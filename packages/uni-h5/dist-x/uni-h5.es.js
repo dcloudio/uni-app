@@ -5796,8 +5796,14 @@ const getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(
 );
 const API_ON_APP_ROUTE = "onAppRoute";
 const API_OFF_APP_ROUTE = "offAppRoute";
+const API_ON_BEFORE_APP_ROUTE = "onBeforeAppRoute";
+const API_OFF_BEFORE_APP_ROUTE = "offBeforeAppRoute";
+const API_REWRITE_ROUTE = "rewriteRoute";
 const eventTransport = /* @__PURE__ */ new Emitter();
-function createAppRouteRuntime() {
+let activeBeforeAppRouteContext;
+const MAX_APP_ROUTE_REWRITE_COUNT = 100;
+const APP_ROUTE_ERROR_CODE = 4;
+function createAppRouteRuntime(options = {}) {
   let routeEventId = 0;
   const onAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
   }, {
@@ -5808,6 +5814,73 @@ function createAppRouteRuntime() {
     allowClearAll: true,
     eventTransport
   });
+  const onBeforeAppRoute = /* @__PURE__ */ defineOnApi(
+    API_ON_BEFORE_APP_ROUTE,
+    () => {
+    },
+    { eventTransport }
+  );
+  const offBeforeAppRoute = /* @__PURE__ */ defineOffApi(
+    API_OFF_BEFORE_APP_ROUTE,
+    () => {
+    },
+    {
+      allowClearAll: true,
+      eventTransport
+    }
+  );
+  const rewriteRoute = /* @__PURE__ */ defineAsyncApi(
+    API_REWRITE_ROUTE,
+    ({ url, preserveQuery }, { resolve, reject }) => {
+      const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
+      const context = activeBeforeAppRouteContext;
+      if (!context) {
+        rejectRewriteRoute(
+          "rewriteRoute is only allowed in a onBeforeAppRoute callback"
+        );
+        return;
+      }
+      if (context.event.openType === "navigateBack") {
+        rejectRewriteRoute(
+          'a "navigateBack" event is not allowed to be rewritten'
+        );
+        return;
+      }
+      if (context.rewrite) {
+        rejectRewriteRoute(
+          `rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`
+        );
+        return;
+      }
+      if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
+        rejectRewriteRoute(
+          `rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`
+        );
+        return;
+      }
+      if (!context.normalizeRewriteRoute) {
+        rejectRewriteRoute("not supported");
+        return;
+      }
+      const rewrite = context.normalizeRewriteRoute(
+        { url, preserveQuery },
+        context.event
+      );
+      if (typeof rewrite === "string") {
+        rejectRewriteRoute(rewrite);
+        return;
+      }
+      context.rewrite = rewrite;
+      resolve();
+    },
+    {
+      url: {
+        type: String,
+        required: true
+      },
+      preserveQuery: Boolean
+    }
+  );
   function createAppRouteContext(event) {
     var _a, _b;
     const timeStamp = (_a = event.timeStamp) != null ? _a : Date.now();
@@ -5819,8 +5892,29 @@ function createAppRouteRuntime() {
         notFound: event.notFound,
         timeStamp,
         routeEventId: (_b = event.routeEventId) != null ? _b : `${timeStamp}-${++routeEventId}`
-      }
+      },
+      normalizeRewriteRoute: options.normalizeRewriteRoute
     };
+  }
+  function dispatchBeforeAppRoute(context) {
+    const event = context.event;
+    const beforeEvent = {
+      path: event.path,
+      query: Object.assign({}, event.query),
+      openType: event.openType,
+      notFound: event.notFound,
+      routeEventId: event.routeEventId
+    };
+    const previousContext = activeBeforeAppRouteContext;
+    activeBeforeAppRouteContext = context;
+    try {
+      eventTransport.emit(API_ON_BEFORE_APP_ROUTE, beforeEvent);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      activeBeforeAppRouteContext = previousContext;
+    }
+    return context.rewrite;
   }
   function dispatchAppRoute2(context) {
     const event = context.event;
@@ -5841,7 +5935,11 @@ function createAppRouteRuntime() {
   return {
     onAppRoute: onAppRoute2,
     offAppRoute: offAppRoute2,
+    onBeforeAppRoute,
+    offBeforeAppRoute,
+    rewriteRoute,
     createAppRouteContext,
+    dispatchBeforeAppRoute,
     dispatchAppRoute: dispatchAppRoute2
   };
 }
@@ -6542,7 +6640,7 @@ function createRouteOptions(type) {
     beforeAll: beforeRoute
   };
 }
-function createNormalizeUrl(type) {
+function createNormalizeUrl(type, options = {}) {
   return function normalizeUrl(url, params) {
     if (!url) {
       return `Missing required args: "url"`;
@@ -6581,10 +6679,10 @@ function createNormalizeUrl(type) {
       }
       return;
     }
-    if (navigatorLock === url && params.openType !== "appLaunch") {
+    if (!options.skipNavigatorLock && navigatorLock === url && params.openType !== "appLaunch") {
       return `${navigatorLock} locked`;
     }
-    if (__uniConfig.ready) {
+    if (!options.skipNavigatorLock && __uniConfig.ready) {
       navigatorLock = url;
     }
   };

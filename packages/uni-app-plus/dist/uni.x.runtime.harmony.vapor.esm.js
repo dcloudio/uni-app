@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, decodedQuery, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -1260,8 +1260,15 @@ function injectAppHooks(appInstance) {
 }
 var API_ON_APP_ROUTE = "onAppRoute";
 var API_OFF_APP_ROUTE = "offAppRoute";
+var API_ON_BEFORE_APP_ROUTE = "onBeforeAppRoute";
+var API_OFF_BEFORE_APP_ROUTE = "offBeforeAppRoute";
+var API_REWRITE_ROUTE = "rewriteRoute";
 var eventTransport = /* @__PURE__ */ new Emitter();
+var activeBeforeAppRouteContext;
+var MAX_APP_ROUTE_REWRITE_COUNT = 100;
+var APP_ROUTE_ERROR_CODE = 4;
 function createAppRouteRuntime() {
+  var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
   var routeEventId = 0;
   var onAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
   }, {
@@ -1272,7 +1279,60 @@ function createAppRouteRuntime() {
     allowClearAll: true,
     eventTransport
   });
-  function createAppRouteContext(event) {
+  var onBeforeAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_BEFORE_APP_ROUTE, () => {
+  }, {
+    eventTransport
+  });
+  var offBeforeAppRoute2 = /* @__PURE__ */ defineOffApi(API_OFF_BEFORE_APP_ROUTE, () => {
+  }, {
+    allowClearAll: true,
+    eventTransport
+  });
+  var rewriteRoute2 = /* @__PURE__ */ defineAsyncApi(API_REWRITE_ROUTE, (_ref, _ref2) => {
+    var {
+      url,
+      preserveQuery
+    } = _ref;
+    var {
+      resolve,
+      reject
+    } = _ref2;
+    var rejectRewriteRoute = (errMsg) => reject(errMsg, {
+      errCode: APP_ROUTE_ERROR_CODE
+    });
+    var context = activeBeforeAppRouteContext;
+    if (!context) {
+      rejectRewriteRoute("rewriteRoute is only allowed in a onBeforeAppRoute callback");
+      return;
+    }
+    if (context.event.openType === "navigateBack") {
+      rejectRewriteRoute('a "navigateBack" event is not allowed to be rewritten');
+      return;
+    }
+    if (context.rewrite) {
+      rejectRewriteRoute('rewriteRoute can only be called once in a route event, this page has been rewritten to "'.concat(context.rewrite.path, '"'));
+      return;
+    }
+    if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
+      rejectRewriteRoute("rewriteRoute exceeded the maximum rewrite count of ".concat(MAX_APP_ROUTE_REWRITE_COUNT));
+      return;
+    }
+    if (!context.normalizeRewriteRoute) {
+      rejectRewriteRoute("not supported");
+      return;
+    }
+    var rewrite = context.normalizeRewriteRoute({
+      url,
+      preserveQuery
+    }, context.event);
+    if (typeof rewrite === "string") {
+      rejectRewriteRoute(rewrite);
+      return;
+    }
+    context.rewrite = rewrite;
+    resolve();
+  });
+  function createAppRouteContext2(event) {
     var _event$timeStamp, _event$routeEventId;
     var timeStamp = (_event$timeStamp = event.timeStamp) !== null && _event$timeStamp !== void 0 ? _event$timeStamp : Date.now();
     return {
@@ -1283,8 +1343,29 @@ function createAppRouteRuntime() {
         notFound: event.notFound,
         timeStamp,
         routeEventId: (_event$routeEventId = event.routeEventId) !== null && _event$routeEventId !== void 0 ? _event$routeEventId : "".concat(timeStamp, "-").concat(++routeEventId)
-      }
+      },
+      normalizeRewriteRoute: options.normalizeRewriteRoute
     };
+  }
+  function dispatchBeforeAppRoute2(context) {
+    var event = context.event;
+    var beforeEvent = {
+      path: event.path,
+      query: Object.assign({}, event.query),
+      openType: event.openType,
+      notFound: event.notFound,
+      routeEventId: event.routeEventId
+    };
+    var previousContext = activeBeforeAppRouteContext;
+    activeBeforeAppRouteContext = context;
+    try {
+      eventTransport.emit(API_ON_BEFORE_APP_ROUTE, beforeEvent);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      activeBeforeAppRouteContext = previousContext;
+    }
+    return context.rewrite;
   }
   function dispatchAppRoute2(context) {
     var event = context.event;
@@ -1305,7 +1386,11 @@ function createAppRouteRuntime() {
   return {
     onAppRoute: onAppRoute2,
     offAppRoute: offAppRoute2,
-    createAppRouteContext,
+    onBeforeAppRoute: onBeforeAppRoute2,
+    offBeforeAppRoute: offBeforeAppRoute2,
+    rewriteRoute: rewriteRoute2,
+    createAppRouteContext: createAppRouteContext2,
+    dispatchBeforeAppRoute: dispatchBeforeAppRoute2,
     dispatchAppRoute: dispatchAppRoute2
   };
 }
@@ -1395,6 +1480,7 @@ function createRouteOptions(type) {
   };
 }
 function createNormalizeUrl(type) {
+  var options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
   return function normalizeUrl(url, params) {
     if (!url) {
       return 'Missing required args: "url"';
@@ -1438,10 +1524,10 @@ function createNormalizeUrl(type) {
       }
       return;
     }
-    if (navigatorLock === url && params.openType !== "appLaunch") {
+    if (!options.skipNavigatorLock && navigatorLock === url && params.openType !== "appLaunch") {
       return "".concat(navigatorLock, " locked");
     }
-    if (__uniConfig.ready) {
+    if (!options.skipNavigatorLock && __uniConfig.ready) {
       navigatorLock = url;
     }
   };
@@ -1656,32 +1742,103 @@ function parseRedirectInfo(appid, redirectInfo) {
     appLink
   };
 }
-var appRouteRuntime = createAppRouteRuntime();
+function normalizeRewriteRoute(_ref, event) {
+  var {
+    url,
+    preserveQuery
+  } = _ref;
+  if (preserveQuery) {
+    url = parseUrl(url).path + stringifyQuery(event.query);
+  }
+  var params = {
+    url,
+    openType: event.openType
+  };
+  var errMsg = createNormalizeUrl(event.openType, {
+    skipNavigatorLock: true
+  })(url, params);
+  if (errMsg) {
+    return errMsg;
+  }
+  var {
+    path,
+    query
+  } = parseUrl(params.url);
+  return {
+    url: params.url,
+    path: removeLeadingSlash(path),
+    query: decodedQuery(query),
+    notFound: false
+  };
+}
+var appRouteRuntime = createAppRouteRuntime({
+  normalizeRewriteRoute
+});
 var onAppRoute = appRouteRuntime.onAppRoute;
 var offAppRoute = appRouteRuntime.offAppRoute;
-function dispatchAppRoute(path, query, openType) {
+var onBeforeAppRoute = appRouteRuntime.onBeforeAppRoute;
+var offBeforeAppRoute = appRouteRuntime.offBeforeAppRoute;
+var rewriteRoute = appRouteRuntime.rewriteRoute;
+function createAppRouteContext(path, query, openType) {
   var notFound = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
-  var context = appRouteRuntime.createAppRouteContext({
+  return appRouteRuntime.createAppRouteContext({
     path: removeLeadingSlash(path),
     query: decodedQuery(query),
     openType,
     notFound
   });
-  if (notFound) {
+}
+function resolveAppRoute(url, openType) {
+  var notFound = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
+  var routeUrl = url;
+  var routeNotFound = notFound;
+  var rewriteCount = 0;
+  while (true) {
+    var {
+      path,
+      query
+    } = parseUrl(routeUrl);
+    var context = createAppRouteContext(path, query, openType, routeNotFound);
+    context.rewriteCount = rewriteCount;
+    var rewrite = appRouteRuntime.dispatchBeforeAppRoute(context);
+    if (!rewrite) {
+      return {
+        url: routeUrl,
+        context
+      };
+    }
+    routeUrl = rewrite.url;
+    routeNotFound = rewrite.notFound;
+    rewriteCount++;
+  }
+}
+function dispatchBeforeAppRoute(context) {
+  return appRouteRuntime.dispatchBeforeAppRoute(context);
+}
+function dispatchAppRoute(contextOrPath) {
+  var query = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+  var openType = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : "appLaunch";
+  var notFound = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
+  var context = typeof contextOrPath === "string" ? createAppRouteContext(contextOrPath, query, openType, notFound) : contextOrPath;
+  var event = context.event;
+  if (event.notFound) {
     invokeHook(getApp().vm, ON_PAGE_NOT_FOUND, {
-      path: context.event.path,
-      query: Object.assign({}, context.event.query),
-      isEntryPage: openType === "appLaunch"
+      path: event.path,
+      query: Object.assign({}, event.query),
+      isEntryPage: event.openType === "appLaunch"
     });
   }
   appRouteRuntime.dispatchAppRoute(context);
 }
-function dispatchAppRouteNotFound(url) {
-  var {
-    path,
-    query
-  } = parseUrl(url);
-  dispatchAppRoute(path, query, "appLaunch", true);
+function dispatchAppRouteNotFound(url, context) {
+  if (!context) {
+    var {
+      path,
+      query
+    } = parseUrl(url);
+    context = createAppRouteContext(path, query, "appLaunch", true);
+  }
+  dispatchAppRoute(context);
 }
 var onTabBarMidButtonTapCallback = [];
 var tabBar0 = null;
@@ -1848,6 +2005,7 @@ function switchSelect(selected, path) {
   var callback = arguments.length > 4 ? arguments[4] : void 0;
   var appRouteOpenType = arguments.length > 5 ? arguments[5] : void 0;
   var shouldDispatchAppRoute = arguments.length > 6 && arguments[6] !== void 0 ? arguments[6] : true;
+  var appRouteContext = arguments.length > 7 ? arguments[7] : void 0;
   var shouldShow = false;
   if (tabBar0 === null) {
     init();
@@ -1868,7 +2026,11 @@ function switchSelect(selected, path) {
     if (shouldShow) {
       invokeHook(page, ON_SHOW);
       if (shouldDispatchAppRoute) {
-        dispatchAppRoute(path, query, type);
+        if (appRouteContext) {
+          dispatchAppRoute(appRouteContext);
+        } else {
+          dispatchAppRoute(path, query, type);
+        }
       }
     }
     selected0 = selected;
@@ -2172,6 +2334,7 @@ function registerPage(_ref, onCreated) {
     query,
     openType,
     appRouteOpenType,
+    appRouteContext,
     webview,
     nvuePageVm,
     eventChannel,
@@ -2208,7 +2371,9 @@ function registerPage(_ref, onCreated) {
   }
   function fn() {
     createVuePage(id2, route, query, pageInstance, {}, nativePage).then((pageComponentPublicInstance) => {
-      if (appRouteOpenType) {
+      if (appRouteContext) {
+        dispatchAppRoute(appRouteContext);
+      } else if (appRouteOpenType) {
         dispatchAppRoute(route, query, appRouteOpenType);
       }
       var pages2 = getCurrentPages();
@@ -2595,12 +2760,12 @@ var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) =
     query
   }).then(resolve).catch(reject);
 }, RedirectToProtocol, RedirectToOptions);
-function _redirectTo(_ref3) {
+function _redirectTo(options) {
+  var appRoute = resolveAppRoute(options.url, API_REDIRECT_TO);
   var {
-    url,
     path,
     query
-  } = _ref3;
+  } = parseUrl(appRoute.url);
   return new Promise((resolve) => {
     setTimeout(() => {
       var lastPage = getCurrentPage().vm;
@@ -2618,11 +2783,12 @@ function _redirectTo(_ref3) {
       }
       invokeAfterRouteHooks(API_REDIRECT_TO);
       showWebview(registerPage({
-        url,
+        url: appRoute.url,
         path,
         query,
         openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo",
         appRouteOpenType: API_REDIRECT_TO,
+        appRouteContext: appRoute.context,
         onRegistered() {
           isRegistered = true;
           callback();
@@ -2675,13 +2841,14 @@ var $reLaunch = (_ref, _ref2) => {
     query
   }).then(resolve).catch(reject);
 };
-function _reLaunch(_ref3) {
+function _reLaunch(options) {
+  var appRouteOpenType = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : API_RE_LAUNCH;
+  var resolvedAppRoute = arguments.length > 2 ? arguments[2] : void 0;
+  var appRoute = resolvedAppRoute || resolveAppRoute(options.url, appRouteOpenType);
   var {
-    url,
     path,
     query
-  } = _ref3;
-  var appRouteOpenType = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : API_RE_LAUNCH;
+  } = parseUrl(appRoute.url);
   return new Promise((resolve) => {
     setTimeout(() => {
       var pages2 = getAllPages().slice(0);
@@ -2699,11 +2866,12 @@ function _reLaunch(_ref3) {
       }
       if (selected === -1) {
         showWebview(registerPage({
-          url,
+          url: appRoute.url,
           path,
           query,
           openType: "reLaunch",
           appRouteOpenType,
+          appRouteContext: appRoute.context,
           onRegistered() {
             isRegistered = true;
             callback();
@@ -2715,7 +2883,7 @@ function _reLaunch(_ref3) {
       } else {
         isRegistered = true;
         isShown = true;
-        switchSelect(selected, path, query, true, callback, appRouteOpenType);
+        switchSelect(selected, path, query, true, callback, appRouteOpenType, true, appRoute.context);
       }
     }, 0);
   });
@@ -2807,17 +2975,17 @@ function $switchTab(args, _ref) {
   } = _ref;
   var appRouteOpenType = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : API_SWITCH_TAB;
   var shouldDispatchAppRoute = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : true;
+  var resolvedAppRoute = arguments.length > 4 ? arguments[4] : void 0;
   var {
     url
   } = args;
   var {
-    path,
-    query
+    path: originalPath
   } = parseUrl(url);
   if (appRouteOpenType === "appLaunch") {
     entryPageState.isReady = true;
   } else {
-    updateEntryPageIsReady(path);
+    updateEntryPageIsReady(originalPath);
   }
   if (!entryPageState.isReady) {
     switchTabPagesBeforeEntryPages.push({
@@ -2829,15 +2997,26 @@ function $switchTab(args, _ref) {
     });
     return;
   }
-  _switchTab({
-    url,
+  var appRoute = shouldDispatchAppRoute && (appRouteOpenType !== API_SWITCH_TAB || !isCurrentTab(originalPath)) ? resolvedAppRoute || resolveAppRoute(url, appRouteOpenType) : void 0;
+  var routeUrl = (appRoute === null || appRoute === void 0 ? void 0 : appRoute.url) || url;
+  var {
     path,
     query
-  }, appRouteOpenType, shouldDispatchAppRoute).then(resolve).catch(reject);
+  } = parseUrl(routeUrl);
+  _switchTab({
+    url: routeUrl,
+    path,
+    query
+  }, appRouteOpenType, shouldDispatchAppRoute, appRoute === null || appRoute === void 0 ? void 0 : appRoute.context).then(resolve).catch(reject);
   handleBeforeEntryPageRoutes();
 }
 var switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
-function _switchTab(_ref2, appRouteOpenType, shouldDispatchAppRoute) {
+function isCurrentTab(path) {
+  var pages2 = getCurrentBasePages();
+  var currentPage = pages2[pages2.length - 1];
+  return !!currentPage && isTabPage(currentPage) && getTabIndex(currentPage.$basePage.path) === getTabIndex(path);
+}
+function _switchTab(_ref2, appRouteOpenType, shouldDispatchAppRoute, appRouteContext) {
   var {
     url,
     path,
@@ -2850,7 +3029,7 @@ function _switchTab(_ref2, appRouteOpenType, shouldDispatchAppRoute) {
   var pages2 = getCurrentBasePages();
   return new Promise((resolve) => {
     setTimeout(() => {
-      switchSelect(selected, path, query, false, void 0, appRouteOpenType, shouldDispatchAppRoute);
+      switchSelect(selected, path, query, false, void 0, appRouteOpenType, shouldDispatchAppRoute, appRouteContext);
       for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
         var page = pages2[index2];
         if (isTabPage(page)) {
@@ -2874,22 +3053,25 @@ function subscribeWebviewReady(_data, pageId) {
 }
 function onLaunchWebviewReady() {
   var _routeOptions;
-  var entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
-  var routeOptions = getRouteOptions(entryPagePath);
-  var isEntryPageNotFound = false;
-  if (!routeOptions) {
-    isEntryPageNotFound = true;
-    dispatchAppRouteNotFound(entryPagePath + (__uniConfig.entryPageQuery || ""));
+  var entryPageUrl = addLeadingSlash(__uniConfig.entryPagePath) + (__uniConfig.entryPageQuery || "");
+  var routeOptions = getRouteOptions(parseUrl(entryPageUrl).path);
+  var appRoute = resolveAppRoute(entryPageUrl, "appLaunch", !routeOptions);
+  var isEntryPageNotFound = appRoute.context.event.notFound;
+  if (isEntryPageNotFound) {
+    dispatchAppRouteNotFound(entryPageUrl, appRoute.context);
     if (__uniRoutes.length > 0) {
-      entryPagePath = __uniRoutes[0].path;
-      routeOptions = getRouteOptions(addLeadingSlash(entryPagePath));
+      entryPageUrl = addLeadingSlash(__uniRoutes[0].path) + (__uniConfig.entryPageQuery || "");
+      routeOptions = getRouteOptions(parseUrl(entryPageUrl).path);
     } else {
       console.error("未匹配到路由，请检查配置");
       return;
     }
+  } else {
+    entryPageUrl = appRoute.url;
+    routeOptions = getRouteOptions(parseUrl(entryPageUrl).path);
   }
   var args = {
-    url: entryPagePath + (__uniConfig.entryPageQuery || ""),
+    url: entryPageUrl,
     openType: "appLaunch"
   };
   var handler = {
@@ -2899,9 +3081,9 @@ function onLaunchWebviewReady() {
     }
   };
   if ((_routeOptions = routeOptions) !== null && _routeOptions !== void 0 && (_routeOptions = _routeOptions.meta) !== null && _routeOptions !== void 0 && _routeOptions.isTabBar) {
-    return $switchTab(args, handler, "appLaunch", !isEntryPageNotFound);
+    return $switchTab(args, handler, "appLaunch", !isEntryPageNotFound, isEntryPageNotFound ? void 0 : appRoute);
   }
-  return $navigateTo(args, handler, "appLaunch", !isEntryPageNotFound);
+  return $navigateTo(args, handler, "appLaunch", !isEntryPageNotFound, isEntryPageNotFound ? void 0 : appRoute);
 }
 function clearWebviewReady() {
   isLaunchWebviewReady = false;
@@ -3081,6 +3263,7 @@ function $navigateTo(args, _ref) {
   } = _ref;
   var appRouteOpenType = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : API_NAVIGATE_TO;
   var shouldDispatchAppRoute = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : true;
+  var resolvedAppRoute = arguments.length > 4 ? arguments[4] : void 0;
   var {
     url,
     events,
@@ -3088,14 +3271,12 @@ function $navigateTo(args, _ref) {
     animationDuration
   } = args;
   var {
-    path,
-    query
+    path: originalPath
   } = parseUrl(url);
-  var [aniType, aniDuration] = initAnimation$1(path, animationType, animationDuration);
   if (appRouteOpenType === "appLaunch") {
     entryPageState.isReady = true;
   } else {
-    updateEntryPageIsReady(path);
+    updateEntryPageIsReady(originalPath);
   }
   if (!entryPageState.isReady) {
     navigateToPagesBeforeEntryPages.push({
@@ -3107,18 +3288,25 @@ function $navigateTo(args, _ref) {
     });
     return;
   }
+  var appRoute = shouldDispatchAppRoute ? resolvedAppRoute || resolveAppRoute(url, appRouteOpenType) : void 0;
+  var routeUrl = (appRoute === null || appRoute === void 0 ? void 0 : appRoute.url) || url;
+  var {
+    path,
+    query
+  } = parseUrl(routeUrl);
+  var [aniType, aniDuration] = initAnimation$1(path, animationType, animationDuration);
   _navigateTo({
-    url,
+    url: routeUrl,
     path,
     query,
     events,
     aniType,
     aniDuration
-  }, appRouteOpenType, shouldDispatchAppRoute).then(resolve).catch(reject);
+  }, appRouteOpenType, shouldDispatchAppRoute, appRoute === null || appRoute === void 0 ? void 0 : appRoute.context).then(resolve).catch(reject);
   handleBeforeEntryPageRoutes();
 }
 var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
-function _navigateTo(_ref2, appRouteOpenType, shouldDispatchAppRoute) {
+function _navigateTo(_ref2, appRouteOpenType, shouldDispatchAppRoute, appRouteContext) {
   var _getCurrentPage;
   var {
     url,
@@ -3152,6 +3340,7 @@ function _navigateTo(_ref2, appRouteOpenType, shouldDispatchAppRoute) {
           query,
           openType: "navigateTo",
           appRouteOpenType: shouldDispatchAppRoute ? appRouteOpenType : void 0,
+          appRouteContext,
           eventChannel,
           onRegistered(page) {
             if (noAnimation) {
@@ -3250,6 +3439,11 @@ function back(delta, animationType, animationDuration) {
   var pages2 = getCurrentBasePages();
   var len = pages2.length;
   var currentPage = pages2[len - 1];
+  var targetPage = pages2[len - delta - 1];
+  var appRouteContext = targetPage ? createAppRouteContext(targetPage.$basePage.path, targetPage.$basePage.options, API_NAVIGATE_BACK) : void 0;
+  if (appRouteContext) {
+    dispatchBeforeAppRoute(appRouteContext);
+  }
   if (delta > 1) {
     pages2.slice(len - delta, len - 1).reverse().forEach((deltaPage) => {
       clearDialogPages(deltaPage.$page);
@@ -3275,7 +3469,11 @@ function back(delta, animationType, animationDuration) {
       invokeHook(ON_SHOW);
       var currentPage2 = getCurrentPage().vm;
       if (currentPage2) {
-        dispatchAppRoute(currentPage2.$basePage.path, currentPage2.$basePage.options, API_NAVIGATE_BACK);
+        if (appRouteContext) {
+          dispatchAppRoute(appRouteContext);
+        } else {
+          dispatchAppRoute(currentPage2.$basePage.path, currentPage2.$basePage.options, API_NAVIGATE_BACK);
+        }
       }
       invokeLastDialogPageHookByUniPage(getCurrentPage(), ON_SHOW);
       setStatusBarStyle();
@@ -5081,7 +5279,9 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   navigateBack,
   navigateTo,
   offAppRoute,
+  offBeforeAppRoute,
   onAppRoute,
+  onBeforeAppRoute,
   onTabBarMidButtonTap,
   openDialogPage,
   pageScrollTo,
@@ -5092,6 +5292,7 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   removeInterceptor,
   removeTabBarBadge,
   requireUTSPlugin,
+  rewriteRoute,
   setNavigationBarColor,
   setNavigationBarTitle,
   setTabBarBadge,

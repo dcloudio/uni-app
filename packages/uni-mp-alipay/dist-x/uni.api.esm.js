@@ -502,6 +502,7 @@ function wrapperOnApi(name, fn, options) {
         createKeepAliveApiCallback(name, callback);
         if (isFirstInvokeOnApi) {
             onKeepAliveApiCallback(name, options === null || options === void 0 ? void 0 : options.eventTransport);
+            fn();
         }
     };
 }
@@ -526,6 +527,7 @@ function wrapperOffApi(name, fn, options) {
         const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
         if (!hasInvokeOnApi) {
             offKeepAliveApiCallback(onApiName, options === null || options === void 0 ? void 0 : options.eventTransport);
+            fn();
         }
     };
 }
@@ -1742,8 +1744,14 @@ function initGetProvider(providers) {
 
 const API_ON_APP_ROUTE = 'onAppRoute';
 const API_OFF_APP_ROUTE = 'offAppRoute';
+const API_ON_BEFORE_APP_ROUTE = 'onBeforeAppRoute';
+const API_OFF_BEFORE_APP_ROUTE = 'offBeforeAppRoute';
+const API_REWRITE_ROUTE = 'rewriteRoute';
 const eventTransport = /*#__PURE__*/ new Emitter();
-function createAppRouteRuntime() {
+let activeBeforeAppRouteContext;
+const MAX_APP_ROUTE_REWRITE_COUNT = 100;
+const APP_ROUTE_ERROR_CODE = 4;
+function createAppRouteRuntime(options = {}) {
     let routeEventId = 0;
     // 独立通道避免依赖平台 Bridge，对外仍沿用 define API 的校验和拦截器。
     const onAppRoute = defineOnApi(API_ON_APP_ROUTE, () => { }, {
@@ -1752,6 +1760,48 @@ function createAppRouteRuntime() {
     const offAppRoute = defineOffApi(API_OFF_APP_ROUTE, () => { }, {
         allowClearAll: true,
         eventTransport,
+    });
+    const onBeforeAppRoute = defineOnApi(API_ON_BEFORE_APP_ROUTE, () => { }, { eventTransport });
+    const offBeforeAppRoute = defineOffApi(API_OFF_BEFORE_APP_ROUTE, () => { }, {
+        allowClearAll: true,
+        eventTransport,
+    });
+    const rewriteRoute = defineAsyncApi(API_REWRITE_ROUTE, ({ url, preserveQuery }, { resolve, reject }) => {
+        const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
+        const context = activeBeforeAppRouteContext;
+        if (!context) {
+            rejectRewriteRoute('rewriteRoute is only allowed in a onBeforeAppRoute callback');
+            return;
+        }
+        if (context.event.openType === 'navigateBack') {
+            rejectRewriteRoute('a "navigateBack" event is not allowed to be rewritten');
+            return;
+        }
+        if (context.rewrite) {
+            rejectRewriteRoute(`rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`);
+            return;
+        }
+        if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
+            rejectRewriteRoute(`rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`);
+            return;
+        }
+        if (!context.normalizeRewriteRoute) {
+            rejectRewriteRoute('not supported');
+            return;
+        }
+        const rewrite = context.normalizeRewriteRoute({ url, preserveQuery }, context.event);
+        if (typeof rewrite === 'string') {
+            rejectRewriteRoute(rewrite);
+            return;
+        }
+        context.rewrite = rewrite;
+        resolve();
+    }, {
+        url: {
+            type: String,
+            required: true,
+        },
+        preserveQuery: Boolean,
     });
     function createAppRouteContext(event) {
         var _a, _b;
@@ -1765,7 +1815,31 @@ function createAppRouteRuntime() {
                 timeStamp,
                 routeEventId: (_b = event.routeEventId) !== null && _b !== void 0 ? _b : `${timeStamp}-${++routeEventId}`,
             },
+            normalizeRewriteRoute: options.normalizeRewriteRoute,
         };
+    }
+    function dispatchBeforeAppRoute(context) {
+        const event = context.event;
+        const beforeEvent = {
+            path: event.path,
+            query: Object.assign({}, event.query),
+            openType: event.openType,
+            notFound: event.notFound,
+            routeEventId: event.routeEventId,
+        };
+        const previousContext = activeBeforeAppRouteContext;
+        activeBeforeAppRouteContext = context;
+        try {
+            eventTransport.emit(API_ON_BEFORE_APP_ROUTE, beforeEvent);
+        }
+        catch (error) {
+            // 路由事件监听器异常不能影响底层路由流程。
+            console.error(error);
+        }
+        finally {
+            activeBeforeAppRouteContext = previousContext;
+        }
+        return context.rewrite;
     }
     function dispatchAppRoute(context) {
         const event = context.event;
@@ -1788,7 +1862,11 @@ function createAppRouteRuntime() {
     return {
         onAppRoute,
         offAppRoute,
+        onBeforeAppRoute,
+        offBeforeAppRoute,
+        rewriteRoute,
         createAppRouteContext,
+        dispatchBeforeAppRoute,
         dispatchAppRoute,
     };
 }

@@ -6034,7 +6034,7 @@ function createRouteOptions(type) {
     beforeAll: beforeRoute
   };
 }
-function createNormalizeUrl(type) {
+function createNormalizeUrl(type, options = {}) {
   return function normalizeUrl(url, params) {
     if (!url) {
       return `Missing required args: "url"`;
@@ -6073,10 +6073,10 @@ function createNormalizeUrl(type) {
       }
       return;
     }
-    if (navigatorLock === url && params.openType !== "appLaunch") {
+    if (!options.skipNavigatorLock && navigatorLock === url && params.openType !== "appLaunch") {
       return `${navigatorLock} locked`;
     }
-    if (__uniConfig.ready) {
+    if (!options.skipNavigatorLock && __uniConfig.ready) {
       navigatorLock = url;
     }
   };
