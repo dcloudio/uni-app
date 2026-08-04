@@ -6,6 +6,7 @@ const mockEntryPageState = {
   isReady: true,
   handledBeforeEntryPageRoutes: false,
 }
+const routeOrder: string[] = []
 
 jest.mock('@dcloudio/uni-api', () => ({
   API_NAVIGATE_TO: 'navigateTo',
@@ -17,7 +18,7 @@ jest.mock('@dcloudio/uni-api', () => ({
 jest.mock('@dcloudio/uni-core', () => ({
   getCurrentPage: () => undefined,
   getRouteMeta: jest.fn(),
-  invokeHook: jest.fn(),
+  invokeHook: () => routeOrder.push('onHide'),
   invokeLastDialogPageHookByUniPage: jest.fn(),
 }))
 
@@ -47,6 +48,16 @@ jest.mock('../../../../src/x/api/route/performance', () => ({
   invokeBeforeRouteHooks: jest.fn(),
 }))
 
+jest.mock('../../../../src/x/api/route/appRoute', () => ({
+  resolveAppRoute: (url: string) => {
+    routeOrder.push('onBeforeAppRoute')
+    return {
+      url,
+      context: { event: {} },
+    }
+  },
+}))
+
 jest.mock('../../../../src/x/framework/app', () => ({
   entryPageState: mockEntryPageState,
   navigateToPagesBeforeEntryPages: [],
@@ -65,6 +76,7 @@ describe('app x navigateTo appRoute openType', () => {
     mockEntryPageState.isReady = true
     mockRegisterPage.mockReset()
     mockShowWebview.mockClear()
+    routeOrder.length = 0
     mockRegisterPage.mockImplementation((options) => {
       const page = {}
       options.onRegistered?.(page)
@@ -101,5 +113,14 @@ describe('app x navigateTo appRoute openType', () => {
     jest.runAllTimers()
 
     expect(mockRegisterPage.mock.calls[0][0].appRouteOpenType).toBeUndefined()
+  })
+
+  test('onBeforeAppRoute 早于当前页面 onHide', () => {
+    $navigateTo({ url: '/pages/next/next', events: {} } as any, {
+      resolve: jest.fn(),
+      reject: jest.fn(),
+    })
+
+    expect(routeOrder).toEqual(['onBeforeAppRoute', 'onHide'])
   })
 })

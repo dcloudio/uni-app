@@ -13,7 +13,7 @@ import {
   invokeBeforeRouteHooks,
 } from '../../api/route/performance'
 import { fixBorderStyle } from './utils'
-import type { AppRouteOpenType } from '@dcloudio/uni-api'
+import type { AppRouteContext, AppRouteOpenType } from '@dcloudio/uni-api'
 import { dispatchAppRoute } from '../../api/route/appRoute'
 
 // 存储 callback
@@ -263,7 +263,8 @@ export function switchSelect(
   rebuild: boolean = false,
   callback?: () => void,
   appRouteOpenType?: AppRouteOpenType,
-  shouldDispatchAppRoute = true
+  shouldDispatchAppRoute = true,
+  appRouteContext?: AppRouteContext
 ) {
   let shouldShow = false
   if (tabBar0 === null) {
@@ -292,7 +293,11 @@ export function switchSelect(
       // resetNavigatorLock()
       invokeHook(page, ON_SHOW)
       if (shouldDispatchAppRoute) {
-        dispatchAppRoute(path, query, type)
+        if (appRouteContext) {
+          dispatchAppRoute(appRouteContext)
+        } else {
+          dispatchAppRoute(path, query, type)
+        }
       }
     }
     selected0 = selected

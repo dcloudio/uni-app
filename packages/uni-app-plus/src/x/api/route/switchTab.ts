@@ -1,6 +1,7 @@
 import {
   API_SWITCH_TAB,
   type API_TYPE_SWITCH_TAB,
+  type AppRouteContext,
   type AppRouteOpenType,
   type DefineAsyncApiFn,
   SwitchTabOptions,
@@ -25,6 +26,7 @@ import {
   switchTabPagesBeforeEntryPages,
 } from '../../framework/app'
 import { getCurrentBasePages } from '../../../service/framework/page/getCurrentPages'
+import { type ResolvedAppRoute, resolveAppRoute } from './appRoute'
 
 type SwitchTabApiFn = DefineAsyncApiFn<API_TYPE_SWITCH_TAB>
 
@@ -32,14 +34,15 @@ export function $switchTab(
   args: Parameters<SwitchTabApiFn>[0],
   { resolve, reject }: Parameters<SwitchTabApiFn>[1],
   appRouteOpenType: AppRouteOpenType = API_SWITCH_TAB,
-  shouldDispatchAppRoute = true
+  shouldDispatchAppRoute = true,
+  resolvedAppRoute?: ResolvedAppRoute
 ) {
   const { url } = args
-  const { path, query } = parseUrl(url)
+  const { path: originalPath } = parseUrl(url)
   if (appRouteOpenType === 'appLaunch') {
     entryPageState.isReady = true
   } else {
-    updateEntryPageIsReady(path)
+    updateEntryPageIsReady(originalPath)
   }
 
   if (!entryPageState.isReady) {
@@ -49,14 +52,22 @@ export function $switchTab(
     })
     return
   }
+  const appRoute =
+    shouldDispatchAppRoute &&
+    (appRouteOpenType !== API_SWITCH_TAB || !isCurrentTab(originalPath))
+      ? resolvedAppRoute || resolveAppRoute(url, appRouteOpenType)
+      : undefined
+  const routeUrl = appRoute?.url || url
+  const { path, query } = parseUrl(routeUrl)
   _switchTab(
     {
-      url,
+      url: routeUrl,
       path,
       query,
     },
     appRouteOpenType,
-    shouldDispatchAppRoute
+    shouldDispatchAppRoute,
+    appRoute?.context
   )
     .then(resolve)
     .catch(reject)
@@ -73,10 +84,23 @@ export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
 
 interface SwitchTabOptions extends RouteOptions {}
 
+function isCurrentTab(path: string) {
+  const pages = getCurrentBasePages()
+  const currentPage = pages[pages.length - 1] as
+    | ComponentPublicInstance
+    | undefined
+  return (
+    !!currentPage &&
+    isTabPage(currentPage) &&
+    getTabIndex(currentPage.$basePage.path) === getTabIndex(path)
+  )
+}
+
 function _switchTab(
   { url, path, query }: SwitchTabOptions,
   appRouteOpenType: AppRouteOpenType,
-  shouldDispatchAppRoute: boolean
+  shouldDispatchAppRoute: boolean,
+  appRouteContext?: AppRouteContext
 ) {
   let selected: number = getTabIndex(path)
   if (selected == -1) {
@@ -92,7 +116,8 @@ function _switchTab(
         false,
         undefined,
         appRouteOpenType,
-        shouldDispatchAppRoute
+        shouldDispatchAppRoute,
+        appRouteContext
       )
       for (let index = pages.length - 1; index >= 0; index--) {
         const page = pages[index] as ComponentPublicInstance

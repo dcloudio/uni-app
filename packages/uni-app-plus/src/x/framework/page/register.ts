@@ -33,7 +33,7 @@ import { invokePageReadyHooks } from '../../api/route/performance'
 import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import { closeDialogPage } from '../../api/route/closeDialogPage'
-import type { AppRouteOpenType } from '@dcloudio/uni-api'
+import type { AppRouteContext, AppRouteOpenType } from '@dcloudio/uni-api'
 import { dispatchAppRoute } from '../../api/route/appRoute'
 
 type PageNodeOptions = {}
@@ -44,6 +44,7 @@ export interface RegisterPageOptions {
   query: Record<string, string>
   openType: UniApp.OpenType
   appRouteOpenType?: AppRouteOpenType
+  appRouteContext?: AppRouteContext
   webview?: IPage
   nvuePageVm?: ComponentPublicInstance
   eventChannel?: EventChannel
@@ -160,6 +161,7 @@ export function registerPage(
     query,
     openType,
     appRouteOpenType,
+    appRouteContext,
     webview,
     nvuePageVm,
     eventChannel,
@@ -211,7 +213,10 @@ export function registerPage(
   function fn() {
     createVuePage(id, route, query, pageInstance, {}, nativePage).then(
       (pageComponentPublicInstance) => {
-        if (appRouteOpenType) {
+        if (appRouteContext) {
+          // mountPage 返回时，非 Tab 页首次 onLoad、onShow 已同步执行完成。
+          dispatchAppRoute(appRouteContext)
+        } else if (appRouteOpenType) {
           // mountPage 返回时，非 Tab 页首次 onLoad、onShow 已同步执行完成。
           dispatchAppRoute(route, query, appRouteOpenType)
         }

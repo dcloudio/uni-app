@@ -2,6 +2,7 @@ const mockGetRouteOptions = jest.fn()
 const mockNavigateTo = jest.fn()
 const mockSwitchTab = jest.fn()
 const mockDispatchAppRouteNotFound = jest.fn()
+const mockResolveAppRoute = jest.fn()
 const mockReLaunch = jest.fn()
 
 jest.mock('@dcloudio/uni-api', () => ({
@@ -34,6 +35,7 @@ jest.mock('../../../../src/x/api/route/switchTab', () => ({
 jest.mock('../../../../src/x/api/route/appRoute', () => ({
   dispatchAppRouteNotFound: (...args: unknown[]) =>
     mockDispatchAppRouteNotFound(...args),
+  resolveAppRoute: (...args: unknown[]) => mockResolveAppRoute(...args),
 }))
 
 jest.mock('../../../../src/x/api/route/reLaunch', () => ({
@@ -60,6 +62,14 @@ describe('app x entry appRoute', () => {
     mockNavigateTo.mockReset()
     mockSwitchTab.mockReset()
     mockDispatchAppRouteNotFound.mockReset()
+    mockResolveAppRoute.mockImplementation(
+      (url: string, _openType: string, notFound: boolean) => ({
+        url,
+        context: {
+          event: { notFound },
+        },
+      })
+    )
     mockReLaunch.mockReset()
     global.__uniConfig = {
       entryPagePath: 'pages/missing/missing',
@@ -81,13 +91,15 @@ describe('app x entry appRoute', () => {
     subscribeWebviewReady(undefined, '1')
 
     expect(mockDispatchAppRouteNotFound).toHaveBeenCalledWith(
-      '/pages/missing/missing?from=launch'
+      '/pages/missing/missing?from=launch',
+      expect.any(Object)
     )
     expect(mockNavigateTo).toHaveBeenCalledWith(
       expect.objectContaining({ url: '/pages/index/index?from=launch' }),
       expect.any(Object),
       'appLaunch',
-      false
+      false,
+      undefined
     )
   })
 
@@ -102,7 +114,8 @@ describe('app x entry appRoute', () => {
       expect.objectContaining({ url: '/pages/index/index?from=launch' }),
       expect.any(Object),
       'appLaunch',
-      false
+      false,
+      undefined
     )
   })
 

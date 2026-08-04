@@ -7,12 +7,20 @@ jest.mock('@dcloudio/uni-api', () =>
   )
 )
 
-import { API_NAVIGATE_TO } from '@dcloudio/uni-api'
+import {
+  API_NAVIGATE_TO,
+  beforeRoute,
+  createNormalizeUrl,
+} from '@dcloudio/uni-api'
 import {
   dispatchAppRoute,
   dispatchAppRouteNotFound,
   offAppRoute,
+  offBeforeAppRoute,
   onAppRoute,
+  onBeforeAppRoute,
+  resolveAppRoute,
+  rewriteRoute,
 } from '../../../../src/x/api/route/appRoute'
 
 describe('app x app route', () => {
@@ -47,6 +55,7 @@ describe('app x app route', () => {
 
   afterAll(() => {
     offAppRoute()
+    offBeforeAppRoute()
     bridge.on = oldOn
     bridge.off = oldOff
     bridge.invokeOnCallback = oldInvokeOnCallback
@@ -57,12 +66,29 @@ describe('app x app route', () => {
   })
 
   beforeEach(() => {
-    global.__uniRoutes = []
+    beforeRoute()
+    global.__uniConfig.ready = false
+    global.__uniRoutes = [
+      {
+        path: '/pages/index/index',
+        alias: '/',
+        meta: { isEntry: true, isTabBar: false },
+      },
+      {
+        path: '/pages/next/next',
+        meta: { isEntry: false, isTabBar: false },
+      },
+      {
+        path: '/pages/tab/tab',
+        meta: { isEntry: false, isTabBar: true },
+      },
+    ] as UniApp.UniRoute[]
     appVm.$.onPageNotFound.length = 0
   })
 
   afterEach(() => {
     offAppRoute()
+    offBeforeAppRoute()
   })
 
   test('dispatches normalized route data and supports offAppRoute', () => {
@@ -118,5 +144,139 @@ describe('app x app route', () => {
     dispatchAppRouteNotFound('/pages/missing/missing?from=launch')
 
     expect(calls).toEqual(['onPageNotFound', 'onAppRoute'])
+  })
+
+  test('rewrites a route and preserves the original query', () => {
+    const beforeEvents: Record<string, any>[] = []
+    const routeListener = jest.fn()
+    onBeforeAppRoute((event) => {
+      beforeEvents.push(event)
+      if (event.path === 'pages/index/index') {
+        rewriteRoute({
+          url: '/pages/next/next?ignored=true',
+          preserveQuery: true,
+        })
+      }
+    })
+    onAppRoute(routeListener)
+
+    const resolved = resolveAppRoute(
+      '/pages/index/index?from=app%20route',
+      API_NAVIGATE_TO
+    )
+    dispatchAppRoute(resolved.context)
+
+    expect(resolved.context.event.query).toEqual({ from: 'app route' })
+    expect(beforeEvents).toHaveLength(2)
+    expect(beforeEvents[0]).toEqual(
+      expect.objectContaining({
+        path: 'pages/index/index',
+        query: { from: 'app route' },
+      })
+    )
+    expect(beforeEvents[1]).toEqual(
+      expect.objectContaining({
+        path: 'pages/next/next',
+        query: { from: 'app route' },
+      })
+    )
+    expect(routeListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: 'pages/next/next',
+        routeEventId: beforeEvents[1].routeEventId,
+      })
+    )
+  })
+
+  test('rewrites to the same normalized URL without navigator lock interference', () => {
+    global.__uniConfig.ready = true
+    const params = {
+      url: '/pages/next/next',
+      openType: API_NAVIGATE_TO,
+    }
+    expect(createNormalizeUrl(API_NAVIGATE_TO)(params.url, params)).toBe(
+      undefined
+    )
+
+    const success = jest.fn()
+    const fail = jest.fn()
+    const beforeListener = jest.fn()
+    let rewritten = false
+    onBeforeAppRoute(() => {
+      beforeListener()
+      if (!rewritten) {
+        rewritten = true
+        rewriteRoute({ url: params.url, success, fail })
+      }
+    })
+
+    const resolved = resolveAppRoute(params.url, API_NAVIGATE_TO)
+
+    expect(resolved.url).toBe(params.url)
+    expect(beforeListener).toHaveBeenCalledTimes(2)
+    expect(success).toHaveBeenCalledWith(
+      expect.objectContaining({ errMsg: 'rewriteRoute:ok' })
+    )
+    expect(fail).not.toHaveBeenCalled()
+  })
+
+  test('validates rewritten page type against the original openType', () => {
+    const failures: string[] = []
+    onBeforeAppRoute((event) => {
+      rewriteRoute({
+        url:
+          event.openType === API_NAVIGATE_TO
+            ? '/pages/tab/tab'
+            : '/pages/next/next',
+        fail: ({ errMsg }) => failures.push(errMsg),
+      })
+    })
+
+    const navigateToRoute = resolveAppRoute(
+      '/pages/index/index',
+      API_NAVIGATE_TO
+    )
+    const switchTabRoute = resolveAppRoute('/pages/tab/tab', 'switchTab')
+
+    expect(navigateToRoute.url).toBe('/pages/index/index')
+    expect(switchTabRoute.url).toBe('/pages/tab/tab')
+    expect(failures).toEqual([
+      'rewriteRoute:fail can not navigateTo a tabbar page',
+      'rewriteRoute:fail can not switch to no-tabBar page',
+    ])
+  })
+
+  test('rewrites a missing entry route before page not found is dispatched', () => {
+    const beforeEvents: Record<string, any>[] = []
+    const pageNotFoundListener = jest.fn()
+    appVm.$.onPageNotFound.push(pageNotFoundListener)
+    onBeforeAppRoute((event) => {
+      beforeEvents.push(event)
+      if (event.notFound) {
+        rewriteRoute({ url: '/pages/next/next?from=missing' })
+      }
+    })
+
+    const resolved = resolveAppRoute(
+      '/pages/missing/missing',
+      'appLaunch',
+      true
+    )
+    dispatchAppRoute(resolved.context)
+
+    expect(
+      beforeEvents.map(({ path, notFound }) => ({ path, notFound }))
+    ).toEqual([
+      { path: 'pages/missing/missing', notFound: true },
+      { path: 'pages/next/next', notFound: false },
+    ])
+    expect(resolved.context.event).toEqual(
+      expect.objectContaining({
+        path: 'pages/next/next',
+        query: { from: 'missing' },
+        notFound: false,
+      })
+    )
+    expect(pageNotFoundListener).not.toHaveBeenCalled()
   })
 })

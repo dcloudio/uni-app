@@ -28,7 +28,11 @@ import { getNativeApp } from '../../framework/app/app'
 import { setStatusBarStyle } from '../../statusBar'
 import { isDirectPage, reLaunchEntryPage } from './direct'
 import { clearDialogPages } from './utils'
-import { dispatchAppRoute } from './appRoute'
+import {
+  createAppRouteContext,
+  dispatchAppRoute,
+  dispatchBeforeAppRoute,
+} from './appRoute'
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
@@ -97,6 +101,17 @@ function back(
   const pages = getCurrentBasePages()
   const len = pages.length
   const currentPage = pages[len - 1]
+  const targetPage = pages[len - delta - 1]
+  const appRouteContext = targetPage
+    ? createAppRouteContext(
+        targetPage.$basePage.path,
+        targetPage.$basePage.options,
+        API_NAVIGATE_BACK
+      )
+    : undefined
+  if (appRouteContext) {
+    dispatchBeforeAppRoute(appRouteContext)
+  }
 
   if (delta > 1) {
     // 中间页隐藏
@@ -135,11 +150,15 @@ function back(
       invokeHook(ON_SHOW)
       const currentPage = (getCurrentPage() as unknown as UniPage).vm
       if (currentPage) {
-        dispatchAppRoute(
-          currentPage.$basePage.path,
-          currentPage.$basePage.options,
-          API_NAVIGATE_BACK
-        )
+        if (appRouteContext) {
+          dispatchAppRoute(appRouteContext)
+        } else {
+          dispatchAppRoute(
+            currentPage.$basePage.path,
+            currentPage.$basePage.options,
+            API_NAVIGATE_BACK
+          )
+        }
       }
       invokeLastDialogPageHookByUniPage(
         getCurrentPage() as unknown as UniPage,
