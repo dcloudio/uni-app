@@ -451,7 +451,8 @@
   <!-- #endif -->
     <view>
       <page-head title="navigate"></page-head>
-      <page-intro content="本页演示页面路由：开关控制共享元素动画，展示 onLoad/onShow/onReady 等生命周期时间戳；通过按钮跳转新页、返回、redirect 等，可传递参数。"></page-intro>
+      <page-intro content="本页演示页面路由：展示 onLoad/onShow/onReady 等生命周期时间戳；通过按钮跳转新页、返回、redirect 等，可传递参数。"></page-intro>
+      <!-- #ifdef APP && !VUE3-VAPOR -->
       <view style="flex-direction: row;">
         <switch @change="onChange"></switch>
         <view class="uni-title">是否启用共享元素动画</view>
@@ -460,6 +461,10 @@
         <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
       </share-element>
       <text style="font-size: 13px;" >注意：开启共享元素动画后仅支持slide-in-right和fade-in动画效果</text>
+      <!-- #endif -->
+      <!-- #ifndef APP && !VUE3-VAPOR -->
+      <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
+      <!-- #endif -->
       <view class="uni-padding-wrap uni-common-mt uni-common-mb">
         <view class="direction-row">
           <text class="label">onLoad触发时间戳:</text>
@@ -522,7 +527,7 @@
     animationTypeList: string[];
   }
 
-  const data = reactive({
+  const data = reactive<DataType>({
     onLoadTime: 0,
     onShowTime: 0,
     onReadyTime: 0,
@@ -539,7 +544,7 @@
       'zoom-fade-out',
       'none'
     ]
-  } as DataType)
+  })
   onLoad(() => {
     data.onLoadTime = Date.now()
     console.log('onLoad', data.onLoadTime)
@@ -870,7 +875,7 @@
   }
 
   const onChange = (event: UniSwitchChangeEvent) => {
-    if(event.detail.value) {
+    if (event.detail.value) {
       data.shareElementKey = "test-share-element-key"
     } else {
       data.shareElementKey = ""

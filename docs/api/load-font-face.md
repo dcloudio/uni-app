@@ -151,6 +151,16 @@
       <text style="margin-left:5px;line-height:22px;">\ue101</text>
       <!-- #endif -->
     </view>
+    <text class="font-size-20 line-height-40" style="font-family: UniFontFamily">实体字符</text>
+    <view style="flex-direction: row;">
+      <!-- #ifdef MP-WEIXIN -->
+      <text class="font-size-20" style="font-family: UniFontFamily2;">&#xe102; &amp;#xe102;</text>
+      <!-- #endif -->
+      <!-- #ifndef MP-WEIXIN -->
+      <text class="font-size-20" style="font-family: UniFontFamily;">&#xe100; &amp;#xe100;</text>
+      <text class="font-size-20" style="font-family: UniFontFamily; margin-left: 5px;">&#xe101; &amp;#xe101;</text>
+      <!-- #endif -->
+    </view>
     <!-- #ifndef APP-HARMONY -->
     <text class="uni-common-mt font-size-20">非全局加载字体：</text>
     <!-- #endif -->

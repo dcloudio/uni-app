@@ -116,8 +116,8 @@
       </view>
       <input-data defaultValue="80" title="压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效）" type="number"
         @confirm="onQualityConfirm"></input-data>
-      <input-data title="压缩后图片的宽度，单位px" type="string" @confirm="onCompressedWidthConfirm"></input-data>
-      <input-data title="压缩后图片的高度，单位px" type="string" @confirm="onCompressedHeightConfirm"></input-data>
+      <input-data defaultValue="" title="压缩后图片的宽度，单位px" type="string" @confirm="onCompressedWidthConfirm"></input-data>
+      <input-data defaultValue="" title="压缩后图片的高度，单位px" type="string" @confirm="onCompressedHeightConfirm"></input-data>
       <input-data defaultValue="0" title="旋转度数，范围0～360" type="number" @confirm="onRotateConfirm"></input-data>
     </view>
 

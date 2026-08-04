@@ -9,9 +9,9 @@
 `UniApp` 对象可同时在 uts 插件和 uvue 页面中使用，但 `vm` 属性及其相关的 `globalData` 仍然只能在 uvue 页面中使用。
 
 ### getApp 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | √ | √ | 4.31 | 4.61 |
+| Web | 微信小程序 | Android | Android(Vapor) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | iOS(Vapor) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | √ | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | √ | 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 |
 
 
 
@@ -26,18 +26,18 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| vm | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象 |
-| globalData | any | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 全局对象 |
-| ~~$vm~~ | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象  **已废弃，仅为了向下兼容保留** |
+| vm | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; Android(Vapor) UTS 插件: x; iOS: 4.31; iOS(VDOM) UTS 插件: x; iOS(Vapor) UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象 |
+| globalData | any | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; Android(Vapor) UTS 插件: x; iOS: 4.31; iOS(Vapor) UTS 插件: x; HarmonyOS: 4.61 | 全局对象 |
+| ~~$vm~~ | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; Android(Vapor) UTS 插件: x; iOS: 4.31; iOS(VDOM) UTS 插件: x; iOS(Vapor) UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象  **已废弃，仅为了向下兼容保留** |
 #### UniApp 的方法 @uniapp-values 
 
 #### getAndroidApplication(): Application @getandroidapplication
 getAndroidApplication
 获取 Android 应用 Application 上下文
 ##### getAndroidApplication 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.31 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.31 | x | x | x |
 
 
 
@@ -52,9 +52,9 @@ getAndroidApplication
 getHarmonyAbility
 获取 鸿蒙应用 Ability 实例
 ##### getHarmonyAbility 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.21 | x | 4.61 | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x |
 
 
 

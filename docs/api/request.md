@@ -610,6 +610,9 @@ offHeadersReceived
   const checkQuery = () => {
     uni.request<string>({
       url: "https://request.dcloud.net.cn/api/http/echo/text?Signature=whpMFJg%2B%2Fc0tqdNXxo4330muVdc%3D",
+      // #ifndef APP-ANDROID && UNI-APP-X && !VUE3-VAPOR
+      dataType: 'text',
+      // #endif
       success:(res) => {
         data.jest_result = res.data == "Signature=whpMFJg%2B%2Fc0tqdNXxo4330muVdc%3D\n";
         console.log("res: ", res);
