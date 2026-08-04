@@ -87,6 +87,8 @@ export interface CollectorDeps {
   }
   /** 报文版本。 */
   config: { usv: string }
+  /** 发送前补齐运行时字段；用于避免安装/入队早于 App 原生渠道就绪。 */
+  resolveUploadFields?: () => Partial<StatData>
   /** ms 时间戳。 */
   nowMs: () => number
   /** 秒时间戳。 */
@@ -203,6 +205,62 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
   }
 
   /**
+   * flush 前补运行时字段。
+   *
+   * 典型场景：App 端首个 Launch 事件入队时 `plus.runtime.channel` 暂不可读，
+   * 但真正发送前已经就绪；此时应以发送前的原生运行时值覆盖本批事件的 `ch`。
+   */
+  function applyUploadFields(bucket: Bucket): void {
+    const fields = deps.resolveUploadFields ? deps.resolveUploadFields() : {}
+    const keys = Object.keys(fields).filter((key) => {
+      const v = fields[key]
+      return v !== '' && v !== undefined && v !== null
+    })
+    if (keys.length === 0) return
+    for (const lt of Object.keys(bucket)) {
+      const list = bucket[lt]
+      if (!Array.isArray(list)) continue
+      for (let i = 0; i < list.length; i++) {
+        const item = list[i]
+        for (let j = 0; j < keys.length; j++) {
+          const key = keys[j]
+          item[key] = fields[key]
+        }
+      }
+    }
+  }
+
+  function applyUploadFieldsToRequests(requests: string): string {
+    const fields = deps.resolveUploadFields ? deps.resolveUploadFields() : {}
+    const keys = Object.keys(fields).filter((key) => {
+      const v = fields[key]
+      return v !== '' && v !== undefined && v !== null
+    })
+    if (keys.length === 0) return requests
+    try {
+      const events = JSON.parse(requests)
+      if (!Array.isArray(events)) return requests
+      for (let i = 0; i < events.length; i++) {
+        const item = events[i]
+        if (!item || typeof item !== 'object') continue
+        for (let j = 0; j < keys.length; j++) {
+          const key = keys[j]
+          item[key] = fields[key]
+        }
+      }
+      return JSON.stringify(events)
+    } catch {
+      return requests
+    }
+  }
+
+  function applyUploadFieldsToPayload(payload: ReportPayload): ReportPayload {
+    const requests = applyUploadFieldsToRequests(payload.requests)
+    if (requests === payload.requests) return payload
+    return Object.assign({}, payload, { requests })
+  }
+
+  /**
    * 真正发送：取快照、序列化、挑通道、按双阈值切片、串行发送，根据结果 commit/persist。
    *
    * 切片策略（修复 image url too long 死循环）：
@@ -233,6 +291,8 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
     }
     const snapshot = deps.queue.flush()
     if (!snapshot) return
+
+    applyUploadFields(snapshot)
 
     const channel = deps.selectChannel()
     if (!channel) {
@@ -385,8 +445,9 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
     let i = 0
     for (const payload of items) {
       i++
+      const uploadPayload = applyUploadFieldsToPayload(payload)
       try {
-        await channel.send(payload)
+        await channel.send(uploadPayload)
         if (payload._id) deps.retry.ack(payload._id)
         logRecoverItem({
           index: i,

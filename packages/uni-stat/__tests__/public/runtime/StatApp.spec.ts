@@ -76,15 +76,53 @@ describe('runtime/StatApp', () => {
     expect(app.getConfig()?.ch).toBe('oppo')
   })
 
-  test('install：显式 ch 优先于 plus.runtime.channel', () => {
+  test('install：App 端始终以 plus.runtime.channel 为准，不被显式 ch 覆盖', () => {
     installMockUni({ platform: 'app' })
     installMockPlus({ runtime: { channel: 'oppo' } })
     const app = getStatApp()
     app.install(
-      { ch: 'custom' },
+      { ch: '1001' },
       { skipInterceptors: true, skipMigration: true, skipRecoverRetry: true }
     )
-    expect(app.getConfig()?.ch).toBe('custom')
+    expect(app.getConfig()?.ch).toBe('oppo')
+  })
+
+  test('report：App 端发送前重新读取 plus.runtime.channel，避免安装/入队过早固定为空', async () => {
+    installMockUni({ platform: 'app' })
+    installMockPlus({ runtime: { channel: '' } })
+    const app = getStatApp()
+    const http = fakeChannel('1.0')
+    app.install(
+      { version: '1' },
+      {
+        channels: { http, cloud: null },
+        skipInterceptors: true,
+        skipMigration: true,
+        skipRecoverRetry: true,
+      }
+    )
+    app.report('foo', 'bar')
+    ;(
+      globalThis as unknown as {
+        plus: { runtime: { channel: string } }
+      }
+    ).plus.runtime.channel = 'dlmm-Android-oppo'
+
+    await app.getCollector()!.flush(true)
+    expect(http.send).toHaveBeenCalledTimes(1)
+    expect(http.send.mock.calls[0][0].requests).toMatch(
+      /"ch":"dlmm-Android-oppo"/
+    )
+  })
+
+  test('install：非 App 端允许手动传入 ch', () => {
+    installMockUni({ platform: 'h5' })
+    const app = getStatApp()
+    app.install(
+      { ch: 'campaign-a' },
+      { skipInterceptors: true, skipMigration: true, skipRecoverRetry: true }
+    )
+    expect(app.getConfig()?.ch).toBe('campaign-a')
   })
 
   test('单例：getInstance / getStatApp 返回同一实例', () => {
