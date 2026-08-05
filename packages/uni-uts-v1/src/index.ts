@@ -300,6 +300,9 @@ export async function compile(
         (process.env.UNI_COMPILE_EXT_API_TYPE === 'pages' ||
           process.env.UNI_COMPILE_EXT_API_TYPE === 'components'))
     ) {
+      if (useProxyCodeV2 && process.env.UNI_COMPILE_EXT_API_PROXY_CODE) {
+        code = process.env.UNI_COMPILE_EXT_API_PROXY_CODE
+      }
       const result = createResult(
         outputPluginDir,
         errMsg,
