@@ -17,6 +17,7 @@
  */
 
 import {
+  APP_CHANNEL_FIRST_FLUSH_DELAY_MS,
   CLOUD_MAX_RETRIES,
   HTTP_MAX_RETRIES,
   IMAGE_MAX_RETRIES,
@@ -369,6 +370,19 @@ export class StatApp {
     return ''
   }
 
+  private resolveFirstFlushDeferMs(): number {
+    if (
+      getRawPlatform() === 'mp-weixin' &&
+      MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
+    ) {
+      return MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS
+    }
+    if (isApp() && !getAppChannel()) {
+      return APP_CHANNEL_FIRST_FLUSH_DELAY_MS
+    }
+    return 0
+  }
+
   private normalizeConfig(c: Partial<StatAppConfig>): StatAppConfig {
     return {
       ak: c.ak ?? getAppId(),
@@ -485,10 +499,7 @@ export class StatApp {
       },
       nowMs,
       nowSec,
-      firstFlushDeferMs:
-        getRawPlatform() === 'mp-weixin' && MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
-          ? MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS
-          : 0,
+      firstFlushDeferMs: this.resolveFirstFlushDeferMs(),
       isNetworkOffline,
     }
 

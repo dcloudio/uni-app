@@ -15,6 +15,7 @@ import {
   __resetStatApp,
   getStatApp,
 } from '../../../src/public/runtime/StatApp'
+import { APP_CHANNEL_FIRST_FLUSH_DELAY_MS } from '../../../src/public/config'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 import { installMockPlus, restoreMockPlus } from '../helpers/mockPlus'
 import * as queueMod from '../../../src/public/pipeline/queue'
@@ -113,6 +114,41 @@ describe('runtime/StatApp', () => {
     expect(http.send.mock.calls[0][0].requests).toMatch(
       /"ch":"dlmm-Android-oppo"/
     )
+  })
+
+  test('report：App 端 channel 为空时自动首包短延迟，等待发送前补齐 ch', async () => {
+    jest.useFakeTimers()
+    try {
+      installMockUni({ platform: 'app' })
+      installMockPlus({ runtime: { channel: '' } })
+      const app = getStatApp()
+      const http = fakeChannel('1.0')
+      app.install(
+        { version: '1' },
+        {
+          channels: { http, cloud: null },
+          skipInterceptors: true,
+          skipMigration: true,
+          skipRecoverRetry: true,
+        }
+      )
+
+      app.report('foo', 'bar')
+      expect(http.send).not.toHaveBeenCalled()
+      ;(
+        globalThis as unknown as {
+          plus: { runtime: { channel: string } }
+        }
+      ).plus.runtime.channel = 'dlmm-Android-honor'
+
+      await jest.advanceTimersByTimeAsync(APP_CHANNEL_FIRST_FLUSH_DELAY_MS)
+      expect(http.send).toHaveBeenCalledTimes(1)
+      expect(http.send.mock.calls[0][0].requests).toMatch(
+        /"ch":"dlmm-Android-honor"/
+      )
+    } finally {
+      jest.useRealTimers()
+    }
   })
 
   test('install：非 App 端允许手动传入 ch', () => {

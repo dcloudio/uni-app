@@ -104,11 +104,11 @@ class Stat extends Report {
     this.applicationHide(self, true)
   }
 
-  appShow(self) {
-    this.applicationShow(self)
+  appShow(self, options) {
+    this.applicationShow(options)
   }
 
-  show(self) {
+  show(self, options) {
     this.self = self
     if (get_page_types(self) === 'page') {
       const isPageReport = is_page_report()
@@ -120,14 +120,14 @@ class Stat extends Report {
     // #ifdef VUE3
     if (get_platform_name() === 'h5' || get_platform_name() === 'n') {
       if (get_page_types(self) === 'app') {
-        this.appShow()
+        this.appShow(self, options)
       }
     }
     // #endif
 
     // #ifndef VUE3
     if (get_page_types(self) === 'app') {
-      this.appShow()
+      this.appShow(self, options)
     }
     // #endif
   }

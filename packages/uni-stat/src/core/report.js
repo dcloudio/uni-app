@@ -223,27 +223,27 @@ export default class Report {
   /**
    * 进入应用触发
    */
-  applicationShow() {
+  applicationShow(appShowOptions = {}) {
     // 通过 __licationHide 判断保证是进入后台后在次进入应用，避免重复上报数据
     if (this.__licationHide) {
+      const scene = get_scene(appShowOptions && appShowOptions.scene)
+      const path = (appShowOptions && appShowOptions.path) || ''
       const time = get_residence_time('app')
       // 需要判断进入后台是否超过时限 ，默认是 30min ，是的话需要执行进入应用的上报
       if (time.overtime) {
         let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE')
         let options = {
-          path: lastPageRoute,
-          scene: this.statData.sc,
+          path: path || lastPageRoute,
+          scene: scene || this.statData.sc,
           cst: 2,
         }
         this.sendReportRequest(options)
       } else {
         // 在没有超过时限的时候 ，判断场景值 ，如果是场景值发生了变化，则需要上报应用启动数据
-        // 目前只有微信小程序生效
-        const scene = get_scene()
-        if (scene !== this.statData.sc) {
+        if (scene && scene !== this.statData.sc) {
           let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE')
           let options = {
-            path: lastPageRoute,
+            path: path || lastPageRoute,
             scene: scene,
             cst: 2,
           }

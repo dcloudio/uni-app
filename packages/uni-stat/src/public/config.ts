@@ -62,6 +62,15 @@ export const MP_WEIXIN_PRELOAD_TIMEOUT_MS = 30_000
 export const MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS = 2_000
 
 /**
+ * App 渠道首包 flush 延迟（ms）。
+ *
+ * App 自定义渠道来自原生 `plus.runtime.channel`。极少数设备/基座上，统计 install
+ * 或首个 lt=1 入队时该值可能还未就绪；给首个自动 flush 一个很短的窗口，发送前
+ * `collector.resolveUploadFields` 会再次读取并补齐 `ch`。设为 `0` 可关闭。
+ */
+export const APP_CHANNEL_FIRST_FLUSH_DELAY_MS = 300
+
+/**
  * 单条事件序列化后允许的最大字节数。
  *
  * 阈值取舍：
