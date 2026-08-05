@@ -376,7 +376,12 @@ export async function compile(
             custom_elements[key] = custom_elements[key]
           })
           if (useProxyCodeV2 && hasUTSBridgeCode(result.uts_bridge)) {
-            code = (await genProxyCodeV2(result.uts_bridge)) ?? ''
+            code =
+              (await genProxyCodeV2(
+                result.uts_bridge,
+                pluginDir,
+                proxyCodeOptions
+              )) ?? ''
           }
         }
         if (!isCompileUniModules && cacheDir) {
@@ -657,7 +662,12 @@ export async function compile(
           }
           if (isSuccess) {
             if (useProxyCodeV2 && hasUTSBridgeCode(res.uts_bridge)) {
-              code = (await genProxyCodeV2(res.uts_bridge)) ?? ''
+              code =
+                (await genProxyCodeV2(
+                  res.uts_bridge,
+                  pluginDir,
+                  proxyCodeOptions
+                )) ?? ''
               saveCachedUtssdkJs(pluginRelativeDir, cacheDir, utsPlatform, code)
             }
             // 生成缓存文件

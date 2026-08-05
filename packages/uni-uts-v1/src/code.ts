@@ -169,15 +169,123 @@ function stringifyUTSBridgeMethodList(methods: UTSBridgeMethod[]) {
   return `[${methods.map(stringifyUTSBridgeMethod).join(', ')}]`
 }
 
-export async function genProxyCodeV2(bridge: UTSBridge) {
+async function prepareProxyCode(module: string, options: GenProxyCodeOptions) {
+  options.inputDir = options.inputDir || process.env.UNI_INPUT_DIR
+  if (!options.meta) {
+    options.meta = {
+      exports: {},
+      types: {},
+      typeParams: [],
+      components: [],
+      customElements: [],
+    }
+  }
+  const meta = options.meta
+  options.types = await parseInterfaceTypes(module, options)
+  meta.types = parseMetaTypes(options.types)
+  meta.typeParams = parseTypeParams(options.types)
+
+  if (options.androidPreprocessor) {
+    // 内置 ext-api 需要分平台解析interface
+    const androidTypes = await parseInterfaceTypes(
+      module,
+      options,
+      options.androidPreprocessor
+    )
+    meta.android = {
+      typeParams: parseTypeParams(androidTypes),
+      types: parseMetaTypes(androidTypes),
+    }
+  }
+  if (options.iosPreprocessor) {
+    const iosTypes = await parseInterfaceTypes(
+      module,
+      options,
+      options.iosPreprocessor
+    )
+    meta.ios = {
+      typeParams: parseTypeParams(iosTypes),
+      types: parseMetaTypes(iosTypes),
+    }
+  }
+
+  const components = new Set<string>()
+  // 自动补充 VideoElement 导出
+  if (options.androidComponents) {
+    Object.keys(options.androidComponents).forEach((name) => {
+      const className =
+        (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
+        capitalize(camelize(name)) +
+        'Element'
+      meta.types[className] = 'class'
+      if (meta.android?.types) {
+        meta.android.types[className] = 'class'
+      }
+      components.add(name)
+    })
+  }
+  if (options.iosComponents) {
+    Object.keys(options.iosComponents).forEach((name) => {
+      const className =
+        (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
+        capitalize(camelize(name)) +
+        'Element'
+      meta.types[className] = 'class'
+      if (meta.ios?.types) {
+        meta.ios.types[className] = 'class'
+      }
+      components.add(name)
+    })
+  }
+  meta.components = [...components]
+
+  const decls = await parseModuleDecls(module, options)
+  decls.forEach((decl) => {
+    if (decl.type === 'InterfaceDeclaration') {
+      meta.exports[decl.cls] = {
+        type: 'interface',
+      }
+    } else if (decl.type === 'Class') {
+      meta.exports[decl.cls] = {
+        type: decl.isVar ? 'var' : 'class',
+      }
+    } else if (decl.type === 'FunctionDeclaration') {
+      meta.exports[decl.method] = {
+        type: decl.isVar ? 'var' : 'function',
+        params: decl.params,
+      }
+    } else if (decl.type === 'VariableDeclaration') {
+      decl.declarations.forEach((declaration) => {
+        meta.exports[(declaration.id as Identifier).value] = {
+          type: 'var',
+        }
+      })
+    }
+  })
+  return decls
+}
+
+export async function genProxyCodeV2(
+  bridge: UTSBridge,
+  module: string,
+  options: GenProxyCodeOptions
+) {
+  await prepareProxyCode(module, options)
   const {
     functions,
     classes,
     interfaces,
     uts_bridge_name: utsBridgeName,
   } = bridge
+  const interceptor = await parseInterceptor(options.platform, module, options)
+  const hasMatchedInterceptor = functions.some((func) =>
+    interceptor.initMethods.includes(`init${capitalize(func.name)}`)
+  )
   let code = `const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction } = uni\n
 const moduleName = '${utsBridgeName}'\n`
+  if (hasMatchedInterceptor) {
+    code += `${interceptor.code}\n`
+  }
   interfaces.forEach((i) => {
     code += `registerUTSInterface({ name: '${
       i.name
@@ -211,9 +319,16 @@ const moduleName = '${utsBridgeName}'\n`
     const exportModifier = f.is_default
       ? 'export default '
       : `export const ${f.name} = `
-    code += `${exportModifier}initUTSProxyFunction(moduleName, ${stringifyUTSBridgeMethod(
+    const originalMethod = `initUTSProxyFunction(moduleName, ${stringifyUTSBridgeMethod(
       f
-    )})\n`
+    )})`
+    const initInterceptorMethodName = `init${capitalize(f.name)}`
+    const proxyMethod =
+      !f.is_default &&
+      interceptor.initMethods.includes(initInterceptorMethodName)
+        ? `${initInterceptorMethodName}(${originalMethod})`
+        : originalMethod
+    code += `${exportModifier}${proxyMethod}\n`
   })
   return code
 }
@@ -223,76 +338,9 @@ export async function genProxyCode(
   options: GenProxyCodeOptions
 ) {
   const { name, is_uni_modules, format, moduleName, moduleType } = options
-  options.inputDir = options.inputDir || process.env.UNI_INPUT_DIR
-  if (!options.meta) {
-    options.meta = {
-      exports: {},
-      types: {},
-      typeParams: [],
-      components: [],
-      customElements: [],
-    }
-  }
-  options.types = await parseInterfaceTypes(module, options)
-  options.meta!.types = parseMetaTypes(options.types)
-  options.meta!.typeParams = parseTypeParams(options.types)
+  const decls = await prepareProxyCode(module, options)
 
-  if (options.androidPreprocessor) {
-    // 内置 ext-api 需要分平台解析interface
-    const androidTypes = await parseInterfaceTypes(
-      module,
-      options,
-      options.androidPreprocessor
-    )
-    options.meta!.android = {
-      typeParams: parseTypeParams(androidTypes),
-      types: parseMetaTypes(androidTypes),
-    }
-  }
-  if (options.iosPreprocessor) {
-    const iosTypes = await parseInterfaceTypes(
-      module,
-      options,
-      options.iosPreprocessor
-    )
-    options.meta!.ios = {
-      typeParams: parseTypeParams(iosTypes),
-      types: parseMetaTypes(iosTypes),
-    }
-  }
-
-  const components = new Set<string>()
-  // 自动补充 VideoElement 导出
-  if (options.androidComponents) {
-    Object.keys(options.androidComponents).forEach((name) => {
-      const className =
-        (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
-        capitalize(camelize(name)) +
-        'Element'
-      options.meta!.types[className] = 'class'
-      if (options.meta?.android?.types) {
-        options.meta.android.types[className] = 'class'
-      }
-      components.add(name)
-    })
-  }
-  if (options.iosComponents) {
-    Object.keys(options.iosComponents).forEach((name) => {
-      const className =
-        (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
-        capitalize(camelize(name)) +
-        'Element'
-      options.meta!.types[className] = 'class'
-      if (options.meta?.ios?.types) {
-        options.meta.ios.types[className] = 'class'
-      }
-      components.add(name)
-    })
-  }
-  options.meta.components = [...components]
-  const decls = await parseModuleDecls(module, options)
-
-  normalizeInterfaceKeepAlive(decls, options.types)
+  normalizeInterfaceKeepAlive(decls, options.types!)
   const interceptor = await parseInterceptor(options.platform!, module, options)
   const hasMatchedInterceptor = decls.some((decl) => {
     if (decl.type === 'FunctionDeclaration') {
@@ -326,7 +374,6 @@ ${genModuleCode(
   decls,
   format,
   options.pluginRelativeDir!,
-  options.meta!,
   interceptor.initMethods
 )}
 `
@@ -634,7 +681,6 @@ function genModuleCode(
   decls: ProxyDecl[],
   format: FORMATS = FORMATS.ES,
   pluginRelativeDir: string,
-  meta: Meta,
   initInterceptorMethods: string[]
 ) {
   const codes: string[] = []
@@ -642,9 +688,6 @@ function genModuleCode(
   const exportConst = exportVarCode(format, 'const')
   decls.forEach((decl) => {
     if (decl.type === 'InterfaceDeclaration') {
-      meta.exports[decl.cls] = {
-        type: 'interface',
-      }
       codes.push(
         `registerUTSInterface('${
           decl.cls
@@ -653,10 +696,6 @@ function genModuleCode(
         }ByJsProxy', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
       )
     } else if (decl.type === 'Class') {
-      meta.exports[decl.cls] = {
-        type: decl.isVar ? 'var' : 'class',
-      }
-
       if (decl.isDefault) {
         // initUTSElementProxyClass不会进入此分支
         codes.push(
@@ -678,10 +717,6 @@ function genModuleCode(
         )
       }
     } else if (decl.type === 'FunctionDeclaration') {
-      meta.exports[decl.method] = {
-        type: decl.isVar ? 'var' : 'function',
-        params: decl.params,
-      }
       const returnOptions = decl.return
         ? { type: decl.return.type, options: decl.return.options + 'Options' }
         : ''
@@ -715,12 +750,6 @@ function genModuleCode(
         }
       }
     } else if (decl.type === 'VariableDeclaration') {
-      decl.declarations.forEach((d) => {
-        meta.exports[(d.id as Identifier).value] = {
-          type: 'var',
-        }
-      })
-
       if (format === FORMATS.ES) {
         codes.push(
           `export ${decl.kind} ${decl.declarations
