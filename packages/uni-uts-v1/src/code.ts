@@ -169,7 +169,10 @@ function stringifyUTSBridgeMethodList(methods: UTSBridgeMethod[]) {
   return `[${methods.map(stringifyUTSBridgeMethod).join(', ')}]`
 }
 
-async function prepareProxyCode(module: string, options: GenProxyCodeOptions) {
+export async function prepareProxyCodeAndFillOptions(
+  module: string,
+  options: GenProxyCodeOptions
+) {
   options.inputDir = options.inputDir || process.env.UNI_INPUT_DIR
   if (!options.meta) {
     options.meta = {
@@ -270,7 +273,6 @@ export async function genProxyCodeV2(
   module: string,
   options: GenProxyCodeOptions
 ) {
-  await prepareProxyCode(module, options)
   const {
     functions,
     classes,
@@ -335,10 +337,10 @@ const moduleName = '${utsBridgeName}'\n`
 
 export async function genProxyCode(
   module: string,
+  decls: ProxyDecl[],
   options: GenProxyCodeOptions
 ) {
   const { name, is_uni_modules, format, moduleName, moduleType } = options
-  const decls = await prepareProxyCode(module, options)
 
   normalizeInterfaceKeepAlive(decls, options.types!)
   const interceptor = await parseInterceptor(options.platform!, module, options)

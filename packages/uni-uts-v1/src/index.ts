@@ -9,6 +9,7 @@ import {
   type GenProxyCodeOptions,
   genProxyCode,
   genProxyCodeV2,
+  prepareProxyCodeAndFillOptions,
   resolvePlatformIndex,
   resolvePlatformIndexFilename,
   resolveRootIndex,
@@ -285,10 +286,14 @@ export async function compile(
     process.env.UNI_APP_X_DOM2 === 'true' &&
     process.env.UNI_UTS_PLATFORM === 'app-android'
 
+  const decls = await prepareProxyCodeAndFillOptions(
+    pluginDir,
+    proxyCodeOptions
+  )
   let code =
     isCompileUniModules || useProxyCodeV2
       ? ''
-      : await genProxyCode(pluginDir, proxyCodeOptions)
+      : await genProxyCode(pluginDir, decls, proxyCodeOptions)
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
