@@ -37,15 +37,13 @@ function createBridgeMethod(
   }
 }
 
-function createUTSResult(overrides: Partial<UTSBridge> = {}): UTSResult {
+function createUTSBridge(overrides: Partial<UTSBridge> = {}): UTSBridge {
   return {
-    uts_bridge: {
-      uts_bridge_name: 'TestBridge',
-      functions: [],
-      classes: [],
-      interfaces: [],
-      ...overrides,
-    },
+    uts_bridge_name: 'TestBridge',
+    functions: [],
+    classes: [],
+    interfaces: [],
+    ...overrides,
   }
 }
 
@@ -98,10 +96,6 @@ async function withUniAppXEnv<T>(
 
 describe('code', () => {
   describe('genProxyCodeV2', () => {
-    test('returns empty code without uts bridge metadata', async () => {
-      await expect(genProxyCodeV2({})).resolves.toBe('')
-    })
-
     test('generates interface, class, and function proxies', async () => {
       const constructor = createBridgeMethod('User', {
         method_id: 10,
@@ -117,7 +111,7 @@ describe('code', () => {
         keep_alive: true,
       })
       const code = await genProxyCodeV2(
-        createUTSResult({
+        createUTSBridge({
           interfaces: [
             {
               name: 'RequestTask',
@@ -143,30 +137,32 @@ describe('code', () => {
               type: 'function',
               keep_alive: true,
               async: true,
+              return_type: 'RequestTask',
             }),
           ],
         })
       )
 
+      expect(code).toContain("const moduleName = 'TestBridge'")
       expect(code).toContain(
-        "registerUTSInterface({ name: 'RequestTask', utsBridgeName: 'TestBridge', methods: " +
-          '[{"name":"abort","methodId":20,"type":"function","keepAlive":false,"async":false}] })'
+        "registerUTSInterface({ name: 'RequestTask', utsBridgeName: moduleName, methods: " +
+          '[{name: "abort", methodId: 20, type: "function", keepAlive: false, async: false}] })'
       )
       expect(code).toContain(
-        "export const User = initUTSProxyClass({ utsBridgeName: 'TestBridge', class: 'User', " +
-          'constructor: {"name":"User","methodId":10,"type":"constructor","keepAlive":false,"async":false}, ' +
-          'staticMethods: [{"name":"create","methodId":11,"type":"staticMethod","keepAlive":false,"async":true}], ' +
-          'methods: [{"name":"listen","methodId":12,"type":"method","keepAlive":true,"async":false}] })'
+        "export const User = initUTSProxyClass({ utsBridgeName: moduleName, class: 'User', " +
+          'constructor: {name: "User", methodId: 10, type: "constructor", keepAlive: false, async: false}, ' +
+          'staticMethods: [{name: "create", methodId: 11, type: "staticMethod", keepAlive: false, async: true}], ' +
+          'methods: [{name: "listen", methodId: 12, type: "method", keepAlive: true, async: false}] })'
       )
       expect(code).toContain(
-        "export const request = initUTSProxyFunction({ utsBridgeName: 'TestBridge', name: 'request', " +
-          "methodId: 30, type: 'function', keepAlive: true, async: true })"
+        'export const request = initUTSProxyFunction(moduleName, ' +
+          '{name: "request", methodId: 30, type: "function", keepAlive: true, async: true, returnType: "RequestTask"})'
       )
     })
 
     test('generates default class and function exports', async () => {
       const defaultClassCode = await genProxyCodeV2(
-        createUTSResult({
+        createUTSBridge({
           classes: [
             {
               name: 'User',
@@ -181,7 +177,7 @@ describe('code', () => {
         })
       )
       const defaultFunctionCode = await genProxyCodeV2(
-        createUTSResult({
+        createUTSBridge({
           functions: [
             {
               ...createBridgeMethod('request', { type: 'function' }),
@@ -202,7 +198,7 @@ describe('code', () => {
         { dom2: 'true', x: 'true', platform: 'app-android' },
         () =>
           genProxyCodeV2(
-            createUTSResult({
+            createUTSBridge({
               classes: [
                 {
                   name: 'UniViewElement',
