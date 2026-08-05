@@ -296,7 +296,7 @@ export async function genProxyCode(
   const interceptor = await parseInterceptor(options.platform!, module, options)
   const hasMatchedInterceptor = decls.some((decl) => {
     if (decl.type === 'FunctionDeclaration') {
-      return interceptor.initMethods.includes(`init${capitalize(decl.method)} `)
+      return interceptor.initMethods.includes(`init${capitalize(decl.method)}`)
     }
     return false
   })
