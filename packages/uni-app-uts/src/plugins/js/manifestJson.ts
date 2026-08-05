@@ -102,7 +102,7 @@ export function uniAppManifestPlugin(
         outputManifestJson.app = outputManifestJson.app || {}
         outputManifestJson.app.defaultAppTheme = selectedTheme
       }
-      if (process.env.NODE_ENV !== 'development' || isXHarmony) {
+      if (process.env.NODE_ENV !== 'development') {
         // 生产模式，记录使用到的modules
         const ids = Array.from(this.getModuleIds())
         const uniExtApis = new Set<string>()
