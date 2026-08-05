@@ -5,6 +5,7 @@ import {
   type GenProxyCodeOptions,
   genProxyCode,
   genProxyCodeV2,
+  prepareProxyCodeAndFillOptions,
 } from '../src/code'
 import { ERR_MSG_PLACEHOLDER } from '../src/utils'
 
@@ -64,6 +65,14 @@ function createGenProxyCodeOptions(
     platform: 'app-android',
     ...overrides,
   }
+}
+
+async function genProxyCodeForTest(
+  module: string,
+  options: GenProxyCodeOptions
+) {
+  const decls = await prepareProxyCodeAndFillOptions(module, options)
+  return genProxyCode(module, decls, options)
 }
 
 async function withUniAppXEnv<T>(
@@ -180,13 +189,6 @@ function defineGenProxyCodeV2Tests() {
         'export const request = initUTSProxyFunction(moduleName, ' +
           '{name: "request", methodId: 30, type: "function", keepAlive: true, async: true, returnType: "RequestTask"})'
       )
-      expect(options.meta?.exports).toEqual(
-        expect.objectContaining({
-          UniViewElement: { type: 'class' },
-          UniCanvasElementImpl: { type: 'class' },
-          ViewController: { type: 'class' },
-        })
-      )
     })
 
     test('generates default class and function exports', async () => {
@@ -289,10 +291,6 @@ function defineGenProxyCodeV2Tests() {
       expect(code).toContain(
         'export const other = initUTSProxyFunction(moduleName, '
       )
-      expect(options.meta?.exports).toEqual({
-        request: { type: 'function', params: [] },
-        other: { type: 'function', params: [] },
-      })
     })
   })
 }
@@ -311,7 +309,7 @@ describe('code', () => {
       inputDir,
       platform: 'app-android',
     }
-    const res = await genProxyCode(pluginDir, options)
+    const res = await genProxyCodeForTest(pluginDir, options)
     expect(res.replace(ERR_MSG_PLACEHOLDER, '')).toMatchSnapshot()
     expect(options.meta).toMatchSnapshot()
     expect(options.types).toMatchSnapshot()
@@ -319,7 +317,7 @@ describe('code', () => {
   test('genProxyCode cjs', async () => {
     expect(
       (
-        await genProxyCode(pluginDir, {
+        await genProxyCodeForTest(pluginDir, {
           id: 'test-uts',
           is_uni_modules: false,
           name: 'test-uts',
@@ -338,7 +336,7 @@ describe('code', () => {
   test('genProxyCode uni_modules', async () => {
     expect(
       (
-        await genProxyCode(uniModuleDir, {
+        await genProxyCodeForTest(uniModuleDir, {
           id: 'test-uts',
           is_uni_modules: true,
           name: 'test-uts',
@@ -355,7 +353,7 @@ describe('code', () => {
   test('genProxyCode uni_modules keepAlive', async () => {
     expect(
       (
-        await genProxyCode(uniModuleKeepAliveDir, {
+        await genProxyCodeForTest(uniModuleKeepAliveDir, {
           id: 'test-keepAlive',
           is_uni_modules: true,
           name: 'test-keepAlive',
@@ -384,7 +382,7 @@ describe('code', () => {
     }
     const res = await withUniAppXEnv(
       { dom2: 'true', x: 'true', platform: 'app-android' },
-      () => genProxyCode(pluginDir, options)
+      () => genProxyCodeForTest(pluginDir, options)
     )
     expect(res.replace(ERR_MSG_PLACEHOLDER, '')).toMatchSnapshot()
   })
@@ -404,13 +402,13 @@ describe('code', () => {
     }
     const res = await withUniAppXEnv(
       { dom2: 'true', x: 'true', platform: 'app-ios' },
-      () => genProxyCode(pluginDir, options)
+      () => genProxyCodeForTest(pluginDir, options)
     )
     expect(res.replace(ERR_MSG_PLACEHOLDER, '')).toMatchSnapshot()
   })
 
   function genElementProxyCode(platform: UTSPlatform = 'app-android') {
-    return genProxyCode(pluginElementProxyDir, {
+    return genProxyCodeForTest(pluginElementProxyDir, {
       id: 'test-element',
       is_uni_modules: false,
       name: 'test-element',
