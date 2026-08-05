@@ -8,6 +8,7 @@ import {
   FORMATS,
   type GenProxyCodeOptions,
   genProxyCode,
+  genProxyCodeV2,
   resolvePlatformIndex,
   resolvePlatformIndexFilename,
   resolveRootIndex,
@@ -15,6 +16,7 @@ import {
 import {
   ERR_MSG_PLACEHOLDER,
   genConfigJson,
+  hasUTSBridgeCode,
   requireUTSPluginCode,
   resolveAndroidComponents,
   resolveConfigProvider,
@@ -58,6 +60,8 @@ import { existsSync, readdirSync, rmSync } from 'fs-extra'
 import { restoreDebuggerFiles } from './manifest/dex'
 import { compileArkTS } from './arkts'
 import type { UniXCompilerOptions } from '../lib/uni-x/dist/compiler'
+import { restoreConfigJson } from './manifest/config'
+import { readCachedUtssdkJs, saveCachedUtssdkJs } from './manifest/utssdkJs'
 
 export { syncUTSFiles } from './uni_modules'
 export * from './tsc'
@@ -276,9 +280,15 @@ export async function compile(
     pkg
   )
 
-  const code = isCompileUniModules
-    ? ''
-    : await genProxyCode(pluginDir, proxyCodeOptions)
+  // 为确保methodId完全一致，proxy code v2依赖uts编译返回的信息生成
+  const useProxyCodeV2 =
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-android'
+
+  let code =
+    isCompileUniModules || useProxyCodeV2
+      ? ''
+      : await genProxyCode(pluginDir, proxyCodeOptions)
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
@@ -362,6 +372,9 @@ export async function compile(
           Object.keys(custom_elements).forEach((key) => {
             custom_elements[key] = custom_elements[key]
           })
+          if (useProxyCodeV2 && hasUTSBridgeCode(result.uts_bridge)) {
+            code = (await genProxyCodeV2(result.uts_bridge)) ?? ''
+          }
         }
         if (!isCompileUniModules && cacheDir) {
           // 存储 sourcemap
@@ -521,21 +534,13 @@ export async function compile(
             cacheDir,
             pkg.is_uni_modules
           )
-          // 处理 config.json
-          genConfigJson(
-            utsPlatform,
-            isX,
-            (utsPlatform === 'app-android'
-              ? proxyCodeOptions.androidHookClass
-              : proxyCodeOptions.iOSHookClass) || '',
-            components,
-            customElements,
-            pluginRelativeDir,
-            pkg.is_uni_modules,
-            inputDir,
-            outputDir,
-            resolveConfigProvider(utsPlatform, pkg.id, transform)
-          )
+
+          // 缓存有效时不重新升成，直接从缓存恢复
+          restoreConfigJson(utsPlatform, pluginRelativeDir, outputDir, cacheDir)
+
+          if (useProxyCodeV2) {
+            code = readCachedUtssdkJs(pluginRelativeDir, cacheDir, utsPlatform)
+          }
 
           console.log(cacheTips(pkg.id))
 
@@ -576,21 +581,6 @@ export async function compile(
         } else {
           deps.push(...resolveIOSDepFiles(filename))
         }
-        // 处理 config.json
-        genConfigJson(
-          utsPlatform,
-          isX,
-          (utsPlatform === 'app-android'
-            ? proxyCodeOptions.androidHookClass
-            : proxyCodeOptions.iOSHookClass) || '',
-          components,
-          customElements,
-          pluginRelativeDir,
-          pkg.is_uni_modules,
-          inputDir,
-          outputDir,
-          resolveConfigProvider(utsPlatform, pkg.id, transform)
-        )
         const res = await getCompiler(compilerType).runDev(filename, {
           components,
           customElements,
@@ -610,6 +600,22 @@ export async function compile(
           sourceMap: !!sourceMap,
           uniModules: uni_modules || [],
         })
+        // 处理 config.json
+        genConfigJson(
+          utsPlatform,
+          isX,
+          (utsPlatform === 'app-android'
+            ? proxyCodeOptions.androidHookClass
+            : proxyCodeOptions.iOSHookClass) || '',
+          components,
+          customElements,
+          pluginRelativeDir,
+          pkg.is_uni_modules,
+          inputDir,
+          outputDir,
+          resolveConfigProvider(utsPlatform, pkg.id, transform),
+          !!(res && hasUTSBridgeCode(res.uts_bridge))
+        )
         if (res) {
           if (res.code) {
             //重要：该日志会被HBuilderX使用，用于识别uts插件编译是否失败，如果调整文案，需要通知HBuilderX。
@@ -647,6 +653,10 @@ export async function compile(
             }
           }
           if (isSuccess) {
+            if (useProxyCodeV2 && hasUTSBridgeCode(res.uts_bridge)) {
+              code = (await genProxyCodeV2(res.uts_bridge)) ?? ''
+              saveCachedUtssdkJs(pluginRelativeDir, cacheDir, utsPlatform, code)
+            }
             // 生成缓存文件
             if (cacheDir) {
               // 存储 sourcemap

@@ -43,6 +43,7 @@ import {
 import { normalizePath } from './shared'
 import { parseUTSSyntaxError } from './stacktrace'
 import type { SyncUniModulesFilePreprocessor } from './uni_modules'
+import type { UTSBridge, UTSBridgeMethod } from '@dcloudio/uts'
 
 const IOS_HOOK_CLASS = 'UTSiOSHookProxy'
 const ANDROID_HOOK_CLASS = 'UTSAndroidHookProxy'
@@ -133,6 +134,90 @@ function isUTSElementProxyClass(cls: string) {
   )
 }
 
+function formatUTSBridgeMethod(method: UTSBridgeMethod) {
+  return {
+    name: method.name,
+    methodId: method.method_id,
+    type: method.type,
+    keepAlive: method.keep_alive,
+    async: method.async,
+    returnType: method.return_type,
+  }
+}
+
+function stringifyUTSBridgeMethod(method: UTSBridgeMethod) {
+  let code = '{'
+  const formattedMethod = formatUTSBridgeMethod(method)
+  for (const key in formattedMethod) {
+    if (!hasOwn(formattedMethod, key)) {
+      continue
+    }
+    const value = formattedMethod[key]
+    if (value === undefined) {
+      continue
+    }
+    if (code.length > 1) {
+      code += ', '
+    }
+    code += `${key}: ${JSON.stringify(value)}`
+  }
+  code += '}'
+  return code
+}
+
+function stringifyUTSBridgeMethodList(methods: UTSBridgeMethod[]) {
+  return `[${methods.map(stringifyUTSBridgeMethod).join(', ')}]`
+}
+
+export async function genProxyCodeV2(bridge: UTSBridge) {
+  const {
+    functions,
+    classes,
+    interfaces,
+    uts_bridge_name: utsBridgeName,
+  } = bridge
+  let code = `const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction } = uni\n
+const moduleName = '${utsBridgeName}'\n`
+  interfaces.forEach((i) => {
+    code += `registerUTSInterface({ name: '${
+      i.name
+    }', utsBridgeName: moduleName, methods: ${stringifyUTSBridgeMethodList(
+      i.methods
+    )} })\n`
+  })
+  classes.forEach((c) => {
+    const exportModifier = c.is_default
+      ? 'export default '
+      : `export const ${c.name} = `
+    const isElement = isUTSElementProxyClass(c.name)
+    // TODO 目前仅用于安卓dom2，如果要支持iOS dom2需要屏蔽ElementProxyClass的注册
+    if (isElement) {
+      code += `${exportModifier}initUTSElementProxyClass({ utsBridgeName: moduleName, class: '${
+        c.name
+      }', staticMethods: ${stringifyUTSBridgeMethodList(
+        c.static_methods
+      )}, methods: ${stringifyUTSBridgeMethodList(c.methods)} })\n`
+    } else {
+      code += `${exportModifier}initUTSProxyClass({ utsBridgeName: moduleName, class: '${
+        c.name
+      }', constructor: ${stringifyUTSBridgeMethod(
+        c.constructor
+      )}, staticMethods: ${stringifyUTSBridgeMethodList(
+        c.static_methods
+      )}, methods: ${stringifyUTSBridgeMethodList(c.methods)} })\n`
+    }
+  })
+  functions.forEach((f) => {
+    const exportModifier = f.is_default
+      ? 'export default '
+      : `export const ${f.name} = `
+    code += `${exportModifier}initUTSProxyFunction(moduleName, ${stringifyUTSBridgeMethod(
+      f
+    )})\n`
+  })
+  return code
+}
+
 export async function genProxyCode(
   module: string,
   options: GenProxyCodeOptions
@@ -211,7 +296,7 @@ export async function genProxyCode(
   const interceptor = await parseInterceptor(options.platform!, module, options)
   const hasMatchedInterceptor = decls.some((decl) => {
     if (decl.type === 'FunctionDeclaration') {
-      return interceptor.initMethods.includes(`init${capitalize(decl.method)}`)
+      return interceptor.initMethods.includes(`init${capitalize(decl.method)} `)
     }
     return false
   })

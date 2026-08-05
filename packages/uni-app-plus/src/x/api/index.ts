@@ -48,17 +48,42 @@ export { env } from './base/env'
 
 export * from './performance'
 
+// #if !_VAPOR_ || !_APP_ANDROID_
 export {
+  // @ts-expect-error
   initUTSProxyClass,
-  initUTSElementProxyClass,
+  // @ts-expect-error
   initUTSProxyFunction,
+  // @ts-expect-error
+  initUTSElementProxyClass,
   initUTSIndexClassName,
   initUTSClassName,
   initUTSPackageName,
+  // @ts-expect-error
   requireUTSPlugin,
+  // @ts-expect-error
   registerUTSPlugin,
+  // @ts-expect-error
   registerUTSInterface,
 } from '../../service/api/plugin/uts'
+// #endif
+// #if _VAPOR_ && _APP_ANDROID_
+export {
+  // @ts-expect-error
+  requireUTSPlugin,
+  // @ts-expect-error
+  registerUTSPlugin,
+  // @ts-expect-error
+  initUTSProxyClass,
+  // @ts-expect-error
+  initUTSProxyFunction,
+  // @ts-expect-error
+  registerUTSInterface,
+  // @ts-expect-error
+  initUTSElementProxyClass,
+} from '../../service/api/plugin/utsVaporAndroid'
+// #endif
+
 // 临时使用 1.0 的日志格式
 export { __log__ } from '../../service/api/plugin/log'
 // uni-console 的 __f__ 方法

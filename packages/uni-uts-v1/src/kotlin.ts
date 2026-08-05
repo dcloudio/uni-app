@@ -22,6 +22,7 @@ import {
   genUTSPlatformResource,
   getKotlinCompilerServer,
   getUTSCompiler,
+  hasUTSBridgeCode,
   isColorSupported,
   isEnableGenericsParameterDefaults,
   isEnableInlineReified,
@@ -200,6 +201,7 @@ export async function runKotlinProd(
       result,
       provider: resolveConfigProvider('app-android', uniModuleId, transform),
       uniModules,
+      utsBridge: hasUTSBridgeCode(result.uts_bridge),
     })
   }
 
@@ -564,7 +566,11 @@ const DEFAULT_IMPORTS_VUE_X = [
 const DEFAULT_IMPORTS_VUE_X_DOM2 = []
 
 const DEFAULT_IMPORTS_X = ['io.dcloud.uniapp.runtime.*']
-const DEFAULT_IMPORTS_X_DOM2 = ['io.dcloud.uniappxv.runtime.*']
+const DEFAULT_IMPORTS_X_DOM2 = [
+  'io.dcloud.uniappxv.runtime.*',
+  'java.util.LinkedHashMap',
+  'kotlin.collections.MutableList',
+]
 
 export async function compile(
   filename: string,
@@ -659,6 +665,10 @@ export async function compile(
       isX,
       isSingleThread,
       isPlugin,
+      utsBridgeName:
+        process.env.UNI_UTS_MODULE_TYPE === 'built-in' && pluginId
+          ? '_' + pluginId
+          : pluginId,
       // TODO 目前安卓dom2仅有js驱动，后续如果增加原生驱动需要由调用者传入参数控制
       isJsDriven: process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js',
       isDom2,
