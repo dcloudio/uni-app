@@ -19,6 +19,10 @@ const pluginElementProxyDir = resolve(
   __dirname,
   'examples/uts/utssdk/test-element-proxy'
 )
+const pluginInterceptorDir = resolve(
+  __dirname,
+  'examples/uts/utssdk/test-interceptor'
+)
 
 type UTSPlatform = GenProxyCodeOptions['platform']
 type UTSBridge = NonNullable<UTSResult['uts_bridge']>
@@ -43,6 +47,21 @@ function createUTSBridge(overrides: Partial<UTSBridge> = {}): UTSBridge {
     functions: [],
     classes: [],
     interfaces: [],
+    ...overrides,
+  }
+}
+
+function createGenProxyCodeOptions(
+  overrides: Partial<GenProxyCodeOptions> = {}
+): GenProxyCodeOptions {
+  return {
+    id: 'test-uts',
+    is_uni_modules: false,
+    name: 'test-uts',
+    namespace: 'uts.sdk.testUTS',
+    extname: '.uts',
+    inputDir,
+    platform: 'app-android',
     ...overrides,
   }
 }
@@ -94,7 +113,7 @@ async function withUniAppXEnv<T>(
   }
 }
 
-describe('code', () => {
+function defineGenProxyCodeV2Tests() {
   describe('genProxyCodeV2', () => {
     test('generates interface, class, and function proxies', async () => {
       const constructor = createBridgeMethod('User', {
@@ -110,6 +129,7 @@ describe('code', () => {
         method_id: 12,
         keep_alive: true,
       })
+      const options = createGenProxyCodeOptions()
       const code = await genProxyCodeV2(
         createUTSBridge({
           interfaces: [
@@ -140,7 +160,9 @@ describe('code', () => {
               return_type: 'RequestTask',
             }),
           ],
-        })
+        }),
+        pluginElementProxyDir,
+        options
       )
 
       expect(code).toContain("const moduleName = 'TestBridge'")
@@ -158,6 +180,13 @@ describe('code', () => {
         'export const request = initUTSProxyFunction(moduleName, ' +
           '{name: "request", methodId: 30, type: "function", keepAlive: true, async: true, returnType: "RequestTask"})'
       )
+      expect(options.meta?.exports).toEqual(
+        expect.objectContaining({
+          UniViewElement: { type: 'class' },
+          UniCanvasElementImpl: { type: 'class' },
+          ViewController: { type: 'class' },
+        })
+      )
     })
 
     test('generates default class and function exports', async () => {
@@ -174,7 +203,9 @@ describe('code', () => {
               methods: [],
             },
           ],
-        })
+        }),
+        pluginElementProxyDir,
+        createGenProxyCodeOptions()
       )
       const defaultFunctionCode = await genProxyCodeV2(
         createUTSBridge({
@@ -184,7 +215,9 @@ describe('code', () => {
               is_default: true,
             },
           ],
-        })
+        }),
+        pluginElementProxyDir,
+        createGenProxyCodeOptions()
       )
 
       expect(defaultClassCode).toContain('export default initUTSProxyClass(')
@@ -217,7 +250,9 @@ describe('code', () => {
                   methods: [],
                 },
               ],
-            })
+            }),
+            pluginElementProxyDir,
+            createGenProxyCodeOptions()
           )
       )
 
@@ -226,8 +261,43 @@ describe('code', () => {
       )
       expect(code).toContain('export const ViewController = initUTSProxyClass(')
     })
-  })
 
+    test('injects interceptor code and wraps matched proxy functions', async () => {
+      const options = createGenProxyCodeOptions()
+      const code = await genProxyCodeV2(
+        createUTSBridge({
+          functions: [
+            createBridgeMethod('request', {
+              method_id: 40,
+              type: 'function',
+            }),
+            createBridgeMethod('other', {
+              method_id: 41,
+              type: 'function',
+            }),
+          ],
+        }),
+        pluginInterceptorDir,
+        options
+      )
+
+      expect(code).toContain('function initRequest(method)')
+      expect(code).not.toContain('export function initRequest')
+      expect(code).toContain(
+        'export const request = initRequest(initUTSProxyFunction(moduleName, '
+      )
+      expect(code).toContain(
+        'export const other = initUTSProxyFunction(moduleName, '
+      )
+      expect(options.meta?.exports).toEqual({
+        request: { type: 'function', params: [] },
+        other: { type: 'function', params: [] },
+      })
+    })
+  })
+}
+
+describe('code', () => {
   test('genProxyCode', async () => {
     const options: GenProxyCodeOptions = {
       moduleName: '测试',
@@ -419,4 +489,6 @@ describe('code', () => {
       'export const UniCanvasElementImpl = /*#__PURE__*/ initUTSElementProxyClass'
     )
   })
+
+  defineGenProxyCodeV2Tests()
 })
