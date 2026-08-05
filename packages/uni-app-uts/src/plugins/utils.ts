@@ -36,6 +36,7 @@ export function createUniOptions(
   platform: 'app-android' | 'app-ios' | 'app-harmony'
 ): UniVitePlugin['uni'] {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const uasmResourceDir = platform === 'app-ios' ? 'frameworks' : 'libs'
   return {
     compiler: isDom2 ? require('@dcloudio/compiler-vapor-dom2') : undefined,
     copyOptions() {
@@ -64,7 +65,11 @@ export function createUniOptions(
         }
       }
       return {
-        assets: ['hybrid/html/**/*', 'uni_modules/*/hybrid/html/**/*'],
+        assets: [
+          'hybrid/html/**/*',
+          'uni_modules/*/hybrid/html/**/*',
+          `uni_modules/*/uasm/${platform}/${uasmResourceDir}/**/*`,
+        ],
         targets,
       }
     },
