@@ -473,6 +473,28 @@ let titleJsons = {};
 let debug =
   process.env.UNI_STAT_DEBUG === 'true' ||
   process.env.UNI_STAT_DEBUG === true;
+
+const MP_SCENE_PLATFORMS = [
+  'wx',
+  'ali',
+  'bd',
+  'tt',
+  'qq',
+  'ks',
+  'lark',
+  'xhs',
+  'jd',
+  'dt',
+  'mhm',
+];
+
+const is_mp_scene_platform = (platformName) => {
+  if (!platformName) return false
+  return (
+    platformName.indexOf('mp-') === 0 ||
+    MP_SCENE_PLATFORMS.indexOf(platformName) !== -1
+  )
+};
 // #ifdef VUE3
 titleJsons = process.env.UNI_STAT_TITLE_JSON;
 // #endif
@@ -594,7 +616,10 @@ const get_encodeURIComponent_options = (statData) => {
  * 快手	  : 'ks',
  * 飞书	  : 'lark',
  * 快应用  : 'qw',
- * 钉钉	  : 'dt'
+ * 小红书  : 'xhs',
+ * 京东	  : 'jd',
+ * 钉钉	  : 'dt',
+ * 鸿蒙	  : 'mhm'
  */
 const get_platform_name = () => {
   // 苹果审核代码中禁止出现 alipay 字样 ，需要特殊处理一下
@@ -614,10 +639,11 @@ const get_platform_name = () => {
     'mp-kuaishou': 'ks',
     'mp-lark': 'lark',
     'quickapp-webview': 'qw',
-    'mp-xhs': 'xhs'
+    'mp-xhs': 'xhs',
+    'mp-jd': 'jd',
   };
   if (platformList[process.env.VUE_APP_PLATFORM] === 'ali') {
-    if (my && my.env) {
+    if (typeof my !== 'undefined' && my && my.env) {
       const clientName = my.env.clientName;
       if (clientName === 'ap') return 'ali'
       if (clientName === 'dingtalk') return 'dt'
@@ -667,14 +693,25 @@ const get_channel = () => {
  */
 const get_scene = (options) => {
   const platformName = get_platform_name();
-  let scene = '';
-  if (options) {
-    return options
+  if (options !== undefined && options !== null && options !== '') {
+    return String(options)
   }
-  if (platformName === 'wx') {
-    scene = uni.getLaunchOptionsSync().scene;
+  if (!is_mp_scene_platform(platformName)) {
+    return ''
   }
-  return scene
+  if (
+    typeof uni === 'undefined' ||
+    typeof uni.getLaunchOptionsSync !== 'function'
+  ) {
+    return ''
+  }
+  try {
+    const launchOptions = uni.getLaunchOptionsSync();
+    const scene = launchOptions && launchOptions.scene;
+    return scene === undefined || scene === null ? '' : String(scene)
+  } catch (e) {
+    return ''
+  }
 };
 
 /**
@@ -1520,27 +1557,27 @@ class Report {
   /**
    * 进入应用触发
    */
-  applicationShow() {
+  applicationShow(appShowOptions = {}) {
     // 通过 __licationHide 判断保证是进入后台后在次进入应用，避免重复上报数据
     if (this.__licationHide) {
+      const scene = get_scene(appShowOptions && appShowOptions.scene);
+      const path = (appShowOptions && appShowOptions.path) || '';
       const time = get_residence_time('app');
       // 需要判断进入后台是否超过时限 ，默认是 30min ，是的话需要执行进入应用的上报
       if (time.overtime) {
         let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE');
         let options = {
-          path: lastPageRoute,
-          scene: this.statData.sc,
+          path: path || lastPageRoute,
+          scene: scene || this.statData.sc,
           cst: 2,
         };
         this.sendReportRequest(options);
       } else {
         // 在没有超过时限的时候 ，判断场景值 ，如果是场景值发生了变化，则需要上报应用启动数据
-        // 目前只有微信小程序生效
-        const scene = get_scene();
-        if (scene !== this.statData.sc) {
+        if (scene && scene !== this.statData.sc) {
           let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE');
           let options = {
-            path: lastPageRoute,
+            path: path || lastPageRoute,
             scene: scene,
             cst: 2,
           };
@@ -2100,11 +2137,11 @@ class Stat extends Report {
     this.applicationHide(self, true);
   }
 
-  appShow(self) {
-    this.applicationShow(self);
+  appShow(self, options) {
+    this.applicationShow(options);
   }
 
-  show(self) {
+  show(self, options) {
     this.self = self;
     if (get_page_types(self) === 'page') {
       const isPageReport = is_page_report();
@@ -2116,14 +2153,14 @@ class Stat extends Report {
     // #ifdef VUE3
     if (get_platform_name() === 'h5' || get_platform_name() === 'n') {
       if (get_page_types(self) === 'app') {
-        this.appShow();
+        this.appShow(self, options);
       }
     }
     // #endif
 
     // #ifndef VUE3
     if (get_page_types(self) === 'app') {
-      this.appShow();
+      this.appShow(self, options);
     }
     // #endif
   }
@@ -2217,9 +2254,9 @@ const lifecycle = {
       };
     }
   },
-  onShow() {
+  onShow(options) {
     isHide = false;
-    stat.show(this);
+    stat.show(this, options);
   },
   onHide() {
     isHide = true;
@@ -2256,8 +2293,8 @@ function load_stat() {
     uni.onAppHide(() => {
       stat.appHide(get_page_vm());
     });
-    uni.onAppShow(() => {
-      stat.appShow(get_page_vm());
+    uni.onAppShow((options) => {
+      stat.appShow(get_page_vm(), options);
     });
   }
   // #endif
