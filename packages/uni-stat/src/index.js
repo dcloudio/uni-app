@@ -24,9 +24,9 @@ const lifecycle = {
       }
     }
   },
-  onShow() {
+  onShow(options) {
     isHide = false
-    stat.show(this)
+    stat.show(this, options)
   },
   onHide() {
     isHide = true
@@ -63,8 +63,8 @@ function load_stat() {
     uni.onAppHide(() => {
       stat.appHide(get_page_vm())
     })
-    uni.onAppShow(() => {
-      stat.appShow(get_page_vm())
+    uni.onAppShow((options) => {
+      stat.appShow(get_page_vm(), options)
     })
   }
   // #endif
