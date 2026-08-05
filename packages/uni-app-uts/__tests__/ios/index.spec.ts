@@ -21,6 +21,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     uniHBuilderXConsolePlugin: plugin('console'),
     uniSharedDataPlugin: plugin('shared-data'),
     uniStatsPlugin: plugin('stats'),
+    uniUasmPlugin: plugin('uasm'),
     uniUTSAppUniModulesPlugin: plugin('uni-modules'),
     uniUTSUVueJavaScriptPlugin: plugin('js'),
     uniUniModulesExtApiPlugin: plugin('ext-api'),

@@ -21,6 +21,7 @@ import {
   normalizePath,
   parseUTSComponent,
   removePlugins,
+  resolveUasmCopyAssets,
   transformLineBreak,
   transformTapToClick,
   transformUTSComponent,
@@ -32,17 +33,22 @@ import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 export const SHARED_DATA_LIB_IMPORT_SOURCE = 'libentry.so'
 export const SHARED_DATA_LIB_GLOBAL_NAME = '__uniSharedDataLib'
 
-export function createUniOptions(
-  platform: 'app-android' | 'app-ios' | 'app-harmony'
-): UniVitePlugin['uni'] {
+type AppPlatform = 'app-android' | 'app-ios' | 'app-harmony'
+
+function isProduction() {
+  const nodeEnv = process.env.UNI_NODE_ENV || process.env.NODE_ENV
+  return nodeEnv !== 'development'
+}
+
+export function createUniOptions(platform: AppPlatform): UniVitePlugin['uni'] {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
-  const uasmResourceDir = platform === 'app-ios' ? 'frameworks' : 'libs'
   return {
     compiler: isDom2 ? require('@dcloudio/compiler-vapor-dom2') : undefined,
     copyOptions() {
       const inputDir = process.env.UNI_INPUT_DIR
       const outputDir = process.env.UNI_OUTPUT_DIR
       const targets: UniViteCopyPluginOptions['targets'] = []
+      const production = isProduction()
       // 自动化测试时，不启用隐私政策
       if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
         if (process.env.UNI_UTS_PLATFORM === 'app-android') {
@@ -68,7 +74,7 @@ export function createUniOptions(
         assets: [
           'hybrid/html/**/*',
           'uni_modules/*/hybrid/html/**/*',
-          `uni_modules/*/uasm/${platform}/${uasmResourceDir}/**/*`,
+          ...resolveUasmCopyAssets(platform, production),
         ],
         targets,
       }

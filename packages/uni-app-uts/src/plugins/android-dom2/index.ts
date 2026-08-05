@@ -16,6 +16,7 @@ import {
   uniStatsPlugin,
   uniUTSAppUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
+  uniUasmPlugin,
   uniUniModulesExtApiPlugin,
   uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -36,6 +37,7 @@ export function init() {
   const isDom2Dynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
   const isDev = process.env.NODE_ENV === 'development'
   return [
+    uniUasmPlugin(),
     ...(isDom2 ? [uniAppCssPrePlugin()] : []),
     ...(isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniDecryptUniModulesPlugin()]

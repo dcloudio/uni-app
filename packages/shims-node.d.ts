@@ -82,6 +82,7 @@ declare namespace NodeJS {
     UNI_APP_PACK_TYPE?: 'release' | 'debug' // 打包类型
     UNI_APP_PLATFORM?: 'android' | 'ios' | 'harmony' // 运行时，可能传入了 UNI_APP_PLATFORM = 'android'|'ios'|'harmony'
     UNI_APP_PRODUCTION_TYPE?: 'WGT' // 发行类型
+    UNI_APP_X_TARGET_ARCHS?: string // 当前运行设备支持的 ABI 列表，值为按优先级排序的 JSON 数组字符串
     UNI_APP_X_CACHE_DIR: string // 当前运行/发行平台的缓存目录，如：unpackage/cache/.app-android
     UNI_APP_X_DOM2?: 'true' // 是否 dom2 模式
     UNI_APP_X_DOM2_DYNAMIC?: 'true' // 是否开启 dom2 模式下的动态渲染功能
