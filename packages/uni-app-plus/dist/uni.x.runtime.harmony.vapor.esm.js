@@ -4115,6 +4115,12 @@ var env = {
   TEMP_PATH: "unifile://temp/",
   ANDROID_INTERNAL_SANDBOX_PATH: "unifile://androidInternalSandbox/"
 };
+function loadUASM(module) {
+  return new Promise((resolve) => {
+    var modulePath = module.startsWith("uni_modules/") ? getNativeApp().convert2AbsFullPath(module) : module;
+    resolve(__uniLoadUASM(modulePath));
+  });
+}
 var _PerformanceEntryStatus;
 var APP_LAUNCH = "appLaunch";
 var PERFORMANCE_BUFFER_SIZE = 30;
@@ -5280,6 +5286,7 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   initUTSProxyClass,
   initUTSProxyFunction,
   loadFontFace,
+  loadUASM,
   navigateBack,
   navigateTo,
   offAppRoute,
