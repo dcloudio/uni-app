@@ -1,5 +1,6 @@
 import fs from 'fs-extra'
 import path from 'node:path'
+import { sync } from 'fast-glob'
 import type { Plugin } from 'vite'
 import { normalizePath } from './utils'
 
@@ -29,6 +30,20 @@ export interface ResolvedUasmModule {
 }
 
 const UASM_PLATFORMS: UasmPlatform[] = ['app-android', 'app-ios', 'app-harmony']
+const UASM_IOS_MANIFEST_VERSION = 1
+
+interface UasmIOSManifestFile {
+  size: number
+  mtimeMs: number
+  mode: number
+  link?: string
+}
+
+interface UasmIOSCopyManifest {
+  version: typeof UASM_IOS_MANIFEST_VERSION
+  libraryIdentifier: string
+  files: Record<string, UasmIOSManifestFile>
+}
 
 let uasmModules: Record<string, UasmModule> = Object.create(null)
 
@@ -56,11 +71,122 @@ export function initUasmModules(inputDir: string) {
 }
 
 export function uniUasmPlugin(inputDir = process.env.UNI_INPUT_DIR): Plugin {
+  let processed = false
   initUasmModules(inputDir)
   return {
     name: 'uni:uasm',
     apply: 'build',
+    enforce: 'post',
+    writeBundle() {
+      if (processed || !shouldCopyUasmIOSFrameworks()) {
+        return
+      }
+      copyUasmIOSFrameworks(inputDir)
+      processed = true
+    },
   }
+}
+
+function shouldCopyUasmIOSFrameworks() {
+  return (
+    process.env.UNI_UTS_PLATFORM === 'app-ios' &&
+    (process.env.UNI_NODE_ENV || process.env.NODE_ENV) === 'development' &&
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    !process.env.UNI_COMPILE_TARGET
+  )
+}
+
+function copyUasmIOSFrameworks(inputDir: string) {
+  const dependenciesDir = process.env.HX_DEPENDENCIES_DIR
+  if (!dependenciesDir) {
+    return
+  }
+  const libraryIdentifier =
+    process.env.HX_RUN_DEVICE_TYPE === 'ios_simulator'
+      ? 'ios-arm64-simulator'
+      : 'ios-arm64'
+  const targetDir = path.resolve(dependenciesDir, 'modules')
+
+  for (const module of Object.values(uasmModules)) {
+    const resources = module.platforms['app-ios']
+    if (!resources) {
+      continue
+    }
+    const frameworksDir = path.resolve(inputDir, resources.dir)
+    const pluginRelativeDir = path.join('uni_modules', module.name, 'uasm')
+    const manifestFile = path.resolve(
+      dependenciesDir,
+      'app-ios',
+      'uasm',
+      pluginRelativeDir,
+      'manifest.json'
+    )
+    const sourceDirs = fs
+      .readdirSync(frameworksDir, { withFileTypes: true })
+      .filter(
+        (entry) =>
+          isDirectoryEntry(frameworksDir, entry) &&
+          entry.name.endsWith('.xcframework')
+      )
+      .map((entry) => ({
+        name: entry.name,
+        dir: path.resolve(frameworksDir, entry.name, libraryIdentifier),
+      }))
+      .filter(({ dir }) => fs.existsSync(dir))
+      .sort((a, b) => a.name.localeCompare(b.name))
+    const manifest = resolveUasmIOSCopyManifest(sourceDirs, libraryIdentifier)
+    const oldManifest = readUasmIOSCopyManifest(manifestFile)
+    if (JSON.stringify(oldManifest) === JSON.stringify(manifest)) {
+      continue
+    }
+    sourceDirs.forEach(({ dir }) =>
+      fs.copySync(dir, targetDir, { overwrite: true })
+    )
+    fs.outputJsonSync(manifestFile, manifest, { spaces: 2 })
+  }
+}
+
+function resolveUasmIOSCopyManifest(
+  sourceDirs: { name: string; dir: string }[],
+  libraryIdentifier: string
+): UasmIOSCopyManifest {
+  const manifest: UasmIOSCopyManifest = {
+    version: UASM_IOS_MANIFEST_VERSION,
+    libraryIdentifier,
+    files: Object.create(null),
+  }
+  sourceDirs.forEach(({ name, dir }) => {
+    sync('**/*', {
+      cwd: dir,
+      dot: true,
+      onlyFiles: false,
+      followSymbolicLinks: false,
+    })
+      .sort()
+      .forEach((file) => {
+        const absoluteFile = path.resolve(dir, file)
+        const stat = fs.lstatSync(absoluteFile)
+        if (!stat.isFile() && !stat.isSymbolicLink()) {
+          return
+        }
+        const manifestFile: UasmIOSManifestFile = {
+          size: stat.size,
+          mtimeMs: stat.mtimeMs,
+          mode: stat.mode,
+        }
+        if (stat.isSymbolicLink()) {
+          manifestFile.link = fs.readlinkSync(absoluteFile)
+        }
+        manifest.files[normalizePath(path.join(name, file))] = manifestFile
+      })
+  })
+  return manifest
+}
+
+function readUasmIOSCopyManifest(file: string) {
+  try {
+    return fs.readJsonSync(file) as UasmIOSCopyManifest
+  } catch {}
 }
 
 function scanUasmModules(

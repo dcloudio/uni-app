@@ -243,10 +243,250 @@ describe('uasm', () => {
     )
     fs.outputFileSync(arm64File, '')
 
-    uniUasmPlugin(inputDir)
+    const plugin = uniUasmPlugin(inputDir)
     expect(
       resolveUasmTargetArch('test-uasm', 'app-android', ['arm64-v8a'])
     ).toBe('arm64-v8a')
+    expect(plugin.enforce).toBe('post')
+  })
+
+  describe('copy ios frameworks in development', () => {
+    let dependenciesDir: string
+    let originalEnv: Record<string, string | undefined>
+
+    beforeEach(() => {
+      dependenciesDir = path.resolve(inputDir, 'dependencies')
+      originalEnv = {
+        UNI_UTS_PLATFORM: process.env.UNI_UTS_PLATFORM,
+        UNI_NODE_ENV: process.env.UNI_NODE_ENV,
+        UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
+        UNI_COMPILE_TARGET: process.env.UNI_COMPILE_TARGET,
+        HX_DEPENDENCIES_DIR: process.env.HX_DEPENDENCIES_DIR,
+        HX_RUN_DEVICE_TYPE: process.env.HX_RUN_DEVICE_TYPE,
+      }
+      process.env.UNI_UTS_PLATFORM = 'app-ios'
+      process.env.UNI_NODE_ENV = 'development'
+      process.env.UNI_APP_X_DOM2 = 'true'
+      Reflect.deleteProperty(process.env, 'UNI_COMPILE_TARGET')
+      Reflect.deleteProperty(process.env, 'HX_RUN_DEVICE_TYPE')
+      process.env.HX_DEPENDENCIES_DIR = dependenciesDir
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
+      Object.entries(originalEnv).forEach(([key, value]) => {
+        if (value === undefined) {
+          Reflect.deleteProperty(process.env, key)
+        } else {
+          process.env[key] = value
+        }
+      })
+    })
+
+    function createFramework(moduleName: string, frameworkName = moduleName) {
+      const xcframeworkDir = path.resolve(
+        inputDir,
+        `uni_modules/${moduleName}/uasm/app-ios/frameworks/${frameworkName}.xcframework`
+      )
+      const deviceFile = path.resolve(
+        xcframeworkDir,
+        `ios-arm64/${frameworkName}.framework/${frameworkName}`
+      )
+      const simulatorFile = path.resolve(
+        xcframeworkDir,
+        `ios-arm64-simulator/${frameworkName}.framework/${frameworkName}`
+      )
+      fs.outputFileSync(deviceFile, `${frameworkName}-device`)
+      fs.outputFileSync(simulatorFile, `${frameworkName}-simulator`)
+      return { deviceFile, simulatorFile }
+    }
+
+    function getManifest(moduleName: string) {
+      return fs.readJsonSync(
+        path.resolve(
+          dependenciesDir,
+          'app-ios',
+          'uasm',
+          'uni_modules',
+          moduleName,
+          'uasm',
+          'manifest.json'
+        )
+      )
+    }
+
+    function writeBundle() {
+      const plugin = uniUasmPlugin(inputDir)
+      Reflect.apply(plugin.writeBundle as () => void, plugin, [])
+    }
+
+    test.each([
+      ['device', undefined, 'ios-arm64', 'zstd-device'],
+      ['simulator', 'ios_simulator', 'ios-arm64-simulator', 'zstd-simulator'],
+    ])('copy the %s slice', (_, deviceType, libraryIdentifier, content) => {
+      createFramework('zstd')
+      if (deviceType) {
+        process.env.HX_RUN_DEVICE_TYPE = deviceType
+      }
+
+      writeBundle()
+
+      expect(
+        fs.readFileSync(
+          path.resolve(dependenciesDir, 'modules/zstd.framework/zstd'),
+          'utf8'
+        )
+      ).toBe(content)
+      expect(getManifest('zstd')).toMatchObject({
+        version: 1,
+        libraryIdentifier,
+        files: {
+          'zstd.xcframework/zstd.framework/zstd': {
+            size: content.length,
+            mtimeMs: expect.any(Number),
+            mode: expect.any(Number),
+          },
+        },
+      })
+    })
+
+    test('isolate manifests by module', () => {
+      createFramework('zstd')
+      createFramework('other')
+
+      writeBundle()
+
+      expect(Object.keys(getManifest('zstd').files)).toEqual([
+        'zstd.xcframework/zstd.framework/zstd',
+      ])
+      expect(Object.keys(getManifest('other').files)).toEqual([
+        'other.xcframework/other.framework/other',
+      ])
+    })
+
+    test('support multiple xcframeworks in one module', () => {
+      createFramework('zstd')
+      createFramework('zstd', 'helper')
+
+      writeBundle()
+
+      expect(Object.keys(getManifest('zstd').files)).toEqual([
+        'helper.xcframework/helper.framework/helper',
+        'zstd.xcframework/zstd.framework/zstd',
+      ])
+      expect(
+        fs.readFileSync(
+          path.resolve(dependenciesDir, 'modules/helper.framework/helper'),
+          'utf8'
+        )
+      ).toBe('helper-device')
+    })
+
+    test('reuse the cache until the source or device type changes', () => {
+      const { deviceFile } = createFramework('zstd')
+      const copySync = jest.spyOn(fs, 'copySync')
+
+      writeBundle()
+      writeBundle()
+      expect(copySync).toHaveBeenCalledTimes(1)
+
+      fs.outputFileSync(deviceFile, 'zstd-device-changed')
+      writeBundle()
+      expect(copySync).toHaveBeenCalledTimes(2)
+
+      process.env.HX_RUN_DEVICE_TYPE = 'ios_simulator'
+      writeBundle()
+      expect(copySync).toHaveBeenCalledTimes(3)
+    })
+
+    test('track xcframework and framework symbolic links', () => {
+      const frameworksDir = path.resolve(
+        inputDir,
+        'uni_modules/zstd/uasm/app-ios/frameworks'
+      )
+      const xcframeworkDir = path.resolve(inputDir, 'external/zstd.xcframework')
+      const versionsDir = path.resolve(
+        xcframeworkDir,
+        'ios-arm64/zstd.framework/Versions'
+      )
+      fs.outputFileSync(path.resolve(versionsDir, 'A/zstd'), 'zstd')
+      fs.outputFileSync(path.resolve(versionsDir, 'B/zstd'), 'zstd')
+      fs.ensureDirSync(frameworksDir)
+      fs.symlinkSync(
+        xcframeworkDir,
+        path.resolve(frameworksDir, 'zstd.xcframework'),
+        'dir'
+      )
+      const currentLink = path.resolve(versionsDir, 'Current')
+      fs.symlinkSync('A', currentLink, 'dir')
+      const copySync = jest.spyOn(fs, 'copySync')
+
+      writeBundle()
+      expect(copySync).toHaveBeenCalledTimes(1)
+      expect(
+        getManifest('zstd').files[
+          'zstd.xcframework/zstd.framework/Versions/Current'
+        ].link
+      ).toBe('A')
+      expect(
+        fs.readlinkSync(
+          path.resolve(
+            dependenciesDir,
+            'modules/zstd.framework/Versions/Current'
+          )
+        )
+      ).toBe('A')
+
+      fs.removeSync(currentLink)
+      fs.symlinkSync('B', currentLink, 'dir')
+      writeBundle()
+
+      expect(copySync).toHaveBeenCalledTimes(2)
+      expect(
+        getManifest('zstd').files[
+          'zstd.xcframework/zstd.framework/Versions/Current'
+        ].link
+      ).toBe('B')
+      expect(
+        fs.readlinkSync(
+          path.resolve(
+            dependenciesDir,
+            'modules/zstd.framework/Versions/Current'
+          )
+        )
+      ).toBe('B')
+    })
+
+    test.each([
+      ['other platform', 'UNI_UTS_PLATFORM', 'app-android'],
+      ['production', 'UNI_NODE_ENV', 'production'],
+      ['non-DOM2', 'UNI_APP_X_DOM2', 'false'],
+      ['special compile target', 'UNI_COMPILE_TARGET', 'uni_modules'],
+      ['missing dependencies directory', 'HX_DEPENDENCIES_DIR', undefined],
+    ])('skip copying for %s', (_, envName, envValue) => {
+      createFramework('zstd')
+      if (envValue === undefined) {
+        Reflect.deleteProperty(process.env, envName)
+      } else {
+        process.env[envName] = envValue
+      }
+      const copySync = jest.spyOn(fs, 'copySync')
+
+      writeBundle()
+
+      expect(copySync).not.toHaveBeenCalled()
+    })
+
+    test('process only once in the same plugin instance', () => {
+      createFramework('zstd')
+      const plugin = uniUasmPlugin(inputDir)
+      const copySync = jest.spyOn(fs, 'copySync')
+
+      Reflect.apply(plugin.writeBundle as () => void, plugin, [])
+      Reflect.apply(plugin.writeBundle as () => void, plugin, [])
+
+      expect(copySync).toHaveBeenCalledTimes(1)
+    })
   })
 
   test('resolve all platform resources in production', () => {
