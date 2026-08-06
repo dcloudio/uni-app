@@ -11,6 +11,17 @@ import {
   initWebAppRouteListener,
   setWebAppRouteHistoryDirection,
 } from '../../service/api/route/appRoute'
+import type { WebAppRouteTransaction } from '../../service/api/route/appRoute'
+import { handleBeforeEntryPageRoutes } from '../../service/api/route/utils'
+import {
+  API_NAVIGATE_BACK,
+  API_REDIRECT_TO,
+  API_RE_LAUNCH,
+  API_SWITCH_TAB,
+} from '@dcloudio/uni-api'
+import { removeLastPage } from '../../service/api/route/redirectTo'
+import { removeAllPages } from '../../service/api/route/reLaunch'
+import { removeNonTabBarPages } from '../../service/api/route/switchTab'
 //#endif
 import {
   getCurrentBasePages,
@@ -26,7 +37,10 @@ import { hideModal } from '../../service/api/ui/popup/showModal'
 export function initRouter(app: App) {
   const router = createRouter(createRouterOptions())
   //#if _X_
-  initWebAppRouteListener(router)
+  initWebAppRouteListener(router, {
+    onRouteConfirmed: cleanupWebAppRoute,
+    onMissingRoute: handleBeforeEntryPageRoutes,
+  })
   //#endif
   //#if _X_ && !_NODE_JS_
   router.beforeEach((to, from) => {
@@ -112,6 +126,25 @@ function removeCurrentPages(delta: number = 1) {
   }
 }
 
+//#if _X_
+export function cleanupWebAppRoute(transaction: WebAppRouteTransaction) {
+  switch (transaction.openType) {
+    case API_REDIRECT_TO:
+      removeLastPage()
+      break
+    case API_RE_LAUNCH:
+      removeAllPages()
+      break
+    case API_SWITCH_TAB:
+      removeNonTabBarPages(transaction.pageId)
+      break
+    case API_NAVIGATE_BACK:
+      removeCurrentPages(transaction.delta || 1)
+      break
+  }
+}
+//#endif
+
 function initHistory() {
   let { routerBase } = __uniConfig.router!
   if (routerBase === '/') {
@@ -126,11 +159,12 @@ function initHistory() {
       : createWebHashHistory(routerBase)
   history.listen((to, _from, info) => {
     //#if _X_
-    setWebAppRouteHistoryDirection(to, info.direction)
-    //#endif
+    setWebAppRouteHistoryDirection(to, info.direction, info.delta)
+    //#else
     if (info.direction === 'back') {
       removeCurrentPages(Math.abs(info.delta))
     }
+    //#endif
   })
   return history
 }

@@ -29,11 +29,7 @@ import { navigateTo } from '../src/service/api/route/navigateTo'
 import { reLaunch } from '../src/service/api/route/reLaunch'
 import { redirectTo } from '../src/service/api/route/redirectTo'
 import { switchTab } from '../src/service/api/route/switchTab'
-import {
-  offAppRoute,
-  onAppRoute,
-  setWebAppRouteReady,
-} from '../src/service/api/route/appRoute'
+import { offAppRoute, onAppRoute } from '../src/service/api/route/appRoute'
 
 const routeApis = [
   ['navigateTo', navigateTo],
@@ -59,7 +55,6 @@ describe('web missing route api', () => {
     global.__PLATFORM__ = 'h5'
     global.__uniConfig = { ready: true } as UniApp.UniConfig
     ;(global as any).getApp = () => ({ vm: appVm })
-    setWebAppRouteReady()
   })
 
   afterAll(() => {

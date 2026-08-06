@@ -27,6 +27,7 @@ import {
   debounce,
   decodedQuery,
   parseQuery,
+  stringifyQuery,
 } from '@dcloudio/uni-shared'
 import { injectAppHooks } from '@dcloudio/uni-api'
 import {
@@ -57,7 +58,9 @@ import { updateCurPageCssVar } from '../../helpers/cssVar'
 //#if _X_
 import {
   dispatchWebAppRoute,
-  setWebAppRouteReady,
+  registerWebAppRouteLaunchExecutor,
+  resolveAppRoute,
+  setSinglePageAppRoute,
 } from '../../service/api/route/appRoute'
 import {
   getPageInstanceByChild,
@@ -195,7 +198,7 @@ export function setupPage(comp: any, path: string) {
           if (!isDialogPageInstance(pageInstance)) {
             // initHooks 已同步触发首次 onLoad、onShow，此处紧接其后派发
             dispatchWebAppRoute(
-              __UNI_FEATURE_PAGES__ ? router.currentRoute.value : route
+              __UNI_FEATURE_PAGES__ ? router.currentRoute.value : undefined
             )
           }
         }
@@ -223,7 +226,7 @@ export function setupPage(comp: any, path: string) {
               const { onShow } = instance
               onShow && invokeArrayFns(onShow)
               dispatchWebAppRoute(
-                __UNI_FEATURE_PAGES__ ? router.currentRoute.value : route
+                __UNI_FEATURE_PAGES__ ? router.currentRoute.value : undefined
               )
               invokeLastDialogPageHookByUniPage(
                 instance.proxy?.$page as UniPage,
@@ -282,41 +285,57 @@ export function setupApp(comp: any) {
       if (__NODE_JS__) {
         return route.query
       }
-      const onLaunch = () => {
+      const onLaunch = (launchRoute: any = route) => {
         injectAppHooks(instance)
         const { onLaunch, onShow, onPageNotFound } = instance
-        const path = route.path.slice(1)
+        const path = launchRoute.path.slice(1)
         const launchOptions = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query),
+          query: decodedQuery(launchRoute.query),
         })
         onLaunch && invokeArrayFns(onLaunch, launchOptions)
         onShow && invokeArrayFns(onShow, launchOptions)
+        //#if _X_
+        const originalUrl = __UNI_FEATURE_PAGES__
+          ? launchRoute.fullPath
+          : launchRoute.path + stringifyQuery(launchRoute.query)
+        const resolved = resolveAppRoute(
+          originalUrl,
+          'appLaunch',
+          __UNI_FEATURE_PAGES__ && !launchRoute.matched.length
+        )
+        if (!__UNI_FEATURE_PAGES__) {
+          setSinglePageAppRoute(resolved, originalUrl)
+        }
+        return resolved
+        //#else
         if (__UNI_FEATURE_PAGES__) {
-          if (!route.matched.length) {
-            //#if !_X_
+          if (!launchRoute.matched.length) {
             const pageNotFoundOptions = {
               notFound: true,
               openType: 'appLaunch',
-              path: route.path,
-              query: decodedQuery(route.query),
+              path: launchRoute.path,
+              query: decodedQuery(launchRoute.query),
               scene: 1001,
             }
-            //#endif
             handleBeforeEntryPageRoutes()
-            //#if !_X_
             onPageNotFound &&
               invokeArrayFns(onPageNotFound, pageNotFoundOptions)
-            //#endif
           }
         }
-        //#if _X_
-        setWebAppRouteReady()
         //#endif
       }
       if (__UNI_FEATURE_PAGES__) {
+        //#if _X_
+        registerWebAppRouteLaunchExecutor(async (launchRoute) => {
+          // 等待用户 App setup 完成，确保其中注册的路由监听器已经生效。
+          await Promise.resolve()
+          return onLaunch(launchRoute)!
+        })
+        //#else
         // 等待ready后，再onLaunch，否则直达非首页无法获取到正确的path和query
         useRouter().isReady().then(onLaunch)
+        //#endif
       } else {
         onBeforeMount(onLaunch)
       }

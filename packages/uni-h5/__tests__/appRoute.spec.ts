@@ -1,4 +1,20 @@
-import { START_LOCATION } from 'vue-router'
+const mockEntryPageState = { handledBeforeEntryPageRoutes: true }
+let mockPageId = 0
+
+jest.mock('../src/framework/setup/page', () => ({
+  createPageState: (type: string, id?: number) => ({
+    __id__: id || ++mockPageId,
+    __type__: type,
+  }),
+  entryPageState: mockEntryPageState,
+  getCurrentBasePages: () => [],
+  getCurrentPagesMap: () => new Map(),
+  getPage$BasePage: (page: any) => page.$basePage,
+  navigateToPagesBeforeEntryPages: [],
+  reLaunchPagesBeforeEntryPages: [],
+  redirectToPagesBeforeEntryPages: [],
+  switchTabPagesBeforeEntryPages: [],
+}))
 
 jest.mock('@dcloudio/uni-api', () =>
   Object.assign(
@@ -9,443 +25,485 @@ jest.mock('@dcloudio/uni-api', () =>
   )
 )
 
+import { API_NAVIGATE_TO } from '@dcloudio/uni-api'
 import * as appRoute from '../src/service/api/route/appRoute'
+import { navigateTo } from '../src/service/api/route/navigateTo'
+
+function stringifyQuery(query: Record<string, any>) {
+  const search = new URLSearchParams(query).toString()
+  return search ? `?${search}` : ''
+}
 
 function createRoute(
   path: string,
   query: Record<string, any> = {},
   extra: Record<string, unknown> = {}
 ) {
+  const routePath = path.startsWith('/') ? path : `/${path}`
+  const routeOptions = global.__uniRoutes.find(
+    (route) => route.path === routePath || route.alias === routePath
+  )
   return {
-    path: `/${path}`,
-    fullPath: `/${path}`,
+    path: routePath,
+    fullPath: routePath + stringifyQuery(query),
     query,
-    meta: { route: path },
-    matched: [{}],
+    meta: routeOptions?.meta || {},
+    matched: routeOptions ? [{}] : [],
     ...extra,
   }
 }
 
 describe('web app route', () => {
-  const oldNodeJs = (global as any).__NODE_JS__
-  const oldPlatform = (global as any).__PLATFORM__
-  const oldHistory = (global as any).history
+  const oldNodeJs = global.__NODE_JS__
+  const oldPlatform = global.__PLATFORM__
+  const oldX = global.__X__
+  const oldUniRoutes = global.__uniRoutes
+  const oldUniConfig = global.__uniConfig
   const oldGetApp = (global as any).getApp
-  const bridge = UniServiceJSBridge as any
-  const oldOn = bridge.on
-  const oldOff = bridge.off
-  const oldInvokeOnCallback = bridge.invokeOnCallback
-  const bridgeListeners: Record<string, Function> = {}
   const appVm = {
     $: {
       onPageNotFound: [] as Function[],
     },
+    $router: undefined as any,
   }
+  const onRouteConfirmed = jest.fn()
+  const onMissingRoute = jest.fn()
   let routerBeforeEach: Function
   let routerAfterEach: Function
   let routerOnError: Function
 
-  function finishRouterRoute(to: object, from: object, failure?: Error) {
-    routerBeforeEach(to, from)
-    routerAfterEach(to, from, failure)
+  async function completeNavigation(location: {
+    path: string
+    query?: Record<string, any>
+  }) {
+    const from = router.currentRoute.value
+    let to = createRoute(location.path, location.query)
+    let redirect = await routerBeforeEach(to)
+    while (redirect) {
+      const redirectedFrom = to
+      to = createRoute(redirect.path, redirect.query, { redirectedFrom })
+      redirect = await routerBeforeEach(to)
+    }
+    router.currentRoute.value = to
+    routerAfterEach(to, from)
   }
 
-  function setHistoryOpenType(openType?: string, stateId = 1) {
-    ;(global as any).history.state = {
-      __id__: stateId,
-      ...(openType ? { __type__: openType } : {}),
-    }
+  const router = {
+    currentRoute: {
+      value: {} as ReturnType<typeof createRoute>,
+    },
+    resolve(location: { path: string; query?: Record<string, any> }) {
+      return createRoute(location.path, location.query)
+    },
+    beforeEach(callback: Function) {
+      routerBeforeEach = callback
+    },
+    afterEach(callback: Function) {
+      routerAfterEach = callback
+    },
+    onError(callback: Function) {
+      routerOnError = callback
+    },
+    push: completeNavigation,
+    replace: completeNavigation,
   }
 
   beforeAll(() => {
-    ;(global as any).__NODE_JS__ = false
-    ;(global as any).__PLATFORM__ = 'h5'
-    ;(global as any).history = { state: {} }
+    global.__NODE_JS__ = false
+    global.__PLATFORM__ = 'h5'
+    global.__X__ = true
+    global.__uniConfig = { ready: false } as UniApp.UniConfig
+    global.__uniRoutes = [
+      {
+        path: '/pages/index/index',
+        alias: '/',
+        meta: {
+          route: 'pages/index/index',
+          isEntry: true,
+          isTabBar: false,
+        },
+      },
+      {
+        path: '/pages/next/next',
+        meta: {
+          route: 'pages/next/next',
+          isEntry: false,
+          isTabBar: false,
+        },
+      },
+      {
+        path: '/pages/final/final',
+        meta: {
+          route: 'pages/final/final',
+          isEntry: false,
+          isTabBar: false,
+        },
+      },
+      {
+        path: '/pages/tab/tab',
+        meta: {
+          route: 'pages/tab/tab',
+          isEntry: false,
+          isTabBar: true,
+        },
+      },
+    ] as UniApp.UniRoute[]
+    router.currentRoute.value = createRoute('/')
+    appVm.$router = router
     ;(global as any).getApp = () => ({ vm: appVm })
-    bridge.on = (name: string, callback: Function) => {
-      bridgeListeners[name] = callback
-    }
-    bridge.off = (name: string) => {
-      delete bridgeListeners[name]
-    }
-    bridge.invokeOnCallback = (name: string, event: unknown) => {
-      bridgeListeners[`api.${name}`]?.(event)
-    }
-    appRoute.initWebAppRouteListener({
-      beforeEach(callback: Function) {
-        routerBeforeEach = callback
-      },
-      afterEach(callback: Function) {
-        routerAfterEach = callback
-      },
-      onError(callback: Function) {
-        routerOnError = callback
-      },
-    } as any)
+    appRoute.initWebAppRouteListener(router as any, {
+      onRouteConfirmed,
+      onMissingRoute,
+    })
   })
 
   afterAll(() => {
     appRoute.offAppRoute()
-    ;(global as any).__NODE_JS__ = oldNodeJs
-    if (oldPlatform === undefined) {
-      delete (global as any).__PLATFORM__
-    } else {
-      ;(global as any).__PLATFORM__ = oldPlatform
-    }
-    if (oldHistory === undefined) {
-      delete (global as any).history
-    } else {
-      ;(global as any).history = oldHistory
-    }
-    bridge.on = oldOn
-    bridge.off = oldOff
-    bridge.invokeOnCallback = oldInvokeOnCallback
-    if (oldGetApp === undefined) {
-      delete (global as any).getApp
-    } else {
-      ;(global as any).getApp = oldGetApp
-    }
+    appRoute.offBeforeAppRoute()
+    global.__NODE_JS__ = oldNodeJs
+    global.__PLATFORM__ = oldPlatform
+    global.__X__ = oldX
+    global.__uniRoutes = oldUniRoutes
+    global.__uniConfig = oldUniConfig
+    ;(global as any).getApp = oldGetApp
   })
 
   beforeEach(() => {
-    appRoute.setWebAppRouteReady()
+    onRouteConfirmed.mockClear()
+    onMissingRoute.mockClear()
     appVm.$.onPageNotFound.length = 0
-    setHistoryOpenType()
   })
 
   afterEach(() => {
     appRoute.offAppRoute()
+    appRoute.offBeforeAppRoute()
     jest.restoreAllMocks()
   })
 
-  test('buffers routes until app is ready', () => {
-    jest.isolateModules(() => {
-      const isolatedAppRoute = jest.requireActual(
-        '../src/service/api/route/appRoute'
-      ) as typeof appRoute
-      const isolatedStartLocation =
-        jest.requireActual('vue-router').START_LOCATION
-      let isolatedRouterAfterEach: Function = () => {}
-      isolatedAppRoute.initWebAppRouteListener({
-        beforeEach() {},
-        afterEach(callback: Function) {
-          isolatedRouterAfterEach = callback
-        },
-        onError() {},
-      } as any)
+  test('启动时等待 App 注册监听器并重写缺失页面', async () => {
+    const beforeEvents: Record<string, any>[] = []
+    const routeListener = jest.fn()
+    const pageNotFoundListener = jest.fn()
+    appVm.$.onPageNotFound.push(pageNotFoundListener)
+    const missingRoute = createRoute('/pages/missing/missing', {
+      from: 'launch',
+    })
 
-      const pageNotFoundListener = jest.fn()
-      const listener = jest.fn()
-      appVm.$.onPageNotFound.push(pageNotFoundListener)
-      isolatedAppRoute.onAppRoute(listener)
-      const launchRoute = createRoute(
-        'pages/missing/missing',
-        { from: 'launch' },
-        { matched: [] }
-      )
-      isolatedRouterAfterEach(launchRoute, isolatedStartLocation)
-      expect(listener).not.toHaveBeenCalled()
-      expect(pageNotFoundListener).not.toHaveBeenCalled()
-
-      isolatedAppRoute.setWebAppRouteReady()
-      expect(listener).toHaveBeenCalledWith(
-        expect.objectContaining({
-          path: 'pages/missing/missing',
-          query: { from: 'launch' },
-          openType: 'appLaunch',
-          routeEventId: expect.any(String),
-          timeStamp: expect.any(Number),
-          notFound: true,
-        })
-      )
-      expect(pageNotFoundListener).toHaveBeenCalledWith({
-        path: 'pages/missing/missing',
-        query: { from: 'launch' },
-        isEntryPage: true,
+    const navigation = routerBeforeEach(missingRoute)
+    appRoute.registerWebAppRouteLaunchExecutor(async (route) => {
+      await Promise.resolve()
+      appRoute.onBeforeAppRoute((event) => {
+        beforeEvents.push(event)
+        if (event.notFound) {
+          appRoute.rewriteRoute({ url: '/pages/next/next?from=rewrite' })
+        }
       })
-      isolatedAppRoute.offAppRoute()
-    })
-  })
-
-  test('isolates listener errors while flushing buffered routes', () => {
-    jest.isolateModules(() => {
-      const isolatedAppRoute = jest.requireActual(
-        '../src/service/api/route/appRoute'
-      ) as typeof appRoute
-      const isolatedStartLocation =
-        jest.requireActual('vue-router').START_LOCATION
-      let isolatedRouterAfterEach: Function = () => {}
-      isolatedAppRoute.initWebAppRouteListener({
-        beforeEach() {},
-        afterEach(callback: Function) {
-          isolatedRouterAfterEach = callback
-        },
-        onError() {},
-      } as any)
-
-      const error = new Error('listener failed')
-      const consoleError = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => {})
-      isolatedAppRoute.onAppRoute(() => {
-        throw error
-      })
-      const launchRoute = createRoute('pages/index/index')
-      isolatedRouterAfterEach(launchRoute, isolatedStartLocation)
-      isolatedAppRoute.dispatchWebAppRoute(launchRoute)
-
-      expect(() => isolatedAppRoute.setWebAppRouteReady()).not.toThrow()
-      expect(consoleError).toHaveBeenCalledWith(error)
-      isolatedAppRoute.offAppRoute()
-    })
-  })
-
-  test('dispatches committed routes synchronously and supports offAppRoute', () => {
-    const listener = jest.fn()
-    appRoute.onAppRoute(listener)
-
-    const launchRoute = createRoute('pages/index/index', { from: 'launch' })
-    finishRouterRoute(launchRoute, START_LOCATION)
-    expect(listener).not.toHaveBeenCalled()
-    appRoute.dispatchWebAppRoute(launchRoute)
-
-    const detailRoute = createRoute('pages/detail/detail', { id: '1' })
-    setHistoryOpenType('redirectTo')
-    finishRouterRoute(detailRoute, launchRoute)
-    appRoute.dispatchWebAppRoute(detailRoute)
-
-    const indexRoute = createRoute('pages/index/index')
-    appRoute.setWebAppRouteHistoryDirection(indexRoute.fullPath, 'back')
-    finishRouterRoute(indexRoute, detailRoute)
-    appRoute.dispatchWebAppRoute(indexRoute)
-
-    expect(listener).toHaveBeenCalledTimes(3)
-    expect(listener.mock.calls[1][0]).toMatchObject({
-      path: 'pages/detail/detail',
-      openType: 'redirectTo',
-    })
-    expect(listener.mock.calls[2][0]).toMatchObject({
-      path: 'pages/index/index',
-      openType: 'navigateBack',
+      appRoute.onAppRoute(routeListener)
+      return appRoute.resolveAppRoute(route.fullPath, 'appLaunch', true)
     })
 
-    appRoute.offAppRoute(listener)
-    const otherRoute = createRoute('pages/other/other')
-    finishRouterRoute(otherRoute, indexRoute)
-    appRoute.dispatchWebAppRoute(otherRoute)
-    expect(listener).toHaveBeenCalledTimes(3)
-  })
+    expect(await navigation).toEqual({
+      path: '/pages/next/next',
+      query: { from: 'rewrite' },
+    })
 
-  test('does not dispatch switchTab to the current tab', () => {
-    const listener = jest.fn()
-    const from = createRoute(
-      'pages/tab/tab',
-      { from: 'launch' },
-      { fullPath: '/pages/tab/tab?from=launch' }
+    const finalRoute = createRoute(
+      '/pages/next/next',
+      { from: 'rewrite' },
+      {
+        redirectedFrom: missingRoute,
+      }
     )
-    const to = createRoute('pages/tab/tab')
-    appRoute.onAppRoute(listener)
+    expect(await routerBeforeEach(finalRoute)).toBeUndefined()
+    routerAfterEach(finalRoute, missingRoute)
+    appRoute.dispatchWebAppRoute(finalRoute)
 
-    setHistoryOpenType('switchTab')
-    finishRouterRoute(to, from)
-
-    expect(listener).not.toHaveBeenCalled()
-  })
-
-  test('isolates listener errors from the router dispatch', () => {
-    const error = new Error('listener failed')
-    const consoleError = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => {})
-    const failedListener = jest.fn(() => {
-      throw error
-    })
-    const skippedListener = jest.fn()
-    appRoute.onAppRoute(failedListener)
-    appRoute.onAppRoute(skippedListener)
-
-    const detailRoute = createRoute('pages/detail/detail')
-    finishRouterRoute(detailRoute, createRoute('pages/index/index'))
-    expect(() => appRoute.dispatchWebAppRoute(detailRoute)).not.toThrow()
-
-    expect(failedListener).toHaveBeenCalledTimes(1)
-    expect(skippedListener).not.toHaveBeenCalled()
-    expect(consoleError).toHaveBeenCalledWith(error)
-  })
-
-  test('does not dispatch failed routes and clears their openType', () => {
-    const listener = jest.fn()
-    appRoute.onAppRoute(listener)
-    const from = createRoute('pages/index/index')
-    const failed = createRoute('pages/failed/failed')
-
-    setHistoryOpenType('reLaunch')
-    finishRouterRoute(failed, from, new Error('navigation failed'))
-
-    const next = createRoute('pages/next/next')
-    setHistoryOpenType()
-    finishRouterRoute(next, from)
-    appRoute.dispatchWebAppRoute(next)
-
-    expect(listener).toHaveBeenCalledTimes(1)
-    expect(listener).toHaveBeenCalledWith(
+    expect(
+      beforeEvents.map(({ path, notFound }) => ({ path, notFound }))
+    ).toEqual([
+      { path: 'pages/missing/missing', notFound: true },
+      { path: 'pages/next/next', notFound: false },
+    ])
+    expect(routeListener).toHaveBeenCalledWith(
       expect.objectContaining({
         path: 'pages/next/next',
-        openType: 'navigateTo',
+        query: { from: 'rewrite' },
+        routeEventId: beforeEvents[1].routeEventId,
       })
     )
-    appRoute.offAppRoute(listener)
-  })
-
-  test('does not dispatch a not-found route after app launch', () => {
-    const calls: string[] = []
-    const pageNotFoundListener = jest.fn(() => calls.push('onPageNotFound'))
-    const listener = jest.fn(() => calls.push('onAppRoute'))
-    const from = createRoute('pages/index/index')
-    const notFoundRoute = createRoute(
-      'pages/missing/missing',
-      {},
-      { matched: [] }
-    )
-    appVm.$.onPageNotFound.push(pageNotFoundListener)
-    appRoute.onAppRoute(listener)
-
-    routerAfterEach(notFoundRoute, from)
-
-    expect(listener).not.toHaveBeenCalled()
     expect(pageNotFoundListener).not.toHaveBeenCalled()
-    expect(calls).toEqual([])
+    expect(onRouteConfirmed).toHaveBeenCalledTimes(1)
   })
 
-  test('dispatches only the final route after a guard redirect', () => {
-    const dateNow = jest.spyOn(Date, 'now').mockReturnValue(100)
-    const listener = jest.fn()
-    appRoute.onAppRoute(listener)
-    const from = createRoute('pages/index/index')
-    const original = createRoute('pages/original/original')
+  test('程序化路由使用最终 Context 且只派发一次', async () => {
+    const beforeListener = jest.fn()
+    const routeListener = jest.fn()
+    appRoute.onBeforeAppRoute(beforeListener)
+    appRoute.onAppRoute(routeListener)
+    const resolved = appRoute.resolveAppRoute(
+      '/pages/next/next?id=1',
+      API_NAVIGATE_TO
+    )
+    const transaction = appRoute.createWebAppRouteTransaction(
+      '/pages/next/next?id=1',
+      API_NAVIGATE_TO,
+      resolved.context
+    )
+    appRoute.queueWebAppRouteTransaction(transaction)
+    const to = createRoute('/pages/next/next', { id: '1' })
 
-    setHistoryOpenType('navigateTo')
+    expect(await routerBeforeEach(to)).toBeUndefined()
+    routerAfterEach(to, createRoute('/'))
+    appRoute.dispatchWebAppRoute(to)
+    appRoute.dispatchWebAppRoute(to)
 
+    expect(beforeListener).toHaveBeenCalledTimes(1)
+    expect(routeListener).toHaveBeenCalledTimes(1)
+    expect(routeListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: 'pages/next/next',
+        routeEventId: resolved.context.event.routeEventId,
+      })
+    )
+  })
+
+  test('navigateTo 重写后使用最终 URL 和 Context 完成路由', async () => {
+    const beforeEvents: Record<string, any>[] = []
+    const routeListener = jest.fn()
+    appRoute.onBeforeAppRoute((event) => {
+      beforeEvents.push(event)
+      if (event.path === 'pages/next/next') {
+        appRoute.rewriteRoute({
+          url: '/pages/final/final?from=rewrite',
+        })
+      }
+    })
+    appRoute.onAppRoute(routeListener)
+
+    await new Promise<void>((resolve, reject) => {
+      navigateTo({
+        url: '/pages/next/next?from=source',
+        success: () => resolve(),
+        fail: reject,
+      })
+    })
+    const finalRoute = router.currentRoute.value
+    appRoute.dispatchWebAppRoute(finalRoute)
+
+    expect(finalRoute.fullPath).toBe('/pages/final/final?from=rewrite')
+    expect(beforeEvents.map(({ path }) => path)).toEqual([
+      'pages/next/next',
+      'pages/final/final',
+    ])
+    expect(onRouteConfirmed).toHaveBeenCalledTimes(1)
+    expect(routeListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: 'pages/final/final',
+        query: { from: 'rewrite' },
+        routeEventId: beforeEvents[1].routeEventId,
+      })
+    )
+  })
+
+  test('Router 二次重定向产生新的 before 事件', async () => {
+    const beforeEvents: Record<string, any>[] = []
+    const routeListener = jest.fn()
+    appRoute.onBeforeAppRoute((event) => beforeEvents.push(event))
+    appRoute.onAppRoute(routeListener)
+    const original = createRoute('/pages/next/next')
+    const resolved = appRoute.resolveAppRoute(
+      original.fullPath,
+      API_NAVIGATE_TO
+    )
+    appRoute.queueWebAppRouteTransaction(
+      appRoute.createWebAppRouteTransaction(
+        original.fullPath,
+        API_NAVIGATE_TO,
+        resolved.context
+      )
+    )
     const redirected = createRoute(
-      'pages/redirected/redirected',
+      '/pages/final/final',
       {},
       {
         redirectedFrom: original,
       }
     )
-    finishRouterRoute(redirected, from)
-    expect(listener).not.toHaveBeenCalled()
+
+    expect(await routerBeforeEach(redirected)).toBeUndefined()
+    routerAfterEach(redirected, createRoute('/'))
     appRoute.dispatchWebAppRoute(redirected)
 
-    expect(listener).toHaveBeenCalledTimes(1)
-    expect(listener).toHaveBeenCalledWith(
+    expect(beforeEvents.map(({ path }) => path)).toEqual([
+      'pages/next/next',
+      'pages/final/final',
+    ])
+    expect(routeListener).toHaveBeenCalledWith(
       expect.objectContaining({
-        path: 'pages/redirected/redirected',
-        openType: 'navigateTo',
-        timeStamp: 100,
-      })
-    )
-    expect(dateNow).toHaveBeenCalledTimes(1)
-    appRoute.offAppRoute(listener)
-  })
-
-  test('offAppRoute with null removes all listeners', () => {
-    const listener1 = jest.fn()
-    const listener2 = jest.fn()
-    appRoute.onAppRoute(listener1)
-    appRoute.onAppRoute(listener2)
-    appRoute.offAppRoute(null)
-    appRoute.dispatchWebAppRoute(createRoute('pages/final/final'))
-    expect(listener1).not.toHaveBeenCalled()
-    expect(listener2).not.toHaveBeenCalled()
-  })
-
-  test('keeps successful navigation openType after another navigation fails', () => {
-    const listener = jest.fn()
-    appRoute.onAppRoute(listener)
-    const from = createRoute('pages/index/index')
-    const failed = createRoute('pages/failed/failed')
-    const succeeded = createRoute('pages/succeeded/succeeded')
-
-    setHistoryOpenType('switchTab')
-    finishRouterRoute(failed, from, new Error('navigation cancelled'))
-    finishRouterRoute(succeeded, from)
-    appRoute.dispatchWebAppRoute(succeeded)
-
-    expect(listener).toHaveBeenCalledTimes(1)
-    expect(listener).toHaveBeenCalledWith(
-      expect.objectContaining({
-        path: 'pages/succeeded/succeeded',
-        openType: 'switchTab',
+        path: 'pages/final/final',
+        routeEventId: beforeEvents[1].routeEventId,
       })
     )
   })
 
-  test('does not apply browser history direction to a same-path navigation', () => {
-    const listener = jest.fn()
-    appRoute.onAppRoute(listener)
-    const from = createRoute('pages/index/index')
-    const backRoute = createRoute('pages/tab/tab')
-    const switchTabRoute = createRoute('pages/tab/tab')
+  test('单页面启动支持 query 重写并只派发一次', () => {
+    const oldLocation = (global as any).location
+    const oldHistory = (global as any).history
+    const replaceState = jest.fn()
+    ;(global as any).location = {
+      pathname: '/app/',
+      hash: '#/',
+    }
+    ;(global as any).history = {
+      state: { key: 'value' },
+      replaceState,
+    }
+    try {
+      const routeListener = jest.fn()
+      appRoute.onBeforeAppRoute((event) => {
+        if (event.query.from === 'source') {
+          appRoute.rewriteRoute({ url: '/?from=rewrite' })
+        }
+      })
+      appRoute.onAppRoute(routeListener)
 
-    setHistoryOpenType(undefined, 2)
-    appRoute.setWebAppRouteHistoryDirection(backRoute.fullPath, 'back')
-    routerBeforeEach(backRoute, from)
-    setHistoryOpenType('switchTab', 2)
-    finishRouterRoute(switchTabRoute, from)
-    appRoute.dispatchWebAppRoute(switchTabRoute)
-    finishRouterRoute(backRoute, from, new Error('navigation cancelled'))
+      const resolved = appRoute.resolveAppRoute('/?from=source', 'appLaunch')
+      appRoute.setSinglePageAppRoute(resolved, '/?from=source')
+      appRoute.dispatchWebAppRoute()
+      appRoute.dispatchWebAppRoute()
 
-    expect(listener).toHaveBeenCalledTimes(1)
-    expect(listener).toHaveBeenCalledWith(
+      expect(replaceState).toHaveBeenCalledWith(
+        { key: 'value' },
+        '',
+        '/app/?from=rewrite#/'
+      )
+      expect(routeListener).toHaveBeenCalledTimes(1)
+      expect(routeListener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          path: 'pages/index/index',
+          query: { from: 'rewrite' },
+          openType: 'appLaunch',
+        })
+      )
+    } finally {
+      ;(global as any).location = oldLocation
+      ;(global as any).history = oldHistory
+    }
+  })
+
+  test('重写保留原 query，并校验目标页面类型', () => {
+    const rewriteSuccess = jest.fn()
+    appRoute.onBeforeAppRoute((event) => {
+      if (event.path === 'pages/next/next') {
+        appRoute.rewriteRoute({
+          url: '/pages/final/final?ignored=1',
+          preserveQuery: true,
+          success: rewriteSuccess,
+        })
+      }
+    })
+
+    const preserved = appRoute.resolveAppRoute(
+      '/pages/next/next?from=source',
+      'navigateTo'
+    )
+
+    expect(preserved.url).toBe('/pages/final/final?from=source')
+    expect(preserved.context.event.query).toEqual({ from: 'source' })
+    expect(rewriteSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({ errMsg: 'rewriteRoute:ok' })
+    )
+
+    appRoute.offBeforeAppRoute()
+    const navigateToFail = jest.fn()
+    const switchTabFail = jest.fn()
+    appRoute.onBeforeAppRoute((event) => {
+      appRoute.rewriteRoute({
+        url:
+          event.openType === 'navigateTo'
+            ? '/pages/tab/tab'
+            : '/pages/next/next',
+        fail: event.openType === 'navigateTo' ? navigateToFail : switchTabFail,
+      })
+    })
+
+    const navigateToResult = appRoute.resolveAppRoute(
+      '/pages/next/next',
+      'navigateTo'
+    )
+    const switchTabResult = appRoute.resolveAppRoute(
+      '/pages/tab/tab',
+      'switchTab'
+    )
+
+    expect(navigateToResult.url).toBe('/pages/next/next')
+    expect(switchTabResult.url).toBe('/pages/tab/tab')
+    expect(navigateToFail).toHaveBeenCalledWith(
       expect.objectContaining({
-        path: 'pages/tab/tab',
-        openType: 'switchTab',
+        errMsg: 'rewriteRoute:fail can not navigateTo a tabbar page',
+      })
+    )
+    expect(switchTabFail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        errMsg: 'rewriteRoute:fail can not switch to no-tabBar page',
       })
     )
   })
 
-  test('keeps browser history direction after a guard redirect', () => {
-    const listener = jest.fn()
-    appRoute.onAppRoute(listener)
-    const from = createRoute('pages/index/index')
-    const backRoute = createRoute('pages/back/back')
-    const redirected = createRoute(
-      'pages/redirected/redirected',
-      {},
-      { redirectedFrom: backRoute }
-    )
+  test('浏览器返回透传 delta，navigateBack 不允许重写', async () => {
+    const rewriteFail = jest.fn()
+    appRoute.onBeforeAppRoute(() => {
+      appRoute.rewriteRoute({ url: '/pages/final/final', fail: rewriteFail })
+    })
+    const to = createRoute('/pages/index/index')
+    appRoute.setWebAppRouteHistoryDirection(to.fullPath, 'back', -2)
 
-    appRoute.setWebAppRouteHistoryDirection(backRoute.fullPath, 'back')
-    routerBeforeEach(backRoute, from)
-    setHistoryOpenType('navigateTo')
-    finishRouterRoute(redirected, from)
-    appRoute.dispatchWebAppRoute(redirected)
-
-    expect(listener).toHaveBeenCalledWith(
-      expect.objectContaining({
-        path: 'pages/redirected/redirected',
-        openType: 'navigateBack',
-      })
-    )
-  })
-
-  test('clears pending history direction when router reports an error', () => {
-    const listener = jest.fn()
-    appRoute.onAppRoute(listener)
-    const failed = createRoute('pages/failed/failed')
-    appRoute.setWebAppRouteHistoryDirection(failed.fullPath, 'back')
-    routerBeforeEach(failed)
-    routerOnError(new Error('guard failed'), failed)
-
-    const from = createRoute('pages/index/index')
-    const to = createRoute('pages/next/next')
-    setHistoryOpenType('redirectTo')
-    finishRouterRoute(to, from)
+    expect(await routerBeforeEach(to)).toBeUndefined()
+    routerAfterEach(to, createRoute('/pages/next/next'))
     appRoute.dispatchWebAppRoute(to)
 
-    expect(listener).toHaveBeenCalledWith(
-      expect.objectContaining({ openType: 'redirectTo' })
+    expect(rewriteFail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        errMsg:
+          'rewriteRoute:fail a "navigateBack" event is not allowed to be rewritten',
+      })
     )
+    expect(onRouteConfirmed).toHaveBeenCalledWith(
+      expect.objectContaining({ openType: 'navigateBack', delta: 2 })
+    )
+  })
+
+  test('失败和异常导航只回收事务，不确认路由', async () => {
+    const first = createRoute('/pages/next/next')
+    const firstResolved = appRoute.resolveAppRoute(
+      first.fullPath,
+      API_NAVIGATE_TO
+    )
+    appRoute.queueWebAppRouteTransaction(
+      appRoute.createWebAppRouteTransaction(
+        first.fullPath,
+        API_NAVIGATE_TO,
+        firstResolved.context
+      )
+    )
+    await routerBeforeEach(first)
+    routerAfterEach(first, createRoute('/'), new Error('cancelled'))
+
+    const second = createRoute('/pages/final/final')
+    const secondResolved = appRoute.resolveAppRoute(
+      second.fullPath,
+      API_NAVIGATE_TO
+    )
+    appRoute.queueWebAppRouteTransaction(
+      appRoute.createWebAppRouteTransaction(
+        second.fullPath,
+        API_NAVIGATE_TO,
+        secondResolved.context
+      )
+    )
+    await routerBeforeEach(second)
+    routerOnError(new Error('guard error'), second)
+
+    expect(onRouteConfirmed).not.toHaveBeenCalled()
   })
 })

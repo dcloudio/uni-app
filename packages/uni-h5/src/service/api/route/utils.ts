@@ -3,6 +3,9 @@ import { type Router, isNavigationFailure } from 'vue-router'
 import {
   createPageState,
   entryPageState,
+  getCurrentBasePages,
+  getCurrentPagesMap,
+  getPage$BasePage,
   navigateToPagesBeforeEntryPages,
   reLaunchPagesBeforeEntryPages,
   redirectToPagesBeforeEntryPages,
@@ -11,6 +14,13 @@ import {
 import { getTabBarPageId, removeNonTabBarPages } from './switchTab'
 import { removeLastPage } from './redirectTo'
 import { removeAllPages } from './reLaunch'
+import {
+  createWebAppRouteTransaction,
+  discardWebAppRouteTransaction,
+  queueWebAppRouteTransaction,
+  resolveAppRoute,
+} from './appRoute'
+import type { WebAppRouteTransaction } from './appRoute'
 
 export type NavigateType =
   | 'navigateTo'
@@ -26,6 +36,28 @@ export interface NavigateOptions {
   isAutomatedTesting?: boolean
 }
 
+function isCurrentTabBarPage(url: string) {
+  const pages = getCurrentBasePages()
+  const currentPage = pages[pages.length - 1]
+  if (!currentPage?.$.__isTabBar) {
+    return false
+  }
+  const path = parseUrl(url).path
+  const $page = getPage$BasePage(currentPage)
+  return path === $page.path || (path === '/' && $page.meta.isEntry)
+}
+
+function findTabBarPageId(url: string) {
+  const path = parseUrl(url).path
+  const pages = getCurrentPagesMap().values()
+  for (const page of pages) {
+    const $page = getPage$BasePage(page)
+    if (path === $page.path || (path === '/' && $page.meta.isEntry)) {
+      return $page.id
+    }
+  }
+}
+
 export function navigate(
   { type, url, tabBarText, events, isAutomatedTesting }: NavigateOptions,
   __id__?: number
@@ -38,20 +70,47 @@ export function navigate(
   const router = __X__
     ? (getApp().vm.$router as Router)
     : (getApp().$router as Router)
-  const { path, query } = parseUrl(url)
   return new Promise((resolve, reject) => {
-    const state = createPageState(type, __id__)
-    router[type === 'navigateTo' ? 'push' : 'replace']({
+    let routeUrl = url
+    let transaction: WebAppRouteTransaction | undefined
+    if (__X__) {
+      const shouldDispatchAppRoute =
+        type !== 'switchTab' || !isCurrentTabBarPage(url)
+      const appRoute = shouldDispatchAppRoute
+        ? resolveAppRoute(url, type)
+        : undefined
+      routeUrl = appRoute?.url || url
+      const { path, query } = parseUrl(routeUrl)
+      transaction = createWebAppRouteTransaction(
+        router.resolve({ path, query }).fullPath,
+        type,
+        appRoute?.context
+      )
+    }
+    const { path, query } = parseUrl(routeUrl)
+    const tabBarPageId =
+      __X__ && type === 'switchTab' ? findTabBarPageId(routeUrl) : __id__
+    const state = createPageState(type, tabBarPageId)
+    if (transaction) {
+      transaction.pageId = state.__id__
+      queueWebAppRouteTransaction(transaction)
+    }
+    const navigation = router[type === 'navigateTo' ? 'push' : 'replace']({
       path,
       query,
       state,
       force: true,
     }).then((failure) => {
       if (isNavigationFailure(failure)) {
+        transaction && discardWebAppRouteTransaction(transaction)
         return reject(failure.message)
       }
       if (type === 'switchTab') {
-        router.currentRoute.value.meta.tabBarText = tabBarText
+        const finalTabBarText =
+          routeUrl === url
+            ? tabBarText
+            : router.resolve({ path, query }).meta.tabBarText
+        router.currentRoute.value.meta.tabBarText = finalTabBarText
       }
       if (type === 'navigateTo') {
         const meta = router.currentRoute.value.meta
@@ -78,6 +137,12 @@ export function navigate(
       }
       return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve()
     })
+    if (__X__) {
+      navigation.catch((error) => {
+        transaction && discardWebAppRouteTransaction(transaction)
+        reject(error instanceof Error ? error.message : error)
+      })
+    }
   })
 }
 
@@ -96,26 +161,30 @@ export function handleBeforeEntryPageRoutes() {
 
   const switchTabPages = [...switchTabPagesBeforeEntryPages]
   switchTabPagesBeforeEntryPages.length = 0
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (
-      removeNonTabBarPages(),
-      navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject)
-    )
-  )
+  switchTabPages.forEach(({ args, resolve, reject }) => {
+    if (!__X__) {
+      removeNonTabBarPages()
+    }
+    navigate(args, __X__ ? undefined : getTabBarPageId(args.url))
+      .then(resolve)
+      .catch(reject)
+  })
 
   const redirectToPages = [...redirectToPagesBeforeEntryPages]
   redirectToPagesBeforeEntryPages.length = 0
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (
-      removeLastPage(), navigate(args).then(resolve).catch(reject)
-    )
-  )
+  redirectToPages.forEach(({ args, resolve, reject }) => {
+    if (!__X__) {
+      removeLastPage()
+    }
+    navigate(args).then(resolve).catch(reject)
+  })
 
   const reLaunchPages = [...reLaunchPagesBeforeEntryPages]
   reLaunchPagesBeforeEntryPages.length = 0
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (
-      removeAllPages(), navigate(args).then(resolve).catch(reject)
-    )
-  )
+  reLaunchPages.forEach(({ args, resolve, reject }) => {
+    if (!__X__) {
+      removeAllPages()
+    }
+    navigate(args).then(resolve).catch(reject)
+  })
 }
