@@ -4,8 +4,10 @@ import path from 'node:path'
 import {
   getUasmModules,
   initUasmModules,
+  parseUasmModuleName,
   parseUniAppXTargetArchs,
   resolveUasmCopyAssets,
+  resolveUasmLoadPath,
   resolveUasmModule,
   resolveUasmTargetArch,
   uniUasmPlugin,
@@ -123,6 +125,89 @@ describe('uasm', () => {
       resolveUasmTargetArch('test-uasm', 'app-harmony', ['x86_64'])
     ).toBeUndefined()
   })
+
+  test('resolve load path', () => {
+    fs.outputFileSync(
+      path.join(
+        inputDir,
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+      ),
+      ''
+    )
+    fs.outputFileSync(
+      path.join(
+        inputDir,
+        'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libtest-uasm.so'
+      ),
+      ''
+    )
+    fs.outputFileSync(
+      path.join(
+        inputDir,
+        'uni_modules/test-uasm/uasm/app-ios/frameworks/Test.framework/Test'
+      ),
+      ''
+    )
+    initUasmModules(inputDir)
+
+    const androidFile =
+      'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+    for (const modulePath of [
+      'uni_modules/test-uasm',
+      '/uni_modules/test-uasm',
+      '@/uni_modules/test-uasm',
+    ]) {
+      expect(parseUasmModuleName(modulePath)).toBe('test-uasm')
+      expect(
+        resolveUasmLoadPath(modulePath, 'app-android', false, ['arm64-v8a'])
+      ).toBe(androidFile)
+    }
+
+    expect(
+      resolveUasmLoadPath('uni_modules/test-uasm', 'app-android', true)
+    ).toBe('libtest-uasm.so')
+    expect(
+      resolveUasmLoadPath('uni_modules/test-uasm', 'app-harmony', true)
+    ).toBe('libtest-uasm.so')
+    expect(resolveUasmLoadPath('uni_modules/test-uasm', 'app-ios', false)).toBe(
+      'test-uasm'
+    )
+    expect(
+      resolveUasmLoadPath('uni_modules/test-uasm', 'app-android', false, [])
+    ).toBe('test-uasm')
+    expect(parseUasmModuleName('./uni_modules/test-uasm')).toBeUndefined()
+    expect(parseUasmModuleName('../uni_modules/test-uasm')).toBeUndefined()
+    expect(parseUasmModuleName('uni_modules/test-uasm/subpath')).toBeUndefined()
+    expect(
+      resolveUasmLoadPath('uni_modules/missing', 'app-android', true)
+    ).toBeUndefined()
+  })
+
+  test.each(['app-android', 'app-harmony'] as const)(
+    'reject %s resources without a correctly named so',
+    (platform) => {
+      fs.outputFileSync(
+        path.join(
+          inputDir,
+          `uni_modules/test-uasm/uasm/${platform}/libs/arm64-v8a/other.so`
+        ),
+        ''
+      )
+      initUasmModules(inputDir)
+
+      expect(getUasmModules()).not.toHaveProperty(
+        `test-uasm.platforms.${platform}`
+      )
+      expect(
+        resolveUasmLoadPath('uni_modules/test-uasm', platform, true)
+      ).toBeUndefined()
+      expect(
+        resolveUasmLoadPath('uni_modules/test-uasm', platform, false, [
+          'arm64-v8a',
+        ])
+      ).toBeUndefined()
+    }
+  )
 
   test('resolve copy assets in development', () => {
     fs.outputFileSync(

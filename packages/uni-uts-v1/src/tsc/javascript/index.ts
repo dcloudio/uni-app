@@ -15,6 +15,9 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
     extname?: string
     rewriteRootDir?: string
   }
+  uasm?: {
+    resolve(modulePath: string): string | undefined
+  }
   disableUTSBooleanConversion?: boolean
   sharedData?: {
     resolveFieldMeta(name: string): { fieldId: number }

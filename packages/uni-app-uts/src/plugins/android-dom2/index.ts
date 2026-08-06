@@ -7,6 +7,7 @@ import {
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
+  resolveUasmLoadPath,
   uniDecryptUniModulesPlugin,
   uniEasycomPlugin,
   uniEncryptUniModulesAssetsPlugin,
@@ -93,6 +94,9 @@ export function init() {
         resolve: () => {
           return getWorkers()
         },
+      },
+      uasm: {
+        resolve: (modulePath) => resolveUasmLoadPath(modulePath, 'app-android'),
       },
     }),
     ...(isDom2 ? [uniSharedDataPlugin()] : []),

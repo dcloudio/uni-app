@@ -7,6 +7,7 @@ import {
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
+  resolveUasmLoadPath,
   uniDecryptUniModulesPlugin,
   uniEasycomPlugin,
   uniEncryptUniModulesAssetsPlugin,
@@ -91,6 +92,9 @@ export function init() {
         resolve: () => {
           return getWorkers()
         },
+      },
+      uasm: {
+        resolve: (modulePath) => resolveUasmLoadPath(modulePath, 'app-harmony'),
       },
     }),
     ...(isDom2 ? [uniSharedDataPlugin()] : []),

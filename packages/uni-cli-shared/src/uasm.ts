@@ -115,6 +115,33 @@ export function resolveUasmModule(
   return resolveUasmModuleFrom(uasmModules, moduleName, platform, targetArchs)
 }
 
+export function parseUasmModuleName(modulePath: string): string | undefined {
+  const normalized = modulePath.replace(/^@?\//, '')
+  return /^uni_modules\/([^/]+)$/.exec(normalized)?.[1]
+}
+
+export function resolveUasmLoadPath(
+  modulePath: string,
+  platform: UasmPlatform,
+  isProduction = (process.env.UNI_NODE_ENV || process.env.NODE_ENV) !==
+    'development',
+  targetArchs = parseUniAppXTargetArchs()
+): string | undefined {
+  const moduleName = parseUasmModuleName(modulePath)
+  if (!moduleName || !uasmModules[moduleName]?.platforms[platform]) {
+    return
+  }
+  if (platform === 'app-ios') {
+    return moduleName
+  }
+  if (isProduction) {
+    return `lib${moduleName}.so`
+  }
+  return (
+    resolveUasmModule(moduleName, platform, targetArchs)?.file || moduleName
+  )
+}
+
 function resolveUasmModuleFrom(
   modules: Record<string, UasmModule>,
   moduleName: string,
@@ -202,6 +229,9 @@ function scanUasmPlatform(
         file,
       }
     })
+    if (!Object.keys(resources.archs).length) {
+      return
+    }
   }
   return resources
 }

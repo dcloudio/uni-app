@@ -1,6 +1,7 @@
 const mockUts2js = jest.fn((_options: Record<string, unknown>) => ({
   name: 'uts2js',
 }))
+const mockResolveUasmLoadPath = jest.fn()
 
 jest.mock('@dcloudio/uni-cli-shared', () => {
   const plugin = (name: string) => () => ({ name })
@@ -11,6 +12,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     initUts2jsSharedDataOptions: () => undefined,
     isNormalCompileTarget: () => process.env.UNI_COMPILE_TARGET !== 'ext-api',
     parseUniExtApiNamespacesOnce: () => ({}),
+    resolveUasmLoadPath: mockResolveUasmLoadPath,
     resolveUTSCompiler: () => ({
       uts2js: mockUts2js,
     }),
@@ -80,6 +82,7 @@ describe('ios plugin init', () => {
 
   afterEach(() => {
     mockUts2js.mockClear()
+    mockResolveUasmLoadPath.mockClear()
     Object.entries(originalEnv).forEach(([key, value]) => {
       if (value === undefined) {
         Reflect.deleteProperty(process.env, key)
@@ -129,6 +132,19 @@ describe('ios plugin init', () => {
 
     expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
       'vapor-script'
+    )
+  })
+
+  test('configures ios UASM resolver', () => {
+    initPlugins()
+
+    const options = mockUts2js.mock.calls[0]?.[0] as {
+      uasm: { resolve(modulePath: string): string | undefined }
+    }
+    options?.uasm.resolve('uni_modules/test-uasm')
+    expect(mockResolveUasmLoadPath).toHaveBeenCalledWith(
+      'uni_modules/test-uasm',
+      'app-ios'
     )
   })
 
