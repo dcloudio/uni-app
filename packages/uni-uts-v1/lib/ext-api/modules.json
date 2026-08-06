@@ -171,6 +171,49 @@
     "easycom": [],
     "customElements": []
   },
+  "uni-bluetooth": {
+    "uni": {
+      "openBluetoothAdapter": {
+        "name": "openBluetoothAdapter",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "closeBluetoothAdapter": {
+        "name": "closeBluetoothAdapter",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "onBluetoothAdapterStateChange": {
+        "name": "onBluetoothAdapterStateChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "offBluetoothAdapterStateChange": {
+        "name": "offBluetoothAdapterStateChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
   "uni-calendar": {
     "uni": {
       "addPhoneCalendar": {
