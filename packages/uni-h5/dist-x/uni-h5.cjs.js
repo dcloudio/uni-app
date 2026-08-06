@@ -662,6 +662,17 @@ function invokeHook(vm, name, args) {
   }
   return hooks && uniShared.invokeArrayFns(hooks, args);
 }
+function normalizeRoute(toRoute) {
+  if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
+    return toRoute;
+  }
+  let fromRoute = "";
+  const pages = getCurrentPages();
+  if (pages.length) {
+    fromRoute = get$pageByPage(pages[pages.length - 1]).route;
+  }
+  return getRealRoute(fromRoute, toRoute);
+}
 function getRealRoute(fromRoute, toRoute) {
   if (toRoute.indexOf("/") === 0) {
     return toRoute;
@@ -1914,6 +1925,49 @@ function invokeCallback(id2, res, extras) {
   }
   return res;
 }
+function findInvokeCallbackByName(name) {
+  for (const key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      return true;
+    }
+  }
+  return false;
+}
+function removeKeepAliveApiCallback(name, callback) {
+  for (const key in invokeCallbacks) {
+    const item = invokeCallbacks[key];
+    if (item.callback === callback && item.name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
+}
+function removeAllKeepAliveApiCallbacks(name) {
+  for (const key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
+}
+function offKeepAliveApiCallback(name, eventTransport2) {
+  const eventName = eventTransport2 ? name : "api." + name;
+  const transport = eventTransport2 || UniServiceJSBridge;
+  transport.off(eventName);
+}
+function onKeepAliveApiCallback(name, eventTransport2) {
+  const eventName = eventTransport2 ? name : "api." + name;
+  const transport = eventTransport2 || UniServiceJSBridge;
+  transport.on(eventName, (res) => {
+    for (const key in invokeCallbacks) {
+      const opts = invokeCallbacks[key];
+      if (opts.name === name) {
+        opts.callback(res);
+      }
+    }
+  });
+}
+function createKeepAliveApiCallback(name, callback) {
+  return addInvokeCallback(invokeCallbackId++, name, callback, true);
+}
 const API_SUCCESS = "success";
 const API_FAIL = "fail";
 const API_COMPLETE = "complete";
@@ -2169,6 +2223,56 @@ function beforeInvokeApi(name, args, protocol, options) {
     return errMsg;
   }
 }
+function checkCallback(callback) {
+  if (!shared.isFunction(callback)) {
+    throw new Error(
+      'Invalid args: type check failed for args "callback". Expected Function'
+    );
+  }
+}
+function wrapperOnApi(name, fn, options) {
+  return (callback) => {
+    checkCallback(callback);
+    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
+    createKeepAliveApiCallback(name, callback);
+    if (isFirstInvokeOnApi) {
+      onKeepAliveApiCallback(name, options == null ? void 0 : options.eventTransport);
+      fn();
+    }
+  };
+}
+function wrapperOffApi(name, fn, options) {
+  return (callback) => {
+    const clearAll = (options == null ? void 0 : options.allowClearAll) === true && callback == null;
+    if (!clearAll) {
+      checkCallback(callback);
+    }
+    const errMsg = beforeInvokeApi(
+      name,
+      clearAll ? [] : [callback],
+      void 0,
+      options
+    );
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    const onApiName = name.replace("off", "on");
+    if (clearAll) {
+      removeAllKeepAliveApiCallbacks(onApiName);
+    } else {
+      removeKeepAliveApiCallback(onApiName, callback);
+    }
+    const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
+    if (!hasInvokeOnApi) {
+      offKeepAliveApiCallback(onApiName, options == null ? void 0 : options.eventTransport);
+      fn();
+    }
+  };
+}
 function parseErrMsg(errMsg) {
   if (!errMsg || shared.isString(errMsg)) {
     return errMsg;
@@ -2203,6 +2307,12 @@ function wrapperSyncApi(name, fn, protocol, options) {
 function wrapperAsyncApi(name, fn, protocol, options) {
   return wrapperTaskApi(name, fn, protocol, options);
 }
+function defineOnApi(name, fn, options) {
+  return wrapperOnApi(name, fn, options);
+}
+function defineOffApi(name, fn, options) {
+  return wrapperOffApi(name, fn, options);
+}
 function defineTaskApi(name, fn, protocol, options) {
   return promisify(
     name,
@@ -2235,6 +2345,155 @@ const getLocale = /* @__PURE__ */ defineSyncApi(
     return useI18n().getLocale();
   }
 );
+const API_ON_APP_ROUTE = "onAppRoute";
+const API_OFF_APP_ROUTE = "offAppRoute";
+const API_ON_BEFORE_APP_ROUTE = "onBeforeAppRoute";
+const API_OFF_BEFORE_APP_ROUTE = "offBeforeAppRoute";
+const API_REWRITE_ROUTE = "rewriteRoute";
+const eventTransport = /* @__PURE__ */ new uniShared.Emitter();
+let activeBeforeAppRouteContext;
+const MAX_APP_ROUTE_REWRITE_COUNT = 100;
+const APP_ROUTE_ERROR_CODE = 4;
+function createAppRouteRuntime(options = {}) {
+  let routeEventId = 0;
+  const onAppRoute = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
+  }, {
+    eventTransport
+  });
+  const offAppRoute = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
+  }, {
+    allowClearAll: true,
+    eventTransport
+  });
+  const onBeforeAppRoute = /* @__PURE__ */ defineOnApi(
+    API_ON_BEFORE_APP_ROUTE,
+    () => {
+    },
+    { eventTransport }
+  );
+  const offBeforeAppRoute = /* @__PURE__ */ defineOffApi(
+    API_OFF_BEFORE_APP_ROUTE,
+    () => {
+    },
+    {
+      allowClearAll: true,
+      eventTransport
+    }
+  );
+  const rewriteRoute = /* @__PURE__ */ defineAsyncApi(
+    API_REWRITE_ROUTE,
+    ({ url, preserveQuery }, { resolve, reject }) => {
+      const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
+      const context = activeBeforeAppRouteContext;
+      if (!context) {
+        rejectRewriteRoute(
+          "rewriteRoute is only allowed in a onBeforeAppRoute callback"
+        );
+        return;
+      }
+      if (context.event.openType === "navigateBack") {
+        rejectRewriteRoute(
+          'a "navigateBack" event is not allowed to be rewritten'
+        );
+        return;
+      }
+      if (context.rewrite) {
+        rejectRewriteRoute(
+          `rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`
+        );
+        return;
+      }
+      if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
+        rejectRewriteRoute(
+          `rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`
+        );
+        return;
+      }
+      if (!context.normalizeRewriteRoute) {
+        rejectRewriteRoute("not supported");
+        return;
+      }
+      const rewrite = context.normalizeRewriteRoute(
+        { url, preserveQuery },
+        context.event
+      );
+      if (typeof rewrite === "string") {
+        rejectRewriteRoute(rewrite);
+        return;
+      }
+      context.rewrite = rewrite;
+      resolve();
+    },
+    {
+      url: {
+        type: String,
+        required: true
+      },
+      preserveQuery: Boolean
+    }
+  );
+  function createAppRouteContext2(event) {
+    var _a, _b;
+    const timeStamp = (_a = event.timeStamp) != null ? _a : Date.now();
+    return {
+      event: {
+        path: event.path,
+        query: Object.assign({}, event.query),
+        openType: event.openType,
+        notFound: event.notFound,
+        timeStamp,
+        routeEventId: (_b = event.routeEventId) != null ? _b : `${timeStamp}-${++routeEventId}`
+      },
+      normalizeRewriteRoute: options.normalizeRewriteRoute
+    };
+  }
+  function dispatchBeforeAppRoute(context) {
+    const event = context.event;
+    const beforeEvent = {
+      path: event.path,
+      query: Object.assign({}, event.query),
+      openType: event.openType,
+      notFound: event.notFound,
+      routeEventId: event.routeEventId
+    };
+    const previousContext = activeBeforeAppRouteContext;
+    activeBeforeAppRouteContext = context;
+    try {
+      eventTransport.emit(API_ON_BEFORE_APP_ROUTE, beforeEvent);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      activeBeforeAppRouteContext = previousContext;
+    }
+    return context.rewrite;
+  }
+  function dispatchAppRoute(context) {
+    const event = context.event;
+    try {
+      const routeEvent = {
+        path: event.path,
+        query: Object.assign({}, event.query),
+        openType: event.openType,
+        notFound: event.notFound,
+        timeStamp: event.timeStamp,
+        routeEventId: event.routeEventId
+      };
+      eventTransport.emit(API_ON_APP_ROUTE, routeEvent);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  return {
+    onAppRoute,
+    offAppRoute,
+    onBeforeAppRoute,
+    offBeforeAppRoute,
+    rewriteRoute,
+    createAppRouteContext: createAppRouteContext2,
+    dispatchBeforeAppRoute,
+    dispatchAppRoute
+  };
+}
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -2357,6 +2616,81 @@ const RequestOptions = {
     }
   }
 };
+function encodeQueryString(url) {
+  if (!shared.isString(url)) {
+    return url;
+  }
+  const index2 = url.indexOf("?");
+  if (index2 === -1) {
+    return url;
+  }
+  const query = url.slice(index2 + 1).trim().replace(/^(\?|#|&)/, "");
+  if (!query) {
+    return url;
+  }
+  url = url.slice(0, index2);
+  const params = [];
+  query.split("&").forEach((param) => {
+    const parts = param.replace(/\+/g, " ").split("=");
+    const key = parts.shift();
+    const val = parts.length > 0 ? parts.join("=") : "";
+    params.push(key + "=" + encodeURIComponent(val));
+  });
+  return params.length ? url + "?" + params.join("&") : url;
+}
+const API_NAVIGATE_TO = "navigateTo";
+const API_REDIRECT_TO = "redirectTo";
+const API_SWITCH_TAB = "switchTab";
+const API_PRELOAD_PAGE = "preloadPage";
+const API_UN_PRELOAD_PAGE = "unPreloadPage";
+let navigatorLock;
+function createNormalizeUrl(type, options = {}) {
+  return function normalizeUrl(url, params) {
+    if (!url) {
+      return `Missing required args: "url"`;
+    }
+    url = normalizeRoute(url);
+    const pagePath = url.split("?")[0];
+    const routeOptions = getRouteOptions(pagePath, true);
+    if (!routeOptions) {
+      return "page `" + url + "` is not found";
+    }
+    if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
+      if (routeOptions.meta.isTabBar) {
+        return `can not ${type} a tabbar page`;
+      }
+    } else if (type === API_SWITCH_TAB) {
+      if (!routeOptions.meta.isTabBar) {
+        return "can not switch to no-tabBar page";
+      }
+    }
+    if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) && routeOptions.meta.isTabBar && params.openType !== "appLaunch") {
+      url = pagePath;
+    }
+    if (routeOptions.meta.isEntry) {
+      url = url.replace(routeOptions.alias, "/");
+    }
+    params.url = encodeQueryString(url);
+    if (type === API_UN_PRELOAD_PAGE) {
+      return;
+    } else if (type === API_PRELOAD_PAGE) {
+      if (routeOptions.meta.isTabBar) {
+        const pages = getCurrentPages();
+        const tabBarPagePath = routeOptions.path.slice(1);
+        if (pages.find((page) => page.route === tabBarPagePath)) {
+          return "tabBar page `" + tabBarPagePath + "` already exists";
+        }
+      }
+      return;
+    }
+    if (!options.skipNavigatorLock && navigatorLock === url && params.openType !== "appLaunch") {
+      return `${navigatorLock} locked`;
+    }
+    if (!options.skipNavigatorLock && __uniConfig.ready) {
+      navigatorLock = url;
+    }
+  };
+}
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
 const SetNavigationBarTitleProtocol = {
@@ -2367,52 +2701,94 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
-function removeNonTabBarPages() {
-  const curTabBarPageVm = getCurrentPageVm();
-  if (!curTabBarPageVm) {
-    return;
+function normalizeAppRoutePath(path) {
+  const route = getRouteOptions(path, true);
+  const pagePath = route == null ? void 0 : route.meta.route;
+  return typeof pagePath === "string" ? pagePath : uniShared.removeLeadingSlash((route == null ? void 0 : route.path) || path);
+}
+function normalizeRewriteRoute({ url, preserveQuery }, event) {
+  if (preserveQuery) {
+    url = uniShared.parseUrl(url).path + uniShared.stringifyQuery(event.query);
   }
-  const pagesMap = getCurrentPagesMap();
-  const keys = pagesMap.keys();
-  for (const routeKey of keys) {
-    const page = pagesMap.get(routeKey);
-    if (!page.$.__isTabBar) {
-      removePage(routeKey);
-    } else {
-      page.$.__isActive = false;
+  const params = { url, openType: event.openType };
+  const errMsg = createNormalizeUrl(event.openType, {
+    skipNavigatorLock: true
+  })(url, params);
+  if (errMsg) {
+    return errMsg;
+  }
+  const { path, query } = uniShared.parseUrl(params.url);
+  return {
+    url: params.url,
+    path: normalizeAppRoutePath(path),
+    query: uniShared.decodedQuery(query),
+    notFound: false
+  };
+}
+const appRouteRuntime = createAppRouteRuntime({ normalizeRewriteRoute });
+const pendingProgrammaticRoutes = [];
+new Promise((resolve) => {
+});
+function createAppRouteContext(path, query, openType, notFound = false) {
+  return appRouteRuntime.createAppRouteContext({
+    path: normalizeAppRoutePath(path),
+    query: uniShared.decodedQuery(query),
+    openType,
+    notFound
+  });
+}
+function resolveAppRoute(url, openType, notFound = false) {
+  let routeUrl = url;
+  let routeNotFound = notFound;
+  let rewriteCount = 0;
+  while (true) {
+    const { path, query } = uniShared.parseUrl(routeUrl);
+    const context = createAppRouteContext(path, query, openType, routeNotFound);
+    context.rewriteCount = rewriteCount;
+    const rewrite = appRouteRuntime.dispatchBeforeAppRoute(context);
+    if (!rewrite) {
+      return { url: routeUrl, context };
     }
-  }
-  if (curTabBarPageVm.$.__isTabBar) {
-    curTabBarPageVm.$.__isVisible = false;
-    invokeHook(curTabBarPageVm, uniShared.ON_HIDE);
+    routeUrl = rewrite.url;
+    routeNotFound = rewrite.notFound;
+    rewriteCount++;
   }
 }
-function isSamePage(url, $page) {
-  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+function createWebAppRouteTransaction(finalFullPath, openType, context) {
+  return {
+    finalFullPath,
+    openType,
+    context
+  };
 }
-function getTabBarPageId(url) {
+function queueWebAppRouteTransaction(transaction) {
+  pendingProgrammaticRoutes.push(transaction);
+}
+function discardWebAppRouteTransaction(transaction) {
+  transaction.cancelled = true;
+  const index2 = pendingProgrammaticRoutes.indexOf(transaction);
+  if (index2 !== -1) {
+    pendingProgrammaticRoutes.splice(index2, 1);
+  }
+}
+function isCurrentTabBarPage(url) {
+  const pages = getCurrentBasePages();
+  const currentPage = pages[pages.length - 1];
+  if (!(currentPage == null ? void 0 : currentPage.$.__isTabBar)) {
+    return false;
+  }
+  const path = uniShared.parseUrl(url).path;
+  const $page = getPage$BasePage(currentPage);
+  return path === $page.path || path === "/" && $page.meta.isEntry;
+}
+function findTabBarPageId(url) {
+  const path = uniShared.parseUrl(url).path;
   const pages = getCurrentPagesMap().values();
   for (const page of pages) {
     const $page = getPage$BasePage(page);
-    if (isSamePage(url, $page)) {
-      page.$.__isActive = true;
+    if (path === $page.path || path === "/" && $page.meta.isEntry) {
       return $page.id;
     }
-  }
-}
-function removeLastPage() {
-  var _a;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
-  if (!page) {
-    return;
-  }
-  const $page = getPage$BasePage(page);
-  removePage(normalizeRouteKey($page.path, $page.id));
-}
-function removeAllPages() {
-  const keys = getCurrentPagesMap().keys();
-  for (const routeKey of keys) {
-    removePage(routeKey);
   }
 }
 function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
@@ -2422,20 +2798,40 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
     );
   }
   const router = getApp().vm.$router;
-  const { path, query } = uniShared.parseUrl(url);
   return new Promise((resolve, reject) => {
-    const state = createPageState(type, __id__);
-    router[type === "navigateTo" ? "push" : "replace"]({
+    let routeUrl = url;
+    let transaction;
+    {
+      const shouldDispatchAppRoute = type !== "switchTab" || !isCurrentTabBarPage(url);
+      const appRoute = shouldDispatchAppRoute ? resolveAppRoute(url, type) : void 0;
+      routeUrl = (appRoute == null ? void 0 : appRoute.url) || url;
+      const { path: path2, query: query2 } = uniShared.parseUrl(routeUrl);
+      transaction = createWebAppRouteTransaction(
+        router.resolve({ path: path2, query: query2 }).fullPath,
+        type,
+        appRoute == null ? void 0 : appRoute.context
+      );
+    }
+    const { path, query } = uniShared.parseUrl(routeUrl);
+    const tabBarPageId = type === "switchTab" ? findTabBarPageId(routeUrl) : __id__;
+    const state = createPageState(type, tabBarPageId);
+    if (transaction) {
+      transaction.pageId = state.__id__;
+      queueWebAppRouteTransaction(transaction);
+    }
+    const navigation = router[type === "navigateTo" ? "push" : "replace"]({
       path,
       query,
       state,
       force: true
     }).then((failure) => {
       if (vueRouter.isNavigationFailure(failure)) {
+        transaction && discardWebAppRouteTransaction(transaction);
         return reject(failure.message);
       }
       if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
+        const finalTabBarText = routeUrl === url ? tabBarText : router.resolve({ path, query }).meta.tabBarText;
+        router.currentRoute.value.meta.tabBarText = finalTabBarText;
       }
       if (type === "navigateTo") {
         const meta = router.currentRoute.value.meta;
@@ -2459,6 +2855,12 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       }
       return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve();
     });
+    {
+      navigation.catch((error) => {
+        transaction && discardWebAppRouteTransaction(transaction);
+        reject(error instanceof Error ? error.message : error);
+      });
+    }
   });
 }
 function handleBeforeEntryPageRoutes() {
@@ -2476,19 +2878,19 @@ function handleBeforeEntryPageRoutes() {
   );
   const switchTabPages = [...switchTabPagesBeforeEntryPages];
   switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
+  switchTabPages.forEach(({ args, resolve, reject }) => {
+    navigate(args, void 0).then(resolve).catch(reject);
+  });
   const redirectToPages = [...redirectToPagesBeforeEntryPages];
   redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
+  redirectToPages.forEach(({ args, resolve, reject }) => {
+    navigate(args).then(resolve).catch(reject);
+  });
   const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
   reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
+  reLaunchPages.forEach(({ args, resolve, reject }) => {
+    navigate(args).then(resolve).catch(reject);
+  });
 }
 let tabBar;
 function useTabBar() {
@@ -2790,20 +3192,6 @@ function getCurrentBasePages() {
     }
   }
   return curPages;
-}
-function removeRouteCache(routeKey) {
-  const vnode = pageCacheMap.get(routeKey);
-  if (vnode) {
-    pageCacheMap.delete(routeKey);
-    routeCache.pruneCacheEntry(vnode);
-  }
-}
-function removePage(routeKey, removeRouteCaches = true) {
-  const pageVm = currentPagesMap.get(routeKey);
-  pageVm.$.__isUnload = true;
-  invokeHook(pageVm, uniShared.ON_UNLOAD);
-  currentPagesMap.delete(routeKey);
-  removeRouteCaches && removeRouteCache(routeKey);
 }
 let id = /* @__PURE__ */ getStateId();
 function createPageState(type, __id__) {

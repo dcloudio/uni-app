@@ -349,7 +349,6 @@ export declare function nextSharedDataTick(fn: () => void): Promise<void>;
 //#region temp/packages/runtime-vapor-dom2/src/sharedData/index.d.ts
 type SharedDataRootDatasetSource = "own" | "fallthrough";
 export declare function setSharedData<S extends UniSharedData, V>(sharedData: S, key: string, value: V, useCache?: boolean): V;
-export declare function setSharedData<V>(sharedData: UniSharedData, key: string, value: V, useCache?: boolean): V;
 /**
 * 仅用于当前 scope 持有生命周期的 UniSharedDataVFor（createSharedDataVSlot 也是 VFor 别名）。
 * scope dispose 时只释放 _cacheProps 引用和 scoped value，不清空 sharedData[key]，也不通知宿主侧。
@@ -361,8 +360,10 @@ export declare function setSharedDataDynamicEvents<S extends UniSharedData>(shar
 export declare function setSharedDataClass<S extends UniSharedData, V>(sharedData: S, key: string, value: V): string[];
 export declare function setSharedDataStyle<S extends UniSharedData, V>(sharedData: S, key: string, value: V): UniElementStyles;
 export declare function setSharedDataAttr<S extends UniSharedData, V>(sharedData: S, key: string, value: V): V;
-export declare function setSharedDataAttr<V>(sharedData: UniSharedData, key: string, value: V): V;
 export declare function setSharedDataEvent<S extends UniSharedData>(sharedData: S, key: string, value: UniSharedDataFunctionEventListener): UniSharedDataFunctionEventListener;
+/**
+* @deprecated 当前编译流程不再生成该调用，仅保留以兼容历史生成代码。
+*/
 export declare function setSharedDataModel<S extends UniSharedData, V>(sharedData: S, key: string, get: () => V, set: (v: V) => void, modifiers?: {
   [key: string]: true;
 }): UniSharedDataFunctionEventListener;

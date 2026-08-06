@@ -1798,7 +1798,7 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
-function removeNonTabBarPages() {
+function removeNonTabBarPages(targetPageId) {
   const curTabBarPageVm = getCurrentPageVm();
   if (!curTabBarPageVm) {
     return;
@@ -1810,10 +1810,10 @@ function removeNonTabBarPages() {
     if (!page.$.__isTabBar) {
       removePage(routeKey);
     } else {
-      page.$.__isActive = false;
+      page.$.__isActive = targetPageId !== void 0;
     }
   }
-  if (curTabBarPageVm.$.__isTabBar) {
+  if (curTabBarPageVm.$.__isTabBar && targetPageId === void 0) {
     curTabBarPageVm.$.__isVisible = false;
     invokeHook(curTabBarPageVm, uniShared.ON_HIDE);
   }
@@ -1852,9 +1852,11 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
     );
   }
   const router = getApp().$router;
-  const { path, query } = uniShared.parseUrl(url);
   return new Promise((resolve, reject) => {
-    const state = createPageState(type, __id__);
+    let routeUrl = url;
+    const { path, query } = uniShared.parseUrl(routeUrl);
+    const tabBarPageId = __id__;
+    const state = createPageState(type, tabBarPageId);
     router[type === "navigateTo" ? "push" : "replace"]({
       path,
       query,
@@ -1865,7 +1867,8 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
         return reject(failure.message);
       }
       if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
+        const finalTabBarText = routeUrl === url ? tabBarText : router.resolve({ path, query }).meta.tabBarText;
+        router.currentRoute.value.meta.tabBarText = finalTabBarText;
       }
       if (type === "navigateTo") {
         const meta = router.currentRoute.value.meta;
@@ -1906,19 +1909,28 @@ function handleBeforeEntryPageRoutes() {
   );
   const switchTabPages = [...switchTabPagesBeforeEntryPages];
   switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
+  switchTabPages.forEach(({ args, resolve, reject }) => {
+    {
+      removeNonTabBarPages();
+    }
+    navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject);
+  });
   const redirectToPages = [...redirectToPagesBeforeEntryPages];
   redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
+  redirectToPages.forEach(({ args, resolve, reject }) => {
+    {
+      removeLastPage();
+    }
+    navigate(args).then(resolve).catch(reject);
+  });
   const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
   reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
+  reLaunchPages.forEach(({ args, resolve, reject }) => {
+    {
+      removeAllPages();
+    }
+    navigate(args).then(resolve).catch(reject);
+  });
 }
 let tabBar;
 function useTabBar() {

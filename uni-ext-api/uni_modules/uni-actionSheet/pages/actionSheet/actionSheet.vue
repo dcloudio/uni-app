@@ -68,7 +68,7 @@
   </view>
 </template>
 
-<script setup lang='ts'>
+<script setup>
   import { getCurrentInstance, reactive, ref, computed } from 'vue'
   import { onLoad, onReady, onResize } from '@dcloudio/uni-app'
 

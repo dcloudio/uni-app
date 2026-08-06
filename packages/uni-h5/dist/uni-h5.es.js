@@ -6959,7 +6959,7 @@ function requestComponentObserver($el, options, callback) {
   }
   return intersectionObserver;
 }
-function removeNonTabBarPages() {
+function removeNonTabBarPages(targetPageId) {
   const curTabBarPageVm = getCurrentPageVm();
   if (!curTabBarPageVm) {
     return;
@@ -6971,10 +6971,10 @@ function removeNonTabBarPages() {
     if (!page.$.__isTabBar) {
       removePage(routeKey);
     } else {
-      page.$.__isActive = false;
+      page.$.__isActive = targetPageId !== void 0 && getPage$BasePage(page).id === targetPageId;
     }
   }
-  if (curTabBarPageVm.$.__isTabBar) {
+  if (curTabBarPageVm.$.__isTabBar && (targetPageId === void 0 || getPage$BasePage(curTabBarPageVm).id !== targetPageId)) {
     curTabBarPageVm.$.__isVisible = false;
     invokeHook(curTabBarPageVm, ON_HIDE);
   }
@@ -7004,7 +7004,10 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return removeNonTabBarPages(), navigate(
+    {
+      removeNonTabBarPages();
+    }
+    return navigate(
       { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
       getTabBarPageId(url)
     ).then(resolve).catch(reject);
@@ -7032,10 +7035,10 @@ const redirectTo = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return (
-      // TODO exists 属性未实现
-      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
-    );
+    {
+      removeLastPage();
+    }
+    return navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
   RedirectToProtocol,
   RedirectToOptions
@@ -7058,7 +7061,10 @@ const reLaunch = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
+    {
+      removeAllPages();
+    }
+    return navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
   ReLaunchProtocol,
   ReLaunchOptions
@@ -7070,9 +7076,11 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
     );
   }
   const router = getApp().$router;
-  const { path, query } = parseUrl(url);
   return new Promise((resolve, reject) => {
-    const state2 = createPageState(type, __id__);
+    let routeUrl = url;
+    const { path, query } = parseUrl(routeUrl);
+    const tabBarPageId = __id__;
+    const state2 = createPageState(type, tabBarPageId);
     router[type === "navigateTo" ? "push" : "replace"]({
       path,
       query,
@@ -7083,7 +7091,8 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
         return reject(failure.message);
       }
       if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
+        const finalTabBarText = routeUrl === url ? tabBarText : router.resolve({ path, query }).meta.tabBarText;
+        router.currentRoute.value.meta.tabBarText = finalTabBarText;
       }
       if (type === "navigateTo") {
         const meta = router.currentRoute.value.meta;
@@ -7124,19 +7133,28 @@ function handleBeforeEntryPageRoutes() {
   );
   const switchTabPages = [...switchTabPagesBeforeEntryPages];
   switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
+  switchTabPages.forEach(({ args, resolve, reject }) => {
+    {
+      removeNonTabBarPages();
+    }
+    navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject);
+  });
   const redirectToPages = [...redirectToPagesBeforeEntryPages];
   redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
+  redirectToPages.forEach(({ args, resolve, reject }) => {
+    {
+      removeLastPage();
+    }
+    navigate(args).then(resolve).catch(reject);
+  });
   const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
   reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
+  reLaunchPages.forEach(({ args, resolve, reject }) => {
+    {
+      removeAllPages();
+    }
+    navigate(args).then(resolve).catch(reject);
+  });
 }
 let tabBar;
 function useTabBar() {
@@ -16807,23 +16825,23 @@ function setupApp(comp) {
     init: initApp,
     setup(instance2) {
       const route = usePageRoute();
-      const onLaunch = () => {
+      const onLaunch = (launchRoute = route) => {
         injectAppHooks(instance2);
         const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2 } = instance2;
-        const path = route.path.slice(1);
+        const path = launchRoute.path.slice(1);
         const launchOptions2 = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query)
+          query: decodedQuery(launchRoute.query)
         });
         onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
         onShow && invokeArrayFns$1(onShow, launchOptions2);
         if (__UNI_FEATURE_PAGES__) {
-          if (!route.matched.length) {
+          if (!launchRoute.matched.length) {
             const pageNotFoundOptions = {
               notFound: true,
               openType: "appLaunch",
-              path: route.path,
-              query: decodedQuery(route.query),
+              path: launchRoute.path,
+              query: decodedQuery(launchRoute.query),
               scene: 1001
             };
             handleBeforeEntryPageRoutes();

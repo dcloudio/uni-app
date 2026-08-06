@@ -6,7 +6,7 @@
 		</view>
 	</view>
 </template>
-<script setup lang='ts'>
+<script setup>
 	import { ref, type Ref } from 'vue'
 	import { onLoad, onReady, onUnload } from '@dcloudio/uni-app'
 

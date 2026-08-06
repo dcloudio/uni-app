@@ -4,11 +4,11 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, isInSSRComponentSetup, createCommentVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, toDisplayString, unref } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { useRoute, isNavigationFailure, START_LOCATION, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
+import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 const realGlobal = getGlobal();
 realGlobal.UTS = UTS$1;
@@ -5814,13 +5814,13 @@ function createAppRouteRuntime(options = {}) {
     allowClearAll: true,
     eventTransport
   });
-  const onBeforeAppRoute = /* @__PURE__ */ defineOnApi(
+  const onBeforeAppRoute2 = /* @__PURE__ */ defineOnApi(
     API_ON_BEFORE_APP_ROUTE,
     () => {
     },
     { eventTransport }
   );
-  const offBeforeAppRoute = /* @__PURE__ */ defineOffApi(
+  const offBeforeAppRoute2 = /* @__PURE__ */ defineOffApi(
     API_OFF_BEFORE_APP_ROUTE,
     () => {
     },
@@ -5829,7 +5829,7 @@ function createAppRouteRuntime(options = {}) {
       eventTransport
     }
   );
-  const rewriteRoute = /* @__PURE__ */ defineAsyncApi(
+  const rewriteRoute2 = /* @__PURE__ */ defineAsyncApi(
     API_REWRITE_ROUTE,
     ({ url, preserveQuery }, { resolve, reject }) => {
       const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
@@ -5881,7 +5881,7 @@ function createAppRouteRuntime(options = {}) {
       preserveQuery: Boolean
     }
   );
-  function createAppRouteContext(event) {
+  function createAppRouteContext2(event) {
     var _a, _b;
     const timeStamp = (_a = event.timeStamp) != null ? _a : Date.now();
     return {
@@ -5935,10 +5935,10 @@ function createAppRouteRuntime(options = {}) {
   return {
     onAppRoute: onAppRoute2,
     offAppRoute: offAppRoute2,
-    onBeforeAppRoute,
-    offBeforeAppRoute,
-    rewriteRoute,
-    createAppRouteContext,
+    onBeforeAppRoute: onBeforeAppRoute2,
+    offBeforeAppRoute: offBeforeAppRoute2,
+    rewriteRoute: rewriteRoute2,
+    createAppRouteContext: createAppRouteContext2,
     dispatchBeforeAppRoute,
     dispatchAppRoute: dispatchAppRoute2
   };
@@ -7505,7 +7505,7 @@ function requestComponentObserver($el, options, callback) {
   }
   return intersectionObserver;
 }
-function removeNonTabBarPages() {
+function removeNonTabBarPages(targetPageId) {
   const curTabBarPageVm = getCurrentPageVm();
   if (!curTabBarPageVm) {
     return;
@@ -7517,10 +7517,10 @@ function removeNonTabBarPages() {
     if (!page.$.__isTabBar) {
       removePage(routeKey);
     } else {
-      page.$.__isActive = false;
+      page.$.__isActive = targetPageId !== void 0 && getPage$BasePage(page).id === targetPageId;
     }
   }
-  if (curTabBarPageVm.$.__isTabBar) {
+  if (curTabBarPageVm.$.__isTabBar && (targetPageId === void 0 || getPage$BasePage(curTabBarPageVm).id !== targetPageId)) {
     curTabBarPageVm.$.__isVisible = false;
     invokeHook(curTabBarPageVm, ON_HIDE);
   }
@@ -7550,9 +7550,9 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return removeNonTabBarPages(), navigate(
+    return navigate(
       { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-      getTabBarPageId(url)
+      void 0
     ).then(resolve).catch(reject);
   },
   SwitchTabProtocol,
@@ -7579,10 +7579,7 @@ const redirectTo = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return (
-      // TODO exists 属性未实现
-      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
-    );
+    return navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
   RedirectToProtocol,
   RedirectToOptions
@@ -7605,11 +7602,365 @@ const reLaunch = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
+    return navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
   ReLaunchProtocol,
   ReLaunchOptions
 );
+var __async$3 = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+function normalizeAppRoutePath(path) {
+  const route = getRouteOptions(path, true);
+  const pagePath = route == null ? void 0 : route.meta.route;
+  return typeof pagePath === "string" ? pagePath : removeLeadingSlash((route == null ? void 0 : route.path) || path);
+}
+function normalizeRewriteRoute({ url, preserveQuery }, event) {
+  if (preserveQuery) {
+    url = parseUrl(url).path + stringifyQuery$1(event.query);
+  }
+  const params = { url, openType: event.openType };
+  const errMsg = createNormalizeUrl(event.openType, {
+    skipNavigatorLock: true
+  })(url, params);
+  if (errMsg) {
+    return errMsg;
+  }
+  const { path, query } = parseUrl(params.url);
+  return {
+    url: params.url,
+    path: normalizeAppRoutePath(path),
+    query: decodedQuery(query),
+    notFound: false
+  };
+}
+const appRouteRuntime = createAppRouteRuntime({ normalizeRewriteRoute });
+const pendingProgrammaticRoutes = [];
+const routeTransactions = /* @__PURE__ */ new WeakMap();
+let pendingHistoryRoute;
+let appRouteStarted = false;
+let launchExecutor;
+let resolveLaunchExecutor;
+const launchExecutorReady = new Promise((resolve) => {
+  resolveLaunchExecutor = resolve;
+});
+let singlePageAppRouteContext;
+const onAppRoute = appRouteRuntime.onAppRoute;
+const offAppRoute = appRouteRuntime.offAppRoute;
+const onBeforeAppRoute = appRouteRuntime.onBeforeAppRoute;
+const offBeforeAppRoute = appRouteRuntime.offBeforeAppRoute;
+const rewriteRoute = appRouteRuntime.rewriteRoute;
+function createAppRouteContext(path, query, openType, notFound = false) {
+  return appRouteRuntime.createAppRouteContext({
+    path: normalizeAppRoutePath(path),
+    query: decodedQuery(query),
+    openType,
+    notFound
+  });
+}
+function resolveAppRoute(url, openType, notFound = false) {
+  let routeUrl = url;
+  let routeNotFound = notFound;
+  let rewriteCount = 0;
+  while (true) {
+    const { path, query } = parseUrl(routeUrl);
+    const context = createAppRouteContext(path, query, openType, routeNotFound);
+    context.rewriteCount = rewriteCount;
+    const rewrite = appRouteRuntime.dispatchBeforeAppRoute(context);
+    if (!rewrite) {
+      return { url: routeUrl, context };
+    }
+    routeUrl = rewrite.url;
+    routeNotFound = rewrite.notFound;
+    rewriteCount++;
+  }
+}
+function dispatchAppRoute(context) {
+  const event = context.event;
+  if (event.notFound) {
+    invokeHook(getApp().vm, ON_PAGE_NOT_FOUND, {
+      path: event.path,
+      query: Object.assign({}, event.query),
+      isEntryPage: event.openType === "appLaunch"
+    });
+  }
+  appRouteRuntime.dispatchAppRoute(context);
+}
+function createWebAppRouteTransaction(finalFullPath, openType, context) {
+  return {
+    finalFullPath,
+    openType,
+    context
+  };
+}
+function queueWebAppRouteTransaction(transaction) {
+  pendingProgrammaticRoutes.push(transaction);
+}
+function discardWebAppRouteTransaction(transaction) {
+  transaction.cancelled = true;
+  const index2 = pendingProgrammaticRoutes.indexOf(transaction);
+  if (index2 !== -1) {
+    pendingProgrammaticRoutes.splice(index2, 1);
+  }
+}
+function takePendingProgrammaticRoute(to) {
+  const redirectedFrom = getOriginalRoute(to.redirectedFrom);
+  const index2 = pendingProgrammaticRoutes.findIndex(
+    (transaction) => !transaction.cancelled && (transaction.finalFullPath === to.fullPath || transaction.finalFullPath === (redirectedFrom == null ? void 0 : redirectedFrom.fullPath))
+  );
+  if (index2 !== -1) {
+    return pendingProgrammaticRoutes.splice(index2, 1)[0];
+  }
+}
+function takePendingHistoryRoute(to) {
+  const redirectedFrom = getOriginalRoute(to.redirectedFrom);
+  if (pendingHistoryRoute && (pendingHistoryRoute.fullPath === to.fullPath || pendingHistoryRoute.fullPath === (redirectedFrom == null ? void 0 : redirectedFrom.fullPath))) {
+    const route = pendingHistoryRoute;
+    pendingHistoryRoute = void 0;
+    return route;
+  }
+}
+function getOriginalRoute(route) {
+  while (route == null ? void 0 : route.redirectedFrom) {
+    route = route.redirectedFrom;
+  }
+  return route;
+}
+function getRouteUrl(route) {
+  return route.fullPath || route.path;
+}
+function resolveFullPath(router, url) {
+  const { path, query } = parseUrl(url);
+  return router.resolve({ path, query }).fullPath;
+}
+function toRouteLocation(url) {
+  const { path, query } = parseUrl(url);
+  return { path, query };
+}
+function bindRouteTransaction(route, transaction) {
+  routeTransactions.set(route, transaction);
+  const originalRoute = getOriginalRoute(route.redirectedFrom);
+  if (originalRoute) {
+    routeTransactions.set(originalRoute, transaction);
+  }
+}
+function findRouteTransaction(route) {
+  const transaction = routeTransactions.get(route) || (getOriginalRoute(route.redirectedFrom) ? routeTransactions.get(getOriginalRoute(route.redirectedFrom)) : void 0);
+  return (transaction == null ? void 0 : transaction.cancelled) ? void 0 : transaction;
+}
+function replaceTransactionRoute(router, transaction, route) {
+  const routeUrl = getRouteUrl(route);
+  const resolved = resolveAppRoute(
+    routeUrl,
+    transaction.openType,
+    route.matched.length === 0
+  );
+  transaction.finalFullPath = resolveFullPath(router, resolved.url);
+  transaction.context = resolved.context;
+  return resolved;
+}
+function bindOrRedirectTransaction(router, to, transaction) {
+  if (transaction.finalFullPath !== to.fullPath) {
+    const resolved = replaceTransactionRoute(router, transaction, to);
+    if (transaction.finalFullPath !== to.fullPath) {
+      pendingProgrammaticRoutes.unshift(transaction);
+      return toRouteLocation(resolved.url);
+    }
+  }
+  bindRouteTransaction(to, transaction);
+}
+function createLaunchTransaction(router, to) {
+  return __async$3(this, null, function* () {
+    yield launchExecutorReady;
+    const originalRoute = getOriginalRoute(to) || to;
+    const resolved = yield launchExecutor(originalRoute);
+    const sourceFullPath = originalRoute.fullPath;
+    const transaction = createWebAppRouteTransaction(
+      resolveFullPath(router, resolved.url),
+      "appLaunch",
+      resolved.context
+    );
+    if (transaction.finalFullPath !== sourceFullPath) {
+      pendingProgrammaticRoutes.unshift(transaction);
+      return {
+        transaction,
+        redirect: toRouteLocation(resolved.url)
+      };
+    }
+    return { transaction };
+  });
+}
+function registerWebAppRouteLaunchExecutor(executor) {
+  launchExecutor = executor;
+  resolveLaunchExecutor == null ? void 0 : resolveLaunchExecutor();
+  resolveLaunchExecutor = void 0;
+}
+function setSinglePageAppRoute(resolved, originalUrl) {
+  singlePageAppRouteContext = resolved.context;
+  if (resolved.url === originalUrl) {
+    return;
+  }
+  const queryIndex = resolved.url.indexOf("?");
+  const search = queryIndex === -1 ? "" : resolved.url.slice(queryIndex);
+  const url = location.pathname + search + location.hash;
+  history.replaceState(history.state, "", url);
+}
+function dispatchWebAppRoute(route) {
+  let context;
+  if (route) {
+    const transaction = findRouteTransaction(route);
+    if (transaction && !transaction.cancelled) {
+      context = transaction.context;
+      routeTransactions.delete(route);
+      const originalRoute = getOriginalRoute(route.redirectedFrom);
+      if (originalRoute) {
+        routeTransactions.delete(originalRoute);
+      }
+    }
+  } else {
+    context = singlePageAppRouteContext;
+    singlePageAppRouteContext = void 0;
+  }
+  if (context) {
+    dispatchAppRoute(context);
+  }
+}
+function setWebAppRouteHistoryDirection(fullPath, direction2, delta = 0) {
+  pendingHistoryRoute = {
+    fullPath,
+    openType: direction2 === "back" ? API_NAVIGATE_BACK : API_NAVIGATE_TO,
+    delta: Math.abs(delta)
+  };
+}
+function initWebAppRouteListener(router, { onRouteConfirmed, onMissingRoute }) {
+  router.beforeEach((to) => __async$3(this, null, function* () {
+    const route = to;
+    if (!appRouteStarted) {
+      appRouteStarted = true;
+      const launch = yield createLaunchTransaction(router, route);
+      if (launch.redirect) {
+        return launch.redirect;
+      }
+      return bindOrRedirectTransaction(router, route, launch.transaction);
+    }
+    let transaction = takePendingProgrammaticRoute(route);
+    if (!transaction) {
+      const historyRoute = takePendingHistoryRoute(route);
+      if (historyRoute) {
+        const originalRoute = getOriginalRoute(route.redirectedFrom) || route;
+        const resolved = resolveAppRoute(
+          historyRoute.fullPath,
+          historyRoute.openType,
+          originalRoute.matched.length === 0
+        );
+        transaction = createWebAppRouteTransaction(
+          resolveFullPath(router, resolved.url),
+          historyRoute.openType,
+          resolved.context
+        );
+        transaction.delta = historyRoute.delta;
+        if (transaction.finalFullPath !== historyRoute.fullPath) {
+          pendingProgrammaticRoutes.unshift(transaction);
+          return toRouteLocation(resolved.url);
+        }
+      }
+    }
+    if (!transaction) {
+      transaction = findRouteTransaction(route);
+    }
+    if (!transaction) {
+      const originalRoute = getOriginalRoute(route.redirectedFrom) || route;
+      const resolved = resolveAppRoute(
+        getRouteUrl(originalRoute),
+        API_NAVIGATE_TO,
+        originalRoute.matched.length === 0
+      );
+      transaction = createWebAppRouteTransaction(
+        resolveFullPath(router, resolved.url),
+        API_NAVIGATE_TO,
+        resolved.context
+      );
+      if (transaction.finalFullPath !== originalRoute.fullPath) {
+        pendingProgrammaticRoutes.unshift(transaction);
+        return toRouteLocation(resolved.url);
+      }
+    }
+    return bindOrRedirectTransaction(router, route, transaction);
+  }));
+  router.afterEach((to, _from, failure) => {
+    var _a;
+    const route = to;
+    const transaction = findRouteTransaction(route);
+    if (!transaction) {
+      return;
+    }
+    if (failure) {
+      discardWebAppRouteTransaction(transaction);
+      routeTransactions.delete(route);
+      return;
+    }
+    if (!transaction.cleaned) {
+      transaction.cleaned = true;
+      onRouteConfirmed(transaction);
+    }
+    if (!transaction.context) {
+      routeTransactions.delete(route);
+      return;
+    }
+    if ((_a = transaction.context) == null ? void 0 : _a.event.notFound) {
+      dispatchWebAppRoute(route);
+      onMissingRoute(transaction);
+    }
+  });
+  router.onError((_error, to) => {
+    if (!to) {
+      return;
+    }
+    const route = to;
+    const transaction = findRouteTransaction(route);
+    if (transaction) {
+      discardWebAppRouteTransaction(transaction);
+      routeTransactions.delete(route);
+    }
+  });
+}
+function isCurrentTabBarPage(url) {
+  const pages = getCurrentBasePages();
+  const currentPage = pages[pages.length - 1];
+  if (!(currentPage == null ? void 0 : currentPage.$.__isTabBar)) {
+    return false;
+  }
+  const path = parseUrl(url).path;
+  const $page = getPage$BasePage(currentPage);
+  return path === $page.path || path === "/" && $page.meta.isEntry;
+}
+function findTabBarPageId(url) {
+  const path = parseUrl(url).path;
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = getPage$BasePage(page);
+    if (path === $page.path || path === "/" && $page.meta.isEntry) {
+      return $page.id;
+    }
+  }
+}
 function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
   if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
     console.warn(
@@ -7617,20 +7968,40 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
     );
   }
   const router = getApp().vm.$router;
-  const { path, query } = parseUrl(url);
   return new Promise((resolve, reject) => {
-    const state2 = createPageState(type, __id__);
-    router[type === "navigateTo" ? "push" : "replace"]({
+    let routeUrl = url;
+    let transaction;
+    {
+      const shouldDispatchAppRoute = type !== "switchTab" || !isCurrentTabBarPage(url);
+      const appRoute = shouldDispatchAppRoute ? resolveAppRoute(url, type) : void 0;
+      routeUrl = (appRoute == null ? void 0 : appRoute.url) || url;
+      const { path: path2, query: query2 } = parseUrl(routeUrl);
+      transaction = createWebAppRouteTransaction(
+        router.resolve({ path: path2, query: query2 }).fullPath,
+        type,
+        appRoute == null ? void 0 : appRoute.context
+      );
+    }
+    const { path, query } = parseUrl(routeUrl);
+    const tabBarPageId = type === "switchTab" ? findTabBarPageId(routeUrl) : __id__;
+    const state2 = createPageState(type, tabBarPageId);
+    if (transaction) {
+      transaction.pageId = state2.__id__;
+      queueWebAppRouteTransaction(transaction);
+    }
+    const navigation = router[type === "navigateTo" ? "push" : "replace"]({
       path,
       query,
       state: state2,
       force: true
     }).then((failure) => {
       if (isNavigationFailure(failure)) {
+        transaction && discardWebAppRouteTransaction(transaction);
         return reject(failure.message);
       }
       if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
+        const finalTabBarText = routeUrl === url ? tabBarText : router.resolve({ path, query }).meta.tabBarText;
+        router.currentRoute.value.meta.tabBarText = finalTabBarText;
       }
       if (type === "navigateTo") {
         const meta = router.currentRoute.value.meta;
@@ -7654,6 +8025,12 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       }
       return isAutomatedTesting ? resolve({ __id__: state2.__id__ }) : resolve();
     });
+    {
+      navigation.catch((error) => {
+        transaction && discardWebAppRouteTransaction(transaction);
+        reject(error instanceof Error ? error.message : error);
+      });
+    }
   });
 }
 function handleBeforeEntryPageRoutes() {
@@ -7671,19 +8048,19 @@ function handleBeforeEntryPageRoutes() {
   );
   const switchTabPages = [...switchTabPagesBeforeEntryPages];
   switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
+  switchTabPages.forEach(({ args, resolve, reject }) => {
+    navigate(args, void 0).then(resolve).catch(reject);
+  });
   const redirectToPages = [...redirectToPagesBeforeEntryPages];
   redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
+  redirectToPages.forEach(({ args, resolve, reject }) => {
+    navigate(args).then(resolve).catch(reject);
+  });
   const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
   reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
+  reLaunchPages.forEach(({ args, resolve, reject }) => {
+    navigate(args).then(resolve).catch(reject);
+  });
 }
 let tabBar;
 function useTabBar() {
@@ -9143,115 +9520,26 @@ function initApp$1(vm) {
   initService();
   initView();
 }
-const appRouteRuntime = createAppRouteRuntime();
-const pendingAppRouteContexts = [];
-const historyOpenTypes = /* @__PURE__ */ new WeakMap();
-let pendingHistoryRoute;
-let appRouteReady = false;
-let appRouteStarted = false;
-const onAppRoute = appRouteRuntime.onAppRoute;
-const offAppRoute = appRouteRuntime.offAppRoute;
-function dispatchAppRoute(context) {
-  if (!appRouteReady) {
-    pendingAppRouteContexts.push(context);
-    return;
-  }
-  const event = context.event;
-  if (event.notFound) {
-    invokeHook(getApp().vm, ON_PAGE_NOT_FOUND, {
-      path: event.path,
-      query: Object.assign({}, event.query),
-      isEntryPage: event.openType === "appLaunch"
-    });
-  }
-  appRouteRuntime.dispatchAppRoute(context);
-}
-function getRoutePath(route) {
-  const pagePath = route.meta.route;
-  return typeof pagePath === "string" ? pagePath : removeLeadingSlash(route.path);
-}
-function dispatchWebAppRoute(route) {
-  const context = appRouteRuntime.createAppRouteContext({
-    path: getRoutePath(route),
-    query: decodedQuery(route.query),
-    openType: resolveOpenType(route),
-    notFound: route.matched.length === 0
+var __async$2 = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
   });
-  dispatchAppRoute(context);
-}
-function isPendingHistoryRoute(to) {
-  var _a;
-  const fullPath = to.fullPath || to.path;
-  return pendingHistoryRoute && (pendingHistoryRoute.fullPath === fullPath || pendingHistoryRoute.fullPath === ((_a = to.redirectedFrom) == null ? void 0 : _a.fullPath));
-}
-function takePendingHistoryOpenType(to) {
-  if (pendingHistoryRoute && isPendingHistoryRoute(to)) {
-    const { openType } = pendingHistoryRoute;
-    pendingHistoryRoute = void 0;
-    return openType;
-  }
-}
-function bindHistoryOpenType(to) {
-  const openType = takePendingHistoryOpenType(to);
-  if (openType) {
-    historyOpenTypes.set(to, openType);
-  }
-}
-function takeHistoryOpenType(to) {
-  const redirectedFrom = to.redirectedFrom;
-  const openType = historyOpenTypes.get(to) || redirectedFrom && historyOpenTypes.get(redirectedFrom);
-  historyOpenTypes.delete(to);
-  if (redirectedFrom) {
-    historyOpenTypes.delete(redirectedFrom);
-  }
-  return openType;
-}
-function resolveOpenType(to) {
-  var _a;
-  if (!appRouteStarted) {
-    appRouteStarted = true;
-    return "appLaunch";
-  }
-  const historyOpenType = takeHistoryOpenType(to);
-  if (historyOpenType) {
-    return historyOpenType;
-  }
-  const openType = (_a = history.state) == null ? void 0 : _a.__type__;
-  if (openType === API_NAVIGATE_TO || openType === API_REDIRECT_TO || openType === API_RE_LAUNCH || openType === API_SWITCH_TAB) {
-    return openType;
-  }
-  return API_NAVIGATE_TO;
-}
-function setWebAppRouteHistoryDirection(fullPath, direction2) {
-  pendingHistoryRoute = {
-    fullPath,
-    openType: direction2 === "back" ? API_NAVIGATE_BACK : API_NAVIGATE_TO
-  };
-}
-function initWebAppRouteListener(router) {
-  router.beforeEach((to) => {
-    bindHistoryOpenType(to);
-  });
-  router.afterEach((to, from, failure) => {
-    if (failure) {
-      takeHistoryOpenType(to);
-      return;
-    }
-    if (from === START_LOCATION && to.matched.length === 0) {
-      dispatchWebAppRoute(to);
-    }
-  });
-  router.onError((_error, to) => {
-    takeHistoryOpenType(to);
-  });
-}
-function setWebAppRouteReady() {
-  if (appRouteReady) {
-    return;
-  }
-  appRouteReady = true;
-  pendingAppRouteContexts.splice(0).forEach(dispatchAppRoute);
-}
+};
 function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
     comp = extend({}, comp);
@@ -9345,7 +9633,7 @@ function setupPage(comp, path) {
           const pageInstance = getPageInstanceByChild(instance2);
           if (!isDialogPageInstance(pageInstance)) {
             dispatchWebAppRoute(
-              __UNI_FEATURE_PAGES__ ? router.currentRoute.value : route
+              __UNI_FEATURE_PAGES__ ? router.currentRoute.value : void 0
             );
           }
         }
@@ -9375,7 +9663,7 @@ function setupPage(comp, path) {
               const { onShow } = instance2;
               onShow && invokeArrayFns$1(onShow);
               dispatchWebAppRoute(
-                __UNI_FEATURE_PAGES__ ? router.currentRoute.value : route
+                __UNI_FEATURE_PAGES__ ? router.currentRoute.value : void 0
               );
               invokeLastDialogPageHookByUniPage(
                 (_a = instance2.proxy) == null ? void 0 : _a.$page,
@@ -9422,25 +9710,32 @@ function setupApp(comp) {
     init: initApp$1,
     setup(instance2) {
       const route = usePageRoute();
-      const onLaunch = () => {
+      const onLaunch = (launchRoute = route) => {
         injectAppHooks(instance2);
         const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2 } = instance2;
-        const path = route.path.slice(1);
+        const path = launchRoute.path.slice(1);
         const launchOptions2 = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query)
+          query: decodedQuery(launchRoute.query)
         });
         onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
         onShow && invokeArrayFns$1(onShow, launchOptions2);
-        if (__UNI_FEATURE_PAGES__) {
-          if (!route.matched.length) {
-            handleBeforeEntryPageRoutes();
-          }
+        const originalUrl = __UNI_FEATURE_PAGES__ ? launchRoute.fullPath : launchRoute.path + stringifyQuery$1(launchRoute.query);
+        const resolved = resolveAppRoute(
+          originalUrl,
+          "appLaunch",
+          __UNI_FEATURE_PAGES__ && !launchRoute.matched.length
+        );
+        if (!__UNI_FEATURE_PAGES__) {
+          setSinglePageAppRoute(resolved, originalUrl);
         }
-        setWebAppRouteReady();
+        return resolved;
       };
       if (__UNI_FEATURE_PAGES__) {
-        useRouter().isReady().then(onLaunch);
+        registerWebAppRouteLaunchExecutor((launchRoute) => __async$2(this, null, function* () {
+          yield Promise.resolve();
+          return onLaunch(launchRoute);
+        }));
       } else {
         onBeforeMount(onLaunch);
       }
@@ -20349,7 +20644,10 @@ function usePopup(props2, {
 }
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
-  initWebAppRouteListener(router);
+  initWebAppRouteListener(router, {
+    onRouteConfirmed: cleanupWebAppRoute,
+    onMissingRoute: handleBeforeEntryPageRoutes
+  });
   router.beforeEach((to, from) => {
     uni.hideToast();
     uni.hideLoading({
@@ -20416,6 +20714,22 @@ function removeCurrentPages(delta = 1) {
     removePage(normalizeRouteKey(page.path, page.id), false);
   }
 }
+function cleanupWebAppRoute(transaction) {
+  switch (transaction.openType) {
+    case API_REDIRECT_TO:
+      removeLastPage();
+      break;
+    case API_RE_LAUNCH:
+      removeAllPages();
+      break;
+    case API_SWITCH_TAB:
+      removeNonTabBarPages(transaction.pageId);
+      break;
+    case API_NAVIGATE_BACK:
+      removeCurrentPages(transaction.delta || 1);
+      break;
+  }
+}
 function initHistory() {
   let { routerBase } = __uniConfig.router;
   if (routerBase === "/") {
@@ -20423,10 +20737,7 @@ function initHistory() {
   }
   const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(routerBase) : createWebHashHistory(routerBase);
   history2.listen((to, _from, info) => {
-    setWebAppRouteHistoryDirection(to, info.direction);
-    if (info.direction === "back") {
-      removeCurrentPages(Math.abs(info.delta));
-    }
+    setWebAppRouteHistoryDirection(to, info.direction, info.delta);
   });
   return history2;
 }
@@ -32951,6 +33262,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   offAppHide,
   offAppRoute,
   offAppShow,
+  offBeforeAppRoute,
   offCompassChange,
   offError,
   offHostThemeChange,
@@ -32966,6 +33278,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   onAppHide,
   onAppRoute,
   onAppShow,
+  onBeforeAppRoute,
   onCompassChange,
   onCreateVueApp,
   onError,
@@ -33004,6 +33317,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   removeStorageSync,
   removeTabBarBadge,
   request,
+  rewriteRoute,
   rpx2px: upx2px,
   saveFile,
   saveImageToPhotosAlbum,
@@ -33284,6 +33598,7 @@ export {
   offAppHide,
   offAppRoute,
   offAppShow,
+  offBeforeAppRoute,
   offCompassChange,
   offError,
   offHostThemeChange,
@@ -33299,6 +33614,7 @@ export {
   onAppHide,
   onAppRoute,
   onAppShow,
+  onBeforeAppRoute,
   onCompassChange,
   onCreateVueApp2 as onCreateVueApp,
   onError,
@@ -33338,6 +33654,7 @@ export {
   removeStorageSync,
   removeTabBarBadge,
   request,
+  rewriteRoute,
   upx2px as rpx2px,
   saveFile,
   saveImageToPhotosAlbum,

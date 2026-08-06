@@ -45,7 +45,7 @@
 		</view>
 	</view>
 </template>
-<script setup lang='ts'>
+<script setup>
 	import {
 		ref,
 		computed,
