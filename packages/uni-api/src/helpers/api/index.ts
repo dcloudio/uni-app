@@ -100,10 +100,11 @@ function invokeFail(
 
   if (__X__) {
     if (typeof UniError !== 'undefined') {
-      res =
-        typeof errRes.errCode !== 'undefined'
-          ? new UniError(name, errRes.errCode, apiErrMsg)
-          : new UniError(apiErrMsg, errRes)
+      const errOptions = extend({}, errRes)
+      if (typeof errOptions.errSubject === 'undefined') {
+        errOptions.errSubject = name
+      }
+      res = new UniError(apiErrMsg, errOptions)
     }
   }
 
