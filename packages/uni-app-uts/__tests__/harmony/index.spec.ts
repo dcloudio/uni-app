@@ -20,6 +20,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     uniUasmPlugin: plugin('uasm'),
     uniUTSAppUniModulesPlugin: plugin('uni-modules'),
     uniUTSUVueJavaScriptPlugin: plugin('js'),
+    uniVaporScriptPlugin: plugin('vapor-script'),
     uniWorkersPlugin: plugin('workers'),
   }
 })
@@ -103,6 +104,14 @@ describe('harmony plugin init', () => {
     const options = mockUts2js.mock.calls[0]?.[0]
     expect(options).toBeDefined()
     expect(options?.sharedDataLibAsGlobal).toBeUndefined()
+  })
+
+  test('dom2 includes vapor script plugin', () => {
+    const plugins = initPlugins()
+
+    expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
+      'vapor-script'
+    )
   })
 
   test('dynamic dom2 does not configure SharedData module import', () => {

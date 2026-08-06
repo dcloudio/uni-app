@@ -1,0 +1,45 @@
+import { createFilter } from '@rollup/pluginutils'
+import { uts2js } from '../src/tsc/javascript'
+
+describe('uts2js DOM2 routing', () => {
+  const originalUts2js = globalThis.uts2js
+
+  afterEach(() => {
+    globalThis.uts2js = originalUts2js
+  })
+
+  test('excludes standard TypeScript and lang.ts requests', () => {
+    const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])
+    globalThis.uts2js = runtimeUts2js
+
+    uts2js({
+      dom2: true,
+      platform: 'app-android',
+      inputDir: '/project/src',
+      version: 'test',
+      modules: {},
+    })
+
+    const options = runtimeUts2js.mock.calls[0][0]
+    const filter = createFilter(undefined, options.exclude)
+    const isExcluded = (id: string) => !filter(id)
+
+    expect(isExcluded('/project/src/utils.ts')).toBe(true)
+    expect(isExcluded('/project/src/utils.ts?v=1')).toBe(true)
+    expect(isExcluded('/project/src/utils.tsx')).toBe(false)
+    expect(isExcluded('/project/src/utils.tsx?v=1')).toBe(false)
+    expect(isExcluded('/project/src/utils.cts')).toBe(false)
+    expect(isExcluded('/project/src/utils.mts')).toBe(false)
+    expect(
+      isExcluded(
+        '/project/src/pages/index.uvue?vue&type=script&setup=true&lang.ts'
+      )
+    ).toBe(true)
+    expect(isExcluded('/project/src/utils.uts')).toBe(false)
+    expect(
+      isExcluded(
+        '/project/src/pages/index.uvue?vue&type=script&setup=true&lang.uts'
+      )
+    ).toBe(false)
+  })
+})

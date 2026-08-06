@@ -25,6 +25,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     uniUTSAppUniModulesPlugin: plugin('uni-modules'),
     uniUTSUVueJavaScriptPlugin: plugin('js'),
     uniUniModulesExtApiPlugin: plugin('ext-api'),
+    uniVaporScriptPlugin: plugin('vapor-script'),
     uniWorkersPlugin: plugin('workers'),
   }
 })
@@ -120,6 +121,14 @@ describe('ios plugin init', () => {
 
     expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
       'css'
+    )
+  })
+
+  test('dom2 includes vapor script plugin', () => {
+    const plugins = initPlugins()
+
+    expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
+      'vapor-script'
     )
   })
 

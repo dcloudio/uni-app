@@ -18,6 +18,7 @@ import {
   uniUTSUVueJavaScriptPlugin,
   uniUasmPlugin,
   uniUniModulesExtApiPlugin,
+  uniVaporScriptPlugin,
   uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 
@@ -62,6 +63,15 @@ export function init() {
           uniAppPagesPlugin(),
         ]),
     uniUTSUVueJavaScriptPlugin(),
+    ...(isDom2
+      ? [
+          uniVaporScriptPlugin({
+            sharedDataLibName: !isDom2Dynamic
+              ? SHARED_DATA_LIB_IMPORT_SOURCE
+              : undefined,
+          }),
+        ]
+      : []),
     resolveUTSCompiler().uts2js({
       dom2: isDom2,
       platform: 'app-harmony',

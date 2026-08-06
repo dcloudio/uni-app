@@ -45,7 +45,10 @@ export function createConfig(
       build: createBuild(options, config),
       css: createCss(options, config),
       esbuild: {
-        include: /\.(tsx?|jsx|uts)$/,
+        include:
+          process.env.UNI_APP_X_DOM2 === 'true'
+            ? /\.(tsx?|jsx)$/
+            : /\.(tsx?|jsx|uts)$/,
         exclude: /\.js$/,
         loader: 'ts',
       },

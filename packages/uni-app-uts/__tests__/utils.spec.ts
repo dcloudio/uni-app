@@ -2,7 +2,8 @@ import fs from 'fs-extra'
 import os from 'node:os'
 import path from 'node:path'
 import { type CopyOptions, initUasmModules } from '@dcloudio/uni-cli-shared'
-import { createUniOptions } from '../src/plugins/utils'
+import type { ResolvedConfig } from 'vite'
+import { configResolved, createUniOptions } from '../src/plugins/utils'
 
 type AppPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 
@@ -20,6 +21,7 @@ describe('createUniOptions', () => {
   const originalEnv = {
     NODE_ENV: process.env.NODE_ENV,
     UNI_NODE_ENV: process.env.UNI_NODE_ENV,
+    UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
     UNI_APP_X_TARGET_ARCHS: process.env.UNI_APP_X_TARGET_ARCHS,
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
     UNI_OUTPUT_DIR: process.env.UNI_OUTPUT_DIR,
@@ -144,4 +146,24 @@ describe('createUniOptions', () => {
       )
     }
   )
+
+  test.each([
+    [true, true],
+    [false, false],
+  ] as const)('keeps vite:esbuild only in DOM2', (isDom2, expected) => {
+    if (isDom2) {
+      process.env.UNI_APP_X_DOM2 = 'true'
+    } else {
+      delete process.env.UNI_APP_X_DOM2
+    }
+    const esbuildPlugin = { name: 'vite:esbuild' }
+    const config = {
+      plugins: [esbuildPlugin, { name: 'vite:asset' }],
+      build: {},
+    } as unknown as ResolvedConfig
+
+    configResolved(config)
+
+    expect(config.plugins.includes(esbuildPlugin)).toBe(expected)
+  })
 })

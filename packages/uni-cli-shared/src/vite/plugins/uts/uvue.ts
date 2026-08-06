@@ -3,10 +3,14 @@ import { isVueSfcFile } from '../../../vue'
 
 export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return {
     name: 'uni:uts-uvue',
     enforce: 'pre',
     configResolved(config) {
+      if (isDom2) {
+        return
+      }
       // 移除自带的 esbuild 处理 ts 文件
       const index = config.plugins.findIndex((p) => p.name === 'vite:esbuild')
       if (index > -1) {
@@ -32,16 +36,27 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
             }
           }
           let result = ''
-          // 如果 <script> 标签中没有 lang 属性，添加 lang="uts"
-          if (!/lang=["']?[^"']*["']?/.test(attributes)) {
+          const langMatch = attributes.match(
+            /(^|\s)lang\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/i
+          )
+          const lang = langMatch
+            ? langMatch[2] || langMatch[3] || langMatch[4]
+            : undefined
+          // 未声明 lang 时保持现有 UTS 默认行为。
+          if (!langMatch) {
             result = `<script${attributes} lang="uts">`
+          } else if (isDom2 && lang === 'js') {
+            // DOM2 的标准 JavaScript 统一交给 TypeScript/esbuild 链路处理。
+            result = match.replace(langMatch[0], `${langMatch[1]}lang="ts"`)
+          } else if (!isDom2 && lang === 'ts') {
+            // 非 DOM2 继续由 uts2js 处理 TypeScript。
+            result = match.replace(langMatch[0], `${langMatch[1]}lang="uts"`)
           } else {
-            // 否则，将现有的 lang 属性替换为 lang="uts"
-            result = match.replace(/lang=["']?ts["']?/, 'lang="uts"')
+            result = match
           }
           if (vapor) {
             // 追加 vapor 属性
-            result = result.replace('lang=', 'vapor lang=')
+            result = result.replace(/(\s)lang(?=\s*=)/i, '$1vapor lang')
           }
           return result
         }),

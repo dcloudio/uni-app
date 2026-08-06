@@ -23,6 +23,25 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
 type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 
 export const uts2js: uts2js = (options) => {
+  if (options.dom2) {
+    const exclude = options.exclude
+      ? Array.isArray(options.exclude)
+        ? options.exclude
+        : [options.exclude]
+      : []
+    options.exclude = [
+      ...exclude,
+      // DOM2 中标准 TypeScript 由 Vite esbuild 处理，uts2js 只保留 UTS 请求。
+      '*.ts',
+      '**/*.ts',
+      '*.ts[?]*',
+      '**/*.ts[?]*',
+      '**/*.vue?*lang.ts*',
+      '**/*.uvue?*lang.ts*',
+      '**/*.vue?*lang=ts*',
+      '**/*.uvue?*lang=ts*',
+    ]
+  }
   extend(options, createBasicUtsOptions(options.inputDir, !!options.sourceMap))
   extend(options.tsconfigOverride.compilerOptions, {
     downlevelIteration: true,

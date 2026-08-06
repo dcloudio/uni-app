@@ -175,10 +175,13 @@ if (
 }
 
 export function configResolved(config: ResolvedConfig, isAndroidVdom = false) {
-  // JS 引擎发行构建需要保留 Terser，Android VDOM 不产出 JS，继续裁剪。
-  const removedPlugins = isAndroidVdom
-    ? REMOVED_PLUGINS
-    : REMOVED_PLUGINS.filter((plugin) => plugin !== 'vite:terser')
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  // JS 引擎保留 Terser；DOM2 还需要 vite:esbuild 处理标准 TypeScript。
+  const removedPlugins = REMOVED_PLUGINS.filter(
+    (plugin) =>
+      (isAndroidVdom || plugin !== 'vite:terser') &&
+      (!isDom2 || plugin !== 'vite:esbuild')
+  )
   removePlugins(removedPlugins, config)
   // console.log(plugins.map((p) => p.name))
   // 强制不inline
