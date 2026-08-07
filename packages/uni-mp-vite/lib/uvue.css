@@ -12,12 +12,14 @@ ad-rewarded-video,
 ad,
 animation-view,
 audio,
-button,
 camera,
 canvas,
 checkbox-group,
 /* #ifndef MP-ALIPAY */ 
+button,
 checkbox,
+picker-view,
+radio,
 /* #endif */
 cover-image,
 cover-view,
@@ -40,15 +42,9 @@ navigation-bar,
 navigator,
 open-data,
 page-meta,
-/* #ifndef MP-ALIPAY */ 
-picker-view,
-/* #endif */
 picker,
 progress,
 radio-group,
-/* #ifndef MP-ALIPAY */ 
-radio, 
-/* #endif */
 rich-text,
 scroll-view,
 slider,
