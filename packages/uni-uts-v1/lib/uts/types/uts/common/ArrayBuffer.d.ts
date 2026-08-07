@@ -24,7 +24,6 @@ interface ArrayBuffer {
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "4.61"
             }
@@ -66,7 +65,6 @@ interface ArrayBuffer {
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "4.61"
             }
@@ -98,7 +96,6 @@ interface ArrayBuffer {
                 "unixUtsPlugin": "x"
               },
             "harmony": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "4.61"
             }
@@ -131,7 +128,6 @@ interface ArrayBuffer {
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "4.61"
             }
@@ -201,7 +197,6 @@ interface ArrayBufferConstructor {
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "4.61"
             }
@@ -234,7 +229,6 @@ interface ArrayBufferConstructor {
                 "unixUtsPlugin": "x"
               },
             "harmony": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "4.61"
             }
@@ -268,7 +262,6 @@ interface ArrayBufferConstructor {
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "4.61"
             }

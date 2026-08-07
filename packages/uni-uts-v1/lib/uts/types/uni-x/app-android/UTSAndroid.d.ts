@@ -1041,6 +1041,26 @@ interface UTSAndroid {
 
 
   /**
+   * 获取指定的颜色。
+   * @param value 需要转换的代表色值的字符串，支持一下格式：精简写法的十六进制 如：#f00，十六进制 如：#ff0000，RGB 如：rgb(255, 0, 0)，RGBA 如:rgba(255, 0, 0, 0.5)，色值关键字，如： red
+   * @return number Int类型颜色值，转换失败则返回黑色
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsios.html#colorwithstring
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *  		     "uniVer": "x",
+   *           "unixVer": "5.21"
+   *        },
+   *        "ios": {
+   *           "uniVer": "x",
+   *           "unixVer": "x"
+   *        }
+   *    }
+   * }
+   */
+  colorWithString(value: string) : number;
+
+  /**
      将文件的项目相对地址转换为 运行期对应的绝对地址
      eg.
         'static/logo.png' -> '/storage/sdcard/0/apps/com.xxxx/files/logo.png'
