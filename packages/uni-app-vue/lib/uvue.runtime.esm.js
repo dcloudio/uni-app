@@ -8848,28 +8848,14 @@ function parseClassListWithCtx(classList, ctx, el) {
   return context;
 }
 
-function useComputedStyle(options = {}) {
-  var _a;
+function useComputedStyle(options) {
+  var _a, _b;
   const i = getCurrentInstance();
   const r = reactive(/* @__PURE__ */ new Map());
   if (i) {
-    const propsDef = i.propsOptions === EMPTY_ARR ? {} : i.propsOptions[0];
-    let { classAttr, styleAttr, properties } = options;
-    let filterProperties = (_a = options.filterProperties) != null ? _a : true;
-    if (classAttr || styleAttr) {
-      if (classAttr && classAttr in propsDef) {
-        classAttr = void 0;
-      }
-      if (styleAttr && styleAttr in propsDef) {
-        styleAttr = void 0;
-      }
-    } else if (!("class" in propsDef) && !("style" in propsDef)) {
-      classAttr = "class";
-      styleAttr = "style";
-    }
+    const properties = (_a = options.properties) != null ? _a : [];
+    const filterProperties = (_b = options.filterProperties) != null ? _b : true;
     const computedStyleInterceptor = {
-      classAttr,
-      styleAttr,
       properties,
       reactiveComputedStyle: r,
       filterProperties
@@ -8883,7 +8869,7 @@ function useComputedStyle(options = {}) {
   }
   return r;
 }
-const excludedPxKeys = /* @__PURE__ */ new Set([
+const notPxKeys = /* @__PURE__ */ new Set([
   "z-index",
   "opacity",
   "font-weight",
@@ -8892,6 +8878,9 @@ const excludedPxKeys = /* @__PURE__ */ new Set([
   "flex-shrink",
   "flex"
 ]);
+function isPxKey(key) {
+  return !notPxKeys.has(key);
+}
 function formatValue(key, value) {
   if (typeof value != "number") {
     return value;
@@ -8901,51 +8890,29 @@ function formatValue(key, value) {
   }
   return `${value}`;
 }
-function isPxKey(key) {
-  return !excludedPxKeys.has(key);
-}
 function triggerComputedStyleUpdate(instance, styles) {
   if (instance.computedStyleInterceptors) {
-    const keysToDelete = /* @__PURE__ */ new Set();
-    let clearStyles = false;
     instance.computedStyleInterceptors.forEach((interceptor) => {
       const r = interceptor.reactiveComputedStyle;
       const properties = interceptor.properties;
-      if (properties) {
-        styles.forEach((value, key) => {
-          const isCSSVar = key.startsWith("--");
-          const hyphenatedKey = isCSSVar ? key : hyphenate(key);
-          if (properties.includes(hyphenatedKey)) {
-            if (value === "" || value == null) {
-              r.delete(hyphenatedKey);
-            } else {
-              r.set(hyphenatedKey, formatValue(hyphenatedKey, value));
-            }
-            if (interceptor.filterProperties) {
-              keysToDelete.add(key);
-            }
+      for (const property of properties) {
+        const camelizedProperty = camelize(property);
+        const hasProperty = styles.has(property);
+        const hasCamelizedProperty = styles.has(camelizedProperty);
+        if (hasProperty || hasCamelizedProperty) {
+          r.set(
+            property,
+            formatValue(
+              property,
+              hasProperty ? styles.get(property) : styles.get(camelizedProperty)
+            )
+          );
+          if (interceptor.filterProperties) {
+            styles.delete(property);
           }
-        });
-      } else {
-        styles.forEach((value, key) => {
-          const isCSSVar = key.startsWith("--");
-          const hyphenatedKey = isCSSVar ? key : hyphenate(key);
-          if (value === "" || value == null) {
-            r.delete(hyphenatedKey);
-          } else {
-            r.set(hyphenatedKey, formatValue(hyphenatedKey, value));
-          }
-        });
-        clearStyles = true;
+        }
       }
     });
-    if (clearStyles) {
-      styles.clear();
-    } else if (keysToDelete.size > 0) {
-      keysToDelete.forEach((key) => {
-        styles.delete(key);
-      });
-    }
   }
   return styles;
 }
