@@ -9570,6 +9570,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-list-view-content",
         "style": contentStyle.value
       }, [visibleVNode], 4)], 4), vue.createVNode(ResizeSensor, {
+        "initial": true,
         "onResize": onResize
       }, null, 8, ["onResize"])], 512);
     };
@@ -9816,17 +9817,24 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     vue.inject("__listViewRegisterItem");
     vue.inject("__listViewUnregisterItem");
     const firstItemRendered = vue.inject("__listViewFirstItemRendered");
-    vue.watch(visible, (value) => {
-      if (!value || status.cachedSizeUpdated) {
+    function updateSize() {
+      if (!visible.value || status.cachedSizeUpdated) {
         return;
       }
-      vue.nextTick(() => {
-        const rootNode = rootRef.value;
-        if (isHTMlElement(rootNode)) {
-          status.cachedSize = getSize(isVertical.value, rootNode);
-          status.cachedSizeUpdated = true;
-          firstItemRendered(status);
+      const rootNode = rootRef.value;
+      if (isHTMlElement(rootNode)) {
+        const size = getSize(isVertical.value, rootNode);
+        if (isNaN(size)) {
+          return;
         }
+        status.cachedSize = getSize(isVertical.value, rootNode);
+        status.cachedSizeUpdated = true;
+        firstItemRendered(status);
+      }
+    }
+    vue.watch(visible, (value) => {
+      vue.nextTick(() => {
+        updateSize();
       });
     });
     return () => {

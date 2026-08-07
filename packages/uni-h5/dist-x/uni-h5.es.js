@@ -19148,6 +19148,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       if (containerRef.value) {
         containerRef.value.scrollLeft = lastScrollLeft;
         containerRef.value.scrollTop = lastScrollTop;
+        resetContainerSize();
       }
     });
     onMounted(() => {
@@ -19282,6 +19283,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-list-view-content",
         "style": contentStyle.value
       }, [visibleVNode], 4)], 4), createVNode(ResizeSensor, {
+        "initial": true,
         "onResize": onResize2
       }, null, 8, ["onResize"])], 512);
     };
@@ -19640,17 +19642,24 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     onBeforeUnmount(() => {
       unregisterItem(status);
     });
-    watch(visible, (value) => {
-      if (!value || status.cachedSizeUpdated) {
+    function updateSize() {
+      if (!visible.value || status.cachedSizeUpdated) {
         return;
       }
-      nextTick(() => {
-        const rootNode = rootRef.value;
-        if (isHTMlElement(rootNode)) {
-          status.cachedSize = getSize(isVertical.value, rootNode);
-          status.cachedSizeUpdated = true;
-          firstItemRendered(status);
+      const rootNode = rootRef.value;
+      if (isHTMlElement(rootNode)) {
+        const size = getSize(isVertical.value, rootNode);
+        if (isNaN(size)) {
+          return;
         }
+        status.cachedSize = getSize(isVertical.value, rootNode);
+        status.cachedSizeUpdated = true;
+        firstItemRendered(status);
+      }
+    }
+    watch(visible, (value) => {
+      nextTick(() => {
+        updateSize();
       });
     });
     return () => {
