@@ -325,6 +325,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (containerRef.value) {
         containerRef.value.scrollLeft = lastScrollLeft
         containerRef.value.scrollTop = lastScrollTop
+        resetContainerSize()
       }
     })
 
@@ -504,7 +505,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               {visibleVNode}
             </div>
           </div>
-          <ResizeSensor onResize={onResize} />
+          <ResizeSensor initial={true} onResize={onResize} />
         </uni-list-view>
       )
     }
