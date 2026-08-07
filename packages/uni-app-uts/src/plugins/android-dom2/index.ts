@@ -5,6 +5,7 @@ import {
   getWorkers,
   initUts2jsSharedDataOptions,
   isNormalCompileTarget,
+  parseUniAppXTargetArchs,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
   resolveUasmLoadPath,
@@ -96,6 +97,7 @@ export function init() {
         },
       },
       uasm: {
+        targetArchs: parseUniAppXTargetArchs(),
         resolve: (modulePath) => resolveUasmLoadPath(modulePath, 'app-android'),
       },
     }),

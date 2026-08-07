@@ -11,6 +11,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     getWorkers: () => ({}),
     initUts2jsSharedDataOptions: () => undefined,
     isNormalCompileTarget: () => true,
+    parseUniAppXTargetArchs: () => ['arm64'],
     parseUniExtApiNamespacesOnce: () => ({}),
     resolveUasmLoadPath: mockResolveUasmLoadPath,
     resolveUTSCompiler: () => ({ uts2js: mockUts2js }),
@@ -121,8 +122,12 @@ describe('harmony plugin init', () => {
     initPlugins()
 
     const options = mockUts2js.mock.calls[0]?.[0] as {
-      uasm: { resolve(modulePath: string): string | undefined }
+      uasm: {
+        targetArchs: string[]
+        resolve(modulePath: string): string | undefined
+      }
     }
+    expect(options?.uasm.targetArchs).toEqual(['arm64'])
     options?.uasm.resolve('uni_modules/test-uasm')
     expect(mockResolveUasmLoadPath).toHaveBeenCalledWith(
       'uni_modules/test-uasm',

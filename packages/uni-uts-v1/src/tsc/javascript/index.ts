@@ -16,6 +16,7 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
     rewriteRootDir?: string
   }
   uasm?: {
+    targetArchs?: string[]
     resolve(modulePath: string): string | undefined
   }
   disableUTSBooleanConversion?: boolean

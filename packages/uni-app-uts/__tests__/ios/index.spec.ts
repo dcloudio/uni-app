@@ -11,6 +11,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     getWorkers: () => ({}),
     initUts2jsSharedDataOptions: () => undefined,
     isNormalCompileTarget: () => process.env.UNI_COMPILE_TARGET !== 'ext-api',
+    parseUniAppXTargetArchs: () => ['arm64'],
     parseUniExtApiNamespacesOnce: () => ({}),
     resolveUasmLoadPath: mockResolveUasmLoadPath,
     resolveUTSCompiler: () => ({
@@ -139,8 +140,12 @@ describe('ios plugin init', () => {
     initPlugins()
 
     const options = mockUts2js.mock.calls[0]?.[0] as {
-      uasm: { resolve(modulePath: string): string | undefined }
+      uasm: {
+        targetArchs: string[]
+        resolve(modulePath: string): string | undefined
+      }
     }
+    expect(options?.uasm.targetArchs).toEqual(['arm64'])
     options?.uasm.resolve('uni_modules/test-uasm')
     expect(mockResolveUasmLoadPath).toHaveBeenCalledWith(
       'uni_modules/test-uasm',
