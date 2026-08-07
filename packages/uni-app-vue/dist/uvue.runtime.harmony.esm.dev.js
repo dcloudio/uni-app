@@ -10212,6 +10212,7 @@ function triggerComputedStyleUpdate(instance, styles) {
           r.set(property, formatValue(property, hasProperty ? styles.get(property) : styles.get(camelizedProperty)));
           if (interceptor.filterProperties) {
             styles.delete(property);
+            styles.delete(camelizedProperty);
           }
         }
       }
