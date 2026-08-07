@@ -2524,21 +2524,17 @@ function parseBaseComponent (vueComponentOptions, {
 }
 
 function resolvePropsData (properties) {
-  {
-    const propsData = {};
-    Object.keys(properties).forEach(name => {
-      propsData[name] = resolvePropValue(properties[name]);
-    });
-    return propsData
-  }
+  const propsData = {};
+  Object.keys(properties).forEach(name => {
+    propsData[name] = resolvePropValue(properties[name]);
+  });
+  return propsData
 }
 
 function resolvePropValue (prop) {
-  {
-    if (isPlainObject(prop) && hasOwn(prop, 'value')) {
-      // 目前 mp-harmony 的 prop 返回的是配置项？
-      return prop.value
-    }
+  if (isPlainObject(prop) && hasOwn(prop, 'value')) {
+    // 目前 mp-harmony 的 prop 返回的是配置项？
+    return prop.value
   }
   return prop
 }
@@ -2584,13 +2580,11 @@ function parseComponent (vueComponentOptions, needVueOptions) {
     this.$vm = new VueComponent(options);
 
     // mp-harmony 平台兼容 observer 触发时 this.$vm 不稳定的情况
-    {
-      if (this._pendingProps) {
-        Object.keys(this._pendingProps).forEach(name => {
-          this.$vm[name] = this._pendingProps[name];
-        });
-        delete this._pendingProps;
-      }
+    if (this._pendingProps) {
+      Object.keys(this._pendingProps).forEach(name => {
+        this.$vm[name] = this._pendingProps[name];
+      });
+      delete this._pendingProps;
     }
 
     // 处理$slots,$scopedSlots（暂不支持动态变化$slots）

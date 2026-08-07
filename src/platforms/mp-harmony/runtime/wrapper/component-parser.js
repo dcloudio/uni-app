@@ -18,22 +18,17 @@ import {
 import parseBaseComponent from '../../../mp-weixin/runtime/wrapper/component-base-parser'
 
 function resolvePropsData (properties) {
-  if (__PLATFORM__ === 'mp-harmony') {
-    const propsData = {}
-    Object.keys(properties).forEach(name => {
-      propsData[name] = resolvePropValue(properties[name])
-    })
-    return propsData
-  }
-  return properties
+  const propsData = {}
+  Object.keys(properties).forEach(name => {
+    propsData[name] = resolvePropValue(properties[name])
+  })
+  return propsData
 }
 
 function resolvePropValue (prop) {
-  if (__PLATFORM__ === 'mp-harmony') {
-    if (isPlainObject(prop) && hasOwn(prop, 'value')) {
-      // 目前 mp-harmony 的 prop 返回的是配置项？
-      return prop.value
-    }
+  if (isPlainObject(prop) && hasOwn(prop, 'value')) {
+    // 目前 mp-harmony 的 prop 返回的是配置项？
+    return prop.value
   }
   return prop
 }
@@ -79,13 +74,11 @@ export default function parseComponent (vueComponentOptions, needVueOptions) {
     this.$vm = new VueComponent(options)
 
     // mp-harmony 平台兼容 observer 触发时 this.$vm 不稳定的情况
-    if (__PLATFORM__ === 'mp-harmony') {
-      if (this._pendingProps) {
-        Object.keys(this._pendingProps).forEach(name => {
-          this.$vm[name] = this._pendingProps[name]
-        })
-        delete this._pendingProps
-      }
+    if (this._pendingProps) {
+      Object.keys(this._pendingProps).forEach(name => {
+        this.$vm[name] = this._pendingProps[name]
+      })
+      delete this._pendingProps
     }
 
     // 处理$slots,$scopedSlots（暂不支持动态变化$slots）

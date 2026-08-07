@@ -600,7 +600,7 @@ function fullKey(key) {
 /**
  * 取真实 uni 对象。剥离到函数里，便于测试用 mockUni 替换后立即生效。
  */
-function getUni$9() {
+function getUni$a() {
     const raw = resolveUniRuntime();
     const u = raw != null && typeof raw === 'object'
         ? raw
@@ -621,7 +621,7 @@ function get(key) {
     if (cache.has(fk))
         return cache.get(fk);
     try {
-        const raw = getUni$9().getStorageSync(fk);
+        const raw = getUni$a().getStorageSync(fk);
         // uni 规范：未命中返回空字符串
         if (raw === '' || raw === null || raw === undefined) {
             cache.set(fk, undefined);
@@ -648,7 +648,7 @@ function safeRead(key) {
     if (cache.has(fk))
         return { ok: true, value: cache.get(fk) };
     try {
-        const raw = getUni$9().getStorageSync(fk);
+        const raw = getUni$a().getStorageSync(fk);
         if (raw === '' || raw === null || raw === undefined) {
             cache.set(fk, undefined);
             return { ok: true, value: undefined };
@@ -676,7 +676,7 @@ function set(key, value) {
     cache.set(fk, value);
     knownKeys.add(fk);
     try {
-        getUni$9().setStorageSync(fk, value);
+        getUni$a().setStorageSync(fk, value);
     }
     catch (_a) {
         // 缓存已更新，吞掉异常；调用方如需感知请使用 try/catch 显式包裹。
@@ -689,7 +689,7 @@ function remove(key) {
     const fk = fullKey(key);
     cache.set(fk, undefined);
     try {
-        getUni$9().removeStorageSync(fk);
+        getUni$a().removeStorageSync(fk);
     }
     catch (_a) {
         // 同 set：忽略 storage 异常，缓存已置空。
@@ -720,7 +720,7 @@ function batchSet(entries) {
 function clearNamespace() {
     let uni;
     try {
-        uni = getUni$9();
+        uni = getUni$a();
     }
     catch (_a) {
         // uni 不可用：仅清缓存，无法清持久化
@@ -2153,7 +2153,7 @@ function getCurrentRouteWithQuery(pageVm) {
  * 注意：本模块不维护订阅注册表（去重逻辑由 `infra/interceptor` 与 `runtime/install`
  * 处理），保持单一职责。
  */
-function getUni$8() {
+function getUni$9() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -2171,7 +2171,7 @@ function getLaunchScene(override) {
     if (override !== undefined && override !== null && override !== '') {
         return String(override);
     }
-    const u = getUni$8();
+    const u = getUni$9();
     if (typeof (u === null || u === void 0 ? void 0 : u.getLaunchOptionsSync) !== 'function')
         return '';
     // 仅小程序宿主有有意义的 scene；其它端即便存在 getLaunchOptionsSync 也无场景值。
@@ -2199,7 +2199,7 @@ function getLaunchScene(override) {
  *      透传。
  *   3. 不缓存：业务方需要会话维度复用时在 `domain/push.ts` 中缓存（待 Phase 5 接入）。
  */
-function getUni$7() {
+function getUni$8() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -2215,7 +2215,7 @@ function getPushClientId(opts = {}) {
             resolve({ ok: false, cid: '', reason: 'disabled' });
             return;
         }
-        const u = getUni$7();
+        const u = getUni$8();
         if (!u || typeof u.getPushClientId !== 'function') {
             resolve({ ok: false, cid: '', reason: 'unsupported' });
             return;
@@ -2870,7 +2870,7 @@ function handleError(app, e) {
         }, 0);
     }, undefined);
 }
-function getUni$6() {
+function getUni$7() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -2922,7 +2922,7 @@ const uniAppHookRegistry = {
 function tryBindUniAppLifecycle(app, opts = {}) {
     if (!shouldBindUniAppLifecycle())
         return false;
-    const u = getUni$6();
+    const u = getUni$7();
     if (!u)
         return false;
     if (!uniAppHookRegistry.showBound && typeof u.onAppShow === 'function') {
@@ -2941,7 +2941,7 @@ function tryBindUniAppLifecycle(app, opts = {}) {
 function unbindUniAppLifecycle() {
     if (!uniAppHookRegistry.showBound && !uniAppHookRegistry.hideBound)
         return;
-    const cur = getUni$6();
+    const cur = getUni$7();
     if (uniAppHookRegistry.showBound &&
         uniAppHookRegistry.appShowCb &&
         (cur === null || cur === void 0 ? void 0 : cur.offAppShow)) {
@@ -3801,6 +3801,20 @@ function createCollector(deps) {
             var _a, _b, _c, _d, _e;
             if (!deps.queue.shouldFlush(force))
                 return;
+            // 无网：不摘队列，等网络恢复后再 flush（公有版门闸）
+            if (deps.isNetworkOffline) {
+                let offline = false;
+                try {
+                    offline = yield deps.isNetworkOffline();
+                }
+                catch (_f) {
+                    offline = false;
+                }
+                if (offline) {
+                    logger.warn('[uni统计 2.0] 当前无网络，延后 flush');
+                    return;
+                }
+            }
             const snapshot = deps.queue.flush();
             if (!snapshot)
                 return;
@@ -3921,6 +3935,19 @@ function createCollector(deps) {
      */
     function recoverRetry() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (deps.isNetworkOffline) {
+                let offline = false;
+                try {
+                    offline = yield deps.isNetworkOffline();
+                }
+                catch (_a) {
+                    offline = false;
+                }
+                if (offline) {
+                    logger.warn('[uni统计 2.0] 当前无网络，延后续传重试');
+                    return;
+                }
+            }
             const items = deps.retry.loadAll();
             if (items.length === 0)
                 return;
@@ -4007,7 +4034,7 @@ function createCollector(deps) {
  *   - `send(payload)`：成功 resolve；3 次重试全失败抛错（供 retry.persist 落盘）。
  *   - 不缓存任何状态；每次 `send` 是无状态的。
  */
-function getUni$5() {
+function getUni$6() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -4053,7 +4080,7 @@ function createHttpChannel(opts = {}) {
             if (tryImageRequest(payload, h5Url))
                 return Promise.resolve();
         }
-        const u = getUni$5();
+        const u = getUni$6();
         if (!u || typeof u.request !== 'function') {
             return Promise.reject(new Error('uni.request unavailable'));
         }
@@ -4095,7 +4122,7 @@ function createHttpChannel(opts = {}) {
     return {
         name: '1.0',
         available() {
-            const u = getUni$5();
+            const u = getUni$6();
             return !!(u && typeof u.request === 'function');
         },
         send(payload) {
@@ -4137,7 +4164,7 @@ const WEBTRACK_BEACON_PATH = '/WebTrack.gif';
 /**
  * 解析运行时 `uni.request` API。
  */
-function getUni$4() {
+function getUni$5() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -4418,7 +4445,7 @@ function createImageChannel(opts = {}) {
      * `uni.request` GET `/WebTrack`（官方普通 GET，非信标）。
      */
     function webTrackGetViaRequest(url) {
-        const u = getUni$4();
+        const u = getUni$5();
         if (!u || typeof u.request !== 'function') {
             return Promise.reject(new PermanentChannelError('当前环境无法完成统计上报'));
         }
@@ -4469,7 +4496,7 @@ function createImageChannel(opts = {}) {
      */
     function onceH5(payload) {
         const g = getGlobalObject();
-        const u = getUni$4();
+        const u = getUni$5();
         const hasRequest = !!(u && typeof u.request === 'function');
         if (preferBeacon && typeof g.fetch === 'function') {
             return fetchBeaconAwait(preflightUrl(payload, WEBTRACK_BEACON_PATH), timeoutMs);
@@ -4761,6 +4788,45 @@ function createStatDataBuilder(deps) {
 }
 
 /**
+ * App 渠道包标识适配（对齐私有版 `utils/pageInfo.js#get_channel`）。
+ *
+ * HBuilderX 云打包会为每个渠道包写入 `plus.runtime.channel`（如 huawei、oppo），
+ * 统计上行字段 `ch` 应优先读取该运行时值，而非 manifest 静态配置。
+ *
+ * 职责：
+ *   - 仅 App 端（`isApp()`）尝试读取 `plus.runtime.channel`。
+ *   - 任意 API 缺失 / 抛错 → 降级 `''`，不阻断 install。
+ *   - 返回值统一为 `string`（原生偶发返回数字时转为字符串）。
+ */
+/**
+ * 将原生渠道值规范为上行用的字符串。
+ *
+ * @param value `plus.runtime.channel` 原值。
+ * @returns 非空字符串；无法识别时返回 `''`。
+ */
+function normalizeChannelValue(value) {
+    if (typeof value === 'string')
+        return value;
+    if (typeof value === 'number' && Number.isFinite(value))
+        return String(value);
+    return '';
+}
+/**
+ * 读取 App 渠道包标识（`plus.runtime.channel`）。
+ *
+ * 与私有版 `get_channel()` 对齐：仅原生 App 有意义；小程序 / H5 恒为 `''`。
+ *
+ * @returns 渠道字符串；未配置或读取失败时为 `''`。
+ */
+function getAppChannel() {
+    if (!isApp())
+        return '';
+    const plus = getGlobalObject().plus;
+    const raw = tryRun(() => { var _a; return (_a = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _a === void 0 ? void 0 : _a.channel; }, undefined);
+    return normalizeChannelValue(raw);
+}
+
+/**
  * 系统信息适配。
  *
  * 私有版的痛点（参考缺陷清单 #14、#18）：
@@ -4789,7 +4855,7 @@ let cachedStatic = null;
  *
  * @see `infra/uniRuntime.ts` 说明（小程序上仅读 globalThis 会静默失败）。
  */
-function getUni$3() {
+function getUni$4() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -4844,7 +4910,7 @@ function mergeSystemSnapshots(...parts) {
  * 各 API 均经 `tryRun` 包裹，任一失败不影响其余来源。
  */
 function mergedSystemInfo() {
-    const u = getUni$3();
+    const u = getUni$4();
     const sync = u && typeof u.getSystemInfoSync === 'function'
         ? tryRun(() => u.getSystemInfoSync(), null)
         : null;
@@ -4996,7 +5062,7 @@ function getLocaleAndScreen() {
  *   - `an`：应用展示名（App = plus.runtime.appname；小程序/H5 = `process.env.UNI_APP_NAME` 等）。
  */
 let cached$1 = null;
-function getUni$2() {
+function getUni$3() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -5014,7 +5080,7 @@ function getPlus() {
  * 任何分支抛错都返回 ''。
  */
 function getMpTdaid(platform) {
-    const u = getUni$2();
+    const u = getUni$3();
     switch (platform) {
         case 'wx':
         case 'qq': {
@@ -5233,7 +5299,7 @@ function add(api, handlers) {
             if (prev) {
                 try {
                     // 精准移除本模块的 fanout，保留第三方在同一 api 上的拦截器。
-                    getUni$1().removeInterceptor(api, prev);
+                    getUni$2().removeInterceptor(api, prev);
                 }
                 catch (_a) {
                     // 即使解绑失败也应保证下次重装时不带本次 handlers
@@ -5302,7 +5368,7 @@ function reinstall(api) {
         return;
     const fanout = buildFanout(set);
     try {
-        const uni = getUni$1();
+        const uni = getUni$2();
         const prev = installedFanout.get(api);
         if (prev) {
             try {
@@ -5319,7 +5385,7 @@ function reinstall(api) {
         // uni 不可用（例如 nvue 早期阶段）：保留 registry 与 installedFanout，等下次 reinstall 再试
     }
 }
-function getUni$1() {
+function getUni$2() {
     const raw = resolveUniRuntime();
     const u = raw != null && typeof raw === 'object'
         ? raw
@@ -5615,6 +5681,145 @@ function selectChannel(opts) {
     }
     logger.warn('[uni统计 2.0] 无可用上报线路');
     return undefined;
+}
+
+/**
+ * 网络类型适配。
+ *
+ * 公有版要求（`03-公有版架构设计.md` §5.9）：
+ *   - 返回 `Promise<NetResult>`，失败一律给默认值，**绝不**中断上报链路（修复缺陷 #10）。
+ *   - 提供 `onChange` 订阅，便于会话上下文里"网络切换 → 触发一次 sessionDirty"。
+ *
+ * 字段映射：上行字段 `net`，与私有版字段保持一致；可选值：
+ *   `wifi | 2g | 3g | 4g | 5g | ethernet | unknown | none`。
+ */
+const DEFAULT_RESULT = { net: 'unknown', raw: '' };
+/** 已知映射；命中外的统一归 unknown。 */
+const NET_MAP = {
+    wifi: 'wifi',
+    '2g': '2g',
+    '3g': '3g',
+    '4g': '4g',
+    '5g': '5g',
+    ethernet: 'ethernet',
+    none: 'none',
+    unknown: 'unknown',
+};
+function getUni$1() {
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
+}
+/**
+ * 把 uni 原始 networkType 字符串归一化为 `NetType`。
+ *
+ * 抽出独立函数，便于上层直接复用（例如 `onChange` 回调里也要做归一）。
+ */
+function normalizeNet(raw) {
+    var _a;
+    if (typeof raw !== 'string' || raw.length === 0)
+        return 'unknown';
+    return (_a = NET_MAP[raw.toLowerCase()]) !== null && _a !== void 0 ? _a : 'unknown';
+}
+/**
+ * 异步取当前网络类型。
+ *
+ * 一律 resolve（永不 reject）：
+ *   - uni 缺失 / 调用抛错 / fail 回调 / 超时 → resolve(`{ net: 'unknown', raw: '' }`）。
+ *   - 默认 1500ms 超时；防止 H5 端 navigator.connection 卡住采集链路。
+ */
+function getNet(timeoutMs = 1500) {
+    return new Promise((resolve) => {
+        const u = getUni$1();
+        if (!u || typeof u.getNetworkType !== 'function') {
+            resolve(DEFAULT_RESULT);
+            return;
+        }
+        let settled = false;
+        const finish = (r) => {
+            if (settled)
+                return;
+            settled = true;
+            resolve(r);
+        };
+        const timer = setTimeout(() => finish(DEFAULT_RESULT), timeoutMs);
+        tryRun(() => u.getNetworkType({
+            success: (res) => {
+                var _a;
+                clearTimeout(timer);
+                const raw = (_a = res === null || res === void 0 ? void 0 : res.networkType) !== null && _a !== void 0 ? _a : '';
+                finish({ net: normalizeNet(raw), raw });
+            },
+            fail: () => {
+                clearTimeout(timer);
+                finish(DEFAULT_RESULT);
+            },
+        }), undefined);
+    });
+}
+/**
+ * 订阅网络变化。返回 unsubscribe 函数，方便测试与运行时解绑。
+ *
+ * 注意：私有版直接调 `uni.onNetworkStatusChange` 但没有解绑，导致 nvue 多次 install 时
+ * 会注册多个回调（缺陷 #16）。公有版返回 unsubscribe 强制调用方持有；
+ * `runtime/install.ts` 会保证 install 多次时复用单实例。
+ */
+function onChange(cb) {
+    const u = getUni$1();
+    if (!u || typeof u.onNetworkStatusChange !== 'function') {
+        return () => {
+            /* noop */
+        };
+    }
+    const wrapped = (res) => {
+        var _a;
+        const raw = (_a = res === null || res === void 0 ? void 0 : res.networkType) !== null && _a !== void 0 ? _a : '';
+        const net = (res === null || res === void 0 ? void 0 : res.isConnected) === false ? 'none' : normalizeNet(raw);
+        tryRun(() => cb({ net, raw }), undefined);
+    };
+    // 注册本身也兜底：个别端 onNetworkStatusChange 同步抛错不应冒泡到调用方（与解绑对称）。
+    tryRun(() => u.onNetworkStatusChange(wrapped), undefined);
+    return () => {
+        if (typeof u.offNetworkStatusChange === 'function') {
+            tryRun(() => u.offNetworkStatusChange(wrapped), undefined);
+        }
+    };
+}
+
+/**
+ * 公有版网络门闸（仅 `src/public` 使用，不与私有版 core 共用）。
+ *
+ * 能力：
+ *   1. `isNetworkOffline()`：基于 `uni.getNetworkType` 判断当前是否无网；
+ *   2. `onNetworkOnline(cb)`：基于 `uni.onNetworkStatusChange`，在恢复有网时回调。
+ *
+ * 判定：`net === 'none'` 为无网；`unknown` **不**当无网（避免误挂起）。
+ */
+/**
+ * 根据 NetResult 判断是否无网。
+ */
+function isOfflineNetResult(r) {
+    return r.net === 'none';
+}
+/**
+ * 先检查当前网络是否不可用。
+ */
+function isNetworkOffline() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const r = yield getNet();
+        return isOfflineNetResult(r);
+    });
+}
+/**
+ * 监听网络恢复为可用。返回 unsubscribe。
+ *
+ * @param cb 变为有网时触发（wifi/4g/...）；无网变化不触发。
+ */
+function onNetworkOnline(cb) {
+    return onChange((r) => {
+        if (isOfflineNetResult(r))
+            return;
+        cb();
+    });
 }
 
 /**
@@ -6091,6 +6296,18 @@ class StatApp {
                 .recoverRetry()
                 .catch((e) => logger.warn('[uni统计 2.0] recoverRetry failed', e));
         }
+        // 公有版：监听网络恢复，立即续传 + 强制 flush（与私有版 core 实现分离）
+        this.uninstallNetworkWatch = tryRun(() => onNetworkOnline(() => {
+            const c = this.collector;
+            if (!c)
+                return;
+            void c
+                .recoverRetry()
+                .catch((e) => logger.warn('[uni统计 2.0] recoverRetry on online failed', e));
+            void c
+                .flush(true)
+                .catch((e) => logger.warn('[uni统计 2.0] flush on online failed', e));
+        }), undefined);
         // 仅在 collector 与拦截器等就绪后再标记，避免中途抛错导致「已 install 却无 collector」。
         this.installed = true;
     }
@@ -6161,6 +6378,10 @@ class StatApp {
             tryRun(() => this.uninstallInterceptors(), undefined);
         }
         this.uninstallInterceptors = undefined;
+        if (this.uninstallNetworkWatch) {
+            tryRun(() => this.uninstallNetworkWatch(), undefined);
+        }
+        this.uninstallNetworkWatch = undefined;
         // 先释放 collector 内部定时器（取消延迟首 flush），再丢弃引用，避免幽灵 flush。
         if (this.collector) {
             tryRun(() => this.collector.destroy(), undefined);
@@ -6173,15 +6394,27 @@ class StatApp {
         this.config = undefined;
         this.installed = false;
     }
+    /**
+     * 解析上行渠道字段 `ch`。
+     *
+     * 优先级：显式配置（manifest / install 入参）> `plus.runtime.channel`（云打包渠道包）> `''`。
+     * 与私有版一致，默认从原生运行时读取；仅当业务方显式传入非空 `ch` 时才覆盖。
+     */
+    resolveChannel(explicit) {
+        if (typeof explicit === 'string' && explicit.length > 0) {
+            return explicit;
+        }
+        return getAppChannel();
+    }
     normalizeConfig(c) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d;
         return {
             ak: (_a = c.ak) !== null && _a !== void 0 ? _a : getAppId$1(),
             v: c.v,
-            ch: (_b = c.ch) !== null && _b !== void 0 ? _b : '',
-            version: (_c = c.version) !== null && _c !== void 0 ? _c : 'image',
-            backgroundTimeoutSec: (_d = c.backgroundTimeoutSec) !== null && _d !== void 0 ? _d : 300,
-            pageInactiveTimeoutSec: (_e = c.pageInactiveTimeoutSec) !== null && _e !== void 0 ? _e : 1800,
+            ch: this.resolveChannel(c.ch),
+            version: (_b = c.version) !== null && _b !== void 0 ? _b : 'image',
+            backgroundTimeoutSec: (_c = c.backgroundTimeoutSec) !== null && _c !== void 0 ? _c : 300,
+            pageInactiveTimeoutSec: (_d = c.pageInactiveTimeoutSec) !== null && _d !== void 0 ? _d : 1800,
             reportIntervalSec: typeof c.reportIntervalSec === 'number'
                 ? c.reportIntervalSec
                 : REPORT_INTERVAL_SEC,
@@ -6275,6 +6508,7 @@ class StatApp {
             firstFlushDeferMs: getRawPlatform() === 'mp-weixin' && MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
                 ? MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS
                 : 0,
+            isNetworkOffline,
         };
         return Object.assign(base, patch);
     }

@@ -1,4 +1,4 @@
-const GraphHelpers = require('webpack/lib/GraphHelpers');
+const webpack = require('webpack');
 const { normalizePath } = require('@dcloudio/uni-cli-shared');
 const getSplitChunks = require('@dcloudio/vue-cli-plugin-uni/lib/split-chunks');
 const path = require('path');
@@ -136,7 +136,12 @@ class SplitHandler {
             const newChunk = this.compilation.addChunk(chunkName);
             newChunk.chunkReason = 'split chunk for independent';
             for (const module of newChunkInfo.modules) {
-                GraphHelpers.connectChunkAndModule(newChunk, module);
+                if (webpack.version[0] > 4) {
+                   this.compilation.chunkGraph.connectChunkAndModule(newChunk, module);
+                } else {
+                    const GraphHelpers = require('webpack/lib/GraphHelpers');
+                    GraphHelpers.connectChunkAndModule(newChunk, module);
+                }
                 [...newChunkInfo.chunks].forEach(chunk => {
                     if (this.removeModuleFromChunkFilter(chunk)) {
                         chunk.removeModule(module);
