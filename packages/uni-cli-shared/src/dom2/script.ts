@@ -19,10 +19,7 @@ export function uniVaporScriptPlugin(
   const nodeEnv = process.env.UNI_NODE_ENV || process.env.NODE_ENV
   return D2SP({
     typescript: resolveUTSCompiler().getTypeScript(),
-    collectExtApi:
-      isNormalCompileTarget() &&
-      (process.env.UNI_UTS_PLATFORM === 'app-harmony' ||
-        nodeEnv !== 'development'),
+    collectExtApi: isNormalCompileTarget() && nodeEnv !== 'development',
     sharedData: {
       ...initUts2jsSharedDataOptions(),
       ...options,
