@@ -266,7 +266,7 @@ export function resolveUasmLoadPath(
   }
   const file = resolveUasmModule(moduleName, platform, targetArchs)?.file
   if (!file) {
-    return moduleName
+    return
   }
   return platform === 'app-harmony' ? libraryName : file
 }

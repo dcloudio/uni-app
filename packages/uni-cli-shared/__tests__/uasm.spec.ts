@@ -179,10 +179,20 @@ describe('uasm', () => {
     )
     expect(
       resolveUasmLoadPath('uni_modules/test-uasm', 'app-android', false, [])
-    ).toBe('test-uasm')
+    ).toBeUndefined()
     expect(
       resolveUasmLoadPath('uni_modules/test-uasm', 'app-harmony', false, [])
-    ).toBe('test-uasm')
+    ).toBeUndefined()
+    expect(
+      resolveUasmLoadPath('uni_modules/test-uasm', 'app-android', false, [
+        'x86_64',
+      ])
+    ).toBeUndefined()
+    expect(
+      resolveUasmLoadPath('uni_modules/test-uasm', 'app-harmony', false, [
+        'x86_64',
+      ])
+    ).toBeUndefined()
     expect(parseUasmModuleName('./uni_modules/test-uasm')).toBeUndefined()
     expect(parseUasmModuleName('../uni_modules/test-uasm')).toBeUndefined()
     expect(parseUasmModuleName('uni_modules/test-uasm/subpath')).toBeUndefined()
