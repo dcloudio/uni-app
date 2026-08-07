@@ -10167,33 +10167,14 @@ function parseClassListWithCtx(classList, ctx, el) {
   });
   return context;
 }
-function useComputedStyle() {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var _a;
+function useComputedStyle(options) {
+  var _a, _b;
   var i = getCurrentInstance();
   var r = reactive(/* @__PURE__ */new Map());
   if (i) {
-    var propsDef = i.propsOptions === EMPTY_ARR ? {} : i.propsOptions[0];
-    var {
-      classAttr,
-      styleAttr,
-      properties
-    } = options;
-    var filterProperties = (_a = options.filterProperties) != null ? _a : true;
-    if (classAttr || styleAttr) {
-      if (classAttr && classAttr in propsDef) {
-        classAttr = void 0;
-      }
-      if (styleAttr && styleAttr in propsDef) {
-        styleAttr = void 0;
-      }
-    } else if (!("class" in propsDef) && !("style" in propsDef)) {
-      classAttr = "class";
-      styleAttr = "style";
-    }
+    var properties = (_a = options.properties) != null ? _a : [];
+    var filterProperties = (_b = options.filterProperties) != null ? _b : true;
     var computedStyleInterceptor = {
-      classAttr,
-      styleAttr,
       properties,
       reactiveComputedStyle: r,
       filterProperties
@@ -10205,7 +10186,10 @@ function useComputedStyle() {
   }
   return r;
 }
-var excludedPxKeys = /* @__PURE__ */new Set(["z-index", "opacity", "font-weight", "line-height", "flex-grow", "flex-shrink", "flex"]);
+var notPxKeys = /* @__PURE__ */new Set(["z-index", "opacity", "font-weight", "line-height", "flex-grow", "flex-shrink", "flex"]);
+function isPxKey(key) {
+  return !notPxKeys.has(key);
+}
 function formatValue(key, value) {
   if (typeof value != "number") {
     return value;
@@ -10215,51 +10199,23 @@ function formatValue(key, value) {
   }
   return "".concat(value);
 }
-function isPxKey(key) {
-  return !excludedPxKeys.has(key);
-}
 function triggerComputedStyleUpdate(instance, styles) {
   if (instance.computedStyleInterceptors) {
-    var keysToDelete = /* @__PURE__ */new Set();
-    var clearStyles = false;
     instance.computedStyleInterceptors.forEach(interceptor => {
       var r = interceptor.reactiveComputedStyle;
       var properties = interceptor.properties;
-      if (properties) {
-        styles.forEach((value, key) => {
-          var isCSSVar = key.startsWith("--");
-          var hyphenatedKey = isCSSVar ? key : hyphenate(key);
-          if (properties.includes(hyphenatedKey)) {
-            if (value === "" || value == null) {
-              r.delete(hyphenatedKey);
-            } else {
-              r.set(hyphenatedKey, formatValue(hyphenatedKey, value));
-            }
-            if (interceptor.filterProperties) {
-              keysToDelete.add(key);
-            }
+      for (var property of properties) {
+        var camelizedProperty = camelize(property);
+        var hasProperty = styles.has(property);
+        var hasCamelizedProperty = styles.has(camelizedProperty);
+        if (hasProperty || hasCamelizedProperty) {
+          r.set(property, formatValue(property, hasProperty ? styles.get(property) : styles.get(camelizedProperty)));
+          if (interceptor.filterProperties) {
+            styles.delete(property);
           }
-        });
-      } else {
-        styles.forEach((value, key) => {
-          var isCSSVar = key.startsWith("--");
-          var hyphenatedKey = isCSSVar ? key : hyphenate(key);
-          if (value === "" || value == null) {
-            r.delete(hyphenatedKey);
-          } else {
-            r.set(hyphenatedKey, formatValue(hyphenatedKey, value));
-          }
-        });
-        clearStyles = true;
+        }
       }
     });
-    if (clearStyles) {
-      styles.clear();
-    } else if (keysToDelete.size > 0) {
-      keysToDelete.forEach(key => {
-        styles.delete(key);
-      });
-    }
   }
   return styles;
 }
