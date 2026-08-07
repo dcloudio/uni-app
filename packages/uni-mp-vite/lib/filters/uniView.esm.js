@@ -144,8 +144,14 @@ function cls (value, mask, keepRaw) {
   return result.join(' ')
 }
 
+function hoverClass (value, mask) {
+  // none 是小程序关闭 hover 效果的控制值；其他值复用普通 class 的分词、去重和前缀逻辑。
+  return value === 'none' ? value : cls(value, mask)
+}
+
 export default {
   sS,
   sA,
   c: cls,
+  h: hoverClass,
 }

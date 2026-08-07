@@ -1,4 +1,5 @@
 import {
+  type AttributeNode,
   type ComponentNode,
   type DirectiveNode,
   ElementTypes,
@@ -343,6 +344,12 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               // noop
             } else if (isAlipayExternalClassBinding(dir, externalClasses)) {
               wrapAlipayExternalClass(dir, context)
+            } else if (
+              context.isX &&
+              isAlipayXStyleIsolation() &&
+              isAlipayStyleIsolationClassAttribute(node, dir)
+            ) {
+              wrapAlipayStyleIsolationClassAttribute(dir, context)
             } else if (isClassBinding(dir)) {
               hasClassBinding = true
               rewriteClass(i, dir, props, virtualHost, context)
@@ -467,6 +474,18 @@ function rewriteAlipayStyleIsolationClasses(
         prop.value.content,
         hasRuntimeClass ? 0 : mask
       )
+    } else if (
+      isAttributeNode(prop) &&
+      isAlipayStyleIsolationClassAttribute(node, prop) &&
+      prop.value?.content &&
+      !(prop.name === 'hover-class' && prop.value.content === 'none')
+    ) {
+      // 这些属性由小程序运行时把值作为 class 应用到真实节点，必须和普通 class 使用相同的作用域前缀。
+      // hover-class 的 none 是平台控制值，不能按普通 class 展开；其他属性没有该特殊语义。
+      prop.value.content = formatAlipayStyleIsolationClasses(
+        prop.value.content,
+        mask
+      )
     }
   }
 }
@@ -490,6 +509,50 @@ function wrapAlipayStyleIsolationClass(
     ]),
     context
   )
+}
+
+function wrapAlipayStyleIsolationClassAttribute(
+  prop: DirectiveNode,
+  context: TransformContext
+) {
+  addUniViewAutoImportFilter(context)
+  const mask = getAlipayStyleIsolationClassMask(context.filename)
+  const exp = rewriteExpression(prop.exp!, context)
+  const name = (prop.arg as SimpleExpressionNode).content
+  const helper = name === 'hover-class' ? 'h' : 'c'
+  // 动态值先复用普通属性的逻辑层变量提取，再由 SJS 展开作用域前缀；
+  // 只有 hover-class 使用专用 helper 保留 none，其他原生 class 属性直接复用 uV.c。
+  prop.exp = rewriteExpression(
+    createCompoundExpression([
+      createSimpleExpression(FILTER_MODULE_NAME),
+      `.${helper}(`,
+      exp,
+      `,${mask})`,
+    ]),
+    context
+  )
+}
+
+function isAlipayStyleIsolationClassAttribute(
+  node: TemplateChildNode,
+  prop: DirectiveNode | AttributeNode
+) {
+  if (!isElementNode(node) || node.tagType !== ElementTypes.ELEMENT) {
+    return false
+  }
+  const name = isAttributeNode(prop)
+    ? prop.name
+    : prop.name === 'bind' &&
+      prop.arg &&
+      isSimpleExpressionNode(prop.arg) &&
+      prop.arg.isStatic
+    ? prop.arg.content
+    : ''
+  const matched =
+    name === 'hover-class' ||
+    (name === 'placeholder-class' &&
+      (node.tag === 'input' || node.tag === 'textarea'))
+  return matched
 }
 
 /**

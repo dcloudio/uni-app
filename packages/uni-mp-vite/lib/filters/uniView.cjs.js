@@ -10,6 +10,7 @@ module.exports = {
     }
   },
   c: cls,
+  h: hoverClass,
 }
 
 var CLASS_MASK_APP = 1
@@ -62,6 +63,11 @@ function cls (value, mask, keepRaw) {
     }
   }
   return result.join(' ')
+}
+
+function hoverClass (value, mask) {
+  // 与支付宝 SJS 保持一致，none 必须原样返回才能关闭 hover 效果。
+  return value === 'none' ? value : cls(value, mask)
 }
 
 function handleStartAnimation (newValue, _ownerInstance, instance) {
