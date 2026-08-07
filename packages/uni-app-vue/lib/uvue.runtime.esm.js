@@ -8909,6 +8909,7 @@ function triggerComputedStyleUpdate(instance, styles) {
           );
           if (interceptor.filterProperties) {
             styles.delete(property);
+            styles.delete(camelizedProperty);
           }
         }
       }
