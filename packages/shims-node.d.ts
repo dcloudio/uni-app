@@ -90,6 +90,8 @@ declare namespace NodeJS {
     UNI_CLI_LAUNCH_PAGE_QUERY?: string // 开发阶段，传入指定入口页面参数
     UNI_SCRIPT?: string // 指定自定义平台，package.json->uni-app->scripts
     UNI_HBUILDERX_LANGID?: string // 当前HBuilderX环境语言，如：zh_CN
+    // uts相关
+    UNI_UTS_D8_MIN_API?: string // d8 最低支持的安卓版本
     /**
      * 输入目录
      */

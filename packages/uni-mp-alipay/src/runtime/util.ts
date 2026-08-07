@@ -23,7 +23,11 @@ import {
 
 import { handleLink as handleBaseLink } from '@dcloudio/uni-mp-weixin'
 
-import { ON_READY, customizeEvent } from '@dcloudio/uni-shared'
+import {
+  ON_READY,
+  createUniDOMStringMap,
+  customizeEvent,
+} from '@dcloudio/uni-shared'
 
 type MPPageInstance = tinyapp.IPageInstance<Record<string, any>>
 export type MPComponentInstance = tinyapp.IComponentInstance<
@@ -205,7 +209,7 @@ export function triggerEvent(
   }
 
   const target = {
-    dataset: {},
+    dataset: __X__ ? createUniDOMStringMap() : {},
   }
 
   handler({

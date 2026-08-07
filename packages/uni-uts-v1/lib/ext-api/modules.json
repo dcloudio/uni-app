@@ -37,7 +37,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-actionSheet": {
     "uni": {
@@ -59,7 +62,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-ad": {
     "uni": {
@@ -84,7 +90,9 @@
     },
     "components": [
       "ad"
-    ]
+    ],
+    "easycom": [],
+    "customElements": []
   },
   "uni-arrayBufferToBase64": {
     "uni": {
@@ -94,10 +102,16 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-authentication": {
     "uni": {
@@ -128,7 +142,15 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-barcode-scanning": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-base64ToArrayBuffer": {
     "uni": {
@@ -138,10 +160,16 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-calendar": {
     "uni": {
@@ -163,7 +191,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-camera": {
     "uni": {
@@ -177,9 +208,11 @@
         }
       }
     },
+    "components": [],
     "easycom": [
       "camera"
-    ]
+    ],
+    "customElements": []
   },
   "uni-canvas": {
     "uni": {
@@ -187,13 +220,15 @@
         "name": "createCanvasContextAsync",
         "app": {
           "js": false,
-          "x-js": false,
-          "kotlin": true,
+          "kotlin": "dom1",
           "swift": false,
-          "arkts": true
+          "arkts": "dom1"
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-chooseLocation": {
     "uni": {
@@ -206,7 +241,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-chooseMedia": {
     "uni": {
@@ -219,7 +257,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-clipboard": {
     "uni": {
@@ -241,7 +282,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-compass": {
     "uni": {
@@ -293,7 +337,10 @@
           "js": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-crash": {
     "uni": {
@@ -342,7 +389,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-createInnerAudioContext": {
     "uni": {
@@ -364,7 +414,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-createRequestPermissionListener": {
     "uni": {
@@ -376,7 +429,10 @@
           "swift": false
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-dialogPage": {
     "uni": {
@@ -400,7 +456,10 @@
           "arkts": false
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-editor": {
     "uni": {
@@ -414,9 +473,11 @@
         }
       }
     },
+    "components": [],
     "easycom": [
       "editor"
-    ]
+    ],
+    "customElements": []
   },
   "uni-event": {
     "uni": {
@@ -460,7 +521,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-exit": {
     "uni": {
@@ -473,7 +537,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-facialVerify": {
     "uni": {
@@ -495,7 +562,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-fileSystemManager": {
     "uni": {
@@ -508,9 +578,25 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
-  "uni-form": {},
+  "uni-form-dom1": {
+    "components": [],
+    "easycom": [],
+    "customElements": [
+      "checkbox",
+      "checkbox-group",
+      "form",
+      "picker-view",
+      "picker-view-column",
+      "radio",
+      "radio-group",
+      "switch"
+    ]
+  },
   "uni-getAccessibilityInfo": {
     "uni": {
       "getAccessibilityInfo": {
@@ -521,7 +607,10 @@
           "swift": false
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-getAppAuthorizeSetting": {
     "uni": {
@@ -534,7 +623,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-getAppBaseInfo": {
     "uni": {
@@ -546,7 +638,10 @@
           "swift": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-getBackgroundAudioManager": {
     "uni": {
@@ -559,7 +654,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-getDeviceInfo": {
     "uni": {
@@ -581,7 +679,10 @@
           "arkts": false
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-getElementById": {
     "uni": {
@@ -592,10 +693,16 @@
           "x-js": false,
           "kotlin": "dom2",
           "swift": true,
-          "arkts": true
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-getNetworkType": {
     "uni": {
@@ -626,7 +733,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-getProvider": {
     "uni": {
@@ -648,7 +758,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-getSystemInfo": {
     "uni": {
@@ -676,7 +789,10 @@
           "swift": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-getSystemSetting": {
     "uni": {
@@ -689,7 +805,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-gyroscope": {
     "uni": {
@@ -741,7 +860,10 @@
           "js": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-installApk": {
     "uni": {
@@ -753,7 +875,10 @@
           "swift": false
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-keyboard": {
     "uni": {
@@ -784,9 +909,11 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
-  "uni-list-view": {},
   "uni-live-player": {
     "uni": {
       "createLivePlayerContext": {
@@ -799,9 +926,11 @@
         }
       }
     },
+    "components": [],
     "easycom": [
       "live-player"
-    ]
+    ],
+    "customElements": []
   },
   "uni-live-pusher": {
     "uni": {
@@ -815,19 +944,20 @@
         }
       }
     },
+    "components": [],
     "easycom": [
       "live-pusher"
-    ]
+    ],
+    "customElements": []
   },
   "uni-loading": {
+    "components": [],
     "easycom": [
       "loading"
-    ]
+    ],
+    "customElements": []
   },
   "uni-location": {
-    "provider": {
-      "service": "location"
-    },
     "uni": {
       "getLocation": {
         "name": "getLocation",
@@ -901,21 +1031,33 @@
           "arkts": true
         }
       }
-    }
+    },
+    "provider": {
+      "service": "location"
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-location-system": {
     "provider": {
       "service": "location",
       "name": "system",
       "servicePlugin": "uni-location"
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-location-tencent": {
     "provider": {
       "service": "location",
       "name": "tencent",
       "servicePlugin": "uni-location"
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-makePhoneCall": {
     "uni": {
@@ -928,7 +1070,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-map-tencent": {
     "uni": {
@@ -938,16 +1083,25 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       }
     },
+    "components": [],
     "easycom": [
       "map"
-    ]
+    ],
+    "customElements": []
   },
   "uni-match-media": {
+    "components": [],
     "easycom": [
+      "match-media"
+    ],
+    "customElements": [
       "match-media"
     ]
   },
@@ -968,8 +1122,7 @@
           "js": false,
           "kotlin": false,
           "swift": false,
-          "arkts": true,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       },
       "closePreviewImage": {
@@ -978,8 +1131,7 @@
           "js": false,
           "kotlin": false,
           "swift": false,
-          "arkts": true,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       },
       "getImageInfo": {
@@ -1054,7 +1206,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-memory": {
     "uni": {
@@ -1077,12 +1232,9 @@
         }
       }
     },
-    "mp-weixin": false,
-    "mp-alipay": false,
-    "mp-baidu": false,
-    "mp-qq": false,
-    "mp-kuaishou": false,
-    "mp-jd": false
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-modal": {
     "uni": {
@@ -1104,9 +1256,11 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
-  "uni-navigator": {},
   "uni-network": {
     "uni": {
       "request": {
@@ -1145,7 +1299,59 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-oauth": {
+    "uni": {
+      "login": {
+        "name": "login",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getUserInfo": {
+        "name": "getUserInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    },
+    "provider": {
+      "service": "oauth",
+      "app": {
+        "js": false,
+        "kotlin": true,
+        "swift": true,
+        "arkts": true
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-oauth-apple": {
+    "provider": {
+      "service": "oauth",
+      "name": "apple",
+      "app": {
+        "js": false,
+        "kotlin": false,
+        "swift": true,
+        "arkts": false
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-oauth-weixin": {
     "provider": {
@@ -1157,7 +1363,10 @@
         "swift": true,
         "arkts": true
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-openAppAuthorizeSetting": {
     "uni": {
@@ -1169,7 +1378,10 @@
           "swift": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-openDocument": {
     "uni": {
@@ -1182,7 +1394,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-openLocation": {
     "uni": {
@@ -1195,17 +1410,19 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-page-container": {
+    "components": [],
     "easycom": [
       "page-container"
-    ]
+    ],
+    "customElements": []
   },
   "uni-payment": {
-    "provider": {
-      "service": "payment"
-    },
     "uni": {
       "requestPayment": {
         "name": "requestPayment",
@@ -1216,19 +1433,31 @@
           "arkts": true
         }
       }
-    }
+    },
+    "provider": {
+      "service": "payment"
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-payment-alipay": {
     "provider": {
       "service": "payment",
       "name": "alipay"
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-payment-wxpay": {
     "provider": {
       "service": "payment",
       "name": "wxpay"
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-phoneContact": {
     "uni": {
@@ -1250,13 +1479,17 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-picker": {
-    "uni": {},
+    "components": [],
     "easycom": [
       "picker"
-    ]
+    ],
+    "customElements": []
   },
   "uni-previewImage": {
     "uni": {
@@ -1276,7 +1509,10 @@
           "swift": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-privacy": {
     "uni": {
@@ -1286,7 +1522,10 @@
           "js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       },
       "offPrivacyAuthorizationChange": {
@@ -1295,7 +1534,10 @@
           "js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       },
       "getPrivacySetting": {
@@ -1304,7 +1546,10 @@
           "js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       },
       "resetPrivacyAuthorization": {
@@ -1313,7 +1558,10 @@
           "js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       },
       "agreePrivacyAuthorization": {
@@ -1322,12 +1570,24 @@
           "js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
-  "uni-progress": {},
+  "uni-progress": {
+    "components": [],
+    "easycom": [],
+    "customElements": [
+      "progress"
+    ]
+  },
   "uni-prompt": {
     "uni": {
       "showToast": {
@@ -1353,7 +1613,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       },
       "hideLoading": {
@@ -1362,7 +1622,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       },
       "showModal": {
@@ -1371,7 +1631,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       },
       "showActionSheet": {
@@ -1380,10 +1640,13 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-push": {
     "uni": {
@@ -1450,7 +1713,55 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-push-fcm": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-push-gp": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-push-hms": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-push-honor": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-push-mainland": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-push-meizu": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-push-oppo": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-push-vivo": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-push-xiaomi": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-recorder": {
     "uni": {
@@ -1463,7 +1774,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-requestMerchantTransfer": {
     "uni": {
@@ -1473,16 +1787,23 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-rich-text": {
-    "uni": {},
+    "components": [],
     "easycom": [
       "rich-text"
-    ]
+    ],
+    "customElements": []
   },
   "uni-rpx2px": {
     "uni": {
@@ -1495,7 +1816,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-scanCode": {
     "uni": {
@@ -1508,7 +1832,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-screenBrightness": {
     "uni": {
@@ -1539,7 +1866,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-secure-network": {
     "uni": {
@@ -1552,18 +1882,12 @@
           "arkts": false
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-share": {
-    "provider": {
-      "service": "share",
-      "app": {
-        "js": false,
-        "kotlin": true,
-        "swift": true,
-        "arkts": true
-      }
-    },
     "uni": {
       "share": {
         "name": "share",
@@ -1574,7 +1898,19 @@
           "arkts": true
         }
       }
-    }
+    },
+    "provider": {
+      "service": "share",
+      "app": {
+        "js": false,
+        "kotlin": true,
+        "swift": true,
+        "arkts": true
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-share-weixin": {
     "provider": {
@@ -1586,7 +1922,10 @@
         "swift": true,
         "arkts": true
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-shareWithSystem": {
     "uni": {
@@ -1599,7 +1938,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-showLoading": {
     "uni": {
@@ -1609,7 +1951,10 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       },
       "hideLoading": {
@@ -1618,10 +1963,16 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-sse": {
     "uni": {
@@ -1634,7 +1985,10 @@
           "arkts": false
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-storage": {
     "uni": {
@@ -1728,9 +2082,11 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
-  "uni-swiper": {},
   "uni-theme": {
     "uni": {
       "onOsThemeChange": {
@@ -1782,7 +2138,6 @@
         "name": "onThemeChange",
         "app": {
           "js": true,
-          "x-js": true,
           "kotlin": false,
           "swift": false,
           "arkts": false
@@ -1792,7 +2147,6 @@
         "name": "offThemeChange",
         "app": {
           "js": true,
-          "x-js": true,
           "kotlin": false,
           "swift": false,
           "arkts": false
@@ -1802,7 +2156,6 @@
         "name": "onHostThemeChange",
         "app": {
           "js": false,
-          "x-js": true,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -1812,13 +2165,15 @@
         "name": "offHostThemeChange",
         "app": {
           "js": false,
-          "x-js": true,
           "kotlin": true,
           "swift": true,
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-verify": {
     "uni": {
@@ -1840,7 +2195,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-vibrate": {
     "uni": {
@@ -1862,7 +2220,10 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
   "uni-video": {
     "uni": {
@@ -1875,9 +2236,11 @@
         }
       }
     },
+    "components": [],
     "easycom": [
       "video"
-    ]
+    ],
+    "customElements": []
   },
   "uni-virtualPayment": {
     "uni": {
@@ -1897,9 +2260,11 @@
           "swift": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
   },
-  "uni-waterflow": {},
   "uni-web-view": {
     "uni": {
       "createWebViewContext": {
@@ -1921,9 +2286,11 @@
         }
       }
     },
+    "components": [],
     "easycom": [
       "web-view"
-    ]
+    ],
+    "customElements": []
   },
   "uni-websocket": {
     "uni": {
@@ -1990,6 +2357,14 @@
           "arkts": true
         }
       }
-    }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-weixin-common": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
   }
 }

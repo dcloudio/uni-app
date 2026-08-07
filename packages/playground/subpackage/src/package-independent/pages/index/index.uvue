@@ -1,0 +1,21 @@
+<template>
+  <view class="independent-page">
+    <text>independent uvue</text>
+    <native-badge text="native-ready"></native-badge>
+    <image class="logo" src="../../static/logo.png"></image>
+  </view>
+</template>
+
+<script>
+export default {}
+</script>
+
+<style>
+.independent-page {
+  padding: 16px;
+}
+.logo {
+  width: 64px;
+  height: 64px;
+}
+</style>

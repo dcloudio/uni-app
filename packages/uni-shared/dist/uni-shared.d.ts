@@ -142,6 +142,8 @@ export declare function createIsCustomElement(tags?: string[]): (tag: string) =>
 
 export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrecision: number): (val: string) => string;
 
+export declare function createUniDOMStringMap(source?: UniDOMStringMapSource, options?: UniDOMStringMapOptions): UniDOMStringMap;
+
 export declare function createUniEvent(evt: Record<string, any>): UniEvent;
 
 declare type CreateVueAppHook = (app: App_2) => void;
@@ -253,6 +255,10 @@ export declare function getPartClass(partName: string): string;
 
 export declare function getValueByDataPath(obj: any, path: string): unknown;
 
+export declare const H5_BUILT_IN_TAG_NAMES: string[];
+
+export declare const H5_BUILT_IN_TAGS: string[];
+
 declare interface HTMLElementWithDataset extends HTMLElement {
     __uniDataset?: Record<string, any>;
 }
@@ -303,6 +309,14 @@ export declare function isComponentInternalInstance(vm: unknown): vm is Componen
 
 export declare function isComponentTag(tag: string): boolean;
 
+/**
+ * 可能后续会添加的tags，native或easycom
+ * movable-area
+ * movable-view
+ * share-element
+ * icon
+ * animation-view
+ */
 export declare function isDom2AppNativeTag(tag: string): boolean;
 
 export declare function isDom2AppUserVueComponentTag(tag: string): boolean;
@@ -393,6 +407,10 @@ export declare const NODE_TYPE_TEXT = 3;
 export declare function normalizeClass(value: unknown): string;
 
 export declare function normalizeDataset(el: Element): any;
+
+export declare function normalizeDatasetAttrName(key: string): string;
+
+export declare function normalizeDatasetKey(key: string): string;
 
 export declare function normalizeEventType(type: string, options?: AddEventListenerOptions): string;
 
@@ -831,6 +849,24 @@ export declare class UniCommentNode extends UniNode {
 }
 
 declare type UniCSSStyleDeclarationJSON = string | null | Record<string, string | string[]> | [string, Record<string, string | string[]>];
+
+export declare class UniDOMStringMap extends Map<string, any> {
+    [key: string]: any;
+    private _options?;
+    constructor(options?: UniDOMStringMapOptions);
+    get(key: string): any;
+    set(key: string, value: any): this;
+    has(key: string): boolean;
+    delete(key: string): boolean;
+    clear(): void;
+}
+
+export declare interface UniDOMStringMapOptions {
+    onSet?: (key: string, value: any) => void;
+    onDelete?: (key: string) => void;
+}
+
+export declare type UniDOMStringMapSource = Record<string, any> | Map<string, any> | UniDOMStringMap;
 
 export declare class UniElement extends UniBaseNode {
     tagName: string;

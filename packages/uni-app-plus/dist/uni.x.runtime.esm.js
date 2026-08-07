@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -838,10 +838,10 @@ function getLoadFontFaceOptions(options, res) {
     family: options.family,
     source: options.source,
     success: (_) => {
-      res.resolve(null);
+      res === null || res === void 0 || res.resolve(null);
     },
     fail: (error) => {
-      res.reject(
+      res === null || res === void 0 || res.reject(
         // new LoadFontFaceErrorImpl(
         error.errMsg,
         error.errCode
@@ -851,26 +851,33 @@ function getLoadFontFaceOptions(options, res) {
   };
 }
 var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
-  options.source = removeUrlWrap(options.source);
   if (options.global === true) {
-    var app = getNativeApp();
-    var fontInfo = getLoadFontFaceOptions(options, res);
-    app.loadFontFace(fontInfo);
+    appLoadFontFace(options, res);
   } else {
-    var page = getCurrentPage().vm;
-    if (!page) {
+    var page = getCurrentPage();
+    if (!page.vm) {
       res.reject("page is not ready", 99);
       return;
     }
-    if (page.$fontFamilySet.has(options.family)) {
-      return;
-    }
-    page.$fontFamilySet.add(options.family);
-    var _fontInfo = getLoadFontFaceOptions(options, res);
-    page.$nativePage.loadFontFace(_fontInfo);
+    pageLoadFontFace(page.vm, options, res);
   }
 });
-function loadFontFaceByStyles(styles, global) {
+var appLoadFontFace = (options, res) => {
+  options.source = removeUrlWrap(options.source);
+  var app = getNativeApp();
+  var fontInfo = getLoadFontFaceOptions(options, res);
+  app.loadFontFace(fontInfo);
+};
+var pageLoadFontFace = (pageVm, options, res) => {
+  if (pageVm.$fontFamilySet.has(options.family)) {
+    return;
+  }
+  options.source = removeUrlWrap(options.source);
+  pageVm.$fontFamilySet.add(options.family);
+  var fontInfo = getLoadFontFaceOptions(options, res);
+  pageVm.$nativePage.loadFontFace(fontInfo);
+};
+function loadFontFaceByStyles(styles, pageVm) {
   styles = Array.isArray(styles) ? styles : [styles];
   var fontFaceStyle = [];
   styles.forEach((style) => {
@@ -887,8 +894,7 @@ function loadFontFaceByStyles(styles, global) {
     var fontVariant = style["fontVariant"];
     var src = style["src"];
     if (fontFamily != null && src != null) {
-      loadFontFace({
-        global,
+      var LoadFontFaceOptions = {
         family: fontFamily,
         source: src,
         desc: {
@@ -896,7 +902,12 @@ function loadFontFaceByStyles(styles, global) {
           weight: fontWeight,
           variant: fontVariant
         }
-      });
+      };
+      if (pageVm === null) {
+        appLoadFontFace(LoadFontFaceOptions, null);
+      } else {
+        pageLoadFontFace(pageVm, LoadFontFaceOptions, null);
+      }
     } else {
       console.warn("loadFontFace: fail, font-family or src is null");
     }
@@ -914,12 +925,17 @@ function initNativePage(vm) {
   }
 }
 function initFontFace(vm) {
-  var _vm$$options$styles;
+  var _vm$$page$vm, _vm$$page, _vm$$options$styles;
   var instance = vm.$;
   if (instance.type.mpType === "app") {
     return;
   }
-  loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
+  var pageVm = (_vm$$page$vm = (_vm$$page = vm.$page) === null || _vm$$page === void 0 ? void 0 : _vm$$page.vm) !== null && _vm$$page$vm !== void 0 ? _vm$$page$vm : null;
+  if (!pageVm) {
+    console.warn("[initFontFace] can not find page, skip loadFontFace");
+    return;
+  }
+  loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], pageVm);
 }
 function initComponentInstance(app) {
   app.config.uniX = {
@@ -1541,16 +1557,15 @@ function fixBorderStyle(tabBarConfig) {
   tabBarConfig.set("borderStyle", borderStyle);
   tabBarConfig.delete("borderColor");
 }
-function parseRedirectInfo(app) {
+function parseRedirectInfo(appid, redirectInfo) {
   var _redirectInfo$get, _redirectInfo$get2, _redirectInfo$get3, _redirectInfo$get4, _redirectInfo$get5;
-  var redirectInfo = app.getRedirectInfo();
   var path = (_redirectInfo$get = redirectInfo.get("path")) !== null && _redirectInfo$get !== void 0 ? _redirectInfo$get : "";
   var query = (_redirectInfo$get2 = redirectInfo.get("query")) !== null && _redirectInfo$get2 !== void 0 ? _redirectInfo$get2 : "";
   var userAction = (_redirectInfo$get3 = redirectInfo.get("userAction")) !== null && _redirectInfo$get3 !== void 0 ? _redirectInfo$get3 : false;
   var appScheme = (_redirectInfo$get4 = redirectInfo.get("appScheme")) !== null && _redirectInfo$get4 !== void 0 ? _redirectInfo$get4 : "";
   var appLink = (_redirectInfo$get5 = redirectInfo.get("appLink")) !== null && _redirectInfo$get5 !== void 0 ? _redirectInfo$get5 : "";
   var referrerInfo = {
-    appId: app.appid,
+    appId: appid,
     extraData: {}
   };
   return {
@@ -1879,12 +1894,17 @@ function setStatusBarStyle() {
     if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length && dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
       var lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
       var lastDialogPage = dialogPages[dialogPages.length - 1];
-      page = // @ts-expect-error
-      Number(lastSystemDialogPage.__nativePageId) > Number(lastDialogPage.__nativePageId) ? lastSystemDialogPage.vm : lastDialogPage.vm;
+      if (lastSystemDialogPage && lastDialogPage) {
+        page = Number(lastSystemDialogPage.__nativePageId) > Number(lastDialogPage.__nativePageId) ? lastSystemDialogPage.vm : lastDialogPage.vm;
+      } else {
+        page = (lastSystemDialogPage === null || lastSystemDialogPage === void 0 ? void 0 : lastSystemDialogPage.vm) || (lastDialogPage === null || lastDialogPage === void 0 ? void 0 : lastDialogPage.vm);
+      }
     } else if (dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
-      page = dialogPages[dialogPages.length - 1].vm;
+      var _dialogPages;
+      page = (_dialogPages = dialogPages[dialogPages.length - 1]) === null || _dialogPages === void 0 ? void 0 : _dialogPages.vm;
     } else if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length) {
-      page = systemDialogPages[systemDialogPages.length - 1].vm;
+      var _systemDialogPages;
+      page = (_systemDialogPages = systemDialogPages[systemDialogPages.length - 1]) === null || _systemDialogPages === void 0 ? void 0 : _systemDialogPages.vm;
     } else {
       page = currentPage === null || currentPage === void 0 ? void 0 : currentPage.vm;
     }
@@ -2247,20 +2267,19 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
   };
 }
 var isInitEntryPage = false;
-function initEntry(app) {
+function initEntry(app, redirectInfo) {
   if (isInitEntryPage) {
     return;
   }
   isInitEntryPage = true;
   var entryPagePath;
   var entryPageQuery;
-  var redirectInfo = app.getRedirectInfo();
   if (redirectInfo.size > 0) {
     var {
       path,
       query
       /* referrerInfo, appScheme, appLink */
-    } = parseRedirectInfo(app);
+    } = parseRedirectInfo(app.appid, redirectInfo);
     if (path) {
       entryPagePath = path;
       entryPageQuery = query;
@@ -2365,7 +2384,7 @@ function initAppLaunch(appVm) {
   invokeHook(appVm, ON_SHOW, showOption);
   var appStyle = appVm.$options.styles;
   if (appStyle) {
-    loadFontFaceByStyles(appStyle, true);
+    loadFontFaceByStyles(appStyle, null);
   }
   useTheme();
 }
@@ -2831,8 +2850,9 @@ function registerApp(appVm, nativeApp2, uniApp) {
   extend(appCtx, defaultApp);
   defineGlobalData(appCtx, defaultApp.globalData);
   initService(nativeApp2, unregisterApp);
-  initEntry(nativeApp2);
-  initEntryPagePath(nativeApp2);
+  var redirectInfo = nativeApp2.getRedirectInfo();
+  initEntry(nativeApp2, redirectInfo);
+  initEntryPagePath(redirectInfo);
   initGlobalEvent(nativeApp2);
   initAppLaunch(appVm);
   initAppError(appVm, nativeApp2);
@@ -2848,8 +2868,7 @@ function unregisterApp() {
 function initApp(app) {
   initComponentInstance(app);
 }
-function initEntryPagePath(app) {
-  var redirectInfo = app.getRedirectInfo();
+function initEntryPagePath(redirectInfo) {
   var debugInfo = redirectInfo.get("debug");
   if (debugInfo) {
     var url = debugInfo.get("url");
@@ -3606,6 +3625,9 @@ class QuerySelectorHelper {
       var nodeInfo2 = {
         node: element
       };
+      if (this._fields.dataset == true) {
+        nodeInfo2.dataset = createUniDOMStringMap(element.dataset || {});
+      }
       if (this._fields.size == true) {
         var rect2 = element.getBoundingClientRect();
         nodeInfo2.width = rect2.width;
@@ -3616,7 +3638,6 @@ class QuerySelectorHelper {
     var rect = element.getBoundingClientRect();
     var nodeInfo = {
       id: (_element$getAttribute = element.getAttribute("id")) === null || _element$getAttribute === void 0 ? void 0 : _element$getAttribute.toString(),
-      dataset: null,
       left: rect.left,
       top: rect.top,
       right: rect.right,
@@ -3624,6 +3645,9 @@ class QuerySelectorHelper {
       width: rect.width,
       height: rect.height
     };
+    if (this._fields.dataset == true) {
+      nodeInfo.dataset = createUniDOMStringMap(element.dataset || {});
+    }
     return nodeInfo;
   }
 }
@@ -4145,10 +4169,33 @@ function serializeUniElement(el, type) {
   };
 }
 function toRaw(observed) {
-  var raw = observed && observed.__v_raw;
-  return raw ? toRaw(raw) : observed;
+  var seen = /* @__PURE__ */ new WeakSet();
+  var current = observed;
+  while (current) {
+    var raw = current.__v_raw;
+    if (!raw) {
+      return current;
+    }
+    if (typeof current === "object" || typeof current === "function") {
+      if (seen.has(current)) {
+        return current;
+      }
+      seen.add(current);
+    }
+    current = raw;
+  }
+  return current;
+}
+var SKIP_CIRCULAR_REFERENCE = {};
+function enterStack(arg, stack) {
+  if (stack.has(arg)) {
+    return false;
+  }
+  stack.add(arg);
+  return true;
 }
 function normalizeArg(arg, callbacks, keepAlive, context) {
+  var stack = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : /* @__PURE__ */ new WeakSet();
   arg = toRaw(arg);
   var isVaporAndroid = false;
   if (typeof arg === "function") {
@@ -4163,8 +4210,22 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
     }
     return id2;
   } else if (isArray(arg)) {
+    if (!enterStack(arg, stack)) {
+      return SKIP_CIRCULAR_REFERENCE;
+    }
     context.depth++;
-    return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context));
+    var newArg = new Array(arg.length);
+    try {
+      arg.forEach((item, index2) => {
+        var value = normalizeArg(item, callbacks, keepAlive, context, stack);
+        if (value !== SKIP_CIRCULAR_REFERENCE) {
+          newArg[index2] = value;
+        }
+      });
+      return newArg;
+    } finally {
+      stack.delete(arg);
+    }
   } else if (arg instanceof ArrayBuffer) {
     if (context.depth > 0) {
       context.nested = true;
@@ -4183,18 +4244,28 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
       }
       return serializeComponentPublicInstance(arg);
     } else {
-      var newArg = {};
-      Object.keys(arg).forEach((name) => {
-        context.depth++;
-        newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context);
-      });
-      return newArg;
+      if (!enterStack(arg, stack)) {
+        return SKIP_CIRCULAR_REFERENCE;
+      }
+      var _newArg = {};
+      try {
+        Object.keys(arg).forEach((name) => {
+          context.depth++;
+          var value = normalizeArg(arg[name], callbacks, keepAlive, context, stack);
+          if (value !== SKIP_CIRCULAR_REFERENCE) {
+            _newArg[name] = value;
+          }
+        });
+        return _newArg;
+      } finally {
+        stack.delete(arg);
+      }
     }
   }
   return arg;
 }
-function initUTSInstanceMethod(async, opts, instanceId, proxy2) {
-  return initProxyFunction("method", async, opts, instanceId, proxy2);
+function initUTSInstanceMethod(async, opts, instanceIdOrInstance, proxy2) {
+  return initProxyFunction("method", async, opts, instanceIdOrInstance, proxy2);
 }
 function getProxy() {
   if (!proxy) {
@@ -4211,7 +4282,7 @@ function getProxy() {
   }
   return proxy;
 }
-function resolveSyncResult(args, res, returnOptions, instanceId, proxy2) {
+function resolveSyncResult(args, res, returnOptions, instanceIdOrInstance, proxy2) {
   if (!res) {
     throw new Error("返回值为：" + JSON.stringify(res) + "；请求参数为：" + JSON.stringify(args));
   }
@@ -4230,6 +4301,7 @@ function resolveSyncResult(args, res, returnOptions, instanceId, proxy2) {
       if (!res.params) {
         return null;
       }
+      var instanceId = typeof instanceIdOrInstance === "number" ? instanceIdOrInstance : void 0;
       if (res.params === instanceId && proxy2) {
         return proxy2;
       }
@@ -4237,7 +4309,8 @@ function resolveSyncResult(args, res, returnOptions, instanceId, proxy2) {
         var ProxyClass = initUTSProxyClass(extend({
           instanceId: res.params
         }, interfaceDefines[returnOptions.options]));
-        return new ProxyClass();
+        var result = new ProxyClass();
+        return result;
       }
     }
   }
@@ -4251,7 +4324,7 @@ function invokePropGetter(args) {
   return resolveSyncResult(args, getProxy().invokeSync(args, () => {
   }));
 }
-function initProxyFunction(type, async, _ref, instanceId, proxy2) {
+function initProxyFunction(type, async, _ref, instanceIdOrInstance, proxy2) {
   var {
     moduleName,
     moduleType,
@@ -4268,6 +4341,9 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
   if (!keepAlive) {
     keepAlive = (methodName.indexOf("on") === 0 || methodName.indexOf("off") === 0) && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
   }
+  var isNumber = typeof instanceIdOrInstance === "number";
+  var instanceId = isNumber ? instanceIdOrInstance : void 0;
+  var instance = isNumber ? void 0 : instanceIdOrInstance;
   var baseArgs = instanceId ? {
     moduleName,
     moduleType,
@@ -4276,6 +4352,15 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     name: methodName,
     method: methodParams,
     nested: false,
+    keepAlive
+  } : instance ? {
+    moduleName,
+    moduleType,
+    ins: instance,
+    type,
+    name: methodName,
+    method: methodParams,
+    nested: true,
     keepAlive
   } : {
     moduleName,
@@ -4336,7 +4421,7 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
         });
       });
     }
-    return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback2), returnOptions, instanceId, proxy2);
+    return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback2), returnOptions, instanceIdOrInstance, proxy2);
   };
 }
 function initUTSStaticMethod(async, opts) {
@@ -4536,6 +4621,175 @@ function initUTSProxyClass(options) {
     }
   }));
 }
+var uniElementImplPriorityMethods = [
+  "hasAttribute",
+  "getAttribute",
+  // 'setAttribute',
+  // 'removeAttribute',
+  "getAnyAttribute"
+  // 'setAnyAttribute',
+];
+var elementClassDefineId = 0;
+function initUTSElementProxyClass(options) {
+  var {
+    moduleName,
+    moduleType,
+    package: pkg,
+    class: cls,
+    methods,
+    props,
+    setters,
+    errMsg
+  } = options;
+  var baseOptions = {
+    moduleName,
+    moduleType,
+    package: pkg,
+    class: cls,
+    errMsg
+  };
+  var staticMethods = options.staticMethods || {};
+  var staticProps = options.staticProps || [];
+  var staticSetters = options.staticSetters || {};
+  var classId = ++elementClassDefineId;
+  var BaseClass = class {
+  };
+  var ProxyClass = class UTSClass extends BaseClass {
+    static [Symbol.hasInstance](instance) {
+      return instance && instance.__element_class_id__ === classId;
+    }
+    // page: UniNativePageImpl
+    constructor(nodeId, page, tagName) {
+      super(nodeId, page, tagName);
+      var pageId = page.pageId;
+      var element = {
+        __type__: "UniElement",
+        pageId,
+        nodeId
+      };
+      var target = {};
+      var proxy2 = new Proxy(this, {
+        get(_target, name) {
+          if (name === "__v_skip") {
+            return true;
+          }
+          if (name === "__element_class_id__") {
+            return classId;
+          }
+          if (uniElementImplPriorityMethods.includes(name) && name in _target) {
+            return _target[name].bind(_target);
+          }
+          if (!target[name]) {
+            if (hasOwn(methods, name)) {
+              var {
+                async,
+                keepAlive,
+                params,
+                return: returnOptions
+              } = methods[name];
+              target[name] = initUTSInstanceMethod(!!async, extend({
+                name,
+                keepAlive,
+                params,
+                return: returnOptions
+              }, baseOptions), element, proxy2);
+            } else if (props.includes(name)) {
+              return invokePropGetter({
+                moduleName,
+                moduleType,
+                ins: element,
+                type: "getter",
+                keepAlive: false,
+                nested: true,
+                name,
+                errMsg
+              });
+            }
+          }
+          if (target[name]) {
+            return target[name];
+          }
+          var propOrMethod = _target[name];
+          if (typeof propOrMethod === "function") {
+            return propOrMethod.bind(_target);
+          }
+          return propOrMethod;
+        },
+        set(_target, name, newValue) {
+          if (props.includes(name)) {
+            var setter = parseClassPropertySetter(name);
+            if (!target[setter]) {
+              var param = setters[name];
+              if (param) {
+                target[setter] = initProxyFunction("setter", false, extend({
+                  name,
+                  keepAlive: false,
+                  params: [param]
+                }, baseOptions), element, proxy2);
+              }
+            }
+            target[parseClassPropertySetter(name)](newValue);
+            return true;
+          }
+          _target[name] = newValue;
+          return true;
+        }
+      });
+      return proxy2;
+    }
+  };
+  var staticPropSetterCache = {};
+  var staticMethodCache = {};
+  return Object.freeze(new Proxy(ProxyClass, {
+    get(target, name, receiver) {
+      name = parseClassMethodName(name, staticMethods);
+      if (hasOwn(staticMethods, name)) {
+        if (!staticMethodCache[name]) {
+          var {
+            async,
+            keepAlive,
+            params,
+            return: returnOptions
+          } = staticMethods[name];
+          staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
+            name,
+            companion: true,
+            keepAlive,
+            params,
+            return: returnOptions
+          }, baseOptions));
+        }
+        return staticMethodCache[name];
+      }
+      if (staticProps.includes(name)) {
+        return invokePropGetter(extend({
+          name,
+          companion: true,
+          type: "getter"
+        }, baseOptions));
+      }
+      return Reflect.get(target, name, receiver);
+    },
+    set(_, name, newValue) {
+      if (staticProps.includes(name)) {
+        var setter = parseClassPropertySetter(name);
+        if (!staticPropSetterCache[setter]) {
+          var param = staticSetters[name];
+          if (param) {
+            staticPropSetterCache[setter] = initProxyFunction("setter", false, extend({
+              name,
+              keepAlive: false,
+              params: [param]
+            }, baseOptions), 0);
+          }
+        }
+        staticPropSetterCache[parseClassPropertySetter(name)](newValue);
+        return true;
+      }
+      return false;
+    }
+  }));
+}
 function isUTSAndroid() {
   {
     if (
@@ -4654,6 +4908,7 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   hideTabBar,
   hideTabBarRedDot,
   initUTSClassName,
+  initUTSElementProxyClass,
   initUTSIndexClassName,
   initUTSPackageName,
   initUTSProxyClass,

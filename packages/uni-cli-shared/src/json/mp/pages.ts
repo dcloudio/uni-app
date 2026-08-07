@@ -14,6 +14,7 @@ interface ParsePagesJsonOptions {
   debug?: boolean
   darkmode?: boolean
   subpackages: boolean
+  independentSubpackages?: boolean
   windowOptionsMap?: Record<string, string>
   tabBarOptionsMap?: Record<string, string>
   tabBarItemOptionsMap?: Record<string, string>
@@ -68,6 +69,7 @@ function parsePagesJson(
   {
     debug,
     darkmode,
+    independentSubpackages,
     networkTimeout,
     subpackages,
     windowOptionsMap,
@@ -119,23 +121,22 @@ function parsePagesJson(
   pagesJson.subPackages = pagesJson.subPackages || pagesJson.subpackages
   if (pagesJson.subPackages) {
     if (subpackages) {
-      appJson.subPackages = pagesJson.subPackages.map(
-        ({ root, pages, ...rest }) => {
-          return extend(
-            {
-              root,
-              pages: pages.map((page) => {
-                addPageJson(
-                  normalizePath(path.join(root, page.path)),
-                  page.style
-                )
-                return page.path
-              }),
-            },
-            rest
-          )
+      appJson.subPackages = pagesJson.subPackages.map((subPackage) => {
+        const { root, pages, ...rest } = subPackage
+        if (!independentSubpackages) {
+          delete rest.independent
         }
-      )
+        return extend(
+          {
+            root,
+            pages: pages.map((page) => {
+              addPageJson(normalizePath(path.join(root, page.path)), page.style)
+              return page.path
+            }),
+          },
+          rest
+        )
+      })
     } else {
       pagesJson.subPackages.forEach(({ root, pages }) => {
         pages.forEach((page) => {

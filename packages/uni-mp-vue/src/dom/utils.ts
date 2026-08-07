@@ -56,12 +56,14 @@ function createUniElement(
     tagName
   )
   uniElement.$vm = ins.proxy
-  // 目前只有微信小程序支持获取 ScrollViewContext
-  if (
-    (ins.proxy as ComponentPublicInstance & { $mpPlatform: string })
-      .$mpPlatform === 'mp-weixin'
-  ) {
+  const mpPlatform = (
+    ins.proxy as ComponentPublicInstance & { $mpPlatform: string }
+  ).$mpPlatform
+  if (mpPlatform === 'mp-weixin') {
     initMiniProgramNode(uniElement, ins)
+  } else if (mpPlatform === 'mp-alipay') {
+    // 支付宝小程序不支持获取 ScrollViewContext，仅设置 scroll offset 相关属性
+    syncUniElementScrollOffset(uniElement)
   }
   uniElement.$onStyleChange((styles) => {
     let cssText = ''
@@ -197,6 +199,18 @@ function initMiniProgramNode(
           .exec()
       }, 2)
     })
+  }
+}
+
+function syncUniElementScrollOffset(uniElement: UniElement) {
+  if (uniElement.tagName === 'SCROLL-VIEW') {
+    uni
+      .createSelectorQuery()
+      .select('#' + uniElement.id)
+      .fields({ scrollOffset: true }, (res: Record<string, any>) => {
+        setUniElementScrollOffset(uniElement, res)
+      })
+      .exec()
   }
 }
 

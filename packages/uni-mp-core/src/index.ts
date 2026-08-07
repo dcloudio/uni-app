@@ -1,4 +1,8 @@
-export { initCreateApp, initCreateSubpackageApp } from './runtime/app'
+export {
+  initCreateApp,
+  initCreateIndependentSubpackageApp,
+  initCreateSubpackageApp,
+} from './runtime/app'
 export { initCreatePage, initPageInstance } from './runtime/page'
 export { initCreateComponent, ParseComponentOptions } from './runtime/component'
 export { initCreatePluginApp } from './runtime/plugin'

@@ -6,9 +6,29 @@ import {
   isEnableUniPushV2,
   isSsr,
   isUniPushOffline,
+  normalizePath,
+  parseIndependentMainRoot,
   resolveBuiltIn,
+  withIndependentRoot,
 } from '@dcloudio/uni-cli-shared'
 import type { ConfigEnv, UserConfig } from 'vite'
+
+function resolveUniPushPath(
+  platform: string,
+  isEnableV1: boolean,
+  isOffline: boolean
+): string {
+  const currentPlatform = platform || process.env.UNI_PLATFORM || ''
+  let file = 'dist/uni-push.es.js'
+  if (currentPlatform.startsWith('mp-')) {
+    file = 'dist/uni-push.mp.es.js'
+  } else if (isEnableV1) {
+    file = 'dist/uni-push-v1.plus.es.js'
+  } else if (isOffline) {
+    file = 'dist/uni-push.plus.es.js'
+  }
+  return normalizePath(resolveBuiltIn(path.join('@dcloudio/uni-push', file)))
+}
 
 export default () => [
   defineUniMainJsPlugin((opts) => {
@@ -16,6 +36,7 @@ export default () => [
     let isEnableV2 = false
     let isOffline = false
     let configModulePush = false
+    let platform = ''
     return {
       name: 'uni:push',
       enforce: 'pre',
@@ -24,9 +45,10 @@ export default () => [
           return
         }
         const inputDir = process.env.UNI_INPUT_DIR!
-        const platform = process.env.UNI_PLATFORM!
-        isEnableV1 = isEnableUniPushV1(inputDir, platform)
-        isEnableV2 = isEnableUniPushV2(inputDir, platform)
+        const currentPlatform = process.env.UNI_PLATFORM!
+        platform = currentPlatform
+        isEnableV1 = isEnableUniPushV1(inputDir, currentPlatform)
+        isEnableV2 = isEnableUniPushV2(inputDir, currentPlatform)
         configModulePush = hasPushModule(inputDir)
         // v1
         if (isEnableV1) {
@@ -48,17 +70,12 @@ export default () => [
       },
       resolveId(id: string) {
         if (id === '@dcloudio/uni-push') {
-          let file = 'dist/uni-push.es.js'
-          if (isEnableV1) {
-            file = 'dist/uni-push-v1.plus.es.js'
-          } else if (isOffline) {
-            file = 'dist/uni-push.plus.es.js'
-          }
-          return resolveBuiltIn(path.join('@dcloudio/uni-push', file))
+          return resolveUniPushPath(platform, isEnableV1, isOffline)
         }
       },
       transform(code: string, id: string) {
-        if (!opts.filter(id)) {
+        const independentRoot = parseIndependentMainRoot(id)
+        if (!opts.filter(id) && !independentRoot) {
           return
         }
         // 如果启用了v1，但是没有配置module.push，不需要注入
@@ -70,8 +87,16 @@ export default () => [
           return
         }
         if (isEnableV1 || isEnableV2) {
+          const importCode = independentRoot
+            ? `import ${JSON.stringify(
+                withIndependentRoot(
+                  resolveUniPushPath(platform, isEnableV1, isOffline),
+                  independentRoot
+                )
+              )};`
+            : `import '@dcloudio/uni-push';`
           return {
-            code: `import '@dcloudio/uni-push';` + code,
+            code: importCode + code,
             map: null,
           }
         }

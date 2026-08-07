@@ -5,20 +5,19 @@ export interface ShowModalSuccess {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -79,20 +78,19 @@ export interface ShowModalSuccess {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -153,20 +151,19 @@ export interface ShowModalSuccess {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -227,20 +224,19 @@ export interface ShowModalSuccess {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -340,20 +336,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -414,20 +409,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -490,20 +484,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -564,20 +557,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -638,20 +630,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -712,20 +703,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -786,20 +776,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -860,20 +849,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -935,20 +923,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1009,20 +996,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1083,20 +1069,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1157,20 +1142,19 @@ export type ShowModalOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1271,20 +1255,19 @@ export type HideModalOptions = {
 	 * @uniPlatform {
 		"app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1344,20 +1327,19 @@ export type HideModalOptions = {
 	 * @uniPlatform {
 		"app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1417,20 +1399,19 @@ export type HideModalOptions = {
 	 * @uniPlatform {
 		"app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1490,20 +1471,19 @@ export type HideModalOptions = {
 	 * @uniPlatform {
 		"app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1580,26 +1560,25 @@ export interface Uni {
 	  });
 	  ```
 	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showmodal
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showmodal
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showmodal
+	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/modal.html
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/modal.html
 	 * @uniPlatform
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1666,26 +1645,25 @@ export interface Uni {
 		});
 	  ```
 	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#hidemodal
-	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hidemodal
-	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hidemodal
+	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/modal.html#hidemodal
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/modal.html#hidemodal
 	 * @uniPlatform
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
-	        "uniVer": "x",
-	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
-	      },
-	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVaporVer": "5.21"
+	      },
+	      "ios": {
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"

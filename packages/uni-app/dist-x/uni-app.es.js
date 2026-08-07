@@ -1,4 +1,4 @@
-import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook } from 'vue';
+import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook, onBeforeUnmount } from 'vue';
 import { hasOwn } from '@vue/shared';
 export { capitalize, extend, hasOwn, isPlainObject } from '@vue/shared';
 import { sanitise, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_LAST_PAGE_BACK_PRESS, ON_EXIT, ON_INIT, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SAVE_EXIT_STATE, ON_TITLE_CLICK, ON_SHARE_TIMELINE, ON_SHARE_CHAT, ON_ADD_TO_FAVORITES, ON_SHARE_APP_MESSAGE, ON_COPY_URL, ON_UPLOAD_DOUYIN_VIDEO, ON_LIVE_MOUNT, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED } from '@dcloudio/uni-shared';
@@ -74,6 +74,79 @@ function resolveEasycom(component, easycom) {
 }
 
 /// <reference types="@dcloudio/types" />
+function isUniApp(target) {
+    const proxy = target === null || target === void 0 ? void 0 : target.proxy;
+    const ctx = target === null || target === void 0 ? void 0 : target.ctx;
+    const type = target === null || target === void 0 ? void 0 : target.type;
+    return ((proxy === null || proxy === void 0 ? void 0 : proxy.$mpType) === 'app' || (ctx === null || ctx === void 0 ? void 0 : ctx.$mpType) === 'app' || (type === null || type === void 0 ? void 0 : type.mpType) === 'app');
+}
+function getAppVm() {
+    const app = getApp({ allowDefault: true });
+    return app === null || app === void 0 ? void 0 : app.$vm;
+}
+function removeAppHook(vm, name, hook, originalHook, target) {
+    const hooks = vm.$[name];
+    if (!Array.isArray(hooks)) {
+        return;
+    }
+    for (let i = hooks.length - 1; i >= 0; i--) {
+        const appHook = hooks[i];
+        if (appHook === hook ||
+            (originalHook &&
+                appHook.__uni_app_hook === originalHook &&
+                appHook.__uni_app_target === target)) {
+            hooks.splice(i, 1);
+        }
+    }
+}
+function isTargetInvalid(target) {
+    var _a;
+    return (target === null || target === void 0 ? void 0 : target.isUnmounted) || (target === null || target === void 0 ? void 0 : target.__isUnload) || ((_a = target === null || target === void 0 ? void 0 : target.root) === null || _a === void 0 ? void 0 : _a.__isUnload);
+}
+function queueRemoveAppHook(removeHook) {
+    Promise.resolve().then(removeHook);
+}
+function injectAppHook(lifecycle, hook, target) {
+    const isAppInstance = isUniApp(target);
+    const appVm = getAppVm();
+    const appInstance = isAppInstance ? target : appVm === null || appVm === void 0 ? void 0 : appVm.$;
+    if (appInstance) {
+        if (isAppInstance) {
+            injectHook(lifecycle, hook, appInstance);
+            return;
+        }
+        let isRemoved = false;
+        let wrappedHook;
+        const removeHook = () => {
+            if (isRemoved || !wrappedHook) {
+                return;
+            }
+            isRemoved = true;
+            const appVm = getAppVm();
+            appVm && removeAppHook(appVm, lifecycle, wrappedHook, hook, target);
+        };
+        const appHook = ((...args) => {
+            if (isRemoved || isTargetInvalid(target)) {
+                queueRemoveAppHook(removeHook);
+                return;
+            }
+            return hook(...args);
+        });
+        wrappedHook = injectHook(lifecycle, appHook, appInstance);
+        if (wrappedHook) {
+            wrappedHook.__uni_app_hook = hook;
+            wrappedHook.__uni_app_target = target;
+            if (isTargetInvalid(target)) {
+                removeHook();
+            }
+        }
+        // 如果不是App，那么需要监听当前target的销毁事件，来移除App上的钩子
+        if (target && wrappedHook) {
+            onBeforeUnmount(() => removeHook(), target);
+            injectHook(ON_UNLOAD, () => removeHook(), target);
+        }
+    }
+}
 // function isUniPage(target: ComponentInternalInstance | null): boolean {
 //   if (target && 'renderer' in target) {
 //     return target.renderer === 'page'
@@ -81,20 +154,19 @@ function resolveEasycom(component, easycom) {
 //   return true
 // }
 const createLifeCycleHook = (lifecycle, flag = 0 /* HookFlags.UNKNOWN */) => (hook, target = getCurrentInstance()) => {
-    // 不使用此判断了，因为组件也可以监听页面的生命周期，当页面作为组件渲染时，那监听的页面生成周期是其所在页面的，而不是其自身的
-    // if (true) {
-    //   // 如果只是页面生命周期，排除与App公用的，比如onShow、onHide
-    //   if (flag === HookFlags.PAGE) {
-    //     if (!isUniPage(target)) {
-    //       return
-    //     }
-    //   }
-    // }
+    if (isInSSRComponentSetup)
+        return;
+    if (flag === 1 /* HookFlags.APP */) {
+        injectAppHook(lifecycle, hook, target);
+        return;
+    }
     // post-create lifecycle registrations are noops during SSR
-    !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+    injectHook(lifecycle, hook, target);
 };
-const onShow = /*#__PURE__*/ createLifeCycleHook(ON_SHOW, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
-const onHide = /*#__PURE__*/ createLifeCycleHook(ON_HIDE, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
+const onAppShow = /*#__PURE__*/ createLifeCycleHook(ON_SHOW, 1 /* HookFlags.APP */);
+const onAppHide = /*#__PURE__*/ createLifeCycleHook(ON_HIDE, 1 /* HookFlags.APP */);
+const onShow = /*#__PURE__*/ createLifeCycleHook(ON_SHOW, 2 /* HookFlags.PAGE */);
+const onHide = /*#__PURE__*/ createLifeCycleHook(ON_HIDE, 2 /* HookFlags.PAGE */);
 const onLaunch = /*#__PURE__*/ createLifeCycleHook(ON_LAUNCH, 1 /* HookFlags.APP */);
 const onError = /*#__PURE__*/ createLifeCycleHook(ON_ERROR, 1 /* HookFlags.APP */);
 const onThemeChange = /*#__PURE__*/ createLifeCycleHook(ON_THEME_CHANGE, 1 /* HookFlags.APP */);
@@ -132,10 +204,8 @@ const onNavigationBarSearchInputConfirmed =
 /*#__PURE__*/ createLifeCycleHook(ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, 2 /* HookFlags.PAGE */);
 const onNavigationBarSearchInputFocusChanged = 
 /*#__PURE__*/ createLifeCycleHook(ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, 2 /* HookFlags.PAGE */);
-const onPageHide = onHide;
 const onPageShow = onShow;
-const onAppHide = onHide;
-const onAppShow = onShow;
+const onPageHide = onHide;
 
 function renderComponentSlot(slots, name, props = null) {
     if (slots[name]) {

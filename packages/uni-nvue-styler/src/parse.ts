@@ -164,6 +164,5 @@ function objToMap(obj: Record<string, unknown>) {
 }
 
 function isExpr(value: string) {
-  const v = value.slice(0, 5)
-  return /* CSS_VAR_ */ v === 'CSS_V' || v === 'calc('
+  return value.startsWith('calc(')
 }

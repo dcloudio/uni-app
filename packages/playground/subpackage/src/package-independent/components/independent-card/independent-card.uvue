@@ -1,0 +1,15 @@
+<template>
+  <view class="independent-card">
+    <text>independent card</text>
+  </view>
+</template>
+
+<script>
+export default {}
+</script>
+
+<style>
+.independent-card {
+  border: 1px solid #1f6feb;
+}
+</style>

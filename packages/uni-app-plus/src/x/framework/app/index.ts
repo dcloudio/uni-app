@@ -119,9 +119,12 @@ export function registerApp(
   defineGlobalData(appCtx, defaultApp.globalData)
 
   initService(nativeApp, unregisterApp)
-
-  initEntry(nativeApp)
-  initEntryPagePath(nativeApp)
+  /**
+   * getRedirectInfo调用一次后可能会被清空，这里统一调一次，后续不可再调用
+   */
+  const redirectInfo = nativeApp.getRedirectInfo()
+  initEntry(nativeApp, redirectInfo)
+  initEntryPagePath(redirectInfo)
   // initTabBar()
   initGlobalEvent(nativeApp)
   // initKeyboardEvent()
@@ -152,8 +155,7 @@ export function initApp(app: App) {
   initComponentInstance(app)
 }
 
-function initEntryPagePath(app: IApp) {
-  const redirectInfo = app.getRedirectInfo()
+function initEntryPagePath(redirectInfo: Map<string, any>) {
   const debugInfo = redirectInfo.get('debug')
   if (debugInfo) {
     const url = debugInfo.get('url')

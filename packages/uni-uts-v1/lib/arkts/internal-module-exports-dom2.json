@@ -1174,9 +1174,6 @@
       "IGetProviderFail"
     ],
     [
-      "IGetScreenBrightnessFail"
-    ],
-    [
       "IGyroscopeError"
     ],
     [
@@ -1202,12 +1199,6 @@
     ],
     [
       "IRequestPaymentFail"
-    ],
-    [
-      "ISetKeepScreenOnFail"
-    ],
-    [
-      "ISetScreenBrightnessFail"
     ],
     [
       "IShareFail"
@@ -1772,6 +1763,9 @@
     ],
     [
       "ProviderErrorCode"
+    ],
+    [
+      "PullDownRefreshErrorCode"
     ],
     [
       "ReadCompressedFileCallback"
@@ -2521,6 +2515,36 @@
       "StartLocationUpdateSuccess"
     ],
     [
+      "StartPullDownRefresh"
+    ],
+    [
+      "StartPullDownRefreshComplete"
+    ],
+    [
+      "StartPullDownRefreshCompleteCallback"
+    ],
+    [
+      "StartPullDownRefreshFail"
+    ],
+    [
+      "StartPullDownRefreshFailCallback"
+    ],
+    [
+      "StartPullDownRefreshFailImpl"
+    ],
+    [
+      "StartPullDownRefreshOptions"
+    ],
+    [
+      "StartPullDownRefreshSuccess"
+    ],
+    [
+      "StartPullDownRefreshSuccessCallback"
+    ],
+    [
+      "StartPullDownRefreshSuccessImpl"
+    ],
+    [
       "StartSoterAuthentication"
     ],
     [
@@ -2638,6 +2662,9 @@
       "StopLocationUpdateSuccess"
     ],
     [
+      "StopPullDownRefresh"
+    ],
+    [
       "TruncateFileOptions"
     ],
     [
@@ -2692,6 +2719,9 @@
       "UniEditorElementSetContentsOptions"
     ],
     [
+      "UniInputElement"
+    ],
+    [
       "UniLoadingElement"
     ],
     [
@@ -2705,6 +2735,9 @@
     ],
     [
       "UniShareProvider"
+    ],
+    [
+      "UniTextareaElement"
     ],
     [
       "UniVerifyButtonListItem"

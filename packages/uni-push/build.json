@@ -15,6 +15,11 @@
   },
   {
     "input": {
+      "src/mp.ts": ["dist/uni-push.mp.es.js"]
+    }
+  },
+  {
+    "input": {
       "src/plus.ts": ["dist/uni-push.plus.es.js"]
     }
   },

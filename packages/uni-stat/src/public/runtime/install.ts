@@ -37,7 +37,7 @@ import type { LifecycleOptions } from './lifecycleHooks'
 
 /**
  * 从 `process.env.UNI_STATISTICS_CONFIG`（plugin 注入的 manifest.uniStatistics 序列化串）
- * 读取业务配置，把已知字段映射为 StatApp.install 的 partial config。
+ * 读取业务配置，把已知行为字段映射为 StatApp.install 的 partial config。
  *
  * ## 字段命名严格对齐私有版
  *
@@ -65,6 +65,12 @@ import type { LifecycleOptions } from './lifecycleHooks'
  * 公有版早期内部测试用了带 `Sec` 后缀的命名（`reportIntervalSec / backgroundTimeoutSec /
  * pageInactiveTimeoutSec`），未对外发布但已在示例中出现过；本函数同时接受这两套写法，
  * **优先取私有版命名**（无后缀），别名仅作向后兼容。
+ *
+ * ## 上行身份字段不从 manifest 读取
+ *
+ * `ak / v / ch` 均有更可信的数据源：`ak` 取构建期应用 AppID，`v` 取运行时版本，
+ * App 端 `ch` 取 `plus.runtime.channel`。这些字段不应由
+ * `manifest.uniStatistics` 静态覆盖，尤其多渠道包会因此被固定到默认渠道。
  *
  * ## 内部接入参数不可自定义
  *
@@ -148,10 +154,6 @@ function readManifestStatConfig(): Partial<StatAppConfig> | undefined {
         cfg.enablePageLog = items.uniStatPageLog
       }
     }
-
-    if (typeof obj.ak === 'string' && obj.ak) cfg.ak = obj.ak
-    if (typeof obj.v === 'string') cfg.v = obj.v
-    if (typeof obj.ch === 'string') cfg.ch = obj.ch
 
     return Object.keys(cfg).length > 0 ? cfg : undefined
   } catch (e) {
@@ -276,6 +278,7 @@ export function installPublicStat(opts: InstallOptions = {}): void {
   // 优先级：opts.config（手动覆盖） > manifest.uniStatistics（plugin 注入） > 默认值。
   // 这样业务/灰度同学既能在 manifest 里改超时阈值（生产路径），
   // 也能用 installPublicStat({ config: {...} }) 在测试环境强行覆盖（接入调试）。
+  // 注意：manifest 仅解析行为配置，不解析 ak/v/ch；App 渠道始终由 plus.runtime.channel 决定。
   const fromManifest = readManifestStatConfig()
   const finalConfig: Partial<StatAppConfig> = Object.assign(
     {},

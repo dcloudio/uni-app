@@ -116,13 +116,16 @@ export function generate(
   })
   if (filter && filter.generate && autoImportFilters.length) {
     autoImportFilters.forEach((autoImportFilter) => {
-      context.code +=
-        filter.generate!(
-          autoImportFilter as any,
-          (process.env.UNI_SUBPACKAGE
-            ? `/${process.env.UNI_SUBPACKAGE}/common/`
-            : '/common/') + autoImportFilter.id
-        ) + '\n'
+      const filterPath =
+        (process.env.UNI_SUBPACKAGE
+          ? `/${process.env.UNI_SUBPACKAGE}/common/`
+          : '/common/') + autoImportFilter.id
+      const generate = filter.generate as (
+        filter: typeof autoImportFilter,
+        filename: string,
+        ownerFilename?: string
+      ) => string | void
+      context.code += generate(autoImportFilter, filterPath, filename) + '\n'
     })
   }
   emitFile!({ type: 'asset', fileName: filename, source: context.code })

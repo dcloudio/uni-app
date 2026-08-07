@@ -42,12 +42,13 @@ import { isArray, isFunction, isString } from '@vue/shared'
 import { preCss, preNVueCss } from '../../../../preprocess'
 import { filterPrefersColorScheme } from '../../../../postcss/plugins/uniapp'
 import { emptyCssComments } from '../cleanString'
+import { shouldUseHighResolutionSourceMap } from '../../../../x'
 
 import { PAGES_JSON_JS, PAGES_JSON_UTS } from '../../../../constants'
 import { createJsStylePlaceholder } from '../../../../dom2/fontFamily'
 import { createRollupError } from '../../../utils/utils'
 import { createCompilerError } from '@vue/compiler-core'
-import { createResolveErrorMsg } from '../../../../utils'
+import { createResolveErrorMsg, hash } from '../../../../utils'
 
 import { parseVueRequest } from '../../../utils'
 import { getIsStaticFile } from './static'
@@ -382,9 +383,18 @@ export function cssPostPlugin(
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
   const styles: Map<string, string> = new Map<string, string>()
+  // 只缓存 cssCode 的 hash，不缓存完整 css，避免用空间换时间。
+  const cssChunkCodeHashCache: Map<string, string> = new Map<string, string>()
   let cssChunks: Map<string, string[]>
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const isDom2App = isDom2 && platform.startsWith('app')
+  // 仅限定鸿蒙 DOM2 开发模式，避免影响其它平台和生产构建。
+  const enableCssIncremental =
+    process.env.NODE_ENV === 'development' &&
+    process.env.UNI_UTS_PLATFORM === 'app-harmony' &&
+    isDom2App &&
+    !!isJsCode &&
+    !!emitFile
   return {
     name: 'vite:css-post',
     buildStart() {
@@ -508,6 +518,9 @@ export function cssPostPlugin(
       }
 
       if (!cssChunks.size) {
+        if (enableCssIncremental) {
+          cssChunkCodeHashCache.clear()
+        }
         return
       }
       // resolve asset URL placeholders to their built file URLs and perform
@@ -553,8 +566,23 @@ export function cssPostPlugin(
           .map((id) => styles.get(id) || '')
           .join('\n')
       }
+      const currentCssFilenames = enableCssIncremental
+        ? new Set(cssChunks.keys())
+        : undefined
       for (const filename of cssChunks.keys()) {
         const cssCode = genCssCode(filename)
+        const cssCodeHash = enableCssIncremental ? hash(cssCode) : ''
+        const hasFontFace =
+          enableCssIncremental && /@font-face\b/i.test(cssCode)
+        // 鸿蒙 DOM2 开发模式下，未变化的样式无需重复 parseCss 和写入原生侧。
+        // @font-face 会在 chunkCssCode 中写入字体缓存，必须保留原有副作用。
+        if (
+          enableCssIncremental &&
+          !hasFontFace &&
+          cssChunkCodeHashCache.get(filename) === cssCodeHash
+        ) {
+          continue
+        }
         let source = await processChunkCSS(cssCode, {
           filename: filename,
           inlined: false,
@@ -572,6 +600,16 @@ export function cssPostPlugin(
                 source,
               })
         }
+        if (enableCssIncremental) {
+          cssChunkCodeHashCache.set(filename, cssCodeHash)
+        }
+      }
+      if (currentCssFilenames) {
+        cssChunkCodeHashCache.forEach((_, filename) => {
+          if (!currentCssFilenames.has(filename)) {
+            cssChunkCodeHashCache.delete(filename)
+          }
+        })
       }
     },
   }
@@ -1682,7 +1720,7 @@ async function getSource(
   ms.appendLeft(0, sep)
   ms.appendLeft(0, additionalData)
 
-  const map = ms.generateMap({ hires: true })
+  const map = ms.generateMap({ hires: shouldUseHighResolutionSourceMap() })
   map.file = filename
   map.sources = [filename]
 

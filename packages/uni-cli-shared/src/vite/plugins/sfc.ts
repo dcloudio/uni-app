@@ -12,6 +12,7 @@ import MagicString from 'magic-string'
 import { isVueSfcFile } from '../../vue'
 import { createRollupError } from '../utils'
 import { preUVueHtml, preUVueJs } from '../../preprocess'
+import { shouldUseHighResolutionSourceMap } from '../../x'
 
 const SRC_IMPORT_RE =
   /<(template|script|style)[^>]*src\s*=\s*["']([^"']+)["'][^>]*>/
@@ -163,7 +164,9 @@ export function uniViteSfcSrcImportPlugin(
 
       return {
         code: s.toString(),
-        map: sourceMap ? s.generateMap({ hires: true }) : null,
+        map: sourceMap
+          ? s.generateMap({ hires: shouldUseHighResolutionSourceMap() })
+          : null,
       }
     },
   }

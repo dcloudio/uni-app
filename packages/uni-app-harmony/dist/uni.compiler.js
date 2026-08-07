@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var appVite = require('@dcloudio/uni-app-vite');
 var uniAppUts = require('@dcloudio/uni-app-uts');
 var path = require('path');
@@ -162,6 +160,13 @@ var ExternalModulesX = [
 			"getUniverifyManager",
 			"getUniVerifyManager"
 		]
+	},
+	{
+		type: "extapi",
+		plugin: "uni-requestMerchantTransfer",
+		apis: [
+			"requestMerchantTransfer"
+		]
 	}
 ];
 
@@ -241,6 +246,13 @@ var ExternalModulesDom2 = [
 			"getUniverifyManager",
 			"getUniVerifyManager"
 		]
+	},
+	{
+		type: "extapi",
+		plugin: "uni-requestMerchantTransfer",
+		apis: [
+			"requestMerchantTransfer"
+		]
 	}
 ];
 
@@ -248,23 +260,6 @@ var ExternalModulesDom2 = [
 // TODO 未来component类型的provider需要重构，比如uni-map-tencent需要依赖内置基础模块uni-map，先基于现状实现。
 const ComponentsWithProvider = [];
 const ComponentsWithProviderX = ['uni-map'];
-const ExtApiBlackListX = ['uni-pullDownRefresh'];
-const ExtApiBlackListDom2 = [
-    ...ExtApiBlackListX,
-    'uni-createWebviewContext',
-];
-const ExtApiBlackList = [
-    'uni-loadFontFace',
-    'uni-getElementById',
-    'uni-document',
-    'uni-navigationBar',
-    'uni-createWebviewContext',
-    'uni-map-tencent',
-    'uni-arrayBufferToBase64',
-    'uni-base64ToArrayBuffer',
-    'uni-privacy',
-    'uni-showLoading',
-];
 
 async function buildWorkers() {
     const workers = uniCliShared.getWorkers();
@@ -763,7 +758,4 @@ var index = [
     uniAppHarmonyPlugin,
 ];
 
-exports.ExtApiBlackList = ExtApiBlackList;
-exports.ExtApiBlackListDom2 = ExtApiBlackListDom2;
-exports.ExtApiBlackListX = ExtApiBlackListX;
-exports.default = index;
+module.exports = index;

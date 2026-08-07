@@ -13,9 +13,11 @@ import {
   type CreateScrollListenerOptions,
   createScrollListener,
   disableScrollListener,
+  getPageInstanceByChild,
   initPageInternalInstance,
   initPageVm,
   invokeHook,
+  isDialogPageInstance,
 } from '@dcloudio/uni-core'
 import {
   ON_PAGE_SCROLL,
@@ -302,6 +304,9 @@ export function onPageShow(
   updateBodyScopeId(instance)
   updateCurPageCssVar(pageMeta)
   updateCurPageAttrs(pageMeta)
+  if (__X__ && isDialogPageInstance(getPageInstanceByChild(instance))) {
+    return
+  }
   initPageScrollListener(instance, pageMeta)
 }
 

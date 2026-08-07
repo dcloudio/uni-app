@@ -1,0 +1,18 @@
+export class UniViewElement {
+  constructor() {}
+  scrollTo(top: number) {}
+}
+
+export class UniCanvasElementImpl {
+  constructor() {}
+  draw() {}
+}
+
+export class ViewController {
+  constructor() {}
+  reload() {}
+}
+
+export default class UniDefaultElement {
+  constructor() {}
+}

@@ -4505,7 +4505,7 @@
       "flatten": {
         "app": {
           "android": {
-            "unixVaporVer": "5.21"
+            "unixVaporVer": "x"
           },
           "ios": {
             "unixVaporVer": "5.11"
@@ -5219,8 +5219,8 @@
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "3.9+",
-                "unixVaporVer": "5.21"
+                "unixVer": "x",
+                "unixVaporVer": "x"
               },
               "ios": {
                 "osVer": "12.0",
@@ -10083,13 +10083,13 @@
       "flatten": {
         "app": {
           "android": {
-            "unixVaporVer": "5.21"
+            "unixVaporVer": "x"
           },
           "ios": {
-            "unixVaporVer": "5.11"
+            "unixVaporVer": "x"
           },
           "harmony": {
-            "unixVaporVer": "5.0"
+            "unixVaporVer": "x"
           }
         }
       },
@@ -10775,13 +10775,13 @@
             "osVer": "5.0",
             "uniVer": "x",
             "unixVer": "3.9+",
-            "unixVaporVer": "5.21"
+            "unixVaporVer": "x"
           },
           "ios": {
             "osVer": "12.0",
             "uniVer": "x",
             "unixVer": "4.11",
-            "unixVaporVer": "5.11"
+            "unixVaporVer": "x"
           },
           "harmony": {
             "osVer": "5.0.0",
@@ -11350,13 +11350,11 @@
           "uniPlatform": {
             "app": {
               "android": {
-                "osVer": "x",
                 "uniVer": "√",
                 "unixVer": "3.9+",
                 "unixVaporVer": "5.21"
               },
               "ios": {
-                "osVer": "x",
                 "uniVer": "√",
                 "unixVer": "4.11",
                 "unixVaporVer": "5.11"
@@ -12789,7 +12787,7 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
-                "unixVaporVer": "5.0"
+                "unixVaporVer": "5.14"
               }
             },
             "mp": {
@@ -13748,7 +13746,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -13784,7 +13781,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -13820,7 +13816,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -13855,7 +13850,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -13891,7 +13885,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -13926,7 +13919,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -13962,7 +13954,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -13997,7 +13988,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -14032,7 +14022,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -14067,7 +14056,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -14102,7 +14090,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -14137,7 +14124,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -14172,7 +14158,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"
@@ -14207,7 +14192,6 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "x",
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "x"

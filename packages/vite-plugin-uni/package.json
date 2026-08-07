@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vite-plugin-uni",
-  "version": "3.0.0-5010520260709002",
+  "version": "3.0.0-alpha-5020320260803001",
   "description": "uni-app vite plugin",
   "bin": {
     "uni": "bin/uni.js"
@@ -25,6 +25,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@babel/core": "catalog:",
+    "@babel/types": "catalog:",
     "@babel/plugin-syntax-import-meta": "^7.10.4",
     "@babel/plugin-transform-typescript": "^7.23.3",
     "@dcloudio/uni-cli-shared": "workspace:*",
@@ -40,6 +41,7 @@
     "@vue/shared": "catalog:",
     "cac": "6.7.9",
     "debug": "catalog:",
+    "es-module-lexer": "catalog:",
     "estree-walker": "catalog:",
     "express": "catalog:",
     "fast-glob": "catalog:",
@@ -49,6 +51,7 @@
     "magic-string": "catalog:",
     "picocolors": "catalog:",
     "terser": "^5.4.0",
+    "source-map-js": "catalog:",
     "unplugin-auto-import": "catalog:"
   },
   "devDependencies": {

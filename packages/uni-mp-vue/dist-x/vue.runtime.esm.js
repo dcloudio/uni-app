@@ -1,4 +1,4 @@
-import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
+import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, createUniDOMStringMap, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
 import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass as normalizeClass$1, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
@@ -5571,9 +5571,13 @@ var plugin = {
         app.config.globalProperties.pruneComponentPropsCache =
             pruneComponentPropsCache;
         const oldMount = app.mount;
-        app.mount = function mount(rootContainer) {
-            const instance = oldMount.call(app, rootContainer);
-            const createApp = getCreateApp();
+        app.mount = function mount(rootContainer, subpackageRoot, options) {
+            const hasSubpackageRoot = typeof subpackageRoot === 'string';
+            const root = hasSubpackageRoot ? subpackageRoot : undefined;
+            const instance = hasSubpackageRoot
+                ? oldMount.call(app, rootContainer)
+                : oldMount.apply(app, arguments);
+            const createApp = getCreateApp(root, options);
             if (createApp) {
                 createApp(instance);
             }
@@ -5588,12 +5592,27 @@ var plugin = {
         };
     },
 };
-function getCreateApp() {
+function getCreateApp(subpackageRoot, options) {
+    const root = normalizeSubpackageRoot(subpackageRoot);
     const method = process.env.UNI_MP_PLUGIN
         ? 'createPluginApp'
-        : process.env.UNI_SUBPACKAGE
-            ? 'createSubpackageApp'
-            : 'createApp';
+        : root && (options === null || options === void 0 ? void 0 : options.independent)
+            ? 'createIndependentSubpackageApp'
+            : root || process.env.UNI_SUBPACKAGE
+                ? 'createSubpackageApp'
+                : 'createApp';
+    const createApp = method === 'createIndependentSubpackageApp' && (options === null || options === void 0 ? void 0 : options.createApp)
+        ? options.createApp
+        : getGlobalCreateApp(method);
+    if (createApp &&
+        root &&
+        (method === 'createSubpackageApp' ||
+            method === 'createIndependentSubpackageApp')) {
+        return (instance) => createApp(instance, root);
+    }
+    return createApp;
+}
+function getGlobalCreateApp(method) {
     if (typeof global !== 'undefined' &&
         typeof global[method] !== 'undefined') {
         return global[method];
@@ -5604,6 +5623,9 @@ function getCreateApp() {
         // @ts-expect-error
         return my[method];
     }
+}
+function normalizeSubpackageRoot(root) {
+    return typeof root === 'string' ? root.replace(/^\/+|\/+$/g, '') : undefined;
 }
 
 class UniCSSStyleDeclaration {
@@ -5668,7 +5690,7 @@ function hyphenateCssProperty(str) {
 class UniAnimation {
     constructor(id, scope, keyframes, options = {}) {
         var _a;
-        this._playState = '';
+        this._playState = 'idle';
         this.parsedKeyframes = [];
         this.options = {};
         this.onfinish = null;
@@ -5690,6 +5712,8 @@ class UniAnimation {
         throw new Error('currentTime not implemented.');
     }
     cancel() {
+        var _a;
+        const shouldDispatchCancel = this._playState !== 'idle';
         toRaw(this.scope).setData({
             ['$eA.' + this.id]: JSON.stringify({
                 id: this.id,
@@ -5699,6 +5723,9 @@ class UniAnimation {
             }),
         });
         this._playState = 'idle';
+        if (shouldDispatchCancel) {
+            (_a = this.oncancel) === null || _a === void 0 ? void 0 : _a.call(this, createUniAnimationPlaybackEvent('cancel'));
+        }
     }
     finish() {
         throw new Error('finish not implemented.');
@@ -5717,6 +5744,14 @@ class UniAnimation {
         });
         this._playState = 'running';
     }
+}
+function createUniAnimationPlaybackEvent(type) {
+    return {
+        type,
+        timeStamp: Date.now(),
+        currentTime: null,
+        timelineTime: null,
+    };
 }
 function handleDirection(keyframes, direction) {
     if (direction === 'reverse') {
@@ -5848,7 +5883,7 @@ class UniElement {
         // 跳过vue的响应式
         this.__v_skip = true;
         this.style = new UniCSSStyleDeclaration();
-        this.dataset = {};
+        this._dataset = createUniDOMStringMap();
         this.offsetTop = NaN;
         this.offsetLeft = NaN;
         this.scrollTop = NaN;
@@ -5858,6 +5893,12 @@ class UniElement {
         this.id = id;
         this.tagName = name.toUpperCase();
         this.nodeName = this.tagName;
+    }
+    get dataset() {
+        return this._dataset;
+    }
+    set dataset(value) {
+        this._dataset = createUniDOMStringMap(value || {});
     }
     scrollTo(options) {
         if (this.$vm
@@ -6053,10 +6094,13 @@ function createUniElement(id, tagName, ins) {
     }
     const uniElement = new (customElements.get(tagName) || UniElement)(id, tagName);
     uniElement.$vm = ins.proxy;
-    // 目前只有微信小程序支持获取 ScrollViewContext
-    if (ins.proxy
-        .$mpPlatform === 'mp-weixin') {
+    const mpPlatform = ins.proxy.$mpPlatform;
+    if (mpPlatform === 'mp-weixin') {
         initMiniProgramNode(uniElement, ins);
+    }
+    else if (mpPlatform === 'mp-alipay') {
+        // 支付宝小程序不支持获取 ScrollViewContext，仅设置 scroll offset 相关属性
+        syncUniElementScrollOffset(uniElement);
     }
     uniElement.$onStyleChange((styles) => {
         var _a;
@@ -6172,6 +6216,17 @@ function initMiniProgramNode(uniElement, ins) {
         });
     }
 }
+function syncUniElementScrollOffset(uniElement) {
+    if (uniElement.tagName === 'SCROLL-VIEW') {
+        uni
+            .createSelectorQuery()
+            .select('#' + uniElement.id)
+            .fields({ scrollOffset: true }, (res) => {
+            setUniElementScrollOffset(uniElement, res);
+        })
+            .exec();
+    }
+}
 function setUniElementScrollOffset(uniElement, res) {
     const properties = [
         'scrollTop',
@@ -6278,7 +6333,7 @@ function normalizeAlipayTapEventPosition(event) {
     event.pageX = event.detail.pageX;
     event.pageY = event.detail.pageY;
 }
-function normalizeXEvent(event, instance) {
+function normalizeXEvent(event, instance, originalTarget = event.target, originalCurrentTarget = event.currentTarget) {
     if (isMPTapEvent(event)) {
         const ctx = instance === null || instance === void 0 ? void 0 : instance.ctx;
         if ((ctx === null || ctx === void 0 ? void 0 : ctx.$mpPlatform) === 'mp-alipay') {
@@ -6298,8 +6353,8 @@ function normalizeXEvent(event, instance) {
             }
         }
     }
-    if (event.target) {
-        const oldTarget = event.target;
+    if (originalTarget) {
+        const oldTarget = originalTarget;
         Object.defineProperty(event, 'target', {
             get() {
                 if (!event._target) {
@@ -6309,8 +6364,8 @@ function normalizeXEvent(event, instance) {
             },
         });
     }
-    if (event.currentTarget) {
-        const oldCurrentTarget = event.currentTarget;
+    if (originalCurrentTarget) {
+        const oldCurrentTarget = originalCurrentTarget;
         Object.defineProperty(event, 'currentTarget', {
             get() {
                 if (!event._currentTarget) {
@@ -6323,6 +6378,8 @@ function normalizeXEvent(event, instance) {
 }
 function patchMPEvent(event, instance) {
     if (event.type && event.target) {
+        const originalTarget = event.target;
+        const originalCurrentTarget = event.currentTarget;
         event.preventDefault = NOOP;
         event.stopPropagation = NOOP;
         event.stopImmediatePropagation = NOOP;
@@ -6343,7 +6400,7 @@ function patchMPEvent(event, instance) {
             event.target = extend({}, event.target, event.detail);
         }
         {
-            normalizeXEvent(event, instance);
+            normalizeXEvent(event, instance, originalTarget, originalCurrentTarget);
         }
     }
 }

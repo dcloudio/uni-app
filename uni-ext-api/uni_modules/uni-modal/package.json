@@ -32,33 +32,35 @@
   },
   "uni_modules": {
     "dependencies": [
-    	"uni-framework",
-    	"uni-theme",
-    	"uni-getSystemInfo",
-    	"uni-dialogPage",
-    	"uni-event"
+      "uni-framework",
+      "uni-theme",
+      "uni-getAppBaseInfo",
+      "uni-getDeviceInfo",
+      "uni-getSystemInfo",
+      "uni-dialogPage",
+      "uni-event"
     ],
     "uni-ext-api": {
-    	"uni": {
-    		"showModal": {
-    			"name": "showModal",
-    			"app": {
-    				"js": false,
-    				"kotlin": true,
-    				"swift": true,
-    				"arkts": true
-    			}
-    		},
-			"hideModal": {
-				"name": "hideModal",
-				"app": {
-					"js": false,
-					"kotlin": true,
-					"swift": true,
-					"arkts": true
-				}
-			}
-    	}
+      "uni": {
+        "showModal": {
+          "name": "showModal",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          }
+        },
+      "hideModal": {
+        "name": "hideModal",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+      }
     },
     "encrypt": [],
     "platforms": {

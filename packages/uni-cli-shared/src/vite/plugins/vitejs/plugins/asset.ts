@@ -19,9 +19,14 @@ import {
   normalizeEmitAssetFileName,
   normalizeNodeModules,
 } from '../../../../utils'
+import {
+  isUniAppXAndroid,
+  shouldUseHighResolutionSourceMap,
+} from '../../../../x'
 import { type IsStaticFile, getIsStaticFile } from './static'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
+const assetUrlMarker = '__VITE_ASSET__'
 
 const rawRE = /(\?|&)raw(?:&|$)/
 const urlRE = /(\?|&)url(?:&|$)/
@@ -125,6 +130,10 @@ export function assetPlugin(
       let match: RegExpExecArray | null
       let s: MagicString | undefined
       assetUrlRE.lastIndex = 0
+      // 部分 chunk 不包含资源占位符，先用低成本字符串查找跳过正则扫描。
+      if (code.indexOf(assetUrlMarker) === -1) {
+        return null
+      }
       // Urls added with JS using e.g.
       // imgElement.src = "__VITE_ASSET__5aa0ddc0__" are using quotes
 
@@ -145,13 +154,21 @@ export function assetPlugin(
       if (s) {
         return {
           code: s.toString(),
-          map: withSourcemap(config) ? s.generateMap({ hires: true }) : null,
+          map: withSourcemap(config)
+            ? s.generateMap({ hires: shouldUseAssetHighResolutionSourceMap() })
+            : null,
         }
       } else {
         return null
       }
     },
   }
+}
+
+function shouldUseAssetHighResolutionSourceMap() {
+  // Android dom2 的 app-service 后续会与 esbuild map 合并，低精度 asset map
+  // 可能导致原始 .uvue 映射丢失或断点偏移。
+  return isUniAppXAndroid() || shouldUseHighResolutionSourceMap()
 }
 
 export function parseAssets(config: ResolvedConfig, code: string) {

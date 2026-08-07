@@ -12738,6 +12738,14 @@ function initPageOptions({ meta }) {
     const statusbarHeight = getStatusbarHeight();
     const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
     return {
+        /**
+         * 此处固定true带来的问题
+         * 鸿蒙非uni-app-x加载页面css时完全是鸿蒙web组件自主行为，uni没有干涉，此时如果页面不含css，鸿蒙web组件会打印一行警告信息
+         *
+         * 改动的困难在于目前__uniRoutes生成仅依赖pages.json的内容，如果再去分析页面是否包含css，会增加复杂度和性能开销
+         * 如果干涉鸿蒙web加载css的过程会降低一丢丢性能，鉴于此警告并不影响功能，暂不处理此问题
+         */
+        // css: meta.hasCss !== false,
         css: true,
         route: meta.route,
         version: 1,
@@ -13588,22 +13596,49 @@ function publishHandler(event, args, pageIds) {
 
 let focusTimeout = 0;
 let keyboardHeight = 0;
+let onKeyboardShow = null;
 let focusTimer = null;
 function hookKeyboardEvent(event, callback) {
+    onKeyboardShow = null;
     if (focusTimer) {
         clearTimeout(focusTimer);
         focusTimer = null;
     }
     if (event.type === 'onFocus') {
-        {
+        if (keyboardHeight > 0) {
+            event.detail.height = keyboardHeight;
+        }
+        else {
             focusTimer = setTimeout(function () {
                 event.detail.height = keyboardHeight;
                 callback(event);
             }, focusTimeout);
+            onKeyboardShow = function () {
+                if (focusTimer) {
+                    clearTimeout(focusTimer);
+                    focusTimer = null;
+                }
+                event.detail.height = keyboardHeight;
+                callback(event);
+            };
             return;
         }
     }
     callback(event);
+}
+function initKeyboardEvent() {
+    const isAndroid = 'HarmonyOS'.toLowerCase() === 'android';
+    focusTimeout = isAndroid ? 300 : 700;
+    UniServiceJSBridge.on(ON_KEYBOARD_HEIGHT_CHANGE, (res) => {
+        keyboardHeight = res.height;
+        if (keyboardHeight > 0) {
+            const callback = onKeyboardShow;
+            onKeyboardShow = null;
+            if (callback) {
+                callback();
+            }
+        }
+    });
 }
 
 function onNodeEvent(nodeId, evt, pageNode) {
@@ -13933,6 +13968,7 @@ function registerApp(appVm) {
     initEntry();
     initTabBar();
     initGlobalEvent();
+    initKeyboardEvent();
     initSubscribeHandlers();
     initAppLaunch(appVm);
     // TODO clearTempFile

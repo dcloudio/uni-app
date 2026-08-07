@@ -30,7 +30,6 @@ export function uniAppPagesPlugin(): Plugin {
 
   let allPagePaths: string[] = []
   let isFirst = true
-  let hasTabBar = false
   return {
     name: 'uni:app-pages-json',
     apply: 'build',
@@ -42,6 +41,12 @@ export function uniAppPagesPlugin(): Plugin {
     load(id) {
       if (isPages(id)) {
         return fs.readFileSync(pagesJsonPath, 'utf8')
+      }
+    },
+    watchChange(id) {
+      if (isDom2 && normalizePath(id) === normalizePath(pagesJsonPath)) {
+        // dom2 下 pages.json 变更需要页面模板重新编译，并走全量更新通知。
+        process.env.UNI_APP_X_DOM2_PAGES_JSON_CHANGED = 'true'
       }
     },
     transform(code, id) {
@@ -80,13 +85,6 @@ export function uniAppPagesPlugin(): Plugin {
         // pages.json
         const pagesJson = normalizeUniAppXAppPagesJson(code)
 
-        // Android vapor 暂不支持 tabBar，iOS/HarmonyOS 已支持
-        if (isDom2 && process.env.UNI_UTS_PLATFORM === 'app-android') {
-          if (pagesJson.tabBar) {
-            hasTabBar = true
-            delete pagesJson.tabBar
-          }
-        }
         // add themeConfig - can move to uni-x/index.ts
         pagesJson.themeConfig = readThemeJSONFile()
 
@@ -125,11 +123,6 @@ export function uniAppPagesPlugin(): Plugin {
       }
     },
     buildEnd() {
-      if (isFirst && hasTabBar) {
-        console.warn(
-          `当前 vapor 模式下 Android 平台暂不支持 pages.json 的 tabBar 配置，已忽略。`
-        )
-      }
       isFirst = false
     },
   }

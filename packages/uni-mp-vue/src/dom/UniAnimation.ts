@@ -8,7 +8,7 @@ import { toRaw } from 'vue'
 // TODO App端实现未继承自EventTarget，如果后续App端调整此处也需要同步调整
 export class UniAnimation implements IUniAnimation {
   id: string
-  private _playState: string = ''
+  private _playState: string = 'idle'
   private parsedKeyframes: IParsedKeyframe[] = []
   private scope: any
   private options: number | KeyframeAnimationOptions = {}
@@ -45,6 +45,7 @@ export class UniAnimation implements IUniAnimation {
   }
 
   cancel(): void {
+    const shouldDispatchCancel = this._playState !== 'idle'
     toRaw(this.scope).setData({
       ['$eA.' + this.id]: JSON.stringify({
         id: this.id,
@@ -54,6 +55,9 @@ export class UniAnimation implements IUniAnimation {
       }),
     })
     this._playState = 'idle'
+    if (shouldDispatchCancel) {
+      this.oncancel?.(createUniAnimationPlaybackEvent('cancel'))
+    }
   }
 
   finish(): void {
@@ -75,6 +79,17 @@ export class UniAnimation implements IUniAnimation {
     })
     this._playState = 'running'
   }
+}
+
+function createUniAnimationPlaybackEvent(
+  type: string
+): UniAnimationPlaybackEvent {
+  return {
+    type,
+    timeStamp: Date.now(),
+    currentTime: null,
+    timelineTime: null,
+  } as unknown as UniAnimationPlaybackEvent
 }
 
 function handleDirection(keyframes: any[], direction: string) {

@@ -1,4 +1,3 @@
-import { normalizeCssVar } from '.'
 import {
   LENGTH_REGEXP,
   type Normalize,
@@ -28,7 +27,7 @@ function createNormalizeLength({
         /env\(([^)]+)\)/.test(v))
     ) {
       v = v.replace(/\s/g, '')
-      return { value: normalizeCssVar(v, options.keepVar) }
+      return { value: v }
     }
 
     const match = v.match(LENGTH_REGEXP)

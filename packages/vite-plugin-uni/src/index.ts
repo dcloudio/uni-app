@@ -47,6 +47,7 @@ import {
 import { initEnv } from './cli/utils'
 import { uniUVuePlugin } from './uvue/plugins'
 import path from 'path'
+import { rewriteImportVuePlugin } from './uvue/plugins/rewriteImportVue'
 
 export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
 
@@ -116,6 +117,9 @@ export default function uniPlugin(
     )
   }
   plugins.unshift(uniJsonPlugin())
+  if (process.env.UNI_APP_OUTPUT_FORMAT === 'esm') {
+    plugins.push(rewriteImportVuePlugin())
+  }
   return plugins
 }
 

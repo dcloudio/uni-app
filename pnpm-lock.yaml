@@ -1944,6 +1944,9 @@ importers:
 
   packages/uni-mp-core:
     dependencies:
+      '@dcloudio/uni-shared':
+        specifier: workspace:*
+        version: link:../uni-shared
       '@vue/shared':
         specifier: 'catalog:'
         version: 3.4.21
@@ -2489,6 +2492,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.23.3
         version: 7.25.2(@babel/core@7.25.2)
+      '@babel/types':
+        specifier: 'catalog:'
+        version: 7.25.6
       '@dcloudio/uni-cli-shared':
         specifier: workspace:*
         version: link:../uni-cli-shared
@@ -2528,6 +2534,9 @@ importers:
       debug:
         specifier: 'catalog:'
         version: 4.3.7(supports-color@8.1.1)
+      es-module-lexer:
+        specifier: 'catalog:'
+        version: 1.5.4
       estree-walker:
         specifier: 'catalog:'
         version: 2.0.2
@@ -2552,6 +2561,9 @@ importers:
       picocolors:
         specifier: 'catalog:'
         version: 1.1.0
+      source-map-js:
+        specifier: 'catalog:'
+        version: 1.2.1
       terser:
         specifier: ^5.4.0
         version: 5.32.0

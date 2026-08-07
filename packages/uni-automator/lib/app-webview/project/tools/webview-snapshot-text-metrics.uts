@@ -162,7 +162,7 @@ const buildAndroidWebViewSnapshotTextMetricsScript = (): string => {
 
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.textContent = 'const observer = new MutationObserver((_) => { const elements = document.querySelectorAll("span"); elements.forEach(element => { const range = document.createRange(); range.selectNodeContents(element); const rects = range.getClientRects(); if (rects.length > 1 && element.parentElement.style.getPropertyValue("line-height") == "") {element.parentElement.style.setProperty("line-height", 1.215); }; }); });observer.observe(document.body, { childList: true, subtree: true, attributes: true });';
+      script.textContent = 'const observer = new MutationObserver((_) => { const elements = document.querySelectorAll("span"); elements.forEach(element => { const range = document.createRange(); range.selectNodeContents(element); const rects = range.getClientRects(); if (rects.length > 1 && (parseFloat(getComputedStyle(element.parentElement).getPropertyValue("line-height")) / parseFloat(getComputedStyle(element.parentElement).getPropertyValue("font-size")) == 1.35 || getComputedStyle(element.parentElement).getPropertyValue("line-height") == "")) {element.parentElement.style.setProperty("line-height", 1.215); }; }); });observer.observe(document.body, { childList: true, subtree: true, attributes: true });';
       document.head.appendChild(script);
     })();
   `

@@ -50,6 +50,12 @@ export const BUILT_IN_TAG_NAMES = [
 
 export const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag)
 
+export const H5_BUILT_IN_TAG_NAMES = BUILT_IN_TAG_NAMES.filter(
+  (tag) => tag !== 'audio'
+)
+
+export const H5_BUILT_IN_TAGS = H5_BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag)
+
 export const TAGS = [
   'app',
   'layout',
@@ -231,10 +237,10 @@ export function isWebBuiltInComponent(tag: string) {
   // h5 平台会被转换为 v-uni-
   const realTag = 'uni-' + tag.replace('v-uni-', '')
   if (process.env.UNI_APP_X !== 'true') {
-    return BUILT_IN_TAGS.indexOf(realTag) !== -1
+    return H5_BUILT_IN_TAGS.indexOf(realTag) !== -1
   }
   return (
-    BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
+    H5_BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
     UVUE_WEB_BUILT_IN_TAGS.indexOf(realTag) !== -1
   )
 }
@@ -256,7 +262,7 @@ export function isH5CustomElement(tag: string, isX = false) {
   if (isX && UVUE_WEB_BUILT_IN_TAGS.indexOf(tag) !== -1) {
     return true
   }
-  return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1
+  return TAGS.indexOf(tag) !== -1 || H5_BUILT_IN_TAGS.indexOf(tag) !== -1
 }
 
 export function isUniXElement(name: string) {

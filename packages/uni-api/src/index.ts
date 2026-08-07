@@ -110,6 +110,7 @@ export * from './protocols/ad/rewardedVideoAd'
 export * from './protocols/ad/fullScreenVideoAd'
 export * from './protocols/ad/interstitialAd'
 export * from './protocols/ad/interactiveAd'
+export * from './protocols/ad/dramaAd'
 
 export { onCreateVueApp } from '@dcloudio/uni-shared'
 

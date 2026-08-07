@@ -111,7 +111,11 @@ export function createNativeEvent(
     currentTarget: realCurrentTarget,
   }
   // 允许自定义事件传递数据（仅限对象）
-  if (evt instanceof CustomEvent && isPlainObject(evt.detail)) {
+  if (
+    typeof CustomEvent !== 'undefined' &&
+    evt instanceof CustomEvent &&
+    isPlainObject(evt.detail)
+  ) {
     event.detail = evt.detail
   }
   // merge stopImmediatePropagation

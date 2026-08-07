@@ -2,13 +2,12 @@ import {
 	get_platform_name
 } from './pageInfo.js'
 import {
-	dbSet,
 	dbGet,
-	dbRemove
+	dbSet
 } from './db.js'
 import {
-	PAGE_PVER_TIME,
-	APP_PVER_TIME
+	APP_PVER_TIME,
+	PAGE_PVER_TIME
 } from '../config.ts';
 // 首次访问时间
 const FIRST_VISIT_TIME_KEY = '__first__visit__time'
@@ -22,7 +21,10 @@ export const get_time = () => {
 }
 
 /**
- * 获取首次访问时间
+ * 获取首次访问时间。
+ * 仅在本地无记录时写入 fvts；**不得**清空 lvts。
+ * 历史缺陷：此处曾 dbRemove(LAST_VISIT_TIME_KEY)，会把 get_last_visit_time()
+ * 刚写入的基线删掉，导致第二次冷启动仍上报 lvts=0，同一设备被反复计为新增。
  */
 export const get_first_visit_time = () => {
 	const timeStorge = dbGet(FIRST_VISIT_TIME_KEY)
@@ -32,14 +34,14 @@ export const get_first_visit_time = () => {
 	} else {
 		time = get_time()
 		dbSet(FIRST_VISIT_TIME_KEY, time)
-		// 首次访问需要 将最后访问时间置 0
-		dbRemove(LAST_VISIT_TIME_KEY)
 	}
 	return time
 }
 
 /**
- * 最后访问时间
+ * 读取并推进最后访问时间。
+ * 读出的值用于本次上报 lvts（0 表示新用户）；读后立刻写入当前时间作为基线，
+ * 保证后续冷启动 / 续会话读到非 0，一生只计一次新增。
  */
 export const get_last_visit_time = () => {
 	const timeStorge = dbGet(LAST_VISIT_TIME_KEY)

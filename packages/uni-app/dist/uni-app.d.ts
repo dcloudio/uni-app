@@ -44,7 +44,7 @@ export declare const onAddToFavorites: (hook: (options: Page.AddToFavoritesOptio
 
 export declare const onAppHide: (hook: () => any, target?: ComponentInternalInstance | null) => void;
 
-export declare const onAppShow: (hook: ((options?: App.LaunchShowOption | undefined) => void) | (() => void), target?: ComponentInternalInstance | null) => void;
+export declare const onAppShow: (hook: (options?: App.LaunchShowOption | undefined) => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onBackPress: (hook: (options: Page.BackPressOption) => any, target?: ComponentInternalInstance | null) => void;
 
@@ -84,7 +84,7 @@ export declare const onPageNotFound: (hook: (options: App.PageNotFoundOption) =>
 
 export declare const onPageScroll: (hook: (options: Page.PageScrollOption) => void, target?: ComponentInternalInstance | null) => void;
 
-export declare const onPageShow: (hook: ((options?: App.LaunchShowOption | undefined) => void) | (() => void), target?: ComponentInternalInstance | null) => void;
+export declare const onPageShow: (hook: () => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onPullDownRefresh: (hook: () => any, target?: ComponentInternalInstance | null) => void;
 
@@ -104,7 +104,7 @@ export declare const onShareChat: (hook: (options: Page.OnShareChatOptions) => P
 
 export declare const onShareTimeline: (hook: (options: Page.OnShareTimelineOptions) => Page.ShareTimelineContent, target?: ComponentInternalInstance | null) => void;
 
-export declare const onShow: (hook: ((options?: App.LaunchShowOption | undefined) => void) | (() => void), target?: ComponentInternalInstance | null) => void;
+export declare const onShow: (hook: () => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onTabItemTap: (hook: (options: Page.TabItemTapOption) => void, target?: ComponentInternalInstance | null) => void;
 

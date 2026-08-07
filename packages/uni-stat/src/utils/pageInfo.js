@@ -16,6 +16,28 @@ let titleJsons = {}
 let debug =
   process.env.UNI_STAT_DEBUG === 'true' ||
   process.env.UNI_STAT_DEBUG === true
+
+const MP_SCENE_PLATFORMS = [
+  'wx',
+  'ali',
+  'bd',
+  'tt',
+  'qq',
+  'ks',
+  'lark',
+  'xhs',
+  'jd',
+  'dt',
+  'mhm',
+]
+
+const is_mp_scene_platform = (platformName) => {
+  if (!platformName) return false
+  return (
+    platformName.indexOf('mp-') === 0 ||
+    MP_SCENE_PLATFORMS.indexOf(platformName) !== -1
+  )
+}
 // #ifdef VUE3
 titleJsons = process.env.UNI_STAT_TITLE_JSON
 // #endif
@@ -137,7 +159,10 @@ export const get_encodeURIComponent_options = (statData) => {
  * 快手	  : 'ks',
  * 飞书	  : 'lark',
  * 快应用  : 'qw',
- * 钉钉	  : 'dt'
+ * 小红书  : 'xhs',
+ * 京东	  : 'jd',
+ * 钉钉	  : 'dt',
+ * 鸿蒙	  : 'mhm'
  */
 export const get_platform_name = () => {
   // 苹果审核代码中禁止出现 alipay 字样 ，需要特殊处理一下
@@ -157,10 +182,11 @@ export const get_platform_name = () => {
     'mp-kuaishou': 'ks',
     'mp-lark': 'lark',
     'quickapp-webview': 'qw',
-    'mp-xhs': 'xhs'
+    'mp-xhs': 'xhs',
+    'mp-jd': 'jd',
   }
   if (platformList[process.env.VUE_APP_PLATFORM] === 'ali') {
-    if (my && my.env) {
+    if (typeof my !== 'undefined' && my && my.env) {
       const clientName = my.env.clientName
       if (clientName === 'ap') return 'ali'
       if (clientName === 'dingtalk') return 'dt'
@@ -215,14 +241,25 @@ export const get_channel = () => {
  */
 export const get_scene = (options) => {
   const platformName = get_platform_name()
-  let scene = ''
-  if (options) {
-    return options
+  if (options !== undefined && options !== null && options !== '') {
+    return String(options)
   }
-  if (platformName === 'wx') {
-    scene = uni.getLaunchOptionsSync().scene
+  if (!is_mp_scene_platform(platformName)) {
+    return ''
   }
-  return scene
+  if (
+    typeof uni === 'undefined' ||
+    typeof uni.getLaunchOptionsSync !== 'function'
+  ) {
+    return ''
+  }
+  try {
+    const launchOptions = uni.getLaunchOptionsSync()
+    const scene = launchOptions && launchOptions.scene
+    return scene === undefined || scene === null ? '' : String(scene)
+  } catch (e) {
+    return ''
+  }
 }
 
 /**

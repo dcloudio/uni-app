@@ -1,0 +1,110 @@
+function getAndroidStatusBarHeight(): number {
+	const windowInfo = uni.getWindowInfo()
+	return windowInfo.statusBarHeight
+}
+
+function createStatusBarPlaceholderScript(height: number): string {
+	return `
+		(function(){
+			var height=${height};
+			var id='uni-app-x-android-pad-statusbar-placeholder';
+			var maxAttempts=60;
+			var attempts=0;
+			var observer=null;
+			var observedBody=null;
+
+			function shouldInsert(){
+				var pageHead=document.querySelector('.uni-page-head');
+				if(!pageHead){
+					// navigationStyle: "custom" does not render a uni-page-head.
+					return true;
+				}
+				if(!pageHead.getBoundingClientRect){
+					return false;
+				}
+				// Pixel XL pageHead 高度为 44.000xxx，故判断小于45
+				return pageHead.getBoundingClientRect().height<45;
+			}
+
+			function apply(){
+				if(height<=0||document.body==null){
+					return false;
+				}
+
+				var body=document.body;
+				var spacer=document.getElementById(id);
+				if(!shouldInsert()){
+					if(spacer!=null&&spacer.parentNode!=null){
+						spacer.parentNode.removeChild(spacer);
+					}
+					return false;
+				}
+
+				if(spacer==null){
+					spacer=document.createElement('div');
+					spacer.id=id;
+					spacer.setAttribute('aria-hidden','true');
+				}
+
+				spacer.style.height=height+'px';
+				spacer.style.minHeight=height+'px';
+				spacer.style.width='100%';
+				spacer.style.display='block';
+				spacer.style.flexShrink='0';
+				spacer.style.pointerEvents='none';
+				spacer.style.background='transparent';
+
+				if(body.firstChild!==spacer){
+					body.insertBefore(spacer,body.firstChild);
+				}
+
+				return true;
+			}
+
+			function observeBody(){
+				if(document.body==null||typeof MutationObserver!='function'){
+					return;
+				}
+				if(observedBody===document.body){
+					return;
+				}
+				if(observer!=null){
+					observer.disconnect();
+				}
+
+				observedBody=document.body;
+				observer=new MutationObserver(function(){
+					var body=document.body;
+					var spacer=document.getElementById(id);
+					if(body==null||spacer==null||spacer.parentNode!==body||body.firstChild!==spacer){
+						apply();
+					}
+				});
+				observer.observe(observedBody,{childList:true});
+			}
+
+			function retry(){
+				apply();
+				observeBody();
+				attempts+=1;
+				if(attempts<maxAttempts){
+					setTimeout(retry,100);
+				}
+			}
+
+			if(document.readyState=='loading'){
+				document.addEventListener('DOMContentLoaded',retry);
+			}
+			setTimeout(retry,0);
+		})();
+	`
+}
+
+export function insertStatusBarPlaceholder(webview: WebViewContext | null): void {
+	if (webview == null) return
+	const webviewContext = webview as WebViewContext
+
+	const statusBarHeight = getAndroidStatusBarHeight()
+	const script = createStatusBarPlaceholderScript(statusBarHeight)
+	webviewContext.evalJS(script)
+}

@@ -1,10 +1,8 @@
 // 注意：该文件尽可能少依赖其他文件，否则可能会导致还没有alias的时候，就加载了目标模块
-import fs from 'fs'
 import path from 'path'
 import moduleAlias from 'module-alias'
 import { isInHBuilderX } from './utils'
 import type { Formatter } from '../logs/format'
-import { parse } from 'jsonc-parser'
 
 const hbxPlugins = {
   typescript: 'compile-typescript/node_modules/typescript',
@@ -14,10 +12,21 @@ const hbxPlugins = {
   pug: 'compile-pug-cli/node_modules/pug',
 } as const
 
+function isWebOrMpPlatform(platform?: string) {
+  return platform === 'h5' || platform === 'web' || platform?.startsWith('mp-')
+}
+
 export function initModuleAlias() {
   const libDir = path.resolve(__dirname, '../../lib')
   const compilerSfcPath = path.resolve(libDir, '@vue/compiler-sfc')
   const serverRendererPath = require.resolve('@vue/server-renderer')
+
+  if (process.env.UNI_OUTPUT_DIR) {
+    const baseOutDir = path.basename(process.env.UNI_OUTPUT_DIR)
+    process.env.UNI_APP_X_CACHE_DIR =
+      process.env.UNI_APP_X_CACHE_DIR ||
+      path.resolve(process.env.UNI_OUTPUT_DIR, '../cache/.' + baseOutDir)
+  }
 
   // 对路径进行兼容
   if (
@@ -27,31 +36,13 @@ export function initModuleAlias() {
     process.env.UNI_APP_X_DOM2_CPP_DIR =
       process.env.UNI_APP_HARMONY_DOM2_CPP_DIR
   }
-
-  // TODO 等待正式对外推出后，删除这个兼容逻辑
-  if (
-    process.env.UNI_APP_PLATFORM === 'ios' ||
-    process.env.UNI_APP_PLATFORM === 'android'
-  ) {
-    if (process.env.UNI_INPUT_DIR) {
-      const manifestJsonFilename = path.resolve(
-        process.env.UNI_INPUT_DIR,
-        'manifest.json'
-      )
-      if (fs.existsSync(manifestJsonFilename)) {
-        const manifestJsonStr = fs.readFileSync(manifestJsonFilename, 'utf-8')
-        const manifestJson = parse(manifestJsonStr)
-        if (manifestJson?.['uni-app-x']?.vapor === true) {
-          const vaporFilename = path.resolve(
-            process.env.UNI_INPUT_DIR,
-            '.vapor'
-          )
-          if (fs.existsSync(vaporFilename)) {
-            process.env.UNI_APP_X_DOM2 = 'true'
-          }
-        }
-      }
-    }
+  // alias 初始化可能早于 CLI 环境初始化，这里仅依据外部预置的平台环境变量判断。
+  // 如果是 web 和小程序，目前强制非蒸汽。
+  const utsPlatform = process.env.UNI_UTS_PLATFORM
+  const uniPlatform = process.env.UNI_PLATFORM
+  if (isWebOrMpPlatform(utsPlatform) || isWebOrMpPlatform(uniPlatform)) {
+    delete process.env.UNI_APP_X_DOM2
+    delete process.env.UNI_APP_X_DOM2_DYNAMIC
   }
 
   if (process.env.UNI_APP_X_DOM2 === 'true') {

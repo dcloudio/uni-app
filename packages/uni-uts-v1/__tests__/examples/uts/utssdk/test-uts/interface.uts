@@ -3,3 +3,9 @@ export interface RequestTask {
   start(): void
   abort(): RequestTask
 }
+export interface Stats {
+  size: number
+}
+export interface FileSystemManager {
+  fstatSync(fd: number): Stats
+}

@@ -47,7 +47,7 @@ export type PreviewImageCompleteCallback = (callback : any) => void
 
 export type LongPressActionsSuccessResult = {
 	/**
-	 * 接口调用失败的回调函数
+	 * 接口调用成功的回调函数
 	 */
 	tapIndex : number,
 	/**
@@ -95,19 +95,17 @@ export type PreviewImageOptions = {
 	 * @uniPlatform {
 	 *	 "app": {
 	 *		"android": {
-	 *			"osVer": "5.0",
 	 *			"uniVer": "√",
 	 *			"unixVer": "x"
 	 *		},
 	 *		"ios": {
-	 *			"osVer": "10.0",
 	 *			"uniVer": "√",
 	 *			"unixVer": "x"
 	 *		},
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "4.61"
+   *      "unixVer": "4.61",
+   *      "unixVaporVer": "5.0"
    *    }
 	 *	},
 	*  "mp": {
@@ -165,17 +163,14 @@ export type PreviewImageOptions = {
 	 * @uniPlatform {
 	 *	 "app": {
 		 *		"android": {
-		 *			"osVer": "5.0",
 		 *			"uniVer": "√",
 		 *			"unixVer": "3.9"
 		 *		},
 		 *		"ios": {
-		 *			"osVer": "10.0",
 		 *			"uniVer": "√",
 		 *			"unixVer": "4.11"
 		 *		},
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -206,17 +201,14 @@ export type PreviewImageOptions = {
 	 * @uniPlatform {
 		   *	 "app": {
 				 *		"android": {
-				 *			"osVer": "5.0",
 				 *			"uniVer": "√",
 				 *			"unixVer": "3.9"
 				 *		},
 				 *		"ios": {
-				 *			"osVer": "10.0",
 				 *			"uniVer": "√",
 				 *			"unixVer": "4.11"
 				 *		},
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "x",
 	 *      "unixVer": "x"
 	 *    }
@@ -233,23 +225,19 @@ export type PreviewImageOptions = {
 	 * @uniPlatform {
 	 *	 "app": {
 	 *		"android": {
-	 *			"osVer": "5.0",
 	 *			"uniVer": "√",
 	 *			"unixVer": "4.51"
 	 *		},
 	 *     "ios": {
-	 *			"osVer": "5.0",
 	 *			"uniVer": "√",
-	 *			"unixVer": "x"
+	 *			"unixVer": "4.71"
 	 *		},
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
 	 *	},
 	 *    "web": {
-	 *      "osVer": "x",
 	 *      "uniVer": "x",
 	 *      "unixVer": "x"
 	 *    },
@@ -349,19 +337,17 @@ export interface Uni {
 	 * @uniPlatform {
 	 *	 "app": {
 	 *		"android": {
-	 *			"osVer": "5.0",
 	 *			"uniVer": "√",
 	 *			"unixVer": "3.9+"
 	 *		},
 	 *		"ios": {
-	 *			"osVer": "12.0",
 	 *			"uniVer": "√",
 	 *			"unixVer": "4.11"
 	 *		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.23",
-	 *      "unixVer": "4.61"
+	 *      "unixVer": "4.61",
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *	},
 	 *  "web": {
@@ -421,8 +407,8 @@ export interface Uni {
 	 * 	}
 	 * })
 	 * ```
-	 * @tutorial-uni-app https://uniapp.dcloud.net.cn/api/media/image.html#unipreviewimageobject
-	 * @tutorial-uni-app-x https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html
+	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/image.html#unipreviewimageobject
+	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html
 	 * @autotest {
 	   generated:false
@@ -435,26 +421,24 @@ export interface Uni {
 	 * @uniPlatform {
 	 *	 "app": {
 	 *		"android": {
-	 *			"osVer": "5.0",
 	 *			"uniVer": "√",
 	 *			"unixVer": "3.9+"
 	 *		},
 	 *		"ios": {
-	 *			"osVer": "12.0",
 	 *			"uniVer": "√",
 	 *			"unixVer": "4.11"
 	 *		},
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.23",
-	 *      "unixVer": "4.61"
+	 *      "unixVer": "4.61",
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *	},
 	*  "mp": {
 	*    "weixin": {
 	*        "hostVer": "√",
 	*        "uniVer": "√",
-	*        "unixVer": "4.41"
+	*        "unixVer": "x"
 	*    },
 	*    "alipay": {
 	*        "hostVer": "√",
@@ -506,8 +490,8 @@ export interface Uni {
 	 * 	}
 	 * })
 	 * ```
-	 * @tutorial-uni-app https://uniapp.dcloud.net.cn/api/media/image.html#closepreviewimage
-	 * @tutorial-uni-app-x https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html#closepreviewimage
+	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/media/image.html#closepreviewimage
+	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html#closepreviewimage
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/preview-image.html#closepreviewimage
 	 * @autotest {
 	   generated:false

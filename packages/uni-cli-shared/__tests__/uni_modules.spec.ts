@@ -135,7 +135,7 @@ ${extraMethods}
         appname: ' ',
       })
     ).toBe(
-      '云编译插件失败：manifest.json 缺少 appid、appname，请先配置后重新编译。'
+      '云编译插件失败：manifest.json 缺少 appid、name，请先配置后重新编译。'
     )
     expect(
       validateCloudCompileAppInfo({
@@ -202,7 +202,7 @@ ${extraMethods}
       })
 
       expect(errorSpy).toHaveBeenCalledWith(
-        '云编译插件失败：manifest.json 缺少 appid、appname，请先配置后重新编译。'
+        '云编译插件失败：manifest.json 缺少 appid、name，请先配置后重新编译。'
       )
       expect(exitSpy).toHaveBeenCalledWith(0)
       expect(

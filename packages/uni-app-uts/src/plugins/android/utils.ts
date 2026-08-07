@@ -10,6 +10,7 @@ import {
   normalizeNodeModules,
   offsetToStartAndEnd,
   parseUniExtApiNamespacesJsOnce,
+  resolveMainUtsName,
 } from '@dcloudio/uni-cli-shared'
 import { isArray, isPlainObject, isString } from '@vue/shared'
 
@@ -22,8 +23,12 @@ import { createCompilerError } from './uvue/compiler/errors'
 
 export const UVUE_CLASS_NAME_PREFIX = 'Gen'
 
-export const ENTRY_FILENAME = () =>
-  process.env.UNI_APP_X_TSC === 'true' ? 'main.uts.ts' : 'main.uts'
+export const ENTRY_FILENAME = () => {
+  const entryFileName = resolveMainUtsName()
+  return process.env.UNI_APP_X_TSC === 'true'
+    ? `${entryFileName}.ts`
+    : entryFileName
+}
 
 export function wrapResolve(
   resolve: PluginContext['resolve']

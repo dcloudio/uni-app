@@ -1133,27 +1133,16 @@ export function parseInjectModules(
 }
 
 function readExtApiModulesJson() {
-  const json = require('../lib/ext-api/modules.json')
-  if (!json['uni-canvas']) {
-    json['uni-canvas'] = {}
-  }
-  json['uni-canvas']['components'] = ['canvas']
-  const isXHarmony =
-    process.env.UNi_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-harmony'
-  if (isXHarmony) {
-    let modules = JSON.parse(JSON.stringify(json)) // 拷贝一份操作
-    const harmonyModules = Object.keys(
-      require('../lib/arkts/external-module-exports-x.json')
-    )
-    for (const key in modules) {
-      if (!harmonyModules.includes('@uni_modules/' + key.toLowerCase())) {
-        delete modules[key]
-      }
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    return require('../lib/ext-api/modules-vapor.json')
+  } else {
+    const json = require('../lib/ext-api/modules.json')
+    if (!json['uni-canvas']) {
+      json['uni-canvas'] = {}
     }
-    return modules
+    json['uni-canvas']['components'] = ['canvas']
+    return json
   }
-  return json
 }
 
 export function parseExtApiModules() {

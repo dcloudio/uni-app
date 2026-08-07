@@ -268,6 +268,52 @@ function initMixinRuntimeHooks(mpOptions) {
     initHooks(mpOptions, findMixinRuntimeHooks());
 }
 
+let runtimeSubpackageRoot;
+const runtimeSubpackages = Object.create(null);
+function resolveSubpackageRoot(root) {
+    return (normalizeSubpackageRoot(root) ||
+        normalizeSubpackageRoot(process.env.UNI_SUBPACKAGE));
+}
+function setRuntimeSubpackageRoot(root) {
+    runtimeSubpackageRoot = normalizeSubpackageRoot(root);
+}
+function getRuntimeSubpackageRoot() {
+    return runtimeSubpackageRoot;
+}
+function setSubpackageAppVm(root, vm, independent) {
+    const subpackageRoot = normalizeSubpackageRoot(root);
+    if (!subpackageRoot) {
+        return;
+    }
+    setRuntimeSubpackageRoot(subpackageRoot);
+    if (independent) {
+        // 独立分包可能先于主包启动，主包 runtime 后续会重建 wx/global，不能把 vm 只挂到全局对象上。
+        runtimeSubpackages[subpackageRoot] = {
+            $vm: vm,
+        };
+    }
+    else {
+        // 普通分包保留旧的全局存储策略，兼容 UNI_SUBPACKAGE 单独编译等历史路径。
+        const globalObject = qq;
+        (globalObject.$subpackages || (globalObject.$subpackages = {}))[subpackageRoot] = {
+            $vm: vm,
+        };
+    }
+}
+function getSubpackageAppVm() {
+    var _a, _b, _c;
+    const subpackageRoot = getRuntimeSubpackageRoot();
+    if (!subpackageRoot) {
+        return;
+    }
+    // 独立分包优先命中 runtime 内缓存；普通分包继续回退到历史的全局缓存。
+    return (((_a = runtimeSubpackages[subpackageRoot]) === null || _a === void 0 ? void 0 : _a.$vm) ||
+        ((_c = (_b = qq.$subpackages) === null || _b === void 0 ? void 0 : _b[subpackageRoot]) === null || _c === void 0 ? void 0 : _c.$vm));
+}
+function normalizeSubpackageRoot(root) {
+    return typeof root === 'string' ? root.replace(/^\/+|\/+$/g, '') : undefined;
+}
+
 const HOOKS = [
     ON_SHOW,
     ON_HIDE,
@@ -329,7 +375,7 @@ function initCreateApp(parseAppOptions) {
     };
 }
 function initCreateSubpackageApp(parseAppOptions) {
-    return function createApp(vm) {
+    return function createApp(vm, root) {
         const appOptions = parseApp(vm);
         const app = isFunction(getApp) &&
             getApp({
@@ -352,11 +398,12 @@ function initCreateSubpackageApp(parseAppOptions) {
             }
         });
         initAppLifecycle(appOptions, vm);
-        if (process.env.UNI_SUBPACKAGE) {
-            (qq.$subpackages || (qq.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
-                $vm: vm,
-            };
-        }
+        setSubpackageAppVm(resolveSubpackageRoot(root), vm);
+    };
+}
+function initCreateIndependentSubpackageApp() {
+    return function createApp(vm, root) {
+        setSubpackageAppVm(resolveSubpackageRoot(root), vm, true);
     };
 }
 function initAppLifecycle(appOptions, vm) {
@@ -706,27 +753,50 @@ function initCreateComponent(parseOptions) {
 }
 let $createComponentFn;
 let $destroyComponentFn;
+let $createComponentAppVm;
+let $destroyComponentAppVm;
+const componentAppVmMap = new WeakMap();
 function getAppVm() {
     if (process.env.UNI_MP_PLUGIN) {
         return qq.$vm;
     }
-    if (process.env.UNI_SUBPACKAGE) {
-        return qq.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
+    const subpackageAppVm = getSubpackageAppVm();
+    if (subpackageAppVm) {
+        return subpackageAppVm;
     }
     return getApp().$vm;
 }
 function $createComponent(initialVNode, options) {
-    if (!$createComponentFn) {
-        $createComponentFn = getAppVm().$createComponent;
+    const appVm = getAppVm();
+    if (!$createComponentFn || $createComponentAppVm !== appVm) {
+        $createComponentAppVm = appVm;
+        $createComponentFn = appVm.$createComponent;
     }
     const proxy = $createComponentFn(initialVNode, options);
-    return getExposeProxy(proxy.$) || proxy;
+    const exposeProxy = getComponentExposeProxy(proxy);
+    componentAppVmMap.set(proxy, appVm);
+    if (exposeProxy && typeof exposeProxy === 'object') {
+        componentAppVmMap.set(exposeProxy, appVm);
+    }
+    return exposeProxy || proxy;
 }
 function $destroyComponent(instance) {
-    if (!$destroyComponentFn) {
-        $destroyComponentFn = getAppVm().$destroyComponent;
+    const appVm = componentAppVmMap.get(instance) || getAppVm();
+    if (!$destroyComponentFn || $destroyComponentAppVm !== appVm) {
+        $destroyComponentAppVm = appVm;
+        $destroyComponentFn = appVm.$destroyComponent;
     }
-    return $destroyComponentFn(instance);
+    try {
+        return $destroyComponentFn(instance);
+    }
+    finally {
+        componentAppVmMap.delete(instance);
+    }
+}
+function getComponentExposeProxy(proxy) {
+    return typeof getExposeProxy === 'function'
+        ? getExposeProxy(proxy.$)
+        : undefined;
 }
 
 function parsePage(vueOptions, parseOptions) {
@@ -921,6 +991,9 @@ const createPage = initCreatePage(parseOptions);
 const createComponent = initCreateComponent(parseOptions);
 const createPluginApp = initCreatePluginApp();
 const createSubpackageApp = initCreateSubpackageApp();
+const createIndependentSubpackageApp = initCreateIndependentSubpackageApp();
+typeof __UNI_MP_INDEPENDENT_RUNTIME__ !== 'undefined' &&
+    __UNI_MP_INDEPENDENT_RUNTIME__ === true;
 
 qq.EventChannel = EventChannel;
 qq.createApp = global.createApp = createApp;
@@ -929,4 +1002,4 @@ qq.createComponent = createComponent;
 qq.createSubpackageApp = global.createSubpackageApp =
     createSubpackageApp;
 
-export { createApp, createComponent, createPage, createPluginApp, createSubpackageApp };
+export { createApp, createComponent, createIndependentSubpackageApp, createPage, createPluginApp, createSubpackageApp };

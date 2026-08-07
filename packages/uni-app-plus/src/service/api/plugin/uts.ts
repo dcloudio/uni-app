@@ -60,9 +60,33 @@ function serializeUniElement(
   return { __type__: type, pageId, nodeId }
 }
 
-function toRaw(observed?: unknown): unknown {
-  const raw = observed && (observed as any).__v_raw
-  return raw ? toRaw(raw) : observed
+function toRaw(observed?: unknown) {
+  const seen = new WeakSet<object>()
+  let current = observed
+  while (current) {
+    const raw = (current as any).__v_raw
+    if (!raw) {
+      return current
+    }
+    if (typeof current === 'object' || typeof current === 'function') {
+      if (seen.has(current as object)) {
+        return current
+      }
+      seen.add(current as object)
+    }
+    current = raw
+  }
+  return current
+}
+
+const SKIP_CIRCULAR_REFERENCE = {}
+
+function enterStack(arg: object, stack: WeakSet<object>) {
+  if (stack.has(arg)) {
+    return false
+  }
+  stack.add(arg)
+  return true
 }
 
 export function normalizeArg(
@@ -72,7 +96,8 @@ export function normalizeArg(
   context: {
     depth: number
     nested: boolean
-  }
+  },
+  stack: WeakSet<object> = new WeakSet()
 ) {
   arg = toRaw(arg)
   const isVaporAndroid = __VAPOR__ && isUTSAndroid()
@@ -89,8 +114,22 @@ export function normalizeArg(
     }
     return id
   } else if (isArray(arg)) {
+    if (!enterStack(arg, stack)) {
+      return SKIP_CIRCULAR_REFERENCE
+    }
     context.depth++
-    return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context))
+    const newArg: unknown[] = new Array(arg.length)
+    try {
+      arg.forEach((item, index) => {
+        const value = normalizeArg(item, callbacks, keepAlive, context, stack)
+        if (value !== SKIP_CIRCULAR_REFERENCE) {
+          newArg[index] = value
+        }
+      })
+      return newArg
+    } finally {
+      stack.delete(arg)
+    }
     // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
   } else if (arg instanceof ArrayBuffer) {
     // android dom2 js引擎支持直接传递 ArrayBuffer
@@ -123,17 +162,28 @@ export function normalizeArg(
       // }
       // const newObj = normalizeArg(obj, {}, false)
       // newObj.a = 2 // 这会污染原始对象 obj
+      if (!enterStack(arg as object, stack)) {
+        return SKIP_CIRCULAR_REFERENCE
+      }
       const newArg = {}
-      Object.keys(arg as object).forEach((name) => {
-        context.depth++
-        newArg[name] = normalizeArg(
-          (arg as any)[name],
-          callbacks,
-          keepAlive,
-          context
-        )
-      })
-      return newArg
+      try {
+        Object.keys(arg as object).forEach((name) => {
+          context.depth++
+          const value = normalizeArg(
+            (arg as any)[name],
+            callbacks,
+            keepAlive,
+            context,
+            stack
+          )
+          if (value !== SKIP_CIRCULAR_REFERENCE) {
+            newArg[name] = value
+          }
+        })
+        return newArg
+      } finally {
+        stack.delete(arg as object)
+      }
     }
   }
   return arg
@@ -142,10 +192,10 @@ export function normalizeArg(
 function initUTSInstanceMethod(
   async: boolean,
   opts: ProxyFunctionOptions,
-  instanceId: number,
+  instanceIdOrInstance: number | Instance,
   proxy: unknown
 ) {
-  return initProxyFunction('method', async, opts, instanceId, proxy)
+  return initProxyFunction('method', async, opts, instanceIdOrInstance, proxy)
 }
 
 interface Parameter {
@@ -259,6 +309,8 @@ interface ProxyClassOptions extends ModuleOptions {
 }
 
 type InvokeType = 'getter' | 'setter' | 'method' | 'constructor'
+// TODO 确定类型
+type Instance = Object
 
 interface InvokeInstanceArgs extends ModuleOptions {
   id: number
@@ -291,6 +343,39 @@ interface InvokeInstanceArgs extends ModuleOptions {
    */
   errMsg?: string
 }
+
+interface InvokeInstanceWithInstanceArgs extends ModuleOptions {
+  ins: Instance
+  /**
+   * 属性名或方法名
+   */
+  name: string
+  /**
+   * 属性|方法
+   */
+  type: InvokeType
+  /**
+   * 回调是否持久保留
+   */
+  keepAlive: boolean
+  /**
+   * 参数中是否包含嵌套序列化对象
+   */
+  nested: boolean
+  /**
+   * 执行方法时的真实参数列表
+   */
+  params?: unknown[]
+  /**
+   * 方法定义的参数列表
+   */
+  method?: Parameter[]
+  /**
+   * 运行时提示的错误信息
+   */
+  errMsg?: string
+}
+
 interface InvokeStaticArgs extends ModuleOptions {
   /**
    * 包名
@@ -334,7 +419,10 @@ interface InvokeStaticArgs extends ModuleOptions {
   errMsg?: string
 }
 
-type InvokeArgs = InvokeInstanceArgs | InvokeStaticArgs
+type InvokeArgs =
+  | InvokeInstanceArgs
+  | InvokeInstanceWithInstanceArgs
+  | InvokeStaticArgs
 
 interface InvokeCallbackReturnRes {
   // 异步 API return 的返回值
@@ -402,17 +490,19 @@ function getProxy(): {
   return proxy
 }
 
+let UTSClassInstanceRegistry: FinalizationRegistry<number>
+
 function resolveSyncResult(
   args: InvokeArgs,
   res: InvokeSyncRes,
   returnOptions?: ProxyFunctionReturnOptions,
-  instanceId?: number,
+  instanceIdOrInstance?: number | Instance,
   proxy?: unknown
 ) {
   if (__DEV__) {
     console.log(
       'uts.invokeSync.result',
-      JSON.stringify([res, returnOptions, instanceId, typeof proxy])
+      JSON.stringify([res, returnOptions, instanceIdOrInstance, typeof proxy])
     )
   }
   if (!res) {
@@ -440,6 +530,10 @@ function resolveSyncResult(
       if (!res.params) {
         return null
       }
+      let instanceId =
+        typeof instanceIdOrInstance === 'number'
+          ? instanceIdOrInstance
+          : undefined
       if (res.params === instanceId && proxy) {
         return proxy
       }
@@ -450,11 +544,36 @@ function resolveSyncResult(
             interfaceDefines[returnOptions.options]
           )
         )
-        return new ProxyClass()
+        const result = new ProxyClass()
+        if (__VAPOR__ && typeof FinalizationRegistry !== 'undefined') {
+          if (!UTSClassInstanceRegistry) {
+            UTSClassInstanceRegistry = new FinalizationRegistry((id) => {
+              unregisterInstance(id as number)
+            })
+          }
+          UTSClassInstanceRegistry.register(result, res.params)
+        }
+        return result
       }
     }
   }
   return res.params
+}
+
+function unregisterInstance(id: number) {
+  const isAndroid = isUTSAndroid()
+  const args: InvokeStaticArgs = {
+    moduleName: '',
+    moduleType: 'built-in',
+    package: isAndroid ? 'io.dcloud.uts' : '',
+    class: 'UTSBridge',
+    name: 'unregisterJavaScriptClassInstance',
+    type: 'method',
+    keepAlive: false,
+    nested: false,
+    params: [id],
+  }
+  getProxy().invokeSync(args, () => {})
 }
 
 function invokePropGetter(args: InvokeArgs) {
@@ -487,7 +606,7 @@ function initProxyFunction(
     return: returnOptions,
     errMsg,
   }: ProxyFunctionOptions,
-  instanceId: number,
+  instanceIdOrInstance: number | Instance,
   proxy?: unknown
 ) {
   if (!keepAlive) {
@@ -496,6 +615,10 @@ function initProxyFunction(
       methodParams.length === 1 &&
       methodParams[0].type === 'UTSCallback'
   }
+  // id: 0为非法instanceId
+  const isNumber = typeof instanceIdOrInstance === 'number'
+  let instanceId = isNumber ? instanceIdOrInstance : undefined
+  let instance = isNumber ? undefined : instanceIdOrInstance
   const baseArgs: InvokeArgs = instanceId
     ? {
         moduleName,
@@ -505,6 +628,17 @@ function initProxyFunction(
         name: methodName,
         method: methodParams,
         nested: false,
+        keepAlive,
+      }
+    : instance
+    ? {
+        moduleName,
+        moduleType,
+        ins: instance,
+        type,
+        name: methodName,
+        method: methodParams,
+        nested: true,
         keepAlive,
       }
     : {
@@ -582,7 +716,7 @@ function initProxyFunction(
       invokeArgs,
       getProxy().invokeSync(invokeArgs, invokeCallback),
       returnOptions,
-      instanceId,
+      instanceIdOrInstance,
       proxy
     )
   }
@@ -777,6 +911,225 @@ export function initUTSProxyClass(
         },
       })
       return Object.freeze(proxy)
+    }
+  }
+  const staticPropSetterCache: Record<string, Function> = {}
+  const staticMethodCache: Record<string, Function> = {}
+  return Object.freeze(
+    new Proxy(ProxyClass, {
+      get(target, name, receiver) {
+        name = parseClassMethodName(name, staticMethods)
+        if (hasOwn(staticMethods, name)) {
+          if (!staticMethodCache[name as string]) {
+            const {
+              async,
+              keepAlive,
+              params,
+              return: returnOptions,
+            } = staticMethods[name]
+            // 静态方法
+            staticMethodCache[name] = initUTSStaticMethod(
+              !!async,
+              extend(
+                {
+                  name,
+                  companion: true,
+                  keepAlive,
+                  params,
+                  return: returnOptions,
+                },
+                baseOptions
+              )
+            )
+          }
+          return staticMethodCache[name]
+        }
+        if (staticProps.includes(name as string)) {
+          return invokePropGetter(
+            extend(
+              {
+                name: name as string,
+                companion: true,
+                type: 'getter',
+              },
+              baseOptions
+            ) as InvokeStaticArgs
+          )
+        }
+        return Reflect.get(target, name, receiver)
+      },
+      set(_, name, newValue) {
+        if (staticProps.includes(name as string)) {
+          // 静态属性
+          const setter = parseClassPropertySetter(name as string)
+          if (!staticPropSetterCache[setter]) {
+            const param = staticSetters[name as string]
+            if (param) {
+              staticPropSetterCache[setter] = initProxyFunction(
+                'setter',
+                false,
+                extend(
+                  {
+                    name: name as string,
+                    keepAlive: false,
+                    params: [param],
+                  },
+                  baseOptions
+                ),
+                0
+              )
+            }
+          }
+          staticPropSetterCache[parseClassPropertySetter(name as string)](
+            newValue
+          )
+          return true
+        }
+        return false
+      },
+    })
+  )
+}
+
+// UniElementImpl基类优先方法列表
+const uniElementImplPriorityMethods = [
+  'hasAttribute',
+  'getAttribute',
+  // 'setAttribute',
+  // 'removeAttribute',
+  'getAnyAttribute',
+  // 'setAnyAttribute',
+]
+
+let elementClassDefineId = 0
+
+export function initUTSElementProxyClass(options: ProxyClassOptions): any {
+  const {
+    moduleName,
+    moduleType,
+    package: pkg,
+    class: cls,
+    methods,
+    props,
+    setters,
+    errMsg,
+  } = options
+
+  const baseOptions = {
+    moduleName,
+    moduleType,
+    package: pkg,
+    class: cls,
+    errMsg,
+  }
+
+  const staticMethods = options.staticMethods || {}
+  const staticProps = options.staticProps || []
+  const staticSetters = options.staticSetters || {}
+
+  const classId = ++elementClassDefineId
+  const BaseClass = __VAPOR__ ? UniViewElementImpl : class {}
+  const ProxyClass = class UTSClass extends BaseClass {
+    static [Symbol.hasInstance](instance) {
+      return instance && instance.__element_class_id__ === classId
+    }
+    // page: UniNativePageImpl
+    constructor(nodeId: number, page: any, tagName: string) {
+      super(nodeId, page, tagName)
+      const pageId = page.pageId
+      const element = { __type__: 'UniElement', pageId, nodeId }
+      const target: Record<string, Function> = {}
+      const proxy = new Proxy(this, {
+        get(_target, name) {
+          // 重要：禁止响应式
+          if (name === '__v_skip') {
+            return true
+          }
+          if (name === '__element_class_id__') {
+            return classId
+          }
+          if (
+            uniElementImplPriorityMethods.includes(name as string) &&
+            name in _target
+          ) {
+            return _target[name].bind(_target)
+          }
+          if (!target[name as string]) {
+            //实例方法
+            if (hasOwn(methods, name)) {
+              const {
+                async,
+                keepAlive,
+                params,
+                return: returnOptions,
+              } = methods[name]
+              target[name] = initUTSInstanceMethod(
+                !!async,
+                extend(
+                  {
+                    name,
+                    keepAlive,
+                    params,
+                    return: returnOptions,
+                  },
+                  baseOptions
+                ),
+                element,
+                proxy
+              )
+            } else if (props.includes(name as string)) {
+              // 实例属性
+              return invokePropGetter({
+                moduleName,
+                moduleType,
+                ins: element,
+                type: 'getter',
+                keepAlive: false,
+                nested: true,
+                name: name as string,
+                errMsg,
+              })
+            }
+          }
+          if (target[name as string]) {
+            return target[name as string]
+          }
+          const propOrMethod = _target[name as string]
+          if (typeof propOrMethod === 'function') {
+            return propOrMethod.bind(_target)
+          }
+          return propOrMethod
+        },
+        set(_target, name, newValue) {
+          if (props.includes(name as string)) {
+            const setter = parseClassPropertySetter(name as string)
+            if (!target[setter]) {
+              const param = setters[name as string]
+              if (param) {
+                target[setter] = initProxyFunction(
+                  'setter',
+                  false,
+                  extend(
+                    {
+                      name: name as string,
+                      keepAlive: false,
+                      params: [param],
+                    },
+                    baseOptions
+                  ),
+                  element,
+                  proxy
+                )
+              }
+            }
+            target[parseClassPropertySetter(name as string)](newValue)
+            return true
+          }
+          _target[name as string] = newValue
+          return true
+        },
+      })
+      return proxy
     }
   }
   const staticPropSetterCache: Record<string, Function> = {}

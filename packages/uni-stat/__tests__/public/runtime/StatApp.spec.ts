@@ -15,7 +15,9 @@ import {
   __resetStatApp,
   getStatApp,
 } from '../../../src/public/runtime/StatApp'
+import { APP_CHANNEL_FIRST_FLUSH_DELAY_MS } from '../../../src/public/config'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
+import { installMockPlus, restoreMockPlus } from '../helpers/mockPlus'
 import * as queueMod from '../../../src/public/pipeline/queue'
 import * as retryMod from '../../../src/public/pipeline/retry'
 import * as sessionMod from '../../../src/public/domain/session/machine'
@@ -61,6 +63,102 @@ describe('runtime/StatApp', () => {
   afterEach(() => {
     resetAllModules()
     restoreMockUni()
+    restoreMockPlus()
+  })
+
+  test('install：App 端默认从 plus.runtime.channel 解析 ch', () => {
+    installMockUni({ platform: 'app' })
+    installMockPlus({ runtime: { channel: 'oppo' } })
+    const app = getStatApp()
+    app.install(
+      {},
+      { skipInterceptors: true, skipMigration: true, skipRecoverRetry: true }
+    )
+    expect(app.getConfig()?.ch).toBe('oppo')
+  })
+
+  test('install：App 端始终以 plus.runtime.channel 为准，不被显式 ch 覆盖', () => {
+    installMockUni({ platform: 'app' })
+    installMockPlus({ runtime: { channel: 'oppo' } })
+    const app = getStatApp()
+    app.install(
+      { ch: '1001' },
+      { skipInterceptors: true, skipMigration: true, skipRecoverRetry: true }
+    )
+    expect(app.getConfig()?.ch).toBe('oppo')
+  })
+
+  test('report：App 端发送前重新读取 plus.runtime.channel，避免安装/入队过早固定为空', async () => {
+    installMockUni({ platform: 'app' })
+    installMockPlus({ runtime: { channel: '' } })
+    const app = getStatApp()
+    const http = fakeChannel('1.0')
+    app.install(
+      { version: '1' },
+      {
+        channels: { http, cloud: null },
+        skipInterceptors: true,
+        skipMigration: true,
+        skipRecoverRetry: true,
+      }
+    )
+    app.report('foo', 'bar')
+    ;(
+      globalThis as unknown as {
+        plus: { runtime: { channel: string } }
+      }
+    ).plus.runtime.channel = 'dlmm-Android-oppo'
+
+    await app.getCollector()!.flush(true)
+    expect(http.send).toHaveBeenCalledTimes(1)
+    expect(http.send.mock.calls[0][0].requests).toMatch(
+      /"ch":"dlmm-Android-oppo"/
+    )
+  })
+
+  test('report：App 端 channel 为空时自动首包短延迟，等待发送前补齐 ch', async () => {
+    jest.useFakeTimers()
+    try {
+      installMockUni({ platform: 'app' })
+      installMockPlus({ runtime: { channel: '' } })
+      const app = getStatApp()
+      const http = fakeChannel('1.0')
+      app.install(
+        { version: '1' },
+        {
+          channels: { http, cloud: null },
+          skipInterceptors: true,
+          skipMigration: true,
+          skipRecoverRetry: true,
+        }
+      )
+
+      app.report('foo', 'bar')
+      expect(http.send).not.toHaveBeenCalled()
+      ;(
+        globalThis as unknown as {
+          plus: { runtime: { channel: string } }
+        }
+      ).plus.runtime.channel = 'dlmm-Android-honor'
+
+      await jest.advanceTimersByTimeAsync(APP_CHANNEL_FIRST_FLUSH_DELAY_MS)
+      expect(http.send).toHaveBeenCalledTimes(1)
+      expect(http.send.mock.calls[0][0].requests).toMatch(
+        /"ch":"dlmm-Android-honor"/
+      )
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  test('install：非 App 端允许手动传入 ch', () => {
+    installMockUni({ platform: 'h5' })
+    const app = getStatApp()
+    app.install(
+      { ch: 'campaign-a' },
+      { skipInterceptors: true, skipMigration: true, skipRecoverRetry: true }
+    )
+    expect(app.getConfig()?.ch).toBe('campaign-a')
   })
 
   test('单例：getInstance / getStatApp 返回同一实例', () => {

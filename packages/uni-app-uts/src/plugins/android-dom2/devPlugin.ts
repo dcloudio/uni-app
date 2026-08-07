@@ -27,40 +27,33 @@ export function uniAppXAndroidEngineDevPlugin(): UniVitePlugin {
       if (!compilerServer) {
         return
       }
-      if (
-        process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true' ||
-        process.env.UNI_APP_X_DOM2_KT_CHANGED === 'true'
-      ) {
-        const { changed, files } = UKF()
-        await compileVaporApp({
-          filename: 'index.kt',
-          changed: changed,
-          chunks: files,
-          inputDir: uvueOutputDir,
-          outputDir: outputDir,
-        })
+      const { changed, files } = UKF()
+      await compileVaporApp({
+        filename: 'index.kt',
+        changed: changed,
+        chunks: files,
+        inputDir: uvueOutputDir,
+        outputDir: outputDir,
+      })
+      const soOutDir = process.env.UNI_APP_X_DOM2_SO_DIR!
+      const res = await compilerServer.compileCpp({
+        appId,
+        projectPath: process.env.UNI_INPUT_DIR,
+        cppPath: process.env.UNI_APP_X_DOM2_CPP_DIR!,
+        outDir: soOutDir,
+      })
+      if (res.code) {
+        throw new Error(res.msg)
       }
-      if (process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true') {
-        const soOutDir = process.env.UNI_APP_X_DOM2_SO_DIR!
-        const res = await compilerServer.compileCpp({
-          appId,
-          projectPath: process.env.UNI_INPUT_DIR,
-          cppPath: process.env.UNI_APP_X_DOM2_CPP_DIR!,
-          outDir: soOutDir,
-        })
-        if (res.code) {
-          throw new Error(res.msg)
-        }
-        const soList = res.data?.soList
-        if (!soList || !soList.length) {
-          return
-        }
-        soList.forEach((so) => {
-          const soFile = path.resolve(soOutDir, so)
-          const targetSoFile = path.resolve(outputDir, so)
-          fs.copySync(soFile, targetSoFile)
-        })
+      const soList = res.data?.soList
+      if (!soList || !soList.length) {
+        return
       }
+      soList.forEach((so) => {
+        const soFile = path.resolve(soOutDir, so)
+        const targetSoFile = path.resolve(outputDir, so)
+        fs.copySync(soFile, targetSoFile)
+      })
     },
   }
 }

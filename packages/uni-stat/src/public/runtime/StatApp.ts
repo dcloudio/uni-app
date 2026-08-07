@@ -17,6 +17,7 @@
  */
 
 import {
+  APP_CHANNEL_FIRST_FLUSH_DELAY_MS,
   CLOUD_MAX_RETRIES,
   HTTP_MAX_RETRIES,
   IMAGE_MAX_RETRIES,
@@ -33,7 +34,8 @@ import { createCollector } from '../pipeline/collector'
 import { createHttpChannel } from '../pipeline/channel/http'
 import { createImageChannel } from '../pipeline/channel/image'
 import { createStatDataBuilder } from '../domain/statData'
-import { getPlatform, getRawPlatform } from '../adapter/platform'
+import { getAppChannel } from '../adapter/channel'
+import { getPlatform, getRawPlatform, isApp } from '../adapter/platform'
 import { getLocaleAndScreen, getSystemInfo } from '../adapter/system'
 import { getUuid } from '../adapter/device'
 import { getPackageInfo } from '../adapter/package'
@@ -46,6 +48,7 @@ import { nowMs, nowSec } from '../infra/time'
 import { selectChannel } from '../pipeline/channel/selector'
 import { setReportTitle } from '../domain/title'
 import { tryRun } from '../infra/safe'
+import { isNetworkOffline, onNetworkOnline } from './networkGate'
 
 import * as queue from '../pipeline/queue'
 import * as retry from '../pipeline/retry'
@@ -61,7 +64,7 @@ export interface StatAppConfig {
   ak: string
   /** 当前应用版本号（v 字段）；缺省取 system.appVersion。 */
   v?: string
-  /** 渠道；缺省 ''。 */
+  /** 渠道；App 端始终取 `plus.runtime.channel`，非 App 端可由手动 install 配置。 */
   ch?: string
   /**
    * 统计协议版本（公有版默认 'image'）：
@@ -130,6 +133,8 @@ export class StatApp {
   private installed = false
   /** 拦截器解绑函数。 */
   private uninstallInterceptors?: () => void
+  /** 网络恢复监听解绑。 */
+  private uninstallNetworkWatch?: () => void
   /** Collector 实例（install 后才有效）。 */
   private collector?: CollectorAPI
   /** Collector 依赖；测试与 lifecycleHooks 通过 getDeps 访问。 */
@@ -234,6 +239,26 @@ export class StatApp {
         .catch((e) => logger.warn('[uni统计 2.0] recoverRetry failed', e))
     }
 
+    // 公有版：监听网络恢复，立即续传 + 强制 flush（与私有版 core 实现分离）
+    this.uninstallNetworkWatch = tryRun(
+      () =>
+        onNetworkOnline(() => {
+          const c = this.collector
+          if (!c) return
+          void c
+            .recoverRetry()
+            .catch((e) =>
+              logger.warn('[uni统计 2.0] recoverRetry on online failed', e)
+            )
+          void c
+            .flush(true)
+            .catch((e) =>
+              logger.warn('[uni统计 2.0] flush on online failed', e)
+            )
+        }),
+      undefined
+    )
+
     // 仅在 collector 与拦截器等就绪后再标记，避免中途抛错导致「已 install 却无 collector」。
     this.installed = true
   }
@@ -311,6 +336,10 @@ export class StatApp {
       tryRun(() => this.uninstallInterceptors!(), undefined)
     }
     this.uninstallInterceptors = undefined
+    if (this.uninstallNetworkWatch) {
+      tryRun(() => this.uninstallNetworkWatch!(), undefined)
+    }
+    this.uninstallNetworkWatch = undefined
     // 先释放 collector 内部定时器（取消延迟首 flush），再丢弃引用，避免幽灵 flush。
     if (this.collector) {
       tryRun(() => this.collector!.destroy(), undefined)
@@ -324,11 +353,41 @@ export class StatApp {
     this.installed = false
   }
 
+  /**
+   * 解析上行渠道字段 `ch`。
+   *
+   * App 渠道包标识只能以原生运行时为准：`plus.runtime.channel`。
+   * `manifest.uniStatistics.ch` 是静态配置，不能区分同一项目打出的多渠道包。
+   * 非 App 端没有 `plus.runtime.channel` 语义，保留手动 install 传入 `ch` 的能力。
+   */
+  private resolveChannel(explicit?: string): string {
+    if (isApp()) {
+      return getAppChannel()
+    }
+    if (typeof explicit === 'string' && explicit.length > 0) {
+      return explicit
+    }
+    return ''
+  }
+
+  private resolveFirstFlushDeferMs(): number {
+    if (
+      getRawPlatform() === 'mp-weixin' &&
+      MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
+    ) {
+      return MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS
+    }
+    if (isApp() && !getAppChannel()) {
+      return APP_CHANNEL_FIRST_FLUSH_DELAY_MS
+    }
+    return 0
+  }
+
   private normalizeConfig(c: Partial<StatAppConfig>): StatAppConfig {
     return {
       ak: c.ak ?? getAppId(),
       v: c.v,
-      ch: c.ch ?? '',
+      ch: this.resolveChannel(c.ch),
       version: c.version ?? 'image',
       backgroundTimeoutSec: c.backgroundTimeoutSec ?? 300,
       pageInactiveTimeoutSec: c.pageInactiveTimeoutSec ?? 1800,
@@ -352,7 +411,14 @@ export class StatApp {
   ): CollectorDeps {
     const platformShort = getPlatform()
     const builder = createStatDataBuilder({
-      config: { ak: cfg.ak, usv: STAT_VERSION_PUBLIC, v: cfg.v, ch: cfg.ch },
+      config: {
+        ak: cfg.ak,
+        usv: STAT_VERSION_PUBLIC,
+        v: cfg.v,
+        get ch() {
+          return isApp() ? getAppChannel() : cfg.ch
+        },
+      },
       platform: {
         ut: platformShort,
       },
@@ -427,12 +493,14 @@ export class StatApp {
         touch: session.touch,
       },
       config: { usv: STAT_VERSION_PUBLIC },
+      resolveUploadFields: () => {
+        const ch = getAppChannel()
+        return ch ? { ch } : {}
+      },
       nowMs,
       nowSec,
-      firstFlushDeferMs:
-        getRawPlatform() === 'mp-weixin' && MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
-          ? MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS
-          : 0,
+      firstFlushDeferMs: this.resolveFirstFlushDeferMs(),
+      isNetworkOffline,
     }
 
     return Object.assign(base, patch)

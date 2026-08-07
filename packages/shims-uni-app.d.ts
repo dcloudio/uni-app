@@ -289,6 +289,7 @@ declare namespace UniNamespace {
     root: string
     name?: string
     pages: PagesJsonPageOptions[]
+    independent?: boolean
     plugins?: Record<
       string,
       { version: string; provider: string; export?: string; lazy?: boolean }

@@ -4,6 +4,8 @@ export default {
   'view.render.compiler.target.bytecode': 'bytecode',
   'view.render.compiler.target.nativecode': 'nativecode',
   'style.isolation.version': 'Style isolation version: {version}',
+  'style.isolation.version.upgrade':
+    'Style isolation version: {version}. Upgrading to 2.0 is recommended.',
   compiling: 'Compiling...',
   'dev.performance':
     'Please note that in running mode, due to log output, sourcemap, and uncompressed source code, the performance and package size are not as good as release mode.',
@@ -20,6 +22,8 @@ export default {
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
   'dev.watching.restart.vapor':
     'DONE  Restart required. Switching vapor mode requires restarting to take effect.',
+  'dev.watching.restart.independentSubPackages':
+    'DONE  Restart required. Changing independent subpackage roots requires restarting to take effect.',
   'dev.watching.vapor.render.target':
     'vapor-render-target in manifest.json was changed to {manifestTarget}, but the running console is still {runtimeTarget}.',
   'build.failed': 'DONE  Build failed.',

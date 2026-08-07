@@ -58,7 +58,7 @@ const actions = {
 }
 
 describe('uvue-template', () => {
-  jest.setTimeout(50 * 1000)
+  jest.setTimeout(100 * 1000)
 
   const distDir = path.resolve(projectDir, 'dist')
   if (fs.existsSync(distDir)) {

@@ -16,8 +16,13 @@ import {
 import { relativeFile } from '../../resolve'
 import { isVueSfcFile } from '../../vue/utils'
 import { UNI_AD_PLUGINS } from '@dcloudio/uni-shared'
+import {
+  parseIndependentSubPackages,
+  setIndependentSubPackages,
+} from './subpackage'
 
 let appJsonCache: Record<string, any> = {}
+let independentRootsCache: string[] = []
 const jsonFilesCache = new Map<string, string>()
 const jsonPagesCache = new Map<string, PageWindowOptions>()
 const jsonComponentsCache = new Map<string, ComponentJson>()
@@ -62,7 +67,7 @@ export function normalizeJsonFilename(filename: string) {
 }
 
 export function findChangedJsonFiles(
-  supportGlobalUsingComponents: boolean = true
+  supportGlobalUsingComponents: boolean | ((filename: string) => boolean) = true
 ) {
   const changedJsonFiles = new Map<string, string>()
   function findChangedFile(filename: string, json: Record<string, any>) {
@@ -75,8 +80,16 @@ export function findChangedJsonFiles(
     // app.json mp-baidu 在 win 不支持相对路径。所有平台改用绝对路径
     if (filename !== 'app') {
       let usingComponents = newJson.usingComponents as Record<string, string>
-      // 如果小程序不支持 global 的 usingComponents
-      if (!supportGlobalUsingComponents) {
+      const independentRoot = findIndependentRoot(
+        filename,
+        independentRootsCache
+      )
+      const supportGlobalUsingComponentsForFile =
+        typeof supportGlobalUsingComponents === 'function'
+          ? supportGlobalUsingComponents(filename)
+          : supportGlobalUsingComponents
+      // 如果小程序不支持 global 的 usingComponents，或独立分包冷启动不能依赖 app.json
+      if (!supportGlobalUsingComponentsForFile || independentRoot) {
         // 从取全局的 usingComponents 并补充到子组件 usingComponents 中
         const globalUsingComponents = appJsonCache?.usingComponents || {}
         const globalComponents = findUsingComponents('app') || {}
@@ -85,6 +98,13 @@ export function findChangedJsonFiles(
           ...globalComponents,
           ...newJson.usingComponents,
         }
+      }
+      if (independentRoot) {
+        validateIndependentUsingComponents(
+          filename,
+          independentRoot,
+          usingComponents
+        )
       }
       Object.keys(usingComponents).forEach((name) => {
         const componentFilename = usingComponents[name]
@@ -117,8 +137,69 @@ export function findChangedJsonFiles(
   return changedJsonFiles
 }
 
+function findIndependentRoot(filename: string, independentRoots: string[]) {
+  return independentRoots.find((root) => {
+    return filename === root || filename.startsWith(root + '/')
+  })
+}
+
+function validateIndependentUsingComponents(
+  filename: string,
+  root: string,
+  usingComponents: Record<string, string>
+) {
+  Object.keys(usingComponents).forEach((name) => {
+    const componentFilename = usingComponents[name]
+    if (
+      isLocalUsingComponent(componentFilename) &&
+      !isUsingComponentInRoot(componentFilename, root, filename)
+    ) {
+      throw new Error(
+        `独立分包 "${root}" 不能在 "${filename}" 中使用 root 外组件 "${name}"（${componentFilename}），请移动到 "${root}" 内或改为页面局部组件。`
+      )
+    }
+  })
+}
+
+function isUsingComponentInRoot(
+  componentFilename: string,
+  root: string,
+  ownerFilename: string
+) {
+  const filename = normalizeUsingComponentFilename(
+    componentFilename,
+    ownerFilename
+  )
+  return filename === root || filename.startsWith(root + '/')
+}
+
+function normalizeUsingComponentFilename(
+  componentFilename: string,
+  ownerFilename: string
+) {
+  if (componentFilename.startsWith('/')) {
+    return normalizePath(componentFilename).replace(/^\/+/, '')
+  }
+  if (componentFilename.startsWith('.')) {
+    return normalizePath(
+      path.join(path.dirname(ownerFilename), componentFilename)
+    )
+  }
+  return normalizePath(componentFilename)
+}
+
+function isLocalUsingComponent(componentFilename: string) {
+  return (
+    !/^(?:plugin|dynamicLib|ext):\/\//.test(componentFilename) &&
+    !componentFilename.startsWith('weui-miniprogram')
+  )
+}
+
 export function addMiniProgramAppJson(appJson: Record<string, any>) {
   appJsonCache = appJson
+  independentRootsCache = parseIndependentSubPackages(
+    appJson as UniApp.PagesJson
+  ).map(({ root }) => root)
 }
 
 export function addMiniProgramPageJson(
@@ -140,6 +221,16 @@ export function addMiniProgramUsingComponents(
   json: UsingComponents
 ) {
   jsonUsingComponentsCache.set(filename, json)
+}
+
+export function resetMiniProgramJsonFiles() {
+  appJsonCache = {}
+  independentRootsCache = []
+  setIndependentSubPackages([])
+  jsonFilesCache.clear()
+  jsonPagesCache.clear()
+  jsonComponentsCache.clear()
+  jsonUsingComponentsCache.clear()
 }
 
 export function isMiniProgramUsingComponent(
@@ -182,14 +273,19 @@ export function findMiniProgramUsingComponents({
     )
   }
 
-  const jsonFile = findJsonFile(
-    removeExt(normalizeMiniProgramFilename(filename, inputDir))
+  const ownerFilename = removeExt(
+    normalizeMiniProgramFilename(filename, inputDir)
   )
+  const jsonFile = findJsonFile(ownerFilename)
   if (jsonFile) {
     if (jsonFile.usingComponents) {
       extend(
         miniProgramComponents,
-        findMiniProgramUsingComponent(jsonFile.usingComponents, componentsDir)
+        findMiniProgramUsingComponent(
+          jsonFile.usingComponents,
+          componentsDir,
+          ownerFilename
+        )
       )
     }
     // mp-baidu 特有
@@ -198,7 +294,8 @@ export function findMiniProgramUsingComponents({
         miniProgramComponents,
         findMiniProgramUsingComponent(
           jsonFile.usingSwanComponents,
-          componentsDir
+          componentsDir,
+          ownerFilename
         )
       )
     }
@@ -209,7 +306,8 @@ export function findMiniProgramUsingComponents({
 
 function findMiniProgramUsingComponent(
   usingComponents: Record<string, string>,
-  componentsDir?: string
+  componentsDir?: string,
+  ownerFilename?: string
 ) {
   return Object.keys(usingComponents).reduce<MiniProgramComponents>(
     (res, name) => {
@@ -226,7 +324,8 @@ function findMiniProgramUsingComponent(
       } else if (
         componentsDir &&
         path.includes(componentsDir + '/') &&
-        findUsingComponentsJson(path, componentsDir).renderer === 'xr-frame'
+        findUsingComponentsJson(path, componentsDir, ownerFilename).renderer ===
+          'xr-frame'
       ) {
         // mp-weixin & x-frame
         res[name] = 'xr-frame'
@@ -259,18 +358,21 @@ function findMiniProgramUsingComponent(
 
 export function findUsingComponentsJson(
   pathInpages: string,
-  componentsDir: string
+  componentsDir: string,
+  ownerFilename?: string
 ): Record<any, any> {
   // 兼容test case
   if (!process.env.UNI_INPUT_DIR) return {}
 
-  let [, dir] = pathInpages.split(componentsDir)
-  if (dir === '') {
+  const fulldir = resolveUsingComponentsDir(
+    pathInpages,
+    componentsDir,
+    ownerFilename
+  )
+  if (!fulldir) {
     console.warn(`${pathInpages} 路径里没有找到对应的 ${componentsDir} 目录`)
     return {}
   }
-  dir = '.' + dir
-  const fulldir = path.resolve(process.env.UNI_INPUT_DIR, componentsDir, dir)
   let jsonPath = fulldir + '.json'
   if (fs.existsSync(jsonPath)) {
     return require(jsonPath) as Record<any, any>
@@ -282,4 +384,32 @@ export function findUsingComponentsJson(
 
   console.warn(`${pathInpages} 路径下没有找到对应的json文件`)
   return {}
+}
+
+function resolveUsingComponentsDir(
+  pathInpages: string,
+  componentsDir: string,
+  ownerFilename?: string
+) {
+  const normalizedPath = normalizePath(pathInpages)
+  if (normalizedPath.startsWith('/')) {
+    return path.resolve(process.env.UNI_INPUT_DIR, '.' + normalizedPath)
+  }
+  if (ownerFilename && normalizedPath.startsWith('.')) {
+    return path.resolve(
+      process.env.UNI_INPUT_DIR,
+      path.dirname(ownerFilename),
+      normalizedPath
+    )
+  }
+  const marker = componentsDir + '/'
+  const index = normalizedPath.indexOf(marker)
+  if (index === -1) {
+    return
+  }
+  const dir = normalizedPath.slice(index + componentsDir.length)
+  if (!dir) {
+    return
+  }
+  return path.resolve(process.env.UNI_INPUT_DIR, componentsDir, '.' + dir)
 }

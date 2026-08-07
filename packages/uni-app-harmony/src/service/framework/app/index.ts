@@ -8,6 +8,7 @@ import { initGlobalEvent } from './initGlobalEvent'
 import { initAppLaunch } from './initAppLaunch'
 import { initTabBar } from './initTabBar'
 import { initEntry } from '@dcloudio/uni-app-plus/service/framework/app/initEntry'
+import { initKeyboardEvent } from '@dcloudio/uni-app-plus/service/framework/dom/keyboard'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
@@ -51,7 +52,7 @@ export function registerApp(appVm: ComponentPublicInstance) {
   initTabBar()
 
   initGlobalEvent()
-
+  initKeyboardEvent()
   initSubscribeHandlers()
 
   initAppLaunch(appVm)

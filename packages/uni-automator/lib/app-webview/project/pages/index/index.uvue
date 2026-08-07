@@ -1,40 +1,41 @@
 <template>
-  <view style="flex: 1;">
-    <!-- #ifdef APP-ANDROID -->
-    <view :style="{ height: `${safeAreaTop}px` }"></view>
-    <!-- #endif -->
-    <web-view
-      ref="webviewElement"
-      id="webview"
-      style="flex: 1;"
-      :webview-styles="webviewStyles"
-      <!-- #ifdef APP-ANDROID -->
-      android-layer-type="software"
-      <!-- #endif -->
-      :src="src"
-      @message="message"
-      @error="error"
-    />
-  </view>
+	<web-view
+		ref="webviewElement"
+		id="webview"
+		style="flex: 1;"
+		:webview-styles="webviewStyles"
+		<!-- #ifdef APP-ANDROID -->
+		android-layer-type="software"
+    @load="onWebviewLoad"
+		<!-- #endif -->
+		:src="src"
+		@message="message"
+		@error="error"
+	/>
 </template>
 
 <script setup lang='uts'>
   // #ifdef APP-IOS || APP-ANDROID
   import { applyWebViewSnapshotTextMetricsPatch } from '@/tools/webview-snapshot-text-metrics.uts'
   // #endif
-
+  // #ifdef APP-ANDROID
+  import { applyAndroidWebViewSafeArea } from '@/tools/android-webview-safe-area.uts'
+  // #endif
 
   const instance = getCurrentInstance()!.proxy!
 
   const src = ref(process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC)
   const webviewElement = ref<UniWebViewElement | null>(null)
-  const webviewContext = ref<WebviewContext | null>(null)
+  const webviewContext = ref<WebViewContext | null>(null)
   const webviewStyles = ref({
     progress: false
   })
   const safeAreaTop = ref(0)
 
   // #ifdef APP-ANDROID
+  const onWebviewLoad = () => {
+    applyAndroidWebViewSafeArea(webviewContext.value)
+  }
   onPageShow(() => {
     UniWebViewElement.enableWholeDraw()
   })
@@ -42,7 +43,7 @@
   onReady(() => {
     const windowInfo = uni.getWindowInfo()
     safeAreaTop.value = windowInfo.safeAreaInsets.top
-    webviewContext.value = uni.createWebviewContext('webview')
+    webviewContext.value = uni.createWebViewContext('webview')
   })
 
   const initAutomator = () => {
@@ -88,12 +89,7 @@
         // 调用截图
         (instance as Page).$viewToTempFilePath({
           id: 'webview',
-          // #ifdef APP-ANDROID
-          offsetY: `44`,
-          // #endif
-          // #ifndef APP-ANDROID
           offsetY: `${safeAreaTop.value + 44}`,
-          // #endif
           overwrite: true,
           wholeContent: true,
           success: (res) => {

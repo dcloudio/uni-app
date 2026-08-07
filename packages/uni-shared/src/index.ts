@@ -17,6 +17,7 @@ export { default as Emitter } from './TinyEmitter'
 export * from './theme'
 
 export * from './dom2/tags'
+export * from './dom2/dataset'
 
 export * from './node/locale'
 export * from './polyfill'

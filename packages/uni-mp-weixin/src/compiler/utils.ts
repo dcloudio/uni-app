@@ -1,5 +1,3 @@
-import fs from 'fs'
-import path from 'path'
 import { parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
 import { isArray } from '@vue/shared'
 
@@ -26,22 +24,18 @@ export function getMiniProgramAIPaths(
   const paths: string[] = []
 
   const instruction = agentConfig.instruction
-  if (instruction && fs.existsSync(path.resolve(inputDir, instruction))) {
+  if (instruction) {
     paths.push(instruction)
   }
 
   const pageMetadata = agentConfig.pageMetadata
-  if (pageMetadata && fs.existsSync(path.resolve(inputDir, pageMetadata))) {
+  if (pageMetadata) {
     paths.push(pageMetadata)
   }
 
   const skills = agentConfig.skills
   if (isArray(skills) && skills.length > 0) {
-    skills.forEach((skill) => {
-      if (skill.path && fs.existsSync(path.resolve(inputDir, skill.path))) {
-        paths.push(skill.path)
-      }
-    })
+    paths.push(...skills.map((skill) => skill.path).filter(Boolean))
   }
 
   return paths

@@ -7477,7 +7477,7 @@
       detail: {},
       currentTarget: realCurrentTarget
     };
-    if (evt instanceof CustomEvent && isPlainObject(evt.detail)) {
+    if (typeof CustomEvent !== "undefined" && evt instanceof CustomEvent && isPlainObject(evt.detail)) {
       event.detail = evt.detail;
     }
     if (evt._stopped) {
@@ -12410,6 +12410,10 @@
       width
     };
   }
+  function createDatasetSnapshot$1(el) {
+    var dataset = getCustomDataset(el);
+    return dataset;
+  }
   function rectifyIntersectionRatio(entrie) {
     var {
       intersectionRatio,
@@ -12437,7 +12441,7 @@
           boundingClientRect: normalizeRect(entrie.boundingClientRect),
           relativeRect: normalizeRect(entrie.rootBounds),
           time: Date.now(),
-          dataset: getCustomDataset(entrie.target),
+          dataset: createDatasetSnapshot$1(entrie.target),
           id: entrie.target.id
         });
       });
@@ -13243,8 +13247,7 @@
     };
   }
   function normalizeCustomEvent(name, domEvt, el, detail) {
-    var target;
-    target = normalizeTarget(el);
+    var target = normalizeTarget(el);
     return {
       type: domEvt.__evName || detail.type || name,
       timeStamp: domEvt.timeStamp || 0,
@@ -26667,13 +26670,16 @@
       return window.__$__(vm).$;
     }
   }
+  function createDatasetSnapshot(dataset) {
+    return dataset;
+  }
   function getRootInfo(fields2) {
     var info = {};
     if (fields2.id) {
       info.id = "";
     }
     if (fields2.dataset) {
-      info.dataset = {};
+      info.dataset = createDatasetSnapshot({});
     }
     if (fields2.rect) {
       info.left = 0;
@@ -26711,7 +26717,7 @@
       info.id = el.id;
     }
     if (fields2.dataset) {
-      info.dataset = getCustomDataset(el);
+      info.dataset = createDatasetSnapshot(getCustomDataset(el));
     }
     if (fields2.rect || fields2.size) {
       var rect = el.getBoundingClientRect();
@@ -26748,9 +26754,9 @@
       }
     }
     if (isArray(fields2.computedStyle)) {
-      var sytle = getComputedStyle(el);
+      var style = getComputedStyle(el);
       fields2.computedStyle.forEach((name) => {
-        info[name] = sytle[name];
+        info[name] = style[name];
       });
     }
     if (fields2.context) {

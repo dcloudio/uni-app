@@ -1,4 +1,4 @@
-import { BUILT_IN_TAG_NAMES, COMPONENT_PREFIX } from '@dcloudio/uni-shared'
+import { COMPONENT_PREFIX, H5_BUILT_IN_TAG_NAMES } from '@dcloudio/uni-shared'
 import { createTransformTag } from './transformTag'
 import { createTransformEvent } from './transformEvent'
 import { createTransformComponentLink } from './transformComponent'
@@ -25,7 +25,7 @@ export {
 } from './vModel'
 
 export const transformH5BuiltInComponents = createTransformTag(
-  BUILT_IN_TAG_NAMES.reduce<Record<string, string>>(
+  H5_BUILT_IN_TAG_NAMES.reduce<Record<string, string>>(
     (tags, tag) => ((tags[tag] = COMPONENT_PREFIX + tag), tags),
     {}
   )

@@ -24,6 +24,21 @@ import type { CliOptions } from '.'
 import { initNVueEnv } from './nvue'
 import { initUVueEnv } from './uvue'
 
+export function formatStyleIsolationVersionMessage(version: string) {
+  const versionNumber = Number(version)
+  const shouldUpgrade = versionNumber !== 2
+  const message =
+    M[
+      shouldUpgrade
+        ? 'style.isolation.version.upgrade'
+        : 'style.isolation.version'
+    ]
+  const displayVersion = Number.isInteger(versionNumber)
+    ? versionNumber.toFixed(1)
+    : version
+  return message.replace('{version}', displayVersion)
+}
+
 // uni -p
 export const PLATFORMS = [
   'app',
@@ -331,12 +346,13 @@ export function initEnv(
     process.env.UNI_APP_X === 'true'
   )
   const isX = isUniAppX()
+  const renderMode = isX ? (isUniAppXVapor() ? '蒸汽模式' : 'VDOM模式') : ''
   console.log(
     M['app.compiler.version'].replace(
       '{version}',
       process.env.UNI_COMPILER_VERSION +
         `（${isX ? 'uni-app x' : 'vue3'}）` +
-        (process.env.UNI_APP_X_DOM2 === 'true' ? '蒸汽模式' : '')
+        renderMode
     )
   )
   if (
@@ -355,9 +371,8 @@ export function initEnv(
   }
   if (isX && !isUniAppXVapor()) {
     console.log(
-      M['style.isolation.version'].replace(
-        '{version}',
-        (process.env.UNI_APP_STYLE_ISOLATION_VERSION || '1') + '.0'
+      formatStyleIsolationVersionMessage(
+        process.env.UNI_APP_STYLE_ISOLATION_VERSION || '1'
       )
     )
   }

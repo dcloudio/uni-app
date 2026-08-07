@@ -517,7 +517,7 @@ function createNativeEvent(evt, htmlElement = false) {
     detail: {},
     currentTarget: realCurrentTarget
   };
-  if (evt instanceof CustomEvent && shared.isPlainObject(evt.detail)) {
+  if (typeof CustomEvent !== "undefined" && evt instanceof CustomEvent && shared.isPlainObject(evt.detail)) {
     event.detail = evt.detail;
   }
   if (evt._stopped) {
@@ -765,8 +765,7 @@ function useNativeEvent(emit2) {
   };
 }
 function normalizeCustomEvent(name, domEvt, el, detail) {
-  let target;
-  target = uniShared.normalizeTarget(el);
+  const target = uniShared.normalizeTarget(el);
   return {
     type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,

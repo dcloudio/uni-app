@@ -950,8 +950,7 @@ function useCustomEvent(ref, emit2) {
   };
 }
 function normalizeCustomEvent(name, domEvt, el, detail) {
-  let target;
-  target = uniShared.normalizeTarget(el);
+  const target = uniShared.normalizeTarget(el);
   return {
     type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
@@ -1101,6 +1100,26 @@ class UniElement extends Object {
   }
   get uniPage() {
     return this.getPage();
+  }
+  get dataset() {
+    if (!this.__uniDatasetMap) {
+      this.__uniDatasetMap = uniShared.createUniDOMStringMap(
+        this.__uniDataset || {}
+      );
+    }
+    return this.__uniDatasetMap;
+  }
+  setAttribute(qualifiedName, value) {
+    super.setAttribute(qualifiedName, value);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.set(qualifiedName, value);
+    }
+  }
+  removeAttribute(qualifiedName) {
+    super.removeAttribute(qualifiedName);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.delete(qualifiedName);
+    }
   }
   getBoundingClientRectAsync(callback) {
     var _a, _b;
@@ -9484,7 +9503,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = vue.getCurrentInstance()) => {
-  !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
+  if (vue.isInSSRComponentSetup)
+    return;
+  vue.injectHook(lifecycle, hook, target);
 };
 const onBackPress = /* @__PURE__ */ createLifeCycleHook(
   uniShared.ON_BACK_PRESS,

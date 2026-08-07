@@ -7,10 +7,10 @@ import {
   PUBLIC_DIR,
   type UniViteCopyPluginTarget,
   getPlatforms,
-  hasUTSModulePlatformFile,
   isWindows,
   normalizePath,
   parseSubpackagesRootOnce,
+  pathToGlob,
   uniViteCopyPlugin,
 } from '@dcloudio/uni-cli-shared'
 import type { VitePluginUniResolvedOptions } from '..'
@@ -45,7 +45,7 @@ export function uniCopyPlugin({
     assets.push(asset)
   })
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
-  const normalizedInputDir = normalizePathForCompare(inputDir)
+  const inputDirGlob = pathToGlob(inputDir, '')
   const platform = process.env.UNI_PLATFORM
   const utsPlatform = process.env.UNI_UTS_PLATFORM
   // 非当前平台 static 目录
@@ -54,16 +54,6 @@ export function uniCopyPlugin({
     platform,
     utsPlatform
   )
-  // app 资源包导出时，如果 uni_modules 的 utssdk 不支持当前原生平台，则连同 static 一起忽略
-  const ignoreUniModulesStaticDirs = createIgnoreUniModulesStaticDirs(
-    inputDir,
-    subpackages,
-    utsPlatform
-  )
-  const ignoreStaticDirs = [
-    ...ignorePlatformStaticDirs,
-    ...ignoreUniModulesStaticDirs,
-  ]
   // 非当前平台 cppsdk 目录
   const ignorePlatformCppDirs = uniModulesCppDir
     ? createIgnorePlatformDirs('cppsdk', platform, utsPlatform)
@@ -77,24 +67,23 @@ export function uniCopyPlugin({
         readyTimeout: getReadyTimeout(),
         ignored(path: string) {
           const normalizedPath = normalizePath(path)
-          const comparablePath = normalizePathForCompare(normalizedPath)
-          if (
-            ignoreUniModulesStaticDirs.find((dir) =>
-              // 忽略整个 static 目录及其子文件，避免无效资源进入资源包
-              (comparablePath + '/').includes(dir)
-            )
-          ) {
-            return true
-          }
           if (
             ignorePlatformStaticDirs.find((dir) =>
-              (comparablePath + '/').includes(dir)
+              // dir都是以 / 结尾，所以这里也要以 / 结尾
+              (normalizedPath + '/').includes(dir)
             )
           ) {
             return fs.statSync(normalizedPath).isDirectory()
           }
-          if (!comparablePath.startsWith(normalizedInputDir)) {
-            if (comparablePath.includes('/static/')) {
+          // 应该是软链
+          if (
+            !isSameOrSubPath(normalizedPath, inputDir) &&
+            !isSameOrSubPath(normalizedPath, inputDirGlob) &&
+            // glob 转义会使 chokidar 从项目上级目录开始遍历，不能忽略这些目录
+            !isSameOrSubPath(inputDir, normalizedPath)
+          ) {
+            // 目前仅简单处理static
+            if (normalizedPath.includes('/static/')) {
               return false
             }
             return true
@@ -127,10 +116,20 @@ export function uniCopyPlugin({
     })
   }
   debugCopy(targets)
-  checkIgnoreStatic(ignoreStaticDirs.map((dir) => dir.substring(1).split('/')))
+  checkIgnoreStatic(
+    ignorePlatformStaticDirs.map((dir) => dir.substring(1).split('/'))
+  )
   return uniViteCopyPlugin({
     targets,
   })
+}
+
+export function isSameOrSubPath(filename: string, dir: string) {
+  filename = normalizePath(filename)
+  dir = normalizePath(dir)
+  return (
+    filename === dir || filename.startsWith(dir.endsWith('/') ? dir : dir + '/')
+  )
 }
 
 let isIgnoreChecked = false
@@ -192,49 +191,6 @@ function createIgnorePlatformDirs(
         return p !== platform
       })
       // 在最后增加 / 是为了避免误判以 platform 开头的目录，比如 app-test
-      .map((p) => normalizePathForCompare('/' + dir + '/' + p + '/'))
+      .map((p) => '/' + dir + '/' + p + '/')
   )
-}
-
-function createIgnoreUniModulesStaticDirs(
-  inputDir: string,
-  subpackages: string[],
-  utsPlatform: UniApp.PLATFORM
-) {
-  if (utsPlatform !== 'app-android' && utsPlatform !== 'app-ios') {
-    return []
-  }
-  const ignoreDirs: string[] = []
-  const roots = [
-    inputDir,
-    ...subpackages.map((root) => path.resolve(inputDir, root)),
-  ]
-  roots.forEach((rootDir) => {
-    const uniModulesDir = path.resolve(rootDir, 'uni_modules')
-    if (!fs.existsSync(uniModulesDir)) {
-      return
-    }
-    fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
-      const uniModuleRootDir = path.resolve(uniModulesDir, uniModuleDir)
-      const utssdkDir = path.resolve(uniModuleRootDir, 'utssdk')
-      const staticDir = path.resolve(uniModuleRootDir, PUBLIC_DIR)
-      if (!fs.existsSync(utssdkDir) || !fs.existsSync(staticDir)) {
-        return
-      }
-      if (hasUTSModulePlatformFile(uniModuleRootDir, utsPlatform)) {
-        return
-      }
-      ignoreDirs.push(
-        normalizePathForCompare(
-          '/' + normalizePath(path.relative(inputDir, staticDir)) + '/'
-        )
-      )
-    })
-  })
-  return ignoreDirs
-}
-
-function normalizePathForCompare(id: string) {
-  const normalizedPath = normalizePath(id)
-  return isWindows ? normalizedPath.toLowerCase() : normalizedPath
 }

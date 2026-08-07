@@ -1006,9 +1006,6 @@
       "IGetProviderFail"
     ],
     [
-      "IGetScreenBrightnessFail"
-    ],
-    [
       "IGyroscopeError"
     ],
     [
@@ -1031,12 +1028,6 @@
     ],
     [
       "IRequestPaymentFail"
-    ],
-    [
-      "ISetKeepScreenOnFail"
-    ],
-    [
-      "ISetScreenBrightnessFail"
     ],
     [
       "IShareFail"
@@ -2197,6 +2188,9 @@
       "StartPullDownRefreshFailCallback"
     ],
     [
+      "StartPullDownRefreshFailImpl"
+    ],
+    [
       "StartPullDownRefreshOptions"
     ],
     [
@@ -2204,6 +2198,9 @@
     ],
     [
       "StartPullDownRefreshSuccessCallback"
+    ],
+    [
+      "StartPullDownRefreshSuccessImpl"
     ],
     [
       "StartSoterAuthentication"

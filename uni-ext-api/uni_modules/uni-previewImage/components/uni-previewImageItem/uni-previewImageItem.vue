@@ -5,520 +5,856 @@
 		<view ref="mask" class="uni-preview-image-patch" @touchstart="onstart" @touchmove="onmove" @touchend="onend"
 			@touchcancel="oncancel"></view>
 		<view class="uni-preview-image-loading" v-if="!loadingFinished">
-			<loadingCircle style="margin: auto;" :speed="16" :size="54" color="#d3d3d3"></loadingCircle>
+			<loading style="margin: auto;width:54px;height: 54px;border-color:#d3d3d3;"></loading>
 		</view>
 		<view style="align-items: center;justify-content: center;position: absolute;top: 0;bottom: 0;left: 0;right: 0;"
 			v-if="loadError" @click="closePreviewImage">
-			<image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAMAAADQmBKKAAAAilBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////2N2iNAAAALXRSTlMAf/kN/BOp7IxPBsMz9NzMRi0h4L7Q5pFjnhfVmIN3WUo6W6NUPrVtJ0yhcR84ApfrAAADTElEQVR42u3b3XaiMBSG4V1CABFBhFr/f1q1Tmf2/d/eHJoYrNJvu1a6Vp7zzrwthAAJFARBEARBEARBEPxmqtiuk3bZTJmnzbJN1ttC0SNeSJ76k71yhyrbqbs9LF4zG8Z8U9TO1Pc9wkG7JOI7Rh/jb3pkg96X/JBqcKtHNGhW8sOW284eyaD9K/cyrN0ewSA9577iTDk9YkGDlH+gOVo9ckH5G/9MvHF7mGCTin/spK978KAiZUA5sXvwoPGIO8XVfDM4TxZEi0k92HzdGoTTwuzBg7ZR5//yNlDOQDysUu4wOlo9DPbE7Ihuzg354RSzI2a5oHHk/sLZgr5xnrs/IhdUjNyrnb47KJOnBU3SrvngvnH5nKC8Ylv0iVxJ8aDrf7Us6GGHVD5owLZW9TrcpXSQTtmS5NTLohIOmrNlRX2pRjRoz5aEenth0SB7ampzrAcPmtnjS4E9eJA1RqIC7MGD3tn0ifbgQUtrvkB78KCddcBqtAcPStiQoT14kIrM+x8t28PomM/gHjxoaJ5BC7QHD1IxX3zAPXjQHzaM4R48KDOfd8R7GJtX38R7GDuFBnAPHlTwRazFexiaWCvywNoImpMHzIlsQx4YWue0B8xRX5MHGiNoQh5IjSBNHoiMoJw84F2Qd4fMu5Pau2Hv3YXRu6nDu8nVu9sP5wYNpmNz4MK3sLiD9dQA3+TjVnxxIvgxCDflixeSfVCEX+4cCX2Ulr2wpUT4ywbQv8i+sOGvY0AZO6MWfWEF0SPziOX4UecMHfPOVQR/6QmoYzacyQC/FoYHCLdkwV+c97dh045M+NJCf3UE/KnhxReXbhi46qPLU668ZeAMghfwXAkDo1V+iZO+2LImBL4InCdsKXMC4MvkumVLfCQAvpGgKNm2IQC81YI+I7adCABvRqmHfKXRBAC36+gs4ivpmQDYhqbFeuT+yJ4AyJYvOnZtJo6AORXZFKfGqyl3GDn5z942qCf14O/qNeZOKXS85DdWNjUB5LeetppA+OZc4AHh6duXkdNZfoM3rxQBxLfAV8j0Lv+RQHkggPxnFDMCSH9oEid7Akh/inOaaQKIfqwUV28HRTD8c660aYYf6/e9oiAIgiAIgiAIguAX+w9i21DdU9TtnwAAAABJRU5ErkJggg==" @click="reloadImage"
-				mode="aspectFit" style="width: 70px;height: 70px;"></image>
+			<image
+				src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAMAAADQmBKKAAAAilBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////2N2iNAAAALXRSTlMAf/kN/BOp7IxPBsMz9NzMRi0h4L7Q5pFjnhfVmIN3WUo6W6NUPrVtJ0yhcR84ApfrAAADTElEQVR42u3b3XaiMBSG4V1CABFBhFr/f1q1Tmf2/d/eHJoYrNJvu1a6Vp7zzrwthAAJFARBEARBEARBEPxmqtiuk3bZTJmnzbJN1ttC0SNeSJ76k71yhyrbqbs9LF4zG8Z8U9TO1Pc9wkG7JOI7Rh/jb3pkg96X/JBqcKtHNGhW8sOW284eyaD9K/cyrN0ewSA9577iTDk9YkGDlH+gOVo9ckH5G/9MvHF7mGCTin/spK978KAiZUA5sXvwoPGIO8XVfDM4TxZEi0k92HzdGoTTwuzBg7ZR5//yNlDOQDysUu4wOlo9DPbE7Ihuzg354RSzI2a5oHHk/sLZgr5xnrs/IhdUjNyrnb47KJOnBU3SrvngvnH5nKC8Ylv0iVxJ8aDrf7Us6GGHVD5owLZW9TrcpXSQTtmS5NTLohIOmrNlRX2pRjRoz5aEenth0SB7ampzrAcPmtnjS4E9eJA1RqIC7MGD3tn0ifbgQUtrvkB78KCddcBqtAcPStiQoT14kIrM+x8t28PomM/gHjxoaJ5BC7QHD1IxX3zAPXjQHzaM4R48KDOfd8R7GJtX38R7GDuFBnAPHlTwRazFexiaWCvywNoImpMHzIlsQx4YWue0B8xRX5MHGiNoQh5IjSBNHoiMoJw84F2Qd4fMu5Pau2Hv3YXRu6nDu8nVu9sP5wYNpmNz4MK3sLiD9dQA3+TjVnxxIvgxCDflixeSfVCEX+4cCX2Ulr2wpUT4ywbQv8i+sOGvY0AZO6MWfWEF0SPziOX4UecMHfPOVQR/6QmoYzacyQC/FoYHCLdkwV+c97dh045M+NJCf3UE/KnhxReXbhi46qPLU668ZeAMghfwXAkDo1V+iZO+2LImBL4InCdsKXMC4MvkumVLfCQAvpGgKNm2IQC81YI+I7adCABvRqmHfKXRBAC36+gs4ivpmQDYhqbFeuT+yJ4AyJYvOnZtJo6AORXZFKfGqyl3GDn5z942qCf14O/qNeZOKXS85DdWNjUB5LeetppA+OZc4AHh6duXkdNZfoM3rxQBxLfAV8j0Lv+RQHkggPxnFDMCSH9oEid7Akh/inOaaQKIfqwUV28HRTD8c660aYYf6/e9oiAIgiAIgiAIguAX+w9i21DdU9TtnwAAAABJRU5ErkJggg=="
+				@click="reloadImage" mode="aspectFit" style="width: 70px;height: 70px;"></image>
 		</view>
 	</view>
 </template>
 
-<script>
-	const DEFAULT_DISTANCE = 4
-	const FAST_SLIDE_LENGTH = 10
-	const LANGUAGE = {
-		"en": {
-			error: "Image loading failed",
-			retry: "Retry"
-		},
-		"zh-Hans": {
-			error: "图片加载失败",
-			retry: "重试"
-		},
-		"zh-Hant": {
-			error: "圖片加載失敗",
-			retry: "重試"
-		}
-	}
-	import {
-		Friction
-	} from './Friction'
+<script setup lang="uts">
+	import { ref, watch, onMounted } from 'vue'
+	import { Friction } from './Friction'
 	// #ifdef APP-ANDROID
-	import View from "android.view.View"
+	// import View from "android.view.View"
 	// #endif
 	// #ifdef APP-IOS
 	import { LongPressActionsOptions, LongPressActionsSuccessResult, LongPressActionsFailResult } from '@/uni_modules/uni-previewImage';
 	// #endif
-
-	// #ifdef APP-ANDROID
-	import { LongPressActionsFailResult } from '@/uni_modules/uni-previewImage';
+	// #ifdef APP-ANDROID && !VUE3-VAPOR
+	import { LongPressActionsFailResult, PreviewImageErrorImpl, UniErrorPreviewImage } from '@/uni_modules/uni-previewImage';
 	// #endif
-	import loadingCircle from "../loading-circle/loading-circle.vue"
+
+	const DEFAULT_DISTANCE = 4
+	const FAST_SLIDE_LENGTH = 10
+	const SCALE_BOUNDARY_BUFFER = 2
+	const MIN_SCALE = 1
+	const MAX_SCALE = 3
+	const ANIMATION_DURATION = 200
+	const SAVE_IMAGE_LANGUAGE = {
+		"en": {
+			save_item: "Save Image",
+			save_success: "Image saved to album successfully",
+			save_fail: "Failed to save image to album"
+		},
+		"zh-Hans": {
+			save_item: "保存图片",
+			save_success: "保存图片到相册成功",
+			save_fail: "保存图片到相册失败"
+		},
+		"zh-Hant": {
+			save_item: "儲存圖片",
+			save_success: "圖片儲存到相簿成功",
+			save_fail: "圖片儲存到相簿失敗"
+		}
+	}
+
 	type Point = {
 		x : number,
 		y : number
 	}
-	export default {
-		components: {
-			loadingCircle
+
+	// Props
+	const props = defineProps({
+		src: {
+			type: String,
+			default: ""
 		},
-		data() {
-			return {
-				imageMode: "aspectFit",
-				lastTouchEndTime: 0,
-				srcPath: "",
-				imageView: null as UniElement | null,
-				screenWidth: 0,
-				screenHeight: 0,
-				/* 放大系数 */
-				scaleSize: 1,
-				/* 上次触摸事件 */
-				lastSlideTouch: null as Array<UniTouch> | null,
-				/* 图片竖向滑动的距离 */
-				imageTop: 0,
-				/* 图片横向滑动的距离 */
-				imageMarginTop: 0,
-				imageLeft: 0,
-				/* 是否需要动画 */
-				withAnimation: false,
-				imageHeight: 0,
-				historyX: [0, 0],
-				historyY: [0, 0],
-				historyT: [0, 0],
-				_friction: new Friction(1, 2),
-				requestId: -1,
-				needExecLongPress: false,
-				// #ifdef APP
-				androidView: null as View | null,
-				// #endif
-				downPoint: null as Point | null,
-				longPressActionTimeoutId: -1,
-				inScaleMode: false,
-				inDoubleTapMode: false,
-				startTimestamp: 0,
-				clickTimeoutId: -1,
-				transformOrigin: [0, 0],
-				loadingFinished: false,
-				devicePixelRatio: 0,
-				loadError: false,
-				language: "zh-Hans"
+		index: {
+			type: Number,
+			default: -1
+		},
+		longPressAction: {
+			type: Object as PropType<LongPressActionsOptions | null>
+		},
+		tips: {
+			type: Object as PropType<UTSJSONObject | null>
+		},
+		reset: {
+			type: Boolean,
+			default: false
+		},
+		resetOnSrcChange: {
+			type: Boolean,
+			default: false
+		}
+	})
+
+	// Refs
+	const imageView = ref<UniElement | null>(null)
+	const mask = ref<UniElement | null>(null)
+
+	// Reactive state
+	const imageMode = ref("aspectFit")
+	const lastTouchEndTime = ref<number>(0)
+	const srcPath = ref("")
+	const screenWidth = ref<number>(0)
+	const screenHeight = ref<number>(0)
+	/* 放大系数 */
+	const scaleSize = ref<number>(1)
+	/* 上次触摸事件 */
+	const lastSlideTouch = ref<Array<UniTouch> | null>(null)
+	/* 图片竖向滑动的距离 */
+	const imageTop = ref<number>(0)
+	/* 图片横向滑动的距离 */
+	const imageMarginTop = ref<number>(0)
+	const imageLeft = ref<number>(0)
+	/* 是否需要动画 */
+	const withAnimation = ref(false)
+	const imageHeight = ref<number>(0)
+	const historyX = ref<Array<number>>([0, 0])
+	const historyY = ref<Array<number>>([0, 0])
+	const historyT = ref<Array<number>>([0, 0])
+	const _friction = ref(new Friction(1, 2))
+	const requestId = ref<number>(-1)
+	const needExecLongPress = ref(false)
+	// #ifdef APP
+	// const androidView = ref<View | null>(null)
+	// #endif
+	const downPoint = ref<Point | null>(null)
+	const longPressActionTimeoutId = ref<number>(-1)
+	const inScaleMode = ref(false)
+	const scaleGestureActive = ref(false)
+	const scaleGestureInProgress = ref(false)
+	const delegateMoveToParent = ref(false)
+	const inDoubleTapMode = ref(false)
+	const startTimestamp = ref<number>(0)
+	const clickTimeoutId = ref<number>(-1)
+	const transformOrigin = ref<Array<number>>([0, 0])
+	const loadingFinished = ref(false)
+	const devicePixelRatio = ref<number>(0)
+	const loadError = ref(false)
+	const language = ref("zh-Hans")
+	const isPreviewImaqeClosed = ref(false)
+	const swiperTouchDisabled = ref(false)
+	const ignoreClickUntil = ref<number>(0)
+	const inScaleBounceBack = ref(false)
+	const bounceTransitionUntil = ref<number>(0)
+
+	const instance = getCurrentInstance()!.proxy!
+
+	const getSrcLocalPath = (url : string) => {
+		srcPath.value = url
+	}
+	const resetImageState = () => {
+		cancelAnimationFrame(requestId.value)
+		clearTimeout(clickTimeoutId.value)
+		clearTimeout(longPressActionTimeoutId.value)
+		loadingFinished.value = false
+		loadError.value = false
+		imageMode.value = "aspectFit"
+		scaleSize.value = 1
+		imageTop.value = 0
+		imageMarginTop.value = 0
+		imageLeft.value = 0
+		imageHeight.value = 0
+		withAnimation.value = false
+		historyX.value = [0, 0]
+		historyY.value = [0, 0]
+		historyT.value = [0, 0]
+		lastSlideTouch.value = null
+		needExecLongPress.value = false
+		downPoint.value = null
+		inScaleMode.value = false
+		scaleGestureActive.value = false
+		scaleGestureInProgress.value = false
+		delegateMoveToParent.value = false
+		inDoubleTapMode.value = false
+		transformOrigin.value = [0, 0]
+		inScaleBounceBack.value = false
+		bounceTransitionUntil.value = 0
+		if (swiperTouchDisabled.value) {
+			swiperTouchDisabled.value = false
+			uni.$emit("__UNIPREVIEWIMAGE", false)
+		}
+		imageView.value?.style.setProperty("height", "100%")
+		imageView.value?.style.setProperty("transition-duration", "0ms")
+		imageView.value?.style.setProperty("transform-origin", "0px 0px")
+		imageView.value?.style.setProperty("transform", "translate(0px,0px) scale(1)")
+	}
+	// Watch
+	watch(() : string => props.src, (newValue : string, oldValue : string) => {
+		if (props.resetOnSrcChange) {
+			resetImageState()
+		}
+		if (newValue != "") {
+			getSrcLocalPath(newValue)
+		} else {
+			srcPath.value = ""
+			loadingFinished.value = true
+			loadError.value = true
+		}
+	}, { immediate: true })
+
+	function getSaveLanguageString(name : string) : string {
+		var value = language.value
+		if (value.startsWith("en")) {
+			value = "en"
+		} else if (value.startsWith("zh-Hant") || value.startsWith("zh-TW") || value.startsWith("zh-HK")) {
+			value = "zh-Hant"
+		} else if (value.startsWith("zh")) {
+			value = "zh-Hans"
+		}
+		var object = SAVE_IMAGE_LANGUAGE[value];
+		if (object != null) {
+			return (object as UTSJSONObject)[name] as string
+		} else {
+			return (SAVE_IMAGE_LANGUAGE["en"] as UTSJSONObject)[name] as string;
+		}
+	}
+
+	// Lifecycle
+	onMounted(() => {
+		// #ifdef APP-ANDROID
+		// androidView.value = (mask.value as UniElement | null)?.getAndroidView() as View | null
+		// #endif
+		var dpr = uni.getDeviceInfo({ filter: ["devicePixelRatio"] }).devicePixelRatio
+		if (dpr == null) {
+			devicePixelRatio.value = 1
+		} else {
+			devicePixelRatio.value = dpr
+		}
+		const systemInfo = uni.getSystemInfoSync()
+		language.value = systemInfo.appLanguage
+		// #ifdef WEB
+		language.value = uni.getLocale()
+		// #endif
+	})
+
+	// Methods
+	const previewImageError = (e : UniImageErrorEvent) => {
+		(mask.value as UniElement | null)?.style.setProperty("point-events", "none")
+		loadingFinished.value = true
+		loadError.value = true
+	}
+
+	const isNetPath = (url : string) => {
+		if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("rtmp://") || url.startsWith("rtsp://")) {
+			return true;
+		}
+		return false;
+	}
+
+	const saveImageToAlbum = (url : string) => {
+		uni.saveImageToPhotosAlbum({
+			filePath: url,
+			success() {
+				uni.showToast({
+					position: "bottom",
+					title: getSaveLanguageString("save_success")
+				})
+			},
+			fail(e) {
+				uni.showToast({
+					position: "bottom",
+					title: getSaveLanguageString("save_fail")
+				})
 			}
-		},
-		props: {
-			"src": {
-				type: String,
-				default: ""
-			},
-			"index": {
-				type: Number,
-				default: -1
-			},
-			"longPressAction": {
-				type: Object as PropType<LongPressActionsOptions | null>
-			},
-			"tips": {
-				type: Object as PropType<UTSJSONObject | null>
-			}
-		},
-		watch: {
-			"src": {
-				handler(newValue : string, oldValue : string) {
-					if (newValue != "") {
-						this.getSrcLocalPath(newValue)
+		})
+	}
+
+	const onLongPressAction = () => {
+		var longPressAction : LongPressActionsOptions | null = props.longPressAction;
+		// #ifdef APP
+		if (longPressAction == null || (longPressAction as LongPressActionsOptions).itemList.length == 0) {
+			longPressAction = {
+				itemList: [getSaveLanguageString("save_item")], success(e) {
+					if (isNetPath(srcPath.value)) {
+						uni.downloadFile({
+							url: srcPath.value, success(e) {
+								saveImageToAlbum(e.tempFilePath)
+							}, fail(e) {
+								uni.showToast({
+									position: "bottom",
+									title: getSaveLanguageString("save_fail")
+								})
+							}
+						})
 					} else {
-						this.loadingFinished = true
-						this.loadError = true
+						saveImageToAlbum(srcPath.value)
 					}
+				}
+			} as LongPressActionsOptions
+		}
+		// #endif
+		if (longPressAction != null && (longPressAction as LongPressActionsOptions).itemList.length > 0) {
+			uni.showActionSheet({
+				itemList: (longPressAction as LongPressActionsOptions).itemList,
+				itemColor: (longPressAction as LongPressActionsOptions).itemColor,
+				success: (e) => {
+					(longPressAction as LongPressActionsOptions).success?.({ tapIndex: e.tapIndex, index: props.index } as LongPressActionsSuccessResult)
+					uni.$emit("__UNIPREVIEWLONGPRESS", { type: "success", tapIndex: e.tapIndex, index: props.index })
 				},
-				immediate: true
-			}
-		},
-		mounted() {
-			this.imageView = this.$refs["imageView"] as UniElement | null
-			// #ifdef APP-ANDROID
-			this.androidView = (this.$refs["mask"] as UniElement | null)?.getAndroidView() as View | null
-			// #endif
-			var dpr = uni.getDeviceInfo({ filter: ["devicePixelRatio"] }).devicePixelRatio
-			if (dpr == null) {
-				this.devicePixelRatio = 1
-			} else {
-				this.devicePixelRatio = dpr
-			}
-			const systemInfo = uni.getSystemInfoSync()
-			this.language = systemInfo.appLanguage
-			// #ifdef WEB
-			this.language = uni.getLocale()
-			// #endif
-		},
-		methods: {
-			getLanguageString(name : string) : string {
-				var object = LANGUAGE[this.language];
-				if (object != null) {
-					return (object as UTSJSONObject)[name] as string
-				} else {
-					return (LANGUAGE["en"] as UTSJSONObject)[name] as string;
+				fail() {
+					(longPressAction as LongPressActionsOptions).fail?.(new PreviewImageErrorImpl(1101001, UniErrorPreviewImage))
+					uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 })
 				}
-			},
-			previewImageError(e : UniImageErrorEvent) {
-				(this.$refs["mask"] as UniElement | null)?.style.setProperty("point-events", "none")
-				this.loadingFinished = true
-				this.loadError = true
-			},
-			isNetPath(url : string) {
-				if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("rtmp://") || url.startsWith("rtsp://")) {
-					return true;
-				}
-				return false;
-			},
-			getSrcLocalPath(url : string) {
-				this.srcPath = url
-			},
-			onstart(e : UniTouchEvent) {
-				// #ifdef APP-ANDROID
-				if (this.androidView == null)
-					this.androidView = (this.$refs["mask"] as UniElement | null)?.getAndroidView() as View | null
-				// #endif
-				this.inScaleMode = false
-				this.withAnimation = false
-				cancelAnimationFrame(this.requestId)
-				clearTimeout(this.clickTimeoutId)
-				this.lastSlideTouch = e.touches
-				this.historyX = [0, 0]
-				this.historyY = [0, 0]
-				this.historyT = [0, 0]
-				this.downPoint = { x: e.touches[0].clientX, y: e.touches[0].clientY }
-				this.inDoubleTapMode = false
-				this.startTimestamp = e.timeStamp
-				// #ifndef APP-IOS
-				e.preventDefault()
-				// #endif
-				this.needExecLongPress = true
-				this.longPressActionTimeoutId = setTimeout(() => {
-					if (this.needExecLongPress) {
-						this.onLongPressAction()
-					}
-				}, 350)
-			},
-			onmove(e : UniTouchEvent) {
-				if (e.touches.length == 1) {
-					var currentSlideTouch = e.touches[0]
-					if (this.lastSlideTouch != null) {
-						var slideX = (currentSlideTouch.clientX - this.lastSlideTouch![0].clientX)
-						var slideY = (currentSlideTouch.clientY - this.lastSlideTouch![0].clientY)
-						var downX = Math.abs(currentSlideTouch.clientX - this.downPoint!.x)
-						var downY = Math.abs(currentSlideTouch.clientY - this.downPoint!.y)
-						if (downX > DEFAULT_DISTANCE || downY > DEFAULT_DISTANCE) {
-							if (this.scaleSize > 1 || this.imageHeight > this.screenHeight) {
-								this.imageLeft = this.imageLeft + slideX
-								this.imageTop = this.imageTop + slideY;
-								this.updateStyle(e, currentSlideTouch.clientX, currentSlideTouch.clientY)
-							} else {
-								this.needExecLongPress = true
-								this.onInterceptTouchEvent(e)
-							}
-							this.historyX.shift()
-							this.historyX.push(this.imageLeft)
-							this.historyY.shift()
-							this.historyY.push(this.imageTop)
-							this.historyT.shift()
-							this.historyT.push(e.timeStamp)
-							this.lastSlideTouch = e.touches
-							this.needExecLongPress = false
-						} else {
-							this.needExecLongPress = true
-						}
-					} else {
-						this.lastSlideTouch = e.touches
-					}
-				} else if (e.touches.length >= 2) {
-					this.inScaleMode = true
-					var currentFirstTouch = e.touches[0]
-					var currentSecondTouch = e.touches[1]
-					var currentXSlideLength = currentFirstTouch.clientX - currentSecondTouch.clientX
-					var currentYSlideLength = currentFirstTouch.clientY - currentSecondTouch.clientY
-					var currentLongSideLength = Math.sqrt(currentXSlideLength * currentXSlideLength + currentYSlideLength * currentYSlideLength)
-					if (this.lastSlideTouch != null && this.lastSlideTouch!.length >= 2) {
-						var lastFirstTouch = this.lastSlideTouch![0]
-						var lastSecondTouch = this.lastSlideTouch![1]
-						var lastXSlideLength = lastFirstTouch.clientX - lastSecondTouch.clientX
-						var lastYSlideLength = lastFirstTouch.clientY - lastSecondTouch.clientY
-						var lastLongSideLength = Math.sqrt(lastXSlideLength * lastXSlideLength + lastYSlideLength * lastYSlideLength)
-						if (currentLongSideLength != lastLongSideLength) {
-							this.scaleSize = this.scaleSize * (currentLongSideLength / lastLongSideLength)
-							this.updateStyle(e, NaN, NaN)
-						}
-					}
-					// 双指状态下应该停掉所有的父的事件
-					this.preventDefaultScall(e)
-					this.needExecLongPress = false
-					this.lastSlideTouch = e.touches
-				}
-			},
-			onend(e : UniTouchEvent) {
-				// 清空长按事件，避免连续点击时，仍然会触发长按事件
-				// this.inScaleMode = false
-				this.needExecLongPress = false
-				clearTimeout(this.longPressActionTimeoutId)
-				var current = Date.now()
-				if (this.historyY[0] == 0 && this.historyY[1] == 0 && this.historyX[0] == 0 && this.historyX[1] == 0) {
-					// 未触发move，认为不需要走惯性
-					this.withAnimation = true
-					if (current - this.lastTouchEndTime < 350) {
-						// 区别快划和双击
-						// 目前测试快划和双击的距离不一样，建议判断距离大于10的，都按照快划处理
-						if (this.lastSlideTouch != null && this.lastSlideTouch!.length > 0) {
-							var downX = Math.abs(this.lastSlideTouch![0].clientX - this.downPoint!.x)
-							var downY = Math.abs(this.lastSlideTouch![0].clientY - this.downPoint!.y)
-							if (downX > FAST_SLIDE_LENGTH || downY > FAST_SLIDE_LENGTH) {
-								this.lastSlideTouch = null
-								return
-							}
-						}
-						if (this.scaleSize > 1) {
-							this.scaleSize = 1
-							this.imageLeft = 0
-							this.updateStyle(e, NaN, NaN)
-						} else if (this.scaleSize == 1) {
-							this.scaleSize = 2
-							this.inDoubleTapMode = true
-							this.updateStyle(e, NaN, NaN)
-						}
-					} else if (e.touches.length == 0) {
-						if (this.lastSlideTouch != null && this.lastSlideTouch!.length == 1) {
-							if (e.timeStamp - this.startTimestamp < 160) {
-								if (this.lastSlideTouch != null) {
-									var downX = Math.abs(this.lastSlideTouch![0].clientX - this.downPoint!.x)
-									var downY = Math.abs(this.lastSlideTouch![0].clientY - this.downPoint!.y)
-									if (downX < FAST_SLIDE_LENGTH && downY < FAST_SLIDE_LENGTH) {
-										this.clickTimeoutId = setTimeout(() => {
-											uni.$emit("__UNIPREVIEWIMAGECLOSE")
-										}, 200)
-									}
-								} else {
-									this.clickTimeoutId = setTimeout(() => {
-										uni.$emit("__UNIPREVIEWIMAGECLOSE")
-									}, 200)
-								}
+			})
+		}
+	}
 
-							}
-						}
-						if (this.scaleSize > 3) {
-							this.scaleSize = 3
-							this.updateStyle(e, NaN, NaN)
-						} else if (this.scaleSize < 1) {
-							this.scaleSize = 1
-							this.imageLeft = 0
-							this.updateStyle(e, NaN, NaN)
-						}
-						this.lastTouchEndTime = current
-					}
-				} else {
-					if (this.inScaleMode) {
-						if (this.scaleSize > 3) {
-							this.scaleSize = 3
-							this.updateStyle(e, NaN, NaN)
-						} else if (this.scaleSize < 1) {
-							this.scaleSize = 1
-							this.imageLeft = 0
-							this.updateStyle(e, NaN, NaN)
-						}
-						this.lastTouchEndTime = current
-					}
-					var xv = 1000 * (this.historyX[1] - this.historyX[0]) / (this.historyT[1] - this.historyT[0])
-					var yv = 1000 * (this.historyY[1] - this.historyY[0]) / (this.historyT[1] - this.historyT[0])
-					this._friction.setVelocity(xv, yv)
-					this._friction.setStartPosition(this.imageLeft, this.imageTop)
-					const x0 = this._friction.displacement().x
-					const y0 = this._friction.displacement().y
-					var x = this.imageLeft
-					if (!Number.isNaN(x0))
-						x = x0 + this.imageLeft
-					var y = this.imageTop
-					if (!Number.isNaN(y0))
-						y = y0 + this.imageTop
-					this._friction.setEndPosition(x, y)
-					this.doTransform(() => {
-						var p = this._friction.positionAtTime(null)
-						if (Number.isNaN(p.x) && Number.isNaN(p.y)) {
-							cancelAnimationFrame(this.requestId)
-						}
-						if (!Number.isNaN(p.x))
-							this.imageLeft = p.x
-						if (!Number.isNaN(p.y))
-							this.imageTop = p.y
-						this.updateStyle(e, NaN, NaN)
-					})
-				}
-				this.lastSlideTouch = null
-				// #ifdef APP-ANDROID
-				this.preventDefaultScall(e)
-				// #endif
-			},
-			oncancel(e : UniTouchEvent) {
-				this.onend(e)
-				clearTimeout(this.clickTimeoutId)
-			},
-			doTransform(callback : (() => void)) {
-				this.requestId = requestAnimationFrame(() => {
-					callback()
-					if (!this._friction.isDone())
-						this.doTransform(callback)
-				})
-			},
-			updateStyle(e : UniTouchEvent | null, xDistance : number, yDistance : number) {
-				this.caculatorTransformOrigin(e)
-				if (1 < this.scaleSize) {
-					var scrollWidthLength = (this.screenWidth * (this.scaleSize - 1))
-					var scrollRadio = this.transformOrigin[0] / (this.screenWidth)
-					if (this.imageLeft > (scrollWidthLength * scrollRadio)) {
-						this.imageLeft = (scrollWidthLength * scrollRadio)
-						this.onInterceptTouchEvent(e)
-					} else if (this.imageLeft < -(scrollWidthLength * (1 - scrollRadio))) {
-						this.imageLeft = -(scrollWidthLength * (1 - scrollRadio))
-						this.onInterceptTouchEvent(e)
-					} else {
-						this.preventDefaultScall(e)
-					}
-				} else {
-					this.imageLeft = 0
-					this.onInterceptTouchEvent(e)
-				}
-				if (this.screenHeight < (this.imageHeight * this.scaleSize)) {
-					// 顶部最大可滚动距离为transform-origin的y方向的坐标减去图片真实的顶部坐标，获取图片transform-origin点上方图片可缩放的长度，诚意缩放比，减去transform-origin的y方向的坐标，即为图片顶部最大可滑动的距离
-					var topMargin = (this.transformOrigin[1] - (this.imageMarginTop > 0 ? this.imageMarginTop : 0)) * this.scaleSize - this.transformOrigin[1]
-					var bottomMargin = ((this.imageHeight + (this.imageMarginTop > 0 ? this.imageMarginTop : 0) - this.transformOrigin[1]) * this.scaleSize) - (this.screenHeight - this.transformOrigin[1])
-					if (this.imageTop > topMargin) {
-						this.imageTop = topMargin
-					} else if (this.imageTop < -bottomMargin) {
-						this.imageTop = -bottomMargin
-					} else {
-						if (!Number.isNaN(yDistance) && Math.abs(yDistance - this.downPoint!.y) > DEFAULT_DISTANCE) {
-							this.preventDefaultScall(e)
-						}
-					}
-				} else {
-					if (!this.inScaleMode) {
-						this.imageTop = 0
-						if (!Number.isNaN(yDistance) && Math.abs(yDistance - this.downPoint!.y) > DEFAULT_DISTANCE) {
-							this.preventDefaultScall(e)
-						}
-					} else {
-						this.preventDefaultScall(e)
-					}
-				}
-				this.imageView?.style.setProperty("transition-duration", this.withAnimation ? "200ms" : "0ms")
-				this.imageView?.style.setProperty("transform-origin", (this.transformOrigin[0]) + "px " + (this.transformOrigin[1]) + "px")
-				this.imageView?.style.setProperty("transform", "translate(" + (this.imageLeft) + "px," + (this.imageTop) + "px) scale(" + this.scaleSize + ")")
-			},
-			onLongPressAction() {
-				if (this.longPressAction != null && (this.longPressAction as LongPressActionsOptions).itemList.length > 0) {
-					uni.showActionSheet({
-						itemList: (this.longPressAction as LongPressActionsOptions).itemList,
-						itemColor: (this.longPressAction as LongPressActionsOptions).itemColor,
-						success: (e) => {
-							uni.$emit("__UNIPREVIEWLONGPRESS", { type: "success", tapIndex: e.tapIndex, index: this.index })
-						},
-						fail() {
-							uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 })
-						}
-					})
-				}
-			},
-			onImageLoad(e : UniImageLoadEvent) {
-				(this.$refs["mask"] as UniElement | null)?.style.setProperty("point-events", "none")
-				uni.createSelectorQuery().in(this).select('.uni-preview-image-item').boundingClientRect().exec((ret) => {
-					if (ret.length == 1) {
-						var rect = this.imageView!.getBoundingClientRect()
-						this.screenHeight = rect.height
-						this.screenWidth = rect.width
-						this.caculatorImageSize(e.detail.width / this.devicePixelRatio, e.detail.height / this.devicePixelRatio)
-					}
-				})
-				this.loadingFinished = true
-			},
-			caculatorImageSize(imageWidth : number, imageHeight : number) {
-				var scaleImageSize = (imageHeight / (imageWidth / this.screenWidth))
-				if (scaleImageSize > this.screenHeight) {
-					this.imageHeight = scaleImageSize
-					this.imageMode = "aspectFill"
-					this.imageView?.style.setProperty("height", scaleImageSize + "px")
-				} else {
-					this.imageMode = "aspectFit"
-				}
-				this.imageMarginTop = (this.screenHeight - scaleImageSize) / 2
-				this.imageHeight = scaleImageSize
-			},
-			preventDefaultScall(e : UniTouchEvent | null) {
-				e?.preventDefault()
-				e?.stopPropagation()
-			},
-			onInterceptTouchEvent(e : UniTouchEvent | null) {
-				if (this.inScaleMode) {
-					this.preventDefaultScall(e)
-					return
-				}
-				clearTimeout(this.clickTimeoutId)
-				// #ifdef APP-ANDROID
-				this.androidView?.parent?.requestDisallowInterceptTouchEvent(false)
-				// #endif
-			},
-			reloadImage(e : UniPointerEvent) {
-				if (this.srcPath == "") {
-					this.loadingFinished = false
-					this.loadError = false
-					setTimeout(() => {
-						this.loadError = true
-						this.loadingFinished = true
-					}, 1000)
-					e.stopPropagation()
-					return
-				}
-				(this.$refs["mask"] as UniElement | null)?.style.setProperty("point-events", "none")
-				this.loadingFinished = false
-				this.loadError = false
-				var tempPath = this.srcPath + ""
-				this.srcPath = ""
-				setTimeout(() => {
-					this.srcPath = tempPath
-				}, 100)
-				e.stopPropagation()
-			},
-			closePreviewImage() {
-				uni.$emit("__UNIPREVIEWIMAGECLOSE")
-			},
-			// 计算transform-origin主要代码
-			caculatorTransformOrigin(e : UniTouchEvent | null) {
-				var originalCenterX : number
-				var originalCenterY : number
-				if (e != null) {
-					if (e.touches.length >= 2) {
-						var point1 = e.touches[0]
-						var point2 = e.touches[1]
-						originalCenterX = (point1.clientX + point2.clientX) / 2
-						originalCenterY = (point1.clientY + point2.clientY) / 2
-						if ((this.scaleSize * this.imageHeight) < this.screenHeight) {
-							originalCenterY = this.screenHeight / 2
-						}
+	const preventDefaultScall = (e : UniTouchEvent | null) => {
+		e?.preventDefault()
+		e?.stopPropagation()
+	}
 
-						if (this.imageHeight > this.screenHeight && this.scaleSize >= 1) {
-							originalCenterY = originalCenterY - this.imageTop / this.scaleSize
-						}
-						var oldTransformOrigin = [this.transformOrigin[0], this.transformOrigin[1]]
-						this.transformOrigin = [originalCenterX, originalCenterY]
-						if (oldTransformOrigin[0] != 0 && oldTransformOrigin[1] != 1) {
-							this.imageLeft = this.imageLeft + (this.scaleSize - 1.0) * (originalCenterX - oldTransformOrigin[0])
-							this.imageTop = this.imageTop + (this.scaleSize - 1.0) * (originalCenterY - oldTransformOrigin[1])
-						}
-					} else if (e.type == "touchend") {
-						if (this.inDoubleTapMode && this.scaleSize == 2 && this.lastSlideTouch != null && this.lastSlideTouch!.length == 1) {
-							originalCenterX = this.lastSlideTouch![0].clientX
-							originalCenterY = this.lastSlideTouch![0].clientY
-							if ((this.scaleSize * this.imageHeight) < this.screenHeight) {
-								originalCenterY = this.screenHeight / 2
-							}
-							if (this.imageHeight > this.screenHeight) {
-								originalCenterY = originalCenterY - this.imageTop
-							}
-							this.transformOrigin = [originalCenterX, originalCenterY]
-							this.imageLeft = this.imageLeft + (this.scaleSize - 1) * (originalCenterX - this.transformOrigin[0])
-							this.imageTop = this.imageTop + (this.scaleSize - 1) * (originalCenterY - this.transformOrigin[1])
-						}
+	const setSwiperTouchDisabled = (disabled : boolean) => {
+		if (swiperTouchDisabled.value == disabled) {
+			return
+		}
+		swiperTouchDisabled.value = disabled
+		uni.$emit("__UNIPREVIEWIMAGE", disabled)
+	}
+
+	const markScaleGesture = () => {
+		ignoreClickUntil.value = Date.now() + 450
+	}
+
+	const shouldIgnoreClick = () : boolean => {
+		return Date.now() < ignoreClickUntil.value
+	}
+
+	const setScaleKeepingViewportCenter = (targetScale : number) => {
+		if (scaleSize.value <= 0 || screenWidth.value <= 0 || screenHeight.value <= 0) {
+			scaleSize.value = targetScale
+			return
+		}
+		var ratio = targetScale / scaleSize.value
+		var centerX = screenWidth.value / 2
+		var centerY = screenHeight.value / 2
+		imageLeft.value = centerX - transformOrigin.value[0] - (centerX - imageLeft.value - transformOrigin.value[0]) * ratio
+		imageTop.value = centerY - transformOrigin.value[1] - (centerY - imageTop.value - transformOrigin.value[1]) * ratio
+		scaleSize.value = targetScale
+	}
+
+	const protectBounceTransition = () => {
+		bounceTransitionUntil.value = Date.now() + ANIMATION_DURATION
+	}
+
+	const onInterceptTouchEvent = (e : UniTouchEvent | null) => {
+		if (inScaleMode.value || scaleGestureActive.value) {
+			setSwiperTouchDisabled(true)
+			preventDefaultScall(e)
+			return
+		}
+		clearTimeout(clickTimeoutId.value)
+		// #ifdef APP-ANDROID
+		// androidView.value?.parent?.requestDisallowInterceptTouchEvent(false)
+		// #endif
+	}
+
+	const shouldDelegateMoveToParent = (slideX : number, slideY : number) => {
+		if (scaleSize.value <= 1 || screenWidth.value <= 0) {
+			return false
+		}
+		if (Math.abs(slideX) <= Math.abs(slideY)) {
+			return false
+		}
+		var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1)
+		var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value)
+		return (imageLeft.value >= maxLeft && slideX > 0) || (imageLeft.value <= minLeft && slideX < 0)
+	}
+
+	const isAtHorizontalBoundary = () : boolean => {
+		if (scaleSize.value <= 1 || screenWidth.value <= 0) {
+			return false
+		}
+		var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1)
+		var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value)
+		return imageLeft.value >= maxLeft || imageLeft.value <= minLeft
+	}
+
+	const delegateCurrentMoveToParent = (e : UniTouchEvent, currentSlideTouch : UniTouch) => {
+		inScaleMode.value = false
+		scaleGestureActive.value = false
+		scaleGestureInProgress.value = false
+		delegateMoveToParent.value = true
+		setSwiperTouchDisabled(false)
+		needExecLongPress.value = false
+		clearTimeout(longPressActionTimeoutId.value)
+		lastSlideTouch.value = e.touches
+		downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY } as Point
+		historyX.value = [imageLeft.value, imageLeft.value]
+		historyY.value = [imageTop.value, imageTop.value]
+		historyT.value = [e.timeStamp, e.timeStamp]
+		onInterceptTouchEvent(e)
+	}
+
+	// 计算transform-origin主要代码
+	const caculatorTransformOrigin = (e : UniTouchEvent | null) => {
+		var originalCenterX : number
+		var originalCenterY : number
+		if (e != null) {
+			if (e.touches.length >= 2) {
+				var point1 = e.touches[0]
+				var point2 = e.touches[1]
+				originalCenterX = (point1.clientX + point2.clientX) / 2
+				originalCenterY = (point1.clientY + point2.clientY) / 2
+				if ((scaleSize.value * imageHeight.value) < screenHeight.value) {
+					originalCenterY = screenHeight.value / 2
+				}
+
+				if (imageHeight.value > screenHeight.value && scaleSize.value >= 1) {
+					originalCenterY = originalCenterY - imageTop.value / scaleSize.value
+				}
+				var oldTransformOrigin = [transformOrigin.value[0], transformOrigin.value[1]]
+				transformOrigin.value = [originalCenterX, originalCenterY]
+				if (oldTransformOrigin[0] != 0 && oldTransformOrigin[1] != 1) {
+					imageLeft.value = imageLeft.value + (scaleSize.value - 1.0) * (originalCenterX - oldTransformOrigin[0])
+					imageTop.value = imageTop.value + (scaleSize.value - 1.0) * (originalCenterY - oldTransformOrigin[1])
+				}
+			} else if (e.type == "touchend") {
+				if (inDoubleTapMode.value && scaleSize.value == 2 && lastSlideTouch.value != null && lastSlideTouch.value!.length == 1) {
+					originalCenterX = lastSlideTouch.value![0].clientX
+					originalCenterY = lastSlideTouch.value![0].clientY
+					if ((scaleSize.value * imageHeight.value) < screenHeight.value) {
+						originalCenterY = screenHeight.value / 2
 					}
+					if (imageHeight.value > screenHeight.value) {
+						originalCenterY = originalCenterY - imageTop.value
+					}
+					transformOrigin.value = [originalCenterX, originalCenterY]
 				}
 			}
 		}
+	}
+
+	const updateStyle = (e : UniTouchEvent | null, xDistance : number, yDistance : number) => {
+		caculatorTransformOrigin(e)
+		if (1 < scaleSize.value) {
+			var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value)
+			var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1)
+			if (imageLeft.value > maxLeft) {
+				imageLeft.value = maxLeft
+				onInterceptTouchEvent(e)
+			} else if (imageLeft.value < minLeft) {
+				imageLeft.value = minLeft
+				onInterceptTouchEvent(e)
+			} else {
+				preventDefaultScall(e)
+			}
+		} else {
+			imageLeft.value = 0
+			onInterceptTouchEvent(e)
+		}
+		var imageContentTop = imageMarginTop.value > 0 ? imageMarginTop.value : 0
+		var imageContentBottom = imageContentTop + imageHeight.value
+		var scaledContentHeight = imageHeight.value * scaleSize.value
+		if (scaleSize.value <= 1 && imageHeight.value > screenHeight.value) {
+			var minTop = screenHeight.value - imageHeight.value
+			if (imageTop.value > 0) {
+				imageTop.value = 0
+			} else if (imageTop.value < minTop) {
+				imageTop.value = minTop
+			}
+			if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value!.y) > DEFAULT_DISTANCE) {
+				preventDefaultScall(e)
+			}
+		} else if ((screenHeight.value + SCALE_BOUNDARY_BUFFER) < scaledContentHeight) {
+			var scaledTopWithoutTranslate = transformOrigin.value[1] + (imageContentTop - transformOrigin.value[1]) * scaleSize.value
+			var scaledBottomWithoutTranslate = transformOrigin.value[1] + (imageContentBottom - transformOrigin.value[1]) * scaleSize.value
+			var visualTop = scaledTopWithoutTranslate + imageTop.value
+			var visualBottom = scaledBottomWithoutTranslate + imageTop.value
+			if (visualBottom < screenHeight.value) {
+				imageTop.value = imageTop.value + (screenHeight.value - visualBottom)
+			} else if (visualTop > 0 && !inScaleBounceBack.value) {
+				imageTop.value = imageTop.value - visualTop
+			}
+			if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value!.y) > DEFAULT_DISTANCE) {
+				preventDefaultScall(e)
+			}
+		} else {
+			if (!inScaleMode.value) {
+				var scaledTopWithoutTranslate = transformOrigin.value[1] + (imageContentTop - transformOrigin.value[1]) * scaleSize.value
+				var centeredTop = (screenHeight.value - scaledContentHeight) / 2
+				imageTop.value = centeredTop - scaledTopWithoutTranslate
+				if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value!.y) > DEFAULT_DISTANCE) {
+					preventDefaultScall(e)
+				}
+			} else {
+				preventDefaultScall(e)
+			}
+		}
+		var shouldAnimate = withAnimation.value || Date.now() < bounceTransitionUntil.value
+		// 回弹动画保护期内继续写 200ms，避免连续 updateStyle 把 transition 覆盖成 0ms。
+		imageView.value?.style.setProperty("transition-duration", shouldAnimate ? ANIMATION_DURATION + "ms" : "0ms")
+		imageView.value?.style.setProperty("transform-origin", (transformOrigin.value[0]) + "px " + (transformOrigin.value[1]) + "px")
+		imageView.value?.style.setProperty("transform", "translate(" + (imageLeft.value) + "px," + (imageTop.value) + "px) scale(" + scaleSize.value + ")")
+	}
+
+	watch(() : boolean => props.reset, (newValue : boolean, oldValue : boolean) => {
+		if (newValue != oldValue) {
+			if (imageView.value != null && (scaleSize.value != 1 || imageLeft.value != 0 || imageTop.value != 0)) {
+				scaleSize.value = 1
+				imageLeft.value = 0
+				imageTop.value = 0
+				withAnimation.value = false
+				updateStyle(null, NaN, NaN)
+			}
+		}
+	}, { immediate: true })
+
+	function doTransform(callback : () => void) {
+		requestId.value = requestAnimationFrame(() => {
+			callback()
+			if (!_friction.value.isDone())
+				doTransform(callback)
+		})
+	}
+
+	function closePreviewImage() {
+		isPreviewImaqeClosed.value = true
+		uni.$emit("__UNIPREVIEWIMAGECLOSE")
+	}
+
+	const onstart = (e : UniTouchEvent) => {
+		if (isPreviewImaqeClosed.value) return
+		// #ifdef APP-ANDROID
+		// if (androidView.value == null)
+		// 	androidView.value = (mask.value as UniElement | null)?.getAndroidView() as View | null
+		// #endif
+		inScaleMode.value = false
+		scaleGestureActive.value = false
+		scaleGestureInProgress.value = false
+		delegateMoveToParent.value = false
+		bounceTransitionUntil.value = 0
+		if (e.touches.length >= 2) {
+			inScaleMode.value = true
+			scaleGestureActive.value = true
+			scaleGestureInProgress.value = true
+			markScaleGesture()
+			setSwiperTouchDisabled(true)
+		} else {
+			setSwiperTouchDisabled(scaleSize.value > 1 && !isAtHorizontalBoundary())
+		}
+		withAnimation.value = false
+		cancelAnimationFrame(requestId.value)
+		clearTimeout(clickTimeoutId.value)
+		lastSlideTouch.value = e.touches
+		historyX.value = [0, 0]
+		historyY.value = [0, 0]
+		historyT.value = [0, 0]
+		downPoint.value = { x: e.touches[0].clientX, y: e.touches[0].clientY } as Point
+		inDoubleTapMode.value = false
+		startTimestamp.value = e.timeStamp
+		// #ifndef APP-IOS
+		e.preventDefault()
+		// #endif
+		needExecLongPress.value = e.touches.length < 2
+		if (needExecLongPress.value) {
+			longPressActionTimeoutId.value = setTimeout(() => {
+				if (needExecLongPress.value) {
+					onLongPressAction()
+				}
+			}, 350)
+		}
+	}
+
+	const onmove = (e : UniTouchEvent) => {
+		if (isPreviewImaqeClosed.value) return
+		if (e.touches.length == 1) {
+			var currentSlideTouch = e.touches[0]
+			if (delegateMoveToParent.value) {
+				needExecLongPress.value = false
+				clearTimeout(longPressActionTimeoutId.value)
+				lastSlideTouch.value = e.touches
+				downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY } as Point
+				historyX.value = [imageLeft.value, imageLeft.value]
+				historyY.value = [imageTop.value, imageTop.value]
+				historyT.value = [e.timeStamp, e.timeStamp]
+				onInterceptTouchEvent(e)
+				return
+			}
+			if (lastSlideTouch.value != null && lastSlideTouch.value!.length != 1) {
+				lastSlideTouch.value = e.touches
+				downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY } as Point
+				historyX.value = [imageLeft.value, imageLeft.value]
+				historyY.value = [imageTop.value, imageTop.value]
+				historyT.value = [e.timeStamp, e.timeStamp]
+				if (scaleSize.value > 1 || inScaleMode.value || scaleGestureActive.value) {
+					preventDefaultScall(e)
+				} else {
+					onInterceptTouchEvent(e)
+				}
+				return
+			}
+			if (lastSlideTouch.value != null) {
+				var slideX = (currentSlideTouch.clientX - lastSlideTouch.value![0].clientX)
+				var slideY = (currentSlideTouch.clientY - lastSlideTouch.value![0].clientY)
+				if (shouldDelegateMoveToParent(slideX, slideY)) {
+					// 放大图到达横向边界后，继续向外滑动需要交给 swiper 翻页。
+					delegateCurrentMoveToParent(e, currentSlideTouch)
+					return
+				}
+				var downX = Math.abs(currentSlideTouch.clientX - downPoint.value!.x)
+				var downY = Math.abs(currentSlideTouch.clientY - downPoint.value!.y)
+				if (downX > DEFAULT_DISTANCE || downY > DEFAULT_DISTANCE) {
+					needExecLongPress.value = false
+					clearTimeout(longPressActionTimeoutId.value)
+					var handledByImage = false
+					if (scaleSize.value > 1) {
+						setSwiperTouchDisabled(true)
+						imageLeft.value = imageLeft.value + slideX
+						imageTop.value = imageTop.value + slideY;
+						updateStyle(e, currentSlideTouch.clientX, currentSlideTouch.clientY)
+						handledByImage = true
+					} else if (imageHeight.value > screenHeight.value && downY > downX) {
+						setSwiperTouchDisabled(true)
+						imageTop.value = imageTop.value + slideY;
+						// 未放大的长图由图片自身处理竖向滑动，横向仍交给 swiper。
+						updateStyle(e, currentSlideTouch.clientX, currentSlideTouch.clientY)
+						preventDefaultScall(e)
+						handledByImage = true
+					} else {
+						setSwiperTouchDisabled(false)
+						onInterceptTouchEvent(e)
+					}
+					if (handledByImage) {
+						historyX.value.shift()
+						historyX.value.push(imageLeft.value)
+						historyY.value.shift()
+						historyY.value.push(imageTop.value)
+						historyT.value.shift()
+						historyT.value.push(e.timeStamp)
+					}
+					lastSlideTouch.value = e.touches
+					needExecLongPress.value = false
+				} else {
+					needExecLongPress.value = true
+				}
+			} else {
+				lastSlideTouch.value = e.touches
+			}
+		} else if (e.touches.length >= 2) {
+			inScaleMode.value = true
+			scaleGestureActive.value = true
+			scaleGestureInProgress.value = true
+			setSwiperTouchDisabled(true)
+			markScaleGesture()
+			needExecLongPress.value = false
+			clearTimeout(longPressActionTimeoutId.value)
+			var currentFirstTouch = e.touches[0]
+			var currentSecondTouch = e.touches[1]
+			var currentXSlideLength = currentFirstTouch.clientX - currentSecondTouch.clientX
+			var currentYSlideLength = currentFirstTouch.clientY - currentSecondTouch.clientY
+			var currentLongSideLength = Math.sqrt(currentXSlideLength * currentXSlideLength + currentYSlideLength * currentYSlideLength)
+			if (lastSlideTouch.value != null && lastSlideTouch.value!.length >= 2) {
+				var lastFirstTouch = lastSlideTouch.value![0]
+				var lastSecondTouch = lastSlideTouch.value![1]
+				var lastXSlideLength = lastFirstTouch.clientX - lastSecondTouch.clientX
+				var lastYSlideLength = lastFirstTouch.clientY - lastSecondTouch.clientY
+				var lastLongSideLength = Math.sqrt(lastXSlideLength * lastXSlideLength + lastYSlideLength * lastYSlideLength)
+				if (currentLongSideLength != lastLongSideLength) {
+					scaleSize.value = scaleSize.value * (currentLongSideLength / lastLongSideLength)
+					updateStyle(e, NaN, NaN)
+				}
+			}
+			// 双指状态下应该停掉所有的父的事件
+			preventDefaultScall(e)
+			needExecLongPress.value = false
+			lastSlideTouch.value = e.touches
+		}
+	}
+
+	const onend = (e : UniTouchEvent) => {
+		if (isPreviewImaqeClosed.value) return
+
+		const wasScaleMode = inScaleMode.value || scaleGestureActive.value || scaleGestureInProgress.value
+		if (wasScaleMode) {
+			markScaleGesture()
+		}
+		inScaleMode.value = false
+		needExecLongPress.value = false
+		clearTimeout(longPressActionTimeoutId.value)
+		var current = Date.now()
+
+		if (wasScaleMode) {
+			if (scaleSize.value > MAX_SCALE) {
+				withAnimation.value = true
+				protectBounceTransition()
+				setScaleKeepingViewportCenter(MAX_SCALE)
+				inScaleBounceBack.value = true
+				// 超过最大缩放时回弹到 MAX_SCALE，并保护本次回弹动画。
+				updateStyle(e, NaN, NaN)
+				inScaleBounceBack.value = false
+			} else if (scaleSize.value < MIN_SCALE) {
+				withAnimation.value = true
+				protectBounceTransition()
+				setScaleKeepingViewportCenter(MIN_SCALE)
+				imageLeft.value = 0
+				imageTop.value = 0
+				inScaleBounceBack.value = true
+				// 小于最小缩放时回弹到原始大小，并保护本次回弹动画。
+				updateStyle(e, NaN, NaN)
+				inScaleBounceBack.value = false
+			} else {
+				withAnimation.value = false
+				updateStyle(e, NaN, NaN)
+			}
+			lastTouchEndTime.value = current
+			lastSlideTouch.value = null
+			scaleGestureActive.value = false
+			if (e.touches.length == 0) {
+				scaleGestureInProgress.value = false
+			}
+			delegateMoveToParent.value = false
+			setSwiperTouchDisabled(false)
+			return
+		}
+
+		if (historyY.value[0] == 0 && historyY.value[1] == 0 && historyX.value[0] == 0 && historyX.value[1] == 0) {
+			withAnimation.value = true
+			if (current - lastTouchEndTime.value < 350) {
+				if (lastSlideTouch.value != null && lastSlideTouch.value!.length > 0) {
+					var downX = Math.abs(lastSlideTouch.value![0].clientX - downPoint.value!.x)
+					var downY = Math.abs(lastSlideTouch.value![0].clientY - downPoint.value!.y)
+					if (downX > FAST_SLIDE_LENGTH || downY > FAST_SLIDE_LENGTH) {
+						lastSlideTouch.value = null
+						scaleGestureActive.value = false
+						delegateMoveToParent.value = false
+						setSwiperTouchDisabled(false)
+						return
+					}
+				}
+				if (scaleSize.value > 1) {
+					scaleSize.value = 1
+					imageLeft.value = 0
+					updateStyle(e, NaN, NaN)
+				} else if (scaleSize.value == 1) {
+					scaleSize.value = 2
+					inDoubleTapMode.value = true
+					updateStyle(e, NaN, NaN)
+				}
+			} else if (e.touches.length == 0) {
+				if (lastSlideTouch.value != null && lastSlideTouch.value!.length == 1 && e.timeStamp - startTimestamp.value < 160) {
+					var downX = Math.abs(lastSlideTouch.value![0].clientX - downPoint.value!.x)
+					var downY = Math.abs(lastSlideTouch.value![0].clientY - downPoint.value!.y)
+					if (downX < FAST_SLIDE_LENGTH && downY < FAST_SLIDE_LENGTH && !shouldIgnoreClick()) {
+						clickTimeoutId.value = setTimeout(() => {
+							closePreviewImage()
+						}, 200)
+					}
+				}
+				lastTouchEndTime.value = current
+			}
+		} else {
+			var deltaTime = historyT.value[1] - historyT.value[0]
+			var xv = 0
+			var yv = 0
+			if (deltaTime > 0) {
+				xv = 1000 * (historyX.value[1] - historyX.value[0]) / deltaTime
+				yv = 1000 * (historyY.value[1] - historyY.value[0]) / deltaTime
+			}
+			if (!Number.isFinite(xv)) {
+				xv = 0
+			}
+			if (!Number.isFinite(yv)) {
+				yv = 0
+			}
+			_friction.value.setVelocity(xv, yv)
+			_friction.value.setStartPosition(imageLeft.value, imageTop.value)
+			const x0 = _friction.value.displacement().x
+			const y0 = _friction.value.displacement().y
+			var x = imageLeft.value
+			if (!Number.isNaN(x0))
+				x = x0 + imageLeft.value
+			var y = imageTop.value
+			if (!Number.isNaN(y0))
+				y = y0 + imageTop.value
+			_friction.value.setEndPosition(x, y)
+			doTransform(() => {
+				var p = _friction.value.positionAtTime(null)
+				if (Number.isNaN(p.x) && Number.isNaN(p.y)) {
+					cancelAnimationFrame(requestId.value)
+				}
+				if (!Number.isNaN(p.x))
+					imageLeft.value = p.x
+				if (!Number.isNaN(p.y))
+					imageTop.value = p.y
+				updateStyle(e, NaN, NaN)
+			})
+		}
+		lastSlideTouch.value = null
+		scaleGestureActive.value = false
+		if (e.touches.length == 0) {
+			scaleGestureInProgress.value = false
+		}
+		delegateMoveToParent.value = false
+		setSwiperTouchDisabled(false)
+		// #ifdef APP-ANDROID
+		// preventDefaultScall(e)
+		// #endif
+	}
+
+	const oncancel = (e : UniTouchEvent) => {
+		onend(e)
+		clearTimeout(clickTimeoutId.value)
+		inScaleMode.value = false
+		scaleGestureActive.value = false
+		scaleGestureInProgress.value = false
+		delegateMoveToParent.value = false
+		setSwiperTouchDisabled(false)
+	}
+
+	const caculatorImageSize = (imgWidth : number, imgHeight : number) => {
+		var scaleImageSize = (imgHeight / (imgWidth / screenWidth.value))
+		if (scaleImageSize > screenHeight.value) {
+			imageHeight.value = scaleImageSize
+			imageMode.value = "aspectFill"
+			imageView.value?.style.setProperty("height", scaleImageSize + "px")
+		} else {
+			imageMode.value = "aspectFit"
+			imageView.value?.style.setProperty("height", "100%")
+		}
+		imageMarginTop.value = (screenHeight.value - scaleImageSize) / 2
+		imageHeight.value = scaleImageSize
+	}
+
+	const onImageLoad = (e : UniImageLoadEvent) => {
+		(mask.value as UniElement | null)?.style.setProperty("point-events", "none")
+		uni.createSelectorQuery().in(instance).select('.uni-preview-image-patch').boundingClientRect().exec((ret) => {
+			if (ret.length == 1) {
+				var rect = mask.value!.getBoundingClientRect()
+				screenHeight.value = rect.height
+				screenWidth.value = rect.width
+				if(devicePixelRatio.value == 0) {
+					var dpr = uni.getDeviceInfo({ filter: ["devicePixelRatio"] }).devicePixelRatio
+					if (dpr == null) {
+						devicePixelRatio.value = 1
+					} else {
+						devicePixelRatio.value = dpr
+					}
+				}
+				caculatorImageSize(e.detail.width / devicePixelRatio.value, e.detail.height / devicePixelRatio.value)
+			}
+		})
+		loadingFinished.value = true
+	}
+
+	const reloadImage = (e : UniPointerEvent) => {
+		if (srcPath.value == "") {
+			loadingFinished.value = false
+			loadError.value = false
+			setTimeout(() => {
+				loadError.value = true
+				loadingFinished.value = true
+			}, 1000)
+			e.stopPropagation()
+			return
+		}
+		(mask.value as UniElement | null)?.style.setProperty("point-events", "none")
+		loadingFinished.value = false
+		loadError.value = false
+		var tempPath = srcPath.value + ""
+		srcPath.value = ""
+		setTimeout(() => {
+			srcPath.value = tempPath
+		}, 100)
+		e.stopPropagation()
 	}
 </script>
 
@@ -548,6 +884,7 @@
 
 	.uni-preview-image-item-background {
 		background-color: black;
+		overflow: hidden;
 	}
 
 	.uni-preview-image-tips-retry {

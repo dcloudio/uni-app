@@ -34,7 +34,7 @@
 						</text>
 					</view>
 					<view v-if="showCancel" class="uni-modal-dialog__split" :class="{ 'uni-modal--dark': isDark }"></view>
-					<view class="uni-modal-dialog__action" :hover-class="hoverClassName" @click="handleSure">
+					<view class="uni-modal-dialog__action uni-modal-dialog__action--confirm" :hover-class="hoverClassName" @click="handleSure">
 						<text :style="{ color: confirmColor }" max-lines="1"
 							class="uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm">
 							{{ confirmText }}
@@ -243,22 +243,21 @@
 		/**
 		 * show modal 不需要对内置文案进行i18n适配。（参考微信）
 		 */
-		const systemInfo = uni.getSystemInfoSync()
-		const osLanguage = systemInfo.osLanguage
+		const deviceInfo = uni.getDeviceInfo()
 		// ios need
-		const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55)
-		maxScrollHeight.value = scrollHeight + 'px'
+		const windowInfo = uni.getWindowInfo()
+		maxScrollHeight.value = `${Math.floor(windowInfo.screenHeight * 0.55)}px`
 		/**
 		 * add since 2025-04-03 目前暂不支持设置app language
 		 */
-		const appLanguage = systemInfo.appLanguage
-		if (appLanguage != null) {
-			language.value = appLanguage
-		} else if (osLanguage != null) {
-			language.value = osLanguage
+		const appBaseInfo = uni.getAppBaseInfo()
+		if (appBaseInfo.appLanguage != null) {
+			language.value = appBaseInfo.appLanguage
+		} else if (deviceInfo.osLanguage != null) {
+			language.value = deviceInfo.osLanguage
 		}
 		// #ifdef WEB
-		const hostTheme = systemInfo.hostTheme
+		const hostTheme = appBaseInfo.hostTheme
 		if (hostTheme != null) {
 			theme.value = hostTheme
 			updateUI()
@@ -277,9 +276,9 @@
 		})
 		// #endif
 		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-		const appTheme = systemInfo.appTheme
+		const appTheme = appBaseInfo.appTheme
 		if (appTheme != null) {
-			const osTheme = systemInfo.osTheme ?? 'light'
+			const osTheme = deviceInfo.osTheme ?? 'light'
 			theme.value = ('auto' == appTheme) ? osTheme : appTheme
 		}
 		appThemeChangeCallbackId.value = uni.onAppThemeChange((res: AppThemeChangeResult) => {
@@ -446,7 +445,7 @@
 	.uni-modal-dialog__body {
 		justify-content: center;
 		align-items: center;
-		padding: 0 24px;
+		padding: 0 22px;
 		margin-bottom: 13px;
 	}
 	.uni-modal-dialog__body.no-title {
@@ -513,29 +512,22 @@
 	}
 
 	.uni-modal-dialog__action {
-		width: 50%;
-		height: 100%;
-		display: flex;
-		align-items: center;
 		justify-content: center;
 		flex-grow: 1;
 	}
+	
+	.uni-modal-dialog__action--cancel{
+		padding: 0 4px 0 10px;
+	}
+	.uni-modal-dialog__action--confirm{
+		padding: 0 10px 0 4px;
+	}
 
 	.uni-modal-dialog__action--hover {
-		width: 50%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		background-color: #efefef;
 	}
 
 	.uni-modal-dialog__action--hover-dark {
-		width: 50%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		background-color: #1c1c1c;
 	}
 

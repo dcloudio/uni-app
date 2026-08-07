@@ -10,6 +10,7 @@ import type {
 import { getCurrentPage } from '@dcloudio/uni-core'
 import type { ComponentPublicInstance, VNode } from 'vue'
 import { isFunction } from '@vue/shared'
+import { createUniDOMStringMap } from '@dcloudio/uni-shared'
 
 type NodeInfo = Partial<
   _NodeInfo & {
@@ -143,7 +144,7 @@ class SelectorQueryImpl implements SelectorQuery {
     if (__VAPOR__) {
       // @ts-expect-error
       this._component?.$nativePage?.waitNativeRender(() => {
-        requestComponentInfo(
+        requestComponentInfoVapor(
           this._component,
           this._queue,
           (res: Array<any>) => {
@@ -372,6 +373,10 @@ class QuerySelectorHelper {
         node: element,
       }
 
+      if (this._fields.dataset == true) {
+        nodeInfo.dataset = createUniDOMStringMap(element.dataset || {})
+      }
+
       if (this._fields.size == true) {
         const rect = element.getBoundingClientRect()
         nodeInfo.width = rect.width
@@ -384,13 +389,117 @@ class QuerySelectorHelper {
     const rect = element.getBoundingClientRect()
     const nodeInfo: NodeInfo = {
       id: element.getAttribute('id')?.toString(),
-      dataset: null,
       left: rect.left,
       top: rect.top,
       right: rect.right,
       bottom: rect.bottom,
       width: rect.width,
       height: rect.height,
+    }
+    if (this._fields.dataset == true) {
+      nodeInfo.dataset = createUniDOMStringMap(element.dataset || {})
+    }
+    return nodeInfo
+  }
+}
+
+/**
+ * QuerySelectorHelperVapor
+ */
+class QuerySelectorHelperVapor {
+  _component: ComponentPublicInstance
+  _fields: NodeField
+
+  constructor(component: ComponentPublicInstance, fields: NodeField) {
+    this._component = component
+    this._fields = fields
+  }
+
+  /**
+   * entry
+   */
+  static queryElement(
+    component: ComponentPublicInstance,
+    selector: string,
+    all: boolean,
+    fields: NodeField
+  ): any | null {
+    return new QuerySelectorHelperVapor(component, fields).query(selector, all)
+  }
+
+  /**
+   * 执行查询
+   * @param selector 选择器
+   * @param all 是否查询所有 selectAll
+   * @returns
+   */
+  query(selector: string, all: boolean): any | null {
+    return all
+      ? this.querySelectorAll(this._component, selector)
+      : this.querySelector(this._component, selector)
+  }
+
+  querySelector(
+    component: ComponentPublicInstance,
+    selector: string
+  ): NodeInfo | null {
+    // @ts-expect-error
+    const result = component.$.sharedData._querySelector(selector)
+    if (result != null) {
+      return this.getNodeInfo(result)
+    }
+    return null
+  }
+
+  querySelectorAll(
+    component: ComponentPublicInstance,
+    selector: string
+  ): Array<NodeInfo> | null {
+    const nodesInfoArray: Array<NodeInfo> = []
+    // @ts-expect-error
+    const findNodes = component.$.sharedData._querySelectorAll(selector)
+    findNodes?.forEach((el: UniElement) => {
+      nodesInfoArray.push(this.getNodeInfo(el))
+    })
+    return nodesInfoArray
+  }
+
+  /**
+   * 查询元素信息
+   * @param element
+   * @returns
+   */
+  getNodeInfo(element: UniElement): NodeInfo {
+    if (this._fields.node == true) {
+      const nodeInfo: NodeInfo = {
+        node: element,
+      }
+
+      if (this._fields.dataset == true) {
+        nodeInfo.dataset = createUniDOMStringMap(element.dataset || {})
+      }
+
+      if (this._fields.size == true) {
+        const rect = element.getBoundingClientRect()
+        nodeInfo.width = rect.width
+        nodeInfo.height = rect.height
+      }
+
+      return nodeInfo
+    }
+
+    const rect = element.getBoundingClientRect()
+    const nodeInfo: NodeInfo = {
+      id: element.getAttribute('id')?.toString(),
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height,
+    }
+    if (this._fields.dataset == true) {
+      nodeInfo.dataset = createUniDOMStringMap(element.dataset || {})
     }
     return nodeInfo
   }
@@ -417,6 +526,35 @@ function requestComponentInfo(
         item.selector,
         !item.single,
         vueComponent?.$.subTree,
+        item.fields
+      )
+      if (queryResult != null) {
+        result.push(queryResult)
+      }
+    })
+  }
+  callback(result)
+}
+
+/**
+ * requestComponentInfoVapor
+ * @param vueComponent
+ * @param queue
+ * @param callback
+ */
+function requestComponentInfoVapor(
+  vueComponent: ComponentPublicInstance | null,
+  queue: Array<SelectorQueryRequest>,
+  callback: any
+) {
+  const result: Array<any> = []
+  if (vueComponent != null) {
+    // 执行待查询 queue
+    queue.forEach((item: SelectorQueryRequest) => {
+      const queryResult = QuerySelectorHelperVapor.queryElement(
+        vueComponent,
+        item.selector,
+        !item.single,
         item.fields
       )
       if (queryResult != null) {

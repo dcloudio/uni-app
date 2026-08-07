@@ -160,31 +160,14 @@ function initBroadcastChannel(gtPush) {
     });
 }
 
-// if (process.env.UNI_PUSH_DEBUG) {
-//   GtPush.setDebugMode(true)
-// }
-// @ts-expect-error
-uni.invokePushCallback({
-    type: 'enabled',
-});
-const appid = process.env.UNI_APP_ID;
-if (!appid) {
-    Promise.resolve().then(() => {
-        // @ts-expect-error
-        uni.invokePushCallback({
-            type: 'clientId',
-            cid: '',
-            errMsg: 'manifest.json->appid is required',
-        });
-    });
+function createAppidRequiredError() {
+    return {
+        type: 'clientId',
+        cid: '',
+        errMsg: 'manifest.json->appid is required',
+    };
 }
-else {
-    // #ifdef APP
-    initPushNotification();
-    // #endif
-    // #ifdef H5
-    initBroadcastChannel(GtPush);
-    // #endif
+function initGtPush(appid, onCallback) {
     // #ifdef MP || APP
     if (typeof uni.onAppShow === 'function') {
         uni.onAppShow(() => {
@@ -196,50 +179,60 @@ else {
         appid,
         onError: (res) => {
             console.error(res.error);
-            const data = {
+            onCallback({
                 type: 'clientId',
                 cid: '',
                 errMsg: res.error,
-            };
-            // @ts-expect-error
-            uni.invokePushCallback(data);
-            // #ifdef H5
-            postPushMessage(data);
-            // #endif
+            });
         },
         onClientId: (res) => {
-            const data = {
+            onCallback({
                 type: 'clientId',
                 cid: res.cid,
-            };
-            // @ts-expect-error
-            uni.invokePushCallback(data);
-            // #ifdef H5
-            postPushMessage(data);
-            // #endif
+            });
         },
         onlineState: (res) => {
-            const data = {
+            onCallback({
                 type: 'lineState',
                 online: res.online,
-            };
-            // @ts-expect-error
-            uni.invokePushCallback(data);
-            // #ifdef H5
-            postPushMessage(data);
-            // #endif
+            });
         },
         onPushMsg: (res) => {
-            const data = {
+            onCallback({
                 type: 'pushMsg',
                 message: res.message,
-            };
-            // @ts-expect-error
-            uni.invokePushCallback(data);
-            // #ifdef H5
-            postPushMessage(data);
-            // #endif
+            });
         },
+    });
+}
+
+// if (process.env.UNI_PUSH_DEBUG) {
+//   GtPush.setDebugMode(true)
+// }
+// @ts-expect-error
+uni.invokePushCallback({
+    type: 'enabled',
+});
+const appid = process.env.UNI_APP_ID;
+if (!appid) {
+    Promise.resolve().then(() => {
+        // @ts-expect-error
+        uni.invokePushCallback(createAppidRequiredError());
+    });
+}
+else {
+    // #ifdef APP
+    initPushNotification();
+    // #endif
+    // #ifdef H5
+    initBroadcastChannel(GtPush);
+    // #endif
+    initGtPush(appid, (data) => {
+        // @ts-expect-error
+        uni.invokePushCallback(data);
+        // #ifdef H5
+        postPushMessage(data);
+        // #endif
     });
     // 仅在 jssdk 中监听
     // #ifdef APP

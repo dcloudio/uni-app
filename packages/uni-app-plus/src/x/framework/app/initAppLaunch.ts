@@ -53,7 +53,7 @@ export function initAppLaunch(appVm: ComponentPublicInstance) {
   // 加载全局字体
   const appStyle = appVm.$options.styles
   if (appStyle) {
-    loadFontFaceByStyles(appStyle, true)
+    loadFontFaceByStyles(appStyle, null)
   }
 
   // darkmode

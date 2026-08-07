@@ -67,9 +67,12 @@ export function initVuePlugins() {
       uniRenderjsPlugin(),
       uniTemplatePlugin(),
       uniStatsPlugin(),
-      uniAppVuePlugin(),
-      uniConfusionPlugin()
+      uniAppVuePlugin()
     )
+    // 鸿蒙暂不支持混淆
+    if (process.env.UNI_PLATFORM !== 'app-harmony') {
+      plugins.push(uniConfusionPlugin())
+    }
     const filter = initUniCssScopedPluginFilter(process.env.UNI_INPUT_DIR)
     if (filter) {
       plugins.unshift(uniCssScopedPlugin({ filter }))

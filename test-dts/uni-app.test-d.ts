@@ -1,22 +1,27 @@
 import {
-  onShow,
-  onLoad,
-  onLaunch,
-  onError,
-  onThemeChange,
-  onPageNotFound,
-  onUnhandledRejection,
   onAddToFavorites,
+  onAppHide,
+  onAppShow,
   onBackPress,
+  onError,
+  onHide,
+  onLaunch,
+  onLoad,
   onNavigationBarButtonTap,
   onNavigationBarSearchInputChanged,
   onNavigationBarSearchInputConfirmed,
   onNavigationBarSearchInputFocusChanged,
+  onPageHide,
+  onPageNotFound,
   onPageScroll,
+  onPageShow,
   onResize,
   onShareAppMessage,
   onShareTimeline,
+  onShow,
   onTabItemTap,
+  onThemeChange,
+  onUnhandledRejection,
 } from '@dcloudio/uni-app'
 import { expectType } from './'
 
@@ -40,9 +45,14 @@ describe('apiLifecycle', () => {
     expectType<Promise<any>>(promise)
     expectType<string>(reason)
   })
-  onShow((option) => {
+  onAppShow((option) => {
     expectType<string>(option!.path)
   })
+  onAppHide(() => {})
+  onShow(() => {})
+  onHide(() => {})
+  onPageShow(() => {})
+  onPageHide(() => {})
   onLoad((options) => {
     expectType<any>(options!.a)
   })

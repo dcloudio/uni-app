@@ -12,8 +12,23 @@ const debugScoped = debug('uni:scoped')
 const SCOPED_RE = /<style\s[^>]*scoped[^>]*>/i
 
 export function addScoped(code: string) {
-  return code.replace(/(<style\b[^><]*)>/gi, (str, $1) => {
-    if ($1.includes('scoped')) {
+  const blockRanges: { start: number; end: number }[] = []
+  code.replace(
+    /<(script|template)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,
+    (block, _tag, offset) => {
+      blockRanges.push({
+        start: offset,
+        end: offset + block.length,
+      })
+      return block
+    }
+  )
+
+  return code.replace(/(<style\b[^><]*)>/gi, (str, $1, offset) => {
+    if (
+      $1.includes('scoped') ||
+      blockRanges.some((range) => offset > range.start && offset < range.end)
+    ) {
       return str
     }
     return `${$1} scoped>`

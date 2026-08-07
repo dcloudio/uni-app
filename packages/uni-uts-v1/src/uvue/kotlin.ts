@@ -117,7 +117,8 @@ export async function runUVueKotlinDev(
         .concat(configJsonJars) // 插件config.json依赖
         .concat(libsJars) // 插件本地libs
 
-      const compileOptions = {
+      const compileOptions: Parameters<typeof compileDex>[0] = {
+        vapor: isDom2,
         version: 'v2',
         pageCount,
         kotlinc: resolveKotlincArgs(
@@ -164,10 +165,7 @@ export async function runUVueKotlinDev(
           }
           result.changed = []
         }
-
-        if (msg) {
-          console.error(msg)
-        }
+        throw new Error(msg || 'kotlin编译失败')
       }
     }
   }

@@ -36,6 +36,7 @@ import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
 import { uniEntryPlugin } from './plugins/entry'
+import { uniIndependentSubpackagePlugin } from './plugins/independent'
 
 import { uniRenderjsPlugin } from './plugins/renderjs'
 import { uniRuntimeHooksPlugin } from './plugins/runtimeHooks'
@@ -111,6 +112,7 @@ export default (options: UniMiniProgramPluginOptions) => {
           },
           uniManifestJsonPlugin(options),
           uniPagesJsonPlugin(options),
+          uniIndependentSubpackagePlugin(options),
         ]),
     uniEntryPlugin(options),
     ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'

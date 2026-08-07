@@ -7,9 +7,12 @@ import {
   normalizePath,
   requireResolve,
   resolveEncryptUniModule,
+  resolveIndependentRoot,
   resolveUTSAppModule,
   resolveUTSModule,
   uni_app_x_extensions,
+  withIndependentRootIfNeeded,
+  withoutIndependentRoot,
 } from '@dcloudio/uni-cli-shared'
 import type { VitePluginUniResolvedOptions } from '..'
 
@@ -25,7 +28,13 @@ function resolveUTSModuleProxyFile(id: string, importer: string) {
 }
 
 export const customResolver: ResolverFunction = (updatedId, importer) => {
-  updatedId = updatedId.split('?')[0]
+  const independentRoot = resolveIndependentRoot(
+    updatedId,
+    importer,
+    process.env.UNI_INPUT_DIR,
+    process.env.UNI_PLATFORM
+  )
+  updatedId = withoutIndependentRoot(updatedId).split('?')[0]
 
   const utsImporter = importer
     ? path.dirname(importer)
@@ -36,7 +45,11 @@ export const customResolver: ResolverFunction = (updatedId, importer) => {
       ? resolveUTSModuleProxyFile(updatedId, utsImporter)
       : resolveUTSModule(updatedId, utsImporter)
   if (utsModuleFile) {
-    return isWindows ? normalizePath(utsModuleFile) : utsModuleFile
+    return withIndependentRootIfNeeded(
+      isWindows ? normalizePath(utsModuleFile) : utsModuleFile,
+      independentRoot,
+      process.env.UNI_INPUT_DIR
+    )
   }
   const resolveId = resolveEncryptUniModule(
     normalizePath(updatedId),
@@ -44,14 +57,21 @@ export const customResolver: ResolverFunction = (updatedId, importer) => {
     process.env.UNI_APP_X === 'true'
   )
   if (resolveId) {
-    return resolveId
-  }
-  if (isWindows) {
-    return normalizePath(
-      requireResolve(updatedId, importer || process.env.UNI_INPUT_DIR)
+    return withIndependentRootIfNeeded(
+      resolveId,
+      independentRoot,
+      process.env.UNI_INPUT_DIR
     )
   }
-  return requireResolve(updatedId, importer || process.env.UNI_INPUT_DIR)
+  const resolvedId = requireResolve(
+    updatedId,
+    importer || process.env.UNI_INPUT_DIR
+  )
+  return withIndependentRootIfNeeded(
+    isWindows ? normalizePath(resolvedId) : resolvedId,
+    independentRoot,
+    process.env.UNI_INPUT_DIR
+  )
 }
 
 export function createResolve(

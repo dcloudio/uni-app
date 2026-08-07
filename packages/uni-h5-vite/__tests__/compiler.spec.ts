@@ -26,5 +26,8 @@ describe('h5: compiler', () => {
       `_resolveComponent("v-uni-canvas")`
     )
     expect(compile('<loading/>').code).toContain(`_resolveComponent("loading")`)
+    expect(compile('<audio src="./static/a.mp3"/>').code).toContain(
+      `_createElementBlock("audio"`
+    )
   })
 })

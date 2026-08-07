@@ -4,9 +4,9 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, isInSSRComponentSetup, createCommentVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, toDisplayString } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, isInSSRComponentSetup, createCommentVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, toDisplayString, unref } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -1624,7 +1624,7 @@ function createNativeEvent(evt, htmlElement = false) {
     detail: {},
     currentTarget: realCurrentTarget
   };
-  if (evt instanceof CustomEvent && isPlainObject(evt.detail)) {
+  if (typeof CustomEvent !== "undefined" && evt instanceof CustomEvent && isPlainObject(evt.detail)) {
     event.detail = evt.detail;
   }
   if (evt._stopped) {
@@ -2021,8 +2021,7 @@ function useCustomEvent(ref2, emit2) {
   };
 }
 function normalizeCustomEvent(name, domEvt, el, detail) {
-  let target;
-  target = el;
+  const target = el;
   return {
     type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
@@ -2173,6 +2172,26 @@ class UniElement extends HTMLElement {
   get uniPage() {
     return this.getPage();
   }
+  get dataset() {
+    if (!this.__uniDatasetMap) {
+      this.__uniDatasetMap = createUniDOMStringMap(
+        this.__uniDataset || {}
+      );
+    }
+    return this.__uniDatasetMap;
+  }
+  setAttribute(qualifiedName, value) {
+    super.setAttribute(qualifiedName, value);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.set(qualifiedName, value);
+    }
+  }
+  removeAttribute(qualifiedName) {
+    super.removeAttribute(qualifiedName);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.delete(qualifiedName);
+    }
+  }
   getBoundingClientRectAsync(callback) {
     var _a, _b;
     if (callback) {
@@ -2220,7 +2239,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2290,7 +2309,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2433,7 +2452,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -2498,7 +2517,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$v = {
+const props$t = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -2534,7 +2553,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$v,
+  props: props$t,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -2557,7 +2576,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$u = {
+const props$s = {
   name: {
     type: String,
     default: ""
@@ -2565,9 +2584,9 @@ const props$u = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$u,
+  props: props$s,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -2627,7 +2646,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$t = {
+const props$r = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2676,9 +2695,9 @@ const props$t = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$t,
+  props: props$r,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -2819,7 +2838,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$s = {
+const props$q = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -5127,13 +5146,13 @@ const innerAudioContextOffEventNames = [
   "offSeeking",
   "offSeeked"
 ];
-let index$p = 0;
+let index$o = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$p++);
+    const callbackId = String(index$o++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -6123,32 +6142,6 @@ const GetImageInfoProtocol = {
   }
 };
 const API_PREVIEW_IMAGE = "previewImage";
-const PreviewImageOptions = {
-  formatArgs: {
-    urls(urls, params) {
-      params.urls = urls.map(
-        (url) => isString(url) && url ? getRealPath(url) : ""
-      );
-    },
-    current(current, params) {
-      if (typeof current === "number") {
-        params.current = current > 0 && current < params.urls.length ? current : 0;
-      } else if (isString(current) && current) {
-        params.current = getRealPath(current);
-      }
-    }
-  }
-};
-const PreviewImageProtocol = {
-  urls: {
-    type: Array,
-    required: true
-  },
-  current: {
-    type: [Number, String]
-  }
-};
-const API_CLOSE_PREVIEW_IMAGE = "closePreviewImage";
 const API_GET_VIDEO_INFO = "getVideoInfo";
 const GetVideoInfoOptions = {
   formatArgs: {
@@ -7274,6 +7267,10 @@ function normalizeRect(rect) {
     width
   };
 }
+function createDatasetSnapshot$1(el) {
+  const dataset = getCustomDataset(el);
+  return createUniDOMStringMap(dataset);
+}
 function rectifyIntersectionRatio(entrie) {
   const {
     intersectionRatio,
@@ -7296,7 +7293,7 @@ function requestComponentObserver($el, options, callback) {
           boundingClientRect: normalizeRect(entrie.boundingClientRect),
           relativeRect: normalizeRect(entrie.rootBounds),
           time: Date.now(),
-          dataset: getCustomDataset(entrie.target),
+          dataset: createDatasetSnapshot$1(entrie.target),
           id: entrie.target.id
         });
       });
@@ -7562,6 +7559,13 @@ function normalizeWindowTop(windowTop) {
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
 }
+const SAFE_AREA_INSET_PROPERTY_PREFIX = "--uni-safe-area-inset-";
+function getSafeAreaInset(style, position) {
+  const value = parseFloat(
+    style.getPropertyValue(`${SAFE_AREA_INSET_PROPERTY_PREFIX}${position}`)
+  );
+  return isNaN(value) ? safeAreaInsets$1[position] : value;
+}
 function getPageWrapperInfo(pageBody) {
   const pageWrapper = pageBody || document.querySelector("uni-page-wrapper");
   const pageWrapperRect = pageWrapper.getBoundingClientRect();
@@ -7576,11 +7580,20 @@ function getPageWrapperInfo(pageBody) {
   };
 }
 const getSystemSafeAreaInsets = function() {
+  if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+    return {
+      top: safeAreaInsets$1.top,
+      right: safeAreaInsets$1.right,
+      bottom: safeAreaInsets$1.bottom,
+      left: safeAreaInsets$1.left
+    };
+  }
+  const bodyStyle = getComputedStyle(document.body);
   return {
-    top: safeAreaInsets$1.top,
-    right: safeAreaInsets$1.right,
-    bottom: safeAreaInsets$1.bottom,
-    left: safeAreaInsets$1.left
+    top: getSafeAreaInset(bodyStyle, "top"),
+    right: getSafeAreaInset(bodyStyle, "right"),
+    bottom: getSafeAreaInset(bodyStyle, "bottom"),
+    left: getSafeAreaInset(bodyStyle, "left")
   };
 };
 function getSafeAreaInsets(pageBody) {
@@ -8195,6 +8208,9 @@ function onPageShow(instance2, pageMeta) {
   updateBodyScopeId(instance2);
   updateCurPageCssVar(pageMeta);
   updateCurPageAttrs();
+  if (isDialogPageInstance(getPageInstanceByChild(instance2))) {
+    return;
+  }
   initPageScrollListener(instance2, pageMeta);
 }
 function onPageReady(instance2) {
@@ -8419,13 +8435,16 @@ function operateMap(id2, pageId, type, data, operateMapCallback2) {
     operateMapCallback2
   );
 }
+function createDatasetSnapshot(dataset) {
+  return createUniDOMStringMap(dataset);
+}
 function getRootInfo(fields2) {
   const info = {};
   if (fields2.id) {
     info.id = "";
   }
   if (fields2.dataset) {
-    info.dataset = {};
+    info.dataset = createDatasetSnapshot({});
   }
   if (fields2.rect) {
     info.left = 0;
@@ -8460,7 +8479,7 @@ function getNodeInfo(el, fields2) {
     info.id = el.id;
   }
   if (fields2.dataset) {
-    info.dataset = getCustomDataset(el);
+    info.dataset = createDatasetSnapshot(getCustomDataset(el));
   }
   if (fields2.rect || fields2.size) {
     const rect = el.getBoundingClientRect();
@@ -8497,9 +8516,9 @@ function getNodeInfo(el, fields2) {
     }
   }
   if (isArray(fields2.computedStyle)) {
-    const sytle = getComputedStyle(el);
+    const style = getComputedStyle(el);
     fields2.computedStyle.forEach((name) => {
-      info[name] = sytle[name];
+      info[name] = style[name];
     });
   }
   if (fields2.context) {
@@ -8640,7 +8659,9 @@ class QuerySelectorHelper {
       nodeInfo.node = element;
     }
     if (fields2.dataset) {
-      nodeInfo.dataset = {};
+      nodeInfo.dataset = createDatasetSnapshot(
+        getCustomDataset(element)
+      );
     }
     return nodeInfo;
   }
@@ -9757,7 +9778,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": placeholderClass
   }, [createVNode("div", {
     "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3$1, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3$2, {
     "disabled": true,
     "style": {
       color
@@ -9766,7 +9787,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": "uni-page-head-search-input",
     "confirm-type": "search",
     "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3$1, {
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3$2, {
     "focus": autoFocus,
     "style": {
       color
@@ -9961,7 +9982,7 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main$6 = {
+const _sfc_main$9 = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -10026,7 +10047,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render]]);
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -11443,7 +11464,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$r = /* @__PURE__ */ extend({}, props$s, {
+const props$p = /* @__PURE__ */ extend({}, props$q, {
   id: {
     type: String,
     default: ""
@@ -11475,9 +11496,9 @@ const props$r = /* @__PURE__ */ extend({}, props$s, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$r,
+  props: props$p,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   rootElement: {
     name: "uni-editor",
@@ -11547,7 +11568,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -11654,7 +11675,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$q = {
+const props$o = {
   src: {
     type: String,
     default: ""
@@ -11693,9 +11714,9 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$q,
+  props: props$o,
   rootElement: {
     name: "uni-image",
     class: UniImageElement
@@ -12058,7 +12079,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$p = /* @__PURE__ */ extend(
+const props$n = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -12148,7 +12169,7 @@ const props$p = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$s
+  props$q
 );
 const emit = [
   "input",
@@ -12415,7 +12436,7 @@ once(() => {
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 });
-const props$o = /* @__PURE__ */ extend({}, props$p, {
+const props$m = /* @__PURE__ */ extend({}, props$n, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -12449,9 +12470,9 @@ class UniInputElement extends UniElement {
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_3$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$o,
+  props: props$m,
   emits: ["confirm", ...emit],
   rootElement: {
     name: "uni-input",
@@ -13046,13 +13067,13 @@ function Decline() {
 Decline.prototype.x = function(e2) {
   return Math.sqrt(e2);
 };
-function Friction$1(e2, t2) {
+function Friction$2(e2, t2) {
   this._m = e2;
   this._f = 1e3 * t2;
   this._startTime = 0;
   this._v = 0;
 }
-Friction$1.prototype.setV = function(x, y) {
+Friction$2.prototype.setV = function(x, y) {
   const n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
   this._x_v = x;
   this._y_v = y;
@@ -13062,11 +13083,11 @@ Friction$1.prototype.setV = function(x, y) {
   this._lastDt = null;
   this._startTime = (/* @__PURE__ */ new Date()).getTime();
 };
-Friction$1.prototype.setS = function(x, y) {
+Friction$2.prototype.setS = function(x, y) {
   this._x_s = x;
   this._y_s = y;
 };
-Friction$1.prototype.s = function(t2) {
+Friction$2.prototype.s = function(t2) {
   if (void 0 === t2) {
     t2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
@@ -13087,7 +13108,7 @@ Friction$1.prototype.s = function(t2) {
     y
   };
 };
-Friction$1.prototype.ds = function(t2) {
+Friction$2.prototype.ds = function(t2) {
   if (void 0 === t2) {
     t2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
@@ -13099,25 +13120,25 @@ Friction$1.prototype.ds = function(t2) {
     dy: this._y_v + this._y_a * t2
   };
 };
-Friction$1.prototype.delta = function() {
+Friction$2.prototype.delta = function() {
   return {
     x: -1.5 * Math.pow(this._x_v, 2) / this._x_a || 0,
     y: -1.5 * Math.pow(this._y_v, 2) / this._y_a || 0
   };
 };
-Friction$1.prototype.dt = function() {
+Friction$2.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
-Friction$1.prototype.done = function() {
+Friction$2.prototype.done = function() {
   const t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
   return t2;
 };
-Friction$1.prototype.setEnd = function(x, y) {
+Friction$2.prototype.setEnd = function(x, y) {
   this._endPositionX = x;
   this._endPositionY = y;
 };
-Friction$1.prototype.reconfigure = function(m, f2) {
+Friction$2.prototype.reconfigure = function(m, f2) {
   this._m = m;
   this._f = 1e3 * f2;
 };
@@ -13875,7 +13896,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     let val = Number(props2.friction);
     return isNaN(val) || val <= 0 ? 2 : val;
   });
-  const _friction = new Friction$1(1, frictionNumber.value);
+  const _friction = new Friction$2(1, frictionNumber.value);
   watch(() => props2.disabled, () => {
     __handleTouchStart();
   });
@@ -14421,7 +14442,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class Friction {
+let Friction$1 = class Friction {
   constructor(drag) {
     this._drag = drag;
     this._dragLog = Math.log(drag);
@@ -14480,7 +14501,7 @@ class Friction {
       }
     ];
   }
-}
+};
 function o(e2, t2, n) {
   return e2 > t2 - n && e2 < t2 + n;
 }
@@ -14671,7 +14692,7 @@ class Spring {
 class Scroll {
   constructor(extent, friction, spring) {
     this._extent = extent;
-    this._friction = friction || new Friction(0.01);
+    this._friction = friction || new Friction$1(0.01);
     this._spring = spring || new Spring(1, 90, 20);
     this._startTime = 0;
     this._springing = false;
@@ -15247,7 +15268,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         enableX: false,
         enableSnap: true,
         itemSize: indicatorHeight.value,
-        friction: new Friction(1e-4),
+        friction: new Friction$1(1e-4),
         spring: new Spring(2, 90, 20),
         onSnap: (index2) => {
           if (!isNaN(index2) && index2 !== state2.current) {
@@ -15498,7 +15519,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$n = {
+const props$l = {
   name: {
     type: String,
     default: ""
@@ -15508,7 +15529,7 @@ class UniRadioGroupElement extends UniElement {
 }
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$n,
+  props: props$l,
   // emits: ['change'],
   rootElement: {
     name: "uni-radio-group",
@@ -15600,7 +15621,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$m = {
+const props$k = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -15651,7 +15672,7 @@ class UniRadioElement extends UniElement {
 }
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$m,
+  props: props$k,
   rootElement: {
     name: "uni-radio",
     class: UniRadioElement
@@ -15976,7 +15997,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$l = {
+const props$j = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -15991,7 +16012,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$l,
+  props: props$j,
   emits: ["itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -16133,7 +16154,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$k = {
+const props$i = {
   direction: {
     type: [String],
     default: "vertical"
@@ -16201,12 +16222,12 @@ const props$k = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
   },
-  props: props$k,
+  props: props$i,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   rootElement: {
     name: "uni-scroll-view",
@@ -16703,7 +16724,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$j = {
+const props$h = {
   name: {
     type: String,
     default: ""
@@ -16812,7 +16833,7 @@ class UniSliderElement extends UniElement {
 }
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$j,
+  props: props$h,
   emits: ["changing", "change"],
   rootElement: {
     name: "uni-slider",
@@ -16962,7 +16983,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$i = {
+const props$g = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -17463,9 +17484,9 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
 }
 class UniSwiperElement extends UniElement {
 }
-const Swiper = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$i,
+  props: props$g,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   rootElement: {
     name: "uni-swiper",
@@ -17697,7 +17718,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$h = {
+const props$f = {
   itemId: {
     type: String,
     default: ""
@@ -17705,9 +17726,9 @@ const props$h = {
 };
 class UniSwiperItemElement extends UniElement {
 }
-const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$h,
+  props: props$f,
   rootElement: {
     name: "uni-swiper-item",
     class: UniSwiperItemElement
@@ -17764,7 +17785,7 @@ const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$g = {
+const props$e = {
   name: {
     type: String,
     default: ""
@@ -17810,7 +17831,7 @@ class UniSwitchElement extends UniElement {
 }
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$g,
+  props: props$e,
   emits: ["change"],
   rootElement: {
     name: "uni-switch",
@@ -17967,7 +17988,7 @@ function parseTextIgnoreLinefeed(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -18031,7 +18052,7 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$f = /* @__PURE__ */ extend({}, props$p, {
+const props$d = /* @__PURE__ */ extend({}, props$n, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -18060,9 +18081,9 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$f,
+  props: props$d,
   emits: ["confirm", "change", "linechange", ...emit],
   rootElement: {
     name: "uni-textarea",
@@ -18241,7 +18262,7 @@ const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ extend({}, hoverProps),
   rootElement: {
@@ -18311,7 +18332,7 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
-const props$e = {
+const props$c = {
   direction: {
     type: String,
     default: "vertical",
@@ -18372,7 +18393,7 @@ class UniListViewElement extends UniElement {
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: props$e,
+  props: props$c,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -19140,7 +19161,9 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
-  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+  if (isInSSRComponentSetup)
+    return;
+  injectHook(lifecycle, hook, target);
 };
 const onLoad = /* @__PURE__ */ createLifeCycleHook(
   ON_LOAD,
@@ -19190,7 +19213,7 @@ var __spreadValues$1 = (a2, b) => {
 var __spreadProps$1 = (a2, b) => __defProps$1(a2, __getOwnPropDescs$1(b));
 const MAX_SLIDER_DISTANCE = 100;
 const MIN_SLIDER_VELOCITY = 0.3;
-const _sfc_main$5 = /* @__PURE__ */ defineComponent(__spreadProps$1(__spreadValues$1({}, {
+const _sfc_main$8 = /* @__PURE__ */ defineComponent(__spreadProps$1(__spreadValues$1({}, {
   name: "page-container",
   rootElement: {
     name: "uni-page-container",
@@ -19442,7 +19465,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent(__spreadProps$1(__spreadValu
       clearTransitionTimer();
     });
     return (_ctx, _cache) => {
-      const _component_view = __syscom_2;
+      const _component_view = __syscom_3;
       return openBlock(), createElementBlock(Fragment, null, [
         _ctx.overlay && showPageContainer.value ? (openBlock(), createBlock(_component_view, {
           key: 0,
@@ -19539,7 +19562,7 @@ var __spreadValues = (a2, b) => {
   return a2;
 };
 var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
-const _sfc_main$4 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
+const _sfc_main$7 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
   name: "loading",
   // @ts-ignore
   rootElement: {
@@ -19557,7 +19580,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues
     const LoadingRef = ref(null);
     const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
     return (_ctx, _cache) => {
-      const _component_view = __syscom_2;
+      const _component_view = __syscom_3;
       return openBlock(), createBlock(_component_view, {
         class: "__uni_loading_container__",
         ref_key: "LoadingRef",
@@ -20736,7 +20759,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$d = {
+const props$b = {
   id: {
     type: String,
     default: ""
@@ -20828,7 +20851,7 @@ class UniVideoElement extends UniElement {
 }
 const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$d,
+  props: props$b,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   rootElement: {
     name: "uni-video",
@@ -21096,7 +21119,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$c = {
+const props$a = {
   src: {
     type: String,
     default: ""
@@ -21107,7 +21130,7 @@ class UniWebViewElement extends UniElement {
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$c,
+  props: props$a,
   emits: ["load"],
   rootElement: {
     name: "uni-web-view",
@@ -21564,7 +21587,7 @@ function translateCoordinateSystem(type, coords, skip) {
     )
   );
 }
-const props$b = {
+const props$9 = {
   id: {
     type: [Number, String],
     default: ""
@@ -21650,7 +21673,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$b,
+  props: props$9,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -21993,7 +22016,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$a = {
+const props$8 = {
   points: {
     type: Array,
     require: true
@@ -22039,7 +22062,7 @@ const props$a = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$a,
+  props: props$8,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -22128,7 +22151,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$9 = {
+const props$7 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -22160,7 +22183,7 @@ const props$9 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$9,
+  props: props$7,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -22236,7 +22259,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$8 = {
+const props$6 = {
   id: {
     type: [Number, String],
     default: ""
@@ -22260,7 +22283,7 @@ const props$8 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$8,
+  props: props$6,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -23415,263 +23438,6 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$7 = {
-  src: {
-    type: String,
-    default: ""
-  }
-};
-const ImageView = /* @__PURE__ */ defineSystemComponent({
-  name: "ImageView",
-  props: props$7,
-  setup(props2) {
-    const state2 = reactive({
-      direction: "none"
-    });
-    let scale = 1;
-    let imgWidth = 0;
-    let imgHeight = 0;
-    let width = 0;
-    let height = 0;
-    function onScale({
-      detail
-    }) {
-      scale = detail.scale;
-    }
-    function onImgLoad(event) {
-      const target = event.target;
-      const rect = target.getBoundingClientRect();
-      imgWidth = rect.width;
-      imgHeight = rect.height;
-    }
-    function onTouchStart(event) {
-      const target = event.target;
-      const rect = target.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-      checkDirection(event);
-    }
-    function onTouchEnd(event) {
-      const horizontal = scale * imgWidth > width;
-      const vertical = scale * imgHeight > height;
-      if (horizontal && vertical) {
-        state2.direction = "all";
-      } else if (horizontal) {
-        state2.direction = "horizontal";
-      } else if (vertical) {
-        state2.direction = "vertical";
-      } else {
-        state2.direction = "none";
-      }
-      checkDirection(event);
-    }
-    function checkDirection(event) {
-      if (state2.direction === "all" || state2.direction === "horizontal") {
-        event.stopPropagation();
-      }
-    }
-    return () => {
-      const viewStyle = {
-        position: "absolute",
-        left: "0",
-        top: "0",
-        width: "100%",
-        height: "100%"
-      };
-      return createVNode(MovableArea, {
-        "style": viewStyle,
-        "onTouchstart": withWebEvent(onTouchStart),
-        "onTouchmove": withWebEvent(checkDirection),
-        "onTouchend": withWebEvent(onTouchEnd)
-      }, {
-        default: () => [createVNode(MovableView, {
-          "style": viewStyle,
-          "direction": state2.direction,
-          "inertia": true,
-          "scale": true,
-          "scale-min": "1",
-          "scale-max": "4",
-          "onScale": onScale
-        }, {
-          default: () => [createVNode("img", {
-            "src": props2.src,
-            "style": {
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-              maxHeight: "100%",
-              maxWidth: "100%"
-            },
-            "onLoad": onImgLoad
-          }, null, 40, ["src", "onLoad"])]
-        }, 8, ["style", "direction", "inertia", "scale", "onScale"])]
-      }, 8, ["style", "onTouchstart", "onTouchmove", "onTouchend"]);
-    };
-  }
-});
-function _isSlot$1(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-const props$6 = {
-  urls: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  current: {
-    type: [Number, String],
-    default: 0
-  }
-};
-function getIndex(props2) {
-  let index2 = typeof props2.current === "number" ? props2.current : props2.urls.indexOf(props2.current);
-  index2 = index2 < 0 ? 0 : index2;
-  return index2;
-}
-const ImagePreview = /* @__PURE__ */ defineSystemComponent({
-  name: "ImagePreview",
-  props: props$6,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    usePreventScroll();
-    const {
-      key
-    } = useKeyboard();
-    const rootRef = ref(null);
-    const indexRef = ref(getIndex(props2));
-    watch(() => props2.current, () => indexRef.value = getIndex(props2));
-    watch(() => key.value, (value) => {
-      if (value === "esc") {
-        onClick();
-      }
-    });
-    let preventDefault;
-    onMounted(() => {
-      const el = rootRef.value;
-      const MAX_MOVE = 20;
-      let x = 0;
-      let y = 0;
-      el.addEventListener("mousedown", (event) => {
-        preventDefault = false;
-        x = event.clientX;
-        y = event.clientY;
-      });
-      el.addEventListener("mouseup", (event) => {
-        if (Math.abs(event.clientX - x) > MAX_MOVE || Math.abs(event.clientY - y) > MAX_MOVE) {
-          preventDefault = true;
-        }
-      });
-    });
-    function onClick() {
-      if (!preventDefault) {
-        nextTick(() => {
-          emit2("close");
-        });
-      }
-    }
-    function onChange2(event) {
-      indexRef.value = event.detail.current;
-    }
-    const closeBtnStyle = {
-      position: "absolute",
-      "box-sizing": "border-box",
-      top: "0",
-      right: "0",
-      width: "60px",
-      height: "44px",
-      padding: "6px",
-      "line-height": "32px",
-      "font-size": "26px",
-      color: "white",
-      "text-align": "center",
-      cursor: "pointer"
-    };
-    return () => {
-      let _slot;
-      return createVNode("div", {
-        "ref": rootRef,
-        "style": {
-          display: "block",
-          position: "fixed",
-          left: "0",
-          top: "0",
-          width: "100%",
-          height: "100%",
-          zIndex: 999,
-          background: "rgba(0,0,0,0.8)"
-        },
-        "onClick": onClick
-      }, [createVNode(Swiper, {
-        "navigation": "auto",
-        "current": indexRef.value,
-        "onChange": onChange2,
-        "indicator-dots": false,
-        "autoplay": false,
-        "style": {
-          position: "absolute",
-          left: "0",
-          top: "0",
-          width: "100%",
-          height: "100%"
-        }
-      }, _isSlot$1(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
-        default: () => [createVNode(ImageView, {
-          "src": src
-        }, null, 8, ["src"])]
-      }))) ? _slot : {
-        default: () => [_slot],
-        _: 1
-      }, 8, ["current", "onChange"]), createVNode("div", {
-        "style": closeBtnStyle
-      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 4)], 8, ["onClick"]);
-    };
-  }
-});
-let state$1 = null;
-let imagePreviewInstance;
-const closePreviewImageView = () => {
-  state$1 = null;
-  nextTick(() => {
-    imagePreviewInstance == null ? void 0 : imagePreviewInstance.unmount();
-    imagePreviewInstance = null;
-  });
-};
-const previewImage = /* @__PURE__ */ defineAsyncApi(
-  API_PREVIEW_IMAGE,
-  (args, { resolve }) => {
-    if (!state$1) {
-      state$1 = reactive(args);
-      nextTick(() => {
-        imagePreviewInstance = createRootApp(
-          ImagePreview,
-          state$1,
-          closePreviewImageView
-        );
-        imagePreviewInstance.mount(ensureRoot("u-a-p"));
-      });
-    } else {
-      extend(state$1, args);
-    }
-    resolve();
-  },
-  PreviewImageProtocol,
-  PreviewImageOptions
-);
-const closePreviewImage = /* @__PURE__ */ defineAsyncApi(
-  API_CLOSE_PREVIEW_IMAGE,
-  (_, { resolve, reject }) => {
-    if (imagePreviewInstance) {
-      closePreviewImageView();
-      resolve();
-    } else {
-      reject();
-    }
-  }
-);
 let videoInput = null;
 const chooseVideo = /* @__PURE__ */ defineAsyncApi(
   API_CHOOSE_VIDEO,
@@ -29043,7 +28809,7 @@ function triggerFailCallback(options, errMsg) {
   (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
-const _sfc_main$3 = /* @__PURE__ */ defineComponent({
+const _sfc_main$6 = /* @__PURE__ */ defineComponent({
   __name: "actionSheet",
   setup(__props) {
     const pageInstance = getCurrentInstance().proxy;
@@ -29079,9 +28845,9 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     const windowHeight = ref(0);
     const popover = reactive({});
     const fixSize = () => {
-      const systemInfo = uni.getSystemInfoSync();
-      windowWidth.value = systemInfo.windowWidth;
-      windowHeight.value = systemInfo.windowHeight + (systemInfo.windowTop || 0);
+      const windowInfo = uni.getWindowInfo();
+      windowWidth.value = windowInfo.windowWidth;
+      windowHeight.value = windowInfo.windowHeight + (windowInfo.windowTop || 0);
     };
     const closeActionSheet = () => {
       show.value = false;
@@ -29138,35 +28904,33 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
         }
       });
       uni.$emit(readyEventName.value, {});
-      const systemInfo = uni.getSystemInfoSync();
-      const osLanguage = systemInfo.osLanguage;
-      const appLanguage = systemInfo.appLanguage;
-      if (appLanguage != null) {
-        language.value = appLanguage;
-      } else if (osLanguage != null) {
-        language.value = osLanguage;
+      const deviceInfo = uni.getDeviceInfo();
+      const appInfo = uni.getAppBaseInfo();
+      if (appInfo.appLanguage != null) {
+        language.value = appInfo.appLanguage;
+      } else if (deviceInfo.osLanguage != null) {
+        language.value = deviceInfo.osLanguage;
       }
-      const systemAppTheme = systemInfo.appTheme;
-      if (systemAppTheme != null && systemAppTheme != "auto") {
-        appTheme.value = systemAppTheme;
+      const currentAppTheme = appInfo.appTheme;
+      if (currentAppTheme != null && currentAppTheme != "auto") {
+        appTheme.value = currentAppTheme;
         handleThemeChange();
       }
-      const systemOsTheme = systemInfo.osTheme;
-      if (systemOsTheme != null && appTheme.value == null) {
-        appTheme.value = systemOsTheme;
+      const currentOsTheme = deviceInfo.osTheme;
+      if (currentOsTheme != null && appTheme.value == null) {
+        appTheme.value = currentOsTheme;
         handleThemeChange();
       }
-      const systemHostTheme = systemInfo.hostTheme;
-      if (systemHostTheme != null) {
-        hostTheme.value = systemHostTheme;
+      const currentHostTheme = appInfo.hostTheme;
+      if (currentHostTheme != null) {
+        hostTheme.value = currentHostTheme;
         handleThemeChange();
       }
       uni.onHostThemeChange((res) => {
         hostTheme.value = res.theme;
         handleThemeChange();
       });
-      windowWidth.value = systemInfo.windowWidth;
-      windowHeight.value = systemInfo.windowHeight;
+      fixSize();
       window.addEventListener("resize", fixSize);
       const locale = uni.getLocale();
       language.value = locale;
@@ -29175,7 +28939,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
           language.value = res.locale;
         }
       });
-      isLandscape2.value = systemInfo.deviceOrientation == "landscape";
+      isLandscape2.value = deviceInfo.deviceOrientation == "landscape";
     });
     const isWidescreen = computed(() => {
       return windowHeight.value >= 500 && windowWidth.value >= 500;
@@ -29265,8 +29029,8 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
       }, 10);
     });
     onResize((_) => {
-      const systemInfo = uni.getSystemInfoSync();
-      isLandscape2.value = systemInfo.deviceOrientation == "landscape";
+      const deviceInfo = uni.getDeviceInfo();
+      isLandscape2.value = deviceInfo.deviceOrientation == "landscape";
     });
     onBeforeUnmount(() => {
       if (!menuItemClicked.value && !cancelButtonClicked.value) {
@@ -29279,8 +29043,8 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
       window.removeEventListener("resize", fixSize);
     });
     return (_ctx, _cache) => {
-      const _component_view = __syscom_2;
-      const _component_text = __syscom_1;
+      const _component_view = __syscom_3;
+      const _component_text = __syscom_2$1;
       return openBlock(), createBlock(_component_view, null, {
         default: withCtx(() => [
           createVNode(_component_view, {
@@ -29395,8 +29159,8 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$3 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.uni-action-sheet_dialog__hover__dark__mode {\n		background-color: #1c1c1c;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["styles", [_style_0$3]]]);
+const _style_0$5 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.uni-action-sheet_dialog__hover__dark__mode {\n		background-color: #1c1c1c;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["styles", [_style_0$5]]]);
 class ShowActionSheetSuccessImpl {
   constructor(tapIndex, errMsg = "showActionSheet:ok") {
     this.errMsg = errMsg;
@@ -29486,7 +29250,7 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+const _sfc_main$5 = /* @__PURE__ */ defineComponent({
   __name: "chooseLocation",
   setup(__props) {
     const defaultPoi = {
@@ -30069,11 +29833,11 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     });
     return (_ctx, _cache) => {
       const _component_map = __syscom_0;
-      const _component_text = __syscom_1;
-      const _component_view = __syscom_2;
-      const _component_input = __syscom_3$1;
-      const _component_loading = _sfc_main$4;
-      const _component_scroll_view = __syscom_3;
+      const _component_text = __syscom_2$1;
+      const _component_view = __syscom_3;
+      const _component_input = __syscom_3$2;
+      const _component_loading = _sfc_main$7;
+      const _component_scroll_view = __syscom_3$1;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-choose-location", darkClassCom.value])
       }, {
@@ -30348,9 +30112,11 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$2 = `
+const _style_0$4 = `
 @font-face {
     font-family: UniChooseLocationFontFamily;
+    
+
     src: url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8Rkp9AAABjAAAAGBjbWFw0euemwAAAgAAAAGyZ2x5ZuUB/iAAAAPAAAACsGhlYWQp23fyAAAA4AAAADZoaGVhB94DhgAAALwAAAAkaG10eBQAAAAAAAHsAAAAFGxvY2EBUAG+AAADtAAAAAxtYXhwARIAfQAAARgAAAAgbmFtZUTMSfwAAAZwAAADS3Bvc3RLRtf0AAAJvAAAAFIAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAUAAQAAAAEAAIZo1N5fDzz1AAsEAAAAAADjXhn6AAAAAONeGfoAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABQBxAAMAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYx560DgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAAAAAFAAAAAwAAACwAAAAEAAABcgABAAAAAABsAAMAAQAAACwAAwAKAAABcgAEAEAAAAAKAAgAAgAC5jHmU+aD563//wAA5jHmU+aD563//wAAAAAAAAAAAAEACgAKAAoACgAAAAIAAwAEAAEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAEAAAAAAAAAABAAA5jEAAOYxAAAAAgAA5lMAAOZTAAAAAwAA5oMAAOaDAAAABAAA560AAOetAAAAAQAAAAAAAABIAGYBCAFYAAIAAP/SA4cDNgAdACoAACUGBwYnLgEnJjc+ATc2Fx4BFxYHBgcXHgEOAiYnJTI+ATQuASIOARQeAQJlSFdVT1FsDQwdHodWU1JTeBQUFhc+7AUFBAsPEAX+T0uASkqAln9LS3/MMwkIICKLV1RQUnMQEBoagVZTUlU+7AYPDwsEBAbrSoCWf0tLf5aASgAAAAEAAAAAA8ACyAANAAATNwU3Njc2NxcHBgcGB0A5AQdAVGaPnxdXbWuWfAGPN986TFl8hTpVbG6aiQAAAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAwYeAj4BNC4CDgEBwCU1JiY1JWoGBEAEB0d1ISIpJ0RFokVEJykiIXX9AiRATEImJT9KQCdUEhkZIxkZAXH+iAQGBgQBeApTP0FJUUVEJykpJ0RFUUlBP1MBIiZDJwImQks/JQEjPQAAABIA3gABAAAAAAAAABMAAAABAAAAAAABABsAEwABAAAAAAACAAcALgABAAAAAAADABsANQABAAAAAAAEABsAUAABAAAAAAAFAAsAawABAAAAAAAGABsAdgABAAAAAAAKACsAkQABAAAAAAALABMAvAADAAEECQAAACYAzwADAAEECQABADYA9QADAAEECQACAA4BKwADAAEECQADADYBOQADAAEECQAEADYBbwADAAEECQAFABYBpQADAAEECQAGADYBuwADAAEECQAKAFYB8QADAAEECQALACYCR0NyZWF0ZWQgYnkgaWNvbmZvbnRVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlSZWd1bGFyVW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VmVyc2lvbiAxLjBVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlHZW5lcmF0ZWQgYnkgc3ZnMnR0ZiBmcm9tIEZvbnRlbGxvIHByb2plY3QuaHR0cDovL2ZvbnRlbGxvLmNvbQBDAHIAZQBhAHQAZQBkACAAYgB5ACAAaQBjAG8AbgBmAG8AbgB0AFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFIAZQBnAHUAbABhAHIAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVgBlAHIAcwBpAG8AbgAgADEALgAwAFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AEcAZQBuAGUAcgBhAHQAZQBkACAAYgB5ACAAcwB2AGcAMgB0AHQAZgAgAGYAcgBvAG0AIABGAG8AbgB0AGUAbABsAG8AIABwAHIAbwBqAGUAYwB0AC4AaAB0AHQAcAA6AC8ALwBmAG8AbgB0AGUAbABsAG8ALgBjAG8AbQAAAgAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAQIBAwEEAQUBBgAGc291c3VvB2dvdXh1YW4HZGluZ3dlaQtkaXR1LXR1ZGluZwAAAAA=') format('truetype');
 }
 .uni-choose-location-icons {
@@ -30659,7 +30425,7 @@ const _style_0$2 = `
   /* 暗黑模式样式结束 */
 
 `;
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$2]]]);
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["styles", [_style_0$4]]]);
 class ChooseLocationFailImpl extends UniError {
   constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
     super();
@@ -30722,7 +30488,7 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main$1 = /* @__PURE__ */ defineComponent({
+const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   __name: "uniModal",
   setup(__props) {
     const theme = ref("light");
@@ -30883,17 +30649,16 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       }, 10);
     });
     onLoad((options) => {
-      const systemInfo = uni.getSystemInfoSync();
-      const osLanguage = systemInfo.osLanguage;
-      const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55);
-      maxScrollHeight.value = scrollHeight + "px";
-      const appLanguage = systemInfo.appLanguage;
-      if (appLanguage != null) {
-        language.value = appLanguage;
-      } else if (osLanguage != null) {
-        language.value = osLanguage;
+      const deviceInfo = uni.getDeviceInfo();
+      const windowInfo = uni.getWindowInfo();
+      maxScrollHeight.value = `${Math.floor(windowInfo.screenHeight * 0.55)}px`;
+      const appBaseInfo = uni.getAppBaseInfo();
+      if (appBaseInfo.appLanguage != null) {
+        language.value = appBaseInfo.appLanguage;
+      } else if (deviceInfo.osLanguage != null) {
+        language.value = deviceInfo.osLanguage;
       }
-      const hostTheme = systemInfo.hostTheme;
+      const hostTheme = appBaseInfo.hostTheme;
       if (hostTheme != null) {
         theme.value = hostTheme;
         updateUI();
@@ -30960,10 +30725,10 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       return false;
     });
     return (_ctx, _cache) => {
-      const _component_text = __syscom_1;
-      const _component_view = __syscom_2;
-      const _component_textarea = __syscom_2$1;
-      const _component_scroll_view = __syscom_3;
+      const _component_text = __syscom_2$1;
+      const _component_view = __syscom_3;
+      const _component_textarea = __syscom_2;
+      const _component_scroll_view = __syscom_3$1;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-modal-mask", { "uni-modal-mask--show": showAnim.value, "uni-modal-mask--hide": !showAnim.value }])
       }, {
@@ -31057,7 +30822,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                         class: normalizeClass(["uni-modal-dialog__split", { "uni-modal--dark": isDark.value }])
                       }, null, 8, ["class"])) : createCommentVNode("", true),
                       createVNode(_component_view, {
-                        class: "uni-modal-dialog__action",
+                        class: "uni-modal-dialog__action uni-modal-dialog__action--confirm",
                         "hover-class": hoverClassName.value,
                         onClick: handleSure
                       }, {
@@ -31090,8 +30855,8 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$1 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n@media screen and (min-width: 768px) {\n.uni-modal-dialog {\n			max-width: 556px;\n}\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		lines: 2;\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 24px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1c1c1c;\n}\n.uni-modal-dialog__action-text {\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n		lines: 1;\n\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n";
-const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
+const _style_0$3 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n@media screen and (min-width: 768px) {\n.uni-modal-dialog {\n			max-width: 556px;\n}\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		lines: 2;\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 22px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--cancel{\n		padding: 0 4px 0 10px;\n}\n.uni-modal-dialog__action--confirm{\n		padding: 0 10px 0 4px;\n}\n.uni-modal-dialog__action--hover {\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		background-color: #1c1c1c;\n}\n.uni-modal-dialog__action-text {\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n		lines: 1;\n\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n";
+const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["styles", [_style_0$3]]]);
 class ShowModalSuccessImpl {
   constructor(cancel, confirm, content = null, errMsg = "showModal:ok") {
     this.errMsg = errMsg;
@@ -31244,7 +31009,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main = /* @__PURE__ */ defineComponent({
+const _sfc_main$3 = /* @__PURE__ */ defineComponent({
   __name: "showLoading",
   setup(__props) {
     const readyEventName = ref("");
@@ -31282,9 +31047,9 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       uni.$off(failEventName.value, null);
     });
     return (_ctx, _cache) => {
-      const _component_loading = _sfc_main$4;
-      const _component_text = __syscom_1;
-      const _component_view = __syscom_2;
+      const _component_loading = _sfc_main$7;
+      const _component_text = __syscom_2$1;
+      const _component_view = __syscom_3;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-loading-mask", { "uni-loading-mask--show": showAnim.value }])
       }, {
@@ -31316,8 +31081,8 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0 = "\n	/**\n	 * 透明背景\n	 */\n.uni-loading-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading-mask--show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading-dialog {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-loading-dialog.uni-loading-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading-dialog__spinner {\n		width: 36px;\n		height: 36px;\n		border-color: white;\n}\n.uni-loading-dialog__title {\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines: 1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n";
-const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["styles", [_style_0]]]);
+const _style_0$2 = "\n	/**\n	 * 透明背景\n	 */\n.uni-loading-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading-mask--show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading-dialog {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n\n\n\n\n		max-width: 80%;\n\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-loading-dialog.uni-loading-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading-dialog__spinner {\n		width: 36px;\n		height: 36px;\n		border-color: white;\n}\n.uni-loading-dialog__title {\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines: 1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n";
+const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["styles", [_style_0$2]]]);
 class ShowLoadingSuccessImpl {
   constructor(errMsg = "showLoading:ok") {
     this.errMsg = errMsg;
@@ -31449,6 +31214,1255 @@ const showLoading = /* @__PURE__ */ defineAsyncApi(
     registerLoadingOnce();
     return showLoading$1(
       extend(
+        {
+          success: (res) => {
+            resolve(res);
+          },
+          fail: (err) => {
+            reject(err);
+          }
+        },
+        args
+      )
+    );
+  }
+);
+class Friction2 {
+  // 构造函数，初始化物体的质量（m）、摩擦力大小（f，这里假设是牛顿单位的力，但乘以1000可能是为了转换为某种特定单位）
+  constructor(mass, frictionForce) {
+    this.endPosition = null;
+    this.lastTimeElapsed = null;
+    this.totalTimeToStop = 0;
+    this.mass = mass;
+    this.frictionForce = 1e3 * frictionForce;
+    this.startTime = 0;
+    this.velocity = { x: 0, y: 0 };
+    this.acceleration = { x: 0, y: 0 };
+    this.startPosition = { x: 0, y: 0 };
+    this.endPosition = null;
+    this.lastTimeElapsed = null;
+  }
+  // 设置物体的速度
+  setVelocity(x, y) {
+    const speed = Math.sqrt(x * x + y * y);
+    this.velocity = { x, y };
+    this.acceleration = {
+      x: -this.frictionForce * x / speed,
+      y: -this.frictionForce * y / speed
+    };
+    this.totalTimeToStop = Math.abs(x / this.acceleration.x);
+    if (Number.isNaN(this.totalTimeToStop)) {
+      this.totalTimeToStop = Math.abs(y / this.acceleration.y);
+    }
+    if (Number.isNaN(this.totalTimeToStop)) {
+      this.totalTimeToStop = 0;
+    }
+    this.startTime = Date.now();
+    this.lastTimeElapsed = null;
+  }
+  // 设置物体的起始位置
+  setStartPosition(x, y) {
+    this.startPosition = { x, y };
+  }
+  // 设置物体的结束位置
+  setEndPosition(x, y) {
+    this.endPosition = { x, y };
+  }
+  // 计算并返回物体在时间 t 时的位置
+  positionAtTime(t2) {
+    if (t2 == null) {
+      t2 = (Date.now() - this.startTime) / 1e3;
+    }
+    if (t2 > this.totalTimeToStop) {
+      t2 = this.totalTimeToStop;
+      this.lastTimeElapsed = t2;
+    }
+    var x = this.velocity.x * t2 + 0.5 * this.acceleration.x * t2 * t2 + this.startPosition.x;
+    var y = this.velocity.y * t2 + 0.5 * this.acceleration.y * t2 * t2 + this.startPosition.y;
+    if (this.acceleration.x > 0 && x < this.endPosition.x || this.acceleration.x < 0 && x > this.endPosition.x) {
+      x = this.endPosition.x;
+    }
+    if (this.acceleration.y > 0 && y < this.endPosition.y || this.acceleration.y < 0 && y > this.endPosition.y) {
+      y = this.endPosition.y;
+    }
+    return { x, y };
+  }
+  // 计算并返回物体在时间 t 时的速度
+  velocityAtTime(t2) {
+    if (t2 == null) {
+      t2 = (Date.now() - this.startTime) / 1e3;
+    }
+    if (t2 > this.totalTimeToStop) {
+      t2 = this.totalTimeToStop;
+    }
+    return {
+      dx: this.velocity.x + this.acceleration.x * t2,
+      dy: this.velocity.y + this.acceleration.y * t2
+    };
+  }
+  // 计算物体停止前的位移量（这里的方法名可能不准确，因为 delta 通常表示变化量）
+  // 注意：这个方法可能是错误的，因为它基于一个不准确的加速度公式
+  displacement() {
+    var tx = -1.5 * Math.pow(this.velocity.x, 2) / this.acceleration.x;
+    if (Number.isNaN(tx)) {
+      tx = 0;
+    }
+    var ty = -1.5 * Math.pow(this.velocity.y, 2) / this.acceleration.y;
+    if (Number.isNaN(ty)) {
+      ty = 0;
+    }
+    return {
+      x: tx,
+      y: ty
+    };
+  }
+  // 计算物体停止所需的时间（这个方法实际上是多余的，因为已经在 setVelocity 中计算过了）
+  timeToStop() {
+    return -this.velocity.x / this.acceleration.x;
+  }
+  // 检查物体是否已经停止或到达结束位置
+  isDone() {
+    const currentPosition = this.positionAtTime(null);
+    return currentPosition.x === this.endPosition.x && currentPosition.y === this.endPosition.y || this.lastTimeElapsed === this.totalTimeToStop;
+  }
+  // 重新配置物体的质量和摩擦力大小
+  reconfigure(mass, frictionForce) {
+    this.mass = mass;
+    this.frictionForce = 1e3 * frictionForce;
+  }
+}
+const DEFAULT_DISTANCE = 4;
+const FAST_SLIDE_LENGTH = 10;
+const SCALE_BOUNDARY_BUFFER = 2;
+const MIN_SCALE = 1;
+const MAX_SCALE = 3;
+const ANIMATION_DURATION = 200;
+const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+  __name: "uni-previewImageItem",
+  props: {
+    src: {
+      type: String,
+      default: ""
+    },
+    index: {
+      type: Number,
+      default: -1
+    },
+    longPressAction: {
+      type: Object
+    },
+    tips: {
+      type: Object
+    },
+    reset: {
+      type: Boolean,
+      default: false
+    },
+    resetOnSrcChange: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const imageView = ref(null);
+    const mask = ref(null);
+    const imageMode = ref("aspectFit");
+    const lastTouchEndTime = ref(0);
+    const srcPath = ref("");
+    const screenWidth = ref(0);
+    const screenHeight = ref(0);
+    const scaleSize = ref(1);
+    const lastSlideTouch = ref(null);
+    const imageTop = ref(0);
+    const imageMarginTop = ref(0);
+    const imageLeft = ref(0);
+    const withAnimation = ref(false);
+    const imageHeight = ref(0);
+    const historyX = ref([0, 0]);
+    const historyY = ref([0, 0]);
+    const historyT = ref([0, 0]);
+    const _friction = ref(new Friction2(1, 2));
+    const requestId = ref(-1);
+    const needExecLongPress = ref(false);
+    const downPoint = ref(null);
+    const longPressActionTimeoutId = ref(-1);
+    const inScaleMode = ref(false);
+    const scaleGestureActive = ref(false);
+    const scaleGestureInProgress = ref(false);
+    const delegateMoveToParent = ref(false);
+    const inDoubleTapMode = ref(false);
+    const startTimestamp = ref(0);
+    const clickTimeoutId = ref(-1);
+    const transformOrigin = ref([0, 0]);
+    const loadingFinished = ref(false);
+    const devicePixelRatio = ref(0);
+    const loadError = ref(false);
+    const language = ref("zh-Hans");
+    const isPreviewImaqeClosed = ref(false);
+    const swiperTouchDisabled = ref(false);
+    const ignoreClickUntil = ref(0);
+    const inScaleBounceBack = ref(false);
+    const bounceTransitionUntil = ref(0);
+    const instance2 = getCurrentInstance().proxy;
+    const getSrcLocalPath = (url) => {
+      srcPath.value = url;
+    };
+    const resetImageState = () => {
+      var _a, _b, _c, _d;
+      cancelAnimationFrame(requestId.value);
+      clearTimeout(clickTimeoutId.value);
+      clearTimeout(longPressActionTimeoutId.value);
+      loadingFinished.value = false;
+      loadError.value = false;
+      imageMode.value = "aspectFit";
+      scaleSize.value = 1;
+      imageTop.value = 0;
+      imageMarginTop.value = 0;
+      imageLeft.value = 0;
+      imageHeight.value = 0;
+      withAnimation.value = false;
+      historyX.value = [0, 0];
+      historyY.value = [0, 0];
+      historyT.value = [0, 0];
+      lastSlideTouch.value = null;
+      needExecLongPress.value = false;
+      downPoint.value = null;
+      inScaleMode.value = false;
+      scaleGestureActive.value = false;
+      scaleGestureInProgress.value = false;
+      delegateMoveToParent.value = false;
+      inDoubleTapMode.value = false;
+      transformOrigin.value = [0, 0];
+      inScaleBounceBack.value = false;
+      bounceTransitionUntil.value = 0;
+      if (swiperTouchDisabled.value) {
+        swiperTouchDisabled.value = false;
+        uni.$emit("__UNIPREVIEWIMAGE", false);
+      }
+      (_a = imageView.value) == null ? void 0 : _a.style.setProperty("height", "100%");
+      (_b = imageView.value) == null ? void 0 : _b.style.setProperty("transition-duration", "0ms");
+      (_c = imageView.value) == null ? void 0 : _c.style.setProperty("transform-origin", "0px 0px");
+      (_d = imageView.value) == null ? void 0 : _d.style.setProperty("transform", "translate(0px,0px) scale(1)");
+    };
+    watch(() => props2.src, (newValue, oldValue) => {
+      if (props2.resetOnSrcChange) {
+        resetImageState();
+      }
+      if (newValue != "") {
+        getSrcLocalPath(newValue);
+      } else {
+        srcPath.value = "";
+        loadingFinished.value = true;
+        loadError.value = true;
+      }
+    }, { immediate: true });
+    onMounted(() => {
+      var dpr = uni.getDeviceInfo({ filter: ["devicePixelRatio"] }).devicePixelRatio;
+      if (dpr == null) {
+        devicePixelRatio.value = 1;
+      } else {
+        devicePixelRatio.value = dpr;
+      }
+      const systemInfo = uni.getSystemInfoSync();
+      language.value = systemInfo.appLanguage;
+      language.value = uni.getLocale();
+    });
+    const previewImageError = (e2) => {
+      var _a;
+      (_a = mask.value) == null ? void 0 : _a.style.setProperty("point-events", "none");
+      loadingFinished.value = true;
+      loadError.value = true;
+    };
+    const onLongPressAction = () => {
+      var longPressAction = props2.longPressAction;
+      if (longPressAction != null && longPressAction.itemList.length > 0) {
+        uni.showActionSheet({
+          itemList: longPressAction.itemList,
+          itemColor: longPressAction.itemColor,
+          success: (e2) => {
+            var _a;
+            (_a = longPressAction.success) == null ? void 0 : _a.call(longPressAction, { tapIndex: e2.tapIndex, index: props2.index });
+            uni.$emit("__UNIPREVIEWLONGPRESS", { type: "success", tapIndex: e2.tapIndex, index: props2.index });
+          },
+          fail() {
+            var _a;
+            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new PreviewImageErrorImpl(1101001, UniErrorPreviewImage));
+            uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 });
+          }
+        });
+      }
+    };
+    const preventDefaultScall = (e2) => {
+      e2 == null ? void 0 : e2.preventDefault();
+      e2 == null ? void 0 : e2.stopPropagation();
+    };
+    const setSwiperTouchDisabled = (disabled) => {
+      if (swiperTouchDisabled.value == disabled) {
+        return;
+      }
+      swiperTouchDisabled.value = disabled;
+      uni.$emit("__UNIPREVIEWIMAGE", disabled);
+    };
+    const markScaleGesture = () => {
+      ignoreClickUntil.value = Date.now() + 450;
+    };
+    const shouldIgnoreClick = () => {
+      return Date.now() < ignoreClickUntil.value;
+    };
+    const setScaleKeepingViewportCenter = (targetScale) => {
+      if (scaleSize.value <= 0 || screenWidth.value <= 0 || screenHeight.value <= 0) {
+        scaleSize.value = targetScale;
+        return;
+      }
+      var ratio = targetScale / scaleSize.value;
+      var centerX = screenWidth.value / 2;
+      var centerY = screenHeight.value / 2;
+      imageLeft.value = centerX - transformOrigin.value[0] - (centerX - imageLeft.value - transformOrigin.value[0]) * ratio;
+      imageTop.value = centerY - transformOrigin.value[1] - (centerY - imageTop.value - transformOrigin.value[1]) * ratio;
+      scaleSize.value = targetScale;
+    };
+    const protectBounceTransition = () => {
+      bounceTransitionUntil.value = Date.now() + ANIMATION_DURATION;
+    };
+    const onInterceptTouchEvent = (e2) => {
+      if (inScaleMode.value || scaleGestureActive.value) {
+        setSwiperTouchDisabled(true);
+        preventDefaultScall(e2);
+        return;
+      }
+      clearTimeout(clickTimeoutId.value);
+    };
+    const shouldDelegateMoveToParent = (slideX, slideY) => {
+      if (scaleSize.value <= 1 || screenWidth.value <= 0) {
+        return false;
+      }
+      if (Math.abs(slideX) <= Math.abs(slideY)) {
+        return false;
+      }
+      var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1);
+      var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value);
+      return imageLeft.value >= maxLeft && slideX > 0 || imageLeft.value <= minLeft && slideX < 0;
+    };
+    const isAtHorizontalBoundary = () => {
+      if (scaleSize.value <= 1 || screenWidth.value <= 0) {
+        return false;
+      }
+      var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1);
+      var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value);
+      return imageLeft.value >= maxLeft || imageLeft.value <= minLeft;
+    };
+    const delegateCurrentMoveToParent = (e2, currentSlideTouch) => {
+      inScaleMode.value = false;
+      scaleGestureActive.value = false;
+      scaleGestureInProgress.value = false;
+      delegateMoveToParent.value = true;
+      setSwiperTouchDisabled(false);
+      needExecLongPress.value = false;
+      clearTimeout(longPressActionTimeoutId.value);
+      lastSlideTouch.value = e2.touches;
+      downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY };
+      historyX.value = [imageLeft.value, imageLeft.value];
+      historyY.value = [imageTop.value, imageTop.value];
+      historyT.value = [e2.timeStamp, e2.timeStamp];
+      onInterceptTouchEvent(e2);
+    };
+    const caculatorTransformOrigin = (e2) => {
+      var originalCenterX;
+      var originalCenterY;
+      if (e2 != null) {
+        if (e2.touches.length >= 2) {
+          var point1 = e2.touches[0];
+          var point2 = e2.touches[1];
+          originalCenterX = (point1.clientX + point2.clientX) / 2;
+          originalCenterY = (point1.clientY + point2.clientY) / 2;
+          if (scaleSize.value * imageHeight.value < screenHeight.value) {
+            originalCenterY = screenHeight.value / 2;
+          }
+          if (imageHeight.value > screenHeight.value && scaleSize.value >= 1) {
+            originalCenterY = originalCenterY - imageTop.value / scaleSize.value;
+          }
+          var oldTransformOrigin = [transformOrigin.value[0], transformOrigin.value[1]];
+          transformOrigin.value = [originalCenterX, originalCenterY];
+          if (oldTransformOrigin[0] != 0 && oldTransformOrigin[1] != 1) {
+            imageLeft.value = imageLeft.value + (scaleSize.value - 1) * (originalCenterX - oldTransformOrigin[0]);
+            imageTop.value = imageTop.value + (scaleSize.value - 1) * (originalCenterY - oldTransformOrigin[1]);
+          }
+        } else if (e2.type == "touchend") {
+          if (inDoubleTapMode.value && scaleSize.value == 2 && lastSlideTouch.value != null && lastSlideTouch.value.length == 1) {
+            originalCenterX = lastSlideTouch.value[0].clientX;
+            originalCenterY = lastSlideTouch.value[0].clientY;
+            if (scaleSize.value * imageHeight.value < screenHeight.value) {
+              originalCenterY = screenHeight.value / 2;
+            }
+            if (imageHeight.value > screenHeight.value) {
+              originalCenterY = originalCenterY - imageTop.value;
+            }
+            transformOrigin.value = [originalCenterX, originalCenterY];
+          }
+        }
+      }
+    };
+    const updateStyle2 = (e2, xDistance, yDistance) => {
+      var _a, _b, _c;
+      caculatorTransformOrigin(e2);
+      if (1 < scaleSize.value) {
+        var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value);
+        var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1);
+        if (imageLeft.value > maxLeft) {
+          imageLeft.value = maxLeft;
+          onInterceptTouchEvent(e2);
+        } else if (imageLeft.value < minLeft) {
+          imageLeft.value = minLeft;
+          onInterceptTouchEvent(e2);
+        } else {
+          preventDefaultScall(e2);
+        }
+      } else {
+        imageLeft.value = 0;
+        onInterceptTouchEvent(e2);
+      }
+      var imageContentTop = imageMarginTop.value > 0 ? imageMarginTop.value : 0;
+      var imageContentBottom = imageContentTop + imageHeight.value;
+      var scaledContentHeight = imageHeight.value * scaleSize.value;
+      if (scaleSize.value <= 1 && imageHeight.value > screenHeight.value) {
+        var minTop = screenHeight.value - imageHeight.value;
+        if (imageTop.value > 0) {
+          imageTop.value = 0;
+        } else if (imageTop.value < minTop) {
+          imageTop.value = minTop;
+        }
+        if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value.y) > DEFAULT_DISTANCE) {
+          preventDefaultScall(e2);
+        }
+      } else if (screenHeight.value + SCALE_BOUNDARY_BUFFER < scaledContentHeight) {
+        var scaledTopWithoutTranslate = transformOrigin.value[1] + (imageContentTop - transformOrigin.value[1]) * scaleSize.value;
+        var scaledBottomWithoutTranslate = transformOrigin.value[1] + (imageContentBottom - transformOrigin.value[1]) * scaleSize.value;
+        var visualTop = scaledTopWithoutTranslate + imageTop.value;
+        var visualBottom = scaledBottomWithoutTranslate + imageTop.value;
+        if (visualBottom < screenHeight.value) {
+          imageTop.value = imageTop.value + (screenHeight.value - visualBottom);
+        } else if (visualTop > 0 && !inScaleBounceBack.value) {
+          imageTop.value = imageTop.value - visualTop;
+        }
+        if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value.y) > DEFAULT_DISTANCE) {
+          preventDefaultScall(e2);
+        }
+      } else {
+        if (!inScaleMode.value) {
+          var scaledTopWithoutTranslate = transformOrigin.value[1] + (imageContentTop - transformOrigin.value[1]) * scaleSize.value;
+          var centeredTop = (screenHeight.value - scaledContentHeight) / 2;
+          imageTop.value = centeredTop - scaledTopWithoutTranslate;
+          if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value.y) > DEFAULT_DISTANCE) {
+            preventDefaultScall(e2);
+          }
+        } else {
+          preventDefaultScall(e2);
+        }
+      }
+      var shouldAnimate = withAnimation.value || Date.now() < bounceTransitionUntil.value;
+      (_a = imageView.value) == null ? void 0 : _a.style.setProperty("transition-duration", shouldAnimate ? ANIMATION_DURATION + "ms" : "0ms");
+      (_b = imageView.value) == null ? void 0 : _b.style.setProperty("transform-origin", transformOrigin.value[0] + "px " + transformOrigin.value[1] + "px");
+      (_c = imageView.value) == null ? void 0 : _c.style.setProperty("transform", "translate(" + imageLeft.value + "px," + imageTop.value + "px) scale(" + scaleSize.value + ")");
+    };
+    watch(() => props2.reset, (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        if (imageView.value != null && (scaleSize.value != 1 || imageLeft.value != 0 || imageTop.value != 0)) {
+          scaleSize.value = 1;
+          imageLeft.value = 0;
+          imageTop.value = 0;
+          withAnimation.value = false;
+          updateStyle2(null, NaN, NaN);
+        }
+      }
+    }, { immediate: true });
+    function doTransform(callback) {
+      requestId.value = requestAnimationFrame(() => {
+        callback();
+        if (!_friction.value.isDone())
+          doTransform(callback);
+      });
+    }
+    function closePreviewImage2() {
+      isPreviewImaqeClosed.value = true;
+      uni.$emit("__UNIPREVIEWIMAGECLOSE");
+    }
+    const onstart = (e2) => {
+      if (isPreviewImaqeClosed.value)
+        return;
+      inScaleMode.value = false;
+      scaleGestureActive.value = false;
+      scaleGestureInProgress.value = false;
+      delegateMoveToParent.value = false;
+      bounceTransitionUntil.value = 0;
+      if (e2.touches.length >= 2) {
+        inScaleMode.value = true;
+        scaleGestureActive.value = true;
+        scaleGestureInProgress.value = true;
+        markScaleGesture();
+        setSwiperTouchDisabled(true);
+      } else {
+        setSwiperTouchDisabled(scaleSize.value > 1 && !isAtHorizontalBoundary());
+      }
+      withAnimation.value = false;
+      cancelAnimationFrame(requestId.value);
+      clearTimeout(clickTimeoutId.value);
+      lastSlideTouch.value = e2.touches;
+      historyX.value = [0, 0];
+      historyY.value = [0, 0];
+      historyT.value = [0, 0];
+      downPoint.value = { x: e2.touches[0].clientX, y: e2.touches[0].clientY };
+      inDoubleTapMode.value = false;
+      startTimestamp.value = e2.timeStamp;
+      e2.preventDefault();
+      needExecLongPress.value = e2.touches.length < 2;
+      if (needExecLongPress.value) {
+        longPressActionTimeoutId.value = setTimeout(() => {
+          if (needExecLongPress.value) {
+            onLongPressAction();
+          }
+        }, 350);
+      }
+    };
+    const onmove = (e2) => {
+      if (isPreviewImaqeClosed.value)
+        return;
+      if (e2.touches.length == 1) {
+        var currentSlideTouch = e2.touches[0];
+        if (delegateMoveToParent.value) {
+          needExecLongPress.value = false;
+          clearTimeout(longPressActionTimeoutId.value);
+          lastSlideTouch.value = e2.touches;
+          downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY };
+          historyX.value = [imageLeft.value, imageLeft.value];
+          historyY.value = [imageTop.value, imageTop.value];
+          historyT.value = [e2.timeStamp, e2.timeStamp];
+          onInterceptTouchEvent(e2);
+          return;
+        }
+        if (lastSlideTouch.value != null && lastSlideTouch.value.length != 1) {
+          lastSlideTouch.value = e2.touches;
+          downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY };
+          historyX.value = [imageLeft.value, imageLeft.value];
+          historyY.value = [imageTop.value, imageTop.value];
+          historyT.value = [e2.timeStamp, e2.timeStamp];
+          if (scaleSize.value > 1 || inScaleMode.value || scaleGestureActive.value) {
+            preventDefaultScall(e2);
+          } else {
+            onInterceptTouchEvent(e2);
+          }
+          return;
+        }
+        if (lastSlideTouch.value != null) {
+          var slideX = currentSlideTouch.clientX - lastSlideTouch.value[0].clientX;
+          var slideY = currentSlideTouch.clientY - lastSlideTouch.value[0].clientY;
+          if (shouldDelegateMoveToParent(slideX, slideY)) {
+            delegateCurrentMoveToParent(e2, currentSlideTouch);
+            return;
+          }
+          var downX = Math.abs(currentSlideTouch.clientX - downPoint.value.x);
+          var downY = Math.abs(currentSlideTouch.clientY - downPoint.value.y);
+          if (downX > DEFAULT_DISTANCE || downY > DEFAULT_DISTANCE) {
+            needExecLongPress.value = false;
+            clearTimeout(longPressActionTimeoutId.value);
+            var handledByImage = false;
+            if (scaleSize.value > 1) {
+              setSwiperTouchDisabled(true);
+              imageLeft.value = imageLeft.value + slideX;
+              imageTop.value = imageTop.value + slideY;
+              updateStyle2(e2, currentSlideTouch.clientX, currentSlideTouch.clientY);
+              handledByImage = true;
+            } else if (imageHeight.value > screenHeight.value && downY > downX) {
+              setSwiperTouchDisabled(true);
+              imageTop.value = imageTop.value + slideY;
+              updateStyle2(e2, currentSlideTouch.clientX, currentSlideTouch.clientY);
+              preventDefaultScall(e2);
+              handledByImage = true;
+            } else {
+              setSwiperTouchDisabled(false);
+              onInterceptTouchEvent(e2);
+            }
+            if (handledByImage) {
+              historyX.value.shift();
+              historyX.value.push(imageLeft.value);
+              historyY.value.shift();
+              historyY.value.push(imageTop.value);
+              historyT.value.shift();
+              historyT.value.push(e2.timeStamp);
+            }
+            lastSlideTouch.value = e2.touches;
+            needExecLongPress.value = false;
+          } else {
+            needExecLongPress.value = true;
+          }
+        } else {
+          lastSlideTouch.value = e2.touches;
+        }
+      } else if (e2.touches.length >= 2) {
+        inScaleMode.value = true;
+        scaleGestureActive.value = true;
+        scaleGestureInProgress.value = true;
+        setSwiperTouchDisabled(true);
+        markScaleGesture();
+        needExecLongPress.value = false;
+        clearTimeout(longPressActionTimeoutId.value);
+        var currentFirstTouch = e2.touches[0];
+        var currentSecondTouch = e2.touches[1];
+        var currentXSlideLength = currentFirstTouch.clientX - currentSecondTouch.clientX;
+        var currentYSlideLength = currentFirstTouch.clientY - currentSecondTouch.clientY;
+        var currentLongSideLength = Math.sqrt(currentXSlideLength * currentXSlideLength + currentYSlideLength * currentYSlideLength);
+        if (lastSlideTouch.value != null && lastSlideTouch.value.length >= 2) {
+          var lastFirstTouch = lastSlideTouch.value[0];
+          var lastSecondTouch = lastSlideTouch.value[1];
+          var lastXSlideLength = lastFirstTouch.clientX - lastSecondTouch.clientX;
+          var lastYSlideLength = lastFirstTouch.clientY - lastSecondTouch.clientY;
+          var lastLongSideLength = Math.sqrt(lastXSlideLength * lastXSlideLength + lastYSlideLength * lastYSlideLength);
+          if (currentLongSideLength != lastLongSideLength) {
+            scaleSize.value = scaleSize.value * (currentLongSideLength / lastLongSideLength);
+            updateStyle2(e2, NaN, NaN);
+          }
+        }
+        preventDefaultScall(e2);
+        needExecLongPress.value = false;
+        lastSlideTouch.value = e2.touches;
+      }
+    };
+    const onend = (e2) => {
+      if (isPreviewImaqeClosed.value)
+        return;
+      const wasScaleMode = inScaleMode.value || scaleGestureActive.value || scaleGestureInProgress.value;
+      if (wasScaleMode) {
+        markScaleGesture();
+      }
+      inScaleMode.value = false;
+      needExecLongPress.value = false;
+      clearTimeout(longPressActionTimeoutId.value);
+      var current = Date.now();
+      if (wasScaleMode) {
+        if (scaleSize.value > MAX_SCALE) {
+          withAnimation.value = true;
+          protectBounceTransition();
+          setScaleKeepingViewportCenter(MAX_SCALE);
+          inScaleBounceBack.value = true;
+          updateStyle2(e2, NaN, NaN);
+          inScaleBounceBack.value = false;
+        } else if (scaleSize.value < MIN_SCALE) {
+          withAnimation.value = true;
+          protectBounceTransition();
+          setScaleKeepingViewportCenter(MIN_SCALE);
+          imageLeft.value = 0;
+          imageTop.value = 0;
+          inScaleBounceBack.value = true;
+          updateStyle2(e2, NaN, NaN);
+          inScaleBounceBack.value = false;
+        } else {
+          withAnimation.value = false;
+          updateStyle2(e2, NaN, NaN);
+        }
+        lastTouchEndTime.value = current;
+        lastSlideTouch.value = null;
+        scaleGestureActive.value = false;
+        if (e2.touches.length == 0) {
+          scaleGestureInProgress.value = false;
+        }
+        delegateMoveToParent.value = false;
+        setSwiperTouchDisabled(false);
+        return;
+      }
+      if (historyY.value[0] == 0 && historyY.value[1] == 0 && historyX.value[0] == 0 && historyX.value[1] == 0) {
+        withAnimation.value = true;
+        if (current - lastTouchEndTime.value < 350) {
+          if (lastSlideTouch.value != null && lastSlideTouch.value.length > 0) {
+            var downX = Math.abs(lastSlideTouch.value[0].clientX - downPoint.value.x);
+            var downY = Math.abs(lastSlideTouch.value[0].clientY - downPoint.value.y);
+            if (downX > FAST_SLIDE_LENGTH || downY > FAST_SLIDE_LENGTH) {
+              lastSlideTouch.value = null;
+              scaleGestureActive.value = false;
+              delegateMoveToParent.value = false;
+              setSwiperTouchDisabled(false);
+              return;
+            }
+          }
+          if (scaleSize.value > 1) {
+            scaleSize.value = 1;
+            imageLeft.value = 0;
+            updateStyle2(e2, NaN, NaN);
+          } else if (scaleSize.value == 1) {
+            scaleSize.value = 2;
+            inDoubleTapMode.value = true;
+            updateStyle2(e2, NaN, NaN);
+          }
+        } else if (e2.touches.length == 0) {
+          if (lastSlideTouch.value != null && lastSlideTouch.value.length == 1 && e2.timeStamp - startTimestamp.value < 160) {
+            var downX = Math.abs(lastSlideTouch.value[0].clientX - downPoint.value.x);
+            var downY = Math.abs(lastSlideTouch.value[0].clientY - downPoint.value.y);
+            if (downX < FAST_SLIDE_LENGTH && downY < FAST_SLIDE_LENGTH && !shouldIgnoreClick()) {
+              clickTimeoutId.value = setTimeout(() => {
+                closePreviewImage2();
+              }, 200);
+            }
+          }
+          lastTouchEndTime.value = current;
+        }
+      } else {
+        var deltaTime = historyT.value[1] - historyT.value[0];
+        var xv = 0;
+        var yv = 0;
+        if (deltaTime > 0) {
+          xv = 1e3 * (historyX.value[1] - historyX.value[0]) / deltaTime;
+          yv = 1e3 * (historyY.value[1] - historyY.value[0]) / deltaTime;
+        }
+        if (!Number.isFinite(xv)) {
+          xv = 0;
+        }
+        if (!Number.isFinite(yv)) {
+          yv = 0;
+        }
+        _friction.value.setVelocity(xv, yv);
+        _friction.value.setStartPosition(imageLeft.value, imageTop.value);
+        const x0 = _friction.value.displacement().x;
+        const y0 = _friction.value.displacement().y;
+        var x = imageLeft.value;
+        if (!Number.isNaN(x0))
+          x = x0 + imageLeft.value;
+        var y = imageTop.value;
+        if (!Number.isNaN(y0))
+          y = y0 + imageTop.value;
+        _friction.value.setEndPosition(x, y);
+        doTransform(() => {
+          var p2 = _friction.value.positionAtTime(null);
+          if (Number.isNaN(p2.x) && Number.isNaN(p2.y)) {
+            cancelAnimationFrame(requestId.value);
+          }
+          if (!Number.isNaN(p2.x))
+            imageLeft.value = p2.x;
+          if (!Number.isNaN(p2.y))
+            imageTop.value = p2.y;
+          updateStyle2(e2, NaN, NaN);
+        });
+      }
+      lastSlideTouch.value = null;
+      scaleGestureActive.value = false;
+      if (e2.touches.length == 0) {
+        scaleGestureInProgress.value = false;
+      }
+      delegateMoveToParent.value = false;
+      setSwiperTouchDisabled(false);
+    };
+    const oncancel = (e2) => {
+      onend(e2);
+      clearTimeout(clickTimeoutId.value);
+      inScaleMode.value = false;
+      scaleGestureActive.value = false;
+      scaleGestureInProgress.value = false;
+      delegateMoveToParent.value = false;
+      setSwiperTouchDisabled(false);
+    };
+    const caculatorImageSize = (imgWidth, imgHeight) => {
+      var _a, _b;
+      var scaleImageSize = imgHeight / (imgWidth / screenWidth.value);
+      if (scaleImageSize > screenHeight.value) {
+        imageHeight.value = scaleImageSize;
+        imageMode.value = "aspectFill";
+        (_a = imageView.value) == null ? void 0 : _a.style.setProperty("height", scaleImageSize + "px");
+      } else {
+        imageMode.value = "aspectFit";
+        (_b = imageView.value) == null ? void 0 : _b.style.setProperty("height", "100%");
+      }
+      imageMarginTop.value = (screenHeight.value - scaleImageSize) / 2;
+      imageHeight.value = scaleImageSize;
+    };
+    const onImageLoad = (e2) => {
+      var _a;
+      (_a = mask.value) == null ? void 0 : _a.style.setProperty("point-events", "none");
+      uni.createSelectorQuery().in(instance2).select(".uni-preview-image-patch").boundingClientRect().exec((ret) => {
+        if (ret.length == 1) {
+          var rect = mask.value.getBoundingClientRect();
+          screenHeight.value = rect.height;
+          screenWidth.value = rect.width;
+          if (devicePixelRatio.value == 0) {
+            var dpr = uni.getDeviceInfo({ filter: ["devicePixelRatio"] }).devicePixelRatio;
+            if (dpr == null) {
+              devicePixelRatio.value = 1;
+            } else {
+              devicePixelRatio.value = dpr;
+            }
+          }
+          caculatorImageSize(e2.detail.width / devicePixelRatio.value, e2.detail.height / devicePixelRatio.value);
+        }
+      });
+      loadingFinished.value = true;
+    };
+    const reloadImage = (e2) => {
+      var _a;
+      if (srcPath.value == "") {
+        loadingFinished.value = false;
+        loadError.value = false;
+        setTimeout(() => {
+          loadError.value = true;
+          loadingFinished.value = true;
+        }, 1e3);
+        e2.stopPropagation();
+        return;
+      }
+      (_a = mask.value) == null ? void 0 : _a.style.setProperty("point-events", "none");
+      loadingFinished.value = false;
+      loadError.value = false;
+      var tempPath = srcPath.value + "";
+      srcPath.value = "";
+      setTimeout(() => {
+        srcPath.value = tempPath;
+      }, 100);
+      e2.stopPropagation();
+    };
+    return (_ctx, _cache) => {
+      const _component_image = __syscom_0$2;
+      const _component_view = __syscom_3;
+      const _component_loading = _sfc_main$7;
+      return openBlock(), createBlock(_component_view, {
+        style: { "flex": "1" },
+        class: "uni-preview-image-item-background"
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_image, {
+            ref_key: "imageView",
+            ref: imageView,
+            mode: imageMode.value,
+            class: "uni-preview-image-item",
+            src: srcPath.value,
+            onError: previewImageError,
+            onLoad: onImageLoad
+          }, null, 8, ["mode", "src"]),
+          createVNode(_component_view, {
+            ref_key: "mask",
+            ref: mask,
+            class: "uni-preview-image-patch",
+            onTouchstart: onstart,
+            onTouchmove: onmove,
+            onTouchend: onend,
+            onTouchcancel: oncancel
+          }, null, 512),
+          !loadingFinished.value ? (openBlock(), createBlock(_component_view, {
+            key: 0,
+            class: "uni-preview-image-loading"
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_loading, { style: { "margin": "auto", "width": "54px", "height": "54px", "border-color": "#d3d3d3" } })
+            ]),
+            _: 1
+          })) : createCommentVNode("", true),
+          loadError.value ? (openBlock(), createBlock(_component_view, {
+            key: 1,
+            style: { "align-items": "center", "justify-content": "center", "position": "absolute", "top": "0", "bottom": "0", "left": "0", "right": "0" },
+            onClick: closePreviewImage2
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_image, {
+                src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAMAAADQmBKKAAAAilBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////2N2iNAAAALXRSTlMAf/kN/BOp7IxPBsMz9NzMRi0h4L7Q5pFjnhfVmIN3WUo6W6NUPrVtJ0yhcR84ApfrAAADTElEQVR42u3b3XaiMBSG4V1CABFBhFr/f1q1Tmf2/d/eHJoYrNJvu1a6Vp7zzrwthAAJFARBEARBEARBEPxmqtiuk3bZTJmnzbJN1ttC0SNeSJ76k71yhyrbqbs9LF4zG8Z8U9TO1Pc9wkG7JOI7Rh/jb3pkg96X/JBqcKtHNGhW8sOW284eyaD9K/cyrN0ewSA9577iTDk9YkGDlH+gOVo9ckH5G/9MvHF7mGCTin/spK978KAiZUA5sXvwoPGIO8XVfDM4TxZEi0k92HzdGoTTwuzBg7ZR5//yNlDOQDysUu4wOlo9DPbE7Ihuzg354RSzI2a5oHHk/sLZgr5xnrs/IhdUjNyrnb47KJOnBU3SrvngvnH5nKC8Ylv0iVxJ8aDrf7Us6GGHVD5owLZW9TrcpXSQTtmS5NTLohIOmrNlRX2pRjRoz5aEenth0SB7ampzrAcPmtnjS4E9eJA1RqIC7MGD3tn0ifbgQUtrvkB78KCddcBqtAcPStiQoT14kIrM+x8t28PomM/gHjxoaJ5BC7QHD1IxX3zAPXjQHzaM4R48KDOfd8R7GJtX38R7GDuFBnAPHlTwRazFexiaWCvywNoImpMHzIlsQx4YWue0B8xRX5MHGiNoQh5IjSBNHoiMoJw84F2Qd4fMu5Pau2Hv3YXRu6nDu8nVu9sP5wYNpmNz4MK3sLiD9dQA3+TjVnxxIvgxCDflixeSfVCEX+4cCX2Ulr2wpUT4ywbQv8i+sOGvY0AZO6MWfWEF0SPziOX4UecMHfPOVQR/6QmoYzacyQC/FoYHCLdkwV+c97dh045M+NJCf3UE/KnhxReXbhi46qPLU668ZeAMghfwXAkDo1V+iZO+2LImBL4InCdsKXMC4MvkumVLfCQAvpGgKNm2IQC81YI+I7adCABvRqmHfKXRBAC36+gs4ivpmQDYhqbFeuT+yJ4AyJYvOnZtJo6AORXZFKfGqyl3GDn5z942qCf14O/qNeZOKXS85DdWNjUB5LeetppA+OZc4AHh6duXkdNZfoM3rxQBxLfAV8j0Lv+RQHkggPxnFDMCSH9oEid7Akh/inOaaQKIfqwUV28HRTD8c660aYYf6/e9oiAIgiAIgiAIguAX+w9i21DdU9TtnwAAAABJRU5ErkJggg==",
+                onClick: reloadImage,
+                mode: "aspectFit",
+                style: { "width": "70px", "height": "70px" }
+              })
+            ]),
+            _: 1
+          })) : createCommentVNode("", true)
+        ]),
+        _: 1
+      });
+    };
+  }
+});
+const _style_0$1 = "\n.uni-preview-image-item {\n		width: 100%;\n		height: 100%;\n		transition-property: transform;\n		transition-duration: 0ms;\n}\n.uni-preview-image-patch {\n		width: 100%;\n		height: 100%;\n		background-color: transparent;\n		position: absolute;\n}\n.uni-preview-image-loading {\n		position: absolute;\n		top: 0;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		pointer-events: none;\n}\n.uni-preview-image-item-background {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-tips-retry {\n		color: blue;\n		font-size: 18px;\n		margin-top: 16px;\n		text-decoration-line: underline;\n}\n.uni-preview-image-tips-error {\n		font-size: 18px;\n		color: red;\n}\n";
+const UniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$1]]]);
+const _sfc_main$1 = /* @__PURE__ */ defineComponent({
+  __name: "uni-previewImageNonVapor",
+  props: {
+    urls: {
+      type: Array,
+      default: null
+    },
+    current: {
+      type: Number,
+      default: 0
+    },
+    resetCurrent: {
+      type: Number,
+      default: 0
+    },
+    loop: {
+      type: Boolean,
+      default: false
+    },
+    disableTouch: {
+      type: Boolean,
+      default: false
+    },
+    numberIndicator: {
+      type: String,
+      default: ""
+    },
+    indicatorIndex: {
+      type: Number,
+      default: 0
+    },
+    indicator: {
+      type: String,
+      default: "number"
+    },
+    longPressAction: {
+      type: Object
+    },
+    tips: {
+      type: Object
+    }
+  },
+  emits: ["previewImageChanged", "previewImageFinish"],
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    const emit2 = __emit;
+    const shouldRender = (index2) => {
+      var _a;
+      const len = (_a = props2.urls) == null ? void 0 : _a.length;
+      if (len == null) {
+        return false;
+      }
+      if (len <= 3) {
+        return true;
+      }
+      const c = props2.current;
+      if (index2 == c) {
+        return true;
+      }
+      if (props2.loop) {
+        const prev = c == 0 ? len - 1 : c - 1;
+        const next = c == len - 1 ? 0 : c + 1;
+        const prev2 = prev == 0 ? len - 1 : prev - 1;
+        const next2 = next == len - 1 ? 0 : next + 1;
+        if (index2 == prev || index2 == next || index2 == prev2 || index2 == next2) {
+          return true;
+        }
+      } else if (Math.abs(index2 - c) <= 2) {
+        return true;
+      }
+      return false;
+    };
+    const handlePreviewImageChanged = (e2) => {
+      emit2("previewImageChanged", e2);
+    };
+    const handlePreviewImageFinish = (e2) => {
+      emit2("previewImageFinish", e2);
+    };
+    return (_ctx, _cache) => {
+      const _component_swiper_item = __syscom_0$1;
+      const _component_swiper = __syscom_1;
+      const _component_text = __syscom_2$1;
+      const _component_view = __syscom_3;
+      return openBlock(), createElementBlock(Fragment, null, [
+        createVNode(_component_swiper, {
+          class: "uni-preview-image-swiper",
+          style: { "flex": "1", "background-color": "black" },
+          "indicator-dots": false,
+          circular: props2.loop,
+          current: props2.current,
+          onChange: handlePreviewImageChanged,
+          onAnimationfinish: handlePreviewImageFinish,
+          "disable-touch": props2.disableTouch
+        }, {
+          default: withCtx(() => [
+            props2.urls != null ? (openBlock(true), createElementBlock(Fragment, { key: 0 }, renderList(props2.urls, (item, index2) => {
+              return openBlock(), createBlock(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, {
+                default: withCtx(() => [
+                  shouldRender(index2) ? (openBlock(), createBlock(UniPreviewImageItem, {
+                    key: 0,
+                    index: index2,
+                    src: item,
+                    longPressAction: props2.longPressAction,
+                    tips: props2.tips,
+                    reset: index2 == props2.resetCurrent
+                  }, null, 8, ["index", "src", "longPressAction", "tips", "reset"])) : createCommentVNode("", true)
+                ]),
+                _: 2
+              }, 1024);
+            }), 256)) : createCommentVNode("", true)
+          ]),
+          _: 1
+        }, 8, ["circular", "current", "disable-touch"]),
+        props2.indicator == "number" ? (openBlock(), createBlock(_component_view, {
+          key: 0,
+          class: "uni-preview-image-number-indicator-layout"
+        }, {
+          default: withCtx(() => [
+            createVNode(_component_text, { class: "uni-preview-image-number-indicator" }, {
+              default: withCtx(() => [
+                createTextVNode(toDisplayString(props2.numberIndicator), 1)
+              ]),
+              _: 1
+            })
+          ]),
+          _: 1
+        })) : createCommentVNode("", true),
+        props2.indicator == "default" ? withDirectives((openBlock(), createBlock(_component_view, {
+          key: 1,
+          class: "uni-preview-image-default-indicator-layout"
+        }, {
+          default: withCtx(() => [
+            (openBlock(true), createElementBlock(Fragment, null, renderList(props2.urls.length, (i) => {
+              return openBlock(), createBlock(_component_view, {
+                class: normalizeClass(["uni-preview-image-default-indicator", props2.indicatorIndex + 1 == i ? "uni-preview-image-default-indicator-active" : "uni-preview-image-default-indicator-default"])
+              }, null, 8, ["class"]);
+            }), 256))
+          ]),
+          _: 1
+        }, 512)), [
+          [vShow, props2.urls != null]
+        ]) : createCommentVNode("", true)
+      ], 64);
+    };
+  }
+});
+const _style_0 = "\n.uni-preview-image-swiper {\n		overflow: hidden;\n}\n.uni-preview-image-swiper-item {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-default-indicator {\n		width: 9px;\n		height: 9px;\n		border-style: solid;\n		border-radius: 9px;\n		margin: 2px 3px;\n		border-width: .1px;\n		border-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-default {\n		background-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-active {\n		background-color: #ffffff;\n}\n.uni-preview-image-default-indicator-layout {\n		bottom: var(--uni-safe-area-inset-bottom);\n		margin-bottom: 8px;\n		flex-direction: row;\n		position: absolute;\n		left: 0px;\n		right: 0px;\n		justify-content: center;\n}\n.uni-preview-image-number-indicator-layout {\n		position: absolute;\n		left: 0;\n		right: 0;\n		top: var(--uni-safe-area-inset-top);\n		margin-top: 8px;\n}\n.uni-preview-image-number-indicator {\n		color: white;\n		font-size: 16px;\n		margin: auto;\n		padding: 8px 20px;\n		background-color: rgba(0, 0, 0, .3);\n		line-height: 1;\n		border-radius: 32px;\n}\n";
+const UniPreviewImageNonVapor = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0]]]);
+const _sfc_main = /* @__PURE__ */ defineComponent({
+  __name: "previewImage",
+  setup(__props) {
+    const urls = ref(null);
+    const current = ref(0);
+    const resetCurrent = ref(0);
+    const loop = ref(false);
+    const disableTouch = ref(false);
+    const numberIndicator = ref("");
+    const indicatorIndex = ref(0);
+    const indicator = ref("number");
+    const longPressAction = ref(null);
+    const tips = ref(null);
+    const pageInstance = getCurrentInstance().proxy;
+    const uniPageInstance = pageInstance.$page;
+    const updateIndicator = (index2) => {
+      var _a;
+      numberIndicator.value = index2 + 1 + " / " + ((_a = urls.value) == null ? void 0 : _a.length);
+      indicatorIndex.value = index2;
+    };
+    const __onPreviewLoadCallback = (result) => {
+      urls.value = result["urls"];
+      if (result["current"] != null) {
+        var c = result["current"];
+        if (typeof c == "number") {
+          var d = c;
+          if (urls.value == null || d < 0 || d >= urls.value.length) {
+            d = 0;
+          }
+          current.value = d;
+        } else if (typeof c == "string" && urls.value != null) {
+          var index2 = urls.value.indexOf(c);
+          if (index2 < 0) {
+            index2 = 0;
+          }
+          current.value = index2;
+        }
+        resetCurrent.value = current.value;
+      }
+      if (result["indicator"] != null) {
+        indicator.value = result["indicator"];
+      }
+      if (result["longPressActions"] != null) {
+        longPressAction.value = {
+          itemList: result["longPressActions"]["itemList"],
+          itemColor: result["longPressActions"]["itemColor"]
+        };
+      }
+      if (result["loop"] != null) {
+        loop.value = result["loop"];
+      }
+      updateIndicator(current.value);
+    };
+    const onPreviewImageChanged = (e2) => {
+      current.value = e2.detail.current;
+      updateIndicator(e2.detail.current);
+    };
+    const onPreviewImageFinish = (e2) => {
+      current.value = e2.detail.current;
+      resetCurrent.value = e2.detail.current;
+    };
+    const setDisableTouch = (isDisable) => {
+      disableTouch.value = isDisable;
+    };
+    const closePreviewPage = () => {
+      uni.closeDialogPage({
+        dialogPage: uniPageInstance,
+        animationType: "fade-out"
+      });
+    };
+    const closePreviewPageByEvent = () => {
+      closePreviewPage();
+    };
+    onUnload(() => {
+      uni.$off("__UNIPREVIEWIMAGE");
+      uni.$off("__UNIPREVIEWIMAGECLOSE");
+      uni.$off("__UNIPREVIEWLONGPRESS");
+      uni.$off("__CLOSEPREVIEWIMAGE");
+    });
+    onLoad(() => {
+      uni.$once("__onPreviewLoadCallback", __onPreviewLoadCallback);
+      uni.$emit("__onPreviewLoad", null);
+      uni.$on("__UNIPREVIEWIMAGE", setDisableTouch);
+      uni.$on("__UNIPREVIEWIMAGECLOSE", closePreviewPage);
+      uni.$on("__CLOSEPREVIEWIMAGE", closePreviewPageByEvent);
+    });
+    onBackPress((options) => {
+      return false;
+    });
+    return (_ctx, _cache) => {
+      return openBlock(), createBlock(UniPreviewImageNonVapor, {
+        urls: unref(urls),
+        current: unref(current),
+        resetCurrent: unref(resetCurrent),
+        loop: unref(loop),
+        disableTouch: unref(disableTouch),
+        numberIndicator: unref(numberIndicator),
+        indicatorIndex: unref(indicatorIndex),
+        indicator: unref(indicator),
+        longPressAction: unref(longPressAction),
+        tips: unref(tips),
+        onPreviewImageChanged,
+        onPreviewImageFinish
+      }, null, 8, ["urls", "current", "resetCurrent", "loop", "disableTouch", "numberIndicator", "indicatorIndex", "indicator", "longPressAction", "tips"]);
+    };
+  }
+});
+const UniErrorPreviewImage$1 = "uni-previewImage";
+const PreviewImageUniErrors = /* @__PURE__ */ new Map([
+  /**
+   * 用户取消
+   */
+  [1101001, "user cancel"],
+  /**
+   * urls至少包含一张图片地址
+   */
+  [1001, "fail parameter error: parameter.urls should have at least 1 item"],
+  /**
+   * 文件不存在
+   */
+  [1101003, "file not find"],
+  /**
+   * 图片加载失败
+   */
+  [1101004, "Failed to load resource"],
+  /**
+   * 未获取权限
+   */
+  [1101005, "No Permission"],
+  /**
+   * 其他错误
+   */
+  [1101010, "unexpect error:please check previewImage.uvue is in pages.json"]
+]);
+let PreviewImageErrorImpl$1 = class PreviewImageErrorImpl2 extends UniError {
+  constructor(errCode, uniErrorSubject) {
+    var _a;
+    super();
+    this.errSubject = uniErrorSubject;
+    this.errCode = errCode;
+    this.errMsg = (_a = PreviewImageUniErrors.get(errCode)) != null ? _a : "";
+  }
+};
+function __previewImage(option) {
+  var _a, _b;
+  if (option.urls.length == 0) {
+    let error = new PreviewImageErrorImpl$1(1001, UniErrorPreviewImage$1);
+    (_a = option.fail) == null ? void 0 : _a.call(option, error);
+    (_b = option.complete) == null ? void 0 : _b.call(option, error);
+    return;
+  }
+  uni.$once("__onPreviewLoad", () => {
+    var object = {
+      current: option.current,
+      urls: option.urls,
+      indicator: option.indicator,
+      loop: option.loop
+    };
+    if (option.longPressActions != null) {
+      object.longPressActions = {
+        itemList: option.longPressActions.itemList,
+        itemColor: option.longPressActions.itemColor
+      };
+    }
+    uni.$emit("__onPreviewLoadCallback", object);
+  });
+  uni.$on("__UNIPREVIEWLONGPRESS", (value) => {
+    var _a2, _b2, _c, _d, _e, _f, _g, _h;
+    if (option.longPressActions != null) {
+      var type = value["type"];
+      var tapIndex = value["tapIndex"];
+      var index2 = value["index"];
+      if (type == "success") {
+        var success = { tapIndex, index: index2 };
+        (_b2 = (_a2 = option.longPressActions) == null ? void 0 : _a2.success) == null ? void 0 : _b2.call(_a2, success);
+        (_d = (_c = option.longPressActions) == null ? void 0 : _c.complete) == null ? void 0 : _d.call(_c, success);
+      } else {
+        var fail = new PreviewImageErrorImpl$1(1101001, UniErrorPreviewImage$1);
+        (_f = (_e = option.longPressActions) == null ? void 0 : _e.fail) == null ? void 0 : _f.call(_e, fail);
+        (_h = (_g = option.longPressActions) == null ? void 0 : _g.complete) == null ? void 0 : _h.call(_g, fail);
+      }
+    }
+  });
+  uni.openDialogPage({
+    url: "uni:previewImage",
+    animationType: "fade-in",
+    success(_) {
+      var _a2, _b2;
+      let success = { errMsg: "ok", "errSubject": UniErrorPreviewImage$1 };
+      (_a2 = option.success) == null ? void 0 : _a2.call(option, success);
+      (_b2 = option.complete) == null ? void 0 : _b2.call(option, success);
+    },
+    fail(_) {
+      var _a2, _b2;
+      let error = new PreviewImageErrorImpl$1(1101010, UniErrorPreviewImage$1);
+      (_a2 = option.fail) == null ? void 0 : _a2.call(option, error);
+      (_b2 = option.complete) == null ? void 0 : _b2.call(option, error);
+    }
+  });
+}
+function __closePreviewImage(option) {
+  var _a, _b;
+  uni.$emit("__CLOSEPREVIEWIMAGE", null);
+  let callback = {
+    errMsg: "ok"
+  };
+  (_a = option.success) == null ? void 0 : _a.call(option, callback);
+  (_b = option.complete) == null ? void 0 : _b.call(option, callback);
+}
+const previewImage$1 = (option) => {
+  __previewImage(option);
+};
+const closePreviewImage$1 = (option) => {
+  __closePreviewImage(option);
+};
+function mergeComponentStyles(page, components) {
+  const styles = isArray(page.styles) ? [...page.styles] : [];
+  components.forEach((component) => {
+    if (isArray(component.styles)) {
+      styles.push(...component.styles);
+    }
+  });
+  page.styles = styles;
+}
+const registerPreviewImageOnce = /* @__PURE__ */ once(() => {
+  mergeComponentStyles(
+    _sfc_main,
+    [UniPreviewImageNonVapor, UniPreviewImageItem]
+  );
+  registerSystemRoute("uni:previewImage", _sfc_main);
+});
+const closePreviewImage = () => {
+  registerPreviewImageOnce();
+  closePreviewImage$1();
+};
+const previewImage = /* @__PURE__ */ defineAsyncApi(
+  API_PREVIEW_IMAGE,
+  (args, { resolve, reject }) => {
+    registerPreviewImageOnce();
+    previewImage$1(
+      /* @__PURE__ */ extend(
         {
           success: (res) => {
             resolve(res);
@@ -31727,32 +32741,32 @@ export {
   index$3 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$s as Button,
+  index$r as Button,
   index$2 as Camera,
   indexX$4 as Canvas,
-  index$q as Checkbox,
-  index$r as CheckboxGroup,
+  index$p as Checkbox,
+  index$q as CheckboxGroup,
   index$7 as CoverImage,
   index$8 as CoverView,
-  index$o as Editor,
-  index$u as Form,
-  index$n as Icon,
-  index$m as Image,
-  __syscom_3$1 as Input,
-  index$t as Label,
+  index$n as Editor,
+  index$t as Form,
+  index$m as Icon,
+  __syscom_0$2 as Image,
+  __syscom_3$2 as Input,
+  index$s as Label,
   LayoutComponent,
   index$g as ListItem,
   index$h as ListView,
   index$1 as LivePlayer,
   index as LivePusher,
-  _sfc_main$4 as Loading,
+  _sfc_main$7 as Loading,
   __syscom_0 as Map,
   MatchMedia,
   MovableArea,
   MovableView,
   index$l as Navigator,
   PageComponent,
-  _sfc_main$5 as PageContainer,
+  _sfc_main$8 as PageContainer,
   index$6 as Picker,
   PickerView,
   PickerViewColumn,
@@ -31761,15 +32775,15 @@ export {
   index$j as RadioGroup,
   ResizeSensor,
   index$i as RichText,
-  __syscom_3 as ScrollView,
+  __syscom_3$1 as ScrollView,
   indexX$2 as Slider,
   index$e as StickyHeader,
   index$f as StickySection,
-  Swiper,
-  SwiperItem,
+  __syscom_1 as Swiper,
+  __syscom_0$1 as SwiperItem,
   indexX$1 as Switch,
-  __syscom_1 as Text,
-  __syscom_2$1 as Textarea,
+  __syscom_2$1 as Text,
+  __syscom_2 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,
@@ -31849,7 +32863,7 @@ export {
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
   index$b as Video,
-  __syscom_2 as View,
+  __syscom_3 as View,
   indexX as WebView,
   __f__,
   addInterceptor,

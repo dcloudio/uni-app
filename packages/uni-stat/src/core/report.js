@@ -44,6 +44,13 @@ import {
 } from '../config.ts'
 
 import { dbGet, dbRemove, dbSet } from '../utils/db.js'
+import {
+  ackPending,
+  gateSend,
+  initReportNetwork,
+  persistPending,
+  toWirePayload,
+} from './reportNetwork.js'
 const eport_Interval = get_report_Interval(OPERATING_TIME)
 
 // 统计数据默认值
@@ -124,6 +131,21 @@ export default class Report {
       this.interceptShare(true)
       this.interceptRequestPayment()
     }
+
+    // 私有版网络门闸：1.0/云函数共用同一模块，仅 sendFn 不同
+    if (__STAT_VERSION__ === '1') {
+      initReportNetwork((optionsData) => {
+        this.dispatchSendRequestV1(optionsData)
+      })
+    }
+    if (__STAT_VERSION__ === '2') {
+      initReportNetwork(
+        (optionsData) => {
+          this.dispatchSendRequestV2(optionsData)
+        },
+        { flushOnInit: false }
+      )
+    }
   }
 
   addInterceptorInit() {
@@ -201,27 +223,27 @@ export default class Report {
   /**
    * 进入应用触发
    */
-  applicationShow() {
+  applicationShow(appShowOptions = {}) {
     // 通过 __licationHide 判断保证是进入后台后在次进入应用，避免重复上报数据
     if (this.__licationHide) {
+      const scene = get_scene(appShowOptions && appShowOptions.scene)
+      const path = (appShowOptions && appShowOptions.path) || ''
       const time = get_residence_time('app')
       // 需要判断进入后台是否超过时限 ，默认是 30min ，是的话需要执行进入应用的上报
       if (time.overtime) {
         let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE')
         let options = {
-          path: lastPageRoute,
-          scene: this.statData.sc,
+          path: path || lastPageRoute,
+          scene: scene || this.statData.sc,
           cst: 2,
         }
         this.sendReportRequest(options)
       } else {
         // 在没有超过时限的时候 ，判断场景值 ，如果是场景值发生了变化，则需要上报应用启动数据
-        // 目前只有微信小程序生效
-        const scene = get_scene()
-        if (scene !== this.statData.sc) {
+        if (scene && scene !== this.statData.sc) {
           let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE')
           let options = {
-            path: lastPageRoute,
+            path: path || lastPageRoute,
             scene: scene,
             cst: 2,
           }
@@ -322,7 +344,12 @@ export default class Report {
   }
 
   /**
-   * 发送请求,应用维度上报
+   * 发送应用维度启动日志（lt=1）。
+   * visit 字段约定（修复 lvts=0 重复新增）：
+   *   1. 先 get_last_visit_time()：读出本次要上报的 lvts，并立刻落库当前时间作基线；
+   *   2. 再 get_first_visit_time()：只维护 fvts，且不得清空步骤 1 写入的 lvts；
+   *   3. 首启上报 lvts=0，之后冷启动 / cst=2|3 续会话必须读到非 0。
+   * odid 与 lvts 解耦：1.0 仅新用户附带；2.0 在尚未标记设备已处理时补发（不依赖 lvts）。
    * @param {Object} options 页面信息
    * @param {Boolean} type 是否立即上报
    */
@@ -331,22 +358,20 @@ export default class Report {
     this._navigationBarTitle.config = get_page_name(options.path)
     let is_opt = options.query && JSON.stringify(options.query) !== '{}'
     let query = is_opt ? '?' + JSON.stringify(options.query) : ''
+    // 必须先读 lvts 再写 fvts，保证首启仍上报 0，同时基线已落库
     const last_time = get_last_visit_time()
-    // 非老用户
-    if (last_time !== 0 || !last_time) {
-      const odid = get_odid()
-      // 1.0 处理规则
-      if (__STAT_VERSION__ === '1') {
+    const odid = get_odid()
+    // 1.0：仅新用户（lvts=0）附带 odid
+    if (__STAT_VERSION__ === '1') {
+      if (last_time === 0) {
         this.statData.odid = odid
       }
-
-      // 2.0 处理规则
-      if (__STAT_VERSION__ === '2') {
-        const have_device = is_handle_device()
-        // 如果没有上报过设备信息 ，则需要上报设备信息
-        if (!have_device) {
-          this.statData.odid = odid
-        }
+    }
+    // 2.0：未处理过设备信息则补发，与是否新用户无关（避免 lvts 基线落库后无法补 odid）
+    if (__STAT_VERSION__ === '2') {
+      const have_device = is_handle_device()
+      if (!have_device) {
+        this.statData.odid = odid
       }
     }
 
@@ -358,7 +383,7 @@ export default class Report {
       fvts: get_first_visit_time(),
       lvts: last_time,
       tvc: get_total_visit_count(),
-      // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
+      // create session type  上报类型 ，1 应用进入 2.后台超时进入 3.页面超时进入
       cst: options.cst || 1,
     })
     if (get_platform_name() === 'n') {
@@ -471,7 +496,9 @@ export default class Report {
 
     if (__STAT_VERSION__ === '1') {
       if (statData.ut === 'h5') {
-        this.imageRequest(optionsData)
+        gateSend(optionsData, (payload) => {
+          this.imageRequest(payload)
+        })
         return
       }
     }
@@ -580,7 +607,10 @@ export default class Report {
 
     if (__STAT_VERSION__ === '1') {
       if (data.ut === 'h5') {
-        this.imageRequest(optionsData)
+        // H5 1.0 同样走网络门闸，无网挂起
+        gateSend(optionsData, (payload) => {
+          this.imageRequest(payload)
+        })
         return
       }
     }
@@ -601,74 +631,113 @@ export default class Report {
   }
 
   /**
-   * 数据上报
+   * 数据上报入口：经私有版网络门闸后，再进入 1.0 HTTP / 2.0 云函数发送。
    * @param {Object} optionsData 需要上报的数据
    */
   sendRequest(optionsData) {
-    if (__STAT_VERSION__ === '2') {
-      if (!uni.__stat_uniCloud_space) {
-        console.error(
-          '应用未关联服务空间，统计上报失败，请在uniCloud目录右键关联服务空间.'
-        )
-        return
-      }
-
-      const uniCloudObj = uni.__stat_uniCloud_space.importObject(
-        'uni-stat-receiver',
-        {
-          customUI: true,
-        }
-      )
-      uniCloudObj
-        .report(optionsData)
-        .then(() => {
-          if (is_debug) {
-            log(optionsData, true)
-          }
-        })
-        .catch((err) => {
-          if (is_debug) {
-            console.warn('=== 统计上报错误')
-            console.error(err)
-          }
-        })
-    }
-
     if (__STAT_VERSION__ === '1') {
-      this.getIsReportData().then(() => {
-        uni.request({
-          url: STAT_URL,
-          method: 'POST',
-          data: optionsData,
-          success: () => {
-            if (is_debug) {
-              log(optionsData, true)
-            }
-          },
-          fail: (e) => {
-            if (++this._retry < 3) {
-              if (is_debug) {
-                console.warn('=== 统计上报错误，尝试重新上报！')
-                console.error(e)
-              }
-              setTimeout(() => {
-                this.sendRequest(optionsData)
-              }, 1000)
-            }
-          },
-        })
+      gateSend(optionsData, (payload) => {
+        this.dispatchSendRequestV1(payload)
+      })
+      return
+    }
+    if (__STAT_VERSION__ === '2') {
+      gateSend(optionsData, (payload) => {
+        this.dispatchSendRequestV2(payload)
       })
     }
   }
 
   /**
-   * h5 请求
+   * uni统计 1.0 实际 HTTP 发送（不含网络门闸）。
+   * @param {Object} optionsData
+   */
+  dispatchSendRequestV1(optionsData) {
+    this.getIsReportData().then(() => {
+      const wire = toWirePayload(optionsData)
+      const retry = optionsData._httpRetry || 0
+      uni.request({
+        url: STAT_URL,
+        method: 'POST',
+        data: wire,
+        success: () => {
+          optionsData._httpRetry = 0
+          ackPending(optionsData)
+          if (is_debug) {
+            log(optionsData, true)
+          }
+        },
+        fail: (e) => {
+          if (retry + 1 < 3) {
+            optionsData._httpRetry = retry + 1
+            if (is_debug) {
+              console.warn('=== 统计上报错误，尝试重新上报！')
+              console.error(e)
+            }
+            setTimeout(() => {
+              this.dispatchSendRequestV1(optionsData)
+            }, 1000)
+          } else {
+            optionsData._httpRetry = 0
+            // 快重试耗尽后持久化，待网络恢复 / 冷启再发
+            persistPending(optionsData)
+            if (is_debug) {
+              console.warn('=== uni统计1.0 上报失败，已转入待发队列 ===')
+              console.error(e)
+            }
+          }
+        },
+      })
+    })
+  }
+
+  /**
+   * uni统计 2.0 实际云函数发送（不含网络门闸）。
+   * 未关联服务空间视为统计不可用，不做挂起兜底。
+   * @param {Object} optionsData
+   */
+  dispatchSendRequestV2(optionsData) {
+    if (!uni.__stat_uniCloud_space) {
+      console.error(
+        '应用未关联服务空间，统计上报失败，请在uniCloud目录右键关联服务空间.'
+      )
+      return
+    }
+
+    const uniCloudObj = uni.__stat_uniCloud_space.importObject(
+      'uni-stat-receiver',
+      {
+        customUI: true,
+      }
+    )
+    const wire = toWirePayload(optionsData)
+    uniCloudObj
+      .report(wire)
+      .then(() => {
+        ackPending(optionsData)
+        if (is_debug) {
+          log(optionsData, true)
+        }
+      })
+      .catch((err) => {
+        persistPending(optionsData)
+        if (is_debug) {
+          console.warn('=== uni统计2.0 上报错误，已转入待发队列 ===')
+          console.error(err)
+        }
+      })
+  }
+
+  /**
+   * h5 1.0 图片通道请求（由门闸放行后调用）。
    */
   imageRequest(data) {
     this.getIsReportData().then(() => {
       let image = new Image()
-      let options = get_sgin(get_encodeURIComponent_options(data)).options
+      let options = get_sgin(get_encodeURIComponent_options(toWirePayload(data))).options
       image.src = STAT_H5_URL + '?' + options
+      // 图片通道无法可靠感知失败，发送即 best-effort ack
+      ackPending(data)
       if (is_debug) {
         log(data, true)
       }

@@ -69,12 +69,16 @@ var index = () => {
                     if (!hasRuntimeSocket) {
                         return;
                     }
-                    if (!opts.filter(id)) {
+                    const independentRoot = uniCliShared.parseIndependentMainRoot(id);
+                    if (!opts.filter(id) && !independentRoot) {
                         return;
                     }
+                    const runtimePath = independentRoot
+                        ? uniCliShared.withIndependentRoot(uniConsolePath, independentRoot)
+                        : uniCliShared.normalizePath(uniConsolePath);
                     return {
                         // 采用绝对路径引入，此时，tsc失效，代码里需要自己处理好各种类型问题
-                        code: `import '${uniCliShared.normalizePath(uniConsolePath)}';${code}`,
+                        code: `import '${runtimePath}';${code}`,
                         map: null,
                     };
                 },

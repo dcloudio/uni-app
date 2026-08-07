@@ -475,6 +475,28 @@ let titleJsons = {};
 let debug =
   process.env.UNI_STAT_DEBUG === 'true' ||
   process.env.UNI_STAT_DEBUG === true;
+
+const MP_SCENE_PLATFORMS = [
+  'wx',
+  'ali',
+  'bd',
+  'tt',
+  'qq',
+  'ks',
+  'lark',
+  'xhs',
+  'jd',
+  'dt',
+  'mhm',
+];
+
+const is_mp_scene_platform = (platformName) => {
+  if (!platformName) return false
+  return (
+    platformName.indexOf('mp-') === 0 ||
+    MP_SCENE_PLATFORMS.indexOf(platformName) !== -1
+  )
+};
 // #ifdef VUE3
 titleJsons = process.env.UNI_STAT_TITLE_JSON;
 // #endif
@@ -596,7 +618,10 @@ const get_encodeURIComponent_options = (statData) => {
  * 快手	  : 'ks',
  * 飞书	  : 'lark',
  * 快应用  : 'qw',
- * 钉钉	  : 'dt'
+ * 小红书  : 'xhs',
+ * 京东	  : 'jd',
+ * 钉钉	  : 'dt',
+ * 鸿蒙	  : 'mhm'
  */
 const get_platform_name = () => {
   // 苹果审核代码中禁止出现 alipay 字样 ，需要特殊处理一下
@@ -616,10 +641,11 @@ const get_platform_name = () => {
     'mp-kuaishou': 'ks',
     'mp-lark': 'lark',
     'quickapp-webview': 'qw',
-    'mp-xhs': 'xhs'
+    'mp-xhs': 'xhs',
+    'mp-jd': 'jd',
   };
   if (platformList[process.env.VUE_APP_PLATFORM] === 'ali') {
-    if (my && my.env) {
+    if (typeof my !== 'undefined' && my && my.env) {
       const clientName = my.env.clientName;
       if (clientName === 'ap') return 'ali'
       if (clientName === 'dingtalk') return 'dt'
@@ -669,14 +695,25 @@ const get_channel = () => {
  */
 const get_scene = (options) => {
   const platformName = get_platform_name();
-  let scene = '';
-  if (options) {
-    return options
+  if (options !== undefined && options !== null && options !== '') {
+    return String(options)
   }
-  if (platformName === 'wx') {
-    scene = uni.getLaunchOptionsSync().scene;
+  if (!is_mp_scene_platform(platformName)) {
+    return ''
   }
-  return scene
+  if (
+    typeof uni === 'undefined' ||
+    typeof uni.getLaunchOptionsSync !== 'function'
+  ) {
+    return ''
+  }
+  try {
+    const launchOptions = uni.getLaunchOptionsSync();
+    const scene = launchOptions && launchOptions.scene;
+    return scene === undefined || scene === null ? '' : String(scene)
+  } catch (e) {
+    return ''
+  }
 };
 
 /**
@@ -990,7 +1027,10 @@ const get_time = () => {
 };
 
 /**
- * 获取首次访问时间
+ * 获取首次访问时间。
+ * 仅在本地无记录时写入 fvts；**不得**清空 lvts。
+ * 历史缺陷：此处曾 dbRemove(LAST_VISIT_TIME_KEY)，会把 get_last_visit_time()
+ * 刚写入的基线删掉，导致第二次冷启动仍上报 lvts=0，同一设备被反复计为新增。
  */
 const get_first_visit_time = () => {
 	const timeStorge = dbGet(FIRST_VISIT_TIME_KEY);
@@ -1000,14 +1040,14 @@ const get_first_visit_time = () => {
 	} else {
 		time = get_time();
 		dbSet(FIRST_VISIT_TIME_KEY, time);
-		// 首次访问需要 将最后访问时间置 0
-		dbRemove(LAST_VISIT_TIME_KEY);
 	}
 	return time
 };
 
 /**
- * 最后访问时间
+ * 读取并推进最后访问时间。
+ * 读出的值用于本次上报 lvts（0 表示新用户）；读后立刻写入当前时间作为基线，
+ * 保证后续冷启动 / 续会话读到非 0，一生只计一次新增。
  */
 const get_last_visit_time = () => {
 	const timeStorge = dbGet(LAST_VISIT_TIME_KEY);
@@ -1111,6 +1151,250 @@ const get_residence_time = (type) => {
 	}
 };
 
+/**
+ * 私有版网络门闸（core / 私有入口共用一份实现）。
+ *
+ * 覆盖私有版历史代码编出的 uni-stat（1.0 HTTP）与 uni-cloud-stat（云函数），
+ * 通过 init 时注册的 sendFn 区分通道，**不**按 1.0/2.0 拆文件。
+ *
+ * 与公有版（src/public/runtime/networkGate.ts）完全分离，互不引用。
+ *
+ * 说明：H5 弱网、未关联服务空间等非正常业务路径不做额外兜底。
+ */
+
+const PENDING_KEY = '__UNI__STAT__NET_PENDING';
+const MAX_PENDING = 50;
+const MAX_ATTEMPTS = 10;
+
+/** 仅本地队列使用，不得随上报上行 */
+const META_KEYS = ['_pendingId', '_netAttempts', '_inflight', '_httpRetry'];
+
+let watcherInstalled = false;
+let flushing = false;
+/** @type {null | ((optionsData: any) => void)} */
+let dispatchSend = null;
+
+/**
+ * 判断当前是否无网（仅 none / isConnected===false；unknown 不当无网）。
+ */
+function isOffline(networkType, isConnected) {
+  if (isConnected === false) return true
+  return networkType === 'none'
+}
+
+/**
+ * 读取私有版待发队列。
+ */
+function readPending() {
+  const list = dbGet(PENDING_KEY);
+  return Array.isArray(list) ? list : []
+}
+
+/**
+ * 写入私有版待发队列（超出上限丢最旧）。
+ */
+function writePending(list) {
+  const next = Array.isArray(list) ? list : [];
+  dbSet(PENDING_KEY, next.slice(-MAX_PENDING));
+}
+
+/**
+ * 为上报包分配 pendingId（若尚无）。
+ */
+function ensurePendingId(optionsData) {
+  if (!optionsData._pendingId) {
+    optionsData._pendingId =
+      'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+  }
+  return optionsData._pendingId
+}
+
+/**
+ * 剥离门闸内部字段，得到可上行的净荷（避免 _pendingId 等污染服务端）。
+ * @param {any} optionsData
+ */
+function toWirePayload(optionsData) {
+  if (!optionsData || typeof optionsData !== 'object') return optionsData
+  const wire = {};
+  for (const key in optionsData) {
+    if (Object.prototype.hasOwnProperty.call(optionsData, key) && META_KEYS.indexOf(key) === -1) {
+      wire[key] = optionsData[key];
+    }
+  }
+  return wire
+}
+
+/**
+ * 冷启时清除遗留 inflight 标记，使上次未 ack 的包可再次冲刷。
+ */
+function clearStaleInflight() {
+  const list = readPending();
+  if (!list.length) return
+  let changed = false;
+  const next = list.map(function (it) {
+    if (!it || !it._inflight) return it
+    changed = true;
+    const copy = Object.assign({}, it);
+    delete copy._inflight;
+    return copy
+  });
+  if (changed) writePending(next);
+}
+
+/**
+ * 将上报包持久化挂起（无网或最终发送失败）。
+ * 失败回写时清除 inflight，便于下次冲刷。
+ */
+function persistPending(optionsData) {
+  if (!optionsData) return
+  ensurePendingId(optionsData);
+  delete optionsData._inflight;
+  const attempts = (optionsData._netAttempts || 0) + 1;
+  optionsData._netAttempts = attempts;
+  if (attempts > MAX_ATTEMPTS) {
+    if (is_debug) {
+      console.warn(
+        '=== uni统计(私有版) 待发超过重试上限，丢弃 ===',
+        optionsData._pendingId
+      );
+    }
+    ackPending(optionsData);
+    return
+  }
+  const list = readPending().filter(
+    (it) => it && it._pendingId !== optionsData._pendingId
+  );
+  list.push(optionsData);
+  writePending(list);
+  if (is_debug) {
+    console.log(
+      '=== uni统计(私有版) 已挂起上报，等待网络 ===',
+      optionsData._pendingId
+    );
+  }
+}
+
+/**
+ * 上报成功后从待发队列移除。
+ */
+function ackPending(optionsData) {
+  if (!optionsData || !optionsData._pendingId) return
+  writePending(
+    readPending().filter((it) => it && it._pendingId !== optionsData._pendingId)
+  );
+}
+
+/**
+ * 注册网络变化监听（单例）。
+ */
+function installWatcher() {
+  if (watcherInstalled) return
+  if (
+    typeof uni === 'undefined' ||
+    typeof uni.onNetworkStatusChange !== 'function'
+  ) {
+    return
+  }
+  watcherInstalled = true;
+  uni.onNetworkStatusChange(function onNetworkStatusChangePrivate(res) {
+    if (isOffline(res && res.networkType, res && res.isConnected)) return
+    flushPending();
+  });
+}
+
+/**
+ * 冲刷待发：ack 前保留在 storage（标 inflight），避免进程被杀导致丢包。
+ */
+function flushPending() {
+  if (flushing || typeof dispatchSend !== 'function') return
+  const list = readPending();
+  if (!list.length) return
+
+  const toSend = [];
+  const next = [];
+  for (let i = 0; i < list.length; i++) {
+    const it = list[i];
+    if (!it) continue
+    if (it._inflight) {
+      next.push(it);
+      continue
+    }
+    it._inflight = true;
+    next.push(it);
+    toSend.push(it);
+  }
+  if (!toSend.length) return
+
+  flushing = true;
+  writePending(next);
+  try {
+    for (let i = 0; i < toSend.length; i++) {
+      dispatchSend(toSend[i]);
+    }
+  } finally {
+    flushing = false;
+  }
+}
+
+/**
+ * 先 getNetworkType，有网再冲刷；无网则继续等待监听。
+ */
+function tryFlushWhenOnline() {
+  if (typeof uni === 'undefined' || typeof uni.getNetworkType !== 'function') {
+    flushPending();
+    return
+  }
+  uni.getNetworkType({
+    success: function (res) {
+      if (isOffline(res && res.networkType, res && res.isConnected)) return
+      flushPending();
+    },
+    fail: function () {
+      // 探测失败时不盲目冲刷，等 onNetworkStatusChange
+    },
+  });
+}
+
+/**
+ * 初始化私有版网络门闸。
+ * @param {(optionsData: any) => void} sendFn 实际发送（由调用方决定通道）
+ * @param {{ flushOnInit?: boolean }} [opts] 云函数通道建议 flushOnInit=false，等服务空间就绪后再 resume
+ */
+function initReportNetwork(sendFn, opts) {
+  dispatchSend = sendFn;
+  clearStaleInflight();
+  installWatcher();
+  {
+    tryFlushWhenOnline();
+  }
+}
+
+/**
+ * 发送门闸：无网挂起，有网才调用 sendFn。
+ * 不覆盖 init 注册的 dispatchSend，避免冲刷走错通道。
+ * @param {any} optionsData
+ * @param {(optionsData: any) => void} sendFn
+ */
+function gateSend(optionsData, sendFn) {
+  installWatcher();
+  if (typeof uni === 'undefined' || typeof uni.getNetworkType !== 'function') {
+    sendFn(optionsData);
+    return
+  }
+  uni.getNetworkType({
+    success: function (res) {
+      if (isOffline(res && res.networkType, res && res.isConnected)) {
+        persistPending(optionsData);
+        return
+      }
+      sendFn(optionsData);
+    },
+    fail: function () {
+      sendFn(optionsData);
+    },
+  });
+}
+
 const eport_Interval = get_report_Interval(OPERATING_TIME);
 
 // 统计数据默认值
@@ -1191,6 +1475,13 @@ class Report {
       this.interceptShare(true);
       this.interceptRequestPayment();
     }
+
+    // 私有版网络门闸：1.0/云函数共用同一模块，仅 sendFn 不同
+    {
+      initReportNetwork((optionsData) => {
+        this.dispatchSendRequestV1(optionsData);
+      });
+    }
   }
 
   addInterceptorInit() {
@@ -1268,27 +1559,27 @@ class Report {
   /**
    * 进入应用触发
    */
-  applicationShow() {
+  applicationShow(appShowOptions = {}) {
     // 通过 __licationHide 判断保证是进入后台后在次进入应用，避免重复上报数据
     if (this.__licationHide) {
+      const scene = get_scene(appShowOptions && appShowOptions.scene);
+      const path = (appShowOptions && appShowOptions.path) || '';
       const time = get_residence_time('app');
       // 需要判断进入后台是否超过时限 ，默认是 30min ，是的话需要执行进入应用的上报
       if (time.overtime) {
         let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE');
         let options = {
-          path: lastPageRoute,
-          scene: this.statData.sc,
+          path: path || lastPageRoute,
+          scene: scene || this.statData.sc,
           cst: 2,
         };
         this.sendReportRequest(options);
       } else {
         // 在没有超过时限的时候 ，判断场景值 ，如果是场景值发生了变化，则需要上报应用启动数据
-        // 目前只有微信小程序生效
-        const scene = get_scene();
-        if (scene !== this.statData.sc) {
+        if (scene && scene !== this.statData.sc) {
           let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE');
           let options = {
-            path: lastPageRoute,
+            path: path || lastPageRoute,
             scene: scene,
             cst: 2,
           };
@@ -1389,7 +1680,12 @@ class Report {
   }
 
   /**
-   * 发送请求,应用维度上报
+   * 发送应用维度启动日志（lt=1）。
+   * visit 字段约定（修复 lvts=0 重复新增）：
+   *   1. 先 get_last_visit_time()：读出本次要上报的 lvts，并立刻落库当前时间作基线；
+   *   2. 再 get_first_visit_time()：只维护 fvts，且不得清空步骤 1 写入的 lvts；
+   *   3. 首启上报 lvts=0，之后冷启动 / cst=2|3 续会话必须读到非 0。
+   * odid 与 lvts 解耦：1.0 仅新用户附带；2.0 在尚未标记设备已处理时补发（不依赖 lvts）。
    * @param {Object} options 页面信息
    * @param {Boolean} type 是否立即上报
    */
@@ -1398,12 +1694,12 @@ class Report {
     this._navigationBarTitle.config = get_page_name(options.path);
     let is_opt = options.query && JSON.stringify(options.query) !== '{}';
     let query = is_opt ? '?' + JSON.stringify(options.query) : '';
+    // 必须先读 lvts 再写 fvts，保证首启仍上报 0，同时基线已落库
     const last_time = get_last_visit_time();
-    // 非老用户
-    if (last_time !== 0 || !last_time) {
-      const odid = get_odid();
-      // 1.0 处理规则
-      {
+    const odid = get_odid();
+    // 1.0：仅新用户（lvts=0）附带 odid
+    {
+      if (last_time === 0) {
         this.statData.odid = odid;
       }
     }
@@ -1416,7 +1712,7 @@ class Report {
       fvts: get_first_visit_time(),
       lvts: last_time,
       tvc: get_total_visit_count(),
-      // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
+      // create session type  上报类型 ，1 应用进入 2.后台超时进入 3.页面超时进入
       cst: options.cst || 1,
     });
     if (get_platform_name() === 'n') {
@@ -1529,7 +1825,9 @@ class Report {
 
     {
       if (statData.ut === 'h5') {
-        this.imageRequest(optionsData);
+        gateSend(optionsData, (payload) => {
+          this.imageRequest(payload);
+        });
         return
       }
     }
@@ -1638,7 +1936,10 @@ class Report {
 
     {
       if (data.ut === 'h5') {
-        this.imageRequest(optionsData);
+        // H5 1.0 同样走网络门闸，无网挂起
+        gateSend(optionsData, (payload) => {
+          this.imageRequest(payload);
+        });
         return
       }
     }
@@ -1659,46 +1960,108 @@ class Report {
   }
 
   /**
-   * 数据上报
+   * 数据上报入口：经私有版网络门闸后，再进入 1.0 HTTP / 2.0 云函数发送。
    * @param {Object} optionsData 需要上报的数据
    */
   sendRequest(optionsData) {
-
     {
-      this.getIsReportData().then(() => {
-        uni.request({
-          url: STAT_URL,
-          method: 'POST',
-          data: optionsData,
-          success: () => {
-            if (is_debug) {
-              log(optionsData, true);
-            }
-          },
-          fail: (e) => {
-            if (++this._retry < 3) {
-              if (is_debug) {
-                console.warn('=== 统计上报错误，尝试重新上报！');
-                console.error(e);
-              }
-              setTimeout(() => {
-                this.sendRequest(optionsData);
-              }, 1000);
-            }
-          },
-        });
+      gateSend(optionsData, (payload) => {
+        this.dispatchSendRequestV1(payload);
       });
+      return
     }
   }
 
   /**
-   * h5 请求
+   * uni统计 1.0 实际 HTTP 发送（不含网络门闸）。
+   * @param {Object} optionsData
+   */
+  dispatchSendRequestV1(optionsData) {
+    this.getIsReportData().then(() => {
+      const wire = toWirePayload(optionsData);
+      const retry = optionsData._httpRetry || 0;
+      uni.request({
+        url: STAT_URL,
+        method: 'POST',
+        data: wire,
+        success: () => {
+          optionsData._httpRetry = 0;
+          ackPending(optionsData);
+          if (is_debug) {
+            log(optionsData, true);
+          }
+        },
+        fail: (e) => {
+          if (retry + 1 < 3) {
+            optionsData._httpRetry = retry + 1;
+            if (is_debug) {
+              console.warn('=== 统计上报错误，尝试重新上报！');
+              console.error(e);
+            }
+            setTimeout(() => {
+              this.dispatchSendRequestV1(optionsData);
+            }, 1000);
+          } else {
+            optionsData._httpRetry = 0;
+            // 快重试耗尽后持久化，待网络恢复 / 冷启再发
+            persistPending(optionsData);
+            if (is_debug) {
+              console.warn('=== uni统计1.0 上报失败，已转入待发队列 ===');
+              console.error(e);
+            }
+          }
+        },
+      });
+    });
+  }
+
+  /**
+   * uni统计 2.0 实际云函数发送（不含网络门闸）。
+   * 未关联服务空间视为统计不可用，不做挂起兜底。
+   * @param {Object} optionsData
+   */
+  dispatchSendRequestV2(optionsData) {
+    if (!uni.__stat_uniCloud_space) {
+      console.error(
+        '应用未关联服务空间，统计上报失败，请在uniCloud目录右键关联服务空间.'
+      );
+      return
+    }
+
+    const uniCloudObj = uni.__stat_uniCloud_space.importObject(
+      'uni-stat-receiver',
+      {
+        customUI: true,
+      }
+    );
+    const wire = toWirePayload(optionsData);
+    uniCloudObj
+      .report(wire)
+      .then(() => {
+        ackPending(optionsData);
+        if (is_debug) {
+          log(optionsData, true);
+        }
+      })
+      .catch((err) => {
+        persistPending(optionsData);
+        if (is_debug) {
+          console.warn('=== uni统计2.0 上报错误，已转入待发队列 ===');
+          console.error(err);
+        }
+      });
+  }
+
+  /**
+   * h5 1.0 图片通道请求（由门闸放行后调用）。
    */
   imageRequest(data) {
     this.getIsReportData().then(() => {
       let image = new Image();
-      let options = get_sgin(get_encodeURIComponent_options(data)).options;
+      let options = get_sgin(get_encodeURIComponent_options(toWirePayload(data))).options;
       image.src = STAT_H5_URL + '?' + options;
+      // 图片通道无法可靠感知失败，发送即 best-effort ack
+      ackPending(data);
       if (is_debug) {
         log(data, true);
       }
@@ -1776,11 +2139,11 @@ class Stat extends Report {
     this.applicationHide(self, true);
   }
 
-  appShow(self) {
-    this.applicationShow(self);
+  appShow(self, options) {
+    this.applicationShow(options);
   }
 
-  show(self) {
+  show(self, options) {
     this.self = self;
     if (get_page_types(self) === 'page') {
       const isPageReport = is_page_report();
@@ -1792,14 +2155,14 @@ class Stat extends Report {
     // #ifdef VUE3
     if (get_platform_name() === 'h5' || get_platform_name() === 'n') {
       if (get_page_types(self) === 'app') {
-        this.appShow();
+        this.appShow(self, options);
       }
     }
     // #endif
 
     // #ifndef VUE3
     if (get_page_types(self) === 'app') {
-      this.appShow();
+      this.appShow(self, options);
     }
     // #endif
   }
@@ -1893,9 +2256,9 @@ const lifecycle = {
       };
     }
   },
-  onShow() {
+  onShow(options) {
     isHide = false;
-    stat.show(this);
+    stat.show(this, options);
   },
   onHide() {
     isHide = true;
@@ -1932,8 +2295,8 @@ function load_stat() {
     uni.onAppHide(() => {
       stat.appHide(get_page_vm());
     });
-    uni.onAppShow(() => {
-      stat.appShow(get_page_vm());
+    uni.onAppShow((options) => {
+      stat.appShow(get_page_vm(), options);
     });
   }
   // #endif

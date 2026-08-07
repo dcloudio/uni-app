@@ -86,6 +86,9 @@ function installAppWithSpyReporter(): {
       skipInterceptors: true,
       skipMigration: true,
       skipRecoverRetry: true,
+      collectorDepsPatch: {
+        isNetworkOffline: async () => false,
+      },
     }
   )
   const collector = app.getCollector()!

@@ -2,6 +2,7 @@ import MagicString from 'magic-string'
 import type { TransformResult } from 'vite'
 import type * as tsTypes from 'typescript'
 import { normalizePath } from '../utils'
+import { shouldUseHighResolutionSourceMap } from '../x'
 
 export function rewriteConsoleExpr(
   method: string,
@@ -26,7 +27,9 @@ export function rewriteConsoleExpr(
   if (s.hasChanged()) {
     return {
       code: s.toString(),
-      map: sourceMap ? s.generateMap({ hires: true }) : { mappings: '' },
+      map: sourceMap
+        ? s.generateMap({ hires: shouldUseHighResolutionSourceMap() })
+        : { mappings: '' },
     }
   }
   return { code, map: null }
