@@ -9725,6 +9725,38 @@
               "unixVer": "4.0"
             }
           }
+        },
+        {
+          "name": "justify",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "uniVer": "x",
+                "unixVer": "x",
+                "unixVaporVer": "5.26"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
