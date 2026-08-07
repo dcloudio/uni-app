@@ -566,11 +566,7 @@ const DEFAULT_IMPORTS_VUE_X = [
 const DEFAULT_IMPORTS_VUE_X_DOM2 = []
 
 const DEFAULT_IMPORTS_X = ['io.dcloud.uniapp.runtime.*']
-const DEFAULT_IMPORTS_X_DOM2 = [
-  'io.dcloud.uniappxv.runtime.*',
-  'java.util.LinkedHashMap',
-  'kotlin.collections.MutableList',
-]
+const DEFAULT_IMPORTS_X_DOM2 = ['io.dcloud.uniappxv.runtime.*']
 
 export async function compile(
   filename: string,
