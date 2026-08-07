@@ -260,12 +260,15 @@ export function resolveUasmLoadPath(
   if (platform === 'app-ios') {
     return moduleName
   }
+  const libraryName = `lib${moduleName}.so`
   if (isProduction) {
-    return `lib${moduleName}.so`
+    return libraryName
   }
-  return (
-    resolveUasmModule(moduleName, platform, targetArchs)?.file || moduleName
-  )
+  const file = resolveUasmModule(moduleName, platform, targetArchs)?.file
+  if (!file) {
+    return moduleName
+  }
+  return platform === 'app-harmony' ? libraryName : file
 }
 
 function resolveUasmModuleFrom(

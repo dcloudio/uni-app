@@ -4117,8 +4117,8 @@ var env = {
 };
 function loadUASM(module) {
   return new Promise((resolve) => {
-    var modulePath = module.startsWith("uni_modules/") ? getNativeApp().convert2AbsFullPath(module) : module;
-    resolve(__uniLoadUASM(modulePath));
+    var app = getNativeApp();
+    resolve(app.loadUASM(module));
   });
 }
 var _PerformanceEntryStatus;

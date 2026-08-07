@@ -169,11 +169,19 @@ describe('uasm', () => {
     expect(
       resolveUasmLoadPath('uni_modules/test-uasm', 'app-harmony', true)
     ).toBe('libtest-uasm.so')
+    expect(
+      resolveUasmLoadPath('uni_modules/test-uasm', 'app-harmony', false, [
+        'arm64-v8a',
+      ])
+    ).toBe('libtest-uasm.so')
     expect(resolveUasmLoadPath('uni_modules/test-uasm', 'app-ios', false)).toBe(
       'test-uasm'
     )
     expect(
       resolveUasmLoadPath('uni_modules/test-uasm', 'app-android', false, [])
+    ).toBe('test-uasm')
+    expect(
+      resolveUasmLoadPath('uni_modules/test-uasm', 'app-harmony', false, [])
     ).toBe('test-uasm')
     expect(parseUasmModuleName('./uni_modules/test-uasm')).toBeUndefined()
     expect(parseUasmModuleName('../uni_modules/test-uasm')).toBeUndefined()
