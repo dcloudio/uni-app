@@ -19240,11 +19240,14 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     const containerStyle = computed(() => {
       return `${props2.direction === "none" ? "overflow: hidden;" : props2.direction === "all" ? "overflow: auto;" : isVertical.value ? "overflow: hidden auto;" : "overflow: auto hidden;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
     });
-    const contentStyle = computed(() => {
-      return `position: relative; ${isVertical.value ? "height" : "width"}: ${state2.totalSize}px;`;
-    });
     const visibleStyle = computed(() => {
-      return `position: absolute; ${isVertical.value ? "width" : "height"}: 100%; ${isVertical.value ? "top" : "left"}: ${state2.placehoderSize}px;`;
+      return `${isVertical.value ? "width" : "height"}: 100%;`;
+    });
+    const placeholderHeadStyle = computed(() => {
+      return `${isVertical.value ? "height" : "width"}: ${state2.headPlaceholderSize}px; ${isVertical.value ? "top" : "left"}: 0;`;
+    });
+    const placeholderTailStyle = computed(() => {
+      return `${isVertical.value ? "height" : "width"}: ${state2.tailPlaceholderSize}px; ${isVertical.value ? "top" : "left"}: 0;`;
     });
     let visibleVNode = null;
     return () => {
@@ -19280,9 +19283,12 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       }, {
         default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
       }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
-        "class": "uni-list-view-content",
-        "style": contentStyle.value
-      }, [visibleVNode], 4)], 4), createVNode(ResizeSensor, {
+        "class": "uni-list-view-content"
+      }, [createVNode("div", {
+        "style": placeholderHeadStyle.value
+      }, null, 4), visibleVNode, createVNode("div", {
+        "style": placeholderTailStyle.value
+      }, null, 4)])], 4), createVNode(ResizeSensor, {
         "initial": true,
         "onResize": onResize2
       }, null, 8, ["onResize"])], 512);
@@ -19299,7 +19305,8 @@ function useListViewState(props2) {
     defaultHeaderSize: 40,
     defaultHeaderSizeUpdated: false,
     totalSize: 0,
-    placehoderSize: 0,
+    headPlaceholderSize: 0,
+    tailPlaceholderSize: 0,
     visibleSize: 0,
     containerSize: 0,
     cacheScreenCount: 10,
@@ -19336,7 +19343,8 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
   state2.lastRenderOffsetMax = offsetMax;
   let tempTotalSize = 0;
   let tempVisibleSize = 0;
-  let tempPlaceholderSize = 0;
+  let tempHeadPlaceholderSize = 0;
+  let tempTailPlaceholderSize = 0;
   let start = false, end = false;
   function callback(child) {
     var _a, _b, _c;
@@ -19415,7 +19423,9 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
         start = true;
       }
       if (!start) {
-        tempPlaceholderSize += itemSize;
+        tempHeadPlaceholderSize += itemSize;
+      } else if (start && end) {
+        tempTailPlaceholderSize += itemSize;
       }
       if (start && !end) {
         tempVisibleSize += itemSize;
@@ -19442,7 +19452,8 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
   traverseListView(visibleVNode, callback);
   state2.totalSize = tempTotalSize;
   state2.visibleSize = tempVisibleSize;
-  state2.placehoderSize = tempPlaceholderSize;
+  state2.headPlaceholderSize = tempHeadPlaceholderSize;
+  state2.tailPlaceholderSize = tempTailPlaceholderSize;
 }
 function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emit2) {
   let beforeRefreshing = false;
