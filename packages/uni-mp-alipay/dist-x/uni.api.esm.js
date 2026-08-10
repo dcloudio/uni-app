@@ -630,7 +630,9 @@ class CanvasContext {
         return this._element.createImageData();
     }
     createPath2D() {
-        return this._element.createPath2D();
+        {
+            return this._element.getContext('2d').createPath2D();
+        }
     }
     requestAnimationFrame(callback) {
         return this._element.requestAnimationFrame(callback);
