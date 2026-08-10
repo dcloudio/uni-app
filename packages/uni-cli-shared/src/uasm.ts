@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import path from 'node:path'
 import { sync } from 'fast-glob'
 import type { Plugin } from 'vite'
-import { normalizePath } from './utils'
+import { normalizePath, requireUniHelpers } from './utils'
 
 export type UasmPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 
@@ -62,6 +62,15 @@ export function parseUniAppXTargetArchs(
       : []
   } catch {
     return []
+  }
+}
+
+export function initUasmTransformOptions(platform: UasmPlatform) {
+  const createLoadUasmTransformer = requireUniHelpers().CLUT
+  return {
+    targetArchs: parseUniAppXTargetArchs(),
+    resolve: (modulePath: string) => resolveUasmLoadPath(modulePath, platform),
+    createLoadUasmTransformer,
   }
 }
 

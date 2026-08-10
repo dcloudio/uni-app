@@ -2,6 +2,8 @@ const mockUts2js = jest.fn((_options: Record<string, unknown>) => ({
   name: 'uts2js',
 }))
 const mockResolveUasmLoadPath = jest.fn()
+const mockCreateLoadUasmTransformer = jest.fn()
+const mockCollectExtApiUsageAst = jest.fn()
 
 jest.mock('@dcloudio/uni-cli-shared', () => {
   const plugin = (name: string) => () => ({ name })
@@ -10,10 +12,17 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     enableSourceMap: () => false,
     getWorkers: () => ({}),
     initUts2jsSharedDataOptions: () => undefined,
+    initUts2jsExtApiOptions: () => ({
+      collectExtApiUsageAst: mockCollectExtApiUsageAst,
+    }),
     isNormalCompileTarget: () => true,
-    parseUniAppXTargetArchs: () => ['arm64'],
+    initUasmTransformOptions: (platform: string) => ({
+      targetArchs: ['arm64'],
+      resolve: (modulePath: string) =>
+        mockResolveUasmLoadPath(modulePath, platform),
+      createLoadUasmTransformer: mockCreateLoadUasmTransformer,
+    }),
     parseUniExtApiNamespacesOnce: () => ({}),
-    resolveUasmLoadPath: mockResolveUasmLoadPath,
     resolveUTSCompiler: () => ({ uts2js: mockUts2js }),
     uniDecryptUniModulesPlugin: plugin('decrypt'),
     uniEasycomPlugin: plugin('easycom'),
@@ -125,13 +134,27 @@ describe('harmony plugin init', () => {
       uasm: {
         targetArchs: string[]
         resolve(modulePath: string): string | undefined
+        createLoadUasmTransformer: unknown
       }
     }
     expect(options?.uasm.targetArchs).toEqual(['arm64'])
+    expect(options?.uasm.createLoadUasmTransformer).toBe(
+      mockCreateLoadUasmTransformer
+    )
     options?.uasm.resolve('uni_modules/test-uasm')
     expect(mockResolveUasmLoadPath).toHaveBeenCalledWith(
       'uni_modules/test-uasm',
       'app-harmony'
+    )
+  })
+
+  test('configures the decrypt Ext API collector for uts2js', () => {
+    initPlugins()
+
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({
+        extApi: { collectExtApiUsageAst: mockCollectExtApiUsageAst },
+      })
     )
   })
 

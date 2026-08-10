@@ -1,9 +1,21 @@
 import fs from 'fs-extra'
 import os from 'node:os'
 import path from 'node:path'
+
+const mockCreateLoadUasmTransformer = jest.fn()
+const mockUniHelpers: {
+  CLUT: typeof mockCreateLoadUasmTransformer
+} = { CLUT: mockCreateLoadUasmTransformer }
+
+jest.mock('../src/utils', () => ({
+  ...jest.requireActual('../src/utils'),
+  requireUniHelpers: () => mockUniHelpers,
+}))
+
 import {
   getUasmModules,
   initUasmModules,
+  initUasmTransformOptions,
   parseUasmModuleName,
   parseUniAppXTargetArchs,
   resolveUasmCopyAssets,
@@ -22,6 +34,7 @@ describe('uasm', () => {
 
   afterEach(() => {
     fs.removeSync(inputDir)
+    mockUniHelpers.CLUT = mockCreateLoadUasmTransformer
   })
 
   test('parse target archs', () => {
@@ -32,6 +45,36 @@ describe('uasm', () => {
     ).toEqual(['arm64-v8a', 'armeabi-v7a'])
     expect(parseUniAppXTargetArchs('arm64-v8a')).toEqual([])
     expect(parseUniAppXTargetArchs('{}')).toEqual([])
+  })
+
+  test('initialize shared transform options', () => {
+    const originalTargetArchs = process.env.UNI_APP_X_TARGET_ARCHS
+    process.env.UNI_APP_X_TARGET_ARCHS = JSON.stringify(['arm64-v8a'])
+    fs.outputFileSync(
+      path.join(
+        inputDir,
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+      ),
+      ''
+    )
+    initUasmModules(inputDir)
+
+    const options = initUasmTransformOptions('app-android')
+    if (!options) {
+      throw new Error('Expected UASM transform options')
+    }
+
+    expect(options.targetArchs).toEqual(['arm64-v8a'])
+    expect(options.resolve('uni_modules/test-uasm')).toBe('libtest-uasm.so')
+    expect(options.createLoadUasmTransformer).toBe(
+      mockCreateLoadUasmTransformer
+    )
+
+    if (originalTargetArchs === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_TARGET_ARCHS')
+    } else {
+      process.env.UNI_APP_X_TARGET_ARCHS = originalTargetArchs
+    }
   })
 
   test('cache all platform and arch resources', () => {

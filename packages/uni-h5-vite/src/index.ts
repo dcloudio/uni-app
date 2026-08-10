@@ -4,6 +4,7 @@ import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
   getWorkers,
+  initUts2jsExtApiOptions,
   isAppVue,
   isEnableConsole,
   isNormalCompileTarget,
@@ -72,6 +73,7 @@ export default () => {
               vueCompilerDom,
               uniCliShared,
             },
+            extApi: initUts2jsExtApiOptions(),
             workers: {
               extname: '.js',
               resolve: () => {

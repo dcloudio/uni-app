@@ -1,5 +1,6 @@
 import { extend, isFunction } from '@vue/shared'
 import type { RPT2Options } from 'rollup-plugin-typescript2'
+import type tsTypes from 'typescript'
 import { createBasicUtsOptions } from '../utils/options'
 interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   dom2?: boolean
@@ -18,6 +19,21 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   uasm?: {
     targetArchs?: string[]
     resolve(modulePath: string): string | undefined
+    createLoadUasmTransformer(options: {
+      typescript: typeof tsTypes
+      targetArchs?: string[]
+      resolve(modulePath: string): string | undefined
+      reportDiagnostic(
+        context: tsTypes.TransformationContext,
+        diagnostic: tsTypes.DiagnosticWithLocation
+      ): void
+    }): tsTypes.TransformerFactory<tsTypes.SourceFile>
+  }
+  extApi?: {
+    collectExtApiUsageAst(
+      sourceFile: tsTypes.SourceFile,
+      typescript: typeof tsTypes
+    ): string[] | undefined
   }
   disableUTSBooleanConversion?: boolean
   sharedData?: {

@@ -3,12 +3,12 @@ import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
   getWorkers,
+  initUasmTransformOptions,
+  initUts2jsExtApiOptions,
   initUts2jsSharedDataOptions,
   isNormalCompileTarget,
-  parseUniAppXTargetArchs,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
-  resolveUasmLoadPath,
   uniDecryptUniModulesPlugin,
   uniEasycomPlugin,
   uniEncryptUniModulesAssetsPlugin,
@@ -39,6 +39,8 @@ export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const isDom2Dynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
   const isDev = process.env.NODE_ENV === 'development'
+  const uasm = initUasmTransformOptions('app-ios')
+  const extApi = initUts2jsExtApiOptions()
   return [
     uniUasmPlugin(),
     ...(isDom2 ? [uniAppCssPrePlugin()] : []),
@@ -74,6 +76,7 @@ export function init() {
               ? SHARED_DATA_LIB_GLOBAL_NAME
               : undefined,
             sharedDataLibAsGlobal: !isDom2Dynamic,
+            uasm,
           }),
         ]
       : []),
@@ -88,6 +91,7 @@ export function init() {
         isDom2 && !isDom2Dynamic ? SHARED_DATA_LIB_GLOBAL_NAME : undefined,
       sharedDataLibAsGlobal: isDom2 && !isDom2Dynamic,
       sharedData: initUts2jsSharedDataOptions(),
+      extApi,
       modules: {
         vueCompilerDom,
         uniCliShared,
@@ -97,10 +101,7 @@ export function init() {
           return getWorkers()
         },
       },
-      uasm: {
-        targetArchs: parseUniAppXTargetArchs(),
-        resolve: (modulePath) => resolveUasmLoadPath(modulePath, 'app-ios'),
-      },
+      uasm,
     }),
     ...(isDom2 ? [uniSharedDataPlugin()] : []),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'

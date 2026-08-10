@@ -7,6 +7,7 @@ import {
   EXTNAME_VUE,
   enableSourceMap,
   getWorkers,
+  initUts2jsExtApiOptions,
   isEnableConsole,
   isInHBuilderX,
   isNormalCompileTarget,
@@ -91,6 +92,7 @@ export default (options: UniMiniProgramPluginOptions) => {
               vueCompilerDom,
               uniCliShared,
             },
+            extApi: initUts2jsExtApiOptions(),
             workers: {
               extname: '.js',
               rewriteRootDir: resolveWorkersRootDir(),

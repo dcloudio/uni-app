@@ -3,8 +3,13 @@ const mockDom2ScriptPlugin = jest.fn((options: Record<string, any>) => ({
   name: 'uni:vapor-script',
   options,
 }))
-const mockUniHelpers: { D2SP?: typeof mockDom2ScriptPlugin } = {
+const mockCollectExtApiUsageAst = jest.fn()
+const mockUniHelpers: {
+  D2SP: typeof mockDom2ScriptPlugin
+  CEAU: typeof mockCollectExtApiUsageAst
+} = {
   D2SP: mockDom2ScriptPlugin,
+  CEAU: mockCollectExtApiUsageAst,
 }
 
 jest.mock('../src/uts', () => ({
@@ -24,7 +29,10 @@ jest.mock('../src/dom2/sharedData', () => ({
   }),
 }))
 
-import { uniVaporScriptPlugin } from '../src/dom2/script'
+import {
+  initUts2jsExtApiOptions,
+  uniVaporScriptPlugin,
+} from '../src/dom2/script'
 
 describe('uniVaporScriptPlugin', () => {
   const originalNodeEnv = process.env.NODE_ENV
@@ -58,14 +66,14 @@ describe('uniVaporScriptPlugin', () => {
       process.env.UNI_COMPILE_TARGET = originalCompileTarget
     }
     mockUniHelpers.D2SP = mockDom2ScriptPlugin
+    mockUniHelpers.CEAU = mockCollectExtApiUsageAst
     mockDom2ScriptPlugin.mockClear()
   })
 
-  test('returns an empty plugin when D2SP is unavailable', () => {
-    mockUniHelpers.D2SP = undefined
-
-    expect(uniVaporScriptPlugin()).toEqual({ name: 'uni:vapor-script' })
-    expect(mockDom2ScriptPlugin).not.toHaveBeenCalled()
+  test('initializes the uts2js Ext API collector from uni_helpers', () => {
+    expect(initUts2jsExtApiOptions()).toEqual({
+      collectExtApiUsageAst: mockCollectExtApiUsageAst,
+    })
   })
 
   test('adapts compiler and SharedData options for uni_helpers', () => {
@@ -86,6 +94,27 @@ describe('uniVaporScriptPlugin', () => {
         sharedDataLibAsGlobal: false,
       },
     })
+  })
+
+  test('forwards UASM transform options to uni_helpers', () => {
+    const createLoadUasmTransformer = jest.fn()
+    const uasm = {
+      targetArchs: ['arm64-v8a'],
+      resolve: jest.fn(),
+      createLoadUasmTransformer,
+    }
+
+    uniVaporScriptPlugin({ uasm })
+
+    expect(mockDom2ScriptPlugin).toHaveBeenCalledWith(
+      expect.objectContaining({
+        uasm: {
+          targetArchs: uasm.targetArchs,
+          resolve: uasm.resolve,
+        },
+        sharedData: expect.not.objectContaining({ uasm: expect.anything() }),
+      })
+    )
   })
 
   test.each(['app-android', 'app-ios', 'app-harmony'] as const)(
