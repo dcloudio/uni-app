@@ -156,10 +156,8 @@ function parseAlipayRefCode(
 
 function processInlineRef(prop: AttributeNode, context: TransformContext) {
   const properties: ObjectProperty[] = []
-  const { refKey } = parseRef(prop, context)
-  properties.push(
-    objectProperty(identifier('r'), identifier(prop.value!.content))
-  )
+  const { expr, refKey } = parseRef(prop, context)
+  properties.push(objectProperty(identifier('r'), expr!))
   if (refKey) {
     properties.push(objectProperty(identifier('k'), stringLiteral(refKey)))
   }

@@ -1,8 +1,62 @@
+/// <reference path="../node_modules/mini-types/types/index.d.ts" />
+
+jest.mock('vue', () => {
+  const vue = jest.requireActual('vue')
+  return {
+    ...vue,
+    EMPTY_OBJ: {},
+    setTemplateRef: (
+      { r }: { r: string | ReturnType<typeof vue.ref> },
+      refValue: unknown,
+      setupState: Record<string, unknown>
+    ) => {
+      if (typeof r === 'string' && r in setupState) {
+        setupState[r] = refValue
+      } else if (vue.isRef(r)) {
+        r.value = refValue
+      }
+    },
+  }
+})
+
+jest.mock('@dcloudio/uni-mp-weixin', () => ({
+  handleLink: jest.fn(),
+}))
+
 import { type ComponentInternalInstance, ref } from 'vue'
 
 // @ts-expect-error EMPTY_OBJ 需要从 vue 导入，以确保与运行时使用同一个对象
 import { EMPTY_OBJ } from 'vue'
 import { initRefs } from '../src/runtime/refs'
+
+global.my = {
+  ...global.my,
+  canIUse: jest.fn(),
+}
+
+const { handleRef } =
+  require('../src/runtime/util') as typeof import('../src/runtime/util')
+
+function createInstance(setupState: Record<string, unknown> = {}) {
+  const instance = {
+    refs: EMPTY_OBJ,
+    setupState,
+    $templateUniElementRefs: [],
+  } as unknown as ComponentInternalInstance
+  initRefs(instance)
+  return instance
+}
+
+function setComponentRef(
+  instance: ComponentInternalInstance,
+  props: Record<string, () => Record<string, unknown>>,
+  component: Record<string, unknown>
+) {
+  handleRef.call(
+    { $vm: { $: instance } } as any,
+    { props, $vm: component } as any
+  )
+}
 
 describe('mp-alipay: runtime refs', () => {
   test('merges component and UniElement refs dynamically', () => {
@@ -58,5 +112,58 @@ describe('mp-alipay: runtime refs', () => {
     } finally {
       isExtensible.mockRestore()
     }
+  })
+
+  test('exposes an inline string ref for a custom component', () => {
+    const component = { id: 'ref-box' }
+    const instance = createInstance()
+
+    setComponentRef(instance, { uR: () => ({ r: 'refBox' }) }, component)
+
+    expect(instance.refs.refBox).toBe(component)
+  })
+
+  test('keeps exposing a setup ref for a custom component', () => {
+    const component = { id: 'setup-ref-box' }
+    const setupRef = ref(null)
+    const instance = createInstance({ refBox: setupRef })
+
+    setComponentRef(
+      instance,
+      { uR: () => ({ r: setupRef, k: 'refBox' }) },
+      component
+    )
+
+    expect(instance.refs.refBox).toBe(component)
+    expect(setupRef.value).toEqual(component)
+  })
+
+  test('does not treat a string-valued setup binding as a static ref', () => {
+    const component = { id: 'string-binding-ref-box' }
+    const instance = createInstance({ refBox: 'dynamicRef' })
+
+    setComponentRef(
+      instance,
+      { uR: () => ({ r: 'dynamicRef', k: 'refBox' }) },
+      component
+    )
+
+    expect(instance.refs).not.toHaveProperty('dynamicRef')
+    expect(instance.refs).not.toHaveProperty('refBox')
+  })
+
+  test('collects inline string refs used in v-for', () => {
+    const components = [{ id: 'ref-box-1' }, { id: 'ref-box-2' }]
+    const instance = createInstance()
+
+    components.forEach((component) => {
+      setComponentRef(
+        instance,
+        { uRIF: () => ({ r: 'refBox', f: 1 }) },
+        component
+      )
+    })
+
+    expect(instance.refs.refBox).toEqual(components)
   })
 })

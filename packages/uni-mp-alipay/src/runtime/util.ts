@@ -186,6 +186,16 @@ function setRef(
     if (isTemplateRef(templateRef)) {
       setTemplateRef(templateRef, refValue, setupState)
       // 对于 template ref，需要手动同步到 refs，否则 getCurrentInstance().proxy.$refs 获取不到
+      if (!templateRef.k && isString(templateRef.r)) {
+        if (isRefInVFor) {
+          ;(
+            (refs[templateRef.r] || (refs[templateRef.r] = [])) as unknown[]
+          ).push(refValue)
+        } else {
+          refs[templateRef.r] = refValue
+        }
+        return
+      }
       if (!templateRef.k || !isRef(templateRef.r)) {
         return
       }
