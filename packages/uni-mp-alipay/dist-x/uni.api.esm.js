@@ -1893,48 +1893,59 @@ function normalizePath(path) {
     return path.replace(/^app:\/\//, '');
 }
 function createAlipayAppRouteApi(platform) {
-    const routeOpenTypes = new Map();
+    const routeContexts = new Map();
     const appRouteRuntime = createAppRouteRuntime();
     if (platform.canIUse('createRouteObserver')) {
         const observer = platform.createRouteObserver({ pages: ['app://*'] });
         observer.beforeRoute((payload) => {
             const openType = normalizeOpenType(payload.openType);
-            if (openType) {
-                routeOpenTypes.set(payload.routeEventId, openType);
-            }
-        });
-        observer.afterShow((payload) => {
-            const routeEventId = payload.routeEventId;
-            const openType = routeOpenTypes.get(routeEventId);
-            routeOpenTypes.delete(routeEventId);
             if (!openType) {
                 return;
             }
-            const path = normalizePath(payload.path);
-            appRouteRuntime.dispatchAppRoute(appRouteRuntime.createAppRouteContext({
-                path,
+            const context = appRouteRuntime.createAppRouteContext({
+                path: normalizePath(payload.path),
                 query: payload.query || {},
                 openType,
+                // 支付宝 beforeRoute 不提供 notFound，缺页会在 onPageNotFound 中另行通知。
                 notFound: false,
-                routeEventId,
-            }));
+                routeEventId: payload.routeEventId,
+            });
+            routeContexts.set(payload.routeEventId, context);
+            appRouteRuntime.dispatchBeforeAppRoute(context);
+        });
+        observer.afterShow((payload) => {
+            const routeEventId = payload.routeEventId;
+            const context = routeContexts.get(routeEventId);
+            routeContexts.delete(routeEventId);
+            if (!context) {
+                return;
+            }
+            context.event.path = normalizePath(payload.path);
+            context.event.query = Object.assign({}, payload.query);
+            appRouteRuntime.dispatchAppRoute(context);
         });
         observer.afterRoute((payload) => {
-            routeOpenTypes.delete(payload.routeEventId);
+            routeContexts.delete(payload.routeEventId);
         });
         observer.onPageNotFound((payload) => {
-            routeOpenTypes.delete(payload.routeEventId);
+            routeContexts.delete(payload.routeEventId);
         });
         observer.observe();
     }
     return {
         onAppRoute: appRouteRuntime.onAppRoute,
         offAppRoute: appRouteRuntime.offAppRoute,
+        onBeforeAppRoute: appRouteRuntime.onBeforeAppRoute,
+        offBeforeAppRoute: appRouteRuntime.offBeforeAppRoute,
+        rewriteRoute: defineAsyncApi(API_REWRITE_ROUTE, (_, { reject }) => reject('not supported', { errCode: 4 })),
     };
 }
 const appRouteApi = /*#__PURE__*/ createAlipayAppRouteApi(my);
 const onAppRoute = appRouteApi.onAppRoute;
 const offAppRoute = appRouteApi.offAppRoute;
+const onBeforeAppRoute = appRouteApi.onBeforeAppRoute;
+const offBeforeAppRoute = appRouteApi.offBeforeAppRoute;
+const rewriteRoute = appRouteApi.rewriteRoute;
 
 let onKeyboardHeightChangeCallback;
 const getProvider = initGetProvider({
@@ -2056,10 +2067,13 @@ var shims = /*#__PURE__*/Object.freeze({
   getProvider: getProvider,
   getStorageSync: getStorageSync,
   offAppRoute: offAppRoute,
+  offBeforeAppRoute: offBeforeAppRoute,
   offKeyboardHeightChange: offKeyboardHeightChange,
   onAppRoute: onAppRoute,
+  onBeforeAppRoute: onBeforeAppRoute,
   onKeyboardHeightChange: onKeyboardHeightChange,
   removeStorageSync: removeStorageSync,
+  rewriteRoute: rewriteRoute,
   setStorageSync: setStorageSync,
   startGyroscope: startGyroscope
 });
