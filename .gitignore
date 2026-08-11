@@ -27,3 +27,5 @@ coverage/
 # Temp files
 *.tmp
 .cache/
+
+*.DS_Store
