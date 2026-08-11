@@ -1,8 +1,42 @@
 import fs from 'fs-extra'
 import path from 'node:path'
 import { sync } from 'fast-glob'
+import type {
+  DiagnosticWithLocation,
+  Node,
+  SourceFile,
+  TransformationContext,
+  TransformerFactory,
+  VisitResult,
+} from 'typescript'
 import type { Plugin } from 'vite'
-import { normalizePath, requireUniHelpers } from './utils'
+import { normalizePath } from './utils'
+
+type TypeScriptCompiler = typeof import('typescript')
+
+export interface UasmSourceEdit {
+  start: number
+  end: number
+  content: string
+}
+
+export interface LoadUasmTransformOptions {
+  targetArchs?: string[]
+  resolve(modulePath: string): string | undefined
+}
+
+export interface LoadUasmTransformerOptions extends LoadUasmTransformOptions {
+  typescript: TypeScriptCompiler
+  onSourceEdit?: (edit: UasmSourceEdit) => void
+  reportDiagnostic(
+    context: TransformationContext,
+    diagnostic: DiagnosticWithLocation
+  ): void
+}
+
+export interface UasmTransformOptions extends LoadUasmTransformOptions {
+  createLoadUasmTransformer: typeof createLoadUasmTransformer
+}
 
 export type UasmPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 
@@ -65,12 +99,99 @@ export function parseUniAppXTargetArchs(
   }
 }
 
-export function initUasmTransformOptions(platform: UasmPlatform) {
-  const createLoadUasmTransformer = requireUniHelpers().CLUT
+export function initUasmTransformOptions(
+  platform: UasmPlatform
+): UasmTransformOptions {
   return {
     targetArchs: parseUniAppXTargetArchs(),
     resolve: (modulePath: string) => resolveUasmLoadPath(modulePath, platform),
     createLoadUasmTransformer,
+  }
+}
+
+function createUasmDiagnostic(
+  options: LoadUasmTransformerOptions,
+  sourceFile: SourceFile,
+  node: Node,
+  messageText: string
+): DiagnosticWithLocation {
+  return {
+    file: sourceFile,
+    start: node.getStart(sourceFile),
+    length: node.getWidth(sourceFile),
+    code: 0,
+    category: options.typescript.DiagnosticCategory.Error,
+    messageText,
+  }
+}
+
+export function createLoadUasmTransformer(
+  options: LoadUasmTransformerOptions
+): TransformerFactory<SourceFile> {
+  const { typescript, resolve, reportDiagnostic } = options
+  const targetArchs = options.targetArchs?.join(', ') || '未指定'
+
+  return (context) => {
+    const { factory } = context
+
+    return (sourceFile) => {
+      const visitor = (node: Node): VisitResult<Node> => {
+        if (
+          typescript.isCallExpression(node) &&
+          node.arguments.length >= 1 &&
+          typescript.isPropertyAccessExpression(node.expression) &&
+          node.expression.name.escapedText === 'loadUASM' &&
+          typescript.isIdentifier(node.expression.expression) &&
+          node.expression.expression.escapedText === 'uni'
+        ) {
+          const firstArg = node.arguments[0]
+          if (
+            !typescript.isStringLiteral(firstArg) &&
+            !typescript.isNoSubstitutionTemplateLiteral(firstArg)
+          ) {
+            reportDiagnostic(
+              context,
+              createUasmDiagnostic(
+                options,
+                sourceFile,
+                firstArg,
+                'uni.loadUASM(modulePath) 的 modulePath 参数必须是字符串字面量'
+              )
+            )
+            return node
+          }
+
+          const resolved = resolve(firstArg.text)
+          if (!resolved) {
+            reportDiagnostic(
+              context,
+              createUasmDiagnostic(
+                options,
+                sourceFile,
+                firstArg,
+                `无法加载 uasm 插件[${firstArg.text}]，当前设备支持的 ABI：${targetArchs}。请确认插件路径正确，且插件已提供匹配的库文件`
+              )
+            )
+            return node
+          }
+
+          options.onSourceEdit?.({
+            start: firstArg.getStart(sourceFile),
+            end: firstArg.getEnd(),
+            content: JSON.stringify(resolved),
+          })
+          return factory.updateCallExpression(
+            node,
+            node.expression,
+            node.typeArguments,
+            [factory.createStringLiteral(resolved), ...node.arguments.slice(1)]
+          )
+        }
+        return typescript.visitEachChild(node, visitor, context)
+      }
+
+      return typescript.visitNode(sourceFile, visitor) as SourceFile
+    }
   }
 }
 

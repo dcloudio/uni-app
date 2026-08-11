@@ -1,18 +1,10 @@
 import fs from 'fs-extra'
 import os from 'node:os'
 import path from 'node:path'
-
-const mockCreateLoadUasmTransformer = jest.fn()
-const mockUniHelpers: {
-  CLUT: typeof mockCreateLoadUasmTransformer
-} = { CLUT: mockCreateLoadUasmTransformer }
-
-jest.mock('../src/utils', () => ({
-  ...jest.requireActual('../src/utils'),
-  requireUniHelpers: () => mockUniHelpers,
-}))
+import * as ts from 'typescript'
 
 import {
+  createLoadUasmTransformer,
   getUasmModules,
   initUasmModules,
   initUasmTransformOptions,
@@ -25,6 +17,31 @@ import {
   uniUasmPlugin,
 } from '../src/uasm'
 
+function transformLoadUasm(
+  code: string,
+  targetArchs: string[] = ['arm64-v8a', 'armeabi-v7a']
+) {
+  return ts.transpileModule(code, {
+    transformers: {
+      before: [
+        createLoadUasmTransformer({
+          typescript: ts,
+          targetArchs,
+          resolve(modulePath) {
+            const normalized = modulePath.replace(/^@?\//, '')
+            if (normalized === 'uni_modules/test-uasm') {
+              return `${normalized}/uasm/app-android/libs/arm64-v8a/libtest-uasm.so`
+            }
+          },
+          reportDiagnostic(_context, diagnostic) {
+            throw new Error(diagnostic.messageText.toString())
+          },
+        }),
+      ],
+    },
+  }).outputText
+}
+
 describe('uasm', () => {
   let inputDir: string
 
@@ -34,7 +51,6 @@ describe('uasm', () => {
 
   afterEach(() => {
     fs.removeSync(inputDir)
-    mockUniHelpers.CLUT = mockCreateLoadUasmTransformer
   })
 
   test('parse target archs', () => {
@@ -66,15 +82,59 @@ describe('uasm', () => {
 
     expect(options.targetArchs).toEqual(['arm64-v8a'])
     expect(options.resolve('uni_modules/test-uasm')).toBe('libtest-uasm.so')
-    expect(options.createLoadUasmTransformer).toBe(
-      mockCreateLoadUasmTransformer
-    )
+    expect(options.createLoadUasmTransformer).toBe(createLoadUasmTransformer)
 
     if (originalTargetArchs === undefined) {
       Reflect.deleteProperty(process.env, 'UNI_APP_X_TARGET_ARCHS')
     } else {
       process.env.UNI_APP_X_TARGET_ARCHS = originalTargetArchs
     }
+  })
+
+  test.each([
+    'uni_modules/test-uasm',
+    '/uni_modules/test-uasm',
+    '@/uni_modules/test-uasm',
+  ])('transforms UASM load path %s', (modulePath) => {
+    expect(
+      transformLoadUasm(`uni.loadUASM<TestUASM>('${modulePath}')`)
+    ).toContain(
+      'uni.loadUASM("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
+    )
+  })
+
+  test('keeps other UASM load arguments', () => {
+    expect(
+      transformLoadUasm(`uni.loadUASM('uni_modules/test-uasm', true)`)
+    ).toContain(
+      'uni.loadUASM("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so", true)'
+    )
+  })
+
+  test('transforms a no-substitution UASM path template literal', () => {
+    expect(
+      transformLoadUasm('uni.loadUASM(`uni_modules/test-uasm`)')
+    ).toContain(
+      'uni.loadUASM("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
+    )
+  })
+
+  test('reports an unresolved UASM load path', () => {
+    expect(() => transformLoadUasm(`uni.loadUASM('')`)).toThrow(
+      '无法加载 uasm 插件[]，当前设备支持的 ABI：arm64-v8a, armeabi-v7a。请确认插件路径正确，且插件已提供匹配的库文件'
+    )
+  })
+
+  test('reports an unspecified target ABI', () => {
+    expect(() => transformLoadUasm(`uni.loadUASM('')`, [])).toThrow(
+      '无法加载 uasm 插件[]，当前设备支持的 ABI：未指定。请确认插件路径正确，且插件已提供匹配的库文件'
+    )
+  })
+
+  test('reports a dynamic UASM load path', () => {
+    expect(() => transformLoadUasm(`uni.loadUASM(modulePath)`)).toThrow(
+      'uni.loadUASM(modulePath) 的 modulePath 参数必须是字符串字面量'
+    )
   })
 
   test('cache all platform and arch resources', () => {

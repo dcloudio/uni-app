@@ -37,7 +37,7 @@ import { SHARED_DATA_LIB_IMPORT_SOURCE } from '../utils'
 export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const isDom2Dynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
-  const uasm = initUasmTransformOptions('app-harmony')
+  const uasm = isDom2 ? initUasmTransformOptions('app-harmony') : undefined
   const extApi = initUts2jsExtApiOptions()
   return [
     uniUasmPlugin(),

@@ -3,13 +3,10 @@ const mockDom2ScriptPlugin = jest.fn((options: Record<string, any>) => ({
   name: 'uni:vapor-script',
   options,
 }))
-const mockCollectExtApiUsageAst = jest.fn()
 const mockUniHelpers: {
   D2SP: typeof mockDom2ScriptPlugin
-  CEAU: typeof mockCollectExtApiUsageAst
 } = {
   D2SP: mockDom2ScriptPlugin,
-  CEAU: mockCollectExtApiUsageAst,
 }
 
 jest.mock('../src/uts', () => ({
@@ -29,10 +26,11 @@ jest.mock('../src/dom2/sharedData', () => ({
   }),
 }))
 
+import { uniVaporScriptPlugin } from '../src/dom2/script'
 import {
+  collectExtApiUsageAst,
   initUts2jsExtApiOptions,
-  uniVaporScriptPlugin,
-} from '../src/dom2/script'
+} from '../src/uts/extApi'
 
 describe('uniVaporScriptPlugin', () => {
   const originalNodeEnv = process.env.NODE_ENV
@@ -66,13 +64,12 @@ describe('uniVaporScriptPlugin', () => {
       process.env.UNI_COMPILE_TARGET = originalCompileTarget
     }
     mockUniHelpers.D2SP = mockDom2ScriptPlugin
-    mockUniHelpers.CEAU = mockCollectExtApiUsageAst
     mockDom2ScriptPlugin.mockClear()
   })
 
-  test('initializes the uts2js Ext API collector from uni_helpers', () => {
+  test('initializes the uts2js Ext API collector from uni-cli-shared', () => {
     expect(initUts2jsExtApiOptions()).toEqual({
-      collectExtApiUsageAst: mockCollectExtApiUsageAst,
+      collectExtApiUsageAst,
     })
   })
 
@@ -87,7 +84,8 @@ describe('uniVaporScriptPlugin', () => {
     expect(plugin.name).toBe('uni:vapor-script')
     expect(mockDom2ScriptPlugin).toHaveBeenCalledWith({
       typescript: mockTypeScript,
-      collectExtApi: true,
+      extApi: { collectExtApiUsageAst },
+      uasm: undefined,
       sharedData: {
         resolveFieldMeta: 'resolveFieldMeta',
         sharedDataLibName: 'libentry.so',
@@ -108,10 +106,7 @@ describe('uniVaporScriptPlugin', () => {
 
     expect(mockDom2ScriptPlugin).toHaveBeenCalledWith(
       expect.objectContaining({
-        uasm: {
-          targetArchs: uasm.targetArchs,
-          resolve: uasm.resolve,
-        },
+        uasm,
         sharedData: expect.not.objectContaining({ uasm: expect.anything() }),
       })
     )
@@ -127,7 +122,7 @@ describe('uniVaporScriptPlugin', () => {
       uniVaporScriptPlugin()
 
       expect(mockDom2ScriptPlugin).toHaveBeenCalledWith(
-        expect.objectContaining({ collectExtApi: false })
+        expect.objectContaining({ extApi: undefined })
       )
     }
   )
@@ -143,7 +138,7 @@ describe('uniVaporScriptPlugin', () => {
       uniVaporScriptPlugin()
 
       expect(mockDom2ScriptPlugin).toHaveBeenCalledWith(
-        expect.objectContaining({ collectExtApi: false })
+        expect.objectContaining({ extApi: undefined })
       )
     }
   )
@@ -156,7 +151,7 @@ describe('uniVaporScriptPlugin', () => {
     uniVaporScriptPlugin()
 
     expect(mockDom2ScriptPlugin).toHaveBeenCalledWith(
-      expect.objectContaining({ collectExtApi: true })
+      expect.objectContaining({ extApi: { collectExtApiUsageAst } })
     )
   })
 
@@ -170,7 +165,7 @@ describe('uniVaporScriptPlugin', () => {
       uniVaporScriptPlugin()
 
       expect(mockDom2ScriptPlugin).toHaveBeenCalledWith(
-        expect.objectContaining({ collectExtApi: false })
+        expect.objectContaining({ extApi: undefined })
       )
     }
   )

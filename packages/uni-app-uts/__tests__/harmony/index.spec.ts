@@ -4,6 +4,15 @@ const mockUts2js = jest.fn((_options: Record<string, unknown>) => ({
 const mockResolveUasmLoadPath = jest.fn()
 const mockCreateLoadUasmTransformer = jest.fn()
 const mockCollectExtApiUsageAst = jest.fn()
+const mockInitUts2jsExtApiOptions = jest.fn(() => ({
+  collectExtApiUsageAst: mockCollectExtApiUsageAst,
+}))
+const mockInitUasmTransformOptions = jest.fn((platform: string) => ({
+  targetArchs: ['arm64'],
+  resolve: (modulePath: string) =>
+    mockResolveUasmLoadPath(modulePath, platform),
+  createLoadUasmTransformer: mockCreateLoadUasmTransformer,
+}))
 
 jest.mock('@dcloudio/uni-cli-shared', () => {
   const plugin = (name: string) => () => ({ name })
@@ -12,16 +21,9 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     enableSourceMap: () => false,
     getWorkers: () => ({}),
     initUts2jsSharedDataOptions: () => undefined,
-    initUts2jsExtApiOptions: () => ({
-      collectExtApiUsageAst: mockCollectExtApiUsageAst,
-    }),
+    initUts2jsExtApiOptions: mockInitUts2jsExtApiOptions,
     isNormalCompileTarget: () => true,
-    initUasmTransformOptions: (platform: string) => ({
-      targetArchs: ['arm64'],
-      resolve: (modulePath: string) =>
-        mockResolveUasmLoadPath(modulePath, platform),
-      createLoadUasmTransformer: mockCreateLoadUasmTransformer,
-    }),
+    initUasmTransformOptions: mockInitUasmTransformOptions,
     parseUniExtApiNamespacesOnce: () => ({}),
     resolveUTSCompiler: () => ({ uts2js: mockUts2js }),
     uniDecryptUniModulesPlugin: plugin('decrypt'),
@@ -80,6 +82,8 @@ describe('harmony plugin init', () => {
   afterEach(() => {
     mockUts2js.mockClear()
     mockResolveUasmLoadPath.mockClear()
+    mockInitUasmTransformOptions.mockClear()
+    mockInitUts2jsExtApiOptions.mockClear()
     Object.entries(originalEnv).forEach(([key, value]) => {
       if (value === undefined) {
         Reflect.deleteProperty(process.env, key)
@@ -90,8 +94,12 @@ describe('harmony plugin init', () => {
     jest.resetModules()
   })
 
-  function initPlugins(dynamic = false) {
-    process.env.UNI_APP_X_DOM2 = 'true'
+  function initPlugins(dynamic = false, dom2 = true) {
+    if (dom2) {
+      process.env.UNI_APP_X_DOM2 = 'true'
+    } else {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    }
     if (dynamic) {
       process.env.UNI_APP_X_DOM2_DYNAMIC = 'true'
     } else {
@@ -124,6 +132,19 @@ describe('harmony plugin init', () => {
 
     expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
       'vapor-script'
+    )
+  })
+
+  test('non-dom2 keeps Ext API collection without UASM transform', () => {
+    initPlugins(false, false)
+
+    expect(mockInitUasmTransformOptions).not.toHaveBeenCalled()
+    expect(mockInitUts2jsExtApiOptions).toHaveBeenCalledTimes(1)
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({
+        uasm: undefined,
+        extApi: { collectExtApiUsageAst: mockCollectExtApiUsageAst },
+      })
     )
   })
 

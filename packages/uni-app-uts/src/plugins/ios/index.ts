@@ -39,7 +39,7 @@ export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const isDom2Dynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
   const isDev = process.env.NODE_ENV === 'development'
-  const uasm = initUasmTransformOptions('app-ios')
+  const uasm = isDom2 ? initUasmTransformOptions('app-ios') : undefined
   const extApi = initUts2jsExtApiOptions()
   return [
     uniUasmPlugin(),
