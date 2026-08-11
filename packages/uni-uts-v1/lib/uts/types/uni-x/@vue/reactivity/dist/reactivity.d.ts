@@ -123,8 +123,7 @@ export declare enum EffectFlags {
   */
   ALLOW_RECURSE = 128,
   PAUSED = 256,
-  STOP = 1024,
-  RECYCLED = 2048
+  STOP = 1024
 }
 export declare class ReactiveEffect<T = any> implements ReactiveEffectOptions, ReactiveNode {
   deps: Link | undefined;
@@ -279,11 +278,10 @@ export type Reactive<T> = UnwrapNestedRefs<T> & (T extends readonly any[] ? Reac
 * @see {@link https://vuejs.org/api/reactivity-core.html#reactive}
 */
 export declare function reactive<T extends object>(target: T): Reactive<T>;
-declare class ShallowReactiveBrandClass {
-  private __shallowReactiveBrand?;
-}
-type ShallowReactiveBrand = ShallowReactiveBrandClass;
-export type ShallowReactive<T> = T & ShallowReactiveBrand;
+declare const ShallowReactiveMarker: unique symbol;
+export type ShallowReactive<T> = T & {
+  [ShallowReactiveMarker]?: true;
+};
 /**
 * Shallow version of {@link reactive}.
 *
@@ -317,7 +315,7 @@ export type ShallowReactive<T> = T & ShallowReactiveBrand;
 export declare function shallowReactive<T extends object>(target: T): ShallowReactive<T>;
 type Primitive = string | number | boolean | bigint | symbol | undefined | null;
 type Builtin = Primitive | Function | Date | Error | RegExp;
-export type DeepReadonly<T> = T extends Builtin ? T : T extends Map<infer K, infer V> ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> : T extends ReadonlyMap<infer K, infer V> ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> : T extends WeakMap<infer K, infer V> ? WeakMap<DeepReadonly<K>, DeepReadonly<V>> : T extends Set<infer U> ? ReadonlySet<DeepReadonly<U>> : T extends ReadonlySet<infer U> ? ReadonlySet<DeepReadonly<U>> : T extends WeakSet<infer U> ? WeakSet<DeepReadonly<U>> : T extends Promise<infer U> ? Promise<DeepReadonly<U>> : T extends Ref<infer U, unknown> ? Readonly<Ref<DeepReadonly<U>>> : T extends {} ? { readonly [K in keyof T]: DeepReadonly<T[K]> } : Readonly<T>;
+export type DeepReadonly<T> = T extends Builtin ? T : T extends Map<infer K, infer V> ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> : T extends ReadonlyMap<infer K, infer V> ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> : T extends WeakMap<infer K, infer V> ? WeakMap<DeepReadonly<K>, DeepReadonly<V>> : T extends Set<infer U> ? ReadonlySet<DeepReadonly<U>> : T extends ReadonlySet<infer U> ? ReadonlySet<DeepReadonly<U>> : T extends WeakSet<infer U> ? WeakSet<DeepReadonly<U>> : T extends Promise<infer U> ? Promise<DeepReadonly<U>> : T extends Ref<infer U> ? Readonly<Ref<DeepReadonly<U>>> : T extends {} ? { readonly [K in keyof T]: DeepReadonly<T[K]> } : Readonly<T>;
 /**
 * Takes an object (reactive or plain) or a ref and returns a readonly proxy to
 * the original.
@@ -609,9 +607,9 @@ export declare function toValue<T>(source: MaybeRefOrGetter<T>): T;
 * that contains refs.
 */
 export declare function proxyRefs<T extends object>(objectWithRefs: T): ShallowUnwrapRef<T>;
-export type CustomRefFactory<T, S = T> = (track: () => void, trigger: () => void) => {
+export type CustomRefFactory<T> = (track: () => void, trigger: () => void) => {
   get: () => T;
-  set: (value: S) => void;
+  set: (value: T) => void;
 };
 /**
 * Creates a customized ref with explicit control over its dependency tracking
@@ -620,11 +618,8 @@ export type CustomRefFactory<T, S = T> = (track: () => void, trigger: () => void
 * @param factory - The function that receives the `track` and `trigger` callbacks.
 * @see {@link https://vuejs.org/api/reactivity-advanced.html#customref}
 */
-export declare function customRef<T, S = T>(factory: CustomRefFactory<T, S>): Ref<T, S>;
+export declare function customRef<T>(factory: CustomRefFactory<T>): Ref<T>;
 export type ToRefs<T = any> = { [K in keyof T]: ToRef<T[K]> };
-type ArrayStringKey<T> = T extends readonly any[] ? number extends T["length"] ? `${number}` : never : never;
-type ToRefKey<T> = keyof T | ArrayStringKey<T>;
-type ToRefValue<T extends object, K extends ToRefKey<T>> = K extends keyof T ? T[K] : T extends readonly (infer V)[] ? K extends ArrayStringKey<T> ? V : never : never;
 /**
 * Converts a reactive object to a plain object where each property of the
 * resulting object is a ref pointing to the corresponding property of the
@@ -679,8 +674,8 @@ export type ToRef<T> = IfAny<T, Ref<T>, [T] extends [Ref] ? T : Ref<T>>;
 * @see {@link https://vuejs.org/api/reactivity-utilities.html#toref}
 */
 export declare function toRef<T>(value: T): T extends (() => infer R) ? Readonly<Ref<R>> : T extends Ref ? T : Ref<UnwrapRef<T>>;
-export declare function toRef<T extends object, K extends ToRefKey<T>>(object: T, key: K): ToRef<ToRefValue<T, K>>;
-export declare function toRef<T extends object, K extends ToRefKey<T>>(object: T, key: K, defaultValue: ToRefValue<T, K>): ToRef<Exclude<ToRefValue<T, K>, undefined>>;
+export declare function toRef<T extends object, K extends keyof T>(object: T, key: K): ToRef<T[K]>;
+export declare function toRef<T extends object, K extends keyof T>(object: T, key: K, defaultValue: T[K]): ToRef<Exclude<T[K], undefined>>;
 export declare function toRef<T>(value: object, key: string): T extends (() => infer R) ? Readonly<Ref<R>> : T extends Ref ? T : Ref<UnwrapRef<T>>;
 export declare function toRef<T>(value: () => T): Readonly<Ref<T>>;
 /**
@@ -697,14 +692,16 @@ export declare function toRef<T>(value: () => T): Readonly<Ref<T>>;
 * ```
 */
 export interface RefUnwrapBailTypes {}
-export type ShallowUnwrapRef<T> = T extends ShallowReactiveBrand ? T : { [K in keyof T]: DistributeRef<T[K]> };
+export type ShallowUnwrapRef<T> = { [K in keyof T]: DistributeRef<T[K]> };
 type DistributeRef<T> = T extends Ref<infer V, unknown> ? V : T;
 export type UnwrapRef<T> = T extends ShallowRef<infer V, unknown> ? V : T extends Ref<infer V, unknown> ? UnwrapRefSimple<V> : UnwrapRefSimple<T>;
 type UnwrapRefSimple<T> = T extends Builtin | Ref | RefUnwrapBailTypes[keyof RefUnwrapBailTypes] | {
   [RawSymbol]?: true;
-} ? T : T extends ShallowReactiveBrand ? T : T extends Map<infer K, infer V> ? Map<K, UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof Map<any, any>>> : T extends WeakMap<infer K, infer V> ? WeakMap<K, UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof WeakMap<any, any>>> : T extends Set<infer V> ? Set<UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof Set<any>>> : T extends WeakSet<infer V> ? WeakSet<UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof WeakSet<any>>> : T extends ReadonlyArray<any> ? { [K in keyof T]: UnwrapRefSimple<T[K]> } : T extends {
+} ? T : T extends Map<infer K, infer V> ? Map<K, UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof Map<any, any>>> : T extends WeakMap<infer K, infer V> ? WeakMap<K, UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof WeakMap<any, any>>> : T extends Set<infer V> ? Set<UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof Set<any>>> : T extends WeakSet<infer V> ? WeakSet<UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof WeakSet<any>>> : T extends ReadonlyArray<any> ? { [K in keyof T]: UnwrapRefSimple<T[K]> } : T extends {
   [UTSObjectMarker]?: true;
-} ? T : T extends object ? { [P in keyof T]: P extends symbol ? T[P] : UnwrapRef<T[P]> } : T;
+} ? T : T extends object & {
+  [ShallowReactiveMarker]?: never;
+} ? { [P in keyof T]: P extends symbol ? T[P] : UnwrapRef<T[P]> } : T;
 //#endregion
 //#region temp/packages/reactivity/src/dep.d.ts
 export declare const ITERATE_KEY: unique symbol;

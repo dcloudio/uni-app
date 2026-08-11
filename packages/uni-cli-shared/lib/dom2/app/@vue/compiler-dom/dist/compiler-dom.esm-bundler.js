@@ -1,11 +1,13 @@
 /**
-  * @vue/compiler-dom v3.6.0-beta.17
+  * @vue/compiler-dom v3.6.0-beta.5
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
 import { TO_DISPLAY_STRING, baseCompile, baseParse, checkCompatEnabled, createCallExpression, createCompilerError, createCompoundExpression, createObjectProperty, createSimpleExpression, findDir, findProp, getConstantType, hasDynamicKeyVBind, isCommentOrWhitespace, isStaticArgOf, isStaticExp, noopDirectiveTransform, registerRuntimeHelpers, transformModel, transformOn } from "@vue/compiler-core";
 import { capitalize, extend, isHTMLTag, isMathMLTag, isSVGTag, isString, isVoidTag, makeMap, parseStringStyle } from "@vue/shared";
-export * from "@vue/compiler-core";
+
+export * from "@vue/compiler-core"
+
 //#region packages/compiler-dom/src/runtimeHelpers.ts
 const V_MODEL_RADIO = Symbol(!!(process.env.NODE_ENV !== "production") ? `vModelRadio` : ``);
 const V_MODEL_CHECKBOX = Symbol(!!(process.env.NODE_ENV !== "production") ? `vModelCheckbox` : ``);
@@ -29,6 +31,7 @@ registerRuntimeHelpers({
 	[TRANSITION]: `Transition`,
 	[TRANSITION_GROUP]: `TransitionGroup`
 });
+
 //#endregion
 //#region packages/compiler-dom/src/decodeHtmlBrowser.ts
 let decoder;
@@ -42,6 +45,7 @@ function decodeHtmlBrowser(raw, asAttr = false) {
 		return decoder.textContent;
 	}
 }
+
 //#endregion
 //#region packages/compiler-dom/src/parserOptions.ts
 const parserOptions = {
@@ -72,6 +76,7 @@ const parserOptions = {
 		return ns;
 	}
 };
+
 //#endregion
 //#region packages/compiler-dom/src/transforms/transformStyle.ts
 const transformStyle = (node) => {
@@ -90,6 +95,7 @@ const parseInlineCSS = (cssText, loc) => {
 	const normalized = parseStringStyle(cssText);
 	return createSimpleExpression(JSON.stringify(normalized), false, loc, 3);
 };
+
 //#endregion
 //#region packages/compiler-dom/src/errors.ts
 function createDOMCompilerError(code, loc) {
@@ -135,6 +141,7 @@ const DOMErrorMessages = {
 	[64]: `Tags with side effect (<script> and <style>) are ignored in client component templates.`,
 	[65]: ``
 };
+
 //#endregion
 //#region packages/compiler-dom/src/transforms/vHtml.ts
 const transformVHtml = (dir, node, context) => {
@@ -146,6 +153,7 @@ const transformVHtml = (dir, node, context) => {
 	}
 	return { props: [createObjectProperty(createSimpleExpression(`innerHTML`, true, loc), exp || createSimpleExpression("", true))] };
 };
+
 //#endregion
 //#region packages/compiler-dom/src/transforms/vText.ts
 const transformVText = (dir, node, context) => {
@@ -157,6 +165,7 @@ const transformVText = (dir, node, context) => {
 	}
 	return { props: [createObjectProperty(createSimpleExpression(`textContent`, true), exp ? getConstantType(exp, context) > 0 ? exp : createCallExpression(context.helperString(TO_DISPLAY_STRING), [exp], loc) : createSimpleExpression("", true))] };
 };
+
 //#endregion
 //#region packages/compiler-dom/src/transforms/vModel.ts
 const transformModel$1 = (dir, node, context) => {
@@ -200,6 +209,7 @@ const transformModel$1 = (dir, node, context) => {
 	baseResult.props = baseResult.props.filter((p) => !(p.key.type === 4 && p.key.content === "modelValue"));
 	return baseResult;
 };
+
 //#endregion
 //#region packages/compiler-dom/src/transforms/vOn.ts
 const isEventOptionModifier = /* @__PURE__ */ makeMap(`passive,once,capture`);
@@ -262,6 +272,7 @@ const transformOn$1 = (dir, node, context) => {
 		return { props: [createObjectProperty(key, handlerExp)] };
 	});
 };
+
 //#endregion
 //#region packages/compiler-dom/src/transforms/vShow.ts
 const transformShow = (dir, node, context) => {
@@ -272,6 +283,7 @@ const transformShow = (dir, node, context) => {
 		needRuntime: context.helper(V_SHOW)
 	};
 };
+
 //#endregion
 //#region packages/compiler-dom/src/transforms/Transition.ts
 const transformTransition = (node, context) => {
@@ -304,6 +316,7 @@ function defaultHasMultipleChildren(node) {
 	const child = children[0];
 	return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(defaultHasMultipleChildren);
 }
+
 //#endregion
 //#region packages/compiler-dom/src/transforms/ignoreSideEffectTags.ts
 const ignoreSideEffectTags = (node, context) => {
@@ -312,6 +325,7 @@ const ignoreSideEffectTags = (node, context) => {
 		context.removeNode();
 	}
 };
+
 //#endregion
 //#region packages/compiler-dom/src/htmlNesting.ts
 /**
@@ -502,6 +516,7 @@ const knownInvalidParents = {
 	h5: headings,
 	h6: headings
 };
+
 //#endregion
 //#region packages/compiler-dom/src/transforms/validateHtmlNesting.ts
 const validateHtmlNesting = (node, context) => {
@@ -511,6 +526,7 @@ const validateHtmlNesting = (node, context) => {
 		context.onWarn(error);
 	}
 };
+
 //#endregion
 //#region packages/compiler-dom/src/index.ts
 const DOMNodeTransforms = [transformStyle, ...!!(process.env.NODE_ENV !== "production") ? [transformTransition, validateHtmlNesting] : []];
@@ -536,5 +552,6 @@ function compile(src, options = {}) {
 function parse(template, options = {}) {
 	return baseParse(template, extend({}, parserOptions, options));
 }
+
 //#endregion
 export { DOMDirectiveTransforms, DOMErrorCodes, DOMErrorMessages, DOMNodeTransforms, TRANSITION, TRANSITION_GROUP, V_MODEL_CHECKBOX, V_MODEL_DYNAMIC, V_MODEL_RADIO, V_MODEL_SELECT, V_MODEL_TEXT, V_ON_WITH_KEYS, V_ON_WITH_MODIFIERS, V_SHOW, compile, createDOMCompilerError, isKeyboardEvent, isValidHTMLNesting, parse, parserOptions, postTransformTransition, resolveModifiers, transformStyle };

@@ -97,7 +97,6 @@ export interface ImportItem {
   exp: SimpleExpressionNode;
   path: string;
 }
-type IdentifierScopeType = "local" | "slot";
 export interface TransformContext extends Required<Omit<TransformOptions, keyof CompilerCompatOptions>>, CompilerCompatOptions {
   selfName: string | null;
   root: RootNode;
@@ -110,9 +109,6 @@ export interface TransformContext extends Required<Omit<TransformOptions, keyof 
   cached: (CacheExpression | null)[];
   identifiers: {
     [name: string]: number | undefined;
-  };
-  identifierScopes: {
-    [name: string]: IdentifierScopeType[] | undefined;
   };
   scopes: {
     vFor: number;
@@ -131,13 +127,11 @@ export interface TransformContext extends Required<Omit<TransformOptions, keyof 
   replaceNode(node: TemplateChildNode): void;
   removeNode(node?: TemplateChildNode): void;
   onNodeRemoved(): void;
-  addIdentifiers(exp: ExpressionNode | string, type?: IdentifierScopeType): void;
+  addIdentifiers(exp: ExpressionNode | string): void;
   removeIdentifiers(exp: ExpressionNode | string): void;
-  isSlotScopeIdentifier(name: string): boolean;
   hoist(exp: string | JSChildNode | ArrayExpression): SimpleExpressionNode;
   cache(exp: JSChildNode, isVNode?: boolean, inVOnce?: boolean): CacheExpression;
   constantCache: WeakMap<TemplateChildNode, ConstantTypes>;
-  vForMemoKeyedNodes: WeakSet<ElementNode>;
   filters?: Set<string>;
 }
 export declare function getSelfName(filename: string): string | null;
@@ -162,7 +156,6 @@ export declare function createTransformContext(root: RootNode, {
   bindingMetadata,
   inline,
   isTS,
-  eventDelegation,
   onError,
   onWarn,
   compatConfig
@@ -264,10 +257,6 @@ export interface BaseElementNode extends Node {
   children: TemplateChildNode[];
   isSelfClosing?: boolean;
   innerLoc?: SourceLocation;
-  /**
-  * fixed by uts DOM2 编译期 flatten 静态值。
-  */
-  flatten?: boolean;
 }
 export interface PlainElementNode extends BaseElementNode {
   tagType: ElementTypes.ELEMENT;
@@ -359,7 +348,6 @@ export interface SimpleExpressionNode extends Node {
   */
   sharedData?: {
     ident?: string;
-    classRef?: string;
     vModel?: {
       eventIdent: string;
     };
@@ -957,12 +945,6 @@ export interface TransformOptions extends SharedTransformCodegenOptions, ErrorHa
   * correctly, e.g. #6938, #7138
   */
   hmr?: boolean;
-  /**
-  * Vapor only: control whether eligible static DOM events are compiled to
-  * document-level delegated events.
-  * @default true
-  */
-  eventDelegation?: boolean;
 }
 export interface CodegenOptions extends SharedTransformCodegenOptions {
   /**
@@ -1017,7 +999,7 @@ export type CompilerOptions = ParserOptions & TransformOptions & CodegenOptions;
 *
 * Since TS 5.3, dts generation starts to strangely include broken triple slash
 * references for source-map-js, so we are inlining all source map related types
-* here to workaround that.
+* here to to workaround that.
 */
 export interface CodegenSourceMapGenerator {
   setSourceContent(sourceFile: string, sourceContent: string): void;
