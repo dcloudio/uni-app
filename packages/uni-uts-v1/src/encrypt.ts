@@ -74,7 +74,10 @@ export async function compileEncrypt(
   const isRollup = !!process.env.UNI_UTS_USING_ROLLUP
   const pluginRelativeDir = relative(inputDir, pluginDir)
   const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
-  const isNative = isX && utsPlatform === 'app-android'
+  const isNative =
+    isX &&
+    utsPlatform === 'app-android' &&
+    process.env.UNI_APP_X_DOM2 !== 'true'
   let code = isNative
     ? 'export default {}'
     : isRollup
