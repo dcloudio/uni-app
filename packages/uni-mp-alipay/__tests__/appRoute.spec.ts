@@ -50,6 +50,98 @@ function createPlatform(canIUse = true) {
 }
 
 describe('mp-alipay app route', () => {
+  test('dispatches the before event before the target page is shown', () => {
+    const platform = createPlatform()
+    const api = createAlipayAppRouteApi(platform)
+    const beforeListener = jest.fn()
+    const routeListener = jest.fn()
+
+    api.onBeforeAppRoute(beforeListener)
+    api.onAppRoute(routeListener)
+    const { callbacks } = platform.observers[0]
+    callbacks.beforeRoute({
+      openType: 'navigateTo',
+      path: 'app://pages/detail/index',
+      query: { from: 'before' },
+      routeEventId: 'route-1',
+    })
+
+    expect(beforeListener).toHaveBeenCalledWith({
+      path: 'pages/detail/index',
+      query: { from: 'before' },
+      openType: 'navigateTo',
+      notFound: false,
+      routeEventId: 'route-1',
+    })
+    expect(routeListener).not.toHaveBeenCalled()
+
+    callbacks.afterShow({
+      path: 'app://pages/detail/index',
+      query: { from: 'show' },
+      routeEventId: 'route-1',
+    })
+    expect(routeListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: 'pages/detail/index',
+        query: { from: 'show' },
+        routeEventId: 'route-1',
+      })
+    )
+    api.offBeforeAppRoute()
+    api.offAppRoute()
+  })
+
+  test('removes one or all before route listeners', () => {
+    const platform = createPlatform()
+    const api = createAlipayAppRouteApi(platform)
+    const listener1 = jest.fn()
+    const listener2 = jest.fn()
+    const { callbacks } = platform.observers[0]
+
+    api.onBeforeAppRoute(listener1)
+    api.onBeforeAppRoute(listener2)
+    api.offBeforeAppRoute(listener1)
+    callbacks.beforeRoute({
+      openType: 'navigateTo',
+      path: 'pages/detail/index',
+      routeEventId: 'route-1',
+    })
+    expect(listener1).not.toHaveBeenCalled()
+    expect(listener2).toHaveBeenCalledTimes(1)
+
+    api.offBeforeAppRoute()
+    callbacks.beforeRoute({
+      openType: 'redirectTo',
+      path: 'pages/other/index',
+      routeEventId: 'route-2',
+    })
+    expect(listener2).toHaveBeenCalledTimes(1)
+  })
+
+  test('exports rewriteRoute but always reports not supported', () => {
+    const api = createAlipayAppRouteApi(createPlatform())
+    const fail = jest.fn()
+    const complete = jest.fn()
+    const originalX = global.__X__
+    global.__X__ = true
+    try {
+      api.rewriteRoute({
+        url: '/pages/detail/index',
+        fail,
+        complete,
+      })
+
+      const error = expect.objectContaining({
+        errMsg: 'rewriteRoute:fail not supported',
+        errCode: 4,
+      })
+      expect(fail).toHaveBeenCalledWith(error)
+      expect(complete).toHaveBeenCalledWith(error)
+    } finally {
+      global.__X__ = originalX
+    }
+  })
+
   test('dispatches a successful route after the target page is shown', () => {
     const platform = createPlatform()
     const api = createAlipayAppRouteApi(platform)
@@ -103,6 +195,7 @@ describe('mp-alipay app route', () => {
 
     callbacks.beforeRoute({
       openType: alipayOpenType,
+      path: 'pages/index/index',
       routeEventId: 'route-1',
     })
     callbacks.afterShow({
@@ -123,6 +216,7 @@ describe('mp-alipay app route', () => {
 
     callbacks.beforeRoute({
       openType: 'switchTab',
+      path: 'pages/index/index',
       routeEventId: 'same-tab',
     })
     callbacks.afterRoute({ routeEventId: 'same-tab' })
@@ -133,6 +227,7 @@ describe('mp-alipay app route', () => {
 
     callbacks.beforeRoute({
       openType: 'autoReLaunch',
+      path: 'pages/index/index',
       routeEventId: 'resume',
     })
     callbacks.afterShow({
@@ -142,6 +237,7 @@ describe('mp-alipay app route', () => {
 
     callbacks.beforeRoute({
       openType: 'navigateTo',
+      path: 'pages/missing/index',
       routeEventId: 'not-found',
     })
     callbacks.onPageNotFound({ routeEventId: 'not-found' })
@@ -172,6 +268,7 @@ describe('mp-alipay app route', () => {
 
     callbacks.beforeRoute({
       openType: 'appLaunch',
+      path: 'pages/index/index',
       routeEventId: 'launch',
     })
     api.onAppRoute(listener)

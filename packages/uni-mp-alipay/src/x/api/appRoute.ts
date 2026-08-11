@@ -1,5 +1,9 @@
+import { defineAsyncApi } from '@dcloudio/uni-api/src/helpers/api'
 import {
+  API_REWRITE_ROUTE,
+  type AppRouteContext,
   type AppRouteOpenType,
+  type RewriteRoute,
   createAppRouteRuntime,
 } from '@dcloudio/uni-api/src/service/route/appRoute'
 
@@ -52,40 +56,43 @@ function normalizePath(path: string): string {
 }
 
 export function createAlipayAppRouteApi(platform: AlipayRoutePlatform) {
-  const routeOpenTypes = new Map<string, AppRouteOpenType>()
+  const routeContexts = new Map<string, AppRouteContext>()
   const appRouteRuntime = createAppRouteRuntime()
 
   if (platform.canIUse('createRouteObserver')) {
     const observer = platform.createRouteObserver({ pages: ['app://*'] })
     observer.beforeRoute((payload) => {
       const openType = normalizeOpenType(payload.openType)
-      if (openType) {
-        routeOpenTypes.set(payload.routeEventId, openType)
-      }
-    })
-    observer.afterShow((payload) => {
-      const routeEventId = payload.routeEventId
-      const openType = routeOpenTypes.get(routeEventId)
-      routeOpenTypes.delete(routeEventId)
       if (!openType) {
         return
       }
-      const path = normalizePath(payload.path)
-      appRouteRuntime.dispatchAppRoute(
-        appRouteRuntime.createAppRouteContext({
-          path,
-          query: payload.query || {},
-          openType,
-          notFound: false,
-          routeEventId,
-        })
-      )
+      const context = appRouteRuntime.createAppRouteContext({
+        path: normalizePath(payload.path),
+        query: payload.query || {},
+        openType,
+        // 支付宝 beforeRoute 不提供 notFound，缺页会在 onPageNotFound 中另行通知。
+        notFound: false,
+        routeEventId: payload.routeEventId,
+      })
+      routeContexts.set(payload.routeEventId, context)
+      appRouteRuntime.dispatchBeforeAppRoute(context)
+    })
+    observer.afterShow((payload) => {
+      const routeEventId = payload.routeEventId
+      const context = routeContexts.get(routeEventId)
+      routeContexts.delete(routeEventId)
+      if (!context) {
+        return
+      }
+      context.event.path = normalizePath(payload.path)
+      context.event.query = Object.assign({}, payload.query)
+      appRouteRuntime.dispatchAppRoute(context)
     })
     observer.afterRoute((payload) => {
-      routeOpenTypes.delete(payload.routeEventId)
+      routeContexts.delete(payload.routeEventId)
     })
     observer.onPageNotFound((payload) => {
-      routeOpenTypes.delete(payload.routeEventId)
+      routeContexts.delete(payload.routeEventId)
     })
     observer.observe()
   }
@@ -93,6 +100,12 @@ export function createAlipayAppRouteApi(platform: AlipayRoutePlatform) {
   return {
     onAppRoute: appRouteRuntime.onAppRoute,
     offAppRoute: appRouteRuntime.offAppRoute,
+    onBeforeAppRoute: appRouteRuntime.onBeforeAppRoute,
+    offBeforeAppRoute: appRouteRuntime.offBeforeAppRoute,
+    rewriteRoute: defineAsyncApi<RewriteRoute>(
+      API_REWRITE_ROUTE,
+      (_, { reject }) => reject('not supported', { errCode: 4 })
+    ),
   }
 }
 
@@ -100,3 +113,6 @@ const appRouteApi = /*#__PURE__*/ createAlipayAppRouteApi(my)
 
 export const onAppRoute = appRouteApi.onAppRoute
 export const offAppRoute = appRouteApi.offAppRoute
+export const onBeforeAppRoute = appRouteApi.onBeforeAppRoute
+export const offBeforeAppRoute = appRouteApi.offBeforeAppRoute
+export const rewriteRoute = appRouteApi.rewriteRoute
