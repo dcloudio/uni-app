@@ -290,6 +290,14 @@ vue3新增的组合式API，是纯编程的，解决了选项式不够灵活的�
 1. 影响应用性能。不管写在哪个页面，这部分代码都在应用启动时执行，而不是页面加载。如果`export default {}`外的代码写的太复杂，会影响应用启动速度，占用更多内存。
 2. 不跟随组件、页面关闭而回收。在外层的静态变量不会跟随页面关闭而回收。如果必要，你需要手动处理。比如 `unmounted` 或 `onUnload` 生命周期进行处理。
 
+### JSX/TSX
+
+uni-app x 目前不支持使用 JSX/TSX 编写页面和组件，请使用 Vue 的 `template` 模板语法。
+
+在 App 端蒸汽模式下，视图层代码，即 Vue 文件中 `template` 和 `style` 内的代码，会在编译期进行静态分析，并直接编译为高度优化的机器码或字节码，它的运行速度远快于arkts、kotlin及k/n。
+
+JSX/TSX 是编写在 JavaScript/TypeScript 中的表达式语法，目前不支持将 JSX/TSX 编译为与 `template` 相同的高性能机器码或字节码，为了发挥 App 端蒸汽模式的视图层性能优势时，应使用 `template` 和 `style` 编写视图代码。
+
 ## style（CSS功能） @css
 
 style的写法与web的css基本相同。但在App端，由于并非webview渲染，支持的css有限。[详见](../css/README.md)
