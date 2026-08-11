@@ -3,7 +3,7 @@
 - vue dev tools： 仅web平台支持。[详见](https://uniapp.dcloud.net.cn/tutorial/debug/uni-vue-devtools.html)
 
 - pinia
-	* 蒸汽模式下全平台支持
+	* 蒸汽模式下安卓、iOS支持，鸿蒙平台即将支持
 	* vdom模式下官方库仅web和小程序支持。vdom模式下app平台可使用[三方插件uts pinia](https://ext.dcloud.net.cn/plugin?name=x-pinia-s)替代官方库。
 	
 	简单的状态管理无需引入pinia，可参考文档：[全局变量和状态管理](../tutorial/store.md)

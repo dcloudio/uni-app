@@ -462,7 +462,7 @@ App平台获取样式值与Web平台存在部分差异：
   特殊值对应的颜色
   + transparent: 对应十六进制颜色八值语法为 #00000000
 
-- 通过 `setProperty` 设置布局相关的 CSS 样式，不能立即通过 `getPropertyValue` 同步获取设置的样式，此时返回的是设置前的样式，需要在 `nexttick` 异步回调中通过 `getPropertyValue` 才能获取到设置的值
+- 通过 `setProperty` 设置布局相关的 CSS 样式，不能立即通过 `getPropertyValue` 同步获取设置的样式，此时返回的是设置前的样式，需要在 `nextTick` 异步回调中通过 `getPropertyValue` 才能获取到设置的值
   ```vue
   <template>
   <!-- #ifdef APP -->

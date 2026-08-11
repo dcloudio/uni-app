@@ -59,6 +59,7 @@ uni-app x 引入蒸汽模式，不仅是去掉了虚拟DOM，更重要的是 uni
 **实验说明：**同屏渲染2050个view，里面又套了2000个text，一共4050个元素。没有懒加载、没有复用，是view和text创建速度的硬性考验。
 
 - 鸿蒙平台
+
 **测试设备：** 鸿蒙nova12(api21，鸿蒙最低端手机)
 
 |	开发方式					|渲染耗时ms	|
@@ -87,6 +88,7 @@ uni-app x 作为一个数据驱动的响应式框架，渲染速度比裸写c代
 测试前建议重启手机，不启动其他应用，保持电量在90%进行对比测试。不要在运行模式下测性能，请发行为release包测试
 
 - iOS平台
+
 **测试设备：**
 
 因iOS26和18的表现差异较大，故选用2台设备分别测试，iPhone SE2(iOS26.5)和iPhoneXR(iOS18.5)
@@ -105,7 +107,9 @@ uni-app x 作为一个数据驱动的响应式框架，渲染速度比裸写c代
 
 iOS原生自身的优化做的很好，都通过AOT编译为了机器码。SwiftUI是数据驱动的声明式框架，比UIKit慢是正常的。但uni-app x 作为数据驱动的响应式框架，做到了比原生UIKit更快数倍。
 
-**视频体验：** [2台 iPhone SE2 上 4050真机对比视频](https://www.bilibili.com/video/BV1ApMt66Eez)。左边为`UIKit原生`，右边为`uni-app x 蒸汽模式`。
+**视频体验：** 
+- [原生UIKit与uni蒸汽4050真机对比视频](https://www.bilibili.com/video/BV1ApMt66Eez)。左边为`UIKit原生`，右边为`uni-app x 蒸汽模式`。
+- [SwiftUI与uni蒸汽4050真机对比视频](https://www.bilibili.com/video/BV1LiGX6kEFA)。左边为`UIKit原生`，右边为`uni-app x 蒸汽模式`。
 
 **测试结论：** 不同设备的差异倍数不同，以iPhone SE2(iOS26.5)为例，在创建view和text的速度对比中，`uni-app x蒸汽模式`比UIKit快2倍、比SwiftUI快2.43倍。
 而iPhoneXR(iOS18.5)上，SwiftUI表现更差，速度比`uni-app x蒸汽模式`慢3.3倍。
@@ -120,7 +124,43 @@ iOS原生自身的优化做的很好，都通过AOT编译为了机器码。Swift
 
 测试前建议重启手机，不启动其他应用，保持电量在90%且不启用节电模式，也不需要开启性能模式（如有），然后进行对比测试。不要在运行模式下测性能，请发行为release包测试
 
-另外，不管是哪个App平台，即便uni-app x不使用拍平，仍然比原生渲染更快。
+- Android平台
+
+**测试设备：** 小米Fold4
+
+|小米Fold4									|5次平均耗时，括号中是明细		|内存增量	|
+|--												|--													|--				|
+|uni-app x蒸汽		|229.2(220 233 228 236 229)	|41,642		|
+|uni-app x蒸汽 非拍平	|276.2(270 275 288 278 270)	|55,494		|
+|原生 view							|461.8(456 456 462 465 470)	|78,760.8	|
+|原生 compose					|625.8(645 623 593 656 612)	|124,145	|
+
+
+**视频体验：** 
+- [Android 原生View vs uni蒸汽 4050真机对比视频](https://www.bilibili.com/video/BV17VuG6sExP)。左边为`原生view`，右边为`uni-app x 蒸汽模式`。
+- [Android Compose UI vs uni蒸汽 4050真机对比视频](https://www.bilibili.com/video/BV17VuG6sE3n)。左边为`原生view`，右边为`uni-app x 蒸汽模式`。
+
+Android上数据有较多维度，有初次安装、闲时优化；uni-app x也有拍平和非拍平。但不管哪个维度，uni-app x 均比 Android 原生View和Compose UI快。
+
+正常的uni-app x开发应当使用拍平，而手机用户日常使用的是闲时优化后的版本，在这个更为普适的维度上：
+- **uni-app x 比 Android 原生View 快2倍**（461.8/229.2）
+- **uni-app x 比 Android Compose UI 快2.73倍**（625.8/229.2）
+
+**重现方式：**
+
+- Android原生示例的源码：[https://gitcode.com/dcloud/test4050-android](https://gitcode.com/dcloud/test4050-android)。仓库下有编译好的apk可直接体验。
+- uni-app x 的源码：[https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/4050/4050.uvue](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/4050/4050.uvue)
+
+`uni-app x 蒸汽模式`，可以在HBuilderX 5.23以上版本编译运行（注意选用release方式运行，或者发行为正式包安装）。
+
+也可以直接安装`hello uni-app x`示例应用：
+![](https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png)
+
+安装 `hello uni-app x` 后，点击右下角模板 -> 顶部有 view和text性能测试。
+
+测试前建议重启手机，不启动其他应用，保持电量在90%且不启用节电模式，也不需要开启性能模式（如有），然后进行对比测试。不要在运行模式下测性能，请发行为release包测试
+
+Android的测试非常复杂，因为核调度策略、jit均不透明，很容易产生错误实验数据，请自行重现实验，务必查阅[Android的专业测试报告](./vapor-benchmark-android.md)
 
 #### 2. 死亡长列表性能测试@list
 
@@ -138,7 +178,7 @@ iOS原生自身的优化做的很好，都通过AOT编译为了机器码。Swift
 
 **测试设备**
 
-鸿蒙仍为nova12 api21，最大帧率120；
+鸿蒙为nova12 api21，最大帧率120；
 
 | nova12 api21			| 平均帧率	|
 |---								|---:			|
@@ -157,31 +197,42 @@ iOS选择了2台设备，一台为iPhone SE2(iOS26.5)，iOS设备不支持高刷
 | uni-app x蒸汽模式	|111		|
 | SwiftUI						|49		|
 
+Android设备为小米Fold4
+
+| 小米Fold4			| 平均帧率	|
+|---						|---:			|
+| 原生View				| 45.35		|
+| Compose UI		| 51.094	|
+| uni-app x蒸汽	|	109			|
+
 **真机视频对比：**
 
-- [鸿蒙长列表2台nova12真机对比视频](https://www.bilibili.com/video/BV1dpPQzAEYN)。左边是原生arkui，右边是`uni-app x蒸汽模式`。
-- [iOS长列表2台iPhone SE2真机对比视频](https://www.bilibili.com/video/BV19zMt6ZEv2)。左边是`uni-app x蒸汽模式`，右边是SwiftUI。
+- [鸿蒙死亡长列表2台nova12真机对比视频](https://www.bilibili.com/video/BV1dpPQzAEYN)。左边是原生arkui，右边是`uni-app x蒸汽模式`。
+- [iOS死亡长列表2台iPhone SE2真机对比视频](https://www.bilibili.com/video/BV19zMt6ZEv2)。左边是`uni-app x蒸汽模式`，右边是SwiftUI。
+- [Android死亡长列表2台小米Fold4真机对比视频](https://www.bilibili.com/video/BV16MuG6ZEjz)。左边是原生RecyclerView，右边是`uni-app x蒸汽模式`。
 
 **实验结论：**
 
-- 鸿蒙平台死亡长列表帧率测试中，`uni-app x蒸汽模式`的帧率是原生ArkUI的4.64倍。
-- iOS平台死亡长列表帧率测试中，`uni-app x蒸汽模式`的帧率，在非高刷设备是原生SwiftUI的1.32倍，在高刷设备上是原生SwiftUI的2.27倍。
+- 鸿蒙平台死亡长列表帧率测试中，`uni-app x蒸汽模式`的平均帧率是原生ArkUI的**4.64倍**（97.97/21.13）。
+- iOS平台死亡长列表帧率测试中，`uni-app x蒸汽模式`的平均帧率，在非高刷设备是原生SwiftUI的1.32倍，在高刷设备上是原生SwiftUI的**2.27倍**(111/49)。
+- Android死亡长列表帧率测试中，`uni-app x蒸汽模式`的平均帧率是 原生RecyclerView 的**2.4倍**（109/45.35），是 Compose UI 的 **2.13倍**（109/51.094）
 
 由于使用复用技术，所有开发，瞬间进入页面。
 
-上下手滑列表均不掉帧；但拖着滚动条极快滑动时，给长列表带来了巨大的压力，`uni-app x蒸汽模式`在任何情况下都不会出现白块灰块，但SwiftUI的列表大段灰块。
+上下手滑列表均不掉帧；但拖着滚动条极快滑动时，给长列表带来了巨大的压力，`uni-app x蒸汽模式`在任何情况下都不会出现白块灰块，但原生版的列表大段灰块。
 
 
 **重现方式：**
 
 - 鸿蒙原生ArkUI的开源工程见[https://gitcode.com/dcloud/HarmonyDeadlyList](https://gitcode.com/dcloud/HarmonyDeadlyList)，开发者可以自行编译、测试数据，重现实验。
 - iOS原生SwiftUI的开源工程见[https://gitcode.com/dcloud/iOSDeadlyList-SwiftUI](https://gitcode.com/dcloud/iOSDeadlyList-SwiftUI)，开发者可以自行编译、测试数据，重现实验。
+- Android原生的开源工程见[https://gitcode.com/dcloud/AndroidDeadlyList](https://gitcode.com/dcloud/AndroidDeadlyList)，开发者可以自行编译、测试数据，重现实验。目录下有编译好的apk可以直接安装体验。
 
-`uni-app x蒸汽模式`，演示包已上架鸿蒙商店和Appstore，使用鸿蒙/iOS手机扫如下二维码，(iOS需登录DCloud账户)，安装后进入右下角选项卡模板 -> 死亡长列表
+`uni-app x蒸汽模式`，演示包已上架，手机扫如下二维码，安装后进入右下角选项卡模板 -> 死亡长列表
 
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png)#{width=200px height=200px}
 
-测试前建议重启手机，不启动其他应用，保持电量在90%且不启用节电模式，也不需要开启性能模式（如有），鸿蒙设备在设置中搜索刷新率，打开强制高刷，然后进行对比测试。不要在运行模式下测性能，请发行为release包测试
+测试前建议重启手机，不启动其他应用，保持电量在90%且不启用节电模式，也不需要开启性能模式（如有），设备在设置中搜索刷新率，打开强制高刷，然后进行对比测试。不要在运行模式下测性能，请发行为release包测试
 
 #### 3. rich-text 5万字长文多图页面@rich-text
 
@@ -195,24 +246,23 @@ uni-app x 蒸汽模式 提供了应该是业内最好的rich-text组件。
 
 用一个rich-text组件加载5万字长文，其中包括59张插图。可以看到：
 
-- [鸿蒙nova12真机录屏](https://www.bilibili.com/video/BV1RWPQzaE7o/)
-- [iOS iPhone SE2 iOS26.5真机录屏](https://www.bilibili.com/video/BV15zMt6fENa/)
-**注：录屏时帧率只能为60Hz，实际使用时是完整的120Hz**
+- [鸿蒙nova12 rich-text真机录屏](https://www.bilibili.com/video/BV1RWPQzaE7o/)
+- [iOS iPhone SE2 iOS26.5 rich-text真机录屏](https://www.bilibili.com/video/BV15zMt6fENa/)
+- [Android小米Fold4 rich-text真机录屏](https://www.bilibili.com/video/BV134u26CE2s)
+**注：iOS和鸿蒙录屏时帧率只能为60Hz，实际使用时是完整的120Hz**
 
 1. 无等待进入页面
 2. 上下快滑不掉帧、不白屏，都是瞬间渲染（初次联网加载图片的速度受网速影响，再次进入后使用本地缓存，速度会更快）
 3. 点击图片预览，瞬间打开，自由缩放、切换，无任何等待。
 
-`uni-app x蒸汽模式`，演示包已上架鸿蒙商店和Appstore，使用鸿蒙/iOS手机扫如下二维码，(iOS需登录DCloud账户)，安装后进入右下角选项卡模板 -> rich-text 5万字性能测试
-
-![](https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png)#{width=200px height=200px}
+体验入口：hello uni-app x 选项卡模板 -> rich-text 5万字性能测试。
 
 测试前建议重启手机，不启动其他应用，保持电量在90%且不启用节电模式，也不需要开启性能模式（如有），鸿蒙设备在设置中搜索刷新率，打开强制高刷，然后进行对比测试。不要在运行模式下测性能，请发行为release包测试
 
 #### 其他
 
 除了上述3个性能考验项，DCloud还做了很多性能测试，
-
+<!-- 
 - slide组件：拖动100个slider，流畅丝滑
 
 * [鸿蒙真机录屏](https://www.bilibili.com/video/BV1RpPQzAE8V)
@@ -221,30 +271,37 @@ uni-app x 蒸汽模式 提供了应该是业内最好的rich-text组件。
 - picker组件：加载省市区4000条数据。无等待弹出组件
 
 * [鸿蒙真机录屏](https://www.bilibili.com/video/BV1dpPQzAEGP)
-* [iOS真机录屏](https://www.bilibili.com/video/BV19rMt6tE81)
+* [iOS真机录屏](https://www.bilibili.com/video/BV19rMt6tE81) -->
 
 - loading组件：屏幕上同时旋转100个loading不掉帧（录屏后从120掉帧到60）
 
 * [鸿蒙真机录屏](https://www.bilibili.com/video/BV1dpPQzAEGD)
 * [iOS真机录屏](https://www.bilibili.com/video/BV1RBMt6bEvS)
+* [Android真机录屏](https://www.bilibili.com/video/BV1ChuS6BEL2)
 
-- canvas组件：屏幕上同时移动数百个小球不掉帧
+- canvas组件：屏幕上同时移动数万个小球不掉帧
 
-* [鸿蒙真机录屏](https://www.bilibili.com/video/BV1X4PQz8Ert)
+* [Android真机录屏](https://www.bilibili.com/video/BV1Wyu26wEYH)
 * [iOS真机录屏](https://www.bilibili.com/video/BV1RBMt6bEyx)
+* [鸿蒙真机录屏](https://www.bilibili.com/video/BV1X4PQz8Ert)
+鸿蒙目前版本使用的是arkUI的canvas，还不能做到数万个小球的不掉帧，后续版本会把Android平台的canvas移植到鸿蒙上。
 
 - 侧滑删除长列表
 
 * [鸿蒙真机录屏](https://www.bilibili.com/video/BV1X4PQz8EdB)
 * [iOS真机录屏](https://www.bilibili.com/video/BV1AHMt63EoY)
+* [Android真机录屏](https://www.bilibili.com/video/BV1pSuU6iEaK)
 
 - ai chat的流式打字机
 
 * [鸿蒙真机录屏](https://www.bilibili.com/video/BV1X4PQz8Ezy)
 * [iOS真机录屏](https://www.bilibili.com/video/BV1PHMt63Ejy)
+* [Android真机录屏](https://www.bilibili.com/video/BV1cRuU6AEwG)
 
 
-更详细专业的benchmark报告，[详见](./vapor-benchmark.md)
+更详细专业的benchmark报告，
+- [鸿蒙benchmark](./vapor-benchmark.md)
+- [Android benchmark](./vapor-benchmark-android.md)
 
 ### 释疑
 关于uni-app x的蒸汽模式为什么这么快，很多人可能有疑问，比如
@@ -285,7 +342,7 @@ uni-app x 蒸汽模式只是使用了原生渲染管线，但几乎没有使用�
 
 hello uni-app x的3个App平台示例均已更新为蒸汽模式，下载地址：[http://hellouniappx.dcloud.net.cn/](http://hellouniappx.dcloud.net.cn/)
 
-下载HBuilderX 5.21+，运行hello uni-app x的[alpha分支](https://gitcode.com/dcloud/hello-uni-app-x)。
+下载HBuilderX 5.21+，运行[hello uni-app x](https://gitcode.com/dcloud/hello-uni-app-x)。
 
 如果要在自己的项目下打开蒸汽模式，需要在**manifest.json的可视化界面首页中勾选蒸汽模式**。
 
@@ -460,5 +517,4 @@ VDOM模式的视图层是编译为uts/js代码，然后驱动原生渲染。
 
 因为最初在5.0版上线鸿蒙蒸汽模式时只有机器码，所以目前在鸿蒙上是提供了字节码或机器码2个选项。
 
-而在5.11上线iOS蒸汽模式时，只提供了字节码选项。实测机器码会造成云打包iOS非常非常慢，暂不计划开放。
-
+而在后续上线iOS和Android蒸汽模式时，只提供了字节码选项。实测机器码会造成云打包非常非常慢，暂不计划开放。

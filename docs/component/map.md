@@ -19,8 +19,10 @@
 |图商		|Web|Android|iOS	|harmony|
 |:-:		|:-:|:-:		|:-:	|:-:		|
 |腾讯		|√	|4.31+	|4.31+|4.61+	|
-|高德		|√	|x			|x		|x			|
+|高德		|√	|√			|√		|x			|
 |Google	|√	|x			|x		|x			|
+
+App平台的高德地图版本，请在插件市场单独安装，需要自定义基座运行：[官方高德地图插件](https://ext.dcloud.net.cn/plugin?id=25947)
 
 除了内置支持的图商，还可以在插件市场寻找更多地图解决方案：
 1. [插件市场的三方地图插件](https://ext.dcloud.net.cn/search?q=%E5%9C%B0%E5%9B%BE&orderBy=Relevance&uni-appx=1)

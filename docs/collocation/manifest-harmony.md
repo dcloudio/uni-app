@@ -24,8 +24,9 @@ HBuilderX 4.63之前的版本鸿蒙平台不支持根据使用情况自动添加
 }
 ```
 
-#### uni-location-system
+#### uni-location @modulesLocation
 
+#### 系统定位 @locationSystem  
 系统定位模块，启用后uni.getLocation接口内可使用系统定位。对应manifest.json内的模块配置如下：
 
 注意：`HBuilderX 4.61`之前版本节点为 `uni-getLocation`

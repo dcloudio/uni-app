@@ -196,9 +196,14 @@ border-width: <line-width>{1,4};
             border-radius: 50px; /* 变成正圆 */
             box-sizing: border-box; /* 确保边框计算在宽度内 */"></view>
         </view>
-        <view flatten style="width: 100px;height: 50px; /* 高度是宽度的一半 */
-              overflow: hidden; /* 隐藏下半部分 */
-              position: relative;">
+        <view
+            <!-- #ifndef APP-ANDROID -->
+            flatten
+            <!-- #endif -->
+            style="width: 100px;height: 50px; /* 高度是宽度的一半 */
+            overflow: hidden; /* 隐藏下半部分 */
+            position: relative;"
+          >
           <view flatten style="width: 100px;height: 100px; /* 完整的圆高度 */
             border: 10px solid blue; /* 环的厚度和颜色 */
             border-radius: 50px; /* 变成正圆 */

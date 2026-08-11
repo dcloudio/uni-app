@@ -9,14 +9,13 @@
 3. `Language`选择为`Objective-C`，点击`Next`即可完成创建
 
 ## 插件工程环境配置
- `Target -> General -> Minimum Deployments` 选择 `12.0`
- `Target -> Build Settings -> Mach-O Type` 设置为`Dynamic Library`
- `Target -> Build Settings -> Other Linker Flags` 中添加`-ObjC`, 字母o和c大写
- `Target -> Build Settings -> Build Libraries for Distribution` 设置为`YES`
- `Target -> Build Settings -> Enable Module Verifier` 设置为`NO`
- `Target -> Build Settings -> Framework Search Paths` 中添加SDK的Libs目录（操作方法：双击展开`Framework Search Paths`将`SDK/Libs`文件夹拖入即可）
-
-`插件工程`中新建`uts-config.json`文件，然后将SDK中`SDK/ExtApiSrc/UTSOC.h`以及`SDK/ExtApiSrc/UTSOC.mm`添加到`插件工程`中
+1.  `Target -> General -> Minimum Deployments` 选择 `13.0`
+2.  `Target -> Build Settings -> Mach-O Type` 设置为`Dynamic Library`
+3.  `Target -> Build Settings -> Other Linker Flags` 中添加`-ObjC`, 字母o和c大写
+ 4. `Target -> Build Settings -> Build Libraries for Distribution` 设置为`YES`
+ 5. `Target -> Build Settings -> Enable Module Verifier` 设置为`NO`
+ 6. `Target -> Build Settings -> Framework Search Paths` 中添加SDK的Libs目录（操作方法：双击展开`Framework Search Paths`将`SDK/Libs`文件夹拖入即可）
+7. `插件工程`中新建`uts-config.json`文件，然后将SDK中`SDK/ExtApiSrc/UTSOC.h`以及`SDK/ExtApiSrc/UTSOC.mm`添加到`插件工程`中
 - 注意： `uts-config.json`、`UTSOC.h`、`UTSOC.m` 文件，既存在`SDK/ExtApiSrc/`目录中， 也可以在
 `SDK/UTSPluginExample/unimoduleUtsWorker/unimoduleUtsWorker/` 中获取， `SDK/UTSPluginExample/`  目录中是已经构建好的uts原生插件工程， 该文件在不同版本的sdk中是通用的
 

@@ -4161,7 +4161,7 @@ declare function useComputedStyle(options: UseComputedStyleOptions | null): Map<
 ```vue
 <template>
 	<view>
-		<text :style="{ 'font-size': style.get('font-size'), color: style.get('color') }">hello</text>
+		<text :style="{ 'font-size': style.get('font-size'), color: style.get('color') }" style="line-height: 100px;">hello world</text>
 	</view>
 </template>
 

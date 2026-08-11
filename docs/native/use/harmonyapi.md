@@ -98,19 +98,18 @@ emitter.on('launch', (data) => {
 
 ### uni-app x 监听消息以及向原生 APP 发送消息
 
-```ts
-// App.uvue
-import emitter from '@ohos.events.emitter'
+```vue
+<script setup lang="uts">
+  import emitter from '@ohos.events.emitter'
 
-emitter.on('message', (data) => {
-  console.log('message:', data.data)
-})
+  emitter.on('message', (data) => {
+    console.log('message:', data.data)
+  })
 
-export default {
-    onLaunch: function (options) {
-        emitter.emit('launch', {
-          data: 'launch'
-        })
-    }
-}
+  onLaunch(() => {
+    emitter.emit('launch', {
+      data: 'launch'
+    })
+  })
+</script>
 ```

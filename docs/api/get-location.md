@@ -139,32 +139,38 @@ iOS设备的系统定位会返回逆地址解析，即geocode，将坐标转换�
 
 不管通过哪种方式获取gcj02坐标，都需要向地图厂商缴纳商业授权费用。DCloud提供了优惠获取地图商业授权的方案，[详见](https://uniapp.dcloud.net.cn/tutorial/app-geolocation.html#lic)
 
-使用三方定位，需要在地图厂商注册账户、创建应用、获取key。然后将key填写到manifest.json中。
 
-Android/iOS平台目前还没有可视化界面，需要在manifest的源码视图中配置。
+### 定位模块配置  
+定位功能使用 [provider机制](../api/provider.md) 实现，需在 `manifest.json` 中配置使用的定位服务。  
 
-- app需要在manifest.json文件中配置`uni-location`节点, `HBuilderX 4.61-`之前为`uni-getLocation`节点，[详见](../collocation/manifest-modules.md#uni-location)
-- iOS平台：如果应用需要后台定位能力，需要在 info.plist 中配置 UIBackgroundModes 的 location，注意需在Xcode工程中添加相对应 Capabilities 中的 Background Modes，并且勾选 Location updates。
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-  	<key>UIBackgroundModes</key>
-		<array>
-			<string>location</string>
-		</array>
-
-	</dict>
-</plist>
-```
-- iOS平台：使用内置腾讯定位和iOS14以上高精度定位时，需配置对应的Key，参考[iOS平台配置腾讯定位](../collocation/manifest-ios.md#locationtencent)
-- Android平台：使用内置腾讯定位时，需配置对应的Key，参考[Android平台配置腾讯定位](../collocation/manifest-android.md#locationTencent)
+使用三方定位，需要在地图厂商注册账户、创建应用、获取key。然后将key填写到 `manifest.json` 中。
 
 地图厂商在App端大多会校验包名和证书，请务必保证在地图厂商后台创建的应用，填写的包名、证书摘要，和实际运行的应用匹配，否则无法使用三方定位。
 
 web平台也分系统定位的SDK定位。系统定位只有wgs84坐标。三方SDK定位，在manifest的Web配置中寻找定位和地图。填入key后需注意校验，如果在地图厂商后台开启了域名、ip校验，那么如果Web运行或发行后的域名与地图厂商后台配置的不符，就无法获取定位。
 
 小程序平台的定位，是小程序引擎自身集成的定位SDK。比如微信小程序使用的是腾讯定位、支付宝小程序使用的是高德定位。由小程序平台免费给开发者提供。
+
+
+#### Android平台
+参考 [Android平台配置“uni-location（定位）”](../collocation/manifest-android.md#modulesLocation)  
+
+使用腾讯定位时，需配置对应的Key，参考[Android平台配置腾讯定位](../collocation/manifest-android.md#locationTencent)
+
+#### iOS平台
+参考 [iOS平台配置“uni-location（定位）”](../collocation/manifest-ios.md#modulesLocation)。
+
+使用腾讯定位时，需配置对应的Key，参考[iOS平台配置腾讯定位](../collocation/manifest-ios.md#locationtencent)。
+
+使用高精度定位，需要配置 `NSLocationTemporaryUsageDescriptionDictionary`，参考[](../collocation/manifest-ios.md#hightprecision)。
+
+如果应用需要后台定位能力，需在 `manifest.json` 中的 [后台运行能力](../collocation/manifest-ios.md#backgroundModes) 配置 `location`。  
+
+#### 鸿蒙平台
+参考 [鸿蒙平台配置“uni-location（定位）”](../collocation/manifest-harmony#modulesLocation)。
+
+鸿蒙平台暂时仅支持系统定位，参考 [鸿蒙平台配置“系统定位”](../collocation/manifest-harmony.md#locationSystem)。
+
 
 ### 权限@permission
 

@@ -410,13 +410,13 @@ onLayoutChange
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (res: [UniPagePerformanceTiming](#unipageperformancetiming-values)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
+| callback | (res: [UniPagePerformanceTiming](#unipageperformancetiming-values)) => void | 是 | Android: x; iOS: x | 
 
 ##### UniPagePerformanceTiming 的属性值 @unipageperformancetiming-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| duration | number | 是 | Android: x; iOS: x; HarmonyOS: x | 性能计时持续的时间，单位为ms |
+| duration | number | 是 | Android: x; iOS: x | 性能计时持续的时间，单位为ms |
 
 
 ##### 返回值 
@@ -445,7 +445,7 @@ offLayoutChange
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| id | number | 是 | Android: x; iOS: x; HarmonyOS: x | 
+| id | number | 是 | Android: x; iOS: x | 
 
 
 
@@ -468,14 +468,14 @@ onRenderChange
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (res: [UniPagePerformanceRenderTiming](#unipageperformancerendertiming-values)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
+| callback | (res: [UniPagePerformanceRenderTiming](#unipageperformancerendertiming-values)) => void | 是 | Android: x; iOS: x | 
 
 ##### UniPagePerformanceRenderTiming 的属性值 @unipageperformancerendertiming-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| updateDuration | number | 是 | Android: x; iOS: x; HarmonyOS: x | 更新渲染属性的总时间，单位为ms |
-| duration | number | 是 | Android: x; iOS: x; HarmonyOS: x | 性能计时持续的时间，单位为ms |
+| updateDuration | number | 是 | Android: x; iOS: x | 更新渲染属性的总时间，单位为ms |
+| duration | number | 是 | Android: x; iOS: x | 性能计时持续的时间，单位为ms |
 
 
 ##### 返回值 
@@ -504,7 +504,7 @@ offRenderChange
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| id | number | 是 | Android: x; iOS: x; HarmonyOS: x | 
+| id | number | 是 | Android: x; iOS: x | 
 
 
 
@@ -527,7 +527,7 @@ onTouchStart
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
+| callback | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | 是 | Android: x; iOS: x | 
 
 
 ##### 返回值 
@@ -556,7 +556,7 @@ offTouchStart
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| id | number | 是 | Android: x; iOS: x; HarmonyOS: x | 
+| id | number | 是 | Android: x; iOS: x | 
 
 
 
@@ -579,7 +579,7 @@ onTouchEnd
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
+| callback | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | 是 | Android: x; iOS: x | 
 
 
 ##### 返回值 
@@ -608,7 +608,7 @@ offTouchEnd
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| id | number | 是 | Android: x; iOS: x; HarmonyOS: x | 
+| id | number | 是 | Android: x; iOS: x | 
 
 
 

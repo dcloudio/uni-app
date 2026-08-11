@@ -19,7 +19,7 @@
 
 > waterflow 暂时只支持 flow-item 组件为子组件，其他组件不可见
 
-> waterflow 只支持竖向滚动，暂时不支持横向滚动
+> waterflow 只支持竖向滚动，不支持横向滚动
 
 > 鸿蒙平台api 20及以上版本支持滚动相关事件，api 18及以上版本支持load-more插槽
 
@@ -170,7 +170,9 @@ UniScrollEvent -- Extends --> UniEvent
 
 ### 自定义下拉刷新样式
 
-waterflow组件有默认的下拉刷新样式，如果想自定义，则需使用自定义下拉刷新。
+waterflow组件有默认的下拉刷新样式，使用方式与scroll-view的自定义下拉刷新相同。[详见](./scroll-view.md#customrefresh)
+
+uni-ui x 提供了开源的自定义下拉刷新组件，可以体验：[uni-refresh-box](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-refresh-box.html)
 
 1. 设置`refresher-default-style`属性为 none 不使用默认样式
 2. 设置 flow-item 定义自定义下拉刷新元素并声明为 `slot="refresher"`，需要设置刷新元素宽高信息否则可能无法正常显示！
@@ -691,13 +693,14 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-#### App平台
+### App平台
 
-+ waterflow 组件默认高度是计算后瀑布流高度，无法滚动，如需要滚动要设置高度小于瀑布流高度，推荐配置 "flex:1"
-+ waterflow 组件在排版完毕UI展示后，如果子组件高度发生变化，则会重新排版，flow-item 组件的UI会出现短暂的错乱和位置位移，建议控制子元素高度固定避免动态修改高度
+- waterflow的性能优化，与list-view相同，详见[列表性能优化](./list-view.md#performance)
+- waterflow 组件默认高度是计算后瀑布流高度，无法滚动，如需要滚动要设置高度小于瀑布流高度，推荐配置 "flex:1"
+- waterflow 组件在排版完毕UI展示后，如果子组件高度发生变化，则会重新排版，flow-item 组件的UI会出现短暂的错乱和位置位移，建议控制子元素高度固定避免动态修改高度
 	+ 场景一 image组件设置mode=widthFix，加载的网络图片会出现异步图片下载动态修改高度的情况，容易出现上述问题
 	+ 场景二 rich-text组件nodes节点内容存在网络图片，出现异步加载情况，会出现动态修改高度导致出现上述问题
-+ waterflow 组件的 overflow 属性不支持配置 visible
+- waterflow 组件的 overflow 属性不支持配置 visible
 
 <!-- ## flow-item -->
 

@@ -150,6 +150,9 @@
 - 侦听器
 
 无法监听异步逻辑（例如：`setTimeout`）中的错误和应用初始化之前、 App 崩溃等错误。
+
+onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，导致无法精准定位问题。真机运行时尽量避免全局监听onError。
+
 :::
 #### onError 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |

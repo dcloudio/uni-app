@@ -592,69 +592,69 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | **SetTabBarStyleOptions** | 是 | HarmonyOS: x |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **SetTabBarStyleOptions** | 是 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| color | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | 微信小程序: 4.41; HarmonyOS: x | tab 上的文字默认颜色 |
-| selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | 微信小程序: 4.41; HarmonyOS: x | tab 上的文字选中时的颜色 |
-| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | 微信小程序: 4.41; HarmonyOS: x | tab 的背景色 |
-| backgroundImage | string | 否 | 微信小程序: 4.41; HarmonyOS: x | 图片背景 |
-| backgroundRepeat | string | 否 | 微信小程序: 4.41; HarmonyOS: x | 背景图平铺方式 |
-| borderColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | Web: 4.23; 微信小程序: 4.41; Android: x; iOS: 4.23; HarmonyOS: x | tabbar上边框的颜色（优先级高于 borderStyle） |
-| borderStyle | string | 否 | 微信小程序: 4.41; HarmonyOS: x | tabbar上边框的颜色 |
-| success | (result: [SetTabBarStyleSuccess](#settabbarstylesuccess-values)) => void | 否 | 微信小程序: 4.41; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: [SetTabBarStyleFail](#settabbarstylefail-values)) => void | 否 | 微信小程序: 4.41; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: [SetTabBarStyleComplete](#settabbarstylecomplete-values)) => void | 否 | 微信小程序: 4.41; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| color | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | 微信小程序: 4.41 | tab 上的文字默认颜色 |
+| selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | 微信小程序: 4.41 | tab 上的文字选中时的颜色 |
+| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | 微信小程序: 4.41 | tab 的背景色 |
+| backgroundImage | string | 否 | 微信小程序: 4.41 | 图片背景 |
+| backgroundRepeat | string | 否 | 微信小程序: 4.41 | 背景图平铺方式 |
+| borderColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | Web: 4.23; 微信小程序: 4.41; Android: x; iOS: 4.23; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | tabbar上边框的颜色（优先级高于 borderStyle） |
+| borderStyle | string | 否 | 微信小程序: 4.41 | tabbar上边框的颜色 |
+| success | (result: [SetTabBarStyleSuccess](#settabbarstylesuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [SetTabBarStyleFail](#settabbarstylefail-values)) => void | 否 | 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [SetTabBarStyleComplete](#settabbarstylecomplete-values)) => void | 否 | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### backgroundRepeat 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| repeat | HarmonyOS: x | 背景图片在垂直方向和水平方向平铺 |
-| repeat-x | HarmonyOS: x | 背景图片在水平方向平铺，垂直方向拉伸 |
-| repeat-y | HarmonyOS: x | 背景图片在垂直方向平铺，水平方向拉伸 |
-| no-repeat | HarmonyOS: x | 背景图片在垂直方向和水平方向都拉伸 |
+| 合法值 | 描述 |
+| :- | :- |
+| repeat | 背景图片在垂直方向和水平方向平铺 |
+| repeat-x | 背景图片在水平方向平铺，垂直方向拉伸 |
+| repeat-y | 背景图片在垂直方向平铺，水平方向拉伸 |
+| no-repeat | 背景图片在垂直方向和水平方向都拉伸 |
 
 ##### borderStyle 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| black | HarmonyOS: x |
-| white | HarmonyOS: x |
+| 合法值 |
+| :- |
+| black |
+| white |
 
 #### SetTabBarStyleSuccess 的属性值 @settabbarstylesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 是 | HarmonyOS: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### SetTabBarStyleFail 的属性值 @settabbarstylefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | HarmonyOS: x | 错误码 |
-| errSubject | string | 是 | HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | HarmonyOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | HarmonyOS: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 100 | HarmonyOS: x | TabBar 不存在 |
-| 200 | HarmonyOS: x | 参数错误 |
+| 合法值 | 描述 |
+| :- | :- |
+| 100 | TabBar 不存在 |
+| 200 | 参数错误 |
 
 #### SetTabBarStyleComplete 的属性值 @settabbarstylecomplete-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 是 | HarmonyOS: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -665,9 +665,9 @@
 
 #### Promise\<SetTabBarStyleSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 是 | HarmonyOS: x | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 

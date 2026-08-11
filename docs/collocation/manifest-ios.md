@@ -316,7 +316,7 @@ iOS平台在iPad设备默认是支持`多任务处理`的，即支持悬浮窗�
   ```
 
 
-#### 高精度定位  
+#### 高精度定位 @hightprecision  
 应用需要使用高精度定位时还需配置 `NSLocationTemporaryUsageDescriptionDictionary` 的 `PurposeKey`，并说明高精度定位的原因。  
 
 需在项目根目录下添加 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoplist) 文件，配置 NSLocationTemporaryUsageDescriptionDictionary 相关信息，如下示例：  

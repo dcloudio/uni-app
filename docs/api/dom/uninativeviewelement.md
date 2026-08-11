@@ -54,7 +54,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| view | UIView | 是 | Android: x; iOS: x; HarmonyOS: x | 
+| view | UIView | 是 | Android: x; iOS: x; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: x | 
 
 
 

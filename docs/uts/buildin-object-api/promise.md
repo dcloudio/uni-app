@@ -67,7 +67,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -137,7 +137,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -218,7 +218,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -301,7 +301,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -384,7 +384,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -467,7 +467,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -550,7 +550,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -622,7 +622,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -698,7 +698,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -774,7 +774,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -850,7 +850,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -926,7 +926,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -1007,7 +1007,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -1067,7 +1067,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -1131,7 +1131,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -1195,7 +1195,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -1258,7 +1258,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -1270,7 +1270,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 | 一个 Promise 数组。 | 
+| arr | Array&lt;Promise&gt; | 是 | 一个 Promise 数组。 | 
 
 
 **返回值**
@@ -1333,7 +1333,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -1345,7 +1345,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 | 一个 Promise 数组。 | 
+| arr | Array&lt;Promise&gt; | 是 | 一个 Promise 数组。 | 
 
 
 **返回值**
@@ -1403,7 +1403,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -1415,7 +1415,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 | 一个 Promise 数组。 | 
+| arr | Array&lt;Promise&gt; | 是 | 一个 Promise 数组。 | 
 
 
 **返回值**
@@ -1490,7 +1490,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 
@@ -1502,7 +1502,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 | 一个 Promise 数组。 | 
+| arr | Array&lt;Promise&gt; | 是 | 一个 Promise 数组。 | 
 
 
 **返回值**
@@ -1562,7 +1562,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
 

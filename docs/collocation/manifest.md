@@ -235,7 +235,7 @@ app内置模块配置
 | 属性 | 类型 | 兼容性 | 描述 |
 | :- | :- | :- | :- |
 | uni-ad | [uni-ad 配置项列表](#modules-uni-ad) | Android: 4.0; iOS: 4.22 | [uni-ad广告联盟](https://uniad.dcloud.net.cn/)模块 |
-| uni-canvas | object | Android: 4.25; iOS: 4.25 | [canvas画布](https://doc.dcloud.net.cn/uni-app-x/component/canvas.html)组件模块（HBuilderX4.0+） |
+| uni-canvas | object | Android: 4.25; iOS: 4.25 | [canvas画布](https://doc.dcloud.net.cn/uni-app-x/component/canvas.html)组件模块（HBuilderX4.25+） |
 | uni-cloud-client | object | Android: 4.25; iOS: 4.25 | [uniCloud云函数/云对象](https://doc.dcloud.net.cn/uniCloud/cf-functions.html)模块（HBuilderX4.25+） |
 | uni-createRequestPermissionListener | object | Android: 4.0; iOS: x | [监听权限申请](https://doc.dcloud.net.cn/uni-app-x/api/create-request-permission-listener.html)模块（HBuilderX4.0+） |
 | uni-createWebviewContext | object | Android: 4.0; iOS: x | 创建[web-view 组件的上下文对象](https://doc.dcloud.net.cn/uni-app-x/api/create-webview-context.html)模块 |
@@ -248,8 +248,8 @@ app内置模块配置
 | uni-getProvider | object | Android: 4.11; iOS: 4.11 | [获取服务供应商](https://doc.dcloud.net.cn/uni-app-x/api/get-provider.html#getprovider)模块 |
 | uni-push | object | Android: 3.97; iOS: 4.11 | [统一推送](https://doc.dcloud.net.cn/uni-app-x/api/uni-push.html)模块 |
 | uni-media | object | Android: 3.91; iOS: 4.11 | [多媒体](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
-| uni-network | object | Android: 3.91; iOS: 4.11 | [网络请求（文件上传/下载）](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
-| uni-virtualPayment | object | Android: x; iOS: 4.25 | [虚拟支付](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
+| uni-network | object | Android: 3.91; iOS: 4.11 | [网络请求（文件上传/下载）](https://doc.dcloud.net.cn/uni-app-x/api/network-summarize.html)模块 |
+| uni-virtualPayment | object | Android: x; iOS: 4.25 | [虚拟支付](https://doc.dcloud.net.cn/uni-app-x/api/virtual-payment.html)模块 |
 | uni-video | object | Android: 3.91; iOS: 4.11 | [video视频组件](https://doc.dcloud.net.cn/uni-app-x/component/video.html)模块 |
 | uni-websocket | object | Android: 3.91; iOS: 4.11 | [WebSocket](https://doc.dcloud.net.cn/uni-app-x/api/websocket.html)模块 |
 | uni-verify | object | Android: 3.99; iOS: 4.18 | [一键登录](https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html)模块 |
@@ -560,16 +560,16 @@ app内置模块配置
 
 | 属性 | 类型 | 兼容性 | 描述 |
 | :- | :- | :- | :- |
-| uni-location | [uni-location 配置项列表](#modules-uni-location) | Android: 4.11 | [iOS平台uni-location（定位）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#moduleslocation)模块Provider配置 |
-| uni-map | [uni-map 配置项列表](#modules-uni-map) | Android: 4.31 | [iOS平台uni-map（地图）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulesmap)模块Provider配置 |
-| uni-payment | [uni-payment 配置项列表](#modules-uni-payment) | Android: 4.18 | [iOS平台uni-payment（支付）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulespayment)模块Provider配置 |
+| uni-location | [uni-location 配置项列表](#modules-uni-location) | iOS: 4.11 | [iOS平台uni-location（定位）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#moduleslocation)模块Provider配置 |
+| uni-map | [uni-map 配置项列表](#modules-uni-map) | iOS: 4.31 | [iOS平台uni-map（地图）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulesmap)模块Provider配置 |
+| uni-payment | [uni-payment 配置项列表](#modules-uni-payment) | iOS: 4.18 | [iOS平台uni-payment（支付）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulespayment)模块Provider配置 |
 
 
 ###### modulesuni-location 配置项列表 @modules-uni-location
 
 [iOS平台uni-location（定位）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#moduleslocation)模块Provider配置
 
-| Android |
+| iOS |
 | :- |
 | 4.11 |
 
@@ -594,7 +594,7 @@ app内置模块配置
 
 [iOS平台uni-map（地图）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulesmap)模块Provider配置
 
-| Android |
+| iOS |
 | :- |
 | 4.31 |
 
@@ -618,7 +618,7 @@ app内置模块配置
 
 [iOS平台uni-payment（支付）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulespayment)模块Provider配置
 
-| Android |
+| iOS |
 | :- |
 | 4.18 |
 

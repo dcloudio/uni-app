@@ -109,6 +109,12 @@ uvue页面基于 vue 单文件组件规范。一个页面内，有3个根节点�
 
 页面内容构成，另有[详细文档](./vue/README.md)
 
+### script区块
+
+VDOM模式script内的代码一定会作为uts编译（目标产物是kotlin或js），需遵循uts的语法规范。
+
+蒸汽模式script内的代码的产物是js（所有平台），因此并不限制开发者使用js语法，也不强制要求补全类型。
+
 ## 页面的可滚动性@disablescroll
 
 web及使用webview的小程序，页面默认是可滚动的。
@@ -133,9 +139,9 @@ uni-app x中，App平台的页面是一个原生页面，
 </template>
 ```
 
-uni-app x的蒸汽模式，因为已经做到比原生渲染更快，套一层scroll-view对性能影响很小，所以拉平了多端一致性。
+uni-app x的蒸汽模式，因为已经做到比原生渲染更快，套一层 `scroll-view` 对性能影响很小，所以拉平了多端一致性。
 
-如果开发者希望页面不可滚动，那么可以在[pages.json](./collocation/pagesjson.md#pagesoptionspage-style)的页面Style中配置`disableScroll:true`禁用页面滚动。此配置项不影响页面中自行写scroll-view。
+如果希望页面不可滚动，可以在[pages.json](./collocation/pagesjson.md#pagesoptionspage-style)的页面Style中配置`disableScroll:true`禁用页面滚动。此配置项仅禁用页面自身的滚动，页面内的 `scroll-view` 组件不受影响。
 
 如下几种情况，推荐禁用页面滚动：
 1. 使用了自定义导航栏、自定义tabbar。如果不禁用页面滚动，bounce回弹效果会在导航栏上面和tabbar下面。

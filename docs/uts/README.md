@@ -6,9 +6,9 @@ uts，全称 uni type script，是一门跨平台的、高性能的、强类型�
 
 它可以被编译为不同平台的编程语言，如：
 - web平台/小程序：编译为JavaScript
-- Android平台：编译为Kotlin
-- iOS平台：编译Swift
-- 鸿蒙OS平台：编译为ArkTS
+- Android平台：编译为Kotlin（蒸汽模式页面组件内script内的代码会编译为js）
+- iOS平台：编译Swift（蒸汽模式页面组件script内的代码会编译为js）
+- 鸿蒙OS平台：编译为ArkTS（仅uts插件内会编译为ArkTS，页面组件内的代码仍编译为js）
 
 uts 采用了与 ts 基本一致的语法规范，支持绝大部分 ES6 API。
 
@@ -450,3 +450,7 @@ uts是全面了解ts、kotlin、swift、ArkTS等不同的语言后，全新设�
 
 - Q：uts不如js好用
 1. 我们承认js的灵活和易用在所有编程语言里名列前茅。如果你认为基于js的uni-app已经能满足你的跨平台需求那也很好。如果你追求原生的性能体验，那么选择uts虽然需要一定的学习和适应成本，但我们相信这个成本比任何其他方案都低。
+
+- Q：引用ts/js类型文件时编译器如何处理
+1. 在目标语言非js时，仅可引用ts文件，此时ts文件会当做uts文件处理。
+2. 在目标语言为js时，可引用ts/js文件，ts文件不会当做uts文件处理，uts2js的编译仅会处理uts文件。此时ts/js文件无需遵守uts约束，也不会附加uts特殊的运行时逻辑。

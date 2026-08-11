@@ -129,14 +129,12 @@ uni-app迁移到uni-app x，是一个大型工程。
 
 	完成后继续在iOS和鸿蒙上验证。
 
-12. 适配Android
+12. 使用HBuilderX 5.23以上适配Android
 	
-	HBuilderX 5.21+，推出uni-app x的Android版蒸汽模式并兼容js/ts写法。这套方案的性能比uni-app x Android版VDOM模式、比Android原生开发的性能都会好非常多。[详见](./app-vapor.md)
+	直接打开 uni-app x 的蒸汽模式，该模式兼容js/ts写法。且性能比uni-app x Android版VDOM模式、比Android原生开发的性能都会好非常多。[详见](./app-vapor.md)
 
 	js驱动将避免开发者改造uts代码，并且兼容广泛的npm js生态。
 	
-	官方推荐开发者先行适配非Android平台，走完上面的前11步。因为Android平台较新，推荐先把其他平台适配好，再开始迁移Android。
-
 
 整个升级过程，不可能在uni-agent的一个会话内完成，前文太长会超过上下文限制，并且让AI迷失重点。
 
@@ -145,3 +143,7 @@ uni-app迁移到uni-app x，是一个大型工程。
 一个AI使用经验：\
 AI很擅长从0到60，这一步很快。但再往上，要不投入更多优秀人力review、要不投入更多和更高智商的AI算力做交叉验证和自动化测试。\
 高智商的AI算力虽然贵，但在代码翻译这件事上，其实性价比是远超过投入优秀的人时的。
+
+自动化测试，在AI时代这几乎是必备技能。[详见](https://doc.dcloud.net.cn/uni-app-x/worktile/auto/quick-start.html)
+
+uni-app 和 uni-app x 的自动化测试例是兼容的，建议先在 uni-app 下补齐自动化测试例，跑通。然后改造 uni-app x 时，继续自动跑这些自动化测试例，会极大提升效率。

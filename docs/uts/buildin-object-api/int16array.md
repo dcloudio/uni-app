@@ -30,9 +30,9 @@
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.Constructor.tutorial -->
@@ -65,9 +65,9 @@
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.Constructor_1.tutorial -->
@@ -118,9 +118,9 @@ ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其�
 toByteBuffer
 ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer对象。
 ###### toByteBuffer 兼容性 <Help /> 
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.25 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.25 | x | 4.61 |
 
 
 
@@ -135,9 +135,9 @@ ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer�
 toData
 ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 ###### toData 兼容性 <Help /> 
-| Web | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | x | x | 4.61 |
 
 
 
@@ -166,9 +166,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.Constructor_2.tutorial -->
@@ -196,9 +196,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.BYTES_PER_ELEMENT.tutorial -->
@@ -242,9 +242,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int8Array.of.tutorial -->
@@ -291,9 +291,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int8Array.from.tutorial -->
@@ -321,9 +321,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.BYTES_PER_ELEMENT.tutorial -->
@@ -347,9 +347,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.BYTES_PER_ELEMENT.tutorial -->
@@ -373,9 +373,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.buffer.tutorial -->
@@ -399,9 +399,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.byteLength.tutorial -->
@@ -425,9 +425,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.byteOffset.tutorial -->
@@ -451,9 +451,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.length.tutorial -->
@@ -501,9 +501,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.copyWithin.tutorial -->
@@ -546,9 +546,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.every.tutorial -->
@@ -602,9 +602,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | x |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | x | √ |
 
 
 <!-- UTSJSON.Int16Array.fill.tutorial -->
@@ -647,9 +647,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.filter.tutorial -->
@@ -690,9 +690,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.find.tutorial -->
@@ -738,9 +738,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.findIndex.tutorial -->
@@ -781,9 +781,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.forEach.tutorial -->
@@ -843,9 +843,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.indexOf.tutorial -->
@@ -893,9 +893,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.join.tutorial -->
@@ -937,9 +937,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.map.tutorial -->
@@ -987,9 +987,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.reduce.tutorial -->
@@ -1036,9 +1036,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.reduceRight.tutorial -->
@@ -1075,9 +1075,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.reverse.tutorial -->
@@ -1126,9 +1126,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.set.tutorial -->
@@ -1179,9 +1179,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.slice.tutorial -->
@@ -1232,9 +1232,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.some.tutorial -->
@@ -1279,9 +1279,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.sort.tutorial -->
@@ -1328,9 +1328,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.subarray.tutorial -->
@@ -1358,9 +1358,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int16Array.toString.tutorial -->

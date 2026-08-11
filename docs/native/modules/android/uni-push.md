@@ -142,7 +142,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.huawei.agconnect'
 ```
 
-* 添加添加华为推送的配置文件
+* 添加华为推送的配置文件
 
 登录华为的AppGallery Connect网站，找到需要集成华为推送的应用，在“项目设置 > 常规”页面的“应用”区域，点击`agconnect-services.json`下载配置文件。
 
@@ -212,7 +212,7 @@ dependencies {
 `GETUI_APPID`、`PUSH_APPID`和`GETUI_APP_ID` 在开发者中心->uni-push->2.0->消息推送->配置管理->应用配置->AppID，请务必填写一致。
 
 
-* 添加添加FCM的配置文件
+* 添加 FCM 的配置文件
 
 登录[FCM网站](https://firebase.google.com/)，找到需要集成FCM的应用，获取`google-services.json`配置文件。
 

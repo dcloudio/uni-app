@@ -24,15 +24,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+| Web | Android | iOS |
+| :- | :- | :- |
+| 4.0 | x | x |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 |
-| :- |
-| x |
+| Android UTS 插件 | iOS UTS 插件 |
+| :- | :- |
+| x | x |
 
 
 <!-- UTSJSON.Number.Constructor.tutorial -->
@@ -56,15 +56,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- |
-| 3.9 | √ |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| 3.9 | x | √ |
 
 
 <!-- UTSJSON.Number.MAX_VALUE.tutorial -->
@@ -82,15 +82,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- |
-| 3.9 | √ |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| 3.9 | x | √ |
 
 
 <!-- UTSJSON.Number.MIN_VALUE.tutorial -->
@@ -108,15 +108,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- |
-| 3.9 | √ |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| 3.9 | x | √ |
 
 
 <!-- UTSJSON.Number.NaN.tutorial -->
@@ -134,15 +134,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | x | x |
+| Web | Android | iOS |
+| :- | :- | :- |
+| 4.0 | 3.9 | x |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 |
-| :- |
-| 3.9 |
+| Android UTS 插件 | iOS UTS 插件 |
+| :- | :- |
+| 3.9 | x |
 
 
 <!-- UTSJSON.Number.NEGATIVE_INFINITY.tutorial -->
@@ -160,15 +160,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- |
-| 3.9 | √ |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| 3.9 | x | √ |
 
 
 <!-- UTSJSON.Number.POSITIVE_INFINITY.tutorial -->
@@ -201,7 +201,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.90 | 3.9 | √ |
 
@@ -294,7 +294,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.90 | √ | √ |
 
@@ -379,7 +379,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.90 | √ | √ |
 
@@ -407,15 +407,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- |
-| x | √ |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| x | x | √ |
 
 
 <!-- UTSJSON.Number.toExponential.tutorial -->
@@ -464,15 +464,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- |
-| x | √ |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| x | x | √ |
 
 
 <!-- UTSJSON.Number.toPrecision.tutorial -->
@@ -527,7 +527,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -600,7 +600,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -626,7 +626,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -652,7 +652,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -678,7 +678,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 3.9 | √ |
 
@@ -711,15 +711,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- |
-| x | 3.90 | x | x |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 3.90 | x |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 |
-| :- |
-| √ |
+| Android UTS 插件 | iOS UTS 插件 |
+| :- | :- |
+| √ | x |
 
 
 ### toLong()
@@ -748,15 +748,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 3.90 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 3.90 | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- |
-| √ | √ |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | x | √ |
 
 
 ### toShort()
@@ -774,15 +774,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 3.90 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 3.90 | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- |
-| √ | √ |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | x | √ |
 
 
 ### toUShort()
@@ -800,15 +800,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 3.90 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 3.90 | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- |
-| √ | √ |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | x | √ |
 
 
 ### toULong()
@@ -826,15 +826,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 3.90 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 3.90 | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- |
-| √ | √ |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | x | √ |
 
 
 ### toInt64()
@@ -852,13 +852,13 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | 4.11 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | 3.9 | √ |
 
@@ -878,13 +878,13 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | 4.11 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | 3.9 | √ |
 
@@ -904,13 +904,13 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | 4.11 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | 3.9 | √ |
 
@@ -930,13 +930,13 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | 4.11 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | 3.9 | √ |
 
@@ -957,13 +957,13 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | 4.11 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | 3.9 | √ |
 
@@ -983,13 +983,13 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | 4.11 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | 3.9 | √ |
 
@@ -1009,13 +1009,13 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | 4.11 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | 3.9 | √ |
 
@@ -1035,13 +1035,13 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | 4.11 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | 3.9 | √ |
 

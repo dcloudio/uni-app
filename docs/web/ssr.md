@@ -49,27 +49,25 @@ export default defineConfig({
   <text v-else>...</text>
 </template>
 
-<script>
-  const id = 1;// 模拟ID
-  export default {
-    computed: {
-      item() {
-        return this.$store.state.items[id]
-      }
-    },
-    mounted() { // 仅客户端执行的生命周期
-      if (!this.item) { // 判断服务端是否已正常获取，若未获取，重新调用加载数据
-        this.fetchItem()
-      }
-    },
-    async serverPrefetch() { // 服务端预取数据的生命周期
-      await this.fetchItem()
-    },
-    methods: {
-      fetchItem() {
-        return this.$store.dispatch('fetchItem', id)
-      }
+<script setup lang="uts">
+  import { useStore } from 'vuex'
+
+  const id = 1 // 模拟ID
+  const store = useStore()
+  const item = computed(() => store.state.items[id])
+
+  onMounted(() => { // 仅客户端执行的生命周期
+    if (!item.value) { // 判断服务端是否已正常获取，若未获取，重新调用加载数据
+      fetchItem()
     }
+  })
+
+  onServerPrefetch(async () => { // 服务端预取数据的生命周期
+    await fetchItem()
+  })
+
+  function fetchItem() {
+    return store.dispatch('fetchItem', id)
   }
 </script>
 ```
@@ -80,13 +78,6 @@ export default defineConfig({
 
 ```ts
 const categories = ssrRef(['c1', 'c2'], 'categories');
-export default {
-  data() {
-    return {
-      categories
-    }
-  }
-}
 ```
 
 #### vuex
@@ -161,34 +152,27 @@ export default () => {
   <text>{{ JSON.stringify(categories) }}</text>
 </template>
 
-<script>
+<script setup lang="uts">
   import { ssrRef } from '@dcloudio/uni-app'
-  const categories = ssrRef(['c1', 'c2'], 'categories');
-  const id = 1;// 模拟ID
-  export default {
-    data() {
-      return {
-        categories
-      }
-    },
-    computed: {
-      item() {
-        return this.$store.state.items[id]
-      }
-    },
-    mounted() { // 仅客户端执行的生命周期
-      if (!this.item) { // 判断服务端是否已正常获取，若未获取，重新调用加载数据
-        this.fetchItem()
-      }
-    },
-    async serverPrefetch() { // 服务端预取数据的生命周期
-      await this.fetchItem()
-    },
-    methods: {
-      fetchItem() {
-        return this.$store.dispatch('fetchItem', id)
-      }
+  import { useStore } from 'vuex'
+
+  const categories = ssrRef(['c1', 'c2'], 'categories')
+  const id = 1 // 模拟ID
+  const store = useStore()
+  const item = computed(() => store.state.items[id])
+
+  onMounted(() => { // 仅客户端执行的生命周期
+    if (!item.value) { // 判断服务端是否已正常获取，若未获取，重新调用加载数据
+      fetchItem()
     }
+  })
+
+  onServerPrefetch(async () => { // 服务端预取数据的生命周期
+    await fetchItem()
+  })
+
+  function fetchItem() {
+    return store.dispatch('fetchItem', id)
   }
 </script>
 ```

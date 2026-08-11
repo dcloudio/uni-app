@@ -141,10 +141,12 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <page-head :title="data.title"></page-head>
-    <text class="uni-title uni-common-pl">普通选择器</text>
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">普通选择器</text>
+    </view>
     <view class="uni-list">
       <view class="uni-list-cell">
-        <view class="uni-list-cell-left">当前选择</view>
+        <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db">
           <picker class="picker-selector--test uni-picker-container-wrap" @change="bindPickerChange" :value="data.index"
             :range="data.selectorArray" range-key="name">
@@ -154,7 +156,9 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
       </view>
     </view>
 
-    <text class="uni-title uni-common-pl">多列选择器</text>
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">多列选择器</text>
+    </view>
     <view class="uni-list">
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择</text>
@@ -169,10 +173,13 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
       </view>
     </view>
 
-    <text class="uni-title uni-common-pl">time选择器</text>
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">time选择器</text>
+      <text class="uni-picker-description">选择 09:01 ~ 21:01 之间的时间，不在区间内不能选中</text>
+    </view>
     <view class="uni-list">
       <view class="uni-list-cell">
-        <view class="uni-list-cell-left">当前选择</view>
+        <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db">
           <picker class="picker-time--test uni-picker-container-wrap" mode="time" :value="data.time" start="09:01" end="21:01"
             @change="bindTimeChange">
@@ -181,9 +188,11 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         </view>
       </view>
     </view>
-    <text class="uni-picker-tips">注：选择 09:01 ~ 21:01 之间的时间, 不在区间内不能选中</text>
 
-    <text class="uni-title uni-common-pl">date选择器 fields = day</text>
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">date选择器 fields = day</text>
+      <text class="uni-picker-description">选择当前时间往前90年和往后10年之间的时间，不在区间内不能选中</text>
+    </view>
     <view class="uni-list">
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择 </text>
@@ -195,9 +204,11 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         </view>
       </view>
     </view>
-    <text class="uni-picker-tips">注：选择当前时间往前90年和往后10年之间的时间, 不在区间内不能选中</text>
 
-    <text class="uni-title uni-common-pl">日期选择器 fields = month</text>
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">日期选择器 fields = month</text>
+      <text class="uni-picker-description">选择当前时间往前90年和往后10年之间的时间，不在区间内不能选中。且只能选年和月</text>
+    </view>
     <view class="uni-list">
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择 </text>
@@ -209,9 +220,11 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         </view>
       </view>
     </view>
-    <text class="uni-picker-tips">注：选择当前时间往前90年和往后10年之间的时间, 不在区间内不能选中。且只能选年和月</text>
 
-    <text class="uni-title uni-common-pl">日期选择器 fields = year</text>
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">日期选择器 fields = year</text>
+      <text class="uni-picker-description">选择当前时间往前90年和往后10年之间的时间，不在区间内不能选中</text>
+    </view>
     <view class="uni-list">
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择 </text>
@@ -223,10 +236,12 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         </view>
       </view>
     </view>
-    <text class="uni-picker-tips">注：选择当前时间往前90年和往后10年之间的时间, 不在区间内不能选中</text>
 
-    <text class="uni-title uni-common-pl">省市地区选择器</text>
-    <view class="uni-list" style="margin-bottom: 15px;">
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">省市地区选择器</text>
+      <text class="uni-picker-description">省市地区数据并没有内置到uni-app x框架中，仅微信下由微信内置了，其他平台需单独加载地区数据</text>
+    </view>
+    <view class="uni-list">
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db">
@@ -248,12 +263,14 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         </view>
       </view>
     </view>
-    <text class="uni-picker-tips">注：省市地区数据并没有内置到uni-app x框架中，仅微信下由微信内置了，其他平台需单独加载地区数据</text>
 
-    <text class="uni-title uni-common-pl">已禁用的picker，点击无效</text>
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">已禁用的picker，点击无效</text>
+      <text class="uni-picker-description">值与普通选择器同步，但不可选择</text>
+    </view>
     <view class="uni-list">
       <view class="uni-list-cell">
-        <view class="uni-list-cell-left">当前选择</view>
+        <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db">
           <picker class="picker-disabled--test uni-picker-container-wrap" @change="bindPickerChange" disabled :value="data.index"
             :range="data.selectorArray" range-key="name">
@@ -262,7 +279,6 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         </view>
       </view>
     </view>
-    <text class="uni-picker-tips">注：值与普通选择器同步，但不可选择</text>
 
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -556,20 +572,45 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
 
 <style>
   .uni-title {
-    font-size: 14px;
+    font-size: 15px;
   }
 
-  .uni-picker-tips {
-    font-size: 12px;
-    color: #666;
-    margin-top: 5px;
-    margin-bottom: 15px;
+  .uni-picker-section-header {
+    display: flex;
+    flex-direction: column;
     padding: 0 15px;
+    margin-top: 15px;
+    margin-bottom: 8px;
+  }
+
+  .uni-picker-section-title {
+    padding: 0;
+  }
+
+  .uni-picker-description {
+    font-size: 12px;
+    color: #BEBEBE;
+    line-height: 18px;
+    min-height: 18px;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  .uni-list {
+    margin-bottom: 15px;
+  }
+
+  .uni-list-cell-left {
+    font-size: 13px;
+    color: #666;
+    padding-left: 15px;
   }
 
   .uni-picker-container-wrap {
     height: 41px;
+    /* #ifndef ANDROID && VUE3_VAPOR */
     line-height: 41px;
+    /* #endif */
   }
 
   .uni-picker-text {
@@ -594,13 +635,21 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
 
   /* #ifdef WEB */
   @media (prefers-color-scheme: dark) {
-    .uni-input {
-      background-color: #2d2d2d;
+    .uni-title,
+    .uni-list-cell-left,
+    .uni-input,
+    .uni-picker-text {
       color: #ffffff;
     }
 
+    .uni-input,
+    .uni-picker-text,
     .uni-list {
       background-color: #2d2d2d;
+    }
+
+    .uni-list-cell-left {
+      color: #b0b0b0;
     }
   }
   /* #endif */

@@ -4,6 +4,41 @@
 ## 实例方法
 
 
+### colorWithString(colorString)@colorwithstring
+
+将颜色字符串转换为鸿蒙平台对应的颜色值
+
+**参数**
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| colorString | string | 是 | 
+
+
+**返回值**
+| 类型 |
+| :- |
+| string | 
+
+
+<!-- UTSJSON.UTSHarmony.colorWithString.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| HarmonyOS |
+| :- |
+| 5.21 |
+
+
+**uni-app 兼容性 <Help />**
+| HarmonyOS UTS 插件 |
+| :- |
+| 5.21 |
+
+
+<!-- UTSJSON.UTSHarmony.colorWithString.tutorial -->
+
+
 ### convert2AbsFullPath(filePath)
 
 将文件的项目相对地址转换为 运行期对应的绝对地址
@@ -37,6 +72,7 @@
 
 
 <!-- UTSJSON.UTSHarmony.convert2AbsFullPath.tutorial -->
+
 
 ### devicePX2px(px)
 
@@ -72,6 +108,7 @@
 
 <!-- UTSJSON.UTSHarmony.devicePX2px.tutorial -->
 
+
 ### exit()
 
 退出应用
@@ -101,6 +138,7 @@
 
 
 <!-- UTSJSON.UTSHarmony.exit.tutorial -->
+
 
 ### getAppTheme()
 
@@ -132,6 +170,7 @@
 
 <!-- UTSJSON.UTSHarmony.getAppTheme.tutorial -->
 
+
 ### getCurrentWindow()
 
 获取当前原生窗口对象
@@ -162,6 +201,7 @@
 
 <!-- UTSJSON.UTSHarmony.getCurrentWindow.tutorial -->
 
+
 ### getOsTheme()
 
 获取系统主题<br/>
@@ -191,6 +231,7 @@
 
 
 <!-- UTSJSON.UTSHarmony.getOsTheme.tutorial -->
+
 
 ### getResourcePath(filePath)
 
@@ -226,6 +267,7 @@
 
 <!-- UTSJSON.UTSHarmony.getResourcePath.tutorial -->
 
+
 ### getUIAbilityContext()
 
 获取应用的UIAbilityContext
@@ -260,73 +302,6 @@
 
 - 鸿蒙官方文档：[UIAbilityContext](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-inner-application-uiabilitycontext)
 
-### offAppThemeChange(id)
-
-取消监听应用主题变化<br/>
-
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| id | number | 是 | 应用主题 | 
-
-
-**返回值**
-| 类型 |
-| :- |
-| void | 
-
-
-<!-- UTSJSON.UTSHarmony.offAppThemeChange.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- |
-| 5.0.0 (12) | 4.71 |
-
-
-**uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.71 |
-
-
-<!-- UTSJSON.UTSHarmony.offAppThemeChange.tutorial -->
-
-### offOsThemeChange(id)
-
-取消监听系统主题变化<br/>
-
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| id | number | 是 | 监听ID | 
-
-
-**返回值**
-| 类型 |
-| :- |
-| void | 
-
-
-<!-- UTSJSON.UTSHarmony.offOsThemeChange.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- |
-| 5.0.0 (12) | 4.71 |
-
-
-**uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.71 |
-
-
-<!-- UTSJSON.UTSHarmony.offOsThemeChange.tutorial -->
 
 ### onAppAbilityCreate(callback)
 
@@ -362,6 +337,7 @@
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityCreate.tutorial -->
 
+
 ### onAppAbilityNewWant(callback)
 
 监听应用EntryAbility生命周期onNewWant
@@ -395,6 +371,7 @@
 
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityNewWant.tutorial -->
+
 
 ### onAppAbilityShare(callback)
 
@@ -430,6 +407,7 @@
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityShare.tutorial -->
 
+
 ### onAppAbilityWindowStageCreate(callback)
 
 监听应用EntryAbility生命周期onWindowStageCreate
@@ -464,85 +442,6 @@
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityWindowStageCreate.tutorial -->
 
-### onAppThemeChange(callback)
-
-监听应用主题变化<br/>
-
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| callback | (res: [OnAppThemeChangeCallbackResult](#onappthemechangecallbackresult-values)) => void | 是 | 应用主题 | 
-
-##### OnAppThemeChangeCallbackResult 的属性值 @onappthemechangecallbackresult-values 
-
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| appTheme | "dark" \| "light" | 是 | 主题名称 |
-
-
-**返回值**
-| 类型 |
-| :- |
-| number | 
-
-
-<!-- UTSJSON.UTSHarmony.onAppThemeChange.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- |
-| 5.0.0 (12) | 4.71 |
-
-
-**uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.71 |
-
-
-<!-- UTSJSON.UTSHarmony.onAppThemeChange.tutorial -->
-
-### onOsThemeChange(callback)
-
-坚听系统主题变化<br/>
-
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| callback | (res: [OnOsThemeChangeCallbackResult](#onosthemechangecallbackresult-values)) => void | 是 | 系统主题变化回调 | 
-
-##### OnOsThemeChangeCallbackResult 的属性值 @onosthemechangecallbackresult-values 
-
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| osTheme | "dark" \| "light" | 是 | 主题名称 |
-
-
-**返回值**
-| 类型 |
-| :- |
-| number | 
-
-
-<!-- UTSJSON.UTSHarmony.onOsThemeChange.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- |
-| 5.0.0 (12) | 4.71 |
-
-
-**uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.71 |
-
-
-<!-- UTSJSON.UTSHarmony.onOsThemeChange.tutorial -->
 
 ### requestSystemPermission(permissions, success?, fail?)
 
@@ -580,36 +479,3 @@
 
 <!-- UTSJSON.UTSHarmony.requestSystemPermission.tutorial -->
 
-### setAppTheme(appTheme)
-
-设置应用主题<br/>
-
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| appTheme | AppTheme | 是 | 应用主题 | 
-
-
-**返回值**
-| 类型 |
-| :- |
-| void | 
-
-
-<!-- UTSJSON.UTSHarmony.setAppTheme.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- |
-| 5.0.0 (12) | 4.71 |
-
-
-**uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.71 |
-
-
-<!-- UTSJSON.UTSHarmony.setAppTheme.tutorial -->

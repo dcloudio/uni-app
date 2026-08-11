@@ -29,7 +29,7 @@ setInterval() 方法重复调用一个函数或执行一个代码片段，在每
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 |
 | :- | :- |
 | 3.90 | 3.90 |
 
@@ -66,7 +66,7 @@ setInterval() 方法重复调用一个函数或执行一个代码片段，在每
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 |
 | :- | :- |
 | 3.90 | 3.90 |
 
@@ -101,7 +101,7 @@ clearInterval() 方法可取消先前通过 setInterval() 设置的重复定时�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.90 | 3.90 | √ |
 
@@ -136,7 +136,7 @@ clearTimeout() 方法取消了先前通过调用setTimeout()建立的定时器
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.90 | 3.90 | √ |
 

@@ -261,22 +261,3 @@ arkUI版本，需要自行编译原始工程。
 ### k/n驱动c层渲染，是否也快过arkUI或uni-app x蒸汽模式？
 截止到目前（2026年2月初），基于k/n的开源跨平台框架，在上述基准测试中的表现均比arkUI差很多。更无法与`uni-app x蒸汽模式`相比。
 
-### uni-app x蒸汽模式在Android和iOS是否也快过原生？
-`uni-app x蒸汽模式`的iOS版和Android版的渲染引擎已开发完毕，但产品化还有一些工作要做。预计分别在2026年Q1和Q2发布。
-
-不管在iOS还是Android，均比原生快2~3倍，均基于原生渲染管线。
-
-已公开如下预览版对比测试例：
-
-* Android平台的uni-app x 蒸汽模式的4050同屏创建示例apk：[https://gitcode.com/dcloud/test4050-uni-app-x-vapor](https://gitcode.com/dcloud/test4050-uni-app-x-vapor)，安装其中apk即可体验。
-* Android平台的原生view，以及compose ui的与源码 [https://gitcode.com/dcloud/test4050-android](https://gitcode.com/dcloud/test4050-android)
-
-上述示例在华为mate30 Android版上，对比数据如下：
-|										|5次冷启动平均耗时（单位:ms）	|
-|--									|--													|
-|原生view						|436												|
-|原生compose	ui			|673.2											|
-|原生compose ui aot	|544.2											|
-|uni-app x 蒸汽模式	|224												|
-
-也就是`uni-app x蒸汽模式`，作为跨平台开发框架，实现了业内期盼已久的梦想：**即跨平台，又比原生性能更高**。

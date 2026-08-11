@@ -857,10 +857,10 @@ defineExpose({
 | :- | :- | :- |  :-: | :- |
 | bubbles | boolean | 是 |   | 是否冒泡 |
 | cancelable | boolean | 是 |   | 是否可以取消 |
-| type | string | 是 | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 事件类型<br/> |
-| target | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 触发事件的组件<br/> |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 当前组件<br/> |
-| timeStamp | number | 是 | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
+| type | string | 是 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 事件类型<br/> |
+| target | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 触发事件的组件<br/> |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当前组件<br/> |
+| timeStamp | number | 是 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
 
 
 

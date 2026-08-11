@@ -25,9 +25,9 @@
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| x | x |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| x | x | x |
 
 
 
@@ -62,9 +62,9 @@
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| x | x |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| x | x | x |
 
 
 

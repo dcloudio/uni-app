@@ -59,7 +59,7 @@ String.fromCharCode() 静态方法返回由指定的 UTF-16 码元序列创建�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 3.9 | √ |
 
@@ -102,7 +102,7 @@ String.fromCharCode() 静态方法返回由指定的 UTF-16 码元序列创建�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -128,13 +128,13 @@ String.fromCharCode() 静态方法返回由指定的 UTF-16 码元序列创建�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -178,7 +178,7 @@ String.fromCharCode() 静态方法返回由指定的 UTF-16 码元序列创建�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -225,7 +225,7 @@ endsWith() 方法用于判断一个字符串是否以指定字符串结尾，如
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -267,7 +267,7 @@ repeat() 构造并返回一个新字符串，该字符串包含被连接在一�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -308,7 +308,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -353,7 +353,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -404,7 +404,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -446,7 +446,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -490,7 +490,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -537,7 +537,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -577,7 +577,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -603,13 +603,13 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -652,7 +652,7 @@ match() 方法检索字符串与正则表达式进行匹配的结果。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -700,7 +700,7 @@ match() 方法检索字符串与正则表达式进行匹配的结果。
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -779,7 +779,7 @@ replaceValue 参数在包含一些特殊字符时在不同的平台被解释为�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -826,7 +826,7 @@ search() 方法执行正则表达式和 String 对象之间的一个搜索匹配
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -871,7 +871,7 @@ slice() 方法提取某个字符串的一部分，并返回一个新的字符串
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -918,7 +918,7 @@ split() 方法接受一个模式，通过搜索模式将字符串分割成一个
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -949,7 +949,7 @@ split() 方法接受一个模式，通过搜索模式将字符串分割成一个
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -1004,7 +1004,7 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -1030,13 +1030,13 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1075,7 +1075,7 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -1101,13 +1101,13 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1146,7 +1146,7 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -1183,13 +1183,13 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1234,7 +1234,7 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -1282,7 +1282,7 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -1309,13 +1309,13 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1343,13 +1343,13 @@ normalize() 方法会按照指定的一种 Unicode 正规形式将当前字符�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1377,13 +1377,13 @@ normalize() 方法会按照指定的一种 Unicode 正规形式将当前字符�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1415,13 +1415,13 @@ String 值的 isWellFormed() 方法返回一个表示该字符串是否包含单
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| √ | 4.25 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| √ | 4.25 | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 4.25 | x | √ |
 
@@ -1451,13 +1451,13 @@ String 的 toWellFormed() 方法返回一个字符串，其中该字符串的所
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| √ | 4.25 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| √ | 4.25 | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 4.25 | x | √ |
 
@@ -1479,13 +1479,13 @@ String 的 toWellFormed() 方法返回一个字符串，其中该字符串的所
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 3.90 | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 3.90 | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | x | √ |
 
@@ -1509,13 +1509,13 @@ String 的 toWellFormed() 方法返回一个字符串，其中该字符串的所
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1544,13 +1544,13 @@ anchor() 方法创建一个 \<a> HTML 锚元素，被用作超文本靶标（hyp
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1575,13 +1575,13 @@ anchor() 方法创建一个 \<a> HTML 锚元素，被用作超文本靶标（hyp
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1606,13 +1606,13 @@ blink() 方法创建一个字符串，其在 \<blink>str\</blink> 中嵌入字�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1637,13 +1637,13 @@ bold() 方法会创建 HTML 元素“b”，并将字符串加粗展示。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1668,13 +1668,13 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1684,7 +1684,7 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 ### fontcolor(color)
 
 创建一个\<font>的 HTML 元素让字符串被显示成指定的字体颜色。
-**已弃用: 不再推荐使用该特性。虽然一些浏览器仍然支持它，但也许已从相关的 web 标准中移除，也许正准备移除或出于兼容性而保留。请尽量不要使用该特性，并更新现有的代码；请注意，该特性随时可能无法正常工作。<br/>备注： \<font> 元素已经在在HTML5 中 (en-US)被移除并且不应该在使用。替代的是，Web 开发者应该使用CSS属性。**
+**已弃用: 不再推荐使用该特性。虽然一些浏览器仍然支持它，但也许已从相关的 web 标准中移除，也许正准备移除或出于兼容性而保留。请尽量不要使用该特性，并更新现有的代码；请注意，该特性随时可能无法正常工作。<br/>备注： \<font> 元素已在 HTML5 中移除且不应再使用。Web 开发者应改用 CSS 属性。**
 
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
@@ -1703,13 +1703,13 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1738,13 +1738,13 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1773,13 +1773,13 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1803,13 +1803,13 @@ italics()方法创建一个\<i> HTML元素，使字符串变为斜体。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1838,13 +1838,13 @@ link() 方法创建一个 HTML 元素 \<a> ，用该字符串作为超链接的�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1869,13 +1869,13 @@ small() 方法的作用是创建一个使字符串显示小号字体的 \<small>
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1900,13 +1900,13 @@ strike()方法创建\<strike> HTML 元素，使字符串展示为被删除的文
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1931,13 +1931,13 @@ sub()方法创建一个 \<sub> HTML 元素，使字符串展示为下标。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 
@@ -1962,13 +1962,13 @@ sup()方法创建 一个\<sup>HTML 元素，使字符串显示为上标。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
 

@@ -9,9 +9,7 @@
 ***
 说明：
 
-当前文档正式版基于android studio 2023.2.1 Patch 2。gradle版本为8.4。gradle插件版本为8.2.2。kotlin插件版本为1.9.10。
-
-当前文档alpha版基于Android Studio Narwhal 3 Feature Drop | 2025.1.3。gradle版本为8.14.3。gradle插件版本为8.12.0。kotlin插件版本为2.2.0。
+当前文档基于Android Studio Narwhal 3 Feature Drop | 2025.1.3。gradle版本为8.14.3。gradle插件版本为8.12.0。kotlin插件版本为2.2.0。更早版本的环境配置请参考[文档](../../tutorial/app-env.md)。
 ***
 
 ## 新建uni-app x模块

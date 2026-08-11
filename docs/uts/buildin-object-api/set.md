@@ -31,7 +31,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -74,7 +74,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -125,7 +125,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -165,7 +165,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -209,7 +209,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -254,7 +254,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 
@@ -341,7 +341,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
 .

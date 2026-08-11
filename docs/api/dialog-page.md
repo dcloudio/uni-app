@@ -46,6 +46,10 @@ dialogPage的绑定：
 app-android平台注意事项：
 - dialogPage不会创建Android原生Activity，复用parentPage的Android原生Activity。
 
+APP 蒸汽模式注意事项：
+- 蒸汽模式下，页面会默认嵌套一层 `scroll-view` 节点，详见[页面的可滚动性](https://doc.dcloud.net.cn/uni-app-x/page.html#disablescroll)。\
+如果希望页面不可滚动，可以在[pages.json](./collocation/pagesjson.md#pagesoptionspage-style)的页面Style中配置`disableScroll:true`禁用页面滚动，此配置项仅禁用页面自身的滚动，页面内的 `scroll-view` 组件不受影响。
+
 <!-- ## uni.openDialogPage(options) @opendialogpage -->
 
 ::: sourceCode

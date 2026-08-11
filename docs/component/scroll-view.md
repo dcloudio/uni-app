@@ -235,11 +235,44 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 
 <!-- UTSCOMJSON.scroll-view.component_type-->
 
-### 自定义下拉刷新样式
+### 子组件 @children-tags
+支持所有组件
+
+### Android的overscroll、bounce、下拉刷新说明@overscroll
+
+overscroll，中文译为过度滚动。
+
+Android原生的滚动容器，在滚动到边缘时，并不能继续滚动，也就是不能overscroll。而iOS、鸿蒙、web、小程序，都支持overscroll。
+
+支持overscroll，意味着滚动到边缘时继续拉，还能拉动，松手后会回弹。
+
+而Android原生不能overscroll，所以滚动到边缘继续拉，是拉伸效果（低版本是弧光）。
+
+uni-app x 的Android版，在蒸汽模式下支持了overscroll属性，默认是Android原生表现，配置overscroll为true时，可达到iOS、鸿蒙、web、小程序相同的效果。
+
+需注意：bounce属性和下拉刷新若干属性的表现，是受overscroll的影响的。
+
+- overscroll为false时
+	即原生Android效果。\
+	配置了bounce为true，bounce效果是拉伸（低版本是弧光）。\
+	开启下拉刷新后，下拉刷新也是Android原生效果，一个悬浮圆球中有个圆弧箭头被拉了下来。此时不会出现类iOS的下拉刷新，因为没有滚动内容外区域可以展示loading。
+	此时圆弧箭头的背景圆的颜色，通过属性refresher-background来设置，且不支持透明。
+- overscroll为true时
+	即类似iOS效果。滚动到边缘继续拉还能再拉出内容。\
+	配置了bounce为true，bounce效果是弹簧。\
+	开启下拉刷新后，下拉刷新会拉出[loading组件](./loading.md)。
+
+默认的下拉刷新自定义能力不足，推荐使用下面的[自定义下拉刷新](#customrefresh)
+
+在VDOM模式时，Android的scroll-view开启下拉刷新后，上方使用的是回弹效果，下方使用的是拉伸效果，下拉刷新使用的是iOS雪花，存在UI逻辑不统一问题。在蒸汽模式不再存在此问题，但升级时需要注意这种差别。
+
+### 自定义下拉刷新样式@customrefresh
 
 1. 设置`refresher-default-style`属性为 none 不使用默认样式
 2. 自定义下拉刷新元素必须要声明为 slot="refresher"，需要设置刷新元素宽高信息否则可能无法正常显示！
 3. 通过组件提供的refresherpulling、refresherrefresh、refresherrestore、refresherabort下拉刷新事件调整自定义下拉刷新元素！实现预期效果
+
+uni-ui x 提供了开源的自定义下拉刷新组件，可以体验：[uni-refresh-box](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-refresh-box.html)
 
 **注意：**
 - 安卓、iOS平台目前自定义下拉刷新元素不支持放在scroll-view的首个子元素位置上。可能无法正常显示
@@ -267,6 +300,16 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 
 ### 嵌套模式@nested-scroll-view
 
+VDOM模式的scroll-view嵌套滚动需要更多手工工作。而蒸汽模式已经简化。
+
+### 蒸汽模式
+
+蒸汽模式已废弃 `type` 属性，只需要设置内层 scroll-view 的 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。
+
+蒸汽模式已废弃 `nested-scroll-header` 和 `nested-scroll-body` 组件的限制要求，嵌套滚动中外层 scroll-view 中可以不使用 `nested-scroll-header` 和 `nested-scroll-body`，在内层 scrol-view 中设置 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。
+
+#### VDOM模式
+
 当存在两个 scroll-view 相互嵌套的场景时，两者滚动存在冲突不能很丝滑的进行衔接，可将外层 scroll-view 改成嵌套模式，这样可以让两个 scroll-view 的滚动衔接起来。
 
 ```html
@@ -293,8 +336,6 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 1. 设置外层 scroll-view 的 type 属性为 "nested"（），将外层 scroll-view 改成嵌套模式
 2. 设置内层 scroll-view 的 `associative-container`  属性为 "nested-scroll-view"，开启内层 scroll-view 支持与外层 scroll-view 嵌套滚动
 
-> 蒸汽模式已废弃 `type` 属性，只需要设置内层 scroll-view 的 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。
-
 
 **嵌套滚动策略：**
 
@@ -308,9 +349,6 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 + `nested-scroll-header` 只能渲染在 `nested-scroll-body` 上面
 + 与nested-scroll嵌套滚动协商互不兼容，`nested-scroll-header` 和 `nested-scroll-body`优先级高于nested-scroll嵌套滚动协商
 + 内层滚动视图支持 scroll-view、list-view、waterflow
-
-> 蒸汽模式已废弃 `nested-scroll-header` 和 `nested-scroll-body` 组件的限制要求，嵌套滚动中外层 scroll-view 中可以不使用 `nested-scroll-header` 和 `nested-scroll-body`，在内层 scrol-view 中设置 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。
-
 
 **具体代码请参考：**[嵌套模式示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/long-list-nested/long-list-nested.uvue)
 
@@ -369,8 +407,9 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 
 **具体代码请参考：**[nested-scroll嵌套滚动示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/long-list-perf/long-list-perf.uvue)
 
-#### App平台
+### tips
 
+#### App平台通用注意事项
 + App-Android、App-iOS平台的滚动方向不能同时横竖，如需同时水平和垂直滚动，可以套2层，一个横一个竖，来实现2个方向能滚动。
 + App平台scroll-view组件不支持动态切换横竖滚动方向
 + App平台scroll-view组件的overflow属性不支持配置visible
@@ -387,8 +426,11 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 		
 + 横向滚动时注意关注flex方向，子内容如需横向排布需要加`flex-direction: row`。
 
-### 子组件 @children-tags
-支持所有组件
+#### App平台蒸汽模式注意事项
+
+
+#### App平台VDOM模式注意事项
+
 
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/scroll-view/scroll-view.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/scroll-view/scroll-view.uvue) 

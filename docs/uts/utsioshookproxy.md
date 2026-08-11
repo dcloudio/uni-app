@@ -20,13 +20,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### applicationDidFinishLaunchingWithOptions(application, launchOptions)
@@ -49,13 +51,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### didRegisterForRemoteNotifications(deviceToken)
@@ -77,13 +81,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.18 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### didFailToRegisterForRemoteNotifications(error)
@@ -105,13 +111,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.18 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.18 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### didReceiveRemoteNotification(userInfo)
@@ -133,13 +141,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.18 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.18 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### didReceiveLocalNotification(notification)
@@ -161,13 +171,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.18 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.18 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### applicationHandleOpenURL(application, url)
@@ -190,13 +202,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### applicationOpenURLOptions(app, url, options)
@@ -220,13 +234,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### applicationWillResignActive(application)
@@ -248,13 +264,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### applicationDidBecomeActive(application)
@@ -276,13 +294,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### applicationDidEnterBackground(application)
@@ -304,13 +324,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### applicationWillEnterForeground(application)
@@ -332,13 +354,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### applicationMain(argc, argv)
@@ -361,13 +385,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 ### applicationContinueUserActivityRestorationHandler(application, userActivity, restorationHandler)
@@ -391,13 +417,15 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| 3.97 |
 
 
 

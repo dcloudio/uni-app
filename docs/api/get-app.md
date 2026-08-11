@@ -26,9 +26,9 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| vm | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; Android(Vapor) UTS 插件: x; iOS: 4.31; iOS(VDOM) UTS 插件: x; iOS(Vapor) UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象 |
+| vm | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; Android(Vapor) UTS 插件: x; iOS: 4.31; iOS UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象 |
 | globalData | any | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; Android(Vapor) UTS 插件: x; iOS: 4.31; iOS(Vapor) UTS 插件: x; HarmonyOS: 4.61 | 全局对象 |
-| ~~$vm~~ | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; Android(Vapor) UTS 插件: x; iOS: 4.31; iOS(VDOM) UTS 插件: x; iOS(Vapor) UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象  **已废弃，仅为了向下兼容保留** |
+| ~~$vm~~ | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; Android(Vapor) UTS 插件: x; iOS: 4.31; iOS UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象  **已废弃，仅为了向下兼容保留** |
 #### UniApp 的方法 @uniapp-values 
 
 #### getAndroidApplication(): Application @getandroidapplication

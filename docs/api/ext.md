@@ -12,34 +12,12 @@
 uni-app x 中不再支持plus和weex的API。对于plus api中一些常用的api，在uni-app x中进行了替换增补。
 - plus.runtime.quit => [uni.exit](./exit.md)
 - plus.runtime.install => [uni.installApk](./install-apk.md)
+- plus.zip => [uni.getFileSystemManager](./get-file-system-manager.md) 中有一批 zip 相关的api。
 
 一些plus api在插件市场有替代：
 - plus.sqlite [插件市场](https://ext.dcloud.net.cn/search?q=sqlite&uni-appx=1)
 - plus.speech [插件市场](https://ext.dcloud.net.cn/search?q=%E6%96%87%E5%AD%97%E8%BD%AC%E8%AF%AD%E9%9F%B3&orderBy=Relevance&uni-appx=1)
 - plus.runtime.openURL [插件市场](https://ext.dcloud.net.cn/plugin?id=17828)
-或者参考如下代码调用。
-
-```vue
-<template>
-	<view>
-		<button @click="openSchema('https://uniapp.dcloud.io/uni-app-x')">使用浏览器打开指定URL</button>
-		<button @click="openSchema('market://details?id=com.tencent.mm')">使用应用商店打开指定App</button>
-		<button @click="openSchema('androidamap://viewMap?sourceApplication=Hello%20uni-app&poiname=DCloud&lat=39.9631018208&lon=116.3406135236&dev=0')">打开地图坐标</button>
-	</view>
-</template>
-<script setup lang="uts">
-	import Intent from 'android.content.Intent';
-	import Uri from 'android.net.Uri';
-
-	const openSchema = (url : string) => {
-		const context = UTSAndroid.getUniActivity()!;
-		const uri = Uri.parse(url)
-		const intent = new Intent(Intent.ACTION_VIEW, uri)
-		intent.setData(uri);
-		context.startActivity(intent);
-	}
-</script>
-```
 
 插件市场有一些抹平plus写法的插件，自定义了一个plus对象，方法内部再调用uni或uts的api，以兼容历史的plus写法，[详见](https://ext.dcloud.net.cn/search?q=plus&orderBy=Relevance&uni-appx=1)
 

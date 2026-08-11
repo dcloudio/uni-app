@@ -28,9 +28,9 @@ TextDecoder 接口表示一个文本解码器，一个解码器只支持一种�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | x |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | x | √ |
 
 
 <!-- UTSJSON.TextDecoder.encoding.tutorial -->
@@ -94,9 +94,9 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | x |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | x | √ |
 
 
 <!-- UTSJSON.TextDecoder.decode.tutorial -->
@@ -128,9 +128,9 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | x |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | x | √ |
 
 
 <!-- UTSJSON.TextDecoder.decode_1.tutorial -->
@@ -162,9 +162,9 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 
 
 **uni-app 兼容性 <Help />**
-| Android(VDOM) UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | x |
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | x | √ |
 
 
 <!-- UTSJSON.TextDecoder.decode_2.tutorial -->

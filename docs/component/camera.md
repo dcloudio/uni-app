@@ -489,20 +489,11 @@ Android端实现相机组件所使用的依赖库
 
 ### 关于相机组件扫码能力的注意事项
 
-- camera组件仅在 uni-app x 项目中支持，扫码功能需更新到 4.71 及以上版本。
-- 扫码功能是独立模块，目前需要手动配置。后续版本会提供可视化界面配置。
+- Android/iOS平台 camera 组件仅在 uni-app x 项目中支持，扫码功能需更新到 HBuilderX4.71 及以上版本。
+- Android/iOS平台扫码功能是独立功能模块，需在 `manifest.json` 中勾选 “uni-barcode-scanning（相机组件扫码）”模块才能使用。
+  + [Android平台配置“uni-barcode-scanning（相机组件扫码）”](../collocation/manifest-android.md#modulesscan)
+  + [iOS平台配置“uni-barcode-scanning（相机组件扫码）”](../collocation/manifest-ios.md#modulesscan)
 
-    在manfiest.json中的 "app-android" -> "distribute" -> "modules" 节点下手动添加 "uni-barcode-scanning"，如下示例：
-
-```
-"app-android" : {
-    "distribute" : {
-        "modules" : {
-            "uni-barcode-scanning" : {}
-        }
-    }
-}
-```
 
 ### 关于预览画面与拍照尺寸的注意事项
 

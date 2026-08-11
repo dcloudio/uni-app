@@ -5,55 +5,36 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 ## 静态方法
 
 
-### getCurrentViewController()
+### destroyInstance()
 
-获取当前 app 显示的 UIViewController。
+销毁指定的原生实例对象。
 
+**参数**
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| obj | AnyObject | 是 | 要销毁的对象。 | 
 
 
 **返回值**
-| 类型 | 描述 |
-| :- | :- |
-| UIViewController | 当前 app 显示的 UIViewController | 
+| 类型 |
+| :- |
+| void | 
 
 
-<!-- UTSJSON.UTSiOS.getCurrentViewController.test -->
+<!-- UTSJSON.UTSiOS.destroyInstance.test -->
 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-### getKeyWindow()
-
-获取当前app的keyWindow。
-
-
-
-**返回值**
-| 类型 | 描述 |
+| iOS | iOS UTS 插件 |
 | :- | :- |
-| UIWindow | 当前app的keyWindow. | 
-
-
-<!-- UTSJSON.UTSiOS.getKeyWindow.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| x | 4.25 |
 
 
 **uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
 
 
 
@@ -70,7 +51,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| UIColor | UIColor 实例对象 注：如转换失败 默认会返回 黑色 | 
+| UIColor | UIColor 实例对象，转换失败则返回黑色 | 
 
 
 <!-- UTSJSON.UTSiOS.colorWithString.test -->
@@ -78,94 +59,15 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-### getResourcePath(resourceName)
-
-获取资源文件的原生平台路径。
-
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| resourceName | string | 是 | 资源文件相对于项目的绝对路径, 如：“/static/logo.png” | 
-
-
-**返回值**
-| 类型 | 描述 |
+| iOS | iOS UTS 插件 |
 | :- | :- |
-| string | 该资源在原生平台的路径 | 
-
-
-<!-- UTSJSON.UTSiOS.getResourcePath.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
-
-
-### getUserAgent()
-
-获取当前应用的 UserAgent。
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | 当前应用的 UserAgent。 | 
-
-
-<!-- UTSJSON.UTSiOS.getUserAgent.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
+| iOS UTS 插件 |
 | :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-### getDataPath()
-
-获取当前运行app的dataPath
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | 当前运行app的dataPath。 | 
-
-
-<!-- UTSJSON.UTSiOS.getDataPath.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
+| √ |
 
 
 
@@ -190,43 +92,505 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
 
 
 
-### destroyInstance()
+### getAppId()
 
-销毁指定的原生实例对象。
+获取当前运行的app的AppId。
 
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| obj | AnyObject | 是 | 要销毁的对象。 | 
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | 当前运行的app的AppId。 | 
+
+
+<!-- UTSJSON.UTSiOS.getAppId.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+<!-- UTSJSON.UTSiOS.getAppId.tutorial -->
+
+
+### getAppName()
+
+获取manifest.json 中配置的应用名称
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | 应用名称。 | 
+
+
+<!-- UTSJSON.UTSiOS.getAppName.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+<!-- UTSJSON.UTSiOS.getAppName.tutorial -->
+
+
+### getAppTheme()
+
+获取App当前主题。
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | App当前主题信息。 | 
+
+
+<!-- UTSJSON.UTSiOS.getAppTheme.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.18 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+<!-- UTSJSON.UTSiOS.getAppTheme.tutorial -->
+
+
+### getAppVersion()
+
+获取manifest.json 中配置的应用版本名称。
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | 应用版本名称。 | 
+
+
+<!-- UTSJSON.UTSiOS.getAppVersion.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+<!-- UTSJSON.UTSiOS.getAppVersion.tutorial -->
+
+
+### getAppVersionCode()
+
+获取manifest.json 中配置的应用版本号。
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | 应用版本号。 | 
+
+
+<!-- UTSJSON.UTSiOS.getAppVersionCode.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+<!-- UTSJSON.UTSiOS.getAppVersionCode.tutorial -->
+
+
+### getAppWgtVersion()
+
+获取应用资源（wgt）的版本名称。
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | 应用资源（wgt）的版本名称。 | 
+
+
+<!-- UTSJSON.UTSiOS.getAppWgtVersion.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+<!-- UTSJSON.UTSiOS.getAppWgtVersion.tutorial -->
+
+
+### getCurrentViewController()
+
+获取当前 app 显示的 UIViewController。
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| UIViewController | 当前 app 显示的 UIViewController | 
+
+
+<!-- UTSJSON.UTSiOS.getCurrentViewController.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+
+### getDataPath()
+
+获取当前运行app的dataPath
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | 当前运行app的dataPath。 | 
+
+
+<!-- UTSJSON.UTSiOS.getDataPath.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+
+### getDeviceId()
+
+获取设备 deviceId。
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | 当前设备的 deviceId | 
+
+
+<!-- UTSJSON.UTSiOS.getDeviceId.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+<!-- UTSJSON.UTSiOS.getDeviceId.tutorial -->
+
+
+### getInnerVersion()
+
+获取引擎版本号。
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | 引擎版本号。 | 
+
+
+<!-- UTSJSON.UTSiOS.getInnerVersion.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+<!-- UTSJSON.UTSiOS.getInnerVersion.tutorial -->
+
+
+### getModel()
+
+获取设备型号。
+
 
 
 **返回值**
 | 类型 |
 | :- |
-| void | 
+| string | 
 
 
-<!-- UTSJSON.UTSiOS.destroyInstance.test -->
+<!-- UTSJSON.UTSiOS.getModel.test -->
 
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.25 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
 
+
+<!-- UTSJSON.UTSiOS.getModel.tutorial -->
+
+
+### getKeyWindow()
+
+获取当前app的keyWindow。
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| UIWindow | 当前app的keyWindow. | 
+
+
+<!-- UTSJSON.UTSiOS.getKeyWindow.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+
+### getOsLanguage()
+
+获取操作系统设置的语言。
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | os language。 | 
+
+
+<!-- UTSJSON.UTSiOS.getOsLanguage.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+<!-- UTSJSON.UTSiOS.getOsLanguage.tutorial -->
+
+
+### getResourcePath(resourceName)
+
+获取资源文件的原生平台路径。
+
+**参数**
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| resourceName | string | 是 | 资源文件相对于项目的绝对路径, 如：“/static/logo.png” | 
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | 该资源在原生平台的路径 | 
+
+
+<!-- UTSJSON.UTSiOS.getResourcePath.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+
+### getSystemSetting()
+
+获取系统设置信息。
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| Map\<string, any> | 系统设置信息。 | 
+
+
+<!-- UTSJSON.UTSiOS.getSystemSetting.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
+
+
+<!-- UTSJSON.UTSiOS.getSystemSetting.tutorial -->
+
+
+### getUserAgent()
+
+获取当前应用的 UserAgent。
+
+
+
+**返回值**
+| 类型 | 描述 |
+| :- | :- |
+| string | 当前应用的 UserAgent。 | 
+
+
+<!-- UTSJSON.UTSiOS.getUserAgent.test -->
+
+**兼容性 <Help />**
+
+**uni-app x 兼容性 <Help />**
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
+
+
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 |
+| :- |
+| √ |
 
 
 
@@ -247,100 +611,19 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| √ |
 
 
 <!-- UTSJSON.UTSiOS.isSimulator.tutorial -->
 
-### getDeviceId()
-
-获取设备 deviceId。
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | 当前设备的 deviceId | 
-
-
-<!-- UTSJSON.UTSiOS.getDeviceId.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getDeviceId.tutorial -->
-
-### getModel()
-
-获取设备型号。
-
-
-
-**返回值**
-| 类型 |
-| :- |
-| string | 
-
-
-<!-- UTSJSON.UTSiOS.getModel.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getModel.tutorial -->
-
-### getAppId()
-
-获取当前运行的app的AppId。
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | 当前运行的app的AppId。 | 
-
-
-<!-- UTSJSON.UTSiOS.getAppId.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getAppId.tutorial -->
 
 ### isUniMp()
 
@@ -359,425 +642,16 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
+| iOS | iOS UTS 插件 |
+| :- | :- |
+| x | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
-
+| iOS UTS 插件 |
+| :- |
+| √ |
 
 
 <!-- UTSJSON.UTSiOS.isUniMp.tutorial -->
 
-### getAppName()
-
-获取manifest.json 中配置的应用名称
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | 应用名称。 | 
-
-
-<!-- UTSJSON.UTSiOS.getAppName.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getAppName.tutorial -->
-
-### getAppVersion()
-
-获取manifest.json 中配置的应用版本名称。
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | 应用版本名称。 | 
-
-
-<!-- UTSJSON.UTSiOS.getAppVersion.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getAppVersion.tutorial -->
-
-### getAppVersionCode()
-
-获取manifest.json 中配置的应用版本号。
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | 应用版本号。 | 
-
-
-<!-- UTSJSON.UTSiOS.getAppVersionCode.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getAppVersionCode.tutorial -->
-
-### getOsLanguage()
-
-获取操作系统设置的语言。
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | os language。 | 
-
-
-<!-- UTSJSON.UTSiOS.getOsLanguage.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getOsLanguage.tutorial -->
-
-### getAppWgtVersion()
-
-获取应用资源（wgt）的版本名称。
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | 应用资源（wgt）的版本名称。 | 
-
-
-<!-- UTSJSON.UTSiOS.getAppWgtVersion.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getAppWgtVersion.tutorial -->
-
-### getInnerVersion()
-
-获取引擎版本号。
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | 引擎版本号。 | 
-
-
-<!-- UTSJSON.UTSiOS.getInnerVersion.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getInnerVersion.tutorial -->
-
-### getSystemSetting()
-
-获取系统设置信息。
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| Map\<string, any> | 系统设置信息。 | 
-
-
-<!-- UTSJSON.UTSiOS.getSystemSetting.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.11 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getSystemSetting.tutorial -->
-
-### getOsTheme()
-
-获取系统当前主题。
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | 系统当前主题信息。 | 
-
-
-<!-- UTSJSON.UTSiOS.getOsTheme.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.18 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getOsTheme.tutorial -->
-
-### onOsThemeChange(callback)
-
-监听系统主题变化（需要调用取消监听避免内存泄露）。
-
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| callback | (theme: string) => void | 是 | 监听函数 | 
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| number | 监听id。 | 
-
-
-<!-- UTSJSON.UTSiOS.onOsThemeChange.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.18 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.onOsThemeChange.tutorial -->
-
-### offOsThemeChange(callbackId)
-
-取消监听系统主题变化。
-
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| callbackId | number | 是 | 监听id | 
-
-
-**返回值**
-| 类型 |
-| :- |
-| void | 
-
-
-<!-- UTSJSON.UTSiOS.offOsThemeChange.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.18 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.offOsThemeChange.tutorial -->
-
-### getAppTheme()
-
-获取App当前主题。
-
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| string | App当前主题信息。 | 
-
-
-<!-- UTSJSON.UTSiOS.getAppTheme.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.18 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.getAppTheme.tutorial -->
-
-### setAppTheme(theme)
-
-设置App当前主题。
-
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| theme | string | 是 | 要设置的主题信息 | 
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| void | App当前主题信息。 | 
-
-
-<!-- UTSJSON.UTSiOS.setAppTheme.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.18 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.setAppTheme.tutorial -->
-
-### onAppThemeChange(callback)
-
-监听app theme变化（需要调用取消监听避免内存泄露）。
-
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| callback | (theme: string) => void | 是 | 监听函数 | 
-
-
-**返回值**
-| 类型 | 描述 |
-| :- | :- |
-| number | 监听id。 | 
-
-
-<!-- UTSJSON.UTSiOS.onAppThemeChange.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.18 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.onAppThemeChange.tutorial -->
-
-### offAppThemeChange(callbackId)
-
-取消监听app theme变化。
-
-**参数**
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| callbackId | number | 是 | 监听id | 
-
-
-**返回值**
-| 类型 |
-| :- |
-| void | 
-
-
-<!-- UTSJSON.UTSiOS.offAppThemeChange.test -->
-
-**兼容性 <Help />**
-
-**uni-app x 兼容性 <Help />**
-| iOS |
-| :- |
-| 4.18 |
-
-
-**uni-app 兼容性 <Help />**
-
-
-
-<!-- UTSJSON.UTSiOS.offAppThemeChange.tutorial -->

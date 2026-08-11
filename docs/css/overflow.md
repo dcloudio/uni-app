@@ -208,7 +208,11 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       </view>
       <text>拍平</text>
       <view class="backgroundview">
-        <view class="" style="overflow: visible;width: 100px;height: 100px;background-color: green;box-shadow: 10px 10px #000;margin-top: 10px;" flatten>
+        <view class="" style="overflow: visible;width: 100px;height: 100px;background-color: green;box-shadow: 10px 10px #000;margin-top: 10px;"
+          <!-- #ifndef APP-ANDROID -->
+          flatten
+          <!-- #endif -->
+        >
           <text style="width:170px; background-color: greenyellow;" flatten>文字文字文字文字文字</text>
         </view>
       </view>
@@ -259,7 +263,11 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
         		<view style="overflow: visible; width: 50px; height: 100px;">
         			<view style="width: 50px; height: 130px; background-color: greenyellow;position: absolute;" flatten></view>
         		</view>
-            <view style="overflow: hidden; width: 50px; height: 100px;" flatten></view>
+            <view style="overflow: hidden; width: 50px; height: 100px;"
+              <!-- #ifndef APP-ANDROID -->
+              flatten
+              <!-- #endif -->
+            ></view>
           </view>
         </view>
       </view>

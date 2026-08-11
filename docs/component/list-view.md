@@ -16,9 +16,9 @@
 
 list-view和scroll-view都是滚动组件，list适用于长列表场景，其他场景适用于scroll-view。
 
-在App中，基于recycle-view的list，才能实现长列表的渲染资源复用，以保障列表加载很多项目时，不会一直增加渲染内容。list-view就是基于recycle-view的list组件。
+在App中，基于复用回收的list，才能实现长列表的渲染资源复用，以保障列表加载很多项目时，不会一直增加渲染内容。list-view就是基于复用回收的list组件。
 
-每个list由1个父组件list-view及若干子组件list-item构成。仅有有限子组件可识别，[见下](#children-tags)
+每个list由1个父组件list-view及若干子组件list-item构成。可接收的子组件有限制，[见下](#children-tags)
 
 
 ### 兼容性 <Help />
@@ -26,8 +26,6 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 | :- | :- | :- | :- | :- |
 | 4.02 | 4.41 | 3.9 | 4.11 | 4.61 |
 
-
-目前微信小程序下，list-view被编译为scroll-view。目前uni-app x还未优化skyline的配置，未来会把list-view编译为skyline的list-view。
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
@@ -184,10 +182,13 @@ UniScrollEvent -- Extends --> UniEvent
 
 ### 自定义下拉刷新样式
 
-list-view组件有默认的下拉刷新样式，如果想自定义，则需使用自定义下拉刷新。
+list-view组件有默认的下拉刷新样式，使用方式与scroll-view的自定义下拉刷新相同。[详见](./scroll-view.md#customrefresh)
 
 1. 设置`refresher-default-style`属性为 none 不使用默认样式
 2. 设置 list-item 定义自定义下拉刷新元素并声明为 `slot="refresher"`，需要设置刷新元素宽高信息否则可能无法正常显示！
+
+uni-ui x 提供了开源的自定义下拉刷新组件，可以体验：[uni-refresh-box](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-refresh-box.html)
+
    ```html
    <template>
    	<list-view refresher-default-style="none" :refresher-enabled="true" :refresher-triggered="refresherTriggered"
@@ -207,9 +208,8 @@ list-view组件有默认的下拉刷新样式，如果想自定义，则需使�
    ```
 3. 通过组件提供的refresherpulling、refresherrefresh、refresherrestore、refresherabort下拉刷新事件调整自定义下拉刷新元素！实现预期效果
 
-**注意：**
-+ 3.93版本开始支持
-+ 目前自定义下拉刷新元素不支持放在list-view的首个子元素位置上。可能无法正常显示
+** VDOM模式注意：**
++ 自定义下拉刷新元素不支持放在list-view的首个子元素位置上。可能无法正常显示
 
 ### 嵌套模式
 
@@ -670,27 +670,28 @@ VDOM模式下，app平台list-view仅对渲染层复用，不会对vue数据层�
 
 - list-item内部组件如果有内部状态不受绑定数据影响则需要依赖onReuse、onRecycle等生命周期函数进行状态重置，否则会出现状态错乱的问题，参考：[组件生命周期文档](../vue/component.md#component-lifecycle)
 - list-view下仅第一个在list-item上的v-for支持复用，其他list-item会被当做view对待。
-- list-item的v-for必须要有:key属性，否则不会复用，此时list-item也会被当做view对待
+- list-item的**v-for必须要有:key属性**，否则不会复用，此时list-item也会被当做view对待
 - list-item不支持设置margin样式
 - 不支持横向滚动
 
-### VDOM模式性能优化及注意事项
+### 列表性能优化@performance
 
-长列表是非常需要注意性能优化的。
-当你的长列表卡顿时，请注意：
+1. 不要放大图。video组件的封面图不能太大。
+2. 尽可能减少列表item中的元素数量
+3. 没有必要监听事件的View、text、image，都设置flatten拍平属性
+4. 不要包装太多vue组件，包括native-view组件。原始的view、text、image的性能最高
+5. 减少圆角阴影的使用
 
-1. 尽可能减少列表item中的组件数量。
-2. 排查代码的内存泄漏，尤其是on后没有off。
-3. 不要一次性加载太多数据，而是分批加载。
-4. 对VNode、DOM进行虚拟化
-
+#### VDOM模式额外注意事项
+VDOM模式的长列表性能要弱于蒸汽模式很多。推荐升级蒸汽模式。如果暂时不能升级，需要注意以下优化方式：
+1. 不要一次性加载太多数据，而是分批加载。
+2. 对VNode、DOM进行虚拟化
 这些技巧另有专门[教程](../performance.md#长列表)
 
 另外在用法上需要注意：
 
 1. 避免对list-item组件的子元素设置event事件，复用后list-item组件部分子元素可能无法正常响应event，有相关业务需要对子元素设置event事件，可对list-item组件设置独立的type实现不复用。
 2. App-iOS平台：使用 v-for 遍历集合方式创建 list-item 时，需要绑定 :key 并要保证值唯一，最好不要使用 index，否则可能会引起 list-item 显示顺序错乱的问题；
-3. App平台scroll-x、scroll-y属性不支持同时设置为true，同时设置true时仅scroll-y生效。4.0版本开始scroll-x、scroll-y已废弃，请使用direction属性。
 4. App平台list-view组件默认高度取值：
 	- list-view组件的子元素高度之和未超过list-view组件的父元素高度：
 		+ list-view组件的默认高度取值为子元素高度之和

@@ -218,20 +218,7 @@ const onSelect = (index: string) => {
 		}
 		// console.log('选择了索引：', index)
 		const childId = 'idx-' + index
-		// #ifndef VUE3-VAPOR && APP-HARMONY
-		// TODO 鸿蒙蒸汽模式修复scrollIntoView不能准确滚动到孙子节点的问题后也使用 scrollIntoView
 		data.indexViewID = childId
-		// #endif
-		// #ifdef VUE3-VAPOR && APP-HARMONY
-		const element = uni.getElementById(childId)
-		if (element != null) {
-			// 使用 scrollTop 属性滚动
-			const rect = element.getBoundingClientRect()
-			const listRect = list.getBoundingClientRect()
-			const scrollTop = list.scrollTop + (rect.top - listRect.top)
-			list.scrollTop = scrollTop
-		}
-		// #endif
 	}
 
 	defineExpose({

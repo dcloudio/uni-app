@@ -477,7 +477,7 @@ uni.chooseLocation 虽然是一个框架内置的页面。但提供了丰富的�
 - 以 .uni-choose-location-light 开头的为light模式下的样式
 - 以 .uni-choose-location-dark 开头的为dark模式下的样式
 
-样式必须以 `!important;` 结尾才能生效，以下是css的class名称，写入同名名称就可以覆盖。
+样式必须以 `!important;` 结尾才能生效，以下是 CSS class 名称，写入同名 class 即可覆盖。
 
 文本样式除了下方列出的 color 和 background-color 外，你还可以替换 font-family 等任何 text 标签支持的样式。
 

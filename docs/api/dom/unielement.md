@@ -1434,8 +1434,8 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| type | string | 是 | 微信小程序: x; HarmonyOS: x | 事件类型 |
-| callback | (event: T) => R | 是 | 微信小程序: x; HarmonyOS: x | 事件监听器 T表示event类型，R表示返回值类型 | 
+| type | string | 是 | 微信小程序: x | 事件类型 |
+| callback | (event: T) => R | 是 | 微信小程序: x | 事件监听器 T表示event类型，R表示返回值类型 | 
 
 
 ##### 返回值 
@@ -1462,8 +1462,8 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| type | string | 是 | 微信小程序: x; HarmonyOS: x | 事件类型 |
-| callbackWrapper | UniCallbackWrapper | 是 | 微信小程序: x; HarmonyOS: x | 事件监听回调封装类 | 
+| type | string | 是 | 微信小程序: x | 事件类型 |
+| callbackWrapper | UniCallbackWrapper | 是 | 微信小程序: x | 事件监听回调封装类 | 
 
 
 
@@ -2162,31 +2162,31 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| width | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制宽度属性的过渡效果 |
-| height | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制高度属性的过渡效果 |
-| margin | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制外边距属性的过渡效果 |
-| marginTop | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制上外边距属性的过渡效果 |
-| marginBottom | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制下外边距属性的过渡效果 |
-| marginLeft | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制左外边距属性的过渡效果 |
-| marginRight | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制右外边距属性的过渡效果 |
-| left | Union | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制左侧位置属性的过渡效果 |
-| right | Union | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制右侧位置属性的过渡效果 |
-| top | Union | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制顶部位置属性的过渡效果 |
-| bottom | Union | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制底部位置属性的过渡效果 |
-| padding | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制内边距属性的过渡效果 |
-| paddingLeft | Union | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制左内边距属性的过渡效果 |
-| paddingRight | Union | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制右内边距属性的过渡效果 |
-| paddingTop | Union | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制上内边距属性的过渡效果 |
-| paddingBottom | Union | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制下内边距属性的过渡效果 |
-| opacity | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制透明度属性的过渡效果 |
-| backgroundColor | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制背景颜色属性的过渡效果 |
-| borderColor | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制边框颜色属性的过渡效果 |
-| borderTopColor | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制上边框颜色属性的过渡效果 |
-| borderBottomColor | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制下边框颜色属性的过渡效果 |
-| borderLeftColor | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制左边框颜色属性的过渡效果 |
-| borderRightColor | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制右边框颜色属性的过渡效果 |
-| transform | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制变换属性的过渡效果 |
-| transformOrigin | Union | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制元素变形的原点的过渡效果 |
+| width | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制宽度属性的过渡效果 |
+| height | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制高度属性的过渡效果 |
+| margin | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制外边距属性的过渡效果 |
+| marginTop | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制上外边距属性的过渡效果 |
+| marginBottom | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制下外边距属性的过渡效果 |
+| marginLeft | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制左外边距属性的过渡效果 |
+| marginRight | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制右外边距属性的过渡效果 |
+| left | Array&lt;any&gt; | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制左侧位置属性的过渡效果 |
+| right | Array&lt;any&gt; | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制右侧位置属性的过渡效果 |
+| top | Array&lt;any&gt; | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制顶部位置属性的过渡效果 |
+| bottom | Array&lt;any&gt; | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制底部位置属性的过渡效果 |
+| padding | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制内边距属性的过渡效果 |
+| paddingLeft | Array&lt;any&gt; | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制左内边距属性的过渡效果 |
+| paddingRight | Array&lt;any&gt; | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制右内边距属性的过渡效果 |
+| paddingTop | Array&lt;any&gt; | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制上内边距属性的过渡效果 |
+| paddingBottom | Array&lt;any&gt; | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制下内边距属性的过渡效果 |
+| opacity | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制透明度属性的过渡效果 |
+| backgroundColor | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制背景颜色属性的过渡效果 |
+| borderColor | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制边框颜色属性的过渡效果 |
+| borderTopColor | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制上边框颜色属性的过渡效果 |
+| borderBottomColor | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制下边框颜色属性的过渡效果 |
+| borderLeftColor | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制左边框颜色属性的过渡效果 |
+| borderRightColor | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制右边框颜色属性的过渡效果 |
+| transform | Array&lt;any&gt; | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制变换属性的过渡效果 |
+| transformOrigin | Array&lt;any&gt; | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制元素变形的原点的过渡效果 |
 | offset | number | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 关键帧的偏移量。为0.0和1.0之间的数字。如果此值缺失，则关键帧将在相邻关键帧之间均匀分布。 |
 
 ##### UniAnimationOption 的属性值 @unianimationoption-values 

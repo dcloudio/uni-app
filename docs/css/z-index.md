@@ -431,9 +431,6 @@ web端在**没有其他会产生层叠上下文的属性干扰时**不会创建�
     </view>
   </view>
 </template>
-<script>
-export default {}
-</script>
 <style>
   .square {
     width: 100px;
@@ -463,9 +460,6 @@ web端对`position: fixed;`的元素设置z-index，此元素仍会在所属的�
     </view>
   </view>
 </template>
-<script>
-export default {}
-</script>
 <style>
   .square {
     width: 100px;
