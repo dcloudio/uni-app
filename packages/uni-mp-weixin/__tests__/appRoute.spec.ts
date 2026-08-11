@@ -2,22 +2,19 @@ import { initUni } from '@dcloudio/uni-mp-core'
 
 import * as protocols from '../src/api/protocols'
 
-declare global {
-  // eslint-disable-next-line no-var
-  var my: any
-}
+const testGlobal = global as any
 
 describe('mp-weixin app route', () => {
-  const originalGlobal = (global as any).__GLOBAL__
-  const originalPlatform = (global as any).__PLATFORM__
+  const originalGlobal = testGlobal.__GLOBAL__
+  const originalPlatform = testGlobal.__PLATFORM__
   const originalX = global.__X__
-  const originalMy = global.my
+  const originalMy = testGlobal.my
 
   afterEach(() => {
-    ;(global as any).__GLOBAL__ = originalGlobal
-    ;(global as any).__PLATFORM__ = originalPlatform
+    testGlobal.__GLOBAL__ = originalGlobal
+    testGlobal.__PLATFORM__ = originalPlatform
     global.__X__ = originalX
-    global.my = originalMy
+    testGlobal.my = originalMy
   })
 
   test('直接透传微信路由前置事件并保持 on/off 回调引用一致', () => {
@@ -25,10 +22,10 @@ describe('mp-weixin app route', () => {
       onBeforeAppRoute: jest.fn(),
       offBeforeAppRoute: jest.fn(),
     }
-    ;(global as any).__GLOBAL__ = platform
-    ;(global as any).__PLATFORM__ = 'mp-weixin'
+    testGlobal.__GLOBAL__ = platform
+    testGlobal.__PLATFORM__ = 'mp-weixin'
     global.__X__ = true
-    global.my = { canIUse: () => false }
+    testGlobal.my = { canIUse: () => false }
 
     const uniApi = initUni({}, protocols, platform)
     const listener = jest.fn()
@@ -56,10 +53,10 @@ describe('mp-weixin app route', () => {
       onBeforeAppRoute: jest.fn(),
       offBeforeAppRoute: jest.fn(),
     }
-    ;(global as any).__GLOBAL__ = platform
-    ;(global as any).__PLATFORM__ = 'mp-weixin'
+    testGlobal.__GLOBAL__ = platform
+    testGlobal.__PLATFORM__ = 'mp-weixin'
     global.__X__ = true
-    global.my = { canIUse: () => false }
+    testGlobal.my = { canIUse: () => false }
 
     const uniApi = initUni({}, protocols, platform)
     uniApi.offBeforeAppRoute()
@@ -73,10 +70,10 @@ describe('mp-weixin app route', () => {
         options.success({ errMsg: 'rewriteRoute:ok' })
       }),
     }
-    ;(global as any).__GLOBAL__ = platform
-    ;(global as any).__PLATFORM__ = 'mp-weixin'
+    testGlobal.__GLOBAL__ = platform
+    testGlobal.__PLATFORM__ = 'mp-weixin'
     global.__X__ = true
-    global.my = { canIUse: () => false }
+    testGlobal.my = { canIUse: () => false }
 
     const uniApi = initUni({}, protocols, platform)
     const success = jest.fn()

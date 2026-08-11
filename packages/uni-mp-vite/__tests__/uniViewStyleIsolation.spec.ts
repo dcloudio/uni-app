@@ -1,5 +1,7 @@
 const uniView = require('../lib/filters/uniView.cjs.js')
 
+export {}
+
 describe('uniView styleIsolation class helper', () => {
   test('按 mask 展开 class 并处理空白', () => {
     expect(uniView.c(' foo\tbar\nbaz\rqux\f ', 3)).toBe(

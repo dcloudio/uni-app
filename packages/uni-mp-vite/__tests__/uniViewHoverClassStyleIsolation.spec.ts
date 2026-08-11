@@ -1,5 +1,7 @@
 const uniView = require('../lib/filters/uniView.cjs.js')
 
+export {}
+
 describe('uniView styleIsolation hover-class helper', () => {
   test('保留 none 并复用普通 class 的展开和幂等规则', () => {
     expect(uniView.h('none', 3)).toBe('none')
