@@ -364,6 +364,8 @@ button 的 size、type 属性是预置样式，适合快速使用；如需修改
 
 APP 蒸汽模式不支持属性选择器，建议使用 class 或 style 自定义样式。
 
+APP蒸汽模式、WEB 和微信小程序平台的 button 组件在 `plain` 为 `true` 时，通过 class 配置的 `background-color` 样式不生效，只能通过 style 设置。
+
 ```html
 <template>
 	<button class="custom-button" hover-class="custom-button-hover">按钮</button>
