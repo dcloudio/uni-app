@@ -33189,6 +33189,29 @@ const createWorker = /* @__PURE__ */ defineSyncApi(
     return new WorkerImpl();
   }
 );
+const uasmCache = /* @__PURE__ */ new Map();
+function loadUASM(module) {
+  const descriptor = module;
+  if (!descriptor || typeof descriptor.id !== "string" || typeof descriptor.loader !== "function") {
+    return Promise.reject(new Error("uni.loadUASM 参数未经过编译处理"));
+  }
+  let promise = uasmCache.get(descriptor.id);
+  if (!promise) {
+    promise = descriptor.loader().then((loaded) => {
+      if (typeof loaded.default !== "function") {
+        throw new Error(`uasm 插件[${descriptor.id}]的默认导出必须是函数`);
+      }
+      return loaded.default();
+    });
+    uasmCache.set(descriptor.id, promise);
+    promise.catch(() => {
+      if (uasmCache.get(descriptor.id) === promise) {
+        uasmCache.delete(descriptor.id);
+      }
+    });
+  }
+  return promise;
+}
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -33278,6 +33301,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   interceptors,
   invokePushCallback,
   loadFontFace,
+  loadUASM,
   login,
   makePhoneCall,
   navigateBack,
@@ -33614,6 +33638,7 @@ export {
   interceptors,
   invokePushCallback,
   loadFontFace,
+  loadUASM,
   login,
   makePhoneCall,
   navigateBack,
