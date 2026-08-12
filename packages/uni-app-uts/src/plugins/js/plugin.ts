@@ -9,6 +9,7 @@ import {
   buildUniExtApis,
   createEncryptCssUrlReplacer,
   emptyDir,
+  getHarmonyRuntimePackageName,
   hash,
   injectCssPlugin,
   injectCssPostPlugin,
@@ -148,6 +149,8 @@ export function createUniAppJsEnginePlugin(
   platform: 'app-android' | 'app-ios' | 'app-harmony'
 ) {
   return function uniAppJsEnginePlugin(): UniVitePlugin {
+    const isX = process.env.UNI_APP_X === 'true'
+    const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
     const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
     const outputDir = process.env.UNI_OUTPUT_DIR
     const uvueOutputDir = uvueOutDir(platform)
@@ -187,17 +190,18 @@ export function createUniAppJsEnginePlugin(
     }
     const isESM = process.env.UNI_APP_OUTPUT_FORMAT === 'esm'
 
-    const paths: Record<string, string> = isESM
-      ? {
-          // vue: '@dcloudio/uni-app-x-runtime',
-          '@vue/shared': '@dcloudio/uni-app-x-runtime',
-        }
-      : {}
-
-    const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
     const isAndroid = platform === 'app-android'
     const isIOS = platform === 'app-ios'
     const isHarmony = platform === 'app-harmony'
+    // TODO 目前仅鸿蒙支持esm格式
+    const paths: Record<string, string> =
+      isESM && isHarmony
+        ? {
+            // vue: getHarmonyRuntimePackageName(isX, isDom2),
+            '@vue/shared': getHarmonyRuntimePackageName(isX, isDom2),
+          }
+        : {}
+
     // 只缓存 sourcemap 内容 hash，不缓存完整内容，避免用空间换时间。
     const sourceMapHashCache: Map<string, string> = new Map<string, string>()
     // 仅限定鸿蒙 DOM2 开发模式，避免影响其它平台和生产构建。
