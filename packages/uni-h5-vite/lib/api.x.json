@@ -86,6 +86,7 @@
   "interceptors",
   "invokePushCallback",
   "loadFontFace",
+  "loadUASM",
   "login",
   "makePhoneCall",
   "navigateBack",
