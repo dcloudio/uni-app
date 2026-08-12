@@ -6480,8 +6480,7 @@ class StatApp {
         return '';
     }
     resolveFirstFlushDeferMs() {
-        if (getRawPlatform() === 'mp-weixin' &&
-            MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT) {
+        if (getRawPlatform() === 'mp-weixin' && MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT) {
             return MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS;
         }
         if (isApp() && !getAppChannel()) {

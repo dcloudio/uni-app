@@ -2563,7 +2563,7 @@ const UVUE_VAPOR_APP_EASYCOMS = [
     'video',
     'flow-item',
     'waterflow',
-    'web-view',
+    'web-view'
 ];
 
 const APP_NATIVE_TAGS = [

@@ -1,11 +1,23 @@
 import { AllNode, AttributeNode, BaseCodegenResult, BindingMetadata, CodegenOptions as CodegenOptions$1, CodegenSourceMapGenerator, CommentNode, CompilerCompatOptions, CompilerError, CompilerOptions as CompilerOptions$1, CompoundExpressionNode, DirectiveNode, ElementNode, Node as Node$1, NodeTypes, RootNode, SimpleExpressionNode, SourceLocation, TemplateChildNode, TemplateNode, TransformOptions, parse } from "@vue/compiler-dom";
 import { App, BaseTransitionProps, Component, ComponentCustomElementInterface, ComponentInjectOptions, ComponentObjectPropsOptions, ComponentOptions, ComponentOptionsBase, ComponentOptionsMixin, ComponentProvideOptions, ComponentPublicInstance, ComputedOptions, ConcreteComponent, CreateAppFunction, CreateComponentPublicInstanceWithMixins, DefineComponent, Directive, EmitsOptions, EmitsToProps, ExtractPropTypes, FunctionalComponent, GenericComponentInstance, HydrationRenderer, MethodOptions, ObjectDirective, RenderFunction, Renderer, RendererOptions, RootHydrateFunction, RootRenderFunction, SetupContext, SlotsType, VNodeRef } from "@vue/runtime-core";
-import { AllowedComponentProps, AsyncComponentInternalOptions, AsyncComponentLoader, AsyncComponentOptions, ComponentCustomProps, ComponentInternalOptions, ComponentObjectPropsOptions as ComponentObjectPropsOptions$1, ComponentPropsOptions, ComponentTypeEmits, CreateAppFunction as CreateAppFunction$1, CustomElementOptions, DirectiveModifiers, EffectScope, EmitFn, EmitsOptions as EmitsOptions$1, EmitsToProps as EmitsToProps$1, ExtractDefaultPropTypes, ExtractPropTypes as ExtractPropTypes$1, GenericAppContext, GenericComponentInstance as GenericComponentInstance$1, LifecycleHook, NULL_DYNAMIC_COMPONENT, NormalizedPropsOptions, ObjectEmitsOptions, Plugin, ReservedProps, SchedulerJob, ShallowUnwrapRef, SuspenseBoundary, TransitionHooks, TransitionProps, TransitionState, TypeEmitsToOptions, VNode, VueElementBase } from "@vue/runtime-dom";
+import { AllowedComponentProps, AsyncComponentInternalOptions, AsyncComponentLoader, AsyncComponentOptions, ComponentCustomProps, ComponentInternalOptions, ComponentObjectPropsOptions as ComponentObjectPropsOptions$1, ComponentPropsOptions, ComponentTypeEmits, CreateAppFunction as CreateAppFunction$1, CustomElementOptions, DirectiveModifiers, EffectScope, EmitFn, EmitsOptions as EmitsOptions$1, EmitsToProps as EmitsToProps$1, ExtractDefaultPropTypes, ExtractPropTypes as ExtractPropTypes$1, GenericAppContext, GenericComponentInstance as GenericComponentInstance$1, KeepAliveProps, LifecycleHook, NULL_DYNAMIC_COMPONENT, NormalizedPropsOptions, ObjectEmitsOptions, Plugin, ReservedProps, SchedulerJob, ShallowUnwrapRef, SuspenseBoundary, TeleportProps, TransitionGroupProps, TransitionHooks, TransitionProps, TransitionState, TypeEmitsToOptions, VNode, VueElementBase } from "@vue/runtime-dom";
 import { EffectScope as EffectScope$1, ReactiveEffect, Ref, ShallowRef } from "@vue/reactivity";
-import { IsKeyValues, Namespace, NormalizedStyle, Prettify } from "@vue/shared";
+import { IsKeyValues, Namespace, NormalizedStyle, Prettify, VaporSlotFlags, extend } from "@vue/shared";
 import { ImportItem } from "@vue/compiler-core";
+import { ParserOptions } from "@babel/parser";
 
 //#region \0rolldown/runtime.js
+//#endregion
+//#region packages/runtime-dom/src/directives/vShow.d.ts
+declare const vShowOriginalDisplay: unique symbol;
+declare const vShowHidden: unique symbol;
+interface VShowElement extends HTMLElement {
+  [vShowOriginalDisplay]?: string;
+  [vShowHidden]?: boolean;
+}
+declare const vShow: ObjectDirective<VShowElement> & {
+  name: "show";
+};
 //#endregion
 //#region node_modules/.pnpm/@types+trusted-types@2.0.7/node_modules/@types/trusted-types/lib/index.d.ts
 declare class TrustedHTML {
@@ -22,6 +34,7 @@ declare const nodeOps: Omit<RendererOptions<Node, Element>, "patchProp">;
 type DOMRendererOptions = RendererOptions<Node, Element>;
 declare const patchProp: DOMRendererOptions["patchProp"];
 declare function shouldSetAsProp(el: Element, key: string, value: unknown, isSVG: boolean): boolean;
+declare function shouldSetAsPropForVueCE(el: any, key: string): boolean;
 //#endregion
 //#region packages/runtime-dom/src/components/Transition.d.ts
 declare const TRANSITION = "transition";
@@ -63,30 +76,19 @@ interface Position$1 {
   top: number;
   left: number;
 }
-type TransitionGroupProps = Omit<TransitionProps$1, "mode"> & {
+type TransitionGroupProps$1 = Omit<TransitionProps$1, "mode"> & {
   tag?: string;
   moveClass?: string;
 };
 declare const TransitionGroup: {
   new (): {
-    $props: TransitionGroupProps;
+    $props: TransitionGroupProps$1;
   };
 };
 declare function callPendingCbs(el: any): void;
 declare function baseApplyTranslation(oldPos: Position$1, newPos: Position$1, el: ElementWithTransition): boolean;
 declare function hasCSSTransform(el: ElementWithTransition, root: Node, moveClass: string): boolean;
 declare const handleMovedChildren: (el: ElementWithTransition, moveClass: string) => void;
-//#endregion
-//#region packages/runtime-dom/src/directives/vShow.d.ts
-declare const vShowOriginalDisplay: unique symbol;
-declare const vShowHidden: unique symbol;
-interface VShowElement extends HTMLElement {
-  [vShowOriginalDisplay]?: string;
-  [vShowHidden]?: boolean;
-}
-declare const vShow: ObjectDirective<VShowElement> & {
-  name: "show";
-};
 //#endregion
 //#region packages/runtime-dom/src/directives/vOn.d.ts
 declare const systemModifiers: readonly ["ctrl", "shift", "alt", "meta"];
@@ -157,183 +159,6 @@ declare const vModelSetSelected: (el: HTMLSelectElement, value: any) => void;
 declare function getValue(el: HTMLOptionElement | HTMLInputElement): any;
 declare const vModelDynamic: ObjectDirective<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
 type VModelDirective = typeof vModelText | typeof vModelCheckbox | typeof vModelSelect | typeof vModelRadio | typeof vModelDynamic;
-//#endregion
-//#region packages/runtime-dom/src/apiCustomElement.d.ts
-type VueElementConstructor<P = {}> = {
-  new (initialProps?: Record<string, any>): VueElement & P;
-};
-interface CustomElementOptions$1 {
-  styles?: string[];
-  shadowRoot?: boolean;
-  shadowRootOptions?: Omit<ShadowRootInit, "mode">;
-  nonce?: string;
-  configureApp?: (app: App) => void;
-}
-declare function defineCustomElement<Props, RawBindings = object>(setup: (props: Props, ctx: SetupContext) => RawBindings | RenderFunction, options?: Pick<ComponentOptions, "name" | "inheritAttrs" | "emits"> & CustomElementOptions$1 & {
-  props?: (keyof Props)[];
-}): VueElementConstructor<Props>;
-declare function defineCustomElement<Props, RawBindings = object>(setup: (props: Props, ctx: SetupContext) => RawBindings | RenderFunction, options?: Pick<ComponentOptions, "name" | "inheritAttrs" | "emits"> & CustomElementOptions$1 & {
-  props?: ComponentObjectPropsOptions<Props>;
-}): VueElementConstructor<Props>;
-declare function defineCustomElement<RuntimePropsOptions extends ComponentObjectPropsOptions = ComponentObjectPropsOptions, PropsKeys extends string = string, RuntimeEmitsOptions extends EmitsOptions = {}, EmitsKeys extends string = string, Data = {}, SetupBindings = {}, Computed extends ComputedOptions = {}, Methods extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, InjectOptions extends ComponentInjectOptions = {}, InjectKeys extends string = string, Slots extends SlotsType = {}, LocalComponents extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions, InferredProps = (string extends PropsKeys ? ComponentObjectPropsOptions extends RuntimePropsOptions ? {} : ExtractPropTypes<RuntimePropsOptions> : { [key in PropsKeys]?: any }), ResolvedProps = InferredProps & EmitsToProps<RuntimeEmitsOptions>>(options: CustomElementOptions$1 & {
-  props?: (RuntimePropsOptions & ThisType<void>) | PropsKeys[];
-} & ComponentOptionsBase<ResolvedProps, SetupBindings, Data, Computed, Methods, Mixin, Extends, RuntimeEmitsOptions, EmitsKeys, {}, InjectOptions, InjectKeys, Slots, LocalComponents, Directives, Exposed, Provide> & ThisType<CreateComponentPublicInstanceWithMixins<Readonly<ResolvedProps>, SetupBindings, Data, Computed, Methods, Mixin, Extends, RuntimeEmitsOptions, EmitsKeys, {}, false, InjectOptions, Slots, LocalComponents, Directives, Exposed>>, extraOptions?: CustomElementOptions$1): VueElementConstructor<ResolvedProps>;
-declare function defineCustomElement<T extends {
-  new (...args: any[]): ComponentPublicInstance<any>;
-}>(options: T, extraOptions?: CustomElementOptions$1): VueElementConstructor<T extends DefineComponent<infer P, any, any, any> ? P : unknown>;
-declare const defineSSRCustomElement: typeof defineCustomElement;
-declare const BaseClass: typeof HTMLElement;
-type InnerComponentDef = ConcreteComponent & CustomElementOptions$1;
-declare abstract class VueElementBase$1<E = Element, C = Component, Def extends CustomElementOptions$1 & {
-  props?: any;
-} = InnerComponentDef> extends BaseClass implements ComponentCustomElementInterface {
-  _isVueCE: boolean;
-  /**
-  * @internal
-  */
-  _instance: GenericComponentInstance | null;
-  /**
-  * @internal
-  */
-  _app: App | null;
-  /**
-  * @internal
-  */
-  _root: Element | ShadowRoot;
-  /**
-  * @internal
-  */
-  _nonce: string | undefined;
-  /**
-  * @internal
-  */
-  _teleportTargets?: Set<Element>;
-  protected _connected: boolean;
-  protected _resolved: boolean;
-  protected _numberProps: Record<string, true> | null;
-  protected _styleChildren: WeakSet<object>;
-  protected _pendingResolve: Promise<void> | undefined;
-  protected _parent: VueElementBase$1 | undefined;
-  protected _patching: boolean;
-  protected _dirty: boolean;
-  protected _def: Def;
-  protected _props: Record<string, any>;
-  protected _createApp: CreateAppFunction<E, C>;
-  /**
-  * dev only
-  */
-  protected _styles?: HTMLStyleElement[];
-  /**
-  * dev only
-  */
-  protected _childStyles?: Map<string, HTMLStyleElement[]>;
-  protected _ob?: MutationObserver | null;
-  protected _slots?: Record<string, Node[]>;
-  /**
-  * Check if this custom element needs hydration.
-  * Returns true if it has a pre-rendered declarative shadow root that
-  * needs to be hydrated.
-  */
-  protected abstract _needsHydration(): boolean;
-  protected abstract _mount(def: Def): void;
-  protected abstract _update(): void;
-  protected abstract _unmount(): void;
-  protected abstract _updateSlotNodes(slot: Map<Node, Node[]>): void;
-  constructor(def: Def, props: Record<string, any> | undefined, createAppFn: CreateAppFunction<E, C>);
-  connectedCallback(): void;
-  disconnectedCallback(): void;
-  protected _setParent(parent?: VueElementBase$1 | undefined): void;
-  protected _inheritParentContext(parent?: VueElementBase$1 | undefined): void;
-  private _processMutations;
-  /**
-  * resolve inner component definition (handle possible async component)
-  */
-  private _resolveDef;
-  private _mountComponent;
-  protected _processExposed(): void;
-  protected _processInstance(): void;
-  private _resolveProps;
-  private _setAttr;
-  /**
-  * @internal
-  */
-  protected _getProp(key: string): any;
-  /**
-  * @internal
-  */
-  _setProp(key: string, val: any, shouldReflect?: boolean, shouldUpdate?: boolean): void;
-  protected _applyStyles(styles: string[] | undefined, owner?: ConcreteComponent): void;
-  /**
-  * Only called when shadowRoot is false
-  */
-  private _parseSlots;
-  /**
-  * Only called when shadowRoot is false
-  */
-  protected _renderSlots(): void;
-  /**
-  * @internal
-  */
-  private _getSlots;
-  /**
-  * @internal
-  */
-  _injectChildStyle(comp: ConcreteComponent & CustomElementOptions$1): void;
-  /**
-  * @internal
-  */
-  _beginPatch(): void;
-  /**
-  * @internal
-  */
-  _endPatch(): void;
-  /**
-  * @internal
-  */
-  _hasShadowRoot(): boolean;
-  /**
-  * @internal
-  */
-  _removeChildStyle(comp: ConcreteComponent): void;
-}
-declare class VueElement extends VueElementBase$1<Element, Component, InnerComponentDef> {
-  constructor(def: InnerComponentDef, props?: Record<string, any> | undefined, createAppFn?: CreateAppFunction<Element, Component>);
-  protected _needsHydration(): boolean;
-  protected _mount(def: InnerComponentDef): void;
-  protected _update(): void;
-  protected _unmount(): void;
-  /**
-  * Only called when shadowRoot is false
-  */
-  protected _updateSlotNodes(replacements: Map<Node, Node[]>): void;
-  private _createVNode;
-}
-declare function useHost(caller?: string): VueElementBase$1 | null;
-/**
-* Retrieve the shadowRoot of the current custom element. Only usable in setup()
-* of a `defineCustomElement` component.
-*/
-declare function useShadowRoot(): ShadowRoot | null;
-//#endregion
-//#region packages/runtime-dom/src/helpers/useCssModule.d.ts
-declare function useCssModule(name?: string): Record<string, string>;
-//#endregion
-//#region packages/runtime-dom/src/helpers/useCssVars.d.ts
-/**
-* Runtime helper for SFC's CSS variable injection feature.
-* @private
-*/
-declare function useCssVars(getter: (ctx: any) => Record<string, unknown>): void;
-/**
-* @internal
-* shared between vdom and vapor
-*/
-declare function baseUseCssVars(instance: GenericComponentInstance | null, getParentNode: () => Node, getVars: () => Record<string, any>, setVars: (vars: Record<string, any>) => void): void;
-/**
-* @internal
-* shared between vdom and vapor
-*/
-declare function setVarsOnNode(el: Node, vars: Record<string, string>): void;
 //#endregion
 //#region node_modules/.pnpm/csstype@3.2.3/node_modules/csstype/index.d.ts
 interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime = string & {}> {
@@ -20707,9 +20532,10 @@ interface AriaAttributes {
   "aria-valuetext"?: string | undefined;
 }
 type StyleValue = false | null | undefined | string | CSSProperties | Array<StyleValue>;
+type ClassValue = false | null | undefined | string | Record<string, any> | Array<ClassValue>;
 interface HTMLAttributes extends AriaAttributes, EventHandlers<Events> {
   innerHTML?: string | undefined;
-  class?: any;
+  class?: ClassValue | undefined;
   style?: StyleValue | undefined;
   accesskey?: string | undefined;
   contenteditable?: Booleanish | "inherit" | "plaintext-only" | undefined;
@@ -21182,7 +21008,7 @@ interface SVGAttributes extends AriaAttributes, EventHandlers<Events> {
   * SVG Styling Attributes
   * @see https://www.w3.org/TR/SVG/styling.html#ElementSpecificStyling
   */
-  class?: any;
+  class?: ClassValue | undefined;
   style?: StyleValue | undefined;
   color?: string | undefined;
   height?: Numberish | undefined;
@@ -21717,14 +21543,203 @@ interface ReservedProps$1 {
 }
 type NativeElements = { [K in keyof IntrinsicElementAttributes]: IntrinsicElementAttributes[K] & ReservedProps$1 };
 //#endregion
+//#region packages/runtime-dom/src/apiCustomElement.d.ts
+type VueElementConstructor<P = {}> = {
+  new (initialProps?: Record<string, any>): VueElement & P;
+};
+interface CustomElementOptions$1 {
+  styles?: string[];
+  shadowRoot?: boolean;
+  shadowRootOptions?: Omit<ShadowRootInit, "mode">;
+  nonce?: string;
+  configureApp?: (app: App) => void;
+}
+declare function defineCustomElement<Props, RawBindings = object>(setup: (props: Props, ctx: SetupContext) => RawBindings | RenderFunction, options?: Pick<ComponentOptions, "name" | "inheritAttrs" | "emits"> & CustomElementOptions$1 & {
+  props?: (keyof Props)[];
+}): VueElementConstructor<Props>;
+declare function defineCustomElement<Props, RawBindings = object>(setup: (props: Props, ctx: SetupContext) => RawBindings | RenderFunction, options?: Pick<ComponentOptions, "name" | "inheritAttrs" | "emits"> & CustomElementOptions$1 & {
+  props?: ComponentObjectPropsOptions<Props>;
+}): VueElementConstructor<Props>;
+declare function defineCustomElement<RuntimePropsOptions extends ComponentObjectPropsOptions = ComponentObjectPropsOptions, PropsKeys extends string = string, RuntimeEmitsOptions extends EmitsOptions = {}, EmitsKeys extends string = string, Data = {}, SetupBindings = {}, Computed extends ComputedOptions = {}, Methods extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, InjectOptions extends ComponentInjectOptions = {}, InjectKeys extends string = string, Slots extends SlotsType = {}, LocalComponents extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions, InferredProps = (string extends PropsKeys ? ComponentObjectPropsOptions extends RuntimePropsOptions ? {} : ExtractPropTypes<RuntimePropsOptions> : { [key in PropsKeys]?: any }), ResolvedProps = InferredProps & EmitsToProps<RuntimeEmitsOptions>>(options: CustomElementOptions$1 & {
+  props?: (RuntimePropsOptions & ThisType<void>) | PropsKeys[];
+} & ComponentOptionsBase<ResolvedProps, SetupBindings, Data, Computed, Methods, Mixin, Extends, RuntimeEmitsOptions, EmitsKeys, {}, InjectOptions, InjectKeys, Slots, LocalComponents, Directives, Exposed, Provide> & ThisType<CreateComponentPublicInstanceWithMixins<Readonly<ResolvedProps>, SetupBindings, Data, Computed, Methods, Mixin, Extends, RuntimeEmitsOptions, EmitsKeys, {}, false, InjectOptions, Slots, LocalComponents, Directives, Exposed>>, extraOptions?: CustomElementOptions$1): VueElementConstructor<ResolvedProps>;
+declare function defineCustomElement<T extends {
+  new (...args: any[]): ComponentPublicInstance<any>;
+}>(options: T, extraOptions?: CustomElementOptions$1): VueElementConstructor<T extends DefineComponent<infer P, any, any, any> ? P : unknown>;
+declare const defineSSRCustomElement: typeof defineCustomElement;
+declare const BaseClass: typeof HTMLElement;
+type InnerComponentDef = ConcreteComponent & CustomElementOptions$1;
+declare abstract class VueElementBase$1<E = Element, C = Component, Def extends CustomElementOptions$1 & {
+  props?: any;
+} = InnerComponentDef> extends BaseClass implements ComponentCustomElementInterface {
+  _isVueCE: boolean;
+  /**
+  * @internal
+  */
+  _instance: GenericComponentInstance | null;
+  /**
+  * @internal
+  */
+  _app: App | null;
+  /**
+  * @internal
+  */
+  _root: Element | ShadowRoot;
+  /**
+  * @internal
+  */
+  _nonce: string | undefined;
+  /**
+  * @internal
+  */
+  _teleportTargets?: Set<Element>;
+  protected _connected: boolean;
+  protected _resolved: boolean;
+  protected _numberProps: Record<string, true> | null;
+  protected _styleChildren: WeakSet<object>;
+  protected _styleAnchors: WeakMap<ConcreteComponent, HTMLStyleElement>;
+  protected _pendingResolve: Promise<void> | undefined;
+  protected _parent: VueElementBase$1 | undefined;
+  protected _patching: boolean;
+  protected _dirty: boolean;
+  protected _def: Def;
+  protected _props: Record<string, any>;
+  protected _createApp: CreateAppFunction<E, C>;
+  /**
+  * dev only
+  */
+  protected _styles?: HTMLStyleElement[];
+  /**
+  * dev only
+  */
+  protected _childStyles?: Map<string, HTMLStyleElement[]>;
+  protected _ob?: MutationObserver | null;
+  protected _slots?: Record<string, Node[]>;
+  /**
+  * Check if this custom element needs hydration.
+  * Returns true if it has a pre-rendered declarative shadow root that
+  * needs to be hydrated.
+  */
+  protected abstract _needsHydration(): boolean;
+  protected abstract _mount(def: Def): void;
+  protected abstract _update(): void;
+  protected abstract _unmount(): void;
+  protected abstract _updateSlotNodes(slot: Map<Node, {
+    nodes: Node[];
+    usedFallback: boolean;
+  }>): void;
+  constructor(def: Def, props: Record<string, any> | undefined, createAppFn: CreateAppFunction<E, C>);
+  connectedCallback(): void;
+  disconnectedCallback(): void;
+  protected _setParent(parent?: VueElementBase$1 | undefined): void;
+  protected _inheritParentContext(parent?: VueElementBase$1 | undefined): void;
+  private _processMutations;
+  /**
+  * resolve inner component definition (handle possible async component)
+  */
+  private _resolveDef;
+  private _mountComponent;
+  protected _processExposed(): void;
+  protected _processInstance(): void;
+  private _resolveProps;
+  private _setAttr;
+  /**
+  * @internal
+  */
+  protected _getProp(key: string): any;
+  /**
+  * @internal
+  */
+  _setProp(key: string, val: any, shouldReflect?: boolean, shouldUpdate?: boolean): void;
+  protected _applyStyles(styles: string[] | undefined, owner?: ConcreteComponent, parentComp?: ConcreteComponent): void;
+  private _getStyleAnchor;
+  private _getRootStyleInsertionAnchor;
+  /**
+  * Only called when shadowRoot is false
+  */
+  private _parseSlots;
+  /**
+  * Only called when shadowRoot is false
+  */
+  protected _renderSlots(): void;
+  /**
+  * @internal
+  */
+  private _getSlots;
+  /**
+  * @internal
+  */
+  _injectChildStyle(comp: ConcreteComponent & CustomElementOptions$1, parentComp?: ConcreteComponent): void;
+  /**
+  * @internal
+  */
+  _beginPatch(): void;
+  /**
+  * @internal
+  */
+  _endPatch(): void;
+  /**
+  * @internal
+  */
+  _hasShadowRoot(): boolean;
+  /**
+  * @internal
+  */
+  _removeChildStyle(comp: ConcreteComponent): void;
+}
+declare class VueElement extends VueElementBase$1<Element, Component, InnerComponentDef> {
+  constructor(def: InnerComponentDef, props?: Record<string, any> | undefined, createAppFn?: CreateAppFunction<Element, Component>);
+  protected _needsHydration(): boolean;
+  protected _mount(def: InnerComponentDef): void;
+  protected _update(): void;
+  protected _unmount(): void;
+  /**
+  * Only called when shadowRoot is false
+  */
+  protected _updateSlotNodes(replacements: Map<Node, {
+    nodes: Node[];
+    usedFallback: boolean;
+  }>): void;
+  private _createVNode;
+}
+declare function useHost(caller?: string): VueElementBase$1 | null;
+/**
+* Retrieve the shadowRoot of the current custom element. Only usable in setup()
+* of a `defineCustomElement` component.
+*/
+declare function useShadowRoot(): ShadowRoot | null;
+//#endregion
+//#region packages/runtime-dom/src/helpers/useCssModule.d.ts
+declare function useCssModule(name?: string): Record<string, string>;
+//#endregion
+//#region packages/runtime-dom/src/helpers/useCssVars.d.ts
+/**
+* Runtime helper for SFC's CSS variable injection feature.
+* @private
+*/
+declare function useCssVars(getter: (ctx: any) => Record<string, unknown>): void;
+/**
+* @internal
+* shared between vdom and vapor
+*/
+declare function baseUseCssVars(instance: GenericComponentInstance | null, getParentNode: () => Node, getVars: () => Record<string, any>, setVars: (vars: Record<string, any>) => void): void;
+/**
+* @internal
+* shared between vdom and vapor
+*/
+declare function setVarsOnNode(el: Node, vars: Record<string, string>): void;
+//#endregion
 //#region packages/runtime-dom/src/modules/style.d.ts
 type Style = string | null | undefined | Record<string, unknown>;
 declare function patchStyle(el: Element, prev: Style, next: Style): void;
 //#endregion
+//#region packages/runtime-dom/src/modules/events.d.ts
+declare function parseEventName(name: string): [string, EventListenerOptions | undefined];
+//#endregion
 //#region packages/runtime-dom/src/modules/attrs.d.ts
 declare const xlinkNS = "http://www.w3.org/1999/xlink";
 declare namespace index_d_exports$1 {
-  export { AnchorHTMLAttributes, AreaHTMLAttributes, AriaAttributes, AudioHTMLAttributes, BaseHTMLAttributes, BlockquoteHTMLAttributes, ButtonHTMLAttributes, CSSProperties, CanvasHTMLAttributes, ColHTMLAttributes, ColgroupHTMLAttributes, CustomElementOptions$1 as CustomElementOptions, DataHTMLAttributes, DelHTMLAttributes, DetailsHTMLAttributes, DialogHTMLAttributes, ElementWithTransition, EmbedHTMLAttributes, Events, FieldsetHTMLAttributes, FormHTMLAttributes, HTMLAttributes, HtmlHTMLAttributes, IframeHTMLAttributes, ImgHTMLAttributes, InputAutoCompleteAttribute, InputHTMLAttributes, InputTypeHTMLAttribute, InsHTMLAttributes, IntrinsicElementAttributes, KeygenHTMLAttributes, LabelHTMLAttributes, LiHTMLAttributes, LinkHTMLAttributes, MapHTMLAttributes, MediaHTMLAttributes, MenuHTMLAttributes, MetaHTMLAttributes, MeterHTMLAttributes, NativeElements, ObjectHTMLAttributes, OlHTMLAttributes, OptgroupHTMLAttributes, OptionHTMLAttributes, OutputHTMLAttributes, ParamHTMLAttributes, ProgressHTMLAttributes, QuoteHTMLAttributes, ReservedProps$1 as ReservedProps, SVGAttributes, ScriptHTMLAttributes, SelectHTMLAttributes, SourceHTMLAttributes, StyleHTMLAttributes, StyleValue, TableHTMLAttributes, TdHTMLAttributes, TextareaHTMLAttributes, ThHTMLAttributes, TimeHTMLAttributes, TrackHTMLAttributes, Transition, TransitionGroup, TransitionGroupProps, TransitionProps$1 as TransitionProps, TransitionPropsValidators, VShowElement, VideoHTMLAttributes, VueElement, VueElementBase$1 as VueElementBase, VueElementConstructor, WebViewHTMLAttributes, baseApplyTranslation, baseUseCssVars, callPendingCbs, createApp, createSSRApp, defineCustomElement, defineSSRCustomElement, ensureHydrationRenderer, ensureRenderer, forceReflow, handleMovedChildren, hasCSSTransform, hydrate, initDirectivesForSSR, nodeOps, normalizeContainer, patchProp, patchStyle, render, resolveTransitionProps, setVarsOnNode, shouldSetAsProp, svgNS, unsafeToTrustedHTML, useCssModule, useCssVars, useHost, useShadowRoot, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, withKeys, withModifiers, xlinkNS };
+  export { AnchorHTMLAttributes, AreaHTMLAttributes, AriaAttributes, AudioHTMLAttributes, BaseHTMLAttributes, BlockquoteHTMLAttributes, ButtonHTMLAttributes, CSSProperties, CanvasHTMLAttributes, ClassValue, ColHTMLAttributes, ColgroupHTMLAttributes, CustomElementOptions$1 as CustomElementOptions, DataHTMLAttributes, DelHTMLAttributes, DetailsHTMLAttributes, DialogHTMLAttributes, ElementWithTransition, EmbedHTMLAttributes, Events, FieldsetHTMLAttributes, FormHTMLAttributes, HTMLAttributes, HtmlHTMLAttributes, IframeHTMLAttributes, ImgHTMLAttributes, InputAutoCompleteAttribute, InputHTMLAttributes, InputTypeHTMLAttribute, InsHTMLAttributes, IntrinsicElementAttributes, KeygenHTMLAttributes, LabelHTMLAttributes, LiHTMLAttributes, LinkHTMLAttributes, MapHTMLAttributes, MediaHTMLAttributes, MenuHTMLAttributes, MetaHTMLAttributes, MeterHTMLAttributes, NativeElements, ObjectHTMLAttributes, OlHTMLAttributes, OptgroupHTMLAttributes, OptionHTMLAttributes, OutputHTMLAttributes, ParamHTMLAttributes, ProgressHTMLAttributes, QuoteHTMLAttributes, ReservedProps$1 as ReservedProps, SVGAttributes, ScriptHTMLAttributes, SelectHTMLAttributes, SourceHTMLAttributes, StyleHTMLAttributes, StyleValue, TableHTMLAttributes, TdHTMLAttributes, TextareaHTMLAttributes, ThHTMLAttributes, TimeHTMLAttributes, TrackHTMLAttributes, Transition, TransitionGroup, TransitionGroupProps$1 as TransitionGroupProps, TransitionProps$1 as TransitionProps, TransitionPropsValidators, VShowElement, VideoHTMLAttributes, VueElement, VueElementBase$1 as VueElementBase, VueElementConstructor, WebViewHTMLAttributes, baseApplyTranslation, baseUseCssVars, callPendingCbs, createApp, createSSRApp, defineCustomElement, defineSSRCustomElement, ensureHydrationRenderer, ensureRenderer, forceReflow, handleMovedChildren, hasCSSTransform, hydrate, initDirectivesForSSR, nodeOps, normalizeContainer, parseEventName, patchProp, patchStyle, render, resolveTransitionProps, setVarsOnNode, shouldSetAsProp, shouldSetAsPropForVueCE, svgNS, unsafeToTrustedHTML, useCssModule, useCssVars, useHost, useShadowRoot, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, withKeys, withModifiers, xlinkNS };
 }
 import * as import__vue_runtime_core from "@vue/runtime-core";
 /**
@@ -21741,9 +21756,13 @@ declare module "@vue/reactivity" {
   }
 }
 declare module "@vue/runtime-core" {
+  interface AllowedAttrs {
+    class?: ClassValue;
+    style?: StyleValue;
+  }
   interface GlobalComponents {
     Transition: DefineComponent<TransitionProps$1>;
-    TransitionGroup: DefineComponent<TransitionGroupProps>;
+    TransitionGroup: DefineComponent<TransitionGroupProps$1>;
   }
   interface GlobalDirectives {
     vShow: typeof vShow;
@@ -21771,58 +21790,93 @@ declare const initDirectivesForSSR: () => void;
 //#endregion
 //#region packages/runtime-vapor/src/apiTemplateRef.d.ts
 type NodeRef = string | Ref | ((ref: Element | VaporComponentInstance, refs: Record<string, any>) => void);
-type RefEl = Element | VaporComponentInstance;
+type RefEl = Element | VaporComponentInstance | DynamicFragment | VaporFragment;
 type setRefFn = (el: RefEl, ref: NodeRef, refFor?: boolean, refKey?: string) => NodeRef | undefined;
 declare function createTemplateRefSetter(): setRefFn;
+declare function setStaticTemplateRef(el: RefEl, ref: NodeRef, refFor?: boolean, refKey?: string): NodeRef | undefined;
+declare function setTemplateRefBinding(el: RefEl, getter: () => any, setter?: setRefFn, refFor?: boolean, refKey?: string): void;
 //#endregion
-//#region packages/runtime-vapor/src/components/KeepAlive.d.ts
-interface KeepAliveContext {
-  processShapeFlag(block: Block): boolean;
-  cacheBlock(): void;
-  cacheScope(key: any, scope: EffectScope$1): void;
-  getScope(key: any): EffectScope$1 | undefined;
+//#region packages/runtime-vapor/src/slotBoundary.d.ts
+interface SlotBoundaryContext {
+  parent: SlotBoundaryContext | null;
+  getFallback: () => BlockFn | undefined;
+  run<R>(fn: () => R, scope?: EffectScope$1): R;
+  markDirty: () => void;
 }
-declare const VaporKeepAliveImpl: ObjectVaporComponent;
+//#endregion
+//#region packages/runtime-vapor/src/keepAlive.d.ts
+interface VaporKeepAliveContext {
+  acquireBranchScope(key: any): EffectScope$1 | undefined;
+  runBranchRender(frag: DynamicFragment, fn: () => void): void;
+  processShapeFlag(block: Block): any | false;
+  cacheBlock(block?: Block): void;
+  cacheScope(cacheKey: any, scopeLookupKey: any, scope: EffectScope$1): void;
+}
 //#endregion
 //#region packages/runtime-vapor/src/fragment.d.ts
 declare class VaporFragment<T extends Block = Block> implements TransitionOptions {
+  /**
+  * @internal marker for duck typing to avoid direct instanceof check
+  * which prevents tree-shaking of VaporFragment
+  */
+  readonly __vf = true;
   $key?: any;
   $transition?: VaporTransitionHooks | undefined;
   nodes: T;
   vnode?: VNode | null;
   anchor?: Node;
-  parentComponent?: GenericComponentInstance$1 | null;
-  fallback?: BlockFn;
+  isBlockValid?: (componentAsValid?: boolean) => boolean;
   insert?: (parent: ParentNode, anchor: Node | null, transitionHooks?: TransitionHooks) => void;
   remove?: (parent?: ParentNode, transitionHooks?: TransitionHooks) => void;
-  hydrate?: (...args: any[]) => void;
+  hydrate?(...args: any[]): void;
   setRef?: (instance: VaporComponentInstance, ref: NodeRef, refFor: boolean, refKey: string | undefined) => void;
+  onBeforeInsert?: ((nodes: Block) => void)[];
+  onBeforeRemove?: ((scope: EffectScope$1) => boolean)[];
+  onBeforeUpdate?: (() => void)[];
   onUpdated?: ((nodes?: Block) => void)[];
   constructor(nodes: T);
 }
-declare class ForFragment extends VaporFragment<Block[]> {
-  constructor(nodes: Block[]);
+declare class RenderContextFragment<T extends Block = Block> extends VaporFragment<T> {
+  readonly renderInstance: GenericComponentInstance$1 | null;
+  readonly slotOwner: VaporComponentInstance | null;
+  readonly keepAliveCtx?: VaporKeepAliveContext | null;
+  readonly slotBoundary: SlotBoundaryContext | null;
+  constructor(nodes: T);
+  protected runWithRenderCtx<R>(fn: () => R, scope?: EffectScope$1): R;
 }
-declare class DynamicFragment extends VaporFragment {
+declare class ForFragment extends VaporFragment<Block[]> {
+  resetListeners?: (() => void)[];
+  constructor(nodes: Block[], trackSlotBoundary: boolean);
+  onReset(fn: () => void): void;
+}
+declare class DynamicFragment extends RenderContextFragment {
+  /**
+  * @internal marker for duck typing to avoid direct instanceof check
+  * which prevents tree-shaking of DynamicFragment
+  */
+  readonly __df = true;
   anchor: Node;
   scope: EffectScope$1 | undefined;
   current?: BlockFn;
   pending?: {
     render?: BlockFn;
     key: any;
+    noScope: boolean;
   };
-  fallback?: BlockFn;
   anchorLabel?: string;
   keyed?: boolean;
-  attrs?: Record<string, any>;
-  setAsyncRef?: (instance: VaporComponentInstance) => void;
-  keepAliveCtx: KeepAliveContext | null;
-  slotOwner: VaporComponentInstance | null;
-  constructor(anchorLabel?: string, keyed?: boolean);
-  update(render?: BlockFn, key?: any): void;
-  renderBranch(render: BlockFn | undefined, transition: VaporTransitionHooks | undefined, parent: ParentNode | null, instance: GenericComponentInstance$1 | null): void;
-  hydrate: (isEmpty?: boolean) => void;
+  isSlot?: boolean;
+  forwarded?: boolean;
+  nativeChildren?: boolean;
+  inTransition?: boolean;
+  hasFallthroughAttrs?: true;
+  constructor(anchorLabel?: string, keyed?: boolean, locate?: boolean, trackSlotBoundary?: boolean);
+  protected get autoHydrate(): boolean;
+  update(render?: BlockFn, key?: any, noScope?: boolean): void;
+  protected getBranchParent(): ParentNode | null;
+  renderBranch(render: BlockFn | undefined, transition: VaporTransitionHooks | undefined, parent: ParentNode | null, key: any, noScope?: boolean, notifyUpdated?: boolean): void;
 }
+declare function isFragment(val: unknown): val is VaporFragment;
 //#endregion
 //#region packages/runtime-vapor/src/block.d.ts
 interface VaporTransitionHooks extends TransitionHooks {
@@ -21830,6 +21884,7 @@ interface VaporTransitionHooks extends TransitionHooks {
   props: TransitionProps;
   instance: VaporComponentInstance;
   disabled?: boolean;
+  applyGroup?: (block: Block, props: TransitionProps, state: TransitionState, instance: VaporComponentInstance) => void;
 }
 interface TransitionOptions {
   $key?: any;
@@ -21843,25 +21898,25 @@ declare function insert(block: Block, parent: ParentNode & {
 declare function prepend(parent: ParentNode, ...blocks: Block[]): void;
 declare function remove(block: Block, parent?: ParentNode): void;
 //#endregion
-//#region packages/runtime-vapor/src/vdomInterop.d.ts
+//#region packages/runtime-vapor/src/vdomInteropState.d.ts
 declare const interopKey: unique symbol;
-declare const vaporInteropPlugin: Plugin;
 //#endregion
 //#region packages/runtime-vapor/src/componentProps.d.ts
-type RawProps = Record<string, () => unknown> & {
+type RawProps = Record<string, unknown> & {
   $?: DynamicPropsSource[] & {
     [interopKey]?: boolean;
   };
 };
-type DynamicPropsSource = (() => Record<string, unknown>) | Record<string, () => unknown>;
+type DynamicPropsSource = (() => Record<string, unknown>) | Record<string, unknown>;
 //#endregion
 //#region packages/runtime-vapor/src/renderEffect.d.ts
 declare class RenderEffect extends ReactiveEffect {
-  render: () => void;
   i: VaporComponentInstance | null;
   job: SchedulerJob;
-  updateJob: SchedulerJob;
-  constructor(render: () => void);
+  updateJob?: SchedulerJob;
+  render: () => void;
+  order: number;
+  constructor(render: () => void, noLifecycle?: boolean);
   fn(): void;
   notify(): void;
 }
@@ -21871,62 +21926,21 @@ declare function renderEffect(fn: () => void, noLifecycle?: boolean): void;
 type RawSlots = Record<string, VaporSlot> & {
   $?: DynamicSlotSource[];
 };
+type LooseRawSlots = VaporSlot | (Record<string, VaporSlot | DynamicSlotSource[]> & {
+  $?: DynamicSlotSource[];
+});
 type StaticSlots = Record<string, VaporSlot>;
-type VaporSlot = BlockFn;
+type VaporSlot = BlockFn & {
+  _?: VaporSlotFlags.NON_STABLE;
+};
 type DynamicSlot = {
   name: string;
   fn: VaporSlot;
 };
 type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
 type DynamicSlotSource = StaticSlots | DynamicSlotFn;
-/**
-* Wrap a slot function to track the slot owner.
-*
-* This ensures:
-* 1. createSlot gets rawSlots from the correct component (slot owner)
-* 2. Elements inherit the slot owner's scopeId
-*/
 declare function withVaporCtx(fn: Function): BlockFn;
-declare function createSlot(name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot, noSlotted?: boolean, once?: boolean): Block;
-//#endregion
-//#region packages/runtime-vapor/src/components/Teleport.d.ts
-declare const VaporTeleportImpl: {
-  name: string;
-  __isTeleport: boolean;
-  __vapor: boolean;
-  process(props: LooseRawProps, slots: LooseRawSlots): TeleportFragment;
-};
-declare class TeleportFragment extends VaporFragment {
-  /**
-  * @internal marker for duck typing to avoid direct instanceof check
-  * which prevents tree-shaking of TeleportFragment
-  */
-  readonly __isTeleportFragment: true;
-  anchor?: Node;
-  private rawProps?;
-  private resolvedProps?;
-  private rawSlots?;
-  isDisabled?: boolean;
-  target?: ParentNode | null;
-  targetAnchor?: Node | null;
-  targetStart?: Node | null;
-  placeholder?: Node;
-  mountContainer?: ParentNode | null;
-  mountAnchor?: Node | null;
-  constructor(props: LooseRawProps, slots: LooseRawSlots);
-  get parent(): ParentNode | null;
-  private initChildren;
-  private registerUpdateCssVars;
-  private handleChildrenUpdate;
-  private mount;
-  private mountToTarget;
-  private handlePropsUpdate;
-  insert: (container: ParentNode, anchor: Node | null) => void;
-  remove: (parent?: ParentNode | undefined) => void;
-  private hydrateDisabledTeleport;
-  private mountChildren;
-  hydrate: () => void;
-}
+declare function createSlot(name?: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot, flags?: number): Block;
 //#endregion
 //#region packages/runtime-vapor/src/apiDefineComponent.d.ts
 type VaporPublicProps = ReservedProps & AllowedComponentProps & ComponentCustomProps;
@@ -21937,21 +21951,22 @@ type VaporComponentInstanceConstructor<T extends VaporComponentInstance> = {
   __isSuspense?: never;
   new (...args: any[]): T;
 };
-type DefineVaporComponent<RuntimePropsOptions = {}, RuntimePropsKeys extends string = string, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, TypeRefs extends Record<string, unknown> = {}, MakeDefaultsOptional extends boolean = true, InferredProps = (string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), PublicProps = VaporPublicProps, ResolvedProps = InferredProps & EmitsToProps$1<Emits>, Defaults = ExtractDefaultPropTypes<RuntimePropsOptions>> = VaporComponentInstanceConstructor<VaporComponentInstance<MakeDefaultsOptional extends true ? keyof Defaults extends never ? Prettify<ResolvedProps> & PublicProps : Partial<Defaults> & Omit<Prettify<ResolvedProps> & PublicProps, keyof Defaults> : Prettify<ResolvedProps> & PublicProps, Emits, Slots, Exposed, TypeBlock, TypeRefs>> & ObjectVaporComponent<RuntimePropsOptions | RuntimePropsKeys[], Emits, RuntimeEmitsKeys, Slots, Exposed>;
-type DefineVaporSetupFnComponent<Props extends Record<string, any> = {}, Emits extends EmitsOptions$1 = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, ResolvedProps extends Record<string, any> = Props & EmitsToProps$1<Emits> & VaporPublicProps> = new (props?: ResolvedProps) => VaporComponentInstance<ResolvedProps, Emits, Slots, Exposed, TypeBlock>;
+type DefineVaporComponent<RuntimePropsOptions = {}, RuntimePropsKeys extends string = string, InferredProps = (string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, TypeRefs extends Record<string, unknown> = {}, MakeDefaultsOptional extends boolean = true, PublicProps = VaporPublicProps, ResolvedProps = InferredProps & EmitsToProps$1<Emits>, Defaults = ExtractDefaultPropTypes<RuntimePropsOptions>> = VaporComponentInstanceConstructor<VaporComponentInstance<MakeDefaultsOptional extends true ? keyof Defaults extends never ? Prettify<ResolvedProps> & PublicProps : Partial<Defaults> & Omit<Prettify<ResolvedProps> & PublicProps, keyof Defaults> : Prettify<ResolvedProps> & PublicProps, Emits, Slots, Exposed, TypeBlock, TypeRefs>> & VaporComponentOptions<RuntimePropsOptions | RuntimePropsKeys[], Emits, RuntimeEmitsKeys, Slots, Exposed>;
+type DefineVaporSetupFnComponent<Props extends Record<string, any> = {}, Emits extends EmitsOptions$1 = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, ResolvedProps extends Record<string, any> = Props & EmitsToProps$1<Emits> & VaporPublicProps> = new () => VaporComponentInstance<ResolvedProps, Emits, Slots, Exposed, TypeBlock>;
 declare function defineVaporComponent<Props extends Record<string, any>, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block>(setup: (props: Props, ctx: {
   emit: EmitFn<Emits>;
   slots: Slots;
   attrs: Record<string, any>;
   expose: (exposed: Exposed) => void;
-}) => VaporRenderResult<TypeBlock> | void, extraOptions?: ObjectVaporComponent<(keyof Props)[], Emits, RuntimeEmitsKeys, Slots, Exposed> & ThisType<void>): DefineVaporSetupFnComponent<Props, Emits, Slots, Exposed, TypeBlock>;
+}) => VaporRenderResult<TypeBlock> | void, extraOptions?: VaporComponentOptions<(keyof NoInfer<Props>)[], Emits, RuntimeEmitsKeys, Slots, Exposed> & ThisType<void>): DefineVaporSetupFnComponent<Props, Emits, Slots, Exposed, TypeBlock>;
 declare function defineVaporComponent<Props extends Record<string, any>, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block>(setup: (props: Props, ctx: {
   emit: EmitFn<Emits>;
   slots: Slots;
   attrs: Record<string, any>;
   expose: (exposed: Exposed) => void;
-}) => VaporRenderResult<TypeBlock> | void, extraOptions?: ObjectVaporComponent<ComponentObjectPropsOptions$1<Props>, Emits, RuntimeEmitsKeys, Slots, Exposed> & ThisType<void>): DefineVaporSetupFnComponent<Props, Emits, Slots, Exposed, TypeBlock>;
-declare function defineVaporComponent<TypeProps, RuntimePropsOptions extends ComponentObjectPropsOptions$1 = ComponentObjectPropsOptions$1, RuntimePropsKeys extends string = string, TypeEmits extends ComponentTypeEmits = {}, RuntimeEmitsOptions extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, ResolvedEmits extends EmitsOptions$1 = ({} extends RuntimeEmitsOptions ? TypeEmitsToOptions<TypeEmits> : RuntimeEmitsOptions), InferredProps = (IsKeyValues<TypeProps> extends true ? TypeProps : string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), TypeRefs extends Record<string, unknown> = {}, TypeBlock extends Block = Block>(options: ObjectVaporComponent<RuntimePropsOptions | RuntimePropsKeys[], ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed, TypeBlock, InferredProps> & {
+}) => VaporRenderResult<TypeBlock> | void, extraOptions?: VaporComponentOptions<ComponentObjectPropsOptions$1<Props>, Emits, RuntimeEmitsKeys, Slots, Exposed> & ThisType<void>): DefineVaporSetupFnComponent<Props, Emits, Slots, Exposed, TypeBlock>;
+declare function defineVaporComponent<TypeProps, RuntimePropsOptions extends ComponentObjectPropsOptions$1 = ComponentObjectPropsOptions$1, RuntimePropsKeys extends string = string, TypeEmits extends ComponentTypeEmits = {}, RuntimeEmitsOptions extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, ResolvedEmits extends EmitsOptions$1 = ({} extends RuntimeEmitsOptions ? TypeEmitsToOptions<TypeEmits> : RuntimeEmitsOptions), InferredProps = (IsKeyValues<TypeProps> extends true ? TypeProps : string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), TypeRefs extends Record<string, unknown> = {}, TypeBlock extends Block = Block>(options: VaporComponentOptions<RuntimePropsOptions | RuntimePropsKeys[], ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed, TypeBlock, InferredProps> & {
+  [key: string]: any;
   /**
   * @private for language-tools use only
   */
@@ -21968,19 +21983,19 @@ declare function defineVaporComponent<TypeProps, RuntimePropsOptions extends Com
   * @private for language-tools use only
   */
   __typeEl?: TypeBlock;
-} & ThisType<void>): DefineVaporComponent<RuntimePropsOptions, RuntimePropsKeys, ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed extends Block ? Record<string, any> : Exposed, TypeBlock, TypeRefs, unknown extends TypeProps ? true : false, InferredProps>;
+} & ThisType<void>): DefineVaporComponent<RuntimePropsOptions, RuntimePropsKeys, InferredProps, ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed extends Block ? Record<string, any> : Exposed, TypeBlock, TypeRefs, unknown extends TypeProps ? true : false>;
 //#endregion
 //#region packages/runtime-vapor/src/component.d.ts
-type VaporComponent = FunctionalVaporComponent | ObjectVaporComponent | DefineVaporComponent;
-type FunctionalVaporComponent<Props = {}, Emits extends EmitsOptions$1 = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>> = ((props: Readonly<Props & EmitsToProps$1<Emits>>, ctx: {
+type VaporComponent = FunctionalVaporComponent<any> | VaporComponentOptions | DefineVaporComponent;
+type FunctionalVaporComponent<Props = {}, Emits extends EmitsOptions$1 = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>> = ((props: Props & EmitsToProps$1<Emits>, ctx: {
   emit: EmitFn<Emits>;
   slots: Slots;
   attrs: Record<string, any>;
   expose: <T extends Record<string, any> = Exposed>(exposed: T) => void;
-}) => VaporRenderResult) & Omit<ObjectVaporComponent<ComponentPropsOptions<Props>, Emits, string, Slots>, "setup"> & {
+}) => VaporRenderResult) & Omit<VaporComponentOptions<ComponentPropsOptions<Props>, Emits, string, Slots>, "setup"> & {
   displayName?: string;
 } & SharedInternalOptions;
-interface ObjectVaporComponent<Props = {}, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, InferredProps = (ComponentObjectPropsOptions$1 extends Props ? {} : ExtractPropTypes$1<Props>)> extends ComponentInternalOptions, AsyncComponentInternalOptions<ObjectVaporComponent, VaporComponentInstance>, SharedInternalOptions {
+interface VaporComponentOptions<Props = {}, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, InferredProps = (ComponentObjectPropsOptions$1 extends Props ? {} : ExtractPropTypes$1<Props>)> extends ComponentInternalOptions, AsyncComponentInternalOptions<VaporComponentOptions, VaporComponentInstance>, SharedInternalOptions {
   inheritAttrs?: boolean;
   props?: Props;
   emits?: Emits | RuntimeEmitsKeys[];
@@ -21995,10 +22010,6 @@ interface ObjectVaporComponent<Props = {}, Emits extends EmitsOptions$1 = {}, Ru
   name?: string;
   vapor?: boolean;
   components?: Record<string, VaporComponent>;
-  /**
-  * @internal custom element interception hook
-  */
-  ce?: (instance: VaporComponentInstance) => void;
 }
 interface SharedInternalOptions {
   /**
@@ -22016,13 +22027,10 @@ interface SharedInternalOptions {
   */
   __emitsOptions?: ObjectEmitsOptions;
 }
-type LooseRawProps = Record<string, (() => unknown) | DynamicPropsSource[]> & {
+type LooseRawProps = Record<string, unknown> & {
   $?: DynamicPropsSource[];
 };
-type LooseRawSlots = Record<string, VaporSlot | DynamicSlotSource[]> & {
-  $?: DynamicSlotSource[];
-};
-declare function createComponent(component: VaporComponent, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, appContext?: GenericAppContext): VaporComponentInstance;
+declare function createComponent(component: VaporComponent, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, appContext?: GenericAppContext, managedMount?: boolean, ce?: (instance: VaporComponentInstance) => void): VaporComponentInstance;
 declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emits extends EmitsOptions$1 = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, TypeRefs extends Record<string, any> = Record<string, any>> implements GenericComponentInstance$1 {
   vapor: true;
   uid: number;
@@ -22053,10 +22061,13 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   suspenseId: number;
   asyncDep: Promise<any> | null;
   asyncResolved: boolean;
-  renderEffects?: RenderEffect[];
+  restoreAsyncContext?: () => void | (() => void);
+  deferredHydrationBoundary?: () => void;
   hasFallthrough: boolean;
   shapeFlag?: number;
+  $key?: any;
   oncePropsCache?: Record<string | symbol, any>;
+  isOnce: boolean;
   isMounted: boolean;
   isUnmounted: boolean;
   isDeactivated: boolean;
@@ -22075,21 +22086,26 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   rtc?: LifecycleHook;
   ec?: LifecycleHook;
   sp?: LifecycleHook<() => Promise<unknown>>;
+  effectCount: number;
   setupState?: Exposed extends Block ? undefined : ShallowUnwrapRef<Exposed>;
   devtoolsRawSetupState?: any;
   hmrRerender?: () => void;
   hmrReload?: (newComp: VaporComponent) => void;
-  parentTeleport?: TeleportFragment | null;
   propsOptions?: NormalizedPropsOptions;
   emitsOptions?: ObjectEmitsOptions | null;
   isSingleRoot?: boolean;
+  renderEffects?: RenderEffect[];
   /**
   * dev only flag to track whether $attrs was used during render.
   * If $attrs was used during render then the warning for failed attrs
   * fallthrough can be suppressed.
   */
   accessedAttrs: boolean;
-  constructor(comp: VaporComponent, rawProps?: RawProps | null, rawSlots?: RawSlots | null, appContext?: GenericAppContext, once?: boolean);
+  /**
+  * @deprecated only used for JSX to detect props types.
+  */
+  $props: Props;
+  constructor(comp: VaporComponent, rawProps?: RawProps | null, rawSlots?: LooseRawSlots | null, appContext?: GenericAppContext, once?: boolean, ce?: (instance: VaporComponentInstance) => void);
   /**
   * Expose `getKeysFromRawProps` on the instance so it can be used in code
   * paths where it's needed, e.g. `useModel`
@@ -22098,6 +22114,12 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   $waitNativeRender(fn: () => void): void;
 }
 declare function isVaporComponent(value: unknown): value is VaporComponentInstance;
+/**
+* Resolve an asset component by name before passing it to the fallback helper;
+* a string passed directly to `createComponentWithFallback` is plain element
+* fallback, not a component name.
+*/
+declare function createAssetComponent(name: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, maybeSelfReference?: boolean, appContext?: GenericAppContext): HTMLElement | VaporComponentInstance;
 /**
 * Used when a component cannot be resolved at compile time
 * and needs rely on runtime resolution - where it might fallback to a plain
@@ -22114,10 +22136,19 @@ declare const createVaporSSRApp: CreateAppFunction$1<ParentNode, VaporComponent>
 //#region packages/runtime-vapor/src/apiDefineAsyncComponent.d.ts
 declare function defineVaporAsyncComponent<T extends VaporComponent>(source: AsyncComponentLoader<T> | AsyncComponentOptions<T>): T;
 //#endregion
+//#region packages/runtime-vapor/src/vdomInterop.d.ts
+declare const vaporInteropPlugin: Plugin;
+//#endregion
 //#region packages/runtime-vapor/src/directives/custom.d.ts
 type VaporDirective = (node: Element | VaporComponentInstance, value?: () => any, argument?: string, modifiers?: DirectiveModifiers) => (() => void) | void;
 type VaporDirectiveArguments = Array<[VaporDirective | undefined] | [VaporDirective | undefined, () => any] | [VaporDirective | undefined, (() => any) | undefined, argument: string] | [VaporDirective | undefined, value: (() => any) | undefined, argument: string | undefined, modifiers: DirectiveModifiers]>;
 declare function withVaporDirectives(node: Element | VaporComponentInstance, dirs: VaporDirectiveArguments): void;
+//#endregion
+//#region packages/runtime-vapor/src/components/Teleport.d.ts
+declare const VaporTeleport: DefineVaporSetupFnComponent<TeleportProps>;
+//#endregion
+//#region packages/runtime-vapor/src/components/KeepAlive.d.ts
+declare const VaporKeepAlive: DefineVaporComponent<{}, string, KeepAliveProps>;
 //#endregion
 //#region packages/runtime-vapor/src/apiDefineCustomElement.d.ts
 type VaporElementConstructor<P = {}> = {
@@ -22128,15 +22159,15 @@ declare function defineVaporCustomElement<Props, RawBindings = object>(setup: (p
   slots: StaticSlots;
   emit: EmitFn;
   expose: (exposed: Record<string, any>) => void;
-}) => RawBindings | VaporRenderResult, options?: Pick<ObjectVaporComponent, "name" | "inheritAttrs" | "emits"> & CustomElementOptions & {
-  props?: (keyof Props)[];
+}) => RawBindings | VaporRenderResult, options?: Pick<VaporComponentOptions, "name" | "inheritAttrs" | "emits"> & CustomElementOptions & {
+  props?: (keyof NoInfer<Props>)[];
 }): VaporElementConstructor<Props>;
 declare function defineVaporCustomElement<Props, RawBindings = object>(setup: (props: Props, ctx: {
   attrs: Record<string, any>;
   slots: StaticSlots;
   emit: EmitFn;
   expose: (exposed: Record<string, any>) => void;
-}) => RawBindings | VaporRenderResult, options?: Pick<ObjectVaporComponent, "name" | "inheritAttrs" | "emits"> & CustomElementOptions & {
+}) => RawBindings | VaporRenderResult, options?: Pick<VaporComponentOptions, "name" | "inheritAttrs" | "emits"> & CustomElementOptions & {
   props?: ComponentObjectPropsOptions$1<Props>;
 }): VaporElementConstructor<Props>;
 declare function defineVaporCustomElement<RuntimePropsOptions extends ComponentObjectPropsOptions$1 = ComponentObjectPropsOptions$1, RuntimePropsKeys extends string = string, RuntimeEmitsOptions extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, InferredProps = (string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), ResolvedProps = InferredProps & EmitsToProps$1<RuntimeEmitsOptions>>(options: CustomElementOptions & {
@@ -22162,7 +22193,10 @@ declare class VaporElement extends VueElementBase<ParentNode, VaporComponent, Va
   /**
   * Only called when shadowRoot is false
   */
-  protected _updateSlotNodes(replacements: Map<Node, Node[]>): void;
+  protected _updateSlotNodes(replacements: Map<Node, {
+    nodes: Node[];
+    usedFallback: boolean;
+  }>): void;
   /**
   * Replace slot nodes with their replace content
   * @internal
@@ -22183,32 +22217,26 @@ type InsertionParent = ParentNode & {
 */
 declare function setInsertionState(parent: ParentNode & {
   $fc?: Node | null;
-}, anchor?: Node | 0 | null, logicalIndex?: number, last?: boolean): void;
+}, anchor?: Node | 0 | null, logicalIndex?: number): void;
 //#endregion
 //#region packages/runtime-vapor/src/dom/template.d.ts
-declare function template(html: string, root?: boolean, ns?: Namespace): () => Node & {
+declare function template(html: string, flags?: number, ns?: Namespace): () => Node & {
   $root?: true;
 };
 //#endregion
 //#region packages/runtime-vapor/src/dom/node.d.ts
 declare function createTextNode(value?: string): Text;
-declare const _txt: typeof _child;
-declare function _child(node: InsertionParent): Node;
-declare function _nthChild(node: InsertionParent, i: number): Node;
-declare function _next(node: Node): Node;
-type DelegatedFunction<T extends (...args: any[]) => any> = T & {
-  impl: T;
-};
-declare const txt: DelegatedFunction<typeof _txt>;
-declare const child: DelegatedFunction<typeof _child>;
-declare const next: DelegatedFunction<typeof _next>;
-declare const nthChild: DelegatedFunction<typeof _nthChild>;
+declare function txt(node: ParentNode): Node;
+declare function child(node: InsertionParent, logicalIndex?: number): Node;
+declare function nthChild(node: InsertionParent, i: number, logicalIndex?: number): Node;
+declare function next(node: Node, logicalIndex?: number): Node;
 //#endregion
 //#region packages/runtime-vapor/src/dom/prop.d.ts
 type TargetElement = Element & {
   $root?: true;
   $html?: string;
   $cls?: string;
+  $clsFlags?: number;
   $sty?: NormalizedStyle | string | undefined;
   value?: string;
   _value?: any;
@@ -22216,7 +22244,8 @@ type TargetElement = Element & {
 declare function setProp(el: any, key: string, value: any): void;
 declare function setAttr(el: any, key: string, value: any, isSVG?: boolean): void;
 declare function setDOMProp(el: any, key: string, value: any, forceHydrate?: boolean, attrName?: string): void;
-declare function setClass(el: TargetElement, value: any, isSVG?: boolean): void;
+declare function setClass(el: TargetElement, value: any, isSVG?: boolean, isNormalized?: boolean): void;
+declare function setClassName(el: TargetElement, flags: number, cls: string | string[], prefix?: string, suffix?: string): void;
 declare function setStyle(el: TargetElement, value: any): void;
 declare function setValue(el: TargetElement, value: any, forceHydrate?: boolean): void;
 /**
@@ -22243,16 +22272,20 @@ declare function setBlockHtml(block: Block & {
 declare function setDynamicProps(el: any, args: any[], isSVG?: boolean): void;
 //#endregion
 //#region packages/runtime-vapor/src/dom/event.d.ts
-declare function on(el: Element, event: string, handler: (e: Event) => any | ((e: Event) => any)[], options?: AddEventListenerOptions & {
-  effect?: boolean;
-}): void;
-declare function delegate(el: any, event: string, handler: (e: Event) => any): void;
+type EventHandler = (...args: any[]) => any;
+type EventHandlerValue = EventHandler | EventHandler[];
+type MaybeEventHandlerValue = EventHandlerValue | null | undefined;
+declare function on(el: Element, event: string, handler: EventHandlerValue, options?: AddEventListenerOptions): void;
+declare function onBinding(el: Element, event: string, handler: EventHandlerValue, options?: AddEventListenerOptions): void;
+declare function delegate(el: any, event: string, handler: EventHandler): void;
 declare const delegateEvents: (...names: string[]) => void;
-declare function setDynamicEvents(el: HTMLElement, events: Record<string, (...args: any[]) => any>): void;
-declare function createInvoker(handler: (...args: any[]) => any): (...args: any[]) => any;
+declare function setDynamicEvents(el: HTMLElement, events: Record<string, EventHandlerValue>): void;
+declare function withVaporModifiers<T extends (event: Event, ...args: unknown[]) => any>(fn: T | null | undefined, modifiers: string[]): T;
+declare function withVaporKeys<T extends (event: KeyboardEvent) => any>(fn: T | null | undefined, modifiers: string[]): T;
+declare function createInvoker(handler: MaybeEventHandlerValue): EventHandler;
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateIf.d.ts
-declare function createIf(condition: () => any, b1: BlockFn, b2?: BlockFn, once?: boolean, index?: number): Block;
+declare function createIf(condition: () => any, b1: BlockFn, b2?: BlockFn, flags?: number): Block;
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateFragment.d.ts
 /**
@@ -22269,18 +22302,46 @@ declare function createKeyedFragment(key: () => any, render: BlockFn): Block;
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateFor.d.ts
 type Source = any[] | Record<any, any> | number | Set<any> | Map<any, any>;
-declare const createFor: (src: () => Source, renderItem: (item: ShallowRef<any>, key: ShallowRef<any>, index: ShallowRef<number | undefined>) => Block, getKey?: (item: any, key: any, index?: number) => any, flags?: number, setup?: (_: {
-  createSelector: (source: () => any) => (cb: () => void) => void;
-}) => void) => ForFragment;
+declare const createFor: (src: () => Source, renderItem: (item: ShallowRef<any>, key: ShallowRef<any>, index: ShallowRef<number | undefined>) => Block, getKey?: (item: any, key: any, index?: number) => any, flags?: number) => ForFragment;
+interface ForSelector {
+  (key: any, oper: () => void): void;
+  /**
+  * Bulk-reset the selector's internal state. Hook into a v-for's fast-reset
+  * paths via `forFragment.onReset(selector.reset)` so the lazy per-item
+  * `onScopeDispose` teardowns short-circuit instead of doing N individual
+  * Map.delete() calls.
+  */
+  reset(): void;
+}
+/**
+* Builds a key-indexed selector that activates only the opers registered with
+* the key matching the current source value. Compared to letting each item
+* subscribe directly, this keeps re-renders on source change O(2) instead of
+* O(N) (only previous and new active item re-run).
+*
+* Selector cleanup follows the current scope. Per-item teardown is auto-wired
+* via `onScopeDispose` so callers (typically v-for item scopes) don't need
+* explicit deregistration. For bulk-reset hot paths, attach the selector to
+* the v-for via `frag.onReset(selector.reset)` to skip the per-item Map ops.
+*/
+declare function createSelector(source: () => any): ForSelector;
 declare function createForSlots(rawSource: Source, getSlot: (item: any, key: any, index?: number) => DynamicSlot): DynamicSlot[];
 declare function getRestElement(val: any, keys: string[]): any;
-declare function getDefaultValue(val: any, defaultVal: any): any;
+declare function getDefaultValue(val: any, getDefaultVal: () => any): any;
 //#endregion
 //#region packages/runtime-vapor/src/helpers/useCssVars.d.ts
 declare function useVaporCssVars(getter: () => Record<string, string>): void;
 //#endregion
+//#region packages/runtime-vapor/src/helpers/setKey.d.ts
+declare function setBlockKey(block: (Block & {
+  $key?: any;
+}) | null | undefined, key: any): void;
+//#endregion
 //#region packages/runtime-vapor/src/apiCreateDynamicComponent.d.ts
-declare function createDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean, once?: boolean): VaporFragment;
+declare function createDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: LooseRawSlots | null, flags?: number): VaporFragment;
+//#endregion
+//#region packages/runtime-vapor/src/apiSetupHelpers.d.ts
+declare function withAsyncContext(getAwaitable: () => any): [any, () => void];
 //#endregion
 //#region packages/runtime-vapor/src/directives/vShow.d.ts
 declare function applyVShow(target: Block, source: () => any): void;
@@ -22297,9 +22358,9 @@ declare const applyDynamicModel: VaporModelDirective;
 declare const VaporTransition: FunctionalVaporComponent<TransitionProps>;
 //#endregion
 //#region packages/runtime-vapor/src/components/TransitionGroup.d.ts
-declare const VaporTransitionGroup: ObjectVaporComponent;
+declare const VaporTransitionGroup: DefineVaporComponent<{}, string, TransitionGroupProps>;
 declare namespace index_d_exports {
-  export { Block, DefineVaporComponent, FunctionalVaporComponent, VaporComponent, VaporComponentInstance, VaporDirective, VaporElement, VaporElementConstructor, VaporKeepAliveImpl as VaporKeepAlive, VaporPublicProps, VaporRenderResult, VaporSlot, VaporTeleportImpl as VaporTeleport, VaporTransition, VaporTransitionGroup, VaporTransitionHooks, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createInvoker, createKeyedFragment, createPlainElement, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, getDefaultValue, getRestElement, insert, isVaporComponent, next, nthChild, on, prepend, remove, renderEffect, setAttr, setBlockHtml, setBlockText, setClass, setDOMProp, setDynamicEvents, setDynamicProps, setElementText, setHtml, setInsertionState, setProp, setStyle, setText, setValue, template, txt, unmountComponent, useVaporCssVars, vaporInteropPlugin, withVaporCtx, withVaporDirectives };
+  export { Block, DefineVaporComponent, DynamicFragment, FunctionalVaporComponent, VaporComponent, VaporComponentInstance, VaporComponentOptions, VaporDirective, VaporElement, VaporElementConstructor, VaporFragment, VaporKeepAlive, VaporKeepAliveContext, VaporPublicProps, VaporRenderResult, VaporSlot, VaporTeleport, VaporTransition, VaporTransitionGroup, VaporTransitionHooks, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createAssetComponent, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createInvoker, createKeyedFragment, createPlainElement, createSelector, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, extend, getDefaultValue, getRestElement, insert, isFragment, isVaporComponent, next, nthChild, on, onBinding, prepend, remove, renderEffect, setAttr, setBlockHtml, setBlockKey, setBlockText, setClass, setClassName, setDOMProp, setDynamicEvents, setDynamicProps, setElementText, setHtml, setInsertionState, setProp, setStaticTemplateRef, setStyle, setTemplateRefBinding, setText, setValue, template, txt, unmountComponent, useVaporCssVars, vaporInteropPlugin, withAsyncContext, withVaporCtx, withVaporDirectives, withVaporKeys, withVaporModifiers };
 }
 //#endregion
 //#region temp/packages/compiler-vapor/src/ir/component.d.ts
@@ -22310,7 +22371,12 @@ export interface IRProp extends Omit<DirectiveTransformResult, "value"> {
   */
   sharedData?: {
     ident?: string;
+    classRef?: string;
   };
+  /**
+  * fixed by uts synthetic data-* group for dom2 dataset callbacks.
+  */
+  datasetProps?: IRProp[];
 }
 export declare enum IRDynamicPropsKind {
   EXPRESSION = 0,
@@ -22368,28 +22434,34 @@ export type IRSlots = IRSlotsStatic | IRSlotDynamic | IRSlotsExpression;
 export declare enum IRNodeTypes {
   ROOT = 0,
   BLOCK = 1,
-  SET_PROP = 2,
-  SET_DYNAMIC_PROPS = 3,
-  SET_TEXT = 4,
-  SET_EVENT = 5,
-  SET_DYNAMIC_EVENTS = 6,
-  SET_HTML = 7,
-  SET_TEMPLATE_REF = 8,
-  INSERT_NODE = 9,
-  PREPEND_NODE = 10,
-  CREATE_COMPONENT_NODE = 11,
-  SLOT_OUTLET_NODE = 12,
-  DIRECTIVE = 13,
-  IF = 14,
-  FOR = 15,
-  GET_TEXT_CHILD = 16,
-  GET_INSERTION_PARENT = 17,
-  SET_CHANGE_PROP = 18
+  SET_BLOCK_KEY = 2,
+  SET_PROP = 3,
+  SET_DYNAMIC_PROPS = 4,
+  SET_TEXT = 5,
+  SET_EVENT = 6,
+  SET_DYNAMIC_EVENTS = 7,
+  SET_HTML = 8,
+  SET_TEMPLATE_REF = 9,
+  INSERT_NODE = 10,
+  PREPEND_NODE = 11,
+  CREATE_COMPONENT_NODE = 12,
+  SLOT_OUTLET_NODE = 13,
+  DIRECTIVE = 14,
+  IF = 15,
+  FOR = 16,
+  KEY = 17,
+  GET_TEXT_CHILD = 18,
+  GET_INSERTION_PARENT = 19,
+  SET_CHANGE_PROP = 20
 }
 export interface BaseIRNode {
   type: IRNodeTypes;
   node: Node$1;
   key?: SimpleExpressionNode | undefined;
+}
+export interface EffectBoundary {
+  operationIndex?: number;
+  effectIndex?: number;
 }
 export type CoreHelper = keyof typeof index_d_exports$1;
 export type VaporHelper = keyof typeof index_d_exports;
@@ -22406,28 +22478,36 @@ export interface RootIRNode {
   type: IRNodeTypes.ROOT;
   node: RootNode;
   source: string;
-  template: Map<string, Namespace>;
-  templateIndexMap: Map<string, number>;
-  rootTemplateIndexes: Set<number>;
+  template: TemplateRegistry;
   component: Set<string>;
   directive: Set<string>;
   block: BlockIRNode;
   hasTemplateRef: boolean;
-  hasDeferredVShow: boolean;
 }
-export interface IfIRNode extends BaseIRNode {
+export interface IRTemplate {
+  content: string;
+  ns: Namespace;
+  root: boolean;
+  static: boolean;
+}
+export declare class TemplateRegistry {
+  entries: IRTemplate[];
+  keys(): string[];
+}
+export interface IfIRNode extends BaseIRNode, EffectBoundary {
   type: IRNodeTypes.IF;
   id: number;
+  blockShape: number;
   condition: SimpleExpressionNode;
   positive: BlockIRNode;
   negative?: BlockIRNode | IfIRNode;
   once?: boolean;
+  slotRoot?: boolean;
   index?: number;
   parent?: number;
   anchor?: number;
   logicalIndex?: number;
   append?: boolean;
-  last?: boolean;
 }
 export interface IRFor {
   source: SimpleExpressionNode;
@@ -22435,26 +22515,45 @@ export interface IRFor {
   key?: SimpleExpressionNode;
   index?: SimpleExpressionNode;
 }
-export interface ForIRNode extends BaseIRNode, IRFor {
+export interface ForIRNode extends BaseIRNode, IRFor, EffectBoundary {
   type: IRNodeTypes.FOR;
   id: number;
   keyProp?: SimpleExpressionNode;
   typeProp?: SimpleExpressionNode;
   render: BlockIRNode;
   once: boolean;
+  slotRoot?: boolean;
   component: boolean;
   onlyChild: boolean;
   parent?: number;
   anchor?: number;
   logicalIndex?: number;
   append?: boolean;
-  last?: boolean;
+}
+export interface KeyIRNode extends BaseIRNode, EffectBoundary {
+  type: IRNodeTypes.KEY;
+  id: number;
+  value: SimpleExpressionNode;
+  block: BlockIRNode;
+  parent?: number;
+  anchor?: number;
+  logicalIndex?: number;
+  append?: boolean;
+}
+export interface SetBlockKeyIRNode extends BaseIRNode {
+  type: IRNodeTypes.SET_BLOCK_KEY;
+  element: number;
+  value: SimpleExpressionNode;
 }
 export interface SetPropIRNode extends BaseIRNode {
   type: IRNodeTypes.SET_PROP;
   element: number;
   prop: IRProp;
   tag: string;
+  /**
+  * fixed by uts 当前操作的目标元素是否为组件模板单根根节点，可用于后续 root-only 逻辑。
+  */
+  root?: boolean;
   isChangeProp?: boolean;
 }
 export interface SetDynamicPropsIRNode extends BaseIRNode {
@@ -22462,6 +22561,10 @@ export interface SetDynamicPropsIRNode extends BaseIRNode {
   element: number;
   props: IRProps[];
   tag: string;
+  /**
+  * fixed by uts 当前操作的目标元素是否为组件模板单根根节点，可用于后续 root-only 逻辑。
+  */
+  root?: boolean;
   /**
   * fixed by uts 当前整个动态绑定表达式对应的标识符，因为动态绑定需要在sharedData层对数据做格式化，不能单个生成标识符，不然需要在c层再格式化一次
   */
@@ -22531,9 +22634,8 @@ export interface DirectiveIRNode extends BaseIRNode {
   builtin?: boolean;
   asset?: boolean;
   modelType?: "text" | "dynamic" | "radio" | "checkbox" | "select";
-  deferred?: boolean;
 }
-export interface CreateComponentIRNode extends BaseIRNode {
+export interface CreateComponentIRNode extends BaseIRNode, EffectBoundary {
   type: IRNodeTypes.CREATE_COMPONENT_NODE;
   id: number;
   tag: string;
@@ -22542,31 +22644,34 @@ export interface CreateComponentIRNode extends BaseIRNode {
   asset: boolean;
   root: boolean;
   once: boolean;
+  slotRoot?: boolean;
   dynamic?: SimpleExpressionNode;
-  isCustomElement: boolean;
+  useCreateElement: boolean;
   parent?: number;
   anchor?: number;
   logicalIndex?: number;
   append?: boolean;
-  last?: boolean;
   /**
   * fixed by uts 当前表达式对应的标识符
   */
   sharedData?: SimpleExpressionNode["sharedData"];
+  /**
+  * fixed by uts DOM2 组件 flatten 静态值。
+  */
+  flatten?: boolean;
 }
-export interface SlotOutletIRNode extends BaseIRNode {
+export interface SlotOutletIRNode extends BaseIRNode, EffectBoundary {
   type: IRNodeTypes.SLOT_OUTLET_NODE;
   id: number;
   name: SimpleExpressionNode;
   props: IRProps[];
   fallback?: BlockIRNode;
-  noSlotted?: boolean;
-  once?: boolean;
+  flags: number;
   parent?: number;
   anchor?: number;
   logicalIndex?: number;
   append?: boolean;
-  last?: boolean;
+  sharedData?: SimpleExpressionNode["sharedData"];
 }
 export interface GetTextChildIRNode extends BaseIRNode {
   type: IRNodeTypes.GET_TEXT_CHILD;
@@ -22581,7 +22686,7 @@ export interface SetChangePropIRNode extends BaseIRNode {
   prop: IRProp;
 }
 export type IRNode = OperationNode | RootIRNode;
-export type OperationNode = SetPropIRNode | SetDynamicPropsIRNode | SetTextIRNode | SetEventIRNode | SetDynamicEventsIRNode | SetHtmlIRNode | SetTemplateRefIRNode | InsertNodeIRNode | PrependNodeIRNode | DirectiveIRNode | IfIRNode | ForIRNode | CreateComponentIRNode | SlotOutletIRNode | GetTextChildIRNode | GetInsertionParentIRNode | SetChangePropIRNode;
+export type OperationNode = SetBlockKeyIRNode | SetPropIRNode | SetDynamicPropsIRNode | SetTextIRNode | SetEventIRNode | SetDynamicEventsIRNode | SetHtmlIRNode | SetTemplateRefIRNode | InsertNodeIRNode | PrependNodeIRNode | DirectiveIRNode | IfIRNode | ForIRNode | KeyIRNode | CreateComponentIRNode | SlotOutletIRNode | GetTextChildIRNode | GetInsertionParentIRNode | SetChangePropIRNode;
 export declare enum DynamicFlag {
   NONE = 0,
   /**
@@ -22626,7 +22731,7 @@ export type VaporDirectiveNode = Overwrite<DirectiveNode, {
   exp: Exclude<DirectiveNode["exp"], CompoundExpressionNode>;
   arg: Exclude<DirectiveNode["arg"], CompoundExpressionNode>;
 }>;
-export type InsertionStateTypes = IfIRNode | ForIRNode | SlotOutletIRNode | CreateComponentIRNode;
+export type InsertionStateTypes = IfIRNode | ForIRNode | KeyIRNode | SlotOutletIRNode | CreateComponentIRNode;
 export declare function isBlockOperation(op: OperationNode): op is InsertionStateTypes;
 //#endregion
 //#region temp/packages/compiler-vapor/src/transform.d.ts
@@ -22655,6 +22760,8 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   block: BlockIRNode;
   options: Required<Omit<TransformOptions$1, "filename" | keyof CompilerCompatOptions>>;
   template: string;
+  templateRoot: boolean;
+  templateIndexMap: Map<string, number>;
   childrenTemplate: (string | null)[];
   dynamic: IRDynamicInfo;
   imports: ImportItem[];
@@ -22664,9 +22771,13 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   component: Set<string>;
   directive: Set<string>;
   slots: IRSlots[];
+  effectIndex: number;
+  operationIndex: number;
   isLastEffectiveChild: boolean;
   isOnRightmostPath: boolean;
-  hasInlineAncestorNeedingClose: boolean;
+  isSingleRoot: boolean;
+  templateCloseTags: Set<string> | undefined;
+  templateCloseBlocks: boolean;
   private globalId;
   private nextIdMap;
   private ifIndex;
@@ -22676,12 +22787,27 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   private initNextIdMap;
   reference(): number;
   nextIfIndex(): number;
-  pushTemplate(content: string): number;
+  private getTemplateNamespace;
+  private canUseStaticTemplate;
+  pushTemplate(content: string, {
+    root,
+    static: isStatic
+  }?: {
+    root?: boolean;
+    static?: boolean;
+  }): number;
   registerTemplate(): number;
   registerEffect(expressions: SimpleExpressionNode[], operation: OperationNode | OperationNode[], getIndex?: () => number, getOperationIndex?: () => number): void;
   registerOperation(...node: OperationNode[]): void;
+  effectBoundary(): {
+    operationIndex: number;
+    effectIndex: number;
+  };
   create<T extends TemplateChildNode>(node: T, index: number): TransformContext<T>;
-  private isEffectivelyLastChild;
+  private shiftEffectBoundaries;
+  private shiftOperationBoundaries;
+  private getChildContextInfo;
+  private isSingleRootChild;
 }
 export declare function transform(node: RootNode, options?: TransformOptions$1): RootIRNode;
 export declare function createStructuralDirectiveTransform(name: string | string[], fn: StructuralDirectiveTransform): NodeTransform;
@@ -22693,18 +22819,27 @@ export declare class CodegenContext {
   options: Required<CodegenOptions>;
   bindingNames: Set<string>;
   helpers: Map<string, string>;
+  needsTemplateRefSetter: boolean;
+  staticTemplateRefHelperCandidate?: SetTemplateRefIRNode;
+  inSlotBlock: boolean;
   helper: (name: CoreHelper | VaporHelper) => string;
   delegates: Set<string>;
+  singleUseAssetComponentNames?: Set<string>;
   identifiers: Record<string, (string | SimpleExpressionNode)[]>;
+  expressionReplacements: Map<SimpleExpressionNode, SimpleExpressionNode>[];
+  withExpressionReplacements<T>(map: Map<SimpleExpressionNode, SimpleExpressionNode>, fn: () => T): T;
+  getExpressionReplacement(node: SimpleExpressionNode): SimpleExpressionNode;
   seenInlineHandlerNames: Record<string, number>;
   block: BlockIRNode;
   withId<T>(fn: () => T, map: Record<string, string | SimpleExpressionNode | null>): T;
   enterBlock(block: BlockIRNode): () => BlockIRNode;
+  enterSlotBlock(): () => boolean;
   scopeLevel: number;
   enterScope(): [level: number, exit: () => number];
   private templateVars;
   private nextIdMap;
   private lastIdMap;
+  private isHelperNameAvailable;
   private lastTIndex;
   private initNextIdMap;
   tName(i: number): string;
@@ -22737,6 +22872,7 @@ export declare const DELIMITERS_ARRAY_NEWLINE: CodeFragmentDelimiters;
 export declare const DELIMITERS_OBJECT: CodeFragmentDelimiters;
 export declare const DELIMITERS_OBJECT_NEWLINE: CodeFragmentDelimiters;
 export declare function genCall(name: string | [name: string, placeholder?: CodeFragments], ...frags: CodeFragments[]): CodeFragment[];
+export declare function getParserOptions(plugins: CodegenContext["options"]["expressionPlugins"]): ParserOptions;
 export declare function codeFragmentToString(code: CodeFragment[], context: CodegenContext): [code: string, map: CodegenSourceMapGenerator | undefined];
 //#endregion
 //#region temp/packages/compiler-vapor/src/transforms/utils.d.ts
@@ -22757,7 +22893,8 @@ export interface VaporCompilerError extends CompilerError {
 export declare function createVaporCompilerError(code: VaporErrorCodes, loc?: SourceLocation): VaporCompilerError;
 export declare enum VaporErrorCodes {
   X_V_PLACEHOLDER = 100,
-  __EXTEND_POINT__ = 101
+  X_DYNAMIC_FLATTEN_NOT_SUPPORTED = 101,
+  __EXTEND_POINT__ = 102
 }
 export declare const VaporErrorMessages: Record<VaporErrorCodes, string>;
 //#endregion
@@ -22797,6 +22934,9 @@ export declare const transformVIf: NodeTransform;
 //#region temp/packages/compiler-vapor/src/transforms/vFor.d.ts
 export declare const transformVFor: NodeTransform;
 //#endregion
+//#region temp/packages/compiler-vapor/src/transforms/transformKey.d.ts
+export declare const transformKey: NodeTransform;
+//#endregion
 //#region temp/packages/compiler-vapor/src/transforms/vModel.d.ts
 export declare const transformVModel: DirectiveTransform;
 //#endregion
@@ -22813,6 +22953,7 @@ export declare const transformVSlot: NodeTransform;
 export declare function propToExpression(prop: AttributeNode | VaporDirectiveNode): SimpleExpressionNode | undefined;
 export declare function isConstantExpression(exp: SimpleExpressionNode): boolean;
 export declare function isStaticExpression(node: SimpleExpressionNode, bindings: BindingMetadata): boolean;
+export declare function parseStaticAttrBooleanExpression(exp: SimpleExpressionNode): boolean | null;
 export declare function getLiteralExpressionValue(exp: SimpleExpressionNode, excludeNumber?: boolean): string | null;
 export declare function isTransitionTag(tag: string): boolean;
 export declare function isTransitionGroupTag(tag: string): boolean;
@@ -22821,19 +22962,28 @@ export declare function isTeleportTag(tag: string): boolean;
 export declare function isBuiltInComponent(tag: string): string | undefined;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/expression.d.ts
-export declare function analyzeExpressions(expressions: SimpleExpressionNode[]): {
+type SourceRange = {
+  start: number;
+  end: number;
+};
+type VariableUse = {
+  name: string;
+  loc?: SourceRange;
+};
+type ExpressionRecord = {
+  variables: VariableUse[];
+};
+type ExpressionAnalysis = {
   seenVariable: Record<string, number>;
   variableToExpMap: Map<string, Set<SimpleExpressionNode>>;
-  expToVariableMap: Map<SimpleExpressionNode, Array<{
-    name: string;
-    loc?: {
-      start: number;
-      end: number;
-    };
-  }>>;
+  expressionRecords: Map<SimpleExpressionNode, ExpressionRecord>;
   seenIdentifier: Set<string>;
   updatedVariable: Set<string>;
 };
+export declare function analyzeExpressions(expressions: SimpleExpressionNode[]): ExpressionAnalysis;
+//#endregion
+//#region temp/packages/compiler-vapor/src/generators/modifier.d.ts
+export declare function genDirectiveModifiers(modifiers: string[]): string;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/for.d.ts
 export type DestructureMapValue = {
@@ -22845,14 +22995,30 @@ export type DestructureMapValue = {
 export type DestructureMap = Map<string, DestructureMapValue | null>;
 export declare function parseValueDestructure(value: SimpleExpressionNode | undefined, context: CodegenContext): DestructureMap;
 export declare function buildDestructureIdMap(idToPathMap: DestructureMap, baseAccessor: string, plugins: CodegenContext["options"]["expressionPlugins"]): Record<string, string | SimpleExpressionNode | null>;
+export declare function matchKeyOnlyBindingPattern(effect: IREffect, key: string): {
+  effect: IREffect;
+} | undefined;
+export declare function matchSelectorPattern(effect: IREffect, key: string, idMap: Record<string, string | SimpleExpressionNode | null>, context: CodegenContext): {
+  effect: IREffect;
+  selector: SimpleExpressionNode;
+} | undefined;
+//#endregion
+//#region temp/packages/compiler-vapor/src/generators/block.d.ts
+export declare function markSlotRootOperations(block: BlockIRNode): void;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/component.d.ts
+export declare function genDynamicComponentFlags(root: boolean | undefined, once: boolean | undefined, slotRoot: boolean | undefined, extraFlags?: [flag: number, name: string][]): string | false;
 /**
-* Check if a slot block needs withVaporCtx wrapper.
-* Returns true if the block contains:
-* - Component creation (needs scopeId inheritance)
-* - Slot outlet (needs rawSlots from slot owner)
+* Static literal values are safe to emit directly because reading them cannot
+* touch reactive state. Keep handlers, v-model values, and dynamic expressions
+* as getter sources to preserve lazy access and merge semantics.
 */
+export declare function isDirectStaticLiteralProp(prop: IRProp, context: CodegenContext): boolean;
+type SlotRootStabilityContext = Pick<CodegenContext, "ir">;
+export declare function hasStableSlotRoot(block: BlockIRNode, context: SlotRootStabilityContext): boolean;
 export declare function needsVaporCtx(block: BlockIRNode): boolean;
+//#endregion
+//#region temp/packages/compiler-vapor/src/generators/slotOutlet.d.ts
+export declare function genSlotFlags(flags: number): string | undefined;
 //#endregion
 export { parse,  };

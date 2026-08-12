@@ -1,14 +1,12 @@
 /**
-  * @vue/compiler-dom v3.6.0-beta.5
+  * @vue/compiler-dom v3.6.0-beta.17
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
 var VueCompilerDOM = (function(exports) {
-
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
-//#region packages/shared/src/makeMap.ts
-/**
+	Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+	//#region packages/shared/src/makeMap.ts
+	/**
 	* Make a map and return a function for checking if a key
 	* is in that map.
 	* IMPORTANT: all calls of this function must be prefixed with
@@ -21,11 +19,10 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		for (const key of str.split(",")) map[key] = 1;
 		return (val) => val in map;
 	}
-
-//#endregion
-//#region packages/shared/src/general.ts
+	//#endregion
+	//#region packages/shared/src/general.ts
 	const EMPTY_OBJ = Object.freeze({});
-	const EMPTY_ARR = Object.freeze([]);
+	Object.freeze([]);
 	const NOOP = () => {};
 	/**
 	* Always return false.
@@ -51,11 +48,6 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 	* @private
 	*/
 	const camelize = cacheStringFunction((str) => str.replace(camelizeRE, camelizeReplacer));
-	const hyphenateRE = /\B([A-Z])/g;
-	/**
-	* @private
-	*/
-	const hyphenate = cacheStringFunction((str) => str.replace(hyphenateRE, "-$1").toLowerCase());
 	/**
 	* @private
 	*/
@@ -77,10 +69,9 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 	const getModifierPropName = (name) => {
 		return `${name === "modelValue" || name === "model-value" ? "model" : name}Modifiers${name === "model" ? "$" : ""}`;
 	};
-
-//#endregion
-//#region packages/shared/src/patchFlags.ts
-/**
+	//#endregion
+	//#region packages/shared/src/patchFlags.ts
+	/**
 	* dev only flag -> name mapping
 	*/
 	const PatchFlagNames = {
@@ -99,10 +90,9 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		[-1]: `CACHED`,
 		[-2]: `BAIL`
 	};
-
-//#endregion
-//#region packages/shared/src/slotFlags.ts
-/**
+	//#endregion
+	//#region packages/shared/src/slotFlags.ts
+	/**
 	* Dev only
 	*/
 	const slotFlagsText = {
@@ -110,9 +100,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		[2]: "DYNAMIC",
 		[3]: "FORWARDED"
 	};
-
-//#endregion
-//#region packages/shared/src/codeframe.ts
+	//#endregion
+	//#region packages/shared/src/codeframe.ts
 	const range = 2;
 	function generateCodeFrame(source, start = 0, end = source.length) {
 		start = Math.max(0, Math.min(start, source.length));
@@ -149,9 +138,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		}
 		return res.join("\n");
 	}
-
-//#endregion
-//#region packages/shared/src/normalizeProp.ts
+	//#endregion
+	//#region packages/shared/src/normalizeProp.ts
 	const listDelimiterRE = /;(?![^(]*\))/g;
 	const propertyDelimiterRE = /:([^]+)/;
 	const styleCommentRE = /\/\*[^]*?\*\//g;
@@ -165,9 +153,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		});
 		return ret;
 	}
-
-//#endregion
-//#region packages/shared/src/domTagConfig.ts
+	//#endregion
+	//#region packages/shared/src/domTagConfig.ts
 	const HTML_TAGS = "html,body,base,head,link,meta,style,title,address,article,aside,footer,header,hgroup,h1,h2,h3,h4,h5,h6,nav,section,div,dd,dl,dt,figcaption,figure,picture,hr,img,li,main,ol,p,pre,ul,a,b,abbr,bdi,bdo,br,cite,code,data,dfn,em,i,kbd,mark,q,rp,rt,ruby,s,samp,small,span,strong,sub,sup,time,u,var,wbr,area,audio,map,track,video,embed,object,param,source,canvas,script,noscript,del,ins,caption,col,colgroup,table,thead,tbody,td,th,tr,button,datalist,fieldset,form,input,label,legend,meter,optgroup,option,output,progress,select,textarea,details,dialog,menu,summary,template,blockquote,iframe,tfoot";
 	const SVG_TAGS = "svg,animate,animateMotion,animateTransform,circle,clipPath,color-profile,defs,desc,discard,ellipse,feBlend,feColorMatrix,feComponentTransfer,feComposite,feConvolveMatrix,feDiffuseLighting,feDisplacementMap,feDistantLight,feDropShadow,feFlood,feFuncA,feFuncB,feFuncG,feFuncR,feGaussianBlur,feImage,feMerge,feMergeNode,feMorphology,feOffset,fePointLight,feSpecularLighting,feSpotLight,feTile,feTurbulence,filter,foreignObject,g,hatch,hatchpath,image,line,linearGradient,marker,mask,mesh,meshgradient,meshpatch,meshrow,metadata,mpath,path,pattern,polygon,polyline,radialGradient,rect,set,solidcolor,stop,switch,symbol,text,textPath,title,tspan,unknown,use,view";
 	const MATH_TAGS = "annotation,annotation-xml,maction,maligngroup,malignmark,math,menclose,merror,mfenced,mfrac,mfraction,mglyph,mi,mlabeledtr,mlongdiv,mmultiscripts,mn,mo,mover,mpadded,mphantom,mprescripts,mroot,mrow,ms,mscarries,mscarry,msgroup,msline,mspace,msqrt,msrow,mstack,mstyle,msub,msubsup,msup,mtable,mtd,mtext,mtr,munder,munderover,none,semantics";
@@ -192,9 +179,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 	* Do NOT use in runtime code paths unless behind `__DEV__` flag.
 	*/
 	const isVoidTag = /* @__PURE__ */ makeMap(VOID_TAGS);
-
-//#endregion
-//#region packages/compiler-core/src/runtimeHelpers.ts
+	//#endregion
+	//#region packages/compiler-core/src/runtimeHelpers.ts
 	const FRAGMENT = Symbol(`Fragment`);
 	const TELEPORT = Symbol(`Teleport`);
 	const SUSPENSE = Symbol(`Suspense`);
@@ -287,9 +273,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			helperNameMap[s] = helpers[s];
 		});
 	}
-
-//#endregion
-//#region packages/compiler-core/src/ast.ts
+	//#endregion
+	//#region packages/compiler-core/src/ast.ts
 	const NodeTypes = {
 		"ROOT": 0,
 		"0": "ROOT",
@@ -565,9 +550,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			helper(getVNodeBlockHelper(inSSR, node.isComponent));
 		}
 	}
-
-//#endregion
-//#region packages/compiler-core/src/tokenizer.ts
+	//#endregion
+	//#region packages/compiler-core/src/tokenizer.ts
 	const defaultDelimitersOpen = new Uint8Array([123, 123]);
 	const defaultDelimitersClose = new Uint8Array([125, 125]);
 	/**
@@ -1274,9 +1258,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		}
 		emitCodePoint(cp, consumed) {}
 	};
-
-//#endregion
-//#region packages/compiler-core/src/compat/compatConfig.ts
+	//#endregion
+	//#region packages/compiler-core/src/compat/compatConfig.ts
 	const CompilerDeprecationTypes = {
 		"COMPILER_IS_ON_ELEMENT": "COMPILER_IS_ON_ELEMENT",
 		"COMPILER_V_BIND_SYNC": "COMPILER_V_BIND_SYNC",
@@ -1342,9 +1325,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		if (loc) err.loc = loc;
 		context.onWarn(err);
 	}
-
-//#endregion
-//#region packages/compiler-core/src/errors.ts
+	//#endregion
+	//#region packages/compiler-core/src/errors.ts
 	function defaultOnError(error) {
 		throw error;
 	}
@@ -1527,10 +1509,9 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		[51]: `"scopeId" option is only supported in module mode.`,
 		[54]: ``
 	};
-
-//#endregion
-//#region packages/compiler-core/src/babelUtils.ts
-/**
+	//#endregion
+	//#region packages/compiler-core/src/babelUtils.ts
+	/**
 	* Return value indicates whether the AST walked can be a constant
 	*/
 	function walkIdentifiers(root, onIdentifier, includeAll = false, parentStack = [], knownIds = Object.create(null)) {}
@@ -1665,9 +1646,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		}
 		return false;
 	}
-
-//#endregion
-//#region packages/compiler-core/src/utils.ts
+	//#endregion
+	//#region packages/compiler-core/src/utils.ts
 	const isStaticExp = (p) => p.type === 4 && p.isStatic;
 	function isCoreComponent(tag) {
 		switch (tag) {
@@ -1702,7 +1682,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 	*/
 	const isMemberExpressionBrowser = (exp) => {
 		const path = getExpSource(exp).trim().replace(whitespaceRE, (s) => s.trim());
-		let state = MemberExpLexState.inMemberExp;
+		let state = 0;
 		let stateStack = [];
 		let currentOpenBracketCount = 0;
 		let currentOpenParensCount = 0;
@@ -1710,31 +1690,31 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		for (let i = 0; i < path.length; i++) {
 			const char = path.charAt(i);
 			switch (state) {
-				case MemberExpLexState.inMemberExp:
+				case 0:
 					if (char === "[") {
 						stateStack.push(state);
-						state = MemberExpLexState.inBrackets;
+						state = 1;
 						currentOpenBracketCount++;
 					} else if (char === "(") {
 						stateStack.push(state);
-						state = MemberExpLexState.inParens;
+						state = 2;
 						currentOpenParensCount++;
 					} else if (!(i === 0 ? validFirstIdentCharRE : validIdentCharRE).test(char)) return false;
 					break;
-				case MemberExpLexState.inBrackets:
+				case 1:
 					if (char === `'` || char === `"` || char === "`") {
 						stateStack.push(state);
-						state = MemberExpLexState.inString;
+						state = 3;
 						currentStringType = char;
 					} else if (char === `[`) currentOpenBracketCount++;
 					else if (char === `]`) {
 						if (!--currentOpenBracketCount) state = stateStack.pop();
 					}
 					break;
-				case MemberExpLexState.inParens:
+				case 2:
 					if (char === `'` || char === `"` || char === "`") {
 						stateStack.push(state);
-						state = MemberExpLexState.inString;
+						state = 3;
 						currentStringType = char;
 					} else if (char === `(`) currentOpenParensCount++;
 					else if (char === `)`) {
@@ -1742,7 +1722,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 						if (!--currentOpenParensCount) state = stateStack.pop();
 					}
 					break;
-				case MemberExpLexState.inString:
+				case 3:
 					if (char === currentStringType) {
 						state = stateStack.pop();
 						currentStringType = null;
@@ -1933,9 +1913,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 	function isCommentOrWhitespace(node) {
 		return node.type === 3 || isWhitespaceText(node);
 	}
-
-//#endregion
-//#region packages/compiler-core/src/parser.ts
+	//#endregion
+	//#region packages/compiler-core/src/parser.ts
 	const defaultParserOptions = {
 		parseMode: "base",
 		ns: 0,
@@ -2115,8 +2094,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 						};
 						if (tokenizer.inSFCRoot && currentOpenTag.tag === "template" && currentProp.name === "lang" && currentAttrValue && currentAttrValue !== "html") tokenizer.enterRCDATA(toCharCodes(`</template`), 0);
 					} else {
-						let expParseMode = ExpParseMode.Normal;
-						currentProp.exp = createExp(currentAttrValue, false, getLoc(currentAttrStartIndex, currentAttrEndIndex), 0, expParseMode);
+						currentProp.exp = createExp(currentAttrValue, false, getLoc(currentAttrStartIndex, currentAttrEndIndex), 0, 0);
 						if (currentProp.name === "for") currentProp.forParseResult = parseForExpression(currentProp.exp);
 						let syncIndex = -1;
 						if (currentProp.name === "bind" && (syncIndex = currentProp.modifiers.findIndex((mod) => mod.content === "sync")) > -1 && checkCompatEnabled("COMPILER_V_BIND_SYNC", currentOptions, currentProp.loc, currentProp.arg.loc.source)) {
@@ -2176,7 +2154,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			}
 		},
 		oncdata(start, end) {
-			if (stack[0].ns !== 0) onText(getSlice(start, end), start, end);
+			if ((stack[0] ? stack[0].ns : currentOptions.ns) !== 0) onText(getSlice(start, end), start, end);
 			else emitError(1, start - 9);
 		},
 		onprocessinginstruction(start) {
@@ -2193,7 +2171,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		const [, LHS, RHS] = inMatch;
 		const createAliasExpression = (content, offset, asParam = false) => {
 			const start = loc.start.offset + offset;
-			return createExp(content, false, getLoc(start, start + content.length), 0, asParam ? ExpParseMode.Params : ExpParseMode.Normal);
+			return createExp(content, false, getLoc(start, start + content.length), 0, asParam ? 1 : 0);
 		};
 		const result = {
 			source: createAliasExpression(RHS.trim(), exp.indexOf(RHS, LHS.length)),
@@ -2436,7 +2414,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		ExpParseMode[ExpParseMode["Skip"] = 3] = "Skip";
 		return ExpParseMode;
 	}(ExpParseMode || {});
-	function createExp(content, isStatic = false, loc, constType = 0, parseMode = ExpParseMode.Normal) {
+	function createExp(content, isStatic = false, loc, constType = 0, parseMode = 0) {
 		return createSimpleExpression(content, isStatic, loc, constType);
 	}
 	function emitError(code, index, message) {
@@ -2474,9 +2452,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		currentRoot = null;
 		return root;
 	}
-
-//#endregion
-//#region packages/compiler-core/src/transforms/cacheStatic.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/cacheStatic.ts
 	function cacheStatic(root, context) {
 		walk(root, void 0, context, !!getSingleElementRoot(root));
 	}
@@ -2670,16 +2647,15 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		const codegenNode = node.codegenNode;
 		if (codegenNode.type === 13) return codegenNode.props;
 	}
-
-//#endregion
-//#region packages/compiler-core/src/transform.ts
+	//#endregion
+	//#region packages/compiler-core/src/transform.ts
 	function getSelfName(filename) {
 		const nameMatch = filename.replace(/\?.*$/, "").match(/([^/\\]+)\.\w+$/);
 		return nameMatch ? capitalize(camelize(nameMatch[1])) : null;
 	}
 	function createTransformContext(root, { filename = "", prefixIdentifiers = false, hoistStatic = false, hmr = false, cacheHandlers = false, nodeTransforms = [], directiveTransforms = {}, transformHoist = null, isBuiltInComponent = NOOP, isCustomElement = NOOP, isUserComponent = (element) => {
 		return element.tagType === 1;
-	}, expressionPlugins = [], scopeId = null, slotted = true, ssr = false, inSSR = false, ssrCssVars = ``, bindingMetadata = EMPTY_OBJ, inline = false, isTS = false, onError = defaultOnError, onWarn = defaultOnWarn, compatConfig }) {
+	}, expressionPlugins = [], scopeId = null, slotted = true, ssr = false, inSSR = false, ssrCssVars = ``, bindingMetadata = EMPTY_OBJ, inline = false, isTS = false, eventDelegation = true, onError = defaultOnError, onWarn = defaultOnWarn, compatConfig }) {
 		const context = {
 			filename,
 			selfName: getSelfName(filename),
@@ -2702,6 +2678,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			bindingMetadata,
 			inline,
 			isTS,
+			eventDelegation,
 			onError,
 			onWarn,
 			compatConfig,
@@ -2713,8 +2690,10 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			imports: [],
 			cached: [],
 			constantCache: /* @__PURE__ */ new WeakMap(),
+			vForMemoKeyedNodes: /* @__PURE__ */ new WeakSet(),
 			temps: 0,
 			identifiers: Object.create(null),
+			identifierScopes: Object.create(null),
 			scopes: {
 				vFor: 0,
 				vSlot: 0,
@@ -2765,8 +2744,12 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 				context.parent.children.splice(removalIndex, 1);
 			},
 			onNodeRemoved: NOOP,
-			addIdentifiers(exp) {},
+			addIdentifiers(exp, type = "local") {},
 			removeIdentifiers(exp) {},
+			isSlotScopeIdentifier(name) {
+				const scopes = context.identifierScopes[name];
+				return scopes ? scopes[scopes.length - 1] === "slot" : false;
+			},
 			hoist(exp) {
 				if (isString(exp)) exp = createSimpleExpression(exp);
 				context.hoists.push(exp);
@@ -2881,9 +2864,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			}
 		};
 	}
-
-//#endregion
-//#region packages/compiler-core/src/codegen.ts
+	//#endregion
+	//#region packages/compiler-core/src/codegen.ts
 	const PURE_ANNOTATION = `/*@__PURE__*/`;
 	const aliasHelper = (s) => `${helperNameMap[s]}: _${helperNameMap[s]}`;
 	const NewlineType = {
@@ -3131,6 +3113,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			case 24: break;
 			case 25: break;
 			case 26: break;
+			/* v8 ignore start */
 			case 10: break;
 			default:
 				assert(false, `unhandled codegen node type: ${node.type}`);
@@ -3316,9 +3299,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		push(`)`);
 		if (needArraySpread) push(`)]`);
 	}
-
-//#endregion
-//#region packages/compiler-core/src/validateExpression.ts
+	//#endregion
+	//#region packages/compiler-core/src/validateExpression.ts
 	const prohibitedKeywordRE = new RegExp("\\b" + "arguments,await,break,case,catch,class,const,continue,debugger,default,delete,do,else,export,extends,finally,for,function,if,import,let,new,return,super,switch,throw,try,var,void,while,with,yield".split(",").join("\\b|\\b") + "\\b");
 	const stripStringRE = /'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`/g;
 	/**
@@ -3338,9 +3320,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			context.onError(createCompilerError(46, node.loc, void 0, message));
 		}
 	}
-
-//#endregion
-//#region packages/compiler-core/src/transforms/transformExpression.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/transformExpression.ts
 	const isLiteralWhitelisted = /* @__PURE__ */ makeMap("true,false,null,this");
 	const transformExpression = (node, context) => {
 		if (node.type === 5) node.content = processExpression(node.content, context);
@@ -3351,7 +3332,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 				if (dir.type === 7 && dir.name !== "for") {
 					const exp = dir.exp;
 					const arg = dir.arg;
-					if (exp && exp.type === 4 && !(dir.name === "on" && arg) && !(memo && arg && arg.type === 4 && arg.content === "key")) dir.exp = processExpression(exp, context, dir.name === "slot");
+					if (exp && exp.type === 4 && !(dir.name === "on" && arg) && !(memo && context.vForMemoKeyedNodes.has(node) && arg && arg.type === 4 && arg.content === "key")) dir.exp = processExpression(exp, context, dir.name === "slot");
 					if (arg && arg.type === 4 && !arg.isStatic) dir.arg = processExpression(arg, context);
 				}
 			}
@@ -3366,9 +3347,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		else if (exp.type === 4) return exp.content;
 		else return exp.children.map(stringifyExpression).join("");
 	}
-
-//#endregion
-//#region packages/compiler-core/src/transforms/vIf.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/vIf.ts
 	const transformIf = createStructuralDirectiveTransform(/^(?:if|else|else-if)$/, (node, dir, context) => {
 		return processIf(node, dir, context, (ifNode, branch, isRoot) => {
 			const siblings = context.parent.children;
@@ -3489,9 +3469,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		else return node;
 		else if (node.type === 20) node = node.value;
 	}
-
-//#endregion
-//#region packages/compiler-core/src/transforms/vFor.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/vFor.ts
 	const transformFor = createStructuralDirectiveTransform("for", (node, dir, context) => {
 		const { helper, removeHelper } = context;
 		return processFor(node, dir, context, (forNode) => {
@@ -3499,10 +3478,9 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			const isTemplate = isTemplateNode(node);
 			const memo = findDir(node, "memo");
 			const keyProp = findProp(node, `key`, false, true);
-			const isDirKey = keyProp && keyProp.type === 7;
+			keyProp && keyProp.type;
 			let keyExp = keyProp && (keyProp.type === 6 ? keyProp.value ? createSimpleExpression(keyProp.value.content, true) : void 0 : keyProp.exp);
-			if (memo && keyExp && isDirKey) {}
-			const keyProperty = keyProp && keyExp ? createObjectProperty(`key`, keyExp) : null;
+			const keyProperty = keyExp ? createObjectProperty(`key`, keyExp) : null;
 			const isStableFragment = forNode.source.type === 4 && forNode.source.constType > 0;
 			const fragmentFlag = isStableFragment ? 64 : keyProp ? 128 : 256;
 			forNode.codegenNode = createVNodeCall(context, helper(FRAGMENT), void 0, renderExp, fragmentFlag, void 0, void 0, true, !isStableFragment, false, node.loc);
@@ -3546,7 +3524,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 							`)`
 						]),
 						createCompoundExpression([
-							`if (_cached`,
+							`if (_cached && _cached.el`,
 							...keyExp ? [` && _cached.key === `, keyExp] : [],
 							` && ${context.helperString(IS_MEMO_SAME)}(_cached, _memo)) return _cached`
 						]),
@@ -3612,9 +3590,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		while (i--) if (args[i]) break;
 		return args.slice(0, i + 1).map((arg, i) => arg || createSimpleExpression(`_`.repeat(i + 1), false));
 	}
-
-//#endregion
-//#region packages/compiler-core/src/transforms/vSlot.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/vSlot.ts
 	const defaultFallback = createSimpleExpression(`undefined`, false);
 	const trackSlotScopes = (node, context) => {
 		if (node.type === 1 && (node.tagType === 1 || node.tagType === 3)) {
@@ -3762,9 +3739,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		}
 		return false;
 	}
-
-//#endregion
-//#region packages/compiler-core/src/transforms/transformElement.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/transformElement.ts
 	const directiveImportMap = /* @__PURE__ */ new WeakMap();
 	const transformElement = (node, context) => {
 		return function postTransformElement() {
@@ -4055,9 +4031,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 	function isComponentTag(tag) {
 		return tag === "component" || tag === "Component";
 	}
-
-//#endregion
-//#region packages/compiler-core/src/transforms/transformSlotOutlet.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/transformSlotOutlet.ts
 	const transformSlotOutlet = (node, context) => {
 		if (isSlotOutlet(node)) {
 			const { children, loc } = node;
@@ -4113,9 +4088,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			slotProps
 		};
 	}
-
-//#endregion
-//#region packages/compiler-core/src/transforms/vOn.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/vOn.ts
 	const transformOn = (dir, node, context, augmentor) => {
 		const { loc, modifiers, arg } = dir;
 		if (!dir.exp && !modifiers.length) context.onError(createCompilerError(35, loc));
@@ -4155,9 +4129,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		ret.props.forEach((p) => p.key.isHandlerKey = true);
 		return ret;
 	};
-
-//#endregion
-//#region packages/compiler-core/src/transforms/vBind.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/vBind.ts
 	const transformBind = (dir, _node, context) => {
 		const { modifiers, loc } = dir;
 		const arg = dir.arg;
@@ -4187,9 +4160,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			arg.children.push(`)`);
 		}
 	};
-
-//#endregion
-//#region packages/compiler-core/src/transforms/transformText.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/transformText.ts
 	const transformText = (node, context) => {
 		if (node.type === 0 || node.type === 1 || node.type === 11 || node.type === 10) return () => {
 			const children = node.children;
@@ -4230,9 +4202,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			}
 		};
 	};
-
-//#endregion
-//#region packages/compiler-core/src/transforms/vOnce.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/vOnce.ts
 	const seen$1 = /* @__PURE__ */ new WeakSet();
 	const transformOnce = (node, context) => {
 		if (node.type === 1 && findDir(node, "once", true)) {
@@ -4247,9 +4218,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			};
 		}
 	};
-
-//#endregion
-//#region packages/compiler-core/src/transforms/vModel.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/vModel.ts
 	const transformModel = (dir, node, context) => {
 		const { exp, arg } = dir;
 		if (!exp) {
@@ -4290,9 +4260,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 	function createTransformProps(props = []) {
 		return { props };
 	}
-
-//#endregion
-//#region packages/compiler-core/src/compat/transformFilter.ts
+	//#endregion
+	//#region packages/compiler-core/src/compat/transformFilter.ts
 	const validDivisionCharRE = /[\w).+\-_$\]]/;
 	const transformFilter = (node, context) => {
 		if (!isCompatEnabled("COMPILER_FILTERS", context)) return;
@@ -4404,9 +4373,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			return `${toValidAssetId(name, "filter")}(${exp}${args !== ")" ? "," + args : args}`;
 		}
 	}
-
-//#endregion
-//#region packages/compiler-core/src/transforms/vMemo.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/vMemo.ts
 	const seen = /* @__PURE__ */ new WeakSet();
 	const transformMemo = (node, context) => {
 		if (node.type === 1) {
@@ -4428,9 +4396,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			};
 		}
 	};
-
-//#endregion
-//#region packages/compiler-core/src/transforms/transformVBindShorthand.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/transformVBindShorthand.ts
 	const transformVBindShorthand = (node, context) => {
 		if (node.type === 1) {
 			for (const prop of node.props) if (prop.type === 7 && prop.name === "bind" && (!prop.exp || prop.exp.type === 4 && !prop.exp.content.trim()) && prop.arg) {
@@ -4445,9 +4412,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			}
 		}
 	};
-
-//#endregion
-//#region packages/compiler-core/src/compile.ts
+	//#endregion
+	//#region packages/compiler-core/src/compile.ts
 	function getBaseTransformPreset(prefixIdentifiers) {
 		return [[
 			transformVBindShorthand,
@@ -4485,9 +4451,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		}));
 		return generate(ast, resolvedOptions);
 	}
-
-//#endregion
-//#region packages/compiler-core/src/options.ts
+	//#endregion
+	//#region packages/compiler-core/src/options.ts
 	const BindingTypes = {
 		"DATA": "data",
 		"PROPS": "props",
@@ -4500,13 +4465,11 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		"OPTIONS": "options",
 		"LITERAL_CONST": "literal-const"
 	};
-
-//#endregion
-//#region packages/compiler-core/src/transforms/noopDirectiveTransform.ts
+	//#endregion
+	//#region packages/compiler-core/src/transforms/noopDirectiveTransform.ts
 	const noopDirectiveTransform = () => ({ props: [] });
-
-//#endregion
-//#region packages/compiler-dom/src/runtimeHelpers.ts
+	//#endregion
+	//#region packages/compiler-dom/src/runtimeHelpers.ts
 	const V_MODEL_RADIO = Symbol(`vModelRadio`);
 	const V_MODEL_CHECKBOX = Symbol(`vModelCheckbox`);
 	const V_MODEL_TEXT = Symbol(`vModelText`);
@@ -4529,9 +4492,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		[TRANSITION]: `Transition`,
 		[TRANSITION_GROUP]: `TransitionGroup`
 	});
-
-//#endregion
-//#region packages/compiler-dom/src/decodeHtmlBrowser.ts
+	//#endregion
+	//#region packages/compiler-dom/src/decodeHtmlBrowser.ts
 	let decoder;
 	function decodeHtmlBrowser(raw, asAttr = false) {
 		if (!decoder) decoder = document.createElement("div");
@@ -4543,9 +4505,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			return decoder.textContent;
 		}
 	}
-
-//#endregion
-//#region packages/compiler-dom/src/parserOptions.ts
+	//#endregion
+	//#region packages/compiler-dom/src/parserOptions.ts
 	const parserOptions = {
 		parseMode: "html",
 		isVoidTag,
@@ -4574,9 +4535,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			return ns;
 		}
 	};
-
-//#endregion
-//#region packages/compiler-dom/src/transforms/transformStyle.ts
+	//#endregion
+	//#region packages/compiler-dom/src/transforms/transformStyle.ts
 	const transformStyle = (node) => {
 		if (node.type === 1) node.props.forEach((p, i) => {
 			if (p.type === 6 && p.name === "style" && p.value) node.props[i] = {
@@ -4593,9 +4553,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		const normalized = parseStringStyle(cssText);
 		return createSimpleExpression(JSON.stringify(normalized), false, loc, 3);
 	};
-
-//#endregion
-//#region packages/compiler-dom/src/errors.ts
+	//#endregion
+	//#region packages/compiler-dom/src/errors.ts
 	function createDOMCompilerError(code, loc) {
 		return createCompilerError(code, loc, DOMErrorMessages);
 	}
@@ -4639,9 +4598,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		[64]: `Tags with side effect (<script> and <style>) are ignored in client component templates.`,
 		[65]: ``
 	};
-
-//#endregion
-//#region packages/compiler-dom/src/transforms/vHtml.ts
+	//#endregion
+	//#region packages/compiler-dom/src/transforms/vHtml.ts
 	const transformVHtml = (dir, node, context) => {
 		const { exp, loc } = dir;
 		if (!exp) context.onError(createDOMCompilerError(54, loc));
@@ -4651,9 +4609,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		}
 		return { props: [createObjectProperty(createSimpleExpression(`innerHTML`, true, loc), exp || createSimpleExpression("", true))] };
 	};
-
-//#endregion
-//#region packages/compiler-dom/src/transforms/vText.ts
+	//#endregion
+	//#region packages/compiler-dom/src/transforms/vText.ts
 	const transformVText = (dir, node, context) => {
 		const { exp, loc } = dir;
 		if (!exp) context.onError(createDOMCompilerError(56, loc));
@@ -4663,9 +4620,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		}
 		return { props: [createObjectProperty(createSimpleExpression(`textContent`, true), exp ? getConstantType(exp, context) > 0 ? exp : createCallExpression(context.helperString(TO_DISPLAY_STRING), [exp], loc) : createSimpleExpression("", true))] };
 	};
-
-//#endregion
-//#region packages/compiler-dom/src/transforms/vModel.ts
+	//#endregion
+	//#region packages/compiler-dom/src/transforms/vModel.ts
 	const transformModel$1 = (dir, node, context) => {
 		const baseResult = transformModel(dir, node, context);
 		if (!baseResult.props.length || node.tagType === 1) return baseResult;
@@ -4707,9 +4663,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		baseResult.props = baseResult.props.filter((p) => !(p.key.type === 4 && p.key.content === "modelValue"));
 		return baseResult;
 	};
-
-//#endregion
-//#region packages/compiler-dom/src/transforms/vOn.ts
+	//#endregion
+	//#region packages/compiler-dom/src/transforms/vOn.ts
 	const isEventOptionModifier = /* @__PURE__ */ makeMap(`passive,once,capture`);
 	const isNonKeyModifier = /* @__PURE__ */ makeMap("stop,prevent,self,ctrl,shift,alt,meta,exact,middle");
 	const maybeKeyModifier = /* @__PURE__ */ makeMap("left,right");
@@ -4770,9 +4725,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			return { props: [createObjectProperty(key, handlerExp)] };
 		});
 	};
-
-//#endregion
-//#region packages/compiler-dom/src/transforms/vShow.ts
+	//#endregion
+	//#region packages/compiler-dom/src/transforms/vShow.ts
 	const transformShow = (dir, node, context) => {
 		const { exp, loc } = dir;
 		if (!exp) context.onError(createDOMCompilerError(62, loc));
@@ -4781,9 +4735,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			needRuntime: context.helper(V_SHOW)
 		};
 	};
-
-//#endregion
-//#region packages/compiler-dom/src/transforms/Transition.ts
+	//#endregion
+	//#region packages/compiler-dom/src/transforms/Transition.ts
 	const transformTransition = (node, context) => {
 		if (node.type === 1 && node.tagType === 1) {
 			if (context.isBuiltInComponent(node.tag) === TRANSITION) return postTransformTransition(node, context.onError);
@@ -4814,19 +4767,17 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		const child = children[0];
 		return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(defaultHasMultipleChildren);
 	}
-
-//#endregion
-//#region packages/compiler-dom/src/transforms/ignoreSideEffectTags.ts
+	//#endregion
+	//#region packages/compiler-dom/src/transforms/ignoreSideEffectTags.ts
 	const ignoreSideEffectTags = (node, context) => {
 		if (node.type === 1 && node.tagType === 0 && (node.tag === "script" || node.tag === "style")) {
 			context.onError(createDOMCompilerError(64, node.loc));
 			context.removeNode();
 		}
 	};
-
-//#endregion
-//#region packages/compiler-dom/src/htmlNesting.ts
-/**
+	//#endregion
+	//#region packages/compiler-dom/src/htmlNesting.ts
+	/**
 	* Copied from https://github.com/MananTank/validate-html-nesting
 	* with ISC license
 	*
@@ -5014,9 +4965,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 		h5: headings,
 		h6: headings
 	};
-
-//#endregion
-//#region packages/compiler-dom/src/transforms/validateHtmlNesting.ts
+	//#endregion
+	//#region packages/compiler-dom/src/transforms/validateHtmlNesting.ts
 	const validateHtmlNesting = (node, context) => {
 		if (node.type === 1 && node.tagType === 0 && context.parent && context.parent.type === 1 && context.parent.tagType === 0 && !isValidHTMLNesting(context.parent.tag, node.tag)) {
 			const error = /* @__PURE__ */ new SyntaxError(`<${node.tag}> cannot be child of <${context.parent.tag}>, according to HTML specifications. This can cause hydration errors or potentially disrupt future functionality.`);
@@ -5024,9 +4974,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 			context.onWarn(error);
 		}
 	};
-
-//#endregion
-//#region packages/compiler-dom/src/index.ts
+	//#endregion
+	//#region packages/compiler-dom/src/index.ts
 	const DOMNodeTransforms = [transformStyle, ...[transformTransition, validateHtmlNesting]];
 	const DOMDirectiveTransforms = {
 		cloak: noopDirectiveTransform,
@@ -5050,185 +4999,184 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 	function parse(template, options = {}) {
 		return baseParse(template, extend({}, parserOptions, options));
 	}
-
-//#endregion
-exports.BASE_TRANSITION = BASE_TRANSITION;
-exports.BindingTypes = BindingTypes;
-exports.CAMELIZE = CAMELIZE;
-exports.CAPITALIZE = CAPITALIZE;
-exports.CREATE_BLOCK = CREATE_BLOCK;
-exports.CREATE_COMMENT = CREATE_COMMENT;
-exports.CREATE_ELEMENT_BLOCK = CREATE_ELEMENT_BLOCK;
-exports.CREATE_ELEMENT_VNODE = CREATE_ELEMENT_VNODE;
-exports.CREATE_SLOTS = CREATE_SLOTS;
-exports.CREATE_STATIC = CREATE_STATIC;
-exports.CREATE_TEXT = CREATE_TEXT;
-exports.CREATE_VNODE = CREATE_VNODE;
-exports.CompilerDeprecationTypes = CompilerDeprecationTypes;
-exports.ConstantTypes = ConstantTypes;
-exports.DOMDirectiveTransforms = DOMDirectiveTransforms;
-exports.DOMErrorCodes = DOMErrorCodes;
-exports.DOMErrorMessages = DOMErrorMessages;
-exports.DOMNodeTransforms = DOMNodeTransforms;
-exports.ElementTypes = ElementTypes;
-exports.ErrorCodes = ErrorCodes;
-exports.FRAGMENT = FRAGMENT;
-exports.GUARD_REACTIVE_PROPS = GUARD_REACTIVE_PROPS;
-exports.IS_MEMO_SAME = IS_MEMO_SAME;
-exports.IS_REF = IS_REF;
-exports.KEEP_ALIVE = KEEP_ALIVE;
-exports.MERGE_PROPS = MERGE_PROPS;
-exports.NORMALIZE_CLASS = NORMALIZE_CLASS;
-exports.NORMALIZE_PROPS = NORMALIZE_PROPS;
-exports.NORMALIZE_STYLE = NORMALIZE_STYLE;
-exports.NewlineType = NewlineType;
-exports.NodeTypes = NodeTypes;
-exports.OPEN_BLOCK = OPEN_BLOCK;
-exports.POP_SCOPE_ID = POP_SCOPE_ID;
-exports.PUSH_SCOPE_ID = PUSH_SCOPE_ID;
-exports.RENDER_LIST = RENDER_LIST;
-exports.RENDER_SLOT = RENDER_SLOT;
-exports.RESOLVE_COMPONENT = RESOLVE_COMPONENT;
-exports.RESOLVE_DIRECTIVE = RESOLVE_DIRECTIVE;
-exports.RESOLVE_DYNAMIC_COMPONENT = RESOLVE_DYNAMIC_COMPONENT;
-exports.RESOLVE_FILTER = RESOLVE_FILTER;
-exports.SET_BLOCK_TRACKING = SET_BLOCK_TRACKING;
-exports.SUSPENSE = SUSPENSE;
-exports.TELEPORT = TELEPORT;
-exports.TO_DISPLAY_STRING = TO_DISPLAY_STRING;
-exports.TO_HANDLERS = TO_HANDLERS;
-exports.TO_HANDLER_KEY = TO_HANDLER_KEY;
-exports.TRANSITION = TRANSITION;
-exports.TRANSITION_GROUP = TRANSITION_GROUP;
-exports.TS_NODE_TYPES = TS_NODE_TYPES;
-exports.UNREF = UNREF;
-exports.V_MODEL_CHECKBOX = V_MODEL_CHECKBOX;
-exports.V_MODEL_DYNAMIC = V_MODEL_DYNAMIC;
-exports.V_MODEL_RADIO = V_MODEL_RADIO;
-exports.V_MODEL_SELECT = V_MODEL_SELECT;
-exports.V_MODEL_TEXT = V_MODEL_TEXT;
-exports.V_ON_WITH_KEYS = V_ON_WITH_KEYS;
-exports.V_ON_WITH_MODIFIERS = V_ON_WITH_MODIFIERS;
-exports.V_SHOW = V_SHOW;
-exports.WITH_CTX = WITH_CTX;
-exports.WITH_DIRECTIVES = WITH_DIRECTIVES;
-exports.WITH_MEMO = WITH_MEMO;
-exports.advancePositionWithClone = advancePositionWithClone;
-exports.advancePositionWithMutation = advancePositionWithMutation;
-exports.assert = assert;
-exports.baseCompile = baseCompile;
-exports.baseParse = baseParse;
-exports.buildDirectiveArgs = buildDirectiveArgs;
-exports.buildProps = buildProps;
-exports.buildSlots = buildSlots;
-exports.checkCompatEnabled = checkCompatEnabled;
-exports.compile = compile;
-exports.convertToBlock = convertToBlock;
-exports.createArrayExpression = createArrayExpression;
-exports.createAssignmentExpression = createAssignmentExpression;
-exports.createBlockStatement = createBlockStatement;
-exports.createCacheExpression = createCacheExpression;
-exports.createCallExpression = createCallExpression;
-exports.createCompilerError = createCompilerError;
-exports.createCompoundExpression = createCompoundExpression;
-exports.createConditionalExpression = createConditionalExpression;
-exports.createDOMCompilerError = createDOMCompilerError;
-exports.createExp = createExp;
-exports.createForLoopParams = createForLoopParams;
-exports.createFunctionExpression = createFunctionExpression;
-exports.createIfStatement = createIfStatement;
-exports.createInterpolation = createInterpolation;
-exports.createObjectExpression = createObjectExpression;
-exports.createObjectProperty = createObjectProperty;
-exports.createReturnStatement = createReturnStatement;
-exports.createRoot = createRoot;
-exports.createSequenceExpression = createSequenceExpression;
-exports.createSimpleExpression = createSimpleExpression;
-exports.createStructuralDirectiveTransform = createStructuralDirectiveTransform;
-exports.createTemplateLiteral = createTemplateLiteral;
-exports.createTransformContext = createTransformContext;
-exports.createVNodeCall = createVNodeCall;
-exports.defaultOnError = defaultOnError;
-exports.defaultOnWarn = defaultOnWarn;
-exports.errorMessages = errorMessages;
-exports.extractIdentifiers = extractIdentifiers;
-exports.filterNonCommentChildren = filterNonCommentChildren;
-exports.findDir = findDir;
-exports.findProp = findProp;
-exports.forAliasRE = forAliasRE;
-exports.generate = generate;
-exports.generateCodeFrame = generateCodeFrame;
-exports.getBaseTransformPreset = getBaseTransformPreset;
-exports.getConstantType = getConstantType;
-exports.getMemoedVNodeCall = getMemoedVNodeCall;
-exports.getSelfName = getSelfName;
-exports.getVNodeBlockHelper = getVNodeBlockHelper;
-exports.getVNodeHelper = getVNodeHelper;
-exports.hasDynamicKeyVBind = hasDynamicKeyVBind;
-exports.hasScopeRef = hasScopeRef;
-exports.hasSingleChild = hasSingleChild;
-exports.helperNameMap = helperNameMap;
-exports.injectProp = injectProp;
-exports.isAllWhitespace = isAllWhitespace;
-exports.isCommentOrWhitespace = isCommentOrWhitespace;
-exports.isConstantNode = isConstantNode;
-exports.isCoreComponent = isCoreComponent;
-exports.isFnExpression = isFnExpression;
-exports.isFnExpressionBrowser = isFnExpressionBrowser;
-exports.isFnExpressionNode = isFnExpressionNode;
-exports.isFunctionType = isFunctionType;
-exports.isInDestructureAssignment = isInDestructureAssignment;
-exports.isInNewExpression = isInNewExpression;
-exports.isKeyboardEvent = isKeyboardEvent;
-exports.isLiteralWhitelisted = isLiteralWhitelisted;
-exports.isMemberExpression = isMemberExpression;
-exports.isMemberExpressionBrowser = isMemberExpressionBrowser;
-exports.isMemberExpressionNode = isMemberExpressionNode;
-exports.isReferencedIdentifier = isReferencedIdentifier;
-exports.isSimpleIdentifier = isSimpleIdentifier;
-exports.isSingleIfBlock = isSingleIfBlock;
-exports.isSlotOutlet = isSlotOutlet;
-exports.isStaticArgOf = isStaticArgOf;
-exports.isStaticExp = isStaticExp;
-exports.isStaticNode = isStaticNode;
-exports.isStaticProperty = isStaticProperty;
-exports.isStaticPropertyKey = isStaticPropertyKey;
-exports.isTemplateNode = isTemplateNode;
-exports.isText = isText;
-exports.isVPre = isVPre;
-exports.isVSlot = isVSlot;
-exports.isValidHTMLNesting = isValidHTMLNesting;
-exports.isWhitespaceText = isWhitespaceText;
-exports.locStub = locStub;
-exports.noopDirectiveTransform = noopDirectiveTransform;
-exports.parse = parse;
-exports.parserOptions = parserOptions;
-exports.postTransformTransition = postTransformTransition;
-exports.processExpression = processExpression;
-exports.processFor = processFor;
-exports.processIf = processIf;
-exports.processSlotOutlet = processSlotOutlet;
-exports.registerRuntimeHelpers = registerRuntimeHelpers;
-exports.resolveComponentType = resolveComponentType;
-exports.resolveModifiers = resolveModifiers;
-exports.stringifyExpression = stringifyExpression;
-exports.toValidAssetId = toValidAssetId;
-exports.trackSlotScopes = trackSlotScopes;
-exports.trackVForSlotScopes = trackVForSlotScopes;
-exports.transform = transform;
-exports.transformBind = transformBind;
-exports.transformElement = transformElement;
-exports.transformExpression = transformExpression;
-exports.transformModel = transformModel;
-exports.transformOn = transformOn;
-exports.transformStyle = transformStyle;
-exports.transformVBindShorthand = transformVBindShorthand;
-exports.traverseNode = traverseNode;
-exports.unwrapTSNode = unwrapTSNode;
-exports.validFirstIdentCharRE = validFirstIdentCharRE;
-exports.walkBlockDeclarations = walkBlockDeclarations;
-exports.walkFunctionParams = walkFunctionParams;
-exports.walkIdentifiers = walkIdentifiers;
-exports.warnDeprecation = warnDeprecation;
-return exports;
+	//#endregion
+	exports.BASE_TRANSITION = BASE_TRANSITION;
+	exports.BindingTypes = BindingTypes;
+	exports.CAMELIZE = CAMELIZE;
+	exports.CAPITALIZE = CAPITALIZE;
+	exports.CREATE_BLOCK = CREATE_BLOCK;
+	exports.CREATE_COMMENT = CREATE_COMMENT;
+	exports.CREATE_ELEMENT_BLOCK = CREATE_ELEMENT_BLOCK;
+	exports.CREATE_ELEMENT_VNODE = CREATE_ELEMENT_VNODE;
+	exports.CREATE_SLOTS = CREATE_SLOTS;
+	exports.CREATE_STATIC = CREATE_STATIC;
+	exports.CREATE_TEXT = CREATE_TEXT;
+	exports.CREATE_VNODE = CREATE_VNODE;
+	exports.CompilerDeprecationTypes = CompilerDeprecationTypes;
+	exports.ConstantTypes = ConstantTypes;
+	exports.DOMDirectiveTransforms = DOMDirectiveTransforms;
+	exports.DOMErrorCodes = DOMErrorCodes;
+	exports.DOMErrorMessages = DOMErrorMessages;
+	exports.DOMNodeTransforms = DOMNodeTransforms;
+	exports.ElementTypes = ElementTypes;
+	exports.ErrorCodes = ErrorCodes;
+	exports.FRAGMENT = FRAGMENT;
+	exports.GUARD_REACTIVE_PROPS = GUARD_REACTIVE_PROPS;
+	exports.IS_MEMO_SAME = IS_MEMO_SAME;
+	exports.IS_REF = IS_REF;
+	exports.KEEP_ALIVE = KEEP_ALIVE;
+	exports.MERGE_PROPS = MERGE_PROPS;
+	exports.NORMALIZE_CLASS = NORMALIZE_CLASS;
+	exports.NORMALIZE_PROPS = NORMALIZE_PROPS;
+	exports.NORMALIZE_STYLE = NORMALIZE_STYLE;
+	exports.NewlineType = NewlineType;
+	exports.NodeTypes = NodeTypes;
+	exports.OPEN_BLOCK = OPEN_BLOCK;
+	exports.POP_SCOPE_ID = POP_SCOPE_ID;
+	exports.PUSH_SCOPE_ID = PUSH_SCOPE_ID;
+	exports.RENDER_LIST = RENDER_LIST;
+	exports.RENDER_SLOT = RENDER_SLOT;
+	exports.RESOLVE_COMPONENT = RESOLVE_COMPONENT;
+	exports.RESOLVE_DIRECTIVE = RESOLVE_DIRECTIVE;
+	exports.RESOLVE_DYNAMIC_COMPONENT = RESOLVE_DYNAMIC_COMPONENT;
+	exports.RESOLVE_FILTER = RESOLVE_FILTER;
+	exports.SET_BLOCK_TRACKING = SET_BLOCK_TRACKING;
+	exports.SUSPENSE = SUSPENSE;
+	exports.TELEPORT = TELEPORT;
+	exports.TO_DISPLAY_STRING = TO_DISPLAY_STRING;
+	exports.TO_HANDLERS = TO_HANDLERS;
+	exports.TO_HANDLER_KEY = TO_HANDLER_KEY;
+	exports.TRANSITION = TRANSITION;
+	exports.TRANSITION_GROUP = TRANSITION_GROUP;
+	exports.TS_NODE_TYPES = TS_NODE_TYPES;
+	exports.UNREF = UNREF;
+	exports.V_MODEL_CHECKBOX = V_MODEL_CHECKBOX;
+	exports.V_MODEL_DYNAMIC = V_MODEL_DYNAMIC;
+	exports.V_MODEL_RADIO = V_MODEL_RADIO;
+	exports.V_MODEL_SELECT = V_MODEL_SELECT;
+	exports.V_MODEL_TEXT = V_MODEL_TEXT;
+	exports.V_ON_WITH_KEYS = V_ON_WITH_KEYS;
+	exports.V_ON_WITH_MODIFIERS = V_ON_WITH_MODIFIERS;
+	exports.V_SHOW = V_SHOW;
+	exports.WITH_CTX = WITH_CTX;
+	exports.WITH_DIRECTIVES = WITH_DIRECTIVES;
+	exports.WITH_MEMO = WITH_MEMO;
+	exports.advancePositionWithClone = advancePositionWithClone;
+	exports.advancePositionWithMutation = advancePositionWithMutation;
+	exports.assert = assert;
+	exports.baseCompile = baseCompile;
+	exports.baseParse = baseParse;
+	exports.buildDirectiveArgs = buildDirectiveArgs;
+	exports.buildProps = buildProps;
+	exports.buildSlots = buildSlots;
+	exports.checkCompatEnabled = checkCompatEnabled;
+	exports.compile = compile;
+	exports.convertToBlock = convertToBlock;
+	exports.createArrayExpression = createArrayExpression;
+	exports.createAssignmentExpression = createAssignmentExpression;
+	exports.createBlockStatement = createBlockStatement;
+	exports.createCacheExpression = createCacheExpression;
+	exports.createCallExpression = createCallExpression;
+	exports.createCompilerError = createCompilerError;
+	exports.createCompoundExpression = createCompoundExpression;
+	exports.createConditionalExpression = createConditionalExpression;
+	exports.createDOMCompilerError = createDOMCompilerError;
+	exports.createExp = createExp;
+	exports.createForLoopParams = createForLoopParams;
+	exports.createFunctionExpression = createFunctionExpression;
+	exports.createIfStatement = createIfStatement;
+	exports.createInterpolation = createInterpolation;
+	exports.createObjectExpression = createObjectExpression;
+	exports.createObjectProperty = createObjectProperty;
+	exports.createReturnStatement = createReturnStatement;
+	exports.createRoot = createRoot;
+	exports.createSequenceExpression = createSequenceExpression;
+	exports.createSimpleExpression = createSimpleExpression;
+	exports.createStructuralDirectiveTransform = createStructuralDirectiveTransform;
+	exports.createTemplateLiteral = createTemplateLiteral;
+	exports.createTransformContext = createTransformContext;
+	exports.createVNodeCall = createVNodeCall;
+	exports.defaultOnError = defaultOnError;
+	exports.defaultOnWarn = defaultOnWarn;
+	exports.errorMessages = errorMessages;
+	exports.extractIdentifiers = extractIdentifiers;
+	exports.filterNonCommentChildren = filterNonCommentChildren;
+	exports.findDir = findDir;
+	exports.findProp = findProp;
+	exports.forAliasRE = forAliasRE;
+	exports.generate = generate;
+	exports.generateCodeFrame = generateCodeFrame;
+	exports.getBaseTransformPreset = getBaseTransformPreset;
+	exports.getConstantType = getConstantType;
+	exports.getMemoedVNodeCall = getMemoedVNodeCall;
+	exports.getSelfName = getSelfName;
+	exports.getVNodeBlockHelper = getVNodeBlockHelper;
+	exports.getVNodeHelper = getVNodeHelper;
+	exports.hasDynamicKeyVBind = hasDynamicKeyVBind;
+	exports.hasScopeRef = hasScopeRef;
+	exports.hasSingleChild = hasSingleChild;
+	exports.helperNameMap = helperNameMap;
+	exports.injectProp = injectProp;
+	exports.isAllWhitespace = isAllWhitespace;
+	exports.isCommentOrWhitespace = isCommentOrWhitespace;
+	exports.isConstantNode = isConstantNode;
+	exports.isCoreComponent = isCoreComponent;
+	exports.isFnExpression = isFnExpression;
+	exports.isFnExpressionBrowser = isFnExpressionBrowser;
+	exports.isFnExpressionNode = isFnExpressionNode;
+	exports.isFunctionType = isFunctionType;
+	exports.isInDestructureAssignment = isInDestructureAssignment;
+	exports.isInNewExpression = isInNewExpression;
+	exports.isKeyboardEvent = isKeyboardEvent;
+	exports.isLiteralWhitelisted = isLiteralWhitelisted;
+	exports.isMemberExpression = isMemberExpression;
+	exports.isMemberExpressionBrowser = isMemberExpressionBrowser;
+	exports.isMemberExpressionNode = isMemberExpressionNode;
+	exports.isReferencedIdentifier = isReferencedIdentifier;
+	exports.isSimpleIdentifier = isSimpleIdentifier;
+	exports.isSingleIfBlock = isSingleIfBlock;
+	exports.isSlotOutlet = isSlotOutlet;
+	exports.isStaticArgOf = isStaticArgOf;
+	exports.isStaticExp = isStaticExp;
+	exports.isStaticNode = isStaticNode;
+	exports.isStaticProperty = isStaticProperty;
+	exports.isStaticPropertyKey = isStaticPropertyKey;
+	exports.isTemplateNode = isTemplateNode;
+	exports.isText = isText;
+	exports.isVPre = isVPre;
+	exports.isVSlot = isVSlot;
+	exports.isValidHTMLNesting = isValidHTMLNesting;
+	exports.isWhitespaceText = isWhitespaceText;
+	exports.locStub = locStub;
+	exports.noopDirectiveTransform = noopDirectiveTransform;
+	exports.parse = parse;
+	exports.parserOptions = parserOptions;
+	exports.postTransformTransition = postTransformTransition;
+	exports.processExpression = processExpression;
+	exports.processFor = processFor;
+	exports.processIf = processIf;
+	exports.processSlotOutlet = processSlotOutlet;
+	exports.registerRuntimeHelpers = registerRuntimeHelpers;
+	exports.resolveComponentType = resolveComponentType;
+	exports.resolveModifiers = resolveModifiers;
+	exports.stringifyExpression = stringifyExpression;
+	exports.toValidAssetId = toValidAssetId;
+	exports.trackSlotScopes = trackSlotScopes;
+	exports.trackVForSlotScopes = trackVForSlotScopes;
+	exports.transform = transform;
+	exports.transformBind = transformBind;
+	exports.transformElement = transformElement;
+	exports.transformExpression = transformExpression;
+	exports.transformModel = transformModel;
+	exports.transformOn = transformOn;
+	exports.transformStyle = transformStyle;
+	exports.transformVBindShorthand = transformVBindShorthand;
+	exports.traverseNode = traverseNode;
+	exports.unwrapTSNode = unwrapTSNode;
+	exports.validFirstIdentCharRE = validFirstIdentCharRE;
+	exports.walkBlockDeclarations = walkBlockDeclarations;
+	exports.walkFunctionParams = walkFunctionParams;
+	exports.walkIdentifiers = walkIdentifiers;
+	exports.warnDeprecation = warnDeprecation;
+	return exports;
 })({});

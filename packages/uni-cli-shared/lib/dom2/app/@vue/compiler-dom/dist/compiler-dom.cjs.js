@@ -1,12 +1,14 @@
 /**
-  * @vue/compiler-dom v3.6.0-beta.5
+  * @vue/compiler-dom v3.6.0-beta.17
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
-Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: 'Module' } });
+Object.defineProperties(exports, {
+	__esModule: { value: true },
+	[Symbol.toStringTag]: { value: "Module" }
+});
 let _vue_compiler_core = require("@vue/compiler-core");
 let _vue_shared = require("@vue/shared");
-
 //#region packages/compiler-dom/src/runtimeHelpers.ts
 const V_MODEL_RADIO = Symbol(`vModelRadio`);
 const V_MODEL_CHECKBOX = Symbol(`vModelCheckbox`);
@@ -30,7 +32,6 @@ const TRANSITION_GROUP = Symbol(`TransitionGroup`);
 	[TRANSITION]: `Transition`,
 	[TRANSITION_GROUP]: `TransitionGroup`
 });
-
 //#endregion
 //#region packages/compiler-dom/src/parserOptions.ts
 const parserOptions = {
@@ -61,7 +62,6 @@ const parserOptions = {
 		return ns;
 	}
 };
-
 //#endregion
 //#region packages/compiler-dom/src/transforms/transformStyle.ts
 const transformStyle = (node) => {
@@ -80,7 +80,6 @@ const parseInlineCSS = (cssText, loc) => {
 	const normalized = (0, _vue_shared.parseStringStyle)(cssText);
 	return (0, _vue_compiler_core.createSimpleExpression)(JSON.stringify(normalized), false, loc, 3);
 };
-
 //#endregion
 //#region packages/compiler-dom/src/errors.ts
 function createDOMCompilerError(code, loc) {
@@ -126,7 +125,6 @@ const DOMErrorMessages = {
 	[64]: `Tags with side effect (<script> and <style>) are ignored in client component templates.`,
 	[65]: ``
 };
-
 //#endregion
 //#region packages/compiler-dom/src/transforms/vHtml.ts
 const transformVHtml = (dir, node, context) => {
@@ -138,7 +136,6 @@ const transformVHtml = (dir, node, context) => {
 	}
 	return { props: [(0, _vue_compiler_core.createObjectProperty)((0, _vue_compiler_core.createSimpleExpression)(`innerHTML`, true, loc), exp || (0, _vue_compiler_core.createSimpleExpression)("", true))] };
 };
-
 //#endregion
 //#region packages/compiler-dom/src/transforms/vText.ts
 const transformVText = (dir, node, context) => {
@@ -150,7 +147,6 @@ const transformVText = (dir, node, context) => {
 	}
 	return { props: [(0, _vue_compiler_core.createObjectProperty)((0, _vue_compiler_core.createSimpleExpression)(`textContent`, true), exp ? (0, _vue_compiler_core.getConstantType)(exp, context) > 0 ? exp : (0, _vue_compiler_core.createCallExpression)(context.helperString(_vue_compiler_core.TO_DISPLAY_STRING), [exp], loc) : (0, _vue_compiler_core.createSimpleExpression)("", true))] };
 };
-
 //#endregion
 //#region packages/compiler-dom/src/transforms/vModel.ts
 const transformModel = (dir, node, context) => {
@@ -194,7 +190,6 @@ const transformModel = (dir, node, context) => {
 	baseResult.props = baseResult.props.filter((p) => !(p.key.type === 4 && p.key.content === "modelValue"));
 	return baseResult;
 };
-
 //#endregion
 //#region packages/compiler-dom/src/transforms/vOn.ts
 const isEventOptionModifier = /* @__PURE__ */ (0, _vue_shared.makeMap)(`passive,once,capture`);
@@ -257,7 +252,6 @@ const transformOn = (dir, node, context) => {
 		return { props: [(0, _vue_compiler_core.createObjectProperty)(key, handlerExp)] };
 	});
 };
-
 //#endregion
 //#region packages/compiler-dom/src/transforms/vShow.ts
 const transformShow = (dir, node, context) => {
@@ -268,7 +262,6 @@ const transformShow = (dir, node, context) => {
 		needRuntime: context.helper(V_SHOW)
 	};
 };
-
 //#endregion
 //#region packages/compiler-dom/src/transforms/Transition.ts
 const transformTransition = (node, context) => {
@@ -301,7 +294,6 @@ function defaultHasMultipleChildren(node) {
 	const child = children[0];
 	return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(defaultHasMultipleChildren);
 }
-
 //#endregion
 //#region packages/compiler-dom/src/transforms/stringifyStatic.ts
 /**
@@ -493,7 +485,6 @@ function evaluateConstant(exp) {
 		return res;
 	}
 }
-
 //#endregion
 //#region packages/compiler-dom/src/transforms/ignoreSideEffectTags.ts
 const ignoreSideEffectTags = (node, context) => {
@@ -502,7 +493,6 @@ const ignoreSideEffectTags = (node, context) => {
 		context.removeNode();
 	}
 };
-
 //#endregion
 //#region packages/compiler-dom/src/htmlNesting.ts
 /**
@@ -693,7 +683,6 @@ const knownInvalidParents = {
 	h5: headings,
 	h6: headings
 };
-
 //#endregion
 //#region packages/compiler-dom/src/transforms/validateHtmlNesting.ts
 const validateHtmlNesting = (node, context) => {
@@ -703,7 +692,6 @@ const validateHtmlNesting = (node, context) => {
 		context.onWarn(error);
 	}
 };
-
 //#endregion
 //#region packages/compiler-dom/src/index.ts
 const DOMNodeTransforms = [transformStyle, ...[transformTransition, validateHtmlNesting]];
@@ -729,7 +717,6 @@ function compile(src, options = {}) {
 function parse(template, options = {}) {
 	return (0, _vue_compiler_core.baseParse)(template, (0, _vue_shared.extend)({}, parserOptions, options));
 }
-
 //#endregion
 exports.DOMDirectiveTransforms = DOMDirectiveTransforms;
 exports.DOMErrorCodes = DOMErrorCodes;
@@ -754,9 +741,11 @@ exports.parserOptions = parserOptions;
 exports.postTransformTransition = postTransformTransition;
 exports.resolveModifiers = resolveModifiers;
 exports.transformStyle = transformStyle;
-Object.keys(_vue_compiler_core).forEach(function (k) {
-  if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
-    enumerable: true,
-    get: function () { return _vue_compiler_core[k]; }
-  });
+Object.keys(_vue_compiler_core).forEach(function(k) {
+	if (k !== "default" && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
+		enumerable: true,
+		get: function() {
+			return _vue_compiler_core[k];
+		}
+	});
 });
