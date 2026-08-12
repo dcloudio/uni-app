@@ -721,9 +721,9 @@ if(webViewElement != null) {
 获取元素的大小及其相对于窗口的位置信息 异步。
 
 ##### getBoundingClientRectAsync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | Android(Vapor) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | iOS(Vapor) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.41 | 4.41 | 4.41 | x | 4.41 | x | x | 4.61 |
+| Web | 微信小程序 | Android | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.41 | 4.41 | 4.41 | x | 4.41 | x | 4.61 |
 
 
 ##### 参数 
@@ -1368,9 +1368,9 @@ if(webViewElement != null) {
 获取元素ios原生view
 
 ##### getIOSView 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | iOS(Vapor) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.25 | 5.11 | x |
+| Web | 微信小程序 | Android | iOS | iOS UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.25 | x |
 
 
 
