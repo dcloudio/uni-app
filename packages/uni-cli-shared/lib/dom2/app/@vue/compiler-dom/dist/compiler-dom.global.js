@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-rc.2
+  * @vue/compiler-dom v3.6.0-rc.3
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -3519,15 +3519,22 @@ var VueCompilerDOM = (function(exports) {
 				else {
 					childBlock = children[0].codegenNode;
 					if (isTemplate && keyProperty) injectProp(childBlock, keyProperty, context);
-					if (childBlock.isBlock !== !isStableFragment) if (childBlock.isBlock) {
+					const shouldUseBlock = !isStableFragment || childBlock.isBlockRequired === true;
+					if (childBlock.isBlock !== shouldUseBlock) if (childBlock.isBlock) {
 						removeHelper(OPEN_BLOCK);
 						removeHelper(getVNodeBlockHelper(context.inSSR, childBlock.isComponent));
 					} else removeHelper(getVNodeHelper(context.inSSR, childBlock.isComponent));
-					childBlock.isBlock = !isStableFragment;
+					childBlock.isBlock = shouldUseBlock;
 					if (childBlock.isBlock) {
 						helper(OPEN_BLOCK);
 						helper(getVNodeBlockHelper(context.inSSR, childBlock.isComponent));
-					} else helper(getVNodeHelper(context.inSSR, childBlock.isComponent));
+					} else {
+						helper(getVNodeHelper(context.inSSR, childBlock.isComponent));
+						if (childBlock.needsPatch) {
+							var _childBlock$patchFlag;
+							childBlock.patchFlag = ((_childBlock$patchFlag = childBlock.patchFlag) !== null && _childBlock$patchFlag !== void 0 ? _childBlock$patchFlag : 0) | 512;
+						}
+					}
 				}
 				if (memo) {
 					const loop = createFunctionExpression(createForLoopParams(forNode.parseResult, [createSimpleExpression(`_cached`)]));
@@ -3770,12 +3777,16 @@ var VueCompilerDOM = (function(exports) {
 			let vnodeDynamicProps;
 			let dynamicPropNames;
 			let vnodeDirectives;
+			let needsPatch = false;
+			let isBlockRequired = false;
 			let shouldUseBlock = isDynamicComponent || vnodeTag === TELEPORT || vnodeTag === SUSPENSE || !isComponent && (tag === "svg" || tag === "foreignObject" || tag === "math");
 			if (props.length > 0) {
 				const propsBuildResult = buildProps(node, context, void 0, isComponent, isDynamicComponent);
 				vnodeProps = propsBuildResult.props;
 				patchFlag = propsBuildResult.patchFlag;
 				dynamicPropNames = propsBuildResult.dynamicPropNames;
+				needsPatch = propsBuildResult.needsPatch;
+				isBlockRequired = propsBuildResult.isBlockRequired;
 				const directives = propsBuildResult.directives;
 				vnodeDirectives = directives && directives.length ? createArrayExpression(directives.map((dir) => buildDirectiveArgs(dir, context))) : void 0;
 				if (propsBuildResult.shouldUseBlock) shouldUseBlock = true;
@@ -3804,7 +3815,10 @@ var VueCompilerDOM = (function(exports) {
 				} else vnodeChildren = node.children;
 			}
 			if (dynamicPropNames && dynamicPropNames.length) vnodeDynamicProps = stringifyDynamicPropNames(dynamicPropNames);
-			node.codegenNode = createVNodeCall(context, vnodeTag, vnodeProps, vnodeChildren, patchFlag === 0 ? void 0 : patchFlag, vnodeDynamicProps, vnodeDirectives, !!shouldUseBlock, false, isComponent, node.loc);
+			const vnodeCall = node.codegenNode = createVNodeCall(context, vnodeTag, vnodeProps, vnodeChildren, patchFlag === 0 ? void 0 : patchFlag, vnodeDynamicProps, vnodeDirectives, !!shouldUseBlock, false, isComponent, node.loc);
+			needsPatch = needsPatch && (patchFlag === 0 || patchFlag === 32);
+			if (needsPatch) vnodeCall.needsPatch = true;
+			if (isBlockRequired) vnodeCall.isBlockRequired = true;
 		};
 	};
 	function resolveComponentType(node, context, ssr = false) {
@@ -3838,6 +3852,7 @@ var VueCompilerDOM = (function(exports) {
 		const runtimeDirectives = [];
 		const hasChildren = children.length > 0;
 		let shouldUseBlock = false;
+		let isBlockRequired = false;
 		let patchFlag = 0;
 		let hasRef = false;
 		let hasClassBinding = false;
@@ -3862,12 +3877,12 @@ var VueCompilerDOM = (function(exports) {
 				const isEventHandler = isOn(name);
 				if (isEventHandler && (!isComponent || isDynamicComponent) && name.toLowerCase() !== "onclick" && name !== "onUpdate:modelValue" && !isReservedProp(name)) hasHydrationEventBinding = true;
 				if (isEventHandler && isReservedProp(name)) hasVnodeHook = true;
+				if (name === "ref") hasRef = true;
 				if (isEventHandler && value.type === 14) value = value.arguments[0];
 				if (value.type === 20 || (value.type === 4 || value.type === 8) && getConstantType(value, context) > 0) return;
-				if (name === "ref") hasRef = true;
-				else if (name === "class") hasClassBinding = true;
+				if (name === "class") hasClassBinding = true;
 				else if (name === "style") hasStyleBinding = true;
-				else if (name !== "key" && !dynamicPropNames.includes(name)) dynamicPropNames.push(name);
+				else if (name !== "ref" && name !== "key" && !dynamicPropNames.includes(name)) dynamicPropNames.push(name);
 				if (isComponent && (name === "class" || name === "style") && !dynamicPropNames.includes(name)) dynamicPropNames.push(name);
 			} else hasDynamicKeys = true;
 		};
@@ -3893,7 +3908,11 @@ var VueCompilerDOM = (function(exports) {
 				if (name === "once" || name === "memo") continue;
 				if (name === "is" || isVBind && isStaticArgOf(arg, "is") && (isComponentTag(tag) || isCompatEnabled("COMPILER_IS_ON_ELEMENT", context))) continue;
 				if (isVOn && ssr) continue;
-				if (isVBind && isStaticArgOf(arg, "key") || isVOn && hasChildren && isStaticArgOf(arg, "vue:before-update")) shouldUseBlock = true;
+				if (isVBind && isStaticArgOf(arg, "key")) shouldUseBlock = true;
+				if (isVOn && hasChildren && arg && isStaticExp(arg) && camelize(arg.content) === "vue:beforeUpdate") {
+					shouldUseBlock = true;
+					isBlockRequired = true;
+				}
 				if (isVBind && isStaticArgOf(arg, "ref")) pushRefVForMarker();
 				if (!arg && (isVBind || isVOn)) {
 					hasDynamicKeys = true;
@@ -3935,7 +3954,10 @@ var VueCompilerDOM = (function(exports) {
 					}
 				} else if (!isBuiltInDirective(name)) {
 					runtimeDirectives.push(prop);
-					if (hasChildren) shouldUseBlock = true;
+					if (hasChildren) {
+						shouldUseBlock = true;
+						isBlockRequired = true;
+					}
 				}
 			}
 		}
@@ -3952,7 +3974,8 @@ var VueCompilerDOM = (function(exports) {
 			if (dynamicPropNames.length) patchFlag |= 8;
 			if (hasHydrationEventBinding) patchFlag |= 32;
 		}
-		if (!shouldUseBlock && (patchFlag === 0 || patchFlag === 32) && (hasRef || hasVnodeHook || runtimeDirectives.length > 0)) patchFlag |= 512;
+		const needsPatch = (patchFlag === 0 || patchFlag === 32) && (hasRef || hasVnodeHook || runtimeDirectives.length > 0);
+		if (!shouldUseBlock && needsPatch) patchFlag |= 512;
 		if (!context.inSSR && propsExpression) switch (propsExpression.type) {
 			case 15:
 				let classKeyIndex = -1;
@@ -3982,7 +4005,9 @@ var VueCompilerDOM = (function(exports) {
 			directives: runtimeDirectives,
 			patchFlag,
 			dynamicPropNames,
-			shouldUseBlock
+			shouldUseBlock,
+			needsPatch,
+			isBlockRequired
 		};
 	}
 	function dedupeProperties(properties) {

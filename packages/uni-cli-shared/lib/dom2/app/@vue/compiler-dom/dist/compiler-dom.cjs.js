@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-rc.2
+  * @vue/compiler-dom v3.6.0-rc.3
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -461,10 +461,11 @@ function stringifyElement(node, context) {
 					res += ` ${p.arg.content}="__VUE_EXP_START__${exp.content}__VUE_EXP_END__"`;
 					continue;
 				}
-				if ((0, _vue_shared.isBooleanAttr)(p.arg.content) && exp.content === "false") continue;
+				if (((0, _vue_shared.isBooleanAttr)(p.arg.content) || p.arg.content === "hidden") && exp.content === "false") continue;
 				let evaluated = evaluateConstant(exp);
 				if (evaluated != null) {
 					const arg = p.arg && p.arg.content;
+					if (arg === "hidden" && typeof evaluated === "number" && !(0, _vue_shared.includeBooleanAttr)(evaluated)) continue;
 					if (arg === "class") evaluated = (0, _vue_shared.normalizeClass)(evaluated);
 					else if (arg === "style") evaluated = (0, _vue_shared.stringifyStyle)((0, _vue_shared.normalizeStyle)(evaluated));
 					res += ` ${p.arg.content}="${(0, _vue_shared.escapeHtml)(evaluated)}"`;

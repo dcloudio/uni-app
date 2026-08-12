@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.2
+  * @vue/compiler-sfc v3.6.0-rc.3
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -1306,6 +1306,18 @@ function createCache(max = 500) {
 	return new LRUCache({ max });
 }
 //#endregion
+//#region packages/compiler-sfc/src/template/resolveTemplateAST.ts
+function resolveTemplateAST(inAST, options) {
+	if (!(inAST === null || inAST === void 0 ? void 0 : inAST.transformed)) return inAST;
+	const { compiler = _vue_compiler_dom, compilerOptions, ssr, onError } = options;
+	return (0, _vue_compiler_core.createRoot)((ssr ? _vue_compiler_dom : compiler).parse(inAST.source, {
+		prefixIdentifiers: true,
+		...compilerOptions,
+		parseMode: "sfc",
+		onError
+	}).children.find((node) => node.type === 1 && node.tag === "template").children, inAST.source);
+}
+//#endregion
 //#region packages/compiler-sfc/src/script/importUsageCheck.ts
 /**
 * Check if an identifier is used in the SFC's template.
@@ -1313,23 +1325,28 @@ function createCache(max = 500) {
 *   when not using inline mode.
 * - 2.check whether the built-in properties such as $attrs, $slots, $emit are used in the template
 */
-function isUsedInTemplate(identifier, sfc) {
-	return resolveTemplateUsedIdentifiers(sfc).has(identifier);
+function isUsedInTemplate(identifier, sfc, options) {
+	return resolveTemplateUsedIdentifiers(sfc, options).has(identifier);
 }
 const templateAnalysisCache = createCache();
-function resolveTemplateVModelIdentifiers(sfc) {
-	return resolveTemplateAnalysisResult(sfc, false).vModelIds;
+function resolveTemplateVModelIdentifiers(sfc, options) {
+	return resolveTemplateAnalysisResult(sfc, false, options).vModelIds;
 }
-function resolveTemplateUsedIdentifiers(sfc) {
-	return resolveTemplateAnalysisResult(sfc).usedIds;
+function resolveTemplateUsedIdentifiers(sfc, options) {
+	return resolveTemplateAnalysisResult(sfc, true, options).usedIds;
 }
-function resolveTemplateAnalysisResult(sfc, collectUsedIds = true) {
+function resolveTemplateAnalysisResult(sfc, collectUsedIds = true, options) {
 	const { content, ast } = sfc.template;
 	const cached = templateAnalysisCache.get(content);
 	if (cached && (!collectUsedIds || cached.usedIds)) return cached;
 	const ids = collectUsedIds ? /* @__PURE__ */ new Set() : void 0;
 	const vModelIds = /* @__PURE__ */ new Set();
-	ast.children.forEach(walk);
+	resolveTemplateAST(ast, {
+		compiler: options === null || options === void 0 ? void 0 : options.compiler,
+		compilerOptions: options === null || options === void 0 ? void 0 : options.compilerOptions,
+		ssr: options === null || options === void 0 ? void 0 : options.ssr,
+		onError: () => {}
+	}).children.forEach(walk);
 	function walk(node) {
 		switch (node.type) {
 			case 1:
@@ -3527,12 +3544,12 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 	const defaultCompiler = ssr ? _vue_compiler_ssr : vapor ? _vue_compiler_vapor : _vue_compiler_dom;
 	compiler = compiler || defaultCompiler;
 	if (compiler !== defaultCompiler) inAST = void 0;
-	if (inAST === null || inAST === void 0 ? void 0 : inAST.transformed) inAST = (0, _vue_compiler_core.createRoot)((ssr ? _vue_compiler_dom : compiler).parse(inAST.source, {
-		prefixIdentifiers: true,
-		...compilerOptions,
-		parseMode: "sfc",
+	inAST = resolveTemplateAST(inAST, {
+		compiler,
+		compilerOptions,
+		ssr,
 		onError: (e) => errors.push(e)
-	}).children.find((node) => node.type === 1 && node.tag === "template").children, inAST.source);
+	});
 	let { code, ast, preamble, map, helpers } = compiler.compile(inAST || source, {
 		mode: "module",
 		prefixIdentifiers: true,
@@ -12484,7 +12501,7 @@ const range = (a, b, str) => {
 	return result;
 };
 //#endregion
-//#region node_modules/.pnpm/brace-expansion@5.0.5/node_modules/brace-expansion/dist/esm/index.js
+//#region node_modules/.pnpm/brace-expansion@5.0.9/node_modules/brace-expansion/dist/esm/index.js
 const escSlash = "\0SLASH" + Math.random() + "\0";
 const escOpen = "\0OPEN" + Math.random() + "\0";
 const escClose = "\0CLOSE" + Math.random() + "\0";
@@ -12501,6 +12518,7 @@ const closePattern = /\\}/g;
 const commaPattern = /\\,/g;
 const periodPattern = /\\\./g;
 const EXPANSION_MAX = 1e5;
+const EXPANSION_MAX_LENGTH = 4e6;
 function numeric(str) {
 	return !isNaN(str) ? parseInt(str, 10) : str.charCodeAt(0);
 }
@@ -12533,9 +12551,9 @@ function parseCommaParts(str) {
 }
 function expand(str, options = {}) {
 	if (!str) return [];
-	const { max = EXPANSION_MAX } = options;
+	const { max = EXPANSION_MAX, maxLength = EXPANSION_MAX_LENGTH } = options;
 	if (str.slice(0, 2) === "{}") str = "\\{\\}" + str.slice(2);
-	return expand_(escapeBraces(str), max, true).map(unescapeBraces);
+	return expand_(escapeBraces(str), max, maxLength, true).map(unescapeBraces);
 }
 function embrace(str) {
 	return "{" + str + "}";
@@ -12549,18 +12567,73 @@ function lte(i, y) {
 function gte(i, y) {
 	return i >= y;
 }
-function expand_(str, max, isTop) {
-	/** @type {string[]} */
-	const expansions = [];
-	const m = balanced("{", "}", str);
-	if (!m) return [str];
-	const pre = m.pre;
-	const post = m.post.length ? expand_(m.post, max, false) : [""];
-	if (/\$$/.test(m.pre)) for (let k = 0; k < post.length && k < max; k++) {
-		const expansion = pre + "{" + m.body + "}" + post[k];
-		expansions.push(expansion);
+function combine(acc, pre, values, max, maxLength, dropEmpties) {
+	const out = [];
+	let length = 0;
+	for (let a = 0; a < acc.length; a++) for (let v = 0; v < values.length; v++) {
+		if (out.length >= max) return out;
+		const expansion = acc[a] + pre + values[v];
+		if (dropEmpties && !expansion) continue;
+		if (length + expansion.length > maxLength) return out;
+		out.push(expansion);
+		length += expansion.length;
 	}
-	else {
+	return out;
+}
+function expandSequence(body, isAlphaSequence, max, maxLength) {
+	const n = body.split(/\.\./);
+	const N = [];
+	/* c8 ignore start */
+	if (n[0] === void 0 || n[1] === void 0) return N;
+	/* c8 ignore stop */
+	const x = numeric(n[0]);
+	const y = numeric(n[1]);
+	const width = Math.max(n[0].length, n[1].length);
+	let incr = n.length === 3 && n[2] !== void 0 ? Math.max(Math.abs(numeric(n[2])), 1) : 1;
+	let test = lte;
+	if (y < x) {
+		incr *= -1;
+		test = gte;
+	}
+	const pad = n.some(isPadded);
+	let length = 0;
+	for (let i = x; test(i, y) && N.length < max; i += incr) {
+		let c;
+		if (isAlphaSequence) {
+			c = String.fromCharCode(i);
+			if (c === "\\") c = "";
+		} else {
+			c = String(i);
+			if (pad) {
+				const need = width - c.length;
+				if (need > 0) {
+					const z = new Array(need + 1).join("0");
+					if (i < 0) c = "-" + z + c.slice(1);
+					else c = z + c;
+				}
+			}
+		}
+		if (length + c.length > maxLength) break;
+		N.push(c);
+		length += c.length;
+	}
+	return N;
+}
+function expand_(str, max, maxLength, isTop) {
+	let acc = [""];
+	let dropEmpties = false;
+	let firstGroup = true;
+	for (;;) {
+		const m = balanced("{", "}", str);
+		if (!m) return combine(acc, str, [""], max, maxLength, dropEmpties);
+		const pre = m.pre;
+		if (/\$$/.test(pre)) {
+			acc = combine(acc, pre + "{" + m.body + "}", [""], max, maxLength, dropEmpties && !m.post.length);
+			firstGroup = false;
+			if (!m.post.length) break;
+			str = m.post;
+			continue;
+		}
 		const isNumericSequence = /^-?\d+\.\.-?\d+(?:\.\.-?\d+)?$/.test(m.body);
 		const isAlphaSequence = /^[a-zA-Z]\.\.[a-zA-Z](?:\.\.-?\d+)?$/.test(m.body);
 		const isSequence = isNumericSequence || isAlphaSequence;
@@ -12568,71 +12641,59 @@ function expand_(str, max, isTop) {
 		if (!isSequence && !isOptions) {
 			if (m.post.match(/,(?!,).*\}/)) {
 				str = m.pre + "{" + m.body + escClose + m.post;
-				return expand_(str, max, true);
+				isTop = true;
+				continue;
 			}
-			return [str];
+			return combine(acc, pre + "{" + m.body + "}" + m.post, [""], max, maxLength, dropEmpties);
 		}
-		let n;
-		if (isSequence) n = m.body.split(/\.\./);
+		if (firstGroup) {
+			dropEmpties = isTop && !isSequence;
+			firstGroup = false;
+		}
+		let values;
+		if (isSequence) values = expandSequence(m.body, isAlphaSequence, max, maxLength);
 		else {
-			n = parseCommaParts(m.body);
+			let n = parseCommaParts(m.body);
 			if (n.length === 1 && n[0] !== void 0) {
-				n = expand_(n[0], max, false).map(embrace);
+				n = expand_(n[0], max, maxLength, false).map(embrace);
 				/* c8 ignore start */
-				if (n.length === 1) return post.map((p) => m.pre + n[0] + p);
-			}
-		}
-		let N;
-		if (isSequence && n[0] !== void 0 && n[1] !== void 0) {
-			const x = numeric(n[0]);
-			const y = numeric(n[1]);
-			const width = Math.max(n[0].length, n[1].length);
-			let incr = n.length === 3 && n[2] !== void 0 ? Math.max(Math.abs(numeric(n[2])), 1) : 1;
-			let test = lte;
-			if (y < x) {
-				incr *= -1;
-				test = gte;
-			}
-			const pad = n.some(isPadded);
-			N = [];
-			for (let i = x; test(i, y); i += incr) {
-				let c;
-				if (isAlphaSequence) {
-					c = String.fromCharCode(i);
-					if (c === "\\") c = "";
-				} else {
-					c = String(i);
-					if (pad) {
-						const need = width - c.length;
-						if (need > 0) {
-							const z = new Array(need + 1).join("0");
-							if (i < 0) c = "-" + z + c.slice(1);
-							else c = z + c;
-						}
-					}
+				if (n.length === 1) {
+					acc = combine(acc, pre + n[0], [""], max, maxLength, dropEmpties && !m.post.length);
+					if (!m.post.length) break;
+					str = m.post;
+					continue;
 				}
-				N.push(c);
 			}
-		} else {
-			N = [];
-			for (let j = 0; j < n.length; j++) N.push.apply(N, expand_(n[j], max, false));
+			let dropsEmpties = dropEmpties && !m.post.length && !pre;
+			for (let d = 0; dropsEmpties && d < acc.length; d++) if (acc[d]) dropsEmpties = false;
+			values = [];
+			let valuesLength = 0;
+			outer: for (let j = 0; j < n.length; j++) {
+				const expanded = expand_(n[j], max, maxLength, false);
+				for (let k = 0; k < expanded.length; k++) {
+					const v = expanded[k];
+					if (dropsEmpties && !v) continue;
+					if (values.length >= max || valuesLength + v.length > maxLength) break outer;
+					values.push(v);
+					valuesLength += v.length;
+				}
+			}
 		}
-		for (let j = 0; j < N.length; j++) for (let k = 0; k < post.length && expansions.length < max; k++) {
-			const expansion = pre + N[j] + post[k];
-			if (!isTop || isSequence || expansion) expansions.push(expansion);
-		}
+		acc = combine(acc, pre, values, max, maxLength, dropEmpties && !m.post.length);
+		if (!m.post.length) break;
+		str = m.post;
 	}
-	return expansions;
+	return acc;
 }
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/assert-valid-pattern.js
+//#region node_modules/.pnpm/minimatch@10.2.6/node_modules/minimatch/dist/esm/assert-valid-pattern.js
 const MAX_PATTERN_LENGTH = 1024 * 64;
 const assertValidPattern = (pattern) => {
 	if (typeof pattern !== "string") throw new TypeError("invalid pattern");
 	if (pattern.length > MAX_PATTERN_LENGTH) throw new TypeError("pattern is too long");
 };
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/brace-expressions.js
+//#region node_modules/.pnpm/minimatch@10.2.6/node_modules/minimatch/dist/esm/brace-expressions.js
 const posixClasses = {
 	"[:alnum:]": ["\\p{L}\\p{Nl}\\p{Nd}", true],
 	"[:alpha:]": ["\\p{L}\\p{Nl}", true],
@@ -12753,7 +12814,7 @@ const parseClass = (glob, position) => {
 	];
 };
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/unescape.js
+//#region node_modules/.pnpm/minimatch@10.2.6/node_modules/minimatch/dist/esm/unescape.js
 /**
 * Un-escape a string that has been escaped with {@link escape}.
 *
@@ -12778,7 +12839,7 @@ const unescape = (s, { windowsPathsNoEscape = false, magicalBraces = true } = {}
 	return windowsPathsNoEscape ? s.replace(/\[([^/\\{}])\]/g, "$1") : s.replace(/((?!\\).|^)\[([^/\\{}])\]/g, "$1$2").replace(/\\([^/{}])/g, "$1");
 };
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/ast.js
+//#region node_modules/.pnpm/minimatch@10.2.6/node_modules/minimatch/dist/esm/ast.js
 var _AST;
 let _Symbol$for;
 var _a;
@@ -13312,7 +13373,7 @@ function _parseGlob(glob, hasMagic, noEmpty = false) {
 }
 _a = AST;
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/escape.js
+//#region node_modules/.pnpm/minimatch@10.2.6/node_modules/minimatch/dist/esm/escape.js
 /**
 * Escape all magic characters in a glob pattern.
 *
@@ -13330,7 +13391,7 @@ const escape = (s, { windowsPathsNoEscape = false, magicalBraces = false } = {})
 	return windowsPathsNoEscape ? s.replace(/[?*()[\]]/g, "[$&]") : s.replace(/[?*()[\]\\]/g, "\\$&");
 };
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/index.js
+//#region node_modules/.pnpm/minimatch@10.2.6/node_modules/minimatch/dist/esm/index.js
 const minimatch = (p, pattern, options = {}) => {
 	assertValidPattern(pattern);
 	if (!options.nocomment && pattern.charAt(0) === "#") return false;
@@ -14247,7 +14308,13 @@ function resolveTypeReference(ctx, node, scope, name, onlyExported = false) {
 		return node._resolvedReference;
 	}
 	const resolved = innerResolveTypeReference(ctx, scope || ctxToScope(ctx), name || getReferenceName(node), node, onlyExported);
-	return canCache ? node._resolvedReference = resolved : resolved;
+	if (canCache) Object.defineProperty(node, "_resolvedReference", {
+		value: resolved,
+		writable: true,
+		configurable: true,
+		enumerable: false
+	});
+	return resolved;
 }
 function innerResolveTypeReference(ctx, scope, name, node, onlyExported) {
 	if (typeof name === "string") if (scope.imports[name]) return resolveTypeFromImport(ctx, node, name, scope);
@@ -15567,7 +15634,7 @@ function compileScript(sfc, options) {
 	}
 	function registerUserImport(source, local, imported, isType, isFromSetup, needTemplateUsageCheck) {
 		let isImportUsed = needTemplateUsageCheck;
-		if (needTemplateUsageCheck && (ctx.isTS || ctx.isUTS) && sfc.template && !sfc.template.src && !sfc.template.lang) isImportUsed = isUsedInTemplate(local, sfc);
+		if (needTemplateUsageCheck && (ctx.isTS || ctx.isUTS) && sfc.template && !sfc.template.src && !sfc.template.lang) isImportUsed = isUsedInTemplate(local, sfc, options.templateOptions);
 		ctx.userImports[local] = {
 			isType,
 			imported,
@@ -15771,7 +15838,7 @@ function compileScript(sfc, options) {
 	for (const key in scriptBindings) ctx.bindingMetadata[key] = scriptBindings[key];
 	for (const key in setupBindings) ctx.bindingMetadata[key] = setupBindings[key];
 	if (sfc.template && !sfc.template.src && sfc.template.ast) {
-		const vModelIds = resolveTemplateVModelIdentifiers(sfc);
+		const vModelIds = resolveTemplateVModelIdentifiers(sfc, options.templateOptions);
 		if (vModelIds.size) {
 			const toDemote = /* @__PURE__ */ new Set();
 			for (const id of vModelIds) if (setupBindings[id] === "setup-reactive-const") toDemote.add(id);
@@ -16090,7 +16157,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-rc.2";
+const version = "3.6.0-rc.3";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,

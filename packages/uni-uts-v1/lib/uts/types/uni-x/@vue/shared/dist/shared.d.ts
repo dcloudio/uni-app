@@ -492,7 +492,9 @@ export declare enum VaporSlotFlags {
   NO_SLOTTED = 1,
   ONCE = 2,
   SLOT_ROOT = 4,
-  NON_STABLE = 8
+  NON_STABLE = 8,
+  SHARED_FALLBACK = 16,
+  INHERIT_FALLBACK = 32
 }
 export declare enum VaporDynamicComponentFlags {
   SINGLE_ROOT = 1,

@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.2
+  * @vue/shared v3.6.0-rc.3
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -426,7 +426,7 @@ const isSpecialBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs);
 /**
 * The full list is needed during SSR to produce the correct initial markup.
 */
-const isBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs + ",async,autofocus,autoplay,controls,default,defer,disabled,hidden,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
+const isBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs + ",async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
 /**
 * Boolean attributes should be included if the value is truthy or ''.
 * e.g. `<select multiple>` compiles to `{ multiple: '' }`
@@ -736,7 +736,11 @@ const VaporSlotFlags = {
 	"SLOT_ROOT": 4,
 	"4": "SLOT_ROOT",
 	"NON_STABLE": 8,
-	"8": "NON_STABLE"
+	"8": "NON_STABLE",
+	"SHARED_FALLBACK": 16,
+	"16": "SHARED_FALLBACK",
+	"INHERIT_FALLBACK": 32,
+	"32": "INHERIT_FALLBACK"
 };
 const VaporDynamicComponentFlags = {
 	"SINGLE_ROOT": 1,

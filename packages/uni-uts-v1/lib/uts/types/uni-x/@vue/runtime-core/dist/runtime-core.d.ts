@@ -41,7 +41,12 @@ declare enum SchedulerJobFlags {
   * stabilizes (#1727).
   */
   ALLOW_RECURSE = 2,
-  DISPOSED = 4
+  DISPOSED = 4,
+  /**
+  * Requeue a Suspense effect if its pending branch is discarded.
+  * @internal
+  */
+  REQUEUE_ON_SUSPENSE_DISCARD = 8
 }
 export interface SchedulerJob extends Function {
   order?: number;
@@ -320,17 +325,17 @@ type DefineModelDefault<T> = InferDefault<Data, T>;
 * const count = defineModel<number>('count', { default: 0 })
 * ```
 */
-export declare function defineModel<T, M extends PropertyKey = string, G = T, S = T>(options: ({
+export declare function defineModel<T, M extends PropertyKey = string, G = T, S = T>(options: DefineModelRuntimeOptions<T, G, S> & ({
   default: DefineModelDefault<T>;
 } | {
   required: true;
-}) & DefineModelRuntimeOptions<T, G, S>): ModelRef<T, M, G, S>;
+})): ModelRef<T, M, G, S>;
 export declare function defineModel<T, M extends PropertyKey = string, G = T, S = T>(options?: DefineModelRuntimeOptions<T, G, S>): ModelRef<T | undefined, M, G | undefined, S | undefined>;
-export declare function defineModel<T, M extends PropertyKey = string, G = T, S = T>(name: string, options: ({
+export declare function defineModel<T, M extends PropertyKey = string, G = T, S = T>(name: string, options: DefineModelRuntimeOptions<T, G, S> & ({
   default: DefineModelDefault<T>;
 } | {
   required: true;
-}) & DefineModelRuntimeOptions<T, G, S>): ModelRef<T, M, G, S>;
+})): ModelRef<T, M, G, S>;
 export declare function defineModel<T, M extends PropertyKey = string, G = T, S = T>(name: string, options?: DefineModelRuntimeOptions<T, G, S>): ModelRef<T | undefined, M, G | undefined, S | undefined>;
 type NotUndefined<T> = T extends undefined ? never : T;
 type MappedOmit<T, K extends keyof any> = { [P in keyof T as P extends K ? never : P]: T[P] };
@@ -630,7 +635,7 @@ export interface TransitionHooksContext {
   cloneHooks: (node: any) => TransitionHooks;
 }
 export declare function resolveTransitionHooks(vnode: VNode, props: BaseTransitionProps<any>, state: TransitionState, instance: GenericComponentInstance, postClone?: (hooks: TransitionHooks) => void): TransitionHooks;
-export declare function setTransitionHooks(vnode: VNode, hooks: TransitionHooks): void;
+export declare function setTransitionHooks(vnode: VNode, hooks: TransitionHooks): TransitionHooks;
 export declare function getTransitionRawChildren(children: VNode[], keepComment?: boolean, parentKey?: VNode["key"]): VNode[];
 //#endregion
 //#region temp/packages/runtime-core/src/renderer.d.ts
@@ -824,7 +829,23 @@ declare function configureCompat(config: CompatConfig): void;
 * ```
 */
 export interface ComponentCustomOptions {}
-export type RenderFunction = () => VNodeChild;
+/**
+* Registry for additional render result types.
+*
+* @example
+* ```ts
+* import type { VaporRenderResult } from 'vue'
+*
+* declare module 'vue' {
+*   interface RenderResultExtensions {
+*     vapor: VaporRenderResult
+*   }
+* }
+* ```
+*/
+export interface RenderResultExtensions {}
+type RenderResult = VNodeChild | RenderResultExtensions[keyof RenderResultExtensions] | RenderResult[];
+export type RenderFunction = () => RenderResult;
 export interface ComponentOptionsBase<Props, RawBindings, D, C extends ComputedOptions, M extends MethodOptions, Mixin extends ComponentOptionsMixin, Extends extends ComponentOptionsMixin, E extends EmitsOptions, EE extends string = string, Defaults = {}, I extends ComponentInjectOptions = {}, II extends string = string, S extends SlotsType = {}, LC extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions> extends LegacyOptions<Props, D, C, M, Mixin, Extends, I, II, Provide>, ComponentInternalOptions, AsyncComponentInternalOptions, ComponentCustomOptions {
   setup?: (this: void, props: LooseRequired<Props & Prettify<UnwrapMixinsType<IntersectionMixin<Mixin> & IntersectionMixin<Extends>, "P">>>, ctx: SetupContext<E, S>) => Promise<RawBindings> | RawBindings | RenderFunction | void;
   name?: string;
@@ -1809,7 +1830,7 @@ type SlotFallback = {
 * Compiler runtime helper for rendering `<slot/>`
 * @private
 */
-export declare function renderSlot(slots: Slots, name: string, props?: Data, fallback?: SlotFallback, noSlotted?: boolean, branchKey?: PropertyKey): VNode;
+export declare function renderSlot(slots: Slots, name: string, props?: Data | null, fallback?: SlotFallback, noSlotted?: boolean, branchKey?: PropertyKey): VNode;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/createSlots.d.ts
 type SSRSlot = (...args: any[]) => VNode[] | undefined;
