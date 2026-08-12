@@ -144,6 +144,7 @@ export * from './route/openDialogPage'
 export * from './route/closeDialogPage'
 export * from './pages'
 export * from './worker/createWorker'
+export * from './base/uasm'
 //#endif
 
 // export * from '@dcloudio/uni-ext-api/uni-getLaunchOptionsSync'

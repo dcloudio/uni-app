@@ -8,12 +8,14 @@ import {
   getUasmModules,
   initUasmModules,
   initUasmTransformOptions,
+  initUasmWebTransformOptions,
   parseUasmModuleName,
   parseUniAppXTargetArchs,
   resolveUasmCopyAssets,
   resolveUasmLoadPath,
   resolveUasmModule,
   resolveUasmTargetArch,
+  resolveUasmWebLoad,
   uniUasmPlugin,
 } from '../src/uasm'
 
@@ -33,6 +35,27 @@ function transformLoadUasm(
               return `${normalized}/uasm/app-android/libs/arm64-v8a/libtest-uasm.so`
             }
           },
+          reportDiagnostic(_context, diagnostic) {
+            throw new Error(diagnostic.messageText.toString())
+          },
+        }),
+      ],
+    },
+  }).outputText
+}
+
+function transformWebLoadUasm(code: string) {
+  const options = initUasmWebTransformOptions()
+  return ts.transpileModule(code, {
+    compilerOptions: {
+      module: ts.ModuleKind.ESNext,
+      target: ts.ScriptTarget.ESNext,
+    },
+    transformers: {
+      before: [
+        options.createLoadUasmTransformer({
+          ...options,
+          typescript: ts,
           reportDiagnostic(_context, diagnostic) {
             throw new Error(diagnostic.messageText.toString())
           },
@@ -185,6 +208,49 @@ describe('uasm', () => {
       },
     })
     expect(getUasmModules()).toEqual(initUasmModules(inputDir))
+  })
+
+  test('cache and resolve web entry', () => {
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/test-uasm/uasm/web/test-uasm.js'),
+      ''
+    )
+    initUasmModules(inputDir)
+
+    expect(getUasmModules()).toEqual({
+      'test-uasm': {
+        name: 'test-uasm',
+        platforms: {},
+        web: {
+          entry: 'uni_modules/test-uasm/uasm/web/test-uasm.js',
+        },
+      },
+    })
+    for (const modulePath of [
+      'uni_modules/test-uasm',
+      '/uni_modules/test-uasm',
+      '@/uni_modules/test-uasm',
+    ]) {
+      expect(resolveUasmWebLoad(modulePath)).toEqual({
+        id: 'test-uasm',
+        entry: '@/uni_modules/test-uasm/uasm/web/test-uasm.js',
+      })
+      expect(
+        transformWebLoadUasm(`uni.loadUASM<TestUASM>('${modulePath}', true)`)
+      ).toContain(
+        'uni.loadUASM({ id: "test-uasm", loader: () => import("@/uni_modules/test-uasm/uasm/web/test-uasm.js") }, true)'
+      )
+    }
+  })
+
+  test('report a missing web entry', () => {
+    initUasmModules(inputDir)
+
+    expect(() =>
+      transformWebLoadUasm(`uni.loadUASM('uni_modules/test-uasm')`)
+    ).toThrow(
+      '无法加载 uasm 插件[uni_modules/test-uasm]，请确认插件路径正确，且插件已提供入口文件 uni_modules/test-uasm/uasm/web/test-uasm.js'
+    )
   })
 
   test('resolve the first existing target arch from cache', () => {

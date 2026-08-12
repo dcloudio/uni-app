@@ -22,12 +22,13 @@ export interface UasmSourceEdit {
 
 export interface LoadUasmTransformOptions {
   targetArchs?: string[]
-  resolve(modulePath: string): string | undefined
+  resolve(modulePath: string): ResolvedUasmLoad | undefined
 }
 
 export interface LoadUasmTransformerOptions extends LoadUasmTransformOptions {
   typescript: TypeScriptCompiler
   onSourceEdit?: (edit: UasmSourceEdit) => void
+  resolveError?: (modulePath: string) => string
   reportDiagnostic(
     context: TransformationContext,
     diagnostic: DiagnosticWithLocation
@@ -53,7 +54,19 @@ export interface UasmPlatformResources {
 export interface UasmModule {
   name: string
   platforms: Partial<Record<UasmPlatform, UasmPlatformResources>>
+  web?: UasmWebResources
 }
+
+export interface UasmWebResources {
+  entry: string
+}
+
+export interface UasmWebLoadDescriptor {
+  id: string
+  entry: string
+}
+
+export type ResolvedUasmLoad = string | UasmWebLoadDescriptor
 
 export interface ResolvedUasmModule {
   name: string
@@ -106,6 +119,24 @@ export function initUasmTransformOptions(
     targetArchs: parseUniAppXTargetArchs(),
     resolve: (modulePath: string) => resolveUasmLoadPath(modulePath, platform),
     createLoadUasmTransformer,
+  }
+}
+
+export function initUasmWebTransformOptions(): UasmTransformOptions {
+  return {
+    resolve: resolveUasmWebLoad,
+    createLoadUasmTransformer(options) {
+      return createLoadUasmTransformer({
+        ...options,
+        resolveError(modulePath) {
+          const moduleName = parseUasmModuleName(modulePath)
+          const entry = moduleName
+            ? `uni_modules/${moduleName}/uasm/web/${moduleName}.js`
+            : 'uni_modules/<插件ID>/uasm/web/<插件ID>.js'
+          return `无法加载 uasm 插件[${modulePath}]，请确认插件路径正确，且插件已提供入口文件 ${entry}`
+        },
+      })
+    },
   }
 }
 
@@ -169,7 +200,8 @@ export function createLoadUasmTransformer(
                 options,
                 sourceFile,
                 firstArg,
-                `无法加载 uasm 插件[${firstArg.text}]，当前设备支持的 ABI：${targetArchs}。请确认插件路径正确，且插件已提供匹配的库文件`
+                options.resolveError?.(firstArg.text) ||
+                  `无法加载 uasm 插件[${firstArg.text}]，当前设备支持的 ABI：${targetArchs}。请确认插件路径正确，且插件已提供匹配的库文件`
               )
             )
             return node
@@ -178,13 +210,45 @@ export function createLoadUasmTransformer(
           options.onSourceEdit?.({
             start: firstArg.getStart(sourceFile),
             end: firstArg.getEnd(),
-            content: JSON.stringify(resolved),
+            content: resolveUasmSourceEdit(resolved),
           })
           return factory.updateCallExpression(
             node,
             node.expression,
             node.typeArguments,
-            [factory.createStringLiteral(resolved), ...node.arguments.slice(1)]
+            [
+              typeof resolved === 'string'
+                ? factory.createStringLiteral(resolved)
+                : factory.createObjectLiteralExpression(
+                    [
+                      factory.createPropertyAssignment(
+                        'id',
+                        factory.createStringLiteral(resolved.id)
+                      ),
+                      factory.createPropertyAssignment(
+                        'loader',
+                        factory.createArrowFunction(
+                          undefined,
+                          undefined,
+                          [],
+                          undefined,
+                          factory.createToken(
+                            typescript.SyntaxKind.EqualsGreaterThanToken
+                          ),
+                          factory.createCallExpression(
+                            factory.createToken(
+                              typescript.SyntaxKind.ImportKeyword
+                            ) as import('typescript').Expression,
+                            undefined,
+                            [factory.createStringLiteral(resolved.entry)]
+                          )
+                        )
+                      ),
+                    ],
+                    false
+                  ),
+              ...node.arguments.slice(1),
+            ]
           )
         }
         return typescript.visitEachChild(node, visitor, context)
@@ -193,6 +257,15 @@ export function createLoadUasmTransformer(
       return typescript.visitNode(sourceFile, visitor) as SourceFile
     }
   }
+}
+
+function resolveUasmSourceEdit(resolved: ResolvedUasmLoad) {
+  if (typeof resolved === 'string') {
+    return JSON.stringify(resolved)
+  }
+  return `{ id: ${JSON.stringify(
+    resolved.id
+  )}, loader: () => import(${JSON.stringify(resolved.entry)}) }`
 }
 
 export function initUasmModules(inputDir: string) {
@@ -340,10 +413,12 @@ function scanUasmModules(
         platforms[platform] = resources
       }
     }
-    if (Object.keys(platforms).length) {
+    const web = scanUasmWeb(inputDir, entry.name)
+    if (Object.keys(platforms).length || web) {
       modules[entry.name] = {
         name: entry.name,
         platforms,
+        ...(web ? { web } : {}),
       }
     }
   })
@@ -374,6 +449,20 @@ export function resolveUasmModule(
 export function parseUasmModuleName(modulePath: string): string | undefined {
   const normalized = modulePath.replace(/^@?\//, '')
   return /^uni_modules\/([^/]+)$/.exec(normalized)?.[1]
+}
+
+export function resolveUasmWebLoad(
+  modulePath: string
+): UasmWebLoadDescriptor | undefined {
+  const moduleName = parseUasmModuleName(modulePath)
+  const entry = moduleName && uasmModules[moduleName]?.web?.entry
+  if (!moduleName || !entry) {
+    return
+  }
+  return {
+    id: moduleName,
+    entry: `@/${entry}`,
+  }
 }
 
 export function resolveUasmLoadPath(
@@ -493,6 +582,18 @@ function scanUasmPlatform(
     }
   }
   return resources
+}
+
+function scanUasmWeb(
+  inputDir: string,
+  moduleName: string
+): UasmWebResources | undefined {
+  const entry = normalizePath(
+    path.join('uni_modules', moduleName, 'uasm', 'web', `${moduleName}.js`)
+  )
+  if (fs.existsSync(path.resolve(inputDir, entry))) {
+    return { entry }
+  }
 }
 
 function isDirectoryEntry(parentDir: string, entry: fs.Dirent) {

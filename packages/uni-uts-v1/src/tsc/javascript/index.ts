@@ -2,6 +2,14 @@ import { extend, isFunction } from '@vue/shared'
 import type { RPT2Options } from 'rollup-plugin-typescript2'
 import type tsTypes from 'typescript'
 import { createBasicUtsOptions } from '../utils/options'
+
+type ResolvedUasmLoad =
+  | string
+  | {
+      id: string
+      entry: string
+    }
+
 interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   dom2?: boolean
   platform: 'app-android' | 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
@@ -18,11 +26,11 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   }
   uasm?: {
     targetArchs?: string[]
-    resolve(modulePath: string): string | undefined
+    resolve(modulePath: string): ResolvedUasmLoad | undefined
     createLoadUasmTransformer(options: {
       typescript: typeof tsTypes
       targetArchs?: string[]
-      resolve(modulePath: string): string | undefined
+      resolve(modulePath: string): ResolvedUasmLoad | undefined
       reportDiagnostic(
         context: tsTypes.TransformationContext,
         diagnostic: tsTypes.DiagnosticWithLocation
