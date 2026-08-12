@@ -146,6 +146,7 @@ svg 是矢量图片，可以无极缩放而不失真。但在以下情况，会�
 - 鸿蒙平台蒸汽模式
 	* 如果启用了 `flatten` 拍平，则会转为位图。
 	* 设置部分 `mode` 属性进行图像裁剪，会转为位图进行裁剪。`mode` 设置为 `scaleToFill/aspectFit/aspectFill` 可以保持矢量能力，设置为其它值会转位图裁剪。
+	* 如果 `src` 设置了 `data:image/svg+xml;base64,...` 这种形式的 url，则会转为位图。
 
 ### 子组件 @children-tags
 不可以嵌套组件
