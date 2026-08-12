@@ -626,6 +626,7 @@ export async function compile(
           pkg.is_uni_modules,
           inputDir,
           outputDir,
+          cacheDir,
           resolveConfigProvider(utsPlatform, pkg.id, transform),
           !!(res && hasUTSBridgeCode(res.uts_bridge))
         )

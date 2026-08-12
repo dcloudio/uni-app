@@ -658,6 +658,7 @@ export function genConfigJson(
   is_uni_modules: boolean,
   inputDir: string,
   outputDir: string,
+  cacheDir: string,
   provider?: { name: string; service: string; class: string },
   utsBridge?: boolean
 ) {
@@ -695,7 +696,7 @@ export function genConfigJson(
   // 存储到缓存目录，缓存有效时直接恢复
   const configJsonCacheFile = resolveConfigJsonCacheFile(
     pluginRelativeDir,
-    outputDir,
+    cacheDir,
     platform
   )
   const configJsonDestFile = resolve(utsOutputDir, 'config.json')
