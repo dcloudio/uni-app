@@ -208,6 +208,150 @@
           "swift": true,
           "arkts": false
         }
+      },
+      "writeBLECharacteristicValue": {
+        "name": "writeBLECharacteristicValue",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "setBLEMTU": {
+        "name": "setBLEMTU",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "readBLECharacteristicValue": {
+        "name": "readBLECharacteristicValue",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "onBLEMTUChange": {
+        "name": "onBLEMTUChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "onBLEConnectionStateChange": {
+        "name": "onBLEConnectionStateChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "onBLECharacteristicValueChange": {
+        "name": "onBLECharacteristicValueChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "offBLEMTUChange": {
+        "name": "offBLEMTUChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "offBLEConnectionStateChange": {
+        "name": "offBLEConnectionStateChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "offBLECharacteristicValueChange": {
+        "name": "offBLECharacteristicValueChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "notifyBLECharacteristicValueChange": {
+        "name": "notifyBLECharacteristicValueChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "getBLEMTU": {
+        "name": "getBLEMTU",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "getBLEDeviceServices": {
+        "name": "getBLEDeviceServices",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "getBLEDeviceRSSI": {
+        "name": "getBLEDeviceRSSI",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "getBLEDeviceCharacteristics": {
+        "name": "getBLEDeviceCharacteristics",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "createBLEConnection": {
+        "name": "createBLEConnection",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "closeBLEConnection": {
+        "name": "closeBLEConnection",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
       }
     },
     "components": [],
@@ -1879,6 +2023,22 @@
     "easycom": [],
     "customElements": []
   },
+  "uni-requestSystemPermission": {
+    "uni": {
+      "requestSystemPermission": {
+        "name": "requestSystemPermission",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
   "uni-rich-text": {
     "components": [],
     "easycom": [
@@ -2257,6 +2417,23 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-uasm": {
+    "uni": {
+      "loadUASM": {
+        "name": "loadUASM",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": false,
+          "arkts": false
         }
       }
     },
