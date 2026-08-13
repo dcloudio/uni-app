@@ -293,6 +293,8 @@ onShow和onHide是成对出现的。
 
 ### 页面 onResize 生命周期 @onresize
 
+页面尺寸改变时触发
+
 #### onResize 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
@@ -324,12 +326,30 @@ onShow和onHide是成对出现的。
 
 
 
-### onReachBottom
+### 页面 onReachBottom 生命周期 @onreachbottom
 
-可在pages.json里定义具体页面底部的触发距离[onReachBottomDistance](./collocation/pagesjson#pages-globalstyle)，
-比如设为50，那么滚动页面到距离底部50px时，就会触发onReachBottom事件。
+页面上拉触底事件的处理函数
+- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。
+- 在触发距离内滑动期间，本事件只会被触发一次。
+
+
+比如 [onReachBottomDistance](./collocation/pagesjson#pages-globalstyle) 设为50，那么滚动页面到距离底部50px时，就会触发onReachBottom事件。
+
+#### onReachBottom 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.08 |
+
+
+
+
+
 
 ### 页面 onPageScroll 生命周期 @onpagescroll
+
+页面滚动触发事件的处理函数
+
+监听用户滑动页面事件。
 
 #### onPageScroll 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
@@ -357,6 +377,8 @@ onShow和onHide是成对出现的。
 :::
 
 ### 页面 onBackPress 生命周期 @onbackpress
+
+监听页面返回
 
 #### onBackPress 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
@@ -475,6 +497,8 @@ onShow和onHide是成对出现的。
 
 ### 页面 onTabItemTap 生命周期 @ontabitemtap
 
+当前是 tab 页时，点击 tab 时触发
+
 #### onTabItemTap 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
@@ -504,6 +528,8 @@ onShow和onHide是成对出现的。
 
 ### 页面 onNavigationBarButtonTap 生命周期 @onnavigationbarbuttontap
 
+监听原生标题栏按钮点击事件
+
 #### onNavigationBarButtonTap 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
@@ -527,6 +553,9 @@ onShow和onHide是成对出现的。
 
 ### 页面 onNavigationBarSearchInputChanged 生命周期 @onnavigationbarsearchinputchanged
 
+监听原生标题栏搜索输入框输入内容变化事件
+
+
 #### onNavigationBarSearchInputChanged 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
@@ -549,6 +578,9 @@ onShow和onHide是成对出现的。
 
 
 ### 页面 onNavigationBarSearchInputConfirmed 生命周期 @onnavigationbarsearchinputconfirmed
+
+监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。
+
 
 #### onNavigationBarSearchInputConfirmed 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
