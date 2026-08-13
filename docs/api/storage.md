@@ -106,13 +106,6 @@ uni.setStorageSync函数定义
 | data | any | 是 | 需要存储的内容，只支持能通过 JSON.stringify 序列化的对象 | 
 
 
-:::warning
-参数 `data` 为对象字面量时，需要通过 `as UTSJSONObject` 明确类型，例如：
-```js
-uni.setStorageSync('obj', {"a": 1} as UTSJSONObject)
-```
-:::
-
 
 
 <!-- UTSAPIJSON.setStorageSync.example -->
@@ -1249,7 +1242,9 @@ let dataObj = uni.getStorageSync("test-class-0")
 console.log("data",dataObj)
 ```
 
-如果要支持读写，开发者需要实现 `IJSONStringify`接口。关于IJSONStringify的[更多介绍](https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/json.html)
+如果仅考虑Android平台，可自定义class可实现`IJSONStringify`接口来支持，仅推荐在[uts插件](https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html)中使用，在uvue页面中仅支持VDOM模式，蒸汽（Vapor）模式不支持。
+关于IJSONStringify的[更多介绍](../uts/buildin-object-api/json.md)。  
+**注意：非Android平台不支持`IJSONStringify`**  
 
 ```ts
 class Person implements IJSONStringify {
@@ -1290,4 +1285,4 @@ console.log("personObj",personObj)
 
 ```
 
-此时，我们就可以让自定义class实现类似自定义type的效果了。
+这样就可以在Android平台让自定义class实现类似自定义type的效果了。
