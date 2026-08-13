@@ -567,6 +567,7 @@ worker 代码，是独立的 `uts` 文件，所有worker代码文件需要放置
 </code>
 </pre>
 
+Worker 代码除了可以放到 `manifest.json->workers` 配置的目录，还支持放置到项目uni_modules插件中，此时目录为固定的 `插件id/workers`（注意这里的workers目录是固定的，跟manifest.json配置没有关系），比如`uni_modules/test-worker/workers`。
 
 ### 3. 编写 Worker 代码
 
@@ -761,4 +762,4 @@ worker.terminate();
 - 鸿蒙平台主线程与 Worker 线程传输的数据默认为浅拷贝，如需传出共享对象，可在[uts插件](../plugin/uts-plugin.md)中混编开发定义[Sendable对象](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable)，调用 `Worker.postMessage` 发送这些共享对象时设置 `harmonySendable` 参数为 true  
 - Worker 中仅支持调用界面无关的API（如 uni.request、uni.getLocation 等），这些 API 触发的回调运行在 Workder 线程中  
 - Web 平台不支持在 worker 中调用 uni 上的 API  
-- uts 插件内部无法包含 workers 目录。在 uts 插件中调用 uni.createWorker 时，必须由项目侧将 workers 目录下的文件路径传递进来。若不希望受限于项目的 workers 目录，建议直接在 uts 插件中调用各平台原生的线程 API 来实现多线程操作。
+
