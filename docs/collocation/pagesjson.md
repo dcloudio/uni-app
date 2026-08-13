@@ -59,7 +59,7 @@ globalStyle节点里是所有页面都生效的全局样式配置。它的配置
 | backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色 |
 | backgroundTextStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 下拉 loading 的样式，仅支持 dark / light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
-| onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
+| onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
