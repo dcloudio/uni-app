@@ -10,6 +10,20 @@
       "null"
     ]
   },
+  "uni-bluetooth": {
+    "offBluetoothAdapterStateChange": [
+      "null"
+    ],
+    "offBLEMTUChange": [
+      "null"
+    ],
+    "offBLEConnectionStateChange": [
+      "null"
+    ],
+    "offBLECharacteristicValueChange": [
+      "null"
+    ]
+  },
   "uni-compass": {
     "offCompassChange": [
       "null"
