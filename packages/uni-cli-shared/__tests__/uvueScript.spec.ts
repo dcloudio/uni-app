@@ -1,4 +1,5 @@
 import type { Plugin } from 'vite'
+import { SourceMapConsumer } from 'source-map-js'
 import { uniUTSUVueJavaScriptPlugin } from '../src/vite/plugins/uts/uvue'
 
 function getTransform(plugin: Plugin) {
@@ -9,12 +10,18 @@ function getTransform(plugin: Plugin) {
 
 describe('uniUTSUVueJavaScriptPlugin', () => {
   const originalDom2 = process.env.UNI_APP_X_DOM2
+  const originalPlatform = process.env.UNI_PLATFORM
 
   afterEach(() => {
     if (originalDom2 === undefined) {
       Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
     } else {
       process.env.UNI_APP_X_DOM2 = originalDom2
+    }
+    if (originalPlatform === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_PLATFORM')
+    } else {
+      process.env.UNI_PLATFORM = originalPlatform
     }
   })
 
@@ -36,14 +43,229 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     expect(
       transform.call(
         {} as any,
-        '<script lang="js">const value = 1</script>',
+        '<script setup lang="js">const value = 1</script>',
         '/pages/index/index.uvue'
       )
     ).toEqual(
       expect.objectContaining({
-        code: '<script lang="ts">const value = 1</script>',
+        code: '<script setup vapor lang="ts">const value = 1</script>',
       })
     )
+  })
+
+  test('keeps normal and external JavaScript scripts unchanged in DOM2', () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+    expect(
+      transform.call(
+        {} as any,
+        '<script lang="js">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toBeUndefined()
+    expect(
+      transform.call(
+        {} as any,
+        '<script setup src="./index.js" lang="js"></script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script setup src="./index.js" vapor lang="js"></script>',
+      })
+    )
+  })
+
+  test('normalizes normal and setup JavaScript together in DOM2', () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+    expect(
+      transform.call(
+        {} as any,
+        '<script lang="js">export default {}</script>\n<script setup lang="js">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script lang="ts">export default {}</script>\n<script setup vapor lang="ts">const value = 1</script>',
+      })
+    )
+  })
+
+  test('ignores script tags in comments and script content in DOM2', () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+    expect(
+      transform.call(
+        {} as any,
+        '<!-- <script lang="uts"></script> -->\n<script setup lang="js">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<!-- <script lang="uts"></script> -->\n<script setup vapor lang="ts">const value = 1</script>',
+      })
+    )
+    expect(
+      transform.call(
+        {} as any,
+        '<script setup lang="js">const source = \'<script lang="uts">\'</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script setup vapor lang="ts">const source = \'<script lang="uts">\'</script>',
+      })
+    )
+  })
+
+  test('keeps the script group language when an external script exists', () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+    expect(
+      transform.call(
+        {} as any,
+        '<script src="./index.js" lang="js"></script>\n<script setup lang="js">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script src="./index.js" lang="js"></script>\n<script setup vapor lang="js">const value = 1</script>',
+      })
+    )
+  })
+
+  test('keeps UTS and implicit UTS scripts out of JavaScript normalization', () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+    expect(
+      transform.call(
+        {} as any,
+        '<script lang="uts">export default {}</script>\n<script setup lang="js">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script lang="uts">export default {}</script>\n<script setup vapor lang="js">const value = 1</script>',
+      })
+    )
+    expect(
+      transform.call(
+        {} as any,
+        '<script>export default {}</script>\n<script setup lang="js">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script lang="uts">export default {}</script>\n<script setup vapor lang="js">const value = 1</script>',
+      })
+    )
+  })
+
+  test('matches complete setup and vapor attributes in DOM2', () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+    expect(
+      transform.call(
+        {} as any,
+        '<script data-setup="x" lang="js">const value = 1</script>\n<script setup-mode="x" lang="js">const other = 2</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toBeUndefined()
+    expect(
+      transform.call(
+        {} as any,
+        '<script setup data-vapor="x" lang="js">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script setup data-vapor="x" vapor lang="ts">const value = 1</script>',
+      })
+    )
+    expect(
+      transform.call(
+        {} as any,
+        '<script setup="" vapor="" lang="ts">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toBeUndefined()
+    expect(
+      transform.call(
+        {} as any,
+        '<SCRIPT SETUP LANG="js">const value = 1</SCRIPT>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<SCRIPT SETUP vapor lang="ts">const value = 1</SCRIPT>',
+      })
+    )
+  })
+
+  test('returns a source map for the DOM2 script tag transform', () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+    const id = '/pages/index/index.uvue'
+    const result = transform.call(
+      {} as any,
+      '<script setup lang="js">\nconst value = 1\n</script>',
+      id
+    ) as any
+    const consumer = new SourceMapConsumer(result.map)
+
+    expect(result.map.sources).toEqual([id])
+    expect(result.map.sourcesContent).toEqual([
+      '<script setup lang="js">\nconst value = 1\n</script>',
+    ])
+    expect(
+      consumer.originalPositionFor({
+        line: 2,
+        column: 0,
+      })
+    ).toMatchObject({
+      source: id,
+      line: 2,
+      column: 0,
+    })
+  })
+
+  test('keeps the DOM2 transform map when build sourcemaps are disabled', () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_PLATFORM = 'app-harmony'
+    const plugin = uniUTSUVueJavaScriptPlugin()
+    const transform = getTransform(plugin)
+    const id = '/pages/index/index.uvue'
+    const source = '<script setup lang="ts">uni.loadUASM(modulePath)</script>'
+
+    if (typeof plugin.configResolved === 'function') {
+      plugin.configResolved({
+        command: 'build',
+        build: { sourcemap: false },
+        plugins: [],
+      } as any)
+    }
+
+    const result = transform.call({} as any, source, id) as any
+    const consumer = new SourceMapConsumer(result.map)
+
+    expect(result.map.sources).toEqual([id])
+    expect(
+      consumer.originalPositionFor({
+        line: 1,
+        column: result.code.indexOf('modulePath'),
+      })
+    ).toMatchObject({
+      source: id,
+      line: 1,
+      column: source.indexOf('modulePath'),
+    })
   })
 
   test('keeps UTS as the default language in DOM2', () => {
@@ -76,6 +298,28 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     ).toEqual(
       expect.objectContaining({
         code: '<script setup vapor lang="ts">const value = 1</script>',
+      })
+    )
+    expect(
+      transform.call(
+        {} as any,
+        '<script setup lang="j&#115;">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script setup vapor lang="ts">const value = 1</script>',
+      })
+    )
+    expect(
+      transform.call(
+        {} as any,
+        '<script lang="&#106;s">export default {}</script>\n<script setup lang="js">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script lang="ts">export default {}</script>\n<script setup vapor lang="ts">const value = 1</script>',
       })
     )
     expect(

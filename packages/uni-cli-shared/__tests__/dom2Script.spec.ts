@@ -1,6 +1,10 @@
 const mockTypeScript = { version: 'test' }
+const mockUniAppXVaporScriptTransform = jest.fn()
 const mockDom2ScriptPlugin = jest.fn((options: Record<string, any>) => ({
   name: 'uni:vapor-script',
+  uni: {
+    uniAppXVaporScriptTransform: mockUniAppXVaporScriptTransform,
+  },
   options,
 }))
 const mockUniHelpers: {
@@ -82,6 +86,9 @@ describe('uniVaporScriptPlugin', () => {
     })
 
     expect(plugin.name).toBe('uni:vapor-script')
+    expect(plugin.uni).toEqual({
+      uniAppXVaporScriptTransform: mockUniAppXVaporScriptTransform,
+    })
     expect(mockDom2ScriptPlugin).toHaveBeenCalledWith({
       typescript: mockTypeScript,
       extApi: { collectExtApiUsageAst },

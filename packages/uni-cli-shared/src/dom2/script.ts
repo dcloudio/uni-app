@@ -1,8 +1,8 @@
-import type { Plugin } from 'vite'
 import { resolveUTSCompiler } from '../uts'
 import { initUts2jsExtApiOptions } from '../uts/extApi'
 import { isNormalCompileTarget, requireUniHelpers } from '../utils'
 import type { UasmTransformOptions } from '../uasm'
+import type { UniVitePlugin } from '../vite'
 import { initUts2jsSharedDataOptions } from './sharedData'
 
 export interface UniVaporScriptPluginOptions {
@@ -13,7 +13,7 @@ export interface UniVaporScriptPluginOptions {
 
 export function uniVaporScriptPlugin(
   options: UniVaporScriptPluginOptions = {}
-): Plugin {
+): UniVitePlugin {
   const { uasm, ...sharedData } = options
   const { D2SP } = requireUniHelpers()
   const nodeEnv = process.env.UNI_NODE_ENV || process.env.NODE_ENV

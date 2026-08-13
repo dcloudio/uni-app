@@ -6,7 +6,6 @@ import type {
   AssetURLOptions,
   SFCDescriptor,
   SFCStyleCompileOptions,
-  TemplateCompiler,
 } from '@vue/compiler-sfc'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import {
@@ -55,12 +54,16 @@ export function createPluginVueInstance(options: VueOptions) {
 
 export function initPluginVueOptions(
   options: VitePluginUniResolvedOptions,
-  UniVitePlugins: UniVitePlugin[],
   uniPluginOptions: Required<
-    Omit<Required<UniVitePlugin>['uni'], 'compiler'>
-  > & {
-    compiler?: TemplateCompiler
-  }
+    Omit<
+      Required<UniVitePlugin>['uni'],
+      'compiler' | 'uniAppXVaporScriptTransform'
+    >
+  > &
+    Pick<
+      NonNullable<UniVitePlugin['uni']>,
+      'compiler' | 'uniAppXVaporScriptTransform'
+    >
 ) {
   const vueOptions = options.vueOptions || (options.vueOptions = {})
   // if (!hasOwn(vueOptions, 'reactivityTransform')) {
@@ -305,6 +308,8 @@ export function initPluginVueOptions(
       vueOptions.script.babelParserPlugins.push('decorators')
     }
     if (isDom2) {
+      ;(vueOptions as any).uniAppXVaporScriptTransform =
+        uniPluginOptions.uniAppXVaporScriptTransform
       const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
       function isAppVue(id: string) {
         return normalizePath(id) === appVue

@@ -357,95 +357,6 @@ function canReuseAST(version) {
   return false;
 }
 
-let clientCache = /* @__PURE__ */ new WeakMap();
-let ssrCache = /* @__PURE__ */ new WeakMap();
-const typeDepToSFCMap = /* @__PURE__ */ new Map();
-function invalidateScript(filename) {
-  const desc = cache.get(filename);
-  if (desc) {
-    clientCache.delete(desc);
-    ssrCache.delete(desc);
-  }
-}
-function getResolvedScript(descriptor, ssr) {
-  return (ssr ? ssrCache : clientCache).get(descriptor);
-}
-function setResolvedScript(descriptor, script, ssr) {
-  (ssr ? ssrCache : clientCache).set(descriptor, script);
-}
-function clearScriptCache() {
-  clientCache = /* @__PURE__ */ new WeakMap();
-  ssrCache = /* @__PURE__ */ new WeakMap();
-}
-function isUseInlineTemplate(descriptor, options) {
-  if (process.env.UNI_APP_X_DOM2 === "true") {
-    return true;
-  }
-  return !options.devServer && !options.devToolsEnabled && !!descriptor.scriptSetup && !descriptor.template?.src;
-}
-const scriptIdentifier = `_sfc_main`;
-function resolveScript(useCache, descriptor, options, ssr, customElement) {
-  if (!descriptor.script && !descriptor.scriptSetup) {
-    return null;
-  }
-  if (useCache) {
-    const cached = getResolvedScript(descriptor, ssr);
-    if (cached) {
-      return cached;
-    }
-  }
-  const extraOptions = options.script?.extraOptions?.(descriptor);
-  if (extraOptions.helper) {
-    extraOptions.className = extraOptions.helper.GCN(
-      descriptor.filename,
-      process.env.UNI_INPUT_DIR
-    );
-  }
-  const resolved = options.compiler.compileScript(descriptor, {
-    ...options.script,
-    // fixed by uts 传递额外参数
-    ...extraOptions,
-    id: descriptor.id,
-    isProd: options.isProduction,
-    inlineTemplate: isUseInlineTemplate(descriptor, options),
-    templateOptions: resolveTemplateCompilerOptions(descriptor, options, ssr),
-    sourceMap: options.sourceMap,
-    genDefaultAs: canInlineMain(descriptor, options) ? scriptIdentifier : void 0,
-    customElement,
-    propsDestructure: options.features?.propsDestructure ?? options.script?.propsDestructure
-  });
-  if (!options.isProduction && resolved?.deps) {
-    for (const [key, sfcs] of typeDepToSFCMap) {
-      if (sfcs.has(descriptor.filename) && !resolved.deps.includes(key)) {
-        sfcs.delete(descriptor.filename);
-      }
-    }
-    for (const dep of resolved.deps) {
-      const existingSet = typeDepToSFCMap.get(dep);
-      if (!existingSet) {
-        typeDepToSFCMap.set(dep, /* @__PURE__ */ new Set([descriptor.filename]));
-      } else {
-        existingSet.add(descriptor.filename);
-      }
-    }
-  }
-  setResolvedScript(descriptor, resolved, ssr);
-  return resolved;
-}
-function canInlineMain(descriptor, options) {
-  if (descriptor.script?.src || descriptor.scriptSetup?.src) {
-    return false;
-  }
-  const lang = descriptor.script?.lang || descriptor.scriptSetup?.lang;
-  if (!lang || lang === "js") {
-    return true;
-  }
-  if (lang === "ts" && options.devServer) {
-    return true;
-  }
-  return false;
-}
-
 const comma = ','.charCodeAt(0);
 const semicolon = ';'.charCodeAt(0);
 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -1302,6 +1213,224 @@ function addMappingInternal(skipable, map, mapping) {
         return addSegmentInternal(skipable, map, generated.line - 1, generated.column, null, null, null, null, null);
     }
     return addSegmentInternal(skipable, map, generated.line - 1, generated.column, source, original.line - 1, original.column, name, content);
+}
+
+function shouldApplyUniAppXVaporScriptTransform(descriptor, transform) {
+  return !!(transform && descriptor.scriptSetup && descriptor.scriptSetup.lang === "ts" && !descriptor.script?.src && !descriptor.scriptSetup.src);
+}
+function getPosition(source, line, column) {
+  let pos = 0;
+  for (let currentLine = 1; currentLine < line; currentLine++) {
+    const lineEnd = source.indexOf("\n", pos);
+    if (lineEnd < 0) return source.length;
+    pos = lineEnd + 1;
+  }
+  return Math.min(pos + column, source.length);
+}
+function remapTransformError(error, code, map, descriptor) {
+  if (error instanceof Error && map && typeof error.pos === "number") {
+    const transformError = error;
+    const generated = getLineAndColumn(code, transformError.pos);
+    const original = originalPositionFor(
+      new TraceMap(
+        map
+      ),
+      generated
+    );
+    if (original.source && original.line != null && original.column != null) {
+      transformError.id = original.source;
+      transformError.pos = getPosition(
+        descriptor.source,
+        original.line,
+        original.column
+      );
+      transformError.loc = {
+        file: original.source,
+        line: original.line,
+        column: original.column
+      };
+    }
+  }
+  throw error;
+}
+function getLineAndColumn(source, pos) {
+  const lines = source.slice(0, pos).split("\n");
+  return {
+    line: lines.length,
+    column: lines[lines.length - 1].length
+  };
+}
+function mergeSourceMaps$1(compileScriptMap, transformMap) {
+  const compileScriptTracer = new TraceMap(
+    compileScriptMap
+  );
+  const transformTracer = new TraceMap(
+    transformMap
+  );
+  const gen = new GenMapping({
+    file: transformMap.file || compileScriptMap.file,
+    sourceRoot: compileScriptMap.sourceRoot
+  });
+  compileScriptTracer.sources.forEach((source, index) => {
+    const content = compileScriptTracer.sourcesContent?.[index];
+    if (content != null) {
+      setSourceContent(gen, source || "", content);
+    }
+  });
+  eachMapping(transformTracer, (mapping) => {
+    if (!mapping.source) return;
+    const original = originalPositionFor(compileScriptTracer, {
+      line: mapping.originalLine,
+      column: mapping.originalColumn
+    });
+    if (!original.source || original.line == null || original.column == null) {
+      return;
+    }
+    addMapping(gen, {
+      source: original.source,
+      original: {
+        line: original.line,
+        column: original.column
+      },
+      generated: {
+        line: mapping.generatedLine,
+        column: mapping.generatedColumn
+      },
+      name: original.name || mapping.name || ""
+    });
+  });
+  return toEncodedMap(gen);
+}
+function applyUniAppXVaporScriptTransform(resolved, descriptor, transform, getSourceMap) {
+  if (!shouldApplyUniAppXVaporScriptTransform(descriptor, transform)) {
+    return resolved;
+  }
+  let result;
+  try {
+    result = transform({
+      code: resolved.content,
+      id: descriptor.filename,
+      lang: resolved.lang
+    });
+  } catch (error) {
+    remapTransformError(
+      error,
+      resolved.content,
+      resolved.map || getSourceMap?.(),
+      descriptor
+    );
+  }
+  if (!result) return resolved;
+  resolved.content = result.code;
+  if (result.map && resolved.map) {
+    resolved.map = mergeSourceMaps$1(resolved.map, result.map);
+  }
+  if (result.meta) {
+    resolved.__uniAppXVaporMeta = result.meta;
+  }
+  return resolved;
+}
+
+let clientCache = /* @__PURE__ */ new WeakMap();
+let ssrCache = /* @__PURE__ */ new WeakMap();
+const typeDepToSFCMap = /* @__PURE__ */ new Map();
+function invalidateScript(filename) {
+  const desc = cache.get(filename);
+  if (desc) {
+    clientCache.delete(desc);
+    ssrCache.delete(desc);
+  }
+}
+function getResolvedScript(descriptor, ssr) {
+  return (ssr ? ssrCache : clientCache).get(descriptor);
+}
+function setResolvedScript(descriptor, script, ssr) {
+  (ssr ? ssrCache : clientCache).set(descriptor, script);
+}
+function clearScriptCache() {
+  clientCache = /* @__PURE__ */ new WeakMap();
+  ssrCache = /* @__PURE__ */ new WeakMap();
+}
+function isUseInlineTemplate(descriptor, options) {
+  if (process.env.UNI_APP_X_DOM2 === "true") {
+    return true;
+  }
+  return !options.devServer && !options.devToolsEnabled && !!descriptor.scriptSetup && !descriptor.template?.src;
+}
+const scriptIdentifier = `_sfc_main`;
+function resolveScript(useCache, descriptor, options, ssr, customElement) {
+  if (!descriptor.script && !descriptor.scriptSetup) {
+    return null;
+  }
+  if (useCache) {
+    const cached = getResolvedScript(descriptor, ssr);
+    if (cached) {
+      return cached;
+    }
+  }
+  const extraOptions = options.script?.extraOptions?.(descriptor);
+  if (extraOptions.helper) {
+    extraOptions.className = extraOptions.helper.GCN(
+      descriptor.filename,
+      process.env.UNI_INPUT_DIR
+    );
+  }
+  const compileScriptOptions = {
+    ...options.script,
+    // fixed by uts 传递额外参数
+    ...extraOptions,
+    id: descriptor.id,
+    isProd: options.isProduction,
+    inlineTemplate: isUseInlineTemplate(descriptor, options),
+    templateOptions: resolveTemplateCompilerOptions(descriptor, options, ssr),
+    sourceMap: options.sourceMap,
+    genDefaultAs: canInlineMain(descriptor, options) ? scriptIdentifier : void 0,
+    customElement,
+    propsDestructure: options.features?.propsDestructure ?? options.script?.propsDestructure
+  };
+  const resolved = applyUniAppXVaporScriptTransform(
+    options.compiler.compileScript(
+      descriptor,
+      compileScriptOptions
+    ),
+    descriptor,
+    options.uniAppXVaporScriptTransform,
+    // 发行模式仅在转换报错时按需生成 map，正常编译不增加 sourcemap 开销。
+    options.sourceMap ? void 0 : () => options.compiler.compileScript(descriptor, {
+      ...compileScriptOptions,
+      sourceMap: true
+    }).map
+  );
+  if (!options.isProduction && resolved?.deps) {
+    for (const [key, sfcs] of typeDepToSFCMap) {
+      if (sfcs.has(descriptor.filename) && !resolved.deps.includes(key)) {
+        sfcs.delete(descriptor.filename);
+      }
+    }
+    for (const dep of resolved.deps) {
+      const existingSet = typeDepToSFCMap.get(dep);
+      if (!existingSet) {
+        typeDepToSFCMap.set(dep, /* @__PURE__ */ new Set([descriptor.filename]));
+      } else {
+        existingSet.add(descriptor.filename);
+      }
+    }
+  }
+  setResolvedScript(descriptor, resolved, ssr);
+  return resolved;
+}
+function canInlineMain(descriptor, options) {
+  if (descriptor.script?.src || descriptor.scriptSetup?.src) {
+    return false;
+  }
+  const lang = descriptor.script?.lang || descriptor.scriptSetup?.lang;
+  if (!lang || lang === "js") {
+    return true;
+  }
+  if (lang === "ts" && (options.devServer || !!options.uniAppXVaporScriptTransform && descriptor.scriptSetup?.lang === "ts")) {
+    return true;
+  }
+  return false;
 }
 
 function getDefaultExportFromCjs (x) {
@@ -2616,7 +2745,11 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
   }
   const attachedProps = [];
   const hasScoped = descriptor.styles.some((s) => s.scoped);
-  const { code: scriptCode, map: scriptMap } = await genScriptCode(
+  const {
+    code: scriptCode,
+    map: scriptMap,
+    meta: scriptMeta
+  } = await genScriptCode(
     descriptor,
     options,
     pluginContext,
@@ -2801,6 +2934,8 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
       mappings: ""
     },
     meta: {
+      // fixed by uts 转发 uni-app x Vapor 脚本元数据
+      ...scriptMeta,
       vite: {
         lang: descriptor.script?.lang || descriptor.scriptSetup?.lang || "js"
       }
@@ -2845,8 +2980,10 @@ async function genScriptCode(descriptor, options, pluginContext, ssr, customElem
   const vaporFlag = descriptor.vapor ? "__vapor: true" : "";
   let scriptCode = `const ${scriptIdentifier} = { ${vaporFlag} }`;
   let map;
+  let meta;
   const script = resolveScript(false, descriptor, options, ssr, customElement);
   if (script) {
+    meta = script.__uniAppXVaporMeta;
     if (canInlineMain(descriptor, options)) {
       if (!options.compiler.version) {
         const userPlugins = options.script?.babelParserPlugins || [];
@@ -2876,7 +3013,9 @@ export * from ${request}`;
   }
   return {
     code: scriptCode,
-    map
+    map,
+    // fixed by uts 转发 uni-app x Vapor 脚本元数据
+    meta
   };
 }
 async function genStyleCode(descriptor, pluginContext, customElement, attachedProps) {
