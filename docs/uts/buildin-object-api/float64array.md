@@ -116,7 +116,7 @@ ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer�
 ###### toByteBuffer 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
-| x | 4.25 | x | 4.61 |
+| x | 4.25 | x | x |
 
 
 
@@ -133,7 +133,7 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 ###### toData 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
-| x | x | x | 4.61 |
+| x | x | x | x |
 
 
 

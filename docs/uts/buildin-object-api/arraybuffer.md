@@ -158,13 +158,13 @@ ArrayBuffer.fromByteBuffer() 静态方法用于将android 原生的ByteBuffer对
 **uni-app x 兼容性 <Help />**
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
-| x | 4.25 | x | 4.61 |
+| x | 4.25 | x | x |
 
 
 **uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
-| √ | x | √ |
+| √ | x | x |
 
 
 <!-- UTSJSON.ArrayBuffer.fromByteBuffer.tutorial -->
@@ -207,13 +207,13 @@ ArrayBuffer.fromData() 静态方法用于将 iOS 原生的 Data 对象转换为 
 **uni-app x 兼容性 <Help />**
 | Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | 4.51 |
+| x | x | x | x | 4.51 |
 
 
 **uni-app 兼容性 <Help />**
 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- |
-| 4.51 | √ |
+| 4.51 | x |
 
 
 <!-- UTSJSON.ArrayBuffer.fromData.tutorial -->
@@ -391,13 +391,13 @@ ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer�
 **uni-app x 兼容性 <Help />**
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
-| x | 4.25 | x | 4.61 |
+| x | 4.25 | x | x |
 
 
 **uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
-| √ | x | √ |
+| √ | x | x |
 
 
 <!-- UTSJSON.ArrayBuffer.toByteBuffer.tutorial -->
@@ -436,13 +436,13 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 **uni-app x 兼容性 <Help />**
 | Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | 4.51 |
+| x | x | x | x | 4.51 |
 
 
 **uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
-| x | 4.51 | √ |
+| x | 4.51 | x |
 
 
 <!-- UTSJSON.ArrayBuffer.toData.tutorial -->
