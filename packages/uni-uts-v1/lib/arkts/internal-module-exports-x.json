@@ -2959,6 +2959,9 @@
       "Worker"
     ],
     [
+      "WorkerEnv"
+    ],
+    [
       "WorkerOnErrorCallback"
     ],
     [
