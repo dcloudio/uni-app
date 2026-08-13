@@ -37,9 +37,9 @@
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | HTTP 请求 Header, header 中不能设置 Referer |
 | formData | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | HTTP 请求中其他额外的 form data |
 | timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
-| success | (result: [UploadFileSuccess](#uploadfilesuccess-values)) => void | 否 | null | 微信小程序: 4.41 | 成功返回的回调函数 |
-| fail | (result: [UploadFileFail](#uploadfilefail-values)) => void | 否 | null | 微信小程序: 4.41 | 失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 微信小程序: 4.41 | 结束的回调函数（调用成功、失败都会执行） |
+| success | (result: [UploadFileSuccess](#uploadfilesuccess-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 成功返回的回调函数 |
+| fail | (result: [UploadFileFail](#uploadfilefail-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 失败的回调函数 |
+| complete | (result: any) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） |
 | enableHttp2 | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>是否开启 http2<br/> |
 | enableProfile | boolean | 否 |  | 微信小程序: 4.41 | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。目前仅 iOS 端支持。<br/> |
 | enableQuic | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>是否开启 Quic/h3 协议（iOS 微信目前使用 gQUIC-Q43；Android 微信在 v8.0.54 前使用 gQUIC-Q43，v8.0.54 开始使用 IETF QUIC，即 h3 协议；PC微信使用 IETF QUIC，即 h3 协议）<br/> |

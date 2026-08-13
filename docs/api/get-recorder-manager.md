@@ -244,7 +244,7 @@ onError
 | :- |  :-: | :- |
 | 1107601 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 没有麦克风权限 |
 | 1107602 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该采样率 |
-| 1107603 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率是和编码码率不匹配 |
+| 1107603 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率和编码码率不匹配 |
 | 1107604 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 启动失败 |
 | 1107605 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该音频格式 |
 | 1107606 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 其他错误 |
@@ -388,7 +388,7 @@ offInterruptionEnd
 | :- |  :-: | :- |
 | 1107601 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 没有麦克风权限 |
 | 1107602 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该采样率 |
-| 1107603 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率是和编码码率不匹配 |
+| 1107603 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率和编码码率不匹配 |
 | 1107604 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 启动失败 |
 | 1107605 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该音频格式 |
 | 1107606 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 其他错误 |

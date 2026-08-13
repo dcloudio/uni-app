@@ -34,9 +34,9 @@
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | HTTP 请求 Header，header 中不能设置 Referer |
 | filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 指定文件下载路径<br/>支持相对路径与绝对路径，例：<br/>`/imgs/pic.png`、`/storage/emulated/0/Android/data/io.dcloud.HBuilder/apps/HBuilder/temp/imgs/pic.png`<br/>并且支持指定下载目录，例：<br/>`/imgs/`<br/>支持uni.env的平台兼容性：Android自3.9开始支持uni.env，iOS自4.13开始支持uni.env |
 | timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
-| success | (result: [DownloadFileSuccess](#downloadfilesuccess-values)) => void | 否 | null | 微信小程序: 4.41 | 下载成功后以 tempFilePath 的形式传给页面，res = {tempFilePath: '文件的临时路径'} |
-| fail | (result: [DownloadFileFail](#downloadfilefail-values)) => void | 否 | null | 微信小程序: 4.41 | 失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 微信小程序: 4.41 | 结束的回调函数（调用成功、失败都会执行） |
+| success | (result: [DownloadFileSuccess](#downloadfilesuccess-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载成功后以 tempFilePath 的形式传给页面，res = {tempFilePath: '文件的临时路径'} |
+| fail | (result: [DownloadFileFail](#downloadfilefail-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 失败的回调函数 |
+| complete | (result: any) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） |
 | enableHttp2 | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>是否开启 http2<br/> |
 | enableProfile | boolean | 否 |  | 微信小程序: 4.41 | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。<br/> |
 | enableQuic | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>是否开启 Quic/h3 协议（iOS 微信目前使用 gQUIC-Q43；Android 微信在 v8.0.54 前使用 gQUIC-Q43，v8.0.54 开始使用 IETF QUIC，即 h3 协议；PC微信使用 IETF QUIC，即 h3 协议）<br/> |

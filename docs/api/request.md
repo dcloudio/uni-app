@@ -40,9 +40,9 @@
 | withCredentials | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 跨域请求时是否携带凭证（cookies）<br/> |
 | firstIpv4 | boolean | 否 | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | DNS解析时优先使用ipv4 |
 | enableChunked | boolean | 否 |  | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开启 transfer-encoding chunked。 |
-| success | (option: [RequestSuccess\<T>](#requestsuccess-values)) => void | 否 | null | 微信小程序: 4.41 | 网络请求成功回调。 |
-| fail | (option: [RequestFail](#requestfail-values)) => void | 否 | null | 微信小程序: 4.41 | 网络请求失败回调。 |
-| complete | (option: any) => void | 否 | null | 微信小程序: 4.41 | 网络请求完成回调，成功或者失败都会调用。 |
+| success | (option: [RequestSuccess\<T>](#requestsuccess-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 网络请求成功回调。 |
+| fail | (option: [RequestFail](#requestfail-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 网络请求失败回调。 |
+| complete | (option: any) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 网络请求完成回调，成功或者失败都会调用。 |
 | enableCache | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>开启 Http 缓存<br/> |
 | enableHttp2 | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>开启 http2<br/> |
 | enableHttpDNS | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.19.1`<br/><br/>是否开启 HttpDNS 服务。如开启，需要同时填入 httpDNSServiceId 。 HttpDNS 用法详见 [移动解析HttpDNS](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/HTTPDNS.html)<br/> |

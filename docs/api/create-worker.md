@@ -33,7 +33,7 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 
 :::
 
-创建一个Worker对象
+CreateWorker
 
 ### createWorker 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
@@ -50,26 +50,26 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 
 ### 返回值 
 
-| 类型 |
-| :- |
-| [Worker](#worker-values) |
+| 类型 | 描述 |
+| :- | :- |
+| [Worker](#worker-values) | Worker对象 |
 
 #### Worker 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| env | **WorkerEnv** | 否 | 微信小程序: 4.41; iOS: x; iOS UTS 插件: 4.81 | worker内的环境变量<br/> |
+| env | **WorkerEnv** | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: x | worker内的环境变量 |
 
 ##### env 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| USER_DATA_PATH | string | 否 | 微信小程序: 4.41; iOS: x; iOS UTS 插件: 4.81 | 文件系统中的用户目录路径 (本地路径)<br/> |
+| USER_DATA_PATH | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: x | 文件系统中的用户目录路径 (本地路径)<br/> |
 #### Worker 的方法 @worker-values 
 
 #### onMessage(callback: WorkerOnMessageCallback): void; @onmessage
 onMessage
-监听主线程/Worker 线程向当前线程发送的消息的事件。
+监听 主线程/Worker线程 向当前线程发送的消息的事件。
 ##### onMessage 兼容性 <Help /> 
 | 微信小程序 | iOS | iOS UTS 插件 |
 | :- | :- | :- |
@@ -77,9 +77,9 @@ onMessage
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (message: any) => void | 是 | iOS: x; iOS UTS 插件: 4.81 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (message: any) => void | 是 | iOS: x; iOS UTS 插件: 4.81 | 监听消息Callback | 
 
 
 
@@ -93,15 +93,15 @@ onError
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (result: [WorkerOnErrorCallbackResult](#workeronerrorcallbackresult-values)) => void | 是 | iOS: x; iOS UTS 插件: 4.81 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (result: [WorkerOnErrorCallbackResult](#workeronerrorcallbackresult-values)) => void | 是 | iOS: x; iOS UTS 插件: 4.81 | Worker错误callback | 
 
 ##### WorkerOnErrorCallbackResult 的属性值 @workeronerrorcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | iOS: x; iOS UTS 插件: 4.81 |  |
+| errCode | number | 是 | iOS: x; iOS UTS 插件: 4.81 | Worker错误码 |
 | errSubject | string | 是 | iOS: x; iOS UTS 插件: 4.81 | 统一错误主题（模块）名称 |
 | data | any | 否 | iOS: x; iOS UTS 插件: 4.81 | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -124,7 +124,7 @@ onError
 
 #### postMessage(message: any, options?: WorkerPostMessageOptions \| null): void; @postmessage
 postMessage
-向主线程/Worker 线程发送的消息。
+向 主线程/Worker线程 发送的消息。
 ##### postMessage 兼容性 <Help /> 
 | 微信小程序 | iOS | iOS UTS 插件 |
 | :- | :- | :- |
@@ -132,10 +132,10 @@ postMessage
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| message | any | 是 | iOS: x; iOS UTS 插件: 4.81 |
-| options | **WorkerPostMessageOptions** | 否 | iOS: x; iOS UTS 插件: 4.81 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| message | any | 是 | iOS: x; iOS UTS 插件: 4.81 | 发送的数据 |
+| options | **WorkerPostMessageOptions** | 否 | iOS: x; iOS UTS 插件: 4.81 | 主线程/Worker线程 发送消息的参数 |
 
 #### options 的属性描述
 
@@ -161,7 +161,7 @@ terminate
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | iOS: x; iOS UTS 插件: 4.81 |  |
+| errCode | number | 是 | iOS: x; iOS UTS 插件: 4.81 | Worker错误码 |
 | errSubject | string | 是 | iOS: x; iOS UTS 插件: 4.81 | 统一错误主题（模块）名称 |
 | data | any | 否 | iOS: x; iOS UTS 插件: 4.81 | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |

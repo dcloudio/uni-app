@@ -41,9 +41,9 @@ app-android平台，可使用本API监听应用权限申请确认框的弹出和
 onRequest
 监听申请系统权限
 ##### onRequest 兼容性 <Help /> 
-| Web | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.0 | x | x |
 
 ##### 参数 
 
@@ -57,9 +57,9 @@ onRequest
 onConfirm
 监听弹出系统权限授权框
 ##### onConfirm 兼容性 <Help /> 
-| Web | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.0 | x | x |
 
 ##### 参数 
 
@@ -73,9 +73,9 @@ onConfirm
 onComplete
 监听权限申请完成
 ##### onComplete 兼容性 <Help /> 
-| Web | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.0 | x | x |
 
 ##### 参数 
 
@@ -89,9 +89,9 @@ onComplete
 stop
 取消所有监听
 ##### stop 兼容性 <Help /> 
-| Web | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.0 | x | x |
 
 
 

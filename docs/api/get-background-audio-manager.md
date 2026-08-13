@@ -65,7 +65,7 @@
 | :- | :- | :- |  :-: | :- |
 | duration | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41 | 当前音频的长度（单位：s），只有在当前有合法的 src 时返回 |
 | currentTime | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41 | 当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回 |
-| paused | boolean | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41 | 当前是是否暂停或停止状态，true 表示暂停或停止，false 表示正在播放 |
+| paused | boolean | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41 | 当前是否处于暂停或停止状态，true 表示暂停或停止，false 表示正在播放 |
 | src | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41 | 音频的数据源，默认为空字符串，当设置了新的 src 时，会自动开始播放 ，目前支持的格式有 m4a, aac, mp3, wav |
 | startTime | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41 | 音频开始播放的位置（单位：s） |
 | buffered | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; HarmonyOS: x | 音频缓冲的时间点，仅保证当前播放时间点到此时间点内容已缓冲 |
