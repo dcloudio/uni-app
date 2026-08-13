@@ -569,6 +569,19 @@ worker 代码，是独立的 `uts` 文件，所有worker代码文件需要放置
 
 Worker 代码除了可以放到 `manifest.json->workers` 配置的目录，还支持放置到项目uni_modules插件中，此时目录为固定的 `插件id/workers`（注意这里的workers目录是固定的，跟manifest.json配置没有关系），比如`uni_modules/test-worker/workers`。
 
+<pre v-pre="" data-lang="">
+	<code class="lang-" style="padding:0">
+├─ static
+├─ uni_modules/test-worker/workers                    // 固定的插件 Worker 目录
+│  └─ HelloWorkerTask.uts     // Worker 代码文件
+├─ App.uvue
+├─ main.uts
+├─ manifest.json
+└─ pages.json
+</code>
+</pre>
+
+
 ### 3. 编写 Worker 代码
 
 Worker 代码中需定义一个类并继承自基类 `WorkerTaskImpl`，重写 `onMessage` 方法接收主线程发送的数据。
