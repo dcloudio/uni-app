@@ -1,3 +1,11 @@
+#### 5.24.2026081301
+##### uni-app x
+* Android平台 蒸汽模式 修复 5.23版本引发的 组件 text 文本频繁更新时无法及时渲染 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=31953)
+* Android平台 VDOM模式 修复 5.21版本引发的 vue useComputedStyle部分情况下无法获取更新的样式 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=31912)
+* 鸿蒙平台 蒸汽模式 修复 编译器 使用pinia编译报错 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=32041)
+##### uts插件
+* Android平台 蒸汽模式 修复 uts付费插件云打包编译报错 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=32001)
+
 #### 5.23.2026080626
 ##### uni-app x
 * 【重要】新增 Android平台 蒸汽模式。比原生更快的渲染系统，且不再要求强类型，可使用js/ts编写 [详情](https://doc.dcloud.net.cn/uni-app-x/app-vapor.html)
