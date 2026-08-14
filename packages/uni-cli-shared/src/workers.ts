@@ -17,6 +17,7 @@ import {
 } from './vite/plugins/uts/uni_modules'
 import { resolveBuiltIn } from './resolve'
 import { initSourceFileCallback } from './dom2'
+import { initUasmTransformerCreator } from './uasm'
 
 const debugWorkers = debug('uni:workers')
 
@@ -85,6 +86,7 @@ export function uniWorkersPlugin(): Plugin {
     platform === 'app-android'
       ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
           resolveWorkers,
+          loadUasmTransformer: initUasmTransformerCreator('app-android'),
           sourceFileCallback: initSourceFileCallback(),
         })
       : null
@@ -93,6 +95,7 @@ export function uniWorkersPlugin(): Plugin {
     platform === 'app-ios'
       ? resolveUTSCompiler().createUniXSwiftCompilerOnce({
           resolveWorkers,
+          loadUasmTransformer: initUasmTransformerCreator('app-ios'),
         })
       : null
 

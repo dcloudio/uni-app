@@ -50,6 +50,7 @@ import { isInHBuilderX } from '../../../hbx'
 import { appendConsoleExpr, rewriteConsoleExpr } from '../../../logs/console'
 import { getWorkers } from '../../../workers'
 import { initSourceFileCallback } from '../../../dom2'
+import { initUasmTransformerCreator } from '../../../uasm'
 
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
@@ -376,6 +377,7 @@ export function uniUTSAppUniModulesPlugin(
       process.env.UNI_UTS_PLATFORM === 'app')
       ? createUniXKotlinCompilerOnce({
           resolveWorkers,
+          loadUasmTransformer: initUasmTransformerCreator('app-android'),
           sourceFileCallback: initSourceFileCallback(),
         })
       : null
@@ -383,7 +385,10 @@ export function uniUTSAppUniModulesPlugin(
     process.env.UNI_APP_X_TSC === 'true' &&
     (process.env.UNI_UTS_PLATFORM === 'app-ios' ||
       process.env.UNI_UTS_PLATFORM === 'app')
-      ? createUniXSwiftCompilerOnce({ resolveWorkers })
+      ? createUniXSwiftCompilerOnce({
+          resolveWorkers,
+          loadUasmTransformer: initUasmTransformerCreator('app-ios'),
+        })
       : null
   const uniXArkTSCompiler =
     process.env.UNI_APP_X_TSC === 'true' &&

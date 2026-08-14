@@ -19,6 +19,9 @@ const debugCompile = debug('uts:tsc:compile')
 const UNI_APP_X_TYPE_VALIDATION =
   process.env.UNI_APP_X_TYPE_VALIDATION === 'true' ? true : false
 type TargetLanguage = `${UniXCompilerOptions['targetLanguage']}`
+type LoadUasmTransformer = NonNullable<
+  NonNullable<UniXCompilerOptions['transformOptions']>['loadUasmTransformer']
+>
 
 const hbxVersion = process.env.HX_Version || ''
 const hxDev = hbxVersion.endsWith('-dev')
@@ -35,6 +38,7 @@ export function createUniXCompiler(
     normalizeFileName: (str: string) => string
     isPureSwift?: boolean
     resolveWorkers: () => Record<string, string>
+    loadUasmTransformer?: LoadUasmTransformer
     sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
   }
 ) {
@@ -111,6 +115,7 @@ export function createUniXCompiler(
             ? '.js'
             : undefined,
       },
+      loadUasmTransformer: options.loadUasmTransformer,
     },
     // dom2: process.env.UNI_APP_X_DOM2 === 'true',
     ...options,

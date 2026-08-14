@@ -3,14 +3,18 @@ import path from 'node:path'
 import { sync } from 'fast-glob'
 import type {
   DiagnosticWithLocation,
+  EntityName,
+  Expression,
   Node,
+  NodeFactory,
   SourceFile,
   TransformationContext,
   TransformerFactory,
   VisitResult,
 } from 'typescript'
 import type { Plugin } from 'vite'
-import { normalizePath } from './utils'
+import { camelize, capitalize, normalizePath } from './utils'
+import { parseKotlinPackageWithPluginId } from './uts'
 
 type TypeScriptCompiler = typeof import('typescript')
 
@@ -27,6 +31,7 @@ export interface LoadUasmTransformOptions {
 
 export interface LoadUasmTransformerOptions extends LoadUasmTransformOptions {
   typescript: TypeScriptCompiler
+  resolveLoader?: (modulePath: string) => string | undefined
   onSourceEdit?: (edit: UasmSourceEdit) => void
   resolveError?: (modulePath: string) => string
   reportDiagnostic(
@@ -38,6 +43,10 @@ export interface LoadUasmTransformerOptions extends LoadUasmTransformOptions {
 export interface UasmTransformOptions extends LoadUasmTransformOptions {
   createLoadUasmTransformer: typeof createLoadUasmTransformer
 }
+
+export type UasmTransformerFactoryCreator = (
+  typescript: TypeScriptCompiler
+) => { before: TransformerFactory<SourceFile> }
 
 export type UasmPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 
@@ -120,6 +129,33 @@ export function initUasmTransformOptions(
     resolve: (modulePath: string) => resolveUasmLoadPath(modulePath, platform),
     createLoadUasmTransformer,
   }
+}
+
+export function initUasmTransformerCreator(
+  platform: UasmPlatform
+): UasmTransformerFactoryCreator | undefined {
+  if (process.env.UNI_APP_X_DOM2 !== 'true') {
+    return
+  }
+  const options = initUasmTransformOptions(platform)
+  return (typescript) => ({
+    before: options.createLoadUasmTransformer({
+      ...options,
+      typescript,
+      resolveLoader:
+        platform === 'app-android' ? resolveUasmAndroidLoader : undefined,
+      reportDiagnostic(context, diagnostic) {
+        const utsContext = context as TransformationContext & {
+          error?(diagnostic: DiagnosticWithLocation): void
+        }
+        if (utsContext.error) {
+          utsContext.error(diagnostic)
+        } else {
+          throw new Error(diagnostic.messageText.toString())
+        }
+      },
+    }),
+  })
 }
 
 export function initUasmWebTransformOptions(): UasmTransformOptions {
@@ -207,6 +243,8 @@ export function createLoadUasmTransformer(
             return node
           }
 
+          const loader = options.resolveLoader?.(firstArg.text)
+
           options.onSourceEdit?.({
             start: firstArg.getStart(sourceFile),
             end: firstArg.getEnd(),
@@ -247,6 +285,9 @@ export function createLoadUasmTransformer(
                     ],
                     false
                   ),
+              ...(loader
+                ? [createUasmLoader(factory, loader, typescript)]
+                : []),
               ...node.arguments.slice(1),
             ]
           )
@@ -257,6 +298,41 @@ export function createLoadUasmTransformer(
       return typescript.visitNode(sourceFile, visitor) as SourceFile
     }
   }
+}
+
+function resolveUasmAndroidLoader(modulePath: string) {
+  const moduleName = parseUasmModuleName(modulePath)
+  if (!moduleName) {
+    return
+  }
+  const packageName = parseKotlinPackageWithPluginId(moduleName, true)
+  const className = capitalize(camelize(moduleName))
+  return `${packageName}.${className}`
+}
+
+function createUasmLoader(
+  factory: NodeFactory,
+  loader: string,
+  typescript: TypeScriptCompiler
+): Expression {
+  const [first, ...rest] = loader.split('.')
+  const typeName = rest.reduce<EntityName>(
+    (typeName, name) => factory.createQualifiedName(typeName, name),
+    factory.createIdentifier(first)
+  )
+  const expression = rest.reduce<Expression>(
+    (expression, name) =>
+      factory.createPropertyAccessExpression(expression, name),
+    factory.createIdentifier(first)
+  )
+  return factory.createArrowFunction(
+    undefined,
+    undefined,
+    [],
+    factory.createTypeReferenceNode(typeName),
+    factory.createToken(typescript.SyntaxKind.EqualsGreaterThanToken),
+    expression
+  )
 }
 
 function resolveUasmSourceEdit(resolved: ResolvedUasmLoad) {

@@ -2,12 +2,18 @@ import fs from 'fs-extra'
 import os from 'node:os'
 import path from 'node:path'
 import * as ts from 'typescript'
+import {
+  compileUniModuleWithTsc,
+  createUniXKotlinCompiler,
+  toKotlin,
+} from '@dcloudio/uni-uts-v1'
 
 import {
   createLoadUasmTransformer,
   getUasmModules,
   initUasmModules,
   initUasmTransformOptions,
+  initUasmTransformerCreator,
   initUasmWebTransformOptions,
   parseUasmModuleName,
   parseUniAppXTargetArchs,
@@ -111,6 +117,128 @@ describe('uasm', () => {
       Reflect.deleteProperty(process.env, 'UNI_APP_X_TARGET_ARCHS')
     } else {
       process.env.UNI_APP_X_TARGET_ARCHS = originalTargetArchs
+    }
+  })
+
+  test('transform Android UTS loader from module id', () => {
+    const originalDom2 = process.env.UNI_APP_X_DOM2
+    const originalNodeEnv = process.env.NODE_ENV
+    const originalUniNodeEnv = process.env.UNI_NODE_ENV
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.NODE_ENV = 'production'
+    process.env.UNI_NODE_ENV = 'production'
+    fs.outputFileSync(
+      path.join(
+        inputDir,
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+      ),
+      ''
+    )
+    initUasmModules(inputDir)
+
+    try {
+      const creator = initUasmTransformerCreator('app-android')!
+      const transform = (code: string) =>
+        ts.transpileModule(code, {
+          compilerOptions: { target: ts.ScriptTarget.ESNext },
+          transformers: { before: [creator(ts).before] },
+        }).outputText
+      expect(transform(`uni.loadUASM('uni_modules/test-uasm')`)).toContain(
+        'uni.loadUASM("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
+      )
+      expect(
+        transform(`uni.loadUASM<CompressionBridge>('uni_modules/test-uasm')`)
+      ).toContain(
+        'uni.loadUASM("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
+      )
+    } finally {
+      restoreEnv('UNI_APP_X_DOM2', originalDom2)
+      restoreEnv('NODE_ENV', originalNodeEnv)
+      restoreEnv('UNI_NODE_ENV', originalUniNodeEnv)
+    }
+  })
+
+  test('generate Android UASM loader in Kotlin', async () => {
+    const originalEnv = { ...process.env }
+    const outputDir = path.join(inputDir, 'unpackage/dist/build/app-android')
+    const tscDir = path.join(inputDir, 'unpackage/cache/.tsc')
+    const uvueDir = path.join(inputDir, 'unpackage/cache/.uvue')
+    const callerDir = path.join(inputDir, 'uni_modules/test-caller')
+    const callerFile = path.join(callerDir, 'utssdk/app-android/index.uts')
+
+    Object.assign(process.env, {
+      NODE_ENV: 'production',
+      UNI_NODE_ENV: 'production',
+      UNI_COMPILE_TARGET: '',
+      UNI_UTS_MODULE_PREFIX: '',
+      UNI_APP_X: 'true',
+      UNI_APP_X_DOM2: 'true',
+      UNI_APP_X_TSC: 'true',
+      UNI_INPUT_DIR: inputDir,
+      UNI_OUTPUT_DIR: outputDir,
+      UNI_UTS_PLATFORM: 'app-android',
+      UNI_APP_X_CACHE_DIR: path.join(inputDir, 'unpackage/cache/app-android'),
+      UNI_APP_X_TSC_DIR: tscDir,
+      UNI_APP_X_UVUE_DIR: uvueDir,
+      UNI_APP_X_TSC_CACHE_DIR: path.join(inputDir, 'unpackage/cache/tsc'),
+    })
+    fs.outputFileSync(
+      path.join(
+        inputDir,
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+      ),
+      ''
+    )
+    fs.outputFileSync(
+      callerFile,
+      `export function load() {
+  return uni.loadUASM('uni_modules/test-uasm')
+}`
+    )
+    fs.outputFileSync(
+      path.join(tscDir, 'uni-ext-api.d.ts'),
+      `interface Uni {
+  loadUASM<T>(module: string): Promise<T>
+}`
+    )
+    initUasmModules(inputDir)
+
+    try {
+      await compileUniModuleWithTsc(
+        'app-android',
+        callerDir,
+        createUniXKotlinCompiler({
+          resolveWorkers: () => ({}),
+          loadUasmTransformer: initUasmTransformerCreator('app-android'),
+        }),
+        {
+          rootFiles: [],
+          preprocessor: async (content) => content,
+        }
+      )
+      await toKotlin(callerFile, {
+        inputDir,
+        outputDir,
+        sourceMap: false,
+        isX: true,
+        isSingleThread: true,
+        isPlugin: true,
+        components: {},
+        uniModules: [],
+      })
+
+      const kotlin = fs.readFileSync(
+        path.join(
+          outputDir,
+          'uni_modules/test-caller/utssdk/app-android/index.kt'
+        ),
+        'utf8'
+      )
+      expect(kotlin).toMatch(
+        /uni_loadUASM\("libtest-uasm\.so", fun\(\): uts\.sdk\.modules\.testUasm\.TestUasm\s*\{\s*return uts\.sdk\.modules\.testUasm\.TestUasm\s*\}\s*\)/
+      )
+    } finally {
+      process.env = originalEnv
     }
   })
 
@@ -685,3 +813,11 @@ describe('uasm', () => {
     ])
   })
 })
+
+function restoreEnv(name: string, value: string | undefined) {
+  if (value === undefined) {
+    Reflect.deleteProperty(process.env, name)
+  } else {
+    process.env[name] = value
+  }
+}
