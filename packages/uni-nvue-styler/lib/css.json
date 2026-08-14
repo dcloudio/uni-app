@@ -213,7 +213,7 @@
       "flatten": {
         "app": {
           "android": {
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.25"
           },
           "ios": {
             "unixVaporVer": "x"
