@@ -5,7 +5,9 @@ import * as ts from 'typescript'
 import {
   compileUniModuleWithTsc,
   createUniXKotlinCompiler,
+  createUniXSwiftCompiler,
   toKotlin,
+  toSwift,
 } from '@dcloudio/uni-uts-v1'
 
 import {
@@ -158,6 +160,45 @@ describe('uasm', () => {
     }
   })
 
+  test('transform iOS UTS loader from module id', () => {
+    const originalDom2 = process.env.UNI_APP_X_DOM2
+    const originalNodeEnv = process.env.NODE_ENV
+    const originalUniNodeEnv = process.env.UNI_NODE_ENV
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.NODE_ENV = 'production'
+    process.env.UNI_NODE_ENV = 'production'
+    fs.ensureDirSync(
+      path.join(
+        inputDir,
+        'uni_modules/test-uasm/uasm/app-ios/frameworks/Test.xcframework'
+      )
+    )
+    initUasmModules(inputDir)
+
+    try {
+      const creator = initUasmTransformerCreator('app-ios')!
+      const transform = (code: string) =>
+        ts.transpileModule(code, {
+          compilerOptions: {
+            module: ts.ModuleKind.ESNext,
+            target: ts.ScriptTarget.ESNext,
+          },
+          transformers: { before: [creator(ts).before] },
+        }).outputText
+      const result = transform(
+        `uni.loadUASM<CompressionBridge>('uni_modules/test-uasm')`
+      )
+      expect(result).toContain('import "unimoduleTestUasm"')
+      expect(result).toContain(
+        'uni.loadUASM("test-uasm", () => unimoduleTestUasm.TestUasm.self)'
+      )
+    } finally {
+      restoreEnv('UNI_APP_X_DOM2', originalDom2)
+      restoreEnv('NODE_ENV', originalNodeEnv)
+      restoreEnv('UNI_NODE_ENV', originalUniNodeEnv)
+    }
+  })
+
   test('generate Android UASM loader in Kotlin', async () => {
     const originalEnv = { ...process.env }
     const outputDir = path.join(inputDir, 'unpackage/dist/build/app-android')
@@ -191,8 +232,8 @@ describe('uasm', () => {
     )
     fs.outputFileSync(
       callerFile,
-      `export function load() {
-  return uni.loadUASM('uni_modules/test-uasm')
+      `export function load(): void {
+  uni.loadUASM('uni_modules/test-uasm')
 }`
     )
     fs.outputFileSync(
@@ -240,7 +281,91 @@ describe('uasm', () => {
     } finally {
       process.env = originalEnv
     }
-  })
+  }, 30000)
+
+  test('generate iOS UASM loader in Swift', async () => {
+    const originalEnv = { ...process.env }
+    const outputDir = path.join(inputDir, 'unpackage/dist/build/app-ios')
+    const tscDir = path.join(inputDir, 'unpackage/cache/.tsc')
+    const uvueDir = path.join(inputDir, 'unpackage/cache/.uvue')
+    const callerDir = path.join(inputDir, 'uni_modules/test-caller')
+    const callerFile = path.join(callerDir, 'utssdk/app-ios/index.uts')
+
+    Object.assign(process.env, {
+      NODE_ENV: 'production',
+      UNI_NODE_ENV: 'production',
+      UNI_COMPILE_TARGET: '',
+      UNI_UTS_MODULE_PREFIX: '',
+      UNI_APP_X: 'true',
+      UNI_APP_X_DOM2: 'true',
+      UNI_APP_X_TSC: 'true',
+      UNI_INPUT_DIR: inputDir,
+      UNI_OUTPUT_DIR: outputDir,
+      UNI_UTS_PLATFORM: 'app-ios',
+      UNI_APP_X_CACHE_DIR: path.join(inputDir, 'unpackage/cache/app-ios'),
+      UNI_APP_X_TSC_DIR: tscDir,
+      UNI_APP_X_UVUE_DIR: uvueDir,
+      UNI_APP_X_TSC_CACHE_DIR: path.join(inputDir, 'unpackage/cache/tsc'),
+    })
+    fs.ensureDirSync(
+      path.join(
+        inputDir,
+        'uni_modules/test-uasm/uasm/app-ios/frameworks/Test.xcframework'
+      )
+    )
+    fs.outputFileSync(
+      callerFile,
+      `export function load(): void {
+  uni.loadUASM('uni_modules/test-uasm')
+}`
+    )
+    fs.outputFileSync(
+      path.join(tscDir, 'uni-ext-api.d.ts'),
+      `interface Uni {
+  loadUASM<T>(module: string): Promise<T>
+}`
+    )
+    initUasmModules(inputDir)
+
+    try {
+      await compileUniModuleWithTsc(
+        'app-ios',
+        callerDir,
+        createUniXSwiftCompiler({
+          resolveWorkers: () => ({}),
+          loadUasmTransformer: initUasmTransformerCreator('app-ios'),
+        }),
+        {
+          rootFiles: [],
+          preprocessor: async (content) => content,
+        }
+      )
+      await toSwift(callerFile, {
+        inputDir,
+        outputDir,
+        sourceMap: false,
+        isX: true,
+        isSingleThread: true,
+        isPlugin: true,
+        components: {},
+        uniModules: [],
+      })
+
+      const swift = fs.readFileSync(
+        path.join(
+          outputDir,
+          'uni_modules/test-caller/utssdk/app-ios/index.swift'
+        ),
+        'utf8'
+      )
+      expect(swift).toContain('import unimoduleTestUasm')
+      expect(swift).toMatch(
+        /DCloudUTSExtAPI\.loadUASM\("test-uasm", \{\s*\(\) -> unimoduleTestUasm\.TestUasm\.Type in\s*return unimoduleTestUasm\.TestUasm\.self\s*\}\)/
+      )
+    } finally {
+      process.env = originalEnv
+    }
+  }, 30000)
 
   test.each([
     'uni_modules/test-uasm',

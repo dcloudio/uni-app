@@ -14,7 +14,10 @@ import type {
 } from 'typescript'
 import type { Plugin } from 'vite'
 import { camelize, capitalize, normalizePath } from './utils'
-import { parseKotlinPackageWithPluginId } from './uts'
+import {
+  parseKotlinPackageWithPluginId,
+  parseSwiftModuleWithPluginId,
+} from './uts'
 
 type TypeScriptCompiler = typeof import('typescript')
 
@@ -31,7 +34,7 @@ export interface LoadUasmTransformOptions {
 
 export interface LoadUasmTransformerOptions extends LoadUasmTransformOptions {
   typescript: TypeScriptCompiler
-  resolveLoader?: (modulePath: string) => string | undefined
+  resolveLoader?: (modulePath: string) => ResolvedUasmLoader | undefined
   onSourceEdit?: (edit: UasmSourceEdit) => void
   resolveError?: (modulePath: string) => string
   reportDiagnostic(
@@ -76,6 +79,14 @@ export interface UasmWebLoadDescriptor {
 }
 
 export type ResolvedUasmLoad = string | UasmWebLoadDescriptor
+
+export interface UasmLoaderDescriptor {
+  type: string
+  value: string
+  imports?: string[]
+}
+
+export type ResolvedUasmLoader = string | UasmLoaderDescriptor
 
 export interface ResolvedUasmModule {
   name: string
@@ -143,7 +154,11 @@ export function initUasmTransformerCreator(
       ...options,
       typescript,
       resolveLoader:
-        platform === 'app-android' ? resolveUasmAndroidLoader : undefined,
+        platform === 'app-android'
+          ? resolveUasmAndroidLoader
+          : platform === 'app-ios'
+          ? resolveUasmIOSLoader
+          : undefined,
       reportDiagnostic(context, diagnostic) {
         const utsContext = context as TransformationContext & {
           error?(diagnostic: DiagnosticWithLocation): void
@@ -202,6 +217,7 @@ export function createLoadUasmTransformer(
     const { factory } = context
 
     return (sourceFile) => {
+      const imports = new Set<string>()
       const visitor = (node: Node): VisitResult<Node> => {
         if (
           typescript.isCallExpression(node) &&
@@ -244,6 +260,9 @@ export function createLoadUasmTransformer(
           }
 
           const loader = options.resolveLoader?.(firstArg.text)
+          if (loader && typeof loader !== 'string') {
+            loader.imports?.forEach((module) => imports.add(module))
+          }
 
           options.onSourceEdit?.({
             start: firstArg.getStart(sourceFile),
@@ -295,7 +314,23 @@ export function createLoadUasmTransformer(
         return typescript.visitEachChild(node, visitor, context)
       }
 
-      return typescript.visitNode(sourceFile, visitor) as SourceFile
+      const transformed = typescript.visitNode(
+        sourceFile,
+        visitor
+      ) as SourceFile
+      if (!imports.size) {
+        return transformed
+      }
+      return factory.updateSourceFile(transformed, [
+        ...Array.from(imports).map((module) =>
+          factory.createImportDeclaration(
+            undefined,
+            undefined,
+            factory.createStringLiteral(module)
+          )
+        ),
+        ...transformed.statements,
+      ])
     }
   }
 }
@@ -310,20 +345,38 @@ function resolveUasmAndroidLoader(modulePath: string) {
   return `${packageName}.${className}`
 }
 
+function resolveUasmIOSLoader(modulePath: string) {
+  const moduleName = parseUasmModuleName(modulePath)
+  if (!moduleName) {
+    return
+  }
+  const swiftModule = parseSwiftModuleWithPluginId(moduleName, true)
+  const className = capitalize(camelize(moduleName))
+  const type = `${swiftModule}.${className}`
+  return {
+    type: `${type}.Type`,
+    value: `${type}.self`,
+    imports: [swiftModule],
+  }
+}
+
 function createUasmLoader(
   factory: NodeFactory,
-  loader: string,
+  loader: ResolvedUasmLoader,
   typescript: TypeScriptCompiler
 ): Expression {
-  const [first, ...rest] = loader.split('.')
-  const typeName = rest.reduce<EntityName>(
+  const descriptor =
+    typeof loader === 'string' ? { type: loader, value: loader } : loader
+  const [firstType, ...restType] = descriptor.type.split('.')
+  const typeName = restType.reduce<EntityName>(
     (typeName, name) => factory.createQualifiedName(typeName, name),
-    factory.createIdentifier(first)
+    factory.createIdentifier(firstType)
   )
-  const expression = rest.reduce<Expression>(
+  const [firstValue, ...restValue] = descriptor.value.split('.')
+  const expression = restValue.reduce<Expression>(
     (expression, name) =>
       factory.createPropertyAccessExpression(expression, name),
-    factory.createIdentifier(first)
+    factory.createIdentifier(firstValue)
   )
   return factory.createArrowFunction(
     undefined,
