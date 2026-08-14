@@ -33,7 +33,6 @@
   "uni_modules": {
     "dependencies": [
       "uni-framework",
-      "uni-theme",
       "uni-getAppBaseInfo",
       "uni-getDeviceInfo",
       "uni-getSystemInfo",

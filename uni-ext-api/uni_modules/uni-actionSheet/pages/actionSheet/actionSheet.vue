@@ -6,20 +6,18 @@
       :style="isWidescreen ? containerStyle : {}"
       <!-- #endif -->
       class="uni-action-sheet_dialog__container"
-      :class="{ 'uni-action-sheet_dialog__show': show,'uni-action-sheet_dark__mode': theme == 'dark',
-      'uni-action-sheet_landscape__mode': isLandscape }">
+      :class="{ 'uni-action-sheet_dialog__show': show, 'uni-action-sheet_landscape__mode': isLandscape }">
       <view :style="backgroundColor != null ? {backgroundColor} : {}" class="uni-action-sheet_dialog__menu"
-        :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
+        :class="{ 'uni-action-sheet_landscape__mode': isLandscape }">
         <template v-if="title">
           <view class="uni-action-sheet_dialog__title border-b"
-            :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
-            <text :style="titleColor != null ? { color: titleColor } : {}" class="uni-action-sheet_dialog__title__text"
-              :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
+            :class="{ 'uni-action-sheet_landscape__mode': isLandscape }">
+            <text :style="titleColor != null ? { color: titleColor } : {}" class="uni-action-sheet_dialog__title__text">
               {{ title }}
             </text>
           </view>
           <!-- #ifdef WEB -->
-          <view class="divider" :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"></view>
+          <view class="divider"></view>
           <!-- #endif -->
         </template>
         <!-- #ifdef WEB -->
@@ -32,14 +30,13 @@
           <!-- #endif -->
             <template v-for="(item, index) in itemList" :key="index">
             <!-- #ifdef WEB -->
-            <view v-if="index !== 0" class="divider" :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"></view>
+            <view v-if="index !== 0" class="divider"></view>
             <!-- #endif -->
               <view class="uni-action-sheet_dialog__cell"
-                :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape, 'border-t': index !== 0 }"
-                :hover-class="hoverClass"
+                :class="{ 'uni-action-sheet_landscape__mode': isLandscape, 'border-t': index !== 0 }"
+                hover-class="uni-action-sheet_dialog__hover"
                 @click="handleMenuItemClick(index)">
-                <text :style="itemColor != null ? { color: itemColor } : {}" class="uni-action-sheet_dialog__cell__text"
-                  :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
+                <text :style="itemColor != null ? { color: itemColor } : {}" class="uni-action-sheet_dialog__cell__text">
                   {{ item }}
                 </text>
               </view>
@@ -52,17 +49,18 @@
         <!-- #endif -->
       </view>
       <view :style="backgroundColor != null ? {backgroundColor} : {}" class="uni-action-sheet_dialog__action"
-        :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }"
-        :hover-class="hoverClass"
+        :class="{ 'uni-action-sheet_landscape__mode': isLandscape }"
+        hover-class="uni-action-sheet_dialog__hover"
         @click="handleCancel">
-        <text :style="cancelColor != null ? { color: cancelColor } : {}" class="uni-action-sheet_dialog__action__text"
-          :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
+        <text :style="cancelColor != null ? { color: cancelColor } : {}" class="uni-action-sheet_dialog__action__text">
           {{ cancelText }}
         </text>
       </view>
-      <view v-if="!isLandscape" :style="{height: `${bottomNavigationHeight}px`, backgroundColor: computedBackgroundColor}"></view>
+      <view v-if="!isLandscape" class="uni-action-sheet_dialog__safe-area"
+        :style="backgroundColor != null ? { height: `${bottomNavigationHeight}px`, backgroundColor } : { height: `${bottomNavigationHeight}px` }"></view>
       <!-- #ifdef WEB -->
-      <view v-if='isWidescreen && Object.keys(popover).length > 0' :style='triangleStyle' class="uni-action-sheet_dialog__triangle" />
+      <view v-if='isWidescreen && Object.keys(popover).length > 0' :style='triangleStyle'
+        class="uni-action-sheet_dialog__triangle" :class="triangleClass" />
       <!-- #endif -->
     </view>
   </view>
@@ -102,11 +100,8 @@
   const cancelColor = ref<string | null>(null)
   const backgroundColor = ref<string | null>(null)
   const language = ref('zhHans')
-  const theme = ref('light')
   const isLandscape = ref(false)
   const bottomNavigationHeight = ref(0)
-  const appTheme = ref<string | null>(null)
-  const hostTheme = ref<string | null>(null)
   const menuItemClicked = ref(false)
   const cancelButtonClicked = ref(false)
   // #ifdef WEB
@@ -114,11 +109,6 @@
   const windowHeight = ref(0)
   const popover = reactive({})
   // #endif
-  // #ifdef APP-ANDROID || APP-IOS
-  const appThemeChangeCallbackId = ref(-1)
-  const osThemeChangeCallbackId = ref(-1)
-  // #endif
-
   // #ifdef WEB
   const fixSize = () => {
     const windowInfo = uni.getWindowInfo()
@@ -144,14 +134,6 @@
     closeActionSheet()
     uni.$emit(failEventName.value, {})
   }
-  const handleThemeChange = () => {
-    if(hostTheme.value != null){
-      theme.value = hostTheme.value
-    } else if(appTheme.value != null){
-      theme.value = appTheme.value
-    }
-  }
-
   onLoad((options) => {
     readyEventName.value = options['readyEventName']!
     optionsEventName.value = options['optionsEventName']!
@@ -192,26 +174,7 @@
     } else if (deviceInfo.osLanguage != null) {
       language.value = deviceInfo.osLanguage
     }
-    const currentAppTheme = appInfo.appTheme
-    if (currentAppTheme != null && currentAppTheme != 'auto') {
-      appTheme.value = currentAppTheme
-      handleThemeChange()
-    }
-    const currentOsTheme = deviceInfo.osTheme
-    if (currentOsTheme != null && appTheme.value == null) {
-      appTheme.value = currentOsTheme
-      handleThemeChange()
-    }
     // #ifdef WEB
-    const currentHostTheme = appInfo.hostTheme
-    if (currentHostTheme != null) {
-      hostTheme.value = currentHostTheme
-      handleThemeChange()
-    }
-    uni.onHostThemeChange((res) => {
-      hostTheme.value = res.theme
-      handleThemeChange()
-    });
     fixSize()
     window.addEventListener('resize', fixSize)
 
@@ -224,15 +187,6 @@
     })
     // #endif
     isLandscape.value = deviceInfo.deviceOrientation == 'landscape'
-    // #ifdef APP-ANDROID || APP-IOS
-    appThemeChangeCallbackId.value = uni.onAppThemeChange((res: AppThemeChangeResult) => {
-      const callbackAppTheme = res.appTheme
-      if (callbackAppTheme != null && callbackAppTheme != "auto") {
-        appTheme.value = callbackAppTheme
-        handleThemeChange()
-      }
-    })
-    // #endif
   })
     
   // #ifdef WEB
@@ -267,7 +221,6 @@
       return {}
     }
     const res = {}
-    const borderColor = backgroundColor.value || (theme.value == 'dark' ? '#2C2C2B' : '#fcfcfd')
     const top = popover.top
     const left = popover.left
     const width = popover.width
@@ -281,15 +234,27 @@
     if (top + height - vcl > vcl - top) {
       res['bottom'] = '-6px'
       res['border-width'] = '6px 6px 0 6px'
-      res['border-color'] =
-        `${borderColor} transparent transparent transparent`
+      if (backgroundColor.value != null) {
+        res['border-color'] =
+          `${backgroundColor.value} transparent transparent transparent`
+      }
     } else {
       res['top'] = '-6px'
       res['border-width'] = '0 6px 6px 6px'
-      res['border-color'] =
-        `transparent transparent ${borderColor} transparent`
+      if (backgroundColor.value != null) {
+        res['border-color'] =
+          `transparent transparent ${backgroundColor.value} transparent`
+      }
     }
     return res
+  })
+  const triangleClass = computed((): string => {
+    if (Object.keys(popover).length == 0) {
+      return ''
+    }
+    return triangleStyle.value['bottom'] != null
+      ? 'uni-action-sheet_dialog__triangle--bottom'
+      : 'uni-action-sheet_dialog__triangle--top'
   })
   // #endif
   const cancelText = computed((): string => {
@@ -314,13 +279,6 @@
     }
     return '取消'
   })
-  const computedBackgroundColor = computed((): string => {
-    return backgroundColor.value !== null ? backgroundColor.value : (theme.value == 'dark' ? '#2C2C2B' : '#ffffff')
-  })
-  const hoverClass = computed((): string => {
-    return theme.value == 'dark' ? 'uni-action-sheet_dialog__hover__dark__mode' : 'uni-action-sheet_dialog__hover'
-  })
-
   onReady(() => {
     bottomNavigationHeight.value = uniPageInstance.safeAreaInsets.bottom
     // #ifdef APP-ANDROID
@@ -348,10 +306,6 @@
     uni.$off(failEventName.value, null)
     // #ifdef WEB
     window.removeEventListener('resize', fixSize)
-    // #endif
-    // #ifdef APP-ANDROID || APP-IOS
-    uni.offAppThemeChange(appThemeChangeCallbackId.value)
-    uni.offOsThemeChange(osThemeChangeCallbackId.value)
     // #endif
   })
 </script>
@@ -406,14 +360,8 @@
 	.border-t{
 		border-top: 1rpx solid #e5e5e5;
 	}
-  .border-t.uni-action-sheet_dark__mode {
-    border-top-color: #2F3131;
-  }
   .border-b{
     border-bottom: 1rpx solid #e5e5e5;
-  }
-  .border-b.uni-action-sheet_dark__mode {
-    border-bottom-color: #2F3131;
   }
   /* #endif */
 
@@ -439,7 +387,8 @@
     color: #000000;
   }
   .uni-action-sheet_dialog__menu,
-  .uni-action-sheet_dialog__action {
+  .uni-action-sheet_dialog__action,
+  .uni-action-sheet_dialog__safe-area {
     background-color: #ffffff;
   }
 
@@ -452,11 +401,8 @@
     /* #endif */
   }
 
-  .uni-action-sheet_dialog__hover {
+	.uni-action-sheet_dialog__hover {
 		background-color: #efefef;
-	}
-	.uni-action-sheet_dialog__hover__dark__mode {
-		background-color: #1c1c1c;
 	}
   /* #ifdef WEB */
   .divider{
@@ -464,26 +410,7 @@
     background-color: #e5e5e5;
     transform: scaleY(0.5);
   }
-  .divider.uni-action-sheet_dark__mode {
-    background-color: #2F3131;
-  }
   /* #endif */
-
-  /* dark mode */
-  .uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {
-    background-color: #1D1E1E;
-  }
-  .uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,
-  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {
-    background-color: #2C2C2B;
-  }
-  .uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {
-    color: #999999;
-  }
-  .uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,
-  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {
-    color: #ffffff;
-  }
 
   /* landscape mode */
   .uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {
@@ -550,6 +477,12 @@
     margin-left: -6px;
     border-style: solid;
   }
+  .uni-action-sheet_dialog__triangle--bottom {
+    border-color: #fcfcfd transparent transparent transparent;
+  }
+  .uni-action-sheet_dialog__triangle--top {
+    border-color: transparent transparent #fcfcfd transparent;
+  }
   /* web wide screen */
   @media screen and (min-width: 500px) and (min-height: 500px) {
     .uni-action-sheet_dialog__mask {
@@ -595,4 +528,44 @@
     }
   }
   /* #endif */
+
+  @media (prefers-color-scheme: dark) {
+    .uni-action-sheet_dialog__container {
+      background-color: #1D1E1E;
+    }
+    .uni-action-sheet_dialog__menu,
+    .uni-action-sheet_dialog__action,
+    .uni-action-sheet_dialog__safe-area {
+      background-color: #2C2C2B;
+    }
+    .uni-action-sheet_dialog__title__text {
+      color: #999999;
+    }
+    .uni-action-sheet_dialog__cell__text,
+    .uni-action-sheet_dialog__action__text {
+      color: #ffffff;
+    }
+    .uni-action-sheet_dialog__hover {
+      background-color: #1c1c1c;
+    }
+    /* #ifdef APP */
+    .border-t {
+      border-top-color: #2F3131;
+    }
+    .border-b {
+      border-bottom-color: #2F3131;
+    }
+    /* #endif */
+    /* #ifdef WEB */
+    .divider {
+      background-color: #2F3131;
+    }
+    .uni-action-sheet_dialog__triangle--bottom {
+      border-color: #2C2C2B transparent transparent transparent;
+    }
+    .uni-action-sheet_dialog__triangle--top {
+      border-color: transparent transparent #2C2C2B transparent;
+    }
+    /* #endif */
+  }
 </style>
