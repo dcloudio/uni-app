@@ -160,7 +160,7 @@ Android上数据有较多维度，有初次安装、闲时优化；uni-app x也�
 
 测试前建议重启手机，不启动其他应用，保持电量在90%且不启用节电模式，也不需要开启性能模式（如有），然后进行对比测试。不要在运行模式下测性能，请发行为release包测试
 
-Android的测试非常复杂，因为核调度策略、jit均不透明，很容易产生错误实验数据，请自行重现实验，务必查阅[Android的专业测试报告](./vapor-benchmark-android.md)
+Android的测试非常复杂，因为核调度策略、jit均不透明，很容易产生错误实验数据，如自行重现实验，务必查阅[Android的专业测试报告](./benchmark/vapor-benchmark-android.md)
 
 #### 2. 死亡长列表性能测试@list
 
@@ -299,9 +299,10 @@ uni-app x 蒸汽模式 提供了应该是业内最好的rich-text组件。
 * [Android真机录屏](https://www.bilibili.com/video/BV1cRuU6AEwG)
 
 
-更详细专业的benchmark报告，
-- [鸿蒙benchmark](./vapor-benchmark.md)
-- [Android benchmark](./vapor-benchmark-android.md)
+更详细专业的benchmark报告：
+- [Android benchmark](./benchmark/vapor-benchmark-android.md)
+- [iOS benchmark](./benchmark/vapor-benchmark-ios.md)
+- [鸿蒙benchmark](./benchmark/vapor-benchmark-harmony.md)
 
 ### 释疑
 关于uni-app x的蒸汽模式为什么这么快，很多人可能有疑问，比如

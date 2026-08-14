@@ -1,7 +1,7 @@
 # 跨平台开发框架比较
 
 > 注意：本文为VDOM模式的比较。不适用于蒸汽模式。蒸汽模式在性能、内存占用、原生生态兼容、易用性等方面均远超其他跨平台开发框架。[另见](./app-vapor.md)
-
+<!-- 
 App跨平台框架历史悠久，从cordova、react native、flutter，直到最近的uni-app x。江山代有才人出，每个都试图颠覆原生，但过去却一直未成功。
 
 过去的问题到底在哪里？uni-app x为什么和过去那些方案不一样？
@@ -349,8 +349,6 @@ DCloud做了很多年跨平台开发，uni-app在web和小程序平台取得了�
 |uni-app x									|强类型	|无							|无									|无				|较小																			|较低										|
 |原生应用										|强类型	|无							|无									|无				|较小																			|较低										|
 
-当然，作为一个客观的分析，这里需要强调uni-app x刚刚面世，还有很多不成熟的地方。
-
 [需求墙](https://vote.dcloud.net.cn/#/?name=uni-app%20x)里都是uni-app x该做还未做的。也欢迎大家投票​。
 
 另外，原生Android中一个界面不能有太多元素，否则性能会拉胯。flutter的自渲染和compose ui解决了这个问题。而原生中解决这个问题需要引入自绘机制来降低元素数量，这个在uni-app x里对应的是draw自绘API​。
@@ -359,32 +357,9 @@ uni-app x这个技术路线是产业真正需要的东西，随着产品的迭�
 
 **让跨平台开发不如原生，成为历史**。
 
-欢迎体验 hello uni-app x 示例应用，Android、iOS、Web 三个平台都有，可以亲身感受它的启动速度，渲染流畅度。
-
-<div class="quick">
-  <div style="margin-top: 20px;justify-content: space-around;">
-    <a
-      href="https://hellouniappx.dcloud.net.cn"
-      target="_blank"
-      style="display: flex; align-items: center;flex-direction: column;margin: 0 5px 20px;width:160px;"
-      one-link-mark="yes"
-    >
-      <div class="barcode-img-box">
-        <img
-          src="https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png"
-          width="160"
-          loading="lazy"
-        />
-      </div>
-      <b>hello uni-app x</b>
-    </a>
-  </div>
-</div>
-
-源码在：[https://gitcode.com/dcloud/hello-uni-app-x/](https://gitcode.com/dcloud/hello-uni-app-x/)
-
 这个示例里有几个例子非常考验通信性能，除了也内置了slider-100外，另一个是“模版-scroll-view自定义滚动吸顶”，在滚动时实时修改元素top值始终为一个固定值，一点都不抖动。
 
 我们不说服您使用任何开发技术，但您应该知道它们的原理和差别。
 
 欢迎指正和讨论。
+ -->

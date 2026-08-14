@@ -1,7 +1,7 @@
 * [概述](README.md)
+* [蒸汽模式](app-vapor.md)
 * [项目](project.md)
 * [页面](page.md)
-* [蒸汽模式](app-vapor.md)
 * 教程
 	* Android VDOM模式注意
 		* [强类型下与js开发的差别](tutorial/codegap.md)
@@ -53,7 +53,6 @@
     * [Android 16KB页面大小适配](tutorial/android-16kb.md)
 		* [iOS Appstore上架](https://uniapp.dcloud.net.cn/tutorial/ios-app-store.html)
     * [iOS平台隐私清单](https://uniapp.dcloud.net.cn/tutorial/app-ios-privacyinfo.html)
-  * [iOS逻辑层使用注意](native/iosReadme.md)
 * 鸿蒙next平台专题指南
   * [概述](app-harmony/README.md)
   * [应用合规指南](tutorial/compliance.md)
@@ -85,7 +84,10 @@
 * [国际化](i18n.md)
 * [源码和示例](sample.md)
 * [兼容性表格导读](tutorial/compatibility.md)
-* [benchmark](vapor-benchmark.md)
+* benchmark
+  * [Android性能评测基准报告](benchmark/vapor-benchmark-android.md)
+  * [iOS性能评测基准报告](benchmark/vapor-benchmark-ios.md)
+  * [鸿蒙性能评测基准报告](benchmark/vapor-benchmark-harmony.md)
 * [uni-app 升级 uni-app x](./uniapptox.md)
 * 安全专题
   * [综述](tutorial/safe.md)

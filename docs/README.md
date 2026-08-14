@@ -1,10 +1,8 @@
 # uni-app x 是什么？<Badge text="HBuilderX 3.9+"/>
 
-uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。
+uni-app x，是下一代 uni-app，是一个基于vue、js/ts/uts、css和原生渲染的跨平台开发框架。
 
-uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。
-
-uni-app x 即跨平台，又做到了比原生更快的渲染速度、更高的帧率。评测见[蒸汽模式](./app-vapor.md)
+uni-app x 在2026年推出[蒸汽模式](./app-vapor.md)后，终于实现了跨平台框架的终极愿景：即跨平台，又做到了比原生更快的渲染速度。见[性能对比](#pk)
 
 可以体验打包后的[hello uni-app x](https://hellouniappx.dcloud.net.cn)，访问地址或扫描二维码后获取：
 
@@ -21,73 +19,72 @@ uni-app x 即跨平台，又做到了比原生更快的渲染速度、更高的�
 </div>
 
 ::: tip
-hello uni-app x的源码见：[https://gitcode.com/dcloud/hello-uni-app-x](https://gitcode.com/dcloud/hello-uni-app-x)
+hello uni-app x 的源码见：[https://gitcode.com/dcloud/hello-uni-app-x](https://gitcode.com/dcloud/hello-uni-app-x)
 :::
 
-## 1. uts语言
+## 性能对比@pk
 
-> 该语言在2022年9月推出
+以渲染4050个view和text的测试例为例，需在同一屏幕内渲染，在不同平台原生的耗时和`uni-app x蒸汽模式`的耗时如下：
 
-uts 全称 uni type script，是一门跨平台的、高性能的、强类型的现代编程语言。它在不同平台，会被编译为不同平台的native语言，如：
+|平台		|原生		|uni-app x|差距倍数	|对比视频																																									|
+|--			|--			|--				|--				|--																																												|
+|Android|505		|273			|1.85倍		|[https://www.bilibili.com/video/BV17VuG6sExP](https://www.bilibili.com/video/BV17VuG6sExP)|
+|iOS		|325.76	|167			|1.95倍		|[https://www.bilibili.com/video/BV1ApMt66Eez](https://www.bilibili.com/video/BV1ApMt66Eez)|
+|鸿蒙		|804		|267			|3倍			|[https://www.bilibili.com/video/BV1RpPQzAEDS](https://www.bilibili.com/video/BV1RpPQzAEDS)|
 
+表格数据为耗时，单位为ms。
+
+- Android测试设备：小米Fold4(Android16)
+- iOS测试设备：iPhoneSE(iOS26.5)
+- 鸿蒙测试设备：鸿蒙nova12(api21)
+
+可见，uni-app x蒸汽模式，在每个平台，均比原生渲染快2、3倍。
+
+**重现方式：**
+
+- uni-app x 的源码：[https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/4050/4050.uvue](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/4050/4050.uvue)。上方二维码显示的[ hello uni-app x 下载页面](http://hellouniappx.dcloud.net.cn/)可下载编译后的体验包。
+- Android原生源码：[https://gitcode.com/dcloud/test4050-android](https://gitcode.com/dcloud/test4050-android)。仓库下有编译好的apk可直接体验。
+- iOS原生源码：[https://gitcode.com/dcloud/test4050-ios](https://gitcode.com/dcloud/test4050-ios)，开发者可以自行编译。
+- 鸿蒙原生源码：[https://gitcode.com/dcloud/test4050-harmony-arkui](https://gitcode.com/dcloud/test4050-harmony-arkui)，开发者可以自行编译。
+
+本文为 uni-app x 简介，并非详细评测报告，更多内容，包括Compose UI、Swift UI等更多技术方案的对比，包括如何公平测试，包括长列表、富文本、canvas等更多组件的性能测试，详见专业的benchmark：
+- [Android benchmark](./benchmark/vapor-benchmark-android.md)
+- [iOS benchmark](./benchmark/vapor-benchmark-ios.md)
+- [鸿蒙benchmark](./benchmark/vapor-benchmark-harmony.md)
+
+## VDOM模式和蒸汽模式
+
+uni-app x 的第一代是VDOM模式，该模式的编程语言是uts，一种可以编译为kotlin、Swift、ets、js的跨平台强类型语言。
 * `web/小程序`平台，编译为JavaScript
 * `Android`平台，编译为Kotlin
 * `iOS`平台，编译Swift
 * `鸿蒙next`平台，编译为ArkTS
 
-uts和ts很相似，但为了跨端，uts进行了一些约束和特定平台的增补。详见 [uts语言介绍](./uts/README.md)
+虽然跨语言调用障碍抹平，但由于VDOM的存在以及渲染引擎不够强大，实际渲染速度比原生慢。
 
-uni-app x早期为vdom模式，Android平台的页面script仅支持uts且会编译为kt代码，受强类型约束。
+2026年，uni-app x 推出了新一代的蒸汽模式，由于新版的渲染引擎性能远超原生，考虑到AI友好度、动态性以及老uni-app用户的升级，
+在蒸汽模式下改用普通的ts/js。
 
-uni-app x于2026年推出蒸汽模式，全平台兼容ts/js写法，不再强制约束强类型。
+如果写成uts，Android和iOS也会通过uts2js运行在js引擎上。鸿蒙目前运行在arkts引擎上，未来为了热更新，也会提供运行在js引擎上的选项。
 
-在蒸汽模式后，uts语言的主要作用是开发uts原生插件。
+在蒸汽模式后，uts语言的主要作用是开发uts原生插件。仅uts插件（utssdk目录）继续保留uts向kotlin、Swift、ets的编译能力。
 
-## 2. uvue渲染引擎
-
-uvue是一套基于uts/ts/js的、兼容vue语法的、跨平台的、原生渲染引擎。
-
-它分为2个模式，VDOM模式和[蒸汽模式](./app-vapor.md)。
-
-VDOM模式于早期推出：
-- Android版于3.99上线
-- Web版于4.0上线
-- iOS版于4.11上线
-- 微信小程序版于4.41上线
-- harmonyOS版于4.61上线
+也就是uni-app x 蒸汽模式，不依赖uts的原生编译能力，拥有js的动态性、拥有非常强的AI友好度，渲染性能又超过原生。
 
 从2026年起，新的[蒸汽模式](./app-vapor.md)将逐渐替代老的VDOM模式。
 - harmonyOS版于5.0上线
 - iOS版于5.11上线
 - Android版于5.21上线
 
-(小程序和web不涉及uvue渲染引擎，蒸汽模式下的uvue页面可以直接编译到小程序和web，无需担心使用蒸汽模式后无法编译到web和小程序。web版目前仍然带有vdom，后续vue官方发布正式版3.6后，uni-app x的web平台也会升级)
+## 开发技术
 
-vue蒸气模式（Vapor），免除了vnode的创建耗时，并全新研发了基于原生渲染管线的UI系统，渲染速度更快、帧率更高。
+开发者使用vue + js/ts + css(子集) 来开发 uni-app x 蒸汽模式。
 
-uni-app x蒸汽模式，摘下了跨平台框架的圣杯：**即跨平台，渲染性能又超过了原生，且兼容原生组件生态**。
+与uni-app相比，无需新学习任何编程语言或框架。仅需注意在uni-app x 的app平台，由于使用的是原生渲染，其支持的css是web css的子集。
 
-以渲染4050个view和text的测试例为例，在不同平台原生的耗时和uni-app x蒸汽模式的耗时如下：
+如果您是新手，也可以通过[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)来完成应用开发，AI对 uni-app x 蒸汽模式的开发非常友好。
 
-|			|原生	|uni-app x蒸汽模式	|
-|--		|--		|--								|
-|鸿蒙	|798	|280							|
-|iOS	|339.7	|185							|
-|Android	|436	|224					|
-
-耗时的单位为ms。
-
-- 鸿蒙测试设备：鸿蒙nova12(apiLevel 21，鸿蒙最低端手机)
-- iOS测试设备：iPhoneXR(iOS18.5)
-- Android测试设备：华为mate30
-
-可见，uni-app x蒸汽模式，均比原生渲染快2、3倍。
-
-测试报告还有很多内容，详细介绍见[蒸汽模式](./app-vapor.md)
-
-有了uvue，开发者就可以使用vue语法、css来快速编写页面，编译为不同平台的、高性能的界面。
-
-一个uvue页面的例子：
+一个典型的 uni-app x 的 uvue页面例子：
 
 ```html
 <template>
@@ -113,35 +110,31 @@ uni-app x蒸汽模式，摘下了跨平台框架的圣杯：**即跨平台，渲
 
 <style>
 	.content {
-		width: 750rpx;
+		flex: 1;
 		background-color: white;
 	}
 </style>
 
 ```
 
-uvue支持的是vue3语法，VDOM模式支持组合式API和选项式API。蒸汽模式仅支持组合式API。详见[vue语法](./vue/README.md)
-
-uvue在App端支持的css语法，是web的子集，类似于但优于nvue的css。仅支持flex布局，但也足以布局出需要的界面。详见[css语法](./css/README.md)
-
-使用该css子集，可保证跨端。如果把uvue页面编译到web和小程序平台，则浏览器的其他css也都可以使用。
-
-## 3. uni的组件 @uni-components
+### uni的组件 @uni-components
 
 uni-app x支持的组件包括：
-- `内置基础组件`：如view、text、image、scroll-view、input...等，详见[组件清单](./component/README.md)
+- `内置基础组件`：与uni-app和小程序相同，如view、text、image、scroll-view、input...等，详见[组件清单](./component/README.md)
 - `自定义uvue组件`：使用内置组件和vue组件技术进行封装的组件，支持easycom。
-- `uts组件插件`：用于原生sdk的ui以组件的方式嵌入。
+- `uts原生组件插件`：用于原生sdk的ui以组件的方式嵌入。
 
 > 除了微信小程序，其他端不支持小程序wxml组件。
 
+很多内置组件，也是开源的uvue组件，在每个组件文档右上角可以点击源码仓库链接查看。
+
 更多组件介绍，[详见](./component/README.md)
 
-## 4. API @uni-api
+## API @uni-api
 
 uni-app x支持的API包括：
 
-1. uts的API [详见](./uts/buildin-object-api/global.md)
+1. js的内置API
 2. 全局API，前面不需要加`uni.`。如[getApp](./api/get-app.md)、[getCurrentPages](./api/get-current-pages.md)
 3. uni.xxx的内置API。数量较多，[详见](./api/README.md)
 4. uniCloud.xxx的内置API。[详见](./api/unicloud/README.md)
@@ -155,38 +148,35 @@ uni-app x不会限制任何原生API的调用，在每个平台都可以调用�
 - iOS平台：可调用iOS的所有api，可混合使用swift，可使用所有适配iOS的sdk，包括动态库静态库，可使用cocoaPods库管理
 - Harmony平台：可调用鸿蒙的所有api，可混合使用ArkTS，可使用所有适配鸿蒙的sdk，包括so库，可使用ohpm库管理。
 
-以下示例，在 Android 上调用了 OS 的能力获取手机型号。如下：
-
-```uts
-	import Build from 'android.os.Build';
-	console.log(Build.MODEL); //调用原生对象，返回手机型号
-	console.log(uni.getSystemInfoSync().deviceModel); //调用uni API，返回手机型号。与上一行返回值相同
-```
-
-::: info
-上面的示例，打印了2行日志，显示手机型号。
-
-- uni.getSystemInfoSync，是uni的api
-- import的Build，是Android OS 的api
-:::
-
-在uni-app x里，可以直接调用 OS 的能力，不受限制，语法是uts的语法，但需要了解什么功能在原生里是哪个api。
-
-使用`uni.getSystemInfoSync`则比较简单，看uni的文档即可，且可跨平台。
-
-其实，[uni.getSystemInfoSync](https://gitcode.com/dcloud/uni-api/blob/master/uni_modules/uni-getSystemInfo/utssdk/app-android/index.uts) 的内部实现就是一个uts模块，底层使用了一样的代码，也是import了android.os.Build。
-
-uni.的api，大多是uts开发的，它们开源在[uni-api](https://gitcode.com/dcloud/uni-api)。
+uni.的api，大多是uts开发的，在每个API文档右上角可以点击源码仓库链接查看。
 
 插件市场也有很多做好的uts插件，方便开发者拿来即用。[uts插件](https://ext.dcloud.net.cn/?cat1=8&type=UpdatedDate)
 
 老uni-app，支持 plus API 和 weex API。但 uni-app x 中，不再支持这些API。
 
-## 5. 插件生态
+更多API介绍，[详见](./api/README.md)
+
+## CSS @css
+
+uni-app x 在web和小程序，支持完成的浏览器css，在app平台，由于是原生渲染，支持的css的子集。
+
+主要差异包括：
+- 使用flex布局，且默认方向为竖向
+- 文字必须写在text组件内且样式不支持继承
+
+其他差异详见 [css文档](./css/README.md)
+
+## 插件生态
 
 uni-app x的插件生态，以uni_modules为主。这是一种面向全端的、统一的插件管理方案。
-它容纳支持了npm、Android仓库、iOS Swift PM、CocoaPods、鸿蒙ohpm。
+
+它容纳支持各种平台的原生库管理方案，包括npm、Android仓储、iOS Swift PM、CocoaPods、鸿蒙ohpm。
+
 可以引入web和原生的各种生态库。
+
+如果不开发原生插件，仅使用纯js库，在蒸汽模式下，npm上众多库也可以直接在App平台使用，比如vue-pinia、day.js等。而vdom模式则需要uts适配库才能在App平台使用。
+
+但需注意小程序和App平台不支持window等api，对dom api的支持也有限。详见[DOM API](./api/dom/README.md)
 
 [uni插件市场](https://ext.dcloud.net.cn/)是跨端插件的聚集地，前端插件可以去npm找，但原生插件更推荐在这里找。
 
@@ -213,7 +203,7 @@ uts插件是一个大一统的插件模型，其中在不同的子平台可以�
 
 如果你想开发uts插件，[参考插件开发教程](./plugin/uts-plugin.md)
 
-如果想复用web生态的内容，还可以使用web-view组件承载：并利用组件提供的postMessage和原生通信。
+推荐使用[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)来开发uts原生插件，它可以做到不懂原生的前端开发者开发出uts原生插件。
 
 ### 推荐的优秀插件
 
