@@ -124,16 +124,14 @@ export function resolveBuiltIn(module: string) {
 export function resolveVueI18nRuntime() {
   return path.resolve(
     __dirname,
-    process.env.UNI_APP_X === 'true'
-      ? '../lib/dom2/vue-i18n/dist/vue-i18n.runtime.esm-bundler.js'
-      : '../lib/vue-i18n/dist/vue-i18n.runtime.esm-bundler.js'
+    '../lib/vue-i18n/dist/vue-i18n.runtime.esm-bundler.js'
   )
 }
 
 export function resolveVueI18n() {
   return path.resolve(
     __dirname,
-    '../lib/dom2/vue-i18n/dist/vue-i18n.esm-bundler.js'
+    '../lib/vue-i18n/dist/vue-i18n.runtime.esm-bundler.js'
   )
 }
 
@@ -157,25 +155,7 @@ function resolveDevtoolsApi(libDir: string) {
 }
 
 export function resolveVueI18nDependencies(): Record<string, string> {
-  if (
-    process.env.UNI_APP_X !== 'true' ||
-    resolveProjectVueI18n() !== undefined
-  ) {
-    return {}
-  }
-  const libDir = path.resolve(__dirname, '../lib/dom2')
-  return {
-    '@intlify/core-base': path.resolve(
-      libDir,
-      '@intlify/core-base/dist/core-base.mjs'
-    ),
-    '@intlify/message-compiler': path.resolve(
-      libDir,
-      '@intlify/message-compiler/dist/message-compiler.mjs'
-    ),
-    '@intlify/shared': path.resolve(libDir, '@intlify/shared/dist/shared.mjs'),
-    '@vue/devtools-api': resolveDevtoolsApi(libDir),
-  }
+  return {}
 }
 
 export function resolvePinia() {
@@ -208,12 +188,6 @@ export function resolvePiniaAlias(): Record<string, string> {
 }
 
 export function resolveVueI18nRuntimeAlias(): Record<string, string> {
-  if (
-    process.env.UNI_APP_X === 'true' &&
-    resolveProjectVueI18n() !== undefined
-  ) {
-    return {}
-  }
   return {
     ...resolveVueI18nDependencies(),
     'vue-i18n': resolveVueI18nRuntime(),
