@@ -39,7 +39,6 @@
 | :- | :- | :- | :- |  :-: | :- |
 | url | string | 是 |  | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址 |
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | HTTP 请求 Header，header 中不能设置 Referer |
-| protocols | Array&lt;string&gt; | 否 | null | 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | 子协议数组 |
 | success | (result: [ConnectSocketSuccess](#connectsocketsuccess-values)) => void | 否 | null | 微信小程序: 4.41 | 接口调用成功的回调函数 |
 | fail | (result: [ConnectSocketFail](#connectsocketfail-values)) => void | 否 | null | 微信小程序: 4.41 | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） |

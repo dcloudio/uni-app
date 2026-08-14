@@ -40,22 +40,22 @@
 
 ##### icon 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| success | 显示成功图标 |
-| error | 显示错误图标 |
-| fail | 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效 |
-| exception | 显示异常图标，此时title文本无长度显示，支付宝小程序生效 |
-| loading | 显示加载图标 |
-| none | 不显示图标 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| success | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | 显示成功图标 |
+| error | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | 显示错误图标 |
+| fail | Web: x; 微信小程序: x; Android: x; iOS: x | 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效 |
+| exception | Web: x; 微信小程序: x; Android: x; iOS: x | 显示异常图标，此时title文本无长度显示，支付宝小程序生效 |
+| loading | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | 显示加载图标 |
+| none | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | 不显示图标 |
 
 ##### position 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| top | 居上显示 |
-| center | 居中显示 |
-| bottom | 居底显示 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| top | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居上显示 |
+| center | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居中显示 |
+| bottom | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居底显示 |
 
 #### ShowToastFail 的属性值 @showtoastfail-values 
 

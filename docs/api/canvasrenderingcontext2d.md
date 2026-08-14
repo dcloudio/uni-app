@@ -1000,7 +1000,7 @@ addColorStop
 
 | 类型 |
 | :- |
-| number\[\] |
+| Array&lt;number&gt; |
  
 
 
@@ -1326,7 +1326,7 @@ addColorStop
 
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| segments | number\[\] | 是 | \<number>一组描述交替绘制线段和间距（坐标空间单位）长度的数字 | 
+| segments | Array&lt;number&gt; | 是 | \<number>一组描述交替绘制线段和间距（坐标空间单位）长度的数字 | 
 
 
 

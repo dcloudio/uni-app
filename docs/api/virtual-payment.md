@@ -265,28 +265,9 @@ restoreTransactions
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: [AppleIAPRestoreSuccess](#appleiaprestoresuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
+| success | (result: AppleIAPRestoreSuccess) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: [AppleIAPRestoreFail](#appleiaprestorefail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-###### AppleIAPRestoreSuccess 的属性值 @appleiaprestoresuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
-
-#### transactions 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
-| transactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
-| originalTransactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
 
 ###### AppleIAPRestoreFail 的属性值 @appleiaprestorefail-values 
 
@@ -327,28 +308,9 @@ getUnfinishedTransactions
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: [AppleIAPUnfinishedTransactionSuccess](#appleiapunfinishedtransactionsuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
+| success | (result: AppleIAPUnfinishedTransactionSuccess) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: [AppleIAPUnfinishedTransactionFail](#appleiapunfinishedtransactionfail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-###### AppleIAPUnfinishedTransactionSuccess 的属性值 @appleiapunfinishedtransactionsuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
-
-#### transactions 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
-| transactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
-| originalTransactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
 
 ###### AppleIAPUnfinishedTransactionFail 的属性值 @appleiapunfinishedtransactionfail-values 
 
@@ -427,28 +389,9 @@ finishTransaction
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: [AppleIAPRestoreSuccess](#appleiaprestoresuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
+| success | (result: AppleIAPRestoreSuccess) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: [AppleIAPRestoreFail](#appleiaprestorefail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-
-###### AppleIAPRestoreSuccess 的属性值 @appleiaprestoresuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
-
-#### transactions 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
-| transactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
-| originalTransactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
 
 ###### AppleIAPRestoreFail 的属性值 @appleiaprestorefail-values 
 
@@ -473,28 +416,9 @@ finishTransaction
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: [AppleIAPUnfinishedTransactionSuccess](#appleiapunfinishedtransactionsuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
+| success | (result: AppleIAPUnfinishedTransactionSuccess) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: [AppleIAPUnfinishedTransactionFail](#appleiapunfinishedtransactionfail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-
-###### AppleIAPUnfinishedTransactionSuccess 的属性值 @appleiapunfinishedtransactionsuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
-
-#### transactions 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
-| transactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
-| originalTransactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
 
 ###### AppleIAPUnfinishedTransactionFail 的属性值 @appleiapunfinishedtransactionfail-values 
 

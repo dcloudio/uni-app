@@ -31,14 +31,11 @@
 | :- | :- | :- | :- |  :-: | :- |
 | pageOrientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: x; HarmonyOS: 4.61 | 屏幕方向。默认为pages.json中的pageOrientation。 |
 | count | number | 否 | 9 | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 最多可以选择的文件个数 |
-| mediaType | Array&lt;string&gt; | 否 | \['image', 'video'\] | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | album 从相册选视频，camera 使用相机拍摄，合法值：'image'、'video'、'mix' |
-| sourceType | Array&lt;string&gt; | 否 | \['album', 'camera'\] | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | album 从相册选视频，camera 使用相机拍摄 |
 | maxDuration | number | 否 | 10 | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 拍摄视频最长拍摄时间，单位秒。时间范围为 3s 至 30s 之间 |
 | camera | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 仅在 sourceType 为 camera 时生效，使用前置或后置摄像头<br/> |
 | success | (callback: [ChooseMediaSuccess](#choosemediasuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41 | 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明 |
 | fail | (callback: [ChooseMediaFail](#choosemediafail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | Web: x; 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| sizeType | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序: 4.41 | 是否压缩所选文件，基础库2.25.0前仅对 mediaType 为 image 时有效，2.25.0及以后对全量 mediaType 有效<br/> | 
+| complete | (callback: any) => void | 否 |  | Web: x; 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### pageOrientation 的属性描述
 
@@ -59,28 +56,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| tempFiles | Array&lt;**ChooseMediaTempFile**&gt; | 是 | Web: x |
 | type | string | 是 | Web: x |
-
-#### tempFiles 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 | Web: x | 选定视频的临时文件路径 |
-| fileType | string | 是 | Web: x | 文件类型 |
-| size | number | 是 | Web: x | 选定视频的数据量大小，单位 kB |
-| byteSize | number | 否 | Web: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 视频文件的字节大小，单位 B |
-| duration | number | 否 | Web: x | 选定视频的时间长度 |
-| height | number | 否 | Web: x | 返回选定视频的长 |
-| width | number | 否 | Web: x | 返回选定视频的宽 |
-| thumbTempFilePath | string | 否 | Web: x | 视频缩略图临时文件路径 |
-
-##### fileType 的属性描述
-
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| image | Web: x |
-| video | Web: x |
 
 #### type 的属性描述
 

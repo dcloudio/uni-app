@@ -543,7 +543,7 @@ fstatSync
 
 | 类型 | 描述 |
 | :- | :- |
-| [Stats](#stats-values) | Stats 对象，即描述文件状态的对象 |
+| [Stats](#stats-values) | Stats 对象，包含了文件的状态信息 |
 
 #### Stats 的属性描述
 
@@ -775,15 +775,9 @@ getSavedFileList
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: [GetSavedFileListResult](#getsavedfilelistresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| success | (res: GetSavedFileListResult) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-###### GetSavedFileListResult 的属性值 @getsavedfilelistresult-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| fileList | Array&lt;string&gt; | 是 | Web: x | 文件数组。自 `4.71` 起，返回 `unifile://` 协议的路径<br/>返回 `unifile://cache/uni-store/` (uni.env.CACHE_PATH/uni-store/) 目录中的文件列表 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
@@ -1272,15 +1266,9 @@ readdir
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的目录路径 (本地路径) |
-| success | (res: [ReadDirSuccessResult](#readdirsuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| success | (res: ReadDirSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-###### ReadDirSuccessResult 的属性值 @readdirsuccessresult-values 
-
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| files | Array&lt;string&gt; | 是 | Web: x |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
@@ -1365,27 +1353,11 @@ readZipEntry
 | :- | :- | :- |  :-: | :- |
 | filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的压缩包的路径 (本地路径)，app-android平台支持代码包文件目录 |
 | encoding | string | 否 | Web: x | 统一指定读取文件的字符编码，只在 entries 值为"all"时有效。<br/>4.31及以后版本如果 entries 值为 null 且不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
-| entries | Array&lt;**EntryItem**&gt; | 否 | Web: x | 要读取的压缩包内的文件列表（当不传入时表示读取压缩包内所有文件） |
 | success | (res: [EntriesResult](#entriesresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### encoding 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| ascii | Web: x | ascii 字符编码 |
-| base64 | Web: x | base64 字符编码 |
-| utf-8 | Web: x | utf-8 字符编码，默认值 |
-
-##### entries 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| path | string | 是 | Web: x | 压缩包内文件路径 |
-| encoding | string | 否 | Web: x | 指定写入文件的字符编码<br/>支持:ascii base64 utf-8;4.31及以后版本如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
-
-###### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
@@ -1877,67 +1849,9 @@ stat
 | :- | :- | :- |  :-: | :- |
 | path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件/目录路径 (本地路径) |
 | recursive | boolean | 是 | Web: x | 是否递归获取目录下的每个文件的 Stats 信息 |
-| success | (res: [StatSuccessResult](#statsuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| success | (res: StatSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-###### StatSuccessResult 的属性值 @statsuccessresult-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| stats | Array&lt;[FileStats](#filestats-values)&gt; | 是 | Web: x | 微信小程序规则：当 recursive 为 false 时，res.stats 是一个 Stats 对象。当 recursive 为 true 且 path 是一个目录的路径时，res.stats 是一个 Array，数组的每一项是一个对象，每个对象包含 path 和 stats<br/>uniapp-x规则为避免返回值是联合类型，均返回数组，具体优化如下：<br/>-—— 当 path = 文件路径，返回数组，仅包含本身stats，返回 stats.path= ""<br/>-—— 当 path = 目录路径 && recursive = false，返回数组，仅包含本身stats，返回 stats.path= "/"<br/>-—— 当 path = 目录路径 && recursive = true，返回数组，包含本身stats和其递归子文件stats和目录文件stats |
-
-#### stats 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| path | string | 是 | Web: x | 文件/目录路径（相对于传入路径） |
-| stats | [Stats](#stats-values) | 是 | Web: x | Stats 对象，即描述文件状态的对象 |
-
-##### stats 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| mode | number | 是 | Web: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
-| size | number | 是 | Web: x | 文件大小，单位：B，对应 POSIX stat.st_size |
-| lastAccessedTime | number | 是 | Web: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
-| lastModifiedTime | number | 是 | Web: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
-
-###### Stats 的方法 @stats-values 
-
-###### isDirectory(): boolean; @isdirectory
-isDirectory
-判断当前文件是否一个目录
-###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
-
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| boolean |
- 
-
-###### isFile(): boolean; @isfile
-isFile
-判断当前文件是否一个普通文件
-###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
-
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| boolean |
- 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
@@ -1998,60 +1912,9 @@ FileSystemManager.stat 的同步版本
 
 ##### 返回值 
 
-| 类型 |
-| :- |
-| Array&lt;[FileStats](#filestats-values)&gt; |
-
-#### Array&lt;FileStats&gt; 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| path | string | 是 | Web: x | 文件/目录路径（相对于传入路径） |
-| stats | [Stats](#stats-values) | 是 | Web: x | Stats 对象，即描述文件状态的对象 |
-
-##### stats 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| mode | number | 是 | Web: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
-| size | number | 是 | Web: x | 文件大小，单位：B，对应 POSIX stat.st_size |
-| lastAccessedTime | number | 是 | Web: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
-| lastModifiedTime | number | 是 | Web: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
-###### Stats 的方法 @stats-values 
-
-###### isDirectory(): boolean; @isdirectory
-isDirectory
-判断当前文件是否一个目录
-###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
-
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| boolean |
- 
-
-###### isFile(): boolean; @isfile
-isFile
-判断当前文件是否一个普通文件
-###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
-
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| boolean |
- 
+| 类型 | 描述 |
+| :- | :- |
+| Array&lt;string&gt; | 图像像素点数据，一维数组，每四项表示一个像素点的rgba |
  
 
 #### truncate(options: TruncateFileOptions): void; @truncate
@@ -2984,15 +2847,9 @@ isFile
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: [GetSavedFileListResult](#getsavedfilelistresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| success | (res: GetSavedFileListResult) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-
-###### GetSavedFileListResult 的属性值 @getsavedfilelistresult-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| fileList | Array&lt;string&gt; | 是 | Web: x | 文件数组。自 `4.71` 起，返回 `unifile://` 协议的路径<br/>返回 `unifile://cache/uni-store/` (uni.env.CACHE_PATH/uni-store/) 目录中的文件列表 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
@@ -3318,15 +3175,9 @@ isFile
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的目录路径 (本地路径) |
-| success | (res: [ReadDirSuccessResult](#readdirsuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| success | (res: ReadDirSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-
-###### ReadDirSuccessResult 的属性值 @readdirsuccessresult-values 
-
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| files | Array&lt;string&gt; | 是 | Web: x |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
@@ -3373,27 +3224,11 @@ isFile
 | :- | :- | :- |  :-: | :- |
 | filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的压缩包的路径 (本地路径)，app-android平台支持代码包文件目录 |
 | encoding | string | 否 | Web: x | 统一指定读取文件的字符编码，只在 entries 值为"all"时有效。<br/>4.31及以后版本如果 entries 值为 null 且不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
-| entries | Array&lt;**EntryItem**&gt; | 否 | Web: x | 要读取的压缩包内的文件列表（当不传入时表示读取压缩包内所有文件） |
 | success | (res: [EntriesResult](#entriesresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### encoding 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| ascii | Web: x | ascii 字符编码 |
-| base64 | Web: x | base64 字符编码 |
-| utf-8 | Web: x | utf-8 字符编码，默认值 |
-
-#### entries 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| path | string | 是 | Web: x | 压缩包内文件路径 |
-| encoding | string | 否 | Web: x | 指定写入文件的字符编码<br/>支持:ascii base64 utf-8;4.31及以后版本如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
-
-##### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
@@ -3709,67 +3544,9 @@ isFile
 | :- | :- | :- |  :-: | :- |
 | path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件/目录路径 (本地路径) |
 | recursive | boolean | 是 | Web: x | 是否递归获取目录下的每个文件的 Stats 信息 |
-| success | (res: [StatSuccessResult](#statsuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| success | (res: StatSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-
-###### StatSuccessResult 的属性值 @statsuccessresult-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| stats | Array&lt;[FileStats](#filestats-values)&gt; | 是 | Web: x | 微信小程序规则：当 recursive 为 false 时，res.stats 是一个 Stats 对象。当 recursive 为 true 且 path 是一个目录的路径时，res.stats 是一个 Array，数组的每一项是一个对象，每个对象包含 path 和 stats<br/>uniapp-x规则为避免返回值是联合类型，均返回数组，具体优化如下：<br/>-—— 当 path = 文件路径，返回数组，仅包含本身stats，返回 stats.path= ""<br/>-—— 当 path = 目录路径 && recursive = false，返回数组，仅包含本身stats，返回 stats.path= "/"<br/>-—— 当 path = 目录路径 && recursive = true，返回数组，包含本身stats和其递归子文件stats和目录文件stats |
-
-#### stats 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| path | string | 是 | Web: x | 文件/目录路径（相对于传入路径） |
-| stats | [Stats](#stats-values) | 是 | Web: x | Stats 对象，即描述文件状态的对象 |
-
-##### stats 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| mode | number | 是 | Web: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
-| size | number | 是 | Web: x | 文件大小，单位：B，对应 POSIX stat.st_size |
-| lastAccessedTime | number | 是 | Web: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
-| lastModifiedTime | number | 是 | Web: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
-
-###### Stats 的方法 @stats-values 
-
-###### isDirectory(): boolean; @isdirectory
-isDirectory
-判断当前文件是否一个目录
-###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
-
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| boolean |
- 
-
-###### isFile(): boolean; @isfile
-isFile
-判断当前文件是否一个普通文件
-###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
-
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| boolean |
- 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
@@ -3809,58 +3586,6 @@ isFile
 | 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
 | 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
 | 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
-
-##### FileStats 的属性值 @filestats-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| path | string | 是 | Web: x | 文件/目录路径（相对于传入路径） |
-| stats | [Stats](#stats-values) | 是 | Web: x | Stats 对象，即描述文件状态的对象 |
-
-#### stats 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| mode | number | 是 | Web: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
-| size | number | 是 | Web: x | 文件大小，单位：B，对应 POSIX stat.st_size |
-| lastAccessedTime | number | 是 | Web: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
-| lastModifiedTime | number | 是 | Web: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
-
-###### Stats 的方法 @stats-values 
-
-###### isDirectory(): boolean; @isdirectory
-isDirectory
-判断当前文件是否一个目录
-###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
-
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| boolean |
- 
-
-###### isFile(): boolean; @isfile
-isFile
-判断当前文件是否一个普通文件
-###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
-
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| boolean |
- 
 
 ##### TruncateFileOptions 的属性值 @truncatefileoptions-values 
 

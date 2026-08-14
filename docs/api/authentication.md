@@ -26,20 +26,12 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| requestAuthModes | Array&lt;string&gt; | 是 | Web: x | 请求使用的可接受的生物认证方式 |
+| requestAuthModes | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求使用的可接受的生物认证方式 |
 | challenge | string | 否 | Web: x | 挑战因子 |
 | authContent | string | 否 | Web: x | 验证描述，即识别过程中显示在界面上的对话框提示内容 |
 | success | (result: [StartSoterAuthenticationSuccess](#startsoterauthenticationsuccess-values)) => void | 否 | Web: x | 接口调用成功的回调函数 |
 | fail | (result: [StartSoterAuthenticationFail](#startsoterauthenticationfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (result: [StartSoterAuthenticationSuccess](#startsoterauthenticationsuccess-values) \| [StartSoterAuthenticationFail](#startsoterauthenticationfail-values)) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-##### requestAuthModes 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| fingerPrint | Web: x | 指纹识别 |
-| facial | Web: x | 人脸识别 |
-| speech | Web: x | 声纹识别（暂未支持） |
 
 #### StartSoterAuthenticationSuccess 的属性值 @startsoterauthenticationsuccess-values 
 
@@ -159,16 +151,8 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| supportMode | Array&lt;string&gt; | 是 | Web: x | 支持的生物认证方式 |
+| supportMode | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 支持的生物认证方式 |
 | errMsg | string | 是 | Web: x | 接口调用结果 |
-
-#### supportMode 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| fingerPrint | Web: x | 指纹识别 |
-| facial | Web: x | 人脸识别 |
-| speech | Web: x | 声纹识别（暂未支持） |
 
 #### CheckIsSupportSoterAuthenticationFail 的属性值 @checkissupportsoterauthenticationfail-values 
 
@@ -184,16 +168,8 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| supportMode | Array&lt;string&gt; | 是 | Web: x | 支持的生物认证方式 |
+| supportMode | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 支持的生物认证方式 |
 | errMsg | string | 是 | Web: x | 接口调用结果 |
-
-#### supportMode 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| fingerPrint | Web: x | 指纹识别 |
-| facial | Web: x | 人脸识别 |
-| speech | Web: x | 声纹识别（暂未支持） |
 
 #### CheckIsSupportSoterAuthenticationFail 的属性值 @checkissupportsoterauthenticationfail-values 
 

@@ -202,19 +202,11 @@ includePoints
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| points | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要显示在可视区域内的坐标点列表，\[{latitude, longitude}\] |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-##### points 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: any) => void | 否 | null | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
@@ -450,130 +442,10 @@ addMarkers
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| markers | Array&lt;**Marker**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 同传入 map 组件的 marker 属性 |
 | clear | boolean | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否先清空地图上所有 marker |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-##### markers 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标记点id，marker点击事件回调会返回此id。建议为每个marker设置上Number类型id，保证更新marker时有更好的性能。最大限制9位数 |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围 -90 ~ 90 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，浮点数，范围 -180 ~ 180 |
-| iconPath | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 显示的图标，项目目录下的图片路径，支持相对路径写法，以'/'开头则表示相对小程序根目录；也支持临时路径 |
-| title | string | 否 | null | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注点名，点击时显示，callout存在时将被忽略 |
-| rotate | number | 否 | 0 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 旋转角度，顺时针旋转的角度，范围 0 ~ 360 |
-| alpha | number | 否 | 1 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注的透明度，范围 0 ~ 1 |
-| width | number | 否 | 默认为图片实际宽度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标宽度 |
-| height | number | 否 | 默认为图片实际高度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标高度 |
-| ariaLabel | string | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.31; HarmonyOS: 4.61 | 无障碍访问，（属性）元素的额外描述 |
-| anchor | **Anchor** | 否 | \[0.5, 1\] | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经纬度在标注图标的锚点，默认底边中点	{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点 |
-| callout | **MapMarkerCallout** | 否 | null | Android: 4.51; iOS: 4.51; HarmonyOS: x | 自定义标记点上方的气泡窗口 |
-| label | **MapMarkerLabel** | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 为标记点旁边增加标签 |
-| clusterId | number | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 自定义点聚合簇效果时使用 |
-| customCallout | **MapMarkerCallout** | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 自定义气泡窗口 |
-| joinCluster | boolean | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 是否参与点聚合 |
-
-###### anchor 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| x | number | 是 |
-| y | number | 是 |
-
-###### callout 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 | "" | Android: 4.51; iOS: 4.51 | 文本 |
-| color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Android: 4.51; iOS: 4.51 | 文本颜色 |
-| fontSize | number | 否 | null | Android: 4.51; iOS: 4.51 | 文字大小 |
-| borderRadius | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 边框圆角 |
-| borderWidth | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 边框宽度 |
-| borderColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "transparent" | Android: 4.51; iOS: 4.51 | 边框颜色 |
-| bgColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "#fff" | Android: 4.51; iOS: 4.51 | 背景色 |
-| padding | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 文本边缘留白 |
-| display | string | 否 | "BYCLICK" | Android: 4.51; iOS: 4.51 | 'BYCLICK':点击显示; 'ALWAYS':常显 |
-| textAlign | string | 否 | "left" | Android: 4.51; iOS: 4.51 | 文本对齐方式。 |
-| anchorX | number | 否 | 0.5 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 横向偏移量，向右为正数 |
-| anchorY | number | 否 | 1 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 纵向偏移量，向下为正数 |
-
-####### display 的属性描述
-
-| 合法值 |
-| :- |
-| BYCLICK |
-| ALWAYS |
-
-####### textAlign 的属性描述
-
-| 合法值 |
-| :- |
-| left |
-| center |
-| right |
-
-###### label 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| content | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本 |
-| color | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本颜色 |
-| fontSize | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文字大小 |
-| x | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
-| y | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
-| anchorX | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
-| anchorY | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
-| borderWidth | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框宽度 |
-| borderColor | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框颜色 |
-| borderRadius | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框圆角 |
-| bgColor | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 背景色 |
-| padding | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本边缘留白 |
-| textAlign | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本对齐方式。 |
-| ariaLabel | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 无障碍访问，（属性）元素的额外描述 |
-
-####### textAlign 的属性描述
-
-| 合法值 |
-| :- |
-| left |
-| center |
-| right |
-
-###### customCallout 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 | "" | Android: 4.51; iOS: 4.51 | 文本 |
-| color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Android: 4.51; iOS: 4.51 | 文本颜色 |
-| fontSize | number | 否 | null | Android: 4.51; iOS: 4.51 | 文字大小 |
-| borderRadius | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 边框圆角 |
-| borderWidth | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 边框宽度 |
-| borderColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "transparent" | Android: 4.51; iOS: 4.51 | 边框颜色 |
-| bgColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "#fff" | Android: 4.51; iOS: 4.51 | 背景色 |
-| padding | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 文本边缘留白 |
-| display | string | 否 | "BYCLICK" | Android: 4.51; iOS: 4.51 | 'BYCLICK':点击显示; 'ALWAYS':常显 |
-| textAlign | string | 否 | "left" | Android: 4.51; iOS: 4.51 | 文本对齐方式。 |
-| anchorX | number | 否 | 0.5 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 横向偏移量，向右为正数 |
-| anchorY | number | 否 | 1 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 纵向偏移量，向下为正数 |
-
-####### display 的属性描述
-
-| 合法值 |
-| :- |
-| BYCLICK |
-| ALWAYS |
-
-####### textAlign 的属性描述
-
-| 合法值 |
-| :- |
-| left |
-| center |
-| right |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
@@ -618,18 +490,10 @@ moveAlong
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
-| path | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 移动路径的坐标串，坐标点格式 {longitude, latitude} |
 | duration | number | 否 | 1000 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平滑移动的时间 |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-##### path 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
@@ -718,12 +582,11 @@ removeMarkers
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| markerIds | Array&lt;number&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要被删除的marker的id属性组成的数组 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: any) => void | 否 | null | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
@@ -936,19 +799,11 @@ updateGroundOverlay
 
 ##### MapContextIncludePointsOptions 的属性值 @mapcontextincludepointsoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| points | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要显示在可视区域内的坐标点列表，\[{latitude, longitude}\] |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
-
-#### points 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: any) => void | 否 | null | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
@@ -1120,130 +975,10 @@ updateGroundOverlay
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| markers | Array&lt;**Marker**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 同传入 map 组件的 marker 属性 |
 | clear | boolean | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否先清空地图上所有 marker |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
-
-#### markers 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标记点id，marker点击事件回调会返回此id。建议为每个marker设置上Number类型id，保证更新marker时有更好的性能。最大限制9位数 |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围 -90 ~ 90 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，浮点数，范围 -180 ~ 180 |
-| iconPath | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 显示的图标，项目目录下的图片路径，支持相对路径写法，以'/'开头则表示相对小程序根目录；也支持临时路径 |
-| title | string | 否 | null | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注点名，点击时显示，callout存在时将被忽略 |
-| rotate | number | 否 | 0 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 旋转角度，顺时针旋转的角度，范围 0 ~ 360 |
-| alpha | number | 否 | 1 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注的透明度，范围 0 ~ 1 |
-| width | number | 否 | 默认为图片实际宽度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标宽度 |
-| height | number | 否 | 默认为图片实际高度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标高度 |
-| ariaLabel | string | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.31; HarmonyOS: 4.61 | 无障碍访问，（属性）元素的额外描述 |
-| anchor | **Anchor** | 否 | \[0.5, 1\] | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经纬度在标注图标的锚点，默认底边中点	{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点 |
-| callout | **MapMarkerCallout** | 否 | null | Android: 4.51; iOS: 4.51; HarmonyOS: x | 自定义标记点上方的气泡窗口 |
-| label | **MapMarkerLabel** | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 为标记点旁边增加标签 |
-| clusterId | number | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 自定义点聚合簇效果时使用 |
-| customCallout | **MapMarkerCallout** | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 自定义气泡窗口 |
-| joinCluster | boolean | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 是否参与点聚合 |
-
-##### anchor 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| x | number | 是 |
-| y | number | 是 |
-
-##### callout 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 | "" | Android: 4.51; iOS: 4.51 | 文本 |
-| color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Android: 4.51; iOS: 4.51 | 文本颜色 |
-| fontSize | number | 否 | null | Android: 4.51; iOS: 4.51 | 文字大小 |
-| borderRadius | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 边框圆角 |
-| borderWidth | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 边框宽度 |
-| borderColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "transparent" | Android: 4.51; iOS: 4.51 | 边框颜色 |
-| bgColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "#fff" | Android: 4.51; iOS: 4.51 | 背景色 |
-| padding | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 文本边缘留白 |
-| display | string | 否 | "BYCLICK" | Android: 4.51; iOS: 4.51 | 'BYCLICK':点击显示; 'ALWAYS':常显 |
-| textAlign | string | 否 | "left" | Android: 4.51; iOS: 4.51 | 文本对齐方式。 |
-| anchorX | number | 否 | 0.5 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 横向偏移量，向右为正数 |
-| anchorY | number | 否 | 1 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 纵向偏移量，向下为正数 |
-
-###### display 的属性描述
-
-| 合法值 |
-| :- |
-| BYCLICK |
-| ALWAYS |
-
-###### textAlign 的属性描述
-
-| 合法值 |
-| :- |
-| left |
-| center |
-| right |
-
-##### label 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| content | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本 |
-| color | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本颜色 |
-| fontSize | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文字大小 |
-| x | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
-| y | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
-| anchorX | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
-| anchorY | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
-| borderWidth | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框宽度 |
-| borderColor | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框颜色 |
-| borderRadius | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框圆角 |
-| bgColor | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 背景色 |
-| padding | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本边缘留白 |
-| textAlign | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本对齐方式。 |
-| ariaLabel | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 无障碍访问，（属性）元素的额外描述 |
-
-###### textAlign 的属性描述
-
-| 合法值 |
-| :- |
-| left |
-| center |
-| right |
-
-##### customCallout 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 | "" | Android: 4.51; iOS: 4.51 | 文本 |
-| color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Android: 4.51; iOS: 4.51 | 文本颜色 |
-| fontSize | number | 否 | null | Android: 4.51; iOS: 4.51 | 文字大小 |
-| borderRadius | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 边框圆角 |
-| borderWidth | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 边框宽度 |
-| borderColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "transparent" | Android: 4.51; iOS: 4.51 | 边框颜色 |
-| bgColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "#fff" | Android: 4.51; iOS: 4.51 | 背景色 |
-| padding | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 文本边缘留白 |
-| display | string | 否 | "BYCLICK" | Android: 4.51; iOS: 4.51 | 'BYCLICK':点击显示; 'ALWAYS':常显 |
-| textAlign | string | 否 | "left" | Android: 4.51; iOS: 4.51 | 文本对齐方式。 |
-| anchorX | number | 否 | 0.5 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 横向偏移量，向右为正数 |
-| anchorY | number | 否 | 1 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 纵向偏移量，向下为正数 |
-
-###### display 的属性描述
-
-| 合法值 |
-| :- |
-| BYCLICK |
-| ALWAYS |
-
-###### textAlign 的属性描述
-
-| 合法值 |
-| :- |
-| left |
-| center |
-| right |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
@@ -1272,18 +1007,10 @@ updateGroundOverlay
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
-| path | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 移动路径的坐标串，坐标点格式 {longitude, latitude} |
 | duration | number | 否 | 1000 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平滑移动的时间 |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
-
-#### path 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
@@ -1340,12 +1067,11 @@ updateGroundOverlay
 
 ##### MapContextRemoveMarkersOptions 的属性值 @mapcontextremovemarkersoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| markerIds | Array&lt;number&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要被删除的marker的id属性组成的数组 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: any) => void | 否 | null | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 

@@ -33,7 +33,6 @@
 | url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器 url |
 | filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 要上传文件资源的路径, 支持uni.env |
 | name | string | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容 |
-| files | Array&lt;**UploadFileOptionFiles**&gt; | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 需要上传的文件列表。 |
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | HTTP 请求 Header, header 中不能设置 Referer |
 | formData | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | HTTP 请求中其他额外的 form data |
 | timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
@@ -44,14 +43,6 @@
 | enableProfile | boolean | 否 |  | 微信小程序: 4.41 | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。目前仅 iOS 端支持。<br/> |
 | enableQuic | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>是否开启 Quic/h3 协议（iOS 微信目前使用 gQUIC-Q43；Android 微信在 v8.0.54 前使用 gQUIC-Q43，v8.0.54 开始使用 IETF QUIC，即 h3 协议；PC微信使用 IETF QUIC，即 h3 协议）<br/> |
 | useHighPerformanceMode | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `3.4.1`<br/><br/>使用高性能模式，暂仅支持 Android，默认关闭。该模式下有更优的网络性能表现。<br/> | 
-
-##### files 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| name | string | 否 | "file" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | multipart 提交时，表单的项目名，默认为 file，如果 name 不填或填的值相同，可能导致服务端读取文件时只能读取到一个文件。 |
-| uri | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 要上传文件资源的路径 |
-| file | any | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | 要上传的文件对象 |
 
 #### UploadFileSuccess 的属性值 @uploadfilesuccess-values 
 

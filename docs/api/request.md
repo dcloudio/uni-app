@@ -237,7 +237,6 @@ onHeadersReceived
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
 | statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
 
@@ -267,7 +266,6 @@ offHeadersReceived
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
 | statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
 
@@ -289,7 +287,6 @@ offHeadersReceived
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
 | statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
 
@@ -297,7 +294,6 @@ offHeadersReceived
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
 | statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
  

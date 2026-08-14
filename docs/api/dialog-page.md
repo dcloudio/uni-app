@@ -196,15 +196,15 @@ APP 蒸汽模式注意事项：
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | 微信小程序: x | 自动选择动画效果 |
-| none | 微信小程序: x | 无动画效果 |
-| slide-out-right | 微信小程序: x | 横向向右侧滑出屏幕动画 |
-| slide-out-left | 微信小程序: x | 横向向左侧滑出屏幕动画 |
-| slide-out-top | 微信小程序: x | 竖向向上侧滑出屏幕动画 |
-| slide-out-bottom | 微信小程序: x | 竖向向下侧滑出屏幕动画 |
-| fade-out | 微信小程序: x | 从不透明到透明逐渐隐藏动画 |
-| zoom-in | 微信小程序: x | 从大逐渐缩小关闭动画 |
-| zoom-fade-in | 微信小程序: x | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| auto | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 自动选择动画效果 |
+| none | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 无动画效果 |
+| slide-out-right | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 横向向右侧滑出屏幕动画 |
+| slide-out-left | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 横向向左侧滑出屏幕动画 |
+| slide-out-top | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 竖向向上侧滑出屏幕动画 |
+| slide-out-bottom | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 竖向向下侧滑出屏幕动画 |
+| fade-out | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 从不透明到透明逐渐隐藏动画 |
+| zoom-in | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 从大逐渐缩小关闭动画 |
+| zoom-fade-in | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
 
 #### CloseDialogPageSuccess 的属性值 @closedialogpagesuccess-values 
 

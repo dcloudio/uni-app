@@ -20,7 +20,6 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| thresholds | Array&lt;any&gt; | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 所有阈值 |
 | initialRatio | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 初始的相交比例 |
 | observeAll | boolean | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否同时观测多个参照节点（而非一个） |
 | nativeMode | boolean | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 需要基础库： `3.5.7`<br/><br/>是否使用原生观察器模式。<br/> | 

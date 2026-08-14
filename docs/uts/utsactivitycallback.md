@@ -591,7 +591,7 @@
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数, 包括页面路由地址与方法返回值 |
 | parent | View \| null | 是 | 即将创建视图的父视图 |
-| name | [String](#string-values) | 是 | 视图的标识名 |
+| name | String | 是 | 视图的标识名 |
 | context | Context | 是 | 视图创建时的上下文 |
 | attrs | AttributeSet | 是 | 视图的属性集 | 
 
@@ -603,28 +603,6 @@
 | pageRoute | string | 是 | Android(VDOM): 4.18; Android(Vapor): x | 页面路由地址 |
 | result | any | 否 | Android: 4.18 | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
 | returnResult | any | 否 | Android(VDOM): 5.01; Android(Vapor): x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
-
-##### String 的方法 @string-values 
-
-##### at(index: number): T \| undefined; @at
-at
-Takes an integer value and returns the item at that index,
-allowing for positive and negative integers.
-Negative integers count back from the last item in the array.
-
-##### 参数 
-
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| index | number | 是 | 
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| T \| any |
- 
 
 
 **返回值**
@@ -702,7 +680,7 @@ Negative integers count back from the last item in the array.
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。 |
-| title | [String](#string-values) | 是 | 即将设置的新标题。 |
+| title | String | 是 | 即将设置的新标题。 |
 | color | Int | 是 | 标题的颜色。 | 
 
 #### params 的属性描述
@@ -713,28 +691,6 @@ Negative integers count back from the last item in the array.
 | pageRoute | string | 是 | Android(VDOM): 4.18; Android(Vapor): x | 页面路由地址 |
 | result | any | 否 | Android: 4.18 | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
 | returnResult | any | 否 | Android(VDOM): 5.01; Android(Vapor): x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
-
-##### String 的方法 @string-values 
-
-##### at(index: number): T \| undefined; @at
-at
-Takes an integer value and returns the item at that index,
-allowing for positive and negative integers.
-Negative integers count back from the last item in the array.
-
-##### 参数 
-
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| index | number | 是 | 
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| T \| any |
- 
 
 
 **返回值**
@@ -811,7 +767,7 @@ Negative integers count back from the last item in the array.
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。 |
 | childActivity | Activity | 是 | 标题变更的子Activity。 |
-| title | [String](#string-values) | 是 | 即将设置的新标题。 | 
+| title | String | 是 | 即将设置的新标题。 | 
 
 #### params 的属性描述
 
@@ -821,28 +777,6 @@ Negative integers count back from the last item in the array.
 | pageRoute | string | 是 | Android(VDOM): 4.18; Android(Vapor): x | 页面路由地址 |
 | result | any | 否 | Android: 4.18 | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
 | returnResult | any | 否 | Android(VDOM): 5.01; Android(Vapor): x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
-
-##### String 的方法 @string-values 
-
-##### at(index: number): T \| undefined; @at
-at
-Takes an integer value and returns the item at that index,
-allowing for positive and negative integers.
-Negative integers count back from the last item in the array.
-
-##### 参数 
-
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| index | number | 是 | 
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| T \| any |
- 
 
 
 **返回值**

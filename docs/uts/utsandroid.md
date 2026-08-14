@@ -531,7 +531,91 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| file | File | 是 | 待转换的私有文件 | 
+| file | [File](#file-values) | 是 | 待转换的私有文件 |
+
+#### file 的属性描述
+
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| lastModified | number | 是 |
+| name | string | 是 |
+| webkitRelativePath | string | 是 |
+| size | number | 是 |
+| type | string | 是 | 
+
+##### File 的方法 @file-values 
+
+##### arrayBuffer(): Promise\<ArrayBuffer>; @arraybuffer
+arrayBuffer
+
+
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| Promise\<[ArrayBuffer](/uts/buildin-object-api/arraybuffer.md)> |
+ 
+
+##### bytes(): Promise\<NodeJS.NonSharedUint8Array>; @bytes
+bytes
+
+
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| Promise\<Uint8Array\<ArrayBuffer>> |
+ 
+
+##### slice(start?: number, end?: number, contentType?: string): Blob; @slice
+slice
+
+
+##### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| start | number | 否 |
+| end | number | 否 |
+| contentType | string | 否 | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| Blob |
+ 
+
+##### stream(): ReadableStream\<NodeJS.NonSharedUint8Array>; @stream
+stream
+
+
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| ReadableStream |
+ 
+
+##### text(): Promise\<string>; @text
+text
+
+
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| Promise\<string> |
+ 
 
 
 **返回值**

@@ -50,7 +50,6 @@
 | anonymousCode | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 头条小程序当前设备标识 |
 | authCode | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序授权码 |
 | authErrorScope | any | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录失败的授权类型，key是授权失败的 scope，value 是对应的错误码 |
-| authSucessScope | Array&lt;string&gt; | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录成功的授权 scope |
 | appleInfo | **AppleLoginAppleInfo** | 否 | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | 苹果登录成功返回的信息 |
 
 #### appleInfo 的属性描述
