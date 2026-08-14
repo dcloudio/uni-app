@@ -11,6 +11,7 @@ import {
   type GenerateAppAndroidJavaScriptRuntimeCodeFrameOptions,
   type GenerateAppIOSJavaScriptRuntimeCodeFrameOptions,
   type GenerateJavaScriptRuntimeCodeFrameOptions,
+  isAppAndroidJavaScriptRuntimeStacktrace,
   parseUTSJavaScriptRuntimeStacktrace,
 } from './js'
 import {
@@ -143,7 +144,7 @@ export function parseUTSRuntimeStacktrace(
 }
 
 function isAndroidJavaScriptRuntimeStacktrace(stacktrace: string) {
-  return /(?:^|\n).*?@(?:.*?\/www\/)?[^\s/]+\.js:\d+:\d+/.test(stacktrace)
+  return isAppAndroidJavaScriptRuntimeStacktrace(stacktrace)
 }
 
 export function parseUTSSyntaxError(
