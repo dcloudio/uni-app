@@ -7,10 +7,7 @@ import {
   resolvePinia,
   resolvePiniaDependencies,
   resolveProjectPinia,
-  resolveProjectVueI18n,
   resolveUTSModule,
-  resolveVueI18n,
-  resolveVueI18nDependencies,
 } from '@dcloudio/uni-cli-shared'
 
 import type { VitePluginUniResolvedOptions } from '../..'
@@ -47,11 +44,9 @@ export function uniResolveIdPlugin(
 ): Plugin {
   const resolveCache: Record<string, string> = {}
   const isX = process.env.UNI_APP_X === 'true'
-  const useProjectVueI18n = isX && resolveProjectVueI18n() !== undefined
   const useProjectPinia = isX && resolveProjectPinia() !== undefined
   // 内部会先判断项目能否解析 vue-i18n，仅无法解析时才返回内置依赖别名。
   const builtInDependencies = {
-    ...resolveVueI18nDependencies(),
     // 内部会先判断项目能否解析 pinia，仅无法解析时才返回内置依赖别名。
     ...resolvePiniaDependencies(),
   }
@@ -72,12 +67,6 @@ export function uniResolveIdPlugin(
       if (cache) {
         // debugResolve('cache', id, cache)
         return cache
-      }
-      if (isX && id === 'vue-i18n') {
-        if (useProjectVueI18n) {
-          return
-        }
-        return (resolveCache[id] = resolveVueI18n())
       }
       if (isX && id === 'pinia') {
         if (useProjectPinia) {
