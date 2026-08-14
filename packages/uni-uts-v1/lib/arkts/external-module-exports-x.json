@@ -233,6 +233,9 @@
       "OnPushMessageCallbackResult"
     ],
     [
+      "OnPushMessageOptions"
+    ],
+    [
       "OnPushMessageType"
     ],
     [

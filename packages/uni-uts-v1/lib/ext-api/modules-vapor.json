@@ -2245,7 +2245,7 @@
           "js": false,
           "x-js": false,
           "kotlin": "dom2",
-          "swift": false,
+          "swift": "dom2",
           "arkts": false
         }
       }
