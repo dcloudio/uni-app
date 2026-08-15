@@ -7,13 +7,15 @@
 `uni-app`分 `uni-app` 和 `uni-app x`。
 
 - uni-app：基于前端技术栈，App引擎采用与小程序相同的技术架构，逻辑层使用js，渲染层使用web-view。
-- uni-app x：是新一代 uni-app，基于uts语言和uvue原生渲染引擎。
+- uni-app x：是新一代 uni-app，拥有比原生应用更优秀的渲染性能。
 
-uts是一门类ts的、跨平台的语言。
+uni-app x 蒸汽模式支持使用js/ts/uts开发页面。uts语言主要用于原生插件扩展。
 
-uts在Android平台编译为kotlin、在iOS平台编译为swift、在鸿蒙next平台上编译为ArkTS、在Web和小程序平台编译为js。
+uts是一门类ts的、跨平台的语言。uts在Android平台编译为kotlin、在iOS平台编译为swift、在鸿蒙next平台上编译为ArkTS、在Web和小程序平台编译为js。
 
 `uni-app`在手，做啥都不愁。即使不跨端，`uni-app`也是更好的小程序开发框架（[详见](https://ask.dcloud.net.cn/article/35947)）、更好的App跨平台框架、更方便的Web开发框架。不管领导安排什么样的项目，你都可以快速交付，不需要转换开发思维、不需要更改开发习惯。
+
+`uni-app`是一个AI友好的技术框架，使用AI擅长的vue、js/ts、css即可完成应用开发。同时DCloud公司提供了uni-agent，可以更方便的使用AI开发`uni-app`
 
 ## 快速体验
 
