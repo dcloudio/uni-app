@@ -347,29 +347,50 @@ class UploadController {
 		if (path.startsWith("file://")) {
 			path = path.replace("file://", "");
 		}
+
+		if (this.isAssetFile(path) || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+			return true;
+		}
+
 		const context = UTSAndroid.getAppContext()!;
 		let cache = context.getExternalCacheDir();
-		let sPrivateExternalDir = ""
+		let privateExternalDir : File | null = null
 		if (cache == null) {
-			sPrivateExternalDir = Environment.getExternalStorageDirectory().getPath() + "/Android/data/" + context.getPackageName();
+			privateExternalDir = new File(Environment.getExternalStorageDirectory().getPath() + "/Android/data/" + context.getPackageName());
 		} else {
-			sPrivateExternalDir = cache.getParent();
+			privateExternalDir = cache.getParentFile();
 		}
-		const sPrivateDir = context.getFilesDir().getParent();
 
-		if (sPrivateExternalDir.startsWith("/") && !path.startsWith("/")) {
+		if (!path.startsWith("/")) {
 			path = "/" + path;
 		}
 
-		if ((path.contains(sPrivateDir) || path.contains(sPrivateExternalDir))//表示应用私有路径
-			|| this.isAssetFile(path) //表示apk的assets路径文件
-			|| Build.VERSION.SDK_INT < Build.VERSION_CODES.Q//表示当前手机属于可正常访问路径系统
-		) {
-			//文件路径在私有路径下或手机系统版符合非分区存储逻辑
+		const targetFile = new File(path);
+		const privateDir = context.getFilesDir().getParentFile();
+		if (privateDir != null && this.isDescendant(privateDir, targetFile)) {
+			return true;
+		}
+
+		if (privateExternalDir != null && this.isDescendant(privateExternalDir, targetFile)) {
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * 判断两个文件的上下级关系
+	 */
+	private isDescendant(parent : File, child : File) : boolean {
+		if (child.getCanonicalPath() == parent.getCanonicalPath()) {
+			return true;
+		}
+		let parentFile = child.getParentFile();
+
+		if (parentFile == null) {
+			return false;
+		}
+		return this.isDescendant(parent, parentFile);
 	}
 
 	private isAssetFile(filePath : string) : boolean {

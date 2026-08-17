@@ -25,18 +25,14 @@ export interface Uni {
      *		}
      *	});
      * ```
-     * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-location.html
-     * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-location.html
-     * @tutorial_uni_app http://uniapp.dcloud.io/api/location/location?id=getlocation
+     * @tutorial http://uniapp.dcloud.io/api/location/location?id=getlocation
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -44,7 +40,7 @@ export interface Uni {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -104,12 +100,10 @@ export interface Uni {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -117,7 +111,7 @@ export interface Uni {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -177,12 +171,10 @@ export interface Uni {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -190,7 +182,7 @@ export interface Uni {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -248,12 +240,10 @@ export interface Uni {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -261,7 +251,7 @@ export interface Uni {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -319,12 +309,10 @@ export interface Uni {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -332,7 +320,7 @@ export interface Uni {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -392,12 +380,10 @@ export interface Uni {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -405,7 +391,7 @@ export interface Uni {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -463,12 +449,10 @@ export interface Uni {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -476,7 +460,7 @@ export interface Uni {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -534,12 +518,10 @@ export interface Uni {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -547,7 +529,7 @@ export interface Uni {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -613,12 +595,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -626,7 +606,7 @@ export type LocationErrorCode =
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
      *    "web": {
@@ -642,12 +622,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -655,7 +633,7 @@ export type LocationErrorCode =
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
      *    "web": {
@@ -671,12 +649,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -684,7 +660,7 @@ export type LocationErrorCode =
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
      *    "web": {
@@ -699,12 +675,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -712,7 +686,7 @@ export type LocationErrorCode =
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
      *    "web": {
@@ -728,12 +702,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -741,7 +713,7 @@ export type LocationErrorCode =
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
      *    "web": {
@@ -757,12 +729,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -770,7 +740,7 @@ export type LocationErrorCode =
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
      *    "web": {
@@ -786,12 +756,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -799,7 +767,7 @@ export type LocationErrorCode =
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
      *    "web": {
@@ -814,12 +782,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
@@ -827,7 +793,7 @@ export type LocationErrorCode =
      *            "osVer": "5.0.0(11)",
      *            "uniVer": "4.25",
      *            "unixVer": "4.81",
-     *            "unixvVer": "5.0"
+     *            "unixVaporVer": "5.0"
      *        }
      *    }
      * }
@@ -838,12 +804,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
@@ -851,7 +815,7 @@ export type LocationErrorCode =
      *            "osVer": "5.0.0(11)",
      *            "uniVer": "4.25",
      *            "unixVer": "4.81",
-     *            "unixvVer": "5.0"
+     *            "unixVaporVer": "5.0"
      *        }
      *    }
      * }
@@ -862,12 +826,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        }
@@ -880,12 +842,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
@@ -893,7 +853,7 @@ export type LocationErrorCode =
      *            "osVer": "5.0.0(11)",
      *            "uniVer": "4.25",
      *            "unixVer": "4.81",
-     *            "unixvVer": "5.0"
+     *            "unixVaporVer": "5.0"
      *        }
      *    }
      * }
@@ -904,12 +864,10 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
@@ -917,7 +875,7 @@ export type LocationErrorCode =
      *            "osVer": "5.0.0(11)",
      *            "uniVer": "4.25",
      *            "unixVer": "4.81",
-     *            "unixvVer": "5.0"
+     *            "unixVaporVer": "5.0"
      *        }
      *    }
      * }
@@ -928,17 +886,14 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "harmony": {
-     *            "osVer": "x",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        }
@@ -951,17 +906,14 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "harmony": {
-     *            "osVer": "x",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        }
@@ -974,17 +926,14 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "harmony": {
-     *            "osVer": "x",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        }
@@ -997,17 +946,14 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "harmony": {
-     *            "osVer": "x",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        }
@@ -1020,17 +966,14 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "harmony": {
-     *            "osVer": "x",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        }
@@ -1043,17 +986,14 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "harmony": {
-     *            "osVer": "x",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        }
@@ -1066,17 +1006,14 @@ export type LocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "harmony": {
-     *            "osVer": "x",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        }
@@ -1089,17 +1026,14 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
      *        "harmony": {
-     *            "osVer": "x",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        }
@@ -1112,17 +1046,14 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
      *        "harmony": {
-     *            "osVer": "x",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        }
@@ -1149,12 +1080,10 @@ export type GetLocationSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -1162,7 +1091,7 @@ export type GetLocationSuccess = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
      *    "web": {
@@ -1178,12 +1107,10 @@ export type GetLocationSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -1191,7 +1118,7 @@ export type GetLocationSuccess = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
      *    "web": {
@@ -1207,12 +1134,10 @@ export type GetLocationSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -1220,7 +1145,7 @@ export type GetLocationSuccess = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -1277,12 +1202,10 @@ export type GetLocationSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -1290,7 +1213,7 @@ export type GetLocationSuccess = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -1348,12 +1271,10 @@ export type GetLocationSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -1361,7 +1282,7 @@ export type GetLocationSuccess = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -1419,12 +1340,10 @@ export type GetLocationSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -1432,7 +1351,7 @@ export type GetLocationSuccess = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.76",
      *      "unixVer": "4.81",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -1490,17 +1409,14 @@ export type GetLocationSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
      *    "harmony": {
-     *      "osVer": "x",
      *      "uniVer": "x",
      *      "unixVer": "x"
      *    }
@@ -1560,17 +1476,14 @@ export type GetLocationSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
      *    "harmony": {
-     *      "osVer": "x",
      *      "uniVer": "x",
      *      "unixVer": "x"
      *    }
@@ -1638,12 +1551,10 @@ export type GetLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.25"
      *        },
@@ -1651,7 +1562,7 @@ export type GetLocationOptions = {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -1709,12 +1620,10 @@ export type GetLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -1722,7 +1631,7 @@ export type GetLocationOptions = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.81",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -1779,12 +1688,10 @@ export type GetLocationOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
      *      "unixVer": "3.9.0"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.11"
      *    }
@@ -1843,12 +1750,10 @@ export type GetLocationOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
      *      "unixVer": "3.9.0"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.11"
      *    }
@@ -1909,12 +1814,10 @@ export type GetLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -1922,7 +1825,7 @@ export type GetLocationOptions = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.81",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -1982,17 +1885,14 @@ export type GetLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
      *    "harmony": {
-     *      "osVer": "x",
      *      "uniVer": "x",
      *      "unixVer": "x"
      *    }
@@ -2052,12 +1952,10 @@ export type GetLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -2065,7 +1963,7 @@ export type GetLocationOptions = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.81",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -2124,12 +2022,10 @@ export type GetLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -2137,7 +2033,7 @@ export type GetLocationOptions = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.81",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -2194,12 +2090,10 @@ export type GetLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -2207,7 +2101,7 @@ export type GetLocationOptions = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.81",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -2264,12 +2158,10 @@ export type GetLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -2277,7 +2169,7 @@ export type GetLocationOptions = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.81",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -2334,12 +2226,10 @@ export type GetLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "√",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "√",
      *            "unixVer": "4.11"
      *        },
@@ -2347,7 +2237,7 @@ export type GetLocationOptions = {
      *      "osVer": "5.0.0(11)",
      *      "uniVer": "4.25",
      *      "unixVer": "4.81",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *    },
          *  "mp": {
@@ -2413,12 +2303,10 @@ export type StartLocationUpdateOptionsType =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -2426,7 +2314,7 @@ export type StartLocationUpdateOptionsType =
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -2484,12 +2372,10 @@ export type StartLocationUpdateOptionsType =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -2497,7 +2383,7 @@ export type StartLocationUpdateOptionsType =
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -2557,12 +2443,10 @@ export type StartLocationUpdateOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -2570,7 +2454,7 @@ export type StartLocationUpdateOptions = {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -2628,12 +2512,10 @@ export type StartLocationUpdateOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -2641,7 +2523,7 @@ export type StartLocationUpdateOptions = {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -2699,12 +2581,10 @@ export type StartLocationUpdateOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -2712,7 +2592,7 @@ export type StartLocationUpdateOptions = {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -2770,12 +2650,10 @@ export type StartLocationUpdateOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -2783,7 +2661,7 @@ export type StartLocationUpdateOptions = {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -2841,12 +2719,10 @@ export type StartLocationUpdateOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -2854,7 +2730,7 @@ export type StartLocationUpdateOptions = {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -2953,12 +2829,10 @@ export type StartLocationUpdateBackgroundOptionsType =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -2966,7 +2840,7 @@ export type StartLocationUpdateBackgroundOptionsType =
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -3024,12 +2898,10 @@ export type StartLocationUpdateBackgroundOptionsType =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -3037,7 +2909,7 @@ export type StartLocationUpdateBackgroundOptionsType =
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -3097,12 +2969,10 @@ export type StartLocationUpdateBackgroundOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -3110,7 +2980,7 @@ export type StartLocationUpdateBackgroundOptions = {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -3168,12 +3038,10 @@ export type StartLocationUpdateBackgroundOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -3181,7 +3049,7 @@ export type StartLocationUpdateBackgroundOptions = {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -3239,12 +3107,10 @@ export type StartLocationUpdateBackgroundOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -3252,7 +3118,7 @@ export type StartLocationUpdateBackgroundOptions = {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -3310,12 +3176,10 @@ export type StartLocationUpdateBackgroundOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -3323,7 +3187,7 @@ export type StartLocationUpdateBackgroundOptions = {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {
@@ -3381,12 +3245,10 @@ export type StartLocationUpdateBackgroundOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.81"
 	 *        },
@@ -3394,7 +3256,7 @@ export type StartLocationUpdateBackgroundOptions = {
      *      "osVer": "5.0.0(11)",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.81",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *    },
 	     *  "mp": {

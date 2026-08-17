@@ -5,12 +5,10 @@ export type SocketDataOptions =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "x",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "x"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "x",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "x"
 	 *        }
@@ -23,12 +21,10 @@ export type SocketDataOptions =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "x",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "x"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "x",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "x"
 	 *        }

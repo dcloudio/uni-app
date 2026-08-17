@@ -8,7 +8,6 @@ export type RouteErrorCode = 4
  *
  * @tutorial http://uniapp.dcloud.io/api/router.html#event-channel
  */
-export type EventChannel = {}
 
 /**
  * 打开 dialogPage 成功回调参数
@@ -16,23 +15,22 @@ export type EventChannel = {}
   {
     "app": {
       "android": {
-        "osVer": "5.0",
-        "uniVer": "x",
-        "uniUtsPlugin": "x",
-        "unixVer": "4.31"
-      },
-      "ios": {
-        "osVer": "12.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.31",
-        "unixUtsPlugin": "4.31"
+        "unixVaporVer": "5.21"
+      },
+      "ios": {
+        "uniVer": "x",
+        "uniUtsPlugin": "x",
+        "unixVer": "4.31",
+        "unixUtsPlugin": "4.31",
+        "unixVaporVer": "5.11"
       },
       "harmony": {
-        "osVer": "3.0",
         "uniVer": "x",
         "unixVer": "4.61",
-        "unixvVer": "5.0"
+        "unixVaporVer": "5.0"
       }
     },
     "mp": {
@@ -98,23 +96,22 @@ type OpenDialogPageCompleteCallback = (result: OpenDialogPageComplete) => void
   {
     "app": {
       "android": {
-        "osVer": "5.0",
-        "uniVer": "x",
-        "uniUtsPlugin": "x",
-        "unixVer": "4.31"
-      },
-      "ios": {
-        "osVer": "12.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.31",
-        "unixUtsPlugin": "4.31"
+        "unixVaporVer": "5.21"
+      },
+      "ios": {
+        "uniVer": "x",
+        "uniUtsPlugin": "x",
+        "unixVer": "4.31",
+        "unixUtsPlugin": "4.31",
+        "unixVaporVer": "5.11"
       },
       "harmony": {
-        "osVer": "3.0",
         "uniVer": "x",
         "unixVer": "4.61",
-        "unixvVer": "5.0"
+        "unixVaporVer": "5.0"
       }
     },
     "mp": {
@@ -172,23 +169,22 @@ export type OpenDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -248,23 +244,22 @@ export type OpenDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -358,23 +353,22 @@ export type OpenDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -433,23 +427,22 @@ export type OpenDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -508,23 +501,22 @@ export type OpenDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -584,23 +576,22 @@ export type OpenDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.41"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.41",
-          "unixUtsPlugin": "4.41"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.41",
+          "unixUtsPlugin": "4.41",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -659,23 +650,22 @@ export type OpenDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -733,23 +723,22 @@ export type OpenDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -807,23 +796,22 @@ export type OpenDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -885,23 +873,22 @@ type CloseDialogPageSuccessCallback = (result: CloseDialogPageSuccess) => void
   {
     "app": {
       "android": {
-        "osVer": "5.0",
-        "uniVer": "x",
-        "uniUtsPlugin": "x",
-        "unixVer": "4.31"
-      },
-      "ios": {
-        "osVer": "12.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.31",
-        "unixUtsPlugin": "4.31"
+        "unixVaporVer": "5.21"
+      },
+      "ios": {
+        "uniVer": "x",
+        "uniUtsPlugin": "x",
+        "unixVer": "4.31",
+        "unixUtsPlugin": "4.31",
+        "unixVaporVer": "5.11"
       },
       "harmony": {
-        "osVer": "3.0",
         "uniVer": "x",
         "unixVer": "4.61",
-        "unixvVer": "5.0"
+        "unixVaporVer": "5.0"
       }
     },
     "mp": {
@@ -964,23 +951,22 @@ type CloseDialogPageCompleteCallback = (result: CloseDialogPageComplete) => void
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -1038,23 +1024,22 @@ export type CloseDialogPageOptions = {
    * {
    *   "app": {
    *     "android": {
-   *       "osVer": "5.0",
-   *       "uniVer": "x",
-   *       "uniUtsPlugin": "x",
-   *       "unixVer": "4.31"
-   *     },
-   *     "ios": {
-   *       "osVer": "12.0",
    *       "uniVer": "x",
    *       "uniUtsPlugin": "x",
    *       "unixVer": "4.31",
-   *       "unixUtsPlugin": "4.31"
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "uniUtsPlugin": "x",
+   *       "unixVer": "4.31",
+   *       "unixUtsPlugin": "4.31",
+   *       "unixVaporVer": "5.11"
    *     },
    *     "harmony": {
-   *       "osVer": "3.0",
    *       "uniVer": "x",
    *       "unixVer": "4.61",
-   *       "unixvVer": "5.0"
+   *       "unixVaporVer": "5.0"
    *     }
    *   },
    *   "mp": {
@@ -1114,23 +1099,22 @@ export type CloseDialogPageOptions = {
    * {
    *   "app": {
    *     "android": {
-   *       "osVer": "5.0",
-   *       "uniVer": "x",
-   *       "uniUtsPlugin": "x",
-   *       "unixVer": "4.31"
-   *     },
-   *     "ios": {
-   *       "osVer": "12.0",
    *       "uniVer": "x",
    *       "uniUtsPlugin": "x",
    *       "unixVer": "4.31",
-   *       "unixUtsPlugin": "4.31"
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "uniUtsPlugin": "x",
+   *       "unixVer": "4.31",
+   *       "unixUtsPlugin": "4.31",
+   *       "unixVaporVer": "5.11"
    *     },
    *     "harmony": {
-   *       "osVer": "3.0",
    *       "uniVer": "x",
    *       "unixVer": "4.61",
-   *       "unixvVer": "5.0"
+   *       "unixVaporVer": "5.0"
    *     }
    *   },
    *   "mp": {
@@ -1188,23 +1172,22 @@ export type CloseDialogPageOptions = {
    * {
    * "app": {
    *     "android": {
-   *       "osVer": "5.0",
    *       "uniVer": "x",
    *       "uniUtsPlugin": "x",
-   *     "unixVer": "4.31"
+   *     "unixVer": "4.31",
+   *     "unixVaporVer": "5.21"
    *   },
    *   "ios": {
-   *     "osVer": "12.0",
    *     "uniVer": "x",
    *     "uniUtsPlugin": "x",
    *     "unixVer": "4.31",
-   *     "unixUtsPlugin": "4.31"
+   *     "unixUtsPlugin": "4.31",
+   *     "unixVaporVer": "5.11"
    *   },
    *   "harmony": {
-   *     "osVer": "3.0",
    *     "uniVer": "x",
    *     "unixVer": "4.61",
-   *     "unixvVer": "5.0"
+   *     "unixVaporVer": "5.0"
    *   }
    * },
    * "mp": {
@@ -1262,23 +1245,22 @@ export type CloseDialogPageOptions = {
    * {
    * "app": {
    *     "android": {
-   *       "osVer": "5.0",
    *       "uniVer": "x",
    *       "uniUtsPlugin": "x",
-   *     "unixVer": "4.31"
+   *     "unixVer": "4.31",
+   *     "unixVaporVer": "5.21"
    *   },
    *   "ios": {
-   *     "osVer": "12.0",
    *     "uniVer": "x",
    *     "uniUtsPlugin": "x",
    *     "unixVer": "4.31",
-   *     "unixUtsPlugin": "4.31"
+   *     "unixUtsPlugin": "4.31",
+   *     "unixVaporVer": "5.11"
    *   },
    *   "harmony": {
-   *     "osVer": "3.0",
    *     "uniVer": "x",
    *     "unixVer": "4.61",
-   *     "unixvVer": "5.0"
+   *     "unixVaporVer": "5.0"
    *   }
    * },
    * "mp": {
@@ -1336,23 +1318,22 @@ export type CloseDialogPageOptions = {
    * {
    * "app": {
    *     "android": {
-   *       "osVer": "5.0",
    *       "uniVer": "x",
    *       "uniUtsPlugin": "x",
-   *     "unixVer": "4.31"
+   *     "unixVer": "4.31",
+   *     "unixVaporVer": "5.21"
    *   },
    *   "ios": {
-   *     "osVer": "12.0",
    *     "uniVer": "x",
    *     "uniUtsPlugin": "x",
    *     "unixVer": "4.31",
-   *     "unixUtsPlugin": "4.31"
+   *     "unixUtsPlugin": "4.31",
+   *     "unixVaporVer": "5.11"
    *   },
    *   "harmony": {
-   *     "osVer": "3.0",
    *     "uniVer": "x",
    *     "unixVer": "4.61",
-   *     "unixvVer": "5.0"
+   *     "unixVaporVer": "5.0"
    *   }
    * },
    * "mp": {
@@ -1410,23 +1391,22 @@ export type CloseDialogPageOptions = {
    * {
    * "app": {
    *     "android": {
-   *       "osVer": "5.0",
    *       "uniVer": "x",
    *       "uniUtsPlugin": "x",
-   *     "unixVer": "4.31"
+   *     "unixVer": "4.31",
+   *     "unixVaporVer": "5.21"
    *   },
    *   "ios": {
-   *     "osVer": "12.0",
    *     "uniVer": "x",
    *     "uniUtsPlugin": "x",
    *     "unixVer": "4.31",
-   *     "unixUtsPlugin": "4.31"
+   *     "unixUtsPlugin": "4.31",
+   *     "unixVaporVer": "5.11"
    *   },
    *   "harmony": {
-   *     "osVer": "3.0",
    *     "uniVer": "x",
    *     "unixVer": "4.61",
-   *     "unixvVer": "5.0"
+   *     "unixVaporVer": "5.0"
    *   }
    * },
    * "mp": {
@@ -1484,23 +1464,22 @@ export type CloseDialogPageOptions = {
    * {
    * "app": {
    *     "android": {
-   *       "osVer": "5.0",
    *       "uniVer": "x",
    *       "uniUtsPlugin": "x",
-   *     "unixVer": "4.31"
+   *     "unixVer": "4.31",
+   *     "unixVaporVer": "5.21"
    *   },
    *   "ios": {
-   *     "osVer": "12.0",
    *     "uniVer": "x",
    *     "uniUtsPlugin": "x",
    *     "unixVer": "4.31",
-   *     "unixUtsPlugin": "4.31"
+   *     "unixUtsPlugin": "4.31",
+   *     "unixVaporVer": "5.11"
    *   },
    *   "harmony": {
-   *     "osVer": "3.0",
    *     "uniVer": "x",
    *     "unixVer": "4.61",
-   *     "unixvVer": "5.0"
+   *     "unixVaporVer": "5.0"
    *   }
    * },
    * "mp": {
@@ -1558,23 +1537,22 @@ export type CloseDialogPageOptions = {
    * {
    * "app": {
    *     "android": {
-   *       "osVer": "5.0",
    *       "uniVer": "x",
    *       "uniUtsPlugin": "x",
-   *     "unixVer": "4.31"
+   *     "unixVer": "4.31",
+   *     "unixVaporVer": "5.21"
    *   },
    *   "ios": {
-   *     "osVer": "12.0",
    *     "uniVer": "x",
    *     "uniUtsPlugin": "x",
    *     "unixVer": "4.31",
-   *     "unixUtsPlugin": "4.31"
+   *     "unixUtsPlugin": "4.31",
+   *     "unixVaporVer": "5.11"
    *   },
    *   "harmony": {
-   *     "osVer": "3.0",
    *     "uniVer": "x",
    *     "unixVer": "4.61",
-   *     "unixvVer": "5.0"
+   *     "unixVaporVer": "5.0"
    *   }
    * },
    * "mp": {
@@ -1632,23 +1610,22 @@ export type CloseDialogPageOptions = {
    * {
    * "app": {
    *     "android": {
-   *       "osVer": "5.0",
    *       "uniVer": "x",
    *       "uniUtsPlugin": "x",
-   *     "unixVer": "4.31"
+   *     "unixVer": "4.31",
+   *     "unixVaporVer": "5.21"
    *   },
    *   "ios": {
-   *     "osVer": "12.0",
    *     "uniVer": "x",
    *     "uniUtsPlugin": "x",
    *     "unixVer": "4.31",
-   *     "unixUtsPlugin": "4.31"
+   *     "unixUtsPlugin": "4.31",
+   *     "unixVaporVer": "5.11"
    *   },
    *   "harmony": {
-   *     "osVer": "3.0",
    *     "uniVer": "x",
    *     "unixVer": "4.61",
-   *     "unixvVer": "5.0"
+   *     "unixVaporVer": "5.0"
    *   }
    * },
    * "mp": {
@@ -1706,23 +1683,22 @@ export type CloseDialogPageOptions = {
    * {
    * "app": {
    *     "android": {
-   *       "osVer": "5.0",
    *       "uniVer": "x",
    *       "uniUtsPlugin": "x",
-   *     "unixVer": "4.31"
+   *     "unixVer": "4.31",
+   *     "unixVaporVer": "5.21"
    *   },
    *   "ios": {
-   *     "osVer": "12.0",
    *     "uniVer": "x",
    *     "uniUtsPlugin": "x",
    *     "unixVer": "4.31",
-   *     "unixUtsPlugin": "4.31"
+   *     "unixUtsPlugin": "4.31",
+   *     "unixVaporVer": "5.11"
    *   },
    *   "harmony": {
-   *     "osVer": "3.0",
    *     "uniVer": "x",
    *     "unixVer": "4.61",
-   *     "unixvVer": "5.0"
+   *     "unixVaporVer": "5.0"
    *   }
    * },
    * "mp": {
@@ -1780,23 +1756,22 @@ export type CloseDialogPageOptions = {
    * {
    * "app": {
    *     "android": {
-   *       "osVer": "5.0",
    *       "uniVer": "x",
    *       "uniUtsPlugin": "x",
-   *     "unixVer": "4.31"
+   *     "unixVer": "4.31",
+   *     "unixVaporVer": "5.21"
    *   },
    *   "ios": {
-   *     "osVer": "12.0",
    *     "uniVer": "x",
    *     "uniUtsPlugin": "x",
    *     "unixVer": "4.31",
-   *     "unixUtsPlugin": "4.31"
+   *     "unixUtsPlugin": "4.31",
+   *     "unixVaporVer": "5.11"
    *   },
    *   "harmony": {
-   *     "osVer": "3.0",
    *     "uniVer": "x",
    *     "unixVer": "4.61",
-   *     "unixvVer": "5.0"
+   *     "unixVaporVer": "5.0"
    *   }
    * },
    * "mp": {
@@ -1854,23 +1829,22 @@ export type CloseDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -1929,23 +1903,22 @@ export type CloseDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -2003,23 +1976,22 @@ export type CloseDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -2077,23 +2049,22 @@ export type CloseDialogPageOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -2156,23 +2127,22 @@ export interface Uni {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -2233,23 +2203,22 @@ export interface Uni {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
-          "uniVer": "x",
-          "uniUtsPlugin": "x",
-          "unixVer": "4.31"
-        },
-        "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.31",
-          "unixUtsPlugin": "4.31"
+          "unixVaporVer": "5.21"
+        },
+        "ios": {
+          "uniVer": "x",
+          "uniUtsPlugin": "x",
+          "unixVer": "4.31",
+          "unixUtsPlugin": "4.31",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "x",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {

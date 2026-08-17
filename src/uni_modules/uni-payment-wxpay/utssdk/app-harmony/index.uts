@@ -1,10 +1,7 @@
 import * as wxopensdk from '@tencent/wechat_open_sdk';
 import { PayReq } from '@tencent/wechat_open_sdk';
 import { AbilityConstant, common, Want } from '@kit.AbilityKit';
-
-interface UniPaymentWxpayProvider extends UniPaymentProvider {
-    isWeChatInstalled: boolean;
-}
+import { UniPaymentWxpayProvider } from '../interface.uts';
 
 type OnWXReq = (req: wxopensdk.BaseReq) => void;
 type OnWXResp = (resp: wxopensdk.BaseResp) => void;
@@ -48,6 +45,9 @@ class WXApiEventHandlerImpl implements wxopensdk.WXApiEventHandler {
     }
 
     onResp(resp: wxopensdk.BaseResp): void {
+        if (!(resp instanceof wxopensdk.PayResp)) {
+          return;
+        }
         this.onRespCallbacks.forEach((on) => {
             on(resp);
         });
@@ -64,6 +64,7 @@ class UniPaymentWxpayProviderImpl implements UniPaymentWxpayProvider {
     id: string = "wxpay";
     description: string = "微信支付";
     isWeChatInstalled: boolean = false;
+    isAppExist: boolean = false;
     onWXResp: OnWXResp = (resp: wxopensdk.BaseResp) => {
 
     }
@@ -71,6 +72,7 @@ class UniPaymentWxpayProviderImpl implements UniPaymentWxpayProvider {
     constructor() {
       try{
         this.isWeChatInstalled = WXApi.isWXAppInstalled()
+        this.isAppExist = this.isWeChatInstalled
       } catch{ }
     }
 

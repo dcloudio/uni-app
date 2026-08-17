@@ -1,5 +1,3 @@
-import PageNode from "io.dcloud.uniapp.dom.node.PageNode"
-import INodeData from "io.dcloud.uniapp.interfaces.INodeData"
 import View from "android.view.View"
 import { CameraImpl, CameraManager } from "uts.sdk.modules.uniCamera"
 import AppCompatActivity from "androidx.appcompat.app.AppCompatActivity"
@@ -8,7 +6,12 @@ import ByteBuffer from 'java.nio.ByteBuffer'
 import CompressVideoSuccess from "uts.sdk.modules.DCloudUniMedia.CompressVideoSuccess"
 import { CameraContextFailImpl, getErrcode } from "../unierror.uts"
 import ImageProxy from "androidx.camera.core.ImageProxy";
+
+// #ifndef VUE3-VAPOR
 import { getCurrentPage } from "@dcloudio/uni-runtime";
+import PageNode from "io.dcloud.uniapp.dom.node.PageNode"
+import INodeData from "io.dcloud.uniapp.interfaces.INodeData"
+// #endif
 
 let androidScanner: AndroidScanner | null = null
 
@@ -22,21 +25,26 @@ export function getAndroidScanner(): AndroidScanner | null {
 
 export class UniCameraElement
 	extends UniViewElementImpl
-	implements UniBuiltInComponent {
-
+// #ifndef VUE3-VAPOR
+	implements UniBuiltInComponent
+// #endif
+{
 	cameraImpl: CameraImpl | null = null
 
+	// #ifndef VUE3-VAPOR
 	constructor(data: INodeData, pageNode: PageNode) {
 		super(data, pageNode);
 	}
+	// #endif
 
-	override get tagName(): string {
-		return "camera";
+	// #ifdef VUE3-VAPOR
+	constructor() {
+		super()
 	}
+	// #endif
 
-	override get nodeName(): string {
-		return this.tagName;
-	}
+	override tagName: string = 'camera'
+	override nodeName: string = 'camera'
 
 	setCamera(cameraImpl: CameraImpl) {
 		this.cameraImpl = cameraImpl
@@ -240,6 +248,17 @@ export class UniCameraElement
 	}
 }
 
+function resolveCameraElement(element: UniElement | null): UniCameraElement | null {
+	let parent = element?.parentElement
+	while (parent != null) {
+		if (parent instanceof UniCameraElement) {
+			return parent as UniCameraElement
+		}
+		parent = parent.parentElement
+	}
+	return null
+}
+
 export class UTSAcvitiyLifeCycleCallback extends UniActivityLifeCycleCallback {
 	private cameraInstance: CameraInstance | null = null
 	constructor(cameraInstance: CameraInstance) {
@@ -252,7 +271,7 @@ export class UTSAcvitiyLifeCycleCallback extends UniActivityLifeCycleCallback {
 		//现在要是恢复 就得存储数据, 而数据已经存储到了相机示例内，所以直接打开就行了。
 		// this.cameraInstance?.resume()
 	}
-	
+
 	override onPause(params: UniActivityParams) {
 		// this.cameraInstance?.pause()
 	}
@@ -280,7 +299,7 @@ export class CameraInstance {
 		const pages = getCurrentPages()
 		const page = pages[pages.length - 1]
 		UTSAndroid.onActivityCallback(this.acvitiyLifeCycleCallback!, page.route);
-		(this.$element.parentElement as UniCameraElement).setCamera(this.cameraImpl!);
+		resolveCameraElement(this.$element)?.setCamera(this.cameraImpl!);
 		const previewView = this.cameraImpl?.getCameraPreviewView(position ?? "medium")
 
 		if (previewView == null) {
@@ -298,7 +317,7 @@ export class CameraInstance {
 	resume() {
 		this.requestCameraPermission(() => {
 			this.cameraImpl?.startCamera()
-			
+
 			setTimeout(()=> {
 				const cameraImpl = this.cameraImpl
 				if (cameraImpl == null) {
@@ -332,7 +351,7 @@ export class CameraInstance {
 				})
 		}
 	}
-	
+
 	stop() {
 		CameraManager.saveConfig(this.$element)
 		this.cameraImpl?.stopAnalysis()
@@ -359,7 +378,7 @@ export class CameraInstance {
 	setFrameSize(size: string) {
 		this.cameraImpl?.setFrameSize(size)
 	}
-	
+
 	setPhotoResolution(resolution: string) {
 		this.cameraImpl?.setPhotoResolution(resolution)
 	}
@@ -387,13 +406,13 @@ export class CameraInstance {
 								const charset = barcode.charset
 								const rawData = barcode.rawData
 								const scanArea = barcode.scanArea
-								const event = new UniNativeViewEvent("scancode_success", { result, scanType, charset, rawData, scanArea } as UTSJSONObject)
-								element.dispatchEvent("scancode", event)
+								const event = new UniNativeViewEvent("scancode", { "scanCodeStatus": "1", result, scanType, charset, rawData, scanArea } as UTSJSONObject)
+								element.dispatchEvent(event)
 							}
 
 							override onScanFailure(error: string) {
-								const event = new UniNativeViewEvent("scancode_fail", { error } as UTSJSONObject)
-								element.dispatchEvent("scancode", event)
+								const event = new UniNativeViewEvent("scancode", { "scanCodeStatus": "0", error } as UTSJSONObject)
+								element.dispatchEvent(event)
 							}
 
 							override needZoom(): void {
@@ -405,7 +424,12 @@ export class CameraInstance {
 							}
 						})
 					}
-					getAndroidScanner()?.processScanBarCode(options)
+					const scanner = getAndroidScanner()
+					if (scanner == null) {
+						imageProxy.close()
+						return
+					}
+					scanner.processScanBarCode(options)
 				}
 			}))
 		} else {
@@ -437,48 +461,87 @@ export class CameraInstance {
 }
 
 
-export const createCameraContext: CreateCameraContext = function (): CameraContext | null {
-	// const pages = getCurrentPages();
-	let currentPage = getCurrentPage()
-	// if (pages.length > 0) {
-		// currentPage = pages[pages.length - 1]
-		// const dialogPages = currentPage?.getDialogPages()
-		// if (dialogPages != null && dialogPages!.length > 0) {
-		// 	currentPage = dialogPages![dialogPages!.length - 1]
-		// }
-	// }
-
+// #ifndef VUE3-VAPOR
+function getNativeCameraElement(): UniElement | null {
+	const currentPage = getCurrentPage()
 	if (currentPage == null) {
 		return null
 	}
-	
 	let nativeCamera: UniElement | null = null
 	const dialogPages = currentPage.$systemDialogPages
 	if (dialogPages != null && dialogPages.length > 0) {
 		const len = dialogPages.length.toInt()
 		for (let i: Int = len - 1;i >= 0;i--) {
 		  const page = dialogPages[i]
-		  const element = page?.getElementById("mnative-camera")
+		  const element = page?.getElementById("uni-camera-bW5hdGl2ZS1jYW1lcmE=")
 		  if (element != null) {
 			  nativeCamera = element
 			  break
 		  }
 		}
 	}
-	
+
 	if (nativeCamera == null) {
-		nativeCamera = currentPage?.$el?.getPage()?.getElementById?.invoke("mnative-camera")	
+		nativeCamera = currentPage?.$el?.getPage()?.getElementById?.invoke("uni-camera-bW5hdGl2ZS1jYW1lcmE=")	
 	}
-	
+
+	return nativeCamera
+}
+// #endif
+
+// #ifdef VUE3-VAPOR
+function getNativeCameraElement(): UniElement | null {
+	const pages = getCurrentPages();
+	let currentPage: UniPage | null = null
+	if (pages.length > 0) {
+		currentPage = pages[pages.length - 1]
+		const dialogPages = currentPage?.getDialogPages()
+		if (dialogPages != null && dialogPages!.length > 0) {
+			currentPage = dialogPages![dialogPages!.length - 1]
+		}
+	}
+	if (currentPage == null) {
+		return null
+	}
+	let nativeCamera: UniElement | null = null
+	const dialogPages = currentPage.$getSystemDialogPages()
+	if (dialogPages != null && dialogPages.length > 0) {
+		const len = dialogPages.length.toInt()
+		for (let i: Int = len - 1;i >= 0;i--) {
+		  const page = dialogPages[i]
+		  const element = page?.getElementById("uni-camera-bW5hdGl2ZS1jYW1lcmE=")
+		  if (element != null) {
+			  nativeCamera = element
+			  break
+		  }
+		}
+	}
+
+	if (nativeCamera == null) {
+		nativeCamera = currentPage?.querySelector("#uni-camera-bW5hdGl2ZS1jYW1lcmE=")
+	}
+
+	return nativeCamera
+}
+// #endif
+
+export const createCameraContext: CreateCameraContext = function (): CameraContext | null {
+	const nativeCamera = getNativeCameraElement()
+
 	if (nativeCamera == null) {
 		return null
 	}
-
+// #ifndef VUE3-VAPOR
 	if (!(nativeCamera instanceof IUniNativeElement)) {
 		return null
 	}
-
-	const cameraElement = nativeCamera?.parentElement as UniCameraElement
+// #endif
+// #ifdef VUE3-VAPOR
+	if (!(nativeCamera instanceof UniNativeViewElement)) {
+		return null
+	}
+// #endif
+	const cameraElement = resolveCameraElement(nativeCamera)
 	if (cameraElement == null) {
 		return null
 	}
@@ -495,6 +558,7 @@ class CameraContextCameraFrameListenerImpl implements CameraContextCameraFrameLi
 	 * 开始监听帧数据
 	 */
 	start(options: CameraContextCameraFrameListenerStartOptions): void {
+		this.element.setFrameCallback(this.callback)
 		this.element.startOnFrame()
 		const result = "start on camera frame"
 		options.success?.(result)

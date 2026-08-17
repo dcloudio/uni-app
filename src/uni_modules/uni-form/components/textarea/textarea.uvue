@@ -1,0 +1,1020 @@
+<template>
+	<!-- #ifdef APP -->
+	<!-- #ifdef APP-ANDROID -->
+	<view ref="textareaWrapperRef" class='uni-textarea-wrapper' @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+		<view class="uni-textarea-container">
+			<text class="uni-textarea-placeholder" v-if="showPlaceholder" :class="placeholderClass"
+				:style="placeholderStyle">{{props.placeholder}}</text>
+			<native-view :style="androidTextareaNativeViewStyle" @init="onViewInit" @input="onInput" @focus="onFocus"
+				@blur="onBlur" @keyboardheightchange="onKeyboardHeightChange" @change="onChange"
+				@linechange="onLineChange" @confirm="onConfirm"></native-view>
+		</view>
+	</view>
+	<!-- #endif -->
+	<!-- #ifndef APP-ANDROID -->
+	<view class='uni-textarea-wrapper' @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+		<view class="uni-textarea-container" flatten>
+			<text class="uni-textarea-placeholder" v-if="showPlaceholder" :class="placeholderClass"
+				:style="placeholderStyle">{{props.placeholder}}</text>
+			<!-- #ifdef APP-IOS -->
+			<native-view style="height: 100%; width: 100%;" @init="onViewInit" @input="onInput" @focus="onFocus"
+				@blur="onBlur" @keyboardheightchange="onKeyboardHeightChange" @change="onChange"
+				@linechange="onLineChange" @confirm="onConfirm"></native-view>
+			<!-- #endif -->
+			<!-- #ifdef APP-HARMONY -->
+			<native-view style="height: 100%; width: 100%;" @init="onViewInit"></native-view>
+			<!-- #endif -->
+		</view>
+	</view>
+	<!-- #endif -->
+	<!-- #endif -->
+	<!-- #ifdef WEB -->
+	<textarea />
+	<!-- #endif -->
+</template>
+<script setup lang="uts">
+	import {
+		NativeTextareaView,
+		// #ifdef APP-ANDROID
+		UniTextareaElement,
+		// #endif
+		// #ifdef APP-IOS
+		UniTextareaElementImpl,
+		// #endif
+		// #ifdef APP-HARMONY
+		UniTextareaElement,
+		// #endif
+	} from "@/uni_modules/uni-form";
+	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+	import { hasRecentEditorTouch, markEditorTouchStart } from "../common.uts"
+	// #endif
+
+	const keyboardHeight = ref(0)
+	const isFocusing = ref(false)
+	const isComposing = ref(false)
+	const adjustPosition = computed(() => Boolean(props.adjustPosition))
+
+	const proxy = getCurrentInstance()?.proxy
+	// #ifdef APP-HARMONY
+	// 通过变量持有 UniTextareaElement 实例，避免被回收，待框架调整 $el 实现后可尝试移除
+	let textareaElement : UniTextareaElement | null = null
+	// #endif
+
+	let isTouching = false
+
+	let pageTouchEndId : number | null = null
+
+	const FORM_KEY = 'UNI_FORM_CTX'
+	interface TextareaInFormContext {
+		registerField : (field : {
+			name : string,
+			getValue : () => string,
+			reset ?: () => void
+		}) => void,
+		unregisterField : (name : string) => void
+	}
+
+	let textareaView : NativeTextareaView | null = null
+
+	// #ifdef APP-ANDROID
+	const textareaWrapperRef = ref<UniElement | null>(null)
+	let androidTextareaHeightBeforeAuto = ''
+	let androidTextareaAutoHeightApplied = false
+	// #endif
+
+	const style = useComputedStyle({
+		properties: [
+			'font-size', 'color', 'line-height', 'letter-spacing', 'font-weight', 'font-style', 'font-family', 'text-align',
+			// #ifndef APP-ANDROID
+			'height', 'min-height', 'max-height',
+			// #endif
+			// #ifdef APP-HARMONY || APP-IOS
+			'padding-top', 'padding-right', 'padding-bottom', 'padding-left'
+			// #endif
+		],
+		filterProperties: true
+	})
+
+	const rpx2px = (value : string) : string => {
+		if (value == null) return ''
+		if (value.endsWith('rpx')) {
+			return `${uni.rpx2px(parseInt(value))}px`
+		}
+		return value
+	}
+
+	// #ifdef APP-ANDROID
+	const androidTextareaHeightStyle = useComputedStyle({
+		properties: ['height'],
+		filterProperties: false
+	})
+	// #endif
+
+	// #ifdef APP-HARMONY || APP-IOS
+	const textareaPaddingStyle = computed(() => {
+		let paddingStyle = ''
+		let paddingTop = style.get('padding-top')
+		if (typeof paddingTop == 'string' && paddingTop.length > 0) {
+			paddingTop = rpx2px(paddingTop)
+			paddingStyle += `padding-top:${paddingTop};`
+		}
+		let paddingRight = style.get('padding-right')
+		if (typeof paddingRight == 'string' && paddingRight.length > 0) {
+			paddingRight = rpx2px(paddingRight)
+			paddingStyle += `padding-right:${paddingRight};`
+		}
+		let paddingBottom = style.get('padding-bottom')
+		if (typeof paddingBottom == 'string' && paddingBottom.length > 0) {
+			paddingBottom = rpx2px(paddingBottom)
+			paddingStyle += `padding-bottom:${paddingBottom};`
+		}
+		let paddingLeft = style.get('padding-left')
+		if (typeof paddingLeft == 'string' && paddingLeft.length > 0) {
+			paddingLeft = rpx2px(paddingLeft)
+			paddingStyle += `padding-left:${paddingLeft};`
+		}
+		return paddingStyle
+	})
+
+	function syncTextareaPaddingStyle() {
+		textareaView?.updatePadding(
+			rpx2px(style.get('padding-top')),
+			rpx2px(style.get('padding-right')),
+			rpx2px(style.get('padding-bottom')),
+			rpx2px(style.get('padding-left'))
+		)
+	}
+	// #endif
+
+	const placeholderStyle = computed(() => {
+		let styleText = ''
+		let styleFontSize = style.get('font-size')
+		if (typeof styleFontSize == 'string') {
+			styleFontSize = rpx2px(styleFontSize)
+			if (styleFontSize.endsWith('px')) {
+				// TODO: 该方案存在 placeholder 先显示默认大小，如果开发者给组件设置了 font-size, 再更新为设置的字体大小问题
+				// TODO: 该方案会导致开发者设置的组件大小对 placeholder 的字体大小影响高于 placeholder-class 中设置的字体大小
+				styleText += `font-size:${parseInt(styleFontSize)}px;`
+			}
+		}
+		// #ifdef APP-IOS || APP-HARMONY
+		styleText += textareaPaddingStyle.value
+		// #endif
+		return `${styleText}${props.placeholderStyle}`
+	})
+
+	defineOptions({
+		name: 'textarea',
+		rootElement: {
+			// #ifdef APP-ANDROID
+			class: UniTextareaElement
+			// #endif
+			// #ifdef APP-IOS
+			class: UniTextareaElementImpl
+			// #endif
+			// #ifdef APP-HARMONY
+			class: UniTextareaElement
+			// #endif
+		},
+		externalClasses: ['placeholder-class']
+	})
+
+	interface TextareaProps {
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		name ?: string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		disabled ?: boolean | string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		value ?: string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		placeholder ?: string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		placeholderStyle ?: string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		placeholderClass ?: string.ClassString;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		maxlength ?: number;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "x"
+		 }
+	   }
+	 }
+	 */
+		cursorSpacing ?: number;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		cursorColor ?: string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		autoFocus ?: boolean | string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		focus ?: boolean | string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		confirmType ?: string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		confirmHold ?: boolean | string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		autoHeight ?: boolean | string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		cursor ?: number;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		selectionStart ?: number;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		selectionEnd ?: number;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		adjustPosition ?: boolean | string;
+		/**
+	 * @uniPlatform {
+	   "app": {
+		 "harmony": {
+		   "unixVaporVer": "5.0"
+		 }
+	   }
+	 }
+	 */
+		holdKeyboard ?: boolean | string;
+	}
+	const props = withDefaults(defineProps<TextareaProps>(), {
+		name: 'textarea',
+		disabled: false,
+		value: '',
+		placeholder: '',
+		placeholderStyle: '',
+		placeholderClass: '',
+		maxlength: -1,
+		cursorSpacing: 0,
+		cursorColor: '',
+		autoFocus: false,
+		focus: false,
+		confirmType: 'return',
+		confirmHold: false,
+		cursor: -1,
+		autoHeight: false,
+		selectionStart: -1,
+		selectionEnd: -1,
+		adjustPosition: true,
+		holdKeyboard: false,
+	});
+
+
+	// #ifdef APP-ANDROID
+	function isAndroidTextareaAutoHeight(): boolean {
+		const value = props.autoHeight
+		if (typeof value == 'boolean') return value
+		if (typeof value == 'string') return value == 'true'
+		return false
+	}
+
+	function getAndroidTextareaDeclaredHeight(): string {
+		const height = androidTextareaHeightStyle.get('height') as string
+		return rpx2px(height)
+	}
+
+	function rememberAndroidTextareaHeightIfNeeded() {
+		if (isAndroidTextareaAutoHeight() && androidTextareaAutoHeightApplied) return
+		const height = getAndroidTextareaDeclaredHeight()
+		if (height.length > 0 && height != 'auto') {
+			androidTextareaHeightBeforeAuto = height
+		}
+	}
+
+	const androidTextareaNativeViewStyle = computed(() => {
+		return isAndroidTextareaAutoHeight() ? 'width: 100%;' : 'height: 100%; width: 100%;'
+	})
+
+	function syncAndroidTextareaAutoHeightStyle() {
+		const wrapper = textareaWrapperRef.value
+		if (wrapper == null) return
+
+		if (isAndroidTextareaAutoHeight()) {
+			rememberAndroidTextareaHeightIfNeeded()
+			androidTextareaAutoHeightApplied = true
+			if (wrapper.style.getPropertyValue('height') != 'auto') {
+				wrapper.style.setProperty('height', 'auto')
+			}
+			return
+		}
+
+		if (!androidTextareaAutoHeightApplied) {
+			rememberAndroidTextareaHeightIfNeeded()
+			return
+		}
+		androidTextareaAutoHeightApplied = false
+		if (androidTextareaHeightBeforeAuto.length > 0 && androidTextareaHeightBeforeAuto != 'auto') {
+			wrapper.style.setProperty('height', androidTextareaHeightBeforeAuto)
+		} else {
+			wrapper.style.setProperty('height', '')
+		}
+	}
+
+	function scheduleAndroidTextareaAutoHeightStyleSync() {
+		nextTick(() => {
+			syncAndroidTextareaAutoHeightStyle()
+		})
+	}
+
+	// #endif
+
+	const emit = defineEmits<{
+		(e : 'update:value', value : string) : void
+		(e : 'input', value : UniInputEvent) : void
+		(e : 'focus', value : UniTextareaFocusEvent) : void
+		(e : 'blur', value : UniTextareaBlurEvent) : void
+		(e : 'keyboardheightchange', value : UniInputKeyboardHeightChangeEvent) : void
+		(e : 'change', value : UniInputChangeEvent) : void
+		(e : 'linechange', value : UniTextareaLineChangeEvent) : void
+		(e : 'confirm', value : UniInputConfirmEvent) : void
+	}>()
+
+	// #ifdef APP-ANDROID
+	function syncAndroidTextareaStyleProps() {
+		textareaView?.updateFontSize(rpx2px(style.get('font-size')))
+		textareaView?.updateColor(style.get('color'))
+		textareaView?.updateLineHeight(rpx2px(style.get('line-height')))
+		textareaView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
+		textareaView?.updateFontWeight(style.get('font-weight'))
+		textareaView?.updateFontStyle(style.get('font-style'))
+		textareaView?.updateFontFamily(style.get('font-family'))
+		textareaView?.updateTextAlign(style.get('text-align'))
+	}
+	// #endif
+
+	function getInitValue() : string {
+		return normalizeByMaxlength(props.value.toString())
+	}
+
+	function normalizeByMaxlength(value : string) : string {
+		if (props.maxlength >= 0) {
+			return value.substring(0, parseInt(props.maxlength))
+		}
+		return value
+	}
+
+	const initialValue = ref<string>(getInitValue())
+	const textareaValue = ref<string>(initialValue.value)
+
+	const showPlaceholder = ref<boolean>(initialValue.value == '' && props.placeholder != '')
+
+	const instance = getCurrentInstance()
+	function onNativeViewReady() {
+		if (!textareaView) return
+		// #ifdef APP-ANDROID
+		textareaView.beginUpdateBatch()
+		textareaView.updateAutoHeight(props.autoHeight)
+		syncAndroidTextareaStyleProps()
+		// #endif
+
+		const rawProps = instance.rawProps
+		for(const key in rawProps) {
+			switch (key) {
+				case 'value':
+					textareaView.updateValue(textareaValue.value)
+					break
+				case 'disabled':
+					textareaView.updateDisabled(props.disabled)
+					break
+				case 'selection-start':
+				case 'selectionStart':
+					textareaView.updateSelectionStart(props.selectionStart)
+					break
+				case 'selection-end':
+				case 'selectionEnd':
+					textareaView.updateSelectionEnd(props.selectionEnd)
+					break
+				case 'auto-focus':
+				case 'autoFocus':
+					textareaView.updateAutoFocus(props.autoFocus)
+					break
+				case 'focus':
+					textareaView.updateFocus(props.focus)
+					break
+				case 'confirm-type':
+				case 'confirmType':
+					textareaView.updateConfirmType(props.confirmType)
+					break
+				case 'confirm-hold':
+				case 'confirmHold':
+					textareaView.updateConfirmHold(props.confirmHold)
+					break
+				case 'auto-height':
+				case 'autoHeight':
+					// #ifndef APP-ANDROID
+					textareaView.updateAutoHeight(props.autoHeight)
+					// #endif
+					break
+				case 'adjust-position':
+				case 'adjustPosition':
+					textareaView.updateAdjustPosition(props.adjustPosition)
+					break
+				case 'hold-keyboard':
+				case 'holdKeyboard':
+					textareaView.updateHoldKeyboard(props.holdKeyboard)
+					break
+				case 'maxlength':
+					textareaView.updateMaxLength(props.maxlength)
+					break
+				case 'cursor-color':
+				case 'cursorColor':
+					textareaView.updateCursorColor(props.cursorColor)
+					break
+				case 'cursor-spacing':
+				case 'cursorSpacing':
+					textareaView.updateCursorSpacing(props.cursorSpacing)
+					break
+				case 'cursor':
+					textareaView.updateCursor(props.cursor)
+					break
+				default:
+					break
+			}
+		}
+		let updatePadding = false
+		style.forEach((value, key) => {
+			switch (key) {
+				case 'font-size':
+					textareaView.updateFontSize(typeof value == 'string' ? rpx2px(value) : undefined)
+					break
+				case 'color':
+					textareaView.updateColor(value as string)
+					break
+				case 'line-height':
+					textareaView.updateLineHeight(rpx2px(value as string))
+					break
+				case 'letter-spacing':
+					textareaView.updateLetterSpacing(rpx2px(value as string))
+					break
+				case 'font-weight':
+					textareaView.updateFontWeight(value as string)
+					break
+				case 'font-style':
+					textareaView.updateFontStyle(value as string)
+					break
+				case 'font-family':
+					textareaView.updateFontFamily(value as string)
+					break
+				case 'text-align':
+					textareaView.updateTextAlign(value as string)
+					break
+				case 'height':
+					// #ifndef APP-ANDROID
+					textareaView.updateHeight(rpx2px(value as string))
+					// #endif
+					break
+				case 'min-height':
+					// #ifndef APP-ANDROID
+					textareaView.updateMinHeight(rpx2px(value as string))
+					// #endif
+					break
+				case 'max-height':
+					// #ifndef APP-ANDROID
+					textareaView.updateMaxHeight(rpx2px(value as string))
+					// #endif
+					break
+				case 'padding-top':
+				case 'padding-right':
+				case 'padding-bottom':
+				case 'padding-left':
+					updatePadding = true
+					break
+				default:
+					break
+			}
+		})
+		// #ifdef APP-IOS || APP-HARMONY
+		if (updatePadding) syncTextareaPaddingStyle()
+		// #endif
+		// #ifdef APP-ANDROID
+		textareaView.endUpdateBatch()
+		// #endif
+	}
+
+	function onViewInit(e : UniNativeViewInitEvent) {
+		// #ifdef APP-HARMONY
+		// 首帧即传入 auto-height 相关初始值，避免原生 textarea 先按默认高度渲染。
+		textareaView = new NativeTextareaView(e.detail.element, {
+			autoHeight: props.autoHeight,
+			value: textareaValue.value,
+			fontSize: rpx2px(style.get('font-size')),
+			lineHeight: rpx2px(style.get('line-height')),
+			padding: style.get('padding'),
+			paddingTop: rpx2px(style.get('padding-top')),
+			paddingRight: rpx2px(style.get('padding-right')),
+			paddingBottom: rpx2px(style.get('padding-bottom')),
+			paddingLeft: rpx2px(style.get('padding-left')),
+			minHeight: rpx2px(style.get('min-height')),
+			maxHeight: rpx2px(style.get('max-height'))
+		}, {
+			inputEvent: onInput,
+			focusEvent: onFocus,
+			blurEvent: onBlur,
+			keyboardHeightChangeEvent: onKeyboardHeightChange,
+			changeEvent: onChange,
+			confirmEvent: onConfirm,
+			lineChangeEvent: onLineChange,
+		});
+		// #endif
+		// #ifndef APP-HARMONY
+		textareaView = new NativeTextareaView(e.detail.element);
+		onNativeViewReady()
+		// #endif
+		// #ifdef APP-ANDROID
+		scheduleAndroidTextareaAutoHeightStyleSync()
+		// #endif
+		// #ifdef APP-HARMONY
+		setTimeout(() => {
+			onNativeViewReady()
+		}, 80)
+		// #endif
+	}
+
+	// #ifdef APP-ANDROID
+	function onInput(e : UniNativeViewEvent) {
+		const newValue = e.detail.value ?? ""
+		if (newValue !== textareaValue.value) {
+			textareaValue.value = newValue
+			emit('update:value', newValue)
+			emit('input', e)
+		}
+	}
+
+	function onFocus(e : UniNativeViewEvent) {
+		isFocusing.value = true
+		emit('focus', e)
+	}
+
+	function onBlur(e : UniNativeViewEvent) {
+		isFocusing.value = false
+		isComposing.value = false
+		emit('blur', e)
+	}
+
+	function onKeyboardHeightChange(e : UniNativeViewEvent) {
+		keyboardHeight.value = e.detail.height ?? 0
+		emit('keyboardheightchange', e)
+	}
+
+	function onChange(e : UniNativeViewEvent) {
+		emit('change', e)
+	}
+
+	function onLineChange(e : UniNativeViewEvent) {
+		emit('linechange', e)
+	}
+
+	function onConfirm(e : UniNativeViewEvent) {
+		emit('confirm', e)
+	}
+	// #endif
+	// #ifdef APP-IOS
+	function onInput(e : UniNativeViewEvent) {
+		isComposing.value = !!e.detail.composing
+		if (isComposing.value) {
+			return
+		}
+		const newValue = e.detail.value;
+		if (newValue !== textareaValue.value) {
+			textareaValue.value = e.detail.value;
+			emit('update:value', newValue)
+			emit('input', e)
+		}
+	}
+
+	function onFocus(e : UniNativeViewEvent) {
+		isFocusing.value = true
+		emit('focus', e)
+	}
+
+	function onBlur(e : UniNativeViewEvent) {
+		isFocusing.value = false
+		isComposing.value = false
+		emit('blur', e)
+	}
+
+	function onKeyboardHeightChange(e : UniNativeViewEvent) {
+		keyboardHeight.value = e.detail.height
+		emit('keyboardheightchange', e)
+	}
+
+	function onChange(e : UniNativeViewEvent) {
+		emit('change', e)
+	}
+
+	function onLineChange(e : UniNativeViewEvent) {
+		emit('linechange', e)
+	}
+
+	function onConfirm(e : UniNativeViewEvent) {
+		emit('confirm', e)
+	}
+	// #endif
+	// #ifdef APP-HARMONY
+	function onInput(e : UniInputEvent) {
+		const newValue = e.detail.value
+		if (newValue !== textareaValue.value) {
+			textareaValue.value = newValue;
+			emit('update:value', newValue)
+			emit('input', e)
+		}
+	}
+
+	function onFocus(e : UniInputFocusEvent) {
+		isFocusing.value = true
+		emit('focus', e)
+	}
+
+	function onBlur(e : UniInputBlurEvent) {
+		isFocusing.value = false
+		emit('blur', e)
+	}
+
+	function onKeyboardHeightChange(e : UniInputKeyboardHeightChangeEvent) {
+		keyboardHeight.value = e.detail.height
+		emit('keyboardheightchange', e)
+	}
+
+	function onChange(e : UniInputChangeEvent) {
+		emit('change', e)
+	}
+
+	function onLineChange(e : UniTextareaLineChangeEvent) {
+		emit('linechange', e)
+	}
+
+	function onConfirm(e : UniInputConfirmEvent) {
+		emit('confirm', e)
+	}
+	// #endif
+
+	const handleTouchStart = () => {
+		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+		markEditorTouchStart()
+		// #endif
+		isTouching = true
+	}
+
+	const handleTouchEnd = (event : UniTouchEvent) => {
+		// #ifdef APP-ANDROID
+		const touch = event.changedTouches[0]
+		textareaView?.cacheEditorTouchEnd(touch.clientX, touch.clientY)
+		// #endif
+		isTouching = false
+	}
+
+	onMounted(() => {
+		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+		pageTouchEndId = proxy?.$page.onTouchEnd(() => {
+			const recentEditorTouch = hasRecentEditorTouch()
+			// #ifdef APP-ANDROID
+			if (isFocusing.value && !isTouching && !recentEditorTouch) {
+				textareaView?.handlePageTouchEndFocus()
+			}
+			// #endif
+			// #ifndef APP-ANDROID
+			if (!isTouching && !recentEditorTouch) {
+				textareaView?.handlePageTouchEndFocus()
+			}
+			// #endif
+		})
+		// #endif
+
+		watch(() => style.get('font-size'), (value : string) => {
+			textareaView?.updateFontSize(rpx2px(value))
+		})
+		watch(() => style.get('color'), (value : string) => {
+			textareaView?.updateColor(value)
+		})
+		watch(() => style.get('line-height'), (value : string) => {
+			textareaView?.updateLineHeight(rpx2px(value))
+		})
+		watch(() => style.get('letter-spacing'), (value : string) => {
+			textareaView?.updateLetterSpacing(rpx2px(value))
+		})
+		watch(() => style.get('font-weight'), (value : string) => {
+			textareaView?.updateFontWeight(value)
+		})
+		watch(() => style.get('font-style'), (value : string) => {
+			textareaView?.updateFontStyle(value)
+		})
+		watch(() => style.get('font-family'), (value : string) => {
+			textareaView?.updateFontFamily(value)
+		})
+		watch(() => style.get('text-align'), (value : string) => {
+			textareaView?.updateTextAlign(value)
+		})
+		// #ifndef APP-ANDROID
+		watch(() => style.get('height'), (value : string) => {
+			textareaView?.updateHeight(rpx2px(value))
+		})
+		watch(() => style.get('min-height'), (value : string) => {
+			textareaView?.updateMinHeight(rpx2px(value))
+		})
+		watch(() => style.get('max-height'), (value : string) => {
+			textareaView?.updateMaxHeight(rpx2px(value))
+		})
+		// #endif
+		// #ifdef APP-IOS || APP-HARMONY
+		watch(() => style.get('padding-top'), () => {
+			syncTextareaPaddingStyle()
+		})
+		watch(() => style.get('padding-right'), () => {
+			syncTextareaPaddingStyle()
+		})
+		watch(() => style.get('padding-bottom'), () => {
+			syncTextareaPaddingStyle()
+		})
+		watch(() => style.get('padding-left'), () => {
+			syncTextareaPaddingStyle()
+		})
+		// #endif
+
+		watch(() => [textareaValue.value, props.placeholder, isComposing.value], ([value, placeholder, composing] : [string, string, boolean]) => {
+			showPlaceholder.value = value == '' && placeholder != '' && !composing;
+		})
+		watch(() => props.value, (newValue : string) => {
+			if (newValue == textareaValue.value) return
+			const value = newValue != null ? newValue : ''
+			textareaValue.value = normalizeByMaxlength(value.toString())
+			textareaView?.updateValue(textareaValue.value)
+			// #ifdef APP-HARMONY
+			textareaElement?.updateValue(textareaValue.value);
+			// #endif
+		})
+
+		watch(() => props.disabled, (newValue : boolean) => {
+			textareaView?.updateDisabled(newValue)
+		})
+		watch(() => props.maxlength, (newValue : number) => {
+			const oldValue = textareaValue.value
+			textareaValue.value = normalizeByMaxlength(textareaValue.value)
+			if (textareaValue.value != oldValue) {
+				textareaView?.updateValue(textareaValue.value)
+				// #ifdef APP-HARMONY
+				textareaElement?.updateValue(textareaValue.value);
+				// #endif
+			}
+			textareaView?.updateMaxLength(newValue)
+		})
+		// input 光标与键盘的距离，单位 px 。实际生效值会受可视区域高度限制
+		watch(() => props.cursorSpacing, (newValue : number) => {
+			textareaView?.updateCursorSpacing(newValue)
+		})
+		watch(() => props.cursorColor, (newValue : string) => {
+			textareaView?.updateCursorColor(newValue)
+		})
+
+		watch(() => props.focus, (newValue : boolean) => {
+			textareaView?.updateFocus(newValue)
+		})
+
+		watch(() => props.confirmType, (newValue : string) => {
+			textareaView?.updateConfirmType(newValue)
+		})
+
+		watch(() => props.confirmHold, (newValue : boolean) => {
+			textareaView?.updateConfirmHold(newValue)
+		})
+
+		watch(() => props.autoHeight, (newValue : boolean) => {
+			// #ifdef APP-ANDROID
+			syncAndroidTextareaAutoHeightStyle()
+			textareaView?.updateAutoHeight(newValue)
+			return
+			// #endif
+			textareaView?.updateAutoHeight(newValue)
+		})
+		// #ifdef APP-ANDROID
+		watch(() => androidTextareaHeightStyle.get('height'), () => {
+			rememberAndroidTextareaHeightIfNeeded()
+		})
+		// #endif
+
+		watch(() => props.cursor, (newValue : number) => {
+			textareaView?.updateCursor(newValue)
+		})
+
+		watch(() => props.selectionStart, (newValue : number) => {
+			textareaView?.updateSelectionStart(newValue)
+		})
+
+		watch(() => props.selectionEnd, (newValue : number) => {
+			textareaView?.updateSelectionEnd(newValue)
+		})
+
+		watch(() => props.adjustPosition, (newValue : boolean) => {
+			textareaView?.updateAdjustPosition(newValue)
+		})
+
+		watch(() => props.holdKeyboard, (newValue : boolean) => {
+			textareaView?.updateHoldKeyboard(newValue)
+		})
+
+		const formCtx = inject<TextareaInFormContext | null>(FORM_KEY, null)
+		if (formCtx && props.name) {
+			formCtx.registerField({
+				name: props.name,
+				getValue: () => textareaValue.value,
+				reset: () => {
+					textareaValue.value = normalizeByMaxlength(initialValue.value)
+					// #ifdef APP-IOS
+					textareaView?.updateValue(textareaValue.value)
+					// #endif
+				}
+			})
+		}
+		setTimeout(() => {
+			// #ifdef APP-ANDROID
+			syncAndroidTextareaAutoHeightStyle()
+			// #endif
+		}, 80)
+
+		// #ifdef APP-HARMONY
+		if (proxy?.$el) {
+			textareaElement = proxy.$el as unknown as UniTextareaElement;
+			// 注册 onValueChange, set value 时更新内部 value 和 arkUI textarea
+			textareaElement.onValueChange = (val : string) => {
+				textareaValue.value = val;
+				textareaView?.updateValue(val)
+			}
+			// 初始化 UniTextareaElement 内部 value
+			textareaElement.updateValue(textareaValue.value);
+		}
+		// #endif
+	})
+
+	onBeforeUnmount(() => {
+		// #ifdef APP-HARMONY
+		textareaElement = null
+		// #endif
+		// #ifndef APP-IOS
+		if (pageTouchEndId != null) {
+			proxy?.$page.offTouchEnd(pageTouchEndId)
+		}
+		// #endif
+
+		const formCtx = inject<{ unregisterField : (name : string) => void } | null>(FORM_KEY, null)
+		if (formCtx && props.name) {
+			formCtx.unregisterField(props.name)
+		}
+		textareaView?.destroy()
+	})
+</script>
+
+<style>
+	.uni-textarea-wrapper {
+		width: 300px;
+		/* #ifdef APP-ANDROID */
+		height: 150px;
+		/* #endif */
+	}
+
+	.uni-textarea-container {
+		height: 100%;
+	}
+
+	.uni-textarea-placeholder {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		color: #999999;
+		font-size: 16px;
+	}
+</style>

@@ -18,31 +18,18 @@ export class UniSliderChangeEvent extends UniCustomEvent<UniSliderChangeEventDet
   }
 }
 
-// #ifdef WEB
-// vapor 临时处理 
-class UniVueElement extends HTMLElement { }
-// #endif
-
-// #ifdef MP
-// vapor 临时处理 
-class UniVueElement extends UniElement { }
-// #endif
-
-export class UniSliderElement extends UniVueElement {
+export class UniSliderElement extends UniViewElementImpl {
   override tagName : string = 'SLIDER'
   override nodeName : string = 'SLIDER'
 
-  _value : number = 0
-
-  get value() {
-    return this._value
+  get value(): number {
+    return this.vm?.getCurrentValue()
   }
 
   set value(val : number) {
-    if (this._value === val) {
+    if (this.value === val) {
       return
     }
-    this._value = val
     this.vm?.renderVisuals(val)
   }
 }

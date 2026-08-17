@@ -13,6 +13,7 @@ import android.os.IBinder
 import uts.sdk.modules.uniLocationSystem.UniLocationSystemProviderImpl
 import android.graphics.Bitmap
 import java.lang.ref.WeakReference
+import android.content.pm.ServiceInfo
 
 // import io.dcloud.uni.getlocation.system.R;
 
@@ -34,7 +35,15 @@ class UniSystemLocationService : Service() {
     }
 
     fun startLocation(location: UniLocationSystemProviderImpl, options: Any,notification:Notification?) {
-        startForeground(1000, notification)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(
+                1000,
+                notification!!,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            )
+        } else {
+            startForeground(1000, notification)
+        }
         location.startSystemLocation(options, this@UniSystemLocationService)
     }
 

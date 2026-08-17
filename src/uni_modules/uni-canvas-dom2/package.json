@@ -34,9 +34,9 @@
     "uni_modules": {
         "encrypt": [],
         "components": {
-          "app-android": false,
+          "app-android": "dom2",
           "app-harmony": "dom2",
-          "app-ios": false,
+          "app-ios": "dom2",
           "web": false,
           "mp-weixin": false
         },
@@ -47,14 +47,16 @@
                     "app": {
                         "js": false,
                         "x-js": false,
-                        "kotlin": true,
-                        "swift": false,
-                        "arkts": true
+                        "kotlin": "dom2",
+                        "swift": "dom2",
+                        "arkts": "dom2"
                     }
                 }
             }
         },
         "dependencies": [
+          "uni-getElementById",
+          "app-ios:uni-canvas-component"
         ],
         "platforms": {
             "cloud": {

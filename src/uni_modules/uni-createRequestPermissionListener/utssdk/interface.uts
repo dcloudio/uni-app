@@ -6,20 +6,100 @@ export interface RequestPermissionListener {
 	/**
 	 * 监听申请系统权限
 	 * @param {RequestPermissionListenerRequestCallback} callback 申请系统权限回调，permissions为触发权限申请的所有权限
+	 * @uniPlatform {
+	 *  "app": {
+	 *		"android": {
+	 *			"uniVer": "4.0+",
+	 *			"unixVer": "4.0+"
+	 *		},
+	 *		"ios": {
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		},
+	 *		"harmony": {
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		}
+	 *	},
+   *  "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "x"
+   *  }
+	 * }
 	 */
 	onRequest(callback : RequestPermissionListenerRequestCallback) : void
 	/**
 	 * 监听弹出系统权限授权框
 	 * @param {RequestPermissionListenerConfirmCallback} callback 弹出系统权限授权框回调，permissions为触发弹出权限授权框的所有权限
+	 * @uniPlatform {
+	 *  "app": {
+	 *		"android": {
+	 *			"uniVer": "4.0+",
+	 *			"unixVer": "4.0+"
+	 *		},
+	 *		"ios": {
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		},
+	 *		"harmony": {
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		}
+	 *	},
+   *  "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "x"
+   *  }
+	 * }
 	 */
 	onConfirm(callback : RequestPermissionListenerConfirmCallback) : void
 	/**
 	 * 监听权限申请完成
 	 * @param {RequestPermissionListenerCompleteCallback} callback 权限申请完成回调，permissions为申请完成的所有权限
+	 * @uniPlatform {
+	 *  "app": {
+	 *		"android": {
+	 *			"uniVer": "4.0+",
+	 *			"unixVer": "4.0+"
+	 *		},
+	 *		"ios": {
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		},
+	 *		"harmony": {
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		}
+	 *	},
+   *  "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "x"
+   *  }
+	 * }
 	 */
 	onComplete(callback : RequestPermissionListenerCompleteCallback) : void
 	/**
 	 * 取消所有监听
+	 * @uniPlatform {
+	 *  "app": {
+	 *		"android": {
+	 *			"uniVer": "4.0+",
+	 *			"unixVer": "4.0+"
+	 *		},
+	 *		"ios": {
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		},
+	 *		"harmony": {
+	 *			"uniVer": "x",
+	 *			"unixVer": "x"
+	 *		}
+	 *	},
+   *  "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "x"
+   *  }
+	 * }
 	 */
 	stop() : void
 }
@@ -36,17 +116,14 @@ export interface Uni {
 	 * @uniPlatform {
 	 *  "app": {
 	 *		"android": {
-	 *			"osVer": "5.0",
 	 *			"uniVer": "4.0+",
 	 *			"unixVer": "4.0+"
 	 *		},
 	 *		"ios": {
-	 *			"osVer": "12.0",
 	 *			"uniVer": "x",
 	 *			"unixVer": "x"
 	 *		},
 	 *		"harmony": {
-	 *			"osVer": "x",
 	 *			"uniVer": "x",
 	 *			"unixVer": "x"
 	 *		}

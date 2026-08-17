@@ -1,4 +1,7 @@
 {
+	"simulatorArchitectures": [
+		"x86_64"
+	],
 	"frameworks": [
 		"libz.1.2.5.tbd"
 	],

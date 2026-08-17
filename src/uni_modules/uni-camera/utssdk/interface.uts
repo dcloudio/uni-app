@@ -69,17 +69,14 @@ export type CameraContextCameraFrameListenerStartOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -93,17 +90,14 @@ export type CameraContextCameraFrameListenerStartOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -117,17 +111,14 @@ export type CameraContextCameraFrameListenerStartOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -144,17 +135,14 @@ export type CameraContextCameraFrameListenerStopOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -168,17 +156,14 @@ export type CameraContextCameraFrameListenerStopOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -192,17 +177,14 @@ export type CameraContextCameraFrameListenerStopOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -218,17 +200,14 @@ export interface CameraContextCameraFrameListener {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -242,17 +221,14 @@ export interface CameraContextCameraFrameListener {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -269,17 +245,14 @@ export type CameraContextOnCameraFrame = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -293,17 +266,14 @@ export type CameraContextOnCameraFrame = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -317,17 +287,14 @@ export type CameraContextOnCameraFrame = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -343,17 +310,14 @@ export type CameraContextSetZoomOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -368,17 +332,14 @@ export type CameraContextSetZoomOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -393,17 +354,14 @@ export type CameraContextSetZoomOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -417,17 +375,14 @@ export type CameraContextSetZoomOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -445,17 +400,14 @@ export type CameraContextTakePhotoResult = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -473,17 +425,14 @@ export type CameraContextTakePhotoOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -498,17 +447,14 @@ export type CameraContextTakePhotoOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -523,17 +469,14 @@ export type CameraContextTakePhotoOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -547,17 +490,14 @@ export type CameraContextTakePhotoOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -571,17 +511,14 @@ export type CameraContextTakePhotoOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -598,17 +535,14 @@ export type CameraContextStartRecordTimeoutResult = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -622,17 +556,14 @@ export type CameraContextStartRecordTimeoutResult = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -650,17 +581,14 @@ export type CameraContextStartRecordOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -674,17 +602,14 @@ export type CameraContextStartRecordOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -698,17 +623,14 @@ export type CameraContextStartRecordOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -723,17 +645,14 @@ export type CameraContextStartRecordOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -747,17 +666,14 @@ export type CameraContextStartRecordOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -771,17 +687,14 @@ export type CameraContextStartRecordOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -799,17 +712,14 @@ export type CameraContextStopRecordResult = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -824,17 +734,14 @@ export type CameraContextStopRecordResult = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -852,17 +759,14 @@ export type CameraContextStopRecordOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -877,17 +781,14 @@ export type CameraContextStopRecordOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -901,17 +802,14 @@ export type CameraContextStopRecordOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -925,17 +823,14 @@ export type CameraContextStopRecordOptions = {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -952,17 +847,14 @@ export interface CameraContext {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -1007,17 +899,14 @@ export interface CameraContext {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -1031,17 +920,14 @@ export interface CameraContext {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -1055,17 +941,14 @@ export interface CameraContext {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -1079,17 +962,14 @@ export interface CameraContext {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
@@ -1194,17 +1074,14 @@ export interface Uni {
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {
-	 *       "osVer": "4.4",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
 	 *     "ios": {
-	 *       "osVer": "12.0",
 	 *       "uniVer": "x",
 	 *       "unixVer": "4.61"
 	 *     },
    *     "harmony": {
-	 *       "osVer": "x",
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }

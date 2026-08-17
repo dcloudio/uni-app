@@ -1,96 +1,130 @@
 {
-	"id": "uni-requestMerchantTransfer",
-	"displayName": "uni-requestMerchantTransfer",
-	"version": "1.0.0",
-	"description": "uni-requestMerchantTransfer",
-	"keywords": [
-		"uni-requestMerchantTransfer"
-	],
-	"repository": "",
-	"engines": {
-		"HBuilderX": "^3.6.8"
-	},
-	"dcloudext": {
-		"type": "uts",
-		"sale": {
-			"regular": {
-				"price": "0.00"
-			},
-			"sourcecode": {
-				"price": "0.00"
-			}
-		},
-		"contact": {
-			"qq": ""
-		},
-		"declaration": {
-			"ads": "",
-			"data": "",
-			"permissions": ""
-		},
-		"npmurl": ""
-	},
-	"uni_modules": {
-		"uni-ext-api": {
-			"uni": {
-				"requestMerchantTransfer": {
-					"name": "requestMerchantTransfer",
-					"app": {
-						"js": false,
-						"kotlin": true,
-						"swift": true,
-						"arkts": false
-					}
-				}
-			}
-		},
-		"dependencies": [],
-		"encrypt": [],
-		"platforms": {
-			"cloud": {
-				"tcb": "u",
-				"aliyun": "u",
-				"alipay": "u"
-			},
-			"client": {
-				"Vue": {
-					"vue2": "u",
-					"vue3": "u"
-				},
-				"App": {
-					"app-android": "u",
-					"app-ios": "u",
-					"app-harmony": "u"
-				},
-				"H5-mobile": {
-					"Safari": "u",
-					"Android Browser": "u",
-					"微信浏览器(Android)": "u",
-					"QQ浏览器(Android)": "u"
-				},
-				"H5-pc": {
-					"Chrome": "u",
-					"IE": "u",
-					"Edge": "u",
-					"Firefox": "u",
-					"Safari": "u"
-				},
-				"小程序": {
-					"微信": "u",
-					"阿里": "u",
-					"百度": "u",
-					"字节跳动": "u",
-					"QQ": "u",
-					"钉钉": "u",
-					"快手": "u",
-					"飞书": "u",
-					"京东": "u"
-				},
-				"快应用": {
-					"华为": "u",
-					"联盟": "u"
-				}
-			}
-		}
-	}
+  "id": "uni-requestMerchantTransfer",
+  "displayName": "uni-requestMerchantTransfer",
+  "version": "1.1.0",
+  "description": "商家转账用户确认模式下，拉起页面请求用户确认收款Transfer",
+  "keywords": [
+    "确认收款",
+    "免确认收款授权"
+],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^3.6.8",
+    "uni-app": "^4.61",
+    "uni-app-x": "^4.61"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "插件不采集任何数据",
+      "permissions": "无"
+    },
+    "npmurl": "",
+    "darkmode": "x",
+    "i18n": "x",
+    "widescreen": "x"
+  },
+  "uni_modules": {
+    "uni-ext-api": {
+      "uni": {
+        "requestMerchantTransfer": {
+          "name": "requestMerchantTransfer",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": ["dom1", "dom2"]
+          }
+        }
+      }
+    },
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "x",
+        "aliyun": "x",
+        "alipay": "x"
+      },
+      "client": {
+        "uni-app": {
+          "vue": {
+            "vue2": "x",
+            "vue3": "√"
+          },
+          "web": {
+            "safari": "-",
+            "chrome": "-"
+          },
+          "app": {
+            "vue": "-",
+            "nvue": "-",
+            "android": {
+                "extVersion": "1.1.0",
+                "minVersion": "34"
+            },
+            "ios": {
+                "extVersion": "1.1.0",
+                "minVersion": "12"
+            },
+            "harmony": {
+                "extVersion": "1.1.0",
+                "minVersion": ""
+            }
+          },
+          "mp": {
+            "weixin": "-",
+            "alipay": "-",
+            "toutiao": "-",
+            "baidu": "-",
+            "kuaishou": "-",
+            "jd": "-",
+            "harmony": "-",
+            "qq": "-",
+            "lark": "-",
+            "xhs": "-"
+          },
+          "quickapp": {
+            "huawei": "-",
+            "union": "-"
+          }
+        },
+        "uni-app-x": {
+          "web": {
+            "safari": "-",
+            "chrome": "-"
+          },
+          "app": {
+            "android": {
+                "extVersion": "1.1.0",
+                "minVersion": "34"
+            },
+            "ios": {
+                "extVersion": "1.1.0",
+                "minVersion": "12"
+            },
+            "harmony": {
+                "extVersion": "1.1.0",
+                "minVersion": ""
+            }
+          },
+          "mp": {
+            "weixin": "-"
+          }
+        }
+      }
+    }
+  }
 }

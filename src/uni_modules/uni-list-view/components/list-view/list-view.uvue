@@ -1,12 +1,13 @@
 <template>
   <scroll-view :ref="recycleListCpp.setElement" :scroll-top="props.scrollTop" :show-scrollbar="props.showScrollbar"
-    :scroll-with-animation="props.scrollWithAnimation" :type="props.type" :bounces="props.bounces"
+    :scroll-with-animation="props.scrollWithAnimation" :type="props.type" :bounces="props.bounces" :android-overscroll="props.androidOverscroll"
     :upper-threshold="props.upperThreshold" :lower-threshold="props.lowerThreshold" :scroll-left="props.scrollLeft"
     :scroll-into-view="props.scrollIntoView" :refresher-enabled="props.refresherEnabled"
     :refresher-threshold="props.refresherThreshold" :refresher-max-drag-distance="props.refresherMaxDragDistance"
     :refresher-background="props.refresherBackground" :refresher-triggered="props.refresherTriggered"
     :custom-nested-scroll="props.customNestedScroll" :nested-scroll-child="props.nestedScrollChild" 
     :associative-container="props.associativeContainer" :enable-back-to-top="props.enableBackToTop" :refresher-default-style="props.refresherDefaultStyle"
+    :android-fast-scroll="props.androidFastScroll"
     :list-view-id="listViewId" change:list-view-id="recycleListCpp.setListViewId"
     :list="keyList as string[]" change:list="recycleListCpp.updateList">
     <view :ref="recycleListCpp.setListHeaderElement">
@@ -25,7 +26,7 @@
 <script module="recycleListCpp" lang="cpp" class-name="RecycleList" src="../../cppsdk/recycle_list.h"
   namespace="recycle_list"></script>
 <script setup>
-  import { generateUniqueId } from '../../common/utils'
+  import { generateUniqueId, NATIVE_CHANNEL_ACTIONS } from '../../common/utils'
   import { UniListViewElement } from '../../common/element'
 
   defineOptions({
@@ -40,6 +41,10 @@
    * - direction
    */
   const props = defineProps({
+    androidOverscroll: {
+      type: [Boolean, String],
+      default: false
+    },
     associativeContainer: {
       type: String,
       default: ''
@@ -110,6 +115,13 @@
     nestedScrollChild: {
       type: String,
       default: ''
+    },
+    /**
+     * @internal
+     */
+    androidFastScroll: {
+      type: [Boolean, String],
+      default: false
     }
   })
   const listViewId = generateUniqueId();
@@ -127,10 +139,22 @@
     renderRange.value = [renderRangeStart, renderRangeEnd];
   }
 
+  let nativeChannelFn: Function | null = null;
+  function setNativeChannelFn(fn: Function) {
+      nativeChannelFn = fn;
+  }
+  
+  onBeforeUnmount(() => {
+      if (nativeChannelFn) {
+          nativeChannelFn(NATIVE_CHANNEL_ACTIONS.DESTROY_LIST, listViewId);
+      }
+  })
+
   defineExpose({
     renderRange,
     updateList,
-    updateRenderInfo
+    updateRenderInfo,
+    setNativeChannelFn
   });
 </script>
 <style>

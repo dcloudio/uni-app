@@ -18,19 +18,6 @@ import {
 import { takePhoto } from './camera.uts'
 
 const errSubject = 'uni-chooseImage'
-interface ChooseImageShowActionSheetOptionsSuccessOptions {
-    tapIndex: number
-}
-
-interface ChooseImageShowActionSheetOptionsFailOptions {
-    errMsg: string
-}
-
-interface ChooseImageShowActionSheetOptions {
-    itemList: string[]
-    success?: (e: ChooseImageShowActionSheetOptionsSuccessOptions) => void | null
-    fail?: (e: ChooseImageShowActionSheetOptionsFailOptions) => void | null
-};
 
 const _chooseImage = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>) => {
     _chooseMedia({
@@ -98,13 +85,13 @@ export const chooseImage: ChooseImage =
                         }
                     },
                     fail: (e) => {
-                        if (e.errMsg.includes('cancel')) {
+                        if (e.errMsg!.includes('cancel')) {
                             res.reject('cancel')
                         } else {
                             res.reject()
                         }
                     }
-                } as ChooseImageShowActionSheetOptions)
+                })
             }
         },
         ChooseImageApiProtocol,

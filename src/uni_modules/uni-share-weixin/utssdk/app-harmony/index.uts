@@ -72,11 +72,12 @@ enum ShareType {
   MINI_PROGRAM = 5
 }
 
+// @ts-expect-error
 class UniShareWeixinProviderImpl implements UniShareWeixinProvider {
-
   id: string = "weixin";
   description: string = "微信分享";
   isWeChatInstalled: boolean = false;
+  isAppExist: boolean = false;
   private APP_ID: string | undefined;
   private WXApi: wxopensdk.WXApi | undefined;
 
@@ -85,6 +86,7 @@ class UniShareWeixinProviderImpl implements UniShareWeixinProvider {
     if (this.APP_ID) {
       this.WXApi = wxopensdk.WXAPIFactory.createWXAPI(this.APP_ID);
       this.isWeChatInstalled = this.WXApi.isWXAppInstalled()
+      this.isAppExist = this.isWeChatInstalled
     }
   }
 
@@ -254,19 +256,33 @@ class UniShareWeixinProviderImpl implements UniShareWeixinProvider {
     } as ShareTextOptions);
   }
 
+  /**
+   * 之前由于微信SDK官网上标注 imageUri 只支持有限格式的图片，因此中间转了一次 base64，处理的有问题，导致用户特定的图片无法分享
+   *
+   * 根据用户反馈只要是本地图片不限制图片格式，测试后确实如此
+   * 现在改为如
+   *    本地图片：data/storage/el2 的图片直接转 uri 分享，data/storage/el1 的图片（如：/static/logo.png）转 base64 分享
+   *    网络图片下载到本地转 uri 分享
+   * 但是 data/storage/el1 的图片还是需要转成 base64，否则会报错参数非法
+   */
   private async handleImageShare(options: ShareOptions): Promise<void> {
     if (!options.imageUrl) {
       throw Helper.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "图片地址不能为空")
     }
-    const imageUrl = getRealPath(options.imageUrl!);
-    let imageData: string | undefined = Helper.getBase64(await Helper.getImageBuffer(imageUrl))
 
-    // 微信图片分享限制： imageData 不能超过 100k，微信 uri 限制 jpeg/png 实测 webp 格式也正常 [微信 sdk 文档](https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Share_and_Favorites/ohos.html)
-    if (typeof imageData === 'string' && imageData.length > 100 * 1024) {
-      // throw Helper.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "图片大小不能大于100kb")
-      imageData = undefined
+    let imageData: string | undefined = undefined
+    const imageUrl = getRealPath(options.imageUrl!);
+    const imageLocalTempFilePath = await Helper.uniDownloadImage(imageUrl);
+    // data/storage/el1 的 uri 会报错参数非法
+    if (imageLocalTempFilePath.startsWith('/data/storage/el1')) {
+        imageData = Helper.getBase64(await Helper.getImageBuffer(imageLocalTempFilePath));
+        if (typeof imageData === 'string' && imageData.length > 102400) {
+            imageData = undefined;
+        }
     }
-    const imageUri = fileUri.getUriFromPath(options.imageUrl);
+    // 实测，只要是本地图片且不超过 30MB 均可分享
+    const imageUri = fileUri.getUriFromPath(imageLocalTempFilePath);
+
     this.shareImage({
       scene: SCENES.get(options.scene!)!,
       imageData: imageData,

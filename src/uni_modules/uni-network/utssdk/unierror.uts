@@ -43,6 +43,10 @@ const NetWorkUniErrors : Map<RequestErrorCode, string> = new Map([
 	 */
 	[600009, 'invalid URL'],
 	/**
+	 * Cronet模块加载失败
+	 */
+	[600010, 'cronet load fail'],
+	/**
 	 * request系统错误
 	 */
 	[602001, 'request system error']

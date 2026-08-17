@@ -1,7 +1,19 @@
 import { SetScreenBrightness, SetScreenBrightnessOptions, SetScreenBrightnessSuccess, GetScreenBrightness, GetScreenBrightnessOptions, GetScreenBrightnessSuccess, SetKeepScreenOn, SetKeepScreenOnOptions, SetKeepScreenOnSuccess } from "../interface.uts"
-import { API_SET_SCREEN_BRIGHTNESS, SetScreenBrightnessApiOptions, SetScreenBrightnessApiProtocol, API_GET_SCREEN_BRIGHTNESS, API_SET_KEEP_SECREEN_ON } from "../protocol.uts"
+import { API_SET_SCREEN_BRIGHTNESS, SetScreenBrightnessApiOptions, SetScreenBrightnessApiProtocol, API_GET_SCREEN_BRIGHTNESS, API_SET_KEEP_SCREEN_ON } from "../protocol.uts"
 import harmonyWindow from '@ohos.window'
 import { BusinessError } from '@kit.BasicServicesKit';
+import { settings } from '@kit.BasicServicesKit';
+import common from '@ohos.app.ability.common';
+
+function normalizeBrightness(value : number) : number {
+	if (value < 0) {
+		return 0
+	}
+	if (value > 1) {
+		return 1
+	}
+	return value
+}
 
 export const setScreenBrightness : SetScreenBrightness = defineAsyncApi<SetScreenBrightnessOptions, SetScreenBrightnessSuccess>(
 	API_SET_SCREEN_BRIGHTNESS,
@@ -13,7 +25,7 @@ export const setScreenBrightness : SetScreenBrightness = defineAsyncApi<SetScree
 				res.reject(`setScreenBrightness:fail. code: ${err.code}, message: ${err.message}`);
 				return;
 			}
-			let brightness : number = options.value;
+			let brightness : number = normalizeBrightness(options.value);
 			try {
 				window.setWindowBrightness(brightness, (err : BusinessError) => {
 					const errCode : number = err.code;
@@ -21,7 +33,7 @@ export const setScreenBrightness : SetScreenBrightness = defineAsyncApi<SetScree
 						res.reject(`setScreenBrightness:fail. code: ${err.code}, message: ${err.message}`);
 						return;
 					}
-					res.resolve()
+					res.resolve({} as SetScreenBrightnessSuccess)
 				});
 			} catch (exception) {
 				res.reject(`setScreenBrightness:fail. code: ${exception.code}, message: ${exception.message}`);
@@ -33,15 +45,6 @@ export const setScreenBrightness : SetScreenBrightness = defineAsyncApi<SetScree
 ) as SetScreenBrightness
 
 
-function formatOutputForDotNumber(num : number, n : number) : number {
-	if (isNaN(num)) {
-		return -1; // 处理无效输入
-	}
-	const factor = Math.pow(10, n);
-	const rounded = Math.round(num * factor) / factor;
-	return rounded;
-}
-
 export const getScreenBrightness : GetScreenBrightness = defineAsyncApi<GetScreenBrightnessOptions, GetScreenBrightnessSuccess>(
 	API_GET_SCREEN_BRIGHTNESS,
 	(_ : GetScreenBrightnessOptions, res : ApiExecutor<GetScreenBrightnessSuccess>) => {
@@ -49,16 +52,21 @@ export const getScreenBrightness : GetScreenBrightness = defineAsyncApi<GetScree
 		windowStage.getMainWindow((err : BusinessError, window) => {
 			const errCode : number = err.code;
 			if (errCode) {
-				res.reject(`setScreenBrightness:fail. code: ${err.code}, message: ${err.message}`);
+				res.reject(`getScreenBrightness:fail. code: ${err.code}, message: ${err.message}`);
 				return;
 			}
 			try {
 				let brightness = window.getWindowProperties().brightness
+				if (brightness == -1) {
+					const context = UTSHarmony.getUIAbilityContext() as common.UIAbilityContext
+					let value = Number(settings.getValueSync(context, settings.display.SCREEN_BRIGHTNESS_STATUS, '-1'));
+					brightness = (!isNaN(value) && value >= 0) ? value / 255 : 1
+				}
 				res.resolve({
-					value: formatOutputForDotNumber(brightness, 2)
+					value: normalizeBrightness(brightness)
 				} as GetScreenBrightnessSuccess)
 			} catch (exception) {
-				res.reject(`setScreenBrightness:fail. code: ${exception.code}, message: ${exception.message}`);
+				res.reject(`getScreenBrightness:fail. code: ${exception.code}, message: ${exception.message}`);
 			}
 		});
 	}
@@ -66,7 +74,7 @@ export const getScreenBrightness : GetScreenBrightness = defineAsyncApi<GetScree
 
 
 export const setKeepScreenOn : SetKeepScreenOn = defineAsyncApi<SetKeepScreenOnOptions, SetKeepScreenOnSuccess>(
-	API_SET_KEEP_SECREEN_ON,
+	API_SET_KEEP_SCREEN_ON,
 	(option : SetKeepScreenOnOptions, res : ApiExecutor<SetKeepScreenOnSuccess>) => {
 		const windowStage : harmonyWindow.WindowStage = UTSHarmony.getWindowStage() as harmonyWindow.WindowStage
 		windowStage.getMainWindow((err : BusinessError, window) => {
@@ -76,16 +84,18 @@ export const setKeepScreenOn : SetKeepScreenOn = defineAsyncApi<SetKeepScreenOnO
 				return;
 			}
 			try {
-				window.setWindowKeepScreenOn(Boolean(option.keepScreenOn), (err : BusinessError) => {
+				window.setWindowKeepScreenOn(option.keepScreenOn, (err : BusinessError) => {
 					const errCode : number = err.code;
 					if (errCode) {
 						res.reject(`setKeepScreenOn:fail. code: ${err.code}, message: ${err.message}`);
 						return;
 					}
-					res.resolve()
+					res.resolve({
+						errMsg: 'setKeepScreenOn:ok'
+					} as SetKeepScreenOnSuccess)
 				});
 			} catch (exception) {
-				res.reject(`setScreenBrightness:fail. code: ${exception.code}, message: ${exception.message}`);
+				res.reject(`setKeepScreenOn:fail. code: ${exception.code}, message: ${exception.message}`);
 			}
 		});
 	}

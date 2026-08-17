@@ -48,8 +48,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.FileProvider
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
-import io.dcloud.uniapp.runtime.UniActivityCallback
-import io.dcloud.uniapp.runtime.UniActivityParams
 import uts.sdk.modules.uniWebView.R
 import uts.sdk.modules.uniWebView.WebViewProgressBar
 import uts.sdk.modules.uniWebView.WebViewFileChooseDialog
@@ -112,6 +110,7 @@ class NativeWebViewImpl @JvmOverloads constructor(
     /** 自定义 view */
     private var mCustomView: View? = null
     private var mCustomViewCallback: WebChromeClient.CustomViewCallback? = null
+    private var mCustomViewShow = false
 
     /** 加载进度条 */
     private var mProgressShow = true
@@ -131,7 +130,7 @@ class NativeWebViewImpl @JvmOverloads constructor(
 
     /** 软键盘 */
     private val mOnGlobalLayoutListener: OnGlobalLayoutListener
-    private val mContentView: View? by lazy {
+    private val mContentView: ViewGroup? by lazy {
         UTSAndroid.getTopPageActivity()?.findViewById(android.R.id.content)
     }
     private var mInputDeltaY: Int? = null
@@ -141,15 +140,6 @@ class NativeWebViewImpl @JvmOverloads constructor(
     /** 主题 */
     private var mAppThemeChangedListenerId: Number = 0
     private var mDarkModeEnable = true
-
-    /** activity 回调 */
-    private val mActivityCallback by lazy {
-        object : UniActivityCallback() {
-            override fun onActivityResult(params: UniActivityParams, requestCode: Int, resultCode: Int, data: Intent?) {
-                handleOnActivityResult(requestCode, resultCode, data)
-            }
-        }
-    }
 
     /** 默认 ua */
     private val mDefaultUserAgent by lazy {
@@ -162,7 +152,7 @@ class NativeWebViewImpl @JvmOverloads constructor(
     init {
         initWebView()
         addView(mWebView, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-        UTSAndroid.onActivityCallback(mActivityCallback)
+        addView(mWebViewProgressBar, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UTSAndroid.convertToNativePx("2px", 0)))
         mOnGlobalLayoutListener = OnGlobalLayoutListener {
             val rect = Rect()
             getWindowVisibleDisplayFrame(rect)
@@ -181,12 +171,16 @@ class NativeWebViewImpl @JvmOverloads constructor(
 
     fun loadUrl(url: String) {
         mWebView.loadUrl(
-            if (url.isEmpty()) {
-                "data:text/html;charset=utf-8,<html></html>"
+            if (url.isEmpty() || url == "about:blank") {
+                "about:blank"
             } else if (url.startsWith("https://") || url.startsWith("http://")) { // 网络网页
                 url
             } else { // 本地网页
-                "file://${UTSAndroid.convert2AbsFullPath(url)}"
+                if (url.startsWith("unifile://static/")) {
+                    UTSAndroid.convert2AbsFullPath(url)
+                } else {
+                    "file://${UTSAndroid.convert2AbsFullPath(url)}"
+                }
             }
         )
     }
@@ -195,6 +189,7 @@ class NativeWebViewImpl @JvmOverloads constructor(
         mProgressShow = show
         if (color != null) {
             mProgressColor = color
+            mWebViewProgressBar.setColorInt(UTSAndroid.convertToNativeColor(color, Color.parseColor("#00FF00")))
         }
     }
 
@@ -267,10 +262,21 @@ class NativeWebViewImpl @JvmOverloads constructor(
     }
 
     fun destroy() {
-        UTSAndroid.offActivityCallback(mActivityCallback)
+        if (mCustomViewShow) {
+            (mCustomView?.parent as? ViewGroup)?.removeView(mCustomView)
+            mCustomView = null
+            mCustomViewCallback?.onCustomViewHidden()
+            mCustomViewCallback = null
+            mCustomViewShow = false
+            setSystemBarsVisible(true)
+        }
         viewTreeObserver.removeOnGlobalLayoutListener(mOnGlobalLayoutListener)
         if (mAppThemeChangedListenerId != 0) {
             UTSAndroid.offAppThemeChanged(mAppThemeChangedListenerId)
+        }
+        if (showProgress()) {
+            (mWebViewProgressBar.parent as? ViewGroup)?.removeView(mWebViewProgressBar)
+            mWebViewProgressBar.destroy()
         }
         (mWebView.parent as? ViewGroup)?.removeView(mWebView)
         mWebView.destroy()
@@ -467,29 +473,28 @@ class NativeWebViewImpl @JvmOverloads constructor(
                  * 进入全屏模式
                  */
                 override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
-                    if (mCustomView != null) {
+                    if (mCustomViewShow || view == null || mContentView == null) {
                         callback?.onCustomViewHidden()
                         return
                     }
-                    addView(
-                        view,
-                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-                    )
+                    mContentView?.addView(view, ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
                     mCustomView = view
                     mCustomViewCallback = callback
-                    setBarVisibility(false)
+                    mCustomViewShow = true
+                    setSystemBarsVisible(false)
                 }
 
                 /**
                  * 退出全屏模式
                  */
                 override fun onHideCustomView() {
-                    if (mCustomView == null) return
-                    removeView(mCustomView)
+                    if (!mCustomViewShow) return
+                    (mCustomView?.parent as? ViewGroup)?.removeView(mCustomView)
                     mCustomView = null
                     mCustomViewCallback?.onCustomViewHidden()
                     mCustomViewCallback = null
-                    setBarVisibility(true)
+                    mCustomViewShow = false
+                    setSystemBarsVisible(true)
                 }
 
                 /**
@@ -598,7 +603,7 @@ class NativeWebViewImpl @JvmOverloads constructor(
         }
     }
 
-    private fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_FILE) { // 文件
                 val value = data?.data
@@ -629,7 +634,7 @@ class NativeWebViewImpl @JvmOverloads constructor(
                         mFilePathCallback?.onReceiveValue(null)
                     }
                 }
-            } else if (resultCode == REQUEST_CODE_MICROPHONE) { // 录音机
+            } else if (requestCode == REQUEST_CODE_MICROPHONE) { // 录音机
                 val value = data?.data
                 if (value != null) {
                     mFilePathCallback?.onReceiveValue(arrayOf(value))
@@ -650,34 +655,18 @@ class NativeWebViewImpl @JvmOverloads constructor(
      * 设置状态栏和导航栏显示隐藏
      */
     @Suppress("DEPRECATION")
-    private fun setBarVisibility(visible: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val controller = windowInsetsController
-            if (visible) {
-                controller?.show(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
-            } else {
-                controller?.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
-            }
-            controller?.systemBarsBehavior =
-                WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    private fun setSystemBarsVisible(visible: Boolean) {
+        val decorView = (context as? Activity)?.window?.decorView ?: return
+        if (visible) {
+            decorView.systemUiVisibility = mCurrentSystemUiVisibility // 恢复之前的配置
         } else {
-            val decorView = (context as? Activity)?.window?.decorView ?: return
-            if (visible) {
-                decorView.systemUiVisibility = mCurrentSystemUiVisibility // 恢复之前的配置
-            } else {
-                mCurrentSystemUiVisibility = decorView.systemUiVisibility // 缓存之前的配置
-                decorView.systemUiVisibility =
-                    SYSTEM_UI_FLAG_HIDE_NAVIGATION or SYSTEM_UI_FLAG_FULLSCREEN or SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            }
+            mCurrentSystemUiVisibility = decorView.systemUiVisibility // 缓存之前的配置
+            decorView.systemUiVisibility = SYSTEM_UI_FLAG_HIDE_NAVIGATION or SYSTEM_UI_FLAG_FULLSCREEN or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         }
     }
 
     private fun startProgress() {
         if (!showProgress()) return
-        if (mWebViewProgressBar.parent == null) {
-            addView(mWebViewProgressBar, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UTSAndroid.convertToNativePx("2", 2)))
-        }
-        mWebViewProgressBar.setColorInt(UTSAndroid.convertToNativeColor(mProgressColor, Color.parseColor("#00FF00")))
         mWebViewProgressBar.startProgress()
     }
 
@@ -878,26 +867,37 @@ class UniInternalWebView @JvmOverloads constructor(
             """
                 javascript:(function() {
                     try {
-                        var currentContentHeight = Math.min(document.body.scrollHeight, document.documentElement.scrollHeight);
+                        function getContentHeight() {
+                            var bodyHeight = document.body.scrollHeight;
+                            var documentHeight = document.documentElement.scrollHeight;
+                            if (bodyHeight > 0 && documentHeight > 0) {
+                                return Math.min(bodyHeight, documentHeight);
+                            } else {
+                                return Math.max(bodyHeight, documentHeight);
+                            }
+                        }
+                        var currentContentHeight = getContentHeight();
                         window.__uniapp_x_.onContentHeightChange(currentContentHeight);
                         var lastContentHeight = currentContentHeight;
-                        setTimeout(function () {
-                            currentContentHeight = Math.min(document.body.scrollHeight, document.documentElement.scrollHeight);
+                        function onContentHeightChange() {
+                            currentContentHeight = getContentHeight();
                             if (currentContentHeight != lastContentHeight) {
                                 lastContentHeight = currentContentHeight;
                                 window.__uniapp_x_.onContentHeightChange(currentContentHeight);
                             }
+                        }
+                        setTimeout(function () {
+                            onContentHeightChange();
                         }, 100);
                         new MutationObserver(function () {
-                            currentContentHeight = document.documentElement.scrollHeight;
-                            if (currentContentHeight != lastContentHeight) {
-                                lastContentHeight = currentContentHeight;
-                                window.__uniapp_x_.onContentHeightChange(currentContentHeight);
-                            }
+                            onContentHeightChange();
                         }).observe(document.documentElement, {
                             subtree: true,
                             childList: true,
                             attributes: true
+                        });
+                        window.addEventListener('resize', function () {
+                            onContentHeightChange();
                         });
                         return document.body.scrollWidth;
                     } catch (err) {

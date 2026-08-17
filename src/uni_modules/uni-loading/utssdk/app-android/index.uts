@@ -5,16 +5,25 @@ import { AnimatedVectorDrawable, Animatable } from "android.graphics.drawable"
 import { ContextCompat } from "androidx.core.content"
 import { R } from "io.dcloud.uts.uniLoading"
 import LinearLayout from 'android.widget.LinearLayout';
+// #ifdef UNI-APP-X && !VUE3-VAPOR
 import PageNode from "io.dcloud.uniapp.dom.node.PageNode";
 import INodeData from "io.dcloud.uniapp.interfaces.INodeData";
+// #endif
 
 
-export class UniLoadingElement extends UniViewElementImpl {
-
+export class UniLoadingElement
+// #ifdef UNI-APP-X && !VUE3-VAPOR
+ extends UniViewElementImpl {
 	constructor(data : INodeData, pageNode : PageNode) {
 		super(data, pageNode);
 	}
-
+// #endif
+// #ifdef VUE3-VAPOR
+  extends UniNativeViewElementImpl {
+  constructor() {
+    super()
+  }
+// #endif
 }
 
 export class NativeLoading {

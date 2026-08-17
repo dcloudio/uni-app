@@ -1,0 +1,3682 @@
+import { EditText, TextView } from 'android.widget'
+import { InputType, TextWatcher, InputFilter, Editable, TextPaint } from 'android.text'
+import PasswordTransformationMethod from 'android.text.method.PasswordTransformationMethod'
+import HideReturnsTransformationMethod from 'android.text.method.HideReturnsTransformationMethod'
+import { View, Gravity, KeyEvent, ViewTreeObserver, MotionEvent, WindowInsets } from 'android.view'
+import ViewGroup from 'android.view.ViewGroup'
+import { InputMethodManager, EditorInfo } from 'android.view.inputmethod'
+import { Context } from 'android.content'
+import { Color, Typeface, Rect, Paint } from 'android.graphics'
+import { GradientDrawable, Drawable } from 'android.graphics.drawable'
+import { Build } from 'android.os'
+import { TypedValue } from 'android.util'
+import WeakReference from 'java.lang.ref.WeakReference'
+
+function toBoolean(value: any): boolean {
+	if (typeof value == 'boolean') {
+		return value
+	}
+	if (typeof value == 'string') {
+		return value == 'true'
+	}
+	if (typeof value == 'number') {
+		return value != 0
+	}
+	return value != null
+}
+
+function parsePixelStyleValue(value?: string): number | null {
+	if (value == null) {
+		return null
+	}
+	const normalizedValue = value.trim()
+	if (normalizedValue == '') {
+		return null
+	}
+	if (normalizedValue.endsWith('px')) {
+		const pixelValue = parseFloat(normalizedValue)
+		return isNaN(pixelValue) ? null : pixelValue
+	}
+	const numberValue = parseFloat(normalizedValue)
+	return isNaN(numberValue) ? null : numberValue
+}
+
+function resolveAndroidEditorFocusSinkContainer(editText: EditText): ViewGroup | null {
+	const parent = editText.getParent()
+	if (parent instanceof ViewGroup) {
+		return parent as ViewGroup
+	}
+	const rootView = editText.getRootView()
+	if (rootView instanceof ViewGroup) {
+		return rootView as ViewGroup
+	}
+	return null
+}
+
+function requestAndroidEditorFocusSink(editText: EditText, currentSink: View | null): View | null {
+	let focusSink = currentSink
+	if (focusSink == null || focusSink.getParent() == null) {
+		const container = resolveAndroidEditorFocusSinkContainer(editText)
+		if (container == null) {
+			return null
+		}
+		focusSink = new View(editText.getContext())
+		focusSink!.setFocusable(true)
+		focusSink!.setFocusableInTouchMode(true)
+		focusSink!.setAlpha(0.0.toFloat())
+		container.addView(focusSink, new ViewGroup.LayoutParams(1, 1))
+	}
+	focusSink!.setFocusable(true)
+	focusSink!.setFocusableInTouchMode(true)
+	focusSink!.requestFocus()
+	return focusSink
+}
+
+function blurAndroidEditor(editText: EditText, currentSink: View | null): View | null {
+	const focusSink = requestAndroidEditorFocusSink(editText, currentSink)
+	editText.clearFocus()
+	return focusSink
+}
+
+function removeAndroidEditorFocusSink(focusSink: View | null) {
+	if (focusSink == null) return
+	const parent = focusSink.getParent()
+	if (parent instanceof ViewGroup) {
+		(parent as ViewGroup).removeView(focusSink)
+	}
+}
+
+function resolveAndroidBottomNavigationInset(rootView: View): Int {
+	if (Build.VERSION.SDK_INT < 23) {
+		return 0
+	}
+	const insets = rootView.getRootWindowInsets()
+	if (insets == null) {
+		return 0
+	}
+	if (Build.VERSION.SDK_INT >= 30) {
+		return insets.getInsets(WindowInsets.Type.navigationBars()).bottom
+	}
+	return insets.getStableInsetBottom()
+}
+
+function resolveAndroidRawKeyboardHeight(rootView: View, visibleRect: Rect): number {
+	const rootHeight = rootView.getHeight()
+	if (rootHeight <= 0) {
+		return 0
+	}
+	let rawKeyboardHeight = rootHeight - visibleRect.bottom
+	const bottomNavigationInset = resolveAndroidBottomNavigationInset(rootView)
+	const navigationMode = UTSAndroid.getNavigationMode()
+	if (navigationMode != 'gestureIndicator' && bottomNavigationInset > 0 && rawKeyboardHeight > bottomNavigationInset) {
+		rawKeyboardHeight = rawKeyboardHeight - bottomNavigationInset
+	}
+	if (rawKeyboardHeight < 0) {
+		rawKeyboardHeight = 0
+	}
+	if (rawKeyboardHeight < 100) {
+		return 0
+	}
+	return rawKeyboardHeight
+}
+
+function resolveAndroidKeyboardHeightInPage(rawKeyboardHeight: number, rootHeight: number, logicalWindowHeight: number): number {
+	if (rawKeyboardHeight <= 0) {
+		return 0
+	}
+	if (rootHeight <= 0 || logicalWindowHeight <= 0) {
+		return rawKeyboardHeight
+	}
+	return rawKeyboardHeight * logicalWindowHeight / rootHeight
+}
+
+function resolveAndroidLogicalToNativeScale(nativeWindowHeight: number, logicalWindowHeight: number): number {
+	if (nativeWindowHeight <= 0 || logicalWindowHeight <= 0) {
+		return 1
+	}
+	return nativeWindowHeight / logicalWindowHeight
+}
+
+function convertAndroidLogicalToNativePx(logicalValue: number, nativeWindowHeight: number, logicalWindowHeight: number): number {
+	return logicalValue * resolveAndroidLogicalToNativeScale(nativeWindowHeight, logicalWindowHeight)
+}
+
+function convertAndroidNativePxToLogicalPx(nativeValue: number, nativeWindowHeight: number, logicalWindowHeight: number): number {
+	const scale = resolveAndroidLogicalToNativeScale(nativeWindowHeight, logicalWindowHeight)
+	if (scale <= 0) {
+		return nativeValue
+	}
+	return nativeValue / scale
+}
+
+function isAndroidCurrentFocusView(element: UniNativeViewElement, view: View | null): boolean {
+	if (view == null) {
+		return false
+	}
+	const activity = element.getAndroidActivity()
+	if (activity == null) {
+		return view.isFocused()
+	}
+	const currentFocus = activity.getCurrentFocus()
+	if (currentFocus == null) {
+		return view.isFocused()
+	}
+	return currentFocus === view
+}
+
+class UniAndroidEditorTouchCache {
+	private static touchElement: WeakReference<UniNativeViewElement> | null = null
+	private static touchClientX: number = -1
+	private static touchClientY: number = -1
+	private static touchAt: number = 0
+	private static cacheDuration: number = 300
+
+	static recordTouchEnd(element: UniNativeViewElement, clientX: number, clientY: number) {
+		UniAndroidEditorTouchCache.touchElement = new WeakReference(element)
+		UniAndroidEditorTouchCache.touchClientX = clientX
+		UniAndroidEditorTouchCache.touchClientY = clientY
+		UniAndroidEditorTouchCache.touchAt = Date.now()
+	}
+
+	static recordNativeTouch(element: UniNativeViewElement) {
+		UniAndroidEditorTouchCache.touchElement = new WeakReference(element)
+		UniAndroidEditorTouchCache.touchClientX = -1
+		UniAndroidEditorTouchCache.touchClientY = -1
+		UniAndroidEditorTouchCache.touchAt = Date.now()
+	}
+
+	static isRecentTouchInsideElement(element: UniNativeViewElement): boolean {
+		if (UniAndroidEditorTouchCache.touchAt <= 0) {
+			return false
+		}
+		const age = Date.now() - UniAndroidEditorTouchCache.touchAt
+		if (age > UniAndroidEditorTouchCache.cacheDuration) {
+			UniAndroidEditorTouchCache.clear()
+			return false
+		}
+		const touchElement = UniAndroidEditorTouchCache.touchElement?.get()
+		if (touchElement == null) {
+			UniAndroidEditorTouchCache.clear()
+			return false
+		}
+		if (touchElement !== element) {
+			return false
+		}
+		if (UniAndroidEditorTouchCache.touchClientX < 0 || UniAndroidEditorTouchCache.touchClientY < 0) {
+			UniAndroidEditorTouchCache.clear()
+			return true
+		}
+		const rect = element.getBoundingClientRect()
+		const x = UniAndroidEditorTouchCache.touchClientX
+		const y = UniAndroidEditorTouchCache.touchClientY
+		const inside = x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height
+		if (inside) {
+			UniAndroidEditorTouchCache.clear()
+		}
+		return inside
+	}
+
+	private static clear() {
+		UniAndroidEditorTouchCache.touchElement = null
+		UniAndroidEditorTouchCache.touchClientX = -1
+		UniAndroidEditorTouchCache.touchClientY = -1
+		UniAndroidEditorTouchCache.touchAt = 0
+	}
+}
+
+interface UniAndroidKeyboardClient {
+	getKeyboardLogicalWindowHeight(): number
+	onKeyboardHeightChangedFromManager(height: number, duration: number): void
+}
+
+class UniAndroidKeyboardManager {
+	private static sharedManager: UniAndroidKeyboardManager | null = null
+	private rootView: View
+	private globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener | null = null
+	private clients: UniAndroidKeyboardClient[] = []
+	private activeClient: UniAndroidKeyboardClient | null = null
+	private pendingBlurClient: UniAndroidKeyboardClient | null = null
+	private keyboardHeight: number = 0
+	private lastRawKeyboardHeight: number = -1
+	private lastDispatchedKeyboardHeight: number = 0
+	private pendingKeyboardHeight: number = 0
+	private keyboardShowRunnable: Runnable | null = null
+	private keyboardHideRunnable: Runnable | null = null
+	private destroyed: boolean = false
+
+	private constructor(rootView: View) {
+		this.rootView = rootView
+		this.observeKeyboardLayout()
+	}
+
+	static acquire(rootView: View, client: UniAndroidKeyboardClient): UniAndroidKeyboardManager {
+		const sharedManager = UniAndroidKeyboardManager.sharedManager
+		if (sharedManager != null && sharedManager.rootView === rootView) {
+			sharedManager.registerClient(client)
+			return sharedManager
+		}
+		if (sharedManager != null) {
+			sharedManager.destroy()
+		}
+		const manager = new UniAndroidKeyboardManager(rootView)
+		UniAndroidKeyboardManager.sharedManager = manager
+		manager.registerClient(client)
+		return manager
+	}
+
+	getKeyboardHeight(): number {
+		return this.keyboardHeight
+	}
+
+	isObservingRootView(rootView: View): boolean {
+		return !this.destroyed && this.rootView === rootView
+	}
+
+	setFocusedClient(client: UniAndroidKeyboardClient) {
+		this.registerClient(client)
+		this.activeClient = client
+		this.pendingBlurClient = null
+	}
+
+	notifyBlur(client: UniAndroidKeyboardClient) {
+		if (this.activeClient === client) {
+			this.activeClient = null
+			if (this.keyboardHeight > 0) {
+				this.pendingBlurClient = client
+			} else {
+				this.pendingBlurClient = null
+			}
+			return
+		}
+		if (this.pendingBlurClient === client && this.keyboardHeight <= 0) {
+			this.pendingBlurClient = null
+		}
+	}
+
+	unregisterClient(client: UniAndroidKeyboardClient) {
+		for (let i = this.clients.length - 1; i >= 0; i--) {
+			if (this.clients[i] === client) {
+				this.clients.splice(i, 1)
+			}
+		}
+		if (this.activeClient === client) {
+			this.activeClient = null
+		}
+		if (this.pendingBlurClient === client) {
+			this.pendingBlurClient = null
+		}
+		if (this.clients.length == 0) {
+			this.destroy()
+		}
+	}
+
+	private registerClient(client: UniAndroidKeyboardClient) {
+		for (let i = 0; i < this.clients.length; i++) {
+			if (this.clients[i] === client) {
+				return
+			}
+		}
+		this.clients.push(client)
+	}
+
+	private observeKeyboardLayout() {
+		const self = this
+		this.keyboardShowRunnable = new (class implements Runnable {
+			override run() {
+				self.keyboardHeight = self.pendingKeyboardHeight
+				if (self.keyboardHeight <= 0) {
+					return
+				}
+				if (self.lastDispatchedKeyboardHeight == self.keyboardHeight) {
+					return
+				}
+				self.lastDispatchedKeyboardHeight = self.keyboardHeight
+				self.dispatchKeyboardHeightChanged(self.keyboardHeight, 0)
+			}
+		})
+		this.keyboardHideRunnable = new (class implements Runnable {
+			override run() {
+				self.pendingKeyboardHeight = 0
+				self.keyboardHeight = 0
+				if (self.lastDispatchedKeyboardHeight <= 0) {
+					return
+				}
+				self.lastDispatchedKeyboardHeight = 0
+				self.dispatchKeyboardHeightChanged(0, 0)
+			}
+		})
+		this.globalLayoutListener = new (class implements ViewTreeObserver.OnGlobalLayoutListener {
+			override onGlobalLayout() {
+				const visibleRect = new Rect()
+				self.rootView.getWindowVisibleDisplayFrame(visibleRect)
+				const rootHeight = self.rootView.getHeight()
+				const rawKeyboardHeight = resolveAndroidRawKeyboardHeight(self.rootView, visibleRect)
+				if (rawKeyboardHeight == self.lastRawKeyboardHeight) {
+					return
+				}
+				self.lastRawKeyboardHeight = rawKeyboardHeight
+				self.pendingKeyboardHeight = resolveAndroidKeyboardHeightInPage(rawKeyboardHeight, rootHeight, self.resolveLogicalWindowHeight())
+				const shouldShowKeyboard = rootHeight > 0 && rawKeyboardHeight > rootHeight / 5
+				if (shouldShowKeyboard) {
+					if (self.keyboardHideRunnable != null) {
+						self.rootView.removeCallbacks(self.keyboardHideRunnable!)
+					}
+					if (self.keyboardShowRunnable != null) {
+						self.rootView.removeCallbacks(self.keyboardShowRunnable!)
+						self.rootView.post(self.keyboardShowRunnable!)
+					}
+				} else {
+					if (self.keyboardShowRunnable != null) {
+						self.rootView.removeCallbacks(self.keyboardShowRunnable!)
+					}
+					if (self.keyboardHideRunnable != null) {
+						self.rootView.removeCallbacks(self.keyboardHideRunnable!)
+						self.rootView.post(self.keyboardHideRunnable!)
+					}
+				}
+			}
+		})
+		this.rootView.getViewTreeObserver().addOnGlobalLayoutListener(this.globalLayoutListener!)
+	}
+
+	private dispatchKeyboardHeightChanged(height: number, duration: number) {
+		if (this.activeClient != null) {
+			this.activeClient.onKeyboardHeightChangedFromManager(height, duration)
+			return
+		}
+		if (height <= 0 && this.pendingBlurClient != null) {
+			const blurClient = this.pendingBlurClient
+			this.pendingBlurClient = null
+			blurClient.onKeyboardHeightChangedFromManager(0, duration)
+		}
+	}
+
+	private resolveLogicalWindowHeight(): number {
+		if (this.clients.length == 0) {
+			return 0
+		}
+		return this.clients[0].getKeyboardLogicalWindowHeight()
+	}
+
+	private destroy() {
+		this.destroyed = true
+		if (this.globalLayoutListener != null) {
+			this.rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this.globalLayoutListener!)
+		}
+		if (this.keyboardShowRunnable != null) {
+			this.rootView.removeCallbacks(this.keyboardShowRunnable!)
+		}
+		if (this.keyboardHideRunnable != null) {
+			this.rootView.removeCallbacks(this.keyboardHideRunnable!)
+		}
+		this.clients.length = 0
+		this.activeClient = null
+		this.pendingBlurClient = null
+		this.keyboardHeight = 0
+		this.lastRawKeyboardHeight = -1
+		this.lastDispatchedKeyboardHeight = 0
+		this.pendingKeyboardHeight = 0
+		this.globalLayoutListener = null
+		this.keyboardShowRunnable = null
+		this.keyboardHideRunnable = null
+		if (UniAndroidKeyboardManager.sharedManager === this) {
+			UniAndroidKeyboardManager.sharedManager = null
+		}
+	}
+}
+
+function parseAndroidColorValue(value: string): Int | null {
+	const normalizedValue = value.trim()
+	if (normalizedValue == '') {
+		return null
+	}
+	try {
+		return UTSAndroid.colorWithString(normalizedValue)
+	} catch (e: Exception) {
+		return null
+	}
+}
+
+function resolveAndroidTypeface(fontFamily: string | null, fontWeight: string | null, fontStyle: string | null): Typeface {
+	let style = Typeface.NORMAL
+	switch (fontWeight) {
+		case 'bold':
+		case '700':
+		case '800':
+		case '900':
+			style = style | Typeface.BOLD
+			break
+	}
+	if (fontStyle == 'italic') {
+		style = style | Typeface.ITALIC
+	}
+
+	const baseTypeface = fontFamily != null && fontFamily != '' ? UTSAndroid.getFontFamily(fontFamily) : null
+	return baseTypeface != null
+		? Typeface.create(baseTypeface, style)
+		: Typeface.defaultFromStyle(style)
+}
+
+function createAndroidCursorDrawable(editText: EditText, color: Int): GradientDrawable {
+	const density = editText.getResources().getDisplayMetrics().density
+	const cursorWidth = Math.max(1, Math.round(2 * density))
+	const cursorDrawable = new GradientDrawable()
+	cursorDrawable.setShape(GradientDrawable.RECTANGLE)
+	cursorDrawable.setSize(cursorWidth.toInt(), -1)
+	cursorDrawable.setColor(color)
+	return cursorDrawable
+}
+
+function applyAndroidCursorDrawable(editText: EditText, cursorDrawable: GradientDrawable, color: Int) {
+	cursorDrawable.setColor(color)
+	if (Build.VERSION.SDK_INT >= 29) {
+		editText.setTextCursorDrawable(cursorDrawable)
+	} else {
+		try {
+			const textViewClass = Class.forName('android.widget.TextView')
+			const mEditor = textViewClass.getDeclaredField('mEditor')
+			mEditor.setAccessible(true)
+			const editor = mEditor.get(editText)
+			try {
+				const drawableForCursor = editor.javaClass.getDeclaredField('mDrawableForCursor')
+				drawableForCursor.setAccessible(true)
+				drawableForCursor.set(editor, cursorDrawable)
+			} catch (e: Exception) {
+				try {
+					const cursorDrawables = editor.javaClass.getDeclaredField('mCursorDrawable')
+					cursorDrawables.setAccessible(true)
+					const drawables = arrayOfNulls<Drawable>(2)
+					drawables[0] = cursorDrawable
+					drawables[1] = cursorDrawable
+					cursorDrawables.set(editor, drawables)
+				} catch (ignored: Exception) {
+					// Cursor drawable is a private implementation detail on old Android versions.
+				}
+			}
+		} catch (ignored: Exception) {
+			// Keep highlight color even when the private cursor field is unavailable.
+		}
+	}
+	editText.setHighlightColor(color)
+}
+
+
+class UniAndroidAdjustPositionParentSnapshot {
+	index: number = -1
+	y: number = 0
+	height: number = 0
+	scrollTop: number = 0
+	scrollLeft: number = 0
+	scrollHeight: number = 0
+}
+
+class UniAndroidAdjustPositionParentPlan {
+	index: number = -1
+	scrollTop: number = 0
+}
+
+class UniAndroidAdjustPositionPlan {
+	shouldAdjust: boolean = false
+	parentPlans: UniAndroidAdjustPositionParentPlan[] = []
+	rootTranslateY: number = 0
+}
+
+type UniAndroidCursorBottomOffsetResolver = (elementHeight: number) => number
+
+function shouldTraceAndroidInputAdjust(tagName: string): boolean {
+	return tagName.toUpperCase() == 'INPUT'
+}
+
+function logAndroidInputAdjust(message: string) {
+}
+
+function shouldTraceAndroidTextareaAdjust(tagName: string): boolean {
+	return tagName.toUpperCase() == 'TEXTAREA'
+}
+
+function logAndroidTextareaAdjust(message: string) {
+}
+
+function summarizeAndroidParentSnapshots(parents: UniAndroidAdjustPositionParentSnapshot[]): string {
+	if (parents.length == 0) {
+		return '[]'
+	}
+	let summary = ''
+	for (let i = 0; i < parents.length; i++) {
+		const parent = parents[i]
+		if (i > 0) {
+			summary += ';'
+		}
+		summary += '#' + parent.index
+			+ '(y=' + parent.y
+			+ ',h=' + parent.height
+			+ ',top=' + parent.scrollTop
+			+ ',scrollH=' + parent.scrollHeight
+			+ ')'
+	}
+	return summary
+}
+
+function summarizeAndroidParentPlans(parentPlans: UniAndroidAdjustPositionParentPlan[]): string {
+	if (parentPlans.length == 0) {
+		return '[]'
+	}
+	let summary = ''
+	for (let i = 0; i < parentPlans.length; i++) {
+		const parentPlan = parentPlans[i]
+		if (i > 0) {
+			summary += ';'
+		}
+		summary += '#' + parentPlan.index + '=>top=' + parentPlan.scrollTop
+	}
+	return summary
+}
+
+function createAndroidAdjustPositionPlan(
+	windowHeight: number,
+	keyboardHeight: number,
+	elementY: number,
+	targetBottomOffset: number,
+	cursorSpacing: number,
+	parents: UniAndroidAdjustPositionParentSnapshot[],
+	allowRootTranslate: boolean,
+	allowRootTranslateAfterParentScroll: boolean,
+	maxAdjustDistance: number
+): UniAndroidAdjustPositionPlan {
+	const plan = new UniAndroidAdjustPositionPlan()
+	const targetBottomY = elementY + targetBottomOffset
+	let needMoreScrollDistance = keyboardHeight + cursorSpacing - (windowHeight - targetBottomY)
+	if (maxAdjustDistance >= 0) {
+		needMoreScrollDistance = Math.min(needMoreScrollDistance, maxAdjustDistance)
+	}
+	if (needMoreScrollDistance <= 0) {
+		return plan
+	}
+
+	plan.shouldAdjust = true
+
+	if (parents.length > 0) {
+		const lastParent = parents[parents.length - 1]
+		if (windowHeight - lastParent.y - targetBottomOffset >= keyboardHeight) {
+			for (let i = 0; i < parents.length; i++) {
+				const parent = parents[i]
+				const canMoreScrollDistance = parent.scrollHeight - parent.scrollTop - parent.height
+				if (canMoreScrollDistance > 0) {
+					let shouldScrollDistance = canMoreScrollDistance
+					if (canMoreScrollDistance > needMoreScrollDistance) {
+						shouldScrollDistance = needMoreScrollDistance
+					}
+					const parentPlan = new UniAndroidAdjustPositionParentPlan()
+					parentPlan.index = parent.index
+					parentPlan.scrollTop = parent.scrollTop + shouldScrollDistance
+					plan.parentPlans.push(parentPlan)
+					needMoreScrollDistance = Math.max(0, needMoreScrollDistance - shouldScrollDistance)
+					if (needMoreScrollDistance <= 0) {
+						break
+					}
+				}
+			}
+		}
+	}
+
+	const changedScrollParents = plan.parentPlans.length > 0
+	const hasScrollParents = parents.length > 0
+	if (needMoreScrollDistance > 0 && allowRootTranslate) {
+		if (!hasScrollParents || !changedScrollParents || allowRootTranslateAfterParentScroll) {
+			plan.rootTranslateY = needMoreScrollDistance
+		}
+	}
+
+	return plan
+}
+
+function isScrollAbleTagName(tagName: string): boolean {
+	const normalizedTagName = tagName.toUpperCase()
+	return normalizedTagName == 'SCROLL-VIEW'
+		|| normalizedTagName == 'SCROLLVIEW'
+		|| normalizedTagName.indexOf('SCROLL-VIEW') >= 0
+		|| normalizedTagName.indexOf('SCROLLVIEW') >= 0
+		|| normalizedTagName == 'LIST-VIEW'
+		|| normalizedTagName == 'LISTVIEW'
+		|| normalizedTagName.indexOf('LIST-VIEW') >= 0
+		|| normalizedTagName.indexOf('LISTVIEW') >= 0
+		|| normalizedTagName == 'WEB-VIEW'
+		|| normalizedTagName == 'WEBVIEW'
+		|| normalizedTagName.indexOf('WEB-VIEW') >= 0
+		|| normalizedTagName.indexOf('WEBVIEW') >= 0
+}
+
+class UniAndroidAdjustPositionHelper {
+	private static activeHelper: UniAndroidAdjustPositionHelper | null = null
+	private static sessionPageBodyView: View | null = null
+	private static sessionPageBodyOriginTranslationY: number = 0
+	private element: UniNativeViewElement
+	private resolveCursorBottomOffset: UniAndroidCursorBottomOffsetResolver = (elementHeight: number): number => {
+		return Math.max(0, elementHeight)
+	}
+	private useLargerAncestorRect: boolean = true
+	private preferFarthestLargerAncestorRect: boolean = false
+	private allowRootTranslateAfterParentScroll: boolean = false
+	private traceCategory: string = ''
+	private adjustDistanceReduction: number = 0
+	private scrollAbleParents: UniElement[] = []
+	private hasCollectedScrollAbleParents: boolean = false
+	private resetPosition: () => void = () => {}
+	private hasLocalAdjustment: boolean = false
+
+	constructor(element: UniNativeViewElement, resolveCursorBottomOffset: UniAndroidCursorBottomOffsetResolver) {
+		this.element = element
+		this.resolveCursorBottomOffset = resolveCursorBottomOffset
+	}
+
+	setCursorBottomOffsetResolver(resolveCursorBottomOffset: UniAndroidCursorBottomOffsetResolver) {
+		this.resolveCursorBottomOffset = resolveCursorBottomOffset
+	}
+
+	setAdjustDistanceReduction(value: number) {
+		this.adjustDistanceReduction = Math.max(0, value)
+	}
+
+	setUseLargerAncestorRect(value: boolean) {
+		this.useLargerAncestorRect = value
+	}
+
+	setPreferFarthestLargerAncestorRect(value: boolean) {
+		this.preferFarthestLargerAncestorRect = value
+	}
+
+	setAllowRootTranslateAfterParentScroll(value: boolean) {
+		this.allowRootTranslateAfterParentScroll = value
+	}
+
+	setTraceCategory(value: string) {
+		this.traceCategory = value
+	}
+
+	private shouldTrace(): boolean {
+		return shouldTraceAndroidInputAdjust(this.element.tagName)
+			|| shouldTraceAndroidTextareaAdjust(this.element.tagName)
+	}
+
+	private trace(message: string) {
+		const tagName = this.element.tagName
+		if (this.traceCategory == 'textarea' || shouldTraceAndroidTextareaAdjust(tagName)) {
+			logAndroidTextareaAdjust('helper tag=' + tagName + ' ' + message)
+			return
+		}
+		logAndroidInputAdjust('helper tag=' + tagName + ' ' + message)
+	}
+
+	prepareForEditing() {
+		this.collectScrollAbleParents()
+		this.captureSessionPageBodyIfNeeded()
+	}
+
+	adjustForKeyboardHeight(keyboardHeight: number, cursorSpacing: number) {
+		this.collectScrollAbleParents()
+		this.captureSessionPageBodyIfNeeded()
+		if (UniAndroidAdjustPositionHelper.activeHelper != null && UniAndroidAdjustPositionHelper.activeHelper !== this) {
+			UniAndroidAdjustPositionHelper.activeHelper!.clearLocalResetPosition()
+		}
+		this.restoreSessionPageBodyTranslation()
+		UniAndroidAdjustPositionHelper.activeHelper = this
+		this.resetElementPosition()
+		if (keyboardHeight <= 0) {
+			return
+		}
+
+		const logicalWindowHeight = this.element.uniPage.height
+		const pageBodyTop = this.element.uniPage.pageBody.top
+		const pageBodyBottom = this.element.uniPage.pageBody.bottom
+		const pageBodyHeight = this.element.uniPage.pageBody.height
+		const elementRect = this.element.getBoundingClientRect()
+		const boundingClientRect = this.resolveAdjustTargetRect(elementRect)
+		const resolvedCursorBottomOffset = this.resolveCursorBottomOffset(boundingClientRect.height)
+		const maxCursorBottomOffset = Math.max(0, boundingClientRect.height)
+		const cursorBottomOffset = maxCursorBottomOffset > 0
+			? Math.min(Math.max(0, resolvedCursorBottomOffset), maxCursorBottomOffset)
+			: Math.max(0, resolvedCursorBottomOffset)
+		const maxSafeSpacing = Math.max(0, pageBodyHeight - keyboardHeight - cursorBottomOffset)
+		const effectiveCursorSpacing = Math.min(Math.max(0, cursorSpacing), maxSafeSpacing)
+		const elementBottom = boundingClientRect.y + boundingClientRect.height
+		const adjustWindowHeight = pageBodyHeight
+		const allowRootTranslate = boundingClientRect.height > 0 && boundingClientRect.y < adjustWindowHeight && elementBottom > 0
+		const nativeWindowHeight = this.resolveNativeWindowHeight()
+		const logicalToNativeScale = resolveAndroidLogicalToNativeScale(nativeWindowHeight, logicalWindowHeight)
+		const rectYPx = convertAndroidLogicalToNativePx(boundingClientRect.y, nativeWindowHeight, logicalWindowHeight)
+		const rectHeightPx = convertAndroidLogicalToNativePx(boundingClientRect.height, nativeWindowHeight, logicalWindowHeight)
+		const keyboardHeightPx = convertAndroidLogicalToNativePx(keyboardHeight, nativeWindowHeight, logicalWindowHeight)
+		const cursorBottomOffsetPx = convertAndroidLogicalToNativePx(cursorBottomOffset, nativeWindowHeight, logicalWindowHeight)
+		const cursorSpacingPx = convertAndroidLogicalToNativePx(effectiveCursorSpacing, nativeWindowHeight, logicalWindowHeight)
+		const allowRootTranslateNative = rectHeightPx > 0 && rectYPx < nativeWindowHeight && rectYPx + rectHeightPx > 0
+		const parentSnapshots: UniAndroidAdjustPositionParentSnapshot[] = []
+		for (let i = 0; i < this.scrollAbleParents.length; i++) {
+			const parentElement = this.scrollAbleParents[i]
+			const parentRect = parentElement.getBoundingClientRect()
+			const snapshot = new UniAndroidAdjustPositionParentSnapshot()
+			snapshot.index = i
+			snapshot.y = parentRect.y
+			snapshot.height = parentRect.height
+			snapshot.scrollTop = parentElement.scrollTop
+			snapshot.scrollLeft = parentElement.scrollLeft
+			snapshot.scrollHeight = parentElement.scrollHeight
+			parentSnapshots.push(snapshot)
+		}
+		const maxAdjustDistance = Math.max(0, boundingClientRect.y - boundingClientRect.height)
+		const plan = createAndroidAdjustPositionPlan(
+			adjustWindowHeight,
+			keyboardHeight,
+			boundingClientRect.y,
+			cursorBottomOffset,
+			effectiveCursorSpacing,
+			parentSnapshots,
+			allowRootTranslate,
+			this.allowRootTranslateAfterParentScroll,
+			maxAdjustDistance
+		)
+		const restorePlan = createAndroidAdjustPositionPlan(
+			adjustWindowHeight,
+			0,
+			boundingClientRect.y,
+			cursorBottomOffset,
+			0,
+			parentSnapshots,
+			false,
+			false,
+			maxAdjustDistance
+		)
+		let remainingReduction = this.adjustDistanceReduction
+		if (remainingReduction > 0 && plan.shouldAdjust) {
+			for (let i = plan.parentPlans.length - 1; i >= 0 && remainingReduction > 0; i--) {
+				const parentPlan = plan.parentPlans[i]
+				const parentSnapshot = parentSnapshots[parentPlan.index]
+				const originalDelta = Math.max(0, parentPlan.scrollTop - parentSnapshot.scrollTop)
+				const reducedDelta = Math.max(0, originalDelta - remainingReduction)
+				remainingReduction -= (originalDelta - reducedDelta)
+				parentPlan.scrollTop = parentSnapshot.scrollTop + reducedDelta
+			}
+			if (remainingReduction > 0 && plan.rootTranslateY > 0) {
+				const reducedRootTranslateY = Math.max(0, plan.rootTranslateY - remainingReduction)
+				remainingReduction -= (plan.rootTranslateY - reducedRootTranslateY)
+				plan.rootTranslateY = reducedRootTranslateY
+			}
+		}
+		this.trace(
+			'adjust logicalWindowHeight=' + logicalWindowHeight
+				+ ' pageBodyTop=' + pageBodyTop
+				+ ' pageBodyBottom=' + pageBodyBottom
+				+ ' pageBodyHeight=' + pageBodyHeight
+				+ ' adjustWindowHeight=' + adjustWindowHeight
+				+ ' keyboardHeight=' + keyboardHeight
+				+ ' elementRectY=' + elementRect.y
+				+ ' elementRectHeight=' + elementRect.height
+				+ ' rectY=' + boundingClientRect.y
+				+ ' rectHeight=' + boundingClientRect.height
+				+ ' cursorBottomOffset=' + cursorBottomOffset
+				+ ' cursorSpacing=' + effectiveCursorSpacing
+				+ ' allowRootTranslate=' + allowRootTranslate
+				+ ' nativeWindowHeight=' + nativeWindowHeight
+				+ ' rectYPx=' + rectYPx
+				+ ' rectHeightPx=' + rectHeightPx
+				+ ' keyboardHeightPx=' + keyboardHeightPx
+				+ ' cursorBottomOffsetPx=' + cursorBottomOffsetPx
+				+ ' cursorSpacingPx=' + cursorSpacingPx
+				+ ' allowRootTranslateNative=' + allowRootTranslateNative
+				+ ' maxAdjustDistance=' + maxAdjustDistance
+				+ ' adjustDistanceReduction=' + this.adjustDistanceReduction
+				+ ' remainingReduction=' + remainingReduction
+				+ ' parents=' + summarizeAndroidParentSnapshots(parentSnapshots)
+				+ ' plans=' + summarizeAndroidParentPlans(plan.parentPlans)
+				+ ' restorePlans=' + summarizeAndroidParentPlans(restorePlan.parentPlans)
+				+ ' rootTranslateY=' + plan.rootTranslateY
+				+ ' shouldAdjust=' + plan.shouldAdjust
+		)
+		if (!plan.shouldAdjust) {
+			return
+		}
+
+		for (let i = 0; i < plan.parentPlans.length; i++) {
+			const parentPlan = plan.parentPlans[i]
+			const parentElement = this.scrollAbleParents[parentPlan.index]
+			const nativeScrollLeft = parentElement.scrollLeft * logicalToNativeScale
+			const nativeScrollTop = parentPlan.scrollTop * logicalToNativeScale
+			this.trace('applyParentScroll index=' + parentPlan.index + ' logicalTop=' + parentPlan.scrollTop + ' nativeTop=' + nativeScrollTop)
+			parentElement.scrollTo(nativeScrollLeft, nativeScrollTop)
+		}
+		const adjustedElementRect = this.element.getBoundingClientRect()
+		const adjustedTargetRect = this.resolveAdjustTargetRect(adjustedElementRect)
+		let adjustedParents = ''
+		for (let i = 0; i < this.scrollAbleParents.length; i++) {
+			const parentElement = this.scrollAbleParents[i]
+			if (i > 0) {
+				adjustedParents += ';'
+			}
+			adjustedParents += '#' + i + '(top=' + parentElement.scrollTop + ',left=' + parentElement.scrollLeft + ')'
+		}
+		this.trace('postAdjust elementRectY=' + adjustedElementRect.y + ' elementRectHeight=' + adjustedElementRect.height + ' targetRectY=' + adjustedTargetRect.y + ' targetRectHeight=' + adjustedTargetRect.height + ' parents=' + adjustedParents)
+
+		if (plan.rootTranslateY > 0) {
+			const pageBodyView = UniAndroidAdjustPositionHelper.sessionPageBodyView
+			const pageBodyOriginTranslationY = UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY
+			const rootTranslateYPx = convertAndroidLogicalToNativePx(plan.rootTranslateY, nativeWindowHeight, logicalWindowHeight)
+			pageBodyView?.setTranslationY((-rootTranslateYPx).toFloat())
+			this.trace('applyPageBodyTranslation logical=' + plan.rootTranslateY + ' native=' + rootTranslateYPx)
+			this.resetPosition = () => {
+				for (let i = 0; i < plan.parentPlans.length; i++) {
+					const parentPlan = plan.parentPlans[i]
+					const parentElement = this.scrollAbleParents[parentPlan.index]
+					const parentSnapshot = parentSnapshots[parentPlan.index]
+					const restoreScrollTop = this.resolveRestoreScrollTop(parentPlan.index, parentSnapshot, restorePlan)
+					parentElement.scrollTo(parentSnapshot.scrollLeft * logicalToNativeScale, restoreScrollTop * logicalToNativeScale)
+				}
+				pageBodyView?.setTranslationY(pageBodyOriginTranslationY.toFloat())
+			}
+		} else {
+			this.resetPosition = () => {
+				for (let i = 0; i < plan.parentPlans.length; i++) {
+					const parentPlan = plan.parentPlans[i]
+					const parentElement = this.scrollAbleParents[parentPlan.index]
+					const parentSnapshot = parentSnapshots[parentPlan.index]
+					const restoreScrollTop = this.resolveRestoreScrollTop(parentPlan.index, parentSnapshot, restorePlan)
+					parentElement.scrollTo(parentSnapshot.scrollLeft * logicalToNativeScale, restoreScrollTop * logicalToNativeScale)
+				}
+			}
+		}
+		this.hasLocalAdjustment = true
+	}
+
+	private resolveRestoreScrollTop(parentIndex: number, parentSnapshot: UniAndroidAdjustPositionParentSnapshot, restorePlan: UniAndroidAdjustPositionPlan): number {
+		for (let i = 0; i < restorePlan.parentPlans.length; i++) {
+			const restoreParentPlan = restorePlan.parentPlans[i]
+			if (restoreParentPlan.index == parentIndex) {
+				return restoreParentPlan.scrollTop
+			}
+		}
+		return parentSnapshot.scrollTop
+	}
+
+	resetElementPosition() {
+		this.resetPosition()
+		this.clearLocalResetPosition()
+		if (UniAndroidAdjustPositionHelper.activeHelper === this) {
+			UniAndroidAdjustPositionHelper.activeHelper = null
+		}
+	}
+
+	resetSessionPosition() {
+		this.resetElementPosition()
+		this.clearSharedSessionState(true)
+	}
+
+	destroy() {
+		this.resetSessionPosition()
+		this.scrollAbleParents.length = 0
+		this.hasCollectedScrollAbleParents = false
+	}
+
+	private clearLocalResetPosition() {
+		this.resetPosition = () => {}
+		this.hasLocalAdjustment = false
+	}
+
+	private captureSessionPageBodyIfNeeded() {
+		const pageBodyView = this.resolvePageBodyView()
+		if (UniAndroidAdjustPositionHelper.sessionPageBodyView != null
+			&& UniAndroidAdjustPositionHelper.sessionPageBodyView !== pageBodyView) {
+			this.clearSharedSessionState(true)
+		}
+		if (UniAndroidAdjustPositionHelper.sessionPageBodyView != null) {
+			return
+		}
+		UniAndroidAdjustPositionHelper.sessionPageBodyView = pageBodyView
+		UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY = pageBodyView?.getTranslationY() ?? 0
+	}
+
+	private resolveAdjustTargetRect(elementRect: DOMRect): DOMRect {
+		if (!this.useLargerAncestorRect) {
+			return elementRect
+		}
+		let currentElement = this.element.parentElement
+		let depth = 0
+		let matchedRect: DOMRect | null = null
+		let matchedTag = ''
+		let matchedDepth = -1
+		while (currentElement != null) {
+			const currentRect = currentElement.getBoundingClientRect()
+			if (currentRect.height > elementRect.height) {
+				matchedRect = currentRect
+				matchedTag = currentElement.tagName
+				matchedDepth = depth
+				if (!this.preferFarthestLargerAncestorRect) {
+					break
+				}
+			}
+			if (isScrollAbleTagName(currentElement.tagName)) {
+				break
+			}
+			currentElement = currentElement.parentElement
+			depth += 1
+		}
+		if (matchedRect != null) {
+			this.trace(
+				'resolveAdjustTargetRect tag=' + this.element.tagName
+					+ ' elementY=' + elementRect.y
+					+ ' elementHeight=' + elementRect.height
+					+ ' ancestorDepth=' + matchedDepth
+					+ ' ancestorTag=' + matchedTag
+					+ ' ancestorY=' + matchedRect.y
+					+ ' ancestorHeight=' + matchedRect.height
+					+ ' preferFarthest=' + this.preferFarthestLargerAncestorRect
+			)
+			return matchedRect
+		}
+		return elementRect
+	}
+
+	private resolveNativeWindowHeight(): number {
+		const activity = this.element.getAndroidActivity()
+		if (activity == null) {
+			return 0
+		}
+		const decorView = activity.getWindow().getDecorView()
+		return decorView?.getHeight() ?? 0
+	}
+
+	private restoreSessionPageBodyTranslation() {
+		if (UniAndroidAdjustPositionHelper.sessionPageBodyView == null) {
+			return
+		}
+		UniAndroidAdjustPositionHelper.sessionPageBodyView!.setTranslationY(
+			UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY.toFloat()
+		)
+	}
+
+	private clearSharedSessionState(restorePageBodyTranslation: boolean) {
+		if (restorePageBodyTranslation) {
+			this.restoreSessionPageBodyTranslation()
+		}
+		UniAndroidAdjustPositionHelper.sessionPageBodyView = null
+		UniAndroidAdjustPositionHelper.sessionPageBodyOriginTranslationY = 0
+		if (UniAndroidAdjustPositionHelper.activeHelper === this) {
+			UniAndroidAdjustPositionHelper.activeHelper = null
+		}
+	}
+
+	private resolvePageBodyView(): View | null {
+		let currentElement: UniElement | null = this.element
+		let bodyElement: UniElement | null = currentElement
+		while (currentElement?.parentElement != null) {
+			bodyElement = currentElement
+			currentElement = currentElement.parentElement
+		}
+		return bodyElement?.getAndroidView<View>() ?? null
+	}
+
+	private collectScrollAbleParents() {
+		if (this.hasCollectedScrollAbleParents) {
+			return
+		}
+
+		let currentParent = this.element.parentElement
+		while (currentParent != null) {
+			if (isScrollAbleTagName(currentParent.tagName)) {
+				this.scrollAbleParents.push(currentParent)
+			}
+			currentParent = currentParent.parentElement
+		}
+		this.hasCollectedScrollAbleParents = true
+	}
+}
+
+/**
+ * 输入类型映射
+ */
+const INPUT_TYPES: Map<string, Int> = new Map([
+	['text', InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL],
+	['number', InputType.TYPE_CLASS_NUMBER],
+	['digit', InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL],
+	['tel', InputType.TYPE_CLASS_PHONE],
+	['email', InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS],
+	['url', InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI],
+	['password', InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD],
+	['safe-password', InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD],
+])
+
+/**
+ * 确认按钮类型映射
+ */
+const CONFIRM_TYPES: Map<string, Int> = new Map([
+	['return', EditorInfo.IME_FLAG_NO_ENTER_ACTION],
+	['send', EditorInfo.IME_ACTION_SEND],
+	['search', EditorInfo.IME_ACTION_SEARCH],
+	['next', EditorInfo.IME_ACTION_NEXT],
+	['go', EditorInfo.IME_ACTION_GO],
+	['done', EditorInfo.IME_ACTION_DONE],
+])
+
+
+/**
+ * Android 端原生输入框视图实现
+ */
+export class NativeInputView implements UniAndroidKeyboardClient {
+	/** 原生视图元素 */
+	private element: UniNativeViewElement
+	/** 原生 EditText 控件 */
+	private editText: EditText | null = null
+	/** 最大输入长度 */
+	private maxLength: number = -1
+	/** 开始编辑时的值，用于判断是否触发 change 事件 */
+	private beginEditValue: string = ""
+	/** 是否正在聚焦 */
+	private isFocusing: boolean = false
+	/** 是否保持键盘 */
+	private holdKeyboard: boolean = false
+	/** 是否自动调整位置 */
+	private adjustPosition: boolean = true
+	/** 键盘高度 */
+	private keyboardHeight: number = 0
+	/** 根视图 */
+	private rootView: View | null = null
+	/** 光标与键盘距离 */
+	private cursorSpacing: number = 0
+	/** 待应用的光标起始位置 */
+	private pendingSelectionStart: number = -1
+	/** 待应用的光标结束位置 */
+	private pendingSelectionEnd: number = -1
+	/** 待应用的 cursor 位置，-2 表示无请求，-1 表示末尾 */
+	private pendingCursorPosition: number = -2
+	/** 是否已调度光标请求 */
+	private pendingSelectionApply: boolean = false
+	/** 是否为密码类型 */
+	private isPassword: boolean = false
+	/** 当前输入类型 */
+	private currentType: string = 'text'
+	/** 当前文字水平对齐方式 */
+	private textAlignValue: string = 'left'
+	private initialFontSize: string | null = null
+	private initialColor: string | null = null
+	private initialLetterSpacing: string | null = null
+	private initialFontWeight: string | null = null
+	private initialFontStyle: string | null = null
+	private initialFontFamily: string | null = null
+	private initialTextAlign: string | null = null
+	private fontWeightStyleValue: string | null = null
+	private fontStyleStyleValue: string | null = null
+	private fontFamilyStyleValue: string | null = null
+	/** 是否已调度 input scroll 同步 */
+	private pendingInputTextScroll: boolean = false
+	/** 是否正在批量更新样式 */
+	private isBatchUpdating: boolean = false
+	/** 批量更新结束后是否需要同步高度 */
+	private pendingBatchHeightRefresh: boolean = false
+	private pendingBatchTypefaceApply: boolean = false
+	/** 光标默认颜色 */
+	private defaultCursorColor: string = '#3393E2'
+	/** 光标颜色 */
+	private cursorColorValue: string = ''
+	/** 光标 drawable */
+	private cursorDrawable: GradientDrawable | null = null
+	/** 页面偏移辅助 */
+	private adjustPositionHelper: UniAndroidAdjustPositionHelper | null = null
+	private keyboardManager: UniAndroidKeyboardManager | null = null
+	private pendingFocusDispatch: boolean = false
+	private focusRequestRevision: number = 0
+	private blurFocusSink: View | null = null
+	private hasInputMeasureCallback: boolean = false
+	private firstFramePreDrawBlockCount: number = 0
+	private lastMeasuredInputHeight: number = -1
+	private destroyed: boolean = false
+
+	constructor(
+		element: UniNativeViewElement,
+		initialFontSize: string | null,
+		initialColor: string | null,
+		initialLetterSpacing: string | null,
+		initialFontWeight: string | null,
+		initialFontStyle: string | null,
+		initialFontFamily: string | null,
+		initialTextAlign: string | null,
+		initialValue: string,
+		initialType: string,
+		initialDisabled: any,
+		initialSelectionStart: number,
+		initialSelectionEnd: number,
+		initialAutoFocus: any,
+		initialFocus: any,
+		initialCursor: number,
+		initialConfirmType: string,
+		initialConfirmHold: any,
+		initialAdjustPosition: any,
+		initialHoldKeyboard: any,
+		initialPassword: any,
+		initialMaxLength: number,
+		initialCursorColor: string,
+		initialCursorSpacing: number
+	) {
+		this.element = element
+		this.initialFontSize = initialFontSize
+		this.initialColor = initialColor
+		this.initialLetterSpacing = initialLetterSpacing
+		this.initialFontWeight = initialFontWeight
+		this.initialFontStyle = initialFontStyle
+		this.initialFontFamily = initialFontFamily
+		this.initialTextAlign = initialTextAlign
+		let parentElement = this.element.parentElement
+		while (parentElement != null) {
+			if (parentElement instanceof UniInputElement) {
+				parentElement.inputView = new WeakReference(this)
+				break
+			}
+			parentElement = parentElement.parentElement
+		}
+		this.adjustPositionHelper = new UniAndroidAdjustPositionHelper(this.element, (elementHeight: number): number => {
+			return Math.max(0, elementHeight)
+		})
+		this.adjustPositionHelper?.setAllowRootTranslateAfterParentScroll(true)
+
+		this.bindView()
+		this.applyInitialInputProps(
+			initialValue,
+			initialType,
+			initialDisabled,
+			initialSelectionStart,
+			initialSelectionEnd,
+			initialAutoFocus,
+			initialFocus,
+			initialCursor,
+			initialConfirmType,
+			initialConfirmHold,
+			initialAdjustPosition,
+			initialHoldKeyboard,
+			initialPassword,
+			initialMaxLength,
+			initialCursorColor,
+			initialCursorSpacing
+		)
+	}
+
+	private applyInitialInputProps(
+		value: string,
+		type: string,
+		disabled: any,
+		selectionStart: number,
+		selectionEnd: number,
+		autoFocus: any,
+		focus: any,
+		cursor: number,
+		confirmType: string,
+		confirmHold: any,
+		adjustPosition: any,
+		holdKeyboard: any,
+		password: any,
+		maxLength: number,
+		cursorColor: string,
+		cursorSpacing: number
+	) {
+		this.beginUpdateBatch()
+		this.updateValue(value)
+		this.updateType(type)
+		this.updateDisabled(disabled)
+		this.updateSelectionStart(selectionStart)
+		this.updateSelectionEnd(selectionEnd)
+		this.updateAutoFocus(autoFocus)
+		this.updateFocus(focus)
+		this.updateCursor(cursor)
+		this.updateConfirmType(confirmType)
+		this.updateConfirmHold(confirmHold)
+		this.updateAdjustPosition(adjustPosition)
+		this.updateHoldKeyboard(holdKeyboard)
+		this.updatePassword(password)
+		this.updateMaxLength(maxLength)
+		this.updateCursorColor(cursorColor)
+		this.updateCursorSpacing(cursorSpacing)
+		this.endUpdateBatch()
+	}
+
+	private ensureInputMeasureCallback() {
+		if (this.hasInputMeasureCallback) return
+		this.hasInputMeasureCallback = true
+		this.element.setMeasureCallback((res: UniNativeMeasureSpecification): UniNativeMeasureSize => {
+			const result = this.resolveMeasuredInputHeight(res)
+			this.lastMeasuredInputHeight = result
+			return UniNativeMeasureSize(res.width, result.toFloat())
+		})
+	}
+
+	private trace(message: string) {
+		logAndroidInputAdjust('native ' + message)
+	}
+
+	private isInsideListView(): boolean {
+		let parentElement = this.element.parentElement
+		while (parentElement != null) {
+			const tagName = parentElement.tagName.toUpperCase()
+			if (tagName == 'LIST-VIEW' || tagName == 'LISTVIEW' || tagName.indexOf('LIST-VIEW') >= 0 || tagName.indexOf('LISTVIEW') >= 0) {
+				return true
+			}
+			parentElement = parentElement.parentElement
+		}
+		return false
+	}
+
+	getKeyboardLogicalWindowHeight(): number {
+		return this.element.uniPage.height
+	}
+
+	onKeyboardHeightChangedFromManager(height: number, duration: number) {
+		this.keyboardHeight = height
+		if (this.pendingFocusDispatch && height > 0) {
+			this.pendingFocusDispatch = false
+			this.dispatchFocus(height, this.editText?.getText()?.toString() ?? "")
+		}
+		this.dispatchKeyboardHeightChange(height, duration)
+		if (height <= 0) {
+			this.adjustPositionHelper?.resetSessionPosition()
+			return
+		}
+		if (this.adjustPosition && this.isFocusing) {
+			this.trace('keyboardManager invokingAdjust keyboardHeight=' + height + ' cursorSpacing=' + this.cursorSpacing)
+			this.adjustPositionHelper?.adjustForKeyboardHeight(height, this.cursorSpacing)
+			this.trace('keyboardManager invokedAdjust keyboardHeight=' + height + ' cursorSpacing=' + this.cursorSpacing)
+		}
+	}
+
+
+	private resolveNativeWindowHeight(): number {
+		if (this.rootView != null) {
+			return this.rootView!.getHeight()
+		}
+		const activity = this.element.getAndroidActivity()
+		if (activity == null) {
+			return 0
+		}
+		const decorView = activity.getWindow().getDecorView()
+		return decorView?.getHeight() ?? 0
+	}
+
+	/**
+	 * 绑定原生视图
+	 */
+	private bindView() {
+		const activity = this.element.getAndroidActivity()
+		if (activity == null) return
+
+		this.editText = new EditText(activity)
+		this.editText!.setBackgroundColor(Color.TRANSPARENT)
+		this.cursorDrawable = createAndroidCursorDrawable(this.editText!, Color.parseColor(this.defaultCursorColor))
+		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, Color.parseColor(this.defaultCursorColor))
+		this.editText!.setTextColor(Color.BLACK)
+		this.editText!.setGravity(Gravity.CENTER_VERTICAL)
+		this.editText!.setPadding(0, 0, 0, 0)
+
+		// 设置单行模式
+		this.editText!.setMaxLines(1)
+		// input 必须保持 Android 单行输入语义，不能通过关闭横向滚动来规避布局问题。
+		this.syncInputSingleLineState()
+		this.applyInitialTextStyleBeforeBind()
+		this.ensureInputMeasureCallback()
+
+		// 添加文本变化监听
+		this.addTextWatcher()
+
+		// 原生 EditText 触摸是“点在当前编辑器内”的最可靠信号，避免全屏后页面 touchEnd 误触发 blur。
+		this.setTouchListener()
+		this.setInputScrollListener()
+
+		// 设置焦点变化监听
+		this.setFocusChangeListener()
+
+		// 设置键盘动作监听
+		this.setEditorActionListener()
+
+		// 绑定原生视图
+		this.element.bindAndroidView(this.editText!)
+		this.installFirstFrameHeightGuard()
+		this.ensureKeyboardLayoutObserver()
+	}
+
+	private installFirstFrameHeightGuard() {
+		const editText = this.editText
+		if (editText == null) return
+
+		const self = this
+		editText.getViewTreeObserver().addOnPreDrawListener(new (class implements ViewTreeObserver.OnPreDrawListener {
+			override onPreDraw(): Boolean {
+				const expectedHeight = self.lastMeasuredInputHeight > 0 ? self.lastMeasuredInputHeight : self.resolveInputSingleLineNativeHeight()
+				let actualHeight = editText.getHeight()
+				const parent = editText.getParent()
+				if (parent instanceof View) {
+					const parentHeight = (parent as View).getHeight()
+					if (actualHeight <= 0 || parentHeight < actualHeight) {
+						actualHeight = parentHeight
+					}
+				}
+
+				if (expectedHeight > 0 && actualHeight < expectedHeight && self.firstFramePreDrawBlockCount < 3) {
+					self.firstFramePreDrawBlockCount++
+					self.invalidateInputMeasure()
+					return false
+				}
+
+				editText.getViewTreeObserver().removeOnPreDrawListener(this)
+				return true
+			}
+		}))
+	}
+
+	private applyInitialTextStyleBeforeBind() {
+		if (this.editText == null) return
+
+		this.updateFontSize(this.initialFontSize)
+		this.updateColor(this.initialColor)
+		this.updateLetterSpacing(this.initialLetterSpacing)
+		this.fontWeightStyleValue = this.initialFontWeight
+		this.fontStyleStyleValue = this.initialFontStyle
+		this.fontFamilyStyleValue = this.initialFontFamily
+		this.applyTypeface()
+		this.updateTextAlign(this.initialTextAlign)
+	}
+
+	private setTouchListener() {
+		if (this.editText == null) return
+		const self = this
+		this.editText!.setOnTouchListener(new (class implements View.OnTouchListener {
+			override onTouch(v: View, event: MotionEvent): Boolean {
+				const action = event.getActionMasked()
+				if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+					UniAndroidEditorTouchCache.recordNativeTouch(self.element)
+				}
+				return false
+			}
+		}))
+	}
+
+	private setInputScrollListener() {
+		if (this.editText == null || Build.VERSION.SDK_INT < 23) return
+		this.editText!.setOnScrollChangeListener(new (class implements View.OnScrollChangeListener {
+			override onScrollChange(v: View, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
+				if (scrollY != 0 && v instanceof EditText) {
+					(v as EditText).scrollTo(scrollX, 0)
+				}
+			}
+		}))
+	}
+
+	private syncInputSingleLineState() {
+		if (this.editText == null) return
+
+		this.editText!.setSingleLine(true)
+		this.editText!.setMaxLines(1)
+		this.editText!.setHorizontallyScrolling(true)
+		this.applyPasswordTransformationIfNeeded()
+		this.syncInputTextScrollIfNeeded()
+	}
+
+	private isPasswordInputMode(): boolean {
+		return this.isPassword || this.currentType == 'password' || this.currentType == 'safe-password'
+	}
+
+	private applyPasswordTransformationIfNeeded() {
+		if (this.editText == null) return
+
+		if (this.isPasswordInputMode()) {
+			this.editText!.setTransformationMethod(PasswordTransformationMethod.getInstance())
+		} else {
+			this.editText!.setTransformationMethod(HideReturnsTransformationMethod.getInstance())
+		}
+	}
+
+	private shouldSyncInputTextScroll(): boolean {
+		return this.textAlignValue == 'center' || this.textAlignValue == 'right'
+	}
+
+	private syncInputTextScrollIfNeeded() {
+		if (this.shouldSyncInputTextScroll()) {
+			this.scheduleInputTextScrollSync()
+			return
+		}
+		this.syncLeftInputCursorScroll()
+	}
+
+	private syncLeftInputCursorScroll() {
+		const editText = this.editText
+		if (this.destroyed || editText == null || this.textAlignValue != 'left') return
+		const layout = editText.getLayout()
+		if (layout == null) return
+		const hspace = editText.getWidth() - editText.getCompoundPaddingLeft() - editText.getCompoundPaddingRight()
+		if (hspace <= 0) return
+		const textLength = editText.getText()?.length ?? 0
+		let selection = editText.getSelectionEnd()
+		if (selection < 0) {
+			selection = editText.getSelectionStart()
+		}
+		if (selection < 0) {
+			selection = textLength
+		}
+		const offset = Math.min(Math.max(0, selection), textLength).toInt()
+		const line = layout.getLineForOffset(offset)
+		const lineRight = Math.ceil(layout.getLineRight(line))
+		const cursorX = layout.getPrimaryHorizontal(offset)
+		let targetScrollX: number = editText.getScrollX()
+		if (cursorX - targetScrollX > hspace) {
+			targetScrollX = cursorX - hspace
+		} else if (cursorX < targetScrollX) {
+			targetScrollX = cursorX
+		}
+		const maxScrollX = Math.max(0, lineRight - hspace)
+		targetScrollX = Math.min(Math.max(0, targetScrollX), maxScrollX)
+		const nextScrollX = targetScrollX.toInt()
+		if (nextScrollX != editText.getScrollX()) {
+			editText.scrollTo(nextScrollX, 0)
+		}
+	}
+
+	private scheduleInputTextScrollSync() {
+		const editText = this.editText
+		if (editText == null || this.pendingInputTextScroll) return
+
+		this.pendingInputTextScroll = true
+		const self = this
+		editText.post(class implements Runnable {
+			override run() {
+				self.pendingInputTextScroll = false
+				self.applyInputTextScroll()
+			}
+		})
+	}
+
+	private applyInputTextScroll() {
+		const editText = this.editText
+		if (this.destroyed || editText == null || !this.shouldSyncInputTextScroll()) return
+		const layout = editText.getLayout()
+		if (layout == null) return
+
+		const textLength = editText.getText()?.length ?? 0
+		let selection = editText.getSelectionStart()
+		if (selection < 0) {
+			selection = textLength
+		}
+		const offset: Int = Math.min(Math.max(0, selection), textLength).toInt()
+		const line: Int = layout.getLineForOffset(offset)
+		const left = Math.floor(layout.getLineLeft(line))
+		const right = Math.ceil(layout.getLineRight(line))
+		const textWidth = right - left
+		const hspace = editText.getWidth() - editText.getCompoundPaddingLeft() - editText.getCompoundPaddingRight()
+		if (hspace <= 0) return
+
+		let targetScrollX: number = editText.getScrollX()
+		const gravity = editText.getGravity() & Gravity.HORIZONTAL_GRAVITY_MASK
+		if (textWidth <= hspace) {
+			if (gravity == Gravity.CENTER_HORIZONTAL) {
+				targetScrollX = left - (hspace - textWidth) / 2.0
+			} else if (gravity == Gravity.RIGHT) {
+				targetScrollX = right - hspace
+			} else {
+				targetScrollX = left
+			}
+		} else {
+			const cursorX = layout.getPrimaryHorizontal(offset)
+			const minScrollX = left
+			const maxScrollX = right - hspace
+			targetScrollX = cursorX - hspace + 4
+			if (targetScrollX < minScrollX) {
+				targetScrollX = minScrollX
+			} else if (targetScrollX > maxScrollX) {
+				targetScrollX = maxScrollX
+			}
+		}
+		const nextScrollX = targetScrollX.toInt()
+		if (nextScrollX != editText.getScrollX()) {
+			editText.scrollTo(nextScrollX, 0)
+		}
+	}
+
+	/**
+	 * 添加文本变化监听器
+	 */
+	private addTextWatcher() {
+		if (this.editText == null) return
+		const self = this
+		this.editText!.addTextChangedListener(new (class implements TextWatcher {
+			override beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+			
+			override onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+			
+			override afterTextChanged(s: Editable) {
+				if (s == null) return
+				
+				let text = s.toString()
+				
+				// 处理最大长度限制
+				if (self.maxLength >= 0 && text.length > self.maxLength) {
+					text = text.substring(0, self.maxLength)
+					self.editText?.setText(text)
+					self.editText?.setSelection(text.length)
+					return
+				}
+				
+				// 获取光标位置
+				const cursor = self.editText?.getSelectionStart() ?? 0
+				
+				self.syncInputTextScrollIfNeeded()
+				// 派发 input 事件
+				self.dispatchInput(text, cursor)
+			}
+		}))
+	}
+
+	/**
+	 * 设置焦点变化监听器
+	 */
+	private setFocusChangeListener() {
+		if (this.editText == null) return
+
+		const self = this
+		this.editText!.setOnFocusChangeListener(new (class implements View.OnFocusChangeListener {
+			override onFocusChange(v: View, hasFocus: boolean) {
+				if (self.destroyed || self.editText == null) {
+					return
+				}
+				if (hasFocus) {
+					self.isFocusing = true
+					self.applyCursorColorIfNeeded()
+					self.beginEditValue = self.editText?.getText()?.toString() ?? ""
+					self.trace('focus hasFocus=true keyboardHeight=' + self.keyboardHeight + ' adjustPosition=' + self.adjustPosition + ' cursorSpacing=' + self.cursorSpacing)
+					self.ensureKeyboardLayoutObserver()
+					self.keyboardManager?.setFocusedClient(self)
+					self.keyboardHeight = self.keyboardManager?.getKeyboardHeight() ?? self.keyboardHeight
+					self.adjustPositionHelper?.prepareForEditing()
+					if (!self.isInsideListView()) {
+						self.revealFocusedInput()
+					}
+					self.dispatchFocusWhenReady()
+					if (self.keyboardHeight > 0 && self.adjustPosition) {
+						self.trace('focus invokingAdjust keyboardHeight=' + self.keyboardHeight + ' cursorSpacing=' + self.cursorSpacing)
+						self.adjustPositionHelper?.adjustForKeyboardHeight(self.keyboardHeight, self.cursorSpacing)
+						self.trace('focus invokedAdjust keyboardHeight=' + self.keyboardHeight + ' cursorSpacing=' + self.cursorSpacing)
+					}
+				} else {
+					self.isFocusing = false
+					self.pendingFocusDispatch = false
+					const currentValue = self.editText?.getText()?.toString() ?? ""
+					const cursor = self.editText?.getSelectionStart() ?? 0
+					self.trace('focus hasFocus=false keyboardHeight=' + self.keyboardHeight + ' adjustPosition=' + self.adjustPosition + ' cursorSpacing=' + self.cursorSpacing + ' cursor=' + cursor)
+					self.keyboardManager?.notifyBlur(self)
+					self.adjustPositionHelper?.resetElementPosition()
+					
+					// 触发 blur 事件
+					self.dispatchBlur(currentValue, cursor)
+					
+					// 触发 change 事件
+					if (self.beginEditValue != currentValue) {
+						self.dispatchChange(currentValue)
+					}
+					self.beginEditValue = ""
+				}
+			}
+		}))
+	}
+
+	/**
+	 * 设置键盘动作监听器
+	 */
+	private setEditorActionListener() {
+		if (this.editText == null) return
+
+		const self = this
+		this.editText!.setOnEditorActionListener(new (class implements TextView.OnEditorActionListener {
+			override onEditorAction(v: TextView, actionId: Int, event: KeyEvent | null): Boolean {
+				if (actionId == EditorInfo.IME_ACTION_DONE ||
+					actionId == EditorInfo.IME_ACTION_GO ||
+					actionId == EditorInfo.IME_ACTION_SEARCH ||
+					actionId == EditorInfo.IME_ACTION_SEND ||
+					actionId == EditorInfo.IME_ACTION_NEXT) {
+					
+					// 派发 confirm 事件
+					self.dispatchConfirm(self.editText?.getText()?.toString() ?? "")
+					
+					// 如果不是 confirmHold，则收起键盘
+					if (!self.holdKeyboard) {
+						self.hideKeyboard()
+					}
+					return true
+				}
+				return false
+			}
+		}))
+	}
+
+	/**
+	 * 隐藏键盘
+	 */
+	private hideKeyboard() {
+		if (this.editText == null) return
+		
+		const activity = this.element.getAndroidActivity()
+		if (activity == null) return
+
+		const imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+		const editText = this.editText
+		if (editText == null) return
+		editText.postDelayed(class implements Runnable {
+			override run() {
+				imm.hideSoftInputFromWindow(editText.getWindowToken(), 0)
+			}
+		}, 16)
+	}
+
+	/**
+	 * 显示键盘
+	 */
+	private showKeyboard() {
+		if (this.editText == null) return
+		const activity = this.element.getAndroidActivity()
+		if (activity == null) return
+
+		const imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+		const self = this
+		const editText = this.editText
+		if (editText == null) return
+		this.focusRequestRevision += 1
+		const requestRevision = this.focusRequestRevision
+		editText.postDelayed(class implements Runnable {
+			override run() {
+				const currentEditText = self.editText
+				if (self.destroyed || currentEditText == null || requestRevision != self.focusRequestRevision) return
+				currentEditText.requestFocus()
+				if (!self.isInsideListView()) {
+					self.revealFocusedInput()
+				}
+				if (self.destroyed || self.currentType == 'none') {
+					return
+				}
+				imm.showSoftInput(currentEditText, InputMethodManager.SHOW_IMPLICIT)
+			}
+		}, 50)
+	}
+
+	private dispatchFocusWhenReady() {
+		if (this.destroyed || this.editText == null) {
+			return
+		}
+		if (!this.isFocusing) {
+			return
+		}
+		if (this.currentType == 'none' || this.keyboardHeight > 0) {
+			this.pendingFocusDispatch = false
+			this.dispatchFocus(this.keyboardHeight, this.editText?.getText()?.toString() ?? "")
+			return
+		}
+		this.pendingFocusDispatch = true
+		const self = this
+		const editText = this.editText
+		if (editText == null) return
+		editText.postDelayed(class implements Runnable {
+			override run() {
+				const currentEditText = self.editText
+				if (self.destroyed || currentEditText == null || !self.pendingFocusDispatch || !self.isFocusing) {
+					return
+				}
+				self.pendingFocusDispatch = false
+				self.dispatchFocus(self.keyboardHeight, currentEditText.getText()?.toString() ?? "")
+			}
+		}, 180)
+	}
+
+	private ensureKeyboardLayoutObserver() {
+		const rootView = this.resolveKeyboardObserverRootView()
+		if (rootView == null) {
+			this.trace('ensureKeyboardLayoutObserver skip reason=noRootView')
+			return
+		}
+		if (this.keyboardManager != null && this.keyboardManager!.isObservingRootView(rootView)) {
+			return
+		}
+		this.rootView = rootView
+		this.keyboardManager = UniAndroidKeyboardManager.acquire(rootView, this)
+		this.keyboardHeight = this.keyboardManager.getKeyboardHeight()
+		this.trace('ensureKeyboardLayoutObserver attached rootHeight=' + rootView.getHeight())
+	}
+
+	private resolveKeyboardObserverRootView(): View | null {
+		const activity = this.element.getAndroidActivity()
+		if (activity != null) {
+			const decorView = activity.getWindow().getDecorView()
+			if (decorView != null) {
+				this.trace('resolveKeyboardObserverRootView source=decor height=' + decorView.getHeight())
+				return decorView
+			}
+		}
+		if (this.editText == null) {
+			return null
+		}
+		const fallbackRootView = this.editText!.getRootView()
+		if (fallbackRootView != null) {
+			this.trace('resolveKeyboardObserverRootView source=editTextRoot height=' + fallbackRootView.getHeight())
+		}
+		return fallbackRootView
+	}
+
+	private revealFocusedInput() {
+		if (this.editText == null) return
+		const rect = new Rect()
+		this.editText!.getDrawingRect(rect)
+		const elementRect = this.element.getBoundingClientRect()
+		const inputRect = this.resolveInputVisualRect(elementRect)
+		const nativeWindowHeight = this.resolveNativeWindowHeight()
+		const logicalWindowHeight = this.getKeyboardLogicalWindowHeight()
+		const extraTop = elementRect.y - inputRect.y
+		const extraBottom = inputRect.y + inputRect.height - (elementRect.y + elementRect.height)
+		if (extraTop > 0) {
+			rect.top -= Math.ceil(convertAndroidLogicalToNativePx(extraTop, nativeWindowHeight, logicalWindowHeight)).toInt()
+		}
+		if (extraBottom > 0) {
+			rect.bottom += Math.ceil(convertAndroidLogicalToNativePx(extraBottom, nativeWindowHeight, logicalWindowHeight)).toInt()
+		}
+		this.editText!.requestRectangleOnScreen(rect, true)
+	}
+
+	private resolveInputVisualRect(elementRect: DOMRect): DOMRect {
+		let currentElement = this.element.parentElement
+		while (currentElement != null) {
+			if (isScrollAbleTagName(currentElement.tagName)) {
+				break
+			}
+			const currentRect = currentElement.getBoundingClientRect()
+			const currentBottom = currentRect.y + currentRect.height
+			const elementBottom = elementRect.y + elementRect.height
+			if (currentRect.y < elementRect.y || currentBottom > elementBottom || currentRect.height > elementRect.height) {
+				return currentRect
+			}
+			currentElement = currentElement.parentElement
+		}
+		return elementRect
+	}
+
+	getValue(): string {
+		return this.editText?.getText()?.toString() ?? ''
+	}
+
+	getEditText(): EditText | null {
+		return this.editText
+	}
+
+	/**
+	 * 更新输入值
+	 */
+	updateValue(value: string) {
+		if (this.editText == null) return
+		
+		const currentText = this.editText!.getText()?.toString() ?? ""
+		if (currentText == value) return
+		
+		const selectionStart = this.editText!.getSelectionStart()
+		const selectionEnd = this.editText!.getSelectionEnd()
+		this.editText!.setText(value)
+		if (selectionStart >= 0 && selectionEnd >= 0) {
+			const length = this.editText!.getText()?.length ?? 0
+			const start = Math.min(Math.max(0, selectionStart), length).toInt()
+			const end = Math.min(Math.max(0, selectionEnd), length).toInt()
+			this.editText!.setSelection(start, end)
+		}
+		this.syncInputTextScrollIfNeeded()
+	}
+
+	/**
+	 * 更新是否禁用
+	 */
+	updateDisabled(value: any) {
+		if (this.editText == null) return
+		this.editText!.setEnabled(!toBoolean(value))
+	}
+
+	/**
+	 * 更新输入类型
+	 */
+	updateType(value: string) {
+		if (this.editText == null) return
+		
+		this.currentType = value
+		if (Build.VERSION.SDK_INT >= 21) {
+			this.editText!.setShowSoftInputOnFocus(value != 'none')
+		}
+		if (value == 'none') {
+			this.editText!.setInputType(InputType.TYPE_CLASS_TEXT)
+			this.syncInputSingleLineState()
+			this.applyCursorColorIfNeeded()
+			return
+		}
+		
+		// 如果是密码类型，使用密码输入类型
+		if (this.isPassword) {
+			this.editText!.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+			this.syncInputSingleLineState()
+			this.applyCursorColorIfNeeded()
+			return
+		}
+		
+		const inputType = INPUT_TYPES.get(value)
+		if (inputType != null) {
+			this.editText!.setInputType(inputType)
+		} else {
+			// 默认使用文本类型
+			this.editText!.setInputType(InputType.TYPE_CLASS_TEXT)
+		}
+		this.syncInputSingleLineState()
+		this.applyCursorColorIfNeeded()
+	}
+
+	/**
+	 * 更新是否为密码类型
+	 */
+	updatePassword(value: any) {
+		if (this.editText == null) return
+		
+		this.isPassword = toBoolean(value)
+		if (this.isPassword) {
+			this.editText!.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+			this.syncInputSingleLineState()
+			this.applyCursorColorIfNeeded()
+		} else {
+			// 恢复之前的类型
+			this.updateType(this.currentType)
+		}
+	}
+
+	/**
+	 * 更新最大输入长度
+	 */
+	updateMaxLength(value: number) {
+		this.maxLength = value
+		if (this.editText == null) return
+		
+		if (value >= 0) {
+			// 设置输入过滤器
+				this.editText!.setFilters(arrayOf(new InputFilter.LengthFilter(value.toInt())))
+		} else {
+			this.editText!.setFilters(arrayOf<InputFilter>())
+		}
+	}
+
+	/**
+	 * 更新光标与键盘的距离
+	 * Android 暂不支持
+	 */
+	updateCursorSpacing(value: number) {
+		this.cursorSpacing = value
+		this.trace('updateCursorSpacing cursorSpacing=' + this.cursorSpacing + ' keyboardHeight=' + this.keyboardHeight + ' isFocusing=' + this.isFocusing + ' adjustPosition=' + this.adjustPosition)
+		if (this.keyboardHeight > 0 && this.adjustPosition && this.isFocusing) {
+			this.adjustPositionHelper?.adjustForKeyboardHeight(this.keyboardHeight, this.cursorSpacing)
+		}
+	}
+
+	/**
+	 * 更新光标颜色
+	 */
+	private applyCursorColorIfNeeded() {
+		if (this.editText == null || this.cursorDrawable == null) return
+		const colorString = this.cursorColorValue != '' ? this.cursorColorValue : this.defaultCursorColor
+		const color = parseAndroidColorValue(colorString)
+		if (color == null) {
+			console.error("Invalid color value: " + colorString)
+			return
+		}
+		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, color)
+	}
+
+	updateCursorColor(value: string) {
+		this.cursorColorValue = value
+		if (this.editText == null) return
+		this.applyCursorColorIfNeeded()
+	}
+
+
+	/**
+	 * 更新是否自动获取焦点
+	 */
+	updateAutoFocus(value: any) {
+		if (toBoolean(value) && this.editText != null) {
+			this.showKeyboard()
+		}
+	}
+
+	/**
+	 * 更新是否获取焦点
+	 */
+	updateFocus(value: any) {
+		if (this.editText == null) return
+		const shouldFocus = toBoolean(value)
+		if (shouldFocus) {
+			this.showKeyboard()
+			return
+		}
+		if (!this.isFocusing && !this.editText!.isFocused()) {
+			return
+		}
+		this.focusRequestRevision += 1
+		this.blurFocusSink = blurAndroidEditor(this.editText!, this.blurFocusSink)
+		this.hideKeyboard()
+	}
+
+	/**
+	 * 更新键盘确认按钮类型
+	 */
+	updateConfirmType(value: string) {
+		if (this.editText == null) return
+		
+		const imeOptions = CONFIRM_TYPES.get(value)
+		if (imeOptions != null) {
+			this.editText!.setImeOptions(imeOptions)
+		} else {
+			this.editText!.setImeOptions(EditorInfo.IME_ACTION_DONE)
+		}
+	}
+
+	/**
+	 * 更新点击确认按钮后是否保持键盘
+	 */
+	updateConfirmHold(value: any) {
+		this.holdKeyboard = toBoolean(value)
+	}
+
+	/**
+	 * 更新光标位置
+	 */
+	updateCursor(value: number) {
+		this.pendingCursorPosition = value
+		this.scheduleApplySelectionRequest()
+	}
+
+	/**
+	 * 更新光标起始位置
+	 */
+	updateSelectionStart(value: number) {
+		this.pendingSelectionStart = value
+		if (value >= 0) {
+			this.scheduleApplySelectionRequest()
+		}
+	}
+
+	/**
+	 * 更新光标结束位置
+	 */
+	updateSelectionEnd(value: number) {
+		this.pendingSelectionEnd = value
+		if (value >= 0) {
+			this.scheduleApplySelectionRequest()
+		}
+	}
+
+	private scheduleApplySelectionRequest() {
+		if (this.editText == null || this.pendingSelectionApply) return
+		this.pendingSelectionApply = true
+		const self = this
+		this.editText!.post(class implements Runnable {
+			override run() {
+				self.applySelectionRequest()
+			}
+		})
+	}
+
+	private clearSelectionRequest() {
+		this.pendingSelectionStart = -1
+		this.pendingSelectionEnd = -1
+		this.pendingCursorPosition = -2
+		this.pendingSelectionApply = false
+	}
+
+	private applySelectionRequest() {
+		this.pendingSelectionApply = false
+		if (this.editText == null) {
+			this.clearSelectionRequest()
+			return
+		}
+		const text = this.editText!.getText()
+		if (text == null) {
+			this.clearSelectionRequest()
+			return
+		}
+		const length = text.length
+		if (this.pendingSelectionStart >= 0 && this.pendingSelectionEnd >= 0) {
+			if (this.pendingSelectionStart <= this.pendingSelectionEnd) {
+				const start = Math.min(Math.max(0, this.pendingSelectionStart), length).toInt()
+				const end = Math.min(Math.max(0, this.pendingSelectionEnd), length).toInt()
+				this.editText!.setSelection(start, end)
+				this.syncInputTextScrollIfNeeded()
+			}
+			this.clearSelectionRequest()
+			return
+		}
+		if (this.pendingSelectionStart >= 0) {
+			this.applyCursorPosition(this.pendingSelectionStart)
+			this.clearSelectionRequest()
+			return
+		}
+		if (this.pendingSelectionEnd >= 0) {
+			this.applyCursorPosition(this.pendingSelectionEnd)
+			this.clearSelectionRequest()
+			return
+		}
+		if (this.pendingCursorPosition >= 0) {
+			this.applyCursorPosition(this.pendingCursorPosition)
+		} else if (this.pendingCursorPosition == -1) {
+			this.editText!.setSelection(length.toInt())
+			this.syncInputTextScrollIfNeeded()
+		}
+		this.clearSelectionRequest()
+	}
+
+	private applyCursorPosition(value: number) {
+		if (this.editText == null) return
+		const text = this.editText!.getText()
+		if (text == null) return
+		const position = Math.min(Math.max(0, value), text.length).toInt()
+		this.editText!.setSelection(position)
+		this.syncInputTextScrollIfNeeded()
+	}
+
+	private resolveInputSingleLineNativeHeight(): number {
+		const editText = this.editText
+		if (editText == null) {
+			return 0
+		}
+
+		const paint = new TextPaint(Paint.ANTI_ALIAS_FLAG)
+		paint.density = editText.getResources().getDisplayMetrics().density
+		paint.setTextSize(editText.getTextSize())
+		paint.setTypeface(editText.getTypeface())
+		const fontHeight = Math.max(0, paint.getFontMetricsInt(null))
+		const result = fontHeight
+			+ editText.getCompoundPaddingTop()
+			+ editText.getCompoundPaddingBottom()
+		return result
+	}
+
+	private resolveMeasuredInputHeight(res: UniNativeMeasureSpecification): number {
+		const heightMode = res.heightMode.toString()
+		if (heightMode == 'Exactly') {
+			return Math.max(0, res.height)
+		}
+		let height = this.resolveInputSingleLineNativeHeight()
+		if (heightMode == 'AtMost' && res.height >= 0) {
+			height = Math.min(height, res.height)
+		}
+		return Math.max(0, height)
+	}
+
+	private invalidateInputMeasure() {
+		this.element.setDirty()
+		const editText = this.editText
+		if (editText == null) return
+		editText.requestLayout()
+		editText.invalidate()
+	}
+
+	private refreshInputHeightForStyleChange() {
+		if (this.isBatchUpdating) {
+			this.pendingBatchHeightRefresh = true
+			return
+		}
+		this.invalidateInputMeasure()
+	}
+
+	beginUpdateBatch() {
+		this.isBatchUpdating = true
+		this.pendingBatchHeightRefresh = false
+		this.pendingBatchTypefaceApply = false
+	}
+
+	endUpdateBatch() {
+		this.isBatchUpdating = false
+		if (this.pendingBatchTypefaceApply) {
+			this.pendingBatchTypefaceApply = false
+			this.pendingBatchHeightRefresh = false
+			this.applyTypeface()
+			return
+		}
+		if (this.pendingBatchHeightRefresh) {
+			this.pendingBatchHeightRefresh = false
+			this.invalidateInputMeasure()
+		}
+	}
+
+	/**
+	 * 更新是否自动调整位置
+	 */
+	updateAdjustPosition(value: any) {
+		this.adjustPosition = toBoolean(value)
+		this.trace('updateAdjustPosition adjustPosition=' + this.adjustPosition + ' keyboardHeight=' + this.keyboardHeight + ' isFocusing=' + this.isFocusing + ' cursorSpacing=' + this.cursorSpacing)
+		if (this.adjustPosition && this.keyboardHeight > 0 && this.isFocusing) {
+			this.adjustPositionHelper?.adjustForKeyboardHeight(this.keyboardHeight, this.cursorSpacing)
+		} else if (!this.adjustPosition) {
+			this.adjustPositionHelper?.resetElementPosition()
+		}
+	}
+
+	/**
+	 * 更新是否保持键盘
+	 */
+	updateHoldKeyboard(value: any) {
+		this.holdKeyboard = toBoolean(value)
+	}
+
+	/**
+	 * 更新字体大小
+	 */
+	updateFontSize(value: string | null) {
+		if (this.editText == null || value == null || value == "") return
+
+		try {
+			// 解析字体大小，支持 px 单位
+			let size: number = 14
+			if (value.endsWith("px")) {
+				const numStr = value.substring(0, value.length - 2)
+				size = parseFloat(numStr)
+			} else {
+				size = parseFloat(value)
+			}
+			if (isNaN(size)) {
+				console.error('Invalid font size value: ' + value)
+				return
+			}
+			const nativeSize = convertAndroidLogicalToNativePx(size, this.resolveNativeWindowHeight(), this.getKeyboardLogicalWindowHeight())
+			this.editText!.setTextSize(TypedValue.COMPLEX_UNIT_PX, nativeSize.toFloat())
+			this.editText!.requestLayout()
+			this.editText!.invalidate()
+			this.refreshInputHeightForStyleChange()
+			this.syncInputTextScrollIfNeeded()
+		} catch (e: Exception) {
+			console.error("Invalid font size value: " + value)
+		}
+	}
+
+	/**
+	 * 更新文字颜色
+	 */
+	updateColor(value: string | null) {
+		if (this.editText == null || value == null || value == "") return
+		const color = parseAndroidColorValue(value)
+		if (color == null) {
+			console.error("Invalid color value: " + value)
+			return
+		}
+		this.editText!.setTextColor(color)
+	}
+
+	/**
+	 * 更新行高
+	 * Android EditText 单行模式暂不支持
+	 */
+	updateLineHeight(value: string | null) {
+		// Android EditText 单行模式暂不支持行高设置
+	}
+
+	/**
+	 * 更新字间距
+	 * Android 暂不支持
+	 */
+	updateLetterSpacing(value: string | null) {
+		if (this.editText == null || value == null || value == "") return
+
+		try {
+			let spacing: number = 0
+			if (value.endsWith("px")) {
+				const numStr = value.substring(0, value.length - 2)
+				spacing = parseFloat(numStr)
+			} else if (value.endsWith("em")) {
+				spacing = parseFloat(value.substring(0, value.length - 2)) * this.editText!.getTextSize()
+			} else {
+				spacing = parseFloat(value)
+				spacing = convertAndroidLogicalToNativePx(spacing, this.resolveNativeWindowHeight(), this.getKeyboardLogicalWindowHeight())
+			}
+			if (isNaN(spacing)) {
+				console.error('Invalid letter spacing value: ' + value)
+				return
+			}
+			if (value.endsWith("px")) {
+				spacing = convertAndroidLogicalToNativePx(spacing, this.resolveNativeWindowHeight(), this.getKeyboardLogicalWindowHeight())
+			}
+			this.editText!.setLetterSpacing((spacing / this.editText!.getTextSize()).toFloat())
+			this.editText!.requestLayout()
+			this.editText!.invalidate()
+			this.refreshInputHeightForStyleChange()
+		} catch (e: Exception) {
+			console.error("Invalid letter spacing value: " + value)
+		}
+	}
+
+	/**
+	 * 更新字体粗细
+	 */
+	updateFontWeight(value: string | null) {
+		if (this.editText == null || this.fontWeightStyleValue == value) return
+		this.fontWeightStyleValue = value
+		this.applyTypeface()
+	}
+
+	/**
+	 * 更新字体样式
+	 */
+	updateFontStyle(value: string | null) {
+		if (this.editText == null || this.fontStyleStyleValue == value) return
+		this.fontStyleStyleValue = value
+		this.applyTypeface()
+	}
+
+	/**
+	 * 更新字体名称
+	 */
+	updateFontFamily(value: string | null) {
+		if (this.editText == null || this.fontFamilyStyleValue == value) return
+		this.fontFamilyStyleValue = value
+		this.applyTypeface()
+	}
+
+	private applyTypeface() {
+		if (this.editText == null) return
+		if (this.isBatchUpdating) {
+			this.pendingBatchTypefaceApply = true
+			return
+		}
+
+		try {
+			const typeface = resolveAndroidTypeface(this.fontFamilyStyleValue, this.fontWeightStyleValue, this.fontStyleStyleValue)
+			this.editText!.setTypeface(typeface)
+			this.editText!.requestLayout()
+			this.editText!.invalidate()
+			this.refreshInputHeightForStyleChange()
+		} catch (e: Exception) {
+			console.error('Invalid font style: ' + this.fontFamilyStyleValue)
+		}
+	}
+
+	/**
+	 * 更新文字对齐方式
+	 */
+	updateTextAlign(value: string | null) {
+		if (this.editText == null || value == null) return
+
+		this.textAlignValue = value
+		switch (value) {
+			case 'left':
+				this.editText!.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT)
+				this.editText!.scrollTo(0, 0)
+				break
+			case 'center':
+				this.editText!.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL)
+				break
+			case 'right':
+				this.editText!.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
+				break
+			default:
+				this.textAlignValue = 'left'
+				this.editText!.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT)
+				this.editText!.scrollTo(0, 0)
+		}
+		this.syncInputSingleLineState()
+	}
+
+	/**
+	 * 派发输入事件
+	 */
+	private dispatchInput(value: string, cursor: number) {
+		const detail = new UTSJSONObject()
+		detail.set("value", value)
+		detail.set("cursor", cursor)
+		const event = new UniNativeViewEvent("input", detail)
+		this.element.dispatchEvent(event)
+	}
+
+	/**
+	 * 派发焦点事件
+	 */
+	private dispatchFocus(height: number, value: string) {
+		const detail = new UTSJSONObject()
+		detail.set("height", height)
+		detail.set("value", value)
+		const event = new UniNativeViewEvent("focus", detail)
+		this.element.dispatchEvent(event)
+	}
+
+	/**
+	 * 派发失焦事件
+	 */
+	private dispatchBlur(value: string, cursor: number) {
+		const detail = new UTSJSONObject()
+		detail.set("value", value)
+		detail.set("cursor", cursor)
+		const event = new UniNativeViewEvent("blur", detail)
+		this.element.dispatchEvent(event)
+	}
+
+	/**
+	 * 派发变化事件
+	 */
+	private dispatchChange(value: string) {
+		const detail = new UTSJSONObject()
+		detail.set("value", value)
+		const event = new UniNativeViewEvent("change", detail)
+		this.element.dispatchEvent(event)
+	}
+
+	/**
+	 * 派发确认事件
+	 */
+	private dispatchConfirm(value: string) {
+		const detail = new UTSJSONObject()
+		detail.set("value", value)
+		const event = new UniNativeViewEvent("confirm", detail)
+		this.element.dispatchEvent(event)
+	}
+
+	private dispatchKeyboardHeightChange(height: number, duration: number) {
+		const detail = new UTSJSONObject()
+		detail.set("height", height)
+		detail.set("duration", duration)
+		const event = new UniNativeViewEvent("keyboardheightchange", detail)
+		this.element.dispatchEvent(event)
+	}
+
+	cacheEditorTouchEnd(clientX: number, clientY: number) {
+		UniAndroidEditorTouchCache.recordTouchEnd(this.element, clientX, clientY)
+	}
+
+	/**
+	 * 处理页面触摸结束时的焦点处理
+	 */
+	handlePageTouchEndFocus() {
+		const editText = this.editText
+		if (editText == null) return
+		if (!this.isFocusing && !editText.isFocused()) return
+		const isCurrentFocus = isAndroidCurrentFocusView(this.element, editText)
+		if (UniAndroidEditorTouchCache.isRecentTouchInsideElement(this.element)) {
+			return
+		}
+		if (!this.holdKeyboard && isCurrentFocus) {
+			this.focusRequestRevision += 1
+			this.blurFocusSink = blurAndroidEditor(editText, this.blurFocusSink)
+			this.hideKeyboard()
+		}
+	}
+
+	/**
+	 * 销毁资源
+	 */
+	destroy() {
+		this.destroyed = true
+		this.pendingFocusDispatch = false
+		const editText = this.editText
+		if (editText != null) {
+			editText.setOnFocusChangeListener(null)
+			editText.setOnEditorActionListener(null)
+			editText.setOnTouchListener(null)
+		}
+		this.keyboardManager?.unregisterClient(this)
+		this.keyboardManager = null
+		this.adjustPositionHelper?.destroy()
+		this.adjustPositionHelper = null
+		removeAndroidEditorFocusSink(this.blurFocusSink)
+		this.blurFocusSink = null
+		let parentElement = this.element.parentElement
+		while (parentElement != null) {
+			if (parentElement instanceof UniInputElement) {
+				if (parentElement.inputView?.get() === this) {
+					parentElement.inputView = null
+				}
+				break
+			}
+			parentElement = parentElement.parentElement
+		}
+		this.rootView = null
+		this.editText = null
+	}
+}
+
+/**
+ * 输入框 DOM 元素类
+ * 用于支持表单集成和 value 属性操作
+ */
+export class UniInputElement extends UniViewElementImpl {
+	private _value: string = ''
+	inputView: WeakReference<NativeInputView> | null = null
+
+	override tagName: string = 'INPUT'
+	override nodeName: string = 'INPUT'
+	
+	constructor() {
+	    super()
+	}
+
+	get value(): string {
+		return this.inputView?.get()?.getValue() ?? this._value
+	}
+
+	set value(value: string) {
+		if (this._value == value) {
+			return
+		}
+		this._value = value
+		super.setAnyAttribute('value', value = value)
+		this.inputView?.get()?.updateValue(value)
+	}
+
+	get name(): string {
+		return this.getAttribute('name') ?? ''
+	}
+
+	set name(value: string) {
+		this.setAttribute('name', value)
+	}
+
+	get type(): string {
+		return this.getAttribute('type') ?? 'text'
+	}
+
+	set type(value: string) {
+		this.setAttribute('type', value)
+		this.inputView?.get()?.updateType(value)
+	}
+
+	get disabled(): boolean {
+		return toBoolean(this.getAnyAttribute('disabled') ?? false)
+	}
+
+	set disabled(value: boolean) {
+		this.setAnyAttribute('disabled', value = value)
+		this.inputView?.get()?.updateDisabled(value)
+	}
+
+	get autofocus(): boolean {
+		return toBoolean(this.getAnyAttribute('autoFocus') ?? false)
+	}
+
+	set autofocus(value: boolean) {
+		this.setAnyAttribute('autoFocus', value = value)
+	}
+
+	override getAttribute(key: string): string | null {
+		if (key == 'value') {
+			return (super.getAnyAttribute(key) as string | null) ?? this._value
+		}
+		return super.getAttribute(key)
+	}
+
+	override getAnyAttribute(key: string): any | null {
+		if (key == 'value') {
+			return super.getAnyAttribute(key) ?? this._value
+		}
+		return super.getAnyAttribute(key)
+	}
+
+	override setAttribute(key: string, value: string) {
+		if (key == 'value') {
+			this.value = value
+			return
+		}
+		super.setAttribute(key, value)
+	}
+
+	override focus() {
+		this.setAnyAttribute('focus', value = true)
+		this.inputView?.get()?.updateFocus(true)
+	}
+
+	override blur() {
+		this.setAnyAttribute('focus', value = false)
+		this.inputView?.get()?.updateFocus(false)
+	}
+	
+	override getAndroidView<T extends View>(): T | null {
+		const inputView = this.inputView?.get()
+		if (inputView == null) {
+			return null
+		}
+		return inputView.getEditText() as T | null
+	}
+
+}
+
+
+export class NativeTextareaView implements UniAndroidKeyboardClient {
+	private element: UniNativeViewElement
+	private editText: EditText | null = null
+	private maxLength: number = -1
+	private beginEditValue: string = ''
+	private isFocusing: boolean = false
+	private holdKeyboard: boolean = false
+	private adjustPosition: boolean = true
+	private keyboardHeight: number = 0
+	private rootView: View | null = null
+	private pendingSelectionStart: number = -1
+	private pendingSelectionEnd: number = -1
+	private pendingCursorPosition: number = -2
+	private pendingSelectionApply: boolean = false
+	private cursorSpacing: number = 0
+	private autoHeight: boolean = false
+	private hasReceivedAutoHeightProp: boolean = false
+	private isBatchUpdating: boolean = false
+	private pendingBatchHeightRefresh: boolean = false
+	private pendingBatchTypefaceApply: boolean = false
+	private lineHeight: number = 0
+	private letterSpacing: number = 0
+	private fontSizeStyleValue: string | null = null
+	private lineHeightStyleValue: string | null = null
+	private letterSpacingStyleValue: string | null = null
+	private fontWeightStyleValue: string | null = null
+	private fontStyleStyleValue: string | null = null
+	private fontFamilyStyleValue: string | null = null
+	private defaultCursorColor: string = '#3393E2'
+	private cursorColorValue: string = ''
+	private cursorDrawable: GradientDrawable | null = null
+	private adjustPositionHelper: UniAndroidAdjustPositionHelper | null = null
+	private keyboardManager: UniAndroidKeyboardManager | null = null
+	private pendingFocusDispatch: boolean = false
+	private focusRequestRevision: number = 0
+	private blurFocusSink: View | null = null
+	private destroyed: boolean = false
+
+	constructor(element: UniNativeViewElement) {
+		this.element = element
+		let parentElement = this.element.parentElement
+		while (parentElement != null) {
+			if (parentElement instanceof UniTextareaElement) {
+				parentElement.textareaView = new WeakReference(this)
+				break
+			}
+			parentElement = parentElement.parentElement
+		}
+		this.adjustPositionHelper = new UniAndroidAdjustPositionHelper(this.element, (elementHeight: number): number => {
+			return Math.max(0, elementHeight)
+		})
+		this.adjustPositionHelper?.setUseLargerAncestorRect(true)
+		this.adjustPositionHelper?.setAllowRootTranslateAfterParentScroll(true)
+		this.adjustPositionHelper?.setTraceCategory('textarea')
+		this.bindView()
+		this.element.setMeasureCallback((res: UniNativeMeasureSpecification): UniNativeMeasureSize => {
+			return UniNativeMeasureSize(res.width, this.resolveMeasuredTextareaHeight(res).toFloat())
+		})
+	}
+
+	private trace(message: string) {
+		logAndroidTextareaAdjust('native ' + message)
+	}
+
+	getKeyboardLogicalWindowHeight(): number {
+		return this.element.uniPage.height
+	}
+
+	onKeyboardHeightChangedFromManager(height: number, duration: number) {
+		this.keyboardHeight = height
+		if (this.pendingFocusDispatch && height > 0) {
+			this.pendingFocusDispatch = false
+			this.dispatchFocus(height, this.editText?.getText()?.toString() ?? '')
+		}
+		this.dispatchKeyboardHeightChange(height, duration)
+		if (height <= 0) {
+			this.adjustPositionHelper?.resetSessionPosition()
+			return
+		}
+		if (this.adjustPosition && this.isFocusing) {
+			this.trace('keyboardManager invokingAdjust keyboardHeight=' + height + ' cursorSpacing=' + this.cursorSpacing)
+			this.adjustPositionHelper?.adjustForKeyboardHeight(height, this.cursorSpacing)
+			this.trace('keyboardManager invokedAdjust keyboardHeight=' + height + ' cursorSpacing=' + this.cursorSpacing)
+		}
+	}
+
+	private resolveNativeWindowHeight(): number {
+		if (this.rootView != null) {
+			return this.rootView!.getHeight()
+		}
+		const activity = this.element.getAndroidActivity()
+		if (activity == null) {
+			return 0
+		}
+		const decorView = activity.getWindow().getDecorView()
+		return decorView?.getHeight() ?? 0
+	}
+
+	private resolveCursorBottomOffset(elementHeight: number): number {
+		const targetBottomOffset = Math.max(0, elementHeight)
+		if (this.editText == null) {
+			this.trace('resolveCursorBottomOffset elementHeight=' + elementHeight + ' targetBottomOffset=' + targetBottomOffset + ' reason=noEditText')
+			return targetBottomOffset
+		}
+		const layout = this.editText!.getLayout()
+		if (layout == null) {
+			this.trace('resolveCursorBottomOffset elementHeight=' + elementHeight + ' targetBottomOffset=' + targetBottomOffset + ' reason=noLayout')
+			return targetBottomOffset
+		}
+
+		let selectionStart = this.editText!.getSelectionStart()
+		if (selectionStart < 0) {
+			selectionStart = this.editText!.getText()?.length ?? 0
+		}
+
+		const line = layout.getLineForOffset(selectionStart)
+		const lineBottom = layout.getLineBottom(line)
+		const paddingTop = this.editText!.getTotalPaddingTop()
+		const scrollY = this.editText!.getScrollY()
+		const cursorBottomOffset = lineBottom + paddingTop - scrollY
+		const clampedCursorBottomOffset = cursorBottomOffset > 0
+			? Math.min(cursorBottomOffset, targetBottomOffset)
+			: 0
+		this.trace(
+			'resolveCursorBottomOffset elementHeight=' + elementHeight
+				+ ' selectionStart=' + selectionStart
+				+ ' line=' + line
+				+ ' lineBottom=' + lineBottom
+				+ ' paddingTop=' + paddingTop
+				+ ' scrollY=' + scrollY
+				+ ' cursorBottomOffset=' + clampedCursorBottomOffset
+				+ ' targetBottomOffset=' + targetBottomOffset
+				+ ' returnValue=' + targetBottomOffset
+		)
+		return targetBottomOffset
+	}
+
+	private bindView() {
+		const activity = this.element.getAndroidActivity()
+		if (activity == null) return
+
+		this.editText = new EditText(activity)
+		this.editText!.setBackgroundColor(Color.TRANSPARENT)
+		this.cursorDrawable = createAndroidCursorDrawable(this.editText!, Color.parseColor(this.defaultCursorColor))
+		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, Color.parseColor(this.defaultCursorColor))
+		this.editText!.setTextColor(Color.BLACK)
+		this.editText!.setGravity(Gravity.TOP | Gravity.LEFT)
+		this.editText!.setPadding(0, 0, 0, 0)
+		this.editText!.setMinHeight(0)
+		this.editText!.setMinimumHeight(0)
+		this.editText!.setSingleLine(false)
+		this.editText!.setMinLines(1)
+		this.editText!.setMaxLines(100)
+		this.editText!.setHorizontallyScrolling(false)
+		this.editText!.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE)
+		this.editText!.setImeOptions(EditorInfo.IME_ACTION_UNSPECIFIED)
+		this.editText!.setRawInputType(InputType.TYPE_CLASS_TEXT)
+		this.editText!.setVerticalScrollBarEnabled(true)
+		this.editText!.setOverScrollMode(View.OVER_SCROLL_IF_CONTENT_SCROLLS)
+		this.editText!.setScrollContainer(true)
+		this.setTouchScrollListener()
+		this.adjustPositionHelper?.setCursorBottomOffsetResolver((elementHeight: number): number => {
+			return this.resolveCursorBottomOffset(elementHeight)
+		})
+		this.addTextWatcher()
+		this.setFocusChangeListener()
+		this.setEditorActionListener()
+		this.element.bindAndroidView(this.editText!)
+		this.ensureKeyboardLayoutObserver()
+	}
+
+	private setTouchScrollListener() {
+		if (this.editText == null) return
+		const self = this
+		this.editText!.setOnTouchListener(new (class implements View.OnTouchListener {
+			override onTouch(v: View, event: MotionEvent): Boolean {
+				const action = event.getActionMasked()
+				if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+					UniAndroidEditorTouchCache.recordNativeTouch(self.element)
+				}
+				const parent = v.getParent()
+				const canScroll = !self.autoHeight && self.isTextareaContentScrollable()
+				if (canScroll) {
+					switch (action) {
+						case MotionEvent.ACTION_DOWN:
+						case MotionEvent.ACTION_MOVE:
+							parent?.requestDisallowInterceptTouchEvent(true)
+							break
+						case MotionEvent.ACTION_UP:
+						case MotionEvent.ACTION_CANCEL:
+							parent?.requestDisallowInterceptTouchEvent(false)
+							break
+					}
+				} else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+					parent?.requestDisallowInterceptTouchEvent(false)
+				}
+				return false
+			}
+		}))
+	}
+
+	private isTextareaContentScrollable(): boolean {
+		if (this.editText == null || this.autoHeight) return false
+		return this.calculateContentHeight() > this.resolveTextareaHeight() + 1
+	}
+
+	private addTextWatcher() {
+		if (this.editText == null) return
+		const self = this
+		this.editText!.addTextChangedListener(new (class implements TextWatcher {
+			override beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+			override onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+			override afterTextChanged(s: Editable) {
+				if (s == null) return
+				let text = s.toString()
+				if (self.maxLength >= 0 && text.length > self.maxLength) {
+					text = text.substring(0, self.maxLength)
+					self.editText?.setText(text)
+					self.editText?.setSelection(text.length)
+					return
+				}
+				const cursor = self.editText?.getSelectionStart() ?? 0
+				self.dispatchInput(text, cursor, false)
+				self.refreshTextareaHeightForTextLayoutChange()
+				self.ensureCursorVisibleAfterLayout()
+			}
+		}))
+	}
+
+	private ensureKeyboardLayoutObserver() {
+		const rootView = this.resolveKeyboardObserverRootView()
+		if (rootView == null) {
+			this.trace('ensureKeyboardLayoutObserver skip reason=noRootView')
+			return
+		}
+		if (this.keyboardManager != null && this.keyboardManager!.isObservingRootView(rootView)) {
+			return
+		}
+		this.rootView = rootView
+		this.keyboardManager = UniAndroidKeyboardManager.acquire(rootView, this)
+		this.keyboardHeight = this.keyboardManager.getKeyboardHeight()
+		this.trace('ensureKeyboardLayoutObserver attached rootHeight=' + rootView.getHeight())
+	}
+
+	private resolveKeyboardObserverRootView(): View | null {
+		const activity = this.element.getAndroidActivity()
+		if (activity != null) {
+			const decorView = activity.getWindow().getDecorView()
+			if (decorView != null) {
+				this.trace('resolveKeyboardObserverRootView source=decor height=' + decorView.getHeight())
+				return decorView
+			}
+		}
+		if (this.editText == null) {
+			return null
+		}
+		const fallbackRootView = this.editText!.getRootView()
+		if (fallbackRootView != null) {
+			this.trace('resolveKeyboardObserverRootView source=editTextRoot height=' + fallbackRootView.getHeight())
+		}
+		return fallbackRootView
+	}
+
+	private setFocusChangeListener() {
+		if (this.editText == null) return
+
+		const self = this
+		this.editText!.setOnFocusChangeListener(new (class implements View.OnFocusChangeListener {
+			override onFocusChange(v: View, hasFocus: boolean) {
+				if (self.destroyed || self.editText == null) {
+					return
+				}
+				if (hasFocus) {
+					self.isFocusing = true
+					self.applyCursorColorIfNeeded()
+					self.beginEditValue = self.editText?.getText()?.toString() ?? ''
+					self.trace('focus hasFocus=true keyboardHeight=' + self.keyboardHeight + ' adjustPosition=' + self.adjustPosition + ' cursorSpacing=' + self.cursorSpacing)
+					self.ensureKeyboardLayoutObserver()
+					self.keyboardManager?.setFocusedClient(self)
+					self.keyboardHeight = self.keyboardManager?.getKeyboardHeight() ?? self.keyboardHeight
+					self.adjustPositionHelper?.prepareForEditing()
+					self.dispatchFocusWhenReady()
+					if (self.keyboardHeight > 0 && self.adjustPosition) {
+						self.trace('focus invokingAdjust keyboardHeight=' + self.keyboardHeight + ' cursorSpacing=' + self.cursorSpacing)
+						self.adjustPositionHelper?.adjustForKeyboardHeight(self.keyboardHeight, self.cursorSpacing)
+						self.trace('focus invokedAdjust keyboardHeight=' + self.keyboardHeight + ' cursorSpacing=' + self.cursorSpacing)
+					}
+				} else {
+					self.isFocusing = false
+					self.pendingFocusDispatch = false
+					const currentValue = self.editText?.getText()?.toString() ?? ''
+					const cursor = self.editText?.getSelectionStart() ?? 0
+					self.trace('focus hasFocus=false keyboardHeight=' + self.keyboardHeight + ' adjustPosition=' + self.adjustPosition + ' cursorSpacing=' + self.cursorSpacing + ' cursor=' + cursor)
+					self.keyboardManager?.notifyBlur(self)
+					self.adjustPositionHelper?.resetElementPosition()
+					self.dispatchBlur(currentValue, cursor)
+					if (self.beginEditValue != currentValue) {
+						self.dispatchChange(currentValue)
+					}
+					self.beginEditValue = ''
+				}
+			}
+		}))
+	}
+
+	private setEditorActionListener() {
+		if (this.editText == null) return
+
+		const self = this
+		this.editText!.setOnEditorActionListener(new (class implements TextView.OnEditorActionListener {
+			override onEditorAction(v: TextView, actionId: Int, event: KeyEvent | null): Boolean {
+				if (actionId == EditorInfo.IME_ACTION_DONE ||
+					actionId == EditorInfo.IME_ACTION_GO ||
+					actionId == EditorInfo.IME_ACTION_SEARCH ||
+					actionId == EditorInfo.IME_ACTION_SEND ||
+					actionId == EditorInfo.IME_ACTION_NEXT) {
+					self.dispatchConfirm(self.editText?.getText()?.toString() ?? '')
+					if (!self.holdKeyboard) {
+						self.hideKeyboard()
+					}
+					return true
+				}
+				return false
+			}
+		}))
+	}
+
+	private hideKeyboard() {
+		if (this.editText == null) return
+		const activity = this.element.getAndroidActivity()
+		if (activity == null) return
+		const imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+		const editText = this.editText
+		if (editText == null) return
+		editText.postDelayed(class implements Runnable {
+			override run() {
+				imm.hideSoftInputFromWindow(editText.getWindowToken(), 0)
+			}
+		}, 16)
+	}
+
+	private showKeyboard() {
+		if (this.editText == null) return
+		const activity = this.element.getAndroidActivity()
+		if (activity == null) return
+		const imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+		const self = this
+		const editText = this.editText
+		if (editText == null) return
+		this.focusRequestRevision += 1
+		const requestRevision = this.focusRequestRevision
+		editText.postDelayed(class implements Runnable {
+			override run() {
+				const currentEditText = self.editText
+				if (self.destroyed || currentEditText == null || requestRevision != self.focusRequestRevision) return
+				currentEditText.requestFocus()
+				const rect = new Rect()
+				currentEditText.getDrawingRect(rect)
+				currentEditText.requestRectangleOnScreen(rect, true)
+				if (self.destroyed) {
+					return
+				}
+				imm.showSoftInput(currentEditText, InputMethodManager.SHOW_IMPLICIT)
+			}
+		}, 50)
+	}
+
+	private dispatchFocusWhenReady() {
+		if (this.destroyed || this.editText == null) {
+			return
+		}
+		if (!this.isFocusing) {
+			return
+		}
+		if (this.keyboardHeight > 0) {
+			this.pendingFocusDispatch = false
+			this.dispatchFocus(this.keyboardHeight, this.editText?.getText()?.toString() ?? '')
+			return
+		}
+		this.pendingFocusDispatch = true
+		const self = this
+		const editText = this.editText
+		if (editText == null) return
+		editText.postDelayed(class implements Runnable {
+			override run() {
+				const currentEditText = self.editText
+				if (self.destroyed || currentEditText == null || !self.pendingFocusDispatch || !self.isFocusing) {
+					return
+				}
+				self.pendingFocusDispatch = false
+				self.dispatchFocus(self.keyboardHeight, currentEditText.getText()?.toString() ?? '')
+			}
+		}, 180)
+	}
+
+	getValue(): string {
+		return this.editText?.getText()?.toString() ?? ''
+	}
+
+	getEditText(): EditText | null {
+		return this.editText
+	}
+
+	updateValue(value: string) {
+		if (this.editText == null) return
+		const currentText = this.editText!.getText()?.toString() ?? ''
+		if (currentText == value) return
+		const selectionStart = this.editText!.getSelectionStart()
+		const selectionEnd = this.editText!.getSelectionEnd()
+		this.editText!.setText(value)
+		if (selectionStart >= 0 && selectionEnd >= 0) {
+			const length = this.editText!.getText()?.length ?? 0
+			const start = Math.min(Math.max(0, selectionStart), length).toInt()
+			const end = Math.min(Math.max(0, selectionEnd), length).toInt()
+			this.editText!.setSelection(start, end)
+		}
+		this.refreshTextareaHeightForTextLayoutChange()
+	}
+
+	updateDisabled(value: any) {
+		if (this.editText == null) return
+		const disabled = toBoolean(value)
+		this.editText!.setEnabled(!disabled)
+		this.editText!.setFocusable(!disabled)
+		this.editText!.setFocusableInTouchMode(!disabled)
+	}
+
+	updateMaxLength(value: number) {
+		this.maxLength = value
+		if (this.editText == null) return
+		if (value >= 0) {
+			this.editText!.setFilters(arrayOf(new InputFilter.LengthFilter(value.toInt())))
+		} else {
+			this.editText!.setFilters(arrayOf<InputFilter>())
+		}
+	}
+
+	updateCursorSpacing(value: number) {
+		this.cursorSpacing = value
+		this.trace('updateCursorSpacing cursorSpacing=' + this.cursorSpacing + ' keyboardHeight=' + this.keyboardHeight + ' isFocusing=' + this.isFocusing + ' adjustPosition=' + this.adjustPosition)
+		if (this.keyboardHeight > 0 && this.adjustPosition && this.isFocusing) {
+			this.adjustPositionHelper?.adjustForKeyboardHeight(this.keyboardHeight, this.cursorSpacing)
+		}
+	}
+
+	private applyCursorColorIfNeeded() {
+		if (this.editText == null || this.cursorDrawable == null) return
+		const colorString = this.cursorColorValue != '' ? this.cursorColorValue : this.defaultCursorColor
+		const color = parseAndroidColorValue(colorString)
+		if (color == null) {
+			console.error('Invalid color value: ' + colorString)
+			return
+		}
+		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, color)
+	}
+
+	updateCursorColor(value: string) {
+		this.cursorColorValue = value
+		if (this.editText == null) return
+		this.applyCursorColorIfNeeded()
+	}
+
+
+	updateAutoFocus(value: any) {
+		if (toBoolean(value) && this.editText != null) {
+			this.showKeyboard()
+		}
+	}
+
+	updateFocus(value: any) {
+		if (this.editText == null) return
+		const shouldFocus = toBoolean(value)
+		if (shouldFocus) {
+			this.showKeyboard()
+			return
+		}
+		if (!this.isFocusing && !this.editText!.isFocused()) {
+			return
+		}
+		this.focusRequestRevision += 1
+		this.blurFocusSink = blurAndroidEditor(this.editText!, this.blurFocusSink)
+		this.hideKeyboard()
+	}
+
+	updateConfirmType(value: string) {
+		if (this.editText == null) return
+		const imeOptions = CONFIRM_TYPES.get(value)
+		if (imeOptions != null) {
+			this.editText!.setImeOptions(imeOptions)
+		} else {
+			this.editText!.setImeOptions(EditorInfo.IME_ACTION_NONE)
+		}
+	}
+
+	updateConfirmHold(value: any) {
+		this.holdKeyboard = toBoolean(value)
+	}
+
+	beginUpdateBatch() {
+		this.isBatchUpdating = true
+		this.pendingBatchHeightRefresh = false
+		this.pendingBatchTypefaceApply = false
+	}
+
+	endUpdateBatch() {
+		this.isBatchUpdating = false
+		if (this.pendingBatchTypefaceApply) {
+			this.pendingBatchTypefaceApply = false
+			this.pendingBatchHeightRefresh = false
+			this.applyTypeface()
+			return
+		}
+		if (this.pendingBatchHeightRefresh) {
+			this.pendingBatchHeightRefresh = false
+			this.refreshTextareaHeightForTextLayoutChange()
+		}
+	}
+
+	updateAutoHeight(value: any) {
+		this.hasReceivedAutoHeightProp = true
+		this.autoHeight = toBoolean(value)
+		this.trace('updateAutoHeight autoHeight=' + this.autoHeight)
+		if (this.editText != null) {
+			this.editText!.setVerticalScrollBarEnabled(!this.autoHeight)
+		}
+		this.refreshTextareaHeightForTextLayoutChange()
+	}
+
+	updateCursor(value: number) {
+		this.pendingCursorPosition = value
+		this.scheduleApplySelectionRequest()
+	}
+
+	updateSelectionStart(value: number) {
+		this.pendingSelectionStart = value
+		if (value >= 0) {
+			this.scheduleApplySelectionRequest()
+		}
+	}
+
+	updateSelectionEnd(value: number) {
+		this.pendingSelectionEnd = value
+		if (value >= 0) {
+			this.scheduleApplySelectionRequest()
+		}
+	}
+
+	updateAdjustPosition(value: any) {
+		this.adjustPosition = toBoolean(value)
+		this.trace('updateAdjustPosition adjustPosition=' + this.adjustPosition + ' keyboardHeight=' + this.keyboardHeight + ' isFocusing=' + this.isFocusing + ' cursorSpacing=' + this.cursorSpacing)
+		if (this.adjustPosition && this.keyboardHeight > 0 && this.isFocusing) {
+			this.adjustPositionHelper?.adjustForKeyboardHeight(this.keyboardHeight, this.cursorSpacing)
+		} else if (!this.adjustPosition) {
+			this.adjustPositionHelper?.resetElementPosition()
+		}
+	}
+
+	updateHoldKeyboard(value: any) {
+		this.holdKeyboard = toBoolean(value)
+	}
+
+	updateFontSize(value: string | null) {
+		if (this.editText == null || value == null || value == '') return
+		if (this.fontSizeStyleValue == value) return
+		try {
+			let size: number = 16
+			if (value.endsWith('px')) {
+				size = parseFloat(value.substring(0, value.length - 2))
+			} else {
+				size = parseFloat(value)
+			}
+			if (isNaN(size)) {
+				console.error('Invalid font size value: ' + value)
+				return
+			}
+			const nativeSize = convertAndroidLogicalToNativePx(size, this.resolveNativeWindowHeight(), this.getKeyboardLogicalWindowHeight())
+			this.fontSizeStyleValue = value
+			this.editText!.setTextSize(TypedValue.COMPLEX_UNIT_PX, nativeSize.toFloat())
+			this.applyLineHeight()
+			this.refreshTextareaHeightForTextLayoutChange()
+		} catch (e: Exception) {
+			console.error('Invalid font size value: ' + value)
+		}
+	}
+
+	updateColor(value: string | null) {
+		if (this.editText == null || value == null || value == '') return
+		const color = parseAndroidColorValue(value)
+		if (color == null) {
+			console.error('Invalid color value: ' + value)
+			return
+		}
+		this.editText!.setTextColor(color)
+	}
+
+	updateLineHeight(value: string | null) {
+		if (this.lineHeightStyleValue == value) return
+		this.lineHeightStyleValue = value
+		if (value == null || value == '') {
+			this.lineHeight = 0
+		} else {
+			const parsedValue = parseFloat(value)
+			if (isNaN(parsedValue)) {
+				return
+			}
+			if (value.endsWith('em')) {
+				const fontSize = this.editText?.getTextSize() ?? 16
+				this.lineHeight = parsedValue * fontSize
+			} else {
+				this.lineHeight = convertAndroidLogicalToNativePx(parsedValue, this.resolveNativeWindowHeight(), this.getKeyboardLogicalWindowHeight())
+			}
+		}
+		this.applyLineHeight()
+		this.refreshTextareaHeightForTextLayoutChange()
+	}
+
+	updateLetterSpacing(value: string | null) {
+		if (this.letterSpacingStyleValue == value) return
+		if (this.editText == null || value == null || value == '') {
+			this.letterSpacingStyleValue = value
+			this.letterSpacing = 0
+			if (this.editText != null) {
+				this.editText!.setLetterSpacing(0.0.toFloat())
+				this.refreshTextareaHeightForTextLayoutChange()
+			}
+			return
+		}
+		try {
+			let spacing: number = 0
+			if (value.endsWith('em')) {
+				const textSize = this.editText!.getTextSize()
+				spacing = parseFloat(value.substring(0, value.length - 2)) * textSize
+			} else if (value.endsWith('px')) {
+				spacing = parseFloat(value.substring(0, value.length - 2))
+				spacing = convertAndroidLogicalToNativePx(spacing, this.resolveNativeWindowHeight(), this.getKeyboardLogicalWindowHeight())
+			} else {
+				spacing = parseFloat(value)
+				spacing = convertAndroidLogicalToNativePx(spacing, this.resolveNativeWindowHeight(), this.getKeyboardLogicalWindowHeight())
+			}
+			if (isNaN(spacing)) {
+				console.error('Invalid letter spacing value: ' + value)
+				return
+			}
+			this.letterSpacingStyleValue = value
+			this.letterSpacing = spacing
+			const textSize = this.editText!.getTextSize()
+			if (textSize > 0) {
+				this.editText!.setLetterSpacing((spacing / textSize).toFloat())
+			}
+			this.refreshTextareaHeightForTextLayoutChange()
+		} catch (e: Exception) {
+			console.error('Invalid letter spacing value: ' + value)
+		}
+	}
+
+	updateFontWeight(value: string | null) {
+		if (this.editText == null) return
+		if (this.fontWeightStyleValue == value) return
+		this.fontWeightStyleValue = value
+		this.applyTypeface()
+	}
+
+	updateFontStyle(value: string | null) {
+		if (this.editText == null) return
+		if (this.fontStyleStyleValue == value) return
+		this.fontStyleStyleValue = value
+		this.applyTypeface()
+	}
+
+	updateFontFamily(value: string | null) {
+		if (this.editText == null) return
+		if (this.fontFamilyStyleValue == value) return
+		this.fontFamilyStyleValue = value
+		this.applyTypeface()
+	}
+
+	private applyTypeface() {
+		if (this.editText == null) return
+		if (this.isBatchUpdating) {
+			this.pendingBatchTypefaceApply = true
+			return
+		}
+
+		try {
+			const typeface = resolveAndroidTypeface(this.fontFamilyStyleValue, this.fontWeightStyleValue, this.fontStyleStyleValue)
+			this.editText!.setTypeface(typeface)
+			this.refreshTextareaHeightForTextLayoutChange()
+		} catch (e: Exception) {
+			console.error('Invalid font style: ' + this.fontFamilyStyleValue)
+		}
+	}
+
+	updateTextAlign(value: string | null) {
+		if (this.editText == null || value == null) return
+		switch (value) {
+			case 'center':
+				this.editText!.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL)
+				break
+			case 'right':
+				this.editText!.setGravity(Gravity.TOP | Gravity.RIGHT)
+				break
+			default:
+				this.editText!.setGravity(Gravity.TOP | Gravity.LEFT)
+		}
+	}
+
+	cacheEditorTouchEnd(clientX: number, clientY: number) {
+		UniAndroidEditorTouchCache.recordTouchEnd(this.element, clientX, clientY)
+	}
+
+	/**
+	 * 处理页面触摸结束时的焦点处理
+	 */
+	handlePageTouchEndFocus() {
+		const editText = this.editText
+		if (editText == null) return
+		if (!this.isFocusing && !editText.isFocused()) return
+		const isCurrentFocus = isAndroidCurrentFocusView(this.element, editText)
+		if (UniAndroidEditorTouchCache.isRecentTouchInsideElement(this.element)) {
+			return
+		}
+		if (!this.holdKeyboard && isCurrentFocus) {
+			this.focusRequestRevision += 1
+			this.blurFocusSink = blurAndroidEditor(editText, this.blurFocusSink)
+			this.hideKeyboard()
+		}
+	}
+
+	destroy() {
+		this.destroyed = true
+		this.pendingFocusDispatch = false
+		const editText = this.editText
+		if (editText != null) {
+			editText.setOnFocusChangeListener(null)
+			editText.setOnEditorActionListener(null)
+			editText.setOnTouchListener(null)
+		}
+		this.keyboardManager?.unregisterClient(this)
+		this.keyboardManager = null
+		this.adjustPositionHelper?.destroy()
+		this.adjustPositionHelper = null
+		removeAndroidEditorFocusSink(this.blurFocusSink)
+		this.blurFocusSink = null
+		let parentElement = this.element.parentElement
+		while (parentElement != null) {
+			if (parentElement instanceof UniTextareaElement) {
+				if (parentElement.textareaView?.get() === this) {
+					parentElement.textareaView = null
+				}
+				break
+			}
+			parentElement = parentElement.parentElement
+		}
+		this.rootView = null
+		this.editText = null
+	}
+
+	private scheduleApplySelectionRequest() {
+		if (this.editText == null || this.pendingSelectionApply) return
+		this.pendingSelectionApply = true
+		const self = this
+		this.editText!.post(class implements Runnable {
+			override run() {
+				self.applySelectionRequest()
+			}
+		})
+	}
+
+	private clearSelectionRequest() {
+		this.pendingSelectionStart = -1
+		this.pendingSelectionEnd = -1
+		this.pendingCursorPosition = -2
+		this.pendingSelectionApply = false
+	}
+
+	private applySelectionRequest() {
+		this.pendingSelectionApply = false
+		if (this.editText == null) {
+			this.clearSelectionRequest()
+			return
+		}
+		const text = this.editText!.getText()
+		if (text == null) {
+			this.clearSelectionRequest()
+			return
+		}
+		const length = text.length
+		if (this.pendingSelectionStart >= 0 && this.pendingSelectionEnd >= 0) {
+			if (this.pendingSelectionStart <= this.pendingSelectionEnd) {
+				const start = Math.min(Math.max(0, this.pendingSelectionStart), length).toInt()
+				const end = Math.min(Math.max(0, this.pendingSelectionEnd), length).toInt()
+				this.editText!.setSelection(start, end)
+			}
+			this.clearSelectionRequest()
+			return
+		}
+		if (this.pendingSelectionStart >= 0) {
+			this.applyCursorPosition(this.pendingSelectionStart)
+			this.clearSelectionRequest()
+			return
+		}
+		if (this.pendingSelectionEnd >= 0) {
+			this.applyCursorPosition(this.pendingSelectionEnd)
+			this.clearSelectionRequest()
+			return
+		}
+		if (this.pendingCursorPosition >= 0) {
+			this.applyCursorPosition(this.pendingCursorPosition)
+		} else if (this.pendingCursorPosition == -1) {
+			this.editText!.setSelection(length.toInt())
+		}
+		this.clearSelectionRequest()
+	}
+
+	private applyCursorPosition(value: number) {
+		if (this.editText == null) return
+		const text = this.editText!.getText()
+		if (text == null) return
+		const position = Math.min(Math.max(0, value), text.length).toInt()
+		this.editText!.setSelection(position)
+	}
+
+	private applyLineHeight() {
+		if (this.editText == null) return
+		if (this.lineHeight <= 0) {
+			this.editText!.setLineSpacing(0.0.toFloat(), 1.0.toFloat())
+			return
+		}
+		const fontSize = this.editText!.getTextSize()
+		const extraSpacing = Math.max(0, this.lineHeight - fontSize)
+		this.editText!.setLineSpacing(extraSpacing.toFloat(), 1.0.toFloat())
+	}
+
+	private calculateContentHeight(): number {
+		const editText = this.editText
+		const nativeMeasureWidth = editText?.getWidth() ?? editText?.getMeasuredWidth() ?? 0
+		const nativeContentHeight = this.calculateContentNativeHeightForMeasureWidth(nativeMeasureWidth)
+		const logicalContentHeight = convertAndroidNativePxToLogicalPx(
+			nativeContentHeight,
+			this.resolveNativeWindowHeight(),
+			this.getKeyboardLogicalWindowHeight()
+		)
+		return Math.max(0, logicalContentHeight)
+	}
+
+	private calculateContentNativeHeightForMeasureWidth(nativeMeasureWidth: number): number {
+		const editText = this.editText
+		if (editText == null) {
+			return 0
+		}
+		if (nativeMeasureWidth > 0) {
+			const widthSpec = View.MeasureSpec.makeMeasureSpec(nativeMeasureWidth.toInt(), View.MeasureSpec.EXACTLY)
+			const heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+			editText.measure(widthSpec, heightSpec)
+			if (editText.getMeasuredHeight() > 0) {
+				return editText.getMeasuredHeight()
+			}
+		}
+		let nativeTextHeight: number = 0
+		const layout = editText.getLayout()
+		if (layout != null && layout.getLineCount() > 0) {
+			nativeTextHeight = layout.getLineTop(layout.getLineCount())
+			if (editText.getCompoundPaddingTop() == 0 && editText.getCompoundPaddingBottom() == 0 && this.autoHeight) {
+				nativeTextHeight = layout.getLineTop((layout.getLineCount() - 1).toInt()) + Math.max(editText.getLineHeight(), editText.getTextSize())
+			}
+		} else if (editText.getMeasuredHeight() > 0 && nativeMeasureWidth > 0) {
+			nativeTextHeight = editText.getMeasuredHeight() - editText.getCompoundPaddingTop() - editText.getCompoundPaddingBottom()
+		} else {
+			const lineCount = Math.max(1, editText.getLineCount())
+			const nativeLineHeight = Math.max(editText.getLineHeight(), editText.getTextSize())
+			nativeTextHeight = lineCount * nativeLineHeight
+		}
+		const nativeContentHeight = Math.max(0, nativeTextHeight)
+			+ editText.getCompoundPaddingTop()
+			+ editText.getCompoundPaddingBottom()
+		return Math.max(0, nativeContentHeight)
+	}
+
+	private resolveTextareaHeight(): number {
+		if (this.autoHeight) {
+			return this.calculateContentHeight()
+		}
+		const editText = this.editText
+		const nativeHeight = editText?.getHeight() ?? editText?.getMeasuredHeight() ?? 0
+		if (nativeHeight > 0) {
+			return convertAndroidNativePxToLogicalPx(
+				nativeHeight,
+				this.resolveNativeWindowHeight(),
+				this.getKeyboardLogicalWindowHeight()
+			)
+		}
+		return 0
+	}
+
+	private resolveMeasuredTextareaHeight(res: UniNativeMeasureSpecification): number {
+		const heightMode = res.heightMode.toString()
+		if (heightMode == 'Exactly') {
+			return Math.max(0, res.height)
+		}
+		if (!this.autoHeight) {
+			return 0
+		}
+		let height = this.calculateContentNativeHeightForMeasureWidth(res.width)
+		if (height <= 0) {
+			height = this.calculateContentNativeHeightForMeasureWidth(0)
+		}
+		if (heightMode == 'AtMost' && res.height >= 0) {
+			height = Math.min(height, res.height)
+		}
+		return Math.max(0, height)
+	}
+
+
+	private invalidateTextareaMeasure() {
+		this.element.setDirty()
+		const editText = this.editText
+		if (editText == null) return
+		editText.requestLayout()
+		editText.invalidate()
+	}
+
+	private ensureCursorVisibleAfterLayout() {
+		const editText = this.editText
+		if (editText == null || this.autoHeight) return
+		const self = this
+		editText.post(class implements Runnable {
+			override run() {
+				self.scrollCursorIntoView()
+			}
+		})
+	}
+
+	private scrollCursorIntoView() {
+		const editText = this.editText
+		if (this.destroyed || editText == null || this.autoHeight) return
+		const layout = editText.getLayout()
+		if (layout == null) return
+		const selectionEnd = editText.getSelectionEnd()
+		const textLength = editText.getText()?.length ?? 0
+		const offset = Math.min(Math.max(0, selectionEnd >= 0 ? selectionEnd : textLength), textLength).toInt()
+		const line = layout.getLineForOffset(offset)
+		const lineTop = layout.getLineTop(line)
+		const lineBottom = layout.getLineBottom(line)
+		const viewportHeight = editText.getHeight()
+			- editText.getCompoundPaddingTop()
+			- editText.getCompoundPaddingBottom()
+		if (viewportHeight <= 0) return
+		let scrollY = editText.getScrollY()
+		if (lineBottom - scrollY > viewportHeight) {
+			scrollY = lineBottom - viewportHeight
+		} else if (lineTop < scrollY) {
+			scrollY = lineTop
+		}
+		const maxScrollY = Math.max(0, layout.getHeight() - viewportHeight)
+		scrollY = Math.min(Math.max(0, scrollY), maxScrollY).toInt()
+		if (scrollY != editText.getScrollY()) {
+			editText.scrollTo(editText.getScrollX(), scrollY)
+		}
+	}
+
+	private refreshTextareaHeightForTextLayoutChange() {
+		if (this.isBatchUpdating) {
+			this.pendingBatchHeightRefresh = true
+			return
+		}
+		if (!this.hasReceivedAutoHeightProp) {
+			return
+		}
+		this.updateTextareaHeight()
+		this.dispatchLineChange()
+	}
+
+	private resetTextareaScrollIfContentFits(height: number) {
+		if (!this.autoHeight || this.editText == null) return
+		const contentHeight = this.calculateContentHeight()
+		if (contentHeight <= height + 1) {
+			this.editText!.scrollTo(0, 0)
+		}
+	}
+
+	private updateTextareaHeight() {
+		const height = this.resolveTextareaHeight()
+		const lineCount = this.editText?.getLineCount() ?? -1
+		const nativeLineHeight = this.editText?.getLineHeight() ?? -1
+		this.trace(
+			'updateTextareaHeight resolved=' + height
+				+ ' autoHeight=' + this.autoHeight
+				+ ' lineCount=' + lineCount
+				+ ' nativeLineHeight=' + nativeLineHeight
+		)
+		this.invalidateTextareaMeasure()
+		this.resetTextareaScrollIfContentFits(height)
+	}
+
+	private dispatchInput(value: string, cursor: number, composing: boolean) {
+		const detail = new UTSJSONObject()
+		detail.set('value', value)
+		detail.set('cursor', cursor)
+		detail.set('composing', composing)
+		const event = new UniNativeViewEvent('input', detail)
+		this.element.dispatchEvent(event)
+	}
+
+	private dispatchFocus(height: number, value: string) {
+		const detail = new UTSJSONObject()
+		detail.set('height', height)
+		detail.set('value', value)
+		const event = new UniNativeViewEvent('focus', detail)
+		this.element.dispatchEvent(event)
+	}
+
+	private dispatchBlur(value: string, cursor: number) {
+		const detail = new UTSJSONObject()
+		detail.set('value', value)
+		detail.set('cursor', cursor)
+		const event = new UniNativeViewEvent('blur', detail)
+		this.element.dispatchEvent(event)
+	}
+
+	private dispatchChange(value: string) {
+		const detail = new UTSJSONObject()
+		detail.set('value', value)
+		const event = new UniNativeViewEvent('change', detail)
+		this.element.dispatchEvent(event)
+	}
+
+	private dispatchConfirm(value: string) {
+		const detail = new UTSJSONObject()
+		detail.set('value', value)
+		const event = new UniNativeViewEvent('confirm', detail)
+		this.element.dispatchEvent(event)
+	}
+
+	private dispatchKeyboardHeightChange(height: number, duration: number) {
+		const detail = new UTSJSONObject()
+		detail.set('height', height)
+		detail.set('duration', duration)
+		const event = new UniNativeViewEvent('keyboardheightchange', detail)
+		this.element.dispatchEvent(event)
+	}
+
+	private dispatchLineChange() {
+		if (this.editText == null) return
+		const lineCount = this.editText!.getLineCount()
+		const contentHeight = this.calculateContentHeight()
+		this.trace('dispatchLineChange lineCount=' + lineCount + ' height=' + contentHeight)
+		const detail = new UTSJSONObject()
+		detail.set('lineCount', lineCount)
+		detail.set('height', contentHeight)
+		const event = new UniNativeViewEvent('linechange', detail)
+		this.element.dispatchEvent(event)
+	}
+}
+
+export class UniTextareaElement extends UniViewElementImpl {
+	private _value: string = ''
+	textareaView: WeakReference<NativeTextareaView> | null = null
+
+	override tagName: string = 'TEXTAREA'
+	override nodeName: string = 'TEXTAREA'
+
+	constructor() {
+		super()
+	}
+
+	get value(): string {
+		return this.textareaView?.get()?.getValue() ?? this._value
+	}
+
+	set value(value: string) {
+		if (this._value == value) {
+			return
+		}
+		this._value = value
+		super.setAnyAttribute('value', value = value)
+		this.textareaView?.get()?.updateValue(value)
+	}
+
+	get name(): string {
+		return this.getAttribute('name') ?? ''
+	}
+
+	set name(value: string) {
+		this.setAttribute('name', value)
+	}
+
+	get disabled(): boolean {
+		return toBoolean(this.getAnyAttribute('disabled') ?? false)
+	}
+
+	set disabled(value: boolean) {
+		this.setAnyAttribute('disabled', value = value)
+		this.textareaView?.get()?.updateDisabled(value)
+	}
+
+	get autofocus(): boolean {
+		return toBoolean(this.getAnyAttribute('autoFocus') ?? false)
+	}
+
+	set autofocus(value: boolean) {
+		this.setAnyAttribute('autoFocus', value = value)
+	}
+
+	override getAttribute(key: string): string | null {
+		if (key == 'value') {
+			return (super.getAnyAttribute(key) as string | null) ?? this._value
+		}
+		return super.getAttribute(key)
+	}
+
+	override getAnyAttribute(key: string): any | null {
+		if (key == 'value') {
+			return super.getAnyAttribute(key) ?? this._value
+		}
+		return super.getAnyAttribute(key)
+	}
+
+	override setAttribute(key: string, value: string) {
+		if (key == 'value') {
+			this.value = value
+			return
+		}
+		super.setAttribute(key, value)
+	}
+
+	override focus() {
+		this.setAnyAttribute('focus', value = true)
+		this.textareaView?.get()?.updateFocus(true)
+	}
+
+	override blur() {
+		this.setAnyAttribute('focus', value = false)
+		this.textareaView?.get()?.updateFocus(false)
+	}
+
+	override getAndroidView<T extends View>(): T | null {
+		const textareaView = this.textareaView?.get()
+		if (textareaView == null) {
+			return null
+		}
+		return textareaView.getEditText() as T | null
+	}
+}

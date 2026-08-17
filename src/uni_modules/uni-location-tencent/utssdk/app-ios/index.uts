@@ -286,7 +286,7 @@ class LBSUpdateLocation implements TencentLBSLocationManagerDelegate {
 			errCode = 1505004
 		}
 		let tempErr = new GetLocationFailImpl(errCode)
-		const err = UniError(tempErr.errSubject, tempErr.errCode, tempErr.errMsg, tempErr.data)
+		const err = new UniError(tempErr.errSubject, tempErr.errCode, tempErr.errMsg, tempErr.data)
 		this.locationUpdateErrorCallback?.(err)
 	}
 

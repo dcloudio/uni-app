@@ -12,27 +12,23 @@
  import android.view.Gravity
  import android.view.animation.AccelerateInterpolator
  import android.view.animation.DecelerateInterpolator
- import android.view.animation.Interpolator
  import android.widget.ProgressBar
 
  class WebViewProgressBar(context: Context) :
      ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal) {
 
-     private var isFinish = false
-     private var alpha = 255
-     private var mCurrentAnimator: ObjectAnimator? = null
+     private var isDestroy = false
+     private var mProgressAnimator: ObjectAnimator? = null
+     private var mDismissAnimator: ObjectAnimator? = null
 
      init {
          max = 100
-     }
-
-     fun setAlphaInt(alpha: Int) {
-         this.alpha = alpha
+         alpha = 0f
      }
 
      fun setColorInt(colorInt: Int) {
          val progressColor =
-             Color.argb(alpha, Color.red(colorInt), Color.green(colorInt), Color.blue(colorInt))
+             Color.argb(255, Color.red(colorInt), Color.green(colorInt), Color.blue(colorInt))
          val backgroundColor = Color.TRANSPARENT
          //Background
          val bgClipDrawable =
@@ -56,88 +52,76 @@
       * 开始进度
       */
      fun startProgress() {
+         if (isDestroy) return
          progress = 0
          setAlpha(1f)
-         isFinish = false
-         val interpolator: Interpolator = DecelerateInterpolator()
-         mCurrentAnimator =
-             getProgressAnimation(30, 2000, interpolator, object : AnimatorListenerAdapter() {
+         mDismissAnimator?.removeAllListeners()
+         mDismissAnimator?.cancel()
+         mProgressAnimator?.removeAllListeners()
+         mProgressAnimator?.cancel()
+         mProgressAnimator = ObjectAnimator.ofInt(this, "progress", progress, 30).apply {
+             duration = 2000
+             interpolator = DecelerateInterpolator()
+             addListener(object : AnimatorListenerAdapter() {
                  override fun onAnimationEnd(animation: Animator) {
                      super.onAnimationEnd(animation)
-                     if (!isFinish) {
-                         mCurrentAnimator = getProgressAnimation(70,
-                             2000,
-                             interpolator,
-                             object : AnimatorListenerAdapter() {
-                                 override fun onAnimationEnd(animation: Animator) {
-                                     super.onAnimationEnd(animation)
-                                     if (!isFinish) {
-                                         mCurrentAnimator =
-                                             getProgressAnimation(95, 50000, interpolator, null)
-                                         mCurrentAnimator?.start()
-                                     }
+                     mProgressAnimator = ObjectAnimator.ofInt(this@WebViewProgressBar, "progress", progress, 70).apply {
+                         duration = 2000
+                         interpolator = DecelerateInterpolator()
+                         addListener(object : AnimatorListenerAdapter() {
+                             override fun onAnimationEnd(animation: Animator) {
+                                 super.onAnimationEnd(animation)
+                                 mProgressAnimator = ObjectAnimator.ofInt(this@WebViewProgressBar, "progress", progress, 95).apply {
+                                     duration = 50000
+                                     interpolator = DecelerateInterpolator()
+                                     start()
                                  }
-                             })
-                         mCurrentAnimator?.start()
+                             }
+                         })
+                         start()
                      }
                  }
              })
-         mCurrentAnimator?.start()
+             start()
+         }
      }
 
      /**
       * 结束进度
       */
      fun finishProgress() {
-         if (isFinish) {
-             return
-         }
-         isFinish = true
-         mCurrentAnimator?.cancel()
-         mCurrentAnimator = getProgressAnimation(100,
-             400,
-             AccelerateInterpolator(),
-             object : AnimatorListenerAdapter() {
-                 override fun onAnimationEnd(animation: Animator) {
-                     super.onAnimationEnd(animation)
-                     if (isFinish) {
-                         startDismissAnimation()
-                     }
-                 }
-             })
-         mCurrentAnimator?.start()
-     }
-
-     /**
-      * progressBar递增动画
-      */
-     private fun getProgressAnimation(
-         newProgress: Int,
-         duration: Int,
-         interpolator: Interpolator,
-         listenerAdapter: AnimatorListenerAdapter?,
-     ): ObjectAnimator {
-         return ObjectAnimator.ofInt(this, "progress", progress, newProgress).apply {
-             this.duration = duration.toLong()
-             this.interpolator = interpolator
-             listenerAdapter?.let { addListener(it) }
-         }
-     }
-
-     /**
-      * progressBar消失动画
-      */
-     private fun startDismissAnimation() {
-         ObjectAnimator.ofFloat(this, "alpha", 1.0f, 0.0f).apply {
-             duration = 1000 // 动画时长
-             interpolator = DecelerateInterpolator() // 减速
+         if (isDestroy) return
+         mProgressAnimator?.removeAllListeners()
+         mProgressAnimator?.cancel()
+         mProgressAnimator = ObjectAnimator.ofInt(this, "progress", progress, 100).apply {
+             duration = 400
+             interpolator = AccelerateInterpolator()
              addListener(object : AnimatorListenerAdapter() {
                  override fun onAnimationEnd(animation: Animator) {
-                     // 动画结束
-                     progress = 0
+                     super.onAnimationEnd(animation)
+                     mDismissAnimator = ObjectAnimator.ofFloat(this@WebViewProgressBar, "alpha", 1f, 0f).apply {
+                         duration = 1000
+                         interpolator = DecelerateInterpolator()
+                         addListener(object : AnimatorListenerAdapter() {
+                             override fun onAnimationEnd(animation: Animator) {
+                                 progress = 0
+                             }
+                         })
+                         start()
+                     }
                  }
              })
              start()
          }
+     }
+     
+     fun destroy() {
+         isDestroy = true
+         mProgressAnimator?.removeAllListeners()
+         mProgressAnimator?.cancel()
+         mProgressAnimator = null
+         mDismissAnimator?.removeAllListeners()
+         mDismissAnimator?.cancel()
+         mDismissAnimator = null
      }
  }

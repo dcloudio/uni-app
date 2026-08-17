@@ -6,20 +6,17 @@ export type ConnectEventSourceOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.51"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.63",
 	        "unixUtsPlugin": "4.63"
 	      },
 	      "harmony": {
-	        "osVer": "x",
 	        "uniVer": "x",
 	        "unixVer": "x"
 	      }
@@ -37,20 +34,17 @@ export type ConnectEventSourceOptions = {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.63",
 	        "unixUtsPlugin": "4.63"
 	      },
 	      "harmony": {
-	        "osVer": "x",
 	        "uniVer": "x",
 	        "unixVer": "x"
 	      }
@@ -76,20 +70,17 @@ export interface Uni {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.51"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.63",
           "unixUtsPlugin": "4.63"
         },
         "harmony": {
-          "osVer": "x",
           "uniVer": "x",
           "unixVer": "x"
         }
@@ -111,20 +102,17 @@ export interface UniEventSource {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.51"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.63",
 	        "unixUtsPlugin": "4.63"
 	      },
 	      "harmony": {
-	        "osVer": "x",
 	        "uniVer": "x",
 	        "unixVer": "x"
 	      }
@@ -143,20 +131,17 @@ export interface UniEventSource {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.51"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.63",
 	        "unixUtsPlugin": "4.63"
 	      },
 	      "harmony": {
-	        "osVer": "x",
 	        "uniVer": "x",
 	        "unixVer": "x"
 	      }
@@ -175,20 +160,17 @@ export interface UniEventSource {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.51"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.63",
 	        "unixUtsPlugin": "4.63"
 	      },
 	      "harmony": {
-	        "osVer": "x",
 	        "uniVer": "x",
 	        "unixVer": "x"
 	      }
@@ -206,20 +188,17 @@ export interface UniEventSource {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.51"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.63",
 	        "unixUtsPlugin": "4.63"
 	      },
 	      "harmony": {
-	        "osVer": "x",
 	        "uniVer": "x",
 	        "unixVer": "x"
 	      }
@@ -239,20 +218,17 @@ export class UniMessageEvent {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.51"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.63",
 	        "unixUtsPlugin": "4.63"
 	      },
 	      "harmony": {
-	        "osVer": "x",
 	        "uniVer": "x",
 	        "unixVer": "x"
 	      }
@@ -271,20 +247,17 @@ export class UniMessageEvent {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.51"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.63",
 	        "unixUtsPlugin": "4.63"
 	      },
 	      "harmony": {
-	        "osVer": "x",
 	        "uniVer": "x",
 	        "unixVer": "x"
 	      }
@@ -302,20 +275,17 @@ export class UniMessageEvent {
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.51"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.63",
 	        "unixUtsPlugin": "4.63"
 	      },
 	      "harmony": {
-	        "osVer": "x",
 	        "uniVer": "x",
 	        "unixVer": "x"
 	      }

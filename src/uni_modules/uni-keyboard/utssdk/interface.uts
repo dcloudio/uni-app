@@ -111,20 +111,17 @@ export interface Uni {
 	 * @uniPlatform {
 	 *    "app": {
 	 *      "android": {
-	*        "osVer": "5.0",
 	*        "uniVer": "√",
 	*        "unixVer": "4.71"
 	*      },
 	 *      "ios": {
-	*        "osVer": "12.0",
 	*        "uniVer": "√",
 	*        "unixVer": "4.71"
 	*      },
 	 *      "harmony": {
-	 *        "osVer": "3.0",
 	 *        "uniVer": "4.23",
 	 *        "unixVer": "4.61",
-	 *        "unixvVer": "5.0"
+	 *        "unixVaporVer": "5.0"
 	 *      }
 	 *  },
 	 *  "mp": {
@@ -186,15 +183,64 @@ export interface Uni {
 	 * @uniPlatform {
 	 *    "app": {
 	 *      "android": {
-	*        "osVer": "5.0",
 	*        "uniVer": "√",
 	*        "unixVer": "4.71"
 	*      },
 	 *      "ios": {
-	*        "osVer": "12.0",
 	*        "uniVer": "√",
 	*        "unixVer": "4.71"
-	*      }
+	*      },
+	 *      "harmony": {
+	 *        "uniVer": "5.08",
+	 *        "unixVer": "5.08",
+	 *        "unixVaporVer": "5.08"
+	 *      }
+	 *  },
+	 *  "mp": {
+	 *    "weixin": {
+	 *        "hostVer": "2.7",
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *        "hostVer": "3.6.8",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    }
+	 *  },
+	 *  "web": {
+	 *    "uniVer": "x",
+	 *    "unixVer": "x"
 	 *  }
 	 * }
 	 */
@@ -208,15 +254,64 @@ export interface Uni {
 	 * @uniPlatform {
 	 *    "app": {
 	 *      "android": {
-	*        "osVer": "5.0",
 	*        "uniVer": "√",
 	*        "unixVer": "4.71"
 	*      },
 	 *      "ios": {
-	*        "osVer": "12.0",
 	*        "uniVer": "√",
 	*        "unixVer": "4.71"
-	*      }
+	*      },
+	 *      "harmony": {
+	 *        "uniVer": "5.08",
+	 *        "unixVer": "5.08",
+	 *        "unixVaporVer": "5.08"
+	 *      }
+	 *  },
+	 *  "mp": {
+	 *    "weixin": {
+	 *        "hostVer": "2.9.2",
+	 *        "uniVer": "√",
+	 *        "unixVer": "4.41"
+	 *    },
+	 *    "alipay": {
+	 *        "hostVer": "3.6.8",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "baidu": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "toutiao": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "lark": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "qq": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "kuaishou": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    },
+	 *    "jd": {
+	 *        "hostVer": "√",
+	 *        "uniVer": "√",
+	 *        "unixVer": "x"
+	 *    }
+	 *  },
+	 *  "web": {
+	 *    "uniVer": "x",
+	 *    "unixVer": "x"
 	 *  }
 	 * }
 	 */

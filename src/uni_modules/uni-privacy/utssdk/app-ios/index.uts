@@ -1,5 +1,5 @@
 import {
-	GetPrivacySetting, GetPrivacySettingOptions, GetPrivacySettingSuccessResult, OnPrivacyAuthorizationChange, PrivacyChangeResult, OnPrivacyAuthorizationChangeCallback, OffPrivacyAuthorizationChange, ResetPrivacyAuthorization
+	GetPrivacySetting, GetPrivacySettingOptions, GetPrivacySettingSuccessResult, OnPrivacyAuthorizationChange, PrivacyChangeResult, OnPrivacyAuthorizationChangeCallback, OffPrivacyAuthorizationChange, ResetPrivacyAuthorization, AgreePrivacyAuthorization
 } from "../interface.uts";
 import { UTSiOS } from "DCloudUTSFoundation";
 
@@ -34,4 +34,11 @@ export const onPrivacyAuthorizationChange : OnPrivacyAuthorizationChange = funct
 */
 export const offPrivacyAuthorizationChange : OffPrivacyAuthorizationChange = function (id : number) : void {
 	UTSiOS.offPrivacyAgreeChange(id)
+}
+
+/**
+ * 同意隐私政策
+*/
+export const agreePrivacyAuthorization : AgreePrivacyAuthorization = function () {
+	UTSiOS.setPrivacyAgree(true)
 }

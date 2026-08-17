@@ -1,12 +1,13 @@
 <template>
   <scroll-view :ref="recycleWaterflowCpp.setElement" :scroll-top="props.scrollTop" :show-scrollbar="props.showScrollbar"
-    :scroll-with-animation="props.scrollWithAnimation" :type="props.type" :bounces="props.bounces"
+    :scroll-with-animation="props.scrollWithAnimation" :type="props.type" :bounces="props.bounces" :android-overscroll="props.androidOverscroll"
     :upper-threshold="props.upperThreshold" :lower-threshold="props.lowerThreshold" :scroll-left="props.scrollLeft"
     :scroll-into-view="props.scrollIntoView" :refresher-enabled="props.refresherEnabled"
     :refresher-threshold="props.refresherThreshold" :refresher-max-drag-distance="props.refresherMaxDragDistance"
     :refresher-background="props.refresherBackground" :refresher-triggered="props.refresherTriggered"
     :custom-nested-scroll="props.customNestedScroll" :nested-scroll-child="props.nestedScrollChild"
     :associative-container="props.associativeContainer" :enable-back-to-top="props.enableBackToTop" :refresher-default-style="props.refresherDefaultStyle"
+    :android-fast-scroll="props.androidFastScroll"
     :waterflow-id="waterflowId" change:waterflow-id="recycleWaterflowCpp.setWaterflowId"
     :list="keyList as string[]" change:list="recycleWaterflowCpp.updateList"
     :cross-axis-count="realCrossAxisCount" :main-axis-gap="realMainAxisGap" :cross-axis-gap="realCrossAxisGap"
@@ -25,7 +26,7 @@
 <script module="recycleWaterflowCpp" lang="cpp" class-name="RecycleWaterflow" src="../../cppsdk/recycle_waterflow.h"
   namespace="recycle_waterflow"></script>
 <script setup>
-  import { generateWaterflowId } from '../../common/utils'
+  import { generateWaterflowId, NATIVE_CHANNEL_ACTIONS } from '../../common/utils'
   import { UniWaterflowElement } from '../../common/element'
 
   defineOptions({
@@ -40,6 +41,10 @@
    * - direction
    */
   const props = defineProps({
+    androidOverscroll: {
+      type: [Boolean, String],
+      default: false
+    },
     crossAxisCount: {
       type: [Number, String],
       default: 2
@@ -126,6 +131,13 @@
     nestedScrollChild: {
       type: String,
       default: ''
+    },
+    /**
+     * @internal
+     */
+    androidFastScroll: {
+      type: [Boolean, String],
+      default: false
     }
   })
 
@@ -164,14 +176,27 @@
   }
 
   const renderRange = ref<[number, number]>([0, 0]);
+
   function updateRenderInfo(renderRangeStart: number, renderRangeEnd: number) {
     renderRange.value = [renderRangeStart, renderRangeEnd];
   }
 
+  let nativeChannelFn: Function | null = null;
+  function setNativeChannelFn(fn: Function) {
+    nativeChannelFn = fn;
+  }
+
+  onBeforeUnmount(() => {
+    if (nativeChannelFn) {
+      nativeChannelFn(NATIVE_CHANNEL_ACTIONS.DESTROY, waterflowId);
+    }
+  })
+
   defineExpose({
     renderRange,
     updateList,
-    updateRenderInfo
+    updateRenderInfo,
+    setNativeChannelFn
   });
 </script>
 <style>

@@ -1,8 +1,8 @@
 <template>
-  <!-- #ifndef APP-HARMONY && VUE3-VAPOR -->
+  <!-- #ifndef VUE3-VAPOR -->
   <uni-video-element
   <!-- #endif -->
-  <!-- #ifdef APP-HARMONY && VUE3-VAPOR -->
+  <!-- #ifdef VUE3-VAPOR -->
   <view
   <!-- #endif -->
     class="uni-video" ref="rootRef" @click="useControlsReturn.toggleControls" @fullscreenchange="useFullScreenReturn.fullscreenchange">
@@ -14,25 +14,29 @@
       @touchmove="useGestureReturn.onTouchmove"
       @touchend="useGestureReturn.onTouchend"
       @touchcancel="useGestureReturn.onTouchend"
+      @fullscreenchange="useFullScreenReturn.fullscreenchange"
     >
       <view class="uni-video-loading" style="justify-content: center;align-items: center;" v-if="props.showLoading && videoState.start && videoState.loading">
         <loading style="width: 54px; height: 54px; border-color: #d3d3d3" />
       </view>
 
       <native-view class="native-view-video" @init="onInit"></native-view>
+      <!-- #ifdef APP-ANDROID -->
+      <image v-if="poster != null && !videoState.start" class="uni-video-poster" :src="poster" :mode="posterMode" :fade-show="false"></image>
+      <!-- #endif -->
       <!-- #ifdef APP-HARMONY && !VUE3-VAPOR -->
       <volume-panel v-if="inited" :volume-level="volumeState.currentVolumeLevel" :position-x="volumeState.positionX"></volume-panel>
       <!-- #endif -->
 
-      <!-- #ifdef APP-HARMONY && !VUE3-VAPOR -->
-      <view v-show="videoState.start && danmuState.enable" ref="danmuRef" class="uni-video-danmu"></view>
-      <!-- #endif -->
-
-      <!-- #ifdef APP-HARMONY && VUE3-VAPOR -->
       <Danmaku v-if="videoState.start && danmuState.enable" ref="danmakuRef"/>
-      <!-- #endif -->
 
-      <view v-if="fullscreenState.fullscreen && useControlsReturn.controlsShow.value" class="uni-video-bar_outside uni-video-title-bar_outside" @click="eventWrapper">
+      <view
+        v-if="fullscreenState.fullscreen && useControlsReturn.controlsShow.value"
+        ref="titleBarRef"
+        class="uni-video-bar_outside uni-video-title-bar_outside"
+        :style="titleBarStyle ?? {}"
+        @click="eventWrapper"
+      >
         <view class="uni-video-bar_container">
           <view class="uni-video-bar">
             <!-- 返回按钮 -->
@@ -50,7 +54,7 @@
         </view>
       </view>
 
-      <view v-if="useControlsReturn.controlsShow.value" :class="{ 'uni-video-bar_outside': true, 'uni-video-fullscreen-bar_outside': fullscreenState.fullscreen }" @click="eventWrapper">
+      <view v-if="useControlsReturn.controlsShow.value" ref="controlsBarRef" :class="{ 'uni-video-bar_outside': true, 'uni-video-fullscreen-bar_outside': fullscreenState.fullscreen }" @click="eventWrapper">
         <view class="uni-video-bar_container" v-if="props.showPlayBtn || props.showProgress || props.showMuteBtn || props.danmuBtn || props.showFullscreenBtn">
           <view :class="{ 'uni-video-bar': true, 'uni-video-bar_fullscreen': fullscreenState.fullscreen }">
             <view class="uni-video-controls" @click="(event : UniPointerEvent) => eventWrapper(event, useControlsReturn.controlsClick)">
@@ -130,11 +134,24 @@
         <slot name="controls"></slot>
       </view>
 
+      <!-- #ifdef APP-IOS || APP-ANDROID -->
+      <text
+        v-if="useControlsReturn.centerPlayBtnShow.value"
+        class="uni-video-icon uni-video-cover-play-button"
+        @click="($event : UniPointerEvent) => eventWrapper($event, useVideoReturn.play)"
+      >
+        {{ ICON_PLAY }}
+      </text>
+      <!-- #endif -->
+
+      <!-- #ifdef APP-HARMONY -->
       <view v-if="useControlsReturn.centerPlayBtnShow.value" class="uni-video-cover" @click="eventWrapper">
         <text class="uni-video-icon uni-video-cover-play-button" @click="($event : UniPointerEvent) => eventWrapper($event, useVideoReturn.play)">
           {{ ICON_PLAY }}
         </text>
       </view>
+      <!-- #endif -->
+
 
       <view v-if="gestureState.gestureType !== 'none' || volumeState.showToast" class="uni-video-loading" @click="eventWrapper">
         <view
@@ -181,20 +198,20 @@
         </view>
       </view>
 
-      <view class="uni-video-slots">
+      <view class="uni-video-slots" ref="slotsRef">
         <slot></slot>
       </view>
     </view>
-  <!-- #ifdef APP-HARMONY && VUE3-VAPOR -->
+  <!-- #ifdef VUE3-VAPOR -->
   </view>
   <!-- #endif -->
-  <!-- #ifndef APP-HARMONY && VUE3-VAPOR -->
+  <!-- #ifndef VUE3-VAPOR -->
   </uni-video-element>
   <!-- #endif -->
 </template>
 
 <script setup lang="uts">
-  import { formatTime } from './utils.uts';
+  import { formatTime as _formatTime } from './utils.uts';
   import {
     UniVideoTimeUpdateEvent,
     UniVideoFullScreenChangeEvent,
@@ -203,17 +220,19 @@
     UniVideoProgressEvent,
     UniVideoEvent,
     UniVideoErrorEvent,
-    UniWebViewErrorEventDetail
+    UniVideoErrorEventDetail
   } from './global.uts';
   // #ifdef APP-HARMONY && VUE3-VAPOR
-  import Danmaku from './danmaku.uvue';
-  import { DanmakuTask, DanmakuType } from './danmakuTypes.uts'
   import { AVVolumePanelOptions } from '@/uni_modules/uni-video';
+  // #endif
+  import Danmaku from './danmaku.uvue';
+  import { DanmakuTask } from './danmakuTypes.uts'
+  // #ifdef VUE3-VAPOR
   import { UniVideoRecycleEvent, UniVideoRecycleEventDetail, UniVideoReuseEvent, UniVideoReuseEventDetail } from './global.uts'
   // #endif
   import { Video, ObjectFit, Danmu, BuilderVideoOptions, BuilderVideoParams, AudioManager, Brightness, UniVideoElement, RequestFullScreenOptions } from '@/uni_modules/uni-video';
 
-  // #ifdef APP-HARMONY && VUE3-VAPOR
+  // #ifdef VUE3-VAPOR
   type RecycleStateInCom = {
     isPlayed: boolean,
     /**
@@ -260,6 +279,21 @@
     event.stopPropagation();
   }
 
+  function isChildOfElement(target : UniElement | null, parent : UniElement | null) : boolean {
+    let current = target;
+    while (current != null) {
+      if (current == parent) {
+        return true;
+      }
+      current = current.parentElement;
+    }
+    return false;
+  }
+
+  function formatTime(val: number) : string {
+      return _formatTime(val);
+  }
+
   const ICON_BACK = '\uE601';
   const ICON_PLAY = '\uea24';
   const ICON_PAUSH = '\uea25';
@@ -271,7 +305,6 @@
   const ICON_VOLUME_MUTE = '\uea31';
   const ICON_BRIGHTNESS = '\uea32';
 
-  // #ifndef APP-IOS
   defineOptions({
     name: 'video',
     // @ts-ignore
@@ -280,7 +313,6 @@
       class: UniVideoElement
     }
   });
-  // #endif
 
   const emit = defineEmits<{
     play: [event: UniEvent];
@@ -293,13 +325,13 @@
     progress: [event: UniVideoProgressEvent];
     fullscreenclick: [event: UniVideoFullScreenClickEvent];
     controlstoggle: [event: UniVideoControlsToggleEvent];
-    // #ifdef APP-HARMONY && VUE3-VAPOR
+    // #ifdef VUE3-VAPOR
     /**
      * 组件回收时的生命周期钩子
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -310,7 +342,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -325,7 +357,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -336,7 +368,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -347,7 +379,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -358,7 +390,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -369,7 +401,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -380,7 +412,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -391,7 +423,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -402,7 +434,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -413,7 +445,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -424,18 +456,18 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
      */
-    objectFit: any;
+    objectFit: string;
     /**
      * 视频封面的图片网络资源地址，如果 controls 属性值为 false 则设置 poster 无效
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -446,7 +478,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -457,7 +489,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -468,7 +500,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -479,7 +511,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -490,7 +522,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -501,7 +533,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -512,7 +544,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -523,7 +555,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -534,7 +566,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -545,7 +577,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -556,7 +588,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -567,7 +599,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -578,7 +610,7 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
@@ -589,12 +621,45 @@
      * @uniPlatform {
        "app": {
          "harmony": {
-           "unixvVer": "x"
+           "unixVaporVer": "x"
          }
        }
      }
      */
     title?: string;
+    /**
+     * 是否对 http、https 视频源开启本地缓存
+     * @uniPlatform {
+       "app": {
+         "harmony": {
+           "unixVaporVer": "x"
+         }
+       }
+     }
+     */
+    httpCache?: boolean;
+    /**
+     * 自定义 header
+     * @uniPlatform {
+       "app": {
+         "harmony": {
+           "unixVaporVer": "x"
+         }
+       }
+     }
+     */
+    header?: UTSJSONObject;
+    /**
+     * 解码器选择
+     * @uniPlatform {
+       "app": {
+         "harmony": {
+           "unixVaporVer": "x"
+         }
+       }
+     }
+     */
+    codec?: string;
   }>(), {
     controls: true,
     autoplay: false,
@@ -616,23 +681,131 @@
     vslideGestureInFullscreen: true,
     direction: 90,
     showLoading: true,
-    enableDanmu: false
+    enableDanmu: false,
+    httpCache: false,
+    codec: 'hardware'
   });
 
+  // #ifdef APP-ANDROID
+  const posterMode = computed(() : string => {
+    switch (props.objectFit) {
+      case 'fill':
+        return 'scaleToFill';
+      case 'cover':
+        return 'aspectFill';
+      case 'contain':
+      default:
+        return 'aspectFit';
+    }
+  });
+  // #endif
+
   let brightness = new Brightness();
+  // #ifdef APP-IOS
+  brightness.onBrightnessChange((value) => {
+    if (gestureState == null || gestureState.gestureType === 'brightness') return;
+    gestureState.brightnessNew = value;
+  });
+  // #endif
   let video: Video | null = null;
   const rootRef = ref<UniElement | null>(null);
   const containerRef = ref<UniElement | null>(null);
+  const slotsRef = ref<UniElement | null>(null);
+  // #ifdef APP-IOS
+  const titleBarRef = ref<UniElement | null>(null);
+  const controlsBarRef = ref<UniElement | null>(null);
+  // #endif
 
   const progressRef = ref<UniElement | null>(null); // 进度条 + 时间
   const progressBarRef = ref<UniElement | null>(null); // 进度条
   const playedRef = ref<UniElement | null>(null);
 
   const windowInfo = uni.getWindowInfo();
-  const danmuRef = ref<UniElement | null>(null);
   const danmakuRef = ref<ComponentPublicInstance | null>(null);
 
   const safeTop = ref<number>(0);
+
+  // #ifdef APP-IOS
+  let hasActiveIOSSlotChildren = false;
+  let hasActiveIOSOverlayControlViews = false;
+  let lastIOSTitleBarOverlayView : UniElement | null = null;
+  let lastIOSControlsBarOverlayView : UniElement | null = null;
+  const isIOSSlotChildVisible = (child : UniElement) : boolean => {
+    const display = child.style.getPropertyValue('display');
+    if (display == 'none') {
+      return false;
+    }
+    const visibility = child.style.getPropertyValue('visibility');
+    if (visibility == 'hidden') {
+      return false;
+    }
+    if (child.offsetWidth <= 0 || child.offsetHeight <= 0) {
+      return false;
+    }
+    return true;
+  };
+  const hasVisibleIOSSlotChildren = () : boolean => {
+    const slotHost = slotsRef.value;
+    if (slotHost == null) {
+      return false;
+    }
+    const children = slotHost.children;
+    for (let i = 0; i < children.length; i++) {
+      if (isIOSSlotChildVisible(children[i])) {
+        return true;
+      }
+    }
+    return false;
+  };
+  const shouldAttachIOSSlotHostView = () : boolean => {
+    if (!hasVisibleIOSSlotChildren()) {
+      return false;
+    }
+    return fullscreenState.fullscreen || videoState.start || !props.showCenterPlayBtn;
+  };
+  const syncIOSSlotHostView = () => {
+    const nextHasActiveSlotChildren = shouldAttachIOSSlotHostView();
+    hasActiveIOSSlotChildren = nextHasActiveSlotChildren;
+    video?.setSlotHostView(nextHasActiveSlotChildren ? slotsRef.value ?? null : null);
+  };
+  const syncIOSOverlayControlViews = (force : boolean = false) => {
+    const nextHasActiveOverlayControlViews = hasVisibleIOSSlotChildren();
+    const nextTitleBarOverlayView = nextHasActiveOverlayControlViews ? titleBarRef.value ?? null : null;
+    const nextControlsBarOverlayView = nextHasActiveOverlayControlViews ? controlsBarRef.value ?? null : null;
+    if (!force &&
+      hasActiveIOSOverlayControlViews == nextHasActiveOverlayControlViews &&
+      lastIOSTitleBarOverlayView == nextTitleBarOverlayView &&
+      lastIOSControlsBarOverlayView == nextControlsBarOverlayView
+    ) {
+      return;
+    }
+    hasActiveIOSOverlayControlViews = nextHasActiveOverlayControlViews;
+    lastIOSTitleBarOverlayView = nextTitleBarOverlayView;
+    lastIOSControlsBarOverlayView = nextControlsBarOverlayView;
+    video?.setOverlayControlViews(nextTitleBarOverlayView, nextControlsBarOverlayView);
+  };
+  const scheduleIOSSlotHostViewSync = (force : boolean = false) => {
+    nextTick(() => {
+      const nextHasActiveSlotChildren = shouldAttachIOSSlotHostView();
+      if (force || hasActiveIOSSlotChildren != nextHasActiveSlotChildren) {
+        syncIOSSlotHostView();
+      }
+    });
+  };
+  const scheduleIOSOverlayControlViewsSync = (force : boolean = false) => {
+    nextTick(() => {
+      syncIOSOverlayControlViews(force);
+    });
+  };
+  onMounted(() => {
+    scheduleIOSSlotHostViewSync(true);
+    scheduleIOSOverlayControlViewsSync(true);
+  });
+  onUpdated(() => {
+    scheduleIOSSlotHostViewSync();
+    syncIOSOverlayControlViews();
+  });
+  // #endif
 
   const options: BuilderVideoOptions = {
     src: props.src,
@@ -720,13 +893,36 @@
       muted.value = _muted;
       if (video != null) video!.muted = _muted;
     }
+    // #ifdef APP-ANDROID || APP-IOS
+    let httpCacheStopHandle: (() => void) | null = null;
+    let headerStopHandle: (() => void) | null = null;
+    let codecStopHandle: (() => void) | null = null;
+    // #endif
+    let srcStopHandle: (() => void) | null = null;
+    let mutedStopHandle: (() => void) | null = null;
+    let posterStopHandle: (() => void) | null = null;
+    let objectFitStopHandle: (() => void) | null = null;
+    let autoplayStopHandle: (() => void) | null = null;
+    let loopStopHandle: (() => void) | null = null;
+    let durationStopHandle: (() => void) | null = null;
     onMounted(() => {
       nextTick(() => {
         watchEffect(() => {
           muted.value = props.muted === true;
         });
+        // #ifdef APP-ANDROID || APP-IOS
+        httpCacheStopHandle = watchEffect(() => {
+          if (video != null) { video!.httpCache = props.httpCache; }
+        });
+        headerStopHandle = watchEffect(() => {
+          if (video != null) { video!.header = props.header; }
+        });
+        codecStopHandle = watchEffect(() => {
+          if (video != null) { video!.codec = props.codec; }
+        });
+        // #endif
 
-        watch(
+        srcStopHandle = watch(
           () : string => props.src,
           (src: string) => {
             state.start = false;
@@ -751,41 +947,58 @@
           }) */
           }
         );
-        watch(
+        mutedStopHandle = watch(
           () : boolean => props.muted,
           (muted: boolean) => {
             mute(muted);
           }
         );
-        watch(
+        posterStopHandle = watch(
           () : string | null => props.poster,
           (poster: string) => {
             if (video != null) { video!.poster = poster; }
           }
         );
-        watch(
+        objectFitStopHandle = watch(
           () : ObjectFit => props.objectFit as ObjectFit,
           (objectFit: ObjectFit) => {
             if (video != null) { video!.objectFit = objectFit; }
           }
         );
-        watch(
+        autoplayStopHandle = watch(
           () : boolean => props.autoplay,
           (autoplay: boolean) => {
             if (video != null) { video!.autoplay = autoplay; }
           }
         );
-        watch(
+        loopStopHandle = watch(
           () : boolean => props.loop,
           (loop: boolean) => {
             if (video != null) { video!.loop = loop; }
           }
         );
-        watch([() => state.duration, () => props.duration], () => {
+        durationStopHandle = watch([() => state.duration, () : number | null => props.duration], () => {
           state.currentDuration = ((props.duration ?? 0) > 0) ? (props.duration ?? 0) : state.duration
+          // #ifdef APP-ANDROID || APP-IOS
+          if (video != null) { video!.duration = state.currentDuration; }
+          // #endif
         }, { immediate: true})
       })
     })
+    onBeforeUnmount(() => {
+      // #ifdef APP-ANDROID || APP-IOS
+      httpCacheStopHandle?.();
+      headerStopHandle?.();
+      codecStopHandle?.();
+      // #endif
+      srcStopHandle?.();
+      mutedStopHandle?.();
+      posterStopHandle?.();
+      objectFitStopHandle?.();
+      autoplayStopHandle?.();
+      loopStopHandle?.();
+      durationStopHandle?.();
+    });
     return {
       state,
       play,
@@ -836,7 +1049,7 @@
     onMounted(() => {
       nextTick(() => {
         let uniPage = rootRef.value?.uniPage
-        // #ifdef APP-HARMONY && VUE3-VAPOR
+        // #ifdef VUE3-VAPOR
         // dom2 上没有 uniPage、getPage()
         if (!uniPage) {
           uniPage = rootRef.value?.page
@@ -848,18 +1061,22 @@
       })
     });
     const fullscreenchange = (event: UniEvent) => {
+      let timeout = 500;
+      // #ifdef APP-IOS
+      timeout = 50;
+      // #endif
       setTimeout(() => {
         containerRef.value?.getBoundingClientRectAsync()?.then((rect) => {
-          // #ifdef APP-HARMONY && VUE3-VAPOR
-          danmakuRef.value?.resize?.()
-          // #endif
+          danmakuRef.value?.$callMethod('resize')
           gestureState!.containerRect.height = rect.height;
           gestureState!.containerRect.width = rect.width;
           gestureState!.containerRect.x = rect.x;
           gestureState!.containerRect.y = rect.y;
 
+          // #ifdef APP-HARMONY
           // @ts-ignore
           state.fullscreen = page?.fullscreenElement != null;
+          // #endif
           const isVertical = rect.height > rect.width;
 
           if (state.fullscreen && isVertical) {
@@ -869,8 +1086,15 @@
           }
 
           emit('fullscreenchange', new UniVideoFullScreenChangeEvent(rootRef.value!, state.fullscreen, isVertical ? 'vertical' : 'horizontal'));
+          // #ifdef APP-IOS
+          scheduleIOSSlotHostViewSync(true);
+          scheduleIOSOverlayControlViewsSync(true);
+          // #endif
+          // #ifdef APP-ANDROID
+          video?.updateLayout(rect.width * windowInfo.pixelRatio, rect.height * windowInfo.pixelRatio)
+          // #endif
         });
-      }, 500);
+      }, timeout);
     }
     return {
       state,
@@ -882,6 +1106,36 @@
   }
   const useFullScreenReturn = useFullscreen();
   const fullscreenState = useFullScreenReturn.state;
+  // #ifdef APP-IOS
+  watch(
+    () : boolean => fullscreenState.fullscreen,
+    (fullscreen : boolean) => {
+      video?.setNativeFullscreenState(fullscreen);
+      if (hasActiveIOSSlotChildren || hasVisibleIOSSlotChildren()) {
+        scheduleIOSSlotHostViewSync(true);
+        scheduleIOSOverlayControlViewsSync(true);
+      }
+    }
+  );
+  watch(
+    () : boolean => videoState.start,
+    () => {
+      if (hasActiveIOSSlotChildren || hasVisibleIOSSlotChildren()) {
+        scheduleIOSSlotHostViewSync(true);
+        scheduleIOSOverlayControlViewsSync(true);
+      }
+    }
+  );
+  // #endif
+  const titleBarStyle = computed(() : UTSJSONObject | null => {
+    // #ifdef APP-IOS
+    return {
+      top: `${safeTop.value}px`,
+      paddingTop: '0px'
+    };
+    // #endif
+    return null;
+  });
   // #endregion useFullscreen
 
   // #region useVolume
@@ -928,14 +1182,25 @@
       useGestureReturn!.changeToastThin();
     }
 
-    const audioManager : AudioManager= new AudioManager((volume) => {
+    let audioManager : AudioManager | null = null;
+    // #ifdef APP-IOS || APP-ANDROID
+    // iOS 平台需要将音量回调订阅放在 keepAlive 方法中，
+    // 以防止 native 回调给 JS 的 callback 提前被释放
+    audioManager = new AudioManager();
+    audioManager.onVolumeChange((volume) => {
+      state.currentVolumeLevel = volume;
+    });
+    // #endif
+    // #ifdef APP-HARMONY
+    audioManager = new AudioManager((volume) => {
       if (gestureState!.gestureType === 'volume') return;
       useShowToast();
       state.currentVolumeLevel = volume;
     });
-    state.minVolume = audioManager.minVolume;
-    state.maxVolume = audioManager.maxVolume;
-    state.currentVolumeLevel = audioManager.currentVolume;
+    // #endif
+    state.minVolume = audioManager!.minVolume;
+    state.maxVolume = audioManager!.maxVolume;
+    state.currentVolumeLevel = audioManager!.currentVolume;
 
     watchEffect(() => {
       const isFullscreen = fullscreenState.fullscreen;
@@ -946,8 +1211,11 @@
       }
     });
     onBeforeUnmount(() => {
-      audioManager?.offVolumeChange();
+      audioManager!.offVolumeChange();
       state.positionX = null;
+      // #ifdef APP-IOS
+      brightness.offBrightnessChange();
+      // #endif
     });
     const updateVolume = (nextVolume: number) => {
       if (nextVolume > state.maxVolume) {
@@ -963,6 +1231,9 @@
         volumeLevel: nextVolume,
         positionX: state.positionX
       } as AVVolumePanelOptions)
+      // #endif
+      // #ifdef APP-ANDROID || APP-IOS
+      video?.changeVolume(nextVolume);
       // #endif
     }
 
@@ -1050,7 +1321,7 @@
 
     const clickProgress = (event: UniPointerEvent) => {
       if (event.target != null) {
-        const clientRect = event.target.getBoundingClientRect();
+        const clientRect = event.target!.getBoundingClientRect();
         const w = clientRect.width;
         const x = event.x - clientRect.x;
         let progress = 0;
@@ -1064,15 +1335,22 @@
       clearTimeout(controlsState!.toggleControlsTimer);
     }
     const toggleControls = (event: UniPointerEvent) => {
+      // #ifdef APP-IOS
+      if (isChildOfElement(event.target, slotsRef.value)) {
+        return;
+      }
+      // #endif
       if (fullscreenState.fullscreen) {
         emit(
           'fullscreenclick',
           new UniVideoFullScreenClickEvent(rootRef.value!, event.screenX, event.screenY, gestureState!.containerRect.width, gestureState!.containerRect.height)
         );
       }
+
       state.toggleControlsTimer = setTimeout(() => {
-        controlsVisible.value = !controlsVisible.value;
-        emit('controlstoggle', new UniVideoControlsToggleEvent(rootRef.value!, controlsVisible.value));
+        const targetVisible = !controlsVisible.value;
+        controlsVisible.value = targetVisible;
+        emit('controlstoggle', new UniVideoControlsToggleEvent(rootRef.value!, targetVisible));
       }, gestureState!.doubleClickTime);
     }
     let hideTiming: number = 0;
@@ -1109,13 +1387,12 @@
     let cachedProgressBarWidth: number = 0;
 
     const onBallTouchend = (event: UniTouchEvent) => {
+      const touchingState = state.touching;
       state.controlsTouching = false;
-      if (state.touching) {
-        if (!moveOnce) {
-          event.stopPropagation();
-          useVideoReturn.seek((videoState.currentDuration * videoState.progress) / 100);
-        }
-        state.touching = false;
+      state.touching = false;
+      if (touchingState && !moveOnce) {
+        event.stopPropagation();
+        useVideoReturn.seek((videoState.currentDuration * videoState.progress) / 100);
       }
     }
     const onBallTouchmove = (event: UniTouchEvent) => {
@@ -1140,7 +1417,9 @@
       state.seeking = true;
       event.stopPropagation();
       if (!fullscreenState.fullscreen) {
+        // #ifndef APP-IOS
         event.preventDefault();
+        // #endif
       }
     }
     const onBallTouchstart = (event: UniTouchEvent) => {
@@ -1176,6 +1455,16 @@
     gestureState!.currentTimeNew = currentTimeNew;
   });
   controlsState = useControlsReturn.state;
+  // #ifdef APP-IOS
+  watch(
+    () : boolean => useControlsReturn.controlsShow.value,
+    () => {
+      if (hasActiveIOSOverlayControlViews || hasVisibleIOSSlotChildren()) {
+        scheduleIOSOverlayControlViewsSync(true);
+      }
+    }
+  );
+  // #endif
   // #endregion useControls
 
   // #region useGesture
@@ -1263,17 +1552,27 @@
       touchStartOrigin.y = toucher.pageY;
       state.gestureType = 'none';
       state.volumeOld = 0;
-      event.stopPropagation();
+      state.hasSought = false;
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
       // state.currentTimeOld = state.currentTimeNew = 0
     }
     const onTouchmove = (event: UniTouchEvent) => {
       if (!videoState.start) return;
 
       function stop() {
-        event.stopPropagation();
         if (!fullscreenState.fullscreen) {
+          // #ifndef APP-IOS
           event.preventDefault();
+          // #endif
+        } else {
+          event.stopPropagation();
         }
+      }
+
+      if (fullscreenState.fullscreen) {
+        stop()
       }
 
       const containerCenter = (containerRect.x + containerRect.width) / 2;
@@ -1368,13 +1667,20 @@
       }
     }
     const onTouchend = (event: UniTouchEvent) => {
+      if (controlsState?.touching == true) {
+        useControlsReturn.onBallTouchend(event);
+      }
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation()
+      }
       if (state.gestureType !== 'none') {
         state.hasSought = true;
         if (state.gestureType !== 'stop') {
-          event.stopPropagation();
           // 全屏的时候触发过 preventDefault 后续不再触发也会拦截 click 事件
           if (!fullscreenState.fullscreen) {
+            // #ifndef APP-IOS
             event.preventDefault();
+            // #endif
           }
         }
       }
@@ -1402,7 +1708,7 @@
 
       // 如果启用了双击手势，调用双击处理函数
       if (doubleClickHandler != null) {
-        doubleClickHandler(event);
+        doubleClickHandler?.(event);
       }
     }
     const getContainerRect = () => {
@@ -1473,7 +1779,7 @@
     const state = reactive<DanmuState>({
       enable: props.enableDanmu
     });
-    watch(() => props.enableDanmu, () => {
+    watch(() : boolean => props.enableDanmu, () => {
       state.enable = props.enableDanmu
     })
     let danmuIndex = {
@@ -1490,73 +1796,14 @@
     const playDanmu = (danmu: Danmu) => {
       if (rootRef.value == null) return;
 
-      // #ifdef VUE3-VAPOR
       if (danmu.text == null || danmu.text?.length === 0 || danmakuRef.value == null) {
         return;
       }
 
-      danmakuRef.value.send({
-        text: danmu.text,
+      danmakuRef.value.$callMethod('send', {
+        text: danmu.text ?? '',
         color: danmu.color
       } as DanmakuTask)
-      return
-      // #endif
-
-      if (danmu.text == null || danmu.text?.length === 0 || danmuRef.value == null) {
-        return;
-      }
-
-      // @ts-ignore
-      const p = rootRef.value.uniPage.createElement('text');
-      const danmuContainer = danmuRef.value as UniElement;
-
-      (p as UniTextElement).setAnyAttribute('value', danmu.text ?? '');
-
-      p.style.setProperty('font-size', '14px');
-      p.style.setProperty('line-height', '14px');
-      p.style.setProperty('position', 'absolute');
-      p.style.setProperty('color', '#000');
-      p.style.setProperty('white-space', 'nowrap');
-      p.style.setProperty('left', '100%');
-      p.style.setProperty('transform', 'translateX(0%)');
-      p.style.setProperty('bottom', `${Math.random() * 100}%`);
-      p.style.setProperty('color', `${danmu.color}`);
-
-      danmuContainer.appendChild(p);
-      // #ifndef APP-HARMONY
-      p.animate(
-        [
-          { left: '100%', transform: 'translateX(0%)' },
-          { left: '0%', transform: `translateX(-100%);` }
-        ],
-        {
-          duration: 3000,
-          easing: 'linear'
-        }
-      );
-      setTimeout(function () {
-        p.remove();
-      }, 3000);
-      // #endif
-      // #ifdef APP-HARMONY
-      // TODO 鸿蒙 left 动画问题导致弹幕渲染出错
-      setTimeout(() => {
-        const textWidth = p.getBoundingClientRect().width
-        p.animate(
-          [
-            { transform: "translateX(0%)" },
-            { transform: `translateX(-${danmuContainer.getBoundingClientRect().width + textWidth}px)` },
-          ],
-          {
-            duration: 3000,
-            easing: 'linear'
-          },
-        )
-        setTimeout(function () {
-          p.remove();
-        }, 3000);
-      }, 100);
-      // #endif
     }
     const updateDanmu = () => {
       const currentTime = videoState.currentTime;
@@ -1647,6 +1894,13 @@
   const progressing = useProgressing();
   // #endregion useProgressing
 
+  // #ifdef APP-ANDROID || APP-IOS
+  uni.loadFontFace({
+    family: 'uni-video-icon',
+    source: '/uni_modules/uni-video/static/font/uni-video-icon.ttf'
+  });
+  // #endif
+
   const inited = ref<boolean>(false);
   function onInit(event: UniNativeViewInitEvent) {
     video = new Video(event.detail.element, {
@@ -1657,6 +1911,9 @@
       objectFit: props.objectFit as ObjectFit,
       loop: props.loop
     } as BuilderVideoParams);
+    // #ifdef APP-IOS
+    scheduleIOSSlotHostViewSync(true);
+    // #endif
     inited.value = true;
   }
 
@@ -1679,7 +1936,13 @@
     videoState.start = true;
     videoState.playing = true;
     useControlsReturn.controlsVisible.value = true;
-    emit('play', new UniVideoEvent(rootRef.value!, 'play', {}));
+    // #ifdef APP-IOS
+    if (hasActiveIOSSlotChildren || hasVisibleIOSSlotChildren()) {
+      scheduleIOSSlotHostViewSync(true);
+    }
+    // #endif
+    uni.setKeepScreenOn({ keepScreenOn: true });
+    emit('play', new UniVideoEvent(rootRef.value!, 'play'));
   };
 
   const ON_PAUSE_EVENT_NAME = `__UNIVIDEO_ON_PAUSE_${eventSeed}`;
@@ -1687,24 +1950,43 @@
     videoState.loading = false;
     videoState.playing = false;
     useControlsReturn.controlsVisible.value = true;
-    emit('pause', new UniVideoEvent(rootRef.value!, 'pause', {}));
+    uni.setKeepScreenOn({ keepScreenOn: false });
+    emit('pause', new UniVideoEvent(rootRef.value!, 'pause'));
   };
 
   const ON_ERROR_EVENT_NAME = `__UNIVIDEO_ON_ERROR_${eventSeed}`;
+  // #ifndef APP-ANDROID
   const onError = () => {
     videoState.isError = true;
     videoState.loading = false;
     videoState.playing = false;
     useControlsReturn.controlsVisible.value = true;
-    emit('error', new UniVideoErrorEvent(rootRef.value!, { errCode: 200001, errSubject: 'uni-video', errMsg: '' } as UniWebViewErrorEventDetail));
+    uni.setKeepScreenOn({ keepScreenOn: false });
+    emit('error', new UniVideoErrorEvent(rootRef.value!, 200001, ''));
   };
+  // #endif
+  // #ifdef APP-ANDROID
+  const onError = (errMsg: string | null) => {
+    videoState.isError = true;
+    videoState.loading = false;
+    videoState.playing = false;
+    useControlsReturn.controlsVisible.value = true;
+    uni.setKeepScreenOn({ keepScreenOn: false });
+    if (errMsg != null) {
+        emit('error', new UniVideoErrorEvent(rootRef.value!, 300001, errMsg));
+    } else {
+        emit('error', new UniVideoErrorEvent(rootRef.value!, 200001, 'internal error'));
+    }
+  };
+  // #endif
 
   const ON_ENDED_EVENT_NAME = `__UNIVIDEO_ON_ENDED_${eventSeed}`;
   const onEnded = () => {
     videoState.loading = false;
     videoState.playing = false;
     useControlsReturn.controlsVisible.value = true;
-    emit('ended', new UniVideoEvent(rootRef.value!, 'ended', {}));
+    uni.setKeepScreenOn({ keepScreenOn: false });
+    emit('ended', new UniVideoEvent(rootRef.value!, 'ended'));
   };
 
   const ON_PREPARED_EVENT_NAME = `__UNIVIDEO_ON_PREPARED_${eventSeed}`;
@@ -1716,7 +1998,7 @@
     const initialTime = props.initialTime ?? 0;
     if (initialTime > 0) {
       useVideoReturn.seek(initialTime);
-    } else if (typeof props.poster === 'undefined' || props.poster.length === 0) {
+    } else if (typeof props.poster === 'undefined' || props.poster?.length === 0) {
       video?.displayTheFirstFrame();
     }
   };
@@ -1730,6 +2012,59 @@
     } as Danmu);
   };
 
+  const ON_WAITING_EVENT_NAME = `__UNIVIDEO_ON_WAITING_${eventSeed}`;
+  const onWaiting = () => {
+    if (videoState.playing) {
+      videoState.loading = true;
+    }
+    emit('waiting', new UniVideoEvent(rootRef.value!, 'waiting'));
+  };
+
+  const ON_PROGRESS_EVENT_NAME = `__UNIVIDEO_ON_PROGRESS_${eventSeed}`;
+  const onProgress = (buffered: number) => {
+    emit('progress', new UniVideoProgressEvent(rootRef.value!, buffered));
+  };
+
+  // #ifdef APP-IOS || APP-ANDROID
+  const ON_REQUEST_FULLSCREEN_EVENT_NAME = `__UNIVIDEO_REQUEST_FULLSCREEN_${eventSeed}`;
+  const onRequestFullscreen = (options: UTSJSONObject) => {
+      // #ifdef APP-IOS
+      const fullscreenElement = containerRef.value as UniElement | null
+      // #endif
+      // #ifdef APP-ANDROID
+      const fullscreenElement = rootRef.value as UniElement | null
+      // #endif
+	      if (fullscreenElement != null) {
+          fullscreenElement.requestFullscreen({
+              navigationUI: options['navigationUI'] as string,
+              orientation: options['orientation'] as string,
+              success: () => {
+									fullscreenState.fullscreen = true;
+              },
+              fail: (err) => {
+								if (err.errCode == 106600) {
+									useFullScreenReturn.exitFullscreen()
+                  fullscreenState.fullscreen = false
+								}
+              }
+          })
+      }
+  };
+
+  const ON_EXIT_FULLSCREEN_EVENT_NAME = `__UNIVIDEO_EXIT_FULLSCREEN_${eventSeed}`;
+  const onExitFullscreen = () => {
+      const pages = getCurrentPages()
+      if (pages.length > 0) {
+          const page = pages[pages.length - 1]
+          page.exitFullscreen({
+              success: () => {
+									fullscreenState.fullscreen = false
+              }
+          })
+      }
+  };
+  // #endif
+
   // 统一注册所有事件
   uni.$on(ON_TIME_UPDATE_EVENT_NAME, onTimeUpdate);
   uni.$on(ON_PLAY_EVENT_NAME, onPlay);
@@ -1738,8 +2073,14 @@
   uni.$on(ON_ENDED_EVENT_NAME, onEnded);
   uni.$on(ON_PREPARED_EVENT_NAME, onPrepared);
   uni.$on(ON_SEND_DANMU_EVENT_NAME, onSendDanmu);
+  uni.$on(ON_WAITING_EVENT_NAME, onWaiting);
+  uni.$on(ON_PROGRESS_EVENT_NAME, onProgress);
+  // #ifdef APP-IOS || APP-ANDROID
+  uni.$on(ON_REQUEST_FULLSCREEN_EVENT_NAME, onRequestFullscreen);
+  uni.$on(ON_EXIT_FULLSCREEN_EVENT_NAME, onExitFullscreen);
+  // #endif
 
-  // #ifdef APP-HARMONY && VUE3-VAPOR
+  // #ifdef VUE3-VAPOR
   onRecycle(() => {
     recycleState.value.duration = videoState.duration
     recycleState.value.currentTime = videoState.currentTime
@@ -1755,6 +2096,7 @@
     recycleState.value.isError = videoState.isError
 
     if (videoState.currentTime > 0) {
+      video?.pause()
       video?.seek(0)
     }
 
@@ -1778,6 +2120,7 @@
       }
       // videoState.duration = recycleState.value.duration
       videoState.playing = false
+      videoState.start = false
 
       // 恢复回收时 video 状态
       // videoState.currentDuration = recycleState.value.currentDuration
@@ -1807,11 +2150,19 @@
     uni.$off(ON_ENDED_EVENT_NAME, onEnded);
     uni.$off(ON_PREPARED_EVENT_NAME, onPrepared);
     uni.$off(ON_SEND_DANMU_EVENT_NAME, onSendDanmu);
+    uni.$off(ON_WAITING_EVENT_NAME, onWaiting);
+    uni.$off(ON_PROGRESS_EVENT_NAME, onProgress);
 
-    // #ifdef APP-HARMONY && VUE3-VAPOR
+    // #ifdef APP-IOS || APP-ANDROID
+    uni.$off(ON_REQUEST_FULLSCREEN_EVENT_NAME, onRequestFullscreen);
+    uni.$off(ON_EXIT_FULLSCREEN_EVENT_NAME, onExitFullscreen);
+    // #endif
+
+    // #ifdef APP-HARMONY && VUE3-VAPOR || APP-ANDROID || APP-IOS
     // vapor 模式需要主动调用
     video?.destroy()
     // #endif
+    uni.setKeepScreenOn({ keepScreenOn: false });
   });
 </script>
 
@@ -1839,7 +2190,6 @@
   .uni-video {
     width: 300px;
     height: 225px;
-    line-height: 0;
     overflow: hidden;
     position: relative;
   }
@@ -1881,7 +2231,15 @@
     line-height: 75px;
     font-size: 60px;
     color: rgba(255, 255, 255, 0.5);
-    /* cursor: pointer; */
+		/* cursor: pointer; */
+
+		/* #ifdef APP-IOS || APP-ANDROID */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+		/* #endif */
   }
 
   .uni-video-cover-duration {
@@ -1905,16 +2263,20 @@
   }
 
   .uni-video-title-bar_outside {
+    /* #ifndef APP-IOS */
     top: 0;
+    padding-top: var(--uni-safe-area-inset-top);
+    /* #endif */
     padding-bottom: 15px;
     background-image: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.5));
-    padding-top: var(--uni-safe-area-inset-top);
   }
 
   .uni-video-fullscreen-bar_outside {
     height: 60px;
     padding-top: 15px;
+    /* #ifndef APP-IOS */
     padding-bottom: var(--uni-safe-area-inset-bottom);
+    /* #endif */
   }
 
   .uni-video-bar_container {
@@ -2215,5 +2577,11 @@
 
   .uni-video-toast-container.uni-video-toast-container-thin {
     height: 6px;
+  }
+
+  .uni-video-poster {
+    width: 100%;
+    height: 100%;
+    position: absolute;
   }
 </style>

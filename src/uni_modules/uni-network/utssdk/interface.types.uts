@@ -5,12 +5,10 @@ export type RequestDataOptions =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "4.4",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "9.0",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        }
@@ -23,12 +21,10 @@ export type RequestDataOptions =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "4.4",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "9.0",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        }
@@ -41,12 +37,10 @@ export type RequestDataOptions =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "x",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "x"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "x",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "x"
 	 *        }
@@ -63,12 +57,10 @@ export type RequestMethod =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "4.4",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "9.0",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        }
@@ -81,12 +73,10 @@ export type RequestMethod =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "4.4",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "9.0",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        }
@@ -99,12 +89,10 @@ export type RequestMethod =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "4.4",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "9.0",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        }
@@ -117,12 +105,10 @@ export type RequestMethod =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "4.4",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "9.0",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        }
@@ -135,12 +121,10 @@ export type RequestMethod =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "4.4",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "9.0",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        }
@@ -153,12 +137,10 @@ export type RequestMethod =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "4.4",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "9.0",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        }
@@ -171,12 +153,10 @@ export type RequestMethod =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "4.4",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "9.0",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        }
@@ -189,12 +169,10 @@ export type RequestMethod =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "4.4",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "9.0",
 	 *  		  "uniVer": "√",
 	 * 			  "unixVer": "3.9+"
 	 *        }
@@ -202,4 +180,3 @@ export type RequestMethod =
 	 * }
 	 */
 	| TRACE;
-	

@@ -5,7 +5,6 @@ import {
     getEnv,
     Emitter,
     getCurrentMP,
-    getRealPath,
 } from '@dcloudio/uni-runtime'
 import {
     DownloadTask as UniDownloadTask,
@@ -25,6 +24,7 @@ import {
 import {
     getClientCertificate,
     parseUrl,
+    getFsPath,
 } from './utils.uts'
 import {
     getCookieSync,
@@ -85,7 +85,7 @@ function getDownloadFilePath(options: GetDownloadFilePathOptions): string {
     }
     let realDirName = dirName || downloadPath
     const contentDispositionFileName = getContentFileName(contentDisposition);
-    const urlFileName = harmonyUrl.URL.parseURL(url).pathname.split('/').pop()
+    const urlFileName = (harmonyUrl.URL.parseURL(url).pathname.split('/').pop() ?? '').slice(0, 255)
     let realFileName: string = contentDispositionFileName || urlFileName || ''
     if (!realFileName) {
         const ext = lookupExt(contentType) || ''
@@ -147,7 +147,7 @@ export const downloadFile = defineTaskApi<UniDownloadFileOptions, UniDownloadFil
         let dirName = '';
         let fileName = ''
         if (filePath) {
-            const realPath = getRealPath(filePath) as string
+            const realPath = getFsPath(filePath) as string
             if (filePath.endsWith('/')) {
                 dirName = realPath.endsWith('/') ? realPath.slice(0, -1) : realPath;
             } else {

@@ -9,20 +9,17 @@ export interface Uni {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
-   *        "unixVer": "x"
+   *        "unixVer": "5.08"
    *      },
    *      "ios": {
-   *          "osVer": "12.0",
    *          "uniVer": "√",
-   *          "unixVer": "x"
+   *          "unixVer": "5.08"
    *      },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.31",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -93,20 +90,17 @@ export interface Uni {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *          "osVer": "12.0",
    *          "uniVer": "√",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.31",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -168,31 +162,119 @@ export interface Uni {
    */
   getUserInfo(options: GetUserInfoOptions): void;
 }
+// #ifdef APP-IOS
+export interface UniOAuthProvider extends Uni, JSExport { }
+// #endif
+
+// #ifndef APP-IOS
 export interface UniOAuthProvider extends UniProvider {
   login(options: LoginOptions): void;
   getUserInfo(options: GetUserInfoOptions): void;
 }
+// #endif
+
+
 export type Login = (options: LoginOptions) => void;
 
 export type AppleLoginAppleInfo = {
   /**
-   * 应用程序用来与服务器交互的令牌
+   * Apple 授权码，用于服务端向 Apple 校验或换取凭证
+	 * @uniPlatform {
+   *  "app": {
+   *   "android": {
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "ios": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.21"
+   *    },
+   *    "harmony": {
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   *
    */
   authorizationCode?: string | null,
   /**
-   * 返回身份的全名
+   * 用户授权时 Apple 返回的姓名信息，通常仅首次授权时可获取，后续登录多数情况下为空
+	 * @uniPlatform {
+	 *  "app": {
+	 *   "android": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "5.21"
+	 *    },
+	 *    "harmony": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 *
    */
-  fullName?: any | null,
+  fullName?: string | null,
   /**
-   * 一个JSON Web令牌(JWT)，可以安全地将用户信息传递给应用程序
+   * Apple 签发的身份令牌（JWT），主要用于服务端校验当前登录用户身份
+	 * @uniPlatform {
+	 *  "app": {
+	 *   "android": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "5.21"
+	 *    },
+	 *    "harmony": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 *
    */
   identityToken?: string | null,
   /**
-   * 指示用户是否为真人
+   * Apple 对真实用户状态的评估值，仅作辅助参考(0: 设备不支持检测; 1: 无法确定; 2:高度可能真实)
+	 * @uniPlatform {
+	 *  "app": {
+	 *   "android": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "5.21"
+	 *    },
+	 *    "harmony": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 *
    */
   realUserStatus?: number | null,
   /**
-   * 验证用户的标识符
+   * Apple 返回给当前 App 的用户唯一标识，不是昵称或用户名
+	 * @uniPlatform {
+	 *  "app": {
+	 *   "android": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	 *    "ios": {
+	 *       "uniVer": "√",
+	 *       "unixVer": "5.21"
+	 *    },
+	 *    "harmony": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *  }
+	 *
    */
   user?: string | null
 };
@@ -200,26 +282,23 @@ export type LoginSuccess = {
   /**
    * 描述信息
    */
-  errMsg: string,
+  errMsg?: string | null,
   /**
    * 登录服务商提供的登录信息，服务商不同返回的结果不完全相同
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
-   *      "unixVer": "x"
+   *      "unixVer": "5.08"
    *    },
    *    "ios": {
-   *       "osVer": "12.0",
    *       "uniVer": "√",
-   *       "unixVer": "x"
+   *       "unixVer": "5.08"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.31",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  }
    * }
@@ -230,20 +309,17 @@ export type LoginSuccess = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
-   *      "unixVer": "x"
+   *      "unixVer": "5.08"
    *    },
    *    "ios": {
-   *       "osVer": "12.0",
    *       "uniVer": "√",
-   *       "unixVer": "x"
+   *       "unixVer": "5.08"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.31",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  }
    * }
@@ -254,17 +330,14 @@ export type LoginSuccess = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -277,17 +350,14 @@ export type LoginSuccess = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -300,17 +370,14 @@ export type LoginSuccess = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -323,17 +390,14 @@ export type LoginSuccess = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -346,17 +410,14 @@ export type LoginSuccess = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
-   *       "uniVer": "x",
-   *       "unixVer": "x"
+   *       "uniVer": "√",
+   *       "unixVer": "5.21"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -372,25 +433,22 @@ export type LoginComplete = any;
 export type LoginCompleteCallback = (result: LoginComplete) => void;
 export type LoginOptions = {
   /**
-   * 授权登录服务提供商，通过uni.getProvider获取，如果不设置则弹出分享列表选择界面
+   * 授权登录服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持微信登录(weixin)
    *
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
-   *        "unixVer": "x"
+   *        "unixVer": "5.08"
    *      },
    *      "ios": {
-   *          "osVer": "12.0",
    *          "uniVer": "√",
-   *          "unixVer": "x"
+   *          "unixVer": "5.08"
    *      },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.31",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -456,20 +514,17 @@ export type LoginOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
-   *      "uniVer": "x",
-   *      "unixVer": "x"
+   *      "uniVer": "√",
+   *      "unixVer": "5.08"
    *    },
    *    "ios": {
-   *       "osVer": "x",
-   *       "uniVer": "x",
-   *       "unixVer": "x"
+   *       "uniVer": "√",
+   *       "unixVer": "5.08"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0.0",
    *      "uniVer": "4.76",
    *      "unixVer": "4.81",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  }
    * }
@@ -480,17 +535,14 @@ export type LoginOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "√",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "√",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -503,17 +555,14 @@ export type LoginOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "√",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "√",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -526,17 +575,14 @@ export type LoginOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -549,17 +595,15 @@ export type LoginOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
-   *       "unixVer": "x"
+   *       "uniVer": "√",
+	 *       "unixVer": "5.21"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -572,20 +616,17 @@ export type LoginOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "x",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  }
    * }
@@ -597,17 +638,14 @@ export type LoginOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -627,17 +665,14 @@ export type LoginOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -668,20 +703,17 @@ export type LoginOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "3.2.6",
-   *        "unixVer": "x"
+   *        "unixVer": "5.08"
    *      },
    *      "ios": {
-   *          "osVer": "12.0",
    *          "uniVer": "3.2.6",
-   *          "unixVer": "x"
+   *          "unixVer": "5.08"
    *      },
    *    "harmony": {
-   *      "osVer": "5.0.0",
    *      "uniVer": "4.76",
    *      "unixVer": "4.81",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    * "web": {
@@ -693,18 +725,70 @@ export type LoginOptions = {
   onlyAuthorize?: boolean | null,
   /**
    * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *        "uniVer": "√",
+	 *        "unixVer": "5.08"
+	 *      },
+	 *      "ios": {
+	 *          "uniVer": "√",
+	 *          "unixVer": "5.08"
+	 *      },
+	 *    "harmony": {
+	 *      "uniVer": "4.31",
+	 *      "unixVer": "4.61",
+	 *      "unixVaporVer": "5.0"
+	 *    }
+	 *  }
+	 * }
    */
   success?: LoginSuccessCallback | null,
   /**
    * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *        "uniVer": "√",
+	 *        "unixVer": "5.08"
+	 *      },
+	 *      "ios": {
+	 *          "uniVer": "√",
+	 *          "unixVer": "5.08"
+	 *      },
+	 *    "harmony": {
+	 *      "uniVer": "4.31",
+	 *      "unixVer": "4.61",
+	 *      "unixVaporVer": "5.0"
+	 *    }
+	 *  }
+	 * }
    */
   fail?: LoginFailCallback | null,
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *        "uniVer": "√",
+	 *        "unixVer": "5.08"
+	 *      },
+	 *      "ios": {
+	 *          "uniVer": "√",
+	 *          "unixVer": "5.08"
+	 *      },
+	 *    "harmony": {
+	 *      "uniVer": "4.31",
+	 *      "unixVer": "4.61",
+	 *      "unixVaporVer": "5.0"
+	 *    }
+	 *  }
+	 * }
    */
   complete?: LoginCompleteCallback | null
 };
 
+// #ifdef APP-HARMONY
 export type UniverifyIconStyles = {
   /**
    * 图标地址
@@ -1009,6 +1093,7 @@ export type UniverifyStyle = {
    */
   buttons?: UniVerifyButtonsStyles | null
 };
+// #endif
 export type GetUserInfo = (options: GetUserInfoOptions) => void;
 export type UserInfo = {
   /**
@@ -1020,20 +1105,17 @@ export type UserInfo = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *          "osVer": "12.0",
    *          "uniVer": "√",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.31",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1103,20 +1185,17 @@ export type UserInfo = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "x",
    *        "uniVer": "x",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *          "osVer": "x",
    *          "uniVer": "x",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *      "osVer": "5.0.0",
    *      "uniVer": "4.76",
    *      "unixVer": "4.81",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1196,20 +1275,17 @@ export type GetUserInfoSuccess = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *          "osVer": "12.0",
    *          "uniVer": "√",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.31",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1275,17 +1351,14 @@ export type GetUserInfoSuccess = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "x",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *          "osVer": "12.0",
    *          "uniVer": "x",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -1353,17 +1426,14 @@ export type GetUserInfoSuccess = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "x",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *          "osVer": "12.0",
    *          "uniVer": "x",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -1431,17 +1501,14 @@ export type GetUserInfoSuccess = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "x",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *          "osVer": "12.0",
    *          "uniVer": "x",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -1509,17 +1576,14 @@ export type GetUserInfoSuccess = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "x",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *          "osVer": "12.0",
    *          "uniVer": "x",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -1598,20 +1662,17 @@ export type GetUserInfoOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *          "osVer": "12.0",
    *          "uniVer": "√",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.31",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1680,17 +1741,14 @@ export type GetUserInfoOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -1703,17 +1761,14 @@ export type GetUserInfoOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -1726,17 +1781,14 @@ export type GetUserInfoOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -1749,17 +1801,14 @@ export type GetUserInfoOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -1772,17 +1821,14 @@ export type GetUserInfoOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -1795,20 +1841,17 @@ export type GetUserInfoOptions = {
    * @uniPlatform {
    *  "app": {
    *   "android": {
-   *      "osVer": "x",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "osVer": "x",
    *       "uniVer": "x",
    *       "unixVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.31",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    *  }
    * }
@@ -1819,17 +1862,14 @@ export type GetUserInfoOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "x",
    *        "uniVer": "x",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *        "osVer": "x",
    *          "uniVer": "x",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *        "osVer": "x",
    *          "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -1897,17 +1937,14 @@ export type GetUserInfoOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "x",
    *        "uniVer": "x",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *        "osVer": "x",
    *          "uniVer": "x",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *        "osVer": "x",
    *          "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -1975,17 +2012,14 @@ export type GetUserInfoOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *        "osVer": "x",
    *        "uniVer": "x",
    *        "unixVer": "x"
    *      },
    *      "ios": {
-   *        "osVer": "x",
    *          "uniVer": "x",
    *          "unixVer": "x"
    *      },
    *    "harmony": {
-   *        "osVer": "x",
    *          "uniVer": "x",
    *      "unixVer": "x"
    *    }
@@ -2118,7 +2152,19 @@ export type OauthErrorCode =
    * 获取用户信息请求超时
    */
   1310511 |
+	/**
+	 * iOS 没有配置对应的URL Scheme
+	 */
+	1310512 |
+	/**
+	 * iOS 没有配置对应的Universal Link
+	 */
+	1310513 |
   /**
    * 登录请求可能被跨站攻击
    */
-  1001502040
+  1001502040 |
+  /**
+   * 服务供应商获取失败
+   */
+  1310600

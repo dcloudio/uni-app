@@ -10,20 +10,17 @@ export interface Uni {
       {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.33",
                 "unixVer": "4.33"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "x",
                 "unixVer": "4.41",
                 "unixUtsPlugin": "4.41"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -83,20 +80,17 @@ export interface Uni {
 	  {
 	    "app": {
 	        "android": {
-	            "osVer": "5.0",
 	            "uniVer": "√",
 	            "uniUtsPlugin": "4.73",
 	            "unixVer": "4.73"
 	        },
 	        "ios": {
-	            "osVer": "12.0",
 	            "uniVer": "x",
 	            "uniUtsPlugin": "x",
 	            "unixVer": "4.81",
 	            "unixUtsPlugin": "4.81"
 	        },
 	        "harmony": {
-	            "osVer": "5.0.0",
 	            "uniVer": "x",
 	            "unixVer": "x",
 	        }
@@ -168,13 +162,11 @@ export type SetInnerAudioOptionOptions = {
 	  {
 	    "app": {
 	        "android": {
-	            "osVer": "5.0",
 	            "uniVer": "√",
 	            "uniUtsPlugin": "4.73",
 	            "unixVer": "4.73"
 	        },
 	        "ios": {
-	            "osVer": "12.0",
 	            "uniVer": "x",
 	            "uniUtsPlugin": "x",
 	            "unixVer": "4.81",
@@ -242,13 +234,11 @@ export type SetInnerAudioOptionOptions = {
 	  {
 	    "app": {
 	        "android": {
-	            "osVer": "5.0",
 	            "uniVer": "√",
 	            "uniUtsPlugin": "5.0",
 	            "unixVer": "5.0"
 	        },
 	        "ios": {
-	            "osVer": "12.0",
 	            "uniVer": "x",
 	            "uniUtsPlugin": "x",
 	            "unixVer": "5.0",
@@ -316,13 +306,11 @@ export type SetInnerAudioOptionOptions = {
 	  {
 	    "app": {
 	        "android": {
-	            "osVer": "5.0",
 	            "uniVer": "x",
 	            "uniUtsPlugin": "x",
 	            "unixVer": "x"
 	        },
 	        "ios": {
-	            "osVer": "12.0",
 	            "uniVer": "x",
 	            "uniUtsPlugin": "x",
 	            "unixVer": "5.0",
@@ -389,20 +377,17 @@ export type SetInnerAudioOptionOptions = {
 	  {
 	    "app": {
 	        "android": {
-	            "osVer": "5.0",
 	            "uniVer": "√",
 	            "uniUtsPlugin": "4.73",
 	            "unixVer": "4.73"
 	        },
 	        "ios": {
-	            "osVer": "12.0",
 	            "uniVer": "x",
 	            "uniUtsPlugin": "x",
 	            "unixVer": "4.81",
 	            "unixUtsPlugin": "4.81"
 	        },
 	        "harmony": {
-	            "osVer": "5.0.0",
 	            "uniVer": "x",
 	            "unixVer": "x",
 	        }
@@ -462,20 +447,17 @@ export type SetInnerAudioOptionOptions = {
 	  {
 	    "app": {
 	        "android": {
-	            "osVer": "5.0",
 	            "uniVer": "√",
 	            "uniUtsPlugin": "4.73",
 	            "unixVer": "4.73"
 	        },
 	        "ios": {
-	            "osVer": "12.0",
 	            "uniVer": "x",
 	            "uniUtsPlugin": "x",
 	            "unixVer": "4.81",
 	            "unixUtsPlugin": "4.81"
 	        },
 	        "harmony": {
-	            "osVer": "5.0.0",
 	            "uniVer": "x",
 	            "unixVer": "x",
 	        }
@@ -535,20 +517,17 @@ export type SetInnerAudioOptionOptions = {
 	  {
 	    "app": {
 	        "android": {
-	            "osVer": "5.0",
 	            "uniVer": "√",
 	            "uniUtsPlugin": "4.73",
 	            "unixVer": "4.73"
 	        },
 	        "ios": {
-	            "osVer": "12.0",
 	            "uniVer": "x",
 	            "uniUtsPlugin": "x",
 	            "unixVer": "4.81",
 	            "unixUtsPlugin": "4.81"
 	        },
 	        "harmony": {
-	            "osVer": "5.0.0",
 	            "uniVer": "x",
 	            "unixVer": "x",
 	        }
@@ -613,20 +592,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -686,20 +662,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -754,25 +727,22 @@ export interface InnerAudioContext {
      */
     currentTime: number;
     /**
-     * 当前是是否暂停或停止状态，true 表示暂停或停止，false 表示正在播放
+     * 当前是否处于暂停或停止状态，true 表示暂停或停止，false 表示正在播放
      * @uniPlatform
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -832,20 +802,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -905,20 +872,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -978,20 +942,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "x",
                 "unixVer": "x",
             }
@@ -1052,20 +1013,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -1126,20 +1084,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -1199,20 +1154,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "x"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "5.0",
                   "unixUtsPlugin": "5.0"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "x",
                 "unixVer": "x",
             }
@@ -1272,20 +1224,17 @@ export interface InnerAudioContext {
      {
          "app": {
              "android": {
-                 "osVer": "5.0",
                  "uniVer": "√",
                  "uniUtsPlugin": "4.33",
                  "unixVer": "4.33"
              },
              "ios": {
-                 "osVer": "12.0",
                  "uniVer": "√",
                  "uniUtsPlugin": "x",
                  "unixVer": "4.41",
                  "unixUtsPlugin": "4.41"
              },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -1346,20 +1295,17 @@ export interface InnerAudioContext {
      {
          "app": {
              "android": {
-                 "osVer": "5.0",
                  "uniVer": "√",
                  "uniUtsPlugin": "4.33",
                  "unixVer": "4.33"
              },
              "ios": {
-                 "osVer": "12.0",
                  "uniVer": "√",
                  "uniUtsPlugin": "x",
                  "unixVer": "4.41",
                  "unixUtsPlugin": "4.41"
              },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "x",
                 "unixVer": "x",
             }
@@ -1419,20 +1365,17 @@ export interface InnerAudioContext {
 	  {
 	      "app": {
 	          "android": {
-	              "osVer": "5.0",
 	              "uniVer": "x",
 	              "uniUtsPlugin": "4.71",
 	              "unixVer": "4.71"
 	          },
 	          "ios": {
-	              "osVer": "12.0",
 	              "uniVer": "x",
 	              "uniUtsPlugin": "x",
 	              "unixVer": "4.71",
 	              "unixUtsPlugin": "4.71"
 	          },
 	        "harmony": {
-	            "osVer": "5.0.0",
 	            "uniVer": "x",
 	            "unixVer": "x",
 	        }
@@ -1494,20 +1437,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -1567,20 +1507,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -1640,20 +1577,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -1713,20 +1647,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -1786,20 +1717,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -1817,20 +1745,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -1890,20 +1815,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -1922,20 +1844,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -1996,20 +1915,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2069,20 +1985,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2142,20 +2055,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2215,20 +2125,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2288,20 +2195,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2361,20 +2265,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2434,20 +2335,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2507,20 +2405,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2580,20 +2475,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2653,20 +2545,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2726,20 +2615,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2799,20 +2685,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2872,20 +2755,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -2945,20 +2825,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -3018,20 +2895,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -3049,20 +2923,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -3122,20 +2993,17 @@ export interface InnerAudioContext {
       {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -3200,20 +3068,17 @@ export type CreateInnerAudioContextErrorCode =
      * @uniPlatform {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -3230,20 +3095,17 @@ export type CreateInnerAudioContextErrorCode =
      * @uniPlatform {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -3260,20 +3122,17 @@ export type CreateInnerAudioContextErrorCode =
      * @uniPlatform {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -3290,20 +3149,17 @@ export type CreateInnerAudioContextErrorCode =
      * @uniPlatform {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -3320,20 +3176,17 @@ export type CreateInnerAudioContextErrorCode =
      * @uniPlatform {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }
@@ -3350,20 +3203,17 @@ export type CreateInnerAudioContextErrorCode =
      * @uniPlatform {
           "app": {
               "android": {
-                  "osVer": "5.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.33",
                   "unixVer": "4.33"
               },
               "ios": {
-                  "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "x",
                   "unixVer": "4.41",
                   "unixUtsPlugin": "4.41"
               },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61",
             }

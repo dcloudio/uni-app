@@ -1,0 +1,43 @@
+import {IShareFail, ShareErrorCode} from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const ShareUniErrorSubject = 'uni-share';
+
+
+export class ShareFailImpl extends UniError implements IShareFail {
+  // #ifdef APP-ANDROID || APP-HARMONY
+  override errCode : ShareErrorCode
+  // #endif
+  constructor(errCode : ShareErrorCode) {
+    super()
+    this.errSubject = ShareUniErrorSubject
+    this.errCode = errCode
+    this.errMsg = ShareUniErrors.get(errCode) ?? '未知错误'
+  }
+}
+
+export const ShareUniErrors : Map<ShareErrorCode, string> = new Map([
+
+  [4000600, '未找到分享服务提供商,请确认 manifest.json 中配置信息是否正确'],
+
+  [4000601, '该场景字段当前不支持'],
+
+  [4000602, '该场景字段未匹配到'],
+
+  [4000603, '分享类型不匹配，请确认类型是否正确'],
+
+  [4000604, '参数填写错误'],
+
+  [4000605, '请求分享接口失败'],
+
+  [4000606, '暂不支持该类型的分享'],
+
+  [4000607, '图片下载失败'],
+
+  [4000608, '加载本地文件失败'],
+
+  [4000609, '获取缩略图失败'],
+
+]);

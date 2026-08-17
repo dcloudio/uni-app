@@ -1,5 +1,33 @@
+import Intent from 'android.content.Intent'
+import Uri from 'android.net.Uri'
 import { OpenLocation, OpenLocationOptions, OpenLocationSuccessImpl, OpenLocationErrorCode } from "../interface.uts"
 import { OpenLocationFailImpl } from "../unierror.uts"
+
+type OpenSchema = (url : string) => void
+type CanOpenURL = (url : string) => boolean
+
+export const openSchema : OpenSchema = function (url : string) : void {
+  if (canOpenURL(url)) {
+    const context = UTSAndroid.getUniActivity()!
+    const uri = Uri.parse(url)
+    const intent = new Intent(Intent.ACTION_VIEW, uri)
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    intent.setData(uri)
+    context.startActivity(intent)
+  } else {
+    console.error('[uni-openLocation] url param error:', JSON.stringify(url))
+  }
+}
+
+export const canOpenURL : CanOpenURL = function (url : string) : boolean {
+  if (typeof url == 'string' && url.length > 0) {
+    const context = UTSAndroid.getUniActivity()!
+    const uri = Uri.parse(url)
+    const intent = new Intent(Intent.ACTION_VIEW, uri)
+    return intent.resolveActivity(context.packageManager) != null
+  }
+  return false
+}
 
 export const openLocation : OpenLocation = function (options : OpenLocationOptions) {
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
@@ -8,29 +36,30 @@ export const openLocation : OpenLocation = function (options : OpenLocationOptio
   const optionsEventName = `${baseEventName}_options`
   const successEventName = `${baseEventName}_success`
   const failEventName = `${baseEventName}_fail`
-  
-  const readyEventId = uni.$on(readyEventName, () => {
+
+  uni.$on(readyEventName, () => {
     uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)))
   })
-  const successEventId = uni.$on(successEventName, () => {
+  uni.$on(successEventName, () => {
     const res = new OpenLocationSuccessImpl()
     options.success?.(res)
-    options.complete?.(res) 
+    options.complete?.(res)
   })
-  const failEventId = uni.$on(failEventName, (errCode : OpenLocationErrorCode) => {
+  uni.$on(failEventName, (errCode : OpenLocationErrorCode) => {
     const res = new OpenLocationFailImpl(errCode)
     options.fail?.(res)
     options.complete?.(res)
   })
   uni.openDialogPage({
     url: `/uni_modules/uni-openLocation/pages/openLocation/openLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    triggerParentHide: true,
     fail(err) {
       const res = new OpenLocationFailImpl(4)
       options.fail?.(res)
       options.complete?.(res)
-      uni.$off(readyEventName, readyEventId)
-      uni.$off(successEventName, successEventId)
-      uni.$off(failEventName, failEventId)
+      uni.$off(readyEventName)
+      uni.$off(successEventName)
+      uni.$off(failEventName)
     }
   })
 };

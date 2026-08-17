@@ -56,6 +56,8 @@ async function _getLocation(options: GetLocationOptions): Promise<string | GetLo
     }
     if (options.highAccuracyExpireTime) {
         currentLocationRequest.timeoutMs = options.highAccuracyExpireTime
+    } else if (options.isHighAccuracy) {
+        currentLocationRequest.timeoutMs = 3000
     }
     const location: geoLocationManager.Location = await geoLocationManager.getCurrentLocation(
         currentLocationRequest,

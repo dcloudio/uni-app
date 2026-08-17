@@ -21,7 +21,6 @@ export interface Uni {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -88,7 +87,6 @@ export interface Uni {
     * @uniPlatform {
     *  "app": {
     *    "android": {
-    *      "osVer": "5.0",
     *      "uniVer": "x",
     *      "unixVer": "x"
     *    },
@@ -98,7 +96,6 @@ export interface Uni {
     *      "unixVer": "4.25"
     *    },
     *    "harmony": {
-    *      "osVer": "x",
     *      "uniVer": "x",
     *      "unixVer": "x"
     *    }
@@ -132,7 +129,6 @@ export interface VirtualPaymentManager {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -166,7 +162,6 @@ export interface VirtualPaymentManager {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -199,7 +194,6 @@ export interface VirtualPaymentManager {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -228,7 +222,6 @@ export type RequestVirtualPaymentErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -250,7 +243,6 @@ export type RequestVirtualPaymentErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -272,7 +264,6 @@ export type RequestVirtualPaymentErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -294,7 +285,6 @@ export type RequestVirtualPaymentErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -316,7 +306,6 @@ export type RequestVirtualPaymentErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -338,7 +327,6 @@ export type RequestVirtualPaymentErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -360,7 +348,6 @@ export type RequestVirtualPaymentErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -382,7 +369,6 @@ export type RequestVirtualPaymentErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -404,7 +390,6 @@ export type RequestVirtualPaymentErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -431,7 +416,6 @@ export type AppleIAPPromotionalOffer = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -453,7 +437,6 @@ export type AppleIAPPromotionalOffer = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -475,7 +458,6 @@ export type AppleIAPPromotionalOffer = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -497,7 +479,6 @@ export type AppleIAPPromotionalOffer = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -519,7 +500,6 @@ export type AppleIAPPromotionalOffer = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -544,7 +524,6 @@ export type AppleIAPTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -566,7 +545,6 @@ export type AppleIAPTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -588,7 +566,6 @@ export type AppleIAPTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -610,7 +587,6 @@ export type AppleIAPTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -632,7 +608,6 @@ export type AppleIAPTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -654,7 +629,6 @@ export type AppleIAPTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -676,7 +650,6 @@ export type AppleIAPTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -698,7 +671,6 @@ export type AppleIAPTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -732,7 +704,6 @@ export type RequestVirtualPaymentSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -762,7 +733,6 @@ export interface IRequestVirtualPaymentFail extends IUniError {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -789,7 +759,6 @@ export type AppleIAPOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -811,7 +780,6 @@ export type AppleIAPOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -833,7 +801,6 @@ export type AppleIAPOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -855,7 +822,6 @@ export type AppleIAPOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -888,7 +854,6 @@ export type RequestVirtualPaymentOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -922,7 +887,6 @@ export type RequestVirtualPaymentOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -986,7 +950,6 @@ export type RequestVirtualPaymentOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1050,7 +1013,6 @@ export type RequestVirtualPaymentOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1120,7 +1082,6 @@ export type AppleIAPRestoreSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1147,7 +1108,6 @@ export interface IAppleIAPRestoreFail extends IUniError {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1176,7 +1136,6 @@ export type AppleIAPRestoreErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -1198,7 +1157,6 @@ export type AppleIAPRestoreErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -1220,7 +1178,6 @@ export type AppleIAPRestoreErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -1242,7 +1199,6 @@ export type AppleIAPRestoreErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -1267,7 +1223,6 @@ export type AppleIAPRestoreOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1289,7 +1244,6 @@ export type AppleIAPRestoreOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1311,7 +1265,6 @@ export type AppleIAPRestoreOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1340,7 +1293,6 @@ export type AppleIAPUnfinishedTransactionSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1367,7 +1319,6 @@ export interface IAppleIAPUnfinishedTransactionFail extends IUniError {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1399,7 +1350,6 @@ export type AppleIAPUnfinishedTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1421,7 +1371,6 @@ export type AppleIAPUnfinishedTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1443,7 +1392,6 @@ export type AppleIAPUnfinishedTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1472,7 +1420,6 @@ export type AppleIAPFinishTransactionSuccess = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1499,7 +1446,6 @@ export interface IAppleIAPFinishTransactionFail extends IUniError {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1528,7 +1474,6 @@ export type AppleIAPFinishTransactionFailErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -1550,7 +1495,6 @@ export type AppleIAPFinishTransactionFailErrorCode =
         * @uniPlatform {
         *    "app": {
         *        "android": {
-        *            "osVer": "5.0",
         *            "uniVer": "x",
         *            "unixVer": "x"
         *        },
@@ -1575,7 +1519,6 @@ export type AppleIAPFinishTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1597,7 +1540,6 @@ export type AppleIAPFinishTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1619,7 +1561,6 @@ export type AppleIAPFinishTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },
@@ -1641,7 +1582,6 @@ export type AppleIAPFinishTransactionOptions = {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "x",
      *            "unixVer": "x"
      *        },

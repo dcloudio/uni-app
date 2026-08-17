@@ -204,6 +204,9 @@ class SimpleDownloadCallback implements Callback {
 
 					tempSource = Okio.buffer(Okio.source(tempFile));
 					let targetFile = this.getFile(response)
+					if (targetFile == null) {
+						return
+					}
 					targetSink = Okio.buffer(Okio.sink(targetFile));
 					targetSink.writeAll(tempSource);
 					targetSink.flush();
@@ -257,7 +260,7 @@ class SimpleDownloadCallback implements Callback {
 		return path + this.downloadFilePath;
 	}
 
-	getFile(response : Response) : File {
+	getFile(response : Response) : File | null {
 		let targetPath = "";
 		if (this.specifyPath != "") {
 			const sourcePath = UTSAndroid.convert2AbsFullPath("/");
@@ -270,7 +273,7 @@ class SimpleDownloadCallback implements Callback {
 				option['cause'] = null;
 				this.listener?.onComplete(option);
 
-				return new File("")
+				return null
 			}
 
 			const pos = this.specifyPath.lastIndexOf("/")
@@ -303,6 +306,7 @@ class SimpleDownloadCallback implements Callback {
 					option['errorMsg'] = "The target file path is already a directory file, and file creation failed.";
 					option['cause'] = null;
 					this.listener?.onComplete(option);
+					return null
 				}
 				
 				if (file.exists()) {
@@ -333,6 +337,7 @@ class SimpleDownloadCallback implements Callback {
 						let cause = exception.cause.toString();
 						option['cause'] = new SourceError(cause);
 						this.listener?.onComplete(option);
+						return null
 					}
 				}
 				return file
@@ -453,6 +458,7 @@ class SimpleDownloadCallback implements Callback {
 				let cause = exception.cause.toString();
 				option['cause'] = new SourceError(cause);
 				this.listener?.onComplete(option);
+				return null
 			}
 		}
 		return file
@@ -460,12 +466,18 @@ class SimpleDownloadCallback implements Callback {
 
 	isAbsolute(path : string) : boolean {
 		const context = UTSAndroid.getAppContext()!! as Context;
-		if (path.startsWith(context.getFilesDir().getParent())) {
+		const targetFile = new File(path);
+		if (!targetFile.isAbsolute()) {
+			return false;
+		}
+
+		const internalRoot = context.getFilesDir().getParentFile();
+		if (internalRoot != null && this.isDescendant(internalRoot, targetFile)) {
 			return true;
 		}
 
-		const exPath = context.getExternalFilesDir(null)?.getParent();
-		if (exPath != null && path.startsWith(exPath)) {
+		const externalRoot = context.getExternalFilesDir(null)?.getParentFile();
+		if (externalRoot != null && this.isDescendant(externalRoot, targetFile)) {
 			return true;
 		}
 

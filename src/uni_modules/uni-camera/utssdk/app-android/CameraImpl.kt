@@ -65,6 +65,7 @@ class CameraImpl(private val activity: AppCompatActivity) {
     private var camera: Camera? = null
     private var imageCapture: ImageCapture? = null
     private var imageAnalysis: ImageAnalysis? = null
+    private val imageAnalysisExecutor = Executors.newSingleThreadExecutor()
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
     private var selfieMirror: Boolean = true
@@ -76,6 +77,7 @@ class CameraImpl(private val activity: AppCompatActivity) {
     private var processOnce = 0
     private var captureFrameStatus = false
     private var analysisStatus = false
+    private var analyzerRegistered = false
 
     // 相机打开状态
     private var cameraOpen = false
@@ -194,6 +196,8 @@ class CameraImpl(private val activity: AppCompatActivity) {
         cameraProvider?.unbind(imageAnalysis)
         imageAnalysis = buildImageAnalysis()
         cameraProvider?.bindToLifecycle(activity, cameraSelector, imageAnalysis)
+        analyzerRegistered = false
+        ensureAnalyzerRegistered()
     }
 
     private var setupResolution = false
@@ -325,6 +329,7 @@ class CameraImpl(private val activity: AppCompatActivity) {
                 preview?.surfaceProvider = it.surfaceProvider
                 imageCapture = buildImageCapture()
                 imageAnalysis = buildImageAnalysis()
+                analyzerRegistered = false
                 videoCapture = buildVideoCapture()
 
                 val useCaseGroupBuilder = UseCaseGroup.Builder()
@@ -352,6 +357,8 @@ class CameraImpl(private val activity: AppCompatActivity) {
                 // 恢复帧回调状态
                 if (isFrameCallbackActive) {
                     startOnFrame()
+                } else if (analysisStatus) {
+                    ensureAnalyzerRegistered()
                 }
             } catch (exc: Exception) {
                 Log.e("CameraImpl", "Error starting preview: ${exc.message}")
@@ -515,7 +522,7 @@ class CameraImpl(private val activity: AppCompatActivity) {
     fun startOnFrame() {
         captureFrameStatus = true
         isFrameCallbackActive = true
-        registerAnalyzer()
+        ensureAnalyzerRegistered()
     }
 
     fun stopOnFrame() {
@@ -528,17 +535,23 @@ class CameraImpl(private val activity: AppCompatActivity) {
         lastFrameHeight = 0
     }
 
-    private fun registerAnalyzer(cameraOriginalFrameCallback: ICallBack? = null) {
+    private fun ensureAnalyzerRegistered() {
         if (!captureFrameStatus && !analysisStatus) {
             return
         }
-        imageAnalysis?.clearAnalyzer()
-        imageAnalysis?.setAnalyzer(Executors.newSingleThreadExecutor()) { imageProxy ->
+        val currentImageAnalysis = imageAnalysis ?: return
+        if (analyzerRegistered) {
+            return
+        }
+        analyzerRegistered = true
+        currentImageAnalysis.setAnalyzer(imageAnalysisExecutor) { imageProxy ->
             // 先检查状态，避免已停止后继续处理
             if (!captureFrameStatus && !analysisStatus) {
                 imageProxy.close()
                 return@setAnalyzer
             }
+
+            var shouldCloseImageProxy = true
 
             if (captureFrameStatus) {
                 cameraFrameCallback?.let {
@@ -558,16 +571,25 @@ class CameraImpl(private val activity: AppCompatActivity) {
 
                     convertYUVToRGBAReusable(imageProxy, rgbaArray)
 
-                    // wrap() 零拷贝包装，只创建轻量包装器对象
-                    val byteBuffer = ByteBuffer.wrap(rgbaArray)
+                    val frameBytes = rgbaArray.copyOf(requiredSize)
+                    val byteBuffer = ByteBuffer.wrap(frameBytes)
                     it.callback("frame", mapOf("width" to width, "height" to height, "buffer" to byteBuffer))
                 }
-                if (!analysisStatus) {
-                    imageProxy.close()
+            }
+            if (analysisStatus) {
+                val activeAnalysisCallback = analysisCallback
+                if (activeAnalysisCallback != null) {
+                    shouldCloseImageProxy = false
+                    try {
+                        activeAnalysisCallback.callback("original_frame", imageProxy)
+                    } catch (e: Exception) {
+                        imageProxy.close()
+                        Log.e("CameraImpl", "Error dispatching analysis callback: ${e.message}", e)
+                    }
                 }
             }
-            if (analysisStatus && cameraOriginalFrameCallback != null) {
-                cameraOriginalFrameCallback.callback("original_frame", imageProxy)
+            if (shouldCloseImageProxy) {
+                imageProxy.close()
             }
         }
     }
@@ -673,7 +695,9 @@ class CameraImpl(private val activity: AppCompatActivity) {
                 imageAnalysis = buildImageAnalysis()
                 cameraProvider?.bindToLifecycle(activity, cameraSelector, imageAnalysis)
             } catch (e: Exception) {
-
+                Log.e("CameraImpl", "Error resetting image analysis: ${e.message}", e)
+            } finally {
+                analyzerRegistered = false
             }
         }
     }
@@ -810,7 +834,7 @@ class CameraImpl(private val activity: AppCompatActivity) {
     ) {
         analysisStatus = true
         analysisCallback = cameraOriginalFrameCallback
-        registerAnalyzer(cameraOriginalFrameCallback)
+        ensureAnalyzerRegistered()
     }
 
     fun stopAnalysis() {
@@ -995,6 +1019,7 @@ class CameraImpl(private val activity: AppCompatActivity) {
         recording = null
         captureFrameStatus = false
         analysisStatus = false
+        analyzerRegistered = false
         isFrameCallbackActive = false
         processOnce = 0
 

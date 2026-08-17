@@ -1,1 +1,1 @@
-export class UniPickerViewColumnElement extends UniVueElement {}
+export class UniPickerViewColumnElement extends UniViewElementImpl {}

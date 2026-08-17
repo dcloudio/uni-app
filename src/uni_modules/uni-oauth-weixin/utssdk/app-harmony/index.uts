@@ -53,6 +53,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 	id: string = "weixin";
 	description: string = "微信登录";
 	isWeChatInstalled: boolean = false;
+  isAppExist: boolean = false;
 	private authResultText: AuthResp = {} as AuthResp; // 用于存储授权结果
 	private APP_ID: string = ""; // 从配置中获取 APP_ID
 	private APP_SECRET: string = ""; // 从配置中获取 APP_SECRET
@@ -64,7 +65,8 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 		this.APP_SECRET = this.getMetadata('WX_APPSECRET');
 		if (this.APP_ID.length) {
 			this.WXApi = wxopensdk.WXAPIFactory.createWXAPI(this.APP_ID);
-			this.isWeChatInstalled = this.WXApi.isWXAppInstalled()
+			this.isWeChatInstalled = this.WXApi.isWXAppInstalled();
+			this.isAppExist = this.isWeChatInstalled
 		}
 	}
 

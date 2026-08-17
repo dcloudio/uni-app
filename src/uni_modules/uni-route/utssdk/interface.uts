@@ -23,20 +23,18 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -94,20 +92,18 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "4.18"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.25"
+     *          "unixVer": "4.25",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -165,17 +161,14 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "4.61",
      *       "unixVer": "5.0"
      *     }
@@ -193,20 +186,18 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
-     *       "unixVer": "4.25"
+     *       "unixVer": "4.25",
+     *       "unixVaporVer": "5.14"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "4.23",
      *       "unixVer": "4.61",
-     *       "unixvVer": "5.0"
+     *       "unixVaporVer": "5.0"
      *     }
      *   },
      *   "web": {
@@ -222,17 +213,14 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -250,17 +238,14 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -278,17 +263,14 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -306,17 +288,14 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -334,17 +313,14 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -362,17 +338,14 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -390,17 +363,14 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -418,20 +388,18 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
-     *       "unixVer": "4.25"
+     *       "unixVer": "4.25",
+     *       "unixVaporVer": "5.14"
      *     },
      *     "harmony": {
-     *       "osVer": "5.0.0",
      *       "uniVer": "x",
      *       "unixVer": "4.61",
-     *       "unixvVer": "5.0"
+     *       "unixVaporVer": "5.0"
      *     }
      *   },
      *   "web": {
@@ -446,20 +414,17 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "x"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
      *          "unixVer": "x"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "x",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -516,20 +481,17 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "x"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
      *          "unixVer": "x"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -586,20 +548,18 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -656,20 +616,18 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -726,20 +684,18 @@ export type NavigateToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -806,20 +762,18 @@ export type RedirectToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -876,20 +830,18 @@ export type RedirectToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -946,20 +898,18 @@ export type RedirectToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -1016,20 +966,18 @@ export type RedirectToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -1096,20 +1044,18 @@ export type ReLaunchOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -1166,20 +1112,18 @@ export type ReLaunchOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -1236,20 +1180,18 @@ export type ReLaunchOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -1306,20 +1248,18 @@ export type ReLaunchOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -1388,20 +1328,19 @@ export type SwitchTabOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
-     *        "unixVer": "√"
+     *        "unixVer": "√",
+     *        "unixVaporVer": "5.22"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -1458,20 +1397,19 @@ export type SwitchTabOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
-     *        "unixVer": "√"
+     *        "unixVer": "√",
+     *        "unixVaporVer": "5.22"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -1528,20 +1466,19 @@ export type SwitchTabOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
-     *        "unixVer": "√"
+     *        "unixVer": "√",
+     *        "unixVaporVer": "5.22"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -1598,20 +1535,19 @@ export type SwitchTabOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
-     *        "unixVer": "√"
+     *        "unixVer": "√",
+     *        "unixVaporVer": "5.22"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -1678,20 +1614,18 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -1749,12 +1683,10 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "4.18"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
      *          "unixVer": "4.25"
      *      }
@@ -1813,17 +1745,14 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "4.61",
      *       "unixVer": "5.0"
      *     }
@@ -1840,20 +1769,18 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
-     *       "unixVer": "4.25"
+     *       "unixVer": "4.25",
+     *       "unixVaporVer": "5.14"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "4.23",
      *       "unixVer": "4.61",
-     *       "unixvVer": "5.0"
+     *       "unixVaporVer": "5.0"
      *     }
      *   },
      *   "web": {
@@ -1868,17 +1795,14 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -1895,17 +1819,14 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -1922,17 +1843,14 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -1949,17 +1867,14 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -1976,17 +1891,14 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -2003,17 +1915,14 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -2030,17 +1939,14 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
      *       "unixVer": "4.25"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "x",
      *       "unixVer": "5.0"
      *     }
@@ -2057,20 +1963,18 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "√",
      *       "unixVer": "4.18"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "√",
-     *       "unixVer": "4.25"
+     *       "unixVer": "4.25",
+     *       "unixVaporVer": "5.14"
      *     },
      *     "harmony": {
-     *       "osVer": "3.0",
      *       "uniVer": "4.23",
      *       "unixVer": "4.61",
-     *       "unixvVer": "5.0"
+     *       "unixVaporVer": "5.0"
      *     }
      *   },
      *   "web": {
@@ -2085,17 +1989,14 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "x"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
      *          "unixVer": "x"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "x"
      *    }
@@ -2154,12 +2055,10 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
      *          "unixVer": "x"
      *      }
@@ -2218,20 +2117,18 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -2288,20 +2185,18 @@ export type NavigateBackOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -2365,20 +2260,18 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -2439,20 +2332,18 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -2513,20 +2404,18 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -2587,20 +2476,19 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
-     *        "unixVer": "√"
+     *        "unixVer": "√",
+     *        "unixVaporVer": "5.22"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -2661,20 +2549,18 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "√"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "√",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.14"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {

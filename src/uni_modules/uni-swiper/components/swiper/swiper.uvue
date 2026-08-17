@@ -44,7 +44,7 @@
 <script setup lang="uts">
 import { UniSwiperChangeEventDetail, UniSwiperChangeEvent, UniSwiperTransitionEventDetail, UniSwiperTransitionEvent,  UniSwiperAnimationFinishEvent, ContainerSize } from './types.uts'
 import { parsePxRpx, getDirection } from './utils.uts'
-// #ifndef APP-IOS
+
 import {
 	UniSwiperElement,
 } from "./index.uts";
@@ -56,14 +56,19 @@ defineOptions({
 	},
 	externalClasses: ['indicator-class', 'indicator-active-class']
 })
-// #endif
 
 type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -72,8 +77,14 @@ type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -82,8 +93,14 @@ type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -92,8 +109,14 @@ type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -102,8 +125,14 @@ type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -112,8 +141,14 @@ type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -122,8 +157,14 @@ type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -132,8 +173,14 @@ type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -142,8 +189,14 @@ type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -152,8 +205,14 @@ type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -163,8 +222,14 @@ type UniSwiperProps = {
 	* 控制是否回弹效果
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -173,8 +238,14 @@ type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -184,8 +255,14 @@ type UniSwiperProps = {
 	* 指示点绑定的 class
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -195,8 +272,14 @@ type UniSwiperProps = {
 	* 当前选中的指示点绑定的 class
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -206,8 +289,14 @@ type UniSwiperProps = {
 	* 指示点样式
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -217,8 +306,14 @@ type UniSwiperProps = {
 	* 当前选中的指示点样式
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -228,8 +323,14 @@ type UniSwiperProps = {
 	* 自动高度。设置为 true 时，swiper 高度会随当前 item 的高度变化而变化。
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -238,8 +339,14 @@ type UniSwiperProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -290,7 +397,9 @@ touchStartY = 0,
 touchStartTime = 0,
 dragging = false,
 touchMoving = false,
+activeTouchId = -1,
 touchStartTranslate = 0,
+gestureStartTranslate = 0,
 prevMargin = parsePxRpx(props.previousMargin),
 nextMargin = parsePxRpx(props.nextMargin),
 sliderItemSize = 0,
@@ -323,6 +432,7 @@ const hasCustomIndicator = computed(() : boolean => {
 })
 
 function updateContainerTransform() {
+	if (destroyFlag) return
 	if (swiperContainer == null) return
 	const offset = translate_value + prevMargin
 	if (props.vertical) {
@@ -333,6 +443,7 @@ function updateContainerTransform() {
 }
 
 function setItemTransform(item: UniElement, offset: number) {
+	if (destroyFlag) return
 	if (props.vertical) {
 		item.style.setProperty('transform', `translateY(${offset}px)`)
 	} else {
@@ -381,6 +492,44 @@ const mergeStyle = (isActive : boolean) : string => {
 	return style
 }
 
+function findTouchByIdentifier(touches : Touch[], identifier : number) : Touch | null {
+	for (let i = 0; i < touches.length; i++) {
+		const touch = touches[i]
+		if (touch.identifier == identifier) {
+			return touch
+		}
+	}
+	return null
+}
+
+function getStartTouch(e : TouchEvent) : Touch | null {
+	if (e.changedTouches.length > 0) {
+		return e.changedTouches[0]
+	}
+	if (e.touches.length > 0) {
+		return e.touches[0]
+	}
+	return null
+}
+
+function getActiveTouch(e : TouchEvent) : Touch | null {
+	if (activeTouchId < 0) {
+		return null
+	}
+	let touch = findTouchByIdentifier(e.changedTouches, activeTouchId)
+	if (touch != null) {
+		return touch
+	}
+	return findTouchByIdentifier(e.touches, activeTouchId)
+}
+
+function handoffActiveTouch(touch : Touch) {
+	activeTouchId = touch.identifier
+	touchStartX = touch.pageX
+	touchStartY = touch.pageY
+	touchStartTranslate = translate_value
+}
+
 function stopAnimationFrame() {
 	if (animationFrameId > 0) {
 		cancelAnimationFrame(animationFrameId)
@@ -406,7 +555,26 @@ function dispatchTransitionEvent(offset : number) {
   emit('transition', new UniSwiperTransitionEvent(accumulatedDx, accumulatedDy))
 }
 
+function getInterruptedTranslate() : number {
+	if (!isSupportCircular()) {
+		return lastAnimationTranslate
+	}
+
+	const stableMinTranslate = -(sliderCount.value - 1) * sliderItemSize
+	if (lastAnimationTranslate <= 0 && lastAnimationTranslate >= stableMinTranslate) {
+		return lastAnimationTranslate
+	}
+
+	return -(currentIndex.value * sliderItemSize)
+}
+
 function animateSlide() {
+	if (destroyFlag) {
+		animating.value = false
+		stopAnimationFrame()
+		return
+	}
+
 	if (!animating.value) {
 		stopAnimationFrame()
 		return
@@ -436,6 +604,11 @@ function animateSlide() {
 		stopAnimationFrame()
 		resetSlidersPosition()
 		if (needInitAfterAnimate) { init() }
+		nextTick(() => {
+			if (initd && !destroyFlag) {
+				init()
+			}
+		})
 
 		// 重置序列起始点
 		sequenceStartTranslate = translate_value
@@ -504,6 +677,8 @@ function adjustSliderPositionWhenNoMargin(targetIndex : number, direction? : num
 	let needItem0AtEnd = false
 	if (currentTranslate < rightBound) {
 		needItem0AtEnd = true
+	} else if (isEndToStartSlide(targetIndex, direction)) {
+		needItem0AtEnd = true
 	} else if (visualIndex == sliderCount.value - 1 && targetIndex == 0 && direction == 1) {
 		// 视觉位置在最后一个，目标是第一个，且从右往左滑动（循环从最后到第一个）
 		needItem0AtEnd = true
@@ -512,6 +687,8 @@ function adjustSliderPositionWhenNoMargin(targetIndex : number, direction? : num
 	// 判断是否需要将最后一个滑块移动到最前
 	let needItemLastAtStart = false
 	if (currentTranslate > leftBound) {
+		needItemLastAtStart = true
+	} else if (isStartToEndSlide(targetIndex, direction)) {
 		needItemLastAtStart = true
 	} else if (visualIndex == 0 && targetIndex == sliderCount.value - 1 && direction == -1) {
 		// 视觉位置在第一个，目标是最后一个，且从左往右滑动（循环从第一个到最后一个）
@@ -580,6 +757,8 @@ function adjustSliderPositionWhenHasMargin(targetIndex? : number | null, directi
 	if (currentTranslate < rightBound) {
 		// 已经进入右侧溢出区，维持首块在末尾
 		needItem0AtEnd = true
+	} else if (targetIndex != null && isEndToStartSlide(targetIndex, direction)) {
+		needItem0AtEnd = true
 	} else if (visualIndex == sliderCount.value - 1 && targetIndex == 0 && direction == 1) {
 		// 视觉位置在最后一个，目标是第一个，且向左滑动（循环从最后到第一个）
 		needItem0AtEnd = true
@@ -592,6 +771,8 @@ function adjustSliderPositionWhenHasMargin(targetIndex? : number | null, directi
 	let needItemLastAtStart = false
 	if (currentTranslate > leftBound) {
 		// 已经进入左侧溢出区，维持末块在最前
+		needItemLastAtStart = true
+	} else if (targetIndex != null && isStartToEndSlide(targetIndex, direction)) {
 		needItemLastAtStart = true
 	} else if (visualIndex == 0 && targetIndex == sliderCount.value - 1 && direction == -1) {
 		// 视觉位置在第一个，目标是最后一个，且向右滑动（循环从第一个到最后一个）
@@ -741,6 +922,7 @@ function getItemIdByIndex(index: number): string | null{
 }
 
 function slideTo(targetIndex : number, source : string, direction? : number | null) {
+	if (destroyFlag) return
 	if (targetIndex < 0 || targetIndex >= sliderCount.value) return
 
 	// 如果正在动画或拖拽中，先归一化位置，避免首尾偏移导致抖动
@@ -756,12 +938,9 @@ function slideTo(targetIndex : number, source : string, direction? : number | nu
 			updateItemPositions()
 			firstSliderPosition = 'start'
 			lastSliderPosition = 'end'
-			translate_value = -(currentIndex.value * sliderItemSize)
-		} else {
-			translate_value = lastAnimationTranslate
 		}
+		translate_value = getInterruptedTranslate()
 		updateContainerTransform()
-		sequenceStartTranslate = translate_value
 	}
 
 	// 停止之前的动画
@@ -807,6 +986,10 @@ function startAutoPlay() {
 	if (!props.autoplay || sliderCount.value <= 1) return
 
 	autoPlayTimer.value = setInterval(() => {
+		if (destroyFlag) {
+			stopAutoPlay()
+			return
+		}
 		const next = currentIndex.value == sliderCount.value - 1 ? 0 : currentIndex.value + 1;
 		slideTo(next, 'autoplay', 1)
 	}, props.interval)
@@ -843,6 +1026,20 @@ function initSliders(){
 
 function updateMinTranslate() {
 	minTranslate = -(sliderCount.value - 1) * sliderItemSize
+}
+
+function getTouchMoveMaxTranslate(): number {
+	if (isSupportCircular() && lastSliderPosition == 'start') {
+		return sliderItemSize
+	}
+	return maxTranslate
+}
+
+function getTouchMoveMinTranslate(): number {
+	if (isSupportCircular() && firstSliderPosition == 'end') {
+		return -(sliderCount.value * sliderItemSize)
+	}
+	return minTranslate
 }
 
 function fixIndex(index: number): number {
@@ -1106,13 +1303,22 @@ function init(){
 	updateContainerTransform()
 
 	adjustSliderPosition(currentIndex.value, null)
+	sequenceStartTranslate = translate_value
 	updateMinTranslate()
 	updateWrapperHeight(currentIndex.value)
 	startAutoPlay()
 }
 
 const onTouchStart = (e : TouchEvent) => {
+	if (destroyFlag) return
   if (props.disableTouch) return
+	e.stopPropagation()
+
+	const startTouch = getStartTouch(e)
+	if (startTouch == null) return
+	if (dragging && activeTouchId >= 0 && findTouchByIdentifier(e.touches, activeTouchId) != null) {
+		return
+	}
 
 	// 停止自动播放
 	stopAutoPlay()
@@ -1123,17 +1329,13 @@ const onTouchStart = (e : TouchEvent) => {
 		animating.value = false
 		stopAnimationFrame()
 
-		// 中断动画时，强制重置所有 slider 到默认位置，并将 translate 设置为 currentIndex 对应的位置
+		// 中断动画时优先保留当前可见位移，只有循环越界时才回退到稳定位置
 		if (isSupportCircular()) {
 			updateItemPositions()
 			firstSliderPosition = 'start'
 			lastSliderPosition = 'end'
-			// 基于 currentIndex 重新计算 translate，确保位置一致
-			translate_value = -(currentIndex.value * sliderItemSize)
-		} else {
-			// 非循环模式使用动画中的视觉位置
-			translate_value = lastAnimationTranslate
 		}
+		translate_value = getInterruptedTranslate()
 		updateContainerTransform()
 	}
 
@@ -1142,13 +1344,11 @@ const onTouchStart = (e : TouchEvent) => {
 	resetSlidersPosition()
 	const translateDelta = translate_value - oldTranslate
 
-	const t = e.touches[0]
-	touchStartX = t.pageX
-	touchStartY = t.pageY
+	handoffActiveTouch(startTouch)
 	touchStartTime = Date.now()
+	gestureStartTranslate = translate_value
 	dragging = true
 	touchMoving = false  // 确保重置移动标志
-	touchStartTranslate = translate_value
 
 	// 重置方向锁定状态
 	touchDirectionLocked = false
@@ -1157,8 +1357,8 @@ const onTouchStart = (e : TouchEvent) => {
 	// 如果之前没有在动画中（即这是一个新的滑动序列的开始），记录序列起始点
 	if (!wasAnimating) {
 		sequenceStartTranslate = translate_value
-		sequenceStartX = t.pageX
-		sequenceStartY = t.pageY
+		sequenceStartX = startTouch.pageX
+		sequenceStartY = startTouch.pageY
 	} else {
 		// 如果之前在动画中（连续滑动），保持原有的序列起始点，但需要根据 normalization 调整，避免 dx 跳变
 		sequenceStartTranslate += translateDelta
@@ -1166,17 +1366,18 @@ const onTouchStart = (e : TouchEvent) => {
 }
 
 const onTouchMove = (e : TouchEvent) => {
+	if (destroyFlag) return
   if (props.disableTouch) return
+	e.stopPropagation()
 	if (!dragging) return
 
-	touchMoving = true
+	const t = getActiveTouch(e)
+	if (t == null) return
 
-	const t = e.touches[0]
+	touchMoving = true
 	const dx = t.pageX - touchStartX
 	const dy = t.pageY - touchStartY
 	const delta = props.vertical ? dy : dx
-	// 基于整体滑动方向，而不是即时方向
-	const direction = delta > 0 ? -1 : 1
 	const currentTranslate = touchStartTranslate + delta
 
 	// 计算从touch开始的总体滑动方向（用于调整slider位置）
@@ -1272,6 +1473,9 @@ const onTouchMove = (e : TouchEvent) => {
 		adjustSliderPosition(targetIndex, overallDirection)
 	}
 
+	const touchMoveMaxTranslate = getTouchMoveMaxTranslate()
+	const touchMoveMinTranslate = getTouchMoveMinTranslate()
+
 	const atBoundary = !props.circular && props.disableBounce && sliderCount.value > 0 && ((currentTranslate > maxTranslate && delta > 0) || (currentTranslate < minTranslate && delta < 0))
 	if (!atBoundary) {
 		e.preventDefault()
@@ -1285,26 +1489,26 @@ const onTouchMove = (e : TouchEvent) => {
 	}
 
 	if (props.disableBounce) {
-		if(currentTranslate > maxTranslate){
-			translate_value = maxTranslate
+		if(currentTranslate > touchMoveMaxTranslate){
+			translate_value = touchMoveMaxTranslate
 			updateContainerTransform()
 			return
 		}
-		if (currentTranslate < minTranslate) {
-			translate_value = minTranslate
+		if (currentTranslate < touchMoveMinTranslate) {
+			translate_value = touchMoveMinTranslate
 			updateContainerTransform()
 			return
 		}
 	} else {
-		if(currentTranslate > maxTranslate){
-			const overScroll = currentTranslate - maxTranslate
-			translate_value = maxTranslate + overScroll * 0.3
+		if(currentTranslate > touchMoveMaxTranslate){
+			const overScroll = currentTranslate - touchMoveMaxTranslate
+			translate_value = touchMoveMaxTranslate + overScroll * 0.3
 			updateContainerTransform()
 			return
 		}
-		if (currentTranslate < minTranslate) {
-			const overScroll = currentTranslate - minTranslate
-			translate_value = minTranslate + overScroll * 0.3
+		if (currentTranslate < touchMoveMinTranslate) {
+			const overScroll = currentTranslate - touchMoveMinTranslate
+			translate_value = touchMoveMinTranslate + overScroll * 0.3
 			updateContainerTransform()
 			return
 		}
@@ -1315,12 +1519,29 @@ const onTouchMove = (e : TouchEvent) => {
 }
 
 const onTouchEnd = (e : TouchEvent) => {
+	if (destroyFlag) return
   if (props.disableTouch) return
+	e.stopPropagation()
 	if (!dragging) return
+
+	const activeChangedTouch = activeTouchId >= 0 ? findTouchByIdentifier(e.changedTouches, activeTouchId) : null
+	if (activeChangedTouch == null) {
+		return
+	}
+
+	if (e.touches.length > 0) {
+		handoffActiveTouch(e.touches[0])
+		return
+	}
+
 	dragging = false
+	activeTouchId = -1
 
 	// 如果没有实际移动，直接返回
 	if (!touchMoving) {
+		if (touchInterruptedAnimation) {
+			slideTo(currentIndex.value, 'touch', 0)
+		}
 		touchMoving = false
 		startAutoPlay()
 		return
@@ -1350,14 +1571,11 @@ const onTouchEnd = (e : TouchEvent) => {
 		return
 	}
 
-	const t = e.changedTouches[0]
-	const dx = t.pageX - touchStartX
-	const dy = t.pageY - touchStartY
 	const dt = Date.now() - touchStartTime
-	const delta = props.vertical ? dy : dx
-	const abs = Math.abs(delta)
+	const totalDelta = translate_value - gestureStartTranslate
+	const abs = Math.abs(totalDelta)
 	const source = 'touch'
-	let direction = delta < 0 ? 1 : -1
+	const direction = totalDelta < 0 ? 1 : totalDelta > 0 ? -1 : 0
 
 	const shouldChange = (dt < 300 && abs > 30) || abs > 100
 	if (!shouldChange){
@@ -1367,9 +1585,9 @@ const onTouchEnd = (e : TouchEvent) => {
 
 	let nextIndex = currentIndex.value
 	if (isSupportCircular()) {
-		if (delta > 0) {
+		if (totalDelta > 0) {
 			nextIndex = (currentIndex.value - 1 + sliderCount.value) % sliderCount.value
-		} else if (delta < 0) {
+		} else if (totalDelta < 0) {
 			nextIndex = (currentIndex.value + 1) % sliderCount.value
 		}
 	} else {
@@ -1381,9 +1599,9 @@ const onTouchEnd = (e : TouchEvent) => {
 				nextIndex = sliderCount.value - 1
 			}
 		} else {
-			if (delta > 0 && currentIndex.value > 0) {
+			if (totalDelta > 0 && currentIndex.value > 0) {
 				nextIndex = currentIndex.value - 1
-			} else if (delta < 0 && currentIndex.value < sliderCount.value - 1) {
+			} else if (totalDelta < 0 && currentIndex.value < sliderCount.value - 1) {
 				nextIndex = currentIndex.value + 1
 			}
 		}
@@ -1394,13 +1612,22 @@ const onTouchEnd = (e : TouchEvent) => {
 }
 
 const handleSwiperItemMounted = () => {
-	if (initd)
+	if (initd && !destroyFlag) {
 		init()
+	}
+	nextTick(() => {
+		if (initd && !destroyFlag) {
+			init()
+		}
+	})
 }
 
 const handleSwiperItemUnMounted = () => {
-	if (initd)
-		init()
+	nextTick(() => {
+		if (initd && !destroyFlag) {
+			init()
+		}
+	})
 }
 
 provide('handleSwiperItemMounted', handleSwiperItemMounted)
@@ -1410,7 +1637,7 @@ provide('autoHeight', props.autoHeight)
 function getItemIndexByItemId(itemId: string): number | null {
 	const list = sliders
 	if(list == null) return null
-	
+
 	let res: number | null = null
 	for(let i = 0;i<list.length;i++){
 		if(list[i].itemId == itemId){
@@ -1422,6 +1649,7 @@ function getItemIndexByItemId(itemId: string): number | null {
 }
 
 onMounted(() => {
+	destroyFlag = false
 	watch(() : number | undefined => props.current, (newVal : number) => {
 		if (newVal == currentIndex.value || newVal < 0 || newVal >= sliderCount.value) return
 		const direction = getSlideDirection(newVal)
@@ -1454,9 +1682,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
 	destroyFlag = true
-})
-
-onUnmounted(() => {
 	stopAutoPlay()
 	stopAnimationFrame()
 })

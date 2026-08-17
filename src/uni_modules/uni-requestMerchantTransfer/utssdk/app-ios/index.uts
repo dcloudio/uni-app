@@ -32,10 +32,10 @@ class WxpayManager implements WXApiDelegate {
 
 	@UTSiOS.keyword("fileprivate")
 	static registerApp() {
-		const scheme = WxpayManager.getApplicationScheme()
-		const universalLink = WxpayManager.getApplicationUniversalLink()
-		if (scheme != null && scheme != "" && universalLink != null && universalLink != "") {
-			WXApi.registerApp(scheme!, universalLink = universalLink!)
+		const scheme = this.getApplicationScheme()
+		const universalLinkTmp = this.getApplicationUniversalLink()
+		if (scheme != null && universalLinkTmp != null && scheme != "" && universalLinkTmp != "") {
+			WXApi.registerApp(scheme!, universalLink = universalLinkTmp!)
 		}
 	}
 

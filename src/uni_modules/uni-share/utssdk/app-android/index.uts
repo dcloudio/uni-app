@@ -1,0 +1,20 @@
+import { Share, ShareOptions, UniShareProvider, ShareProvider } from "../interface.uts";
+import {ShareFailImpl} from "../unierror.uts";
+
+const DEFAULT_PROVIDER : ShareProvider = 'weixin';
+
+export const share : Share = function (options : ShareOptions) {
+	const resolvedProvider = (options.provider == null || options.provider!.length == 0)
+		? DEFAULT_PROVIDER
+		: options.provider!;
+	const provider = UTSAndroid.getProvider<UniShareProvider>("share", resolvedProvider);
+	if (provider != null) {
+		provider.share(options);
+	} else {
+		// 使用空值合并运算符提供默认值
+		const errMsg = '未找到分享服务提供商';
+		const err = new ShareFailImpl(4000600);
+		options.fail?.(err);
+		options.complete?.(err);
+	}
+};

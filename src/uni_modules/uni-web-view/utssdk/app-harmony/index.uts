@@ -3,12 +3,16 @@ import { image } from '@kit.ImageKit';
 import { componentSnapshot, FrameCallback } from '@kit.ArkUI';
 import { fileIo as fs } from '@kit.CoreFileKit';
 import { BusinessError } from '@kit.BasicServicesKit'
+import buffer from '@ohos.buffer';
+import { util } from '@kit.ArkTS';
 // @ts-ignore
-import { uni, getCurrentMP } from "@dcloudio/uni-runtime";
+import { uni, getCurrentMP, getAbilityContext } from "@dcloudio/uni-runtime";
 import { buildWeb, TitleUpdateEvent, PostMessageToServiceEvent, LoadEvent, MessageEvent, LoadingEvent, DownloadEvent, ErrorEvent } from "./builder.ets";
 import { CreateWebViewContext, WebViewContext, CreateWebviewContext, WebviewContext, UniWebViewContextLoadDataOptions, UniWebViewElementLoadDataOptions, WebViewStyles, WebViewProgressStyles, UniWebviewContextLoadDataOptions } from '../interface.uts';
 import { createDownloadDelegate } from './webview.ets';
 import { CustomFrameCallback, getSnapshotArea, mergeImage } from './utils.uts'
+
+const BASE64_ENCODING = 'base64'
 
 class BindWebViewController {
   private controllerAttachedInvokers: Array<() => void> = []
@@ -82,17 +86,39 @@ class BindWebViewController {
    * 加载本地图片场景，baseUrl和historyUrl不能同时为空，否则图片无法成功加载。
    * 若html中的富文本中带有注入#等特殊字符，建议将baseUrl和historyUrl两个参数的值设置为"空格"。
    * data数据必须使用base64编码或将内容中的任何#字符编码为%23。否则#将被视为内容的结尾而剩余的文本将被用作文档片段标识符。
+   *
+   * 用户不传递 encoding 且 baseURL 为空时，则默认对 data 进行 base64 编码后再传给底层，以兼容用户直接传入 html 中有特殊字符鸿蒙 Web 显示异常 https://issues.dcloud.net.cn/pages/issues/detail?id=28962
+   *    如果 encoding=base64 且 baseURL 不为空会将 base64 内容原样显示
    */
   loadData(options: UniWebViewElementLoadDataOptions) {
     let data = options.data
-    if (options.encoding?.toLowerCase() !== 'base64') {
+    let encoding = options?.encoding
+    const baseURL = options?.baseURL ?? ''
+
+    if (encoding == null && baseURL.length === 0) {
+      try {
+        const htmlBytes = new util.TextEncoder().encodeInto(data);
+        const byteOffset = htmlBytes.byteOffset
+        const byteLength = htmlBytes.byteLength
+        const htmlBuffer = byteOffset == 0 && byteLength == htmlBytes.buffer.byteLength
+          ? htmlBytes.buffer
+          : htmlBytes.buffer.slice(byteOffset, byteOffset + byteLength);
+        data = buffer.from(htmlBuffer).toString(BASE64_ENCODING);
+        encoding = BASE64_ENCODING
+      } catch (error) {
+        console.error('[WebView loadData] Failed to encode data to base64:', error)
+      }
+    }
+
+    if (encoding !== BASE64_ENCODING) {
       data = data.replace(/#/g, '%23')
     }
+
     this.invokeController('loadData',
       data,
       options.mimeType ?? "text/html",
-      options.encoding ?? "UTF-8",
-      options.baseURL ?? ''
+      encoding ?? "UTF-8",
+      baseURL ?? ''
     )
   }
 }
@@ -443,10 +469,6 @@ export class UniWebViewElement extends UniViewElementImpl implements IUniWebView
     }
   }
 
-  getNativeWebview(): NativeWebView | null {
-    return this.nativeWebview
-  }
-
   back() {
     this.invokeNativeWebview(() => {
       this.nativeWebview?.back()
@@ -606,7 +628,7 @@ export class UniWebViewElement extends UniViewElementImpl implements IUniWebView
         this.webViewScrollSnapshot()
           .then((imagePixelMap: PixelMap) => {
             if (type === DEFAULT_TYPE && imagePixelMap) {
-              this.pixelMapToImgPath(getContext(), format, imagePixelMap)
+              this.pixelMapToImgPath(getAbilityContext(), format, imagePixelMap)
                 .then((tempFilePath: string) => {
                   const res: TakeSnapshotSuccess = { tempFilePath }
                   options.success?.(res);
@@ -680,7 +702,7 @@ const getWebViewContext = (id: string, component?: ComponentPublicInstance | nul
     webViewElement = (component.$el as UniElement)?.parentElement?.querySelector('#' + id) as unknown as UniWebViewElement;
   }
   if (webViewElement == null) return null;
-  return new WebViewContextImpl(webViewElement.getNativeWebview());
+  return new WebViewContextImpl(webViewElement);
 }
 
 // @ts-ignore
@@ -702,39 +724,39 @@ export const createWebviewContext: CreateWebviewContext = defineSyncApi<WebviewC
 
 class WebViewContextImpl implements WebViewContext {
 
-  private nativeWebview?: NativeWebView | null = null;
+  private webViewElement?: UniWebViewElement | null = null;
 
-  constructor(nativeWebview?: NativeWebView | null) {
-    this.nativeWebview = nativeWebview;
+  constructor(webViewElement?: UniWebViewElement | null) {
+    this.webViewElement = webViewElement;
   }
 
   back() {
-    this.nativeWebview?.back()
+    this.webViewElement?.back()
   }
 
   forward() {
-    this.nativeWebview?.forward()
+    this.webViewElement?.forward()
   }
 
   reload() {
-    this.nativeWebview?.reload()
+    this.webViewElement?.reload()
 
   }
 
   stop() {
-    this.nativeWebview?.stop()
+    this.webViewElement?.stop()
   }
 
   evalJS(js: string) {
-    this.nativeWebview?.evalJS(js)
+    this.webViewElement?.evalJS(js)
   }
 
   getContentHeight(): number {
-    return this.nativeWebview?.getContentHeight() ?? 0
+    return this.webViewElement?.getContentHeight() ?? 0
   }
 
   loadData(options: UniWebViewContextLoadDataOptions) {
-    this.nativeWebview?.loadData(options as UniWebViewElementLoadDataOptions)
+    this.webViewElement?.loadData(options as UniWebViewElementLoadDataOptions)
   }
 }
 

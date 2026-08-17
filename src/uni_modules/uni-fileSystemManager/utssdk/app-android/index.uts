@@ -81,12 +81,16 @@ class AndroidStats implements Stats, io.dcloud.uts.log.LogSelf, io.dcloud.uts.js
 
 }
 class AndroidFileSystemManager implements FileSystemManager {
-	private fileDesUtil : FileDescriptorUtil = new FileDescriptorUtil()
-	private writeFileUtil : WriteFileUtil = new WriteFileUtil()
-	private readFileUtil : ReadFileUtil = new ReadFileUtil()
+	private fileDesUtil : FileDescriptorUtil
+	private writeFileUtil : WriteFileUtil
+	private readFileUtil : ReadFileUtil
 
 	private static manager : AndroidFileSystemManager = new AndroidFileSystemManager()
-	private constructor() { }
+	private constructor() {
+		this.fileDesUtil = new FileDescriptorUtil()
+		this.writeFileUtil = new WriteFileUtil(this.fileDesUtil)
+		this.readFileUtil = new ReadFileUtil(this.fileDesUtil)
+	}
 	public static getManager() : AndroidFileSystemManager {
 		return this.manager;
 	}
@@ -1906,34 +1910,39 @@ class AndroidFileSystemManager implements FileSystemManager {
 	}
 
 	public close(options : CloseOptions) {
-		let fd = ParcelFileDescriptor.fromFd(options.fd.toInt())
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
+		let that = this
 		UTSAndroid.getDispatcher('io').async(function (_) {
 			try {
+				let fd = that.fileDesUtil.removeDescriptor(options.fd)
+				if (fd == null) {
+					throw new Error('invalid fd')
+				}
 				fd.close()
 				let success : FileManagerSuccessResult = {
 					errMsg: "close:ok",
 				}
-				if (this.fileDesUtil.openMap.has(options.fd)) {
-					this.fileDesUtil.openMap.delete(options.fd)
-				}
-
-				options.success?.(success)
-				options.complete?.(success)
+				currentDispatcher.async(function (_) {
+					options.success?.(success)
+					options.complete?.(success)
+				}, null)
 			} catch (e) {
-				let err = new FileSystemManagerFailImpl(1300009);
-				options.fail?.(err)
-				options.complete?.(err)
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(1300009);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
 			}
 		})
 	}
 	public closeSync(options : CloseSyncOptions) {
 		let msgPrefix = "closeSync:fail "
-		let fd = ParcelFileDescriptor.fromFd(options.fd.toInt())
 		try {
-			fd.close()
-			if (this.fileDesUtil.openMap.has(options.fd)) {
-				this.fileDesUtil.openMap.delete(options.fd)
+			let fd = this.fileDesUtil.removeDescriptor(options.fd)
+			if (fd == null) {
+				throw new Error('invalid fd')
 			}
+			fd.close()
 		} catch (e) {
 			throw new UniError(FileSystemManagerUniErrorSubject, 1300009, msgPrefix + FileSystemManagerUniErrors.get(1300009)!)
 		}
@@ -2085,9 +2094,12 @@ class AndroidFileSystemManager implements FileSystemManager {
 				})
 			},
 			fail: (res) => {
-				let err = new FileSystemManagerFailImpl(res.errCode);
-				options.fail?.(err)
-				options.complete?.(err)
+				let currentDispatcher = UTSAndroid.getDispatcher("main")
+				currentDispatcher.async(function (_) {
+					let err = new FileSystemManagerFailImpl(res.errCode);
+					options.fail?.(err)
+					options.complete?.(err)
+				}, null)
 			}
 		}
 		this.unzip(zipOptions)

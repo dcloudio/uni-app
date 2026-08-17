@@ -1,5 +1,171 @@
-export * from './openDialogPage.uts'
-export * from './closeDialogPage.uts'
+// #ifndef VUE3-VAPOR
+import {
+    ANIMATION_DURATION,
+    ANIMATION_TYPE,
+    getCurrentPage,
+    Page,
+    isSystemDialogPage,
+    isTabPage,
+    NAVIGATE_TO,
+    navigateDialogPage,
+    normalizeRouteOptions,
+} from '@dcloudio/uni-runtime'
+// #endif
+
+import {
+    DEFAULT_ANIMATION_DURATION,
+    DEFAULT_ANIMATION_OUT,
+    DEFAULT_ANIMATION_IN,
+} from '../constants.uts'
+import { CloseDialogPageOptions, CloseDialogPageComplete, OpenDialogPageComplete, OpenDialogPageOptions } from '../interface.uts'
+import { CloseDialogPageSuccessImpl, CloseDialogPageFailImpl, OpenDialogPageSuccessImpl, OpenDialogPageFailImpl } from '../unierror.uts'
+
+export const closeDialogPage = (options: CloseDialogPageOptions | null) => {
+    // #ifdef VUE3-VAPOR
+    nativeCloseDialogPage(options, () => {
+        const successRes = new CloseDialogPageSuccessImpl()
+        options?.success?.(successRes)
+        options?.complete?.(successRes)
+    }, (error: Map<string, any | null>) => {
+        const errMsg = error.get('errMsg') as string
+        const failRes = new CloseDialogPageFailImpl(errMsg)
+        options?.fail?.(failRes)
+        options?.complete?.(failRes as CloseDialogPageComplete)
+    })
+    // #endif
+    // #ifndef VUE3-VAPOR
+    if (options?.animationType === 'pop-out') {
+        options.animationType = 'none'
+    }
+    const closeOptions = new Map<string, any | null>([
+        [
+            ANIMATION_TYPE,
+            options?.animationType ?? DEFAULT_ANIMATION_OUT,
+        ],
+        [
+            ANIMATION_DURATION,
+            options?.animationDuration ?? DEFAULT_ANIMATION_DURATION,
+        ],
+    ])
+    if (options?.dialogPage === null) {
+        const currentPage = getCurrentPage()
+        if (currentPage === null) {
+            if (options !== null) {
+                const failRes = new CloseDialogPageFailImpl('currentPage is null')
+                options.fail?.(failRes)
+                options.complete?.(failRes)
+            }
+        } else {
+            const dialogPages = currentPage.getDialogPages()
+            for (let i = dialogPages.length - 1; i >= 0; i--) {
+                (dialogPages[i].$vm as Page).$close(closeOptions)
+            }
+            if (options !== null) {
+                const successRes = new CloseDialogPageSuccessImpl()
+                options.success?.(successRes)
+                options.complete?.(successRes)
+            }
+        }
+    } else {
+        const dialogPage = options?.dialogPage!
+        const currentPages = getCurrentPages()
+        const parentPage = dialogPage.getParentPage()
+        if (isSystemDialogPage(dialogPage)) {
+            (dialogPage.$vm as Page).$close(closeOptions)
+            return
+        }
+        if ((dialogPage.$vm as Page).$dialogOptions === null ||
+            parentPage == null ||
+            (!isTabPage(parentPage!.vm!) && currentPages.indexOf(parentPage) === -1) ||
+            parentPage!.getDialogPages().indexOf(dialogPage) === -1) {
+            if (options !== null) {
+                const errRes = new CloseDialogPageFailImpl('dialogPage is not a valid page')
+                options.fail?.(errRes)
+                options.complete?.(errRes)
+            }
+        } else {
+            (dialogPage.$vm as Page).$close(closeOptions)
+            if (options !== null) {
+                const successRes = new CloseDialogPageSuccessImpl()
+                options.success?.(successRes)
+                options.complete?.(successRes)
+            }
+        }
+    }
+    // #endif
+}
+
+export const openDialogPage = (options: OpenDialogPageOptions): UniPage | null => {
+    // #ifdef VUE3-VAPOR
+    const page = nativeOpenDialogPage(options, () => {
+        const successRes = new OpenDialogPageSuccessImpl()
+        options.success?.(successRes)
+        options.complete?.(successRes)
+    }, (error: Map<string, any | null>) => {
+        const errMsg = error.get('errMsg') as string
+        const failRes = new OpenDialogPageFailImpl(errMsg)
+        options.fail?.(failRes)
+        options.complete?.(failRes as OpenDialogPageComplete)
+    })
+    return page
+    // #endif
+    // #ifndef VUE3-VAPOR
+    const navigationStart = Date.now()
+
+    const normalizeRouteOptionsResult = normalizeRouteOptions(
+        NAVIGATE_TO,
+        options.url as string,
+    )
+    if (normalizeRouteOptionsResult.errMsg.length > 0) {
+        const res = new OpenDialogPageFailImpl(normalizeRouteOptionsResult.errMsg)
+        options.fail?.(res)
+        options.complete?.(res)
+        return null
+    }
+
+    if (options.parentPage !== null) {
+        const pages = getCurrentPages()
+        if (pages.indexOf(options.parentPage) === -1) {
+            const res = new OpenDialogPageFailImpl('parentPage is not a valid page')
+            options.fail?.(res)
+            options.complete?.(res)
+            return null
+        }
+    }
+
+    options.url = normalizeRouteOptionsResult.url
+
+    if (options.animationType === 'pop-in') {
+        options.animationType = 'none'
+    }
+    const dialogPage = navigateDialogPage(
+        options.url as string,
+        new Map<string, any | null>([
+            [
+                ANIMATION_TYPE,
+                options.animationType ?? DEFAULT_ANIMATION_IN,
+            ],
+            [
+                ANIMATION_DURATION,
+                options.animationDuration ?? DEFAULT_ANIMATION_DURATION,
+            ],
+        ]),
+        NAVIGATE_TO,
+        navigationStart,
+        new Map<string, any | null>([
+            ['disableEscBack', options.disableEscBack],
+            ['parentPage', options.parentPage],
+            ['triggerParentHide', options.triggerParentHide],
+        ]),
+        // 调整回调在 callback 中执行，避免时机太早， showToast 异常
+        () => {
+            options.success?.(new OpenDialogPageSuccessImpl())
+            options.complete?.(new OpenDialogPageSuccessImpl())
+        }
+    )
+    return dialogPage
+    // #endif
+}
 
 export {
     OpenDialogPageOptions,

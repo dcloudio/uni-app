@@ -1,1 +1,1 @@
-export class UniProgressElement extends UniVueElement {}
+export class UniProgressElement extends UniViewElementImpl {}

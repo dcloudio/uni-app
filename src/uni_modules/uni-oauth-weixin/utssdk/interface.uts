@@ -1,9 +1,17 @@
+// #ifdef APP-IOS
+export interface UniOAuthWeixinProvider extends UniOAuthProvider, JSExport {
+	toJSON() : Map<String, Any>
+	isWeChatInstalled : boolean
+}
+// #endif
+
+// #ifndef APP-IOS
 export interface UniOAuthWeixinProvider extends UniOAuthProvider {
 	isWeChatInstalled : boolean
 }
+// #endif
 
-export type OauthWeixinFail = IOauthWeixinFail;
-
+// #ifdef APP-HARMONY
 export interface AuthResp {
 	id : number;
 	name : string;
@@ -46,3 +54,4 @@ export interface WeixinUserInfoResp {
 	privilege : string[];
 	unionid ?: string; // 可选字段
 }
+// #endif

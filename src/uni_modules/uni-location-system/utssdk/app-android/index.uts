@@ -79,7 +79,9 @@ export class UniLocationSystemProviderImpl implements UniLocationSystemProvider,
 		this.locationUpdateCallback = null
 		this.locationUpdateErrorCallback = null
 		if (this.connection.isConnect) {
-			UTSAndroid.getUniActivity()!.getApplication()!.unbindService(this.connection)
+			UTSAndroid.getAppContext()?.unbindService(this.connection)
+			this.connection.isConnect = false
+			this.connection.service = null
 		}
 		this.locationManager?.removeUpdates(this)
 		this.locationManager = null;
@@ -285,6 +287,35 @@ class LocationRequest {
 		this.hasSuccessDone = true
 	}
 
+	tryReturnCachedLocation(providerName : string, currentProviderName : string) : boolean {
+		if (providerName == currentProviderName) {
+			return false
+		}
+		if (!this.hostLocationManager.getAllProviders().contains(providerName)) {
+			return false
+		}
+		const lastLocation = this.hostLocationManager.getLastKnownLocation(providerName)
+		if (lastLocation == null) {
+			return false
+		}
+		this.returnLastLocation(lastLocation)
+		return true
+	}
+
+	tryReturnFallbackLastLocation(currentProviderName : string) : boolean {
+		// GPS 首定位超时时，优先回退到更容易命中的网络缓存。
+		if (this.tryReturnCachedLocation('network', currentProviderName)) {
+			return true
+		}
+		if (this.tryReturnCachedLocation('passive', currentProviderName)) {
+			return true
+		}
+		if (this.tryReturnCachedLocation('gps', currentProviderName)) {
+			return true
+		}
+		return false
+	}
+
 	/**
 	 * 不存在预期的缓存，需要等待provider的位置更新
 	 */
@@ -304,6 +335,9 @@ class LocationRequest {
 				this.hostLocationManager.removeUpdates(this.systemListener!)
 			}
 			if (!this.hasSuccessDone) {
+				if (this.tryReturnFallbackLastLocation(providerName)) {
+					return
+				}
 				// 超过6s/或者设定的超时时间，尚未成功返回，则需要返回错误
 				let err = new GetLocationFailImpl(1505600);
 				this.hostOption.fail?.(err)

@@ -14,8 +14,14 @@
      * 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -69,14 +75,14 @@
   const elementOrderMap = new Map<string, number>()
 
   const ensureIncluded = (value : string) => {
-    if (selectedValues.value.indexOf(value) === -1) {
+    if (selectedValues.value.indexOf(value) == -1) {
       selectedValues.value.push(value)
     }
   }
 
   const ensureExcluded = (value : string) => {
     const i = selectedValues.value.indexOf(value)
-    if (i !== -1) {
+    if (i != -1) {
       selectedValues.value.splice(i, 1)
     }
   }
@@ -105,7 +111,7 @@
       elementOrderMap.set(value, elementOrderCounter++)
       updateSelection(value, checked)
       // record initial snapshot on first register per value
-      if (initialSelected.value.indexOf(value) === -1 && checked) {
+      if (initialSelected.value.indexOf(value) == -1 && checked) {
         initialSelected.value.push(value)
       }
     },
@@ -121,7 +127,7 @@
       }
     },
     isChecked: (value : string) : boolean => {
-      return selectedValues.value.indexOf(value) !== -1
+      return selectedValues.value.indexOf(value) != -1
     },
     name: props.name
   }

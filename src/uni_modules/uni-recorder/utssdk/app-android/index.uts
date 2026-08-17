@@ -7,7 +7,6 @@ import { RecorderManagerFailImpl, RecorderManagerUniErrors } from '../unierror.u
 
 // NOTE 避免被 vue Proxy 污染
 const DEFAULT_DURATION = 1000 * 60
-const MAX_DURATION = DEFAULT_DURATION * 10
 const DEFAULT_FORMAT = 'aac'
 
 
@@ -30,9 +29,7 @@ class RecorderManagerImpl implements RecorderManager, AudioRecorder.RecordingLis
 		if (options.duration == null) {
 			options.duration = DEFAULT_DURATION
 		}
-		if (options.duration! > MAX_DURATION) {
-			options.duration = MAX_DURATION
-		} else if (options.duration! < 0) {
+		if (options.duration! <= 0) {
 			options.duration = DEFAULT_DURATION
 		}
 		if(options.sampleRate == null) {

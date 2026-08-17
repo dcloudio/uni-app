@@ -1159,10 +1159,7 @@ extension UniFileSystemManager {
             completionHandler?(false, status.toError())
             return
         case .valid(let status):
-            if status.isDirectory {
-                completionHandler?(false, .isDirectory)
-                return
-            } else if status.isReadable == false {
+            if status.isReadable == false {
                 completionHandler?(false, .permissionDenied)
                 return
             }
@@ -1184,18 +1181,20 @@ extension UniFileSystemManager {
             }
             
         case .valid(let status):
-            if status.isDirectory {
-                completionHandler?(false, .isDirectory)
-                return
-            } else if status.isWritable == false {
+            if status.isWritable == false {
                 completionHandler?(false, .permissionDenied)
                 return
             }
             //存在的先remove
-            let (success, _) = unlink(path: newPath)
-            
-            if !success {
+            var result: (Bool, Error?)
+            if status.isDirectory {
+                result = removeDirectorySync(newPath, true)
+            } else {
+                result = unlink(path: newPath)
+            }
+            if !result.0 {
                 completionHandler?(false, .systemError)
+                return
             }
         }
         
@@ -1808,6 +1807,35 @@ extension UniFileSystemManager {
             }
         }
         
+        func isInvalidNonNegativeNumber(_ value: NSNumber?) -> Bool {
+            guard let value = value else {
+                return false
+            }
+            
+            let doubleValue = value.doubleValue
+            return !doubleValue.isFinite || doubleValue < 0
+        }
+        
+        if chunkSize <= 0 {
+            completionHandler?(nil, .argumentInvalid)
+            return
+        }
+        
+        if isInvalidNonNegativeNumber(offset) {
+            completionHandler?(nil, .argumentInvalid)
+            return
+        }
+        
+        if isInvalidNonNegativeNumber(length) {
+            completionHandler?(nil, .argumentInvalid)
+            return
+        }
+        
+        if isInvalidNonNegativeNumber(position) {
+            completionHandler?(nil, .argumentInvalid)
+            return
+        }
+        
         safeWrite()
         
         func safeWrite() {
@@ -1832,71 +1860,98 @@ extension UniFileSystemManager {
                     cleanFileQueue(for: absolutePath)
                 }
                 
-                // 分片写入逻辑
-                func writeChunks(_ chunkData: Data, isArrayBuffer: Bool? = false) -> UInt64 {
-                    let originalSize = fileHandle.seekToEndOfFile()
-                    
+                // 归一化本次实际写入的 Data 区间：String 写全部内容，ArrayBuffer 才应用 offset/length。
+                // 返回 nil 表示没有可写字节，调用方应直接返回 0，避免空写入仍触发 seek 或扩展文件。
+                func normalizedWriteRange(_ chunkData: Data, isArrayBuffer: Bool? = false) -> Range<Int>? {
                     let isArrayBuffer = isArrayBuffer ?? false
                     
                     // offset参数：ArrayBuffer 中的索引，只在 data 类型是 ArrayBuffer 时有效
-                    var offsetTemp = 0
-                    if let offset = offset, isArrayBuffer {
-                        offsetTemp = Int(truncating: offset)
+                    let startIndex = isArrayBuffer ? Int(truncating: offset ?? 0) : 0
+                    if startIndex >= chunkData.count {
+                        return nil
                     }
                     
                     // length参数：写入的字节数，只在 data 类型是 ArrayBuffer 时有效
-                    var totalSize = chunkData.count - offsetTemp
+                    let endIndex: Int
                     if let length = length, isArrayBuffer {
-                        totalSize = Int(truncating: length + (offset ?? 0))
-                        
-                        //截取的offset+截取的length > 写入数据arrryBuffer的总长度， 则取当前写入数据总长度，否则会crash
-                        if totalSize > chunkData.count {
-                            totalSize = chunkData.count
+                        let writeLength = Int(truncating: length)
+                        let remainingLength = chunkData.count - startIndex
+                        endIndex = writeLength >= remainingLength ? chunkData.count : startIndex + writeLength
+                    } else {
+                        endIndex = chunkData.count
+                    }
+                    
+                    if startIndex >= endIndex {
+                        return nil
+                    }
+                    
+                    return startIndex..<endIndex
+                }
+                
+                // 根据 position 定位写入位置：未传 position 时追加到文件末尾。
+                // 当 position 超过文件末尾时显式分片补 0，保证 String 和 ArrayBuffer 的空洞填充语义一致。
+                func seekAndFillGapIfNeeded() {
+                    guard let position = position else {
+                        fileHandle.seekToEndOfFile()
+                        return
+                    }
+                    
+                    let targetPosition = position.uint64Value
+                    let currentFileSize = fileHandle.seekToEndOfFile()
+                    
+                    // position 超过当前文件末尾时，两种 data 类型都显式补 0；分片补零避免大 position 一次性分配过多内存。
+                    if targetPosition > currentFileSize {
+                        var remainingEmptyBytes = targetPosition - currentFileSize
+                        let emptyChunkSize = min(chunkSize, 1024 * 256)
+                        let emptyChunk = Data(repeating: 0, count: emptyChunkSize)
+                        while remainingEmptyBytes > 0 {
+                            let writeLength = min(UInt64(emptyChunkSize), remainingEmptyBytes)
+                            fileHandle.write(emptyChunk.prefix(Int(writeLength)))
+                            remainingEmptyBytes -= writeLength
                         }
                     }
                     
-                    while offsetTemp < totalSize {
-                        let length = min(chunkSize, totalSize - offsetTemp)
-                        let chunk = chunkData.subdata(in: offsetTemp..<(offsetTemp + length))
+                    fileHandle.seek(toFileOffset: targetPosition)
+                }
+                
+                // 分片写入逻辑
+                func writeChunks(_ chunkData: Data, in range: Range<Int>) -> UInt64 {
+                    var offsetTemp = range.lowerBound
+                    let endIndex = range.upperBound
+                    var bytesWritten: UInt64 = 0
+                    
+                    while offsetTemp < endIndex {
+                        let writeLength = min(chunkSize, endIndex - offsetTemp)
+                        let chunk = chunkData.subdata(in: offsetTemp..<(offsetTemp + writeLength))
                         fileHandle.write(chunk)
-                        offsetTemp += length
+                        bytesWritten += UInt64(writeLength)
+                        offsetTemp += writeLength
                     }
-                    
-                    let newSize = fileHandle.seekToEndOfFile()
-                    
-                    return newSize - originalSize
+
+                    return bytesWritten
                 }
                 
                 // 处理不同数据类型
                 if let buffer = data as? ArrayBuffer {
                     let bufferData = buffer.toData()
-                    if let position = position {
-                        // 获取文件当前末尾的位置
-                        let currentFileSize = fileHandle.seekToEndOfFile()
-                        
-                        // 如果目标位置大于文件当前大小，填充空字节
-                        if position > currentFileSize {
-                            let emptyBytes = Int(truncating: position - currentFileSize)
-                            
-                            // 在当前位置之前填充空字节（例如填充零字节）
-                            let emptyData = Data(repeating: 0, count: emptyBytes)
-                            fileHandle.write(emptyData)
-                        }
-                        
-                        // 将文件指针设置到目标位置
-                        fileHandle.seek(toFileOffset: position.toUInt64())
+                    guard let writeRange = normalizedWriteRange(bufferData, isArrayBuffer: true) else {
+                        completionHandler?(0, nil)
+                        return
                     }
-                    let bytesWritten = writeChunks(bufferData, isArrayBuffer: true)
+                    seekAndFillGapIfNeeded()
+                    let bytesWritten = writeChunks(bufferData, in: writeRange)
                     completionHandler?(Int32(bytesWritten), nil)
                 } else if let string = data as? String {
                     guard let encodedData = encodeData(string, encoding: encoding) else {
                         completionHandler?(nil, .encodingFailed)
                         return
                     }
-                    if let position = position {
-                        fileHandle.seek(toFileOffset: position.toUInt64())
+                    guard let writeRange = normalizedWriteRange(encodedData) else {
+                        completionHandler?(0, nil)
+                        return
                     }
-                    let bytesWritten = writeChunks(encodedData)
+                    seekAndFillGapIfNeeded()
+                    let bytesWritten = writeChunks(encodedData, in: writeRange)
                     completionHandler?(Int32(bytesWritten), nil)
                 } else {
                     completionHandler?(nil, .fileNotFound)

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="uts" setup>
-  import { FORM_KEY, RADIO_GROUP_KEY } from '../common.uts'
+  import { FORM_KEY, RADIO_GROUP_KEY, toStringOrEmpty } from '../common.uts'
   import { UniRadioGroupElement } from './global.uts'
   import { FormContext } from '../types.uts'
 
@@ -44,8 +44,14 @@
      * 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -70,7 +76,7 @@
   const initialValue = ref<string | null>(null)
 
   function setSelectedValue(val : string | null) {
-    if (selectedValue.value === val) {
+    if (selectedValue.value == val) {
       return
     }
     selectedValue.value = val
@@ -97,10 +103,10 @@
     if (formCtx && props.name) {
       formCtx.registerField({
         name: props.name,
-        getValue: () => selectedValue.value,
+        getValue: () => toStringOrEmpty(selectedValue.value),
         reset: () => {
           selectedValue.value = initialValue.value
-          emit('change', new UniRadioGroupChangeEvent(initialValue.value))
+          emit('change', new UniRadioGroupChangeEvent(toStringOrEmpty(initialValue.value)))
         }
       })
     }

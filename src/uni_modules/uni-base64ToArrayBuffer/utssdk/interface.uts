@@ -9,20 +9,17 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
      *      "unixVer": "4.51"
      *    },
      *    "ios": {
-     *      "osVer": "5.0",
      *      "uniVer": "4.61",
      *      "unixVer": "4.61"
      *    },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "web": {

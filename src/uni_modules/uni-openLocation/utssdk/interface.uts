@@ -2,42 +2,39 @@
  * 错误码
  */
 export type OpenLocationErrorCode =
-/**
- * 框架内部错误
- * @uniPlatform {
- *    "app": {
- *      "android": {
- *        "osVer": "5.0",
- *        "uniVer": "√",
- *        "unixVer": "4.41"
- *      },
- *      "ios": {
- *        "osVer": "12.0",
- *        "uniVer": "√",
- *        "unixVer": "4.41"
- *   	  },
- *      "harmony": {
- *        "osVer": "3.0",
- *        "uniVer": "4.23",
- *        "unixVer": "4.61"
- *      }
- *    },
- *    "web": {
- *        "uniVer": "√",
- *        "unixVer": "4.0"
- *    },
- *    "mp": {
- *      "weixin": {
- *         "uniVer": "x",
- *         "unixVer": "x"
- *      }
- *    }
- * }
- */
-4;
+  /**
+   * 框架内部错误
+   * @uniPlatform {
+   *    "app": {
+   *      "android": {
+   *        "uniVer": "√",
+   *        "unixVer": "5.11"
+   *      },
+   *      "ios": {
+   *        "uniVer": "√",
+   *        "unixVer": "5.11"
+   *   	  },
+   *      "harmony": {
+   *        "uniVer": "4.23",
+   *        "unixVer": "5.11"
+   *      }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    },
+   *    "mp": {
+   *      "weixin": {
+   *         "uniVer": "x",
+   *         "unixVer": "x"
+   *      }
+   *    }
+   * }
+   */
+  4;
 
 export interface OpenLocationSuccess {
-  errMsg: string
+  errMsg : string
 }
 
 type OpenLocationSuccessCallback = (result : OpenLocationSuccess) => void
@@ -59,19 +56,16 @@ export type OpenLocationOptions = {
    * @uniPlatform {
    *    "app": {
    *      "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *      },
    *      "ios": {
-   *        "osVer": "12.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *   	  },
    *      "harmony": {
-   *        "osVer": "3.0",
    *        "uniVer": "4.23",
-   *        "unixVer": "4.61"
+   *        "unixVer": "5.11"
    *      }
    *    },
    *    "web": {
@@ -81,7 +75,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *         "uniVer": "√",
-   *         "unixVer": "4.41"
+   *         "unixVer": "5.11"
    *      }
    *    }
    * }
@@ -92,19 +86,16 @@ export type OpenLocationOptions = {
    * @uniPlatform {
    *    "app": {
    *      "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *      },
    *      "ios": {
-   *        "osVer": "12.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *   	  },
    *      "harmony": {
-   *        "osVer": "3.0",
    *        "uniVer": "4.23",
-   *        "unixVer": "4.61"
+   *        "unixVer": "5.11"
    *      }
    *    },
    *    "web": {
@@ -114,7 +105,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *         "uniVer": "√",
-   *         "unixVer": "4.41"
+   *         "unixVer": "5.11"
    *      }
    *    }
    * }
@@ -125,19 +116,16 @@ export type OpenLocationOptions = {
    * @uniPlatform {
    *    "app": {
    *      "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *      },
    *      "ios": {
-   *        "osVer": "12.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *   	  },
    *      "harmony": {
-   *        "osVer": "3.0",
    *        "uniVer": "4.23",
-   *        "unixVer": "4.61"
+   *        "unixVer": "5.11"
    *      }
    *    },
    *    "web": {
@@ -147,7 +135,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *         "uniVer": "√",
-   *         "unixVer": "4.41"
+   *         "unixVer": "5.11"
    *      }
    *    }
    * }
@@ -158,19 +146,16 @@ export type OpenLocationOptions = {
    * @uniPlatform {
    *    "app": {
    *      "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *      },
    *      "ios": {
-   *        "osVer": "12.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *   	  },
    *      "harmony": {
-   *        "osVer": "3.0",
    *        "uniVer": "4.23",
-   *        "unixVer": "4.61"
+   *        "unixVer": "5.11"
    *      }
    *    },
    *    "web": {
@@ -180,7 +165,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *         "uniVer": "√",
-   *         "unixVer": "4.41"
+   *         "unixVer": "5.11"
    *      }
    *    }
    * }
@@ -191,19 +176,16 @@ export type OpenLocationOptions = {
    * @uniPlatform {
    *    "app": {
    *      "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *      },
    *      "ios": {
-   *        "osVer": "12.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *   	  },
    *      "harmony": {
-   *        "osVer": "3.0",
    *        "uniVer": "4.23",
-   *        "unixVer": "4.61"
+   *        "unixVer": "5.11"
    *      }
    *    },
    *    "web": {
@@ -213,7 +195,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *         "uniVer": "√",
-   *         "unixVer": "4.41"
+   *         "unixVer": "5.11"
    *      }
    *    }
    * }
@@ -224,19 +206,16 @@ export type OpenLocationOptions = {
    * @uniPlatform {
    *    "app": {
    *      "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *      },
    *      "ios": {
-   *        "osVer": "12.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *   	  },
    *      "harmony": {
-   *        "osVer": "3.0",
    *        "uniVer": "4.23",
-   *        "unixVer": "4.61"
+   *        "unixVer": "5.11"
    *      }
    *    },
    *    "web": {
@@ -246,7 +225,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *         "uniVer": "√",
-   *         "unixVer": "4.41"
+   *         "unixVer": "5.11"
    *      }
    *    }
    * }
@@ -257,19 +236,16 @@ export type OpenLocationOptions = {
    * @uniPlatform {
    *    "app": {
    *      "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *      },
    *      "ios": {
-   *        "osVer": "12.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *   	  },
    *      "harmony": {
-   *        "osVer": "3.0",
    *        "uniVer": "4.23",
-   *        "unixVer": "4.61"
+   *        "unixVer": "5.11"
    *      }
    *    },
    *    "web": {
@@ -279,7 +255,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *         "uniVer": "√",
-   *         "unixVer": "4.41"
+   *         "unixVer": "5.11"
    *      }
    *    }
    * }
@@ -290,19 +266,16 @@ export type OpenLocationOptions = {
    * @uniPlatform {
    *    "app": {
    *      "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *      },
    *      "ios": {
-   *        "osVer": "12.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *   	  },
    *      "harmony": {
-   *        "osVer": "3.0",
    *        "uniVer": "4.23",
-   *        "unixVer": "4.61"
+   *        "unixVer": "5.11"
    *      }
    *    },
    *    "web": {
@@ -312,7 +285,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *         "uniVer": "√",
-   *         "unixVer": "4.41"
+   *         "unixVer": "5.11"
    *      }
    *    }
    * }
@@ -328,19 +301,16 @@ export type OpenLocationOptions = {
  * @uniPlatform {
  *    "app": {
  *      "android": {
- *        "osVer": "5.0",
  *        "uniVer": "√",
- *        "unixVer": "4.41"
+ *        "unixVer": "5.11"
  *      },
  *      "ios": {
- *        "osVer": "12.0",
  *        "uniVer": "√",
- *        "unixVer": "4.41"
+ *        "unixVer": "5.11"
  *   	  },
  *      "harmony": {
- *        "osVer": "3.0",
  *        "uniVer": "4.23",
- *        "unixVer": "4.61"
+ *        "unixVer": "5.11"
  *      }
  *    },
  *    "web": {
@@ -350,7 +320,7 @@ export type OpenLocationOptions = {
  *    "mp": {
  *      "weixin": {
  *         "uniVer": "√",
- *         "unixVer": "4.41"
+ *         "unixVer": "5.11"
  *      }
  *    }
  * }
@@ -380,19 +350,16 @@ export interface Uni {
    * @uniPlatform {
    *    "app": {
    *      "android": {
-   *        "osVer": "5.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *      },
    *      "ios": {
-   *        "osVer": "12.0",
    *        "uniVer": "√",
-   *        "unixVer": "4.41"
+   *        "unixVer": "5.11"
    *   	  },
    *      "harmony": {
-   *        "osVer": "3.0",
    *        "uniVer": "4.23",
-   *        "unixVer": "4.61"
+   *        "unixVer": "5.11"
    *      }
    *    },
    *    "web": {
@@ -402,7 +369,7 @@ export interface Uni {
    *    "mp": {
    *      "weixin": {
    *         "uniVer": "√",
-   *         "unixVer": "4.41"
+   *         "unixVer": "5.11"
    *      }
    *    }
    * }
@@ -412,7 +379,7 @@ export interface Uni {
 
 export class OpenLocationSuccessImpl implements OpenLocationSuccess {
   errMsg : string
-  constructor(errMsg : string = 'chooseLocation:ok') {
+  constructor(errMsg : string = 'openLocation:ok') {
     this.errMsg = errMsg
   }
 }

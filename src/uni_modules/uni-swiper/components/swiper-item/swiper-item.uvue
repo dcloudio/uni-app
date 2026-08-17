@@ -12,7 +12,6 @@
 </template>
 
 <script setup lang="uts">
-// #ifndef APP-IOS
 import {
 	UniSwiperItemElement,
 } from "./index.uts";
@@ -23,7 +22,6 @@ defineOptions({
 		class: UniSwiperItemElement
 	}
 })
-// #endif
 
 const swiperItem = ref(null)
 
@@ -31,8 +29,14 @@ type UniSwiperItemProps = {
 	/**
 	* @uniPlatform {
 		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
 			"harmony": {
-				"unixvVer": "5.0"
+				"unixVaporVer": "5.0"
 			}
 		}
 	}
@@ -53,7 +57,10 @@ onMounted(() => {
 	handleMounted()
 })
 onUnmounted(() => {
-	handleUnMounted()
+	// TODO 触发时机过早，因调整框架生命周期影响范围较大，当前版本暂时在组件内部通过nextTick规避，待框架修复后移除
+	nextTick(() => {
+		handleUnMounted()
+	})
 })
 </script>
 

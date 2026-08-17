@@ -33,14 +33,13 @@ export const switchTab = defineAsyncApi<SwitchTabOptions, SwitchTabSuccess>(
         const pages = getCurrentPages()
         setTimeout(() => {
             changeTabBarIndex(selected, path, query)
-            for (let index = pages.length - 1; index >= 0; index--) {
+            for (let index = 0; index < pages.length; index++) {
                 const page = pages[index]
-                if (isTabPage(page.vm!)) {
-                    break
+                if (!isTabPage(page.vm!)) {
+                    page.vm!.$close(
+                        new Map<string, any | null>([[ANIMATION_TYPE, 'none']]),
+                    )
                 }
-                page.vm!.$close(
-                    new Map<string, any | null>([[ANIMATION_TYPE, 'none']]),
-                )
             }
             res.resolve(null)
         }, 0)

@@ -1,0 +1,310 @@
+<template>
+    <view @click="handleClick">
+        <slot></slot>
+    </view>
+</template>
+
+<script setup lang="uts">
+    import { UniPickerElement, UniPickerChangeEvent, UniPickerColumnChangeEvent, UniPickerCancelEvent } from './global.uts'
+
+    const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
+    const baseEventName = `uni_picker_${uuid}`
+    const readyEventName = `${baseEventName}_ready`
+    const optionsEventName = `${baseEventName}_options`
+    const selectorChangeEventName = `${baseEventName}_selector_change`
+    const cancelEventName = `${baseEventName}_cancel_change`
+    const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`
+    const timeChangeEventName = `${baseEventName}_time_change`
+    const columnChangeEventName = `${baseEventName}_column_change`
+
+
+    type Mode = 'selector' | 'multiSelector' | 'time' | 'date'
+
+    type Fields = 'year' | 'month' | 'day'
+
+    type Value = number | string | number[]
+
+    defineOptions({
+        name: 'picker',
+        rootElement: {
+            class: UniPickerElement
+        }
+    })
+
+    const props = defineProps({
+        disabled: {
+            type: Boolean,
+            default: false
+        },
+        mode: {
+            type: String as PropType<Mode>,
+            default: 'selector'
+        },
+        range: {
+            type: Array as PropType<string[]>,
+            default: () => [] as string[]
+        },
+        rangeKey: {
+            type: String,
+            default: ''
+        },
+        value: {
+            type: [Number, String, Array] as PropType<Value>,
+            default: null
+        },
+        start: {
+            type: String,
+            default: ''
+        },
+        end: {
+            type: String,
+            default: ''
+        },
+        fields: {
+            type: String as PropType<Fields>,
+            default: 'day'
+        },
+        name: {
+            type: String,
+            default: ''
+        }
+    })
+
+    const emit = defineEmits<{
+        change : UniPickerChangeEvent
+        columnchange : UniPickerColumnChangeEvent
+        cancel : UniPickerCancelEvent
+    }>()
+
+    const innerValue = ref(null as any | null)
+    const initialValue = ref(null as any | null)
+    const isOpening = ref(false)
+    const OPEN_LOCK_DURATION = 300
+    const DEFAULT_START_YEAR = 1970
+    const DEFAULT_END_YEAR = 2099
+
+    watch(() : any | null => {
+        return props.value
+    }, (newValue : any | null) => {
+        innerValue.value = newValue
+    }, { deep: true })
+
+    function parseTime(date : Date) : string[] {
+        // 格式化为YY-MM-DD（两位数补零）
+        const year = (date.getFullYear()).toString().padStart(2, '0'); // 取年份后两位
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');    // 月份范围1-12
+        const day = date.getDate().toString().padStart(2, '0');
+        return [year, month, day]
+    }
+
+    function formatTime(time : string[]) {
+        const formattedHours = time[0].padStart(2, '0');
+        const formattedMinutes = time[1].padStart(2, '0');
+        return [formattedHours, formattedMinutes]
+    }
+
+    function getCurrentDateValue() {
+        const today = parseTime(new Date())
+        let date = props.value
+        let date_data : string[] = []
+        if (date != null && typeof date == 'string' && date != '') {
+            let date_val = date.split('-') as string[]
+
+            while (date_val.length < 3) {
+                date_val.push('1');
+            }
+            const year = parseInt(date_val[0]);
+            const startYear = props.start != null ? parseInt(props.start.split('-')[0]) : DEFAULT_START_YEAR;
+            const endYear = props.end != null ? parseInt(props.end.split('-')[0]) : DEFAULT_END_YEAR;
+
+            if (year < startYear) {
+                date_val[0] = startYear.toString();
+            } else if (year > endYear) {
+                date_val[0] = endYear.toString();
+            }
+
+            try {
+                const year = parseInt(date_val[0])
+                const month = parseInt(date_val[1])
+                const day = parseInt(date_val[2])
+                date_data = parseTime(new Date(year, month - 1, day))
+            } catch (_) {
+                date_data = today
+            }
+
+        } else {
+            date_data = today
+        }
+        return date_data
+    }
+
+    function getCurrentTimeValue() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        // 格式化为 ['02', '10']
+        const timeArray = [hours, minutes];
+        let time = props.value
+        let val : string[]
+        if (time != null && typeof time == 'string') {
+            let timeVal = time.split(':')
+            if (timeVal.length < 2) {
+                val = timeArray
+            } else {
+                val = formatTime(timeVal)
+            }
+        } else {
+            val = timeArray
+        }
+        return val
+    }
+
+    function parseStartAndEndTime(type : 'start' | 'end') {
+        let time = type == 'start' ? props.start : props.end
+        let defaultVal = ['00', '00']
+        if (type == 'end') {
+            defaultVal = ['23', '59']
+        }
+        let val : string[]
+        if (time != null && typeof time == 'string') {
+            let timeVal = time.split(':')
+            if (timeVal.length < 2) {
+                val = defaultVal
+            } else {
+                val = formatTime(timeVal)
+            }
+        } else {
+            return defaultVal
+        }
+        return val
+    }
+
+    function parseStartAndEndDate(type : 'start' | 'end') : string[] {
+        const dateStr = type == 'start' ? props.start : props.end
+        // 默认值设置
+        const defaultDate = type == 'start'
+            ? [DEFAULT_START_YEAR.toString(), '01', '01']  // 起始默认日期
+            : [DEFAULT_END_YEAR.toString(), '12', '31']; // 结束默认日期
+
+        // 空值直接返回默认
+        if (dateStr == null || dateStr.length == 0) return defaultDate;
+
+        // 分割日期字符串
+        const parts = dateStr.split('-');
+        if (parts.length != 3) return defaultDate;
+
+        // 格式化各部分（补零 + 截取）
+        const formatPart = (value : string, length : number) => {
+            return value.padStart(length, '0').slice(0, length);
+        };
+
+        const year = formatPart(parts[0], 4);  // 年份补足4位
+        const month = formatPart(parts[1], 2); // 月份补足2位
+        const day = formatPart(parts[2], 2);   // 日期补足2位
+
+        return [year, month, day];
+    }
+
+    function handleClick() {
+        if (props.disabled) {
+            return
+        }
+
+        // 防止重复打开
+        if (isOpening.value) {
+            return
+        }
+
+        isOpening.value = true
+        uni.openDialogPage({
+            url: `/uni_modules/uni-picker/pages/picker/picker?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&cancelEventName=${cancelEventName}&selectorChangeEventName=${selectorChangeEventName}&multiSelectorChangeEventName=${multiSelectorChangeEventName}&timeChangeEventName=${timeChangeEventName}&columnChangeEventName=${columnChangeEventName}`,
+            success() {
+                setTimeout(() => {
+                    isOpening.value = false
+                }, OPEN_LOCK_DURATION)
+            },
+            fail() {
+                isOpening.value = false
+                uni.$off(readyEventName)
+                uni.$off(optionsEventName)
+            }
+        })
+    }
+
+    function sendOptions(eventName : string) {
+        const baseParams = {
+            mode: props.mode,
+        }
+        switch (props.mode) {
+            case 'selector':
+                baseParams.range = props.range
+                baseParams.rangeKey = props.rangeKey
+                baseParams.selectorValue = props.value != null ? props.value : 0
+                break
+            case 'multiSelector':
+                baseParams.range = props.range
+                baseParams.rangeKey = props.rangeKey
+                baseParams.multiSelectorValue = props.value != null ? props.value : [] as number[]
+                break
+            case 'time':
+                baseParams.timeValue = getCurrentTimeValue()
+                baseParams.start = parseStartAndEndTime('start')
+                baseParams.end = parseStartAndEndTime('end')
+                break
+            case 'date':
+                baseParams.dateValue = getCurrentDateValue()
+                baseParams.fields = props.fields
+                baseParams.start = parseStartAndEndDate('start')
+                baseParams.end = parseStartAndEndDate('end')
+        }
+        uni.$emit(eventName, baseParams)
+    }
+
+
+    onMounted(() => {
+        innerValue.value = props.value
+        initialValue.value = props.value
+
+        // 监听页面加载
+        uni.$on(readyEventName, () => {
+            sendOptions(optionsEventName)
+        })
+
+        // 监听取消按钮
+        uni.$on(cancelEventName, () => {
+            emit('cancel', new UniPickerCancelEvent())
+        })
+
+        // 单列change触发
+        uni.$on(selectorChangeEventName, (value : number) => {
+            innerValue.value = value
+            emit('change', new UniPickerChangeEvent(value))
+        })
+
+        // 多列change触发
+        uni.$on(multiSelectorChangeEventName, (value : number[]) => {
+            innerValue.value = value
+            emit('change', new UniPickerChangeEvent(value))
+        })
+
+        // 日期时间change触发
+        uni.$on(timeChangeEventName, (value : string) => {
+            innerValue.value = value
+            emit('change', new UniPickerChangeEvent(value))
+        })
+
+        // 列滚动columnchange 触发
+        uni.$on(columnChangeEventName, (column : number, value : number) => {
+            emit('columnchange', new UniPickerColumnChangeEvent(column, value))
+        })
+    })
+
+    onUnmounted(() => {
+        uni.$off(readyEventName)
+        uni.$off(selectorChangeEventName)
+        uni.$off(multiSelectorChangeEventName)
+        uni.$off(timeChangeEventName)
+        uni.$off(columnChangeEventName)
+        uni.$off(cancelEventName)
+    })
+</script>

@@ -7,20 +7,18 @@ export interface Uni {
      * @uniPlatform {
        *  "app": {
        *    "android": {
-       *      "osVer": "5.0",
        *      "uniVer": "√",
        *      "unixVer": "4.63"
        *    },
        *    "ios": {
-       *      "osVer": "12.0",
        *      "uniVer": "√",
        *      "unixVer": "4.63",
        *      "unixUtsPlugin": "4.63"
        *    },
        *    "harmony": {
-       *      "osVer": "3.0",
        *      "uniVer": "4.23",
-       *      "unixVer": "4.61"
+       *      "unixVer": "4.61",
+			 *      "unixVaporVer": "5.0",
        *      "unixUtsPlugin": "4.61"
        *    }
        *  },
@@ -104,20 +102,18 @@ export type MakePhoneCallOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
      *      "unixVer": "4.63"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.63",
      *      "unixUtsPlugin": "4.63"
      *    },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
+		 *      "unixVaporVer": "5.0",
      *      "unixUtsPlugin": "4.61"
      *    }
      *  },
@@ -175,20 +171,18 @@ export type MakePhoneCallOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.63"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.63",
 	 *      "unixUtsPlugin": "4.63"
 	 *    },
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.23",
 	 *      "unixVer": "4.61",
+	 *      "unixVaporVer": "5.0",
 	 *      "unixUtsPlugin": "4.61"
 	 *    }
 	 *  },
@@ -246,20 +240,18 @@ export type MakePhoneCallOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.63"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.63",
 	 *      "unixUtsPlugin": "4.63"
 	 *    },
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.23",
 	 *      "unixVer": "4.61",
+	 *      "unixVaporVer": "5.0",
 	 *      "unixUtsPlugin": "4.61"
 	 *    }
 	 *  },
@@ -317,20 +309,18 @@ export type MakePhoneCallOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.63"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.63",
 	 *      "unixUtsPlugin": "4.63"
 	 *    },
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.23",
-	 *      "unixVer": "4.61",
+	 *      "unixVer": "4.61",,
+	 *      "unixVaporVer": "5.0",
 	 *      "unixUtsPlugin": "4.61"
 	 *    }
 	 *  },

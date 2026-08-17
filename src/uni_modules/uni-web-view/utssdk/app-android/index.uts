@@ -1,27 +1,35 @@
 import View from "android.view.View";
 import Uri from "android.net.Uri";
+import Intent from "android.content.Intent";
 import WebView from "android.webkit.WebView";
+import WeakReference from "java.lang.ref.WeakReference";
+// #ifndef VUE3-VAPOR
 import PageNode from "io.dcloud.uniapp.dom.node.PageNode";
 import INodeData from "io.dcloud.uniapp.interfaces.INodeData";
+// #endif
 
 import { CreateWebViewContext, CreateWebviewContext, WebViewContext, WebviewContext, UniWebViewContextLoadDataOptions, UniWebViewElementLoadDataOptions, WebViewStyles, WebViewProgressStyles } from '../interface.uts';
 export { WebViewStyles }
 
-export class UniWebViewElement extends UniViewElementImpl {
-
-	private nativeWebView : NativeWebView | null = null;
-
+export class UniWebViewElement
+// #ifndef VUE3-VAPOR
+extends UniViewElementImpl {
 	constructor(data : INodeData, pageNode : PageNode) {
 		super(data, pageNode);
 	}
-
-	override get tagName() : string {
-		return "WEB-VIEW";
+// #endif
+// #ifdef VUE3-VAPOR
+extends UniNativeViewElementImpl {
+	constructor() {
+		super()
 	}
+// #endif
 
-	override get nodeName() : string {
-		return this.tagName;
-	}
+	private nativeWebView : NativeWebView | null = null;
+
+	override tagName : string = "WEB-VIEW";
+
+	override nodeName : string = "WEB-VIEW";
 
 	setNativeWebView(nativeWebView : NativeWebView | null) {
 		this.nativeWebView = nativeWebView;
@@ -55,27 +63,30 @@ export class UniWebViewElement extends UniViewElementImpl {
 		this.nativeWebView?.loadData(options);
 	}
 
-	enableWholeDraw() {
+	static enableWholeDraw() {
 		WebView.enableSlowWholeDocumentDraw();
 	}
 
 	override getAndroidView<T extends View>() : T | null {
-		const nativeElement = this.firstChild as UniNativeViewElement | null;
-		if (nativeElement == null) {
-			return null;
-		} else {
-			return this.nativeWebView?.webViewImpl?.getAndroidWebView() as T | null;
-		}
+		return this.nativeWebView?.webViewImpl?.getAndroidWebView() as T | null;
 	}
 }
 
 export class NativeWebView {
 	webViewImpl : NativeWebViewImpl | null = null;
+	private activityCallback : WebViewActivityCallback | null = null;
 
 	constructor(element : UniNativeViewElement) {
 		this.webViewImpl = new NativeWebViewImpl(element.getAndroidActivity()!);
+		this.activityCallback = new WebViewActivityCallback(this.webViewImpl!);
+		UTSAndroid.onActivityCallback(this.activityCallback!);
 		element.bindAndroidView(this.webViewImpl!);
+		// #ifndef VUE3-VAPOR
 		(element.parentElement as UniWebViewElement | null)?.setNativeWebView(this);
+		// #endif
+		// #ifdef VUE3-VAPOR
+		(element as UniWebViewElement | null)?.setNativeWebView(this);
+		// #endif
         let bodyElement : UniElement = element;
         while (bodyElement.parentElement != null && bodyElement.tagName != 'BODY') {
             bodyElement = bodyElement.parentElement;
@@ -98,7 +109,7 @@ export class NativeWebView {
 			override onLoad(url : string) {
 				const event = new UniNativeViewEvent("load", { url, src: url });
 				element.dispatchEvent("load", event);
-
+	
 				const _event = new UniNativeViewEvent("loaded", { url, src: url });
 				element.dispatchEvent("loaded", _event);
 			}
@@ -116,6 +127,7 @@ export class NativeWebView {
 
 					case NativeWebViewImpl.POST_MESSAGE_TO_SERVICE:
 						const service = JSON.parseObject(params);
+						// #ifndef VUE3-VAPOR
 						const name = service?.getString('args.data.name');
 						const url = service?.getString('args.data.arg.url') ?? '';
 						switch (name) {
@@ -138,6 +150,11 @@ export class NativeWebView {
 							default:
 								break;
 						}
+						// #endif
+						// #ifdef VUE3-VAPOR
+						const _event = new UniNativeViewEvent("onWebViewServiceMessage", { data: service });
+						element.dispatchEvent("onWebViewServiceMessage", _event);
+						// #endif
 						break;
 				}
 			}
@@ -233,44 +250,67 @@ export class NativeWebView {
 	}
 
 	destroy() {
+		if (this.activityCallback != null) {
+			UTSAndroid.offActivityCallback(this.activityCallback!);
+      		this.activityCallback!.destroy();
+			this.activityCallback = null;
+		}
 		this.webViewImpl?.destroy();
+    	this.webViewImpl = null;
+	}
+}
+
+class WebViewActivityCallback extends UniActivityCallback {
+	private webview : NativeWebViewImpl | null = null;
+
+	constructor(webview : NativeWebViewImpl) {
+		super();
+		this.webview = webview;
+	}
+
+	override onActivityResult(params : UniActivityParams, requestCode : Int, resultCode : Int, data : Intent | null) {
+		this.webview?.handleOnActivityResult(requestCode, resultCode, data);
+	}
+  
+	destroy() {
+		this.webview = null;
 	}
 }
 
 class WebViewContextImpl implements WebViewContext {
 
-	private webviewElement ?: UniWebViewElement | null = null;
+	private webviewElementRef : WeakReference<UniWebViewElement> | null = null;
 
 	constructor(webviewElement : UniWebViewElement) {
-		this.webviewElement = webviewElement;
+		this.webviewElementRef = new WeakReference(webviewElement);
 	}
 
 	back() {
-		this.webviewElement?.back();
+		this.webviewElementRef?.get()?.back();
 	}
 
 	forward() {
-		this.webviewElement?.forward();
+		this.webviewElementRef?.get()?.forward();
 	}
 
 	reload() {
-		this.webviewElement?.reload();
+		this.webviewElementRef?.get()?.reload();
 	}
 
 	stop() {
-		this.webviewElement?.stop();
+		this.webviewElementRef?.get()?.stop();
 	}
 
 	evalJS(js : string) {
-		this.webviewElement?.evalJS(js);
+		this.webviewElementRef?.get()?.evalJS(js);
 	}
 
 	getContentHeight() : number {
-		return this.webviewElement?.getContentHeight() ?? 0;
+		return this.webviewElementRef?.get()?.getContentHeight() ?? 0;
 	}
 
 	loadData(options : UniWebViewContextLoadDataOptions) {
-		this.webviewElement?.loadData({
+		this.webviewElementRef?.get()?.loadData({
 			data: options.data,
 			baseURL: options.baseURL,
 			mimeType: options.mimeType,
@@ -285,17 +325,17 @@ export const createWebViewContext : CreateWebViewContext = function (webviewId :
 		const pages = getCurrentPages();
 		if (pages.length > 0) {
 			const currentPage = pages[pages.length - 1];
-			webviewElement = currentPage.vm!.$el?.parentNode?.querySelector('#' + webviewId);
+			webviewElement = currentPage.querySelector('#' + webviewId);
 			if (webviewElement == null) {
 				const dialogPages = currentPage.getDialogPages();
 				if (dialogPages.length > 0) {
 					const currentPageDialogPage = dialogPages[dialogPages.length - 1];
-					webviewElement = currentPageDialogPage.vm!.$el?.parentNode?.querySelector('#' + webviewId);
+					webviewElement = currentPageDialogPage.querySelector('#' + webviewId);
 				}
 			}
 		}
 	} else {
-		webviewElement = component.$el?.parentNode?.querySelector('#' + webviewId);
+		webviewElement = component.$el?.parentElement?.querySelector('#' + webviewId);
 	}
 	if (webviewElement == null) {
 		return null;
@@ -310,17 +350,17 @@ export const createWebviewContext : CreateWebviewContext = function (webviewId :
 		const pages = getCurrentPages();
 		if (pages.length > 0) {
 			const currentPage = pages[pages.length - 1];
-			webviewElement = currentPage.vm!.$el?.parentNode?.querySelector('#' + webviewId);
+			webviewElement = currentPage.querySelector('#' + webviewId);
 			if (webviewElement == null) {
 				const dialogPages = currentPage.getDialogPages();
 				if (dialogPages.length > 0) {
 					const currentPageDialogPage = dialogPages[dialogPages.length - 1];
-					webviewElement = currentPageDialogPage.vm!.$el?.parentNode?.querySelector('#' + webviewId);
+					webviewElement = currentPageDialogPage.querySelector('#' + webviewId);
 				}
 			}
 		}
 	} else {
-		webviewElement = component.$el?.parentNode?.querySelector('#' + webviewId);
+		webviewElement = component.$el?.parentElement?.querySelector('#' + webviewId);
 	}
 	if (webviewElement == null) {
 		return null;

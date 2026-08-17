@@ -1,0 +1,123 @@
+import {
+	SetScreenBrightness,
+	SetScreenBrightnessOptions,
+	GetScreenBrightness,
+	GetScreenBrightnessOptions,
+	SetKeepScreenOn,
+	SetKeepScreenOnOptions,
+	SetKeepScreenOnSuccess
+} from '../interface.uts'
+
+type WakeLockSentinel = {
+	released : boolean,
+	release : () => Promise<void>
+}
+
+type WakeLockManager = {
+	request : (type : string) => Promise<WakeLockSentinel>
+}
+
+type NavigatorWithWakeLock = {
+	wakeLock ?: WakeLockManager | null
+}
+
+let currentWakeLock : WakeLockSentinel | null = null
+
+function createFailResult(errMsg : string) : UniError {
+	return new UniError('uni-screenBrightness', 1302, errMsg)
+}
+
+function getWakeLockManager() : WakeLockManager | null {
+	const currentNavigator = navigator as NavigatorWithWakeLock
+	if (currentNavigator.wakeLock != null) {
+		return currentNavigator.wakeLock!
+	}
+	return null
+}
+
+export const setScreenBrightness : SetScreenBrightness = function (options : SetScreenBrightnessOptions) {
+	const error = createFailResult('setScreenBrightness:fail web does not support screen brightness')
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+export const getScreenBrightness : GetScreenBrightness = function (options : GetScreenBrightnessOptions) {
+	const error = createFailResult('getScreenBrightness:fail web does not support screen brightness')
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+export const setKeepScreenOn : SetKeepScreenOn = function (options : SetKeepScreenOnOptions) {
+	const wakeLockManager = getWakeLockManager()
+	if (wakeLockManager == null) {
+		const error = createFailResult('setKeepScreenOn:fail Screen Wake Lock API is unsupported')
+		options.fail?.(error)
+		options.complete?.(error)
+		return
+	}
+
+	if (options.keepScreenOn) {
+		wakeLockManager.request('screen').then((sentinel : WakeLockSentinel) => {
+			currentWakeLock = sentinel
+			const result : SetKeepScreenOnSuccess = {
+				errMsg: 'setKeepScreenOn:ok'
+			}
+			options.success?.(result)
+			options.complete?.(result)
+		}, (_err : Error | null) => {
+			const error = createFailResult('setKeepScreenOn:fail wake lock request rejected')
+			options.fail?.(error)
+			options.complete?.(error)
+		})
+		return
+	}
+
+	if (currentWakeLock == null || currentWakeLock.released) {
+		const result : SetKeepScreenOnSuccess = {
+			errMsg: 'setKeepScreenOn:ok'
+		}
+		options.success?.(result)
+		options.complete?.(result)
+		return
+	}
+
+	currentWakeLock.release().then(() => {
+		currentWakeLock = null
+		const result : SetKeepScreenOnSuccess = {
+			errMsg: 'setKeepScreenOn:ok'
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}, (_err : Error | null) => {
+		const error = createFailResult('setKeepScreenOn:fail wake lock release rejected')
+		options.fail?.(error)
+		options.complete?.(error)
+	})
+}
+
+export {
+	GetScreenBrightness,
+	GetScreenBrightnessComplete,
+	GetScreenBrightnessCompleteCallback,
+	GetScreenBrightnessFail,
+	GetScreenBrightnessFailCallback,
+	GetScreenBrightnessOptions,
+	GetScreenBrightnessSuccess,
+	GetScreenBrightnessSuccessCallback,
+	SetKeepScreenOn,
+	SetKeepScreenOnComplete,
+	SetKeepScreenOnCompleteCallback,
+	SetKeepScreenOnFail,
+	SetKeepScreenOnFailCallback,
+	SetKeepScreenOnOptions,
+	SetKeepScreenOnSuccess,
+	SetKeepScreenOnSuccessCallback,
+	SetScreenBrightness,
+	SetScreenBrightnessComplete,
+	SetScreenBrightnessCompleteCallback,
+	SetScreenBrightnessFail,
+	SetScreenBrightnessFailCallback,
+	SetScreenBrightnessOptions,
+	SetScreenBrightnessSuccess,
+	SetScreenBrightnessSuccessCallback
+} from '../interface.uts'

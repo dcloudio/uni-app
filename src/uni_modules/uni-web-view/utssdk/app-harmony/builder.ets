@@ -150,13 +150,13 @@ const getSslErrorMessage = (event: SslError): string => {
 
 @Component
 export struct WebView {
-  @Prop webId?: string
+  @Prop webId: string
   @Prop @Watch('setSrc') src: string
   @Prop bounces: boolean = true
   @Prop @Watch('setBarAccess') horizontalScrollBarAccess?: boolean = true
   @Prop @Watch('setBarAccess') verticalScrollBarAccess?: boolean = true
   @Prop disableUserSelectMenu?: boolean = false
-  @Prop attributeUpdater?: object
+  @Prop attributeUpdater: object
   delegate!: webview.WebDownloadDelegate
   controller: webview.WebviewController = new webview.WebviewController()
   onAboutToAppear?: (instance: WebView) => void
@@ -246,8 +246,11 @@ export struct WebView {
           this.controller.setDownloadDelegate(this.delegate)
           const userAgent = `${this.controller.getUserAgent()} ${UTSHarmony.getUserAgent()}`
           this.controller.setCustomUserAgent(userAgent)
-          // TODO 调用 setCustomUserAgent 后必须重新 loadUrl，否则 controller 上方法会失效
-          this.controller.loadUrl(getRealPath(this.src))
+          const src = getRealPath(this.src)
+          if (src) {
+            // TODO 调用 setCustomUserAgent 后必须重新 loadUrl，否则 controller 上方法会失效
+            this.controller.loadUrl(src)
+          }
           this.controller.setWebSchemeHandler('tel', createTelSchemeHandler())
         } catch (error) {
           // TODO: Implement error handling.
@@ -255,33 +258,33 @@ export struct WebView {
         this.onControllerAttached?.()
       })
       .onLoadIntercept((event) => {
-        const context = this.getUIContext().getHostContext()
         let url = event.data.getRequestUrl()
+        const context = this.getUIContext().getHostContext()
         if (context) {
-          let internalHtmlDirs = [
+          let harmonyFilesDir = [
             context.filesDir,
             context.getApplicationContext().filesDir,
             context.resourceDir,
             context.getApplicationContext().resourceDir
-          ].filter(item => !!item).map(item => item + '/uni-app-x/apps')
+          ].filter(item => !!item)
+          let allowingUniversalAccess = harmonyFilesDir.map(item => item + '/uni-app-x/apps').concat(harmonyFilesDir.map(item => item + '/uni-static'))
           try {
             if (deviceInfo.sdkApiVersion < 21) {
-              if (
-                url.startsWith('file:/') &&
-                  (url.includes(context.tempDir) || url.includes(context.getApplicationContext().tempDir) ||
-                  url.includes(context.cacheDir) || url.includes(context.getApplicationContext().cacheDir))
+              if (url.startsWith('file:/') &&
+                (url.includes(context.tempDir) || url.includes(context.getApplicationContext().tempDir) ||
+                url.includes(context.cacheDir) || url.includes(context.getApplicationContext().cacheDir))
               ) {
-                internalHtmlDirs = []
+                allowingUniversalAccess = []
               }
-              this.controller?.setPathAllowingUniversalAccess(internalHtmlDirs)
+              this.controller?.setPathAllowingUniversalAccess(allowingUniversalAccess)
             } else {
-              internalHtmlDirs.push(
+              allowingUniversalAccess.push(
                 context.cacheDir,
                 context.getApplicationContext().cacheDir,
                 context.tempDir,
                 context.getApplicationContext().tempDir
               )
-              this.controller?.setPathAllowingUniversalAccess(internalHtmlDirs)
+              this.controller?.setPathAllowingUniversalAccess(allowingUniversalAccess)
             }
           } catch (error) {
             console.error('[runtime-harmony] Webview setPathAllowingUniversalAccess error: ' + error)

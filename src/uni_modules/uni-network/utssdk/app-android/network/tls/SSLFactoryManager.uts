@@ -14,7 +14,7 @@ class SSLFactoryManager {
 
 	public static getInstance(): SSLFactoryManager {
 		if (this.instance == null) {
-			this.instance = SSLFactoryManager();
+			this.instance = new SSLFactoryManager();
 		}
 		return this.instance!;
 	}

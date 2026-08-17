@@ -1,1 +1,1 @@
-export class UniRadioGroupElement extends UniVueElement {}
+export class UniRadioGroupElement extends UniViewElementImpl {}

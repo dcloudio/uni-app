@@ -26,23 +26,20 @@ export type ScanCodeSupportedTypes =
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "√",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.71"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "√",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.71",
 	        "unixUtsPlugin": "4.71"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixvVer": "5.0"
+	        "unixVaporVer": "5.0"
 	      }
 	    },
 	    "mp": {
@@ -100,23 +97,20 @@ export type ScanCodeSupportedTypes =
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "√",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.71"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "√",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.71",
 	        "unixUtsPlugin": "4.71"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixvVer": "5.0"
+	        "unixVaporVer": "5.0"
 	      }
 	    },
 	    "mp": {
@@ -174,23 +168,20 @@ export type ScanCodeSupportedTypes =
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "√",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.71"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "√",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.71",
 	        "unixUtsPlugin": "4.71"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixvVer": "5.0"
+	        "unixVaporVer": "5.0"
 	      }
 	    },
 	    "mp": {
@@ -248,23 +239,20 @@ export type ScanCodeSupportedTypes =
 	  {
 	    "app": {
 	      "android": {
-	        "osVer": "5.0",
 	        "uniVer": "√",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.71"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "√",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.71",
 	        "unixUtsPlugin": "4.71"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixvVer": "5.0"
+	        "unixVaporVer": "5.0"
 	      }
 	    },
 	    "mp": {
@@ -355,23 +343,20 @@ export interface Uni {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "x",
           "unixVer": "4.71"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "x",
           "unixVer": "4.71",
           "unixUtsPlugin": "4.71"
         },
         "harmony": {
-          "osVer": "3.0",
           "uniVer": "4.23",
           "unixVer": "4.61",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {

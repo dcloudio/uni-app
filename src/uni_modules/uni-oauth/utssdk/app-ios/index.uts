@@ -1,0 +1,26 @@
+import { UniOAuthProvider, Login, LoginOptions, GetUserInfo, GetUserInfoOptions } from "../interface.uts";
+import { OauthFailImpl } from "../unierror.uts";
+import { UTSiOS } from "DCloudUTSFoundation";
+
+export const login : Login = function (options : LoginOptions) {
+		const provider = UTSiOS.getProvider<UniOAuthProvider>("oauth", options.provider?? '', UniOAuthProvider.self)
+    if (provider != null) {
+        provider!.login(options);
+    } else {
+        const err = new OauthFailImpl(1310600);
+        options.fail?.(err);
+        options.complete?.(err);
+				
+    }
+};
+
+export const getUserInfo : GetUserInfo = function (options : GetUserInfoOptions) {
+    const provider = UTSiOS.getProvider<UniOAuthProvider>("oauth", options.provider?? '', UniOAuthProvider.self)
+    if (provider != null) {
+        provider!.getUserInfo(options);
+    } else {
+        const err = new OauthFailImpl(1310600);
+        options.fail?.(err);
+        options.complete?.(err);
+    }
+};

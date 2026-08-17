@@ -233,12 +233,12 @@ class IosScannerListenerImpl implements IosScannerListener {
 		const charset = barcode.charset
 		const rawData = barcode.rawData
 		const scanArea = barcode.scanArea
-		const event = new UniNativeViewEvent("scancode_success", { result, scanType, charset, rawData, scanArea } as UTSJSONObject)
-		this.element.dispatchEvent("scancode", event)
+		const event = new UniNativeViewEvent("scancode", { "scanCodeStatus": "1", result, scanType, charset, rawData, scanArea } as UTSJSONObject)
+		this.element.dispatchEvent(event)
 	}
 	onScanFailure(error: string): void{
-		const event = new UniNativeViewEvent("scancode_fail", { error } as UTSJSONObject)
-		element.dispatchEvent("scancode", event)
+		const event = new UniNativeViewEvent("scancode", { "scanCodeStatus": "0", error } as UTSJSONObject)
+		this.element.dispatchEvent(event)
 	}
 	needZoom(): void{
 
@@ -416,7 +416,7 @@ export const createCameraContext: CreateCameraContext =  () : CameraContext | nu
 		const len = dialogPages!.length
 		for (let i = len - 1;i >= 0;i--) {
 		  const page = dialogPages![i]
-		  const element = page.getElementById("mnative-camera")
+		  const element = page.getElementById("uni-camera-bW5hdGl2ZS1jYW1lcmE=")
 		  if (element != null) {
 			  nativeCamera = element
 			  break
@@ -426,7 +426,7 @@ export const createCameraContext: CreateCameraContext =  () : CameraContext | nu
 	
 	
 	if (nativeCamera == null) {
-		nativeCamera = currentPage?.getElementById("mnative-camera")
+		nativeCamera = currentPage?.getElementById("uni-camera-bW5hdGl2ZS1jYW1lcmE=")
 	}
 	
 	if (nativeCamera == null) {

@@ -7,23 +7,20 @@ export interface Uni {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18",
           "unixUtsPlugin": "4.18"
         },
         "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -90,23 +87,20 @@ export interface Uni {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18",
           "unixUtsPlugin": "4.18"
         },
         "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -171,23 +165,20 @@ export interface Uni {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18",
           "unixUtsPlugin": "4.18"
         },
         "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -263,23 +254,20 @@ export interface Uni {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18",
           "unixUtsPlugin": "4.18"
         },
         "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "mp": {
@@ -346,23 +334,20 @@ export interface Uni {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18",
           "unixUtsPlugin": "4.18"
         },
         "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "web": {
@@ -385,20 +370,17 @@ export interface Uni {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *      "osVer": "9.0",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -459,20 +441,17 @@ export interface Uni {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *      "osVer": "9.0",
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    },
    *    "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -534,20 +513,17 @@ export interface Uni {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "3.6.9",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *      "osVer": "9.0",
    *      "uniVer": "2.6.5",
    *      "unixVer": "x"
    *    },
    *    "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -609,20 +585,17 @@ export interface Uni {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "3.6.9",
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *      "osVer": "9.0",
    *      "uniVer": "2.6.5",
    *      "unixVer": "x"
    *    },
    *    "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -681,23 +654,20 @@ export interface Uni {
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.18"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.18",
         "unixUtsPlugin": "4.18"
       },
       "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
       }
     },
     "web": {
@@ -713,23 +683,20 @@ export type OsThemeChangeResult = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18",
           "unixUtsPlugin": "4.18"
         },
         "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "web": {
@@ -755,23 +722,20 @@ export type OsThemeChangeResult = {
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.18"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.18",
         "unixUtsPlugin": "4.18"
       },
       "harmony": {
-        "osVer": "5.0.0",
         "uniVer": "4.71",
         "unixVer": "4.71",
-        "unixvVer": "5.0"
+        "unixVaporVer": "5.0"
       }
     },
     "web": {
@@ -787,23 +751,20 @@ export type AppThemeChangeResult = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18",
           "unixUtsPlugin": "4.18"
         },
         "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "web": {
@@ -852,23 +813,20 @@ export type SetAppThemeCompleteCallback = (result: any) => void;
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.18"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.18",
         "unixUtsPlugin": "4.18"
       },
       "harmony": {
-        "osVer": "5.0.0",
         "uniVer": "4.71",
         "unixVer": "4.71",
-        "unixvVer": "5.0"
+        "unixVaporVer": "5.0"
       }
     },
     "web": {
@@ -884,23 +842,20 @@ export type SetAppThemeOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18",
           "unixUtsPlugin": "4.18"
         },
         "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "web": {
@@ -930,23 +885,20 @@ export type SetAppThemeOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18",
           "unixUtsPlugin": "4.18"
         },
         "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "web": {
@@ -964,23 +916,20 @@ export type SetAppThemeOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18",
           "unixUtsPlugin": "4.18"
         },
         "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "web": {
@@ -998,23 +947,20 @@ export type SetAppThemeOptions = {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "x",
           "unixVer": "4.18",
           "unixUtsPlugin": "4.18"
         },
         "harmony": {
-          "osVer": "5.0.0",
           "uniVer": "4.71",
           "unixVer": "4.71",
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       },
       "web": {
@@ -1034,23 +980,20 @@ export type SetAppThemeOptions = {
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.18"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.18",
         "unixUtsPlugin": "4.18"
       },
       "harmony": {
-        "osVer": "5.0.0",
         "uniVer": "4.71",
         "unixVer": "4.71",
-        "unixvVer": "5.0"
+        "unixVaporVer": "5.0"
       }
     },
     "web": {
@@ -1076,23 +1019,20 @@ export type AppThemeFail = IAppThemeFail;
   {
     "app": {
       "android": {
-        "osVer": "5.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.18"
       },
       "ios": {
-        "osVer": "12.0",
         "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "4.18",
         "unixUtsPlugin": "4.18"
       },
       "harmony": {
-        "osVer": "5.0.0",
         "uniVer": "4.71",
         "unixVer": "4.71",
-        "unixvVer": "5.0"
+        "unixVaporVer": "5.0"
       }
     },
     "web": {

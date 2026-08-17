@@ -1,34 +1,52 @@
 <template>
   <view style="width: 100%;flex-direction: row;box-sizing: border-box;overflow: visible;padding: 4px;">
-    <view ref="containerRef"
-      style="position: relative;flex: 1;align-items: center;justify-content: center;overflow: visible;cursor: pointer;"
+    <view ref="containerRef" style="position: relative;flex: 1;align-items: center;justify-content: center;overflow: visible;cursor: pointer;"
       @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
 
       <!-- 背景轨道 -->
-      <view flatten class="slider-track-bg" :class="props.trackClass">
+      <view
+        <!-- #ifndef APP-ANDROID -->
+        flatten
+        <!-- #endif -->
+        class="slider-track-bg" :class="props.trackClass">
         <!-- 填充条(左边线) -->
-        <view flatten ref="fillRef" class="slider-track-fill"
+        <view
+          <!-- #ifndef APP-ANDROID -->
+          flatten
+          <!-- #endif -->
+          ref="fillRef" class="slider-track-fill" android-layer-type="hardware"
           :class="props.trackActiveClass"
-          :style="{ transform: `scaleX(${trackActiveScaleX})` }" android-layer-type="hardware">
+          :style="{ transform: `scaleX(${trackActiveScaleX})` }">
         </view>
       </view>
 
       <!-- 滑块 -->
-      <view flatten ref="handleRef" style="overflow: visible; align-self: flex-start;z-index: 2;"
+      <view
+        <!-- #ifndef APP-ANDROID -->
+        flatten
+        <!-- #endif -->
+        ref="handleRef" style="overflow: visible; align-self: flex-start;z-index: 2;"
         :style="{ width: '100%', transform: `translateX(${thumbTranslateX}%)` }">
-        <view flatten ref="thumbRef" class="slider-handle" :class="props.thumbClass" android-layer-type="hardware"
-          :style="{ transform: `translateX(-${thumbTranslateX}%)` }"
+        <view
+          <!-- #ifndef APP-ANDROID -->
+          flatten
+          <!-- #endif -->
           <!-- #ifdef WEB -->
           tabIndex="0" role="slider" :aria-valuenow="currentValue" :aria-valuemin="min" :aria-valuemax="max"
           <!-- #endif -->
-          >
+          ref="thumbRef" class="slider-handle" android-layer-type="hardware"
+          :class="props.thumbClass"
+          :style="{ transform: `translateX(-${thumbTranslateX}%)` }">
         </view>
       </view>
     </view>
 
     <!-- 显示当前值 -->
-    <text v-if="props.showValue" ref="showValueRef"
-      style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 3px;white-space: nowrap;">
+    <text
+      <!-- #ifndef APP-ANDROID -->
+      flatten
+      <!-- #endif -->
+      v-if="props.showValue" ref="showValueRef" style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 3px;white-space: nowrap;">
       <!-- #ifndef APP -->
       {{ currentValue }}
       <!-- #endif -->
@@ -64,12 +82,10 @@
   defineOptions({
     name: 'slider',
     externalClasses: ['track-class', 'track-active-class', 'thumb-class'],
-    // #ifndef APP-IOS
     rootElement: {
       name: 'uni-slider-element',
       class: UniSliderElement
     }
-    // #endif
   })
   // Emits 定义
   const emit = defineEmits<{
@@ -83,8 +99,16 @@
      * 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交
      * @uniPlatform {
        "app": {
+         "ios": {
+           "uniVer": "√",
+           "unixVer": "4.11",
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -94,8 +118,16 @@
      * slider 最小值
      * @uniPlatform {
        "app": {
+         "ios": {
+           "uniVer": "√",
+           "unixVer": "4.11",
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -105,8 +137,16 @@
      * slider 最大值
      * @uniPlatform {
        "app": {
+         "ios": {
+           "uniVer": "√",
+           "unixVer": "4.11",
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -116,8 +156,16 @@
      * slider 步长，取值必须大于 0，并且可被(max - min)整除
      * @uniPlatform {
        "app": {
+         "ios": {
+           "uniVer": "√",
+           "unixVer": "4.11",
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -127,8 +175,16 @@
      * slider 当前取值
      * @uniPlatform {
        "app": {
+         "ios": {
+           "uniVer": "√",
+           "unixVer": "4.11",
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -138,8 +194,16 @@
      * 是否禁用
      * @uniPlatform {
        "app": {
+         "ios": {
+           "uniVer": "√",
+           "unixVer": "4.11",
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -149,8 +213,16 @@
      * 是否显示当前 value
      * @uniPlatform {
        "app": {
+         "ios": {
+           "uniVer": "√",
+           "unixVer": "4.11",
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -160,8 +232,16 @@
      * slider 背景条样式类名
      * @uniPlatform {
        "app": {
+         "ios": {
+           "uniVer": "x",
+           "unixVer": "x",
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -171,8 +251,16 @@
      * slider 滑块左侧已选择部分的线条样式类名
      * @uniPlatform {
        "app": {
+         "ios": {
+           "uniVer": "x",
+           "unixVer": "x",
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -182,8 +270,16 @@
      * slider 滑块样式类名
      * @uniPlatform {
        "app": {
+         "ios": {
+           "uniVer": "x",
+           "unixVer": "x",
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
          "harmony": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -682,6 +778,7 @@
   })
   defineExpose({
     renderVisuals,
+    getCurrentValue: (): number => currentValue.value
   })
 </script>
 

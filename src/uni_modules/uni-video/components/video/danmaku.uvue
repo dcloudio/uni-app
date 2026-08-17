@@ -1,10 +1,11 @@
 <template>
   <view ref="container" style="position: absolute;top:0;bottom:0;left:0;right:0;overflow: hidden;pointer-events: none;">
-    <text v-for="item in pool" :key="item.id" ref="danmakuRefs" style="position: absolute;white-space:nowrap;"
+    <!-- 固定渲染整个 pool，确保 danmakuRefs.value[slot.id] 和 slot.id 始终对应。 -->
+    <text v-for="item in pool" :key="item.id" ref="danmakuRefs" style="position: absolute;white-space:nowrap;color:transparent;opacity:0;"
       <!-- #ifdef WEB -->
       class="danmu-item"
       <!-- #endif -->
-      >
+    >
       {{ item.text }}
     </text>
   </view>
@@ -14,42 +15,36 @@
   import { scheduleIdleWork } from './idleScheduler'
   import { DanmakuTask, DanmakuType } from './danmakuTypes.uts'
 
-  /* ================= 类型定义（只用 type） ================= */
-
-  type DanmakuStyle = {
-    color ?: string
-    transform ?: string
-    transition ?: string
-    top ?: string
-    fontSize ?: string
-    visibility ?: string
-  }
+  /* ================= 类型定义 ================= */
 
   type DanmakuItem = {
-    id : number
-    text : string
-    active : boolean
-    type : DanmakuType
-    lane : number
-    width : number
+    id: number
+    text: string
+    active: boolean
+    // 区分同一个 slot 的不同使用周期，防止旧异步回调改到复用后的弹幕。
+    version: number
   }
 
   type LaneState = {
-    lastStart : number
-    lastWidth : number
-    busyUntil : number
+    lastStart: number
+    lastWidth: number
   }
 
   type Area = {
-    start : number
-    count : number
+    start: number
+    count: number
+  }
+
+  type Areas = {
+    oneThird: Area
+    oneHalf: Area
+    full: Area
   }
 
   /* ================= 配置 ================= */
 
   const MAX_POOL = 60
 
-  // 轨道数量将根据容器高度动态计算
   let LANES_ONE_THIRD = 4
   let LANES_ONE_HALF = 6
   let LANES_FULL = 10
@@ -57,10 +52,9 @@
   const FONT_SIZE = 18
   const LANE_HEIGHT = 28
 
-  const SPEED = 120 // px/s
+  const SPEED = 180 // px/s
   const GAP = 20
-  const STATIC_DURATION = 4000
-  const danmakuRefs = ref<UniElement[]>([])
+  const RESIZE_RETRY_DELAY = 60
 
   const DANMU_DEFAULT_COLOR = '#000000'
 
@@ -70,35 +64,62 @@
   let containerWidth: number = 0
   let containerHeight: number = 0
 
-  function initContainerSize() {
-    if (container.value) {
+  const danmakuRefs = ref<UniElement[]>([])
+
+  function initContainerSize(): void {
+    if (container.value != null) {
       containerWidth = container.value.offsetWidth
       containerHeight = container.value.offsetHeight
     }
   }
-
-  /* ================= 弹幕池 ================= */
-
-  const pool = reactive<DanmakuItem[]>(
-    Array.from({ length: MAX_POOL }, (_, i) => ({
+  
+  /* ================= 声明 ================= */
+  const items: DanmakuItem[] = []
+  for (let i = 0; i < MAX_POOL; i++) {
+    items.push({
       id: i,
       text: '',
       active: false,
-      type: 0,
-      lane: -1,
-      width: 0
-    }))
-  )
+      version: 0
+    })
+  }
+  const pool = reactive<DanmakuItem[]>(items)
+  const pendingQueue: DanmakuTask[] = []
+  let idleScheduled = false
+  let laneRetryScheduled = false
+  let disposed = false
+  let schedule: () => void = (): void => {}
+  let dispatch: (task: DanmakuTask) => boolean = (_task: DanmakuTask): boolean => false
+  let findScrollLane: (area: Area) => number = (_area: Area): number => -1
+  let mountScroll: (slot: DanmakuItem, text: string, laneIndex: number, color: string | null) => boolean = (_slot: DanmakuItem, _text: string, _laneIndex: number, _color: string | null): boolean => false
+  let recycle: (slot: DanmakuItem, el: UniElement, version: number) => void = (_slot: DanmakuItem, _el: UniElement, _version: number): void => {}
+
+  /* ================= 弹幕池 ================= */
+
+  function resetSlot(slot: DanmakuItem): void {
+    slot.text = ''
+    slot.active = false
+  }
+
+  function schedulePendingQueueIfIdle(): void {
+    if (pool.some((item): boolean => item.active)) return
+
+    if (pendingQueue.length > 0) {
+      schedule()
+    }
+  }
+
+  function isCurrentSlot(slot: DanmakuItem, version: number): boolean {
+    return !disposed && slot.active && slot.version === version
+  }
+
+  function canReuseSlot(slot: DanmakuItem): boolean {
+    return !slot.active
+  }
 
   /* ================= 轨道 ================= */
 
-  type Areas = {
-    oneThird : Area
-    oneHalf : Area
-    full : Area
-  }
-
-  const AREAS : Areas = {
+  const AREAS: Areas = {
     oneThird: {
       start: 0,
       count: LANES_ONE_THIRD
@@ -113,114 +134,172 @@
     }
   }
 
-  // 记录每个区域上次使用的轨道索引，用于轮询分散弹幕
-  const lastLaneIndex = {
-    oneThird: -1,
-    oneHalf: -1,
-    full: -1
-  }
+  let lanes: LaneState[] = []
 
-  const lanes = reactive<LaneState[]>([])
+  function initLanes(): void {
+    if (container.value == null) return
 
-  function initLanes() : void {
-    if (container.value) {
-      // 根据容器高度计算轨道数量
-      const maxLanes = Math.floor(containerHeight / LANE_HEIGHT)
-      LANES_FULL = maxLanes
-      LANES_ONE_HALF = Math.floor(LANES_FULL * 0.6)
-      LANES_ONE_THIRD = Math.floor(LANES_FULL * 0.4)
+    const maxLanes = Math.max(0, Math.floor(containerHeight / LANE_HEIGHT))
+    LANES_FULL = maxLanes
+    LANES_ONE_HALF = LANES_FULL > 0 ? Math.max(1, Math.floor(LANES_FULL * 0.6)) : 0
+    LANES_ONE_THIRD = LANES_FULL > 0 ? Math.max(1, Math.floor(LANES_FULL * 0.4)) : 0
 
-      lanes.length = 0
-      for (let i = 0; i < LANES_FULL; i++) {
-        lanes.push({
+    const oldLanes = lanes
+    // 调整尺寸时保留正在滚动的旧轨道，避免 active 弹幕的轨道状态丢失。
+    const laneCount = pool.some((item): boolean => item.active)
+      ? Math.max(LANES_FULL, oldLanes.length)
+      : LANES_FULL
+    const nextLanes: LaneState[] = []
+    for (let i = 0; i < laneCount; i++) {
+      if (i < oldLanes.length) {
+        nextLanes.push(oldLanes[i])
+      } else {
+        nextLanes.push({
           lastStart: 0,
-          lastWidth: 0,
-          busyUntil: 0
+          lastWidth: 0
         })
       }
-
-      // 更新区域配置
-      AREAS.oneThird.count = LANES_ONE_THIRD
-      AREAS.oneHalf.count = LANES_ONE_HALF
-      AREAS.full.count = LANES_FULL
     }
+    lanes = nextLanes
+
+    AREAS.oneThird.count = LANES_ONE_THIRD
+    AREAS.oneHalf.count = LANES_ONE_HALF
+    AREAS.full.count = LANES_FULL
   }
 
-  function resize() {
+  function resize(): void {
+    if (disposed) return
+
     initContainerSize()
     initLanes()
+    if (pendingQueue.length > 0) {
+      schedule()
+    }
   }
 
   onMounted(() => {
     resize()
   })
 
-  const pendingQueue : DanmakuTask[] = []
-  let idleScheduled = false
-  const timers : number[] = [] // 收集所有的定时器 ID
-  const rafIds : number[] = [] // 收集所有的 requestAnimationFrame ID
+  /* ================= 定时器管理 ================= */
 
-  function send(task : DanmakuTask) : void {
-    task.type = task.type ?? 0
+  const timers: number[] = []
+  const rafIds: number[] = []
+
+  function addTimer(id: number): void {
+    timers.push(id)
+  }
+
+  function removeTimer(id: number): void {
+    const index = timers.indexOf(id)
+    if (index !== -1) {
+      timers.splice(index, 1)
+    }
+  }
+
+  function addRafId(id: number): void {
+    rafIds.push(id)
+  }
+
+  function removeRafId(id: number): void {
+    const index = rafIds.indexOf(id)
+    if (index !== -1) {
+      rafIds.splice(index, 1)
+    }
+  }
+
+  /* ================= 调度 ================= */
+
+  function send(task: DanmakuTask): void {
+    if (disposed) return
+    if (task.type == null) {
+      task.type = 0
+    }
     pendingQueue.push(task)
     schedule()
   }
 
   defineExpose({ send, resize })
 
-  function schedule() : void {
+  function hasUsableLane(): boolean {
+    return containerWidth > 0 && LANES_FULL > 0 && lanes.length > 0
+  }
+
+  function scheduleResizeRetry(): void {
+    if (disposed || laneRetryScheduled) return
+
+    // 组件刚挂载时 offset 可能还没有值，延迟重测后继续消费 pendingQueue。
+    laneRetryScheduled = true
+    let timerId = -1
+    timerId = setTimeout(() => {
+      removeTimer(timerId)
+      laneRetryScheduled = false
+      if (disposed) return
+
+      resize()
+    }, RESIZE_RETRY_DELAY)
+    addTimer(timerId)
+  }
+
+  schedule = (): void => {
+    if (disposed) return
     if (idleScheduled) return
     idleScheduled = true
 
-    scheduleIdleWork((timeRemaining : () => number) => {
+    scheduleIdleWork((_timeRemaining: () => number) => {
       idleScheduled = false
-      // NOTE 在鸿蒙上视频播放且没有触摸时 timeRemaining() 一直为0
-      while (/* timeRemaining() > 5 && */pendingQueue.length) {
+      if (disposed) return
+      if (!hasUsableLane()) {
+        scheduleResizeRetry()
+        return
+      }
+      // NOTE 在鸿蒙上视频播放且没有触摸时 _timeRemaining() 一直为0
+      while (/* _timeRemaining() > 5 && */pendingQueue.length > 0) {
         const task = pendingQueue[0]
-        if (task) {
-          // 尝试分发弹幕，只有成功才从队列移除
+        if (task != null) {
           if (dispatch(task)) {
             pendingQueue.shift()
           } else {
-            // 没有可用轨道，等待下次重试
             break
           }
         }
       }
 
-      if (pendingQueue.length) {
+      if (pendingQueue.length > 0) {
         schedule()
       }
     })
   }
 
-  function dispatch({ text, type, color } : DanmakuTask) : boolean {
-    const slot = pool.find(i => !i.active)
-    if (!slot) return false
+  dispatch = (task: DanmakuTask): boolean => {
+    const slot = pool.find((i): boolean => canReuseSlot(i))
+    if (slot == null) return false
+
+    const type: DanmakuType = task.type != null ? task.type : 0
 
     let lane = -1
     if (type === 0) {
       // 全屏弹幕
-      lane = findScrollLane(AREAS.full, 'full')
+      lane = findScrollLane(AREAS.full)
     } else if (type === 1) {
       // 1/2 弹幕
-      lane = findScrollLane(AREAS.oneHalf, 'oneHalf')
+      lane = findScrollLane(AREAS.oneHalf)
     } else {
       // 1/3 弹幕
-      lane = findScrollLane(AREAS.oneThird, 'oneThird')
+      lane = findScrollLane(AREAS.oneThird)
     }
 
     if (lane !== -1) {
-      mountScroll(slot, text, lane, color)
-      return true
+      return mountScroll(slot, task.text, lane, task.color)
     }
 
     return false
   }
 
-  function canEnterLane(index : number) : boolean {
+  function canEnterLane(index: number): boolean {
     const lane = lanes[index]
-    if (!lane.lastStart) return true
+    if (lane == null) return false
+    if (lane.lastStart == 0) return true
 
     const now = Date.now()
     const elapsed = (now - lane.lastStart) / 1000
@@ -229,153 +308,194 @@
     return distance > lane.lastWidth + GAP
   }
 
-  function findScrollLane(area : Area, areaKey : string) : number {
-    // 获取上次使用的轨道索引
-    let lastIndex = -1
-    if (areaKey === 'oneThird') {
-      lastIndex = lastLaneIndex.oneThird
-    } else if (areaKey === 'oneHalf') {
-      lastIndex = lastLaneIndex.oneHalf
-    } else if (areaKey === 'full') {
-      lastIndex = lastLaneIndex.full
-    }
-
-    // 从上次使用的轨道的下一个位置开始循环查找
-    const start = lastIndex >= area.start ? lastIndex - area.start + 1 : 0
+  findScrollLane = (area: Area): number => {
+    // 从上到下选择第一个安全轨道，避免可复用的上方轨道被下方旧轨道抢走。
     for (let offset = 0; offset < area.count; offset++) {
-      const i = area.start + (start + offset) % area.count
+      const i = area.start + offset
       if (canEnterLane(i)) {
-        // 更新该区域的上次使用轨道索引
-        if (areaKey === 'oneThird') {
-          lastLaneIndex.oneThird = i
-        } else if (areaKey === 'oneHalf') {
-          lastLaneIndex.oneHalf = i
-        } else if (areaKey === 'full') {
-          lastLaneIndex.full = i
-        }
         return i
       }
     }
     return -1
   }
 
-  function mountScroll(
-    slot : DanmakuItem,
-    text : string,
-    laneIndex : number,
-    color ?: string
-  ) : void {
-    const now = Date.now()
-
-    slot.text = text
-    slot.active = true
-    slot.type = 0
-    slot.lane = laneIndex
-
-    const el = danmakuRefs.value[slot.id]
-    if (el == null) return
-
-    // TODO 不延迟拿不到弹幕的宽度；而延迟会先显示在屏幕上，所以要先添加透明色
-    el.style.setProperty('color', 'transparent')
-    const timeoutId = setTimeout(() => {
-      el.getBoundingClientRectAsync()?.then((rect) => {
-        let width = rect.width;
-        // TODO 获取的宽度不对 150 像素添加 30 像素的修正值
-        width = width + Math.ceil(width / 150) * 30
-
-        const translateXDistance = containerWidth + width
-        const duration = translateXDistance / SPEED
-
-        el.style.setProperty('left', `${containerWidth}px`)
-        el.style.setProperty('top', `${laneIndex * LANE_HEIGHT}px`)
-        el.style.setProperty('font-size', `${FONT_SIZE}px`)
-        el.style.setProperty('transform', `translateX(0px)`)
-        el.style.setProperty("transition-property", "transform")
-        el.style.setProperty("transition-duration", `${duration}s`)
-        el.style.setProperty("transition-timing-function", 'linear')
-
-        if (color) {
-          el.style.setProperty('color', color)
-        } else {
-          el.style.setProperty('color', DANMU_DEFAULT_COLOR)
-        }
-
-        const rafId = requestAnimationFrame(() => {
-          el.style.setProperty('transform', `translateX(-${translateXDistance}px)`)
-
-          slot.width = width
-
-          lanes[laneIndex].lastStart = now
-          lanes[laneIndex].lastWidth = width
-
-          const timerId = setTimeout(() => recycle(slot, el), duration * 1000)
-          timers.push(timerId)
-        })
-        rafIds.push(rafId)
-      })
-    }, 50)
-    timers.push(timeoutId)
-
+  function estimateScrollWidth(text: string): number {
+    const estimatedTextWidth = Math.ceil(text.length * FONT_SIZE)
+    return Math.max(100, estimatedTextWidth)
   }
 
-  function mountStatic(
-    slot : DanmakuItem,
-    text : string,
-    laneIndex : number,
-    color ?: string
-  ) : void {
-    const now = Date.now()
-
-    const el = danmakuRefs.value[slot.id]
-    if (!el) return
-
-    slot.text = text
-    slot.active = true
-    slot.type = 1
-    slot.lane = laneIndex
-
-    el.style.setProperty('left', '50%')
-    el.style.setProperty('transform', 'translateX(-50%)')
-    el.style.setProperty('top', `${laneIndex * LANE_HEIGHT}px`)
-    el.style.setProperty('font-size', `${FONT_SIZE}px`)
-
-    if (color) {
-      el.style.setProperty('color', color)
+  function restoreLaneIfReserved(
+    lane: LaneState,
+    reservedStart: number,
+    reservedWidth: number,
+    oldStart: number,
+    oldWidth: number
+  ): void {
+    // 只回滚本次 mount 的临时占用，避免覆盖后续弹幕已经写入的轨道状态。
+    if (lane.lastStart === reservedStart && lane.lastWidth === reservedWidth) {
+      lane.lastStart = oldStart
+      lane.lastWidth = oldWidth
     }
+  }
 
-    lanes[laneIndex].busyUntil = now + STATIC_DURATION
+  function cancelMount(
+    slot: DanmakuItem,
+    version: number,
+    lane: LaneState,
+    reservedStart: number,
+    reservedWidth: number,
+    oldStart: number,
+    oldWidth: number
+  ): void {
+    if (!isCurrentSlot(slot, version)) return
 
-    const timerId = setTimeout(() => recycle(slot, el), STATIC_DURATION)
-    timers.push(timerId)
+    restoreLaneIfReserved(lane, reservedStart, reservedWidth, oldStart, oldWidth)
+    resetSlot(slot)
+    schedulePendingQueueIfIdle()
+  }
+
+  mountScroll = (
+    slot: DanmakuItem,
+    text: string,
+    laneIndex: number,
+    color: string | null
+  ): boolean => {
+    const lane = lanes[laneIndex]
+    if (lane == null) return false
+
+    slot.version++
+    const version = slot.version
+    slot.active = true
+
+    const oldLaneStart = lane.lastStart
+    const oldLaneWidth = lane.lastWidth
+    const reservedStart = Date.now()
+    const reservedWidth = estimateScrollWidth(text)
+
+    // 立即标记轨道为繁忙，防止两条弹幕间隔太短时复用同一轨道
+    // lastWidth 先给一个保守估值，等测量完成后在 rAF 中更新为实际值
+    lane.lastStart = reservedStart
+    lane.lastWidth = reservedWidth
+
+    nextTick(() => {
+      if (!isCurrentSlot(slot, version)) return
+
+      const el = danmakuRefs.value[slot.id]
+      if (el == null) {
+        cancelMount(slot, version, lane, reservedStart, reservedWidth, oldLaneStart, oldLaneWidth)
+        return
+      }
+
+      el.style.setProperty('transition-property', 'none')
+      el.style.setProperty('transition-duration', '0s')
+      el.style.setProperty('transform', 'translateX(0px)')
+      el.style.setProperty('left', '0px')
+      el.style.setProperty('top', '0px')
+      el.style.setProperty('color', 'transparent')
+      el.style.setProperty('opacity', '0')
+      el.style.setProperty('font-size', `${FONT_SIZE}px`)
+      el.style.setProperty('height', `${LANE_HEIGHT}px`)
+      el.style.setProperty('line-height', `${LANE_HEIGHT}px`)
+
+      slot.text = text
+
+      let timeoutId = -1
+      timeoutId = setTimeout(() => {
+        removeTimer(timeoutId)
+        if (!isCurrentSlot(slot, version)) return
+
+        const rectTask = el.getBoundingClientRectAsync()
+        if (rectTask == null) {
+          cancelMount(slot, version, lane, reservedStart, reservedWidth, oldLaneStart, oldLaneWidth)
+          return
+        }
+
+        rectTask.then((rect) => {
+          if (!isCurrentSlot(slot, version)) return
+
+          let width = rect.width
+          // 修正 getBoundingClientRectAsync 在部分平台返回宽度不准确的问题
+          if (width <= 0) {
+            width = estimateScrollWidth(text)
+          }
+          width = width + Math.ceil(width / 180) * 30
+
+          const translateXDistance = containerWidth + width
+          const duration = translateXDistance / SPEED
+
+          el.style.setProperty('left', `${containerWidth}px`)
+          el.style.setProperty('top', `${laneIndex * LANE_HEIGHT}px`)
+          el.style.setProperty('transform', `translateX(0px)`)
+          el.style.setProperty('transition-property', 'transform')
+          el.style.setProperty('transition-duration', `${duration}s`)
+          el.style.setProperty('transition-timing-function', 'linear')
+
+          const textColor = color != null ? color : DANMU_DEFAULT_COLOR
+          el.style.setProperty('color', textColor)
+          el.style.setProperty('opacity', '1')
+
+          let rafId = -1
+          rafId = requestAnimationFrame(() => {
+            removeRafId(rafId)
+            if (!isCurrentSlot(slot, version)) return
+
+            el.style.setProperty('transform', `translateX(-${translateXDistance}px)`)
+
+            lane.lastStart = Date.now()
+            lane.lastWidth = width
+
+            let timerId = -1
+            timerId = setTimeout(() => {
+              removeTimer(timerId)
+              recycle(slot, el, version)
+            }, duration * 1000)
+            addTimer(timerId)
+          })
+          addRafId(rafId)
+        }).catch(() => {
+          cancelMount(slot, version, lane, reservedStart, reservedWidth, oldLaneStart, oldLaneWidth)
+        })
+      }, 50)
+
+      addTimer(timeoutId)
+    })
+
+    return true
   }
 
   /* ================= 回收 ================= */
 
-  function recycle(slot : DanmakuItem, el : UniElement) : void {
-    slot.text = ''
-    slot.width = 0
-    slot.lane = -1
+  recycle = (slot: DanmakuItem, el: UniElement, version: number): void => {
+    if (!isCurrentSlot(slot, version)) return
 
     try {
-      el.style.setProperty("transition-property", "none")
-      el.style.setProperty("transition-duration", '0s')
+      el.style.setProperty('transition-property', 'none')
+      el.style.setProperty('transition-duration', '0s')
       el.style.setProperty('transform', 'translateX(0px)')
       el.style.setProperty('left', '0px')
       el.style.setProperty('top', '0px')
-      el.style.setProperty('color', DANMU_DEFAULT_COLOR)
-      el.style.setProperty('font-size', '')
+      el.style.setProperty('color', 'transparent')
+      el.style.setProperty('opacity', '0')
+      el.style.setProperty('font-size', '0px')
     } catch (error) { }
 
-    slot.active = false
+    resetSlot(slot)
+    schedulePendingQueueIfIdle()
   }
 
   onBeforeUnmount(() => {
-    // 清除所有定时器
-    timers.forEach(timerId => clearTimeout(timerId))
+    disposed = true
+    pendingQueue.length = 0
+
+    pool.forEach((slot) => {
+      slot.version++
+      resetSlot(slot)
+    })
+
+    timers.forEach((timerId: number) => clearTimeout(timerId))
     timers.length = 0
 
-    // 清除所有 requestAnimationFrame
-    rafIds.forEach(rafId => cancelAnimationFrame(rafId))
+    rafIds.forEach((rafId: number) => cancelAnimationFrame(rafId))
     rafIds.length = 0
   })
 </script>

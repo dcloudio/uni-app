@@ -1,5 +1,3 @@
-import { getCurrentPage } from '@dcloudio/uni-runtime'
-
 import { PageScrollToOptions, PageScrollToSuccess } from '../interface.uts'
 import { PageScrollToFailImpl } from '../unierror.uts'
 function queryElementTop(
@@ -17,8 +15,13 @@ export const pageScrollTo = defineAsyncApi<
     PageScrollToOptions,
     PageScrollToSuccess
 >('pageScrollTo', (options: PageScrollToOptions, res: ApiExecutor) => {
-    const currentPage = getCurrentPage()
-    const scrollViewNode = currentPage?.$el
+    const pages = getCurrentPages()
+    const currentPage = pages[pages.length - 1]
+    if(currentPage == null) {
+        res.reject(new PageScrollToFailImpl('current page not found'))
+        return
+    }
+    const scrollViewNode = currentPage.vm?.$el
     if (scrollViewNode == null || scrollViewNode.tagName != 'SCROLL-VIEW') {
         res.reject(new PageScrollToFailImpl('selector invalid'))
         return
@@ -26,7 +29,7 @@ export const pageScrollTo = defineAsyncApi<
 
     let top = options.scrollTop
     if (options.selector != null) {
-        top = queryElementTop(currentPage!, options.selector!)
+        top = queryElementTop(currentPage.vm!, options.selector!)
         if (top != null) {
             const currentScrollTop = scrollViewNode.getAnyAttribute(
                 'scrollTop',

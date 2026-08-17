@@ -35,9 +35,11 @@
     "dependencies": [
       "uni-framework",
       "uni-theme",
+      "uni-getAppBaseInfo",
+      "uni-getDeviceInfo",
       "uni-getSystemInfo",
-      "app-ios:uni-dialogPage",
-      "app-ios:uni-event"
+      "uni-dialogPage",
+      "uni-event"
     ],
     "uni-ext-api": {
       "uni": {

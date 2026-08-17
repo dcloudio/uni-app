@@ -1,9 +1,9 @@
 <template>
   <view
-    :list-view-id="listViewId"
-    change:list-view-id="recycleListItemCpp.setListViewId"
     :section-id="sectionId"
     change:section-id="recycleListItemCpp.setSectionId"
+    :list-view-id="listViewId"
+    change:list-view-id="recycleListItemCpp.setListViewId"
     :item-key="'' + props.itemKey"
     change:item-key="recycleListItemCpp.updateKey"
     :ref="recycleListItemCpp.setElement"

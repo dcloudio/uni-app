@@ -25,12 +25,17 @@ export class UniNavigatorElement extends UniViewElementImpl implements UniCustom
     const animationType = this.getAttributeValue('animationType', 'pop-in')
     const animationDuration = parseFloat(this.getAttributeValue('animationDuration', '300'))
 
+    const onFail = (error: UniError) => {
+			console.error(error.message)
+    }
+
     switch (openType) {
       case 'navigate':
         uni.navigateTo({
           url: url!,
           animationType: animationType!,
-          animationDuration
+          animationDuration,
+          fail: onFail
         })
         break;
       case 'navigateBack':
@@ -38,22 +43,26 @@ export class UniNavigatorElement extends UniViewElementImpl implements UniCustom
         uni.navigateBack({
           delta: delta,
           animationType: this.getAttributeValue('animationType', 'pop-out'),
-          animationDuration
+          animationDuration,
+          fail: onFail
         })
         break;
       case 'redirect':
         uni.redirectTo({
-          url: url!
+          url: url!,
+          fail: onFail
         })
         break;
       case 'reLaunch':
         uni.reLaunch({
-          url: url!
+          url: url!,
+          fail: onFail
         });
         break;
       case 'switchTab':
         uni.switchTab({
-          url: url!
+          url: url!,
+          fail: onFail
         });
         break;
       // #ifdef APP-ANDROID

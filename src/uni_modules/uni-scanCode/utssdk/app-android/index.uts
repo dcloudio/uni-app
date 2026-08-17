@@ -1,5 +1,19 @@
 
-import { ScanCodeSuccess, ScanCodeOptions, ScanCodeFail } from '../interface.uts'
+import { ScanCodeSuccess, ScanCodeOptions, ScanCodeFail, ScanCodeSupportedTypes } from '../interface.uts'
+
+// #ifdef VUE3-VAPOR
+import ImageView from "android.widget.ImageView";
+import { DrawHelper } from "uts.sdk.modules.uniScanCode";
+import {
+    createCameraContext,
+    getAndroidScanner,
+    AndroidFrameScannerOptions,
+    AndroidScannerListener,
+    BarcodeInformation,
+    ScreenShot,
+    AndroidPhotoScannerOptions
+} from "@/uni_modules/uni-camera";
+// #endif
 
 export function scanCode(options: ScanCodeOptions | null): void {
     const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
@@ -7,6 +21,11 @@ export function scanCode(options: ScanCodeOptions | null): void {
     const successEventName = `${baseEventName}_success`
     const failEventName = `${baseEventName}_fail`
     const onlyFromCamera = options?.onlyFromCamera ?? false
+    let scanTypeValue = ""
+    options?.scanType?.forEach((item, index) => {
+        scanTypeValue += index == 0 ? item : `,${item}`
+    })
+    const scanTypeQuery = scanTypeValue.length == 0 ? "" : `&scanType=${scanTypeValue}`
 
     uni.$on(successEventName, (result: UTSJSONObject) => {
         const successResult: ScanCodeSuccess = {
@@ -27,10 +46,175 @@ export function scanCode(options: ScanCodeOptions | null): void {
     uni.openDialogPage({
         triggerParentHide: true,
 		animationType: "zoom-fade-out",
-        url: `/uni_modules/uni-scanCode/pages/scanCode/scanCode?successEventName=${successEventName}&failEventName=${failEventName}&onlyFromCamera=${onlyFromCamera}`,
+        url: `/uni_modules/uni-scanCode/pages/scanCode/scanCode?successEventName=${successEventName}&failEventName=${failEventName}&onlyFromCamera=${onlyFromCamera}${scanTypeQuery}`,
         fail(err) {
             uni.$off(successEventName);
             uni.$off(failEventName);
         }
     })
 }
+
+// #ifdef VUE3-VAPOR
+function toBarcodeInformationMap(value: BarcodeInformation): Map<string, any> {
+    const item: Map<string, any> = new Map()
+    item["result"] = value.result
+    item["scanType"] = value.scanType
+    item["charset"] = value.charset
+    item["rawData"] = value.rawData
+    item["scanArea"] = value.scanArea
+    return item
+}
+
+function toBarcodeInformationMaps(barcodeInformation: Array<BarcodeInformation>): Array<Map<string, any>> {
+    const data: Map<string, any>[] = []
+    barcodeInformation.forEach((value: BarcodeInformation) => {
+        data.push(toBarcodeInformationMap(value))
+    })
+    return data
+}
+
+function drawImage(element: UniElement, screenShot: ScreenShot): void {
+    const view = element.getAndroidView()
+    if (view != null && view instanceof ImageView) {
+        DrawHelper.drawImageWithBitmap(view, screenShot.bitmap)
+    }
+}
+
+class AndroidScannerFrameListenerImpl implements AndroidScannerListener {
+    constructor(
+        private successCallback: (barcodeInformation: Array<BarcodeInformation>, screenShot: ScreenShot | null) => void,
+        private failCallback: (error: string) => void,
+        private zoomCallback: () => void,
+        private lightCallback: (light: boolean) => void
+    ) {
+    }
+
+	override onScanSuccess(barcodeInformation: Array<BarcodeInformation>, screenShot: ScreenShot | null): void {
+        this.successCallback(barcodeInformation, screenShot)
+    }
+
+    override onScanFailure(error: string): void {
+        this.failCallback(error)
+    }
+
+    override needZoom(): void {
+        this.zoomCallback()
+    }
+
+    override onLight(light: boolean): void {
+        this.lightCallback(light)
+    }
+}
+
+class AndroidScannerPhotoListenerImpl implements AndroidScannerListener {
+    constructor(
+        private successCallback: (barcodeInformation: Array<BarcodeInformation>, screenShot: ScreenShot | null) => void,
+        private failCallback: (error: string) => void,
+    ) {
+    }
+
+    override onScanSuccess(barcodeInformation: Array<BarcodeInformation>, screenShot: ScreenShot | null): void {
+        this.successCallback(barcodeInformation, screenShot)
+    }
+
+    override onScanFailure(error: string): void {
+        this.failCallback(error)
+    }
+
+    override needZoom(): void {
+    }
+
+    override onLight(light: boolean): void {
+    }
+}
+
+let scanCodeSelectionShowStatus: boolean = false
+
+export function setScanCodeSelectionShowStatus(show: boolean) {
+    scanCodeSelectionShowStatus = show
+}
+
+@UTSJS.keepAlive
+export function utsNativeProcessScanBarCode(
+    scanType: ScanCodeSupportedTypes[],
+    width: number,
+    height: number,
+    element: UniElement,
+    showSelectViewCallback: (show: boolean) => void,
+    attachTipViewCallback: (barcodeInformation: Array<Map<string, any>>) => void,
+    singleBarSuccessCallback: (barcodeInformation: Array<Map<string, any>>) => void,
+    failCallback: (error: string) => void,
+    zoomCallback: () => void,
+    lightCallback: (light: boolean) => void
+) {
+    const context = createCameraContext()
+    context?.onAndroidCameraOriginalFrame((imageProxy) => {
+        const scanner = getAndroidScanner()
+        if (scanner == null) {
+            imageProxy.close()
+            failCallback("scanner not found")
+            return
+        }
+        const options: AndroidFrameScannerOptions = {
+            imageProxy,
+            scanType,
+            autoZoom: true,
+            width: width.toInt(),
+            height: height.toInt(),
+            androidScannerListenner: new AndroidScannerFrameListenerImpl(
+                (barcodeInformation: Array<BarcodeInformation>, screenShot: ScreenShot | null) => {
+                    const data = toBarcodeInformationMaps(barcodeInformation)
+                    if (
+                        barcodeInformation.length > 1 &&
+                        screenShot != null &&
+                        !scanCodeSelectionShowStatus
+                    ) {
+                        context?.offAndroidCameraOriginalFrame()
+                        showSelectViewCallback(true)
+                        drawImage(element, screenShot)
+                        attachTipViewCallback(data)
+                        return
+                    }
+                    if (barcodeInformation.length == 0) {
+                        return
+                    }
+                    singleBarSuccessCallback(data)
+                },
+                (error: string) => {
+                    failCallback(error)
+                },
+                () => {
+                    zoomCallback()
+                },
+                (light: boolean) => {
+                    lightCallback(light)
+                }
+            ),
+        }
+        scanner.processScanBarCode(options)
+    })
+}
+
+export function utsNativeProcessScanBarCodeWithPhoto(
+    filePath: string,
+    scanType: ScanCodeSupportedTypes[],
+    singleBarSuccessCallback: (barcodeInformation: Array<Map<string, any>>) => void,
+    failCallback: (error: string) => void
+) {
+    const context = UTSAndroid.getAppContext()!!
+    const options: AndroidPhotoScannerOptions = {
+        context,
+        filePath,
+        scanType,
+        androidScannerListenner: new AndroidScannerPhotoListenerImpl(
+            (barcodeInformation: Array<BarcodeInformation>, screenShot: ScreenShot | null) => {
+                singleBarSuccessCallback(toBarcodeInformationMaps(barcodeInformation))
+            },
+            (error: string) => {
+                failCallback(error)
+            }
+        ),
+    }
+    getAndroidScanner()?.processScanBarCodeWithPhoto(options)
+}
+// #endif

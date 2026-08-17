@@ -1,0 +1,18 @@
+Third party libraries
+***************************
+
+THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
+
+AndroidX CameraX (https://developer.android.com/jetpack/androidx/releases/camera)
+  Copyright: Copyright (c) The Android Open Source Project
+  License: Apache License 2.0, full text can be found at https://github.com/androidx/androidx/blob/androidx-main/LICENSE.txt
+
+ML Kit Barcode Scanning (https://developers.google.com/ml-kit)
+  Copyright: Copyright 2024 Google LLC. All rights reserved.
+  License: Google ML Kit Terms of Service / Apache License 2.0, full text can be found at https://developers.google.com/ml-kit/terms
+
+juniversalchardet (https://github.com/albfernandez/juniversalchardet)
+  License: Google ML Kit Terms of Service / Apache License 2.0, full text can be found at https://github.com/albfernandez/juniversalchardet/blob/main/LICENSE
+
+
+

@@ -7,21 +7,18 @@ export interface Uni {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61",
 	 *  		"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -81,21 +78,18 @@ export type RecorderManagerStartOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 *  		"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -152,21 +146,18 @@ export type RecorderManagerStartOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -224,21 +215,18 @@ export type RecorderManagerStartOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x",
 	 * 			"unixUtsPlugin": "x"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -296,21 +284,18 @@ export type RecorderManagerStartOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -368,21 +353,18 @@ export type RecorderManagerStartOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -439,21 +421,18 @@ export type RecorderManagerStartOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -510,21 +489,18 @@ export type RecorderManagerStartOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x",
 	 * 			"unixUtsPlugin": "x"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -581,21 +557,18 @@ export type RecorderManagerStartOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -652,21 +625,18 @@ export type RecorderManagerStartOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -723,21 +693,18 @@ export type RecorderManagerStartOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x",
 	 * 			"unixUtsPlugin": "x"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -794,18 +761,15 @@ export type RecorderManagerStartOptions = {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x",
 	 * 			"unixUtsPlugin": "x"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "x"
 	 *    }
@@ -867,21 +831,18 @@ export interface RecorderManagerOnStopResult {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -944,21 +905,18 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -1023,16 +981,14 @@ export interface RecorderManager {
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -1097,16 +1053,14 @@ export interface RecorderManager {
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -1166,21 +1120,18 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -1240,21 +1191,18 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -1315,18 +1263,15 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.0"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.0",
 	 * 			"unixUtsPlugin": "5.0"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "5.0"
 	 *    }
@@ -1393,16 +1338,14 @@ export interface RecorderManager {
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -1468,13 +1411,11 @@ export interface RecorderManager {
 	 * 			"unixVer": "5.0"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.0",
 	 * 			"unixUtsPlugin": "5.0"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "5.0"
 	 *    }
@@ -1537,21 +1478,18 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -1612,18 +1550,15 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.0"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.0",
 	 * 			"unixUtsPlugin": "5.0"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "5.0"
 	 *    }
@@ -1685,18 +1620,15 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x",
 	 * 			"unixUtsPlugin": "x"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "x"
 	 *    }
@@ -1759,18 +1691,15 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x",
 	 * 			"unixUtsPlugin": "x"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "x"
 	 *    }
@@ -1833,21 +1762,18 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "v",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -1908,18 +1834,15 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "√",
 	 * 			"unixVer": "5.0"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "v",
 	 * 			"unixVer": "5.0",
 	 * 			"unixUtsPlugin": "5.0"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "5.0"
 	 *    }
@@ -1987,16 +1910,14 @@ export interface RecorderManager {
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -2062,13 +1983,11 @@ export interface RecorderManager {
 	 * 			"unixVer": "5.0"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "5.0",
 	 * 			"unixUtsPlugin": "5.0"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "5.0"
 	 *    }
@@ -2131,21 +2050,18 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -2206,18 +2122,15 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "5.0"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "5.0",
 	 * 			"unixUtsPlugin": "5.0"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "5.0"
 	 *    }
@@ -2279,21 +2192,18 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.31",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -2354,18 +2264,15 @@ export interface RecorderManager {
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "5.0"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "5.0",
 	 * 			"unixUtsPlugin": "5.0"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "5.0"
 	 *    }
@@ -2431,21 +2338,18 @@ export type RecorderManagerErrorCode =
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.61",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -2502,21 +2406,18 @@ export type RecorderManagerErrorCode =
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.61",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -2569,25 +2470,22 @@ export type RecorderManagerErrorCode =
 	 */
 	1107602 |
 	/**
-	 * 采样率是和编码码率不匹配
+	 * 采样率和编码码率不匹配
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.61",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -2644,21 +2542,18 @@ export type RecorderManagerErrorCode =
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.61",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -2715,21 +2610,18 @@ export type RecorderManagerErrorCode =
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.61",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -2786,21 +2678,18 @@ export type RecorderManagerErrorCode =
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.61",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -2857,21 +2746,18 @@ export type RecorderManagerErrorCode =
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.61",
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.61",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -2928,18 +2814,15 @@ export type RecorderManagerErrorCode =
 	 * @uniPlatform {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.81"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "12.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x",
 	 * 			"unixUtsPlugin": x""
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "x"
 	 *    }

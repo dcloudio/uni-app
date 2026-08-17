@@ -33,18 +33,25 @@
 			"uni-framework",
 			"uni-theme",
 			"uni-getSystemInfo",
-			"app-ios:uni-dialogPage",
-			"app-ios:uni-event"
+			"uni-getAppBaseInfo",
+			"uni-getDeviceInfo",
+			"uni-dialogPage",
+			"uni-event"
 		],
 		"pages": {
-			"app-android": false,
-			"app-ios": false,
-            "app-harmony": "dom1"
+			"app-android": "dom1",
+			"app-ios": "dom1",
+			"app-harmony": "dom1"
+		},
+		"components": {
+			"app-android": "dom1",
+			"app-ios": "dom1",
+			"app-harmony": false
 		},
 		"customElements": {
 			"app-android": false,
 			"app-ios": false,
-            "app-harmony": true
+			"app-harmony": true
 		},
 		"uni-ext-api": {
 			"uni": {}

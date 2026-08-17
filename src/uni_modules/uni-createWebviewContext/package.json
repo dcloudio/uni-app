@@ -5,7 +5,7 @@
   "description": "uni-createWebviewContext",
   "keywords": [
     "uni-createWebviewContext"
-],
+  ],
   "repository": "",
   "engines": {
     "HBuilderX": "^3.6.8"
@@ -31,21 +31,31 @@
     "npmurl": ""
   },
   "uni_modules": {
-	"uni-ext-api": {
-	  "uni": {
-	    "createWebviewContext": {
-		  "name": "createWebviewContext",
-		  "app": {
-		    "js": false,
-		    "kotlin": false,
-		    "swift": false
-		  }
-	    }
-	  }
-	},
+    "uni-ext-api": {
+      "uni": {
+        "createWebviewContext": {
+          "name": "createWebviewContext",
+          "app": {
+            "js": false,
+            "kotlin": false,
+            "swift": false,
+            "arkts": "dom1"
+          }
+        },
+        "createWebViewContext": {
+          "name": "createWebViewContext",
+          "app": {
+            "js": false,
+            "kotlin": false,
+            "swift": false,
+            "arkts": "dom1"
+          }
+        }
+      }
+    },
     "dependencies": [
-	  "uni-framework"
-	],
+      "uni-framework"
+    ],
     "encrypt": [],
     "platforms": {
       "cloud": {

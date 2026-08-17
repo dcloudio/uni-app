@@ -37,8 +37,8 @@
         "service": "oauth",
         "app": {
             "js": false,
-            "kotlin": false,
-            "swift": false,
+            "kotlin": true,
+            "swift": true,
             "arkts": true
         }
       },
@@ -47,8 +47,8 @@
           "name": "login",
           "app": {
             "js": false,
-            "kotlin": false,
-            "swift": false,
+            "kotlin": true,
+            "swift": true,
             "arkts": true
           }
         },
@@ -56,8 +56,8 @@
           "name": "getUserInfo",
           "app": {
             "js": false,
-            "kotlin": false,
-            "swift": false,
+            "kotlin": true,
+            "swift": true,
             "arkts": true
           }
         }

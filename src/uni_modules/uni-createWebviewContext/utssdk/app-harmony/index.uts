@@ -1,38 +1,55 @@
-import { CreateWebviewContext, WebviewContext, UniWebviewContextLoadDataOptions } from '../interface.uts';
+import { CreateWebviewContext, CreateWebViewContext, WebViewContext, UniWebviewContextLoadDataOptions } from '../interface.uts';
 
-export const createWebviewContext: CreateWebviewContext = function (webviewId: string.WebviewIdString, component?: ComponentPublicInstance | null): WebviewContext | null {
-  let webviewElement: UniWebViewElement | null = null;
-  let element: any | null = null;
+const getWebViewContext = (id: string, component?: ComponentPublicInstance | null): WebViewContext | null => {
+  let webViewElement: UniWebViewElement | null | undefined = null;
   if (component == null) {
     // @ts-ignore
     const pages = globalThis.getCurrentPages() as UniPageImpl[];
     if (pages.length > 0) {
       const page = (pages[pages.length - 1])
       if (!page) {
-        throw new Error(`getCurrentPages is empty`)
+        console.error(`getCurrentPages is empty`)
+        return null
       }
       // @ts-ignore
-      element = ((page.vm as ESObject).$el as UniElement)?.parentNode?.querySelector('#' + webviewId) as UniWebViewElement;
-
-      if (element == null) {
+      webViewElement = ((page.vm as ESObject).$el as UniElement)?.parentElement?.querySelector('#' + id) as UniWebViewElement;
+      if (webViewElement == null) {
         const dialogPages = page.getDialogPages() as UniPageImpl[];
-        const topDialogPage = dialogPages[dialogPages.length - 1];
-        element = ((topDialogPage.vm as ESObject).$el as UniElement)?.parentNode?.querySelector('#' + webviewId) as UniWebViewElement;
+        if (dialogPages.length > 0) {
+          const topDialogPage = dialogPages[dialogPages.length - 1];
+          if (!topDialogPage) {
+            console.error(`getDialogPages is empty`)
+            return null
+          }
+          webViewElement = ((topDialogPage.vm as ESObject).$el as UniElement)?.parentElement?.querySelector('#' + id) as unknown as UniWebViewElement;
+        }
       }
     }
   } else {
-    element = (component.$el as UniElement)?.parentNode?.querySelector('#' + webviewId) as UniWebViewElement;
+    webViewElement = (component.$el as UniElement)?.parentElement?.querySelector('#' + id) as unknown as UniWebViewElement;
   }
-  if (element != null && (element instanceof UniWebViewElementImpl)) {
-    webviewElement = (element as UniWebViewElement)
-  }
-  if (webviewElement == null) {
-    return null
-  }
-  return new WebviewContextImpl(webviewElement!)
+  if (webViewElement == null) return null;
+  return new WebViewContextImpl(webViewElement);
 }
 
-class WebviewContextImpl implements WebviewContext {
+// @ts-ignore
+export const createWebViewContext: CreateWebViewContext = defineSyncApi<WebViewContext | null>(
+  'createWebViewContext',
+  // @ts-ignore
+  (id: string, component?: ComponentPublicInstance | null) => {
+    return getWebViewContext(id, component)
+  }
+) as CreateWebViewContext
+// @ts-ignore
+export const createWebviewContext: CreateWebviewContext = defineSyncApi<WebViewContext | null>(
+  'createWebviewContext',
+  // @ts-ignore
+  (id: string, component?: ComponentPublicInstance | null) => {
+    return getWebViewContext(id, component)
+  }
+) as CreateWebviewContext
+
+class WebViewContextImpl implements WebViewContext {
   private webviewElement: UniWebViewElement | null = null;
 
   constructor(webviewElement: UniWebViewElement) {
@@ -59,14 +76,17 @@ class WebviewContextImpl implements WebviewContext {
     this.webviewElement?.evalJS(js);
   }
 
+  getContentHeight(): number {
+    return this.webviewElement?.getContentHeight() ?? 0
+  }
+
   loadData(options: UniWebviewContextLoadDataOptions) {
     this.webviewElement?.loadData(options);
   }
-
 }
 
 export {
   CreateWebviewContext,
   UniWebviewContextLoadDataOptions,
-  WebviewContext
+  WebViewContext
 } from '../interface.uts';

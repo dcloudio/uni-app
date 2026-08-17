@@ -347,6 +347,19 @@ function openGalleryActivity(count : number, type : number, compressed : boolean
 	UTSAndroid.getUniActivity()!!.startActivityForResult(albumIntent, GALLERY_MEDIA_PICKER_RESULT.toInt())
 }
 
+type VideoMetadata = {
+	duration : number,
+	size : number,
+	height : number,
+	width : number,
+	filePath : string,
+	byteSize : number,
+	orientation : string,
+	type ?: string | null,
+	bitrate ?: number | null,
+	fps ?: number | null,
+}
+
 function getMediaFileByType(path : string, mimeType : number) : ChooseMediaTempFile | null {
 	if (path.startsWith("content://")) {
 		var type = UTSAndroid.getUniActivity()!.getContentResolver().getType(Uri.parse(path))
@@ -389,33 +402,41 @@ function getMediaTempFile(path : string, mimeType : number) : ChooseMediaTempFil
 		tempPath = "file://" + path
 	}
 	if (mimeType == 1) {
-		return {
+		const imageTempFile : ChooseMediaTempFile = {
 			tempFilePath: tempPath,
 			size: getMediaInfo(path),
 			fileType: "image"
-		} as ChooseMediaTempFile
+		}
+		return imageTempFile
 	} else if (mimeType == 3) {
 		var tempThumbPath = mediaCachePath + "video_thumb_" + System.currentTimeMillis() + ".jpg"
 		var metadata = getVideoMetadata(path, tempThumbPath)
+		let fallbackByteSizeLong = getMediaInfo(path)
+		let fallbackByteSize = fallbackByteSizeLong.toDouble()
+		let fallbackSize = formatNumber(fallbackByteSize / 1024.0)
 		if (metadata == null) {
 			metadata = {
 				duration: 0.0,
-				size: 0.0,
+				size: fallbackSize,
 				height: 0.0,
 				width: 0.0,
-				filePath: ""
+				filePath: "",
+				byteSize: fallbackByteSize,
+				orientation: "up"
 			}
 		}
-		return {
+		let resolvedMetadata = metadata!
+		const videoTempFile : ChooseMediaTempFile = {
 			tempFilePath: tempPath,
 			fileType: "video",
-			thumbTempFilePath: metadata!["filePath"] as string,
-			width: metadata == null ? 0 : metadata!["width"] as Number,
-			height: metadata == null ? 0 : metadata!["height"] as Number,
-			size: metadata == null ? 0 : metadata!["size"] as Number,
-			duration: metadata == null ? 0 : metadata!["duration"] as Number,
-			byteSize:metadata == null ? 0 : metadata!["byteSize"] as Number,
-		} as ChooseMediaTempFile
+			thumbTempFilePath: resolvedMetadata.filePath,
+			width: resolvedMetadata.width,
+			height: resolvedMetadata.height,
+			size: resolvedMetadata.size,
+			duration: resolvedMetadata.duration,
+			byteSize: resolvedMetadata.byteSize,
+		}
+		return videoTempFile
 	}
 	return null
 }
@@ -464,18 +485,31 @@ function getMediaInfo(path : string) : Long {
 	return 0
 }
 
-function getVideoMetadata(src : string, filePath : string | null) : UTSJSONObject | null {
-	let videoInfo = {
+function normalizeMediaPath(path : string) : string {
+	if (path.startsWith("file://")) {
+		return path.replace("file://", "")
+	}
+	return path
+}
+
+function getVideoMetadata(src : string, filePath : string | null) : VideoMetadata | null {
+	let videoInfo : VideoMetadata = {
 		duration: 0.0,
 		size: 0.0,
 		height: 0.0,
-		width: 0.0
+		width: 0.0,
+		filePath: "",
+		byteSize: 0.0,
+		orientation: "up"
 	}
-	var path = src
-	var videoFile = new File(src)
-	if (!videoFile.exists()) {
+	var path = normalizeMediaPath(src)
+	let isContentUri = path.startsWith("content://")
+	var videoFile = new File(path)
+	if (!videoFile.exists() && !isContentUri) {
 		path = UTSAndroid.convert2AbsFullPath(src)
 	}
+	path = normalizeMediaPath(path)
+	isContentUri = path.startsWith("content://")
 	if (path.startsWith("/android_asset/")) {
 		var mediaCachePath = UTSAndroid.getAppCachePath() + "uni-media/_" + System.currentTimeMillis()
 		if (copyFile(path, mediaCachePath)) {
@@ -487,25 +521,27 @@ function getVideoMetadata(src : string, filePath : string | null) : UTSJSONObjec
 	if (!videoFile.exists()) {
 		videoFile = new File(path)
 	}
-	if (!videoFile.exists() && !src.startsWith("content://")) {
+	if (!videoFile.exists() && !isContentUri) {
 		return null
 	}
-	let byteSize = getMediaInfo(path);
-	videoInfo.byteSize = byteSize
-	videoInfo.size = formatNumber(getMediaInfo(path) / 1024.0);
+	let byteSizeLong = getMediaInfo(path)
+	videoInfo.byteSize = byteSizeLong.toDouble()
+	videoInfo.size = formatNumber(videoInfo.byteSize / 1024.0)
+	let retriever : MediaMetadataRetriever | null = null
 	try {
-		let retriever = new MediaMetadataRetriever()
+		retriever = new MediaMetadataRetriever()
 		if (path.startsWith("content://")) {
 			retriever.setDataSource(UTSAndroid.getUniActivity()!, Uri.parse(path))
 		} else {
 			retriever.setDataSource(path)
 		}
+		// 先尝试从 retriever 读取首帧，webm 解码失败时允许仅返回基础信息。
 		var firstFrameBitmap =
 			saveBitmapToLocalPath(retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC), filePath)
 		if (!firstFrameBitmap) {
 			videoInfo.filePath = ""
 		} else {
-			videoInfo.filePath = filePath
+			videoInfo.filePath = filePath != null ? filePath : ""
 		}
 		let durationStr : string | null = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
 		let width : number | null = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toFloat()
@@ -543,7 +579,9 @@ function getVideoMetadata(src : string, filePath : string | null) : UTSJSONObjec
 		videoInfo.duration = big.toFloat()
 		videoInfo.orientation = rotation!
 		let mimeType : string | null = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
-		videoInfo.type = mimeType
+		if (!TextUtils.isEmpty(mimeType)) {
+			videoInfo.type = mimeType
+		}
 		let bitrateStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
 		var bitrate : number | null = null
 		try {
@@ -552,32 +590,105 @@ function getVideoMetadata(src : string, filePath : string | null) : UTSJSONObjec
 			}
 		} catch (e) { }
 		videoInfo.bitrate = bitrate
+		// retriever 能直接给出帧率时优先使用；拿不到时交给后面的 extractor 补齐。
 		var fpsNum : number | null = null
 		let fps : string | null = retriever.extractMetadata(32);
-		if (TextUtils.isEmpty(fps)) {
-			let extractor = new MediaExtractor()
-			extractor.setDataSource(UTSAndroid.getUniActivity()!, Uri.parse(path), null)
-			let trackCount = extractor.getTrackCount();
-			for (var i = 0; i < trackCount; i++) {
-				let mediaFormat = extractor.getTrackFormat(i.toInt());
-				let mimeType = mediaFormat.getString(MediaFormat.KEY_MIME);
-				if (!TextUtils.isEmpty(mimeType) && mimeType!!.startsWith("video/")) {
-					let frame = mediaFormat.getInteger(MediaFormat.KEY_FRAME_RATE);
-					fpsNum = frame
-				}
-			}
-		} else {
+		if (!TextUtils.isEmpty(fps)) {
 			try { fpsNum = Math.round(((fps!!).toFloat() / (duration)) * 1000) } catch (e) { } // 沿用1.0设计，向上取整
 		}
 		videoInfo.fps = fpsNum
-		return videoInfo
 	} catch (e) {
-		return null
+	} finally {
+		try {
+			retriever?.release()
+		} catch (e) { }
+	}
+	// retriever 在部分视频格式上可能只拿到部分字段，这里继续用 extractor 补齐缺失值。
+	fillVideoMetadataByExtractor(path, videoInfo)
+	return videoInfo
+}
+
+function fillVideoMetadataByExtractor(path : string, videoInfo : VideoMetadata) {
+	let extractor : MediaExtractor | null = null
+	try {
+		path = normalizeMediaPath(path)
+		extractor = new MediaExtractor()
+		if (path.startsWith("content://")) {
+			extractor.setDataSource(UTSAndroid.getUniActivity()!, Uri.parse(path), null)
+		} else {
+			extractor.setDataSource(path)
+		}
+		let trackCount = extractor.getTrackCount();
+		for (var i = 0; i < trackCount; i++) {
+			let mediaFormat = extractor.getTrackFormat(i.toInt());
+			let mimeType = mediaFormat.getString(MediaFormat.KEY_MIME);
+			if (!TextUtils.isEmpty(mimeType) && mimeType!!.startsWith("video/")) {
+				// extractor 只补 retriever 没拿到的字段，避免覆盖已校正过的结果。
+				if (TextUtils.isEmpty(videoInfo.type)) {
+					videoInfo.type = mimeType
+				}
+				let extractorWidth : number = 0
+				let extractorHeight : number = 0
+				try {
+					extractorWidth = mediaFormat.getInteger(MediaFormat.KEY_WIDTH).toFloat()
+				} catch (e) { }
+				try {
+					extractorHeight = mediaFormat.getInteger(MediaFormat.KEY_HEIGHT).toFloat()
+				} catch (e) { }
+				let shouldSwapSize = videoInfo.orientation == "right" || videoInfo.orientation == "left"
+				if (!shouldSwapSize) {
+					try {
+						let rotationDegrees = mediaFormat.getInteger(MediaFormat.KEY_ROTATION)
+						shouldSwapSize = rotationDegrees == 90 || rotationDegrees == 270
+					} catch (e) { }
+				}
+				if (extractorWidth > 0 && extractorHeight > 0 && (videoInfo.width <= 0 || videoInfo.height <= 0)) {
+					if (shouldSwapSize) {
+						if (videoInfo.width <= 0) {
+							videoInfo.width = extractorHeight
+						}
+						if (videoInfo.height <= 0) {
+							videoInfo.height = extractorWidth
+						}
+					} else {
+						if (videoInfo.width <= 0) {
+							videoInfo.width = extractorWidth
+						}
+						if (videoInfo.height <= 0) {
+							videoInfo.height = extractorHeight
+						}
+					}
+				}
+				try {
+					if (videoInfo.duration <= 0) {
+						let durationUs = mediaFormat.getLong(MediaFormat.KEY_DURATION)
+						if (durationUs > 0) {
+							let big : BigDecimal = BigDecimal.valueOf(durationUs.toDouble() / 1000000).setScale(2, BigDecimal.ROUND_HALF_UP)
+							videoInfo.duration = big.toFloat()
+						}
+					}
+				} catch (e) { }
+				try {
+					if (videoInfo.fps == null) {
+						videoInfo.fps = mediaFormat.getInteger(MediaFormat.KEY_FRAME_RATE)
+					}
+				} catch (e) { }
+				break
+			}
+		}
+	} catch (e) {
+	} finally {
+		try {
+			extractor?.release()
+		} catch (e) { }
 	}
 }
 
 function saveBitmapToLocalPath(bitmap : Bitmap | null, filePath ?: string | null) : boolean {
 	if (TextUtils.isEmpty(filePath)) {
+		return false
+	}
+	if (bitmap == null) {
 		return false
 	}
 	var file = new File(filePath)
@@ -586,9 +697,6 @@ function saveBitmapToLocalPath(bitmap : Bitmap | null, filePath ?: string | null
 	}
 	if (!file.exists()) {
 		file.createNewFile()
-	}
-	if (bitmap == null) {
-		return false
 	}
 	var os : OutputStream | null = null
 	try {
@@ -702,7 +810,7 @@ function copyFile(fromFilePath : string, toFilePath : string) : boolean {
 	}
 }
 function formatNumber(input:number):number {
-	let bd = DecimalFormat("#.###")
+	let bd = new DecimalFormat("#.###")
 	bd.setDecimalSeparatorAlwaysShown(false)
 	return bd.format(input).toFloat()
 }

@@ -11,17 +11,14 @@ export interface Uni {
 	 * {
 	 * 	"app": {
 	 * 		"android": {
-	 * 			"osVer": "5.0",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "4.51"
 	 * 		},
 	 * 		"ios": {
-	 * 			"osVer": "x",
 	 * 			"uniVer": "x",
 	 * 			"unixVer": "x"
 	 * 		},
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "x",
 	 *      "unixVer": "x"
 	 *    }

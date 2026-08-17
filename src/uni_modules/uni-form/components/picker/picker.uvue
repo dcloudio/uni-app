@@ -81,8 +81,14 @@
          * 是否禁用
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.0"
+         *       "unixVaporVer": "5.0"
          *     }
          *   }
          * }
@@ -92,8 +98,14 @@
          * 选择器类型
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.0"
+         *       "unixVaporVer": "5.0"
          *     }
          *   }
          * }    
@@ -103,8 +115,14 @@
          * mode为 selector 或 multiSelector 时，range 有效
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.0"
+         *       "unixVaporVer": "5.0"
          *     }
          *   }
          * }    
@@ -114,8 +132,14 @@
          * 当 range 是一个 Object Array 时，通过 range-key 来指定 Object 中 key 的值作为选择器显示内容
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.0"
+         *       "unixVaporVer": "5.0"
          *     }
          *   }
          * }    
@@ -125,8 +149,14 @@
          * 表示选择了 range 中的第几个（下标从 0 开始）
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.0"
+         *       "unixVaporVer": "5.0"
          *     }
          *   }
          * }    
@@ -136,8 +166,14 @@
          * 表示有效时间范围的开始
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.0"
+         *       "unixVaporVer": "5.0"
          *     }
          *   }
          * }    
@@ -147,8 +183,14 @@
          * 表示有效时间范围的结束
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.0"
+         *       "unixVaporVer": "5.0"
          *     }
          *   }
          * }    
@@ -158,8 +200,14 @@
          * 有效值 year,month,day，表示选择器的粒度
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.0"
+         *       "unixVaporVer": "5.0"
          *     }
          *   }
          * }    
@@ -169,8 +217,14 @@
          * 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.0"
+         *       "unixVaporVer": "5.0"
          *     }
          *   }
          * }    
@@ -230,7 +284,7 @@
 
         isOpening.value = true
         uni.openDialogPage({
-            url: `/uni_modules/uni-picker-dom2/pages/picker/picker?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&cancelEventName=${cancelEventName}&selectorChangeEventName=${selectorChangeEventName}&multiSelectorChangeEventName=${multiSelectorChangeEventName}&timeChangeEventName=${timeChangeEventName}&columnChangeEventName=${columnChangeEventName}`,
+            url: `/uni_modules/uni-form/pages/picker/picker?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&cancelEventName=${cancelEventName}&selectorChangeEventName=${selectorChangeEventName}&multiSelectorChangeEventName=${multiSelectorChangeEventName}&timeChangeEventName=${timeChangeEventName}&columnChangeEventName=${columnChangeEventName}`,
             success() {
               setTimeout(() => {
                 isOpening.value = false
@@ -248,16 +302,17 @@
         const baseParams = {
             mode: props.mode,
         }
+        const currentValue = innerValue.value
         switch (props.mode) {
             case 'selector':
                 baseParams.range = props.range
                 baseParams.rangeKey = props.rangeKey
-                baseParams.selectorValue = props.value ?? 0
+                baseParams.selectorValue = currentValue ?? 0
                 break
             case 'multiSelector':
                 baseParams.range = props.range
                 baseParams.rangeKey = props.rangeKey
-                baseParams.multiSelectorValue = props.value ?? []
+                baseParams.multiSelectorValue = currentValue ?? []
                 break
             case 'time':
                 baseParams.timeValue = getCurrentTimeValue()
@@ -333,7 +388,7 @@
 
     function getCurrentDateValue() {
         const today = parseTime(new Date())
-        let date = props.value
+        let date = innerValue.value
         let date_data : string[] = []
         if (date != '' && date != null) {
             let date_val = date.split('-') as string[]
@@ -372,7 +427,7 @@
         const minutes = String(now.getMinutes()).padStart(2, '0');
         // 格式化为 ['02', '10']
         const timeArray = [hours, minutes];
-        let time = props.value
+        let time = innerValue.value
         let val : string[]
         if (time) {
             let timeVal = time.split(':')
@@ -446,4 +501,13 @@
 
         return [year, month, day];
     }
+
+    defineExpose({
+        getPickerValue : () : any => {
+            return innerValue.value as any
+        },
+        setPickerValue : (value : any) => {
+            innerValue.value = value
+        }
+    })
 </script>

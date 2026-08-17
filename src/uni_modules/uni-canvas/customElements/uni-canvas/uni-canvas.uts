@@ -497,12 +497,21 @@ export class UniCanvasRenderingContext2D implements CanvasRenderingContext2D {
     return gradient
   }
 
-  private _fixColor(color: string): string {
-    if (color.startsWith('#') || color.startsWith('rgb')) {
+  private _fixColor(color : string) : string {
+    if (color.startsWith('#') || color.startsWith('rgb') || color.startsWith('rgba')) {
       return color
-    } else {
-      return EXTENDED_COLOR_KEYWORDS[color]
     }
+
+    const colorValue: string | undefined = EXTENDED_COLOR_KEYWORDS[color]
+    if (colorValue) {
+      return colorValue
+    }
+
+    if (color == 'transparent') {
+      return 'rgba(0,0,0,0)'
+    }
+
+    return color
   }
 }
 

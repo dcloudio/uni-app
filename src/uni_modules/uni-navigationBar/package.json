@@ -40,7 +40,7 @@
                         "js": false,
                         "kotlin": false,
                         "swift": false,
-                        "arkts": true
+                        "arkts": ["dom1", "dom2"]
                     }
                 },
                 "setNavigationBarTitle": {
@@ -58,7 +58,7 @@
                         "js": false,
                         "kotlin": false,
                         "swift": false,
-                        "arkts": true
+                        "arkts": ["dom1", "dom2"]
                     }
                 },
                 "hideNavigationBarLoading": {
@@ -67,7 +67,7 @@
                         "js": false,
                         "kotlin": false,
                         "swift": false,
-                        "arkts": true
+                        "arkts": ["dom1", "dom2"]
                     }
                 }
             }

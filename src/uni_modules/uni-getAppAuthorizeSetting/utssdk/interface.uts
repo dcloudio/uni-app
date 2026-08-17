@@ -8,20 +8,17 @@ export interface Uni {
       * {
       * 	"app": {
       * 		"android": {
-      * 			"osVer": "5.0",
       * 			"uniVer": "√",
       * 			"unixVer": "3.9+"
       * 		},
       * 		"ios": {
-      * 			"osVer": "12.0",
       * 			"uniVer": "√",
       * 			"unixVer": "4.11"
       * 		},
     *    "harmony": {
-    *      "osVer": "3.0",
     *      "uniVer": "4.31",
     *      "unixVer": "4.61",
-    *      "unixvVer": "5.0"
+    *      "unixVaporVer": "5.0"
     *    }
       * 	},
        *  "mp": {
@@ -89,12 +86,10 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "5.0",
      * 			"uniVer": "x",
      * 			"unixVer": "4.25"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
@@ -125,12 +120,10 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "5.0",
      * 			"uniVer": "x",
      * 			"unixVer": "4.25"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
@@ -143,7 +136,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'authorized' |
     /**
-     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
+     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请蓝牙相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
      */
     'denied' |
     /**
@@ -161,12 +154,10 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "4.4",
      * 			"uniVer": "√",
      * 			"unixVer": "3.9"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
@@ -179,7 +170,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'authorized' |
     /**
-     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
+     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请摄像头相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
      */
     'denied' |
     /**
@@ -197,12 +188,10 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "4.4",
      * 			"uniVer": "√",
      * 			"unixVer": "3.9"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
@@ -215,7 +204,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'authorized' |
     /**
-     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
+     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请定位相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
      */
     'denied' |
     /**
@@ -233,12 +222,10 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "4.4",
      * 			"uniVer": "√",
      * 			"unixVer": "3.9"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
@@ -265,12 +252,10 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
@@ -285,12 +270,10 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "4.4",
      * 			"uniVer": "√",
      * 			"unixVer": "3.9"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
@@ -303,7 +286,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'authorized' |
     /**
-     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
+     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请麦克风相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
      */
     'denied' |
     /**
@@ -321,12 +304,10 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "4.4",
      * 			"uniVer": "√",
      * 			"unixVer": "3.9"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
@@ -339,7 +320,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'authorized' |
     /**
-     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
+     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请通知相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
      */
     'denied' |
     /**
@@ -357,12 +338,10 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
@@ -375,7 +354,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'authorized' |
     /**
-     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
+     * 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
      */
     'denied' |
     /**
@@ -393,12 +372,10 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
@@ -411,7 +388,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'authorized' |
     /**
-     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
+     * 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
      */
     'denied' |
     /**
@@ -429,12 +406,10 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
      * 		"ios": {
-     * 			"osVer": "12.0",
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
@@ -447,7 +422,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'authorized' |
     /**
-     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
+     * 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
      */
     'denied' |
     /**
@@ -465,17 +440,14 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
      * 		"ios": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
        *    "harmony": {
-       *      "osVer": "x",
        *      "uniVer": "x",
        *      "unixVer": "x"
        *    }
@@ -488,7 +460,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'authorized' |
     /**
-     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
+     * 请求授权被拒绝，无法再次请求授权。
      */
     'denied' |
     /**
@@ -496,7 +468,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'not determined' |
     /**
-     * 当前应用没有配置推送权限描述
+     * 当前应用没有配置读写日历权限描述
      */
     'config error' | null,
     /**
@@ -506,20 +478,17 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
      * 		"ios": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
        *    "harmony": {
-       *      "osVer": "5.0.0",
        *      "uniVer": "4.61",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      * 	}
      * }
@@ -530,7 +499,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'authorized' |
     /**
-     * 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限
+     * 请求授权被拒绝，无法再次请求授权。
      */
     'denied' |
     /**
@@ -538,7 +507,7 @@ export type GetAppAuthorizeSettingResult = {
      */
     'not determined' |
     /**
-     * 当前应用没有配置推送权限描述
+     * 当前应用没有配置读日历权限描述
      */
     'config error' | null,
     /**
@@ -548,20 +517,17 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
      * 		"ios": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
        *    "harmony": {
-       *      "osVer": "5.0.0",
        *      "uniVer": "4.61",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      * 	}
      * }
@@ -586,20 +552,17 @@ export type GetAppAuthorizeSettingResult = {
      * {
      * 	"app": {
      * 		"android": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
      * 		"ios": {
-     * 			"osVer": "x",
      * 			"uniVer": "x",
      * 			"unixVer": "x"
      * 		},
        *    "harmony": {
-       *      "osVer": "5.0.0",
        *      "uniVer": "4.61",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      * 	}
      * }

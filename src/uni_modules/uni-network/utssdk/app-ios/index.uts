@@ -7,7 +7,6 @@ import { NetworkUtil } from './network/utils/NetworkUtil.uts';
 import { CFString } from 'CoreFoundation';
 class SimpleNetworkListener<T> extends NetworkRequestListener {
 	private param : RequestOptions<T> | null = null;
-	private headers : Map<string, any> | null = null;
 	private received : number = 0;
 	private data : Data = new Data();
 	@UTSiOS.keyword("weak")
@@ -21,9 +20,8 @@ class SimpleNetworkListener<T> extends NetworkRequestListener {
 	}
 
 	public override onHeadersReceived(statusCode : number, headers : Map<string, any>) : void {
-		this.headers = headers;
-		
 	}
+	
 	public override onDataReceived(data : Data) : void {
 		this.received += Number.from(data.count);
 		this.data.append(data);
@@ -31,7 +29,11 @@ class SimpleNetworkListener<T> extends NetworkRequestListener {
 
 	public override onFinished(response : HTTPURLResponse) : void {
 		try {
-			let headers = response.allHeaderFields as Map<string, any>;
+			let originalHeaders = response.allHeaderFields as Map<string, any>;
+			let headers = new Map<string, any>();
+			originalHeaders.forEach((value, key) => {
+				headers.set(key.toLowerCase(), value);
+			})
 			let kParam = this.param;
 			let result = {};
 			result['statusCode'] = response.statusCode;
@@ -70,7 +72,7 @@ class SimpleNetworkListener<T> extends NetworkRequestListener {
 				data: result['data']! as T,
 				statusCode: (new NSNumber(value = response.statusCode)),
 				header: result['header'] ?? "",
-				cookies: this.parseCookie(this.headers)
+				cookies: this.parseCookie(headers)
 			})
 			let success = kParam?.success;
 			let complete = kParam?.complete;

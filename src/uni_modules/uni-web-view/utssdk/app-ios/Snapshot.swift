@@ -96,7 +96,7 @@ extension UIView {
                 filePath = p
             } else {
                 //截屏存储路径定义：UniSnapshotCacheDir() + /uni-snapshot + 时间搓 + ".png"
-                filePath = "\(UniSnapshotCacheDir())/\(Date().timeIntervalSince1970).png"
+                filePath = "\(UTSiOS.getSnapshotCacheDir())/\(Date().timeIntervalSince1970).png"
             }
             
             do {

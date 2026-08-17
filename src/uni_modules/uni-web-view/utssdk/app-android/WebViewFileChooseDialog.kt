@@ -37,8 +37,8 @@ class WebViewFileChooseDialog(private val context: Activity, intent: Intent) : D
     init {
         val ctx = context
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        oneDp = UTSAndroid.convertToNativePx("1", 1)
-        oneSp = UTSAndroid.convertToNativePx("1", 1)
+        oneDp = UTSAndroid.convertToNativePx("1px", 0)
+        oneSp = UTSAndroid.convertToNativePx("1px", 0)
         var cameraIntent: Intent? = null
         var ext = ""
         intent.type?.let {

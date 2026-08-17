@@ -16,7 +16,9 @@ import TextUtils from 'android.text.TextUtils';
 import FileOutputStream from 'java.io.FileOutputStream';
 import FileInputStream from 'java.io.FileInputStream';
 import InputStream from 'java.io.InputStream';
+// #ifndef VUE3-VAPOR
 import UniConfig from 'io.dcloud.uniapp.framework.UniConfig';
+// #endif
 import Cursor from 'android.database.Cursor';
 import OpenableColumns from 'android.provider.OpenableColumns';
 import Uri from 'android.net.Uri';
@@ -222,6 +224,7 @@ export function copyFile(fromFilePath : string, toFilePath : string) : boolean {
  * 2 USER/AUTO
  */
 export function getOrientation(pageOrientation ?: ChooseImagePageOrientation | null) : number {
+	// #ifndef VUE3-VAPOR
 	if (pageOrientation == null) {
 		var __uniConfig = getGlobalConfig()
 		if (__uniConfig != null) {
@@ -235,6 +238,15 @@ export function getOrientation(pageOrientation ?: ChooseImagePageOrientation | n
 			return 1
 		}
 	}
+	// #endif
+	// #ifdef VUE3-VAPOR
+	if (pageOrientation == null) {
+		pageOrientation = getCurrentAppPageOrientation()
+	}
+	if (pageOrientation == null) {
+		pageOrientation = "portrait"
+	}
+	// #endif
 	switch (pageOrientation!) {
 		case "auto": {
 			return 2
@@ -248,6 +260,58 @@ export function getOrientation(pageOrientation ?: ChooseImagePageOrientation | n
 		default: {
 			return 1
 		}
+	}
+}
+
+function getCurrentAppPageOrientation() : ChooseImagePageOrientation | null {
+	try {
+		var hostEngineClass = Class.forName("io.dcloud.uniappxv.HostEngine")
+		var hostEngine : any | null = null
+		try {
+			var instanceField = hostEngineClass.getDeclaredField("INSTANCE")
+			instanceField.setAccessible(true)
+			hostEngine = instanceField.get(null)
+		} catch (e) {
+		}
+		var currentApp : any | null = null
+		try {
+			var currentAppMethod = hostEngineClass.getDeclaredMethod("getCurrentApp")
+			currentAppMethod.setAccessible(true)
+			currentApp = currentAppMethod.invoke(hostEngine)
+		} catch (e) {
+			var currentAppField = hostEngineClass.getDeclaredField("currentApp")
+			currentAppField.setAccessible(true)
+			currentApp = currentAppField.get(hostEngine)
+		}
+		if (currentApp == null) {
+			return null
+		}
+		var appConfig : any | null = null
+		try {
+			var appConfigMethod = currentApp.javaClass.getDeclaredMethod("getAppConfig")
+			appConfigMethod.setAccessible(true)
+			appConfig = appConfigMethod.invoke(currentApp)
+		} catch (e) {
+			var appConfigField = currentApp.javaClass.getDeclaredField("appConfig")
+			appConfigField.setAccessible(true)
+			appConfig = appConfigField.get(currentApp)
+		}
+		if (appConfig == null) {
+			return null
+		}
+		var orientation : any | null = null
+		try {
+			var orientationMethod = appConfig.javaClass.getDeclaredMethod("getPageOrientation")
+			orientationMethod.setAccessible(true)
+			orientation = orientationMethod.invoke(appConfig)
+		} catch (e) {
+			var orientationField = appConfig.javaClass.getDeclaredField("pageOrientation")
+			orientationField.setAccessible(true)
+			orientation = orientationField.get(appConfig)
+		}
+		return orientation?.toString() as ChooseImagePageOrientation | null
+	} catch (e) {
+		return null
 	}
 }
 

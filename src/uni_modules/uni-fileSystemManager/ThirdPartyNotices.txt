@@ -1,0 +1,8 @@
+Third party libraries
+***************************
+
+THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
+
+Brotli (https://github.com/google/brotli)
+  Copyright: Copyright 2025 The Brotli Authors. All rights reserved.
+  License: MIT License, full text can be found at https://github.com/google/brotli/blob/master/LICENSE

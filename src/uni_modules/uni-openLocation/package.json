@@ -1,14 +1,16 @@
 {
   "id": "uni-openLocation",
   "displayName": "uni-openLocation",
-  "version": "1.1.0",
+  "version": "1.3.0",
   "description": "APP端的 uni.openLocation，仅支持uni-app x，不支持uni-app",
   "keywords": [
     "uni-openLocation"
-],
+  ],
   "repository": "",
   "engines": {
-    "HBuilderX": "^4.41"
+    "HBuilderX": "^4.41",
+    "uni-app": "",
+    "uni-app-x": "^4.36"
   },
   "dcloudext": {
     "type": "uts",
@@ -28,11 +30,23 @@
       "data": "插件不采集任何数据",
       "permissions": "无"
     },
-    "npmurl": ""
+    "npmurl": "",
+    "darkmode": "x",
+    "i18n": "x",
+    "widescreen": "x"
   },
   "uni_modules": {
     "dependencies": [
-      "uts-openSchema"
+      "uni-framework",
+      "uni-actionSheet",
+      "uni-getAppBaseInfo",
+      "uni-theme",
+      "uni-prompt",
+      "uni-getSystemInfo",
+      "uni-getLocation",
+      "uni-map-tencent",
+      "uni-dialogPage",
+      "uni-event"
     ],
     "uni-ext-api": {
       "uni": {
@@ -50,47 +64,59 @@
     "encrypt": [],
     "platforms": {
       "cloud": {
-        "tcb": "y",
-        "aliyun": "y",
-        "alipay": "y"
+        "tcb": "√",
+        "aliyun": "√",
+        "alipay": "√"
       },
       "client": {
-        "Vue": {
-          "vue2": "n",
-          "vue3": "y"
+        "uni-app": {
+          "vue": {
+            "vue2": "-",
+            "vue3": "-"
+          },
+          "web": {
+            "safari": "-",
+            "chrome": "-"
+          },
+          "app": {
+            "vue": "-",
+            "nvue": "-",
+            "android": "-",
+            "ios": "-",
+            "harmony": "-"
+          },
+          "mp": {
+            "weixin": "-",
+            "alipay": "-",
+            "toutiao": "-",
+            "baidu": "-",
+            "kuaishou": "-",
+            "jd": "-",
+            "harmony": "-",
+            "qq": "-",
+            "lark": "-"
+          },
+          "quickapp": {
+            "huawei": "-",
+            "union": "-"
+          }
         },
-        "App": {
-            "app-android": "y",
-            "app-ios": "y",
-            "app-harmony": "y"
-        },
-        "H5-mobile": {
-          "Safari": "y",
-          "Android Browser": "y",
-          "微信浏览器(Android)": "y",
-          "QQ浏览器(Android)": "y"
-        },
-        "H5-pc": {
-          "Chrome": "y",
-          "IE": "n",
-          "Edge": "y",
-          "Firefox": "y",
-          "Safari": "y"
-        },
-        "小程序": {
-          "微信": "n",
-          "阿里": "n",
-          "百度": "n",
-          "字节跳动": "n",
-          "QQ": "n",
-          "钉钉": "n",
-          "快手": "n",
-          "飞书": "n",
-          "京东": "n"
-        },
-        "快应用": {
-          "华为": "n",
-          "联盟": "n"
+        "uni-app-x": {
+          "web": {
+            "safari": "√",
+            "chrome": "√"
+          },
+          "app": {
+            "android": {
+              "extVersion": "",
+              "minVersion": "21"
+            },
+            "ios": "√",
+            "harmony": "√"
+          },
+          "mp": {
+            "weixin": "x"
+          }
         }
       }
     }

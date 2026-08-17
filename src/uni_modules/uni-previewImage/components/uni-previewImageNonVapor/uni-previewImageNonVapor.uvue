@@ -1,0 +1,167 @@
+<template>
+	<!-- #ifdef APP-HARMONY -->
+	<view id="previewSwiper" style="flex: 1;">
+	<!-- #endif -->
+		<swiper class="uni-preview-image-swiper" style="flex: 1;background-color: black;" :indicator-dots="false" :circular="props.loop" :current="props.current"
+			@change="handlePreviewImageChanged" @animationfinish="handlePreviewImageFinish" :disable-touch="props.disableTouch">
+			<swiper-item class="uni-preview-image-swiper-item" v-if="props.urls != null" v-for="(item,index) in props.urls">
+				<uniPreviewImageItem v-if="shouldRender(index)" :index="index" :src="item" :longPressAction="props.longPressAction" :tips="props.tips"
+					:reset="index == props.resetCurrent">
+				</uniPreviewImageItem>
+			</swiper-item>
+		</swiper>
+		<view v-if="props.indicator == 'number'" class="uni-preview-image-number-indicator-layout">
+			<text class="uni-preview-image-number-indicator">{{ props.numberIndicator }}</text>
+		</view>
+		<view class="uni-preview-image-default-indicator-layout" v-if="props.indicator == 'default'"
+			v-show="props.urls != null">
+			<view v-for="i in props.urls!.length" class="uni-preview-image-default-indicator"
+				:class="((props.indicatorIndex + 1) == i) ? 'uni-preview-image-default-indicator-active' : 'uni-preview-image-default-indicator-default'">
+			</view>
+		</view>
+	<!-- #ifdef APP-HARMONY -->
+	</view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="uts">
+	import uniPreviewImageItem from "../uni-previewImageItem/uni-previewImageItem.uvue"
+
+	const props = defineProps({
+		urls: {
+			type: Array as PropType<Array<string> | null>,
+			default: null
+		},
+		current: {
+			type: Number,
+			default: 0
+		},
+		resetCurrent: {
+			type: Number,
+			default: 0
+		},
+		loop: {
+			type: Boolean,
+			default: false
+		},
+		disableTouch: {
+			type: Boolean,
+			default: false
+		},
+		numberIndicator: {
+			type: String,
+			default: ""
+		},
+		indicatorIndex: {
+			type: Number,
+			default: 0
+		},
+		indicator: {
+			type: String,
+			default: "number"
+		},
+		longPressAction: {
+			type: Object as PropType<LongPressActionsOptions | null>
+		},
+		tips: {
+			type: Object as PropType<UTSJSONObject | null>
+		}
+	})
+	const emit = defineEmits<{
+		(e : 'previewImageChanged', event : UniSwiperChangeEvent) : void
+		(e : 'previewImageFinish', event : UniSwiperAnimationFinishEvent) : void
+	}>()
+
+	const shouldRender = (index : number) : boolean => {
+		const len = props.urls?.length
+		if (len == null) {
+			return false
+		}
+		if (len <= 3) {
+			return true
+		}
+
+		const c = props.current
+		if (index == c) {
+			return true
+		}
+
+		if (props.loop) {
+			const prev = c == 0 ? len - 1 : c - 1
+			const next = c == len - 1 ? 0 : c + 1
+			const prev2 = prev == 0 ? len - 1 : prev - 1
+			const next2 = next == len - 1 ? 0 : next + 1
+			if (index == prev || index == next || index == prev2 || index == next2) {
+				return true
+			}
+		} else if (Math.abs(index - c) <= 2) {
+			return true
+		}
+		return false
+	}
+
+	const handlePreviewImageChanged = (e : UniSwiperChangeEvent) => {
+		emit('previewImageChanged', e)
+	}
+
+	const handlePreviewImageFinish = (e : UniSwiperAnimationFinishEvent) => {
+		emit('previewImageFinish', e)
+	}
+</script>
+
+<style>
+	.uni-preview-image-swiper {
+		overflow: hidden;
+	}
+
+	.uni-preview-image-swiper-item {
+		background-color: black;
+		overflow: hidden;
+	}
+
+	.uni-preview-image-default-indicator {
+		width: 9px;
+		height: 9px;
+		border-style: solid;
+		border-radius: 9px;
+		margin: 2px 3px;
+		border-width: .1px;
+		border-color: #AAAAAA;
+	}
+
+	.uni-preview-image-default-indicator-default {
+		background-color: #AAAAAA;
+	}
+
+	.uni-preview-image-default-indicator-active {
+		background-color: #ffffff;
+	}
+
+	.uni-preview-image-default-indicator-layout {
+		bottom: var(--uni-safe-area-inset-bottom);
+		margin-bottom: 8px;
+		flex-direction: row;
+		position: absolute;
+		left: 0px;
+		right: 0px;
+		justify-content: center;
+	}
+
+	.uni-preview-image-number-indicator-layout {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: var(--uni-safe-area-inset-top);
+		margin-top: 8px;
+	}
+
+	.uni-preview-image-number-indicator {
+		color: white;
+		font-size: 16px;
+		margin: auto;
+		padding: 8px 20px;
+		background-color: rgba(0, 0, 0, .3);
+		line-height: 1;
+		border-radius: 32px;
+	}
+</style>

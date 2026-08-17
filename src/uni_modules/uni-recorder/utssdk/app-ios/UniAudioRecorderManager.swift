@@ -68,11 +68,11 @@ public class UniAudioRecorderManager: NSObject, RecorderManager {
     
     
     private var audioRecorder: AVAudioRecorder?
-    
-    private var displayLink: CADisplayLink?
-    private var starTime: TimeInterval = 0 //记录录音开始时间
+
+    private var durationTimer: Timer?
     private var maxDuration: TimeInterval = 0 //录音最大时长
     private var isPaused: Bool = false //是否处于暂停状态
+    private var backgroundTaskId: UIBackgroundTaskIdentifier = .invalid
     /*
      iOS 设备支持的常见采样率如下：
      •    8000 Hz（8kHz）：电话质量，适用于 VoIP（如 G.711 编码）
@@ -93,24 +93,31 @@ public class UniAudioRecorderManager: NSObject, RecorderManager {
     private var errorEventCallBack: UniAudioRecorderErrorEventCallback?
 
     private var audioFormat: UniAudioRecorderFormat = .aac
-    
+
     public override init() {
-       
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
-    
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        endBackgroundTask()
+    }
+
     public func start(_ options: RecorderManagerStartOptions) {
-        
+
         requestRecordPermission { [weak self] granted in
             guard let self = self else { return }
-            
+
             if granted == false {
                 failedAction(1107601)
                 return
             }
-            
+
             self.stop()
-            
-            let duration = TimeInterval(truncating: options.duration ?? 60000) / 1000
+
+            let duration = TimeInterval(truncating: options.duration ?? 61000) / 1000
             let sampleRate = options.sampleRate ?? 44100
             guard sampleRates.contains(sampleRate.int32Value) else {
                 failedAction(1107602)
@@ -118,13 +125,13 @@ public class UniAudioRecorderManager: NSObject, RecorderManager {
             }
             let channels = options.numberOfChannels ?? 1
             let bitRate = options.encodeBitRate ?? 128000
-            
+
             let (valid, error) = isValidEncodeBitRate(bitRate.int32Value, compare: sampleRate.int32Value)
             guard valid else {
                 failedAction(1107603, errMsg: error)
                 return
             }
-            
+
             if let format = options.format {
                 if format == UniAudioRecorderFormat.aac.rawValue {
                     self.audioFormat = .aac
@@ -139,57 +146,58 @@ public class UniAudioRecorderManager: NSObject, RecorderManager {
                     return
                 }
             }
-            
+
             self.innerStart(duration: duration, sampleRate: sampleRate.doubleValue, channels: channels.intValue, bitRate: bitRate.intValue, frameSize: options.frameSize?.int64Value)
         }
     }
-    
+
     public func stop() {
         if let isRecording = audioRecorder?.isRecording, (isRecording || isPaused) {
             audioRecorder?.stop()
-            stopDisplayLink()
-            
+            stopTimer()
+            endBackgroundTask()
+
             let result = StateChangeRes()
             result.tempFilePath = audioRecorder?.url.absoluteString ?? ""
             dispatchStopEvent(event:.stop , result: result)
-            
+
             print("录音已完成，文件保存在: \(audioRecorder?.url.absoluteString ?? "未知路径")")
             audioRecorder = nil
         }
     }
-    
+
     public func pause() {
         guard let recorder = audioRecorder, recorder.isRecording else { return }
         recorder.pause()
         isPaused = true
-        stopDisplayLink()
+        stopTimer()
         dispatchEvent(event: .pause)
     }
-    
+
     public func resume() {
         guard let recorder = audioRecorder, !recorder.isRecording else { return }
         recorder.record()
         isPaused = false
-        startDisplayLink()
+        startTimer()
         dispatchEvent(event: .resume)
     }
-    
+
     public func onStart(_ options: @escaping (Any) -> Void) {
         addEvent(event: .start, eventCallback: options)
     }
-    
+
     public func onPause(_ options: @escaping (Any) -> Void) {
         addEvent(event: .pause, eventCallback: options)
     }
-    
+
     public func onStop(_ options: @escaping (any RecorderManagerOnStopResult) -> Void) {
         addStopEvent(event: .stop, eventCallback: options)
     }
-    
+
     public func onResume(_ options: @escaping (Any) -> Void) {
         addEvent(event: .resume, eventCallback: options)
     }
-    
+
     public func onFrameRecorded(_ options: @escaping (Any) -> Void) {
         addEvent(event: .frameRecorded, eventCallback: options)
     }
@@ -297,41 +305,64 @@ extension UniAudioRecorderManager {
                     // TODO: 设置帧大小
                 }
                 //录音计时逻辑
-                starTime = CACurrentMediaTime()
                 maxDuration = duration
                 isPaused = false
-                startDisplayLink()
-                
+                startTimer()
+                beginBackgroundTask()
+
                 dispatchEvent(event: .start)
             } else {
                 failedAction(1107604, errMsg: "录音启动失败，请对比采样率与编码码率是否匹配")
             }
-            
+
         } catch {
             failedAction(1107604, errMsg: error.localizedDescription)
             print("录音启动失败: \(error.localizedDescription)")
         }
     }
-    
-    private func startDisplayLink() {
-        stopDisplayLink()
-        displayLink = CADisplayLink(target: self, selector: #selector(updateTimer))
-        displayLink?.add(to: .main, forMode: .common)
+
+    private func startTimer() {
+        stopTimer()
+        durationTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
+            self?.updateTimer()
+        }
+        RunLoop.main.add(durationTimer!, forMode: .common)
     }
-    
-    private func stopDisplayLink() {
-        displayLink?.invalidate()
-        displayLink = nil
+
+    private func stopTimer() {
+        durationTimer?.invalidate()
+        durationTimer = nil
     }
-    
+
     @objc func updateTimer() {
-        guard !isPaused else { return }
-        let elapsedTime = CACurrentMediaTime() - starTime
-        if elapsedTime >= maxDuration {
+        guard !isPaused, let recorder = audioRecorder else { return }
+        if recorder.currentTime >= maxDuration {
             stop()
         }
     }
-    
+
+    private func beginBackgroundTask() {
+        endBackgroundTask()
+        backgroundTaskId = UIApplication.shared.beginBackgroundTask { [weak self] in
+            self?.endBackgroundTask()
+        }
+    }
+
+    private func endBackgroundTask() {
+        if backgroundTaskId != .invalid {
+            UIApplication.shared.endBackgroundTask(backgroundTaskId)
+            backgroundTaskId = .invalid
+        }
+    }
+
+    @objc private func appDidEnterBackground() {
+        beginBackgroundTask()
+    }
+
+    @objc private func appWillEnterForeground() {
+        // 后台任务会在录音结束时自动清理
+    }
+
     private func getAudioRecorderFileURL() -> URL {
         var cachePath = UniResource.CACHE_PATH + "uni-recorder/"
         cachePath = UTSiOS.convert2AbsFullPath(cachePath)

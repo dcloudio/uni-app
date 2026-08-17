@@ -62,10 +62,12 @@ export const getSystemInfoSync : GetSystemInfoSync = function () : GetSystemInfo
 			const windowHeight = UTSAndroid.getWindowHeight();
 			const windowTop = 0;
 			const windowBottom = 0;
-			const safeAreaInsetsTop = statusBarHeight;
+			let safeAreaInsetsTop = statusBarHeight;
 			let safeAreaInsetsBottom = 0;
-			// #ifdef UNI-APP-X
-			let androidThreeButtonNavigationTranslucent = false;
+			let safeAreaInsetsLeft = 0;
+			let safeAreaInsetsRight = 0;
+            let androidThreeButtonNavigationTranslucent = false;
+			// #ifdef UNI-APP-X && !VUE3-VAPOR			
 			const pages = getCurrentPages();
 			if (pages.length > 0) {
 				const currentPage = pages[pages.length - 1];
@@ -93,19 +95,56 @@ export const getSystemInfoSync : GetSystemInfoSync = function () : GetSystemInfo
 				safeAreaInsetsBottom = DeviceUtil.getNavigationBarHeight(activity);
 			}
 			// #endif
+            // #ifdef VUE3-VAPOR
+            const insets = UTSAndroid.getSafeAreaInsets();
+            safeAreaInsetsLeft = insets.getNumber('left') ?? 0;
+            safeAreaInsetsRight = insets.getNumber('right') ?? 0;
+            safeAreaInsetsTop = insets.getNumber('top') ?? 0;
+            safeAreaInsetsBottom = insets.getNumber('bottom') ?? 0;
+            // #endif
 			const safeAreaInsets : SafeAreaInsets = {
-				left: 0,
+				left: safeAreaInsetsLeft,
 				top: safeAreaInsetsTop,
-				right: 0,
+				right: safeAreaInsetsRight,
 				bottom: safeAreaInsetsBottom
 			}
 
 			let contentHeight = Math.ceil(UTSAndroid.getUniActivity()!!.findViewById<ViewGroup>(android.R.id.content).height / pixelRatio);
-			// #ifdef UNI-APP-X
+			// #ifdef UNI-APP-X && !VUE3-VAPOR
 			if (!androidThreeButtonNavigationTranslucent && navigationMode == "button") {
 				contentHeight -= DeviceUtil.getNavigationBarHeight(activity);
 			}
 			// #endif
+            // #ifdef VUE3-VAPOR
+            try {
+              const pages = getCurrentPages();
+              if (pages.length > 0) {
+                const currentPage = pages[pages.length - 1];
+                androidThreeButtonNavigationTranslucent = (currentPage.getPageStyle()["androidThreeButtonNavigationTranslucent"] as boolean | null) ?? false;
+                const dialogPages = currentPage.getDialogPages();
+                const systemDialogPages = currentPage.$getSystemDialogPages();
+                if (dialogPages.length > 0 && systemDialogPages.length == 0) {
+                  const currentDialogPage = dialogPages[dialogPages.length - 1];
+                  androidThreeButtonNavigationTranslucent = (currentDialogPage.getPageStyle()["androidThreeButtonNavigationTranslucent"] as boolean | null) ?? true;
+                } else if (systemDialogPages.length > 0 && dialogPages.length == 0) {
+                  const currentSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+                  androidThreeButtonNavigationTranslucent = (currentSystemDialogPage.getPageStyle()["androidThreeButtonNavigationTranslucent"] as boolean | null) ?? true;
+                } else if (dialogPages.length > 0 && systemDialogPages.length > 0) {
+                  const currentDialogPage = dialogPages[dialogPages.length - 1];
+                  const currentSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+                  if (currentDialogPage.pageId > currentSystemDialogPage.pageId) {
+                    androidThreeButtonNavigationTranslucent = (currentDialogPage.getPageStyle()["androidThreeButtonNavigationTranslucent"] as boolean | null) ?? true;
+                  } else {
+                    androidThreeButtonNavigationTranslucent = (currentSystemDialogPage.getPageStyle()["androidThreeButtonNavigationTranslucent"] as boolean | null) ?? true;
+                  }
+                }
+              }
+              const navigationMode = UTSAndroid.getNavigationMode();
+              if (!androidThreeButtonNavigationTranslucent && navigationMode == "button") {
+                contentHeight -= DeviceUtil.getNavigationBarHeight(activity);
+              } 
+            } catch(e) { }
+            // #endif
 			
 			const safeArea : SafeArea = {
 				left: safeAreaInsets.left,
@@ -202,10 +241,12 @@ export const getWindowInfo: GetWindowInfo = function(): GetWindowInfoResult {
 	const windowHeight = UTSAndroid.getWindowHeight();
 	const windowTop = 0;
 	const windowBottom = 0;
-	const safeAreaInsetsTop = statusBarHeight;
+	let safeAreaInsetsTop = statusBarHeight;
 	let safeAreaInsetsBottom = 0;
-	// #ifdef UNI-APP-X
+	let safeAreaInsetsLeft = 0;
+	let safeAreaInsetsRight = 0;
 	let androidThreeButtonNavigationTranslucent = false;
+	// #ifdef UNI-APP-X && !VUE3-VAPOR
 	const pages = getCurrentPages();
 	if (pages.length > 0) {
 		const currentPage = pages[pages.length - 1];
@@ -233,19 +274,56 @@ export const getWindowInfo: GetWindowInfo = function(): GetWindowInfoResult {
 		safeAreaInsetsBottom = DeviceUtil.getNavigationBarHeight(activity);
 	}
 	// #endif
+    // #ifdef VUE3-VAPOR
+    const insets = UTSAndroid.getSafeAreaInsets();
+    safeAreaInsetsLeft = insets.getNumber('left') ?? 0;
+    safeAreaInsetsRight = insets.getNumber('right') ?? 0;
+    safeAreaInsetsTop = insets.getNumber('top') ?? 0;
+    safeAreaInsetsBottom = insets.getNumber('bottom') ?? 0;
+    // #endif
 	const safeAreaInsets : SafeAreaInsets = {
-		left: 0,
+		left: safeAreaInsetsLeft,
 		top: safeAreaInsetsTop,
-		right: 0,
+		right: safeAreaInsetsRight,
 		bottom: safeAreaInsetsBottom
 	}
 	
 	let contentHeight = Math.ceil(UTSAndroid.getUniActivity()!!.findViewById<ViewGroup>(android.R.id.content).height / pixelRatio);
-	// #ifdef UNI-APP-X
+	// #ifdef UNI-APP-X && !VUE3-VAPOR
 	if (!androidThreeButtonNavigationTranslucent && navigationMode == "button") {
 		contentHeight -= DeviceUtil.getNavigationBarHeight(activity);
 	}
 	// #endif
+    // #ifdef VUE3-VAPOR
+    try {
+      const pages = getCurrentPages();
+      if (pages.length > 0) {
+        const currentPage = pages[pages.length - 1];
+        androidThreeButtonNavigationTranslucent = (currentPage.getPageStyle()["androidThreeButtonNavigationTranslucent"] as boolean | null) ?? false;
+        const dialogPages = currentPage.getDialogPages();
+        const systemDialogPages = currentPage.$getSystemDialogPages();
+        if (dialogPages.length > 0 && systemDialogPages.length == 0) {
+          const currentDialogPage = dialogPages[dialogPages.length - 1];
+          androidThreeButtonNavigationTranslucent = (currentDialogPage.getPageStyle()["androidThreeButtonNavigationTranslucent"] as boolean | null) ?? true;
+        } else if (systemDialogPages.length > 0 && dialogPages.length == 0) {
+          const currentSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+          androidThreeButtonNavigationTranslucent = (currentSystemDialogPage.getPageStyle()["androidThreeButtonNavigationTranslucent"] as boolean | null) ?? true;
+        } else if (dialogPages.length > 0 && systemDialogPages.length > 0) {
+          const currentDialogPage = dialogPages[dialogPages.length - 1];
+          const currentSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+          if (currentDialogPage.pageId > currentSystemDialogPage.pageId) {
+            androidThreeButtonNavigationTranslucent = (currentDialogPage.getPageStyle()["androidThreeButtonNavigationTranslucent"] as boolean | null) ?? true;
+          } else {
+            androidThreeButtonNavigationTranslucent = (currentSystemDialogPage.getPageStyle()["androidThreeButtonNavigationTranslucent"] as boolean | null) ?? true;
+          }
+        }
+      }
+      const navigationMode = UTSAndroid.getNavigationMode();
+      if (!androidThreeButtonNavigationTranslucent && navigationMode == "button") {
+        contentHeight -= DeviceUtil.getNavigationBarHeight(activity);
+      } 
+    } catch(e) { }
+    // #endif
 	
 	const safeArea : SafeArea = {
 		left: safeAreaInsets.left,

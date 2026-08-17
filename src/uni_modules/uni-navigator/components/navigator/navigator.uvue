@@ -17,8 +17,11 @@
      * 跳转方式
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -28,8 +31,11 @@
      * 当前应用内的跳转链接
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -39,8 +45,11 @@
      * 当 open-type="navigateTo" 或 open-type="navigateBack" 时有效，窗口的显示/关闭的动画类型。
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -50,8 +59,11 @@
      * 当 open-type="navigateTo" 或 open-type="navigateBack" 时有效，窗口的显示/关闭动画的持续时间。
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -61,8 +73,11 @@
      * 当 open-type 为 navigateBack 时有效，表示回退的层数
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -92,34 +107,42 @@
   const handleTap = () => {
     const url = props.url
     const openType = props.openType as OpenType
+    const onFail = (res: { errMsg: string }) => {
+      console.error(res.errMsg)
+    }
     switch (openType) {
       case 'navigate':
         uni.navigateTo({
           url: url,
           animationType: props.animationType || 'pop-in',
-          animationDuration: props.animationDuration
+          animationDuration: props.animationDuration,
+          fail: onFail
         })
         break;
       case 'navigateBack':
         uni.navigateBack({
           delta: props.delta,
           animationType: props.animationType || 'pop-out',
-          animationDuration: props.animationDuration
+          animationDuration: props.animationDuration,
+          fail: onFail
         })
         break;
       case 'redirect':
         uni.redirectTo({
-          url: url
+          url: url,
+          fail: onFail
         })
         break;
       case 'reLaunch':
         uni.reLaunch({
-          url: url
+          url: url,
+          fail: onFail
         });
         break;
       case 'switchTab':
         uni.switchTab({
-          url: url
+          url: url,
+          fail: onFail
         });
         break;
       default:

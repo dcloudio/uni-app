@@ -219,7 +219,7 @@ export type ClearStorageFailCallback = (res: UniError) => void
 export type ClearStorageCompleteCallback = (res: any) => void
 
 /**
- * uni.removeStorage参数定义
+ * uni.clearStorage参数定义
  */
 export type ClearStorageOptions = {
     /**
@@ -253,20 +253,17 @@ export interface Uni {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "4.11"
      *   	  },
        *    "harmony": {
-       *      "osVer": "3.0",
        *      "uniVer": "4.23",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      *    },
       *  "mp": {
@@ -332,20 +329,17 @@ export interface Uni {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "4.11"
      *   	  },
        *    "harmony": {
-       *      "osVer": "3.0",
        *      "uniVer": "4.23",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      *    },
       *  "mp": {
@@ -410,20 +404,17 @@ export interface Uni {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "4.11"
      *   	  },
        *    "harmony": {
-       *      "osVer": "3.0",
        *      "uniVer": "4.23",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      *    },
       *  "mp": {
@@ -488,20 +479,17 @@ export interface Uni {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "4.11"
      *   	  },
        *    "harmony": {
-       *      "osVer": "3.0",
        *      "uniVer": "4.23",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      *    },
       *  "mp": {
@@ -566,20 +554,17 @@ export interface Uni {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "4.11"
      *   	  },
        *    "harmony": {
-       *      "osVer": "3.0",
        *      "uniVer": "4.23",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      *    },
       *  "mp": {
@@ -644,20 +629,17 @@ export interface Uni {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "4.11"
      *   	  },
        *    "harmony": {
-       *      "osVer": "3.0",
        *      "uniVer": "4.23",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      *    },
       *  "mp": {
@@ -724,20 +706,17 @@ export interface Uni {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "4.11"
      *   	  },
        *    "harmony": {
-       *      "osVer": "3.0",
        *      "uniVer": "4.23",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      *    },
       *  "mp": {
@@ -804,20 +783,17 @@ export interface Uni {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "4.11"
      *   	  },
        *    "harmony": {
-       *      "osVer": "3.0",
        *      "uniVer": "4.23",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      *    },
       *  "mp": {
@@ -882,20 +858,17 @@ export interface Uni {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "4.11"
      *   	  },
        *    "harmony": {
-       *      "osVer": "3.0",
        *      "uniVer": "4.23",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      *    },
       *  "mp": {
@@ -960,20 +933,17 @@ export interface Uni {
      * @uniPlatform {
      *    "app": {
      *        "android": {
-     *            "osVer": "5.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "3.9.0"
      *        },
      *        "ios": {
-     *            "osVer": "12.0",
      *            "uniVer": "2.0.3",
      *            "unixVer": "4.11"
      *   	  },
        *    "harmony": {
-       *      "osVer": "3.0",
        *      "uniVer": "4.23",
        *      "unixVer": "4.61",
-       *      "unixvVer": "5.0"
+       *      "unixVaporVer": "5.0"
        *    }
      *    },
       *  "mp": {

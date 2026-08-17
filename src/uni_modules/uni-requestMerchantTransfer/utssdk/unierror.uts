@@ -1,0 +1,53 @@
+export type RequestMerchantTransferErrorCode = 9301102 | 9301103 | 9301104 | 9301105 | 9301106 | 9301107 | 9301108 | 9301109 | 9301110
+
+export type RequestMerchantTransferError = {
+	errCode : RequestMerchantTransferErrorCode
+	errMsg : string
+}
+
+export const REQUEST_MERCHANT_TRANSFER_MCH_ID_REQUIRED : RequestMerchantTransferError = {
+	errCode: 9301102,
+	errMsg: 'requestMerchantTransfer:fail mchId is required'
+}
+
+export const REQUEST_MERCHANT_TRANSFER_PACKAGE_REQUIRED : RequestMerchantTransferError = {
+	errCode: 9301103,
+	errMsg: 'requestMerchantTransfer:fail package is required'
+}
+
+export const REQUEST_MERCHANT_TRANSFER_APP_ID_REQUIRED : RequestMerchantTransferError = {
+	errCode: 9301104,
+	errMsg: 'requestMerchantTransfer:fail appId is required'
+}
+
+export const REQUEST_MERCHANT_TRANSFER_WECHAT_NOT_INSTALLED : RequestMerchantTransferError = {
+	errCode: 9301105,
+	errMsg: 'requestMerchantTransfer:fail wechat is not installed'
+}
+
+export const REQUEST_MERCHANT_TRANSFER_WECHAT_VERSION_LOW : RequestMerchantTransferError = {
+	errCode: 9301106,
+	errMsg: 'requestMerchantTransfer:fail wechat version is too low'
+}
+
+export const REQUEST_MERCHANT_TRANSFER_CANCEL : RequestMerchantTransferError = {
+	errCode: 9301107,
+	errMsg: 'requestMerchantTransfer:fail cancel'
+}
+
+export const REQUEST_MERCHANT_TRANSFER_PARSE_RESPONSE_ERROR : RequestMerchantTransferError = {
+	errCode: 9301108,
+	errMsg: 'requestMerchantTransfer:fail parse response error'
+}
+
+export const REQUEST_MERCHANT_TRANSFER_OPEN_SDK_ERROR : RequestMerchantTransferError = {
+	errCode: 9301109,
+	errMsg: 'requestMerchantTransfer:fail open sdk error'
+}
+
+export const REQUEST_MERCHANT_TRANSFER_BUSINESS_FAILED : RequestMerchantTransferError = {
+	errCode: 9301110,
+	errMsg: 'requestMerchantTransfer:fail business failed'
+}
+
+export const REQUEST_MERCHANT_TRANSFER_OK = 'requestMerchantTransfer:ok'

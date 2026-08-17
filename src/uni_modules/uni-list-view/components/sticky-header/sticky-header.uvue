@@ -1,8 +1,6 @@
 <template>
   <view
     class="uni-sticky-header"
-    :list-view-id="listViewId"
-    change:list-view-id="recycleListHeaderCpp.setListViewId"
     :section-id="sectionId"
     change:section-id="recycleListHeaderCpp.setSectionId"
     :ref="recycleListHeaderCpp.setElement"
@@ -22,7 +20,6 @@ defineOptions({
   },
 })
 
-const listViewId = inject<number>('__uni_recycle_view_id', 0)
 const sectionId = inject<number>('__uni_recycle_section_id', 0)
 </script>
 <style></style>

@@ -50,9 +50,9 @@ import {
 	ReadCompressedFileResult,
 	ZipFileItem
 } from "../interface.uts"
-import { UniJsSwiftApiWrapper, UTSiOS } from 'DCloudUniappRuntime'
+import { UTSiOS } from 'DCloudUniappRuntime'
 import { Int32 } from 'Swift';
-import { DispatchSemaphore, DispatchTime, DispatchGroup } from 'Dispatch'
+import { DispatchQueue, DispatchSemaphore, DispatchTime, DispatchGroup } from 'Dispatch'
 import { FileSystemManagerFailImpl } from '../unierror';
 
 export const getFileSystemManager : GetFileSystemManager = function () : FileSystemManager {
@@ -72,7 +72,7 @@ class UniFileSystemManagerStats implements Stats {
 	}
 
 	isFile() : boolean {
-		return (UInt16(truncating = mode) & S_IFMT) == S_IFDIR
+		return (UInt16(truncating = mode) & S_IFMT) == S_IFREG
 	}
 
 }
@@ -84,7 +84,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.readFile(encoding = options.encoding, path = options.filePath, completionHandler = (data ?: any, error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -96,7 +96,7 @@ class InnerFileSystemManager implements FileSystemManager {
 						data: buffer
 					}
 
-					UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					DispatchQueue.main.async(execute = () : void => {
 						options.success?.(result)
 						options.complete?.(result)
 					})
@@ -105,7 +105,7 @@ class InnerFileSystemManager implements FileSystemManager {
 					const result : ReadFileSuccessResult = {
 						data: string
 					}
-					UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					DispatchQueue.main.async(execute = () : void => {
 						options.success?.(result)
 						options.complete?.(result)
 					})
@@ -143,7 +143,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.writeFile(encoding = options.encoding, path = options.filePath, data = options.data, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -153,7 +153,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "writeFile:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -186,7 +186,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.removeFile(filePath = options.filePath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -196,7 +196,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "unlink:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -229,7 +229,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.createDirectory(path = options.dirPath, recursive = options.recursive, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -239,7 +239,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "mkdir:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -272,7 +272,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.removeDirectory(filePath = options.dirPath, recursive = options.recursive, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -282,7 +282,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "rmdir:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -315,7 +315,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.readDirectoryList(options.dirPath, completionHandler = (list ?: string[], error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -326,7 +326,7 @@ class InnerFileSystemManager implements FileSystemManager {
 					files: list!,
 					errMsg: "readdir:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -361,13 +361,13 @@ class InnerFileSystemManager implements FileSystemManager {
 			const result : FileManagerSuccessResult = {
 				errMsg: "access:ok"
 			}
-			UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+			DispatchQueue.main.async(execute = () : void => {
 				options.success?.(result)
 				options.complete?.(result)
 			})
 		} else {
 			let err = this.failedAction(1300002)
-			UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+			DispatchQueue.main.async(execute = () : void => {
 				options.fail?.(err)
 				options.complete?.(err)
 			})
@@ -388,7 +388,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.rename(oldPath = options.oldPath, newPath = options.newPath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -398,7 +398,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "rename:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -431,7 +431,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.copyFile(srcPath = options.srcPath, destPath = options.destPath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -441,7 +441,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "copyFile:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -474,7 +474,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.getFileInfo(filePath = options.filePath, digestAlgorithm = options.digestAlgorithm, completionHandler = (result ?: GetFileInfoSuccessResult, error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -486,7 +486,7 @@ class InnerFileSystemManager implements FileSystemManager {
 					size: result!.size as number,
 					errMsg: "getFileInfo:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(res)
 					options.complete?.(res)
 				})
@@ -498,7 +498,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.getStat(filePath = options.path, recursive = options.recursive, completionHandler = (fileStatsArray ?: FileStats[], error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -520,7 +520,7 @@ class InnerFileSystemManager implements FileSystemManager {
 					stats: tempArray
 				}
 
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(res)
 					options.complete?.(res)
 				})
@@ -564,7 +564,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.appendFile(encoding = options.encoding, path = options.filePath, data = options.data, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -574,7 +574,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "appendFile:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -607,7 +607,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.saveFile(tempFilePath = options.tempFilePath, filePath = options.filePath, completionHandler = (path ?: string, error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -617,7 +617,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : SaveFileSuccessResult = {
 					savedFilePath: path!
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -648,7 +648,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.removeSavedFile(filePath = options.filePath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -658,7 +658,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "removeSavedFile:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -670,7 +670,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.unzip(zipFilePath = options.zipFilePath, targetPath = options.targetPath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -680,7 +680,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "unzip:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -692,7 +692,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.getSavedFileList(completionHandler = (list ?: string[], error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -702,7 +702,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : GetSavedFileListResult = {
 					fileList: list
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -714,7 +714,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.truncate(filePath = options.filePath, length = options.length, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -724,7 +724,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "truncate:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -757,7 +757,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.readCompressedFile(filePath = options.filePath, compressionAlgorithm = options.compressionAlgorithm, completionHandler = (dataString ?: string, error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -767,7 +767,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : ReadCompressedFileResult = {
 					data: dataString
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -801,7 +801,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.open(filePath = options.filePath, flag = options.flag, completionHandler = (fd ?: Int32, error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -812,7 +812,7 @@ class InnerFileSystemManager implements FileSystemManager {
 					fd: fd!.toString(),
 					errMsg: "open:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -846,7 +846,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.close(fd = options.fd, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -856,7 +856,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "close:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -889,7 +889,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.fstat(fd = options.fd, completionHandler = (stats ?: Stats, error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -899,7 +899,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FStatSuccessResult = {
 					stats: stats!
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -933,7 +933,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.ftruncate(fd = options.fd, length = options.length, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
 			if (error != null && success == false) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -943,7 +943,7 @@ class InnerFileSystemManager implements FileSystemManager {
 				const result : FileManagerSuccessResult = {
 					errMsg: "ftruncate:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -976,7 +976,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.readZipEntry(filePath = options.filePath, encoding = options.encoding, entries = options.entries, completionHandler = (dict ?: Dictionary<string, ZipFileItem>, error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -993,7 +993,7 @@ class InnerFileSystemManager implements FileSystemManager {
 					result: map,
 					errMsg: "readZipEntry:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -1005,7 +1005,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.write(fd = options.fd, data = options.data, offset = options.offset, length = options.length, position = options.position, completionHandler = (bytesWritten ?: Int32, error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.fail?.(err)
 					options.complete?.(err)
 				})
@@ -1016,7 +1016,7 @@ class InnerFileSystemManager implements FileSystemManager {
 					bytesWritten: Number.from(bytesWritten!),
 					errMsg: "write:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					options.success?.(result)
 					options.complete?.(result)
 				})
@@ -1045,7 +1045,7 @@ class InnerFileSystemManager implements FileSystemManager {
 		UniFileSystemManager.read(arrayBuffer = option.arrayBuffer, fd = option.fd, offset = option.offset, length = option.length, position = option.position, completionHandler = (bytesRead ?: Int32, error ?: UniFileSystemManagerError) : void => {
 			if (error != null) {
 				let err = this.failedAction(error!.errorCode, error!.nativeErrorDescription)
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					option.fail?.(err)
 					option.complete?.(err)
 				})
@@ -1057,7 +1057,7 @@ class InnerFileSystemManager implements FileSystemManager {
 					bytesRead: bytesRead,
 					errMsg: "read:ok"
 				}
-				UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+				DispatchQueue.main.async(execute = () : void => {
 					option.success?.(result)
 					option.complete?.(result)
 				})

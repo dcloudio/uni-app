@@ -37,15 +37,18 @@
       "name": "weixin",
       "app": {
           "js": false,
-          "kotlin": false,
-          "swift": false,
+          "kotlin": true,
+          "swift": true,
           "arkts": true
       }
     }
 	},
     "encrypt": [],
 		"dependencies": [
-			"uni-share"
+			"uni-share",
+			"uni-weixin-common",
+			"uni-framework",
+      "uni-event"
 		],
     "platforms": {
       "cloud": {

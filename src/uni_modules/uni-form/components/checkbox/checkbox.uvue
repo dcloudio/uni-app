@@ -1,9 +1,17 @@
 <template>
-  <text v-if="!hasDefaultSlot" class="uni-checkbox-view uni-checkbox-icon" :class="checkboxClasses" @click.stop="handleTap">
+  <text
+    v-if="!hasDefaultSlot"
+    class="uni-checkbox-view uni-checkbox-icon"
+    :class="disabled ? 'uni-checkbox-disabled' : [isChecked ? checkboxActiveClass : checkboxClass, iconClass]"
+    @click.stop="handleTap"
+  >
     {{ isChecked ? fontUnicode : '' }}
   </text>
   <view v-else class="uni-checkbox" @click.stop="handleTap">
-    <text class="uni-checkbox-view uni-checkbox-icon" :class="checkboxClasses">{{ isChecked ? fontUnicode : '' }}</text>
+    <text
+      class="uni-checkbox-view uni-checkbox-icon"
+      :class="disabled ? 'uni-checkbox-disabled' : [isChecked ? checkboxActiveClass : checkboxClass, iconClass]"
+    >{{ isChecked ? fontUnicode : '' }}</text>
     <text v-if="isStringSlot">
       <slot></slot>
     </text>
@@ -12,17 +20,23 @@
 </template>
 
 <script lang="uts" setup>
-  import { CHECKBOX_GROUP_KEY, FORM_KEY, LABEL_KEY, buildPointerEvent } from '../common.uts'
-  import { UniCheckboxElement } from './global.uts' 
+  import { CHECKBOX_GROUP_KEY, FORM_KEY, LABEL_KEY, buildPointerEvent, toStringOrEmpty } from '../common.uts'
+  import { UniCheckboxElement } from './global.uts'
   import { LabelContext, CheckboxGroupContext } from '../types.uts'
-  
+
   interface CheckboxProps {
     /**
      * 是否禁用
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -32,8 +46,14 @@
      * 当前是否选中，可用来设置默认选中
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -43,8 +63,14 @@
      * 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -54,8 +80,14 @@
      * 复选框选中图标的类名
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -65,8 +97,14 @@
      * 复选框未选中的类名
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -76,8 +114,14 @@
      * 复选框选中的类名
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -107,7 +151,7 @@
   const id = attrs.id
 
   const slots = useSlots()
-  const isStringSlot = slots['default']?.['returnType'] === 'string'
+  const isStringSlot = slots['default']?.['returnType'] == 'string'
   const hasDefaultSlot = slots['default'] != null
 
   const proxy = getCurrentInstance()?.proxy
@@ -120,40 +164,36 @@
   const group = inject<CheckboxGroupContext | null>(CHECKBOX_GROUP_KEY, null)
   const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
 
-  const checkboxClasses = computed<string[]>(() => {
-    if (props.disabled) {
-      return ['uni-checkbox-disabled']
-    }
-    return [isChecked.value ? props.checkboxActiveClass : props.checkboxClass, props.iconClass]
-  })
-
-  watch(() => props.checked, (value : boolean) => {
-    if (isChecked.value === value) {
+  const setChecked = (checked : boolean, syncGroup : boolean) => {
+    if (isChecked.value == checked) {
       return
     }
-    isChecked.value = value
-    if (group != null) {
-      group.toggle(props.value, value, false)
+    isChecked.value = checked
+    if (syncGroup && group != null) {
+      group.toggle(toStringOrEmpty(props.value), checked, false)
     }
+  }
+
+  watch(() => props.checked, (value : boolean) => {
+    setChecked(value, true)
   })
 
   onMounted(() => {
     // If inside a group, prefer group's current state
     if (group != null) {
-      const current = group.isChecked(props.value)
+      const value = toStringOrEmpty(props.value)
+      const current = group.isChecked(value)
       // if group has no opinion yet, fall back to prop
       const initial = current ? true : props.checked
       isChecked.value = initial
-      group.register(props.value, isChecked.value, (checked: boolean) => {
-        if (isChecked.value !== checked) {
-          isChecked.value = checked
-        }
+      group.register(value, isChecked.value, (checked: boolean) => {
+        setChecked(checked, false)
       })
     }
     // Register with enclosing label if any
     if (labelCtx != null) {
       labelCtx.register({
-        id: id || props.value,
+        id: id || toStringOrEmpty(props.value),
         activate: (event: UniPointerEvent) => {
           proxy?.$el?.dispatchEvent('click', buildPointerEvent(event))
         },
@@ -164,10 +204,10 @@
 
   onUnmounted(() => {
     if (group != null) {
-      group.unregister(props.value)
+      group.unregister(toStringOrEmpty(props.value))
     }
     if (labelCtx != null) {
-      labelCtx.unregister(id || props.value)
+      labelCtx.unregister(id || toStringOrEmpty(props.value))
     }
   })
 
@@ -177,9 +217,18 @@
     }
     isChecked.value = !isChecked.value
     if (group != null) {
-      group.toggle(props.value, isChecked.value, true)
+      group.toggle(toStringOrEmpty(props.value), isChecked.value, true)
     }
   }
+
+  defineExpose({
+    getCheckboxChecked : () => {
+      return isChecked.value
+    },
+    setCheckboxChecked : (checked : boolean) => {
+      setChecked(checked, true)
+    }
+  })
 </script>
 
 <style>
@@ -205,7 +254,7 @@
     margin-right: 5px;
     /* #ifndef WEB */
     text-align: center;
-    line-height: 22px; 
+    line-height: 22px;
     /* #endif */
   }
 

@@ -36,41 +36,41 @@
 </template>
 
 <script lang="uts" setup>
-  import { openSchema } from '@/uni_modules/uts-openSchema'
+  import { openSchema } from '@/uni_modules/uni-openLocation';
   // #ifdef APP
-  import { canOpenURL } from '@/uni_modules/uts-openSchema'
+  import { canOpenURL } from '@/uni_modules/uni-openLocation';
   // #endif
 
-  import targetPath from '@/uni_modules/uni-openLocation/pages/openLocation/target.png'
+  import targetPath from '@/uni_modules/uni-openLocation/static/target.png';
 
   type AafeArea = {
-    top : number,
-    bottom : number,
-    left : number,
-    right : number
-  }
-
-  type IconPath = {
-    target : string,
-    position : string,
-    navigation : string,
-    back : string,
-  }
-
-  const languageData = {
-    "en": {
-      "navigation": "navigation"
-    },
-    "zh-Hans": {
-      "navigation": "导航"
-    },
-    "zh-Hant": {
-      "navigation": "導航"
-    }
+    top : number;
+    bottom : number;
+    left : number;
+    right : number;
   };
 
-  const currentInstance = getCurrentInstance()!.proxy!
-  const uniPage = currentInstance.$page
+  type IconPath = {
+    target : string;
+    position : string;
+    navigation : string;
+    back : string;
+  };
+
+  const languageData = {
+    en: {
+      navigation: 'navigation',
+    },
+    'zh-Hans': {
+      navigation: '导航',
+    },
+    'zh-Hant': {
+      navigation: '導航',
+    },
+  };
+
+  const currentInstance = getCurrentInstance()!.proxy!;
+  const uniPage = currentInstance.$page;
 
   const id1 = `UniMap1_${(Math.random() * 10e5).toString(36)}` as string;
 
@@ -84,13 +84,13 @@
     longitude: 0,
     scale: 18,
     name: '',
-    address: ''
+    address: '',
   } as OpenLocationOptions);
   const safeArea = ref({
     top: 0,
     bottom: 0,
     left: 0,
-    right: 0
+    right: 0,
   } as AafeArea);
   const icon = ref({
     target: '\ue683',
@@ -98,9 +98,9 @@
     navigation: '\ue640',
     back: '\ue651',
   } as IconPath);
-  const language = ref("zh-Hans");
+  const language = ref('zh-Hans');
   const isLandscape = ref(false);
-  const theme = ref("light");
+  const theme = ref('light');
   const mapId = ref(id1);
   const latitude = ref(0);
   const longitude = ref(0);
@@ -108,13 +108,13 @@
 
   // 计算属性
   const languageCom = computed(() => {
-    const textInfo = languageData[language.value] != null ? languageData[language.value] as UTSJSONObject : languageData['zh-Hans'] as UTSJSONObject;
+    const textInfo = languageData[language.value] != null ? (languageData[language.value] as UTSJSONObject) : (languageData['zh-Hans'] as UTSJSONObject);
     return textInfo;
   });
 
   const darkClassCom = computed(() : string => {
     return theme.value == 'dark' ? 'uni-open-location-dark' : 'uni-open-location-light';
-  })
+  });
 
   const landscapeClassCom = computed(() => {
     return isLandscape.value ? 'uni-open-location-landscape' : '';
@@ -127,7 +127,7 @@
     successEventName.value = options['successEventName']! as string;
     failEventName.value = options['failEventName']! as string;
     uni.$on(optionsEventName.value, (data : UTSJSONObject) => {
-      console.log('data: ', JSON.stringify(data))
+      console.log('data: ', JSON.stringify(data));
       if (data['latitude'] != null) {
         openLocationOptions.value.latitude = data['latitude'] as number;
         latitude.value = openLocationOptions.value.latitude;
@@ -153,8 +153,8 @@
             longitude: openLocationOptions.value.longitude,
             iconPath: targetPath,
             width: 50,
-            height: 50
-          } as Marker
+            height: 50,
+          } as Marker,
         ] as Marker[];
       }, 300);
       uni.$emit(successEventName.value, {});
@@ -168,54 +168,54 @@
     safeArea.value.bottom = info.safeAreaInsets.bottom;
     safeArea.value.left = info.safeAreaInsets.left;
     safeArea.value.right = info.safeAreaInsets.right;
-    const systemInfo = uni.getSystemInfoSync()
+    const systemInfo = uni.getSystemInfoSync();
     // const osLanguage = systemInfo.osLanguage
-    const appLanguage = systemInfo.appLanguage
-    language.value = appLanguage
-    const osTheme = systemInfo.osTheme
-    const appTheme = systemInfo.appTheme
-    if (appTheme != null && appTheme != "auto") {
-      theme.value = appTheme
+    const appLanguage = systemInfo.appLanguage;
+    language.value = appLanguage;
+    const osTheme = systemInfo.osTheme;
+    const appTheme = systemInfo.appTheme;
+    if (appTheme != null && appTheme != 'auto') {
+      theme.value = appTheme;
     } else if (osTheme != null) {
-      theme.value = osTheme
+      theme.value = osTheme;
     }
-    isLandscape.value = systemInfo.deviceOrientation == 'landscape'
+    isLandscape.value = systemInfo.deviceOrientation == 'landscape';
     // #ifdef WEB
-    const hostTheme = systemInfo.hostTheme
+    const hostTheme = systemInfo.hostTheme;
     if (hostTheme != null) {
-      theme.value = hostTheme
+      theme.value = hostTheme;
     }
-    const locale = uni.getLocale()
-    language.value = locale
+    const locale = uni.getLocale();
+    language.value = locale;
     uni.onLocaleChange((res) => {
       if (res.locale) {
-        language.value = res.locale
+        language.value = res.locale;
       }
-    })
+    });
     uni.onThemeChange((res) => {
-      theme.value = res.theme
+      theme.value = res.theme;
     });
     // #endif
     // #ifdef APP-ANDROID || APP-IOS
     uni.onAppThemeChange((res : AppThemeChangeResult) => {
-      theme.value = res.appTheme
-    })
+      theme.value = res.appTheme;
+    });
     uni.onOsThemeChange((res : OsThemeChangeResult) => {
-      theme.value = res.osTheme
-    })
+      theme.value = res.osTheme;
+    });
     // #endif
   };
 
   const closeDialogPage = () => {
     // #ifdef APP-ANDROID
     uni.closeDialogPage({
-      dialogPage: uniPage
-    } as io.dcloud.uniapp.framework.extapi.CloseDialogPageOptions)
+      dialogPage: uniPage,
+    } as io.dcloud.uniapp.framework.extapi.CloseDialogPageOptions);
     // #endif
     // #ifndef APP-ANDROID
     uni.closeDialogPage({
-      dialogPage: uniPage
-    })
+      dialogPage: uniPage,
+    });
     // #endif
   };
 
@@ -253,9 +253,9 @@
     const src = appBaseInfo.packageName;
     // #endif
 
-    const list = ["腾讯地图", "高德地图", "百度地图"] as Array<string>;
+    const list = ['腾讯地图', '高德地图', '百度地图'] as Array<string>;
     // #ifdef APP-IOS
-    list.push("苹果地图");
+    list.push('苹果地图');
     // #endif
     // #ifdef APP-HARMONY
     // TODO: 华为地图有问题，暂不支持
@@ -268,15 +268,15 @@
         if (index >= 0) {
           let item = list[index] as string;
           try {
-            let url = "";
-            if (item == "腾讯地图") {
+            let url = '';
+            if (item == '腾讯地图') {
               // #ifdef APP
               url = `qqmap://map/routeplan?type=drive&from=我的位置&fromcoord=CurrentLocation&to=${openLocationOptions.value.name}&tocoord=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&referer=1`;
               // #endif
               // #ifdef WEB
               url = `https://apis.map.qq.com/uri/v1/marker?marker=coord:${openLocationOptions.value.latitude},${openLocationOptions.value.longitude};title:${openLocationOptions.value.name};addr:${openLocationOptions.value.address}&referer=1`;
               // #endif
-            } else if (item == "高德地图") {
+            } else if (item == '高德地图') {
               // #ifdef APP-ANDROID
               url = `androidamap://route/plan/?sourceApplication=${src}&slat=&slon=&sname=我的位置&dlat=${openLocationOptions.value.latitude}&dlon=${openLocationOptions.value.longitude}&dname=${openLocationOptions.value.name}&dev=0&t=0`;
               // #endif
@@ -289,36 +289,36 @@
               // #ifdef APP-HARMONY
               url = `amapuri://route/plan?dlat=${openLocationOptions.value.latitude}&dlon=${openLocationOptions.value.longitude}&dname=${openLocationOptions.value.name}&sname=我的位置&t=0&sourceApplication=${src}`;
               // #endif
-            } else if (item == "百度地图") {
+            } else if (item == '百度地图') {
               // #ifdef APP
               url = `baidumap://map/direction?origin=我的位置&destination=latlng:${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}|name:${openLocationOptions.value.name}&coord_type=gcj02&mode=driving&src=${src}`;
               // #endif
               // #ifdef WEB
               url = `https://api.map.baidu.com/marker?coord_type=gcj02&location=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&title=${openLocationOptions.value.name}&content=${openLocationOptions.value.address}&output=html&src=${src}`;
               // #endif
-            } else if (item == "苹果地图") {
+            } else if (item == '苹果地图') {
               // #ifdef APP-IOS
               url = `maps://?ll=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&q=${openLocationOptions.value.name}`;
               // #endif
-            } else if (item == "华为地图") {
+            } else if (item == '华为地图') {
               // #ifdef APP-HARMONY
               url = `petalmaps://route?saddr=我的位置&daddr=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&type=drive&utm_source=${src}`;
               // #endif
             }
-            if (url != "") {
+            if (url != '') {
               // #ifdef APP-HARMONY
               try {
                 openSchema(url);
               } catch (err) {
                 uni.showToast({
                   title: `打开失败${err.message}`,
-                  icon: "none"
+                  icon: 'none',
                 });
               }
               // #endif
 
               // #ifdef APP-ANDROID || APP-IOS
-              let schemaPrefix = "";
+              let schemaPrefix = '';
               const schemaIndex = url.indexOf('?');
               if (schemaIndex != -1) {
                 schemaPrefix = url.substring(0, schemaIndex);
@@ -328,7 +328,7 @@
               } else {
                 uni.showToast({
                   title: `请先安装${item}`,
-                  icon: "none"
+                  icon: 'none',
                 });
               }
               // #endif
@@ -341,7 +341,7 @@
             console.error(err);
           }
         }
-      }
+      },
     });
   };
 
@@ -357,10 +357,10 @@
     uni.$off(successEventName.value, null);
     uni.$off(failEventName.value, null);
     // #ifdef APP-IOS
-    __uniappx__nativeEventBus.off(optionsEventName.value, null)
-    __uniappx__nativeEventBus.off(readyEventName.value, null)
-    __uniappx__nativeEventBus.off(successEventName.value, null)
-    __uniappx__nativeEventBus.off(failEventName.value, null)
+    __uniappx__nativeEventBus.off(optionsEventName.value, null);
+    __uniappx__nativeEventBus.off(readyEventName.value, null);
+    __uniappx__nativeEventBus.off(successEventName.value, null);
+    __uniappx__nativeEventBus.off(failEventName.value, null);
     // #endif
   });
 
@@ -373,11 +373,19 @@
 <style>
   @font-face {
     font-family: UniOpenLocationFontFamily;
+    
+    /* #ifdef WEB */
     src: url('data:font/ttf;charset=utf-8;base64,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') format('truetype');
+    /* #endif */
+    
+    /* #ifndef WEB */
+    src: url('../../static/iconfont.ttf') format('truetype');
+    /* #endif */
+    
   }
 
   .uni-open-location-icons {
-    font-family: "UniOpenLocationFontFamily";
+    font-family: 'UniOpenLocationFontFamily';
     font-size: 16px;
     font-style: normal;
   }
@@ -411,10 +419,10 @@
     width: 40px;
     height: 40px;
     box-sizing: border-box;
-    background-color: #fff;
+    background-color: #ffffff;
     border-radius: 20px;
     pointer-events: auto;
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, 0.3);
     z-index: 9;
     display: flex;
     justify-content: center;
@@ -434,7 +442,7 @@
     width: 100%;
     height: 60px;
     background-color: rgba(0, 0, 0, 0);
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, 0));
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
   }
 
   .uni-open-location-nav-btn {
@@ -457,8 +465,8 @@
     position: absolute;
   }
 
-  .uni-open-location-nav-back-text {
-    color: #fff;
+  .uni-open-location-nav-back-text.uni-open-location-icons {
+    color: #ffffff;
     font-size: 26px;
   }
 
@@ -466,7 +474,7 @@
     height: 150px;
     border-radius: 10px 10px 0px 0px;
     overflow: hidden;
-    background-color: #fff;
+    background-color: #ffffff;
     display: flex;
     flex-direction: row;
     align-items: center;

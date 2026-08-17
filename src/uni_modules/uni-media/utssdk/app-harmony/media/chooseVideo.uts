@@ -16,20 +16,6 @@ import {
 } from '../../unierror.uts'
 import { CameraPosition, takeVideo, TakeVideoOptions } from './camera.uts'
 
-interface ChooseVideoShowActionSheetOptionsSuccessOptions {
-    tapIndex: number
-}
-
-interface ChooseVideoShowActionSheetOptionsFailOptions {
-    errMsg: string
-}
-
-interface ChooseVideoShowActionSheetOptions {
-    itemList: string[]
-    success?: (e: ChooseVideoShowActionSheetOptionsSuccessOptions) => void | null
-    fail?: (e: ChooseVideoShowActionSheetOptionsFailOptions) => void | null
-};
-
 const errSubject = 'uni-chooseVideo'
 const _chooseVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>) => {
     _chooseMedia({
@@ -97,13 +83,13 @@ export const chooseVideo: ChooseVideo =
                         }
                     },
                     fail: (e) => {
-                        if (e.errMsg.includes('cancel')) {
+                        if (e.errMsg!.includes('cancel')) {
                             res.reject('cancel')
                         } else {
                             res.reject()
                         }
                     }
-                } as ChooseVideoShowActionSheetOptions)
+                })
             }
         },
         ChooseVideoApiProtocol,

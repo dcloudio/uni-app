@@ -152,10 +152,11 @@ export const EXTENDED_COLOR_KEYWORDS = {
 export function uniCanvasGradient(gradient) {
   const originalAddColorStop = gradient.addColorStop;
   gradient.addColorStop = function(offset, color) {
-    if (color.startsWith('#') || color.startsWith('rgb')) {
-      originalAddColorStop.call(this, offset, color);
+    let colorNameValue = EXTENDED_COLOR_KEYWORDS[color];
+    if (colorNameValue) {
+      originalAddColorStop.call(this, offset, colorNameValue);
     } else {
-      originalAddColorStop.call(this, offset, EXTENDED_COLOR_KEYWORDS[color]);
+      originalAddColorStop.call(this, offset, color);
     }
   }
 }

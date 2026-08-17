@@ -25,7 +25,14 @@ export interface UniWebViewElement extends JSExport, UniElement {
 }
 
 
-class UniWebViewElementImpl extends UniElementImpl implements UniWebViewElement {
+class UniWebViewElementImpl
+// #ifndef VUE3-VAPOR
+  extends UniElementImpl
+// #endif
+// #ifdef VUE3-VAPOR
+  extends UniNativeViewElementImpl
+// #endif
+implements UniWebViewElement {
 
 	override tagName : string = 'WEB-VIEW'
 	override nodeName : string = 'WEB-VIEW'
@@ -40,12 +47,18 @@ class UniWebViewElementImpl extends UniElementImpl implements UniWebViewElement 
 	}
 
 	override getIOSView() : UIView | null {
+		// #ifdef VUE3-VAPOR
+		return nativeWebview
+		// #endif
+
+		// #ifndef VUE3-VAPOR
 		const nativeElement = this.firstChild as UniNativeViewElement
 		if (nativeElement == null) {
 			return null
 		} else {
-			return nativeElement.getIOSView()
+      return nativeElement.getIOSView()
 		}
+    // #endif
 	}
 
 	back() {
@@ -73,10 +86,11 @@ class UniWebViewElementImpl extends UniElementImpl implements UniWebViewElement 
 	}
 
 	loadData(options : any) {
-		let data : string = ""
-		let baseURL : string | null = ""
-		let encoding : string | null = ""
+
 		if (options instanceof Map<string, any>) {
+			let data : string = ""
+			let baseURL : string | null = ""
+			let encoding : string | null = ""
 			let option = options as Map<string, any>
 			if (typeof option["data"] == "string") {
 				data = option["data"] as string
@@ -87,27 +101,35 @@ class UniWebViewElementImpl extends UniElementImpl implements UniWebViewElement 
 			if (typeof option["encoding"] == "string") {
 				encoding = option["encoding"] as string
 			}
-		} else if (options instanceof UniWebViewElementLoadDataOptions) {
-			let option = options as UniWebViewElementLoadDataOptions
-			data = option.data
-			baseURL = option.baseURL
-			encoding = option.encoding
-		}
 
-		let option : UniWebViewContextLoadDataOptions = {
-			data: data,
-			baseURL: baseURL,
-			encoding: encoding
+      let context : UniWebViewContextLoadDataOptions = {
+      	data: data,
+      	baseURL: baseURL,
+      	encoding: encoding
+      }
+      this.nativeWebview?.loadData(context)
+
+		} else if (options instanceof UniWebViewContextLoadDataOptions) {
+			let context = options as UniWebViewContextLoadDataOptions
+			this.nativeWebview?.loadData(context)
 		}
-		this.nativeWebview?.loadData(option)
 	}
 
 	override takeSnapshot(options : TakeSnapshotOptions) {
 		if (UTSiOS.instanceof(this.getIOSView(), WKWebView.self)) {
 			const webview = this.getIOSView() as WKWebView
-			webview.inner__takeSnapShotPath(backgroundColor = this.component?.view.backgroundColor, completion = (path : string | null) : void => {
+			let backgroundColor: UIColor | null = null
+			// #ifdef VUE3-VAPOR
+			backgroundColor = self.nativeWebview?.domNode?.getIOSView()?.backgroundColor
+			// #endif
+
+			// #ifndef VUE3-VAPOR
+			backgroundColor = this.component?.view.backgroundColor
+			// #endif
+
+			webview.inner__takeSnapShotPath(backgroundColor = backgroundColor, completion = (path : string | null) : void => {
 				if (path != null) {
-					UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					DispatchQueue.main.async(execute = () : void => {
 						const takeSnapshotSuccess : TakeSnapshotSuccess = {
 							tempFilePath: path!
 						}
@@ -115,7 +137,7 @@ class UniWebViewElementImpl extends UniElementImpl implements UniWebViewElement 
 						options.complete?.(takeSnapshotSuccess)
 					})
 				} else {
-					UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+					DispatchQueue.main.async(execute = () : void => {
 						const takeSnapshotFail : TakeSnapshotFail = {
 							errMsg: 'Snapshot failed'
 						}
@@ -131,18 +153,34 @@ class UniWebViewElementImpl extends UniElementImpl implements UniWebViewElement 
 export class NativeWebView {
 	element : UniNativeViewElement;
 	webView : InnerWebView | null = null;
+	iosAllowsInlineMediaPlayback : boolean = false;
+	elementImpl: UniWebViewElementImpl | null = null
 
-	constructor(element : UniNativeViewElement) {
+	constructor(element : UniNativeViewElement, iosAllowsInlineMediaPlayback : boolean = false) {
 		//接收传递过来的UniNativeViewElement
 		this.element = element;
+		this.iosAllowsInlineMediaPlayback = iosAllowsInlineMediaPlayback;
 		super.init()
 		this.bindView();
-		(this.element.parentElement as UniWebViewElementImpl).setWebView(this.webView);
+
+		// #ifdef VUE3-VAPOR
+		if (UTSiOS.instanceof(this.element, UniWebViewElementImpl.self)) {
+			this.elementImpl = this.element as UniWebViewElementImpl
+			this.elementImpl.setWebView(this.webView);
+		}
+		// #endif
+		// #ifndef VUE3-VAPOR
+		if (UTSiOS.instanceof(this.element.parentElement, UniWebViewElementImpl.self)) {
+			this.elementImpl = this.element.parentElement as UniWebViewElementImpl
+			this.elementImpl.setWebView(this.webView);
+		}
+		// #endif
 	}
 
 	bindView() {
-		this.webView = new InnerWebView()
+		this.webView = new InnerWebView(allowsInlineMediaPlayback = this.iosAllowsInlineMediaPlayback)
 		if (this.webView != null) {
+			this.webView!.pageUrl = this.element.uniPage.route
 			this.element.bindIOSView(this.webView!)
 		}
 		this.addCallback()
@@ -158,60 +196,98 @@ export class NativeWebView {
 		this.setOnContentHeightChangeCallback()
 		this.setOnDidTerminateCallback()
 		this.setOnServiceMessageCallback()
+		this.setOnBlankAreaTapCallback()
 	}
 
 	setOnLoadingCallback() {
 		this.webView?.setOnLoadingCallback((event : UniNativeViewEvent) : void => {
+			"[weak self]"
 			this.element.dispatchEvent('loading', event)
 		})
 	}
 
 	setOnLoadedCallback() {
 		this.webView?.setOnLoadedCallback((event : UniNativeViewEvent) : void => {
+			"[weak self]"
 			this.element.dispatchEvent('loaded', event)
 		})
 	}
 
 	setOnLoadCallback() {
 		this.webView?.setOnLoadCallback((event : UniNativeViewEvent) : void => {
+			"[weak self]"
 			this.element.dispatchEvent('load', event)
 		})
 	}
 
 	setOnErrorCallback() {
 		this.webView?.setOnErrorCallback((event : UniNativeViewEvent) : void => {
+			"[weak self]"
 			this.element.dispatchEvent('error', event)
 		})
 	}
 
 	setOnMessageCallback() {
 		this.webView?.setOnMessageCallback((event : UniNativeViewEvent) : void => {
+			"[weak self]"
 			this.element.dispatchEvent('message', event)
 		})
 	}
 
 	setOnDownloadCallback() {
 		this.webView?.setOnDownloadCallback((event : UniNativeViewEvent) : void => {
+			"[weak self]"
 			this.element.dispatchEvent('download', event)
 		})
 	}
 
 	setOnContentHeightChangeCallback() {
 		this.webView?.setOnContentHeightChangeCallback((event : UniNativeViewEvent) : void => {
+			"[weak self]"
 			this.element.dispatchEvent('contentheightchange', event)
 		})
 	}
 
 	setOnDidTerminateCallback() {
 		this.webView?.setOnDidTerminateCallback((event : UniNativeViewEvent) : void => {
+			"[weak self]"
 			this.element.dispatchEvent('didterminate', event)
 		})
 	}
 
 	setOnServiceMessageCallback() {
 		this.webView?.setOnServiceMessageCallback((event : UniNativeViewEvent) : void => {
-			this.element.dispatchEvent('onWebViewServiceMessage', event)	
+			"[weak self]"
+			this.element.dispatchEvent('onWebViewServiceMessage', event)
 		})
+	}
+
+	setOnBlankAreaTapCallback() {
+		this.webView?.setOnBlankAreaTapCallback((tapInfo: BlankAreaTapInfo, tap: UITapGestureRecognizer) : void => {
+			"[weak self]"
+			this.dispatchBlankAreaTap(tapInfo, tap)
+		})
+	}
+
+	private dispatchBlankAreaTap(tapInfo : BlankAreaTapInfo, tap: UITapGestureRecognizer) {
+		// #ifdef VUE3-VAPOR
+		//TODO: webview需要补齐是否触发宿主 click 事件（点击链接/图片不触发）
+		// const event = new UniPointerEvent('click')
+		// event.bubbles = true
+		// event.x = tapInfo.x as number
+		// event.y = tapInfo.y as number
+		// event.clientX = tapInfo.clientX as number
+		// event.clientY = tapInfo.clientY as number
+		// event.pageX = tapInfo.pageX as number
+		// event.pageY = tapInfo.pageY as number
+		// event.screenX = tapInfo.screenX as number
+		// event.screenY = tapInfo.screenY as number
+		// this.elementImpl.dispatchEvent('click', event)
+		// #endif
+
+		// #ifndef VUE3-VAPOR
+		this.elementImpl?.component?.onClick(tap)
+		// #endif
 	}
 
 	setSrc(src : string | null) {
@@ -249,11 +325,19 @@ export class NativeWebView {
 		this.webView?.setDisableUserSelectMenu(disableUserSelectMenu)
 	}
 
+	setIOSAllowsInlineMediaPlayback(iosAllowsInlineMediaPlayback : boolean) {
+		this.iosAllowsInlineMediaPlayback = iosAllowsInlineMediaPlayback
+		this.webView?.setIOSAllowsInlineMediaPlayback(iosAllowsInlineMediaPlayback)
+	}
+
 	destroy() {
+		this.webView?.prepareForDestroy()
+		this.elementImpl?.setWebView(null)
+		this.webView = null
+		this.elementImpl = null
 		UTSiOS.destroyInstance(this)
 	}
 }
-
 
 export const createWebViewContext : CreateWebViewContext = function (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) : WebViewContext | null {
 	let webviewElement : UniWebViewElement | null = null;
@@ -316,7 +400,7 @@ class WebViewContextImpl implements WebViewContext {
 		return this.webviewElement?.getContentHeight() ?? 0;
 	}
 
-	loadData(options : any) {
+	loadData(options : UniWebViewContextLoadDataOptions) {
 		this.webviewElement?.loadData(options)
 	}
 }
