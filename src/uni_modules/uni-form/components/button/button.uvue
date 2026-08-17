@@ -1,22 +1,76 @@
 <template>
-  <view v-if="loading && !disabled" class="uni-button" :class="[...viewClasses, ...textClasses]"
+  <view
+    v-if="loading && !disabled"
+    class="uni-button"
+    :class="{
+      'uni-button-type-default_view': buttonType == 'default',
+      'uni-button-type-primary_view': buttonType == 'primary',
+      'uni-button-type-warn_view': buttonType == 'warn',
+      'uni-button-view-plain': plain,
+      'uni-button-has-type': type != null,
+      'uni-button-no-type': type == null,
+      'uni-button-disabled': disabled,
+      'uni-button-size-mini': size == 'mini',
+      'transition-enabled': enableTransition,
+      'uni-button-type-default_text': buttonType == 'default',
+      'uni-button-type-primary_text': buttonType == 'primary',
+      'uni-button-type-warn_text': buttonType == 'warn',
+      'uni-button-text-plain': plain && loading,
+      'uni-button-text-size-mini': size == 'mini',
+      'uni-button-text-size-default': size == 'default'
+    }"
     style="justify-content: center;flex-direction: row;align-items: center"
-    :hover-class="disabled ? 'none' : hoverClasses" :hover-start-time="hoverStartTime" :hover-stay-time="hoverStayTime"
-    :hover-stop-propagation="hoverStopPropagation" @click="handleTap">
-    <loading 
-      class="uni-loading" 
-      :class="loadingClasses" 
+    :hover-class="disabled ? 'none' : hoverClasses"
+    :hover-start-time="hoverStartTime"
+    :hover-stay-time="hoverStayTime"
+    :hover-stop-propagation="hoverStopPropagation"
+    @click="handleTap"
+  >
+    <loading
+      class="uni-loading"
+      :class="[
+        {
+          'uni-loading-default': buttonType == 'default',
+          'uni-loading-plain-primary': plain && buttonType == 'primary',
+          'uni-loading-plain-warn': plain && buttonType == 'warn'
+        },
+        loadingClass || ''
+      ]"
       <!-- #ifdef APP-IOS -->
-      :ios-spinner="iosLoadingSnow" 
+      :ios-spinner="iosLoadingSnow"
       <!-- #endif -->
     ></loading>
-    <text class="uni-button-loading-text" :style="textStyle">
+    <text ref="textRef" class="uni-button-loading-text" :style="loadingTextStyle" :class="loadingTextClass || ''">
       <slot></slot>
     </text>
   </view>
-  <text v-else class="uni-button uni-button-text" :class="[...viewClasses, ...textClasses]"
-    :hover-class="disabled ? 'none' : hoverClasses" :hover-start-time="hoverStartTime" :hover-stay-time="hoverStayTime"
-    :hover-stop-propagation="hoverStopPropagation" @click="handleTap">
+  <text
+    v-else
+    ref="textRef"
+    class="uni-button uni-button-text"
+    :class="{
+      'uni-button-type-default_view': buttonType == 'default',
+      'uni-button-type-primary_view': buttonType == 'primary',
+      'uni-button-type-warn_view': buttonType == 'warn',
+      'uni-button-view-plain': plain,
+      'uni-button-has-type': type != null,
+      'uni-button-no-type': type == null,
+      'uni-button-disabled': disabled,
+      'uni-button-size-mini': size == 'mini',
+      'transition-enabled': enableTransition,
+      'uni-button-type-default_text': buttonType == 'default',
+      'uni-button-type-primary_text': buttonType == 'primary',
+      'uni-button-type-warn_text': buttonType == 'warn',
+      'uni-button-text-plain': plain && loading,
+      'uni-button-text-size-mini': size == 'mini',
+      'uni-button-text-size-default': size == 'default'
+    }"
+    :hover-class="disabled ? 'none' : hoverClasses"
+    :hover-start-time="hoverStartTime"
+    :hover-stay-time="hoverStayTime"
+    :hover-stop-propagation="hoverStopPropagation"
+    @click="handleTap"
+  >
     <slot></slot>
   </text>
 </template>
@@ -26,11 +80,7 @@
   import { UniButtonElement } from './global.uts'
   import { FormContext } from '../types.uts'
 
-  // TODO hover-class 属性说明
-  // 默认值为 button-hover
-  // 传入的 button-hover 字符串被编译为 ^button-hover
-  // 无法判断外部传入的 button-hover 是否存在，暂时使用内置的 button-hover
-  const DEFAULT_BUTTON_HOVER_CLASS_NAME = '^button-hover'
+  const DEFAULT_BUTTON_HOVER_CLASS_NAME = 'button-hover'
 
   type ButtonSize = 'default' | 'mini'
   type ButtonType = 'default' | 'primary' | 'warn'
@@ -45,8 +95,14 @@
      * 是否禁用
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -56,8 +112,14 @@
      * 按钮类型
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -67,8 +129,14 @@
      * 按钮大小
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -78,8 +146,14 @@
      * 按钮是否镂空，背景色透明
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -89,30 +163,65 @@
      * loading 图标的类名
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
      */
     loadingClass ?: string.ClassString;
     /**
-     * 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果
+     * loading 文案的类名
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.21"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.21"
          }
        }
      }
      */
-    hoverClass ?: any;
+    loadingTextClass ?: string.ClassString;
+    /**
+     * 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    hoverClass ?: string.ClassString;
     /**
      * 按住后多久出现点击态，单位毫秒
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -122,8 +231,14 @@
      * 手指松开后点击态保留时间，单位毫秒
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -133,8 +248,14 @@
      * 指定是否阻止本节点的祖先节点出现点击态
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -144,8 +265,14 @@
      * 名称前是否带 loading 图标
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -155,8 +282,14 @@
      * 用于 form 组件，点击分别会触发 form 组件的 submit/reset 事件
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -166,8 +299,14 @@
      * 开放能力
      * @uniPlatform {
        "app": {
-         "harmony": {
-           "unixvVer": "5.0"
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
          }
        }
      }
@@ -178,7 +317,7 @@
      * @uniPlatform {
        "app": {
          "ios": {
-           "unixvVer": "5.0"
+           "unixVaporVer": "5.11"
          }
        }
      }
@@ -188,10 +327,8 @@
 
   const props = withDefaults(defineProps<ButtonProps>(), {
     disabled: false,
-    type: 'default',
     size: 'default',
     plain: false,
-    hoverClass: '',
     hoverStartTime: 20,
     hoverStayTime: 70,
     hoverStopPropagation: false,
@@ -202,19 +339,37 @@
 
   defineOptions({
     name: 'button',
-    // #ifndef APP-IOS
+    // @ts-ignore
     rootElement: {
       class: UniButtonElement
     },
-    // #endif
-    externalClasses: ['hover-class', 'loading-class']
+    externalClasses: ['hover-class', 'loading-class', 'loading-text-class']
+  })
+
+  const textRef = ref<UniTextElement | null>(null)
+
+  const buttonType = computed(() : ButtonType => {
+    return props.type == null ? 'default' : props.type
   })
 
   const textStyle = useComputedStyle({
 		properties: ['font-size', 'color', 'line-height', 'font-weight', 'text-align'],
 		filterProperties: false
 	})
- 
+
+  const loadingTextStyle = computed(() : Map<string, any> => {
+    if (props.loadingTextClass == null) {
+      return textStyle
+    }
+    const style = new Map<string, any>()
+    textStyle.forEach((value, key) => {
+      if (key != 'color') {
+        style.set(key, value)
+      }
+    })
+    return style
+  })
+
   const formCtx = inject<FormContext | null>(FORM_KEY, null)
 
   const enableTransition = ref(false)
@@ -222,31 +377,23 @@
     enableTransition.value = true
   })
 
-  const loadingClasses = computed(() => {
-    const classes : Array<string> = []
-    if (props.type === 'default') {
-      classes.push('uni-loading-default')
-    } else if (props.plain) {
-      if (props.type === 'primary') {
-        classes.push('uni-loading-plain-primary')
-      } else if (props.type === 'warn') {
-        classes.push('uni-loading-plain-warn')
-      }
-    }
-    if (props.loadingClass) {
-      classes.push(props.loadingClass)
-    }
-    return classes
-  })
-
   const hoverClasses = computed(() => {
-    if (props.hoverClass.length && props.hoverClass !== 'none' && props.hoverClass != DEFAULT_BUTTON_HOVER_CLASS_NAME) {
-      return `${props.hoverClass}`
+    let isDefaultHoverClass = false
+
+    if (props.hoverClass != null) {
+      const hoverClass = `${props.hoverClass}`.replace(/^\^+/, '')
+      if (hoverClass == '' || hoverClass == 'none') {
+        return 'none'
+      }
+      if (hoverClass != DEFAULT_BUTTON_HOVER_CLASS_NAME) {
+        return `${props.hoverClass}`
+      }
+      isDefaultHoverClass = true
     }
 
     const classes : Array<string> = []
     if (!props.plain) {
-      switch (props.type) {
+      switch (buttonType.value) {
         case 'default':
           classes.push('uni-button-view_default_hover')
           break;
@@ -258,7 +405,7 @@
           break;
       }
     } else {
-      switch (props.type) {
+      switch (buttonType.value) {
         case 'default':
           classes.push('uni-button-view_plain_default_hover')
           break;
@@ -271,64 +418,12 @@
       }
     }
 
-    return classes.join(' ')
-  })
-  const viewClasses = computed(() => {
-    const classes : Array<string> = []
-    switch (props.type) {
-      case 'default':
-        classes.push('uni-button-type-default_view')
-        break;
-      case 'primary':
-        classes.push('uni-button-type-primary_view')
-        break;
-      case 'warn':
-        classes.push('uni-button-type-warn_view')
-        break;
+    // 如果开发者外部传入的 hoverClass 也为 button-hover，默认的 button-hover 效果也要生效
+    if (isDefaultHoverClass) {
+      classes.push(`${props.hoverClass}`)
     }
-    if (props.plain) {
-      classes.push('uni-button-view-plain')
-    }
-    if (props.disabled) {
-      classes.push('uni-button-disabled')
-    }
-    switch (props.size) {
-      case 'mini':
-        classes.push('uni-button-size-mini')
-        break;
-    }
-    if (enableTransition.value) {
-      classes.push('transition-enabled')
-    }
-    return classes
-  })
 
-  // 为了实现 loading 颜色和 text 颜色一致，把颜色值注入到根节点 view 上，通过 useComputedStyle 获取 color，设置到子节点 text 上
-  const textClasses = computed(() => {
-    const classes : Array<string> = []
-    switch (props.type) {
-      case 'default':
-        classes.push('uni-button-type-default_text')
-        break;
-      case 'primary':
-        classes.push('uni-button-type-primary_text')
-        break;
-      case 'warn':
-        classes.push('uni-button-type-warn_text')
-        break;
-    }
-    if (props.plain && props.loading) {
-      classes.push('uni-button-text-plain')
-    }
-    switch (props.size) {
-      case 'mini':
-        classes.push('uni-button-text-size-mini')
-        break;
-      case 'default':
-        classes.push('uni-button-text-size-default')
-        break;
-    }
-    return classes
+    return classes.join(' ')
   })
 
   const checkFormAndSubmitOrReset = () => {
@@ -348,9 +443,7 @@
   function checkOpenType() {
     switch (props.openType) {
       case 'agreePrivacyAuthorization':
-        // #ifdef APP-HARMONY
-        UTSHarmony.setPrivacyAgree(true)
-        // #endif
+        uni.agreePrivacyAuthorization()
         break;
     }
   }
@@ -364,6 +457,18 @@
     checkFormAndSubmitOrReset()
     checkOpenType()
   }
+
+  defineExpose({
+    getValue() {
+      if (textRef.value == null) {
+        return ''
+      }
+      return textRef.value.value
+    },
+    isLoading() {
+      return props.loading && !props.disabled
+    }
+  })
 </script>
 
 <style>
@@ -418,6 +523,10 @@
     padding-bottom: 12px;
   }
 
+  .uni-button.uni-button-disabled {
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+
   .uni-button-disabled {
     pointer-events: none;
   }
@@ -438,13 +547,13 @@
   .uni-button-text-plain {
     color: #000000;
   }
-  
+
   .uni-button-disabled.uni-button-text-plain {
     background-color: transparent;
     color: rgba(0, 0, 0, .2);
     border-color: rgba(0, 0, 0, .2);
   }
-  
+
   .uni-button-disabled.uni-button-view-plain {
     background-color: transparent;
     color: rgba(0, 0, 0, .2);
@@ -477,18 +586,27 @@
 
   .uni-button-view-plain {
     border-width: 1px;
+    border-color: #353535;
     background-color: transparent;
   }
 
-  .uni-button-view-plain.uni-button-type-default_view {
+  .uni-button.uni-button-view-plain.uni-button-has-type {
+    background-color: transparent;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
     border-color: #353535;
   }
 
-  .uni-button-view-plain.uni-button-type-primary_view {
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_text {
+    color: #353535;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-primary_view {
     border-color: #007aff;
   }
 
-  .uni-button-view-plain.uni-button-type-primary_text {
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-primary_text {
     color: #007aff;
   }
 
@@ -496,16 +614,26 @@
     color: #007aff;
   }
 
-  .uni-button-view-plain.uni-button-type-warn_view {
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-warn_view {
     border-color: #e64340;
   }
 
-  .uni-button-view-plain.uni-button-type-warn_text {
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-warn_text {
     color: #e64340;
   }
 
   .uni-button-text-plain.uni-button-type-warn_text {
     color: #e64340;
+  }
+
+  .uni-button.uni-button-disabled.uni-button-view-plain {
+    background-color: transparent;
+    color: rgba(0, 0, 0, .2);
+    border-color: rgba(0, 0, 0, .2);
+  }
+
+  .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-no-type {
+    background-color: #f7f7f7;
   }
 
   .button-hover {
@@ -575,5 +703,11 @@
   }
   .transition-enabled.uni-button-view_plain_warn_hover {
     transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+  }
+
+  .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type {
+    background-color: transparent;
+    color: rgba(0, 0, 0, .2);
+    border-color: rgba(0, 0, 0, .2);
   }
 </style>

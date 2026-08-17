@@ -1,0 +1,6 @@
+framework module storage {
+  umbrella header "storage.h"
+  export *
+
+  module * { export * }
+}

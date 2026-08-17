@@ -402,7 +402,7 @@ extension SpinnerView {
     /// 创建系统雪花 indicator
     private func createSpinnerIndicator() {
         
-        let indicator = UIActivityIndicatorView()
+        let indicator = UIActivityIndicatorView(style: .large)
         indicator.color = configuredStrokeColor
         indicator.hidesWhenStopped = false
         addSubview(indicator)

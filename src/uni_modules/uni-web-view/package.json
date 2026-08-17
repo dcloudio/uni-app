@@ -36,7 +36,10 @@
 		"widescreen": "-"
 	},
 	"uni_modules": {
-		"dependencies": ["uni-framework", "app-ios:uni-getElementById"],
+		"dependencies": [
+			"uni-framework",
+			"uni-getElementById"
+		],
 		"components": {
 			"app-android": true,
 			"app-ios": true,

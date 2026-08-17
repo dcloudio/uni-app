@@ -1,4 +1,6 @@
-export type CreateWebviewContext = (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) => WebviewContext | null;
+export type CreateWebviewContext = (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) => WebViewContext | null;
+
+export type CreateWebViewContext = (webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null) => WebViewContext | null;
 
 export type UniWebviewContextLoadDataOptions = {
 	/**
@@ -19,26 +21,23 @@ export type UniWebviewContextLoadDataOptions = {
 	encoding?: string | null
 }
 
-export interface WebviewContext {
+export interface WebViewContext {
 	/**
 	 * @description 后退到 web-view 组件网页加载历史的上一页，如果不存在上一页则没有任何效果。
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "3.9.0"
 	 *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.11"
      *    },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.28",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
 	 *  }
 	 * }
@@ -51,20 +50,17 @@ export interface WebviewContext {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "3.9.0"
 	 *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.11"
      *    },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.28",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
 	 *  }
 	 * }
@@ -77,20 +73,17 @@ export interface WebviewContext {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "3.9.0"
 	 *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.11"
      *    },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.28",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
 	 *  }
 	 * }
@@ -103,20 +96,17 @@ export interface WebviewContext {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "3.9.0"
 	 *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.11"
      *    },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.28",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
 	 *  }
 	 * }
@@ -129,20 +119,17 @@ export interface WebviewContext {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "3.9.0"
 	 *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.11"
      *    },
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.28",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
 	 *  }
 	 * }
@@ -151,24 +138,43 @@ export interface WebviewContext {
 	evalJS(js : string) : void
 
 	/**
+	 * 获取webview内容高度
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.63"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.63"
+	 *     },
+	 *    "harmony": {
+	 *      "uniVer": "5.08",
+	 *      "unixVer": "5.08",
+	 *      "unixVaporVer": "5.08"
+	 *    }
+	 *   }
+	 * }
+	 */
+	getContentHeight() : number
+
+	/**
 	 * @description 在web-view组件中加载页面内容
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "4.71"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "4.71"
 	 *    },
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.71",
 	 *      "unixVer": "4.71",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *  }
 	 * }
@@ -179,36 +185,55 @@ export interface WebviewContext {
 
 export interface Uni {
 	/**
-	 * @description 创建 web-view 组件的上下文对象，用于操作 web-view 的行为。
+	 * 创建 web-view 上下文 WebViewContext 对象。
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/create-webview-context.html
 	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/create-webview-context.html
 	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/create-webview-context.html#createwebviewcontext
+	 *
 	 * @uniPlatform {
-	 *  "app": {
-	 *    "android": {
-	 *      "osVer": "5.0",
-	 *      "uniVer": "x",
-	 *      "unixVer": "3.9.0"
-	 *    },
-   *    "ios": {
-   *      "osVer": "12.0",
-   *      "uniVer": "√",
-   *      "unixVer": "4.11"
-   *    },
-   *    "harmony": {
-   *      "osVer": "3.0",
-   *      "uniVer": "4.28",
-   *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
-   *    }
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "3.9.0"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "5.08",
+	 *       "unixVer": "5.08",
+	 *       "unixVaporVer": "5.08"
+	 *     }
+	 *   }
+	 * }
+	 */
+	createWebViewContext : CreateWebViewContext,
+	/**
+	 * @deprecated 已废弃，仅为了向下兼容保留，建议使用`createWebViewContext`。
+	 * 创建 web-view 上下文 WebviewContext 对象。
+	 *
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "3.9.0"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "4.28",
+	 *       "unixVer": "4.61",
+	 *       "unixVaporVer": "5.0"
+	 *     }
 	 *  },
      *  "web": {
      *    "uniVer": "x",
      *    "unixVer": "x"
      *  }
 	 * }
-	 * @uniVueVersion 2,3
-	 * @return {WebviewContext} web-view组件上下文对象
 	 */
-	createWebviewContext(webviewId : string.WebviewIdString, component ?: ComponentPublicInstance | null): WebviewContext | null;
+	createWebviewContext : CreateWebviewContext
 }

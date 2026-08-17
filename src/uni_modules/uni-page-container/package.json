@@ -32,7 +32,7 @@
   },
   "uni_modules": {
     "components": {
-      "app-android": true,
+      "app-android": "dom2",
       "app-harmony": true,
       "app-ios": true
     },

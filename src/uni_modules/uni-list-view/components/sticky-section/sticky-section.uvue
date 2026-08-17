@@ -5,19 +5,38 @@
     change:list-view-id="recycleListSectionCpp.setListViewId"
     :section-id="sectionId"
     change:section-id="recycleListSectionCpp.setSectionId"
+    :preload="props.preload"
+    change:preload="recycleListSectionCpp.setPreload"
+    :push-pinned-header="pushPinnedHeader"
+    change:push-pinned-header="recycleListSectionCpp.setPushPinnedHeader"
     :list="keyList as string[]"
     change:list="recycleListSectionCpp.updateList"
     :ref="recycleListSectionCpp.setElement"
+    style="position: relative;"
+    :style="{overflow: props.pushPinnedHeader ? 'hidden' : 'visible'}"
   >
-    <view class="placeholder" :ref="recycleListSectionCpp.setPlaceholderElement"></view>
-    <slot></slot>
+    <view :style="{overflow: props.pushPinnedHeader ? 'hidden' : 'visible'}">
+        <view class="placeholder" :ref="recycleListSectionCpp.setPlaceholderElement"></view>
+        <slot></slot>
+    </view>
   </view>
 </template>
 <script module="recycleListSectionCpp" lang="cpp" class-name="RecycleListSection" src="../../cppsdk/recycle_list.h"
   namespace="recycle_list"></script>
 <script setup>
-import { generateUniqueId } from '../../common/utils'
+import { generateUniqueId, NATIVE_CHANNEL_ACTIONS } from '../../common/utils'
 import { UniStickySectionElement } from '../../common/element'
+
+const props = defineProps({
+    preload: {
+        type: Boolean,
+        default: false
+    },
+    pushPinnedHeader: {
+        type: Boolean,
+        default: true
+    }
+})
 
 defineOptions({
   name: 'sticky-section',
@@ -26,13 +45,6 @@ defineOptions({
   },
 })
 
-const props = defineProps({
-  sectionId: {
-    type: [String, Number],
-    required: false,
-    default: '',
-  },
-})
 const listViewId = inject<number>('__uni_recycle_view_id', 0)
 
 const keyList = shallowRef<string[]>([])
@@ -49,10 +61,22 @@ function updateRenderInfo(renderRangeStart: number, renderRangeLength: number) {
   renderRange.value = [renderRangeStart, renderRangeLength]
 }
 
+let nativeChannelFn: Function | null = null;
+function setNativeChannelFn(fn: Function) {
+    nativeChannelFn = fn;
+}
+
+onBeforeUnmount(() => {
+    if (nativeChannelFn) {
+        nativeChannelFn(NATIVE_CHANNEL_ACTIONS.DESTROY_SECTION, sectionId);
+    }
+})
+
 defineExpose({
   updateList,
   updateRenderInfo,
   renderRange,
+  setNativeChannelFn
 })
 </script>
 <style>

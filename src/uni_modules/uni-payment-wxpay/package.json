@@ -39,7 +39,9 @@
 		},
 		"encrypt": [],
 		"dependencies": [
-			"uni-payment"
+      "uni-framework",
+			"uni-payment",
+      "uni-event"
 		],
 		"platforms": {
 			"cloud": {

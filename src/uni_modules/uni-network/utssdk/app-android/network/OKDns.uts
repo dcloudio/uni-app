@@ -7,7 +7,7 @@ export class OKDns implements Dns {
 
 	public override lookup(hostName: string): kotlin.collections.MutableList<InetAddress> {
 		if (hostName == null) {
-			throw UnknownHostException("hostname == null");
+			throw new UnknownHostException("hostname == null");
 		} else {
 			try {
 				let inetAddressesList: Array<InetAddress> = [];

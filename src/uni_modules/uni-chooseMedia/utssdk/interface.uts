@@ -49,20 +49,17 @@ export type ChooseMediaTempFile = {
 	 * @uniPlatform {
 	  *	 "app": {
 	  *		"android": {
-	  *			"osVer": "5.0",
 	  *			"uniVer": "x",
 	  *			"unixVer": "4.61"
 	  *		},
 	  *		"ios": {
-	  *			"osVer": "12.0",
 	  *			"uniVer": "x",
 	  *			"unixVer": "4.61"
 	  *		},
 	*    "harmony": {
-	*      "osVer": "5.0.0",
 	*      "uniVer": "4.61",
 	*      "unixVer": "4.61",
-	*      "unixvVer": "5.0"
+	*      "unixVaporVer": "5.0"
 	*    }
 	  *	},
 	  *	"web": {
@@ -113,24 +110,21 @@ export type ChooseMediaPageOrientation = /**
 
 export type ChooseMediaOptions = {
 	/**
-	  * 屏幕方向。默认为page.json中的pageOrientation。
+	  * 屏幕方向。默认为pages.json中的pageOrientation。
 	  * @uniPlatform {
 	  *	 "app": {
 	  *		"android": {
-	  *			"osVer": "5.0",
 	  *			"uniVer": "x",
 	  *			"unixVer": "4.51"
 	  *		},
 	  *		"ios": {
-	  *			"osVer": "12.0",
 	  *			"uniVer": "x",
 	  *			"unixVer": "x"
 	  *		},
 	*    "harmony": {
-	*      "osVer": "3.0",
 	*      "uniVer": "4.31",
 	*      "unixVer": "4.61",
-	*      "unixvVer": "5.0"
+	*      "unixVaporVer": "5.0"
 	*    }
 	  *	},
 	 *  "mp": {
@@ -189,22 +183,20 @@ export type ChooseMediaOptions = {
 	 * @uniPlatform {
 	 * "app": {
 		 *		"android": {
-		 *			"osVer": "5.0",
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
 		 *		"ios": {
-		 *			"osVer": "12.0",
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
 		 *    "harmony": {
-		 *      "osVer": "3.0",
 		 *      "uniVer": "4.31",
 		 *      "unixVer": "4.61",
-		 *      "unixvVer": "5.0"
+		 *      "unixVaporVer": "5.0"
 		 *    }
-	 *	},
+	 *	}
+	 *}
 	 */
 	count ?: number | null
 	/**
@@ -213,22 +205,20 @@ export type ChooseMediaOptions = {
 	 * @uniPlatform {
 	 * "app": {
 		 *		"android": {
-		 *			"osVer": "5.0",
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
 		 *		"ios": {
-		 *			"osVer": "12.0",
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
 		 *    "harmony": {
-		 *      "osVer": "3.0",
 		 *      "uniVer": "4.31",
 		 *      "unixVer": "4.61",
-		 *      "unixvVer": "5.0"
+		 *      "unixVaporVer": "5.0"
 		 *    }
-	 *	},
+	 *	}
+	 *}
 	 */
 	mediaType ?: (string[]) | null,
 	/**
@@ -237,22 +227,20 @@ export type ChooseMediaOptions = {
 	 * @uniPlatform {
 	 * "app": {
 		 *		"android": {
-		 *			"osVer": "5.0",
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
 		 *		"ios": {
-		 *			"osVer": "12.0",
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
 		 *    "harmony": {
-		 *      "osVer": "3.0",
 		 *      "uniVer": "4.31",
 		 *      "unixVer": "4.61",
-		 *      "unixvVer": "5.0"
+		 *      "unixVaporVer": "5.0"
 		 *    }
-	 *	},
+	 *	}
+	 *}
 	 */
 	sourceType ?: (string[]) | null,
 	/**
@@ -261,20 +249,17 @@ export type ChooseMediaOptions = {
 	 * @uniPlatform {
 	 * "app": {
 		 *		"android": {
-		 *			"osVer": "5.0",
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
 		 *		"ios": {
-		 *			"osVer": "12.0",
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.31",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
 	 *	},
 	*  "mp": {
@@ -332,20 +317,17 @@ export type ChooseMediaOptions = {
 	 * @uniPlatform {
 	 * "app": {
 		 *		"android": {
-		 *			"osVer": "5.0",
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
 		 *		"ios": {
-		 *			"osVer": "12.0",
 		 *			"uniVer": "x",
 		 *			"unixVer": "4.51"
 		 *		},
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.25",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
 	 *	},
 	*  "mp": {
@@ -431,20 +413,17 @@ export interface Uni {
 	  * @uniPlatform {
 	  *	 "app": {
 	  *		"android": {
-	  *			"osVer": "5.0",
 	  *			"uniVer": "x",
 	  *			"unixVer": "4.51"
 	  *		},
 	  *		"ios": {
-	  *			"osVer": "12.0",
 	  *			"uniVer": "x",
 	  *			"unixVer": "4.51"
 	  *		},
 	  *    "harmony": {
-	  *      "osVer": "3.0",
 	  *      "uniVer": "4.31",
 	  *      "unixVer": "4.61",
-	  *      "unixvVer": "5.0"
+	  *      "unixVaporVer": "5.0"
 	  *    }
 	  *	},
 	 *  "mp": {

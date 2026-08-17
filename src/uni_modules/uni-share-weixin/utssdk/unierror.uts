@@ -20,7 +20,9 @@ export enum ShareWeixinErrorCode {
 
   GET_THUMB_IMAGE_ERROR = 4000509,
 
-  WEI_XIN_APP_MAYBE_NOT_INSTALL = 4000510
+  WEI_XIN_APP_MAYBE_NOT_INSTALL = 4000510,
+
+	TYPE_SHARE_FAIL = 4000511
 }
 
 export const SHARE_WEIXIN_UNI_ERROR_CODES : Map<ShareErrorCode, string> = new Map([
@@ -45,7 +47,9 @@ export const SHARE_WEIXIN_UNI_ERROR_CODES : Map<ShareErrorCode, string> = new Ma
 
   [ShareWeixinErrorCode.GET_THUMB_IMAGE_ERROR, '获取缩略图失败'],
 
-  [ShareWeixinErrorCode.WEI_XIN_APP_MAYBE_NOT_INSTALL, '微信可能未安装']
+  [ShareWeixinErrorCode.WEI_XIN_APP_MAYBE_NOT_INSTALL, '微信可能未安装'],
+
+	[ShareWeixinErrorCode.TYPE_SHARE_FAIL, '分享失败'],
 ]);
 
 export class ShareWeixinError extends UniError implements IShareFail {

@@ -12,15 +12,6 @@ import DCloudUniappRuntime
 
 typealias ICallBack = (String, Any?) -> Void
 
-@objc(UniCameraComponentRegister)
-@objcMembers
-public class UniCameraComponentRegister : NSObject {
-    public static func registerComponent() {
-        UniSDKEngine.shared.registerUniComponent(type: "uni-camera-element", nodeClazz: UniCameraElementImpl.constructor, componentCls: UniViewComponent.self);
-        UniSDKEngine.shared.registerExtComponent(type: "uni-camera-element");
-    }
-}
-
 @objc public class CameraImpl: NSObject {
     fileprivate var previewView: UIView? = nil
     fileprivate var currentResolution = "medium"

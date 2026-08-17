@@ -9,11 +9,18 @@ import { UniErrorSubject, FileSystemManagerFailImpl, FileSystemManagerUniErrors,
 import RandomAccessFile from 'java.io.RandomAccessFile'
 import FileChannel from 'java.nio.channels.FileChannel'
 import { isSandyBoxPath } from './FileManagerUtil.uts'
+import { FileDescriptorUtil } from './FileDescriptorUtil'
 import ByteBuffer from 'java.nio.ByteBuffer';
 import FileOutputStream from 'java.io.FileOutputStream';
 
 
 export class WriteFileUtil {
+	private fileDesUtil : FileDescriptorUtil
+
+	constructor(fileDesUtil : FileDescriptorUtil) {
+		this.fileDesUtil = fileDesUtil
+	}
+
 	public writeFile(options : WriteFileOptions) {
 		if (options.encoding == null) {
 			options.encoding = 'utf-8'
@@ -47,7 +54,7 @@ export class WriteFileUtil {
 		}
 
 		let that = this
-		let currentDispatcher = UTSAndroid.getDispatcher()
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
 		UTSAndroid.getDispatcher('io').async(function (_) {
 
 			/**
@@ -235,62 +242,79 @@ export class WriteFileUtil {
 			return
 		}
 		let that = this
-		let currentDispatcher = UTSAndroid.getDispatcher()
+		let currentDispatcher = UTSAndroid.getDispatcher("main")
 		UTSAndroid.getDispatcher('io').async(function (_) {
-
-			let fd = ParcelFileDescriptor.fromFd(options.fd.toInt())
-			if (fd == null) {
-				let err = new FileSystemManagerFailImpl(1300009);
-				options.fail?.(err)
-				options.complete?.(err)
-				return
-			}
-			let outStream = new FileOutputStream(fd.getFileDescriptor())
-			let fileChannel = outStream.getChannel()
-			//创建ByteBuffer并写入数据
-			let byteLength : number = 0
-			if (options.data instanceof ArrayBuffer) {
-				let buffer = options.data as ArrayBuffer
-				byteLength = that.writeBufferByCondition(buffer, options.offset, options.position, options.length, fileChannel)
-			} else {
-				let buffer:ByteBuffer;
-				// 写入文本，根据不同的编码内容写入不同的数据
-				if (options.encoding?.toLowerCase() == 'ascii') {
-					// 与微信保持一致，以UTF-16 BE首字节为ascii
-					let charArray = options.data.toString().toCharArray()
-					let charNum = charArray.size
-					let byteArray = new ByteArray(charNum)
-					let index = 0;
-					for (; index < charNum; index++) {
-						let perByte = charArray[index.toInt()].toChar().code.toByte()
-						byteArray.set(index.toInt(), perByte)
-					}
-					buffer = ByteBuffer.wrap(byteArray)
-				} else if (options.encoding?.toLowerCase() == 'base64') {
-					// base64
-					buffer = ByteBuffer.wrap(Base64.decode(options.data.toString(), Base64.NO_WRAP))
+			var fd : ParcelFileDescriptor | null = null
+			var operationFd : ParcelFileDescriptor | null = null
+			var outStream : FileOutputStream | null = null
+			var fileChannel : FileChannel | null = null
+			try {
+				// open/close 持有原始 descriptor；每次写入复制一个临时副本，避免流对象关闭时影响原始 fd。
+				fd = that.fileDesUtil.getDescriptor(options.fd)
+				if (fd == null) {
+					currentDispatcher.async(function (_) {
+						let err = new FileSystemManagerFailImpl(1300009);
+						options.fail?.(err)
+						options.complete?.(err)
+					})
+					return
+				}
+				operationFd = ParcelFileDescriptor.dup(fd.getFileDescriptor())
+				outStream = new FileOutputStream(operationFd.getFileDescriptor())
+				fileChannel = outStream.getChannel()
+				//创建ByteBuffer并写入数据
+				let byteLength : number = 0
+				if (options.data instanceof ArrayBuffer) {
+					let buffer = options.data as ArrayBuffer
+					byteLength = that.writeBufferByCondition(buffer, options.offset, options.position, options.length, fileChannel)
 				} else {
-					// utf-8 兜底
-					buffer = ByteBuffer.wrap(options.data.toString().toByteArray())
+					let buffer:ByteBuffer;
+					// 写入文本，根据不同的编码内容写入不同的数据
+					if (options.encoding?.toLowerCase() == 'ascii') {
+						// 与微信保持一致，以UTF-16 BE首字节为ascii
+						let charArray = options.data.toString().toCharArray()
+						let charNum = charArray.size
+						let byteArray = new ByteArray(charNum)
+						let index = 0;
+						for (; index < charNum; index++) {
+							let perByte = charArray[index.toInt()].toChar().code.toByte()
+							byteArray.set(index.toInt(), perByte)
+						}
+						buffer = ByteBuffer.wrap(byteArray)
+					} else if (options.encoding?.toLowerCase() == 'base64') {
+						// base64
+						buffer = ByteBuffer.wrap(Base64.decode(options.data.toString(), Base64.NO_WRAP))
+					} else {
+						// utf-8 兜底
+						buffer = ByteBuffer.wrap(options.data.toString().toByteArray())
+					}
+
+					// buffer.flip()
+					while (buffer.hasRemaining()) {
+						byteLength+=fileChannel.write(buffer, 0)
+					}
 				}
 
-				// buffer.flip()
-				while (buffer.hasRemaining()) {
-					byteLength+=fileChannel.write(buffer, 0)
+				let ret : WriteResult = {
+					bytesWritten: byteLength,
+					errMsg: 'write:ok'
 				}
-
-				fileChannel.close()
-				outStream.close()
+				currentDispatcher.async(function (_) {
+					options.success?.(ret)
+					options.complete?.(ret)
+				})
+			} catch (e) {
+				currentDispatcher.async(function (_) {
+					let errCode = fd == null ? 1300009 : 1300201
+					let err = new FileSystemManagerFailImpl(errCode);
+					options.fail?.(err)
+					options.complete?.(err)
+				})
+			} finally {
+				fileChannel?.close()
+				outStream?.close()
+				operationFd?.close()
 			}
-
-			let ret : WriteResult = {
-				bytesWritten: byteLength,
-				errMsg: 'write:ok'
-			}
-			currentDispatcher.async(function (_) {
-				options.success?.(ret)
-				options.complete?.(ret)
-			})
 		}, null)
 	}
 
@@ -302,14 +326,20 @@ export class WriteFileUtil {
 		if (options.encoding.toString().toLowerCase() != 'base64' && options.encoding.toString().toLowerCase() != 'utf-8' && options.encoding.toString().toLowerCase() != 'ascii') {
 			throw new UniError(FileSystemManagerUniErrorSubject, 1200002, msgPrefix + FileSystemManagerUniErrors.get(1200002)!)
 		}
-		let fd = ParcelFileDescriptor.fromFd(options.fd.toInt())
-		if (fd == null) {
-			throw new UniError(FileSystemManagerUniErrorSubject, 1300009, msgPrefix + FileSystemManagerUniErrors.get(1300009)!)
-		}
 		let byteLength : number = 0
+		var fd : ParcelFileDescriptor | null = null
+		var operationFd : ParcelFileDescriptor | null = null
+		var outStream : FileOutputStream | null = null
+		var fileChannel : FileChannel | null = null
 		try {
-			let outStream = new FileOutputStream(fd.getFileDescriptor())
-			let fileChannel = outStream.getChannel()
+			// 同步写入也只使用复制出的临时 descriptor，调用结束立即释放。
+			fd = this.fileDesUtil.getDescriptor(options.fd)
+			if (fd == null) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300009, msgPrefix + FileSystemManagerUniErrors.get(1300009)!)
+			}
+			operationFd = ParcelFileDescriptor.dup(fd.getFileDescriptor())
+			outStream = new FileOutputStream(operationFd.getFileDescriptor())
+			fileChannel = outStream.getChannel()
 			//创建ByteBuffer并写入数据
 			if (options.data instanceof ArrayBuffer) {
 				let buffer = options.data as ArrayBuffer
@@ -339,11 +369,16 @@ export class WriteFileUtil {
 				while (buffer.hasRemaining()) {
 					byteLength+=fileChannel.write(buffer, 0)
 				}
-				fileChannel.close()
-				outStream.close()
 			}
 		} catch (e) {
+			if (fd == null) {
+				throw new UniError(FileSystemManagerUniErrorSubject, 1300009, msgPrefix + FileSystemManagerUniErrors.get(1300009)!)
+			}
 			throw new UniError(FileSystemManagerUniErrorSubject, 1300201, msgPrefix + FileSystemManagerUniErrors.get(1300201)!)
+		} finally {
+			fileChannel?.close()
+			outStream?.close()
+			operationFd?.close()
 		}
 		let ret : WriteResult = {
 			bytesWritten: byteLength,

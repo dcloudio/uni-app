@@ -1,0 +1,28 @@
+import { OauthErrorCode, IOauthFail } from "./interface.uts";
+
+export const OauthUniErrors : Map<OauthErrorCode, string> = new Map([
+    /**
+     * 服务供应商获取失败
+     */
+    [1310600, '服务供应商获取失败']
+]);
+
+/**
+ * 登录错误主题
+ */
+export const OauthUniErrorSubject = 'uni-oauth';
+
+/**
+ * 登录失败错误类
+ */
+export class OauthFailImpl extends UniError implements IOauthFail {
+    // #ifdef APP-HARMONY
+    override errCode : OauthErrorCode;
+    // #endif
+    constructor(errCode : OauthErrorCode) {
+        super();
+        this.errSubject = OauthUniErrorSubject;
+        this.errCode = errCode;
+        this.errMsg = OauthUniErrors.get(errCode) ?? "";
+    }
+}

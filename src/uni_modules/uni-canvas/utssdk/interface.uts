@@ -17,12 +17,10 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "x"
      *      }
@@ -82,20 +80,17 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.25"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "4.25"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *  },
      *  "web": {
@@ -152,20 +147,17 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.25"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "4.25"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *  },
      *  "web": {
@@ -222,20 +214,17 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.25"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "4.25"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *  },
      *  "web": {
@@ -292,20 +281,17 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.25"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "4.25"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *  },
      *  "web": {
@@ -362,20 +348,17 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.25"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "4.25"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *  },
      *  "web": {
@@ -432,20 +415,17 @@ export interface CanvasContext {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "x",
      *       "unixVer": "4.25"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "x",
      *       "unixVer": "4.25"
      *     },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *   },
      *   "web": {
@@ -502,20 +482,17 @@ export interface CanvasContext {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "x",
      *       "unixVer": "4.25"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "x",
      *       "unixVer": "4.25"
      *     },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *   },
      *   "web": {
@@ -575,12 +552,10 @@ export type CreateCanvasContextAsyncOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.25"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "4.25"
      *      }
@@ -649,12 +624,10 @@ export type CreateCanvasContextAsyncOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.25"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "4.25"
      *      }
@@ -713,12 +686,10 @@ export type CreateCanvasContextAsyncOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.25"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "4.25"
      *      }
@@ -777,12 +748,10 @@ export type CreateCanvasContextAsyncOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.25"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "4.25"
      *      }
@@ -841,12 +810,10 @@ export type CreateCanvasContextAsyncOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.25"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "4.25"
      *      }
@@ -912,20 +879,17 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "x",
      *      "unixVer": "4.25"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "x",
      *      "unixVer": "4.25"
      *    },
      *    "harmony": {
-     *      "osVer": "5.0.0",
      *      "uniVer": "x",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "web": {

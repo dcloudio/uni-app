@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+	<queries>
+		<package android:name="com.tencent.mm" />
+	</queries>
+	<application>
+		<activity
+		    android:name="uts.sdk.modules.DCloudUniWeixinCommon.WXEntryActivity"
+		    android:exported="true"
+		    android:taskAffinity="${applicationId}"
+		    android:launchMode="singleTask">
+		</activity>
+        
+        <activity-alias
+            android:name="${applicationId}.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:targetActivity="uts.sdk.modules.DCloudUniWeixinCommon.WXEntryActivity">
+        </activity-alias>
+        
+        <meta-data android:name="WX_APPID" android:value="${WX_APPID}" />
+	</application>
+</manifest>

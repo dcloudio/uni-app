@@ -8,14 +8,13 @@ export type GetProviderSuccess = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.18"
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -30,20 +29,18 @@ export type GetProviderSuccess = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.11"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.18"
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 * 		"harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 * 		}
 	 *  },
 	 *  "web": {
@@ -54,24 +51,48 @@ export type GetProviderSuccess = {
 	 */
 	'payment' |
 	/**
+	 * 定位 (system、tencent)
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "4.11"
+	 *    },
+	 *    "ios": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
+	 *    },
+	 *    "harmony": {
+	 *      "uniVer": "4.25",
+	 *      "unixVer": "4.61",
+	 *      "unixVaporVer": "5.0"
+	 *    }
+	 *  },
+	 *  "web": {
+	 *    "uniVer": "x",
+	 *    "unixVer": "x"
+	 *  }
+	 * }
+	 */
+	'location' |
+	/**
 	 * 授权登录
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "x"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.08",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 * 		"harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.27",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 * 		}
 	 *  },
 	 *  "web": {
@@ -86,20 +107,18 @@ export type GetProviderSuccess = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.08"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.08",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 * 		"harmony": {
-	 *      "osVer": "5.0.0",
 	 *      "uniVer": "4.66",
 	 *      "unixVer": "4.66",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 * 		}
 	 *  },
 	 *  "web": {
@@ -115,14 +134,13 @@ export type GetProviderSuccess = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.18"
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -137,14 +155,13 @@ export type GetProviderSuccess = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.18"
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -164,14 +181,13 @@ export type GetProviderSyncSuccess = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.25"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.25"
+	 *      "unixVer": "4.25",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -186,20 +202,18 @@ export type GetProviderSyncSuccess = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "4.25"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "x",
-	 *      "unixVer": "4.25"
+	 *      "unixVer": "4.25",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -214,20 +228,18 @@ export type GetProviderSyncSuccess = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "4.25"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "x",
-	 *      "unixVer": "4.25"
+	 *      "unixVer": "4.25",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -238,24 +250,22 @@ export type GetProviderSyncSuccess = {
 	 */
 	'location' |
 	/**
-	 * 授权登录
+	 * 授权登录 （weixin）
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.08"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.08",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 * 		"harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.27",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 * 		}
 	 *  },
 	 *  "web": {
@@ -264,27 +274,51 @@ export type GetProviderSyncSuccess = {
 	 *  }
 	 * }
 	 */
-	'oauth',
+	'oauth'|
+	/**
+	 * 分享（weixin）
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.08"
+	 *    },
+	 *    "ios": {
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.08",
+	 *      "unixVaporVer": "5.11"
+	 *    },
+	 * 		"harmony": {
+	 *      "uniVer": "4.27",
+	 *      "unixVer": "4.61",
+	 *      "unixVaporVer": "5.0"
+	 * 		}
+	 *  },
+	 *  "web": {
+	 *    "uniVer": "x",
+	 *    "unixVer": "x"
+	 *  }
+	 * }
+	 */
+	'share',
 	/**
 	 * 得到的服务供应商
 	 * @type PlusShareShareService['id'][] | PlusPushClientInfo['id'][] | PlusOauthAuthService['id'][] | PlusPaymentPaymentChannel['id'][]
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "4.25"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "x",
-	 *      "unixVer": "4.25"
+	 *      "unixVer": "4.25",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -299,20 +333,18 @@ export type GetProviderSyncSuccess = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "4.25"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "x",
-	 *      "unixVer": "4.25"
+	 *      "unixVer": "4.25",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -332,14 +364,13 @@ export type GetProviderSyncOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.25"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.25"
+	 *      "unixVer": "4.25",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -354,14 +385,13 @@ export type GetProviderSyncOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.25"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.25"
+	 *      "unixVer": "4.25",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -376,14 +406,13 @@ export type GetProviderSyncOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.25"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.25"
+	 *      "unixVer": "4.25",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -394,24 +423,22 @@ export type GetProviderSyncOptions = {
 	 */
 	'location' |
 	/**
-	 * 授权登录
+	 * 授权登录 (weixin)
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.08"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.08",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 * 		"harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.27",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 * 		}
 	 *  },
 	 *  "web": {
@@ -420,7 +447,33 @@ export type GetProviderSyncOptions = {
 	 *  }
 	 * }
 	 */
-	'oauth',
+	'oauth'|
+	/**
+	 * 分享 (weixin)
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.08"
+	 *    },
+	 *    "ios": {
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.08",
+	 *      "unixVaporVer": "5.11"
+	 *    },
+	 * 		"harmony": {
+	 *      "uniVer": "4.27",
+	 *      "unixVer": "4.81",
+	 *      "unixVaporVer": "5.0"
+	 * 		}
+	 *  },
+	 *  "web": {
+	 *    "uniVer": "x",
+	 *    "unixVer": "x"
+	 *  }
+	 * }
+	 */
+	'share',
 };
 
 export type GetProviderSuccessCallback = (result : GetProviderSuccess) => void;
@@ -435,14 +488,13 @@ export type GetProviderOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.18"
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -457,14 +509,13 @@ export type GetProviderOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.11"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.18"
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -475,24 +526,43 @@ export type GetProviderOptions = {
 	 */
 	'payment' |
 	/**
-	 * 授权登录
+	 * 定位 (system、tencent)
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "4.11"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
+	 *    }
+	 *  },
+	 *  "web": {
+	 *    "uniVer": "x",
+	 *    "unixVer": "x"
+	 *  }
+	 * }
+	 */
+	'location' |
+	/**
+	 * 授权登录 (weixin)
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.08"
+	 *    },
+	 *    "ios": {
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.08",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 * 		"harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.27",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 * 		}
 	 *  },
 	 *  "web": {
@@ -501,20 +571,45 @@ export type GetProviderOptions = {
 	 *  }
 	 * }
 	 */
-	'oauth',
+	'oauth' |
+	/**
+	 * 分享 (weixin)
+	 * @uniPlatform {
+	 *  "app": {
+	 *    "android": {
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.08"
+	 *    },
+	 *    "ios": {
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.08",
+	 *      "unixVaporVer": "5.11"
+	 *    },
+	 * 		"harmony": {
+	 *      "uniVer": "4.27",
+	 *      "unixVer": "4.61",
+	 *      "unixVaporVer": "5.0"
+	 * 		}
+	 *  },
+	 *  "web": {
+	 *    "uniVer": "x",
+	 *    "unixVer": "x"
+	 *  }
+	 * }
+	 */
+	'share',
 	/**
 	 * 接口调用成功的回调
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.18"
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -529,14 +624,13 @@ export type GetProviderOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.18"
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -551,14 +645,13 @@ export type GetProviderOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.18"
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -585,20 +678,18 @@ export interface Uni {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.11"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.18"
+	 *      "unixVer": "4.18",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.23",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *  },
    *  "mp": {
@@ -659,20 +750,18 @@ export interface Uni {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "x",
 	 *      "unixVer": "4.25"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "x",
-	 *      "unixVer": "4.25"
+	 *      "unixVer": "4.25",
+	 *      "unixVaporVer": "5.11"
 	 *    },
 	 *    "harmony": {
-	 *      "osVer": "3.0",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61",
-	 *      "unixvVer": "5.0"
+	 *      "unixVaporVer": "5.0"
 	 *    }
 	 *  },
    *  "mp": {
@@ -735,14 +824,13 @@ export type ProviderErrorCode =
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.25"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
-	 *      "unixVer": "4.25"
+	 *      "unixVer": "4.25",
+	 *      "unixVaporVer": "5.11"
 	 *    }
 	 *  },
 	 *  "web": {

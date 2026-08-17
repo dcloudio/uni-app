@@ -1,4 +1,4 @@
-import { GetPrivacySetting, GetPrivacySettingOptions, GetPrivacySettingSuccessResult, OffPrivacyAuthorizationChange, OnPrivacyAuthorizationChange, OnPrivacyAuthorizationChangeCallback, PrivacyChangeResult, ResetPrivacyAuthorization } from "../interface";
+import { GetPrivacySetting, GetPrivacySettingOptions, GetPrivacySettingSuccessResult, OffPrivacyAuthorizationChange, OnPrivacyAuthorizationChange, OnPrivacyAuthorizationChangeCallback, PrivacyChangeResult, ResetPrivacyAuthorization, AgreePrivacyAuthorization } from "../interface";
 import HashMap from 'java.util.HashMap';
 
 export const getPrivacySetting : GetPrivacySetting = function (option : GetPrivacySettingOptions) {
@@ -34,4 +34,8 @@ export const offPrivacyAuthorizationChange : OffPrivacyAuthorizationChange = (id
 	if (privacyCallbacks.isEmpty()) {
 		UTSAndroid.offPrivacyAgreeChange(privacyAuthorizationChangeFunction)
 	}
+}
+
+export const agreePrivacyAuthorization : AgreePrivacyAuthorization = () => {
+	UTSAndroid.setPrivacyAgree(true)
 }

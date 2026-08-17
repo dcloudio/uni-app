@@ -1,0 +1,66 @@
+import Activity from 'android.app.Activity';
+import Intent from 'android.content.Intent';
+import Bundle from 'android.os.Bundle';
+import PackageManager from 'android.content.pm.PackageManager';
+import ConstantsAPI from 'com.tencent.mm.opensdk.constants.ConstantsAPI';
+import BaseReq from 'com.tencent.mm.opensdk.modelbase.BaseReq';
+import BaseResp from 'com.tencent.mm.opensdk.modelbase.BaseResp';
+import IWXAPIEventHandler from 'com.tencent.mm.opensdk.openapi.IWXAPIEventHandler';
+import WXAPIFactory from 'com.tencent.mm.opensdk.openapi.WXAPIFactory';
+import IWXAPI from 'com.tencent.mm.opensdk.openapi.IWXAPI';
+import SendAuth from 'com.tencent.mm.opensdk.modelmsg.SendAuth';
+
+export class WXEntryActivity extends Activity implements IWXAPIEventHandler {
+
+    constructor() {
+        super();
+    }
+
+    private api : IWXAPI | null = null;
+
+    override onCreate(savedInstanceState : Bundle | null) {
+        super.onCreate(savedInstanceState);
+        this.api = WXAPIFactory.createWXAPI(this, this.getWXAppId());
+        this.api?.handleIntent(this.getIntent(), this);
+    }
+
+    override onNewIntent(intent : Intent) {
+        super.onNewIntent(intent);
+        this.setIntent(intent);
+        this.api?.handleIntent(intent, this);
+    }
+
+    override onResp(resp : BaseResp) {
+        if (resp.type == ConstantsAPI.COMMAND_SENDAUTH) {
+            if (resp instanceof SendAuth.Resp) {
+              uni.$emit('uni-oauth-weixin', {
+                  errCode: resp.errCode,
+                  authResult: resp.authResult,
+                  code: resp.code,
+                  country: resp.country,
+                  lang: resp.lang,
+                  state: resp.state,
+                  url: resp.url
+              });
+            }
+        } else if (resp.type == ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX) {
+            uni.$emit('uni-share-weixin', {
+              transaction: resp.transaction,
+              errCode: resp.errCode,
+              errStr: resp.errStr
+            });
+        }
+        this.finish();
+        this.overridePendingTransition(0, 0);
+    }
+
+    override onReq(req : BaseReq) {
+        this.finish();
+        this.overridePendingTransition(0, 0);
+    }
+
+    private getWXAppId() : string {
+        const metaData = this.getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA).metaData;
+        return metaData.getString('WX_APPID', '');
+    }
+}

@@ -1,0 +1,258 @@
+import {
+  CanvasContext,
+  CreateCanvasContextAsync,
+  CreateCanvasContextAsyncOptions,
+  RequestAnimationFrameCallback,
+  CreateCanvasContextAsyncSuccessCallback,
+  CreateCanvasContextAsyncFailCallback,
+  CreateCanvasContextAsyncCompleteCallback,
+} from '../interface.uts'
+
+import {
+  Image,
+  UniCanvasRenderView,
+} from 'DCloudUniCanvas'
+import { DispatchQueue } from 'Dispatch'
+import { NSNumber } from 'Foundation'
+import { JSExport } from 'JavaScriptCore';
+import { CanvasRenderingContext2D, UniCanvasRenderingContext2D } from './CanvasRenderingContext2D.uts'
+
+export type UniCanvasElementReadyCallback = () => void
+
+export class UniNativeCanvas {
+  private element : UniCanvasElementImpl | null = null
+  private renderView : UniCanvasRenderView = new UniCanvasRenderView()
+  private _width = 0
+  private _height = 0
+
+  constructor(element : UniNativeViewElement) {
+    super.init()
+    if (UTSiOS.instanceof(element, UniCanvasElementImpl.self)) {
+      this.element = element as UniCanvasElementImpl
+      this.element.setNativeCanvas(this)
+      this.element.bindView(this.renderView)
+    }
+    const ctx = UTSRuntimeBridge.getCurrentJSContext()
+    ctx?.uni_setObject(Image.self, forKeyedSubscript = "Image");
+    ctx?.uni_setObject(Path2D.self, forKeyedSubscript = "Path2D");
+  }
+  
+  getCanvasRenderView() : UniCanvasRenderView {
+    return this.renderView
+  }
+
+  get width() : number {
+    if (this._width > 0) {
+      return this._width
+    }
+    if (this.element != null) {
+      return this.element!.offsetWidth * this.renderView.devicePixelRatio()
+    }
+    return 0;
+  }
+
+  set width(value : number) {
+    this._width = value
+  }
+
+  get height() : number {
+    if (this._height > 0) {
+      return this._height
+    }
+    if (this.element != null) {
+      return this.element!.offsetHeight * this.renderView.devicePixelRatio()
+    }
+    return 0
+  }
+
+  set height(value : number) {
+    this._height = value
+  }
+
+  getContext(type : string) : CanvasRenderingContext2D | null {
+    return this.element?.getContext(type)
+  }
+
+  toDataURL(type : string | null = null, quality : any | null = null) : string {
+    const data = this.renderView.toDataURL(type ?? 'image/png', quality)
+    return data != null ? data as string : ''
+  }
+
+  destroy() {
+    this.renderView.element = nil
+    this.renderView.destroy()
+  }
+
+  updateBackground(color : string) {
+    this.renderView.updateBackground(color)
+  }
+}
+
+export interface UniCanvasElement extends JSExport, UniElement {
+  width: number;
+  height: number;
+  getContext(contextId: string): CanvasRenderingContext2D | null;
+  toDataURL(type?: string, quality?: any): string;
+}
+
+export class UniCanvasElementImpl extends UniNativeViewElementImpl implements UniCanvasElement {
+  override tagName : string = 'CANVAS'
+  override nodeName : string = 'CANVAS'
+  private context2D : UniCanvasRenderingContext2D | null = null
+  private isViewReady : boolean = false
+  private viewReadyCallbacks : UniCanvasElementReadyCallback[] = []
+  
+  @UTSiOS.keyword("weak")
+  private canvas_holder : UniNativeCanvas | null = null
+
+  setNativeCanvas(holder : UniNativeCanvas) {
+    this.canvas_holder = holder
+  }
+
+  onViewReadyOnce(callback : UniCanvasElementReadyCallback) {
+    if (this.isViewReady) {
+      callback()
+      return
+    }
+    this.viewReadyCallbacks.push(callback)
+  }
+
+  private notifyViewReady() {
+    if (this.isViewReady) {
+      return
+    }
+    this.isViewReady = true
+    const callbacks = this.viewReadyCallbacks
+    this.viewReadyCallbacks = []
+    for (callback in callbacks) {
+      callback()
+    }
+  }
+
+  bindView(view: UniCanvasRenderView ) {
+    view.element = this
+    this.bindIOSView(view)
+    DispatchQueue.main.async(execute = () : void => {
+      this.notifyViewReady()
+    })
+  }
+
+  get width() : number {
+    if (this.canvas_holder != null){
+      return this.canvas_holder!.width
+    }
+    return 0
+  }
+
+  set width(value : number) {
+    if (this.canvas_holder != null){
+      this.canvas_holder!.width = value
+    }
+  }
+
+  get height() : number {
+    if (this.canvas_holder != null){
+      return this.canvas_holder!.height
+    }
+    return 0
+  }
+
+  set height(value : number) {
+    if (this.canvas_holder != null){
+      this.canvas_holder!.height = value
+    }
+  }
+
+  getContext(type : string) : CanvasRenderingContext2D | null {
+    if (type != '2d') {
+      return null
+    }
+    
+    if (this.context2D == null) {
+      const canvas_view = this.canvas_holder?.getCanvasRenderView()
+      if (canvas_view != null) {
+        const context = canvas_view!.getContext("2d")
+        if (context != null) {
+          this.context2D = new UniCanvasRenderingContext2D(context!, this)
+        }
+      }
+    }
+
+    return this.context2D
+  }
+
+  toDataURL(type : string | null = null, quality : any | null = null) : string {
+    if (this.canvas_holder != null) {
+      return this.canvas_holder!.toDataURL(type, quality)  
+    }
+    return ""
+  }
+}
+
+export class UniCanvasContext implements CanvasContext {
+  @UTSiOS.keyword("weak")
+  _element : UniCanvasElementImpl | null = null
+  requestAnimationFrame : JSValue | null = null
+  cancelAnimationFrame : JSValue | null = null
+  
+  constructor(element : UniCanvasElementImpl) {
+    this._element = element
+    const ctx = UTSRuntimeBridge.getCurrentJSContext()
+    this.requestAnimationFrame = ctx?.globalObject?.objectForKeyedSubscript("requestAnimationFrame") 
+    this.cancelAnimationFrame = ctx?.globalObject?.objectForKeyedSubscript("cancelAnimationFrame")
+  }
+
+  getContext(type : string) : CanvasRenderingContext2D | null {
+    return this._element?.getContext(type) as CanvasRenderingContext2D | null
+  }
+
+  toDataURL(type : string) : string {
+    return this.toDataURL(type, 1)
+  }
+
+  toDataURL(type : string, encoderOptions : any) : string {
+    if(this._element != null) {
+      return this._element!.toDataURL(type, encoderOptions)
+    }
+    return ""
+  }
+
+  toDataURL() : string {
+    return this.toDataURL("image/png", 1)
+  }
+
+  createImage() : Image {
+    return new Image()
+  }
+
+  createPath2D() : Path2D {
+    return new Path2D()
+  }
+
+}
+
+export const createCanvasContextAsync : CreateCanvasContextAsync =
+  function (options : CreateCanvasContextAsyncOptions) {
+    const element = uni.getElementById(options.id)
+    if (element != null && UTSiOS.instanceof(element, UniCanvasElementImpl.self)) {
+      const canvasElement = element as UniCanvasElementImpl
+      canvasElement.onViewReadyOnce(() => {
+        options.success?.(new UniCanvasContext(canvasElement))
+        options.complete?.()
+      })
+    } else {
+      const uniError = new UniError('uni-createCanvasContextAsync', -1, 'canvas id invalid.')
+      options.fail?.(uniError)
+      options.complete?.()
+    }
+  }
+
+export {
+  CanvasContext,
+  CreateCanvasContextAsync,
+  CreateCanvasContextAsyncOptions,
+  RequestAnimationFrameCallback,
+  CreateCanvasContextAsyncSuccessCallback,
+  CreateCanvasContextAsyncFailCallback,
+  CreateCanvasContextAsyncCompleteCallback,
+}

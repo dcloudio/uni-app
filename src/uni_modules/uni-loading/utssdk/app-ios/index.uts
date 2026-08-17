@@ -13,7 +13,6 @@ export class NativeLoading {
 		this.element = element;
 		super.init()
 		this.bindView();
-		(this.element.parentElement as UniLoadingElement).setLoadingView(this.spinnerView);
 	}
 
 	bindView() {
@@ -22,15 +21,15 @@ export class NativeLoading {
 			this.element.bindIOSView(this.spinnerView!)
 		}
 	}
-	
-	
+
+
 	updateIosSpinner(iosSpinner : boolean) {
-		const iosSpinnerValue: boolean = iosSpinner ?? false
+		const iosSpinnerValue : boolean = iosSpinner ?? false
 		this.spinnerView?.updateIosSpinnerProp(iosSpinnerValue)
 	}
-	
+
 	updatePaused(paused : boolean) {
-		const pausedValue: boolean = paused ?? false
+		const pausedValue : boolean = paused ?? false
 		this.spinnerView?.updatePausedProp(pausedValue)
 	}
 
@@ -45,10 +44,10 @@ export class NativeLoading {
 	updateUI() {
 		let color = UTSiOS.colorWithString(this.color ?? "black")
 
-		if (this.strokeWidth == null ) {
+		if (this.strokeWidth == null) {
 			this.strokeWidth = "medium"
 		}
-		
+
 		this.spinnerView?.setAppearance(strokeColor = color, strokeWidth = this.strokeWidth!, animationTimingFunction = this.animationTimingFunction)
 	}
 
@@ -57,15 +56,26 @@ export class NativeLoading {
 	}
 }
 
-export class UniLoadingElement extends UniElementImpl {
+export interface UniLoadingElement extends JSExport {
 
-	private nativeView : SpinnerView | null = null;
+}
 
-	@UTSiOS.keyword("fileprivate")
-	setLoadingView(nativeView : SpinnerView | null) {
-		this.nativeView = nativeView
-	}
+/**
+ * UniLoadingElement实现
+ *  非蒸汽模式：继承自UniElement实现，外面嵌套了一层uni-loading-element
+ *  蒸汽模式：继承自UniNativeViewElement实现
+ *  原则：uvue文件中template中的根几点是什么类型就继承自对应的Element实现
+ */
+export class UniLoadingElementImpl
+// #ifndef VUE3-VAPOR
+  extends UniElementImpl
+// #endif
+// #ifdef VUE3-VAPOR
+  extends UniNativeViewElementImpl
+// #endif
+  implements UniLoadingElement {
 
+// #ifndef VUE3-VAPOR
 	override getIOSView() : UIView | null {
 		const nativeElement = this.firstChild as UniNativeViewElement
 		if (nativeElement == null) {
@@ -74,4 +84,5 @@ export class UniLoadingElement extends UniElementImpl {
 			return nativeElement.getIOSView()
 		}
 	}
+// #endif
 }

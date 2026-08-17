@@ -4,7 +4,9 @@
     "version": "1.0.0",
     "description": "uni-pullDownRefresh",
     "keywords": [
-        "uni-pullDownRefresh"
+        "uni-pullDownRefresh",
+        "uni.startPullDownRefresh",
+        "uni.stopPullDownRefresh"
     ],
     "repository": "",
     "engines": {
@@ -31,24 +33,27 @@
         "npmurl": ""
     },
     "uni_modules": {
+        "dependencies": [
+            "uni-event"
+        ],
         "uni-ext-api": {
             "uni": {
                 "startPullDownRefresh": {
                     "name": "startPullDownRefresh",
                     "app": {
                         "js": false,
-                        "kotlin": false,
-                        "swift": false,
-                        "arkts": true
+                        "kotlin": "dom2",
+                        "swift": "dom2",
+                        "arkts": ["uni1","dom2"]
                     }
                 },
                 "stopPullDownRefresh": {
                     "name": "stopPullDownRefresh",
                     "app": {
                         "js": false,
-                        "kotlin": false,
-                        "swift": false,
-                        "arkts": true
+                        "kotlin": "dom2",
+                        "swift": "dom2",
+                        "arkts": ["uni1","dom2"]
                     }
                 }
             }

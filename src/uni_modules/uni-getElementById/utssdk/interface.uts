@@ -11,21 +11,21 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
-     *        "unixVer": "3.91"
+     *        "unixVer": "3.91",
+     *        "unixVaporVer": "5.21"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "x",
      *          "unixVer": "4.11",
      *          "uniUtsPlugin": "x",
-     *          "unixUtsPlugin": "4.25"
+     *          "unixUtsPlugin": "4.25",
+     *          "unixVaporVer": "5.11"
      *      },
      *    "harmony": {
-     *      "osVer": "5.0.0",
      *      "uniVer": "x",
      *      "unixVer": "4.61",
+     *      "unixVaporVer": "5.0",
      *      "unixUtsPlugin": "4.61"
      *    }
      *  },

@@ -1,70 +1,536 @@
-import { CreateVideoContext, VideoContext, RequestFullScreenOptions, Danmu } from '../interface.uts';
-import { UniVideoTimeUpdateEvent, UniVideoTimeUpdateEventDetail, UniVideoFullScreenChangeEvent, UniVideoFullScreenChangeEventDetail, UniVideoErrorEvent, UniVideoProgressEvent, UniVideoProgressEventDetail, UniVideoFullScreenClickEvent, UniVideoFullScreenClickEventDetail, UniVideoControlsToggleEvent, UniVideoControlsToggleEventDetail } from '../interface.uts';
-import { UniVideoElement } from './index.vue';
+import View from "android.view.View";
+import Activity from "android.app.Activity";
+import WindowManager from "android.view.WindowManager";
+import { AudioManager as AndroidAudioManager } from "android.media";
+import Settings from "android.provider.Settings";
+import Context from "android.content.Context";
+import Intent from "android.content.Intent";
+import IntentFilter from "android.content.IntentFilter";
+import BroadcastReceiver from "android.content.BroadcastReceiver";
+import WeakReference from "java.lang.ref.WeakReference";
 
-export const createVideoContext : CreateVideoContext = function (videoId : string.VideoIdString, component ?: ComponentPublicInstance | null) : VideoContext | null {
-	let videoElement : UniElement | null = null;
-	if (component == null) {
-		const pages = getCurrentPages();
-		if (pages.length > 0) {
-			videoElement = pages[pages.length - 1].vm!.$el?.parentNode?.querySelector('#' + videoId);
-		}
-	} else {
-		videoElement = component.$el?.parentNode?.querySelector('#' + videoId);
-	}
-	if (videoElement == null) return null;
-	return new VideoContextImpl(videoElement as UniVideoElement);
+// #ifndef VUE3-VAPOR
+import PageNode from "io.dcloud.uniapp.dom.node.PageNode";
+import INodeData from "io.dcloud.uniapp.interfaces.INodeData";
+// #endif
+
+import { CreateVideoContext, VideoContext, RequestFullScreenOptions, Danmu } from '../interface.uts';
+
+export class Video {
+    videoImpl : VideoImpl | null = null;
+
+    private rootElement : UniVideoElement | null;
+    private params : BuilderVideoParams;
+    private _src : string = '';
+    private _poster : string | null = null;
+    private _objectFit : ObjectFit = 'contain';
+    private _autoplay : boolean = false;
+    private _loop : boolean = false;
+    private _muted : boolean = false;
+    private _playbackRate : number = 1.0;
+    private _httpCache : boolean = false;
+    private _header : UTSJSONObject | null = null;
+    private _duration : number = 0;
+    private _codec : string = 'hardware';
+
+    constructor(element : UniNativeViewElement, params : BuilderVideoParams) {
+        this.params = params;
+        this.videoImpl = new VideoImpl(element.getAndroidActivity()!);
+        element.bindAndroidView(this.videoImpl!);
+        this.rootElement = element.parentElement?.parentElement as UniVideoElement | null;
+        this.rootElement?.setNativeVideo(this);
+        this.src = params.options.src;
+        const self = this;
+        this.videoImpl?.setEventCallback(new (class implements EventCallback {
+            override onPlay() {
+                uni.$emit(`__UNIVIDEO_ON_PLAY_${params.eventSeed}`);
+            }
+            override onPause() {
+                uni.$emit(`__UNIVIDEO_ON_PAUSE_${params.eventSeed}`);
+            }
+            override onEnded() {
+                uni.$emit(`__UNIVIDEO_ON_ENDED_${params.eventSeed}`);
+            }
+            override onStop() {
+                uni.$emit(`__UNIVIDEO_ON_STOP_${params.eventSeed}`);
+            }
+            override onError(errMsg : string | null) {
+                uni.$emit(`__UNIVIDEO_ON_ERROR_${params.eventSeed}`, errMsg);
+            }
+            override onPrepared(duration : number) {
+                uni.$emit(`__UNIVIDEO_ON_PREPARED_${params.eventSeed}`, duration);
+            }
+            override onTimeUpdate(currentTime : number) {
+                uni.$emit(`__UNIVIDEO_ON_TIME_UPDATE_${params.eventSeed}`, currentTime);
+            }
+            override onWaiting() {
+                uni.$emit(`__UNIVIDEO_ON_WAITING_${params.eventSeed}`);
+            }
+            override onProgress(buffered : number) {
+                uni.$emit(`__UNIVIDEO_ON_PROGRESS_${params.eventSeed}`, buffered);
+            }
+            override onPlayerReady() {
+                self.muted = params.muted ?? self._muted;
+                self.objectFit = params.objectFit ?? self._objectFit;
+                self.autoplay = params.autoplay ?? self._autoplay;
+                self.loop = params.loop ?? self._loop;
+            }
+        }));
+    }
+
+    get src() : string {
+        return this._src;
+    }
+
+    set src(value : string) {
+        if (this._src == value) return;
+        this._src = value;
+        if (value.startsWith("https://") || value.startsWith("http://") || value.startsWith("rtmp://") || value.startsWith("rtsp://")) {
+            this.videoImpl!.src = value;
+        } else {
+            this.videoImpl!.src = UTSAndroid.convert2AbsFullPath(value);
+        }
+    }
+
+    get poster() : string | null {
+        return this._poster;
+    }
+
+    set poster(value : string | null) {
+        if (this._poster == value) return;
+        this._poster = value;
+        // do nothing
+    }
+
+    get objectFit() : ObjectFit {
+        return this._objectFit;
+    }
+
+    set objectFit(value : ObjectFit) {
+        if (this._objectFit == value) return;
+        this._objectFit = value;
+        this.videoImpl!.objectFit = value;
+    }
+
+    get autoplay() : boolean {
+        return this._autoplay;
+    }
+
+    set autoplay(value : boolean) {
+        if (this._autoplay == value) return;
+        this._autoplay = value;
+        this.videoImpl!.autoplay = value;
+    }
+
+    get loop() : boolean {
+        return this._loop;
+    }
+
+    set loop(value : boolean) {
+        if (this._loop == value) return;
+        this._loop = value;
+        this.videoImpl!.loop = value;
+    }
+
+    get muted() : boolean {
+        return this._muted;
+    }
+
+    set muted(value : boolean) {
+        if (this._muted == value) return;
+        this._muted = value;
+        this.videoImpl!.muted = value;
+    }
+
+    get playbackRate() : number {
+        return this._playbackRate;
+    }
+
+    set playbackRate(value : number) {
+        if (this._playbackRate == value) return;
+        this._playbackRate = value;
+        this.videoImpl!.playbackRate = value.toFloat();
+    }
+
+    get httpCache() : boolean {
+        return this._httpCache;
+    }
+
+    set httpCache(value : boolean) {
+        if (this._httpCache == value) return;
+        this._httpCache = value;
+        this.videoImpl!.httpCache = value;
+    }
+
+    get header() : UTSJSONObject | null {
+        return this._header;
+    }
+
+    set header(value : UTSJSONObject | null) {
+        if (this._header == value) return;
+        this._header = value;
+        if (value != null) {
+            const header = new Map<string, string>();
+            value.forEach((key) => {
+                header.set(key, value.getString(key, ''));
+            })
+            this.videoImpl!.header = header;
+        }
+    }
+
+    get duration() : number {
+        return this._duration;
+    }
+
+    set duration(value : number) {
+        if (this._duration == value) return;
+        this._duration = value;
+        this.videoImpl!.duration = value.toFloat();
+    }
+    
+    get codec() : string {
+        return this._codec;
+    }
+    
+    set codec(value : string) {
+        if (this._codec == value) return;
+        this._codec = value;
+        this.videoImpl!.codec = value;
+    }
+
+    play() {
+        this.videoImpl?.play();
+    }
+
+    pause() {
+        this.videoImpl?.pause();
+    }
+
+    seek(position : number) {
+        this.videoImpl?.seek(position.toFloat());
+    }
+
+    stop() {
+        this.videoImpl?.stop();
+    }
+
+    sendDanmu(danmu : Danmu) {
+        uni.$emit(`__UNIVIDEO_SEND_DANMU_${this.params.eventSeed}`, new UTSJSONObject({
+            text: danmu.text,
+            color: danmu.color,
+            time: danmu.time
+        }));
+    }
+
+    playbackRateInternal(rate : number) {
+        this.videoImpl!.playbackRate = rate.toFloat();
+    }
+
+    requestFullscreen(direction ?: RequestFullScreenOptions | null) {
+        let orientation = 'auto';
+        switch (direction?.direction) {
+            case 0:
+                orientation = "portrait";
+                break;
+            case 90:
+                orientation = "landscape-secondary";
+                break;
+            case -90:
+                orientation = "landscape-primary";
+                break;
+            default:
+                if (this.videoImpl!.videoWidth <= this.videoImpl!.videoHeight) {
+                    orientation = "portrait";
+                } else {
+                    orientation = "landscape";
+                }
+                break;
+        }
+        uni.$emit(`__UNIVIDEO_REQUEST_FULLSCREEN_${this.params.eventSeed}`, {
+            navigationUI: 'hide',
+            orientation: orientation
+        });
+    }
+
+    exitFullscreen() {
+        uni.$emit(`__UNIVIDEO_EXIT_FULLSCREEN_${this.params.eventSeed}`);
+    }
+
+    updateLayout(width : number, height : number) {
+        this.videoImpl?.updateLayout(width.toInt(), height.toInt());
+    }
+
+    displayTheFirstFrame() {
+        // do nothing
+    }
+
+    changeVolume(volume : number) {
+        this.videoImpl!.volume = volume.toFloat();
+    }
+
+    destroy() {
+        this.videoImpl?.destroy();
+        this.videoImpl = null;
+        this.rootElement = null;
+    }
+}
+
+class VolumeChangeReceiver extends BroadcastReceiver {
+    private audioManager : AndroidAudioManager;
+    private volumeChange : (volume : number) => void;
+
+    constructor(audioManager : AndroidAudioManager, volumeChange : (volume : number) => void) {
+        super();
+        this.audioManager = audioManager;
+        this.volumeChange = volumeChange;
+    }
+
+    override onReceive(_context : Context, intent : Intent) {
+        if (intent.getAction() != "android.media.VOLUME_CHANGED_ACTION") return;
+        const streamType = intent.getIntExtra("android.media.EXTRA_VOLUME_STREAM_TYPE", -1);
+        if (streamType != AndroidAudioManager.STREAM_MUSIC) return;
+        this.volumeChange(this.audioManager.getStreamVolume(AndroidAudioManager.STREAM_MUSIC).toFloat() / this.audioManager.getStreamMaxVolume(AndroidAudioManager.STREAM_MUSIC));
+    }
+}
+
+export class AudioManager {
+    private volumeChangeReceiver : BroadcastReceiver | null = null;
+    currentVolume : number = 0;
+    maxVolume : number = 1;
+    minVolume : number = 0;
+
+    constructor() {
+        const audioManager = UTSAndroid.getAppContext()?.getSystemService(Context.AUDIO_SERVICE) as AndroidAudioManager | null;
+        if (audioManager == null) return;
+        this.currentVolume = audioManager.getStreamVolume(AndroidAudioManager.STREAM_MUSIC).toFloat() / audioManager.getStreamMaxVolume(AndroidAudioManager.STREAM_MUSIC);
+    }
+    
+    onVolumeChange(volumeChange : (volume : number) => void) {
+        const context = UTSAndroid.getAppContext();
+        if (context == null) return;
+        const audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AndroidAudioManager | null;
+        if (audioManager == null) return;
+        const self = this;
+        this.volumeChangeReceiver = new VolumeChangeReceiver(audioManager, (volume : number) => {
+            self.currentVolume = volume;
+            volumeChange(volume);
+        });
+        context.registerReceiver(this.volumeChangeReceiver, new IntentFilter("android.media.VOLUME_CHANGED_ACTION"));
+    }
+
+    offVolumeChange() {
+        const context = UTSAndroid.getAppContext();
+        if (context == null || this.volumeChangeReceiver == null) {
+            return;
+        }
+        context.unregisterReceiver(this.volumeChangeReceiver);
+        this.volumeChangeReceiver = null;
+    }
+}
+
+export class Brightness {
+    getBrightness() : number {
+        const activity = UTSAndroid.getTopPageActivity() as Activity | null;
+        const layoutParams = activity?.window?.attributes;
+        const screenBrightness = layoutParams?.screenBrightness ?? WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+        if (screenBrightness == WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE) {
+            try {
+                return Settings.System.getFloat(UTSAndroid.getAppContext()!.contentResolver, Settings.System.SCREEN_BRIGHTNESS) / 255;
+            } catch (e : Exception) {
+                return WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+            }
+        } else {
+            return screenBrightness;
+        }
+    }
+
+    setBrightness(brightness : number) {
+        const activity = UTSAndroid.getTopPageActivity() as Activity | null;
+        if (activity == null) return;
+        const layoutParams = activity.window.attributes;
+        if (brightness < 0) {
+            layoutParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+        } else {
+            layoutParams.screenBrightness = brightness.toFloat();
+        };
+        activity.window.attributes = layoutParams;
+    }
+}
+
+export class UniVideoElement extends UniViewElementImpl {
+
+    private video : Video | null = null;
+
+    // #ifndef VUE3-VAPOR
+    constructor(data : INodeData, pageNode : PageNode) {
+        super(data, pageNode);
+    }
+    // #endif
+    
+    // #ifdef VUE3-VAPOR
+    constructor() {
+        super()
+    }
+    // #endif
+    
+    override tagName : string = "VIDEO";
+    
+    override nodeName : string = "VIDEO";
+
+    setNativeVideo(video : Video | null) {
+        this.video = video;
+    }
+
+    play() {
+        this.video?.play();
+    }
+
+    pause() {
+        this.video?.pause();
+    }
+
+    seek(position : number) {
+        this.video?.seek(position);
+    }
+
+    stop() {
+        this.video?.stop();
+    }
+
+    sendDanmu(danmu : Danmu) {
+        this.video?.sendDanmu(danmu);
+    }
+
+    playbackRate(rate : number) {
+        this.video?.playbackRateInternal(rate);
+    }
+
+    requestFullScreen(direction ?: RequestFullScreenOptions | null) {
+        this.video?.requestFullscreen(direction);
+    }
+
+    exitFullScreen() {
+        this.video?.exitFullscreen();
+    }
+
+    override getAndroidView<T extends View>() : T | null {
+        return this.video?.videoImpl as T | null;
+    }
 }
 
 class VideoContextImpl implements VideoContext {
 
-	private videoElement : UniVideoElement;
+    private videoElementRef : WeakReference<UniVideoElement> | null = null;
 
-	constructor(videoElement : UniVideoElement) {
-		this.videoElement = videoElement;
-	}
+    constructor(videoElement : UniVideoElement) {
+        this.videoElementRef = new WeakReference(videoElement);
+    }
 
-	play() {
-		this.videoElement.play();
-	}
+    play() {
+        this.videoElementRef?.get()?.play();
+    }
 
-	pause() {
-		this.videoElement.pause();
-	}
+    pause() {
+        this.videoElementRef?.get()?.pause();
+    }
 
-	seek(position : number) {
-		this.videoElement.seek(position);
-	}
+    seek(position : number) {
+        this.videoElementRef?.get()?.seek(position);
+    }
 
-	stop() {
-		this.videoElement.stop();
-	}
+    stop() {
+        this.videoElementRef?.get()?.stop();
+    }
 
-	sendDanmu(danmu : Danmu) {
-		this.videoElement.sendDanmu(danmu);
-	}
+    sendDanmu(danmu : Danmu) {
+        this.videoElementRef?.get()?.sendDanmu(danmu);
+    }
 
-	playbackRate(rate : number) {
-		this.videoElement.playbackRate(rate);
-	}
+    playbackRate(rate : number) {
+        this.videoElementRef?.get()?.playbackRate(rate);
+    }
 
-	requestFullScreen(direction ?: RequestFullScreenOptions | null) {
-		this.videoElement.requestFullScreen(direction);
-	}
+    requestFullScreen(direction ?: RequestFullScreenOptions | null) {
+        this.videoElementRef?.get()?.requestFullScreen(direction);
+    }
 
-	exitFullScreen() {
-		this.videoElement.exitFullScreen();
-	}
+    exitFullScreen() {
+        this.videoElementRef?.get()?.exitFullScreen();
+    }
 }
 
-export type VideoTimeUpdateEvent = UniVideoTimeUpdateEvent
-export type VideoTimeUpdateEventDetail = UniVideoTimeUpdateEventDetail
-export type VideoFullScreenChangeEvent = UniVideoFullScreenChangeEvent
-export type VideoFullScreenChangeEventDetail = UniVideoFullScreenChangeEventDetail
-export type VideoErrorEvent = UniVideoErrorEvent
-export type VideoProgressEvent = UniVideoProgressEvent
-export type VideoProgressEventDetail = UniVideoProgressEventDetail
-export type VideoFullScreenClickEvent = UniVideoFullScreenClickEvent
-export type VideoFullScreenClickEventDetail = UniVideoFullScreenClickEventDetail
-export type VideoControlsToggleEvent = UniVideoControlsToggleEvent
-export type VideoControlsToggleEventDetail = UniVideoControlsToggleEventDetail
+export const createVideoContext : CreateVideoContext = function (videoId : string.VideoIdString, component ?: ComponentPublicInstance | null) : VideoContext | null {
+    let videoElement : UniElement | null = null;
+    if (component == null) {
+        const pages = getCurrentPages();
+        if (pages.length > 0) {
+            const currentPage = pages[pages.length - 1];
+            videoElement = currentPage.querySelector('#' + videoId);
+            if (videoElement == null) {
+                const dialogPages = currentPage.getDialogPages();
+                if (dialogPages.length > 0) {
+                    const currentPageDialogPage = dialogPages[dialogPages.length - 1];
+                    videoElement = currentPageDialogPage.querySelector('#' + videoId);
+                }
+            }
+        }
+    } else {
+        videoElement = component.$el?.parentElement?.querySelector('#' + videoId);
+    }
+    if (videoElement == null) {
+        return null;
+    } else {
+        return new VideoContextImpl(videoElement as UniVideoElement);
+    }
+};
+
+export type ObjectFit = 'contain' | 'fill' | 'cover';
+
+export type BuilderVideoParams = {
+    options : BuilderVideoOptions,
+    event ?: VideoEvent,
+    objectFit ?: ObjectFit,
+    muted ?: boolean,
+    autoplay ?: boolean,
+    loop ?: boolean,
+    controls ?: boolean,
+    eventSeed : number,
+};
+
+export interface VideoEvent {
+    onPlay ?: () => void;
+    onPause ?: () => void;
+    onEnded ?: () => void;
+    onStop ?: () => void;
+    onError ?: () => void;
+    onPrepared ?: (event : OnPreparedEvent) => void;
+    onSeeking ?: (event : OnSeekingEvent) => void;
+    onSeeked ?: (event : OnSeekedEvent) => void;
+    onTimeUpdate ?: (event : OnUpdateEvent) => void;
+    onFullscreenChange ?: (event : OnFullscreenChange) => void;
+};
+
+export interface OnPreparedEvent {
+    duration : number;
+}
+
+export interface OnSeekingEvent {
+    time : number;
+}
+
+export interface OnSeekedEvent {
+    time : number;
+}
+
+export interface OnUpdateEvent {
+    time : number;
+}
+
+export interface OnFullscreenChange {
+    fullscreen : boolean;
+}
+
+export type BuilderVideoOptions = {
+    src : string,
+    previewUri : string | null
+};

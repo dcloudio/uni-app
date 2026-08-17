@@ -5,13 +5,6 @@
 //  Created by Mccc on 2019/4/19.
 //
 
-
-
-//待处理
-//Wait状态，用json文件处理
-// 多个状态更新的方案 （开始上传，正在上传，上传成功）
-
-
 import Foundation
 import UIKit
 
@@ -25,19 +18,44 @@ internal let kScreenHeight = UIScreen.main.bounds.size.height
 
 
 public class MCToast: NSObject {
-    
+
     /// 管理所有的windows
     internal static var windows = Array<UIWindow?>()
-    internal static let keyWindow = UIApplication.shared.keyWindow?.subviews.first as UIView?
     internal static var timer: DispatchSource!
     internal static var timerTimes = 0
-    
+
     private override init() { }
-    
+
+    @available(iOS 13.0, *)
+    internal static func currentWindowScene() -> UIWindowScene? {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        return scenes.first { $0.activationState == .foregroundActive }
+            ?? scenes.first { $0.activationState == .foregroundInactive }
+            ?? scenes.first
+    }
+
+    internal static func currentKeyWindow() -> UIWindow? {
+        if #available(iOS 13.0, *) {
+            if let scene = currentWindowScene() {
+                return scene.windows.first { $0.isKeyWindow }
+                    ?? scene.windows.first { !$0.isHidden }
+            }
+        }
+
+        if let window = UIApplication.shared.keyWindow {
+            return window
+        }
+
+        if let window = UIApplication.shared.delegate?.window ?? nil {
+            return window
+        }
+
+        return nil
+    }
+
     internal static func safeAreaInsets() -> (top: CGFloat, bottom: CGFloat) {
         if #available(iOS 11.0, *) {
-            
-            let inset = UIApplication.shared.delegate?.window??.safeAreaInsets
+            let inset = currentKeyWindow()?.safeAreaInsets
             return (inset?.top ?? 0, inset?.bottom ?? 0)
         } else {
             return (0, 0)
@@ -67,28 +85,35 @@ extension MCToast {
 
 
 extension MCToast {
-    
-    
+
+
     /// 创建Window
     /// - Parameters:
     ///   - respond: 交互类型
     ///   - frame: window的frame
     static func createWindow(respond: MCToastRespond, frame: CGRect) -> UIWindow {
-        
-        let window = UIWindow()
+
+        let baseWindow = currentKeyWindow()
+        let window: UIWindow
+        if #available(iOS 13.0, *), let scene = baseWindow?.windowScene ?? currentWindowScene() {
+            window = UIWindow(windowScene: scene)
+        } else {
+            window = UIWindow()
+        }
         window.backgroundColor = UIColor.clear
-        
+
         switch respond {
             case .respond, .default:
                 window.frame = frame
-                window.center = keyWindow!.center
+                let referenceView = baseWindow?.subviews.first ?? baseWindow
+                window.center = referenceView?.center ?? CGPoint(x: kScreenWidth / 2, y: kScreenHeight / 2)
         case .noRespond:
             window.frame = CGRect.init(x: 0, y: 0, width: kScreenWidth, height: kScreenHeight)
         case .navBarRespond:
             let vc = UIViewController.current()
             let rectNav = vc.navigationController?.navigationBar.frame
             let maxY = rectNav?.maxY ?? 0
-            
+
             if vc.navigationController != nil && vc.navigationController?.navigationBar.isHidden == false {
                 window.frame = CGRect.init(x: 0, y: maxY, width: kScreenWidth, height: kScreenHeight - maxY)
             } else {
@@ -97,10 +122,10 @@ extension MCToast {
         }
         window.windowLevel = UIWindow.Level.alert
         window.isHidden = false
-        
+
         return window
     }
-    
+
     /// 创建主视图区域
     static func createMainView(frame: CGRect) -> UIView {
         let mainView = UIView()

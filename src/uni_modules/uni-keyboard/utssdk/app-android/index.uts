@@ -3,8 +3,10 @@ import InputMethodManager from 'android.view.inputmethod.InputMethodManager';
 import ViewTreeObserver from "android.view.ViewTreeObserver";
 import Rect from 'android.graphics.Rect';
 import View from 'android.view.View';
+import ViewParent from 'android.view.ViewParent';
 import Activity from 'android.app.Activity';
 import Context from 'android.content.Context';
+import WebView from 'android.webkit.WebView';
 import EditText from 'android.widget.EditText';
 import ViewCompat from 'androidx.core.view.ViewCompat';
 import WindowInsetsCompat from 'androidx.core.view.WindowInsetsCompat';
@@ -17,6 +19,25 @@ let keyBoardChangeListeerMaps : HashMap<number, OnKeyboardHeightChangeCallback> 
 
 var listener : OnKeyBoardChangedListener | null = null
 
+function isWebViewRelatedFocusView(view : View) : boolean {
+	if (view instanceof WebView) {
+		return true
+	}
+
+	let parent : ViewParent | null = view.getParent()
+	while (parent != null) {
+		if (parent instanceof WebView) {
+			return true
+		}
+		if (!(parent instanceof View)) {
+			return false
+		}
+		parent = (parent as View).getParent()
+	}
+
+	return false
+}
+
 export const hideKeyboard : HideKeyboard = (options ?: HideKeyboardOptions | null) => {
 	var activity : Activity = UTSAndroid.getUniActivity()!;
 	if (inputManager == null) {
@@ -26,9 +47,10 @@ export const hideKeyboard : HideKeyboard = (options ?: HideKeyboardOptions | nul
 	if (focusView != null) {
 		focusView!.postDelayed(class implements Runnable {
 			override run() {
+				let shouldClearFocus = !isWebViewRelatedFocusView(focusView!)
 				let result = inputManager!.hideSoftInputFromWindow(focusView!.getWindowToken(), 0)
-				if (result) {
-					focusView!.clearFocus()
+				if (result && shouldClearFocus) {
+					focusView!.clearFocus()  //临时验证隐藏软键盘不失去焦点
 				}
 			}
 		}, 16)
@@ -109,6 +131,15 @@ class OnKeyBoardChangedListener extends UniActivityLifeCycleCallback implements 
 		}
 	}
 
+	override onDestroy(_params : UniActivityParams) {
+		if (this.activity == null) {
+			return
+		}
+		this.decorView?.getViewTreeObserver()?.removeOnGlobalLayoutListener(this)
+		this.decorView = null
+		this.activity = null
+	}
+
 	watchKeyBoardChanged() {
 		this.activity = UTSAndroid.getUniActivity()!
 		this.decorView = this.activity!.getWindow().getDecorView()
@@ -142,7 +173,7 @@ class OnKeyBoardChangedListener extends UniActivityLifeCycleCallback implements 
 	override onGlobalLayout() {
 		var rootView = this.getRootView()
 		if (rootView != null) {
-			var rect = Rect()
+			var rect = new Rect()
 			rootView!.getWindowVisibleDisplayFrame(rect)
 			let fullHeight = rootView!.getRootView().getHeight()
 			let diffHeight = fullHeight - rect.height() - this.getSystenBarHeight();
@@ -152,13 +183,16 @@ class OnKeyBoardChangedListener extends UniActivityLifeCycleCallback implements 
 			}
 			var exceedHeight = fullHeight / 5
 			this.lastKeyboardHeight = height
+			const result : OnKeyboardHeightChangeCallbackResult = {
+				height: height
+			}
 			if (diffHeight > exceedHeight) {
 				this.keyBoardChangeListeerMaps.values.forEach((callback : OnKeyboardHeightChangeCallback) => {
-					callback({ height: height } as OnKeyboardHeightChangeCallbackResult)
+					callback(result)
 				})
 			} else {
 				this.keyBoardChangeListeerMaps.values.forEach((callback : OnKeyboardHeightChangeCallback) => {
-					callback({ height: height } as OnKeyboardHeightChangeCallbackResult)
+					callback(result)
 				})
 			}
 		}

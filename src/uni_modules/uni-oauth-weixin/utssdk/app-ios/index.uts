@@ -1,0 +1,198 @@
+import { UTSiOSHookProxy } from "DCloudUniappRuntime";
+import { UIApplication } from "UIKit";
+import { URL, NSUserActivity } from "Foundation";
+import { UniOAuthWeixinProvider } from '../interface.uts';
+import { OauthWeixinFailImpl } from '../unierror.uts';
+
+export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
+
+	id : string = "weixin"
+
+	override description : string = "微信登录"
+
+	login(options : LoginOptions) {
+		Wxlogin.login(options)
+	}
+
+	getUserInfo(options : GetUserInfoOptions) {
+
+	}
+
+	get isAppExist() : boolean {
+		return Wxlogin.share.isWXAppInstalled()
+	}
+	
+	set isAppExist(newValue: boolean) {
+	
+	}
+
+	checkAppExist() {
+		this.isAppExist = Wxlogin.share.isWXAppInstalled()
+		this.isWeChatInstalled = Wxlogin.share.isWXAppInstalled()
+	}
+
+	get isWeChatInstalled() : boolean {
+		return Wxlogin.share.isWXAppInstalled()
+	}
+
+	set isWeChatInstalled(newValue : boolean) {
+
+	}
+
+	toJSON() : Map<string, any> {
+		const dict = new Map<string, any>()
+		dict.set('id', this.id)
+		dict.set('description', this.description)
+		dict.set('isAppExist', this.isAppExist)
+		dict.set('isWeChatInstalled', this.isWeChatInstalled)
+		return dict
+	}
+
+	constructor() {
+
+	}
+}
+
+export class WxloginHookProxy implements UTSiOSHookProxy {
+	// 应用正常启动时 (不包括已在后台转到前台的情况)的回调函数。
+	applicationDidFinishLaunchingWithOptions(application : UIApplication | null, launchOptions : Map<UIApplication.LaunchOptionsKey, any> | null = null) : boolean {
+		Wxlogin.share.registerApp()
+		return false
+	}
+
+	// 通过 url scheme 方式唤起 app 时的回调函数。
+	applicationOpenURLOptions(app : UIApplication | null, url : URL, options : Map<UIApplication.OpenURLOptionsKey, any> | null = null) : boolean {
+		Wxlogin.share.handleOpen(url)
+		return true
+	}
+
+	// 当应用程序接收到与用户活动相关的数据时调用此方法，例如，当用户使用 Universal Link 唤起应用时。
+	applicationContinueUserActivityRestorationHandler(application : UIApplication | null, userActivity : NSUserActivity | null, restorationHandler : ((res : [any] | null) => void) | null = null) : boolean {
+		Wxlogin.share.handleOpenUniversalLink(userActivity)
+		return true
+	}
+}
+
+export class Wxlogin implements WXApiDelegate {
+	static share = new Wxlogin()
+
+	private options ?: LoginOptions
+
+	@UTSiOS.keyword("fileprivate")
+	registerApp() {
+		const scheme = this.getApplicationScheme()
+		const universalLinkTmp = this.getApplicationUniversalLink()
+		if (scheme != null && universalLinkTmp != null && scheme != "" && universalLinkTmp != "") {
+			WXApi.registerApp(scheme!, universalLink = universalLinkTmp!)
+		}
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	handleOpen(url : URL) {
+		WXApi.handleOpen(url, delegate = this)
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	handleOpenUniversalLink(userActivity : NSUserActivity | null) {
+		if (userActivity != null) {
+			WXApi.handleOpenUniversalLink(userActivity!, delegate = this)
+		}
+	}
+
+	private getApplicationScheme() : string | null {
+		let scheme : string | null = null
+		const infoDictionary = Bundle.main.infoDictionary
+		if (infoDictionary != null) {
+			const wechat = infoDictionary!['WeChat'] as Map<string, any> | null
+			if (wechat != null) {
+				scheme = wechat!['appid'] as string | null
+			}
+		}
+
+		return scheme
+	}
+
+	private getApplicationUniversalLink() : string | null {
+		let universalLink : string | null = null
+		const infoDictionary = Bundle.main.infoDictionary
+		if (infoDictionary != null) {
+			const wechat = infoDictionary!['WeChat'] as Map<string, any> | null
+			if (wechat != null) {
+				universalLink = wechat!['universalLink'] as string | null
+			}
+		}
+		return universalLink
+	}
+
+	//@brief 检查微信是否已被用户安装
+	@UTSiOS.keyword("fileprivate")
+	isWXAppInstalled() : boolean {
+		return WXApi.isWXAppInstalled()
+	}
+
+	onResp(resp : BaseResp) {
+		if (this.options == null) return;
+
+		if (resp instanceof SendAuthResp) {
+			const res = resp as SendAuthResp
+			switch (res.errCode) {
+				case 0:
+					let authResult : any | null = null;
+					if (!(this.options?.onlyAuthorize ?? false)) {
+						authResult = resp;
+					}
+					const success : LoginSuccess = {
+						code: res.code,
+						authResult: authResult ?? {}
+					};
+					this.options?.success?.(success);
+					this.options?.complete?.(success);
+					break;
+				case -2:
+					const fail1 = new OauthWeixinFailImpl(1310509);
+					this.options?.fail?.(fail1);
+					this.options?.complete?.(fail1);
+					break;
+				case -4:
+					const fail2 = new OauthWeixinFailImpl(1310503);
+					this.options?.fail?.(fail2);
+					this.options?.complete?.(fail2);
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	static login(options : LoginOptions) {
+		Wxlogin.share.options = options
+
+		if (Wxlogin.share.isWXAppInstalled() == false) {
+			let err = new OauthWeixinFailImpl(1310502);
+			Wxlogin.share.options?.fail?.(err)
+			Wxlogin.share.options?.complete?.(err)
+			return
+		}
+
+		if (Wxlogin.share.getApplicationScheme() == null || Wxlogin.share.getApplicationScheme() == "") {
+			let err = new OauthWeixinFailImpl(1310512);
+			Wxlogin.share.options?.fail?.(err)
+			Wxlogin.share.options?.complete?.(err)
+			return
+		}
+
+		if (Wxlogin.share.getApplicationUniversalLink() == null || Wxlogin.share.getApplicationUniversalLink() == "") {
+			let err = new OauthWeixinFailImpl(1310513);
+			Wxlogin.share.options?.fail?.(err)
+			Wxlogin.share.options?.complete?.(err)
+			return
+		}
+
+		if (Wxlogin.share.options != null) {
+			const request = new SendAuthReq();
+			request.scope = "snsapi_userinfo";
+			request.state = "wechat_sdk_dcloud_weixin_oauth";
+			WXApi.send(request);
+		}
+	}
+}

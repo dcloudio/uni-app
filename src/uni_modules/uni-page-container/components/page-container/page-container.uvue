@@ -14,7 +14,8 @@
 </template>
 
 <script setup lang="uts">
-    import { UniPageContainerElement } from './global.uts'
+    import { UniPageContainerElement } from './global'
+    import { pageContainerManager } from './manager'
 
     defineOptions({
         name: 'page-container',
@@ -25,106 +26,160 @@
 
     type PageContainerPosition = 'top' | 'bottom' | 'left' | 'right' | 'center';
 
-    interface PageContainerProps {
+    type PageContainerProps = {
         /**
          * 是否显示容器组件
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.02"
+         *       "unixVaporVer": "5.02"
          *     }
          *   }
          * }
          */
-        show : boolean;
+        show? : boolean;
         /**
          * 动画时长，单位毫秒
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.02"
+         *       "unixVaporVer": "5.02"
          *     }
          *   }
          * }
          */
-        duration : number;
+        duration? : number;
         /**
          * z-index 层级
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.02"
+         *       "unixVaporVer": "5.02"
          *     }
          *   }
          * }
          */
-        zIndex : number;
+        zIndex? : number;
         /**
          * 是否显示遮罩层
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.02"
+         *       "unixVaporVer": "5.02"
          *     }
          *   }
          * }
          */
-        overlay : boolean;
+        overlay? : boolean;
         /**
          * 是否显示圆角
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.02"
+         *       "unixVaporVer": "5.02"
          *     }
          *   }
          * }
          */
-        round : boolean;
+        round? : boolean;
         /**
          * 弹出位置
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.02"
+         *       "unixVaporVer": "5.02"
          *     }
          *   }
          * }
          */ 
-        position : PageContainerPosition;
+        position? : PageContainerPosition;
         /**
          * 自定义弹出层样式
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.02"
+         *       "unixVaporVer": "5.02"
          *     }
          *   }
          * }
          */
-        customStyle : string;
+        customStyle? : string;
         /**
          * 自定义遮罩层样式
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.02"
+         *       "unixVaporVer": "5.02"
          *     }
          *   }
          * }
          */
-        overlayStyle : string;
+        overlayStyle? : string;
         /**
          * 是否在下滑一段距离后关闭
          * @uniPlatform {
          *   "app": {
+         *     "ios": {
+         *       "unixVaporVer": "5.11"
+         *     },
+         *     "android": {
+         *       "unixVaporVer": "5.21"
+         *     },
          *     "harmony": {
-         *       "unixvVer": "5.02"
+         *       "unixVaporVer": "5.02"
          *     }
          *   }
          * }
          */
-        closeOnSlideDown : boolean;
+        closeOnSlideDown? : boolean;
     }
 
     const props = withDefaults(defineProps<PageContainerProps>(), {
@@ -153,6 +208,11 @@
     const isAnimating = ref(false)
     const transitionTimer = ref<number | null>(null)
     const isEntered = ref(false)
+    const instanceId = ref<number>(0)
+
+    // #ifdef APP-IOS
+    const swipeBackDisabledByContainer = ref(false)
+    // #endif
 
     // 触摸相关状态（用于滑动关闭）
     let touchStartX = 0
@@ -162,6 +222,8 @@
     const MAX_SLIDER_DISTANCE = 100
     const MIN_SLIDER_VELOCITY = 0.3
     const translateValue = ref<number>(0)
+    const isSlideClosing = ref<boolean>(false)
+    const isSlideLeaving = ref<boolean>(false)
 
     const overlayStyleMap = computed(() => {
         const styleMap = new Map<string, string>([
@@ -180,21 +242,42 @@
             ['transition-duration', props.duration + 'ms'],
         ])
         // 滑动拖动时的 transform
-        if (translateValue.value != 0 && isDragging) {
+        if (translateValue.value != 0 && (isDragging || isSlideClosing.value)) {
             let transformValue = ''
-            switch (props.position) {
-                case 'bottom':
-                case 'top':
-                    transformValue = `translateY(${translateValue.value}px)`
-                    break
-                case 'left':
-                case 'right':
-                    transformValue = `translateX(${translateValue.value}px)`
-                    break
+            if (isSlideLeaving.value) {
+                switch (props.position) {
+                    case 'bottom':
+                        transformValue = 'translateY(100%)'
+                        break
+                    case 'top':
+                        transformValue = 'translateY(-100%)'
+                        break
+                    case 'left':
+                        transformValue = 'translateX(-100%)'
+                        break
+                    case 'right':
+                        transformValue = 'translateX(100%)'
+                        break
+                }
+            } else {
+                switch (props.position) {
+                    case 'bottom':
+                    case 'top':
+                        transformValue = `translateY(${translateValue.value}px)`
+                        break
+                    case 'left':
+                    case 'right':
+                        transformValue = `translateX(${translateValue.value}px)`
+                        break
+                }
             }
             if (transformValue != '') {
                 styleMap.set('transform', transformValue)
-                styleMap.set('transition', 'none')
+                if (isDragging) {
+                    styleMap.set('transition', 'none')
+                } else {
+                    styleMap.set('transition', `transform ${props.duration}ms ease`)
+                }
             }
         } else if (translateValue.value != 0 && !isDragging) {
             // 回弹动画
@@ -218,6 +301,13 @@
         return classes
     })
 
+    function resetDragState() {
+        isDragging = false
+        isSlideClosing.value = false
+        isSlideLeaving.value = false
+        translateValue.value = 0
+    }
+
     function clearTransitionTimer() {
         if (transitionTimer.value != null) {
             clearTimeout(transitionTimer.value as number)
@@ -235,6 +325,8 @@
             emits('afterenter')
         } else if (type == 'leave') {
             showPageContainer.value = false
+            isEntered.value = false
+            resetDragState()
             emits('afterleave')
         }
     }
@@ -250,15 +342,16 @@
         }, props.duration)
     }
 
-    function resetDragState() {
-        isDragging = false
-        translateValue.value = 0
-    }
-
     function openContainer() {
         emits('beforeenter')
         showPageContainer.value = true
         isEntered.value = false
+
+        // #ifdef APP-IOS
+        updateSwipeBack(true)
+        // #endif
+
+        instanceId.value = pageContainerManager.register()
         // 重置拖动状态
         resetDragState()
         nextTick(() => {
@@ -278,6 +371,14 @@
         if (isAnimating.value) {
             return
         }
+
+        // #ifdef APP-IOS
+        if (swipeBackDisabledByContainer.value) {
+            updateSwipeBack(false)
+        }
+        // #endif
+
+        pageContainerManager.unregister(instanceId.value)
         emits('beforeleave')
         isAnimating.value = true
         nextTick(() => {
@@ -287,6 +388,49 @@
             listenTransitionEnd('leave')
         })
     }
+
+    function closeContainerFromSlide() {
+        if (isAnimating.value) {
+            return
+        }
+
+        // #ifdef APP-IOS
+        if (swipeBackDisabledByContainer.value) {
+            updateSwipeBack(false)
+        }
+        // #endif
+
+        pageContainerManager.unregister(instanceId.value)
+        emits('beforeleave')
+        isAnimating.value = true
+        isDragging = false
+        isSlideClosing.value = true
+        isSlideLeaving.value = false
+        nextTick(() => {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    isSlideLeaving.value = true
+                    emits('leave')
+                    listenTransitionEnd('leave')
+                })
+            })
+        })
+    }
+
+    // #ifdef APP-IOS
+    function updateSwipeBack(disabled : boolean) {
+        const pages = getCurrentPages()
+        if (pages.length == 0) {
+            return
+        }
+        const currentPage = pages[pages.length - 1]
+        currentPage.setPageStyle({
+            disableSwipeBack: disabled
+        })
+        swipeBackDisabledByContainer.value = disabled
+    }
+    // #endif
+
 
     watch(() : boolean => props.show, (newVal : boolean) => {
         if (newVal && !showPageContainer.value) {
@@ -323,9 +467,6 @@
     function onTouchMove(e : UniTouchEvent) {
         // 如果不是滑动关闭模式，阻止事件冒泡（防止滚动穿透），但允许容器内部滚动
         if (!props.closeOnSlideDown) {
-            // #ifdef WEB
-            e.preventDefault()
-            // #endif
             e.stopPropagation()
             return
         }
@@ -389,11 +530,11 @@
             const deltaTime = Date.now() - touchStartTime
             const velocity = Math.abs(translateValue.value) / deltaTime
 
+            const shouldClose = Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY
+
             // 判断是否应该关闭：拖动距离超过 100px 或拖动速度较快
-            if (Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY) {
-                // 先重置拖动状态，避免触发回弹逻辑
-                resetDragState()
-                closeContainer()
+            if (shouldClose) {
+                closeContainerFromSlide()
             } else {
                 // 回弹
                 resetDragState()
@@ -413,7 +554,7 @@
     }
 
     onBackPress(() => {
-        if (showPageContainer.value) {
+        if (showPageContainer.value && pageContainerManager.isTop(instanceId.value)) {
             closeContainer()
             return true
         }
@@ -429,6 +570,9 @@
     // 组件卸载前清理
     onBeforeUnmount(() => {
         clearTransitionTimer()
+        if (instanceId.value > 0) {
+            pageContainerManager.unregister(instanceId.value)
+        }
     })
 </script>
 
@@ -456,10 +600,11 @@
     }
 
     .uni-page-container-popup-right {
+        left: 0;
         right: 0;
         top: 0;
         height: 100%;
-        width: 80%;
+        width: 100%;
         transform: translateX(100%);
     }
 
@@ -469,9 +614,10 @@
 
     .uni-page-container-popup-left {
         left: 0;
+        right: 0;
         top: 0;
         height: 100%;
-        width: 80%;
+        width: 100%;
         transform: translateX(-100%);
     }
 
@@ -510,16 +656,19 @@
     }
 
     .uni-page-container-popup-center {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0.9);
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: scale(0.98);
+        transform-origin: center;
         transition-property: opacity, transform;
         transition-timing-function: ease;
         opacity: 0;
     }
 
     .uni-page-container-popup-center.uni-page-container-popup-enter {
-        transform: translate(-50%, -50%) scale(1);
+        transform: scale(1);
         opacity: 1;
     }
 </style>

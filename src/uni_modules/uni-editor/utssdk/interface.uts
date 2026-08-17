@@ -1,0 +1,1615 @@
+export type UniEditorElementOptionsSuccessRes = {
+  errMsg : string
+}
+export type UniEditorElementOptionsFailRes = {
+  errMsg : string
+}
+export type UniEditorElementOptionsCompleteRes = {
+  errMsg : string
+}
+
+export type UniEditorElementOptions = {
+  success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
+}
+
+export type UniEditorElementInsertImageOptions = {
+  src ?: string | null,
+  alt ?: string | null,
+  width ?: string | null,
+  height ?: string | null,
+  extClass ?: string | null,
+  data ?: any | null,
+  success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
+}
+
+export type UniEditorElementInsertTextOptions = {
+  text ?: string | null,
+  success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
+}
+
+export type UniEditorElementInsertLinkOptions = {
+  text?: string | null,
+  href: string,
+  success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
+}
+
+
+export type UniEditorElementInsertMentionOptions = {
+  /**
+   * 被 @ 的人 id
+   */
+  id ?: string | null,
+  /**
+   * 被 @ 的人名字
+   */
+  name?: string | null,
+  /**
+   * 提及文本颜色，默认为 #1677ff
+   * @defaultValue #1677ff
+   */
+  color?: string | null,
+  /**
+   * 提及背景颜色，默认为 #e6f3ff
+   * @defaultValue #e6f3ff
+   */
+  background?: string | null,
+  /**
+   * 提及圆角，默认为 4px
+   * @defaultValue 4px
+   */
+  radius?: string | null,
+  success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
+}
+
+export type UniEditorElementSetContentsOptions = {
+  delta ?: any | null,
+  html ?: string | null,
+  success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
+}
+
+export type UniEditorElementGetSelectionTextOptionsRes = {
+  errMsg : string,
+  text : string
+}
+
+export type UniEditorElementGetSelectionTextOptions = {
+  success ?: ((res : UniEditorElementGetSelectionTextOptionsRes) => void) | null
+  fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
+}
+
+export type UniEditorElementGetContentsOptionsRes = {
+  errMsg : string,
+  delta : any,
+  html : string,
+  text : string
+}
+
+export type UniEditorElementGetContentsOptions = {
+  success ?: ((res : UniEditorElementGetContentsOptionsRes) => void) | null
+  fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
+}
+
+export interface IUniEditorElement extends UniElement {
+  format(name : string, value ?: string | number | null) : void
+  insertDivider(options : UniEditorElementOptions | null) : void
+  insertImage(options : UniEditorElementInsertImageOptions | null) : void
+  insertText(options : UniEditorElementInsertTextOptions | null) : void
+  insertLink(options : UniEditorElementInsertLinkOptions | null) : void
+  insertMention(options ?: UniEditorElementInsertMentionOptions | null) : void
+  setContents(options : UniEditorElementSetContentsOptions | null) : void
+  getContents(options : UniEditorElementGetContentsOptions | null) : void
+  clear(options : UniEditorElementOptions | null) : void
+  removeFormat(options : UniEditorElementOptions | null) : void
+  undo(options : UniEditorElementOptions | null) : void
+  redo(options : UniEditorElementOptions | null) : void
+  getSelectionText(options : UniEditorElementGetSelectionTextOptions | null) : void
+  scrollIntoView(options : UniEditorElementOptions | null) : void
+}
+
+type CreateEditorContextAsyncSuccessCallback = (context : EditorContext) => void
+type CreateEditorContextAsyncFailCallback = (error : UniError) => void
+type CreateEditorContextAsyncCompleteCallback = () => void
+
+export type CreateEditorContextAsyncOptions = {
+  /**
+   * editor 元素的 id 属性
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "ios": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "5.08"
+   *      }
+   *  },
+   *  "web": {
+   *      "uniVer": "√",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *  },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  id : string.IDString
+  /**
+   * 组件或页面实例，限定在什么范围内查找id
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "ios": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "5.08"
+   *      }
+   *  },
+   *  "web": {
+   *      "uniVer": "√",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *  },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  component ?: ComponentPublicInstance
+  /**
+   * 接口调用成功的回调函数
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "ios": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "5.08"
+   *      }
+   *  },
+   *  "web": {
+   *      "uniVer": "√",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *  },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  success ?: CreateEditorContextAsyncSuccessCallback
+  /**
+   * 接口调用失败的回调函数
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "ios": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "5.08"
+   *      }
+   *  },
+   *  "web": {
+   *      "uniVer": "√",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *  },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  fail ?: CreateEditorContextAsyncFailCallback
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "ios": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "5.08"
+   *      }
+   *  },
+   *  "web": {
+   *      "uniVer": "√",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *  },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  complete ?: CreateEditorContextAsyncCompleteCallback
+}
+
+export interface EditorContext {
+  /**
+   * 修改样式
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  format(name : string, value ?: string | number | null) : void
+  /**
+   * 插入分割线
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  insertDivider(options ?: UniEditorElementOptions | null) : void
+  /**
+   * 插入图片
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  insertImage(options ?: UniEditorElementInsertImageOptions | null) : void
+  /**
+   * 覆盖当前选区，设置一段文本
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  insertText(options ?: UniEditorElementInsertTextOptions | null) : void
+    /**
+    * 插入链接
+    * @uniPlatform {
+    *   "app": {
+    *     "android": {
+    *       "uniVer": "x",
+    *       "unixVer": "5.08"
+    *     },
+    *     "ios": {
+    *       "uniVer": "x",
+    *       "unixVer": "5.08"
+    *     },
+    *     "harmony": {
+    *       "osVer": "√",
+    *       "uniVer": "x",
+    *       "unixVer": "5.08",
+    *       "unixVaporVer": "5.08"
+    *     }
+    *   },
+    *   "web": {
+    *       "uniVer": "√",
+    *       "unixVer": "5.08",
+    *       "unixVaporVer": "5.08"
+    *   },
+    *   "mp":{
+    *     "weixin": {
+    *       "hostVer": "√",
+    *       "uniVer": "5.08",
+    *       "unixVer": "5.08",
+    *       "unixVaporVer": "5.08"
+    *     },
+    *     "alipay": {
+    *       "hostVer": "x",
+    *       "uniVer": "x",
+    *       "unixVer": "x"
+    *     },
+    *     "baidu": {
+    *       "hostVer": "x",
+    *       "uniVer": "x",
+    *       "unixVer": "x"
+    *     },
+    *     "toutiao": {
+    *       "hostVer": "x",
+    *       "uniVer": "x",
+    *       "unixVer": "x"
+    *     },
+    *     "lark": {
+    *       "hostVer": "x",
+    *       "uniVer": "x",
+    *       "unixVer": "x"
+    *     },
+    *     "qq": {
+    *       "hostVer": "x",
+    *       "uniVer": "x",
+    *       "unixVer": "x"
+    *     },
+    *     "kuaishou": {
+    *       "hostVer": "x",
+    *       "uniVer": "x",
+    *       "unixVer": "x"
+    *     },
+    *     "jd": {
+    *       "hostVer": "x",
+    *       "uniVer": "x",
+    *       "unixVer": "x"
+    *     }
+    *   }
+    * }
+    */
+  insertLink(options ?: UniEditorElementInsertLinkOptions | null) : void
+  /**
+   * 插入可整块删除的提及，提及文本默认为 @名字，当选区存在时覆盖选区文本，当选区不存在时插入到光标处
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.11"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  insertMention(options ?: UniEditorElementInsertMentionOptions | null) : void
+  /**
+   * 初始化编辑器内容，html和delta同时存在时仅delta生效
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  setContents(options ?: UniEditorElementSetContentsOptions | null) : void
+  /**
+   * 获取编辑器内容
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  getContents(options ?: UniEditorElementGetContentsOptions | null) : void
+  /**
+   * 清空编辑器内容
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  clear(options ?: UniEditorElementOptions | null) : void
+  /**
+   * 清除当前选区的样式
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  removeFormat(options ?: UniEditorElementOptions | null) : void
+  /**
+   * 撤销
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  undo(options ?: UniEditorElementOptions | null) : void
+  /**
+   * 恢复
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  redo(options ?: UniEditorElementOptions | null) : void
+  /**
+   * 获取编辑器已选区域内的纯文本内容。当编辑器失焦或未选中一段区间时，返回内容为空。
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  getSelectionText(options ?: UniEditorElementGetSelectionTextOptions | null) : void
+  /**
+   * 使得编辑器光标处滚动到窗口可视区域内。
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  scrollIntoView(options ?: UniEditorElementOptions | null) : void
+  /**
+   * 编辑器失焦，同时收起键盘
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *   },
+   *   "mp":{
+   *     "weixin": {
+   *       "hostVer": "√",
+   *       "uniVer": "5.08",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "baidu": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "toutiao": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "lark": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "qq": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "kuaishou": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     },
+   *     "jd": {
+   *       "hostVer": "x",
+   *       "uniVer": "x",
+   *       "unixVer": "x"
+   *     }
+   *   }
+   * }
+   */
+  blur(options ?: UniEditorElementOptions | null) : void
+}
+
+export type CreateEditorContextAsync = (options: CreateEditorContextAsyncOptions) => void
+
+export interface Uni {
+  /**
+   * 创建并返回 editor 上下文 editorContext 对象
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "ios": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "x"
+   *      },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "5.08",
+   *        "unixVaporVer": "5.08"
+   *      }
+   *  },
+   *  "web": {
+   *      "uniVer": "√",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *  },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixVaporVer": "5.08"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   *
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/create-editor-context-async.html
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/create-editor-context-async.html
+   */
+  createEditorContextAsync : CreateEditorContextAsync
+}

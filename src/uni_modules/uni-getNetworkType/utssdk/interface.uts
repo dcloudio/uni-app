@@ -11,20 +11,17 @@ export interface Uni {
    * @uniPlatform {
    * 	"app": {
    * 		"android": {
-   * 			"osVer": "5.0",
    * 			"uniVer": "√",
    * 			"unixVer": "3.9+"
    * 		},
    * 		"ios": {
-   * 			"osVer": "12.0",
    * 			"uniVer": "√",
    * 			"unixVer": "4.11"
    * 		},
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.24",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    * 	},
      *  "mp": {
@@ -93,21 +90,18 @@ export interface Uni {
    * @uniPlatform {
    * 	"app": {
    * 		"android": {
-   * 			"osVer": "5.0",
    * 			"uniVer": "√",
    * 			"unixVer": "4.81"
    * 		},
    * 		"ios": {
-   * 			"osVer": "12.0",
    * 			"uniVer": "√",
    * 			"unixVer": "4.81",
    *  			"unixUtsPlugin": "4.81"
    * 		},
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.24",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    * 	},
      *  "mp": {
@@ -168,21 +162,18 @@ export interface Uni {
    * @uniPlatform {
    * 	"app": {
    * 		"android": {
-   * 			"osVer": "5.0",
    * 			"uniVer": "√",
    * 			"unixVer": "4.81"
    * 		},
    * 		"ios": {
-   * 			"osVer": "12.0",
    * 			"uniVer": "√",
    * 			"unixVer": "4.81",
    *  			"unixUtsPlugin": "4.81"
    * 		},
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.24",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    * 	},
      *  "mp": {
@@ -273,22 +264,19 @@ export type OnNetworkStatusChangeCallbackResult = {
    * @uniPlatform {
    * 	"app": {
    * 		"android": {
-   * 			"osVer": "5.0",
    * 			"uniVer": "√",
-   * 			"unixVer": "4.81"
+   * 			"unixVer": "4.81",
    *  			"unixUtsPlugin": "4.81"
    * 		},
    * 		"ios": {
-   * 			"osVer": "12.0",
    * 			"uniVer": "√",
    * 			"unixVer": "4.81",
    * 			"unixUtsPlugin": "4.81"
    * 		},
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.24",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    * 	},
      *  "mp": {
@@ -347,22 +335,19 @@ export type OnNetworkStatusChangeCallbackResult = {
    * @uniPlatform {
    * 	"app": {
    * 		"android": {
-   * 			"osVer": "5.0",
    * 			"uniVer": "√",
-   * 			"unixVer": "4.81"
+   * 			"unixVer": "4.81",
    *  			"unixUtsPlugin": "4.81"
    * 		},
    * 		"ios": {
-   * 			"osVer": "12.0",
    * 			"uniVer": "√",
    * 			"unixVer": "4.81",
    * 			"unixUtsPlugin": "4.81"
    * 		},
    *    "harmony": {
-   *      "osVer": "3.0",
    *      "uniVer": "4.24",
    *      "unixVer": "4.61",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
    * 	},
      *  "mp": {

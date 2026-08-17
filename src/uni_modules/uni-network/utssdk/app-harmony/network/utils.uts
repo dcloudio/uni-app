@@ -46,6 +46,18 @@ function getCertType(certPath: string): http.CertType {
     }
 }
 
+export function getFsPath(filePath: string) {
+    filePath = getRealPath(filePath) as string
+    if (!filePath.startsWith('file:')) {
+        return filePath
+    }
+    const rawPath = filePath.replace(/^file:\/\//, '')
+    if (rawPath[0] === '/') {
+        return rawPath
+    }
+    return filePath
+}
+
 export function getClientCertificate(url: string): http.ClientCert | undefined {
     if (certificates.length === 0) return undefined
     const urlObj = harmonyUrl.URL.parseURL(url);
@@ -53,7 +65,7 @@ export function getClientCertificate(url: string): http.ClientCert | undefined {
     if (cert) {
         return {
             certType: getCertType(cert.client!),
-            certPath: getRealPath(cert.client!),
+            certPath: getFsPath(cert.client!),
             keyPath: cert.keyPath ?? '',
             keyPassword: cert.clientPassword
         } as http.ClientCert

@@ -60,7 +60,7 @@ export class Wxpay {
 	 * 微信app是否安装
 	 */
 	static isInstalled() : boolean {
-		let api = WXAPIFactory.createWXAPI(UTSAndroid.getTopPageActivity(), '');
+		let api = WXAPIFactory.createWXAPI(UTSAndroid.getAppContext(), '');
 		return api!.isWXAppInstalled()
 	}
 };

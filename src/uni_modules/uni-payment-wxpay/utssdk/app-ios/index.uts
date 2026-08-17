@@ -84,10 +84,10 @@ export class Wxpay implements WXApiDelegate {
 
 	@UTSiOS.keyword("fileprivate")
 	registerApp() {
-		const scheme = Wxpay.share.getApplicationScheme()
-		const universalLink = Wxpay.share.getApplicationUniversalLink()
-		if (scheme != null && universalLink != null && scheme != "" && universalLink != "") {
-			WXApi.registerApp(scheme!, universalLink = universalLink!)
+		const scheme = this.getApplicationScheme()
+		const universalLinkTmp = this.getApplicationUniversalLink()
+		if (scheme != null && universalLinkTmp != null && scheme != "" && universalLinkTmp != "") {
+			WXApi.registerApp(scheme!, universalLink = universalLinkTmp!)
 		}
 	}
 

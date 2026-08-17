@@ -34,12 +34,14 @@
     "dependencies": [
       "uni-framework",
       "uni-theme",
+      "uni-getAppBaseInfo",
+      "uni-getDeviceInfo",
       "uni-getSystemInfo",
       "uni-location",
       "uni-cloud-client",
       "uni-map-tencent",
-      "app-ios:uni-dialogPage",
-      "app-ios:uni-event"
+      "uni-dialogPage",
+      "uni-event"
     ],
     "uni-ext-api": {
       "uni": {

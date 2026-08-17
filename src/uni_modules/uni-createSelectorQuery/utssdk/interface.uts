@@ -10,7 +10,7 @@ export type NodeInfo = {
     /**
      * 节点的dataset
      */
-    dataset: any | null
+    dataset: UniDOMStringMap | null
     /**
      * 节点的左边界坐标
      */
@@ -56,20 +56,22 @@ export type NodeInfo = {
      */
     node: any | null
     /**
-     * 节点对应的 Context 对象
-     * @type MapContext | CanvasContext | VideoContext | EditorContext
+     * 节点对应的 Context 对象（uni-app x 暂仅支持获取 EditorContext）
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
-     *        "uniVer": "√",
-     *        "unixVer": "x"
-     *      },
-     *      "ios": {
-     *          "osVer": "10.0",
-     *          "uniVer": "√",
-     *          "unixVer": "x"
-     *      }
+     *      "uniVer": "√",
+     *      "unixVer": "5.04"
+     *    },
+     *    "ios": {
+     *      "uniVer": "√",
+     *      "unixVer": "5.04"
+     *    },
+     *     "harmony": {
+     *       "uniVer": "4.23",
+     *       "unixVer": "5.04",
+     *       "unixVaporVer": "5.04"
+     *     }
      *  },
      *  "mp": {
      *    "weixin": {
@@ -162,12 +164,10 @@ export type NodeField = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "√",
      *          "unixVer": "x"
      *      }
@@ -247,12 +247,10 @@ export interface NodesRef {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
      *      "unixVer": "4.25"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.25"
      *    }
@@ -311,19 +309,22 @@ export interface NodesRef {
     ): SelectorQuery
 
     /**
-     * 添加节点的 Context 对象查询请求
+     * 添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
-     *      "unixVer": "x"
+     *      "unixVer": "5.04"
      *    },
      *    "ios": {
-     *      "osVer": "10.0",
      *      "uniVer": "√",
-     *      "unixVer": "x"
-     *    }
+     *      "unixVer": "5.04"
+     *    },
+     *     "harmony": {
+     *       "uniVer": "4.23",
+     *       "unixVer": "5.04",
+     *       "unixVaporVer": "5.04"
+     *     }
      *  },
      *  "mp": {
      *    "weixin": {
@@ -381,12 +382,10 @@ export interface NodesRef {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
      *      "unixVer": "4.25"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.25"
      *    }
@@ -481,20 +480,18 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
-     *      "unixVer": "3.91"
+     *      "unixVer": "3.91",
+     *      "unixVaporVer": "5.21"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.11"
      *    },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {

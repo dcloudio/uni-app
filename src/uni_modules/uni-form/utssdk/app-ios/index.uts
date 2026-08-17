@@ -1,0 +1,2148 @@
+import { UIReturnKeyType, UIKeyboardType, UITextField, UITextFieldDelegate, UITextView, UITextViewDelegate, UIResponder, UIScreen, UIScrollView, UIView } from 'UIKit';
+import { NotificationCenter, NSNotification, NSNumber, NSValue } from 'Foundation';
+import { CGPoint, CGFloat } from 'CoreFoundation';
+import { JSExport } from 'JavaScriptCore';
+
+function toBoolean(value: any): boolean {
+	if (typeof value == 'boolean') {
+		return value
+	}
+	if (typeof value == 'string') {
+		return value == 'true'
+	}
+	if (typeof value == 'number') {
+		return value != 0
+	}
+	return value != null
+}
+
+function parsePixelStyleValue(value?: string): number | null {
+	if (value == null) {
+		return null
+	}
+	const normalizedValue = value.trim()
+	if (normalizedValue == '') {
+		return null
+	}
+	if (normalizedValue.endsWith('px')) {
+		const pixelValue = parseFloat(normalizedValue)
+		return isNaN(pixelValue) ? null : pixelValue
+	}
+	const numberValue = parseFloat(normalizedValue)
+	return isNaN(numberValue) ? null : numberValue
+}
+
+function normalizePaddingStyleValue(value?: string): number | null {
+	const pixelValue = parsePixelStyleValue(value)
+	if (pixelValue == null) {
+		return null
+	}
+	return Math.max(0, pixelValue)
+}
+
+function normalizeElementStringValue(value: any): string {
+	if (value == null) {
+		return ''
+	}
+	if (typeof value == 'string') {
+		return value as string
+	}
+	if (typeof value == 'number') {
+		return `${value as number}`
+	}
+	if (typeof value == 'boolean') {
+		return (value as boolean) ? 'true' : 'false'
+	}
+	return ''
+}
+
+function dispatchNativeViewEvent(element: UniNativeViewElement, type: string, detail: UTSJSONObject) {
+	const event = new UniNativeViewEvent(type, detail)
+	element.dispatchEvent(event)
+}
+
+function dispatchKeyboardHeightChangeEvent(element: UniNativeViewElement, height: number, duration: number) {
+	dispatchNativeViewEvent(element, 'keyboardheightchange', {
+		'height': height,
+		'duration': duration
+	} as UTSJSONObject)
+}
+
+class UniAdjustPositionParentSnapshot {
+	index: number = -1
+	y: number = 0
+	height: number = 0
+	scrollTop: number = 0
+	scrollLeft: number = 0
+	scrollHeight: number = 0
+}
+
+class UniAdjustPositionParentPlan {
+	index: number = -1
+	scrollTop: number = 0
+}
+
+class UniAdjustPositionPlan {
+	shouldAdjust: boolean = false
+	parentPlans: UniAdjustPositionParentPlan[] = []
+	rootTranslateY: number = 0
+}
+
+class UniNativeScrollParentPlan {
+	index: number = -1
+	originOffsetX: CGFloat = 0.0
+	originOffsetY: CGFloat = 0.0
+	offsetY: CGFloat = 0.0
+}
+
+class UniNativeScrollPlan {
+	parentPlans: UniNativeScrollParentPlan[] = []
+	remainingDistance: CGFloat = 0.0
+}
+
+type UniCursorBottomOffsetResolver = (elementHeight: number) => number
+
+function createAdjustPositionPlan(
+	windowHeight: number,
+	keyboardHeight: number,
+	elementY: number,
+	targetBottomOffset: number,
+	cursorSpacing: number,
+	parents: UniAdjustPositionParentSnapshot[],
+	allowRootTranslate: boolean
+): UniAdjustPositionPlan {
+	const plan = new UniAdjustPositionPlan()
+	const targetBottomY = elementY + targetBottomOffset
+	let needMoreScrollDistance = keyboardHeight + cursorSpacing - (windowHeight - targetBottomY)
+	if (needMoreScrollDistance <= 0) {
+		return plan
+	}
+
+	plan.shouldAdjust = true
+
+	if (parents.length > 0) {
+		const lastParent = parents[parents.length - 1]
+		if (windowHeight - lastParent.y - targetBottomOffset >= keyboardHeight) {
+			for (let i = 0; i < parents.length; i++) {
+				const parent = parents[i]
+				const canMoreScrollDistance = parent.scrollHeight - parent.scrollTop - parent.height
+				if (canMoreScrollDistance > 0) {
+					let shouldScrollDistance = canMoreScrollDistance
+					if (canMoreScrollDistance > needMoreScrollDistance) {
+						shouldScrollDistance = needMoreScrollDistance
+					}
+					const parentPlan = new UniAdjustPositionParentPlan()
+					parentPlan.index = parent.index
+					parentPlan.scrollTop = parent.scrollTop + shouldScrollDistance
+					plan.parentPlans.push(parentPlan)
+					needMoreScrollDistance = Math.max(0, needMoreScrollDistance - shouldScrollDistance)
+					if (needMoreScrollDistance <= 0) {
+						break
+					}
+				}
+			}
+		}
+	}
+
+	const changedScrollParents = plan.parentPlans.length > 0
+	const hasScrollParents = parents.length > 0
+	if (needMoreScrollDistance > 0 && allowRootTranslate) {
+		if (!hasScrollParents || !changedScrollParents) {
+			plan.rootTranslateY = needMoreScrollDistance
+		}
+	}
+
+	return plan
+}
+
+function isScrollAbleTagName(tagName: string): boolean {
+	const normalizedTagName = tagName.toUpperCase()
+	return normalizedTagName == 'SCROLL-VIEW'
+		|| normalizedTagName == 'SCROLLVIEW'
+		|| normalizedTagName.indexOf('SCROLL-VIEW') >= 0
+		|| normalizedTagName.indexOf('SCROLLVIEW') >= 0
+		|| normalizedTagName == 'LIST-VIEW'
+		|| normalizedTagName == 'LISTVIEW'
+		|| normalizedTagName.indexOf('LIST-VIEW') >= 0
+		|| normalizedTagName.indexOf('LISTVIEW') >= 0
+		|| normalizedTagName == 'WEB-VIEW'
+		|| normalizedTagName == 'WEBVIEW'
+		|| normalizedTagName.indexOf('WEB-VIEW') >= 0
+		|| normalizedTagName.indexOf('WEBVIEW') >= 0
+}
+
+class UniInputAdjustPositionHelper {
+	private static activeHelper: UniInputAdjustPositionHelper | null = null
+	private static sessionPageRootElement: UniElement | null = null
+	private static sessionPageRootOriginTransform: string = ''
+	private static pendingSessionResetTimer: number | null = null
+	private element: UniNativeViewElement
+	private resolveCursorBottomOffset: UniCursorBottomOffsetResolver = (elementHeight: number): number => {
+		return Math.max(0, elementHeight)
+	}
+	private scrollAbleParents: UniElement[] = []
+	private nativeScrollParents: UIScrollView[] = []
+	private pageRootElement: UniElement | null = null
+	private hasCollectedScrollAbleParents: boolean = false
+	private hasCollectedNativeScrollParents: boolean = false
+	private resetPosition: () => void = () => {}
+	private hasLocalAdjustment: boolean = false
+	private pendingAdjustTimer: number | null = null
+	private editingParentSnapshots: UniAdjustPositionParentSnapshot[] = []
+
+	private static readonly REVEAL_RETRY_DELAY = 24
+	private static readonly MAX_REVEAL_RETRY_COUNT = 12
+
+	constructor(element: UniNativeViewElement, resolveCursorBottomOffset: UniCursorBottomOffsetResolver) {
+		this.element = element
+		this.resolveCursorBottomOffset = resolveCursorBottomOffset
+	}
+
+	setCursorBottomOffsetResolver(resolveCursorBottomOffset: UniCursorBottomOffsetResolver) {
+		this.resolveCursorBottomOffset = resolveCursorBottomOffset
+	}
+
+	prepareForEditing() {
+		this.cancelPendingSessionReset()
+		this.collectScrollAbleParents()
+		this.collectNativeScrollParents()
+		this.captureSessionPageRootIfNeeded()
+		this.captureEditingParentSnapshots()
+	}
+
+	private prepareForKeyboardAdjust() {
+		this.cancelPendingSessionReset()
+		this.collectScrollAbleParents()
+		this.collectNativeScrollParents()
+		this.captureSessionPageRootIfNeeded()
+	}
+
+	cancelPendingSessionReset() {
+		const timer = UniInputAdjustPositionHelper.pendingSessionResetTimer
+		if (timer != null) {
+			clearTimeout(timer!)
+			UniInputAdjustPositionHelper.pendingSessionResetTimer = null
+		}
+	}
+
+	scheduleSessionReset(delaySeconds: number) {
+		this.cancelPendingSessionReset()
+		const delayMs = Math.max(0, Math.ceil(delaySeconds * 1000) + 16)
+		UniInputAdjustPositionHelper.pendingSessionResetTimer = setTimeout(() => {
+			UniInputAdjustPositionHelper.pendingSessionResetTimer = null
+			this.resetSessionPosition()
+		}, delayMs)
+	}
+
+	adjustForKeyboardHeight(keyboardHeight: number, cursorSpacing: number) {
+		this.prepareForKeyboardAdjust()
+		if (UniInputAdjustPositionHelper.activeHelper != null && UniInputAdjustPositionHelper.activeHelper !== this) {
+			UniInputAdjustPositionHelper.activeHelper!.clearPendingAdjustTimer()
+			UniInputAdjustPositionHelper.activeHelper!.clearLocalResetPosition()
+		}
+		this.restoreSessionPageRootTransform()
+		UniInputAdjustPositionHelper.activeHelper = this
+		this.clearPendingAdjustTimer()
+		this.applyAdjustForKeyboardHeight(keyboardHeight, cursorSpacing, true, 0)
+	}
+
+	private applyAdjustForKeyboardHeight(keyboardHeight: number, cursorSpacing: number, resetBeforeApply: boolean, retryCount: number) {
+		if (resetBeforeApply) {
+			this.resetElementPosition()
+		}
+		if (keyboardHeight <= 0) {
+			return
+		}
+
+		const windowHeight = this.element.uniPage.pageBody.height
+		const boundingClientRect = this.element.getBoundingClientRect()
+		const resolvedCursorBottomOffset = this.resolveCursorBottomOffset(boundingClientRect.height)
+		const maxCursorBottomOffset = Math.max(0, boundingClientRect.height)
+		const cursorBottomOffset = maxCursorBottomOffset > 0
+			? Math.min(Math.max(0, resolvedCursorBottomOffset), maxCursorBottomOffset)
+			: Math.max(0, resolvedCursorBottomOffset)
+		const cursorBottomY = boundingClientRect.y + cursorBottomOffset
+		const maxSafeSpacing = Math.max(0, windowHeight - keyboardHeight - cursorBottomOffset)
+		// Clamp only by the available viewport above the keyboard. In scrollable pages,
+		// limiting by the input's current bottom gap makes large cursor-spacing values
+		// appear to move only a little even though more scroll distance is available.
+		const effectiveCursorSpacing = Math.min(Math.max(0, cursorSpacing), maxSafeSpacing)
+		const visibleBottom = windowHeight - keyboardHeight - effectiveCursorSpacing
+		const elementBottom = boundingClientRect.y + boundingClientRect.height
+		// Only move the whole page when the focused field already overlaps the viewport.
+		// Off-screen list items should be brought in by their scroll container instead of
+		// applying a large root translate that can push the whole page away.
+		const allowRootTranslate = boundingClientRect.height > 0 && boundingClientRect.y < windowHeight && elementBottom > 0
+		const parentSnapshots: UniAdjustPositionParentSnapshot[] = []
+		for (let i = 0; i < this.scrollAbleParents.length; i++) {
+			const parentElement = this.scrollAbleParents[i]
+			const parentRect = parentElement.getBoundingClientRect()
+			const snapshot = new UniAdjustPositionParentSnapshot()
+			snapshot.index = i
+			snapshot.y = parentRect.y
+			snapshot.height = parentRect.height
+			snapshot.scrollTop = parentElement.scrollTop
+			snapshot.scrollLeft = parentElement.scrollLeft
+			snapshot.scrollHeight = parentElement.scrollHeight
+			parentSnapshots.push(snapshot)
+		}
+
+		const plan = createAdjustPositionPlan(
+			windowHeight,
+			keyboardHeight,
+			boundingClientRect.y,
+			cursorBottomOffset,
+			effectiveCursorSpacing,
+			parentSnapshots,
+			allowRootTranslate
+		)
+		if (!plan.shouldAdjust) {
+			return
+		}
+
+		const previousResetPosition = resetBeforeApply ? (() => {}) : this.resetPosition
+		const baselineParentSnapshots = (!this.hasLocalAdjustment && this.editingParentSnapshots.length == parentSnapshots.length)
+			? this.editingParentSnapshots
+			: parentSnapshots
+		const nativeScrollPlan = plan.rootTranslateY > 0
+			? this.createNativeScrollPlan(plan.rootTranslateY)
+			: new UniNativeScrollPlan()
+		let rootFallbackTranslateY = plan.rootTranslateY
+		if (rootFallbackTranslateY > 0 && this.nativeScrollParents.length > 0) {
+			// When the page UIScrollView cannot satisfy a large cursor-spacing, only
+			// translate enough to keep the focused field visible above the keyboard.
+			const minimalRootPlan = createAdjustPositionPlan(
+				windowHeight,
+				keyboardHeight,
+				boundingClientRect.y,
+				cursorBottomOffset,
+				0,
+				[],
+				allowRootTranslate
+			)
+			if (minimalRootPlan.rootTranslateY < rootFallbackTranslateY) {
+				rootFallbackTranslateY = minimalRootPlan.rootTranslateY
+			}
+		}
+		const rootFallbackTranslateYValue = CGFloat(rootFallbackTranslateY)
+		const rootTranslateY: CGFloat = nativeScrollPlan.parentPlans.length > 0
+			? (nativeScrollPlan.remainingDistance < rootFallbackTranslateYValue ? nativeScrollPlan.remainingDistance : rootFallbackTranslateYValue)
+			: rootFallbackTranslateYValue
+
+		for (let i = 0; i < plan.parentPlans.length; i++) {
+			const parentPlan = plan.parentPlans[i]
+			const parentElement = this.scrollAbleParents[parentPlan.index]
+			parentElement.scrollTo(parentElement.scrollLeft, parentPlan.scrollTop)
+		}
+		for (let i = 0; i < nativeScrollPlan.parentPlans.length; i++) {
+			const parentPlan = nativeScrollPlan.parentPlans[i]
+			const scrollView = this.nativeScrollParents[parentPlan.index]
+			scrollView.setContentOffset(CGPoint(x = scrollView.contentOffset.x, y = parentPlan.offsetY), animated = false)
+		}
+
+		if (rootTranslateY > 0) {
+			const pageRootElement = this.getPageRootElement()
+			const pageRootOriginTransform = UniInputAdjustPositionHelper.sessionPageRootOriginTransform
+			pageRootElement?.style.setProperty('transform', `translateY(-${rootTranslateY}px)`)
+			this.resetPosition = () => {
+				for (let i = 0; i < plan.parentPlans.length; i++) {
+					const parentPlan = plan.parentPlans[i]
+					const parentElement = this.scrollAbleParents[parentPlan.index]
+					const parentSnapshot = baselineParentSnapshots[parentPlan.index]
+					parentElement.scrollTo(parentSnapshot.scrollLeft, parentSnapshot.scrollTop)
+				}
+				for (let i = 0; i < nativeScrollPlan.parentPlans.length; i++) {
+					const parentPlan = nativeScrollPlan.parentPlans[i]
+					const scrollView = this.nativeScrollParents[parentPlan.index]
+					this.restoreNativeScrollParentIfUnchanged(scrollView, parentPlan)
+				}
+				this.getPageRootElement()?.style.setProperty('transform', pageRootOriginTransform)
+				previousResetPosition()
+			}
+		} else {
+			this.resetPosition = () => {
+				for (let i = 0; i < plan.parentPlans.length; i++) {
+					const parentPlan = plan.parentPlans[i]
+					const parentElement = this.scrollAbleParents[parentPlan.index]
+					const parentSnapshot = baselineParentSnapshots[parentPlan.index]
+					parentElement.scrollTo(parentSnapshot.scrollLeft, parentSnapshot.scrollTop)
+				}
+				for (let i = 0; i < nativeScrollPlan.parentPlans.length; i++) {
+					const parentPlan = nativeScrollPlan.parentPlans[i]
+					const scrollView = this.nativeScrollParents[parentPlan.index]
+					this.restoreNativeScrollParentIfUnchanged(scrollView, parentPlan)
+				}
+				previousResetPosition()
+			}
+		}
+		this.hasLocalAdjustment = true
+		const changedScrollParents = plan.parentPlans.length > 0
+		const changedNativeScrollParents = nativeScrollPlan.parentPlans.length > 0
+		const needsMoreReveal = boundingClientRect.y >= windowHeight || cursorBottomY > visibleBottom
+		const shouldRetryAfterScroll = changedScrollParents || changedNativeScrollParents || (!allowRootTranslate && needsMoreReveal)
+		if (shouldRetryAfterScroll && retryCount < UniInputAdjustPositionHelper.MAX_REVEAL_RETRY_COUNT) {
+			this.pendingAdjustTimer = setTimeout(() => {
+				this.pendingAdjustTimer = null
+				this.applyAdjustForKeyboardHeight(keyboardHeight, cursorSpacing, false, retryCount + 1)
+			}, UniInputAdjustPositionHelper.REVEAL_RETRY_DELAY)
+		}
+	}
+
+	resetElementPosition() {
+		this.clearPendingAdjustTimer()
+		this.runResetPosition(false)
+	}
+
+	resetSessionPosition() {
+		this.cancelPendingSessionReset()
+		this.clearPendingAdjustTimer()
+		this.runResetPosition(true)
+		this.editingParentSnapshots.length = 0
+		this.clearSharedSessionState(true)
+	}
+
+	destroy() {
+		this.cancelPendingSessionReset()
+		this.clearPendingAdjustTimer()
+		this.resetElementPosition()
+		const pageRootElement = this.getPageRootElement()
+		if (UniInputAdjustPositionHelper.activeHelper === this || UniInputAdjustPositionHelper.sessionPageRootElement === pageRootElement) {
+			this.clearSharedSessionState(true)
+		}
+		this.scrollAbleParents.length = 0
+		this.nativeScrollParents.length = 0
+		this.pageRootElement = null
+		this.hasCollectedScrollAbleParents = false
+		this.hasCollectedNativeScrollParents = false
+	}
+
+	private clearPendingAdjustTimer() {
+		const timer = this.pendingAdjustTimer
+		if (timer != null) {
+			clearTimeout(timer!)
+			this.pendingAdjustTimer = null
+		}
+	}
+
+	private clearLocalResetPosition() {
+		this.resetPosition = () => {}
+		this.hasLocalAdjustment = false
+	}
+
+	private runResetPosition(clearActiveHelper: boolean) {
+		this.resetPosition()
+		this.clearLocalResetPosition()
+		if (clearActiveHelper && UniInputAdjustPositionHelper.activeHelper === this) {
+			UniInputAdjustPositionHelper.activeHelper = null
+		}
+	}
+
+	private captureSessionPageRootIfNeeded() {
+		const pageRootElement = this.getPageRootElement()
+		if (UniInputAdjustPositionHelper.sessionPageRootElement != null && UniInputAdjustPositionHelper.sessionPageRootElement !== pageRootElement) {
+			this.clearSharedSessionState(true)
+		}
+		if (UniInputAdjustPositionHelper.sessionPageRootElement != null) {
+			return
+		}
+		UniInputAdjustPositionHelper.sessionPageRootElement = pageRootElement
+		UniInputAdjustPositionHelper.sessionPageRootOriginTransform = pageRootElement?.style.getPropertyValue('transform') ?? ''
+	}
+
+	private captureEditingParentSnapshots() {
+		this.editingParentSnapshots.length = 0
+		for (let i = 0; i < this.scrollAbleParents.length; i++) {
+			const parentElement = this.scrollAbleParents[i]
+			const snapshot = new UniAdjustPositionParentSnapshot()
+			snapshot.index = i
+			snapshot.scrollTop = parentElement.scrollTop
+			snapshot.scrollLeft = parentElement.scrollLeft
+			this.editingParentSnapshots.push(snapshot)
+		}
+	}
+
+	private createNativeScrollPlan(distance: number): UniNativeScrollPlan {
+		const plan = new UniNativeScrollPlan()
+		plan.remainingDistance = distance > 0 ? CGFloat(distance) : 0.0
+		if (plan.remainingDistance <= 0) {
+			return plan
+		}
+
+		for (let i = 0; i < this.nativeScrollParents.length; i++) {
+			const scrollView = this.nativeScrollParents[i]
+			let canMoreScrollDistance = scrollView.contentSize.height - scrollView.contentOffset.y - scrollView.bounds.height
+			if (canMoreScrollDistance <= 0) {
+				continue
+			}
+			let shouldScrollDistance = canMoreScrollDistance
+			if (shouldScrollDistance > plan.remainingDistance) {
+				shouldScrollDistance = plan.remainingDistance
+			}
+			const parentPlan = new UniNativeScrollParentPlan()
+			parentPlan.index = i
+			parentPlan.originOffsetX = scrollView.contentOffset.x
+			parentPlan.originOffsetY = scrollView.contentOffset.y
+			parentPlan.offsetY = scrollView.contentOffset.y + shouldScrollDistance
+			plan.parentPlans.push(parentPlan)
+			plan.remainingDistance = plan.remainingDistance - shouldScrollDistance
+			if (plan.remainingDistance < 0) {
+				plan.remainingDistance = 0.0
+			}
+			if (plan.remainingDistance <= 0) {
+				break
+			}
+		}
+
+		return plan
+	}
+
+	private restoreNativeScrollParentIfUnchanged(scrollView: UIScrollView, parentPlan: UniNativeScrollParentPlan) {
+		const currentOffsetY = scrollView.contentOffset.y
+		if (currentOffsetY > parentPlan.offsetY + 1.0 || currentOffsetY < parentPlan.offsetY - 1.0) {
+			return
+		}
+		scrollView.setContentOffset(CGPoint(x = parentPlan.originOffsetX, y = parentPlan.originOffsetY), animated = false)
+	}
+
+	private restoreSessionPageRootTransform() {
+		if (UniInputAdjustPositionHelper.sessionPageRootElement == null) {
+			return
+		}
+		UniInputAdjustPositionHelper.sessionPageRootElement!.style.setProperty('transform', UniInputAdjustPositionHelper.sessionPageRootOriginTransform)
+	}
+
+	private clearSharedSessionState(restorePageRootTransform: boolean) {
+		this.cancelPendingSessionReset()
+		if (restorePageRootTransform) {
+			this.restoreSessionPageRootTransform()
+		}
+		UniInputAdjustPositionHelper.sessionPageRootElement = null
+		UniInputAdjustPositionHelper.sessionPageRootOriginTransform = ''
+		UniInputAdjustPositionHelper.activeHelper = null
+	}
+
+	private getPageRootElement(): UniElement | null {
+		if (this.pageRootElement != null) {
+			return this.pageRootElement
+		}
+
+		let rootElement = this.element.parentElement
+		while (rootElement?.parentElement != null) {
+			rootElement = rootElement.parentElement
+		}
+		this.pageRootElement = rootElement
+		return this.pageRootElement
+	}
+
+	private collectScrollAbleParents() {
+		if (this.hasCollectedScrollAbleParents) {
+			return
+		}
+
+		let currentParent = this.element.parentElement
+		while (currentParent != null) {
+			if (isScrollAbleTagName(currentParent.tagName)) {
+				this.scrollAbleParents.push(currentParent)
+			}
+			currentParent = currentParent.parentElement
+		}
+		this.hasCollectedScrollAbleParents = true
+	}
+
+	private collectNativeScrollParents() {
+		if (this.hasCollectedNativeScrollParents) {
+			return
+		}
+
+		let currentView = this.element.getIOSView()?.superview
+		while (currentView != null) {
+			if (UTSiOS.instanceof(currentView, UIScrollView.self)) {
+				this.nativeScrollParents.push(currentView as UIScrollView)
+			}
+			currentView = currentView!.superview
+		}
+		this.hasCollectedNativeScrollParents = true
+	}
+}
+
+const UNI_INPUT_DEFAULT_FONT_SIZE = 16
+
+class UniEditSharedState {
+	maxLength: number = -1
+	beginEditValue: string = ''
+	confirmHold: boolean = false
+	holdKeyboard: boolean = false
+	adjustPosition: boolean = true
+	isFocusing: boolean = false
+	keyboardHeight: number = 0
+	keyboardAnimationDuration: number = 0
+	cursorSpacing: number = 0
+	cursor: number = -1
+	selectionStart: number = -1
+	selectionEnd: number = -1
+	fontSize: number = UNI_INPUT_DEFAULT_FONT_SIZE
+	fontWeight: string = 'normal'
+	fontStyle: string = 'normal'
+	fontFamily: string = ''
+}
+
+class UniEditKeyboardController {
+	private state: UniEditSharedState
+	private positionHelper: UniInputAdjustPositionHelper
+
+	constructor(element: UniNativeViewElement, state: UniEditSharedState, resolveCursorBottomOffset: UniCursorBottomOffsetResolver) {
+		this.state = state
+		this.positionHelper = new UniInputAdjustPositionHelper(element, resolveCursorBottomOffset)
+	}
+
+	destroy() {
+		this.positionHelper.destroy()
+	}
+
+	beginEditing() {
+		this.positionHelper.prepareForEditing()
+	}
+
+	handleKeyboardDismissStart() {
+		this.positionHelper.cancelPendingSessionReset()
+		if (this.state.keyboardHeight > 0) {
+			this.positionHelper.resetSessionPosition()
+		}
+	}
+
+	scheduleDismissReset() {
+		if (this.state.keyboardHeight > 0) {
+			this.positionHelper.scheduleSessionReset(this.state.keyboardAnimationDuration)
+		}
+	}
+
+	setCursorBottomOffsetResolver(resolveCursorBottomOffset: UniCursorBottomOffsetResolver) {
+		this.positionHelper.setCursorBottomOffsetResolver(resolveCursorBottomOffset)
+	}
+
+	handleKeyboardWillShow(notification: NSNotification, isFirstResponder: boolean) {
+		if (!isFirstResponder) {
+			return
+		}
+		this.state.keyboardAnimationDuration = this.getKeyboardAnimationDuration(notification)
+	}
+
+	handleKeyboardWillHide(notification: NSNotification) {
+		if (!this.state.isFocusing && this.state.keyboardHeight <= 0) {
+			return
+		}
+		this.state.keyboardAnimationDuration = this.getKeyboardAnimationDuration(notification)
+		this.handleKeyboardDismissStart()
+	}
+
+	handleKeyboardFrameWillChange(notification: NSNotification, onKeyboardHeightChange: (height: number, duration: number) => void) {
+		const keyboardHeight = this.getKeyboardHeight(notification)
+		if (!this.state.isFocusing && !(this.state.keyboardHeight > 0 && keyboardHeight <= 0)) {
+			return
+		}
+		const duration = this.getKeyboardAnimationDuration(notification)
+		this.state.keyboardHeight = keyboardHeight
+		this.state.keyboardAnimationDuration = duration
+		onKeyboardHeightChange(keyboardHeight, duration)
+		if (keyboardHeight <= 0) {
+			this.state.keyboardHeight = 0
+			this.positionHelper.resetSessionPosition()
+			return
+		}
+		if (this.state.adjustPosition) {
+			this.positionHelper.adjustForKeyboardHeight(keyboardHeight, this.state.cursorSpacing)
+		} else {
+			this.positionHelper.resetElementPosition()
+		}
+	}
+
+	refreshPosition() {
+		if (!this.state.isFocusing) {
+			return
+		}
+		if (this.state.adjustPosition && this.state.keyboardHeight > 0) {
+			this.positionHelper.adjustForKeyboardHeight(this.state.keyboardHeight, this.state.cursorSpacing)
+		} else if (!this.state.adjustPosition) {
+			this.positionHelper.resetElementPosition()
+		}
+	}
+
+	resetPosition() {
+		this.positionHelper.resetElementPosition()
+	}
+
+	private getKeyboardHeight(notification: NSNotification): number {
+		const endFrameValue = notification.userInfo?.[UIResponder.keyboardFrameEndUserInfoKey]
+		if (endFrameValue == null) {
+			return 0
+		}
+		const endFrame = (endFrameValue as NSValue).cgRectValue
+		// keyboardFrameEndUserInfoKey reports the full keyboard frame size even when it is
+		// moving off-screen, so derive the visible overlap with the screen bottom instead.
+		const screenHeight = NSNumber(value = Double(UIScreen.main.bounds.size.height))
+		const keyboardTop = NSNumber(value = Double(endFrame.origin.y))
+		const keyboardHeight = NSNumber(value = Double(endFrame.size.height))
+		const visibleHeight = Math.max(0, Math.min(keyboardHeight, screenHeight - keyboardTop))
+		return visibleHeight
+	}
+
+	private getKeyboardAnimationDuration(notification: NSNotification): number {
+		const durationValue = notification.userInfo?.[UIResponder.keyboardAnimationDurationUserInfoKey]
+		if (durationValue == null) {
+			return 0
+		}
+		return NSNumber(value = (durationValue as NSNumber).doubleValue)
+	}
+}
+
+export interface UniInputElement extends JSExport, UniViewElement {
+	value: string
+	name: string
+	type: string
+	disabled: boolean
+	autofocus: boolean
+	focus(): void
+	blur(): void
+}
+
+export interface UniTextareaElement extends JSExport, UniViewElement {
+	value: string
+	name: string
+	disabled: boolean
+	autofocus: boolean
+	focus(): void
+	blur(): void
+}
+
+export class UniInputElementImpl extends UniViewElementImpl implements UniInputElement {
+	_value: string = ''
+	_name: string = ''
+	_type: string = 'text'
+	_disabled: boolean = false
+	_autofocus: boolean = false
+	private nativeInputView: NativeInputView | null = null
+
+	private applyValue(value: any, syncNativeView: boolean) {
+		const normalizedValue = normalizeElementStringValue(value)
+		const changed = this._value != normalizedValue
+		this._value = normalizedValue
+		if (syncNativeView && changed) {
+			this.nativeInputView?.updateValue(normalizedValue)
+		}
+	}
+
+	private applyName(value: any) {
+		const normalizedValue = normalizeElementStringValue(value)
+		this._name = normalizedValue
+	}
+
+	private applyType(value: any, syncNativeView: boolean) {
+		const normalizedValue = normalizeElementStringValue(value)
+		const changed = this._type != normalizedValue
+		this._type = normalizedValue
+		if (syncNativeView && changed) {
+			this.nativeInputView?.updateType(normalizedValue)
+		}
+	}
+
+	private applyDisabled(value: any, syncNativeView: boolean) {
+		const normalizedValue = toBoolean(value)
+		const changed = this._disabled != normalizedValue
+		this._disabled = normalizedValue
+		if (syncNativeView && changed) {
+			this.nativeInputView?.updateDisabled(normalizedValue)
+		}
+	}
+
+	private applyAutofocus(value: any, syncNativeView: boolean) {
+		const normalizedValue = toBoolean(value)
+		const changed = this._autofocus != normalizedValue
+		this._autofocus = normalizedValue
+		if (syncNativeView && changed) {
+			this.nativeInputView?.updateAutoFocus(normalizedValue)
+		}
+	}
+
+	setNativeInputView(nativeInputView: NativeInputView | null) {
+		this.nativeInputView = nativeInputView
+		if (nativeInputView == null) {
+			return
+		}
+		nativeInputView.updateValue(this._value)
+		nativeInputView.updateType(this._type)
+		nativeInputView.updateDisabled(this._disabled)
+		nativeInputView.updateAutoFocus(this._autofocus)
+	}
+
+	updateValueFromNative(value: string) {
+		this.applyValue(value, false)
+	}
+
+	updateTypeFromNative(value: string) {
+		this.applyType(value, false)
+	}
+
+	updateDisabledFromNative(value: boolean) {
+		this.applyDisabled(value, false)
+	}
+
+	updateAutofocusFromNative(value: boolean) {
+		this.applyAutofocus(value, false)
+	}
+
+	get value(): string {
+		return this._value
+	}
+
+	set value(value: string) {
+		this.applyValue(value, true)
+	}
+
+	get name(): string {
+		return this._name
+	}
+
+	set name(value: string) {
+		this.applyName(value)
+	}
+
+	get type(): string {
+		return this._type
+	}
+
+	set type(value: string) {
+		this.applyType(value, true)
+	}
+
+	get disabled(): boolean {
+		return this._disabled
+	}
+
+	set disabled(value: boolean) {
+		this.applyDisabled(value, true)
+	}
+
+	get autofocus(): boolean {
+		return this._autofocus
+	}
+
+	set autofocus(value: boolean) {
+		this.applyAutofocus(value, true)
+	}
+
+	override focus() {
+		this.nativeInputView?.updateFocus(true)
+	}
+
+	override blur() {
+		this.nativeInputView?.updateFocus(false)
+	}
+
+	override getIOSView(): UIView | null {
+		return this.nativeInputView?.textField
+	}
+
+	override tagName: string = 'INPUT'
+	override nodeName: string = 'INPUT'
+}
+
+export class UniTextareaElementImpl extends UniViewElementImpl implements UniTextareaElement {
+	_value: string = ''
+	_name: string = ''
+	_disabled: boolean = false
+	_autofocus: boolean = false
+	private nativeTextareaView: NativeTextareaView | null = null
+
+	private applyValue(value: any, syncNativeView: boolean) {
+		const normalizedValue = normalizeElementStringValue(value)
+		const changed = this._value != normalizedValue
+		this._value = normalizedValue
+		if (syncNativeView && changed) {
+			this.nativeTextareaView?.updateValue(normalizedValue)
+		}
+	}
+
+	private applyName(value: any) {
+		const normalizedValue = normalizeElementStringValue(value)
+		this._name = normalizedValue
+	}
+
+	private applyDisabled(value: any, syncNativeView: boolean) {
+		const normalizedValue = toBoolean(value)
+		const changed = this._disabled != normalizedValue
+		this._disabled = normalizedValue
+		if (syncNativeView && changed) {
+			this.nativeTextareaView?.updateDisabled(normalizedValue)
+		}
+	}
+
+	private applyAutofocus(value: any, syncNativeView: boolean) {
+		const normalizedValue = toBoolean(value)
+		const changed = this._autofocus != normalizedValue
+		this._autofocus = normalizedValue
+		if (syncNativeView && changed) {
+			this.nativeTextareaView?.updateAutoFocus(normalizedValue)
+		}
+	}
+
+	setNativeTextareaView(nativeTextareaView: NativeTextareaView | null) {
+		this.nativeTextareaView = nativeTextareaView
+		if (nativeTextareaView == null) {
+			return
+		}
+		nativeTextareaView.updateValue(this._value)
+		nativeTextareaView.updateDisabled(this._disabled)
+		nativeTextareaView.updateAutoFocus(this._autofocus)
+	}
+
+	updateValueFromNative(value: string) {
+		this.applyValue(value, false)
+	}
+
+	updateDisabledFromNative(value: boolean) {
+		this.applyDisabled(value, false)
+	}
+
+	updateAutofocusFromNative(value: boolean) {
+		this.applyAutofocus(value, false)
+	}
+
+	get value(): string {
+		return this._value
+	}
+
+	set value(value: string) {
+		this.applyValue(value, true)
+	}
+
+	get name(): string {
+		return this._name
+	}
+
+	set name(value: string) {
+		this.applyName(value)
+	}
+
+	get disabled(): boolean {
+		return this._disabled
+	}
+
+	set disabled(value: boolean) {
+		this.applyDisabled(value, true)
+	}
+
+	get autofocus(): boolean {
+		return this._autofocus
+	}
+
+	set autofocus(value: boolean) {
+		this.applyAutofocus(value, true)
+	}
+
+	override focus() {
+		this.nativeTextareaView?.updateFocus(true)
+	}
+
+	override blur() {
+		this.nativeTextareaView?.updateFocus(false)
+	}
+
+	override getIOSView(): UIView | null {
+		return this.nativeTextareaView?.textView
+	}
+
+	override tagName: string = 'TEXTAREA'
+	override nodeName: string = 'TEXTAREA'
+}
+
+function findInputElementImpl(element: UniNativeViewElement): UniInputElementImpl | null {
+	let currentElement = element.parentElement
+	while (currentElement != null) {
+		if (UTSiOS.instanceof(currentElement, UniInputElementImpl.self)) {
+			return currentElement as UniInputElementImpl
+		}
+		currentElement = currentElement.parentElement
+	}
+	return null
+}
+
+function findTextareaElementImpl(element: UniNativeViewElement): UniTextareaElementImpl | null {
+	let currentElement = element.parentElement
+	while (currentElement != null) {
+		if (UTSiOS.instanceof(currentElement, UniTextareaElementImpl.self)) {
+			return currentElement as UniTextareaElementImpl
+		}
+		currentElement = currentElement.parentElement
+	}
+	return null
+}
+
+class UniInputFontUtil {
+	static applyInputFont(target: UniInputView | null, fontSize: number, fontWeight: string, fontStyle: string, fontFamily: string) {
+		if (target == null) return
+		target!.font = this.buildFont(fontSize, fontWeight, fontStyle, fontFamily)
+	}
+
+	static applyTextareaFont(target: UniTextareaView | null, fontSize: number, fontWeight: string, fontStyle: string, fontFamily: string) {
+		if (target == null) return
+		target!.font = this.buildFont(fontSize, fontWeight, fontStyle, fontFamily)
+	}
+
+	static buildFont(fontSize: number, fontWeight: string, fontStyle: string, fontFamily: string): UIFont {
+		const size = CGFloat(fontSize)
+		const familyCandidates = this.buildFontFamilyCandidates(fontFamily)
+		for (let i = 0; i < familyCandidates.length; i++) {
+			const font = this.buildCustomFont(familyCandidates[i], size, fontWeight, fontStyle)
+			if (font != null) {
+				return font!
+			}
+		}
+		return this.buildSystemFont(size, fontWeight, fontStyle)
+	}
+
+	static parseFontSize(value: string, viewportWidth?: number): number | null {
+		if (value == null) {
+			return null
+		}
+		const normalizedValue = value.trim()
+		if (normalizedValue == '') {
+			return null
+		}
+		let parsedValue = normalizedValue
+		if (parsedValue.endsWith('px')) {
+			parsedValue = parsedValue.substring(0, parsedValue.length - 2)
+		} else if (parsedValue.endsWith('rpx')) {
+			const rpxValue = parseFloat(parsedValue.substring(0, parsedValue.length - 3))
+			if (isNaN(rpxValue) || rpxValue <= 0) {
+				return null
+			}
+			const baseWidth = viewportWidth != null && viewportWidth > 0
+				? viewportWidth
+				: NSNumber(value = Double(UIScreen.main.bounds.size.width))
+			return rpxValue * baseWidth / 750
+		}
+		const size = parseFloat(parsedValue)
+		if (isNaN(size) || size <= 0) {
+			return null
+		}
+		return size
+	}
+
+	static normalizeFontWeight(value: string): string {
+		if (value == null) {
+			return 'normal'
+		}
+		const normalizedValue = value.trim().toLowerCase()
+		return normalizedValue == '' ? 'normal' : normalizedValue
+	}
+
+	static normalizeFontStyle(value: string): string {
+		if (value == null) {
+			return 'normal'
+		}
+		return value.trim().toLowerCase() == 'italic' ? 'italic' : 'normal'
+	}
+
+	static normalizeFontFamily(value: string): string {
+		if (value == null) {
+			return ''
+		}
+		return value.trim()
+	}
+
+	private static buildCustomFont(family: string, size: CGFloat, fontWeight: string, fontStyle: string): UIFont | null {
+		return UTSiOS.getFontFamily(family, size, fontWeight, fontStyle)
+	}
+
+	private static buildSystemFont(size: CGFloat, fontWeight: string, fontStyle: string): UIFont {
+		if (fontStyle == 'italic') {
+			if (this.isBoldFontWeight(fontWeight)) {
+				const boldItalicFont = UIFont(name = 'Helvetica-BoldOblique', size = size)
+				if (boldItalicFont != null) {
+					return boldItalicFont!
+				}
+			}
+			return UIFont.italicSystemFont(ofSize = size)
+		}
+		switch (fontWeight) {
+			case '100':
+				return UIFont.systemFont(ofSize = size, weight = UIFont.Weight.ultraLight)
+			case '200':
+				return UIFont.systemFont(ofSize = size, weight = UIFont.Weight.thin)
+			case '300':
+			case 'lighter':
+				return UIFont.systemFont(ofSize = size, weight = UIFont.Weight.light)
+			case '500':
+				return UIFont.systemFont(ofSize = size, weight = UIFont.Weight.medium)
+			case '600':
+				return UIFont.systemFont(ofSize = size, weight = UIFont.Weight.semibold)
+			case '700':
+			case 'bold':
+				return UIFont.systemFont(ofSize = size, weight = UIFont.Weight.bold)
+			case '800':
+				return UIFont.systemFont(ofSize = size, weight = UIFont.Weight.heavy)
+			case '900':
+			case 'bolder':
+				return UIFont.systemFont(ofSize = size, weight = UIFont.Weight.black)
+			default:
+				return UIFont.systemFont(ofSize = size, weight = UIFont.Weight.regular)
+		}
+	}
+
+	private static isBoldFontWeight(value: string): boolean {
+		return value == 'bold' || value == 'bolder' || value == '600' || value == '700' || value == '800' || value == '900'
+	}
+
+	private static buildFontFamilyCandidates(value: string): string[] {
+		const candidates: string[] = []
+		if (value == null || value.trim() == '') {
+			return candidates
+		}
+		const families = value.split(',')
+		for (let i = 0; i < families.length; i++) {
+			const family = this.trimFontFamilyToken(families[i].trim())
+			if (family != '' && candidates.indexOf(family) < 0) {
+				candidates.push(family)
+			}
+		}
+		return candidates
+	}
+
+	private static trimFontFamilyToken(value: string): string {
+		if (value.length >= 2) {
+			const firstChar = value.charAt(0)
+			const lastChar = value.charAt(value.length - 1)
+			if ((firstChar == '\'' && lastChar == '\'') || (firstChar == '"' && lastChar == '"')) {
+				return value.substring(1, value.length - 1).trim()
+			}
+		}
+		return value
+	}
+}
+
+export class NativeInputView implements UITextFieldDelegate {
+
+	element : UniNativeViewElement;
+	textField : UniInputView | null = null;
+	private state: UniEditSharedState
+	private keyboardController: UniEditKeyboardController
+	private elementImpl: UniInputElementImpl | null = null
+
+	constructor(element : UniNativeViewElement) {
+		// 接收组件传递过来的UniNativeViewElement
+		this.element = element;
+		this.state = new UniEditSharedState()
+		this.keyboardController = new UniEditKeyboardController(element, this.state, (elementHeight: number): number => {
+			return Math.max(0, elementHeight)
+		})
+		super.init()
+		this.bindView();
+		this.bindElementImpl()
+	}
+
+	// element 绑定原生view
+	bindView() {
+		// 初始化原生 textField
+		this.textField = new UniInputView()
+		const textField = this.textField!
+		this.keyboardController.setCursorBottomOffsetResolver((elementHeight: number): number => {
+			const cursorBottomOffset = NSNumber(value = Double(textField.caretBottomOffset()))
+			if (cursorBottomOffset > 0) {
+				return cursorBottomOffset
+			}
+			return Math.max(0, elementHeight)
+		})
+		this.textField!.textColor = UIColor.black;
+		UniInputFontUtil.applyInputFont(this.textField, this.state.fontSize, this.state.fontWeight, this.state.fontStyle, this.state.fontFamily)
+		// 设置delegate对象
+		this.textField!.delegate = this;
+		// UniNativeViewElement 绑定原生 view
+		this.element.bindIOSView(this.textField!);
+		// 监听通知
+		this.addObserver()
+	}
+
+	destroy() {
+		// 移除通知监听
+	    NotificationCenter.default.removeObserver(this, name= UITextField.textDidChangeNotification, object= this.textField)
+		NotificationCenter.default.removeObserver(this, name= UIResponder.keyboardWillShowNotification, object= null)
+		NotificationCenter.default.removeObserver(this, name= UIResponder.keyboardWillHideNotification, object= null)
+		NotificationCenter.default.removeObserver(this, name= UIResponder.keyboardWillChangeFrameNotification, object= null)
+		this.elementImpl?.setNativeInputView(null)
+		this.elementImpl = null
+		this.keyboardController.destroy()
+		// 释放 UTS 实例对象，避免内存泄露
+		UTSiOS.destroyInstance(this)
+		
+	}   
+	
+	// 监听通知
+	addObserver() {
+		if (this.textField == null) { return }
+		NotificationCenter.default.addObserver(this, selector= #selector(textFieldDidChange), name= UITextField.textDidChangeNotification, object= this.textField)
+		NotificationCenter.default.addObserver(this, selector= #selector(keyboardWillShow), name= UIResponder.keyboardWillShowNotification, object= null)
+		NotificationCenter.default.addObserver(this, selector= #selector(keyboardWillHide), name= UIResponder.keyboardWillHideNotification, object= null)
+		NotificationCenter.default.addObserver(this, selector= #selector(keyboardFrameWillChange), name= UIResponder.keyboardWillChangeFrameNotification, object= null)
+	}
+
+	private bindElementImpl() {
+		const elementImpl = findInputElementImpl(this.element)
+		if (elementImpl == null) {
+			return
+		}
+		this.elementImpl = elementImpl
+		this.elementImpl.setNativeInputView(this)
+	}
+
+	private normalizeByMaxLength(value: string): string {
+		if (this.state.maxLength >= 0 && value.count > this.state.maxLength) {
+			return String(value.prefix(this.state.maxLength.intValue))
+		}
+		return value
+	}
+	
+	// 处理输入变动通知
+	@objc textFieldDidChange(notification: NSNotification) {
+		if (this.textField == null) {
+			return;
+		}
+		let range = this.textField!.markedTextRange
+		let beginning = this.textField!.beginningOfDocument
+		let selectedRange = this.textField!.selectedTextRange
+		let selectionStart = selectedRange?.start
+		let cursor = this.textField!.offset(from = beginning, to = selectionStart ?? beginning)
+		let cursorValue = NSNumber(value = cursor)
+		this.state.cursor = cursorValue
+		if (range != null) {
+			let newText = this.textField!.text(in = range!)
+				if (newText != null && newText!.count > 0) {
+					dispatchNativeViewEvent(this.element, 'input', {
+						'value': this.textField!.text ?? '',
+						'cursor': cursorValue,
+						'composing': true
+					} as UTSJSONObject)
+				return
+			}      
+		}
+		let textValue: string = this.textField!.text ?? ""
+		const normalizedValue = this.normalizeByMaxLength(textValue)
+		if (normalizedValue != textValue) {
+			textValue = normalizedValue
+			this.textField!.text = textValue
+		}
+		this.elementImpl?.updateValueFromNative(textValue)
+		// 发送 inputEvent
+		dispatchNativeViewEvent(this.element, 'input', {
+			'value': textValue,
+			'cursor': cursorValue,
+			'composing': false
+		} as UTSJSONObject)
+	}
+	
+	// UITextFieldDelegate 相关
+	textFieldDidBeginEditing(textField: UITextField) {
+	    this.state.beginEditValue = textField.text ?? ""
+		this.keyboardController.beginEditing()
+		this.state.isFocusing = true
+		this.dispatchFocus()
+		this.applySelectionRange()
+	}
+	
+	textFieldDidEndEditing(textField: UITextField) {
+		const cursor = this.getCursorPosition()
+		if (this.state.beginEditValue != textField.text) {
+			dispatchNativeViewEvent(this.element, 'change', {
+				'value': this.textField!.text ?? ''
+			} as UTSJSONObject)
+		}
+		dispatchNativeViewEvent(this.element, 'blur', {
+			'value': this.textField!.text ?? '',
+			'cursor': cursor
+		} as UTSJSONObject)
+		this.keyboardController.scheduleDismissReset()
+		this.state.isFocusing = false
+		this.state.beginEditValue = '';
+	}
+
+	textFieldShouldReturn(textField: UITextField): boolean {
+		dispatchNativeViewEvent(this.element, 'confirm', {
+			'value': this.textField!.text ?? ''
+		} as UTSJSONObject)
+		if (!this.state.confirmHold) {
+			textField.resignFirstResponder()
+		}
+		return true
+	}
+
+	@objc keyboardWillShow(notification: NSNotification) {
+		this.keyboardController.handleKeyboardWillShow(notification, this.textField != null && this.textField!.isFirstResponder)
+	}
+
+	@objc keyboardWillHide(notification: NSNotification) {
+		this.keyboardController.handleKeyboardWillHide(notification)
+	}
+
+	@objc keyboardFrameWillChange(notification: NSNotification) {
+		this.keyboardController.handleKeyboardFrameWillChange(notification, (keyboardHeight: number, duration: number) => {
+			dispatchKeyboardHeightChangeEvent(this.element, keyboardHeight, duration)
+		})
+	}
+	
+	// input 初始内容
+	updateValue(value: string) {
+		if (this.textField == null) return
+		const normalizedValue = this.normalizeByMaxLength(value)
+		this.textField!.text = normalizedValue
+		this.elementImpl?.updateValueFromNative(normalizedValue)
+		if (this.textField!.isFirstResponder) {
+			this.applySelectionRange()
+		}
+	}
+	
+	// 更新input 是否禁用
+	updateDisabled(value: boolean) {
+		if (this.textField == null) return
+		this.textField!.isEnabled = !value
+		this.elementImpl?.updateDisabledFromNative(value)
+	}
+	
+	// 更新input 的类型
+	updateType(value: string) {
+		if (this.textField == null) return
+		this.elementImpl?.updateTypeFromNative(value)
+		const suppressKeyboard = value == 'none'
+		this.textField!.setKeyboardSuppressed(suppressKeyboard)
+		if (suppressKeyboard) {
+			this.textField!.keyboardType = UIKeyboardType.default
+			return
+		}
+		
+		// 根据类型设置键盘类型
+		switch (value) {
+			case "number":
+				this.textField!.keyboardType = UIKeyboardType.numberPad
+				break
+			case "digit":
+				this.textField!.keyboardType = UIKeyboardType.decimalPad
+				break
+			case "tel":
+				this.textField!.keyboardType = UIKeyboardType.phonePad
+				break
+			case "email":
+				this.textField!.keyboardType = UIKeyboardType.emailAddress
+				break
+			case "search":
+				this.textField!.keyboardType = UIKeyboardType.webSearch
+				break
+			case "url":
+				this.textField!.keyboardType = UIKeyboardType.URL
+				break
+			default:
+				this.textField!.keyboardType = UIKeyboardType.default
+		}
+	}
+	
+	// 更新input 是否是密码类型
+	updatePassword(value: boolean) {
+		if (this.textField == null) return
+		this.textField!.isSecureTextEntry = value
+	}
+	
+	// 更新input 最大输入长度，0和正数为合法值，非法值的时候不限制最大长度
+	updateMaxLength(value: number) {
+		this.state.maxLength = value
+		if (this.textField != null) {
+			const textValue = this.textField!.text ?? ''
+			const normalizedValue = this.normalizeByMaxLength(textValue)
+			if (normalizedValue != textValue) {
+				this.updateValue(normalizedValue)
+			}
+		}
+	}
+	
+	// 更新input 光标与键盘的距离，单位 px 。实际生效值会受可视区域高度限制
+	updateCursorSpacing(value: number) {
+		this.state.cursorSpacing = Math.max(0, value)
+		this.keyboardController.refreshPosition()
+	}
+	
+	// 更新input 光标颜色
+	updateCursorColor(value: string) {
+		if (this.textField == null || value == "") return
+		
+		// 解析颜色字符串并设置 tintColor
+		// 支持 #RRGGBB 格式
+		this.textField!.tintColor = UTSiOS.colorWithString(value)
+	}
+	
+	// 更新input 自动获取焦点，与focus属性对比，此属性只会首次生效。
+	updateAutoFocus(value: boolean) {
+		this.elementImpl?.updateAutofocusFromNative(value)
+		if (value && this.textField != null) {
+			this.textField!.becomeFirstResponder()
+		}
+	}
+	
+	// 更新input 获取焦点
+	updateFocus(value: boolean) {
+		if (this.textField == null) return
+		
+		if (value) {
+			this.textField!.becomeFirstResponder()
+		} else {
+			this.textField!.resignFirstResponder()
+		}
+	}
+	
+	// 更新input 键盘右下角按钮的文字，仅在 type为text 时生效。
+	updateConfirmType(value: string) {
+		if (this.textField == null) return  
+		
+		// 设置键盘返回键类型
+		switch (value) {
+			case "send":
+				this.textField!.returnKeyType = UIReturnKeyType.send
+				break
+			case "search":
+				this.textField!.returnKeyType = UIReturnKeyType.search
+				break
+			case "next":
+				this.textField!.returnKeyType = UIReturnKeyType.next
+				break
+			case "go":
+				this.textField!.returnKeyType = UIReturnKeyType.go
+				break
+			case "done":
+				this.textField!.returnKeyType = UIReturnKeyType.done
+				break
+			default:
+				this.textField!.returnKeyType = UIReturnKeyType.default
+		}
+	}
+	
+	// 更新input 点击键盘右下角按钮时是否保持键盘不收起
+	updateConfirmHold(value: boolean) {
+		this.state.confirmHold = value
+	}
+	
+	// 更新input focus时的光标位置
+	updateCursor(value: number) {
+		if (this.textField == null) return
+		this.state.cursor = value
+		if (this.textField!.isFirstResponder) {
+			this.applySelectionRange()
+		}
+	}
+	
+	// 更新input 光标起始位置，自动聚集时有效，需与selection-end搭配使用
+	updateSelectionStart(value: number) {
+		this.state.selectionStart = value
+		this.applySelectionRange()
+	}
+	
+	// 更新input 光标结束位置，自动聚集时有效，需与selection-start搭配使用
+	updateSelectionEnd(value: number) {
+		this.state.selectionEnd = value
+		this.applySelectionRange()
+	}
+	
+	// 更新input 键盘弹起时，是否自动上推页面
+	updateAdjustPosition(value: boolean) {
+		this.state.adjustPosition = value
+		if (!value) {
+			this.keyboardController.resetPosition()
+			return
+		}
+		this.keyboardController.refreshPosition()
+	}
+	
+	// 更新input focus时，点击页面的时候不收起键盘
+	updateHoldKeyboard(value: boolean) {
+		this.state.holdKeyboard = value
+		if (this.textField != null) {
+			this.textField!.holdKeyboardEnabled = value
+		}
+	}
+
+	handlePageTouchEndFocus() {
+		if (this.textField == null) return
+		if (!this.state.holdKeyboard && this.textField!.isFirstResponder) {
+			this.textField!.resignFirstResponder()
+		}
+	}
+
+	updateFontSize(value: string) {
+		const size = UniInputFontUtil.parseFontSize(value, this.element.uniPage.pageBody.width) ?? UNI_INPUT_DEFAULT_FONT_SIZE
+		this.state.fontSize = size
+		this.applyFont()
+	}
+
+	updateColor(value: string) {
+		if (this.textField == null || value == null || value == '') return
+		this.textField!.textColor = UTSiOS.colorWithString(value)
+	}
+
+	updateLineHeight(value?: string) {
+		// UITextField 单行输入框不直接支持 line-height，这里先保留空实现
+	}
+
+	updateLetterSpacing(value: string) {
+		// 当前 iOS input 插件先保留空实现，避免缺失方法导致运行时崩溃
+	}
+
+	updateFontWeight(value: string) {
+		this.state.fontWeight = UniInputFontUtil.normalizeFontWeight(value)
+		this.applyFont()
+	}
+
+	updateFontStyle(value: string) {
+		this.state.fontStyle = UniInputFontUtil.normalizeFontStyle(value)
+		this.applyFont()
+	}
+
+	updateFontFamily(value: string) {
+		this.state.fontFamily = UniInputFontUtil.normalizeFontFamily(value)
+		this.applyFont()
+	}
+
+	updateTextAlign(value: string) {
+		if (this.textField == null) return
+		switch (value) {
+			case 'right':
+				this.textField!.textAlignment = NSTextAlignment.right
+				break
+			case 'center':
+				this.textField!.textAlignment = NSTextAlignment.center
+				break
+			default:
+				this.textField!.textAlignment = NSTextAlignment.left
+		}
+	}
+
+	applySelectionRange() {
+		if (this.textField == null) return
+		if (this.state.selectionStart >= 0 && this.state.selectionEnd >= 0) {
+			this.textField!.setSelectionRange(start = this.state.selectionStart.intValue, end = this.state.selectionEnd.intValue)
+			return
+		}
+		const textLength = (this.textField!.text ?? '').count
+		let cursor = textLength
+		if (this.state.cursor >= 0) {
+			cursor = this.state.cursor.intValue
+			if (cursor > textLength) {
+				cursor = textLength
+			}
+		}
+		this.textField!.setSelectionRange(start = cursor, end = cursor)
+	}
+
+	private dispatchFocus() {
+		dispatchNativeViewEvent(this.element, 'focus', {
+			'value': this.textField?.text ?? '',
+			'height': this.state.keyboardHeight
+		} as UTSJSONObject)
+	}
+
+	private getCursorPosition(): number {
+		if (this.textField == null) {
+			return this.state.cursor
+		}
+		const beginning = this.textField!.beginningOfDocument
+		const selectedRange = this.textField!.selectedTextRange
+		const selectionStart = selectedRange?.start
+		this.state.cursor = NSNumber(value = this.textField!.offset(from = beginning, to = selectionStart ?? beginning))
+		return this.state.cursor
+	}
+
+	private applyFont() {
+		UniInputFontUtil.applyInputFont(this.textField, this.state.fontSize, this.state.fontWeight, this.state.fontStyle, this.state.fontFamily)
+	}
+}
+
+export class NativeTextareaView implements UITextViewDelegate {
+	element : UniNativeViewElement;
+	textView : UniTextareaView | null = null;
+	private state: UniEditSharedState
+	textColor: UIColor = UIColor.black
+	textAlign: NSTextAlignment = NSTextAlignment.left
+	lineHeight: number = 0
+	letterSpacing: number = 0
+	autoHeight: boolean = false
+	requestedAutoHeight: boolean = false
+	explicitHeight: number = 150
+	hasExplicitHeight: boolean = false
+	minHeight: number = -1
+	hasExplicitMinHeight: boolean = false
+	maxHeightLimit: number = -1
+	hasExplicitMaxHeight: boolean = false
+	defaultHeight: number = 150
+	private keyboardController: UniEditKeyboardController
+	private elementImpl: UniTextareaElementImpl | null = null
+
+	constructor(element : UniNativeViewElement) {
+		this.element = element;
+		this.state = new UniEditSharedState()
+		this.keyboardController = new UniEditKeyboardController(element, this.state, (elementHeight: number): number => {
+			return Math.max(0, elementHeight)
+		})
+		super.init()
+		this.bindView();
+		this.bindElementImpl()
+	}
+
+	bindView() {
+		
+		this.textView = new UniTextareaView()
+		const textView = this.textView!
+		this.keyboardController.setCursorBottomOffsetResolver((elementHeight: number): number => {
+			const cursorBottomOffset = NSNumber(value = Double(textView.caretBottomOffset()))
+			if (cursorBottomOffset > 0) {
+				return cursorBottomOffset
+			}
+			return Math.max(0, elementHeight)
+		})
+		this.textView!.delegate = this;
+		this.textView!.textColor = UIColor.black
+		this.textView!.backgroundColor = UIColor.clear
+		this.textView!.textContainerInset = UIEdgeInsets.zero
+		this.textView!.textContainer.lineFragmentPadding = 0
+		this.textView!.clipsToBounds = true
+		this.textView!.isScrollEnabled = true
+		this.element.bindIOSView(this.textView!);
+		this.applyTextStyles(true)
+		this.updateTextareaHeight()
+		this.addObserver()
+	}
+
+	destroy() {
+		NotificationCenter.default.removeObserver(this, name= UIResponder.keyboardWillShowNotification, object= null)
+		NotificationCenter.default.removeObserver(this, name= UIResponder.keyboardWillHideNotification, object= null)
+		NotificationCenter.default.removeObserver(this, name= UIResponder.keyboardWillChangeFrameNotification, object= null)
+		this.elementImpl?.setNativeTextareaView(null)
+		this.elementImpl = null
+		this.keyboardController.destroy()
+		UTSiOS.destroyInstance(this)
+	}
+
+	private bindElementImpl() {
+		const elementImpl = findTextareaElementImpl(this.element)
+		if (elementImpl == null) {
+			return
+		}
+		this.elementImpl = elementImpl
+		this.elementImpl.setNativeTextareaView(this)
+	}
+
+	addObserver() {
+		NotificationCenter.default.addObserver(this, selector= #selector(keyboardWillShow), name= UIResponder.keyboardWillShowNotification, object= null)
+		NotificationCenter.default.addObserver(this, selector= #selector(keyboardWillHide), name= UIResponder.keyboardWillHideNotification, object= null)
+		NotificationCenter.default.addObserver(this, selector= #selector(keyboardFrameWillChange), name= UIResponder.keyboardWillChangeFrameNotification, object= null)
+	}
+
+	textViewDidBeginEditing(textView: UITextView) {
+		this.state.beginEditValue = textView.text ?? ""
+		this.keyboardController.beginEditing()
+		this.state.isFocusing = true
+		this.dispatchFocus()
+		this.applySelectionRange()
+	}
+
+	textViewDidChange(textView: UITextView) {
+		let textValue = textView.text ?? ''
+		const markedTextRange = textView.markedTextRange
+		const cursor = this.getCursorPosition()
+		if (markedTextRange != null) {
+			const markedText = textView.text(in = markedTextRange!)
+				if (markedText != null && markedText!.count > 0) {
+					dispatchNativeViewEvent(this.element, 'input', {
+						'value': textValue,
+						'cursor': cursor,
+						'composing': true
+					} as UTSJSONObject)
+				this.updateTextareaHeight()
+				return
+			}
+		}
+
+		const normalizedValue = this.normalizeByMaxLength(textValue)
+		if (normalizedValue != textValue) {
+			textValue = normalizedValue
+			this.textView!.text = textValue
+		}
+		this.elementImpl?.updateValueFromNative(textValue)
+
+		if (textValue.endsWith('\n') && this.textView!.returnKeyType != UIReturnKeyType.default) {
+			textValue = textValue.substring(0, textValue.length - 1)
+			this.textView!.text = textValue
+			this.applyTextStyles()
+			dispatchNativeViewEvent(this.element, 'confirm', {
+				'value': textValue
+			} as UTSJSONObject)
+			if (!this.state.confirmHold) {
+				this.textView!.resignFirstResponder()
+			}
+		}
+
+		this.applyTextStyles()
+		dispatchNativeViewEvent(this.element, 'input', {
+			'value': this.textView!.text ?? '',
+			'cursor': cursor,
+			'composing': false
+		} as UTSJSONObject)
+		this.updateTextareaHeight()
+		this.dispatchLineChange()
+	}
+
+	textViewDidEndEditing(textView: UITextView) {
+		const cursor = this.getCursorPosition()
+		if (this.state.beginEditValue != (textView.text ?? '')) {
+			dispatchNativeViewEvent(this.element, 'change', {
+				'value': this.textView!.text ?? ''
+			} as UTSJSONObject)
+		}
+		dispatchNativeViewEvent(this.element, 'blur', {
+			'value': this.textView!.text ?? '',
+			'cursor': cursor
+		} as UTSJSONObject)
+		this.keyboardController.scheduleDismissReset()
+		this.state.isFocusing = false
+		this.state.beginEditValue = ''
+	}
+
+	@objc keyboardWillShow(notification: NSNotification) {
+		this.keyboardController.handleKeyboardWillShow(notification, this.textView != null && this.textView!.isFirstResponder)
+	}
+
+	@objc keyboardWillHide(notification: NSNotification) {
+		this.keyboardController.handleKeyboardWillHide(notification)
+	}
+
+	@objc keyboardFrameWillChange(notification: NSNotification) {
+		this.keyboardController.handleKeyboardFrameWillChange(notification, (keyboardHeight: number, duration: number) => {
+			dispatchKeyboardHeightChangeEvent(this.element, keyboardHeight, duration)
+		})
+	}
+
+	private normalizeByMaxLength(value: string): string {
+		if (this.state.maxLength >= 0 && value.count > this.state.maxLength) {
+			return String(value.prefix(this.state.maxLength.intValue))
+		}
+		return value
+	}
+
+	updateValue(value: string) {
+		if (this.textView == null) return
+		const normalizedValue = this.normalizeByMaxLength(value)
+		this.textView!.text = normalizedValue
+		this.elementImpl?.updateValueFromNative(normalizedValue)
+		this.applyTextStyles()
+		this.updateTextareaHeight()
+		this.dispatchLineChange()
+		if (this.textView!.isFirstResponder) {
+			this.applySelectionRange()
+		}
+	}
+
+	updateDisabled(value: boolean) {
+		if (this.textView == null) return
+		this.textView!.isEditable = !value
+		this.textView!.isSelectable = !value
+		this.elementImpl?.updateDisabledFromNative(value)
+	}
+
+	updateMaxLength(value: number) {
+		this.state.maxLength = value
+		if (this.textView != null && this.state.maxLength >= 0) {
+			const textValue = this.textView!.text ?? ''
+			const normalizedValue = this.normalizeByMaxLength(textValue)
+			if (normalizedValue != textValue) {
+				this.updateValue(normalizedValue)
+			}
+		}
+	}
+
+	updateCursorSpacing(value: number) {
+		this.state.cursorSpacing = Math.max(0, value)
+		this.keyboardController.refreshPosition()
+	}
+
+	updateCursorColor(value: string) {
+		if (this.textView == null || value == '') return
+		this.textView!.tintColor = UTSiOS.colorWithString(value)
+	}
+
+	updateAutoFocus(value: boolean) {
+		this.elementImpl?.updateAutofocusFromNative(value)
+		if (value && this.textView != null) {
+			this.textView!.becomeFirstResponder()
+		}
+	}
+
+	updateFocus(value: boolean) {
+		if (this.textView == null) return
+		if (value) {
+			this.textView!.becomeFirstResponder()
+		} else {
+			this.textView!.resignFirstResponder()
+		}
+	}
+
+	updateConfirmType(value: string) {
+		if (this.textView == null) return
+		switch (value) {
+			case "send":
+				this.textView!.returnKeyType = UIReturnKeyType.send
+				break
+			case "search":
+				this.textView!.returnKeyType = UIReturnKeyType.search
+				break
+			case "next":
+				this.textView!.returnKeyType = UIReturnKeyType.next
+				break
+			case "go":
+				this.textView!.returnKeyType = UIReturnKeyType.go
+				break
+			case "done":
+				this.textView!.returnKeyType = UIReturnKeyType.done
+				break
+			default:
+				this.textView!.returnKeyType = UIReturnKeyType.default
+		}
+	}
+
+	updateConfirmHold(value: boolean) {
+		this.state.confirmHold = value
+	}
+
+	updateAutoHeight(value: boolean) {
+		this.requestedAutoHeight = value
+		this.refreshAutoHeightBehavior()
+	}
+
+	updateCursor(value: number) {
+		if (this.textView == null) return
+		this.state.cursor = value
+		if (this.textView!.isFirstResponder) {
+			this.applySelectionRange()
+		}
+	}
+
+	updateSelectionStart(value: number) {
+		this.state.selectionStart = value
+		this.applySelectionRange()
+	}
+
+	updateSelectionEnd(value: number) {
+		this.state.selectionEnd = value
+		this.applySelectionRange()
+	}
+
+	updateAdjustPosition(value: boolean) {
+		this.state.adjustPosition = value
+		if (!value) {
+			this.keyboardController.resetPosition()
+			return
+		}
+		this.keyboardController.refreshPosition()
+	}
+
+	updateHoldKeyboard(value: boolean) {
+		this.state.holdKeyboard = value
+		if (this.textView != null) {
+			this.textView!.holdKeyboardEnabled = value
+		}
+	}
+
+	updateFontSize(value: string) {
+		const size = UniInputFontUtil.parseFontSize(value, this.element.uniPage.pageBody.width) ?? UNI_INPUT_DEFAULT_FONT_SIZE
+		this.state.fontSize = size
+		this.applyTextStyles(true)
+		this.updateTextareaHeight()
+		this.dispatchLineChange()
+	}
+
+	updateColor(value: string) {
+		if (value == null || value == '') return
+		this.textColor = UTSiOS.colorWithString(value)
+		this.applyTextStyles()
+	}
+
+	updateLineHeight(value?: string) {
+		if (value == null || value == '') {
+			this.lineHeight = 0
+			this.applyTextStyles()
+			this.updateTextareaHeight()
+			this.dispatchLineChange()
+			return
+		}
+		const numericValue = parseFloat(value)
+		if (value.endsWith('px')) {
+			if (!isNaN(numericValue)) {
+				this.lineHeight = numericValue
+			}
+		} else if (value.endsWith('em') || !isNaN(numericValue)) {
+			if (!isNaN(numericValue)) {
+				this.lineHeight = numericValue * this.state.fontSize
+			}
+		}
+		this.applyTextStyles()
+		this.updateTextareaHeight()
+		this.dispatchLineChange()
+	}
+
+	updateLetterSpacing(value: string) {
+		if (value == null || value == '') {
+			this.letterSpacing = 0
+			this.applyTextStyles()
+			return
+		}
+		const parsed = parseFloat(value)
+		if (!isNaN(parsed)) {
+			this.letterSpacing = parsed
+			this.applyTextStyles()
+		}
+	}
+
+	updateFontWeight(value: string) {
+		this.state.fontWeight = UniInputFontUtil.normalizeFontWeight(value)
+		this.applyTextStyles(true)
+		this.updateTextareaHeight()
+		this.dispatchLineChange()
+	}
+
+	updateFontStyle(value: string) {
+		this.state.fontStyle = UniInputFontUtil.normalizeFontStyle(value)
+		this.applyTextStyles(true)
+		this.updateTextareaHeight()
+		this.dispatchLineChange()
+	}
+
+	updateFontFamily(value: string) {
+		this.state.fontFamily = UniInputFontUtil.normalizeFontFamily(value)
+		this.applyTextStyles(true)
+		this.updateTextareaHeight()
+		this.dispatchLineChange()
+	}
+
+	updateTextAlign(value: string) {
+		switch (value) {
+			case 'right':
+				this.textAlign = NSTextAlignment.right
+				break
+			case 'center':
+				this.textAlign = NSTextAlignment.center
+				break
+			default:
+				this.textAlign = NSTextAlignment.left
+		}
+		this.applyTextStyles()
+	}
+
+	updatePadding(paddingTop?: string, paddingRight?: string, paddingBottom?: string, paddingLeft?: string) {
+		if (this.textView == null) return
+		const inset = this.resolvePaddingInset(paddingTop, paddingRight, paddingBottom, paddingLeft)
+		const currentInset = this.textView!.textContainerInset
+		if (
+			currentInset.top == inset.top &&
+			currentInset.left == inset.left &&
+			currentInset.bottom == inset.bottom &&
+			currentInset.right == inset.right
+		) {
+			return
+		}
+
+		this.textView!.textContainerInset = inset
+		this.updateTextareaHeight()
+		this.dispatchLineChange()
+		if (this.state.isFocusing && this.state.adjustPosition) {
+			this.keyboardController.refreshPosition()
+		}
+	}
+
+	updateHeight(value: string) {
+		const height = parsePixelStyleValue(value)
+		this.hasExplicitHeight = height != null
+		if (height == null) {
+			this.explicitHeight = this.defaultHeight
+		} else if (height! <= 0) {
+			this.explicitHeight = this.defaultHeight
+		} else {
+			this.explicitHeight = height!
+		}
+		this.refreshAutoHeightBehavior()
+	}
+
+	updateMinHeight(value: string) {
+		const height = parsePixelStyleValue(value)
+		this.hasExplicitMinHeight = height != null
+		this.minHeight = height == null ? -1 : height
+		this.refreshAutoHeightBehavior()
+	}
+
+	updateMaxHeight(value: string) {
+		const height = parsePixelStyleValue(value)
+		this.hasExplicitMaxHeight = height != null
+		this.maxHeightLimit = height == null ? -1 : height
+		this.refreshAutoHeightBehavior()
+	}
+
+	handlePageTouchEndFocus() {
+		if (this.textView == null) return
+		if (!this.state.holdKeyboard && this.textView!.isFirstResponder) {
+			this.textView!.resignFirstResponder()
+		}
+	}
+
+	private applySelectionRange() {
+		if (this.textView == null) return
+		if (this.state.selectionStart >= 0 && this.state.selectionEnd >= 0) {
+			this.textView!.setSelectionRange(start = this.state.selectionStart.intValue, end = this.state.selectionEnd.intValue)
+			return
+		}
+		const textLength = (this.textView!.text ?? '').count
+		let cursor = textLength
+		if (this.state.cursor >= 0) {
+			cursor = this.state.cursor.intValue
+			if (cursor > textLength) {
+				cursor = textLength
+			}
+		}
+		this.textView!.setSelectionRange(start = cursor, end = cursor)
+	}
+
+	private applyTextStyles(resolveFont: boolean = false) {
+		if (this.textView == null) return
+		if (resolveFont) {
+			UniInputFontUtil.applyTextareaFont(this.textView, this.state.fontSize, this.state.fontWeight, this.state.fontStyle, this.state.fontFamily)
+		}
+		this.textView!.styledTextColor = this.textColor
+		this.textView!.lineHeightValue = this.lineHeight > 0 ? CGFloat(this.lineHeight) : null
+		this.textView!.letterSpacingValue = this.letterSpacing != 0 ? CGFloat(this.letterSpacing) : null
+		this.textView!.textAlignment = this.textAlign
+		this.textView!.applyTextStyle()
+	}
+
+	private updateTextareaHeight() {
+		if (this.textView == null) return
+		if (this.requestedAutoHeight && this.shouldUseFlexAutoHeightFallback()) {
+			this.element.style.setProperty('height', '100%')
+			return
+		}
+		const contentHeight = this.autoHeight
+			? NSNumber(value = Double(this.textView!.calculatedContentHeight()))
+			: -1
+		const height = this.resolveTextareaHeight()
+		this.element.style.setProperty('height', `${height}px`)
+		if (this.textView != null) {
+			this.textView!.isScrollEnabled = this.autoHeight ? contentHeight > height : true
+		}
+	}
+
+	private isWrapperFlexGrow1(): boolean {
+		const wrapperEl = this.element.parentElement?.parentElement
+		if (wrapperEl == null) return false
+		let flexGrow = wrapperEl.style.getPropertyValue('flex-grow')
+		if (flexGrow == '') {
+			flexGrow = wrapperEl.style.getPropertyValue('flexGrow')
+		}
+		const normalizedFlexGrow = parseFloat(flexGrow)
+		const wrapperParentHeight = wrapperEl.parentElement?.style.getPropertyValue('height')
+		return !isNaN(normalizedFlexGrow) && normalizedFlexGrow == 1 && wrapperParentHeight != 'auto'
+	}
+
+	private hasExplicitHeightConstraint(): boolean {
+		return this.hasExplicitHeight || this.hasExplicitMinHeight || this.hasExplicitMaxHeight
+	}
+
+	private shouldUseFlexAutoHeightFallback(): boolean {
+		return this.isWrapperFlexGrow1() && !this.hasExplicitHeightConstraint()
+	}
+
+	private shouldDisableAutoHeight(): boolean {
+		return this.shouldUseFlexAutoHeightFallback()
+	}
+
+	private refreshAutoHeightBehavior() {
+		this.autoHeight = this.requestedAutoHeight && !this.shouldDisableAutoHeight()
+		if (this.textView != null) {
+			this.textView!.isScrollEnabled = !this.autoHeight
+		}
+		this.updateTextareaHeight()
+	}
+
+	private resolvePaddingInset(paddingTop?: string, paddingRight?: string, paddingBottom?: string, paddingLeft?: string): UIEdgeInsets {
+		let top = 0
+		let right = 0
+		let bottom = 0
+		let left = 0
+
+		const topValue = normalizePaddingStyleValue(paddingTop)
+		if (topValue != null) {
+			top = topValue
+		}
+		const rightValue = normalizePaddingStyleValue(paddingRight)
+		if (rightValue != null) {
+			right = rightValue
+		}
+		const bottomValue = normalizePaddingStyleValue(paddingBottom)
+		if (bottomValue != null) {
+			bottom = bottomValue
+		}
+		const leftValue = normalizePaddingStyleValue(paddingLeft)
+		if (leftValue != null) {
+			left = leftValue
+		}
+
+		return UIEdgeInsets(
+			top = CGFloat(top),
+			left = CGFloat(left),
+			bottom = CGFloat(bottom),
+			right = CGFloat(right)
+		)
+	}
+
+	private resolveTextareaHeight(): number {
+		let height = this.explicitHeight
+		if (this.autoHeight) {
+			height = NSNumber(value = Double(this.textView!.calculatedContentHeight()))
+		}
+		if (height <= 0) {
+			height = this.defaultHeight
+		}
+		if (this.minHeight >= 0 && height < this.minHeight) {
+			height = this.minHeight
+		}
+		if (this.maxHeightLimit >= 0 && height > this.maxHeightLimit) {
+			height = this.maxHeightLimit
+		}
+		return height
+	}
+
+	private dispatchLineChange() {
+		if (this.textView == null) return
+		const contentHeight = NSNumber(value = Double(this.textView!.calculatedContentHeight()))
+		const detail = {
+			'lineCount': this.textView!.currentLineCount(),
+			'height': contentHeight
+		} as UTSJSONObject
+		dispatchNativeViewEvent(this.element, 'linechange', detail)
+	}
+
+	private dispatchFocus() {
+		dispatchNativeViewEvent(this.element, 'focus', {
+			'value': this.textView?.text ?? '',
+			'height': this.state.keyboardHeight
+		} as UTSJSONObject)
+	}
+
+	private getCursorPosition(): number {
+		if (this.textView == null) {
+			return this.state.cursor
+		}
+		const beginning = this.textView!.beginningOfDocument
+		const selectedRange = this.textView!.selectedTextRange
+		const selectionStart = selectedRange?.start
+		this.state.cursor = NSNumber(value = this.textView!.offset(from = beginning, to = selectionStart ?? beginning))
+		return this.state.cursor
+	}
+}

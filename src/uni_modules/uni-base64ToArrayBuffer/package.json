@@ -39,8 +39,8 @@
           "app": {
             "js": false,
             "kotlin": true,
-            "swift": false,
-            "arkts": true
+            "swift": true,
+            "arkts": ["dom1", "dom2"]
           }
         }
       }

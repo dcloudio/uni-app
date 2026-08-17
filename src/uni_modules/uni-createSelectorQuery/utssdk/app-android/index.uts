@@ -341,6 +341,9 @@ class QuerySelectorHelper {
             const nodeInfo = {
                 node: element
             } as NodeInfo
+            if (this._fields.dataset == true) {
+                nodeInfo.dataset = element.dataset
+            }
             if (this._fields.size == true) {
                 const rect = element.getBoundingClientRect()
                 nodeInfo.width = rect.width
@@ -359,6 +362,9 @@ class QuerySelectorHelper {
             width: rect.width,
             height: rect.height,
         } as NodeInfo
+        if (this._fields.dataset == true) {
+            nodeInfo.dataset = element.dataset
+        }
         return nodeInfo
     }
 }

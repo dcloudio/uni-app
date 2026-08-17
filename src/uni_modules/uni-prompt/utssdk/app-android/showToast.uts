@@ -6,7 +6,7 @@ import { ShowToastOptions, ShowLoadingOptions, ShowToastSuccess, ShowLoadingSucc
 import { PromptErrorImpl } from "../unierror.uts"
 import WeakReference from 'java.lang.ref.WeakReference';
 
-// #ifdef UNI-APP-X
+// #ifdef UNI-APP-X && !VUE3-VAPOR
 import getCurrentPages from 'io.dcloud.uniapp.framework.getCurrentPages';
 import onReady from 'io.dcloud.uniapp.framework.onReady';
 import onUnload from 'io.dcloud.uniapp.framework.onUnload';
@@ -53,7 +53,7 @@ export function hideLoadingImpl() {
 
 
 // 全局存储
-// #ifdef UNI-APP-X
+// #ifdef UNI-APP-X && !VUE3-VAPOR
 const onReadyToast = new Map<ComponentPublicInstance,UTSJSONObject>()
 // #endif
 
@@ -61,7 +61,7 @@ function closeToast(type : string | null) {
 	if (type != null && type !== toastType) {
 		return
 	}
-	// #ifdef UNI-APP-X
+	// #ifdef UNI-APP-X && !VUE3-VAPOR
 	let pages = getCurrentPages();
 	if (pages.length > 0) {
 		let page = pages[pages.length - 1].vm!;
@@ -116,7 +116,7 @@ function makeLoading(style : ShowLoadingOptions, type : string, errMsg : string)
 
 		
 		
-		// #ifndef UNI-APP-X
+		// #ifdef !UNI-APP-X || VUE3-VAPOR
 			/**
 			 * uni-app
 			 */
@@ -130,7 +130,7 @@ function makeLoading(style : ShowLoadingOptions, type : string, errMsg : string)
 			})
 			
 		// #endif
-		// #ifdef UNI-APP-X
+		// #ifdef UNI-APP-X && !VUE3-VAPOR
 			/**
 			 * uni-app x
 			 * 需要特殊处理生命周期 
@@ -249,21 +249,24 @@ function makeToast(style : ShowToastOptions, type : string, errMsg : string) {
 
 			
 			
-			// #ifndef UNI-APP-X
+			// #ifdef !UNI-APP-X || VUE3-VAPOR
 				/**
 				 * uni-app
 				 */
-				const alert = new WaitingView(UTSAndroid.getTopPageActivity(), options,UTSAndroid.getTopPageView())
-				toast = alert
-				alert?.showWaiting();
-				
-				UTSAndroid.onAppActivityDestroy(function(){
-					toast?.close()
-					toast = null
-				})
-				
+				const context = UTSAndroid.getTopPageActivity();
+				if (context != null) {
+					const alert = new WaitingView(context, options,UTSAndroid.getTopPageView())
+					toast = alert
+					alert?.showWaiting();
+
+					UTSAndroid.onAppActivityDestroy(function(){
+						toast?.close()
+						toast = null
+					})
+				}
+
 			// #endif
-			// #ifdef UNI-APP-X
+			// #ifdef UNI-APP-X && !VUE3-VAPOR
 				/**
 				 * uni-app x
 				 * 需要特殊处理生命周期 

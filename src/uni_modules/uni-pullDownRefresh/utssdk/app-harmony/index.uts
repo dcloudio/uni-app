@@ -1,42 +1,83 @@
+// #ifndef VUE3-VAPOR
 import {
-    startPullDownRefresh as internalStartPullDownRefresh,
-    stopPullDownRefresh as internalStopPullDownRefresh,
+	startPullDownRefresh as internalStartPullDownRefresh,
+	stopPullDownRefresh as internalStopPullDownRefresh,
 } from '@dcloudio/uni-runtime'
 import {
-    StartPullDownRefresh,
-    StartPullDownRefreshOptions,
-    StartPullDownRefreshSuccess,
-    StopPullDownRefresh,
+	StartPullDownRefresh,
+	StartPullDownRefreshOptions,
+	StartPullDownRefreshSuccess,
+	StopPullDownRefresh,
 } from '../interface.uts'
 import {
-    API_START_PULL_DOWN_REFRESH,
-    API_STOP_PULL_DOWN_REFRESH
+	API_START_PULL_DOWN_REFRESH,
+	API_STOP_PULL_DOWN_REFRESH
 } from '../protocol.uts'
 
 export const startPullDownRefresh = defineAsyncApi<
-    StartPullDownRefreshOptions,
-    StartPullDownRefreshSuccess
+	StartPullDownRefreshOptions,
+	StartPullDownRefreshSuccess
 >(API_START_PULL_DOWN_REFRESH, (_, res) => {
-    internalStartPullDownRefresh()
-    res.resolve()
+	internalStartPullDownRefresh()
+	res.resolve()
 }) as StartPullDownRefresh
 
 export const stopPullDownRefresh = defineSyncApi<void>(
-    API_STOP_PULL_DOWN_REFRESH,
-    () => {
-        internalStopPullDownRefresh()
-    },
+	API_STOP_PULL_DOWN_REFRESH,
+	() => {
+		internalStopPullDownRefresh()
+	},
 ) as StopPullDownRefresh
+// #endif
+
+// #ifdef VUE3-VAPOR
+import { StartPullDownRefreshOptions, StartPullDownRefreshFailImpl, StartPullDownRefreshSuccessImpl } from '../interface.uts'
+
+export const startPullDownRefresh = (options?: StartPullDownRefreshOptions | null) => {
+	const pages = getCurrentPages()
+	const page = pages[pages.length - 1]
+	if (page === null) {
+		const error = new StartPullDownRefreshFailImpl('startPullDownRefresh:fail, page is not ready', 4)
+		options?.fail?.(error)
+		options?.complete?.(error)
+		return
+	}
+	const rootEl = page.querySelector('page') as UniElement | null
+	if(rootEl == null || rootEl instanceof UniViewElementImpl == true){
+		const error = new StartPullDownRefreshFailImpl('startPullDownRefresh:fail, disabled', 4)
+		options?.fail?.(error)
+		options?.complete?.(error)
+		return
+	}
+	const refresherTriggered = rootEl?.getAttribute('refresher-triggered')
+	if(refresherTriggered != 'true'){
+		rootEl?.setAnyAttribute('refresher-triggered', 'true')
+	}
+	const res = new StartPullDownRefreshSuccessImpl()
+	options?.success?.(res)
+	options?.complete?.(res)
+}
+
+export const stopPullDownRefresh = () => {
+	const pages = getCurrentPages()
+	const page = pages[pages.length - 1]
+	if (page === null) {
+		return
+	}
+	const rootEl = page.querySelector('page') as UniElement | null
+	rootEl?.setAnyAttribute('refresher-triggered', 'false')
+}
+// #endif
 
 export {
-    PullDownRefreshErrorCode,
-    StartPullDownRefresh,
-    StartPullDownRefreshComplete,
-    StartPullDownRefreshCompleteCallback,
-    StartPullDownRefreshFail,
-    StartPullDownRefreshFailCallback,
-    StartPullDownRefreshOptions,
-    StartPullDownRefreshSuccess,
-    StartPullDownRefreshSuccessCallback,
-    StopPullDownRefresh
+	PullDownRefreshErrorCode,
+	StartPullDownRefresh,
+	StartPullDownRefreshComplete,
+	StartPullDownRefreshCompleteCallback,
+	StartPullDownRefreshFail,
+	StartPullDownRefreshFailCallback,
+	StartPullDownRefreshOptions,
+	StartPullDownRefreshSuccess,
+	StartPullDownRefreshSuccessCallback,
+	StopPullDownRefresh
 } from '../interface.uts'

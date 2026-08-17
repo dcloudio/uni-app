@@ -178,6 +178,9 @@ export class WaitingView{
 				 */
 				return
 			}
+			if (this.hostView!.getWindowToken() == null) {
+				return;
+			}
 			let width = -2;
 			let height = -2
 			if (Build.VERSION.SDK_INT >= 23 && this.mask) {

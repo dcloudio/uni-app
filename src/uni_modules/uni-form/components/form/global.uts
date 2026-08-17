@@ -1,1 +1,1 @@
-export class UniFormElement extends UniVueElement {}
+export class UniFormElement extends UniViewElementImpl {}

@@ -11,12 +11,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -29,12 +27,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -47,12 +43,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -65,12 +59,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -83,12 +75,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -101,12 +91,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -119,12 +107,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -137,12 +123,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -155,12 +139,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -173,12 +155,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -191,12 +171,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -209,12 +187,10 @@ export type LocationErrorCode =
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "4.31",
 	 *            "unixVer": "4.25"
 	 *        }
@@ -241,17 +217,14 @@ export type GetLocationSuccess = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }
@@ -269,17 +242,14 @@ export type GetLocationSuccess = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }
@@ -297,17 +267,14 @@ export type GetLocationSuccess = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }
@@ -324,17 +291,14 @@ export type GetLocationSuccess = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }
@@ -352,17 +316,14 @@ export type GetLocationSuccess = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }
@@ -380,17 +341,14 @@ export type GetLocationSuccess = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "x",
 	 *      "unixVer": "x"
 	 *    }
@@ -408,17 +366,14 @@ export type GetLocationSuccess = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "x",
 	 *      "unixVer": "x"
 	 *    }
@@ -436,17 +391,14 @@ export type GetLocationSuccess = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "x",
 	 *      "unixVer": "x"
 	 *    }
@@ -470,17 +422,14 @@ export type GetLocationOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }
@@ -497,12 +446,10 @@ export type GetLocationOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "3.9.0"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.11"
 	 *    }
@@ -519,12 +466,10 @@ export type GetLocationOptions = {
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
-	 *      "osVer": "5.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "3.9.0"
 	 *    },
 	 *    "ios": {
-	 *      "osVer": "12.0",
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.11"
 	 *    }
@@ -543,17 +488,14 @@ export type GetLocationOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }
@@ -573,17 +515,14 @@ export type GetLocationOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "x",
 	 *      "unixVer": "x"
 	 *    }
@@ -601,17 +540,14 @@ export type GetLocationOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }
@@ -630,17 +566,14 @@ export type GetLocationOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }
@@ -657,17 +590,14 @@ export type GetLocationOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }
@@ -684,17 +614,14 @@ export type GetLocationOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }
@@ -711,17 +638,14 @@ export type GetLocationOptions = {
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *            "osVer": "5.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "3.9.0"
 	 *        },
 	 *        "ios": {
-	 *            "osVer": "12.0",
 	 *            "uniVer": "√",
 	 *            "unixVer": "4.11"
 	 *        },
 	 *    "harmony": {
-	 *      "osVer": "x",
 	 *      "uniVer": "4.25",
 	 *      "unixVer": "4.61"
 	 *    }

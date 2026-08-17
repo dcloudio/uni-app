@@ -1,0 +1,387 @@
+import { JSExport } from 'JavaScriptCore'
+import {
+  CanvasGradient,
+  CanvasPattern,
+  Image,
+  ImageData,
+  Path2D,
+  TextMetrics,
+  RenderingContext2D,
+  UniCanvasRenderView,
+} from 'DCloudUniCanvas'
+
+import {
+  UniCanvasElement,
+  UniCanvasElementImpl
+} from './index.uts'
+
+export type CanvasFillRule = 'evenodd' | 'nonzero'
+export type GlobalCompositeOperation =
+  | 'source-over'
+  | 'source-in'
+  | 'source-out'
+  | 'source-atop'
+  | 'destination-over'
+  | 'destination-in'
+  | 'destination-out'
+  | 'destination-atop'
+  | 'lighter'
+  | 'copy'
+  | 'xor'
+  | 'multiply'
+  | 'screen'
+  | 'overlay'
+  | 'darken'
+  | 'lighten'
+  | 'color-dodge'
+  | 'color-burn'
+  | 'hard-light'
+  | 'soft-light'
+  | 'difference'
+  | 'exclusion'
+  | 'hue'
+  | 'saturation'
+  | 'color'
+  | 'luminosity'
+
+export type CanvasLineCap = 'butt' | 'round' | 'square'
+export type CanvasLineJoin = 'bevel' | 'round' | 'miter'
+export type CanvasTextAlign = 'left' | 'right' | 'center' | 'start' | 'end'
+export type CanvasTextBaseline =
+  | 'top'
+  | 'hanging'
+  | 'middle'
+  | 'alphabetic'
+  | 'ideographic'
+  | 'bottom'
+
+export interface CanvasRenderingContext2D extends JSExport {
+  readonly canvas: UniCanvasElement | null
+  font: string
+  fillStyle: string | CanvasGradient | CanvasPattern
+  globalAlpha: number
+  globalCompositeOperation: GlobalCompositeOperation
+  lineCap: CanvasLineCap
+  lineDashOffset: number
+  lineJoin: CanvasLineJoin
+  lineWidth: number
+  strokeStyle: string | CanvasGradient | CanvasPattern
+  textAlign: CanvasTextAlign
+  miterLimit: number
+  textBaseline: CanvasTextBaseline
+
+  arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise: boolean): void
+  arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): void
+  beginPath(): void
+  bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void
+  clearRect(x: number, y: number, width: number, height: number): void
+  clip(): void
+  closePath(): void
+  createPattern(image: Image, repetition: string): CanvasPattern
+  createLinearGradient(x0: number, y0: number, x1: number, y1: number): CanvasGradient
+  createRadialGradient(x0: number, y0: number, r0: number, x1: number, y1: number, r1: number): CanvasGradient
+  draw(): void
+  drawImage(image: Image, sx: number, sy: number, sWidth: number, sHeight: number, dx: number, dy: number, dWidth: number, dHeight: number): void
+  ellipse(x: number, y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number): void
+  ellipse(x: number, y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number, counterclockwise: boolean): void
+  fill(path?: Path2D | CanvasFillRule | null, fillRule?: CanvasFillRule | null): void
+  fillRect(x: number, y: number, width: number, height: number): void
+  fillText(text: string, x: number, y: number, maxWidth?: number): void
+  getImageData(x: number, y: number, width: number, height: number): ImageData
+  getLineDash(): number[]
+  lineTo(x: number, y: number): void
+  measureText(text: string): TextMetrics
+  moveTo(x: number, y: number): void
+  putImageData(data: ImageData, x: number, y: number, dx?: number, dy?: number, dWidth?: number, dHeight?: number): void
+  quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void
+  rect(x: number, y: number, width: number, height: number): void
+  reset(): void
+  resetTransform(): void
+  restore(): void
+  rotate(rotate: number): void
+  save(): void
+  scale(x: number, y: number): void
+  setLineDash(segments: number[]): void
+  setTransform(scaleX: number, skewY: number, skewX: number, scaleY: number, translateX: number, translateY: number): void
+  stroke(path?: Path2D | null): void
+  strokeRect(x: number, y: number, width: number, height: number): void
+  strokeText(text: string, x: number, y: number, maxWidth?: number): void
+  transform(scaleX: number, skewY: number, skewX: number, scaleY: number, translateX: number, translateY: number): void
+  translate(translateX: number, translateY: number): void
+}
+
+export class UniCanvasRenderingContext2D implements CanvasRenderingContext2D {
+  private readonly _context : RenderingContext2D
+  
+  @UTSiOS.keyword("weak")
+  private _element : UniCanvasElement | null = null
+
+  constructor(context : RenderingContext2D, element : UniCanvasElement) {
+    this._context = context
+    this._element = element
+  }
+
+  get canvas() : UniCanvasElement | null {
+    return this._element
+  }
+
+  get font() : string {
+    return this._context.font as string
+  }
+
+  set font(value : string) {
+    this._context.font = value
+  }
+
+  get fillStyle() : string | CanvasGradient | CanvasPattern {
+    return this._context.fillStyle as string | CanvasGradient | CanvasPattern
+  }
+
+  set fillStyle(value : string | CanvasGradient | CanvasPattern) {
+    this._context.fillStyle = value
+  }
+
+  get globalAlpha() : number {
+    return this._context.globalAlpha as number
+  }
+
+  set globalAlpha(value : number) {
+    this._context.globalAlpha = value
+  }
+
+  get globalCompositeOperation() : GlobalCompositeOperation {
+    return this._context.globalCompositeOperation as GlobalCompositeOperation
+  }
+
+  set globalCompositeOperation(value : GlobalCompositeOperation) {
+    this._context.globalCompositeOperation = value
+  }
+
+  get lineCap() : CanvasLineCap {
+    return this._context.lineCap as CanvasLineCap
+  }
+
+  set lineCap(value : CanvasLineCap) {
+    this._context.lineCap = value
+  }
+
+  get lineDashOffset() : number {
+    return this._context.lineDashOffset as number
+  }
+
+  set lineDashOffset(value : number) {
+    this._context.lineDashOffset = value
+  }
+
+  get lineJoin() : CanvasLineJoin {
+    return this._context.lineJoin as CanvasLineJoin
+  }
+
+  set lineJoin(value : CanvasLineJoin) {
+    this._context.lineJoin = value
+  }
+
+  get lineWidth() : number {
+    return this._context.lineWidth as number
+  }
+
+  set lineWidth(value : number) {
+    this._context.lineWidth = value
+  }
+
+  get strokeStyle() : string | CanvasGradient | CanvasPattern {
+    return this._context.strokeStyle as string | CanvasGradient | CanvasPattern
+  }
+
+  set strokeStyle(value : string | CanvasGradient | CanvasPattern) {
+    this._context.strokeStyle = value
+  }
+
+  get textAlign() : CanvasTextAlign {
+    return this._context.textAlign as CanvasTextAlign
+  }
+
+  set textAlign(value : CanvasTextAlign) {
+    this._context.textAlign = value
+  }
+
+  get miterLimit() : number {
+    return this._context.miterLimit as number
+  }
+
+  set miterLimit(value : number) {
+    this._context.miterLimit = value
+  }
+
+  get textBaseline() : CanvasTextBaseline {
+    return this._context.textBaseline as CanvasTextBaseline
+  }
+
+  set textBaseline(value : CanvasTextBaseline) {
+    this._context.textBaseline = value
+  }
+
+  arc(x : number, y : number, radius : number, startAngle : number, endAngle : number, anticlockwise : boolean) : void {
+    this._context.arc(x, y, radius, startAngle, endAngle, anticlockwise)
+  }
+
+  arcTo(x1 : number, y1 : number, x2 : number, y2 : number, radius : number) : void {
+    this._context.arcTo(x1, y1, x2, y2, radius)
+  }
+
+  beginPath() : void {
+    this._context.beginPath()
+  }
+
+  bezierCurveTo(cp1x : number, cp1y : number, cp2x : number, cp2y : number, x : number, y : number) : void {
+    this._context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)
+  }
+
+  clearRect(x : number, y : number, width : number, height : number) : void {
+    this._context.clearRect(x, y, width, height)
+  }
+
+  clip() : void {
+    this._context.clip()
+  }
+
+  closePath() : void {
+    this._context.closePath()
+  }
+
+  createPattern(image : Image, repetition : string) : CanvasPattern {
+    return this._context.createPattern(image, repetition) as CanvasPattern
+  }
+
+  createLinearGradient(x0 : number, y0 : number, x1 : number, y1 : number) : CanvasGradient {
+    return this._context.createLinearGradient(x0, y0, x1, y1) as CanvasGradient
+  }
+
+  createRadialGradient(x0 : number, y0 : number, r0 : number, x1 : number, y1 : number, r1 : number) : CanvasGradient {
+    return this._context.createRadialGradient(x0, y0, r0, x1, y1, r1) as CanvasGradient
+  }
+
+  draw() : void {
+    this._context.draw()
+  }
+
+  drawImage(image : Image, sx : number, sy : number, sWidth : number, sHeight : number, dx : number, dy : number, dWidth : number, dHeight : number) : void {
+    this._context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+  }
+
+  ellipse(x: number, y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number): void {
+    this._context.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, false)
+  }
+
+  ellipse(x : number, y : number, radiusX : number, radiusY : number, rotation : number, startAngle : number, endAngle : number, counterclockwise : boolean) : void {
+    this._context.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, counterclockwise)
+  }
+
+  fill(path ?: Path2D | CanvasFillRule | null, fillRule ?: CanvasFillRule | null) : void {
+    this._context.fill(path as Path2D | null, fillRule  as CanvasFillRule | null)
+  }
+
+  fillRect(x : number, y : number, width : number, height : number) : void {
+    this._context.fillRect(x, y, width, height)
+  }
+
+  fillText(text : string, x : number, y : number, maxWidth ?: number) : void {
+    if (maxWidth != null) {
+      this._context.fillText(text, x, y, maxWidth!)
+    } else {
+      this._context.fillText(text, x, y, -1)
+    }
+  }
+
+  getImageData(x : number, y : number, width : number, height : number) : ImageData {
+    return this._context.getImageData(x, y, width, height) as ImageData
+  }
+
+  getLineDash() : number[] {
+    return this._context.getLineDash() as number[]
+  }
+
+  lineTo(x : number, y : number) : void {
+    this._context.lineTo(x, y)
+  }
+
+  measureText(text : string) : TextMetrics {
+    return this._context.measureText(text) as TextMetrics
+  }
+
+  moveTo(x : number, y : number) : void {
+    this._context.moveTo(x, y)
+  }
+
+  putImageData(data : ImageData, x : number, y : number, dx ?: number, dy ?: number, dWidth ?: number, dHeight ?: number) : void {
+    if (dx != null && dy != null && dWidth != null && dHeight != null) {
+      this._context.putImageData(data, x, y, dx!, dy!, dWidth!, dHeight!)
+    } else {
+      this._context.putImageData(data, x, y, -1, -1, -1, -1)
+    }
+  }
+
+  quadraticCurveTo(cpx : number, cpy : number, x : number, y : number) : void {
+    this._context.quadraticCurveTo(cpx, cpy, x, y)
+  }
+
+  rect(x : number, y : number, width : number, height : number) : void {
+    this._context.rect(x, y, width, height)
+  }
+
+  reset() : void {
+    this._context.reset()
+  }
+
+  resetTransform() : void {
+    this._context.resetTransform()
+  }
+
+  restore() : void {
+    this._context.restore()
+  }
+
+  rotate(rotate : number) : void {
+    this._context.rotate(rotate)
+  }
+
+  save() : void {
+    this._context.save()
+  }
+
+  scale(x : number, y : number) : void {
+    this._context.scale(x, y)
+  }
+
+  setLineDash(segments : number[]) : void {
+    this._context.setLineDash(segments)
+  }
+
+  setTransform(scaleX : number, skewY : number, skewX : number, scaleY : number, translateX : number, translateY : number) : void {
+    this._context.setTransform(scaleX, skewY, skewX, scaleY, translateX, translateY)
+  }
+
+  stroke(path ?: Path2D | null) : void {
+    this._context.stroke(path)
+  }
+
+  strokeRect(x : number, y : number, width : number, height : number) : void {
+    this._context.strokeRect(x, y, width, height)
+  }
+
+  strokeText(text : string, x : number, y : number, maxWidth ?: number) : void {
+    if (maxWidth != null) {
+      this._context.strokeText(text, x, y, maxWidth!)
+    } else {
+      this._context.strokeText(text, x, y, -1)
+    }
+  }
+
+  transform(scaleX : number, skewY : number, skewX : number, scaleY : number, translateX : number, translateY : number) : void {
+    this._context.transform(scaleX, skewY, skewX, scaleY, translateX, translateY)
+  }
+
+  translate(translateX : number, translateY : number) : void {
+    this._context.translate(translateX, translateY)
+  }
+}

@@ -33,7 +33,11 @@
   "uni_modules": {
     "dependencies": ["uni-framework", "uni-camera", "uni-getSystemInfo"],
     "uni-ext-api": {
-      "hook": {}
+      "hook": {
+        "app-android": true,
+        "app-harmony": false,
+        "app-ios": true
+      }
     },
     "encrypt": [],
     "platforms": {

@@ -11,16 +11,6 @@ import {
 } from '../../protocol.uts'
 import { uni } from '@dcloudio/uni-runtime'
 
-interface IGetImageInfoDownloadOptions {
-    url: string
-    success: (res: IGetImageInfoDownloadSuccess) => void
-    fail: (err: IGetImageInfoDownloadFail) => void
-}
-
-interface IGetImageInfoDownloadSuccess {
-    tempFilePath: string
-}
-
 interface IGetImageInfoDownloadFail {
     errMsg: string
 }
@@ -35,13 +25,13 @@ export const getImageInfo: GetImageInfo =
                     src = await new Promise<string>((resolve, reject) => {
                         uni.downloadFile({
                             url: options.src,
-                            success: (res: IGetImageInfoDownloadSuccess) => {
+                            success: (res) => {
                                 resolve(res.tempFilePath)
                             },
-                            fail: (err: IGetImageInfoDownloadFail) => {
+                            fail: (err) => {
                                 reject(err)
                             }
-                        } as IGetImageInfoDownloadOptions)
+                        })
                     })
                 } catch (err) {
                     const error  = err as IGetImageInfoDownloadFail

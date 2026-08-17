@@ -1,1 +1,1 @@
-export class UniCheckboxGroupElement extends UniVueElement {}
+export class UniCheckboxGroupElement extends UniViewElementImpl {}

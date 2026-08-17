@@ -1,0 +1,887 @@
+import { UTSiOSHookProxy } from "DCloudUniappRuntime";
+import { UTSiOS } from "DCloudUTSFoundation";
+import { UIApplication, UIImage } from "UIKit";
+import { CGRect, CGSize } from "CoreFoundation";
+import { URL, NSUserActivity, Bundle, Data } from "Foundation";
+import { UniShareWeixinProvider } from '../interface.uts';
+import {
+	ShareWeixinErrorCode,
+	ShareWeixinError,
+	SHARE_WEIXIN_UNI_ERROR_CODES
+} from '../unierror.uts';
+
+const DEFAULT_SCENE = 'WXSceneSession';
+const TITLE_MAX_BYTES = 512;
+const SUMMARY_MAX_BYTES = 1024;
+const THUMB_MAX_BYTES = 32 * 1024;
+// 微信返回 App 后，给 SDK 回调链路留一个短暂观察窗口，避免生命周期切换瞬间误判为无回调。
+const SHARE_RETURN_CHECK_DELAY = 600;
+
+
+type ShareTextOptions = {
+	scene : Int
+	text : string
+}
+
+type ShareImageOptions = {
+	scene : Int
+	imageData : Data
+	thumbData : Data | null
+	title : string | null
+	summary : string | null
+}
+
+type ShareVideoOptions = {
+	scene : Int
+	videoUrl : string
+	thumbData : Data | null
+	title : string | null
+	summary : string | null
+}
+
+type ShareWebpageOptions = {
+	scene : Int
+	webpageUrl : string
+	thumbData : Data | null
+	title : string | null
+	summary : string | null
+}
+
+type ShareMiniProgramOptions = {
+	scene : Int
+	id : string
+	path : string | null
+	miniprogramType : Int | null
+	thumbData : Data
+	title : string | null
+	summary : string | null
+	webpageUrl : string | null
+}
+
+export class UniShareWeixinProviderImpl implements UniShareWeixinProvider {
+	id : string = "weixin"
+
+	override description : string = "微信分享"
+
+	share(options : ShareOptions) : void {
+		WxShare.share(options)
+	}
+
+	get isAppExist() : boolean {
+		return WxShare.instance.isWXAppInstalled()
+	}
+
+	set isAppExist(newValue : boolean) {
+	}
+
+	checkAppExist() {
+		this.isAppExist = WxShare.instance.isWXAppInstalled()
+		this.isWeChatInstalled = WxShare.instance.isWXAppInstalled()
+	}
+
+	get isWeChatInstalled() : boolean {
+		return WxShare.instance.isWXAppInstalled()
+	}
+
+	set isWeChatInstalled(newValue : boolean) {
+	}
+
+	toJSON() : Map<string, any> {
+		const dict = new Map<string, any>()
+		dict.set('id', this.id)
+		dict.set('description', this.description)
+		dict.set('isAppExist', this.isAppExist)
+		dict.set('isWeChatInstalled', this.isWeChatInstalled)
+		return dict
+	}
+
+	constructor() {
+	}
+}
+
+export class WxShareHookProxy implements UTSiOSHookProxy {
+	applicationDidFinishLaunchingWithOptions(application : UIApplication | null, launchOptions : Map<UIApplication.LaunchOptionsKey, any> | null = null) : boolean {
+		WxShare.instance.registerApp()
+		return false
+	}
+
+	applicationWillResignActive(application : UIApplication | null) {
+		WxShare.instance.handleAppWillResignActive()
+	}
+
+	applicationOpenURLOptions(app : UIApplication | null, url : URL, options : Map<UIApplication.OpenURLOptionsKey, any> | null = null) : boolean {
+		WxShare.instance.handleOpen(url)
+		return true
+	}
+
+	applicationContinueUserActivityRestorationHandler(application : UIApplication | null, userActivity : NSUserActivity | null, restorationHandler : ((res : [any] | null) => void) | null = null) : boolean {
+		WxShare.instance.handleOpenUniversalLink(userActivity)
+		return true
+	}
+
+	applicationDidBecomeActive(application : UIApplication | null) {
+		WxShare.instance.handleAppDidBecomeActive()
+	}
+}
+
+export class WxShare implements WXApiDelegate {
+	static instance = new WxShare()
+
+	private options : ShareOptions | null = null
+	private activeRequestId : Int = 0
+	private requestSequence : Int = 0
+	private isProcessing : boolean = false
+	private didSendRequestToWeixin : boolean = false
+	private didLeaveAppForShare : boolean = false
+	private shareReturnCheckTimerId = -1
+
+	@UTSiOS.keyword("fileprivate")
+	registerApp() {
+		const scheme = this.getApplicationScheme()
+		const universalLinkTmp = this.getApplicationUniversalLink()
+		if (scheme != null && universalLinkTmp != null && scheme != "" && universalLinkTmp != "") {
+			WXApi.registerApp(scheme!, universalLink = universalLinkTmp!)
+		}
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	handleOpen(url : URL) {
+		this.cancelShareReturnCheck()
+		WXApi.handleOpen(url, delegate = this)
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	handleOpenUniversalLink(userActivity : NSUserActivity | null) {
+		if (userActivity != null) {
+			this.cancelShareReturnCheck()
+			WXApi.handleOpenUniversalLink(userActivity!, delegate = this)
+		}
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	handleAppWillResignActive() {
+		if (!this.isProcessing || !this.didSendRequestToWeixin) {
+			return
+		}
+
+		this.didLeaveAppForShare = true
+		this.cancelShareReturnCheck()
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	handleAppDidBecomeActive() {
+		if (!this.isProcessing || !this.didLeaveAppForShare) {
+			return
+		}
+
+		this.scheduleShareReturnCheck(this.activeRequestId)
+	}
+
+	@UTSiOS.keyword("fileprivate")
+	isWXAppInstalled() : boolean {
+		return WXApi.isWXAppInstalled()
+	}
+
+	onResp(resp : BaseResp) {
+		const requestId = this.activeRequestId
+		if (!this.isCurrentRequest(requestId)) return;
+		this.cancelShareReturnCheck()
+		if (resp instanceof SendMessageToWXResp) {
+			const res = resp as SendMessageToWXResp
+			switch (res.errCode) {
+				case 0:
+					this.handlePendingShareSuccess(requestId)
+					break
+				case -2:
+					const cancelErr = this.getError(ShareWeixinErrorCode.TYPE_SHARE_FAIL, "用户取消分享")
+					this.handlePendingShareError(requestId, cancelErr)
+					break
+				case -4:
+					const deniedErr = this.getError(ShareWeixinErrorCode.TYPE_SHARE_FAIL, "分享被拒绝")
+					this.handlePendingShareError(requestId, deniedErr)
+					break
+				default:
+					const message = resp.errStr.length > 0 ? resp.errStr : "微信返回未知错误"
+					const commonErr = this.getError(ShareWeixinErrorCode.TYPE_SHARE_FAIL, message)
+					this.handlePendingShareError(requestId, commonErr)
+					break
+			}
+		}
+	}
+
+	static share(options : ShareOptions) {
+		const requestId = WxShare.instance.beginShare(options)
+		if (requestId == null) {
+			const busyErr = WxShare.instance.getError(ShareWeixinErrorCode.TYPE_SHARE_FAIL, "分享进行中，请稍后重试")
+			WxShare.instance.handleDirectShareError(options, busyErr)
+			return
+		}
+
+		if (!WxShare.instance.isWXAppInstalled()) {
+			const err = WxShare.instance.getError(ShareWeixinErrorCode.WEI_XIN_APP_MAYBE_NOT_INSTALL)
+			WxShare.instance.handlePendingShareError(requestId!, err)
+			return
+		}
+
+		const appId = WxShare.instance.getApplicationScheme()
+		if (appId == null || appId.length == 0) {
+			const err = WxShare.instance.getError(ShareWeixinErrorCode.APP_ID_NOT_FOUND)
+			WxShare.instance.handlePendingShareError(requestId!, err)
+			return
+		}
+
+		const universalLink = WxShare.instance.getApplicationUniversalLink()
+		if (universalLink == null || universalLink.length == 0) {
+			const err = WxShare.instance.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "未配置 universalLink")
+			WxShare.instance.handlePendingShareError(requestId!, err)
+			return
+		}
+
+		options.scene = options.scene ?? DEFAULT_SCENE
+		const validateErr = WxShare.instance.validateShareOptions(options)
+		if (validateErr != null) {
+			WxShare.instance.handlePendingShareError(requestId!, validateErr)
+			return
+		}
+		const shareType = options.type ?? 0
+
+		switch (shareType) {
+			case 0:
+				WxShare.instance.handleWebpageShare(options, requestId!)
+				break
+			case 1:
+				WxShare.instance.handleTextShare(options, requestId!)
+				break
+			case 2:
+				WxShare.instance.handleImageShare(options, requestId!)
+				break
+			case 3:
+				const musicErr = WxShare.instance.getError(ShareWeixinErrorCode.TYPE_NOT_SUPPORT)
+				WxShare.instance.handlePendingShareError(requestId!, musicErr)
+				break
+			case 4:
+				WxShare.instance.handleVideoShare(options, requestId!)
+				break
+			case 5:
+				WxShare.instance.handleMiniProgramShare(options, requestId!)
+				break
+			default:
+				const typeErr = WxShare.instance.getError(ShareWeixinErrorCode.TYPE_NOT_FOUND)
+				WxShare.instance.handlePendingShareError(requestId!, typeErr)
+				break
+		}
+	}
+
+	private beginShare(options : ShareOptions) : Int | null {
+		if (this.isProcessing) {
+			return null
+		}
+
+		this.requestSequence = this.requestSequence + 1
+		const requestId = this.requestSequence
+		this.options = options
+		this.activeRequestId = requestId
+		this.isProcessing = true
+		this.didSendRequestToWeixin = false
+		this.didLeaveAppForShare = false
+		this.cancelShareReturnCheck()
+		return requestId
+	}
+
+	private isCurrentRequest(requestId : Int) : boolean {
+		return this.isProcessing && this.activeRequestId == requestId
+	}
+
+	private clearCurrentShare(requestId : Int) {
+		if (!this.isCurrentRequest(requestId)) {
+			return
+		}
+
+		this.cancelShareReturnCheck()
+		this.options = null
+		this.activeRequestId = 0
+		this.isProcessing = false
+		this.didSendRequestToWeixin = false
+		this.didLeaveAppForShare = false
+	}
+
+	private cancelShareReturnCheck() {
+		if (this.shareReturnCheckTimerId == -1) {
+			return
+		}
+
+		clearTimeout(this.shareReturnCheckTimerId)
+		this.shareReturnCheckTimerId = -1
+	}
+
+	private scheduleShareReturnCheck(requestId : Int) {
+		this.cancelShareReturnCheck()
+		this.shareReturnCheckTimerId = setTimeout(() => {
+			this.shareReturnCheckTimerId = -1
+			if (!this.isCurrentRequest(requestId) || !this.didLeaveAppForShare) {
+				return
+			}
+
+			const uncertainErr = this.getError(ShareWeixinErrorCode.TYPE_SHARE_FAIL, "未收到微信回调，无法确认分享结果，请在微信中确认是否分享成功")
+			this.handlePendingShareError(requestId, uncertainErr)
+		}, SHARE_RETURN_CHECK_DELAY)
+	}
+
+	private handlePendingShareSuccess(requestId : Int) {
+		if (!this.isCurrentRequest(requestId)) {
+			return
+		}
+
+		const success : ShareSuccess = {}
+		const currentOptions = this.options
+		this.clearCurrentShare(requestId)
+		currentOptions?.success?.(success)
+		currentOptions?.complete?.(success)
+	}
+
+	private handlePendingShareError(requestId : Int, err : ShareWeixinError) {
+		if (!this.isCurrentRequest(requestId)) {
+			return
+		}
+
+		const currentOptions = this.options
+		this.clearCurrentShare(requestId)
+		currentOptions?.fail?.(err)
+		currentOptions?.complete?.(err)
+	}
+
+	private handleDirectShareError(options : ShareOptions, err : ShareWeixinError) {
+		options.fail?.(err)
+		options.complete?.(err)
+	}
+
+	private handleTextShare(options : ShareOptions, requestId : Int) {
+		if (options.summary == null || options.summary!.length == 0) {
+			const err = this.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "分享的内容不能为空")
+			this.handlePendingShareError(requestId, err)
+			return
+		}
+
+		const shareOptions : ShareTextOptions = {
+			scene: this.getScene(options),
+			text: options.summary!
+		}
+		this.shareText(shareOptions)
+	}
+
+	private getScene(options : ShareOptions) : Int {
+		if (options.scene != null) {
+			if (options.scene! == "WXSceneSession") {
+				return 0
+			} else if (options.scene! == "WXSceneTimeline") {
+				return 1
+			}
+		}
+		return 0
+	}
+
+	private handleImageShare(options : ShareOptions, requestId : Int) {
+		if (options.imageUrl == null || options.imageUrl!.length == 0) {
+			const err = this.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "图片地址不能为空")
+			this.handlePendingShareError(requestId, err)
+			return
+		}
+
+		this.loadImageDataAsync(options.imageUrl!, requestId, (imageData : Data) => {
+			if (!this.isCurrentRequest(requestId)) {
+				return
+			}
+
+			this.prepareThumbData(requestId, imageData, (thumbData : Data) => {
+				if (!this.isCurrentRequest(requestId)) {
+					return
+				}
+
+				const shareOptions : ShareImageOptions = {
+					scene: this.getScene(options),
+					imageData: imageData,
+					thumbData: thumbData,
+					title: options.title,
+					summary: options.summary
+				}
+				this.shareImage(shareOptions)
+			}, (err : ShareWeixinError) => {
+				this.handlePendingShareError(requestId, err)
+			})
+		}, (err : ShareWeixinError) => {
+			this.handlePendingShareError(requestId, err)
+		})
+	}
+
+	private handleVideoShare(options : ShareOptions, requestId : Int) {
+		if (options.mediaUrl == null || options.mediaUrl!.length == 0) {
+			const err = this.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "分享的视频地址不能为空")
+			this.handlePendingShareError(requestId, err)
+			return
+		}
+
+		if (options.imageUrl != null && options.imageUrl!.length > 0) {
+			this.loadImageDataAsync(options.imageUrl!, requestId, (imageData : Data) => {
+				if (!this.isCurrentRequest(requestId)) {
+					return
+				}
+
+				this.prepareThumbData(requestId, imageData, (thumb : Data) => {
+					if (!this.isCurrentRequest(requestId)) {
+						return
+					}
+
+					const shareOptions : ShareVideoOptions = {
+						scene: this.getScene(options),
+						videoUrl: options.mediaUrl!,
+						thumbData: thumb,
+						title: options.title,
+						summary: options.summary
+					}
+					this.shareVideo(shareOptions)
+				}, (err : ShareWeixinError) => {
+					this.handlePendingShareError(requestId, err)
+				})
+			}, (err : ShareWeixinError) => {
+				this.handlePendingShareError(requestId, err)
+			})
+			return
+		}
+
+		const shareOptions : ShareVideoOptions = {
+			scene: this.getScene(options),
+			videoUrl: options.mediaUrl!,
+			thumbData: null,
+			title: options.title,
+			summary: options.summary
+		}
+		this.shareVideo(shareOptions)
+	}
+
+	private handleWebpageShare(options : ShareOptions, requestId : Int) {
+		if (options.href == null || options.href!.length == 0) {
+			const err = this.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "分享的网页地址不能为空")
+			this.handlePendingShareError(requestId, err)
+			return
+		}
+
+		if (options.imageUrl != null && options.imageUrl!.length > 0) {
+			this.loadImageDataAsync(options.imageUrl!, requestId, (imageData : Data) => {
+				if (!this.isCurrentRequest(requestId)) {
+					return
+				}
+
+				this.prepareThumbData(requestId, imageData, (thumb : Data) => {
+					if (!this.isCurrentRequest(requestId)) {
+						return
+					}
+
+					const shareOptions : ShareWebpageOptions = {
+						scene: this.getScene(options),
+						webpageUrl: options.href!,
+						thumbData: thumb,
+						title: options.title,
+						summary: options.summary
+					}
+					this.shareWebpage(shareOptions)
+				}, (err : ShareWeixinError) => {
+					this.handlePendingShareError(requestId, err)
+				})
+			}, (err : ShareWeixinError) => {
+				this.handlePendingShareError(requestId, err)
+			})
+			return
+		}
+
+		const shareOptions : ShareWebpageOptions = {
+			scene: this.getScene(options),
+			webpageUrl: options.href!,
+			thumbData: null,
+			title: options.title,
+			summary: options.summary
+		}
+		this.shareWebpage(shareOptions)
+	}
+
+	private handleMiniProgramShare(options : ShareOptions, requestId : Int) {
+		if (options.miniProgram == null || options.miniProgram!.id == null || options.miniProgram!.id!.length == 0) {
+			const err = this.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "需要填写小程序的原始ID")
+			this.handlePendingShareError(requestId, err)
+			return
+		}
+
+		if (options.imageUrl == null || options.imageUrl!.length == 0) {
+			const err = this.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, "小程序分享必须提供缩略图")
+			this.handlePendingShareError(requestId, err)
+			return
+		}
+
+		const miniProgram = options.miniProgram!
+		let miniprogramType : Int | null = null
+		if (miniProgram.type != null) {
+			miniprogramType = Int(miniProgram.type!)
+		}
+
+		this.loadImageDataAsync(options.imageUrl!, requestId, (imageData : Data) => {
+			if (!this.isCurrentRequest(requestId)) {
+				return
+			}
+
+			this.prepareThumbData(requestId, imageData, (thumbData : Data) => {
+				if (!this.isCurrentRequest(requestId)) {
+					return
+				}
+
+				const shareOptions : ShareMiniProgramOptions = {
+					scene: this.getScene(options),
+					id: miniProgram.id!,
+					path: miniProgram.path,
+					miniprogramType: miniprogramType,
+					thumbData: thumbData,
+					title: options.title,
+					summary: options.summary,
+					webpageUrl: miniProgram.webUrl ?? options.href
+				}
+				this.shareMiniProgram(shareOptions)
+			}, (err : ShareWeixinError) => {
+				this.handlePendingShareError(requestId, err)
+			})
+		}, (err : ShareWeixinError) => {
+			this.handlePendingShareError(requestId, err)
+		})
+	}
+
+	private shareText(options : ShareTextOptions) {
+		const req = new SendMessageToWXReq()
+		req.bText = true
+		req.text = options.text
+		req.scene = Int32(options.scene)
+		this.sendRequest(req)
+	}
+
+	private shareImage(options : ShareImageOptions) {
+		const imageObject = new WXImageObject()
+		imageObject.imageData = options.imageData
+
+		const message = new WXMediaMessage()
+		message.title = options.title ?? ""
+		message.description = options.summary ?? ""
+		message.mediaObject = imageObject
+
+		if (options.thumbData != null) {
+			message.thumbData = options.thumbData
+		}
+
+		this.sendMediaRequest(options.scene, message)
+	}
+
+	private shareVideo(options : ShareVideoOptions) {
+		const videoObject = new WXVideoObject()
+		videoObject.videoUrl = options.videoUrl
+
+		const message = new WXMediaMessage()
+		message.title = options.title ?? ""
+		message.description = options.summary ?? ""
+		message.mediaObject = videoObject
+		if (options.thumbData != null) {
+			message.thumbData = options.thumbData
+		}
+
+		this.sendMediaRequest(options.scene, message)
+	}
+
+	private shareWebpage(options : ShareWebpageOptions) {
+		const webpageObject = new WXWebpageObject()
+		webpageObject.webpageUrl = options.webpageUrl
+
+		const message = new WXMediaMessage()
+		message.title = options.title ?? ""
+		message.description = options.summary ?? ""
+		message.mediaObject = webpageObject
+		if (options.thumbData != null) {
+			message.thumbData = options.thumbData
+		}
+
+		this.sendMediaRequest(options.scene, message)
+	}
+
+	private shareMiniProgram(options : ShareMiniProgramOptions) {
+		const miniProgramObject = new WXMiniProgramObject()
+		miniProgramObject.userName = options.id
+		miniProgramObject.path = options.path
+		miniProgramObject.webpageUrl = options.webpageUrl ?? ""
+		miniProgramObject.hdImageData = options.thumbData
+
+		// miniProgramObject.miniProgramType = options.miniprogramType
+
+		const message = new WXMediaMessage()
+		message.title = options.title ?? ""
+		message.description = options.summary ?? ""
+		message.thumbData = options.thumbData
+		message.mediaObject = miniProgramObject
+
+		this.sendMediaRequest(options.scene, message)
+	}
+
+	private sendMediaRequest(scene : Int, message : WXMediaMessage) {
+		const req = new SendMessageToWXReq()
+		req.bText = false
+		req.message = message
+		req.scene = Int32(scene)
+		this.sendRequest(req)
+	}
+
+	private sendRequest(req : SendMessageToWXReq) {
+		const requestId = this.activeRequestId
+		WXApi.send(req, completion = (success : boolean) => {
+			if (success) {
+				if (this.isCurrentRequest(requestId)) {
+					this.didSendRequestToWeixin = true
+				}
+				return
+			}
+
+			const err = this.getError(ShareWeixinErrorCode.TYPE_SHARE_FAIL, "调用微信分享失败")
+			this.handlePendingShareError(requestId, err)
+		})
+	}
+
+	private getApplicationScheme() : string | null {
+		let scheme : string | null = null
+		const infoDictionary = Bundle.main.infoDictionary
+		if (infoDictionary != null) {
+			const wechat = infoDictionary!['WeChat'] as Map<string, any> | null
+			if (wechat != null) {
+				scheme = wechat!['appid'] as string | null
+			}
+		}
+
+		return scheme
+	}
+
+	private getApplicationUniversalLink() : string | null {
+		let universalLink : string | null = null
+		const infoDictionary = Bundle.main.infoDictionary
+		if (infoDictionary != null) {
+			const wechat = infoDictionary!['WeChat'] as Map<string, any> | null
+			if (wechat != null) {
+				universalLink = wechat!['universalLink'] as string | null
+			}
+		}
+		return universalLink
+	}
+
+	private validateShareOptions(options : ShareOptions) : ShareWeixinError | null {
+		if (options.title != null && this.getByteLength(options.title!) > TITLE_MAX_BYTES) {
+			return this.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, `title字段不能超过 ${TITLE_MAX_BYTES} 个字节`)
+		}
+
+		if (options.summary != null && this.getByteLength(options.summary!) > SUMMARY_MAX_BYTES) {
+			return this.getError(ShareWeixinErrorCode.PARAMETERS_INVALID, `summary字段不能超过 ${SUMMARY_MAX_BYTES} 个字节`)
+		}
+
+		return null
+	}
+
+	private prepareThumbData(requestId : Int, imageData : Data, success : (thumbData : Data) => void, fail : (err : ShareWeixinError) => void) {
+		if (!this.isCurrentRequest(requestId)) {
+			return
+		}
+
+		const thumbData = this.createThumbDataFromData(imageData)
+		if (thumbData == null) {
+			fail(this.getError(ShareWeixinErrorCode.GET_THUMB_IMAGE_ERROR))
+			return
+		}
+		if (thumbData!.count > THUMB_MAX_BYTES) {
+			fail(this.getError(ShareWeixinErrorCode.GET_THUMB_IMAGE_ERROR, `缩略图不能超过 ${THUMB_MAX_BYTES} 字节`))
+			return
+		}
+		success(thumbData!)
+	}
+
+	private createThumbDataFromData(imageData : Data) : Data | null {
+		const image = new UIImage(data = imageData)
+		if (image == null) {
+			return imageData
+		}
+		const thumbData = this.compressThumbData(image!, imageData)
+		return thumbData ?? imageData
+	}
+
+	private compressThumbData(image : UIImage, fallbackData : Data) : Data | null {
+		if (fallbackData.count <= THUMB_MAX_BYTES) {
+			return fallbackData
+		}
+
+		let fpersent : CGFloat = CGFloat(THUMB_MAX_BYTES) / CGFloat(fallbackData.count)
+		let resizedImage = this.resizeImageByPercent(image, fpersent)
+		let initialImage = resizedImage ?? image
+		const qualityLevels = new Array<CGFloat>()
+		qualityLevels.push(0.5)
+		qualityLevels.push(0.4)
+		qualityLevels.push(0.3)
+		qualityLevels.push(0.2)
+		qualityLevels.push(0.1)
+		let thumbData = this.compressThumbImageUntilLimit(initialImage, qualityLevels)
+		return thumbData
+	}
+
+	private compressImageWithQuality(image : UIImage, quality : CGFloat) : Data | null {
+		return image.jpegData(compressionQuality = quality)
+	}
+
+	private compressThumbImageUntilLimit(image : UIImage, qualityLevels : Array<CGFloat>) : Data | null {
+		let workingImage = image
+		let bestData : Data | null = null
+		for (item in qualityLevels) {
+			const data = this.compressImageWithQuality(workingImage, item)
+			if (data == null) {
+				continue
+			}
+			if (bestData == null || data!.count < bestData!.count) {
+				bestData = data
+			}
+			if (data!.count <= THUMB_MAX_BYTES) {
+				return data
+			}
+		}
+
+		let resizeCount = 0
+		while (resizeCount < 8) {
+			const resizedImage = this.resizeImage(workingImage, 0.8)
+			if (resizedImage == null) {
+				break
+			}
+			workingImage = resizedImage!
+			resizeCount = resizeCount + 1
+			for (item in qualityLevels) {
+				const data = this.compressImageWithQuality(workingImage, item)
+				if (data == null) {
+					continue
+				}
+				if (bestData == null || data!.count < bestData!.count) {
+					bestData = data
+				}
+				if (data!.count <= THUMB_MAX_BYTES) {
+					return data
+				}
+			}
+		}
+
+		return bestData
+	}
+
+	private resizeImageByPercent(image : UIImage, percent : CGFloat) : UIImage | null {
+		let width = image.size.width * percent
+		let height = image.size.height * percent
+		let targetSize = this.normalizeThumbSize(width, height)
+		return this.resizeImageToSize(image, targetSize.width, targetSize.height)
+	}
+
+	private normalizeThumbSize(width : CGFloat, height : CGFloat) : CGSize {
+		let targetWidth = width
+		let targetHeight = height
+		const minSize : CGFloat = 128.0
+		if (targetWidth < 128 || targetHeight < 128) {
+			if (targetHeight > targetWidth) {
+				targetHeight = (minSize / targetWidth) * targetHeight
+				targetWidth = minSize
+			} else if (targetHeight < targetWidth) {
+				targetWidth = (minSize / targetHeight) * targetWidth
+				targetHeight = minSize
+			}
+		}
+		return CGSize(width = targetWidth, height = targetHeight)
+	}
+
+	private resizeImage(image : UIImage, ratio : CGFloat) : UIImage | null {
+		const width = image.size.width * ratio
+		const height = image.size.height * ratio
+		if (width < 1 || height < 1) {
+			return image
+		}
+		return this.resizeImageToSize(image, width, height)
+	}
+
+	private resizeImageToSize(image : UIImage, width : CGFloat, height : CGFloat) : UIImage | null {
+		const size = CGSize(width = width, height = height)
+		UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
+		image.draw(in = CGRect(x = 0, y = 0, width = width, height = height))
+		const resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		return resizedImage
+	}
+
+	private loadImageDataAsync(imageUrl : string, requestId : Int, success : (imageData : Data) => void, fail : (err : ShareWeixinError) => void) {
+		const realPath = UTSiOS.convert2AbsFullPath(imageUrl)
+		if (!this.isNetworkUrl(realPath)) {
+			if (!this.isCurrentRequest(requestId)) {
+				return
+			}
+			const imageData = this.loadLocalImageData(realPath)
+			if (imageData == null) {
+				fail(this.getError(ShareWeixinErrorCode.LOAD_LOCAL_FILEPATH_ERROR, "读取图片数据失败"))
+				return
+			}
+			success(imageData!)
+			return
+		}
+
+		const downloadOptions : DownloadFileOptions = {
+			url: realPath,
+			success: (res : DownloadFileSuccess) => {
+				if (!this.isCurrentRequest(requestId)) {
+					return
+				}
+				if (res.tempFilePath.length == 0) {
+					fail(this.getError(ShareWeixinErrorCode.DOWNLOAD_IMAGE_ERROR, "下载后未返回临时文件路径"))
+					return
+				}
+
+				const imageData = this.loadLocalImageData(res.tempFilePath)
+				if (imageData == null) {
+					fail(this.getError(ShareWeixinErrorCode.LOAD_LOCAL_FILEPATH_ERROR, "读取下载后的图片失败"))
+					return
+				}
+
+				success(imageData!)
+			},
+			fail: (downloadErr : DownloadFileFail) => {
+				if (!this.isCurrentRequest(requestId)) {
+					return
+				}
+				const message = downloadErr.errMsg.length > 0 ? downloadErr.errMsg : "网络图片下载失败"
+				fail(this.getError(ShareWeixinErrorCode.DOWNLOAD_IMAGE_ERROR, message))
+			}
+		}
+		uni.downloadFile(downloadOptions)
+	}
+
+	private loadLocalImageData(localPath : string) : Data | null {
+		const fileUrl = new URL(fileURLWithPath = localPath)
+		return UTSiOS.try(Data(contentsOf = fileUrl), "?")
+	}
+
+	private isNetworkUrl(url : string) : boolean {
+		return url.startsWith("http://") || url.startsWith("https://")
+	}
+
+	private getByteLength(str : string) : Int {
+		const data = str.data(using = String.Encoding.utf8)
+		if (data == null) {
+			return Int(str.length)
+		}
+		return Int(data!.count)
+	}
+
+	private getError(code : ShareWeixinErrorCode, message : string | null = null) : ShareWeixinError {
+		const errorCode = code.rawValue as ShareErrorCode
+		let errMsg = SHARE_WEIXIN_UNI_ERROR_CODES.get(errorCode) ?? "未知错误"
+		if (message != null) {
+			errMsg = errMsg + ', ' + message
+		}
+
+		return new ShareWeixinError(errorCode, errMsg)
+	}
+}

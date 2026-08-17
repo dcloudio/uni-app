@@ -25,8 +25,9 @@ import { UTSiOS } from "DCloudUTSFoundation";
 import { URL, Data, FileAttributeKey } from 'Foundation';
 import { UIImage } from 'UIKit';
 import { AVURLAsset, AVMediaType } from 'AVFoundation';
-import { UniJsSwiftApiWrapper } from 'DCloudUniappRuntime'
 import { PHPhotoLibrary } from "Photos";
+import { DispatchQueue } from 'Dispatch'
+
 let mediaPicker : DCUniMediaPicker = new DCUniMediaPicker();
 
 export const chooseFile : ChooseFile = function (option : ChooseFileOptions) {
@@ -34,7 +35,7 @@ export const chooseFile : ChooseFile = function (option : ChooseFileOptions) {
 		if (errorCode != null) {
 			let err = new MediaErrorImpl(errorCode!, UniError_ChooseFile);
 
-			UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+			DispatchQueue.main.async(execute = () : void => {
 				option.fail?.(err)
 				option.complete?.(err)
 			})
@@ -55,7 +56,7 @@ export const chooseFile : ChooseFile = function (option : ChooseFileOptions) {
 				tempFiles: tempFiles
 			}
 
-			UniJsSwiftApiWrapper.runOnJsQueue(() : void => {
+			DispatchQueue.main.async(execute = () : void => {
 				option.success?.(result)
 				option.complete?.(result)
 			})

@@ -33,7 +33,7 @@
     },
     "uni_modules": {
         "encrypt": [],
-        "customElements":{
+        "customElements": {
             "app-android": false,
             "app-ios": false,
             "app-harmony": true
@@ -44,10 +44,9 @@
                     "name": "createCanvasContextAsync",
                     "app": {
                         "js": false,
-                        "x-js": false,
-                        "kotlin": true,
+                        "kotlin": "dom1",
                         "swift": false,
-                        "arkts": true
+                        "arkts": "dom1"
                     }
                 }
             }

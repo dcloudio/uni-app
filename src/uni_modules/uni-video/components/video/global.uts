@@ -1,11 +1,16 @@
-export type UniVideoEventDetail = {}
-export class UniVideoEvent<T = UniVideoEventDetail> extends UniCustomEvent<T> {
-  constructor(target : UniElement, type : string, detail ?: T) {
-    super(type, detail ?? {} as T)
-    if (!this.target) {
+class UniVideoBaseEvent<T> extends UniCustomEvent<T> {
+  constructor(target : UniElement, type : string, detail : T) {
+    super(type, detail)
+    if (this.target == null) {
       this.target = target
     }
     this.currentTarget = target
+  }
+}
+
+export class UniVideoEvent extends UniVideoBaseEvent<UTSJSONObject> {
+  constructor(target : UniElement, type : string) {
+    super(target, type, {})
   }
 }
 
@@ -16,7 +21,7 @@ export type UniVideoControlsToggleEventDetail = {
    */
   show : boolean
 }
-export class UniVideoControlsToggleEvent extends UniVideoEvent<UniVideoControlsToggleEventDetail> {
+export class UniVideoControlsToggleEvent extends UniVideoBaseEvent<UniVideoControlsToggleEventDetail> {
   constructor(target : UniElement, show : boolean) {
     super(target, 'controlstoggle', { show } as UniVideoControlsToggleEventDetail)
   }
@@ -39,14 +44,18 @@ export type VideoErrorCode =
    * SDK错误
    */
   300001
-export type UniWebViewErrorEventDetail = {
+export type UniVideoErrorEventDetail = {
   errSubject : string;
   errCode : VideoErrorCode;
   errMsg : string;
 }
-export class UniVideoErrorEvent extends UniVideoEvent<UniWebViewErrorEventDetail>{
-  constructor(target : UniElement, detail: UniWebViewErrorEventDetail ) {
-    super(target, 'error', detail)
+export class UniVideoErrorEvent extends UniVideoBaseEvent<UniVideoErrorEventDetail>{
+  constructor(target : UniElement, errCode : VideoErrorCode, errMsg : string) {
+    super(target, 'error', {
+        errSubject : 'uni-video',
+        errCode,
+        errMsg
+    } as UniVideoErrorEventDetail)
   }
 }
 
@@ -62,7 +71,7 @@ export type UniVideoFullScreenChangeEventDetail = {
    */
   direction : UniVideoFullScreenDirection
 }
-export class UniVideoFullScreenChangeEvent extends UniVideoEvent<UniVideoFullScreenChangeEventDetail> {
+export class UniVideoFullScreenChangeEvent extends UniVideoBaseEvent<UniVideoFullScreenChangeEventDetail> {
   constructor(target : UniElement, fullScreen : boolean, direction : UniVideoFullScreenDirection = 'horizontal') {
     super(target, 'fullscreenchange', {
       fullScreen,
@@ -90,7 +99,7 @@ export type UniVideoFullScreenClickEventDetail = {
    */
   screenHeight : number
 }
-export class UniVideoFullScreenClickEvent extends UniVideoEvent<UniVideoFullScreenClickEventDetail> {
+export class UniVideoFullScreenClickEvent extends UniVideoBaseEvent<UniVideoFullScreenClickEventDetail> {
   constructor(target : UniElement, screenX : number, screenY : number, screenWidth : number, screenHeight : number) {
     super(target, 'fullscreenclick', {
       screenX, screenY, screenWidth, screenHeight
@@ -105,7 +114,7 @@ export type UniVideoProgressEventDetail = {
    */
   buffered : number
 }
-export class UniVideoProgressEvent extends UniVideoEvent<UniVideoProgressEventDetail> {
+export class UniVideoProgressEvent extends UniVideoBaseEvent<UniVideoProgressEventDetail> {
   constructor(target : UniElement, buffered : number) {
     super(target, 'progress', {
       buffered
@@ -124,7 +133,7 @@ export type UniVideoTimeUpdateEventDetail = {
    */
   duration : number
 }
-export class UniVideoTimeUpdateEvent extends UniVideoEvent<UniVideoTimeUpdateEventDetail> {
+export class UniVideoTimeUpdateEvent extends UniVideoBaseEvent<UniVideoTimeUpdateEventDetail> {
   constructor(target : UniElement, currentTime : number, duration : number) {
     super(target, 'timeupdate', {
       currentTime,
@@ -133,6 +142,7 @@ export class UniVideoTimeUpdateEvent extends UniVideoEvent<UniVideoTimeUpdateEve
   }
 }
 
+// #ifdef VUE3-VAPOR
 /**
  * video组件回收时的状态信息
  */
@@ -151,9 +161,9 @@ export type UniVideoRecycleEventDetail = {
   duration: number
 }
 /**
- * video组件回收事件对象
+ * video组件回收事件
  */
-export class UniVideoRecycleEvent extends UniVideoEvent<UniVideoRecycleEventDetail> {
+export class UniVideoRecycleEvent extends UniVideoBaseEvent<UniVideoRecycleEventDetail> {
   constructor(target : UniElement, detail: UniVideoRecycleEventDetail) {
     super(target, 'recycle', detail)
   }
@@ -161,20 +171,39 @@ export class UniVideoRecycleEvent extends UniVideoEvent<UniVideoRecycleEventDeta
 
 export type UniVideoReuseEventDetail = {
   /**
-   * 回收时是否处于播放状态。回收时暂停状态此值为false
+   * 复用时是否处于播放状态。复用时暂停状态此值为false
    */
   isPlaying: boolean
   /**
-   * 回收时播放视频的进度
+   * 复用时播放视频的进度
    */
   currentTime: number
   /**
-   * 回收时播放视频的总时长
+   * 复用时播放视频的总时长
    */
   duration: number
 }
-export class UniVideoReuseEvent extends UniVideoEvent<UniVideoReuseEventDetail> {
+/**
+ * video组件复用事件
+ */
+export class UniVideoReuseEvent extends UniVideoBaseEvent<UniVideoReuseEventDetail> {
   constructor(target : UniElement, detail: UniVideoReuseEventDetail) {
     super(target, 'reuse', detail)
   }
 }
+// #endif
+
+// #ifdef APP-ANDROID || APP-IOS
+export type VideoTimeUpdateEvent = UniVideoTimeUpdateEvent
+export type VideoTimeUpdateEventDetail = UniVideoTimeUpdateEventDetail
+export type VideoFullScreenChangeEvent = UniVideoFullScreenChangeEvent
+export type VideoFullScreenChangeEventDetail = UniVideoFullScreenChangeEventDetail
+export type VideoErrorEvent = UniVideoErrorEvent
+export type VideoErrorEventDetail = UniVideoErrorEventDetail
+export type VideoProgressEvent = UniVideoProgressEvent
+export type VideoProgressEventDetail = UniVideoProgressEventDetail
+export type VideoFullScreenClickEvent = UniVideoFullScreenClickEvent
+export type VideoFullScreenClickEventDetail = UniVideoFullScreenClickEventDetail
+export type VideoControlsToggleEvent = UniVideoControlsToggleEvent
+export type VideoControlsToggleEventDetail = UniVideoControlsToggleEventDetail
+// #endif

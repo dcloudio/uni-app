@@ -32,12 +32,16 @@
   },
   "uni_modules": {
     "components": {
-      "app-android": false,
-      "app-ios": false
+      "app-android": true,
+      "app-ios": true,
+      "app-harmony": true
     },
     "dependencies": [
       "uni-framework",
-	  "uni-fileSystemManager"
+	  "uni-fileSystemManager",
+      "uni-getSystemInfo",
+      "uni-event",
+      "uni-screenBrightness"
     ],
     "uni-ext-api": {
       "uni": {

@@ -22,7 +22,7 @@ export interface AVVolumePanelOptions {
 @Component
 export struct VolumePanel {
   @Prop volumeLevel: number = 0;
-  @Prop volumeParameter?: AVVolumePanelParameter;
+  @Prop volumeParameter: AVVolumePanelParameter;
   onAboutToAppear?: (instance: VolumePanel) => void
 
   build() {

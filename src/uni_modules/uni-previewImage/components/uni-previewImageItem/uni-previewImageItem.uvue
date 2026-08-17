@@ -20,17 +20,21 @@
 	import { ref, watch, onMounted } from 'vue'
 	import { Friction } from './Friction'
 	// #ifdef APP-ANDROID
-	import View from "android.view.View"
+	// import View from "android.view.View"
 	// #endif
 	// #ifdef APP-IOS
 	import { LongPressActionsOptions, LongPressActionsSuccessResult, LongPressActionsFailResult } from '@/uni_modules/uni-previewImage';
 	// #endif
-	// #ifdef APP-ANDROID
+	// #ifdef APP-ANDROID && !VUE3-VAPOR
 	import { LongPressActionsFailResult, PreviewImageErrorImpl, UniErrorPreviewImage } from '@/uni_modules/uni-previewImage';
 	// #endif
 
 	const DEFAULT_DISTANCE = 4
 	const FAST_SLIDE_LENGTH = 10
+	const SCALE_BOUNDARY_BUFFER = 2
+	const MIN_SCALE = 1
+	const MAX_SCALE = 3
+	const ANIMATION_DURATION = 200
 	const SAVE_IMAGE_LANGUAGE = {
 		"en": {
 			save_item: "Save Image",
@@ -73,6 +77,10 @@
 		reset: {
 			type: Boolean,
 			default: false
+		},
+		resetOnSrcChange: {
+			type: Boolean,
+			default: false
 		}
 	})
 
@@ -105,11 +113,14 @@
 	const requestId = ref<number>(-1)
 	const needExecLongPress = ref(false)
 	// #ifdef APP
-	const androidView = ref<View | null>(null)
+	// const androidView = ref<View | null>(null)
 	// #endif
 	const downPoint = ref<Point | null>(null)
 	const longPressActionTimeoutId = ref<number>(-1)
 	const inScaleMode = ref(false)
+	const scaleGestureActive = ref(false)
+	const scaleGestureInProgress = ref(false)
+	const delegateMoveToParent = ref(false)
 	const inDoubleTapMode = ref(false)
 	const startTimestamp = ref<number>(0)
 	const clickTimeoutId = ref<number>(-1)
@@ -119,17 +130,61 @@
 	const loadError = ref(false)
 	const language = ref("zh-Hans")
 	const isPreviewImaqeClosed = ref(false)
+	const swiperTouchDisabled = ref(false)
+	const ignoreClickUntil = ref<number>(0)
+	const inScaleBounceBack = ref(false)
+	const bounceTransitionUntil = ref<number>(0)
 
 	const instance = getCurrentInstance()!.proxy!
 
 	const getSrcLocalPath = (url : string) => {
 		srcPath.value = url
 	}
+	const resetImageState = () => {
+		cancelAnimationFrame(requestId.value)
+		clearTimeout(clickTimeoutId.value)
+		clearTimeout(longPressActionTimeoutId.value)
+		loadingFinished.value = false
+		loadError.value = false
+		imageMode.value = "aspectFit"
+		scaleSize.value = 1
+		imageTop.value = 0
+		imageMarginTop.value = 0
+		imageLeft.value = 0
+		imageHeight.value = 0
+		withAnimation.value = false
+		historyX.value = [0, 0]
+		historyY.value = [0, 0]
+		historyT.value = [0, 0]
+		lastSlideTouch.value = null
+		needExecLongPress.value = false
+		downPoint.value = null
+		inScaleMode.value = false
+		scaleGestureActive.value = false
+		scaleGestureInProgress.value = false
+		delegateMoveToParent.value = false
+		inDoubleTapMode.value = false
+		transformOrigin.value = [0, 0]
+		inScaleBounceBack.value = false
+		bounceTransitionUntil.value = 0
+		if (swiperTouchDisabled.value) {
+			swiperTouchDisabled.value = false
+			uni.$emit("__UNIPREVIEWIMAGE", false)
+		}
+		imageView.value?.style.setProperty("height", "100%")
+		imageView.value?.style.setProperty("transition-duration", "0ms")
+		imageView.value?.style.setProperty("transform-origin", "0px 0px")
+		imageView.value?.style.setProperty("transform", "translate(0px,0px) scale(1)")
+	}
 	// Watch
 	watch(() : string => props.src, (newValue : string, oldValue : string) => {
+		if (props.resetOnSrcChange) {
+			resetImageState()
+		}
 		if (newValue != "") {
 			getSrcLocalPath(newValue)
 		} else {
+			srcPath.value = ""
 			loadingFinished.value = true
 			loadError.value = true
 		}
@@ -137,12 +192,12 @@
 
 	function getSaveLanguageString(name : string) : string {
 		var value = language.value
-		if(value.startsWith("en")) {
+		if (value.startsWith("en")) {
 			value = "en"
-		} else if(value.startsWith("zh-Hans")) {
-			value = "zh-Hans"
-		} else if(value.startsWith("zh-Hant")) {
+		} else if (value.startsWith("zh-Hant") || value.startsWith("zh-TW") || value.startsWith("zh-HK")) {
 			value = "zh-Hant"
+		} else if (value.startsWith("zh")) {
+			value = "zh-Hans"
 		}
 		var object = SAVE_IMAGE_LANGUAGE[value];
 		if (object != null) {
@@ -155,7 +210,7 @@
 	// Lifecycle
 	onMounted(() => {
 		// #ifdef APP-ANDROID
-		androidView.value = (mask.value as UniElement | null)?.getAndroidView() as View | null
+		// androidView.value = (mask.value as UniElement | null)?.getAndroidView() as View | null
 		// #endif
 		var dpr = uni.getDeviceInfo({ filter: ["devicePixelRatio"] }).devicePixelRatio
 		if (dpr == null) {
@@ -247,15 +302,86 @@
 		e?.stopPropagation()
 	}
 
+	const setSwiperTouchDisabled = (disabled : boolean) => {
+		if (swiperTouchDisabled.value == disabled) {
+			return
+		}
+		swiperTouchDisabled.value = disabled
+		uni.$emit("__UNIPREVIEWIMAGE", disabled)
+	}
+
+	const markScaleGesture = () => {
+		ignoreClickUntil.value = Date.now() + 450
+	}
+
+	const shouldIgnoreClick = () : boolean => {
+		return Date.now() < ignoreClickUntil.value
+	}
+
+	const setScaleKeepingViewportCenter = (targetScale : number) => {
+		if (scaleSize.value <= 0 || screenWidth.value <= 0 || screenHeight.value <= 0) {
+			scaleSize.value = targetScale
+			return
+		}
+		var ratio = targetScale / scaleSize.value
+		var centerX = screenWidth.value / 2
+		var centerY = screenHeight.value / 2
+		imageLeft.value = centerX - transformOrigin.value[0] - (centerX - imageLeft.value - transformOrigin.value[0]) * ratio
+		imageTop.value = centerY - transformOrigin.value[1] - (centerY - imageTop.value - transformOrigin.value[1]) * ratio
+		scaleSize.value = targetScale
+	}
+
+	const protectBounceTransition = () => {
+		bounceTransitionUntil.value = Date.now() + ANIMATION_DURATION
+	}
+
 	const onInterceptTouchEvent = (e : UniTouchEvent | null) => {
-		if (inScaleMode.value) {
+		if (inScaleMode.value || scaleGestureActive.value) {
+			setSwiperTouchDisabled(true)
 			preventDefaultScall(e)
 			return
 		}
 		clearTimeout(clickTimeoutId.value)
 		// #ifdef APP-ANDROID
-		androidView.value?.parent?.requestDisallowInterceptTouchEvent(false)
+		// androidView.value?.parent?.requestDisallowInterceptTouchEvent(false)
 		// #endif
+	}
+
+	const shouldDelegateMoveToParent = (slideX : number, slideY : number) => {
+		if (scaleSize.value <= 1 || screenWidth.value <= 0) {
+			return false
+		}
+		if (Math.abs(slideX) <= Math.abs(slideY)) {
+			return false
+		}
+		var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1)
+		var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value)
+		return (imageLeft.value >= maxLeft && slideX > 0) || (imageLeft.value <= minLeft && slideX < 0)
+	}
+
+	const isAtHorizontalBoundary = () : boolean => {
+		if (scaleSize.value <= 1 || screenWidth.value <= 0) {
+			return false
+		}
+		var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1)
+		var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value)
+		return imageLeft.value >= maxLeft || imageLeft.value <= minLeft
+	}
+
+	const delegateCurrentMoveToParent = (e : UniTouchEvent, currentSlideTouch : UniTouch) => {
+		inScaleMode.value = false
+		scaleGestureActive.value = false
+		scaleGestureInProgress.value = false
+		delegateMoveToParent.value = true
+		setSwiperTouchDisabled(false)
+		needExecLongPress.value = false
+		clearTimeout(longPressActionTimeoutId.value)
+		lastSlideTouch.value = e.touches
+		downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY } as Point
+		historyX.value = [imageLeft.value, imageLeft.value]
+		historyY.value = [imageTop.value, imageTop.value]
+		historyT.value = [e.timeStamp, e.timeStamp]
+		onInterceptTouchEvent(e)
 	}
 
 	// 计算transform-origin主要代码
@@ -292,8 +418,6 @@
 						originalCenterY = originalCenterY - imageTop.value
 					}
 					transformOrigin.value = [originalCenterX, originalCenterY]
-					imageLeft.value = imageLeft.value + (scaleSize.value - 1) * (originalCenterX - transformOrigin.value[0])
-					imageTop.value = imageTop.value + (scaleSize.value - 1) * (originalCenterY - transformOrigin.value[1])
 				}
 			}
 		}
@@ -302,13 +426,13 @@
 	const updateStyle = (e : UniTouchEvent | null, xDistance : number, yDistance : number) => {
 		caculatorTransformOrigin(e)
 		if (1 < scaleSize.value) {
-			var scrollWidthLength = (screenWidth.value * (scaleSize.value - 1))
-			var scrollRadio = transformOrigin.value[0] / (screenWidth.value)
-			if (imageLeft.value > (scrollWidthLength * scrollRadio)) {
-				imageLeft.value = (scrollWidthLength * scrollRadio)
+			var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value)
+			var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1)
+			if (imageLeft.value > maxLeft) {
+				imageLeft.value = maxLeft
 				onInterceptTouchEvent(e)
-			} else if (imageLeft.value < -(scrollWidthLength * (1 - scrollRadio))) {
-				imageLeft.value = -(scrollWidthLength * (1 - scrollRadio))
+			} else if (imageLeft.value < minLeft) {
+				imageLeft.value = minLeft
 				onInterceptTouchEvent(e)
 			} else {
 				preventDefaultScall(e)
@@ -317,22 +441,37 @@
 			imageLeft.value = 0
 			onInterceptTouchEvent(e)
 		}
-		if (screenHeight.value < (imageHeight.value * scaleSize.value)) {
-			// 顶部最大可滚动距离为transform-origin的y方向的坐标减去图片真实的顶部坐标，获取图片transform-origin点上方图片可缩放的长度，诚意缩放比，减去transform-origin的y方向的坐标，即为图片顶部最大可滑动的距离
-			var topMargin = (transformOrigin.value[1] - (imageMarginTop.value > 0 ? imageMarginTop.value : 0)) * scaleSize.value - transformOrigin.value[1]
-			var bottomMargin = ((imageHeight.value + (imageMarginTop.value > 0 ? imageMarginTop.value : 0) - transformOrigin.value[1]) * scaleSize.value) - (screenHeight.value - transformOrigin.value[1])
-			if (imageTop.value > topMargin) {
-				imageTop.value = topMargin
-			} else if (imageTop.value < -bottomMargin) {
-				imageTop.value = -bottomMargin
-			} else {
-				if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value!.y) > DEFAULT_DISTANCE) {
-					preventDefaultScall(e)
-				}
+		var imageContentTop = imageMarginTop.value > 0 ? imageMarginTop.value : 0
+		var imageContentBottom = imageContentTop + imageHeight.value
+		var scaledContentHeight = imageHeight.value * scaleSize.value
+		if (scaleSize.value <= 1 && imageHeight.value > screenHeight.value) {
+			var minTop = screenHeight.value - imageHeight.value
+			if (imageTop.value > 0) {
+				imageTop.value = 0
+			} else if (imageTop.value < minTop) {
+				imageTop.value = minTop
+			}
+			if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value!.y) > DEFAULT_DISTANCE) {
+				preventDefaultScall(e)
+			}
+		} else if ((screenHeight.value + SCALE_BOUNDARY_BUFFER) < scaledContentHeight) {
+			var scaledTopWithoutTranslate = transformOrigin.value[1] + (imageContentTop - transformOrigin.value[1]) * scaleSize.value
+			var scaledBottomWithoutTranslate = transformOrigin.value[1] + (imageContentBottom - transformOrigin.value[1]) * scaleSize.value
+			var visualTop = scaledTopWithoutTranslate + imageTop.value
+			var visualBottom = scaledBottomWithoutTranslate + imageTop.value
+			if (visualBottom < screenHeight.value) {
+				imageTop.value = imageTop.value + (screenHeight.value - visualBottom)
+			} else if (visualTop > 0 && !inScaleBounceBack.value) {
+				imageTop.value = imageTop.value - visualTop
+			}
+			if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value!.y) > DEFAULT_DISTANCE) {
+				preventDefaultScall(e)
 			}
 		} else {
 			if (!inScaleMode.value) {
-				imageTop.value = 0
+				var scaledTopWithoutTranslate = transformOrigin.value[1] + (imageContentTop - transformOrigin.value[1]) * scaleSize.value
+				var centeredTop = (screenHeight.value - scaledContentHeight) / 2
+				imageTop.value = centeredTop - scaledTopWithoutTranslate
 				if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value!.y) > DEFAULT_DISTANCE) {
 					preventDefaultScall(e)
 				}
@@ -340,26 +479,16 @@
 				preventDefaultScall(e)
 			}
 		}
-		imageView.value?.style.setProperty("transition-duration", withAnimation.value ? "200ms" : "0ms")
+		var shouldAnimate = withAnimation.value || Date.now() < bounceTransitionUntil.value
+		// 回弹动画保护期内继续写 200ms，避免连续 updateStyle 把 transition 覆盖成 0ms。
+		imageView.value?.style.setProperty("transition-duration", shouldAnimate ? ANIMATION_DURATION + "ms" : "0ms")
 		imageView.value?.style.setProperty("transform-origin", (transformOrigin.value[0]) + "px " + (transformOrigin.value[1]) + "px")
 		imageView.value?.style.setProperty("transform", "translate(" + (imageLeft.value) + "px," + (imageTop.value) + "px) scale(" + scaleSize.value + ")")
 	}
-	
-	watch(() : boolean => props.reset, (newValue : boolean, oldValue : boolean) => {
-		if (newValue != oldValue) {
-			if(imageView.value != null && scaleSize.value != 1) {
-			scaleSize.value = 1
-			imageLeft.value = 0
-			imageTop.value = 0
-			withAnimation.value = false
-			updateStyle(null, NaN, NaN)
-			}
-		}
-	}, { immediate: true })
 
 	watch(() : boolean => props.reset, (newValue : boolean, oldValue : boolean) => {
 		if (newValue != oldValue) {
-			if (imageView.value != null && scaleSize.value != 1) {
+			if (imageView.value != null && (scaleSize.value != 1 || imageLeft.value != 0 || imageTop.value != 0)) {
 				scaleSize.value = 1
 				imageLeft.value = 0
 				imageTop.value = 0
@@ -376,19 +505,32 @@
 				doTransform(callback)
 		})
 	}
-	
+
 	function closePreviewImage() {
 		isPreviewImaqeClosed.value = true
 		uni.$emit("__UNIPREVIEWIMAGECLOSE")
 	}
 
 	const onstart = (e : UniTouchEvent) => {
-		if(isPreviewImaqeClosed.value) return
+		if (isPreviewImaqeClosed.value) return
 		// #ifdef APP-ANDROID
-		if (androidView.value == null)
-			androidView.value = (mask.value as UniElement | null)?.getAndroidView() as View | null
+		// if (androidView.value == null)
+		// 	androidView.value = (mask.value as UniElement | null)?.getAndroidView() as View | null
 		// #endif
 		inScaleMode.value = false
+		scaleGestureActive.value = false
+		scaleGestureInProgress.value = false
+		delegateMoveToParent.value = false
+		bounceTransitionUntil.value = 0
+		if (e.touches.length >= 2) {
+			inScaleMode.value = true
+			scaleGestureActive.value = true
+			scaleGestureInProgress.value = true
+			markScaleGesture()
+			setSwiperTouchDisabled(true)
+		} else {
+			setSwiperTouchDisabled(scaleSize.value > 1 && !isAtHorizontalBoundary())
+		}
 		withAnimation.value = false
 		cancelAnimationFrame(requestId.value)
 		clearTimeout(clickTimeoutId.value)
@@ -402,38 +544,83 @@
 		// #ifndef APP-IOS
 		e.preventDefault()
 		// #endif
-		needExecLongPress.value = true
-		longPressActionTimeoutId.value = setTimeout(() => {
-			if (needExecLongPress.value) {
-				onLongPressAction()
-			}
-		}, 350)
+		needExecLongPress.value = e.touches.length < 2
+		if (needExecLongPress.value) {
+			longPressActionTimeoutId.value = setTimeout(() => {
+				if (needExecLongPress.value) {
+					onLongPressAction()
+				}
+			}, 350)
+		}
 	}
 
 	const onmove = (e : UniTouchEvent) => {
-		if(isPreviewImaqeClosed.value) return
+		if (isPreviewImaqeClosed.value) return
 		if (e.touches.length == 1) {
 			var currentSlideTouch = e.touches[0]
+			if (delegateMoveToParent.value) {
+				needExecLongPress.value = false
+				clearTimeout(longPressActionTimeoutId.value)
+				lastSlideTouch.value = e.touches
+				downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY } as Point
+				historyX.value = [imageLeft.value, imageLeft.value]
+				historyY.value = [imageTop.value, imageTop.value]
+				historyT.value = [e.timeStamp, e.timeStamp]
+				onInterceptTouchEvent(e)
+				return
+			}
+			if (lastSlideTouch.value != null && lastSlideTouch.value!.length != 1) {
+				lastSlideTouch.value = e.touches
+				downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY } as Point
+				historyX.value = [imageLeft.value, imageLeft.value]
+				historyY.value = [imageTop.value, imageTop.value]
+				historyT.value = [e.timeStamp, e.timeStamp]
+				if (scaleSize.value > 1 || inScaleMode.value || scaleGestureActive.value) {
+					preventDefaultScall(e)
+				} else {
+					onInterceptTouchEvent(e)
+				}
+				return
+			}
 			if (lastSlideTouch.value != null) {
 				var slideX = (currentSlideTouch.clientX - lastSlideTouch.value![0].clientX)
 				var slideY = (currentSlideTouch.clientY - lastSlideTouch.value![0].clientY)
+				if (shouldDelegateMoveToParent(slideX, slideY)) {
+					// 放大图到达横向边界后，继续向外滑动需要交给 swiper 翻页。
+					delegateCurrentMoveToParent(e, currentSlideTouch)
+					return
+				}
 				var downX = Math.abs(currentSlideTouch.clientX - downPoint.value!.x)
 				var downY = Math.abs(currentSlideTouch.clientY - downPoint.value!.y)
 				if (downX > DEFAULT_DISTANCE || downY > DEFAULT_DISTANCE) {
-					if (scaleSize.value > 1 || imageHeight.value > screenHeight.value) {
+					needExecLongPress.value = false
+					clearTimeout(longPressActionTimeoutId.value)
+					var handledByImage = false
+					if (scaleSize.value > 1) {
+						setSwiperTouchDisabled(true)
 						imageLeft.value = imageLeft.value + slideX
 						imageTop.value = imageTop.value + slideY;
 						updateStyle(e, currentSlideTouch.clientX, currentSlideTouch.clientY)
+						handledByImage = true
+					} else if (imageHeight.value > screenHeight.value && downY > downX) {
+						setSwiperTouchDisabled(true)
+						imageTop.value = imageTop.value + slideY;
+						// 未放大的长图由图片自身处理竖向滑动，横向仍交给 swiper。
+						updateStyle(e, currentSlideTouch.clientX, currentSlideTouch.clientY)
+						preventDefaultScall(e)
+						handledByImage = true
 					} else {
-						needExecLongPress.value = true
+						setSwiperTouchDisabled(false)
 						onInterceptTouchEvent(e)
 					}
-					historyX.value.shift()
-					historyX.value.push(imageLeft.value)
-					historyY.value.shift()
-					historyY.value.push(imageTop.value)
-					historyT.value.shift()
-					historyT.value.push(e.timeStamp)
+					if (handledByImage) {
+						historyX.value.shift()
+						historyX.value.push(imageLeft.value)
+						historyY.value.shift()
+						historyY.value.push(imageTop.value)
+						historyT.value.shift()
+						historyT.value.push(e.timeStamp)
+					}
 					lastSlideTouch.value = e.touches
 					needExecLongPress.value = false
 				} else {
@@ -444,6 +631,12 @@
 			}
 		} else if (e.touches.length >= 2) {
 			inScaleMode.value = true
+			scaleGestureActive.value = true
+			scaleGestureInProgress.value = true
+			setSwiperTouchDisabled(true)
+			markScaleGesture()
+			needExecLongPress.value = false
+			clearTimeout(longPressActionTimeoutId.value)
 			var currentFirstTouch = e.touches[0]
 			var currentSecondTouch = e.touches[1]
 			var currentXSlideLength = currentFirstTouch.clientX - currentSecondTouch.clientX
@@ -468,23 +661,62 @@
 	}
 
 	const onend = (e : UniTouchEvent) => {
-		// 清空长按事件，避免连续点击时，仍然会触发长按事件
-		// inScaleMode.value = false
-		if(isPreviewImaqeClosed.value) return
+		if (isPreviewImaqeClosed.value) return
+
+		const wasScaleMode = inScaleMode.value || scaleGestureActive.value || scaleGestureInProgress.value
+		if (wasScaleMode) {
+			markScaleGesture()
+		}
+		inScaleMode.value = false
 		needExecLongPress.value = false
 		clearTimeout(longPressActionTimeoutId.value)
 		var current = Date.now()
+
+		if (wasScaleMode) {
+			if (scaleSize.value > MAX_SCALE) {
+				withAnimation.value = true
+				protectBounceTransition()
+				setScaleKeepingViewportCenter(MAX_SCALE)
+				inScaleBounceBack.value = true
+				// 超过最大缩放时回弹到 MAX_SCALE，并保护本次回弹动画。
+				updateStyle(e, NaN, NaN)
+				inScaleBounceBack.value = false
+			} else if (scaleSize.value < MIN_SCALE) {
+				withAnimation.value = true
+				protectBounceTransition()
+				setScaleKeepingViewportCenter(MIN_SCALE)
+				imageLeft.value = 0
+				imageTop.value = 0
+				inScaleBounceBack.value = true
+				// 小于最小缩放时回弹到原始大小，并保护本次回弹动画。
+				updateStyle(e, NaN, NaN)
+				inScaleBounceBack.value = false
+			} else {
+				withAnimation.value = false
+				updateStyle(e, NaN, NaN)
+			}
+			lastTouchEndTime.value = current
+			lastSlideTouch.value = null
+			scaleGestureActive.value = false
+			if (e.touches.length == 0) {
+				scaleGestureInProgress.value = false
+			}
+			delegateMoveToParent.value = false
+			setSwiperTouchDisabled(false)
+			return
+		}
+
 		if (historyY.value[0] == 0 && historyY.value[1] == 0 && historyX.value[0] == 0 && historyX.value[1] == 0) {
-			// 未触发move，认为不需要走惯性
 			withAnimation.value = true
 			if (current - lastTouchEndTime.value < 350) {
-				// 区别快划和双击
-				// 目前测试快划和双击的距离不一样，建议判断距离大于10的，都按照快划处理
 				if (lastSlideTouch.value != null && lastSlideTouch.value!.length > 0) {
 					var downX = Math.abs(lastSlideTouch.value![0].clientX - downPoint.value!.x)
 					var downY = Math.abs(lastSlideTouch.value![0].clientY - downPoint.value!.y)
 					if (downX > FAST_SLIDE_LENGTH || downY > FAST_SLIDE_LENGTH) {
 						lastSlideTouch.value = null
+						scaleGestureActive.value = false
+						delegateMoveToParent.value = false
+						setSwiperTouchDisabled(false)
 						return
 					}
 				}
@@ -498,48 +730,31 @@
 					updateStyle(e, NaN, NaN)
 				}
 			} else if (e.touches.length == 0) {
-				if (lastSlideTouch.value != null && lastSlideTouch.value!.length == 1) {
-					if (e.timeStamp - startTimestamp.value < 160) {
-						if (lastSlideTouch.value != null) {
-							var downX = Math.abs(lastSlideTouch.value![0].clientX - downPoint.value!.x)
-							var downY = Math.abs(lastSlideTouch.value![0].clientY - downPoint.value!.y)
-							if (downX < FAST_SLIDE_LENGTH && downY < FAST_SLIDE_LENGTH) {
-								clickTimeoutId.value = setTimeout(() => {
-									closePreviewImage()
-								}, 200)
-							}
-						} else {
-							clickTimeoutId.value = setTimeout(() => {
-								closePreviewImage()
-							}, 200)
-						}
-
+				if (lastSlideTouch.value != null && lastSlideTouch.value!.length == 1 && e.timeStamp - startTimestamp.value < 160) {
+					var downX = Math.abs(lastSlideTouch.value![0].clientX - downPoint.value!.x)
+					var downY = Math.abs(lastSlideTouch.value![0].clientY - downPoint.value!.y)
+					if (downX < FAST_SLIDE_LENGTH && downY < FAST_SLIDE_LENGTH && !shouldIgnoreClick()) {
+						clickTimeoutId.value = setTimeout(() => {
+							closePreviewImage()
+						}, 200)
 					}
-				}
-				if (scaleSize.value > 3) {
-					scaleSize.value = 3
-					updateStyle(e, NaN, NaN)
-				} else if (scaleSize.value < 1) {
-					scaleSize.value = 1
-					imageLeft.value = 0
-					updateStyle(e, NaN, NaN)
 				}
 				lastTouchEndTime.value = current
 			}
 		} else {
-			if (inScaleMode.value) {
-				if (scaleSize.value > 3) {
-					scaleSize.value = 3
-					updateStyle(e, NaN, NaN)
-				} else if (scaleSize.value < 1) {
-					scaleSize.value = 1
-					imageLeft.value = 0
-					updateStyle(e, NaN, NaN)
-				}
-				lastTouchEndTime.value = current
+			var deltaTime = historyT.value[1] - historyT.value[0]
+			var xv = 0
+			var yv = 0
+			if (deltaTime > 0) {
+				xv = 1000 * (historyX.value[1] - historyX.value[0]) / deltaTime
+				yv = 1000 * (historyY.value[1] - historyY.value[0]) / deltaTime
 			}
-			var xv = 1000 * (historyX.value[1] - historyX.value[0]) / (historyT.value[1] - historyT.value[0])
-			var yv = 1000 * (historyY.value[1] - historyY.value[0]) / (historyT.value[1] - historyT.value[0])
+			if (!Number.isFinite(xv)) {
+				xv = 0
+			}
+			if (!Number.isFinite(yv)) {
+				yv = 0
+			}
 			_friction.value.setVelocity(xv, yv)
 			_friction.value.setStartPosition(imageLeft.value, imageTop.value)
 			const x0 = _friction.value.displacement().x
@@ -564,14 +779,25 @@
 			})
 		}
 		lastSlideTouch.value = null
+		scaleGestureActive.value = false
+		if (e.touches.length == 0) {
+			scaleGestureInProgress.value = false
+		}
+		delegateMoveToParent.value = false
+		setSwiperTouchDisabled(false)
 		// #ifdef APP-ANDROID
-		preventDefaultScall(e)
+		// preventDefaultScall(e)
 		// #endif
 	}
 
 	const oncancel = (e : UniTouchEvent) => {
 		onend(e)
 		clearTimeout(clickTimeoutId.value)
+		inScaleMode.value = false
+		scaleGestureActive.value = false
+		scaleGestureInProgress.value = false
+		delegateMoveToParent.value = false
+		setSwiperTouchDisabled(false)
 	}
 
 	const caculatorImageSize = (imgWidth : number, imgHeight : number) => {
@@ -582,6 +808,7 @@
 			imageView.value?.style.setProperty("height", scaleImageSize + "px")
 		} else {
 			imageMode.value = "aspectFit"
+			imageView.value?.style.setProperty("height", "100%")
 		}
 		imageMarginTop.value = (screenHeight.value - scaleImageSize) / 2
 		imageHeight.value = scaleImageSize
@@ -589,11 +816,19 @@
 
 	const onImageLoad = (e : UniImageLoadEvent) => {
 		(mask.value as UniElement | null)?.style.setProperty("point-events", "none")
-		uni.createSelectorQuery().in(instance).select('.uni-preview-image-item').boundingClientRect().exec((ret) => {
+		uni.createSelectorQuery().in(instance).select('.uni-preview-image-patch').boundingClientRect().exec((ret) => {
 			if (ret.length == 1) {
-				var rect = imageView.value!.getBoundingClientRect()
+				var rect = mask.value!.getBoundingClientRect()
 				screenHeight.value = rect.height
 				screenWidth.value = rect.width
+				if(devicePixelRatio.value == 0) {
+					var dpr = uni.getDeviceInfo({ filter: ["devicePixelRatio"] }).devicePixelRatio
+					if (dpr == null) {
+						devicePixelRatio.value = 1
+					} else {
+						devicePixelRatio.value = dpr
+					}
+				}
 				caculatorImageSize(e.detail.width / devicePixelRatio.value, e.detail.height / devicePixelRatio.value)
 			}
 		})
@@ -649,6 +884,7 @@
 
 	.uni-preview-image-item-background {
 		background-color: black;
+		overflow: hidden;
 	}
 
 	.uni-preview-image-tips-retry {

@@ -198,12 +198,15 @@ class NetworkManager {
 		if (listener != null) {
 			listener.onStart();
 		}
-		let client = this.createRequestClient(param!);
+		let client = this.createRequestClient(param!, listener!);
+		if (client == null) {
+			return new NetworkRequestTaskImpl(null);
+		}
 		let request = this.createRequest(param!, listener!);
 		if (request == null) {
 			return new NetworkRequestTaskImpl(null);
 		}
-		let call : Call = client.newCall(request);
+		let call : Call = client!.newCall(request);
 
 		let task = new NetworkRequestTaskImpl(call);
 		call.enqueue(new SimpleCallback(listener, task, param.enableChunked ?? false, Looper.myLooper()));
@@ -211,7 +214,7 @@ class NetworkManager {
 		return task;
 	}
 
-	public createRequestClient<T>(param : RequestOptions<T>) : OkHttpClient {
+	public createRequestClient<T>(param : RequestOptions<T>, listener : NetworkRequestListener) : OkHttpClient | null {
 		let clientBuilder = OkHttpClient.Builder();
 		const timeout : Long = param.timeout != null ? param.timeout!.toLong() : 60000;
 		clientBuilder.connectTimeout(timeout, TimeUnit.MILLISECONDS);
@@ -266,7 +269,25 @@ class NetworkManager {
 		const enableQuic = param.enableQuic ?? false
 		if(enableQuic) {
 			// #ifdef UNI-APP-X
+			// #ifdef !VUE3-VAPOR
 			CronetHelper.supportCronet(clientBuilder)
+			// #endif
+			
+			// #ifdef VUE3-VAPOR
+			const loaded = CronetHelper.supportCronet(clientBuilder)
+			if (!loaded) {
+				let option = {};
+				option['statusCode'] = '-1';
+				option['errorCode'] = '600010';
+				option['errorMsg'] = "cronet load fail";
+				option['cause'] = new Exception("cronet load fail");
+				if (listener != null) {
+					listener.onComplete(option);
+				}
+				return null;
+			}
+			// #endif
+			
 			// #endif
 		}
 

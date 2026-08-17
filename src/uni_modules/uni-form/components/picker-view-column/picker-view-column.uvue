@@ -44,6 +44,9 @@
 
   let isAdjusting = false
   let columnIndex = -1
+  // #ifdef APP-IOS
+  let clickAdjustTimer : number
+  // #endif
 
   function setScrollTop(idx : number) {
     if (idx < 0) {
@@ -72,6 +75,9 @@
     if (ctx) {
       ctx.unregisterColumn(api)
     }
+    // #ifdef APP-IOS
+    clearTimeout(clickAdjustTimer)
+    // #endif
   })
 
   function onScroll() {
@@ -100,6 +106,8 @@
       setTimeout(() => {
         isAdjusting = false;
       }, 0)
+    } else {
+      selectedIndex.value = idx
     }
 
     if (valueChanged) {
@@ -135,8 +143,21 @@
     const isIndexValid = targetIndex >= 0 && (itemCount ? targetIndex < itemCount : true)
 
     if (isIndexValid && targetIndex !== selectedIndex.value) {
+      // #ifdef APP-IOS
+      isAdjusting = true
+      ctx?.onColumnIndexChange(columnIndex, targetIndex)
+      setTimeout(() => {
+        setScrollTop(targetIndex)
+      }, 0)
+      clearTimeout(clickAdjustTimer)
+      clickAdjustTimer = setTimeout(() => {
+        isAdjusting = false
+      }, 350)
+      // #endif
+      // #ifndef APP-IOS
       setScrollTop(targetIndex)
       ctx?.onColumnIndexChange(columnIndex, targetIndex)
+      // #endif
     }
   }
 </script>
@@ -179,7 +200,8 @@
     height: 50px;
     border-top-width: 0.5px;
     border-bottom-width: 0.5px;
-    border-style: solid;
+    border-top-style: solid;
+    border-bottom-style: solid;
     border-color: #ddd;
     background-color: #efeff480;
     z-index: 1;

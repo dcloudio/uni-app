@@ -27,7 +27,7 @@ export const loadFontFace = defineAsyncApi<LoadFontFaceOptions, LoadFontFaceSucc
             return
         }
         page.$fontFamilySet.add(options.family)
-        appLoadFontFace(getLoadFontFaceOptions(options, res))
+        page.$nativePage!.loadFontFace(getLoadFontFaceOptions(options, res))
     }
 })
 
@@ -48,16 +48,16 @@ function removeUrlWrap(source: string): string {
 
 function getLoadFontFaceOptions(
     options: LoadFontFaceOptions,
-    res: ApiExecutor,
+    res: ApiExecutor | null,
 ): NativeLoadFontFaceOptions {
     return {
         family: options.family,
         source: options.source,
         success: (_: any | null) => {
-            res.resolve(null)
+            res?.resolve(null)
         },
         fail: (error: NativeLoadFontFaceFail) => {
-            res.reject(
+            res?.reject(
                 new LoadFontFaceFailImpl(
                     error.errMsg,
                     error.errCode as LoadFontFaceErrCode,

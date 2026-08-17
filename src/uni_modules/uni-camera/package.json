@@ -31,6 +31,11 @@
     "npmurl": ""
   },
   "uni_modules": {
+    "components": {
+        "app-android": true,
+        "app-ios": true,
+        "app-harmony": false
+    },
     "dependencies": ["uni-framework", "uni-media"],
 	"uni-ext-api": {
 		"uni": {

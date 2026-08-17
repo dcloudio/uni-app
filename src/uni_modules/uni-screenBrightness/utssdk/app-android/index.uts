@@ -1,0 +1,177 @@
+import Settings from 'android.provider.Settings'
+import WindowManager from 'android.view.WindowManager'
+import {
+	SetScreenBrightness,
+	SetScreenBrightnessOptions,
+	SetScreenBrightnessSuccess,
+	GetScreenBrightness,
+	GetScreenBrightnessOptions,
+	GetScreenBrightnessSuccess,
+	SetKeepScreenOn,
+	SetKeepScreenOnOptions,
+	SetKeepScreenOnSuccess
+} from '../interface.uts'
+
+function createFailResult(errMsg : string) : UniError {
+	return new UniError('uni-screenBrightness', 1301, errMsg)
+}
+
+function normalizeBrightness(value : number) : number {
+	if (value < 0) {
+		return 0
+	}
+	if (value > 1) {
+		return 1
+	}
+	return value
+}
+
+// 部分安卓设备在应用未主动设置亮度前，窗口属性会直接返回 `1`。
+// 因此在 setScreenBrightness 调用前，getScreenBrightness 应优先返回系统亮度；
+// 一旦当前页面显式设置过亮度，再优先读取窗口层亮度。
+let hasCustomScreenBrightness = false
+let customScreenBrightness = 1
+
+function getSystemBrightness() : number {
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		return 1
+	}
+	// 某些厂商设备会额外维护 0~1 的浮点亮度值，优先读取它，
+	// 可以避免把超出 255 范围的整数亮度错误归一化为 1。
+	const brightnessFloatValue = Settings.System.getString(activity.contentResolver, 'screen_brightness_float')
+	if (brightnessFloatValue != null) {
+		const parsedFloatValue = parseFloat(brightnessFloatValue)
+		if (!isNaN(parsedFloatValue) && parsedFloatValue >= 0 && parsedFloatValue <= 1) {
+			return normalizeBrightness(parsedFloatValue)
+		}
+	}
+	// 标准 Android 设备仍然使用 SCREEN_BRIGHTNESS，按 255 归一化兜底。
+	const brightnessValue = Settings.System.getInt(activity.contentResolver, Settings.System.SCREEN_BRIGHTNESS, -1)
+	if (brightnessValue < 0) {
+		return 1
+	}
+	return normalizeBrightness(Number.from(brightnessValue) / 255)
+}
+
+function isAutoBrightnessMode() : boolean {
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		return false
+	}
+	const brightnessMode = Settings.System.getInt(
+		activity.contentResolver,
+		Settings.System.SCREEN_BRIGHTNESS_MODE,
+		Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
+	)
+	return brightnessMode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
+}
+
+function getWindowBrightness() : number {
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		return -1
+	}
+	const currentBrightness = activity.getWindow().getAttributes().screenBrightness
+	return currentBrightness >= 0 ? normalizeBrightness(Number.from(currentBrightness)) : -1
+}
+
+export const setScreenBrightness : SetScreenBrightness = function (options : SetScreenBrightnessOptions) {
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		const error = createFailResult('setScreenBrightness:fail activity is null')
+		options.fail?.(error)
+		options.complete?.(error)
+		return
+	}
+
+	const window = activity.getWindow()
+	const params = window.getAttributes()
+	const normalizedValue = normalizeBrightness(options.value)
+	params.screenBrightness = normalizedValue.toFloat()
+	window.setAttributes(params)
+	hasCustomScreenBrightness = true
+	customScreenBrightness = normalizedValue
+
+	const result : SetScreenBrightnessSuccess = {}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+export const getScreenBrightness : GetScreenBrightness = function (options : GetScreenBrightnessOptions) {
+	if (UTSAndroid.getUniActivity() == null) {
+		const error = createFailResult('getScreenBrightness:fail activity is null')
+		options.fail?.(error)
+		options.complete?.(error)
+		return
+	}
+
+	const systemBrightness = getSystemBrightness()
+	const windowBrightness = getWindowBrightness()
+	const autoBrightnessMode = isAutoBrightnessMode()
+	let value = systemBrightness
+	if (hasCustomScreenBrightness) {
+		// 当前页面调用过 setScreenBrightness 后，以窗口层亮度为准；
+		// 如果窗口属性暂时取不到，就回退到最近一次设置值。
+		value = windowBrightness >= 0 ? windowBrightness : customScreenBrightness
+	} else if (autoBrightnessMode && systemBrightness == 1 && windowBrightness >= 0 && windowBrightness < 1) {
+		// 自动亮度场景下，部分设备会把持久化系统亮度保留为 1。
+		// 如果此时窗口层能拿到更小的有效值，则优先返回窗口亮度。
+		value = windowBrightness
+	}
+	const result : GetScreenBrightnessSuccess = {
+		value: value
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+export const setKeepScreenOn : SetKeepScreenOn = function (options : SetKeepScreenOnOptions) {
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		const error = createFailResult('setKeepScreenOn:fail activity is null')
+		options.fail?.(error)
+		options.complete?.(error)
+		return
+	}
+
+	const window = activity.getWindow()
+	if (options.keepScreenOn) {
+		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+	} else {
+		window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+	}
+
+	const result : SetKeepScreenOnSuccess = {
+		errMsg: 'setKeepScreenOn:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+export {
+	GetScreenBrightness,
+	GetScreenBrightnessComplete,
+	GetScreenBrightnessCompleteCallback,
+	GetScreenBrightnessFail,
+	GetScreenBrightnessFailCallback,
+	GetScreenBrightnessOptions,
+	GetScreenBrightnessSuccess,
+	GetScreenBrightnessSuccessCallback,
+	SetKeepScreenOn,
+	SetKeepScreenOnComplete,
+	SetKeepScreenOnCompleteCallback,
+	SetKeepScreenOnFail,
+	SetKeepScreenOnFailCallback,
+	SetKeepScreenOnOptions,
+	SetKeepScreenOnSuccess,
+	SetKeepScreenOnSuccessCallback,
+	SetScreenBrightness,
+	SetScreenBrightnessComplete,
+	SetScreenBrightnessCompleteCallback,
+	SetScreenBrightnessFail,
+	SetScreenBrightnessFailCallback,
+	SetScreenBrightnessOptions,
+	SetScreenBrightnessSuccess,
+	SetScreenBrightnessSuccessCallback
+} from '../interface.uts'

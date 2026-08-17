@@ -46,16 +46,16 @@ export const createWorker: CreateWorker = defineSyncApi<Worker>(CREATE_WORKER, (
         /**
          * https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/worker-introduction#onallerrors接口与onerror接口之间的行为差异
          */
-        if (deviceInfo.sdkApiVersion >= 18) {
+        /* if (deviceInfo.sdkApiVersion >= 18) {
             (threadWorker as ESObject).onAllErrors = (error: ErrorEvent) => {
                 ThreadWorkerEventHub.emit('error', new WorkerOnErrorCallbackResultImpl(WORKER_RUN_FAILED, `${error.message} in ${error.filename}(${error.lineno}:${error.colno})`));
             }
-        } else {
-            // onerror 触发后，会销毁 worker 实例
-            threadWorker.onerror = (error) => {
-                ThreadWorkerEventHub.emit('error', new WorkerOnErrorCallbackResultImpl(WORKER_RUN_FAILED, `${error.message} in ${error.filename}(${error.lineno}:${error.colno})`));
-            }
+        } else { */
+        // onerror 触发后，会销毁 worker 实例
+        threadWorker.onerror = (error) => {
+            ThreadWorkerEventHub.emit('error', new WorkerOnErrorCallbackResultImpl(WORKER_RUN_FAILED, `${error.message} in ${error.filename}(${error.lineno}:${error.colno})`));
         }
+        // }
 
         class WorkerImpl implements Worker {
             __v_skip: boolean = true

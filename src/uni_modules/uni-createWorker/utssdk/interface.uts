@@ -45,60 +45,59 @@ export type WorkerPostMessageOptions = {
    * 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false
    * 仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable
    *
-	 * @uniPlatform {
-	 *  "app": {
-	 *    "android": {
-	 *      "osVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
-	 *    },
-   *    "ios": {
-   *      "osVer": "x",
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
    *      "uniVer": "x",
-   *      "unixVer": "x"
+   *      "unixVer": "x",
+   *      "unixVaporVer": "x"
+   *    },
+   *    "ios": {
+   *      "uniVer": "x",
+   *      "unixVer": "x",
+   *      "unixVaporVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0.0",
    *      "uniVer": "x",
    *      "unixVer": "4.81",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
-	 *  },
+   *  },
    * "web": {
    *    "uniVer": "x",
    *    "unixVer": "x"
    *  }
-	 * }
+   * }
    */
   harmonySendable?: boolean
+
   /**
    * 可转移对象数组，默认值为空数组
    * 仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects
    *
-	 * @uniPlatform {
-	 *  "app": {
-	 *    "android": {
-	 *      "osVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
-	 *    },
-   *    "ios": {
-   *      "osVer": "x",
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
    *      "uniVer": "x",
-   *      "unixVer": "x"
+   *      "unixVer": "x",
+   *      "unixVaporVer": "x"
+   *    },
+   *    "ios": {
+   *      "uniVer": "x",
+   *      "unixVer": "x",
+   *      "unixVaporVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0.0",
    *      "uniVer": "x",
    *      "unixVer": "4.81",
-   *      "unixvVer": "5.0"
+   *      "unixVaporVer": "5.0"
    *    }
-	 *  },
+   *  },
    * "web": {
    *    "uniVer": "x",
    *    "unixVer": "4.81"
    *  }
-	 * }
+   * }
    */
   transfer?: any[]
 }
@@ -127,32 +126,35 @@ export interface Uni {
    * 创建一个Worker对象
    * @param url Worker脚本的URL
    *
-	 * @uniPlatform {
-	 *  "app": {
-	 *    "android": {
-	 *      "osVer": "5.0",
-	 *      "uniVer": "x",
-	 *      "unixVer": "4.81",
-	 * 		"unixUtsPlugin": "4.81"
-	 *    },
-   *    "ios": {
-   *      "osVer": "12.0",
-   *      "uniVer": "x",
-   *      "unixVer": "x",
-   * 	  "unixUtsPlugin": "4.81"
-   *    },
-   *    "harmony": {
-   *      "osVer": "5.0.0",
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *      "osVer": "5.0",
    *      "uniVer": "x",
    *      "unixVer": "4.81",
-   *      "unixUtsPlugin": "4.81"
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "x",
+   *      "unixVaporUtsPlugin": "5.21"
+   *    },
+   *    "ios": {
+   *      "uniVer": "x",
+   *      "unixVer": "x",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "x",
+   *      "unixVaporUtsPlugin": "5.11"
+   *    },
+   *    "harmony": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "5.0"
    *    }
-	 *  },
+   *  },
    * "web": {
    *    "uniVer": "x",
    *    "unixVer": "4.81"
    *  }
-	 * }
+   * }
    */
   createWorker: CreateWorker
 }

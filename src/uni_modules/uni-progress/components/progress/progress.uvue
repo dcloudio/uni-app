@@ -17,8 +17,14 @@
      * 进度增加1%所需毫秒数
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -28,8 +34,14 @@
      * 进度百分比
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -39,8 +51,14 @@
      * 是否启用动画
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -50,8 +68,14 @@
      * 动画模式
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -61,8 +85,14 @@
      * 未选择的进度条的颜色
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -72,8 +102,14 @@
      * 进度条宽度
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -83,8 +119,14 @@
      * 已选择的进度条的颜色
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -94,8 +136,14 @@
      * 是否显示进度条值
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -105,8 +153,14 @@
      * 进度条圆角
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -116,8 +170,14 @@
      * 进度条字体大小
      * @uniPlatform {
        "app": {
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
         "harmony": {
-          "unixvVer": "5.0"
+          "unixVaporVer": "5.0"
         }
       }
     }

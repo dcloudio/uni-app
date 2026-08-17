@@ -1,0 +1,36 @@
+import { StartPullDownRefreshOptions, StartPullDownRefreshFailImpl, StartPullDownRefreshSuccessImpl } from '../interface.uts'
+
+export const startPullDownRefresh = (options?: StartPullDownRefreshOptions | null) => {
+	const pages = getCurrentPages()
+	const page = pages[pages.length - 1]
+	if (page === null) {
+		const error = new StartPullDownRefreshFailImpl('startPullDownRefresh:fail, page is not ready', 4)
+		options?.fail?.(error)
+		options?.complete?.(error)
+		return
+	}
+	const rootEl = page.querySelector('page') as UniElement | null
+	if(rootEl == null || rootEl instanceof UniViewElementImpl == true){
+		const error = new StartPullDownRefreshFailImpl('startPullDownRefresh:fail, disabled', 4)
+		options?.fail?.(error)
+		options?.complete?.(error)
+		return
+	}
+	const refresherTriggered = rootEl?.getAttribute('refresher-triggered')
+	if(refresherTriggered != 'true'){
+		rootEl?.setAnyAttribute('refresher-triggered', 'true')
+	}
+	const res = new StartPullDownRefreshSuccessImpl()
+	options?.success?.(res)
+	options?.complete?.(res)
+}
+
+export const stopPullDownRefresh = () => {
+	const pages = getCurrentPages()
+	const page = pages[pages.length - 1]
+	if (page === null) {
+		return
+	}
+	const rootEl = page.querySelector('page') as UniElement | null
+	rootEl?.setAnyAttribute('refresher-triggered', 'false')
+}

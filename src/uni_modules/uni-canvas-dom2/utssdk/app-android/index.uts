@@ -1,0 +1,215 @@
+import {
+  CreateCanvasContextAsync,
+  CreateCanvasContextAsyncOptions,
+  RequestAnimationFrameCallback,
+  CreateCanvasContextAsyncSuccessCallback,
+  CreateCanvasContextAsyncFailCallback,
+  CreateCanvasContextAsyncCompleteCallback,
+} from '../interface.uts'
+
+import UniCanvasView from "io.dcloud.canvas.UniCanvasView"
+import UniCanvasContext from "io.dcloud.canvas.UniCanvasContext"
+
+export type UniCanvasElementReadyCallback = () => void
+
+export class UniNativeCanvas {
+  private element : UniNativeViewElement
+
+  constructor(el : UniNativeViewElement) {
+    this.element = el;
+    (el as UniCanvasElement | null)?.bindView()
+  }
+
+  destroy() {
+    (this.element as UniCanvasElement | null)?.uni_destroy()
+  }
+
+  updateBackground(color : string) {
+    try {
+      (this.element as UniCanvasElement | null)?.getRenderView()?.updateBackground(color)
+    } catch (e) {
+      // Ignore invalid background colors to keep canvas rendering stable.
+    }
+  }
+}
+
+export class UniCanvasElement extends UniNativeViewElementImpl {
+  override tagName : string = 'CANVAS'
+  override nodeName : string = 'CANVAS'
+  private renderView : UniCanvasView | null = null
+  private isViewReady : boolean = false
+  private viewReadyCallbacks : UniCanvasElementReadyCallback[] = []
+  constructor() {
+    super()
+  }
+
+  onViewReady(callback : UniCanvasElementReadyCallback) {
+    if (this.isViewReady) {
+      callback()
+      return
+    }
+    this.viewReadyCallbacks.push(callback)
+  }
+
+  notifyViewReady() {
+    if (this.isViewReady) {
+      return
+    }
+    this.isViewReady = true
+    const callbacks = this.viewReadyCallbacks
+    this.viewReadyCallbacks = []
+    for (callback in callbacks) {
+      callback()
+    }
+  }
+
+  bindView() {
+    if (null == this.renderView) {
+      this.renderView = new UniCanvasView(this)
+    }
+    if (null != this.renderView) {
+      this.bindAndroidView(this.renderView!)
+      this.renderView!.post(new UniCanvasViewReadyRunnable(this))
+    }
+  }
+
+  getRenderView() : UniCanvasView|null {
+    return this.renderView
+  }
+
+  uni_destroy() {
+    this.renderView?.destroy()
+    this.renderView = null
+  }
+}
+
+class UniCanvasViewReadyRunnable extends Runnable {
+  private element : UniCanvasElement | null = null
+
+  constructor(element : UniCanvasElement) {
+    super()
+    this.element = element
+  }
+
+  override run() : void {
+    this.element?.notifyViewReady()
+  }
+}
+
+function toCanvasElement(element : UniElement | null) : UniCanvasElement | null {
+  if (element != null && element.tagName == 'CANVAS') {
+    return element as UniCanvasElement
+  }
+  return null
+}
+
+function queryCanvasElement(root : UniElement | null, eleId : string) : UniCanvasElement | null {
+  if (root == null) {
+    return null
+  }
+  if (root.id == eleId) {
+    return toCanvasElement(root)
+  }
+  return toCanvasElement(root.querySelector('#' + eleId))
+}
+
+function queryCanvasElementInPage(page : UniPage | null, eleId : string) : UniCanvasElement | null {
+  if (page == null) {
+    return null
+  }
+  return toCanvasElement(page.querySelector('#' + eleId))
+}
+
+
+export const createCanvasContextAsync : CreateCanvasContextAsync =
+  function (options : CreateCanvasContextAsyncOptions) {
+    let element : UniCanvasElement | null = null;
+    let page : UniPage | null = null;
+    const component = options.component
+    const eleId = options.id
+    let completed = false
+
+    const fail = (errCode : number, errMsg : string) => {
+      if (completed) {
+        return
+      }
+      completed = true
+      const uniError = new UniError('uni-createCanvasContextAsync', errCode, errMsg)
+      options.fail?.(uniError)
+      options.complete?.()
+    }
+    
+    const resolveCallback = (canvasElement : UniCanvasElement) => {
+      if (completed) {
+        return
+      }
+      completed = true
+      const renderView = canvasElement.getRenderView()
+      if(renderView != null){
+        const canvas = new UniCanvasContext(canvasElement.uniPage.appId, canvasElement.uniPage.pageId, canvasElement.elementId, renderView.canvasId)
+        options.success?.(canvas)
+      } else {
+        const uniError = new UniError('uni-createCanvasContextAsync', -2, 'canvas view invalid.')
+        options.fail?.(uniError)
+      }
+      options.complete?.()
+    }
+    
+    if (component == null || component.$page == null) {
+      const pages = getCurrentPages();
+      if (pages.length > 0) {
+        const currentPage = pages[pages.length - 1];
+        element = queryCanvasElementInPage(currentPage, eleId)
+        page = currentPage
+        if (element == null) {
+          const dialogPages = currentPage.getDialogPages();
+          if (dialogPages.length > 0) {
+            const currentPageDialogPage = dialogPages[dialogPages.length - 1];
+            element = queryCanvasElementInPage(currentPageDialogPage, eleId)
+            page = currentPageDialogPage
+          }
+        }
+      }
+    } else {
+    	page = component.$page;
+      element = queryCanvasElement(component.$el, eleId)
+    }
+    if (page != null && element == null){
+      let renderChangeId = 0
+      renderChangeId = page.onRenderChange(()=>{
+        page!.offRenderChange(renderChangeId)
+        const el = queryCanvasElementInPage(page, eleId)
+        if (el == null) {
+          fail(-1, 'canvas id invalid.')
+          return
+        }
+        el.onViewReady(()=>{
+          resolveCallback(el)
+        })
+      })
+      return
+    } else if (element != null){
+      element.onViewReady(()=>{
+        resolveCallback(element!)
+      })
+      return
+    }
+    
+    if (element != null) {
+      const canvasElement = element
+      canvasElement.onViewReady(()=>{
+        resolveCallback(canvasElement)
+      })
+    } else {
+      fail(-1, 'canvas id invalid.')
+    }
+  }
+
+export {
+  CreateCanvasContextAsync,
+  CreateCanvasContextAsyncOptions,
+  RequestAnimationFrameCallback,
+  CreateCanvasContextAsyncSuccessCallback,
+  CreateCanvasContextAsyncFailCallback,
+  CreateCanvasContextAsyncCompleteCallback,
+}

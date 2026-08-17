@@ -494,16 +494,26 @@ export class UniCanvasRenderingContext2D implements CanvasRenderingContext2D {
   }
 
   private _fixColor(color : string) : string {
-    if (color.startsWith('#') || color.startsWith('rgb')) {
+    if (color.startsWith('#') || color.startsWith('rgb') || color.startsWith('rgba')) {
       return color
-    } else {
-      return EXTENDED_COLOR_KEYWORDS[color]
     }
+
+    const colorValue: string | undefined = EXTENDED_COLOR_KEYWORDS[color]
+    if (colorValue) {
+      return colorValue
+    }
+
+    if (color == 'transparent') {
+      return 'rgba(0,0,0,0)'
+    }
+
+    return color
   }
 }
 
 interface CanvasBuilderOptions {
   context : ESObject
+  background : string
 }
 
 export class UniNativeCanvas {
@@ -522,11 +532,22 @@ export class UniNativeCanvas {
     this.context2D = new UniCanvasRenderingContext2D(element, this.context)
     this.element.bindHarmonyWrappedBuilder(wrapBuilder<[CanvasBuilderOptions]>(buildCanvas),
       {
-        context: this.context
+        context: this.context,
+        background: "#00000000"
       } as CanvasBuilderOptions);
     this.harmonyBuilderNode = (element as ESObject).getHarmonyComponentContent()
     // 绑定当前实例为自定义的controller，方便其他地方通过 element 获取使用
     element.bindHarmonyController(this);
+  }
+
+  updateBackground(color : string) {
+    try {
+      this.harmonyBuilderNode?.update({
+        background: color
+      })
+    } catch (e) {
+      // Ignore invalid background colors to keep canvas rendering stable.
+    }
   }
 
   get width() : number {
@@ -550,6 +571,8 @@ export class UniNativeCanvas {
   toDataURL(type ?: string, quality ?: any) : string {
     return this.context.toDataURL(type, quality)
   }
+
+  destroy() {}
 }
 
 export class UniCanvasElement extends UniNativeViewElementImpl {

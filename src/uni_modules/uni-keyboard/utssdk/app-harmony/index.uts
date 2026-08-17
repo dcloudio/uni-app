@@ -1,11 +1,17 @@
 import {
-    API_HIDE_KEYBOARD
+    API_HIDE_KEYBOARD,
+    API_ON_KEYBOARD_HEIGHT_CHANGE,
+    API_OFF_KEYBOARD_HEIGHT_CHANGE
 } from '../protocol.uts'
 import {
     HideKeyboardOptions,
     HideKeyboardSuccess,
     HideKeyboardFail,
-    HideKeyboard
+    HideKeyboard,
+    OnKeyboardHeightChange,
+    OffKeyboardHeightChange,
+    OnKeyboardHeightChangeCallback,
+    OnKeyboardHeightChangeCallbackResult
 } from '../interface.uts'
 import inputMethod from '@ohos.inputMethod';
 
@@ -19,6 +25,43 @@ export const hideKeyboard: HideKeyboard = defineAsyncApi<HideKeyboardOptions, Hi
         })
     }
 ) as HideKeyboard
+
+let index = 0
+let keyboardCallbackMap: Map<number, (keyboardHeight: number) => void> = new Map()
+
+export const onKeyboardHeightChange: OnKeyboardHeightChange = defineSyncApi<number>(
+    API_ON_KEYBOARD_HEIGHT_CHANGE,
+    (callback: OnKeyboardHeightChangeCallback) => {
+        index++
+        const currentId = index
+        const windowClass = UTSHarmony.getCurrentWindow()
+        const wrappedCallback = (keyboardHeight: number) => {
+            callback({ height: px2vp(keyboardHeight) } as OnKeyboardHeightChangeCallbackResult)
+        }
+        keyboardCallbackMap.set(currentId, wrappedCallback)
+        windowClass.on('keyboardHeightChange', wrappedCallback)
+        return currentId
+    }
+) as OnKeyboardHeightChange
+
+export const offKeyboardHeightChange: OffKeyboardHeightChange = defineSyncApi<void>(
+    API_OFF_KEYBOARD_HEIGHT_CHANGE,
+    (id?: number | null) => {
+        const windowClass = UTSHarmony.getCurrentWindow()
+        if (id == null) {
+            keyboardCallbackMap.forEach((wrappedCallback) => {
+                windowClass.off('keyboardHeightChange', wrappedCallback)
+            })
+            keyboardCallbackMap.clear()
+        } else {
+            const wrappedCallback = keyboardCallbackMap.get(id)
+            if (wrappedCallback != null) {
+                windowClass.off('keyboardHeightChange', wrappedCallback)
+                keyboardCallbackMap.delete(id)
+            }
+        }
+    }
+) as OffKeyboardHeightChange
 
 export {
     HideKeyboard,

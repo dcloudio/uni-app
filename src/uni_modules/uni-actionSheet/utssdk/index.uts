@@ -54,4 +54,15 @@ export const hideActionSheet = () => {
 	})
 }
 
-export * from './interface.uts'
+export {
+	Popover,
+  ShowActionSheetErrorCode,
+  ShowActionSheetSuccess,
+  ShowActionSheetFail,
+  ShowActionSheetComplete,
+  ShowActionSheetOptions,
+  ShowActionSheet,
+  ShowActionSheetSuccessImpl,
+  ShowActionSheetFailImpl,
+  HideActionSheet,
+} from './interface.uts'

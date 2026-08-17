@@ -1,17 +1,21 @@
 <template>
-  <uni-camera-element ref="cameraRef">
-    <native-view
-      ref="natvieElement"
-      id="mnative-camera"
-      @init="onObjectInit"
-      @stop="handleStop"
-      @error="handleError"
-      @scancode="handleScanCode"
-      @initdone="handleInitDone"
-      style="width: 100%; height: 100%"
-    >
-    </native-view>
-  </uni-camera-element>
+	<!-- #ifndef VUE3-VAPOR -->
+	<uni-camera-element ref="cameraRef">
+	<!-- #endif -->
+	<!-- #ifdef VUE3-VAPOR -->
+	<view ref="cameraRef">
+	<!-- #endif -->
+			<native-view ref="natvieElement" id="uni-camera-bW5hdGl2ZS1jYW1lcmE=" @init="onObjectInit" @stop="handleStop"
+				@error="handleError" @scancode="handleScanCode" @initdone="handleInitDone"
+				style="width: 100%; height: 100%">
+			</native-view>
+	<!-- #ifndef VUE3-VAPOR -->
+	</uni-camera-element>
+	<!-- #endif -->
+	<!-- #ifdef VUE3-VAPOR -->
+	</view>
+	<!-- #endif -->
+
 </template>
 
 <script setup lang="uts">
@@ -36,7 +40,6 @@
 	})
 
 	let cameraInstance : CameraInstance | null = null
-	// #ifndef APP-IOS
 	defineOptions({
 		name: "camera",
 		rootElement: {
@@ -44,8 +47,55 @@
 			class: UniCameraElement
 		}
 	})
-	// #endif
 	const emit = defineEmits(['stop', 'error', 'initdone', 'scancode'])
+
+	function getDetailString(detail : any, key : string) : string | null {
+		// #ifdef APP-ANDROID
+		// #ifdef VUE3-VAPOR
+		return detail[key] as string | null
+		// #endif
+		// #ifndef VUE3-VAPOR
+		const jsonObject = detail as UTSJSONObject
+		return jsonObject.getString(key)
+		// #endif
+		// #endif
+
+		// #ifndef APP-ANDROID
+		return detail[key] as string | null
+		// #endif
+	}
+
+	function getDetailNumber(detail : any, key : string) : number | null {
+		// #ifdef APP-ANDROID
+		// #ifdef VUE3-VAPOR
+		return detail[key] as number | null
+		// #endif
+		// #ifndef VUE3-VAPOR
+		const jsonObject = detail as UTSJSONObject
+		return jsonObject.getNumber(key)
+		// #endif
+		// #endif
+
+		// #ifndef APP-ANDROID
+		return detail[key] as number | null
+		// #endif
+	}
+
+	function getDetailNumberArray(detail : any, key : string) : Array<number> | null {
+		// #ifdef APP-ANDROID
+		// #ifdef VUE3-VAPOR
+		return detail[key] as Array<number> | null
+		// #endif
+		// #ifndef VUE3-VAPOR
+		const jsonObject = detail as UTSJSONObject
+		return jsonObject.getArray(key) as Array<number> | null
+		// #endif
+		// #endif
+
+		// #ifndef APP-ANDROID
+		return detail[key] as Array<number> | null
+		// #endif
+	}
 
 	watchEffect(() => {
 		const devicePosition = props.devicePosition
@@ -61,18 +111,19 @@
 		const frameSize = props.frameSize
 		cameraInstance?.setFrameSize(frameSize)
 	})
-	
+
 	watchEffect(() => {
 		const photoResolution = props.photoResolution
 		cameraInstance?.setPhotoResolution(photoResolution)
 	})
 
 	const setDefaultOptions = () => {
+		cameraInstance?.switchCamera(props.devicePosition)
 		cameraInstance?.setFlash(props.flash)
 		cameraInstance?.setFrameSize(props.frameSize)
 		cameraInstance?.setPhotoResolution(props.photoResolution)
 	}
-	
+
 	const setDefaultOptionsAfterInitDone = () => {
 		cameraInstance?.switchCamera(props.devicePosition)
 	}
@@ -84,16 +135,11 @@
 			setDefaultOptions()
 		}, 0);
 	}
-	
+
 
 	const handleStop = (customEvent : UniNativeViewEvent) => {
-		// #ifdef APP-ANDROID
-		const error = customEvent.detail.getString("error")
-		// #endif
-		// #ifndef APP-ANDROID
-		const error = customEvent.detail["error"]
-		// #endif
-		
+		const error = getDetailString(customEvent.detail, "error")
+
 		let errCode = 2003100;
 		if (error == "camera is disabled") {
 			errCode = 2003004;
@@ -106,7 +152,7 @@
 		}
 		const detail : UniCameraStopEventDetail = {
 			errorCause: error,
-			errSubject:"uni-camera",
+			errSubject: "uni-camera",
 			errCode: errCode,
 			errMsg: error,
 			data: null,
@@ -117,21 +163,16 @@
 	}
 
 	const handleError = (customEvent : UniNativeViewEvent) => {
-		// #ifdef APP-ANDROID
-		const error = customEvent.detail.getString("error")
-		// #endif
-		// #ifndef APP-ANDROID
-		const error = customEvent.detail["error"]
-		// #endif
-		
+		const error = getDetailString(customEvent.detail, "error")
+
 		let errCode = 2003100;
 		if (error == "permission denied") {
 			errCode = 2003002;
 		}
-		
+
 		const detail : UniCameraErrorEventDetail = {
 			msg: error,
-			errSubject:"uni-camera",
+			errSubject: "uni-camera",
 			errCode: errCode,
 			errMsg: error,
 			data: null,
@@ -142,12 +183,7 @@
 	}
 
 	const handleInitDone = (customEvent : UniNativeViewEvent) => {
-		// #ifdef APP-ANDROID
-		const maxzoom = customEvent.detail.getNumber("maxzoom")
-		// #endif
-		// #ifndef APP-ANDROID
-		const maxzoom = customEvent.detail["maxzoom"]
-		// #endif
+		const maxzoom = getDetailNumber(customEvent.detail, "maxzoom")
 		const detail : UniCameraInitDoneEventDetail = {
 			maxZoom: maxzoom
 		}
@@ -155,46 +191,30 @@
 		const event = new UniCameraInitDoneEvent("initdone", detail)
 		emit("initdone", event)
 		// 当实例化完成后才可以开启扫码模式, 不是扫描模式就不要设置，否则会stopAnalysis
-		if(props.mode == "scanCode") {
+		if (props.mode == "scanCode") {
 			//todo 临时性延迟，等onready生效后再次调用
-			setTimeout(()=>{
-				cameraInstance?.setScanCode(true)		
-			},500)
+			setTimeout(() => {
+				cameraInstance?.setScanCode(true)
+			}, 500)
 		}
 	}
 
 
 	const handleScanCode = (customEvent : UniNativeViewEvent) => {
+		let scanCodeStatus : string | null = null;
 		let type : string | null = null;
 		let result : string | null = null;
-		let rawData: string | null = null;
-		let charSet: string | null = null;
-		let scanArea: Array<number> | null = null;
-		if (customEvent.type == "scancode_success") {
-			// #ifdef APP-ANDROID
-			type = customEvent.detail.getString("scanType")
-			result = customEvent.detail.getString("result")
-			rawData = customEvent.detail.getString("rawData") // 二维码的原始数据，可能是图片、视频、文件等
-			charSet = customEvent.detail.getString("charset") // 二维码的字符集，如 UTF-8、GBK等
-			scanArea = customEvent.detail.getArray("scanArea") as Array<number>// 二维码的扫描区域
-
-			// #endif
-			// #ifndef APP-ANDROID
-			type = customEvent.detail["scanType"]
-			result = customEvent.detail["result"]
-			rawData = customEvent.detail["rawData"] // 二维码的原始数据，可能是图片、视频、文件等
-			charSet = customEvent.detail["charset"] // 二维码的字符集，如 UTF-8、GBK等
-			scanArea = customEvent.detail["scanArea"] as Array<number> // 二维码的扫描区域
-			// #endif
+		let rawData : string | null = null;
+		let charSet : string | null = null;
+		let scanArea : Array<number> | null = null;
+		scanCodeStatus = getDetailString(customEvent.detail, "scanCodeStatus")
+		if (scanCodeStatus == "1") {
+			type = getDetailString(customEvent.detail, "scanType")
+			result = getDetailString(customEvent.detail, "result")
+			rawData = getDetailString(customEvent.detail, "rawData") // 二维码的原始数据，可能是图片、视频、文件等
+			charSet = getDetailString(customEvent.detail, "charset") // 二维码的字符集，如 UTF-8、GBK等
+			scanArea = getDetailNumberArray(customEvent.detail, "scanArea") // 二维码的扫描区域
 		}
-		//  else if (customEvent.type == "scancode_fail") {
-		// 	// #ifdef APP-ANDROID
-		// 	result = customEvent.detail.getString("error")
-		// 	// #endif
-		// 	// #ifndef APP-ANDROID
-		// 	result = customEvent.detail["error"]
-		// 	// #endif
-		// }
 
 		if (result != null) {
 			const detail : UniCameraScanCodeEventDetail = {
@@ -211,10 +231,10 @@
 
 	// #ifdef APP-ANDROID
 	onAppHide(() => {
-		
+
 		const detail : UniCameraStopEventDetail = {
 			errorCause: "the application enters the background",
-			errSubject:"uni-camera",
+			errSubject: "uni-camera",
 			errCode: 2003009,
 			errMsg: "the application enters the background",
 			data: null,
@@ -232,16 +252,16 @@
 	// 	const event = new UniCameraStopEvent("stop", detail)
 	// 	emit("stop", event)
 	// }, getApp().vm!)
-	
+
 	onPageShow(() => {
 		cameraInstance?.resume()
 	})
-	
+
 	onPageHide(() => {
 		cameraInstance?.stop()
 	})
-	
-	
+
+
 	onUnmounted(() => {
 		cameraInstance?.destory()
 		cameraInstance = null

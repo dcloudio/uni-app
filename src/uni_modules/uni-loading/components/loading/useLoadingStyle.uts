@@ -38,7 +38,7 @@ export function useLoadingStyle(targetElement : Ref<_Element | null>, bold : Ref
       cb(el)
     })
     // #endif
-    // #ifdef APP-HARMONY && VUE3-VAPOR
+    // #ifdef VUE3-VAPOR
     observer = new UniResizeObserver((entries) => {
       cb(el)
     })

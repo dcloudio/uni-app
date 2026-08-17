@@ -39,7 +39,7 @@
             "js": true,
             "kotlin": true,
             "swift": true,
-            "arkts": true
+            "arkts": ["dom1", "dom2"]
           }
         },
         "offPrivacyAuthorizationChange": {
@@ -48,7 +48,7 @@
             "js": true,
             "kotlin": true,
             "swift": true,
-            "arkts": true
+            "arkts": ["dom1", "dom2"]
           }
         },
         "getPrivacySetting": {
@@ -57,7 +57,7 @@
             "js": true,
             "kotlin": true,
             "swift": true,
-            "arkts": true
+            "arkts": ["dom1", "dom2"]
           }
         },
         "resetPrivacyAuthorization": {
@@ -66,7 +66,16 @@
             "js": true,
             "kotlin": true,
             "swift": true,
-            "arkts": true
+            "arkts": ["dom1", "dom2"]
+          }
+        },
+        "agreePrivacyAuthorization": {
+          "name": "agreePrivacyAuthorization",
+          "app": {
+            "js": true,
+            "kotlin": true,
+            "swift": true,
+            "arkts": ["dom1", "dom2"]
           }
         }
       }

@@ -7,29 +7,26 @@ export type GetAppBaseInfoOptions = {
 
 export type GetAppBaseInfoResult = {
     /**
-     * manifest.json 中应用appid，即DCloud appid。
+     * `manifest.json` 中的应用标识，即DCloud AppID
      *
      * @uniPlatform
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.91",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -83,29 +80,26 @@ export type GetAppBaseInfoResult = {
     appId?: string,
 
     /**
-     * `manifest.json` 中应用名称。
+     * `manifest.json` 中的应用名称
      *
      * @uniPlatform
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.91",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -159,29 +153,26 @@ export type GetAppBaseInfoResult = {
     appName?: string,
 
     /**
-     * `manifest.json` 中应用版本名称，如果离线打包注意修改修改index.kt中UniAppConfig类型中的版本名称[文档](https://doc.dcloud.net.cn/uni-app-x/native/use/android.html#%E6%8B%B7%E8%B4%9Dkt%E6%96%87%E4%BB%B6)。
+     * `manifest.json` 中的应用版本名称
      *
      * @uniPlatform
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.91",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -235,26 +226,23 @@ export type GetAppBaseInfoResult = {
     appVersion?: string,
 
     /**
-     * `manifest.json` 中应用版本号，如果离线打包注意修改修改index.kt中UniAppConfig类型中的版本号[文档](https://doc.dcloud.net.cn/uni-app-x/native/use/android.html#%E6%8B%B7%E8%B4%9Dkt%E6%96%87%E4%BB%B6)。
+     * `manifest.json` 中的应用版本号
      *
      * @uniPlatform
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.91",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -310,26 +298,23 @@ export type GetAppBaseInfoResult = {
     appVersionCode?: string,
 
     /**
-     * 应用设置的语言en、zh-Hans、zh-Hant、fr、es
+     * 应用的语言en、zh-Hans、zh-Hant、fr、es
      *
      * @uniPlatform
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.91",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -383,6 +368,152 @@ export type GetAppBaseInfoResult = {
       }
      */
     appLanguage?: string,
+
+    /**
+     * 应用的主题
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.18"
+          },
+          "ios": {
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.18",
+            "unixUtsPlugin": "4.18"
+          },
+          "harmony": {
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixVaporVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    appTheme?: 'light' | 'dark' | 'auto' | null,
+
+    /**
+     * 应用的分发渠道
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.28"
+          },
+          "ios": {
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.31",
+            "unixUtsPlugin": "4.31"
+          },
+          "harmony": {
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      }
+     */
+    channel?: string,
+
     /**
      * 应用设置的语言
      *
@@ -390,20 +521,17 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.91",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -466,23 +594,20 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.91",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -536,29 +661,26 @@ export type GetAppBaseInfoResult = {
     version?: string,
 
     /**
-     * 应用资源（wgt）的版本名称。
+     * 应用资源（wgt）的版本名称
      *
      * @uniPlatform
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x",
             "unixUtsPlugin": "x"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -618,23 +740,20 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x",
             "unixUtsPlugin": "x"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -694,20 +813,17 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x",
             "unixUtsPlugin": "x"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -761,6 +877,7 @@ export type GetAppBaseInfoResult = {
       }
      */
     hostVersion?: string,
+
     /**
      * 小程序宿主名称
      *
@@ -768,20 +885,17 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x",
             "unixUtsPlugin": "x"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -835,6 +949,7 @@ export type GetAppBaseInfoResult = {
       }
      */
     hostName?: string,
+
     /**
      * 小程序宿主包名
      *
@@ -842,20 +957,17 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x",
             "unixUtsPlugin": "x"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -917,20 +1029,17 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x",
             "unixUtsPlugin": "x"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -992,20 +1101,17 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "x",
             "unixVer": "x",
             "unixUtsPlugin": "x"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -1067,20 +1173,17 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.91",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -1143,20 +1246,17 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.91",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -1218,23 +1318,20 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "x",
             "uniUtsPlugin": "x",
             "unixVer": "4.0"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "x",
             "uniUtsPlugin": "x",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -1288,157 +1385,6 @@ export type GetAppBaseInfoResult = {
     uniCompilerVersion?: string,
 
     /**
-     * uni-app 运行平台。
-     *
-     * @uniPlatform
-      {
-        "app": {
-          "android": {
-            "osVer": "5.0",
-            "uniVer": "√",
-            "uniUtsPlugin": "3.91",
-            "unixVer": "3.91"
-          },
-          "ios": {
-            "osVer": "12.0",
-            "uniVer": "√",
-            "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
-          },
-          "harmony": {
-            "osVer": "3.0",
-            "uniVer": "4.23",
-            "unixVer": "4.61",
-            "unixvVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "hostVer": "√",
-            "uniVer": "√",
-            "unixVer": "4.41"
-          },
-          "alipay": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "baidu": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "toutiao": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "lark": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "qq": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "kuaishou": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "jd": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          }
-        },
-        "web": {
-          "uniVer": "√",
-          "unixVer": "4.0"
-        }
-      }
-     */
-    uniPlatform?: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei',
-
-    /**
-     * uni 运行时版本
-     *
-     * @uniPlatform
-      {
-        "app": {
-          "android": {
-            "osVer": "5.0",
-            "uniVer": "√",
-            "uniUtsPlugin": "3.91",
-            "unixVer": "3.91"
-          },
-          "ios": {
-            "osVer": "12.0",
-            "uniVer": "√",
-            "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
-          },
-          "harmony": {
-            "osVer": "3.0",
-            "uniVer": "x",
-            "unixVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "hostVer": "√",
-            "uniVer": "√",
-            "unixVer": "4.41"
-          },
-          "alipay": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "baidu": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "toutiao": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "lark": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "qq": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "kuaishou": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "jd": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          }
-        },
-        "web": {
-          "uniVer": "x",
-          "unixVer": "4.18"
-        }
-      }
-     */
-    uniRuntimeVersion?: string,
-
-    /**
      * uni 编译器版本号
      * @deprecated 已废弃，仅为了向下兼容保留
      *
@@ -1446,23 +1392,20 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.91",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -1522,23 +1465,20 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "x",
             "uniUtsPlugin": "x",
             "unixVer": "4.0"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "x",
             "uniUtsPlugin": "x",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -1592,29 +1532,98 @@ export type GetAppBaseInfoResult = {
     uniCompilerVersionCode?: number,
 
     /**
-     * uni 运行时版本号
+     * uni 运行时版本
      *
      * @uniPlatform
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.91",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "4.18"
+        }
+      }
+     */
+    uniRuntimeVersion?: string,
+
+    /**
+     * uni 运行时版本号
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -1668,36 +1677,109 @@ export type GetAppBaseInfoResult = {
     uniRuntimeVersionCode?: number,
 
     /**
-     * Android的包名
+     * uni-app 运行平台
      *
      * @uniPlatform
       {
         "app": {
           "android": {
-            "osVer": "5.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "3.91",
+            "unixVer": "3.91"
+          },
+          "ios": {
+            "uniVer": "√",
+            "uniUtsPlugin": "4.11",
+            "unixVer": "4.11",
+            "unixUtsPlugin": "4.11"
+          },
+          "harmony": {
+            "uniVer": "4.23",
+            "unixVer": "4.61",
+            "unixVaporVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          },
+          "alipay": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "baidu": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "toutiao": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "lark": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "qq": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "kuaishou": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          },
+          "jd": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+     */
+    uniPlatform?: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei',
+
+    /**
+     * 微信小程序: 小程序appId
+     * Android: 包名
+     * iOS: Bundle ID
+     * 鸿蒙: bundleName
+     *
+     * @uniPlatform
+      {
+        "app": {
+          "android": {
             "uniVer": "x",
             "uniUtsPlugin": "3.97",
             "unixVer": "3.97"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "x",
             "uniUtsPlugin": "x",
             "unixVer": "x",
             "unixUtsPlugin": "x"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
           "weixin": {
             "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
+            "uniVer": "5.13",
+            "unixVer": "5.13"
           },
           "alipay": {
             "hostVer": "√",
@@ -1743,7 +1825,6 @@ export type GetAppBaseInfoResult = {
      */
     packageName?: string,
 
-
     /**
      * 鸿蒙的包名
      *
@@ -1751,23 +1832,20 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "x",
             "uniUtsPlugin": "x",
             "unixVer": "x"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "x",
             "uniUtsPlugin": "x",
             "unixVer": "x",
             "unixUtsPlugin": "x"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.61",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -1821,26 +1899,23 @@ export type GetAppBaseInfoResult = {
     bundleName?: string,
 
     /**
-     * iOS的bundleId
+     * iOS的Bundle ID
      *
      * @uniPlatform
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "x",
             "uniUtsPlugin": "x",
             "unixVer": "x"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "x",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -1903,20 +1978,17 @@ export type GetAppBaseInfoResult = {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "x",
             "uniUtsPlugin": "3.97",
             "unixVer": "3.97"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "x",
             "uniUtsPlugin": "4.11",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "x",
             "unixVer": "x"
           }
@@ -1970,157 +2042,6 @@ export type GetAppBaseInfoResult = {
       }
      */
     signature?: string,
-
-    /**
-     * 当前App的主题
-     *
-     * @uniPlatform
-      {
-        "app": {
-          "android": {
-            "osVer": "5.0",
-            "uniVer": "x",
-            "uniUtsPlugin": "x",
-            "unixVer": "4.18"
-          },
-          "ios": {
-            "osVer": "12.0",
-            "uniVer": "x",
-            "uniUtsPlugin": "x",
-            "unixVer": "4.18",
-            "unixUtsPlugin": "4.18"
-          },
-          "harmony": {
-            "osVer": "3.0",
-            "uniVer": "4.23",
-            "unixVer": "4.61",
-            "unixvVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "alipay": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "baidu": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "toutiao": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "lark": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "qq": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "kuaishou": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "jd": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          }
-        },
-        "web": {
-          "uniVer": "x",
-          "unixVer": "x"
-        }
-      }
-     */
-    appTheme?: 'light' | 'dark' | 'auto' | null,
-
-    /**
-     * 当前应用分发的渠道
-     *
-     * @uniPlatform
-      {
-        "app": {
-          "android": {
-            "osVer": "5.0",
-            "uniVer": "x",
-            "uniUtsPlugin": "x",
-            "unixVer": "4.28"
-          },
-          "ios": {
-            "osVer": "12.0",
-            "uniVer": "x",
-            "uniUtsPlugin": "x",
-            "unixVer": "4.31",
-            "unixUtsPlugin": "4.31"
-          },
-          "harmony": {
-            "osVer": "3.0",
-            "uniVer": "x",
-            "unixVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "hostVer": "√",
-            "uniVer": "x",
-            "unixVer": "x"
-          },
-          "alipay": {
-            "hostVer": "√",
-            "uniVer": "√",
-            "unixVer": "x"
-          },
-          "baidu": {
-            "hostVer": "√",
-            "uniVer": "√",
-            "unixVer": "x"
-          },
-          "toutiao": {
-            "hostVer": "√",
-            "uniVer": "√",
-            "unixVer": "x"
-          },
-          "lark": {
-            "hostVer": "√",
-            "uniVer": "√",
-            "unixVer": "x"
-          },
-          "qq": {
-            "hostVer": "√",
-            "uniVer": "√",
-            "unixVer": "x"
-          },
-          "kuaishou": {
-            "hostVer": "√",
-            "uniVer": "√",
-            "unixVer": "x"
-          },
-          "jd": {
-            "hostVer": "√",
-            "uniVer": "√",
-            "unixVer": "x"
-          }
-        },
-        "web": {
-          "uniVer": "x",
-          "unixVer": "x"
-        }
-      }
-     */
-    channel?: string,
 }
 
 /**
@@ -2143,23 +2064,20 @@ export interface Uni {
       {
         "app": {
           "android": {
-            "osVer": "5.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.6",
             "unixVer": "3.91"
           },
           "ios": {
-            "osVer": "12.0",
             "uniVer": "√",
             "uniUtsPlugin": "3.6",
             "unixVer": "4.11",
             "unixUtsPlugin": "4.11"
           },
           "harmony": {
-            "osVer": "3.0",
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixvVer": "5.0"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {

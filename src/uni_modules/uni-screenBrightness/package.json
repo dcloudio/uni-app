@@ -36,8 +36,8 @@
 					"name": "setScreenBrightness",
 					"app": {
 						"js": false,
-						"kotlin": false,
-						"swift": false,
+						"kotlin": true,
+						"swift": true,
 						"arkts": true
 					}
 				},
@@ -45,17 +45,17 @@
 					"name": "getScreenBrightness",
 					"app": {
 						"js": false,
-						"kotlin": false,
-						"swift": false,
+						"kotlin": true,
+						"swift": true,
 						"arkts": true
 					}
 				},
 				"setKeepScreenOn": {
 					"name": "setKeepScreenOn",
 					"app": {
-						"js": false,
-						"kotlin": false,
-						"swift": false,
+						"js": true,
+						"kotlin": true,
+						"swift": true,
 						"arkts": true
 					}
 				}

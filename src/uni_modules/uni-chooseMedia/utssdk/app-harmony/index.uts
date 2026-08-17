@@ -6,21 +6,6 @@ import { cameraPicker, camera } from '@kit.CameraKit'
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import { uni } from '@dcloudio/uni-runtime'
 
-interface ChooseMediaShowActionSheetOptionsSuccessOptions {
-  tapIndex: number
-}
-
-interface ChooseMediaShowActionSheetOptionsFailOptions {
-  errMsg: string
-}
-
-interface ChooseMediaShowActionSheetOptions {
-  itemList: string[]
-  success?: (e: ChooseMediaShowActionSheetOptionsSuccessOptions) => void | null
-  fail?: (e: ChooseMediaShowActionSheetOptionsFailOptions) => void | null
-};
-
-
 type CameraPosition = 'back' | 'front'
 type UNI_MEDIA_TYPE = 'image' | 'video' | 'mix'
 
@@ -161,13 +146,13 @@ export const chooseMedia: ChooseMedia = defineAsyncApi<ChooseMediaOptions, Choos
           }
         },
         fail: (e) => {
-          if (e.errMsg.includes('cancel')) {
+          if (e.errMsg!.includes('cancel')) {
             executor.reject('cancel')
           } else {
             executor.reject(e.errMsg)
           }
         }
-      } as ChooseMediaShowActionSheetOptions)
+      })
     }
   },
   ChooseMediaApiProtocol,

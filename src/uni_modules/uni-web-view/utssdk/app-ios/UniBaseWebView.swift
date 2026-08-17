@@ -66,8 +66,10 @@ public class UniBaseWebView: WKWebView, UniViewLifecycle {
     /// 在视图即将释放时调用
     public func onDeinit() { }
     
+
     public override func addGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
-        if gestureRecognizer is UniTouchGestureRecognizer {
+        
+        if UTSiOS.isUniGestureRecognizer(gestureRecognizer) {
             return
         }
         super.addGestureRecognizer(gestureRecognizer)
@@ -83,7 +85,7 @@ extension UniBaseWebView {
     private func removeUniTouchGestureIfNeeded() {
         if let gestureRecognizers = self.gestureRecognizers {
             for gesture in gestureRecognizers {
-                if gesture is UniTouchGestureRecognizer {
+                if UTSiOS.isUniGestureRecognizer(gesture) {
                     self.removeGestureRecognizer(gesture)
                 }
             }

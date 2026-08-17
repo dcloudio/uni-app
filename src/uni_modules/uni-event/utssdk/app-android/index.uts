@@ -1,5 +1,7 @@
-import { Emitter } from '@dcloudio/uni-runtime'
 import { $Off, $On, $Once } from '../interface.uts'
+
+// #ifndef VUE3-VAPOR
+import { Emitter } from '@dcloudio/uni-runtime'
 
 const emitter = new Emitter()
 
@@ -19,3 +21,21 @@ export const $once = defineSyncApi<$Once>('$once', (eventName, callback): number
 export function $emit(eventName: string, ...args: Array<any | null>): void {
     emitter.emit(eventName, ...args)
 }
+// #endif
+// #ifdef VUE3-VAPOR
+export const $on: $On = (eventName: string, callback: Function): number => {
+    return Emitter.on(eventName, callback)
+}
+
+export const $off: $Off = (eventName: string, callback?: any | null): void => {
+    Emitter.off(eventName, callback)
+}
+
+export const $once: $Once = (eventName: string, callback: Function): number => {
+    return Emitter.once(eventName, callback)
+}
+
+export function $emit(eventName: string, ...args: Array<any | null>): void {
+    Emitter.emit(eventName, ...args)
+}
+// #endif

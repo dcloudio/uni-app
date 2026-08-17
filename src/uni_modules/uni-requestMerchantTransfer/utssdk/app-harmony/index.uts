@@ -1,0 +1,120 @@
+import { RequestMerchantTransfer, RequestMerchantTransferGeneralCallbackResult, RequestMerchantTransferOptions } from '../interface.uts'
+import {
+	handleWechatMerchantTransferWant,
+	requestWechatMerchantTransfer,
+	WechatMerchantTransferNativeResult
+} from './wechatMerchantTransfer.ets'
+import {
+	REQUEST_MERCHANT_TRANSFER_APP_ID_REQUIRED,
+	REQUEST_MERCHANT_TRANSFER_BUSINESS_FAILED,
+	REQUEST_MERCHANT_TRANSFER_CANCEL,
+	REQUEST_MERCHANT_TRANSFER_MCH_ID_REQUIRED,
+	REQUEST_MERCHANT_TRANSFER_OK,
+	REQUEST_MERCHANT_TRANSFER_OPEN_SDK_ERROR,
+	REQUEST_MERCHANT_TRANSFER_PACKAGE_REQUIRED,
+	REQUEST_MERCHANT_TRANSFER_PARSE_RESPONSE_ERROR,
+	REQUEST_MERCHANT_TRANSFER_WECHAT_NOT_INSTALLED,
+	REQUEST_MERCHANT_TRANSFER_WECHAT_VERSION_LOW
+} from '../unierror.uts'
+
+let isWechatMerchantTransferHandlerRegistered = false
+
+function ensureWechatMerchantTransferHandlerRegistered() : void {
+	if (isWechatMerchantTransferHandlerRegistered) {
+		return
+	}
+	isWechatMerchantTransferHandlerRegistered = true
+	UTSHarmony.onAppAbilityCreate((want, _launchParam) => {
+		handleWechatMerchantTransferWant(want)
+	})
+	UTSHarmony.onAppAbilityNewWant((want, _launchParam) => {
+		handleWechatMerchantTransferWant(want)
+	})
+}
+
+function invokeCallback(options : RequestMerchantTransferOptions, errMsg : string, isSuccess : boolean) : void {
+	const result : RequestMerchantTransferGeneralCallbackResult = {
+		errMsg: errMsg
+	}
+	if (isSuccess) {
+		options.success?.(result)
+	} else {
+		options.fail?.(result)
+	}
+	options.complete?.(result)
+}
+
+function isEmptyString(value : string | null) : boolean {
+	return value == null || value.length == 0
+}
+
+function appendQueryParam(query : string, key : string, value : string) : string {
+	const param = key + '=' + encodeURIComponent(value)
+	if (query.length > 0) {
+		return query + '&' + param
+	}
+	return param
+}
+
+function getValidateErrorMsg(options : RequestMerchantTransferOptions) : string {
+	if (isEmptyString(options.mchId)) {
+		return REQUEST_MERCHANT_TRANSFER_MCH_ID_REQUIRED.errMsg
+	}
+	if (isEmptyString(options.package)) {
+		return REQUEST_MERCHANT_TRANSFER_PACKAGE_REQUIRED.errMsg
+	}
+	if (isEmptyString(options.appId)) {
+		return REQUEST_MERCHANT_TRANSFER_APP_ID_REQUIRED.errMsg
+	}
+	return ''
+}
+
+function buildRequestMerchantTransferQuery(options : RequestMerchantTransferOptions, appId : string) : string {
+	let query = ''
+  // 微信官方文档上只有下方3个参数，没有 openId、subAppId、subMchId
+  // 相关文档：
+  // 用户确认收款：https://pay.weixin.qq.com/doc/v3/merchant/4019670774
+  // 免确认收款授权：https://pay.weixin.qq.com/doc/v3/merchant/4020320137
+	query = appendQueryParam(query, 'mchId', options.mchId)
+	query = appendQueryParam(query, 'package', options.package)
+	query = appendQueryParam(query, 'appId', appId)
+	return query
+}
+
+function handleNativeResult(options : RequestMerchantTransferOptions, nativeResult : WechatMerchantTransferNativeResult) : void {
+	if (nativeResult.result == 'success') {
+		invokeCallback(options, REQUEST_MERCHANT_TRANSFER_OK, true)
+		return
+	}
+
+	let errMsg = REQUEST_MERCHANT_TRANSFER_BUSINESS_FAILED.errMsg
+	if (nativeResult.result == 'cancel') {
+		errMsg = REQUEST_MERCHANT_TRANSFER_CANCEL.errMsg
+	} else if (nativeResult.result == 'wechat_not_installed') {
+		errMsg = REQUEST_MERCHANT_TRANSFER_WECHAT_NOT_INSTALLED.errMsg
+	} else if (nativeResult.result == 'wechat_version_low') {
+		errMsg = REQUEST_MERCHANT_TRANSFER_WECHAT_VERSION_LOW.errMsg
+	} else if (nativeResult.result == 'parse_response_error') {
+		errMsg = REQUEST_MERCHANT_TRANSFER_PARSE_RESPONSE_ERROR.errMsg
+	} else if (nativeResult.result == 'open_sdk_error' || nativeResult.result == 'timeout' || nativeResult.result == 'request_interrupted') {
+		errMsg = REQUEST_MERCHANT_TRANSFER_OPEN_SDK_ERROR.errMsg
+	}
+	invokeCallback(options, errMsg, false)
+}
+
+export const requestMerchantTransfer : RequestMerchantTransfer = function (options : RequestMerchantTransferOptions) {
+	const validateErrorMsg = getValidateErrorMsg(options)
+	if (validateErrorMsg.length > 0) {
+		invokeCallback(options, validateErrorMsg, false)
+		return
+	}
+
+	ensureWechatMerchantTransferHandlerRegistered()
+	const appId : string = options.appId ?? ''
+	const query = buildRequestMerchantTransferQuery(options, appId)
+	requestWechatMerchantTransfer(appId, query).then((nativeResult : WechatMerchantTransferNativeResult) => {
+		handleNativeResult(options, nativeResult)
+	}).catch((_error : Error) => {
+		invokeCallback(options, REQUEST_MERCHANT_TRANSFER_OPEN_SDK_ERROR.errMsg, false)
+	})
+}

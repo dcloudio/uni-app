@@ -1,6 +1,71 @@
 /**
  * 设置页面滚动错误码
  * - 4: 框架内部异常
+ * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "uniVer": "√",
+     *      "unixVer": "3.91",
+     *      "unixVaporVer": "5.21"
+     *    },
+     *    "ios": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.11",
+     *      "unixVaporVer": "5.11"
+     *    },
+     *    "harmony": {
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixVaporVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
  */
 export type PageScrollToErrorCode = 4
 export interface PageScrollToFail extends IUniError {
@@ -17,11 +82,141 @@ export type PageScrollToCompleteCallback = (
 ) => void
 export type PageScrollToOptions = {
     /**
-     * 滚动到页面的目标位置
+     * 滚动到页面的目标位置（单位px）
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "uniVer": "√",
+     *      "unixVer": "3.91",
+     *      "unixVaporVer": "5.21"
+     *    },
+     *    "ios": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.11",
+     *      "unixVaporVer": "5.11"
+     *    },
+     *    "harmony": {
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixVaporVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
      */
     scrollTop?: number | null
     /**
-     * 选择器
+     * 元素选择器，用于指定要滚动到的元素位置
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "uniVer": "√",
+     *      "unixVer": "3.91",
+     *      "unixVaporVer": "5.21"
+     *    },
+     *    "ios": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.11",
+     *      "unixVaporVer": "5.11"
+     *    },
+     *    "harmony": {
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixVaporVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
      */
     selector?: string | null
     /**
@@ -29,20 +224,19 @@ export type PageScrollToOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
-     *        "unixVer": "3.91"
+     *        "unixVer": "3.91",
+     *        "unixVaporVer": "5.21"
      *      },
      *      "ios": {
-     *          "osVer": "12.0",
      *          "uniVer": "x",
-     *          "unixVer": "4.11"
+     *          "unixVer": "4.11",
+     *          "unixVaporVer": "5.11"
      *      },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -60,19 +254,279 @@ export type PageScrollToOptions = {
      */
     offsetTop?: number | null
     /**
-     * 滚动动画的时长
+     * 滚动动画的时长，默认300，单位 ms
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "uniVer": "√",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "x"
+     *    },
+     *    "ios": {
+     *      "uniVer": "√",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "x"
+     *    },
+     *    "harmony": {
+     *      "uniVer": "4.23",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "x"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
      */
     duration?: number | null
     /**
      * 接口调用成功的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "uniVer": "√",
+     *      "unixVer": "3.91",
+     *      "unixVaporVer": "5.21"
+     *    },
+     *    "ios": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.11",
+     *      "unixVaporVer": "5.11"
+     *    },
+     *    "harmony": {
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixVaporVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
      */
     success?: PageScrollToSuccessCallback | null
     /**
      * 接口调用失败的回调函数
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "uniVer": "√",
+     *      "unixVer": "3.91",
+     *      "unixVaporVer": "5.21"
+     *    },
+     *    "ios": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.11",
+     *      "unixVaporVer": "5.11"
+     *    },
+     *    "harmony": {
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixVaporVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
      */
     fail?: PageScrollToFailCallback | null
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "uniVer": "√",
+     *      "unixVer": "3.91",
+     *      "unixVaporVer": "5.21"
+     *    },
+     *    "ios": {
+     *      "uniVer": "√",
+     *      "unixVer": "4.11",
+     *      "unixVaporVer": "5.11"
+     *    },
+     *    "harmony": {
+     *      "uniVer": "4.23",
+     *      "unixVer": "4.61",
+     *      "unixVaporVer": "5.0"
+     *    }
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "4.41"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "√",
+     *      "uniVer": "√",
+     *      "unixVer": "x"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "√",
+     *    "unixVer": "4.0"
+     *  }
+     * }
      */
     complete?: PageScrollToCompleteCallback | null
 }
@@ -87,20 +541,19 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
-     *      "unixVer": "3.91"
+     *      "unixVer": "3.91",
+     *      "unixVaporVer": "5.21"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
-     *      "unixVer": "4.11"
+     *      "unixVer": "4.11",
+     *      "unixVaporVer": "5.11"
      *    },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {

@@ -1,5 +1,8 @@
 {
 	"deploymentTarget": "12",
+	"simulatorArchitectures": [
+		"x86_64"
+	],
 	"frameworks": [
 		"AVFoundation.framework",
 		"CoreImage.framework"

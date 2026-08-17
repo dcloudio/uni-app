@@ -8,6 +8,15 @@ export interface StartPullDownRefreshFail extends IUniError {
     errCode: PullDownRefreshErrorCode
 }
 
+export class StartPullDownRefreshFailImpl extends UniError implements StartPullDownRefreshFail {
+  override errCode: PullDownRefreshErrorCode
+  constructor(errMsg: string = 'startPullDownRefresh:fail', errCode: PullDownRefreshErrorCode = 4) {
+    super()
+    this.errMsg = errMsg
+    this.errCode = errCode
+  }
+}
+
 export type StartPullDownRefreshOptions = {
     /**
      * 接口调用成功的回调函数
@@ -23,13 +32,19 @@ export type StartPullDownRefreshOptions = {
     complete?: StartPullDownRefreshCompleteCallback
 }
 export type StartPullDownRefreshSuccess = AsyncApiSuccessResult
+export class StartPullDownRefreshSuccessImpl implements StartPullDownRefreshSuccess {
+  errMsg: string
+  constructor(errMsg: string = 'startPullDownRefresh:ok') {
+    this.errMsg = errMsg
+  }
+}
 export type StartPullDownRefreshSuccessCallback = (
     result: StartPullDownRefreshSuccess,
 ) => void
 export type StartPullDownRefreshFailCallback = (
     result: StartPullDownRefreshFail,
 ) => void
-export type StartPullDownRefreshComplete = AsyncApiResult
+export type StartPullDownRefreshComplete = any
 export type StartPullDownRefreshCompleteCallback = (
     result: StartPullDownRefreshComplete,
 ) => void
@@ -47,20 +62,19 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
-     *      "unixVer": "3.91"
+     *      "unixVer": "3.91",
+     *      "unixVaporVer": "5.21"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
-     *      "unixVer": "4.11"
+     *      "unixVer": "4.11",
+     *      "unixVaporVer": "5.11"
      *    },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "x"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {
@@ -123,20 +137,19 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
-     *      "unixVer": "3.91"
+     *      "unixVer": "3.91",
+     *      "unixVaporVer": "5.21"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
-     *      "unixVer": "4.11"
+     *      "unixVer": "4.11",
+     *      "unixVaporVer": "5.11"
      *    },
      *    "harmony": {
-     *      "osVer": "3.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "x"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {

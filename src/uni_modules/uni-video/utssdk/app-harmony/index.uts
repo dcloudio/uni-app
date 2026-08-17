@@ -1,6 +1,8 @@
 import OHWindow from '@ohos.window'
+import fs, { ReadOptions } from '@ohos.file.fs'
 import { audio } from '@kit.AudioKit';
 import { font } from '@kit.ArkUI'
+import { media } from '@kit.MediaKit';
 // @ts-ignore
 import { getCurrentMP, getRealPath } from "@dcloudio/uni-runtime";
 import { buildVideo, AVVolumePanelOptions } from "./builder.ets";
@@ -134,6 +136,8 @@ export class Video {
   private readyToSetNextSrc = true;
   private srcQueue: string[] = []
   private originalSrc: string = ''
+  private fullscreenOrientation : string | null = null
+  private fullscreenOrientationRequestId = 0
   fullscreening : boolean = false
 
   constructor(element : UniNativeViewElement, params : BuilderVideoParams) {
@@ -210,6 +214,7 @@ export class Video {
     }
 
     formatVideoOptions(this.params.options)
+    this.updateFullscreenOrientation()
 
     this.params.volumeOptions = {
       show: false
@@ -280,6 +285,57 @@ export class Video {
     this.params.volumeOptions!.show = false
   }
 
+  private async updateFullscreenOrientation() {
+    const src = this.params.options.src
+    const requestId = ++this.fullscreenOrientationRequestId
+    this.fullscreenOrientation = null
+    if (typeof src !== 'string' || src.length === 0) return
+
+    const isNetworkUrl = src.startsWith('http://') || src.startsWith('https://') || src.startsWith('rtmp://') || src.startsWith('rtsp://')
+    try {
+      const avMetadataExtractor = await media.createAVMetadataExtractor()
+      let metadata : media.AVMetadata | null = null
+      try {
+        if (isNetworkUrl) {
+          avMetadataExtractor.setUrlSource(src)
+          metadata = await avMetadataExtractor.fetchMetadata()
+        } else {
+          const file = await fs.open(src, fs.OpenMode.READ_ONLY)
+          try {
+            const fileSize = (await fs.stat(file.fd)).size
+            avMetadataExtractor.dataSrc = {
+              fileSize,
+              callback: (buffer : ArrayBuffer, length : number, pos ?: number) => {
+                return fs.readSync(file.fd, buffer, {
+                  offset: pos,
+                  length,
+                } as ReadOptions)
+              },
+            }
+            metadata = await avMetadataExtractor.fetchMetadata()
+          } finally {
+            await fs.close(file)
+          }
+        }
+      } finally {
+        await avMetadataExtractor.release()
+      }
+
+      if (requestId !== this.fullscreenOrientationRequestId || src !== this.params.options.src || metadata == null) return
+      let width = Number(metadata.videoWidth)
+      let height = Number(metadata.videoHeight)
+      const orientation = metadata.videoOrientation != null ? Number(metadata.videoOrientation) : 0
+      if (orientation === 90 || orientation === 270) {
+        const originWidth = width
+        width = height
+        height = originWidth
+      }
+      if (width > 0 && height > 0) {
+        this.fullscreenOrientation = width <= height ? 'portrait' : 'landscape'
+      }
+    } catch (error) { }
+  }
+
   private setSrc(src: string) {
     if (!this.readyToSetNextSrc) {
       this.srcQueue.push(src)
@@ -290,9 +346,12 @@ export class Video {
     this.pendingPlayAfterPrepared = false
     this.readyToSetNextSrc = false;
     this.updateParams()
+    this.updateFullscreenOrientation()
   }
 
   dispose() {
+    this.fullscreenOrientationRequestId++
+    this.fullscreenOrientation = null
     this.bindVideoController?.dispose()
     this.bindVideoController = undefined
     this.harmonyBuilderNode?.dispose()
@@ -317,6 +376,8 @@ export class Video {
     if (src === this.originalSrc) {
       this.resetVideoState()
       this.params.options.src = ''
+      this.fullscreenOrientationRequestId++
+      this.fullscreenOrientation = null
       this.updateParams()
       setTimeout(() => {
         this.setSrc(src)
@@ -394,6 +455,10 @@ export class Video {
 
   requestFullscreen(options ?: RequestFullScreenOptions | null) {
     this.bindVideoController?.requestFullscreen(options)
+  }
+
+  getFullscreenOrientation() : string | null {
+    return this.fullscreenOrientation
   }
 
   exitFullscreen() {
@@ -496,20 +561,22 @@ export class UniVideoElement extends UniViewElementImpl implements IUniVideoElem
   requestFullScreen(options ?: ESObject | null) {
     // @ts-ignore ESObject
     let requestFullscreenOptions : ESObject = options ?? {};
-    if (options?.direction === 0) {
-      requestFullscreenOptions = {
-        orientation: 'portrait'
-      };
-    }
-    if (options?.direction === 90) {
-      requestFullscreenOptions = {
-        orientation: 'landscape-primary'
-      };
-    }
-    if (options?.direction === -90) {
-      requestFullscreenOptions = {
-        orientation: 'landscape-secondary'
-      };
+    switch (options?.direction) {
+      case 0:
+        requestFullscreenOptions.orientation = 'portrait'
+        break;
+      case 90:
+        requestFullscreenOptions.orientation = 'landscape-primary'
+        break;
+      case -90:
+        requestFullscreenOptions.orientation = 'landscape-secondary'
+        break;
+      default:
+        const orientation = this.video?.getFullscreenOrientation()
+        if (orientation != null) {
+          requestFullscreenOptions.orientation = orientation
+        }
+        break;
     }
 
     // #ifdef VUE3-VAPOR

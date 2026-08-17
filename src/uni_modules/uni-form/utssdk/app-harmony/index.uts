@@ -1,0 +1,1498 @@
+import { BuilderNode, UIContext, KeyboardAvoidMode, window, ComponentContent } from "@kit.ArkUI";
+import { UniInputOptions, wrapBuilderCustomKeyboard, InputBuilder } from './input.ets'
+import { TextareaBuilder, UniTextareaOptions, UniTextareaPadding } from './textarea.ets'
+import { getCurrentMP, toUniNativeColor } from "@dcloudio/uni-runtime";
+import { deviceInfo } from '@kit.BasicServicesKit';
+
+// @ts-expect-error
+const INPUT_TYPES = new Map<string, InputType>([
+	// for type
+	// @ts-expect-error
+	['text', InputType.Normal],
+	// @ts-expect-error
+	['number', InputType.Number],
+	// @ts-expect-error
+	['digit', InputType.NUMBER_DECIMAL],
+	// @ts-expect-error
+	['tel', InputType.PhoneNumber],
+	// for password
+	// @ts-expect-error
+	['password', InputType.Password],
+	// @ts-expect-error
+	['safe-password', InputType.Password],
+	// for inputMode
+	// @ts-expect-error
+	['email', InputType.Email],
+	// @ts-expect-error
+	['url', InputType.URL],
+])
+
+// @ts-expect-error
+const CONFIRM_TYPES = new Map<string, EnterKeyType>([
+	// @ts-expect-error
+	['return', EnterKeyType.NEW_LINE],
+	// @ts-expect-error
+	['send', EnterKeyType.Send],
+	// @ts-expect-error
+	['search', EnterKeyType.Search],
+	// @ts-expect-error
+	['next', EnterKeyType.Next],
+	// @ts-expect-error
+	['go', EnterKeyType.Go],
+	// @ts-expect-error
+	['done', EnterKeyType.Done],
+])
+
+interface SelectionData {
+	start: number,
+	end: number
+}
+
+interface ScrollAdjustRecord {
+	element: UniElement,
+	originScrollTop: number,
+	adjustedScrollTop: number
+}
+
+export interface NativeTextareaInitOptions {
+	autoHeight: boolean | string,
+	value: string,
+	fontSize?: string,
+	lineHeight?: string,
+	padding?: string,
+	paddingTop?: string,
+	paddingRight?: string,
+	paddingBottom?: string,
+	paddingLeft?: string,
+	minHeight?: string,
+	maxHeight?: string
+}
+
+type InputEventDetail = {
+	value: string
+	cursor: number
+}
+class UniInputEventEvent extends UniCustomEvent<InputEventDetail> {
+	constructor(detail: InputEventDetail) {
+		super('input', {
+			detail
+		} as UniCustomEventOptions<InputEventDetail>)
+	}
+}
+type FocusEventDetail = {
+	height: number
+	value: string
+}
+class UniFocusEventEvent extends UniCustomEvent<FocusEventDetail> {
+	constructor(detail: FocusEventDetail) {
+		super('focus', {
+			detail
+		} as UniCustomEventOptions<FocusEventDetail>)
+	}
+}
+type BlurEventDetail = InputEventDetail
+class UniBlurEventEvent extends UniCustomEvent<BlurEventDetail> {
+	constructor(detail: BlurEventDetail) {
+		super('blur', {
+			detail
+		} as UniCustomEventOptions<BlurEventDetail>)
+	}
+}
+type KeyboardHeightChangeEventDetail = {
+	height: number
+	duration: number
+}
+class UniKeyboardHeightChangeEventEvent extends UniCustomEvent<KeyboardHeightChangeEventDetail> {
+	constructor(detail: KeyboardHeightChangeEventDetail) {
+		super('keyboardheightchange', {
+			detail
+		} as UniCustomEventOptions<KeyboardHeightChangeEventDetail>)
+	}
+}
+type ChangeEventDetail = {
+	value: string
+}
+class UniChangeEventEvent extends UniCustomEvent<ChangeEventDetail> {
+	constructor(detail: ChangeEventDetail) {
+		super('change', {
+			detail
+		} as UniCustomEventOptions<ChangeEventDetail>)
+	}
+}
+type ConfirmEventDetail = ChangeEventDetail
+class UniConfirmEventEvent extends UniCustomEvent<ConfirmEventDetail> {
+	constructor(detail: ConfirmEventDetail) {
+		super('confirm', {
+			detail
+		} as UniCustomEventOptions<ConfirmEventDetail>)
+	}
+}
+
+type LineChangeEventDetail = {
+	lineCount: number
+	height: number
+}
+// @ts-expect-error
+type InputEvent = (e: ESObject) => void
+
+function translateColor(color: string): string {
+	// 处理 color 值，将 #0099ccff 调整为 #ff0099cc 适配 arkUI
+	if (color.startsWith('#') && color.length == 9) {
+		return `${color.substring(0, 1)}${color.substring(color.length - 2)}${color.substring(1, color.length - 2)}`
+	}
+	return color
+}
+
+function isEmptyStyleValue(value?: string | null): boolean {
+	return value == null || value == ''
+}
+
+function isPixelStyleValue(value?: string | null): boolean {
+	return value != null && value.endsWith('px')
+}
+
+function parsePixelStyleValue(value?: string): number | null {
+	if (value == null) {
+		return null
+	}
+	const normalizedValue = value.trim()
+	if (normalizedValue == '') {
+		return null
+	}
+	if (normalizedValue.endsWith('px')) {
+		const pixelValue = parseFloat(normalizedValue)
+		return isNaN(pixelValue) ? null : pixelValue
+	}
+	const numberValue = parseFloat(normalizedValue)
+	return isNaN(numberValue) ? null : numberValue
+}
+
+function normalizePaddingValue(value?: string): string | null {
+	const pixelValue = parsePixelStyleValue(value)
+	if (pixelValue == null) {
+		return null
+	}
+	return `${Math.max(0, pixelValue)}vp`
+}
+
+type DispatchInput = (value: string, cursor?: number) => void
+export interface UniInputFileOptions {
+  key: string
+  value: string
+	placeholder: string
+	confirmHold?: boolean
+	enabled?: boolean
+	maxLength?: number
+	// @ts-expect-error
+	handleMountedFocus?: Function
+	dispatchInput?: DispatchInput
+	// @ts-expect-error
+	handleFocus?: Function
+	// @ts-expect-error
+	handleBlur?: Function
+	// @ts-expect-error
+	dispatchConfirm?: Function
+	// @ts-expect-error
+	enterKeyType?: EnterKeyType,
+	fontSize?: string
+	color?: string
+	letterSpacing?: string
+	// @ts-expect-error
+	fontWeight?: FontWeight
+	fontFamily?: string
+	// @ts-expect-error
+	fontStyle?: FontStyle
+	// @ts-expect-error
+	textAlign?: TextAlign
+	// @ts-expect-error
+	caretColor?: ResourceColor
+}
+
+interface EventHandlers {
+  inputEvent: InputEvent
+  focusEvent: InputEvent
+  blurEvent: InputEvent
+  keyboardHeightChangeEvent: InputEvent
+  changeEvent: InputEvent
+  confirmEvent: InputEvent
+	lineChangeEvent?: InputEvent | null
+}
+
+class NativeInputFileView {
+	protected element: UniNativeViewElement;
+	protected harmonyBuilderNode: BuilderNode<[UniTextareaOptions]> | BuilderNode<[UniInputOptions]> | null = null
+	protected uiContext: UIContext | null = null
+	protected value = ''
+	protected params: UniInputFileOptions = {
+		key: '',
+		value: '',
+		placeholder: '',
+		confirmHold: false,
+		// @ts-expect-error
+		handleMountedFocus: this.handleMountedFocus.bind(this),
+		// @ts-expect-error
+		dispatchInput: this.dispatchInput.bind(this),
+		// @ts-expect-error
+		handleFocus: this.handleFocus.bind(this),
+		// @ts-expect-error
+		handleBlur: this.handleBlur.bind(this),
+		// @ts-expect-error
+		dispatchConfirm: this.dispatchConfirm.bind(this),
+	}
+	protected cursor = -1
+	protected autoFocus = false
+	protected isFocusing = false
+	protected needFocusWhenMounted = false
+	protected selection: SelectionData = { start: -1, end: -1 }
+	protected holdKeyboard = false
+	protected adjustPosition = false
+	protected mounted = false
+	protected inputEvent: InputEvent | null = null
+	protected focusEvent: InputEvent | null = null
+	protected blurEvent: InputEvent | null = null
+	protected keyboardHeightChangeEvent: InputEvent | null = null
+	protected changeEvent: InputEvent | null = null
+	protected confirmEvent: InputEvent | null = null
+	protected currentWindow: window.Window | null = null
+	protected keyboardHeight = 0
+	protected defaultFontSize: number = 16
+	protected keyboardAnimationDuration: number = 350
+	protected preTextValue: string = ''
+	protected triggerFocusTimer: number | null = null
+	protected updateSelectionTimer: number | null = null
+	protected updateCursorTimer: number | null = null
+	protected dispatchBlurTimer: number | null = null
+	protected rollAbleParents: UniElement[] = [];
+	protected pageRootElement: UniElement | null = null
+	protected resetElementPositionWhenBlur: () => void = () => {}
+
+	constructor(element: UniNativeViewElement, eventHandlers: EventHandlers) {
+		this.element = element;
+		this.params.key = `${element.getNodeId()}`
+		this.inputEvent = eventHandlers.inputEvent
+		this.focusEvent = eventHandlers.focusEvent
+		this.blurEvent = eventHandlers.blurEvent
+		this.keyboardHeightChangeEvent = eventHandlers.keyboardHeightChangeEvent
+		this.changeEvent = eventHandlers.changeEvent
+		this.confirmEvent = eventHandlers.confirmEvent
+		this.updateParams()
+	}
+
+	updateParams() {
+		// 空实现，由子类实现具体更新逻辑
+	}
+
+	protected resolveCursorPosition(value: number): number {
+		if (value < 0) {
+			return (this.params.value ?? this.value).length
+		}
+		return value
+	}
+
+	protected getCurrentCursorPosition(): number {
+		return this.cursor
+	}
+
+	updateDisabled(value: boolean) {
+		this.params.enabled = !value
+		this.updateParams()
+	}
+
+	updateCursorSpacing(value: number) {
+		// harmony 不支持
+	}
+
+	updateMaxLength(value: number) {
+		this.params.maxLength = value
+		this.updateParams()
+	}
+
+	updateFocus(value: boolean) {
+		if (value && !this.isFocusing) {
+			if (!this.mounted) {
+				this.needFocusWhenMounted = true
+				return
+			}
+			this.triggerFocus()
+		} else {
+			if (this.isFocusing) {
+				this.triggerBlur()
+			}
+		}
+	}
+
+	triggerFocus() {
+		this.preTextValue = this.value
+		if (!this.mounted) {
+			this.needFocusWhenMounted = true
+			return
+		}
+
+		const uiContext = this.getUIContext()
+		if (!uiContext) return
+
+		this.isFocusing = true
+		uiContext.getFocusController().requestFocus(this.params.key)
+		if (this.updateSelectionTimer != null) {
+			clearTimeout(this.updateSelectionTimer)
+		}
+	}
+
+	updateCursorColor(value: string) {
+		this.params.caretColor = toUniNativeColor(null, value, this.params.caretColor)
+		this.updateParams()
+	}
+
+	updateAutoFocus(value: boolean) {
+		this.autoFocus = value
+	}
+
+	updateLetterSpacing(value?: string) {
+		if (!isPixelStyleValue(value)) {
+			if (this.params.letterSpacing != null) {
+				this.params.letterSpacing = undefined
+				this.updateParams()
+			}
+			return
+		}
+
+		const newValue = `${parseInt(value!)}vp`
+		if (this.params.letterSpacing != newValue) {
+			this.params.letterSpacing = newValue
+			this.updateParams()
+		}
+	}
+
+	updateFontWeight(value?: string) {
+		// @ts-expect-error
+		let newValue = FontWeight.Normal
+		switch (value) {
+			case 'bold':
+			case '700':
+			case '800':
+			case '900':
+				// @ts-expect-error
+				newValue = FontWeight.Bold
+				break;
+			case 'lighter':
+				// @ts-expect-error
+				newValue = FontWeight.Lighter
+				break;
+			case 'bolder':
+				// @ts-expect-error
+				newValue = FontWeight.Bolder
+				break;
+		}
+		if (this.params.fontWeight != newValue) {
+			this.params.fontWeight = newValue
+			this.updateParams()
+		}
+	}
+
+	updateFontStyle(value?: string) {
+		// @ts-expect-error
+		let newValue = FontStyle.Normal
+		if (value == 'italic') {
+			// @ts-expect-error
+			newValue = FontStyle.Italic
+		}
+		if (this.params.fontStyle != newValue) {
+			this.params.fontStyle = newValue
+			this.updateParams()
+		}
+	}
+
+	updateFontFamily(value?: string) {
+		const newValue = isEmptyStyleValue(value) ? undefined : value as string
+		if (this.params.fontFamily != newValue) {
+			this.params.fontFamily = newValue
+			this.updateParams()
+		}
+	}
+
+	updateTextAlign(value?: string) {
+		// @ts-expect-error
+		let newValue = TextAlign.Start
+		switch (value) {
+			case 'right':
+				// @ts-expect-error
+				newValue = TextAlign.End
+				break;
+			case 'center':
+				// @ts-expect-error
+				newValue = TextAlign.Center
+				break;
+		}
+		if (this.params.textAlign != newValue) {
+			this.params.textAlign = newValue
+			this.updateParams()
+		}
+	}
+
+	getUIContext() {
+		if (this.uiContext) return this.uiContext
+		const mainWindow = getCurrentMP().window
+		if (!mainWindow) return
+		const uiContext = mainWindow.getUIContext()
+		if (!uiContext) return
+		this.uiContext = uiContext
+		return this.uiContext
+	}
+
+	handleMountedFocus() {
+		this.mounted = true
+		this.collectScrollAbleParents()
+		// @ts-expect-error
+		window.getLastWindow(getContext(this.harmonyBuilderNode)).then(currentWindow => {
+			this.currentWindow = currentWindow
+			// @ts-expect-error
+			currentWindow.on('keyboardHeightChange', this.dispatchKeyboardHeightChange.bind(this))
+		})
+		if (this.needFocusWhenMounted || this.autoFocus) {
+			this.triggerFocus()
+		}
+	}
+
+	triggerBlur() {
+		try {
+			const uiContext = this.getUIContext()
+			if (!uiContext) return
+
+			const cursor = this.getCurrentCursorPosition()
+			uiContext.getFocusController().clearFocus()
+			this.dispatchBlur(this.value, cursor)
+		} catch (e) {
+			console.error(e.message)
+		}
+	}
+
+	updateConfirmHold(value: boolean) {
+		this.params.confirmHold = value
+		this.updateParams()
+	}
+
+	updateSelectionStart(value: number) {
+		this.selection.start = value
+	}
+
+	updateSelectionEnd(value: number) {
+		this.selection.end = value
+	}
+
+	updateAdjustPosition(value: boolean) {
+		this.adjustPosition = value
+	}
+
+	updateHoldKeyboard(value: boolean) {
+		this.holdKeyboard = value
+	}
+
+	updateColor(value?: string) {
+		if (isEmptyStyleValue(value)) {
+			if (this.params.color != null) {
+				this.params.color = undefined
+				this.updateParams()
+			}
+			return
+		}
+
+		const _value = translateColor(value!)
+		if (this.params.color != _value) {
+			this.params.color = _value
+			this.updateParams()
+		}
+	}
+
+	handleBlur() {
+		if (!this.isFocusing) return
+
+		const uiContext = this.getUIContext()
+		if (!uiContext) return
+
+		uiContext.setKeyboardAvoidMode(KeyboardAvoidMode.OFFSET)
+		this.dispatchBlur(this.value, this.getCurrentCursorPosition())
+	}
+
+	updateInputEvent(event: InputEvent) {
+		this.inputEvent = event
+	}
+
+	dispatchInput(value: string, cursor?: number | null) {
+		this.value = value
+		this.params.value = value
+		if (cursor != null) {
+			this.cursor = cursor
+		}
+	}
+
+	updateFocusEvent(event: InputEvent) {
+		this.focusEvent = event
+	}
+	handleFocus() {
+		this.isFocusing = true
+		this.preTextValue = this.value
+		this.dispatchFocus(this.keyboardHeight, this.value)
+		const uiContext = this.getUIContext()
+		if (!uiContext) return
+
+		uiContext.setKeyboardAvoidMode(KeyboardAvoidMode.NONE)
+	}
+	dispatchFocus(height: number, value: string) {
+		this.focusEvent?.(new UniFocusEventEvent({ height, value } as FocusEventDetail))
+	}
+
+	updateBlurEvent(event: InputEvent) {
+		this.blurEvent = event
+	}
+
+	dispatchBlur(value: string, cursor: number) {
+		this.dispatchChange()
+
+		this.blurEvent?.(new UniBlurEventEvent({ value, cursor } as BlurEventDetail))
+		if (this.dispatchBlurTimer != null) {
+			clearTimeout(this.dispatchBlurTimer)
+		}
+		this.resetElementPositionWhenBlur()
+		// keyboardHeightChange 事件依赖 isFocusing 状态，故等待键盘收起动画完成后再修改状态
+		this.dispatchBlurTimer = setTimeout(() => {
+			this.isFocusing = false
+		}, this.keyboardAnimationDuration)
+	}
+
+	updateKeyboardHeightChangeEvent(event: InputEvent) {
+		this.keyboardHeightChangeEvent = event
+	}
+	dispatchKeyboardHeightChange(height: number) {
+		if (!this.isFocusing) return
+		// @ts-expect-error
+		const _height = px2vp(height)
+		this.keyboardHeight = _height
+		this.keyboardHeightChangeEvent?.(new UniKeyboardHeightChangeEventEvent({ height: _height, duration: 0 } as KeyboardHeightChangeEventDetail))
+
+		this.handleElementPositionWhenFocus();
+	}
+	handleElementPositionWhenFocus() {
+		if (!this.adjustPosition) return;
+		const windowHeight = this.element.uniPage.pageBody.height
+		const boundingClientRect = this.element.getBoundingClientRect();
+		const elementHeight = boundingClientRect.height;
+
+		// 元素距离底部距离 = 窗口高度-元素纵坐标-元素高度
+		const elementToBottomDistance = windowHeight - boundingClientRect.y - elementHeight
+		// 使元素在软键盘上面，需要滚动的距离
+		let needMoreScrollDistance = this.keyboardHeight - elementToBottomDistance
+		// 如果元素位置高于软键盘顶部，不需要处理
+		if (needMoreScrollDistance <= 0) return
+
+		// 记录由键盘避让逻辑主动触发的滚动，用于 blur 时判断是否需要还原。
+		const scrollAdjustRecords: ScrollAdjustRecord[] = []
+		let lastRollAbleParentPaddingBottom = "-1px"
+		let changedBodyPosition = false
+
+		if(this.rollAbleParents.length > 0){
+			const lastRollAbleParent = this.rollAbleParents[this.rollAbleParents.length - 1]
+			const lastRollAbleParentBoundingClientRect = lastRollAbleParent.getBoundingClientRect();
+			// 最外层滚动容器支持露出输入框
+			if (windowHeight - lastRollAbleParentBoundingClientRect.y - elementHeight >= this.keyboardHeight) {
+				let currentParentElement!: UniElement
+
+				for (let i = 0; i < this.rollAbleParents.length; i++) {
+					currentParentElement = this.rollAbleParents[i]
+					const parentScrollHeight = currentParentElement.scrollHeight
+					const parentScrollTop = currentParentElement.scrollTop
+					const parentHeight = currentParentElement.getBoundingClientRect().height
+					// 计算剩余可滚动高度
+					const canMoreScrollDistance = parentScrollHeight - parentScrollTop - parentHeight
+					if(canMoreScrollDistance > 0){
+						const shouldScrollDistance = canMoreScrollDistance > needMoreScrollDistance ? needMoreScrollDistance : canMoreScrollDistance
+						const adjustedScrollTop = parentScrollTop + shouldScrollDistance
+						// 同时记录原始位置和自动滚动后的目标位置，避免 blur 时覆盖用户手动滚动后的位置。
+						scrollAdjustRecords.push({
+							element: currentParentElement,
+							originScrollTop: parentScrollTop,
+							adjustedScrollTop
+						} as ScrollAdjustRecord)
+						currentParentElement.scrollTo(currentParentElement.scrollLeft, adjustedScrollTop)
+						needMoreScrollDistance -= shouldScrollDistance
+
+						if(needMoreScrollDistance === 0) break
+					}
+					if(i === this.rollAbleParents.length - 1 && needMoreScrollDistance > 0) {
+						// 最外层滚动容器滚动后仍无法露出输入框，增加 paddingBottom 以露出输入框
+						lastRollAbleParentPaddingBottom = lastRollAbleParent.style.getPropertyValue('paddingBottom')
+						lastRollAbleParent.style.setProperty("paddingBottom", `${parseInt(lastRollAbleParentPaddingBottom) + needMoreScrollDistance}px`)
+					}
+				}
+			}
+		}
+		if(needMoreScrollDistance > 0){
+			// 通过滚动容器滚动无法露出输入框, 通过移动 body 露出输入框
+			changedBodyPosition = true
+			const pageRootElement = this.getPageRootElement()
+			pageRootElement?.style.setProperty("transform", `translateY(-${needMoreScrollDistance})`)
+		}
+		this.resetElementPositionWhenBlur = () => {
+			if(scrollAdjustRecords.length > 0){
+				const SCROLL_TOP_EPSILON = 1
+				// 如果当前 scrollTop 已经偏离自动滚动后的目标位置，说明聚焦期间用户主动滚动过页面。
+				const hasUserScrolled = scrollAdjustRecords.some((record: ScrollAdjustRecord): boolean => {
+					return Math.abs(record.element.scrollTop - record.adjustedScrollTop) > SCROLL_TOP_EPSILON
+				})
+				if(!hasUserScrolled){
+					for( let i = 0; i < scrollAdjustRecords.length; i++){
+						const record = scrollAdjustRecords[i]
+						record.element.scrollTo(record.element.scrollLeft, record.originScrollTop)
+					}
+				}
+				scrollAdjustRecords.length = 0
+			}
+			if(lastRollAbleParentPaddingBottom !== "-1px"){
+				const lastRollAbleParent = this.rollAbleParents[this.rollAbleParents.length - 1]
+				lastRollAbleParent.style.setProperty("padding-bottom", `${lastRollAbleParentPaddingBottom}px`)
+			}
+			if(changedBodyPosition){
+				const pageRootElement = this.getPageRootElement()
+				pageRootElement?.style.setProperty("transform", `translateY(0)`)
+			}
+		}
+	}
+	getPageRootElement(): UniElement {
+		if(this.pageRootElement !== null) return this.pageRootElement
+
+		let rootElement = this.element.parentElement
+		while (rootElement?.parentElement != null) {
+			rootElement = rootElement.parentElement
+		}
+		this.pageRootElement = rootElement!
+		return this.pageRootElement
+	}
+	collectScrollAbleParents() {
+		let currentParent = this.element.parentElement;
+		while(currentParent != null){
+			if (this.isScrollAbleElement(currentParent)) {
+				this.rollAbleParents.push(currentParent);
+			}
+			currentParent = currentParent.parentElement;
+		}
+	}
+	isScrollAbleElement(el: UniElement): boolean {
+		return el.tagName === 'SCROLL-VIEW' || el.tagName === 'LIST-VIEW' || el.tagName === 'WEB-VIEW' || (el.tagName === 'PAGE' && el instanceof UniViewElementImpl === false);
+	}
+
+	updateChangeEvent(event: InputEvent) {
+		this.changeEvent = event
+	}
+	dispatchChange() {
+		if (this.value !== this.preTextValue) {
+			this.changeEvent?.(new UniChangeEventEvent({ value: this.value } as ChangeEventDetail))
+		}
+	}
+
+	updateConfirmEvent(event: InputEvent) {
+		this.confirmEvent = event
+	}
+	dispatchConfirm(value: string) {
+		this.confirmEvent?.(new UniConfirmEventEvent({ value } as ConfirmEventDetail))
+	}
+
+	handlePageTouchEndFocus() {
+		if (!this.holdKeyboard && this.isFocusing) {
+			this.getUIContext()?.getFocusController().clearFocus()
+		}
+	}
+
+	destroy() {
+		if (this.triggerFocusTimer != null) {
+			clearTimeout(this.triggerFocusTimer)
+		}
+		if (this.updateSelectionTimer != null) {
+			clearTimeout(this.updateSelectionTimer)
+		}
+		if (this.updateCursorTimer != null) {
+			clearTimeout(this.updateCursorTimer)
+		}
+		if (this.dispatchBlurTimer != null) {
+			clearTimeout(this.dispatchBlurTimer)
+		}
+
+		this.harmonyBuilderNode = null
+		this.uiContext = null
+		this.inputEvent = null
+		this.focusEvent = null
+		this.blurEvent = null
+		this.keyboardHeightChangeEvent = null
+		this.changeEvent = null
+		this.confirmEvent = null
+		this.currentWindow = null
+	}
+}
+
+export class NativeInputView extends NativeInputFileView {
+	// @ts-expect-error
+	private controller = new TextInputController()
+	private _params: UniInputOptions = {
+		...this.params,
+		controller: this.controller,
+		height: '24vp',
+		customKeyboard: undefined,
+	}
+
+	private propsType: string = 'text'
+	private lineHeight: number | null = null
+	private fontSize: number | null = null
+	private defaultInputHeight = 24
+	private isPassword = false
+
+	constructor(element: UniNativeViewElement, eventHandlers: EventHandlers) {
+		super(element, eventHandlers)
+		this.bindView()
+	}
+
+	// @ts-expect-error
+	updateParams() {
+		this._params = {
+			...this._params,
+			...this.params,
+		}
+		this.harmonyBuilderNode?.update(this._params)
+	}
+
+	private bindView() {
+		// @ts-expect-error
+		// 首帧即传入完整参数，避免 onAppear 触发时 options.handleMountedFocus 为空。
+		this.element.bindHarmonyWrappedBuilder(wrapBuilder<[UniInputOptions]>(InputBuilder), this._params);
+		// @ts-expect-error
+		this.harmonyBuilderNode = (this.element as ESObject).getHarmonyComponentContent()
+	}
+
+	private updateSelection() {
+		if (this.selection.end !== -1 && this.selection.end >= this.selection.start) {
+			this.controller.setTextSelection(this.selection.start, this.selection.end)
+			this.cursor = this.selection.end
+		} else if (this.params.value!.length > 0) {
+			const cursor = this.resolveCursorPosition(-1)
+			this._params.caretPosition = cursor
+			this.cursor = cursor
+			this.updateParams()
+		}
+	}
+
+	updateValue(value: string) {
+		this.value = value
+		this.params.value = value
+		this.updateParams()
+		if (this.mounted && this.isFocusing) {
+			this.updateSelection()
+		}
+	}
+
+	handleFocus() {
+		super.handleFocus()
+		// 保存光标信息，避免切换 type none 时光标回到开头
+		const positionInfo = this.controller.getCaretOffset()
+		this._params.caretPosition = positionInfo.index
+		this.cursor = positionInfo.index
+	}
+
+	// @ts-expect-error
+	protected getCurrentCursorPosition(): number {
+		try {
+			const positionInfo = this.controller.getCaretOffset()
+			this.cursor = positionInfo.index
+		} catch (e) {
+			return this.cursor
+		}
+		return this.cursor
+	}
+
+	updateType(value: string) {
+		if (value === 'none' || INPUT_TYPES.get(value) !== null) {
+			this.propsType = value
+			if (this.isPassword) {
+				return
+			}
+			if (value === 'none') {
+				// API 22 customKeyboard 才支持 ComponentContent | undefined 类型
+				if (deviceInfo.sdkApiVersion >= 22) {
+					const uiContext = this.getUIContext()
+					if (uiContext) {
+						// 'none' 设置聚焦不弹起软键盘 https://issuereporter.developer.huawei.com/detail/250428155020088/comment
+						this._params.customKeyboard = new ComponentContent(uiContext, wrapBuilderCustomKeyboard)
+						this.updateParams()
+					}
+				}
+				return
+			}
+
+			this._params.customKeyboard = undefined
+			this._params.type = INPUT_TYPES.get(value)!
+			this.updateParams()
+		}
+	}
+
+	updatePassword(value: boolean) {
+		this.isPassword = value
+		const type = this.isPassword ? 'password' : this.propsType
+		this._params.type = INPUT_TYPES.get(type)!
+		this.updateParams()
+	}
+
+	// @ts-expect-error
+	triggerFocus() {
+		super.triggerFocus()
+		// 需要在聚焦完成后再设置 selection
+		this.updateSelectionTimer = setTimeout(() => {
+			this.updateSelection()
+		}, 0)
+	}
+
+	updateConfirmType(value: string) {
+		if (this._params.type != INPUT_TYPES.get('text')) return
+
+		const type = CONFIRM_TYPES.get(value)
+		if (type !== null) {
+			this.params.enterKeyType = type
+			this.updateParams()
+		}
+	}
+
+	updateCursor(value: number) {
+		if (this.updateCursorTimer != null) {
+			clearTimeout(this.updateCursorTimer)
+		}
+		// 需要等 input 聚焦后再设置才生效
+		this.updateCursorTimer = setTimeout(() => {
+			const cursor = this.resolveCursorPosition(value)
+			this._params.caretPosition = cursor
+			this.cursor = cursor
+			this.updateParams()
+		}, 0)
+	}
+
+	private updateTextInputHeight() {
+		const newHeight = `${Math.max(this.defaultInputHeight, this.fontSize ?? 0, this.lineHeight ?? 0)}vp`
+		if (this._params.height != newHeight) {
+			this._params.height = newHeight
+			this.updateParams()
+		}
+	}
+
+	// TODO: 以下暂时仅支持 px
+	updateFontSize(value?: string) {
+		if (!isPixelStyleValue(value)) {
+			if (this.fontSize == null && this.params.fontSize == null) return
+
+			this.fontSize = null
+			this.params.fontSize = undefined
+			this.updateParams()
+			this.updateTextInputHeight()
+			return
+		}
+
+		const _value = parseInt(value!)
+		if (this.fontSize == _value) return
+
+		this.fontSize = _value
+		const newValue = `${this.fontSize}vp`
+		if (this.params.fontSize != newValue) {
+			this.params.fontSize = newValue
+			this.updateParams()
+		}
+		this.updateTextInputHeight()
+	}
+	updateLineHeight(value?: string) {
+		if (isEmptyStyleValue(value)) {
+			if (this.lineHeight == null) return
+
+			this.lineHeight = null
+			this.updateTextInputHeight()
+			return
+		}
+
+		let newLineHeight: number | null = null
+		if (value!.endsWith('px')) {
+			newLineHeight = parseInt(value!)
+		} else if (!isNaN(Number(value)) || value!.endsWith('em')) {
+			newLineHeight = parseFloat(value!) * (this.fontSize == null ? this.defaultFontSize : this.fontSize)
+		}
+		if (newLineHeight == null) {
+			if (this.lineHeight != null) {
+				this.lineHeight = null
+				this.updateTextInputHeight()
+			}
+			return
+		}
+		if (newLineHeight != null && this.lineHeight != newLineHeight) {
+			this.lineHeight = newLineHeight
+			this.updateTextInputHeight()
+		}
+	}
+
+	// @ts-expect-error
+	dispatchInput(value: string, cursor?: number | null) {
+		super.dispatchInput(value, cursor)
+		if (!this.isFocusing) return
+		this.inputEvent?.(new UniInputEventEvent({ value, cursor } as InputEventDetail))
+	}
+}
+
+export class NativeTextareaView extends NativeInputFileView {
+	// @ts-expect-error
+	private controller = new TextAreaController()
+	private defaultHeight = 150
+	private _params: UniTextareaOptions = {
+		...this.params,
+		controller: this.controller,
+		autoHeight: false,
+		height: this.defaultHeight,
+		padding: {
+			top: '0vp',
+			right: '0vp',
+			bottom: '0vp',
+			left: '0vp',
+		} as UniTextareaPadding,
+	}
+
+	private autoHeight = false
+	private lineCount: number = 0
+	private textRectHeight: number = 0
+	private lineChangeEvent: InputEvent | null = null
+	private textareaHeight: number = this.defaultHeight
+	private calcTextAreaMinHeight: number = -1
+	private calculatedHeight: number = 0
+	private minHeight = -1
+	private maxHeight = -1
+	private paddingTop = 0
+	private paddingRight = 0
+	private paddingBottom = 0
+	private paddingLeft = 0
+	private calcHeightTimer: number | null = null
+
+	constructor(element: UniNativeViewElement, options: NativeTextareaInitOptions | null = null, eventHandlers: EventHandlers) {
+		super(element, eventHandlers)
+		this.lineChangeEvent = eventHandlers.lineChangeEvent!
+		const autoHeight = this.isAutoHeightEnabled(options?.autoHeight)
+		const value = options?.value ?? ''
+		this.value = value
+		this.params.value = value
+		this._params.value = value
+		this.autoHeight = autoHeight
+		this._params.autoHeight = autoHeight
+		if (autoHeight) {
+			// 构造阶段只能做首帧估算，真实文本高度需等 onAppear 后再测量。
+			this.initEstimatedHeightLimits(options)
+			this.initEstimatedPadding(options)
+			const initialAutoHeight = this.getEstimatedAutoHeight(value, options)
+			this._params.height = initialAutoHeight
+			this.element.style.setProperty('height', `${initialAutoHeight}px`)
+		}
+		this.bindView()
+		this.initCalcTextAreaMinHeight()
+	}
+
+	// @ts-expect-error
+	updateParams() {
+		this._params = {
+			...this._params,
+			...this.params,
+		}
+		this.harmonyBuilderNode?.update(this._params)
+	}
+
+	private bindView() {
+		// @ts-expect-error
+		// 首帧即传入完整参数，避免 onAppear 触发时 options.handleMountedFocus 为空。
+		this.element.bindHarmonyWrappedBuilder(wrapBuilder<[UniTextareaOptions]>(TextareaBuilder), this._params);
+		// @ts-expect-error
+		this.harmonyBuilderNode = (this.element as ESObject).getHarmonyComponentContent()
+	}
+
+	updateValue(value: string) {
+		if (this.value == value && this.params.value == value && this._params.value == value) return
+		this.value = value
+		this.params.value = value
+		this.updateParams()
+		if (this.autoHeight) {
+			this.calcHeight()
+		}
+	}
+
+	updateAutoHeight(value: boolean | string) {
+		this.autoHeight = this.isAutoHeightEnabled(value)
+		this._params.autoHeight = this.autoHeight
+		if(this.autoHeight){
+			this.calcHeight()
+		} else {
+			this.resetHeight()
+		}
+	}
+
+	private isAutoHeightEnabled(value: boolean | string | null | undefined): boolean {
+		return value === true || value === 'true'
+	}
+
+	// 优先使用 uvue 侧传入的 computed style；为空时再回退读取原生元素样式。
+	private getInitStyleValue(value: string | null | undefined, propertyName: string, fallbackPropertyName: string): string {
+		if (value != null && value != '') {
+			return value
+		}
+		const styleValue = this.element.style.getPropertyValue(propertyName)
+		if (styleValue != '') {
+			return styleValue
+		}
+		return this.element.style.getPropertyValue(fallbackPropertyName)
+	}
+
+	// 首帧估算时先应用 min/max-height，避免随后真实测量前出现明显越界高度。
+	private initEstimatedHeightLimits(options: NativeTextareaInitOptions | null) {
+		this.minHeight = parsePixelStyleValue(this.getInitStyleValue(options?.minHeight, 'minHeight', 'min-height')) ?? this.minHeight
+		this.maxHeight = parsePixelStyleValue(this.getInitStyleValue(options?.maxHeight, 'maxHeight', 'max-height')) ?? this.maxHeight
+	}
+
+	// 将 padding 同步到首帧 ArkUI 参数和本地缓存，使估算高度包含上下内边距。
+	private initEstimatedPadding(options: NativeTextareaInitOptions | null) {
+		const paddingTop = this.getInitStyleValue(options?.paddingTop, 'paddingTop', 'padding-top')
+		const paddingRight = this.getInitStyleValue(options?.paddingRight, 'paddingRight', 'padding-right')
+		const paddingBottom = this.getInitStyleValue(options?.paddingBottom, 'paddingBottom', 'padding-bottom')
+		const paddingLeft = this.getInitStyleValue(options?.paddingLeft, 'paddingLeft', 'padding-left')
+		const estimatedPadding = this.resolvePadding(paddingTop, paddingRight, paddingBottom, paddingLeft)
+		this.paddingTop = parseFloat(estimatedPadding.top)
+		this.paddingRight = parseFloat(estimatedPadding.right)
+		this.paddingBottom = parseFloat(estimatedPadding.bottom)
+		this.paddingLeft = parseFloat(estimatedPadding.left)
+		this._params.padding = estimatedPadding
+	}
+
+	// 组件尚未 onAppear 时不能读取 TextAreaController 的真实内容高度，这里只计算首帧近似值。
+	private getEstimatedAutoHeight(value: string, options: NativeTextareaInitOptions | null): number {
+		const fontSize = parsePixelStyleValue(this.getInitStyleValue(options?.fontSize, 'fontSize', 'font-size')) ?? this.defaultFontSize
+		const styleLineHeight = this.getInitStyleValue(options?.lineHeight, 'lineHeight', 'line-height')
+		const lineHeight = this.parseLineHeight(styleLineHeight, fontSize) ?? Math.round(fontSize * 1.2)
+		const verticalPadding = this.paddingTop + this.paddingBottom
+		// 首帧仅按显式换行估算，避免引入不稳定的字符宽度推断。
+		const lineCount = Math.max(1, value.split('\n').length)
+		let height = Math.max(fontSize, lineHeight) * lineCount + verticalPadding
+		if (this.minHeight >= 0 && height < this.minHeight) {
+			height = this.minHeight
+		}
+		if (this.maxHeight >= 0 && height > this.maxHeight) {
+			height = this.maxHeight
+		}
+		return Math.max(1, Math.round(height))
+	}
+
+	// 对齐 textarea 后续 updateLineHeight 的解析规则，支持 px、em 和数字倍率。
+	private parseLineHeight(value: string | null | undefined, fontSize: number): number | null {
+		if (isEmptyStyleValue(value)) {
+			return null
+		}
+		if (value!.endsWith('px')) {
+			return parsePixelStyleValue(value!)
+		}
+		if (value!.endsWith('em')) {
+			const emValue = parseFloat(value!)
+			return isNaN(emValue) ? null : emValue * fontSize
+		}
+		const numberValue = parseFloat(value!)
+		return isNaN(numberValue) ? null : numberValue * fontSize
+	}
+
+	resetHeight(){
+		this.clearCalcHeightTimer()
+		if(this.isWrapperFlexGrow1()){
+			this.updateTextareaHeight('100%')
+			return
+		}
+		this.updateTextareaHeight(this.textareaHeight)
+	}
+
+	// TODO: 以下暂时仅支持 px
+	updateFontSize(value?: string) {
+		if (!isPixelStyleValue(value)) {
+			if (this.params.fontSize == null) return
+
+			this.calcTextAreaMinHeight = this.defaultFontSize
+			this.params.fontSize = undefined
+			this.updateParams()
+			if (this.autoHeight) {
+				this.calcHeight()
+			}
+			return
+		}
+
+		const fontSize = parseInt(value!)
+		const _value = `${fontSize}vp`
+		if (this.params.fontSize == _value) return
+
+		this.calcTextAreaMinHeight = fontSize
+		this.params.fontSize = _value
+		this.updateParams()
+		if (this.autoHeight) {
+			this.calcHeight()
+		}
+	}
+
+	updateLineHeight(value?: string) {
+		if (isEmptyStyleValue(value)) {
+			if (this._params.lineHeight == null) return
+
+			this._params.lineHeight = undefined
+			this.updateParams()
+			if (this.autoHeight) {
+				this.calcHeight()
+			}
+			return
+		}
+
+		let newLineHeight = this._params.lineHeight
+		const fontSize = this.params.fontSize == null ? this.defaultFontSize : parseInt(this.params.fontSize)
+		const lineHeight = this.parseLineHeight(value, fontSize)
+		if (lineHeight != null) {
+			newLineHeight = `${lineHeight}vp`
+		} else {
+			newLineHeight = undefined
+		}
+
+		if (this._params.lineHeight != newLineHeight) {
+			this._params.lineHeight = newLineHeight
+			this.updateParams()
+			if (this.autoHeight) {
+				this.calcHeight()
+			}
+		}
+	}
+
+	// @ts-expect-error
+	handleMountedFocus() {
+		super.handleMountedFocus()
+		if (this.autoHeight) {
+			// onAppear 后 ArkUI TextArea 已可测量，用真实内容高度校正首帧估算值。
+			this.calcHeight()
+		}
+	}
+
+	private resolvePadding(paddingTop?: string, paddingRight?: string, paddingBottom?: string, paddingLeft?: string): UniTextareaPadding {
+		let top = '0vp'
+		let right = '0vp'
+		let bottom = '0vp'
+		let left = '0vp'
+
+		const topValue = normalizePaddingValue(paddingTop)
+		if (topValue != null) {
+			top = topValue
+		}
+		const rightValue = normalizePaddingValue(paddingRight)
+		if (rightValue != null) {
+			right = rightValue
+		}
+		const bottomValue = normalizePaddingValue(paddingBottom)
+		if (bottomValue != null) {
+			bottom = bottomValue
+		}
+		const leftValue = normalizePaddingValue(paddingLeft)
+		if (leftValue != null) {
+			left = leftValue
+		}
+
+		return {
+			top,
+			right,
+			bottom,
+			left,
+		} as UniTextareaPadding
+	}
+
+	updatePadding(paddingTop?: string, paddingRight?: string, paddingBottom?: string, paddingLeft?: string) {
+		const newPadding = this.resolvePadding(paddingTop, paddingRight, paddingBottom, paddingLeft)
+		if (
+			this._params.padding?.top == newPadding.top &&
+			this._params.padding?.right == newPadding.right &&
+			this._params.padding?.bottom == newPadding.bottom &&
+			this._params.padding?.left == newPadding.left
+		) {
+			return
+		}
+
+		this.paddingTop = parseFloat(newPadding.top)
+		this.paddingRight = parseFloat(newPadding.right)
+		this.paddingBottom = parseFloat(newPadding.bottom)
+		this.paddingLeft = parseFloat(newPadding.left)
+		this._params.padding = newPadding
+		if (this.autoHeight) {
+			this.calcHeight()
+		} else {
+			this.updateParams()
+		}
+	}
+
+	initCalcTextAreaMinHeight(){
+		const fontSize = parseInt(this.element.style.getPropertyValue('fontSize')) || this.defaultFontSize
+		this.calcTextAreaMinHeight = fontSize
+		if (!this.autoHeight) {
+			this.calcHeight()
+		}
+	}
+
+	updateHeight(value?: string) {
+		if (!isPixelStyleValue(value)) {
+			if (this.textareaHeight != this.defaultHeight) {
+				this.textareaHeight = this.defaultHeight
+				this.calcHeight()
+			}
+			return
+		}
+
+		const newValue = parseInt(value!)
+		if (this.textareaHeight != newValue) {
+			this.textareaHeight = newValue;
+			this.calcHeight()
+		}
+	}
+
+	updateMinHeight(value?: string) {
+		if (!isPixelStyleValue(value)) {
+			if (this.minHeight != -1) {
+				this.minHeight = -1
+				this.calcHeight()
+			}
+			return
+		}
+
+		const newValue = parseInt(value!)
+		if (this.minHeight != newValue) {
+			this.minHeight = newValue
+			this.calcHeight()
+		}
+	}
+
+	updateMaxHeight(value?: string) {
+		if (!isPixelStyleValue(value)) {
+			if (this.maxHeight != -1) {
+				this.maxHeight = -1
+				this.calcHeight()
+			}
+			return
+		}
+
+		const newValue = parseInt(value!)
+		if (this.maxHeight != newValue) {
+			this.maxHeight = newValue
+			this.calcHeight()
+		}
+	}
+
+	updateCalculatedHeight() {
+		const textRect = this.controller.getTextContentRect();
+		// @ts-expect-error
+		this.textRectHeight = px2vp(textRect.height);
+		const verticalPadding = this.paddingTop + this.paddingBottom
+		this.calculatedHeight = Math.max(this.calcTextAreaMinHeight + verticalPadding, Math.round(this.textRectHeight) + verticalPadding)
+	}
+
+	isWrapperFlexGrow1(){
+		const wrapperEl = this.element.parentElement?.parentElement
+		if(wrapperEl != null){
+			const flexGrow = wrapperEl.style.getPropertyValue('flex-grow')
+			const wrapperElParentHeight = wrapperEl.parentElement?.style.getPropertyValue('height')
+			return flexGrow == '1' && wrapperElParentHeight !== 'auto'
+		}
+		return false
+	}
+
+	private clearCalcHeightTimer() {
+		if (this.calcHeightTimer != null) {
+			clearTimeout(this.calcHeightTimer)
+			this.calcHeightTimer = null
+		}
+	}
+
+	calcHeight() {
+		if (this.autoHeight && !this.mounted) return
+		// 如果 minHeight < this.defaultHeight 时，不能设置 auto, 否则高度会自适应为内容高度
+		let textAreaComponentHeight: number | string = this.textareaHeight;
+		// 保证高度不小于最小高度
+		if (this.minHeight > textAreaComponentHeight) {
+		  textAreaComponentHeight = this.minHeight
+		  // 保证高度不大于最大高度
+		} else if (this.maxHeight >= 0 && this.maxHeight < textAreaComponentHeight) {
+		  textAreaComponentHeight = this.maxHeight
+		} else if (this.autoHeight) {
+			// 设置 auto-height 时，height 无效
+		  // 如果 minHeight < this.defaultHeight, 高度应为 min-height 和 this.calculatedHeight 中较大值
+		  if (this.minHeight >= 0 && this.minHeight < textAreaComponentHeight) {
+		    textAreaComponentHeight = Math.max(this.minHeight, this.calculatedHeight)
+		  } else {
+		    textAreaComponentHeight = 'auto'
+		  }
+		}
+		// 拉齐与 dom1 表现一致，flex-grow:1 优先级高于 auto-height
+		if(this.isWrapperFlexGrow1()){
+			this.updateTextareaHeight('100%')
+			return
+		}
+
+		if (this.autoHeight) {
+			if (this.calcHeightTimer != null) {
+				this.clearCalcHeightTimer()
+			}
+			// 挂载和样式同步阶段可能连续触发多次高度计算，这里合并到最后一次测量。
+			this.calcHeightTimer = setTimeout(() => {
+				this.calcHeightTimer = null
+				// 更新 value 后无法同步获取更新后的文字所占大小，需要延迟，未找到合适的回调或其他时机
+				this.updateCalculatedHeight()
+
+				if (this.minHeight >= 0 && this.calculatedHeight < this.minHeight) {
+					this.calculatedHeight = this.minHeight
+				}
+				if (this.calcTextAreaMinHeight >= 0 && this.calculatedHeight < this.calcTextAreaMinHeight) {
+					this.calculatedHeight = this.calcTextAreaMinHeight
+				}
+				if (this.maxHeight >= 0 && this.calculatedHeight > this.maxHeight) {
+					this.calculatedHeight = this.maxHeight
+					textAreaComponentHeight = this.maxHeight
+				}
+				// 如果内容高度不等于前面计算的组件高度，组件高度需要设置为 auto
+				if (textAreaComponentHeight !== 'auto' && this.calculatedHeight !== textAreaComponentHeight) {
+					textAreaComponentHeight = 'auto'
+				}
+				// dom2 auto 不适用，因为 element 高度是靠 textarea 撑起的，auto 时 textarea 没高度，导致高度塌陷
+				if(textAreaComponentHeight == 'auto'){
+					if(this.params.value == ''){
+						// 为空时，textarea 没有内容撑起高度, 仅设置默认字体大小高度时与输入一行文本的高度差3px,但没找出具体原因，先通过实验得出这个差值
+						textAreaComponentHeight = this.calculatedHeight + 3
+					}else{
+						textAreaComponentHeight = this.calculatedHeight
+					}
+				}
+				this.updateTextareaHeight(textAreaComponentHeight as number)
+			}, 10)
+		}else{
+			this.updateTextareaHeight(textAreaComponentHeight as number)
+		}
+	}
+	updateTextareaHeight(height: number | string) {
+		this._params.height = height;
+		this.updateParams();
+		const value = typeof height === 'number' ? `${height}px` : height;
+		this.element.style.setProperty('height', value);
+	}
+
+	destroy() {
+		this.clearCalcHeightTimer()
+		this.lineChangeEvent = null
+		super.destroy()
+	}
+
+	// @ts-expect-error
+	triggerFocus() {
+		super.triggerFocus()
+		// 需要在聚焦完成后再设置 selection
+		this.updateSelectionTimer = setTimeout(() => {
+			if (this.selection.end !== -1 && this.selection.end >= this.selection.start) {
+				this.controller.setTextSelection(this.selection.start, this.selection.end)
+				this.cursor = this.selection.end
+			} else if (this.params.value!.length > 0) {
+				const cursor = this.resolveCursorPosition(-1)
+				this.controller.caretPosition(cursor)
+				this.cursor = cursor
+				this.updateParams()
+			}
+		}, 0)
+	}
+
+	updateConfirmType(value: string) {
+		const type = CONFIRM_TYPES.get(value)
+		if (type !== null) {
+			this.params.enterKeyType = type
+			this.updateParams()
+		}
+	}
+
+	updateCursor(value: number) {
+		if (this.updateCursorTimer != null) {
+			clearTimeout(this.updateCursorTimer)
+		}
+		// 需要等 textarea 聚焦后再设置才生效
+		this.updateCursorTimer = setTimeout(() => {
+			const cursor = this.resolveCursorPosition(value)
+			this.controller.caretPosition(cursor)
+			this.cursor = cursor
+		}, 0)
+	}
+
+	// @ts-expect-error
+	protected getCurrentCursorPosition(): number {
+		try {
+			const positionInfo = this.controller.getCaretOffset()
+			this.cursor = positionInfo.index
+		} catch (e) {
+			return this.cursor
+		}
+		return this.cursor
+	}
+
+	// @ts-expect-error
+	dispatchInput(value: string, cursor?: number | null) {
+		super.dispatchInput(value, cursor)
+		this.calcHeight()
+		if (!this.isFocusing) return
+		this.updateLineCount()
+		this.inputEvent?.(new UniInputEventEvent({ value, cursor } as InputEventDetail))
+	}
+
+	updateLineChangeEvent(event: InputEvent) {
+		this.lineChangeEvent = event
+	}
+	dispatchLineChange() {
+		const textRect = this.controller.getTextContentRect()
+		// @ts-expect-error
+		this.textRectHeight = px2vp(textRect.height)
+		this.lineChangeEvent?.(new UniCustomEvent('linechange', new UniCustomEventOptions<LineChangeEventDetail>({ lineCount: this.lineCount, height: this.textRectHeight } as LineChangeEventDetail)))
+	}
+	updateLineCount() {
+		const newLineCount = this.controller.getTextContentLineCount()
+		if (this.lineCount !== newLineCount) {
+			this.lineCount = newLineCount
+			this.dispatchLineChange()
+		}
+	}
+}
+
+// @ts-expect-error
+class UniInputFileElement extends UniViewElementImpl {
+	_value: string = ''
+	onValueChange: (value: string) => void = () => {}
+
+	updateValue(value: string) {
+		if (this._value === value) {
+			return
+		}
+		this._value = value
+	}
+
+	get value(): string {
+		return this._value
+	}
+
+	set value(value: string) {
+		if (this._value === value) {
+			return
+		}
+		this._value = value
+		this.onValueChange(value)
+	}
+}
+
+export class UniInputElement extends UniInputFileElement {
+	// @ts-expect-error
+	override tagName: string = 'INPUT'
+	// @ts-expect-error
+	override nodeName: string = 'INPUT'
+}
+
+export class UniTextareaElement extends UniInputFileElement {
+	// @ts-expect-error
+	override tagName: string = 'TEXTAREA'
+	// @ts-expect-error
+	override nodeName: string = 'TEXTAREA'
+}

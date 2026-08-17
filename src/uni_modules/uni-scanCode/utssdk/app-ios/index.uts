@@ -22,6 +22,11 @@ export function scanCode(options : ScanCodeOptions | null) : void {
 	const successEventName = `${baseEventName}_success`
 	const failEventName = `${baseEventName}_fail`
 	const onlyFromCamera = options?.onlyFromCamera ?? false
+	let scanTypeValue = ""
+	options?.scanType?.forEach((item, index) => {
+		scanTypeValue += index == 0 ? item : `,${item}`
+	})
+	const scanTypeQuery = scanTypeValue.length == 0 ? "" : `&scanType=${scanTypeValue}`
 
 	uni.$on(successEventName, (result : UTSJSONObject) => {
 		const successResult : ScanCodeSuccess = {
@@ -42,7 +47,7 @@ export function scanCode(options : ScanCodeOptions | null) : void {
 	uni.openDialogPage({
 		triggerParentHide: true,
 		animationType: "zoom-fade-out",
-		url: `/uni_modules/uni-scanCode/pages/scanCode/scanCode?successEventName=${successEventName}&failEventName=${failEventName}&onlyFromCamera=${onlyFromCamera}`,
+		url: `/uni_modules/uni-scanCode/pages/scanCode/scanCode?successEventName=${successEventName}&failEventName=${failEventName}&onlyFromCamera=${onlyFromCamera}${scanTypeQuery}`,
 		fail(err) {
 			uni.$off(successEventName);
 			uni.$off(failEventName);
@@ -189,5 +194,4 @@ export function utsNativeProcessScanBarCodeWithPhoto(filePath : string, scanType
 			}
 		),
 	};
-	getIosScanner()?.processScanBarCodeWithPhoto(options);
-}
+	getIosScanner()?.processScanBarCodeWithPhoto(options);}

@@ -32,13 +32,22 @@
   },
   "uni_modules": {
     "uni-ext-api": {
+			"provider": {
+			  "service": "share",
+			  "app": {
+			      "js": false,
+			      "kotlin": true,
+			      "swift": true,
+			      "arkts": true
+			  }
+			},
       "uni": {
         "share": {
           "name": "share",
           "app": {
             "js": false,
-            "kotlin": false,
-            "swift": false,
+            "kotlin": true,
+            "swift": true,
             "arkts": true
           }
         }

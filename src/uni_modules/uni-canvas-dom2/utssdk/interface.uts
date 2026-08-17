@@ -1,4 +1,12 @@
+
+// #ifndef APP-ANDROID
 export type CreateCanvasContextAsyncSuccessCallback = (context: CanvasContext) => void
+// #endif
+// #ifdef APP-ANDROID
+import JSAble from "io.dcloud.uniappxv.js_invoke.JSAble"
+export type CreateCanvasContextAsyncSuccessCallback = (context: JSAble) => void
+// #endif
+
 export type CreateCanvasContextAsyncFailCallback = (error: UniError) => void
 export type CreateCanvasContextAsyncCompleteCallback = () => void
 
@@ -7,7 +15,7 @@ export type RequestAnimationFrameCallback = (time: number) => void
 // #ifdef WEB
 export type CanvasContextToBlobCallback = (blob: Blob) => void
 // #endif
-
+// #ifndef APP-IOS || APP-ANDROID
 export interface CanvasContext {
     getContext(type: '2d'): CanvasRenderingContext2D | null
 
@@ -17,12 +25,10 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "x"
      *      }
@@ -82,20 +88,19 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
-     *        "unixVer": "4.25"
+     *        "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
-     *          "unixVer": "4.25"
+     *          "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *  },
      *  "web": {
@@ -152,20 +157,19 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
-     *        "unixVer": "4.25"
+     *        "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
-     *          "unixVer": "4.25"
+     *          "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *  },
      *  "web": {
@@ -222,20 +226,19 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
-     *        "unixVer": "4.25"
+     *        "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
-     *          "unixVer": "4.25"
+     *          "unixVer": "4.25",
+     *          "unixVaporUtsPlugin": "x"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *  },
      *  "web": {
@@ -292,20 +295,19 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
-     *        "unixVer": "4.25"
+     *        "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
-     *          "unixVer": "4.25"
+     *          "unixVer": "4.25",
+     *          "unixVaporUtsPlugin": "x"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *  },
      *  "web": {
@@ -362,20 +364,19 @@ export interface CanvasContext {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
-     *        "unixVer": "4.25"
+     *        "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
-     *          "unixVer": "4.25"
+     *          "unixVer": "4.25",
+     *          "unixVaporUtsPlugin": "x"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *  },
      *  "web": {
@@ -432,20 +433,19 @@ export interface CanvasContext {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "x",
-     *       "unixVer": "4.25"
+     *       "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "x",
-     *       "unixVer": "4.25"
+     *       "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *     },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *   },
      *   "web": {
@@ -502,20 +502,19 @@ export interface CanvasContext {
      * @uniPlatform {
      *   "app": {
      *     "android": {
-     *       "osVer": "5.0",
      *       "uniVer": "x",
-     *       "unixVer": "4.25"
+     *       "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *     },
      *     "ios": {
-     *       "osVer": "12.0",
      *       "uniVer": "x",
-     *       "unixVer": "4.25"
+     *       "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *     },
      *      "harmony": {
-     *        "osVer": "5.0.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *   },
      *   "web": {
@@ -568,6 +567,497 @@ export interface CanvasContext {
      */
     cancelAnimationFrame(taskId: number): void;
 }
+// #endif
+// #ifdef APP-IOS
+export interface CanvasContext extends JSExport {
+  getContext(type: '2d'): CanvasRenderingContext2D | null
+
+  /**
+   * 返回一个包含图片展示的 data URI
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.25",
+   *        "unixVaporUtsPlugin": "x"
+   *      },
+   *      "ios": {
+   *          "uniVer": "x",
+   *          "unixVer": "4.25",
+   *          "unixVaporUtsPlugin": "x"
+   *      },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.61",
+   *        "unixVaporVer": "5.0"
+   *      }
+   *  },
+   *  "web": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.25"
+   *  },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  toDataURL(): string
+  /**
+   * 返回一个包含图片展示的 data URI
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.25",
+   *        "unixVaporUtsPlugin": "x"
+   *      },
+   *      "ios": {
+   *          "uniVer": "x",
+   *          "unixVer": "4.25",
+   *        "unixVaporUtsPlugin": "x"
+   *      },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.61",
+   *        "unixVaporVer": "5.0"
+   *      }
+   *  },
+   *  "web": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.25"
+   *  },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  toDataURL(type: string): string
+  /**
+   * 返回一个包含图片展示的 data URI
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.25",
+   *        "unixVaporUtsPlugin": "x"
+   *      },
+   *      "ios": {
+   *          "uniVer": "x",
+   *          "unixVer": "4.25",
+   *          "unixVaporUtsPlugin": "x"
+   *      },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.61",
+   *        "unixVaporVer": "5.0"
+   *      }
+   *  },
+   *  "web": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.25"
+   *  },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  toDataURL(type: string, encoderOptions: any): string
+  /**
+   * 返回一个包含图片展示的 data URI
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.25",
+   *        "unixVaporUtsPlugin": "x"
+   *      },
+   *      "ios": {
+   *          "uniVer": "x",
+   *          "unixVer": "4.25",
+   *          "unixVaporUtsPlugin": "x"
+   *      },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.61",
+   *        "unixVaporVer": "5.0"
+   *      }
+   *  },
+   *  "web": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.25"
+   *  },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  createImage(): Image
+  /**
+   * 返回一个包含图片展示的 data URI
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.25",
+   *        "unixVaporUtsPlugin": "x"
+   *      },
+   *      "ios": {
+   *          "uniVer": "x",
+   *          "unixVer": "4.25",
+   *          "unixVaporUtsPlugin": "x"
+   *      },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.61",
+   *        "unixVaporVer": "5.0"
+   *      }
+   *  },
+   *  "web": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.25"
+   *  },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  createPath2D(): Path2D
+  /**
+   * 在下一次重绘之前，调用用户提供的回调函数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "4.25",
+   *       "unixVaporUtsPlugin": "x"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "4.25",
+   *       "unixVaporUtsPlugin": "x"
+   *     },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.61",
+   *        "unixVaporVer": "5.0"
+   *      }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "4.25"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  readonly requestAnimationFrame : JSValue|null;
+  /**
+   * 取消一个先前通过调用 uni.requestAnimationFrame() 方法添加到计划中的动画帧请求
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "4.25"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "4.25"
+   *     },
+   *      "harmony": {
+   *        "uniVer": "x",
+   *        "unixVer": "4.61",
+   *        "unixVaporVer": "5.0"
+   *      }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "4.25"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  readonly cancelAnimationFrame : JSValue|null;
+}
+// #endif
+// #ifdef APP-ANDROID
+
+// #endif
 
 export type CreateCanvasContextAsyncOptions = {
     /**
@@ -575,12 +1065,10 @@ export type CreateCanvasContextAsyncOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.25"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
      *          "unixVer": "4.25"
      *      }
@@ -649,14 +1137,14 @@ export type CreateCanvasContextAsyncOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
-     *        "unixVer": "4.25"
+     *        "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
-     *          "unixVer": "4.25"
+     *          "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      }
      *  },
      *  "web": {
@@ -713,14 +1201,14 @@ export type CreateCanvasContextAsyncOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
-     *        "unixVer": "4.25"
+     *        "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
-     *          "unixVer": "4.25"
+     *          "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      }
      *  },
      *  "web": {
@@ -777,14 +1265,14 @@ export type CreateCanvasContextAsyncOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
-     *        "unixVer": "4.25"
+     *        "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
-     *          "unixVer": "4.25"
+     *          "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      }
      *  },
      *  "web": {
@@ -841,14 +1329,14 @@ export type CreateCanvasContextAsyncOptions = {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
-     *        "unixVer": "4.25"
+     *        "unixVer": "4.25",
+     *        "unixVaporUtsPlugin": "x"
      *      },
      *      "ios": {
-     *          "osVer": "10.0",
      *          "uniVer": "x",
-     *          "unixVer": "4.25"
+     *          "unixVer": "4.25",
+     *          "unixVaporUtsPlugin": "x"
      *      }
      *  },
      *  "web": {
@@ -912,20 +1400,19 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "x",
-     *      "unixVer": "4.25"
+     *      "unixVer": "4.25",
+     *      "unixVaporUtsPlugin": "x"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "x",
-     *      "unixVer": "4.25"
+     *      "unixVer": "4.25",
+     *      "unixVaporUtsPlugin": "x"
      *    },
      *    "harmony": {
-     *      "osVer": "5.0.0",
      *      "uniVer": "x",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "web": {

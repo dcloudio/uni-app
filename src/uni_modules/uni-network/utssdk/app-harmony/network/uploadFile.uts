@@ -2,7 +2,6 @@ import http from '@ohos.net.http'
 import buffer from '@ohos.buffer';
 import fs from '@ohos.file.fs'
 import {
-    getRealPath,
     Emitter,
     getCurrentMP,
 } from '@dcloudio/uni-runtime'
@@ -24,6 +23,7 @@ import {
 import {
     getClientCertificate,
     parseUrl,
+    getFsPath,
 } from './utils.uts'
 import {
     getCookieSync,
@@ -74,7 +74,7 @@ class UploadTask implements UniUploadTask {
 }
 
 function readFile(filePath: string): ArrayBuffer {
-    const readFilePath = getRealPath(filePath) as string
+    const readFilePath = getFsPath(filePath) as string
     const file = fs.openSync(readFilePath, fs.OpenMode.READ_ONLY)
     const stat = fs.statSync(file.fd)
     const data = new ArrayBuffer(stat.size)

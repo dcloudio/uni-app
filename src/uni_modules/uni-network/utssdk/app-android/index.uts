@@ -43,6 +43,7 @@ class RunnableTask extends Runnable {
 
 
 class RequestNetworkListener<T> extends NetworkRequestListener {
+	private completed : boolean = false;
 	private param : RequestOptions<T> | null = null;
 	private headers : UTSJSONObject = {};
 	private looper : Looper | null = null;
@@ -88,6 +89,10 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 	}
 
 	override onComplete(option : UTSJSONObject) : void {
+		if (this.completed) {
+			return
+		}
+		this.completed = true
 		let kParam = this.param;
 		let result = {};
 		if (kParam != null) {
@@ -132,6 +137,7 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 			} else {
 				result['statusCode'] = option['statusCode'];
 				if (option['originalData'] == null) {
+					let type = kParam.responseType != null ? kParam.responseType : kParam.dataType;
 					if ("java.lang.Object".equals(this.clzName, true)) {
 						let errMsg = option['errorMsg'];
 						if (errMsg != null) {
@@ -146,7 +152,7 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 						}
 					} else if ("java.lang.String".equals(this.clzName, true)) {
 						result['data'] = option['errorMsg'] ?? "error";
-					} else if ("io.dcloud.uts.ArrayBuffer".equals(this.clzName, true)) {
+					} else if ("io.dcloud.uts.ArrayBuffer".equals(this.clzName, true) || "ArrayBuffer".equals(type, true)) {
 						let textDecoder : TextEncoder = new TextEncoder()
 						let error : string = (option['errorMsg'] ?? "error") as string
 						let uint8Array = textDecoder.encode(error)
@@ -188,13 +194,12 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 						}
 					}
 					let data : any | null;
-					if ("io.dcloud.uts.ArrayBuffer".equals(this.clzName, true)) {
+					let type = kParam.responseType != null ? kParam.responseType : kParam.dataType;
+					if ("io.dcloud.uts.ArrayBuffer".equals(this.clzName, true) || "ArrayBuffer".equals(type, true)) {
 						let by = option['originalData'] as ByteArray
 						data = ArrayBuffer.fromByteBuffer(ByteBuffer.wrap(by))
 					} else {
 						let strData = this.readAsString(option['originalData'] as ByteArray, charset);
-
-						let type = kParam.responseType != null ? kParam.responseType : kParam.dataType;
 						if (type == null) {
 							type = charset;
 						}
@@ -335,6 +340,7 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 
 
 class UploadNetworkListener implements NetworkUploadFileListener {
+	private completed : boolean = false;
 	private param : UploadFileOptions | null = null;
 	public progressListeners = new ArrayList<UploadFileProgressUpdateCallback>();
 	private looper : Looper | null = null;
@@ -355,6 +361,10 @@ class UploadNetworkListener implements NetworkUploadFileListener {
 	}
 
 	onComplete(option : UTSJSONObject) {
+		if (this.completed) {
+			return
+		}
+		this.completed = true
 		let kParam = this.param;
 		if (kParam != null) {
 			const errorMsg = option["errorMsg"];
@@ -408,6 +418,7 @@ class UploadNetworkListener implements NetworkUploadFileListener {
 	}
 }
 class DownloadNetworkListener implements NetworkDownloadFileListener {
+	private completed : boolean = false;
 	private param : DownloadFileOptions | null = null;
 	public progressListeners = new ArrayList<DownloadFileProgressUpdateCallback>();
 	private looper : Looper | null = null;
@@ -427,6 +438,10 @@ class DownloadNetworkListener implements NetworkDownloadFileListener {
 		}
 	}
 	onComplete(option : UTSJSONObject) {
+		if (this.completed) {
+			return
+		}
+		this.completed = true
 		let kParam = this.param;
 		if (kParam != null) {
 			let errMsg = option['errorMsg'];

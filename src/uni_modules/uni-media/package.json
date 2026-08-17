@@ -48,8 +48,7 @@
 						"js": false,
 						"kotlin": false,
 						"swift": false,
-						"arkts": true,
-                        "x-arkts": false
+						"arkts": "uni1"
 					}
 				},
 				"closePreviewImage": {
@@ -58,8 +57,7 @@
 						"js": false,
 						"kotlin": false,
 						"swift": false,
-						"arkts": true,
-                        "x-arkts": false
+						"arkts": "uni1"
 					}
 				},
 				"getImageInfo": {

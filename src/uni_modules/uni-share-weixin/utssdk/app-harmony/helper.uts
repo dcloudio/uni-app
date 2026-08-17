@@ -5,9 +5,13 @@ import { bundleManager } from '@kit.AbilityKit'
 import { image } from '@kit.ImageKit'
 import { ShareWeixinErrorCode, SHARE_WEIXIN_UNI_ERROR_CODES } from '../unierror.uts'
 import { BusinessError } from '@kit.BasicServicesKit';
-import { getRealPath } from "@dcloudio/uni-runtime";
+import { getRealPath, uni, DownloadFileSuccess, DownloadFileFail, DownloadFileOptions } from "@dcloudio/uni-runtime";
 
 class Helper {
+
+  public static isNetworkPath(path : string) : boolean {
+    return /^(http|https):\/\//.test(path);
+  }
 
   public static getBase64(array : ArrayBuffer) : string {
     let base64Helper = new util.Base64Helper()
@@ -39,9 +43,27 @@ class Helper {
     })
   }
 
+  public static async uniDownloadImage(url : string) : Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      if (Helper.isNetworkPath(url)) {
+        uni.downloadFile({
+          url,
+          success: (res: DownloadFileSuccess) => {
+            resolve(res.tempFilePath);
+          },
+          fail: (err: DownloadFileFail) => {
+            reject(Helper.getError(ShareWeixinErrorCode.DOWNLOAD_IMAGE_ERROR, err.errMsg));
+          },
+        } as DownloadFileOptions);
+      } else {
+        resolve(url)
+      }
+    });
+  }
+
   public static async getImageBuffer(imageUrl : string) : Promise<ArrayBuffer> {
     const imageRealPath = getRealPath(imageUrl);
-    const isNetworkImage = /^(http|https):\/\//.test(imageRealPath);
+    const isNetworkImage = Helper.isNetworkPath(imageRealPath);
     return isNetworkImage ? await Helper.downloadImage(imageRealPath) : Helper.getLocalFile(imageRealPath)
   }
 
