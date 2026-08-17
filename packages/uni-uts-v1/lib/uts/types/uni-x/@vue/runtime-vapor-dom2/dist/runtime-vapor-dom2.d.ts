@@ -64,6 +64,7 @@ type VaporScopedSlot<T extends UniSharedData = any> = ((slotProps: any, sharedDa
 type DynamicSlot = {
   name: string;
   fn: VaporSlot;
+  key?: unknown;
 };
 type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
 export type DynamicSlotSource = StaticSlots | DynamicSlotFn;
@@ -143,8 +144,6 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
   propsDefaults: Record<string, any> | null;
   slots: StaticSlots;
   scopeId?: string | null;
-  rawPropsRef?: ShallowRef<any>;
-  rawSlotsRef?: ShallowRef<any>;
   emit: EmitFn;
   emitted: Record<string, boolean> | null;
   expose: (exposed: Record<string, any>) => void;
@@ -279,7 +278,7 @@ interface SharedDataSelector {
   reset(): void;
 }
 export declare function createSharedDataSelector(source: () => any): SharedDataSelector;
-export declare function createSharedDataForSlots<S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, rawSource: Source, getSlot: (sharedData: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: IndexOfKey<KeyOf<Source>>) => DynamicSlot): DynamicSlot[];
+export declare function createSharedDataForSlots<S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, rawSource: () => Source, renderSlot: (sharedData: S, item: ShallowRef<ItemOf<Source>>, key?: ShallowRef<KeyOf<Source>>, index?: ShallowRef<IndexOfKey<KeyOf<Source>> | undefined>) => VaporSlot, getName: (item: ItemOf<Source>, key: KeyOf<Source>, index?: IndexOfKey<KeyOf<Source>>) => unknown, setName: (sharedData: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: IndexOfKey<KeyOf<Source>>) => unknown, getKey?: (item: ItemOf<Source>, key: KeyOf<Source>, index?: IndexOfKey<KeyOf<Source>>) => unknown): () => DynamicSlot[];
 export declare function getSharedDataRestElement(val: any, keys: string[]): any;
 export declare function getSharedDataDefaultValue(val: any, defaultVal: any): any;
 //#endregion

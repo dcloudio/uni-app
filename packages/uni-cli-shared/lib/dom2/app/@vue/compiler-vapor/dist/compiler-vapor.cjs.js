@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.3
+  * @vue/compiler-vapor v3.6.0-rc.4
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -460,7 +460,7 @@ var TransformContext = class TransformContext {
 	isSingleRootChild(childInfo) {
 		if (this.inVFor || !childInfo.hasSingleRootChild) return false;
 		if (this.node.type === 0) return true;
-		return this.node.type === 1 && this.node.tagType === 3 && !!this.parent && this.isSingleRoot;
+		return this.node.type === 1 && (this.node.tagType === 3 || isTransitionNode(this.node)) && !!this.parent && this.isSingleRoot;
 	}
 };
 function hasSingleRootChild(children) {
@@ -2398,7 +2398,7 @@ function genStaticSlots({ slots }, context, dynamicSlots) {
 	return genMulti(DELIMITERS_OBJECT_NEWLINE, ...args);
 }
 function genDynamicSlots(slots, context) {
-	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, true)));
+	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, slot.slotType !== 2)));
 }
 function genDynamicSlot(slot, context, withFunction = false) {
 	let frag;
@@ -2425,26 +2425,65 @@ function genBasicDynamicSlot(slot, context) {
 	return genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...genExpression(name, context)], ["fn: ", ...genSlotBlockWithProps(fn, context, false)]);
 }
 function genLoopSlot(slot, context) {
-	const { name, fn, loop } = slot;
+	const { name, fn, loop, keyProp } = slot;
 	const { value, key, index, source } = loop;
 	const rawValue = value && value.content;
 	const rawKey = key && key.content;
 	const rawIndex = index && index.content;
-	const idMap = {};
-	if (rawValue) idMap[rawValue] = rawValue;
-	if (rawKey) idMap[rawKey] = rawKey;
-	if (rawIndex) idMap[rawIndex] = rawIndex;
-	const slotExpr = genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...context.withId(() => genExpression(name, context), idMap)], ["fn: ", ...context.withId(() => genSlotBlockWithProps(fn, context, false), idMap)]);
-	return [...genCall(context.helper("createForSlots"), genExpression(source, context), [
+	const idToPathMap = parseValueDestructure(value, context);
+	const [depth, exitScope] = context.enterScope();
+	const itemVar = `_for_item${depth}`;
+	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, context.options.expressionPlugins);
+	idMap[itemVar] = null;
+	const args = [itemVar];
+	if (rawKey) {
+		const keyVar = `_for_key${depth}`;
+		args.push(keyVar);
+		idMap[rawKey] = `${keyVar}.value`;
+		idMap[keyVar] = null;
+	} else if (rawIndex) args.push("_");
+	if (rawIndex) {
+		const indexVar = `_for_index${depth}`;
+		args.push(indexVar);
+		idMap[rawIndex] = `${indexVar}.value`;
+		idMap[indexVar] = null;
+	}
+	const renderSlot = [
 		...genMulti([
 			"(",
 			")",
 			", "
-		], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex),
+		], ...args),
+		" => ",
+		...context.withId(() => genSlotBlockWithProps(fn, context, false), idMap)
+	];
+	exitScope();
+	const rawIdMap = {};
+	if (rawKey) rawIdMap[rawKey] = null;
+	if (rawIndex) rawIdMap[rawIndex] = null;
+	idToPathMap.forEach((_, id) => rawIdMap[id] = null);
+	const rawParams = genMulti([
+		"(",
+		")",
+		", "
+	], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex);
+	const getName = [
+		...rawParams,
 		" => (",
-		...slotExpr,
+		...context.withId(() => genExpression(name, context), rawIdMap),
 		")"
-	])];
+	];
+	const getKey = keyProp && [
+		...rawParams,
+		" => (",
+		...context.withId(() => genExpression(keyProp, context), rawIdMap),
+		")"
+	];
+	return [...genCall(context.helper("createForSlots"), [
+		"() => (",
+		...genExpression(source, context),
+		")"
+	], renderSlot, getName, getKey)];
 }
 function genConditionalSlot(slot, context) {
 	const { condition, positive, negative } = slot;
@@ -4047,7 +4086,8 @@ function dedupeProperties(results) {
 		const name = prop.key.content;
 		const existing = knownProps.get(name);
 		if (existing && existing.handler === prop.handler) {
-			if (name === "style" || name === "class" || prop.handler || name === "hover-class") mergePropValues(existing, prop);
+			if (prop.handler) deduped.push(prop);
+			else if (name === "style" || name === "class" || name === "hover-class") mergePropValues(existing, prop);
 		} else {
 			knownProps.set(name, prop);
 			deduped.push(prop);
@@ -4938,13 +4978,16 @@ function transformTemplateSlot(node, dir, context) {
 			};
 			ifNode.negative = negative;
 		} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(30, vElse.loc));
-	} else if (vFor) if (vFor.forParseResult) registerDynamicSlot(slots, {
-		slotType: 2,
-		name: arg,
-		fn: block,
-		loop: vFor.forParseResult
-	});
-	else context.options.onError((0, _vue_compiler_dom.createCompilerError)(32, vFor.loc));
+	} else if (vFor) if (vFor.forParseResult) {
+		const keyProp = findProp$1(node, "key");
+		registerDynamicSlot(slots, {
+			slotType: 2,
+			name: arg,
+			fn: block,
+			loop: vFor.forParseResult,
+			keyProp: keyProp && propToExpression(keyProp)
+		});
+	} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(32, vFor.loc));
 	return onExit;
 }
 function ensureStaticSlots(slots) {

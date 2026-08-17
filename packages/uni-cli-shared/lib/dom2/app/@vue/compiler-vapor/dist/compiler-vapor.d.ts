@@ -21832,6 +21832,7 @@ type VaporSlot = BlockFn & {
 type DynamicSlot = {
   name: string;
   fn: VaporSlot;
+  key?: unknown;
 };
 type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
 type DynamicSlotSource = StaticSlots | DynamicSlotFn;
@@ -21852,10 +21853,10 @@ interface VaporKeepAliveContext {
 //#region packages/runtime-vapor/src/fragment.d.ts
 declare class VaporFragment<T extends Block = Block> implements TransitionOptions {
   /**
-  * @internal marker for duck typing to avoid direct instanceof check
-  * which prevents tree-shaking of VaporFragment
+  * @internal fragment protocol flags. Role checks use a shared field instead
+  * of class references so unused fragment implementations remain tree-shakable.
   */
-  readonly __vf = true;
+  readonly __vf: number;
   $key?: any;
   $transition?: VaporTransitionHooks | undefined;
   nodes: T;
@@ -21870,14 +21871,14 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   onRemove?: (() => void)[];
   onBeforeUpdate?: (() => void)[];
   onUpdated?: ((nodes?: Block) => void)[];
-  constructor(nodes: T);
+  constructor(nodes: T, flags?: number);
 }
 declare class RenderContextFragment<T extends Block = Block> extends VaporFragment<T> {
   readonly renderInstance: GenericComponentInstance$1 | null;
   readonly slotOwner: VaporComponentInstance | null;
   readonly keepAliveCtx?: VaporKeepAliveContext | null;
   readonly slotBoundary: SlotBoundaryContext | null;
-  constructor(nodes: T);
+  constructor(nodes: T, flags?: number);
   protected runWithRenderCtx<R>(fn: () => R, scope?: EffectScope$1): R;
 }
 declare class ForFragment extends VaporFragment<Block[]> {
@@ -21886,11 +21887,6 @@ declare class ForFragment extends VaporFragment<Block[]> {
   onReset(fn: () => void): void;
 }
 declare class DynamicFragment extends RenderContextFragment {
-  /**
-  * @internal marker for duck typing to avoid direct instanceof check
-  * which prevents tree-shaking of DynamicFragment
-  */
-  readonly __df = true;
   anchor: Node;
   scope: EffectScope$1 | undefined;
   current?: BlockFn;
@@ -21901,12 +21897,11 @@ declare class DynamicFragment extends RenderContextFragment {
   };
   anchorLabel?: string;
   keyed?: boolean;
-  isSlot?: boolean;
   nativeChildren?: boolean;
   inTransition?: boolean;
   hasFallthroughAttrs?: true;
   everUpdated: boolean;
-  constructor(anchorLabel?: string, keyed?: boolean, locate?: boolean, trackSlotBoundary?: boolean, onInvalid?: () => void, adoptAnchor?: Node);
+  constructor(anchorLabel?: string, keyed?: boolean, locate?: boolean, trackSlotBoundary?: boolean, onInvalid?: () => void, adoptAnchor?: Node, flags?: number);
   protected get autoHydrate(): boolean;
   update(render?: BlockFn, key?: any, noScope?: boolean): void;
   protected getBranchParent(): ParentNode | null;
@@ -22070,6 +22065,7 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   deferredHydrationBoundary?: () => void;
   hasFallthrough: boolean;
   shapeFlag?: number;
+  inputScope?: EffectScope;
   $key?: any;
   deferredKeepAliveUpdates?: DeferredKeepAliveUpdates;
   oncePropsCache?: Record<string | symbol, any>;
@@ -22338,7 +22334,7 @@ interface ForSelector {
 * the v-for via `frag.onReset(selector.reset)` to skip the per-item Map ops.
 */
 declare function createSelector(source: () => any): ForSelector;
-declare function createForSlots(rawSource: Source, getSlot: (item: any, key: any, index?: number) => DynamicSlot): DynamicSlot[];
+declare function createForSlots(rawSource: () => Source, renderSlot: (item: ShallowRef, key?: ShallowRef, index?: ShallowRef) => VaporSlot, getName: (item: any, key: any, index?: number) => unknown, getKey?: (item: any, key: any, index?: number) => unknown): () => DynamicSlot[];
 declare function getRestElement(val: any, keys: string[]): any;
 declare function getDefaultValue(val: any, getDefaultVal: () => any): any;
 //#endregion
@@ -22348,7 +22344,7 @@ declare function useVaporCssVars(getter: () => Record<string, string>): void;
 //#region packages/runtime-vapor/src/helpers/setKey.d.ts
 declare function setBlockKey(block: (Block & {
   $key?: any;
-}) | null | undefined, key: any): void;
+}) | null | undefined, key: any, overwrite?: boolean): void;
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateDynamicComponent.d.ts
 declare function createDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: LooseRawSlots | null, flags?: number): VaporFragment;
@@ -22429,6 +22425,7 @@ export interface IRSlotDynamicLoop {
   name: SimpleExpressionNode;
   fn: SlotBlockIRNode;
   loop: IRFor;
+  keyProp?: SimpleExpressionNode;
 }
 export interface IRSlotDynamicConditional {
   slotType: IRSlotType.CONDITIONAL;
