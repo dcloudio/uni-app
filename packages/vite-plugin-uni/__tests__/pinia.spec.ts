@@ -4,10 +4,8 @@ import { uniResolveIdPlugin } from '../src/configResolved/plugins/resolveId'
 
 jest.mock('@dcloudio/uni-cli-shared', () => ({
   ...jest.requireActual('@dcloudio/uni-cli-shared'),
-  resolvePinia: jest.fn(),
-  resolvePiniaDependencies: jest.fn(),
-  resolveProjectPinia: jest.fn(),
-  resolveVueI18nDependencies: jest.fn(),
+  resolvePiniaAlias: jest.fn(),
+  resolveVueI18nAlias: jest.fn(),
 }))
 
 describe('resolve pinia', () => {
@@ -19,7 +17,8 @@ describe('resolve pinia', () => {
   beforeEach(() => {
     process.env.UNI_APP_X = 'true'
     process.env.UNI_UTS_PLATFORM = 'web'
-    jest.mocked(uniCliShared.resolveVueI18nDependencies).mockReturnValue({})
+    jest.mocked(uniCliShared.resolvePiniaAlias).mockReturnValue({})
+    jest.mocked(uniCliShared.resolveVueI18nAlias).mockReturnValue({})
   })
 
   afterEach(() => {
@@ -38,32 +37,22 @@ describe('resolve pinia', () => {
   }
 
   test('leaves project pinia to vite', () => {
-    jest
-      .mocked(uniCliShared.resolveProjectPinia)
-      .mockReturnValue('/project/node_modules/pinia/index.js')
-    jest.mocked(uniCliShared.resolvePiniaDependencies).mockReturnValue({})
-
     const plugin = uniResolveIdPlugin({} as any)
 
     expect(resolveId(plugin, 'pinia')).toBeUndefined()
   })
 
-  test('resolves built-in pinia and its dependencies', () => {
-    const dependencies = {
+  test('resolves built-in pinia aliases', () => {
+    const piniaAliases = {
+      pinia: '/internal/pinia.mjs',
+      'pinia/package.json': '/internal/pinia/package.json',
       '@vue/devtools-api': '/internal/@vue/devtools-api.js',
     }
-    jest.mocked(uniCliShared.resolveProjectPinia).mockReturnValue(undefined)
-    jest
-      .mocked(uniCliShared.resolvePiniaDependencies)
-      .mockReturnValue(dependencies)
-    jest
-      .mocked(uniCliShared.resolvePinia)
-      .mockReturnValue('/internal/pinia.mjs')
+    jest.mocked(uniCliShared.resolvePiniaAlias).mockReturnValue(piniaAliases)
 
     const plugin = uniResolveIdPlugin({} as any)
 
-    expect(resolveId(plugin, 'pinia')).toBe('/internal/pinia.mjs')
-    Object.entries(dependencies).forEach(([id, filename]) => {
+    Object.entries(piniaAliases).forEach(([id, filename]) => {
       expect(resolveId(plugin, id)).toBe(filename)
     })
   })

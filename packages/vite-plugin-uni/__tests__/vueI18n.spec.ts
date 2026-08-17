@@ -4,10 +4,8 @@ import { uniResolveIdPlugin } from '../src/configResolved/plugins/resolveId'
 
 jest.mock('@dcloudio/uni-cli-shared', () => ({
   ...jest.requireActual('@dcloudio/uni-cli-shared'),
-  resolveProjectVueI18n: jest.fn(),
-  resolvePiniaDependencies: jest.fn(),
-  resolveVueI18n: jest.fn(),
-  resolveVueI18nDependencies: jest.fn(),
+  resolvePiniaAlias: jest.fn(),
+  resolveVueI18nAlias: jest.fn(),
 }))
 
 describe('resolve vue-i18n', () => {
@@ -19,7 +17,8 @@ describe('resolve vue-i18n', () => {
   beforeEach(() => {
     process.env.UNI_APP_X = 'true'
     process.env.UNI_UTS_PLATFORM = 'web'
-    jest.mocked(uniCliShared.resolvePiniaDependencies).mockReturnValue({})
+    jest.mocked(uniCliShared.resolvePiniaAlias).mockReturnValue({})
+    jest.mocked(uniCliShared.resolveVueI18nAlias).mockReturnValue({})
   })
 
   afterEach(() => {
@@ -38,35 +37,28 @@ describe('resolve vue-i18n', () => {
   }
 
   test('leaves project vue-i18n to vite', () => {
-    jest
-      .mocked(uniCliShared.resolveProjectVueI18n)
-      .mockReturnValue('/project/node_modules/vue-i18n/index.js')
-    jest.mocked(uniCliShared.resolveVueI18nDependencies).mockReturnValue({})
-
     const plugin = uniResolveIdPlugin({} as any)
 
     expect(resolveId(plugin, 'vue-i18n')).toBeUndefined()
   })
 
-  test('resolves built-in vue-i18n and its dependencies', () => {
-    const dependencies = {
+  test('resolves built-in vue-i18n aliases', () => {
+    const vueI18nAliases = {
+      'vue-i18n': '/internal/vue-i18n.mjs',
+      'vue-i18n/runtime': '/internal/vue-i18n.runtime.mjs',
+      'vue-i18n/package.json': '/internal/vue-i18n/package.json',
       '@intlify/core-base': '/internal/@intlify/core-base.mjs',
       '@intlify/message-compiler': '/internal/@intlify/message-compiler.mjs',
       '@intlify/shared': '/internal/@intlify/shared.mjs',
       '@vue/devtools-api': '/internal/@vue/devtools-api.js',
     }
-    jest.mocked(uniCliShared.resolveProjectVueI18n).mockReturnValue(undefined)
     jest
-      .mocked(uniCliShared.resolveVueI18nDependencies)
-      .mockReturnValue(dependencies)
-    jest
-      .mocked(uniCliShared.resolveVueI18n)
-      .mockReturnValue('/internal/vue-i18n.mjs')
+      .mocked(uniCliShared.resolveVueI18nAlias)
+      .mockReturnValue(vueI18nAliases)
 
     const plugin = uniResolveIdPlugin({} as any)
 
-    expect(resolveId(plugin, 'vue-i18n')).toBe('/internal/vue-i18n.mjs')
-    Object.entries(dependencies).forEach(([id, filename]) => {
+    Object.entries(vueI18nAliases).forEach(([id, filename]) => {
       expect(resolveId(plugin, id)).toBe(filename)
     })
   })
