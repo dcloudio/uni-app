@@ -1,3 +1,6 @@
+/**
+ * Worker错误码
+ */
 export type WorkerOnErrorCallbackResultErrorCode =
 /**
  * worker 运行错误
@@ -32,14 +35,26 @@ export type WorkerOnErrorCallbackResultErrorCode =
  */
 5000511
 
+/**
+ * Worker错误回调参数
+ */
 export interface WorkerOnErrorCallbackResult extends IUniError {
   errCode: WorkerOnErrorCallbackResultErrorCode
 };
-//监听消息Callback
+
+/**
+ * 监听消息Callback
+ */
 export type WorkerOnMessageCallback = (message: any) => void;
-//Worker错误callback
+
+/**
+ * Worker错误callback
+ */
 export type WorkerOnErrorCallback = (result: WorkerOnErrorCallbackResult) => void;
-//发送消息扩展参数
+
+/**
+ * 主线程/Worker线程 发送消息的参数
+ */
 export type WorkerPostMessageOptions = {
   /**
    * 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false
@@ -101,18 +116,189 @@ export type WorkerPostMessageOptions = {
    */
   transfer?: any[]
 }
-//Worker对象
+
+/**
+ * worker内的环境变量
+ */
+export type WorkerEnv = {
+    /**
+    * 文件系统中的用户目录路径 (本地路径)
+    *
+    * @uniPlatform {
+    *  "app": {
+    *    "android": {
+    *      "uniVer": "x",
+    *      "unixVer": "x",
+    *      "unixVaporVer": "x",
+    *      "uniUtsPlugin": "x",
+    *      "unixUtsPlugin": "x",
+    *      "unixVaporUtsPlugin": "x"
+    *    },
+    *    "ios": {
+    *      "uniVer": "x",
+    *      "unixVer": "x",
+    *      "unixVaporVer": "x",
+    *      "uniUtsPlugin": "x",
+    *      "unixUtsPlugin": "x",
+    *      "unixVaporUtsPlugin": "x"
+    *    },
+    *    "harmony": {
+    *      "uniVer": "x",
+    *      "unixVer": "x",
+    *      "unixVaporVer": "x",
+    *      "uniUtsPlugin": "x",
+    *      "unixUtsPlugin": "x",
+    *      "unixVaporUtsPlugin": "x"
+    *    }
+    *  },
+    * "web": {
+    *    "uniVer": "x",
+    *    "unixVer": "x"
+    *  },
+    *   "mp": {
+    *     "weixin": {
+    *       "hostVer": "√",
+    *       "uniVer": "√",
+    *       "unixVer": "4.41"
+    *     },
+    *     "alipay": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "baidu": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "toutiao": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "lark": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "qq": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "kuaishou": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "jd": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     }
+    *   }
+    * }
+    */
+    USER_DATA_PATH?: string | null
+};
+
+/**
+ * Worker对象
+ */
 export interface Worker {
   /**
-   * 监听主线程/Worker 线程向当前线程发送的消息的事件。
+    * worker内的环境变量
+    *
+    * @uniPlatform {
+    *  "app": {
+    *    "android": {
+    *      "uniVer": "x",
+    *      "unixVer": "x",
+    *      "unixVaporVer": "x",
+    *      "uniUtsPlugin": "x",
+    *      "unixUtsPlugin": "x",
+    *      "unixVaporUtsPlugin": "x"
+    *    },
+    *    "ios": {
+    *      "uniVer": "x",
+    *      "unixVer": "x",
+    *      "unixVaporVer": "x",
+    *      "uniUtsPlugin": "x",
+    *      "unixUtsPlugin": "x",
+    *      "unixVaporUtsPlugin": "x"
+    *    },
+    *    "harmony": {
+    *      "uniVer": "x",
+    *      "unixVer": "x",
+    *      "unixVaporVer": "x",
+    *      "uniUtsPlugin": "x",
+    *      "unixUtsPlugin": "x",
+    *      "unixVaporUtsPlugin": "x"
+    *    }
+    *  },
+    * "web": {
+    *    "uniVer": "x",
+    *    "unixVer": "x"
+    *  },
+    *   "mp": {
+    *     "weixin": {
+    *       "hostVer": "√",
+    *       "uniVer": "√",
+    *       "unixVer": "4.41"
+    *     },
+    *     "alipay": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "baidu": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "toutiao": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "lark": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "qq": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "kuaishou": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     },
+    *     "jd": {
+    *       "hostVer": "-",
+    *       "uniVer": "-",
+    *       "unixVer": "-"
+    *     }
+    *   }
+    * }
+    */
+  env?: WorkerEnv | null;
+  /**
+   * 监听 主线程/Worker线程 向当前线程发送的消息的事件。
+   * @param callback 监听消息的回调函数
    */
   onMessage(callback: WorkerOnMessageCallback): void;
   /**
    * 监听 Worker 线程错误事件。当 Worker 线程中发生脚本错误时会触发此事件。
+   * @param callback 监听错误的回调函数
    */
   onError(callback: WorkerOnErrorCallback): void;
   /**
-   * 向主线程/Worker 线程发送的消息。
+   * 向 主线程/Worker线程 发送的消息。
+   * @param message 发送的数据
+   * @param options 发送消息的参数
    */
   postMessage(message: any, options?: WorkerPostMessageOptions | null): void;
   /**
@@ -120,7 +306,12 @@ export interface Worker {
    */
   terminate(): void;
 }
+
+/**
+ * CreateWorker
+ */
 export type CreateWorker = (url: string) => Worker
+
 export interface Uni {
   /**
    * 创建一个Worker对象
@@ -129,7 +320,6 @@ export interface Uni {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "x",
    *      "unixVer": "4.81",
    *      "unixUtsPlugin": "4.81",
