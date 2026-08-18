@@ -1,0 +1,10 @@
+{
+  "i18n.title": "Internationalization",
+  "i18n.description": "Switch page language with vue-i18n",
+  "i18n.currentLocale": "Current locale",
+  "i18n.greeting": "Hello, uni-app x",
+  "i18n.named": "Welcome to {framework}",
+  "i18n.switchToZhHans": "简体中文",
+  "i18n.switchToZhHant": "繁體中文",
+  "i18n.switchToEn": "English"
+}

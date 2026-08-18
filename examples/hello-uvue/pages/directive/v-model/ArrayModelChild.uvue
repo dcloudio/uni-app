@@ -1,0 +1,35 @@
+<template>
+  <view class="array-model-container">
+    <text id="array-model-value">{{ modelValue.length }}</text>
+    <button class="btn" id="array-model-btn" @click="addItem">add item</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const props = defineProps({
+  modelValue: {
+    type: Array,
+    default: () => [] as string[]
+  }
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const addItem = () => {
+  const list = props.modelValue as string[]
+  const newVal = [...list, 'Item ' + (list.length + 1)]
+  emit('update:modelValue', newVal)
+}
+</script>
+
+<style>
+.array-model-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+}
+.btn {
+  margin-top: 10px;
+}
+</style>

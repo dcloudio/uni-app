@@ -21,13 +21,14 @@
   }
 
   // 自动化测试
-  const setLifeCycleNum = (num: number) : number => {
+  const setLifeCycleNum = (num: number) => {
     state.lifeCycleNum = num
   }
   const getLifeCycleNum = () : number => {
     return state.lifeCycleNum
   }
   defineExpose({
-    getLifeCycleNum
+    getLifeCycleNum,
+    setLifeCycleNum
   })
 </script>

@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <inject-comp />
+    <inject-comp class="component-for-inject" />
   </view>
 </template>
 

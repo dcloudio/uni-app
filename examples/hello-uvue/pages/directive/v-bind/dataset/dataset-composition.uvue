@@ -1,0 +1,589 @@
+<template>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+  <view class="page">
+    <view
+      id="dataset-observer-target"
+      class="summary-card"
+      data-type="observer"
+      data-observer="intersection"
+    >
+      <text class="summary-title">dataset 全链路验证</text>
+      <text class="summary-tip">覆盖元素直读、Map API、动态更新、自定义组件透传、事件对象和 selector API。</text>
+      <text class="summary-tip">绿色结果区展示当前页面读到的实际 dataset，异常时可以直接从界面定位是哪条链路失败。</text>
+    </view>
+
+    <view class="section control-section">
+      <text class="section-title">操作</text>
+      <button id="update-dataset-btn" class="primary-button" @click="updateDataset">更新动态 dataset</button>
+      <text class="hint">点击下方元素可刷新事件对象 dataset；input 输入时会触发 input 事件。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">元素 dataset</text>
+
+      <input
+        id="dataset-input"
+        class="dataset-item input"
+        placeholder="输入内容查看 input 事件 dataset"
+        data-type="input"
+        :data-count="count"
+        @input="recordInputEvent"
+      />
+
+      <DatasetChild
+        data-type="custom-fallthrough"
+        data-parent-only="parent"
+        :data-count="count"
+        :data-shared="parentShared"
+        @click="recordEvent('custom', $event as MouseEvent)"
+      />
+
+      <view
+        id="dataset-view"
+        class="dataset-item"
+        data-type="view"
+        :data-count="count"
+        :data-enabled="enabled"
+        :data-complex="complexObj"
+        :data-array="complexArray"
+        @click="recordEvent('view', $event as MouseEvent)"
+      >
+        <text class="item-title">view</text>
+        <text class="item-desc">动态值、复杂对象、数组</text>
+      </view>
+
+      <text
+        id="dataset-text"
+        class="dataset-item"
+        data-type="text"
+        :data-count="count"
+        @click="recordEvent('text', $event as MouseEvent)"
+      >
+        text：点击查看事件 dataset
+      </text>
+
+      <button
+        id="dataset-button"
+        class="secondary-button"
+        data-type="button"
+        :data-null-value="nullValue"
+        :data-undefined-value="undefinedValue"
+        @click="recordEvent('button', $event as MouseEvent)"
+      >
+        button：null / undefined
+      </button>
+    </view>
+
+    <view class="section">
+      <text class="section-title">API dataset</text>
+      <button class="secondary-button" @click="refreshApiDatasetTexts">刷新 API dataset 结果</button>
+      <view
+        id="dataset-query-target"
+        class="dataset-item api-item"
+        data-type="query"
+        data-query="selector"
+        data-get="conflict-get"
+        data-set="conflict-set"
+        data-has="conflict-has"
+        data-delete="conflict-delete"
+        data-clear="conflict-clear"
+      >
+        <text class="item-title">selector query</text>
+        <text class="item-desc">同时验证 get/set/has/delete/clear 冲突 key</text>
+      </view>
+
+      <scroll-view
+        id="dataset-scroll-target"
+        class="scroll-box"
+        scroll-y="true"
+        data-type="scroll"
+        data-scroll="offset"
+      >
+        <view class="scroll-content">scrollOffset dataset 目标</view>
+      </scroll-view>
+
+      <view
+        class="dataset-item api-item"
+        data-type="observer"
+        data-observer="intersection"
+      >
+        <text class="item-title">intersection observer</text>
+        <text class="item-desc">仅 Web / 小程序自动化覆盖</text>
+      </view>
+    </view>
+
+    <view class="result-panel">
+      <text class="section-title">页面读取结果</text>
+      <view class="result-row">
+        <text class="result-label">view</text>
+        <text id="view-dataset-text" class="result-value">{{ datasetTexts.view }}</text>
+      </view>
+      <view class="result-row">
+        <text class="result-label">text</text>
+        <text id="text-dataset-text" class="result-value">{{ datasetTexts.text }}</text>
+      </view>
+      <view class="result-row">
+        <text class="result-label">input</text>
+        <text id="input-dataset-text" class="result-value">{{ datasetTexts.input }}</text>
+      </view>
+      <view class="result-row">
+        <text class="result-label">button</text>
+        <text id="button-dataset-text" class="result-value">{{ datasetTexts.button }}</text>
+      </view>
+      <text id="custom-dataset-text" class="result-line">custom: {{ datasetTexts.custom }}</text>
+      <text id="complex-dataset-text" class="result-line">complex: {{ datasetTexts.complex }}</text>
+      <text id="map-api-dataset-text" class="result-line">map api: {{ datasetTexts.mapApi }}</text>
+      <text id="selector-api-dataset-text" class="result-line">selector api: {{ datasetTexts.selectorApi }}</text>
+      <text id="observer-api-dataset-text" class="result-line">observer api: {{ datasetTexts.observerApi }}</text>
+      <text id="event-dataset-text" class="result-line event-line">event: {{ eventDatasetText }}</text>
+    </view>
+  </view>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup vapor lang="uts">
+import DatasetChild from './DatasetChild.uvue'
+
+// #ifdef WEB || MP
+const componentInstance = getCurrentInstance()!.proxy!
+// #endif
+const count = ref(1)
+const enabled = ref(true)
+const parentShared = ref('parent-shared')
+const nullValue = null
+// Android VDOM 编译到 KT，不支持 undefined 字面量。
+// #ifdef APP-ANDROID && !VUE3-VAPOR
+const undefinedValue = null
+// #endif
+// #ifndef APP-ANDROID && !VUE3-VAPOR
+const undefinedValue = undefined
+// #endif
+const complexObj = reactive({
+  name: 'complex',
+  nested: {
+    value: 1,
+  } as UTSJSONObject,
+} as UTSJSONObject)
+const complexArray = ref<any[]>([1, 'a'])
+const eventDatasetSnapshots = reactive({} as UTSJSONObject)
+const eventDatasetText = ref('输入或点击下方元素后展示事件 dataset')
+const datasetTexts = reactive({
+  view: '',
+  text: '',
+  input: '',
+  button: '',
+  custom: '',
+  complex: '',
+  mapApi: '',
+  selectorApi: '',
+  observerApi: '',
+} as UTSJSONObject)
+
+// 小程序 X 不验证 getElementById().dataset，只覆盖事件对象和 selector/intersection API 返回的 dataset。
+// #ifdef MP
+const isMP = true
+// #endif
+// #ifndef MP
+const isMP = false
+// #endif
+
+
+function getDatasetValue(dataset: any | null, key: string): any | null {
+  if (dataset == null) {
+    return null
+  }
+  const map = dataset as Map<string, any>
+  return map.has(key) ? map.get(key) : null
+}
+
+function normalizeDataset(dataset: any | null): UTSJSONObject {
+  const complex = getDatasetValue(dataset, 'complex') as UTSJSONObject | null
+  const complexNested = complex == null ? null : complex['nested'] as UTSJSONObject | null
+  const array = getDatasetValue(dataset, 'array') as any[] | null
+  const nullDatasetValue = getDatasetValue(dataset, 'nullValue')
+  const undefinedDatasetValue = getDatasetValue(dataset, 'undefinedValue')
+  return {
+    type: getDatasetValue(dataset, 'type'),
+    count: getDatasetValue(dataset, 'count'),
+    enabled: getDatasetValue(dataset, 'enabled'),
+    parentOnly: getDatasetValue(dataset, 'parentOnly'),
+    childOnly: getDatasetValue(dataset, 'childOnly'),
+    shared: getDatasetValue(dataset, 'shared'),
+    childCount: getDatasetValue(dataset, 'childCount'),
+    nullIsNull: nullDatasetValue == null,
+    undefinedIsUndefined: undefinedDatasetValue == undefinedValue,
+    complexName: complex == null ? null : complex['name'],
+    complexNestedValue: complexNested == null ? null : complexNested['value'],
+    arrayFirst: array == null ? null : array[0],
+    arraySecond: array == null ? null : array[1],
+    query: getDatasetValue(dataset, 'query'),
+    scroll: getDatasetValue(dataset, 'scroll'),
+    observer: getDatasetValue(dataset, 'observer'),
+    conflictGet: getDatasetValue(dataset, 'get'),
+    conflictSet: getDatasetValue(dataset, 'set'),
+    conflictHas: getDatasetValue(dataset, 'has'),
+    conflictDelete: getDatasetValue(dataset, 'delete'),
+    conflictClear: getDatasetValue(dataset, 'clear'),
+  } as UTSJSONObject
+}
+
+function getElementDataset(id: string): UTSJSONObject {
+  const el = uni.getElementById(id)
+  if (el == null) {
+    return {} as UTSJSONObject
+  }
+  return normalizeDataset((el as UniElement).dataset)
+}
+
+function collectDatasetSnapshot(): UTSJSONObject {
+  const snapshot = {} as UTSJSONObject
+  snapshot['view'] = getElementDataset('dataset-view')
+  snapshot['text'] = getElementDataset('dataset-text')
+  snapshot['input'] = getElementDataset('dataset-input')
+  snapshot['button'] = getElementDataset('dataset-button')
+  snapshot['custom'] = getElementDataset('dataset-child-root')
+  return snapshot
+}
+
+function collectElementDatasetSnapshot(name: string): UTSJSONObject {
+  if (name == 'view') {
+    return getElementDataset('dataset-view')
+  }
+  if (name == 'text') {
+    return getElementDataset('dataset-text')
+  }
+  if (name == 'input') {
+    return getElementDataset('dataset-input')
+  }
+  if (name == 'button') {
+    return getElementDataset('dataset-button')
+  }
+  if (name == 'custom') {
+    return getElementDataset('dataset-child-root')
+  }
+  return {} as UTSJSONObject
+}
+
+function collectDatasetMapApiSnapshot(): UTSJSONObject {
+  const el = uni.getElementById('dataset-view')
+  if (el == null) {
+    return {} as UTSJSONObject
+  }
+  const dataset = (el as UniElement).dataset as any
+  const map = dataset as Map<string, any>
+
+  map.set('mapSet', 'map-value')
+  dataset['bracketSet'] = 'bracket-value'
+  map.set('get', 'reserved-value')
+  const mapSetByBracket = dataset['mapSet']
+  const deleteResult = map.delete('mapSet')
+
+  return {
+    getType: map.get('type'),
+    getCount: map.get('count'),
+    hasType: map.has('type'),
+    mapSetByBracket,
+    bracketSetByGet: map.get('bracketSet'),
+    bracketSetByBracket: dataset['bracketSet'],
+    deleteResult,
+    hasMapSetAfterDelete: map.has('mapSet'),
+    reservedGetByMap: map.get('get'),
+    getIsFunction: map.get('get') == 'reserved-value',
+  } as UTSJSONObject
+}
+
+function normalizeApiNodeDataset(result: any | null): UTSJSONObject {
+  if (result == null) {
+    return {} as UTSJSONObject
+  }
+  const dataset = (result as NodeInfo).dataset
+  const normalized = normalizeDataset(dataset)
+  const map = dataset as Map<string, any> | null
+  normalized['isMap'] = map != null && map.has('type')
+  normalized['getIsFunction'] = map != null && map.get('type') == normalized['type']
+  return normalized
+}
+
+function collectSelectorQueryDatasetSnapshot(): Promise<UTSJSONObject> {
+  return new Promise((resolve, _) => {
+    const snapshot = {} as UTSJSONObject
+    const query = uni.createSelectorQuery()
+    query.select('#dataset-query-target').boundingClientRect((result: any) => {
+      snapshot['bounding'] = normalizeApiNodeDataset(result)
+    })
+    query
+      .select('#dataset-query-target')
+      .fields({ dataset: true }, (result: any) => {
+        snapshot['fields'] = normalizeApiNodeDataset(result)
+      })
+    query.select('#dataset-scroll-target').scrollOffset((result: any) => {
+      snapshot['scrollOffset'] = normalizeApiNodeDataset(result)
+    })
+    query.exec((result: any) => {
+      snapshot['execLength'] = result == null ? 0 : (result as any[]).length
+      resolve(snapshot)
+    })
+  })
+}
+
+function collectIntersectionObserverDatasetSnapshot(): Promise<UTSJSONObject> {
+  // #ifdef WEB || MP
+  return new Promise((resolve, _) => {
+    // 传入当前组件实例，确保选择器在当前组件范围内查询节点。
+    const observer = uni.createIntersectionObserver(
+      componentInstance,
+      {} as UTSJSONObject,
+    )
+    // 固定观察首屏顶部节点，确保初始相交比例会触发回调。
+    observer.relativeToViewport({ bottom: 100 } as UTSJSONObject)
+    observer.observe('#dataset-observer-target', (result: any) => {
+      const snapshot = normalizeApiNodeDataset(result)
+      observer.disconnect()
+      resolve(snapshot)
+    })
+  })
+  // #endif
+  // #ifdef APP
+  return Promise.resolve({} as UTSJSONObject)
+  // #endif
+}
+
+function valueToText(value: any | null): string {
+  return value == null ? 'null' : `${value}`
+}
+
+function datasetToText(dataset: UTSJSONObject): string {
+  return `type=${valueToText(dataset['type'])}, count=${valueToText(dataset['count'])}, shared=${valueToText(dataset['shared'])}`
+}
+
+function refreshApiDatasetTexts(): void {
+  collectSelectorQueryDatasetSnapshot().then((snapshot: UTSJSONObject) => {
+    const fields = snapshot['fields'] as UTSJSONObject
+    const scrollOffset = snapshot['scrollOffset'] as UTSJSONObject
+    const fieldsText = `${valueToText(fields['type'])}/${valueToText(fields['query'])}`
+    const scrollText = `${valueToText(scrollOffset['type'])}/${valueToText(scrollOffset['scroll'])}`
+    datasetTexts['selectorApi'] = `fields=${fieldsText}, scroll=${scrollText}`
+  })
+  collectIntersectionObserverDatasetSnapshot().then((snapshot: UTSJSONObject) => {
+    const type = snapshot['type']
+    if (type == null) {
+      datasetTexts['observerApi'] = '当前平台不覆盖 intersection observer dataset'
+    } else {
+      datasetTexts['observerApi'] = `type=${valueToText(type)}, observer=${valueToText(snapshot['observer'])}`
+    }
+  })
+}
+
+function updateDatasetTexts(): void {
+  if (isMP) {
+    const message = '小程序 X 通过事件对象和 selector/intersection API 验证 dataset'
+    datasetTexts['view'] = message
+    datasetTexts['text'] = message
+    datasetTexts['input'] = message
+    datasetTexts['button'] = message
+    datasetTexts['custom'] = message
+    datasetTexts['complex'] = message
+    datasetTexts['mapApi'] = message
+    datasetTexts['selectorApi'] = '读取中'
+    datasetTexts['observerApi'] = '读取中'
+    refreshApiDatasetTexts()
+    return
+  }
+
+  const snapshot = collectDatasetSnapshot()
+  const view = snapshot['view'] as UTSJSONObject
+  const text = snapshot['text'] as UTSJSONObject
+  const input = snapshot['input'] as UTSJSONObject
+  const button = snapshot['button'] as UTSJSONObject
+  const custom = snapshot['custom'] as UTSJSONObject
+  datasetTexts['view'] = datasetToText(view)
+  datasetTexts['text'] = datasetToText(text)
+  datasetTexts['input'] = datasetToText(input)
+  datasetTexts['button'] = `type=${valueToText(button['type'])}, null=${valueToText(button['nullIsNull'])}, undefined=${valueToText(button['undefinedIsUndefined'])}`
+  datasetTexts['custom'] = `type=${valueToText(custom['type'])}, parentOnly=${valueToText(custom['parentOnly'])}, childOnly=${valueToText(custom['childOnly'])}, shared=${valueToText(custom['shared'])}, count=${valueToText(custom['count'])}`
+  datasetTexts['complex'] = `name=${valueToText(view['complexName'])}, nested=${valueToText(view['complexNestedValue'])}, array=${valueToText(view['arrayFirst'])}/${valueToText(view['arraySecond'])}`
+  const mapApi = collectDatasetMapApiSnapshot()
+  datasetTexts['mapApi'] = `get=${valueToText(mapApi['getType'])}, set=${valueToText(mapApi['bracketSetByGet'])}, delete=${valueToText(mapApi['hasMapSetAfterDelete'])}, reserved=${valueToText(mapApi['getIsFunction'])}`
+  datasetTexts['selectorApi'] = '读取中'
+  datasetTexts['observerApi'] = '读取中'
+  refreshApiDatasetTexts()
+}
+
+function updateDataset(): void {
+  count.value++
+  enabled.value = false
+  parentShared.value = 'parent-shared-updated'
+  complexObj['name'] = 'complex-updated'
+  const nested = complexObj['nested'] as UTSJSONObject
+  nested['value'] = 2
+  complexArray.value = [2, 'b']
+  nextTick(() => {
+    updateDatasetTexts()
+  })
+}
+
+function recordEvent(name: string, event: MouseEvent): void {
+  const target = event.target as UniElement | null
+  const currentTarget = event.currentTarget as UniElement | null
+  if (currentTarget == null) {
+    return
+  }
+  const snapshot = {
+    // Harmony App click 事件可能没有 target，本用例重点验证 currentTarget.dataset。
+    target: target == null ? ({} as UTSJSONObject) : normalizeDataset(target.dataset),
+    currentTarget: normalizeDataset(currentTarget.dataset),
+  } as UTSJSONObject
+  eventDatasetSnapshots[name] = snapshot
+  const currentTargetDataset = snapshot['currentTarget'] as UTSJSONObject
+  eventDatasetText.value = `${name}: type=${valueToText(currentTargetDataset['type'])}, count=${valueToText(currentTargetDataset['count'])}, parentOnly=${valueToText(currentTargetDataset['parentOnly'])}`
+}
+
+function recordInputEvent(event: any): void {
+  recordEvent('input', event as MouseEvent)
+}
+
+function getEventDatasetSnapshots(): UTSJSONObject {
+  return eventDatasetSnapshots
+}
+
+onReady(() => {
+  updateDatasetTexts()
+})
+
+defineExpose({
+  collectDatasetSnapshot,
+  collectElementDatasetSnapshot,
+  collectDatasetMapApiSnapshot,
+  collectSelectorQueryDatasetSnapshot,
+  collectIntersectionObserverDatasetSnapshot,
+  updateDataset,
+  getEventDatasetSnapshots,
+})
+</script>
+
+<style>
+.page {
+  padding: 12px;
+  background-color: #f7faf7;
+}
+.summary-card {
+  margin-bottom: 12px;
+  padding: 14px;
+  border-radius: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #2f855a;
+  background-color: #ecfdf3;
+}
+.summary-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1f5132;
+}
+.summary-tip {
+  margin-top: 6px;
+  color: #4a5f50;
+}
+.section {
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #d7e6da;
+  background-color: #ffffff;
+}
+.control-section {
+  background-color: #fffaf0;
+  border-color: #f0d49a;
+}
+.section-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #243b2b;
+}
+.hint {
+  margin-top: 8px;
+  color: #6a6a6a;
+}
+.dataset-item {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #cfded4;
+  background-color: #f9fffb;
+}
+.api-item {
+  background-color: #f7fbff;
+  border-color: #c8d8ea;
+}
+.item-title {
+  font-weight: bold;
+  color: #263d2b;
+}
+.item-desc {
+  margin-top: 4px;
+  color: #647067;
+}
+.input {
+  height: 40px;
+}
+.scroll-box {
+  margin-top: 10px;
+  height: 48px;
+  border-radius: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #c8d8ea;
+  background-color: #f7fbff;
+}
+.scroll-content {
+  height: 96px;
+  padding: 10px;
+}
+.primary-button {
+  margin-top: 8px;
+  background-color: #2f855a;
+  color: #ffffff;
+}
+.secondary-button {
+  margin-top: 10px;
+}
+.result-panel {
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #9fd3af;
+  background-color: #f0fff4;
+}
+.result-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+.result-label {
+  width: 64px;
+  font-weight: bold;
+  color: #2f5137;
+}
+.result-value {
+  flex: 1;
+  color: #1f2933;
+}
+.result-line {
+  margin-top: 6px;
+  color: #1f2933;
+}
+.event-line {
+  color: #7c4a03;
+}
+</style>

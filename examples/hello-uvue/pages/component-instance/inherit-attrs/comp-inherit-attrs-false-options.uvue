@@ -1,0 +1,36 @@
+<template>
+	<view id="container" class="p-10 comp-inherit-attrs-false-options">
+		<text>inheritAttrs: false</text>
+		<view class="flex flex-row">
+			<text>id: </text>
+			<text id="comp-inherit-attrs-false-options-id">{{ id }}</text>
+		</view>
+		<view class="flex flex-row">
+			<text>class: </text>
+			<text id="comp-inherit-attrs-false-options-class">{{ className }}</text>
+		</view>
+		<view class="flex flex-row">
+			<text>data-test: </text>
+			<text id="comp-inherit-attrs-false-options-data-test">{{ dataTest }}</text>
+		</view>
+	</view>
+</template>
+
+<script>
+export default {
+	inheritAttrs: false,
+	data(){
+		return {
+			id: '',
+			className: '',
+			dataTest: ''
+		}
+	},
+	mounted() {
+		const container = this.$el!
+		this.id = container.getAttribute('id') ?? ''
+		this.className = container.classList.toString()
+		this.dataTest = container.getAttribute('data-test') ?? ''
+	}
+}
+</script>

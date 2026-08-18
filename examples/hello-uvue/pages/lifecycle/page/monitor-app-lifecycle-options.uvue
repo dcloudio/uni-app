@@ -1,0 +1,31 @@
+<script lang="uts">
+import { state, setLifeCycleNum } from '@/store/index.uts'
+export default {
+	setup() {
+		onAppShow((onShowOptions: OnShowOptions) => {
+			console.log('选项式组件监听应用生命周期 => onAppShow => onShowOptions', onShowOptions)
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 10)
+		})
+		onAppHide(() => {
+			console.log('选项式组件监听应用生命周期 => onAppHide')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum - 100)
+		})
+		onError((err: any) => {
+			console.log('选项式组件监听应用生命周期 => onError', err)
+			setLifeCycleNum(state.lifeCycleNum + 10)
+		})
+		const triggerError = () => {
+			throw new Error('trigger error in monitor app lifecycle options')
+		}
+		return {
+			triggerError
+		}
+	}
+}
+</script>
+
+<template>
+	<text id="trigger-monitor-app-error" style="margin: 10px 0;" @click="triggerError">组件监听应用生命周期（选项式 API）</text>
+</template>

@@ -1,0 +1,30 @@
+<template>
+  <view>
+    <button @click="toggle">toggle</button>
+    <view v-for="(item, index) in innerList" :key="idList[index]">
+      <view>
+        <text :id="'t-' + index">{{item}}</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup>
+  const innerList = ref([1, 2])
+  const idList = ref([0, 1])
+  const toggle = () => {
+    const id1 = idList.value[0]
+    idList.value[0] = idList.value[1]
+    idList.value[1] = id1
+    const list1 = innerList.value[0]
+    innerList.value[0] = innerList.value[1]
+    innerList.value[1] = list1
+  }
+  defineExpose({
+    toggle
+  })
+</script>
+
+<style>
+
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -30,7 +30,7 @@
       <ChildMixinComp2 />
       <MixinComp />
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

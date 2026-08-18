@@ -1,6 +1,3 @@
-export function getBatteryInfo(options) {
+export default function getBatteryInfo(options) {
     return qq.getBatteryInfo(options)
-}
-export function getBatteryInfoSync(options) {
-    return qq.getBatteryInfoSync(options)
 }

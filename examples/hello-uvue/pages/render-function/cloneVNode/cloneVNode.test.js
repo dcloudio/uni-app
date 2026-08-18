@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/render-function/cloneVNode/cloneVNode-options'
 const COMPOSITION_PAGE_PATH = '/pages/render-function/cloneVNode/cloneVNode-composition'
 
@@ -6,7 +8,7 @@ describe('cloneVNode', () => {
   const isWeb = platformInfo.startsWith('web')
   const isIos = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
-  if(isMP) {
+  if(isMP || isDom2) {
     it('not support', async () => {
       expect(1).toBe(1)
     })

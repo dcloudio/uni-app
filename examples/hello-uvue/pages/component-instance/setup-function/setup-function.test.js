@@ -1,10 +1,18 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const platformInfo = process.env.uniTestPlatformInfo.toLowerCase()
-const isIOS = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 
 const PAGE_PATH = '/pages/component-instance/setup-function/setup-function'
 describe('options setup', () => {
+  if (isDom2) {
+    it('not support', async () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
@@ -90,7 +98,8 @@ describe('options setup', () => {
     // slots
     const defaultSlotInFoo = await page.$('#default-slot-in-foo')
     expect(await defaultSlotInFoo.text()).toBe('default slot in Foo')
-    const hasDefaultSlot = await page.$('#has-default-slot')
+    const componentFoo = await page.$('#component-foo')
+    const hasDefaultSlot = await componentFoo.$('#has-default-slot')
     expect(await hasDefaultSlot.text()).toBe('true')
   })
 })

@@ -83,10 +83,6 @@
                         name: "混编测试示例",
                         url: "SyntaxCase/MixNativeCode"
                     },
-                    {
-                        name: "issue-20232",
-                        url: "issues/issue-20232/issue-20232"
-                    },
                     ] as Page[]
                 },
                 {

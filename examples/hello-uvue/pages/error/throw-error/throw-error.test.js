@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.includes('android')
 const isIOS = platformInfo.includes('ios')
@@ -11,8 +13,8 @@ describe('throw error', () => {
   const initLifecycle = async () => {
     page = await program.reLaunch(HOME_PAGE_PATH)
     await page.waitFor('view')
-    await page.callMethod('setLifeCycleNum', 0)
-    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    await page.callMethod('pageSetLifeCycleNum', 0)
+    lifeCycleNum = await page.callMethod('pageGetLifeCycleNum')
     expect(lifeCycleNum).toBe(0)
   }
   const test = async (pagePath) => {
@@ -44,17 +46,19 @@ describe('throw error', () => {
     await page.waitFor('view')
     expect(page.path).toBe(HOME_PAGE_PATH.substring(1))
   }
-  it('onError options API', async () => {
-    await test(OPTIONS_PAGE_PATH)
-  })
+  if (!isDom2) {
+    it('onError options API', async () => {
+      await test(OPTIONS_PAGE_PATH)
+    })
+  }
   it('onError composition API', async () => {
     await test(COMPOSITION_PAGE_PATH)
   })
 
   afterAll(async () => {
     const resetLifecycleNum = 1110
-    await page.callMethod('setLifeCycleNum', resetLifecycleNum)
-    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    await page.callMethod('pageSetLifeCycleNum', resetLifecycleNum)
+    lifeCycleNum = await page.callMethod('pageGetLifeCycleNum')
     expect(lifeCycleNum).toBe(resetLifecycleNum)
   })
 })

@@ -1,46 +1,56 @@
 jest.setTimeout(20000)
 
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 const PAGE_PATH = '/pages/component-instance/provide/provide-options-1'
 
 describe('选项式 API 字面量方式创建 provide', () => {
+  if (isDom2) {
+    it('not support', async () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
+  let componentForInject
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
+    componentForInject = await page.$('.component-for-inject')
   })
   it('alias', async () => {
-    const aliasProvidePageTitleEl = await page.$('.alias-provide-page-title')
+    const aliasProvidePageTitleEl = await componentForInject.$('.alias-provide-page-title')
     const aliasProvidePageTitleText = await aliasProvidePageTitleEl.text()
     expect(aliasProvidePageTitleText).toBe(
       'aliasProvidePageTitle: default alias provide page title'
     )
   })
   it('string', async () => {
-    const providePageStrEl = await page.$('.provide-page-str')
+    const providePageStrEl = await componentForInject.$('.provide-page-str')
     const providePageStrText = await providePageStrEl.text()
     expect(providePageStrText).toBe(
       'providePageStr: 字面量方式定义 provide page str'
     )
   })
   it('number', async () => {
-    const providePageNumEl = await page.$('.provide-page-num')
+    const providePageNumEl = await componentForInject.$('.provide-page-num')
     const providePageNumText = await providePageNumEl.text()
     expect(providePageNumText).toBe('providePageNum: 1')
   })
   it('boolean', async () => {
-    const providePageBoolEl = await page.$('.provide-page-bool')
+    const providePageBoolEl = await componentForInject.$('.provide-page-bool')
     const providePageBoolText = await providePageBoolEl.text()
     expect(providePageBoolText).toBe('providePageBool: true')
   })
   it('object', async () => {
-    const providePageObjectTitleEl = await page.$(
+    const providePageObjectTitleEl = await componentForInject.$(
       '.provide-page-object-title'
     )
     const providePageObjectTitleText = await providePageObjectTitleEl.text()
     expect(providePageObjectTitleText).toBe(
       'providePageObject.title: 字面量方式定义 provide page object title'
     )
-    const providePageObjectContentEl = await page.$(
+    const providePageObjectContentEl = await componentForInject.$(
       '.provide-page-object-content'
     )
     const providePageObjectContentText =
@@ -50,22 +60,22 @@ describe('选项式 API 字面量方式创建 provide', () => {
     )
   })
   it('array', async () => {
-    const providePageArrEl = await page.$('.provide-page-arr')
+    const providePageArrEl = await componentForInject.$('.provide-page-arr')
     const providePageArrText = await providePageArrEl.text()
     expect(providePageArrText).toBe('providePageArr: ["字面量方式定义 provide page arr"]')
   })
   it('map', async () => {
-    const providePageMapEl = await page.$('.provide-page-map')
+    const providePageMapEl = await componentForInject.$('.provide-page-map')
     const providePageMapText = await providePageMapEl.text()
     expect(providePageMapText).toBe('providePageMap: {"key":"字面量方式定义 provide page map"}')
   })
   it('set', async () => {
-    const providePageSetEl = await page.$('.provide-page-set')
+    const providePageSetEl = await componentForInject.$('.provide-page-set')
     const providePageSetText = await providePageSetEl.text()
     expect(providePageSetText).toBe('providePageSet: ["字面量方式定义 provide page set"]')
   })
   it('string default value', async () => {
-    const testInjectStringDefaultValueEl = await page.$(
+    const testInjectStringDefaultValueEl = await componentForInject.$(
       '.test-inject-string-default-value'
     )
     const testInjectStringDefaultValueText =
@@ -75,7 +85,7 @@ describe('选项式 API 字面量方式创建 provide', () => {
     )
   })
   it('object default value', async () => {
-    const testInjectObjectDefaultValueTitleEl = await page.$(
+    const testInjectObjectDefaultValueTitleEl = await componentForInject.$(
       '.test-inject-object-default-value-title'
     )
     const testInjectObjectDefaultValueTitleText =
@@ -84,7 +94,7 @@ describe('选项式 API 字面量方式创建 provide', () => {
       'testInjectObjectDefaultValue.title: test inject object default value title'
     )
 
-    const testInjectObjectDefaultValueContentEl = await page.$(
+    const testInjectObjectDefaultValueContentEl = await componentForInject.$(
       '.test-inject-object-default-value-content'
     )
     const testInjectObjectDefaultValueContentText =

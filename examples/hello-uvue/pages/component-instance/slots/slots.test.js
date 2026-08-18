@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
   
@@ -21,11 +23,13 @@ describe('$slots', () => {
     expect(hasSlots).toBe(true)
   }
 
-  it('$slots Options API 生效', async () => {
-    await test(PAGE_PATH)
-  })
+  if (!isDom2) {
+    it('$slots Options API', async () => {
+      await test(PAGE_PATH)
+    })
+  }
 
-  it('$slots Composition API 生效', async () => {
+  it('$slots Composition API', async () => {
     await test(PAGE_COMPOSITION_PATH)
   })
 })

@@ -21,10 +21,10 @@
   const instance = getCurrentInstance()!.proxy!
 
   onMounted(() => {
-    // #ifdef APP-ANDROID
+    // #ifdef APP-ANDROID && !VUE3-VAPOR
     parentStr.value = (instance.$parent!.$exposed['str'] as Ref<string>).value
     // #endif
-    // #ifndef APP-ANDROID
+    // #ifndef APP-ANDROID && !VUE3-VAPOR
     parentStr.value = instance.$parent!['str'] as string
     // #endif
   })

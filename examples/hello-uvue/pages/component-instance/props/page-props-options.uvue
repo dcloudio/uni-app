@@ -107,11 +107,11 @@
 		},
 		methods: {
 			// 自动化测试
-			setLifeCycleNum(num: number) {
+			pageSetLifeCycleNum(num: number) {
 				setLifeCycleNum(num)
 			},
 			// 自动化测试
-			getLifeCycleNum(): number {
+			pageGetLifeCycleNum(): number {
 				return state.lifeCycleNum
 			}
 		}

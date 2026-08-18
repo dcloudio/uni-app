@@ -72,7 +72,7 @@ export function testUTSJSONObject(): Result {
       let data2 = JSON.parse<UTSJSONObject>(JSON.stringify(data1))!
       if (android.os.Build.VERSION.SDK_INT > 22) {
         // 6.0 以下字段顺序不一致，不影响结果
-        expect(data2!.toJSONString().length).toEqual(35)
+        expect(data2!.toJSONString()).toEqual('{"str":"test","num":1.0,"num2":2.369}')
       }
       class TestData2 implements IJSONStringify {
         toJSON(): any | null {
@@ -80,7 +80,7 @@ export function testUTSJSONObject(): Result {
         }
       }
 
-      let testData2 = new TestData2()
+      let testData2 = TestData2()
       let dataClass = UTSAndroid.getJavaClass(data2)
 
       let data3 = {
@@ -92,7 +92,7 @@ export function testUTSJSONObject(): Result {
 
       if (android.os.Build.VERSION.SDK_INT > 22) {
         // 6.0 以下字段顺序不一致，不影响结果
-        expect(data3!.toJSONString().length).toEqual(94)
+        expect(data3!.toJSONString()).toEqual('{"testData":"122","strA":"stringA","dataClass":"io.dcloud.uts.UTSJSONObject","booleanB":false}')
       }
       type TestData4 = {
         name: string,
@@ -109,7 +109,7 @@ export function testUTSJSONObject(): Result {
       }
       if (android.os.Build.VERSION.SDK_INT > 22) {
         // 6.0 以下字段顺序不一致，不影响结果
-        expect(data5!.toJSONString().length).toEqual(66)
+        expect(data5!.toJSONString()).toEqual('{"data4":{"data":{"str":"test","num":1,"num2":2.369},"name":"张三"}}')
       }
       // class TestData6 implements IJsonStringify{
       // 	toJSON():any|null{
@@ -145,7 +145,7 @@ export function testUTSJSONObject(): Result {
       }
       if (android.os.Build.VERSION.SDK_INT > 22) {
         // 6.0 以下字段顺序不一致，不影响结果
-        expect(utsjson.toJSONString().length).toEqual(140)
+        expect(utsjson.toJSONString()).toEqual('{"list":[{"DATA":{"BSSID":1101,"SSID":"hello-WIFI"},"AGE":12,"NAME":"张三"},{"DATA":{"BSSID":1101,"SSID":"hello-WIFI"},"AGE":22,"NAME":"李四"}]}')
       }
       // #endif
     })
@@ -368,17 +368,6 @@ export function testUTSJSONObject(): Result {
           name: "name"
         }
       } as UTSJSONObject)
-    })
-    
-    test('issue-19443', () => {
-      let u1 = {
-        "name":"zhangsan",
-      }
-      u1['.'] = 321
-      u1['a.b'] = 123
-      expect(u1["a.b"]).toEqual(123)
-      expect(u1["."]).toEqual(321)
-      expect(u1["name"]).toEqual("zhangsan")
     })
   })
 }

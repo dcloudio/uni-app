@@ -1,0 +1,17 @@
+<template>
+	<view>
+		<text :style="{ 'font-size': style.get('font-size'), color: style.get('color') }" style="line-height: 100px;">hello world</text>
+	</view>
+</template>
+
+<script setup>
+	const style = useComputedStyle({
+		properties: ['font-size', 'color'],
+		filterProperties: true
+	} as UseComputedStyleOptions)
+	watchEffect(() => {
+		console.log(`style.fontSize = ${style.get('font-size')}`)
+	})
+</script>
+
+<style></style>

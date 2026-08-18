@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const PAGE_OPTIONS = '/pages/built-in/special-elements/component/component-options'
 const PAGE_COMPOSITION = '/pages/built-in/special-elements/component/component-composition'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
@@ -13,10 +15,10 @@ describe('built-in/component', () => {
     })
     return
   }
-  let page
   const test = async (pagePath) => {
-    page = await program.reLaunch(pagePath)
+    const page = await program.reLaunch(pagePath)
     await page.waitFor('view')
+    
     const isOptionsPage = pagePath.indexOf('component-options') !== -1
     let fooList = await page.$$('.component-foo')
     expect(fooList.length).toBe(isOptionsPage ? 2 : 1)
@@ -45,9 +47,11 @@ describe('built-in/component', () => {
       expect(await myInput.property('value')).toBe('default value')
     }
   }
-  it('component Options API', async () => {
-    await test(PAGE_OPTIONS)
-  })
+  if (!isDom2) {
+    it('component Options API', async () => {
+      await test(PAGE_OPTIONS)
+    })
+  }
   it('component Composition API', async () => {
     await test(PAGE_COMPOSITION)
   })

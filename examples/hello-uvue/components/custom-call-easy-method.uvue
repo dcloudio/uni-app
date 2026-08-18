@@ -1,19 +1,15 @@
 <template>
-    <view>{{result}}</view>
+	<view>{{ result }}</view>
 </template>
 
-<script>
-    export default {
-        data() {
-            return {
-                result: ''
-            }
-        },
-        methods: {
-            foo() : string {
-                this.result = "custom foo"
-                return this.result
-            }
-        }
-    }
+<script setup>
+const result = ref('')
+
+const foo = (): string => {
+	result.value = 'custom foo'
+	return result.value
+}
+defineExpose({
+	foo
+})
 </script>

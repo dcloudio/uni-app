@@ -1,0 +1,30 @@
+<template>
+  <view class="dialog-page">
+    <view class="dialog-content">
+      <text>page lifecycle dialogPage</text>
+      <button class="mt-10" @click="closeDialogPage">closeDialogPage</button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+const closeDialogPage = () => {
+  uni.closeDialogPage()
+}
+</script>
+
+<style>
+.dialog-page {
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.dialog-content {
+  width: 260px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+</style>

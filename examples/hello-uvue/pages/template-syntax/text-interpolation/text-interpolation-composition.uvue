@@ -1,0 +1,22 @@
+<template>
+    <view>
+        <text id="text1">hello {{ 'world' }}</text>
+        <text id="text2">hello {{ world }}</text>
+        <text id="text3">hello{{' '}}{{ world }}</text>
+        <text id="text4">hello{{' '}}{{ w }}{{'o'}}{{'rld'}}</text>
+        <!-- 之所以增加 button 测试例，是因为 button 在底层是 uvue 实现的，跟 text 是两套机制，需要分别测试 -->
+        <button id="btn1">hello {{ 'world' }}</button>
+        <button id="btn2">hello {{ world }}</button>
+        <button id="btn3">hello{{' '}}{{ world }}</button>
+        <button id="btn4">hello{{' '}}{{ w }}{{'o'}}{{'rld'}}</button>
+    </view>
+</template>
+
+<script setup>
+    const w = 'w'
+    const world = 'world'
+</script>
+
+<style>
+
+</style>

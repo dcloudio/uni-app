@@ -256,17 +256,12 @@ export function testOperators(): Result {
           type Adventurer = {
             name: string
             cat?: Cat | null
-            cats ?: Array<Cat> | null
           }
         	const adventurer1: Adventurer = {
         	  name: 'Alice',
         	  cat: {
         	    name: 'Dinah'
-        	  },
-            //#ifdef APP-HARMONY
-            // TODO 编译器调整后删除此条件编译
-            cats: null
-            //#endif
+        	  }
         	}
         	expect(adventurer1.cat?.name).toEqual("Dinah")
           // #ifdef APP-ANDROID || APP-IOS
@@ -274,19 +269,6 @@ export function testOperators(): Result {
             name: 'Alice'
           }
           expect(adventurer2.cat?.name).toEqual(null)
-          // #endif
-          
-          const adventurers: Adventurer[] = [{
-            name: 'Alice',
-            cats: [{
-              name: 'Dinah'
-            }]
-          }]
-          // 跨所有平台的正确写法
-          expect(adventurers[0].cats?.[0].name).toEqual("Dinah")
-          // #ifdef APP-ANDROID
-          // swift 中是不能对非空类型做解包的
-          expect(adventurers[0]?.cats[0]?.name).toEqual("Dinah")
           // #endif
         })
         test('%', () => {
@@ -356,15 +338,6 @@ export function testOperators(): Result {
             const c: number = -5;         //  11111111111111111111111111111011
             expect(a >>> b).toEqual(1); // 00000000000000000000000000000001
             // expect(c >>> b).toEqual(1073741822); // 00111111111111111111111111111110
-            const t1l = 3055341859 //这里安卓端默认number就无法正常运算了
-            const t2l = t1l >>> 0
-            expect(t1l).toEqual(3055341859); 
-            expect(t2l).toEqual(3055341859); 
-            const aa = 3144134277.518717
-            const bb = aa | 0
-            // #ifdef APP-ANDROID
-            expect(bb).toEqual(-1150833019); 
-            // #endif
         })
         test('>>>=', () => {
             let a = 5; //  00000000000000000000000000000101

@@ -208,7 +208,7 @@ export function gotoCameraTake(imageDone : (event : string) => void) : boolean {
 		} else {
 			//callback(false,"用户拒绝了部分权限")
 		}
-	}, function (_1 : boolean, _2 : string[]) {
+	}, function (_ : boolean, _ : string[]) {
 		//callback(false,"用户拒绝了部分权限")
 	},true)
 
@@ -365,7 +365,7 @@ export function arrayPermissionFlowTest(callback : (ret : boolean, desc : string
 		} else {
 			callback(false, "用户拒绝了部分权限")
 		}
-	}, function (_1 : boolean, _2 : string[]) {
+	}, function (_ : boolean, _ : string[]) {
 		callback(false, "用户拒绝了部分权限")
 	})
 
@@ -379,11 +379,23 @@ export function getDeviceInfoTest():string {
 	let info = ''
 	info += 'isUniMp: '+UTSAndroid.isUniMp() + "\n ";
 	info += 'getAppDarkMode: '+UTSAndroid.getAppDarkMode() + "\n ";
+	info += 'getLanguageInfo: '+ JSON.stringify(UTSAndroid.getLanguageInfo(UTSAndroid.getAppContext()!)) + "\n ";
+	info += 'getWebViewInfo: '+ JSON.stringify(UTSAndroid.getWebViewInfo(UTSAndroid.getAppContext()!)) + "\n ";
+	info += 'getDeviceID: '+UTSAndroid.getDeviceID(UTSAndroid.getAppContext()!) + "\n ";
+	info += 'getOAID: '+UTSAndroid.getOAID() + "\n ";
 	info += 'getInnerVersion: '+UTSAndroid.getInnerVersion() + "\n ";
+	info += 'getUniCompileVersion: '+UTSAndroid.getUniCompileVersion() + "\n ";
+	info += 'getUniRuntimeVersion: '+UTSAndroid.getUniRuntimeVersion() + "\n ";
 	info += 'getAppId: '+UTSAndroid.getAppId() + "\n ";
 	info += 'getAppVersion: '+JSON.stringify(UTSAndroid.getAppVersion()) + "\n ";
 	info += 'getAppName: '+UTSAndroid.getAppName() + "\n ";
 	info += 'getOsTheme: '+UTSAndroid.getOsTheme() + "\n ";
+	info += 'getScreenInfo: '+JSON.stringify(UTSAndroid.getScreenInfo()) + "\n ";
+	info += 'getStatusBarHeight: '+UTSAndroid.getStatusBarHeight() + "\n ";
+	info += 'isTitleNViewShow: '+UTSAndroid.isTitleNViewShow() + "\n ";
+	info += 'isTabBarShow: '+UTSAndroid.isTabBarShow() + "\n ";
+	info += 'getWindowHeight: '+UTSAndroid.getWindowHeight() + "\n ";
+	info += 'getSafeAreaInsets: '+JSON.stringify(UTSAndroid.getSafeAreaInsets()) + "\n ";
 	info += 'isUniAppX: '+UTSAndroid.isUniAppX() + "\n ";
 	
 	return info
@@ -498,7 +510,7 @@ export function singlePermissionFlowTest(callback : (ret : boolean, desc : strin
 		} else {
 			callback(false, "用户拒绝了部分权限")
 		}
-	}, function (_1 : boolean, _2 : string[]) {
+	}, function (_ : boolean, _ : string[]) {
 		callback(false, "用户拒绝了部分权限")
 	})
 

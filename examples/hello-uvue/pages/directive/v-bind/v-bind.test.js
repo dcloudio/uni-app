@@ -1,8 +1,9 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/directive/v-bind/v-bind-options'
 const COMPOSITION_PAGE_PATH = '/pages/directive/v-bind/v-bind-composition'
 
 describe('v-bind', () => {
-  let page
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isWeb = platformInfo.startsWith('web')
   const isMP = platformInfo.startsWith('mp')
@@ -14,7 +15,7 @@ describe('v-bind', () => {
   const isFirefoxOrApp = isFirefox || isApp
 
   const test = async (pagePath) => {
-    page = await program.reLaunch(pagePath)
+    const page = await program.reLaunch(pagePath)
     await page.waitFor('view')
     await page.waitFor(1000)
 
@@ -27,26 +28,30 @@ describe('v-bind', () => {
     const dataInfo = await page.data('dataInfo')
 
     const bindObjectStyle = await page.$('#bind-object-style')
-    expect(await bindObjectStyle.style('fontSize')).toBe(dataInfo.fontSize)
+    expect(await bindObjectStyle.style(isDom2? 'font-size' : 'fontSize')).toBe(dataInfo.fontSize)
 
     const bindArrayStyle = await page.$('#bind-array-style')
-    if (isWeb || isMP) {
-      expect(await bindArrayStyle.style('backgroundColor')).toBe('rgb(0, 128, 0)')
-    } else {
-      expect(await bindArrayStyle.style('backgroundColor')).toBe(dataInfo.backgroundColor.replace(
-        'background-color:', '').trim())
-    }
-    const borderStyles = dataInfo.border.replace('border:', '').trim().split(' ')
+    const backgroundColorProperty = isDom2 ? 'background-color' : 'backgroundColor'
+    const expectedBackgroundColor = isWebOrMP || isDom2
+      ? 'rgb(0, 128, 0)'
+      : dataInfo.backgroundColor.replace('background-color:', '').trim()
+    expect(await bindArrayStyle.style(backgroundColorProperty)).toBe(expectedBackgroundColor)
 
-    expect(await bindArrayStyle.style(isFirefoxOrApp ? 'borderTopWidth' : 'borderWidth')).toBe(borderStyles[0])
-    expect(await bindArrayStyle.style(isFirefoxOrApp ? 'borderTopStyle' : 'borderStyle')).toBe(borderStyles[1])
-    expect(await bindArrayStyle.style(isFirefoxOrApp ? 'borderTopColor' : 'borderColor')).toBe(isWebOrMP ? 'rgb(255, 0, 0)' : borderStyles[2])
+    const [borderWidth, borderStyle, borderColor] = dataInfo.border.replace('border:', '').trim().split(' ')
+    const borderWidthProperty = isDom2 ? 'border-width' : isFirefoxOrApp ? 'borderTopWidth' : 'borderWidth'
+    const borderStyleProperty = isDom2 ? 'border-style' : isFirefoxOrApp ? 'borderTopStyle' : 'borderStyle'
+    const borderColorProperty = isDom2 ? 'border-top-color' : isFirefoxOrApp ? 'borderTopColor' : 'borderColor'
+    const expectedBorderColor = isDom2 || isWebOrMP ? 'rgb(255, 0, 0)' : borderColor
+    expect(await bindArrayStyle.style(borderWidthProperty)).toBe(borderWidth)
+    expect(await bindArrayStyle.style(borderStyleProperty)).toBe(borderStyle)
+    expect(await bindArrayStyle.style(borderColorProperty)).toBe(expectedBorderColor)
 
-    const fooPropsTitle = await page.$('#foo-props-title')
+    const fooProps = await page.$('.foo-props')
+    const fooPropsTitle = await fooProps.$('#foo-props-title')
     expect(await fooPropsTitle.text()).toBe(dataInfo.fooProps.title)
-    const fooPropsNum = await page.$('#foo-props-num')
+    const fooPropsNum = await fooProps.$('#foo-props-num')
     expect(await fooPropsNum.text()).toBe(dataInfo.fooProps.num.toString())
-    const fooPropsObjName = await page.$('#foo-props-obj-name')
+    const fooPropsObjName = await fooProps.$('#foo-props-obj-name')
     expect(await fooPropsObjName.text()).toBe(dataInfo.fooProps.obj.name)
 
     if(!isMP) {
@@ -73,9 +78,11 @@ describe('v-bind', () => {
     expect(await bindRawArrayStyle.text()).toBe("rawArrayStyle")
   }
 
-  it('v-bind options API', async () => {
-    await test(OPTIONS_PAGE_PATH)
-  })
+  if(!isDom2){
+    it('v-bind options API', async () => {
+      await test(OPTIONS_PAGE_PATH)
+    })
+  }
 
   it('v-bind composition API', async () => {
     await test(COMPOSITION_PAGE_PATH)

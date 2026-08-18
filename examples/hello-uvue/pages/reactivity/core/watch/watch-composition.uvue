@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
     <!-- #endif -->
     <view class="page">
@@ -71,7 +71,7 @@
         <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
       </view>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -107,7 +107,10 @@ const stopWatchCount = watch(count, (count : number, prevCount : number, onClean
   // 响应属性或引用作为依赖项被跟踪时调用
   onTrack(event : DebuggerEvent) {
     if (event.type === 'get') {
-      watchCountTrackNum.value++
+    // #ifndef VUE3-VAPOR
+    // 蒸汽模式放开下面这行会报错 Stack overflow! 已知Bug:[support for trigger responsive getters in onTrack](https://github.com/vuejs/core/pull/12266)
+    watchCountTrackNum.value++
+    // #endif
     }
   }
   // TODO: vue>3.4.15 开始 监听函数、onTrack、onTrigger 同时存在修改响应式数据时,会报错 Maximum call stack size exceeded
@@ -127,11 +130,11 @@ const obj = reactive({
   arr: [0]
 } as Obj)
 
-// immediate: true 第一次触发, 旧值应该是 undefined, 现在 app 是初始值
 const watchObjRes = ref('')
 watch(obj, (obj : Obj, prevObj ?: Obj) => {
   watchObjRes.value = `obj: ${JSON.stringify(obj)}, prevObj: ${JSON.stringify(prevObj)}`
 }, { immediate: true })
+// TODO: 设置 immediate: true 第一次触发时，app 端原始值不对
 
 const objStrRef = ref<UniTextElement | null>(null)
 const watchObjStrRes = ref('')

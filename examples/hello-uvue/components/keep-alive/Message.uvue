@@ -4,7 +4,8 @@
 		<text class="mt-10 change-message" @click="changeMessage">change message</text>
 	</view>
 </template>
-
+// android 改为组合式式 API 之后，组件的生命周期函数 activated 和 deactivated 不触发
+// #ifdef APP-ANDROID
 <script lang="uts">
 	export default {
 		name: 'Message',
@@ -20,6 +21,16 @@
 		}
 	}
 </script>
+// #endif
+// #ifndef APP-ANDROID
+<script setup lang="uts">
+	const msg = ref('default message')
+
+	const changeMessage = () => {
+		msg.value = 'message changed'
+	}
+</script>
+// #endif
 
 <style>
 	.change-message {

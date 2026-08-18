@@ -1,0 +1,40 @@
+<script lang="ts" setup>
+  defineOptions({ name: 'Issue29737Text' })
+
+  defineProps({
+    textId: {
+      type: String,
+      default: ''
+    },
+    color: {
+      type: String,
+      default: '#111111'
+    },
+    fontSize: {
+      type: String,
+      default: '15'
+    },
+    lineHeight: {
+      type: String,
+      default: '1.2'
+    },
+    lines: {
+      type: Number,
+      default: 2
+    }
+  })
+</script>
+
+<template>
+  <text
+    :id="textId"
+    :style="{
+      color: color,
+      fontSize: fontSize + 'px',
+      lineHeight: lineHeight
+    }"
+    :max-lines="lines"
+  >
+    <slot></slot>
+  </text>
+</template>

@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 // TODO: 确认各端差异
 
 const platformInfo = process.env.uniTestPlatformInfo.toLowerCase()
@@ -10,9 +12,9 @@ const isMP = platformInfo.startsWith('mp')
 const OPTIONS_PAGE_PATH = '/pages/reactivity/core/watch/watch-options'
 
 describe('watch', () => {
-  
-  if(isMP) {
+  if(isMP || isDom2) {
     // 微信小程序支持此特性，但是示例内部使用了较多的dom api无法兼容微信小程序
+    // 蒸汽模式不支持 options API
     it('not support', async () => {
       expect(1).toBe(1)
     })

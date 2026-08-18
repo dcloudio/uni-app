@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -45,11 +45,11 @@
         @compUpdateObj="compUpdateObj"
         :isShow="true" />
       <!-- #endif -->
-      <Foo>
+      <Foo id="component-foo">
         <text class="mt-10" id="default-slot-in-foo">default slot in Foo</text>
       </Foo>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

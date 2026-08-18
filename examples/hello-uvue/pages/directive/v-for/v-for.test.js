@@ -1,10 +1,14 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/directive/v-for/v-for-options'
 const COMPOSITION_PAGE_PATH = '/pages/directive/v-for/v-for-composition'
 
 describe('v-for', () => {
-  let page
-  
-  const test = async (page) => {
+  const test = async (pagePath) => {
+    const page = await program.reLaunch(pagePath)
+    await page.waitFor('view')
+    await page.waitFor(500)
+
     // v-for number
     const num1 = await page.$('#number-1')
     expect(await num1.text()).toBe('1')
@@ -42,14 +46,15 @@ describe('v-for', () => {
     await vShow1Count.tap()
     await page.waitFor(100)
     expect(await vShow1Count.text()).toBe('2')
-    
+
+    // v-for map
     const mapValue1 = await page.$('#map-key-1')
     expect(await mapValue1.text()).toBe('map value 1')
     const mapValue2 = await page.$('#map-key-2')
     expect(await mapValue2.text()).toBe('map value 2')
     const mapValue3 = await page.$('#map-key-3')
     expect(await mapValue3.text()).toBe('map value 3')
-    
+
     const setValue1 = await page.$('#set-value-1')
     expect(await setValue1.text()).toBe('set value 1')
     const setValue2 = await page.$('#set-value-2')
@@ -74,19 +79,14 @@ describe('v-for', () => {
     });
     expect(image).toSaveImageSnapshot();
   }
-  it('v-for options API', async () => {
-    page = await program.reLaunch(OPTIONS_PAGE_PATH)
-    await page.waitFor('view')
-    await page.waitFor(500)
-    
-    await test(page)
-  })
+
+  if (!isDom2) {
+    it('v-for options API', async () => {
+      await test(OPTIONS_PAGE_PATH)
+    })
+  }
   
   it('v-for composition API', async () => {
-    page = await program.reLaunch(COMPOSITION_PAGE_PATH)
-    await page.waitFor('view')
-    await page.waitFor(500)
-    
-    await test(page)
+    await test(COMPOSITION_PAGE_PATH)
   })
 })

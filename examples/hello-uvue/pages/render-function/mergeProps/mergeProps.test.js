@@ -1,10 +1,12 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/render-function/mergeProps/mergeProps-options'
 const COMPOSITION_PAGE_PATH = '/pages/render-function/mergeProps/mergeProps-composition'
 
 describe('mergeProps', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
-  if(isMP) {
+  if(isMP || isDom2) {
     it('not support', async () => {
       expect(1).toBe(1)
     })

@@ -2,7 +2,7 @@
     "id": "hello-uts-alpha",
     "name": "hello-uts-alpha",
     "displayName": "hello-uts-alpha",
-    "version": "1.0.56",
+    "version": "1.0.48",
     "description": "UTS插件示例项目",
     "repository": "https://gitcode.net/dcloud/hello-uts",
     "keywords": [

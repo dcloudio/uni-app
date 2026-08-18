@@ -6,7 +6,7 @@
         {{ value }}
       </text>
     </view>
-    <child @callback="callback"></child>
+    <child class="emit-function-child" @callback="callback"></child>
   </view>
 </template>
 

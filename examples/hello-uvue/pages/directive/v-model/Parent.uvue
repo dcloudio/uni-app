@@ -1,5 +1,5 @@
 <template>
-    <Son v-model="value"></Son>
+    <Son class="son-component" v-model="value"></Son>
 </template>
 
 <script setup>

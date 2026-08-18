@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -32,7 +32,7 @@
       <button class="mt-10 show-message" @click="changeComponent('Message')">show Message</button>
       <button class="mt-10 show-should-exclude" @click="changeComponent('ShouldExclude')">show ShouldExclude</button>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

@@ -12,6 +12,7 @@
         "navigationBarTitleText": "app.component"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/app-instance/globalProperties/globalProperties-options",
       "style": {
@@ -24,84 +25,113 @@
         "navigationBarTitleText": "app.globalProperties"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/app-instance/use/use-options",
       "style": {
         "navigationBarTitleText": "app.use"
       }
     },
+    // #endif
     {
       "path": "pages/app-instance/use/use-composition",
       "style": {
         "navigationBarTitleText": "app.use"
       }
     },
+    // #ifndef APP-ANDROID && !VUE3-VAPOR
+    {
+      "path": "pages/pinia/pinia",
+      "style": {
+        "navigationBarTitleText": "Pinia"
+      }
+    },
+    {
+      "path": "pages/i18n/i18n",
+      "style": {
+        "navigationBarTitleText": "国际化"
+      }
+    },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/attrs/attrs-options",
       "style": {
         "navigationBarTitleText": "$attrs"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/attrs/attrs-composition",
       "style": {
         "navigationBarTitleText": "useAttrs"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/data/data-options",
       "style": {
         "navigationBarTitleText": "$data"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/data/data-composition",
       "style": {
         "navigationBarTitleText": "data 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/props/props-options",
       "style": {
         "navigationBarTitleText": "$props"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/props/props-composition",
       "style": {
         "navigationBarTitleText": "defineProps"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/el/el-options",
       "style": {
         "navigationBarTitleText": "$el 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/el/el-composition",
       "style": {
         "navigationBarTitleText": "$el 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/options/options-options",
       "style": {
         "navigationBarTitleText": "$options"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/options/options-composition",
       "style": {
         "navigationBarTitleText": "defineOptions"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/parent/parent-options",
       "style": {
         "navigationBarTitleText": "$parent 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/parent/parent-composition",
       "style": {
@@ -109,12 +139,14 @@
       }
     },
     // #ifndef WEB
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/root/root-options",
       "style": {
         "navigationBarTitleText": "$root 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/root/root-composition",
       "style": {
@@ -122,7 +154,7 @@
       }
     },
     // #endif
-    // #ifndef APP-IOS || MP
+    // #ifndef VUE3-VAPOR || APP-IOS || MP
     {
       "path": "pages/directive/v-html/v-html-options",
       "style": {
@@ -136,48 +168,56 @@
       }
     },
     // #endif 
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/directive/v-show/v-show-options",
       "style": {
         "navigationBarTitleText": "v-show 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/directive/v-show/v-show-composition",
       "style": {
         "navigationBarTitleText": "v-show 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/directive/v-if/v-if-options",
       "style": {
         "navigationBarTitleText": "v-if 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/directive/v-if/v-if-composition",
       "style": {
         "navigationBarTitleText": "v-if 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/directive/v-for/v-for-options",
       "style": {
         "navigationBarTitleText": "v-for 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/directive/v-for/v-for-composition",
       "style": {
         "navigationBarTitleText": "v-for 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/directive/v-on/v-on-options",
       "style": {
         "navigationBarTitleText": "v-on 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/directive/v-on/v-on-composition",
       "style": {
@@ -191,18 +231,21 @@
         "navigationBarTitleText": "v-pre"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/directive/v-once/v-once-options",
       "style": {
         "navigationBarTitleText": "v-once 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/directive/v-once/v-once-composition",
       "style": {
         "navigationBarTitleText": "v-once 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/directive/v-memo/v-memo-options",
       "style": {
@@ -216,7 +259,8 @@
       }
     },
     // #endif
-    // #ifdef WEB
+    // #endif
+    // #ifdef WEB || !VUE3-VAPOR
     {
       "path": "pages/directive/v-text/v-text-options",
       "style": {
@@ -230,12 +274,14 @@
       }
     },
     // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/directive/v-bind/v-bind-options",
       "style": {
         "navigationBarTitleText": "v-bind 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/directive/v-bind/v-bind-composition",
       "style": {
@@ -243,11 +289,19 @@
       }
     },
     {
+      "path": "pages/directive/v-bind/dataset/dataset-composition",
+      "style": {
+        "navigationBarTitleText": "dataset"
+      }
+    },
+    // #ifndef VUE3-VAPOR
+    {
       "path": "pages/directive/v-model/v-model-options",
       "style": {
         "navigationBarTitleText": "v-model"
       }
     },
+    // #endif
     // #ifndef MP
     {
       "path": "pages/directive/v-model/v-model-composition",
@@ -256,12 +310,14 @@
       }
     },
     // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/directive/v-slot/v-slot-options",
       "style": {
         "navigationBarTitleText": "v-slot"
       }
     },
+    // #endif
     {
       "path": "pages/directive/v-slot/v-slot-composition",
       "style": {
@@ -269,41 +325,54 @@
       }
     },
     {
+      "path": "pages/directive/v-slot/issue-29737",
+      "style": {
+        "navigationBarTitleText": "懒渲染插槽上下文"
+      }
+    },
+    // #ifndef VUE3-VAPOR
+    {
       "path": "pages/component-instance/slots/slots-options",
       "style": {
         "navigationBarTitleText": "$slots"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/slots/slots-composition",
       "style": {
         "navigationBarTitleText": "$slots"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/refs/refs-options",
       "style": {
         "navigationBarTitleText": "$refs 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/refs/refs-composition",
       "style": {
         "navigationBarTitleText": "$refs 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/emit-function/emit-function-options",
       "style": {
         "navigationBarTitleText": "$emit() 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/emit-function/emit-function-composition",
       "style": {
         "navigationBarTitleText": "defineEmits 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/force-update/force-update-options",
       "style": {
@@ -316,60 +385,85 @@
         "navigationBarTitleText": "$forceUpdate 组合式 API"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
+    {
+      "path": "pages/component-instance/inherit-attrs/inherit-attrs-options",
+      "style": {
+        "navigationBarTitleText": "inheritAttrs 选项式 API"
+      }
+    },
+    // #endif
+    {
+      "path": "pages/component-instance/inherit-attrs/inherit-attrs-composition",
+      "style": {
+        "navigationBarTitleText": "inheritAttrs 组合式 API"
+      }
+    },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/nextTick/nextTick-options",
       "style": {
         "navigationBarTitleText": "$nextTick"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/nextTick/nextTick-composition",
       "style": {
         "navigationBarTitleText": "nextTick"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/methods/call-method-uni-element-options",
       "style": {
         "navigationBarTitleText": "call-method-uni-element 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/methods/call-method-uni-element-composition",
       "style": {
         "navigationBarTitleText": "call-method-uni-element 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/methods/call-method-easycom-options",
       "style": {
         "navigationBarTitleText": "call-method-easycom 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/methods/call-method-easycom-composition",
       "style": {
         "navigationBarTitleText": "call-method-easycom 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/methods/call-method-easycom-uni-modules-options",
       "style": {
         "navigationBarTitleText": "call-method-easycom-uni-modules 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/methods/call-method-easycom-uni-modules-composition",
       "style": {
         "navigationBarTitleText": "call-method-easycom-uni-modules 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/methods/call-method-other-options",
       "style": {
         "navigationBarTitleText": "call-method-other 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/methods/call-method-other-composition",
       "style": {
@@ -382,30 +476,36 @@
         "navigationBarTitleText": "call-method-define-expose"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/provide/provide-options-1",
       "style": {
         "navigationBarTitleText": "provide 选项式 API 字面量"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/provide/provide-options-2",
       "style": {
         "navigationBarTitleText": "provide 选项式 API 函数"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/provide/provide-composition",
       "style": {
         "navigationBarTitleText": "provide 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/setup-function/setup-function",
       "style": {
         "navigationBarTitleText": "setup()"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/define-expose/define-expose",
       "style": {
@@ -413,12 +513,14 @@
       }
     },
     // #ifndef MP
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/circular-reference/circular-reference-options",
       "style": {
         "navigationBarTitleText": "循环引用 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/circular-reference/circular-reference-composition",
       "style": {
@@ -427,12 +529,15 @@
     },
     // #endif
     // #ifdef APP
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/mixins/mixins-app",
       "style": {
         "navigationBarTitleText": "mixins"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/mixins/mixins-app-page-namesake",
       "style": {
@@ -440,13 +545,16 @@
       }
     },
     // #endif
+    // #endif
     // #ifdef WEB
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/mixins/mixins-web",
       "style": {
         "navigationBarTitleText": "mixins"
       }
     },
+    // #endif
     // #endif
     // #ifdef MP
     {
@@ -463,12 +571,14 @@
         "navigationBarTitleText": "ref"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/reactivity/core/computed/computed-options",
       "style": {
         "navigationBarTitleText": "computed 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/reactivity/core/computed/computed-composition",
       "style": {
@@ -487,12 +597,14 @@
         "navigationBarTitleText": "readonly"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/reactivity/core/watch/watch-options",
       "style": {
         "navigationBarTitleText": "watch 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/reactivity/core/watch/watch-composition",
       "style": {
@@ -625,32 +737,48 @@
         "navigationBarTitleText": "onScopeDispose"
       }
     },
-    {
-      "path": "pages/lifecycle/page/page-composition",
-      "style": {
-        "navigationBarTitleText": "page-lifecycle 组合式 API",
-        "enablePullDownRefresh": true
-      }
-    },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/lifecycle/page/page-options",
       "style": {
         "navigationBarTitleText": "page-lifecycle 选项式 API",
-        "enablePullDownRefresh": true
+        "enablePullDownRefresh": true,
+				"pageOrientation": "auto"
       }
     },
+    // #endif
+    {
+      "path": "pages/lifecycle/page/page-composition",
+      "style": {
+        "navigationBarTitleText": "page-lifecycle 组合式 API",
+        "enablePullDownRefresh": true,
+				"pageOrientation": "auto"
+      }
+    },
+    // #ifndef MP
+    {
+      "path": "pages/lifecycle/page/dialog-page",
+      "style": {
+        "navigationBarTitleText": "page-lifecycle dialogPage"
+      }
+    },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/lifecycle/page/onBackPress/on-back-press-options",
       "style": {
         "navigationBarTitleText": "onBackPress 选项式 API"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/lifecycle/page/onBackPress/on-back-press-child-options",
       "style": {
         "navigationBarTitleText": "onBackPress 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/lifecycle/page/onBackPress/on-back-press-composition",
       "style": {
@@ -664,6 +792,7 @@
       }
     },
     // #ifndef MP
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/lifecycle/component/component-options",
       "style": {
@@ -671,6 +800,7 @@
         "enablePullDownRefresh": true
       }
     },
+    // #endif
     {
       "path": "pages/lifecycle/component/component-composition",
       "style": {
@@ -678,6 +808,7 @@
         "enablePullDownRefresh": true
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/built-in/component/keep-alive/keep-alive-options",
       "style": {
@@ -690,6 +821,9 @@
         "navigationBarTitleText": "keep-alive 组合式 API"
       }
     },
+    // #endif
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/built-in/component/teleport/teleport-options",
       "style": {
@@ -711,30 +845,36 @@
         "navigationBarTitleText": "slots 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/built-in/special-elements/slots/slots-options",
       "style": {
         "navigationBarTitleText": "slots 选项式 API"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/built-in/special-elements/template/template-options",
       "style": {
         "navigationBarTitleText": "template 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/built-in/special-elements/template/template-composition",
       "style": {
         "navigationBarTitleText": "template 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/built-in/special-elements/template/template-map-style-options",
       "style": {
         "navigationBarTitleText": "template-map-style 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/built-in/special-elements/template/template-map-style-composition",
       "style": {
@@ -742,18 +882,21 @@
       }
     },
     // #ifndef MP
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/built-in/special-elements/component/component-options",
       "style": {
         "navigationBarTitleText": "component 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/built-in/special-elements/component/component-composition",
       "style": {
         "navigationBarTitleText": "component 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/render-function/render/render-options",
       "style": {
@@ -766,6 +909,8 @@
         "navigationBarTitleText": "render 组合式 API"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/render-function/mergeProps/mergeProps-options",
       "style": {
@@ -778,6 +923,8 @@
         "navigationBarTitleText": "mergeProps 组合式 API"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/render-function/cloneVNode/cloneVNode-options",
       "style": {
@@ -790,6 +937,8 @@
         "navigationBarTitleText": "cloneVNode 组合式 API"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/render-function/isVNode/isVNode-options",
       "style": {
@@ -802,6 +951,8 @@
         "navigationBarTitleText": "isVNode 组合式 API"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/render-function/resolveComponent/resolveComponent-options",
       "style": {
@@ -814,6 +965,8 @@
         "navigationBarTitleText": "resolveComponent 组合式 API"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/render-function/withDirectives/withDirectives-options",
       "style": {
@@ -826,6 +979,8 @@
         "navigationBarTitleText": "withDirectives 组合式 API"
       }
     },
+    // #endif
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/render-function/withModifiers/withModifiers-options",
       "style": {
@@ -839,42 +994,63 @@
       }
     },
     // #endif
+    // #endif
+    {
+        "path": "pages/template-syntax/text-interpolation/text-interpolation-composition",
+        "style": {
+            "navigationBarTitleText": ""
+        }
+    },
     {
       "path": "pages/examples/unrecognized-component/unrecognized-component",
       "style": {
         "navigationBarTitleText": "unrecognized-component"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/examples/nested-component-communication/nested-component-communication-options",
       "style": {
         "navigationBarTitleText": "嵌套组件通信 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/examples/nested-component-communication/nested-component-communication-composition",
       "style": {
         "navigationBarTitleText": "嵌套组件通信 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/examples/set-custom-child-component-root-node-class/set-custom-child-component-root-node-class-options",
       "style": {
         "navigationBarTitleText": "自定义组件中使用 class 定制另一个自定义组件根节点样式 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/examples/set-custom-child-component-root-node-class/set-custom-child-component-root-node-class-composition",
       "style": {
         "navigationBarTitleText": "自定义组件中使用 class 定制另一个自定义组件根节点样式 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/examples/multiple-style-script/multiple-style-script",
       "style": {
         "navigationBarTitleText": "多个 style 和 script"
       }
     },
+    // #endif
+    // #ifdef APP
+    {
+      "path": "pages/helpers/useComputedStyle/useComputedStyle",
+      "style": {
+        "navigationBarTitleText": "useComputedStyle"
+      }
+    },
+    // #endif
     {
       "path": "pages/type/type",
       "style": {
@@ -882,24 +1058,28 @@
         "enablePullDownRefresh": false
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/error/runtime-error/runtime-error-options",
       "style": {
         "navigationBarTitleText": "runtime error 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/error/runtime-error/runtime-error-composition",
       "style": {
         "navigationBarTitleText": "runtime error 组合式 API"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/error/throw-error/throw-error-options",
       "style": {
         "navigationBarTitleText": "throw error 选项式 API"
       }
     },
+    // #endif
     {
       "path": "pages/error/throw-error/throw-error-composition",
       "style": {
@@ -912,21 +1092,61 @@
         "navigationBarTitleText": "页面作为组件引入"
       }
     },
+    // #ifndef VUE3-VAPOR
     {
       "path": "pages/component-instance/props/page-props-options",
       "style": {
         "navigationBarTitleText": "页面通过 url props 传参-选项式"
       }
     },
+    // #endif
     {
       "path": "pages/component-instance/props/page-props-composition",
       "style": {
         "navigationBarTitleText": "页面通过 url props 传参-组合式"
       }
+    },
+    {
+      "path": "pages/examples/root-node-custom-component/root-node-custom-component",
+      "style": {
+        "navigationBarTitleText": "根节点为自定义组件示例"
+      }
+    },
+    // #ifndef MP
+    {
+       "path": "pages/built-in/special-attributes/key/key-composition",
+       "style": {
+         "navigationBarTitleText": "特殊属性 key 组合式"
+       } 
+    },
+    // #endif
+    {
+      "path": "pages/examples/issue-27027/issue-27027",
+      "style": {
+        "navigationBarTitleText": "v-for + scopedSlot"
+      }
+    },
+    {
+      "path": "pages/examples/issue-27239/issue-27239",
+      "style": {
+        "navigationBarTitleText": "v-for + irelaventKey"
+      }
+    },
+    {
+      "path": "pages/examples/issue-30373/issue-30373",
+      "style": {
+        "navigationBarTitleText": "插槽中 v-for 渲染"
+      }
+    },
+    {
+      "path": "pages/reactivity/render-effect-guard",
+      "style": {
+        "navigationBarTitleText": "响应式渲染副作用守卫"
+      }
     }
   ],
   "globalStyle": {
-    "pageOrientation": "portrait",
+    "pageOrientation": "auto",
     "navigationBarTitleText": "Hello UVUE",
     "navigationBarTextStyle": "white",
     "navigationBarBackgroundColor": "#007AFF",

@@ -78,14 +78,11 @@ class DialogUIRunnable implements Runnable {
 				.setPositiveButton("确定", new DialogListener(et, this.callback!))
 				.setNegativeButton("取消", null).show();
 		} else {
-			// new AlertDialog.Builder(UTSAndroid.getUniActivity())
-			// 	.setTitle(this.title)
-			// 	.setMessage(this.message)
-			// 	.setIcon(android.R.drawable.ic_dialog_info)
-			// 	.setNegativeButton("取消", null).show();
-      uni.showModal({
-        title:"测试弹窗"
-      })
+			new AlertDialog.Builder(UTSAndroid.getUniActivity())
+				.setTitle(this.title)
+				.setMessage(this.message)
+				.setIcon(android.R.drawable.ic_dialog_info)
+				.setNegativeButton("取消", null).show();
 		}
 
 

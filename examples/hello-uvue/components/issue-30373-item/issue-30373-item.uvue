@@ -1,0 +1,24 @@
+<script setup lang="ts">
+  defineProps({
+    textId: {
+      type: String,
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  })
+</script>
+
+<template>
+  <text :id="textId" class="issue-30373-item">{{ label }}</text>
+</template>
+
+<style>
+  .issue-30373-item {
+    color: #111111;
+    font-size: 14px;
+    line-height: 22px;
+  }
+</style>

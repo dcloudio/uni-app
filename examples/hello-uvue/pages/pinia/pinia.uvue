@@ -1,0 +1,88 @@
+<template>
+  <view class="page">
+    <view class="flex justify-between flex-row mb-10">
+      <text>name:</text>
+      <text id="store-name">{{ name }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>count:</text>
+      <text id="store-count">{{ count }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>double count:</text>
+      <text id="store-double-count">{{ doubleCount }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>count text:</text>
+      <text id="store-count-text">{{ countText }}</text>
+    </view>
+    <button class="mb-10" id="increment-btn" @click="increment">increment</button>
+    <button class="mb-10" id="decrement-btn" @click="decrement">decrement</button>
+    <button class="mb-10" id="rename-btn" @click="rename">rename</button>
+    <button id="reset-btn" @click="reset">reset</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+import { defineStore, storeToRefs } from 'pinia'
+
+const useCounterStore = defineStore('piniaCounter', () => {
+  const name = ref('Pinia')
+  const count = ref(0)
+
+  const doubleCount = computed(() : number => {
+    return count.value * 2
+  })
+
+  const countText = computed(() : string => {
+    return `${name.value}: ${count.value}`
+  })
+
+  const increment = () => {
+    count.value++
+  }
+
+  const decrement = () => {
+    count.value--
+  }
+
+  const rename = () => {
+    name.value = name.value == 'Pinia' ? 'Pinia Store' : 'Pinia'
+  }
+
+  const reset = () => {
+    name.value = 'Pinia'
+    count.value = 0
+  }
+
+  return {
+    name,
+    count,
+    doubleCount,
+    countText,
+    increment,
+    decrement,
+    rename,
+    reset
+  }
+})
+
+const counterStore = useCounterStore()
+const { name, count, doubleCount, countText } = storeToRefs(counterStore)
+
+const increment = () => {
+  counterStore.increment()
+}
+
+const decrement = () => {
+  counterStore.decrement()
+}
+
+const rename = () => {
+  counterStore.rename()
+}
+
+const reset = () => {
+  counterStore.reset()
+}
+</script>

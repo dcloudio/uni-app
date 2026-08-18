@@ -10,16 +10,16 @@
 
 <script lang='uts'>
   // #ifdef APP-ANDROID
-  import ChildA from './childA-options.uvue'
+  import ChildA from './ChildA-options.uvue'
   // #endif
-  import childC from './childC-options.uvue'
+  import ChildC from './ChildC-options.uvue'
 
   export default {
     components: {
       // #ifdef APP-ANDROID
       ChildA,
       // #endif
-      childC
+      ChildC
     }
   }
 </script>

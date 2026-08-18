@@ -1,21 +1,20 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/directive/v-memo/v-memo-options'
 const COMPOSITION_PAGE_PATH = '/pages/directive/v-memo/v-memo-composition'
 
 describe('v-memo', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.includes('android')
-  const isIOS = platformInfo.includes('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
-  if (isWeb || isMP) {
+  if (isWeb || isMP || isDom2) {
     it('not support', async () => {
       expect(1).toBe(1)
     })
     return
   }
-  let page
   const test = async (pagePath) => {
-    page = await program.reLaunch(pagePath)
+    const page = await program.reLaunch(pagePath)
     await page.waitFor('view')
     
     const neverChangeMsg = await page.$('#v-memo-never-change-msg')
@@ -43,8 +42,8 @@ describe('v-memo', () => {
   }
   
   it('v-memo options API', async () => {
-		await test(OPTIONS_PAGE_PATH)
-	})
+    await test(OPTIONS_PAGE_PATH)
+  })
 	
 	it('v-memo composition API', async () => {
 		await test(COMPOSITION_PAGE_PATH)

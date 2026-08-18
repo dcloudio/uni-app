@@ -2,6 +2,12 @@ import App from './App.uvue'
 import { createSSRApp } from 'vue'
 import CompForAppComponent from '@/components/CompForAppComponent.uvue'
 
+// #ifndef APP-ANDROID && !VUE3-VAPOR
+import { createPinia } from 'pinia'
+import { i18n } from './i18n.uts'
+// #endif
+
+// #ifndef VUE3-VAPOR
 import GlobalMixinComp1 from '@/pages/component-instance/mixins/components/GlobalMixinComp1.uvue';
 import GlobalChildMixinComp1 from '@/pages/component-instance/mixins/components/GlobalChildMixinComp1.uvue';
 import GlobalMixinComp2 from '@/pages/component-instance/mixins/components/GlobalMixinComp2.uvue';
@@ -11,6 +17,7 @@ import MixinCompForGlobalChildMixin from '@/pages/component-instance/mixins/comp
 
 import plugin1 from '@/plugins/plugin1.uts'
 import plugin2 from '@/plugins/plugin2.uts'
+// #endif
 import plugin3 from '@/plugins/plugin3.uts'
 import plugin4 from '@/plugins/plugin4.uts'
 import CompForPlugin from '@/components/CompForPlugin.uvue'
@@ -21,11 +28,11 @@ import CompForPluginCopy from '@/components/CompForPluginCopy.uvue'
 let testType1 : TestType1ComponentPublicInstance | null = null
 export function createApp() {
   const app = createSSRApp(App)
-  console.log(testType1)
   app.component('CompForAppComponent', CompForAppComponent)
 
   app.provide('globalProvideMsg', 'global provide message')
 
+  // #ifndef VUE3-VAPOR
   const globalChildMixin = defineMixin({
     components: { GlobalChildMixinComp1, MixinComp: MixinCompForGlobalChildMixin },
     props: {
@@ -268,6 +275,7 @@ export function createApp() {
 
   app.use(plugin1)
   app.use(plugin2)
+  // #endif
   app.use(plugin3)
   app.use(plugin4)
   app.use(function (app: VueApp, componentName: string) {
@@ -289,6 +297,11 @@ export function createApp() {
       app.component('CompForPlugin2', CompForPlugin)
     }
   }, null, null)
+
+  // #ifndef APP-ANDROID && !VUE3-VAPOR
+  app.use(createPinia())
+  app.use(i18n)
+  // #endif
 
   app.config.globalProperties.globalPropertiesStr = 'default string'
   app.config.globalProperties.globalPropertiesNum = 0

@@ -12,72 +12,64 @@
 	</view>
 </template>
 
-<script lang="uts">
-	import { $dispatch } from './util.uts'
-	export default {
-		name: "UniCollapseItem",
-		props: {
-			// 列表标题
-			title: {
-				type: String,
-				default: ''
-			},
-			open: {
-				type: Boolean,
-				default: false
-			},
-			disabled: {
-				type: Boolean,
-				default: false
-			}
+<script setup lang="uts">
+import { $dispatch } from './util.uts'
+
+const instance = getCurrentInstance()!.proxy!;
+
+const props = defineProps({
+		// 列表标题
+		title: {
+			type: String,
+			default: ''
 		},
-		data() {
-			return {
-				height: 0,
-				is_open: this.open as boolean,
-				boxNode: null as UniElement | null,
-				contentNode: null as UniElement | null,
-			};
+		open: {
+			type: Boolean,
+			default: false
 		},
-		watch: {
-			open(value: boolean) {
-				// this.is_open = value
-				if (this.boxNode != null) {
-					this.openCollapse(value)
-				}
-			}
-		},
-		created() {
-			$dispatch(this, 'UniCollapse', 'init', this)
-		},
-		mounted() {
-			this.boxNode = this.$refs['boxRef'] as UniElement;
-			this.contentNode = this.$refs['contentRef'] as UniElement;
-			// this.openCollapse(this.open)
-		},
-		methods: {
-			// 开启或关闭折叠面板
-			openCollapse(open: boolean) {
-				if (this.disabled) return
-				// 关闭其他已打开
-				$dispatch(this, 'UniCollapse', 'closeAll')
-				this.is_open = open
-				this.openOrClose(open)
-			},
-			openOrClose(open: boolean) {
-				const boxNode = this.boxNode?.style!;
-				const contentNode = this.contentNode?.style!;
-				let hide = open ? 'flex' : 'none';
-				const opacity = open ? 1 : 0
-				let ani_transform = open ? 'translateY(0)' : 'translateY(-100%)';
-				boxNode.setProperty('display', hide);
-				this.$nextTick(() => {
-					contentNode.setProperty('transform', ani_transform);
-					contentNode.setProperty('opacity', opacity);
-				})
-			}
+		disabled: {
+			type: Boolean,
+			default: false
 		}
+	})
+	const is_open = ref<boolean>(props.open)
+	const boxNode = ref<UniElement | null>(null)
+	const contentNode = ref<UniElement | null>(null)
+
+	onMounted(() => {
+		nextTick(() => {
+			$dispatch(instance, 'UniCollapse', 'init', instance)
+			boxNode.value = instance.$refs['boxRef'] as UniElement
+			contentNode.value = instance.$refs['contentRef'] as UniElement
+		});
+	})
+
+	const openOrClose = (open: boolean) => {
+		const boxNodeStyle = boxNode.value?.style!;
+		const contentNodeStyle = contentNode.value?.style!;
+		let hide = open ? 'flex' : 'none';
+		const opacity = open ? 1 : 0
+		let ani_transform = open ? 'translateY(0)' : 'translateY(-100%)';
+		boxNodeStyle.setProperty('display', hide);
+		nextTick(() => {
+			contentNodeStyle.setProperty('transform', ani_transform);
+			contentNodeStyle.setProperty('opacity', opacity);
+		})
 	}
+	// 开启或关闭折叠面板
+	const openCollapse = (open: boolean) => {
+		if (props.disabled) return
+		// 关闭其他已打开
+		$dispatch(instance, 'UniCollapse', 'closeAll')
+		is_open.value = open
+		openOrClose(open)
+	}
+
+	watch(():boolean => props.open, (value: boolean) => {
+		if (boxNode.value != null) {
+			openCollapse(value)
+		}
+	})
 </script>
 
 <style scoped>

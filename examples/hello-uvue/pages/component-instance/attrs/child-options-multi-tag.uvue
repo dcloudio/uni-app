@@ -1,0 +1,51 @@
+<template>
+   <text>多跟节点继承 $attrs.style 只有 hasStyleAttr 设置天蓝色背景</text>
+    <view class="mb-10 flex flex-row justify-between">
+      <text>hasPropsAttr</text>
+      <text id="has-props-attr" class="has-props-attr">{{ hasPropsAttr }}</text>
+    </view>
+    <view class="mb-10 flex flex-row justify-between">
+      <text>hasEmitsAttr</text>
+      <text id="has-emits-attr">{{ hasEmitsAttr }}</text>
+    </view>
+    <view class="mb-10 flex flex-row justify-between">
+      <text>hasClassAttr</text>
+      <text id="has-class-attr" class="has-class-attr">{{ hasClassAttr }}</text>
+    </view>
+    <view class="mb-10 flex flex-row justify-between" :style="$attrs['style']!">
+      <text>hasStyleAttr</text>
+      <text id="has-class-attr">{{ hasStyleAttr }}</text>
+    </view>
+</template>
+
+<script lang="uts">
+export default {
+  emits: ['childClick'],
+  props: {
+    str: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+
+    hasPropsAttr(): boolean {
+      return this.$attrs['val'] != null
+    },
+    hasEmitsAttr(): boolean {
+      return this.$attrs['childClick'] != null
+    },
+    hasClassAttr(): boolean {
+      return this.$attrs['class'] != null
+    },
+    hasStyleAttr(): boolean {
+      return this.$attrs['style'] != null
+    },
+  },
+  methods:{
+    getAttr(_e: PointerEvent) {
+      console.log(this.$attrs['styles']);
+    }
+  }
+}
+</script>

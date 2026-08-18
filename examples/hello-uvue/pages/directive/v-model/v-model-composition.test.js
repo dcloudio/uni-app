@@ -13,7 +13,7 @@ describe('defineModel', () => {
     })
     return
   }
-  let page = null
+  let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')

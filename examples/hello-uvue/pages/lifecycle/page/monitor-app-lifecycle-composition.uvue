@@ -1,0 +1,27 @@
+<script lang="uts" setup>
+// 增加显式导入生命周期，测试 https://issues.dcloud.net.cn/pages/issues/detail?id=31456
+import { onAppShow } from '@dcloudio/uni-app'
+import { state, setLifeCycleNum } from '@/store/index.uts'
+
+onAppShow((onShowOptions: OnShowOptions) => {
+	console.log('组合式组件监听应用生命周期 => onAppShow => onShowOptions', onShowOptions)
+	// 自动化测试
+	setLifeCycleNum(state.lifeCycleNum + 10)
+})
+onAppHide(() => {
+	console.log('组合式组件监听应用生命周期 => onAppHide')
+	// 自动化测试
+	setLifeCycleNum(state.lifeCycleNum - 100)
+})
+onError((err: any) => {
+	console.log('组合式组件监听应用生命周期 => onError', err)
+	setLifeCycleNum(state.lifeCycleNum + 10)
+})
+const triggerError = () => {
+	throw new Error('trigger error in monitor app lifecycle composition')
+}
+</script>
+
+<template>
+	<text id="trigger-monitor-app-error" style="margin: 10px 0;" @click="triggerError">组件监听应用生命周期（组合式 API）</text>
+</template>

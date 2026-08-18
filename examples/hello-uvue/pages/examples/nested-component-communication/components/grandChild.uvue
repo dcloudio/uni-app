@@ -1,26 +1,19 @@
 <template>
   <view class="child">
     <view class="flex-row">
-      孙组件:
+      <text>孙组件:</text>
       <text class="grandchild-msg">{{ msg }}</text>
     </view>
     <button class="grandchild-btn" @click="change">孙组件清空数据</button>
   </view>
 </template>
 
-<script>
+<script setup>
 import { state, setComponentMsg } from '@/store/index.uts'
-export default {
-  computed: {
-    msg(): number {
-      return state.componentMsg
-    }
-  },
-  methods: {
-    change() {
-      setComponentMsg(0)
-    }
-  }
+
+const msg = computed((): number => state.componentMsg)
+const change = () => {
+	setComponentMsg(0)
 }
 </script>
 

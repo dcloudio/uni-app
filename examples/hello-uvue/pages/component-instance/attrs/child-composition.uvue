@@ -12,6 +12,10 @@
       <text>hasClassAttr</text>
       <text id="has-class-attr">{{ hasClassAttr }}</text>
     </view>
+    <view class="mb-10 flex flex-row justify-between">
+      <text>hasStyleAttr</text>
+      <text id="has-class-attr">{{ hasStyleAttr }}</text>
+    </view>
   </view>
 </template>
 
@@ -37,5 +41,9 @@ const hasEmitsAttr = computed(():boolean => {
 
 const hasClassAttr = computed(():boolean => {
   return attrs['class'] != null
+})
+
+const hasStyleAttr = computed(():boolean=>{
+  return attrs['style'] != null
 })
 </script>

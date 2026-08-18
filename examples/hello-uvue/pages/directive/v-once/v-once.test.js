@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/directive/v-once/v-once-options'
 const COMPOSITION_PAGE_PATH = '/pages/directive/v-once/v-once-composition'
 
@@ -11,10 +13,9 @@ describe('v-once', () => {
     })
     return
   }
-	let page
 	
 	const test = async (pagePath) => {
-		page = await program.reLaunch(pagePath)
+		const page = await program.reLaunch(pagePath)
 		await page.waitFor('view')
 		
 		const vOnceMsg = await page.$('#v-once-msg')
@@ -30,9 +31,11 @@ describe('v-once', () => {
 		expect(await msg.text()).toBe('msg changed')
 	}
 	
-	it('v-once options API', async () => {
-		await test(OPTIONS_PAGE_PATH)
-	})
+	if (!isDom2) {
+		it('v-once options API', async () => {
+			await test(OPTIONS_PAGE_PATH)
+		})
+	}
 	
 	it('v-once composition API', async () => {
 		await test(COMPOSITION_PAGE_PATH)

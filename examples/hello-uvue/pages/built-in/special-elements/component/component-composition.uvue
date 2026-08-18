@@ -11,7 +11,7 @@
   import Bar from '../../../../components/Bar.uvue'
 
   const currentComponentStr = ref('Foo')
-  const currentComponentInstance = ref(Foo)
+  const currentComponentInstance = shallowRef(Foo)
   const myInput = ref('input')
   const inputValue = ref('default value')
 

@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view class="page">
@@ -19,8 +19,10 @@
         page test $nextTick
       </button>
       <Child id="child-component" />
+      <button class="mt-10" id="after-next-tick-get-text-btn" @click="afterNextTickGetText">toggle v-if text</button>
+      <text v-if="dataInfo.showTestText" class="mt-10" id="v-if-next-tick-should-getable">测试 v-if & nextTick 后获取元素</text>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -32,12 +34,16 @@
     title : string
     beforeNextTickTitle : string
     afterNextTickTitle : string
+    showTestText: boolean
+    vIfNextTickTestTextGetAble: boolean
   }
 
   const dataInfo = reactive({
     title: 'default title',
     beforeNextTickTitle: '',
     afterNextTickTitle: '',
+    showTestText: false,
+    vIfNextTickTestTextGetAble: false,
   } as DataInfo)
 
   const testNextTick = async () => {
@@ -45,7 +51,7 @@
     dataInfo.title = 'new title'
 
     // #ifdef APP
-    dataInfo.beforeNextTickTitle = pageText.getAttribute('value')!
+    dataInfo.beforeNextTickTitle = (pageText as UniTextElement).value
     // #endif
     // #ifndef APP
     // @ts-ignore
@@ -55,7 +61,7 @@
     await nextTick()
     
     // #ifdef APP
-    dataInfo.afterNextTickTitle = pageText.getAttribute('value')!
+    dataInfo.afterNextTickTitle = (pageText as UniTextElement).value
     // #endif
     // #ifndef APP
     // @ts-ignore
@@ -66,7 +72,17 @@
     testNextTick()
   }
 
+  const afterNextTickGetText = () => {
+    dataInfo.showTestText = !dataInfo.showTestText
+    nextTick(() => {
+      const text = uni.getElementById('v-if-next-tick-should-getable')
+      dataInfo.vIfNextTickTestTextGetAble = text != null
+      console.log('after v-if nextTick should getable text:', dataInfo.vIfNextTickTestTextGetAble)
+    })
+  }
+
   defineExpose({
-    dataInfo
+    dataInfo,
+    afterNextTickGetText
   })
 </script>

@@ -4,7 +4,7 @@
     <!-- #endif -->
     <view class="page">
       <text>provide page 2</text>
-      <ComponentForInject />
+      <ComponentForInject class="component-for-inject" />
     </view>
     <!-- #ifdef APP -->
   </scroll-view>

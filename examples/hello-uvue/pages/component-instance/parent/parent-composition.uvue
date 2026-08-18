@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <child ref="childRef" />
+    <child ref="childRef" class="parent-child" />
   </view>
 </template>
 

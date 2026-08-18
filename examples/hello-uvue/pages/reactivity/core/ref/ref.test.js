@@ -52,6 +52,28 @@ describe('ref', () => {
     
     const issue15557Text = await page.$('#issue-15557')
     expect(await issue15557Text.text()).toBe('2')
+    
+    const issue20323Text1 = await page.$('#issue-20323-1')
+    expect(await issue20323Text1.text()).toBe('abc')
+    const issue20323Text2 = await page.$('#issue-20323-2')
+    expect(await issue20323Text2.text()).toBe('abc')
+	
+    const refStrId = await page.$('#ref-str-id')
+    expect(await refStrId.text()).toBe('1')
+    
+    const refStrBoolean = await page.$('#ref-str-boolean')
+    expect(await refStrBoolean.text()).toBe('false')
+    
+    const refStrAny = await page.$('#ref-str-any')
+    expect(await refStrAny.text()).toBe('1')
+    
+    const refStrArr = await page.$('#ref-str-arr')
+    expect(await refStrArr.text()).toBe('1')
+    
+    const refStrJson = await page.$('#ref-str-json')
+    expect(await refStrJson.text()).toBe('car1')
+    
+    const refSt = await page.$('#ref-str')
+    expect(await refStrId.text()).toBe('1')
   })
-
 })

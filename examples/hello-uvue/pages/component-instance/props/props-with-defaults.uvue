@@ -13,13 +13,20 @@
 </template>
 
 <script setup lang="uts">
+type CustomPropsTestType = {
+  a?: number
+}  
 interface CustomProps {
   msg: string
   labels : string[]
+  test: CustomPropsTestType
+  testArr1?: CustomPropsTestType[]
+  testArr2?: Array<CustomPropsTestType>
 }
 
 const props = withDefaults(defineProps<CustomProps>(), {
   msg: 'hello',
-  labels: ():string[] => ['a', 'b']
+  labels: ():string[] => ['a', 'b'],
+  test: {} as CustomPropsTestType
 })
 </script>

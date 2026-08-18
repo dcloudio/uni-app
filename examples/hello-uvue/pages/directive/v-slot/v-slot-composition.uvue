@@ -39,6 +39,12 @@
           <text id="slot-footer">{{ JSON.stringify(arr) }}</text>
         </view>
       </template>
+      <template #withFor="{ item }">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>v-for slot item:</text>
+          <text :id="`slot-for-${item}`">{{ item }}</text>
+        </view>
+      </template>
     </Foo>
   </view>
 </template>

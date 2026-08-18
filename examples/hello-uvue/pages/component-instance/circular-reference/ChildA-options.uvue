@@ -9,7 +9,7 @@
 </template>
 
 <script lang='uts'>
-  import ChildB from './childB-options.uvue'
+  import ChildB from './ChildB-options.uvue'
 
   export default {
     components: {

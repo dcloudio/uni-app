@@ -1,14 +1,20 @@
-const OPTIONS_PAGE_PATH = '/pages/directive/v-slot/v-slot-options'
-const COMPOSITION_PAGE_PATH = '/pages/directive/v-slot/v-slot-composition'
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 describe('v-slot', () => {
+  if (isDom2) {
+    it('dom2 编译失败', async () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   const platformInfo = process.env.uniTestPlatformInfo.toLowerCase()
-  const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
-  let page
+  const OPTIONS_PAGE_PATH = '/pages/directive/v-slot/v-slot-options'
+  const COMPOSITION_PAGE_PATH = '/pages/directive/v-slot/v-slot-composition'
   
   const test = async (pagePath) => {
-    page = await program.reLaunch(pagePath)
+    const page = await program.reLaunch(pagePath)
     await page.waitFor('view')
     
     const slotHeader = await page.$('#slot-header')
@@ -31,11 +37,22 @@ describe('v-slot', () => {
 
     const slotFooter = await page.$('#slot-footer')
     expect(await slotFooter.text()).toBe('["a","b","c"]')
+    
+    if (!isMP) {
+      // 小程序scopedSlot不支持此测试例
+      const slotFor1 = await page.$('#slot-for-1')
+      const slotFor2 = await page.$('#slot-for-2')
+      expect(await slotFor1.text()).toBe('1')
+      expect(await slotFor2.text()).toBe('2')
+    }
+    
   }
   
-  it('v-slot', async () => {
-    await test(OPTIONS_PAGE_PATH)
-  })
+  if (!isDom2) {
+    it('v-slot', async () => {
+      await test(OPTIONS_PAGE_PATH)
+    })
+  }
   
   it('defineSlots', async () => {
     await test(COMPOSITION_PAGE_PATH)

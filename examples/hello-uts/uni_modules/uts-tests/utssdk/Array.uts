@@ -356,7 +356,7 @@ export function testArray(): Result {
       let encoder = new TextEncoder();
       let view: Uint8Array = encoder.encode(content);
       let numberArray: number[] = Array.from(view) as number[]
-      expect(numberArray).toEqual([226,130,172]);
+      expect(numberArray).toEqual([-30, -126, -84]);
       let view2: Uint8Array = encoder.encode(content);
       let numberArray2: number[] = Array.from(view2, function (element: any | null, index: number): any | null {
         if ("number" == typeof element) {

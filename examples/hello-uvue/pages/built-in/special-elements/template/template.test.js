@@ -1,10 +1,13 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const PAGE_PATH_OPTIONS = '/pages/built-in/special-elements/template/template-options'
 const PAGE_PATH_COMPOSITION = '/pages/built-in/special-elements/template/template-composition'
 
 describe('built-in/special-elements/component', () => {
-  let page
-  const test = async () => {
+  const test = async (pagePath) => {
+    const page = await program.reLaunch(pagePath)
     await page.waitFor('view')
+
     const showBtn = await page.$('#show-botton')
     expect(await showBtn.text()).toBe("点击显示")
     await showBtn.tap()
@@ -17,12 +20,12 @@ describe('built-in/special-elements/component', () => {
     expect(await showBtn.text()).toBe("点击隐藏")
     expect((await page.$$('.item')).length).toBe(2)
   }
-  it('template Options API', async () => {
-    page = await program.reLaunch(PAGE_PATH_OPTIONS)
-    await test()
-  })
+  if (!isDom2) {
+    it('template Options API', async () => {
+      await test(PAGE_PATH_OPTIONS)
+    })
+  }
   it('template Composition API', async () => {
-    page = await program.reLaunch(PAGE_PATH_COMPOSITION)
-    await test()
+    await test(PAGE_PATH_COMPOSITION)
   })
 });

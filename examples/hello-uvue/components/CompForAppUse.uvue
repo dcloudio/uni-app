@@ -1,17 +1,18 @@
 <template>
   <view>
     <text class="mt-10 bold">component for app.use</text>
-    <text class="mt-10 plugin1">plugin1: {{ plugin1 }}</text>
+    <!-- #ifndef VUE3-VAPOR -->
+    <text class="mt-10 plugin1" id="plugin1">plugin1: {{ plugin1 }}</text>
     <text class="mt-10 plugin2">plugin2: {{ plugin2 }}</text>
+    <!-- #endif -->
     <text class="mt-10 plugin3">plugin3: {{ plugin3 }}</text>
     <text class="mt-10 plugin4">plugin4: {{ plugin4 }}</text>
-    <CompForPlugin1 />
-    <CompForPlugin2 />
+    <CompForPlugin1 class="component-for-plugin" />
+    <CompForPlugin2 class="component-for-plugin" />
   </view>
 </template>
 
-<script lang="uts">
-export default {
-  inject: ['plugin3', 'plugin4'],
-}
+<script setup lang="uts">
+  const plugin3 = inject('plugin3')
+	const plugin4 = inject('plugin4')
 </script>

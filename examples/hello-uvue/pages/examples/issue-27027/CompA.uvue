@@ -1,0 +1,16 @@
+<script setup>
+import { ref } from 'vue'
+import CompB from './CompB.uvue'
+const msg = ref('CompA msg')
+</script>
+<template>
+  <!-- CompA -->
+  <view>
+    <CompB>
+      <template #default="{ item }">
+        <text>{{ msg }}</text>
+        <slot :item="item"></slot>
+      </template>
+    </CompB>
+  </view>
+</template>

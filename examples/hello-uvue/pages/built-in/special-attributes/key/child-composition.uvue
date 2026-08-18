@@ -1,0 +1,16 @@
+  <template>
+      <view style="padding: 12px; background-color: #eeeeee;">
+          <text>props id: </text>
+          <text id="child-id">{{ id }}</text>
+          <text>created id: </text>
+          <text id="child-created-id" style="margin-top: 8px;">{{ createdId }}</text>
+      </view>
+  </template>
+
+  <script setup vapor lang="uts">
+    const props = defineProps({
+        id: { type: String, default: '' }
+    })
+
+    const createdId = ref(props.id)
+  </script>

@@ -1,17 +1,22 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <view class="page container">
       <text class="mb-10">component lifecycle 组合式 API</text>
+      <!-- #ifndef VUE3-VAPOR -->
       <keep-alive>
         <component :is="aliveComponent"  @updateIsScroll="updateIsScroll" />
       </keep-alive>
+       <!-- #endif -->
+      <!-- #ifdef VUE3-VAPOR -->
+        <child-component @updateIsScroll="updateIsScroll" />
+       <!-- #endif -->
       <button class="mt-10" @click="scrollToBottom">scrollToBottom</button>
       <button id="toggle-alive-component-btn" class="mt-10" @click="toggleAliveComponent">toggle alive component</button>
       <button class="mt-10" @click="navigateToHome">navigateTo home</button>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -81,6 +86,6 @@
 
 <style>
   .container {
-    height: 1200px;
+    height: 2200px;
   }
 </style>

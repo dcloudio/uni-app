@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1" :bounces="false">
     <!-- #endif -->
     <view class="page container">
@@ -21,6 +21,10 @@
         <text>{{ isOnPullDownRefreshTriggered }}</text>
       </view>
       <view class="flex flex-row justify-between mt-10">
+        <text>onPageScroll 触发：</text>
+        <text>{{ isOnPageScrollTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
         <text>onReachBottom 触发：</text>
         <text>{{ isOnReachBottomTriggered }}</text>
       </view>
@@ -36,24 +40,36 @@
         <text>onResize 触发：</text>
         <text>{{ isOnResizeTriggered }}</text>
       </view>
-      <view class="flex flex-row justify-between mt-10">
+      <view class="mt-10">
+        <MonitorAppLifecycleComposition class="monitor-app-lifecycle" />
+      </view>
+      <view class="mt-10">
         <MonitorPageLifecycleComposition />
       </view>
       <button class="mt-10" @click="scrollToBottom">scrollToBottom</button>
       <button class="mt-10" @click="pullDownRefresh">
         trigger pullDownRefresh
       </button>
+      <!-- #ifndef MP -->
+      <button class="mt-10" @click="openLifecycleDialogPage">
+        openDialogPage
+      </button>
+      <button class="mt-10" @click="closeLifecycleDialogPage">
+        closeDialogPage
+      </button>
+      <!-- #endif -->
       <button class="mt-10" @click="goOnBackPress">
         跳转 onBackPress 示例
       </button>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
 <script setup lang="uts">
 import { state, setLifeCycleNum } from '@/store/index.uts'
+import MonitorAppLifecycleComposition from './monitor-app-lifecycle-composition.uvue'
 import MonitorPageLifecycleComposition from './monitor-page-lifecycle-composition.uvue'
 
 const isOnloadTriggered = ref(false)
@@ -122,7 +138,7 @@ onUnload(() => {
   setLifeCycleNum(state.lifeCycleNum - 100)
 })
 onResize((options: OnResizeOptions) => {
-  console.log('onBackPress', options)
+  console.log('onResize', options)
   isOnResizeTriggered.value = true
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum + 10)
@@ -154,6 +170,23 @@ const scrollToBottom = () => {
   })
 }
 
+const resetPageScrollStatus = () => {
+  isOnPageScrollTriggered.value = false
+  dataInfo.isScrolled = false
+}
+
+// #ifndef MP
+const openLifecycleDialogPage = () => {
+  uni.openDialogPage({
+    url: '/pages/lifecycle/page/dialog-page',
+  })
+}
+
+const closeLifecycleDialogPage = () => {
+  uni.closeDialogPage()
+}
+// #endif
+
 const goOnBackPress = () => {
   uni.navigateTo({url: '/pages/lifecycle/page/onBackPress/on-back-press-composition'})
 }
@@ -164,11 +197,16 @@ defineExpose({
   pageSetLifeCycleNum,
   pullDownRefresh,
   scrollToBottom,
+  resetPageScrollStatus,
+  // #ifndef MP
+  openLifecycleDialogPage,
+  closeLifecycleDialogPage,
+  // #endif
 })
 </script>
 
 <style>
 .container {
-  height: 1200px;
+  height: 2200px;
 }
 </style>

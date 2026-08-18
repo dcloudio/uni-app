@@ -7,6 +7,9 @@
     <slot name="msgTrue" :msg="msg"></slot>
     <slot name="msgFalse" :msg="msg"></slot>
     <slot name="footer" :arr="arr"></slot>
+    <template v-for="item in 2">
+      <slot name="withFor" :item="item"></slot>
+    </template>
   </view>
 </template>
 

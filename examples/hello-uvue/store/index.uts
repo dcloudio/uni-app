@@ -40,4 +40,3 @@ export const setStatusBarHeight = (height : number) => {
 export const setDevicePixelRatio = (devicePixelRatio : number) => {
   state.devicePixelRatio = devicePixelRatio
 }
-

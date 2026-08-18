@@ -21,6 +21,10 @@
         <text>{{ isOnPullDownRefreshTriggered }}</text>
       </view>
       <view class="flex flex-row justify-between mt-10">
+        <text>onPageScroll 触发：</text>
+        <text>{{ isOnPageScrollTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
         <text>onReachBottom 触发：</text>
         <text>{{ isOnReachBottomTriggered }}</text>
       </view>
@@ -36,11 +40,20 @@
         <text>onResize 触发：</text>
         <text>{{ isOnResizeTriggered }}</text>
       </view>
+			<MonitorAppLifecycleOptions class="monitor-app-lifecycle" />
 			<MonitorPageLifecycleOptions />
       <button class="mt-10" @click="scrollToBottom">scrollToBottom</button>
       <button class="mt-10" @click="pullDownRefresh">
         trigger pullDownRefresh
       </button>
+      <!-- #ifndef MP -->
+      <button class="mt-10" @click="openLifecycleDialogPage">
+        openDialogPage
+      </button>
+      <button class="mt-10" @click="closeLifecycleDialogPage">
+        closeDialogPage
+      </button>
+      <!-- #endif -->
 			<button class="mt-10" @click="goOnBackPress">
         跳转 onBackPress 示例
       </button>
@@ -52,12 +65,13 @@
 
 <script lang="uts">
 import { state, setLifeCycleNum } from '@/store/index.uts'
+import MonitorAppLifecycleOptions from './monitor-app-lifecycle-options.uvue'
 import MonitorPageLifecycleOptions from './monitor-page-lifecycle-options.uvue'
  type DataInfo = {
  	isScrolled: boolean
  }
 export default {
-	components: { MonitorPageLifecycleOptions },
+	components: { MonitorAppLifecycleOptions, MonitorPageLifecycleOptions },
 	data() {
 		return {
 			isOnloadTriggered: false,
@@ -123,7 +137,7 @@ export default {
 		setLifeCycleNum(state.lifeCycleNum - 100)
 	},
 	onResize(options: OnResizeOptions) {
-		console.log('onBackPress', options)
+		console.log('onResize', options)
 		this.isOnResizeTriggered = true
 		// 自动化测试
 		setLifeCycleNum(state.lifeCycleNum + 10)
@@ -153,6 +167,20 @@ export default {
 				scrollTop: 2000,
 			})
 		},
+		resetPageScrollStatus() {
+			this.isOnPageScrollTriggered = false
+			this.dataInfo.isScrolled = false
+		},
+		// #ifndef MP
+		openLifecycleDialogPage() {
+			uni.openDialogPage({
+				url: '/pages/lifecycle/page/dialog-page',
+			})
+		},
+		closeLifecycleDialogPage() {
+			uni.closeDialogPage()
+		},
+		// #endif
 		goOnBackPress() {
 			uni.navigateTo({url: '/pages/lifecycle/page/onBackPress/on-back-press-options'})
 		}
@@ -162,6 +190,6 @@ export default {
 
 <style>
 .container {
-  height: 1200px;
+  height: 2200px;
 }
 </style>

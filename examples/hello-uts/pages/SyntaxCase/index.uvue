@@ -223,7 +223,7 @@
                     }
                 } catch (e) {}
             },
-            async testUtsAsync():Promise<void|null> {
+            async testUtsAsync():Promise<Void> {
                 this.testUtsAsyncResult['return'] = false;
                 this.testUtsAsyncResult['success'] = false;
                 // testUtsAsyncResult.fail = false;
@@ -251,7 +251,7 @@
                 
                 return null
             },
-            async testUtsAsyncMulitParam():Promise<void|null> {
+            async testUtsAsyncMulitParam():Promise<Void> {
                 this.testUtsAsyncMulitParamResult['return'] = false;
                 this.testUtsAsyncMulitParamResult['success'] = false;
                 this.testUtsAsyncMulitParamResult['complete'] = false;
@@ -320,7 +320,7 @@
                     }
                 } catch (e) {}
             },
-            async testUtsClassStaticAsync():Promise<void|null> {
+            async testUtsClassStaticAsync():Promise<Void> {
                 this.testUtsClassStaticAsyncResult['return'] = false;
                 this.testUtsClassStaticAsyncResult['success'] = false;
                 this.testUtsClassStaticAsyncResult['complete'] = false;
@@ -386,7 +386,7 @@
                     }
                 } catch (e) {}
             },
-            async testUtsClassAsync():Promise<void|null> {
+            async testUtsClassAsync():Promise<Void> {
                 if (test == null) {
                     this.testUtsClassConstructor()
                 }
@@ -436,7 +436,7 @@
                     }
                 })
                 
-                const res = task!.sync({ 
+                const res = task.sync({ 
                   success:(res) => {
                       console.log("task.sync.success.callback", res);
                       this.testUtsClassInstanceResult['success'] = true;

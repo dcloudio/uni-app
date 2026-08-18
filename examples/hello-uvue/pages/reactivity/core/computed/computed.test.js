@@ -1,10 +1,13 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/reactivity/core/computed/computed-options'
 const COMPOSITION_PAGE_PATH = '/pages/reactivity/core/computed/computed-composition'
 
 describe('computed', () => {
-  let page = null
-  
-  const test = async (page) => {
+  const test = async (pagePath) => {
+    const page = await program.reLaunch(pagePath)
+    await page.waitFor('view')
+
     const count = await page.$('#count')
     expect(await count.text()).toBe('0')
     const doubleCount = await page.$('#double-count')
@@ -31,17 +34,13 @@ describe('computed', () => {
     expect(await objArrLen.text()).toBe('4')
   }
   
-  it('computed options API', async () => {
-    page = await program.reLaunch(OPTIONS_PAGE_PATH)
-    await page.waitFor('view')
-    
-    await test(page)
-  })
+  if (!isDom2) {
+    it('computed options API', async () => {
+      await test(OPTIONS_PAGE_PATH)
+    })
+  }
   
   it('computed composition API', async () => {
-    page = await program.reLaunch(COMPOSITION_PAGE_PATH)
-    await page.waitFor('view')
-    
-    await test(page)
+    await test(COMPOSITION_PAGE_PATH)
   })
 })

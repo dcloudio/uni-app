@@ -49,11 +49,13 @@ type BtnPreventRect = {
 let btnPreventRect = reactive({
   value: null
 } as BtnPreventRect)
+// #ifdef APP
 onReady(() => {
   const btnPrevent = uni.getElementById("btn-prevent")
   btnPreventRect.value = btnPrevent!.getBoundingClientRect()
   btnPreventRect.value!.y += uni.getSystemInfoSync().safeArea.top + 44
 })
+// #endif
 
 const handleTouchstart = () => {
   console.log('handleTouchstart')

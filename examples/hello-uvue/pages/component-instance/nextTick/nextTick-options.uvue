@@ -8,7 +8,7 @@
         <text id="page-text-callback">{{ dataInfo.titleForCallback }}</text>
       </view>
       <view class="flex justify-between mb-10">
-        <text ref="text">before $nextTick callback title:</text>
+        <text ref="text">before $nextTick callback title123:</text>
         <text>{{ dataInfo.beforeNextTickCallbackTitle }}</text>
       </view>
       <view class="flex justify-between mb-10">
@@ -29,6 +29,8 @@
       </view>
       <button id="page-test-next-tick-btn" @click="pageTestNextTick">page test $nextTick</button>
       <Child id="child-component" />
+      <button class="mt-10" id="after-next-tick-get-text-btn" @click="afterNextTickGetText">toggle v-if text</button>
+      <text v-if="showTestText" class="mt-10" id="v-if-next-tick-should-getable">测试 v-if & nextTick 后获取元素</text>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -60,7 +62,9 @@
           titleForPromise: 'default title for promise',
           beforeNextTickPromiseTitle: '',
           afterNextTickPromiseTitle: '',
-        } as DataInfo
+        } as DataInfo,
+        showTestText: false,
+        vIfNextTickTestTextGetAble: false
       }
     },
     methods: {
@@ -73,7 +77,7 @@
         this.dataInfo.titleForCallback = 'new title for callback'
 
         // #ifdef APP
-        this.dataInfo.beforeNextTickCallbackTitle = pageText.getAttribute('value')!
+        this.dataInfo.beforeNextTickCallbackTitle = (pageText as UniTextElement).value
         // #endif
         // #ifdef WEB
         // @ts-ignore
@@ -82,7 +86,7 @@
         
         this.$nextTick(() => {
           // #ifdef APP
-          this.dataInfo.afterNextTickCallbackTitle = pageText.getAttribute('value')!
+          this.dataInfo.afterNextTickCallbackTitle = (pageText as UniTextElement).value
           // #endif
           // #ifdef WEB
           // @ts-ignore
@@ -95,7 +99,7 @@
         this.dataInfo.titleForPromise = 'new title for promise'
 
         // #ifdef APP
-        this.dataInfo.beforeNextTickPromiseTitle = pageText.getAttribute('value')!
+        this.dataInfo.beforeNextTickPromiseTitle = (pageText as UniTextElement).value
         // #endif
         // #ifdef WEB
         // @ts-ignore
@@ -104,12 +108,20 @@
         
         this.$nextTick().then(() => {
           // #ifdef APP
-          this.dataInfo.afterNextTickPromiseTitle = pageText.getAttribute('value')!
+          this.dataInfo.afterNextTickPromiseTitle = (pageText as UniTextElement).value
           // #endif
           // #ifdef WEB
           // @ts-ignore
           this.dataInfo.afterNextTickPromiseTitle = pageText.textContent
           // #endif
+        })
+      },
+      afterNextTickGetText(){
+        this.showTestText = !this.showTestText
+        this.$nextTick(() => {
+          const text = uni.getElementById('v-if-next-tick-should-getable')
+          this.vIfNextTickTestTextGetAble = text != null
+          console.log('after v-if nextTick should getable text:', this.vIfNextTickTestTextGetAble)
         })
       }
     }

@@ -4,7 +4,7 @@
       <text>str:</text>
       <text id="str">{{ str }}</text>
     </view>
-    <input class="mb-10 input" id="model-str" v-model="str" />
+    <input class="mb-10 input" id="model-str" v-model="str" @input="onInput" />
     <input class="mb-10 input" id="model-num" v-model.number="num" type="text" />
     <input class="mb-10 input" id="model-str-trim" v-model.trim="strForTrim" />
     <input class="mb-10 input" id="model-str-lazy" v-model.lazy="str" type="text" />
@@ -16,7 +16,7 @@
       <text>str for trim length:</text>
       <text id="str-length">{{ strForTrim.length }}</text>
     </view>
-    <Parent v-model="value"></Parent>
+    <Parent id="parent-component" v-model="value"></Parent>
     <Parent v-model="utsObj['modelValue']"></Parent>
     <Parent v-model="typeObj.modelValue"></Parent>
     <Parent v-model="typeObj.modelValue as string"></Parent>
@@ -43,6 +43,11 @@ export default {
   },
   components: {
       Parent
+  },
+  methods: {
+    onInput(){
+      // noop
+    }
   }
 }
 </script>

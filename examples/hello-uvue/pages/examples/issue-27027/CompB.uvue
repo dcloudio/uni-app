@@ -1,0 +1,9 @@
+<script setup></script>
+<template>
+  <!-- CompB -->
+  <view>
+    <view v-for="item in 4" :key="item">
+      <slot :item="item"></slot>
+    </view>
+  </view>
+</template>
