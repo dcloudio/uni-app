@@ -28,7 +28,7 @@
 不支持的css功能，并不影响业务开发。因为css本质是一种编写元素的样式属性的一种描述性写法。元素的所有样式设置，都可以脱离css这种写法，由API完成。
 
 - `@keyframes关键帧动画`，在App平台，可以使用API方式实现，暂不支持通过css方式实现。详见[UniElement的animate方法](../../dom/unielement.md#animate)
-- `@media媒体查询`，宽屏适配可使用`<match-media>组件`，[详见](../../component/match-media.md)。判断暗黑模式可使用API实现，[详见](https://doc.dcloud.net.cn/uni-app-x/api/theme-change.html)
+- `@media媒体查询`，宽屏适配可使用`<match-media>组件`，[详见](../../component/match-media.md)。暗黑主题适配，[详见](https://doc.dcloud.net.cn/uni-app-x/api/theme-change.html)
 
 ## 字体 @font
 
