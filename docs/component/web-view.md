@@ -16,19 +16,19 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| src | string \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | webview 指向网页的链接 |
-| allow | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 用于为 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 指定其[特征策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/策略特征) |
-| sandbox | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 该属性对呈现在 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 框架中的内容启用一些额外的限制条件。 |
-| fullscreen | boolean |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否铺满整个页面，默认值：`true`。 |
-| webview-styles | **WebViewStyles** | {"progress":{"color":"#00FF00"}} | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | webview 网络地址页面加载进度条样式 |
+| src | string \| null |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | webview 指向网页的链接 |
+| allow | string |   | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 用于为 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 指定其[特征策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/策略特征) |
+| sandbox | string |   | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 该属性对呈现在 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 框架中的内容启用一些额外的限制条件。 |
+| fullscreen | boolean |   | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否铺满整个页面，默认值：`true`。 |
+| webview-styles | **WebViewStyles** | {"progress":{"color":"#00FF00"}} | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | webview 网络地址页面加载进度条样式 |
 
 #### webview-styles 的属性描述
 
@@ -42,31 +42,38 @@
 | :- | :- | :- | :- |
 | color | [string.ColorString](/uts/data-type.md#ide-string) | 是 | 网页加载进度条颜色，默认值为 #00FF00 。 |
 @
-| horizontal-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61 | 设置是否显示横向滚动条 |
-| vertical-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61 | 设置是否显示纵向滚动条 |
-| bounces | boolean | true | Web: x; 微信小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 设置是否开启回弹效果 |
-| android-nested-scroll | string | "all" | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 设置嵌套滚动方向 |
-| disable-user-select-menu | boolean | false | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.84; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 设置是否禁用文本选择时弹出的系统菜单 |
-| ios-allows-inline-media-playback | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 5.08; HarmonyOS: x | 设置是否允许内联播放(禁止使用系统播放器全屏播放) |
+| horizontal-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61 | 设置是否显示横向滚动条 |
+| vertical-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61 | 设置是否显示纵向滚动条 |
+| bounces | boolean | true | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 设置是否开启回弹效果 |
+| android-nested-scroll | string | "all" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 设置嵌套滚动方向 |
+| associative-container | string |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 5.26 | 关联的滚动容器 |
+| disable-user-select-menu | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.84; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 设置是否禁用文本选择时弹出的系统菜单 |
+| ios-allows-inline-media-playback | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 5.08; HarmonyOS: x | 设置是否允许内联播放(禁止使用系统播放器全屏播放) |
 | dark-mode | boolean | true | HarmonyOS(Vapor): x |   |
-| @message | (event: [UniWebViewMessageEvent](#uniwebviewmessageevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页向应用 postMessage 时触发。e.detail = { data } |
-| @error | (event: [UniWebViewErrorEvent](#uniwebviewerrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页加载错误时触发。e.detail = { errSubject, errCode, errMsg, url, fullUrl, src } |
-| @load | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: 4.72; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 网页加载完成后触发。e.detail = { url, src } |
-| ~~@loaded~~ | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 网页加载完成后触发。e.detail = { url, src }。已废弃，请改用load |
-| @loading | (event: [UniWebViewLoadingEvent](#uniwebviewloadingevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页开始加载时触发。e.detail = { url, src } |
-| @download | (event: [UniWebViewDownloadEvent](#uniwebviewdownloadevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击网页中可下载链接时触发。e.detail = { url, userAgent, contentDisposition, mimetype, contentLength } |
-| @contentheightchange | (event: [UniWebViewContentHeightChangeEvent](#uniwebviewcontentheightchangeevent)) => void |   | Web: x; 微信小程序: x; Android: 4.63; iOS: 4.63; HarmonyOS: 4.63 | 网页内容高度变化时触发。e.detail = { height } |
-| @didterminate | (event: [UniWebViewDidTerminateEvent](#uniwebviewdidterminateevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: 5.0; HarmonyOS: x | 检测到web-view压后台再回来出现白屏时触发 |
+| @message | (event: [UniWebViewMessageEvent](#uniwebviewmessageevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页向应用 postMessage 时触发。e.detail = { data } |
+| @error | (event: [UniWebViewErrorEvent](#uniwebviewerrorevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页加载错误时触发。e.detail = { errSubject, errCode, errMsg, url, fullUrl, src } |
+| @load | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: 4.72; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 网页加载完成后触发。e.detail = { url, src } |
+| ~~@loaded~~ | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 网页加载完成后触发。e.detail = { url, src }。已废弃，请改用load |
+| @loading | (event: [UniWebViewLoadingEvent](#uniwebviewloadingevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页开始加载时触发。e.detail = { url, src } |
+| @download | (event: [UniWebViewDownloadEvent](#uniwebviewdownloadevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击网页中可下载链接时触发。e.detail = { url, userAgent, contentDisposition, mimetype, contentLength } |
+| @contentheightchange | (event: [UniWebViewContentHeightChangeEvent](#uniwebviewcontentheightchangeevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.63; iOS: 4.63; HarmonyOS: 4.63 | 网页内容高度变化时触发。e.detail = { height } |
+| @didterminate | (event: [UniWebViewDidTerminateEvent](#uniwebviewdidterminateevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 5.0; HarmonyOS: x | 检测到web-view压后台再回来出现白屏时触发 |
 | @onWebViewServiceMessage | Event |   | HarmonyOS(Vapor): 5.0 |   |
 
 #### android-nested-scroll 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| all | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向竖向均可嵌套滚动 |
-| vertical | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 竖向可嵌套滚动 |
-| horizontal | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向均可嵌套滚动 |
-| none | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向竖向均不可嵌套滚动 |
+| all | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向竖向均可嵌套滚动 |
+| vertical | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 竖向可嵌套滚动 |
+| horizontal | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向均可嵌套滚动 |
+| none | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向竖向均不可嵌套滚动 |
+
+#### associative-container 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| nested-scroll-view | Web: x; Android: x; iOS: x; HarmonyOS: 5.25 | 关联 scroll-view 滚动容器。在所有方向上优先滚动 scroll-view |
 
 
 ### 事件

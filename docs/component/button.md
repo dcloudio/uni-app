@@ -10,118 +10,118 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
-| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "button-hover" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
-| hover-stop-propagation | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态 |
-| hover-start-time | number | 20 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按住后多久出现点击态，单位毫秒 |
-| hover-stay-time | number | 70 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指松开后点击态保留时间，单位毫秒 |
-| size | string | "default" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮大小 |
-| type | string | "default" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮类型 |
-| plain | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮是否镂空，背景色透明 |
-| loading | boolean | false | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 名称前是否带 loading 图标 |
-| form-type | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 用于 form 组件，点击分别会触发 form 组件的 submit/reset 事件 |
-| open-type | string |   | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 开放能力 |
-| lang | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。 |
-| session-from | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 会话来源 |
-| send-message-title | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 会话内消息卡片标题 |
-| send-message-path | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 会话内消息卡片点击跳转应用路径 |
-| send-message-img | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 会话内消息卡片图片 |
-| show-message-card | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 显示会话内消息卡片 |
-| app-parameter | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开 APP 时，向 APP 传递的参数 |
-| group-id | string |   | Web: x; 微信小程序: x; Android: x; iOS: x | 打开群资料卡时，传递的群号 |
-| guild-id | string |   | Web: x; 微信小程序: x; Android: x; iOS: x | 打开频道页面时，传递的频道号 |
-| public-id | string |   | Web: x; 微信小程序: x; Android: x; iOS: x | 打开公众号资料卡时，传递的号码 |
-| phone-number-no-quota-toast | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当手机号快速验证或手机号实时验证额度用尽时，是否对用户展示“申请获取你的手机号，但该功能使用次数已达当前小程序上限，暂时无法使用”的提示，默认展示，open-type="getPhoneNumber" 或 open-type="getRealtimePhoneNumber" 时有效 |
-| createliveactivity | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>[新的一次性订阅消息下发机制](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message-2.html)回调，open-type=liveActivity时有效 |
+| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
+| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "button-hover" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
+| hover-stop-propagation | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态 |
+| hover-start-time | number | 20 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按住后多久出现点击态，单位毫秒 |
+| hover-stay-time | number | 70 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指松开后点击态保留时间，单位毫秒 |
+| size | string | "default" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮大小 |
+| type | string | "default" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮类型 |
+| plain | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮是否镂空，背景色透明 |
+| loading | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 名称前是否带 loading 图标 |
+| form-type | string |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 用于 form 组件，点击分别会触发 form 组件的 submit/reset 事件 |
+| open-type | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 开放能力 |
+| lang | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。 |
+| session-from | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 会话来源 |
+| send-message-title | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 会话内消息卡片标题 |
+| send-message-path | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 会话内消息卡片点击跳转应用路径 |
+| send-message-img | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 会话内消息卡片图片 |
+| show-message-card | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 显示会话内消息卡片 |
+| app-parameter | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 打开 APP 时，向 APP 传递的参数 |
+| group-id | string |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 打开群资料卡时，传递的群号 |
+| guild-id | string |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 打开频道页面时，传递的频道号 |
+| public-id | string |   | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x | 打开公众号资料卡时，传递的号码 |
+| phone-number-no-quota-toast | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当手机号快速验证或手机号实时验证额度用尽时，是否对用户展示“申请获取你的手机号，但该功能使用次数已达当前小程序上限，暂时无法使用”的提示，默认展示，open-type="getPhoneNumber" 或 open-type="getRealtimePhoneNumber" 时有效 |
+| createliveactivity | eventhandle |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>[新的一次性订阅消息下发机制](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message-2.html)回调，open-type=liveActivity时有效 |
 | loading-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | loading 图标的类名 |
 | loading-text-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.21; HarmonyOS(Vapor): 5.21 | loading 文案的类名 |
 | ios-loading-snow | boolean | false | iOS(Vapor): 5.11 | iOS 雪花加载效果 |
-| @getuserinfo | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 用户点击该按钮时，会返回获取到的用户信息，回调的detail数据与uni.getUserInfo返回的一致 |
-| @contact | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 客服消息回调 |
-| @getphonenumber | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 获取用户手机号回调 |
-| @error | (event: [UniEvent](/component/common.md#unievent)) => void |   | 微信小程序: 4.41; Android: x; iOS: x | 当使用开放能力时，发生错误的回调 |
-| @opensetting | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 在打开授权设置页后回调 |
-| @launchapp | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开 APP 成功的回调 |
-| @chooseavatar | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 获取用户头像回调 |
-| @chooseaddress | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x | 调起用户编辑并选择收货地址的回调 |
-| @chooseinvoicetitle | (event: [UniEvent](/component/common.md#unievent)) => void |   | 微信小程序: x; Android: x; iOS: x | 用户选择发票抬头的回调 |
-| @addgroupapp | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x | 添加群应用的回调 |
-| @subscribe | (event: [UniEvent](/component/common.md#unievent)) => void |   | 微信小程序: x; Android: x; iOS: x | 订阅消息授权回调 |
-| @login | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x | 登录回调 |
-| @getrealtimephonenumber | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>手机号实时验证回调，open-type=getRealtimePhoneNumber 时有效。Tips：在触发 bindgetrealtimephonenumber 回调后应立即隐藏手机号按钮组件，或置为 disabled 状态，避免用户重复授权手机号产生额外费用。 |
-| @agreeprivacyauthorization | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>用户同意隐私协议事件回调，open-type=agreePrivacyAuthorization时有效 （Tips: 如果使用 onNeedPrivacyAuthorization 接口，需要在 bindagreeprivacyauthorization 触发后再调用 `resolve({ event: "agree", buttonId })`） |
+| @getuserinfo | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x | 用户点击该按钮时，会返回获取到的用户信息，回调的detail数据与uni.getUserInfo返回的一致 |
+| @contact | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 客服消息回调 |
+| @getphonenumber | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x | 获取用户手机号回调 |
+| @error | (event: [UniEvent](/component/common.md#unievent)) => void |   | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x | 当使用开放能力时，发生错误的回调 |
+| @opensetting | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 在打开授权设置页后回调 |
+| @launchapp | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 打开 APP 成功的回调 |
+| @chooseavatar | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x | 获取用户头像回调 |
+| @chooseaddress | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 调起用户编辑并选择收货地址的回调 |
+| @chooseinvoicetitle | (event: [UniEvent](/component/common.md#unievent)) => void |   | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 用户选择发票抬头的回调 |
+| @addgroupapp | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 添加群应用的回调 |
+| @subscribe | (event: [UniEvent](/component/common.md#unievent)) => void |   | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 订阅消息授权回调 |
+| @login | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 登录回调 |
+| @getrealtimephonenumber | eventhandle |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>手机号实时验证回调，open-type=getRealtimePhoneNumber 时有效。Tips：在触发 bindgetrealtimephonenumber 回调后应立即隐藏手机号按钮组件，或置为 disabled 状态，避免用户重复授权手机号产生额外费用。 |
+| @agreeprivacyauthorization | eventhandle |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>用户同意隐私协议事件回调，open-type=agreePrivacyAuthorization时有效 （Tips: 如果使用 onNeedPrivacyAuthorization 接口，需要在 bindagreeprivacyauthorization 触发后再调用 `resolve({ event: "agree", buttonId })`） |
 
 #### size 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| default | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 默认大小 |
-| mini | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 小尺寸 |
+| default | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 默认大小 |
+| mini | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 小尺寸 |
 
 #### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| default | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 白色 |
-| primary | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝色 |
-| warn | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 红色 |
+| default | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 白色 |
+| primary | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝色 |
+| warn | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 红色 |
 
 #### form-type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| submit | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 提交表单 |
-| reset | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 重置表单 |
+| submit | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 提交表单 |
+| reset | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 重置表单 |
 
 #### open-type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| agreePrivacyAuthorization | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 用户同意隐私协议按钮。用户点击一次此按钮后，所有已声明过的隐私接口可以正常调用。 |
-| feedback | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开“意见反馈”页面，用户可提交反馈内容并上传日志 |
-| share | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 触发用户转发 |
-| getUserInfo | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 获取用户信息，可以从@getuserinfo回调中获取到用户信息 |
-| contact | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开客服会话，如果用户在会话中点击消息卡片后返回应用，可以从 @contact 回调中获得具体信息 |
-| getPhoneNumber | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 获取用户手机号，可以从@getphonenumber回调中获取到用户信息 |
-| launchApp | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开APP，可以通过app-parameter属性设定向APP传的参数 |
-| openSetting | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开授权设置页 |
-| chooseAvatar | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 获取用户头像，可以从@chooseavatar回调中获取到头像信息 |
-| getAuthorize | Web: x; 微信小程序: x; Android: x; iOS: x | 支持小程序授权 |
-| lifestyle | Web: x; 微信小程序: x; Android: x; iOS: x | 关注生活号 |
-| contactShare | Web: x; 微信小程序: x; Android: x; iOS: x | 分享到通讯录好友 |
-| openGroupProfile | Web: x; 微信小程序: x; Android: x; iOS: x | 呼起QQ群资料卡页面，可以通过group-id属性设定需要打开的群资料卡的群号，同时manifest.json中必须配置groupIdList |
-| openGuildProfile | Web: x; 微信小程序: x; Android: x; iOS: x | 呼起频道页面，可以通过guild-id属性设定需要打开的频道ID |
-| openPublicProfile | Web: x; 微信小程序: x; Android: x; iOS: x | 打开公众号资料卡，可以通过public-id属性设定需要打开的公众号资料卡的号码，同时manifest.json中必须配置publicIdList |
-| shareMessageToFriend | Web: x; 微信小程序: x; Android: x; iOS: x | 在自定义开放数据域组件中,向指定好友发起分享 |
-| addFriend | Web: x; 微信小程序: x; Android: x; iOS: x | 添加好友，对方需要通过该小程序进行授权，允许被加好友后才能调用成功用户授权 |
-| addColorSign | Web: x; 微信小程序: x; Android: x; iOS: x | 添加彩签，点击后添加状态有用户提示，无回调 |
-| addGroupApp | Web: x; 微信小程序: x; Android: x; iOS: x | 添加群应用（只有管理员或群主有权操作），添加后给button绑定@addgroupapp事件接收回调数据 |
-| addToFavorites | Web: x; 微信小程序: x; Android: x; iOS: x | 收藏当前页面，点击按钮后会触发Page.onAddToFavorites方法 |
-| chooseAddress | Web: x; 微信小程序: x; Android: x; iOS: x | 选择用户收货地址，可以从@chooseaddress回调中获取到用户选择的地址信息 |
-| chooseInvoiceTitle | Web: x; 微信小程序: x; Android: x; iOS: x | 选择用户发票抬头，可以从@chooseinvoicetitle回调中获取到用户选择发票抬头信息 |
-| login | Web: x; 微信小程序: x; Android: x; iOS: x | 登录，可以从@login回调中确认是否登录成功 |
-| subscribe | Web: x; 微信小程序: x; Android: x; iOS: x | 订阅类模板消息，需要用户授权才可发送 |
-| favorite | Web: x; 微信小程序: x; Android: x; iOS: x | 触发用户收藏 |
-| watchLater | Web: x; 微信小程序: x; Android: x; iOS: x | 触发用户稍后再看 |
-| openProfile | Web: x; 微信小程序: x; Android: x; iOS: x | 触发打开用户主页 |
-| liveActivity | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 通过前端获取[新的一次性订阅消息下发机制](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message-2.html)使用的 code |
-| getRealtimePhoneNumber | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 手机号实时验证，向用户申请，并在用户同意后，快速填写和实时验证手机号。[具体说明]((getRealtimePhoneNumber)) （*小程序插件中不能使用*） |
+| agreePrivacyAuthorization | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 用户同意隐私协议按钮。用户点击一次此按钮后，所有已声明过的隐私接口可以正常调用。 |
+| feedback | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 打开“意见反馈”页面，用户可提交反馈内容并上传日志 |
+| share | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x | 触发用户转发 |
+| getUserInfo | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 获取用户信息，可以从@getuserinfo回调中获取到用户信息 |
+| contact | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 打开客服会话，如果用户在会话中点击消息卡片后返回应用，可以从 @contact 回调中获得具体信息 |
+| getPhoneNumber | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 获取用户手机号，可以从@getphonenumber回调中获取到用户信息 |
+| launchApp | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 打开APP，可以通过app-parameter属性设定向APP传的参数 |
+| openSetting | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 打开授权设置页 |
+| chooseAvatar | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x | 获取用户头像，可以从@chooseavatar回调中获取到头像信息 |
+| getAuthorize | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x | 支持小程序授权 |
+| lifestyle | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x | 关注生活号 |
+| contactShare | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x | 分享到通讯录好友 |
+| openGroupProfile | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 呼起QQ群资料卡页面，可以通过group-id属性设定需要打开的群资料卡的群号，同时manifest.json中必须配置groupIdList |
+| openGuildProfile | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 呼起频道页面，可以通过guild-id属性设定需要打开的频道ID |
+| openPublicProfile | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 打开公众号资料卡，可以通过public-id属性设定需要打开的公众号资料卡的号码，同时manifest.json中必须配置publicIdList |
+| shareMessageToFriend | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 在自定义开放数据域组件中,向指定好友发起分享 |
+| addFriend | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 添加好友，对方需要通过该小程序进行授权，允许被加好友后才能调用成功用户授权 |
+| addColorSign | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 添加彩签，点击后添加状态有用户提示，无回调 |
+| addGroupApp | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 添加群应用（只有管理员或群主有权操作），添加后给button绑定@addgroupapp事件接收回调数据 |
+| addToFavorites | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 收藏当前页面，点击按钮后会触发Page.onAddToFavorites方法 |
+| chooseAddress | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 选择用户收货地址，可以从@chooseaddress回调中获取到用户选择的地址信息 |
+| chooseInvoiceTitle | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 选择用户发票抬头，可以从@chooseinvoicetitle回调中获取到用户选择发票抬头信息 |
+| login | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 登录，可以从@login回调中确认是否登录成功 |
+| subscribe | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 订阅类模板消息，需要用户授权才可发送 |
+| favorite | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 触发用户收藏 |
+| watchLater | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 触发用户稍后再看 |
+| openProfile | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 触发打开用户主页 |
+| liveActivity | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 通过前端获取[新的一次性订阅消息下发机制](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message-2.html)使用的 code |
+| getRealtimePhoneNumber | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 手机号实时验证，向用户申请，并在用户同意后，快速填写和实时验证手机号。[具体说明]((getRealtimePhoneNumber)) （*小程序插件中不能使用*） |
 
 #### lang 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| en | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 英文 |
-| zh_CN | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 简体中文 |
-| zh_TW | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 繁体中文 |
+| en | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 英文 |
+| zh_CN | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 简体中文 |
+| zh_TW | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 繁体中文 |
 
 
 

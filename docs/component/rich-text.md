@@ -22,9 +22,9 @@ uni-app x 蒸汽模式的rich-text native，应该是业内最佳的富文本呈
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
 
 
 ### 支持的HTML标签和属性
@@ -51,29 +51,29 @@ uni-app x 蒸汽模式的rich-text native，应该是业内最佳的富文本呈
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| nodes | any |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 节点列表/HTML String |
-| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 文本是否可选。已废弃，请使用 user-select |
-| mode | string | "web" | Web: x; 微信小程序: x; Android: 4.71; iOS: 4.11; HarmonyOS: 4.61 | 渲染模式 |
-| space | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>显示连续空格 |
-| ~~user-select~~ | boolean | false | Web: 5.24; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): 5.24; iOS(VDOM): 4.11; iOS(Vapor): 5.24; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.24 | 文本是否可选，该属性会使节点显示为 block |
+| nodes | any |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 节点列表/HTML String |
+| ~~selectable~~ | boolean | false | Web: 5.24; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 文本是否可选。已废弃，请使用 user-select |
+| mode | string | "web" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.71; iOS: 4.11; HarmonyOS: 4.61 | 渲染模式 |
+| space | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>显示连续空格 |
+| user-select | boolean | false | Web: 5.25; 微信小程序: 4.41; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.25; iOS(VDOM): 4.11; iOS(Vapor): 5.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.25 | 文本是否可选，该属性会使节点显示为 block |
 | selection-handle-color | string | "#4285F4FF" | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.22; HarmonyOS: x | 选择区域高亮手柄颜色 |
 | selection-background-color | string | "#33B5E566" | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.22; HarmonyOS: x | 选择区域高亮背景颜色 |
-| @itemclick | (event: [UniRichTextItemClickEvent](#unirichtextitemclickevent)) => void |   | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.71 | 内容点击事件 |
+| @itemclick | (event: [UniRichTextItemClickEvent](#unirichtextitemclickevent)) => void |   | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.71 | 内容点击事件 |
 
 #### mode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| web | Web: x; 微信小程序: x; Android: 4.71; iOS: 4.11; HarmonyOS: 4.61 | 使用webview渲染 |
-| native | Web: x; 微信小程序: x; Android: 4.71; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 使用原生渲染 |
+| web | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.71; iOS: 4.11; HarmonyOS: 4.61 | 使用webview渲染 |
+| native | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.71; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 使用原生渲染 |
 
 #### space 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ensp | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 中文字符空格一半大小 |
-| emsp | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 中文字符空格大小 |
-| nbsp | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 根据字体设置的空格大小 |
+| ensp | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 中文字符空格一半大小 |
+| emsp | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 中文字符空格大小 |
+| nbsp | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 根据字体设置的空格大小 |
 
 ### 节点列表数据结构
 ``` json

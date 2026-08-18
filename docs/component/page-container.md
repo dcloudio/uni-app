@@ -14,40 +14,40 @@ page-container 的特点：
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 5.02 | 4.41 | 5.02 | 5.02 | 5.02 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 5.02 | 4.41 | 5.25 | 5.02 | 5.02 | 5.02 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| show | boolean | false | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否显示容器组件 |
-| duration | number | 300 | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 动画时长，单位毫秒 |
-| z-index | number | 100 | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | z-index 层级 |
-| overlay | boolean | true | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否显示遮罩层 |
-| round | boolean | false | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否显示圆角 |
-| position | top \| left \| bottom \| right \| center | "bottom" | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 弹出位置 |
-| close-on-slide-down | boolean | false | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否在下滑一段距离后关闭 |
-| overlay-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 自定义遮罩层样式 |
-| custom-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 自定义弹出层样式 |
-| @beforeenter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>进入前触发 |
-| @enter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>进入中触发 |
-| @afterenter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>进入后触发 |
-| @beforeleave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>离开前触发 |
-| @leave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>离开中触发 |
-| @afterleave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>离开后触发 |
-| @clickoverlay | (event: [UniPointerEvent](/component/common.md#unipointerevent)) => void |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 点击遮罩层时触发 |
+| show | boolean | false | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否显示容器组件 |
+| duration | number | 300 | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 动画时长，单位毫秒 |
+| z-index | number | 100 | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | z-index 层级 |
+| overlay | boolean | true | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否显示遮罩层 |
+| round | boolean | false | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否显示圆角 |
+| position | top \| left \| bottom \| right \| center | "bottom" | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 弹出位置 |
+| close-on-slide-down | boolean | false | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否在下滑一段距离后关闭 |
+| overlay-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 自定义遮罩层样式 |
+| custom-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 自定义弹出层样式 |
+| @beforeenter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>进入前触发 |
+| @enter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>进入中触发 |
+| @afterenter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>进入后触发 |
+| @beforeleave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>离开前触发 |
+| @leave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>离开中触发 |
+| @afterleave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>离开后触发 |
+| @clickoverlay | (event: [UniPointerEvent](/component/common.md#unipointerevent)) => void |   | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 点击遮罩层时触发 |
 
 #### position 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| top | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 顶部 |
-| left | Web: 5.02; 微信小程序: x; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 左侧 |
-| bottom | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 底部 |
-| right | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 右侧 |
-| center | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 居中 |
+| top | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 顶部 |
+| left | Web: 5.02; 微信小程序: x; 支付宝小程序: x; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 左侧 |
+| bottom | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 底部 |
+| right | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 右侧 |
+| center | Web: 5.02; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 居中 |
 
 
 
