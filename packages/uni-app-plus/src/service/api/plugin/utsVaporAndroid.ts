@@ -206,7 +206,7 @@ interface InterfaceOptions {
 }
 
 interface ClassOptions {
-  name: string
+  class: string
   utsBridgeName: string
   constructor: MethodOptions
   staticMethods: MethodOptions[]
@@ -223,6 +223,13 @@ export function registerUTSInterface(options: InterfaceOptions) {
     interfaceDefines[options.utsBridgeName] = {}
   }
   interfaceDefines[options.utsBridgeName][options.name] = options
+}
+const classDefines: Record<string, Record<string, ClassOptions>> = {}
+export function registerUTSClass(options: ClassOptions) {
+  if (!classDefines[options.utsBridgeName]) {
+    classDefines[options.utsBridgeName] = {}
+  }
+  classDefines[options.utsBridgeName][options.class] = options
 }
 
 function resolveReturnValue(
@@ -245,6 +252,10 @@ function resolveReturnValue(
       interfaceDefines[utsBridgeName]?.[options.returnType]
     if (interfaceOptions) {
       return initUTSProxyInterface(value, interfaceOptions)
+    }
+    const classOptions = classDefines[utsBridgeName]?.[options.returnType]
+    if (classOptions) {
+      return initUTSProxyClassInstance(value, classOptions)
     }
   }
   return value
@@ -312,7 +323,8 @@ const FUNCTION_PLACEHOLDER = () => {}
 
 export function initUTSProxyInterface(
   instanceId: number,
-  options: InterfaceOptions
+  options: InterfaceOptions,
+  isClass: boolean = false
 ) {
   const methods: Record<string, Function> = {}
   const getters: Record<string, Function> = {}
@@ -340,6 +352,9 @@ export function initUTSProxyInterface(
         // 重要：禁止响应式
         if (prop === '__v_skip') {
           return true
+        }
+        if (isClass && prop === '__classId') {
+          return `${options.utsBridgeName}#${options.name}`
         }
         if (hasOwn(methods, prop)) {
           if (methods[prop] === FUNCTION_PLACEHOLDER) {
@@ -397,7 +412,18 @@ export function initUTSProxyInterface(
   return instanceProxy
 }
 
+function initUTSProxyClassInstance(instanceId: number, options: ClassOptions) {
+  const interfaceOptions: InterfaceOptions = {
+    name: options.class,
+    utsBridgeName: options.utsBridgeName,
+    methods: [...options.methods],
+  }
+  return initUTSProxyInterface(instanceId, interfaceOptions, true)
+}
+
 export function initUTSProxyClass(options: ClassOptions) {
+  const className = options.class
+  registerUTSClass(options)
   const constructor = initProxyFunction(
     options.utsBridgeName,
     options.constructor
@@ -418,12 +444,17 @@ export function initUTSProxyClass(options: ClassOptions) {
         break
     }
   }
+  const classId = `${options.utsBridgeName}#${className}`
   const ProxyClass = class {
     __instanceId: number = 0
+    __classId: string = classId
+    static [Symbol.hasInstance](instance: any) {
+      return instance && instance.__classId === classId
+    }
     constructor(...args: any[]) {
       this.__instanceId = constructor(...args) as number
       if (!this.__instanceId) {
-        throw new Error(`new ${options.name} is failed`)
+        throw new Error(`new ${className} is failed`)
       }
       const instance = this
       const methods: Record<string, Function> = {}
