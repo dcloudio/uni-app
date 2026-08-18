@@ -1,9 +1,9 @@
 import * as ts from 'typescript'
 import { collectExtApiUsageAst } from '../src/uts/extApi'
 
-function collect(code: string) {
+function collect(code: string, filename = '/src/module.ts') {
   const sourceFile = ts.createSourceFile(
-    '/src/module.ts',
+    filename,
     code,
     ts.ScriptTarget.Latest,
     true,
@@ -39,5 +39,19 @@ describe('collectExtApiUsageAst', () => {
         other.request()
       `)
     ).toBeUndefined()
+  })
+
+  test('removes the uni-push dependency from uni-cloud-x', () => {
+    expect(
+      collect(
+        `
+          uni.getPushClientId()
+          uni.onPushMessage(() => {})
+          uni.offPushMessage(() => {})
+          uni.request({})
+        `,
+        '/node_modules/@dcloudio/uni-cloud/dist/uni-cloud-x.es.js'
+      )
+    ).toEqual(['uni.request'])
   })
 })
