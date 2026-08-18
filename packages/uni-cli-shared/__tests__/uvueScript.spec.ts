@@ -11,6 +11,11 @@ function getTransform(plugin: Plugin) {
 describe('uniUTSUVueJavaScriptPlugin', () => {
   const originalDom2 = process.env.UNI_APP_X_DOM2
   const originalPlatform = process.env.UNI_PLATFORM
+  const originalVaporScriptLang = process.env.UNI_APP_X_VAPOR_SCRIPT_LANG
+
+  beforeEach(() => {
+    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'true'
+  })
 
   afterEach(() => {
     if (originalDom2 === undefined) {
@@ -23,6 +28,47 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     } else {
       process.env.UNI_PLATFORM = originalPlatform
     }
+    if (originalVaporScriptLang === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_VAPOR_SCRIPT_LANG')
+    } else {
+      process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = originalVaporScriptLang
+    }
+  })
+
+  test('keeps the existing DOM2 UTS behavior without script lang support', () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'false'
+    const plugin = uniUTSUVueJavaScriptPlugin()
+    const transform = getTransform(plugin)
+    const esbuildPlugin = { name: 'vite:esbuild' }
+    const config = { plugins: [esbuildPlugin] }
+
+    expect(
+      transform.call(
+        {} as any,
+        '<script setup lang="ts">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script setup vapor lang="uts">const value = 1</script>',
+      })
+    )
+    expect(
+      transform.call(
+        {} as any,
+        '<script setup lang="js">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script setup vapor lang="js">const value = 1</script>',
+      })
+    )
+    if (typeof plugin.configResolved === 'function') {
+      plugin.configResolved(config as any)
+    }
+    expect(config.plugins).not.toContain(esbuildPlugin)
   })
 
   test('preserves TypeScript and normalizes JavaScript in DOM2', () => {
@@ -363,7 +409,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     )
   })
 
-  test('keeps vite esbuild in DOM2', () => {
+  test('keeps vite esbuild in DOM2 with script lang support', () => {
     process.env.UNI_APP_X_DOM2 = 'true'
     const plugin = uniUTSUVueJavaScriptPlugin()
     const esbuildPlugin = { name: 'vite:esbuild' }

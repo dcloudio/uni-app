@@ -86,6 +86,7 @@ declare namespace NodeJS {
     UNI_APP_X_CACHE_DIR: string // 当前运行/发行平台的缓存目录，如：unpackage/cache/.app-android
     UNI_APP_X_DOM2?: 'true' // 是否 dom2 模式
     UNI_APP_X_DOM2_DYNAMIC?: 'true' // 是否开启 dom2 模式下的动态渲染功能
+    UNI_APP_X_VAPOR_SCRIPT_LANG?: 'true' | 'false' // 是否启用 Vapor JS/TS 脚本编译链路
     UNI_APP_X_VAPOR_RENDER_TARGET?: 'nativecode' | 'bytecode' // dom2 模式下，模板和样式的编译目标
     UNI_CLI_LAUNCH_PAGE_PATH?: string // 开发阶段，传入指定入口页面
     UNI_CLI_LAUNCH_PAGE_QUERY?: string // 开发阶段，传入指定入口页面参数

@@ -3,12 +3,19 @@ import { uts2js } from '../src/tsc/javascript'
 
 describe('uts2js DOM2 routing', () => {
   const originalUts2js = globalThis.uts2js
+  const originalVaporScriptLang = process.env.UNI_APP_X_VAPOR_SCRIPT_LANG
 
   afterEach(() => {
     globalThis.uts2js = originalUts2js
+    if (originalVaporScriptLang === undefined) {
+      delete process.env.UNI_APP_X_VAPOR_SCRIPT_LANG
+    } else {
+      process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = originalVaporScriptLang
+    }
   })
 
   test('excludes standard TypeScript and lang.ts requests', () => {
+    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'true'
     const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])
     globalThis.uts2js = runtimeUts2js
 
@@ -41,5 +48,21 @@ describe('uts2js DOM2 routing', () => {
         '/project/src/pages/index.uvue?vue&type=script&setup=true&lang.uts'
       )
     ).toBe(false)
+  })
+
+  test('keeps TypeScript in uts2js without script lang support', () => {
+    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'false'
+    const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])
+    globalThis.uts2js = runtimeUts2js
+
+    uts2js({
+      dom2: true,
+      platform: 'app-android',
+      inputDir: '/project/src',
+      version: 'test',
+      modules: {},
+    })
+
+    expect(runtimeUts2js.mock.calls[0][0].exclude).toBeUndefined()
   })
 })

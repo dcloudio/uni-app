@@ -24,6 +24,7 @@ describe('initPluginVueOptions', () => {
   const originalEnv = {
     UNI_APP_X: process.env.UNI_APP_X,
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
+    UNI_APP_X_VAPOR_SCRIPT_LANG: process.env.UNI_APP_X_VAPOR_SCRIPT_LANG,
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
   }
 
@@ -40,6 +41,7 @@ describe('initPluginVueOptions', () => {
   test('injects the script transform only in uni-app x Vapor mode', () => {
     process.env.UNI_APP_X = 'true'
     process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'true'
     process.env.UNI_INPUT_DIR = '/project'
     const uniAppXVaporScriptTransform = jest.fn()
     const plugin = {
@@ -61,6 +63,14 @@ describe('initPluginVueOptions', () => {
     expect((vueOptions as any).uniAppXVaporScriptTransform).toBe(
       uniAppXVaporScriptTransform
     )
+
+    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'false'
+    options.vueOptions = undefined
+    const disabledVueOptions = initPluginVueOptions(options, uniPluginOptions)
+
+    expect(
+      (disabledVueOptions as any).uniAppXVaporScriptTransform
+    ).toBeUndefined()
 
     delete process.env.UNI_APP_X_DOM2
     options.vueOptions = undefined

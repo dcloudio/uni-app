@@ -175,12 +175,14 @@ if (
 }
 
 export function configResolved(config: ResolvedConfig, isAndroidVdom = false) {
-  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
-  // JS 引擎保留 Terser；DOM2 还需要 vite:esbuild 处理标准 TypeScript。
+  const enableVaporScriptLang =
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
+  // JS 引擎保留 Terser；启用 Vapor JS/TS 脚本时还需要 vite:esbuild 处理标准 TypeScript。
   const removedPlugins = REMOVED_PLUGINS.filter(
     (plugin) =>
       (isAndroidVdom || plugin !== 'vite:terser') &&
-      (!isDom2 || plugin !== 'vite:esbuild')
+      (!enableVaporScriptLang || plugin !== 'vite:esbuild')
   )
   removePlugins(removedPlugins, config)
   // console.log(plugins.map((p) => p.name))

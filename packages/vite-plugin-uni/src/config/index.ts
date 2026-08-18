@@ -46,7 +46,8 @@ export function createConfig(
       css: createCss(options, config),
       esbuild: {
         include:
-          process.env.UNI_APP_X_DOM2 === 'true'
+          process.env.UNI_APP_X_DOM2 === 'true' &&
+          process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
             ? /\.(tsx?|jsx)$/
             : /\.(tsx?|jsx|uts)$/,
         exclude: /\.js$/,

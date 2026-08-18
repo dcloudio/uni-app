@@ -308,8 +308,10 @@ export function initPluginVueOptions(
       vueOptions.script.babelParserPlugins.push('decorators')
     }
     if (isDom2) {
-      ;(vueOptions as any).uniAppXVaporScriptTransform =
-        uniPluginOptions.uniAppXVaporScriptTransform
+      if (process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true') {
+        ;(vueOptions as any).uniAppXVaporScriptTransform =
+          uniPluginOptions.uniAppXVaporScriptTransform
+      }
       const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
       function isAppVue(id: string) {
         return normalizePath(id) === appVue

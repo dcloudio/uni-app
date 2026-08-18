@@ -22,6 +22,7 @@ describe('createUniOptions', () => {
     NODE_ENV: process.env.NODE_ENV,
     UNI_NODE_ENV: process.env.UNI_NODE_ENV,
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
+    UNI_APP_X_VAPOR_SCRIPT_LANG: process.env.UNI_APP_X_VAPOR_SCRIPT_LANG,
     UNI_APP_X_TARGET_ARCHS: process.env.UNI_APP_X_TARGET_ARCHS,
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
     UNI_OUTPUT_DIR: process.env.UNI_OUTPUT_DIR,
@@ -148,22 +149,29 @@ describe('createUniOptions', () => {
   )
 
   test.each([
-    [true, true],
-    [false, false],
-  ] as const)('keeps vite:esbuild only in DOM2', (isDom2, expected) => {
-    if (isDom2) {
-      process.env.UNI_APP_X_DOM2 = 'true'
-    } else {
-      delete process.env.UNI_APP_X_DOM2
+    [true, true, true],
+    [true, false, false],
+    [false, true, false],
+  ] as const)(
+    'keeps vite:esbuild with DOM2=%s and script lang=%s',
+    (isDom2, enableVaporScriptLang, expected) => {
+      if (isDom2) {
+        process.env.UNI_APP_X_DOM2 = 'true'
+      } else {
+        delete process.env.UNI_APP_X_DOM2
+      }
+      process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = enableVaporScriptLang
+        ? 'true'
+        : 'false'
+      const esbuildPlugin = { name: 'vite:esbuild' }
+      const config = {
+        plugins: [esbuildPlugin, { name: 'vite:asset' }],
+        build: {},
+      } as unknown as ResolvedConfig
+
+      configResolved(config)
+
+      expect(config.plugins.includes(esbuildPlugin)).toBe(expected)
     }
-    const esbuildPlugin = { name: 'vite:esbuild' }
-    const config = {
-      plugins: [esbuildPlugin, { name: 'vite:asset' }],
-      build: {},
-    } as unknown as ResolvedConfig
-
-    configResolved(config)
-
-    expect(config.plugins.includes(esbuildPlugin)).toBe(expected)
-  })
+  )
 })

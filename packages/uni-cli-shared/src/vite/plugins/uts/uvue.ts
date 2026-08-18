@@ -60,11 +60,13 @@ function findScriptTag(code: string, node: ElementNode): ScriptTag | undefined {
 export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const enableVaporScriptLang =
+    isDom2 && process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
   return {
     name: 'uni:uts-uvue',
     enforce: 'pre',
     configResolved(config) {
-      if (isDom2) {
+      if (enableVaporScriptLang) {
         return
       }
       // 移除自带的 esbuild 处理 ts 文件
@@ -83,7 +85,7 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
         platform === 'app' ||
         platform === 'app-plus' ||
         platform === 'app-harmony'
-      const scriptTags = isDom2
+      const scriptTags = enableVaporScriptLang
         ? parse(code, {
             parseMode: 'sfc',
             // 此阶段只识别真实脚本块，语法错误仍由后续正式 SFC 编译统一报告。
@@ -100,7 +102,7 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
       const setupScript = scriptTags.find((script) => script.setup)
       // 同一 SFC 的普通 script 与 script setup 必须使用相同语言，因此需要整组归一为 TypeScript。
       const normalizeJavaScript =
-        isDom2 &&
+        enableVaporScriptLang &&
         !!setupScript &&
         !scriptTags.some((script) => script.src) &&
         (setupScript.lang === 'js' || setupScript.lang === 'ts') &&
@@ -117,14 +119,21 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
         if (!langMatch) {
           result = `<script${attributes} lang="uts">`
         } else if (lang === 'ts') {
-          // 非 DOM2 继续由 uts2js 处理 TypeScript。
+          // 未启用 Vapor JS/TS 脚本时，TypeScript 继续由 uts2js 处理。
           result = match.replace(langMatch[0], `${langMatch[1]}lang="uts"`)
         } else {
           result = match
         }
+        if (
+          isDom2 &&
+          attributes.includes('setup') &&
+          !attributes.includes('vapor')
+        ) {
+          result = result.replace(/(\s)lang(?=\s*=)/i, '$1vapor lang')
+        }
         return result
       }
-      if (isDom2) {
+      if (enableVaporScriptLang) {
         const source = id.split('?')[0]
         const transformed = new MagicString(code)
         let changed = false
