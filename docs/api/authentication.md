@@ -26,22 +26,22 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| requestAuthModes | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求使用的可接受的生物认证方式 |
-| challenge | string | 否 | Web: x | 挑战因子 |
-| authContent | string | 否 | Web: x | 验证描述，即识别过程中显示在界面上的对话框提示内容 |
-| success | (result: [StartSoterAuthenticationSuccess](#startsoterauthenticationsuccess-values)) => void | 否 | Web: x | 接口调用成功的回调函数 |
-| fail | (result: [StartSoterAuthenticationFail](#startsoterauthenticationfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
-| complete | (result: [StartSoterAuthenticationSuccess](#startsoterauthenticationsuccess-values) \| [StartSoterAuthenticationFail](#startsoterauthenticationfail-values)) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| requestAuthModes | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41 | 请求使用的可接受的生物认证方式 |
+| challenge | string | 否 | Web: x; 微信小程序: 4.41 | 挑战因子 |
+| authContent | string | 否 | Web: x; 微信小程序: 4.41 | 验证描述，即识别过程中显示在界面上的对话框提示内容 |
+| success | (result: [StartSoterAuthenticationSuccess](#startsoterauthenticationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [StartSoterAuthenticationFail](#startsoterauthenticationfail-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [StartSoterAuthenticationSuccess](#startsoterauthenticationsuccess-values) \| [StartSoterAuthenticationFail](#startsoterauthenticationfail-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StartSoterAuthenticationSuccess 的属性值 @startsoterauthenticationsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x | 错误码 |
-| authMode | string | 是 | Web: x | 生物认证方式 |
-| resultJSON | string | 否 | Web: x | 在设备安全区域（TEE）内获得的本机安全信息以及本次认证信息 |
-| resultJSONSignature | string | 否 | Web: x | 用安全密钥对 resultJSON 的签名(SHA256 with RSA/PSS, saltlen=20) |
-| errMsg | string | 是 | Web: x | 接口调用结果 |
+| errCode | number | 是 | Web: x; 微信小程序: 4.41 | 错误码 |
+| authMode | string | 是 | Web: x; 微信小程序: 4.41 | 生物认证方式 |
+| resultJSON | string | 否 | Web: x; 微信小程序: 4.41 | 在设备安全区域（TEE）内获得的本机安全信息以及本次认证信息 |
+| resultJSONSignature | string | 否 | Web: x; 微信小程序: 4.41 | 用安全密钥对 resultJSON 的签名(SHA256 with RSA/PSS, saltlen=20) |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41 | 接口调用结果 |
 
 #### authMode 的属性描述
 
@@ -65,11 +65,11 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x | 错误码 |
-| authMode | string | 是 | Web: x | 生物认证方式 |
-| resultJSON | string | 否 | Web: x | 在设备安全区域（TEE）内获得的本机安全信息以及本次认证信息 |
-| resultJSONSignature | string | 否 | Web: x | 用安全密钥对 resultJSON 的签名(SHA256 with RSA/PSS, saltlen=20) |
-| errMsg | string | 是 | Web: x | 接口调用结果 |
+| errCode | number | 是 | Web: x; 微信小程序: 4.41 | 错误码 |
+| authMode | string | 是 | Web: x; 微信小程序: 4.41 | 生物认证方式 |
+| resultJSON | string | 否 | Web: x; 微信小程序: 4.41 | 在设备安全区域（TEE）内获得的本机安全信息以及本次认证信息 |
+| resultJSONSignature | string | 否 | Web: x; 微信小程序: 4.41 | 用安全密钥对 resultJSON 的签名(SHA256 with RSA/PSS, saltlen=20) |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41 | 接口调用结果 |
 
 #### authMode 的属性描述
 
@@ -100,7 +100,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.authentication.startSoterAuthentication)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/authentication.html#startsoterauthentication)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=startSoterAuthentication&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/soter/wx.startSoterAuthentication.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startSoterAuthentication&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startSoterAuthentication&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startSoterAuthentication&secondType=all&type=1)
@@ -143,16 +143,16 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: [CheckIsSupportSoterAuthenticationSuccess](#checkissupportsoterauthenticationsuccess-values)) => void | 否 | Web: x | 接口调用成功的回调函数 |
-| fail | (result: [CheckIsSupportSoterAuthenticationFail](#checkissupportsoterauthenticationfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
-| complete | (result: [CheckIsSupportSoterAuthenticationSuccess](#checkissupportsoterauthenticationsuccess-values) \| [CheckIsSupportSoterAuthenticationFail](#checkissupportsoterauthenticationfail-values)) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [CheckIsSupportSoterAuthenticationSuccess](#checkissupportsoterauthenticationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [CheckIsSupportSoterAuthenticationFail](#checkissupportsoterauthenticationfail-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [CheckIsSupportSoterAuthenticationSuccess](#checkissupportsoterauthenticationsuccess-values) \| [CheckIsSupportSoterAuthenticationFail](#checkissupportsoterauthenticationfail-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### CheckIsSupportSoterAuthenticationSuccess 的属性值 @checkissupportsoterauthenticationsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| supportMode | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 支持的生物认证方式 |
-| errMsg | string | 是 | Web: x | 接口调用结果 |
+| supportMode | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41 | 支持的生物认证方式 |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41 | 接口调用结果 |
 
 #### CheckIsSupportSoterAuthenticationFail 的属性值 @checkissupportsoterauthenticationfail-values 
 
@@ -168,8 +168,8 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| supportMode | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 支持的生物认证方式 |
-| errMsg | string | 是 | Web: x | 接口调用结果 |
+| supportMode | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41 | 支持的生物认证方式 |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41 | 接口调用结果 |
 
 #### CheckIsSupportSoterAuthenticationFail 的属性值 @checkissupportsoterauthenticationfail-values 
 
@@ -192,7 +192,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.authentication.checkIsSupportSoterAuthentication)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/authentication.html#checkissupportsoterauthentication)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=checkIsSupportSoterAuthentication&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/soter/wx.checkIsSupportSoterAuthentication.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=checkIsSupportSoterAuthentication&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=checkIsSupportSoterAuthentication&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=checkIsSupportSoterAuthentication&secondType=all&type=1)
@@ -236,10 +236,10 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| checkAuthMode | string | 是 | Web: x | 生物认证方式 |
-| success | (result: [CheckIsSoterEnrolledInDeviceSuccess](#checkissoterenrolledindevicesuccess-values)) => void | 否 | Web: x | 支持的生物认证方式 |
-| fail | (result: [CheckIsSoterEnrolledInDeviceFail](#checkissoterenrolledindevicefail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
-| complete | (result: [CheckIsSoterEnrolledInDeviceSuccess](#checkissoterenrolledindevicesuccess-values) \| [CheckIsSoterEnrolledInDeviceFail](#checkissoterenrolledindevicefail-values)) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| checkAuthMode | string | 是 | Web: x; 微信小程序: 4.41 | 生物认证方式 |
+| success | (result: [CheckIsSoterEnrolledInDeviceSuccess](#checkissoterenrolledindevicesuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 支持的生物认证方式 |
+| fail | (result: [CheckIsSoterEnrolledInDeviceFail](#checkissoterenrolledindevicefail-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [CheckIsSoterEnrolledInDeviceSuccess](#checkissoterenrolledindevicesuccess-values) \| [CheckIsSoterEnrolledInDeviceFail](#checkissoterenrolledindevicefail-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### checkAuthMode 的属性描述
 
@@ -253,8 +253,8 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| isEnrolled | boolean | 是 | Web: x | 是否已录入信息 |
-| errMsg | string | 是 | Web: x | 错误信息 |
+| isEnrolled | boolean | 是 | Web: x; 微信小程序: 4.41 | 是否已录入信息 |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41 | 错误信息 |
 
 #### CheckIsSoterEnrolledInDeviceFail 的属性值 @checkissoterenrolledindevicefail-values 
 
@@ -270,8 +270,8 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| isEnrolled | boolean | 是 | Web: x | 是否已录入信息 |
-| errMsg | string | 是 | Web: x | 错误信息 |
+| isEnrolled | boolean | 是 | Web: x; 微信小程序: 4.41 | 是否已录入信息 |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41 | 错误信息 |
 
 #### CheckIsSoterEnrolledInDeviceFail 的属性值 @checkissoterenrolledindevicefail-values 
 
@@ -294,7 +294,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.authentication.checkIsSoterEnrolledInDevice)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/authentication.html#checkissoterenrolledindevice)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=checkIsSoterEnrolledInDevice&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/soter/wx.checkIsSoterEnrolledInDevice.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=checkIsSoterEnrolledInDevice&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=checkIsSoterEnrolledInDevice&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=checkIsSoterEnrolledInDevice&secondType=all&type=1)

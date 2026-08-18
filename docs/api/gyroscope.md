@@ -1,5 +1,11 @@
 ::: sourceCode
 ## uni.startGyroscope(options?) @startgyroscope
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-gyroscope
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-gyroscope
+
 :::
 
 开始监听陀螺仪数据。
@@ -20,10 +26,10 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| interval | string | 否 | Web: x | 监听陀螺仪数据回调函数的执行频率 |
-| success | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values)) => void | 否 | Web: x | 接口调用成功的回调函数 |
-| fail | (res: [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
-| complete | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values) \| [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| interval | string | 否 | Web: x; 微信小程序: 4.41 | 监听陀螺仪数据回调函数的执行频率 |
+| success | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (res: [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values) \| [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### interval 的属性描述
 
@@ -120,7 +126,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.gyroscope.startGyroscope)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/gyroscope.html#startgyroscope)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=startGyroscope&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.startGyroscope.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startGyroscope&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startGyroscope&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startGyroscope&secondType=all&type=1)
@@ -138,6 +144,12 @@
 
 ::: sourceCode
 ## uni.stopGyroscope(options?) @stopgyroscope
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-gyroscope
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-gyroscope
+
 :::
 
 停止监听陀螺仪数据变化事件。
@@ -158,9 +170,9 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values)) => void | 否 | Web: x | 接口调用成功的回调函数 |
-| fail | (res: [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
-| complete | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values) \| [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (res: [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values) \| [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StopGyroscopeSuccess 的属性值 @stopgyroscopesuccess-values 
 
@@ -249,7 +261,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.gyroscope.stopGyroscope)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/gyroscope.html#stopgyroscope)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=stopGyroscope&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.stopGyroscope.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=stopGyroscope&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=stopGyroscope&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=stopGyroscope&secondType=all&type=1)
@@ -263,6 +275,12 @@
 
 ::: sourceCode
 ## uni.onGyroscopeChange(callback) @ongyroscopechange
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-gyroscope
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-gyroscope
+
 :::
 
 监听陀螺仪数据变化事件
@@ -284,9 +302,9 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| x | number | 是 | Web: x | x 轴的角速度 |
-| y | number | 是 | Web: x | y 轴的角速度 |
-| z | number | 是 | Web: x | z 轴的角速度 |
+| x | number | 是 | Web: x; 微信小程序: 4.41 | x 轴的角速度 |
+| y | number | 是 | Web: x; 微信小程序: 4.41 | y 轴的角速度 |
+| z | number | 是 | Web: x; 微信小程序: 4.41 | z 轴的角速度 |
 
 
 
@@ -299,7 +317,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.gyroscope.onGyroscopeChange)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/gyroscope.html#ongyroscopechange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onGyroscopeChange&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.onGyroscopeChange.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onGyroscopeChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onGyroscopeChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onGyroscopeChange&secondType=all&type=1)
@@ -317,6 +335,12 @@
 
 ::: sourceCode
 ## uni.offGyroscopeChange(callback?) @offgyroscopechange
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-gyroscope
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-gyroscope
+
 :::
 
 停止监听陀螺仪数据变化事件
@@ -337,9 +361,9 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| x | number | 是 | Web: x | x 轴的角速度 |
-| y | number | 是 | Web: x | y 轴的角速度 |
-| z | number | 是 | Web: x | z 轴的角速度 |
+| x | number | 是 | Web: x; 微信小程序: 4.41 | x 轴的角速度 |
+| y | number | 是 | Web: x; 微信小程序: 4.41 | y 轴的角速度 |
+| z | number | 是 | Web: x; 微信小程序: 4.41 | z 轴的角速度 |
 
 
 
@@ -352,7 +376,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.gyroscope.offGyroscopeChange)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/gyroscope.html#offgyroscopechange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offGyroscopeChange&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.offGyroscopeChange.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offGyroscopeChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offGyroscopeChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offGyroscopeChange&secondType=all&type=1)

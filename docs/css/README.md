@@ -291,6 +291,21 @@ app平台由于暂不支持伪元素，字体图标需使用unicode直显方式�
 | [align-content](align-content.md) |
 | [align-items](align-items.md) |
 | [align-self](align-self.md) |
+| [animation](animation.md) |
+| [animation-composition](animation-composition.md) |
+| [animation-delay](animation-delay.md) |
+| [animation-direction](animation-direction.md) |
+| [animation-duration](animation-duration.md) |
+| [animation-fill-mode](animation-fill-mode.md) |
+| [animation-iteration-count](animation-iteration-count.md) |
+| [animation-name](animation-name.md) |
+| [animation-play-state](animation-play-state.md) |
+| [animation-range](animation-range.md) |
+| [animation-range-end](animation-range-end.md) |
+| [animation-range-start](animation-range-start.md) |
+| [animation-timeline](animation-timeline.md) |
+| [animation-timing-function](animation-timing-function.md) |
+| [backdrop-filter](backdrop-filter.md) |
 | [background](background.md) |
 | [background-clip](background-clip.md) |
 | [background-color](background-color.md) |
@@ -324,6 +339,7 @@ app平台由于暂不支持伪元素，字体图标需使用unicode直显方式�
 | [box-shadow](box-shadow.md) |
 | [box-sizing](box-sizing.md) |
 | [color](color.md) |
+| [direction](direction.md) |
 | [display](display.md) |
 | [flex](flex.md) |
 | [flex-basis](flex-basis.md) |
@@ -387,8 +403,24 @@ app平台由于暂不支持伪元素，字体图标需使用unicode直显方式�
 
 | CSS 属性列表 | 兼容性 |
 | :- |  :-: |
+| [animation](animation.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-composition](animation-composition.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-delay](animation-delay.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-direction](animation-direction.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-duration](animation-duration.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-fill-mode](animation-fill-mode.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-iteration-count](animation-iteration-count.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-name](animation-name.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-play-state](animation-play-state.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-range](animation-range.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-range-end](animation-range-end.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-range-start](animation-range-start.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-timeline](animation-timeline.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-timing-function](animation-timing-function.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [backdrop-filter](backdrop-filter.md) |   |
 | [background-clip](background-clip.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [background-image](background-image.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [direction](direction.md) | Android(Vapor): 5.25; iOS(Vapor): x; HarmonyOS(Vapor): 4.26 |
 | [lines](lines.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [overflow](overflow.md) | Android(Vapor): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 |
 | [pointer-events](pointer-events.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |

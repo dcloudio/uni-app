@@ -16,11 +16,11 @@
 
 ### OnCompassChangeCallbackResult 的属性值 @oncompasschangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| direction | number | 是 | 面对的方向度数 |
-| accuracy | number \| string | 否 | 精度 |
-| errMsg | string | 否 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| direction | number | 是 | 微信小程序: 4.41 | 面对的方向度数 |
+| accuracy | number \| string | 否 | 微信小程序: 4.41 | 精度 |
+| errMsg | string | 否 | 微信小程序: 4.41 | 错误信息 |
 
 
 
@@ -29,7 +29,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.onCompassChange)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/compass.html#oncompasschange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onCompassChange&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.onCompassChange.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onCompassChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onCompassChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onCompassChange&secondType=all&type=1)
@@ -59,11 +59,11 @@
 
 ### OnCompassChangeCallbackResult 的属性值 @oncompasschangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| direction | number | 是 | 面对的方向度数 |
-| accuracy | number \| string | 否 | 精度 |
-| errMsg | string | 否 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| direction | number | 是 | 微信小程序: 4.41 | 面对的方向度数 |
+| accuracy | number \| string | 否 | 微信小程序: 4.41 | 精度 |
+| errMsg | string | 否 | 微信小程序: 4.41 | 错误信息 |
 
 
 
@@ -72,7 +72,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.offCompassChange)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/compass.html#offcompasschange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offCompassChange&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.offCompassChange.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offCompassChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offCompassChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offCompassChange&secondType=all&type=1)
@@ -103,11 +103,11 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| success | (res: [StartCompassSuccess](#startcompasssuccess-values)) => void | 否 | 开始监听罗盘数据调用成功的回调函数 |
-| fail | (res: [StartCompassFail](#startcompassfail-values)) => void | 否 | 开始监听罗盘数据调用失败的回调函数 |
-| complete | (res: [StartCompassSuccess](#startcompasssuccess-values) \| [StartCompassFail](#startcompassfail-values)) => void | 否 | 开始监听罗盘数据调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: [StartCompassSuccess](#startcompasssuccess-values)) => void | 否 | 微信小程序: 4.41 | 开始监听罗盘数据调用成功的回调函数 |
+| fail | (res: [StartCompassFail](#startcompassfail-values)) => void | 否 | 微信小程序: 4.41 | 开始监听罗盘数据调用失败的回调函数 |
+| complete | (res: [StartCompassSuccess](#startcompasssuccess-values) \| [StartCompassFail](#startcompassfail-values)) => void | 否 | 微信小程序: 4.41 | 开始监听罗盘数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StartCompassSuccess 的属性值 @startcompasssuccess-values 
 
@@ -192,7 +192,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.startCompass)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/compass.html#startcompass)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=startCompass&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.startCompass.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startCompass&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startCompass&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startCompass&secondType=all&type=1)
@@ -223,11 +223,11 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| success | (res: [StopCompassSuccess](#stopcompasssuccess-values)) => void | 否 | 停止监听罗盘数据调用成功的回调函数 |
-| fail | (res: [StopCompassFail](#stopcompassfail-values)) => void | 否 | 停止监听罗盘数据调用失败的回调函数 |
-| complete | (res: [StopCompassSuccess](#stopcompasssuccess-values) \| [StopCompassFail](#stopcompassfail-values)) => void | 否 | 停止监听罗盘数据调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: [StopCompassSuccess](#stopcompasssuccess-values)) => void | 否 | 微信小程序: 4.41 | 停止监听罗盘数据调用成功的回调函数 |
+| fail | (res: [StopCompassFail](#stopcompassfail-values)) => void | 否 | 微信小程序: 4.41 | 停止监听罗盘数据调用失败的回调函数 |
+| complete | (res: [StopCompassSuccess](#stopcompasssuccess-values) \| [StopCompassFail](#stopcompassfail-values)) => void | 否 | 微信小程序: 4.41 | 停止监听罗盘数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StopCompassSuccess 的属性值 @stopcompasssuccess-values 
 
@@ -312,7 +312,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.stopCompass)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/compass.html#stopcompass)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=stopCompass&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.stopCompass.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=stopCompass&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=stopCompass&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=stopCompass&secondType=all&type=1)

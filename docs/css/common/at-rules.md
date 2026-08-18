@@ -11,7 +11,7 @@
 | @font-feature-values | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @font-feature-values CSS at-rule 允许作者在font-variant-alternates 中使用通用名称，用于在 OpenType 中以不同方式激活功能。它允许在使用几种字体时简化 CSS。 |
 | @font-palette-values | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @font-palette-values CSS at-rule 允许您自定义字体制作者创建的字体调色板的默认值。 |
 | @import | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | @import CSS@规则，用于从其他样式表导入样式规则。这些规则必须先于所有其他类型的规则，@charset 规则除外; 因为它不是一个嵌套语句，@import 不能在条件组的规则中使用。 |
-| @keyframes | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 关键帧 @keyframes at-rule 规则通过在动画序列中定义关键帧（或 waypoints）的样式来控制 CSS 动画序列中的中间步骤。和 转换 transition 相比，关键帧 keyframes 可以控制动画序列的中间步骤。 |
+| @keyframes | Web: 4.0; Android(VDOM): x; Android(Vapor): 5.25; iOS(VDOM): x; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 关键帧 @keyframes at-rule 规则通过在动画序列中定义关键帧（或 waypoints）的样式来控制 CSS 动画序列中的中间步骤。和 转换 transition 相比，关键帧 keyframes 可以控制动画序列的中间步骤。 |
 | @layer | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | CSS @规则 中的@layer声明了一个 级联层，同一层内的规则将级联在一起，这给予了开发者对层叠机制的更多控制。 |
 | @media | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @media CSS at 规则可用于基于一个或多个媒体查询的结果来应用样式表的一部分。使用它，你可以指定一个媒体查询和一个 CSS 块，当且仅当该媒体查询与正在使用其内容的设备匹配时，该 CSS 块才能应用于该文档。 |
 | @namespace | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @namespace 是用来定义使用在 CSS 样式表中的 XML 命名空间的 @规则。定义的命名空间可以把通配、元素和属性选择器限制在指定命名空间里的元素。@namespace规则通常在处理包含多个 namespaces 的文档时才有用，比如 HTML5 里内联的 SVG、MathML 或者混合多个词汇表的 XML。 |

@@ -93,7 +93,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.vibrate.vibrateShort)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/vibrate.html#vibrateshort)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=vibrateShort&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/vibrate/wx.vibrateShort.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=vibrateShort&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=vibrateShort&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=vibrateShort&secondType=all&type=1)
@@ -191,7 +191,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.vibrate.vibrateLong)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/vibrate.html#vibratelong)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=vibrateLong&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/vibrate/wx.vibrateLong.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=vibrateLong&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=vibrateLong&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=vibrateLong&secondType=all&type=1)

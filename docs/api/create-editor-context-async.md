@@ -1,5 +1,11 @@
 ::: sourceCode
 ## uni.createEditorContextAsync(options) @createeditorcontextasync
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-editor
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-editor
+
 :::
 
 创建并返回 editor 上下文 editorContext 对象

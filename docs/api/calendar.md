@@ -1,5 +1,11 @@
 ::: sourceCode
 ## uni.addPhoneRepeatCalendar(options) @addphonerepeatcalendar
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-calendar
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-calendar
+
 :::
 
 向系统日历添加重复事件
@@ -32,9 +38,10 @@
 | signature | string | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 仅微信小程序支持，App 平台保留该字段但不会使用，跳转小程序路径签名，必须要和 path 一起使用，用 session_key 对 path 签名得到的结果，即 hmac_sha256(session_key, path)。 |
 | repeatInterval | string | 是 | month | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 重复周期，默认 month 每月重复 |
 | repeatEndTime | number | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 重复周期结束时间的 unix 时间戳，不填表示一直重复 |
-| success | (res: [AddPhoneRepeatCalendarSuccess](#addphonerepeatcalendarsuccess-values)) => void | 否 |  | Web: x | 接口调用成功的回调函数 |
-| fail | (res: [AddPhoneRepeatCalendarFail](#addphonerepeatcalendarfail-values)) => void | 否 |  | Web: x | 接口调用失败的回调函数 |
-| complete | (res: [AddPhoneRepeatCalendarSuccess](#addphonerepeatcalendarsuccess-values) \| [AddPhoneRepeatCalendarFail](#addphonerepeatcalendarfail-values)) => void | 否 |  | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: [AddPhoneRepeatCalendarSuccess](#addphonerepeatcalendarsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (res: [AddPhoneRepeatCalendarFail](#addphonerepeatcalendarfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (res: [AddPhoneRepeatCalendarSuccess](#addphonerepeatcalendarsuccess-values) \| [AddPhoneRepeatCalendarFail](#addphonerepeatcalendarfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| description | string | 否 |  | Web: x; 微信小程序: 4.41 | 事件说明<br/> | 
 
 ##### repeatInterval 的属性描述
 
@@ -114,7 +121,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.calendar.addPhoneRepeatCalendar)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/calendar.html#addphonerepeatcalendar)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=addPhoneRepeatCalendar&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/calendar/wx.addPhoneRepeatCalendar.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=addPhoneRepeatCalendar&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=addPhoneRepeatCalendar&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=addPhoneRepeatCalendar&secondType=all&type=1)
@@ -128,6 +135,12 @@
 
 ::: sourceCode
 ## uni.addPhoneCalendar(options) @addphonecalendar
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-calendar
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-calendar
+
 :::
 
 向系统日历添加事件
@@ -158,9 +171,10 @@
 | alarmOffset | number | 否 | 0 | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 提醒提前量，单位秒，默认 0 表示开始时提醒 |
 | path | string | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 跳转小程序路径，必须要和 signature 一起使用，填入后会自动生成跳转链接拼接在事件说明中 |
 | signature | string | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 仅微信小程序支持，App 平台保留该字段但不会使用，跳转小程序路径签名，必须要和 path 一起使用，用 session_key 对 path 签名得到的结果，即 hmac_sha256(session_key, path)。 |
-| success | (res: [AddPhoneCalendarSuccess](#addphonecalendarsuccess-values)) => void | 否 |  | Web: x | 接口调用成功的回调函数 |
-| fail | (res: [AddPhoneCalendarFail](#addphonecalendarfail-values)) => void | 否 |  | Web: x | 接口调用失败的回调函数 |
-| complete | (res: [AddPhoneCalendarSuccess](#addphonecalendarsuccess-values) \| [AddPhoneCalendarFail](#addphonecalendarfail-values)) => void | 否 |  | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: [AddPhoneCalendarSuccess](#addphonecalendarsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (res: [AddPhoneCalendarFail](#addphonecalendarfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (res: [AddPhoneCalendarSuccess](#addphonecalendarsuccess-values) \| [AddPhoneCalendarFail](#addphonecalendarfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| description | string | 否 |  | Web: x; 微信小程序: 4.41 | 事件说明<br/> | 
 
 #### AddPhoneCalendarSuccess 的属性值 @addphonecalendarsuccess-values 
 
@@ -231,7 +245,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.calendar.addPhoneCalendar)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/calendar.html#addphonecalendar)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=addPhoneCalendar&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/calendar/wx.addPhoneCalendar.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=addPhoneCalendar&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=addPhoneCalendar&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=addPhoneCalendar&secondType=all&type=1)

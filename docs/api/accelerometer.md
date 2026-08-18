@@ -16,11 +16,11 @@
 
 ### OnAccelerometerChangeCallbackResult 的属性值 @onaccelerometerchangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| x | number | 是 | X 轴加速度数据 |
-| y | number | 是 | Y 轴加速度数据 |
-| z | number | 是 | Z 轴加速度数据 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| x | number | 是 | 微信小程序: 4.41 | X 轴加速度数据 |
+| y | number | 是 | 微信小程序: 4.41 | Y 轴加速度数据 |
+| z | number | 是 | 微信小程序: 4.41 | Z 轴加速度数据 |
 
 
 
@@ -31,7 +31,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.onAccelerometerChange)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#onaccelerometerchange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onAccelerometerChange&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.onAccelerometerChange.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onAccelerometerChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onAccelerometerChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onAccelerometerChange&secondType=all&type=1)
@@ -65,11 +65,11 @@
 
 ### OnAccelerometerChangeCallbackResult 的属性值 @onaccelerometerchangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| x | number | 是 | X 轴加速度数据 |
-| y | number | 是 | Y 轴加速度数据 |
-| z | number | 是 | Z 轴加速度数据 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| x | number | 是 | 微信小程序: 4.41 | X 轴加速度数据 |
+| y | number | 是 | 微信小程序: 4.41 | Y 轴加速度数据 |
+| z | number | 是 | 微信小程序: 4.41 | Z 轴加速度数据 |
 
 
 
@@ -80,7 +80,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.offAccelerometerChange)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#offaccelerometerchange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offAccelerometerChange&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.offAccelerometerChange.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offAccelerometerChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offAccelerometerChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offAccelerometerChange&secondType=all&type=1)
@@ -111,12 +111,12 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| interval | string | 否 | 监听加速度数据回调函数的执行频率 |
-| success | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values)) => void | 否 | 监听加速度数据调用成功的回调函数 |
-| fail | (res: [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 监听加速度数据调用失败的回调函数 |
-| complete | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values) \| [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| interval | string | 否 | 微信小程序: 4.41 | 监听加速度数据回调函数的执行频率 |
+| success | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values)) => void | 否 | 微信小程序: 4.41 | 监听加速度数据调用成功的回调函数 |
+| fail | (res: [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 微信小程序: 4.41 | 监听加速度数据调用失败的回调函数 |
+| complete | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values) \| [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 微信小程序: 4.41 | 监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### interval 的属性描述
 
@@ -207,7 +207,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.startAccelerometer)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#startaccelerometer)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=startAccelerometer&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.startAccelerometer.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startAccelerometer&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startAccelerometer&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startAccelerometer&secondType=all&type=1)
@@ -242,11 +242,11 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| success | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values)) => void | 否 | 停止监听加速度数据调用成功的回调函数 |
-| fail | (res: [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 停止监听加速度数据调用失败的回调函数 |
-| complete | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values) \| [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values)) => void | 否 | 微信小程序: 4.41 | 停止监听加速度数据调用成功的回调函数 |
+| fail | (res: [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 微信小程序: 4.41 | 停止监听加速度数据调用失败的回调函数 |
+| complete | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values) \| [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 微信小程序: 4.41 | 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StopAccelerometerSuccess 的属性值 @stopaccelerometersuccess-values 
 
@@ -329,7 +329,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.stopAccelerometer)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#stopaccelerometer)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=stopAccelerometer&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.stopAccelerometer.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=stopAccelerometer&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=stopAccelerometer&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=stopAccelerometer&secondType=all&type=1)
