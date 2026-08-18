@@ -9079,13 +9079,7 @@ function updateCurPageAttrs(pageMeta) {
   }
 }
 function onPageShow(instance2, pageMeta) {
-  {
-    const type = instance2.type;
-    if (type.styleIsolation !== "isolated") {
-      const scopeId = getScopeId(instance2.root);
-      scopeId && updateCurPageBodyScopeId(scopeId);
-    }
-  }
+  updateCurPageBodyScopeId(instance2);
   updateBodyScopeId(instance2);
   updateCurPageCssVar(pageMeta);
   updateCurPageAttrs();
@@ -9095,16 +9089,25 @@ function onPageShow(instance2, pageMeta) {
   initPageScrollListener(instance2, pageMeta);
 }
 function onPageReady(instance2) {
-  const scopeId = getScopeId(instance2);
-  scopeId && updateCurPageBodyScopeId(scopeId);
-}
-function updateCurPageBodyScopeId(scopeId) {
-  const pageBodyEl = document.querySelector("uni-page-body");
-  if (pageBodyEl) {
-    pageBodyEl.setAttribute(scopeId, "");
-  } else if (process.env.NODE_ENV !== "production") {
+  if (!updateCurPageBodyScopeId(instance2) && process.env.NODE_ENV !== "production") {
     console.warn("uni-page-body not found");
   }
+}
+function updateCurPageBodyScopeId(instance2) {
+  var _a, _b, _c;
+  const pageRoot = (_b = (_a = getPageInstanceByChild(instance2)) == null ? void 0 : _a.subTree) == null ? void 0 : _b.el;
+  const pageBodyEl = (_c = pageRoot == null ? void 0 : pageRoot.querySelector) == null ? void 0 : _c.call(pageRoot, "uni-page-body");
+  if (!pageBodyEl) {
+    return false;
+  }
+  const type = instance2.type;
+  if (type.styleIsolation !== "isolated") {
+    const appScopeId = getScopeId(instance2.root);
+    appScopeId && pageBodyEl.setAttribute(appScopeId, "");
+  }
+  const pageScopeId = getScopeId(instance2);
+  pageScopeId && pageBodyEl.setAttribute(pageScopeId, "");
+  return true;
 }
 function getScopeId(instance2) {
   return instance2.type.__scopeId;
