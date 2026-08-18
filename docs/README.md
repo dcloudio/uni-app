@@ -62,8 +62,8 @@ uni-app x 的第一代是VDOM模式，该模式的编程语言是uts，一种可
 
 虽然跨语言调用障碍抹平，但由于VDOM的存在以及渲染引擎不够强大，实际渲染速度比原生慢。
 
-2026年，uni-app x 推出了新一代的蒸汽模式，由于新版的渲染引擎性能远超原生，考虑到AI友好度、动态性以及老uni-app用户的升级，
-在蒸汽模式下改用普通的ts/js。
+2026年，uni-app x 推出了新一代的[蒸汽模式](./app-vapor.md)，由于新版的渲染引擎性能远超原生数倍，改成js也还是快于原生数倍。
+考虑到AI熟悉度、易用性、生态、动态化、以及老uni用户的升级，在蒸汽模式下改用普通的ts/js。
 
 如果写成uts，Android和iOS也会通过uts2js运行在js引擎上。鸿蒙目前运行在arkts引擎上，未来为了热更新，也会提供运行在js引擎上的选项。
 
@@ -119,7 +119,7 @@ uni-app x 的第一代是VDOM模式，该模式的编程语言是uts，一种可
 
 ### uni的组件 @uni-components
 
-uni-app x支持的组件包括：
+uni-app x 支持的组件包括：
 - `内置基础组件`：与uni-app和小程序相同，如view、text、image、scroll-view、input...等，详见[组件清单](./component/README.md)
 - `自定义uvue组件`：使用内置组件和vue组件技术进行封装的组件，支持easycom。
 - `uts原生组件插件`：用于原生sdk的ui以组件的方式嵌入。
@@ -132,7 +132,7 @@ uni-app x支持的组件包括：
 
 ## API @uni-api
 
-uni-app x支持的API包括：
+uni-app x 支持的API包括：
 
 1. js的内置API
 2. 全局API，前面不需要加`uni.`。如[getApp](./api/get-app.md)、[getCurrentPages](./api/get-current-pages.md)
@@ -141,7 +141,7 @@ uni-app x支持的API包括：
 5. dom的API [详见](./api/dom/README.md)
 6. 原生API
 
-uni-app x不会限制任何原生API的调用，在每个平台都可以调用其平台所有原生能力：
+uni-app x 不会限制任何原生API的调用，在每个平台都可以调用其平台所有原生能力：
 - web平台：可调用浏览器的所有api，可混合使用js，可使用web生态的各种库，包括npm。
 - 小程序平台：可调用小程序的所有api，可混合使用js，小程序的自定义组件生态（如wxml组件），包括支持小程序的npm库。
 - Android平台：可调用Android os的所有api，可混合使用kotlin、java源码，可使用所有适配Android的sdk，包括so库，可使用gradle等仓储。
@@ -166,9 +166,9 @@ uni-app x 在web和小程序，支持完成的浏览器css，在app平台，由�
 
 其他差异详见 [css文档](./css/README.md)
 
-## 插件生态
+## 插件生态@plugin
 
-uni-app x的插件生态，以uni_modules为主。这是一种面向全端的、统一的插件管理方案。
+uni-app x 的插件生态，以uni_modules为主。这是一种面向全端的、统一的插件管理方案。
 
 它容纳支持各种平台的原生库管理方案，包括npm、Android仓储、iOS Swift PM、CocoaPods、鸿蒙ohpm。
 
@@ -176,13 +176,13 @@ uni-app x的插件生态，以uni_modules为主。这是一种面向全端的、
 
 如果不开发原生插件，仅使用纯js库，在蒸汽模式下，npm上众多库也可以直接在App平台使用，比如vue-pinia、day.js等。而vdom模式则需要uts适配库才能在App平台使用。
 
-但需注意小程序和App平台不支持window等api，对dom api的支持也有限。详见[DOM API](./api/dom/README.md)
+但需注意小程序和App平台不支持window等api，对dom api的支持也有限。详见[DOM API](./api/dom/README.md)。所以尽量选用那些适配小程序的NPM库，比如[echarts-for-weixin](https://echarts.apache.org/handbook/zh/how-to/cross-platform/wechat-app/)
 
 [uni插件市场](https://ext.dcloud.net.cn/)是跨端插件的聚集地，前端插件可以去npm找，但原生插件更推荐在这里找。
 
-uni-app x的插件生态，基于[uts插件](./plugin/uts-plugin.md)。这是一种面向全端的、统一的插件管理方案。
+uni-app x 的插件生态，基于[uts插件](./plugin/uts-plugin.md)。这是一种面向全端的、统一的插件管理方案。
 
-目前已经有数千款插件支持uni-app x，它们发布在[uni插件市场](https://ext.dcloud.net.cn/?uni-appx=1)
+目前已经有数千款插件支持 uni-app x，它们发布在[uni插件市场](https://ext.dcloud.net.cn/?uni-appx=1)
 
 uts插件通过统一的interface，约束了所有平台的API的输入输出，甚至错误码，保障了跨平台调用的一致性。
 
@@ -201,7 +201,7 @@ uts插件是一个大一统的插件模型，其中在不同的子平台可以�
 
 如果你只是使用插件，那么访问插件市场，勾选`uni-app x`的checkbox就能找到所需插件。
 
-如果你想开发uts插件，[参考插件开发教程](./plugin/uts-plugin.md)
+如果你想开发uts插件，[参考插件开发教程](./plugin/uts-plugin.md)。
 
 推荐使用[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)来开发uts原生插件，它可以做到不懂原生的前端开发者开发出uts原生插件。
 
@@ -216,22 +216,24 @@ uts插件是一个大一统的插件模型，其中在不同的子平台可以�
 
 ## 开放性
 
-uni-app x的组件和API基本都开源，个别未开源部分也会在接下来陆续完成开源。
+uni-app x 的组件和API基本都开源，个别未开源部分也会在接下来陆续完成开源。
 
-在uni-app x的每个组件和API的文档中，都有该API具体实现的源码github和gitcode链接（文档右侧）。比如[uni.showModal](https://doc.dcloud.net.cn/uni-app-x/api/modal.html)
+在 uni-app x 的每个组件和API的文档中，都有该API具体实现的源码github和gitcode链接（文档右侧）。比如[uni.showModal](https://doc.dcloud.net.cn/uni-app-x/api/modal.html)
 
 开发者可以审查这些源码的合理性，也可以在遇到官方bug时，自行拉源码修复。\
-uni-app x支持单独的组件和API替换，将源码的`uni_modules`下载到工程下，修改源码后打包即可将官方实现自动替换为你修改的实现。
+uni-app x 支持单独的组件和API替换，将源码的`uni_modules`下载到工程下，修改源码后打包即可将官方实现自动替换为你修改的实现。
 
-uni-app x的Web版、小程序版的主引擎有单独开源地址：[https://github.com/dcloudio/uni-app](https://github.com/dcloudio/uni-app)
+uni-app x 的Web版、小程序版的主引擎有单独开源地址：[https://github.com/dcloudio/uni-app](https://github.com/dcloudio/uni-app)
 
-uni-app x的所有可视元素，都没有写死样式和文字，开发者可以自己定制风格和国际化。
+uni-app x 的所有可视元素，都没有写死样式和文字，开发者可以自己定制风格和国际化。
 
 开发者编写的代码，编译后的产物代码都在项目的unpackage目录下。\
 开发者可以看到实际生成的js、kt、swift、ets代码是什么样的，无需担心埋入不合适的代码。\
 开发者可以自行把这些编译产物引入自己的原生工程中，自行打包。这些都是开放的。
 
-uni-app x引擎仅在引擎崩溃时有数据收集以用于产品改进，且不采集任何《个人信息保护法》涉及的个人隐私数据。详见[隐私协议](https://dcloud.io/license/appprivacy.html)
+uni-app x 引擎仅在引擎崩溃时有数据收集以用于产品改进，且不采集任何《个人信息保护法》涉及的个人隐私数据。详见[隐私协议](https://dcloud.io/license/appprivacy.html)
+
+如大型开发者需要提前获取 uni-app x 的未开源部分，可以联系：service@dcloud.io
 
 ## 路线图
 
@@ -247,12 +249,21 @@ uni-app x 在2026年会陆续完成
 ## 案例
 [另见](./sample.md)
 
-## 自动化测试
-uni-app x 从源头重视产品质量，第一个版本就支持自动化测试。并为uni-app x产品编写了数十万行自动化测试例代码。
+## 质量
 
-uni-app x 的自动化测试方案和 uni-app js版相同，自动化测试脚本使用js编写（注意不是uts）。整个自动化测试环境，运行在电脑端。
+uni-app x 从2023年起第一个版本就支持自动化测试。
 
-开发者可以为自己的app编写好自动化测试，以提升自己的产品质量。
+并且 uni-app x 坚持一个原则，修复的每个开发者报的[issues](https://issues.dcloud.net.cn/?mid=uni-app-x)，都要配套自动化测试例。
+
+数年来，uni-app x 已经积累数万个自动化测试例，包括功能、性能、UI截图对比、内存泄漏、崩溃等多种维度。
+
+uni-app x 蒸汽模式 虽然是2026年推出的，但它的发布之初，就通过了所有 uni-app x 积累的所有自动化测试例。
+
+所以 uni-app x 蒸汽模式 的质量，并不比更早推出的 uni-app x VDOM模式 差。可以明确，它的质量已达到商用标准。
+
+uni-app x 蒸汽模式还有一个特点：内部实现代码基本都是一套，都是跨平台的c或uts。所以它的平台差异很小。
+
+同时也建议开发者通过 uni-app x 提供的自动化测试框架，为自己的app编写自动化测试，以提升自己的产品质量。在AI时代，首先可以让AI协助写自动化测试例，然后在有了充足的自动化测试例之后，再让AI高效改代码，自动跑自动化测试，可以大幅提升开发效率，减少人工review的压力。
 
 uni-app (x) 的自动化测试教程详见：[https://uniapp.dcloud.net.cn/worktile/auto/quick-start.html](https://uniapp.dcloud.net.cn/worktile/auto/quick-start.html)
 
@@ -270,12 +281,46 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
 
 插件市场已经有uts版本的[内嵌flutter插件](https://ext.dcloud.net.cn/search?q=flutter&orderBy=Relevance&cat1=8)、[内嵌compose ui插件](https://ext.dcloud.net.cn/search?q=compose+ui&orderBy=Relevance&cat1=8)
 
-而[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，也具备把原生、rn、flutter应用翻译成uni-app x应用的能力。
+而[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，也具备把原生、rn、flutter应用翻译成 uni-app x 应用的能力。
 
 至于把 uni-app x 作为一个sdk内嵌到其他原生应用中，请参考[uni-app x原生SDK](native/README.md)。
 
 
 ## FAQ
+- AI时代，跨平台工具的价值还明显吗？\
+	AI大幅提效，削减了行业整体的开发成本。不管是原生、其他跨平台框架，还是uni，开发成本都大幅下降。\
+	但如果想交付好多端成品，使用原生技术栈时仍然需要多个平台的开发工程师各自操作AI。\
+	如果你不懂原生，直接让AI写3个平台的原生代码，你会很快得到一个半成品，然后再变成商用成品的过程中发现不懂原生不行。\
+	
+	可以这么类比：\
+	* AI Coding之前，开发者假使每个平台需要2人月的工作量，3个平台是6人月，而使用 uni-app 能变成 1人月。节省5倍成本和1倍的时间。
+	* AI Coding之后，原生从6人月变成了3人月 + 部分token费用。而使用 uni-app x 蒸汽，则变成了 0.5人月 + 部分token费用。还是节省5倍左右的成本和1倍的时间。
+	
+	由于开发成本和耗时的进一步下降，事实上催生了uni应用数量的进一步增长。
+	
+	另外 uni-app x 还有2个相对于原生的优势：
+	1. 比原生更好的渲染性能，使用 AI + 原生也达不到 uni-app x 的效果。
+	2. uni-app x 毕竟是vue的声明式写法，比原生的命令式写法更简单、更高效。而原生的声明式写法不跨端且性能不佳。即使不跨端，只开发一个平台，uni-app x 都能比原生开发更快、成品性能更流畅。
+
+- uni-app x 支持AI开发吗？\
+	官方提供的[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，是最佳的 uni-app x AI Coding工具。熟悉uni全线产品，熟悉uts语法、自动修复编译错误，还熟悉原生混编，可以写uts原生插件。\
+	官方的[uni-ui x](./component/uni-ui-x/README.md) 组件库，以及众多 组件（高德地图、lottie的animation-view）、API（陀螺仪、加速计、指南针、日历、通讯录...），都是使用 uni-agent 开发的。
+
+	另外 uni-app x 蒸汽模式，由于支持普通的ts/js，使用vue、css等标准技术栈，AI非常熟悉。
+
+- uni-app x 的技术路线稳定了吗？还会换吗？\
+	从 uni-app 到 uni-app x vdom模式，直到 uni-app x 蒸汽模式，是 DCloud 一路在追求让跨平台框架达到原生性能的梦想。\
+	如今目标已经超预期实现，不止达到、还比原生快了数倍。DCloud 没有再更换技术路线的计划。\
+	而且事实证明DCloud走出了别人未走出的最佳技术路线。\
+	uni-app x 蒸汽模式支持js后，对老uni用户的升级非常友好，而VDOM模式的uts代码也可以兼容使用。
+	
+
+- uni-app x 的插件生态和竞品相比如何？\
+	uni-app x 支持的插件生态有较多种，[见上](#plugin)。\
+	flutter和react native的插件生态，长于国外sdk的封装。而国内、尤其是要鸿蒙和小程序，还是uni的生态更丰富。\
+	另外很多高频的功能，本身在uni-app中已经官方内置。\
+	大多数插件，只是一个桥接翻译层，在AI时代，通过 uni-agent 可以轻松的把原生SDK封装对接出来，这种较浅的插件其实意义不大，下载三方代码还不如自己用AI封装一下。
+
 - uni-app x 支持uvue页面和vue页面混写吗？\
   不支持混写。但蒸汽模式下的uvue可以写js/ts/uts。如需升级详见：[uni-app 升级 uni-app x](./uniapptox.md)
 
@@ -284,25 +329,23 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
 
 - uni-app x 的App能热更新吗？\
   App开发期间可以热刷，但打包后不能热更新。\
-  蒸汽模式下的3端app会推出wgt更新。\
+  蒸汽模式下的3端app会推出发布后更新，请关注更新。\
   Android目前可以使用[uni小程序sdk](https://ext.dcloud.net.cn/plugin?id=17638)，热更新小程序。\
   
 - uni-app x 能调用所有原生API吗？\
   可以。在app端，kotlin、swift、ets能调用的，uts就能调，因为uts其实就是编译成这些语言了。在浏览器、小程序端，所有js能调用的，uts也都能调。
-
+	
 - uni-app x 能集成原生sdk吗？\
   可以，通过uts插件，[https://uniapp.dcloud.net.cn/plugin/uts-plugin.html](https://uniapp.dcloud.net.cn/plugin/uts-plugin.html)
 
 - uni-app x 的开发只能用HBuilderX吗？\
-  官方已发布cursor/vscode的语法服务插件，运行和打包仍需要HBuilderX。[详见](tutorial/ls-plugin.md)
+  官方已发布cursor/vscode的语法服务插件，运行和打包仍需要HBuilderX。[详见](tutorial/ls-plugin.md)\
+	官方已启动 HBuilderV 产品开发，这是一个类似cursor的、基于vscode的IDE。（之所以不是vscode的插件，是因为vscode的插件api不够用，只能参考cursor、trae的做法）
 
-- uni-app x 支持AI开发吗？\
-	官方提供的[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，是最佳的uni-app x AI Coding工具。熟悉uni全线产品，熟悉uts语法、自动修复编译错误，还熟悉原生混编，可以写uts原生插件。\
-	官方的[uni-ui x](./component/uni-ui-x/README.md) 组件库，以及众多新出的[设备API](./api/calendar.md)，都是使用uni-agent开发的。
 
 - uni-app x 支持最低的Android版本多少？浏览器版本多少？\
   * Android VDOM最低支持`Android 5`，蒸汽模式最低支持`Android 6`；
-  * iOS版 VDOM模式最低支持`iOS12`，蒸汽模式最低支持`iOS14`
+  * iOS版 VDOM模式最低支持`iOS12`，蒸汽模式最低支持`iOS15`
   * harmonyOS版 VDOM模式最低支持`API14`；蒸汽模式最低支持`API20`
   * Web版`发行模式`最低支持`chrome 64`、`safari 11.1`、`firefox 62`、`edge 79`、`safari on iOS 12`；
   * Web版`运行模式`最低支持`chrome 66`、`safari 11.1`、`firefox 62`、`edge 79`、`safari on iOS 12`；另外由于运行时不会对语法进行转化来兼容低版本浏览器，如果使用了一些比较新的语法可能会无法在低版本浏览器上运行。
@@ -311,15 +354,15 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
   
 	官方已于2024年停止nvue和5+的维护。
 	
-	因为uni-app x蒸汽模式已经兼容js/ts写法，开发者可以方便的将老uni-app升级到uni-app x蒸汽模式。所以老uni-app、尤其是老uni-app的app平台的维护意义也不大了。
+	因为 uni-app x蒸汽模式 已经兼容js/ts写法，开发者可以方便的将老uni-app升级到 uni-app x蒸汽模式。所以老uni-app、尤其是老uni-app的app平台的维护意义也不大了。
 	
 	不再维护不是下线，而是没有重大问题的话（如新手机不兼容）不会再更新了。
 
-  如果只开发小程序和Web，那使用uni-app或uni-app x哪个都差不多。如果开发App，那么推荐改用uni-app x。
+  如果只开发小程序和Web，那使用 uni-app 或 uni-app x 哪个都差不多。如果开发App，那么推荐改用 uni-app x。
 
-  不管uni-app还是uni-app x，都支持uts插件生态，原生扩展api和插件是复用的。
+  不管 uni-app 还是 uni-app x，都支持uts插件生态，原生扩展的api插件是复用的。但原生组件插件在老uni-app 和 uni-app x 蒸汽模式之间不能复用。
 
-  包括官方的组件和API也是复用的，比如电量API [uni.getbatteryinfo](https://ext.dcloud.net.cn/plugin?id=9295)，它们使用uts开发，在 uni-app和uni-app x上，调用的都是一套代码。
+  包括官方的API也是复用的，比如电量API [uni.getbatteryinfo](https://ext.dcloud.net.cn/plugin?id=9295)，它们使用uts开发，在 uni-app 和 uni-app x 上，调用的都是一套代码。
 
 
 ::: tip 加群交流

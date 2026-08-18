@@ -67,6 +67,7 @@
   * [概述](mp/README.md)
   * [AI 开发模式接入指南](mp/mp-weixin-ai-develop.md)
   * [独立分包](mp/independent-subpackage.md)
+  * [适配 glass-easel](mp/mp-weixin-glass-easel.md)
 * 运行和调试
   * [Android/iOS运行](tutorial/run-app.md)
   * [uts插件Android运行配置](tutorial/uts-development-android.md)

@@ -115,15 +115,15 @@ uni.setAppTheme({"theme": "auto"}) //跟随OS的主题而变化，设置为auto�
 
 #### 3. app.uvue
 
-app.uvue在主题适配中有2个角色：
+app.uvue在主题适配中有2种用途：
 - 获取和监听上家或自身的主题状态
 - 设置全局样式
 
 如下分别讲述。
 
-web和小程序平台可以使用媒体查询来设置，但App平台暂不支持媒体查询。
+web和小程序平台一直支持媒体查询。HBuilderX 5.25+，App平台蒸汽模式支持使用`@media (prefers-color-scheme: light)`和`@media (prefers-color-scheme: dark)`，根据appTheme自动切换样式。详见[@media媒体查询](../css/common/at-rules.md#media)。
 
-所以跨端的写法是，在app.uvue里，通过`uni.getAppBaseInfo`、`uni.getDeviceInfo`获取自身或上家的主题设置，保存到vue的响应式变量中，模板的class绑定响应式变量实现动态切换class。
+使用媒体查询设置主题样式时，无需监听主题变化并动态切换class。App平台非蒸汽模式，或需要在逻辑中使用主题状态时，仍需在app.uvue里通过`uni.getAppBaseInfo`、`uni.getDeviceInfo`获取自身或上家的主题设置，保存到vue的响应式变量中，模板的class绑定响应式变量实现动态切换class。
 
 - 在app.uvue的onLaunch生命周期中写代码，获取上家的主题，并监听上家的主题变化。这里需要写条件编译
 
@@ -212,6 +212,8 @@ onLaunch(() => {
 ```
 
 #### 4. uvue页面
+
+以下示例继续使用前文通过API监听主题变化、动态切换class的方案。
 
 在根节点的class中，根据`state.isDark`设置class，让全局样式的`theme-dark`或`theme-light`生效。
 
@@ -324,9 +326,10 @@ uni-app x的内置组件，在App和Web平台均支持css设置所有样式，�
 
 设置应用主题
 
-uni.setAppTheme，并不会帮助开发者自动实现整个应用的亮/暗主题切换，但是必须写。它的作用是：
+uni.setAppTheme用于设置App当前主题。开发者仍需为不同主题定义相应的页面和组件样式。它的作用是：
 1. 根据[theme.json](../collocation/themejson.md)，设置pages.json的亮/暗主题
-2. 触发uni.onAppThemeChange，开发者和组件作者均可监听这个事件，自行响应将页面设置为对应的亮/暗风格。
+2. HBuilderX 5.25+，在App平台蒸汽模式下，自动更新`@media (prefers-color-scheme: light)`和`@media (prefers-color-scheme: dark)`匹配的样式
+3. 触发uni.onAppThemeChange，开发者和组件作者均可监听这个事件，自行响应将页面设置为对应的亮/暗风格。
 
 当然组件作者也可以不监听onAppThemeChange，而是暴露主题切换API给开发者，由开发者监听主题切换，再调用组件的主题切换API。
 

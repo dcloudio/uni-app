@@ -28,7 +28,7 @@
 不支持的css功能，并不影响业务开发。因为css本质是一种编写元素的样式属性的一种描述性写法。元素的所有样式设置，都可以脱离css这种写法，由API完成。
 
 - `@keyframes关键帧动画`，在App平台，可以使用API方式实现，暂不支持通过css方式实现。详见[UniElement的animate方法](../../dom/unielement.md#animate)
-- `@media媒体查询`，宽屏适配可使用`<match-media>组件`，[详见](../../component/match-media.md)。判断暗黑模式可使用API实现，[详见](https://doc.dcloud.net.cn/uni-app-x/api/theme-change.html)
+- `@media媒体查询`，宽屏适配可使用`<match-media>组件`，[详见](../../component/match-media.md)。暗黑主题适配，[详见](https://doc.dcloud.net.cn/uni-app-x/api/theme-change.html)
 
 ## 字体 @font
 
@@ -294,3 +294,23 @@ export default {
   word-break: break-word;
 }
 </style>
+
+## 媒体查询 @media
+
+`@media` 用于根据媒体查询结果应用一组样式。Web 和小程序平台支持媒体查询，具体能力由对应平台决定。
+
+HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒体查询来适配应用暗黑主题（暂不支持尺寸、宽高、屏幕方向、分辨率等其他媒体特性）：
+
+```css
+.page {
+  background-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .page {
+    background-color: #111111;
+  }
+}
+```
+
+详见 [暗黑主题适配教程](https://doc.dcloud.net.cn/uni-app-x/api/theme-change.html)。

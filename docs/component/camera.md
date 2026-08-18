@@ -166,7 +166,7 @@ UniCameraScanCodeEvent -- Extends --> UniCustomEvent&ltUniCameraScanCodeEventDet
 | result | string | 否 |
 | rawData | string | 否 |
 | charSet | string | 否 |
-| scanArea | number\[\] | 否 |
+| scanArea | Array&lt;number&gt; | 否 |
 
 
 
