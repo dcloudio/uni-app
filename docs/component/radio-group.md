@@ -12,16 +12,16 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
-| name | string | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| @change | (event: [UniRadioGroupChangeEvent](#uniradiogroupchangeevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio-group 中的选中项发生变化时触发 change 事件，event.detail = {value: 选中项radio的value} |
+| name | string | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| @change | (event: [UniRadioGroupChangeEvent](#uniradiogroupchangeevent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio-group 中的选中项发生变化时触发 change 事件，event.detail = {value: 选中项radio的value} |
 
 
 ### 事件
@@ -49,7 +49,7 @@ UniRadioGroupChangeEvent -- Extends --> UniCustomEvent&ltUniRadioGroupChangeEven
 ### 子组件 @children-tags
 | 子组件 | 兼容性 |
 | :- | :- |
-| [*](*.md) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| [*](*.md) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 
 
 

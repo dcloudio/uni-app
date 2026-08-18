@@ -8,9 +8,9 @@ cover-view 在uni-app x的app、web、微信小程序上，已废弃，使用vie
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.53 | 4.53 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | 4.53 | 4.53 | 4.61 |
 
 
 ::: warning 注意
@@ -20,7 +20,7 @@ app 端并不是在运行时实现了cover-view组件，仅仅是编译器把cov
 ### 属性 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
-| scroll-top | number/string | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number/string)*<br/>设置顶部滚动偏移量，仅在设置了 overflow-y: scroll 成为滚动元素后生效 |
+| scroll-top | number/string | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(number/string)*<br/>设置顶部滚动偏移量，仅在设置了 overflow-y: scroll 成为滚动元素后生效 |
 
 
 

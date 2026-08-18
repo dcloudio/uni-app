@@ -16,28 +16,28 @@ media query 匹配检测节点
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.71 | 4.41 | 4.71 | 5.0 | 4.71 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.71 | 4.41 | 5.25 | 4.71 | 5.0 | 4.71 |
 
 
 ### 属性 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
-| width | string \| number | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面宽度（px 为单位） |
-| min-width | string \| number | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面最小宽度（px 为单位） |
-| max-width | string \| number | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面最大宽度（px 为单位） |
-| height | string \| number | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面高度（px 为单位） |
-| min-height | string \| number | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面最小高度（px 为单位） |
-| max-height | string \| number | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面最大高度（px 为单位） |
-| orientation | portrait \| landscape | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 屏幕方向 |
+| width | string \| number | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面宽度（px 为单位） |
+| min-width | string \| number | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面最小宽度（px 为单位） |
+| max-width | string \| number | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面最大宽度（px 为单位） |
+| height | string \| number | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面高度（px 为单位） |
+| min-height | string \| number | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面最小高度（px 为单位） |
+| max-height | string \| number | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面最大高度（px 为单位） |
+| orientation | portrait \| landscape | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 屏幕方向 |
 
 #### orientation 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| portrait | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 竖屏 |
-| landscape | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 横屏 |
+| portrait | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 竖屏 |
+| landscape | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 横屏 |
 
 
 

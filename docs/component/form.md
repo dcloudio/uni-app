@@ -16,19 +16,19 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.97 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | 3.97 | 4.11 | 4.61 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| disabled | boolean | false | Web: 4.0; 微信小程序: x; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
-| report-submit | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否返回 formId 用于发送模板消息 |
-| report-submit-timeout | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>等待一段时间（毫秒数）以确认 formId 是否生效。如果未指定这个参数，formId 有很小的概率是无效的（如遇到网络失败的情况）。指定这个参数将可以检测 formId 是否有效，以这个参数的时间作为这项检测的超时时间。如果失败，将返回 requestFormId:fail 开头的 formId |
-| @submit | (event: [UniFormSubmitEvent](#uniformsubmitevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 携带 form 中的数据触发 submit 事件，event.detail = {value : {'name': 'value'}} |
-| @reset | (event: [UniFormResetEvent](#uniformresetevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 表单重置时会触发 reset 事件 |
+| disabled | boolean | false | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
+| report-submit | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否返回 formId 用于发送模板消息 |
+| report-submit-timeout | number |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>等待一段时间（毫秒数）以确认 formId 是否生效。如果未指定这个参数，formId 有很小的概率是无效的（如遇到网络失败的情况）。指定这个参数将可以检测 formId 是否有效，以这个参数的时间作为这项检测的超时时间。如果失败，将返回 requestFormId:fail 开头的 formId |
+| @submit | (event: [UniFormSubmitEvent](#uniformsubmitevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 携带 form 中的数据触发 submit 事件，event.detail = {value : {'name': 'value'}} |
+| @reset | (event: [UniFormResetEvent](#uniformresetevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 表单重置时会触发 reset 事件 |
 
 
 ### 事件
