@@ -25,6 +25,8 @@
 | ~~rebound~~ | boolean | true | 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: x | 是否开启回弹效果。已废弃，请改用bounces |
 | bounces | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 是否开启回弹效果，优先级高于rebound |
 | android-overscroll | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: x; HarmonyOS: x | Android平台是否开启弹簧回弹效果，开启后默认下拉刷新使用圆弧loading样式（推动页面内容），否则默认下拉刷新使用Android系统悬浮圆环样式（不推动页面内容） |
+| android-scrollbar-draggable | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.25; iOS: x; HarmonyOS: x | Android 平台是否允许拖动滚动条以快速定位滚动内容，默认值为 false，当前暂仅支持竖向滚动  |
+| android-refresher-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.25; iOS: x; HarmonyOS: x | 设置 Android 平台 scroll-view 默认下拉刷新样式的前景颜色，优先级高于 refresher-default-style  |
 | associative-container | string |   | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61 | 关联的滚动容器 |
 | enable-back-to-top | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 4.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 点击系统状态栏滚动条返回顶部，只支持竖向 |
 | upper-threshold | number | 50 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |

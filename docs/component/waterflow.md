@@ -34,11 +34,12 @@
 | associative-container | string |   | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: x | 关联的滚动容器 |
 | bounces | boolean \| string | true | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 控制是否回弹效果 |
 | android-overscroll | boolean \| string | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: x; HarmonyOS: x | Android平台是否开启弹簧回弹效果，开启后默认下拉刷新使用圆弧loading样式（推动页面内容），否则默认下拉刷新使用Android系统悬浮圆环样式（不推动页面内容） |
+| android-scrollbar-draggable | boolean \| string | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.26; iOS: x; HarmonyOS: x | Android 平台是否允许拖动滚动条以快速定位滚动内容，默认值为 false，当前暂仅支持竖向滚动  |
 | upper-threshold | number | 50 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
 | lower-threshold | number | 50 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 距底部/右边多远时（单位px），触发 scrolltolower 事件 |
 | scroll-top | number | 0 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 设置竖向滚动条位置 |
 | show-scrollbar | boolean \| string | true | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 控制是否出现滚动条 |
-| scroll-into-view | string([string.IDString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; Android: 4.41; iOS(VDOM): 4.41; iOS(Vapor): x; HarmonyOS: x | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素起始位置 |
+| scroll-into-view | string([string.IDString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; Android(VDOM): 4.41; Android(Vapor): 5.25; iOS(VDOM): 4.41; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素起始位置 |
 | scroll-with-animation | boolean \| string | false | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画 |
 | refresher-enabled | boolean \| string | false | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 开启下拉刷新，暂时不支持scroll-x = true横向刷新 |
 | refresher-threshold | number | 45 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 设置下拉刷新阈值, 仅 refresher-default-style = 'none' 自定义样式下生效 |

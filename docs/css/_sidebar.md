@@ -9,7 +9,7 @@
   * [align-content](align-content.md)
   * [align-items](align-items.md)
   * [align-self](align-self.md)
-  <!-- * [animation](animation.md)
+  * [animation](animation.md)
   * [animation-composition](animation-composition.md)
   * [animation-delay](animation-delay.md)
   * [animation-direction](animation-direction.md)
@@ -23,7 +23,7 @@
   * [animation-range-start](animation-range-start.md)
   * [animation-timeline](animation-timeline.md)
   * [animation-timing-function](animation-timing-function.md)
-  * [backdrop-filter](backdrop-filter.md) -->
+  * [backdrop-filter](backdrop-filter.md)
   * [background](background.md)
   * [background-clip](background-clip.md)
   * [background-color](background-color.md)

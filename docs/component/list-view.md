@@ -36,13 +36,14 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 | ~~rebound~~ | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 控制是否回弹效果。已废弃，请改用bounces |
 | bounces | boolean \| string | true | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 控制是否回弹效果 优先级高于rebound |
 | android-overscroll | boolean \| string | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: x; HarmonyOS: x | Android平台是否开启弹簧回弹效果，开启后默认下拉刷新使用圆弧loading样式（推动页面内容），否则默认下拉刷新使用Android系统悬浮圆环样式（不推动页面内容） |
+| android-scrollbar-draggable | boolean \| string | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.26; iOS: x; HarmonyOS: x | Android 平台是否允许拖动滚动条以快速定位滚动内容，默认值为 false，当前暂仅支持竖向滚动  |
 | associative-container | string | "" | Web: x; 微信小程序: x; Android: 4.11; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 关联的滚动容器 |
 | upper-threshold | number | 50 | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
 | lower-threshold | number | 50 | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 距底部/右边多远时（单位px），触发 scrolltolower 事件 |
 | scroll-top | number | 0 | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置竖向滚动条位置 |
 | scroll-left | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 设置横向滚动条位置 |
 | show-scrollbar | boolean \| string | true | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 控制是否出现滚动条 |
-| scroll-into-view | string([string.IDString](/uts/data-type.md#ide-string)) |   | Web: 5.08; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素起始位置 |
+| scroll-into-view | string([string.IDString](/uts/data-type.md#ide-string)) |   | Web: 5.08; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): 5.25; iOS(VDOM): 4.11; iOS(Vapor): 5.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.25 | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素起始位置 |
 | scroll-with-animation | boolean \| string | false | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画 |
 | refresher-enabled | boolean \| string | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 开启下拉刷新，暂时不支持scroll-x = true横向刷新 |
 | refresher-threshold | number | 45 | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置下拉刷新阈值, 仅 refresher-default-style = 'none' 自定义样式下生效 |
@@ -54,6 +55,7 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 | custom-nested-scroll | boolean \| string | false | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
 | padding | Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array)*<br/>长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距 |
 | nested-scroll-child | string |   |   |   |
+| scroll-anchoring | boolean \| string |   | Android(VDOM): x; Android(Vapor): 5.25; iOS(VDOM): x; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 是否启用滚动锚定，默认不启用 |
 | @refresherpulling | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 下拉刷新控件被下拉 |
 | @refresherrefresh | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 下拉刷新被触发 |
 | @refresherrestore | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 下拉刷新被复位 |

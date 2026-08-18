@@ -22,10 +22,10 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 文本是否可选，蒸汽模式（Vapor）推荐使用user-select替换 |
+| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.24 | 文本是否可选，蒸汽模式（Vapor）推荐使用user-select替换 |
 | space | string |   | Web: 4.0; 微信小程序: -; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 显示连续空格，App平台蒸汽模式（Vapor）已废弃此属性 |
 | decode | boolean | false | Web: 4.0; 微信小程序: -; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 是否解码，App平台蒸汽模式（Vapor）已废弃此属性 |
-| user-select | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.11; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 文本是否可选，Web平台该属性会使文本节点显示为 inline-block，App平台弹出"复制"菜单 |
+| user-select | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.11; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.24 | 文本是否可选，Web平台该属性会使文本节点显示为 inline-block，App平台弹出"复制"菜单 |
 | hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "none" | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
 | hover-stop-propagation | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态(祖先节点：指根节点到该节点路径上的所有节点都是这个节点的祖先节点) |
 | hover-start-time | number | 50 | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 按住后多久出现点击态，单位毫秒 |
