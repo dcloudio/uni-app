@@ -294,13 +294,7 @@ export function onPageShow(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
 ) {
-  if (__X__) {
-    const type = instance.type as { styleIsolation?: string }
-    if (type.styleIsolation !== 'isolated') {
-      const scopeId = getScopeId(instance.root)
-      scopeId && updateCurPageBodyScopeId(scopeId)
-    }
-  }
+  updateCurPageBodyScopeId(instance)
   updateBodyScopeId(instance)
   updateCurPageCssVar(pageMeta)
   updateCurPageAttrs(pageMeta)
@@ -311,17 +305,28 @@ export function onPageShow(
 }
 
 export function onPageReady(instance: ComponentInternalInstance) {
-  const scopeId = getScopeId(instance)
-  scopeId && updateCurPageBodyScopeId(scopeId)
-}
-
-function updateCurPageBodyScopeId(scopeId: string) {
-  const pageBodyEl = document.querySelector('uni-page-body')
-  if (pageBodyEl) {
-    pageBodyEl.setAttribute(scopeId, '')
-  } else if (__DEV__) {
+  if (!updateCurPageBodyScopeId(instance) && __DEV__) {
     console.warn('uni-page-body not found')
   }
+}
+
+function updateCurPageBodyScopeId(instance: ComponentInternalInstance) {
+  const pageRoot = getPageInstanceByChild(instance)?.subTree
+    ?.el as Element | null
+  const pageBodyEl = pageRoot?.querySelector?.('uni-page-body')
+  if (!pageBodyEl) {
+    return false
+  }
+
+  const type = instance.type as { styleIsolation?: string }
+  if (__X__ && type.styleIsolation !== 'isolated') {
+    const appScopeId = getScopeId(instance.root)
+    appScopeId && pageBodyEl.setAttribute(appScopeId, '')
+  }
+
+  const pageScopeId = getScopeId(instance)
+  pageScopeId && pageBodyEl.setAttribute(pageScopeId, '')
+  return true
 }
 
 function getScopeId(instance: ComponentInternalInstance) {
