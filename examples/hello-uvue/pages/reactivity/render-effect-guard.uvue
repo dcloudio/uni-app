@@ -1,0 +1,93 @@
+<template>
+    <view class="page">
+        <text class="title">渲染副作用守卫</text>
+        <text id="case-desc" class="desc">验证同一个渲染 effect 中，只有 scrollIntoView 变化时，不应重放 scrollTop=0 等未变更的宿主副作用。</text>
+        <text id="case-steps" class="desc">点击按钮后先滚到 target；300ms 后只清空 scrollIntoView，页面应继续停留在 target 附近。</text>
+        <text id="case-fail" class="desc">如果缺少 guard，会在清空 scrollIntoView 时重放 scrollTop=0，导致滚回顶部。</text>
+
+        <button id="btn" class="button" @click="run">滚到 target</button>
+
+        <text id="state" class="state">state: {{ state }}</text>
+        <text id="current-top" class="state">currentTop: {{ currentTop }}</text>
+
+        <scroll-view id="scroller" class="scroller" scroll-y="true" :scroll-top="scrollTop"
+            :scroll-into-view="scrollIntoView" @scroll="onScroll">
+            <view id="top" class="item">top</view>
+            <view id="target" class="item target">target</view>
+            <view id="bottom" class="item">bottom</view>
+        </scroll-view>
+    </view>
+</template>
+
+<script setup lang="uts">
+    const scrollTop = ref(0)
+    const scrollIntoView = ref('')
+    const currentTop = ref(0)
+    const state = ref('ready')
+
+    function run() {
+        scrollIntoView.value = 'target'
+        state.value = 'scrollIntoView=target'
+
+        setTimeout(() => {
+            // 只清空 scroll-into-view，不改 scroll-top。
+            // 错误实现会重放 scroll-top=0，导致 currentTop 回到 0。
+            scrollIntoView.value = ''
+            state.value = 'scrollIntoView=empty'
+        }, 300)
+    }
+
+    function onScroll(e : UniScrollEvent) {
+        currentTop.value = e.detail.scrollTop
+    }
+
+    defineExpose({
+        currentTop
+    })
+</script>
+
+<style>
+    .page {
+        padding: 20px;
+    }
+
+    .title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .desc {
+        font-size: 14px;
+        color: #555555;
+        margin-bottom: 6px;
+        line-height: 22px;
+    }
+
+    .button {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .state {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .scroller {
+        height: 160px;
+        border: 1px solid #cccccc;
+        margin-top: 12px;
+    }
+
+    .item {
+        height: 160px;
+        line-height: 160px;
+        text-align: center;
+        background-color: #f5f5f5;
+    }
+
+    .target {
+        background-color: #bde7ff;
+    }
+</style>

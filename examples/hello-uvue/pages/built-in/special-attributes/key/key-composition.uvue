@@ -1,0 +1,23 @@
+<template>
+    <view style="flex: 1; padding: 20px;">
+        <button id="btn" @click="switchItem">切换详情</button>
+
+        <text>页面当前 currentId: </text>
+        <text id="current-id">{{ currentId }}</text>
+
+        <!-- 小程序平台不支持 :key，该页面已在页面注册和入口处通过条件编译屏蔽 -->
+        <view v-if="currentId != ''" style="margin-top: 20px;">
+            <Child :key="currentId" :id="currentId" />
+        </view>
+    </view>
+</template>
+
+<script setup vapor lang="uts">
+    import Child from './child-composition.uvue'
+
+    const currentId = ref('a')
+
+    function switchItem() {
+        currentId.value = currentId.value == 'a' ? 'b' : 'a'
+    }
+</script>

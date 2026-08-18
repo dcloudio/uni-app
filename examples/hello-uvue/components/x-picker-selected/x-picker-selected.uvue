@@ -1,0 +1,101 @@
+<script lang="ts" setup>
+  import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+
+  type PickerItem = {
+    title: string,
+    item: UTSJSONObject
+  }
+
+  defineOptions({ name: 'xPickerSelected' })
+  defineSlots<{
+    item(props: { item: UTSJSONObject }): any
+    default(): any
+  }>()
+
+  const props = withDefaults(defineProps<{
+    list: UTSJSONObject[],
+    labelKey: string,
+    lazyContent: boolean,
+    lazyDuration: number
+  }>(), {
+    list: () => [] as UTSJSONObject[],
+    labelKey: 'text',
+    lazyContent: false,
+    lazyDuration: 100
+  })
+
+  const show = ref(false)
+  const lazyReady = ref(false)
+  let tid = 0
+
+  const renderList = computed((): PickerItem[] => {
+    return props.list.map((el: UTSJSONObject): PickerItem => {
+      return {
+        title: el.getString(props.labelKey)!,
+        item: el
+      } as PickerItem
+    })
+  })
+
+  function openShow(): void {
+    if (show.value) {
+      show.value = false
+    }
+    show.value = true
+  }
+
+  function onClose(): void {
+    show.value = false
+    lazyReady.value = props.lazyContent ? false : true
+    clearTimeout(tid)
+  }
+
+  function onOpen(): void {
+    clearTimeout(tid)
+    tid = setTimeout((): void => {
+      lazyReady.value = true
+    }, props.lazyDuration)
+  }
+
+  onMounted(() => {
+    lazyReady.value = props.lazyContent ? false : true
+  })
+
+  onBeforeUnmount(() => {
+    clearTimeout(tid)
+  })
+
+  defineExpose({
+    open: () => openShow()
+  })
+</script>
+
+<template>
+  <view>
+    <view @click="openShow">
+      <slot></slot>
+    </view>
+    <x-drawer @open="onOpen" @close="onClose" :show="show">
+      <text v-if="!lazyReady" class="loading">加载中...</text>
+      <view v-if="renderList.length > 0 && lazyReady">
+        <view v-for="(item, index) in renderList" :key="index" class="item">
+          <slot name="item" :item="item.item">
+            <x-text>{{ item.title }}</x-text>
+          </slot>
+        </view>
+      </view>
+    </x-drawer>
+  </view>
+</template>
+
+<style scoped>
+  .item {
+    min-height: 50px;
+    justify-content: center;
+  }
+
+  .loading {
+    color: #666666;
+    font-size: 14px;
+  }
+</style>

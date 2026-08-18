@@ -277,7 +277,7 @@ export function callJavaMethodGetInfo():String {
 }
 
 
-@UTSJS.keepAlive
+
 export function callKotlinCallbackUTS(callback: (res: string) => void) {
 	NativeCode.kotlinCallbackUTS(function(res:string){
     console.log(res)
@@ -322,13 +322,6 @@ export class UTSAcvitiyLifeCycleCallback extends UniActivityLifeCycleCallback {
     console.log('UTSAcvitiyLifeCycle', 'onResume', params.activity)
     callback('onResume')
   }
-  
-  override onPictureInPictureModeChanged(params : UniActivityParams) {
-    console.log('UTSAcvitiyLifeCycle', 'onPictureInPictureModeChanged', params.result)
-    callback('onPictureInPictureModeChanged')
-  }
-  
-  
   override onPreResume(params : UniActivityParams) {
     console.log('UTSAcvitiyLifeCycle', 'onPreResume', params)
     callback('onPreResume')
@@ -348,12 +341,10 @@ export class UTSAcvitiyKeyEventCallback extends UniActivityKeyEventCallback {
   }
   override onKeyDown(params : UniActivityParams, keyCode : Int, event : KeyEvent | null) {
     console.log('UTSAcvitiyKeyEvent', 'onKeyDown', params, keyCode, '' + event)
-    params.returnResult = true //设置returnResult为true，表示需要拦截事件，终止事件传递
     callback('onKeyDown')
   }
   override onPreKeyDown(params : UniActivityParams, keyCode : Int, event : KeyEvent | null) {
     console.log('UTSAcvitiyKeyEvent', 'onPreKeyDown', params, keyCode, '' + event)
-    params.returnResult = true //如果这里设置returnResult为true，表示需要拦截事件，不会再回调onKeyDown
     callback('onPreKeyDown')
   }
   override onKeyLongPress(params : UniActivityParams, keyCode : Int, event : KeyEvent | null) {

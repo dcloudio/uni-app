@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang='uts'>
-  import ChildB from './childB-composition.uvue'
+  import ChildB from './ChildB-composition.uvue'
 
   defineProps({
     limit: {

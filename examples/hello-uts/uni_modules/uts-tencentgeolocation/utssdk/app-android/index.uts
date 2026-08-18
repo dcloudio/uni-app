@@ -21,9 +21,9 @@ export function requestPremission() {
 	 * 准备权限
 	 */
 	let permissionNeed = [Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION];
-	UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight:boolean,_permission:string[]) {
+	UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight:boolean,_:string[]) {
 		console.log("用户同意了权限",allRight)
-	}, function (_result:boolean,_permission:string[]) {
+	}, function (_:boolean,_:string[]) {
 		console.log("用户拒绝了部分权限:")
 	})
 	

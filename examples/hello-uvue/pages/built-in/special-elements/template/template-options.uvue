@@ -6,7 +6,7 @@
     <template v-else>
       <text>隐藏标题时显示</text>
     </template>
-    <button id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</button>
+    <text class="mt-10 btn" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
     <template v-for="(item, index) in list" :key="index">
       <text :class="'item'">{{ index + 1 }}.{{ item.name }}</text>
     </template>
@@ -49,6 +49,13 @@ export default {
 </script>
 
 <style>
+.btn{
+  border: 1px solid #eee;
+  border-radius: 4px;
+  text-align: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
 .item {
   margin: 15px;
   padding: 4px 8px;

@@ -1,5 +1,5 @@
 <template>
-<!-- #ifdef APP -->
+<!-- #ifdef APP && !VUE3-VAPOR -->
 <scroll-view style="flex: 1">
   <!-- #endif -->    
   <view class="page">
@@ -32,7 +32,7 @@
     </view>
 
     <!-- v-bind props -->
-    <Foo :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
+    <Foo class="foo-props" :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
 
     <!-- v-bind props -->
     <Foo checked />
@@ -53,7 +53,7 @@
     <view class="mb-10 v-bind-css"></view>
     <!-- #endif -->
   </view>
-<!-- #ifdef APP -->
+<!-- #ifdef APP && !VUE3-VAPOR -->
 </scroll-view>
 <!-- #endif -->  
 </template>

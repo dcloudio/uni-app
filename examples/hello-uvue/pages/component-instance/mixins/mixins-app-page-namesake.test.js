@@ -1,21 +1,21 @@
-const PAGE_PATH = '/pages/component-instance/mixins/mixins-app-page-namesake'
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.includes('android')
+const isIOS = platformInfo.includes('ios')
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 describe('mixins-page-namesake', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.includes('android')
-  const isIOS = platformInfo.includes('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  if (!isIOS && !isAndroid) {
+  if (!(isIOS || isAndroid) || isDom2) {
     it('not support', async () => {
       expect(1).toBe(1)
     })
     return
   }
   let page
+  const PAGE_PATH = '/pages/component-instance/mixins/mixins-app-page-namesake'
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
+    await page.waitFor(1000)
   })
 
   it('components', async () => {

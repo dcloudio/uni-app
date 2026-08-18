@@ -148,6 +148,8 @@
               self.watchCountTrackNum++
             }
           }
+          // TODO: 3.5.22 以上代码也会报错 Maximum call stack size exceeded，因为页面渲染读取 count，count 被 $watch 侦听，这个读取操作会触发 onTrack 钩子函数
+          // onTrack 中修改了响应式数据 watchCountTrackNum，响应式数据的修改都会通知 Vue 进行重新渲染，再次读取 count，形成死循环
           // TODO: vue>3.4.15 开始 监听函数、onTrack、onTrigger 同时存在修改响应式数据时,会报错 Maximum call stack size exceeded
           // 所以将 onTrack 与 onTrigger 调整到两个 watch 里
         })
@@ -167,7 +169,6 @@
             // #endif
           }
         },
-        // immediate: true 第一次触发, 旧值应该是 undefined, 现在 app 是初始值
         immediate: true,
         deep: true
       },

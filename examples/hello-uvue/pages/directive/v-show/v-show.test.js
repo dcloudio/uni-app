@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/directive/v-show/v-show-options'
 const COMPOSITION_PAGE_PATH = '/pages/directive/v-show/v-show-composition'
 
@@ -17,10 +19,8 @@ async function isElementShow(ele) {
 }
 
 describe('v-show', () => {
-  let page
-  
   const test = async (pagePath) => {
-    page = await program.reLaunch(pagePath)
+    const page = await program.reLaunch(pagePath)
     await page.waitFor('view')
 
     let dataInfo = await page.data('dataInfo')
@@ -63,9 +63,11 @@ describe('v-show', () => {
     }
   }
   
-  it('v-show options API', async () => {
-    await test(OPTIONS_PAGE_PATH)
-  })
+  if (!isDom2) {
+    it('v-show options API', async () => {
+      await test(OPTIONS_PAGE_PATH)
+    })
+  }
   
   it('v-show composition API', async () => {
     await test(COMPOSITION_PAGE_PATH)

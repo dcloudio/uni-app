@@ -2,10 +2,9 @@ const PAGE_PATH = '/pages/component-instance/nextTick/nextTick-options'
 
 describe('$nextTick()', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isWeb = platformInfo.startsWith('web')
-  const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
-  if (isMP) {
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  if (isMP || isDom2) {
     it("not support", async () => {
       expect(1).toBe(1);
     });
@@ -30,6 +29,13 @@ describe('$nextTick()', () => {
     expect(pageDataInfo.afterNextTickCallbackTitle).toBe('new title for callback')
     expect(pageDataInfo.beforeNextTickPromiseTitle).toBe('default title for promise')
     expect(pageDataInfo.afterNextTickPromiseTitle).toBe('new title for promise')
+
+    let vIfNextTickTestTextGetAble = await page.data('vIfNextTickTestTextGetAble')
+    expect(vIfNextTickTestTextGetAble).toBe(false)
+    await page.callMethod('afterNextTickGetText')
+    await page.waitFor(1000)
+    vIfNextTickTestTextGetAble = await page.data('vIfNextTickTestTextGetAble')
+    expect(vIfNextTickTestTextGetAble).toBe(true)
   });
 
   it('$nextTick component', async () => {

@@ -3,16 +3,24 @@
     <child
       class="child-class"
       str="str from parent"
+      style="background-color: lightblue;"
+      @childClick="() => {}" />
+
+    <child-multi-tag
+      class="child-class"
+      str="str from parent"
+      style='background-color: lightblue;'
       @childClick="() => {}" />
   </view>
 </template>
 
 <script lang="uts">
 import child from './child-options.uvue'
-
+import childMultiTag from './child-composition-multi-tag.uvue'
 export default {
   components: {
     child,
+    childMultiTag
   },
 }
 </script>

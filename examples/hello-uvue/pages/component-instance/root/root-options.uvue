@@ -4,7 +4,7 @@
       <text>root str in parent component: </text>
       <text id="root-str-parent">{{ rootStr }}</text>
     </view>
-    <child />
+    <child class="root-child" />
   </view>
 </template>
 

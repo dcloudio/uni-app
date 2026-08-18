@@ -1,0 +1,32 @@
+<template>
+  <view>
+    <CompUseComputedStyle :class="classChanged ? 'test-comp-changed' : 'test-comp'"
+      :style="{'font-size': styleChanged ? '40px' : '14px' }"></CompUseComputedStyle>
+    <button class="toggle-class-btn" @click="toggleClass">toggleClass</button>
+    <button class="toggle-style-btn" @click="toggleStyle">toggleStyle</button>
+  </view>
+</template>
+
+<script setup>
+  import CompUseComputedStyle from './CompUseComputedStyle.uvue'
+  const styleChanged = ref(false)
+  const classChanged = ref(false)
+  function toggleClass(){
+    classChanged.value = !classChanged.value
+  }
+  function toggleStyle(){
+    styleChanged.value = !styleChanged.value
+  }
+</script>
+
+<style>
+  .test-comp {
+    color: green;
+    background-color: yellow;
+  }
+
+  .test-comp-changed {
+    color: yellow;
+    background-color: green;
+  }
+</style>

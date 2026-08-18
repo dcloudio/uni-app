@@ -1,0 +1,27 @@
+<template>
+  <view class="issue-30373-shell">
+    <view class="slot-block">
+      <slot></slot>
+    </view>
+    <view class="slot-block">
+      <slot name="footer"></slot>
+    </view>
+    <view class="slot-block">
+      <slot name="scoped" suffix="scoped"></slot>
+    </view>
+  </view>
+</template>
+
+<style>
+  .issue-30373-shell {
+    padding: 8px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #cccccc;
+    border-radius: 6px;
+  }
+
+  .slot-block {
+    margin-bottom: 8px;
+  }
+</style>

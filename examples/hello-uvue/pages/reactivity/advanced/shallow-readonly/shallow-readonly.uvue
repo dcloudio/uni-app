@@ -20,9 +20,11 @@
       @click="incrementStateNestedCount">
       increment state.nested.count
     </button>
+    <!-- #ifndef VUE3-VAPOR -->
     <button id="update-page-render-btn" @click="updatePageRender">
       update page render
     </button>
+    <!-- #endif -->
   </view>
 </template>
 
@@ -44,6 +46,8 @@ const state = shallowReadonly<State>({
   }
 })
 
+const reactiveState = reactive<State>(state)
+
 // #ifdef APP
 const incrementStateCount = () => {
   state.count++
@@ -57,4 +61,8 @@ const incrementStateNestedCount = () => {
 const updatePageRender = () => {
   pageKey.value = Date.now()
 }
+
+defineExpose({
+  reactiveState,
+})
 </script>

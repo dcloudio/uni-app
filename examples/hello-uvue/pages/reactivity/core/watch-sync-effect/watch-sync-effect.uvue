@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
     <!-- #endif -->
     <view class="page">
@@ -67,7 +67,7 @@
         <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
       </view>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -106,7 +106,9 @@
       // 响应属性或引用作为依赖项被跟踪时调用
       onTrack(event : DebuggerEvent) {
         if (event.type === 'get') {
+          // #ifndef VUE3-VAPOR
           watchCountTrackNum.value++
+          // #endif
         }
       }
     },

@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const PAGE_OPTIONS = '/pages/built-in/special-elements/slots/slots-options'
 const PAGE_COMPOSITION = '/pages/built-in/special-elements/slots/slots-composition'
 
@@ -21,9 +23,11 @@ describe('built-in/special-elements/slots', () => {
     expect(await footerEl.text()).toEqual("Here's some contact info");
   }
 
-  it('slots Options API', async () => {
-    await test(PAGE_OPTIONS)
-  });
+  if (!isDom2) {
+    it('slots Options API', async () => {
+      await test(PAGE_OPTIONS)
+    });
+  }
 
   it('slots Composition API', async () => {
     await test(PAGE_COMPOSITION)

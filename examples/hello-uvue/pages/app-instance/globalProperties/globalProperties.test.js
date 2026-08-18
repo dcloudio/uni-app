@@ -1,11 +1,24 @@
 jest.setTimeout(30000)
 
-const OPTIONS_PAGE_PATH = '/pages/app-instance/globalProperties/globalProperties-options'
-const COMPOSITION_PAGE_PATH = '/pages/app-instance/globalProperties/globalProperties-composition'
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 describe('globalProperties', () => {
-	let page = null
-	const testGlobalProperties = async (page) => {
+	if (isDom2) {
+    it("not support", async () => {
+      expect(1).toBe(1);
+    });
+    return
+	}
+
+	const OPTIONS_PAGE_PATH = '/pages/app-instance/globalProperties/globalProperties-options'
+	const COMPOSITION_PAGE_PATH = '/pages/app-instance/globalProperties/globalProperties-composition'
+
+	const test = async (pagePath) => {
+		const page = await program.reLaunch(pagePath)
+		await page.waitFor('view')
+		// 等待 globalProperties-options resetGlobalProperties 完成
+		await page.waitFor(1500)
+
 		let data = await page.data()
     await page.waitFor(1000)
 		expect(data.myGlobalProperties.str).toBe('default string')
@@ -48,33 +61,20 @@ describe('globalProperties', () => {
 			bool: true
 		})
 		expect(data.myGlobalProperties.globalPropertiesFnRes).toBe('globalPropertiesStr: new string, globalPropertiesNum: 100')
-	}
-	const testScreenShot = async (page) => {
+
 		await page.waitFor(500)
+
 		const image = await program.screenshot({
 			fullPage: true
 		});
 		expect(image).toSaveImageSnapshot();
 	}
-	
+
 	it('globalProperties options API', async () => {
-		page = await program.reLaunch(OPTIONS_PAGE_PATH)
-		await page.waitFor('view')
-		
-		await testGlobalProperties(page)
-	})
-	it('screenshot options API', async () => {
-		await testScreenShot(page)
+		await test(OPTIONS_PAGE_PATH)
 	})
 	
 	it('globalProperties composition API', async () => {
-		page = await program.reLaunch(COMPOSITION_PAGE_PATH)
-    // 等待 globalProperties-options resetGlobalProperties 完成
-		await page.waitFor(1500)
-		
-		await testGlobalProperties(page)
-	})
-	it('screenshot composition API', async () => {
-		await testScreenShot(page)
+		await test(COMPOSITION_PAGE_PATH)
 	})
 })

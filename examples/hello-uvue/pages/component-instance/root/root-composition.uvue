@@ -4,7 +4,7 @@
       <text>root str in parent component: </text>
       <text id="root-str-parent">{{ rootStr }}</text>
     </view>
-    <Child />
+    <Child class="root-child" />
   </view>
 </template>
 
@@ -17,10 +17,10 @@
   onReady(() => {
     const instance = getCurrentInstance()!.proxy!
     // TODO: 确认 android 与 ios 的差异， ios 与标准 vue 相同
-    // #ifdef APP-ANDROID
+    // #ifdef APP-ANDROID && !VUE3-VAPOR
     rootStr.value = (instance.$root!.$exposed['str'] as Ref<string>).value as string
     // #endif
-    // #ifndef APP-ANDROID
+    // #ifdef !APP-ANDROID || (APP-ANDROID && VUE3-VAPOR)
     rootStr.value = instance.$root!['str'] as string
     // #endif
   })

@@ -246,8 +246,8 @@ export function testNumber(): Result {
       let a11: number | null = null
       let b11: Int | null = null
 
-      expect(a11?.toString()).toEqual(null);
-      expect(b11?.toString()).toEqual(null);
+      expect(a11.toString()).toEqual("null");
+      expect(b11.toString()).toEqual("null");
 
 
       // #endif

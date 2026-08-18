@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 jest.setTimeout(30000)
 const OPTIONS_PAGE_PATH = '/pages/lifecycle/page/onBackPress/on-back-press-options'
 const OPTIONS_CHILD_PAGE_PATH = '/pages/lifecycle/page/onBackPress/on-back-press-child-options'
@@ -33,9 +35,11 @@ describe('onBackPress 返回值', () => {
     expect(currentPageData.from).toBe('navigateBack')
 
   }
-  it('onBackPress options API', async () => {
-    await test(OPTIONS_PAGE_PATH, OPTIONS_CHILD_PAGE_PATH)
-  })
+  if (!isDom2) {
+    it('onBackPress options API', async () => {
+      await test(OPTIONS_PAGE_PATH, OPTIONS_CHILD_PAGE_PATH)
+    })
+  }
 
   it('onBackPress composition API', async () => {
     await test(COMPOSITION_PAGE_PATH, COMPOSITION_CHILD_PAGE_PATH)

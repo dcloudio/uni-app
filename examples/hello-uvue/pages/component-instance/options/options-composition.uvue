@@ -4,24 +4,30 @@
       <text>component name: </text>
       <text id="component-name">{{ dataInfo.name }}</text>
     </view>
-    <!-- #ifndef APP-ANDROID -->
+    <!-- #ifndef APP-ANDROID && !VUE3-VAPOR -->
     <view class="mb-10 flex justify-between flex-row">
       <text>custom key: </text>
       <text id="custom-key">{{ dataInfo.customKey }}</text>
     </view>
+    <!-- #ifndef VUE3-VAPOR -->
     <view class="mb-10 flex justify-between flex-row">
       <text>mixin data str: </text>
       <text id="mixin-data-str">{{ dataInfo.mixinDataStr }}</text>
     </view>
     <!-- #endif -->
+    <!-- #endif -->
   </view>
 </template>
 
 <script setup lang="uts">
+// #ifndef VUE3-VAPOR
 import mixins from "./mixins.uts"
+// #endif
 
 defineOptions({
+  // #ifndef VUE3-VAPOR
   mixins: [mixins],
+  // #endif
   name: "$options",
   _customKey: "custom key"
 })
@@ -29,21 +35,27 @@ defineOptions({
 type DataInfo = {
   name: string
   customKey: string
+  // #ifdef VUE3-VAPOR
   mixinDataStr: string
+  // #endif
 }
 
 const dataInfo = reactive({
   name: "",
   customKey: "",
+  // #ifdef VUE3-VAPOR
   mixinDataStr: ""
+  // #endif
 } as DataInfo)
 
 onMounted(() => {
   const instance = getCurrentInstance()!.proxy!
   dataInfo.name = instance.$options.name!
-  // #ifndef APP-ANDROID
+  // #ifndef APP-ANDROID && !VUE3-VAPOR
   dataInfo.customKey = instance.$options._customKey
+  // #ifndef VUE3-VAPOR
   dataInfo.mixinDataStr = instance.$options.data!({})!['str']
+  // #endif
   // #endif
 })
 

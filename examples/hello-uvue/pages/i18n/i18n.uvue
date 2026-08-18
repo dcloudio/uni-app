@@ -1,0 +1,100 @@
+<template>
+  <view class="page">
+    <view class="section">
+      <text class="title">{{ t('i18n.title') }}</text>
+      <text class="description">{{ t('i18n.description') }}</text>
+      <text class="locale-label">{{ t('i18n.currentLocale') }}: {{ locale }}</text>
+    </view>
+
+    <view class="section">
+      <text class="message greeting">{{ t('i18n.greeting') }}</text>
+      <text class="message named">{{ t('i18n.named', { framework: 'uni-app x' } as UTSJSONObject) }}</text>
+    </view>
+
+    <view class="button-group">
+      <button class="locale-btn locale-btn-zh-hans" @click="changeLocale('zh-Hans')">
+        {{ t('i18n.switchToZhHans') }}
+      </button>
+      <button class="locale-btn locale-btn-zh-hant" @click="changeLocale('zh-Hant')">
+        {{ t('i18n.switchToZhHant') }}
+      </button>
+      <button class="locale-btn locale-btn-en" @click="changeLocale('en')">
+        {{ t('i18n.switchToEn') }}
+      </button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+import { useI18n } from 'vue-i18n'
+
+const { t, locale } = useI18n()
+
+const syncLocale = (newLocale : string) => {
+  locale.value = newLocale
+}
+
+// #ifdef WEB || MP-WEIXIN
+uni.onLocaleChange((res : UniNamespace.OnLocaleChangeCallbackResult) => {
+  if (res.locale != null) {
+    syncLocale(res.locale!)
+  }
+})
+// #endif
+
+const changeLocale = (newLocale : string) => {
+  // #ifdef WEB || MP-WEIXIN
+  uni.setLocale(newLocale)
+  // #endif
+  syncLocale(newLocale)
+}
+
+const getContentSnapshot = () : UTSJSONObject => {
+  return {
+    locale: locale.value,
+    title: t('i18n.title'),
+    description: t('i18n.description'),
+    greeting: t('i18n.greeting'),
+    named: t('i18n.named', { framework: 'uni-app x' } as UTSJSONObject)
+  } as UTSJSONObject
+}
+
+defineExpose({
+  changeLocale,
+  getContentSnapshot
+})
+</script>
+
+<style>
+.page {
+  flex: 1;
+  padding: 16px;
+}
+
+.section {
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.description,
+.locale-label,
+.message {
+  font-size: 16px;
+  color: #374151;
+  margin-top: 8px;
+}
+
+.button-group {
+  margin-top: 8px;
+}
+
+.locale-btn {
+  margin-top: 10px;
+}
+</style>

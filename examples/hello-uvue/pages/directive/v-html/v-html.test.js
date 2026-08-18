@@ -1,24 +1,25 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/directive/v-html/v-html-options'
 const COMPOSITION_PAGE_PATH = '/pages/directive/v-html/v-html-composition'
 
-// TODO: ios 暂不支持
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.includes('ios')
+const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.includes('harmony')
 
 describe('v-html', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isIOS = platformInfo.includes('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isHarmony = platformInfo.includes('harmony')
-  if (isIOS || isMP || isHarmony) {
+  if (isIOS || isMP || isHarmony || isDom2) {
     it("not support", async () => {
       expect(1).toBe(1);
     });
     return
   }
-  let page
-  
+
   const test = async (pagePath) => {
-    page = await program.reLaunch(pagePath)
-    await page.waitFor(700)
+    const page = await program.reLaunch(pagePath)
+    await page.waitFor('view')
+    await page.waitFor(500)
 
     const image = await program.screenshot()
     expect(image).toSaveImageSnapshot()

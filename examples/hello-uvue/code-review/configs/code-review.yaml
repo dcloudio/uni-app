@@ -5,7 +5,7 @@ project:
   provider: "ablai"  # AI 服务商，可选值：ablai（阿波罗）, bailian（阿里百炼）。如果要使用国外的大模型，请选择 ablai；如果使用国内的大模型，请选择 bailian。
   # 阿波罗支持的模型列表：https://api.ablai.top/models
   # 阿里百炼支持的模型列表：https://bailian.console.aliyun.com/?tab=model#/model-market
-  aiModel: "gemini-2.5-pro-preview-05-06"  # AI 模型，可选值：qwen-turbo-2025-04-28, deepseek-v3, gemini-2.5-pro-preview-05-06
+  aiModel: "gemini-2.5-pro"  # AI 模型，可选值：qwen-turbo-2025-04-28, deepseek-v3, gemini-2.5-pro-preview-05-06
   maxTokens: 5000  # AI 模型最大输出 token 数。不同的模型支持的 token 数不同，请根据实际情况调整。输出 token 数越多，评审结果越准确，但成本也越高。
   reviewGuidelines: |
     **请扮演一位经验丰富的 uni-app x 高级开发者，专注于对 Git Commit 进行代码评审。**

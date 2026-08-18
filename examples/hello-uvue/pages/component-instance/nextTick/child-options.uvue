@@ -67,7 +67,7 @@
         this.dataInfo.titleForCallback = 'new title for callback'
 
         // #ifdef APP
-        this.dataInfo.beforeNextTickCallbackTitle = childText.getAttribute('value')!
+        this.dataInfo.beforeNextTickCallbackTitle = (childText as UniTextElement).value
         // #endif
         // #ifndef APP
         // @ts-ignore
@@ -76,7 +76,7 @@
         
         this.$nextTick(() => {
           // #ifdef APP
-          this.dataInfo.afterNextTickCallbackTitle = childText.getAttribute('value')!
+          this.dataInfo.afterNextTickCallbackTitle = (childText as UniTextElement).value
           // #endif
           // #ifndef APP
           // @ts-ignore
@@ -89,7 +89,7 @@
         this.dataInfo.titleForPromise = 'new title for promise'
 
         // #ifdef APP
-        this.dataInfo.beforeNextTickPromiseTitle = childText.getAttribute('value')!
+        this.dataInfo.beforeNextTickPromiseTitle = (childText as UniTextElement).value
         // #endif
         // #ifndef APP
         // @ts-ignore
@@ -98,7 +98,7 @@
         
         this.$nextTick().then(() => {
           // #ifdef APP
-          this.dataInfo.afterNextTickPromiseTitle = childText.getAttribute('value')!
+          this.dataInfo.afterNextTickPromiseTitle = (childText as UniTextElement).value
           // #endif
           // #ifndef APP
           // @ts-ignore

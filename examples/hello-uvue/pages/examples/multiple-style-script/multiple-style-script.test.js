@@ -1,18 +1,27 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const PAGE_PATH = '/pages/examples/multiple-style-script/multiple-style-script'
 
 describe(PAGE_PATH, () => {
+  if (isDom2) {
+    it('not support', async () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   const platformInfo = process.env.uniTestPlatformInfo.toLowerCase()
   const isAndroid = platformInfo.startsWith('android')
   const isWeb = platformInfo.startsWith('web')
   const isMP = platformInfo.startsWith('mp')
   const isSafari = platformInfo.includes('safari')
-  let page
   
 	beforeAll(async () => {
-		page = await program.reLaunch(PAGE_PATH)
-		await page.waitFor('view')
 	})
   it('测试多 style 和 script', async () => {
+		const page = await program.reLaunch(PAGE_PATH)
+    await page.waitFor('view')
+
     const msg = await page.$('#msg')
     expect(await msg.text()).toBe('Hello World')
     if (!isAndroid) {

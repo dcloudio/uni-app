@@ -1,10 +1,12 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const PAGE_PATH = '/pages/lifecycle/component/component-options'
 const HOME_PATH = '/pages/index/index'
 
 describe('component-lifecycle', () => {
-  if(isMP) {
+  if(isMP || isDom2) {
     it('not support', async () => {
       expect(1).toBe(1)
     })
@@ -16,8 +18,8 @@ describe('component-lifecycle', () => {
     page = await program.reLaunch(HOME_PATH)
     await page.waitFor(700)
     const initLifecycleNum = 0
-    await page.callMethod('setLifeCycleNum', initLifecycleNum)
-    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    await page.callMethod('pageSetLifeCycleNum', initLifecycleNum)
+    lifeCycleNum = await page.callMethod('pageGetLifeCycleNum')
     expect(lifeCycleNum).toBe(initLifecycleNum)
 
     page = await program.navigateTo(PAGE_PATH)
@@ -25,8 +27,8 @@ describe('component-lifecycle', () => {
   })
   afterAll(async () => {
     const resetLifecycleNum = 1110
-    await page.callMethod('setLifeCycleNum', resetLifecycleNum)
-    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    await page.callMethod('pageSetLifeCycleNum', resetLifecycleNum)
+    lifeCycleNum = await page.callMethod('pageGetLifeCycleNum')
     expect(lifeCycleNum).toBe(resetLifecycleNum)
   })
 
@@ -51,7 +53,7 @@ describe('component-lifecycle', () => {
   })
   it('deactivated beforeUnmount unmounted', async () => {
     page = await program.navigateBack()
-    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    lifeCycleNum = await page.callMethod('pageGetLifeCycleNum')
     expect(lifeCycleNum).toBe(4)
   })
 })

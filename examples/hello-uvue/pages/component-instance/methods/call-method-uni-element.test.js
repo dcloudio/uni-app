@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const PAGE_PATH = '/pages/component-instance/methods/call-method-uni-element-options'
 const PAGE_COMPOSITION_PATH = '/pages/component-instance/methods/call-method-uni-element-composition'
 
@@ -14,21 +16,25 @@ describe('call-method-uni-element', () => {
     return
   }
   
-  let page
-
-  it('callMethodTest Options API', async () => {
-    page = await program.reLaunch(PAGE_PATH)
+  const test = async (pagePath) => {
+    const page = await program.reLaunch(pagePath)
+    await page.waitFor('view')
     await page.waitFor(500)
-    const title = Date.now() + ''
-    const result = await page.callMethod('callMethodTest', title)
-    expect(result).toBe(title)
-  })
+
+    if (!isDom2) {
+      const title = Date.now() + ''
+      const result = await page.callMethod('callMethodTest', title)
+      expect(result).toBe(title)
+    }
+  }
+
+  if (!isDom2) {
+    it('callMethodTest Options API', async () => {
+      await test(PAGE_PATH)
+    })
+  }
 
   it('callMethodTest Composition API', async () => {
-    page = await program.reLaunch(PAGE_COMPOSITION_PATH)
-    await page.waitFor(500)
-    const title = Date.now() + ''
-    const result = await page.callMethod('callMethodTest', title)
-    expect(result).toBe(title)
+    await test(PAGE_COMPOSITION_PATH)
   })
 })

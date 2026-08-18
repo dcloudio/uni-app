@@ -1,0 +1,38 @@
+<template>
+	<view class="p-10">
+		<text>inheritAttrs 选项式 API</text>
+		<view class="flex flex-row">
+			<text>count in page: </text>
+			<text id="inherit-attrs-options-count">{{ count }}</text>
+		</view>
+		<CompInheritAttrsTrueOptions id="comp-inherit-attrs-true-options" class="bg-red" data-test="comp-inherit-attrs-true-options" @click="handleClickInPage" />
+		<CompInheritAttrsFalseOptions id="comp-inherit-attrs-false-options" class="bg-red" data-test="comp-inherit-attrs-false-options" @click="handleClickInPage" />
+	</view>
+</template>
+
+<script>
+import CompInheritAttrsTrueOptions from './comp-inherit-attrs-true-options.uvue'
+import CompInheritAttrsFalseOptions from './comp-inherit-attrs-false-options.uvue'
+export default {
+	components: {
+		CompInheritAttrsTrueOptions,
+		CompInheritAttrsFalseOptions
+	},
+	data() {
+		return {
+			count: 0
+		}
+	},
+	methods: {
+		handleClickInPage() {
+			this.count++
+		}
+	}
+}
+</script>
+
+<style>
+.bg-red{
+	background-color: red;
+}
+</style>

@@ -1,9 +1,13 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/component-instance/data/data-options'
 const COMPOSITION_PAGE_PATH = '/pages/component-instance/data/data-composition'
 
 describe('$data', () => {
-  let page
-  const test = async (page) => {
+  const test = async (pagePath) => {
+    const page = await program.reLaunch(pagePath)
+    await page.waitFor('view')
+
     const str = await page.$('#str')
     expect(await str.text()).toBe('default str')
 
@@ -35,17 +39,13 @@ describe('$data', () => {
     expect(await elementIsSame.text()).toBe('true')
   }
 
-  it('$data 选项式 API', async () => {
-    page = await program.reLaunch(OPTIONS_PAGE_PATH)
-    await page.waitFor('view')
-
-    await test(page)
-  });
+  if (!isDom2) {
+    it('$data 选项式 API', async () => {
+      await test(OPTIONS_PAGE_PATH)
+    });
+  }
 
   it('data 组合式 API', async () => {
-    page = await program.reLaunch(COMPOSITION_PAGE_PATH)
-    await page.waitFor('view')
-
-    await test(page)
+    await test(COMPOSITION_PAGE_PATH)
   })
 })

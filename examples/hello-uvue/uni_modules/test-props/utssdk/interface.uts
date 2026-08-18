@@ -6,7 +6,7 @@ export type IPropsChangeEventDetail = {
   value : number
 }
 
-export interface IPropsChangeEvent extends UniVideoEvent {
+export interface IPropsChangeEvent {
 	detail : IPropsChangeEventDetail[]
 }
 

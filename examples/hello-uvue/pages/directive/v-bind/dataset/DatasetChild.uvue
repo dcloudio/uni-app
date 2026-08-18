@@ -1,0 +1,38 @@
+<template>
+  <view
+    id="dataset-child-root"
+    class="custom-child"
+    data-type="custom-own"
+    data-child-only="child"
+    :data-shared="childShared"
+    :data-child-count="childCount"
+  >
+    <text class="custom-title">点击自定义组件根节点</text>
+    <text class="custom-desc">验证 fallthrough dataset 合并与事件 dataset</text>
+  </view>
+</template>
+
+<script setup vapor lang="uts">
+const childShared = ref('child-shared')
+const childCount = ref(10)
+</script>
+
+
+<style>
+.custom-child {
+  margin-top: 10px;
+  padding: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #cfded4;
+  border-radius: 8px;
+  background-color: #f9fffb;
+}
+.custom-title {
+  font-weight: bold;
+}
+.custom-desc {
+  margin-top: 4px;
+  color: #647067;
+}
+</style>

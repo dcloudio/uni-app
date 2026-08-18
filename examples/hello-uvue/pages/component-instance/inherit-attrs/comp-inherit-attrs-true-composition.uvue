@@ -1,0 +1,44 @@
+<template>
+	<view id="container" class="p-10" @click="handleClickInComp">
+		<text>inheritAttrs: true</text>
+		<view class="flex flex-row">
+			<text>id: </text>
+			<text id="comp-inherit-attrs-true-composition-id">{{ id }}</text>
+		</view>
+		<view class="flex flex-row">
+			<text>class: </text>
+			<text id="comp-inherit-attrs-true-composition-class">{{ className }}</text>
+		</view>
+		<view class="flex flex-row">
+			<text>data-test: </text>
+			<text id="comp-inherit-attrs-true-composition-data-test">{{ dataTest }}</text>
+		</view>
+		<view class="flex flex-row">
+			<text>count in comp: </text>
+			<text id="comp-inherit-attrs-true-composition-count">{{ count }}</text>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	defineOptions({
+		inheritAttrs: true
+	})
+
+	const id = ref('')
+	const className = ref('')
+	const dataTest = ref('')
+
+	const count = ref(0)
+
+	onMounted(() => {
+		const container = getCurrentInstance()!.proxy!.$el as UniElement
+		id.value = container.getAttribute('id') ?? ''
+		className.value = container.classList.toString()
+		dataTest.value = container.getAttribute('data-test') ?? ''
+	})
+
+	const handleClickInComp = () => {
+		count.value++
+	}
+</script>

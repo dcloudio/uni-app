@@ -1,0 +1,28 @@
+<template>
+	<view class="p-10">
+		<text>inheritAttrs 组合式 API</text>
+		<view class="flex flex-row">
+			<text>count in page: </text>
+			<text id="inherit-attrs-composition-count">{{ count }}</text>
+		</view>
+		<CompInheritAttrsTrueComposition id="comp-inherit-attrs-true-composition" class="bg-red" data-test="comp-inherit-attrs-true-composition" @click="handleClickInPage" />
+		<CompInheritAttrsFalseComposition id="comp-inherit-attrs-false-composition" class="bg-red" data-test="comp-inherit-attrs-false-composition" @click="handleClickInPage" />
+	</view>
+</template>
+
+<script setup lang="uts">
+	import CompInheritAttrsTrueComposition from './comp-inherit-attrs-true-composition.uvue'
+	import CompInheritAttrsFalseComposition from './comp-inherit-attrs-false-composition.uvue'
+
+	const count = ref(0)
+
+	const handleClickInPage = () => {
+		count.value++
+	}
+</script>
+
+<style>
+	.bg-red {
+		background-color: red;
+	}
+</style>

@@ -1,10 +1,12 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const PAGE_PATH_OPTIONS = '/pages/built-in/component/keep-alive/keep-alive-options'
 const PAGE_PATH_COMPOSITION = '/pages/built-in/component/keep-alive/keep-alive-composition'
 
 describe('keep-alive', () => {
-  if(isMP) {
+  if(isMP || isDom2) {
     it('not support', async () => {
       expect(1).toBe(1)
     })

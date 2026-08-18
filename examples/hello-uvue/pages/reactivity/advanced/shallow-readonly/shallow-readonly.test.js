@@ -1,6 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 const PAGE_PATH = '/pages/reactivity/advanced/shallow-readonly/shallow-readonly'
 
@@ -31,12 +32,16 @@ describe('shallowReadonly', () => {
     expect(await stateCount.text()).toBe('0')
     expect(await stateNestedCount.text()).toBe('0')
 
-    const updatePageRenderBtn = await page.$('#update-page-render-btn')
-    await updatePageRenderBtn.tap()
-
-    stateCount = await page.$('#state-count')
-    expect(await stateCount.text()).toBe('0')
-    stateNestedCount = await page.$('#state-nested-count')
-    expect(await stateNestedCount.text()).toBe('1')
+    if (!isDom2) {
+      const updatePageRenderBtn = await page.$('#update-page-render-btn')
+      await updatePageRenderBtn.tap()
+      stateCount = await page.$('#state-count')
+      expect(await stateCount.text()).toBe('0')
+      stateNestedCount = await page.$('#state-nested-count')
+      expect(await stateNestedCount.text()).toBe('1')
+    }
+    const state = await page.data('reactiveState')
+    expect(state.count).toBe(0)
+    expect(state.nested.count).toBe(1)
   })
 })

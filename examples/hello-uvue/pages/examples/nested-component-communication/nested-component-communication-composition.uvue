@@ -5,7 +5,7 @@
       <text class="parent-msg">{{ msg }}</text>
     </view>
     <button class="parent-btn" @click="change">父组件改变数据</button>
-    <child />
+    <child class="nested-child" />
   </view>
 </template>
 

@@ -1,0 +1,9 @@
+<script lang="ts" setup>
+  defineOptions({ name: 'xText' })
+</script>
+
+<template>
+  <text>
+    <slot></slot>
+  </text>
+</template>

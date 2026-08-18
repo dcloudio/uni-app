@@ -7,7 +7,7 @@
       <button class="mt-10" @click="goProvidePage2">
         跳转函数方式定义 provide 示例
       </button>
-      <ComponentForInject />
+      <ComponentForInject class="component-for-inject" />
     </view>
     <!-- #ifdef APP -->
   </scroll-view>

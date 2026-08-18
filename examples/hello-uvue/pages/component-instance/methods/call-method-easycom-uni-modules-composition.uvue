@@ -1,7 +1,7 @@
 <template>
   <view>
     <call-easy-method-uni-modules ref="callEasyMethod1"></call-easy-method-uni-modules>
-    <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY -->
+    <!-- #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR -->
     <!-- 在兼容组件中 ios 返回非普通对象数据，比如 Map 数据时候会被 jscore 统一处理为 object，和安卓产生了差异 -->
     <!-- 测试用例用来验证返回数据特殊，安卓和其他平台无此限制 -->
     <view>---</view>
@@ -22,9 +22,8 @@
 
 <script setup lang="uts">
   import { testInOtherFile } from './call-method-easycom-uni-modules'
-  import { ref, isProxy, isRef } from 'vue'
 
-  // #ifdef APP-ANDROID || APP-IOS
+  // #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR
   import { PropsChangeEvent } from '@/uni_modules/test-props'
   // #endif
 
@@ -74,7 +73,7 @@
     return testInOtherFile(callEasyMethod1.value!, text)
   }
 
-  // #ifdef APP-ANDROID
+  // #ifdef APP-ANDROID && !VUE3-VAPOR
   const numListChange = (res : Map<string, Map<string, any>>) => {
     const value = res['detail']!['value'] as number[]
     const isArray = Array.isArray(value)
@@ -83,7 +82,7 @@
   }
   // #endif
 
-  // #ifdef APP-IOS || APP-HARMONY
+  // #ifdef APP-IOS && !VUE3-VAPOR
   const numListChange = (res : any) => {
     const value = res['detail']!['value'] as number[]
     const isArray = Array.isArray(value)
@@ -93,7 +92,7 @@
   // #endif
 
 
-  // #ifdef APP-ANDROID
+  // #ifdef APP-ANDROID && !VUE3-VAPOR
   const objListChange = (res : Map<string, Map<string, any>>) => {
     const value = res['detail']!['value'] as any[]
     const isArray = Array.isArray(value)
@@ -102,7 +101,7 @@
   }
   // #endif
 
-  // #ifdef APP-IOS || APP-HARMONY
+  // #ifdef APP-IOS && !VUE3-VAPOR
   const objListChange = (res : any) => {
     const value = res['detail']!['value'] as any[]
     const isArray = Array.isArray(value)

@@ -1,0 +1,89 @@
+<template>
+  <scroll-view class="page" direction="vertical">
+    <view class="header">
+      <text class="title">#29737 最小复现</text>
+      <text class="desc">点击“打开懒渲染内容”。弹层里应该看到绿色“正常”和 JSON；如果内容为空，就是复现旧问题。</text>
+    </view>
+
+    <view class="card">
+      <text class="case-title">components easycom 最小 picker + 跨组件懒挂载</text>
+      <text class="case-desc">判断标准：绿色“正常”表示父级 item 插槽首次懒渲染成功；内容为空表示旧 bug 复现。当前保留跨组件默认插槽懒挂载这一必要条件。</text>
+      <x-picker-selected
+        id="x-picker-selected"
+        ref="pickerRef"
+        label-key="name"
+        :lazyContent="true"
+        :list="list"
+      >
+        <button id="open-panel">打开懒渲染内容</button>
+        <template v-slot:item="{ item }">
+          <Issue29737Text text-id="slot-pass-text" color="#18a058" font-size="18" line-height="1.2" :lines="3">
+            正常：{{ JSON.stringify(item) }}
+          </Issue29737Text>
+        </template>
+      </x-picker-selected>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup vapor lang="uts">
+  import Issue29737Text from '@/components/issue-29737/Issue29737Text.uvue'
+
+  const list = ref<UTSJSONObject[]>([
+    { id: 29737, lid: '1001', name: '深圳市创明展览设计有限公司' }
+  ])
+  const pickerRef = ref<ComponentPublicInstance | null>(null)
+
+  const openPanel = () => {
+    pickerRef.value?.$callMethod('open')
+  }
+
+  defineExpose({
+    openPanel
+  })
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    padding: 12px;
+  }
+
+  .header {
+    margin-bottom: 12px;
+  }
+
+  .title {
+    color: #111111;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .desc {
+    color: #666666;
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+
+  .card {
+    padding: 12px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #dddddd;
+    border-radius: 8px;
+  }
+
+  .case-title {
+    color: #111111;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+
+  .case-desc {
+    color: #666666;
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+</style>

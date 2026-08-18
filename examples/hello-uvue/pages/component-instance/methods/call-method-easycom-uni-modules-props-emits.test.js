@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = "/pages/component-instance/methods/call-method-easycom-uni-modules-options"
 const COMPOSITION_PAGE_PATH = "/pages/component-instance/methods/call-method-easycom-uni-modules-composition"
 
@@ -12,6 +14,7 @@ describe('call method easycom uni modules', () => {
     isMP ||
     isWeb ||
     isHarmony ||
+    isDom2 ||
     (
     isIOS &&
       (
@@ -30,6 +33,7 @@ describe('call method easycom uni modules', () => {
   const test = async (pagePath) => {
     page = await program.reLaunch(pagePath)
     await page.waitFor('view')
+    await page.waitFor(500)
 
     await page.callMethod('onButtonClick')
     await page.waitFor(1500)
@@ -38,6 +42,8 @@ describe('call method easycom uni modules', () => {
     const resStr2 = await page.$("#isObjListValid")
     expect(await resStr1.text()).toBe(`true`)
     expect(await resStr2.text()).toBe(`true`)
+    // 等待 onReady 内 call 方法执行完，避免运行时错误
+    await page.waitFor(1500)
   }
 
   it('选项式 API', async () => {

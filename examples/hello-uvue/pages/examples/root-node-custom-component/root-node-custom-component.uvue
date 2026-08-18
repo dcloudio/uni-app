@@ -1,0 +1,7 @@
+<template>
+  <Bar />
+</template>
+
+<script setup lang="uts">
+  import Bar from '@/components/Bar.uvue'
+</script>

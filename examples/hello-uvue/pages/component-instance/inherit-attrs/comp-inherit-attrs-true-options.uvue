@@ -1,0 +1,46 @@
+<template>
+	<view id="container" class="p-10" @click="handleClickInComp">
+		<text>inheritAttrs: true</text>
+		<view class="flex flex-row">
+			<text>id: </text>
+			<text id="comp-inherit-attrs-true-options-id">{{ id }}</text>
+		</view>
+		<view class="flex flex-row">
+			<text>class: </text>
+			<text id="comp-inherit-attrs-true-options-class">{{ className }}</text>
+		</view>
+		<view class="flex flex-row">
+			<text>data-test: </text>
+			<text id="comp-inherit-attrs-true-options-data-test">{{ dataTest }}</text>
+		</view>
+		<view class="flex flex-row">
+			<text>count in comp: </text>
+			<text id="comp-inherit-attrs-true-options-count">{{ count }}</text>
+		</view>
+	</view>
+</template>
+
+<script>
+export default {
+	inheritAttrs: true,
+	data(){
+		return {
+			id: '',
+			className: '',
+			dataTest: '',
+			count: 0
+		}
+	},
+	mounted() {
+		const container = this.$el!
+		this.id = container.getAttribute('id') ?? ''
+		this.className = container.classList.toString()
+		this.dataTest = container.getAttribute('data-test') ?? ''
+	},
+	methods: {
+		handleClickInComp() {
+			this.count++
+		}
+	},
+}
+</script>

@@ -25,7 +25,7 @@ describe('shallowReactive', () => {
     await page.waitFor(500)
 
     if (isWeb) {
-      //   web 端 view text 为组件，无法动态更新 shallowReactive nested 数据
+      // web 端 view text 为组件，无法动态更新 shallowReactive nested 数据
       state = await page.data('state')
       expect(state.count).toBe(1)
       expect(state.nested.count).toBe(1)

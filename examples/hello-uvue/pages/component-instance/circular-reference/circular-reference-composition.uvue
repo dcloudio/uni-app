@@ -10,7 +10,7 @@
 
 <script setup lang='uts'>
   // #ifdef APP-ANDROID
-  import ChildA from './childA-composition.uvue'
+  import ChildA from './ChildA-composition.uvue'
   // #endif
   import ChildC from './ChildC-composition.uvue'
 </script>

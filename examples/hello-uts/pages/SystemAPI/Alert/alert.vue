@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  // #ifdef APP-ANDROID||APP-IOS
+  // #ifdef APP
 	import { showAlert,showPrompt } from '@/uni_modules/uts-alert'
   // #endif
 	export default {

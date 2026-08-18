@@ -22,10 +22,6 @@
       <text id="object-type-obj-age">{{ obj.age }}</text>  
     </view>
     <view class="mb-10 flex justify-between flex-row">
-      <text>obj.age: </text>
-      <text id="object-type-obj-age">{{ obj.age }}</text>  
-    </view>
-    <view class="mb-10 flex justify-between flex-row">
       <text>arr: </text>
       <text id="object-type-arr">{{ JSON.stringify(arr) }}</text>
     </view>

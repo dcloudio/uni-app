@@ -43,7 +43,7 @@ export function sayHelloFromJar(): string {
   let hasXActivityIntegration =  true
   try{
   	let packageManager = UTSAndroid.getUniActivity()!.getPackageManager();
-  	let intent = new Intent(UTSAndroid.getUniActivity(),(new DemoActivity()).javaClass);
+  	let intent = new Intent(UTSAndroid.getUniActivity(),DemoActivity().javaClass);
   	let resolveInfo = packageManager.queryIntentActivities(intent,0);
   	console.log(resolveInfo.size)
   	if(resolveInfo.size == 0){
@@ -70,7 +70,7 @@ export function sayHelloFromSO():string {
   let hasXActivityIntegration =  true
   try{
   	let packageManager = UTSAndroid.getUniActivity()!.getPackageManager();
-  	let intent = new Intent(UTSAndroid.getUniActivity(),(new DemoActivity()).javaClass);
+  	let intent = new Intent(UTSAndroid.getUniActivity(),DemoActivity().javaClass);
   	let resolveInfo = packageManager.queryIntentActivities(intent,0);
   	console.log(resolveInfo.size)
   	if(resolveInfo.size == 0){
@@ -225,7 +225,7 @@ class StartServiceListener implements OnClickListener{
 	
     override onClick(v?: View):void{
 		
-      let intent = new Intent(UTSAndroid.getUniActivity(), (new ForeService()).javaClass);
+      let intent = new Intent(UTSAndroid.getUniActivity(), ForeService().javaClass);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         UTSAndroid.getAppContext()!.startForegroundService(intent);
       }
@@ -291,7 +291,7 @@ class RootActivityStartListener implements OnClickListener{
 	
     override onClick(v?: View):void{
       // 需要开发者替换成自己的包名，并且与AndroidManifest.xml 中保持一致
-      let intent = new Intent("uni.UNI70BE9D0.RootPackageActivity")
+      let intent = Intent("uni.UNI70BE9D0.RootPackageActivity")
       host.startActivity(intent)
     }
 }
@@ -331,7 +331,7 @@ class CustomThread extends Thread{
 }
 
 
-// @ts-ignore
+
 class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder>{
 	
 	
@@ -347,7 +347,7 @@ class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder>{
 		fruitName:TextView;
 		constructor(view:View) {
 			super(view);
-			this.fruitName = view.findViewById(R.id.fruit_name) as TextView;
+			fruitName = view.findViewById(R.id.fruit_name) as TextView;
 		}
 	}
 
@@ -429,7 +429,7 @@ class DemoActivity  extends Activity{
 class IntentRunable implements Runnable{
 	override run(){
 		console.log("IntentRunable = " + Thread.currentThread().getName())
-		let intent = new Intent(UTSAndroid.getUniActivity(),(new DemoActivity()).javaClass);
+		let intent = new Intent(UTSAndroid.getUniActivity(),DemoActivity().javaClass);
 		UTSAndroid.getUniActivity()!.startActivity(intent);
 	}
 }
@@ -447,7 +447,7 @@ function initShortCut() {
     
     // #ifdef UNI-APP-X
       // 注意 id 不能重复
-      let shortcutBuilder = new ShortcutInfoCompat.Builder(UTSAndroid.getAppContext()!, "id1");
+      let shortcutBuilder = ShortcutInfoCompat.Builder(UTSAndroid.getAppContext()!, "id1");
       shortcutBuilder.setShortLabel("官网")
       shortcutBuilder.setLongLabel("访问官网")
       shortcutBuilder.setIcon(IconCompat.createWithResource(UTSAndroid.getAppContext()!, R.drawable.icon_short))
@@ -459,7 +459,7 @@ function initShortCut() {
       )
       let shortcut = shortcutBuilder.build()
       // 注意 id 不能重复
-      let shortcutBuilder2 = new ShortcutInfoCompat.Builder(UTSAndroid.getAppContext()!, "id2");
+      let shortcutBuilder2 = ShortcutInfoCompat.Builder(UTSAndroid.getAppContext()!, "id2");
       shortcutBuilder2.setShortLabel("示例界面")
       shortcutBuilder2.setLongLabel("打开示例界面，最多可以写25个字")
       shortcutBuilder2.setIcon(IconCompat.createWithResource(UTSAndroid.getAppContext()!, R.drawable.icon_short))
@@ -484,7 +484,7 @@ export function gotoDemoActivity():boolean {
 	let hasXActivityIntegration =  true
 	try{
 		let packageManager = UTSAndroid.getUniActivity()!.getPackageManager();
-		let intent = new Intent(UTSAndroid.getUniActivity(),(new DemoActivity()).javaClass);
+		let intent = new Intent(UTSAndroid.getUniActivity(),DemoActivity().javaClass);
 		let resolveInfo = packageManager.queryIntentActivities(intent,0);
 		console.log(resolveInfo.size)
 		if(resolveInfo.size == 0){

@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/render-function/withModifiers/withModifiers-options'
 const COMPOSITION_PAGE_PATH = '/pages/render-function/withModifiers/withModifiers-composition'
 
@@ -6,7 +8,7 @@ describe('withModifiers', () => {
   const isWeb = platformInfo.startsWith('web')
   const isIos = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
-  if (isWeb || isMP) {
+  if (isWeb || isMP || isDom2) {
     it("not support", async () => {
       expect(1).toBe(1);
     });

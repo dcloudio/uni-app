@@ -20,7 +20,7 @@
         super(context)
       }
     
-      override onWindowSystemUiVisibilityChanged(visibility:kotlin.Int){
+      override onWindowVisibilityChanged(visibility:kotlin.Int){
        
         if (visibility == View.VISIBLE){
           console.log("可见状态",visibility)

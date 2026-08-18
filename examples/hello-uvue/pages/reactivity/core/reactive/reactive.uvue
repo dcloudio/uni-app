@@ -1,79 +1,231 @@
 <template>
-	<scroll-view direction="vertical" style="flex: 1;">
-		<view class="flex justify-between flex-row mb-10">
-			<text>count:</text>
-			<text id="count">{{ count }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>obj.str:</text>
-			<text id="obj-str">{{ obj['str'] }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>obj.num:</text>
-			<text id="obj-num">{{ obj['num'] }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>obj.arr:</text>
-			<text id="obj-arr">{{ JSON.stringify(obj['arr']) }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>count1:</text>
-			<text id="count1">{{ count1 }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>obj1.a.b.c:</text>
-			<text id="obj1-a-b-c">{{ obj1.getString('a.b.c') }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>arr1(spread):</text>
-			<text id="arr1">{{ JSON.stringify(arr1) }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>arr2ForEachEffectCount:</text>
-			<text id="arr2">{{ arr2ForEachEffectCount }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>arr3(reverse):</text>
-			<text id="arr3">{{ JSON.stringify(arr3) }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>arr4(sort):</text>
-			<text id="arr4">{{ JSON.stringify(computedArr4) }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>arr5:</text>
-			<text id="arr5">{{ JSON.stringify(arr5Result) }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>map2ForEachEffectCount:</text>
-			<text id="map2">{{ map2ForEachEffectCount }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>map3ForOfEffectCount:</text>
-			<text id="map3">{{ map3ForOfEffectCount }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>set2ForEachEffectCount:</text>
-			<text id="set2">{{ set2ForEachEffectCount }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>set3ForOfEffectCount:</text>
-			<text id="set3">{{ set3ForOfEffectCount }}</text>
-		</view>
-		<button class='mb-10' id="update-count-btn" @click="updateCount">update count</button>
-		<button class='mb-10' id="update-obj-str-btn" @click="updateObjStr">update obj.str</button>
-		<button class='mb-10' id="update-obj-num-btn" @click="updateObjNum">update obj.num</button>
-		<button class='mb-10' id="update-obj-arr-btn" @click="updateObjArr">update obj.arr</button>
-		<button class='mb-10' id="update-obj1-a-b-c-btn" @click="updateObj1_A_B_C">update obj1.a.b.c</button>
-		<button class='mb-10' id="update-arr1-btn" @click="updateArr1(false)">update arr1 without reactive</button>
-		<button class='mb-10' id="update-arr1-reactive-btn" @click="updateArr1(true)">update arr1 with reactive</button>
-		<button class='mb-10' id="update-arr2-forEach-effect-btn" @click="updateArr2()">update arr2</button>
-		<button class='mb-10' id="update-arr4-btn" @click="updateArr4()">update arr4</button>
-		<button class='mb-10' id="update-map2-forEach-effect-btn" @click="updateMap2()">update map2 for each</button>
-		<button class='mb-10' id="update-map3-forOf-effect-btn" @click="updateMap3()">update map3 for of</button>
-		<button class='mb-10' id="update-set2-forEach-effect-btn" @click="updateSet2()">update set2 for each</button>
-		<button class='mb-10' id="update-set3-forOf-effect-btn" @click="updateSet3()">update set3 for of</button>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <scroll-view style="flex: 1;">
+    <!-- #endif -->
+		<view class="page">
+      <view class="flex justify-between flex-row mb-10">
+        <text>count:</text>
+        <text id="count">{{ count }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.str:</text>
+        <text id="obj-str">{{ obj['str'] }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.num:</text>
+        <text id="obj-num">{{ obj['num'] }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.arr:</text>
+        <text id="obj-arr">{{ JSON.stringify(obj['arr']) }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>count1:</text>
+        <text id="count1">{{ count1 }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj1.a.b.c:</text>
+        <text id="obj1-a-b-c">{{ obj1.getString('a.b.c') }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arr1(spread):</text>
+        <text id="arr1">{{ JSON.stringify(arr1) }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arr2ForEachEffectCount:</text>
+        <text id="arr2">{{ arr2ForEachEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arr3(reverse):</text>
+        <text id="arr3">{{ JSON.stringify(arr3) }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arr4(sort):</text>
+        <text id="arr4">{{ JSON.stringify(computedArr4) }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arr5:</text>
+        <text id="arr5">{{ JSON.stringify(arr5Result) }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>map2ForEachEffectCount:</text>
+        <text id="map2">{{ map2ForEachEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>map3ForOfEffectCount:</text>
+        <text id="map3">{{ map3ForOfEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>set2ForEachEffectCount:</text>
+        <text id="set2">{{ set2ForEachEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>set3ForOfEffectCount:</text>
+        <text id="set3">{{ set3ForOfEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>response.data.success:</text>
+        <text id="generic">{{ response.data.success }}</text>
+      </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>reactive-str-id:</text>
+      <text id="reactive-str-id">{{ r1.getString(('id')) }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>reactive-str-boolean :</text>
+      <text id="reactive-str-boolean">{{ r1.getBoolean(('bl')) }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>reactive-str-number :</text>
+      <text id="reactive-str-number">{{ r1.getNumber(('n')) }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>reactive-str-any :</text>
+      <text id="reactive-str-any">{{ r1.getAny(('id')) }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>reactive-str-arr :</text>
+      <text id="reactive-str-arr">{{ r1.getArray(('arr'))![0] }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>reactive-str-json :</text>
+      <text id="reactive-str-json">{{ r1.getJSON(('cars[0]'))!['name'] }}</text>
+    </view>
+    <view class="flex justify-between flex-row mb-10">
+      <text>reactive-str:</text>
+      <text id="reactive-str">{{ r2.getString("msg") }}</text>
+    </view>
+      <button class='mb-10' id="update-count-btn" @click="updateCount">update count</button>
+      <button class='mb-10' id="update-obj-str-btn" @click="updateObjStr">update obj.str</button>
+      <button class='mb-10' id="update-obj-num-btn" @click="updateObjNum">update obj.num</button>
+      <button class='mb-10' id="update-obj-arr-btn" @click="updateObjArr">update obj.arr</button>
+      <button class='mb-10' id="update-obj1-a-b-c-btn" @click="updateObj1_A_B_C">update obj1.a.b.c</button>
+      <button class='mb-10' id="update-arr1-btn" @click="updateArr1(false)">update arr1 without reactive</button>
+      <button class='mb-10' id="update-arr1-reactive-btn" @click="updateArr1(true)">update arr1 with reactive</button>
+      <button class='mb-10' id="update-arr2-forEach-effect-btn" @click="updateArr2()">update arr2</button>
+      <button class='mb-10' id="update-arr4-btn" @click="updateArr4()">update arr4</button>
+      <button class='mb-10' id="update-map2-forEach-effect-btn" @click="updateMap2()">update map2 for each</button>
+      <button class='mb-10' id="update-map3-forOf-effect-btn" @click="updateMap3()">update map3 for of</button>
+      <button class='mb-10' id="update-set2-forEach-effect-btn" @click="updateSet2()">update set2 for each</button>
+      <button class='mb-10' id="update-set3-forOf-effect-btn" @click="updateSet3()">update set3 for of</button>
+      <button class='mb-10' id="update-generic" @click="updateResponse()">response.data.success</button>
+      
+      <!-- 复杂场景测试 -->
+      <view class="flex justify-between flex-row mb-10 mt-20">
+        <text class="section-title">复杂场景</text>
+      </view>
+      
+      <!-- 1. 数组嵌套对象测试 -->
+      <view class="mb-10">
+        <text>arrWithObj[0].name:</text>
+        <text id="arr-with-obj-name">{{ arrWithObj[0].name }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arrWithObj[0].count:</text>
+        <text id="arr-with-obj-count">{{ arrWithObj[0].count }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arrWithObj length:</text>
+        <text id="arr-with-obj-length">{{ arrWithObj.length }}</text>
+      </view>
+      <button class='mb-10' id="update-arr-with-obj-name-btn" @click="updateArrWithObjName()">update arrWithObj[0].name</button>
+      <button class='mb-10' id="update-arr-with-obj-count-btn" @click="updateArrWithObjCount()">update arrWithObj[0].count</button>
+      <button class='mb-10' id="push-arr-with-obj-btn" @click="pushArrWithObj()">push new obj to arrWithObj</button>
+      
+      <!-- 2. 对象嵌套数组测试 -->
+      <view class="mb-10">
+        <text>objWithArr.items:</text>
+        <text id="obj-with-arr-items">{{ JSON.stringify(objWithArr.items) }}</text>
+      </view>
+      <view class="mb-10">
+        <text>objWithArr.items[0]:</text>
+        <text id="obj-with-arr-items-0">{{ (objWithArr['items'] as string[])[0] }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>objWithArr.items.length:</text>
+        <text id="obj-with-arr-items-length">{{ (objWithArr['items'] as string[]).length }}</text>
+      </view>
+      <button class='mb-10' id="update-obj-with-arr-items-0-btn" @click="updateObjWithArrItems0()">update objWithArr.items[0]</button>
+      <button class='mb-10' id="push-obj-with-arr-items-btn" @click="pushObjWithArrItems()">push to objWithArr.items</button>
+      
+      <!-- 3. JSON.parse + reactive 联合测试 -->
+      <view class="flex justify-between flex-row mb-10">
+        <text>jsonParsedData.user.name:</text>
+        <text id="json-parsed-user-name">{{ jsonParsedData.getString('user.name') }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>jsonParsedData.user.age:</text>
+        <text id="json-parsed-user-age">{{ jsonParsedData.getNumber('user.age') }}</text>
+      </view>
+      <view class="mb-10">
+        <text>jsonParsedData.tags:</text>
+        <text id="json-parsed-tags">{{ JSON.stringify(jsonParsedData.tags) }}</text>
+      </view>
+      <view class="mb-10">
+        <text>jsonParsedData.items[0].title:</text>
+        <text id="json-parsed-items-0-title">{{ jsonParsedData.getJSON('items[0]')!.title }}</text>
+      </view>
+      <button class='mb-10' id="update-json-parsed-user-name-btn" @click="updateJsonParsedUserName()">update jsonParsedData.user.name</button>
+      <button class='mb-10' id="update-json-parsed-user-age-btn" @click="updateJsonParsedUserAge()">update jsonParsedData.user.age</button>
+      <button class='mb-10' id="push-json-parsed-tags-btn" @click="pushJsonParsedTags()">push to jsonParsedData.tags</button>
+      <button class='mb-10' id="update-json-parsed-items-0-title-btn" @click="updateJsonParsedItems0Title()">update jsonParsedData.items[0].title</button>
+      
+      <!-- 4. 多层嵌套复杂结构测试 -->
+      <view class="mb-10">
+        <text>complexData.users[0].profile.name:</text>
+        <text id="complex-users-0-profile-name">{{ ((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject).getString('profile.name') }}</text>
+      </view>
+      <view class="mb-10">
+        <text>complexData.users[0].hobbies[0]:</text>
+        <text id="complex-users-0-hobbies-0">{{ (((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject)['hobbies'] as string[])[0] }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>complexData.users[0].hobbies.length:</text>
+        <text id="complex-users-0-hobbies-length">{{ (((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject)['hobbies'] as string[]).length }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>complexData.meta.count:</text>
+        <text id="complex-meta-count">{{ (complexData['meta'] as UTSJSONObject)['count'] }}</text>
+      </view>
+      <button class='mb-10' id="update-complex-users-0-profile-name-btn" @click="updateComplexUsers0ProfileName()">update complexData.users[0].profile.name</button>
+      <button class='mb-10' id="update-complex-users-0-hobbies-0-btn" @click="updateComplexUsers0Hobbies0()">update complexData.users[0].hobbies[0]</button>
+      <button class='mb-10' id="push-complex-users-0-hobbies-btn" @click="pushComplexUsers0Hobbies()">push to complexData.users[0].hobbies</button>
+      <button class='mb-10' id="update-complex-meta-count-btn" @click="updateComplexMetaCount()">update complexData.meta.count</button>
+      
+      <!-- 5. watchEffect 追踪复杂结构 -->
+      <view class="flex justify-between flex-row mb-10">
+        <text>complexEffectCount:</text>
+        <text id="complex-effect-count">{{ complexEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>jsonParsedEffectCount:</text>
+        <text id="json-parsed-effect-count">{{ jsonParsedEffectCount }}</text>
+      </view>
+      <button class='mb-10' id="trigger-complex-effect-btn" @click="triggerComplexEffect()">trigger complex effect</button>
+      <button class='mb-10' id="trigger-json-parsed-effect-btn" @click="triggerJsonParsedEffect()">trigger jsonParsed effect</button>
+      
+      <!-- 6. 数组嵌套对象 + forEach 响应式 -->
+      <view class="flex justify-between flex-row mb-10">
+        <text>arrWithObjForEachCount:</text>
+        <text id="arr-with-obj-forEach-count">{{ arrWithObjForEachCount }}</text>
+      </view>
+      <button class='mb-10' id="update-arr-with-obj-forEach-btn" @click="updateArrWithObjForEach()">update arrWithObj (forEach effect)</button>
+      
+      <!-- 7. 对象嵌套数组 + JSON.parse 联合测试 -->
+      <view class="mb-10">
+        <text>jsonObjWithArr.data.list:</text>
+        <text id="json-obj-with-arr-list">{{ JSON.stringify((jsonObjWithArr['data'] as UTSJSONObject)['list']) }}</text>
+      </view>
+      <view class="mb-10">
+        <text>jsonObjWithArr.data.list[0].value:</text>
+        <text id="json-obj-with-arr-list-0-value">{{ (((jsonObjWithArr['data'] as UTSJSONObject)['list'] as UTSJSONObject[])[0] as UTSJSONObject)['value'] }}</text>
+      </view>
+      <button class='mb-10' id="update-json-obj-with-arr-list-0-value-btn" @click="updateJsonObjWithArrList0Value()">update jsonObjWithArr.data.list[0].value</button>
+      <button class='mb-10' id="push-json-obj-with-arr-list-btn" @click="pushJsonObjWithArrList()">push to jsonObjWithArr.data.list</button>
+    </view>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
 	</scroll-view>
+  <!-- #endif -->
 </template>
 
 <script setup lang="uts">
@@ -204,4 +356,213 @@
 	function updateSet3() {
 		set3.add(Date.now())
 	}
+  
+  type BaseResponse<T> = {
+  	code : number
+  	data : T
+  }
+  const response = reactive<BaseResponse<UTSJSONObject>>({
+  	code: 1,
+  	data: {
+      success: true
+    } as UTSJSONObject
+  })
+  function updateResponse() {
+  	response.data.success = response.data.success != true
+  }
+  
+  let r1 = reactive({})
+  let result = JSON.parse(`{ "result": { "data": { "id": "1", "bl": false, "n": 2, "arr": ["1"], "cars": [ { "name": "car1", "value": 100} ] } } }`) as UTSJSONObject
+  r1 = result.getJSON('result.data', {} as UTSJSONObject)
+  let r2 = reactive({})
+  r2 = { msg: '1' }
+  
+  // ========== 复杂场景测试 ==========
+  
+  // 1. 数组嵌套对象测试
+  const arrWithObj = reactive<UTSJSONObject[]>([
+    { name: 'item1', count: 0 } as UTSJSONObject,
+    { name: 'item2', count: 1 } as UTSJSONObject
+  ])
+  
+  function updateArrWithObjName() {
+    (arrWithObj[0] as UTSJSONObject)['name'] = 'updated-item1-' + Date.now()
+  }
+  
+  function updateArrWithObjCount() {
+    const currentCount = (arrWithObj[0] as UTSJSONObject)['count'] as number;
+    (arrWithObj[0] as UTSJSONObject)['count'] = currentCount + 1
+  }
+  
+  function pushArrWithObj() {
+    arrWithObj.push({ name: 'item' + arrWithObj.length, count: arrWithObj.length } as UTSJSONObject)
+  }
+  
+  // 2. 对象嵌套数组测试
+  const objWithArr = reactive({
+    items: ['a', 'b', 'c'] as string[]
+  })
+  
+  function updateObjWithArrItems0() {
+    const items = objWithArr['items'] as string[]
+    items[0] = 'updated-' + Date.now()
+  }
+  
+  function pushObjWithArrItems() {
+    const items = objWithArr['items'] as string[]
+    items.push('item' + items.length)
+  }
+  
+  // 3. JSON.parse + reactive 联合测试
+  const jsonString = `{
+    "user": {
+      "name": "John",
+      "age": 30
+    },
+    "tags": ["tag1", "tag2"],
+    "items": [
+      { "title": "item1", "value": 100 },
+      { "title": "item2", "value": 200 }
+    ]
+  }`
+  const jsonParsed = JSON.parse(jsonString) as UTSJSONObject
+  const jsonParsedData = reactive(jsonParsed)
+  
+  function updateJsonParsedUserName() {
+    ((jsonParsedData['user'] as UTSJSONObject) as UTSJSONObject)['name'] = 'Updated-' + Date.now()
+  }
+  
+  function updateJsonParsedUserAge() {
+    const currentAge = ((jsonParsedData['user'] as UTSJSONObject) as UTSJSONObject)['age'] as number;
+    ((jsonParsedData['user'] as UTSJSONObject) as UTSJSONObject)['age'] = currentAge + 1
+  }
+  
+  function pushJsonParsedTags() {
+    const tags = jsonParsedData['tags'] as string[]
+    tags.push('tag' + tags.length)
+  }
+  
+  function updateJsonParsedItems0Title() {
+    const items = jsonParsedData['items'] as UTSJSONObject[];
+    (items[0] as UTSJSONObject)['title'] = 'updated-item1-' + Date.now()
+  }
+  
+  // 4. 多层嵌套复杂结构测试
+  const complexData = reactive({
+    users: [
+      {
+        profile: {
+          name: 'Alice',
+          age: 25
+        },
+        hobbies: ['reading', 'coding'] as string[]
+      } as UTSJSONObject
+    ] as UTSJSONObject[],
+    meta: {
+      count: 1
+    } as UTSJSONObject
+  })
+  
+  function updateComplexUsers0ProfileName() {
+    (((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject)['profile'] as UTSJSONObject)['name'] = 'Updated-Alice-' + Date.now()
+  }
+  
+  function updateComplexUsers0Hobbies0() {
+    (((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject)['hobbies'] as string[])[0] = 'updated-hobby-' + Date.now()
+  }
+  
+  function pushComplexUsers0Hobbies() {
+    const hobbies = (((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject)['hobbies'] as string[])
+    hobbies.push('hobby' + hobbies.length)
+  }
+  
+  function updateComplexMetaCount() {
+    const meta = complexData['meta'] as UTSJSONObject
+    const currentCount = meta['count'] as number;
+    meta['count'] = currentCount + 1
+  }
+  
+  // 5. watchEffect 追踪复杂结构
+  const complexEffectCount = ref(0)
+  watchEffect(() => {
+    complexEffectCount.value++
+    // 追踪复杂嵌套结构
+    const users = complexData['users'] as UTSJSONObject[]
+    const user = users[0] as UTSJSONObject
+    const profile = user['profile'] as UTSJSONObject
+    const userName = profile['name']
+    const hobbies = user['hobbies'] as string[]
+    const hobby = hobbies[0]
+    const meta = complexData['meta'] as UTSJSONObject
+    const metaCount = meta['count']
+    console.log('complex effect:', userName, hobby, metaCount)
+  })
+  
+  const jsonParsedEffectCount = ref(0)
+  watchEffect(() => {
+    jsonParsedEffectCount.value++
+    // 追踪 JSON.parse 后的响应式数据
+    const userName = jsonParsedData.getString('user.name')
+    const tags = jsonParsedData['tags']
+    const items = jsonParsedData['items'] as UTSJSONObject[]
+    const itemTitle = (items[0] as UTSJSONObject)['title']
+    console.log('jsonParsed effect:', userName, tags, itemTitle)
+  })
+  
+  function triggerComplexEffect() {
+    updateComplexUsers0ProfileName()
+    updateComplexMetaCount()
+  }
+  
+  function triggerJsonParsedEffect() {
+    updateJsonParsedUserName()
+    pushJsonParsedTags()
+  }
+  
+  // 6. 数组嵌套对象 + forEach 响应式
+  const arrWithObjForEachCount = ref(0)
+  watchEffect(() => {
+    arrWithObjForEachCount.value++
+    arrWithObj.forEach((item) => {
+      const name = (item as UTSJSONObject)['name']
+      const count = (item as UTSJSONObject)['count']
+      // console.log('arrWithObj forEach:', name, count)
+    })
+  })
+  
+  function updateArrWithObjForEach() {
+    updateArrWithObjName()
+    pushArrWithObj()
+  }
+  
+  // 7. 对象嵌套数组 + JSON.parse 联合测试
+  const jsonObjWithArrString = `{
+    "data": {
+      "list": [
+        { "id": 1, "value": "value1" },
+        { "id": 2, "value": "value2" }
+      ]
+    }
+  }`
+  const jsonObjWithArrParsed = JSON.parse(jsonObjWithArrString) as UTSJSONObject
+  const jsonObjWithArr = reactive(jsonObjWithArrParsed)
+  
+  function updateJsonObjWithArrList0Value() {
+    const data = jsonObjWithArr['data'] as UTSJSONObject
+    const list = data['list'] as UTSJSONObject[];
+    (list[0] as UTSJSONObject)['value'] = 'updated-value1-' + Date.now()
+  }
+  
+  function pushJsonObjWithArrList() {
+    const data = jsonObjWithArr['data'] as UTSJSONObject
+    const list = data['list'] as UTSJSONObject[]
+    list.push({ id: list.length + 1, value: 'value' + (list.length + 1) } as UTSJSONObject)
+  }
 </script>
+<style>
+    .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+</style>

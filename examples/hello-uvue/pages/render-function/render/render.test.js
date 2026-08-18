@@ -1,3 +1,5 @@
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 const OPTIONS_PAGE_PATH = '/pages/render-function/render/render-options'
 const COMPOSITION_PAGE_PATH = '/pages/render-function/render/render-composition'
 
@@ -6,7 +8,7 @@ describe('render-function render', () => {
   const isWeb = platformInfo.startsWith('web')
   const isMP = platformInfo.startsWith('mp')
   const isAndroid = platformInfo.startsWith('android')
-  if (isWeb || isMP) {
+  if (isWeb || isMP || isDom2) {
     it("not support", async () => {
       expect(1).toBe(1);
     });

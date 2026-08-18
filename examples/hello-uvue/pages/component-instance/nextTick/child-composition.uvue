@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
@@ -17,7 +17,7 @@
       </view>
       <button id="child-test-next-tick-btn" @click="childTestNextTick">child test nextTick</button>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -40,7 +40,7 @@
     dataInfo.title = 'new title'
 
     // #ifdef APP
-    dataInfo.beforeNextTickTitle = childText.getAttribute('value')!
+    dataInfo.beforeNextTickTitle = (childText as UniTextElement).value
     // #endif
     // #ifndef APP
     // @ts-ignore
@@ -50,7 +50,7 @@
     await nextTick()
     
     // #ifdef APP
-    dataInfo.afterNextTickTitle = childText.getAttribute('value')!
+    dataInfo.afterNextTickTitle = (childText as UniTextElement).value
     // #endif
     // #ifndef APP
     // @ts-ignore

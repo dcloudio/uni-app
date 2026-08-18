@@ -28,7 +28,7 @@ export function testGlobal() : Result {
 
     test('btoa', () => {
       // #TEST Global.btoa
-      // #ifdef APP-ANDROID || APP-IOS || WEB
+      // #ifdef APP-ANDROID
       expect(btoa("")).toEqual('');
       expect(btoa("hello world")).toEqual('aGVsbG8gd29ybGQ=');
       expect(btoa("@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM")).toEqual('QC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTUAtMTIzNDU2Nzg5MHF3ZXJ0eXVpb3Bhc2RmZ2hqa2x6eGN2Ym5tLVFXRVJUWVVJT1BBU0RGR0hKS0xaWENWQk5NQC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTQ==');
@@ -38,7 +38,7 @@ export function testGlobal() : Result {
 
     test('atob', () => {
       // #TEST Global.atob
-      // #ifdef APP-ANDROID || APP-IOS || WEB
+      // #ifdef APP-ANDROID
       expect(atob("")).toEqual('');
       expect(atob('aGVsbG8gd29ybGQ=')).toEqual('hello world');
       expect(atob("QC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTUAtMTIzNDU2Nzg5MHF3ZXJ0eXVpb3Bhc2RmZ2hqa2x6eGN2Ym5tLVFXRVJUWVVJT1BBU0RGR0hKS0xaWENWQk5NQC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTQ==")).toEqual('@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM');

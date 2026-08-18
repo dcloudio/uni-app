@@ -18,11 +18,9 @@
     </view>
 </template>
 <script lang="ts">
-    
-    
-    import { getBatteryInfo, GetBatteryInfoOptions,GetBatteryInfoSuccess } from "@/uni_modules/uts-getbatteryinfo";
-    // #ifdef APP-ANDROID
     import { gotoDemoActivity,sayHelloFromJar,sayHelloFromSO } from "@/uni_modules/uts-nativepage";
+    import { getBatteryInfo, GetBatteryInfoOptions } from "@/uni_modules/uts-getbatteryinfo";
+    // #ifdef APP-ANDROID
      import {
        UTSAcvitiyLifeCycleCallback,
        UTSAcvitiyKeyEventCallback,
@@ -35,9 +33,6 @@
     
      import File from 'java.io.File';
      import Intent from 'android.content.Intent';
-     import PictureInPictureParams from 'android.app.PictureInPictureParams'
-     import Rational from 'android.util.Rational'
-     
     // #endif
     type Page = {
         name : string,
@@ -62,15 +57,10 @@
                 list: [{
                         name: "设备相关",
                         open: false,
-                        pages: [
-                          {
+                        pages: [{
                             name: "获取电池电量",
                             function: "testGetBatteryCapacity"
-                          },
-                          {
-                            name: "进入画中画模式",
-                            function: "testPictureInPicture"
-                          }
+                        }
                         // #ifdef APP-ANDROID
                         ,
                         {
@@ -135,13 +125,8 @@
                         case 'testGetBatteryCapacity':
                             this.testGetBatteryCapacity()
                             break
-                        case 'testPictureInPicture':
-                            this.testPictureInPicture()
-                            break
                         case 'testActivityCallback':
-                            // #ifdef APP-ANDROID
                             this.testActivityCallback()
-                            // #endif
                             break
                         case 'testGotoDemoActivity':
                             this.testGotoDemoActivity()
@@ -159,31 +144,12 @@
                     url: `/pages/${e.url}`
                 })
             },
-            testPictureInPicture() {
-                /**
-                 * 画中画模式监听
-                 */
-                let permissionNeed = ["android.permission.APP_OPS_STR_PICTURE_IN_PICTURE"]
-                UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissionNeed, function (allRight : boolean, _ : string[]) {
-                }, function (_1 : boolean, _2 : string[]) {
-                	//用户拒绝了部分权限
-                	console.log("fail",_1,_2)
-                })
-                const params = new PictureInPictureParams.Builder()
-                                    .setAspectRatio(new Rational(16, 9))
-                                    .setSourceRectHint(null)
-                                    .setAutoEnterEnabled(true)
-                                    .build()
-                					
-                UTSAndroid.getUniActivity()!.setPictureInPictureParams(params)
-                UTSAndroid.getUniActivity()!.enterPictureInPictureMode(params)
-                
-            },
+
             testGetBatteryCapacity() {
                 getBatteryInfo({
-                    success(res:GetBatteryInfoSuccess) {
+                    success(res) {
                         uni.showToast({
-                            title: "当前电量：" + res.level + '%',
+                            title: "当前电量：" + (res as UTSJSONObject)['level'] + '%',
                             icon: 'none'
                         });
                     }

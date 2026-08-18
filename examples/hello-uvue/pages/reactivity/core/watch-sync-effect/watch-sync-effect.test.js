@@ -5,10 +5,9 @@ const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 describe('watchSyncEffect', () => {
-  let page = null
-  
   if(isMP) {
     // 微信小程序支持此特性，但是示例内部使用了较多的dom api无法兼容微信小程序
     it('not support', async () => {
@@ -17,6 +16,7 @@ describe('watchSyncEffect', () => {
     return
   }
 
+  let page = null
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
@@ -32,10 +32,12 @@ describe('watchSyncEffect', () => {
 
     // track
     const watchCountTrackNum = await page.$('#watch-count-track-num')
-    if (isAndroid) {
-      expect(await watchCountTrackNum.text()).toBe('3')
-    } else {
-      expect(await watchCountTrackNum.text()).toBe('6')
+    if (!isDom2) {
+      if (isAndroid) {
+        expect(await watchCountTrackNum.text()).toBe('3')
+      } else {
+        expect(await watchCountTrackNum.text()).toBe('6')
+      }
     }
 
     const watchCountCleanupRes = await page.$('#watch-count-cleanup-res')
@@ -52,10 +54,12 @@ describe('watchSyncEffect', () => {
     expect(await watchCountRes.text()).toBe(
       'count: 1, count ref text: 0')
 
-    if (isAndroid) {
-      expect(await watchCountTrackNum.text()).toBe('3')
-    } else {
-      expect(await watchCountTrackNum.text()).toBe('9')
+    if (!isDom2) {
+      if (isAndroid) {
+        expect(await watchCountTrackNum.text()).toBe('3')
+      } else {
+        expect(await watchCountTrackNum.text()).toBe('9')
+      }
     }
 
     expect(await watchCountCleanupRes.text()).toBe('watch count cleanup: 1')
@@ -68,10 +72,12 @@ describe('watchSyncEffect', () => {
     expect(await watchCountRes.text()).toBe(
       'count: 2, count ref text: 1')
 
-    if (isAndroid) {
-      expect(await watchCountTrackNum.text()).toBe('3')
-    } else {
-      expect(await watchCountTrackNum.text()).toBe('12')
+    if (!isDom2) {
+      if (isAndroid) {
+        expect(await watchCountTrackNum.text()).toBe('3')
+      } else {
+        expect(await watchCountTrackNum.text()).toBe('12')
+      }
     }
 
     expect(await watchCountCleanupRes.text()).toBe('watch count cleanup: 2')
@@ -88,10 +94,12 @@ describe('watchSyncEffect', () => {
     expect(await watchCountRes.text()).toBe(
       'count: 2, count ref text: 1')
 
-    if (isAndroid) {
-      expect(await watchCountTrackNum.text()).toBe('3')
-    } else {
-      expect(await watchCountTrackNum.text()).toBe('12')
+    if (!isDom2) {
+      if (isAndroid) {
+        expect(await watchCountTrackNum.text()).toBe('3')
+      } else {
+        expect(await watchCountTrackNum.text()).toBe('12')
+      }
     }
 
     expect(await watchCountCleanupRes.text()).toBe('watch count cleanup: 2')

@@ -1,0 +1,72 @@
+<script lang="ts" setup>
+  import { ref, watch, onBeforeUnmount } from 'vue'
+
+  defineOptions({ name: 'xDrawer' })
+
+  const props = withDefaults(defineProps<{
+    show: boolean
+  }>(), {
+    show: false
+  })
+
+  const emit = defineEmits(['open', 'close'])
+  const mounted = ref(false)
+  const contentVisible = ref(false)
+  let tid = 0
+
+  function close(): void {
+    mounted.value = false
+    contentVisible.value = false
+    clearTimeout(tid)
+    emit('close')
+  }
+
+  function open(): void {
+    mounted.value = true
+    contentVisible.value = false
+    clearTimeout(tid)
+    tid = setTimeout((): void => {
+      emit('open')
+      contentVisible.value = true
+    }, 60)
+  }
+
+  watch((): boolean => props.show, (value: boolean) => {
+    if (value) {
+      open()
+    }
+  })
+
+  onBeforeUnmount(() => {
+    clearTimeout(tid)
+  })
+</script>
+
+<template>
+  <view v-if="mounted" class="drawer">
+    <button class="close-btn" @click="close">关闭</button>
+    <view v-if="contentVisible" class="content">
+      <slot></slot>
+    </view>
+  </view>
+</template>
+
+<style scoped>
+  .drawer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #ffffff;
+    padding: 12px;
+  }
+
+  .close-btn {
+    margin-bottom: 12px;
+  }
+
+  .content {
+    flex: 1;
+  }
+</style>

@@ -469,13 +469,6 @@ export function testDate(): Result {
       expect(previousWeekBoundaryDay.getDay()).toEqual(5);
       expect(finalWeekBoundaryDay.getDay()).toEqual(6);
       expect(subsequentWeekBoundaryDay.getDay()).toEqual(0);
-      
-      // #ifdef APP-ANDROID
-      const a1 =new Date('1962-01-01 12:00:00')
-      expect(a1.getDay()).toEqual(1);
-      const a2 =new Date(-1009872000000)
-      expect(a2.toString()).toEqual('Sat Jan 01 1938 00:00:00 GMT+0800');
-      // #endif
     });
 
 

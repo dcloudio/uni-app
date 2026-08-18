@@ -11,10 +11,10 @@ const rootStr = ref('')
 
 onMounted(() => {
   const instance = getCurrentInstance()!.proxy!
-  // #ifdef APP-ANDROID
+  // #ifdef APP-ANDROID && !VUE3-VAPOR
   rootStr.value = (instance.$root!.$exposed['str'] as Ref<string>).value as string
   // #endif
-  // #ifndef APP-ANDROID
+	// #ifdef !APP-ANDROID || (APP-ANDROID && VUE3-VAPOR)
   rootStr.value = instance.$root!['str'] as string
   // #endif
 })

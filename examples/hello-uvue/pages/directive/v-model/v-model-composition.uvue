@@ -10,7 +10,7 @@
       @update:modelValue="handleModelValueUpdate"
       @update:msg="handleModelMsgUpdate"
        />
-    <input class="mb-10 input" id="model-value-input" v-model="str" />
+    <input class="mb-10 input" id="model-value-input" v-model="str" @input="onInput" />
     <input class="mb-10 input" id="model-msg-input" v-model="msg" />
     <input class="mb-10 input" id="model-uts-obj-value-input" v-model="utsObj['modelValue']" />
     <input class="mb-10 input" id="model-type-obj-value-input" v-model="typeObj.modelValue" />
@@ -23,12 +23,18 @@
       <text id="handle-model-msg-update-res">{{ handleModelMsgUpdateRes }}</text>
     </view>
     <Parent v-model="value"></Parent>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>arrayValue:</text>
+      <text id="array-value">{{ arrayValue.region }}</text>
+    </view>
+    <ArrayModelChild v-model="arrayValue.region"></ArrayModelChild>
   </view>
 </template>
 
 <script setup lang="uts">
 import Foo from './Foo-composition.uvue'
 import Parent from './Parent.uvue'
+import ArrayModelChild from './ArrayModelChild.uvue'
 import { VModelObj } from './types.uts'
 
 const str = ref('str')
@@ -36,6 +42,9 @@ const msg = ref('msg')
 const strArr = ref<string[]>(['0'])
 const numArr = ref<number[]>([0])
 const value = ref("nested");
+const arrayValue = reactive({
+	region: [] as string[]
+});
 const handleModelValueUpdateRes = ref('')
 const handleModelValueUpdate = (val : string) => {
   handleModelValueUpdateRes.value = val
@@ -48,6 +57,9 @@ const handleModelMsgUpdate = (val : string) => {
 const utsObj = reactive({ modelValue: 'utsObj.value' })
 const typeObj = reactive({ modelValue: 'typeObj.value' } as VModelObj)
 
+function onInput(){
+  // noop
+}
 </script>
 
 <style>

@@ -1,28 +1,168 @@
 <template>
-  <view class="page">
-    <view class="mb-10 flex justify-between flex-row">
-      <text>v-if</text>
-      <text id="v-if-show" v-if="show">show</text>
-    </view>
-    <button id="switch-v-if-btn" @click="show = !show">switch v-if</button>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+      <view class="page">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>v-if</text>
+          <text id="v-if-show" v-if="show">show</text>
+        </view>
+        <button id="switch-v-if-btn" @click="show = !show">switch v-if</button>
 
-    <view class="mt-10 mb-10 flex justify-between flex-row">
-      <text>num:</text>
-      <text id="num">{{ num }}</text>
-    </view>
-    <view class="mb-10 flex justify-between flex-row">
-      <text>v-if v-else-if v-else</text>
-      <text id="num-v-if" v-if="num == 1">v-if num = 1</text>
-      <text id="num-v-else-if" v-else-if="num == 2">v-else-if num = 2</text>
-      <text id="num-v-else" v-else>v-else</text>
-    </view>
-    <button id="change-num-btn" @click="changeNum">change num</button>
-  </view>
+        <view class="mt-10 mb-10 flex justify-between flex-row">
+          <text>num:</text>
+          <text id="num">{{ num }}</text>
+        </view>
+        <view class="mb-10 flex justify-between flex-row">
+          <text>v-if v-else-if v-else</text>
+          <text id="num-v-if" v-if="num == 1">v-if num = 1</text>
+          <text id="num-v-else-if" v-else-if="num == 2">v-else-if num = 2</text>
+          <text id="num-v-else" v-else>v-else</text>
+        </view>
+        <button id="change-num-btn" @click="changeNum">change num</button>
+
+        <!-- 测试标题 -->
+        <view class="mt-10">
+          <text class="section-title">多层嵌套v-if测试</text>
+        </view>
+
+        <!-- view 普通版本 -->
+        <view class="mt-10">
+          <text class="test-label">1. view 普通版本 </text>
+          <view class="test-item" v-if="viewNormalChild1">
+            <view v-if="viewNormalChild1" id="view-normal-child1">
+              <text>view二层嵌套内容</text>
+              <view v-if="viewNormalChild2" id="view-normal-child2">
+                <text>view三层嵌套内容</text>
+              </view>
+              <button id="toggle-view-normal-child2" @click="viewNormalChild2 = !viewNormalChild2">内层切换显示</button>
+            </view>
+          </view>
+          <button id="toggle-view-normal-child1" @click="viewNormalChild1 = !viewNormalChild1">外层切换显示</button>
+        </view>
+
+        <!-- view 拍平版本 -->
+        <view class="mt-10">
+          <text class="test-label">2. view 拍平版本 </text>
+          <view class="test-item" v-if="viewFlattenChild1">
+            <view flatten v-if="viewFlattenChild1" id="view-flatten-child1">
+              <view flatten v-if="viewFlattenChild1">
+                <text>view拍平三层嵌套内容（应该能消失）</text>
+              </view>
+            </view>
+          </view>
+          <button id="toggle-view-flatten-child1" @click="viewFlattenChild1 = !viewFlattenChild1">
+            切换显示
+          </button>
+        </view>
+
+        <!-- text 普通版本 -->
+        <view class="mt-10">
+          <text class="test-label">3. text 普通版本 </text>
+          <view class="test-item">
+            <text v-if="textNormalChild1">
+              <text v-if="textNormalChild1" id="text-normal-child1">text二层嵌套内容（应该能消失）</text>
+            </text>
+          </view>
+          <button id="toggle-text-normal-child1" @click="textNormalChild1 = !textNormalChild1">
+            切换显示
+          </button>
+        </view>
+
+        <!-- text 拍平版本 -->
+        <view class="mt-10">
+          <text class="test-label">4. text 拍平版本 </text>
+          <view flatten class="test-item">
+            <text flatten v-if="textFlattenChild1">
+              <text flatten v-if="textFlattenChild1" id="text-flatten-child1">text拍平二层嵌套内容（应该能消失）</text>
+            </text>
+          </view>
+          <button id="toggle-text-flatten-child1" @click="textFlattenChild1 = !textFlattenChild1">
+            切换显示
+          </button>
+        </view>
+
+        <!-- image 普通版本 -->
+        <view class="mt-10">
+          <text class="test-label">5. image 普通版本 </text>
+          <view class="test-item">
+              <image v-if="imageNormalChild1" id="image-normal-child1" src="/static/logo.png" class="test-image"></image>
+          </view>
+          <button id="toggle-image-normal-child1" @click="imageNormalChild1 = !imageNormalChild1">
+            切换显示
+          </button>
+        </view>
+
+        <!-- image 拍平版本 -->
+        <view class="mt-10">
+          <text class="test-label">6. image 拍平版本（多层嵌套v-if）</text>
+          <view flatten class="test-item">
+              <image flatten v-if="imageFlattenChild1" id="image-flatten-child1" src="/static/logo.png" class="test-image"></image>
+          </view>
+          <button id="toggle-image-flatten-child1" @click="imageFlattenChild1 = !imageFlattenChild1">
+            切换显示
+          </button>
+        </view>
+        
+        <!-- scroll-view：动态切换 -->
+        <view class="mt-10">
+          <text class="test-label">8. scroll-view（动态v-if）</text>
+          <view class="test-item">
+            <scroll-view v-if="scrollViewChild1" id="scroll-view-child1" class="scroll-view-test">
+              <text>scroll-view内容1（应该能消失）</text>
+              <view><text>scroll-view内容2（应该能消失）</text></view>
+            </scroll-view>
+            <button id="toggle-scroll-view-child1" @click="scrollViewChild1 = !scrollViewChild1">
+              切换scroll-view显示
+            </button>
+          </view>
+        </view>
+
+        <!-- 自定义 child 组件 -->
+        <view class="mt-10">
+          <text class="test-label">9. child 组件（子child动态v-if普通版本➕拍平版本）</text>
+          <view class="test-item">
+            <child v-if="childComponent1" id="child-component1"></child>
+            <view flatten>
+                <child v-if="childComponent1" id="child-component2" flatten></child>
+            </view>
+            <button id="toggle-child-component1" @click="childComponent1 = !childComponent1">
+              切换child组件显示
+            </button>
+          </view>
+        </view>
+
+      </view>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
 <script setup lang="uts">
+import child from './child.uvue'
+
+// 原有变量
 const show = ref(true)
 const num = ref(1)
+
+// view 测试变量
+const viewNormalChild1 = ref(true)
+const viewNormalChild2 = ref(true)
+const viewFlattenChild1 = ref(true)
+
+// text 测试变量
+const textNormalChild1 = ref(true)
+const textFlattenChild1 = ref(true)
+
+// image 测试变量
+const imageNormalChild1 = ref(true)
+const imageFlattenChild1 = ref(true)
+
+// scroll-view 测试变量
+const scrollViewChild1 = ref(true)
+
+// child 组件测试变量
+const childComponent1 = ref(true)
 
 const changeNum = () => {
   if(num.value<3) {
@@ -32,3 +172,34 @@ const changeNum = () => {
   }
 }
 </script>
+
+<style>
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.test-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.test-item {
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.test-image {
+  width: 50px;
+  height: 50px;
+}
+
+.scroll-view-test {
+  height: 100px;
+  background-color: #e0e0e0;
+  padding: 10px;
+}
+</style>

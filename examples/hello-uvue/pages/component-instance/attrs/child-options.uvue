@@ -1,5 +1,6 @@
 <template>
   <view>
+    <text>单一节点继承 $attrs.style 整个组件设置天蓝色背景</text>
     <view class="mb-10 flex flex-row justify-between">
       <text>hasPropsAttr</text>
       <text id="has-props-attr" class="has-props-attr">{{ hasPropsAttr }}</text>
@@ -11,6 +12,10 @@
     <view class="mb-10 flex flex-row justify-between">
       <text>hasClassAttr</text>
       <text id="has-class-attr" class="has-class-attr">{{ hasClassAttr }}</text>
+    </view>
+    <view class="mb-10 flex flex-row justify-between">
+      <text>hasStyleAttr</text>
+      <text id="has-class-attr" class="has-class-attr">{{ hasStyleAttr }}</text>
     </view>
   </view>
 </template>
@@ -33,6 +38,14 @@ export default {
     },
     hasClassAttr(): boolean {
       return this.$attrs['class'] != null
+    },
+    hasStyleAttr(): boolean {
+      return this.$attrs['style'] != null
+    },
+  },
+  methods:{
+    getAttr(_e: PointerEvent) {
+      console.log(this.$attrs['styles']);
     }
   }
 }

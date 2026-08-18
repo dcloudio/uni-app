@@ -3,7 +3,9 @@
     <call-easy-method ref="callEasyMethod1"></call-easy-method>
     <custom-call-easy-method ref="customCallEasyMethod1"></custom-call-easy-method>
     <test-getter-setter-composition ref="getterAndSetterComposition"></test-getter-setter-composition>
+    <!-- #ifndef VUE3-VAPOR -->
     <test-getter-setter-options ref="getterAndSetterOptions"></test-getter-setter-options>
+    <!-- #endif -->
     <view>
         <text>getter-setter: <text id="getterAndSetter">{{JSON.stringify(getterAndSetterResult)}}</text></text>
     </view>
@@ -58,7 +60,9 @@ const callCustomMethodTest = (): string | null => {
 }
 
 const getterAndSetterComposition = ref<TestGetterSetterCompositionComponentPublicInstance | null>(null)
+// #ifndef VUE3-VAPOR
 const getterAndSetterOptions = ref<TestGetterSetterOptionsComponentPublicInstance | null>(null)
+// #endif
 const getterAndSetterResult = ref<number[]>([])
 
 const callGetterAndSetterCompositionGetCount = (): number => {
@@ -67,24 +71,28 @@ const callGetterAndSetterCompositionGetCount = (): number => {
 const callGetterAndSetterCompositionGetCountWithCallMethod = (): number => {
     return getterAndSetterComposition.value!.$callMethod('getCount') as number
 }
+// #ifndef VUE3-VAPOR
 const callGetterAndSetterOptionsGetCount = (): number => {
     return getterAndSetterOptions.value!.getCount()
 }
 const callGetterAndSetterOptionsGetCountWithCallMethod = (): number => {
     return getterAndSetterOptions.value!.$callMethod('getCount') as number
 }
+// #endif
 const callGetterAndSetterCompositionSetCount = (count: number) => {
     getterAndSetterComposition.value!.setCount(count)
 }
 const callGetterAndSetterCompositionSetCountWithCallMethod = (count: number) => {
     getterAndSetterComposition.value!.$callMethod('setCount', count)
 }
+// #ifndef VUE3-VAPOR
 const callGetterAndSetterOptionsSetCount = (count: number) => {
     getterAndSetterOptions.value!.setCount(count)
 }
 const callGetterAndSetterOptionsSetCountWithCallMethod = (count: number) => {
     getterAndSetterOptions.value!.$callMethod('setCount', count)
 }
+// #endif
 
 const callGetterAndSetter = (): number[] => {
     const result: number[] = []
@@ -92,10 +100,12 @@ const callGetterAndSetter = (): number[] => {
     result.push(callGetterAndSetterCompositionGetCount())
     callGetterAndSetterCompositionSetCountWithCallMethod(2)
     result.push(callGetterAndSetterCompositionGetCountWithCallMethod())
+    // #ifndef VUE3-VAPOR
     callGetterAndSetterOptionsSetCount(3)
     result.push(callGetterAndSetterOptionsGetCount())
     callGetterAndSetterOptionsSetCountWithCallMethod(4)
     result.push(callGetterAndSetterOptionsGetCountWithCallMethod())
+    // #endif
     getterAndSetterResult.value = result
     return result
 }

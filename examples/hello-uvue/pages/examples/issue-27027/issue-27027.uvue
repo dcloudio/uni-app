@@ -1,0 +1,39 @@
+<script setup vapor lang="ts">
+  import CompA from './CompA.uvue'
+  import CompB from './CompB.uvue'
+</script>
+
+<template>
+  <!-- page -->
+  <view style="flex: 1">
+    <view class="section">
+      <view>
+        <text>单层v-for+scopedSlot</text>
+      </view>
+      <CompB>
+        <template #default="{ item }">
+          <text :id="'s-' + item">{{ item }}</text>
+        </template>
+      </CompB>
+    </view>
+    <!-- #ifndef MP -->
+    <!-- 小程序平台对此场景支持不完善 -->
+    <view class="section">
+      <view>
+        <text>深层v-for+scopedSlot</text>
+      </view>
+      <CompA>
+        <template #default="{ item }">
+          <text :id="'d-' + item">{{ item }}</text>
+        </template>
+      </CompA>
+    </view>
+    <!-- #endif -->
+  </view>
+</template>
+
+<style>
+  .section {
+    padding: 10px;
+  }
+</style>

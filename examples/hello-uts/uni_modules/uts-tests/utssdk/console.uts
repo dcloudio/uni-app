@@ -31,7 +31,7 @@ export function testConsole() : Result {
         console.log("obtainRet",obtainRet)
         let aa1 = (obtainInnerObject(obtainRet) as UTSJSONObject).toJSONString()
         expect(JSON.stringify(event1).length).toEqual(55);
-        expect(aa1.length > 5500).toEqual(true);
+        expect(aa1.length > 6000).toEqual(true);
       // #endif
     })
     

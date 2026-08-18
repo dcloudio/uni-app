@@ -1,5 +1,10 @@
 <template>
+	<!-- #ifndef VUE3-VAPOR -->
   title: {{ title }}
+	<!-- #endif -->
+	<!-- #ifdef VUE3-VAPOR -->
+	<text>title: {{ title }}</text>
+	<!-- #endif -->
   <button class="component-lifecycle-btn mt-10" @click="updateTitle">
     updateTitle
   </button>
@@ -15,87 +20,104 @@ const emit = defineEmits<{
 }>()
 
 onLoad((_ : OnLoadOptions) => {
+  console.log('child component composition onLoad')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum + 100)
 })
 onPageShow(() => {
+  console.log('child component composition onPageShow')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum + 10)
 })
 onReady(() => {
+  console.log('child component composition onReady')
   // 自动化测试
   // TODO: onReady 未触发
   setLifeCycleNum(state.lifeCycleNum + 10)
 })
 
 onPullDownRefresh(() => {
+  console.log('child component composition onPullDownRefresh')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum + 10)
 })
 onPageScroll((_) => {
+  console.log('child component composition onPageScroll')
   // 自动化测试
   emit('updateIsScroll', true)
 })
 onReachBottom(() => {
+  console.log('child component composition onReachBottom')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum + 10)
 })
 onBackPress((_ : OnBackPressOptions) : boolean | null => {
+  console.log('child component composition onBackPress')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum - 10)
   return null
 })
 onPageHide(() => {
+  console.log('child component composition onPageHide')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum - 10)
 })
 onUnload(() => {
+  console.log('child component composition onUnload')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum - 100)
 })
 
 onBeforeMount(() => {
+  console.log('child component composition onBeforeMount')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum + 1)
   console.log('component for lifecycle test onBeforeMount')
 })
 
 onMounted(() => {
+  console.log('child component composition onMounted')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum + 1)
   console.log('component for lifecycle test mounted')
 })
 
 onBeforeUpdate(() => {
+  console.log('child component composition onBeforeUpdate')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum + 1)
   console.log('component for lifecycle test beforeUpdate')
 })
 
 onUpdated(() => {
+  console.log('child component composition onUpdated')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum + 1)
   console.log('component for lifecycle test updated')
 })
 
 onBeforeUnmount(() => {
+  console.log('child component composition onBeforeUnmount')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum - 1)
   console.log('component for lifecycle test beforeUnmount')
 })
 
 onUnmounted(() => {
+  console.log('child component composition onUnmounted')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum - 1)
   console.log('component for lifecycle test unmounted')
 })
 
 onActivated(() => {
+  console.log('child component composition onActivated')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum + 1)
   console.log('component for lifecycle test onActivated')
 })
 onDeactivated(() => {
+  console.log('child component composition onDeactivated')
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum - 1)
   console.log('component for lifecycle test onDeactivated')

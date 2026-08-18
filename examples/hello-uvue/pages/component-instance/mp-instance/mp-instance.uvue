@@ -4,22 +4,12 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        mpRenderer: ''
-      }
-    },
-    onLoad() {
-      this.mpRenderer = this.$scope.renderer
-    },
-    methods: {
-      
-    }
-  }
+<script setup>
+const mpRenderer = ref('')
+const ins = getCurrentInstance()?.proxy
+
+onLoad(() => {
+  mpRenderer.value = ins?.$scope?.renderer || ''
+})
 </script>
 
-<style>
-
-</style>

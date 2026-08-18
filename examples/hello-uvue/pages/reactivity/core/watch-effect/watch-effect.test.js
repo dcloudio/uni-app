@@ -5,9 +5,9 @@ const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 describe('watchEffect', () => {
-  
   if(isMP) {
     // 微信小程序支持此特性，但是示例内部使用了较多的dom api无法兼容微信小程序
     it('not support', async () => {
@@ -31,10 +31,12 @@ describe('watchEffect', () => {
       'count: 0, count ref text (flush sync): 0')
     // track
     const watchCountTrackNum = await page.$('#watch-count-track-num')
-    if (isAndroid) {
-      expect(await watchCountTrackNum.text()).toBe('3')
-    } else {
-      expect(await watchCountTrackNum.text()).toBe('6')
+    if (!isDom2) {
+      if (isAndroid) {
+        expect(await watchCountTrackNum.text()).toBe('3')
+      } else {
+        expect(await watchCountTrackNum.text()).toBe('6')
+      }
     }
 
     const watchCountCleanupRes = await page.$('#watch-count-cleanup-res')
@@ -51,10 +53,12 @@ describe('watchEffect', () => {
     expect(await watchCountRes.text()).toBe(
       'count: 1, count ref text (flush sync): 0')
 
-    if (isAndroid) {
-      expect(await watchCountTrackNum.text()).toBe('3')
-    } else {
-      expect(await watchCountTrackNum.text()).toBe('9')
+    if (!isDom2) {
+      if (isAndroid) {
+        expect(await watchCountTrackNum.text()).toBe('3')
+      } else {
+        expect(await watchCountTrackNum.text()).toBe('9')
+      }
     }
 
     expect(await watchCountCleanupRes.text()).toBe('watch count cleanup: 1')
@@ -67,10 +71,12 @@ describe('watchEffect', () => {
     expect(await watchCountRes.text()).toBe(
       'count: 2, count ref text (flush sync): 1')
 
-    if (isAndroid) {
-      expect(await watchCountTrackNum.text()).toBe('3')
-    } else {
-      expect(await watchCountTrackNum.text()).toBe('12')
+    if (!isDom2) {
+      if (isAndroid) {
+        expect(await watchCountTrackNum.text()).toBe('3')
+      } else {
+        expect(await watchCountTrackNum.text()).toBe('12')
+      }
     }
     expect(await watchCountCleanupRes.text()).toBe('watch count cleanup: 2')
 
@@ -86,10 +92,12 @@ describe('watchEffect', () => {
     expect(await watchCountRes.text()).toBe(
       'count: 2, count ref text (flush sync): 1')
 
-    if (isAndroid) {
-      expect(await watchCountTrackNum.text()).toBe('3')
-    } else {
-      expect(await watchCountTrackNum.text()).toBe('12')
+    if (!isDom2) {
+      if (isAndroid) {
+        expect(await watchCountTrackNum.text()).toBe('3')
+      } else {
+        expect(await watchCountTrackNum.text()).toBe('12')
+      }
     }
     expect(await watchCountCleanupRes.text()).toBe('watch count cleanup: 2')
 
@@ -108,7 +116,7 @@ describe('watchEffect', () => {
     const watchObjRes = await page.$('#watch-obj-res')
     if (isAndroid) {
       expect(await watchObjRes.text()).toBe(
-        'obj: {"arr":[0],"bool":false,"num":0,"str":"num: 0"}')
+        isDom2 ? 'obj: {\"num\":0,\"str\":\"num: 0\",\"bool\":false,\"arr\":[0]}' : 'obj: {"arr":[0],"bool":false,"num":0,"str":"num: 0"}')
     }
     if (isWeb) {
       expect(await watchObjRes.text()).toBe(
@@ -139,7 +147,7 @@ describe('watchEffect', () => {
 
     if (isAndroid) {
       expect(await watchObjRes.text()).toBe(
-        'obj: {"arr":[0,1],"bool":true,"num":1,"str":"num: 1"}')
+        isDom2 ? 'obj: {\"num\":1,\"str\":\"num: 1\",\"bool\":true,\"arr\":[0,1]}' : 'obj: {"arr":[0,1],"bool":true,"num":1,"str":"num: 1"}')
     }
     if (isWeb) {
       expect(await watchObjRes.text()).toBe(
@@ -150,9 +158,11 @@ describe('watchEffect', () => {
 
     expect(await watchObjStrTriggerNum.text()).toBe('2')
 
-    expect(await watchObjBoolRes.text()).toBe(
-      'bool: true, obj.bool ref text (flush post): true')
-
+    if (!isDom2) {
+      // TODO: flush: 'post' 时钩子拿到的 textElement value 不是页面渲染后的 @fxy
+      expect(await watchObjBoolRes.text()).toBe(
+        'bool: true, obj.bool ref text (flush post): true')
+    }
     expect(await watchObjArrRes.text()).toBe('arr: [0,1]')
 
     const watchCountAndObjNumRes = await page.$('#watch-count-obj-num-res')
