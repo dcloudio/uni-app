@@ -4638,9 +4638,16 @@ function registerUTSInterface(options) {
   }
   interfaceDefines[options.utsBridgeName][options.name] = options;
 }
+var classDefines = {};
+function registerUTSClass(options) {
+  if (!classDefines[options.utsBridgeName]) {
+    classDefines[options.utsBridgeName] = {};
+  }
+  classDefines[options.utsBridgeName][options.class] = options;
+}
 function resolveReturnValue(utsBridgeName, options, instanceOrId, instanceProxy, value) {
   if (options.returnType && typeof value === "number") {
-    var _interfaceDefines$uts;
+    var _interfaceDefines$uts, _classDefines$utsBrid;
     if (value === 0) {
       return null;
     }
@@ -4651,6 +4658,10 @@ function resolveReturnValue(utsBridgeName, options, instanceOrId, instanceProxy,
     var interfaceOptions = (_interfaceDefines$uts = interfaceDefines[utsBridgeName]) === null || _interfaceDefines$uts === void 0 ? void 0 : _interfaceDefines$uts[options.returnType];
     if (interfaceOptions) {
       return initUTSProxyInterface(value, interfaceOptions);
+    }
+    var classOptions = (_classDefines$utsBrid = classDefines[utsBridgeName]) === null || _classDefines$utsBrid === void 0 ? void 0 : _classDefines$utsBrid[options.returnType];
+    if (classOptions) {
+      return initUTSProxyClassInstance(value, classOptions);
     }
   }
   return value;
@@ -4694,6 +4705,7 @@ function initProxyFunction(utsBridgeName, options, instanceOrId, instanceProxy) 
 var FUNCTION_PLACEHOLDER = () => {
 };
 function initUTSProxyInterface(instanceId, options) {
+  var isClass = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
   var methods = {};
   var getters = {};
   var setters = {};
@@ -4717,6 +4729,9 @@ function initUTSProxyInterface(instanceId, options) {
       }
       if (prop === "__v_skip") {
         return true;
+      }
+      if (isClass && prop === "__classId") {
+        return "".concat(options.utsBridgeName, "#").concat(options.name);
       }
       if (hasOwn(methods, prop)) {
         if (methods[prop] === FUNCTION_PLACEHOLDER) {
@@ -4754,7 +4769,17 @@ function initUTSProxyInterface(instanceId, options) {
   }
   return instanceProxy;
 }
+function initUTSProxyClassInstance(instanceId, options) {
+  var interfaceOptions = {
+    name: options.class,
+    utsBridgeName: options.utsBridgeName,
+    methods: [...options.methods]
+  };
+  return initUTSProxyInterface(instanceId, interfaceOptions, true);
+}
 function initUTSProxyClass(options) {
+  var className = options.class;
+  registerUTSClass(options);
   var constructor = initProxyFunction(options.utsBridgeName, options.constructor);
   var staticMethods = {};
   var staticGetters = {};
@@ -4772,12 +4797,14 @@ function initUTSProxyClass(options) {
         break;
     }
   }
+  var classId = "".concat(options.utsBridgeName, "#").concat(className);
   var ProxyClass = class {
     constructor() {
       this.__instanceId = 0;
+      this.__classId = classId;
       this.__instanceId = constructor(...arguments);
       if (!this.__instanceId) {
-        throw new Error("new ".concat(options.name, " is failed"));
+        throw new Error("new ".concat(className, " is failed"));
       }
       var instance = this;
       var methods = {};
@@ -4839,6 +4866,9 @@ function initUTSProxyClass(options) {
         UTSClassInstanceRegistry.register(instanceProxy, instanceProxy.__instanceId);
       }
       return instanceProxy;
+    }
+    static [Symbol.hasInstance](instance) {
+      return instance && instance.__classId === classId;
     }
   };
   return new Proxy(ProxyClass, {
