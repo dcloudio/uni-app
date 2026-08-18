@@ -17,7 +17,7 @@ jobs:
           - os: macos-latest
             node_version: 18.20.0
           - os: windows-latest
-            node_version: 18.20.0
+            node_version: 22.22.2
       fail-fast: false
     name: 'e2e: node-${{ matrix.node_version }}, ${{ matrix.os }}'
     env:
