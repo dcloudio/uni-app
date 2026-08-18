@@ -7,6 +7,15 @@ const props = {
       return []
     },
   },
+  /** @deprecated 请使用 user-select */
+  selectable: {
+    type: [Boolean, String],
+    default: false,
+  },
+  userSelect: {
+    type: [Boolean, String],
+    default: false,
+  },
 }
 
 export { props, parseHtml }

@@ -196,9 +196,10 @@ function initOnError() {
 }
 
 function formatMessage(type, args) {
+    const messageType = type === 'warn' ? 'warning' : type;
     try {
         return {
-            type,
+            type: messageType,
             args: formatArgs(args),
         };
     }
@@ -206,7 +207,7 @@ function formatMessage(type, args) {
         // originalConsole.error(e)
     }
     return {
-        type,
+        type: messageType,
         args: [],
     };
 }

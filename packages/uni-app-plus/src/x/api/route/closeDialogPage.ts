@@ -9,6 +9,13 @@ import closeNativeDialogPage from './closeNativeDialogPage'
 import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import { ANI_DURATION } from '../../../service/constants'
 import { isTabPage } from '../../framework/app/tabBar'
+// #if _VAPOR_
+import {
+  getCurrentDevToolsPage,
+  hasDevToolsPageChangedListener,
+  notifyDevToolsPageChanged,
+} from '../../framework/page/dialogPage'
+// #endif
 
 export const closeDialogPage = (options?: CloseDialogPageOptions) => {
   const currentPages = getCurrentPages() as UniPage[]
@@ -17,6 +24,15 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
     triggerFailCallback(options, 'currentPage is null')
     return
   }
+  // #if _VAPOR_
+  const observeDevToolsPage =
+    typeof __UNI_X_DEVTOOLS__ !== 'undefined' && __UNI_X_DEVTOOLS__
+      ? hasDevToolsPageChangedListener()
+      : false
+  const previousDevToolsPage = observeDevToolsPage
+    ? getCurrentDevToolsPage()
+    : null
+  // #endif
   // @ts-expect-error
   if (options?.animationType === 'pop-out') {
     options.animationType = 'none'
@@ -87,6 +103,15 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
     }
     dialogPages.length = 0
   }
+
+  // #if _VAPOR_
+  if (
+    observeDevToolsPage &&
+    previousDevToolsPage !== getCurrentDevToolsPage()
+  ) {
+    notifyDevToolsPageChanged()
+  }
+  // #endif
 
   const successOptions = { errMsg: 'closeDialogPage: ok' }
   options?.success?.(successOptions)

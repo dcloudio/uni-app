@@ -311,10 +311,66 @@ describe('mp-alipay: transform component x', () => {
     )
   })
 
+  test(`picker`, () => {
+    assert(
+      `<picker header-text="请选择"/>`,
+      `<picker title="请选择" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<picker :header-text="pickerTitle"/>`,
+      `<picker title="{{a}}" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _ctx.pickerTitle, b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
   test(`scroll-view`, () => {
     assert(
       `<list-view/>`,
       `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test(`text`, () => {
+    assert(
+      `<text user-select/>`,
+      `<text selectable style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<text :user-select="false"/>`,
+      `<text selectable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__

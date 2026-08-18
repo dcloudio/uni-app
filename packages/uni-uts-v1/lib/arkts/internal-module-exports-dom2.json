@@ -1,5 +1,5 @@
 {
-  "@dcloudio/uni-app-x-runtime": [
+  "@dcloudio/uni-app-x-vapor-runtime": [
     [
       "$Emit"
     ],
@@ -1918,6 +1918,24 @@
       "RequestSuccessCallback"
     ],
     [
+      "RequestSystemPermission"
+    ],
+    [
+      "RequestSystemPermissionComplete"
+    ],
+    [
+      "RequestSystemPermissionErrorCode"
+    ],
+    [
+      "RequestSystemPermissionFail"
+    ],
+    [
+      "RequestSystemPermissionOptions"
+    ],
+    [
+      "RequestSystemPermissionSuccess"
+    ],
+    [
       "RequestTask"
     ],
     [
@@ -2411,6 +2429,9 @@
     ],
     [
       "ShowToastSuccessCallback"
+    ],
+    [
+      "ShowToastSuccessImpl"
     ],
     [
       "SocketTask"

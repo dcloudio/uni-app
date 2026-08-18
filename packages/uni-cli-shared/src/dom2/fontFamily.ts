@@ -10,11 +10,11 @@ export function createJsStylePlaceholder(id: string) {
 export function createJsStylePlaceholderRegExp(id: string) {
   const hashId = hash(id)
   return new RegExp(
-    `\\{\\s*"${JS_STYLE_PLACEHOLDER_MARKER}"\\s*:\\s*"${hashId}"\\s*\\}`,
+    `\\{\\s*(?:"${JS_STYLE_PLACEHOLDER_MARKER}"|'${JS_STYLE_PLACEHOLDER_MARKER}'|${JS_STYLE_PLACEHOLDER_MARKER})\\s*:\\s*(?:"${hashId}"|'${hashId}')\\s*\\}`,
     'g'
   )
 }
 export const ANY_JS_STYLE_PLACEHOLDER_RE = new RegExp(
-  `\\{\\s*"${JS_STYLE_PLACEHOLDER_MARKER}"\\s*:\\s*".+?"\\s*\\}`,
+  `\\{\\s*(?:"${JS_STYLE_PLACEHOLDER_MARKER}"|'${JS_STYLE_PLACEHOLDER_MARKER}'|${JS_STYLE_PLACEHOLDER_MARKER})\\s*:\\s*(?:"[^"]+?"|'[^']+?')\\s*\\}`,
   'g'
 )

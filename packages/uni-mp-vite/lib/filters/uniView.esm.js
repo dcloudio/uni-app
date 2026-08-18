@@ -92,7 +92,66 @@ function sA (newValue, oldValue, _ownerInstance, instance) {
   }
 }
 
+var CLASS_MASK_APP = 1
+var CLASS_MASK_PAGE = 1 << 1
+var CLASS_MASK_COMPONENT = 1 << 2
+
+function pushClass (result, seen, token, mask, keepRaw) {
+  if (!token) return
+  var type = token.charCodeAt(1)
+  // 已带内部前缀的 class 来自上一次展开，直接保留以保证组件转发时幂等。
+  if (
+    token.charCodeAt(0) === 45 &&
+    token.charCodeAt(2) === 45 &&
+    (type === 97 || type === 112 || type === 99)
+  ) {
+    pushUniqueClass(result, seen, token)
+    return
+  }
+  if (keepRaw) pushUniqueClass(result, seen, token)
+  if (mask & CLASS_MASK_APP) pushUniqueClass(result, seen, '-a-' + token)
+  if (mask & CLASS_MASK_PAGE) pushUniqueClass(result, seen, '-p-' + token)
+  if (mask & CLASS_MASK_COMPONENT) pushUniqueClass(result, seen, '-c-' + token)
+}
+
+function pushUniqueClass (result, seen, token) {
+  var key = '$' + token
+  if (seen[key]) return
+  seen[key] = true
+  result.push(token)
+}
+
+function cls (value, mask, keepRaw) {
+  if (!value) return ''
+  keepRaw = keepRaw !== 0
+  var result = []
+  var seen = {}
+  var input = '' + value
+  var start = -1
+  // 支付宝 SJS 禁止 RegExp，单次扫描 HTML 空白字符完成分词，避免额外 tokens 数组。
+  for (var i = 0; i <= input.length; i++) {
+    var code = i < input.length ? input.charCodeAt(i) : 32
+    var isSpace = code === 32 || code === 9 || code === 10 || code === 13 || code === 12
+    if (isSpace) {
+      if (start !== -1) {
+        pushClass(result, seen, input.slice(start, i), mask, keepRaw)
+        start = -1
+      }
+    } else if (start === -1) {
+      start = i
+    }
+  }
+  return result.join(' ')
+}
+
+function hoverClass (value, mask) {
+  // none 是小程序关闭 hover 效果的控制值；其他值复用普通 class 的分词、去重和前缀逻辑。
+  return value === 'none' ? value : cls(value, mask)
+}
+
 export default {
   sS,
   sA,
+  c: cls,
+  h: hoverClass,
 }

@@ -206,9 +206,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
   }
 
   plugins.unshift(
-    createPluginVueInstance(
-      initPluginVueOptions(options, uniPlugins, uniPluginOptions)
-    )
+    createPluginVueInstance(initPluginVueOptions(options, uniPluginOptions))
   )
 
   let addCopyPlugin = false

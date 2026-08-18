@@ -9,9 +9,13 @@ export const COMBINATORS_RE =
 export const SIMPLE_SELECTOR_RE =
   /^(?:\.[A-Za-z0-9_\-]+)+(?:\s*,\s*(?:\.[A-Za-z0-9_\-]+)+)*$/
 
-export type TransformDecl = (decl: Declaration) => Declaration[]
+export type TransformDecl = (
+  decl: Declaration,
+  onWarning?: (reason: string, property?: string) => void
+) => Declaration[]
 
 export interface NormalizeOptions {
+  dom2?: boolean
   logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
   type?: 'nvue' | 'uvue'
   platform?: typeof process.env.UNI_UTS_PLATFOR
@@ -93,7 +97,7 @@ export interface PropertyValue {
 export interface Property {
   name: string
   shorthand?: boolean
-  restrictions: Restriction[]
+  restrictions?: Restriction[]
   values?: PropertyValue[]
   uniPlatform?: UniPlatform
   unixTags?: string[]
@@ -128,6 +132,21 @@ export const NUM_REGEXP = /^[-]?\d*\.?\d+$/
 export const LENGTH_REGEXP = /^[-+]?\d*\.?\d+(\S*)$/
 export const SUPPORTED_VALUES_REGEXP = /supported values are: ([^)]+)/
 export const SUPPORT_CSS_UNIT = ['px', 'pt', 'wx', 'upx', 'rpx']
+
+const DOM2_CSS_DOCS_BASE_URL = 'https://doc.dcloud.net.cn/uni-app-x/css'
+
+export const DOM2_SELECTOR_DOCS_URL = `${DOM2_CSS_DOCS_BASE_URL}/common/selector.html#selector`
+export const DOM2_FONT_FACE_DOCS_URL = `${DOM2_CSS_DOCS_BASE_URL}/common/at-rules.html#tips`
+
+export function getDom2PropertyDocsUrl(property: string) {
+  return `${DOM2_CSS_DOCS_BASE_URL}/${hyphenateStyleProperty(
+    property
+  )}.html#suggestion`
+}
+
+export function appendDom2Docs(reason: string, url?: string) {
+  return url ? `${reason} 详见：${url}` : reason
+}
 
 export const isNumber = (val: unknown): val is string => typeof val === 'number'
 
@@ -186,15 +205,15 @@ export function supportedEnumReason(
   v: string | number,
   items: unknown[]
 ) {
-  return (
+  const reason =
     'ERROR: property value `' +
     v +
     '` is not supported for `' +
     hyphenateStyleProperty(k) +
-    '` (supported values are: `' +
-    items.join('`|`') +
-    '`)'
-  )
+    '`'
+  return items.length
+    ? reason + ' (supported values are: `' + items.join('`|`') + '`)'
+    : reason
 }
 
 export function supportedValueWithTipsReason(
@@ -245,24 +264,24 @@ export function supportedPropertyReason(k: string) {
 }
 
 function getPlatformVersion(
-  platform: UniPlatform['app'][keyof UniPlatform['app']] | undefined
+  platform: UniPlatform['app'][keyof UniPlatform['app']] | undefined,
+  dom2: boolean
 ) {
-  return isDom2() ? platform?.unixVaporVer : platform?.unixVer
+  return dom2 ? platform?.unixVaporVer : platform?.unixVer
 }
 
-function isDom2() {
-  return typeof process !== 'undefined' && process.env.UNI_APP_X_DOM2 === 'true'
-}
-
-export function getSupportedPlatforms(uniPlatform: UniPlatform | undefined) {
+export function getSupportedPlatforms(
+  uniPlatform: UniPlatform | undefined,
+  dom2 = false
+) {
   const supportedPlatforms: string[] = []
-  if (getPlatformVersion(uniPlatform?.app?.android) !== 'x') {
+  if (getPlatformVersion(uniPlatform?.app?.android, dom2) !== 'x') {
     supportedPlatforms.push('app-android')
   }
-  if (getPlatformVersion(uniPlatform?.app?.ios) !== 'x') {
+  if (getPlatformVersion(uniPlatform?.app?.ios, dom2) !== 'x') {
     supportedPlatforms.push('app-ios')
   }
-  if (getPlatformVersion(uniPlatform?.app?.harmony) !== 'x') {
+  if (getPlatformVersion(uniPlatform?.app?.harmony, dom2) !== 'x') {
     supportedPlatforms.push('app-harmony')
   }
   return supportedPlatforms
@@ -290,6 +309,8 @@ export function normalizeReasons(
     }
   }
   if (enums.length > 0) {
+    const unsupportedReason = supportedEnumReason(k, v, [])
+    reasons = reasons.filter((reason) => reason !== unsupportedReason)
     enums = [...new Set(enums)]
     reasons.push(supportedEnumReason(k, v, enums))
   }

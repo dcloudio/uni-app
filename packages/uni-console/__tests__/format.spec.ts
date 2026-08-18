@@ -1,7 +1,14 @@
 import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
-import { formatArg } from '../src/runtime/console/format'
+import { formatArg, formatMessage } from '../src/runtime/console/format'
 
 describe('uni-console', () => {
+  test('formatMessage warning', () => {
+    expect(formatMessage('warn', ['warning message'])).toEqual({
+      type: 'warning',
+      args: [{ type: 'string', value: 'warning message' }],
+    })
+  })
+
   test('formatArg undefined', () => {
     expect(formatArg(undefined)).toEqual({
       type: 'undefined',

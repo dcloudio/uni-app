@@ -99,9 +99,10 @@
     }
 
     function formatMessage(type, args) {
+        var messageType = type === 'warn' ? 'warning' : type;
         try {
             return {
-                type: type,
+                type: messageType,
                 args: formatArgs(args),
             };
         }
@@ -109,7 +110,7 @@
             // originalConsole.error(e)
         }
         return {
-            type: type,
+            type: messageType,
             args: [],
         };
     }

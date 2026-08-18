@@ -23,6 +23,8 @@ import {
   // @ts-expect-error
 } from './apis/Page.uts'
 // @ts-expect-error
+import { getPageById } from './apis/util.uts'
+// @ts-expect-error
 import { type SocketEmitterParams, socketEmitter } from './apis/App/Socket.uts'
 import {
   type CallFunctionParams as ElementCallFunctionParams,
@@ -128,6 +130,18 @@ export function onMessage(msg: string) {
           // @ts-expect-error
           pageGetElement(JSON.parse<PageGetElementParams>(params)!, callback)
           break
+        case 'Page.pageNextTick': {
+          const pageId = JSON.parse<PageGetDataParams>(params)!.pageId
+          const page = getPageById(pageId)
+          if (page == null) {
+            callback(null, { errMsg: 'Page VM nextTick is not available' })
+          }else{
+            page.vm!.$nextTick(() => {
+              callback({ result: true }, null)
+            })
+          }
+          break
+        }
         case 'Page.getElements':
           // @ts-expect-error
           pageGetElements(JSON.parse<PageGetElementParams>(params)!, callback)

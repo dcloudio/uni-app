@@ -389,7 +389,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -788,7 +787,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -873,7 +871,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1003,7 +1000,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1045,7 +1041,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1182,7 +1177,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1316,7 +1310,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1360,7 +1353,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1494,7 +1486,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1538,7 +1529,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1583,7 +1573,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1711,14 +1700,13 @@ interface String {
   /**
      创建一个<font>的 HTML 元素让字符串被显示成指定的字体颜色。
      @deprecated 已弃用: 不再推荐使用该特性。虽然一些浏览器仍然支持它，但也许已从相关的 web 标准中移除，也许正准备移除或出于兼容性而保留。请尽量不要使用该特性，并更新现有的代码；请注意，该特性随时可能无法正常工作。
-     备注： <font> 元素已经在在HTML5 中 (en-US)被移除并且不应该在使用。替代的是，Web 开发者应该使用CSS属性。
+     备注： <font> 元素已在 HTML5 中移除且不应再使用。Web 开发者应改用 CSS 属性。
      @param color 代表颜色的一个字符串，可以是三个一组的十六进制的 RGB 值，也可以是一个颜色名称的字符串字面量.
      @return 一个包含一个<font> HTML 元素的字符串。
      @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/string.html#fontcolor
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1763,7 +1751,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1808,7 +1795,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1852,7 +1838,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1897,7 +1882,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1941,7 +1925,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -1985,7 +1968,6 @@ interface String {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",

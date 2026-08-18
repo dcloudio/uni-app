@@ -17,6 +17,7 @@ import {
 } from './vite/plugins/uts/uni_modules'
 import { resolveBuiltIn } from './resolve'
 import { initSourceFileCallback } from './dom2'
+import { initUasmTransformerCreator } from './uasm'
 
 const debugWorkers = debug('uni:workers')
 
@@ -85,6 +86,7 @@ export function uniWorkersPlugin(): Plugin {
     platform === 'app-android'
       ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
           resolveWorkers,
+          loadUasmTransformer: initUasmTransformerCreator('app-android'),
           sourceFileCallback: initSourceFileCallback(),
         })
       : null
@@ -93,6 +95,7 @@ export function uniWorkersPlugin(): Plugin {
     platform === 'app-ios'
       ? resolveUTSCompiler().createUniXSwiftCompilerOnce({
           resolveWorkers,
+          loadUasmTransformer: initUasmTransformerCreator('app-ios'),
         })
       : null
 
@@ -205,15 +208,33 @@ export function normalizeJavaScriptWorkerSource(content: string) {
   return /(^|\n)\s*(import|export)\s/m.test(code) ? code : `${code}\nexport {}`
 }
 
+export function genAlipayWorkerRuntimeImportCode(
+  file: string,
+  workerRootDir: string = resolveWorkersRootDir()
+) {
+  let workerRuntimePath = normalizePath(
+    path.relative(path.dirname(file), path.join(workerRootDir, 'uni-worker.js'))
+  )
+  if (!workerRuntimePath.startsWith('.')) {
+    workerRuntimePath = './' + workerRuntimePath
+  }
+  return `import '${workerRuntimePath}';`
+}
+
 export function uniJavaScriptWorkersPlugin(): Plugin {
-  // 仅小程序平台外置uni-worker.mp.js
-  const external = (process.env.UNI_UTS_PLATFORM || '').startsWith('mp-')
+  // 仅小程序平台外置 uni-worker，支付宝小程序 worker 不支持 require，单独使用 ES module 版本。
+  const platform = process.env.UNI_UTS_PLATFORM || ''
+  const external = platform.startsWith('mp-')
+  const isMpAlipay = platform === 'mp-alipay'
   let workerPolyfillCode = ''
   let isWrite = false
   const UniAppWorkerJSName = external ? 'uni-worker.mp.js' : 'uni-worker.web.js'
+  const workerRuntimeFileName = isMpAlipay
+    ? 'uni-worker.alipay.js'
+    : UniAppWorkerJSName
   let viteServer: ViteDevServer | null = null
   const workersRootPaths: string[] = []
-  const workerPolyfillPath = `@dcloudio/uni-app/dist-x/${UniAppWorkerJSName}`
+  const workerPolyfillPath = `@dcloudio/uni-app/dist-x/${workerRuntimeFileName}`
   const workerPolyfillAbsPath = normalizePath(
     resolveBuiltIn(workerPolyfillPath)
   )
@@ -303,12 +324,14 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
             const chunk = bundle[file]
             if (chunk.type === 'chunk') {
               const workerCode = external
-                ? `require('${normalizePath(
-                    path.relative(
-                      path.dirname(file),
-                      path.join(resolveWorkersRootDir(), 'uni-worker.js')
-                    )
-                  )}')`
+                ? isMpAlipay
+                  ? genAlipayWorkerRuntimeImportCode(file)
+                  : `require('${normalizePath(
+                      path.relative(
+                        path.dirname(file),
+                        path.join(resolveWorkersRootDir(), 'uni-worker.js')
+                      )
+                    )}')`
                 : workerPolyfillCode
               chunk.code = `${workerCode}\n${chunk.code}`
             }

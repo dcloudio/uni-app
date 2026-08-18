@@ -211,7 +211,7 @@ interface JSON {
      JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述的对象。
      如果输入的是一个合法的json对象，返回一个对应的UTSJSONObject，如果是json array 或者其他格式的字符串返回null
      @param text 要被解析成 JavaScript 值的字符串
-     @return 返回一个UTSJSONObjet 或者 null
+     @return 返回一个UTSJSONObject 或者 null
      @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/json.html#parseobject
      @inline
      @reified

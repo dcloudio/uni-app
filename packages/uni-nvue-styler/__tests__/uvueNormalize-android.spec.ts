@@ -1,10 +1,15 @@
 import { parse } from '../src'
 
-async function objectifierRule(input: string) {
+function withDom2PropertyDocs(message: string, property: string) {
+  return `${message} 详见：https://doc.dcloud.net.cn/uni-app-x/css/${property}.html#suggestion`
+}
+
+async function objectifierRule(input: string, options = {}) {
   const { code, messages } = await parse(input, {
     logLevel: 'NOTE',
     type: 'uvue',
     platform: 'app-android',
+    ...options,
   })
   return {
     json: JSON.parse(code),
@@ -134,7 +139,7 @@ borderRightStyle: abc;
     expect(messages[2]).toEqual(
       expect.objectContaining({
         type: 'warning',
-        text: 'ERROR: property value `padding-box` is not supported for `background-clip` (supported values are: `border-box`)',
+        text: 'ERROR: property value `padding-box` is not supported for `background-clip`',
       })
     )
     expect(messages[3]).toEqual(
@@ -795,6 +800,433 @@ flexBasis: fill;
       })
     )
   })
+
+  test('animation properties', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.foo {
+  animation-name: fade, slide;
+  animation-duration: 200ms, 1s;
+  animation-delay: -100ms, +0s;
+  animation-direction: normal, alternate;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 2, infinite;
+  animation-play-state: running, paused;
+  animation-timing-function: ease-in, cubic-bezier(.42, 0, 1, 1);
+}
+.shorthand {
+  animation: fade 200ms ease-in -100ms 2 alternate forwards paused, slide 1s cubic-bezier(.42, 0, 1, 1);
+}
+.override {
+  animation-name: original;
+  animation: fade 200ms forwards;
+  animation-duration: 1s;
+}
+.keyword {
+  animation-name: None;
+  animation-delay: +1s;
+}
+.none-shorthand {
+  animation: none 1s forwards;
+}
+.variable {
+  animation: var(--animation);
+}
+.mixed-variable {
+  animation: fade var(--duration);
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({
+      foo: {
+        '': {
+          animationName: 'fade,slide',
+          animationDuration: '200ms,1s',
+          animationDelay: '-100ms,+0s',
+          animationDirection: 'normal,alternate',
+          animationFillMode: 'forwards',
+          animationIterationCount: '2,infinite',
+          animationPlayState: 'running,paused',
+          animationTimingFunction: 'ease-in,cubic-bezier(0.42,0,1,1)',
+        },
+      },
+      shorthand: {
+        '': {
+          animationName: 'fade,slide',
+          animationDuration: '200ms,1s',
+          animationDelay: '-100ms,0s',
+          animationTimingFunction: 'ease-in,cubic-bezier(0.42,0,1,1)',
+          animationIterationCount: '2,1',
+          animationDirection: 'alternate,normal',
+          animationFillMode: 'forwards,forwards',
+          animationPlayState: 'paused,running',
+        },
+      },
+      override: {
+        '': {
+          animationName: 'fade',
+          animationDuration: '1s',
+          animationDelay: '0s',
+          animationTimingFunction: 'ease',
+          animationIterationCount: 1,
+          animationDirection: 'normal',
+          animationFillMode: 'forwards',
+          animationPlayState: 'running',
+        },
+      },
+      keyword: {
+        '': {
+          animationName: 'none',
+          animationDelay: '+1s',
+        },
+      },
+      'none-shorthand': {
+        '': {
+          animationName: 'none',
+          animationDuration: '1s',
+          animationDelay: '0s',
+          animationTimingFunction: 'ease',
+          animationIterationCount: 1,
+          animationDirection: 'normal',
+          animationFillMode: 'forwards',
+          animationPlayState: 'running',
+        },
+      },
+      variable: {
+        '': {
+          animationName: 'var(--animation)',
+          animationDuration: 'var(--animation)',
+          animationDelay: 'var(--animation)',
+          animationTimingFunction: 'var(--animation)',
+          animationIterationCount: 'var(--animation)',
+          animationDirection: 'var(--animation)',
+          animationFillMode: 'var(--animation)',
+          animationPlayState: 'var(--animation)',
+        },
+      },
+      'mixed-variable': {
+        '': {
+          animationName: 'fade var(--duration)',
+          animationDuration: 'fade var(--duration)',
+          animationDelay: 'fade var(--duration)',
+          animationTimingFunction: 'fade var(--duration)',
+          animationIterationCount: 'fade var(--duration)',
+          animationDirection: 'fade var(--duration)',
+          animationFillMode: 'fade var(--duration)',
+          animationPlayState: 'fade var(--duration)',
+        },
+      },
+    })
+    expect(messages).toHaveLength(0)
+  })
+
+  test('unsupported animation properties', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.foo {
+  animation-composition: add;
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({
+      foo: {
+        '': {
+          animationComposition: 'add',
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        text: withDom2PropertyDocs(
+          'WARNING: `animation-composition` is not a standard property name (may not be supported)',
+          'animation-composition'
+        ),
+      })
+    )
+  })
+
+  test('animation values respect dom2 platform support', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.longhand {
+  animation-name: fade;
+  animation-direction: reverse, alternate-reverse;
+  animation-fill-mode: none, backwards, both;
+}
+.shorthand {
+  animation: fade 1s reverse both;
+}
+.none-fill {
+  animation: fade 1s none;
+}
+.missing-fill {
+  animation: fade 1s;
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({
+      longhand: {
+        '': {
+          animationName: 'fade',
+        },
+      },
+      'missing-fill': {
+        '': {
+          animationName: 'fade',
+          animationDuration: '1s',
+          animationDelay: '0s',
+          animationTimingFunction: 'ease',
+          animationIterationCount: 1,
+          animationDirection: 'normal',
+          animationFillMode: 'forwards',
+          animationPlayState: 'running',
+        },
+      },
+    })
+    expect(messages.map((message) => message.text)).toEqual([
+      withDom2PropertyDocs(
+        'ERROR: property value `reverse, alternate-reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+        'animation-direction'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `none, backwards, both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+        'animation-direction'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `none` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
+    ])
+  })
+
+  test('animation direction respects harmony dom2 platform support', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.longhand {
+  animation-name: fade;
+  animation-direction: reverse, alternate-reverse;
+  animation-fill-mode: none;
+}
+.shorthand {
+  animation: fade 1s reverse forwards;
+}
+`,
+      { dom2: true, platform: 'app-harmony' }
+    )
+    expect(json).toEqual({
+      longhand: {
+        '': {
+          animationName: 'fade',
+          animationDirection: 'reverse,alternate-reverse',
+        },
+      },
+      shorthand: {
+        '': {
+          animationName: 'fade',
+          animationDuration: '1s',
+          animationDelay: '0s',
+          animationTimingFunction: 'ease',
+          animationIterationCount: 1,
+          animationDirection: 'reverse',
+          animationFillMode: 'forwards',
+          animationPlayState: 'running',
+        },
+      },
+    })
+    expect(messages.map((message) => message.text)).toEqual([
+      withDom2PropertyDocs(
+        'ERROR: property value `none` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
+    ])
+  })
+
+  test('animation keywords are case-insensitive', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.shorthand {
+  animation: fade 1S EASE-IN +1 ALTERNATE FORWARDS PAUSED;
+}
+.longhand {
+  animation-delay: +1S;
+  animation-direction: ALTERNATE;
+  animation-duration: 200MS;
+  animation-fill-mode: FORWARDS;
+  animation-iteration-count: +1, INFINITE;
+  animation-name: None;
+  animation-play-state: PAUSED;
+  animation-timing-function: EASE-OUT, CUBIC-BEZIER(.42, 0, 1, 1);
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({
+      shorthand: {
+        '': {
+          animationName: 'fade',
+          animationDuration: '1s',
+          animationDelay: '0s',
+          animationTimingFunction: 'ease-in',
+          animationIterationCount: 1,
+          animationDirection: 'alternate',
+          animationFillMode: 'forwards',
+          animationPlayState: 'paused',
+        },
+      },
+      longhand: {
+        '': {
+          animationDelay: '+1s',
+          animationDirection: 'alternate',
+          animationDuration: '200ms',
+          animationFillMode: 'forwards',
+          animationIterationCount: '1,infinite',
+          animationName: 'none',
+          animationPlayState: 'paused',
+          animationTimingFunction: 'ease-out,cubic-bezier(0.42,0,1,1)',
+        },
+      },
+    })
+    expect(messages).toHaveLength(0)
+  })
+
+  test('invalid animation property values', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.foo {
+  animation-duration: -1s;
+  animation-duration: 1.s;
+  animation-delay: pending;
+  animation-direction: sideways;
+  animation-iteration-count: -1;
+  animation-timing-function: steps(2);
+  animation-timing-function: linear(0, 1);
+}
+.invalid-time-count {
+  animation: fade 1s 2s 3s;
+}
+.unsupported-steps {
+  animation: fade 1s steps(2);
+}
+.duplicate-name {
+  animation: fade auto ease;
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({})
+    expect(messages.map((message) => message.text)).toEqual([
+      withDom2PropertyDocs(
+        'ERROR: property value `-1s` is not supported for `animation-duration` (supported values are: `non-negative time`)',
+        'animation-duration'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `1.s` is not supported for `animation-duration` (supported values are: `non-negative time`)',
+        'animation-duration'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `pending` is not supported for `animation-delay` (supported values are: `time`)',
+        'animation-delay'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `sideways` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+        'animation-direction'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `-1` is not supported for `animation-iteration-count` (supported values are: `non-negative number`|`infinite`)',
+        'animation-iteration-count'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `steps(2)` is not supported for `animation-timing-function` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)',
+        'animation-timing-function'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `linear(0, 1)` is not supported for `animation-timing-function` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)',
+        'animation-timing-function'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `fade 1s 2s 3s` is not valid for `animation`',
+        'animation'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `fade 1s steps(2)` is not valid for `animation`',
+        'animation'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `fade auto ease` is not valid for `animation`',
+        'animation'
+      ),
+    ])
+  })
+
+  test('animation values must fit runtime numeric types', async () => {
+    const tooLargeFloat = '9'.repeat(39)
+    const tooLargeDouble = '9'.repeat(400)
+    const { json, messages } = await objectifierRule(
+      `
+.foo {
+  animation-duration: ${tooLargeFloat}ms;
+  animation-delay: -${tooLargeFloat}s;
+  animation-iteration-count: ${tooLargeDouble};
+  animation-timing-function: cubic-bezier(${tooLargeFloat}, 0, 1, 1);
+}
+`,
+      { dom2: true }
+    )
+
+    expect(json).toEqual({})
+    expect(messages.map((message) => message.text)).toEqual([
+      withDom2PropertyDocs(
+        `ERROR: property value \`${tooLargeFloat}ms\` is not supported for \`animation-duration\` (supported values are: \`non-negative time\`)`,
+        'animation-duration'
+      ),
+      withDom2PropertyDocs(
+        `ERROR: property value \`-${tooLargeFloat}s\` is not supported for \`animation-delay\` (supported values are: \`time\`)`,
+        'animation-delay'
+      ),
+      withDom2PropertyDocs(
+        `ERROR: property value \`${tooLargeDouble}\` is not supported for \`animation-iteration-count\` (supported values are: \`non-negative number\`|\`infinite\`)`,
+        'animation-iteration-count'
+      ),
+      withDom2PropertyDocs(
+        `ERROR: property value \`cubic-bezier(${tooLargeFloat}, 0, 1, 1)\` is not supported for \`animation-timing-function\` (supported values are: \`linear\`|\`ease\`|\`ease-in\`|\`ease-out\`|\`ease-in-out\`|\`cubic-bezier(n,n,n,n)\`)`,
+        'animation-timing-function'
+      ),
+    ])
+  })
+
+  test('animation decimals do not use exponent notation', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.foo {
+  animation-iteration-count: 0.0000001, 9007199254740993;
+  animation-timing-function: cubic-bezier(0.0000001, 0, 1, 1);
+}
+`,
+      { dom2: true }
+    )
+
+    expect(json).toEqual({
+      foo: {
+        '': {
+          animationIterationCount: '0.0000001,9007199254740993',
+          animationTimingFunction: 'cubic-bezier(0.0000001,0,1,1)',
+        },
+      },
+    })
+    expect(messages).toHaveLength(0)
+  })
+
   test('remove px unit', async () => {
     const { json, messages } = await objectifierRule(`
 .foo {
@@ -1016,5 +1448,100 @@ flexBasis: fill;
 `)
     expect(messages.length).toBe(0)
     expect(json).toEqual({})
+  })
+
+  test('backdrop-filter', async () => {
+    const tooLargeFloat = '9'.repeat(39)
+    const { json, messages } = await objectifierRule(
+      `
+.none {
+  backdrop-filter: none;
+}
+.foo {
+  backdrop-filter: blur(5px);
+}
+.zero {
+  backdrop-filter: blur(0);
+}
+.rpx {
+  backdrop-filter: blur(1rpx);
+}
+.em {
+  backdrop-filter: blur(1em);
+}
+.rem {
+  backdrop-filter: blur(1rem);
+}
+.negative {
+  backdrop-filter: blur(-1px);
+}
+.percent {
+  backdrop-filter: blur(20%);
+}
+.angle {
+  backdrop-filter: blur(10deg);
+}
+.other {
+  backdrop-filter: brightness(1);
+}
+.too-large {
+  backdrop-filter: blur(${tooLargeFloat}px);
+}
+`,
+      { dom2: true, platform: 'app-harmony' }
+    )
+
+    expect(json).toEqual({
+      none: {
+        '': {
+          backdropFilter: 'none',
+        },
+      },
+      foo: {
+        '': {
+          backdropFilter: 'blur(5px)',
+        },
+      },
+      zero: {
+        '': {
+          backdropFilter: 'blur(0)',
+        },
+      },
+      rpx: {
+        '': {
+          backdropFilter: 'blur(1rpx)',
+        },
+      },
+    })
+    expect(messages.map((message) => message.text)).toEqual([
+      withDom2PropertyDocs(
+        'ERROR: property value `blur(1em)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `blur(1rem)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `blur(-1px)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `blur(20%)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `blur(10deg)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `brightness(1)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        `ERROR: property value \`blur(${tooLargeFloat}px)\` is not supported for \`backdrop-filter\` (supported values are: \`none\`|\`blur()\`)`,
+        'backdrop-filter'
+      ),
+    ])
   })
 })

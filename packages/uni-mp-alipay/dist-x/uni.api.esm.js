@@ -183,6 +183,49 @@ function invokeCallback(id, res, extras) {
     }
     return res;
 }
+function findInvokeCallbackByName(name) {
+    for (const key in invokeCallbacks) {
+        if (invokeCallbacks[key].name === name) {
+            return true;
+        }
+    }
+    return false;
+}
+function removeKeepAliveApiCallback(name, callback) {
+    for (const key in invokeCallbacks) {
+        const item = invokeCallbacks[key];
+        if (item.callback === callback && item.name === name) {
+            delete invokeCallbacks[key];
+        }
+    }
+}
+function removeAllKeepAliveApiCallbacks(name) {
+    for (const key in invokeCallbacks) {
+        if (invokeCallbacks[key].name === name) {
+            delete invokeCallbacks[key];
+        }
+    }
+}
+function offKeepAliveApiCallback(name, eventTransport) {
+    const eventName = eventTransport ? name : 'api.' + name;
+    const transport = eventTransport || UniServiceJSBridge;
+    transport.off(eventName);
+}
+function onKeepAliveApiCallback(name, eventTransport) {
+    const eventName = eventTransport ? name : 'api.' + name;
+    const transport = eventTransport || UniServiceJSBridge;
+    transport.on(eventName, (res) => {
+        for (const key in invokeCallbacks) {
+            const opts = invokeCallbacks[key];
+            if (opts.name === name) {
+                opts.callback(res);
+            }
+        }
+    });
+}
+function createKeepAliveApiCallback(name, callback) {
+    return addInvokeCallback(invokeCallbackId++, name, callback, true);
+}
 const API_SUCCESS = 'success';
 const API_FAIL = 'fail';
 const API_COMPLETE = 'complete';
@@ -356,10 +399,43 @@ function promisify$1(name, fn) {
     };
 }
 
+/**
+ * 统一格式化 API 首参，确保 formatArgs 阶段总是拿到可写对象。
+ */
+function normalizeFormatApiParams(args) {
+    const params = args[0];
+    if (isPlainObject(params)) {
+        return params;
+    }
+    const normalizedParams = {};
+    args[0] = normalizedParams;
+    return normalizedParams;
+}
 function formatApiArgs(args, options) {
-    args[0];
-    {
+    const rawParams = args[0];
+    if (!options ||
+        !options.formatArgs ||
+        (!isPlainObject(options.formatArgs) && isPlainObject(rawParams))) {
         return;
+    }
+    const params = normalizeFormatApiParams(args);
+    const formatArgs = options.formatArgs;
+    const keys = Object.keys(formatArgs);
+    for (let i = 0; i < keys.length; i++) {
+        const name = keys[i];
+        const formatterOrDefaultValue = formatArgs[name];
+        if (isFunction(formatterOrDefaultValue)) {
+            const errMsg = formatterOrDefaultValue(params[name], params);
+            if (isString(errMsg)) {
+                return errMsg;
+            }
+        }
+        else {
+            // defaultValue
+            if (!hasOwn(params, name)) {
+                params[name] = formatterOrDefaultValue;
+            }
+        }
     }
 }
 function invokeSuccess(id, name, res) {
@@ -386,10 +462,11 @@ function invokeFail(id, name, errMsg, errRes = {}) {
     let res = extend({ errMsg: apiErrMsg }, errRes);
     {
         if (typeof UniError !== 'undefined') {
-            res =
-                typeof errRes.errCode !== 'undefined'
-                    ? new UniError(name, errRes.errCode, apiErrMsg)
-                    : new UniError(apiErrMsg, errRes);
+            const errOptions = extend({}, errRes);
+            if (typeof errOptions.errSubject === 'undefined') {
+                errOptions.errSubject = name;
+            }
+            res = new UniError(apiErrMsg, errOptions);
         }
     }
     return invokeCallback(id, res);
@@ -398,10 +475,62 @@ function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
         validateProtocols(name, args, protocol);
     }
-    const errMsg = formatApiArgs(args);
+    if (options && options.beforeInvoke) {
+        const errMsg = options.beforeInvoke(args);
+        if (isString(errMsg)) {
+            return errMsg;
+        }
+    }
+    const errMsg = formatApiArgs(args, options);
     if (errMsg) {
         return errMsg;
     }
+}
+function checkCallback(callback) {
+    if (!isFunction(callback)) {
+        throw new Error('Invalid args: type check failed for args "callback". Expected Function');
+    }
+}
+function wrapperOnApi(name, fn, options) {
+    return (callback) => {
+        checkCallback(callback);
+        const errMsg = beforeInvokeApi(name, [callback], undefined, options);
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
+        // 是否是首次调用on,如果是首次，需要初始化onMethod监听
+        const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
+        createKeepAliveApiCallback(name, callback);
+        if (isFirstInvokeOnApi) {
+            onKeepAliveApiCallback(name, options === null || options === void 0 ? void 0 : options.eventTransport);
+            fn();
+        }
+    };
+}
+function wrapperOffApi(name, fn, options) {
+    return (callback) => {
+        const clearAll = (options === null || options === void 0 ? void 0 : options.allowClearAll) === true && callback == null;
+        if (!clearAll) {
+            checkCallback(callback);
+        }
+        const errMsg = beforeInvokeApi(name, clearAll ? [] : [callback], undefined, options);
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
+        const onApiName = name.replace('off', 'on');
+        if (clearAll) {
+            removeAllKeepAliveApiCallbacks(onApiName);
+        }
+        else {
+            removeKeepAliveApiCallback(onApiName, callback);
+        }
+        // 是否还存在监听，若已不存在，则移除onMethod监听
+        const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
+        if (!hasInvokeOnApi) {
+            offKeepAliveApiCallback(onApiName, options === null || options === void 0 ? void 0 : options.eventTransport);
+            fn();
+        }
+    };
 }
 function parseErrMsg(errMsg) {
     if (!errMsg || isString(errMsg)) {
@@ -415,7 +544,7 @@ function parseErrMsg(errMsg) {
 function wrapperTaskApi(name, fn, protocol, options) {
     return (args) => {
         const id = createAsyncApiCallback(name, args, options);
-        const errMsg = beforeInvokeApi(name, [args], protocol);
+        const errMsg = beforeInvokeApi(name, [args], protocol, options);
         if (errMsg) {
             return invokeFail(id, name, errMsg);
         }
@@ -427,7 +556,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
 }
 function wrapperSyncApi(name, fn, protocol, options) {
     return (...args) => {
-        const errMsg = beforeInvokeApi(name, args, protocol);
+        const errMsg = beforeInvokeApi(name, args, protocol, options);
         if (errMsg) {
             throw new Error(errMsg);
         }
@@ -437,8 +566,14 @@ function wrapperSyncApi(name, fn, protocol, options) {
 function wrapperAsyncApi(name, fn, protocol, options) {
     return wrapperTaskApi(name, fn, protocol, options);
 }
+function defineOnApi(name, fn, options) {
+    return wrapperOnApi(name, fn, options);
+}
+function defineOffApi(name, fn, options) {
+    return wrapperOffApi(name, fn, options);
+}
 function defineSyncApi(name, fn, protocol, options) {
-    return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined);
+    return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
 }
 function defineAsyncApi(name, fn, protocol, options) {
     return promisify$1(name, wrapperAsyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options));
@@ -495,7 +630,9 @@ class CanvasContext {
         return this._element.createImageData();
     }
     createPath2D() {
-        return this._element.createPath2D();
+        {
+            return this._element.getContext('2d').createPath2D();
+        }
     }
     requestAnimationFrame(callback) {
         return this._element.requestAnimationFrame(callback);
@@ -1031,11 +1168,42 @@ function shouldKeepReturnValue(methodName) {
 }
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
+const ON_API_RE = /^on[A-Z]/;
+const OFF_API_RE = /^off[A-Z]/;
+function getOnApiName(methodName) {
+    return OFF_API_RE.test(methodName) ? `on${methodName.slice(3)}` : '';
+}
 function initWrapper(protocols) {
+    const eventCallbackMap = new WeakMap();
     function processCallback(methodName, method, returnValue) {
         return function (res) {
             return method(processReturnValue(methodName, res, returnValue));
         };
+    }
+    function processEventCallback(methodName, callback, returnValue) {
+        if (ON_API_RE.test(methodName)) {
+            let methodCallbackMap = eventCallbackMap.get(callback);
+            if (!methodCallbackMap) {
+                methodCallbackMap = new Map();
+                eventCallbackMap.set(callback, methodCallbackMap);
+            }
+            let eventCallback = methodCallbackMap.get(methodName);
+            if (!eventCallback) {
+                eventCallback = processCallback(methodName, callback, returnValue);
+                methodCallbackMap.set(methodName, eventCallback);
+            }
+            return eventCallback;
+        }
+        if (OFF_API_RE.test(methodName)) {
+            const onMethodName = getOnApiName(methodName);
+            const methodCallbackMap = eventCallbackMap.get(callback);
+            const eventCallback = methodCallbackMap === null || methodCallbackMap === void 0 ? void 0 : methodCallbackMap.get(onMethodName);
+            if (eventCallback) {
+                return eventCallback;
+            }
+            return callback;
+        }
+        return processCallback(methodName, callback, returnValue);
     }
     function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
         if (isPlainObject(fromArgs)) {
@@ -1081,7 +1249,8 @@ function initWrapper(protocols) {
             if (isFunction(argsOption)) {
                 argsOption(fromArgs, {});
             }
-            fromArgs = processCallback(methodName, fromArgs, returnValue);
+            // 事件 API 需要保证 on/off 传给平台的回调引用一致。
+            fromArgs = processEventCallback(methodName, fromArgs, returnValue);
         }
         return fromArgs;
     }
@@ -1101,10 +1270,13 @@ function initWrapper(protocols) {
          * - 开发者自定义的方法属性也会进入此方法，此时method为undefined，应返回undefined
          */
         const hasProtocol = hasOwn(protocols, methodName);
+        const onMethodName = getOnApiName(methodName);
+        const hasOnProtocol = !!onMethodName && hasOwn(protocols, onMethodName);
         if (!hasProtocol && typeof my[methodName] !== 'function') {
             return method;
         }
         const needWrapper = hasProtocol ||
+            hasOnProtocol ||
             isFunction(protocols.returnValue) ||
             isContextApi(methodName) ||
             isTaskApi(methodName);
@@ -1573,6 +1745,208 @@ function initGetProvider(providers) {
     };
 }
 
+const API_ON_APP_ROUTE = 'onAppRoute';
+const API_OFF_APP_ROUTE = 'offAppRoute';
+const API_ON_BEFORE_APP_ROUTE = 'onBeforeAppRoute';
+const API_OFF_BEFORE_APP_ROUTE = 'offBeforeAppRoute';
+const API_REWRITE_ROUTE = 'rewriteRoute';
+const eventTransport = /*#__PURE__*/ new Emitter();
+let activeBeforeAppRouteContext;
+const MAX_APP_ROUTE_REWRITE_COUNT = 100;
+const APP_ROUTE_ERROR_CODE = 4;
+function createAppRouteRuntime(options = {}) {
+    let routeEventId = 0;
+    // 独立通道避免依赖平台 Bridge，对外仍沿用 define API 的校验和拦截器。
+    const onAppRoute = defineOnApi(API_ON_APP_ROUTE, () => { }, {
+        eventTransport,
+    });
+    const offAppRoute = defineOffApi(API_OFF_APP_ROUTE, () => { }, {
+        allowClearAll: true,
+        eventTransport,
+    });
+    const onBeforeAppRoute = defineOnApi(API_ON_BEFORE_APP_ROUTE, () => { }, { eventTransport });
+    const offBeforeAppRoute = defineOffApi(API_OFF_BEFORE_APP_ROUTE, () => { }, {
+        allowClearAll: true,
+        eventTransport,
+    });
+    const rewriteRoute = defineAsyncApi(API_REWRITE_ROUTE, ({ url, preserveQuery }, { resolve, reject }) => {
+        const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
+        const context = activeBeforeAppRouteContext;
+        if (!context) {
+            rejectRewriteRoute('rewriteRoute is only allowed in a onBeforeAppRoute callback');
+            return;
+        }
+        if (context.event.openType === 'navigateBack') {
+            rejectRewriteRoute('a "navigateBack" event is not allowed to be rewritten');
+            return;
+        }
+        if (context.rewrite) {
+            rejectRewriteRoute(`rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`);
+            return;
+        }
+        if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
+            rejectRewriteRoute(`rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`);
+            return;
+        }
+        if (!context.normalizeRewriteRoute) {
+            rejectRewriteRoute('not supported');
+            return;
+        }
+        const rewrite = context.normalizeRewriteRoute({ url, preserveQuery }, context.event);
+        if (typeof rewrite === 'string') {
+            rejectRewriteRoute(rewrite);
+            return;
+        }
+        context.rewrite = rewrite;
+        resolve();
+    }, {
+        url: {
+            type: String,
+            required: true,
+        },
+        preserveQuery: Boolean,
+    });
+    function createAppRouteContext(event) {
+        var _a, _b;
+        const timeStamp = (_a = event.timeStamp) !== null && _a !== void 0 ? _a : Date.now();
+        return {
+            event: {
+                path: event.path,
+                query: Object.assign({}, event.query),
+                openType: event.openType,
+                notFound: event.notFound,
+                timeStamp,
+                routeEventId: (_b = event.routeEventId) !== null && _b !== void 0 ? _b : `${timeStamp}-${++routeEventId}`,
+            },
+            normalizeRewriteRoute: options.normalizeRewriteRoute,
+        };
+    }
+    function dispatchBeforeAppRoute(context) {
+        const event = context.event;
+        const beforeEvent = {
+            path: event.path,
+            query: Object.assign({}, event.query),
+            openType: event.openType,
+            notFound: event.notFound,
+            routeEventId: event.routeEventId,
+        };
+        const previousContext = activeBeforeAppRouteContext;
+        activeBeforeAppRouteContext = context;
+        try {
+            eventTransport.emit(API_ON_BEFORE_APP_ROUTE, beforeEvent);
+        }
+        catch (error) {
+            // 路由事件监听器异常不能影响底层路由流程。
+            console.error(error);
+        }
+        finally {
+            activeBeforeAppRouteContext = previousContext;
+        }
+        return context.rewrite;
+    }
+    function dispatchAppRoute(context) {
+        const event = context.event;
+        try {
+            const routeEvent = {
+                path: event.path,
+                query: Object.assign({}, event.query),
+                openType: event.openType,
+                notFound: event.notFound,
+                timeStamp: event.timeStamp,
+                routeEventId: event.routeEventId,
+            };
+            eventTransport.emit(API_ON_APP_ROUTE, routeEvent);
+        }
+        catch (error) {
+            // 路由事件监听器异常不能影响底层路由流程。
+            console.error(error);
+        }
+    }
+    return {
+        onAppRoute,
+        offAppRoute,
+        onBeforeAppRoute,
+        offBeforeAppRoute,
+        rewriteRoute,
+        createAppRouteContext,
+        dispatchBeforeAppRoute,
+        dispatchAppRoute,
+    };
+}
+
+function normalizeOpenType(openType) {
+    switch (openType) {
+        case 'appLaunch':
+        case 'navigateTo':
+        case 'redirectTo':
+        case 'switchTab':
+        case 'reLaunch':
+        case 'navigateBack':
+            return openType;
+        case 'back':
+            return 'navigateBack';
+        case 'tabClick':
+            return 'switchTab';
+    }
+}
+function normalizePath(path) {
+    return path.replace(/^app:\/\//, '');
+}
+function createAlipayAppRouteApi(platform) {
+    const routeContexts = new Map();
+    const appRouteRuntime = createAppRouteRuntime();
+    if (platform.canIUse('createRouteObserver')) {
+        const observer = platform.createRouteObserver({ pages: ['app://*'] });
+        observer.beforeRoute((payload) => {
+            const openType = normalizeOpenType(payload.openType);
+            if (!openType) {
+                return;
+            }
+            const context = appRouteRuntime.createAppRouteContext({
+                path: normalizePath(payload.path),
+                query: payload.query || {},
+                openType,
+                // 支付宝 beforeRoute 不提供 notFound，缺页会在 onPageNotFound 中另行通知。
+                notFound: false,
+                routeEventId: payload.routeEventId,
+            });
+            routeContexts.set(payload.routeEventId, context);
+            appRouteRuntime.dispatchBeforeAppRoute(context);
+        });
+        observer.afterShow((payload) => {
+            const routeEventId = payload.routeEventId;
+            const context = routeContexts.get(routeEventId);
+            routeContexts.delete(routeEventId);
+            if (!context) {
+                return;
+            }
+            context.event.path = normalizePath(payload.path);
+            context.event.query = Object.assign({}, payload.query);
+            appRouteRuntime.dispatchAppRoute(context);
+        });
+        observer.afterRoute((payload) => {
+            routeContexts.delete(payload.routeEventId);
+        });
+        observer.onPageNotFound((payload) => {
+            routeContexts.delete(payload.routeEventId);
+        });
+        observer.observe();
+    }
+    return {
+        onAppRoute: appRouteRuntime.onAppRoute,
+        offAppRoute: appRouteRuntime.offAppRoute,
+        onBeforeAppRoute: appRouteRuntime.onBeforeAppRoute,
+        offBeforeAppRoute: appRouteRuntime.offBeforeAppRoute,
+        rewriteRoute: defineAsyncApi(API_REWRITE_ROUTE, (_, { reject }) => reject('not supported', { errCode: 4 })),
+    };
+}
+const appRouteApi = /*#__PURE__*/ createAlipayAppRouteApi(my);
+const onAppRoute = appRouteApi.onAppRoute;
+const offAppRoute = appRouteApi.offAppRoute;
+const onBeforeAppRoute = appRouteApi.onBeforeAppRoute;
+const offBeforeAppRoute = appRouteApi.offBeforeAppRoute;
+const rewriteRoute = appRouteApi.rewriteRoute;
+
 let onKeyboardHeightChangeCallback;
 const getProvider = initGetProvider({
     oauth: ['alipay'],
@@ -1692,9 +2066,14 @@ var shims = /*#__PURE__*/Object.freeze({
   createSelectorQuery: createSelectorQuery,
   getProvider: getProvider,
   getStorageSync: getStorageSync,
+  offAppRoute: offAppRoute,
+  offBeforeAppRoute: offBeforeAppRoute,
   offKeyboardHeightChange: offKeyboardHeightChange,
+  onAppRoute: onAppRoute,
+  onBeforeAppRoute: onBeforeAppRoute,
   onKeyboardHeightChange: onKeyboardHeightChange,
   removeStorageSync: removeStorageSync,
+  rewriteRoute: rewriteRoute,
   setStorageSync: setStorageSync,
   startGyroscope: startGyroscope
 });

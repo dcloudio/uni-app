@@ -141,7 +141,6 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
 
     delete (_systemInfo as any).screenTop
     delete (_systemInfo as any).enableDebug
-    if (!__uniConfig.darkmode) delete (_systemInfo as any).theme
 
     return _systemInfo
   }

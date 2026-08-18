@@ -47,6 +47,7 @@ export type UTSOutputOptions = {
   outDir: string
   outFilename?: string
   package: string
+  utsBridgeName?: string
   banner?: string
   footer?: string
   imports?: string[]
@@ -133,6 +134,50 @@ export interface ToCppCodeOptions {
   code: string
   treeshake?: boolean
 }
+
+export type UTSBridgeMethodType =
+  | 'function'
+  | 'constructor'
+  | 'staticMethod'
+  | 'staticGetter'
+  | 'staticSetter'
+  | 'method'
+  | 'getter'
+  | 'setter'
+
+export interface UTSBridgeMethod {
+  name: string
+  method_id: number
+  type: UTSBridgeMethodType
+  keep_alive: boolean
+  async: boolean
+  return_type?: string
+}
+
+export interface UTSBridgeFunction extends UTSBridgeMethod {
+  is_default?: boolean
+}
+
+export interface UTSBridgeClass {
+  name: string
+  is_default?: boolean
+  constructor: UTSBridgeMethod
+  static_methods: UTSBridgeMethod[]
+  methods: UTSBridgeMethod[]
+}
+
+export interface UTSBridgeInterface {
+  name: string
+  methods: UTSBridgeMethod[]
+}
+
+export interface UTSBridge {
+  uts_bridge_name: string
+  functions: UTSBridgeFunction[]
+  classes: UTSBridgeClass[]
+  interfaces: UTSBridgeInterface[]
+}
+
 export interface UTSResult {
   filename?: string
   deps?: string[]
@@ -144,6 +189,7 @@ export interface UTSResult {
   exports?: string[]
   time?: number
   error?: Error
+  uts_bridge?: UTSBridge
 }
 
 export interface UTSBundleOptions extends UTSOptions {}

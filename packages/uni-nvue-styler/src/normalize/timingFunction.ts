@@ -3,7 +3,7 @@ import { NUM_REGEXP, type Normalize, supportedEnumReason } from '../utils'
 export const normalizeTimingFunction: Normalize = (v) => {
   v = (v || '').toString()
 
-  if (v.match(/^linear|ease|ease-in|ease-out|ease-in-out$/)) {
+  if (v.match(/^(?:linear|ease|ease-in|ease-out|ease-in-out)$/)) {
     return { value: v }
   }
 

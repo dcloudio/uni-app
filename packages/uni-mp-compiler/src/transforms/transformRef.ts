@@ -119,12 +119,12 @@ export function rewriteRefProp(
   }
   parseExprWithRewrite(
     context.helperString(helper) +
-    '(' +
-    code +
-    ', ' +
-    id +
-    (Object.keys(opts).length ? ', ' + JSON.stringify(opts) : '') +
-    ')',
+      '(' +
+      code +
+      ', ' +
+      id +
+      (Object.keys(opts).length ? ', ' + JSON.stringify(opts) : '') +
+      ')',
     prop.loc,
     context
   )
@@ -156,10 +156,8 @@ function parseAlipayRefCode(
 
 function processInlineRef(prop: AttributeNode, context: TransformContext) {
   const properties: ObjectProperty[] = []
-  const { refKey } = parseRef(prop, context)
-  properties.push(
-    objectProperty(identifier('r'), identifier(prop.value!.content))
-  )
+  const { expr, refKey } = parseRef(prop, context)
+  properties.push(objectProperty(identifier('r'), expr!))
   if (refKey) {
     properties.push(objectProperty(identifier('k'), stringLiteral(refKey)))
   }

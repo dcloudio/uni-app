@@ -38,6 +38,8 @@ function IEVersion() {
 }
 
 export function getTheme() {
+  if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
+    return undefined
   if (__uniConfig.darkmode !== true)
     return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : 'light'
   try {

@@ -31,8 +31,17 @@ import { ON_POP_GESTURE } from '../../constants'
 import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
 import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
+// #if _VAPOR_
+import {
+  getCurrentDevToolsPage,
+  hasDevToolsPageChangedListener,
+  notifyDevToolsPageChanged,
+} from './dialogPage'
+// #endif
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import { closeDialogPage } from '../../api/route/closeDialogPage'
+import type { AppRouteContext, AppRouteOpenType } from '@dcloudio/uni-api'
+import { dispatchAppRoute } from '../../api/route/appRoute'
 
 type PageNodeOptions = {}
 
@@ -41,6 +50,8 @@ export interface RegisterPageOptions {
   path: string
   query: Record<string, string>
   openType: UniApp.OpenType
+  appRouteOpenType?: AppRouteOpenType
+  appRouteContext?: AppRouteContext
   webview?: IPage
   nvuePageVm?: ComponentPublicInstance
   eventChannel?: EventChannel
@@ -156,6 +167,8 @@ export function registerPage(
     path,
     query,
     openType,
+    appRouteOpenType,
+    appRouteContext,
     webview,
     nvuePageVm,
     eventChannel,
@@ -207,6 +220,13 @@ export function registerPage(
   function fn() {
     createVuePage(id, route, query, pageInstance, {}, nativePage).then(
       (pageComponentPublicInstance) => {
+        if (appRouteContext) {
+          // mountPage 返回时，非 Tab 页首次 onLoad、onShow 已同步执行完成。
+          dispatchAppRoute(appRouteContext)
+        } else if (appRouteOpenType) {
+          // mountPage 返回时，非 Tab 页首次 onLoad、onShow 已同步执行完成。
+          dispatchAppRoute(route, query, appRouteOpenType)
+        }
         // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
         // nativePage.addPageEventListener(ON_SHOW, (_) => {
         //   invokeHook(page, ON_SHOW)
@@ -215,17 +235,20 @@ export function registerPage(
         if (pages.length === 1) {
           // dialogPages 数据 ios 端不需要框架处理，预期仅在鸿蒙上生效
           const homePage = pages[0] as unknown as UniPage
-          let sourceDialogPages: UniPage[] = []
-          let targetDialogPages: UniPage[] = []
           if (homeDialogPages.length) {
-            sourceDialogPages = homeDialogPages
-            targetDialogPages = homePage.getDialogPages()
+            handleHomeDialogPages(
+              homePage,
+              homeDialogPages,
+              homePage.getDialogPages()
+            )
           }
           if (homeSystemDialogPages.length) {
-            sourceDialogPages = homeSystemDialogPages
-            targetDialogPages = getSystemDialogPages(homePage)
+            handleHomeDialogPages(
+              homePage,
+              homeSystemDialogPages,
+              getSystemDialogPages(homePage)
+            )
           }
-          handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages)
         }
         nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
           uni.navigateBack({
@@ -474,6 +497,17 @@ export function registerDialogPage(
           invokeHook(pageComponentPublicInstance, ON_RESIZE, args)
         })
         nativePage.startRender()
+        // #if _VAPOR_
+        if (
+          typeof __UNI_X_DEVTOOLS__ !== 'undefined' &&
+          __UNI_X_DEVTOOLS__ &&
+          hasDevToolsPageChangedListener() &&
+          !isSystemDialogPage(dialogPage) &&
+          getCurrentDevToolsPage() === dialogPage
+        ) {
+          notifyDevToolsPageChanged()
+        }
+        // #endif
       }
     )
   }

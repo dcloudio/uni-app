@@ -219,6 +219,43 @@ callWithAsyncErrorHandling@uni-app-x-framework.js:2286:38
     ).toMatchSnapshot()
   })
 
+  test('parse app-android JavaScript V8 stacktrace', async () => {
+    const cacheDir = path.resolve(
+      __dirname,
+      'examples/uni-app-x/output/cache/app-ios'
+    )
+    const options = {
+      platform: 'app-android' as const,
+      language: 'javascript' as const,
+      cacheDir,
+    }
+    expect(
+      await parseRuntimeStacktrace(
+        `Error: compress parameters length error, got 0 parameters
+    at <embedded>:20368:15
+    at /data/data/io.dcloud.uniappx/apps/__UNI__XXXXXXX/www/app-service.js:9:64
+    at callWithErrorHandling (<embedded>:4680:21)`,
+        options
+      )
+    ).toMatchSnapshot()
+
+    const expectedPosition = 'at pages/index/index.uvue:7:12'
+    expect(
+      await parseRuntimeStacktrace(
+        `Error: test
+    at onLoad (/data/data/io.dcloud.uniappx/apps/__UNI__XXXXXXX/www/app-service.js:9:64)`,
+        options
+      )
+    ).toContain(expectedPosition)
+    expect(
+      await parseRuntimeStacktrace(
+        `Error: test
+onLoad@/data/data/io.dcloud.uniappx/apps/__UNI__XXXXXXX/www/app-service.js:9:64`,
+        options
+      )
+    ).toContain(expectedPosition)
+  })
+
   test('parseWeixinRuntimeStacktrace', async () => {
     const outputDir = path.resolve(
       __dirname,

@@ -6,6 +6,14 @@ import {
 } from '../service/framework/page'
 import * as components from './components'
 
+// #if _VAPOR_
+export {
+  getCurrentDevToolsPage,
+  isDevToolsDialogPage,
+  setDevToolsPageChangedListener,
+} from './framework/page/dialogPage'
+// #endif
+
 import {
   registerSystemRoute as __registerSystemRoute,
   systemRoutes as __uniSystemRoutes,

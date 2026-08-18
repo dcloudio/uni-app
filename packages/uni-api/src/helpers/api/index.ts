@@ -14,30 +14,45 @@ import {
   invokeCallback,
   offKeepAliveApiCallback,
   onKeepAliveApiCallback,
+  removeAllKeepAliveApiCallbacks,
   removeKeepAliveApiCallback,
 } from './callback'
-import type { CALLBACK_TYPES } from './callback'
+import type { CALLBACK_TYPES, OnApiEventTransport } from './callback'
 import { promisify } from './promise'
+
+/**
+ * 统一格式化 API 首参，确保 formatArgs 阶段总是拿到可写对象。
+ */
+function normalizeFormatApiParams(args: any[]): Record<string, any> {
+  const params = args[0]
+  if (isPlainObject(params)) {
+    return params as Record<string, any>
+  }
+  const normalizedParams: Record<string, any> = {}
+  args[0] = normalizedParams
+  return normalizedParams
+}
 
 function formatApiArgs<T extends ApiLike>(
   args: any[],
   options?: ApiOptions<T>
 ) {
-  const params = args[0]
+  const rawParams = args[0]
   if (
     !options ||
     !options.formatArgs ||
-    (!isPlainObject(options.formatArgs) && isPlainObject(params))
+    (!isPlainObject(options.formatArgs) && isPlainObject(rawParams))
   ) {
     return
   }
+  const params = normalizeFormatApiParams(args)
   const formatArgs = options.formatArgs!
   const keys = Object.keys(formatArgs)
   for (let i = 0; i < keys.length; i++) {
     const name = keys[i]
     const formatterOrDefaultValue = formatArgs[name]!
     if (isFunction(formatterOrDefaultValue)) {
-      const errMsg = formatterOrDefaultValue(args[0][name], params)
+      const errMsg = formatterOrDefaultValue(params[name], params)
       if (isString(errMsg)) {
         return errMsg
       }
@@ -85,10 +100,11 @@ function invokeFail(
 
   if (__X__) {
     if (typeof UniError !== 'undefined') {
-      res =
-        typeof errRes.errCode !== 'undefined'
-          ? new UniError(name, errRes.errCode, apiErrMsg)
-          : new UniError(apiErrMsg, errRes)
+      const errOptions = extend({}, errRes)
+      if (typeof errOptions.errSubject === 'undefined') {
+        errOptions.errSubject = name
+      }
+      res = new UniError(apiErrMsg, errOptions)
     }
   }
 
@@ -126,7 +142,7 @@ function checkCallback(callback: Function) {
 function wrapperOnApi<T extends ApiLike>(
   name: string,
   fn: Function,
-  options?: ApiOptions<T>
+  options?: DefineOnApiOptions<T>
 ) {
   return (callback: Function) => {
     checkCallback(callback)
@@ -138,29 +154,50 @@ function wrapperOnApi<T extends ApiLike>(
     const isFirstInvokeOnApi = !findInvokeCallbackByName(name)
     createKeepAliveApiCallback(name, callback)
     if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name)
+      onKeepAliveApiCallback(name, options?.eventTransport)
       fn()
     }
   }
 }
 
+export interface DefineOnApiOptions<T extends ApiLike> extends ApiOptions<T> {
+  eventTransport?: OnApiEventTransport
+}
+
+export interface DefineOffApiOptions<T extends ApiLike>
+  extends DefineOnApiOptions<T> {
+  allowClearAll?: boolean
+}
+
 function wrapperOffApi<T extends ApiLike>(
   name: string,
   fn: Function,
-  options?: ApiOptions<T>
+  options?: DefineOffApiOptions<T>
 ) {
-  return (callback: Function) => {
-    checkCallback(callback)
-    const errMsg = beforeInvokeApi(name, [callback], undefined, options)
+  return (callback?: Function | null) => {
+    const clearAll = options?.allowClearAll === true && callback == null
+    if (!clearAll) {
+      checkCallback(callback as Function)
+    }
+    const errMsg = beforeInvokeApi(
+      name,
+      clearAll ? [] : [callback],
+      undefined,
+      options
+    )
     if (errMsg) {
       throw new Error(errMsg)
     }
-    name = name.replace('off', 'on')
-    removeKeepAliveApiCallback(name, callback)
+    const onApiName = name.replace('off', 'on')
+    if (clearAll) {
+      removeAllKeepAliveApiCallbacks(onApiName)
+    } else {
+      removeKeepAliveApiCallback(onApiName, callback!)
+    }
     // 是否还存在监听，若已不存在，则移除onMethod监听
-    const hasInvokeOnApi = findInvokeCallbackByName(name)
+    const hasInvokeOnApi = findInvokeCallbackByName(onApiName)
     if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(name)
+      offKeepAliveApiCallback(onApiName, options?.eventTransport)
       fn()
     }
   }
@@ -230,7 +267,7 @@ function wrapperAsyncApi<T extends ApiLike>(
 export function defineOnApi<T extends ApiLike>(
   name: string,
   fn: () => void,
-  options?: ApiOptions<T>
+  options?: DefineOnApiOptions<T>
 ) {
   return wrapperOnApi(name, fn, options) as unknown as T
 }
@@ -238,7 +275,7 @@ export function defineOnApi<T extends ApiLike>(
 export function defineOffApi<T extends ApiLike>(
   name: string,
   fn: () => void,
-  options?: ApiOptions<T>
+  options?: DefineOffApiOptions<T>
 ) {
   return wrapperOffApi(name, fn, options) as unknown as T
 }

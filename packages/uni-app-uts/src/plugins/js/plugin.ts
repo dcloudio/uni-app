@@ -9,6 +9,7 @@ import {
   buildUniExtApis,
   createEncryptCssUrlReplacer,
   emptyDir,
+  getHarmonyRuntimePackageName,
   hash,
   injectCssPlugin,
   injectCssPostPlugin,
@@ -21,11 +22,7 @@ import {
   uvueOutDir,
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
-import {
-  SHARED_DATA_LIB_NAME,
-  configResolved,
-  createUniOptions,
-} from '../utils'
+import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
 import { uniAppJsPlugin } from './js'
 import { writeAppServiceSourceMapToCache } from './sourceMap'
@@ -152,6 +149,8 @@ export function createUniAppJsEnginePlugin(
   platform: 'app-android' | 'app-ios' | 'app-harmony'
 ) {
   return function uniAppJsEnginePlugin(): UniVitePlugin {
+    const isX = process.env.UNI_APP_X === 'true'
+    const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
     const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
     const outputDir = process.env.UNI_OUTPUT_DIR
     const uvueOutputDir = uvueOutDir(platform)
@@ -191,17 +190,18 @@ export function createUniAppJsEnginePlugin(
     }
     const isESM = process.env.UNI_APP_OUTPUT_FORMAT === 'esm'
 
-    const paths: Record<string, string> = isESM
-      ? {
-          // vue: '@dcloudio/uni-app-x-runtime',
-          '@vue/shared': '@dcloudio/uni-app-x-runtime',
-        }
-      : {}
-
-    const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
     const isAndroid = platform === 'app-android'
     const isIOS = platform === 'app-ios'
     const isHarmony = platform === 'app-harmony'
+    // TODO 目前仅鸿蒙支持esm格式
+    const paths: Record<string, string> =
+      isESM && isHarmony
+        ? {
+            // vue: getHarmonyRuntimePackageName(isX, isDom2),
+            '@vue/shared': getHarmonyRuntimePackageName(isX, isDom2),
+          }
+        : {}
+
     // 只缓存 sourcemap 内容 hash，不缓存完整内容，避免用空间换时间。
     const sourceMapHashCache: Map<string, string> = new Map<string, string>()
     // 仅限定鸿蒙 DOM2 开发模式，避免影响其它平台和生产构建。
@@ -210,9 +210,6 @@ export function createUniAppJsEnginePlugin(
     const globals = {
       vue: 'Vue',
       '@vue/shared': 'uni.VueShared',
-    }
-    if (isDom2 && (isAndroid || isIOS)) {
-      globals[SHARED_DATA_LIB_NAME] = '__uniSharedDataLib'
     }
     return {
       name: 'uni:app-uts',
@@ -228,13 +225,15 @@ export function createUniAppJsEnginePlugin(
             assetsInlineLimit: 0,
             target: isIOS
               ? [
-                  'ios12',
+                  isDom2 ? 'ios14' : 'ios12',
                   'es2020',
                   'edge88',
                   'firefox78',
                   'chrome87',
                   'safari14',
                 ]
+              : isAndroid && isDom2
+              ? ['es2022']
               : isHarmony
               ? ['es2022']
               : undefined,
@@ -296,7 +295,10 @@ export function createUniAppJsEnginePlugin(
         if (!isDom2) {
           initUniAppJsEngineDom1CssPlugin(config)
         }
-        insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
+        // .lang 开启后由 uni:vapor-script 统一处理 JS/TS，避免重复解析普通 JS。
+        if (!isDom2 || process.env.UNI_APP_X_VAPOR_SCRIPT_LANG !== 'true') {
+          insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
+        }
         // 如果开启了 vapor 模式，则禁用 vue 的 devtools，让 @vitejs/plugin-vue 不管是开发还是发行，均生成发行代码
         // 理论上非 vapor 也应该禁用，但为了不引发其他问题，暂时只禁用 vapor 模式
         if (isDom2) {

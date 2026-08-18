@@ -325,6 +325,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (containerRef.value) {
         containerRef.value.scrollLeft = lastScrollLeft
         containerRef.value.scrollTop = lastScrollTop
+        resetContainerSize()
       }
     })
 
@@ -445,15 +446,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           : 'overflow: auto hidden;'
       }scroll-behavior: ${props.scrollWithAnimation ? 'smooth' : 'auto'};`
     })
-    const contentStyle = computed(() => {
-      return `position: relative; ${isVertical.value ? 'height' : 'width'}: ${
-        state.totalSize
-      }px;`
-    })
     const visibleStyle = computed(() => {
-      return `position: absolute; ${
-        isVertical.value ? 'width' : 'height'
-      }: 100%; ${isVertical.value ? 'top' : 'left'}: ${state.placehoderSize}px;`
+      return `${isVertical.value ? 'width' : 'height'}: 100%;`
+    })
+    const placeholderHeadStyle = computed(() => {
+      return `${isVertical.value ? 'height' : 'width'}: ${
+        state.headPlaceholderSize
+      }px; ${isVertical.value ? 'top' : 'left'}: 0;`
+    })
+    const placeholderTailStyle = computed(() => {
+      return `${isVertical.value ? 'height' : 'width'}: ${
+        state.tailPlaceholderSize
+      }px; ${isVertical.value ? 'top' : 'left'}: 0;`
     })
 
     let visibleVNode = null as VNode | null
@@ -500,11 +504,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                   : null}
               </Refresher>
             ) : null}
-            <div class="uni-list-view-content" style={contentStyle.value}>
+            <div class="uni-list-view-content">
+              <div style={placeholderHeadStyle.value}></div>
               {visibleVNode}
+              <div style={placeholderTailStyle.value}></div>
             </div>
           </div>
-          <ResizeSensor onResize={onResize} />
+          <ResizeSensor initial={true} onResize={onResize} />
         </uni-list-view>
       )
     }
@@ -517,7 +523,8 @@ interface State {
   defaultHeaderSize: number
   defaultHeaderSizeUpdated: boolean
   totalSize: number
-  placehoderSize: number
+  headPlaceholderSize: number
+  tailPlaceholderSize: number
   visibleSize: number
   containerSize: number
   cacheScreenCount: number
@@ -538,7 +545,8 @@ function useListViewState(props: Props) {
     defaultHeaderSize: 40,
     defaultHeaderSizeUpdated: false,
     totalSize: 0,
-    placehoderSize: 0,
+    headPlaceholderSize: 0,
+    tailPlaceholderSize: 0,
     visibleSize: 0,
     containerSize: 0,
     cacheScreenCount: 10,
@@ -598,17 +606,19 @@ function rearrange(
   state.lastRenderOffsetMax = offsetMax
   let tempTotalSize = 0
   let tempVisibleSize = 0
-  let tempPlaceholderSize = 0
+  let tempHeadPlaceholderSize = 0
+  let tempTailPlaceholderSize = 0
   let start = false,
     end = false
   function callback(child: VNode) {
     const childType = child.component?.type.name
     const status = child.component?.exposed?.__listViewChildStatus
     if (childType === 'StickySection') {
-      const { headSize, tailSize, placeholderSize } =
+      const { headSize, tailSize, headPlaceholderSize, tailPlaceholderSize } =
         status as StickySectionStatus
       tempTotalSize += headSize.value
-      let tempPlaceholderSizeOfSection = 0
+      let tempTailPlaceholderSizeOfSection = 0
+      let tempHeadPlaceholderSizeOfSection = 0
       traverseStickySection(child, (child: VNode) => {
         const childType = child.component?.type.name
         const status = child.component?.exposed?.__listViewChildStatus
@@ -643,18 +653,23 @@ function rearrange(
           if (start && !end) {
             tempVisibleSize += itemSize
             status.visible.value = true
+          } else if (start && end) {
+            status.visible.value = false
+            tempTailPlaceholderSizeOfSection += itemSize
           } else {
             status.visible.value = false
-            tempPlaceholderSizeOfSection += itemSize
+            tempHeadPlaceholderSizeOfSection += itemSize
           }
           if (!end && tempTotalSize >= offsetMax) {
             end = true
           }
         }
       })
-      tempVisibleSize += tempPlaceholderSizeOfSection
+      tempVisibleSize +=
+        tempHeadPlaceholderSizeOfSection + tempTailPlaceholderSizeOfSection
       tempTotalSize += tailSize.value
-      placeholderSize.value = tempPlaceholderSizeOfSection
+      headPlaceholderSize.value = tempHeadPlaceholderSizeOfSection
+      tailPlaceholderSize.value = tempTailPlaceholderSizeOfSection
     } else if (childType === 'ListItem') {
       const { cachedSize, cachedSizeUpdated } = status as ListItemStatus
       if (
@@ -671,7 +686,9 @@ function rearrange(
         start = true
       }
       if (!start) {
-        tempPlaceholderSize += itemSize
+        tempHeadPlaceholderSize += itemSize
+      } else if (start && end) {
+        tempTailPlaceholderSize += itemSize
       }
       if (start && !end) {
         tempVisibleSize += itemSize
@@ -699,7 +716,8 @@ function rearrange(
   traverseListView(visibleVNode!, callback)
   state.totalSize = tempTotalSize
   state.visibleSize = tempVisibleSize
-  state.placehoderSize = tempPlaceholderSize
+  state.headPlaceholderSize = tempHeadPlaceholderSize
+  state.tailPlaceholderSize = tempTailPlaceholderSize
 }
 
 function handleTouchEvent(

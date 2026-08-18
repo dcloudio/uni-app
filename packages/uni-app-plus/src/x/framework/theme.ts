@@ -8,13 +8,30 @@ import { parsePageStyle } from './page/register'
 import { initRouteOptions } from '../../service/framework/page/routeOptions'
 import { fixBorderStyle } from './app/utils'
 import { UTSJSONObject } from '@dcloudio/uni-shared'
+import { getNativeApp } from './app/app'
 
 const APP_THEME_AUTO = 'auto'
 export const THEME_KEY_PREFIX = '@'
 
 type IThemeMode = 'dark' | 'light'
+type ThemeStyleSnapshot = Record<string, unknown>
+
+interface ThemeVariants {
+  light: ThemeStyleSnapshot
+  dark: ThemeStyleSnapshot
+  preserveDialogBackgroundColorContent?: true
+}
+
+interface AppThemeConfig {
+  pages: Record<string, ThemeVariants>
+  tabBar?: ThemeVariants
+}
 
 declare const uni: any
+declare function __uni__app_RegisterThemeConfig(
+  appId: number,
+  config: AppThemeConfig
+): boolean
 
 // 获取 appTheme > osTheme
 export function getAppThemeFallbackOS(): IThemeMode {
@@ -176,7 +193,119 @@ export function normalizeTabBarStyles(
   normalizeStyles(tabBar, themeMap)
 }
 
+function hasThemeValue(value: unknown): boolean {
+  if (isString(value)) {
+    return value.charCodeAt(0) === 64
+  }
+  if (isArray(value)) {
+    return value.some(hasThemeValue)
+  }
+  return (
+    isPlainObject(value) &&
+    Object.keys(value).some((key) => hasThemeValue(value[key]))
+  )
+}
+
+function createThemeVariants(
+  style: Record<string, unknown>,
+  themeConfig: UniApp.ThemeJson
+): ThemeVariants | null {
+  const snapshot: ThemeStyleSnapshot = {}
+  Object.keys(style).forEach((key) => {
+    if (hasThemeValue(style[key])) {
+      snapshot[key] = style[key]
+    }
+  })
+  if (Object.keys(snapshot).some((key) => key.startsWith('navigation'))) {
+    Object.keys(style).forEach((key) => {
+      if (key.startsWith('navigation')) {
+        snapshot[key] = style[key]
+      }
+    })
+  }
+  if (Object.keys(snapshot).length === 0) {
+    return null
+  }
+
+  const light = JSON.parse(JSON.stringify(snapshot)) as ThemeStyleSnapshot
+  const dark = JSON.parse(JSON.stringify(snapshot)) as ThemeStyleSnapshot
+  normalizeStyles(light, themeConfig.light || {})
+  normalizeStyles(dark, themeConfig.dark || {})
+  // 页面创建时已确定 default/custom；动态主题暂不切换导航栏类型。
+  delete light.navigationStyle
+  delete dark.navigationStyle
+  if (JSON.stringify(light) === JSON.stringify(dark)) {
+    return null
+  }
+  return { light, dark }
+}
+
+export function createThemeSnapshots(
+  routes: ReadonlyArray<Pick<UniApp.UniRoute, 'path' | 'meta'>> = __uniRoutes,
+  themeConfig: UniApp.ThemeJson | undefined = __uniConfig.themeConfig,
+  tabBarConfig:
+    | Record<string, unknown>
+    | undefined = __uniConfig.getTabBarConfig()
+): AppThemeConfig | undefined {
+  if (themeConfig == null) {
+    return
+  }
+  const pages: Record<string, ThemeVariants> = {}
+  routes.forEach((route) => {
+    const routePath = route.meta.route || route.path.replace(/^\/+/, '')
+    const style = initRouteOptions(route.path, '').meta as unknown as Record<
+      string,
+      unknown
+    >
+    delete style.navigationBar
+    if (
+      Object.keys(style).some((key) => key.startsWith('navigation')) &&
+      style.navigationBarTextStyle !== 'custom' &&
+      !style.isQuit &&
+      routePath !== __uniConfig.realEntryPagePath
+    ) {
+      style.navigationBarAutoBackButton = true
+    }
+    const variants = createThemeVariants(style, themeConfig)
+    if (variants != null) {
+      if (
+        !route.meta.backgroundColorContent &&
+        'backgroundColorContent' in variants.light
+      ) {
+        variants.preserveDialogBackgroundColorContent = true
+      }
+      pages[routePath] = variants
+    }
+  })
+
+  const tabBar = tabBarConfig
+    ? createThemeVariants(tabBarConfig, themeConfig) || undefined
+    : undefined
+  if (Object.keys(pages).length === 0 && tabBar == null) {
+    return
+  }
+  const result: AppThemeConfig = { pages }
+  if (tabBar != null) {
+    result.tabBar = tabBar
+  }
+  return result
+}
+
+function registerThemeConfig() {
+  const config = createThemeSnapshots()
+  if (config != null) {
+    const app = getNativeApp() as IApp & { readonly id: number }
+    if (!__uni__app_RegisterThemeConfig(app.id, config)) {
+      throw new Error('Failed to register app theme config')
+    }
+  }
+}
+
 export function useTheme() {
+  if (__VAPOR_PLATFORM__ === 'app-harmony') {
+    registerThemeConfig()
+    return
+  }
   // 监听
   registerThemeChange(onThemeChange)
 }

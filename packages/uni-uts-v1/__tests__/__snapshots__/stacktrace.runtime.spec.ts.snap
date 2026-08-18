@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`uts:stacktrace:runtime parse app-android JavaScript V8 stacktrace 1`] = `
+"error: [EXCEPTION] Error: compress parameters length error, got 0 parameters
+    at <embedded>:20368:15
+at pages/index/index.uvue:7:12
+5  |      export default {
+6  |          onLoad() {
+7  |              uni.__log__('log','at pages/index/index.uvue:7',a)
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8  |          }
+9  |      }"
+`;
+
 exports[`uts:stacktrace:runtime parseAlipayRuntimeStacktrace 1`] = `
 "Error: bbbbbbbbbbb12
 at pages/index/index.vue:21:16

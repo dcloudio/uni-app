@@ -1602,7 +1602,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": "uni1"
         }
       },
       "hideToast": {
@@ -1610,7 +1610,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": "uni1"
         }
       },
       "showLoading": {
@@ -1828,6 +1829,22 @@
             "dom1",
             "dom2"
           ]
+        }
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-requestSystemPermission": {
+    "uni": {
+      "requestSystemPermission": {
+        "name": "requestSystemPermission",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
         }
       }
     },
@@ -2213,6 +2230,23 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-uasm": {
+    "uni": {
+      "loadUASM": {
+        "name": "loadUASM",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": "dom2",
+          "arkts": false
         }
       }
     },

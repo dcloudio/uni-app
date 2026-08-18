@@ -33,9 +33,11 @@ declare var __IMPORT_META_ENV_BASE_URL__:
 // Global compile-time constants
 declare var __X__: boolean
 declare var __X_STYLE_ISOLATION__: boolean
+declare var __X_STYLE_ISOLATION_UP_ARROW__: boolean
 // 暂不启用
 // declare var __X_VAPOR__: boolean
 declare var __DEV__: boolean
+declare var __UNI_X_DEVTOOLS__: boolean
 declare var __TEST__: boolean
 declare var __NODE_JS__: boolean
 declare var __HYPHENATE__: boolean

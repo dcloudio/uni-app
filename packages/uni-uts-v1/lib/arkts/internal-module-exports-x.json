@@ -1915,6 +1915,24 @@
       "RequestSuccessCallback"
     ],
     [
+      "RequestSystemPermission"
+    ],
+    [
+      "RequestSystemPermissionComplete"
+    ],
+    [
+      "RequestSystemPermissionErrorCode"
+    ],
+    [
+      "RequestSystemPermissionFail"
+    ],
+    [
+      "RequestSystemPermissionOptions"
+    ],
+    [
+      "RequestSystemPermissionSuccess"
+    ],
+    [
       "RequestTask"
     ],
     [
@@ -2408,6 +2426,9 @@
     ],
     [
       "ShowToastSuccessCallback"
+    ],
+    [
+      "ShowToastSuccessImpl"
     ],
     [
       "SocketTask"

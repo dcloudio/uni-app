@@ -98,10 +98,17 @@ export function updateMiniProgramComponentProperties(
 
 export function updateComponentProps(
   up: string,
-  instance: ComponentInternalInstance
+  instance: ComponentInternalInstance,
+  extraProps?: Record<string, unknown>
 ) {
   const prevProps = toRaw(instance.props)
-  const nextProps = findComponentPropsData(up) || {}
+  // 仅支付宝 externalClass 更新时可能没有 uP，此时保留其他现有 props，避免默认值被误判为删除。
+  const nextProps =
+    findComponentPropsData(up) ||
+    (extraProps ? Object.assign({}, prevProps) : {})
+  if (extraProps) {
+    Object.assign(nextProps, extraProps)
+  }
   if (hasPropsChanged(prevProps, nextProps)) {
     updateProps(instance, nextProps, prevProps, false)
     if (hasQueueJob(instance.update)) {

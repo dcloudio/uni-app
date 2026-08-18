@@ -27,6 +27,7 @@ import { findChangedJsonFiles } from '../json'
 import { getWorkers } from '../workers'
 import { initSourceFileCallback } from '../dom2'
 import { isUniAppXAndroidNative } from '../x'
+import { initUasmTransformerCreator } from '../uasm'
 
 export function createEncryptCssUrlReplacer(
   resolve: ResolveFn
@@ -212,6 +213,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         process.env.UNI_APP_X_TSC === 'true'
           ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
               resolveWorkers: () => getWorkers(),
+              loadUasmTransformer: initUasmTransformerCreator('app-android'),
               sourceFileCallback: initSourceFileCallback(),
             })
           : null
@@ -499,11 +501,15 @@ export function compileCloudUniModuleWithTsc(
     platform === 'app-android'
       ? createUniXKotlinCompilerOnce({
           resolveWorkers,
+          loadUasmTransformer: initUasmTransformerCreator('app-android'),
           sourceFileCallback: initSourceFileCallback(),
         })
       : platform === 'app-harmony'
       ? createUniXArkTSCompilerOnce({ resolveWorkers })
-      : createUniXSwiftCompilerOnce({ resolveWorkers }),
+      : createUniXSwiftCompilerOnce({
+          resolveWorkers,
+          loadUasmTransformer: initUasmTransformerCreator('app-ios'),
+        }),
     {
       rootFiles: [],
       preprocessor:

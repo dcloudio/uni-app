@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, nextTick, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -303,11 +303,22 @@ function removeKeepAliveApiCallback(name, callback) {
     }
   }
 }
-function offKeepAliveApiCallback(name) {
-  UniServiceJSBridge.off("api." + name);
+function removeAllKeepAliveApiCallbacks(name) {
+  for (var key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
 }
-function onKeepAliveApiCallback(name) {
-  UniServiceJSBridge.on("api." + name, (res) => {
+function offKeepAliveApiCallback(name, eventTransport2) {
+  var eventName = eventTransport2 ? name : "api." + name;
+  var transport = eventTransport2 || UniServiceJSBridge;
+  transport.off(eventName);
+}
+function onKeepAliveApiCallback(name, eventTransport2) {
+  var eventName = eventTransport2 ? name : "api." + name;
+  var transport = eventTransport2 || UniServiceJSBridge;
+  transport.on(eventName, (res) => {
     for (var key in invokeCallbacks) {
       var opts = invokeCallbacks[key];
       if (opts.name === name) {
@@ -497,18 +508,28 @@ function promisify(name, fn) {
     })));
   };
 }
-function formatApiArgs(args, options) {
+function normalizeFormatApiParams(args) {
   var params = args[0];
-  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+  if (isPlainObject(params)) {
+    return params;
+  }
+  var normalizedParams = {};
+  args[0] = normalizedParams;
+  return normalizedParams;
+}
+function formatApiArgs(args, options) {
+  var rawParams = args[0];
+  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(rawParams)) {
     return;
   }
+  var params = normalizeFormatApiParams(args);
   var formatArgs = options.formatArgs;
   var keys = Object.keys(formatArgs);
   for (var i = 0; i < keys.length; i++) {
     var name = keys[i];
     var formatterOrDefaultValue = formatArgs[name];
     if (isFunction(formatterOrDefaultValue)) {
-      var errMsg = formatterOrDefaultValue(args[0][name], params);
+      var errMsg = formatterOrDefaultValue(params[name], params);
       if (isString(errMsg)) {
         return errMsg;
       }
@@ -544,7 +565,11 @@ function invokeFail(id2, name, errMsg) {
   }, errRes);
   {
     if (typeof UniError !== "undefined") {
-      res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
+      var errOptions = extend({}, errRes);
+      if (typeof errOptions.errSubject === "undefined") {
+        errOptions.errSubject = name;
+      }
+      res = new UniError(apiErrMsg, errOptions);
     }
   }
   return invokeCallback(id2, res);
@@ -576,23 +601,30 @@ function wrapperOnApi(name, fn, options) {
     var isFirstInvokeOnApi = !findInvokeCallbackByName(name);
     createKeepAliveApiCallback(name, callback);
     if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name);
+      onKeepAliveApiCallback(name, options === null || options === void 0 ? void 0 : options.eventTransport);
       fn();
     }
   };
 }
 function wrapperOffApi(name, fn, options) {
   return (callback) => {
-    checkCallback(callback);
-    var errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    var clearAll = (options === null || options === void 0 ? void 0 : options.allowClearAll) === true && callback == null;
+    if (!clearAll) {
+      checkCallback(callback);
+    }
+    var errMsg = beforeInvokeApi(name, clearAll ? [] : [callback], void 0, options);
     if (errMsg) {
       throw new Error(errMsg);
     }
-    name = name.replace("off", "on");
-    removeKeepAliveApiCallback(name, callback);
-    var hasInvokeOnApi = findInvokeCallbackByName(name);
+    var onApiName = name.replace("off", "on");
+    if (clearAll) {
+      removeAllKeepAliveApiCallbacks(onApiName);
+    } else {
+      removeKeepAliveApiCallback(onApiName, callback);
+    }
+    var hasInvokeOnApi = findInvokeCallbackByName(onApiName);
     if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(name);
+      offKeepAliveApiCallback(onApiName, options === null || options === void 0 ? void 0 : options.eventTransport);
       fn();
     }
   };
@@ -769,6 +801,36 @@ var ON_POP_GESTURE = "onPopGesture";
 var OPEN_DIALOG_PAGE = "openDialogPage";
 var homeDialogPages = [];
 var homeSystemDialogPages = [];
+var devToolsPageChangedListener;
+function getCurrentDevToolsPage() {
+  var pages2 = getCurrentPages();
+  var currentPage = pages2[pages2.length - 1] || null;
+  var dialogPages = homeDialogPages.length ? homeDialogPages : (currentPage === null || currentPage === void 0 ? void 0 : currentPage.getDialogPages()) || homeDialogPages;
+  for (var index2 = dialogPages.length - 1; index2 >= 0; index2--) {
+    var dialogPage = dialogPages[index2];
+    if (dialogPage.$vm) {
+      return dialogPage;
+    }
+  }
+  return currentPage;
+}
+function isDevToolsDialogPage(page) {
+  return page instanceof UniDialogPageImpl;
+}
+function setDevToolsPageChangedListener(listener) {
+  devToolsPageChangedListener = listener;
+}
+function hasDevToolsPageChangedListener() {
+  return !!devToolsPageChangedListener;
+}
+function notifyDevToolsPageChanged() {
+  try {
+    var _devToolsPageChangedL;
+    (_devToolsPageChangedL = devToolsPageChangedListener) === null || _devToolsPageChangedL === void 0 || _devToolsPageChangedL();
+  } catch (error) {
+    console.error(error);
+  }
+}
 var currentNormalDialogPage = null;
 function setCurrentNormalDialogPage(value) {
   currentNormalDialogPage = value;
@@ -920,7 +982,7 @@ function initNativePage(vm) {
   }
   var pageId = instance.root.attrs.__pageId;
   vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
-  if (vm.$page) {
+  if (vm.$page && vm.$nativePage) {
     vm.$page.__nativePageId = vm.$nativePage.pageId;
   }
 }
@@ -1230,6 +1292,142 @@ function injectAppHooks(appInstance) {
     });
   });
 }
+var API_ON_APP_ROUTE = "onAppRoute";
+var API_OFF_APP_ROUTE = "offAppRoute";
+var API_ON_BEFORE_APP_ROUTE = "onBeforeAppRoute";
+var API_OFF_BEFORE_APP_ROUTE = "offBeforeAppRoute";
+var API_REWRITE_ROUTE = "rewriteRoute";
+var eventTransport = /* @__PURE__ */ new Emitter();
+var activeBeforeAppRouteContext;
+var MAX_APP_ROUTE_REWRITE_COUNT = 100;
+var APP_ROUTE_ERROR_CODE = 4;
+function createAppRouteRuntime() {
+  var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+  var routeEventId = 0;
+  var onAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
+  }, {
+    eventTransport
+  });
+  var offAppRoute2 = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
+  }, {
+    allowClearAll: true,
+    eventTransport
+  });
+  var onBeforeAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_BEFORE_APP_ROUTE, () => {
+  }, {
+    eventTransport
+  });
+  var offBeforeAppRoute2 = /* @__PURE__ */ defineOffApi(API_OFF_BEFORE_APP_ROUTE, () => {
+  }, {
+    allowClearAll: true,
+    eventTransport
+  });
+  var rewriteRoute2 = /* @__PURE__ */ defineAsyncApi(API_REWRITE_ROUTE, (_ref, _ref2) => {
+    var {
+      url,
+      preserveQuery
+    } = _ref;
+    var {
+      resolve,
+      reject
+    } = _ref2;
+    var rejectRewriteRoute = (errMsg) => reject(errMsg, {
+      errCode: APP_ROUTE_ERROR_CODE
+    });
+    var context = activeBeforeAppRouteContext;
+    if (!context) {
+      rejectRewriteRoute("rewriteRoute is only allowed in a onBeforeAppRoute callback");
+      return;
+    }
+    if (context.event.openType === "navigateBack") {
+      rejectRewriteRoute('a "navigateBack" event is not allowed to be rewritten');
+      return;
+    }
+    if (context.rewrite) {
+      rejectRewriteRoute('rewriteRoute can only be called once in a route event, this page has been rewritten to "'.concat(context.rewrite.path, '"'));
+      return;
+    }
+    if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
+      rejectRewriteRoute("rewriteRoute exceeded the maximum rewrite count of ".concat(MAX_APP_ROUTE_REWRITE_COUNT));
+      return;
+    }
+    if (!context.normalizeRewriteRoute) {
+      rejectRewriteRoute("not supported");
+      return;
+    }
+    var rewrite = context.normalizeRewriteRoute({
+      url,
+      preserveQuery
+    }, context.event);
+    if (typeof rewrite === "string") {
+      rejectRewriteRoute(rewrite);
+      return;
+    }
+    context.rewrite = rewrite;
+    resolve();
+  });
+  function createAppRouteContext2(event) {
+    var _event$timeStamp, _event$routeEventId;
+    var timeStamp = (_event$timeStamp = event.timeStamp) !== null && _event$timeStamp !== void 0 ? _event$timeStamp : Date.now();
+    return {
+      event: {
+        path: event.path,
+        query: Object.assign({}, event.query),
+        openType: event.openType,
+        notFound: event.notFound,
+        timeStamp,
+        routeEventId: (_event$routeEventId = event.routeEventId) !== null && _event$routeEventId !== void 0 ? _event$routeEventId : "".concat(timeStamp, "-").concat(++routeEventId)
+      },
+      normalizeRewriteRoute: options.normalizeRewriteRoute
+    };
+  }
+  function dispatchBeforeAppRoute2(context) {
+    var event = context.event;
+    var beforeEvent = {
+      path: event.path,
+      query: Object.assign({}, event.query),
+      openType: event.openType,
+      notFound: event.notFound,
+      routeEventId: event.routeEventId
+    };
+    var previousContext = activeBeforeAppRouteContext;
+    activeBeforeAppRouteContext = context;
+    try {
+      eventTransport.emit(API_ON_BEFORE_APP_ROUTE, beforeEvent);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      activeBeforeAppRouteContext = previousContext;
+    }
+    return context.rewrite;
+  }
+  function dispatchAppRoute2(context) {
+    var event = context.event;
+    try {
+      var routeEvent = {
+        path: event.path,
+        query: Object.assign({}, event.query),
+        openType: event.openType,
+        notFound: event.notFound,
+        timeStamp: event.timeStamp,
+        routeEventId: event.routeEventId
+      };
+      eventTransport.emit(API_ON_APP_ROUTE, routeEvent);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  return {
+    onAppRoute: onAppRoute2,
+    offAppRoute: offAppRoute2,
+    onBeforeAppRoute: onBeforeAppRoute2,
+    offBeforeAppRoute: offBeforeAppRoute2,
+    rewriteRoute: rewriteRoute2,
+    createAppRouteContext: createAppRouteContext2,
+    dispatchBeforeAppRoute: dispatchBeforeAppRoute2,
+    dispatchAppRoute: dispatchAppRoute2
+  };
+}
 function encodeQueryString(url) {
   if (!isString(url)) {
     return url;
@@ -1316,6 +1514,7 @@ function createRouteOptions(type) {
   };
 }
 function createNormalizeUrl(type) {
+  var options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
   return function normalizeUrl(url, params) {
     if (!url) {
       return 'Missing required args: "url"';
@@ -1359,10 +1558,10 @@ function createNormalizeUrl(type) {
       }
       return;
     }
-    if (navigatorLock === url && params.openType !== "appLaunch") {
+    if (!options.skipNavigatorLock && navigatorLock === url && params.openType !== "appLaunch") {
       return "".concat(navigatorLock, " locked");
     }
-    if (__uniConfig.ready) {
+    if (!options.skipNavigatorLock && __uniConfig.ready) {
       navigatorLock = url;
     }
   };
@@ -1577,6 +1776,104 @@ function parseRedirectInfo(appid, redirectInfo) {
     appLink
   };
 }
+function normalizeRewriteRoute(_ref, event) {
+  var {
+    url,
+    preserveQuery
+  } = _ref;
+  if (preserveQuery) {
+    url = parseUrl(url).path + stringifyQuery(event.query);
+  }
+  var params = {
+    url,
+    openType: event.openType
+  };
+  var errMsg = createNormalizeUrl(event.openType, {
+    skipNavigatorLock: true
+  })(url, params);
+  if (errMsg) {
+    return errMsg;
+  }
+  var {
+    path,
+    query
+  } = parseUrl(params.url);
+  return {
+    url: params.url,
+    path: removeLeadingSlash(path),
+    query: decodedQuery(query),
+    notFound: false
+  };
+}
+var appRouteRuntime = createAppRouteRuntime({
+  normalizeRewriteRoute
+});
+var onAppRoute = appRouteRuntime.onAppRoute;
+var offAppRoute = appRouteRuntime.offAppRoute;
+var onBeforeAppRoute = appRouteRuntime.onBeforeAppRoute;
+var offBeforeAppRoute = appRouteRuntime.offBeforeAppRoute;
+var rewriteRoute = appRouteRuntime.rewriteRoute;
+function createAppRouteContext(path, query, openType) {
+  var notFound = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
+  return appRouteRuntime.createAppRouteContext({
+    path: removeLeadingSlash(path),
+    query: decodedQuery(query),
+    openType,
+    notFound
+  });
+}
+function resolveAppRoute(url, openType) {
+  var notFound = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
+  var routeUrl = url;
+  var routeNotFound = notFound;
+  var rewriteCount = 0;
+  while (true) {
+    var {
+      path,
+      query
+    } = parseUrl(routeUrl);
+    var context = createAppRouteContext(path, query, openType, routeNotFound);
+    context.rewriteCount = rewriteCount;
+    var rewrite = appRouteRuntime.dispatchBeforeAppRoute(context);
+    if (!rewrite) {
+      return {
+        url: routeUrl,
+        context
+      };
+    }
+    routeUrl = rewrite.url;
+    routeNotFound = rewrite.notFound;
+    rewriteCount++;
+  }
+}
+function dispatchBeforeAppRoute(context) {
+  return appRouteRuntime.dispatchBeforeAppRoute(context);
+}
+function dispatchAppRoute(contextOrPath) {
+  var query = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+  var openType = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : "appLaunch";
+  var notFound = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
+  var context = typeof contextOrPath === "string" ? createAppRouteContext(contextOrPath, query, openType, notFound) : contextOrPath;
+  var event = context.event;
+  if (event.notFound) {
+    invokeHook(getApp().vm, ON_PAGE_NOT_FOUND, {
+      path: event.path,
+      query: Object.assign({}, event.query),
+      isEntryPage: event.openType === "appLaunch"
+    });
+  }
+  appRouteRuntime.dispatchAppRoute(context);
+}
+function dispatchAppRouteNotFound(url, context) {
+  if (!context) {
+    var {
+      path,
+      query
+    } = parseUrl(url);
+    context = createAppRouteContext(path, query, "appLaunch", true);
+  }
+  dispatchAppRoute(context);
+}
 var onTabBarMidButtonTapCallback = [];
 var tabBar0 = null;
 var selected0 = -1;
@@ -1740,12 +2037,15 @@ function switchSelect(selected, path) {
   var query = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
   var rebuild = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
   var callback = arguments.length > 4 ? arguments[4] : void 0;
+  var appRouteOpenType = arguments.length > 5 ? arguments[5] : void 0;
+  var shouldDispatchAppRoute = arguments.length > 6 && arguments[6] !== void 0 ? arguments[6] : true;
+  var appRouteContext = arguments.length > 7 ? arguments[7] : void 0;
   var shouldShow = false;
   if (tabBar0 === null) {
     init();
   }
   var currentPage = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
-  var type = currentPage == null ? "appLaunch" : "switchTab";
+  var type = appRouteOpenType !== null && appRouteOpenType !== void 0 ? appRouteOpenType : currentPage == null ? "appLaunch" : "switchTab";
   invokeBeforeRouteHooks(type);
   getTabPage(getRealPath(path, true), query, rebuild, (pageInfo) => {
     callback === null || callback === void 0 || callback();
@@ -1759,6 +2059,13 @@ function switchSelect(selected, path) {
     tabBar0.switchSelect(page.$basePage.id.toString(), selected);
     if (shouldShow) {
       invokeHook(page, ON_SHOW);
+      if (shouldDispatchAppRoute) {
+        if (appRouteContext) {
+          dispatchAppRoute(appRouteContext);
+        } else {
+          dispatchAppRoute(path, query, type);
+        }
+      }
     }
     selected0 = selected;
     invokeAfterRouteHooks(type);
@@ -1932,6 +2239,8 @@ var closeDialogPage = (options) => {
     triggerFailCallback$1(options, "currentPage is null");
     return;
   }
+  var observeDevToolsPage = typeof __UNI_X_DEVTOOLS__ !== "undefined" && __UNI_X_DEVTOOLS__ ? hasDevToolsPageChangedListener() : false;
+  var previousDevToolsPage = observeDevToolsPage ? getCurrentDevToolsPage() : null;
   if ((options === null || options === void 0 ? void 0 : options.animationType) === "pop-out") {
     options.animationType = "none";
   }
@@ -1981,6 +2290,9 @@ var closeDialogPage = (options) => {
       dialogPages[i] = null;
     }
     dialogPages.length = 0;
+  }
+  if (observeDevToolsPage && previousDevToolsPage !== getCurrentDevToolsPage()) {
+    notifyDevToolsPageChanged();
   }
   var successOptions = {
     errMsg: "closeDialogPage: ok"
@@ -2062,6 +2374,8 @@ function registerPage(_ref, onCreated) {
     path,
     query,
     openType,
+    appRouteOpenType,
+    appRouteContext,
     webview,
     nvuePageVm,
     eventChannel,
@@ -2098,20 +2412,20 @@ function registerPage(_ref, onCreated) {
   }
   function fn() {
     createVuePage(id2, route, query, pageInstance, {}, nativePage).then((pageComponentPublicInstance) => {
+      if (appRouteContext) {
+        dispatchAppRoute(appRouteContext);
+      } else if (appRouteOpenType) {
+        dispatchAppRoute(route, query, appRouteOpenType);
+      }
       var pages2 = getCurrentPages();
       if (pages2.length === 1) {
         var homePage = pages2[0];
-        var sourceDialogPages = [];
-        var targetDialogPages = [];
         if (homeDialogPages.length) {
-          sourceDialogPages = homeDialogPages;
-          targetDialogPages = homePage.getDialogPages();
+          handleHomeDialogPages(homePage, homeDialogPages, homePage.getDialogPages());
         }
         if (homeSystemDialogPages.length) {
-          sourceDialogPages = homeSystemDialogPages;
-          targetDialogPages = getSystemDialogPages(homePage);
+          handleHomeDialogPages(homePage, homeSystemDialogPages, getSystemDialogPages(homePage));
         }
-        handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages);
       }
       nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
         uni.navigateBack({
@@ -2292,6 +2606,9 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
         invokeHook(pageComponentPublicInstance, ON_RESIZE, args);
       });
       nativePage.startRender();
+      if (typeof __UNI_X_DEVTOOLS__ !== "undefined" && __UNI_X_DEVTOOLS__ && hasDevToolsPageChangedListener() && !isSystemDialogPage(dialogPage) && getCurrentDevToolsPage() === dialogPage) {
+        notifyDevToolsPageChanged();
+      }
     });
   }
   if (delay) {
@@ -2482,12 +2799,12 @@ var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) =
     query
   }).then(resolve).catch(reject);
 }, RedirectToProtocol, RedirectToOptions);
-function _redirectTo(_ref3) {
+function _redirectTo(options) {
+  var appRoute = resolveAppRoute(options.url, API_REDIRECT_TO);
   var {
-    url,
     path,
     query
-  } = _ref3;
+  } = parseUrl(appRoute.url);
   return new Promise((resolve) => {
     setTimeout(() => {
       var lastPage = getCurrentPage().vm;
@@ -2505,10 +2822,12 @@ function _redirectTo(_ref3) {
       }
       invokeAfterRouteHooks(API_REDIRECT_TO);
       showWebview(registerPage({
-        url,
+        url: appRoute.url,
         path,
         query,
         openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo",
+        appRouteOpenType: API_REDIRECT_TO,
+        appRouteContext: appRoute.context,
         onRegistered() {
           isRegistered = true;
           callback();
@@ -2561,12 +2880,14 @@ var $reLaunch = (_ref, _ref2) => {
     query
   }).then(resolve).catch(reject);
 };
-function _reLaunch(_ref3) {
+function _reLaunch(options) {
+  var appRouteOpenType = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : API_RE_LAUNCH;
+  var resolvedAppRoute = arguments.length > 2 ? arguments[2] : void 0;
+  var appRoute = resolvedAppRoute || resolveAppRoute(options.url, appRouteOpenType);
   var {
-    url,
     path,
     query
-  } = _ref3;
+  } = parseUrl(appRoute.url);
   return new Promise((resolve) => {
     setTimeout(() => {
       var pages2 = getAllPages().slice(0);
@@ -2584,10 +2905,12 @@ function _reLaunch(_ref3) {
       }
       if (selected === -1) {
         showWebview(registerPage({
-          url,
+          url: appRoute.url,
           path,
           query,
           openType: "reLaunch",
+          appRouteOpenType,
+          appRouteContext: appRoute.context,
           onRegistered() {
             isRegistered = true;
             callback();
@@ -2599,7 +2922,7 @@ function _reLaunch(_ref3) {
       } else {
         isRegistered = true;
         isShown = true;
-        switchSelect(selected, path, query, true, callback);
+        switchSelect(selected, path, query, true, callback, appRouteOpenType, true, appRoute.context);
       }
     }, 0);
   });
@@ -2684,19 +3007,25 @@ function clearDialogPages(uniPage) {
   }
   systemDialogPages.length = 0;
 }
-var $switchTab = (args, _ref) => {
+function $switchTab(args, _ref) {
   var {
     resolve,
     reject
   } = _ref;
+  var appRouteOpenType = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : API_SWITCH_TAB;
+  var shouldDispatchAppRoute = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : true;
+  var resolvedAppRoute = arguments.length > 4 ? arguments[4] : void 0;
   var {
     url
   } = args;
   var {
-    path,
-    query
+    path: originalPath
   } = parseUrl(url);
-  updateEntryPageIsReady(path);
+  if (appRouteOpenType === "appLaunch") {
+    entryPageState.isReady = true;
+  } else {
+    updateEntryPageIsReady(originalPath);
+  }
   if (!entryPageState.isReady) {
     switchTabPagesBeforeEntryPages.push({
       args,
@@ -2707,15 +3036,26 @@ var $switchTab = (args, _ref) => {
     });
     return;
   }
-  _switchTab({
-    url,
+  var appRoute = shouldDispatchAppRoute && (appRouteOpenType !== API_SWITCH_TAB || !isCurrentTab(originalPath)) ? resolvedAppRoute || resolveAppRoute(url, appRouteOpenType) : void 0;
+  var routeUrl = (appRoute === null || appRoute === void 0 ? void 0 : appRoute.url) || url;
+  var {
     path,
     query
-  }).then(resolve).catch(reject);
+  } = parseUrl(routeUrl);
+  _switchTab({
+    url: routeUrl,
+    path,
+    query
+  }, appRouteOpenType, shouldDispatchAppRoute, appRoute === null || appRoute === void 0 ? void 0 : appRoute.context).then(resolve).catch(reject);
   handleBeforeEntryPageRoutes();
-};
+}
 var switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
-function _switchTab(_ref2) {
+function isCurrentTab(path) {
+  var pages2 = getCurrentBasePages();
+  var currentPage = pages2[pages2.length - 1];
+  return !!currentPage && isTabPage(currentPage) && getTabIndex(currentPage.$basePage.path) === getTabIndex(path);
+}
+function _switchTab(_ref2, appRouteOpenType, shouldDispatchAppRoute, appRouteContext) {
   var {
     url,
     path,
@@ -2728,7 +3068,7 @@ function _switchTab(_ref2) {
   var pages2 = getCurrentBasePages();
   return new Promise((resolve) => {
     setTimeout(() => {
-      switchSelect(selected, path, query);
+      switchSelect(selected, path, query, false, void 0, appRouteOpenType, shouldDispatchAppRoute, appRouteContext);
       for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
         var page = pages2[index2];
         if (isTabPage(page)) {
@@ -2752,19 +3092,25 @@ function subscribeWebviewReady(_data, pageId) {
 }
 function onLaunchWebviewReady() {
   var _routeOptions;
-  var entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
-  var routeOptions = getRouteOptions(entryPagePath);
-  if (!routeOptions) {
+  var entryPageUrl = addLeadingSlash(__uniConfig.entryPagePath) + (__uniConfig.entryPageQuery || "");
+  var routeOptions = getRouteOptions(parseUrl(entryPageUrl).path);
+  var appRoute = resolveAppRoute(entryPageUrl, "appLaunch", !routeOptions);
+  var isEntryPageNotFound = appRoute.context.event.notFound;
+  if (isEntryPageNotFound) {
+    dispatchAppRouteNotFound(entryPageUrl, appRoute.context);
     if (__uniRoutes.length > 0) {
-      entryPagePath = __uniRoutes[0].path;
-      routeOptions = getRouteOptions(addLeadingSlash(entryPagePath));
+      entryPageUrl = addLeadingSlash(__uniRoutes[0].path) + (__uniConfig.entryPageQuery || "");
+      routeOptions = getRouteOptions(parseUrl(entryPageUrl).path);
     } else {
       console.error("未匹配到路由，请检查配置");
       return;
     }
+  } else {
+    entryPageUrl = appRoute.url;
+    routeOptions = getRouteOptions(parseUrl(entryPageUrl).path);
   }
   var args = {
-    url: entryPagePath + (__uniConfig.entryPageQuery || ""),
+    url: entryPageUrl,
     openType: "appLaunch"
   };
   var handler = {
@@ -2774,9 +3120,9 @@ function onLaunchWebviewReady() {
     }
   };
   if ((_routeOptions = routeOptions) !== null && _routeOptions !== void 0 && (_routeOptions = _routeOptions.meta) !== null && _routeOptions !== void 0 && _routeOptions.isTabBar) {
-    return $switchTab(args, handler);
+    return $switchTab(args, handler, "appLaunch", !isEntryPageNotFound, isEntryPageNotFound ? void 0 : appRoute);
   }
-  return $navigateTo(args, handler);
+  return $navigateTo(args, handler, "appLaunch", !isEntryPageNotFound, isEntryPageNotFound ? void 0 : appRoute);
 }
 function clearWebviewReady() {
   isLaunchWebviewReady = false;
@@ -2949,11 +3295,14 @@ function initEntryPagePath(redirectInfo) {
     }
   }
 }
-var $navigateTo = (args, _ref) => {
+function $navigateTo(args, _ref) {
   var {
     resolve,
     reject
   } = _ref;
+  var appRouteOpenType = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : API_NAVIGATE_TO;
+  var shouldDispatchAppRoute = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : true;
+  var resolvedAppRoute = arguments.length > 4 ? arguments[4] : void 0;
   var {
     url,
     events,
@@ -2961,11 +3310,13 @@ var $navigateTo = (args, _ref) => {
     animationDuration
   } = args;
   var {
-    path,
-    query
+    path: originalPath
   } = parseUrl(url);
-  var [aniType, aniDuration] = initAnimation$1(path, animationType, animationDuration);
-  updateEntryPageIsReady(path);
+  if (appRouteOpenType === "appLaunch") {
+    entryPageState.isReady = true;
+  } else {
+    updateEntryPageIsReady(originalPath);
+  }
   if (!entryPageState.isReady) {
     navigateToPagesBeforeEntryPages.push({
       args,
@@ -2976,18 +3327,25 @@ var $navigateTo = (args, _ref) => {
     });
     return;
   }
+  var appRoute = shouldDispatchAppRoute ? resolvedAppRoute || resolveAppRoute(url, appRouteOpenType) : void 0;
+  var routeUrl = (appRoute === null || appRoute === void 0 ? void 0 : appRoute.url) || url;
+  var {
+    path,
+    query
+  } = parseUrl(routeUrl);
+  var [aniType, aniDuration] = initAnimation$1(path, animationType, animationDuration);
   _navigateTo({
-    url,
+    url: routeUrl,
     path,
     query,
     events,
     aniType,
     aniDuration
-  }).then(resolve).catch(reject);
+  }, appRouteOpenType, shouldDispatchAppRoute, appRoute === null || appRoute === void 0 ? void 0 : appRoute.context).then(resolve).catch(reject);
   handleBeforeEntryPageRoutes();
-};
+}
 var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
-function _navigateTo(_ref2) {
+function _navigateTo(_ref2, appRouteOpenType, shouldDispatchAppRoute, appRouteContext) {
   var _getCurrentPage;
   var {
     url,
@@ -2998,8 +3356,7 @@ function _navigateTo(_ref2) {
     aniDuration
   } = _ref2;
   var currentPage = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
-  var currentRouteType = currentPage == null ? "appLaunch" : API_NAVIGATE_TO;
-  invokeBeforeRouteHooks(currentRouteType);
+  invokeBeforeRouteHooks(appRouteOpenType);
   invokeHook(ON_HIDE);
   currentPage && invokeLastDialogPageHookByUniPage(currentPage.$page, ON_HIDE);
   var eventChannel = new EventChannel(getWebviewId() + 1, events);
@@ -3008,7 +3365,7 @@ function _navigateTo(_ref2) {
       var noAnimation = aniType === "none" || aniDuration === 0;
       function callback(page) {
         showWebview(page, aniType, aniDuration, () => {
-          invokeAfterRouteHooks(currentRouteType);
+          invokeAfterRouteHooks(appRouteOpenType);
           resolve({
             eventChannel
           });
@@ -3021,6 +3378,8 @@ function _navigateTo(_ref2) {
           path,
           query,
           openType: "navigateTo",
+          appRouteOpenType: shouldDispatchAppRoute ? appRouteOpenType : void 0,
+          appRouteContext,
           eventChannel,
           onRegistered(page) {
             if (noAnimation) {
@@ -3053,9 +3412,16 @@ function reLaunchEntryPage() {
   var _uniConfig$entryPage;
   __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
   __uniConfig.realEntryPagePath = "";
-  reLaunch({
-    url: (_uniConfig$entryPage = __uniConfig.entryPagePath) !== null && _uniConfig$entryPage !== void 0 && _uniConfig$entryPage.startsWith("/") ? __uniConfig.entryPagePath : "/" + __uniConfig.entryPagePath
-  });
+  var url = (_uniConfig$entryPage = __uniConfig.entryPagePath) !== null && _uniConfig$entryPage !== void 0 && _uniConfig$entryPage.startsWith("/") ? __uniConfig.entryPagePath : "/" + __uniConfig.entryPagePath;
+  var {
+    path,
+    query
+  } = parseUrl(url);
+  void _reLaunch({
+    url,
+    path,
+    query
+  }, API_NAVIGATE_BACK);
 }
 var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref) => {
   var {
@@ -3112,6 +3478,11 @@ function back(delta, animationType, animationDuration) {
   var pages2 = getCurrentBasePages();
   var len = pages2.length;
   var currentPage = pages2[len - 1];
+  var targetPage = pages2[len - delta - 1];
+  var appRouteContext = targetPage ? createAppRouteContext(targetPage.$basePage.path, targetPage.$basePage.options, API_NAVIGATE_BACK) : void 0;
+  if (appRouteContext) {
+    dispatchBeforeAppRoute(appRouteContext);
+  }
   if (delta > 1) {
     pages2.slice(len - delta, len - 1).reverse().forEach((deltaPage) => {
       clearDialogPages(deltaPage.$page);
@@ -3135,6 +3506,14 @@ function back(delta, animationType, animationDuration) {
     closeWebview(webview2, animationType, animationDuration, () => {
       pages2.slice(len - delta, len).forEach((page) => removePage(page));
       invokeHook(ON_SHOW);
+      var currentPage2 = getCurrentPage().vm;
+      if (currentPage2) {
+        if (appRouteContext) {
+          dispatchAppRoute(appRouteContext);
+        } else {
+          dispatchAppRoute(currentPage2.$basePage.path, currentPage2.$basePage.options, API_NAVIGATE_BACK);
+        }
+      }
       invokeLastDialogPageHookByUniPage(getCurrentPage(), ON_SHOW);
       setStatusBarStyle();
     });
@@ -3771,6 +4150,12 @@ var env = {
   TEMP_PATH: "unifile://temp/",
   ANDROID_INTERNAL_SANDBOX_PATH: "unifile://androidInternalSandbox/"
 };
+function loadUASM(module) {
+  return new Promise((resolve) => {
+    var app = getNativeApp();
+    resolve(app.loadUASM(module));
+  });
+}
 var _PerformanceEntryStatus;
 var APP_LAUNCH = "appLaunch";
 var PERFORMANCE_BUFFER_SIZE = 30;
@@ -4587,6 +4972,14 @@ function initUTSProxyClass(options) {
           return false;
         }
       });
+      if (typeof FinalizationRegistry !== "undefined") {
+        if (!UTSClassInstanceRegistry) {
+          UTSClassInstanceRegistry = new FinalizationRegistry((id2) => {
+            unregisterInstance(id2);
+          });
+        }
+        UTSClassInstanceRegistry.register(proxy2, this.__instanceId);
+      }
       return Object.freeze(proxy2);
     }
   };
@@ -4812,15 +5205,9 @@ function initUTSElementProxyClass(options) {
 }
 function isUTSAndroid() {
   {
-    if (
-      // @ts-expect-error
-      typeof nativeChannel === "object" && // @ts-expect-error
-      nativeChannel && // @ts-expect-error
-      nativeChannel.os === "android"
-    ) {
-      return true;
+    {
+      return false;
     }
-    return false;
   }
 }
 function isUTSiOS() {
@@ -4934,8 +5321,13 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   initUTSProxyClass,
   initUTSProxyFunction,
   loadFontFace,
+  loadUASM,
   navigateBack,
   navigateTo,
+  offAppRoute,
+  offBeforeAppRoute,
+  onAppRoute,
+  onBeforeAppRoute,
   onTabBarMidButtonTap,
   openDialogPage,
   pageScrollTo,
@@ -4946,6 +5338,7 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   removeInterceptor,
   removeTabBarBadge,
   requireUTSPlugin,
+  rewriteRoute,
   setNavigationBarColor,
   setNavigationBarTitle,
   setTabBarBadge,
@@ -5230,7 +5623,10 @@ export {
   defineOnApi,
   defineSyncApi,
   defineTaskApi,
+  getCurrentDevToolsPage,
   getCurrentPages$1 as getCurrentPages,
   initApp,
+  isDevToolsDialogPage,
+  setDevToolsPageChangedListener,
   index$1 as uni
 };

@@ -1,4 +1,5 @@
 import {
+  type AttributeNode,
   type ComponentNode,
   type DirectiveNode,
   ElementTypes,
@@ -18,6 +19,8 @@ import {
   ATTR_SET_ELEMENT_ANIMATION,
   ATTR_SET_ELEMENT_STYLE,
   ATTR_VUE_SLOTS,
+  FILTER_MODULE_NAME,
+  addUniViewAutoImportFilter,
   isFilterExpr,
   rewriteExpression,
 } from './utils'
@@ -56,9 +59,13 @@ import {
 } from './transformComponent'
 import {
   addPageExternalClasses,
+  clearMiniProgramComponentStyleIsolation,
   findMiniProgramComponentExternalClasses,
+  formatAlipayStyleIsolationClasses,
+  getAlipayStyleIsolationClassMask,
   getGlobalComponentSource,
   hasExternalClasses,
+  isAlipayXStyleIsolation,
   isAttributeNode,
   isDirectiveNode,
   isElementNode,
@@ -67,7 +74,9 @@ import {
   matchEasycom,
   parseExternalClasses,
   parseProgram,
+  parseStyleIsolation,
   updateMiniProgramComponentExternalClasses,
+  updateMiniProgramComponentStyleIsolation,
 } from '@dcloudio/uni-cli-shared'
 import { isUniPageFile } from '@dcloudio/uni-cli-shared'
 import fs from 'fs'
@@ -174,7 +183,16 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         if (process.env.UNI_PLATFORM === 'mp-weixin') {
           externalClasses = []
         }
-        rewriteBinding(node as ComponentNode, context, externalClasses)
+        rewriteAlipayStyleIsolationClasses(node, context)
+        rewriteAlipayStaticExternalClasses(node, context, externalClasses)
+        rewriteBinding(
+          node as ComponentNode,
+          context,
+          externalClasses,
+          isAlipayXStyleIsolation()
+        )
+      } else {
+        rewriteAlipayStyleIsolationClasses(node, context)
       }
 
       let elementId: string = ''
@@ -287,6 +305,13 @@ export const transformIdentifier: NodeTransform = (node, context) => {
             })
             skipIndex.push(classPropIndex)
           }
+          // part 合并后的 class 会跳过普通属性循环，需要在此补一次 SJS 展开。
+          for (const index of skipIndex) {
+            const prop = props[index]
+            if (isDirectiveNode(prop) && isClassBinding(prop)) {
+              wrapAlipayStyleIsolationClass(prop, context)
+            }
+          }
         }
       }
 
@@ -317,9 +342,18 @@ export const transformIdentifier: NodeTransform = (node, context) => {
           if (exp) {
             if (isBuiltIn(dir)) {
               // noop
+            } else if (isAlipayExternalClassBinding(dir, externalClasses)) {
+              wrapAlipayExternalClass(dir, context)
+            } else if (
+              context.isX &&
+              isAlipayXStyleIsolation() &&
+              isAlipayStyleIsolationClassAttribute(node, dir)
+            ) {
+              wrapAlipayStyleIsolationClassAttribute(dir, context)
             } else if (isClassBinding(dir)) {
               hasClassBinding = true
               rewriteClass(i, dir, props, virtualHost, context)
+              wrapAlipayStyleIsolationClass(dir, context)
             } else if (isStyleBinding(dir)) {
               hasStyleBinding = true
               rewriteStyle(i, dir, props, virtualHost, context, elementId)
@@ -355,7 +389,9 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       if (virtualHost) {
         if (!hasClassBinding) {
           hasClassBinding = true
-          props.push(createVirtualHostClass(props, context))
+          const classProp = createVirtualHostClass(props, context)
+          wrapAlipayStyleIsolationClass(classProp, context)
+          props.push(classProp)
         }
         if (!hasStyleBinding) {
           hasStyleBinding = true
@@ -396,6 +432,188 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       }
     }
   }
+}
+
+/**
+ * 支付宝不支持微信的 [class] 隔离方式，仅在支付宝样式隔离 2.0 下展开普通 class。
+ * 有动态 class、part 或 virtual host 时统一交给一次 SJS 处理，避免静态前缀重复生成。
+ */
+function rewriteAlipayStyleIsolationClasses(
+  node: TemplateChildNode,
+  context: TransformContext
+) {
+  if (
+    !context.isX ||
+    !isAlipayXStyleIsolation() ||
+    !context.filename ||
+    !isElementNode(node)
+  ) {
+    return
+  }
+  const mask = getAlipayStyleIsolationClassMask(context.filename)
+  const hasRuntimeClass =
+    node.props.some(
+      (prop) =>
+        (isDirectiveNode(prop) &&
+          (isClassBinding(prop) ||
+            (prop.name === 'bind' &&
+              prop.arg &&
+              isSimpleExpressionNode(prop.arg) &&
+              prop.arg.content === 'part'))) ||
+        prop.name === 'part'
+    ) ||
+    !!(
+      context.miniProgram.component?.mergeVirtualHostAttributes &&
+      context.rootNode === node
+    )
+
+  for (const prop of node.props) {
+    if (isAttributeNode(prop) && prop.name === 'class' && prop.value?.content) {
+      // mask 为 0 时只做保留前缀校验，实际展开留给后续合并后的动态 class。
+      prop.value.content = formatAlipayStyleIsolationClasses(
+        prop.value.content,
+        hasRuntimeClass ? 0 : mask
+      )
+    } else if (
+      isAttributeNode(prop) &&
+      isAlipayStyleIsolationClassAttribute(node, prop) &&
+      prop.value?.content &&
+      !(prop.name === 'hover-class' && prop.value.content === 'none')
+    ) {
+      // 这些属性由小程序运行时把值作为 class 应用到真实节点，必须和普通 class 使用相同的作用域前缀。
+      // hover-class 的 none 是平台控制值，不能按普通 class 展开；其他属性没有该特殊语义。
+      prop.value.content = formatAlipayStyleIsolationClasses(
+        prop.value.content,
+        mask
+      )
+    }
+  }
+}
+
+function wrapAlipayStyleIsolationClass(
+  prop: DirectiveNode,
+  context: TransformContext
+) {
+  if (!context.isX || !isAlipayXStyleIsolation() || !prop.exp) {
+    return
+  }
+  addUniViewAutoImportFilter(context)
+  const mask = getAlipayStyleIsolationClassMask(context.filename)
+  // 先复用原有表达式重写，再在视图层调用 SJS，避免把 _ctx 等逻辑层标识符输出到模板。
+  prop.exp = rewriteExpression(
+    createCompoundExpression([
+      createSimpleExpression(FILTER_MODULE_NAME),
+      '.c(',
+      prop.exp,
+      `,${mask})`,
+    ]),
+    context
+  )
+}
+
+function wrapAlipayStyleIsolationClassAttribute(
+  prop: DirectiveNode,
+  context: TransformContext
+) {
+  addUniViewAutoImportFilter(context)
+  const mask = getAlipayStyleIsolationClassMask(context.filename)
+  const exp = rewriteExpression(prop.exp!, context)
+  const name = (prop.arg as SimpleExpressionNode).content
+  const helper = name === 'hover-class' ? 'h' : 'c'
+  // 动态值先复用普通属性的逻辑层变量提取，再由 SJS 展开作用域前缀；
+  // 只有 hover-class 使用专用 helper 保留 none，其他原生 class 属性直接复用 uV.c。
+  prop.exp = rewriteExpression(
+    createCompoundExpression([
+      createSimpleExpression(FILTER_MODULE_NAME),
+      `.${helper}(`,
+      exp,
+      `,${mask})`,
+    ]),
+    context
+  )
+}
+
+function isAlipayStyleIsolationClassAttribute(
+  node: TemplateChildNode,
+  prop: DirectiveNode | AttributeNode
+) {
+  if (!isElementNode(node) || node.tagType !== ElementTypes.ELEMENT) {
+    return false
+  }
+  const name = isAttributeNode(prop)
+    ? prop.name
+    : prop.name === 'bind' &&
+      prop.arg &&
+      isSimpleExpressionNode(prop.arg) &&
+      prop.arg.isStatic
+    ? prop.arg.content
+    : ''
+  const matched =
+    name === 'hover-class' ||
+    (name === 'placeholder-class' &&
+      (node.tag === 'input' || node.tag === 'textarea'))
+  return matched
+}
+
+/**
+ * externalClass 由子组件的静态声明确定，调用点只负责按调用方作用域展开。
+ * 这里不保留原 class，防止值进入子组件普通 :class 后被错误补成子组件本地 class。
+ */
+function rewriteAlipayStaticExternalClasses(
+  node: ComponentNode,
+  context: TransformContext,
+  externalClasses: string[]
+) {
+  if (!context.isX || !isAlipayXStyleIsolation() || !externalClasses.length) {
+    return
+  }
+  const mask = getAlipayStyleIsolationClassMask(context.filename)
+  for (const prop of node.props) {
+    if (
+      isAttributeNode(prop) &&
+      externalClasses.includes(prop.name) &&
+      prop.value?.content
+    ) {
+      prop.value.content = formatAlipayStyleIsolationClasses(
+        prop.value.content,
+        mask,
+        false
+      )
+    }
+  }
+}
+
+function isAlipayExternalClassBinding(
+  prop: DirectiveNode,
+  externalClasses: string[]
+) {
+  return (
+    isAlipayXStyleIsolation() &&
+    prop.name === 'bind' &&
+    !!prop.arg &&
+    isSimpleExpressionNode(prop.arg) &&
+    prop.arg.isStatic &&
+    externalClasses.includes(prop.arg.content)
+  )
+}
+
+function wrapAlipayExternalClass(
+  prop: DirectiveNode,
+  context: TransformContext
+) {
+  addUniViewAutoImportFilter(context)
+  const mask = getAlipayStyleIsolationClassMask(context.filename)
+  const exp = rewriteExpression(prop.exp!, context)
+  // 第三个参数关闭原 class 输出；uV.c 对已展开前缀保持幂等，可安全支持多级组件转发。
+  prop.exp = rewriteExpression(
+    createCompoundExpression([
+      createSimpleExpression(FILTER_MODULE_NAME),
+      '.c(',
+      exp,
+      `,${mask},0)`,
+    ]),
+    context
+  )
 }
 
 const builtInProps = [ATTR_VUE_SLOTS]
@@ -472,6 +690,14 @@ function getComponentExternalClasses(
     })
   } catch (error) {}
   if (program) {
+    // 页面解析子组件 externalClasses 时已经完成文件读取和 AST 解析，
+    // 同步缓存 styleIsolation，确保后续子组件模板编译能直接得到正确的 class mask。
+    const styleIsolation = parseStyleIsolation(program)
+    if (styleIsolation) {
+      updateMiniProgramComponentStyleIsolation(source, styleIsolation)
+    } else {
+      clearMiniProgramComponentStyleIsolation(source)
+    }
     const classes = parseExternalClasses(program)
     updateMiniProgramComponentExternalClasses(source, { mtime, classes })
     return classes

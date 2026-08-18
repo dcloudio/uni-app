@@ -25,6 +25,9 @@ interface PluginConfig {
 
 export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]): {
   compiler?: TemplateCompiler
+  uniAppXVaporScriptTransform?: NonNullable<
+    UniVitePlugin['uni']
+  >['uniAppXVaporScriptTransform']
   copyOptions: {
     assets: string[]
     targets: UniViteCopyPluginTarget[]
@@ -41,9 +44,13 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]): {
   const jsxOptions: Required<UniVitePlugin>['uni']['jsxOptions'] = {}
   const styleOptions: Required<UniVitePlugin>['uni']['styleOptions'] = {}
   let compiler: TemplateCompiler | undefined
+  let uniAppXVaporScriptTransform: NonNullable<
+    UniVitePlugin['uni']
+  >['uniAppXVaporScriptTransform']
   UniVitePlugins.forEach((plugin) => {
     const {
       compiler: pluginTemplateCompiler,
+      uniAppXVaporScriptTransform: pluginUniAppXVaporScriptTransform,
       copyOptions: pluginCopyOptions,
       compilerOptions: pluginCompilerOptions,
       jsxOptions: pluginJsxOptions,
@@ -51,6 +58,9 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]): {
     } = plugin.uni || {}
     if (pluginTemplateCompiler) {
       compiler = pluginTemplateCompiler
+    }
+    if (pluginUniAppXVaporScriptTransform) {
+      uniAppXVaporScriptTransform = pluginUniAppXVaporScriptTransform
     }
     if (pluginCompilerOptions) {
       extend(compilerOptions, pluginCompilerOptions)
@@ -76,6 +86,7 @@ export function initPluginUniOptions(UniVitePlugins: UniVitePlugin[]): {
   })
   return {
     compiler,
+    uniAppXVaporScriptTransform,
     copyOptions: {
       assets,
       targets,

@@ -7,7 +7,7 @@ export function uniAppJsPlugin(resolvedConfig: ResolvedConfig): Plugin {
   return {
     name: 'uni:app-js',
     async transform(source, filename) {
-      if (!filename.endsWith('.js')) {
+      if (!filename.endsWith('.js') && !filename.endsWith('.ts')) {
         return
       }
       const parseResult = parse(source, {

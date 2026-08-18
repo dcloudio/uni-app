@@ -203,11 +203,15 @@ export function resolvePiniaAlias(): Record<string, string> {
   }
   return {
     ...resolvePiniaDependencies(),
+    'pinia/package.json': path.resolve(
+      __dirname,
+      '../lib/dom2/pinia/package.json'
+    ),
     pinia: resolvePinia(),
   }
 }
 
-export function resolveVueI18nRuntimeAlias(): Record<string, string> {
+export function resolveVueI18nAlias(): Record<string, string> {
   if (
     process.env.UNI_APP_X === 'true' &&
     resolveProjectVueI18n() !== undefined
@@ -216,7 +220,19 @@ export function resolveVueI18nRuntimeAlias(): Record<string, string> {
   }
   return {
     ...resolveVueI18nDependencies(),
-    'vue-i18n': resolveVueI18nRuntime(),
+    ...(process.env.UNI_APP_X === 'true'
+      ? {
+          'vue-i18n/package.json': path.resolve(
+            __dirname,
+            '../lib/dom2/vue-i18n/package.json'
+          ),
+        }
+      : {}),
+    'vue-i18n/runtime': resolveVueI18nRuntime(),
+    'vue-i18n':
+      process.env.UNI_APP_X === 'true'
+        ? resolveVueI18n()
+        : resolveVueI18nRuntime(),
   }
 }
 

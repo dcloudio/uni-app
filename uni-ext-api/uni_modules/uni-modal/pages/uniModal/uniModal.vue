@@ -1,18 +1,18 @@
 <template>
 	<view class="uni-modal-mask" :class="{ 'uni-modal-mask--show': showAnim, 'uni-modal-mask--hide': !showAnim }">
 		<view class="uni-modal-dialog" :style="{ bottom: inputBottom }"
-			:class="{ 'uni-modal-dialog--show': showAnim, 'uni-modal--dark': isDark }">
+			:class="{ 'uni-modal-dialog--show': showAnim }">
 			<!-- ios need -->
-			<view class="uni-modal-dialog__inner" :class="{ 'uni-modal--dark': isDark }">
+			<view class="uni-modal-dialog__inner">
 				<view class="uni-modal-dialog__title__container">
-					<text v-if="hasTitle" max-lines="2" class="uni-modal-dialog__title" :class="{ 'uni-modal--dark': isDark }">
+					<text v-if="hasTitle" max-lines="2" class="uni-modal-dialog__title">
 						{{ title }}
 					</text>
 				</view>
 
 				<view class="uni-modal-dialog__body" :class="{'no-title' : !hasTitle}">
 					<textarea v-if="editable" v-model="content" class="uni-modal-dialog__textarea"
-						placeholder-class="uni-modal-dialog__textarea-placeholder" :class="{ 'uni-modal--dark': isDark }"
+						placeholder-class="uni-modal-dialog__textarea-placeholder"
 						:focus="true" :adjust-position="false" @blur="onInputBlur"
 						@keyboardheightchange="onInputKeyboardChange" :auto-height="isAutoHeight"
 						:placeholder="placeholderText" />
@@ -25,17 +25,18 @@
 					</scroll-view>
 				</view>
 
-				<view class="uni-modal-dialog__divider" :class="{ 'uni-modal--dark': isDark }"></view>
+				<view class="uni-modal-dialog__divider"></view>
 				<view class="uni-modal-dialog__actions">
 					<view v-if="showCancel" class="uni-modal-dialog__action uni-modal-dialog__action--cancel"
-						:hover-class="hoverClassName" @click="handleCancel">
-						<text :style="{ color: cancelColor }" max-lines="1" class="uni-modal-dialog__action-text">
+						hover-class="uni-modal-dialog__action--hover" @click="handleCancel">
+						<text :style="cancelColorStyle" max-lines="1" class="uni-modal-dialog__action-text">
 							{{ cancelText }}
 						</text>
 					</view>
-					<view v-if="showCancel" class="uni-modal-dialog__split" :class="{ 'uni-modal--dark': isDark }"></view>
-					<view class="uni-modal-dialog__action uni-modal-dialog__action--confirm" :hover-class="hoverClassName" @click="handleSure">
-						<text :style="{ color: confirmColor }" max-lines="1"
+					<view v-if="showCancel" class="uni-modal-dialog__split"></view>
+					<view class="uni-modal-dialog__action uni-modal-dialog__action--confirm"
+						hover-class="uni-modal-dialog__action--hover" @click="handleSure">
+						<text :style="confirmColorStyle" max-lines="1"
 							class="uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm">
 							{{ confirmText }}
 						</text>
@@ -45,15 +46,13 @@
 		</view>
 	</view>
 </template>
-<script setup lang='ts'>
+<script setup>
 	import {
 		ref,
 		computed,
 		getCurrentInstance
 	} from 'vue'
 
-	const theme = ref('light')
-	const isDark = computed((): boolean => theme.value == 'dark')
 	const language = ref('zh-Hans')
 	const i18nCancelText = {
 		en: 'Cancel',
@@ -80,18 +79,12 @@
 	const placeholderText = ref<string | null>(null)
 	const inputConfirmText = ref<string | null>(null)
 	const inputCancelText = ref<string | null>(null)
-	const cancelColor = ref('#000000')
-	const confirmColor = ref('#4A5E86')
 	const inputBottom = ref('0px')
 	const maxScrollHeight = ref('192px')
 	const inputCancelColor = ref<string | null>(null)
 	const inputConfirmColor = ref<string | null>(null)
-	const hoverClassName = ref('uni-modal-dialog__action--hover')
 	const showAnim = ref(false)
 	const isAutoHeight = ref(true)
-	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-	const appThemeChangeCallbackId = ref(-1)
-	// #endif
 
 	const hasTitle = computed((): boolean => {
 		return title.value != ''
@@ -170,38 +163,12 @@
 		return hexColorRegex.test(inputColor)
 	}
 
-	/**
-	 * update ui when theme change.
-	 */
-	const updateUI = () => {
-		if (isValidColor(inputConfirmColor.value)) {
-			confirmColor.value = inputConfirmColor.value!
-		} else {
-			/**
-			 * init text color with theme
-			 */
-			if (theme.value == 'dark') {
-				confirmColor.value = '#7388a2'
-			} else {
-				confirmColor.value = '#4A5E86'
-			}
-		}
-		if (isValidColor(inputCancelColor.value)) {
-			cancelColor.value = inputCancelColor.value!
-		} else {
-			if (theme.value == 'dark') {
-				cancelColor.value = '#a5a5a5'
-			} else {
-				cancelColor.value = '#000000'
-			}
-		}
-
-		if (theme.value == 'dark') {
-			hoverClassName.value = 'uni-modal-dialog__action--hover-dark'
-		} else {
-			hoverClassName.value = 'uni-modal-dialog__action--hover'
-		}
-	}
+	const cancelColorStyle = computed((): UTSJSONObject => {
+		return isValidColor(inputCancelColor.value) ? { color: inputCancelColor.value! } : {}
+	})
+	const confirmColorStyle = computed((): UTSJSONObject => {
+		return isValidColor(inputConfirmColor.value) ? { color: inputConfirmColor.value! } : {}
+	})
 
 	const closeModal = () => {
 		showAnim.value = false
@@ -257,15 +224,6 @@
 			language.value = deviceInfo.osLanguage
 		}
 		// #ifdef WEB
-		const hostTheme = appBaseInfo.hostTheme
-		if (hostTheme != null) {
-			theme.value = hostTheme
-			updateUI()
-		}
-		uni.onThemeChange((res) => {
-			theme.value = res.theme
-			updateUI()
-		})
 		// 监听浏览器的语言设置
 		const locale = uni.getLocale()
 		language.value = locale
@@ -273,17 +231,6 @@
 			if (res.locale) {
 				language.value = res.locale
 			}
-		})
-		// #endif
-		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-		const appTheme = appBaseInfo.appTheme
-		if (appTheme != null) {
-			const osTheme = deviceInfo.osTheme ?? 'light'
-			theme.value = ('auto' == appTheme) ? osTheme : appTheme
-		}
-		appThemeChangeCallbackId.value = uni.onAppThemeChange((res: AppThemeChangeResult) => {
-			theme.value = res.appTheme
-			updateUI()
 		})
 		// #endif
 
@@ -322,8 +269,6 @@
 			if (data['cancelColor'] != null) {
 				inputCancelColor.value = data['cancelColor'] as string
 			}
-
-			updateUI()
 		})
 
 		uni.$emit(readyEventName.value, {})
@@ -335,9 +280,6 @@
 		uni.$off(readyEventName.value, null)
 		uni.$off(successEventName.value, null)
 		uni.$off(failEventName.value, null)
-		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-		uni.offAppThemeChange(appThemeChangeCallbackId.value)
-		// #endif
 	})
 
 	// onBackPress 生命周期
@@ -403,19 +345,11 @@
 		transform: scale(1);
 	}
 
-	.uni-modal-dialog.uni-modal--dark {
-		background-color: #272727;
-	}
-
 	.uni-modal-dialog__inner {
 		width: 100%;
 		height: 100%;
 		background-color: #ffffff;
 		border-radius: 8px;
-	}
-
-	.uni-modal-dialog__inner.uni-modal--dark {
-		background-color: #272727;
 	}
 
 	.uni-modal-dialog__title__container {
@@ -436,10 +370,6 @@
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 		/* #endif */
-	}
-
-	.uni-modal-dialog__title.uni-modal--dark {
-		color: #cfcfcf;
 	}
 
 	.uni-modal-dialog__body {
@@ -483,11 +413,6 @@
 		/* #endif */
 	}
 
-	.uni-modal-dialog__textarea.uni-modal--dark {
-		background-color: #3d3d3d;
-		color: #cfcfcf;
-	}
-
 	.uni-modal-dialog__textarea-placeholder {
 		color: #808080;
 	}
@@ -497,10 +422,6 @@
 		height: 1px;
 		transform: scaleY(0.5);
 		background-color: #e3e3e3;
-	}
-
-	.uni-modal-dialog__divider.uni-modal--dark {
-		background-color: #303030;
 	}
 
 	.uni-modal-dialog__actions {
@@ -527,11 +448,8 @@
 		background-color: #efefef;
 	}
 
-	.uni-modal-dialog__action--hover-dark {
-		background-color: #1c1c1c;
-	}
-
 	.uni-modal-dialog__action-text {
+		color: #000000;
 		letter-spacing: 1px;
 		font-size: 17px;
 		text-align: center;
@@ -553,13 +471,36 @@
 		background-color: #e3e3e3;
 	}
 
-	.uni-modal-dialog__split.uni-modal--dark {
-		background-color: #303030;
-	}
-
 	/* #ifdef WEB */
 	.uni-textarea-wrapper {
 		min-height: 18px !important;
 	}
 	/* #endif */
+
+	@media (prefers-color-scheme: dark) {
+		.uni-modal-dialog,
+		.uni-modal-dialog__inner {
+			background-color: #272727;
+		}
+		.uni-modal-dialog__title {
+			color: #cfcfcf;
+		}
+		.uni-modal-dialog__textarea {
+			background-color: #3d3d3d;
+			color: #cfcfcf;
+		}
+		.uni-modal-dialog__divider,
+		.uni-modal-dialog__split {
+			background-color: #303030;
+		}
+		.uni-modal-dialog__action--hover {
+			background-color: #1c1c1c;
+		}
+		.uni-modal-dialog__action-text {
+			color: #a5a5a5;
+		}
+		.uni-modal-dialog__action-text--confirm {
+			color: #7388a2;
+		}
+	}
 </style>

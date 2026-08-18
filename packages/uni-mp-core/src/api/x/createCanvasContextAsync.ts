@@ -47,6 +47,9 @@ class CanvasContext {
   }
 
   createPath2D() {
+    if (__PLATFORM__ === 'mp-alipay') {
+      return this._element.getContext('2d').createPath2D()
+    }
     return this._element.createPath2D()
   }
 

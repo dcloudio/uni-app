@@ -20,6 +20,7 @@ import {
   entryPageState,
   redirectToPagesBeforeEntryPages,
 } from '../../framework/app'
+import { resolveAppRoute } from './appRoute'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
@@ -46,13 +47,10 @@ export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
 
 interface RedirectToOptions extends RouteOptions {}
 
-export function _redirectTo({
-  url,
-  path,
-  query,
-}: RedirectToOptions): Promise<undefined> {
+export function _redirectTo(options: RedirectToOptions): Promise<undefined> {
   // 与 uni-app x 安卓一致，后移除页面
-
+  const appRoute = resolveAppRoute(options.url, API_REDIRECT_TO)
+  const { path, query } = parseUrl(appRoute.url)
   return new Promise((resolve) => {
     setTimeout(() => {
       const lastPage = (getCurrentPage() as unknown as UniPage).vm
@@ -71,13 +69,15 @@ export function _redirectTo({
       invokeAfterRouteHooks(API_REDIRECT_TO)
       showWebview(
         registerPage({
-          url,
+          url: appRoute.url,
           path,
           query,
           openType:
             isTabPage(lastPage) || getAllPages().length === 1
               ? 'reLaunch'
               : 'redirectTo',
+          appRouteOpenType: API_REDIRECT_TO,
+          appRouteContext: appRoute.context,
           onRegistered() {
             isRegistered = true
             callback()

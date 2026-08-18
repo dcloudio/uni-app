@@ -1,3 +1,19 @@
+const mockUts2js = jest.fn((_options: Record<string, unknown>) => ({
+  name: 'uts2js',
+}))
+const mockResolveUasmLoadPath = jest.fn()
+const mockCreateLoadUasmTransformer = jest.fn()
+const mockCollectExtApiUsageAst = jest.fn()
+const mockInitUts2jsExtApiOptions = jest.fn(() => ({
+  collectExtApiUsageAst: mockCollectExtApiUsageAst,
+}))
+const mockInitUasmTransformOptions = jest.fn((platform: string) => ({
+  targetArchs: ['arm64-v8a'],
+  resolve: (modulePath: string) =>
+    mockResolveUasmLoadPath(modulePath, platform),
+  createLoadUasmTransformer: mockCreateLoadUasmTransformer,
+}))
+
 jest.mock('@dcloudio/uni-cli-shared', () => {
   const plugin = (name: string) => () => ({ name })
   return {
@@ -5,10 +21,12 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     enableSourceMap: () => false,
     getWorkers: () => ({}),
     initUts2jsSharedDataOptions: () => undefined,
+    initUts2jsExtApiOptions: mockInitUts2jsExtApiOptions,
     isNormalCompileTarget: () => process.env.UNI_COMPILE_TARGET !== 'ext-api',
+    initUasmTransformOptions: mockInitUasmTransformOptions,
     parseUniExtApiNamespacesOnce: () => ({}),
     resolveUTSCompiler: () => ({
-      uts2js: () => ({ name: 'uts2js' }),
+      uts2js: mockUts2js,
     }),
     uniDecryptUniModulesPlugin: plugin('decrypt'),
     uniEasycomPlugin: plugin('easycom'),
@@ -17,9 +35,11 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     uniHBuilderXConsolePlugin: plugin('console'),
     uniSharedDataPlugin: plugin('shared-data'),
     uniStatsPlugin: plugin('stats'),
+    uniUasmPlugin: plugin('uasm'),
     uniUTSAppUniModulesPlugin: plugin('uni-modules'),
     uniUTSUVueJavaScriptPlugin: plugin('js'),
     uniUniModulesExtApiPlugin: plugin('ext-api'),
+    uniVaporScriptPlugin: plugin('vapor-script'),
     uniWorkersPlugin: plugin('workers'),
   }
 })
@@ -54,12 +74,14 @@ jest.mock('../../src/plugins/android-dom2/devPlugin', () => ({
 }))
 
 jest.mock('../../src/plugins/utils', () => ({
-  SHARED_DATA_LIB_NAME: 'libentry.so',
+  SHARED_DATA_LIB_GLOBAL_NAME: '__uniSharedDataLib',
 }))
 
 describe('android-dom2 plugin init', () => {
   const originalEnv = {
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
+    UNI_APP_X_DOM2_DYNAMIC: process.env.UNI_APP_X_DOM2_DYNAMIC,
+    UNI_APP_X_VAPOR_SCRIPT_LANG: process.env.UNI_APP_X_VAPOR_SCRIPT_LANG,
     UNI_COMPILE_TARGET: process.env.UNI_COMPILE_TARGET,
     UNI_COMPILE_EXT_API_TYPE: process.env.UNI_COMPILE_EXT_API_TYPE,
     UNI_APP_X_CACHE_DIR: process.env.UNI_APP_X_CACHE_DIR,
@@ -72,6 +94,10 @@ describe('android-dom2 plugin init', () => {
   }
 
   afterEach(() => {
+    mockUts2js.mockClear()
+    mockResolveUasmLoadPath.mockClear()
+    mockInitUasmTransformOptions.mockClear()
+    mockInitUts2jsExtApiOptions.mockClear()
     Object.entries(originalEnv).forEach(([key, value]) => {
       if (value === undefined) {
         Reflect.deleteProperty(process.env, key)
@@ -82,8 +108,24 @@ describe('android-dom2 plugin init', () => {
     jest.resetModules()
   })
 
-  function initPlugins() {
-    process.env.UNI_APP_X_DOM2 = 'true'
+  function initPlugins(
+    dynamic = false,
+    dom2 = true,
+    enableVaporScriptLang = true
+  ) {
+    if (dom2) {
+      process.env.UNI_APP_X_DOM2 = 'true'
+    } else {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    }
+    if (dynamic) {
+      process.env.UNI_APP_X_DOM2_DYNAMIC = 'true'
+    } else {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2_DYNAMIC')
+    }
+    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = enableVaporScriptLang
+      ? 'true'
+      : 'false'
     process.env.UNI_APP_X_CACHE_DIR = '/tmp/cache'
     process.env.UNI_INPUT_DIR = '/tmp/input'
     process.env.UNI_COMPILER_VERSION = '1.0.0'
@@ -111,6 +153,88 @@ describe('android-dom2 plugin init', () => {
     )
   })
 
+  test('dom2 includes vapor script plugin with script lang support', () => {
+    const plugins = initPlugins()
+
+    expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
+      'vapor-script'
+    )
+  })
+
+  test('dom2 excludes vapor script plugin without script lang support', () => {
+    const plugins = initPlugins(false, true, false)
+
+    expect(
+      plugins.map((plugin: { name: string }) => plugin.name)
+    ).not.toContain('vapor-script')
+  })
+
+  test('non-dom2 keeps Ext API collection without UASM transform', () => {
+    initPlugins(false, false)
+
+    expect(mockInitUasmTransformOptions).not.toHaveBeenCalled()
+    expect(mockInitUts2jsExtApiOptions).toHaveBeenCalledTimes(1)
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({
+        uasm: undefined,
+        extApi: { collectExtApiUsageAst: mockCollectExtApiUsageAst },
+      })
+    )
+  })
+
+  test('configures android UASM resolver', () => {
+    initPlugins()
+
+    const options = mockUts2js.mock.calls[0]?.[0] as {
+      uasm: {
+        targetArchs: string[]
+        resolve(modulePath: string): string | undefined
+        createLoadUasmTransformer: unknown
+      }
+    }
+    expect(options?.uasm.targetArchs).toEqual(['arm64-v8a'])
+    expect(options?.uasm.createLoadUasmTransformer).toBe(
+      mockCreateLoadUasmTransformer
+    )
+    options?.uasm.resolve('uni_modules/test-uasm')
+    expect(mockResolveUasmLoadPath).toHaveBeenCalledWith(
+      'uni_modules/test-uasm',
+      'app-android'
+    )
+  })
+
+  test('configures the decrypt Ext API collector for uts2js', () => {
+    initPlugins()
+
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({
+        extApi: { collectExtApiUsageAst: mockCollectExtApiUsageAst },
+      })
+    )
+  })
+
+  test('dom2 configures SharedData global access', () => {
+    initPlugins()
+
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sharedDataLibName: '__uniSharedDataLib',
+        sharedDataLibAsGlobal: true,
+      })
+    )
+  })
+
+  test('dynamic dom2 does not configure SharedData global access', () => {
+    initPlugins(true)
+
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sharedDataLibName: undefined,
+        sharedDataLibAsGlobal: false,
+      })
+    )
+  })
+
   test('development includes android engine dev plugin', () => {
     process.env.NODE_ENV = 'development'
 
@@ -131,3 +255,5 @@ describe('android-dom2 plugin init', () => {
     ).not.toContain('stats')
   })
 })
+
+export {}

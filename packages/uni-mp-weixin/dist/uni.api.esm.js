@@ -802,11 +802,42 @@ function promisify(name, api) {
 }
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
+const ON_API_RE = /^on[A-Z]/;
+const OFF_API_RE = /^off[A-Z]/;
+function getOnApiName(methodName) {
+    return OFF_API_RE.test(methodName) ? `on${methodName.slice(3)}` : '';
+}
 function initWrapper(protocols) {
+    const eventCallbackMap = new WeakMap();
     function processCallback(methodName, method, returnValue) {
         return function (res) {
             return method(processReturnValue(methodName, res, returnValue));
         };
+    }
+    function processEventCallback(methodName, callback, returnValue) {
+        if (ON_API_RE.test(methodName)) {
+            let methodCallbackMap = eventCallbackMap.get(callback);
+            if (!methodCallbackMap) {
+                methodCallbackMap = new Map();
+                eventCallbackMap.set(callback, methodCallbackMap);
+            }
+            let eventCallback = methodCallbackMap.get(methodName);
+            if (!eventCallback) {
+                eventCallback = processCallback(methodName, callback, returnValue);
+                methodCallbackMap.set(methodName, eventCallback);
+            }
+            return eventCallback;
+        }
+        if (OFF_API_RE.test(methodName)) {
+            const onMethodName = getOnApiName(methodName);
+            const methodCallbackMap = eventCallbackMap.get(callback);
+            const eventCallback = methodCallbackMap === null || methodCallbackMap === void 0 ? void 0 : methodCallbackMap.get(onMethodName);
+            if (eventCallback) {
+                return eventCallback;
+            }
+            return callback;
+        }
+        return processCallback(methodName, callback, returnValue);
     }
     function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
         if (isPlainObject(fromArgs)) {
@@ -852,7 +883,8 @@ function initWrapper(protocols) {
             if (isFunction(argsOption)) {
                 argsOption(fromArgs, {});
             }
-            fromArgs = processCallback(methodName, fromArgs, returnValue);
+            // 事件 API 需要保证 on/off 传给平台的回调引用一致。
+            fromArgs = processEventCallback(methodName, fromArgs, returnValue);
         }
         return fromArgs;
     }
@@ -872,10 +904,13 @@ function initWrapper(protocols) {
          * - 开发者自定义的方法属性也会进入此方法，此时method为undefined，应返回undefined
          */
         const hasProtocol = hasOwn(protocols, methodName);
+        const onMethodName = getOnApiName(methodName);
+        const hasOnProtocol = !!onMethodName && hasOwn(protocols, onMethodName);
         if (!hasProtocol && typeof wx[methodName] !== 'function') {
             return method;
         }
         const needWrapper = hasProtocol ||
+            hasOnProtocol ||
             isFunction(protocols.returnValue) ||
             isContextApi(methodName) ||
             isTaskApi(methodName);

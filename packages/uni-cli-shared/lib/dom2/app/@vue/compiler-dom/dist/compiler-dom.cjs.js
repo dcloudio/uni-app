@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-beta.17
+  * @vue/compiler-dom v3.6.0-rc.4
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -202,6 +202,14 @@ const resolveModifiers = (key, modifiers, context, loc) => {
 	const eventOptionModifiers = [];
 	for (let i = 0; i < modifiers.length; i++) {
 		const modifier = modifiers[i].content;
+		if (modifier === "delegate") {
+			if (context) {
+				const error = /* @__PURE__ */ new SyntaxError(`.delegate modifier is only supported in Vapor components.`);
+				error.loc = modifiers[i].loc;
+				context.onWarn(error);
+			}
+			continue;
+		}
 		if (modifier === "native" && context && (0, _vue_compiler_core.checkCompatEnabled)("COMPILER_V_ON_NATIVE", context, loc)) eventOptionModifiers.push(modifier);
 		else if (isEventOptionModifier(modifier)) eventOptionModifiers.push(modifier);
 		else {
@@ -278,7 +286,7 @@ function postTransformTransition(node, onError, hasMultipleChildren = defaultHas
 			source: ""
 		}));
 		const child = node.children[0];
-		if (child.type === 1) {
+		if (child.type === 1 && !(0, _vue_compiler_core.findDir)(child, "if")) {
 			for (const p of child.props) if (p.type === 7 && p.name === "show") node.props.push({
 				type: 6,
 				name: "persisted",
@@ -453,10 +461,11 @@ function stringifyElement(node, context) {
 					res += ` ${p.arg.content}="__VUE_EXP_START__${exp.content}__VUE_EXP_END__"`;
 					continue;
 				}
-				if ((0, _vue_shared.isBooleanAttr)(p.arg.content) && exp.content === "false") continue;
+				if (((0, _vue_shared.isBooleanAttr)(p.arg.content) || p.arg.content === "hidden") && exp.content === "false") continue;
 				let evaluated = evaluateConstant(exp);
 				if (evaluated != null) {
 					const arg = p.arg && p.arg.content;
+					if (arg === "hidden" && typeof evaluated === "number" && !(0, _vue_shared.includeBooleanAttr)(evaluated)) continue;
 					if (arg === "class") evaluated = (0, _vue_shared.normalizeClass)(evaluated);
 					else if (arg === "style") evaluated = (0, _vue_shared.stringifyStyle)((0, _vue_shared.normalizeStyle)(evaluated));
 					res += ` ${p.arg.content}="${(0, _vue_shared.escapeHtml)(evaluated)}"`;

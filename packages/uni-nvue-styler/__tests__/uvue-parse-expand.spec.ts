@@ -22,7 +22,11 @@ function createDeclaration(prop: string, value: unknown) {
   }
 }
 
-function normalizeStyle(name: string, value: unknown) {
+function normalizeStyle(
+  name: string,
+  value: unknown,
+  processor = processDeclaration
+) {
   const decl = {
     replaceWith(newProps: Declaration[]) {
       props = newProps
@@ -32,7 +36,7 @@ function normalizeStyle(name: string, value: unknown) {
   } as Declaration
 
   let props = [decl]
-  processDeclaration(decl)
+  processor(decl)
   return props
 }
 
@@ -125,6 +129,131 @@ describe('test esm expand', () => {
         value: 'red',
       },
     ])
+  })
+
+  test('expands animation only for dom2 uvue', () => {
+    const processDom2Declaration = expand({
+      type: 'uvue',
+      dom2: true,
+      platform: 'app-android',
+    }).Declaration as (decl: Declaration) => void
+    const animation = normalizeStyle(
+      'animation',
+      'fade 1s ease-in forwards',
+      processDom2Declaration
+    )
+    expect(animation.map(({ prop, value }) => ({ prop, value }))).toEqual([
+      { prop: 'animation-name', value: 'fade' },
+      { prop: 'animation-duration', value: '1s' },
+      { prop: 'animation-delay', value: '0s' },
+      { prop: 'animation-timing-function', value: 'ease-in' },
+      { prop: 'animation-iteration-count', value: '1' },
+      { prop: 'animation-direction', value: 'normal' },
+      { prop: 'animation-fill-mode', value: 'forwards' },
+      { prop: 'animation-play-state', value: 'running' },
+    ])
+
+    expect(
+      normalizeStyle(
+        'animation',
+        'fade 1s ease-in',
+        processDom2Declaration
+      ).map(({ prop, value }) => ({ prop, value }))
+    ).toEqual([
+      { prop: 'animation-name', value: 'fade' },
+      { prop: 'animation-duration', value: '1s' },
+      { prop: 'animation-delay', value: '0s' },
+      { prop: 'animation-timing-function', value: 'ease-in' },
+      { prop: 'animation-iteration-count', value: '1' },
+      { prop: 'animation-direction', value: 'normal' },
+      { prop: 'animation-fill-mode', value: 'forwards' },
+      { prop: 'animation-play-state', value: 'running' },
+    ])
+
+    expect(
+      normalizeStyle(
+        'animation',
+        'fade 1s ease-in none',
+        processDom2Declaration
+      )
+    ).toHaveLength(0)
+
+    const variableAnimation = normalizeStyle(
+      'animation',
+      'var(--animation) !important',
+      processDom2Declaration
+    )
+    expect(
+      variableAnimation.map(({ prop, value, important }) => ({
+        prop,
+        value,
+        important,
+      }))
+    ).toEqual(
+      [
+        'animation-name',
+        'animation-duration',
+        'animation-delay',
+        'animation-timing-function',
+        'animation-iteration-count',
+        'animation-direction',
+        'animation-fill-mode',
+        'animation-play-state',
+      ].map((prop) => ({
+        prop,
+        value: 'var(--animation)',
+        important: true,
+      }))
+    )
+
+    const mixedVariableAnimation = normalizeStyle(
+      'animation',
+      'fade var(--duration)',
+      processDom2Declaration
+    )
+    expect(
+      mixedVariableAnimation.map(({ prop, value }) => ({ prop, value }))
+    ).toEqual(
+      [
+        'animation-name',
+        'animation-duration',
+        'animation-delay',
+        'animation-timing-function',
+        'animation-iteration-count',
+        'animation-direction',
+        'animation-fill-mode',
+        'animation-play-state',
+      ].map((prop) => ({
+        prop,
+        value: 'fade var(--duration)',
+      }))
+    )
+
+    const legacyUVueAnimation = normalizeStyle('animation', 'fade 1s ease-in')
+    expect(legacyUVueAnimation).toHaveLength(1)
+    expect(legacyUVueAnimation[0]).toEqual(
+      expect.objectContaining({
+        prop: 'animation',
+        value: 'fade 1s ease-in',
+      })
+    )
+
+    const processNVueDeclaration = expand({ type: 'nvue' }).Declaration as (
+      decl: Declaration
+    ) => void
+    const declaration = {
+      ...createDeclaration('animation', 'fade 1s ease-in'),
+      replaceWith() {
+        throw new Error('nvue animation should not be expanded')
+      },
+    } as unknown as Declaration
+    processNVueDeclaration(declaration)
+    expect(declaration).toEqual(
+      expect.objectContaining({
+        prop: 'animation',
+        value: 'fade 1s ease-in',
+      })
+    )
   })
 })
 

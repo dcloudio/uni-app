@@ -293,11 +293,15 @@ function removeKeepAliveApiCallback(name, callback) {
         }
     }
 }
-function offKeepAliveApiCallback(name) {
-    UniServiceJSBridge.off('api.' + name);
+function offKeepAliveApiCallback(name, eventTransport) {
+    const eventName = 'api.' + name;
+    const transport = UniServiceJSBridge;
+    transport.off(eventName);
 }
-function onKeepAliveApiCallback(name) {
-    UniServiceJSBridge.on('api.' + name, (res) => {
+function onKeepAliveApiCallback(name, eventTransport) {
+    const eventName = 'api.' + name;
+    const transport = UniServiceJSBridge;
+    transport.on(eventName, (res) => {
         for (const key in invokeCallbacks) {
             const opts = invokeCallbacks[key];
             if (opts.name === name) {
@@ -482,20 +486,33 @@ function promisify(name, fn) {
     };
 }
 
-function formatApiArgs(args, options) {
+/**
+ * 统一格式化 API 首参，确保 formatArgs 阶段总是拿到可写对象。
+ */
+function normalizeFormatApiParams(args) {
     const params = args[0];
+    if (isPlainObject(params)) {
+        return params;
+    }
+    const normalizedParams = {};
+    args[0] = normalizedParams;
+    return normalizedParams;
+}
+function formatApiArgs(args, options) {
+    const rawParams = args[0];
     if (!options ||
         !options.formatArgs ||
-        (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
+        (!isPlainObject(options.formatArgs) && isPlainObject(rawParams))) {
         return;
     }
+    const params = normalizeFormatApiParams(args);
     const formatArgs = options.formatArgs;
     const keys = Object.keys(formatArgs);
     for (let i = 0; i < keys.length; i++) {
         const name = keys[i];
         const formatterOrDefaultValue = formatArgs[name];
         if (isFunction(formatterOrDefaultValue)) {
-            const errMsg = formatterOrDefaultValue(args[0][name], params);
+            const errMsg = formatterOrDefaultValue(params[name], params);
             if (isString(errMsg)) {
                 return errMsg;
             }
@@ -570,17 +587,21 @@ function wrapperOnApi(name, fn, options) {
 }
 function wrapperOffApi(name, fn, options) {
     return (callback) => {
-        checkCallback(callback);
+        {
+            checkCallback(callback);
+        }
         const errMsg = beforeInvokeApi(name, [callback], undefined, options);
         if (errMsg) {
             throw new Error(errMsg);
         }
-        name = name.replace('off', 'on');
-        removeKeepAliveApiCallback(name, callback);
+        const onApiName = name.replace('off', 'on');
+        {
+            removeKeepAliveApiCallback(onApiName, callback);
+        }
         // 是否还存在监听，若已不存在，则移除onMethod监听
-        const hasInvokeOnApi = findInvokeCallbackByName(name);
+        const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
         if (!hasInvokeOnApi) {
-            offKeepAliveApiCallback(name);
+            offKeepAliveApiCallback(onApiName);
             fn();
         }
     };
@@ -12438,7 +12459,7 @@ function createRouteOptions(type) {
         beforeAll: beforeRoute,
     };
 }
-function createNormalizeUrl(type) {
+function createNormalizeUrl(type, options = {}) {
     return function normalizeUrl(url, params) {
         if (!url) {
             return `Missing required args: "url"`;
@@ -12493,12 +12514,14 @@ function createNormalizeUrl(type) {
             return;
         }
         // 主要拦截目标为用户快速点击时触发的多次跳转，该情况，通常前后 url 是一样的
-        if (navigatorLock === url && params.openType !== 'appLaunch') {
+        if (!options.skipNavigatorLock &&
+            navigatorLock === url &&
+            params.openType !== 'appLaunch') {
             return `${navigatorLock} locked`;
         }
         // 至少 onLaunch 之后，再启用lock逻辑（onLaunch之前可能开发者手动调用路由API，来提前跳转）
         // enableNavigatorLock 临时开关（不对外开放），避免该功能上线后，有部分情况异常，可以让开发者临时关闭 lock 功能
-        if (__uniConfig.ready) {
+        if (!options.skipNavigatorLock && __uniConfig.ready) {
             navigatorLock = url;
         }
     };
@@ -13416,6 +13439,8 @@ function getNavigatorStyle() {
     return getTheme() === 'dark' ? 'light' : 'dark';
 }
 function getTheme() {
+    if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
+        return undefined;
     return plus.navigator.getUIStyle();
 }
 function changePagesNavigatorStyle() {
@@ -13935,8 +13960,6 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
     const _systemInfo = extend(systemInfo, windowInfo, deviceInfo, appBaseInfo, extraData);
     delete _systemInfo.screenTop;
     delete _systemInfo.enableDebug;
-    if (!__uniConfig.darkmode)
-        delete _systemInfo.theme;
     return _systemInfo;
 });
 const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {

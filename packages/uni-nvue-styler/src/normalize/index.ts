@@ -2,9 +2,13 @@ import { camelize, hasOwn, isFunction, isString } from '@vue/shared'
 import type { Declaration, Helpers, Plugin, Rule } from 'postcss'
 import {
   COMBINATORS_RE,
+  DOM2_FONT_FACE_DOCS_URL,
+  DOM2_SELECTOR_DOCS_URL,
   LENGTH_REGEXP,
   type NormalizeOptions,
   SUPPORT_CSS_UNIT,
+  appendDom2Docs,
+  getDom2PropertyDocsUrl,
   isNumber,
   supportedPropertyReason,
 } from '../utils'
@@ -54,13 +58,15 @@ function createRuleProcessor(opts: NormalizeOptions = {}) {
           return selector
         }
         let type = opts.type || 'nvue'
+        const reason =
+          'ERROR: Selector `' +
+          selector +
+          '` is not supported. ' +
+          type +
+          ' only support classname selector'
         rule.warn(
           helper.result,
-          'ERROR: Selector `' +
-            selector +
-            '` is not supported. ' +
-            type +
-            ' only support classname selector'
+          appendDom2Docs(reason, opts.dom2 ? DOM2_SELECTOR_DOCS_URL : undefined)
         )
         return ''
       })
@@ -103,7 +109,8 @@ function createDeclarationProcessor(options: NormalizeOptions) {
           needLog = true
         }
       }
-      needLog && decl.warn(helper.result, reason)
+      needLog &&
+        decl.warn(helper.result, appendDom2Docs(reason, log.documentation))
     }
     if (value === null) {
       decl.remove()
@@ -116,6 +123,7 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
   let { prop: name, value } = decl
   let result, log
   const normalize = getNormalizeMap(options)[name]
+  const atRule = decl.parent?.type === 'atrule' ? (decl.parent as any).name : ''
   if (options.type === 'uvue' && !value.includes('calc')) {
     if (hasCssVar(value)) {
       return {
@@ -128,13 +136,20 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
   if (isFunction(normalize)) {
     if (!isFunction(value)) {
       result = normalize(value, options, {
-        atRule: decl.parent?.type === 'atrule' ? (decl.parent as any).name : '',
+        atRule,
       })
     } else {
       result = { value: value }
     }
     if (result.reason) {
-      log = { reason: result.reason(name, value, result.value) }
+      log = {
+        reason: result.reason(name, value, result.value),
+        documentation: options.dom2
+          ? atRule === 'font-face' || name === 'src'
+            ? DOM2_FONT_FACE_DOCS_URL
+            : getDom2PropertyDocsUrl(name)
+          : undefined,
+      }
     }
   } else {
     // ensure number type, no `px`

@@ -156,6 +156,12 @@
     ]
   },
   "uni-route": {
+    "offAppRoute": [
+      "null"
+    ],
+    "offBeforeAppRoute": [
+      "null"
+    ],
     "navigateBack": [
       "null"
     ]
@@ -211,6 +217,10 @@
     ]
   },
   "uni-push": {
+    "onPushMessage": [
+      null,
+      "null"
+    ],
     "setAppBadgeNumber": [
       null,
       "null"

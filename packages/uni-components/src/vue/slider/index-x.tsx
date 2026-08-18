@@ -1,4 +1,4 @@
-import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { ExtractPropTypes, Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
@@ -9,6 +9,7 @@ import {
   withWebEvent,
 } from '../../helpers/useEvent'
 import { type UniFormCtx, uniFormKey } from '../form'
+import { createBackgroundColorStyle, withBackgroundColor } from './utils'
 
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28
@@ -40,37 +41,29 @@ const props = {
   },
   color: {
     type: String,
-    default: '#e9e9e9',
   },
   backgroundColor: {
     type: String,
-    default: '#e9e9e9',
   },
   // 优先级高于 activeColor
   activeBackgroundColor: {
     type: String,
-    default: '',
   },
   activeColor: {
     type: String,
-    default: '#007aff',
   },
   selectedColor: {
     type: String,
-    default: '#007aff',
   },
   blockColor: {
     type: String,
-    default: '#ffffff',
   },
   // 优先级高于blockColor
   foreColor: {
     type: String,
-    default: '',
   },
   valueColor: {
     type: String,
-    default: '#888888',
   },
   blockSize: {
     type: [Number, String],
@@ -185,17 +178,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-slider ref={sliderRef}>
           <div class="uni-slider-wrapper">
             <div class="uni-slider-input">
-              <div style={setTrackBgColor.value} class="uni-slider-track">
-                <div
-                  style={setActiveColor.value}
-                  class="uni-slider-track-value"
-                />
+              <div style={setTrackBgColor()} class="uni-slider-track">
+                <div style={setActiveColor()} class="uni-slider-track-value" />
               </div>
-              <div style={thumbTrackStyle.value} class="uni-slider-thumb-track">
-                <div
-                  style={setThumbStyle.value}
-                  class="uni-slider-thumb-value"
-                />
+              <div style={thumbTrackStyle()} class="uni-slider-thumb-track">
+                <div style={setThumbStyle()} class="uni-slider-thumb-value" />
               </div>
               <input
                 class="uni-slider-browser-input-range"
@@ -211,7 +198,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             <span
               v-show={props.showValue}
               ref={sliderValueRef}
-              style={setValueStyle.value}
+              style={setValueStyle()}
               class="uni-slider-value"
             ></span>
           </div>
@@ -223,19 +210,25 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
 function useSliderState(props: SliderProps) {
   const _getBgColor = () => {
-    return props.backgroundColor !== '#e9e9e9'
-      ? props.backgroundColor
-      : props.color !== '#007aff'
-      ? props.color
-      : '#007aff'
+    const backgroundColor = props.backgroundColor
+    const color = props.color
+    if (backgroundColor && backgroundColor !== '#e9e9e9') {
+      return backgroundColor
+    }
+    if (color && color !== '#007aff') return color
+    return backgroundColor || color
   }
   const _getActiveColor = () => {
     const activeColor = props.activeBackgroundColor || props.activeColor
-    return activeColor !== '#007aff'
-      ? activeColor
-      : props.selectedColor !== '#e9e9e9'
-      ? props.selectedColor
-      : '#e9e9e9'
+    const selectedColor = props.selectedColor
+    if (activeColor && activeColor !== '#007aff') return activeColor
+    if (selectedColor && selectedColor !== '#e9e9e9') {
+      return selectedColor
+    }
+    return activeColor || selectedColor
+  }
+  const _getBlockColor = () => {
+    return props.foreColor || props.blockColor
   }
   const _getBlockSizeString = () => {
     const blockSize = Math.min(
@@ -245,27 +238,23 @@ function useSliderState(props: SliderProps) {
     return blockSize + 'px'
   }
 
-  const state = {
-    setTrackBgColor: computed(() => ({
-      backgroundColor: _getBgColor(),
-    })),
-    setActiveColor: computed(() => ({
-      backgroundColor: _getActiveColor(),
-    })),
-    thumbTrackStyle: computed(() => ({
+  return {
+    setTrackBgColor: () => createBackgroundColorStyle(_getBgColor()),
+    setActiveColor: () => createBackgroundColorStyle(_getActiveColor()),
+    thumbTrackStyle: () => ({
       marginRight: _getBlockSizeString(),
-    })),
-    setThumbStyle: computed(() => ({
-      width: _getBlockSizeString(),
-      height: _getBlockSizeString(),
-      backgroundColor: props.foreColor || props.blockColor,
-    })),
-    setValueStyle: computed(() => ({
-      color: props.valueColor,
-    })),
+    }),
+    setThumbStyle: () =>
+      withBackgroundColor(
+        {
+          width: _getBlockSizeString(),
+          height: _getBlockSizeString(),
+        },
+        _getBlockColor()
+      ),
+    setValueStyle: () =>
+      props.valueColor ? { color: props.valueColor } : undefined,
   }
-
-  return state
 }
 
 function useSliderLoader(

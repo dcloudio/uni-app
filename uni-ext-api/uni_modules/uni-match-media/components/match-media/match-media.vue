@@ -166,7 +166,7 @@
   show.value = isValid(getExpressions(), {
     width: uni.getWindowInfo().windowWidth,
     height: uni.getWindowInfo().windowHeight,
-    orientation: uni.getSystemInfoSync().deviceOrientation,
+    orientation: uni.getDeviceInfo().deviceOrientation,
   })
 
   onResize((res: OnResizeOptions) => {
@@ -184,7 +184,7 @@
     show.value = isValid(expressions, {
       width: windowWidth,
       height: windowHeight,
-      orientation: uni.getSystemInfoSync().deviceOrientation,
+      orientation: uni.getDeviceInfo().deviceOrientation,
     })
   })
 

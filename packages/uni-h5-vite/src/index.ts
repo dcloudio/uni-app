@@ -4,6 +4,8 @@ import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
   getWorkers,
+  initUasmWebTransformOptions,
+  initUts2jsExtApiOptions,
   isAppVue,
   isEnableConsole,
   isNormalCompileTarget,
@@ -16,6 +18,7 @@ import {
   uniHBuilderXConsolePlugin,
   uniJavaScriptWorkersPlugin,
   uniUTSUVueJavaScriptPlugin,
+  uniUasmPlugin,
   uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 import * as vueCompilerDom from '@vue/compiler-dom'
@@ -58,6 +61,7 @@ export default () => {
     ...(process.env.UNI_APP_X === 'true'
       ? [
           uniDecryptUniModulesPlugin(),
+          uniUasmPlugin(),
           uniUTSUVueJavaScriptPlugin(),
           resolveUTSCompiler().uts2js({
             platform: 'web',
@@ -72,6 +76,8 @@ export default () => {
               vueCompilerDom,
               uniCliShared,
             },
+            extApi: initUts2jsExtApiOptions(),
+            uasm: initUasmWebTransformOptions(),
             workers: {
               extname: '.js',
               resolve: () => {

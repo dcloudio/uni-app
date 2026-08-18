@@ -532,6 +532,10 @@ uni-navigator[hidden] {
   color: inherit;
   cursor: pointer;
 }
+uni-rich-text[selectable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+}
 uni-progress {
   display: flex;
   align-items: center;
@@ -748,6 +752,7 @@ uni-slider .uni-slider-handle {
 
 uni-slider .uni-slider-thumb {
   z-index: 2;
+  background-color: #fff;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -773,6 +778,12 @@ uni-slider .uni-slider-disabled .uni-slider-track {
 uni-slider .uni-slider-disabled .uni-slider-thumb {
   background-color: #fff;
   border-color: #ccc;
+}
+
+@media (prefers-color-scheme: dark) {
+  uni-slider .uni-slider-track {
+    background-color: #393939;
+  }
 }
 uni-switch {
   -webkit-tap-highlight-color: transparent;

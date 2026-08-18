@@ -63,19 +63,17 @@ interface UTSiOS {
 	/**
 	 * 获取指定的颜色。
 	 * @param value 需要转换的代表色值的字符串，支持一下格式：精简写法的十六进制 如：#f00，十六进制 如：#ff0000，RGB 如：rgb(255, 0, 0)，RGBA 如:rgba(255, 0, 0, 0.5)，色值关键字，如： red
-	 * @return UIColor 实例对象 注：如转换失败 默认会返回 黑色
+	 * @return UIColor 实例对象，转换失败则返回黑色
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsios.html#colorwithstring
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {
-	 *           "osVer": "x",
-	 *  		     "uniVer": "x",
-	 * 			     "unixVer": "x"
+	 *           "uniVer": "x",
+	 *           "unixVer": "x"
 	 *        },
 	 *        "ios": {
-	 *           "osVer": "12.0",
-	 *  		     "uniVer": "√",
-	 * 			     "unixVer": "4.11"
+	 *           "uniVer": "√",
+	 *           "unixVer": "4.11"
 	 *        }
 	 *    }
 	 * }

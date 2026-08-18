@@ -4,9 +4,9 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, createElementVNode, normalizeStyle } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, createElementVNode, normalizeStyle } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_THEME_CHANGE, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, createRouter, createWebHistory, createWebHashHistory, useRouter, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -564,16 +564,16 @@ function initNavigationBarI18n(navigationBar) {
     ]);
   }
 }
-function initTabBarI18n(tabBar2) {
-  if (isEnableLocale() && tabBar2.list) {
-    tabBar2.list.forEach((item) => {
+function initTabBarI18n(tabBar) {
+  if (isEnableLocale() && tabBar.list) {
+    tabBar.list.forEach((item) => {
       defineI18nProperty(item, ["text"]);
     });
   }
-  if (isEnableLocale() && tabBar2.midButton) {
-    defineI18nProperty(tabBar2.midButton, ["text"]);
+  if (isEnableLocale() && tabBar.midButton) {
+    defineI18nProperty(tabBar.midButton, ["text"]);
   }
-  return tabBar2;
+  return tabBar;
 }
 function initBridge(subscribeNamespace) {
   const emitter = new Emitter();
@@ -1317,9 +1317,9 @@ function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
     const { meta } = newTabBarRoute;
     meta.tabBarIndex = index2;
     meta.isQuit = meta.isTabBar = true;
-    const tabBar2 = __uniConfig.tabBar;
-    if (tabBar2 && tabBar2.list && tabBar2.list[index2]) {
-      tabBar2.list[index2].pagePath = removeLeadingSlash(newPagePath);
+    const tabBar = __uniConfig.tabBar;
+    if (tabBar && tabBar.list && tabBar.list[index2]) {
+      tabBar.list[index2].pagePath = removeLeadingSlash(newPagePath);
     }
   }
 }
@@ -2773,11 +2773,15 @@ function removeKeepAliveApiCallback(name, callback) {
     }
   }
 }
-function offKeepAliveApiCallback(name) {
-  UniServiceJSBridge.off("api." + name);
+function offKeepAliveApiCallback(name, eventTransport) {
+  const eventName = "api." + name;
+  const transport = UniServiceJSBridge;
+  transport.off(eventName);
 }
-function onKeepAliveApiCallback(name) {
-  UniServiceJSBridge.on("api." + name, (res) => {
+function onKeepAliveApiCallback(name, eventTransport) {
+  const eventName = "api." + name;
+  const transport = UniServiceJSBridge;
+  transport.on(eventName, (res) => {
     for (const key in invokeCallbacks) {
       const opts = invokeCallbacks[key];
       if (opts.name === name) {
@@ -2970,18 +2974,28 @@ function promisify(name, fn) {
     );
   };
 }
-function formatApiArgs(args, options) {
+function normalizeFormatApiParams(args) {
   const params = args[0];
-  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+  if (isPlainObject(params)) {
+    return params;
+  }
+  const normalizedParams = {};
+  args[0] = normalizedParams;
+  return normalizedParams;
+}
+function formatApiArgs(args, options) {
+  const rawParams = args[0];
+  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(rawParams)) {
     return;
   }
+  const params = normalizeFormatApiParams(args);
   const formatArgs = options.formatArgs;
   const keys = Object.keys(formatArgs);
   for (let i = 0; i < keys.length; i++) {
     const name = keys[i];
     const formatterOrDefaultValue = formatArgs[name];
     if (isFunction(formatterOrDefaultValue)) {
-      const errMsg = formatterOrDefaultValue(args[0][name], params);
+      const errMsg = formatterOrDefaultValue(params[name], params);
       if (isString(errMsg)) {
         return errMsg;
       }
@@ -3053,16 +3067,25 @@ function wrapperOnApi(name, fn, options) {
 }
 function wrapperOffApi(name, fn, options) {
   return (callback) => {
-    checkCallback(callback);
-    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    {
+      checkCallback(callback);
+    }
+    const errMsg = beforeInvokeApi(
+      name,
+      [callback],
+      void 0,
+      options
+    );
     if (errMsg) {
       throw new Error(errMsg);
     }
-    name = name.replace("off", "on");
-    removeKeepAliveApiCallback(name, callback);
-    const hasInvokeOnApi = findInvokeCallbackByName(name);
+    const onApiName = name.replace("off", "on");
+    {
+      removeKeepAliveApiCallback(onApiName, callback);
+    }
+    const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
     if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(name);
+      offKeepAliveApiCallback(onApiName);
       fn();
     }
   };
@@ -6011,7 +6034,7 @@ function createRouteOptions(type) {
     beforeAll: beforeRoute
   };
 }
-function createNormalizeUrl(type) {
+function createNormalizeUrl(type, options = {}) {
   return function normalizeUrl(url, params) {
     if (!url) {
       return `Missing required args: "url"`;
@@ -6050,10 +6073,10 @@ function createNormalizeUrl(type) {
       }
       return;
     }
-    if (navigatorLock === url && params.openType !== "appLaunch") {
+    if (!options.skipNavigatorLock && navigatorLock === url && params.openType !== "appLaunch") {
       return `${navigatorLock} locked`;
     }
-    if (__uniConfig.ready) {
+    if (!options.skipNavigatorLock && __uniConfig.ready) {
       navigatorLock = url;
     }
   };
@@ -6936,7 +6959,7 @@ function requestComponentObserver($el, options, callback) {
   }
   return intersectionObserver;
 }
-function removeNonTabBarPages() {
+function removeNonTabBarPages(targetPageId) {
   const curTabBarPageVm = getCurrentPageVm();
   if (!curTabBarPageVm) {
     return;
@@ -6948,10 +6971,10 @@ function removeNonTabBarPages() {
     if (!page.$.__isTabBar) {
       removePage(routeKey);
     } else {
-      page.$.__isActive = false;
+      page.$.__isActive = targetPageId !== void 0 && getPage$BasePage(page).id === targetPageId;
     }
   }
-  if (curTabBarPageVm.$.__isTabBar) {
+  if (curTabBarPageVm.$.__isTabBar && (targetPageId === void 0 || getPage$BasePage(curTabBarPageVm).id !== targetPageId)) {
     curTabBarPageVm.$.__isVisible = false;
     invokeHook(curTabBarPageVm, ON_HIDE);
   }
@@ -6981,7 +7004,10 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return removeNonTabBarPages(), navigate(
+    {
+      removeNonTabBarPages();
+    }
+    return navigate(
       { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
       getTabBarPageId(url)
     ).then(resolve).catch(reject);
@@ -7009,10 +7035,10 @@ const redirectTo = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return (
-      // TODO exists 属性未实现
-      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
-    );
+    {
+      removeLastPage();
+    }
+    return navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
   RedirectToProtocol,
   RedirectToOptions
@@ -7035,7 +7061,10 @@ const reLaunch = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
+    {
+      removeAllPages();
+    }
+    return navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
   ReLaunchProtocol,
   ReLaunchOptions
@@ -7047,9 +7076,11 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
     );
   }
   const router = getApp().$router;
-  const { path, query } = parseUrl(url);
   return new Promise((resolve, reject) => {
-    const state2 = createPageState(type, __id__);
+    let routeUrl = url;
+    const { path, query } = parseUrl(routeUrl);
+    const tabBarPageId = __id__;
+    const state2 = createPageState(type, tabBarPageId);
     router[type === "navigateTo" ? "push" : "replace"]({
       path,
       query,
@@ -7060,7 +7091,8 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
         return reject(failure.message);
       }
       if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
+        const finalTabBarText = routeUrl === url ? tabBarText : router.resolve({ path, query }).meta.tabBarText;
+        router.currentRoute.value.meta.tabBarText = finalTabBarText;
       }
       if (type === "navigateTo") {
         const meta = router.currentRoute.value.meta;
@@ -7101,25 +7133,352 @@ function handleBeforeEntryPageRoutes() {
   );
   const switchTabPages = [...switchTabPagesBeforeEntryPages];
   switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
+  switchTabPages.forEach(({ args, resolve, reject }) => {
+    {
+      removeNonTabBarPages();
+    }
+    navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject);
+  });
   const redirectToPages = [...redirectToPagesBeforeEntryPages];
   redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
+  redirectToPages.forEach(({ args, resolve, reject }) => {
+    {
+      removeLastPage();
+    }
+    navigate(args).then(resolve).catch(reject);
+  });
   const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
   reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
+  reLaunchPages.forEach(({ args, resolve, reject }) => {
+    {
+      removeAllPages();
+    }
+    navigate(args).then(resolve).catch(reject);
+  });
 }
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
+const ua = navigator.userAgent;
+const isAndroid = /* @__PURE__ */ /android/i.test(ua);
+const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
+const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
+const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+const isHarmony = /OpenHarmony/i.test(ua);
+const isHarmony2in1 = isHarmony && /PC/i.test(ua);
+const isHarmonyTablet = isHarmony && /Tablet/i.test(ua);
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth() {
+  const screenFix = getScreenFix();
+  if (screenFix) {
+    const screenWidth = getScreenWidth(screenFix, isLandscape(screenFix));
+    return Math.min(
+      window.innerWidth,
+      document.documentElement.clientWidth,
+      screenWidth
+    ) || screenWidth;
+  } else {
+    return Math.min(window.innerWidth, document.documentElement.clientWidth);
   }
+}
+function getBaseSystemInfo() {
+  const windowWidth = getWindowWidth();
+  return {
+    platform: isIOS ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
+function IEVersion() {
+  const userAgent = navigator.userAgent;
+  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
+  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
+  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
+  if (isIE) {
+    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+    reIE.test(userAgent);
+    const fIEVersion = parseFloat(RegExp.$1);
+    if (fIEVersion > 6) {
+      return fIEVersion;
+    } else {
+      return 6;
+    }
+  } else if (isEdge) {
+    return -1;
+  } else if (isIE11) {
+    return 11;
+  } else {
+    return -1;
+  }
+}
+function getTheme() {
+  if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
+    return void 0;
+  if (__uniConfig.darkmode !== true)
+    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
+  }
+}
+function getBrowserInfo() {
+  let osname;
+  let osversion = "0";
+  let model;
+  let deviceType = "phone";
+  let platform = "";
+  let deviceBrand;
+  const language = navigator.language;
+  if (isIOS) {
+    deviceBrand = "iPhone";
+    osname = "iOS";
+    const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
+    if (osversionFind) {
+      osversion = osversionFind[1].replace(/_/g, ".");
+    }
+    const iosVersion = osversion.split(".")[0];
+    if (Number(iosVersion) >= 18) {
+      const versionMatch = ua.match(/Version\/([\d\.]+)/);
+      if (versionMatch) {
+        osversion = versionMatch[1];
+      }
+    }
+    const modelFind = ua.match(/\(([a-zA-Z]+);/);
+    if (modelFind) {
+      model = modelFind[1];
+    }
+  } else if (isAndroid) {
+    osname = "Android";
+    const osversionFind = ua.match(/Android[\s/]([\w\.]+)[;\s]/);
+    if (osversionFind) {
+      osversion = osversionFind[1];
+    }
+    const infoFind = ua.match(/\((.+?)\)/);
+    const infos = infoFind ? infoFind[1].split(";") : ua.split(" ");
+    const otherInfo = [
+      /\bAndroid\b/i,
+      /\bLinux\b/i,
+      /\bU\b/i,
+      /^\s?[a-z][a-z]$/i,
+      /^\s?[a-z][a-z]-[a-z][a-z]$/i,
+      /\bwv\b/i,
+      /\/[\d\.,]+$/,
+      /^\s?[\d\.,]+$/,
+      /\bBrowser\b/i,
+      /\bMobile\b/i
+    ];
+    for (let i = 0; i < infos.length; i++) {
+      const info = infos[i];
+      if (info.indexOf("Build") > 0) {
+        model = info.split("Build")[0].trim();
+        break;
+      }
+      let other;
+      for (let o2 = 0; o2 < otherInfo.length; o2++) {
+        if (otherInfo[o2].test(info)) {
+          other = true;
+          break;
+        }
+      }
+      if (!other) {
+        model = info.trim();
+        break;
+      }
+    }
+  } else if (isIPadOS) {
+    deviceBrand = "iPad";
+    model = "iPad";
+    osname = "iOS";
+    deviceType = "pad";
+    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
+    if (parseInt(osversion) === 14) {
+      const versionMatched = ua.match(/Version\/(\S*)\b/);
+      if (versionMatched) {
+        osversion = versionMatched[1];
+      }
+    }
+  } else if (isWindows || isMac || isLinux) {
+    model = "PC";
+    osname = "PC";
+    deviceType = "pc";
+    osversion = "0";
+    let osversionFind = ua.match(/\((.+?)\)/)[1];
+    if (isWindows) {
+      osname = "Windows";
+      switch (isWindows[1]) {
+        case "5.1":
+          osversion = "XP";
+          break;
+        case "6.0":
+          osversion = "Vista";
+          break;
+        case "6.1":
+          osversion = "7";
+          break;
+        case "6.2":
+          osversion = "8";
+          break;
+        case "6.3":
+          osversion = "8.1";
+          break;
+        case "10.0":
+          osversion = "10";
+          break;
+      }
+      const framework = osversionFind && osversionFind.match(/[Win|WOW]([\d]+)/);
+      if (framework) {
+        osversion += ` x${framework[1]}`;
+      }
+    } else if (isMac) {
+      osname = "macos";
+      platform = "mac";
+      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
+      if (osversion) {
+        osversion = _osversion[1].replace(/_/g, ".");
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
+      }
+    } else if (isLinux) {
+      osname = "Linux";
+      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
+      if (_osversion) {
+        osversion = _osversion[1];
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
+      }
+    }
+  } else if (isHarmony) {
+    deviceBrand = "HUAWEI";
+    osname = "harmonyos";
+    deviceType = isHarmony2in1 ? "pc" : isHarmonyTablet ? "pad" : "phone";
+    const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/);
+    if (osversionFind) {
+      osversion = osversionFind[1];
+    }
+    model = void 0;
+  } else {
+    osname = "Other";
+    osversion = "0";
+    deviceType = "unknown";
+  }
+  const system = `${osname} ${osversion}`;
+  if (!platform)
+    platform = osname.toLowerCase();
+  let browserName = "";
+  let browserVersion = String(IEVersion());
+  if (browserVersion !== "-1") {
+    browserName = "IE";
+  } else {
+    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
+    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
+    for (let index2 = 0; index2 < browseVendors.length; index2++) {
+      const vendor = browseVendors[index2];
+      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
+      if (reg.test(ua)) {
+        browserName = vendors[index2];
+        browserVersion = ua.match(reg)[2];
+      }
+    }
+  }
+  let deviceOrientation = "portrait";
+  if (window.matchMedia) {
+    try {
+      if (window.matchMedia("(orientation:landscape)").matches) {
+        deviceOrientation = "landscape";
+      }
+    } catch (e2) {
+    }
+  }
+  if (deviceOrientation === "portrait" && window.screen.orientation !== void 0) {
+    deviceOrientation = [90, 270].includes(window.screen.orientation.angle) ? "landscape" : "portrait";
+  }
+  if (deviceOrientation === "portrait" && window.orientation != null) {
+    deviceOrientation = Math.abs(window.orientation) === 90 ? "landscape" : "portrait";
+  }
+  return {
+    deviceBrand,
+    brand: deviceBrand,
+    deviceModel: model,
+    deviceOrientation,
+    model,
+    system,
+    platform,
+    browserName: browserName.toLocaleLowerCase(),
+    browserVersion,
+    language,
+    deviceType,
+    ua,
+    osname,
+    osversion,
+    theme: getTheme()
+  };
+}
+function onThemeChange$2(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
+  }
+}
+function offThemeChange$1(callback) {
+  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactivity = isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
+    watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange$2(onThemeChangeCallback);
+  return reactivePageStyle;
+}
+let _tabBar;
+function useTabBar() {
+  if (!_tabBar) {
+    _tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
+  }
+  const tabBar = useTheme(_tabBar, () => {
+    const tabBarStyle = parseTheme(_tabBar);
+    tabBar.backgroundColor = tabBarStyle.backgroundColor;
+    tabBar.borderStyle = tabBarStyle.borderStyle;
+    tabBar.color = tabBarStyle.color;
+    tabBar.selectedColor = tabBarStyle.selectedColor;
+    tabBar.blurEffect = tabBarStyle.blurEffect;
+    tabBar.midButton = tabBarStyle.midButton;
+    if (tabBarStyle.list && tabBarStyle.list.length) {
+      tabBarStyle.list.forEach((item, index2) => {
+        tabBar.list[index2].iconPath = item.iconPath;
+        tabBar.list[index2].selectedIconPath = item.selectedIconPath;
+      });
+    }
+  });
   return tabBar;
 }
 function cssSupports(css) {
@@ -7157,8 +7516,8 @@ function updateCurPageCssVar(pageMeta) {
     windowTopValue = NAVBAR_HEIGHT;
   }
   if (__UNI_FEATURE_TABBAR__ && pageMeta.isTabBar) {
-    const tabBar2 = useTabBar();
-    tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
+    const tabBar = useTabBar();
+    tabBar.shown && (windowBottomValue = parseInt(tabBar.height));
   }
   updatePageCssVar({
     "--window-top": normalizeWindowTop(windowTopValue),
@@ -7455,49 +7814,6 @@ function getRealPath(filePath) {
     );
   }
   return filePath;
-}
-const ua = navigator.userAgent;
-const isAndroid = /* @__PURE__ */ /android/i.test(ua);
-const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
-const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
-const isIPadOS = isMac && navigator.maxTouchPoints > 0;
-const isHarmony = /OpenHarmony/i.test(ua);
-const isHarmony2in1 = isHarmony && /PC/i.test(ua);
-const isHarmonyTablet = isHarmony && /Tablet/i.test(ua);
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth() {
-  const screenFix = getScreenFix();
-  if (screenFix) {
-    const screenWidth = getScreenWidth(screenFix, isLandscape(screenFix));
-    return Math.min(
-      window.innerWidth,
-      document.documentElement.clientWidth,
-      screenWidth
-    ) || screenWidth;
-  } else {
-    return Math.min(window.innerWidth, document.documentElement.clientWidth);
-  }
-}
-function getBaseSystemInfo() {
-  const windowWidth = getWindowWidth();
-  return {
-    platform: isIOS ? "ios" : "other",
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
-  };
 }
 function operateVideoPlayer(videoId, pageId, type, data) {
   UniServiceJSBridge.invokeViewMethod(
@@ -14179,6 +14495,15 @@ const props$n = {
     default: function() {
       return [];
     }
+  },
+  /** @deprecated 请使用 user-select */
+  selectable: {
+    type: [Boolean, String],
+    default: false
+  },
+  userSelect: {
+    type: [Boolean, String],
+    default: false
   }
 };
 const index$l = /* @__PURE__ */ defineBuiltInComponent({
@@ -14211,7 +14536,8 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
       deep: true
     });
     return () => h("uni-rich-text", {
-      ref: rootRef
+      ref: rootRef,
+      selectable: props2.userSelect || props2.selectable ? true : null
     }, h("div", {}, _vnode.value));
   }
 });
@@ -14834,6 +15160,12 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     _scrollLeftChanged
   };
 }
+function createBackgroundColorStyle(color) {
+  return color ? { backgroundColor: color } : void 0;
+}
+function withBackgroundColor(style, color) {
+  return color ? Object.assign(style, { backgroundColor: color }) : style;
+}
 const props$l = {
   name: {
     type: String,
@@ -14860,24 +15192,19 @@ const props$l = {
     default: false
   },
   color: {
-    type: String,
-    default: "#e9e9e9"
+    type: String
   },
   backgroundColor: {
-    type: String,
-    default: "#e9e9e9"
+    type: String
   },
   activeColor: {
-    type: String,
-    default: "#007aff"
+    type: String
   },
   selectedColor: {
-    type: String,
-    default: "#007aff"
+    type: String
   },
   blockColor: {
-    type: String,
-    default: "#ffffff"
+    type: String
   },
   blockSize: {
     type: [Number, String],
@@ -14932,17 +15259,17 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "class": "uni-slider-tap-area"
       }, [createVNode("div", {
-        "style": setBgColor.value,
+        "style": setBgColor(),
         "class": "uni-slider-handle-wrapper"
       }, [createVNode("div", {
         "ref": sliderHandleRef,
-        "style": setBlockBg.value,
+        "style": setBlockBg(),
         "class": "uni-slider-handle"
       }, null, 4), createVNode("div", {
-        "style": setBlockStyle.value,
+        "style": setBlockStyle(),
         "class": "uni-slider-thumb"
       }, null, 4), createVNode("div", {
-        "style": setActiveColor.value,
+        "style": setActiveColor(),
         "class": "uni-slider-track"
       }, null, 4)], 4)]), withDirectives(createVNode("span", {
         "ref": sliderValueRef,
@@ -14961,32 +15288,41 @@ function useSliderState(props2, sliderValue) {
     return getValueWidth(sliderValue.value, props2.min, props2.max);
   };
   const _getBgColor = () => {
-    return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
+    const backgroundColor = props2.backgroundColor;
+    const color = props2.color;
+    if (backgroundColor && backgroundColor !== "#e9e9e9") {
+      return backgroundColor;
+    }
+    if (color && color !== "#007aff")
+      return color;
+    return backgroundColor || color;
   };
   const _getActiveColor = () => {
-    return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+    const activeColor = props2.activeColor;
+    const selectedColor = props2.selectedColor;
+    if (activeColor && activeColor !== "#007aff")
+      return activeColor;
+    if (selectedColor && selectedColor !== "#e9e9e9") {
+      return selectedColor;
+    }
+    return activeColor || selectedColor;
   };
-  const state2 = {
-    setBgColor: computed(() => ({
-      backgroundColor: _getBgColor()
-    })),
-    setBlockBg: computed(() => ({
+  return {
+    setBgColor: () => createBackgroundColorStyle(_getBgColor()),
+    setBlockBg: () => ({
       left: _getValueWidth()
-    })),
-    setActiveColor: computed(() => ({
-      backgroundColor: _getActiveColor(),
+    }),
+    setActiveColor: () => withBackgroundColor({
       width: _getValueWidth()
-    })),
-    setBlockStyle: computed(() => ({
+    }, _getActiveColor()),
+    setBlockStyle: () => withBackgroundColor({
       width: props2.blockSize + "px",
       height: props2.blockSize + "px",
       marginLeft: -props2.blockSize / 2 + "px",
       marginTop: -props2.blockSize / 2 + "px",
-      left: _getValueWidth(),
-      backgroundColor: props2.blockColor
-    }))
+      left: _getValueWidth()
+    }, props2.blockColor)
   };
-  return state2;
 }
 function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
   const truthStep = computed(() => {
@@ -16555,7 +16891,7 @@ function initHistory() {
     routerBase = "";
   }
   const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(routerBase) : createWebHashHistory(routerBase);
-  history2.listen((_to, _from, info) => {
+  history2.listen((to, _from, info) => {
     if (info.direction === "back") {
       removeCurrentPages(Math.abs(info.delta));
     }
@@ -16764,23 +17100,23 @@ function setupApp(comp) {
     init: initApp,
     setup(instance2) {
       const route = usePageRoute();
-      const onLaunch = () => {
+      const onLaunch = (launchRoute = route) => {
         injectAppHooks(instance2);
         const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2 } = instance2;
-        const path = route.path.slice(1);
+        const path = launchRoute.path.slice(1);
         const launchOptions2 = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query)
+          query: decodedQuery(launchRoute.query)
         });
         onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
         onShow && invokeArrayFns$1(onShow, launchOptions2);
         if (__UNI_FEATURE_PAGES__) {
-          if (!route.matched.length) {
+          if (!launchRoute.matched.length) {
             const pageNotFoundOptions = {
               notFound: true,
               openType: "appLaunch",
-              path: route.path,
-              query: decodedQuery(route.query),
+              path: launchRoute.path,
+              query: decodedQuery(launchRoute.query),
               scene: 1001
             };
             handleBeforeEntryPageRoutes();
@@ -16800,7 +17136,7 @@ function setupApp(comp) {
         );
         window.addEventListener("message", onMessage);
         document.addEventListener("visibilitychange", onVisibilityChange$1);
-        onThemeChange$2();
+        onThemeChange$1();
       });
       return route.query;
     },
@@ -16849,7 +17185,7 @@ function onVisibilityChange$1() {
     emit2(ON_APP_ENTER_BACKGROUND);
   }
 }
-function onThemeChange$2() {
+function onThemeChange$1() {
   let mediaQueryList = null;
   try {
     mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
@@ -19281,231 +19617,6 @@ function deviceId$1() {
   }
   return deviceId;
 }
-function IEVersion() {
-  const userAgent = navigator.userAgent;
-  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
-  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
-  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
-  if (isIE) {
-    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
-    reIE.test(userAgent);
-    const fIEVersion = parseFloat(RegExp.$1);
-    if (fIEVersion > 6) {
-      return fIEVersion;
-    } else {
-      return 6;
-    }
-  } else if (isEdge) {
-    return -1;
-  } else if (isIE11) {
-    return 11;
-  } else {
-    return -1;
-  }
-}
-function getTheme() {
-  if (__uniConfig.darkmode !== true)
-    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
-  try {
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  } catch (error) {
-    return "light";
-  }
-}
-function getBrowserInfo() {
-  let osname;
-  let osversion = "0";
-  let model;
-  let deviceType = "phone";
-  let platform = "";
-  let deviceBrand;
-  const language = navigator.language;
-  if (isIOS) {
-    deviceBrand = "iPhone";
-    osname = "iOS";
-    const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
-    if (osversionFind) {
-      osversion = osversionFind[1].replace(/_/g, ".");
-    }
-    const iosVersion = osversion.split(".")[0];
-    if (Number(iosVersion) >= 18) {
-      const versionMatch = ua.match(/Version\/([\d\.]+)/);
-      if (versionMatch) {
-        osversion = versionMatch[1];
-      }
-    }
-    const modelFind = ua.match(/\(([a-zA-Z]+);/);
-    if (modelFind) {
-      model = modelFind[1];
-    }
-  } else if (isAndroid) {
-    osname = "Android";
-    const osversionFind = ua.match(/Android[\s/]([\w\.]+)[;\s]/);
-    if (osversionFind) {
-      osversion = osversionFind[1];
-    }
-    const infoFind = ua.match(/\((.+?)\)/);
-    const infos = infoFind ? infoFind[1].split(";") : ua.split(" ");
-    const otherInfo = [
-      /\bAndroid\b/i,
-      /\bLinux\b/i,
-      /\bU\b/i,
-      /^\s?[a-z][a-z]$/i,
-      /^\s?[a-z][a-z]-[a-z][a-z]$/i,
-      /\bwv\b/i,
-      /\/[\d\.,]+$/,
-      /^\s?[\d\.,]+$/,
-      /\bBrowser\b/i,
-      /\bMobile\b/i
-    ];
-    for (let i = 0; i < infos.length; i++) {
-      const info = infos[i];
-      if (info.indexOf("Build") > 0) {
-        model = info.split("Build")[0].trim();
-        break;
-      }
-      let other;
-      for (let o2 = 0; o2 < otherInfo.length; o2++) {
-        if (otherInfo[o2].test(info)) {
-          other = true;
-          break;
-        }
-      }
-      if (!other) {
-        model = info.trim();
-        break;
-      }
-    }
-  } else if (isIPadOS) {
-    deviceBrand = "iPad";
-    model = "iPad";
-    osname = "iOS";
-    deviceType = "pad";
-    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
-    if (parseInt(osversion) === 14) {
-      const versionMatched = ua.match(/Version\/(\S*)\b/);
-      if (versionMatched) {
-        osversion = versionMatched[1];
-      }
-    }
-  } else if (isWindows || isMac || isLinux) {
-    model = "PC";
-    osname = "PC";
-    deviceType = "pc";
-    osversion = "0";
-    let osversionFind = ua.match(/\((.+?)\)/)[1];
-    if (isWindows) {
-      osname = "Windows";
-      switch (isWindows[1]) {
-        case "5.1":
-          osversion = "XP";
-          break;
-        case "6.0":
-          osversion = "Vista";
-          break;
-        case "6.1":
-          osversion = "7";
-          break;
-        case "6.2":
-          osversion = "8";
-          break;
-        case "6.3":
-          osversion = "8.1";
-          break;
-        case "10.0":
-          osversion = "10";
-          break;
-      }
-      const framework = osversionFind && osversionFind.match(/[Win|WOW]([\d]+)/);
-      if (framework) {
-        osversion += ` x${framework[1]}`;
-      }
-    } else if (isMac) {
-      osname = "macos";
-      platform = "mac";
-      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
-      if (osversion) {
-        osversion = _osversion[1].replace(/_/g, ".");
-        if (osversion.indexOf(";") !== -1) {
-          osversion = osversion.split(";")[0];
-        }
-      }
-    } else if (isLinux) {
-      osname = "Linux";
-      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
-      if (_osversion) {
-        osversion = _osversion[1];
-        if (osversion.indexOf(";") !== -1) {
-          osversion = osversion.split(";")[0];
-        }
-      }
-    }
-  } else if (isHarmony) {
-    deviceBrand = "HUAWEI";
-    osname = "harmonyos";
-    deviceType = isHarmony2in1 ? "pc" : isHarmonyTablet ? "pad" : "phone";
-    const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/);
-    if (osversionFind) {
-      osversion = osversionFind[1];
-    }
-    model = void 0;
-  } else {
-    osname = "Other";
-    osversion = "0";
-    deviceType = "unknown";
-  }
-  const system = `${osname} ${osversion}`;
-  if (!platform)
-    platform = osname.toLowerCase();
-  let browserName = "";
-  let browserVersion = String(IEVersion());
-  if (browserVersion !== "-1") {
-    browserName = "IE";
-  } else {
-    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
-    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
-    for (let index2 = 0; index2 < browseVendors.length; index2++) {
-      const vendor = browseVendors[index2];
-      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
-      if (reg.test(ua)) {
-        browserName = vendors[index2];
-        browserVersion = ua.match(reg)[2];
-      }
-    }
-  }
-  let deviceOrientation = "portrait";
-  if (window.matchMedia) {
-    try {
-      if (window.matchMedia("(orientation:landscape)").matches) {
-        deviceOrientation = "landscape";
-      }
-    } catch (e2) {
-    }
-  }
-  if (deviceOrientation === "portrait" && window.screen.orientation !== void 0) {
-    deviceOrientation = [90, 270].includes(window.screen.orientation.angle) ? "landscape" : "portrait";
-  }
-  if (deviceOrientation === "portrait" && window.orientation != null) {
-    deviceOrientation = Math.abs(window.orientation) === 90 ? "landscape" : "portrait";
-  }
-  return {
-    deviceBrand,
-    brand: deviceBrand,
-    deviceModel: model,
-    deviceOrientation,
-    model,
-    system,
-    platform,
-    browserName: browserName.toLocaleLowerCase(),
-    browserVersion,
-    language,
-    deviceType,
-    ua,
-    osname,
-    osversion,
-    theme: getTheme()
-  };
-}
 const getWindowInfo = /* @__PURE__ */ defineSyncApi(
   "getWindowInfo",
   () => {
@@ -19652,8 +19763,6 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
     );
     delete systemInfo.screenTop;
     delete systemInfo.enableDebug;
-    if (!__uniConfig.darkmode)
-      delete systemInfo.theme;
     return systemInfo;
   }
 );
@@ -19935,13 +20044,13 @@ function _setClipboardData(data, resolve, reject) {
 const themeChangeCallBack = (res) => {
   UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
 };
-const onThemeChange$1 = /* @__PURE__ */ defineOnApi(
+const onThemeChange = /* @__PURE__ */ defineOnApi(
   ON_THEME_CHANGE,
   () => {
     UniServiceJSBridge.on(ON_THEME_CHANGE, themeChangeCallBack);
   }
 );
-const offThemeChange$1 = /* @__PURE__ */ defineOffApi(
+const offThemeChange = /* @__PURE__ */ defineOffApi(
   OFF_THEME_CHANGE,
   () => {
     UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
@@ -22363,39 +22472,6 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
   },
   PreloadPageProtocol
 );
-function onThemeChange(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
-  }
-}
-function offThemeChange(callback) {
-  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactivity = isReactive(pageStyle);
-  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactivity) {
-    watch(pageStyle, (value) => {
-      const _pageStyle = parseTheme(value);
-      for (const key in _pageStyle) {
-        reactivePageStyle[key] = _pageStyle[key];
-      }
-    });
-  }
-  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
-  return reactivePageStyle;
-}
 const ModalTheme = {
   light: {
     cancelColor: "#000000"
@@ -22530,10 +22606,10 @@ function useOnThemeChange$1(props2) {
           _onThemeChange({
             theme: "dark"
           });
-        onThemeChange(_onThemeChange);
+        onThemeChange$2(_onThemeChange);
       }
     } else {
-      offThemeChange(_onThemeChange);
+      offThemeChange$1(_onThemeChange);
     }
   });
   return cancelColor;
@@ -22660,9 +22736,9 @@ function useToastIcon(props2) {
   }) => iconColor.value = getIconColor(theme);
   watchEffect(() => {
     if (props2.visible) {
-      onThemeChange(_onThemeChange);
+      onThemeChange$2(_onThemeChange);
     } else {
-      offThemeChange(_onThemeChange);
+      offThemeChange$1(_onThemeChange);
     }
   });
   const Icon = computed(() => {
@@ -23108,10 +23184,10 @@ function useOnThemeChange(props2) {
         _onThemeChange({
           theme: getTheme()
         });
-        onThemeChange(_onThemeChange);
+        onThemeChange$2(_onThemeChange);
       }
     } else {
-      offThemeChange(_onThemeChange);
+      offThemeChange$1(_onThemeChange);
     }
   });
   return actionSheetTheme;
@@ -23347,16 +23423,16 @@ function setTabBar(type, args, resolve, reject) {
       return reject(`tabbar item not found`);
     }
   }
-  const tabBar2 = useTabBar();
+  const tabBar = useTabBar();
   switch (type) {
     case API_SHOW_TAB_BAR:
-      tabBar2.shown = true;
+      tabBar.shown = true;
       break;
     case API_HIDE_TAB_BAR:
-      tabBar2.shown = false;
+      tabBar.shown = false;
       break;
     case API_SET_TAB_BAR_ITEM:
-      const tabBarItem = tabBar2.list[index2];
+      const tabBarItem = tabBar.list[index2];
       const oldPagePath = tabBarItem.pagePath;
       setProperties(tabBarItem, setTabBarItemProps, args);
       const { pagePath } = args;
@@ -23368,23 +23444,23 @@ function setTabBar(type, args, resolve, reject) {
       }
       break;
     case API_SET_TAB_BAR_STYLE:
-      setProperties(tabBar2, setTabBarStyleProps, args);
+      setProperties(tabBar, setTabBarStyleProps, args);
       break;
     case API_SHOW_TAB_BAR_RED_DOT:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+      setProperties(tabBar.list[index2], setTabBarBadgeProps, {
         badge: "",
         redDot: true
       });
       break;
     case API_SET_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+      setProperties(tabBar.list[index2], setTabBarBadgeProps, {
         badge: args.text,
         redDot: true
       });
       break;
     case API_HIDE_TAB_BAR_RED_DOT:
     case API_REMOVE_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+      setProperties(tabBar.list[index2], setTabBarBadgeProps, {
         badge: "",
         redDot: false
       });
@@ -23464,42 +23540,27 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
     const visibleList = ref([]);
-    const _tabBar = useTabBar();
-    const tabBar2 = useTheme(_tabBar, () => {
-      const tabBarStyle = parseTheme(_tabBar);
-      tabBar2.backgroundColor = tabBarStyle.backgroundColor;
-      tabBar2.borderStyle = tabBarStyle.borderStyle;
-      tabBar2.color = tabBarStyle.color;
-      tabBar2.selectedColor = tabBarStyle.selectedColor;
-      tabBar2.blurEffect = tabBarStyle.blurEffect;
-      tabBar2.midButton = tabBarStyle.midButton;
-      if (tabBarStyle.list && tabBarStyle.list.length) {
-        tabBarStyle.list.forEach((item, index2) => {
-          tabBar2.list[index2].iconPath = item.iconPath;
-          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
-        });
-      }
-    });
-    useVisibleList(tabBar2, visibleList);
-    useTabBarCssVar(tabBar2);
-    const onSwitchTab = useSwitchTab(useRoute(), tabBar2, visibleList);
+    const tabBar = useTabBar();
+    useVisibleList(tabBar, visibleList);
+    useTabBarCssVar(tabBar);
+    const onSwitchTab = useSwitchTab(useRoute(), tabBar, visibleList);
     const {
       style,
       borderStyle,
       placeholderStyle
-    } = useTabBarStyle(tabBar2);
+    } = useTabBarStyle(tabBar);
     onMounted(() => {
-      if (tabBar2.iconfontSrc) {
+      if (tabBar.iconfontSrc) {
         loadFontFace({
           family: UNI_TABBAR_ICON_FONT,
-          source: `url("${tabBar2.iconfontSrc}")`
+          source: `url("${tabBar.iconfontSrc}")`
         });
       }
     });
     return () => {
-      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
+      const tabBarItemsTsx = createTabBarItemsTsx(tabBar, onSwitchTab, visibleList);
       return createVNode("uni-tabbar", {
-        "class": "uni-tabbar-" + tabBar2.position
+        "class": "uni-tabbar-" + tabBar.position
       }, [createVNode("div", {
         "class": "uni-tabbar",
         "style": style.value
@@ -23513,22 +23574,22 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function useTabBarCssVar(tabBar2) {
-  watch(() => tabBar2.shown, (value) => {
+function useTabBarCssVar(tabBar) {
+  watch(() => tabBar.shown, (value) => {
     updatePageCssVar({
-      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar2.height) : 0)
+      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar.height) : 0)
     });
   });
 }
-function useVisibleList(tabBar2, visibleList) {
+function useVisibleList(tabBar, visibleList) {
   const internalMidButton = ref(extend({
     type: "midButton"
-  }, tabBar2.midButton));
+  }, tabBar.midButton));
   function setVisibleList() {
     let tempList = [];
-    tempList = tabBar2.list.filter((item) => item.visible !== false);
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar2.midButton) {
-      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar2.midButton);
+    tempList = tabBar.list.filter((item) => item.visible !== false);
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {
+      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar.midButton);
       tempList = tempList.filter((item) => !isMidButton(item));
       if (tempList.length % 2 === 0) {
         tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
@@ -23538,13 +23599,13 @@ function useVisibleList(tabBar2, visibleList) {
   }
   watchEffect(setVisibleList);
 }
-function useSwitchTab(route, tabBar2, visibleList) {
+function useSwitchTab(route, tabBar, visibleList) {
   watchEffect(() => {
     const meta = route.meta;
     if (meta.isTabBar) {
       const pagePath = meta.route;
       const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
-      tabBar2.selectedIndex = index2;
+      tabBar.selectedIndex = index2;
     }
   });
   return (tabBarItem, index2) => {
@@ -23591,10 +23652,10 @@ const BORDER_COLORS = {
   white: "rgba(255, 255, 255, 0.33)",
   black: "rgba(0, 0, 0, 0.33)"
 };
-function useTabBarStyle(tabBar2) {
+function useTabBarStyle(tabBar) {
   const style = computed(() => {
-    let backgroundColor = tabBar2.backgroundColor;
-    const blurEffect = tabBar2.blurEffect;
+    let backgroundColor = tabBar.backgroundColor;
+    const blurEffect = tabBar.blurEffect;
     if (!backgroundColor) {
       if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
         backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
@@ -23609,7 +23670,7 @@ function useTabBarStyle(tabBar2) {
     const {
       borderStyle: borderStyle2,
       borderColor
-    } = tabBar2;
+    } = tabBar;
     if (borderColor && isString(borderColor)) {
       return {
         backgroundColor: borderColor
@@ -23621,7 +23682,7 @@ function useTabBarStyle(tabBar2) {
   });
   const placeholderStyle = computed(() => {
     return {
-      height: tabBar2.height
+      height: tabBar.height
     };
   });
   return {
@@ -23633,12 +23694,12 @@ function useTabBarStyle(tabBar2) {
 function isMidButton(item) {
   return item.type === "midButton";
 }
-function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
+function createTabBarItemsTsx(tabBar, onSwitchTab, visibleList) {
   const {
     selectedIndex,
     selectedColor,
     color
-  } = tabBar2;
+  } = tabBar;
   return visibleList.value.map((item, index2) => {
     const selected = selectedIndex === index2;
     const textColor = selected ? selectedColor : color;
@@ -23646,37 +23707,37 @@ function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
     const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
     const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
     if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
-      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
     }
-    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
   });
 }
-function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2, index2, onSwitchTab) {
+function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar, index2, onSwitchTab) {
   return createVNode("div", {
     "key": index2,
     "class": "uni-tabbar__item",
     "onClick": onSwitchTab(tabBarItem, index2)
-  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar2)], 8, ["onClick"]);
+  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar)], 8, ["onClick"]);
 }
-function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2) {
+function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar) {
   const {
     height
-  } = tabBar2;
+  } = tabBar;
   return createVNode("div", {
     "class": "uni-tabbar__bd",
     "style": {
       height
     }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
-function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
+function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
   const {
     type,
     text: text2
   } = tabBarItem;
   const {
     iconWidth
-  } = tabBar2;
+  } = tabBar;
   const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
@@ -23689,7 +23750,7 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     "src": getRealPath(iconPath)
   }, null, 8, ["src"])], 6);
 }
-function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
+function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar) {
   var _a;
   const {
     type,
@@ -23697,7 +23758,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
   } = tabBarItem;
   const {
     iconWidth
-  } = tabBar2;
+  } = tabBar;
   const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
@@ -23715,7 +23776,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
     "style": iconfontStyle
   }, [iconfontText], 4)], 6);
 }
-function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
+function createTabBarItemTextTsx(color, tabBarItem, tabBar) {
   const {
     iconPath,
     text: text2
@@ -23723,7 +23784,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
     fontSize,
     spacing
-  } = tabBar2;
+  } = tabBar;
   const style = {
     color,
     fontSize,
@@ -23741,7 +23802,7 @@ function createTabBarItemRedDotTsx(badge) {
     "class": clazz2
   }, [badge], 2);
 }
-function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2, index2, onSwitchTab) {
+function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar, index2, onSwitchTab) {
   const {
     width,
     height,
@@ -23769,7 +23830,7 @@ function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, 
       height: iconWidth
     },
     "src": getRealPath(iconPath)
-  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
+  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar)], 12, ["onClick"]);
 }
 const DEFAULT_CSS_VAR_VALUE = "0px";
 let globalLayoutState = void 0;
@@ -23994,10 +24055,10 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
 }
 function useShowTabBar(emit2) {
   const route = usePageRoute();
-  const tabBar2 = useTabBar();
-  const showTabBar2 = computed(() => route.meta.isTabBar && tabBar2.shown);
+  const tabBar = useTabBar();
+  const showTabBar2 = computed(() => route.meta.isTabBar && tabBar.shown);
   updateCssVar({
-    "--tab-bar-height": tabBar2.height
+    "--tab-bar-height": tabBar.height
   });
   return showTabBar2;
 }
@@ -24644,7 +24705,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   offNetworkStatusChange,
   offPageNotFound,
   offPushMessage,
-  offThemeChange: offThemeChange$1,
+  offThemeChange,
   offUnhandledRejection,
   offWindowResize,
   onAccelerometerChange,
@@ -24666,7 +24727,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   onSocketMessage,
   onSocketOpen,
   onTabBarMidButtonTap,
-  onThemeChange: onThemeChange$1,
+  onThemeChange,
   onUnhandledRejection,
   onUserCaptureScreen,
   onWindowResize,
@@ -27855,7 +27916,7 @@ export {
   offNetworkStatusChange,
   offPageNotFound,
   offPushMessage,
-  offThemeChange$1 as offThemeChange,
+  offThemeChange,
   offUnhandledRejection,
   offWindowResize,
   onAccelerometerChange,
@@ -27877,7 +27938,7 @@ export {
   onSocketMessage,
   onSocketOpen,
   onTabBarMidButtonTap,
-  onThemeChange$1 as onThemeChange,
+  onThemeChange,
   onUnhandledRejection,
   onUserCaptureScreen,
   onWindowResize,

@@ -4,6 +4,11 @@ import { tryCatch } from './catch'
 
 let invokeCallbackId = 1
 
+export interface OnApiEventTransport {
+  on(name: string, callback: (res: unknown) => void): void
+  off(name: string): void
+}
+
 const invokeCallbacks: {
   [id: string]: {
     name: string
@@ -58,12 +63,30 @@ export function removeKeepAliveApiCallback(name: string, callback: Function) {
   }
 }
 
-export function offKeepAliveApiCallback(name: string) {
-  UniServiceJSBridge.off('api.' + name)
+export function removeAllKeepAliveApiCallbacks(name: string) {
+  for (const key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      delete invokeCallbacks[key]
+    }
+  }
 }
 
-export function onKeepAliveApiCallback(name: string) {
-  UniServiceJSBridge.on('api.' + name, (res: unknown) => {
+export function offKeepAliveApiCallback(
+  name: string,
+  eventTransport?: OnApiEventTransport
+) {
+  const eventName = eventTransport ? name : 'api.' + name
+  const transport = eventTransport || UniServiceJSBridge
+  transport.off(eventName)
+}
+
+export function onKeepAliveApiCallback(
+  name: string,
+  eventTransport?: OnApiEventTransport
+) {
+  const eventName = eventTransport ? name : 'api.' + name
+  const transport = eventTransport || UniServiceJSBridge
+  transport.on(eventName, (res: unknown) => {
     for (const key in invokeCallbacks) {
       const opts = invokeCallbacks[key]
       if (opts.name === name) {

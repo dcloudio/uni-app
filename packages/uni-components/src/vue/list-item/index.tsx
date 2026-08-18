@@ -63,17 +63,24 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     onBeforeUnmount(() => {
       unregisterItem(status)
     })
-    watch(visible, (value) => {
-      if (!value || status.cachedSizeUpdated) {
+    function updateSize() {
+      if (!visible.value || status.cachedSizeUpdated) {
         return
       }
-      nextTick(() => {
-        const rootNode = rootRef.value! as HTMLElement | Node
-        if (isHTMlElement(rootNode)) {
-          status.cachedSize = getSize(isVertical.value, rootNode)
-          status.cachedSizeUpdated = true
-          firstItemRendered(status)
+      const rootNode = rootRef.value! as HTMLElement | Node
+      if (isHTMlElement(rootNode)) {
+        const size = getSize(isVertical.value, rootNode)
+        if (isNaN(size)) {
+          return
         }
+        status.cachedSize = getSize(isVertical.value, rootNode)
+        status.cachedSizeUpdated = true
+        firstItemRendered(status)
+      }
+    }
+    watch(visible, (value) => {
+      nextTick(() => {
+        updateSize()
       })
     })
 

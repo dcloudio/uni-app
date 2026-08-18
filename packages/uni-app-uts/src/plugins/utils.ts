@@ -21,6 +21,7 @@ import {
   normalizePath,
   parseUTSComponent,
   removePlugins,
+  resolveUasmCopyAssets,
   transformLineBreak,
   transformTapToClick,
   transformUTSComponent,
@@ -29,11 +30,17 @@ import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { ResolvedConfig } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 
-export const SHARED_DATA_LIB_NAME = 'libentry.so'
+export const SHARED_DATA_LIB_IMPORT_SOURCE = 'libentry.so'
+export const SHARED_DATA_LIB_GLOBAL_NAME = '__uniSharedDataLib'
 
-export function createUniOptions(
-  platform: 'app-android' | 'app-ios' | 'app-harmony'
-): UniVitePlugin['uni'] {
+type AppPlatform = 'app-android' | 'app-ios' | 'app-harmony'
+
+function isProduction() {
+  const nodeEnv = process.env.UNI_NODE_ENV || process.env.NODE_ENV
+  return nodeEnv !== 'development'
+}
+
+export function createUniOptions(platform: AppPlatform): UniVitePlugin['uni'] {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return {
     compiler: isDom2 ? require('@dcloudio/compiler-vapor-dom2') : undefined,
@@ -41,6 +48,7 @@ export function createUniOptions(
       const inputDir = process.env.UNI_INPUT_DIR
       const outputDir = process.env.UNI_OUTPUT_DIR
       const targets: UniViteCopyPluginOptions['targets'] = []
+      const production = isProduction()
       // 自动化测试时，不启用隐私政策
       if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
         if (process.env.UNI_UTS_PLATFORM === 'app-android') {
@@ -63,7 +71,11 @@ export function createUniOptions(
         }
       }
       return {
-        assets: ['hybrid/html/**/*', 'uni_modules/*/hybrid/html/**/*'],
+        assets: [
+          'hybrid/html/**/*',
+          'uni_modules/*/hybrid/html/**/*',
+          ...resolveUasmCopyAssets(platform, production),
+        ],
         targets,
       }
     },
@@ -162,12 +174,21 @@ if (
   REMOVED_PLUGINS.push('vite:esbuild-transpile')
 }
 
-export function configResolved(config: ResolvedConfig, isAndroidX = false) {
-  removePlugins(REMOVED_PLUGINS.slice(0), config)
+export function configResolved(config: ResolvedConfig, isAndroidVdom = false) {
+  const enableVaporScriptLang =
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
+  // JS 引擎保留 Terser；启用 Vapor JS/TS 脚本时还需要 vite:esbuild 处理标准 TypeScript。
+  const removedPlugins = REMOVED_PLUGINS.filter(
+    (plugin) =>
+      (isAndroidVdom || plugin !== 'vite:terser') &&
+      (!enableVaporScriptLang || plugin !== 'vite:esbuild')
+  )
+  removePlugins(removedPlugins, config)
   // console.log(plugins.map((p) => p.name))
   // 强制不inline
   config.build.assetsInlineLimit = 0
-  injectAssetPlugin(config, { isAndroidX })
+  injectAssetPlugin(config, { isAndroidX: isAndroidVdom })
 }
 
 export function relativeInputDir(filename: string) {

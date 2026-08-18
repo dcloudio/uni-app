@@ -66,5 +66,19 @@
     "replaceAfterBundled": {
       "'use strict';": "'raw js';\n    'use strict';"
     }
+  },
+  {
+    "input": {
+      "src/worker/index.ts": ["dist-x/uni-worker.alipay.js"]
+    },
+    "output": {
+      "format": "es"
+    },
+    "external": false,
+    "replacements": {
+      "__X__": "true",
+      "__WEB__": "false",
+      "__MP__": "true"
+    }
   }
 ]

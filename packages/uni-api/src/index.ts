@@ -24,6 +24,8 @@ export * from './service/keyboard/getSelectedTextRange'
 
 export * from './service/lifecycle/app'
 
+export * from './service/route/appRoute'
+
 export * from './service/plugin/push'
 
 // protocols

@@ -1,6 +1,10 @@
 import { parse } from '../src'
 import type { ParseOptions } from '../src/parse'
 
+function withDom2PropertyDocs(message: string, property: string) {
+  return `${message} 详见：https://doc.dcloud.net.cn/uni-app-x/css/${property}.html#suggestion`
+}
+
 // for uvue version
 async function objectifierRule(input: string, options: ParseOptions = {}) {
   const opt = Object.assign({}, options, {
@@ -478,18 +482,14 @@ describe('uvue-styler: normalize', () => {
     )
   })
   test('dom2 platform support uses unixVaporVer', async () => {
-    const oldDom2 = process.env.UNI_APP_X_DOM2
-    process.env.UNI_APP_X_DOM2 = 'true'
-    const { json, messages } = await objectifierRule(`
+    const { json, messages } = await objectifierRule(
+      `
   .foo {
     textDecorationColor: #21ff21;
   }
-  `)
-    if (oldDom2 === undefined) {
-      delete process.env.UNI_APP_X_DOM2
-    } else {
-      process.env.UNI_APP_X_DOM2 = oldDom2
-    }
+  `,
+      { dom2: true }
+    )
     expect(json).toEqual({
       foo: {
         '': {
@@ -500,18 +500,14 @@ describe('uvue-styler: normalize', () => {
     expect(messages.length).toBe(0)
   })
   test('dom2 platform unsupported still warns', async () => {
-    const oldDom2 = process.env.UNI_APP_X_DOM2
-    process.env.UNI_APP_X_DOM2 = 'true'
-    const { json, messages } = await objectifierRule(`
+    const { json, messages } = await objectifierRule(
+      `
   .foo {
     textDecorationStyle: dotted;
   }
-  `)
-    if (oldDom2 === undefined) {
-      delete process.env.UNI_APP_X_DOM2
-    } else {
-      process.env.UNI_APP_X_DOM2 = oldDom2
-    }
+  `,
+      { dom2: true }
+    )
     expect(json).toEqual({
       foo: {
         '': {
@@ -521,7 +517,10 @@ describe('uvue-styler: normalize', () => {
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
-        text: 'WARNING: `text-decoration-style` is not a standard property name (may not be supported)',
+        text: withDom2PropertyDocs(
+          'WARNING: `text-decoration-style` is not a standard property name (may not be supported)',
+          'text-decoration-style'
+        ),
       })
     )
   })
@@ -883,5 +882,39 @@ border-color: var(--default-border);
       },
     })
     expect(res2.messages.length).toBe(0)
+  })
+
+  test('animation values respect dom2 platform support', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.longhand {
+  animation-direction: reverse, alternate-reverse;
+  animation-fill-mode: none, backwards, both, forwards;
+}
+.shorthand {
+  animation: fade 1s reverse both;
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({})
+    expect(messages.map((message) => message.text)).toEqual([
+      withDom2PropertyDocs(
+        'ERROR: property value `reverse, alternate-reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+        'animation-direction'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `none, backwards, both, forwards` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+        'animation-direction'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
+    ])
   })
 })

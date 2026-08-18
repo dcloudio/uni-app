@@ -162,7 +162,6 @@ export declare function createTransformContext(root: RootNode, {
   bindingMetadata,
   inline,
   isTS,
-  eventDelegation,
   onError,
   onWarn,
   compatConfig
@@ -181,6 +180,8 @@ export declare function buildProps(node: ElementNode, context: TransformContext,
   patchFlag: number;
   dynamicPropNames: string[];
   shouldUseBlock: boolean;
+  needsPatch: boolean;
+  isBlockRequired: boolean;
 };
 export declare function buildDirectiveArgs(dir: DirectiveNode, context: TransformContext): ArrayExpression;
 //#endregion
@@ -428,6 +429,10 @@ export interface VNodeCall extends Node {
   patchFlag: PatchFlags | undefined;
   dynamicProps: string | SimpleExpressionNode | undefined;
   directives: DirectiveArguments | undefined;
+  /** Whether this vnode must be patched if a later transform makes it non-block. */
+  needsPatch?: boolean;
+  /** Whether a later transform must preserve this vnode as a block. */
+  isBlockRequired?: boolean;
   isBlock: boolean;
   disableTracking: boolean;
   isComponent: boolean;
@@ -526,7 +531,7 @@ export interface DirectiveArgumentNode extends ArrayExpression {
 }
 export interface RenderSlotCall extends CallExpression {
   callee: typeof RENDER_SLOT;
-  arguments: [string, string | ExpressionNode] | [string, string | ExpressionNode, PropsExpression] | [string, string | ExpressionNode, PropsExpression | "{}", TemplateChildNode[]];
+  arguments: [string, string | ExpressionNode] | [string, string | ExpressionNode, PropsExpression | "{}"] | [string, string | ExpressionNode, PropsExpression | "{}", FunctionExpression | string] | [string, string | ExpressionNode, PropsExpression | "{}", FunctionExpression | string, string] | [string, string | ExpressionNode, PropsExpression | "{}", FunctionExpression | string, string, JSChildNode];
 }
 export type SlotsExpression = SlotsObjectExpression | DynamicSlotsExpression;
 export interface SlotsObjectExpression extends ObjectExpression {
@@ -957,12 +962,6 @@ export interface TransformOptions extends SharedTransformCodegenOptions, ErrorHa
   * correctly, e.g. #6938, #7138
   */
   hmr?: boolean;
-  /**
-  * Vapor only: control whether eligible static DOM events are compiled to
-  * document-level delegated events.
-  * @default true
-  */
-  eventDelegation?: boolean;
 }
 export interface CodegenOptions extends SharedTransformCodegenOptions {
   /**
