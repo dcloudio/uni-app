@@ -14445,17 +14445,17 @@
           "android": {
             "uniVer": "√",
             "unixVer": "x",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.25"
           },
           "ios": {
             "uniVer": "√",
             "unixVer": "x",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.25"
           },
           "harmony": {
             "uniVer": "4.23",
             "unixVer": "x",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.25"
           }
         },
         "mp": {
