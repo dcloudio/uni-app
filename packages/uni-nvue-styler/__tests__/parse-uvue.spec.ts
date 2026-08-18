@@ -217,6 +217,27 @@ describe('uvue-style', () => {
     expect(res2.code).toBe('{}')
   })
 
+  test('dom2 支持 css calc', async () => {
+    const { code, messages } = await parse(
+      `.content {
+          width: calc(100% - 20px);
+          top: calc(var(--window-top) + 10px);
+          padding-bottom: calc(100px - env(safe-area-inset-bottom));
+          margin: calc(10px + 2px) 5px;
+        }`,
+      {
+        type: 'uvue',
+        dom2: true,
+        platform: 'app-android',
+        map: true,
+        ts: true,
+      }
+    )
+
+    expect(messages).toHaveLength(0)
+    expect(code).toMatchSnapshot()
+  })
+
   test('support env', async () => {
     const { code, messages } = await parse(
       `.top {
