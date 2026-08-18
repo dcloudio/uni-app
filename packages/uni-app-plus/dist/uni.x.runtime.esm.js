@@ -2372,17 +2372,12 @@ function registerPage(_ref, onCreated) {
       var pages2 = getCurrentPages();
       if (pages2.length === 1) {
         var homePage = pages2[0];
-        var sourceDialogPages = [];
-        var targetDialogPages = [];
         if (homeDialogPages.length) {
-          sourceDialogPages = homeDialogPages;
-          targetDialogPages = homePage.getDialogPages();
+          handleHomeDialogPages(homePage, homeDialogPages, homePage.getDialogPages());
         }
         if (homeSystemDialogPages.length) {
-          sourceDialogPages = homeSystemDialogPages;
-          targetDialogPages = getSystemDialogPages(homePage);
+          handleHomeDialogPages(homePage, homeSystemDialogPages, getSystemDialogPages(homePage));
         }
-        handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages);
       }
       nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
         uni.navigateBack({

@@ -801,6 +801,36 @@ var ON_POP_GESTURE = "onPopGesture";
 var OPEN_DIALOG_PAGE = "openDialogPage";
 var homeDialogPages = [];
 var homeSystemDialogPages = [];
+var devToolsPageChangedListener;
+function getCurrentDevToolsPage() {
+  var pages2 = getCurrentPages();
+  var currentPage = pages2[pages2.length - 1] || null;
+  var dialogPages = homeDialogPages.length ? homeDialogPages : (currentPage === null || currentPage === void 0 ? void 0 : currentPage.getDialogPages()) || homeDialogPages;
+  for (var index2 = dialogPages.length - 1; index2 >= 0; index2--) {
+    var dialogPage = dialogPages[index2];
+    if (dialogPage.$vm) {
+      return dialogPage;
+    }
+  }
+  return currentPage;
+}
+function isDevToolsDialogPage(page) {
+  return page instanceof UniDialogPageImpl;
+}
+function setDevToolsPageChangedListener(listener) {
+  devToolsPageChangedListener = listener;
+}
+function hasDevToolsPageChangedListener() {
+  return !!devToolsPageChangedListener;
+}
+function notifyDevToolsPageChanged() {
+  try {
+    var _devToolsPageChangedL;
+    (_devToolsPageChangedL = devToolsPageChangedListener) === null || _devToolsPageChangedL === void 0 || _devToolsPageChangedL();
+  } catch (error) {
+    console.error(error);
+  }
+}
 var currentNormalDialogPage = null;
 function setCurrentNormalDialogPage(value) {
   currentNormalDialogPage = value;
@@ -2209,6 +2239,8 @@ var closeDialogPage = (options) => {
     triggerFailCallback$1(options, "currentPage is null");
     return;
   }
+  var observeDevToolsPage = typeof __UNI_X_DEVTOOLS__ !== "undefined" && __UNI_X_DEVTOOLS__ ? hasDevToolsPageChangedListener() : false;
+  var previousDevToolsPage = observeDevToolsPage ? getCurrentDevToolsPage() : null;
   if ((options === null || options === void 0 ? void 0 : options.animationType) === "pop-out") {
     options.animationType = "none";
   }
@@ -2258,6 +2290,9 @@ var closeDialogPage = (options) => {
       dialogPages[i] = null;
     }
     dialogPages.length = 0;
+  }
+  if (observeDevToolsPage && previousDevToolsPage !== getCurrentDevToolsPage()) {
+    notifyDevToolsPageChanged();
   }
   var successOptions = {
     errMsg: "closeDialogPage: ok"
@@ -2385,17 +2420,12 @@ function registerPage(_ref, onCreated) {
       var pages2 = getCurrentPages();
       if (pages2.length === 1) {
         var homePage = pages2[0];
-        var sourceDialogPages = [];
-        var targetDialogPages = [];
         if (homeDialogPages.length) {
-          sourceDialogPages = homeDialogPages;
-          targetDialogPages = homePage.getDialogPages();
+          handleHomeDialogPages(homePage, homeDialogPages, homePage.getDialogPages());
         }
         if (homeSystemDialogPages.length) {
-          sourceDialogPages = homeSystemDialogPages;
-          targetDialogPages = getSystemDialogPages(homePage);
+          handleHomeDialogPages(homePage, homeSystemDialogPages, getSystemDialogPages(homePage));
         }
-        handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages);
       }
       nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
         uni.navigateBack({
@@ -2576,6 +2606,9 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
         invokeHook(pageComponentPublicInstance, ON_RESIZE, args);
       });
       nativePage.startRender();
+      if (typeof __UNI_X_DEVTOOLS__ !== "undefined" && __UNI_X_DEVTOOLS__ && hasDevToolsPageChangedListener() && !isSystemDialogPage(dialogPage) && getCurrentDevToolsPage() === dialogPage) {
+        notifyDevToolsPageChanged();
+      }
     });
   }
   if (delay) {
@@ -5590,7 +5623,10 @@ export {
   defineOnApi,
   defineSyncApi,
   defineTaskApi,
+  getCurrentDevToolsPage,
   getCurrentPages$1 as getCurrentPages,
   initApp,
+  isDevToolsDialogPage,
+  setDevToolsPageChangedListener,
   index$1 as uni
 };

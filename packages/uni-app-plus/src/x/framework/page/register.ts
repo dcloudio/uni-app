@@ -31,6 +31,13 @@ import { ON_POP_GESTURE } from '../../constants'
 import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
 import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
+// #if _VAPOR_
+import {
+  getCurrentDevToolsPage,
+  hasDevToolsPageChangedListener,
+  notifyDevToolsPageChanged,
+} from './dialogPage'
+// #endif
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import { closeDialogPage } from '../../api/route/closeDialogPage'
 import type { AppRouteContext, AppRouteOpenType } from '@dcloudio/uni-api'
@@ -228,17 +235,20 @@ export function registerPage(
         if (pages.length === 1) {
           // dialogPages 数据 ios 端不需要框架处理，预期仅在鸿蒙上生效
           const homePage = pages[0] as unknown as UniPage
-          let sourceDialogPages: UniPage[] = []
-          let targetDialogPages: UniPage[] = []
           if (homeDialogPages.length) {
-            sourceDialogPages = homeDialogPages
-            targetDialogPages = homePage.getDialogPages()
+            handleHomeDialogPages(
+              homePage,
+              homeDialogPages,
+              homePage.getDialogPages()
+            )
           }
           if (homeSystemDialogPages.length) {
-            sourceDialogPages = homeSystemDialogPages
-            targetDialogPages = getSystemDialogPages(homePage)
+            handleHomeDialogPages(
+              homePage,
+              homeSystemDialogPages,
+              getSystemDialogPages(homePage)
+            )
           }
-          handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages)
         }
         nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
           uni.navigateBack({
@@ -487,6 +497,17 @@ export function registerDialogPage(
           invokeHook(pageComponentPublicInstance, ON_RESIZE, args)
         })
         nativePage.startRender()
+        // #if _VAPOR_
+        if (
+          typeof __UNI_X_DEVTOOLS__ !== 'undefined' &&
+          __UNI_X_DEVTOOLS__ &&
+          hasDevToolsPageChangedListener() &&
+          !isSystemDialogPage(dialogPage) &&
+          getCurrentDevToolsPage() === dialogPage
+        ) {
+          notifyDevToolsPageChanged()
+        }
+        // #endif
       }
     )
   }
