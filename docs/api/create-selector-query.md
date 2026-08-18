@@ -24,9 +24,9 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 小程序下有时用本API获取部分组件的上下文context，但这个写法不跨平台。跨平台的获取组件context，应该使用uni.createXXContext()。
 
 ### createSelectorQuery 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 3.91 | 4.11 | 4.61 |
 
 
 
@@ -49,9 +49,9 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 in
 将选择器的选取范围更改为自定义组件component内
 ##### in 兼容性 <Help /> 
-| 微信小程序 |
-| :- |
-| 4.41 |
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | - |
 
 ##### 参数 
 
@@ -71,9 +71,9 @@ in
 select
 在当前页面下选择第一个匹配选择器selector的节点
 ##### select 兼容性 <Help /> 
-| 微信小程序 |
-| :- |
-| 4.41 |
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | - |
 
 ##### 参数 
 
@@ -130,28 +130,28 @@ scrollOffset
 fields
 获取节点的相关信息，需要获取的字段在fields中指定
 ###### fields 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.25 | 4.25 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | 4.25 | 4.25 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| fields | **NodeField** | 是 |
-| callback | (result: any) => void | 否 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| fields | **NodeField** | 是 | 支付宝小程序: x |
+| callback | (result: any) => void | 否 | 支付宝小程序: x | 
 
 #### fields 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| id | boolean | 否 |   | 是否返回节点 id |
-| dataset | boolean | 否 |   | 是否返回节点 dataset |
-| rect | boolean | 否 |   | 是否返回节点布局位置（left right top bottom） |
-| size | boolean | 否 |   | 是否返回节点尺寸（width height） |
-| scrollOffset | boolean | 否 |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
-| context | boolean | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 是否返回节点对应的 Context 对象 |
-| node | boolean | 否 |   | 是否返回节点对应的 Node 实例 |
+| id | boolean | 否 | 支付宝小程序: x | 是否返回节点 id |
+| dataset | boolean | 否 | 支付宝小程序: x | 是否返回节点 dataset |
+| rect | boolean | 否 | 支付宝小程序: x | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 | 支付宝小程序: x | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 | 支付宝小程序: x | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| context | boolean | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 | 支付宝小程序: x | 是否返回节点对应的 Node 实例 |
 
 
 ###### 返回值 
@@ -165,15 +165,15 @@ fields
 context
 添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
 ###### context 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | 5.04 | 5.04 | 5.04 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 ###### 返回值 
@@ -188,15 +188,15 @@ node
 获取 Node 节点实例。目前支持 Canvas 的获取。
 获取节点的相关信息，需要获取的字段在fields中指定
 ###### node 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.25 | 4.25 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | 4.25 | 4.25 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 ###### 返回值 
@@ -210,28 +210,28 @@ node
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| id | boolean | 否 |   | 是否返回节点 id |
-| dataset | boolean | 否 |   | 是否返回节点 dataset |
-| rect | boolean | 否 |   | 是否返回节点布局位置（left right top bottom） |
-| size | boolean | 否 |   | 是否返回节点尺寸（width height） |
-| scrollOffset | boolean | 否 |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
-| context | boolean | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 是否返回节点对应的 Context 对象 |
-| node | boolean | 否 |   | 是否返回节点对应的 Node 实例 |
+| id | boolean | 否 | 支付宝小程序: x | 是否返回节点 id |
+| dataset | boolean | 否 | 支付宝小程序: x | 是否返回节点 dataset |
+| rect | boolean | 否 | 支付宝小程序: x | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 | 支付宝小程序: x | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 | 支付宝小程序: x | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| context | boolean | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 | 支付宝小程序: x | 是否返回节点对应的 Node 实例 |
  
 
 #### selectAll(selector: string): NodesRef @selectall
 selectAll
 在当前页面下选择匹配选择器selector的所有节点
 ##### selectAll 兼容性 <Help /> 
-| 微信小程序 |
-| :- |
-| 4.41 |
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| selector | string | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| selector | string | 是 | 支付宝小程序: x | 
 
 
 ##### 返回值 
@@ -245,9 +245,9 @@ selectAll
 selectViewport
 选择显示区域
 ##### selectViewport 兼容性 <Help /> 
-| 微信小程序 |
-| :- |
-| 4.41 |
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | x |
 
 
 
@@ -262,15 +262,15 @@ selectViewport
 exec
 执行所有的请求
 ##### exec 兼容性 <Help /> 
-| 微信小程序 |
-| :- |
-| 4.41 |
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: Array&lt;any&gt;) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: Array&lt;any&gt;) => void | 是 | 支付宝小程序: x | 
 
 
 ##### 返回值 
@@ -897,5 +897,5 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

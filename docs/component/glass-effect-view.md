@@ -10,17 +10,17 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.23 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.23 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| glass-style | string | "regular" | Web: x; 微信小程序: x; Android: x; iOS 系统版本: 15.0; iOS(VDOM): x; iOS(Vapor): 5.23; HarmonyOS: x | 玻璃效果样式 |
-| interactive | boolean | false | Web: x; 微信小程序: x; Android: x; iOS 系统版本: 26.0; iOS(VDOM): x; iOS(Vapor): 5.23; HarmonyOS: x | 是否启用液态玻璃的交互行为，仅 iOS 26 及以上生效 |
-| tint-color | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; Android: x; iOS 系统版本: 26.0; iOS(VDOM): x; iOS(Vapor): 5.23; HarmonyOS: x | 施加在液态玻璃效果上的着色，仅 iOS 26 及以上生效 |
+| glass-style | string | "regular" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS(VDOM): x; iOS(Vapor): 5.23; HarmonyOS: x | 玻璃效果样式 |
+| interactive | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS 系统版本: 26.0; iOS(VDOM): x; iOS(Vapor): 5.23; HarmonyOS: x | 是否启用液态玻璃的交互行为，仅 iOS 26 及以上生效 |
+| tint-color | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS 系统版本: 26.0; iOS(VDOM): x; iOS(Vapor): 5.23; HarmonyOS: x | 施加在液态玻璃效果上的着色，仅 iOS 26 及以上生效 |
 
 #### glass-style 的属性描述
 

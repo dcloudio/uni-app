@@ -41,9 +41,9 @@
 请求支付
 
 ### requestVirtualPayment 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | 4.25 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS 系统版本 | iOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | 4.25 |
 
 
 uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
@@ -54,102 +54,102 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **RequestVirtualPaymentOptions** | 是 | Web: x; Android: x |
+| options | **RequestVirtualPaymentOptions** | 是 | Web: x; 支付宝小程序: x; Android: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| apple | **AppleIAPOptions** | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 苹果IAP的参数 |
-| success | (result: [RequestVirtualPaymentSuccess](#requestvirtualpaymentsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用成功的回调函数 |
-| fail | (result: [RequestVirtualPaymentFail](#requestvirtualpaymentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| mode | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 支付的类型, 不同的支付类型有各自额外要传的附加参数<br/><br/>可选值：<br/>- 'short_series_goods': 道具直购;<br/>- 'short_series_coin': 代币充值;<br/> |
-| paySig | string | 否 | Web: x; 微信小程序: 4.41; Android: x |  |
-| signData | **RequestVirtualPaymentOptionsSignData** | 否 | Web: x; 微信小程序: 4.41; Android: x | 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"offerId":"123","buyQuantity":1,"env":0,"currencyType":"CNY","productId":"testproductId","goodsPrice":10,"outTradeNo":"xxxxxx","attach":"testdata"}'<br/> |
-| signature | string | 否 | Web: x; 微信小程序: 4.41; Android: x |  | 
+| apple | **AppleIAPOptions** | 否 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 苹果IAP的参数 |
+| success | (result: [RequestVirtualPaymentSuccess](#requestvirtualpaymentsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用成功的回调函数 |
+| fail | (result: [RequestVirtualPaymentFail](#requestvirtualpaymentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| mode | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x | 支付的类型, 不同的支付类型有各自额外要传的附加参数<br/><br/>可选值：<br/>- 'short_series_goods': 道具直购;<br/>- 'short_series_coin': 代币充值;<br/> |
+| paySig | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x |  |
+| signData | **RequestVirtualPaymentOptionsSignData** | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x | 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"offerId":"123","buyQuantity":1,"env":0,"currencyType":"CNY","productId":"testproductId","goodsPrice":10,"outTradeNo":"xxxxxx","attach":"testdata"}'<br/> |
+| signature | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x |  | 
 
 ##### apple 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，在苹果开发者中心配置 |
-| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量，默认是1，最小值是1，最大值是10 |
-| promotionalOffer | **AppleIAPPromotionalOffer** | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 促销优惠参数说明 |
+| productId | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，在苹果开发者中心配置 |
+| appAccountToken | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
+| quantity | number | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量，默认是1，最小值是1，最大值是10 |
+| promotionalOffer | **AppleIAPPromotionalOffer** | 否 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 促销优惠参数说明 |
 
 ###### promotionalOffer 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| offerIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 促销id |
-| keyIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 密钥 |
-| nonce | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 唯一id (必须小写 24小时有效) |
-| signature | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 签名 |
-| timestamp | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 创建证书的时间戳(毫秒 24小时有效) |
+| offerIdentifier | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 促销id |
+| keyIdentifier | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 密钥 |
+| nonce | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 唯一id (必须小写 24小时有效) |
+| signature | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 签名 |
+| timestamp | number | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 创建证书的时间戳(毫秒 24小时有效) |
 
 ##### mode 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| short_series_goods | Web: x; Android: x |
-| short_series_coin | Web: x; Android: x |
+| short_series_goods | Web: x; 支付宝小程序: x; Android: x |
+| short_series_coin | Web: x; 支付宝小程序: x; Android: x |
 
 ##### signData 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| attach | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 透传数据, 发货通知时会透传给开发者<br/> |
-| buyQuantity | number | 否 | Web: x; 微信小程序: 4.41; Android: x | 购买数量<br/> |
-| currencyType | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 币种<br/><br/>可选值：<br/>- 'CNY': 人民币;<br/> |
-| offerId | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 在米大师侧申请的应用 id, mp-支付基础配置中的offerid<br/> |
-| outTradeNo | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 业务订单号, 每个订单号只能使用一次, 重复使用会失败(极端情况不保证唯一, 不建议业务强依赖唯一性).  要求8-32个字符内, 只能是数字、大小写字母、符号 _-\|*@组成, 不能以下划线(_)开头<br/> |
-| env | number | 否 | Web: x; 微信小程序: 4.41; Android: x | 环境配置, 0 米大师正式环境, 1 米大师沙箱环境, 默认为 0<br/> |
-| goodsPrice | number | 否 | Web: x; 微信小程序: 4.41; Android: x | 道具单价(分), **该字段仅mode=short_series_goods时需要必填**, 用来校验价格与后台道具价格是否一致, 避免用户在业务商城页看到的价格与实际价格不一致导致投诉<br/> |
-| productId | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 道具ID, **该字段仅mode=short_series_goods时需要必填**<br/> |
+| attach | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x | 透传数据, 发货通知时会透传给开发者<br/> |
+| buyQuantity | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x | 购买数量<br/> |
+| currencyType | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x | 币种<br/><br/>可选值：<br/>- 'CNY': 人民币;<br/> |
+| offerId | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x | 在米大师侧申请的应用 id, mp-支付基础配置中的offerid<br/> |
+| outTradeNo | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x | 业务订单号, 每个订单号只能使用一次, 重复使用会失败(极端情况不保证唯一, 不建议业务强依赖唯一性).  要求8-32个字符内, 只能是数字、大小写字母、符号 _-\|*@组成, 不能以下划线(_)开头<br/> |
+| env | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x | 环境配置, 0 米大师正式环境, 1 米大师沙箱环境, 默认为 0<br/> |
+| goodsPrice | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x | 道具单价(分), **该字段仅mode=short_series_goods时需要必填**, 用来校验价格与后台道具价格是否一致, 避免用户在业务商城页看到的价格与实际价格不一致导致投诉<br/> |
+| productId | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x | 道具ID, **该字段仅mode=short_series_goods时需要必填**<br/> |
 
 #### RequestVirtualPaymentSuccess 的属性值 @requestvirtualpaymentsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| apple | **AppleIAPTransactionOptions** | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付成功返回结果 |
+| apple | **AppleIAPTransactionOptions** | 否 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付成功返回结果 |
 
 #### apple 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
-| transactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
-| originalTransactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
+| productId | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
+| appAccountToken | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
+| quantity | number | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
+| transactionDate | Date | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
+| transactionIdentifier | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
+| originalTransactionDate | Date | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
+| originalTransactionIdentifier | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
+| jsonRepresentation | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
 
 #### RequestVirtualPaymentFail 的属性值 @requestvirtualpaymentfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 错误码 |
-| errSubject | string | 是 | Web: x; Android: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; Android: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 错误码 |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x; Android: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x; Android: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; Android: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 700000 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 其他未知错误。 |
-| 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 正在处理中，支付结果未知 |
-| 700601 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 用户中途取消。 |
-| 700602 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 网络连接出错。 |
-| 700604 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 不允许App内购买项目, 请授权应用内购买权限。 |
-| 700605 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品无效。 |
-| 700606 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 促销信息错误。 |
-| 700607 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 缺少支付参数。 |
-| 700800 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 只支持iOS15以上的版本。 |
+| 700000 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 其他未知错误。 |
+| 700600 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 正在处理中，支付结果未知 |
+| 700601 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 用户中途取消。 |
+| 700602 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 网络连接出错。 |
+| 700604 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 不允许App内购买项目, 请授权应用内购买权限。 |
+| 700605 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品无效。 |
+| 700606 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 促销信息错误。 |
+| 700607 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 缺少支付参数。 |
+| 700800 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 只支持iOS15以上的版本。 |
 
 
 
@@ -351,14 +351,14 @@ finishTransaction
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
-| transactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
-| originalTransactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
+| productId | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
+| appAccountToken | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
+| quantity | number | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
+| transactionDate | Date | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
+| transactionIdentifier | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
+| originalTransactionDate | Date | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
+| originalTransactionIdentifier | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
+| jsonRepresentation | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
 
 ###### AppleIAPFinishTransactionSuccess 的属性值 @appleiapfinishtransactionsuccess-values 
 
@@ -443,14 +443,14 @@ finishTransaction
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
-| transactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
-| originalTransactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
+| productId | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
+| appAccountToken | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
+| quantity | number | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
+| transactionDate | Date | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
+| transactionIdentifier | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
+| originalTransactionDate | Date | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
+| originalTransactionIdentifier | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
+| jsonRepresentation | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
 
 ###### AppleIAPFinishTransactionSuccess 的属性值 @appleiapfinishtransactionsuccess-values 
 

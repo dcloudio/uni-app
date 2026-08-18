@@ -3,73 +3,73 @@
 获取图片信息
 
 ### getImageInfo 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.18 | 4.25 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.25 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **GetImageInfoOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **GetImageInfoOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
-| success | (callback: [GetImageInfoSuccess](#getimageinfosuccess-values)) => void | 否 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
-| fail | (callback: [GetImageInfoFail](#getimageinfofail-values)) => void | 否 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
+| success | (callback: [GetImageInfoSuccess](#getimageinfosuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
+| fail | (callback: [GetImageInfoFail](#getimageinfofail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetImageInfoSuccess 的属性值 @getimageinfosuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| width | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片宽度，单位px |
-| height | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片高度，单位px |
-| path | string | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的本地路径 |
-| orientation | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的方向 |
-| type | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的格式 |
+| width | number | 是 | 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 图片宽度，单位px |
+| height | number | 是 | 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 图片高度，单位px |
+| path | string | 是 | 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 返回图片的本地路径 |
+| orientation | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 返回图片的方向 |
+| type | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 返回图片的格式 |
 
 #### orientation 的属性描述
 
-| 合法值 |
-| :- |
-| up |
-| down |
-| left |
-| right |
-| up-mirrored |
-| down-mirrored |
-| left-mirrored |
-| right-mirrored |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| up | 支付宝小程序: x |
+| down | 支付宝小程序: x |
+| left | 支付宝小程序: x |
+| right | 支付宝小程序: x |
+| up-mirrored | 支付宝小程序: x |
+| down-mirrored | 支付宝小程序: x |
+| left-mirrored | 支付宝小程序: x |
+| right-mirrored | 支付宝小程序: x |
 
 #### GetImageInfoFail 的属性值 @getimageinfofail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 1101001 | 用户取消 |
-| 1101002 | urls至少包含一张图片地址 |
-| 1101003 | 文件不存在 |
-| 1101004 | 图片加载失败 |
-| 1101005 | 未获取权限 |
-| 1101006 | 图片或视频保存失败 |
-| 1101007 | 图片裁剪失败 |
-| 1101008 | 拍照或录像失败 |
-| 1101009 | 图片压缩失败 |
-| 1101010 | 其他错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1101001 | 支付宝小程序: x | 用户取消 |
+| 1101002 | 支付宝小程序: x | urls至少包含一张图片地址 |
+| 1101003 | 支付宝小程序: x | 文件不存在 |
+| 1101004 | 支付宝小程序: x | 图片加载失败 |
+| 1101005 | 支付宝小程序: x | 未获取权限 |
+| 1101006 | 支付宝小程序: x | 图片或视频保存失败 |
+| 1101007 | 支付宝小程序: x | 图片裁剪失败 |
+| 1101008 | 支付宝小程序: x | 拍照或录像失败 |
+| 1101009 | 支付宝小程序: x | 图片压缩失败 |
+| 1101010 | 支付宝小程序: x | 其他错误 |
 
 
 
@@ -250,5 +250,5 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

@@ -18,16 +18,16 @@
 | app.config | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
 | app.config.errorHandler | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.11; HarmonyOS: 4.61 |
 | app.config.globalProperties | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
-| globalData | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
-| onLaunch() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
-| onShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
-| onHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
-| onLastPageBackPress() | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: 4.71 |
-| onExit() | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: 4.72 |
-| onError() | Web: 4.0; 微信小程序: 4.41; Android: 4.21; iOS: 4.21; HarmonyOS: 4.61 |
-| onPageNotFound() | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |
-| onUniNViewMessage() | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| onThemeChange() | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |
+| globalData | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
+| onLaunch() | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
+| onShow() | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
+| onHide() | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
+| onLastPageBackPress() | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: x; HarmonyOS: 4.71 |
+| onExit() | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: x; HarmonyOS: 4.72 |
+| onError() | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.21; iOS: 4.21; HarmonyOS: 4.61 |
+| onPageNotFound() | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x |
+| onUniNViewMessage() | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| onThemeChange() | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x |
 
 ### app.component
 

@@ -17,9 +17,9 @@ Lottie 动画
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| √ | √ | 3.9 | 4.11 | 5.0 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| √ | √ | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 5.0 |
 
 
 标准基座并不包含本插件，下载插件后需编写调用代码并打包自定义基座才可运行。
@@ -27,20 +27,20 @@ Lottie 动画
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | "" | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 动画资源地址，目前只支持绝对路径 |
-| loop | boolean | false | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 动画是否循环播放 |
-| autoplay | boolean | false | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 动画是否自动播放 |
-| action | string | "stop" | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 动画操作，可取值 play、pause、stop |
-| hidden | boolean | false | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 是否隐藏动画 |
-| @ended | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: √; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 |   |
+| path | string | "" | Web: √; 微信小程序: √; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 动画资源地址，目前只支持绝对路径 |
+| loop | boolean | false | Web: √; 微信小程序: √; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 动画是否循环播放 |
+| autoplay | boolean | false | Web: √; 微信小程序: √; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 动画是否自动播放 |
+| action | string | "stop" | Web: √; 微信小程序: √; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 动画操作，可取值 play、pause、stop |
+| hidden | boolean | false | Web: √; 微信小程序: √; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 是否隐藏动画 |
+| @ended | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: √; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 |   |
 
 #### action 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| play | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 播放 |
-| pause | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 暂停 |
-| stop | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 停止 |
+| play | Web: √; 微信小程序: √; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 播放 |
+| pause | Web: √; 微信小程序: √; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 暂停 |
+| stop | Web: √; 微信小程序: √; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 停止 |
 
 
 

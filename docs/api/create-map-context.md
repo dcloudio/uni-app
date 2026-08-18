@@ -5,17 +5,17 @@
 参考：[Map组件](../component/map.md)
 
 ### createMapContext 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| mapId | string | 是 |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| mapId | string | 是 | 支付宝小程序: x |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | 支付宝小程序: x | 
 
 
 ### 返回值 
@@ -30,52 +30,52 @@
 getCenterLocation
 获取当前地图中心的经纬度，返回的是 gcj02 坐标系，可以用于 uni.openLocation
 ##### getCenterLocation 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | 4.61 |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextGetCenterLocationOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextGetCenterLocationOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 描述 |
-| :- | :- | :- | :- | :- |
-| success | (result: [LocationObject](#locationobject-values)) => void | 否 |  | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| success | (result: [LocationObject](#locationobject-values)) => void | 否 |  | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### LocationObject 的属性值 @locationobject-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
@@ -83,47 +83,47 @@ getCenterLocation
 moveToLocation
 将地图中心移动到当前定位点，需要配合map组件的show-location使用
 ##### moveToLocation 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | 4.61 |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextMoveToLocationOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextMoveToLocationOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 | null | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 否 | null | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| latitude | number | 否 | null | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 否 | null | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
@@ -131,58 +131,58 @@ moveToLocation
 translateMarker
 平移marker，带动画
 ##### translateMarker 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | 4.61 |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextTranslateMarkerOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextTranslateMarkerOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
-| destination | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker移动到的目标点 |
-| autoRotate | boolean | 否 |  | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 移动过程中是否自动旋转marker |
-| rotate | number | 否 | 0 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | marker的旋转角度 |
-| moveWithRotate | boolean | 否 | false | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平移和旋转同时进行 |
-| duration | number | 否 | 1000 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 动画持续时长，平移与旋转分别计算 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| markerId | number | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
+| destination | **LocationObject** | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker移动到的目标点 |
+| autoRotate | boolean | 否 |  | 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 移动过程中是否自动旋转marker |
+| rotate | number | 否 | 0 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | marker的旋转角度 |
+| moveWithRotate | boolean | 否 | false | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平移和旋转同时进行 |
+| duration | number | 否 | 1000 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 动画持续时长，平移与旋转分别计算 |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### destination 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
@@ -190,45 +190,45 @@ translateMarker
 includePoints
 缩放视野展示所有经纬度
 ##### includePoints 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | 4.61 |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextIncludePointsOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextIncludePointsOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 描述 |
-| :- | :- | :- | :- | :- |
-| success | (result: any) => void | 否 | null | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
@@ -236,66 +236,66 @@ includePoints
 getRegion
 获取当前地图的视野范围
 ##### getRegion 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | 4.61 |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextGetRegionOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextGetRegionOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 描述 |
-| :- | :- | :- | :- | :- |
-| success | (result: [MapContextGetRegionResult](#mapcontextgetregionresult-values)) => void | 否 | null | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| success | (result: [MapContextGetRegionResult](#mapcontextgetregionresult-values)) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextGetRegionResult 的属性值 @mapcontextgetregionresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| southwest | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 #### southwest 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 #### northeast 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
@@ -303,51 +303,51 @@ getRegion
 getScale
 获取当前地图的缩放级别
 ##### getScale 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | 4.61 |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextGetScaleOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextGetScaleOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 描述 |
-| :- | :- | :- | :- | :- |
-| success | (result: [MapContextGetScaleResult](#mapcontextgetscaleresult-values)) => void | 否 | null | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| success | (result: [MapContextGetScaleResult](#mapcontextgetscaleresult-values)) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextGetScaleResult 的属性值 @mapcontextgetscaleresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| scale | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 地图缩放级别 |
+| scale | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 地图缩放级别 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
@@ -355,72 +355,72 @@ getScale
 addGroundOverlay
 创建自定义图片图层，图片会随着地图缩放而缩放
 ##### addGroundOverlay 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | x |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextAddGroundOverlayOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextAddGroundOverlayOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
-| src | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
-| bounds | **Bounds** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片覆盖的经纬度范围 |
-| visible | boolean | 否 | false | Android: 4.31; iOS: 4.31; HarmonyOS: x | 是否可见 |
-| zIndex | number | 否 | 0 | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层绘制顺序 |
-| opacity | number | 否 | 1 | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层透明度 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| id | string | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
+| src | string | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
+| bounds | **Bounds** | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片覆盖的经纬度范围 |
+| visible | boolean | 否 | false | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 是否可见 |
+| zIndex | number | 否 | 0 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层绘制顺序 |
+| opacity | number | 否 | 1 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层透明度 |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### bounds 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| southwest | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ###### southwest 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### northeast 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
@@ -428,46 +428,46 @@ addGroundOverlay
 addMarkers
 添加 marker
 ##### addMarkers 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | 4.61 |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextAddMarkersOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextAddMarkersOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| clear | boolean | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否先清空地图上所有 marker |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| clear | boolean | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否先清空地图上所有 marker |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
@@ -475,47 +475,47 @@ addMarkers
 moveAlong
 沿指定路径移动 marker，用于轨迹回放等场景。动画完成时触发回调事件，若动画进行中，对同一 marker 再次调用 moveAlong 方法，前一次的动画将被打断。
 ##### moveAlong 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | 4.61 |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextMoveAlongOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextMoveAlongOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
-| duration | number | 否 | 1000 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平滑移动的时间 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| markerId | number | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
+| duration | number | 否 | 1000 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平滑移动的时间 |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
@@ -523,46 +523,46 @@ moveAlong
 removeGroundOverlay
 移除自定义图片图层
 ##### removeGroundOverlay 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | x |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextRemoveGroundOverlayOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextRemoveGroundOverlayOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 图片图层 id |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| id | string | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 图片图层 id |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
@@ -570,45 +570,45 @@ removeGroundOverlay
 removeMarkers
 移除 marker
 ##### removeMarkers 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | 4.61 |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextRemoveMarkersOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextRemoveMarkersOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 描述 |
-| :- | :- | :- | :- | :- |
-| success | (result: any) => void | 否 | null | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
@@ -616,541 +616,541 @@ removeMarkers
 updateGroundOverlay
 更新自定义图片图层。
 ##### updateGroundOverlay 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | x |
+| 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.31 | 4.31 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **MapContextUpdateGroundOverlayOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **MapContextUpdateGroundOverlayOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
-| src | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
-| bounds | **Bounds** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片覆盖的经纬度范围 |
-| visible | boolean | 否 | true | Android: 4.31; iOS: 4.31; HarmonyOS: x | 是否可见 |
-| zIndex | number | 否 | 0 | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层绘制顺序 |
-| opacity | number | 否 | 1 | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层透明度 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| id | string | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
+| src | string | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
+| bounds | **Bounds** | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片覆盖的经纬度范围 |
+| visible | boolean | 否 | true | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 是否可见 |
+| zIndex | number | 否 | 0 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层绘制顺序 |
+| opacity | number | 否 | 1 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层透明度 |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### bounds 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| southwest | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ###### southwest 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### northeast 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 
 
 ##### MapContextGetCenterLocationOptions 的属性值 @mapcontextgetcenterlocationoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 描述 |
-| :- | :- | :- | :- | :- |
-| success | (result: [LocationObject](#locationobject-values)) => void | 否 |  | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| success | (result: [LocationObject](#locationobject-values)) => void | 否 |  | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### LocationObject 的属性值 @locationobject-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 ##### MapContextMoveToLocationOptions 的属性值 @mapcontextmovetolocationoptions-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 | null | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 否 | null | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| latitude | number | 否 | null | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 否 | null | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 ##### MapContextTranslateMarkerOptions 的属性值 @mapcontexttranslatemarkeroptions-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
-| destination | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker移动到的目标点 |
-| autoRotate | boolean | 否 |  | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 移动过程中是否自动旋转marker |
-| rotate | number | 否 | 0 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | marker的旋转角度 |
-| moveWithRotate | boolean | 否 | false | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平移和旋转同时进行 |
-| duration | number | 否 | 1000 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 动画持续时长，平移与旋转分别计算 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| markerId | number | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
+| destination | **LocationObject** | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker移动到的目标点 |
+| autoRotate | boolean | 否 |  | 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 移动过程中是否自动旋转marker |
+| rotate | number | 否 | 0 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | marker的旋转角度 |
+| moveWithRotate | boolean | 否 | false | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平移和旋转同时进行 |
+| duration | number | 否 | 1000 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 动画持续时长，平移与旋转分别计算 |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### destination 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 ##### MapContextIncludePointsOptions 的属性值 @mapcontextincludepointsoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 描述 |
-| :- | :- | :- | :- | :- |
-| success | (result: any) => void | 否 | null | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 ##### MapContextGetRegionOptions 的属性值 @mapcontextgetregionoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 描述 |
-| :- | :- | :- | :- | :- |
-| success | (result: [MapContextGetRegionResult](#mapcontextgetregionresult-values)) => void | 否 | null | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| success | (result: [MapContextGetRegionResult](#mapcontextgetregionresult-values)) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextGetRegionResult 的属性值 @mapcontextgetregionresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| southwest | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 #### southwest 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 #### northeast 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 ##### MapContextGetScaleOptions 的属性值 @mapcontextgetscaleoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 描述 |
-| :- | :- | :- | :- | :- |
-| success | (result: [MapContextGetScaleResult](#mapcontextgetscaleresult-values)) => void | 否 | null | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| success | (result: [MapContextGetScaleResult](#mapcontextgetscaleresult-values)) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextGetScaleResult 的属性值 @mapcontextgetscaleresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| scale | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 地图缩放级别 |
+| scale | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 地图缩放级别 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 ##### MapContextAddGroundOverlayOptions 的属性值 @mapcontextaddgroundoverlayoptions-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
-| src | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
-| bounds | **Bounds** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片覆盖的经纬度范围 |
-| visible | boolean | 否 | false | Android: 4.31; iOS: 4.31; HarmonyOS: x | 是否可见 |
-| zIndex | number | 否 | 0 | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层绘制顺序 |
-| opacity | number | 否 | 1 | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层透明度 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| id | string | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
+| src | string | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
+| bounds | **Bounds** | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片覆盖的经纬度范围 |
+| visible | boolean | 否 | false | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 是否可见 |
+| zIndex | number | 否 | 0 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层绘制顺序 |
+| opacity | number | 否 | 1 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层透明度 |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### bounds 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| southwest | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ##### southwest 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ##### northeast 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 ##### MapContextAddMarkersOptions 的属性值 @mapcontextaddmarkersoptions-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| clear | boolean | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否先清空地图上所有 marker |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| clear | boolean | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否先清空地图上所有 marker |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 ##### MapContextMoveAlongOptions 的属性值 @mapcontextmovealongoptions-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
-| duration | number | 否 | 1000 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平滑移动的时间 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| markerId | number | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
+| duration | number | 否 | 1000 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平滑移动的时间 |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 ##### MapContextRemoveGroundOverlayOptions 的属性值 @mapcontextremovegroundoverlayoptions-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 图片图层 id |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| id | string | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 图片图层 id |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 ##### MapContextRemoveMarkersOptions 的属性值 @mapcontextremovemarkersoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 描述 |
-| :- | :- | :- | :- | :- |
-| success | (result: any) => void | 否 | null | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
 
 ##### MapContextUpdateGroundOverlayOptions 的属性值 @mapcontextupdategroundoverlayoptions-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
-| src | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
-| bounds | **Bounds** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片覆盖的经纬度范围 |
-| visible | boolean | 否 | true | Android: 4.31; iOS: 4.31; HarmonyOS: x | 是否可见 |
-| zIndex | number | 否 | 0 | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层绘制顺序 |
-| opacity | number | 否 | 1 | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层透明度 |
-| success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| id | string | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
+| src | string | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
+| bounds | **Bounds** | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片覆盖的经纬度范围 |
+| visible | boolean | 否 | true | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 是否可见 |
+| zIndex | number | 否 | 0 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层绘制顺序 |
+| opacity | number | 否 | 1 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层透明度 |
+| success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### bounds 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| southwest | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ##### southwest 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ##### northeast 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 500001 | 获取当前地图中心的经纬度失败 |
-| 500002 | 未找到当前定位位置 |
-| 500003 | 未找到marker |
-| 500004 | 创建自定义图片图层失败 |
-| 500005 | 未找到自定义图层id |
-| 500006 | 网络图片加载失败 |
-| 500012 | 地图内部错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 500001 | 支付宝小程序: x | 获取当前地图中心的经纬度失败 |
+| 500002 | 支付宝小程序: x | 未找到当前定位位置 |
+| 500003 | 支付宝小程序: x | 未找到marker |
+| 500004 | 支付宝小程序: x | 创建自定义图片图层失败 |
+| 500005 | 支付宝小程序: x | 未找到自定义图层id |
+| 500006 | 支付宝小程序: x | 网络图片加载失败 |
+| 500012 | 支付宝小程序: x | 地图内部错误 |
  
 
 

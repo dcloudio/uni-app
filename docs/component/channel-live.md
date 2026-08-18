@@ -8,16 +8,16 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
-| feed-id | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>视频 feedId |
-| finder-user-name | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>视频号 id，以“sph”开头的id，可在视频号助手获取。视频号必须与当前小程序相同主体。 |
+| feed-id | string | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>视频 feedId |
+| finder-user-name | string | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>视频号 id，以“sph”开头的id，可在视频号助手获取。视频号必须与当前小程序相同主体。 |
 
 
 

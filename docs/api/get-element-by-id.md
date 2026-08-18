@@ -16,9 +16,9 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ### getElementById 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.25 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.25 | 4.61 |
 
 
 **注意：** \
@@ -33,9 +33,9 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 | 支付宝小程序: x | 
 
 
 `3.93+` 支持泛型，可通过 `uni.getElementById<ElementType>(id)` 获取指定类型的元素。对于组件有自带方法的情况，通过泛型指定具体的元素类型，就可以调用该类型组件的专用方法，比如unicloud-db组件。\
@@ -191,5 +191,5 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

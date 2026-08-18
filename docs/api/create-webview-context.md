@@ -357,7 +357,7 @@ loadData
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
 
 示例代码另见[web-view组件](../component/web-view.md)

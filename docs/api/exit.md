@@ -13,9 +13,9 @@
 退出当前应用
 
 ### exit 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.33 | 4.71 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.33 | 4.71 |
 
 
 #### app平台差异
@@ -47,39 +47,39 @@ iOS系统自身并没有退出应用的API。
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **ExitOptions** | 否 | Web: x; 微信小程序: x | uni.exit参数定义 |
+| options | **ExitOptions** | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | uni.exit参数定义 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: [ExitSuccess](#exitsuccess-values)) => void | 否 | Web: x; 微信小程序: x | uni.exit成功回调函数定义 |
-| fail | (res: [ExitFail](#exitfail-values)) => void | 否 | Web: x; 微信小程序: x | uni.exit失败回调函数定义 |
-| complete | (res: any) => void | 否 | Web: x; 微信小程序: x | uni.exit完成回调函数定义 | 
+| success | (res: [ExitSuccess](#exitsuccess-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | uni.exit成功回调函数定义 |
+| fail | (res: [ExitFail](#exitfail-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | uni.exit失败回调函数定义 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | uni.exit完成回调函数定义 | 
 
 #### ExitSuccess 的属性值 @exitsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 是 | Web: x; 微信小程序: x |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
 
 #### ExitFail 的属性值 @exitfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x |  |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 12001 | Web: x; 微信小程序: x | 系统不支持 |
-| 12002 | Web: x; 微信小程序: x | 未知错误 |
-| 12003 | Web: x; 微信小程序: x | iOS平台，仅在uni-app x SDK模式中支持应用退出 |
+| 12001 | Web: x; 微信小程序: x; 支付宝小程序: x | 系统不支持 |
+| 12002 | Web: x; 微信小程序: x; 支付宝小程序: x | 未知错误 |
+| 12003 | Web: x; 微信小程序: x; 支付宝小程序: x | iOS平台，仅在uni-app x SDK模式中支持应用退出 |
 
 
 
@@ -161,5 +161,5 @@ UTSHarmony.getUIAbilityContext().moveAbilityToBackground()
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
