@@ -129,7 +129,7 @@ describe('utsVaporAndroid', () => {
       params: args.methodId === 20 ? 100 : 'hello',
     }))
     const User = initUTSProxyClass({
-      name: 'User',
+      class: 'User',
       utsBridgeName: 'TestBridge',
       constructor: {
         name: 'User',
@@ -153,6 +153,7 @@ describe('utsVaporAndroid', () => {
     const user = new User('test') as any
 
     expect(user.__v_skip).toBe(true)
+    expect(user).toBeInstanceOf(User)
     expect(user.getName()).toBe('hello')
     expect(invokeSync).toHaveBeenNthCalledWith(
       1,
@@ -261,13 +262,110 @@ describe('utsVaporAndroid', () => {
     )
   })
 
+  test('creates class proxies for sync and async return types', async () => {
+    const Profile = initUTSProxyClass({
+      class: 'Profile',
+      utsBridgeName: 'TestBridge',
+      constructor: {
+        name: 'Profile',
+        methodId: 90,
+        type: 'constructor',
+        keepAlive: false,
+        async: false,
+      },
+      staticMethods: [],
+      methods: [
+        {
+          name: 'getName',
+          methodId: 91,
+          type: 'method',
+          keepAlive: false,
+          async: false,
+        },
+        {
+          name: 'name',
+          methodId: 92,
+          type: 'getter',
+          keepAlive: false,
+          async: false,
+        },
+        {
+          name: 'name',
+          methodId: 93,
+          type: 'setter',
+          keepAlive: false,
+          async: false,
+        },
+      ],
+    })
+    const getProfile = initUTSProxyFunction('TestBridge', {
+      name: 'getProfile',
+      utsBridgeName: 'TestBridge',
+      methodId: 94,
+      type: 'function',
+      keepAlive: false,
+      async: false,
+      returnType: 'Profile',
+    })
+    const getProfileAsync = initUTSProxyFunction('TestBridge', {
+      name: 'getProfileAsync',
+      utsBridgeName: 'TestBridge',
+      methodId: 95,
+      type: 'function',
+      keepAlive: false,
+      async: true,
+      returnType: 'Profile',
+    })
+    invokeSync.mockImplementation((_channel, args) => ({
+      type: 'return',
+      params:
+        args.methodId === 94
+          ? 501
+          : args.methodId === 91
+          ? 'method name'
+          : args.methodId === 92
+          ? 'property name'
+          : null,
+    }))
+    invokeAsync.mockImplementation((_channel, _args, callback) => {
+      callback({ type: 'return', params: 502 })
+    })
+
+    const profile = getProfile() as any
+    const asyncProfile = (await getProfileAsync()) as any
+
+    expect(profile).toBeInstanceOf(Profile)
+    expect(asyncProfile).toBeInstanceOf(Profile)
+    expect(profile.__v_skip).toBe(true)
+    expect(profile.getName()).toBe('method name')
+    expect(profile.name).toBe('property name')
+    profile.name = 'updated name'
+    expect(asyncProfile.getName()).toBe('method name')
+    expect(invokeSync).toHaveBeenCalledWith(
+      'APP-SERVICE',
+      expect.objectContaining({
+        methodId: 93,
+        instanceId: 501,
+        params: ['updated name'],
+      })
+    )
+    expect(invokeSync).toHaveBeenLastCalledWith(
+      'APP-SERVICE',
+      expect.objectContaining({
+        methodId: 91,
+        instanceId: 502,
+        params: [],
+      })
+    )
+  })
+
   test('returns the current class proxy from sync and async methods', async () => {
     invokeSync.mockReturnValue({ type: 'return', params: 400 })
     invokeAsync.mockImplementation((_channel, _args, callback) => {
       callback({ type: 'return', params: 400 })
     })
     const SelfReturningClass = initUTSProxyClass({
-      name: 'SelfReturningClass',
+      class: 'SelfReturningClass',
       utsBridgeName: 'TestBridge',
       constructor: {
         name: 'SelfReturningClass',
