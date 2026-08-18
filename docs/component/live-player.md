@@ -12,31 +12,31 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.81 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| src | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81 | 音视频地址。微信小程序支持 flv, rtmp 格式，app平台支持 rtmp, hls 协议 |
-| mode | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | live（直播），RTC（实时通话） |
-| autoplay | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81 | 自动播放 |
-| muted | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81 | 是否静音 |
-| orientation | string | "vertical" | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81 | 画面方向，可选值有 vertical，horizontal |
-| object-fit | string | "contain" | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81 | 填充模式，可选值有 contain，fillCrop |
-| background-mute | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81 | 进入后台时是否静音 |
-| min-cache | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 最小缓冲区，单位s |
-| max-cache | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 最大缓冲区，单位s |
-| sound-mode | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>声音输出方式 |
-| auto-pause-if-navigate | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当跳转到本小程序的其他页面时，是否自动暂停本页面的实时音视频播放 |
-| auto-pause-if-open-native | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当跳转到其它微信原生页面时，是否自动暂停本页面的实时音视频播放 |
-| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"]） |
-| picture-in-picture-init-position | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>小窗模式下小窗的初始显示位置，格式为 (alignment, y)，其中 alignment 表示小窗吸附屏幕左侧还是右侧，可选值为 left、right，y 代表小窗最顶部所在的屏幕高度百分比 |
-| enable-auto-rotation | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否开启手机横屏时自动全屏，当系统设置开启自动旋转时生效 |
-| referrer-policy | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本； |
-| enable-casting | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否支持投屏。开启后，可以通过 [LivePlayerContext]((LivePlayerContext)) 上相关方法进行操作。 |
+| src | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 音视频地址。微信小程序支持 flv, rtmp 格式，app平台支持 rtmp, hls 协议 |
+| mode | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | live（直播），RTC（实时通话） |
+| autoplay | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 自动播放 |
+| muted | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 是否静音 |
+| orientation | string | "vertical" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 画面方向，可选值有 vertical，horizontal |
+| object-fit | string | "contain" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 填充模式，可选值有 contain，fillCrop |
+| background-mute | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 进入后台时是否静音 |
+| min-cache | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 最小缓冲区，单位s |
+| max-cache | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 最大缓冲区，单位s |
+| sound-mode | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>声音输出方式 |
+| auto-pause-if-navigate | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当跳转到本小程序的其他页面时，是否自动暂停本页面的实时音视频播放 |
+| auto-pause-if-open-native | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当跳转到其它微信原生页面时，是否自动暂停本页面的实时音视频播放 |
+| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"]） |
+| picture-in-picture-init-position | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>小窗模式下小窗的初始显示位置，格式为 (alignment, y)，其中 alignment 表示小窗吸附屏幕左侧还是右侧，可选值为 left、right，y 代表小窗最顶部所在的屏幕高度百分比 |
+| enable-auto-rotation | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否开启手机横屏时自动全屏，当系统设置开启自动旋转时生效 |
+| referrer-policy | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本； |
+| enable-casting | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否支持投屏。开启后，可以通过 [LivePlayerContext]((LivePlayerContext)) 上相关方法进行操作。 |
 | duration | number | 0 |   |   |
 | initial-time | number | 0 |   |   |
 | loop | boolean | false |   |   |
@@ -50,59 +50,59 @@
 | controls | boolean | true |   |   |
 | show-center-play-btn | boolean | true |   |   |
 | show-loading | boolean | true |   |   |
-| @statechange | (event: [UniLivePlayerStatechangeEvent](#uniliveplayerstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81 | 播放状态变化事件，event.detail = {code} |
-| @fullscreenchange | (event: [UniLivePlayerFullscreenchangeEvent](#uniliveplayerfullscreenchangeevent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81 | 全屏变化事件，event.detail = {direction, fullScreen} |
-| @error | (event: [UniLivePlayerErrorEvent](#uniliveplayererrorevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81 | 错误事件，event.detail = {errCode, errMsg} |
-| @netstatus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 网络状态通知，detail = {info} |
-| @audiovolumenotify | eventhandler |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>播放音量大小通知，detail = {} |
-| @enterpictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>播放器进入小窗 |
-| @leavepictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>播放器退出小窗 |
-| @castinguserselect | eventhandler |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>用户选择投屏设备时触发 detail = { state: "success"/"fail" } |
-| @castingstatechange | eventhandler |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>投屏成功/失败时触发 detail = { type, state: "success"/"fail" } |
-| @castinginterrupt | eventhandler |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>投屏被中断时触发 |
+| @statechange | (event: [UniLivePlayerStatechangeEvent](#uniliveplayerstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 播放状态变化事件，event.detail = {code} |
+| @fullscreenchange | (event: [UniLivePlayerFullscreenchangeEvent](#uniliveplayerfullscreenchangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 全屏变化事件，event.detail = {direction, fullScreen} |
+| @error | (event: [UniLivePlayerErrorEvent](#uniliveplayererrorevent)) => void |   | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81 | 错误事件，event.detail = {errCode, errMsg} |
+| @netstatus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 网络状态通知，detail = {info} |
+| @audiovolumenotify | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>播放音量大小通知，detail = {} |
+| @enterpictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>播放器进入小窗 |
+| @leavepictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>播放器退出小窗 |
+| @castinguserselect | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>用户选择投屏设备时触发 detail = { state: "success"/"fail" } |
+| @castingstatechange | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>投屏成功/失败时触发 detail = { type, state: "success"/"fail" } |
+| @castinginterrupt | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>投屏被中断时触发 |
 
 #### mode 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| RTC | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| live | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| RTC | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |
+| live | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |
 
 #### orientation 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| vertical | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x |
-| horizontal | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x |
+| vertical | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
+| horizontal | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 
 #### object-fit 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| contain | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x |
-| fillCrop | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x |
+| contain | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
+| fillCrop | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 
 #### sound-mode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| speaker | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 扬声器 |
-| ear | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 听筒 |
+| speaker | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 扬声器 |
+| ear | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 听筒 |
 
 #### picture-in-picture-mode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| [] | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 取消小窗 |
-| push | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 路由 push 时触发小窗 |
-| pop | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 路由 pop 时触发小窗 |
+| [] | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 取消小窗 |
+| push | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 路由 push 时触发小窗 |
+| pop | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 路由 pop 时触发小窗 |
 
 #### referrer-policy 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| origin | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 发送完整的referrer |
-| no-referrer | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 不发送 |
+| origin | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 发送完整的referrer |
+| no-referrer | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 不发送 |
 
 
 ### 事件
@@ -124,7 +124,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态码 |
+| code | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态码 |
 
 ##### code 的属性描述
 
@@ -168,8 +168,8 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| direction | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 屏幕方向 |
-| fullScreen | boolean | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 是否全屏 |
+| direction | string | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 屏幕方向 |
+| fullScreen | boolean | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 是否全屏 |
 
 
 ##### UniLivePlayerFullscreenchangeEvent 的方法

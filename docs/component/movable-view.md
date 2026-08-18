@@ -8,9 +8,9 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 之所以有movable-area和movable-view，是因为逻辑层和视图层分离，从视图层发送数据给逻辑层，处理后再传回视图层会产生损耗，导致拖动卡顿。
@@ -24,23 +24,23 @@
 ### 属性 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
-| direction | string | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | movable-view的移动方向，属性值有all、vertical、horizontal、none |
-| inertia | boolean | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | movable-view 是否带有惯性。 |
-| out-of-bounds | boolean | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 超过可移动区域后，movable-view 是否还可以移动。 |
-| x | string \| number | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 定义 x 轴方向的偏移，如果 x 的值不在可移动范围内，会自动移动到可移动范围；改变 x 的值会触发动画。 |
-| y | string \| number | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 定义 y 轴方向的偏移，如果 y 的值不在可移动范围内，会自动移动到可移动范围；改变 y 的值会触发动画。 |
-| damping | number | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 阻尼系数，用于控制 x 或 y 改变时的动画和过界回弹的动画，值越大移动越快。 |
-| friction | number | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 摩擦系数，用于控制惯性滑动的动画，值越大摩擦力越大，滑动越快停止；必须大于0，否则会被设置成默认值 2。 |
-| disabled | boolean | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否禁用。 |
-| scale | boolean | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否支持双指缩放，默认缩放手势生效区域是在 movable-view 内。 |
-| scale-min | number | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 定义缩放倍数最小值，默认为 0.5。 |
-| scale-max | number | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 定义缩放倍数最大值，默认为 10。 |
-| scale-value | number | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 定义缩放倍数，取值范围为 0.5 - 10 |
-| animation | boolean | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否使用动画，默认为 true。 |
-| htouchmove | eventhandle | Web: -; 微信小程序: 4.41; 支付宝小程序: x; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(eventhandle)*<br/>初次手指触摸后移动为横向的移动时触发，如果catch此事件，则意味着touchmove事件也被catch |
-| vtouchmove | eventhandle | Web: -; 微信小程序: 4.41; 支付宝小程序: x; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(eventhandle)*<br/>初次手指触摸后移动为纵向的移动时触发，如果catch此事件，则意味着touchmove事件也被catch |
-| @change | (event: [UniEvent](/component/common.md#unievent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 拖动过程中触发的事件，event.detail = {x: x, y: y, source: source}。其中source表示产生移动的原因，值可为touch（拖动）、touch-out-of-bounds（超出移动范围）、out-of-bounds（超出移动范围后的回弹）、friction（惯性）和空字符串（setData）。 |
-| @scale | (event: [UniEvent](/component/common.md#unievent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 缩放过程中触发的事件，event.detail = {x: x, y: y, scale: scale}。 |
+| direction | string | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | movable-view的移动方向，属性值有all、vertical、horizontal、none |
+| inertia | boolean | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | movable-view 是否带有惯性。 |
+| out-of-bounds | boolean | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 超过可移动区域后，movable-view 是否还可以移动。 |
+| x | string \| number | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 定义 x 轴方向的偏移，如果 x 的值不在可移动范围内，会自动移动到可移动范围；改变 x 的值会触发动画。 |
+| y | string \| number | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 定义 y 轴方向的偏移，如果 y 的值不在可移动范围内，会自动移动到可移动范围；改变 y 的值会触发动画。 |
+| damping | number | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 阻尼系数，用于控制 x 或 y 改变时的动画和过界回弹的动画，值越大移动越快。 |
+| friction | number | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 摩擦系数，用于控制惯性滑动的动画，值越大摩擦力越大，滑动越快停止；必须大于0，否则会被设置成默认值 2。 |
+| disabled | boolean | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否禁用。 |
+| scale | boolean | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否支持双指缩放，默认缩放手势生效区域是在 movable-view 内。 |
+| scale-min | number | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 定义缩放倍数最小值，默认为 0.5。 |
+| scale-max | number | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 定义缩放倍数最大值，默认为 10。 |
+| scale-value | number | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 定义缩放倍数，取值范围为 0.5 - 10 |
+| animation | boolean | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否使用动画，默认为 true。 |
+| htouchmove | eventhandle | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(eventhandle)*<br/>初次手指触摸后移动为横向的移动时触发，如果catch此事件，则意味着touchmove事件也被catch |
+| vtouchmove | eventhandle | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(eventhandle)*<br/>初次手指触摸后移动为纵向的移动时触发，如果catch此事件，则意味着touchmove事件也被catch |
+| @change | (event: [UniEvent](/component/common.md#unievent)) => void | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 拖动过程中触发的事件，event.detail = {x: x, y: y, source: source}。其中source表示产生移动的原因，值可为touch（拖动）、touch-out-of-bounds（超出移动范围）、out-of-bounds（超出移动范围后的回弹）、friction（惯性）和空字符串（setData）。 |
+| @scale | (event: [UniEvent](/component/common.md#unievent)) => void | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 缩放过程中触发的事件，event.detail = {x: x, y: y, scale: scale}。 |
 
 #### direction 的属性描述
 
