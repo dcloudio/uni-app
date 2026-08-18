@@ -16,55 +16,57 @@
 uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于需要向用户直接发放资金（如提现、奖励发放、活动返现）的场景。
 
 注意：
+  - [APP调起用户确认收款] 和 [APP调起用户免确认收款授权] 是用一个 API，参数一致
   - 开发者需在[微信支付商户平台/合作伙伴平台-产品中心](https://pay.weixin.qq.com/)，申请开通商家转账
   - 具体流程请参考[微信商家转账文档](https://pay.weixin.qq.com/doc/v3/merchant/4012711988)
   - app-ios 需要在可视化界面配置scheme、universalLink 参数，详见 [iOS配置/uni-payment(支付)/微信支付](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#paymentweixin)
   - 该功能支持 uniapp 项目，请使用插件[uni-requestMerchantTransfer](https://ext.dcloud.net.cn/plugin?id=22283)
+  - uniapp x 的iOS端和安卓端已内置此插件，但鸿蒙端需要下载插件[uni-requestMerchantTransfer](https://ext.dcloud.net.cn/plugin?id=22283)
 :::
 
-### requestMerchantTransfer 兼容性 
+### requestMerchantTransfer 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.61 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.61 | 4.61 | 5.22 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **RequestMerchantTransferOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **RequestMerchantTransferOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| mchId | string | 是 |  | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 商户号 |
-| package | string | 是 |  | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 商家转账付款单跳转收款页 pkg 信息,商家转账付款单受理成功时返回给商户 |
-| appId | string | 否 |  | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 商户 appId（微信平台appid），普通模式下必填，服务商模式下，appId 和 subAppId 二选一填写 |
-| openId | string | 否 |  | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 收款用户 openId， 对应传入的商户 appId 下，某用户的 openId |
-| subAppId | string | 否 |  | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 子商户 appId（微信平台子appid)，服务商模式下，appId 和 subAppId 二选一填写 |
-| subMchId | string | 否 |  | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 子商户号，服务商模式下必填 |
-| success | (res: [RequestMerchantTransferGeneralCallbackResult](#requestmerchanttransfergeneralcallbackresult-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: [RequestMerchantTransferGeneralCallbackResult](#requestmerchanttransfergeneralcallbackresult-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: [RequestMerchantTransferGeneralCallbackResult](#requestmerchanttransfergeneralcallbackresult-values)) => void | 否 |  | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| mchId | string | 是 | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: 5.22 | 商户号 |
+| package | string | 是 | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: 5.22 | 商家转账付款单跳转收款页 pkg 信息,商家转账付款单受理成功时返回给商户 |
+| appId | string | 否 | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: 5.22 | 商户 appId（微信平台appid），普通模式下必填，服务商模式下，appId 和 subAppId 二选一填写 |
+| openId | string | 否 | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 收款用户 openId， 对应传入的商户 appId 下，某用户的 openId |
+| subAppId | string | 否 | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 子商户 appId（微信平台子appid)，服务商模式下，appId 和 subAppId 二选一填写 |
+| subMchId | string | 否 | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 子商户号，服务商模式下必填 |
+| success | (res: [RequestMerchantTransferGeneralCallbackResult](#requestmerchanttransfergeneralcallbackresult-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (res: [RequestMerchantTransferGeneralCallbackResult](#requestmerchanttransfergeneralcallbackresult-values)) => void | 否 | Web: x; 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (res: [RequestMerchantTransferGeneralCallbackResult](#requestmerchanttransfergeneralcallbackresult-values)) => void | 否 | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: 5.22 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### RequestMerchantTransferGeneralCallbackResult 的属性值 @requestmerchanttransfergeneralcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | Web: x |
 
 #### RequestMerchantTransferGeneralCallbackResult 的属性值 @requestmerchanttransfergeneralcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | Web: x |
 
 #### RequestMerchantTransferGeneralCallbackResult 的属性值 @requestmerchanttransfergeneralcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | Web: x |
 
 
 
@@ -116,12 +118,15 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
 
   const getBundleId = (): string | null => {
     let baseInfo = uni.getAppBaseInfo();
-    let bundleId : string | null;
+    let bundleId: string | null = null;
     // #ifdef APP-ANDROID
     bundleId = baseInfo.packageName;
     // #endif
     // #ifdef APP-IOS
     bundleId = baseInfo.bundleId;
+    // #endif
+    // #ifdef APP-HARMONY
+    bundleId = baseInfo.bundleName;
     // #endif
     // #ifdef MP-WEIXIN
     bundleId = uni.getAccountInfoSync().miniProgram.appId;
@@ -350,7 +355,7 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

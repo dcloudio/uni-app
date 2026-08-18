@@ -718,7 +718,7 @@ export default {
     </view>
 
     <!-- v-bind props -->
-    <Foo :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
+    <Foo class="foo-props" :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
 
     <!-- v-bind props -->
     <Foo checked />
@@ -806,6 +806,7 @@ export default {
   }
   /* #endif */
 </style>
+
 ```
 
 > 选项式 API
@@ -839,7 +840,7 @@ export default {
     </view>
 
     <!-- v-bind props -->
-    <Foo :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
+    <Foo class="foo-props" :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
 
     <!-- v-bind props -->
     <Foo checked />
@@ -931,6 +932,7 @@ export default {
   }
   /* #endif */
 </style>
+
 ```
 :::
 

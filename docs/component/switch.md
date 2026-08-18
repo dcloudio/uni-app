@@ -9,7 +9,7 @@
  开关选择器
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -27,17 +27,17 @@
 | foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | switch 的滑块背景颜色 |
 | activeForeColor | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | switch 的开启状态下的滑块背景颜色 |
 | disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
-| thumb-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 开关选择器滑块的类名 |
-| thumb-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 开关选择器滑块选中的类名 |
-| switch-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 开关选择器选中的类名 |
+| thumb-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 开关选择器滑块的类名 |
+| thumb-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 开关选择器滑块选中的类名 |
+| switch-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 开关选择器选中的类名 |
 | @change | (event: [UniSwitchChangeEvent](#uniswitchchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | checked 改变时触发 change 事件，event.detail={ value:checked} |
 
 #### type 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| switch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   |  |
-| checkbox | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   |  |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| switch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x |
+| checkbox | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x |
 
 type为checkbox只有微信小程序和Web平台支持。一般建议使用标准的[checkbox组件](checkbox-group.md)
 
@@ -56,9 +56,9 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
 
 
 ###### UniSwitchChangeEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | boolean | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| value | boolean | 是 |
 
 
 
@@ -86,13 +86,13 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
       </view>
       <view class="uni-title">暗黑样式</view>
       <view class="flex-row">
-        <!-- #ifndef VUE3-VAPOR -->
+        <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
         <switch id="darkChecked" background-color="#1f1f1f" activeBackgroundColor="#007aff" foreColor="#f0f0f0"
           activeForeColor="#ffffff" :checked="data.checked" />
         <switch id="dark" background-color="#1f1f1f" activeBackgroundColor="#007aff" foreColor="#f0f0f0"
           activeForeColor="#ffffff" />
         <!-- #endif -->
-        <!-- #ifdef VUE3-VAPOR -->
+        <!-- #ifdef VUE3-VAPOR && !MP -->
         <switch id="darkChecked" :class="{ 'dark-class': !data.darkChecked1 }" switch-active-class="custom-switch-active" thumb-active-class="custom-thumb-active1" thumb-class="custom-thumb1" :checked="data.checked" @change="switch3Change" />
         <switch id="dark" :class="{ 'dark-class': !data.darkChecked2 }" switch-active-class="custom-switch-active" thumb-active-class="custom-thumb-active1" thumb-class="custom-thumb1" @change="switch4Change" />
         <!-- #endif -->
@@ -104,11 +104,11 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
       </view>
       <view class="uni-title">不同颜色和尺寸的switch</view>
       <view class="flex-row">
-        <!-- #ifndef VUE3-VAPOR -->
+        <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
         <switch class="switch-color-checked" :color="data.color" style="transform:scale(0.7)" :checked="true" />
         <switch class="switch-color" :color="data.color" style="transform:scale(0.7)" />
         <!-- #endif -->
-        <!-- #ifdef VUE3-VAPOR -->
+        <!-- #ifdef VUE3-VAPOR && !MP -->
         <switch switch-active-class="custom-switch-active-color" style="transform:scale(0.7)" :checked="true" />
         <switch switch-active-class="custom-switch-active-color" style="transform:scale(0.7)" />
         <!-- #endif -->
@@ -125,7 +125,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
         <switch />
       </view>
 
-      <!-- #ifdef VUE3-VAPOR -->
+      <!-- #ifdef VUE3-VAPOR && !MP -->
       <view class="uni-list-cell uni-list-cell-padding">
         <view class="uni-list-cell-db">自定义 thumb 样式</view>
         <switch thumb-class="custom-thumb" thumb-active-class="custom-thumb-active"  />
@@ -143,7 +143,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
   type DataType = {
     title: string;
     checked: boolean;
-    // #ifdef VUE3-VAPOR
+    // #ifdef VUE3-VAPOR && !MP
     darkChecked1: boolean;
     darkChecked2: boolean;
     // #endif
@@ -155,7 +155,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
   const data = reactive({
     title: 'switch 开关',
     checked: true,
-    // #ifdef VUE3-VAPOR
+    // #ifdef VUE3-VAPOR && !MP
     darkChecked1: true,
     darkChecked2: false,
     // #endif
@@ -175,7 +175,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
     console.log('switch2 发生 change 事件，携带值为', e.detail.value)
   }
 
-  // #ifdef VUE3-VAPOR
+  // #ifdef VUE3-VAPOR && !MP
   const switch3Change = (e: UniSwitchChangeEvent) => {
     data.darkChecked1 = e.detail.value
   }
@@ -195,7 +195,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
     flex-direction: row;
   }
 
-  /* #ifdef VUE3-VAPOR */
+  /* #ifdef VUE3-VAPOR && !MP */
   .dark-class {
     background-color: #1f1f1f;
     border-color: #1f1f1f;
@@ -215,7 +215,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
     background-color: #ffffff;
   }
 
-  .custom-thumb {
+  .custom-thumb1 {
     background-color: #f0f0f0;
   }
 

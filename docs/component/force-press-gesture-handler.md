@@ -7,20 +7,20 @@
 
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| tag | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>声明手势协商时的组件标识 |
-| worklet:ongesture | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>手势识别成功的回调 |
-| worklet:should-accept-gesture | callback |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(callback)*<br/>手势是否应该被识别 |
-| simultaneous-handlers | Array.&lt;string&gt; |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array.&lt;string&gt;)*<br/>声明可同时触发的手势节点 |
-| native-view | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>代理的原生节点类型 |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| tag | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>声明手势协商时的组件标识 |
+| worklet:ongesture | eventhandler | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>手势识别成功的回调 |
+| worklet:should-accept-gesture | callback | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(callback)*<br/>手势是否应该被识别 |
+| simultaneous-handlers | Array.&lt;string&gt; | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array.&lt;string&gt;)*<br/>声明可同时触发的手势节点 |
+| native-view | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>代理的原生节点类型 |
 
 #### worklet:ongesture 的属性描述
 

@@ -5,13 +5,13 @@
 transition CSS 属性是 transition-property、transition-duration、transition-timing-function 和 transition-delay 的一个简写属性 (en-US)。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -59,18 +59,9 @@ transition暂不支持结束属性值为百分比。
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
-		<!-- #ifndef APP-ANDROID -->
-		<view style="margin: 7px; height: 60px;">
-			<navigator url="/pages/CSS/transition/transition-transform" hover-class="none">
-				<button type="primary">
-					transform 多个属性示例
-				</button>
-			</navigator>
-		</view>
-		<!-- #endif -->
     <view class="container">
       <text class="text">点击修改宽度</text>
       <view class="base-style transition-width" id="widthOrHeight" @click="changeWidthOrHeight"></view>
@@ -149,6 +140,10 @@ transition暂不支持结束属性值为百分比。
       <text class="text">点击修改Scale
       </text>
       <view class="base-style transition-transform" id="styleChangScale" @click="changestyleScale"></view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改scale和opacity(cubic-bezier回弹)</text>
+      <view class="base-style transition-scale-opacity" id="styleScaleOpacity" @click="changeScaleOpacity"></view>
     </view>
     <view class="container">
       <text class="text">仅指定transition-duration背影有动画为正常</text>
@@ -252,7 +247,7 @@ transition暂不支持结束属性值为百分比。
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition </text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
     </view>
 
     <view class="test-container">
@@ -269,7 +264,7 @@ transition暂不支持结束属性值为百分比。
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">设置值 sdf: {{data.transitionValue}}</text>
         <text class="uni-info">获取值: {{data.transitionActualText}}</text>
         <view class="test-box">
           <text ref="textRefTransition" class="common-text" :style="{ transition: data.transitionValue }" @click="triggerTransitionText">点击text</text>
@@ -326,11 +321,18 @@ transition暂不支持结束属性值为百分比。
     <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
     <text class="text">点击 native-view 查看 transition 效果</text>
     <view class="demo-box">
-      <native-view ref="nativeView1" class="base-style" style="transition: width 1s;" @click="changeNativeViewWidth1"></native-view>
-      <native-view ref="nativeView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeNativeViewWidth2"></native-view>
+      <test-native-view ref="nativeView1" class="base-style" style="transition: width 1s;" @click="changeNativeViewWidth1"></test-native-view>
+      <test-native-view ref="nativeView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeNativeViewWidth2"></test-native-view>
     </view>
 
-  <!-- #ifdef APP -->
+		<view style="margin: 7px; height: 60px;">
+			<navigator url="/pages/CSS/transition/transition-transform" hover-class="none">
+				<button type="primary">
+					transform 多个属性示例
+				</button>
+			</navigator>
+		</view>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -352,8 +354,8 @@ transition暂不支持结束属性值为百分比。
   const scrollView2 = ref(null as UniElement | null)
   let isNativeViewWidth1 = false
   let isNativeViewWidth2 = false
-  const nativeView1 = ref(null as UniElement | null)
-  const nativeView2 = ref(null as UniElement | null)
+  const nativeView1 = ref<ComponentPublicInstance|null>(null)
+  const nativeView2 = ref<ComponentPublicInstance|null>(null)
   let isTranstionChangeMargin = false
   let styleMargin: UniElement | null = null
   let isTransitionStylePadding = false
@@ -388,6 +390,8 @@ transition暂不支持结束属性值为百分比。
   const changestyleTransitionDuration = ref('background-color:brown;')
   let styleTransitionAll: UniElement | null = null
   let isTransitionAll = false
+  let isTransitionScaleOpacity = false
+  let styleScaleOpacity: UniElement | null = null
   const lineLeft = ref(0)
   const lineWidth = ref(200)
   const translatePercent = ref('0%')
@@ -431,6 +435,7 @@ transition暂不支持结束属性值为百分比。
     styleTransformTranslate = uni.getElementById("transformTranslate")
     styleTransformTranslateScale = uni.getElementById("styleTransformTranslateScale")
     styleTransitionAll = uni.getElementById("styleTransitionAll")
+    styleScaleOpacity = uni.getElementById("styleScaleOpacity")
     widthOrHeightAuto = uni.getElementById("widthOrHeightAuto")
     changeWidthInEnd = uni.getElementById("changeWidthInEnd")
     textTransform = uni.getElementById("textTransform")
@@ -442,7 +447,6 @@ transition暂不支持结束属性值为百分比。
     elChangeBorderAndBackgroundColor = uni.getElementById("borderAndBackgroundColor")
   })
 
-  const ins = getCurrentInstance()
 
   const changeWidthOrHeight = () => {
     widthOrHeight?.style?.setProperty("width", isTranstionWidthOrHeight
@@ -481,12 +485,12 @@ transition暂不支持结束属性值为百分比。
   }
 
   const changeNativeViewWidth1 = () => {
-    nativeView1.value?.style.setProperty("width", isNativeViewWidth1 ? '100px' : '150px')
+    nativeView1.value?.$el.style.setProperty("width", isNativeViewWidth1 ? '100px' : '150px')
     isNativeViewWidth1 = !isNativeViewWidth1
   }
 
   const changeNativeViewWidth2 = () => {
-    nativeView2.value?.style.setProperty("width", isNativeViewWidth2 ? '100px' : '150px')
+    nativeView2.value?.$el.style.setProperty("width", isNativeViewWidth2 ? '100px' : '150px')
     isNativeViewWidth2 = !isNativeViewWidth2
   }
 
@@ -623,6 +627,18 @@ transition暂不支持结束属性值为百分比。
       el?.style.setProperty("transition-duration", "200ms")
       el?.style.setProperty("transform", "translate(10px,10px) scale(0.5)")
     }, 200)
+  }
+
+  const changeScaleOpacity = () => {
+    styleScaleOpacity?.style?.setProperty("opacity", isTransitionScaleOpacity
+      ? '1'
+      : '0.4'
+    )
+    styleScaleOpacity?.style?.setProperty("transform", isTransitionScaleOpacity
+      ? 'scale(1)'
+      : 'scale(0.5)'
+    )
+    isTransitionScaleOpacity = !isTransitionScaleOpacity
   }
 
   const handleTouchStart = (e : UniTouchEvent) => {
@@ -807,7 +823,7 @@ transition暂不支持结束属性值为百分比。
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeTransition = (index: number) => {
@@ -993,6 +1009,14 @@ transition暂不支持结束属性值为百分比。
     transform: translate(0%, 0%) scaleX(1) rotate(0deg);
     transition-property: transform;
     transition-duration: 1s;
+  }
+
+  .transition-scale-opacity {
+    opacity: 1;
+    transform: scale(1);
+    transition-property: transform, opacity;
+    transition-duration: 800ms;
+    transition-timing-function: cubic-bezier(0.2, 1.8, 0.3, 1);
   }
 
   .transition-border {

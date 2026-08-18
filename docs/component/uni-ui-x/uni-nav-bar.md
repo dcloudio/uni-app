@@ -34,23 +34,62 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar
 
 本组件默认没有背景色，即透明，会透显页面的背景色。开发者可通过组件的class自行设置背景色
 
+在小程序端，如果需要规避右上角胶囊按钮，可以参考下方代码设置 margin-right 让出胶囊按钮的宽度和右侧间距。
+
+```html
+<template>
+	<uni-nav-bar title="标题" right-class="nav-right">
+		<template #right>
+			<view :style="{ transform: 'translateX(-' + rightMargin + 'px)' }">
+				<text class="txt-button">right</text>
+			</view>
+		</template>
+	</uni-nav-bar>
+</template>
+
+<script setup lang="uts">
+	const rightMargin = ref(0)
+	onMounted(() => {
+		// #ifdef MP-WEIXIN
+		const menuButtonInfo = uni.getMenuButtonBoundingClientRect()
+		const windowInfo = uni.getWindowInfo()
+		// 预留胶囊按钮宽度和右侧间距，让右侧插槽显示在胶囊按钮左边
+		rightMargin.value = windowInfo.windowWidth - menuButtonInfo.right + menuButtonInfo.width
+		// #endif
+	})
+</script>
+
+<style>
+	.nav-right {
+		overflow: visible;
+	}
+
+	.txt-button {
+		width: 44px;
+		height: 44px;
+		line-height: 44px;
+		text-align: center;
+	}
+</style>
+```
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| hideDefaultBack | boolean | false |   | 是否隐藏默认的返回箭头。为 true 时需要通过 left 插槽自定义返回按钮 |
-| title | string | "" |   | 导航栏中间显示的标题文字，若使用 mid 插槽则该属性无效 |
-| navigationBarTextStyle | String as PropType\<"white" \| "black" \| ""> | "" |   | 导航栏前景色（文字和返回箭头颜色）。非小程序端未传入时会自动读取 pageStyle 的 navigationBarTextStyle |
-| leftClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 左侧区域的自定义样式类 |
-| midClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 中间区域的自定义样式类 |
-| rightClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 右侧区域的自定义样式类 |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| hideDefaultBack | boolean | false | 是否隐藏默认的返回箭头。为 true 时需要通过 left 插槽自定义返回按钮 |
+| title | string | "" | 导航栏中间显示的标题文字，若使用 mid 插槽则该属性无效 |
+| navigationBarTextStyle | String as PropType\<"white" \| "black" \| ""> | "" | 导航栏前景色（文字和返回箭头颜色）。非小程序端未传入时会自动读取 pageStyle 的 navigationBarTextStyle |
+| leftClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 左侧区域的自定义样式类 |
+| midClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 中间区域的自定义样式类 |
+| rightClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 右侧区域的自定义样式类 |
 
 <!-- UTSCOMJSON.uni-nav-bar.fileFormates -->
 

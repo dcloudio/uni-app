@@ -7,34 +7,34 @@
 富文本编辑器，可以对图片、文字进行编辑。
 
 
-### 兼容性
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 7.1.1 | 5.08 | 5.08 | 5.08 | 5.08 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 7.1.1 | 5.08 | 5.08 | 5.08 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| read-only | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 设置编辑器为只读 |
-| placeholder | string |   | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 提示信息 |
-| show-img-size | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 点击图片时显示图片大小控件 |
-| show-img-toolbar | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 点击图片时显示工具栏控件 |
-| show-img-resize | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 点击图片时显示修改尺寸控件 |
+| read-only | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 设置编辑器为只读 |
+| placeholder | string |   | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 提示信息 |
+| show-img-size | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 点击图片时显示图片大小控件 |
+| show-img-toolbar | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 点击图片时显示工具栏控件 |
+| show-img-resize | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 点击图片时显示修改尺寸控件 |
 | enable-formats | Array.&lt;string&gt; |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array.&lt;string&gt;)*<br/>编辑器允许的名单内的格式 |
-| type | "none" | "null" | Web: 4.0; 微信小程序: x; Android 系统版本: 8.0.0; Android: 5.08; iOS: 5.08; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 输入类型，暂只支持<br>  "none": 聚焦时不弹出键盘 |
+| type | "none" | "null" | Web: 4.0; 微信小程序: x; Android 系统版本: 8.0.0; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 输入类型，暂只支持<br>  "none": 聚焦时不弹出键盘 |
 | name | string |   |   | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| @ready | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 编辑器初始化完成时触发 |
-| @focus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS:   | 编辑器聚焦时触发 |
-| @blur | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS:   | 编辑器失去焦点时触发 |
-| @input | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS:   | 编辑器内容改变时触发 |
-| @statuschange | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS:   | 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式 |
+| @ready | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 编辑器初始化完成时触发 |
+| @focus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08 | 编辑器聚焦时触发 |
+| @blur | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08 | 编辑器失去焦点时触发 |
+| @input | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08 | 编辑器内容改变时触发 |
+| @statuschange | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08 | 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式 |
 
 #### type 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| none |   |  |
+| 合法值 |
+| :- |
+| none |
 
 
 
@@ -72,7 +72,6 @@ editor组件有上下文对象，api为[uni.createEditorContextAsync()](../api/c
       </view>
 
       <view class="preview-state-row">
-        <text class="preview-state-text">keyboard height: {{ Math.floor(data.keyboardHeight) }}</text>
         <view v-if="showLogs">
           <text class="preview-state-text">X: {{ data.editorX }}</text>
           <text class="preview-state-text">Y: {{ data.editorY }}</text>
@@ -122,15 +121,15 @@ editor组件有上下文对象，api为[uni.createEditorContextAsync()](../api/c
         <view class="preview-toolbar-item" @tap="blurEditor">
           <text class="preview-toolbar-icon iconfont">{{"&#xe69a;"}}</text>
         </view>
+        <!-- #ifndef MP -->
         <view class="preview-toolbar-item" @tap="insertMention">
           <text class="preview-toolbar-icon iconfont">@</text>
         </view>
+        <!-- #endif -->
       </view>
     </view>
 
     <scroll-view class="props-scroll" direction="vertical">
-      <page-intro content="本页演示 editor 的 read-only、placeholder、show-img-size、show-img-toolbar、show-img-resize、type 属性，以及 ready、focus、blur、input、statuschange 事件。placeholder 与 show-img-* 为初始化生效属性，调整后需要点击按钮重建 editor。"></page-intro>
-
       <view class="uni-padding-wrap">
         <view class="uni-title uni-common-mt">
           <text class="uni-title-text">可动态修改属性</text>
@@ -225,8 +224,8 @@ type EditorPropsPageData = {
   editorY: number
   editorWidth: number
   editorHeight: number
-  keyboardHeight: number
-  keyboardHeightChangeCount: number
+  insertImageWidth: number
+  insertImageHeight: number
 }
 
 const SAMPLE_TEXT = '这是 editor 示例文本。你可以继续输入内容，也可以滚动下方属性区实时调整 editor 状态。'
@@ -266,8 +265,8 @@ const initialData: EditorPropsPageData = {
   editorY: 0,
   editorWidth: 0,
   editorHeight: 0,
-  keyboardHeight: 0,
-  keyboardHeightChangeCount: 0
+  insertImageWidth: 0,
+  insertImageHeight: 0
 }
 
 const data = reactive<EditorPropsPageData>(initialData)
@@ -344,6 +343,7 @@ function rebuildEditor() {
 }
 
 function updateEditorRect() {
+  // #ifndef MP
   const editorElement = uni.getElementById('editor-props-demo')
   const editorRect = editorElement?.getBoundingClientRect()
   if (editorRect != null) {
@@ -356,6 +356,18 @@ function updateEditorRect() {
     data.editorY += systemInfo.safeAreaInsets.top + 44
     // #endif
   }
+  // #endif
+  // #ifdef MP
+  wx.createSelectorQuery().select('#editor-props-demo').boundingClientRect(function(editorRect){
+    data.editorX = editorRect.top
+    data.editorY = editorRect.left
+    data.editorWidth = editorRect.width
+    data.editorHeight = editorRect.height
+
+    const windowInfo = uni.getWindowInfo()
+    data.editorY += windowInfo.safeAreaInsets.top + 44
+  }).exec()
+  // #endif
 }
 
 function onEditorReady() {
@@ -399,18 +411,6 @@ function onStatusChange(event: UniEditorStatusChangeEvent) {
   appendLog('statuschange', data.statusSummary)
 }
 
-onLoad(() => {
-  uni.onKeyboardHeightChange((res) => {
-    data.keyboardHeight = res.height
-    data.keyboardHeightChangeCount += 1
-    appendLog('keyboard', `height => ${res.height}`)
-  })
-})
-
-onUnload(() => {
-  uni.offKeyboardHeightChange()
-})
-
 function insertSampleText() {
   data.editorCtx?.insertText({
     text: SAMPLE_TEXT,
@@ -420,15 +420,31 @@ function insertSampleText() {
   })
 }
 
-function insertSampleImage() {
+const src = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png'
+function insertImage() {
   data.editorCtx?.insertImage({
-    src: 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png',
+    src,
     alt: '示例图片',
     success: () => {
       appendLog('action', '已插入示例图片，请点击图片验证 show-img-*')
     },
     fail: () => {
       appendLog('error', '插入示例图片失败')
+    }
+  })
+}
+function insertSampleImage() {
+  uni.getImageInfo({
+    src,
+    success(res) {
+      console.log('res: ',res);
+      data.insertImageWidth = res.width
+      data.insertImageHeight = res.height
+      appendLog('network', `图片加载成功: ${summarizeText(src)}`)
+      insertImage()
+    },
+    fail() {
+      insertImage()
     }
   })
 }
@@ -488,12 +504,23 @@ function blurEditor() {
 
 function hideKeyboardForTest() {
   uni.hideKeyboard()
-  data.keyboardHeight = 0
   appendLog('keyboard', '已请求隐藏键盘')
 }
 
 function clearLogs() {
   data.logs.splice(0, data.logs.length)
+}
+
+function testSetContentsHtml() {
+  data.editorCtx?.setContents({
+    html: '<p style="text-align:center;"><strong>Hello,uni-app x</strong></p><p>editor的setContents接口示例</p>',
+    success: () => {
+      appendLog('action', '成功设置富文本内容')
+    },
+    fail: (error: any) => {
+      appendLog('error', `setContents fail: ${JSON.stringify(error)}`)
+    }
+  })
 }
 
 defineExpose({
@@ -515,7 +542,8 @@ defineExpose({
   clearEditor,
   blurEditor,
   hideKeyboardForTest,
-  updateEditorRect
+  updateEditorRect,
+  testSetContentsHtml
 })
 </script>
 
@@ -599,6 +627,7 @@ defineExpose({
 
 .preview-editor {
   height: 150px;
+  min-height: 0px;
   padding: 10px;
 }
 
@@ -665,3 +694,5 @@ defineExpose({
 - 虽然editor组件被分类到form组件，但并不能在form的submit中提交
 - 如果要做 im 输入类功能，需要使用 [onKeyboardHeightChange](../api/keyboard.md#onkeyboardheightchange) 监听键盘高度变化，来定位 editor 组件的位置，避免被键盘遮挡
 - editor 组件可以使用 `readOnly=false` 属性来让键盘失焦，然后通过 `readOnly=true;setTimeout(() => {editor.format(name, value)}, 0)` 来实现在 editor 组件失焦的情况下调用 format 方法来修改 editor 组件内容输入并自动聚焦。如果失焦后直接调用 format 方法，再手动聚焦设置的内容会被覆盖掉。
+- editor 存在 `min-height: 200px` 的默认样式，如果需要修改高度，请注意重写 `min-height` 样式
+  - **Bug：** 在 HBuilderX 5.21 之前 min-height 样式不生效，始终会有 200px 的最小高度

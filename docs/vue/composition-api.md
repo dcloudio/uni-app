@@ -1153,7 +1153,6 @@ const stateText = computed(() => {
       margin-bottom: 10px;
     }
 </style>
-
 ```
 
 :::
@@ -2341,7 +2340,7 @@ const isReactiveShallowReadonlyCount = isReactive(shallowReadonlyCount);
 |  | 兼容性 |
 | :- | :- |
 | shallowRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
-| triggerRef() | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| triggerRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | customRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | shallowReactive() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | shallowReadonly() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
@@ -2877,8 +2876,8 @@ const triggerRefState = () => {
 
 |  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| provide | 4.0 | 4.41 | 3.99 | x | 4.11 | 5.11 | 4.61 | 5.0 |
-| inject | 4.0 | 4.41 | 3.99 | x | 4.11 | 5.11 | 4.61 | 5.0 |
+| provide | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
+| inject | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 | mixins | 4.0 | 4.41 | 3.99 | x | 4.11 | x | 4.61 | x |
 
 ### inject
@@ -2998,6 +2997,10 @@ onReady(() => {
         <text>{{ isOnPullDownRefreshTriggered }}</text>
       </view>
       <view class="flex flex-row justify-between mt-10">
+        <text>onPageScroll 触发：</text>
+        <text>{{ isOnPageScrollTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
         <text>onReachBottom 触发：</text>
         <text>{{ isOnReachBottomTriggered }}</text>
       </view>
@@ -3013,13 +3016,24 @@ onReady(() => {
         <text>onResize 触发：</text>
         <text>{{ isOnResizeTriggered }}</text>
       </view>
-      <view class="flex flex-row justify-between mt-10">
+      <view class="mt-10">
+        <MonitorAppLifecycleComposition class="monitor-app-lifecycle" />
+      </view>
+      <view class="mt-10">
         <MonitorPageLifecycleComposition />
       </view>
       <button class="mt-10" @click="scrollToBottom">scrollToBottom</button>
       <button class="mt-10" @click="pullDownRefresh">
         trigger pullDownRefresh
       </button>
+      <!-- #ifndef MP -->
+      <button class="mt-10" @click="openLifecycleDialogPage">
+        openDialogPage
+      </button>
+      <button class="mt-10" @click="closeLifecycleDialogPage">
+        closeDialogPage
+      </button>
+      <!-- #endif -->
       <button class="mt-10" @click="goOnBackPress">
         跳转 onBackPress 示例
       </button>
@@ -3031,6 +3045,7 @@ onReady(() => {
 
 <script setup lang="uts">
 import { state, setLifeCycleNum } from '@/store/index.uts'
+import MonitorAppLifecycleComposition from './monitor-app-lifecycle-composition.uvue'
 import MonitorPageLifecycleComposition from './monitor-page-lifecycle-composition.uvue'
 
 const isOnloadTriggered = ref(false)
@@ -3099,7 +3114,7 @@ onUnload(() => {
   setLifeCycleNum(state.lifeCycleNum - 100)
 })
 onResize((options: OnResizeOptions) => {
-  console.log('onBackPress', options)
+  console.log('onResize', options)
   isOnResizeTriggered.value = true
   // 自动化测试
   setLifeCycleNum(state.lifeCycleNum + 10)
@@ -3131,6 +3146,23 @@ const scrollToBottom = () => {
   })
 }
 
+const resetPageScrollStatus = () => {
+  isOnPageScrollTriggered.value = false
+  dataInfo.isScrolled = false
+}
+
+// #ifndef MP
+const openLifecycleDialogPage = () => {
+  uni.openDialogPage({
+    url: '/pages/lifecycle/page/dialog-page',
+  })
+}
+
+const closeLifecycleDialogPage = () => {
+  uni.closeDialogPage()
+}
+// #endif
+
 const goOnBackPress = () => {
   uni.navigateTo({url: '/pages/lifecycle/page/onBackPress/on-back-press-composition'})
 }
@@ -3141,6 +3173,11 @@ defineExpose({
   pageSetLifeCycleNum,
   pullDownRefresh,
   scrollToBottom,
+  resetPageScrollStatus,
+  // #ifndef MP
+  openLifecycleDialogPage,
+  closeLifecycleDialogPage,
+  // #endif
 })
 </script>
 
@@ -3160,30 +3197,30 @@ defineExpose({
 
 |  | 兼容性 | 描述 |
 | :- | :- | :- |
-| onMounted() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
-| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
-| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。 |
-| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
-| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
-| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。 |
+| onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
+| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
+| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。 |
+| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
+| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
+| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。 |
 | onErrorCaptured() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 注册一个钩子，在捕获了后代组件传递的错误时调用。 |
 | onRenderTracked() | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用。 |
 | onRenderTriggered() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用。 |
 | onActivated() | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | keep-alive 组件激活时调用。 |
 | onDeactivated() | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | keep-alive 组件停用时调用。 |
 | onServerPrefetch() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 注册一个异步函数，在组件实例在服务器上被渲染之前调用。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。<br/>这个钩子仅会在服务端渲染中执行，可以用于执行一些仅存在于服务端的数据抓取过程。 |
-| onRecycle() | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 组件回收时的生命周期钩子 |
-| onReuse() | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 组件复用时的生命周期钩子 |
-| onLoad() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
-| onReady() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
-| onUnload() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
-| onPageShow() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
-| onPageHide() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
-| onPageScroll() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.13; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
-| onBackPress() | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回 |
-| onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
-| onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
-| onResize() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 页面尺寸改变时触发 |
+| onRecycle() | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 组件回收时的生命周期钩子 |
+| onReuse() | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 组件复用时的生命周期钩子 |
+| onLoad() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
+| onReady() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
+| onUnload() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
+| onPageShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
+| onPageHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
+| onPageScroll() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
+| onBackPress() | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回 |
+| onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
+| onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
+| onResize() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 页面尺寸改变时触发 |
 
 #### onMounted、onUnmounted 使用注意事项 @mounted-unmounted-tips
 
@@ -3363,17 +3400,17 @@ const updateTitle = () => {
 
 
 
-##### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.61 | 5.03 |
+##### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | 4.11 | 4.61 |
 
 
 ##### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| setup | Any |   | Web: 4.0; 微信小程序: √; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |   |
-| lang | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |  |
+| 名称 | 类型 | 兼容性 |
+| :- | :- |  :-: |
+| setup | Any | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| lang | Any | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 
 #### lang 的属性描述
 
@@ -3446,7 +3483,7 @@ const updateTitle = () => {
         @compUpdateObj="compUpdateObj"
         :isShow="true" />
       <!-- #endif -->
-      <Foo>
+      <Foo id="component-foo">
         <text class="mt-10" id="default-slot-in-foo">default slot in Foo</text>
       </Foo>
     </view>
@@ -3517,7 +3554,7 @@ export default {
 | defineSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | useSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | useAttrs() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
-| useRecycleState() | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 |
+| useRecycleState() | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 |
 
 
 ### defineProps()
@@ -3533,15 +3570,15 @@ export default {
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -3559,6 +3596,7 @@ export default {
   const obj = { age: 18 }
   const arr = ['a', 'b', 'c']
 </script>
+
 ```
 
 :::
@@ -3655,7 +3693,7 @@ defineOptions({
       <text>component name: </text>
       <text id="component-name">{{ dataInfo.name }}</text>
     </view>
-    <!-- #ifndef APP-ANDROID -->
+    <!-- #ifndef APP-ANDROID && !VUE3-VAPOR -->
     <view class="mb-10 flex justify-between flex-row">
       <text>custom key: </text>
       <text id="custom-key">{{ dataInfo.customKey }}</text>
@@ -3702,7 +3740,7 @@ const dataInfo = reactive({
 onMounted(() => {
   const instance = getCurrentInstance()!.proxy!
   dataInfo.name = instance.$options.name!
-  // #ifndef APP-ANDROID
+  // #ifndef APP-ANDROID && !VUE3-VAPOR
   dataInfo.customKey = instance.$options._customKey
   // #ifndef VUE3-VAPOR
   dataInfo.mixinDataStr = instance.$options.data!({})!['str']
@@ -4123,7 +4161,7 @@ declare function useComputedStyle(options: UseComputedStyleOptions | null): Map<
 ```vue
 <template>
 	<view>
-		<text :style="{ 'font-size': style.get('font-size'), color: style.get('color') }">hello</text>
+		<text :style="{ 'font-size': style.get('font-size'), color: style.get('color') }" style="line-height: 100px;">hello world</text>
 	</view>
 </template>
 

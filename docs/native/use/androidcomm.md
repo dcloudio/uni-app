@@ -33,7 +33,7 @@ startActivity(Intent(this, UniAppActivity::class.java))
 	</view>
 </template>
 
-<script>
+<script setup lang="uts">
 	// #ifdef APP-ANDROID
 	import BroadcastReceiver from 'android.content.BroadcastReceiver'
 	import Context from 'android.content.Context'
@@ -55,43 +55,40 @@ startActivity(Intent(this, UniAppActivity::class.java))
 		}
 	}
 	// #endif
-	export default {
-		data() {
-			return {
-				title: '点击图片发送广播',
-				// #ifdef APP-ANDROID
-				receiver: null as BroadcastReceiver | null
-				// #endif
-			}
-		},
-		onLoad() {
 
-		},
-		onReady() {
-			// #ifdef APP-ANDROID
-			this.receiver = new MyReciver()
-			if (Build.VERSION.SDK_INT >= 33) {
-				UTSAndroid.getUniActivity()?.registerReceiver(this.receiver, IntentFilter("ACTION_FROM_NATIVE"), Context.RECEIVER_EXPORTED)
-			} else {
-				UTSAndroid.getUniActivity()?.registerReceiver(this.receiver, IntentFilter("ACTION_FROM_NATIVE"))
-			}
-			// #endif
-		},
+	const title = '点击图片发送广播'
+	// #ifdef APP-ANDROID
+	let receiver: BroadcastReceiver | null = null
+	// #endif
 
-		onUnload() {
-			// #ifdef APP-ANDROID
-			UTSAndroid.getUniActivity()?.unregisterReceiver(this.receiver!)
-			// #endif
-		},
-		methods: {
-			send() {
-				// #ifdef APP-ANDROID
-				var intent = new Intent("ACTION_TO_NATIVE");
-				intent.putExtra("key", "接受到广播，三秒钟之后会接收到原生发送的广播");
-				UTSAndroid.getUniActivity()?.sendBroadcast(intent)
-				// #endif
-			}
+	onReady(() => {
+		// #ifdef APP-ANDROID
+		const currentReceiver = new MyReciver()
+		receiver = currentReceiver
+		if (Build.VERSION.SDK_INT >= 33) {
+			UTSAndroid.getUniActivity()?.registerReceiver(currentReceiver, IntentFilter("ACTION_FROM_NATIVE"), Context.RECEIVER_EXPORTED)
+		} else {
+			UTSAndroid.getUniActivity()?.registerReceiver(currentReceiver, IntentFilter("ACTION_FROM_NATIVE"))
 		}
+		// #endif
+	})
+
+	onUnload(() => {
+		// #ifdef APP-ANDROID
+		const currentReceiver = receiver
+		if (currentReceiver != null) {
+			UTSAndroid.getUniActivity()?.unregisterReceiver(currentReceiver)
+			receiver = null
+		}
+		// #endif
+	})
+
+	const send = () => {
+		// #ifdef APP-ANDROID
+		var intent = new Intent("ACTION_TO_NATIVE");
+		intent.putExtra("key", "接受到广播，三秒钟之后会接收到原生发送的广播");
+		UTSAndroid.getUniActivity()?.sendBroadcast(intent)
+		// #endif
 	}
 </script>
 

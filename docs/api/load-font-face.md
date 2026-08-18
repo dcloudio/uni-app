@@ -13,7 +13,7 @@
 动态加载网络字体
 
 
-### loadFontFace 兼容性 
+### loadFontFace 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.10 | 4.61 |
@@ -21,47 +21,46 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **LoadFontFaceOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **LoadFontFaceOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| global | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: x; HarmonyOS: x | 是否全局生效微信小程序 '2.10.0'起支持全局生效。需在 app.uvue 中调用。 |
-| family | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 定义的字体名称 |
-| source | [string.FontURIString](/uts/data-type.md#ide-string) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 字体资源的地址, App-Android 平台不支持 woff、woff2 格式字体文件 |
-| desc | **LoadFontFaceOptionDesc** | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 4.10; HarmonyOS: x | 可选的字体描述符 |
-| success | (result: [LoadFontFaceSuccess](#loadfontfacesuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (error: [LoadFontFaceFail](#loadfontfacefail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (res: [LoadFontFaceComplete](#loadfontfacecomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| scopes | Array&lt;any&gt; | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 字体作用范围，可选值为 webview / native / skyline，默认全选，设置 native 可在 Canvas 2D 下使用<br/> | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| global | boolean | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: x; HarmonyOS: x | 是否全局生效微信小程序 '2.10.0'起支持全局生效。需在 app.uvue 中调用。 |
+| family | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 定义的字体名称 |
+| source | [string.FontURIString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 字体资源的地址, App-Android 平台不支持 woff、woff2 格式字体文件 |
+| desc | **LoadFontFaceOptionDesc** | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 4.10; HarmonyOS: x | 可选的字体描述符 |
+| success | (result: [LoadFontFaceSuccess](#loadfontfacesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10 | 接口调用成功的回调函数 |
+| fail | (error: [LoadFontFaceFail](#loadfontfacefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10 | 接口调用失败的回调函数 |
+| complete | (res: [LoadFontFaceComplete](#loadfontfacecomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### desc 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| style | string | 否 |  |   |  |
-| weight | string | 否 |  |   |  |
-| variant | string | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| style | string | 否 |
+| weight | string | 否 |
+| variant | string | 否 |
 
 #### LoadFontFaceSuccess 的属性值 @loadfontfacesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### LoadFontFaceFail 的属性值 @loadfontfacefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| status | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 加载字体结果<br/> |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |   | 错误码 |
+| status | string | 否 | 微信小程序: 4.41 | 加载字体结果<br/> |
+| errSubject | string | 是 |   | 统一错误主题（模块）名称 |
+| data | any | 否 |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |   |  |
 
 #### errCode 的属性描述
 
@@ -78,9 +77,9 @@
 
 #### LoadFontFaceComplete 的属性值 @loadfontfacecomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -91,9 +90,9 @@
 
 #### Promise\<LoadFontFaceSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 ### 注意事项
@@ -119,7 +118,9 @@
   2. base64 格式字体是通过转换成 buffer 保存在磁盘上并引入实现的，因此页面上过多的使用 base64 可能会有性能问题
   3. HarmonyOS 字体都是全局生效的
 
-不同平台支持的字体格式不同，另见[css字体](../css/font-family.md)
+- 不同平台支持的字体格式不同，另见[css字体](../css/font-family.md)
+
+- app平台由于不支持伪元素，字体图标加载需使用unicode直显。[详见](./common/at-rules.md)
 
 ### 示例
 
@@ -147,6 +148,16 @@
       <text class="icon-text">\ue100</text>
       <text class="font-size-20" style="font-family: UniFontFamily;">{{data.uniIcon2}}</text>
       <text style="margin-left:5px;line-height:22px;">\ue101</text>
+      <!-- #endif -->
+    </view>
+    <text class="font-size-20 line-height-40" style="font-family: UniFontFamily">实体字符</text>
+    <view style="flex-direction: row;">
+      <!-- #ifdef MP-WEIXIN -->
+      <text class="font-size-20" style="font-family: UniFontFamily2;">&#xe102; &amp;#xe102;</text>
+      <!-- #endif -->
+      <!-- #ifndef MP-WEIXIN -->
+      <text class="font-size-20" style="font-family: UniFontFamily;">&#xe100; &amp;#xe100;</text>
+      <text class="font-size-20" style="font-family: UniFontFamily; margin-left: 5px;">&#xe101; &amp;#xe101;</text>
       <!-- #endif -->
     </view>
     <!-- #ifndef APP-HARMONY -->
@@ -369,7 +380,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

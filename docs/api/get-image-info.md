@@ -2,7 +2,7 @@
 
 获取图片信息
 
-### getImageInfo 兼容性 
+### getImageInfo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.18 | 4.25 | 4.61 |
@@ -10,51 +10,51 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **GetImageInfoOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **GetImageInfoOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS:   | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
-| success | (callback: [GetImageInfoSuccess](#getimageinfosuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (callback: [GetImageInfoFail](#getimageinfofail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
+| success | (callback: [GetImageInfoSuccess](#getimageinfosuccess-values)) => void | 否 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
+| fail | (callback: [GetImageInfoFail](#getimageinfofail-values)) => void | 否 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetImageInfoSuccess 的属性值 @getimageinfosuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS:   | 图片宽度，单位px |
-| height | number | 是 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS:   | 图片高度，单位px |
-| path | string | 是 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS:   | 返回图片的本地路径 |
-| orientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS:   | 返回图片的方向 |
-| type | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS:   | 返回图片的格式 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| width | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片宽度，单位px |
+| height | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片高度，单位px |
+| path | string | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的本地路径 |
+| orientation | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的方向 |
+| type | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的格式 |
 
 #### orientation 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| up |  |
-| down |  |
-| left |  |
-| right |  |
-| up-mirrored |  |
-| down-mirrored |  |
-| left-mirrored |  |
-| right-mirrored |  |
+| 合法值 |
+| :- |
+| up |
+| down |
+| left |
+| right |
+| up-mirrored |
+| down-mirrored |
+| left-mirrored |
+| right-mirrored |
 
 #### GetImageInfoFail 的属性值 @getimageinfofail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -105,7 +105,7 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -129,14 +129,15 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
         <button type="primary" @click="chooseImage">拍摄照片或从相册中选择照片</button>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
 <script setup lang="uts">
   type TestStateType = {
-    imageInfoForTest: UTSJSONObject | null
+    imageInfoForTest: UTSJSONObject | null,
+    autoTest: boolean
   }
 
   const title = ref("getImageInfo")
@@ -148,7 +149,8 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
   const remoteImageInfo = ref("")
   // 自动化测试
   const testState = reactive({
-    imageInfoForTest: null as UTSJSONObject | null
+    imageInfoForTest: null as UTSJSONObject | null,
+    autoTest: false
   } as TestStateType)
 
   const chooseImage = () => {
@@ -173,6 +175,10 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
       }
     });
   }
+
+  onLoad((options : OnLoadOptions) => {
+    testState.autoTest = options['autoTest'] == 'true'
+  })
 
   onReady(() => {
     uni.getImageInfo({
@@ -201,7 +207,11 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
       src: remoteImagePath.value,
       success: (res) => {
         console.log("getImageInfo success", JSON.stringify(res));
-        remoteImageInfo.value = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片路径: ${res.path}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+        if (testState.autoTest) {
+          remoteImageInfo.value = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+        } else {
+          remoteImageInfo.value = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片路径: ${res.path}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+        }
       },
       fail: (err) => {
         uni.showModal({
@@ -238,7 +248,7 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

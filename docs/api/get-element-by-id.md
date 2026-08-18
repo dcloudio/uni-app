@@ -15,10 +15,10 @@
 ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素，则返回第一个匹配的元素。
 
 
-### getElementById 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS uni-app x UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.25 | 4.61 | 4.61 |
+### getElementById 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.25 | 4.61 |
 
 
 **注意：** \
@@ -27,41 +27,41 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 
 如需寻找特定页面上的Element，应使用[UniPage对象的getElementById方法](../api/get-current-pages.md#getelementbyid)
 
-而获取当前页面对象的方法，则是`this.$page`，这个方式可以获取到dialogPage页面，那么通用的、在当前页面获取UniElement的方式是：`this.$page.getElementById`
+组合式 API 中可通过`getCurrentInstance()?.proxy?.$page`获取当前页面对象，这个方式可以获取到dialogPage页面。那么通用的、在当前页面获取UniElement的方式是：`getCurrentInstance()?.proxy?.$page.getElementById`
 
-另一种与页面绑定的获取元素的方式是`this.$refs`获取的组件对象再进一步as为element。[详见](../tutorial/idref.md#ref方式)
+另一种与页面绑定的获取元素的方式是定义与模板 ref 属性同名的 `ref` 变量。[详见](../tutorial/idref.md#ref方式)
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 | 
 
 
 `3.93+` 支持泛型，可通过 `uni.getElementById<ElementType>(id)` 获取指定类型的元素。对于组件有自带方法的情况，通过泛型指定具体的元素类型，就可以调用该类型组件的专用方法，比如unicloud-db组件。\
 具体的组件元素类型，可查阅`组件文档/组件类型`获取。
 
 ```html
-	<template>
-		<view>
-			<text id='text' ref='textRef'>test text</text>
-		</view>
-	</template>
-	<script>
-		export default {
-      onReady(){
-        uni.navigateTo({
-          url: '/pages/test/test'
-          success() {
-            // 通过 ref 获取指定页面的元素
-            const textRef = this.$refs['textRef']
-            // 通过 getElementById 获取指定页面的元素，此时当前页面为 test 页面，所以获取不到 #text 元素
-            const textNode = uni.getElementById('text')
-          }
-        })
-      }
-		}
-	</script>
+<template>
+	<view>
+		<text id='text' ref='textRef'>test text</text>
+	</view>
+</template>
+<script setup lang="uts">
+	const textRef = ref<UniTextElement | null>(null)
+
+	onReady(() => {
+		uni.navigateTo({
+			url: '/pages/test/test',
+			success() {
+				// 通过 ref 获取指定页面的元素
+				const textElement = textRef.value
+				// 通过 getElementById 获取指定页面的元素，此时当前页面为 test 页面，所以获取不到 #text 元素
+				const textNode = uni.getElementById('text')
+			}
+		})
+	})
+</script>
 ```
 
 ### 返回值 
@@ -189,7 +189,7 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

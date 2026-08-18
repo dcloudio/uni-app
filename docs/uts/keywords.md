@@ -329,7 +329,7 @@ await 操作符用于等待一个 [Promise](./buildin-object-api/promise.md) 兑
 
 > 4.11+ （iOS）
 在 iOS 平台上，HBuilderX 4.11 之前的版本，`uvue` 由于运行在 JS 环境中，可以正常使用 `Promise` `async` `await`, 但在 `uts 插件中` 不支持 `Promise`, 且对 `async` 和 `await` 的支持使用的是iOS 系统的异步函数，支持有限，且仅支持 iOS 13.0 及以上版本。参考文档：[iOS 异步函数](../plugin/uts-for-ios.md#async-method)
-从 HBuilderX 4.11 版本开始，iOS 平台 `uts 插件中` 支持了 Promise / async / await。可以在 uts 插件中正常使用相关功能。 注意从这个版本开始，iOS 平台上的 async / await 不再是 iOS 系统的 async / awiait，也不再有 iOS 13.0 的系统最低版本号限制。[iOS Promise](https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/promise.html)
+从 HBuilderX 4.11 版本开始，iOS 平台 `uts 插件中` 支持了 Promise / async / await。可以在 uts 插件中正常使用相关功能。 注意从这个版本开始，iOS 平台上的 async / await 不再是 iOS 系统的 async / await，也不再有 iOS 13.0 的系统最低版本号限制。[iOS Promise](https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/promise.html)
 
 ```ts
 async function test(): Promise<string> {

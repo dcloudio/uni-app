@@ -5,13 +5,13 @@
 font-weight 属性用于设置字体的粗细程度。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -69,7 +69,7 @@ font-weight: <font-weight-absolute>{1,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -104,7 +104,7 @@ font-weight: <font-weight-absolute>{1,2};
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 font-weight 测试</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -135,7 +135,7 @@ font-weight: <font-weight-absolute>{1,2};
           <input-data :defaultValue="data.fontWeight" title="font-weight 自定义值" type="text" @confirm="inputChangeFontWeight"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -171,7 +171,6 @@ font-weight: <font-weight-absolute>{1,2};
 		data.fontWeightActualFlat = textRefFlat.value?.style.getPropertyValue('font-weight') ?? ''
 	}
 
-	const ins = getCurrentInstance()
 
 	const changeFontWeight = (value: string) => {
 		data.fontWeight = value
@@ -180,7 +179,7 @@ font-weight: <font-weight-absolute>{1,2};
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
 			getPropertyValues()
-		}, ins)
+		})
 	}
 
 	const radioChangeFontWeight = (index: number) => {
@@ -239,7 +238,7 @@ font-weight: <font-weight-absolute>{1,2};
 
 #### App平台差异
 - app平台 font-weight 样式不支持继承
-- app-android平台，部分自定义字体不支持设置 font-weight
+- app-android平台，部分自定义字体（如：字体中只包含单一字重文件、不是支持字重轴的可变字体）不支持设置font-weight具体数值
 
 
 ### 参见

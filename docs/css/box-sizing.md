@@ -5,13 +5,13 @@
 CSS 中的 box-sizing 属性定义了 user agent 应该如何计算一个元素的总宽度和总高度。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -58,7 +58,7 @@ box-sizing: content-box | border-box;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
   <view style="flex-grow: 1;">
@@ -141,7 +141,7 @@ box-sizing: content-box | border-box;
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 box-sizing </text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       <text class="help-text">设置 width: 60px, padding: 10px, border: 10px</text>
     </view>
 
@@ -219,12 +219,12 @@ box-sizing: content-box | border-box;
       <text>native-view组件: box-sizing: content-box 和 border-box</text>
       <text class="help-text">设置 width: 100px, padding: 10px, border: 10px</text>
       <view class="demo-box">
-        <native-view class="scroll-view-box-sizing" style="box-sizing: content-box;"></native-view>
-        <native-view class="scroll-view-box-sizing" style="box-sizing: border-box;"></native-view>
+        <test-native-view class="native-view-box-sizing" style="box-sizing: content-box;"></test-native-view>
+        <test-native-view class="native-view-box-sizing" style="box-sizing: border-box;"></test-native-view>
       </view>
     </view>
   </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -263,7 +263,6 @@ box-sizing: content-box | border-box;
     data.boxSizingActualImageFlat = imageRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBoxSizing = (value: string) => {
     data.boxSizing = value
     viewRef.value?.style.setProperty('box-sizing', value)
@@ -275,7 +274,7 @@ box-sizing: content-box | border-box;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBoxSizing = (index: number) => {
@@ -414,6 +413,14 @@ box-sizing: content-box | border-box;
     padding: 10px;
     border: 10px solid cyan;
     background-color: #4ecdc4;
+  }
+
+  .native-view-box-sizing {
+    width: 100px;
+    height: 80px;
+    padding: 10px;
+    border: 10px solid cyan;
+    background-color: cyan;
   }
 
 </style>

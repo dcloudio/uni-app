@@ -1,12 +1,13 @@
 * [概述](README.md)
+* [蒸汽模式](app-vapor.md)
 * [项目](project.md)
 * [页面](page.md)
-* [蒸汽模式](app-vapor.md)
 * 教程
-  * [与js开发的差别](tutorial/codegap.md)
-  * [request联网教程](tutorial/request.md)
-  * [复杂列表开发指南](tutorial/stickynestlist.md)
-  * [全局变量与状态管理](tutorial/store.md)
+	* Android VDOM模式注意
+		* [强类型下与js开发的差别](tutorial/codegap.md)
+		* [request联网教程](tutorial/request.md)
+	* [复杂列表开发指南](tutorial/stickynestlist.md)
+	* [全局变量与状态管理](tutorial/store.md)
   * [几种组件标记的概念澄清](tutorial/idref.md)
 * web平台专题指南
   * [概述](web/README.md)
@@ -33,6 +34,8 @@
 				* [uni-verify](native/modules/android/uni-verify.md)
 				* [uni-getLocation](native/modules/android/uni-getLocation.md)
 				* [uni-map-tencent](native/modules/android/uni-map-tencent.md)
+				* [uni-oauth](native/modules/android/uni-oauth.md)
+				* [uni-share](native/modules/android/uni-share.md)
 			* [uts插件配置](native/use/androiduts.md)
 			* [启动与通信](native/use/androidcomm.md)
 			* [原生联调](native/debug/android.md)
@@ -50,7 +53,6 @@
     * [Android 16KB页面大小适配](tutorial/android-16kb.md)
 		* [iOS Appstore上架](https://uniapp.dcloud.net.cn/tutorial/ios-app-store.html)
     * [iOS平台隐私清单](https://uniapp.dcloud.net.cn/tutorial/app-ios-privacyinfo.html)
-  * [iOS逻辑层使用注意](native/iosReadme.md)
 * 鸿蒙next平台专题指南
   * [概述](app-harmony/README.md)
   * [应用合规指南](tutorial/compliance.md)
@@ -63,25 +65,8 @@
     * [原生联调](native/debug/harmony.md)
 * 小程序平台专题指南
   * [概述](mp/README.md)
-- 安全专题
-  - [综述](tutorial/safe.md)
-  - 客户端安全
-    - [app js/nvue 文件原生混淆加密](tutorial/app-sec-confusion.md)
-  - [Android 安全漏洞问题解决方案](tutorial/app-sec-android.md)
-    - [App 安全检测 API](tutorial/app-sec-api.md)
-  - [App 加固](tutorial/app-security.md)
-  - [App 隐私合规检测](tutorial/app-privacy-detect.md)
-  - 网络安全
-    - [云端一体安全网络](https://doc.dcloud.net.cn/uniCloud/secure-network.html)
-    - [传统服务器与 uniCloud 安全通信](https://doc.dcloud.net.cn/uniCloud/uni-cloud-s2s.html)
-  - 身份安全
-    - [App 一键登录](https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html)
-    - [App 实人认证](https://doc.dcloud.net.cn/uniCloud/frv/intro.html)
-    - [图形验证码](https://doc.dcloud.net.cn/uniCloud/uni-captcha.html)
-  - 服务器安全
-    - [uniCloud ip 防刷](https://doc.dcloud.net.cn/uniCloud/ip-filter.html)
-    - [内容安全审查](https://ext.dcloud.net.cn/plugin?id=5460)
-  - [等保测评服务](tutorial/djbh.md)
+  * [AI 开发模式接入指南](mp/mp-weixin-ai-develop.md)
+  * [独立分包](mp/independent-subpackage.md)
 * 运行和调试
   * [Android/iOS运行](tutorial/run-app.md)
   * [uts插件Android运行配置](tutorial/uts-development-android.md)
@@ -92,15 +77,36 @@
   * [uts插件iOS Debug](tutorial/uni-uts-debug-ios.md)
   * [鸿蒙运行](tutorial/harmony/runbuild.md)
   * [鸿蒙Debug断点](tutorial/uni-uts-debug-harmony.md)
-  * [AI纠错](tutorial/bug_repair.md)
 * [性能优化](performance.md)
 * [uni错误规范](err-spec.md)
 * [暗黑模式](api/theme-change.md)
 * [宽屏适配](adapt.md)
 * [国际化](i18n.md)
 * [源码和示例](sample.md)
-* [benchmark](vapor-benchmark.md)
-* [跨平台框架及原生对比](select.md)
+* [兼容性表格导读](tutorial/compatibility.md)
+* benchmark
+  * [Android性能评测基准报告](benchmark/vapor-benchmark-android.md)
+  * [iOS性能评测基准报告](benchmark/vapor-benchmark-ios.md)
+  * [鸿蒙性能评测基准报告](benchmark/vapor-benchmark-harmony.md)
+* [uni-app 升级 uni-app x](./uniapptox.md)
+* 安全专题
+  * [综述](tutorial/safe.md)
+  * 客户端安全
+    * [Android 安全漏洞问题解决方案](tutorial/app-sec-android.md)
+    * [App 安全检测 API](tutorial/app-sec-api.md)
+    * [App 加固](tutorial/app-security.md)
+    * [App 隐私合规检测](tutorial/app-privacy-detect.md)
+  * 网络安全
+    * [云端一体安全网络](https://doc.dcloud.net.cn/uniCloud/secure-network.html)
+    * [传统服务器与 uniCloud 安全通信](https://doc.dcloud.net.cn/uniCloud/uni-cloud-s2s.html)
+  * 身份安全
+    * [App 一键登录](https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html)
+    * [App 实人认证](https://doc.dcloud.net.cn/uniCloud/frv/intro.html)
+    * [图形验证码](https://doc.dcloud.net.cn/uniCloud/uni-captcha.html)
+  * 服务器安全
+    * [uniCloud ip 防刷](https://doc.dcloud.net.cn/uniCloud/ip-filter.html)
+    * [内容安全审查](https://ext.dcloud.net.cn/plugin?id=5460)
+  * [等保测评服务](tutorial/djbh.md)
 * 运营服务
   * uni多商店上传
     * [简介](uni-publish/intro.md)

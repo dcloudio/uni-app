@@ -5,13 +5,13 @@
 CSS 属性 border-right 是属性border-right-color, border-right-style, 和border-right-width的三者的缩写。这些属性都是在描述一个元素的右边的边框border。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -50,7 +50,7 @@ border-right: <line-width> || <line-style> || <color>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -59,6 +59,14 @@ border-right: <line-width> || <line-style> || <color>;
         <view class="demo-box">
           <view class="common" style="border-right: 5px solid blue;"></view>
           <view class="common" style="border-right: 5px solid blue;" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-right: 6rpx dashed #00f8</text>
+        <view class="demo-box">
+          <view class="common" style="border-right: 6rpx dashed #00f8;"></view>
+          <view class="common" style="border-right: 6rpx dashed #00f8;" flatten></view>
         </view>
       </view>
 
@@ -74,7 +82,7 @@ border-right: <line-width> || <line-style> || <color>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-right </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -147,15 +155,8 @@ border-right: <line-width> || <line-style> || <color>;
         <input-data :defaultValue="data.borderRight" title="border-right 自定义值" type="text" @confirm="inputChangeBorderRight"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-right: 5px solid blue 和 10px dashed cyan</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-right: 5px solid blue;"></native-view>
-          <native-view class="common" style="border-right: 10px dashed cyan;"></native-view>
-        </view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -168,7 +169,8 @@ border-right: <line-width> || <line-style> || <color>;
     { value: 1, name: 'none' },
     { value: 2, name: '1px solid cyan' },
     { value: 3, name: '2px dashed blue' },
-    { value: 4, name: '3px dotted green' }
+    { value: 4, name: '3px dotted green' },
+    { value: 5, name: '8rpx dashed #00f8' }
   ]
 
   const data = reactive({
@@ -196,7 +198,6 @@ border-right: <line-width> || <line-style> || <color>;
     data.borderRightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-right') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorderRight = (value: string) => {
     data.borderRight = value
     viewRef.value?.style.setProperty('border-right', value)
@@ -208,7 +209,7 @@ border-right: <line-width> || <line-style> || <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorderRight = (index: number) => {

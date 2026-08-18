@@ -9,26 +9,26 @@
  嵌入页面的滚动选择器
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| name | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| value | number[\] |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件值，作为键值对的一部分与表单(form组件)一同提交 |
-| indicator-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指示器样式 |
-| indicator-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 设置选择器中间选中框的类名 |
-| mask-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 设置蒙层的样式 |
-| mask-top-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 遮罩顶部类 |
-| mask-bottom-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 遮罩底部类 |
-| mask-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 遮罩类 |
-| @change | (event: [UniPickerViewChangeEvent](#unipickerviewchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当滚动选择，value 改变时触发 change 事件，event.detail = {value: value}；value为数组，表示 picker-view 内的 picker-view-column 当前选择的是第几项（下标从 0<br/>		开始） |
-| @pickstart | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>当滚动选择开始时候触发事件 |
-| @pickend | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>当滚动选择结束时候触发事件 |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| name | string | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| value | number\[\] | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件值，作为键值对的一部分与表单(form组件)一同提交 |
+| indicator-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指示器样式 |
+| indicator-class | string([string.ClassString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 设置选择器中间选中框的类名 |
+| mask-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 设置蒙层的样式 |
+| mask-top-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 遮罩顶部类 |
+| mask-bottom-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 遮罩底部类 |
+| mask-class | string([string.ClassString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 遮罩类 |
+| @change | (event: [UniPickerViewChangeEvent](#unipickerviewchangeevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当滚动选择，value 改变时触发 change 事件，event.detail = {value: value}；value为数组，表示 picker-view 内的 picker-view-column 当前选择的是第几项（下标从 0<br/>		开始） |
+| @pickstart | eventhandle | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>当滚动选择开始时候触发事件 |
+| @pickend | eventhandle | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>当滚动选择结束时候触发事件 |
 
 
 ### 事件
@@ -45,9 +45,9 @@ UniPickerViewChangeEvent -- Extends --> UniCustomEvent&ltUniPickerViewChangeEven
 
 
 ###### UniPickerViewChangeEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | Array&lt;number&gt; | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| value | Array&lt;number&gt; | 是 |
 
 
 
@@ -57,6 +57,10 @@ UniPickerViewChangeEvent -- Extends --> UniCustomEvent&ltUniPickerViewChangeEven
 | 子组件 | 兼容性 |
 | :- | :- |
 | [picker-view-column](picker-view-column.md) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+
+### 支付宝小程序注意事项
+
+支付宝小程序动态设置 `picker-view` 指示器样式时可能出现偏移，建议使用静态配置，避免运行时修改指示器样式。
 
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/picker-view/picker-view.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/picker-view/picker-view.uvue) 
@@ -315,16 +319,16 @@ UniPickerViewChangeEvent -- Extends --> UniCustomEvent&ltUniPickerViewChangeEven
 仅可放置于 picker-view 中，其子节点未继承 picker-view 的选中框的高度，需要自己设置高度并居中
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| value | number |   | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 |   |
+| 名称 | 类型 | 兼容性 |
+| :- | :- |  :-: |
+| value | number | HarmonyOS(Vapor): 5.0 |
 
 
 

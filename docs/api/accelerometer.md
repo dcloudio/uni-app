@@ -2,25 +2,25 @@
 
 监听加速度数据变化事件
 
-### onAccelerometerChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
+### onAccelerometerChange 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 是 |  |   | 加速度数据事件的监听函数 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 是 | 加速度数据事件的监听函数 | 
 
 ### OnAccelerometerChangeCallbackResult 的属性值 @onaccelerometerchangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | X 轴加速度数据 |
-| y | number | 是 |  |   | Y 轴加速度数据 |
-| z | number | 是 |  |   | Z 轴加速度数据 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | X 轴加速度数据 |
+| y | number | 是 | Y 轴加速度数据 |
+| z | number | 是 | Z 轴加速度数据 |
 
 
 
@@ -51,25 +51,25 @@
 
 监听加速度数据变化事件
 
-### offAccelerometerChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
+### offAccelerometerChange 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 否 |  |   | onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 否 | onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
 
 ### OnAccelerometerChangeCallbackResult 的属性值 @onaccelerometerchangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | X 轴加速度数据 |
-| y | number | 是 |  |   | Y 轴加速度数据 |
-| z | number | 是 |  |   | Z 轴加速度数据 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | X 轴加速度数据 |
+| y | number | 是 | Y 轴加速度数据 |
+| z | number | 是 | Z 轴加速度数据 |
 
 
 
@@ -97,26 +97,26 @@
 开始监听加速度数据变化事件
 
 
-### startAccelerometer 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
+### startAccelerometer 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **StartAccelerometerOptions** | 否 |  |   | 开始监听加速度数据的参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **StartAccelerometerOptions** | 否 | 开始监听加速度数据的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| interval | string | 否 |  |   | 监听加速度数据回调函数的执行频率 |
-| success | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values)) => void | 否 |  |   | 监听加速度数据调用成功的回调函数 |
-| fail | (res: [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 |  |   | 监听加速度数据调用失败的回调函数 |
-| complete | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values) \| [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 |  |   | 监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| interval | string | 否 | 监听加速度数据回调函数的执行频率 |
+| success | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values)) => void | 否 | 监听加速度数据调用成功的回调函数 |
+| fail | (res: [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 监听加速度数据调用失败的回调函数 |
+| complete | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values) \| [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### interval 的属性描述
 
@@ -128,75 +128,75 @@
 
 #### StartAccelerometerSuccess 的属性值 @startaccelerometersuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StartAccelerometerFail 的属性值 @startaccelerometerfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 501 |  |
-| 502 |  |
-| 503 |  |
-| 601 |  |
-| 602 |  |
-| 603 |  |
-| 604 |  |
-| 701 |  |
-| 702 |  |
-| 703 |  |
-| 801 |  |
-| 802 |  |
-| 803 |  |
-| 804 |  |
-| 901 |  |
+| 合法值 |
+| :- |
+| 501 |
+| 502 |
+| 503 |
+| 601 |
+| 602 |
+| 603 |
+| 604 |
+| 701 |
+| 702 |
+| 703 |
+| 801 |
+| 802 |
+| 803 |
+| 804 |
+| 901 |
 
 #### StartAccelerometerSuccess 的属性值 @startaccelerometersuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StartAccelerometerFail 的属性值 @startaccelerometerfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 501 |  |
-| 502 |  |
-| 503 |  |
-| 601 |  |
-| 602 |  |
-| 603 |  |
-| 604 |  |
-| 701 |  |
-| 702 |  |
-| 703 |  |
-| 801 |  |
-| 802 |  |
-| 803 |  |
-| 804 |  |
-| 901 |  |
+| 合法值 |
+| :- |
+| 501 |
+| 502 |
+| 503 |
+| 601 |
+| 602 |
+| 603 |
+| 604 |
+| 701 |
+| 702 |
+| 703 |
+| 801 |
+| 802 |
+| 803 |
+| 804 |
+| 901 |
 
 
 
@@ -228,97 +228,97 @@
 停止监听加速度数据变化事件
 
 
-### stopAccelerometer 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
+### stopAccelerometer 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **StopAccelerometerOptions** | 否 |  |   | 停止监听加速度数据的参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **StopAccelerometerOptions** | 否 | 停止监听加速度数据的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values)) => void | 否 |  |   | 停止监听加速度数据调用成功的回调函数 |
-| fail | (res: [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 |  |   | 停止监听加速度数据调用失败的回调函数 |
-| complete | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values) \| [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 |  |   | 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| success | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values)) => void | 否 | 停止监听加速度数据调用成功的回调函数 |
+| fail | (res: [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 停止监听加速度数据调用失败的回调函数 |
+| complete | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values) \| [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StopAccelerometerSuccess 的属性值 @stopaccelerometersuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StopAccelerometerFail 的属性值 @stopaccelerometerfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 501 |  |
-| 502 |  |
-| 503 |  |
-| 601 |  |
-| 602 |  |
-| 603 |  |
-| 604 |  |
-| 701 |  |
-| 702 |  |
-| 703 |  |
-| 801 |  |
-| 802 |  |
-| 803 |  |
-| 804 |  |
-| 901 |  |
+| 合法值 |
+| :- |
+| 501 |
+| 502 |
+| 503 |
+| 601 |
+| 602 |
+| 603 |
+| 604 |
+| 701 |
+| 702 |
+| 703 |
+| 801 |
+| 802 |
+| 803 |
+| 804 |
+| 901 |
 
 #### StopAccelerometerSuccess 的属性值 @stopaccelerometersuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StopAccelerometerFail 的属性值 @stopaccelerometerfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 501 |  |
-| 502 |  |
-| 503 |  |
-| 601 |  |
-| 602 |  |
-| 603 |  |
-| 604 |  |
-| 701 |  |
-| 702 |  |
-| 703 |  |
-| 801 |  |
-| 802 |  |
-| 803 |  |
-| 804 |  |
-| 901 |  |
+| 合法值 |
+| :- |
+| 501 |
+| 502 |
+| 503 |
+| 601 |
+| 602 |
+| 603 |
+| 604 |
+| 701 |
+| 702 |
+| 703 |
+| 801 |
+| 802 |
+| 803 |
+| 804 |
+| 901 |
 
 
 
@@ -506,10 +506,10 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ### tips
-- 和微信小程序平台不同，app 平台调用 `uni.onAccelerometerChange` 时不会自动启动加速器，需要调用 `uni.startAccelerometer()` 才能正常启动加速器。这个问题会在后续版本处理，app 平台在 `5.09+` 版本中将和微信小程序行为保持一致。
+- 5.08版本，app和微信小程序平台有个差异，app 平台调用 `uni.onAccelerometerChange` 时不会自动启动加速器，需要调用 `uni.startAccelerometer()` 才能正常启动加速器。`5.09+` 版本app 平台拉齐了和微信小程序的表现。

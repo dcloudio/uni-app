@@ -5,13 +5,13 @@
 border-width 属性用于设置元素边框的宽度。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -60,7 +60,7 @@ border-width: <line-width>{1,4};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
@@ -196,9 +196,14 @@ border-width: <line-width>{1,4};
             border-radius: 50px; /* 变成正圆 */
             box-sizing: border-box; /* 确保边框计算在宽度内 */"></view>
         </view>
-        <view flatten style="width: 100px;height: 50px; /* 高度是宽度的一半 */
-              overflow: hidden; /* 隐藏下半部分 */
-              position: relative;">
+        <view
+            <!-- #ifndef APP-ANDROID -->
+            flatten
+            <!-- #endif -->
+            style="width: 100px;height: 50px; /* 高度是宽度的一半 */
+            overflow: hidden; /* 隐藏下半部分 */
+            position: relative;"
+          >
           <view flatten style="width: 100px;height: 100px; /* 完整的圆高度 */
             border: 10px solid blue; /* 环的厚度和颜色 */
             border-radius: 50px; /* 变成正圆 */
@@ -264,7 +269,7 @@ border-width: <line-width>{1,4};
 
     <!-- 动态设置 -->
     <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-width </text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
     </view>
 
     <!-- 普通版本 -->
@@ -344,14 +349,7 @@ border-width: <line-width>{1,4};
         @confirm="inputChangeBorderWidth"></input-data>
     </view>
 
-    <view class="uni-common-mb">
-      <text>native-view组件: border-width: 5px 和 10px</text>
-      <view class="demo-box">
-        <native-view class="common" style="border-width: 5px; border-style: solid;"></native-view>
-        <native-view class="common" style="border-width: 10px; border-style: solid;"></native-view>
-      </view>
-    </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -394,7 +392,6 @@ border-width: <line-width>{1,4};
     data.borderWidthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-width') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorderWidth = (value : string) => {
     data.borderWidth = value
     viewRef.value?.style.setProperty('border-width', value)
@@ -406,7 +403,7 @@ border-width: <line-width>{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorderWidth = (index : number) => {

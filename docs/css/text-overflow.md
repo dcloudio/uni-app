@@ -5,13 +5,13 @@
 text-overflow CSS 属性用于确定如何提示用户存在隐藏的溢出内容。其形式可以是裁剪、显示一个省略号（“…”）或显示一个自定义字符串。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -56,7 +56,7 @@ text-overflow: [ clip | ellipsis | <string> ]{1,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -100,15 +100,19 @@ text-overflow: [ clip | ellipsis | <string> ]{1,2};
           <text style="color:#dbd9d9;">拍平版本</text>
           <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 300px;" flatten>{{data.multiLineText}}</text>
         </view>
-         <!-- #ifdef !VUE3-VAPOR && (APP-IOS || APP-ANDROID || APP-HARMONY) -->
         <view class="margin-bottom-10">
-          <text class="font-weight-bold">lines:1 text-overflow:ellipsis</text>
-          <text class="font-size-20" style="text-overflow: ellipsis; lines: 1;">{{data.multiLineText}}</text>
+          <text class="font-weight-bold">2行 text-overflow:ellipsis</text>
+          <!-- #ifdef !VUE3-VAPOR && APP -->
+          <text class="font-size-20" style="text-overflow: ellipsis; lines: 2;width: 100px;">{{data.multiLineText}}</text>
+          <!-- #endif -->
+          <!-- #ifdef VUE3-VAPOR || WEB || MP -->
+          <text class="font-size-20" style="text-overflow: ellipsis; width: 100px;" :max-lines="2">{{data.multiLineText}}</text>
+          <!-- #endif -->
         </view>
-        <!-- #endif -->
+
 
         <view class="margin-bottom-10 uni-common-mt">
-          <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-overflow </text>
+          <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
         </view>
 
         <view class="common-box">
@@ -140,7 +144,7 @@ text-overflow: [ clip | ellipsis | <string> ]{1,2};
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -170,7 +174,6 @@ text-overflow: [ clip | ellipsis | <string> ]{1,2};
     data.textOverflowActualFlat = textRefFlat.value?.style.getPropertyValue('text-overflow') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeTextOverflow = (value: string) => {
     data.textOverflow = value
@@ -179,7 +182,7 @@ text-overflow: [ clip | ellipsis | <string> ]{1,2};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeTextOverflow = (index: number) => {

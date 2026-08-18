@@ -13,7 +13,7 @@
 实时音视频录制
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.81 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -22,26 +22,26 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| url | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 推流地址，支持 rtmp 协议 |
-| mode | string | "SD" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | SD（标清）, HD（高清）, FHD（超清）, RTC（实时通话） |
-| autopush | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 自动推流 |
-| muted | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 是否静音 |
-| enable-camera | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 开启摄像头 |
-| auto-focus | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 自动获取焦点 |
-| orientation | string | "vertical" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 画面方向，可选值有 vertical，horizontal |
-| beauty | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 美颜，取值范围 0-9（iOS取值范围为1） ，0 表示关闭 |
-| aspect | string | "3:4" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 视频宽高比例 |
-| min-bitrate | number | 200 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 最小码率 |
-| max-bitrate | number | 1000 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 最大码率 |
-| waiting-image | string |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 进入后台时推流的等待画面 |
-| waiting-image-md5 | string |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 等待画面资源的MD5值 |
-| background-mute | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 进入后台时是否静音 |
-| enableVideoCustomRender | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>自定义渲染，允许开发者自行处理所采集的视频帧，详见[LivePusherContext](../api/create-live-pusher-context.md) |
+| url | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 推流地址，支持 rtmp 协议 |
+| mode | string | "SD" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | SD（标清）, HD（高清）, FHD（超清）, RTC（实时通话） |
+| autopush | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 自动推流 |
+| muted | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 是否静音 |
+| enable-camera | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 开启摄像头 |
+| auto-focus | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 自动获取焦点 |
+| orientation | string | "vertical" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 画面方向，可选值有 vertical，horizontal |
+| beauty | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 美颜，取值范围 0-9（iOS取值范围为1） ，0 表示关闭 |
+| aspect | string | "3:4" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 视频宽高比例 |
+| min-bitrate | number | 200 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 最小码率 |
+| max-bitrate | number | 1000 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 最大码率 |
+| waiting-image | string |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 进入后台时推流的等待画面 |
+| waiting-image-md5 | string |   | Web: x; 微信小程序: x; Android: x; iOS: x | 等待画面资源的MD5值 |
+| background-mute | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 进入后台时是否静音 |
+| enableVideoCustomRender | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>自定义渲染，允许开发者自行处理所采集的视频帧，详见[LivePusherContext]((LivePusherContext)) |
 | whiteness | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(number)*<br/>美白，取值范围 0-9（iOS取值范围为1） ，0 表示关闭 |
 | audio-quality | string | "high" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(string)*<br/>高音质(48KHz)或低音质(16KHz)，值为`high`, `low` |
 | waiting-image-hash | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>等待画面资源的MD5值 |
 | zoom | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>调整焦距 |
-| zoom | number | 1 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 调整焦距 |
+| zoom | number | 1 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 调整焦距 |
 | device-position | string | "front" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(string)*<br/>前置或后置，值为`front`, `back` |
 | mirror | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>设置推流画面是否镜像，产生的效果在 live-player 反应到 |
 | remote-mirror | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(boolean)*<br/>同 mirror 属性，后续 mirror 将废弃 |
@@ -55,7 +55,7 @@
 | video-height | number |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(number)*<br/>上推的视频流的分辨率高度 |
 | beauty-style | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>设置美颜类型 |
 | filter | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>设置色彩滤镜 |
-| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"] |
+| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"]） |
 | voice-changer-type | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>0：关闭变声；1：熊孩子；2：萝莉；3：大叔；4：重金属；6：外国人；7：困兽；8：死肥仔；9：强电流；10：重机械；11：空灵 |
 | custom-effect | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否启动自定义特效，设定后不能更改 |
 | skin-whiteness | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>自定义特效美白效果，取值 0~1。需要开启 `custom-effect` |
@@ -63,11 +63,9 @@
 | face-thinness | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>自定义特效瘦脸效果，取值 0~1。需要开启 `custom-effect` |
 | eye-bigness | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>自定义特效大眼效果，取值 0~1。需要开启 `custom-effect` |
 | fps | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>帧率，有效值为 1~30 |
-| @statechange | (event: [UniLivePusherStatechangeEvent](#unilivepusherstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 播放状态变化事件，event.detail = {code, message} |
-| @statechange | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 播放状态变化事件，detail = {code} |
+| @statechange | (event: [UniLivePusherStatechangeEvent](#unilivepusherstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 播放状态变化事件，event.detail = {code, message} |
 | @error | (event: [UniLivePusherErrorEvent](#unilivepushererrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 错误事件，event.detail = {errCode, errMsg} |
-| @netstatus | (event: [UniLivePusherNetstatusEvent](#unilivepushernetstatusevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 网络状态通知，event.detail = {videoBitrate, audioBitrate, videoFPS, videoGOP, netSpeed, videoWidth, videoHeight} |
-| @netstatus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 网络状态通知，detail = {info} |
+| @netstatus | (event: [UniLivePusherNetstatusEvent](#unilivepushernetstatusevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 网络状态通知，event.detail = {videoBitrate, audioBitrate, videoFPS, videoGOP, netSpeed, videoWidth, videoHeight} |
 | @bgmstart | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音开始播放时触发 |
 | @bgmprogress | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音进度变化时触发，detail = {progress, duration} |
 | @bgmcomplete | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音播放完成时触发 |
@@ -88,10 +86,10 @@
 
 #### orientation 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| vertical | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
-| horizontal | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| vertical | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
+| horizontal | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 
 #### local-mirror 的属性描述
 
@@ -159,22 +157,22 @@
 推流状态变化事件
 
 ##### UniLivePusherStatechangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniLivePusherStatechangeEventDetail** | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   |  |
-| cancelable | boolean | 是 |  |   |  |
-| type | string | 是 |  |   |  |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| timeStamp | Long | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniLivePusherStatechangeEventDetail** | 是 |
+| bubbles | boolean | 是 |
+| cancelable | boolean | 是 |
+| type | string | 是 |
+| target | [UniElement](/api/dom/unielement.md) | 否 |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |
+| timeStamp | Long | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| code | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态码 |
-| message | string | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| code | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态码 |
+| message | string | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态信息 |
 
 ##### code 的属性描述
 
@@ -186,34 +184,34 @@
 
 
 ##### UniLivePusherStatechangeEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  |   |  |
-| preventDefault | () => void | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| stopPropagation | () => void | 是 |
+| preventDefault | () => void | 是 |
 
 #### UniLivePusherErrorEvent
 错误事件
 
 ##### UniLivePusherErrorEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniLivePusherError** | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   |  |
-| cancelable | boolean | 是 |  |   |  |
-| type | string | 是 |  |   |  |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| timeStamp | Long | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniLivePusherError** | 是 |
+| bubbles | boolean | 是 |
+| cancelable | boolean | 是 |
+| type | string | 是 |
+| target | [UniElement](/api/dom/unielement.md) | 否 |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |
+| timeStamp | Long | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 ##### errCode 的属性描述
 
@@ -239,43 +237,43 @@
 
 
 ##### UniLivePusherErrorEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  |   |  |
-| preventDefault | () => void | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| stopPropagation | () => void | 是 |
+| preventDefault | () => void | 是 |
 
 #### UniLivePusherNetstatusEvent
 推流网络状态事件
 
 ##### UniLivePusherNetstatusEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniLivePusherNetstatusEventDetail** | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   |  |
-| cancelable | boolean | 是 |  |   |  |
-| type | string | 是 |  |   |  |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| timeStamp | Long | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniLivePusherNetstatusEventDetail** | 是 |
+| bubbles | boolean | 是 |
+| cancelable | boolean | 是 |
+| type | string | 是 |
+| target | [UniElement](/api/dom/unielement.md) | 否 |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |
+| timeStamp | Long | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| videoBitrate | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频编/码器输出的比特率，单位 kbps |
-| audioBitrate | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前音频编/码器输出的比特率，单位 kbps |
-| videoFPS | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频帧率 |
-| videoGOP | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频 GOP,也就是每两个关键帧(I帧)间隔时长，单位 s |
-| netSpeed | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前的发送/接收速度 |
-| videoWidth | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 视频画面的宽度 |
-| videoHeight | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 视频画面的高度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| videoBitrate | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频编/码器输出的比特率，单位 kbps |
+| audioBitrate | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前音频编/码器输出的比特率，单位 kbps |
+| videoFPS | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频帧率 |
+| videoGOP | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频 GOP,也就是每两个关键帧(I帧)间隔时长，单位 s |
+| netSpeed | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前的发送/接收速度 |
+| videoWidth | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 视频画面的宽度 |
+| videoHeight | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 视频画面的高度 |
 
 
 ##### UniLivePusherNetstatusEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  |   |  |
-| preventDefault | () => void | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| stopPropagation | () => void | 是 |
+| preventDefault | () => void | 是 |
 
 
 <!-- UTSCOMJSON.live-pusher.component_type -->
@@ -298,7 +296,7 @@
 ```uvue
 <template>
   <view class="uni-flex-item">
-    <live-pusher v-if="isPermissionGranted && isUrlSet" id="live-pusher" class="live-pusher" :url="url" :beauty="beauty"
+    <live-pusher v-if="isUrlSet" id="live-pusher" class="live-pusher" :url="url" :beauty="beauty"
       :whiteness="whiteness" :remote-mirror="remoteMirror" :local-mirror="localMirror" :device-position="devicePosition"
       :mode="mode" :auto-focus="autoFocus" :muted="muted" :orientation="orientation" :enable-camera="enableCamera"
       :enable-mic="enableMic" :audio-quality="audioQuality" :min-bitrate="minBitrate" :max-bitrate="maxBitrate"
@@ -395,7 +393,6 @@
   const videoWidth = ref(0);
   const videoHeight = ref(0);
   const fps = ref(0);
-  const isPermissionGranted = ref(false);
   const isUrlSet = ref(true);
   const initState = ref(true);
   const connectedState = ref(false);
@@ -404,17 +401,6 @@
 
   onReady(() => {
     instance.value = getCurrentInstance()?.proxy;
-    // #ifdef APP-ANDROID
-    const permissions = ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"];
-    UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissions, (allRight : boolean, grantedList : string[]) => {
-      if (allRight) {
-        isPermissionGranted.value = true;
-      }
-    }, (doNotAskAgain : boolean, grantedList : string[]) => { });
-    // #endif
-    // #ifndef APP-ANDROID
-    isPermissionGranted.value = true;
-    // #endif
   });
 
   const statechange = (e : UniLivePusherStatechangeEvent) => {
@@ -697,10 +683,6 @@
     height: 40px;
     background: #FFF;
     padding: 8px 13px;
-  }
-
-  .margin-10 {
-    margin: 10px;
   }
 </style>
 

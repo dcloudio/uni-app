@@ -5,13 +5,13 @@
 width 属性用于设置元素的宽度。width 默认设置内容区域的宽度，但如果 box-sizing 属性被设置为 border-box，就转而设置边框区域的宽度。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -60,7 +60,7 @@ width: <viewport-length>{1,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
   <view style="flex-grow: 1;">
@@ -103,7 +103,7 @@ width: <viewport-length>{1,2};
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 width </text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
     </view>
 
     <!-- 普通版本 -->
@@ -223,15 +223,19 @@ width: <viewport-length>{1,2};
         <native-view ref="emptyNativeViewRef" style="background-color: cyan;"></native-view>
       </view>
     </view>
-    <!-- #endif -->
 
     <view class="uni-common-mb">
       <text>native-view组件: width: 100px 和 width: 200px</text>
-      <view class="demo-box">
-        <native-view style="width: 100px; height: 100px; background-color: cyan;"></native-view>
-        <native-view style="width: 200px; height: 100px; background-color: cyan;"></native-view>
+      <view class="demo-box-native">
+        <view class="container-native">
+          <native-view style="width: 100px; height: 100px;"></native-view>
+        </view>
+        <view class="container-native">
+          <native-view style="width: 200px; height: 100px;"></native-view>
+        </view>
       </view>
     </view>
+    <!-- #endif -->
 
     <!-- #ifdef WEB -->
     <view class="container">
@@ -240,7 +244,7 @@ width: <viewport-length>{1,2};
     </view>
     <!-- #endif -->
   </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -333,7 +337,6 @@ width: <viewport-length>{1,2};
     data.widthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('width') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeWidth = (value: string) => {
     data.width = value
@@ -346,7 +349,7 @@ width: <viewport-length>{1,2};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeWidth = (index: number) => {
@@ -404,6 +407,17 @@ width: <viewport-length>{1,2};
     font-size: 12px;
     line-height: 100px;
     text-align: center;
+  }
+
+  .demo-box-native {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .container-native {
+    background-color: cyan;
   }
 
   /* #ifdef WEB */

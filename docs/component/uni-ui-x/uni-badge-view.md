@@ -48,19 +48,19 @@ badge组件的badge-class和badge-style属性，直接作用在角标view上，�
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.08 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.08 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| text | string | "" |   | badge 的内容。为 "0" 时不显示 badge；为空字符串时显示圆点；有文字则显示文字 |
-| badgeStyle | string | "" |   | badge 的内联样式，用于覆盖内置 style |
-| badgeClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | badge 的样式类，用于覆盖内置 class |
-| alwaysWrapWithContent | boolean | false |   | 当有 slot 内容时，即使 text 为 "0" 也保留包裹层（badge-wrap），避免多个子 slot 时 flex 方向错乱 |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| text | string | "" | badge 的内容。为 "0" 时不显示 badge；为空字符串时显示圆点；有文字则显示文字 |
+| badgeStyle | string | "" | badge 的内联样式，用于覆盖内置 style |
+| badgeClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | badge 的样式类，用于覆盖内置 class |
+| alwaysWrapWithContent | boolean | false | 当有 slot 内容时，即使 text 为 "0" 也保留包裹层（badge-wrap），避免多个子 slot 时 flex 方向错乱 |
 
 <!-- UTSCOMJSON.uni-badge-view.fileFormates -->
 
@@ -111,14 +111,14 @@ badge组件的badge-class和badge-style属性，直接作用在角标view上，�
 				<view style="width: 20px;height: 16px;background-color: green;"></view>
 			</uni-badge-view>
 		</view>
-
+		
 		<!-- 不包裹内容 -->
 		<view style="margin-bottom: 10px;">
 			<text class="label" style="margin-bottom: 10px;">不包裹内容的圆点：</text>
 			<uni-badge-view text="">
 			</uni-badge-view>
 		</view>
-
+		
 		<view style="margin-bottom: 10px;">
 			<text class="label" style="margin-bottom: 10px;">不包裹内容的文字：</text>
 			<uni-badge-view text="1" badge-style="align-self:flex-start;"/> <!-- 在flex方向为竖时，默认横向拉伸，需要设flex-start避免 -->
@@ -143,7 +143,7 @@ badge组件的badge-class和badge-style属性，直接作用在角标view上，�
 				</view>
 			</uni-badge-view>
 		</view>
-
+		
 		<uni-badge-view text="99+" >
 			<view style="width: 10px; height: 20px; background-color: green;"></view>
 		</uni-badge-view>
@@ -206,7 +206,7 @@ badge组件的badge-class和badge-style属性，直接作用在角标view上，�
 				</view>
 			</uni-badge-view>
 		</view>
-
+		
 		<view style="margin-bottom: 10px;">
 			<text class="label" style="margin-bottom: 10px;">按钮中badge文字：</text>
 			<!-- <button size="mini">按钮<uni-badge-view text="9"/></button> -->
@@ -214,7 +214,7 @@ badge组件的badge-class和badge-style属性，直接作用在角标view上，�
 			<view	style="width: 150px; height: 30px; background-color: lightgray; border-radius: 4px; align-items: center; justify-content: center;flex-direction: row;">
 				<text>按钮&nbsp;</text>
 				<uni-badge-view text="9"/>
-				<!--
+				<!-- 
 				 上面加style="padding-top: 5px;" 会导致vue报错：
 				 [Vue warn]: Extraneous non-props attributes (style) were passed to component but could not be automatically inherited because component renders fragment or text root nodes. \n at <UniBadgeView>\nat <View>\nat <View>\nat <View>\nat <Badge>\nat <AsyncComponentWrapper>\nat <PageBody>\nat <Page>\nat <Anonymous>\nat <Layout>\nat <App>
 				 app不报错。app也应该报错。
@@ -222,7 +222,7 @@ badge组件的badge-class和badge-style属性，直接作用在角标view上，�
 				 -->
 			</view>
 		</view>
-
+		
 		<view style="margin-bottom: 10px;">
 			<text class="label" style="margin-bottom: 10px;">按钮中badge红点：</text>
 			<view	style="width: 150px; height: 30px; background-color: lightgray; border-radius: 4px; align-items: center; justify-content: center;flex-direction: row;">
@@ -277,15 +277,14 @@ defineExpose({
 		width: 200px;
 		height: 24px;
 		padding-left: 2px;
-		color: #333333;
-		/* color: var(--text-color, #333333); */
+		color: var(--text-color, #333333);
 	}
 
 	.custom-badge-text {
 		background-color: #28a745;
 		color: black;
 	}
-
+	
 	.custom-badge-dot {
 		background-color: #28a745;
 		width: 16px;

@@ -9,7 +9,7 @@
 地图由三方专业地图厂商提供SDK。在App和Web中，使用三方SDK需在[manifest](../collocation/manifest.md)中进行配置。
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.31 | 4.31 | 4.61 |
@@ -19,8 +19,10 @@
 |图商		|Web|Android|iOS	|harmony|
 |:-:		|:-:|:-:		|:-:	|:-:		|
 |腾讯		|√	|4.31+	|4.31+|4.61+	|
-|高德		|√	|x			|x		|x			|
+|高德		|√	|√			|√		|x			|
 |Google	|√	|x			|x		|x			|
+
+App平台的高德地图版本，请在插件市场单独安装，需要自定义基座运行：[官方高德地图插件](https://ext.dcloud.net.cn/plugin?id=25947)
 
 除了内置支持的图商，还可以在插件市场寻找更多地图解决方案：
 1. [插件市场的三方地图插件](https://ext.dcloud.net.cn/search?q=%E5%9C%B0%E5%9B%BE&orderBy=Relevance&uni-appx=1)
@@ -36,13 +38,13 @@
 | min-scale | number | 3 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 最小缩放级别 |
 | max-scale | number | 20 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 最大缩放级别 |
 | layer-style | string | "1" | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 个性化地图（如实现地图暗黑模式） |
-| markers | Marker[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标记点 |
-| covers | array |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 即将移除，请使用 markers |
-| polyline | Polyline[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 路线 |
-| polygons | Polygon[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 多边形 |
-| circles | Circle[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 圆 |
-| controls | Control[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 控件 |
-| include-points | LocationObject[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 缩放视野以包含所有给定的坐标点 |
+| markers | Marker\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标记点 |
+| covers | array |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 即将移除，请使用 markers |
+| polyline | Polyline\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 路线 |
+| polygons | Polygon\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 多边形 |
+| circles | Circle\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 圆 |
+| controls | Control\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 控件 |
+| include-points | LocationObject\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 缩放视野以包含所有给定的坐标点 |
 | show-location | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 显示带有方向的当前定位点 |
 | enable-3D | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否显示3D楼块 |
 | show-compass | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否显示指南针 |
@@ -61,10 +63,10 @@
 | show-scale | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>显示比例尺，工具暂不支持 |
 | enable-auto-max-overlooking | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>开启最大俯视角，俯视角度从 45 度拓展到 75 度 |
 | setting | object |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(object)*<br/>配置项 |
-| enable3-d | boolean | false | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否显示3D楼块 |
+| enable3-d | boolean | false | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否显示3D楼块 |
 | enable-indoor-map | boolean | false |   |   |
 | @markertap | (event: [UniMapMarkerTapEvent](#unimapmarkertapevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 点击标记点时触发 |
-| @callouttap | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 点击标记点对应的气泡时触发 |
+| @callouttap | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 点击标记点对应的气泡时触发 |
 | @controltap | (event: [UniMapControlTapEvent](#unimapcontroltapevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 点击控件时触发 |
 | @regionchange | (event: [UniMapRegionChangeEvent](#unimapregionchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 视野发生变化时触发 |
 | @updated | (event: [UniMapUpdatedEvent](#unimapupdatedevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 在地图渲染更新完成时触发 |
@@ -76,7 +78,7 @@
 | @abilitysuccess | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>地图能力生效时触发，`e.detail = {ability, errCode, errMsg}` |
 | @abilityfail | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>地图能力失败时触发，`e.detail = {ability, errCode, errMsg}` |
 | @authsuccess | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>地图鉴权结果成功时触发，`e.detail = {errCode, errMsg}` |
-| @interpolatepoint | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>MapContext.moveAlong 插值动画时触发。`e.detail = {markerId, longitude, latitude, animationStatus: "interpolating" |
+| @interpolatepoint | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>MapContext.moveAlong 插值动画时触发。`e.detail = {markerId, longitude, latitude, animationStatus: "interpolating"}` |
 | @error | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>组件错误时触发，例如创建或鉴权失败，`e.detail = {longitude, latitude}` |
 
 
@@ -91,15 +93,15 @@ UniMapMarkerTapEvent -- Extends --> UniPointerEvent
   click UniPointerEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unipointerevent"
 ```
 ##### UniMapMarkerTapEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapMarkerTapEventDetail** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniMapMarkerTapEventDetail** | 否 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| markerId | number | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| markerId | number | 否 |
 
 
 #### UniMapControlTapEvent
@@ -115,9 +117,9 @@ UniMapControlTapEvent -- Extends --> UniCustomEvent&ltUniMapControlTapEventDetai
 
 
 ###### UniMapControlTapEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| controlId | number | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| controlId | number | 否 |
 
 
 #### UniMapRegionChangeEvent
@@ -130,9 +132,9 @@ UniMapRegionChangeEvent -- Extends --> UniCustomEvent&lt&gt
   click UniCustomEvent&lt&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
 ```
 ##### UniMapRegionChangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| causedBy | string | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| causedBy | string | 否 |
 
 
 #### UniMapUpdatedEvent
@@ -154,16 +156,16 @@ UniMapTapEvent -- Extends --> UniPointerEvent
   click UniPointerEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unipointerevent"
 ```
 ##### UniMapTapEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapTapEventDetail** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniMapTapEventDetail** | 否 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 |  |   |  |
-| longitude | number | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| latitude | number | 否 |
+| longitude | number | 否 |
 
 
 #### UniMapAnchorPointTapEvent
@@ -176,16 +178,16 @@ UniMapAnchorPointTapEvent -- Extends --> UniPointerEvent
   click UniPointerEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unipointerevent"
 ```
 ##### UniMapAnchorPointTapEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapAnchorPointTapEventDetail** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniMapAnchorPointTapEventDetail** | 否 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 |  |   |  |
-| longitude | number | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| latitude | number | 否 |
+| longitude | number | 否 |
 
 
 #### UniMapPoiTapEvent
@@ -198,17 +200,17 @@ UniMapPoiTapEvent -- Extends --> UniPointerEvent
   click UniPointerEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unipointerevent"
 ```
 ##### UniMapPoiTapEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapPoiTapEventDetail** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniMapPoiTapEventDetail** | 否 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 |  |   |  |
-| longitude | number | 否 |  |   |  |
-| name | string | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| latitude | number | 否 |
+| longitude | number | 否 |
+| name | string | 否 |
 
 
 

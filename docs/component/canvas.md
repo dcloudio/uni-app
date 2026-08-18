@@ -15,7 +15,7 @@
  画布
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.21 | 4.41 | 4.25 | 4.25 | 4.61 |
@@ -39,8 +39,8 @@
 | type | string |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(string)*<br/>指定 canvas 类型，支持 2d (2.9.0) 和 webgl (2.7.0) |
 | canvas-id | string |   | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: x | *(string)*<br/>canvas 组件的唯一标识符，若指定了 type 则无需再指定该属性 |
 | disable-scroll | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当在 canvas 中移动时且有绑定手势事件时，禁止屏幕滚动以及下拉刷新 |
-| width | number | 0 | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 |   |
-| height | number | 0 | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 |   |
+| width | number | 0 | HarmonyOS(Vapor): 5.0 |   |
+| height | number | 0 | HarmonyOS(Vapor): 5.0 |   |
 | @touchstart | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸动作开始 |
 | @touchmove | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸后移动 |
 | @touchend | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸动作结束 |
@@ -227,7 +227,7 @@ canvas相关的API较多，参考如下：
 
       <view class="text-group">
         <text>测试 createCanvasContextAsync 结果：</text>
-        <view @click="testCreateContextAsync" id="createCanvasContextAsync">{{testCanvasCtx}}</view>
+        <text @click="testCreateContextAsync" id="createCanvasContextAsync">{{testCanvasCtx}}</text>
       </view>
       <canvas-child ref="canvasChildRef"></canvas-child>
     </scroll-view>
@@ -486,7 +486,9 @@ canvas相关的API较多，参考如下：
 
 canvas有很多应用场景，插件市场有很多封装好的插件：
 
-* 图表需求：[echart](https://ext.dcloud.net.cn/search?q=chart&orderBy=Relevance&uni-appx=1)、[F2](https://ext.dcloud.net.cn/search?q=f2&orderBy=Relevance&uni-appx=1)
+* 图表需求：
+	在蒸汽模式下，npm上的echart for小程序等图表组件可以直接使用。\
+	插件市场也有uts版本：[echart](https://ext.dcloud.net.cn/search?q=chart&orderBy=Relevance&uni-appx=1)、[F2](https://ext.dcloud.net.cn/search?q=f2&orderBy=Relevance&uni-appx=1)
 * 二维码展示：[见插件市场](https://ext.dcloud.net.cn/search?q=%E4%BA%8C%E7%BB%B4%E7%A0%81&uni-appx=1)
 * 手写签名：[见插件市场](https://ext.dcloud.net.cn/search?q=%E7%AD%BE%E5%90%8D&orderBy=Relevance&uni-appx=1)
 * 抽奖转盘：[见插件市场](https://ext.dcloud.net.cn/search?q=%E8%BD%AC%E7%9B%98&orderBy=Relevance&uni-appx=1)

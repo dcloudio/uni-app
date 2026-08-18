@@ -5,13 +5,13 @@
 align-items 属性将所有直接子元素上的 align-self 值设置为一个组。在 Flex 弹性布局中控制子元素在交叉轴方向的对齐方式，相当于为所有子元素设置了默认的 align-self 值。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -68,7 +68,7 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -175,7 +175,7 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 align-items </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -213,7 +213,7 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
           <enum-data :items="alignItemsEnum" title="align-items 枚举值" @change="radioChangeAlignItems" :compact="true"></enum-data>
           <input-data :defaultValue="data.alignItems" title="align-items 自定义值" type="text" @confirm="inputChangeAlignItems"></input-data>
       </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -242,7 +242,6 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
     data.alignItemsActualFlat = viewRefFlat.value?.style.getPropertyValue('align-items') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeAlignItems = (value: string) => {
     data.alignItems = value
     viewRef.value?.style.setProperty('align-items', value)
@@ -250,7 +249,7 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeAlignItems = (index: number) => {

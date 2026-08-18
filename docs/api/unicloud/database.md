@@ -2,7 +2,7 @@
 
 uniCloud.databaseForJQL()是客户端访问云数据库的API，即[clientDB](https://doc.dcloud.net.cn/uniCloud/clientdb.html)。
 
-非蒸汽模式安卓平台有如下限制：
+VDOM模式安卓平台有如下限制：
 
 - 暂不支持泛型传递
 - 暂不支持getOne
@@ -16,7 +16,7 @@ uniCloud.databaseForJQL()是客户端访问云数据库的API，即[clientDB](ht
 
 获取数据库操作实例
 
-### databaseForJQL 兼容性 
+### databaseForJQL 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.91，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -32,10 +32,10 @@ uniCloud.databaseForJQL()是客户端访问云数据库的API，即[clientDB](ht
 
 #### Database 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| command | any | 是 |  |   |  |
-| Geo | any | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| command | any | 是 |
+| Geo | any | 是 |
 #### Database 的方法 @database-values 
 
 #### collection(...args: Array\<any>): Collection; @collection
@@ -44,9 +44,9 @@ collection
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| args | Array&lt;any&gt; | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| args | Array&lt;any&gt; | 否 | 
 
 
 ##### 返回值 
@@ -63,9 +63,9 @@ where
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| condition | any | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| condition | any | 是 | 
 
 
 ###### 返回值 
@@ -82,9 +82,9 @@ get
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arg | any | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| arg | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
 
 ###### 返回值 
@@ -95,11 +95,11 @@ get
 
 #### Promise\<UniCloudDBGetResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | Array&lt;any&gt; | 是 |  |   | 添加的记录的id列表 |
-| count | number | 否 |  |   | 匹配到的数据总量 |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | Array&lt;any&gt; | 是 | 添加的记录的id列表 |
+| count | number | 否 | 匹配到的数据总量 |
+| requestId | string | 否 | 请求id | 
 
 ###### count(): Promise\<UniCloudDBCountResult>; @count
 count
@@ -115,10 +115,10 @@ count
 
 #### Promise\<UniCloudDBCountResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| total | number | 是 |  |   | 添加的记录的id列表 |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| total | number | 是 | 添加的记录的id列表 |
+| requestId | string | 否 | 请求id | 
 
 ###### update(data: UTSJSONObject): Promise\<UniCloudDBUpdateResult>; @update
 update
@@ -126,9 +126,9 @@ update
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| data | any | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
 
 ###### 返回值 
@@ -139,10 +139,10 @@ update
 
 #### Promise\<UniCloudDBUpdateResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| updated | number | 是 |  |   | 更新成功的记录数 |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| updated | number | 是 | 更新成功的记录数 |
+| requestId | string | 否 | 请求id | 
 
 ###### remove(): Promise\<UniCloudDBRemoveResult>; @remove
 remove
@@ -158,10 +158,10 @@ remove
 
 #### Promise\<UniCloudDBRemoveResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| deleted | number | 是 |  |   | 删除成功的记录数 |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| deleted | number | 是 | 删除成功的记录数 |
+| requestId | string | 否 | 请求id | 
 
 ###### getTemp(): UTSJSONObject; @gettemp
 getTemp
@@ -182,9 +182,9 @@ where
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| condition | any | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| condition | any | 是 | 
 
 
 ###### 返回值 
@@ -200,9 +200,9 @@ doc
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| docId | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| docId | string | 是 | 
 
 
 ###### 返回值 
@@ -218,9 +218,9 @@ field
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| filed | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| filed | string | 是 | 
 
 
 ###### 返回值 
@@ -237,9 +237,9 @@ get
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arg | any | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| arg | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
 
 ###### 返回值 
@@ -250,11 +250,11 @@ get
 
 #### Promise\<UniCloudDBGetResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | Array&lt;any&gt; | 是 |  |   | 添加的记录的id列表 |
-| count | number | 否 |  |   | 匹配到的数据总量 |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | Array&lt;any&gt; | 是 | 添加的记录的id列表 |
+| count | number | 否 | 匹配到的数据总量 |
+| requestId | string | 否 | 请求id | 
 
 ###### count(): Promise\<UniCloudDBCountResult>; @count
 count
@@ -270,10 +270,10 @@ count
 
 #### Promise\<UniCloudDBCountResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| total | number | 是 |  |   | 添加的记录的id列表 |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| total | number | 是 | 添加的记录的id列表 |
+| requestId | string | 否 | 请求id | 
 
 ###### getTemp(): UTSJSONObject; @gettemp
 getTemp
@@ -294,9 +294,9 @@ field
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| filed | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| filed | string | 是 | 
 
 
 ###### 返回值 
@@ -312,9 +312,9 @@ skip
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| num | number | 是 | 
 
 
 ###### 返回值 
@@ -330,9 +330,9 @@ limit
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| num | number | 是 | 
 
 
 ###### 返回值 
@@ -348,9 +348,9 @@ orderBy
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| order | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| order | string | 是 | 
 
 
 ###### 返回值 
@@ -366,9 +366,9 @@ groupBy
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| field | string | 是 | 
 
 
 ###### 返回值 
@@ -384,9 +384,9 @@ groupField
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| field | string | 是 | 
 
 
 ###### 返回值 
@@ -402,9 +402,9 @@ distinct
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| field | string | 是 | 
 
 
 ###### 返回值 
@@ -420,9 +420,9 @@ geoNear
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | any | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | any | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
 
 ###### 返回值 
@@ -434,18 +434,18 @@ geoNear
 
 ###### UniCloudDBGetResult 的属性值 @uniclouddbgetresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | Array&lt;any&gt; | 是 |  |   | 添加的记录的id列表 |
-| count | number | 否 |  |   | 匹配到的数据总量 |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | Array&lt;any&gt; | 是 | 添加的记录的id列表 |
+| count | number | 否 | 匹配到的数据总量 |
+| requestId | string | 否 | 请求id |
 
 ###### UniCloudDBCountResult 的属性值 @uniclouddbcountresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| total | number | 是 |  |   | 添加的记录的id列表 |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| total | number | 是 | 添加的记录的id列表 |
+| requestId | string | 否 | 请求id |
  
 
 ###### skip(num: number): UniCloudDBQuery; @skip
@@ -454,9 +454,9 @@ skip
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| num | number | 是 | 
 
 
 ###### 返回值 
@@ -472,9 +472,9 @@ limit
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| num | number | 是 | 
 
 
 ###### 返回值 
@@ -490,9 +490,9 @@ orderBy
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| order | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| order | string | 是 | 
 
 
 ###### 返回值 
@@ -508,9 +508,9 @@ groupBy
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| field | string | 是 | 
 
 
 ###### 返回值 
@@ -526,9 +526,9 @@ groupField
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| field | string | 是 | 
 
 
 ###### 返回值 
@@ -544,9 +544,9 @@ distinct
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| field | string | 是 | 
 
 
 ###### 返回值 
@@ -562,9 +562,9 @@ geoNear
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | any | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | any | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
 
 ###### 返回值 
@@ -576,32 +576,32 @@ geoNear
 
 ###### UniCloudDBGetResult 的属性值 @uniclouddbgetresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | Array&lt;any&gt; | 是 |  |   | 添加的记录的id列表 |
-| count | number | 否 |  |   | 匹配到的数据总量 |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | Array&lt;any&gt; | 是 | 添加的记录的id列表 |
+| count | number | 否 | 匹配到的数据总量 |
+| requestId | string | 否 | 请求id |
 
 ###### UniCloudDBCountResult 的属性值 @uniclouddbcountresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| total | number | 是 |  |   | 添加的记录的id列表 |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| total | number | 是 | 添加的记录的id列表 |
+| requestId | string | 否 | 请求id |
 
 ###### UniCloudDBUpdateResult 的属性值 @uniclouddbupdateresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| updated | number | 是 |  |   | 更新成功的记录数 |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| updated | number | 是 | 更新成功的记录数 |
+| requestId | string | 否 | 请求id |
 
 ###### UniCloudDBRemoveResult 的属性值 @uniclouddbremoveresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| deleted | number | 是 |  |   | 删除成功的记录数 |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| deleted | number | 是 | 删除成功的记录数 |
+| requestId | string | 否 | 请求id |
  
 
 ###### doc(docId: string): UniCloudDBFilter; @doc
@@ -610,9 +610,9 @@ doc
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| docId | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| docId | string | 是 | 
 
 
 ###### 返回值 
@@ -641,9 +641,9 @@ foreignKey
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| foreignKey | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| foreignKey | string | 是 | 
 
 
 ###### 返回值 
@@ -659,9 +659,9 @@ add
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| data | any | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
 
 ###### 返回值 
@@ -672,10 +672,10 @@ add
 
 #### Promise\<UniCloudDBAddResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  |   | 添加的记录的id |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| id | string | 是 | 添加的记录的id |
+| requestId | string | 否 | 请求id | 
 
 ###### get(arg?: UTSJSONObject \| null): Promise\<UniCloudDBGetResult>; @get
 get
@@ -683,9 +683,9 @@ get
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arg | any | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| arg | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
 
 ###### 返回值 
@@ -696,11 +696,11 @@ get
 
 #### Promise\<UniCloudDBGetResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | Array&lt;any&gt; | 是 |  |   | 添加的记录的id列表 |
-| count | number | 否 |  |   | 匹配到的数据总量 |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | Array&lt;any&gt; | 是 | 添加的记录的id列表 |
+| count | number | 否 | 匹配到的数据总量 |
+| requestId | string | 否 | 请求id | 
 
 ###### count(): Promise\<UniCloudDBCountResult>; @count
 count
@@ -716,10 +716,10 @@ count
 
 #### Promise\<UniCloudDBCountResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| total | number | 是 |  |   | 添加的记录的id列表 |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| total | number | 是 | 添加的记录的id列表 |
+| requestId | string | 否 | 请求id | 
 
 ###### getTemp(): UTSJSONObject; @gettemp
 getTemp
@@ -740,9 +740,9 @@ field
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| filed | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| filed | string | 是 | 
 
 
 ###### 返回值 
@@ -758,9 +758,9 @@ skip
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| num | number | 是 | 
 
 
 ###### 返回值 
@@ -776,9 +776,9 @@ limit
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| num | number | 是 | 
 
 
 ###### 返回值 
@@ -794,9 +794,9 @@ orderBy
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| order | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| order | string | 是 | 
 
 
 ###### 返回值 
@@ -808,40 +808,40 @@ orderBy
 
 ###### UniCloudDBAddResult 的属性值 @uniclouddbaddresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  |   | 添加的记录的id |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| id | string | 是 | 添加的记录的id |
+| requestId | string | 否 | 请求id |
 
 ###### UniCloudDBGetResult 的属性值 @uniclouddbgetresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | Array&lt;any&gt; | 是 |  |   | 添加的记录的id列表 |
-| count | number | 否 |  |   | 匹配到的数据总量 |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | Array&lt;any&gt; | 是 | 添加的记录的id列表 |
+| count | number | 否 | 匹配到的数据总量 |
+| requestId | string | 否 | 请求id |
 
 ###### UniCloudDBCountResult 的属性值 @uniclouddbcountresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| total | number | 是 |  |   | 添加的记录的id列表 |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| total | number | 是 | 添加的记录的id列表 |
+| requestId | string | 否 | 请求id |
  
 
 #### multiSend(...args: Array\<UTSJSONObject>): Promise\<UniCloudDBMultiSendResult>; @multisend
 multiSend
 合并查询请求
-##### multiSend 兼容性 
+##### multiSend 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.16 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| args | Array&lt;any&gt; | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| args | Array&lt;any&gt; | 否 | 
 
 
 ##### 返回值 
@@ -852,18 +852,18 @@ multiSend
 
 #### Promise\<UniCloudDBMultiSendResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| dataList | Array&lt;**UniCloudDBMultiSendResultItem**&gt; | 是 |  |   | 数据列表 |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| dataList | Array&lt;**UniCloudDBMultiSendResultItem**&gt; | 是 | 数据列表 |
+| requestId | string | 否 | 请求id | 
 
 ##### dataList 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | any | 是 |  |   | 错误码，可能为字符串或数字，数字0表示成功 |
-| errMsg | string | 是 |  |   | 错误信息 |
-| data | Array&lt;any&gt; | 否 |  |   | 数据 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | any | 是 | 错误码，可能为字符串或数字，数字0表示成功 |
+| errMsg | string | 是 | 错误信息 |
+| data | Array&lt;any&gt; | 否 | 数据 |
 
 ##### Collection 的方法 @collection-values 
 
@@ -873,9 +873,9 @@ where
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| condition | any | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| condition | any | 是 | 
 
 
 ###### 返回值 
@@ -891,9 +891,9 @@ doc
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| docId | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| docId | string | 是 | 
 
 
 ###### 返回值 
@@ -922,9 +922,9 @@ foreignKey
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| foreignKey | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| foreignKey | string | 是 | 
 
 
 ###### 返回值 
@@ -940,9 +940,9 @@ add
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| data | any | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
 
 ###### 返回值 
@@ -953,10 +953,10 @@ add
 
 #### Promise\<UniCloudDBAddResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  |   | 添加的记录的id |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| id | string | 是 | 添加的记录的id |
+| requestId | string | 否 | 请求id | 
 
 ##### get(arg?: UTSJSONObject \| null): Promise\<UniCloudDBGetResult>; @get
 get
@@ -964,9 +964,9 @@ get
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arg | any | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| arg | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
 
 ###### 返回值 
@@ -977,11 +977,11 @@ get
 
 #### Promise\<UniCloudDBGetResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | Array&lt;any&gt; | 是 |  |   | 添加的记录的id列表 |
-| count | number | 否 |  |   | 匹配到的数据总量 |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | Array&lt;any&gt; | 是 | 添加的记录的id列表 |
+| count | number | 否 | 匹配到的数据总量 |
+| requestId | string | 否 | 请求id | 
 
 ##### count(): Promise\<UniCloudDBCountResult>; @count
 count
@@ -997,10 +997,10 @@ count
 
 #### Promise\<UniCloudDBCountResult> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| total | number | 是 |  |   | 添加的记录的id列表 |
-| requestId | string | 否 |  |   | 请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| total | number | 是 | 添加的记录的id列表 |
+| requestId | string | 否 | 请求id | 
 
 ##### getTemp(): UTSJSONObject; @gettemp
 getTemp
@@ -1021,9 +1021,9 @@ field
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| filed | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| filed | string | 是 | 
 
 
 ###### 返回值 
@@ -1039,9 +1039,9 @@ skip
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| num | number | 是 | 
 
 
 ###### 返回值 
@@ -1057,9 +1057,9 @@ limit
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| num | number | 是 | 
 
 
 ###### 返回值 
@@ -1075,9 +1075,9 @@ orderBy
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| order | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| order | string | 是 | 
 
 
 ###### 返回值 
@@ -1089,40 +1089,40 @@ orderBy
 
 ###### UniCloudDBAddResult 的属性值 @uniclouddbaddresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  |   | 添加的记录的id |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| id | string | 是 | 添加的记录的id |
+| requestId | string | 否 | 请求id |
 
 ###### UniCloudDBGetResult 的属性值 @uniclouddbgetresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | Array&lt;any&gt; | 是 |  |   | 添加的记录的id列表 |
-| count | number | 否 |  |   | 匹配到的数据总量 |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | Array&lt;any&gt; | 是 | 添加的记录的id列表 |
+| count | number | 否 | 匹配到的数据总量 |
+| requestId | string | 否 | 请求id |
 
 ###### UniCloudDBCountResult 的属性值 @uniclouddbcountresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| total | number | 是 |  |   | 添加的记录的id列表 |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| total | number | 是 | 添加的记录的id列表 |
+| requestId | string | 否 | 请求id |
 
 ##### UniCloudDBMultiSendResult 的属性值 @uniclouddbmultisendresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| dataList | Array&lt;**UniCloudDBMultiSendResultItem**&gt; | 是 |  |   | 数据列表 |
-| requestId | string | 否 |  |   | 请求id |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| dataList | Array&lt;**UniCloudDBMultiSendResultItem**&gt; | 是 | 数据列表 |
+| requestId | string | 否 | 请求id |
 
 #### dataList 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | any | 是 |  |   | 错误码，可能为字符串或数字，数字0表示成功 |
-| errMsg | string | 是 |  |   | 错误信息 |
-| data | Array&lt;any&gt; | 否 |  |   | 数据 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | any | 是 | 错误码，可能为字符串或数字，数字0表示成功 |
+| errMsg | string | 是 | 错误信息 |
+| data | Array&lt;any&gt; | 否 | 数据 |
  
 
 

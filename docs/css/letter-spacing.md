@@ -5,13 +5,13 @@
 letter-spacing 属性用于设置文本字符的间距表现，正值会导致字符分布得更远，而负值会使字符更接近。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -59,7 +59,7 @@ letter-spacing: normal | <length>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <template v-if="autoTestData.begin">
@@ -79,16 +79,18 @@ letter-spacing: normal | <length>;
         <text class="common">letter-spacing</text>
         <text class="common" style="letter-spacing: 5px;">letter-spacing: 5px</text>
         <text class="common" style="letter-spacing: -2px;">letter-spacing: -2px</text>
+        <text class="common" style="letter-spacing: 4rpx;">letter-spacing: 4rpx</text>
       </view>
       <text class="uni-title-text">拍平</text>
       <view class="box">
         <text class="common">letter-spacing</text>
         <text class="common" style="letter-spacing: 5px;" flatten>letter-spacing: 5px</text>
         <text class="common" style="letter-spacing: -2px;" flatten>letter-spacing: -2px</text>
+        <text class="common" style="letter-spacing: 4rpx;" flatten>letter-spacing: 4rpx</text>
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 letter-spacing 测试</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -119,7 +121,7 @@ letter-spacing: normal | <length>;
           <input-data :defaultValue="data.letterSpacing" title="letter-spacing 自定义值" type="text" @confirm="inputChangeLetterSpacing"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -134,7 +136,9 @@ letter-spacing: normal | <length>;
 		{ value: 3, name: '-2px' },
 		{ value: 4, name: '2px' },
 		{ value: 5, name: '5px' },
-		{ value: 6, name: '10px' }
+		{ value: 6, name: '10px' },
+		{ value: 7, name: '2rpx' },
+		{ value: 8, name: '10rpx' }
 	]
 
 	const data = reactive({
@@ -151,7 +155,6 @@ letter-spacing: normal | <length>;
 		data.letterSpacingActualFlat = textRefFlat.value?.style.getPropertyValue('letter-spacing') ?? ''
 	}
 
-	const ins = getCurrentInstance()
 
 	const changeLetterSpacing = (value: string) => {
 		data.letterSpacing = value
@@ -160,7 +163,7 @@ letter-spacing: normal | <length>;
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
 			getPropertyValues()
-		}, ins)
+		})
 	}
 
 	const radioChangeLetterSpacing = (index: number) => {

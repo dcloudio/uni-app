@@ -5,13 +5,13 @@
 CSS **left**属性定义了定位元素的左外边距边界与其包含块左边界之间的偏移，非定位元素设置此属性无效。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -54,159 +54,159 @@ left: <length> | <percentage> | auto;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
-  <view style="flex-grow: 1;">
-    <view class="uni-common-mb">
-      <text class="uni-title-text">left: 20px (距离左边 20px) - 右侧：拍平</text>
-      <view class="test-container">
-        <view class="example-box">
-          <view class="common" style="left: 20px;"></view>
-        </view>
-        <view class="example-box">
-          <view class="common" style="left: 20px;" flatten></view>
-        </view>
-      </view>
-    </view>
-
-    <view class="uni-common-mb">
-      <text class="uni-title-text">left: 20rpx (距离左边 20rpx) - 右侧：拍平</text>
-      <view class="test-container">
-        <view class="example-box">
-          <view class="common" style="left: 20rpx;"></view>
-        </view>
-        <view class="example-box">
-          <view class="common" style="left: 20rpx;" flatten></view>
-        </view>
-      </view>
-    </view>
-
-    <view class="uni-common-mb">
-      <text class="uni-title-text">left: 20% (距离左边 20%) - 右侧：拍平</text>
-      <view class="test-container">
-        <view class="example-box">
-          <view class="common" style="left: 20%;"></view>
-        </view>
-        <view class="example-box">
-          <view class="common" style="left: 20%;" flatten></view>
-        </view>
-      </view>
-    </view>
-
-    <view class="uni-common-mb">
-      <text class="uni-title-text">left: auto (自动，默认左边对齐) - 右侧：拍平</text>
-      <view class="test-container">
-        <view class="example-box">
-          <view class="common" style="left: auto;"></view>
-        </view>
-        <view class="example-box">
-          <view class="common" style="left: auto;" flatten></view>
-        </view>
-      </view>
-    </view>
-
-    <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
-
-    <view class="uni-common-mb">
-      <text class="uni-subtitle-text">left: 10% 和 left: 30px</text>
-      <view class="test-container">
-        <view class="example-box">
-          <scroll-view class="common" style="left: 10%;"></scroll-view>
-        </view>
-        <view class="example-box">
-          <scroll-view class="common" style="left: 30px;"></scroll-view>
-        </view>
-      </view>
-    </view>
-
-    <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 left </text>
-    </view>
-
-    <!-- 普通版本 -->
-    <view class="test-container">
-      <view class="test-item">
-        <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{data.left}}</text>
-        <text class="uni-info">获取值: {{data.leftActual}}</text>
-        <view class="test-box">
-          <view ref="viewRef" class="common test-view" :style="{ left: data.left }">
-            <text class="common-text">view</text>
+    <view style="flex-grow: 1;">
+      <view class="uni-common-mb">
+        <text class="uni-title-text">left: 20px (距离左边 20px) - 右侧：拍平</text>
+        <view class="test-container">
+          <view class="example-box">
+            <view class="common" style="left: 20px;"></view>
+          </view>
+          <view class="example-box">
+            <view class="common" style="left: 20px;" flatten></view>
           </view>
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{data.left}}</text>
-        <text class="uni-info">获取值: {{data.leftActualText}}</text>
-        <view class="test-box">
-          <text ref="textRef" class="common common-text test-text" :style="{ left: data.left }">text</text>
-        </view>
-      </view>
-
-      <view class="test-item">
-        <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{data.left}}</text>
-        <text class="uni-info">获取值: {{data.leftActualImage}}</text>
-        <view class="test-box">
-          <image ref="imageRef" class="common test-image" :style="{ left: data.left }" src="/static/test-image/logo.png"></image>
-        </view>
-      </view>
-    </view>
-
-    <!-- 拍平版本 -->
-    <view class="test-container">
-      <view class="test-item">
-        <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{data.left}}</text>
-        <text class="uni-info">获取值: {{data.leftActualFlat}}</text>
-        <view class="test-box">
-          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ left: data.left }" flatten>
-            <text class="common-text">view</text>
+      <view class="uni-common-mb">
+        <text class="uni-title-text">left: 20rpx (距离左边 20rpx) - 右侧：拍平</text>
+        <view class="test-container">
+          <view class="example-box">
+            <view class="common" style="left: 20rpx;"></view>
+          </view>
+          <view class="example-box">
+            <view class="common" style="left: 20rpx;" flatten></view>
           </view>
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{data.left}}</text>
-        <text class="uni-info">获取值: {{data.leftActualTextFlat}}</text>
-        <view class="test-box">
-          <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ left: data.left }" flatten>text</text>
+      <view class="uni-common-mb">
+        <text class="uni-title-text">left: 20% (距离左边 20%) - 右侧：拍平</text>
+        <view class="test-container">
+          <view class="example-box">
+            <view class="common" style="left: 20%;"></view>
+          </view>
+          <view class="example-box">
+            <view class="common" style="left: 20%;" flatten></view>
+          </view>
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{data.left}}</text>
-        <text class="uni-info">获取值: {{data.leftActualImageFlat}}</text>
-        <view class="test-box">
-          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ left: data.left }" flatten src="/static/test-image/logo.png"></image>
+      <view class="uni-common-mb">
+        <text class="uni-title-text">left: auto (自动，默认左边对齐) - 右侧：拍平</text>
+        <view class="test-container">
+          <view class="example-box">
+            <view class="common" style="left: auto;"></view>
+          </view>
+          <view class="example-box">
+            <view class="common" style="left: auto;" flatten></view>
+          </view>
         </view>
       </view>
-    </view>
 
-    <view class="uni-common-mt uni-common-mb">
-      <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-      <enum-data :items="leftEnum" title="left 枚举值" @change="radioChangeLeft" :compact="true"></enum-data>
-      <input-data :defaultValue="data.left" title="left 自定义值" type="text" @confirm="inputChangeLeft"></input-data>
-    </view>
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
 
-    <view class="uni-common-mb">
-      <text>native-view组件: left: 10% 和 left: 30px</text>
+      <view class="uni-common-mb">
+        <text class="uni-subtitle-text">left: 10% 和 left: 30px</text>
+        <view class="test-container">
+          <view class="example-box">
+            <scroll-view class="common" style="left: 10%;"></scroll-view>
+          </view>
+          <view class="example-box">
+            <scroll-view class="common" style="left: 30px;"></scroll-view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+      </view>
+
+      <!-- 普通版本 -->
       <view class="test-container">
-        <view class="example-box">
-          <native-view class="common" style="left: 10%;"></native-view>
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.left}}</text>
+          <text class="uni-info">获取值: {{data.leftActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common test-view" :style="{ left: data.left }">
+              <text class="common-text">view</text>
+            </view>
+          </view>
         </view>
-        <view class="example-box">
-          <native-view class="common" style="left: 30px;"></native-view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.left}}</text>
+          <text class="uni-info">获取值: {{data.leftActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common common-text test-text" :style="{ left: data.left }">text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.left}}</text>
+          <text class="uni-info">获取值: {{data.leftActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common test-image" :style="{ left: data.left }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.left}}</text>
+          <text class="uni-info">获取值: {{data.leftActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common test-view-flatten" :style="{ left: data.left }" flatten>
+              <text class="common-text">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.left}}</text>
+          <text class="uni-info">获取值: {{data.leftActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ left: data.left }" flatten>text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.left}}</text>
+          <text class="uni-info">获取值: {{data.leftActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common test-image-flatten" :style="{ left: data.left }" flatten src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="leftEnum" title="left 枚举值" @change="radioChangeLeft" :compact="true"></enum-data>
+        <input-data :defaultValue="data.left" title="left 自定义值" type="text" @confirm="inputChangeLeft"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: left: 10% 和 left: 30px</text>
+        <view class="test-container">
+          <view class="example-box">
+            <test-native-view class="common-native" style="left: 10%;"></test-native-view>
+          </view>
+          <view class="example-box">
+            <test-native-view class="common-native" style="left: 30px;"></test-native-view>
+          </view>
         </view>
       </view>
     </view>
-  </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -214,7 +214,7 @@ left: <length> | <percentage> | auto;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const leftEnum: ItemType[] = [
+  const leftEnum : ItemType[] = [
     { value: 0, name: '' },
     { value: 1, name: '0' },
     { value: 2, name: '0px' },
@@ -250,9 +250,8 @@ left: <length> | <percentage> | auto;
     data.leftActualImageFlat = imageRefFlat.value?.style.getPropertyValue('left') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
-  const changeLeft = (value: string) => {
+  const changeLeft = (value : string) => {
     data.left = value
     viewRef.value?.style.setProperty('left', value)
     viewRefFlat.value?.style.setProperty('left', value)
@@ -263,17 +262,17 @@ left: <length> | <percentage> | auto;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
-  const radioChangeLeft = (index: number) => {
-    const selectedItem = leftEnum.find((item): boolean => item.value === index)
+  const radioChangeLeft = (index : number) => {
+    const selectedItem = leftEnum.find((item) : boolean => item.value === index)
     if (selectedItem != null) {
       changeLeft(selectedItem.name)
     }
   }
 
-  const inputChangeLeft = (value: string) => {
+  const inputChangeLeft = (value : string) => {
     changeLeft(value)
   }
 
@@ -304,8 +303,8 @@ left: <length> | <percentage> | auto;
     background-color: cyan;
   }
 
-  .common-text{
-    width:50px;
+  .common-text {
+    width: 50px;
     font-size: 12px;
   }
 
@@ -325,6 +324,13 @@ left: <length> | <percentage> | auto;
     width: 100%;
     height: 60px;
     background-color: #e0e0e0;
+  }
+
+  .common-native {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: #00FFFF;
   }
 </style>
 

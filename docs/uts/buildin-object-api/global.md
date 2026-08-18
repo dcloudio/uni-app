@@ -8,9 +8,9 @@
 eval() 函数会将传入的字符串当做 JavaScript 代码进行执行。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | string | 是 |  |   | 一个表示 JavaScript 表达式、语句或一系列语句的字符串。表达式可以包含变量与已存在对象的属性。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x | string | 是 | 一个表示 JavaScript 表达式、语句或一系列语句的字符串。表达式可以包含变量与已存在对象的属性。 | 
 
 
 **返回值**
@@ -21,15 +21,15 @@ eval() 函数会将传入的字符串当做 JavaScript 代码进行执行。
 
 <!-- UTSJSON.Global.eval.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x | x |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | x | x | √ |
@@ -45,10 +45,10 @@ eval() 函数会将传入的字符串当做 JavaScript 代码进行执行。
 parseInt(string, radix) 解析一个字符串并返回指定基数的十进制整数，radix 是 2-36 之间的整数，表示被解析字符串的基数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| string | string | 是 |  |   | 要被解析的值。字符串开头的空白符将会被忽略。（注意：只接收字符串类型的参数，其他类型将编译报错。） |
-| radix | number | 否 |  |   | 从 2 到 36 的整数，表示进制的基数。例如指定 16 表示被解析值是十六进制数。如果超出这个范围，将返回 NaN。假如指定 0 或未指定，基数将会根据字符串的值进行推算。注意，推算的结果不会永远是默认值 10！ | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| string | string | 是 | 要被解析的值。字符串开头的空白符将会被忽略。（注意：只接收字符串类型的参数，其他类型将编译报错。） |
+| radix | number | 否 | 从 2 到 36 的整数，表示进制的基数。例如指定 16 表示被解析值是十六进制数。如果超出这个范围，将返回 NaN。假如指定 0 或未指定，基数将会根据字符串的值进行推算。注意，推算的结果不会永远是默认值 10！ | 
 
 
 **返回值**
@@ -102,15 +102,15 @@ parseInt(string, radix) 解析一个字符串并返回指定基数的十进制�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 | 3.91 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.91 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.91 | 4.11 | √ |
@@ -149,9 +149,9 @@ const c = parseInt("546", 2) // 结果为 NAN (原因：除了“0、1”外，�
 parseFloat() 函数解析一个参数（直接收字符串类型的参数，其他类型编译报错）并返回一个浮点数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| string | string | 是 |  |   | 需要被解析成为浮点数的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| string | string | 是 | 需要被解析成为浮点数的值。 | 
 
 
 **返回值**
@@ -180,15 +180,15 @@ parseFloat() 函数解析一个参数（直接收字符串类型的参数，其�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 | 3.91 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.91 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.91 | 4.11 | √ |
@@ -206,9 +206,9 @@ parseFloat() 函数解析一个参数（直接收字符串类型的参数，其�
 isNaN() 函数用来确定一个值是否为NaN 。注：isNaN函数内包含一些非常有趣的规则；你也可以使用 ECMAScript 2015 中定义的 Number.isNaN() 来判断。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| number | number | 是 |  |   | 要被检测的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| number | number | 是 | 要被检测的值。 | 
 
 
 **返回值**
@@ -260,15 +260,15 @@ isNaN() 函数用来确定一个值是否为NaN 。注：isNaN函数内包含一
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 | 3.91 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.91 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.91 | 4.11 | √ |
@@ -284,9 +284,9 @@ isNaN() 函数用来确定一个值是否为NaN 。注：isNaN函数内包含一
 isFinite() 函数用来判断被传入的参数值是否为一个有限数值（finite number）。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| number | number | 是 |  |   | 要被检测的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| number | number | 是 | 要被检测的值。 | 
 
 
 **返回值**
@@ -297,15 +297,15 @@ isFinite() 函数用来判断被传入的参数值是否为一个有限数值（
 
 <!-- UTSJSON.Global.isFinite.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 | 3.91 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.91 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.91 | 4.11 | √ |
@@ -321,9 +321,9 @@ isFinite() 函数用来判断被传入的参数值是否为一个有限数值（
 decodeURI() 函数能解码由encodeURI 创建或其他流程得到的统一资源标识符（URI）。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| encodedURI | string | 是 |  |   | 一个完整的编码过的 URI | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| encodedURI | string | 是 | 一个完整的编码过的 URI | 
 
 
 **返回值**
@@ -344,15 +344,15 @@ decodeURI() 函数能解码由encodeURI 创建或其他流程得到的统一资�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 | 3.91 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.91 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.91 | 4.11 | √ |
@@ -368,9 +368,9 @@ decodeURI() 函数能解码由encodeURI 创建或其他流程得到的统一资�
 decodeURIComponent() 方法用于解码由 encodeURIComponent 方法或者其他类似方法编码的部分统一资源标识符（URI）。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| encodedURIComponent | string | 是 |  |   | 编码后的部分 URI | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| encodedURIComponent | string | 是 | 编码后的部分 URI | 
 
 
 **返回值**
@@ -391,15 +391,15 @@ decodeURIComponent() 方法用于解码由 encodeURIComponent 方法或者其他
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 | 3.91 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.91 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.91 | 4.11 | √ |
@@ -415,9 +415,9 @@ decodeURIComponent() 方法用于解码由 encodeURIComponent 方法或者其他
 encodeURI() 函数通过将特定字符的每个实例替换为一个、两个、三或四转义序列来对统一资源标识符 (URI) 进行编码 (该字符的 UTF-8 编码仅为四转义序列) 由两个 "代理" 字符组成)。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| uri | string | 是 |  |   | 一个完整的 URI。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| uri | string | 是 | 一个完整的 URI。 | 
 
 
 **返回值**
@@ -1428,15 +1428,15 @@ encodeURI() 函数通过将特定字符的每个实例替换为一个、两个�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 | 3.91 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.91 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.91 | 4.11 | √ |
@@ -1452,9 +1452,9 @@ encodeURI() 函数通过将特定字符的每个实例替换为一个、两个�
 encodeURIComponent() 函数通过将特定字符的每个实例替换成代表字符的 UTF-8 编码的一个、两个、三个或四个转义序列来编码 URI（只有由两个“代理”字符组成的字符会被编码为四个转义序列）。与 encodeURI() 相比，此函数会编码更多的字符，包括 URI 语法的一部分。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| uriComponent | string | 是 |  |   | 要被检测的 string 值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| uriComponent | string | 是 | 要被检测的 string 值。 | 
 
 
 **返回值**
@@ -1475,15 +1475,15 @@ encodeURIComponent() 函数通过将特定字符的每个实例替换成代表�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 | 3.91 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.91 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.91 | 4.11 | √ |
@@ -1499,9 +1499,9 @@ encodeURIComponent() 函数通过将特定字符的每个实例替换成代表�
 atob() 函数会对经过 Base64 编码的字符串进行解码
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| encodedData | string | 是 |  |   | 一个包含 base64 编码数据的二进制字符串（即字符串中的每个字符都被视为一字节的二进制数据）。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| encodedData | string | 是 | 一个包含 base64 编码数据的二进制字符串（即字符串中的每个字符都被视为一字节的二进制数据）。 | 
 
 
 **返回值**
@@ -1523,15 +1523,15 @@ atob() 函数会对经过 Base64 编码的字符串进行解码
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.61 | x | 4.25 | 4.61 | x |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| √ | 4.25 | 4.61 | x |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 4.25 | 4.61 | x |
@@ -1551,9 +1551,9 @@ atob() 函数会对经过 Base64 编码的字符串进行解码
 btoa() 方法可以将一个二进制字符串（例如，将字符串中的每一个字节都视为一个二进制数据字节）编码为 Base64 编码的 ASCII 字符串
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stringToEncode | string | 是 |  |   | 一个需要编码的二进制字符串 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| stringToEncode | string | 是 | 一个需要编码的二进制字符串 | 
 
 
 **返回值**
@@ -1575,15 +1575,15 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.61 | x | 4.25 | 4.61 | x |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| √ | 4.25 | 4.61 | x |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 4.25 | 4.61 | x |
@@ -1603,9 +1603,9 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 在下一次重绘之前，调用用户提供的回调函数
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (task: number) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (timestamp: number) => void | 是 | 
 
 
 **返回值**
@@ -1616,18 +1616,18 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 
 <!-- UTSJSON.Global.requestAnimationFrame.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.25 | 4.25 | 4.61 | x |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| x | x |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| x | x | x |
 
 
 
@@ -1640,9 +1640,9 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 取消一个先前通过调用 requestAnimationFrame() 方法添加到计划中的动画帧请求
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| taskId | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| taskId | number | 是 | 
 
 
 **返回值**
@@ -1653,18 +1653,18 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 
 <!-- UTSJSON.Global.cancelAnimationFrame.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.25 | 4.25 | 4.61 | x |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| x | x |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| x | x | x |
 
 
 

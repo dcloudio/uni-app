@@ -5,13 +5,13 @@
 flex-direction 属性设置弹性容器中的子元素的布局方向，该方向定义为主轴，另一个垂直与它的方向为交叉轴。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -66,7 +66,7 @@ flex-direction: row | row-reverse | column | column-reverse;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -156,7 +156,7 @@ flex-direction: row | row-reverse | column | column-reverse;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-direction </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -195,7 +195,7 @@ flex-direction: row | row-reverse | column | column-reverse;
         <input-data :defaultValue="data.flexDirection" title="flex-direction 自定义值" type="text" @confirm="inputChangeFlexDirection"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -224,7 +224,6 @@ flex-direction: row | row-reverse | column | column-reverse;
     data.flexDirectionActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-direction') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeFlexDirection = (value: string) => {
     data.flexDirection = value
     viewRef.value?.style.setProperty('flex-direction', value)
@@ -232,7 +231,7 @@ flex-direction: row | row-reverse | column | column-reverse;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFlexDirection = (index: number) => {

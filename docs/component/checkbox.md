@@ -9,7 +9,7 @@
  多选项。在1组check-group中可选择多个
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -28,15 +28,19 @@
 | activeBorderColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#d1d1d1" | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | checkbox选中时的边框颜色 |
 | ~~iconColor~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | checkbox的图标颜色，优先级大于color属性 (使用foreColor替代) |
 | foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | checkbox的图标颜色，优先级大于color属性 |
-| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 复选框选中图标的类名 |
-| checkbox-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 复选框未选中的类名 |
-| checkbox-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 复选框选中的类名 |
+| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 复选框选中图标的类名 |
+| checkbox-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 复选框未选中的类名 |
+| checkbox-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 复选框选中的类名 |
 
 
 
 <!-- UTSCOMJSON.checkbox.component_type -->
 
 
+
+### 支付宝小程序注意事项
+
+支付宝小程序不支持将文本或 `text` 组件放在 `checkbox` 组件内部。选项文本应与 `checkbox` 作为同级节点放置，通常可使用 `label` 包裹同级的 `checkbox` 和文本。
 
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/checkbox/checkbox.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/checkbox/checkbox.uvue) 
@@ -260,14 +264,14 @@
         </view>
         <view>
           <checkbox-group class="uni-row checkbox-group">
-            <!-- #ifndef VUE3-VAPOR -->
+            <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
             <checkbox value="cb1" :checked="true" color="#FFCC33" style="transform: scale(0.7); margin-right: 15px"
               class="checkbox">选中
             </checkbox>
             <checkbox value="cb" color="#FFCC33" style="transform: scale(0.7)" class="checkbox">未选中</checkbox>
             <!-- #endif -->
 
-            <!-- #ifdef VUE3-VAPOR -->
+            <!-- #ifdef VUE3-VAPOR && !MP -->
             <checkbox value="cb1" :checked="true" icon-class="custom-icon"
               style="transform: scale(0.7); margin-right: 15px" class="checkbox">选中
             </checkbox>
@@ -285,7 +289,7 @@
         </view>
       </view>
 
-      <!-- #ifdef VUE3-VAPOR -->
+      <!-- #ifdef VUE3-VAPOR && !MP -->
       <view class="uni-padding-wrap">
         <view class="uni-title uni-common-mt">
           <text class="uni-title-text"> 自定义 checkbox </text>
@@ -314,7 +318,7 @@
       </view>
     </view>
 
-    <!-- #ifndef VUE3-VAPOR -->
+    <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
     <view>
       <input-data defaultValue="#007aff" title="checkbox的颜色" type="text" @confirm="confirm_color_input"></input-data>
       <input-data defaultValue="#ffffff" title="checkbox默认的背景颜色" type="text"
@@ -356,7 +360,7 @@
     justify-content: space-between;
   }
 
-  /* #ifdef VUE3-VAPOR */
+  /* #ifdef VUE3-VAPOR && !MP */
   .custom-icon {
     color: #FFCC33;
   }

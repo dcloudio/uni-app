@@ -13,7 +13,7 @@
 隐藏键盘
 
 
-### hideKeyboard 兼容性 
+### hideKeyboard 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.71 | 4.71 | 4.61 |
@@ -21,17 +21,17 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **HideKeyboardOptions** | 否 |  |   | uni.hideKeyboard参数定义 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **HideKeyboardOptions** | 否 | uni.hideKeyboard参数定义 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: HideKeyboardSuccess) => void | 否 |  |   | uni.hideKeyboard成功回调函数定义 |
-| fail | (res: HideKeyboardFail) => void | 否 |  |   | uni.hideKeyboard失败回调函数定义 |
-| complete | (res: any) => void | 否 |  |   | uni.hideKeyboard完成回调函数定义 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: HideKeyboardSuccess) => void | 否 | 微信小程序: 4.41 | uni.hideKeyboard成功回调函数定义 |
+| fail | (res: HideKeyboardFail) => void | 否 | 微信小程序: 4.41 | uni.hideKeyboard失败回调函数定义 |
+| complete | (res: any) => void | 否 | 微信小程序: 4.41 | uni.hideKeyboard完成回调函数定义 | 
 
 
 
@@ -42,7 +42,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.keyboard.hideKeyboard)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/key.html#hidekeyboard)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=hideKeyboard&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/keyboard/wx.hideKeyboard.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=hideKeyboard&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=hideKeyboard&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=hideKeyboard&secondType=all&type=1)
@@ -70,23 +70,23 @@
 
 在input和textarea组件上也有事件用于监听键盘高度变化。本API为全局API，可以全局监听键盘弹出收起和高度变化，尤其是App内嵌web-view中的键盘变化，无法在组件上监听，只能使用本API全局监听。
 
-### onKeyboardHeightChange 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 5.08 | 5.08 |
+### onKeyboardHeightChange 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OnKeyboardHeightChangeCallbackResult](#onkeyboardheightchangecallbackresult-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | uni.onKeyboardHeightChange参数定义 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (res: [OnKeyboardHeightChangeCallbackResult](#onkeyboardheightchangecallbackresult-values)) => void | 是 | Web: x; 微信小程序: 4.41 | uni.onKeyboardHeightChange参数定义 | 
 
 ### OnKeyboardHeightChangeCallbackResult 的属性值 @onkeyboardheightchangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 键盘高度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| height | number | 是 | Web: x; 微信小程序: 4.41 | 键盘高度 |
 
 
 ### 返回值 
@@ -103,7 +103,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.keyboard.onKeyboardHeightChange)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/key.html#onkeyboardheightchange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onKeyboardHeightChange&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/keyboard/wx.onKeyboardHeightChange.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onKeyboardHeightChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onKeyboardHeightChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onKeyboardHeightChange&secondType=all&type=1)
@@ -129,17 +129,17 @@
 
 移除键盘高度变化事件的监听函数
 
-### offKeyboardHeightChange 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 5.08 | 5.08 |
+### offKeyboardHeightChange 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| id | number | 否 | Web: x | 
 
 
 
@@ -150,7 +150,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.keyboard.offKeyboardHeightChange)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/key.html#offkeyboardheightchange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offKeyboardHeightChange&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/keyboard/wx.offKeyboardHeightChange.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offKeyboardHeightChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offKeyboardHeightChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offKeyboardHeightChange&secondType=all&type=1)
@@ -263,7 +263,7 @@ defineExpose({
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

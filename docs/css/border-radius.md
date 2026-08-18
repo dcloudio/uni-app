@@ -5,13 +5,13 @@
 CSS 属性 border-radius 允许你设置元素的外边框圆角。当使用一个半径时确定一个圆形，当使用两个半径时确定一个椭圆。这个（椭）圆与边框的交集形成圆角效果。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -49,7 +49,7 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -59,6 +59,14 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
         <view class="demo-box">
           <view class="common" style="border-radius: 10px;"></view>
           <view class="common" style="border-radius: 10px;" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-radius: 10rpx</text>
+        <view class="demo-box">
+          <view class="common" style="border-radius: 10rpx;"></view>
+          <view class="common" style="border-radius: 10rpx;" flatten></view>
         </view>
       </view>
 
@@ -220,7 +228,7 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-radius </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -293,16 +301,8 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
         <input-data :defaultValue="data.borderRadius" title="border-radius 自定义值" type="text" @confirm="inputChangeBorderRadius"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-radius: 10px 和 border-top-left-radius: 10px</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-radius: 10px"></native-view>
-          <native-view class="common" style="border-top-left-radius: 10px"></native-view>
-        </view>
-      </view>
-
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -315,8 +315,10 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
     { value: 1, name: '0' },
     { value: 2, name: '5px' },
     { value: 3, name: '20px' },
-    { value: 4, name: '0%' },
-    { value: 5, name: '50%' }
+    { value: 4, name: '10rpx' },
+    { value: 5, name: '0%' },
+    { value: 6, name: '50%' },
+    { value: 7, name: '100%' }
   ]
 
   const data = reactive({
@@ -344,7 +346,6 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
     data.borderRadiusActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorderRadius = (value: string) => {
     data.borderRadius = value
     viewRef.value?.style.setProperty('border-radius', value)
@@ -356,7 +357,7 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorderRadius = (index: number) => {

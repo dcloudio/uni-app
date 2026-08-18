@@ -23,25 +23,25 @@
 生命周期回调，监听应用初始化，应用初始化完成时触发，全局只触发一次。
 
 
-#### onLaunch 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | x | 4.0 | 4.61 |
+#### onLaunch 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
 
 
 #### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **OnLaunchOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **OnLaunchOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 |  |   | 应用启动页面路径 |
-| appScheme | string | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.25; Android(Vapor): x; iOS: 4.25; HarmonyOS: x | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
-| appLink | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: x | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | string | 是 |   | 应用启动页面路径 |
+| appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
+| appLink | string | 否 | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.25; HarmonyOS: x | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
 
 
 
@@ -60,25 +60,25 @@
 应用启动，或从后台进入前台显示时触发
 
 
-#### onShow 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | x | 4.0 | 4.61 |
+#### onShow 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
 
 
 #### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **OnShowOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **OnShowOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 |  |   | 应用启动页面路径 |
-| appScheme | string | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.25; Android(Vapor): x; iOS: 4.25; HarmonyOS: x | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
-| appLink | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: x | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | string | 是 |   | 应用启动页面路径 |
+| appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
+| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: x | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> | 
 
 
 
@@ -101,10 +101,10 @@
 应用从前台进入后台时触发
 
 
-#### onHide 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | x | 4.0 | 4.61 |
+#### onHide 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
 
 
 
@@ -123,10 +123,10 @@
 监听应用退出。app-uvue-android 3.9+
 
 
-#### onExit 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 3.9 | x | x | 4.72 |
+#### onExit 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.72 |
 
 
 
@@ -150,18 +150,21 @@
 - 侦听器
 
 无法监听异步逻辑（例如：`setTimeout`）中的错误和应用初始化之前、 App 崩溃等错误。
+
+onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，导致无法精准定位问题。真机运行时尽量避免全局监听onError。
+
 :::
-#### onError 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.21 | x | 4.21 | 4.61 |
+#### onError 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.21 | 4.21 | 4.61 |
 
 
 #### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| error | any | 是 |  |   | 错误信息 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| error | any | 是 | 错误信息 | 
 
 
 
@@ -177,10 +180,10 @@
 最后一个页面按下Android back键，常用于自定义退出。
 
 
-#### onLastPageBackPress 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 3.9 | x | x | 4.71 |
+#### onLastPageBackPress 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.71 |
 
 
 
@@ -204,25 +207,25 @@
 2. 如果 `onPageNotFound` 回调中又重定向到另一个不存在的页面，将推入微信客户端原生的页面不存在提示页面，并且不再回调 `onPageNotFound`。
 
 
-#### onPageNotFound 兼容性 
-| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | x | 10.0 | x | x | x | x |
+#### onPageNotFound 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | x | x |
 
 
 #### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **OnPageNotFoundOption** | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **OnPageNotFoundOption** | 是 | Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 不存在页面的路径 |
-| query | AnyObject | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 打开不存在页面的 query |
-| isEntryPage | boolean | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | string | 是 | Android: x; iOS: x; HarmonyOS: x | 不存在页面的路径 |
+| query | AnyObject | 是 | Android: x; iOS: x; HarmonyOS: x | 打开不存在页面的 query |
+| isEntryPage | boolean | 是 | Android: x; iOS: x; HarmonyOS: x | 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） | 
 
 
 
@@ -238,7 +241,7 @@
 未处理的 Promise 拒绝事件监听函数
 
 
-#### onUnhandledRejection 兼容性 
+#### onUnhandledRejection 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | x | x | x |
@@ -259,10 +262,10 @@
 监听系统主题变化
 
 
-#### onThemeChange 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | x | x | x | x | x | x | x | x |
+#### onThemeChange 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | 4.41 | x | x | x |
 
 
 监听主题变化一般不推荐这个生命周期。而是使用uni api方式。详见：[uni-app x主题适配](../api/theme-change.md)
@@ -546,7 +549,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
           increase lifeCycleNum
         </button>
         <text class="uni-common-mt">lifeCycleNum: {{ data.lifeCycleNum }}</text>
-        <!-- #ifdef APP-ANDROID -->
+        <!-- #ifdef APP-ANDROID && !VUE3-VAPOR -->
         <button class="uni-common-mt" @click="getAndroidApplication">
           getAndroidApplication
         </button>
@@ -687,7 +690,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
     setLifeCycleNum(num)
   }
 
-  // #ifdef APP-ANDROID
+  // #ifdef APP-ANDROID && !VUE3-VAPOR
   const getAndroidApplication = () : boolean => {
     const app = getApp()
     data.androidApplication = app.getAndroidApplication()
@@ -705,7 +708,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
     setGlobalData,
     _increaseLifeCycleNum,
     setLifeCycleNumFunc,
-    // #ifdef APP-ANDROID
+    // #ifdef APP-ANDROID && !VUE3-VAPOR
     getAndroidApplication
     // #endif
   })

@@ -5,13 +5,13 @@
 transition-duration 属性以秒或毫秒为单位指定过渡动画所需的时间。默认值为 0s，表示不出现过渡动画。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -48,7 +48,7 @@ transition-duration: <time>#;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
@@ -81,7 +81,7 @@ transition-duration: <time>#;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition-duration </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -153,14 +153,14 @@ transition-duration: <time>#;
       </view>
 
       <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-duration: 2s</text>
-      <native-view :class="nativeViewClassValue"></native-view>
+      <test-native-view :class="nativeViewClassValue"></test-native-view>
       <view class="button-container">
         <button class="button-item" @click="nativeViewStart">native-view start</button>
         <button class="button-item" @click="nativeViewReset">native-view reset</button>
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -264,7 +264,6 @@ transition-duration: <time>#;
     data.transitionDurationActualImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-duration') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeTransitionDurationDynamic = (value: string) => {
     data.transitionDurationDynamic = value
@@ -278,7 +277,7 @@ transition-duration: <time>#;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeTransitionDuration = (index: number) => {

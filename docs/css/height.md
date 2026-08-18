@@ -5,13 +5,13 @@
 height CSS 属性指定了一个元素的高度。默认情况下，这个属性决定的是内容区（ content area）的高度，但是，如果将 box-sizing 设置为 border-box , 这个属性决定的将是边框区域（border area）的高度。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -60,7 +60,7 @@ height: <viewport-length>{1,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -95,7 +95,7 @@ height: <viewport-length>{1,2};
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 height </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -170,13 +170,17 @@ height: <viewport-length>{1,2};
 
       <view class="uni-common-mb">
         <text>native-view组件: height: 80px 和 height: 120px</text>
-        <view class="demo-box">
-          <native-view style="width: 100px; height: 80px; background-color: cyan;"></native-view>
-          <native-view style="width: 100px; height: 120px; background-color: cyan;"></native-view>
+        <view class="demo-box-native">
+          <view class="container-native">
+            <native-view style="width: 100px;height: 80px;"></native-view>
+          </view>
+          <view class="container-native">
+            <native-view style="width: 100px;height: 120px;"></native-view>
+          </view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -220,7 +224,6 @@ height: <viewport-length>{1,2};
     data.heightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('height') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeHeight = (value: string) => {
     data.height = value
@@ -233,7 +236,7 @@ height: <viewport-length>{1,2};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeHeight = (index: number) => {
@@ -296,6 +299,16 @@ height: <viewport-length>{1,2};
     text-align: center;
   }
 
+  .demo-box-native {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .container-native {
+    background-color: cyan;
+  }
 </style>
 
 ```

@@ -9,7 +9,7 @@
  按钮
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -20,41 +20,42 @@
 | :- | :- | :- |  :-: | :- |
 | disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
 | hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "button-hover" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
-| hover-stop-propagation | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态 |
+| hover-stop-propagation | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态 |
 | hover-start-time | number | 20 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按住后多久出现点击态，单位毫秒 |
 | hover-stay-time | number | 70 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指松开后点击态保留时间，单位毫秒 |
 | size | string | "default" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮大小 |
 | type | string | "default" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮类型 |
 | plain | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮是否镂空，背景色透明 |
-| loading | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 名称前是否带 loading 图标 |
+| loading | boolean | false | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 名称前是否带 loading 图标 |
 | form-type | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 用于 form 组件，点击分别会触发 form 组件的 submit/reset 事件 |
 | open-type | string |   | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 开放能力 |
-| lang | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。 |
-| session-from | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 会话来源 |
-| send-message-title | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 会话内消息卡片标题 |
-| send-message-path | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 会话内消息卡片点击跳转应用路径 |
-| send-message-img | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 会话内消息卡片图片 |
-| show-message-card | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 显示会话内消息卡片 |
-| app-parameter | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 打开 APP 时，向 APP 传递的参数 |
-| group-id | string |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 打开群资料卡时，传递的群号 |
-| guild-id | string |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 打开频道页面时，传递的频道号 |
-| public-id | string |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 打开公众号资料卡时，传递的号码 |
+| lang | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。 |
+| session-from | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 会话来源 |
+| send-message-title | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 会话内消息卡片标题 |
+| send-message-path | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 会话内消息卡片点击跳转应用路径 |
+| send-message-img | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 会话内消息卡片图片 |
+| show-message-card | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 显示会话内消息卡片 |
+| app-parameter | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开 APP 时，向 APP 传递的参数 |
+| group-id | string |   | Web: x; 微信小程序: x; Android: x; iOS: x | 打开群资料卡时，传递的群号 |
+| guild-id | string |   | Web: x; 微信小程序: x; Android: x; iOS: x | 打开频道页面时，传递的频道号 |
+| public-id | string |   | Web: x; 微信小程序: x; Android: x; iOS: x | 打开公众号资料卡时，传递的号码 |
 | phone-number-no-quota-toast | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当手机号快速验证或手机号实时验证额度用尽时，是否对用户展示“申请获取你的手机号，但该功能使用次数已达当前小程序上限，暂时无法使用”的提示，默认展示，open-type="getPhoneNumber" 或 open-type="getRealtimePhoneNumber" 时有效 |
 | createliveactivity | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>[新的一次性订阅消息下发机制](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message-2.html)回调，open-type=liveActivity时有效 |
-| loading-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | loading 图标的类名 |
-| ios-loading-snow | boolean | false | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS:   | iOS 雪花加载效果 |
-| @getuserinfo | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 用户点击该按钮时，会返回获取到的用户信息，回调的detail数据与uni.getUserInfo返回的一致 |
-| @contact | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 客服消息回调 |
-| @getphonenumber | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 获取用户手机号回调 |
-| @error | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web:  ; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 当使用开放能力时，发生错误的回调 |
-| @opensetting | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 在打开授权设置页后回调 |
-| @launchapp | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 打开 APP 成功的回调 |
-| @chooseavatar | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 获取用户头像回调 |
-| @chooseaddress | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 调起用户编辑并选择收货地址的回调 |
-| @chooseinvoicetitle | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web:  ; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 用户选择发票抬头的回调 |
-| @addgroupapp | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 添加群应用的回调 |
-| @subscribe | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web:  ; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 订阅消息授权回调 |
-| @login | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 登录回调 |
+| loading-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | loading 图标的类名 |
+| loading-text-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.21; HarmonyOS(Vapor): 5.21 | loading 文案的类名 |
+| ios-loading-snow | boolean | false | iOS(Vapor): 5.11 | iOS 雪花加载效果 |
+| @getuserinfo | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 用户点击该按钮时，会返回获取到的用户信息，回调的detail数据与uni.getUserInfo返回的一致 |
+| @contact | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 客服消息回调 |
+| @getphonenumber | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 获取用户手机号回调 |
+| @error | (event: [UniEvent](/component/common.md#unievent)) => void |   | 微信小程序: 4.41; Android: x; iOS: x | 当使用开放能力时，发生错误的回调 |
+| @opensetting | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 在打开授权设置页后回调 |
+| @launchapp | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开 APP 成功的回调 |
+| @chooseavatar | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 获取用户头像回调 |
+| @chooseaddress | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x | 调起用户编辑并选择收货地址的回调 |
+| @chooseinvoicetitle | (event: [UniEvent](/component/common.md#unievent)) => void |   | 微信小程序: x; Android: x; iOS: x | 用户选择发票抬头的回调 |
+| @addgroupapp | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x | 添加群应用的回调 |
+| @subscribe | (event: [UniEvent](/component/common.md#unievent)) => void |   | 微信小程序: x; Android: x; iOS: x | 订阅消息授权回调 |
+| @login | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x | 登录回调 |
 | @getrealtimephonenumber | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>手机号实时验证回调，open-type=getRealtimePhoneNumber 时有效。Tips：在触发 bindgetrealtimephonenumber 回调后应立即隐藏手机号按钮组件，或置为 disabled 状态，避免用户重复授权手机号产生额外费用。 |
 | @agreeprivacyauthorization | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>用户同意隐私协议事件回调，open-type=agreePrivacyAuthorization时有效 （Tips: 如果使用 onNeedPrivacyAuthorization 接口，需要在 bindagreeprivacyauthorization 触发后再调用 `resolve({ event: "agree", buttonId })`） |
 
@@ -85,32 +86,32 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | agreePrivacyAuthorization | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 用户同意隐私协议按钮。用户点击一次此按钮后，所有已声明过的隐私接口可以正常调用。 |
-| feedback | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 打开“意见反馈”页面，用户可提交反馈内容并上传日志 |
-| share | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 触发用户转发 |
-| getUserInfo | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 获取用户信息，可以从@getuserinfo回调中获取到用户信息 |
-| contact | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 打开客服会话，如果用户在会话中点击消息卡片后返回应用，可以从 @contact 回调中获得具体信息 |
-| getPhoneNumber | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 获取用户手机号，可以从@getphonenumber回调中获取到用户信息 |
-| launchApp | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 打开APP，可以通过app-parameter属性设定向APP传的参数 |
-| openSetting | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 打开授权设置页 |
-| chooseAvatar | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 获取用户头像，可以从@chooseavatar回调中获取到头像信息 |
-| getAuthorize | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 支持小程序授权 |
-| lifestyle | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 关注生活号 |
-| contactShare | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 分享到通讯录好友 |
-| openGroupProfile | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 呼起QQ群资料卡页面，可以通过group-id属性设定需要打开的群资料卡的群号，同时manifest.json中必须配置groupIdList |
-| openGuildProfile | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 呼起频道页面，可以通过guild-id属性设定需要打开的频道ID |
-| openPublicProfile | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 打开公众号资料卡，可以通过public-id属性设定需要打开的公众号资料卡的号码，同时manifest.json中必须配置publicIdList |
-| shareMessageToFriend | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 在自定义开放数据域组件中,向指定好友发起分享 |
-| addFriend | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 添加好友，对方需要通过该小程序进行授权，允许被加好友后才能调用成功用户授权 |
-| addColorSign | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 添加彩签，点击后添加状态有用户提示，无回调 |
-| addGroupApp | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 添加群应用（只有管理员或群主有权操作），添加后给button绑定@addgroupapp事件接收回调数据 |
-| addToFavorites | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 收藏当前页面，点击按钮后会触发Page.onAddToFavorites方法 |
-| chooseAddress | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 选择用户收货地址，可以从@chooseaddress回调中获取到用户选择的地址信息 |
-| chooseInvoiceTitle | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 选择用户发票抬头，可以从@chooseinvoicetitle回调中获取到用户选择发票抬头信息 |
-| login | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 登录，可以从@login回调中确认是否登录成功 |
-| subscribe | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 订阅类模板消息，需要用户授权才可发送 |
-| favorite | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 触发用户收藏 |
-| watchLater | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 触发用户稍后再看 |
-| openProfile | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 触发打开用户主页 |
+| feedback | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开“意见反馈”页面，用户可提交反馈内容并上传日志 |
+| share | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 触发用户转发 |
+| getUserInfo | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 获取用户信息，可以从@getuserinfo回调中获取到用户信息 |
+| contact | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开客服会话，如果用户在会话中点击消息卡片后返回应用，可以从 @contact 回调中获得具体信息 |
+| getPhoneNumber | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 获取用户手机号，可以从@getphonenumber回调中获取到用户信息 |
+| launchApp | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开APP，可以通过app-parameter属性设定向APP传的参数 |
+| openSetting | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开授权设置页 |
+| chooseAvatar | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 获取用户头像，可以从@chooseavatar回调中获取到头像信息 |
+| getAuthorize | Web: x; 微信小程序: x; Android: x; iOS: x | 支持小程序授权 |
+| lifestyle | Web: x; 微信小程序: x; Android: x; iOS: x | 关注生活号 |
+| contactShare | Web: x; 微信小程序: x; Android: x; iOS: x | 分享到通讯录好友 |
+| openGroupProfile | Web: x; 微信小程序: x; Android: x; iOS: x | 呼起QQ群资料卡页面，可以通过group-id属性设定需要打开的群资料卡的群号，同时manifest.json中必须配置groupIdList |
+| openGuildProfile | Web: x; 微信小程序: x; Android: x; iOS: x | 呼起频道页面，可以通过guild-id属性设定需要打开的频道ID |
+| openPublicProfile | Web: x; 微信小程序: x; Android: x; iOS: x | 打开公众号资料卡，可以通过public-id属性设定需要打开的公众号资料卡的号码，同时manifest.json中必须配置publicIdList |
+| shareMessageToFriend | Web: x; 微信小程序: x; Android: x; iOS: x | 在自定义开放数据域组件中,向指定好友发起分享 |
+| addFriend | Web: x; 微信小程序: x; Android: x; iOS: x | 添加好友，对方需要通过该小程序进行授权，允许被加好友后才能调用成功用户授权 |
+| addColorSign | Web: x; 微信小程序: x; Android: x; iOS: x | 添加彩签，点击后添加状态有用户提示，无回调 |
+| addGroupApp | Web: x; 微信小程序: x; Android: x; iOS: x | 添加群应用（只有管理员或群主有权操作），添加后给button绑定@addgroupapp事件接收回调数据 |
+| addToFavorites | Web: x; 微信小程序: x; Android: x; iOS: x | 收藏当前页面，点击按钮后会触发Page.onAddToFavorites方法 |
+| chooseAddress | Web: x; 微信小程序: x; Android: x; iOS: x | 选择用户收货地址，可以从@chooseaddress回调中获取到用户选择的地址信息 |
+| chooseInvoiceTitle | Web: x; 微信小程序: x; Android: x; iOS: x | 选择用户发票抬头，可以从@chooseinvoicetitle回调中获取到用户选择发票抬头信息 |
+| login | Web: x; 微信小程序: x; Android: x; iOS: x | 登录，可以从@login回调中确认是否登录成功 |
+| subscribe | Web: x; 微信小程序: x; Android: x; iOS: x | 订阅类模板消息，需要用户授权才可发送 |
+| favorite | Web: x; 微信小程序: x; Android: x; iOS: x | 触发用户收藏 |
+| watchLater | Web: x; 微信小程序: x; Android: x; iOS: x | 触发用户稍后再看 |
+| openProfile | Web: x; 微信小程序: x; Android: x; iOS: x | 触发打开用户主页 |
 | liveActivity | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 通过前端获取[新的一次性订阅消息下发机制](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message-2.html)使用的 code |
 | getRealtimePhoneNumber | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 手机号实时验证，向用户申请，并在用户同意后，快速填写和实时验证手机号。[具体说明]((getRealtimePhoneNumber)) （*小程序插件中不能使用*） |
 
@@ -125,19 +126,6 @@
 
 
 <!-- UTSCOMJSON.button.component_type-->
-
-- 在web平台，由于0.5px有兼容性问题，button的边框使用伪类实现。
-- 在app平台，HBuilderX4.02及以上版本调整为原生实现button组件，默认边框不占高度，解决button实际渲染宽高与Web端不一致的问题；HBuilderX4.01及以下版本封装text实现button组件，由于不支持伪类，默认边框使用 border 样式实现，会导致button的实际的渲染宽高在app端比web端多1px。
-- button的默认边框宽度为0.5px，当type属性为plain时，边框宽度是1px，此时在web平台button实际的渲染宽高会大于其他类型1px，在app平台button实际的渲染高度与其他类型一致。
-- button 的text区域文字，app平台HBuilderX4.02及以上版本支持 `\n` 方式换行，HBuilderX4.01及以下版本不支持 ，会直接显示 `\n` 字符；Web端 `\n` 会变成一个空格。
-- button按下后触发hover-class效果，在app平台，手指不松开、一直在屏幕上移动、离开button组件范围后，hover-class效果消失，同时也不会触发点击事件；在web平台，手指移动一点后，即便未离开button范围，hover-class效果也会消失，同时也不会触发点击事件。
-- 无论在哪个平台，hover-class消失后松开手指，都不会触发点击事件。
-- button 设置hover-class属性时需注意，app平台HBuilderX4.04及以下版本与web平台有差异，HBuilderX4.05版本统一为以下规则：
-  + 如果hover-class属性值设置为none，在style样式里面设置了同名的none样式，none样式将不起作用，没有点击态效果
-  + 如果hover-class属性值设置为button-hover或者不设置hover-class属性值，在style样式里面设置了同名的button-hover样式，点击效果将使用button-hover样式
-  + 如果hover-class属性值设置为无效值（或非法值），没有点击态效果
-- `open-type="agreePrivacyAuthorization"`，用于开发者在让用户同意隐私协议时，放置“同意”按钮。它并非强制性的，它只是开发者和插件作者之间的一种通信方式。并不是没有点下这个按钮，技术上就拦截了涉及隐私的API的调用。[详见](../api/privacy.md)
-- 鸿蒙平台 蒸汽模式，button 组件根节点设置 color 时，不支持使用 css 变量
 
 ### 子组件 @children-tags
 不可以嵌套组件
@@ -274,6 +262,7 @@
       :plain="data.plain_boolean" @touchstart="button_touchstart" @touchmove="button_touchmove"
       @touchcancel="button_touchcancel" @touchend="button_touchend" @tap="button_tap" @click="button_click"
       @longpress="button_longpress" class="btn"
+      :loading-text-class="data.loading ? (data.type_enum[data.type_enum_current].name == 'default' ? 'black-loading-text' : 'white-loading-text') : ''"
       :class="data.default_style ? (data.disabled_boolean ? 'custom-btn-disable' : 'custom-btn') : ''"
       :hover-class="data.default_style ? 'is-hover' : 'button-hover'">
       {{ data.text }}
@@ -339,6 +328,14 @@
     background-color: #f8f8f8;
     border-color: rgba(0, 0, 0, 0.2);
   }
+
+  .black-loading-text {
+    color: #000000
+  }
+
+  .white-loading-text {
+    color: #ffffff
+  }
 </style>
 
 ```
@@ -361,74 +358,82 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## hover-class 属性值
+## 样式修改 @style
 
-### button样式修改@style
+button 的 size、type 属性是预置样式，适合快速使用；如需修改文字、背景、边框、尺寸等样式，可直接在 button 组件上使用 style 或 class 覆盖。如需保持样式一致，建议不要依赖 type 的默认颜色。
 
-button在元素的text区域直接写文字，和text组件一样。可以这么理解，button是一个特殊的text组件，文字样式可以直接写在button组件的style或class上。
+APP 蒸汽模式不支持属性选择器，建议使用 class 或 style 自定义样式。
 
-button组件属性中的size和type，属于预置样式，方便开发者使用。开发者也可以通过style和class来自定义样式。但它们在不同平台，覆盖方式需要注意：
-
-	- App和Web平台style和class的优先级，高于size和type属性
-	- 小程序平台，取决于不同小程序平台的button的实现方式。在微信小程序上，type和size属性的样式通过属性选择器设置，开发者设置的class，想要覆盖这2个属性的样式，需要加`!important`。而通过style设置样式，则优先级高于属性选择器，所以可以覆盖2个属性设置的样式。
-
-	如果开发者要自定义button样式，最好不要使用type和size。包括type的颜色在不同小程序平台不一样，甚至在微信小程序的v1和v2的样式中也不一样。如果一定要用type，那么用style而不是class覆盖属性样式，也可以跨端兼容。
-
-button虽然可以内嵌text组件，但不建议通过text组件来修改button样式，因为会导致hove-class不生效。尤其是uvue中样式不继承。建议button组件text区域直接写文字，然后在button组件的style或class属性编写样式。
-
-
+APP蒸汽模式、WEB 和微信小程序平台的 button 组件在 `plain` 为 `true` 时，通过 class 配置的 `background-color` 样式不生效，只能通过 style 设置。
 
 ```html
 <template>
-	<button size="default" type="default"
-	style="color:#ffffff;backgroundColor:#1AAD19;borderColor:#1AAD19"
-	hover-class="is-hover">按钮</button>
+	<button class="custom-button" hover-class="custom-button-hover">按钮</button>
 </template>
+
 <style>
-.is-hover {
+.custom-button {
+	color: #ffffff;
+	background-color: #1AAD19;
+	border-color: #1AAD19;
+}
+
+.custom-button-hover {
 	color: rgba(255, 255, 255, 0.6);
 	background-color: #179b16;
 	border-color: #179b16;
-  }
+}
 </style>
 ```
 
-## button点击
+## hover-class 属性值
 
-button 组件的点击遵循 vue 标准的 @click事件。
+button 按下后触发 hover-class 效果。点击态取消后的触发规则如下：
 
-button 组件没有 url 属性，如果要跳转页面，可以在@click中编写，也可以在button组件外面套一层 navigator 组件。举例，如需跳转到about页面，可按如下几种代码写法执行：
+- Android 平台：手指不松开并持续在屏幕上移动，离开 button 组件范围后，hover-class 效果消失。
+- iOS 平台：手指按下后，hover-class 效果会保持到手指抬起时消失。
+- 鸿蒙平台、Web 平台：手指移动一点后，即便未离开 button 范围，hover-class 效果也会消失。
+
+button 设置 hover-class 属性规则如下：
+
+- 如果 hover-class 属性值设置为 button-hover 或者不设置 hover-class 属性值，在 style 样式里面设置了同名的 button-hover 样式，点击效果将使用 button-hover 样式。
+- 如果 hover-class 属性值设置为无效值（或非法值），没有点击态效果。
+
+## 点击跳转
+
+button 组件没有 url 属性，点击后需要跳转页面时，可在 @click 中调用路由 API，也可以使用 [navigator](./navigator.md) 组件实现声明式跳转。
 
 ```html
 <template>
 	<view>
-		<navigator url="/pages/about/about"><button>通过navigator组件跳转到about页面</button></navigator>
-		<button @click="goto('/pages/about/about')">通过方法跳转到about页面</button>
+		<button @click="gotoAbout">跳转到 about 页面</button>
+		<navigator url="/pages/about/about" open-type="navigate">
+			<button>使用 navigator 跳转到 about 页面</button>
+		</navigator>
 	</view>
 </template>
-<script>
-	export default {
-		methods: {
-			goto(url:string) {
-				uni.navigateTo({
-					url:url
-				})
-			}
-		}
+
+<script setup lang="uts">
+	function gotoAbout() {
+		uni.navigateTo({
+			url: '/pages/about/about'
+		})
 	}
 </script>
 ```
 
-## tips
+## 隐私协议授权
 
-- button 的默认文字大小为18px，文字行高为2.5。如果指定了按钮高度，要注意手动调整文字行高
-- 蒸汽模式下，button 的居中效果不依赖 line-height，是靠 padding 实现的，调整 padding 可能会影响按钮的居中效果
+`open-type="agreePrivacyAuthorization"` 用于开发者在让用户同意隐私协议时，放置“同意”按钮。它不是强制拦截能力，只是开发者和插件作者之间的一种通信方式；未点击该按钮，并不代表技术上会拦截涉及隐私的 API 调用。[详见](../api/privacy.md)
 
-## 样式冲突
+## 文本显示
 
-非蒸汽模式下使用属性选择器定义css存在平台兼容性，差异点如下：
-- **Web** 因页面样式作用域隔离机制编译后会在 class 上增加属性选择器，会覆盖组件属性选择器样式
-- **App** 暂不支持属性选择器
-- **微信小程序** 普通 class 不能直接覆盖组件的属性选择器，因为属性选择器样式优先级更高
+- 如果 button 组件的文本内容包含 `\n`，非蒸汽模式 APP 和 web 会被渲染为字符，不会换行，微信小程序会移除换行符号。蒸汽模式 APP 会移除 `\n` 旁的文字。
+- 非蒸汽模式 button 默认文字大小为 18px，文字行高为 2.5。自定义高度时，需要同步调整 line-height。
+- APP 蒸汽模式下，button 的文字居中依赖 padding。调整 height 和 line-height 时，建议同时将 padding-top、padding-bottom 设置为 0。
 
-蒸汽模式由于不支持使用属性选择器，因此不存在上述问题，开发者可以直接使用 class 或者 style 定义样式覆盖组件默认样式
+```html
+<template>
+	<button style="height: 50px; line-height: 50px; padding-top: 0; padding-bottom: 0;">按钮</button>
+</template>
+```

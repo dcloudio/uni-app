@@ -8,13 +8,13 @@ uni.env提供了一些环境变量，主要是App和小程序文件系统相关�
 
 ### env 的属性值 @env-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| USER_DATA_PATH | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 文件系统中的用户文件目录路径 |
-| CACHE_PATH | string | 是 |  | Web: x; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 文件系统中的缓存文件目录路径 |
-| SANDBOX_PATH | string | 是 |  | Web: x; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 文件系统中的应用沙盒目录路径 |
-| TEMP_PATH | string | 是 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.62 | 文件系统中的应用临时目录路径，应用退出自动清理 |
-| ANDROID_INTERNAL_SANDBOX_PATH | string | 是 |  | Web: x; 微信小程序: x; Android: 3.99; iOS: x; HarmonyOS: x | 文件系统中的应用内置沙盒目录路径（仅app-android平台支持） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| USER_DATA_PATH | string | 是 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 文件系统中的用户文件目录路径 |
+| CACHE_PATH | string | 是 | Web: x; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 文件系统中的缓存文件目录路径 |
+| SANDBOX_PATH | string | 是 | Web: x; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 文件系统中的应用沙盒目录路径 |
+| TEMP_PATH | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.62 | 文件系统中的应用临时目录路径，应用退出自动清理 |
+| ANDROID_INTERNAL_SANDBOX_PATH | string | 是 | Web: x; 微信小程序: x; Android: 3.99; iOS: x; HarmonyOS: x | 文件系统中的应用内置沙盒目录路径（仅app-android平台支持） |
 
 
 
@@ -169,7 +169,7 @@ uni.env提供了一些环境变量，主要是App和小程序文件系统相关�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

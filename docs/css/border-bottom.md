@@ -5,13 +5,13 @@
 border-bottom 简写属性把下边框的所有属性：border-bottom-color，border-bottom-style 与 border-bottom-width 设置到了一个声明中。这些属性描述了元素的下边框样式。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -50,7 +50,7 @@ border-bottom: <line-width> || <line-style> || <color>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -59,6 +59,14 @@ border-bottom: <line-width> || <line-style> || <color>;
         <view class="demo-box">
           <view class="common" style="border-bottom: 5px dashed blue;"></view>
           <view class="common" style="border-bottom: 5px dashed blue;" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-bottom: 6rpx dashed #0000ff80</text>
+        <view class="demo-box">
+          <view class="common" style="border-bottom: 6rpx dashed #0000ff80;"></view>
+          <view class="common" style="border-bottom: 6rpx dashed #0000ff80;" flatten></view>
         </view>
       </view>
 
@@ -74,7 +82,7 @@ border-bottom: <line-width> || <line-style> || <color>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-bottom </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -147,15 +155,8 @@ border-bottom: <line-width> || <line-style> || <color>;
         <input-data :defaultValue="data.borderBottom" title="border-bottom 自定义值" type="text" @confirm="inputChangeBorderBottom"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-bottom: 5px dashed blue 和 10px solid green</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-bottom: 5px dashed blue;"></native-view>
-          <native-view class="common" style="border-bottom: 10px solid green;"></native-view>
-        </view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -168,11 +169,12 @@ border-bottom: <line-width> || <line-style> || <color>;
     { value: 1, name: 'none' },
     { value: 2, name: '1px solid black' },
     { value: 3, name: '2px dashed blue' },
-    { value: 4, name: '3px dotted green' }
+    { value: 4, name: '3px dotted green' },
+    { value: 5, name: '8rpx solid #0000ff80' },
   ]
 
   const data = reactive({
-    borderBottom: '5px solid purple',
+    borderBottom: '6rpx dashed #0000ff80',
     borderBottomActual: '',
     borderBottomActualText: '',
     borderBottomActualImage: '',
@@ -196,7 +198,6 @@ border-bottom: <line-width> || <line-style> || <color>;
     data.borderBottomActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-bottom') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorderBottom = (value: string) => {
     data.borderBottom = value
     viewRef.value?.style.setProperty('border-bottom', value)
@@ -208,7 +209,7 @@ border-bottom: <line-width> || <line-style> || <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorderBottom = (index: number) => {

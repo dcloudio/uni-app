@@ -9,7 +9,7 @@
  图片
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -25,7 +25,7 @@
 | webp | boolean | true | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): -; HarmonyOS(Vapor): x | 是否支持 WebP 格式，web、app平台默认支持 WebP 格式，不支持本属性，无法关闭对 WebP 格式的解析。 |
 | show-menu-by-longpress | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 开启长按图片显示识别小程序码菜单 |
 | draggable | boolean | false | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 鼠标长按是否能拖动图片(仅H5平台) |
-| flatten | boolean | false | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
+| flatten | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
 | @error | (event: [UniImageErrorEvent](#uniimageerrorevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片加载错误时触发，event.detail = { errMsg } |
 | @load | (event: [UniImageLoadEvent](#uniimageloadevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片加载完成时触发，event.detail = { width: '图片宽度px', height: '图片高度px' } |
 
@@ -60,15 +60,15 @@ UniImageErrorEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniImageErrorEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniImageErrorEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniImageErrorEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 #### UniImageLoadEvent
@@ -81,16 +81,16 @@ UniImageLoadEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniImageLoadEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniImageLoadEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniImageLoadEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 |  |   | 图片宽度 |
-| height | number | 是 |  |   | 图片高度 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| width | number | 是 | 图片宽度 |
+| height | number | 是 | 图片高度 |
 
 
 
@@ -109,9 +109,9 @@ UniImageLoadEvent -- Extends --> UniEvent
 | ICO			| √										| √													| √					|																							|
 | JPG			| √										| √													| √					|																							|
 | PNG			| √										| √													| √					|																							|
-| WebP		| √										| √													| √					|iOS 14+ 为硬解码，低版本为软解码（性能较低）	|
+| WebP		| √										| √													| √					|iOS 14+ 为硬解码，低版本为软解码（软解性能较低）	|
 | HEIC		| √ (Android10+)			| √													| √					|																							|
-| AVIF		| √ (HBuilderX5.08+)	| √ (iOS16+)								| x					|系统支持硬解才有优势，使用三方软解还不如其他格式	|
+| AVIF		| √ (HBuilderX5.08+)	| √ (iOS16+)								| x					|系统支持硬解才有优势，使用三方软解还不如换用其他格式	|
 | TIF			| x										| √													| x					|																							|
 | SVG			| √ (HBuilderX4.81+)	| √ (iOS13+ HBuilderX4.81+)	| ️√				|	不支持svg动画。某些场景会解成位图渲染，[详见](#svg-support)		|
 
@@ -146,6 +146,7 @@ svg 是矢量图片，可以无极缩放而不失真。但在以下情况，会�
 - 鸿蒙平台蒸汽模式
 	* 如果启用了 `flatten` 拍平，则会转为位图。
 	* 设置部分 `mode` 属性进行图像裁剪，会转为位图进行裁剪。`mode` 设置为 `scaleToFill/aspectFit/aspectFill` 可以保持矢量能力，设置为其它值会转位图裁剪。
+	* 如果 `src` 设置了 `data:image/svg+xml;base64,...` 这种形式的 url，则会转为位图。
 
 ### 子组件 @children-tags
 不可以嵌套组件
@@ -372,5 +373,4 @@ svg 是矢量图片，可以无极缩放而不失真。但在以下情况，会�
 - 图片文件需在static目录（项目下或uni_modules下都支持static目录）下，或者import导入文件，否则文件不会被copy到最终的包中，导致无法访问
 - app-android平台由于默认启用了图片缩放（即根据组件实际宽高加载图片，以节省内存），所以可能导致load事件返回的图片尺寸并非图片原始尺寸
 - app-android平台不支持CMYK色彩的图片，[详见](https://github.com/facebook/fresco/issues/1404)
-- app-ios平台 iOS14 版本开始系统原生支持 WebP 图片格式，iOS14以下的版本使用三方解码器软解码实现对 WebP 的支持，性能存在一定损耗。如果在iOS14以下同一页面中大量使用WebP图片，会增加性能损耗
-- app-ios平台非蒸汽模式不支持padding style（padding-top、padding-left、padding-right、padding-bottom）
+- app-ios平台 VDOM模式的image组件不支持padding style（padding-top、padding-left、padding-right、padding-bottom）

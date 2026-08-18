@@ -112,19 +112,19 @@ const onSelect = (index: string) => {
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.08 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.08 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| indexs | string | "A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ" |   | 索引字符列表，使用换行符 \n 分隔，每行作为一个索引项 |
-| indicatorViewClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 指示器容器的自定义样式类，触摸时显示当前索引的气泡 |
-| indicatorTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 指示器内文字的自定义样式类 |
-| @select | Event |   |   | 选择索引时触发，参数为当前选择的索引字符，类型为 string |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| indexs | string | "A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ" | 索引字符列表，使用换行符 \n 分隔，每行作为一个索引项 |
+| indicatorViewClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 指示器容器的自定义样式类，触摸时显示当前索引的气泡 |
+| indicatorTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 指示器内文字的自定义样式类 |
+| @select | Event |   | 选择索引时触发，参数为当前选择的索引字符，类型为 string |
 
 <!-- UTSCOMJSON.uni-index-bar.fileFormates -->
 
@@ -149,8 +149,12 @@ const onSelect = (index: string) => {
 				<button class="control-btn" @click="toggleStyle">{{ data.useCustomStyle ? '默认样式' : '自定义样式' }}</button>
 				<button class="control-btn" @click="toggleIndexs">{{ data.useCustomIndexs ? '根据数据设索引' : '自定义索引' }}</button>
 			</view>
-			<list-view ref="listRef" style="flex: 1;" :scroll-into-view="data.indexViewID">
-			<sticky-section v-for="group in cityGroups" :key="group.index">
+			<list-view ref="listRef" style="flex: 1;" class="city-list" :scroll-into-view="data.indexViewID">
+			<sticky-section v-for="group in cityGroups" :key="group.index"
+			<!-- #ifdef APP && VUE3-VAPOR -->
+			:preload="true"
+			<!-- #endif -->
+			>
 				<sticky-header :id="'idx-' + group.index">
 					<view class="group-header">
 						<text class="group-header-text">{{ group.index }}</text>
@@ -214,20 +218,7 @@ const onSelect = (index: string) => {
 		}
 		// console.log('选择了索引：', index)
 		const childId = 'idx-' + index
-		// #ifndef VUE3-VAPOR && APP-HARMONY
-		// TODO 鸿蒙蒸汽模式修复scrollIntoView不能准确滚动到孙子节点的问题后也使用 scrollIntoView
 		data.indexViewID = childId
-		// #endif
-		// #ifdef VUE3-VAPOR && APP-HARMONY
-		const element = uni.getElementById(childId)
-		if (element != null) {
-			// 使用 scrollTop 属性滚动
-			const rect = element.getBoundingClientRect()
-			const listRect = list.getBoundingClientRect()
-			const scrollTop = list.scrollTop + (rect.top - listRect.top)
-			list.scrollTop = scrollTop
-		}
-		// #endif
 	}
 
 	defineExpose({
@@ -264,6 +255,10 @@ const onSelect = (index: string) => {
 		color: var(--text-color, #333333);
 		opacity: 0.7;
 		font-weight: bold;
+	}
+
+	.city-list {
+		background-color: var(--list-background-color, #ffffff);
 	}
 
 	.city-item {

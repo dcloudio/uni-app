@@ -46,26 +46,26 @@ rate组件有onChange事件，事件回调中会给出点击触发的新评分�
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| value | number |   |   | 当前评分，取值范围 0~5 的数字 |
-| modelValue | number |   |   | v-model 绑定值，支持双向绑定，优先级高于 value |
-| full | boolean |   |   | 是否显示完整 5 颗星。为 true 时用灰星填充未选中位置；为 false 时仅显示亮星，性能更高但不支持点击交互 |
-| readonly | boolean |   |   | 是否只读，为 true 时不响应点击评分（full 为 false 时始终只读） |
-| plain | boolean |   |   | 灰星是否使用镂空样式（☆），为 false 时使用实心灰星（★） |
-| starClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |   | 灰星（未选中）的自定义样式类 |
-| starStyle | string |   |   | 灰星（未选中）的内联样式 |
-| starActiveClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |   | 亮星（选中）的自定义样式类 |
-| starActiveStyle | string |   |   | 亮星（选中）的内联样式 |
-| @change | Event |   |   | 评分变化事件，参数为评分值，类型为 number |
-| @update:modelValue | Event |   |   | v-model 绑定值变化事件，参数为评分值，类型为 number |
+| 名称 | 类型 | 描述 |
+| :- | :- | :- |
+| value | number | 当前评分，取值范围 0~5 的数字 |
+| modelValue | number | v-model 绑定值，支持双向绑定，优先级高于 value |
+| full | boolean | 是否显示完整 5 颗星。为 true 时用灰星填充未选中位置；为 false 时仅显示亮星，性能更高但不支持点击交互 |
+| readonly | boolean | 是否只读，为 true 时不响应点击评分（full 为 false 时始终只读） |
+| plain | boolean | 灰星是否使用镂空样式（☆），为 false 时使用实心灰星（★） |
+| starClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 灰星（未选中）的自定义样式类 |
+| starStyle | string | 灰星（未选中）的内联样式 |
+| starActiveClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 亮星（选中）的自定义样式类 |
+| starActiveStyle | string | 亮星（选中）的内联样式 |
+| @change | Event | 评分变化事件，参数为评分值，类型为 number |
+| @update:modelValue | Event | v-model 绑定值变化事件，参数为评分值，类型为 number |
 
 <!-- UTSCOMJSON.uni-rate.fileFormates -->
 

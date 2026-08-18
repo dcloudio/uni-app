@@ -105,15 +105,10 @@ export function leakActivity() {
 #### 页面调用
 ```js
 import { leakActivity } from "@/uni_modules/leak-leakcanary"
-export default {
-    data() {
-        return {}
-    },
-    onReady() {
-        leakActivity()
-    },
-    methods: {}
-}
+
+onReady(() => {
+    leakActivity()
+})
 ```
 
 #### 泄漏日志分析
@@ -189,19 +184,15 @@ export function removeCurrentActivity() {
 **页面中正确使用：**
 ```js
 import { leakActivity, removeCurrentActivity } from "@/uni_modules/leak-leakcanary"
-export default {
-    data() {
-        return {}
-    },
-    onReady() {
-        leakActivity()
-    },
-    onUnload() {
-        // 页面销毁时清理引用
-        removeCurrentActivity()
-    },
-    methods: {}
-}
+
+onReady(() => {
+    leakActivity()
+})
+
+onUnload(() => {
+    // 页面销毁时清理引用
+    removeCurrentActivity()
+})
 ```
 
 ---
@@ -212,20 +203,15 @@ export default {
 ```js
 //uvue中
 let globalElement: UniElement[] = [] // 应用级全局变量
-export default {
-    data() {
-        return {
-            element: null as UniElement | null
-        }
-    },
-    onReady(){
-        this.element = uni.getElementById("xx")
-        if (this.element != null) {
-            globalElement.push(this.element)
-        }
-    },
-    methods: {}
-}
+const element = ref<UniElement | null>(null)
+
+onReady(() => {
+    element.value = uni.getElementById("xx")
+    const currentElement = element.value
+    if (currentElement != null) {
+        globalElement.push(currentElement)
+    }
+})
 ```
 
 #### 泄漏日志分析
@@ -287,30 +273,27 @@ export default {
 #### 解决方案
 ```js
 let globalElement: UniElement[] = [] // 应用级全局变量
-export default {
-    data() {
-        return {
-            element: null as UniElement | null
+const element = ref<UniElement | null>(null)
+
+onReady(() => {
+    element.value = uni.getElementById("xx")
+    const currentElement = element.value
+    if (currentElement != null) {
+        globalElement.push(currentElement)
+    }
+})
+
+onUnload(() => {
+    // 页面销毁时移除特定元素引用
+    const currentElement = element.value
+    if (currentElement != null) {
+        const index = globalElement.indexOf(currentElement)
+        if (index > -1) {
+            globalElement.splice(index, 1)
         }
-    },
-    onReady(){
-        this.element = uni.getElementById("xx")
-        if (this.element != null) {
-            globalElement.push(this.element)
-        }
-    },
-    onUnload() {
-        // 页面销毁时移除特定元素引用
-        if (this.element != null) {
-            const index = globalElement.indexOf(this.element)
-            if (index > -1) {
-                globalElement.splice(index, 1)
-            }
-            this.element = null
-        }
-    },
-    methods: {}
-}
+        element.value = null
+    }
+})
 ```
 
 ---

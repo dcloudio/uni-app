@@ -345,22 +345,22 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.08 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| modelValue | Array |   |   | 可拖拽排序的数据源，支持 v-model 双向绑定，内部会在拖拽结束后更新顺序 |
-| column | number | 0 |   | 网格列数。大于 0 时按网格排布，等于 0 时按一行流式排布 |
-| showClose | boolean | false |   | 是否显示拖拽到底部删除栏，开启后可将 item 拖入底部删除 |
-| showAppend | boolean | true |   | 是否显示末尾的 append 插槽（非拖拽状态下） |
-| handleMode | boolean | false |   | 是否启用拖拽手柄模式，仅点击 handle 插槽才能触发拖拽 |
-| @update:modelValue | Event |   |   | v-model 绑定值变化事件，参数为最新数组，类型为数组 |
-| @change | Event |   |   | 排序完成后、删除完成后触发，参数为最新数组，类型为数组 |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| modelValue | Array |   | 可拖拽排序的数据源，支持 v-model 双向绑定，内部会在拖拽结束后更新顺序 |
+| column | number | 0 | 网格列数。大于 0 时按网格排布，等于 0 时按一行流式排布 |
+| showClose | boolean | false | 是否显示拖拽到底部删除栏，开启后可将 item 拖入底部删除 |
+| showAppend | boolean | true | 是否显示末尾的 append 插槽（非拖拽状态下） |
+| handleMode | boolean | false | 是否启用拖拽手柄模式，仅点击 handle 插槽才能触发拖拽 |
+| @update:modelValue | Event |   | v-model 绑定值变化事件，参数为最新数组，类型为数组 |
+| @change | Event |   | 排序完成后、删除完成后触发，参数为最新数组，类型为数组 |
 
 <!-- UTSCOMJSON.uni-drag-cell.fileFormates -->
 

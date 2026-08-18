@@ -12,7 +12,7 @@
 
 获取系统设置
 
-### getSystemSetting 兼容性 
+### getSystemSetting 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -28,22 +28,26 @@
 
 #### GetSystemSettingResult 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| bluetoothEnabled | boolean | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝牙是否开启<br/> |
-| bluetoothError | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝牙的报错信息<br/> |
-| locationEnabled | boolean | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 位置是否开启<br/> |
-| wifiEnabled | boolean | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | wifi是否开启<br/> |
-| wifiError | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61 | wifi的报错信息<br/> |
-| deviceOrientation | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| bluetoothEnabled | boolean | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝牙是否开启<br/> |
+| bluetoothError | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝牙的报错信息<br/> |
+| locationEnabled | boolean | 是 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 位置是否开启<br/> |
+| wifiEnabled | boolean | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | wifi是否开启<br/> |
+| wifiError | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61 | wifi的报错信息<br/> |
+| deviceOrientation | string | 是 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向<br/> |
 
 ##### deviceOrientation 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| portrait | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 纵向 |
-| landscape | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 横向 | 
+| portrait | Web: x | 纵向 |
+| landscape | Web: x | 横向 | 
 
+
+## 注意事项
+
+- 如果出现 `bluetoothError`、`wifiError` 非空的情况就说明权限配置错误，需要根据 [文档](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions) 正确配置权限。
 
 ### 示例
 
@@ -163,7 +167,8 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+
 

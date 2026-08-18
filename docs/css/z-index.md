@@ -28,13 +28,13 @@ root
 z-index 属性设定了一个定位元素及其后代元素的 z-order。当元素之间重叠的时候，z-index 较大的元素会覆盖较小的元素在上层进行显示。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -81,7 +81,7 @@ z-index: auto | <integer>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -150,7 +150,7 @@ z-index: auto | <integer>;
     </view>
 
     <view class="uni-common-mt" style="top:100px;">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 z-index </text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
@@ -195,12 +195,12 @@ z-index: auto | <integer>;
 
       <view class="uni-common-mb" style="top: 50px;">
         <text>native-view组件: z-index: 10 和 z-index: 5</text>
-        <native-view class="common-text" style="z-index: 10; background-color: cyan;"></native-view>
-        <native-view class="common-text" style="top: -40px;left: 30px;z-index: 5;background-color: green;"></native-view>
+        <test-native-view class="common-text" style="z-index: 10; background-color: cyan;"></test-native-view>
+        <test-native-view class="common-text" style="top: -40px;left: 30px;z-index: 5;background-color: green;"></test-native-view>
       </view>
     </view>
 
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -209,12 +209,12 @@ z-index: auto | <integer>;
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   type DataType = {
-    zIndex: number
-    autoTest: boolean
-    zIndexValue: number
-    zIndexActual: string
-    zIndexActualText: string
-    zIndexActualImage: string
+    zIndex : number
+    autoTest : boolean
+    zIndexValue : number
+    zIndexActual : string
+    zIndexActualText : string
+    zIndexActualImage : string
   }
 
   const data = reactive({
@@ -228,12 +228,12 @@ z-index: auto | <integer>;
 
   const view = ref(null as UniElement | null)
 
-  const changeZIndex = (zIndexValue: number) => {
+  const changeZIndex = (zIndexValue : number) => {
     data.zIndex = 20
     view.value?.style.setProperty('z-index', zIndexValue)
   }
 
-  const zIndexEnum: ItemType[] = [
+  const zIndexEnum : ItemType[] = [
     { value: 0, name: '' },
     { value: 1, name: '-1' },
     { value: 2, name: '0' },
@@ -251,8 +251,7 @@ z-index: auto | <integer>;
     data.zIndexActualImage = imageRef.value?.style.getPropertyValue('z-index') ?? ''
   }
 
-  const ins = getCurrentInstance()
-  const changeZIndexProperty = (value: number) => {
+  const changeZIndexProperty = (value : number) => {
     data.zIndexValue = value
     viewRef.value?.style.setProperty('z-index', value)
     textRef.value?.style.setProperty('z-index', value.toString())
@@ -260,18 +259,18 @@ z-index: auto | <integer>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
-  const radioChangeZIndex = (index: number) => {
-    const selectedItem = zIndexEnum.find((item): boolean => item.value === index)
+  const radioChangeZIndex = (index : number) => {
+    const selectedItem = zIndexEnum.find((item) : boolean => item.value === index)
     if (selectedItem != null) {
       const value = selectedItem.name === '' ? 0 : parseInt(selectedItem.name)
       changeZIndexProperty(value)
     }
   }
 
-  const inputChangeZIndex = (value: string) => {
+  const inputChangeZIndex = (value : string) => {
     const numValue = parseInt(value)
     if (!isNaN(numValue)) {
       changeZIndexProperty(numValue)
@@ -296,7 +295,8 @@ z-index: auto | <integer>;
     justify-content: center;
     align-items: center;
   }
-  .common-text{
+
+  .common-text {
     width: 125px;
     height: 125px;
   }
@@ -400,7 +400,6 @@ z-index: auto | <integer>;
     background-color: gray;
     position: relative;
   }
-
 </style>
 
 ```
@@ -432,9 +431,6 @@ web端在**没有其他会产生层叠上下文的属性干扰时**不会创建�
     </view>
   </view>
 </template>
-<script>
-export default {}
-</script>
 <style>
   .square {
     width: 100px;
@@ -464,9 +460,6 @@ web端对`position: fixed;`的元素设置z-index，此元素仍会在所属的�
     </view>
   </view>
 </template>
-<script>
-export default {}
-</script>
 <style>
   .square {
     width: 100px;

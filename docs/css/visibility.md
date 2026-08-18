@@ -5,13 +5,13 @@
 visibility CSS 属性显示或隐藏元素而不更改文档的布局。该属性还可以隐藏 \<table> 中的行或列。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -57,7 +57,7 @@ visibility: visible | hidden | collapse;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -92,7 +92,7 @@ visibility: visible | hidden | collapse;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 visibility </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -138,16 +138,16 @@ visibility: visible | hidden | collapse;
         <view class="demo-box">
           <view>
             <text>native-view: visible</text>
-            <native-view class="common" style="visibility: visible;"></native-view>
+            <test-native-view class="common" style="visibility: visible;"></test-native-view>
           </view>
           <view>
             <text>native-view: hidden</text>
-            <native-view class="common" style="visibility: hidden;"></native-view>
+            <test-native-view class="common" style="visibility: hidden;"></test-native-view>
           </view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -164,7 +164,6 @@ visibility: visible | hidden | collapse;
     visibilityActualImage: ''
   })
 
-  const ins = getCurrentInstance()
 
   const changeVisibility = () => {
     flag = !flag
@@ -175,7 +174,7 @@ visibility: visible | hidden | collapse;
     }
   }
 
-  const visibilityEnum: ItemType[] = [
+  const visibilityEnum : ItemType[] = [
     { value: 0, name: '' },
     { value: 1, name: 'visible' },
     { value: 2, name: 'hidden' }
@@ -191,7 +190,7 @@ visibility: visible | hidden | collapse;
     data.visibilityActualImage = imageRef.value?.style.getPropertyValue('visibility') ?? ''
   }
 
-  const changeVisibilityProperty = (value: string) => {
+  const changeVisibilityProperty = (value : string) => {
     data.visibilityValue = value
     viewRef.value?.style.setProperty('visibility', value)
     textRef.value?.style.setProperty('visibility', value)
@@ -199,17 +198,17 @@ visibility: visible | hidden | collapse;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
-  const radioChangeVisibility = (index: number) => {
-    const selectedItem = visibilityEnum.find((item): boolean => item.value === index)
+  const radioChangeVisibility = (index : number) => {
+    const selectedItem = visibilityEnum.find((item) : boolean => item.value === index)
     if (selectedItem != null) {
       changeVisibilityProperty(selectedItem.name)
     }
   }
 
-  const inputChangeVisibility = (value: string) => {
+  const inputChangeVisibility = (value : string) => {
     changeVisibilityProperty(value)
   }
 
@@ -229,11 +228,13 @@ visibility: visible | hidden | collapse;
     height: 100px;
     background-color: cyan;
   }
+
   .demo-box {
     flex-direction: row;
     margin-top: 10px;
     justify-content: space-around;
   }
+
   .common-dynamic {
     width: 100px;
     height: 100px;
@@ -258,7 +259,6 @@ visibility: visible | hidden | collapse;
     justify-content: center;
     align-items: center;
   }
-
 </style>
 
 ```

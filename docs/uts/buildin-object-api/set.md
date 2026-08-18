@@ -9,9 +9,9 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| values | readonly T[] \| null | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| values | readonly T\[] \| null | 否 | 
 
 
 **返回值**
@@ -22,15 +22,15 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 <!-- UTSJSON.Set.Constructor.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -65,15 +65,15 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -88,9 +88,9 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 如果 Set 对象中没有具有相同值的元素，则 add() 方法将插入一个具有指定值的新元素到 Set 对象中。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | T | 是 |  |   | 要添加到 Set 对象的元素的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| value | T | 是 | 要添加到 Set 对象的元素的值。 | 
 
 
 **返回值**
@@ -116,15 +116,15 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -156,15 +156,15 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -175,9 +175,9 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 从 Set 对象中删除指定的值（如果该值在 Set 中）。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | T | 是 |  |   | 要从 Set 中移除的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| value | T | 是 | 要从 Set 中移除的值。 | 
 
 
 **返回值**
@@ -200,15 +200,15 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -219,10 +219,10 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 对 Set 对象中的每个值按插入顺序执行一次提供的函数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (value: T, value2: T, set: Set\<T>) => void | 是 |  |   | 为集合中每个元素执行的回调函数，该函数接收三个参数：value、key: Set 中正在处理的当前元素。因为 Set 中没有键，所以 value 会被共同传递给这两个参数。set: 调用 forEach() 的 Set 对象。 |
-| thisArg | any | 否 |  |   | 值在执行 callbackFn 时作为 this 使用。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (value: T, value2: T, set: Set\<T>) => void | 是 | 为集合中每个元素执行的回调函数，该函数接收三个参数：value、key: Set 中正在处理的当前元素。因为 Set 中没有键，所以 value 会被共同传递给这两个参数。set: 调用 forEach() 的 Set 对象。 |
+| thisArg | any | 否 | 值在执行 callbackFn 时作为 this 使用。 | 
 
 
 **返回值**
@@ -245,15 +245,15 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -304,9 +304,9 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 返回一个布尔值来指示对应的值是否存在于 Set 对象中。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | T | 是 |  |   | 要测试是否存在于 Set 对象中的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| value | T | 是 | 要测试是否存在于 Set 对象中的值。 | 
 
 
 **返回值**
@@ -332,15 +332,15 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |

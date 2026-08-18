@@ -2,7 +2,7 @@
 
 添加拦截器
 
-### addInterceptor 兼容性 
+### addInterceptor 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.97 | 4.11 | 4.61 |
@@ -10,10 +10,10 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 |  |   | 需要拦截的 API 名称 |
-| interceptor | Interceptor | 是 |  |   | 拦截器 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| name | string | 是 | 需要拦截的 API 名称 |
+| interceptor | Interceptor | 是 | 拦截器 | 
 
 
 
@@ -27,7 +27,7 @@
 
 删除拦截器
 
-### removeInterceptor 兼容性 
+### removeInterceptor 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.97 | 4.11 | 4.61 |
@@ -35,10 +35,10 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 |  |   | 需要删除拦截器的 API 名称 |
-| interceptor | Interceptor | 否 |  |   | 拦截器 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| name | string | 是 | 需要删除拦截器的 API 名称 |
+| interceptor | Interceptor | 否 | 拦截器 | 
 
 
 
@@ -210,9 +210,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ## Tips@tips

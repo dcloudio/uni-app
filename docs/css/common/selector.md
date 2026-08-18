@@ -8,9 +8,9 @@
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
 | 通配选择器 | * {} | 4.0 | x | x | x | x | x |  |
 | 类选择器 | .class {} | 4.0 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |  |
-| 元素选择器 | \[tag]{} | 4.0 | x | x | x | x | x | App平台蒸汽模式支持page选择器 |
-| ID 选择器 | #\[id]{} | 4.0 | x | x | x | x | x |  |
-| 属性选择器 | \[attr]{} | 4.0 | x | x | x | x | x |  |
+| 元素选择器 | \[tag] {} | 4.0 | x | x | x | x | x | App平台蒸汽模式支持page选择器 |
+| ID 选择器 | #\[id] {} | 4.0 | x | x | x | x | x |  |
+| 属性选择器 | \[attr] {} | 4.0 | x | x | x | x | x |  |
 | 分组选择器 | .a, .b {} | 4.0 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |  |
 | 直接子代选择器 | .a > .b {} | 4.0 | 3.9 | 4.11 |   | 4.61 | x |  |
 | 后代选择器 | .a .b {} | 4.0 | 3.9 | 4.11 | x | 4.61 | x |  |
@@ -30,9 +30,9 @@
 
 ```vue
 <template>
-  <div :class="{{docBody}}">
-    <text :class="{{rowDesc}}">描述内容</text>
-  </div>
+  <view :class="docBody">
+    <text :class="rowDesc">描述内容</text>
+  </view>
 </template>
 
 <style>
@@ -47,15 +47,9 @@
   }
 </style>
 
-<script lang="uts">
-  export default {
-    data() {
-      return {
-        rowDesc: 'row-desc1',
-        docBody: 'doc-body1'
-      }
-    }
-  }
+<script setup lang="uts">
+  const rowDesc = ref('row-desc1')
+  const docBody = ref('doc-body1')
 </script>
 ```
 

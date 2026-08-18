@@ -5,13 +5,13 @@
 CSS 属性 border-color 是一个用于设置元素四个边框颜色的快捷属性： border-top-color、border-right-color、border-bottom-color、border-left-color。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -65,7 +65,7 @@ border-color: <color>{1,4};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -99,6 +99,21 @@ border-color: <color>{1,4};
         <view class="demo-box">
           <view class="common" style="border-width: 5px; border-color: rgba(0,255,255,0.5); border-style: solid;"></view>
           <view class="common" style="border-width: 5px; border-color: rgba(0,255,255,0.5); border-style: solid;" flatten></view>
+        </view>
+      </view>
+      <view>
+        <text>border-color: #00f8</text>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-color: #00f8; border-style: solid;"></view>
+          <view class="common" style="border-width: 5px; border-color: #00f8; border-style: solid;" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-color: #0000ff80</text>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-color: #0000ff80; border-style: solid;"></view>
+          <view class="common" style="border-width: 5px; border-color: #0000ff80; border-style: solid;" flatten></view>
         </view>
       </view>
 
@@ -146,7 +161,7 @@ border-color: <color>{1,4};
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-color </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -219,15 +234,8 @@ border-color: <color>{1,4};
         <input-data :defaultValue="data.borderColor" title="border-color 自定义值" type="text" @confirm="inputChangeBorderColor"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-color: cyan 和 #00FF00</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-width: 5px; border-style: solid; border-color: cyan;"></native-view>
-          <native-view class="common" style="border-width: 5px; border-style: solid; border-color: #00FF00;"></native-view>
-        </view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -239,9 +247,10 @@ border-color: <color>{1,4};
     { value: 0, name: '' },
     { value: 1, name: 'blue' },
     { value: 2, name: '#0000ff' },
-    { value: 3, name: 'rgb(0, 0, 255)' },
-    { value: 4, name: 'rgba(0, 0, 255, 0.5)' },
-    { value: 5, name: 'transparent' }
+    { value: 3, name: '#00f8' },
+    { value: 4, name: '#0000ff80' },
+    { value: 5, name: 'rgb(0, 0, 255)' },
+    { value: 6, name: 'rgba(0, 0, 255, 0.5)' }
   ]
 
   const data = reactive({
@@ -269,7 +278,6 @@ border-color: <color>{1,4};
     data.borderColorActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-color') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorderColor = (value: string) => {
     data.borderColor = value
     viewRef.value?.style.setProperty('border-color', value)
@@ -281,7 +289,7 @@ border-color: <color>{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorderColor = (index: number) => {

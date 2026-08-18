@@ -27,7 +27,7 @@ JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的对�
 
 - JSON.parse 解析出来的对象（不是数组），在App平台使用方括号[]访问，即数组下标方式。并且支持第一层对象属性通过`.`运算符访问（推荐使用HBuilderX 5.0+）
 - 如果输入的字符串不是合法的json格式，则会返回 null
-- JSON.parse 接口内部通过[特殊方式读取了范型类型](../generics.md#使用限制)，不支持传入动态的泛型：比如将外层方法的普通泛型参数传入 JSON.parse。
+- JSON.parse 接口内部通过[特殊方式读取了泛型类型](../generics.md#使用限制)，不支持传入动态的泛型：比如将外层方法的普通泛型参数传入 JSON.parse。
 
 ### parse(text, reviver?)
 
@@ -37,8 +37,8 @@ JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的 Jav
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | text | string | 是 |  |   | 要被解析成 JavaScript 值的字符串 |
-| reviver | (this: any, key: string, value: any) => any | 否 |  | Web: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | \[可选]转换器，如果传入该参数 (函数)，可以用来修改解析生成的原始值，调用时机在 parse 函数返回之前。 |
-| ignoreError | boolean | 否 | false | Web: √; Android: 4.41; iOS 系统版本: x; iOS: x; HarmonyOS: √ | \[ignoreError=false]是否要忽略，解析错误时引发的控制台报错，默认为false | 
+| reviver | (this: any, key: string, value: any) => any | 否 |  | Web: x; Android: x; iOS: x; HarmonyOS: x | \[可选] 转换器，如果传入该参数 (函数)，可以用来修改解析生成的原始值，调用时机在 parse 函数返回之前。 |
+| ignoreError | boolean | 否 | false | Web: √; Android: 4.41; iOS: x; HarmonyOS: √ | \[ignoreError=false] 是否要忽略，解析错误时引发的控制台报错，默认为false | 
 
 
 **返回值**
@@ -62,15 +62,15 @@ JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的 Jav
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -86,7 +86,7 @@ JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的值�
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | text | string | 是 |  |   | 要被解析成 JavaScript 值的字符串 |
-| ignoreError | boolean | 否 | false | Web: x; Android: 4.41; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | \[ignoreError=false]是否要忽略，解析错误时引发的控制台报错，默认为false | 
+| ignoreError | boolean | 否 | false | Web: x; Android: 4.41; iOS: x; HarmonyOS: 4.61 | \[ignoreError=false] 是否要忽略，解析错误时引发的控制台报错，默认为false | 
 
 
 **返回值**
@@ -111,15 +111,15 @@ JSON.parse支持传入[泛型](../generics.md)，parse结果可以直接返回�
 
 目前带泛型的 `parse`函数，访问性能高于不带泛型的。
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.90 | 3.9 | √ |
@@ -132,11 +132,11 @@ JSON.parse支持传入[泛型](../generics.md)，parse结果可以直接返回�
 JSON.stringify() 方法将一个 JavaScript 对象或值转换为 JSON 字符串，如果指定了一个 replacer 函数，则可以选择性地替换值，或者指定的 replacer 是数组，则可选择性地仅包含数组指定的属性
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | any \| null | 是 |  |   | 将要序列化成 一个 JSON 字符串的值。 |
-| replacer | any \| null | 否 |  | Web: 4.25; Android: 4.25; iOS: 4.11; HarmonyOS: 4.61 | 如果该参数是一个函数，则在序列化过程中，被序列化的值的每个属性都会经过该函数的转换和处理；如果该参数是一个数组，则只有包含在这个数组中的属性名才会被序列化到最终的 JSON 字符串中；如果该参数为 null 或者未提供，则对象所有的属性都会被序列化。 仅Android/web HBuilder X 4.25之后支持 |
-| space | any \| null | 否 |  | Web: 4.25; Android: 4.25; iOS: 4.11; HarmonyOS: 4.61 | 指定缩进用的空白字符串，用于美化输出（pretty-print）；如果参数是个数字，它代表有多少的空格；上限为 10。该值若小于 1，则意味着没有空格；如果该参数为字符串（当字符串长度超过 10 个字母，取其前 10 个字母），该字符串将被作为空格；如果该参数没有提供（或者为 null），将没有空格。 仅Android/web HBuilder X 4.25之后支持 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| value | any \| null | 是 |   | 将要序列化成 一个 JSON 字符串的值。 |
+| replacer | any \| null | 否 | Web: 4.25; Android: 4.25; iOS: 4.11; HarmonyOS: 4.61 | 如果该参数是一个函数，则在序列化过程中，被序列化的值的每个属性都会经过该函数的转换和处理；如果该参数是一个数组，则只有包含在这个数组中的属性名才会被序列化到最终的 JSON 字符串中；如果该参数为 null 或者未提供，则对象所有的属性都会被序列化。 仅Android/web HBuilder X 4.25之后支持 |
+| space | any \| null | 否 | Web: 4.25; Android: 4.25; iOS: 4.11; HarmonyOS: 4.61 | 指定缩进用的空白字符串，用于美化输出（pretty-print）；如果参数是个数字，它代表有多少的空格；上限为 10。该值若小于 1，则意味着没有空格；如果该参数为字符串（当字符串长度超过 10 个字母，取其前 10 个字母），该字符串将被作为空格；如果该参数没有提供（或者为 null），将没有空格。 仅Android/web HBuilder X 4.25之后支持 | 
 
 
 **返回值**
@@ -177,15 +177,15 @@ JSON.stringify() 方法将一个 JavaScript 对象或值转换为 JSON 字符串
 JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述的对象。<br/>     如果输入的是一个合法的json对象，返回一个对应的UTSJSONObject，如果是json array 或者其他格式的字符串返回null
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  |   | 要被解析成 JavaScript 值的字符串 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| text | string | 是 | 要被解析成 JavaScript 值的字符串 | 
 
 
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| UTSJSONObject \| null | 返回一个UTSJSONObjet 或者 null | 
+| UTSJSONObject \| null | 返回一个UTSJSONObject 或者 null | 
 
 
 ::: preview 
@@ -199,15 +199,15 @@ JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.90 | √ | √ |
@@ -220,9 +220,9 @@ JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述�
 JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述的对象，该对象的类型由泛型参数T决定<br/>     如果输入的是一个合法的json对象，返回一个对应的T对象，如果是json array 或者其他格式的字符串返回null
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  |   | 要被解析成 JavaScript 值的字符串 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| text | string | 是 | 要被解析成 JavaScript 值的字符串 | 
 
 
 **返回值**
@@ -245,15 +245,15 @@ JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.90 | 3.9 | √ |
@@ -266,9 +266,9 @@ JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述�
 JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述的数组。数组元素类型为any<br/>     如果输入的是一个合法的json数组，返回一个对应的Array，如果是json object 或者其他格式的字符串返回null
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  |   | 要被解析成 JavaScript 值的字符串 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| text | string | 是 | 要被解析成 JavaScript 值的字符串 | 
 
 
 **返回值**
@@ -288,15 +288,15 @@ JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.90 | √ | √ |
@@ -309,9 +309,9 @@ JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述�
 JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述的数组。数组元素类型由泛型T决定<br/>     如果输入的是一个合法的json数组，返回一个对应的Array，如果是json object 或者其他格式的字符串返回null
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  |   | 要被解析成 JavaScript 值的字符串 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| text | string | 是 | 要被解析成 JavaScript 值的字符串 | 
 
 
 **返回值**
@@ -331,15 +331,15 @@ JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.90 | √ | √ |
@@ -364,15 +364,15 @@ JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述�
 
 <!-- UTSJSON.IJSONStringify.toJSON.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS 系统版本 | iOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 4.53 | x | x | 4.53 | x |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.53 | x |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 |
 | :- | :- |
 | 4.53 | x |

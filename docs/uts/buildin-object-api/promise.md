@@ -7,9 +7,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 创建一个新的 Promise 对象。该构造函数主要用于封装还没有添加 promise 支持的函数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| fn | (resolve: (value: T) => void, reject: (reason?: any) => void) => void | 是 |  |   | 在构造函数中执行的 function。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| fn | (resolve: (value: T) => void, reject: (reason?: any) => void) => void | 是 | 在构造函数中执行的 function。 | 
 
 
 
@@ -58,15 +58,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -77,9 +77,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 创建一个新的 Promise 对象。该构造函数主要用于封装还没有添加 promise 支持的函数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| fn | (resolve: (value: T) => void) => void | 是 |  |   | 在构造函数中执行的 function。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| fn | (resolve: (value: T) => void) => void | 是 | 在构造函数中执行的 function。 | 
 
 
 
@@ -128,15 +128,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -209,15 +209,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -228,10 +228,10 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 将一个兑现处理器和拒绝处理器附加到 Promise 上，并返回一个新的 Promise，解决为调用处理器得到的返回值，或者如果 Promise 没有被处理（即相关处理器 onFulfilled 或 onRejected 不是函数），则以原始敲定值解决。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| onFulfilled | () => any | 是 |  |   | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
-| onRejected | (...args?: any) => any | 否 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| onFulfilled | () => any | 是 | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
+| onRejected | (...args?: any) => any | 否 | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -292,15 +292,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -311,10 +311,10 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 将一个兑现处理器和拒绝处理器附加到 Promise 上，并返回一个新的 Promise，解决为调用处理器得到的返回值，或者如果 Promise 没有被处理（即相关处理器 onFulfilled 或 onRejected 不是函数），则以原始敲定值解决。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| onFulfilled | () => Promise\<any> | 是 |  |   | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
-| onRejected | (...args?: any) => any | 否 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| onFulfilled | () => Promise\<any> | 是 | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
+| onRejected | (...args?: any) => any | 否 | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -375,15 +375,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -394,10 +394,10 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 将一个兑现处理器和拒绝处理器附加到 Promise 上，并返回一个新的 Promise，解决为调用处理器得到的返回值，或者如果 Promise 没有被处理（即相关处理器 onFulfilled 或 onRejected 不是函数），则以原始敲定值解决。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| onFulfilled | (res: T) => any | 是 |  |   | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
-| onRejected | (...args?: any) => any | 否 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| onFulfilled | (res: T) => any | 是 | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
+| onRejected | (...args?: any) => any | 否 | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -458,15 +458,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -477,10 +477,10 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 将一个兑现处理器和拒绝处理器附加到 Promise 上，并返回一个新的 Promise，解决为调用处理器得到的返回值，或者如果 Promise 没有被处理（即相关处理器 onFulfilled 或 onRejected 不是函数），则以原始敲定值解决。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| onFulfilled | (res: T) => Promise\<any> | 是 |  |   | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
-| onRejected | (...args?: any) => any | 否 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| onFulfilled | (res: T) => Promise\<any> | 是 | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
+| onRejected | (...args?: any) => any | 否 | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -541,15 +541,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -613,15 +613,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -632,9 +632,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 将一个拒绝处理回调函数附加到 Promise 上，并返回一个新的 Promise，如果回调被调用，则解决为回调的返回值，如果 Promise 被兑现，解决为其原始兑现值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| onRejected | () => any | 是 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| onRejected | () => any | 是 | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -689,15 +689,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -708,9 +708,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 将一个拒绝处理回调函数附加到 Promise 上，并返回一个新的 Promise，如果回调被调用，则解决为回调的返回值，如果 Promise 被兑现，解决为其原始兑现值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| onRejected | () => Promise\<any> | 是 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| onRejected | () => Promise\<any> | 是 | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -765,15 +765,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -784,9 +784,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 将一个拒绝处理回调函数附加到 Promise 上，并返回一个新的 Promise，如果回调被调用，则解决为回调的返回值，如果 Promise 被兑现，解决为其原始兑现值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| onRejected | (res?: any) => any | 是 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| onRejected | (res?: any) => any | 是 | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -841,15 +841,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -860,9 +860,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 将一个拒绝处理回调函数附加到 Promise 上，并返回一个新的 Promise，如果回调被调用，则解决为回调的返回值，如果 Promise 被兑现，解决为其原始兑现值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| onRejected | (res?: any) => Promise\<any> | 是 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| onRejected | (res?: any) => Promise\<any> | 是 | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -917,15 +917,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -936,9 +936,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 将一个处理器附加到 Promise 上，并返回一个新的 Promise，当原始 Promise 被解决时解决。无论 Promise 是否被兑现还是被拒绝，处理器都会在 Promise 敲定时被调用。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-|  | (...args?: any) => any | 是 |  |   |  | 
+| 类型 | 必填 |
+| :- | :- |
+| (...args?: any) => any | 是 | 
 
 
 **返回值**
@@ -998,15 +998,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -1058,15 +1058,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -1077,9 +1077,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 返回一个新的 Promise 对象，该对象以给定的值兑现。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | T \| null | 是 |  |   | 一个兑现的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| value | T \| null | 是 | 一个兑现的值。 | 
 
 
 **返回值**
@@ -1122,15 +1122,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -1141,9 +1141,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 返回一个新的 Promise 对象，该对象以给定的值兑现。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | Promise\<T> \| null | 是 |  |   | 一个 Promise。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| value | Promise\<T> \| null | 是 | 一个 Promise。 | 
 
 
 **返回值**
@@ -1186,15 +1186,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -1205,9 +1205,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 返回一个新的 Promise 对象，该对象以给定的原因拒绝。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | any \| null | 否 |  |   | 一个拒绝的原因。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| value | any \| null | 否 | 一个拒绝的原因。 | 
 
 
 **返回值**
@@ -1249,15 +1249,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -1268,9 +1268,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 接受一个 Promise 可迭代对象作为输入，并返回单个 Promise。返回的 Promise 在所有输入的 Promise 都兑现时（包括传入的可迭代对象为空时）被兑现，其值为一个包含所有兑现值的数组。如果输入的任何 Promise 被拒绝，返回的 Promise 也会被拒绝，并返回第一个拒绝的原因。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 |  |   | 一个 Promise 数组。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| arr | Array&lt;Promise&gt; | 是 | 一个 Promise 数组。 | 
 
 
 **返回值**
@@ -1324,15 +1324,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -1343,9 +1343,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 接受一个 Promise 可迭代对象作为输入，并返回单个 Promise。返回的 Promise 与第一个敲定的 Promise 的最终状态保持一致。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 |  |   | 一个 Promise 数组。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| arr | Array&lt;Promise&gt; | 是 | 一个 Promise 数组。 | 
 
 
 **返回值**
@@ -1394,15 +1394,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -1413,9 +1413,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 接受一个 Promise 可迭代对象作为输入，并返回单个 Promise。返回的 Promise 在任何输入的 Promise 兑现时兑现，其值为第一个兑现的值。如果所有输入的 Promise 都被拒绝（包括传入的可迭代对象为空时），返回的 Promise 将以带有一个包含拒绝原因的数组的 AggregateError 拒绝。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 |  |   | 一个 Promise 数组。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| arr | Array&lt;Promise&gt; | 是 | 一个 Promise 数组。 | 
 
 
 **返回值**
@@ -1481,15 +1481,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |
@@ -1500,9 +1500,9 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 接受一个 Promise 可迭代对象作为输入，并返回单个 Promise。返回的 Promise 在所有输入的 Promise 都敲定时兑现（包括传入的可迭代对象为空时），其值为一个描述每个 Promise 结果的对象数组。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 |  |   | 一个 Promise 数组。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| arr | Array&lt;Promise&gt; | 是 | 一个 Promise 数组。 | 
 
 
 **返回值**
@@ -1553,15 +1553,15 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 3.9 | 4.31 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | 3.9 | 4.31 | √ |

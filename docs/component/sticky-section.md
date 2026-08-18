@@ -6,22 +6,21 @@
 
 > 组件类型：UniStickySectionElement 
 
- 吸顶布局容器 
-
- 注意：暂时仅支持作为list-view的子节点, sticky-section不支持css样式！
+ 吸顶布局容器 <br/><br/> 注意：暂时仅支持作为list-view的子节点, sticky-section不支持css样式！
 
 
-### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.11 | 5.0.5 | 4.71 | 5.08 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.11 | 4.71 | 5.08 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| push-pinned-header | boolean | true | Web: x; 微信小程序: x; Android(VDOM): 3.98; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | sticky-section元素重叠时是否继续上推 |
-| padding | Array\<number> | [0,0,0,0\] | Web: 4.02; 微信小程序: x; Android(VDOM): 3.98; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
+| push-pinned-header | boolean | true | Web: x; 微信小程序: x; Android: 3.98; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.21 | sticky-section元素重叠时是否继续上推 |
+| preload | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.21 | sticky-section即使在视图外也预加载内容 |
+| padding | Array\<number> | \[0,0,0,0\] | Web: 4.02; 微信小程序: x; Android(VDOM): 3.98; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
 
 
 
@@ -37,7 +36,7 @@
 
 ```html
 <list-view id="list-view" style="flex: 1; background-color: #f5f5f5;">
-  <sticky-section v-for="sectionId in 3" :id="sectionId" push-pinned-header=false>
+  <sticky-section v-for="sectionId in 3" :id="sectionId" push-pinned-header=false :preload="true">
     <sticky-header>
       <text style="padding: 20px; background-color: #f5f5f5;">sticky-header吸顶--{{sectionId}}</text>
     </sticky-header>
@@ -47,6 +46,12 @@
   </sticky-section>
 </list-view>
 ```
+
+#### preload属性说明
+
+> 仅app平台蒸汽模式支持
+
+preload属性用于控制sticky-section组件的预加载行为，默认值为false。设置为true时，sticky-section组件会在滚动到该section之前就进行渲染，从而避免或减少滚动到该section时出现空白或闪烁的情况。例如在index-bar这种直接跳转到某个section的场景下，设置preload为true可以提升用户体验。参考：[uni-ui-x index-bar示例](https://gitcode.com/dcloud/uni-ui-x/blob/dev/pages/uni-ui/index-bar/index-bar.uvue)
 
 #### 注意事项  
 
@@ -80,18 +85,29 @@
     <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
       <button @click="deleteSection()" size="mini">删除第一组 section</button>
     </list-item>
-    <sticky-section v-for="(section) in pageData.sectionArray" :key="section.name" :padding="pageData.sectionPadding"
+    <sticky-section class="content-section" ref="sectionRefs" style="align-items: stretch; align-content: stretch;" v-for="(section) in pageData.sectionArray" :key="section.name"
+      <!-- #ifndef APP && VUE3-VAPOR -->
+      :padding="pageData.sectionPadding"
+      <!-- #endif -->
+      <!-- #ifdef APP && VUE3-VAPOR -->
+      :preload="true"
+      <!-- #endif -->
       :push-pinned-header="true">
       <sticky-header :id="section.name">
         <text class="sticky-header-text">{{section.name}}</text>
       </sticky-header>
       <list-item v-for="(list) in section.list" :key="list.text" :name="list.text" class="content-item" :type=10>
-        <text class="text">{{list.text}}</text>
+        <text class="content-item-text">{{list.text}}</text>
       </list-item>
     </sticky-section>
     <list-item v-if="pageData.sectionArray.length > 0" style="padding: 10px; margin: 5px 0;align-items: center;" :type=30>
       <!-- <text style="color: #aaa">到底了</text> -->
       <button @click="toTop" size="mini">回到顶部</button>
+    </list-item>
+    <list-item>
+      <navigator url="/pages/component/sticky-section/sticky-section-push-pinned-header">
+        <button>push-pinned-header属性测试</button>
+      </navigator>
     </list-item>
   </list-view>
 </template>
@@ -127,13 +143,15 @@
   } as DataType)
 
   const listViewRef = ref<UniElement | null>(null)
+  const sectionRefs = ref<UniElement[] | null>(null)
 
   const initSectionArray = () => {
     pageData.sectionArray = []
     console.log("initSectionArray start", pageData.sectionArray.length)
-    pageData.data.forEach(key => {
+    pageData.data.forEach((key, index) => {
       const list = [] as sectionListItem[]
-      for (let i = 1; i < 11; i++) {
+      const count = index === pageData.data.length - 1 ? 30 : 11
+      for (let i = 1; i < count; i++) {
         const item = { text: key + "--item--content----" + i } as sectionListItem
         list.push(item)
       }
@@ -205,12 +223,19 @@
     }, 1000)
   }
 
+  const jest_checkPreload = () => {
+    return sectionRefs.value?.every(sectionElement => {
+      return sectionElement.querySelectorAll(".content-item").length > 0;
+    }) ?? false;
+  }
+
   defineExpose({
     pageData,
     deleteSection,
     listViewScrollByY,
     toTop,
-    gotoStickyHeader
+    gotoStickyHeader,
+    jest_checkPreload
   })
 </script>
 
@@ -227,9 +252,19 @@
     background-color: #f5f5f5;
   }
 
+  .content-section {
+    /* #ifdef APP && VUE3-VAPOR */
+    /* 蒸汽模式sticky-section支持padding样式，不支持padding属性 */
+    padding: 0px 10px 0px 10px;
+    /* #endif */
+  }
+
   .content-item {
+    padding-bottom: 10px;
+  }
+
+  .content-item-text {
     padding: 15px;
-    margin-bottom: 10px;
     background-color: #fff;
   }
 </style>

@@ -24,15 +24,15 @@ console.log(map.get('key1')) // 跨端用法
 | Map\<any, any> | Map 对象。 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -45,9 +45,9 @@ console.log(map.get('key1')) // 跨端用法
 
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entries | readonly (readonly \\[K, V])[]\| null | 否 |  |   | 元素为键值对的数组，eg: \[[key1, value1], [key2, value2]] | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| entries | readonly (readonly \[K, V])\[] \| null | 否 | 元素为键值对的数组，eg: \[[key1, value1], \[key2, value2]\] | 
 
 
 **返回值**
@@ -56,15 +56,15 @@ console.log(map.get('key1')) // 跨端用法
 | Map\<K, V> | Map 对象。 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -98,15 +98,15 @@ Map 对象的成员数量。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -142,15 +142,15 @@ Map 对象的成员数量。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -161,9 +161,9 @@ Map 对象的成员数量。
 用于移除 Map 对象中指定的元素。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| key | K | 是 |  |   | 要从 Map 对象中删除的元素的键。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| key | K | 是 | 要从 Map 对象中删除的元素的键。 | 
 
 
 **返回值**
@@ -188,15 +188,15 @@ Map 对象的成员数量。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -207,10 +207,10 @@ Map 对象的成员数量。
 按照插入顺序依次对 Map 中每个键/值对执行一次给定的函数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (value: any, key: any, map: Map\<K, V>) => void | 是 |  |   | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 key: 每个迭代的键。 map: 正在迭代的 Map。 |
-| thisArg | any | 否 |  |   | 在 callbackfn 执行中使用的 this 的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (value: any, key: any, map: Map\<K, V>) => void | 是 | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 key: 每个迭代的键。 map: 正在迭代的 Map。 |
+| thisArg | any | 否 | 在 callbackfn 执行中使用的 this 的值。 | 
 
 
 **返回值**
@@ -235,15 +235,15 @@ Map 对象的成员数量。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -255,10 +255,10 @@ Map 对象的成员数量。
 按照插入顺序依次对 Map 中每个键/值对执行一次给定的函数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (value: any) => void | 是 |  |   | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 |
-| thisArg | any | 否 |  |   | 在 callbackfn 执行中使用的 this 的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (value: any) => void | 是 | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 |
+| thisArg | any | 否 | 在 callbackfn 执行中使用的 this 的值。 | 
 
 
 **返回值**
@@ -283,15 +283,15 @@ Map 对象的成员数量。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -304,10 +304,10 @@ Map 对象的成员数量。
 按照插入顺序依次对 Map 中每个键/值对执行一次给定的函数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (value: any, key: any) => void | 是 |  |   | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 key: 每个迭代的键。 |
-| thisArg | any | 否 |  |   | 在 callbackfn 执行中使用的 this 的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (value: any, key: any) => void | 是 | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 key: 每个迭代的键。 |
+| thisArg | any | 否 | 在 callbackfn 执行中使用的 this 的值。 | 
 
 
 **返回值**
@@ -332,15 +332,15 @@ Map 对象的成员数量。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -353,9 +353,9 @@ Map 对象的成员数量。
 从 Map 对象返回指定的元素。如果与所提供的键相关联的值是一个对象，那么你将获得该对象的引用，对该对象所做的任何更改都会有效地在 Map 对象中修改它。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| key | K | 是 |  |   | 从 Map 对象返回的元素的键。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| key | K | 是 | 从 Map 对象返回的元素的键。 | 
 
 
 **返回值**
@@ -376,15 +376,15 @@ Map 对象的成员数量。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -395,9 +395,9 @@ Map 对象的成员数量。
 返回一个布尔值，指示具有指定键的元素是否存在。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| key | K | 是 |  |   | 用于测试 Map 对象中是否存在的元素的键。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| key | K | 是 | 用于测试 Map 对象中是否存在的元素的键。 | 
 
 
 **返回值**
@@ -421,15 +421,15 @@ Map 对象的成员数量。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |
@@ -440,10 +440,10 @@ Map 对象的成员数量。
 为 Map 对象添加或更新一个指定了键（key）和值（value）的（新）键值对。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| key | K | 是 |  |   | 要添加到 Map 对象的元素的键。该值可以是任何数据类型（任何原始值或任何类型的对象）。 |
-| value | V | 是 |  |   | 要添加到 Map 对象的元素的值。该值可以是任何数据类型（任何原始值或任何类型的对象）。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| key | K | 是 | 要添加到 Map 对象的元素的键。该值可以是任何数据类型（任何原始值或任何类型的对象）。 |
+| value | V | 是 | 要添加到 Map 对象的元素的值。该值可以是任何数据类型（任何原始值或任何类型的对象）。 | 
 
 
 **返回值**
@@ -467,15 +467,15 @@ Map 对象的成员数量。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | √ | √ |

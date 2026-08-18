@@ -9,7 +9,7 @@
  可滚动视图容器
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -18,29 +18,30 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| type | string |   | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61 | 渲染模式，用于支持使用 nested-scroll-header、nested-scroll-body 实现嵌套滚动 |
+| type | string |   | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61 | 渲染模式，蒸汽（Vapor）模式已废弃 |
 | direction | string | "vertical" | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 滚动方向，可取值 none、all、horizontal、vertical，默认值vertical |
-| ~~scroll-x~~ | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: x | 允许横向滚动，不支持同时设置scroll-y属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
-| ~~scroll-y~~ | boolean | true | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: x | 允许竖向滚动，不支持同时设置scroll-x属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
-| ~~rebound~~ | boolean | true | Web:  ; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x | 是否开启回弹效果。已废弃，请改用bounces |
+| ~~scroll-x~~ | boolean | false | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: x | 允许横向滚动，不支持同时设置scroll-y属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
+| ~~scroll-y~~ | boolean | true | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: x | 允许竖向滚动，不支持同时设置scroll-x属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
+| ~~rebound~~ | boolean | true | 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: x | 是否开启回弹效果。已废弃，请改用bounces |
 | associative-container | string |   | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61 | 关联的滚动容器 |
 | enable-back-to-top | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 4.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 点击系统状态栏滚动条返回顶部，只支持竖向 |
-| bounces | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 是否开启回弹效果 优先级高于rebound |
+| bounces | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 是否开启回弹效果，优先级高于rebound |
 | upper-threshold | number | 50 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
 | lower-threshold | number | 50 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 距底部/右边多远时（单位px），触发 scrolltolower 事件 |
 | scroll-top | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置竖向滚动条位置 |
 | scroll-left | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置横向滚动条位置 |
-| scroll-into-view | string([string.IDString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素起始位置 |
+| scroll-into-view | string([string.IDString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在此方向滚动到该元素起始位置 |
 | scroll-with-animation | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画 |
-| refresher-enabled | boolean | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 开启下拉刷新，暂时不支持scroll-x = true横向刷新 |
+| refresher-enabled | boolean | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 开启下拉刷新，仅支持竖向滚动的刷新，暂时不支持横向滚动的刷新 |
 | refresher-threshold | number | 45 | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置下拉刷新阈值 |
 | refresher-max-drag-distance | number |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置下拉最大拖拽距离（单位px），默认是下拉刷新控件高度的2.5倍 |
 | refresher-default-style | string | "black" | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置下拉刷新默认样式，支持设置 black \| white \| none， none 表示不使用默认样式 |
 | refresher-background | string([string.ColorString](/uts/data-type.md#ide-string)) | "transparent" | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置下拉刷新区域背景颜色，默认透明 |
 | refresher-triggered | boolean | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发 |
 | show-scrollbar | boolean | true | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 控制是否出现滚动条 |
-| custom-nested-scroll | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
-| nested-scroll-child | string([string.IDString](/uts/data-type.md#ide-string)) | "" | Web: x; 微信小程序: x; Android: 3.97; iOS: x; HarmonyOS: x | 嵌套滚动子元素的id属性，不支持ref，scroll-view惯性滚动时会让对应id元素视图进行滚动，子元素滚动时会触发scroll-view的nestedprescroll事件，嵌套子元素需要设置custom-nested-scroll = true |
+| custom-nested-scroll | boolean | false | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: x | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
+| nested-scroll-child | string([string.IDString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; Android(VDOM): 3.97; Android(Vapor): x; iOS: x; HarmonyOS: x | 嵌套滚动子元素的id属性，不支持ref，scroll-view惯性滚动时会让对应id元素视图进行滚动，子元素滚动时会触发scroll-view的nestedprescroll事件，嵌套子元素需要设置custom-nested-scroll = true |
+| android-overscroll | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: x; HarmonyOS: x | Android平台是否开启弹簧回弹效果，开启后默认下拉刷新使用圆弧loading样式（推动页面内容），否则默认下拉刷新使用Android系统悬浮圆环样式（不推动页面内容） |
 | enable-passive | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>开启 passive 特性，能优化一定的滚动性能 |
 | fast-deceleration | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>滑动减速速率控制, 仅在 iOS 下生效 (同时开启 enhanced 属性后生效) |
 | @refresherpulling | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 下拉刷新控件被下拉 |
@@ -51,9 +52,9 @@
 | @scrolltolower | (event: [UniScrollToLowerEvent](#uniscrolltolowerevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 滚动到底部/右边，会触发 scrolltolower 事件 |
 | @scroll | (event: [UniScrollEvent](#uniscrollevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} |
 | @scrollend | (event: [UniScrollEvent](#uniscrollevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 滚动结束时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} |
-| @startnestedscroll | (event: [UniStartNestedScrollEvent](#unistartnestedscrollevent)) => Boolean |   | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x | 子元素开始滚动时触发, return true表示与子元素开启滚动协商 默认return false! event = {node} |
-| @nestedprescroll | (event: [UniNestedPreScrollEvent](#uninestedprescrollevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x | 子元素滚动时触发，可执行event.consumed(x,y)告知子元素deltaX、deltaY各消耗多少。子元素将执行差值后的deltaX、deltaY滚动距离。不执行consumed(x,y)则表示父元素不消耗deltaX、deltaY。event = {deltaX, deltaY} |
-| @stopnestedscroll | (event: [UniStopNestedScrollEvent](#unistopnestedscrollevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x | 子元素滚动结束或意外终止时触发 |
+| @startnestedscroll | (event: [UniStartNestedScrollEvent](#unistartnestedscrollevent)) => Boolean |   | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: x | 子元素开始滚动时触发, return true表示与子元素开启滚动协商 默认return false! event = {node} |
+| @nestedprescroll | (event: [UniNestedPreScrollEvent](#uninestedprescrollevent)) => void |   | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: x | 子元素滚动时触发，可执行event.consumed(x,y)告知子元素deltaX、deltaY各消耗多少。子元素将执行差值后的deltaX、deltaY滚动距离。不执行consumed(x,y)则表示父元素不消耗deltaX、deltaY。event = {deltaX, deltaY} |
+| @stopnestedscroll | (event: [UniStopNestedScrollEvent](#unistopnestedscrollevent)) => void |   | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: x | 子元素滚动结束或意外终止时触发 |
 | @dragstart | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>滑动开始事件 (同时开启 enhanced 属性后生效) detail { scrollTop, scrollLeft } |
 | @dragging | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>滑动事件 (同时开启 enhanced 属性后生效) detail { scrollTop, scrollLeft } |
 | @dragend | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>滑动结束事件 (同时开启 enhanced 属性后生效) detail { scrollTop, scrollLeft, velocity } |
@@ -62,16 +63,16 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| nested | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61 | 嵌套模式。用于处理父子 scroll-view 间的嵌套滚动，此时子节点只能是 nested-scroll-header nested-scroll-body 组件或自定义 refresher |
+| nested | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61 | 嵌套模式，支持使用 nested-scroll-header、nested-scroll-body 实现嵌套滚动，蒸汽（Vapor）模式已废弃 |
 
 #### direction 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| none | Web: 4.0; 微信小程序:  ; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 禁止滚动 |
-| all | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 横向/竖向可同时滚动 |
-| horizontal | Web: 4.0; 微信小程序:  ; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 横向滚动 |
-| vertical | Web: 4.0; 微信小程序:  ; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 竖向滚动 |
+| none | Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 禁止滚动 |
+| all | Web: 4.0; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 横向/竖向可同时滚动 |
+| horizontal | Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 横向滚动 |
+| vertical | Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 竖向滚动 |
 
 #### associative-container 的属性描述
 
@@ -99,15 +100,15 @@ UniRefresherEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniRefresherEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniRefresherEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniRefresherEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| dy | number | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| dy | number | 是 |
 
 
 #### UniScrollToUpperEvent
@@ -120,15 +121,15 @@ UniScrollToUpperEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollToUpperEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToUpperEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollToUpperEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 |  |   | 滚动方向 top 或 left |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| direction | string | 是 | 滚动方向 top 或 left |
 
 
 #### UniScrollToLowerEvent
@@ -141,15 +142,15 @@ UniScrollToLowerEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollToLowerEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToLowerEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollToLowerEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 |  |   | 滚动方向 bottom 或 right |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| direction | string | 是 | 滚动方向 bottom 或 right |
 
 
 #### UniScrollEvent
@@ -162,20 +163,20 @@ UniScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| scrollTop | number | 是 |  |   | 竖向滚动的距离 |
-| scrollLeft | number | 是 |  |   | 横向滚动的距离 |
-| scrollHeight | number | 是 |  |   | 滚动区域的高度 |
-| scrollWidth | number | 是 |  |   | 滚动区域的宽度 |
-| deltaY | number | 是 |  |   | 当次滚动事件竖向滚动量 |
-| deltaX | number | 是 |  |   | 当次滚动事件横向滚动量 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| scrollTop | number | 是 | 竖向滚动的距离 |
+| scrollLeft | number | 是 | 横向滚动的距离 |
+| scrollHeight | number | 是 | 滚动区域的高度 |
+| scrollWidth | number | 是 | 滚动区域的宽度 |
+| deltaY | number | 是 | 当次滚动事件竖向滚动量 |
+| deltaX | number | 是 | 当次滚动事件横向滚动量 |
 
 
 #### UniStartNestedScrollEvent
@@ -188,10 +189,10 @@ UniStartNestedScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniStartNestedScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| node | [UniElement](/api/dom/unielement.md) | 是 |  |   | 开始滚动子节点对象 |
-| isTouch | boolean | 是 |  | Web:  ; 微信小程序:  ; Android: 3.99; iOS: x; HarmonyOS:   | 是否由触摸行为发生的Event |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| node | [UniElement](/api/dom/unielement.md) | 是 |   | 开始滚动子节点对象 |
+| isTouch | boolean | 是 | Android: 3.99; iOS: x | 是否由触摸行为发生的Event |
 
 
 #### UniNestedPreScrollEvent
@@ -204,17 +205,17 @@ UniNestedPreScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniNestedPreScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| deltaX | number | 是 |  |   | x轴滚动距离 |
-| deltaY | number | 是 |  |   | y轴滚动距离 |
-| isTouch | boolean | 是 |  | Web:  ; 微信小程序:  ; Android: 3.99; iOS: x; HarmonyOS:   | 是否由触摸行为发生的Event |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deltaX | number | 是 |   | x轴滚动距离 |
+| deltaY | number | 是 |   | y轴滚动距离 |
+| isTouch | boolean | 是 | Android: 3.99; iOS: x | 是否由触摸行为发生的Event |
 
 
 ##### UniNestedPreScrollEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| consumed | (consumedX: number, consumedY: number) => void | 是 |  |   | 通知到子节点x,y轴滚动距离的消耗 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| consumed | (consumedX: number, consumedY: number) => void | 是 | 通知到子节点x,y轴滚动距离的消耗 |
 
 #### UniStopNestedScrollEvent
 
@@ -226,23 +227,57 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniStopNestedScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| isTouch | boolean | 是 |  |   | 是否由触摸行为发生的Event |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| isTouch | boolean | 是 | 是否由触摸行为发生的Event |
 
 
 
 <!-- UTSCOMJSON.scroll-view.component_type-->
 
-### 自定义下拉刷新样式
+### 子组件 @children-tags
+支持所有组件
+
+### Android的overscroll、bounce、下拉刷新说明@overscroll
+
+overscroll，中文译为过度滚动。
+
+Android原生的滚动容器，在滚动到边缘时，并不能继续滚动，也就是不能overscroll。而iOS、鸿蒙、web、小程序，都支持overscroll。
+
+支持overscroll，意味着滚动到边缘时继续拉，还能拉动，松手后会回弹。
+
+而Android原生不能overscroll，所以滚动到边缘继续拉，是拉伸效果（低版本是弧光）。
+
+uni-app x 的Android版，在蒸汽模式下支持了overscroll属性，默认是Android原生表现，配置overscroll为true时，可达到iOS、鸿蒙、web、小程序相同的效果。
+
+需注意：bounce属性和下拉刷新若干属性的表现，是受overscroll的影响的。
+
+- overscroll为false时
+	即原生Android效果。\
+	配置了bounce为true，bounce效果是拉伸（低版本是弧光）。\
+	开启下拉刷新后，下拉刷新也是Android原生效果，一个悬浮圆球中有个圆弧箭头被拉了下来。此时不会出现类iOS的下拉刷新，因为没有滚动内容外区域可以展示loading。
+	此时圆弧箭头的背景圆的颜色，通过属性refresher-background来设置，且不支持透明。
+- overscroll为true时
+	即类似iOS效果。滚动到边缘继续拉还能再拉出内容。\
+	配置了bounce为true，bounce效果是弹簧。\
+	开启下拉刷新后，下拉刷新会拉出[loading组件](./loading.md)。
+
+默认的下拉刷新自定义能力不足，推荐使用下面的[自定义下拉刷新](#customrefresh)
+
+在VDOM模式时，Android的scroll-view开启下拉刷新后，上方使用的是回弹效果，下方使用的是拉伸效果，下拉刷新使用的是iOS雪花，存在UI逻辑不统一问题。在蒸汽模式不再存在此问题，但升级时需要注意这种差别。
+
+### 自定义下拉刷新样式@customrefresh
 
 1. 设置`refresher-default-style`属性为 none 不使用默认样式
 2. 自定义下拉刷新元素必须要声明为 slot="refresher"，需要设置刷新元素宽高信息否则可能无法正常显示！
 3. 通过组件提供的refresherpulling、refresherrefresh、refresherrestore、refresherabort下拉刷新事件调整自定义下拉刷新元素！实现预期效果
 
+uni-ui x 提供了开源的自定义下拉刷新组件，可以体验：[uni-refresh-box](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-refresh-box.html)
+
 **注意：**
 - 安卓、iOS平台目前自定义下拉刷新元素不支持放在scroll-view的首个子元素位置上。可能无法正常显示
 - 鸿蒙平台自定义下拉刷新元素要放在最后一个子元素的位置，否则顶部可能出现空白区域
+- 支付宝小程序不支持通过 `slot="refresher"` 自定义下拉刷新内容，相关内容需通过条件编译排除支付宝小程序
 
 ```vue
 <scroll-view refresher-default-style="none" :refresher-enabled="true" :refresher-triggered="refresherTriggered"
@@ -264,6 +299,16 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 **具体代码请参考：**[自定义下拉刷新样式示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/component/scroll-view/scroll-view-custom-refresher-props.uvue)
 
 ### 嵌套模式@nested-scroll-view
+
+VDOM模式的scroll-view嵌套滚动需要更多手工工作。而蒸汽模式已经简化。
+
+### 蒸汽模式
+
+蒸汽模式已废弃 `type` 属性，只需要设置内层 scroll-view 的 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。
+
+蒸汽模式已废弃 `nested-scroll-header` 和 `nested-scroll-body` 组件的限制要求，嵌套滚动中外层 scroll-view 中可以不使用 `nested-scroll-header` 和 `nested-scroll-body`，在内层 scrol-view 中设置 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。
+
+#### VDOM模式
 
 当存在两个 scroll-view 相互嵌套的场景时，两者滚动存在冲突不能很丝滑的进行衔接，可将外层 scroll-view 改成嵌套模式，这样可以让两个 scroll-view 的滚动衔接起来。
 
@@ -291,8 +336,6 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 1. 设置外层 scroll-view 的 type 属性为 "nested"（），将外层 scroll-view 改成嵌套模式
 2. 设置内层 scroll-view 的 `associative-container`  属性为 "nested-scroll-view"，开启内层 scroll-view 支持与外层 scroll-view 嵌套滚动
 
-> 蒸汽模式已废弃 `type` 属性，只需要设置内层 scroll-view 的 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。
-
 
 **嵌套滚动策略：**
 
@@ -306,9 +349,6 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 + `nested-scroll-header` 只能渲染在 `nested-scroll-body` 上面
 + 与nested-scroll嵌套滚动协商互不兼容，`nested-scroll-header` 和 `nested-scroll-body`优先级高于nested-scroll嵌套滚动协商
 + 内层滚动视图支持 scroll-view、list-view、waterflow
-
-> 蒸汽模式已废弃 `nested-scroll-header` 和 `nested-scroll-body` 组件的限制要求，嵌套滚动中外层 scroll-view 中可以不使用 `nested-scroll-header` 和 `nested-scroll-body`，在内层 scrol-view 中设置 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。
-
 
 **具体代码请参考：**[嵌套模式示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/long-list-nested/long-list-nested.uvue)
 
@@ -360,29 +400,37 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 6. 滚动行为停止后会触发`stopnestedscroll`事件
 
 **注意：**
-+ 仅Android平台支持嵌套滚动协商
++ 嵌套滚动协商仅在 Android + VDOM 模式下支持，蒸气模式下无效
 + 嵌套滚动协商仅支持竖向滚动，横向滚动不支持
 + nested-scroll-child设置的元素必须配置custom-nested-scroll = true，否则配置无效
 + 与`nested-scroll-header` 和 `nested-scroll-body`不兼容，scroll-view 设置嵌套模式后，嵌套滚动手势协商相关事件将不会触发
 
 **具体代码请参考：**[nested-scroll嵌套滚动示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/long-list-perf/long-list-perf.uvue)
 
-#### App平台
+### tips
 
-+ App-Android、App-iOS平台scroll-x、scroll-y属性不支持同时设置为true, 同时设置true时仅scroll-y生效，4.0版本开始scroll-x、scroll-y已废弃，请使用direction属性。
-如需同时水平和垂直滚动，可以套2层，一个横一个竖，来实现2个方向能滚动。
+#### App平台通用注意事项
++ App-Android、App-iOS平台的滚动方向不能同时横竖，如需同时水平和垂直滚动，可以套2层，一个横一个竖，来实现2个方向能滚动。
 + App平台scroll-view组件不支持动态切换横竖滚动方向
 + App平台scroll-view组件的overflow属性不支持配置visible
 + App平台scroll-view组件默认高度取值：
 	- scroll-view组件的子元素高度之和未超过scroll-view组件的父元素高度：
 		+ scroll-view组件的默认高度取值为子元素高度之和
 	- scroll-view组件的子元素高度之和超过scroll-view组件的父元素高度：
-		+ 3.9版本scroll-view组件默认高度取值为scroll-view组件父元素的高度。子元素高度之和超过scroll-view组件的高度，scroll-view组件可滚动。
 		+ 4.0版本开始scroll-view组件的默认高度取值为子元素高度之和。
-    注意：scroll-view组件的内容高度需要大于scroll-view组件的高度，才能滚动。如未给scroll-view设置高度，那么其高度默认与子内容相同，就会导致无法滚动。开发者需要设置css属性定义scroll-view组件高度，让scroll-view组件高度小于子元素高度之和，实现滚动能力。可以指定scroll-view的height，也可以设置flex:1来撑满剩余空间。
+    
++ scroll-view无法滚动注意事项：
+	scroll-view组件的内容高度需要大于scroll-view组件的高度，才能滚动。
+	如未给scroll-view设置高度，那么其高度默认与子内容相同，就会导致无法滚动。\
+	开发者需要设置css属性定义scroll-view组件高度，让scroll-view组件高度小于子元素高度之和，实现滚动能力。可以指定scroll-view的height，也可以设置flex:1来撑满剩余空间。
+		
++ 横向滚动时注意关注flex方向，子内容如需横向排布需要加`flex-direction: row`。
 
-### 子组件 @children-tags
-支持所有组件
+#### App平台蒸汽模式注意事项
+
+
+#### App平台VDOM模式注意事项
+
 
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/scroll-view/scroll-view.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/scroll-view/scroll-view.uvue) 
@@ -393,76 +441,74 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view" :direction="data.scrollDirection">
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <scroll-view class="page-scroll-view">
   <!-- #endif -->
-    <view>
-      <page-head title="scroll-view,区域滚动视图"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <view class="uni-title uni-common-mt">
-          <text class="uni-title-text">Vertical Scroll</text>
-          <text class="uni-subtitle-text">纵向滚动</text>
-        </view>
-        <view>
-          <scroll-view :scroll-top="data.scrollTop" direction="vertical" class="scroll-Y" scroll-with-animation="true"
-            @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll" @scrollend="end"
-            :show-scrollbar="data.showScrollbar" id="verticalScrollView">
-            <view class="scroll-view-item uni-bg-red"><text class="text">A</text></view>
-            <view class="scroll-view-item uni-bg-green"><text class="text">B</text></view>
-            <view class="scroll-view-item uni-bg-blue"><text class="text">C</text></view>
-          </scroll-view>
-        </view>
-        <view @tap="goTop" class="uni-center uni-common-mt">
-          <text class="uni-link">点击这里返回顶部</text>
-        </view>
-
-        <view class="uni-title uni-common-mt">
-          <text class="uni-title-text">Horizontal Scroll</text>
-          <text class="uni-subtitle-text">横向滚动</text>
-        </view>
-        <view>
-          <scroll-view class="scroll-view_H" direction="horizontal" @scroll="scroll" @scrollend="end"
-            :scroll-left="data.scrollLeft" :show-scrollbar="data.showScrollbar">
-            <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
-            <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
-            <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
-          </scroll-view>
-        </view>
-        <boolean-data :defaultValue="false" title="是否禁用外层scroll-view滚动" @change="change_disabled_boolean"></boolean-data>
-
-        <text class="uni-title-text">scroll-view样式大合集</text>
-        <scroll-view class="scroll-view-style-demo" direction="vertical">
-          <view class="style-demo-item uni-bg-red"><text class="text">1</text></view>
-          <view class="style-demo-item uni-bg-green"><text class="text">2</text></view>
-          <view class="style-demo-item uni-bg-blue"><text class="text">3</text></view>
-        </scroll-view>
-
-        <navigator url="/pages/component/scroll-view/scroll-view-props" hover-class="none">
-          <button type="primary" class="button">
-            非下拉刷新的属性示例
-          </button>
-        </navigator>
-        <view class="uni-common-pb"></view>
-
-        <navigator url="/pages/component/scroll-view/scroll-view-refresher-props" hover-class="none">
-          <button type="primary" class="button">
-            下拉刷新的属性示例
-          </button>
-        </navigator>
-        <view class="uni-common-pb"></view>
-        <navigator url="/pages/component/scroll-view/scroll-view-refresher" hover-class="none">
-          <button type="primary" class="button"> 默认下拉刷新示例 </button>
-        </navigator>
-        <view class="uni-common-pb"></view>
-        <navigator url="/pages/component/scroll-view/scroll-view-custom-refresher-props" hover-class="none">
-          <button type="primary" class="button">
-            自定义下拉刷新示例
-          </button>
-        </navigator>
-        <view class="uni-common-pb"></view>
+    <page-head title="scroll-view,区域滚动视图"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text">Vertical Scroll</text>
+        <text class="uni-subtitle-text">纵向滚动</text>
       </view>
+      <view>
+        <scroll-view :scroll-top="data.scrollTop" :direction="data.scrollDirection" class="scroll-Y" scroll-with-animation="true"
+          @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll" @scrollend="end"
+          :show-scrollbar="data.showScrollbar" id="verticalScrollView">
+          <view class="scroll-view-item uni-bg-red"><text class="text">A</text></view>
+          <view class="scroll-view-item uni-bg-green"><text class="text">B</text></view>
+          <view class="scroll-view-item uni-bg-blue"><text class="text">C</text></view>
+        </scroll-view>
+      </view>
+      <view @tap="goTop" class="uni-center uni-common-mt">
+        <text class="uni-link">点击这里返回顶部</text>
+      </view>
+      <boolean-data :defaultValue="false" title="是否禁用scroll-view滚动" @change="change_disabled_boolean"></boolean-data>
+
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text">Horizontal Scroll</text>
+        <text class="uni-subtitle-text">横向滚动</text>
+      </view>
+      <view>
+        <scroll-view class="scroll-view_H" direction="horizontal" @scroll="scroll" @scrollend="end"
+          :scroll-left="data.scrollLeft" :show-scrollbar="data.showScrollbar">
+          <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
+          <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
+          <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
+        </scroll-view>
+      </view>
+
+      <text class="uni-title-text">scroll-view样式大合集</text>
+      <scroll-view class="scroll-view-style-demo" direction="vertical">
+        <view class="style-demo-item uni-bg-red"><text class="text">1</text></view>
+        <view class="style-demo-item uni-bg-green"><text class="text">2</text></view>
+        <view class="style-demo-item uni-bg-blue"><text class="text">3</text></view>
+      </scroll-view>
+
+      <navigator url="/pages/component/scroll-view/scroll-view-props" hover-class="none">
+        <button type="primary" class="button">
+          非下拉刷新的属性示例
+        </button>
+      </navigator>
+      <view class="uni-common-pb"></view>
+
+      <navigator url="/pages/component/scroll-view/scroll-view-refresher-props" hover-class="none">
+        <button type="primary" class="button">
+          下拉刷新的属性示例
+        </button>
+      </navigator>
+      <view class="uni-common-pb"></view>
+      <navigator url="/pages/component/scroll-view/scroll-view-refresher" hover-class="none">
+        <button type="primary" class="button"> 默认下拉刷新示例 </button>
+      </navigator>
+      <view class="uni-common-pb"></view>
+      <navigator url="/pages/component/scroll-view/scroll-view-custom-refresher-props" hover-class="none">
+        <button type="primary" class="button">
+          自定义下拉刷新示例
+        </button>
+      </navigator>
+      <view class="uni-common-pb"></view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

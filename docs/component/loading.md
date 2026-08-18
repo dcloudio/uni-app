@@ -11,7 +11,7 @@
 加载组件。利用系统GPU进行加速渲染，不受主线程繁忙影响。
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 5.0 | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -70,9 +70,18 @@
         </view>
         <view class="item">
           <text class="label">背景圈黑色，前景白色</text>
+          <!-- #ifndef APP-HARMONY -->
           <view style="width: 17px;height: 17px;border-radius: 8.5px;border: black 2px solid;align-items: center;justify-content: center;overflow: visible;">
             <loading style="border-color: white;" bold />
           </view>
+          <!-- #endif -->
+          <!-- #ifdef APP-HARMONY -->
+          <!-- 鸿蒙上父 border 会覆盖在子上 -->
+          <view style="width: 17px;height: 17px;background-color:black;border-radius:50%;align-items: center;justify-content: center;overflow: visible;position: relative;">
+            <view style="width: 13px;height: 13px;background-color:white;border-radius:50%;position: absolute;"></view>
+            <loading style="border-color: white;" bold />
+          </view>
+          <!-- #endif -->
         </view>
       </view>
     </view>

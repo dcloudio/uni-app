@@ -13,7 +13,7 @@
 相机组件
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.61 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -22,14 +22,14 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| flash | auto \| on \| off \| torch | "auto" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS:   | 闪光灯，值为auto, on, off, torch |
-| device-position | back \| front | "back" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS:   | 前置或后置，值为front, back |
+| flash | auto \| on \| off \| torch | "auto" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61 | 闪光灯，值为auto, on, off, torch |
+| device-position | back \| front | "back" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61 | 前置或后置，值为front, back |
 | mode | normal \| scanCode | "normal" | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | *(string)*<br/>应用模式，只在初始化时有效，不能动态变更 |
 | resolution | low \| medium \| high | "medium" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | *(string)*<br/>分辨率，不支持动态修改 |
 | frame-size | small \| medium \| large | "medium" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | *(string)*<br/>指定期望的相机帧数据尺寸 |
 | photo-resolution | low \| medium \| high \| original | "medium" | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | *(string)*<br/>指定期望的拍照图片分辨率，不支持动态修改 |
-| @stop | (event: [UniCameraStopEvent](#unicamerastopevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS:   | 摄像头在非正常终止时触发，如退出后台等情况 |
-| @error | (event: [UniCameraErrorEvent](#unicameraerrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS:   | 用户不允许使用摄像头时触发 |
+| @stop | (event: [UniCameraStopEvent](#unicamerastopevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61 | 摄像头在非正常终止时触发，如退出后台等情况 |
+| @error | (event: [UniCameraErrorEvent](#unicameraerrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61 | 用户不允许使用摄像头时触发 |
 | @initdone | (event: [UniCameraInitDoneEvent](#unicamerainitdoneevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | *(eventhandle)*<br/>相机初始化完成时触发，`e.detail = {maxZoom}` |
 | @scancode | (event: [UniCameraScanCodeEvent](#unicamerascancodeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | *(eventhandle)*<br/>在扫码识别成功时触发，仅在 mode="scanCode" 时生效 |
 
@@ -96,14 +96,14 @@ UniCameraStopEvent -- Extends --> UniCustomEvent&ltUniCameraStopEventDetail&gt
 
 
 ###### UniCameraStopEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errorCause | string | 否 |  |   |  |
-| errSubject | string | 否 |  |   |  |
-| errCode | number | 否 |  |   |  |
-| errMsg | string | 否 |  |   |  |
-| data | Object | 否 |  |   |  |
-| cause | Object | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| errorCause | string | 否 |
+| errSubject | string | 否 |
+| errCode | number | 否 |
+| errMsg | string | 否 |
+| data | Object | 否 |
+| cause | Object | 否 |
 
 
 #### UniCameraErrorEvent
@@ -119,14 +119,14 @@ UniCameraErrorEvent -- Extends --> UniCustomEvent&ltUniCameraErrorEventDetail&gt
 
 
 ###### UniCameraErrorEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| msg | string | 否 |  |   |  |
-| errSubject | string | 否 |  |   |  |
-| errCode | number | 否 |  |   |  |
-| errMsg | string | 否 |  |   |  |
-| data | Object | 否 |  |   |  |
-| cause | Object | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| msg | string | 否 |
+| errSubject | string | 否 |
+| errCode | number | 否 |
+| errMsg | string | 否 |
+| data | Object | 否 |
+| cause | Object | 否 |
 
 
 #### UniCameraInitDoneEvent
@@ -142,9 +142,9 @@ UniCameraInitDoneEvent -- Extends --> UniCustomEvent&ltUniCameraInitDoneEventDet
 
 
 ###### UniCameraInitDoneEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| maxZoom | number | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| maxZoom | number | 否 |
 
 
 #### UniCameraScanCodeEvent
@@ -160,13 +160,13 @@ UniCameraScanCodeEvent -- Extends --> UniCustomEvent&ltUniCameraScanCodeEventDet
 
 
 ###### UniCameraScanCodeEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 |  |   |  |
-| result | string | 否 |  |   |  |
-| rawData | string | 否 |  |   |  |
-| charSet | string | 否 |  |   |  |
-| scanArea | number[\] | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| type | string | 否 |
+| result | string | 否 |
+| rawData | string | 否 |
+| charSet | string | 否 |
+| scanArea | number\[\] | 否 |
 
 
 
@@ -209,7 +209,7 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 					</view>
 					<view class="uni-camera-wrapper">
 						<slider class="uni-camera-test-host" :disabled="maxZoom == 0" :show-value="true" :min="1"
-							:max="maxZoom" :value="1" @change="zoomSliderChange" />
+							:max="maxZoom" :value="1" @changing="zoomSliderChange" />
 					</view>
 				</view>
 
@@ -489,20 +489,11 @@ Android端实现相机组件所使用的依赖库
 
 ### 关于相机组件扫码能力的注意事项
 
-- camera组件仅在 uni-app x 项目中支持，扫码功能需更新到 4.71 及以上版本。
-- 扫码功能是独立模块，目前需要手动配置。后续版本会提供可视化界面配置。
+- Android/iOS平台 camera 组件仅在 uni-app x 项目中支持，扫码功能需更新到 HBuilderX4.71 及以上版本。
+- Android/iOS平台扫码功能是独立功能模块，需在 `manifest.json` 中勾选 “uni-barcode-scanning（相机组件扫码）”模块才能使用。
+  + [Android平台配置“uni-barcode-scanning（相机组件扫码）”](../collocation/manifest-android.md#modulesscan)
+  + [iOS平台配置“uni-barcode-scanning（相机组件扫码）”](../collocation/manifest-ios.md#modulesscan)
 
-    在manfiest.json中的 "app-android" -> "distribute" -> "modules" 节点下手动添加 "uni-barcode-scanning"，如下示例：
-
-```
-"app-android" : {
-    "distribute" : {
-        "modules" : {
-            "uni-barcode-scanning" : {}
-        }
-    }
-}
-```
 
 ### 关于预览画面与拍照尺寸的注意事项
 

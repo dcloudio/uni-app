@@ -12,7 +12,7 @@
 
 请求支付
 
-### requestPayment 兼容性 
+### requestPayment 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.02 | 4.18 | 4.61 |
@@ -32,66 +32,66 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **RequestPaymentOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **RequestPaymentOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| provider | string | 是 |  | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS 系统版本: 3，0; HarmonyOS: 4.61 | 支付服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持支付宝支付(alipay),微信支付(wxpay) |
-| orderInfo | string | 是 |  | Web: x; 微信小程序: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单数据 |
-| success | (result: [RequestPaymentSuccess](#requestpaymentsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS 系统版本: 3，0; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [RequestPaymentFail](#requestpaymentfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| nonceStr | string | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 随机字符串，长度为32个字符以下<br/> |
-| package | string | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=***<br/> |
-| paySign | string | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 签名，具体见微信支付文档<br/> |
-| timeStamp | string | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 时间戳，从 1970 年 1 月 1 日 00:00:00 至今的秒数，即当前的时间<br/> |
-| signType | string | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 签名算法，应与后台下单时的值一致<br/><br/>可选值：<br/>- 'MD5': 仅在 v2 版本接口适用;<br/>- 'HMAC-SHA256': 仅在 v2 版本接口适用;<br/>- 'RSA': 仅在 v3 版本接口适用;<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| provider | string | 是 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 支付服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持支付宝支付(alipay),微信支付(wxpay) |
+| orderInfo | string | 是 | Web: x; 微信小程序: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单数据 |
+| success | (result: [RequestPaymentSuccess](#requestpaymentsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [RequestPaymentFail](#requestpaymentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| nonceStr | string | 否 | Web: x; 微信小程序: 4.41 | 随机字符串，长度为32个字符以下<br/> |
+| package | string | 否 | Web: x; 微信小程序: 4.41 | 统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=***<br/> |
+| paySign | string | 否 | Web: x; 微信小程序: 4.41 | 签名，具体见微信支付文档<br/> |
+| timeStamp | string | 否 | Web: x; 微信小程序: 4.41 | 时间戳，从 1970 年 1 月 1 日 00:00:00 至今的秒数，即当前的时间<br/> |
+| signType | string | 否 | Web: x; 微信小程序: 4.41 | 签名算法，应与后台下单时的值一致<br/><br/>可选值：<br/>- 'MD5': 仅在 v2 版本接口适用;<br/>- 'HMAC-SHA256': 仅在 v2 版本接口适用;<br/>- 'RSA': 仅在 v3 版本接口适用;<br/> |
 
 ##### signType 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| MD5 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
-| HMAC-SHA256 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
-| RSA | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| MD5 | Web: x |
+| HMAC-SHA256 | Web: x |
+| RSA | Web: x | 
 
 #### RequestPaymentSuccess 的属性值 @requestpaymentsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | any | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 返回数据 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 返回数据 |
 
 #### RequestPaymentFail 的属性值 @requestpaymentfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 700000 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 其它支付错误。 |
-| 700600 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 正在处理中，支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态 |
-| 700601 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 用户中途取消。 |
-| 700602 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 网络连接出错。 |
-| 700603 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态。 |
-| 700604 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 微信没有安装。 |
-| 700605 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 服务供应商获取失败。 |
-| 700607 | Web: x; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 支付未完成。 |
-| 700608 | Web: x; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 服务商返回参数错误。 |
-| 700800 | Web: x; 微信小程序:  ; Android: x; iOS: 4.18; HarmonyOS: x | 没有配置对应的URL Scheme。 |
-| 700801 | Web: x; 微信小程序:  ; Android: x; iOS: 4.18; HarmonyOS: x | 没有配置对应的Universal Link。 |
-| 701100 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单支付失败。 |
-| 701110 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 重复请求。 |
+| 700000 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 其它支付错误。 |
+| 700600 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 正在处理中，支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态 |
+| 700601 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 用户中途取消。 |
+| 700602 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 网络连接出错。 |
+| 700603 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态。 |
+| 700604 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 微信没有安装。 |
+| 700605 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 服务供应商获取失败。 |
+| 700607 | Web: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 支付未完成。 |
+| 700608 | Web: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 服务商返回参数错误。 |
+| 700800 | Web: x; Android: x; iOS: 4.18; HarmonyOS: x | 没有配置对应的URL Scheme。 |
+| 700801 | Web: x; Android: x; iOS: 4.18; HarmonyOS: x | 没有配置对应的Universal Link。 |
+| 701100 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单支付失败。 |
+| 701110 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 重复请求。 |
 
 
 ### orderInfo参数说明
@@ -243,7 +243,7 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
   </view>
   <view class="payment-content">
     <template v-if="providerList.length > 0">
-      <button class="payment-button" type="primary" v-for="(item, index) in providerList" :key="index" @click="requestPayment(item)">{{ item.name }}</button>
+      <button class="payment-button" type="primary" v-for="(item, index) in providerList" :key="index" @click="requestPaymentByItem(item)">{{ item.name }}</button>
     </template>
     <template v-else>
       <button class="payment-button" type="primary">请先在 manifest.json 配置勾选微信支付、支付宝</button>
@@ -270,18 +270,14 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
     provider: string;
     orderInfo: string;
     errorTitle?: string;
-    duration?: number;
   };
 
   // 支付订单请求地址
-  const ALIPAY_ORDER_URL = 'https://demo.dcloud.net.cn/payment/alipay/?total=0.01';
-  const WXPAY_ORDER_URL = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__uniappx/?total=0.01';
-  const WXPAY_HELLO_UNI_APP_X_ORDER_URL = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__HelloUniAppX/?total=0.01';
   const UNI_PAY_API_URL = 'https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api';
 
   const providerList = ref([] as PayItem[]);
 
-  const data = reactive({
+  const defaultData: DataType = {
     btnText: '支付宝支付',
     btnType: 'primary',
     orderInfo: '',
@@ -291,7 +287,11 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
     fail: false,
     outTradeNo: '',
     openid: '',
-  } as DataType);
+  };
+
+  const data = reactive(defaultData);
+
+  const bundleId = ref('');
 
   const getPaymentBundleId = (): string => {
     let bundleId: string | null = '';
@@ -310,147 +310,30 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
     return bundleId ?? '';
   };
 
-  const getWxpayOrderUrl = (): string => {
-    if (getPaymentBundleId() == 'io.dcloud.hellouniappx') {
-      return WXPAY_HELLO_UNI_APP_X_ORDER_URL;
-    }
-    return WXPAY_ORDER_URL;
-  };
-
   const requestPaymentByOrderInfo = (options: PaymentOptions) => {
-    let duration = 3000;
-    if (options.duration != null) {
-      duration = options.duration as number;
-    }
     uni.requestPayment({
       provider: options.provider,
       orderInfo: options.orderInfo,
       // #ifdef MP-WEIXIN
-      // 微信小程序支持...结构语法
+      // 微信小程序需使用...结构参数
       ...JSON.parse(options.orderInfo),
       // #endif
-      // #ifdef APP-HARMONY
-      dataType: 'text',
-      // #endif
-      success: (res: RequestPaymentSuccess) => {
+      success: (res) => {
         console.log(JSON.stringify(res));
-        uni.showToast({ duration, icon: 'success', title: '支付成功' });
+        uni.showToast({ icon: 'success', title: '支付成功' });
       },
-      fail: (res: RequestPaymentFail) => {
+      fail: (res) => {
         console.log(JSON.stringify(res));
         data.errorCode = res.errCode;
         const title = options.errorTitle == null ? 'errorCode:' + data.errorCode : options.errorTitle;
-        uni.showToast({ duration, icon: 'error', title });
-      },
-    } as RequestPaymentOptions);
-  };
-
-  // #ifdef APP
-  const appPay = (provider: string) => {
-    uni.showLoading({ title: '请求中...' });
-    const isWxpay = provider == 'wxpay';
-    uni.request({
-      url: isWxpay ? getWxpayOrderUrl() : ALIPAY_ORDER_URL,
-      method: 'GET',
-      timeout: 6000,
-      success: (res) => {
-        console.log(res.data);
-        const orderInfo = isWxpay ? JSON.stringify(res.data) : (res.data as string);
-        data.orderInfo = JSON.stringify(res.data);
-        uni.hideLoading();
-        requestPaymentByOrderInfo({
-          provider,
-          orderInfo,
-          duration: isWxpay ? 5000 : 3000,
-        });
-      },
-      fail: (res) => {
-        uni.hideLoading();
-        console.log(res);
+        uni.showToast({ icon: 'error', title });
       },
     });
-  };
-  // #endif
-
-  // #ifdef MP-WEIXIN
-  // 发起微信小程序支付
-  const mpWeixinPay = async (): Promise<void> => {
-    uni.showLoading({ title: '请求中...', mask: true });
-    try {
-      if (data.openid == '') {
-        await getOpenId();
-      }
-    } catch (err) {
-      uni.hideLoading();
-      console.error('get-openid-err', err);
-      return;
-    }
-    let bundleId = getPaymentBundleId();
-    let random = Math.floor(Math.random() * 9000) + 1000;
-    data.outTradeNo = `test${Date.now()}${random}`;
-    console.log('outTradeNo: ', data.outTradeNo);
-    uni.request({
-      url: `${UNI_PAY_API_URL}/getOrderInfo`,
-      method: 'GET',
-      data: {
-        outTradeNo: data.outTradeNo,
-        bundleId,
-        openid: data.openid,
-        totalFee: 1,
-      },
-      success: (res) => {
-        uni.hideLoading();
-        let responseData = res.data as UTSJSONObject;
-        let errCode = responseData['errCode'] as number;
-        if (errCode != 0) {
-          uni.showModal({
-            title: '提示',
-            content: responseData['errMsg'] as string,
-            showCancel: false,
-          });
-          return;
-        }
-        let orderInfo = responseData['orderInfo'] as string;
-        console.log('orderInfo: ', orderInfo);
-        requestPaymentByOrderInfo({
-          provider: 'wxpay',
-          orderInfo,
-          errorTitle: '支付失败',
-        });
-      },
-      fail: (err) => {
-        uni.hideLoading();
-        console.error('request-err', err);
-      },
-    });
-  };
-  // #endif
-
-  const requestPayment = (e: PayItem) => {
-    // #ifdef APP
-    const provider = e.id;
-    if (provider == 'wxpay') {
-      const wxProvider = e.provider as UniPaymentWxpayProvider;
-      if (wxProvider != null && wxProvider.isWeChatInstalled != null && wxProvider.isWeChatInstalled == false) {
-        uni.showToast({
-          title: '微信没有安装',
-          icon: 'error',
-        });
-        return;
-      }
-    }
-    appPay(provider);
-    // #endif
-
-    // #ifdef MP-WEIXIN
-    mpWeixinPay();
-    // #endif
   };
 
   // #ifdef MP-WEIXIN
   // 获取微信小程序openid，用于发起支付
   const getOpenId = async (): Promise<void> => {
-    let bundleId = getPaymentBundleId();
     let code = '';
     await new Promise<void>((resolve, reject) => {
       uni.login({
@@ -470,10 +353,11 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
         method: 'GET',
         data: {
           code,
-          bundleId,
+          bundleId: bundleId.value,
         },
         success: (res) => {
-          data.openid = res.data.openid;
+          const responseData = res.data as UTSJSONObject;
+          data.openid = responseData['openid'] as string;
           console.log('openid: ', data.openid);
           resolve();
         },
@@ -486,29 +370,101 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
   };
   // #endif
 
+  const requestPaymentByItem = async (e: PayItem): Promise<void> => {
+    const provider = e.id;
+    const appProvider = e.provider;
+    const supportCheckWeChat = appProvider != null || provider == 'alipay';
+    let requestData = {} as UTSJSONObject;
+    let paymentProvider = provider;
+
+    if (supportCheckWeChat && provider == 'wxpay' && appProvider != null) {
+      const wxProvider = appProvider as UniPaymentWxpayProvider;
+      if (wxProvider.isWeChatInstalled == false) {
+        uni.showToast({ title: '本设备中未找到微信', icon: 'error' });
+        return;
+      }
+    }
+
+    uni.showLoading({ title: '请求中...', mask: true });
+    const random = Math.floor(Math.random() * 9000) + 1000;
+    data.outTradeNo = `test${Date.now()}${random}`;
+    requestData = {
+      provider: paymentProvider,
+      outTradeNo: data.outTradeNo,
+      bundleId: bundleId.value,
+      totalFee: 1,
+    } as UTSJSONObject;
+
+    // #ifdef MP-WEIXIN
+    try {
+      if (data.openid == '') {
+        await getOpenId();
+      }
+      requestData.openid = data.openid;
+    } catch (err) {
+      uni.showToast({ title: '获取微信openid失败', icon: 'error' });
+      uni.hideLoading();
+      return;
+    }
+
+    // #endif
+    uni.request({
+      url: `${UNI_PAY_API_URL}/getOrderInfo`,
+      method: 'GET',
+      data: requestData,
+      timeout: 6000,
+      success: (res) => {
+        uni.hideLoading();
+        const responseData = res.data as UTSJSONObject;
+        const errCode = responseData['errCode'] as number;
+        if (errCode != 0) {
+          uni.showModal({ title: '提示', content: responseData['errMsg'] as string, showCancel: false });
+          return;
+        }
+
+        const orderInfo = responseData['orderInfo'] as string;
+        console.log('orderInfo: ', orderInfo);
+        data.orderInfo = orderInfo;
+        requestPaymentByOrderInfo({
+          provider: paymentProvider,
+          orderInfo,
+          errorTitle: '支付失败',
+        });
+      },
+      fail: (err) => {
+        uni.hideLoading();
+        console.error('request-err', err);
+      },
+    });
+  };
+
   onLoad(() => {
+    // 获取包名或appid
+    bundleId.value = getPaymentBundleId();
+
     // #ifdef APP
-    let provider = uni.getProviderSync({
+    const providerOptions: GetProviderSyncOptions = {
       service: 'payment',
-    } as GetProviderSyncOptions);
-    console.log(provider);
+    };
+    let provider = uni.getProviderSync(providerOptions);
     provider.providerObjects.forEach((value: UniProvider) => {
       if (value.id == 'alipay' || value.id == 'wxpay') {
-        console.log(value.id, value);
-        providerList.value.push({
+        const payItem: PayItem = {
           name: value.description,
           id: value.id,
           provider: value,
-        } as PayItem);
+        };
+        providerList.value.push(payItem);
       }
     });
     // #endif
 
     // #ifdef MP-WEIXIN
-    providerList.value.push({
+    const payItem: PayItem = {
       name: '微信支付',
       id: 'wxpay',
-    } as PayItem);
+    };
+    providerList.value.push(payItem);
     // #endif
   });
 
@@ -554,9 +510,9 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 

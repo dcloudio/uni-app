@@ -9,9 +9,9 @@
 初始化一个对象
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| length | number | 是 |  |   | 当使用非对象调用时，该参数将被视为指定类型化数组长度的数字。在内存中创建一个内部数组缓冲区，大小长度乘以 BYTES_PER_ELEMENT 字节，用 0 填充。省略所有参数，等同于使用 0 作为参数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| length | number | 是 | 当使用非对象调用时，该参数将被视为指定类型化数组长度的数字。在内存中创建一个内部数组缓冲区，大小长度乘以 BYTES_PER_ELEMENT 字节，用 0 填充。省略所有参数，等同于使用 0 作为参数。 | 
 
 
 **返回值**
@@ -22,18 +22,18 @@
 
 <!-- UTSJSON.Int32Array.Constructor.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.Constructor.tutorial -->
@@ -43,9 +43,9 @@
 初始化一个对象
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| array | ArrayLike\<number> \| ArrayBufferLike | 是 |  |   | 当使用 TypedArray 子类的实例调用时，typedArray 会被拷贝到一个新的类型数组中。对于非 bigint TypeedArray 构造函数，typedArray 参数仅可以是非 bigint 类型（例如 Int32Array）。同样，对于 bigint TypedArray 构造函数（BigInt64Array 或 BigUint64Array），typedArray 参数仅可以是 bigint 类型。typedArray 中的每个值在拷贝到新数组之前都转换为构造函数的相应类型。新的类型化数组的长度与 typedArray 参数的长度相同。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| array | ArrayLike\<number> \| ArrayBufferLike | 是 | 当使用 TypedArray 子类的实例调用时，typedArray 会被拷贝到一个新的类型数组中。对于非 bigint TypeedArray 构造函数，typedArray 参数仅可以是非 bigint 类型（例如 Int32Array）。同样，对于 bigint TypedArray 构造函数（BigInt64Array 或 BigUint64Array），typedArray 参数仅可以是 bigint 类型。typedArray 中的每个值在拷贝到新数组之前都转换为构造函数的相应类型。新的类型化数组的长度与 typedArray 参数的长度相同。 | 
 
 
 **返回值**
@@ -56,18 +56,18 @@
 
 <!-- UTSJSON.Int32Array.Constructor_1.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.Constructor_1.tutorial -->
@@ -77,34 +77,34 @@
 当使用 ArrayBuffer  实例以及可选的 byteOffset 和 length 参数调用时，将创建一个新的指定缓冲区的类型化数组视图。byteOffset 和 length 参数指定类型化数组视图将暴露的内存范围。如果忽略这两个参数，则是整个视图的所有 buffer；如果仅忽略 length，则是从 byteOffset 开始的 buffer 剩余部分的视图。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| buffer | [ArrayBufferLike](#arraybufferlike-values) | 是 |  |   | ArrayBuffer实例 |
-| byteOffset | number | 否 |  |   | 可选，偏移量，单位字节 |
-| length | number | 否 |  |   | 可选，长度 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| buffer | [ArrayBufferLike](#arraybufferlike-values) | 是 | ArrayBuffer实例 |
+| byteOffset | number | 否 | 可选，偏移量，单位字节 |
+| length | number | 否 | 可选，长度 | 
 
 #### buffer 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteLength | number | 是 |  | Web: √; Android: 4.25; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长度（以字节为单位）。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| byteLength | number | 是 | Web: √; Android: 4.25; iOS: 4.11; HarmonyOS: 4.61 | ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长度（以字节为单位）。 |
 
 ##### ArrayBufferLike 的方法 @arraybufferlike-values 
 
 ##### slice(begin ?: number, end ?: number) : ArrayBuffer; @slice
 slice
 ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其包含原 ArrayBuffer 实例中从 begin 开始（包含）到 end 结束（不含）的所有字节的副本。
-###### slice 兼容性 
-| Web | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | x | 4.61 |
+###### slice 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| begin | number | 否 |  |   | 可选，要开始提取的位置索引（从 0 开始），将被转换为整数。负数索引将会从缓冲区末尾开始计算——如果 start \< 0，那么将会使用 start + buffer.length。 如果 start \< -buffer.length 或省略了 start，则会使用 0。 如果 start >= buffer.length，则不会提取任何内容。 |
-| end | number | 否 |  |   | 可选，要结束提取的位置索引（从 0 开始），将被转换为整数。slice() 提取到但不包括 end。 负数索引将会从缓冲区末尾开始计算——如果 end \< 0，那么将会使用 end + buffer.length。 如果 end \< -buffer.length，则会使用 0。 如果 end >= buffer.length 或省略了 end，则会使用 buffer.length，则会导致直到末尾的所有元素都被提取。 如果标准化后的 end 位置在 start 位置之前，则不会提取任何内容。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| begin | number | 否 | 可选，要开始提取的位置索引（从 0 开始），将被转换为整数。负数索引将会从缓冲区末尾开始计算——如果 start \< 0，那么将会使用 start + buffer.length。 如果 start \< -buffer.length 或省略了 start，则会使用 0。 如果 start >= buffer.length，则不会提取任何内容。 |
+| end | number | 否 | 可选，要结束提取的位置索引（从 0 开始），将被转换为整数。slice() 提取到但不包括 end。 负数索引将会从缓冲区末尾开始计算——如果 end \< 0，那么将会使用 end + buffer.length。 如果 end \< -buffer.length，则会使用 0。 如果 end >= buffer.length 或省略了 end，则会使用 buffer.length，则会导致直到末尾的所有元素都被提取。 如果标准化后的 end 位置在 start 位置之前，则不会提取任何内容。 | 
 
 
 ###### 返回值 
@@ -117,10 +117,10 @@ ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其�
 ##### toByteBuffer() : ByteBuffer; @tobytebuffer
 toByteBuffer
 ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer对象。
-###### toByteBuffer 兼容性 
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.25 | x | x | x | 4.61 |
+###### toByteBuffer 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.25 | x | x |
 
 
 
@@ -134,10 +134,10 @@ ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer�
 ##### toData() : Data; @todata
 toData
 ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
-###### toData 兼容性 
-| Web | Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | 4.61 |
+###### toData 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | x | x | x |
 
 
 
@@ -157,18 +157,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 <!-- UTSJSON.Int32Array.Constructor_2.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.Constructor_2.tutorial -->
@@ -187,18 +187,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 <!-- UTSJSON.Int32Array.BYTES_PER_ELEMENT.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.BYTES_PER_ELEMENT.tutorial -->
@@ -212,9 +212,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 从一组元素创建一个新数组。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| items | number[\] | 是 |  |   | 要包含在新数组对象中的一组元素。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| items | number\[\] | 是 | 要包含在新数组对象中的一组元素。 | 
 
 
 **返回值**
@@ -233,18 +233,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.of.tutorial -->
@@ -254,16 +254,16 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 从类似数组或可迭代对象创建数组。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arrayLike | [ArrayLike\<number>](#arraylike-values) | 是 |  |   | 要转换为数组的类似数组或可迭代对象。 |
-| mapfn | (v: number, k: number) => number | 否 |  |   | 可选参数。如果指定了该参数，则最后生成的类型数组会经过该函数的加工处理后再返回。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| arrayLike | [ArrayLike\<number>](#arraylike-values) | 是 | 要转换为数组的类似数组或可迭代对象。 |
+| mapfn | (v: number, k: number) => number | 否 | 可选参数。如果指定了该参数，则最后生成的类型数组会经过该函数的加工处理后再返回。 | 
 
 #### arrayLike 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| length | number | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| length | number | 是 |
 
 
 **返回值**
@@ -282,18 +282,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.from.tutorial -->
@@ -312,18 +312,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 <!-- UTSJSON.Int32Array.BYTES_PER_ELEMENT.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.BYTES_PER_ELEMENT.tutorial -->
@@ -338,18 +338,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 <!-- UTSJSON.Int32Array.buffer.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.buffer.tutorial -->
@@ -364,18 +364,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 <!-- UTSJSON.Int32Array.byteLength.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.byteLength.tutorial -->
@@ -390,18 +390,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 <!-- UTSJSON.Int32Array.byteOffset.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.byteOffset.tutorial -->
@@ -416,18 +416,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 <!-- UTSJSON.Int32Array.length.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.length.tutorial -->
@@ -441,11 +441,11 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 返回this对象，将数组中由start和end标识的部分复制到从位置target开始的相同数组。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| target | number | 是 |  |   | 如果target为负数，则视为length+target，其中length为数组的长度。 |
-| start | number | 是 |  |   | 如果start为负数，则视为length+start。如果省略end，则使用this对象的长度作为其默认值。 |
-| end | number | 否 |  |   | 如果未指定，默认使用this对象的长度。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| target | number | 是 | 如果target为负数，则视为length+target，其中length为数组的长度。 |
+| start | number | 是 | 如果start为负数，则视为length+start。如果省略end，则使用this对象的长度作为其默认值。 |
+| end | number | 否 | 如果未指定，默认使用this对象的长度。 | 
 
 
 **返回值**
@@ -468,18 +468,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.copyWithin.tutorial -->
@@ -489,9 +489,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 确定数组的所有成员是否满足指定的测试。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: number, index: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => boolean | 是 |  |   | 一个最多接受三个参数的函数。every方法对数组中的每个元素调用predicate函数，直到predicate返回一个可转换为布尔值false的值，或者直到数组结束。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: number, index: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => boolean | 是 | 一个最多接受三个参数的函数。every方法对数组中的每个元素调用predicate函数，直到predicate返回一个可转换为布尔值false的值，或者直到数组结束。 | 
 
 
 **返回值**
@@ -502,18 +502,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 <!-- UTSJSON.Int32Array.Constructor.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.every.tutorial -->
@@ -523,11 +523,11 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 将数组中的所有元素更改为静态值value，并返回修改后的数组。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | number | 是 |  |   | 用于填充数组部分的值。 |
-| start | number | 否 |  |   | 开始填充数组的索引。如果start为负数，则视为length+start，其中length为数组的长度。 |
-| end | number | 否 |  |   | 停止填充数组的索引。如果end为负数，则视为length+end。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| value | number | 是 | 用于填充数组部分的值。 |
+| start | number | 否 | 开始填充数组的索引。如果start为负数，则视为length+start，其中length为数组的长度。 |
+| end | number | 否 | 停止填充数组的索引。如果end为负数，则视为length+end。 | 
 
 
 **返回值**
@@ -558,18 +558,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.fill.tutorial -->
@@ -579,9 +579,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 返回满足回调函数中指定条件的数组元素。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: number, index: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => any | 是 |  |   | 一个最多接受三个参数的函数。filter方法对数组中的每个元素调用predicate函数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: number, index: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => any | 是 | 一个最多接受三个参数的函数。filter方法对数组中的每个元素调用predicate函数。 | 
 
 
 **返回值**
@@ -600,18 +600,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.filter.tutorial -->
@@ -621,9 +621,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 返回数组中第一个满足条件的元素的值，否则返回undefined。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: number, index: number, obj: [Int32Array](/uts/buildin-object-api/int32array.md)) => boolean | 是 |  |   | 对数组中的每个元素调用一次predicate，直到找到一个使predicate返回true的元素为止。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: number, index: number, obj: [Int32Array](/uts/buildin-object-api/int32array.md)) => boolean | 是 | 对数组中的每个元素调用一次predicate，直到找到一个使predicate返回true的元素为止。 | 
 
 
 **返回值**
@@ -643,18 +643,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.find.tutorial -->
@@ -664,9 +664,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 返回数组中第一个满足条件的元素的索引，否则返回-1。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: number, index: number, obj: [Int32Array](/uts/buildin-object-api/int32array.md)) => boolean | 是 |  |   | 对数组中的每个元素调用一次predicate，直到找到一个使predicate返回true的元素为止。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: number, index: number, obj: [Int32Array](/uts/buildin-object-api/int32array.md)) => boolean | 是 | 对数组中的每个元素调用一次predicate，直到找到一个使predicate返回true的元素为止。 | 
 
 
 **返回值**
@@ -690,18 +690,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.findIndex.tutorial -->
@@ -711,9 +711,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 对数组的每个元素执行指定的操作。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (value: number, index: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => void | 是 |  |   | 一个最多接受三个参数的函数。forEach方法对数组中的每个元素调用callbackfn函数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (value: number, index: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => void | 是 | 一个最多接受三个参数的函数。forEach方法对数组中的每个元素调用callbackfn函数。 | 
 
 
 **返回值**
@@ -733,18 +733,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.forEach.tutorial -->
@@ -754,10 +754,10 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 返回数组中第一个出现的指定值的索引，如果不存在则返回-1。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| searchElement | number | 是 |  |   | 要在数组中查找的值。 |
-| fromIndex | number | 否 |  |   | 开始搜索的数组索引。如果省略，则从索引0开始搜索。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| searchElement | number | 是 | 要在数组中查找的值。 |
+| fromIndex | number | 否 | 开始搜索的数组索引。如果省略，则从索引0开始搜索。 | 
 
 
 **返回值**
@@ -789,18 +789,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.indexOf.tutorial -->
@@ -810,9 +810,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 将数组中所有元素连接成一个字符串。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| separator | string | 否 |  |   | 用于分隔数组元素的字符串。如果省略，则使用逗号分隔数组元素。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| separator | string | 否 | 用于分隔数组元素的字符串。如果省略，则使用逗号分隔数组元素。 | 
 
 
 **返回值**
@@ -838,18 +838,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.join.tutorial -->
@@ -859,9 +859,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 对数组的每个元素执行指定的操作，并返回包含执行结果的数组。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (value: number, index: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => number | 是 |  |   | 一个最多接受三个参数的函数。map方法对数组中的每个元素调用callbackfn函数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (value: number, index: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => number | 是 | 一个最多接受三个参数的函数。map方法对数组中的每个元素调用callbackfn函数。 | 
 
 
 **返回值**
@@ -882,18 +882,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.map.tutorial -->
@@ -903,9 +903,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 对数组的每个元素执行指定的累加操作。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (previousValue: number, currentValue: number, currentIndex: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => number | 是 |  |   | 一个最多接受四个参数的函数。reduce方法对数组中的每个元素调用callbackfn函数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (previousValue: number, currentValue: number, currentIndex: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => number | 是 | 一个最多接受四个参数的函数。reduce方法对数组中的每个元素调用callbackfn函数。 | 
 
 
 **返回值**
@@ -933,18 +933,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.reduce.tutorial -->
@@ -954,9 +954,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 对数组的每个元素执行指定的累加操作，从右向左处理。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (previousValue: number, currentValue: number, currentIndex: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => number | 是 |  |   | 一个最多接受四个参数的函数。reduceRight方法从数组的最后一个元素向第一个元素逐个调用callbackfn函数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (previousValue: number, currentValue: number, currentIndex: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => number | 是 | 一个最多接受四个参数的函数。reduceRight方法从数组的最后一个元素向第一个元素逐个调用callbackfn函数。 | 
 
 
 **返回值**
@@ -984,18 +984,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.reduceRight.tutorial -->
@@ -1023,18 +1023,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.reverse.tutorial -->
@@ -1044,16 +1044,16 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 设置一个值或数组的值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| array | [ArrayLike\<number>](#arraylike-values) | 是 |  |   | 要设置的值或数组。 |
-| offset | number | 否 |  |   | 要写入值的当前数组中的索引。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| array | [ArrayLike\<number>](#arraylike-values) | 是 | 要设置的值或数组。 |
+| offset | number | 否 | 要写入值的当前数组中的索引。 | 
 
 #### array 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| length | number | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| length | number | 是 |
 
 
 **返回值**
@@ -1074,18 +1074,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.set.tutorial -->
@@ -1095,10 +1095,10 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 返回数组的一部分。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| start | number | 否 |  |   | 指定部分的起始索引。 |
-| end | number | 否 |  |   | 指定部分的结束索引。不包括索引'end'处的元素。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| start | number | 否 | 指定部分的起始索引。 |
+| end | number | 否 | 指定部分的结束索引。不包括索引'end'处的元素。 | 
 
 
 **返回值**
@@ -1127,18 +1127,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.slice.tutorial -->
@@ -1148,9 +1148,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 确定数组的任何元素是否满足指定的测试。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: number, index: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => boolean | 是 |  |   | 一个最多接受三个参数的函数。some方法对数组中的每个元素调用predicate函数，直到predicate返回一个可转换为布尔值true的值，或者直到数组结束。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: number, index: number, array: [Int32Array](/uts/buildin-object-api/int32array.md)) => boolean | 是 | 一个最多接受三个参数的函数。some方法对数组中的每个元素调用predicate函数，直到predicate返回一个可转换为布尔值true的值，或者直到数组结束。 | 
 
 
 **返回值**
@@ -1174,18 +1174,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.some.tutorial -->
@@ -1195,9 +1195,9 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 对数组进行排序。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| compareFn | (a: number, b: number) => number | 否 |  |   | 用于确定元素顺序的函数。如果省略，则元素按升序排序。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| compareFn | (a: number, b: number) => number | 否 | 用于确定元素顺序的函数。如果省略，则元素按升序排序。 | 
 
 
 **返回值**
@@ -1221,18 +1221,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.sort.tutorial -->
@@ -1242,10 +1242,10 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 获取此数组的ArrayBuffer存储的新的Int32Array视图，引用从begin（包括）到end（不包括）的元素。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| begin | number | 否 |  |   | 开始数组的索引。 |
-| end | number | 否 |  |   | 结束数组的索引。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| begin | number | 否 | 开始数组的索引。 |
+| end | number | 否 | 结束数组的索引。 | 
 
 
 **返回值**
@@ -1269,18 +1269,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.subarray.tutorial -->
@@ -1299,18 +1299,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 <!-- UTSJSON.Int32Array.toString.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.toString.tutorial -->
@@ -1339,18 +1339,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.values.tutorial -->
@@ -1364,7 +1364,7 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| IterableIterator\<\[number, number] | 数组条目的键值对迭代器 | 
+| IterableIterator\<\[number, number]> | 数组条目的键值对迭代器 | 
 
 
 ::: preview 
@@ -1385,18 +1385,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.entries.tutorial -->
@@ -1425,18 +1425,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.Int32Array.keys.tutorial -->

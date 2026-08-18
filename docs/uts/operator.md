@@ -176,7 +176,7 @@ uts 中算数运算符在大部分场景下和 ts 中的行为一致，但是在
 - 其中 number 是指 number 类型的变量，字面量是指数字字面量，变量是指平台专有数字类型的变量
 - 运算符 / 在 字面量 / 字面量场景下, 结果为 number.
 
-| 场景                                 | 示例                                           | Kottlin 结果                   |  Swift 结果 							  |
+| 场景                                 | 示例                                           | Kotlin 结果                   |  Swift 结果 							  |
 | ----------------------------------- | -------------------------------------------   | ------------------------------ |------------------------------------------|
 | number + - * / % number                      | number + number            				  | 结果为 number                   |结果为 number				              |
 | number + - * / % 字面量 #{rowspan=2}| number + 1                                   | 结果为 number                   |结果为 number 						 	  |
@@ -184,13 +184,13 @@ uts 中算数运算符在大部分场景下和 ts 中的行为一致，但是在
 | number + - * / % 变量 #{rowspan=4}| let a: Int = 1; number + a     			  | 结果为 number      			   |结果为 number 						   	  |
 | let b: Double = 1;  number + b       		  | 结果为 number        		   |结果为 number 						      |
 | let c: Long = 1; number + c 				  | 结果为 number       			   |Swift 中无 Long 							  |
-| let d: Int64 = 1; number+ d      			  | kottlin 中无 Int64      		   |结果为 number							  |
+| let d: Int64 = 1; number+ d      			  | Kotlin 中无 Int64      		   |结果为 number							  |
 | 字面量 + - * / % number #{rowspan=2}| 1 + number 								  | 结果为 number                   |结果为 number 							  |
 | 3.14 + number 								  | 结果为 number                   |结果为 number 							  |
 | 变量 + - * / % number #{rowspan=4}| let a: Int = 1; a + number 				  | 结果为 number                   |编译失败，需要用 (a as number) + number 	  |
 | let b: Double = 1; b + number 				  | 结果为 number                   |编译失败，需要用 (b as number) + number	  |
 | let c: Long = 1;  c + number  				  | 结果为 number                   |Swift 中无 Long 	  						  |
-| let d: Int64 = 1; d + number 				  | kottlin 中无 Int64              |编译失败，需要用 (d as number) + number	  |
+| let d: Int64 = 1; d + number 				  | Kotlin 中无 Int64              |编译失败，需要用 (d as number) + number	  |
 | 字面量 + - * % 字面量 #{rowspan=3}| 1 + 1 				  						  | 结果为 2 Int                    |结果为2 Int                          	  |
 | 1 + 3.14 				  					  | 结果为4.14 Double               |结果为4.14 Double	  					  |
 | 1.0 + 3.14  				                  | 结果为4.14 Double               |结果为4.14 Double 	 					  |
@@ -220,7 +220,7 @@ uts 中比较运算符在大部分场景下和 ts 中的行为一致，但是在
 
 - 其中 number 是指 number 类型的变量，字面量是指数字字面量，变量是指平台专有数字类型的变量
 
-| 场景                                 | 示例                                           | Kottlin 结果                   |  Swift 结果 							  |
+| 场景                                 | 示例                                           | Kotlin 结果                   |  Swift 结果 							  |
 | -----------------------------------  | -------------------------------------------   | ------------------------------ |-----------------------------------------|
 | number > number                      | number > number            				  | 结果为 true or false            |结果为 true or false  				      |
 | number > 字面量                       | number > 1                                   | 结果为 true or false            |结果为 true or false 					  |
@@ -236,7 +236,7 @@ uts 中比较运算符在大部分场景下和 ts 中的行为一致，但是在
 ### 比较运算符 == != === !==@completecomparison
 
 
-| 场景                                  | 示例                                           | Kottlin 结果                   |  Swift 结果 							  |
+| 场景                                  | 示例                                           | Kotlin 结果                   |  Swift 结果 							  |
 | ------------------------------------ | -------------------------------------------   | ------------------------------ |------------------------------------------|
 | number == number (!= === !== 行为相同) | number == number            				  | 值相同就true                     |值相同就true				                  |
 | number == 字面量 (!= === !== 行为相同)  | number == 1                                 | 值相同就true                     |值相同就true 						 	  |

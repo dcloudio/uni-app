@@ -23,7 +23,7 @@
 地图是商业服务，授权较贵，如需购买，请点击[获取优惠](https://ask.dcloud.net.cn/explore/map/)。
 
 
-### chooseLocation 兼容性 
+### chooseLocation 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.33 | 4.61 |
@@ -31,48 +31,48 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ChooseLocationOptions** | 是 |  |   | uni.chooseLocation函数参数定义 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **ChooseLocationOptions** | 是 | uni.chooseLocation函数参数定义 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的经度 |
-| longitude | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的纬度 |
-| keyword | string | 否 |  | Web: 4.0; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的名称 |
-| payload | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |  | Web: 4.35; 微信小程序:  ; Android: 4.35; iOS: 4.35; HarmonyOS: 4.61 | 用户自定义参数 |
-| success | (result: [ChooseLocationSuccess](#chooselocationsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [ChooseLocationFail](#chooselocationfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的经度 |
+| longitude | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的纬度 |
+| keyword | string | 否 | Web: 4.0; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的名称 |
+| payload | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: 4.35; Android: 4.35; iOS: 4.35; HarmonyOS: 4.61 | 用户自定义参数 |
+| success | (result: [ChooseLocationSuccess](#chooselocationsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [ChooseLocationFail](#chooselocationfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### ChooseLocationSuccess 的属性值 @chooselocationsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
-| name | string | 是 |  |   |  |
-| address | string | 是 |  |   |  |
-| latitude | number | 是 |  |   |  |
-| longitude | number | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
+| name | string | 是 |
+| address | string | 是 |
+| latitude | number | 是 |
+| longitude | number | 是 |
 
 #### ChooseLocationFail 的属性值 @chooselocationfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1 | Web: 4.34; 微信小程序:  ; Android: 4.34; iOS: 4.34; HarmonyOS: 4.61 | 取消 |
-| 4 | Web: 4.34; 微信小程序:  ; Android: 4.34; iOS: 4.34; HarmonyOS: 4.61 | 框架内部错误 |
+| 1 | Web: 4.34; Android: 4.34; iOS: 4.34; HarmonyOS: 4.61 | 取消 |
+| 4 | Web: 4.34; Android: 4.34; iOS: 4.34; HarmonyOS: 4.61 | 框架内部错误 |
 
 
 
@@ -477,7 +477,7 @@ uni.chooseLocation 虽然是一个框架内置的页面。但提供了丰富的�
 - 以 .uni-choose-location-light 开头的为light模式下的样式
 - 以 .uni-choose-location-dark 开头的为dark模式下的样式
 
-样式必须以 `!important;` 结尾才能生效，以下是css的class名称，写入同名名称就可以覆盖。
+样式必须以 `!important;` 结尾才能生效，以下是 CSS class 名称，写入同名 class 即可覆盖。
 
 文本样式除了下方列出的 color 和 background-color 外，你还可以替换 font-family 等任何 text 标签支持的样式。
 

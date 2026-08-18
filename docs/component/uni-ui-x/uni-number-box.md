@@ -72,28 +72,28 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-number-bo
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| value | number |   |   | 输入框当前值，不使用 v-model 时通过该属性传入初始值 |
-| modelValue | number |   |   | v-model 绑定值，支持双向绑定 |
-| min | number |   |   | 允许输入的最小值 |
-| max | number |   |   | 允许输入的最大值 |
-| step | number |   |   | 每次点击加/减按钮改变的步长，支持小数 |
-| disabled | boolean |   |   | 是否禁用组件，禁用时输入框和加减按钮都不可操作 |
-| btnClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |   | 加减按钮的自定义样式类 |
-| inputClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |   | 输入框的自定义样式类 |
-| iconClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |   | 加减按钮内部图标的自定义样式类 |
-| @change | Function |   |   | 值改变时触发，参数为当前值，类型为 number |
-| @focus | Function |   |   | 输入框聚焦时触发，参数为事件对象，类型为 UniInputFocusEvent |
-| @blur | Function |   |   | 输入框失焦时触发，参数为事件对象，类型为 UniInputBlurEvent |
-| @update:modelValue | Event |   |   | v-model 绑定值变化事件，参数为当前值，类型为 number |
+| 名称 | 类型 | 描述 |
+| :- | :- | :- |
+| value | number | 输入框当前值，不使用 v-model 时通过该属性传入初始值 |
+| modelValue | number | v-model 绑定值，支持双向绑定 |
+| min | number | 允许输入的最小值 |
+| max | number | 允许输入的最大值 |
+| step | number | 每次点击加/减按钮改变的步长，支持小数 |
+| disabled | boolean | 是否禁用组件，禁用时输入框和加减按钮都不可操作 |
+| btnClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 加减按钮的自定义样式类 |
+| inputClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 输入框的自定义样式类 |
+| iconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 加减按钮内部图标的自定义样式类 |
+| @change | Function | 值改变时触发，参数为当前值，类型为 number |
+| @focus | Function | 输入框聚焦时触发，参数为事件对象，类型为 UniInputFocusEvent |
+| @blur | Function | 输入框失焦时触发，参数为事件对象，类型为 UniInputBlurEvent |
+| @update:modelValue | Event | v-model 绑定值变化事件，参数为当前值，类型为 number |
 
 <!-- UTSCOMJSON.uni-number-box.fileFormates -->
 

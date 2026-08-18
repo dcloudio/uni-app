@@ -7,35 +7,35 @@
 当使用 ArrayBuffer  实例以及可选的 byteOffset 和 length 参数调用时，将创建一个新的指定缓冲区的DataView视图。byteOffset 和 length 参数指定视图将暴露的内存范围。如果忽略这两个参数，则是整个视图的所有 buffer；如果仅忽略 length，则是从 byteOffset 开始的 buffer 剩余部分的视图。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| buffer | [ArrayBufferLike & { BYTES_PER_ELEMENT ?: never; }](#arraybufferlike-values) | 是 |  |   | ArrayBuffer实例 |
-| byteOffset | number | 否 |  |   | 可选，偏移量，单位字节 |
-| byteLength | number | 否 |  |   | 长度 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| buffer | [ArrayBufferLike & { BYTES_PER_ELEMENT ?: never; }](#arraybufferlike-values) | 是 | ArrayBuffer实例 |
+| byteOffset | number | 否 | 可选，偏移量，单位字节 |
+| byteLength | number | 否 | 长度 | 
 
 #### buffer 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteLength | number | 是 |  | Web: √; Android: 4.25; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长度（以字节为单位）。 |
-| BYTES_PER_ELEMENT | any | 否 |  |   |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| byteLength | number | 是 | Web: √; Android: 4.25; iOS: 4.11; HarmonyOS: 4.61 | ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长度（以字节为单位）。 |
+| BYTES_PER_ELEMENT | any | 否 |   |  |
 
 ##### ArrayBufferLike & { BYTES_PER_ELEMENT ?: never; } 的方法 @arraybufferlike-values 
 
 ##### slice(begin ?: number, end ?: number) : ArrayBuffer; @slice
 slice
 ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其包含原 ArrayBuffer 实例中从 begin 开始（包含）到 end 结束（不含）的所有字节的副本。
-###### slice 兼容性 
-| Web | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | x | 4.61 |
+###### slice 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| begin | number | 否 |  |   | 可选，要开始提取的位置索引（从 0 开始），将被转换为整数。负数索引将会从缓冲区末尾开始计算——如果 start \< 0，那么将会使用 start + buffer.length。 如果 start \< -buffer.length 或省略了 start，则会使用 0。 如果 start >= buffer.length，则不会提取任何内容。 |
-| end | number | 否 |  |   | 可选，要结束提取的位置索引（从 0 开始），将被转换为整数。slice() 提取到但不包括 end。 负数索引将会从缓冲区末尾开始计算——如果 end \< 0，那么将会使用 end + buffer.length。 如果 end \< -buffer.length，则会使用 0。 如果 end >= buffer.length 或省略了 end，则会使用 buffer.length，则会导致直到末尾的所有元素都被提取。 如果标准化后的 end 位置在 start 位置之前，则不会提取任何内容。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| begin | number | 否 | 可选，要开始提取的位置索引（从 0 开始），将被转换为整数。负数索引将会从缓冲区末尾开始计算——如果 start \< 0，那么将会使用 start + buffer.length。 如果 start \< -buffer.length 或省略了 start，则会使用 0。 如果 start >= buffer.length，则不会提取任何内容。 |
+| end | number | 否 | 可选，要结束提取的位置索引（从 0 开始），将被转换为整数。slice() 提取到但不包括 end。 负数索引将会从缓冲区末尾开始计算——如果 end \< 0，那么将会使用 end + buffer.length。 如果 end \< -buffer.length，则会使用 0。 如果 end >= buffer.length 或省略了 end，则会使用 buffer.length，则会导致直到末尾的所有元素都被提取。 如果标准化后的 end 位置在 start 位置之前，则不会提取任何内容。 | 
 
 
 ###### 返回值 
@@ -48,10 +48,10 @@ ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其�
 ##### toByteBuffer() : ByteBuffer; @tobytebuffer
 toByteBuffer
 ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer对象。
-###### toByteBuffer 兼容性 
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.25 | x | x | x | 4.61 |
+###### toByteBuffer 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.25 | x | x |
 
 
 
@@ -65,10 +65,10 @@ ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer�
 ##### toData() : Data; @todata
 toData
 ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
-###### toData 兼容性 
-| Web | Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | 4.61 |
+###### toData 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | x | x | x |
 
 
 
@@ -88,15 +88,15 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 <!-- UTSJSON.DataView.Constructor.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -117,15 +117,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 <!-- UTSJSON.DataView.buffer.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -143,15 +143,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 <!-- UTSJSON.DataView.byteLength.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -169,15 +169,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 <!-- UTSJSON.DataView.byteOffset.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -194,10 +194,10 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 获取指定字节偏移处的 Float32 值。没有对齐约束；多字节值可以从任何偏移处获取。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始检索值的位置。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则读取大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始检索值的位置。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则读取大端值。 | 
 
 
 **返回值**
@@ -220,15 +220,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -241,10 +241,10 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 获取指定字节偏移处的 Float64 值。没有对齐约束；多字节值可以从任何偏移处获取。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始检索值的位置。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则读取大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始检索值的位置。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则读取大端值。 | 
 
 
 **返回值**
@@ -267,15 +267,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -288,9 +288,9 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 获取指定字节偏移处的 Int8 值。没有对齐约束；多字节值可以从任何偏移处获取。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始检索值的位置。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始检索值的位置。 | 
 
 
 **返回值**
@@ -313,15 +313,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -334,10 +334,10 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 获取指定字节偏移处的 Int16 值。没有对齐约束；多字节值可以从任何偏移处获取。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始检索值的位置。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则读取大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始检索值的位置。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则读取大端值。 | 
 
 
 **返回值**
@@ -360,15 +360,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -381,10 +381,10 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 获取指定字节偏移处的 Int32 值。没有对齐约束；多字节值可以从任何偏移处获取。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始检索值的位置。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则读取大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始检索值的位置。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则读取大端值。 | 
 
 
 **返回值**
@@ -407,15 +407,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -428,9 +428,9 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 获取指定字节偏移处的 Uint8 值。没有对齐约束；多字节值可以从任何偏移处获取。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始检索值的位置。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始检索值的位置。 | 
 
 
 **返回值**
@@ -453,15 +453,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -474,10 +474,10 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 获取指定字节偏移处的 Uint16 值。没有对齐约束；多字节值可以从任何偏移处获取。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始检索值的位置。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则读取大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始检索值的位置。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则读取大端值。 | 
 
 
 **返回值**
@@ -500,15 +500,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -521,10 +521,10 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 获取指定字节偏移处的 Uint32 值。没有对齐约束；多字节值可以从任何偏移处获取。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始检索值的位置。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则读取大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始检索值的位置。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则读取大端值。 | 
 
 
 **返回值**
@@ -547,15 +547,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -568,11 +568,11 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 在指定的字节偏移处存储一个 Float32 值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始设置值的位置。 |
-| value | number | 是 |  |   | 要设置的值。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则写入大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始设置值的位置。 |
+| value | number | 是 | 要设置的值。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则写入大端值。 | 
 
 
 **返回值**
@@ -595,15 +595,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -616,11 +616,11 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 在指定的字节偏移处存储一个 Float64 值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始设置值的位置。 |
-| value | number | 是 |  |   | 要设置的值。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则写入大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始设置值的位置。 |
+| value | number | 是 | 要设置的值。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则写入大端值。 | 
 
 
 **返回值**
@@ -643,15 +643,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -664,10 +664,10 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 在指定的字节偏移处存储一个 Int8 值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始设置值的位置。 |
-| value | number | 是 |  |   | 要设置的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始设置值的位置。 |
+| value | number | 是 | 要设置的值。 | 
 
 
 **返回值**
@@ -690,15 +690,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -711,11 +711,11 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 在指定的字节偏移处存储一个 Int16 值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始设置值的位置。 |
-| value | number | 是 |  |   | 要设置的值。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则写入大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始设置值的位置。 |
+| value | number | 是 | 要设置的值。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则写入大端值。 | 
 
 
 **返回值**
@@ -738,15 +738,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -759,11 +759,11 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 在指定的字节偏移处存储一个 Int32 值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始设置值的位置。 |
-| value | number | 是 |  |   | 要设置的值。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则写入大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始设置值的位置。 |
+| value | number | 是 | 要设置的值。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则写入大端值。 | 
 
 
 **返回值**
@@ -786,15 +786,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -807,10 +807,10 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 在指定的字节偏移处存储一个 Uint8 值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始设置值的位置。 |
-| value | number | 是 |  |   | 要设置的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始设置值的位置。 |
+| value | number | 是 | 要设置的值。 | 
 
 
 **返回值**
@@ -833,15 +833,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -854,11 +854,11 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 在指定的字节偏移处存储一个 Uint16 值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始设置值的位置。 |
-| value | number | 是 |  |   | 要设置的值。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则写入大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始设置值的位置。 |
+| value | number | 是 | 要设置的值。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则写入大端值。 | 
 
 
 **返回值**
@@ -881,15 +881,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -902,11 +902,11 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 在指定的字节偏移处存储一个 Uint32 值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteOffset | number | 是 |  |   | 从视图开始设置值的位置。 |
-| value | number | 是 |  |   | 要设置的值。 |
-| littleEndian | boolean | 否 |  |   | 如果为 false 或未定义，则写入大端值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteOffset | number | 是 | 从视图开始设置值的位置。 |
+| value | number | 是 | 要设置的值。 |
+| littleEndian | boolean | 否 | 如果为 false 或未定义，则写入大端值。 | 
 
 
 **返回值**
@@ -929,15 +929,15 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |
@@ -950,35 +950,35 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 当使用 ArrayBuffer  实例以及可选的 byteOffset 和 length 参数调用时，将创建一个新的指定缓冲区的DataView视图。byteOffset 和 length 参数指定视图将暴露的内存范围。如果忽略这两个参数，则是整个视图的所有 buffer；如果仅忽略 length，则是从 byteOffset 开始的 buffer 剩余部分的视图。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| buffer | [ArrayBufferLike & { BYTES_PER_ELEMENT ?: never; }](#arraybufferlike-values) | 是 |  |   | ArrayBuffer实例 |
-| byteOffset | number | 否 |  |   | 可选，偏移量，单位字节 |
-| byteLength | number | 否 |  |   | 长度 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| buffer | [ArrayBufferLike & { BYTES_PER_ELEMENT ?: never; }](#arraybufferlike-values) | 是 | ArrayBuffer实例 |
+| byteOffset | number | 否 | 可选，偏移量，单位字节 |
+| byteLength | number | 否 | 长度 | 
 
 #### buffer 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteLength | number | 是 |  | Web: √; Android: 4.25; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长度（以字节为单位）。 |
-| BYTES_PER_ELEMENT | any | 否 |  |   |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| byteLength | number | 是 | Web: √; Android: 4.25; iOS: 4.11; HarmonyOS: 4.61 | ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长度（以字节为单位）。 |
+| BYTES_PER_ELEMENT | any | 否 |   |  |
 
 ##### ArrayBufferLike & { BYTES_PER_ELEMENT ?: never; } 的方法 @arraybufferlike-values 
 
 ##### slice(begin ?: number, end ?: number) : ArrayBuffer; @slice
 slice
 ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其包含原 ArrayBuffer 实例中从 begin 开始（包含）到 end 结束（不含）的所有字节的副本。
-###### slice 兼容性 
-| Web | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | x | 4.61 |
+###### slice 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| begin | number | 否 |  |   | 可选，要开始提取的位置索引（从 0 开始），将被转换为整数。负数索引将会从缓冲区末尾开始计算——如果 start \< 0，那么将会使用 start + buffer.length。 如果 start \< -buffer.length 或省略了 start，则会使用 0。 如果 start >= buffer.length，则不会提取任何内容。 |
-| end | number | 否 |  |   | 可选，要结束提取的位置索引（从 0 开始），将被转换为整数。slice() 提取到但不包括 end。 负数索引将会从缓冲区末尾开始计算——如果 end \< 0，那么将会使用 end + buffer.length。 如果 end \< -buffer.length，则会使用 0。 如果 end >= buffer.length 或省略了 end，则会使用 buffer.length，则会导致直到末尾的所有元素都被提取。 如果标准化后的 end 位置在 start 位置之前，则不会提取任何内容。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| begin | number | 否 | 可选，要开始提取的位置索引（从 0 开始），将被转换为整数。负数索引将会从缓冲区末尾开始计算——如果 start \< 0，那么将会使用 start + buffer.length。 如果 start \< -buffer.length 或省略了 start，则会使用 0。 如果 start >= buffer.length，则不会提取任何内容。 |
+| end | number | 否 | 可选，要结束提取的位置索引（从 0 开始），将被转换为整数。slice() 提取到但不包括 end。 负数索引将会从缓冲区末尾开始计算——如果 end \< 0，那么将会使用 end + buffer.length。 如果 end \< -buffer.length，则会使用 0。 如果 end >= buffer.length 或省略了 end，则会使用 buffer.length，则会导致直到末尾的所有元素都被提取。 如果标准化后的 end 位置在 start 位置之前，则不会提取任何内容。 | 
 
 
 ###### 返回值 
@@ -991,10 +991,10 @@ ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其�
 ##### toByteBuffer() : ByteBuffer; @tobytebuffer
 toByteBuffer
 ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer对象。
-###### toByteBuffer 兼容性 
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.25 | x | x | x | 4.61 |
+###### toByteBuffer 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.25 | x | x |
 
 
 
@@ -1008,10 +1008,10 @@ ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer�
 ##### toData() : Data; @todata
 toData
 ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
-###### toData 兼容性 
-| Web | Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | 4.61 |
+###### toData 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | x | x | x |
 
 
 
@@ -1031,15 +1031,15 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 <!-- UTSJSON.DataView.Constructor.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 | 4.61 |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- |
 | √ | 4.51 | √ |

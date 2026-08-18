@@ -40,7 +40,7 @@
 
 请求支付
 
-### requestVirtualPayment 兼容性 
+### requestVirtualPayment 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS 系统版本 | iOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | 4.25 |
@@ -52,104 +52,104 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **RequestVirtualPaymentOptions** | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS:   |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **RequestVirtualPaymentOptions** | 是 | Web: x; Android: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| apple | **AppleIAPOptions** | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 苹果IAP的参数 |
-| success | (result: [RequestVirtualPaymentSuccess](#requestvirtualpaymentsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (result: [RequestVirtualPaymentFail](#requestvirtualpaymentfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| mode | string | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   | 支付的类型, 不同的支付类型有各自额外要传的附加参数<br/><br/>可选值：<br/>- 'short_series_goods': 道具直购;<br/>- 'short_series_coin': 代币充值;<br/> |
-| paySig | string | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   |  |
-| signData | **RequestVirtualPaymentOptionsSignData** | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   | 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"offerId":"123","buyQuantity":1,"env":0,"currencyType":"CNY","productId":"testproductId","goodsPrice":10,"outTradeNo":"xxxxxx","attach":"testdata"}'<br/> |
-| signature | string | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   |  | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| apple | **AppleIAPOptions** | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 苹果IAP的参数 |
+| success | (result: [RequestVirtualPaymentSuccess](#requestvirtualpaymentsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用成功的回调函数 |
+| fail | (result: [RequestVirtualPaymentFail](#requestvirtualpaymentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| mode | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 支付的类型, 不同的支付类型有各自额外要传的附加参数<br/><br/>可选值：<br/>- 'short_series_goods': 道具直购;<br/>- 'short_series_coin': 代币充值;<br/> |
+| paySig | string | 否 | Web: x; 微信小程序: 4.41; Android: x |  |
+| signData | **RequestVirtualPaymentOptionsSignData** | 否 | Web: x; 微信小程序: 4.41; Android: x | 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"offerId":"123","buyQuantity":1,"env":0,"currencyType":"CNY","productId":"testproductId","goodsPrice":10,"outTradeNo":"xxxxxx","attach":"testdata"}'<br/> |
+| signature | string | 否 | Web: x; 微信小程序: 4.41; Android: x |  | 
 
 ##### apple 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| productId | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 产品id，在苹果开发者中心配置 |
-| appAccountToken | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 购买数量，默认是1，最小值是1，最大值是10 |
-| promotionalOffer | **AppleIAPPromotionalOffer** | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 促销优惠参数说明 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，在苹果开发者中心配置 |
+| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
+| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量，默认是1，最小值是1，最大值是10 |
+| promotionalOffer | **AppleIAPPromotionalOffer** | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 促销优惠参数说明 |
 
 ###### promotionalOffer 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| offerIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 促销id |
-| keyIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 密钥 |
-| nonce | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 唯一id (必须小写 24小时有效) |
-| signature | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 签名 |
-| timestamp | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 创建证书的时间戳(毫秒 24小时有效) |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| offerIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 促销id |
+| keyIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 密钥 |
+| nonce | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 唯一id (必须小写 24小时有效) |
+| signature | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 签名 |
+| timestamp | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 创建证书的时间戳(毫秒 24小时有效) |
 
 ##### mode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| short_series_goods | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS:   |  |
-| short_series_coin | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS:   |  |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| short_series_goods | Web: x; Android: x |
+| short_series_coin | Web: x; Android: x |
 
 ##### signData 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| attach | string | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   | 透传数据, 发货通知时会透传给开发者<br/> |
-| buyQuantity | number | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   | 购买数量<br/> |
-| currencyType | string | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   | 币种<br/><br/>可选值：<br/>- 'CNY': 人民币;<br/> |
-| offerId | string | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   | 在米大师侧申请的应用 id, mp-支付基础配置中的offerid<br/> |
-| outTradeNo | string | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   | 业务订单号, 每个订单号只能使用一次, 重复使用会失败(极端情况不保证唯一, 不建议业务强依赖唯一性).  要求8-32个字符内, 只能是数字、大小写字母、符号 _-\|*@组成, 不能以下划线(_)开头<br/> |
-| env | number | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   | 环境配置, 0 米大师正式环境, 1 米大师沙箱环境, 默认为 0<br/> |
-| goodsPrice | number | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   | 道具单价(分), **该字段仅mode=short_series_goods时需要必填**, 用来校验价格与后台道具价格是否一致, 避免用户在业务商城页看到的价格与实际价格不一致导致投诉<br/> |
-| productId | string | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS:  ; HarmonyOS:   | 道具ID, **该字段仅mode=short_series_goods时需要必填**<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| attach | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 透传数据, 发货通知时会透传给开发者<br/> |
+| buyQuantity | number | 否 | Web: x; 微信小程序: 4.41; Android: x | 购买数量<br/> |
+| currencyType | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 币种<br/><br/>可选值：<br/>- 'CNY': 人民币;<br/> |
+| offerId | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 在米大师侧申请的应用 id, mp-支付基础配置中的offerid<br/> |
+| outTradeNo | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 业务订单号, 每个订单号只能使用一次, 重复使用会失败(极端情况不保证唯一, 不建议业务强依赖唯一性).  要求8-32个字符内, 只能是数字、大小写字母、符号 _-\|*@组成, 不能以下划线(_)开头<br/> |
+| env | number | 否 | Web: x; 微信小程序: 4.41; Android: x | 环境配置, 0 米大师正式环境, 1 米大师沙箱环境, 默认为 0<br/> |
+| goodsPrice | number | 否 | Web: x; 微信小程序: 4.41; Android: x | 道具单价(分), **该字段仅mode=short_series_goods时需要必填**, 用来校验价格与后台道具价格是否一致, 避免用户在业务商城页看到的价格与实际价格不一致导致投诉<br/> |
+| productId | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 道具ID, **该字段仅mode=short_series_goods时需要必填**<br/> |
 
 #### RequestVirtualPaymentSuccess 的属性值 @requestvirtualpaymentsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| apple | **AppleIAPTransactionOptions** | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 支付成功返回结果 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| apple | **AppleIAPTransactionOptions** | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付成功返回结果 |
 
 #### apple 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| productId | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 购买数量 |
-| transactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易唯一标识 |
-| originalTransactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 支付票据 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
+| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
+| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
+| transactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
+| transactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
+| originalTransactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
+| originalTransactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
+| jsonRepresentation | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
 
 #### RequestVirtualPaymentFail 的属性值 @requestvirtualpaymentfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS:   |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 错误码 |
+| errSubject | string | 是 | Web: x; Android: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; Android: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; Android: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 700000 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 其他未知错误。 |
-| 700600 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 正在处理中，支付结果未知 |
-| 700601 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 用户中途取消。 |
-| 700602 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 网络连接出错。 |
-| 700604 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 不允许App内购买项目, 请授权应用内购买权限。 |
-| 700605 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 产品无效。 |
-| 700606 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 促销信息错误。 |
-| 700607 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 缺少支付参数。 |
-| 700800 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 只支持iOS15以上的版本。 |
+| 700000 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 其他未知错误。 |
+| 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 正在处理中，支付结果未知 |
+| 700601 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 用户中途取消。 |
+| 700602 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 网络连接出错。 |
+| 700604 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 不允许App内购买项目, 请授权应用内购买权限。 |
+| 700605 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品无效。 |
+| 700606 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 促销信息错误。 |
+| 700607 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 缺少支付参数。 |
+| 700800 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 只支持iOS15以上的版本。 |
 
 
 
@@ -223,7 +223,7 @@ uni.requestVirtualPayment({
 
 获取各平台虚拟支付的管理类，用于操作各平台专有的API。
 
-### getVirtualPaymentManager 兼容性 
+### getVirtualPaymentManager 兼容性 <Help /> 
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | 4.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -250,306 +250,230 @@ uni.getVirtualPaymentManager(): 用来创建各个平台虚拟支付的管理类
 #### restoreTransactions(options: AppleIAPRestoreOptions): void; @restoretransactions
 restoreTransactions
 恢复苹果服务器已支付的交易列表
-##### restoreTransactions 兼容性 
+##### restoreTransactions 兼容性 <Help /> 
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 15.0 | 4.25 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **AppleIAPRestoreOptions** | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **AppleIAPRestoreOptions** | 是 | Web: x; Android: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [AppleIAPRestoreSuccess](#appleiaprestoresuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: [AppleIAPRestoreFail](#appleiaprestorefail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-###### AppleIAPRestoreSuccess 的属性值 @appleiaprestoresuccess-values 
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
-
-#### transactions 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| productId | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 购买数量 |
-| transactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易唯一标识 |
-| originalTransactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 支付票据 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (result: AppleIAPRestoreSuccess) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: [AppleIAPRestoreFail](#appleiaprestorefail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### AppleIAPRestoreFail 的属性值 @appleiaprestorefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
+| errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 700600 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | apple restore 请求失败。 |
-| 700601 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 用户中途取消。 |
-| 700602 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 网络连接出错。 |
-| 700800 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 只支持iOS15以上的版本。 |
+| 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | apple restore 请求失败。 |
+| 700601 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 用户中途取消。 |
+| 700602 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 网络连接出错。 |
+| 700800 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 只支持iOS15以上的版本。 |
 
 
 
 #### getUnfinishedTransactions(options: AppleIAPUnfinishedTransactionOptions): void; @getunfinishedtransactions
 getUnfinishedTransactions
 获取苹果服务器已支付且未关闭的交易列表
-##### getUnfinishedTransactions 兼容性 
+##### getUnfinishedTransactions 兼容性 <Help /> 
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 15.0 | 4.25 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **AppleIAPUnfinishedTransactionOptions** | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **AppleIAPUnfinishedTransactionOptions** | 是 | Web: x; Android: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [AppleIAPUnfinishedTransactionSuccess](#appleiapunfinishedtransactionsuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: [AppleIAPUnfinishedTransactionFail](#appleiapunfinishedtransactionfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-###### AppleIAPUnfinishedTransactionSuccess 的属性值 @appleiapunfinishedtransactionsuccess-values 
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
-
-#### transactions 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| productId | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 购买数量 |
-| transactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易唯一标识 |
-| originalTransactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 支付票据 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (result: AppleIAPUnfinishedTransactionSuccess) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: [AppleIAPUnfinishedTransactionFail](#appleiapunfinishedtransactionfail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### AppleIAPUnfinishedTransactionFail 的属性值 @appleiapunfinishedtransactionfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 错误码<br/>- 700800  只支持iOS15以上的版本。 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; Android: x; HarmonyOS: x | 错误码<br/>- 700800  只支持iOS15以上的版本。 |
+| errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; Android: x; HarmonyOS: x |  |
 
 
 
 #### finishTransaction(options: AppleIAPFinishTransactionOptions): void; @finishtransaction
 finishTransaction
 关闭苹果服务器订单
-##### finishTransaction 兼容性 
+##### finishTransaction 兼容性 <Help /> 
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 15.0 | 4.25 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **AppleIAPFinishTransactionOptions** | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **AppleIAPFinishTransactionOptions** | 是 | Web: x; Android: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| transaction | **AppleIAPTransactionOptions** | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 交易对象 |
-| success | (result: [AppleIAPFinishTransactionSuccess](#appleiapfinishtransactionsuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: [AppleIAPFinishTransactionFail](#appleiapfinishtransactionfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| transaction | **AppleIAPTransactionOptions** | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 交易对象 |
+| success | (result: [AppleIAPFinishTransactionSuccess](#appleiapfinishtransactionsuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: [AppleIAPFinishTransactionFail](#appleiapfinishtransactionfail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### transaction 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| productId | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 购买数量 |
-| transactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易唯一标识 |
-| originalTransactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 支付票据 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
+| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
+| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
+| transactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
+| transactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
+| originalTransactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
+| originalTransactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
+| jsonRepresentation | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
 
 ###### AppleIAPFinishTransactionSuccess 的属性值 @appleiapfinishtransactionsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| state | boolean | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 关单状态 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| state | boolean | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 关单状态 |
 
 ###### AppleIAPFinishTransactionFail 的属性值 @appleiapfinishtransactionfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
+| errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 700600 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 没有该交易。 |
-| 700800 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 只支持iOS15以上的版本。 |
+| 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 没有该交易。 |
+| 700800 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 只支持iOS15以上的版本。 |
 
 
 
 ##### AppleIAPRestoreOptions 的属性值 @appleiaprestoreoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [AppleIAPRestoreSuccess](#appleiaprestoresuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: [AppleIAPRestoreFail](#appleiaprestorefail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-
-###### AppleIAPRestoreSuccess 的属性值 @appleiaprestoresuccess-values 
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
-
-#### transactions 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| productId | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 购买数量 |
-| transactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易唯一标识 |
-| originalTransactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 支付票据 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (result: AppleIAPRestoreSuccess) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: [AppleIAPRestoreFail](#appleiaprestorefail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### AppleIAPRestoreFail 的属性值 @appleiaprestorefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
+| errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 700600 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | apple restore 请求失败。 |
-| 700601 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 用户中途取消。 |
-| 700602 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 网络连接出错。 |
-| 700800 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 只支持iOS15以上的版本。 |
+| 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | apple restore 请求失败。 |
+| 700601 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 用户中途取消。 |
+| 700602 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 网络连接出错。 |
+| 700800 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 只支持iOS15以上的版本。 |
 
 ##### AppleIAPUnfinishedTransactionOptions 的属性值 @appleiapunfinishedtransactionoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [AppleIAPUnfinishedTransactionSuccess](#appleiapunfinishedtransactionsuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: [AppleIAPUnfinishedTransactionFail](#appleiapunfinishedtransactionfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-
-###### AppleIAPUnfinishedTransactionSuccess 的属性值 @appleiapunfinishedtransactionsuccess-values 
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
-
-#### transactions 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| productId | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 购买数量 |
-| transactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易唯一标识 |
-| originalTransactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 支付票据 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (result: AppleIAPUnfinishedTransactionSuccess) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: [AppleIAPUnfinishedTransactionFail](#appleiapunfinishedtransactionfail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### AppleIAPUnfinishedTransactionFail 的属性值 @appleiapunfinishedtransactionfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 错误码<br/>- 700800  只支持iOS15以上的版本。 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; Android: x; HarmonyOS: x | 错误码<br/>- 700800  只支持iOS15以上的版本。 |
+| errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; Android: x; HarmonyOS: x |  |
 
 ##### AppleIAPFinishTransactionOptions 的属性值 @appleiapfinishtransactionoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| transaction | **AppleIAPTransactionOptions** | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 交易对象 |
-| success | (result: [AppleIAPFinishTransactionSuccess](#appleiapfinishtransactionsuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: [AppleIAPFinishTransactionFail](#appleiapfinishtransactionfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| transaction | **AppleIAPTransactionOptions** | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 交易对象 |
+| success | (result: [AppleIAPFinishTransactionSuccess](#appleiapfinishtransactionsuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: [AppleIAPFinishTransactionFail](#appleiapfinishtransactionfail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### transaction 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| productId | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 产品id，和苹果开发者中心配置的一样 |
-| appAccountToken | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
-| quantity | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 购买数量 |
-| transactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易日期，示例 2022-01-01 08:00:00 |
-| transactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 交易唯一标识 |
-| originalTransactionDate | Date | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易日期，示例 2022-01-01 08:00:00 |
-| originalTransactionIdentifier | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 原始交易唯一标识 |
-| jsonRepresentation | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS:   | 支付票据 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
+| appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
+| quantity | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 购买数量 |
+| transactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易日期，示例 2022-01-01 08:00:00 |
+| transactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 交易唯一标识 |
+| originalTransactionDate | Date | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易日期，示例 2022-01-01 08:00:00 |
+| originalTransactionIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 原始交易唯一标识 |
+| jsonRepresentation | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付票据 |
 
 ###### AppleIAPFinishTransactionSuccess 的属性值 @appleiapfinishtransactionsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| state | boolean | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 关单状态 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| state | boolean | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 关单状态 |
 
 ###### AppleIAPFinishTransactionFail 的属性值 @appleiapfinishtransactionfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
+| errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 700600 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 没有该交易。 |
-| 700800 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 只支持iOS15以上的版本。 |
+| 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 没有该交易。 |
+| 700800 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 只支持iOS15以上的版本。 |
  
 
 ### IAP注意事项
@@ -680,7 +604,7 @@ Sandbox环境：https://api.storekit-sandbox.itunes.apple.com/inApps/v1/transact
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/virtual-payment/virtual-payment
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1;">
   <!-- #endif -->
     <page-head title="虚拟支付"></page-head>
@@ -713,7 +637,7 @@ Sandbox环境：https://api.storekit-sandbox.itunes.apple.com/inApps/v1/transact
       <button style="margin-top: 20px; margin-bottom: 50px;" type="primary"
         @click="getUnfinishedTransactions">获取未结束的订单列表</button>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

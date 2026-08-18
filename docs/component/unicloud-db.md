@@ -9,37 +9,37 @@
  是一个数据库查询组件，它将clientDB的API封装为组件，进一步减少开发者使用所需的代码量。
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.93 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| id | string([string.IDString](/uts/data-type.md#ide-string)) |   | Web: -; 微信小程序: -; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS: 4.61 | 唯一标识 |
-| v-slot:default | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | {data, loading, hasMore, pagination, error} |
-| collection | string([string.DBCollectionString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 表名 |
-| field | string([string.DBFieldString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 查询字段，多个字段用 `,` 分割 |
-| where | string([string.JQLString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 查询条件 |
-| orderby | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 排序字段及正序倒叙设置 |
-| groupby | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 对数据进行分组 |
-| group-field | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 对数据进行分组统计 |
-| distinct | boolean |   | Web: 4.0; 微信小程序: -; Android: 3.93; iOS: 4.11; HarmonyOS:   | 是否对数据查询结果中重复的记录进行去重 |
-| page-data | string |   | Web: 4.0; 微信小程序: -; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | add 多次查询的集合, replace 当前查询的集合 |
-| page-current | number |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 当前页 |
-| page-size | number |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 每页数据数量 |
-| getone | boolean |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定查询结果是否返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要\[0]方式获取。在true下，直接返回结果数据，少一层数组 |
-| getcount | boolean |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 是否查询总数量 |
-| gettree | boolean |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 是否查询树状结构数据 |
-| startwith | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | gettree的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询 |
-| limitlevel | number |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | gettree查询返回的树的最大层级。超过设定层级的节点不会返回。默认10级，最大15，最小1 |
-| manual | boolean |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 是否手动加载数据，默认为 false，页面onLoad时自动联网加载数据 |
-| loadtime | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 加载数据时机，默认auto，可选值 auto\|onready\|manual |
-| ~~action~~ | string([string.ClientDBActionString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理(推荐改用JQL触发器) |
-| @load | (data : Array\<UTSJSONObject>, ended : boolean, pagination : [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 成功回调。如联网返回结果后，想修改下数据再渲染界面，则在本方法里对data进行修改 |
-| @error | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 失败回调 |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| id | string([string.IDString](/uts/data-type.md#ide-string)) | Web: -; 微信小程序: -; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS: 4.61 | 唯一标识 |
+| v-slot:default | string | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | {data, loading, hasMore, pagination, error} |
+| collection | string([string.DBCollectionString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 表名 |
+| field | string([string.DBFieldString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 查询字段，多个字段用 `,` 分割 |
+| where | string([string.JQLString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 查询条件 |
+| orderby | string | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 排序字段及正序倒序设置 |
+| groupby | string | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 对数据进行分组 |
+| group-field | string | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 对数据进行分组统计 |
+| distinct | boolean | Web: 4.0; 微信小程序: -; Android: 3.93; iOS: 4.11 | 是否对数据查询结果中重复的记录进行去重 |
+| page-data | string | Web: 4.0; 微信小程序: -; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | add 多次查询的集合, replace 当前查询的集合 |
+| page-current | number | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 当前页 |
+| page-size | number | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 每页数据数量 |
+| getone | boolean | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定查询结果是否返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要\[0]的方式获取。在true下，直接返回结果数据，少一层数组 |
+| getcount | boolean | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 是否查询总数量 |
+| gettree | boolean | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 是否查询树状结构数据 |
+| startwith | string | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | gettree的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询 |
+| limitlevel | number | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | gettree查询返回的树的最大层级。超过设定层级的节点不会返回。默认10级，最大15，最小1 |
+| manual | boolean | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 是否手动加载数据，默认为 false，页面onLoad时自动联网加载数据 |
+| loadtime | string | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 加载数据时机，默认auto，可选值 auto\|onready\|manual |
+| ~~action~~ | string([string.ClientDBActionString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 云端执行数据库查询的前或后，触发某个action函数操作，进行预处理或后处理(推荐改用JQL触发器) |
+| @load | (data : Array\<UTSJSONObject>, ended : boolean, pagination : [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 成功回调。如联网返回结果后，想修改下数据再渲染界面，则在本方法里对data进行修改 |
+| @error | (event: [UniEvent](/component/common.md#unievent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 失败回调 |
 
 #### v-slot:default 的属性描述
 
@@ -53,17 +53,17 @@
 
 ##### pagination 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| current |   | 当前页号 |
-| size |   | 分页大小 |
-| count |   | 数据库的总数据量, 设置 :getcount=true 时有效 |
+| 合法值 | 描述 |
+| :- | :- |
+| current | 当前页号 |
+| size | 分页大小 |
+| count | 数据库的总数据量, 设置 :getcount=true 时有效 |
 
 #### distinct 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| true | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS(VDOM): -; HarmonyOS(Vapor): - | 去重 |
+| true | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 去重 |
 | false | Web: -; 微信小程序: -; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 不去重 |
 
 #### page-data 的属性描述
@@ -96,19 +96,19 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniCloudDBComponentLoadDataOptions** | 否 |  |   | 可选参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **UniCloudDBComponentLoadDataOptions** | 否 | 可选参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| clear | boolean | 否 | false |   | 是否清空数据 |
-| current | number | 否 |  |   | 当前第几页 |
-| success | (res?: T) => void | 否 |  |   | 成功回调 |
-| fail | (err?: any) => void | 否 |  |   | 失败回调 |
-| complete | () => void | 否 |  |   | 完成回调 | 
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| clear | boolean | 否 | false | 是否清空数据 |
+| current | number | 否 |  | 当前第几页 |
+| success | (res?: T) => void | 否 |  | 成功回调 |
+| fail | (err?: any) => void | 否 |  | 失败回调 |
+| complete | () => void | 否 |  | 完成回调 | 
 
 
 
@@ -126,22 +126,22 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |   | 新增数据. |
-| options | **UniCloudDBComponentAddOptions** | 否 |  |   | 可选参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| value | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 新增数据. |
+| options | **UniCloudDBComponentAddOptions** | 否 | 可选参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| showToast | boolean | 否 | true |   | 是否显示 Toast |
-| toastTitle | string | 否 |  |   | Toast 标题 |
-| needLoading | boolean | 否 | true |   | 是否需要 Loading |
-| loadingTitle | string | 否 |  |   | Loading 标题 |
-| success | (res?: T) => void | 否 |  |   | 成功回调 |
-| fail | (err?: any) => void | 否 |  |   | 失败回调 |
-| complete | () => void | 否 |  |   | 完成回调 | 
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| showToast | boolean | 否 | true | 是否显示 Toast |
+| toastTitle | string | 否 |  | Toast 标题 |
+| needLoading | boolean | 否 | true | 是否需要 Loading |
+| loadingTitle | string | 否 |  | Loading 标题 |
+| success | (res?: T) => void | 否 |  | 成功回调 |
+| fail | (err?: any) => void | 否 |  | 失败回调 |
+| complete | () => void | 否 |  | 完成回调 | 
 
 
 
@@ -158,10 +158,10 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | any | 否 |  |   |  |
-| options | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| id | any | 否 |
+| options | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | 
 
 
 
@@ -171,26 +171,26 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  |   | 数据库字段的唯一标识. |
-| value | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |   | 需要修改的新数据. |
-| options | **UniCloudDBComponentUpdateOptions** | 否 |  |   | 可选参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| id | string | 是 | 数据库字段的唯一标识. |
+| value | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 需要修改的新数据. |
+| options | **UniCloudDBComponentUpdateOptions** | 否 | 可选参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| showToast | boolean | 否 | true |   | 是否显示更新后 Toast |
-| toastTitle | string | 否 | "" |   | 更新成功后 Toast 标题 |
-| confirmTitle | string | 否 |  |   | 确认框标题 |
-| confirmContent | string | 否 |  |   | 确认框内容 |
-| needConfirm | boolean | 否 | true |   | 是否显示更新确认框 |
-| needLoading | boolean | 否 | true |   | 是否需要 Loading |
-| loadingTitle | string | 否 |  |   | Loading 标题 |
-| success | (res?: T) => void | 否 |  |   | 成功回调 |
-| fail | (err?: any) => void | 否 |  |   | 失败回调 |
-| complete | () => void | 否 |  |   | 完成回调 | 
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| showToast | boolean | 否 | true | 是否显示更新后 Toast |
+| toastTitle | string | 否 | "" | 更新成功后 Toast 标题 |
+| confirmTitle | string | 否 |  | 确认框标题 |
+| confirmContent | string | 否 |  | 确认框内容 |
+| needConfirm | boolean | 否 | true | 是否显示更新确认框 |
+| needLoading | boolean | 否 | true | 是否需要 Loading |
+| loadingTitle | string | 否 |  | Loading 标题 |
+| success | (res?: T) => void | 否 |  | 成功回调 |
+| fail | (err?: any) => void | 否 |  | 失败回调 |
+| complete | () => void | 否 |  | 完成回调 | 
 
 
 
@@ -200,16 +200,19 @@
 
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/unicloud-db/unicloud-db.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/unicloud-db/unicloud-db.uvue) 
->
-> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
-```uvue
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/component/unicloud-db/unicloud-db
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/component/unicloud-db/unicloud-db
+
+>示例
+```vue
 <template>
   <view class="content">
     <page-intro content="本页演示 unicloud-db 云数据库组件：集合查询、分页与 loadtime manual，列表展示与 Add/Get 操作，可跳转通讯录等 mixin-datacom 示例。"></page-intro>
     <unicloud-db ref="udbRef" v-slot:default="{data, pagination, loading, error}" :collection="collection" :getcount="true"
       loadtime="manual">
       <list-view v-if="data.length>0" ref="listViewRef" class="list" :scroll-y="true" @scrolltolower="loadMore()">
-        <list-item class="list-item" v-for="(item, _) in data">
+        <list-item class="list-item" v-for="(item, _) in data" :key="item.getString('_id')">
           <view class="list-item-fill">
             <text>{{item}}</text>
           </view>
@@ -257,6 +260,14 @@ function loadMore() {
 function get() {
   udbRef.value!.loadData({
     clear: true
+  })
+}
+
+function showError(err : any | null) {
+  const error = err as UniCloudError
+  uni.showModal({
+    content: error.errMsg,
+    showCancel: false
   })
 }
 
@@ -321,14 +332,6 @@ function onQueryLoad(data : Array<UTSJSONObject>, ended : boolean, pagination : 
   console.log(data, ended, pagination)
 }
 
-function showError(err : any | null) {
-  const error = err as UniCloudError
-  uni.showModal({
-    content: error.errMsg,
-    showCancel: false
-  })
-}
-
 // Lifecycle
 onReady(() => {
   get()
@@ -342,6 +345,33 @@ onPullDownRefresh(() => {
     }
   })
 })
+
+// #ifdef VUE3-VAPOR
+let checkMethods = false
+
+function checkUdbRefMethods() : boolean {
+  const udb = udbRef.value
+  if (udb == null) {
+    checkMethods = false
+    return checkMethods
+  }
+
+  const hasLoadData = udb.loadData != null
+  const hasLoadMore = udb.loadMore != null
+  const hasAdd = udb.add != null
+  const hasRemove = udb.remove != null
+  const hasUpdate = udb.update != null
+
+  checkMethods = hasLoadData && hasLoadMore && hasAdd && hasRemove && hasUpdate
+  return checkMethods
+}
+
+defineExpose({
+  checkUdbRefMethods
+})
+
+// #endif
+
 </script>
 
 <style>
@@ -394,6 +424,8 @@ onPullDownRefresh(() => {
 </style>
 
 ```
+
+:::
 
 
 ### 参见

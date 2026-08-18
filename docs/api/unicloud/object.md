@@ -2,7 +2,7 @@
 
 引用云对象
 
-### importObject 兼容性 
+### importObject 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -10,33 +10,33 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| objectName | string ([string.CloudObjectString](/uts/data-type.md#ide-string)) | 是 |  |   |  |
-| options | **UniCloudImportObjectOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| objectName | string ([string.CloudObjectString](/uts/data-type.md#ide-string)) | 是 |
+| options | **UniCloudImportObjectOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| customUI | boolean | 否 |  |   | 是否移除自动展示的ui |
-| loadingOptions | **UniCloudImportObjectLoadingOptions** | 否 |  |   | loading界面配置 |
-| errorOptions | **UniCloudImportObjectErrorOptions** | 否 |  |   | 错误提示配置 |
-| secretMethods | any | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 指定方法的加密类型 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| customUI | boolean | 否 |   | 是否移除自动展示的ui |
+| loadingOptions | **UniCloudImportObjectLoadingOptions** | 否 |   | loading界面配置 |
+| errorOptions | **UniCloudImportObjectErrorOptions** | 否 |   | 错误提示配置 |
+| secretMethods | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 指定方法的加密类型 | 
 
 ##### loadingOptions 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| title | string | 否 |  |   | 加载框标题 |
-| mask | boolean | 否 |  |   | 加载框是否显示mask |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| title | string | 否 | 加载框标题 |
+| mask | boolean | 否 | 加载框是否显示mask |
 
 ##### errorOptions 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 |  |   | 错误提示类型，可以是modal或者toast |
-| retry | boolean | 否 |  |   | 是否显示重试按钮 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| type | string | 否 | 错误提示类型，可以是modal或者toast |
+| retry | boolean | 否 | 是否显示重试按钮 |
 
 
 ### 返回值 
@@ -47,9 +47,9 @@
 
 #### UniCloudCloudObjectCaller 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| _obj | [InternalUniCloudCloudObject](#internalunicloudcloudobject-values) | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| _obj | [InternalUniCloudCloudObject](#internalunicloudcloudobject-values) | 是 |
 ##### InternalUniCloudCloudObject 的方法 @internalunicloudcloudobject-values 
 
 ##### callMethod\<T = UTSJSONObject>(methodName: string, args: Array\<any \| null>): Promise\<T>; @callmethod
@@ -58,10 +58,10 @@ callMethod
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| methodName | string | 是 |  |   |  |
-| args | Array&lt;any&gt; | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| methodName | string | 是 |
+| args | Array&lt;any&gt; | 是 | 
 
 
 ###### 返回值 
@@ -79,9 +79,9 @@ _getArgs
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| args | Array&lt;any&gt; | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| args | Array&lt;any&gt; | 否 | 
 
 
 ##### 返回值 

@@ -5,13 +5,13 @@
 border-style 是一个 CSS 简写属性，用来设定元素所有边框的样式。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -56,7 +56,7 @@ border-style: <line-style>{1,4};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -137,7 +137,7 @@ border-style: <line-style>{1,4};
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-style </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -210,15 +210,8 @@ border-style: <line-style>{1,4};
         <input-data :defaultValue="data.borderStyleValue" title="border-style 自定义值" type="text" @confirm="inputChangeBorderStyle"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-style: dashed 和 dotted</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-width: 5px; border-style: dashed;"></native-view>
-          <native-view class="common" style="border-width: 5px; border-style: dotted;"></native-view>
-        </view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -270,7 +263,6 @@ border-style: <line-style>{1,4};
     data.borderStyleActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-style') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorderStyleValue = (value: string) => {
     data.borderStyleValue = value
     viewRef.value?.style.setProperty('border-style', value)
@@ -282,7 +274,7 @@ border-style: <line-style>{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorderStyle = (index: number) => {

@@ -15,7 +15,7 @@
  页面链接
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -40,9 +40,9 @@
 | hover-stay-time | number |   | Web: 4.41; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 手指松开后点击态保留时间，单位毫秒 |
 | render-link | boolean | true | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否给 navigator 组件加一层 a 标签控制 ssr 渲染 |
 | short-link | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>当`target="miniProgram"`时有效，当传递该参数后，可以不传 app-id 和 path。链接可以通过【小程序菜单】->【复制链接】获取。 |
-| @success | string |   | Web: 4.41; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效时有效，跳转小程序成功 |
-| @fail | string |   | Web: 4.41; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效时有效，跳转小程序失败 |
-| @complete | string |   | Web: 4.41; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效时有效，跳转小程序完成 |
+| @success | string |   | Web: 4.41; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效，跳转小程序成功 |
+| @fail | string |   | Web: 4.41; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效，跳转小程序失败 |
+| @complete | string |   | Web: 4.41; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(string)*<br/>当`target="miniProgram"`且`open-type="navigate/navigateBack"`时有效，跳转小程序完成 |
 
 #### target 的属性描述
 
@@ -74,24 +74,24 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 5.0 | 自动选择动画效果 |
-| none | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | 无动画效果 |
-| slide-in-right | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从右侧横向滑动效果 |
-| slide-in-left | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 左侧横向滑动效果 |
-| slide-in-top | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从上侧竖向滑动效果 |
-| slide-in-bottom | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从下侧竖向滑动效果 |
-| fade-in | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从透明到不透明逐渐显示效果 |
-| zoom-out | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从小到大逐渐放大显示效果 |
-| zoom-fade-out | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从小到大逐渐放大并且从透明到不透明逐渐显示效果 |
-| pop-in | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | 从右侧平移入栈动画效果 |
-| slide-out-right | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 横向向右侧滑出屏幕动画 |
-| slide-out-left | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 横向向左侧滑出屏幕动画 |
-| slide-out-top | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 竖向向上侧滑出屏幕动画 |
-| slide-out-bottom | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 竖向向下侧滑出屏幕动画 |
-| fade-out | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从不透明到透明逐渐隐藏动画 |
-| zoom-in | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从大逐渐缩小关闭动画 |
-| zoom-fade-in | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
-| pop-out | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
+| auto | HarmonyOS: 5.0 | 自动选择动画效果 |
+| none | HarmonyOS: 4.61 | 无动画效果 |
+| slide-in-right | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从右侧横向滑动效果 |
+| slide-in-left | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 左侧横向滑动效果 |
+| slide-in-top | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从上侧竖向滑动效果 |
+| slide-in-bottom | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从下侧竖向滑动效果 |
+| fade-in | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从透明到不透明逐渐显示效果 |
+| zoom-out | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从小到大逐渐放大显示效果 |
+| zoom-fade-out | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从小到大逐渐放大并且从透明到不透明逐渐显示效果 |
+| pop-in | HarmonyOS: 4.61 | 从右侧平移入栈动画效果 |
+| slide-out-right | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 横向向右侧滑出屏幕动画 |
+| slide-out-left | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 横向向左侧滑出屏幕动画 |
+| slide-out-top | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 竖向向上侧滑出屏幕动画 |
+| slide-out-bottom | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 竖向向下侧滑出屏幕动画 |
+| fade-out | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从不透明到透明逐渐隐藏动画 |
+| zoom-in | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从大逐渐缩小关闭动画 |
+| zoom-fade-in | HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| pop-out | HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
 
 
 

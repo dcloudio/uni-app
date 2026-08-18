@@ -38,13 +38,15 @@ web浏览器默认排版是block。block更适合布局文档，比如论文、�
 - rich-text组件内部为block，适于文档、图文显示
 - waterflow组件内部为grid
 
+web和小程序平台虽然默认是flex布局，但通过高权重的样式写`display:block`也可以生效。
+
 ### flex方向 @flex-direction
 
 在W3C规范中，flex 默认是`横向`的，但uni-app x里全平台的flex方向默认值都是`纵向`的。
 
 因为W3C规范中，起初布局是block，后来推出flex时更高频率是用它的横排能力。而在flex是第一布局模型的手机端，大量布局都是竖排的，此时要求开发者大量编写`style="flex-direction:column"`很不友好。
 
-所以在uni-app x中默认是竖排（之前nvue也默认是竖排）。同时在[manifest.json](../collocation/manifest.md)中提供了配置项，可以修改flex方向默认值为横排。
+所以在uni-app x中默认是竖排（之前nvue也默认是竖排）。
 
 ```html
 <view style="flex-direction:row">
@@ -172,40 +174,41 @@ app中，设置样式只有内联样式即style属性和class属性这两种方�
 - 内联样式(即style属性)优先级高于class选择器
 
 - 单class选择器以组件class属性中的书写顺序确定优先级，后边的优先级高（与web有差异，web是按class定义顺序确定优先级）
-```vue
-<template>
-	<!--如果希望a的优先级高于b,为了各端一致，需要确保在<style>中a的定义顺序在b的后边，且组件class属性中也保证a在b的后边-->
-    <text class="b a">hello world</text>
-</template>
-<style>
-    .b {
-        color: blue
-    }
 
-    .a {
-        color: red
-    }
-</style>
-```
+	```vue
+	<template>
+		<!--如果希望a的优先级高于b,为了各端一致，需要确保在<style>中a的定义顺序在b的后边，且组件class属性中也保证a在b的后边-->
+			<text class="b a">hello world</text>
+	</template>
+	<style>
+			.b {
+					color: blue
+			}
+
+			.a {
+					color: red
+			}
+	</style>
+	```
 
 - class复合选择器之间的优先级遵循web规范，但需要规范写法
 
-```vue
-<template>
-    <!--如果希望.a.c的优先级高于.a.b，需要确保在<style>中.a.c的定义顺序在.a.b的后边，且确保复合选择器写的时候，统一使用同一个前缀.a，如果换成.c.a在App端优先级会有差异-->
-    <text class="c b a">hello world</text>
-</template>
-<style>
-    .a.b {
-        color: blue
-    }
+	```vue
+	<template>
+			<!--如果希望.a.c的优先级高于.a.b，需要确保在<style>中.a.c的定义顺序在.a.b的后边，且确保复合选择器写的时候，统一使用同一个前缀.a，如果换成.c.a在App端优先级会有差异-->
+			<text class="c b a">hello world</text>
+	</template>
+	<style>
+			.a.b {
+					color: blue
+			}
 
-    /* 重要：需要确保也是用.a开头做复合，.c.a 在App端的优先级并不等同于 .a.c  */
-    .a.c {
-        color: red
-    }
-</style>
-```
+			/* 重要：需要确保也是用.a开头做复合，.c.a 在App端的优先级并不等同于 .a.c  */
+			.a.c {
+					color: red
+			}
+	</style>
+	```
 
 - class关系选择器之间的优先级遵循web规范
 > 注意：目前App端蒸汽模式不支持关系选择器
@@ -228,11 +231,15 @@ HBuilderX 5+ 已统一策略，页面是否被全局样式影响、组件是否�
 
 ## 层级
 
-App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持脱离dom树任意调节层级。
+app平台仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持脱离dom树任意调节层级。
 
 ## css方法 @css-function
 
-目前支持url()、rgb()、rgba()、var()、env()。[详见](./common/function.md)
+app平台目前支持url()、rgb()、rgba()、var()、env()。[详见](./common/function.md)
+
+## 字体图标注意
+
+app平台由于暂不支持伪元素，字体图标需使用unicode直显方式。[详见](./common/at-rules.md)
 
 ## css样式重置 @css-reset
 
@@ -244,6 +251,8 @@ App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持
 
 	比如auto、normal、medium，这些值内部逻辑很复杂，在不同情况有不同表现。很多是历史兼容造成的包袱。
 	在uni-app x中，倾向于让值明确。
+
+虽然css有reset，但并不是重置前的css无法在web和小程序上使用，在webview中，仍然可以使用所有的css，包括单独写了`display:block`也是可以使用的。
 
 如下是uni-app x的css重置清单，需要开发者注意。
 
@@ -374,24 +383,26 @@ App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持
 | [z-index](z-index.md) |
 
 
-## 不支持拍平的 CSS 属性
+## 不支持拍平的 CSS 属性@css_no_flatten_list
 
-| CSS 属性列表 |
-| :- |
-| [background-clip](background-clip.md) |
-| [background-image](background-image.md) |
-| [lines](lines.md) |
-| [pointer-events](pointer-events.md) |
-| [text-decoration](text-decoration.md) |
-| [text-decoration-style](text-decoration-style.md) |
-| [text-decoration-thickness](text-decoration-thickness.md) |
-| [transition](transition.md) |
-| [transition-delay](transition-delay.md) |
-| [transition-duration](transition-duration.md) |
-| [transition-property](transition-property.md) |
-| [transition-timing-function](transition-timing-function.md) |
-| [visibility](visibility.md) |
-| [z-index](z-index.md) |
+| CSS 属性列表 | 兼容性 |
+| :- |  :-: |
+| [background-clip](background-clip.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [background-image](background-image.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [lines](lines.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [overflow](overflow.md) | Android(Vapor): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 |
+| [pointer-events](pointer-events.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [text-decoration](text-decoration.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [text-decoration-color](text-decoration-color.md) | Android(Vapor): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 |
+| [text-decoration-style](text-decoration-style.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [text-decoration-thickness](text-decoration-thickness.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [transition](transition.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [transition-delay](transition-delay.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [transition-duration](transition-duration.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [transition-property](transition-property.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [transition-timing-function](transition-timing-function.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [visibility](visibility.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [z-index](z-index.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 
 
 ## Bug

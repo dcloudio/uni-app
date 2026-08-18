@@ -6,21 +6,19 @@
 
 > 组件类型：UniStickyHeaderElement 
 
- 吸顶布局容器 
-
- 注意：暂时仅支持作为list-view、sticky-section的子节点, sticky-header不支持css样式！当一个容器视图设置多个sticky-header时，后一个sticky-header会停靠在前一个sticky-header的末尾处。
+ 吸顶布局容器 <br/><br/> 注意：暂时仅支持作为list-view、sticky-section的子节点, sticky-header不支持css样式！当一个容器视图设置多个sticky-header时，后一个sticky-header会停靠在前一个sticky-header的末尾处。
 
 
-### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.93 | 4.11 | 5.0.5 | 4.71 | 5.08 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.93 | 4.11 | 4.71 | 5.08 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| padding | Array\<number> | [0,0,0,0\] | Web: 4.02; 微信小程序: x; Android(VDOM): 3.98; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
+| padding | Array\<number> | \[0,0,0,0\] | Web: 4.02; 微信小程序: x; Android(VDOM): 3.98; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
 
 
 
@@ -96,7 +94,7 @@
       </sticky-header>
 
       <list-item v-for="(item,index) in data.list_item" :key="index" class="content-item" type=3>
-        <text class="text">{{item}}</text>
+        <text class="content-item-text">{{item}}</text>
       </list-item>
     </sticky-section>
   </list-view>
@@ -165,15 +163,15 @@
   }
 
   .content-item {
-    padding: 15px;
-    margin-bottom: 10px;
-    background-color: #fff;
+    padding-bottom: 10px;
   }
 
-  .text {
+  .content-item-text {
     font-size: 14px;
     color: #666;
     line-height: 20px;
+    padding: 15px;
+    background-color: #fff;
   }
 
   .sift-item {

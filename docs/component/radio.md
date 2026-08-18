@@ -9,7 +9,7 @@
  单选项。在1组radio-group中只能选中1个
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -27,16 +27,20 @@
 | activeBackgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007AFF" | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio选中时的背景颜色，优先级大于color属性 |
 | activeBorderColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio选中时的边框颜色 |
 | ~~iconColor~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio的图标颜色 (使用foreColor替代) |
-| foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS:   | radio的图标颜色 |
-| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 单选框图标的类名 |
-| radio-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 单选框的类名 |
-| radio-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 单选框选中的类名 |
+| foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18 | radio的图标颜色 |
+| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 单选框图标的类名 |
+| radio-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 单选框的类名 |
+| radio-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 单选框选中的类名 |
 
 
 
 <!-- UTSCOMJSON.radio.component_type -->
 
 
+
+### 支付宝小程序注意事项
+
+支付宝小程序不支持将文本或 `text` 组件放在 `radio` 组件内部。选项文本应与 `radio` 作为同级节点放置，通常可使用 `label` 包裹同级的 `radio` 和文本。
 
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/radio/radio.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/radio/radio.uvue) 
@@ -247,13 +251,13 @@
           <text class="uni-title-text"> 不同颜色和尺寸的radio </text>
         </view>
         <radio-group class="uni-row radio-group">
-          <!-- #ifndef VUE3-VAPOR -->
+          <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
           <radio value="r1" :checked="true" color="#FFCC33" style="transform: scale(0.7); margin-right: 15px"
             class="radio">选中
           </radio>
           <radio value="r2" color="#FFCC33" style="transform: scale(0.7)" class="radio">未选中</radio>
           <!-- #endif -->
-          <!-- #ifdef VUE3-VAPOR -->
+          <!-- #ifdef VUE3-VAPOR && !MP -->
           <radio value="r1" :checked="true" radio-active-class="radio-active" style="transform: scale(0.7); margin-right: 15px"
             class="radio">选中
           </radio>
@@ -288,7 +292,7 @@
       </view>
     </view>
 
-    <!-- #ifndef VUE3-VAPOR -->
+    <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
     <view>
       <input-data defaultValue="#007AFF" title="radio的颜色" type="text" @confirm="confirm_color_input"></input-data>
       <input-data defaultValue="#ffffff" title="radio默认的背景颜色" type="text"
@@ -327,7 +331,7 @@
     justify-content: space-between;
   }
 
-  /* #ifdef VUE3-VAPOR */
+  /* #ifdef VUE3-VAPOR && !MP */
   .radio-active {
     background-color: #FFCC33;
     border-color: #FFCC33;

@@ -7,19 +7,19 @@
 自定义tabBar
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.24 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| direction | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 选项的排列方向 |
-| show-icon | boolean |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 是否显示icon |
-| selected | number |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 选中的tabBar选项索引值 |
-| @onTabItemTap | (event: [OnTabItemTapOption](#ontabitemtapoption)) => void |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 点击自定义 tabBar 触发事件，detail = {index, pagePath, text} |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| direction | string | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 选项的排列方向 |
+| show-icon | boolean | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 是否显示icon |
+| selected | number | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 选中的tabBar选项索引值 |
+| @onTabItemTap | (event: [OnTabItemTapOption](#ontabitemtapoption)) => void | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 点击自定义 tabBar 触发事件，detail = {index, pagePath, text} |
 
 #### direction 的属性描述
 

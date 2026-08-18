@@ -5,13 +5,13 @@
 align-content 属性用于在 Flex 弹性布局中设置多行（或多列）作为一个整体在交叉轴方向的分布方式。注意：如果子元素只有一行（或一列）该属性不起作用，需配合 flex-wrap: wrap 使用。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -71,7 +71,7 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -233,7 +233,7 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 align-content </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -278,7 +278,7 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
         <input-data :defaultValue="data.alignContent" title="align-content 自定义值" type="text" @confirm="inputChangeAlignContent"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -309,7 +309,6 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
     data.alignContentActualFlat = viewRefFlat.value?.style.getPropertyValue('align-content') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeAlignContent = (value: string) => {
     data.alignContent = value
     viewRef.value?.style.setProperty('align-content', value)
@@ -317,7 +316,7 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeAlignContent = (index: number) => {

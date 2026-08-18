@@ -15,7 +15,7 @@
  表单
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.97 | 4.11 | 4.61 |
@@ -45,9 +45,9 @@ UniFormSubmitEvent -- Extends --> UniCustomEvent&ltUniFormSubmitEventDetail&gt
 
 
 ###### UniFormSubmitEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| value | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |
 
 
 #### UniFormResetEvent
@@ -162,7 +162,7 @@ reset在浏览器W3C的策略是还原、重置。
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view class="scroll-view">
   <!-- #endif -->
     <view class="page">
@@ -260,7 +260,7 @@ reset在浏览器W3C的策略是还原、重置。
       <view class="result">提交的表单数据</view>
       <textarea class="textarea" :value="formDataText" :maxlength="-1" :auto-height="true"></textarea>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

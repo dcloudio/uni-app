@@ -5,13 +5,13 @@
 opacity 属性指定了一个元素的不透明度。换言之，opacity 属性指定了一个元素后面的背景的被覆盖程度。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -48,167 +48,167 @@ opacity: <alpha-value>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
-  <view style="flex-grow: 1;">
-    <view class="demo-row">
-      <view class="demo-item">
-        <text>opacity: 1 (默认值)</text>
-        <view class="common" style="opacity: 1;"></view>
-      </view>
-      <view class="demo-item">
-        <text>拍平</text>
-        <view class="common" style="opacity: 1;" flatten></view>
-      </view>
-    </view>
-
-    <view class="demo-row uni-common-mt">
-      <view class="demo-item">
-        <text>opacity: 0.8</text>
-        <view class="common" style="opacity: 0.8;"></view>
-      </view>
-      <view class="demo-item">
-        <text>拍平</text>
-        <view class="common" style="opacity: 0.8;" flatten></view>
-      </view>
-    </view>
-
-    <view class="demo-row uni-common-mt">
-      <view class="demo-item">
-        <text>opacity: 0.5</text>
-        <view class="common" style="opacity: 0.5;"></view>
-      </view>
-      <view class="demo-item">
-        <text>拍平</text>
-        <view class="common" style="opacity: 0.5;" flatten></view>
-      </view>
-    </view>
-
-    <view class="demo-row uni-common-mt">
-      <view class="demo-item">
-        <text>opacity: 0.2</text>
-        <view class="common" style="opacity: 0.2;"></view>
-      </view>
-      <view class="demo-item">
-        <text>拍平</text>
-        <view class="common" style="opacity: 0.2;" flatten></view>
-      </view>
-    </view>
-
-    <view class="demo-row uni-common-mt">
-      <view class="demo-item">
-        <text>opacity: 0</text>
-        <view class="common" style="opacity: 0;"></view>
-      </view>
-      <view class="demo-item">
-        <text>拍平</text>
-        <view class="common" style="opacity: 0;" flatten></view>
-      </view>
-    </view>
-
-    <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
-
-    <view class="demo-row uni-common-mt">
-      <view class="demo-item">
-        <text>opacity: 0.5</text>
-        <scroll-view class="common" style="opacity: 0.5;"></scroll-view>
-      </view>
-      <view class="demo-item">
-        <text>opacity: 0.2</text>
-        <scroll-view class="common" style="opacity: 0.2;"></scroll-view>
-      </view>
-    </view>
-
-    <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 opacity </text>
-    </view>
-
-    <!-- 普通版本 -->
-    <view class="test-container">
-      <view class="test-item">
-        <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{data.opacity}}</text>
-        <text class="uni-info">获取值: {{data.opacityActual}}</text>
-        <view class="test-box">
-          <view ref="viewRef" class="common test-view" :style="{ opacity: data.opacity }">
-            <text class="common-text">view</text>
-          </view>
+    <view style="flex-grow: 1;">
+      <view class="demo-row">
+        <view class="demo-item">
+          <text>opacity: 1 (默认值)</text>
+          <view class="common" style="opacity: 1;"></view>
+        </view>
+        <view class="demo-item">
+          <text>拍平</text>
+          <view class="common" style="opacity: 1;" flatten></view>
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{data.opacity}}</text>
-        <text class="uni-info">获取值: {{data.opacityActualText}}</text>
-        <view class="test-box">
-          <text ref="textRef" class="common test-text" :style="{ opacity: data.opacity }">text</text>
+      <view class="demo-row uni-common-mt">
+        <view class="demo-item">
+          <text>opacity: 0.8</text>
+          <view class="common" style="opacity: 0.8;"></view>
+        </view>
+        <view class="demo-item">
+          <text>拍平</text>
+          <view class="common" style="opacity: 0.8;" flatten></view>
         </view>
       </view>
 
-      <view class="test-item">
-        <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{data.opacity}}</text>
-        <text class="uni-info">获取值: {{data.opacityActualImage}}</text>
-        <view class="test-box">
-          <image ref="imageRef" class="common test-image" :style="{ opacity: data.opacity }" src="/static/test-image/logo.png"></image>
-        </view>
-      </view>
-    </view>
-
-    <!-- 拍平版本 -->
-    <view class="test-container">
-      <view class="test-item">
-        <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{data.opacity}}</text>
-        <text class="uni-info">获取值: {{data.opacityActualFlat}}</text>
-        <view class="test-box">
-          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ opacity: data.opacity }" flatten>
-            <text class="common-text">view</text>
-          </view>
-        </view>
-      </view>
-
-      <view class="test-item">
-        <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{data.opacity}}</text>
-        <text class="uni-info">获取值: {{data.opacityActualTextFlat}}</text>
-        <view class="test-box">
-          <text ref="textRefFlat" class="common test-text-flatten" :style="{ opacity: data.opacity }" flatten>text</text>
-        </view>
-      </view>
-
-      <view class="test-item">
-        <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{data.opacity}}</text>
-        <text class="uni-info">获取值: {{data.opacityActualImageFlat}}</text>
-        <view class="test-box">
-          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ opacity: data.opacity }" flatten src="/static/test-image/logo.png"></image>
-        </view>
-      </view>
-    </view>
-
-    <view class="uni-common-mt uni-common-mb">
-      <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-      <enum-data :items="opacityEnum" title="opacity 枚举值" @change="radioChangeOpacity" :compact="true"></enum-data>
-      <input-data :defaultValue="data.opacity" title="opacity 自定义值" type="text" @confirm="inputChangeOpacity"></input-data>
-    </view>
-
-    <view class="uni-common-mb">
-      <text>native-view组件: opacity: 0.5 和 opacity: 0.2</text>
       <view class="demo-row uni-common-mt">
         <view class="demo-item">
           <text>opacity: 0.5</text>
-          <native-view class="common" style="opacity: 0.5;"></native-view>
+          <view class="common" style="opacity: 0.5;"></view>
+        </view>
+        <view class="demo-item">
+          <text>拍平</text>
+          <view class="common" style="opacity: 0.5;" flatten></view>
+        </view>
+      </view>
+
+      <view class="demo-row uni-common-mt">
+        <view class="demo-item">
+          <text>opacity: 0.2</text>
+          <view class="common" style="opacity: 0.2;"></view>
+        </view>
+        <view class="demo-item">
+          <text>拍平</text>
+          <view class="common" style="opacity: 0.2;" flatten></view>
+        </view>
+      </view>
+
+      <view class="demo-row uni-common-mt">
+        <view class="demo-item">
+          <text>opacity: 0</text>
+          <view class="common" style="opacity: 0;"></view>
+        </view>
+        <view class="demo-item">
+          <text>拍平</text>
+          <view class="common" style="opacity: 0;" flatten></view>
+        </view>
+      </view>
+
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+
+      <view class="demo-row uni-common-mt">
+        <view class="demo-item">
+          <text>opacity: 0.5</text>
+          <scroll-view class="common" style="opacity: 0.5;"></scroll-view>
         </view>
         <view class="demo-item">
           <text>opacity: 0.2</text>
-          <native-view class="common" style="opacity: 0.2;"></native-view>
+          <scroll-view class="common" style="opacity: 0.2;"></scroll-view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common test-view" :style="{ opacity: data.opacity }">
+              <text class="common-text">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common test-text" :style="{ opacity: data.opacity }">text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common test-image" :style="{ opacity: data.opacity }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common test-view-flatten" :style="{ opacity: data.opacity }" flatten>
+              <text class="common-text">view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common test-text-flatten" :style="{ opacity: data.opacity }" flatten>text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="uni-info">设置值: {{data.opacity}}</text>
+          <text class="uni-info">获取值: {{data.opacityActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common test-image-flatten" :style="{ opacity: data.opacity }" flatten src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="opacityEnum" title="opacity 枚举值" @change="radioChangeOpacity" :compact="true"></enum-data>
+        <input-data :defaultValue="data.opacity" title="opacity 自定义值" type="text" @confirm="inputChangeOpacity"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: opacity: 0.5 和 opacity: 0.2</text>
+        <view class="demo-row uni-common-mt">
+          <view class="demo-item">
+            <text>opacity: 0.5</text>
+            <test-native-view class="common" style="opacity: 0.5;"></test-native-view>
+          </view>
+          <view class="demo-item">
+            <text>opacity: 0.2</text>
+            <test-native-view class="common" style="opacity: 0.2;"></test-native-view>
+          </view>
         </view>
       </view>
     </view>
-  </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -216,7 +216,7 @@ opacity: <alpha-value>;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const opacityEnum: ItemType[] = [
+  const opacityEnum : ItemType[] = [
     { value: 0, name: '' },
     { value: 1, name: '0' },
     { value: 2, name: '0.2' },
@@ -250,9 +250,8 @@ opacity: <alpha-value>;
     data.opacityActualImageFlat = imageRefFlat.value?.style.getPropertyValue('opacity') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
-  const changeOpacity = (value: string) => {
+  const changeOpacity = (value : string) => {
     data.opacity = value
     viewRef.value?.style.setProperty('opacity', value)
     viewRefFlat.value?.style.setProperty('opacity', value)
@@ -263,17 +262,17 @@ opacity: <alpha-value>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
-  const radioChangeOpacity = (index: number) => {
-    const selectedItem = opacityEnum.find((item): boolean => item.value === index)
+  const radioChangeOpacity = (index : number) => {
+    const selectedItem = opacityEnum.find((item) : boolean => item.value === index)
     if (selectedItem != null) {
       changeOpacity(selectedItem.name)
     }
   }
 
-  const inputChangeOpacity = (value: string) => {
+  const inputChangeOpacity = (value : string) => {
     changeOpacity(value)
   }
 
@@ -285,7 +284,6 @@ opacity: <alpha-value>;
     radioChangeOpacity,
     data
   })
-
 </script>
 
 <style>
@@ -325,7 +323,6 @@ opacity: <alpha-value>;
     height: 80px;
     background-color: gray;
   }
-
 </style>
 
 ```

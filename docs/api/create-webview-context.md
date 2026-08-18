@@ -30,18 +30,18 @@ let v1 = uni.createWebViewContext("wv1", getCurrentInstance()!.proxy!) //获取i
 let wv = uni.getElementById("wv1") as UniWebViewElement
 ```
 
-### createWebViewContext 兼容性 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 3.9.0 | 4.11 | 5.08 | 5.08 |
+### createWebViewContext 兼容性 <Help /> 
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 3.9.0 | 4.11 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| webviewId | [string.WebviewIdString](/uts/data-type.md#ide-string) | 是 |  |   |  |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| webviewId | [string.WebviewIdString](/uts/data-type.md#ide-string) | 是 |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | 
 
 
 
@@ -57,7 +57,7 @@ let wv = uni.getElementById("wv1") as UniWebViewElement
 #### back() : void @back
 back
 后退到 web-view 组件网页加载历史的上一页，如果不存在上一页则没有任何效果。
-##### back 兼容性 
+##### back 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.9.0 | 4.11 | 4.61 |
@@ -68,7 +68,7 @@ back
 #### forward() : void @forward
 forward
 前进到 web-view 组件网页加载历史的下一页，如果不存在下一页则没有任何效果。
-##### forward 兼容性 
+##### forward 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.9.0 | 4.11 | 4.61 |
@@ -79,7 +79,7 @@ forward
 #### reload() : void @reload
 reload
 重新加载 web-view 组件当前页面。
-##### reload 兼容性 
+##### reload 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.9.0 | 4.11 | 4.61 |
@@ -90,7 +90,7 @@ reload
 #### stop() : void @stop
 stop
 停止加载 web-view 组件当前网页，该方法不能阻止已经加载的 html 文档，但是能够阻止未完成的图片及延迟加载的资源。
-##### stop 兼容性 
+##### stop 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.9.0 | 4.11 | 4.61 |
@@ -101,26 +101,26 @@ stop
 #### evalJS(js : string) : void @evaljs
 evalJS
 在网页中执行指定的js脚本，在 uvue 页面中可通过此方法向 web-view 组件加载的页面发送数据
-##### evalJS 兼容性 
+##### evalJS 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| js | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| js | string | 是 | Web: x | 
 
 
 
 #### getContentHeight() : number @getcontentheight
 getContentHeight
 获取webview内容高度
-##### getContentHeight 兼容性 
-| Web | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | 4.63 | 4.63 | 5.08 | 5.08 |
+##### getContentHeight 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.63 | 4.63 | 5.08 |
 
 
 
@@ -134,36 +134,36 @@ getContentHeight
 #### loadData(options: UniWebviewContextLoadDataOptions) : void @loaddata
 loadData
 在web-view组件中加载页面内容
-##### loadData 兼容性 
+##### loadData 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 4.71 | 4.71 | 4.71 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniWebviewContextLoadDataOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **UniWebviewContextLoadDataOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 要加载的内容，编码后的字符串 |
-| baseURL | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面的基础URL |
-| mimeType | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 加载的页面内容类型，默认值为"text/html" |
-| encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面内容的编码类型，默认值为"utf-8" | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | string | 是 | Web: x | 要加载的内容，编码后的字符串 |
+| baseURL | string | 否 | Web: x | 页面的基础URL |
+| mimeType | string | 否 | Web: x | 加载的页面内容类型，默认值为"text/html" |
+| encoding | string | 否 | Web: x | 页面内容的编码类型，默认值为"utf-8" | 
 
 
 
 ##### UniWebviewContextLoadDataOptions 的属性值 @uniwebviewcontextloaddataoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 要加载的内容，编码后的字符串 |
-| baseURL | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面的基础URL |
-| mimeType | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 加载的页面内容类型，默认值为"text/html" |
-| encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面内容的编码类型，默认值为"utf-8" |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | string | 是 | Web: x | 要加载的内容，编码后的字符串 |
+| baseURL | string | 否 | Web: x | 页面的基础URL |
+| mimeType | string | 否 | Web: x | 加载的页面内容类型，默认值为"text/html" |
+| encoding | string | 否 | Web: x | 页面内容的编码类型，默认值为"utf-8" |
  
 
 
@@ -203,7 +203,13 @@ loadData
   **已废弃，仅为了向下兼容保留，建议使用`createWebViewContext`。
 创建 web-view 上下文 WebviewContext 对象。**
 
-### createWebviewContext 兼容性 
+早期，本API的大小写不规范，`createWebviewContext`的view的首字母`v`没有大写。
+
+目前不规范的API已经废弃，推荐使用上方的`uni.createWebViewContext`。
+
+- app-android 平台在蒸汽模式下仅支持`V`大写的方式 ，不再支持向下兼容写法。
+
+### createWebviewContext 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9.0 | 4.11 | 4.61 |
@@ -211,10 +217,10 @@ loadData
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| webviewId | [string.WebviewIdString](/uts/data-type.md#ide-string) | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| webviewId | [string.WebviewIdString](/uts/data-type.md#ide-string) | 是 | Web: x |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: x | 
 
 
 ### 返回值 
@@ -228,7 +234,7 @@ loadData
 #### back() : void @back
 back
 后退到 web-view 组件网页加载历史的上一页，如果不存在上一页则没有任何效果。
-##### back 兼容性 
+##### back 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.9.0 | 4.11 | 4.61 |
@@ -239,7 +245,7 @@ back
 #### forward() : void @forward
 forward
 前进到 web-view 组件网页加载历史的下一页，如果不存在下一页则没有任何效果。
-##### forward 兼容性 
+##### forward 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.9.0 | 4.11 | 4.61 |
@@ -250,7 +256,7 @@ forward
 #### reload() : void @reload
 reload
 重新加载 web-view 组件当前页面。
-##### reload 兼容性 
+##### reload 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.9.0 | 4.11 | 4.61 |
@@ -261,7 +267,7 @@ reload
 #### stop() : void @stop
 stop
 停止加载 web-view 组件当前网页，该方法不能阻止已经加载的 html 文档，但是能够阻止未完成的图片及延迟加载的资源。
-##### stop 兼容性 
+##### stop 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.9.0 | 4.11 | 4.61 |
@@ -272,26 +278,26 @@ stop
 #### evalJS(js : string) : void @evaljs
 evalJS
 在网页中执行指定的js脚本，在 uvue 页面中可通过此方法向 web-view 组件加载的页面发送数据
-##### evalJS 兼容性 
+##### evalJS 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| js | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| js | string | 是 | Web: x | 
 
 
 
 #### getContentHeight() : number @getcontentheight
 getContentHeight
 获取webview内容高度
-##### getContentHeight 兼容性 
-| Web | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | 4.63 | 4.63 | 5.08 | 5.08 |
+##### getContentHeight 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.63 | 4.63 | 5.08 |
 
 
 
@@ -305,36 +311,36 @@ getContentHeight
 #### loadData(options: UniWebviewContextLoadDataOptions) : void @loaddata
 loadData
 在web-view组件中加载页面内容
-##### loadData 兼容性 
+##### loadData 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 4.71 | 4.71 | 4.71 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniWebviewContextLoadDataOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **UniWebviewContextLoadDataOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 要加载的内容，编码后的字符串 |
-| baseURL | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面的基础URL |
-| mimeType | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 加载的页面内容类型，默认值为"text/html" |
-| encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面内容的编码类型，默认值为"utf-8" | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | string | 是 | Web: x | 要加载的内容，编码后的字符串 |
+| baseURL | string | 否 | Web: x | 页面的基础URL |
+| mimeType | string | 否 | Web: x | 加载的页面内容类型，默认值为"text/html" |
+| encoding | string | 否 | Web: x | 页面内容的编码类型，默认值为"utf-8" | 
 
 
 
 ##### UniWebviewContextLoadDataOptions 的属性值 @uniwebviewcontextloaddataoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 要加载的内容，编码后的字符串 |
-| baseURL | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面的基础URL |
-| mimeType | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 加载的页面内容类型，默认值为"text/html" |
-| encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面内容的编码类型，默认值为"utf-8" |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | string | 是 | Web: x | 要加载的内容，编码后的字符串 |
+| baseURL | string | 否 | Web: x | 页面的基础URL |
+| mimeType | string | 否 | Web: x | 加载的页面内容类型，默认值为"text/html" |
+| encoding | string | 否 | Web: x | 页面内容的编码类型，默认值为"utf-8" |
  
 
 
@@ -349,9 +355,9 @@ loadData
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 示例代码另见[web-view组件](../component/web-view.md)

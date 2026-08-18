@@ -12,7 +12,7 @@
 
 创建一个监听权限申请的对象。
 
-### createRequestPermissionListener 兼容性 
+### createRequestPermissionListener 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -40,58 +40,58 @@ app-android平台，可使用本API监听应用权限申请确认框的弹出和
 #### onRequest(callback : RequestPermissionListenerRequestCallback) : void @onrequest
 onRequest
 监听申请系统权限
-##### onRequest 兼容性 
-| Web | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+##### onRequest 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.0 | x | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS: x | 申请系统权限回调，permissions为触发权限申请的所有权限 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (permissions: Array&lt;string&gt;) => void | 是 | Web: x; iOS: x; HarmonyOS: x | 申请系统权限回调，permissions为触发权限申请的所有权限 | 
 
 
 
 #### onConfirm(callback : RequestPermissionListenerConfirmCallback) : void @onconfirm
 onConfirm
 监听弹出系统权限授权框
-##### onConfirm 兼容性 
-| Web | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+##### onConfirm 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.0 | x | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS: x | 弹出系统权限授权框回调，permissions为触发弹出权限授权框的所有权限 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (permissions: Array&lt;string&gt;) => void | 是 | Web: x; iOS: x; HarmonyOS: x | 弹出系统权限授权框回调，permissions为触发弹出权限授权框的所有权限 | 
 
 
 
 #### onComplete(callback : RequestPermissionListenerCompleteCallback) : void @oncomplete
 onComplete
 监听权限申请完成
-##### onComplete 兼容性 
-| Web | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+##### onComplete 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.0 | x | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS: x | 权限申请完成回调，permissions为申请完成的所有权限 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (permissions: Array&lt;string&gt;) => void | 是 | Web: x; iOS: x; HarmonyOS: x | 权限申请完成回调，permissions为申请完成的所有权限 | 
 
 
 
 #### stop() : void @stop
 stop
 取消所有监听
-##### stop 兼容性 
-| Web | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+##### stop 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.0 | x | x |
 
 
 
@@ -108,7 +108,7 @@ stop
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/create-request-permission-listener/create-request-permission-listener
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head title="权限申请监听"></page-head>
@@ -119,7 +119,7 @@ stop
     </view>
     <button type="primary" style="margin: 10px;" @click="requestPermission">点击申请日历权限</button>
 
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -215,7 +215,7 @@ stop
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

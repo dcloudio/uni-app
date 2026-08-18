@@ -290,6 +290,14 @@ vue3新增的组合式API，是纯编程的，解决了选项式不够灵活的�
 1. 影响应用性能。不管写在哪个页面，这部分代码都在应用启动时执行，而不是页面加载。如果`export default {}`外的代码写的太复杂，会影响应用启动速度，占用更多内存。
 2. 不跟随组件、页面关闭而回收。在外层的静态变量不会跟随页面关闭而回收。如果必要，你需要手动处理。比如 `unmounted` 或 `onUnload` 生命周期进行处理。
 
+### JSX/TSX
+
+uni-app x 目前不支持使用 JSX/TSX 编写页面和组件，请使用 Vue 的 `template` 模板语法。
+
+在 App 端蒸汽模式下，视图层代码，即 Vue 文件中 `template` 和 `style` 内的代码，会在编译期进行静态分析，并直接编译为高度优化的机器码或字节码，它的运行速度远快于arkts、kotlin及k/n。
+
+JSX/TSX 是编写在 JavaScript/TypeScript 中的表达式语法，目前不支持将 JSX/TSX 编译为与 `template` 相同的高性能机器码或字节码，为了发挥 App 端蒸汽模式的视图层性能优势时，应使用 `template` 和 `style` 编写视图代码。
+
 ## style（CSS功能） @css
 
 style的写法与web的css基本相同。但在App端，由于并非webview渲染，支持的css有限。[详见](../css/README.md)
@@ -305,26 +313,26 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 
 
 
-##### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.61 | 5.03 |
+##### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | 4.11 | 4.61 |
 
 
 ##### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| lang | string |   | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |  |
-| scoped | boolean |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |   |
-| module | Any |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |   |
+| 名称 | 类型 | 兼容性 |
+| :- | :- |  :-: |
+| lang | string | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| scoped | boolean | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| module | Any | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 #### lang 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| scss | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |  |
-| less | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |  |
-| stylus | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |  |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| scss | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| less | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| stylus | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 
 
 
@@ -342,7 +350,7 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 - `uni-app x` 支持绑定  `UTSJSONObject` 和 `Map` 类型数据。
 - 在App-Android平台上 `Map` 的性能高于 `UTSJSONObject` 数据类型。从 `uni-app x 4.01` 起，Web平台也支持了 `Map` 类型绑定。
 
-如下示例中，给view组件的style和class分别绑定了2个data，就可以通过在逻辑代码里修改data而实现动态修改样式。
+如下示例中，给 view 组件的 style 和 class 分别绑定了两个响应式变量，就可以通过在逻辑代码里修改变量而实现动态修改样式。
 ```vue
 <template>
   <view>
@@ -350,15 +358,9 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
   </view>
 </template>
 
-<script lang="uts">
-  export default {
-    data() {
-      return {
-        styleMap: new Map<string, string>([['border', '2px solid red'], ['background-color', 'green']]),
-        classMap: new Map<string, boolean>([['w-100', true], ['h-100', true], ['rounded', false]])
-      }
-    }
-  }
+<script setup lang="uts">
+  const styleMap = ref(new Map<string, string>([['border', '2px solid red'], ['background-color', 'green']]))
+  const classMap = ref(new Map<string, boolean>([['w-100', true], ['h-100', true], ['rounded', false]]))
 </script>
 
 <style lang="scss" scoped>
@@ -531,3 +533,32 @@ const theme = {
 10. 在测试例页面用到页面中的数据或方法时，必须通过 `defineExpose` 显式暴露数据和方法，避免测试无法访问。
 11. 在页面生命周期中，`onPullDownRefresh` 应作为页面生命周期函数处理，而不是写成普通方法。
 12. 检查控制台的编译报错，如果有报错自行修复，并再次检查编译报错，直到无报错编译通过。
+
+
+
+## 利用 AI 适配蒸汽模式@ai-vapor
+
+下面提示词用于把已有 uni-app x 页面适配到蒸汽模式。
+
+把本项目下的页面适配为可用于蒸汽模式的写法
+
+1. 只做蒸汽模式兼容适配和必要的组合式改造，避免引入业务逻辑变更。
+2. 不要删除或遗漏任何已有代码、注释、测试入口和外部调用链路；确实需要调整时，保持原有功能等价。
+3. 蒸汽模式仅支持组合式 API。如果页面仍使用选项式 API，先转换为 `<script setup>` 组合式写法，再继续处理蒸汽模式兼容。
+4. 在组合式 API 中，保证所有函数和变量在调用前已定义；如定义顺序不合理，按依赖关系调整顺序，避免未定义前调用。
+5. 在组合式 API 中，不需要 import 所有 Vue API 和 uni-app x 生命周期函数，例如 `ref`、`reactive`、`computed`、`watch`、`onLoad`、`onMounted` 等，uni-app x 会自动引入；不要额外引入无必要的 import。
+6. 选项式 API 中的 `onShow`、`onHide` 页面生命周期，改为组合式 API 时分别使用 `onPageShow`、`onPageHide`。
+7. 选项式 API 中的 `beforeUnmount`、`mounted`、`unmounted`，改为组合式 API 时分别使用 `onBeforeUnmount`、`onMounted`、`onUnmounted`；`created` 的逻辑放到 `<script setup>` 顶层执行。
+8. 页面生命周期 `onPullDownRefresh` 不要当作普通方法处理；如果蒸汽模式当前平台不支持页面下拉刷新，改为使用页面内 `scroll-view` 等可兼容方案，并保持交互等价。
+9. 子组件方法、页面测试入口或外部需要访问的数据和方法，必须通过 `defineExpose` 显式暴露，避免父组件、测试用例或外部调用失效。
+10. 不要继续使用 `mixin`，将其中的数据、计算逻辑、方法和生命周期合并到当前组件的组合式代码中，或抽成普通 composable 函数。
+11. 检查模板中蒸汽模式不支持或行为变化的写法，按项目现有规范改成兼容写法，保持页面结构和交互不变。
+12. 检查 `scroll-view`、`swiper` 等组件的布尔属性；不要依赖旧默认值，按页面实际需要显式补齐 `true` 或 `false`，避免行为变化。
+13. 检查 `list-view` / `list-item`：用于复用的 `list-item` 循环必须有稳定 `:key`；`list-view` 和需要复用的 `list-item` 应在同一个 uvue 文件内；`list-item` 内文本必须使用 `text` 包裹；不要依赖横向滚动、`margin` 等不兼容能力。
+14. 检查 `swiper` 相关页面：如依赖内容高度、指示器样式或 `swiper-item` 定位，按蒸汽模式支持的属性和插槽调整，避免显示异常。
+15. 检查 CSS 选择器，避免运行时依赖复杂关系选择器；将 `.parent .child`、深层后代选择器等改为明确的 class 命名，优先使用 BEM 风格表达层级关系。
+16. 可以保留 SCSS 等编译期写法，但最终运行时应落到蒸汽模式支持的简单 class 选择器或分组选择器。
+17. 检查组件样式隔离影响。外部页面或全局样式不要默认假设能影响组件内部同名 class；如组件确实需要受外部样式影响，在 `<script setup>` 中通过 `defineOptions` 设置合适的 `styleIsolation`，并说明原因。
+18. 调整样式时保持视觉效果尽量一致，不要借适配蒸汽模式的机会重构设计或改动无关样式。
+19. 改造后检查控制台编译报错和运行时报错；如果有报错，自行修复并再次检查，直到无报错编译通过。
+20. 适配完成后，列出本次修改点、涉及的蒸汽模式差异，以及仍需人工在真机或目标平台确认的行为。

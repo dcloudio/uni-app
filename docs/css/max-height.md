@@ -5,13 +5,13 @@
 CSS属性 max-height 设置元素的最大高度。它防止height属性的使用值（used value）大于 max-height 的指定值。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -57,7 +57,7 @@ max-height: <viewport-length>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -86,7 +86,7 @@ max-height: <viewport-length>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 max-height </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -116,7 +116,8 @@ max-height: <viewport-length>;
           <text class="uni-info">设置值: {{data.maxHeight}}</text>
           <text class="uni-info">获取值: {{data.maxHeightActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ maxHeight: data.maxHeight }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ maxHeight: data.maxHeight }"
+              src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -128,7 +129,8 @@ max-height: <viewport-length>;
           <text class="uni-info">设置值: {{data.maxHeight}}</text>
           <text class="uni-info">获取值: {{data.maxHeightActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ maxHeight: data.maxHeight }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ maxHeight: data.maxHeight }"
+              flatten>
               <text style="font-size: 12px;">view</text>
             </view>
           </view>
@@ -139,7 +141,8 @@ max-height: <viewport-length>;
           <text class="uni-info">设置值: {{data.maxHeight}}</text>
           <text class="uni-info">获取值: {{data.maxHeightActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ maxHeight: data.maxHeight }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ maxHeight: data.maxHeight }"
+              flatten>text</text>
           </view>
         </view>
 
@@ -148,26 +151,33 @@ max-height: <viewport-length>;
           <text class="uni-info">设置值: {{data.maxHeight}}</text>
           <text class="uni-info">获取值: {{data.maxHeightActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ maxHeight: data.maxHeight }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ maxHeight: data.maxHeight }"
+              flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :items="maxHeightEnum" title="max-height 枚举值" @change="radioChangeMaxHeight" :compact="true"></enum-data>
-        <input-data :defaultValue="data.maxHeight" title="max-height 自定义值" type="text" @confirm="inputChangeMaxHeight"></input-data>
+        <enum-data :items="maxHeightEnum" title="max-height 枚举值" @change="radioChangeMaxHeight"
+          :compact="true"></enum-data>
+        <input-data :defaultValue="data.maxHeight" title="max-height 自定义值" type="text"
+          @confirm="inputChangeMaxHeight"></input-data>
       </view>
 
       <view class="uni-common-mb">
         <text>native-view组件: max-height: 80px 和 max-height: 120px</text>
-        <view class="demo-box">
-          <native-view class="common" style="max-height: 80px; background-color: cyan;width:100px;"></native-view>
-          <native-view class="common" style="max-height: 120px; background-color: cyan;width:100px;"></native-view>
+        <view class="demo-box-native">
+          <view class="container-native">
+            <native-view style="max-height: 80px; width:100px; height: 400px;"></native-view>
+          </view>
+          <view class="container-native">
+            <native-view style="max-height: 120px; width:100px; height: 400px;"></native-view>
+          </view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -175,7 +185,7 @@ max-height: <viewport-length>;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const maxHeightEnum: ItemType[] = [
+  const maxHeightEnum : ItemType[] = [
     { value: 0, name: '' },
     { value: 1, name: '0' },
     { value: 2, name: '0px' },
@@ -210,9 +220,8 @@ max-height: <viewport-length>;
     data.maxHeightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('max-height') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
-  const changeMaxHeight = (value: string) => {
+  const changeMaxHeight = (value : string) => {
     data.maxHeight = value
     viewRef.value?.style.setProperty('max-height', value)
     viewRefFlat.value?.style.setProperty('max-height', value)
@@ -223,17 +232,17 @@ max-height: <viewport-length>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
-  const radioChangeMaxHeight = (index: number) => {
-    const selectedItem = maxHeightEnum.find((item): boolean => item.value === index)
+  const radioChangeMaxHeight = (index : number) => {
+    const selectedItem = maxHeightEnum.find((item) : boolean => item.value === index)
     if (selectedItem != null) {
       changeMaxHeight(selectedItem.name)
     }
   }
 
-  const inputChangeMaxHeight = (value: string) => {
+  const inputChangeMaxHeight = (value : string) => {
     changeMaxHeight(value)
   }
 
@@ -288,6 +297,17 @@ max-height: <viewport-length>;
   .scroll-view-label {
     font-size: 12px;
     text-align: center;
+  }
+
+  .demo-box-native {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .container-native {
+    background-color: cyan;
   }
 </style>
 

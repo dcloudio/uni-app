@@ -13,24 +13,24 @@
 监听网络状态变化
 
 
-### onNetworkStatusChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.81 | 4.81 | 4.81 | 4.61 |
+### onNetworkStatusChange 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.81 | 4.81 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| listener | (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| listener | (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 是 | 
 
 ### OnNetworkStatusChangeCallbackResult 的属性值 @onnetworkstatuschangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| isConnected | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61 | 当前是否有网络连接<br/> |
-| networkType | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61 | 网络类型(wifi、2g、3g、4g、5g、unknown、none)<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| isConnected | boolean | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: 4.61 | 当前是否有网络连接<br/> |
+| networkType | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: 4.61 | 网络类型(wifi、2g、3g、4g、5g、unknown、none)<br/> |
 
 
 ### 返回值 
@@ -78,24 +78,24 @@
 取消监听网络状态变化
 
 
-### offNetworkStatusChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.81 | 4.81 | 4.81 | 4.61 |
+### offNetworkStatusChange 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.81 | 4.81 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| listener | number \| (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| listener | number \| (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 否 | 
 
 ### OnNetworkStatusChangeCallbackResult 的属性值 @onnetworkstatuschangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| isConnected | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61 | 当前是否有网络连接<br/> |
-| networkType | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61 | 网络类型(wifi、2g、3g、4g、5g、unknown、none)<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| isConnected | boolean | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: 4.61 | 当前是否有网络连接<br/> |
+| networkType | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: 4.61 | 网络类型(wifi、2g、3g、4g、5g、unknown、none)<br/> |
 
 
 
@@ -223,7 +223,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

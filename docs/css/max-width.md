@@ -5,13 +5,13 @@
 max-width 属性用来给元素设置最大宽度值。定义了 max-width 的元素会在达到 max-width 值之后避免进一步按照 width 属性设置变大。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -57,7 +57,7 @@ max-width: <viewport-length>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -86,7 +86,7 @@ max-width: <viewport-length>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 max-width </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -116,7 +116,8 @@ max-width: <viewport-length>;
           <text class="uni-info">设置值: {{data.maxWidth}}</text>
           <text class="uni-info">获取值: {{data.maxWidthActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ maxWidth: data.maxWidth }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ maxWidth: data.maxWidth }"
+              src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -128,7 +129,8 @@ max-width: <viewport-length>;
           <text class="uni-info">设置值: {{data.maxWidth}}</text>
           <text class="uni-info">获取值: {{data.maxWidthActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ maxWidth: data.maxWidth }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ maxWidth: data.maxWidth }"
+              flatten>
               <text class="common-text">view</text>
             </view>
           </view>
@@ -139,7 +141,8 @@ max-width: <viewport-length>;
           <text class="uni-info">设置值: {{data.maxWidth}}</text>
           <text class="uni-info">获取值: {{data.maxWidthActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ maxWidth: data.maxWidth }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ maxWidth: data.maxWidth }"
+              flatten>text</text>
           </view>
         </view>
 
@@ -148,27 +151,34 @@ max-width: <viewport-length>;
           <text class="uni-info">设置值: {{data.maxWidth}}</text>
           <text class="uni-info">获取值: {{data.maxWidthActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ maxWidth: data.maxWidth }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ maxWidth: data.maxWidth }"
+              flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :items="maxWidthEnum" title="max-width 枚举值" @change="radioChangeMaxWidth" :compact="true"></enum-data>
-        <input-data :defaultValue="data.maxWidth" title="max-width 自定义值" type="text" @confirm="inputChangeMaxWidth"></input-data>
+        <enum-data :items="maxWidthEnum" title="max-width 枚举值" @change="radioChangeMaxWidth"
+          :compact="true"></enum-data>
+        <input-data :defaultValue="data.maxWidth" title="max-width 自定义值" type="text"
+          @confirm="inputChangeMaxWidth"></input-data>
       </view>
 
       <view class="uni-common-mb">
         <text>native-view组件: max-width: 100px 和 max-width: 200px</text>
-        <view class="demo-box">
-          <native-view class="common-view" style="max-width: 100px;"></native-view>
-          <native-view class="common-view" style="max-width: 200px;"></native-view>
+        <view class="demo-box-native">
+          <view class="container-native">
+            <native-view style="max-width: 100px; height: 100px;"></native-view>
+          </view>
+          <view class="container-native">
+            <native-view style="max-width: 200px; height: 100px;"></native-view>
+          </view>
         </view>
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -176,7 +186,7 @@ max-width: <viewport-length>;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const maxWidthEnum: ItemType[] = [
+  const maxWidthEnum : ItemType[] = [
     { value: 0, name: '' },
     { value: 1, name: '0' },
     { value: 2, name: '0px' },
@@ -211,9 +221,8 @@ max-width: <viewport-length>;
     data.maxWidthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('max-width') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
-  const changeMaxWidth = (value: string) => {
+  const changeMaxWidth = (value : string) => {
     data.maxWidth = value
     viewRef.value?.style.setProperty('max-width', value)
     viewRefFlat.value?.style.setProperty('max-width', value)
@@ -224,17 +233,17 @@ max-width: <viewport-length>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
-  const radioChangeMaxWidth = (index: number) => {
-    const selectedItem = maxWidthEnum.find((item): boolean => item.value === index)
+  const radioChangeMaxWidth = (index : number) => {
+    const selectedItem = maxWidthEnum.find((item) : boolean => item.value === index)
     if (selectedItem != null) {
       changeMaxWidth(selectedItem.name)
     }
   }
 
-  function inputChangeMaxWidth(value: string) {
+  function inputChangeMaxWidth(value : string) {
     changeMaxWidth(value)
   }
 
@@ -256,13 +265,14 @@ max-width: <viewport-length>;
     justify-content: center;
     align-items: center;
   }
-  .common-view{
+
+  .common-view {
     width: 400px;
     height: 80px;
     background-color: cyan;
   }
 
-  .common-text{
+  .common-text {
     width: 50px;
   }
 
@@ -298,6 +308,17 @@ max-width: <viewport-length>;
   .scroll-view-label {
     font-size: 12px;
     text-align: center;
+  }
+
+  .demo-box-native {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .container-native {
+    background-color: cyan;
   }
 </style>
 

@@ -5,13 +5,13 @@
 margin-right 属性 设置与元素相关联的盒子模型的右外边距。这个值可以为负值。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -59,7 +59,7 @@ margin-right: <length> | <percentage> | auto;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -116,7 +116,7 @@ margin-right: <length> | <percentage> | auto;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 margin-right </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -203,18 +203,18 @@ margin-right: <length> | <percentage> | auto;
         <view class="demo-box">
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin-right: 25px;"></native-view>
+            <test-native-view class="common" style="margin-right: 25px;"></test-native-view>
             <view class="common blue"></view>
           </view>
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin-right: 10%;"></native-view>
+            <test-native-view class="common" style="margin-right: 10%;"></test-native-view>
             <view class="common blue"></view>
           </view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -258,7 +258,6 @@ margin-right: <length> | <percentage> | auto;
     data.marginRightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-right') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeMarginRight = (value: string) => {
     data.marginRight = value
@@ -271,7 +270,7 @@ margin-right: <length> | <percentage> | auto;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeMarginRight = (index: number) => {

@@ -13,42 +13,42 @@
 显示 tabBar
 
 
-### showTabBar 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+### showTabBar 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ShowTabBarOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **ShowTabBarOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| animation | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 是否需要动画效果 |
-| success | (result: [ShowTabBarSuccess](#showtabbarsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (result: [ShowTabBarFail](#showtabbarfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (result: [ShowTabBarComplete](#showtabbarcomplete-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| animation | boolean | 否 | 微信小程序: 4.41 | 是否需要动画效果 |
+| success | (result: [ShowTabBarSuccess](#showtabbarsuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [ShowTabBarFail](#showtabbarfail-values)) => void | 否 | 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [ShowTabBarComplete](#showtabbarcomplete-values)) => void | 否 | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### ShowTabBarSuccess 的属性值 @showtabbarsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### ShowTabBarFail 的属性值 @showtabbarfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -59,9 +59,9 @@
 
 #### ShowTabBarComplete 的属性值 @showtabbarcomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -72,9 +72,9 @@
 
 #### Promise\<ShowTabBarSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 
@@ -108,42 +108,42 @@
 隐藏 tabBar
 
 
-### hideTabBar 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+### hideTabBar 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **HideTabBarOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **HideTabBarOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| animation | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 是否需要动画效果 |
-| success | (result: [HideTabBarSuccess](#hidetabbarsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (result: [HideTabBarFail](#hidetabbarfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (result: [HideTabBarComplete](#hidetabbarcomplete-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| animation | boolean | 否 | 微信小程序: 4.41 | 是否需要动画效果 |
+| success | (result: [HideTabBarSuccess](#hidetabbarsuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [HideTabBarFail](#hidetabbarfail-values)) => void | 否 | 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [HideTabBarComplete](#hidetabbarcomplete-values)) => void | 否 | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### HideTabBarSuccess 的属性值 @hidetabbarsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### HideTabBarFail 的属性值 @hidetabbarfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -154,9 +154,9 @@
 
 #### HideTabBarComplete 的属性值 @hidetabbarcomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -167,9 +167,9 @@
 
 #### Promise\<HideTabBarSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 
@@ -203,42 +203,42 @@
 显示 tabBar 某一项的右上角的红点
 
 
-### showTabBarRedDot 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+### showTabBarRedDot 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ShowTabBarRedDotOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **ShowTabBarRedDotOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | tabBar的哪一项，从左边算起，索引从0开始 |
-| success | (result: [ShowTabBarRedDotSuccess](#showtabbarreddotsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (result: [ShowTabBarRedDotFail](#showtabbarreddotfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (result: [ShowTabBarRedDotComplete](#showtabbarreddotcomplete-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| index | number | 是 | 微信小程序: 4.41 | tabBar的哪一项，从左边算起，索引从0开始 |
+| success | (result: [ShowTabBarRedDotSuccess](#showtabbarreddotsuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [ShowTabBarRedDotFail](#showtabbarreddotfail-values)) => void | 否 | 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [ShowTabBarRedDotComplete](#showtabbarreddotcomplete-values)) => void | 否 | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### ShowTabBarRedDotSuccess 的属性值 @showtabbarreddotsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### ShowTabBarRedDotFail 的属性值 @showtabbarreddotfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -249,9 +249,9 @@
 
 #### ShowTabBarRedDotComplete 的属性值 @showtabbarreddotcomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -262,9 +262,9 @@
 
 #### Promise\<ShowTabBarRedDotSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 
@@ -298,42 +298,42 @@
 隐藏 tabBar 某一项的右上角的红点
 
 
-### hideTabBarRedDot 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+### hideTabBarRedDot 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **HideTabBarRedDotOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **HideTabBarRedDotOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | tabBar的哪一项，从左边算起，索引从0开始 |
-| success | (result: [HideTabBarRedDotSuccess](#hidetabbarreddotsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (result: [HideTabBarRedDotFail](#hidetabbarreddotfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (result: [HideTabBarRedDotComplete](#hidetabbarreddotcomplete-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| index | number | 是 | 微信小程序: 4.41 | tabBar的哪一项，从左边算起，索引从0开始 |
+| success | (result: [HideTabBarRedDotSuccess](#hidetabbarreddotsuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [HideTabBarRedDotFail](#hidetabbarreddotfail-values)) => void | 否 | 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [HideTabBarRedDotComplete](#hidetabbarreddotcomplete-values)) => void | 否 | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### HideTabBarRedDotSuccess 的属性值 @hidetabbarreddotsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### HideTabBarRedDotFail 的属性值 @hidetabbarreddotfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -344,9 +344,9 @@
 
 #### HideTabBarRedDotComplete 的属性值 @hidetabbarreddotcomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -357,9 +357,9 @@
 
 #### Promise\<HideTabBarRedDotSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 
@@ -393,43 +393,43 @@
 为 tabBar 某一项的右上角添加文本
 
 
-### setTabBarBadge 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+### setTabBarBadge 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **SetTabBarBadgeOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **SetTabBarBadgeOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | tabBar的哪一项，从左边算起，索引从0开始 |
-| text | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 显示的文本，不超过 3 个半角字符 |
-| success | (result: [SetTabBarBadgeSuccess](#settabbarbadgesuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (result: [SetTabBarBadgeFail](#settabbarbadgefail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (result: [SetTabBarBadgeComplete](#settabbarbadgecomplete-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| index | number | 是 | 微信小程序: 4.41 | tabBar的哪一项，从左边算起，索引从0开始 |
+| text | string | 是 | 微信小程序: 4.41 | 显示的文本，不超过 3 个半角字符 |
+| success | (result: [SetTabBarBadgeSuccess](#settabbarbadgesuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [SetTabBarBadgeFail](#settabbarbadgefail-values)) => void | 否 | 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [SetTabBarBadgeComplete](#settabbarbadgecomplete-values)) => void | 否 | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### SetTabBarBadgeSuccess 的属性值 @settabbarbadgesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### SetTabBarBadgeFail 的属性值 @settabbarbadgefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -440,9 +440,9 @@
 
 #### SetTabBarBadgeComplete 的属性值 @settabbarbadgecomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -453,9 +453,9 @@
 
 #### Promise\<SetTabBarBadgeSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 
@@ -489,42 +489,42 @@
 移除 tabBar 某一项右上角的文本
 
 
-### removeTabBarBadge 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+### removeTabBarBadge 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **RemoveTabBarBadgeOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **RemoveTabBarBadgeOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | tabBar的哪一项，从左边算起，索引从0开始 |
-| success | (result: [RemoveTabBarBadgeSuccess](#removetabbarbadgesuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (result: [RemoveTabBarBadgeFail](#removetabbarbadgefail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (result: [RemoveTabBarBadgeComplete](#removetabbarbadgecomplete-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| index | number | 是 | 微信小程序: 4.41 | tabBar的哪一项，从左边算起，索引从0开始 |
+| success | (result: [RemoveTabBarBadgeSuccess](#removetabbarbadgesuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [RemoveTabBarBadgeFail](#removetabbarbadgefail-values)) => void | 否 | 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [RemoveTabBarBadgeComplete](#removetabbarbadgecomplete-values)) => void | 否 | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### RemoveTabBarBadgeSuccess 的属性值 @removetabbarbadgesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### RemoveTabBarBadgeFail 的属性值 @removetabbarbadgefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -535,9 +535,9 @@
 
 #### RemoveTabBarBadgeComplete 的属性值 @removetabbarbadgecomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -548,9 +548,9 @@
 
 #### Promise\<RemoveTabBarBadgeSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 
@@ -584,77 +584,77 @@
 动态设置 tabBar 的整体样式
 
 
-### setTabBarStyle 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | 5.11 |
+### setTabBarStyle 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.0 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **SetTabBarStyleOptions** | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **SetTabBarStyleOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| color | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | tab 上的文字默认颜色 |
-| selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | tab 上的文字选中时的颜色 |
-| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | tab 的背景色 |
-| backgroundImage | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 图片背景 |
-| backgroundRepeat | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 背景图平铺方式 |
-| borderColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 |  | Web: 4.23; 微信小程序: 4.41; Android: x; iOS: 4.23; HarmonyOS: x | tabbar上边框的颜色（优先级高于 borderStyle） |
-| borderStyle | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | tabbar上边框的颜色 |
-| success | (result: [SetTabBarStyleSuccess](#settabbarstylesuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: [SetTabBarStyleFail](#settabbarstylefail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: [SetTabBarStyleComplete](#settabbarstylecomplete-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| color | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | 微信小程序: 4.41 | tab 上的文字默认颜色 |
+| selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | 微信小程序: 4.41 | tab 上的文字选中时的颜色 |
+| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | 微信小程序: 4.41 | tab 的背景色 |
+| backgroundImage | string | 否 | 微信小程序: 4.41 | 图片背景 |
+| backgroundRepeat | string | 否 | 微信小程序: 4.41 | 背景图平铺方式 |
+| borderColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | Web: 4.23; 微信小程序: 4.41; Android: x; iOS: 4.23; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | tabbar上边框的颜色（优先级高于 borderStyle） |
+| borderStyle | string | 否 | 微信小程序: 4.41 | tabbar上边框的颜色 |
+| success | (result: [SetTabBarStyleSuccess](#settabbarstylesuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [SetTabBarStyleFail](#settabbarstylefail-values)) => void | 否 | 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [SetTabBarStyleComplete](#settabbarstylecomplete-values)) => void | 否 | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### backgroundRepeat 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| repeat | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 背景图片在垂直方向和水平方向平铺 |
-| repeat-x | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 背景图片在水平方向平铺，垂直方向拉伸 |
-| repeat-y | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 背景图片在垂直方向平铺，水平方向拉伸 |
-| no-repeat | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 背景图片在垂直方向和水平方向都拉伸 |
+| 合法值 | 描述 |
+| :- | :- |
+| repeat | 背景图片在垂直方向和水平方向平铺 |
+| repeat-x | 背景图片在水平方向平铺，垂直方向拉伸 |
+| repeat-y | 背景图片在垂直方向平铺，水平方向拉伸 |
+| no-repeat | 背景图片在垂直方向和水平方向都拉伸 |
 
 ##### borderStyle 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| black | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
-| white | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+| 合法值 |
+| :- |
+| black |
+| white |
 
 #### SetTabBarStyleSuccess 的属性值 @settabbarstylesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### SetTabBarStyleFail 的属性值 @settabbarstylefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 错误码 |
-| errSubject | string | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 100 | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | TabBar 不存在 |
-| 200 | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 参数错误 |
+| 合法值 | 描述 |
+| :- | :- |
+| 100 | TabBar 不存在 |
+| 200 | 参数错误 |
 
 #### SetTabBarStyleComplete 的属性值 @settabbarstylecomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -665,9 +665,9 @@
 
 #### Promise\<SetTabBarStyleSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 
@@ -701,58 +701,58 @@
 动态设置 tabBar 某一项的内容
 
 
-### setTabBarItem 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+### setTabBarItem 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **SetTabBarItemOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **SetTabBarItemOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | tabBar 的哪一项，从左边算起，索引从0开始 |
-| text | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | tab 上按钮文字 |
-| iconPath | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 图片路径 |
-| selectedIconPath | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 选中时的图片路径 |
-| pagePath | string | 否 |  | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 页面绝对路径 |
-| iconfont | **SetTabBarItemIconFontOptions** | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 字体图标，优先级高于 iconPath |
-| visible | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | tab 是否显示 |
-| success | (result: [SetTabBarItemSuccess](#settabbaritemsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (result: [SetTabBarItemFail](#settabbaritemfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (result: [SetTabBarItemComplete](#settabbaritemcomplete-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| index | number | 是 | 微信小程序: 4.41 | tabBar 的哪一项，从左边算起，索引从0开始 |
+| text | string | 否 | 微信小程序: 4.41 | tab 上按钮文字 |
+| iconPath | string | 否 | 微信小程序: 4.41 | 图片路径 |
+| selectedIconPath | string | 否 | 微信小程序: 4.41 | 选中时的图片路径 |
+| pagePath | string | 否 | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 页面绝对路径 |
+| iconfont | **SetTabBarItemIconFontOptions** | 否 | 微信小程序: 4.41 | 字体图标，优先级高于 iconPath |
+| visible | boolean | 否 | 微信小程序: 4.41 | tab 是否显示 |
+| success | (result: [SetTabBarItemSuccess](#settabbaritemsuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [SetTabBarItemFail](#settabbaritemfail-values)) => void | 否 | 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [SetTabBarItemComplete](#settabbaritemcomplete-values)) => void | 否 | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### iconfont 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  |   | 字库 Unicode 码 |
-| selectedText | string | 是 |  |   | 选中后字库 Unicode 码 |
-| fontSize | string | 否 |  |   | 字体图标字号(px) |
-| color | string | 否 |  |   | 字体图标颜色 |
-| selectedColor | string | 否 |  |   | 字体图标选中颜色 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| text | string | 是 | 字库 Unicode 码 |
+| selectedText | string | 是 | 选中后字库 Unicode 码 |
+| fontSize | string | 否 | 字体图标字号(px) |
+| color | string | 否 | 字体图标颜色 |
+| selectedColor | string | 否 | 字体图标选中颜色 |
 
 #### SetTabBarItemSuccess 的属性值 @settabbaritemsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### SetTabBarItemFail 的属性值 @settabbaritemfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -763,9 +763,9 @@
 
 #### SetTabBarItemComplete 的属性值 @settabbaritemcomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -776,9 +776,9 @@
 
 #### Promise\<SetTabBarItemSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 
@@ -804,9 +804,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ## Bug & Tips @tips

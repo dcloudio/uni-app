@@ -15,7 +15,7 @@
  视频
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -29,7 +29,7 @@
 | initial-time | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定视频初始播放位置 |
 | duration | number |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定视频长度 |
 | controls | boolean | true | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否显示默认播放控件（播放/暂停按钮、播放进度、时间） |
-| danmu-list | Danmu[\] | [\] | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 弹幕列表 |
+| danmu-list | Danmu\[\] | \[\] | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 弹幕列表 |
 | danmu-btn | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 是否显示弹幕按钮，只在初始化时有效，不能动态变更 |
 | enable-danmu | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 是否展示弹幕，只在初始化时有效，不能动态变更 |
 | autoplay | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否自动播放 |
@@ -52,15 +52,15 @@
 | auto-pause-if-open-native | boolean |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 当跳转到其它小程序宿主原生页面时，是否自动暂停本页面的视频 |
 | vslide-gesture | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 在非全屏模式下，是否开启亮度与音量调节手势（同 page-gesture） |
 | vslide-gesture-in-fullscreen | boolean | true | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 在全屏模式下，是否开启亮度与音量调节手势 |
-| ad-unit-id | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 视频前贴广告单元ID |
+| ad-unit-id | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 视频前贴广告单元ID |
 | poster-for-crawler | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 用于给搜索等场景作为视频封面展示，建议使用无播放 icon 的视频封面图，只支持网络地址 |
-| codec | string | "hardware" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): x | 解码器选择 |
-| http-cache | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): x | 是否对 http、https 视频源开启本地缓存 |
+| codec | string | "hardware" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS(Vapor): x | 解码器选择 |
+| http-cache | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(Vapor): x | 是否对 http、https 视频源开启本地缓存 |
 | play-strategy | number | 0 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 播放策略 |
 | is-live | boolean |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否为直播源 |
 | show-bottom-progress | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否展示底部进度条 |
 | show-casting-button | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>显示投屏按钮。安卓在同层渲染下生效，支持 DLNA 协议；iOS 支持 AirPlay 和 DLNA 协议。可以通过[VideoContext](../api/create-video-context)的相关方法进行操作。 |
-| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"] |
+| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"]） |
 | picture-in-picture-show-progress | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否在小窗模式下显示播放进度 |
 | picture-in-picture-init-position | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>小窗模式下小窗的初始显示位置，格式为 (alignment, y)，其中 alignment 表示小窗吸附屏幕左侧还是右侧，可选值为 left、right，y 代表小窗最顶部所在的屏幕高度百分比 |
 | enable-auto-rotation | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否开启手机横屏时自动全屏，当系统设置开启自动旋转时生效 |
@@ -74,7 +74,7 @@
 | certificate-url | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>DRM 设备身份认证 url，仅 is-drm 为 true 时生效 (iOS) |
 | license-url | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>DRM 获取加密信息 url，仅 is-drm 为 true 时生效 |
 | preferred-peak-bit-rate | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>指定码率上界，单位为比特每秒 |
-| header | UTSJSONObject |   | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): x | 自定义 header |
+| header | UTSJSONObject |   | HarmonyOS(Vapor): x | 自定义 header |
 | @loadedmetadata | (event: [UniVideoLoadedMetadataEvent](#univideoloadedmetadataevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视频元数据加载完成时触发 |
 | @play | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当开始/继续播放时触发 |
 | @pause | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当暂停播放时触发 |
@@ -86,8 +86,8 @@
 | @progress | (event: [UniVideoProgressEvent](#univideoprogressevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 加载进度变化时触发，只支持一段加载。event.detail = { buffered }，百分比 |
 | @fullscreenclick | (event: [UniVideoFullScreenClickEvent](#univideofullscreenclickevent)) => void |   | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 视频全屏播放时点击屏幕触发。event.detail = { screenX, screenY, screenWidth, screenHeight } |
 | @controlstoggle | (event: [UniVideoControlsToggleEvent](#univideocontrolstoggleevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 切换 controls 显示隐藏时触发。event.detail = { show } |
-| @recycle | (event: [UniVideoRecycleEvent](#univideorecycleevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: 5.0 | 组件回收时的生命周期钩子 |
-| @reuse | (event: [UniVideoReuseEvent](#univideoreuseevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: 5.0 | 组件复用时的生命周期钩子 |
+| @recycle | (event: [UniVideoRecycleEvent](#univideorecycleevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 5.0 | 组件回收时的生命周期钩子 |
+| @reuse | (event: [UniVideoReuseEvent](#univideoreuseevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 5.0 | 组件复用时的生命周期钩子 |
 | @enterpictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>播放器进入小窗 |
 | @leavepictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>播放器退出小窗 |
 | @seekcomplete | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>seek 完成时触发 |
@@ -99,17 +99,17 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 0 | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 正常竖向 |
-| 90 | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 屏幕逆时针90度 |
-| -90 | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 屏幕顺时针90度 |
+| 0 | Web: x; 微信小程序: 4.41 | 正常竖向 |
+| 90 | Web: x; 微信小程序: 4.41 | 屏幕逆时针90度 |
+| -90 | Web: x; 微信小程序: 4.41 | 屏幕顺时针90度 |
 
 #### object-fit 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| contain | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 包含 |
-| fill | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 填充 |
-| cover | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 覆盖 |
+| contain | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 包含 |
+| fill | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 填充 |
+| cover | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 覆盖 |
 
 #### play-btn-position 的属性描述
 
@@ -145,16 +145,16 @@ UniVideoTimeUpdateEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoTimeUpdateEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniVideoTimeUpdateEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniVideoTimeUpdateEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| currentTime | number | 是 |  |   | 当前进度 |
-| duration | number | 是 |  |   | 总进度 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| currentTime | number | 是 | 当前进度 |
+| duration | number | 是 | 总进度 |
 
 
 #### UniVideoFullScreenChangeEvent
@@ -167,16 +167,16 @@ UniVideoFullScreenChangeEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoFullScreenChangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniVideoFullScreenChangeEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniVideoFullScreenChangeEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| fullScreen | boolean | 是 |  |   | 是否全屏 |
-| direction | string | 是 |  |   | 横竖屏 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| fullScreen | boolean | 是 | 是否全屏 |
+| direction | string | 是 | 横竖屏 |
 
 ##### direction 的属性描述
 
@@ -196,19 +196,19 @@ UniVideoErrorEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoErrorEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **VideoError** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **VideoError** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 统一错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 统一错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 ##### errCode 的属性描述
 
@@ -229,15 +229,15 @@ UniVideoProgressEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoProgressEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniVideoProgressEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniVideoProgressEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| buffered | number | 是 |  |   | 加载进度百分比 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| buffered | number | 是 | 加载进度百分比 |
 
 
 #### UniVideoFullScreenClickEvent
@@ -250,18 +250,18 @@ UniVideoFullScreenClickEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoFullScreenClickEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniVideoFullScreenClickEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniVideoFullScreenClickEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| screenX | number | 是 |  |   | 点击点相对于屏幕左侧边缘的 X 轴坐标 |
-| screenY | number | 是 |  |   | 点击点相对于屏幕顶部边缘的 Y 轴坐标 |
-| screenWidth | number | 是 |  |   | 屏幕总宽度 |
-| screenHeight | number | 是 |  |   | 屏幕总高度 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| screenX | number | 是 | 点击点相对于屏幕左侧边缘的 X 轴坐标 |
+| screenY | number | 是 | 点击点相对于屏幕顶部边缘的 Y 轴坐标 |
+| screenWidth | number | 是 | 屏幕总宽度 |
+| screenHeight | number | 是 | 屏幕总高度 |
 
 
 #### UniVideoControlsToggleEvent
@@ -274,58 +274,56 @@ UniVideoControlsToggleEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoControlsToggleEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniVideoControlsToggleEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniVideoControlsToggleEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| show | boolean | 是 |  |   | 是否显示 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| show | boolean | 是 | 是否显示 |
 
 
 #### UniVideoRecycleEvent
-video组件回收事件对象
+video组件回收事件
+```mermaid
+graph LR
+  
+UniVideoRecycleEvent -- Extends --> UniCustomEvent&ltUniVideoRecycleEventDetail&gt
+  style UniCustomEvent&ltUniVideoRecycleEventDetail&gt color:#42b983
+  click UniCustomEvent&ltUniVideoRecycleEventDetail&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
+```
+##### UniVideoRecycleEventDetail
+video组件回收时的状态信息
 
-##### UniVideoRecycleEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | T | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   | 是否冒泡 |
-| cancelable | boolean | 是 |  |   | 是否可以取消 |
-| type | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件类型<br/> |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 触发事件的组件<br/> |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 当前组件<br/> |
-| timeStamp | number | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
+###### UniVideoRecycleEventDetail 的属性值
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| isPlaying | boolean | 是 | 回收时是否处于播放状态。回收时暂停状态此值为false |
+| currentTime | number | 是 | 回收时播放视频的进度 |
+| duration | number | 是 | 回收时播放视频的总时长 |
 
-
-##### UniVideoRecycleEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 | 阻止当前事件的进一步传播<br/> |
-| preventDefault | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.55; HarmonyOS: 4.61 | 阻止当前事件的默认行为<br/> |
 
 #### UniVideoReuseEvent
+video组件复用事件
+```mermaid
+graph LR
+  
+UniVideoReuseEvent -- Extends --> UniCustomEvent&ltUniVideoReuseEventDetail&gt
+  style UniCustomEvent&ltUniVideoReuseEventDetail&gt color:#42b983
+  click UniCustomEvent&ltUniVideoReuseEventDetail&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
+```
+##### UniVideoReuseEventDetail
 
 
-##### UniVideoReuseEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | T | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   | 是否冒泡 |
-| cancelable | boolean | 是 |  |   | 是否可以取消 |
-| type | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件类型<br/> |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 触发事件的组件<br/> |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 当前组件<br/> |
-| timeStamp | number | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
+###### UniVideoReuseEventDetail 的属性值
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| isPlaying | boolean | 是 | 复用时是否处于播放状态。复用时暂停状态此值为false |
+| currentTime | number | 是 | 复用时播放视频的进度 |
+| duration | number | 是 | 复用时播放视频的总时长 |
 
-
-##### UniVideoReuseEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 | 阻止当前事件的进一步传播<br/> |
-| preventDefault | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.55; HarmonyOS: 4.61 | 阻止当前事件的默认行为<br/> |
 
 
 <!-- UTSCOMJSON.video.component_type -->
@@ -736,7 +734,7 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     objectFit: "contain",
     objectFitItemTypes: [{ "value": 0, "name": "contain(包含)" }, { "value": 1, "name": "fill(填充)" }, { "value": 2, "name": "cover(覆盖)" }],
     objectFitItems: ["contain", "fill", "cover"],
-    poster: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-android.png",
+    poster: "https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/video/video-poster.jpg",
     showMuteBtn: false,
     title: "video-component",
     enablePlayGesture: false,
@@ -815,6 +813,10 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     })
   }
 
+  const getDialogPageVideoFullscreenBtnRect = (): DOMRect | null => {
+    return data.dialogPageVideo?.getElementById('fullscreen-btn')?.getBoundingClientRect() ?? null;
+  }
+
   // API
   const play = () => {
     console.log("play");
@@ -854,6 +856,20 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
   const sendDanmu = () => {
     console.log("sendDanmu -> " + data.danmu);
     data.videoContext?.sendDanmu(data.danmu);
+  }
+
+  const continuousSendDanmu = () => {
+    const colors = ['#FF0000', '#31ff23', '#f13ef8', '#4972f8', '#FF9800', '#9C27B0']
+    for (let i = 0; i < colors.length; i++) {
+      const color = colors[i]
+      const text = '弹幕' + (i + 1)
+      setTimeout(() => {
+        data.videoContext?.sendDanmu({
+          text,
+          color
+        });
+      }, i * 500);
+    }
   }
 
   const onSendDanmuInput = (event : UniInputEvent) => {
@@ -1305,7 +1321,9 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     openDialogPageVideo,
     closeDialogPageVideo,
     getWindowInfo,
-    getVideoRect
+    getVideoRect,
+    continuousSendDanmu,
+    getDialogPageVideoFullscreenBtnRect
   })
 </script>
 
@@ -1319,10 +1337,6 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     height: 40px;
     background: #FFF;
     padding: 8px 13px;
-  }
-
-  .margin-10 {
-    margin: 10px;
   }
 
   .img-fast-backward {

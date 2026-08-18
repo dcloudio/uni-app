@@ -94,24 +94,24 @@ function onRefresherabort1() {
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| pullingDistance | number | 0 |   | 当前下拉距离（px），通常由外部 scroll-view 的 refresher 状态传入 |
-| refreshing | boolean | false |   | 是否正在刷新中，外部控制；为 true 时显示 loading 动画 |
-| threshold | number | 45 |   | 触发刷新的下拉阈值（px），下拉距离超过该值时进入“松手刷新”状态 |
-| pullingText | string | "下拉刷新" |   | 下拉过程中（未达到阈值）显示的提示文字 |
-| loosingText | string | "松手刷新" |   | 下拉超过阈值后显示的提示文字 |
-| loadingText | string | "正在刷新" |   | 刷新中显示的提示文字 |
-| completeText | string | "" |   | 刷新完成瞬间显示的提示文字，为空则不展示 |
-| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 提示文字的自定义样式类 |
-| loadingClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | loading 图标的自定义样式类 |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| pullingDistance | number | 0 | 当前下拉距离（px），通常由外部 scroll-view 的 refresher 状态传入 |
+| refreshing | boolean | false | 是否正在刷新中，外部控制；为 true 时显示 loading 动画 |
+| threshold | number | 45 | 触发刷新的下拉阈值（px），下拉距离超过该值时进入“松手刷新”状态 |
+| pullingText | string | "下拉刷新" | 下拉过程中（未达到阈值）显示的提示文字 |
+| loosingText | string | "松手刷新" | 下拉超过阈值后显示的提示文字 |
+| loadingText | string | "正在刷新" | 刷新中显示的提示文字 |
+| completeText | string | "" | 刷新完成瞬间显示的提示文字，为空则不展示 |
+| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 提示文字的自定义样式类 |
+| loadingClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | loading 图标的自定义样式类 |
 
 <!-- UTSCOMJSON.uni-refresh-box.fileFormates -->
 

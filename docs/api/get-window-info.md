@@ -12,7 +12,7 @@
 
 同步获取窗口信息
 
-### getWindowInfo 兼容性 
+### getWindowInfo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -28,49 +28,49 @@
 
 #### GetWindowInfoResult 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| pixelRatio | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备像素比<br/> |
-| screenWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕宽度，单位为px<br/> |
-| screenHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕高度，单位为px<br/> |
-| windowWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口宽度，单位为px<br/> |
-| windowHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口高度，单位为px<br/> |
-| statusBarHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 状态栏的高度，单位为px<br/> |
-| windowTop | number | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离顶部的距离（同CSS变量 `--window-top`），单位为px<br/> |
-| windowBottom | number | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离底部的距离（同CSS变量 `--window-bottom`），单位为px<br/> |
-| safeArea | **SafeArea** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域在屏幕中的位置信息<br/> |
-| safeAreaInsets | **SafeAreaInsets** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域插入位置（与屏幕边界的距离）信息<br/> |
-| screenTop | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 窗口上边缘的 y 值，单位为px<br/> |
-| cutoutArea | Array&lt;**CutoutRect**&gt; | 否 |  | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域在屏幕中的位置信息<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| pixelRatio | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备像素比<br/> |
+| screenWidth | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕宽度，单位为px<br/> |
+| screenHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕高度，单位为px<br/> |
+| windowWidth | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口宽度，单位为px<br/> |
+| windowHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口高度，单位为px<br/> |
+| statusBarHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 状态栏的高度，单位为px<br/> |
+| windowTop | number | 是 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离顶部的距离（同CSS变量 `--window-top`），单位为px<br/> |
+| windowBottom | number | 是 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离底部的距离（同CSS变量 `--window-bottom`），单位为px<br/> |
+| safeArea | **SafeArea** | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域在屏幕中的位置信息<br/> |
+| safeAreaInsets | **SafeAreaInsets** | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域插入位置（与屏幕边界的距离）信息<br/> |
+| screenTop | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 窗口上边缘的 y 值，单位为px<br/> |
+| cutoutArea | Array&lt;**CutoutRect**&gt; | 否 | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域在屏幕中的位置信息<br/> |
 
 ##### safeArea 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角横坐标，单位为px<br/> |
-| right | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角横坐标，单位为px<br/> |
-| top | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角纵坐标，单位为px<br/> |
-| bottom | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角纵坐标，单位为px<br/> |
-| width | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的宽度，单位为px<br/> |
-| height | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的高度，单位为px<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角横坐标，单位为px<br/> |
+| right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角横坐标，单位为px<br/> |
+| top | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角纵坐标，单位为px<br/> |
+| bottom | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角纵坐标，单位为px<br/> |
+| width | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的宽度，单位为px<br/> |
+| height | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的高度，单位为px<br/> |
 
 ##### safeAreaInsets 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左侧插入位置（距离左边边界距离），单位为px<br/> |
-| right | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右侧插入位置（距离右边边界距离），单位为px<br/> |
-| top | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区顶部插入位置（距离顶部边界距离），单位为px<br/> |
-| bottom | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域底部插入位置（距离底部边界距离），单位为px<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左侧插入位置（距离左边边界距离），单位为px<br/> |
+| right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右侧插入位置（距离右边边界距离），单位为px<br/> |
+| top | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区顶部插入位置（距离顶部边界距离），单位为px<br/> |
+| bottom | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域底部插入位置（距离底部边界距离），单位为px<br/> |
 
 ##### cutoutArea 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域左上角横坐标，单位为px<br/> |
-| right | number | 是 |  | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域右下角横坐标，单位为px<br/> |
-| top | number | 是 |  | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域左上角纵坐标，单位为px<br/> |
-| bottom | number | 是 |  | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域右下角纵坐标，单位为px<br/> | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| left | number | 是 | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域左上角横坐标，单位为px<br/> |
+| right | number | 是 | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域右下角横坐标，单位为px<br/> |
+| top | number | 是 | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域左上角纵坐标，单位为px<br/> |
+| bottom | number | 是 | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域右下角纵坐标，单位为px<br/> | 
 
 
 `uni.getWindowInfo`是全局API，沿袭自小程序。但小程序并未考虑丰富的场景，其实手机屏幕尺寸、应用所占区域尺寸、页面所占区域尺寸是3个概念。
@@ -246,7 +246,7 @@ app-ios平台safeArea与iOS原生的安全区域概念相同，top与bottom分�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

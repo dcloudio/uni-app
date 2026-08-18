@@ -108,19 +108,19 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| activeIndex | number |   |   | 当前激活的选项卡索引 |
-| tabBarHeight | number | 50 |   | tab-bar 的高度 |
-| tabContentHeightFull | boolean | false |   | tab-content 的高度是否通到tab-bar下面 |
-| @change | Event |   |   | 选项卡变化时触发，参数为当前激活的选项卡索引，类型为 number |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| activeIndex | number |   | 当前激活的选项卡索引 |
+| tabBarHeight | number | 50 | tab-bar 的高度 |
+| tabContentHeightFull | boolean | false | tab-content 的高度是否通到tab-bar下面 |
+| @change | Event |   | 选项卡变化时触发，参数为当前激活的选项卡索引，类型为 number |
 
 <!-- UTSCOMJSON.uni-tab.fileFormates -->
 
@@ -147,10 +147,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 
@@ -822,17 +822,17 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| badgeText | string |   |   | badge 的内容 |
-| badgeClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | badge 的样式类 |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| badgeText | string |   | badge 的内容 |
+| badgeClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | badge 的样式类 |
 
 <!-- UTSCOMJSON.uni-tab-item.fileFormates -->
 
@@ -859,10 +859,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 
@@ -892,17 +892,17 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| width | number | 90 |   | 中间按钮宽度，单位 px |
-| height | number | 90 |   | 中间按钮高度，单位 px |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| width | number | 90 | 中间按钮宽度，单位 px |
+| height | number | 90 | 中间按钮高度，单位 px |
 
 <!-- UTSCOMJSON.uni-tab-midbutton.fileFormates -->
 
@@ -1087,7 +1087,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 			<tabContent4 />
 		</uni-tab-content>
 
-		<uni-tab-bar style="border-top: 0px;">
+		<uni-tab-bar style="border-top: 0px;background-color: rgba(0, 0, 0, 0);">
 			<uni-tab-item class="tab-bg">
 				<!-- <image :src="activeIndex == 0 ? '/static/componentHL.png' : '/static/component.png'" class="tab-icon-image"></image> -->
 				<text :class="activeIndex == 0 ? 'tab-label-active' : ''">🏠</text>
@@ -1100,7 +1100,8 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 			</uni-tab-item>
 			<uni-tab-midbutton :width="106" :height="94">
 				<view class="floating-ball" hover-class="floating-ball-hover" :hover-stop-propagation="true" @click="handleMidButtonClick">
-					<text class="floating-ball-plus">+</text>
+					<view flatten class="floating-ball-plus" style="position: absolute;"></view>
+					<view flatten class="floating-ball-plus" style="position: absolute;transform: rotate(90deg);"></view>
 				</view>
 				<image class="notch-svg" src="/static/tab-bar-midbutton-notch.svg" mode="scaleToFill"></image>
 			</uni-tab-midbutton>
@@ -1189,6 +1190,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	}
 
 	.floating-ball {
+		position: relative;
 		width: 70px;
 		height: 70px;
 		border-radius: 50%;
@@ -1207,9 +1209,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	}
 
 	.floating-ball-plus {
-		font-size: 40px;
-		line-height: 40px;
-		color: #ffffff;
+		background-color: #ffffff;
+		border-radius: 2px;
+		width: 40%;
+		height: 2px;
 	}
 </style>
 

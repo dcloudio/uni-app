@@ -5,13 +5,13 @@
 text-shadow 为文字添加阴影。可以为文字与 decoration 添加多个阴影，阴影值之间用逗号隔开。每个阴影值由元素在 X 和 Y 方向的偏移量、模糊半径和颜色值组成。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.61 | 4.61 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -58,7 +58,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view class="container">
@@ -69,6 +69,8 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
       <text class="text" style="text-shadow: 5px 10px;">text-shadow: 5px 10px</text>
       <text class="text" style="text-shadow: 1px 2px 4px rgb(34, 202, 43);">text-shadow: 1px 2px 4px rgb(34, 202, 43)</text>
       <text class="text" style="text-shadow: 2px 4px rgba(202, 207, 17, 0.5);">text-shadow: 2px 4px rgba(202, 207, 17, 0.5)</text>
+      <text class="text" style="text-shadow: 1rpx 2rpx 4rpx #00f8;">text-shadow: 1rpx 2rpx 4rpx #00f8</text>
+      <text class="text" style="text-shadow: 2px 4px #0000ff80;">text-shadow: 2px 4px #0000ff80</text>
 
       <text class="uni-title-text">【拍平版本】</text>
       <text class="text" style="text-shadow: 1px 1px 2px pink;" flatten>text-shadow: 1px 1px 2px pink</text>
@@ -78,9 +80,11 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
       <text class="text" style="text-shadow: 5px 10px;" flatten>text-shadow: 5px 10px</text>
       <text class="text" style="text-shadow: 1px 2px 4px rgb(34, 202, 43);" flatten>text-shadow: 1px 2px 4px rgb(34, 202, 43)</text>
       <text class="text" style="text-shadow: 2px 4px rgba(202, 207, 17, 0.5);" flatten>text-shadow: 2px 4px rgba(202, 207, 17, 0.5)</text>
+      <text class="text" style="text-shadow: 1rpx 2rpx 4rpx #00f8;" flatten>text-shadow: 1rpx 2rpx 4rpx #00f8</text>
+      <text class="text" style="text-shadow: 2px 4px #0000ff80;" flatten>text-shadow: 2px 4px #0000ff80</text>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-shadow </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -88,7 +92,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
         <view class="uni-common-mt">
           <text class="uni-title-text">text-shadow</text>
           <text class="uni-info">设置值: {{data.textShadow}}</text>
-          <text class="uni-info">获取值: {{data.textShadowActual}}</text>
+          <text class="uni-info info-wrap">获取值: {{data.textShadowActual}}</text>
           <view class="test-box">
             <text ref="textRef" class="text test-text" :style="{ textShadow: data.textShadow }">当前 text-shadow: {{data.textShadow}}</text>
           </view>
@@ -98,7 +102,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
         <view class="uni-common-mt">
           <text class="uni-title-text">拍平</text>
           <text class="uni-info">设置值: {{data.textShadow}}</text>
-          <text class="uni-info">获取值: {{data.textShadowActualFlat}}</text>
+          <text class="uni-info info-wrap">获取值: {{data.textShadowActualFlat}}</text>
           <view class="test-box">
             <text ref="textRefFlat" class="text test-text-flatten" :style="{ textShadow: data.textShadow }" flatten>当前 text-shadow: {{data.textShadow}}</text>
           </view>
@@ -111,7 +115,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
         <input-data :defaultValue="data.textShadow" title="text-shadow 自定义值" type="text" @confirm="inputChangeTextShadow"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -127,7 +131,9 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
     { value: 4, name: 'cyan 2px 5px' },
     { value: 5, name: '5px 10px' },
     { value: 6, name: '1px 2px 4px rgb(34, 202, 43)' },
-    { value: 7, name: '2px 4px rgba(202, 207, 17, 0.5)' }
+    { value: 7, name: '2px 4px rgba(202, 207, 17, 0.5)' },
+    { value: 8, name: '4rpx 8rpx #0000ff80' },
+    { value: 9, name: '2rpx 4rpx 8rpx #00f8' }
   ]
 
   const data = reactive({
@@ -143,7 +149,6 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
     data.textShadowActualFlat = textRefFlat.value?.style.getPropertyValue('text-shadow') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeTextShadow = (value: string) => {
     data.textShadow = value
@@ -152,7 +157,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeTextShadow = (index: number) => {
@@ -200,6 +205,11 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
     background-color: #cccccc;
     justify-content: center;
     align-items: center;
+  }
+
+  .info-wrap {
+    width: 200px;
+    white-space: normal;
   }
 </style>
 

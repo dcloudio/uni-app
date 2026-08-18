@@ -5,13 +5,13 @@
 min-width 属性为给定元素设置最小宽度。它可以阻止 width 属性的应用值小于 min-width 的值。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -61,7 +61,7 @@ min-width: <viewport-length>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -90,7 +90,7 @@ min-width: <viewport-length>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 min-width </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -120,7 +120,8 @@ min-width: <viewport-length>;
           <text class="uni-info">设置值: {{data.minWidth}}</text>
           <text class="uni-info">获取值: {{data.minWidthActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ minWidth: data.minWidth }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ minWidth: data.minWidth }"
+              src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -132,7 +133,8 @@ min-width: <viewport-length>;
           <text class="uni-info">设置值: {{data.minWidth}}</text>
           <text class="uni-info">获取值: {{data.minWidthActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ minWidth: data.minWidth }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ minWidth: data.minWidth }"
+              flatten>
               <text>view</text>
             </view>
           </view>
@@ -143,7 +145,8 @@ min-width: <viewport-length>;
           <text class="uni-info">设置值: {{data.minWidth}}</text>
           <text class="uni-info">获取值: {{data.minWidthActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ minWidth: data.minWidth }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ minWidth: data.minWidth }"
+              flatten>text</text>
           </view>
         </view>
 
@@ -152,26 +155,33 @@ min-width: <viewport-length>;
           <text class="uni-info">设置值: {{data.minWidth}}</text>
           <text class="uni-info">获取值: {{data.minWidthActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ minWidth: data.minWidth }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ minWidth: data.minWidth }"
+              flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :items="minWidthEnum" title="min-width 枚举值" @change="radioChangeMinWidth" :compact="true"></enum-data>
-        <input-data :defaultValue="data.minWidth" title="min-width 自定义值" type="text" @confirm="inputChangeMinWidth"></input-data>
+        <enum-data :items="minWidthEnum" title="min-width 枚举值" @change="radioChangeMinWidth"
+          :compact="true"></enum-data>
+        <input-data :defaultValue="data.minWidth" title="min-width 自定义值" type="text"
+          @confirm="inputChangeMinWidth"></input-data>
       </view>
 
       <view class="uni-common-mb">
         <text>native-view组件: min-width: 100px 和 min-width: 200px</text>
-        <view class="demo-box">
-          <native-view class="common-dynamic" style="min-width: 100px;"></native-view>
-          <native-view class="common-dynamic" style="min-width: 200px;"></native-view>
+        <view class="demo-box-native">
+          <view class="container-native" style="background-color: green;">
+            <native-view style="min-width: 100px; height: 100px;"></native-view>
+          </view>
+          <view class="container-native" style="background-color: red;">
+            <native-view style="min-width: 200px; height: 100px;"></native-view>
+          </view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -179,7 +189,7 @@ min-width: <viewport-length>;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const minWidthEnum: ItemType[] = [
+  const minWidthEnum : ItemType[] = [
     { value: 0, name: '' },
     { value: 1, name: '0' },
     { value: 2, name: '0px' },
@@ -213,9 +223,8 @@ min-width: <viewport-length>;
     data.minWidthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('min-width') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
-  const changeMinWidth = (value: string) => {
+  const changeMinWidth = (value : string) => {
     data.minWidth = value
     viewRef.value?.style.setProperty('min-width', value)
     viewRefFlat.value?.style.setProperty('min-width', value)
@@ -226,18 +235,18 @@ min-width: <viewport-length>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
-  const radioChangeMinWidth = (index: number) => {
-    console.log('index',index)
-    const selectedItem = minWidthEnum.find((item): boolean => item.value === index)
+  const radioChangeMinWidth = (index : number) => {
+    console.log('index', index)
+    const selectedItem = minWidthEnum.find((item) : boolean => item.value === index)
     if (selectedItem != null) {
       changeMinWidth(selectedItem.name)
     }
   }
 
-  const inputChangeMinWidth = (value: string) => {
+  const inputChangeMinWidth = (value : string) => {
     changeMinWidth(value)
   }
 
@@ -249,7 +258,6 @@ min-width: <viewport-length>;
     radioChangeMinWidth,
     data
   })
-
 </script>
 
 <style>
@@ -261,7 +269,7 @@ min-width: <viewport-length>;
     align-items: center;
   }
 
-  .common-dynamic{
+  .common-dynamic {
     width: 50px;
     height: 80px;
     background-color: cyan;
@@ -293,6 +301,17 @@ min-width: <viewport-length>;
   .scroll-view-label {
     font-size: 12px;
     text-align: center;
+  }
+
+  .demo-box-native {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .container-native {
+    background-color: cyan;
   }
 </style>
 

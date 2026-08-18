@@ -3,6 +3,7 @@
 * 内置组件```{"collapsable": false}```
   * 视图容器
     * [view | 基本视图容器](view.md)
+    <!-- * [glass-effect-view | 玻璃效果视图容器](glass-effect-view.md) -->
     * [scroll-view | 可滚动视图容器](scroll-view.md)
     * [swiper | 滑块视图容器](swiper.md)
     * [list-view | 列表容器](list-view.md)
@@ -65,6 +66,7 @@
     * [web-view](web-view.md)
   * 页面属性配置节点
     * [custom-tab-bar](custom-tab-bar.md)
+    * [navigation-bar](navigation-bar.md)
     * [page-meta](page-meta.md)
   * unicloud
     * [unicloud-db](unicloud-db.md)

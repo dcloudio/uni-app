@@ -105,13 +105,15 @@ hello uni-app使用了topWindow和leftWindow，分为上左右3栏，[详见](ht
 #### 屏幕尺寸检测
 通过`uni.getWindowInfo().windowWidth`监听屏幕尺寸变化或通过获取`uni.getDeviceInfo().deviceType`设备类型phone、pad、pc来实现响应式布局
 ```js
+const isWideScreen = ref(false)
+
 // 方式一：基于屏幕宽度
 const { windowWidth } = uni.getWindowInfo()
-this.isWideScreen = windowWidth > 768
+isWideScreen.value = windowWidth > 768
 
 // 方式二：基于设备类型
 const deviceType = uni.getDeviceInfo().deviceType
-this.isWideScreen = deviceType === 'pad' || deviceType === 'pc'
+isWideScreen.value = deviceType === 'pad' || deviceType === 'pc'
 ```
 
 #### 布局实现

@@ -2,10 +2,10 @@
 
 ## var
 
-### 兼容性 
- | Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 4.0 | x | 4.11 | 4.61 | 5.01 |
+### 兼容性 <Help /> 
+ | Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
 
 > uni-app x 4.0+ 提供内置 CSS 变量。
 > uni-app x 4.52+ 全平台提供了安全区域相关 CSS 变量 --uni-safe-area-inset-* 。
@@ -212,7 +212,7 @@ env(safe-area-inset-left, 20px);
 
 app平台仅以下CSS属性支持使用环境变量
 - padding （不支持缩写，只支持展开值，明确到具体方向，比如 padding-left）
-- margin（不支持缩写，只支持展开值，明确到具体方向，比如 padding-left）
+- margin（不支持缩写，只支持展开值，明确到具体方向，比如 margin-left）
 - width
 - height
 - top
@@ -301,7 +301,7 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 
 根据红色、绿色和蓝色值创建颜色。
 
-### 兼容性 
+### 兼容性 <Help /> 
  | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -421,7 +421,7 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 
 根据红色、绿色、蓝色和 alpha 值创建颜色。
 
-### 兼容性 
+### 兼容性 <Help /> 
  | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |

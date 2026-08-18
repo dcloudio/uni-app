@@ -3,7 +3,7 @@
 保留当前页面，跳转到应用内的某个页面
 
 
-### navigateTo 兼容性 
+### navigateTo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.11 | 5.14 | 4.61 |
@@ -11,61 +11,61 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **NavigateToOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **NavigateToOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
-| animationType | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 窗口显示的动画类型<br/> |
-| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 窗口显示动画的持续时间，单位为 ms |
-| events | any | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 页面间通信接口，用于监听被打开页面发送到当前页面的数据 |
-| success | (result: [NavigateToSuccess](#navigatetosuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [NavigateToFail](#navigatetofail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: [NavigateToComplete](#navigatetocomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| routeConfig | IAnyObject | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
-| routeOptions | IAnyObject | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
-| routeType | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
+| animationType | string | 否 | Web: x; 微信小程序: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 窗口显示的动画类型<br/> |
+| animationDuration | number | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 窗口显示动画的持续时间，单位为 ms |
+| events | any | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 页面间通信接口，用于监听被打开页面发送到当前页面的数据 |
+| success | (result: [NavigateToSuccess](#navigatetosuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [NavigateToFail](#navigatetofail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [NavigateToComplete](#navigatetocomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| routeConfig | IAnyObject | 否 | 微信小程序: 4.41 |  |
+| routeOptions | IAnyObject | 否 | 微信小程序: 4.41 |  |
+| routeType | string | 否 | 微信小程序: 4.41 |  | 
 
 ##### animationType 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
-| none | Web: x; 微信小程序:  ; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 无动画效果 |
-| slide-in-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从右侧横向滑动效果 |
-| slide-in-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从左侧横向滑动效果 |
-| slide-in-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从上侧竖向滑动效果 |
-| slide-in-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从下侧竖向滑动效果 |
-| fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从完全透明到不透明逐渐显示 |
-| zoom-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 在屏幕中间从小到大逐渐放大显示 |
-| zoom-fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
-| pop-in | Web: x; 微信小程序:  ; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
+| auto | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
+| none | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 无动画效果 |
+| slide-in-right | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从右侧横向滑动效果 |
+| slide-in-left | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从左侧横向滑动效果 |
+| slide-in-top | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从上侧竖向滑动效果 |
+| slide-in-bottom | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从下侧竖向滑动效果 |
+| fade-in | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从完全透明到不透明逐渐显示 |
+| zoom-out | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 在屏幕中间从小到大逐渐放大显示 |
+| zoom-fade-out | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| pop-in | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
 
 #### NavigateToSuccess 的属性值 @navigatetosuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### NavigateToFail 的属性值 @navigatetofail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 路由错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 路由错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### NavigateToComplete 的属性值 @navigatetocomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -76,9 +76,9 @@
 
 #### Promise\<NavigateToSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 <!-- UTSAPIJSON.navigateTo.example -->
@@ -104,7 +104,7 @@
 关闭当前页面，跳转到应用内的某个页面
 
 
-### redirectTo 兼容性 
+### redirectTo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.11 | 5.14 | 4.61 |
@@ -112,40 +112,40 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **RedirectToOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **RedirectToOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
-| success | (result: [RedirectToSuccess](#redirecttosuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [RedirectToFail](#redirecttofail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: [RedirectToComplete](#redirecttocomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
+| success | (result: [RedirectToSuccess](#redirecttosuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [RedirectToFail](#redirecttofail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [RedirectToComplete](#redirecttocomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### RedirectToSuccess 的属性值 @redirecttosuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### RedirectToFail 的属性值 @redirecttofail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 路由错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 路由错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### RedirectToComplete 的属性值 @redirecttocomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -156,9 +156,9 @@
 
 #### Promise\<RedirectToSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 <!-- UTSAPIJSON.redirectTo.example -->
@@ -184,7 +184,7 @@
 关闭所有页面，打开到应用内的某个页面
 
 
-### reLaunch 兼容性 
+### reLaunch 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.11 | 5.14 | 4.61 |
@@ -192,40 +192,40 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ReLaunchOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **ReLaunchOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的应用内页面路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'，如果跳转的页面路径是 tabBar 页面则不能带参数 |
-| success | (result: [ReLaunchSuccess](#relaunchsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [ReLaunchFail](#relaunchfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: [ReLaunchComplete](#relaunchcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的应用内页面路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'，如果跳转的页面路径是 tabBar 页面则不能带参数 |
+| success | (result: [ReLaunchSuccess](#relaunchsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [ReLaunchFail](#relaunchfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [ReLaunchComplete](#relaunchcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### ReLaunchSuccess 的属性值 @relaunchsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### ReLaunchFail 的属性值 @relaunchfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 路由错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 路由错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### ReLaunchComplete 的属性值 @relaunchcomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -236,9 +236,9 @@
 
 #### Promise\<ReLaunchSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 <!-- UTSAPIJSON.reLaunch.example -->
@@ -264,48 +264,48 @@
 跳转到 tabBar 页面，并关闭其他所有非 tabBar 页面
 
 
-### switchTab 兼容性 
-| Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | 5.14 | 4.61 |
+### switchTab 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **SwitchTabOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **SwitchTabOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的 tabBar 页面的路径，路径后不能带参数 |
-| success | (result: [SwitchTabSuccess](#switchtabsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [SwitchTabFail](#switchtabfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: [SwitchTabComplete](#switchtabcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的 tabBar 页面的路径，路径后不能带参数 |
+| success | (result: [SwitchTabSuccess](#switchtabsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [SwitchTabFail](#switchtabfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [SwitchTabComplete](#switchtabcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### SwitchTabSuccess 的属性值 @switchtabsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### SwitchTabFail 的属性值 @switchtabfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 路由错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 路由错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### SwitchTabComplete 的属性值 @switchtabcomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -316,9 +316,9 @@
 
 #### Promise\<SwitchTabSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 <!-- UTSAPIJSON.switchTab.example -->
@@ -344,7 +344,7 @@
 关闭当前页面，返回上一页面或多级页面
 
 
-### navigateBack 兼容性 
+### navigateBack 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.11 | 5.14 | 4.61 |
@@ -352,57 +352,57 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **NavigateBackOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **NavigateBackOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| delta | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 返回的页面数，如果 delta 大于现有页面数，则返回到首页 |
-| animationType | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.25; HarmonyOS:   | 窗口关闭的动画类型<br/> |
-| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 窗口关闭动画的持续时间，单位为 ms |
-| success | (result: [NavigateBackSuccess](#navigatebacksuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: x; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (result: [NavigateBackFail](#navigatebackfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: [NavigateBackComplete](#navigatebackcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| delta | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 返回的页面数，如果 delta 大于现有页面数，则返回到首页 |
+| animationType | string | 否 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.25 | 窗口关闭的动画类型<br/> |
+| animationDuration | number | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 窗口关闭动画的持续时间，单位为 ms |
+| success | (result: [NavigateBackSuccess](#navigatebacksuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: x | 接口调用成功的回调函数 |
+| fail | (result: [NavigateBackFail](#navigatebackfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [NavigateBackComplete](#navigatebackcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### animationType 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
-| none | Web: x; 微信小程序:  ; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 无动画效果 |
-| slide-out-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向右侧滑出屏幕动画 |
-| slide-out-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向左侧滑出屏幕动画 |
-| slide-out-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向上侧滑出屏幕动画 |
-| slide-out-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向下侧滑出屏幕动画 |
-| fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从不透明到透明逐渐隐藏动画 |
-| zoom-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小关闭动画 |
-| zoom-fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
-| pop-out | Web: x; 微信小程序:  ; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
+| auto | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
+| none | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 无动画效果 |
+| slide-out-right | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向右侧滑出屏幕动画 |
+| slide-out-left | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向左侧滑出屏幕动画 |
+| slide-out-top | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向上侧滑出屏幕动画 |
+| slide-out-bottom | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向下侧滑出屏幕动画 |
+| fade-out | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从不透明到透明逐渐隐藏动画 |
+| zoom-in | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小关闭动画 |
+| zoom-fade-in | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| pop-out | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
 
 #### NavigateBackSuccess 的属性值 @navigatebacksuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### NavigateBackFail 的属性值 @navigatebackfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 路由错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 路由错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### NavigateBackComplete 的属性值 @navigatebackcomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -413,9 +413,9 @@
 
 #### Promise\<NavigateBackSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 <!-- UTSAPIJSON.navigateBack.example -->
@@ -446,12 +446,13 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
       <page-head title="navigate"></page-head>
-      <page-intro content="本页演示页面路由：开关控制共享元素动画，展示 onLoad/onShow/onReady 等生命周期时间戳；通过按钮跳转新页、返回、redirect 等，可传递参数。"></page-intro>
+      <page-intro content="本页演示页面路由：展示 onLoad/onShow/onReady 等生命周期时间戳；通过按钮跳转新页、返回、redirect 等，可传递参数。"></page-intro>
+      <!-- #ifdef APP && !VUE3-VAPOR -->
       <view style="flex-direction: row;">
         <switch @change="onChange"></switch>
         <view class="uni-title">是否启用共享元素动画</view>
@@ -460,6 +461,10 @@
         <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
       </share-element>
       <text style="font-size: 13px;" >注意：开启共享元素动画后仅支持slide-in-right和fade-in动画效果</text>
+      <!-- #endif -->
+      <!-- #ifndef APP && !VUE3-VAPOR -->
+      <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
+      <!-- #endif -->
       <view class="uni-padding-wrap uni-common-mt uni-common-mb">
         <view class="direction-row">
           <text class="label">onLoad触发时间戳:</text>
@@ -504,7 +509,7 @@
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -522,7 +527,7 @@
     animationTypeList: string[];
   }
 
-  const data = reactive({
+  const data = reactive<DataType>({
     onLoadTime: 0,
     onShowTime: 0,
     onReadyTime: 0,
@@ -539,7 +544,7 @@
       'zoom-fade-out',
       'none'
     ]
-  } as DataType)
+  })
   onLoad(() => {
     data.onLoadTime = Date.now()
     console.log('onLoad', data.onLoadTime)
@@ -870,7 +875,7 @@
   }
 
   const onChange = (event: UniSwitchChangeEvent) => {
-    if(event.detail.value) {
+    if (event.detail.value) {
       data.shareElementKey = "test-share-element-key"
     } else {
       data.shareElementKey = ""
@@ -904,9 +909,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ## 页面跳转与参数传递

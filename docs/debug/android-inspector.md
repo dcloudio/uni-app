@@ -34,7 +34,7 @@ HBuilderX暂时不支持 uni-app x 项目 uvue 页面的元素审查。相关需
 > 注意：需要确保uni-app x项目在设备前台运行  
 
 左侧 Component Tree 中展开所有子节点，查找到 DecorView -> LinearLayout -> content -> PageFrameView -> RenderContainer，下面就是 uvue 页面 template 中元素对应的原生View：  
-![LayoutInpsector查看元素](https://native-res.dcloud.net.cn/images/uni-app-x/android/inspector/inspector-detail.png)
+![LayoutInspector查看元素](https://native-res.dcloud.net.cn/images/uni-app-x/android/inspector/inspector-detail.png)
 
 > view 组件对应原生 UniView  
 > image 组件对应原生 UniImageView  

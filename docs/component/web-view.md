@@ -15,7 +15,7 @@
  承载网页的容器
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -32,15 +32,15 @@
 
 #### webview-styles 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| progress | **WebViewProgressStyles** \| boolean | 是 | {"color": "#00FF00"} |   | 网络地址页面加载进度条样式，设置为 false 时表示不显示加载进度条。 |
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| progress | **WebViewProgressStyles** \| boolean | 是 | {"color": "#00FF00"} | 网络地址页面加载进度条样式，设置为 false 时表示不显示加载进度条。 |
 
 ##### progress 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| color | [string.ColorString](/uts/data-type.md#ide-string) | 是 |  |   | 网页加载进度条颜色，默认值为 #00FF00 。 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| color | [string.ColorString](/uts/data-type.md#ide-string) | 是 | 网页加载进度条颜色，默认值为 #00FF00 。 |
 @
 | horizontal-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61 | 设置是否显示横向滚动条 |
 | vertical-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61 | 设置是否显示纵向滚动条 |
@@ -48,8 +48,7 @@
 | android-nested-scroll | string | "all" | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 设置嵌套滚动方向 |
 | disable-user-select-menu | boolean | false | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.84; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 设置是否禁用文本选择时弹出的系统菜单 |
 | ios-allows-inline-media-playback | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 5.08; HarmonyOS: x | 设置是否允许内联播放(禁止使用系统播放器全屏播放) |
-| dark-mode | boolean | true | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): x |   |
-| ios-allows-inline-media-playback | boolean |   | Web:  ; 微信小程序:  ; Android:  ; iOS: 5.07; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): x |   |
+| dark-mode | boolean | true | HarmonyOS(Vapor): x |   |
 | @message | (event: [UniWebViewMessageEvent](#uniwebviewmessageevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页向应用 postMessage 时触发。e.detail = { data } |
 | @error | (event: [UniWebViewErrorEvent](#uniwebviewerrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页加载错误时触发。e.detail = { errSubject, errCode, errMsg, url, fullUrl, src } |
 | @load | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: 4.72; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 网页加载完成后触发。e.detail = { url, src } |
@@ -58,7 +57,7 @@
 | @download | (event: [UniWebViewDownloadEvent](#uniwebviewdownloadevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击网页中可下载链接时触发。e.detail = { url, userAgent, contentDisposition, mimetype, contentLength } |
 | @contentheightchange | (event: [UniWebViewContentHeightChangeEvent](#uniwebviewcontentheightchangeevent)) => void |   | Web: x; 微信小程序: x; Android: 4.63; iOS: 4.63; HarmonyOS: 4.63 | 网页内容高度变化时触发。e.detail = { height } |
 | @didterminate | (event: [UniWebViewDidTerminateEvent](#uniwebviewdidterminateevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: 5.0; HarmonyOS: x | 检测到web-view压后台再回来出现白屏时触发 |
-| @onWebViewServiceMessage | Event |   | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 |   |
+| @onWebViewServiceMessage | Event |   | HarmonyOS(Vapor): 5.0 |   |
 
 #### android-nested-scroll 的属性描述
 
@@ -81,18 +80,18 @@ UniWebViewMessageEvent -- Extends --> UniCustomEvent&ltUniWebViewMessageEventDet
   click UniCustomEvent&ltUniWebViewMessageEventDetail&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
 ```
 ##### UniWebViewMessageEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   | 事件类型，固定值message |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| type | string | 是 | 事件类型，固定值message |
 
 
 ##### UniWebViewMessageEventDetail
 
 
 ###### UniWebViewMessageEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | UTSJSONObject[\] | 是 |  |   | 消息包含的数据，4.13版本之前类型为Map\<string, any \| null> \| null，4.13版本（含）之后类型为Array\<UTSJSONObject> |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| data | UTSJSONObject\[\] | 是 | 消息包含的数据，4.13版本之前类型为Map\<string, any \| null> \| null，4.13版本（含）之后类型为Array\<UTSJSONObject> |
 
 
 #### UniWebViewErrorEvent
@@ -105,30 +104,30 @@ UniWebViewErrorEvent -- Extends --> UniCustomEvent&ltUniWebViewErrorEventDetail&
   click UniCustomEvent&ltUniWebViewErrorEventDetail&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
 ```
 ##### UniWebViewErrorEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   | 事件类型，固定值error |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| type | string | 是 | 事件类型，固定值error |
 
 
 ##### UniWebViewErrorEventDetail
 
 
 ###### UniWebViewErrorEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称，固定值uni-web-view |
-| errCode | number | 是 |  |   | 统一错误码<br/>100001 ssl error<br/>100002 page error<br/>100003 http error  |
-| errMsg | string | 是 |  |   | 统一错误描述信息 |
-| url | string | 是 |  |   | 加载错误的网页链接，非完整链接，仅包含scheme://authority部分，4.13版本起支持 |
-| fullUrl | string | 是 |  |   | 加载错误的网页链接，完整链接，4.13版本起支持 |
-| src | string | 是 |  |   | 加载错误的网页链接，完整链接，4.13版本起支持 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| errSubject | string | 是 | 统一错误主题（模块）名称，固定值uni-web-view |
+| errCode | number | 是 | 统一错误码<br/>100001 ssl error<br/>100002 page error<br/>100003 http error  |
+| errMsg | string | 是 | 统一错误描述信息 |
+| url | string | 是 | 加载错误的网页链接，非完整链接，仅包含scheme://authority部分，4.13版本起支持 |
+| fullUrl | string | 是 | 加载错误的网页链接，完整链接，4.13版本起支持 |
+| src | string | 是 | 加载错误的网页链接，完整链接，4.13版本起支持 |
 
 ###### 的属性值 @errcode-values
-| 合法值 | 描述 |
-| :- | :- |
-| 100001 |  |
-| 100002 |  |
-| 100003 |  |
+| 合法值 |
+| :- |
+| 100001 |
+| 100002 |
+| 100003 |
 #### UniWebViewLoadEvent
 
 ```mermaid
@@ -139,19 +138,19 @@ UniWebViewLoadEvent -- Extends --> UniCustomEvent&ltUniWebViewLoadEventDetail&gt
   click UniCustomEvent&ltUniWebViewLoadEventDetail&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
 ```
 ##### UniWebViewLoadEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   | 事件类型，固定值load |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| type | string | 是 | 事件类型，固定值load |
 
 
 ##### UniWebViewLoadEventDetail
 
 
 ###### UniWebViewLoadEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| ~~url~~ | string | 是 |  |   | 加载完成的网页链接 |
-| src | string | 是 |  |   | 加载完成的网页链接，4.13版本起支持 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| ~~url~~ | string | 是 | 加载完成的网页链接 |
+| src | string | 是 | 加载完成的网页链接，4.13版本起支持 |
 
 
 #### UniWebViewLoadingEvent
@@ -164,19 +163,19 @@ UniWebViewLoadingEvent -- Extends --> UniCustomEvent&ltUniWebViewLoadingEventDet
   click UniCustomEvent&ltUniWebViewLoadingEventDetail&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
 ```
 ##### UniWebViewLoadingEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   | 事件类型，固定值loading |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| type | string | 是 | 事件类型，固定值loading |
 
 
 ##### UniWebViewLoadingEventDetail
 
 
 ###### UniWebViewLoadingEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| ~~url~~ | string | 是 |  |   | 加载中的网页链接 |
-| src | string | 是 |  |   | 加载中的网页链接，4.13版本起支持 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| ~~url~~ | string | 是 | 加载中的网页链接 |
+| src | string | 是 | 加载中的网页链接，4.13版本起支持 |
 
 
 #### UniWebViewDownloadEvent
@@ -189,22 +188,22 @@ UniWebViewDownloadEvent -- Extends --> UniCustomEvent&ltUniWebViewDownloadEventD
   click UniCustomEvent&ltUniWebViewDownloadEventDetail&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
 ```
 ##### UniWebViewDownloadEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   | 事件类型，固定值download |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| type | string | 是 | 事件类型，固定值download |
 
 
 ##### UniWebViewDownloadEventDetail
 
 
 ###### UniWebViewDownloadEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  |   | 下载链接 |
-| userAgent | string | 是 |  |   | 用户代理 |
-| contentDisposition | string | 是 |  |   | 指示回复的内容该以何种形式展示，是以内联的形式（即网页或者页面的一部分），还是以附件的形式下载并保存到本地 |
-| mimetype | string | 是 |  |   | 媒体类型 |
-| contentLength | number | 是 |  |   | 文件大小 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| url | string | 是 | 下载链接 |
+| userAgent | string | 是 | 用户代理 |
+| contentDisposition | string | 是 | 指示回复的内容该以何种形式展示，是以内联的形式（即网页或者页面的一部分），还是以附件的形式下载并保存到本地 |
+| mimetype | string | 是 | 媒体类型 |
+| contentLength | number | 是 | 文件大小 |
 
 
 #### UniWebViewContentHeightChangeEvent
@@ -217,18 +216,18 @@ UniWebViewContentHeightChangeEvent -- Extends --> UniCustomEvent&ltUniWebViewCon
   click UniCustomEvent&ltUniWebViewContentHeightChangeEventDetail&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
 ```
 ##### UniWebViewContentHeightChangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   | 事件类型，固定值contentheightchange |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| type | string | 是 | 事件类型，固定值contentheightchange |
 
 
 ##### UniWebViewContentHeightChangeEventDetail
 
 
 ###### UniWebViewContentHeightChangeEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 |  |   | 内容高度 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| height | number | 是 | 内容高度 |
 
 
 
@@ -662,9 +661,9 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
 
 ### 上下文对象API
 
-web-view的操作api为[uni.createWebviewContext()](../api/create-webview-context.md)。
+web-view的操作api为[uni.createWebViewContext()](../api/create-webview-context.md)。
 
-给web-view组件设一个id属性，将id的值传入uni.createWebviewContext()，即可得到web-view组件的上下文对象，进一步可使用`.evalJS()`、`.reload()`等封装好的跨平台方法。
+给web-view组件设一个id属性，将id的值传入uni.createWebViewContext()，即可得到web-view组件的上下文对象，进一步可使用`.evalJS()`、`.reload()`等封装好的跨平台方法。
 
 #### 获取原生WebView对象@nativeview
 

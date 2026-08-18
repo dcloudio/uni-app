@@ -9,7 +9,7 @@
  瀑布流组件
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.41 | 4.81 | 5.02 |
@@ -19,7 +19,7 @@
 
 > waterflow 暂时只支持 flow-item 组件为子组件，其他组件不可见
 
-> waterflow 只支持竖向滚动，暂时不支持横向滚动
+> waterflow 只支持竖向滚动，不支持横向滚动
 
 > 鸿蒙平台api 20及以上版本支持滚动相关事件，api 18及以上版本支持load-more插槽
 
@@ -30,7 +30,7 @@
 | main-axis-gap | number \| string | 0 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 主轴方向间隔 |
 | cross-axis-gap | number \| string | 0 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 交叉轴方向间隔 |
 | max-cross-axis-extent | number \| string | 0 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.02 | flow-item交叉轴方向最大尺寸 |
-| padding | Array | [0,0,0,0\] | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距 |
+| padding | Array | \[0,0,0,0\] | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距。蒸汽模式已废弃此属性，推荐使用 css padding 属性 |
 | associative-container | string |   | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: x | 关联的滚动容器 |
 | bounces | boolean \| string | true | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 控制是否回弹效果 |
 | upper-threshold | number | 50 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
@@ -47,8 +47,10 @@
 | refresher-triggered | boolean \| string | false | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发 |
 | enable-back-to-top | boolean \| string | false | Web: x; 微信小程序: x; Android: x; iOS: 4.41; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.02 | iOS点击顶部状态栏滚动条返回顶部，只支持竖向 |
 | custom-nested-scroll | boolean \| string | false | Web: x; 微信小程序: x; Android: 4.41; iOS: x; HarmonyOS: x | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
+| android-overscroll | boolean \| string | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: x; HarmonyOS: x | 控制默认下拉刷新样式 true 是下拉圆弧转圈 false 是悬浮圆弧转圈 |
 | scroll-left | number |   |   |   |
 | nested-scroll-child | string |   |   |   |
+| android-fast-scroll | boolean \| string |   |   |   |
 | @refresherpulling | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 下拉刷新控件被下拉 |
 | @refresherrefresh | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 下拉刷新被触发 |
 | @refresherrestore | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 下拉刷新被复位 |
@@ -84,15 +86,15 @@ UniRefresherEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniRefresherEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniRefresherEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniRefresherEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| dy | number | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| dy | number | 是 |
 
 
 #### UniScrollToUpperEvent
@@ -105,15 +107,15 @@ UniScrollToUpperEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollToUpperEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToUpperEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollToUpperEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 |  |   | 滚动方向 top 或 left |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| direction | string | 是 | 滚动方向 top 或 left |
 
 
 #### UniScrollToLowerEvent
@@ -126,15 +128,15 @@ UniScrollToLowerEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollToLowerEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToLowerEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollToLowerEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 |  |   | 滚动方向 bottom 或 right |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| direction | string | 是 | 滚动方向 bottom 或 right |
 
 
 #### UniScrollEvent
@@ -147,20 +149,20 @@ UniScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| scrollTop | number | 是 |  |   | 竖向滚动的距离 |
-| scrollLeft | number | 是 |  |   | 横向滚动的距离 |
-| scrollHeight | number | 是 |  |   | 滚动区域的高度 |
-| scrollWidth | number | 是 |  |   | 滚动区域的宽度 |
-| deltaY | number | 是 |  |   | 当次滚动事件竖向滚动量 |
-| deltaX | number | 是 |  |   | 当次滚动事件横向滚动量 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| scrollTop | number | 是 | 竖向滚动的距离 |
+| scrollLeft | number | 是 | 横向滚动的距离 |
+| scrollHeight | number | 是 | 滚动区域的高度 |
+| scrollWidth | number | 是 | 滚动区域的宽度 |
+| deltaY | number | 是 | 当次滚动事件竖向滚动量 |
+| deltaX | number | 是 | 当次滚动事件横向滚动量 |
 
 
 
@@ -168,7 +170,9 @@ UniScrollEvent -- Extends --> UniEvent
 
 ### 自定义下拉刷新样式
 
-waterflow组件有默认的下拉刷新样式，如果想自定义，则需使用自定义下拉刷新。
+waterflow组件有默认的下拉刷新样式，使用方式与scroll-view的自定义下拉刷新相同。[详见](./scroll-view.md#customrefresh)
+
+uni-ui x 提供了开源的自定义下拉刷新组件，可以体验：[uni-refresh-box](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-refresh-box.html)
 
 1. 设置`refresher-default-style`属性为 none 不使用默认样式
 2. 设置 flow-item 定义自定义下拉刷新元素并声明为 `slot="refresher"`，需要设置刷新元素宽高信息否则可能无法正常显示！
@@ -276,6 +280,7 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
     waterflowPadding: Array<number>;
     isLoadingMore: boolean;
     hasMore: boolean;
+    osHarmonySDKAPIVersion: number;
   }
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
@@ -309,10 +314,16 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
     cross_axis_gap: 2,
     waterflowPadding: [10, 5, 10, 5],
     isLoadingMore: false,
-    hasMore: true
+    hasMore: true,
+    osHarmonySDKAPIVersion: 0
   } as DataType)
 
   const waterflowRef = ref<UniWaterFlowElement | null>(null)
+
+  // #ifdef APP-HARMONY
+  const deviceInfo = uni.getDeviceInfo()
+  data.osHarmonySDKAPIVersion = deviceInfo.osHarmonySDKAPIVersion
+  // #endif
 
   onLoad(() => {
     //静态瀑布流数据
@@ -682,13 +693,14 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-#### App平台
+### App平台
 
-+ waterflow 组件默认高度是计算后瀑布流高度，无法滚动，如需要滚动要设置高度小于瀑布流高度，推荐配置 "flex:1"
-+ waterflow 组件在排版完毕UI展示后，如果子组件高度放生变化，则会重新排版，flow-item 组件的UI会出现短暂的错乱和位置位移，建议控制子元素高度固定避免动态修改高度
+- waterflow的性能优化，与list-view相同，详见[列表性能优化](./list-view.md#performance)
+- waterflow 组件默认高度是计算后瀑布流高度，无法滚动，如需要滚动要设置高度小于瀑布流高度，推荐配置 "flex:1"
+- waterflow 组件在排版完毕UI展示后，如果子组件高度发生变化，则会重新排版，flow-item 组件的UI会出现短暂的错乱和位置位移，建议控制子元素高度固定避免动态修改高度
 	+ 场景一 image组件设置mode=widthFix，加载的网络图片会出现异步图片下载动态修改高度的情况，容易出现上述问题
 	+ 场景二 rich-text组件nodes节点内容存在网络图片，出现异步加载情况，会出现动态修改高度导致出现上述问题
-+ waterflow 组件的 overflow 属性不支持配置 visible
+- waterflow 组件的 overflow 属性不支持配置 visible
 
 <!-- ## flow-item -->
 
@@ -701,7 +713,7 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
  waterflow组件的唯一合法子组件
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.41 | 4.81 | 5.02 |

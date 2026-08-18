@@ -5,13 +5,13 @@
 margin 属性为给定元素设置所有四个（上下左右）方向的外边距属性。也就是 margin-top，margin-right，margin-bottom，和 margin-left 四个外边距属性设置的简写。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -67,7 +67,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -105,7 +105,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 margin </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -219,19 +219,19 @@ margin: [ <length> | <percentage> | auto ]{1,4};
         <view class="demo-box">
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin: 25px;"></native-view>
+            <test-native-view class="common" style="margin: 25px;"></test-native-view>
             <view class="common blue"></view>
           </view>
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin: 10%;"></native-view>
+            <test-native-view class="common" style="margin: 10%;"></test-native-view>
             <view class="common blue"></view>
           </view>
         </view>
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -278,7 +278,6 @@ margin: [ <length> | <percentage> | auto ]{1,4};
     data.marginActualScrollView = scrollViewRef.value?.style.getPropertyValue('margin') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeMargin = (value: string) => {
     data.margin = value
@@ -292,7 +291,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeMargin = (index: number) => {

@@ -5,13 +5,13 @@
 font-family 属性用于设置元素使用的字体，允许通过给定一个有先后顺序的，由字体名或者字体族名组成的列表来为元素设置字体。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -61,7 +61,7 @@ font-family: <family-name>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view class="uni-padding-wrap">
@@ -90,7 +90,7 @@ font-family: <family-name>;
 
 
       <view class="uni-common-mt">
-        <text class="uni-title-text title-color">setProperty 设置与 getPropertyValue 获取 font-family 测试</text>
+        <text class="uni-title-text title-color">setProperty 设置与 getPropertyValue 获取</text>
 
         <!-- 普通版本 -->
         <text class="uni-info">设置值: {{data.fontFamily}}</text>
@@ -114,7 +114,7 @@ font-family: <family-name>;
       <button type="default" @click="openUniIcon">内置字体图标uni-icon示例</button>
     </view>
     <!-- #endif -->
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -151,7 +151,6 @@ font-family: <family-name>;
     data.fontFamilyActualFlat = textRefFlat.value?.style.getPropertyValue('font-family') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeFontFamily = (value: string) => {
     data.fontFamily = value
@@ -160,7 +159,7 @@ font-family: <family-name>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFontFamily = (index: number) => {
@@ -255,12 +254,15 @@ font-family: <family-name>;
 - app平台: 指定自定义字体路径时，必须使用url()包裹，支持本地文件路径、远程地址，4.33 版本开始支持 base64 格式数据；
 - HarmonyOS平台: 支持ttf、otf 使用 [@ohos.font](https://developer.huawei.com/consumer/cn/doc/harmonyos-references-V13/js-apis-font-V13?ha_source=Dcloud&ha_sourceId=89000448) 实现
 
-自定义字体的加载，除了在css的src中设置，也可以使用API [uni.loadFontface](../api/load-font-face.md)
+自定义字体的加载
+1. 在css中加载：[@font-face](./common/at-rules.md)
+2. 使用API加载： [uni.loadFontface](../api/load-font-face.md)
 
 
 ### App平台差异
 - app平台 font-family 样式不支持继承，每层组件都需要设样式
 - app平台 font-family 属性值不支持使用分隔符（,）多个字体名称设置字体回退列表，仅支持设置一个字体
+- app平台由于不支持伪元素，字体图标加载需使用unicode直显。[详见](./common/at-rules.md)
 
 
 ### 参见

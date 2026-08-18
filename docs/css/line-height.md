@@ -5,13 +5,13 @@
 line-height 属性用于设置多行文本的间距。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -74,7 +74,7 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <template v-if="autoTestData.begin">
@@ -95,18 +95,20 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
         <text class="common" style="line-height: 75px;">line-height: 75px</text>
         <text class="line-height-3 common">line-height: 3</text>
         <text class="common" style="line-height: 3em;">line-height: 3em</text>
+        <text class="common" style="line-height: 50rpx;">line-height: 50rpx</text>
         <text class="common" style="line-height: 3;">line-height: 3\nline-height: 3\nline-height: 3</text>
       </view>
       <view class="box">
         <text class="common" style="line-height: 75px;" flatten>line-height: 75px</text>
         <text class="line-height-3 common" flatten>line-height: 3</text>
         <text class="common" style="line-height: 3em;" flatten>line-height: 3em</text>
+        <text class="common" style="line-height: 50rpx;" flatten>line-height: 50rpx</text>
         <text class="common" style="line-height: 3;" flatten>line-height: 3\nline-height: 3\nline-height: 3</text>
       </view>
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 line-height </text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
     </view>
 
     <view class="common-box">
@@ -136,7 +138,7 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
         <enum-data :items="lineHeightEnum" title="line-height 枚举值" @change="radioChangeLineHeight" :compact="true"></enum-data>
         <input-data :defaultValue="data.lineHeight" title="line-height 自定义值" type="text" @confirm="inputChangeLineHeight"></input-data>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -174,7 +176,6 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
     data.lineHeightActualFlat = textRefFlat.value?.style.getPropertyValue('line-height') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeLineHeight = (value: string) => {
     data.lineHeight = value
@@ -183,7 +184,7 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeLineHeight = (index: number) => {

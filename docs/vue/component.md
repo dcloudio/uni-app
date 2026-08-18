@@ -144,15 +144,15 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -170,6 +170,7 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
   const obj = { age: 18 }
   const arr = ['a', 'b', 'c']
 </script>
+
 ```
 
 > 选项式 API
@@ -177,15 +178,15 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -216,6 +217,7 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
     },
   }
 </script>
+
 ```
 
 :::
@@ -237,7 +239,7 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
         {{ value }}
       </text>
     </view>
-    <child @callback="callback"></child>
+    <child class="emit-function-child" @callback="callback"></child>
   </view>
 </template>
 
@@ -259,6 +261,7 @@ const callback = (str: string) => {
   margin-bottom: 10px;
 }
 </style>
+
 ```
 
 > 选项式 API
@@ -272,7 +275,7 @@ const callback = (str: string) => {
         {{ value }}
       </text>
     </view>
-    <child @callback="callback"></child>
+    <child class="emit-function-child" @callback="callback"></child>
   </view>
 </template>
 
@@ -320,7 +323,7 @@ export default {
 ```vue
 <template>
   <view class="page">
-    <inject-comp />
+    <inject-comp class="component-for-inject" />
   </view>
 </template>
 
@@ -348,7 +351,7 @@ provide('fn', () : string => 'hello');
       <button class="mt-10" @click="goProvidePage2">
         跳转函数方式定义 provide 示例
       </button>
-      <ComponentForInject />
+      <ComponentForInject class="component-for-inject" />
     </view>
     <!-- #ifdef APP -->
   </scroll-view>
@@ -415,7 +418,7 @@ export default {
       <text class="parent-msg">{{ msg }}</text>
     </view>
     <button class="parent-btn" @click="change">父组件改变数据</button>
-    <child />
+    <child class="nested-child" />
   </view>
 </template>
 
@@ -429,6 +432,7 @@ const change = () => {
   setComponentMsg(state.componentMsg + 1)
 }
 </script>
+
 ```
 
 > 选项式 API
@@ -441,7 +445,7 @@ const change = () => {
       <text class="parent-msg">{{ msg }}</text>
     </view>
     <button class="parent-btn" @click="change">父组件改变数据</button>
-    <child></child>
+    <child class="nested-child"></child>
   </view>
 </template>
 
@@ -1400,11 +1404,13 @@ export default {
 
 #### 使用 `ref` 属性搭配 `$callMethod` 方法 @call-component-method
 
-如果不是内置组件，也不是easycom组件，那么无法使用`.`操作符了。
+Android VDOM模式是强类型，如果不是内置组件，也不是easycom组件，无法使用`.`操作符访问组件的方法。
 
 此时需使用 `this.$refs` 获取组件实例，然后通过 `$callMethod` 调用组件的方法。也就是把组件的方法名、参数，当做callMethod的参数来传递。此时也就没有`.`操作符那样的代码提示和校验了。
 
-callMethod可用于所有自定义组件，包括easycom组件也可以使用，只不过easycom组件有更简单的用法。
+callMethod可用于所有自定义组件，包括easycom组件也可以使用，只不过easycom组件可以直接`.`。
+
+蒸汽模式下不再推荐使用`callMethod`
 
 **语法**
 
@@ -1423,7 +1429,7 @@ ComponentPublicInstance
 ```vue
 <template>
   <view class="page">
-    <child ref="childRef" />
+    <child ref="childRef" class="parent-child" />
   </view>
 </template>
 
@@ -1449,6 +1455,7 @@ ComponentPublicInstance
     callMethodByChild
   })
 </script>
+
 ```
 
 > 选项式 API
@@ -1456,7 +1463,7 @@ ComponentPublicInstance
 ```vue
 <template>
   <view class="page">
-    <child ref='child' />
+    <child ref='child' class="parent-child" />
   </view>
 </template>
 
@@ -1590,17 +1597,106 @@ export default {
 
 ### 组件监听应用、页面生命周期 @component-page-lifecycle
 
+|组件中监听应用生命周期 |Android |Android(Vapor)  |iOS  | iOS(Vapor) |HarmonyOS | HarmonyOS(Vapor) |Web |微信小程序 |
+|:-:			          |:-:		 |:-:             |:-:  |:-:         |:-:		  |:-:               |:-:	 |:-:		  |
+|onAppShow          |4.11    |5.21            |4.11 |5.21        |4.61     |5.21             |4.11 |4.41     |
+|onAppHide          |4.11    |5.21            |4.11 |5.21        |4.61     |5.21             |4.11 |4.41     |
+|onError            |4.11    |5.21            |5.21 |5.21        |5.21     |5.21             |4.11 |4.41     |
+
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/lifecycle/page/monitor-app-lifecycle-composition.uvue)
+
+::: preview https://hellouvue.dcloud.net.cn/#/pages/lifecycle/page/page-composition
+
+> 组合式 API
+
+```vue
+<script lang="uts" setup>
+// 增加显式导入生命周期，测试 https://issues.dcloud.net.cn/pages/issues/detail?id=31456
+import { onAppShow } from '@dcloudio/uni-app'
+import { state, setLifeCycleNum } from '@/store/index.uts'
+
+onAppShow((onShowOptions: OnShowOptions) => {
+	console.log('组合式组件监听应用生命周期 => onAppShow => onShowOptions', onShowOptions)
+	// 自动化测试
+	setLifeCycleNum(state.lifeCycleNum + 10)
+})
+onAppHide(() => {
+	console.log('组合式组件监听应用生命周期 => onAppHide')
+	// 自动化测试
+	setLifeCycleNum(state.lifeCycleNum - 100)
+})
+onError((err: any) => {
+	console.log('组合式组件监听应用生命周期 => onError', err)
+	setLifeCycleNum(state.lifeCycleNum + 10)
+})
+const triggerError = () => {
+	throw new Error('trigger error in monitor app lifecycle composition')
+}
+</script>
+
+<template>
+	<text id="trigger-monitor-app-error" style="margin: 10px 0;" @click="triggerError">组件监听应用生命周期（组合式 API）</text>
+</template>
+
+```
+
+> 选项式 API
+
+```vue
+<script lang="uts">
+import { state, setLifeCycleNum } from '@/store/index.uts'
+export default {
+	setup() {
+		onAppShow((onShowOptions: OnShowOptions) => {
+			console.log('选项式组件监听应用生命周期 => onAppShow => onShowOptions', onShowOptions)
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum + 10)
+		})
+		onAppHide(() => {
+			console.log('选项式组件监听应用生命周期 => onAppHide')
+			// 自动化测试
+			setLifeCycleNum(state.lifeCycleNum - 100)
+		})
+		onError((err: any) => {
+			console.log('选项式组件监听应用生命周期 => onError', err)
+			setLifeCycleNum(state.lifeCycleNum + 10)
+		})
+		const triggerError = () => {
+			throw new Error('trigger error in monitor app lifecycle options')
+		}
+		return {
+			triggerError
+		}
+	}
+}
+</script>
+
+<template>
+	<text id="trigger-monitor-app-error" style="margin: 10px 0;" @click="triggerError">组件监听应用生命周期（选项式 API）</text>
+</template>
+
+```
+
+:::
+
+|组件中监听页面生命周期 |Android |Android(Vapor) |iOS  | iOS(Vapor) |HarmonyOS | HarmonyOS(Vapor) |Web |微信小程序 |
+|:-:			          |:-:		 |:-:             |:-:  |:-:         |:-:		   |:-:               |:-:	|:-:		  |
+|onLoad             |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onPageShow         |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onReady            |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onPullDownRefresh  |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onPageScroll       |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onReachBottom      |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onBackPress        |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onPageHide         |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onUnload           |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+
 > 选项式 API 和 组合式 API 在监听页面生命周期时有所不同
 >
 > 比如选项式 API 中的 `onShow`、`onHide` 监听页面生命周期在组合式 API 中分别对应 `onPageShow`、`onPageHide`（在组合式 API 时会和 App 的生命周期冲突）
 >
 > 具体请查看 [页面生命周期](../page.md#lifecycle)
 
-|组件中监听应用生命周期 |Android |Android(Vapor)  |iOS  | iOS(Vapor) |HarmonyOS | HarmonyOS(Vapor) |Web |微信小程序 |
-|:-:			          |:-:		 |:-:             |:-:  |:-:         |:-:		  |:-:               |:-:	 |:-:		  |
-|onAppShow          |4.11    |5.21            |4.11 |5.21        |4.61     |5.21             |4.11 |4.41     |
-|onAppHide          |4.11    |5.21            |4.11 |5.21        |4.61     |5.21             |4.11 |4.41     |
-|onError            |4.11    |5.21            |5.21 |5.21        |5.21     |5.21             |4.11 |4.41     |
 
 ::: warning 注意
  `onPageHide`、`onPageShow` 需要写在选项式的 setup 函数或者组合式 `<script setup>` 中才能生效
@@ -1614,54 +1710,174 @@ export default {
 
 ```vue
 <script lang="uts" setup>
-// #ifdef APP-ANDROID
-onAppHide(() => {
-	console.log('组件监听应用生命周期 => onAppHide')
-})
-onAppShow((onShowOptions: OnShowOptions) => {
-	console.log('组件监听应用生命周期 => onAppShow => onShowOptions', onShowOptions)
-})
-// #endif
+	import { state, setLifeCycleNum } from '@/store/index.uts'
 
-onPageShow(() => {
-	console.log('组件监听页面生命周期 => onPageShow')
-})
-onPageHide(() => {
-	console.log('组件监听页面生命周期 => onPageHide')
-})
+	const isScrolled = ref(false)
+
+	onLoad((options : OnLoadOptions) => {
+		console.log('组合式组件监听页面生命周期 => onLoad', options)
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 100)
+	})
+	onPageShow(() => {
+		console.log('组合式组件监听页面生命周期 => onPageShow')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onReady(() => {
+		console.log('组合式组件监听页面生命周期 => onReady')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onPullDownRefresh(() => {
+		console.log('组合式组件监听页面生命周期 => onPullDownRefresh')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onPageScroll((options : OnPageScrollOptions) => {
+		console.log('组合式组件监听页面生命周期 => onPageScroll', options)
+		isScrolled.value = true
+	})
+	onReachBottom(() => {
+		console.log('组合式组件监听页面生命周期 => onReachBottom')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onBackPress((options : OnBackPressOptions) : boolean | null => {
+		console.log('组合式组件监听页面生命周期 => onBackPress', options)
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum - 10)
+		return null
+	})
+	onPageHide(() => {
+		console.log('组合式组件监听页面生命周期 => onPageHide')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum - 10)
+	})
+	onResize((options : OnResizeOptions) => {
+		console.log('组合式组件监听页面生命周期 => onResize', options)
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 1)
+	})
+	onUnload(() => {
+		console.log('组合式组件监听页面生命周期 => onUnload')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum - 10)
+	})
 </script>
 
 <template>
-	<text>组件监听页面、应用生命周期（组合式 API）</text>
+	<view>
+		<text class="mb-10">选项式组件监听页面生命周期（组合式 API）</text>
+		<view class="justify-between flex-row mb-10">
+			<text>组件中监听到页面滚动:</text>
+			<text>{{isScrolled}}</text>
+		</view>
+	</view>
 </template>
+
+<style>
+	.mb-10{
+		margin-bottom: 10px;
+	}
+	.justify-between{
+		justify-content: space-between;
+	}
+	.flex-row{
+		flex-direction: row;
+	}
+</style>
 ```
 
 > 选项式 API
 
 ```vue
 <script lang="uts">
-export default {
-	setup() {
-		// #ifdef APP-ANDROID
-		onAppHide(() => {
-			console.log('组件监听应用生命周期 => onAppHide')
-		})
-		onAppShow((onShowOptions: OnShowOptions) => {
-			console.log('组件监听应用生命周期 => onAppShow => onShowOptions', onShowOptions)
-		})
-		// #endif
+	import { state, setLifeCycleNum } from '@/store/index.uts'
 
-		onPageShow(() => {
-			console.log('组件监听页面生命周期 => onPageShow')
-		})
-		onPageHide(() => {
-			console.log('组件监听页面生命周期 => onPageHide')
-		})
+	export default {
+		setup() {
+			const isScrolled = ref(false)
+			
+			onLoad((options : OnLoadOptions) => {
+				console.log('选项式组件监听页面生命周期 => onLoad', options)
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 100)
+			})
+			onPageShow(() => {
+				console.log('选项式组件监听页面生命周期 => onPageShow')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 10)
+			})
+			onReady(() => {
+				console.log('选项式组件监听页面生命周期 => onReady')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 10)
+			})
+			onPullDownRefresh(() => {
+				console.log('选项式组件监听页面生命周期 => onPullDownRefresh')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 10)
+			})
+			onPageScroll((options: OnPageScrollOptions) => {
+				console.log('选项式组件监听页面生命周期 => onPageScroll', options)
+				isScrolled.value = true
+			})
+			onReachBottom(() => {
+				console.log('选项式组件监听页面生命周期 => onReachBottom')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 10)
+			})
+			onBackPress((options : OnBackPressOptions) : boolean | null => {
+				console.log('选项式组件监听页面生命周期 => onBackPress', options)
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum - 10)
+				return null
+			})
+			onPageHide(() => {
+				console.log('选项式组件监听页面生命周期 => onPageHide')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum - 10)
+			})
+			onResize((options : OnResizeOptions) => {
+				console.log('选项式组件监听页面生命周期 => onResize', options)
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 1)
+			})
+			onUnload(() => {
+				console.log('选项式组件监听页面生命周期 => onUnload')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum - 10)
+			})
+			
+			return {
+				isScrolled
+			}
+		}
 	}
-}
 </script>
 
-<template>组件监听页面、应用生命周期（选项式 API）</template>
+<template>
+	<view>
+		<text class="mb-10">选项式组件监听页面生命周期（选项式 API）</text>
+		<view class="justify-between flex-row mb-10">
+			<text>组件中监听到页面滚动:</text>
+			<text>{{isScrolled}}</text>
+		</view>
+	</view>
+</template>
+
+<style>
+	.mb-10{
+		margin-bottom: 10px;
+	}
+	.justify-between{
+		justify-content: space-between;
+	}
+	.flex-row{
+		flex-direction: row;
+	}
+</style>
 ```
 
 :::
@@ -1691,30 +1907,30 @@ export default {
 
 |  | 兼容性 | 描述 |
 | :- | :- | :- |
-| onMounted() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
-| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
-| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。 |
-| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
-| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
-| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。 |
+| onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
+| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
+| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。 |
+| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
+| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
+| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。 |
 | onErrorCaptured() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 注册一个钩子，在捕获了后代组件传递的错误时调用。 |
 | onRenderTracked() | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用。 |
 | onRenderTriggered() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用。 |
 | onActivated() | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | keep-alive 组件激活时调用。 |
 | onDeactivated() | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | keep-alive 组件停用时调用。 |
 | onServerPrefetch() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 注册一个异步函数，在组件实例在服务器上被渲染之前调用。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。<br/>这个钩子仅会在服务端渲染中执行，可以用于执行一些仅存在于服务端的数据抓取过程。 |
-| onRecycle() | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 组件回收时的生命周期钩子 |
-| onReuse() | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 组件复用时的生命周期钩子 |
-| onLoad() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
-| onReady() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
-| onUnload() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
-| onPageShow() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
-| onPageHide() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
-| onPageScroll() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.13; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
-| onBackPress() | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回 |
-| onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
-| onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
-| onResize() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 页面尺寸改变时触发 |
+| onRecycle() | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 组件回收时的生命周期钩子 |
+| onReuse() | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 组件复用时的生命周期钩子 |
+| onLoad() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
+| onReady() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
+| onUnload() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
+| onPageShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
+| onPageHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
+| onPageScroll() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
+| onBackPress() | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回 |
+| onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
+| onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
+| onResize() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 页面尺寸改变时触发 |
 
 示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/lifecycle/component/ChildComponentOptions.uvue)
 
@@ -1954,15 +2170,15 @@ const updateTitle = () => {
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -1980,6 +2196,7 @@ const updateTitle = () => {
   const obj = { age: 18 }
   const arr = ['a', 'b', 'c']
 </script>
+
 ```
 
 > 选项式 API
@@ -1987,15 +2204,15 @@ const updateTitle = () => {
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -2026,6 +2243,7 @@ const updateTitle = () => {
     },
   }
 </script>
+
 ```
 
 :::

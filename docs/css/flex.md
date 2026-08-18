@@ -5,13 +5,13 @@
 flex 属性设置弹性元素如何增大或缩小以适应其弹性容器中可用的空间，是 flex-grow、flex-shrink、flex-basis 的简写。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -61,7 +61,7 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
@@ -75,7 +75,7 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
           <text class="common-text" style="height: 20px;">scroll-view</text>
         </scroll-view>
         <text class="common-text" style="height: 20px;">下方有个native-view</text>
-        <native-view style="width: 20px;height: 20px;background-color: cyan;"></native-view>
+        <test-native-view style="width: 20px;height: 20px;background-color: cyan;"></test-native-view>
       </view>
       <button @tap="switchDisplay" class="uni-common-mb">切换display属性</button>
 
@@ -91,7 +91,7 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 display </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -138,12 +138,12 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
       <view class="uni-common-mb">
         <text>native-view组件: display: flex 和 display: none</text>
         <view class="demo-box">
-          <native-view class="common-view" style="display: flex;width:100px;"></native-view>
-          <native-view class="common-view" style="display: none;width:100px;"></native-view>
+          <test-native-view class="common-view" style="display: flex;width:100px;"></test-native-view>
+          <test-native-view class="common-view" style="display: none;width:100px;"></test-native-view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -179,7 +179,6 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
     data.displayActualImage = imageRef.value?.style.getPropertyValue('display') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeDisplay = (value: string) => {
     data.displayProp = value
     viewRef.value?.style.setProperty('display', value)
@@ -188,7 +187,7 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeDisplay = (index: number) => {

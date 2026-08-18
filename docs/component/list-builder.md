@@ -7,22 +7,22 @@
 
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| padding | Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array)*<br/>长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距 |
-| type | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>类型，默认为定高模式 |
-| list | Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array)*<br/>需要用于渲染的列表 |
-| child-count | Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array)*<br/>完整列表的长度，如果不传则取 list 的长度作为其值 |
-| child-height | Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array)*<br/>列表项的高度，当 type 为 static 时必须传入 |
-| @itembuild | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>列表项创建时触发，event.detail = {index}，index 即被创建的列表项序号 |
-| @itemdispose | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>列表项回收时触发，event.detail = {index}，index 即被回收的列表项序号 |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| padding | Array | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array)*<br/>长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距 |
+| type | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>类型，默认为定高模式 |
+| list | Array | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array)*<br/>需要用于渲染的列表 |
+| child-count | Array | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array)*<br/>完整列表的长度，如果不传则取 list 的长度作为其值 |
+| child-height | Array | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array)*<br/>列表项的高度，当 type 为 static 时必须传入 |
+| @itembuild | eventhandle | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>列表项创建时触发，event.detail = {index}，index 即被创建的列表项序号 |
+| @itemdispose | eventhandle | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>列表项回收时触发，event.detail = {index}，index 即被回收的列表项序号 |
 
 #### type 的属性描述
 

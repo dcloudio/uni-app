@@ -47,7 +47,7 @@ template区：
 <video id="vid" src="uni.mp4"></video>
 ```
 
-scrip区：
+script区：
 ```js
 uni.createVideoContext('vid').play()
 ```

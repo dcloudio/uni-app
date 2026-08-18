@@ -5,13 +5,13 @@
 transform-origin CSS 属性让你更改一个元素变形的原点。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -64,7 +64,7 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
@@ -93,7 +93,7 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transform-origin </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -168,12 +168,12 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
         <text class="uni-title-text">native-view 组件 transform-origin ：</text>
         <text class="uni-subtitle-text">点击下方 native-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
         <view class="scroll-view-item">
-          <native-view ref="nativeViewTransformView" class="scroll-view-base transform" @click="changeNativeViewTransform"></native-view>
+          <test-native-view ref="nativeViewTransformView" class="scroll-view-base transform-native" @click="changeNativeViewTransform"></test-native-view>
         </view>
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -185,14 +185,13 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
   const textTransformView = ref(null as UniElement | null)
   const imageTransformView = ref(null as UniElement | null)
   const scrollViewTransformView = ref(null as UniElement | null)
-  const nativeViewTransformView = ref(null as UniElement | null)
+  const nativeViewTransformView = ref<ComponentPublicInstance|null>(null)
   const count = ref(0)
   const textCount = ref(0)
   const imageCount = ref(0)
   const scrollViewCount = ref(0)
   const nativeViewCount = ref(0)
 
-  const ins = getCurrentInstance()
 
   const changetransform = () => {
     const element = transformView.value
@@ -325,7 +324,7 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
   }
 
   const changeNativeViewTransform = () => {
-    const element = nativeViewTransformView.value
+    const element = nativeViewTransformView.value?.$el
 
     if (nativeViewCount.value == 0) {
       element?.style.setProperty("transform-origin", "60px 60px")
@@ -406,7 +405,7 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeTransformOrigin = (index: number) => {
@@ -544,6 +543,10 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
     border-style: solid;
     text-align: center;
     position: relative;
+  }
+
+  .transform-native {
+    background-color: #00FFFF80;
   }
 
 </style>

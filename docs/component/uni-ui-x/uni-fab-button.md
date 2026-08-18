@@ -28,17 +28,17 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-fab-butto
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| plusClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 加号图标的自定义样式类，用于调整加号颜色、尺寸等样式 |
-| @click | Event |   |   | 点击事件，参数为事件对象，类型为 UniPointerEvent |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| plusClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 加号图标的自定义样式类，用于调整加号颜色、尺寸等样式 |
+| @click | Event |   | 点击事件，参数为事件对象，类型为 UniPointerEvent |
 
 <!-- UTSCOMJSON.uni-fab-button.fileFormates -->
 
@@ -66,17 +66,98 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-fab-butto
 		<uni-fab-button plus-class="custom-plus-class"></uni-fab-button>
 		<text class="label">自定义fab和plus样式，变成一个16px的纯+</text>
 		<uni-fab-button class="transparent" plus-class="black-plus"></uni-fab-button>
-		<uni-fab-button class="right-bottom" hover-class="fab-hover" @click="clickme"></uni-fab-button> <!-- TODO: hover-class仅web生效-->
+		<text class="label">可移动uni-fab-button</text>
+		<view class="move-fab-placeholder">
+			<view id="move-fab" class="move-fab" @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="updateMoveData" @touchcancel="updateMoveData">
+				<uni-fab-button></uni-fab-button>
+			</view>
+		</view>
+		<view
+			class="right-bottom"
+			:class="rightBottomFabPressed ? 'fab-pressed' : ''"
+			@touchstart="rightBottomFabPressed = true"
+			@touchend="rightBottomFabPressed = false"
+			@touchcancel="rightBottomFabPressed = false">
+			<uni-fab-button @click="handleClick"></uni-fab-button>
+		</view>
 	</view>
 </template>
 
-<script setup>
-	const clickme = () => {
+<script setup lang="uts">
+	type Data = {
+		dx : number
+		dy : number
+		left : number
+		top : number
+	}
+
+	const data = reactive<Data>({
+		dx: 0,
+		dy: 0,
+		left: 15,
+		top: 47
+	})
+	let sx = 0
+	let sy = 0
+	let mx = 0
+	let my = 0
+	let baseLeft = 15
+	let baseTop = 47
+	const rightBottomFabPressed = ref(false)
+
+	function handleClick() {
 		uni.showToast({
 			title: '点击了右下角的fab',
 			icon: 'none'
 		})
 	}
+
+	function updateMoveData() {
+		data.left = baseLeft + mx
+		data.top = baseTop + my
+		data.dx = mx
+		data.dy = my
+	}
+
+	function updateMovePos(element : UniElement) {
+		element.style.setProperty('position', 'fixed')
+		element.style.setProperty('left', baseLeft + 'px')
+		element.style.setProperty('top', baseTop + 'px')
+		element.style.setProperty('transform', 'translate(' + mx + 'px,' + my + 'px)')
+	}
+
+	function onTouchStart(e : UniTouchEvent) {
+		sx = e.touches[0].clientX
+		sy = e.touches[0].clientY
+		updateMovePos(e.currentTarget as UniElement)
+	}
+
+	function onTouchMove(e : UniTouchEvent) {
+		mx = e.touches[0].clientX - sx + mx
+		my = e.touches[0].clientY - sy + my
+		sx = e.touches[0].clientX
+		sy = e.touches[0].clientY
+		updateMovePos(e.currentTarget as UniElement)
+	}
+
+	onReady(() => {
+		uni.createSelectorQuery()
+			.select('.move-fab-placeholder')
+			.boundingClientRect((rect) => {
+				if (rect != null) {
+					const nodeInfo = rect as NodeInfo
+					baseLeft = nodeInfo.left != null ? nodeInfo.left : baseLeft
+					baseTop = nodeInfo.top != null ? nodeInfo.top : baseTop
+					data.left = baseLeft
+					data.top = baseTop
+				}
+			})
+			.exec()
+	})
+
+	defineExpose({
+		data
+	})
 </script>
 
 <style>
@@ -111,15 +192,30 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-fab-butto
 		height: 2px;
 		border-radius: 0px;
 	}
+	.move-fab-placeholder {
+		width: 44px;
+		height: 44px;
+	}
+	.move-fab {
+		width: 44px;
+		height: 44px;
+	}
 	.right-bottom {
 		position: absolute;
 		right: 44px;
 		bottom: 44px;
-		transition: transform 0.1s ease;
+		width: 44px;
+		height: 44px;
+		opacity: 1;
+		transform: scale(1);
+		transform-origin: center center;
+		transition-property: transform, opacity;
+		transition-duration: 140ms;
+		transition-timing-function: cubic-bezier(0.2, 0, 0.2, 1);
 	}
-	.fab-hover{
-		opacity: 0.8;
-		transform: scale(0.8); /* TOOD hover-class里使用transform和transition，取消hover后无法复位*/
+	.fab-pressed {
+		opacity: 0.9;
+		transform: scale(0.95);
 	}
 </style>
 

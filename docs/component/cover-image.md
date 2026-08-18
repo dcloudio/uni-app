@@ -7,7 +7,7 @@ cover-image 在uni-app x的app、web、微信小程序上，已废弃，使用 i
 在其他小程序平台，某些原生组件（如map、canvas、video）不支持同层渲染，仍需要 cover-image 来覆盖。
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.53 | 4.53 | 4.61 |
@@ -18,12 +18,12 @@ app 端并不是在运行时实现了 cover-image 组件，仅仅是编译器把
 :::
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| src | string([string.ImageURIString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 4.53; iOS: 4.53; HarmonyOS:   | 图标路径，支持临时路径、网络地址（1.6.0起支持）。暂不支持base64格式。 |
-| referrer-policy | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本； |
-| @load | eventhandle |   | Web: 4.0; 微信小程序: 4.41; Android: 4.53; iOS: 4.53; HarmonyOS: x | *(eventhandle)*<br/>图片加载成功时触发 |
-| @error | eventhandle |   | Web: 4.0; 微信小程序: 4.41; Android: 4.53; iOS: 4.53; HarmonyOS: x | *(eventhandle)*<br/>图片加载失败时触发 |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| src | string([string.ImageURIString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: 4.53; iOS: 4.53 | 图标路径，支持临时路径、网络地址（1.6.0起支持）。暂不支持base64格式。 |
+| referrer-policy | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本； |
+| @load | eventhandle | Web: 4.0; 微信小程序: 4.41; Android: 4.53; iOS: 4.53; HarmonyOS: x | *(eventhandle)*<br/>图片加载成功时触发 |
+| @error | eventhandle | Web: 4.0; 微信小程序: 4.41; Android: 4.53; iOS: 4.53; HarmonyOS: x | *(eventhandle)*<br/>图片加载失败时触发 |
 
 #### referrer-policy 的属性描述
 

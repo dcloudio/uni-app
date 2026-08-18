@@ -13,41 +13,41 @@ page-container 的特点：
 - 与[dialogPage](../api/dialog-page.md)相比，`page-container` 是组件而不是页面；`page-container` 跨端，而 dialogPage 不支持小程序；dialogPage 支持覆盖pages.json中定义的顶部导航栏和tabbar，而 `page-container`不支持。
 
 
-### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.02 | 4.41 | 5.02 | 5.02 | 5.02 | 5.02 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.02 | 4.41 | 5.02 | 5.02 | 5.02 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| show | boolean | false | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 是否显示容器组件 |
-| duration | number | 300 | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 动画时长，单位毫秒 |
-| z-index | number | 100 | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | z-index 层级 |
-| overlay | boolean | true | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 是否显示遮罩层 |
-| round | boolean | false | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 是否显示圆角 |
-| position | top \| left \| bottom \| right \| center | "bottom" | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 弹出位置 |
-| close-on-slide-down | boolean | false | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 是否在下滑一段距离后关闭 |
-| overlay-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 自定义遮罩层样式 |
-| custom-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 自定义弹出层样式 |
-| @beforeenter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | *(eventhandle)*<br/>进入前触发 |
-| @enter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | *(eventhandle)*<br/>进入中触发 |
-| @afterenter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | *(eventhandle)*<br/>进入后触发 |
-| @beforeleave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | *(eventhandle)*<br/>离开前触发 |
-| @leave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | *(eventhandle)*<br/>离开中触发 |
-| @afterleave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | *(eventhandle)*<br/>离开后触发 |
-| @clickoverlay | (event: [UniPointerEvent](/component/common.md#unipointerevent)) => void |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 点击遮罩层时触发 |
+| show | boolean | false | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否显示容器组件 |
+| duration | number | 300 | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 动画时长，单位毫秒 |
+| z-index | number | 100 | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | z-index 层级 |
+| overlay | boolean | true | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否显示遮罩层 |
+| round | boolean | false | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否显示圆角 |
+| position | top \| left \| bottom \| right \| center | "bottom" | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 弹出位置 |
+| close-on-slide-down | boolean | false | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 是否在下滑一段距离后关闭 |
+| overlay-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 自定义遮罩层样式 |
+| custom-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 自定义弹出层样式 |
+| @beforeenter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>进入前触发 |
+| @enter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>进入中触发 |
+| @afterenter | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>进入后触发 |
+| @beforeleave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>离开前触发 |
+| @leave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>离开中触发 |
+| @afterleave | eventhandle |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | *(eventhandle)*<br/>离开后触发 |
+| @clickoverlay | (event: [UniPointerEvent](/component/common.md#unipointerevent)) => void |   | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 点击遮罩层时触发 |
 
 #### position 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| top | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 顶部 |
-| left | Web: 5.02; 微信小程序: x; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 左侧 |
-| bottom | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 底部 |
-| right | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 右侧 |
-| center | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 居中 |
+| top | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 顶部 |
+| left | Web: 5.02; 微信小程序: x; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 左侧 |
+| bottom | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 底部 |
+| right | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 右侧 |
+| center | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS: 5.02 | 居中 |
 
 
 
@@ -56,14 +56,16 @@ page-container 的特点：
 ### Tips
 - uni ui组件库中曾广泛使用的uni-popup组件，在uni-app x中推荐改用 page-container 组件替代
 - 组件支持拦截用户的返回操作，包括右滑手势、安卓物理返回键和调用 navigateBack API
+- iOS从屏幕左边滑入默认是关闭当前页面，如需改成关闭弹层，需在 pages.json 中配置`swipeBackAsBackPress`为true，把左滑关闭页面功能转为 `onBackPress`，才能关闭弹层。此功能需 5.21+ iOS平台 蒸汽模式 [文档](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style)
 - Web 设置 `overlay: true` 时，组件会禁止背景页面滚动，避免滚动穿透
 - 小程序 `uni.navigateBack` 无法在页面栈顶调用，此时没有上一级页面
 - 小程序不支持 `左侧弹出`，App 和 Web 支持
 - 小程序 `enter` 和 `leave` 相关事件的回调函数有参数 `event`，App 和 Web 平台没有
 - 开启 `closeOnSlideDown` 后，小程序需要快速下滑才生效，而 App 和 Web 会跟着手指拖动滑动
-- 小程序页面最多只有1个page-container，若已存在page-container的情况下，无法新弹出page-container。App 和 Web 支持弹出多个page-container组件，后弹覆盖先弹。
+- 支付宝小程序同一个页面最多只能有一个 `page-container`，如果页面中有多个 `page-container`，则只有一个 `page-container` 能够正常弹出，其他的 `page-container` 无法弹出，即使设置了 `v-if` 条件渲染也无法弹出，而微信小程序无此限制。App 和 Web 支持弹出多个 `page-container` 组件，后弹覆盖先弹。
 - Web 暂不支持拦截侧滑返回和浏览器的后退按钮
 - `overlay-style` 设置 `pointer-events: none` 可以实现点击遮罩层不关闭弹窗
+- 居中弹出为全屏显示。此行为是为了对齐小程序的表现。由于遮罩层被覆盖，并不会触发 `click-overlay` 事件，可以自行调整 `custom-style` 的样式来规避此行为
 
 
 
@@ -159,6 +161,18 @@ page-container 的特点：
       </view>
     </view>
 
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 其他方向滑动关闭 </text>
+      </view>
+      <view>
+        <button @click="showSlideClose('left')">左滑关闭</button>
+        <button class="mt-5" @click="showSlideClose('right')">右滑关闭</button>
+        <button class="mt-5" @click="showSlideClose('top')">上滑关闭</button>
+        <text class="slider-down-info">提示: close-on-slide-down=true 时，关闭方向由 position 决定</text>
+      </view>
+    </view>
+
     <!-- #ifndef MP -->
     <view class="uni-padding-wrap uni-common-mt" style="margin-bottom: 30px;">
       <view class="uni-title uni-common-mt">
@@ -175,6 +189,7 @@ page-container 的特点：
       <!-- #endif -->
       :show="containerShow" :position="containerPosition" :round="containerRound"
       :overlay="containerOverlay" :overlay-style="containerOverlayStyle"
+      :custom-style="containerCustomStyle"
       :close-on-slide-down="containerCloseOnSlideDown" @afterleave="onAfterLeave">
       <view class="container">
         <text class="container-title">{{ containerTitle }}</text>
@@ -255,6 +270,7 @@ page-container 的特点：
   const containerOverlay = ref<boolean>(true)
   const containerTitle = ref<string>('Page-Container')
   const containerOverlayStyle = ref<string>('')
+  const containerCustomStyle = ref<string>('')
   const containerContent = ref<string>('这是一个 page-container 容器')
   const containerCloseOnSlideDown = ref<boolean>(false)
   const enableScrollThrough = ref<boolean>(false)
@@ -283,6 +299,7 @@ page-container 的特点：
     containerOverlay.value = true
     containerCloseOnSlideDown.value = false
     containerOverlayStyle.value = ''
+    containerCustomStyle.value = ''
     enableScrollThrough.value = false
   }
 
@@ -354,6 +371,28 @@ page-container 的特点：
     containerPosition.value = 'bottom'
     containerTitle.value = 'Close-on-slide-down: true'
     containerContent.value = '下滑关闭: true'
+  }
+
+  function showSlideClose(position : string) {
+    resetConfig()
+    containerCloseOnSlideDown.value = true
+    containerPosition.value = position
+
+    if (position == 'left') {
+      containerCustomStyle.value = 'width: 300px; height: 100%; right: auto;'
+      containerTitle.value = '左滑关闭'
+      containerContent.value = '左侧弹出: 从内容区域向左滑动可关闭容器'
+    } else if (position == 'right') {
+      containerCustomStyle.value = 'width: 300px; height: 100%; left: auto;'
+      containerTitle.value = '右滑关闭'
+      containerContent.value = '右侧弹出: 从内容区域向右滑动可关闭容器'
+    } else if (position == 'top') {
+      containerCustomStyle.value = 'height: 300px;'
+      containerTitle.value = '上滑关闭'
+      containerContent.value = '顶部弹出: 从内容区域向上滑动可关闭容器'
+    }
+
+    containerShow.value = true
   }
 
   function autoClose() {
@@ -590,7 +629,7 @@ page-container 的特点：
 
 
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.wx.other.page-container)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.view-container.page-container)
 - [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/component/page-container.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=page-container&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=page-container&scope=devdocs&source=docs)

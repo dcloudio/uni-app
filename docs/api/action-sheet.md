@@ -12,60 +12,60 @@
 
 从底部向上弹出操作菜单
 
-### showActionSheet 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
+### showActionSheet 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ShowActionSheetOptions** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 参数说明 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **ShowActionSheetOptions** | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 参数说明 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| title | string | 否 |  | Web: 4.51; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; iOS uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 菜单标题 |
-| alertText | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 警示文案（仅微信小程序真机有效） |
-| itemList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 按钮的文字数组 |
-| itemColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 按钮的文字颜色，字符串格式 |
-| popover | **Popover** | 否 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 大屏设备弹出原生选择按钮框的指示区域，默认居中显示 |
-| titleColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 菜单标题文字颜色，字符串格式 |
-| cancelText | string | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 取消按钮的文字，默认为"取消" |
-| cancelColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 取消按钮的文字颜色，字符串格式 |
-| backgroundColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 弹框背景颜色 |
-| success | (result: [ShowActionSheetSuccess](#showactionsheetsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [ShowActionSheetFail](#showactionsheetfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| title | string | 否 | Web: 4.51; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 菜单标题 |
+| alertText | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 警示文案（仅微信小程序真机有效） |
+| itemList | Array&lt;string&gt; | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 按钮的文字数组 |
+| itemColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 按钮的文字颜色，字符串格式 |
+| popover | **Popover** | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 大屏设备弹出原生选择按钮框的指示区域，默认居中显示 |
+| titleColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 菜单标题文字颜色，字符串格式 |
+| cancelText | string | 否 | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 取消按钮的文字，默认为"取消" |
+| cancelColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 取消按钮的文字颜色，字符串格式 |
+| backgroundColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 弹框背景颜色 |
+| success | (result: [ShowActionSheetSuccess](#showactionsheetsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [ShowActionSheetFail](#showactionsheetfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### popover 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| top | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域坐标，使用原生 navigationBar 时一般需要加上 navigationBar 的高度 |
-| left | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域坐标 |
-| width | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域宽度 |
-| height | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域高度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| top | number | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 指示区域坐标，使用原生 navigationBar 时一般需要加上 navigationBar 的高度 |
+| left | number | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 指示区域坐标 |
+| width | number | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 指示区域宽度 |
+| height | number | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 指示区域高度 |
 
 #### ShowActionSheetSuccess 的属性值 @showactionsheetsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 错误信息 |
-| tapIndex | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 用户点击的按钮序号，从上到下的顺序，从0开始 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 错误信息 |
+| tapIndex | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 用户点击的按钮序号，从上到下的顺序，从0开始 |
 
 #### ShowActionSheetFail 的属性值 @showactionsheetfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 
 
@@ -76,7 +76,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ui.actionSheet.showActionSheet)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/prompt.html#showactionsheet)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=showActionSheet&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/interaction/wx.showActionSheet.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=showActionSheet&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=showActionSheet&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=showActionSheet&secondType=all&type=1)
@@ -105,10 +105,10 @@
 
 关闭栈顶页面操作菜单
 
-### hideActionSheet 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.11 | 4.61 |
+### hideActionSheet 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
 
 
 
@@ -143,7 +143,7 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1;">
   <!-- #endif -->
   <view>
@@ -196,7 +196,7 @@
       </view>
     </view>
   </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -453,7 +453,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

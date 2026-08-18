@@ -14,7 +14,7 @@
 
 系统分享不同于SDK分享。不需要配置三方SDK的key信息。手机上安装的、可接受分享的应用都会出现在列表中。
 
-### shareWithSystem 兼容性 
+### shareWithSystem 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.33 | 4.33 | 4.61 |
@@ -22,58 +22,58 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ShareWithSystemOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **ShareWithSystemOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 分享类型,默认为text。 |
-| summary | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享的文字内容 |
-| href | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享链接 |
-| imageUrl | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享单个图片，仅支持本地路径 |
-| imagePaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享图片，仅支持本地路径 |
-| videoPaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享video，仅支持本地路径 |
-| audioPaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享audio，仅支持本地路径 |
-| filePaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享文件，仅支持本地路径 |
-| success | (res: ShareWithSystemSuccess) => void | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem成功回调函数定义 |
-| fail | (res: [ShareWithSystemFail](#sharewithsystemfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem完成回调函数定义 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| type | string | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享类型,默认为text。 |
+| summary | string | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享的文字内容 |
+| href | string | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享链接 |
+| imageUrl | string | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享单个图片，仅支持本地路径 |
+| imagePaths | Array&lt;string&gt; | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享图片，仅支持本地路径 |
+| videoPaths | Array&lt;string&gt; | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享video，仅支持本地路径 |
+| audioPaths | Array&lt;string&gt; | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享audio，仅支持本地路径 |
+| filePaths | Array&lt;string&gt; | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享文件，仅支持本地路径 |
+| success | (res: ShareWithSystemSuccess) => void | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem成功回调函数定义 |
+| fail | (res: [ShareWithSystemFail](#sharewithsystemfail-values)) => void | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem失败回调函数定义 |
+| complete | (res: any) => void | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem完成回调函数定义 | 
 
 ##### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| text | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | text类型 |
-| image | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | image类型 |
-| video | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | video类型 |
-| audio | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | audio类型 |
-| file | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | file类型 |
+| text | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | text类型 |
+| image | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | image类型 |
+| video | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | video类型 |
+| audio | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | audio类型 |
+| file | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | file类型 |
 
 #### ShareWithSystemFail 的属性值 @sharewithsystemfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1310600 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 取消分享 |
-| 1310601 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 分享内容不可以为空 |
-| 1310602 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 已经成功调用系统分享接口，系统分享出错 |
-| 1310603 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | 图片路径无效 |
-| 1310604 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 无效的链接 |
-| 1310605 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | video 路径无效 |
-| 1310606 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | file 文件不存在 |
-| 1310607 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | audio 路径无效 |
+| 1310600 | Web: x; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 取消分享 |
+| 1310601 | Web: x; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 分享内容不可以为空 |
+| 1310602 | Web: x; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 已经成功调用系统分享接口，系统分享出错 |
+| 1310603 | Web: x; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | 图片路径无效 |
+| 1310604 | Web: x; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 无效的链接 |
+| 1310605 | Web: x; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | video 路径无效 |
+| 1310606 | Web: x; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | file 文件不存在 |
+| 1310607 | Web: x; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | audio 路径无效 |
 
 
 
@@ -639,9 +639,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ## 注意

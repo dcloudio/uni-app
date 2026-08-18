@@ -5,13 +5,13 @@
 font-style 属性用于设置字体样式。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -58,7 +58,7 @@ font-style: normal | italic | oblique <angle>{0,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -75,7 +75,7 @@ font-style: normal | italic | oblique <angle>{0,2};
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 font-style 测试</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -106,7 +106,7 @@ font-style: normal | italic | oblique <angle>{0,2};
           <input-data :defaultValue="data.fontStyle" title="font-style 自定义值" type="text" @confirm="inputChangeFontStyle"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -133,7 +133,6 @@ font-style: normal | italic | oblique <angle>{0,2};
     data.fontStyleActualFlat = textRefFlat.value?.style.getPropertyValue('font-style') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeFontStyle = (value: string) => {
     data.fontStyle = value
@@ -142,7 +141,7 @@ font-style: normal | italic | oblique <angle>{0,2};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFontStyle = (index: number) => {

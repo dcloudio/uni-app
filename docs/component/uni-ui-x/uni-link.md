@@ -59,34 +59,34 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-link
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| href | string | "" |   | 链接地址，点击组件时要打开的 URL |
-| target | _blank \| _self | "_self" |   | 打开方式。"_self" 在当前应用内置 webview 中打开；"_blank" 在外部浏览器中打开（小程序端会复制链接提示用户外部打开） |
-| blankFallback | turn-self \| copy-link-modal \| none | "turn-self" |   | `target="_blank"`失败时，可以通过本属性控制失败回退策略。"turn-self"使用_self方式打开；"copy-link-modal"复制链接并弹框提醒；"none"不回退，触发失败回调 |
-| @error | Event |   |   |   |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| href | string | "" | 链接地址，点击组件时要打开的 URL |
+| target | _blank \| _self | "_self" | 打开方式。"_self" 在当前应用内置 webview 中打开；"_blank" 在外部浏览器中打开（小程序端会复制链接提示用户外部打开） |
+| blankFallback | turn-self \| copy-link-modal \| none | "turn-self" | `target="_blank"`失败时，可以通过本属性控制失败回退策略。"turn-self"使用_self方式打开；"copy-link-modal"复制链接并弹框提醒；"none"不回退，触发失败回调 |
+| @error | Event |   |   |
 
 #### target 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| _blank |   |  |
-| _self |   |  |
+| 合法值 |
+| :- |
+| _blank |
+| _self |
 
 #### blankFallback 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| turn-self |   |  |
-| copy-link-modal |   |  |
-| none |   |  |
+| 合法值 |
+| :- |
+| turn-self |
+| copy-link-modal |
+| none |
 
 <!-- UTSCOMJSON.uni-link.fileFormates -->
 

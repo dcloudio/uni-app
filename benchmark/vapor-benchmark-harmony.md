@@ -1,4 +1,4 @@
-Benchmark
+Harmony Benchmark
 
 ## 背景
 `uni-app x 蒸汽模式`，是DCloud于2026年推出的跨平台开发框架新版本。
@@ -9,9 +9,14 @@ Benchmark
 
 先简要介绍 `uni-app x` 及 蒸汽模式
 - uni-app x 使用vue语法，并在蒸汽模式中去除了虚拟DOM
-- 蒸汽模式中，模板和样式编译为c或c++代码（在Android也会编译出部分kotlin代码），script仍然为uts语言
+- 蒸汽模式中，模板和样式编译为字节码/机器码，script支持js/ts/uts语言
 - uni-app x 基于原生渲染管线，可融合原生组件生态，并占用更小的内存
 - 蒸汽模式提供了大量自研高性能组件，如view、text、image、list、rich-text、swiper、slider、picker等
+
+本报告为harmony平台的性能评测。
+
+iOS评测报告[另见](./vapor-benchmark-ios.md)，Android评测报告[另见](./vapor-benchmark-android.md)。
+
 
 **测试指标**
 
@@ -129,7 +134,7 @@ arkUI中使用lazy foreach，`uni-app x`中使用list-view。
 
 在2端分别进入长列表，滚动到底部，加载完4000行数据，然后点击鸿蒙手机的顶部状态栏，此时会滚动回到列表顶部。
 
-2端回滚速度一样，均为1秒，在这个回滚到顶部的过程中，计算帧率，验证掉帧情况。同时从录像视觉上进行直观感受。
+2端回滚时间一样，均为1秒，在这个回滚到顶部的过程中，计算帧率，验证掉帧情况。同时从录像视觉上进行直观感受。
 
 首先看录屏对比。
 左边为`arkUI原生`，右边为`uni-app x蒸汽模式`。
@@ -238,7 +243,7 @@ arkUI版本，需要自行编译原始工程。
 
 如果使用xComponent自渲染，会因为2条渲染管线并存额外消耗硬件资源。
 
-并且鸿蒙有很多原生组件，比如权限按钮、map地图以及三方生态中大量arkUI原生组件，自渲染方案在与原生生态融合时问题较多。两条渲染管线的滚动同步、资源消耗均导致这一路线不是最佳方案。
+并且鸿蒙有很多原生组件，比如权限按钮、webview组件、map地图以及三方生态中大量arkUI原生组件，自渲染方案在与原生生态融合时问题较多。两条渲染管线的滚动同步、层级合成、资源消耗均导致这一路线不是最佳方案。
 
 站在宏观视角，在原生渲染管线中优化，提供更快的核心组件，兼容所有原生组件，比自立一套组件生态对产业更有意义。
 
@@ -253,30 +258,8 @@ arkUI版本，需要自行编译原始工程。
 	
 2. vue里template和style里的代码，被直接编译为优化度非常高的C代码。它的运行速度远快于arkts、kotlin及k/n。
 	
-	当然它的副作用就是编译速度很慢。在5.11版本起，DCloud提供了字节码模式，大幅提升了编译速度。
-
 ### 在uni-app x的示例中发现了拍平。如果不拍平的话，uni-app x蒸汽模式中渲染速度还会比原生快吗？
 如果不拍平的话，同屏创建4050个view和text的示例的平均耗时为467ms。仍远快于arkUI的797.6ms。
 
 ### k/n驱动c层渲染，是否也快过arkUI或uni-app x蒸汽模式？
 截止到目前（2026年2月初），基于k/n的开源跨平台框架，在上述基准测试中的表现均比arkUI差很多。更无法与`uni-app x蒸汽模式`相比。
-
-### uni-app x蒸汽模式在Android和iOS是否也快过原生？
-`uni-app x蒸汽模式`的iOS版和Android版的渲染引擎已开发完毕，但产品化还有一些工作要做。预计分别在2026年Q1和Q2发布。
-
-不管在iOS还是Android，均比原生快2~3倍，均基于原生渲染管线。
-
-已公开如下预览版对比测试例：
-
-* Android平台的uni-app x 蒸汽模式的4050同屏创建示例apk：[https://gitcode.com/dcloud/test4050-uni-app-x-vapor](https://gitcode.com/dcloud/test4050-uni-app-x-vapor)，安装其中apk即可体验。
-* Android平台的原生view，以及compose ui的与源码 [https://gitcode.com/dcloud/test4050-android](https://gitcode.com/dcloud/test4050-android)
-
-上述示例在华为mate30 Android版上，对比数据如下：
-|										|5次冷启动平均耗时（单位:ms）	|
-|--									|--													|
-|原生view						|436												|
-|原生compose	ui			|673.2											|
-|原生compose ui aot	|544.2											|
-|uni-app x 蒸汽模式	|224												|
-
-也就是`uni-app x蒸汽模式`，作为跨平台开发框架，实现了业内期盼已久的梦想：**即跨平台，又比原生性能更高**。

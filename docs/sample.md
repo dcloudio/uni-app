@@ -1,14 +1,12 @@
 # 源码和示例
 
 官方有6个开源项目比较重要
+- [hello uni-app x](https://gitcode.com/dcloud/hello-uni-app-x)：uni内置组件和API的使用示例，也包括一些常见但复杂的模板示例
 - [hello uts](https://gitcode.com/dcloud/hello-uts)：uts的语法和内置对象的使用示例
 - [hello uvue](https://gitcode.com/dcloud/hello-uvue)：vue语法的使用示例
-- [hello uni-app x](https://gitcode.com/dcloud/hello-uni-app-x)：uni内置组件和API的使用示例，也包括一些常见但复杂的模板示例
 - [uni-api](https://gitcode.com/dcloud/uni-api)：uni api的实现源码。大量uts API插件源码，适合uts插件作者学习
 - [uni-component](https://gitcode.com/dcloud/uni-component)：内置组件的实现源码。uts组件插件源码，适合uts插件作者学习
 - [uni-ai-x](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)：用于快速搭建 AI 聊天类应用的开源插件，适合开发者学习 AI 功能与 uni-app x 结合的开发方案
-
-
 
 这些开源项目的master分支对应着HBuilderX最新正式版，alpha分支对应着最新alpha版。
 
@@ -33,6 +31,8 @@ uni-app x的组件和API，大多是uts语言开发的。和开发者做的uts�
 
 以下列出部分案例：
 
+- 发票匣：（蒸汽模式案例）[Android](https://r.app.xiaomi.com/details?id=com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)
+- 仪表宝典(化工资料)：（蒸汽模式案例）[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app )
 - e线签（天津数字认证有限公司）：[Android](https://sj.qq.com/appdetail/com.tjca.elinesign)、[iOS](https://apps.apple.com/cn/app/e%E7%BA%BF%E7%AD%BE/id6743433163)
 - Tevau 海外应用：[Google Play](https://play.google.com/store/apps/details?id=uni.UNI2317D55&hl=zh&pli=1)、[iOS](https://apps.apple.com/cn/app/tevau/id6504911110)
 - 舆情秘书专业版：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.istarshine.yqms4harmonyos)
@@ -104,7 +104,6 @@ uni-app x的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 二狗英语（教育）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.youjuda.ergouenglish)
 - W Life（租房）：[Android](https://appgallery.huawei.com/app/C114037237)、[iOS](https://apps.apple.com/cn/app/w-life/id6742771365?uo=4)
 - 维度新闻（黑龙江官媒）：[Android](https://sj.qq.com/appdetail/uni.UNIDB3060D)
-- 鲨推AI（工具）：[Android](https://sj.qq.com/appdetail/com.shatui.ai)
 - Atter（AI工具）：[Android](https://sj.qq.com/appdetail/com.wbgrecordx.app)、[iOS](https://apps.apple.com/us/app/atter-ai-voice-to-text-notes/id6747348330)
 - 崇胜AI助手（工具）：[Android](https://appgallery.huawei.com/app/C110643037)、[iOS](https://apps.apple.com/bn/app/%E5%B4%87%E8%83%9Cai%E5%8A%A9%E6%89%8B-ai%E8%A7%86%E9%A2%91%E5%88%9B%E4%BD%9C%E5%B7%A5%E5%85%B7/id6479941790)
 - 知食有为（AI健康）：[Android](https://sj.qq.com/appdetail/cn.sshcn.nutrition.m)、[iOS](https://apps.apple.com/hk/app/%E7%9F%A5%E9%A3%9F%E6%9C%89%E4%B8%BA/id6739123603)
@@ -117,7 +116,7 @@ uni-app x的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 缘乐多（社交）：[Android](https://sj.qq.com/appdetail/com.adaphan.myloves)
 - 面具漂流瓶（社交）：[Android](https://appgallery.huawei.com/app/C113757831)
 - 一起超慢跑（健身）：[Android](https://sj.qq.com/appdetail/com.cloud.dema.jog)
-- 萤科物联（物联网）：[Android](https://sj.qq.com/appdetail/iot.ykwl.vip)、[iOS](https://apps.apple.com/cn/app/%E8%90%A4%E7%A7%91%E7%89%A9%E8%81%94/id6741841541)
+- 萤科物联（物联网）：[Android](https://sj.qq.com/appdetail/iot.ykwl.vip)、[iOS](https://apps.apple.com/cn/app/%E8%90%A4%E7%A7%91%E7%89%A9%E8%81%94/id6741841541)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=huawei.iot.ykwl.vip&channelId=SHARE&source=appshare)
 - 牛轻松（物联网）：[Android](https://sj.qq.com/appdetail/com.wuitu.nqs)
 - 小溪相册（物联网）：[Android](https://app.mi.com/details?id=com.yanxi.xiaoxizaijia)、[iOS](https://apps.apple.com/vn/app/%E5%B0%8F%E6%BA%AA%E7%9B%B8%E5%86%8C/id6593673873)
 - 灵犀一点（物联网）：[Android](https://sj.qq.com/appdetail/uni.qinhua)、[iOS](https://apps.apple.com/cn/app/%E7%81%B5%E7%8A%80%E4%B8%80%E7%82%B9/id1661770402)
@@ -129,7 +128,6 @@ uni-app x的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 华杰全优采（医药电商）：[Android](https://sj.qq.com/appdetail/com.wta.NewCloudApp.jiuwei314439)、[iOS](https://apps.apple.com/cn/app/%E5%8D%8E%E6%9D%B0%E5%85%A8%E4%BC%98%E9%87%87/id1577869835)
 - 时一助手（工具）：[App端](http://app.yuteng.vip/sy/index.html)
 - 拾用视频去水印（工具）：[Android](https://sj.qq.com/appdetail/io.video.convertApp)
-- 176乐园（网赚）：[Android](https://sj.qq.com/appdetail/uni.UNI1A7CD2D)
 - 云旅迹：[Android](https://sj.qq.com/appdetail/com.yunlvji.trip)
 - uyultax（维吾尔族多语言应用）：[Android](https://sj.qq.com/appdetail/com.android.uyultax)
 - 我爱点读（教育）：[Android](https://sj.qq.com/appdetail/com.aiduowan.diandu)
@@ -153,11 +151,7 @@ uni-app x的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 智消云管家（消防）：[Android](https://sj.qq.com/appdetail/com.jbufa.iot3)、[iOS](https://apps.apple.com/sa/app/%E6%99%BA%E6%B6%88%E4%BA%91%E7%AE%A1%E5%AE%B6/id6499505198)
 - ABSign（电子合同）：[iOS](https://apps.apple.com/us/app/absign/id6751777998)
 
-插件市场的云端一体项目模板，这些项目的客户端和服务器的源码都是现成的，可直接购买：
-- 快亿商城：[App端插件](https://ext.dcloud.net.cn/plugin?id=15458)、[管理端插件](https://ext.dcloud.net.cn/plugin?id=15568)
-- [ai(chatGPT)聊天对话，uni-app x(uvue+uts)和uniCloud云端一体完整项目模板](https://ext.dcloud.net.cn/plugin?id=17075)
-
 其实uni-app x最大的案例就是uni-app x自身，
-1. uni-app x有几十个组件（form类、video）、以及界面有关的API（showModel、showActionSheet、previewImage、chooseLocation、scanCode等）都是用uvue实现的。
+1. uni-app x有几十个内置组件（form类、video）、uni-ui x、以及界面有关的API（showModal、showActionSheet、previewImage、chooseLocation、scanCode等）都是用uvue实现的。
 2. uni-app x的几百个API，都是用uts实现的。
 这些组件和API的文档上都列有源码链接。

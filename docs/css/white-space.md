@@ -5,13 +5,13 @@
 white-space 属性用于设置如何处理元素中的空白字符（空格、换行符、制表符）以及文本是否自动换行。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.0 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -70,7 +70,7 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
 **默认值调整**
 - app-android、app-ios平台新增支持取值 `keep`，默认值由 `normal` 调整为 `keep`  
 - app-harmony平台蒸汽模式（Vapor）支持取值 `keep`，默认值为 `keep`  
-- web平台平台，默认值由 `normal' 调整为 pre-line
+- web平台，默认值由 `normal` 调整为 `pre-line`
 
 **调整前实现规范**  
 - normal（与调整后的pre-line效果一致）  
@@ -95,7 +95,7 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -109,7 +109,7 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
 
       <scroll-view style="flex: 1">
         <view class="content uni-common-mt">
-          <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 white-space </text>
+          <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
         </view>
 
         <view class="common-box">
@@ -141,7 +141,7 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
         </view>
       </scroll-view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -184,7 +184,6 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
     data.whiteSpaceActualFlat = textRefFlat.value?.style.getPropertyValue('white-space') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeWhiteSpace = (value: string) => {
     data.whiteSpace = value
@@ -193,7 +192,7 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeWhiteSpace = (index: number) => {

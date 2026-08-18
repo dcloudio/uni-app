@@ -5,13 +5,13 @@
 font-size 属性用于设置字体大小，更改字体大小还会更新字体大小相关的 `<length>` 单位，例如 line-height 属性的 em 单位值。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -71,7 +71,7 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -80,15 +80,17 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
         <view class="common">
           <text ref="text" :style="{'font-size': data.fontSize}">font-size: {{data.fontSize}}</text>
           <text style="font-size: 30px;">font-size: 30px</text>
+          <text style="font-size: 20rpx;">font-size: 20rpx</text>
         </view>
         <view class="common">
           <text ref="text" :style="{'font-size': data.fontSize}" flatten>font-size: {{data.fontSize}}</text>
           <text style="font-size: 30px;" flatten>font-size: 30px</text>
+          <text style="font-size: 20rpx;" flatten>font-size: 20rpx</text>
         </view>
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 font-size 测试</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -119,7 +121,7 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
           <input-data :defaultValue="data.fontSizeProp" title="font-size 自定义值" type="text" @confirm="inputChangeFontSize"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -156,7 +158,6 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
     data.fontSizeActualFlat = textRefFlat.value?.style.getPropertyValue('font-size') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeFontSize = (value: string) => {
     data.fontSizeProp = value
@@ -165,7 +166,7 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFontSize = (index: number) => {

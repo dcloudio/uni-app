@@ -25,32 +25,32 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 获取隐私协议状态
 
-### getPrivacySetting 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.31 | 4.31 | 4.31 | 4.61 |
+### getPrivacySetting 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.31 | 4.31 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **GetPrivacySettingOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **GetPrivacySettingOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (result: [GetPrivacySettingSuccessResult](#getprivacysettingsuccessresult-values)) => void | 否 | null | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: any) => void | 否 | null | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [GetPrivacySettingSuccessResult](#getprivacysettingsuccessresult-values)) => void | 否 | null | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: any) => void | 否 | null | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetPrivacySettingSuccessResult 的属性值 @getprivacysettingsuccessresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| needAuthorization | boolean | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true) |
-| privacyContractName | string | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 隐私授权协议的名称<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| needAuthorization | boolean | 是 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true) |
+| privacyContractName | string | 否 | Web: x; 微信小程序: 4.41 | 隐私授权协议的名称<br/> |
 
 
 
@@ -88,10 +88,10 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 适用于隐私协议变更，需要重新同意的场景。
 
-### resetPrivacyAuthorization 兼容性 
-| Web | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.31 | 4.61 |
+### resetPrivacyAuthorization 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.61 |
 
 
 
@@ -129,23 +129,23 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 开启监听隐私协议状态改变
 
-### onPrivacyAuthorizationChange 兼容性 
-| Web | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.31 | 4.61 |
+### onPrivacyAuthorizationChange 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [PrivacyChangeResult](#privacychangeresult-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (res: [PrivacyChangeResult](#privacychangeresult-values)) => void | 是 | Web: x | 
 
 ### PrivacyChangeResult 的属性值 @privacychangeresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| needAuthorization | boolean | 是 |  | Web: x; 微信小程序:  ; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true) |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| needAuthorization | boolean | 是 | Web: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true) |
 
 
 ### 返回值 
@@ -187,17 +187,17 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 取消监听隐私协议状态改变
 
-### offPrivacyAuthorizationChange 兼容性 
-| Web | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.31 | 4.61 |
+### offPrivacyAuthorizationChange 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 开启监听隐私协议状态改变返回的id | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| id | number | 是 | Web: x | 开启监听隐私协议状态改变返回的id | 
 
 
 
@@ -341,7 +341,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

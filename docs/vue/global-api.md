@@ -6,25 +6,25 @@
 
 |  | 兼容性 |
 | :- | :- |
-| createApp() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| createSSRApp() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| app.mount() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): 5.11; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 |
-| app.unmount() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| app.component() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
+| createApp() | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
+| createSSRApp() | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
+| app.mount() | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
+| app.unmount() | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
+| app.component() | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
 | app.use() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
 | app.mixin() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
-| app.provide() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| app.version | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): 5.11; iOS: 4.11; HarmonyOS: 4.61 |
+| app.provide() | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
+| app.version | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
 | app.config | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
-| app.config.errorHandler | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 4.11; HarmonyOS: 4.61 |
-| app.config.globalProperties | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
-| globalData | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.0; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
-| onLaunch() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.0; HarmonyOS: 4.61 |
-| onShow() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.0; HarmonyOS: 4.61 |
-| onHide() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.0; HarmonyOS: 4.61 |
-| onLastPageBackPress() | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: 4.71 |
-| onExit() | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: 4.72 |
-| onError() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.21; Android(Vapor): x; iOS: 4.21; HarmonyOS: 4.61 |
+| app.config.errorHandler | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.11; HarmonyOS: 4.61 |
+| app.config.globalProperties | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
+| globalData | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
+| onLaunch() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
+| onShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
+| onHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
+| onLastPageBackPress() | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: 4.71 |
+| onExit() | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: 4.72 |
+| onError() | Web: 4.0; 微信小程序: 4.41; Android: 4.21; iOS: 4.21; HarmonyOS: 4.61 |
 | onPageNotFound() | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |
 | onUniNViewMessage() | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
 | onThemeChange() | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |
@@ -587,11 +587,11 @@ uni-app x 新增了 [onLastPageBackPress](../collocation/App.md#applifecycle) �
 
 ## 通用 @general
 
-|  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| version | 4.0 | 4.41 | √ | 5.11 | 4.11 | 4.61 |
-| nextTick() | 4.0 | 4.41 | √ | x | 4.11 | 4.61 |
-| defineComponent() | 4.0 | 4.41 | x | x | x | x |
+|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| version | 4.0 | 4.41 | √ | 4.11 | 4.61 |
+| nextTick() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
+| defineComponent() | 4.0 | 4.41 | x | x | x |
 
 
 

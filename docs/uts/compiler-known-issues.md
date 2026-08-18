@@ -142,11 +142,9 @@ console.log(msg.type);
     </view>
 </template>
 
-<script>
-	export default {
-		onTabItemTap() {
-		}
-	}
+<script setup lang="uts">
+	onTabItemTap(() => {
+	})
 </script>
 ```
 
@@ -633,11 +631,9 @@ export default {
 	</view>
 </template>
 
-<script>
+<script setup lang="uts">
 	import * as xxx from './foo.uts'
 	console.log(xxx);
-    export default{
-    }
 </script>
 ```
 
@@ -656,11 +652,9 @@ export function myFunction() {
 	</view>
 </template>
 
-<script>
+<script setup lang="uts">
 	import { myFunction }from './foo.uts'
 	myFunction()
-    export default{
-    }
 </script>
 ```
 
@@ -1159,13 +1153,9 @@ import { myApi } from '@/uni_modules/xx-yy'
 	</view>
 </template>
 
-<script lang="uts">
-	export default {
-		methods: {
-			handleMessage(e : any) {
-				console.log(e['detail'])
-			}
-		}
+<script setup lang="uts">
+	function handleMessage(e : any) {
+		console.log(e['detail'])
 	}
 </script>
 ```
@@ -1178,13 +1168,9 @@ import { myApi } from '@/uni_modules/xx-yy'
 	</view>
 </template>
 
-<script lang="uts">
-	export default {
-		methods: {
-			handleMessage(e : UniWebViewMessageEvent) {
-				console.log(e.detail)
-			}
-		}
+<script setup lang="uts">
+	function handleMessage(e : UniWebViewMessageEvent) {
+		console.log(e.detail)
 	}
 </script>
 ```

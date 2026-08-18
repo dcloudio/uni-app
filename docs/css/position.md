@@ -5,13 +5,13 @@
 position 属性用于指定元素在页面中的定位方式。与 top、right、bottom、left 等属性决定该元素的最终位置。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -61,7 +61,7 @@ position: static | relative | absolute | sticky | fixed;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -214,7 +214,7 @@ position: static | relative | absolute | sticky | fixed;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 position </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -263,12 +263,12 @@ position: static | relative | absolute | sticky | fixed;
       <view class="uni-common-mb">
         <text>native-view组件: position: relative 和 position: absolute</text>
         <view class="position-test-box">
-          <native-view class="scroll-view-common" style="position: relative; top: 20px; left: 20px; background-color: cyan;"></native-view>
-          <native-view class="scroll-view-common" style="position: absolute; top: 65px; left: 65px; background-color: green;"></native-view>
+          <test-native-view class="scroll-view-common" style="position: relative; top: 20px; left: 20px; background-color: cyan;"></test-native-view>
+          <test-native-view class="scroll-view-common" style="position: absolute; top: 65px; left: 65px; background-color: green;"></test-native-view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 
@@ -277,7 +277,7 @@ position: static | relative | absolute | sticky | fixed;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const positionEnum: ItemType[] = [
+  const positionEnum : ItemType[] = [
     { value: 0, name: '' },
     { value: 1, name: 'static' },
     { value: 2, name: 'relative' },
@@ -301,9 +301,8 @@ position: static | relative | absolute | sticky | fixed;
     data.positionActualImage = imageRef.value?.style.getPropertyValue('position') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
-  const changePosition = (value: string) => {
+  const changePosition = (value : string) => {
     data.position = value
     viewRef.value?.style.setProperty('position', value)
     textRef.value?.style.setProperty('position', value)
@@ -311,17 +310,17 @@ position: static | relative | absolute | sticky | fixed;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
-  const radioChangePosition = (index: number) => {
-    const selectedItem = positionEnum.find((item): boolean => item.value === index)
+  const radioChangePosition = (index : number) => {
+    const selectedItem = positionEnum.find((item) : boolean => item.value === index)
     if (selectedItem != null) {
       changePosition(selectedItem.name)
     }
   }
 
-  const inputChangePosition = (value: string) => {
+  const inputChangePosition = (value : string) => {
     changePosition(value)
   }
 
@@ -336,7 +335,7 @@ position: static | relative | absolute | sticky | fixed;
 </script>
 
 <style>
-  .common-box{
+  .common-box {
     flex-direction: row;
     justify-content: space-around;
   }
@@ -366,7 +365,7 @@ position: static | relative | absolute | sticky | fixed;
 
   .text {
     width: 100%;
-    font-size:12px;
+    font-size: 12px;
   }
 
   .test-block {
@@ -474,7 +473,6 @@ position: static | relative | absolute | sticky | fixed;
     width: 80px;
     height: 60px;
   }
-
 </style>
 
 ```

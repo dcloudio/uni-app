@@ -1,12 +1,14 @@
 ## 概述  
-随着设备制造商为设备配备更多 RAM 以优化性能，许多制造商将采用更大的页面大小（例如 16 KB）。为了迎接这些即将推出的设备，Google Play 推出了一项新的兼容性要求：  
+16K，是指C语言等可操作内存的语言使用内存的规范，对齐16K可以提升C代码的运行性能。如果使用js、java，不涉及16K。
+
+Google Play 的政策要求：  
 自 2025 年 11 月 1 日起，提交到 Google Play 且以 Android15（API 级别 35）及更高版本的设备为目标平台的所有新应用和现有应用更新都必须支持 16KB 的页面大小。  
-如需详细了解此兼容性要求，请参阅[Google官方博文](https://android-developers.googleblog.com/2025/05/prepare-play-apps-for-devices-with-16kb-page-size.html)。
+[详情](https://android-developers.googleblog.com/2025/05/prepare-play-apps-for-devices-with-16kb-page-size.html)。
 
 > HBuilderX4.81版本已适配支持 16KB 内存页面大小
 
 ## 不支持 16KB 的模块  
-虽然 uni-app x 核心功能模块已适配支持 16KB 内存页面大小，但部分涉及三方 SDK 的模块仍未完全适配支持。  
+虽然 uni-app x 核心功能模块已适配支持 16KB 内存页面大小，但部分涉及三方 SDK 的so库仍未完全适配支持。  
 
 ### [live-pusher 组件](../component/live-pusher.md)
 `uni-live-pusher`模块是由 DCloud 的合作伙伴七牛提供并实现 live-pusher 组件相关功能，此模块依赖七牛的多媒体SDK，但该 SDK 目前未适配支持 16KB 内存页面大小。  

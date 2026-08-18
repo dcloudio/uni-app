@@ -33,9 +33,9 @@ ArrayBuffer 对象用来表示通用的原始二进制数据缓冲区。
 构造函数创建一个以字节为单位的给定长度的新 ArrayBuffer
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteLength | number | 是 |  |   | 长度，单位字节 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteLength | number | 是 | 长度，单位字节 | 
 
 
 **返回值**
@@ -46,18 +46,18 @@ ArrayBuffer 对象用来表示通用的原始二进制数据缓冲区。
 
 <!-- UTSJSON.ArrayBuffer.Constructor.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | √ | x | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | √ | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.ArrayBuffer.Constructor.tutorial -->
@@ -71,9 +71,9 @@ ArrayBuffer 对象用来表示通用的原始二进制数据缓冲区。
 ArrayBuffer.isView() 静态方法用于确定传递的值是否是 ArrayBuffer 视图之一。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arg | any | 是 |  |   | 需要检测的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| arg | any | 是 | 需要检测的值。 | 
 
 
 **返回值**
@@ -98,18 +98,18 @@ ArrayBuffer.isView() 静态方法用于确定传递的值是否是 ArrayBuffer �
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | √ | x | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | √ | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.ArrayBuffer.isView.tutorial -->
@@ -119,9 +119,9 @@ ArrayBuffer.isView() 静态方法用于确定传递的值是否是 ArrayBuffer �
 ArrayBuffer.fromByteBuffer() 静态方法用于将android 原生的ByteBuffer对象转换为ArrayBuffer
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| byteBuffer | ByteBuffer | 是 |  |   | android原生bytebuffer对象 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| byteBuffer | ByteBuffer | 是 | android原生bytebuffer对象 | 
 
 
 **返回值**
@@ -153,18 +153,18 @@ ArrayBuffer.fromByteBuffer() 静态方法用于将android 原生的ByteBuffer对
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS 系统版本 | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | 4.25 | x | x | x | 4.61 | 4.25 | x |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.25 | x | x |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | x |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | x | x |
 
 
 <!-- UTSJSON.ArrayBuffer.fromByteBuffer.tutorial -->
@@ -174,9 +174,9 @@ ArrayBuffer.fromByteBuffer() 静态方法用于将android 原生的ByteBuffer对
 ArrayBuffer.fromData() 静态方法用于将 iOS 原生的 Data 对象转换为 ArrayBuffer
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | Data | 是 |  |   | iOS 原生 Data 对象 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| data | Data | 是 | iOS 原生 Data 对象 | 
 
 
 **返回值**
@@ -202,18 +202,18 @@ ArrayBuffer.fromData() 静态方法用于将 iOS 原生的 Data 对象转换为 
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | 4.61 | x | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | x | x | x | 4.51 |
 
 
-**uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| 4.51 |
+**uni-app 兼容性 <Help />**
+| iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| 4.51 | x |
 
 
 <!-- UTSJSON.ArrayBuffer.fromData.tutorial -->
@@ -229,18 +229,18 @@ ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长�
 
 
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | x | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.ArrayBuffer.byteLength.tutorial -->
@@ -254,10 +254,10 @@ ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长�
 ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其包含原 ArrayBuffer 实例中从 begin 开始（包含）到 end 结束（不含）的所有字节的副本。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| begin | number | 否 |  |   | 可选，要开始提取的位置索引（从 0 开始），将被转换为整数。负数索引将会从缓冲区末尾开始计算——如果 start \< 0，那么将会使用 start + buffer.length。 如果 start \< -buffer.length 或省略了 start，则会使用 0。 如果 start >= buffer.length，则不会提取任何内容。 |
-| end | number | 否 |  |   | 可选，要结束提取的位置索引（从 0 开始），将被转换为整数。slice() 提取到但不包括 end。 负数索引将会从缓冲区末尾开始计算——如果 end \< 0，那么将会使用 end + buffer.length。 如果 end \< -buffer.length，则会使用 0。 如果 end >= buffer.length 或省略了 end，则会使用 buffer.length，则会导致直到末尾的所有元素都被提取。 如果标准化后的 end 位置在 start 位置之前，则不会提取任何内容。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| begin | number | 否 | 可选，要开始提取的位置索引（从 0 开始），将被转换为整数。负数索引将会从缓冲区末尾开始计算——如果 start \< 0，那么将会使用 start + buffer.length。 如果 start \< -buffer.length 或省略了 start，则会使用 0。 如果 start >= buffer.length，则不会提取任何内容。 |
+| end | number | 否 | 可选，要结束提取的位置索引（从 0 开始），将被转换为整数。slice() 提取到但不包括 end。 负数索引将会从缓冲区末尾开始计算——如果 end \< 0，那么将会使用 end + buffer.length。 如果 end \< -buffer.length，则会使用 0。 如果 end >= buffer.length 或省略了 end，则会使用 buffer.length，则会导致直到末尾的所有元素都被提取。 如果标准化后的 end 位置在 start 位置之前，则不会提取任何内容。 | 
 
 
 **返回值**
@@ -335,18 +335,18 @@ ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | 4.11 | x | 4.61 | 4.25 | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | 4.61 | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | 4.51 | √ |
 
 
 <!-- UTSJSON.ArrayBuffer.slice.tutorial -->
@@ -386,18 +386,18 @@ ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS 系统版本 | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | 4.25 | x | x | x | 4.61 | 4.25 | x |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.25 | x | x |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| √ | x |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| √ | x | x |
 
 
 <!-- UTSJSON.ArrayBuffer.toByteBuffer.tutorial -->
@@ -431,18 +431,18 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
-**uni-app x 兼容性**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | 4.61 | x | 4.51 |  |
+**uni-app x 兼容性 <Help />**
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | x | x | x | 4.51 |
 
 
-**uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| x | 4.51 |
+**uni-app 兼容性 <Help />**
+| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| x | 4.51 | x |
 
 
 <!-- UTSJSON.ArrayBuffer.toData.tutorial -->

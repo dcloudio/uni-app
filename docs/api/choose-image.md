@@ -12,7 +12,7 @@
 
 从本地相册选择图片或使用相机拍照
 
-### chooseImage 兼容性 
+### chooseImage 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -20,24 +20,21 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ChooseImageOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **ChooseImageOptions** | 是 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| pageOrientation | string | 否 |  | Web: x; 微信小程序: x; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为page.json中的pageOrientation。 |
+| pageOrientation | string | 否 |  | Web: x; 微信小程序: x; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为pages.json中的pageOrientation。 |
 | albumMode | string | 否 | "custom" | Web: x; 微信小程序: x; Android: 4.33; iOS: x; HarmonyOS: x | 图片选择模式 |
-| count | number | 否 | 9 | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。 |
-| sizeType | Array&lt;string&gt; | 否 | ['original','compressed'\] | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | original 原图，compressed 压缩图，默认二者都有 |
-| sourceType | Array&lt;string&gt; | 否 | ['album','camera'\] | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | album 从相册选图，camera 使用相机，默认二者都有 |
-| extension | Array&lt;string&gt; | 否 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。仅H5支持 |
-| crop | **ChooseImageCropOptions** | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: x | 图像裁剪参数，设置后 sizeType 失效。 |
-| success | (callback: [ChooseImageSuccess](#chooseimagesuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 成功则返回图片的本地文件路径列表 tempFilePaths |
-| fail | (callback: [ChooseImageFail](#chooseimagefail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| count | number | 否 | 9 | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。 |
+| crop | **ChooseImageCropOptions** | 否 |  | Web: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 图像裁剪参数，设置后 sizeType 失效。 |
+| success | (callback: [ChooseImageSuccess](#chooseimagesuccess-values)) => void | 否 |  | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 成功则返回图片的本地文件路径列表 tempFilePaths |
+| fail | (callback: [ChooseImageFail](#chooseimagefail-values)) => void | 否 |  | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### pageOrientation 的属性描述
 
@@ -58,38 +55,28 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 |  | Web:  ; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 裁剪的宽度，单位为px，用于计算裁剪宽高比。 |
-| height | number | 是 |  | Web:  ; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 裁剪的高度，单位为px，用于计算裁剪宽高比。 |
-| quality | number | 否 | 80 | Web:  ; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 取值范围为1-100，数值越小，质量越低（仅对jpg格式有效）。默认值为80。 |
-| resize | boolean | 否 |  | Web:  ; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 是否将width和height作为裁剪保存图片真实的像素值。默认值为true。注：设置为false时在裁剪编辑界面显示图片的像素值，设置为true时不显示。 |
+| width | number | 是 |  | Android: 3.9; iOS: 4.11 | 裁剪的宽度，单位为px，用于计算裁剪宽高比。 |
+| height | number | 是 |  | Android: 3.9; iOS: 4.11 | 裁剪的高度，单位为px，用于计算裁剪宽高比。 |
+| quality | number | 否 | 80 | Android: 3.9; iOS: 4.11 | 取值范围为1-100，数值越小，质量越低（仅对jpg格式有效）。默认值为80。 |
+| resize | boolean | 否 |  | Android: 3.9; iOS: 4.11 | 是否将width和height作为裁剪保存图片真实的像素值。默认值为true。注：设置为false时在裁剪编辑界面显示图片的像素值，设置为true时不显示。 |
 
 #### ChooseImageSuccess 的属性值 @chooseimagesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errSubject | string | 是 |  | Web:  ; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 调用API的名称 |
-| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 描述信息 |
-| tempFilePaths | Array&lt;string&gt; | 是 |  | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 图片的本地文件路径列表 |
-| tempFiles | Array&lt;**ChooseImageTempFile**&gt; | 是 |  | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 图片的本地文件列表 |
-
-#### tempFiles 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 |  | Web:  ; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 本地文件路径 |
-| size | number | 是 |  | Web:  ; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 本地文件大小，单位：B |
-| name | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 包含扩展名的文件名称，仅H5支持 |
-| type | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文件类型，仅H5支持 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errSubject | string | 是 | Android: 3.9; iOS: 4.11 | 调用API的名称 |
+| errMsg | string | 是 | Android: 3.9; iOS: 4.11 | 描述信息 |
+| tempFilePaths | Array&lt;string&gt; | 是 | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 图片的本地文件路径列表 |
 
 #### ChooseImageFail 的属性值 @chooseimagefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -202,7 +189,7 @@
               图片质量(%)
             </view>
             <view class="uni-list-cell-right">
-              <input :value="cropPercent" @confirm="cropPercentConfim" type="number" maxlength="-1" />
+              <input :value="cropPercent" @confirm="cropPercentConfim" type="number" :maxlength="-1" />
             </view>
           </view>
           <view class="uni-list-cell cell-pd">
@@ -210,7 +197,7 @@
               裁剪宽度(px)
             </view>
             <view class="uni-list-cell-right">
-              <input :value="cropWidth" @confirm="cropWidthConfim" type="number" maxlength="-1" />
+              <input :value="cropWidth" @confirm="cropWidthConfim" type="number" :maxlength="-1" />
             </view>
           </view>
           <view class="uni-list-cell cell-pd">
@@ -218,7 +205,7 @@
               裁剪高度(px)
             </view>
             <view class="uni-list-cell-right">
-              <input :value="cropHeight" @confirm="cropHeightConfim" type="number" maxlength="-1" />
+              <input :value="cropHeight" @confirm="cropHeightConfim" type="number" :maxlength="-1" />
             </view>
           </view>
           <view class="uni-list-cell cell-pd">
@@ -511,9 +498,9 @@ const previewImage = (index: number) => {
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ## 相册选择的2种方式

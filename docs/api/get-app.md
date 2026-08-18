@@ -8,10 +8,10 @@
 
 `UniApp` 对象可同时在 uts 插件和 uvue 页面中使用，但 `vm` 属性及其相关的 `globalData` 仍然只能在 uvue 页面中使用。
 
-### getApp 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | √ | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | √ | 4.31 | 4.61 |
+### getApp 兼容性 <Help /> 
+| Web | 微信小程序 | Android | Android(Vapor) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | iOS(Vapor) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | √ | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | √ | 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 |
 
 
 
@@ -24,17 +24,17 @@
 
 #### UniApp 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| vm | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象 |
-| globalData | any | 是 |  | Web: 4.31; 微信小程序: x; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 全局对象 |
-| ~~$vm~~ | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: 4.31; 微信小程序: x; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象  **已废弃，仅为了向下兼容保留** |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| vm | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; Android(Vapor) UTS 插件: x; iOS: 4.31; iOS UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象 |
+| globalData | any | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; Android(Vapor) UTS 插件: x; iOS: 4.31; iOS(Vapor) UTS 插件: x; HarmonyOS: 4.61 | 全局对象 |
+| ~~$vm~~ | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; Android(Vapor) UTS 插件: x; iOS: 4.31; iOS UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象  **已废弃，仅为了向下兼容保留** |
 #### UniApp 的方法 @uniapp-values 
 
 #### getAndroidApplication(): Application @getandroidapplication
 getAndroidApplication
 获取 Android 应用 Application 上下文
-##### getAndroidApplication 兼容性 
+##### getAndroidApplication 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | x | x | 4.31 | x | x | x |
@@ -51,7 +51,7 @@ getAndroidApplication
 #### getHarmonyAbility(): UIAbility @getharmonyability
 getHarmonyAbility
 获取 鸿蒙应用 Ability 实例
-##### getHarmonyAbility 兼容性 
+##### getHarmonyAbility 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | x | x | x | x | 4.61 | x |
@@ -117,7 +117,7 @@ getHarmonyAbility
           increase lifeCycleNum
         </button>
         <text class="uni-common-mt">lifeCycleNum: {{ data.lifeCycleNum }}</text>
-        <!-- #ifdef APP-ANDROID -->
+        <!-- #ifdef APP-ANDROID && !VUE3-VAPOR -->
         <button class="uni-common-mt" @click="getAndroidApplication">
           getAndroidApplication
         </button>
@@ -258,7 +258,7 @@ getHarmonyAbility
     setLifeCycleNum(num)
   }
 
-  // #ifdef APP-ANDROID
+  // #ifdef APP-ANDROID && !VUE3-VAPOR
   const getAndroidApplication = () : boolean => {
     const app = getApp()
     data.androidApplication = app.getAndroidApplication()
@@ -276,7 +276,7 @@ getHarmonyAbility
     setGlobalData,
     _increaseLifeCycleNum,
     setLifeCycleNumFunc,
-    // #ifdef APP-ANDROID
+    // #ifdef APP-ANDROID && !VUE3-VAPOR
     getAndroidApplication
     // #endif
   })
@@ -322,7 +322,7 @@ getHarmonyAbility
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

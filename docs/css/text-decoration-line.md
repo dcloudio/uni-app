@@ -5,13 +5,13 @@
 text-decoration-line 属性用于设置元素中文本的修饰线类型。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -58,7 +58,7 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -74,15 +74,9 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
         <text class="common" style="text-decoration-line: underline;color: blue;" flatten>text-decoration-line: underline 自适应宽高且拍平</text>
         <text class="common" style="text-decoration-line: line-through;color: blue;" flatten>text-decoration-line: line-through 自适应宽高且拍平</text>
       </view>
-      <!-- #ifndef APP-ANDROID || (APP-HARMONY && !VUE3-VAPOR) || (APP-IOS && !VUE3-VAPOR) -->
-      <view class="content">
-        <text class="common" style="text-decoration-line: underline;color: blue; text-decoration-color: red; text-overflow: ellipsis;width: 200px;white-space: nowrap;">下划线颜色和ellipsis组合</text>
-        <text class="common" style="text-decoration-line: line-through;color: blue; text-decoration-color: blue; text-overflow: ellipsis;width: 200px;white-space: nowrap;">删除线颜色和ellipsis组合</text>
-      </view>
-      <!-- #endif -->
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-decoration-line </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -113,7 +107,16 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
           <input-data :defaultValue="data.textDecorationLine" title="text-decoration-line 自定义值" type="text" @confirm="inputChangeTextDecorationLine"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+
+		<!-- #ifndef APP-ANDROID || (APP-HARMONY && !VUE3-VAPOR) || (APP-IOS && !VUE3-VAPOR) -->
+    <!-- 临时注释，后续App支持再放开 -->
+		<!-- <view class="content">
+		  <text class="common" style="text-decoration-line: underline;color: blue; text-decoration-color: red; text-overflow: ellipsis;width: 200px;white-space: nowrap;">下划线颜色和ellipsis组合</text>
+		  <text class="common" style="text-decoration-line: line-through;color: blue; text-decoration-color: blue; text-overflow: ellipsis;width: 200px;white-space: nowrap;">删除线颜色和ellipsis组合</text>
+		</view> -->
+		<!-- #endif -->
+
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -141,7 +144,6 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
 		data.textDecorationLineActualFlat = textRefFlat.value?.style.getPropertyValue('text-decoration-line') ?? ''
 	}
 
-	const ins = getCurrentInstance()
 
 	const changeTextDecorationLine = (value: string) => {
 		data.textDecorationLine = value
@@ -150,7 +152,7 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
 			getPropertyValues()
-		}, ins)
+		})
 	}
 
 	const radioChangeTextDecorationLine = (index: number) => {

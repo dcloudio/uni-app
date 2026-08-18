@@ -54,17 +54,17 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-time-form
 
 
 
-### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
+### 兼容性 <Help />
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| timestamp | number |   |   | 需要格式化的时间戳，支持秒级（10 位）或毫秒级（13 位），秒级会自动换算成毫秒 |
-| format | string | "datetime" |   | 输出格式。"datetime" 输出 YYYY-MM-DD HH:mm；"date" 输出 YYYY-MM-DD；"time" 输出 HH:mm:ss；"relative" 输出相对时间（刚刚 / N 分钟前 / N 小时前 / 昨天 HH:mm / 完整日期） |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| timestamp | number |   | 需要格式化的时间戳，支持秒级（10 位）或毫秒级（13 位），秒级会自动换算成毫秒 |
+| format | string | "datetime" | 输出格式。"datetime" 输出 YYYY-MM-DD HH:mm；"date" 输出 YYYY-MM-DD；"time" 输出 HH:mm:ss；"relative" 输出相对时间（刚刚 / N 分钟前 / N 小时前 / 昨天 HH:mm / 完整日期） |
 
 <!-- UTSCOMJSON.uni-time-format.fileFormates -->
 
@@ -303,13 +303,11 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-time-form
     margin-bottom: 6px;
     border-width: 1px;
     border-style: solid;
-		border-color: #dddddd;
-    /* border-color: var(--border-color, #dddddd); */
+    border-color: var(--border-color, #dddddd);
     height: 38px;
     padding-left: 10px;
     padding-right: 10px;
-		color: #333333;
-    /* color: var(--text-color, #333333); */
+    color: var(--text-color, #333333);
   }
 
   .row {

@@ -2,13 +2,16 @@
 
 ## 图标配置 @icon  
 
-应用图标是在手机上安装应用后显示在桌面的图标，可在 manifest.json 的可视化界面配置：  
+应用图标是在手机上安装应用后显示在桌面的图标，可在 manifest.json 的可视化界面配置：
+
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_icon.png)
 
-如果不配置，默认使用以下图标：  
-  ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_icon_default.png)#{width="96px"}  
+如果不配置，默认使用以下图标：
+
+![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_icon_default.png)#{width="96px"}
 
 **注意**
+
 - 修改或配置图标后需提交云端打包才能生效
 
 
@@ -33,7 +36,7 @@ Android8及以上系统在Google Pixel手机中应用图标在某些地方是圆
 ## 启动界面 @splashscreen  
 App启动时，系统加载应用渲染首页需要一定的时间，为了避免用户等待，手机操作系统提供了特殊的启动界面设计，让用户先看到一个简单的界面，等应用加载完成后正式进入应用首页。
 
-这个界面，即被称为启动封面，也成称为 splash。
+这个界面，即被称为启动封面，也称为 splash。
 
 当然并非所有App都需要splash，很多系统应用比如计算器、日历都没有splash。
 
@@ -42,7 +45,7 @@ uni-app x中，如不配置splash，则与计算器等应用一致，启动时�
 如需配置splash，注意避免splash图与首页风格差异太大。因为uni-app x启动速度非常快，splash只是一闪而过，如果颜色差异太大，会让用户视觉不舒服。
 
 > HBuilderX 3.99+ 版本支持配置启动界面  
-> HBuilderX 4.71 及以上版本Andrid平台可视化界面设置调整到`安卓App配置`项中
+> HBuilderX 4.71 及以上版本 Android 平台可视化界面设置调整到`安卓App配置`项中
 
 uni-app x 的 app-android 平台，启动界面有以下策略：
 - 不配置
@@ -301,7 +304,7 @@ onReady触发时机要比onShow晚一些。
 
 在uni-app x项目中使用此模块，需在manifest.json中配置：  
 
-- HBuilderX 5.08 版本  
+- HBuilderX 5.08 及以上版本  
   需通过 manifest.json 的`源码视图`在 "app-android" -> "distribute" -> "modules" -> "uni-oauth" 下添加 "weixin" 节点，如下示例：  
   ```json
   {
@@ -412,7 +415,7 @@ onReady触发时机要比onShow晚一些。
   }
   ```
 
-  > HBuilder 4.71 以下版本不支持在 manifest.json 中配置 `腾讯位置服务` 申请的 Key，需在项目根目录下添加 [AndroidManifest.xml](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#%E5%BA%94%E7%94%A8%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6-androidmanifest-xml) 文件，将 Key 配置到 application 下的 meta-data 节点中，如下示例：
+  > HBuilderX 4.71 以下版本不支持在 manifest.json 中配置 `腾讯位置服务` 申请的 Key，需在项目根目录下添加 [AndroidManifest.xml](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#%E5%BA%94%E7%94%A8%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6-androidmanifest-xml) 文件，将 Key 配置到 application 下的 meta-data 节点中，如下示例：
 
   ```xml
   <?xml version="1.0" encoding="utf-8"?>
@@ -484,7 +487,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
   }
   ```
 
-  > HBuilder 4.71 以下版本不支持在 manifest.json 中配置从 `腾讯位置服务` 申请的 Key，需在项目根目录下添加 [AndroidManifest.xml](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#%E5%BA%94%E7%94%A8%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6-androidmanifest-xml) 文件，将 Key 配置到 application 下的 meta-data 节点中，如下示例：
+  > HBuilderX 4.71 以下版本不支持在 manifest.json 中配置从 `腾讯位置服务` 申请的 Key，需在项目根目录下添加 [AndroidManifest.xml](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#%E5%BA%94%E7%94%A8%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6-androidmanifest-xml) 文件，将 Key 配置到 application 下的 meta-data 节点中，如下示例：
 
   ```xml
   <?xml version="1.0" encoding="utf-8"?>
@@ -610,6 +613,31 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 }
 ```
 
+
+### uni-network-cronet（网络支持 Quic/h3 协议）@modulesnetwork  
+> HBuilderX 5.22 及以上版本 uni-app x 项目蒸汽（Vapor）模式新增支持  
+
+[uni.request](../api/request.md)发起网络请求支持 Quic/h3 协议（enableQuic属性设置为true）依赖 cronet 模块，支持 Quic/h3 协议需勾选此模块。  
+
+在uni-app x项目中使用此模块，需在manifest.json中配置。  
+
+可视化界面操作在 “安卓App配置” 的 “可选模块配置” 勾选 “uni-network-cronet（网络支持 Quic/h3 协议）”模块：  
+![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_cronet.png)
+
+也可通过`源码视图`在 "app-android" -> "distribute" -> "modules" 下添加 "uni-network-cronet" 节点，如下示例：
+```json
+{
+  "app-android": {
+    "distribute": {
+      "modules": {
+        "uni-network-cronet":{}
+      }
+    }
+  }
+}
+```
+
+
 ### uni-push（消息推送） @modulespush  
 > HBuilderX 4.71 及以上版本新增支持配置厂商推送SDK  
 
@@ -621,13 +649,13 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。
 可视化界面操作在 “安卓App配置” 的 “可选模块配置” 勾选 “uni-push（消息推送）”模块，根据需求勾选厂商推送SDK：  
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_unipush.png)
 
-也可通过`源码视图`在 "app-android" -> "distribute" -> "modules" 下添加 "uni-barcode-scanning" 节点，如下示例：
+也可通过`源码视图`在 "app-android" -> "distribute" -> "modules" 下添加 "uni-push" 节点，如下示例：
 ```json
 {
   "app-android": {
     "distribute": {
       "modules": {
-				"uni-push": {
+        "uni-push": {
           "hms": {},    //华为厂商推送SDK
           "oppo": {},   //OPPO厂商推送SDK
           "vivo": {},   //VIVO厂商推送SDK
@@ -660,7 +688,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。
 
 在uni-app x项目中使用此模块，需在manifest.json中配置：  
 
-- HBuilderX 5.08 版本  
+- HBuilderX 5.08 及以上版本  
   需通过 manifest.json 的`源码视图`在 "app-android" -> "distribute" -> "modules" -> "uni-share" 下添加 "weixin" 节点，如下示例：  
   ```json
   {
@@ -777,19 +805,19 @@ uni-app x项目使用[uni内置模块](./manifest-modules.md#utsmodules)时，�
 
 > HBuilderX 4.71 及以上版本支持可视化配置 minSdkVersion  
 
-minSdkVersion用于指定应用兼容的最低Android版本（API等级），uni-app x 项目默认值为21（即最低支持Android5）。 如果APP某些功能无法支持低版本Android系统的设备，可以配置minSdkVersion确保APP只能安装到指定Android版本及以上的设备。
+minSdkVersion用于指定应用兼容的最低Android版本（API等级），uni-app x 项目VDOM模式默认值为21（即最低支持Android5），蒸汽（Vapor）模式默认值为23（即最低支持Android6）。 如果APP某些功能无法支持低版本Android系统的设备，可以配置minSdkVersion确保APP只能安装到指定Android版本及以上的设备。
 
 minSdkVersion值为Number类型，且必须为正整数，取值范围参考[Android版本列表](#apilevellist)中的API等级。
 
-> App升级时 minSdkVersion 只能增加不能降低，也就是说 minSdkVersion 高的App无法被 minSdkVersion 低的App覆盖安装，开发者需要注意！
+> 提高 minSdkVersion 后，低于该 Android 版本的设备将无法安装或升级到新包；已安装用户能否收到升级，还会受到应用市场分发规则影响，发布前需确认目标用户设备版本。
 
 如需更改此值，可在项目 manifest.json 文件中配置： 
 
 - HBuilderX 4.71 及以上版本  
-  可视化界面操作在 “安卓App配置” 的 “miniSdkVersion” 中设置，如下示例配置 miniSdkVersion 值为 26（Android 8）：  
+  可视化界面操作在 “安卓App配置” 的 “minSdkVersion” 中设置，如下示例配置 minSdkVersion 值为 26（Android 8）：  
   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_miniSdkVersion.png)
 
-  也可通过`源码视图`在 "app-android" -> "distribute" 节点配置 miniSdkVersion  
+  也可通过`源码视图`在 "app-android" -> "distribute" 节点配置 minSdkVersion
   ```json
   {
     "app-android": {
@@ -815,21 +843,21 @@ minSdkVersion值为Number类型，且必须为正整数，取值范围参考[And
   ```
 
 **注意**  
-- 配置或修改 miniSdkVersion 后需提交云端打包才能生效  
+- 配置或修改 minSdkVersion 后需提交云端打包才能生效
 
 
 ## targetSdkVersion @targetsdkversion  
 
 > HBuilderX 4.71 及以上版本支持可视化配置 targetSdkVersion  
 
-targetSdkVersion用于指定应用的目标Android版本（API等级），uni-app x 项目默认值为32（即Android12L）。
+targetSdkVersion用于指定应用的目标Android版本（API等级），uni-app x 项目VDOM模式默认值为32（即Android12L），蒸汽（Vapor）模式默认值为36（Android16）。
 
 设置targetSdkVersion值表示App适配的Android版本（API等级），设置低版本的targetSdkVersion会使APP兼容模式运行，也就可能无法用到新系统的特性，甚至在兼容模式下运行可能存在安全漏洞等问题。 随着Android系统的升级，一些应用市场会要求设置较高的targetSdkVersion才可以提交，HBuilderX中可在项目的manifest.json中进行配置。
 
 targetSdkVersion值为Number类型，且必须为正整数，取值范围参考[Android版本列表](#apilevellist)中的API等级。
 
-> App升级时 targetSdkVersion 只能增加不能降低，也就是说 targetSdkVersion 高的App无法被 targetSdkVersion 低的App覆盖安装，开发者需要注意！
-> Android 15 设备对 targetSdkVersion 版本有要求，低于24无法正常在android 15设备上正常安装，开发者需要注意！
+> targetSdkVersion 主要影响系统兼容行为和应用市场审核要求。部分应用市场可能要求新包的 targetSdkVersion 不低于已上架版本，调整前需确认目标市场规则。
+> Android 15 设备对 targetSdkVersion 有要求，低于 24 的应用无法在 Android 15 设备上正常安装，开发者需要注意！
 
 如需更改此值，可在项目 manifest.json 文件中配置：  
 
@@ -903,12 +931,6 @@ uni-app x 项目支持的主流 CPU 类型详解：
 - x86（Intel/AMD 32位）  
   一些老旧设备，以及在 Android Studio 选了 Intel x86 创建的模拟器。  
 
-
-**注意**  
-> HBuilderX5.21版本开始，uni-app x 项目标准基座仅包含 arm64-v8a（ARM 64位）架构，其它架构需要提交云端打包自定义基座  
-> uni-app x 真气模式不再支持 x86（Intel/AMD 32位） 架构  
-
-
 uni-app x 项目云端打包默认仅包含“arm64-v8a”，如需支持其它CPU类型，可在项目 manifest.json 文件中配置。  
 
 - HBuilderX 4.71 及以上版本  
@@ -951,13 +973,75 @@ uni-app x 项目云端打包默认仅包含“arm64-v8a”，如需支持其它C
   ```
 
 **注意**
+
+- HBuilderX5.21版本开始，uni-app x 项目标准基座仅包含 arm64-v8a（ARM 64位）架构，其它架构需要提交云端打包自定义基座
+- uni-app x 蒸汽模式（Vapor）不再支持 x86（Intel/AMD 32位） 架构
 - 支持的CPU类型越多，安装包会越大  
 - 使用uts插件时，如果插件也包含或依赖使用了so库，需确认插件是否支持配置CPU类型，如果插件不支持可能会导致应用运行异常  
 - 配置 abiFilters 需提交云端打包才能生效
 
+
+## 不压缩原生库（.so 文件） @disablelegacypackaging
+
+> HBuilderX 5.21 及以上版本支持
+
+Android平台云端打包默认会压缩 APK/AAB 中的原生库（.so 文件）。如果三方SDK要求 .so 文件以未压缩方式打包，或希望优化应用安装、启动时加载原生库的性能，可在 manifest.json 中配置 `disableLegacyPackaging`。
+
+可视化界面操作在 “安卓App配置” 中选择勾选 “不压缩原生库（so文件）”：
+
+![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_disablelegacypackaging.png)
+
+也可通过`源码视图`在 "app-android" -> "distribute" 下添加 "disableLegacyPackaging" 节点，如下示例：
+```json
+{
+  "app-android": {
+    "distribute": {
+      "disableLegacyPackaging": true
+    }
+  }
+}
+```
+
+**注意**
+- 请根据 APK/AAB 体积、安装性能、设备存储占用和三方SDK要求决定是否开启
+- 配置 disableLegacyPackaging 需提交云端打包才能生效
+
+`disableLegacyPackaging` 对应原生工程 build.gradle 中的 `jniLibs.useLegacyPackaging` 配置，二者含义相反：
+- `disableLegacyPackaging` 配置为 `true`：关闭 legacy packaging，对应 `useLegacyPackaging = false`，表示不压缩 .so 文件。
+- `disableLegacyPackaging` 不配置或配置为 `false`：使用默认 legacy packaging，对应 `useLegacyPackaging = true`，表示压缩 .so 文件。
+
+### 压缩 so 库
+压缩 so 库是云端打包的默认策略，适合优先控制 APK 下载体积的应用。
+
+**优点**
+- APK 体积更小，下载、分发和传输成本更低
+- 适合 .so 文件较多，且没有三方SDK特殊要求的应用
+
+**缺点**
+- 安装时系统需要解压 .so 文件，可能增加安装耗时
+- 安装后会额外保存解压后的 .so 文件，最终设备存储占用不一定更小
+- 首次加载原生库前需要依赖已解压文件，可能增加安装后首次启动或首次调用相关功能的等待时间
+- 不适用于要求 .so 文件以未压缩方式打包的三方SDK
+
+### 不压缩 so 库
+不压缩 so 库会让 .so 文件以未压缩方式存放在 APK 中，Android 系统可直接从 APK 中映射加载原生库。
+
+**优点**
+- 安装时无需解压 .so 文件，可减少安装耗时
+- 系统可通过 mmap 等方式直接映射 APK 中的 .so 文件，减少解压和复制带来的 CPU、I/O 开销
+- 首次启动或首次加载原生库时，可能减少等待时间；包含大量或较大 .so 文件的应用收益更明显
+- 安装后无需额外保存一份解压后的 .so 文件，可能降低应用安装后的磁盘占用
+- 可满足部分三方SDK对 .so 文件未压缩打包的要求
+
+**缺点**
+- APK 体积通常会增大，下载和分发成本更高
+- 如果应用包含多个CPU架构的 .so 文件，包体积增幅会更明显
+- 性能收益与设备系统版本、.so 文件数量和大小、实际加载时机有关，不一定在所有应用中都有明显体感
+
+
 ## 渠道信息配置 @channel  
 
-> HBuilder4.31版本新增支持
+> HBuilderX 4.31版本新增支持
 
 uni-app x 的渠道信息配置，云端需在“App打包”界面配置，详情参考[配置渠道包](../tutorial/app-package.md#channel)。
 
@@ -971,12 +1055,12 @@ manifest.json中不提供配置 `manifestPlaceholders` 数据，如果应用使�
 
 ## enableResourceOptimizations @enableresourceoptimizations  
 
-> HBuilder4.33版本新增支持 enableResourceOptimizations 配置项
+> HBuilderX 4.33版本新增支持 enableResourceOptimizations 配置项
 
-Android平台云端打包时原生工程 gradle.properties 的 android.enableResourceOptimizations 配置项，配置是否开启Android原生res资源文件优化，开启后res资源文件名称会被混淆，默认值为 ture，如不希望混淆原生res资源文件名称，可在项目 manifest.json 文件的`源码视图`配置：
+Android平台云端打包时原生工程 gradle.properties 的 android.enableResourceOptimizations 配置项，配置是否开启Android原生res资源文件优化，开启后res资源文件名称会被混淆，默认值为 true。如不希望混淆原生res资源文件名称，可在项目 manifest.json 文件的`源码视图`配置：
 
 - HBuilderX 4.71 及以上版本  
-  需通过`源码视图`在 "app-android" -> "distribute" -> "android" 节点配置 enableResourceOptimizations，如下示例：  
+  需通过`源码视图`在 "app-android" -> "distribute" 节点配置 enableResourceOptimizations，如下示例：
   ```json
   {
     "app-android": {
@@ -1007,14 +1091,14 @@ Android平台云端打包时原生工程 gradle.properties 的 android.enableRes
 
 ## aaptOptions @aaptoptions  
 
-> HBuilder4.31版本新增支持
+> HBuilderX 4.31版本新增支持
 
 Android平台云端打包时原生工程应用 build.gradle 的 aaptOptions配置项，支持的属性参考：[Android官方文档](https://developer.android.google.cn/reference/tools/gradle-api/7.1/com/android/build/api/dsl/AaptOptions?hl=en)。  
 
 需在项目 manifest.json 文件的`源码视图`配置：  
 
 - HBuilderX 4.71 及以上版本  
-  需通过`源码视图`在 "app-android" -> "distribute" -> "android" 节点配置 aaptOptions，如下示例：  
+  需通过`源码视图`在 "app-android" -> "distribute" 节点配置 aaptOptions，如下示例：
   ```json
   {
     "app-android": {
@@ -1051,7 +1135,7 @@ Android平台云端打包时原生工程应用 build.gradle 的 aaptOptions配�
 
 ## buildFeatures @buildfeatures  
 
-> HBuilder4.31版本新增支持
+> HBuilderX 4.31版本新增支持
 
 Android平台云端打包时原生工程应用 build.gradle 的 buildFeatures 配置项，支持的属性参考：[Android官方文档](https://developer.android.google.cn/reference/tools/gradle-api/7.1/com/android/build/api/dsl/BuildFeatures?hl=en)。  
 
@@ -1064,8 +1148,8 @@ Android平台云端打包时原生工程应用 build.gradle 的 buildFeatures �
     "app-android": {
       "distribute": {
         "buildFeatures": [
-          "viewBinding true",  //开启dataBinding
-          "dataBinding true"   //开启viewBinding
+          "viewBinding true",  //开启 viewBinding
+          "dataBinding true"   //开启 dataBinding
         ]
       }
     }
@@ -1080,8 +1164,8 @@ Android平台云端打包时原生工程应用 build.gradle 的 buildFeatures �
       "distribute": {
         "android": {
           "buildFeatures": [
-            "viewBinding true",  //开启dataBinding
-            "dataBinding true"   //开启viewBinding
+            "viewBinding true",  //开启 viewBinding
+            "dataBinding true"   //开启 dataBinding
           ]
         }
       }

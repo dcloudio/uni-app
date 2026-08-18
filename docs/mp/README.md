@@ -4,6 +4,8 @@
 
 uni-app x 项目在编译到小程序平台时，将部分特性对齐了web与app端，因此和非uni-app x项目编译到小程序端略有差异。
 
+HBuilderX 5.25 起支持编译到支付宝小程序。
+
 与uni-app相比，uni-app x编译到微信小程序有2个显著差别：
 1. uni-app x 支持 Element API
 在微信小程序上开发高性能应用，离不开wxs。但wxs难用且不跨平台。\
@@ -142,6 +144,17 @@ align-content
 justify-content
 align-items
 ```
+
+### 支付宝小程序注意事项@mp-alipay
+
+编译到支付宝小程序时需注意以下平台差异：
+
+- `scroll-view` 不支持通过 `slot="refresher"` 自定义下拉刷新内容，相关内容需通过条件编译排除支付宝小程序。
+- `radio`、`checkbox` 不支持将文本或 `text` 组件放在组件内部。选项文本应与 `radio`、`checkbox` 作为同级节点放置，通常可使用 `label` 包裹同级的选项组件和文本。
+- 同一页面存在多个 `page-container` 时，第二个及后续打开的 `page-container` 可能无法弹出，建议同一页面只保留一个 `page-container`。
+- `native-view` 暂不支持支付宝小程序，使用时需通过条件编译排除支付宝小程序。
+- `picker` 不支持 `mode` 属性，如需多平台兼容，需要为支付宝小程序单独处理选择能力。
+- `picker-view` 动态设置指示器样式时可能出现偏移，建议使用静态配置，避免运行时修改指示器样式。
 
 ## 开发和调试
 

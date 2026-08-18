@@ -11,17 +11,17 @@
 同一个radio-group下的多个radio为单选效果，选中一个radio后其他radio将失去选中效果。
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| name | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| @change | (event: [UniRadioGroupChangeEvent](#uniradiogroupchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio-group 中的选中项发生变化时触发 change 事件，event.detail = {value: 选中项radio的value} |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| name | string | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| @change | (event: [UniRadioGroupChangeEvent](#uniradiogroupchangeevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio-group 中的选中项发生变化时触发 change 事件，event.detail = {value: 选中项radio的value} |
 
 
 ### 事件
@@ -38,9 +38,9 @@ UniRadioGroupChangeEvent -- Extends --> UniCustomEvent&ltUniRadioGroupChangeEven
 
 
 ###### UniRadioGroupChangeEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| value | string | 是 |
 
 
 

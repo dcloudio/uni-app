@@ -5,13 +5,13 @@
 padding CSS 简写属性控制元素所有四条边的内边距区域。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -51,7 +51,7 @@ padding: [ <length> | <percentage> ]{1,4};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -109,7 +109,7 @@ padding: [ <length> | <percentage> ]{1,4};
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 padding </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -211,20 +211,7 @@ padding: [ <length> | <percentage> ]{1,4};
       </view>
     </view>
 
-    <view>
-      <text>native-view组件: padding: 30px 和 padding: 30%</text>
-      <text class="uni-tips">说明：cyan 背景色区域的大小即为 padding 的值，灰色区域为容器背景</text>
-      <view class="demo-box" style="margin:20px;">
-        <view class="native-view-container-large">
-          <native-view class="cyan" style="padding: 30px;"></native-view>
-        </view>
-        <view class="native-view-container-large">
-          <native-view class="cyan" style="padding: 30%;"></native-view>
-        </view>
-      </view>
-    </view>
-
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -269,7 +256,6 @@ padding: [ <length> | <percentage> ]{1,4};
     data.paddingActualScrollView = scrollViewRef.value?.style.getPropertyValue('padding') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changePadding = (value: string) => {
     data.padding = value
@@ -283,7 +269,7 @@ padding: [ <length> | <percentage> ]{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangePadding = (index: number) => {

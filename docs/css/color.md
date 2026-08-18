@@ -5,13 +5,13 @@
 color 属性设置元素的文本及文本装饰（text-decoration）的前景色颜色值。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -62,7 +62,7 @@ color: <color>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -73,6 +73,8 @@ color: <color>;
           <text class="common" style="color: rgba(0, 0, 255, 0.5);">color: rgba(0, 0, 255, 0.5)</text>
           <text class="common" style="color: #0000ff;">color: #0000ff</text>
           <text class="common" style="color: #00f;">color: #00f</text>
+          <text class="common" style="color: #00f8;">color: #00f8</text>
+          <text class="common" style="color: #0000ff80;">color: #0000ff80</text>
           <text class="common" style="color: blue;">color: blue</text>
         </view>
         <view class="box">
@@ -80,12 +82,14 @@ color: <color>;
           <text class="common" style="color: rgba(0, 0, 255, 0.5);" flatten>color: rgba(0, 0, 255, 0.5)</text>
           <text class="common" style="color: #0000ff;" flatten>color: #0000ff</text>
           <text class="common" style="color: #00f;" flatten>color: #00f</text>
+          <text class="common" style="color: #00f8;" flatten>color: #00f8</text>
+          <text class="common" style="color: #0000ff80;" flatten>color: #0000ff80</text>
           <text class="common" style="color: blue;" flatten>color: blue</text>
         </view>
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 color 测试</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -116,7 +120,7 @@ color: <color>;
         <input-data :defaultValue="data.color" title="color 自定义值" type="text" @confirm="inputChangeColor"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -130,8 +134,10 @@ color: <color>;
     { value: 2, name: '#942192' },
     { value: 3, name: '#000' },
     { value: 4, name: '#0000ff' },
-    { value: 5, name: 'rgb(0, 255, 0)' },
-    { value: 6, name: 'rgba(0, 255, 0, 0.5)' }
+    { value: 5, name: '#00f8' },
+    { value: 6, name: '#0000ff80' },
+    { value: 7, name: 'rgb(0, 255, 0)' },
+    { value: 8, name: 'rgba(0, 255, 0, 0.5)' }
   ]
 
   const data = reactive({
@@ -147,7 +153,6 @@ color: <color>;
     data.colorActualFlat = textRefFlat.value?.style.getPropertyValue('color') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeColor = (value: string) => {
     data.color = value
@@ -156,7 +161,7 @@ color: <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeColor = (index: number) => {
@@ -191,7 +196,7 @@ color: <color>;
   }
   .box{
     flex:1;
-    height: 130px;
+    height: 190px;
     background-color: gray;
     justify-content: center;
     align-items: center;

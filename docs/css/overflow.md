@@ -5,17 +5,17 @@
 overflow 是 CSS 的简写属性，其设置了元素溢出时所需的行为——即当元素的内容太大而无法适应它的块级格式化上下文时。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| 5.21 | 5.11 | 5.0 |
+| x | 5.11 | 5.0 |
 
 
 
@@ -61,7 +61,7 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1;">
   <!-- #endif -->
     <page-intro content="本页演示 overflow 样式：overflow:hidden 与 overflow:visible 下子元素超出时的裁剪与显示；子元素为 view（border 圆角/边框）、text、image 等，每组均提供拍平（flatten）版本对比。"></page-intro>
@@ -121,8 +121,9 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       <text style="font-size: 15px;">overflow=hidden效果 子元素是text</text>
       <view class="backgroundview">
         <view class="box-hidden-border-radius">
+          <!-- 微信小程序 webview 模式使用 line-clamp 会截断文本显示省略号，skyline 模式正常 -->
           <text
-            <!-- #ifdef VUE3-VAPOR-->
+            <!-- #ifdef VUE3-VAPOR && !MP -->
               max-lines=1
             <!-- #endif-->
             class="text1">ABCDEFG</text>
@@ -132,7 +133,7 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       <view class="backgroundview">
         <view class="box-hidden-border-radius" flatten>
           <text
-          <!-- #ifdef VUE3-VAPOR-->
+          <!-- #ifdef VUE3-VAPOR && !MP -->
             max-lines=1
           <!-- #endif-->
           class="text1" flatten>ABCDEFG</text>
@@ -143,7 +144,7 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       <view class="backgroundview">
         <view class="box-visible-border-radius">
           <text
-          <!-- #ifdef VUE3-VAPOR-->
+          <!-- #ifdef VUE3-VAPOR && !MP -->
             max-lines=1
           <!-- #endif-->
           class="text1">ABCDEFG</text>
@@ -153,7 +154,7 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       <view class="backgroundview">
         <view class="box-visible-border-radius" flatten>
           <text
-          <!-- #ifdef VUE3-VAPOR-->
+          <!-- #ifdef VUE3-VAPOR && !MP -->
             max-lines=1
           <!-- #endif-->
            class="text1" flatten >ABCDEFG</text>
@@ -207,7 +208,11 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       </view>
       <text>拍平</text>
       <view class="backgroundview">
-        <view class="" style="overflow: visible;width: 100px;height: 100px;background-color: green;box-shadow: 10px 10px #000;margin-top: 10px;" flatten>
+        <view class="" style="overflow: visible;width: 100px;height: 100px;background-color: green;box-shadow: 10px 10px #000;margin-top: 10px;"
+          <!-- #ifndef APP-ANDROID -->
+          flatten
+          <!-- #endif -->
+        >
           <text style="width:170px; background-color: greenyellow;" flatten>文字文字文字文字文字</text>
         </view>
       </view>
@@ -258,13 +263,17 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
         		<view style="overflow: visible; width: 50px; height: 100px;">
         			<view style="width: 50px; height: 130px; background-color: greenyellow;position: absolute;" flatten></view>
         		</view>
-            <view style="overflow: hidden; width: 50px; height: 100px;" flatten></view>
+            <view style="overflow: hidden; width: 50px; height: 100px;"
+              <!-- #ifndef APP-ANDROID -->
+              flatten
+              <!-- #endif -->
+            ></view>
           </view>
         </view>
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

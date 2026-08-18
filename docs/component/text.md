@@ -9,7 +9,7 @@
  文本
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -22,24 +22,24 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 文本是否可选 |
-| space | string |   | Web: 4.0; 微信小程序: -; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 显示连续空格，App平台蒸汽模式（Vapor）将废弃此属性 |
-| decode | boolean | false | Web: 4.0; 微信小程序: -; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 是否解码，App平台蒸汽模式（Vapor）将废弃此属性 |
-| user-select | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>文本是否可选，该属性会使文本节点显示为 inline-block |
-| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "none" | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
-| hover-stop-propagation | boolean | false | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态(祖先节点：指根节点到该节点路径上的所有节点都是这个节点的祖先节点) |
-| hover-start-time | number | 50 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 按住后多久出现点击态，单位毫秒 |
-| hover-stay-time | number | 400 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 手指松开后点击态保留时间，单位毫秒 |
-| max-lines | number |   | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 文本的最大行数，默认不限制最大行数 |
-| flatten | boolean | false | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
+| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 文本是否可选，蒸汽模式（Vapor）推荐使用user-select替换 |
+| space | string |   | Web: 4.0; 微信小程序: -; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 显示连续空格，App平台蒸汽模式（Vapor）已废弃此属性 |
+| decode | boolean | false | Web: 4.0; 微信小程序: -; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 是否解码，App平台蒸汽模式（Vapor）已废弃此属性 |
+| user-select | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.11; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 文本是否可选，Web平台该属性会使文本节点显示为 inline-block，App平台弹出"复制"菜单 |
+| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "none" | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
+| hover-stop-propagation | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态(祖先节点：指根节点到该节点路径上的所有节点都是这个节点的祖先节点) |
+| hover-start-time | number | 50 | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 按住后多久出现点击态，单位毫秒 |
+| hover-stay-time | number | 400 | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 手指松开后点击态保留时间，单位毫秒 |
+| max-lines | number |   | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 文本的最大行数，默认不限制最大行数 |
+| flatten | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
 
 #### space 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ensp | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 中文字符空格一半大小 |
-| emsp | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 中文字符空格大小 |
-| nbsp | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 根据字体设置的空格大小 |
+| ensp | Web: 4.0; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 中文字符空格一半大小 |
+| emsp | Web: 4.0; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 中文字符空格大小 |
+| nbsp | Web: 4.0; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 根据字体设置的空格大小 |
 
 
 
@@ -50,7 +50,7 @@ App平台蒸汽模式（Vapor） `text` 组件新增支持 `hover-class` 实现�
 
 **注意**
 - 蒸汽模式（Vapor）子 `text` 组件不支持 hover 相关功能
-- 非蒸汽模式（Vapor) `text` 组件不支持 hover 相关功能
+- VDOM模式 `text` 组件不支持 hover 相关功能
 
 
 ### 空白字符
@@ -194,7 +194,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -256,7 +256,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
           打字机效果示例
         </button>
         <!-- #endif -->
-        <!-- #ifdef APP-ANDROID -->
+        <!-- #ifdef APP-ANDROID && !VUE3-VAPOR -->
         <button class="uni-btn" type="primary" @click="textLayout">
           文本测量
         </button>
@@ -268,7 +268,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
       </navigator>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -758,7 +758,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="background-color: #EEE;">
@@ -803,11 +803,11 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
           <text class="uni-subtitle-text">selectable属性（鸿蒙蒸汽暂不支持）</text>
         </view>
         <view class="text-box">
-          <!-- #ifdef APP-ANDROID -->
-          <text :selectable="true">{{ singleLineText }}</text>
-          <!-- #endif -->
-          <!-- #ifndef APP-ANDROID -->
+          <!-- #ifdef APP-HARMONY -->
           <text>{{ singleLineText }}</text>
+          <!-- #endif -->
+          <!-- #ifndef APP-HARMONY -->
+          <text :selectable="true">{{ singleLineText }}</text>
           <!-- #endif -->
         </view>
 
@@ -959,7 +959,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1240,7 +1240,16 @@ App 端不支持 `text` 组件中渲染多段文本，如果 `text` 组件中的
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+## max-lines
+
+多行文本设置最大行，目前在web规范中，需使用临时规范-webkit-line-clamp，并搭配display: -webkit-box。
+
+App平台在VDOM模式时使用了自定义的css属性lines，在蒸汽模式下改成了text的max-lines组件属性。
+
+使用max-lines属性时，不需要写 `display: -webkit-box;-webkit-box-orient: vertical;overflow: hidden;`。如果你需要兼容web，可以写在web的条件编译中。
+
+web和小程序的text组件暂未支持max-lines组件属性，后续计划蒸汽模式的全平台text组件都将支持max-lines属性，并在web和小程序上编译为-webkit写法。
+
 ## Bug & Tips@tips
-- app-Android和app-iOS平台 selectable开启后，仅支持全部文字复制，不支持自由调整光标选择文字。如需自由选择文字，请使用[rich-text组件](rich-text.md)。web平台默认就是可复制文字的，selectable无效。
-- app-android平台，部分自定义字体不支持设置font-weight。
+- app-Android平台和app-iOS VDOM平台 selectable开启后，仅支持全部文字复制，暂不支持自由调整光标选择文字。如需自由选择文字，请使用[rich-text组件](rich-text.md)。web平台默认就是可复制文字的，selectable无效。
 - web平台4.86版本起text组件调整为display:block，嵌套text组件时，子text默认display为inline。此前版本无论父子均为inline。如无必要请勿覆盖text的display样式，以免出现预期外的效果。

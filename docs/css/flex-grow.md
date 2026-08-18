@@ -5,13 +5,13 @@
 flex-grow 属性设置弹性元素在主轴方向的增长系数。此属性定义了元素在弹性容器中分配主轴方向剩余空间的相对比例（即弹性增长因子），增长的可能是弹性元素的宽度或高度，取决于 flex-direction 值。<br/>剩余空间是指弹性容器尺寸减去所有子元素尺寸之和后的空间。若所有子元素有相同的增长系数，则各子元素将获得等量的剩余空间，否则按不同增长系数的比例进行分配。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -48,7 +48,7 @@ flex-grow: <number>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -103,7 +103,7 @@ flex-grow: <number>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-grow </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -210,17 +210,17 @@ flex-grow: <number>;
       <view class="demo-box uni-common-mb">
         <view class="flex-container-compare" style="margin-right:10px;">
           <view class="common red width-30-no-grow"></view>
-          <native-view class="native-view-grow green" style="flex-grow: 0.5;"></native-view>
+          <test-native-view class="native-view-grow green" style="flex-grow: 0.5;"></test-native-view>
           <view class="common blue width-30-no-grow"></view>
         </view>
         <view class="flex-container-compare">
           <view class="common red width-30-no-grow"></view>
-          <native-view class="native-view-grow green" style="flex-grow: 1;"></native-view>
+          <test-native-view class="native-view-grow green" style="flex-grow: 1;"></test-native-view>
           <view class="common blue width-30-no-grow"></view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -261,7 +261,6 @@ flex-grow: <number>;
     data.flexGrowActualImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-grow') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeFlexGrow = (value: string) => {
     data.flexGrow = value
@@ -274,7 +273,7 @@ flex-grow: <number>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFlexGrow = (index: number) => {

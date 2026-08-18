@@ -2,14 +2,15 @@
 
 > 新增于4.0版本
 
-uni-app x 编译到web平台时，并非是与uni-app js引擎版一致。而是基于uts的统一规范，和编译到安卓端的一致性较高。
-
-与App版相比，web版有几个较大的差别：
+- 与App版相比，web版有几个较大的差别：
 1. web版是一个spa的单页应用，而app是多页的。
 2. pages.json配置的导航栏和tabbar，在web端并非原生的，而是网页的一部分。虽然uvue页面仍然是在导航栏和tabbar之间的，但在web平台，开发者可以直接操作导航栏和tabbar的dom。
-3. web版默认有页面滚动；app没有。
 
-本文档会介绍与web和Android的差异及注意事项。
+web版默认有页面滚动；app平台vdom模式时没有页面滚动，但蒸汽模式时已经支持页面滚动了。所以从蒸汽开始，这点平台差异不再存在。
+
+- 与老uni-app x相比，uni-app x 编译到web平台时，有几处不同：
+1. 如果使用uts代码，会走uts2js逻辑，会注入UTSJSONObject。如果使用ts/js则无法使用UTSJSONObject。
+2. 重置了css，拉齐App布局引擎，比如统一使用flex布局。详见[css重置](../css/README.md#css-reset)
 
 ## web运行失败注意事项@faq
 
@@ -24,57 +25,50 @@ uni-app x编译到web端时遵循vue规范，目前有部分vue特性暂不支�
 不支持的特性如下
 
 - 指令：`v-once`、`v-memo`
-- render函数
-- 不支持组件中监听页面 `onPageScroll`、`onReachBottom` 生命周期
-
-部分支持的特性
-
-- mixin：需要使用`defineMixin`函数定义mixin，不可直接使用对象字面量定义mixin
-
-自4.11版本起支持如下特性
-
-- 组合式API：`defineOptions`、`defineModel`、`toValue`、`toRef`、`toRefs`、`hasInjectionContext`
 
 ### refs@refs
 
-使用refs获取内置组件实例时会获取到对应的Element，而不是vue组件实例。
+使用ref获取内置组件实例时会获取到对应的Element，而不是vue组件实例。
 
 ```vue
 <template>
-  <view ref="view"></view>
+  <view ref="viewRef"></view>
 </template>
-<script>
-export default {
-  onReady() {
-    console.log(this.$refs['view']) // 此时获取到的是UniViewElement
-  }
-}
+<script setup>
+const viewRef = ref<UniElement | null>(null)
+onMounted(() => {
+  console.log(viewRef.value) // 此时获取到的是UniElement
+})
 </script>
 ```
 
 ### vue实例相关属性类型问题
 
-为保证运行性能，app安卓端部分属性（如：$data、$refs）被转为了Map类型（安卓端map支持使用下标访问），而web端仍是普通对象或proxy。为保证多端代码一致，在使用这些属性时可以统一为下标访问。
+> 如下选项式示例仅为演示部分类型问题。组合式下通常不需要这样获取$props、$data、$refs等属性，直接使用defineProps、ref、reactive即可，无类型问题。
+
+为保证运行性能，app安卓端vdom模式部分属性（如：$data、$refs）被转为了Map类型（安卓端map支持使用下标访问），而web端仍是普通对象或proxy。为保证多端代码一致，在使用这些属性时可以统一为下标访问。
 
 ```vue
 <template>
   <view></view>
 </template>
-<script>
-export default {
-  data() {
-    return {
-      a: 1
-    }
-  },
-  onReady() {
-    console.log(this.$data['a']) // 1
-  }
-}
+<script setup>
+const ins = getCurrentInstance()!.proxy
+const props = defineProps({
+	name: {
+		type: String,
+		default: 'default name'
+	}
+})
+onMounted(() => {
+	console.log(ins!.$props['name'])
+})
 </script>
 ```
 
 ### ComponentPublicInstance类型
+
+> 如下选项式示例仅为演示ComponentPublicInstance类型问题，组合式下通过getCurrentInstance()!.proxy获取的componentPublicInstance没有类型问题。
 
 目前已知组件使用emits会导致this不能直接传递给ComponentPublicInstance类型，需要as一下。
 
@@ -130,8 +124,8 @@ type XxxComponentPublicInstanceEmit = (event: 'change' | 'input', ...args: any[]
 
 ### 注意事项
 
-- data内$开头的属性不可直接使用`this.$xxx`访问，需要使用`this.$data['$xxx']`，这是vue的规范。目前安卓端可以使用this.$xxx访问是Bug而非特性，请勿使用此特性。
-- 安卓端由于kotlin特性组件内部使用组件data内定义的属性时this可以省略，请勿在web端使用此特性。
+- data内$开头的属性不可直接使用`this.$xxx`访问，需要使用`this.$data['$xxx']`，这是vue的规范。目前安卓端VDOM模式可以使用this.$xxx访问是Bug而非特性，请勿使用此特性。
+- 安卓端VDOM模式由于kotlin特性组件内部使用组件data内定义的属性时this可以省略，请勿在web端使用此特性。
 - web端由于是一个单页应用，使用`$root`会获取应用根组件，而不是页面根组件。而安卓端是多页应用，`$root`获取的是页面根组件。
 - web端使用`$parent`会获取父组件（含内置组件），安卓端只会获取父级非内置组件，web端后续会调整，请勿利用此特性。
 - web端切换页面后上一个页面的元素、组件会从dom树上移除，并触发组件及页面的`deactivate`生命周期，此时部分dom事件无法触发（如：transitionEnd）。可以视情况使用`activate`、`deactivate`生命周期重新触发dom相关操作。

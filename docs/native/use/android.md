@@ -9,9 +9,7 @@
 ***
 说明：
 
-当前文档正式版基于android studio 2023.2.1 Patch 2。gradle版本为8.4。gradle插件版本为8.2.2。kotlin插件版本为1.9.10。
-
-当前文档alpha版基于Android Studio Narwhal 3 Feature Drop | 2025.1.3。gradle版本为8.14.3。gradle插件版本为8.12.0。kotlin插件版本为2.2.0。
+当前文档基于Android Studio Narwhal 3 Feature Drop | 2025.1.3。gradle版本为8.14.3。gradle插件版本为8.12.0。kotlin插件版本为2.2.0。更早版本的环境配置请参考[文档](../../tutorial/app-env.md)。
 ***
 
 ## 新建uni-app x模块
@@ -283,7 +281,7 @@ android.enableJetifier=true
 	**注意：apps下的appid必须与AndroidManifest.xml的`DCLOUD_UNI_APPID`保持一致。**
 	
 ### 拷贝kt文件
-需要将`unkackage/resource/app-android/uniappx/app-android/src/`目录下的所有文件拷贝到uniappx项目的`src/main/java`下
+需要将`unpackage/resource/app-android/uniappx/app-android/src/`目录下的所有文件拷贝到uniappx项目的`src/main/java`下
 
 ![](https://web-ext-storage.dcloud.net.cn/native/doc/android/copykt.png)
 

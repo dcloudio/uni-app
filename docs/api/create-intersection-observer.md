@@ -3,7 +3,7 @@
 创建并返回一个 IntersectionObserver 对象实例
 
 
-### createIntersectionObserver 兼容性 
+### createIntersectionObserver 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -11,19 +11,18 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| component | any | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  |
-| options | **CreateIntersectionObserverOptions** | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| component | any | 是 | Android: x; iOS: x; HarmonyOS: x |
+| options | **CreateIntersectionObserverOptions** | 否 | Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| thresholds | Array&lt;any&gt; | 否 |  | Web:  ; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 所有阈值 |
-| initialRatio | number | 否 |  | Web:  ; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 初始的相交比例 |
-| observeAll | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否同时观测多个参照节点（而非一个） |
-| nativeMode | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 需要基础库： `3.5.7`<br/><br/>是否使用原生观察器模式。<br/> | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| initialRatio | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 初始的相交比例 |
+| observeAll | boolean | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否同时观测多个参照节点（而非一个） |
+| nativeMode | boolean | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 需要基础库： `3.5.7`<br/><br/>是否使用原生观察器模式。<br/> | 
 
 
 ### 返回值 
@@ -37,17 +36,17 @@
 #### relativeTo(selector: string, margins?: any): IntersectionObserver; @relativeto
 relativeTo
 使用选择器指定一个节点，作为参照区域之一
-##### relativeTo 兼容性 
+##### relativeTo 兼容性 <Help /> 
 | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.41 | x | x | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| selector | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  |
-| margins | any | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| selector | string | 是 | Android: x; iOS: x; HarmonyOS: x |
+| margins | any | 否 | Android: x; iOS: x; HarmonyOS: x | 
 
 
 ##### 返回值 
@@ -60,16 +59,16 @@ relativeTo
 #### relativeToViewport(margins?: any): IntersectionObserver; @relativetoviewport
 relativeToViewport
 指定页面显示区域作为参照区域之一
-##### relativeToViewport 兼容性 
+##### relativeToViewport 兼容性 <Help /> 
 | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.41 | x | x | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| margins | any | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| margins | any | 否 | Android: x; iOS: x; HarmonyOS: x | 
 
 
 ##### 返回值 
@@ -82,52 +81,52 @@ relativeToViewport
 #### observe(targetSelector: string, callback: ObserveCallback): void; @observe
 observe
 指定目标节点并开始监听相交状态变化情况
-##### observe 兼容性 
+##### observe 兼容性 <Help /> 
 | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.41 | x | x | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| targetSelector | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  |
-| callback | (result: [ObserveResult](#observeresult-values)) => void | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| targetSelector | string | 是 | Android: x; iOS: x; HarmonyOS: x |
+| callback | (result: [ObserveResult](#observeresult-values)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
 ##### ObserveResult 的属性值 @observeresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| intersectionRatio | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交比例 |
-| intersectionRect | any | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交区域的边界 |
-| boundingClientRect | **ObserveNodeRect** | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 目标节点布局区域的边界 |
-| relativeRect | **ObserveNodeRect** | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 参照区域的边界 |
-| time | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交检测时的时间戳 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| intersectionRatio | number | 是 | Android: x; iOS: x; HarmonyOS: x | 相交比例 |
+| intersectionRect | any | 是 | Android: x; iOS: x; HarmonyOS: x | 相交区域的边界 |
+| boundingClientRect | **ObserveNodeRect** | 是 | Android: x; iOS: x; HarmonyOS: x | 目标节点布局区域的边界 |
+| relativeRect | **ObserveNodeRect** | 是 | Android: x; iOS: x; HarmonyOS: x | 参照区域的边界 |
+| time | number | 是 | Android: x; iOS: x; HarmonyOS: x | 相交检测时的时间戳 |
 
 #### boundingClientRect 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | left |
-| right | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | right |
-| top | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | top |
-| bottom | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | bottom |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| left | number | 是 | Android: x; iOS: x; HarmonyOS: x | left |
+| right | number | 是 | Android: x; iOS: x; HarmonyOS: x | right |
+| top | number | 是 | Android: x; iOS: x; HarmonyOS: x | top |
+| bottom | number | 是 | Android: x; iOS: x; HarmonyOS: x | bottom |
 
 #### relativeRect 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | left |
-| right | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | right |
-| top | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | top |
-| bottom | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | bottom |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| left | number | 是 | Android: x; iOS: x; HarmonyOS: x | left |
+| right | number | 是 | Android: x; iOS: x; HarmonyOS: x | right |
+| top | number | 是 | Android: x; iOS: x; HarmonyOS: x | top |
+| bottom | number | 是 | Android: x; iOS: x; HarmonyOS: x | bottom |
 
 
 
 #### disconnect(): void; @disconnect
 disconnect
 停止监听
-##### disconnect 兼容性 
+##### disconnect 兼容性 <Help /> 
 | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.41 | x | x | x |
@@ -137,31 +136,31 @@ disconnect
 
 ##### ObserveResult 的属性值 @observeresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| intersectionRatio | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交比例 |
-| intersectionRect | any | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交区域的边界 |
-| boundingClientRect | **ObserveNodeRect** | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 目标节点布局区域的边界 |
-| relativeRect | **ObserveNodeRect** | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 参照区域的边界 |
-| time | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交检测时的时间戳 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| intersectionRatio | number | 是 | Android: x; iOS: x; HarmonyOS: x | 相交比例 |
+| intersectionRect | any | 是 | Android: x; iOS: x; HarmonyOS: x | 相交区域的边界 |
+| boundingClientRect | **ObserveNodeRect** | 是 | Android: x; iOS: x; HarmonyOS: x | 目标节点布局区域的边界 |
+| relativeRect | **ObserveNodeRect** | 是 | Android: x; iOS: x; HarmonyOS: x | 参照区域的边界 |
+| time | number | 是 | Android: x; iOS: x; HarmonyOS: x | 相交检测时的时间戳 |
 
 #### boundingClientRect 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | left |
-| right | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | right |
-| top | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | top |
-| bottom | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | bottom |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| left | number | 是 | Android: x; iOS: x; HarmonyOS: x | left |
+| right | number | 是 | Android: x; iOS: x; HarmonyOS: x | right |
+| top | number | 是 | Android: x; iOS: x; HarmonyOS: x | top |
+| bottom | number | 是 | Android: x; iOS: x; HarmonyOS: x | bottom |
 
 #### relativeRect 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | left |
-| right | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | right |
-| top | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | top |
-| bottom | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | bottom |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| left | number | 是 | Android: x; iOS: x; HarmonyOS: x | left |
+| right | number | 是 | Android: x; iOS: x; HarmonyOS: x | right |
+| top | number | 是 | Android: x; iOS: x; HarmonyOS: x | top |
+| bottom | number | 是 | Android: x; iOS: x; HarmonyOS: x | bottom |
  
 
 
@@ -280,7 +279,7 @@ disconnect
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

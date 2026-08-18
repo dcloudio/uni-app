@@ -159,10 +159,11 @@ iOS平台在iPad设备默认是支持`多任务处理`的，即支持悬浮窗�
 #### 微信登录 @oauthweixin  
 使用 “微信 Open SDK for iOS” 实现，使用前需到[微信开放平台](https://open.weixin.qq.com/)创建移动应用并在开发配置中正确配置`iOS应用`的 Bundle ID 和 Universal Links。
 
-在uni-app x项目中使用此模块，需在manifest.json中配置：  
-
 - HBuilderX 5.08 版本  
-  需通过 manifest.json 的`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-oauth" 下添加 "weixin" 节点，如下示例：  
+可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-oauth（登录）” 中勾选 “微信登录”：  
+  ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_oauth_weixin.png)
+  
+  也可通过 manifest.json 的`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-oauth" 下添加 "weixin" 节点，如下示例：  
   ```json
   {
     "app-ios": {
@@ -179,6 +180,30 @@ iOS平台在iPad设备默认是支持`多任务处理`的，即支持悬浮窗�
     }
   }
   ```
+  
+ #### 苹果登录 @oauthapple
+  
+在uni-app x项目中使用此模块，需在manifest.json中配置：  
+
+- HBuilderX 5.21 版本  
+可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-oauth（登录）” 中勾选 “苹果登录（Sign in with Apple）”：  
+  ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_oauth_apple.png)
+  
+  也可通过 manifest.json 的`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-oauth" 下添加 "apple" 节点，如下示例：  
+  ```json
+  {
+    "app-ios": {
+      "distribute": {
+        "modules": {
+          "uni-oauth":{
+            "apple":{ }
+          }
+        }
+      }
+    }
+  }
+  ```
+ - 注意：根据apple审核要求，支持任何三方登录，必须同时支持Apple 登录功能，否则审核失败； 具体请参考[Apple App Review Guidelines - Login Services说明](https://developer.apple.com/app-store/review/guidelines/#design)
 
 
 ### uni-location（定位） @modulesLocation
@@ -291,7 +316,7 @@ iOS平台在iPad设备默认是支持`多任务处理`的，即支持悬浮窗�
   ```
 
 
-#### 高精度定位  
+#### 高精度定位 @hightprecision  
 应用需要使用高精度定位时还需配置 `NSLocationTemporaryUsageDescriptionDictionary` 的 `PurposeKey`，并说明高精度定位的原因。  
 
 需在项目根目录下添加 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoplist) 文件，配置 NSLocationTemporaryUsageDescriptionDictionary 相关信息，如下示例：  
@@ -511,13 +536,15 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 
 支持以下分享 provider ：
 
-#### 微信登录 @shareweixin  
+#### 微信分享 @shareweixin  
 使用 “微信 Open SDK for iOS” 实现，使用前需到[微信开放平台](https://open.weixin.qq.com/)创建移动应用并在开发配置中正确配置`iOS应用`的 Bundle ID 和 Universal Links。
 
 在uni-app x项目中使用此模块，需在manifest.json中配置：  
 
 - HBuilderX 5.08 版本  
-  需通过 manifest.json 的`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-share" 下添加 "weixin" 节点，如下示例：  
+可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-share（分享）” 中勾选 “微信分享”：  
+  ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_share_weixin.png)
+  也可通过 manifest.json 的`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-share" 下添加 "weixin" 节点，如下示例：  
   ```json
   {
     "app-ios": {

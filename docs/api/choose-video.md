@@ -12,7 +12,7 @@
 
 拍摄视频或从手机相册中选视频，返回视频的临时文件路径。
 
-### chooseVideo 兼容性 
+### chooseVideo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.18 | 4.18 | 4.61 |
@@ -20,23 +20,21 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ChooseVideoOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **ChooseVideoOptions** | 是 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| pageOrientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为page.json中的pageOrientation。 |
-| sourceType | Array&lt;string&gt; | 否 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS:   | album 从相册选视频，camera 使用相机拍摄，默认为：['album', 'camera'\] |
+| pageOrientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为pages.json中的pageOrientation。 |
 | maxDuration | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 拍摄视频最长拍摄时间，单位秒。最长支持 60 秒 |
 | camera | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 摄像切换<br/> |
-| extension | Array&lt;string&gt; | 否 |  | Web:  ; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。 |
-| success | (callback: [ChooseVideoSuccess](#choosevideosuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS:   | 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明 |
-| fail | (callback: [ChooseVideoFail](#choosevideofail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| ~~albumMode~~ | string | 否 | "custom" | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | 视频选择模式  **已废弃，仅为了向下兼容保留** |
+| success | (callback: [ChooseVideoSuccess](#choosevideosuccess-values)) => void | 否 |  | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明 |
+| fail | (callback: [ChooseVideoFail](#choosevideofail-values)) => void | 否 |  | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| ~~albumMode~~ | string | 否 | "custom" | Web: x; Android: 4.33; iOS: x; HarmonyOS: x | 视频选择模式  **已废弃，仅为了向下兼容保留** |
 | ~~compressed~~ | boolean | 否 | true | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS: x | 是否压缩所选的视频源文件，默认值为true，需要压缩  **已废弃，仅为了向下兼容保留** | 
 
 ##### pageOrientation 的属性描述
@@ -63,23 +61,23 @@
 
 #### ChooseVideoSuccess 的属性值 @choosevideosuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS:   | 选定视频的临时文件路径 |
-| duration | number | 是 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS:   | 选定视频的时间长度 |
-| size | number | 是 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS:   | 选定视频的数据量大小 |
-| height | number | 是 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS:   | 返回选定视频的长 |
-| width | number | 是 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS:   | 返回选定视频的宽 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| tempFilePath | string | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 选定视频的临时文件路径 |
+| duration | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 选定视频的时间长度 |
+| size | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 选定视频的数据量大小 |
+| height | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 返回选定视频的长 |
+| width | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 返回选定视频的宽 |
 
 #### ChooseVideoFail 的属性值 @choosevideofail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -125,7 +123,7 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -153,7 +151,7 @@
       <boolean-data title="是否压缩（HamonyOS 不支持，推荐使用 uni.compressVideo 进行压缩）" :defaultValue="true" @change="onCompressedChange"></boolean-data>
     </view>
     <!-- #endif -->
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -265,9 +263,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 

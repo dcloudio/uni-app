@@ -20,7 +20,7 @@
 注意共享元素组件仅指的是动画的视觉共享，并不是2个页面真的复用了同一个组件实例，不同页面的组件仍然是各自单独的实例。
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -125,9 +125,6 @@
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/share-element/share-element.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/share-element/share-element.uvue) 
 >
 > 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
-
-::: preview
-> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/component/share-element/share-element
 ```uvue
 <template>
   <page-head title="share-element"></page-head>
@@ -333,7 +330,6 @@
 </style>
 
 ```
-:::
 
 
 ### 参见

@@ -18,7 +18,7 @@ uni统计自定义上报方法。
 ### 注意事项
 `uni.report` 需要依赖 [`uni统计`](https://ext.dcloud.net.cn?name=uni-stat)，集成方式请查看[文档](https://uniapp.dcloud.net.cn/uni-stat-uniappx)。
 
-### report 兼容性 
+### report 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | 4.33 | 4.33 | 4.33 |
@@ -26,35 +26,35 @@ uni统计自定义上报方法。
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ReportOptions** | 是 |  |   | 自定义事件参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **ReportOptions** | 是 | 自定义事件参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 |  |   | 自定义事件名称，内置名称不允许覆盖，可选值:<br/>`uni-app-launch`：应用启动，options 参数必填，值为 onLaunch 返回值<br/>`uni-app-show`：应用进入前台<br/>`uni-app-hide`：应用进入后台<br/>`uni-app-error`：应用发生错误，options 参数必填，值为错误信息，类型为String<br/>`title`：标题采集<br/>`自定义name`：用户自定义 |
-| options | any | 否 |  |   | 额外参数 |
-| success | (res: [ReportSuccess](#reportsuccess-values)) => void | 否 |  |   | 接口调用成功回调 |
-| fail | (err: [ReportFail](#reportfail-values)) => void | 否 |  |   | 接口调用失败回调 |
-| complete | (res: any) => void | 否 |  |   | 接口调用结束回调（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| name | string | 是 | 自定义事件名称，内置名称不允许覆盖，可选值:<br/>`uni-app-launch`：应用启动，options 参数必填，值为 onLaunch 返回值<br/>`uni-app-show`：应用进入前台<br/>`uni-app-hide`：应用进入后台<br/>`uni-app-error`：应用发生错误，options 参数必填，值为错误信息，类型为String<br/>`title`：标题采集<br/>`自定义name`：用户自定义 |
+| options | any | 否 | 额外参数 |
+| success | (res: [ReportSuccess](#reportsuccess-values)) => void | 否 | 接口调用成功回调 |
+| fail | (err: [ReportFail](#reportfail-values)) => void | 否 | 接口调用失败回调 |
+| complete | (res: any) => void | 否 | 接口调用结束回调（调用成功、失败都会执行） | 
 
 #### ReportSuccess 的属性值 @reportsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   | 成功的详细信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 成功的详细信息 |
 
 #### ReportFail 的属性值 @reportfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -105,7 +105,7 @@ uni.report({
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head title="report"></page-head>
@@ -138,7 +138,7 @@ uni.report({
       </text>
     </view>
 
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -349,7 +349,7 @@ uni.report({
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

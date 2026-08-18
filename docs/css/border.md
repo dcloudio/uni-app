@@ -5,13 +5,13 @@
 CSS 的 border 是设置元素边框属性的简写形式，用于设置一个或多个以下属性的值：border-width、border-style、border-color。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -50,7 +50,7 @@ border: <line-width> || <line-style> || <color>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -82,6 +82,14 @@ border: <line-width> || <line-style> || <color>;
         <view class="demo-box">
           <view class="common" style="border: 5px dotted blue;"></view>
           <view class="common" style="border: 5px dotted blue;" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border: 6rpx dashed #00f8</text>
+        <view class="demo-box">
+          <view class="common" style="border: 6rpx dashed #00f8;"></view>
+          <view class="common" style="border: 6rpx dashed #00f8;" flatten></view>
         </view>
       </view>
 
@@ -126,7 +134,7 @@ border: <line-width> || <line-style> || <color>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -195,16 +203,8 @@ border: <line-width> || <line-style> || <color>;
         <input-data :defaultValue="data.border" title="border 自定义值" type="text" @confirm="inputChangeBorder"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border: 5px dotted blue 和 5px solid cyan;</text>
-        <view class="demo-box">
-          <native-view class="common" style="border: 5px dotted blue;"></native-view>
-          <native-view class="common" style="border: 5px solid cyan;"></native-view>
-        </view>
-      </view>
-
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -222,7 +222,9 @@ border: <line-width> || <line-style> || <color>;
     { value: 1, name: 'none' },
     { value: 2, name: '1px solid purple' },
     { value: 3, name: '2px dashed blue' },
-    { value: 4, name: '3px dotted green' }
+    { value: 4, name: '3px dotted green' },
+    { value: 5, name: '6rpx dashed #00f8' },
+    { value: 6, name: '8rpx solid #0000ff80' }
   ]
 
   const data = reactive({
@@ -251,7 +253,6 @@ border: <line-width> || <line-style> || <color>;
     data.borderActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorder = (value: string) => {
     data.border = value
     viewRef.value?.style.setProperty('border', value)
@@ -263,7 +264,7 @@ border: <line-width> || <line-style> || <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorder = (index: number) => {

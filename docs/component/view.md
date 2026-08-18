@@ -11,7 +11,7 @@
 view组件是 uni-app x 最基本的视图容器，它的作用类似于HTML中的div标签。
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -24,7 +24,7 @@ view组件是 uni-app x 最基本的视图容器，它的作用类似于HTML中�
 | hover-stop-propagation | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定是否阻止本节点的祖先节点出现点击态(祖先节点：指根节点到该节点路径上的所有节点都是这个节点的祖先节点) |
 | hover-start-time | number | 50 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按住后多久出现点击态，单位毫秒 |
 | hover-stay-time | number | 400 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指松开后点击态保留时间，单位毫秒 |
-| flatten | boolean | false | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
+| flatten | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
 
 #### hover-class说明@hover-class
 
@@ -68,6 +68,8 @@ if(viewElement != null) {
 }
 ```
 
++ getAndroidView 方法需要在 uts 插件中使用。
+
 **iOS 平台：**
 
 获取view组件对应的UniElement对象，通过UniElement对象的[getIOSView](../dom/unielement.md#getiosview)函数获取组件原生UIView对象
@@ -83,9 +85,13 @@ if (view != null && view instanceof UIView) {
 
 ```
 
-+ iOS平台 uvue 环境使用 js 驱动无法处理原生类型，getIOSView 方法需要在 uts 插件中使用。
++ getIOSView 方法需要在 uts 插件中使用。
 
 更多示例请参考 uts 插件 [uts-get-native-view](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/uni_modules/uts-get-native-view/utssdk/app-ios/index.uts)
+
+注意：
+- 鸿蒙平台蒸汽模式无法获取到原生view对象
+- 设置flatten属性后，无法获取原生view对象
 
 ### 子组件 @children-tags
 支持所有组件
@@ -235,11 +241,12 @@ if (view != null && view instanceof UIView) {
   .test-view {
     height: 200px;
     width: 200px;
+    --view-child1-hover-bg: #179b16;
     background-color: var(--list-background-color,#ffffff);
   }
 
   .is-hover {
-    background-color: #179b16;
+    background-color: var(--view-child1-hover-bg, #179b16);
   }
 
   .is-parent-hover {

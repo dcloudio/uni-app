@@ -5,13 +5,13 @@
 flex-basis 属性设置弹性元素在主轴方向的初始大小，即在分配剩余空间（flex-grow）或收缩溢出空间（flex-shrink）的基准尺寸。当弹性元素同时设置了 flex-basis（除 auto 外的值）和 width（或 flex-direction 为 column 时设置了 height），flex-basis 的优先级更高。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
@@ -56,7 +56,7 @@ flex-basis: content | <'width'>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -103,7 +103,7 @@ flex-basis: content | <'width'>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-basis </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -209,18 +209,18 @@ flex-basis: content | <'width'>;
       <text class="uni-title-text">native-view 组件：flex-basis: 50px 和 100px</text>
       <view class="demo-box uni-common-mb">
         <view class="flex-container">
-          <native-view class="common-view" style="flex-basis: 50px;"></native-view>
+          <test-native-view class="common-view" style="flex-basis: 50px;"></test-native-view>
           <view class="flex-item green"></view>
           <view class="flex-item blue"></view>
         </view>
         <view class="flex-container">
-          <native-view class="common-view" style="flex-basis: 100px;"></native-view>
+          <test-native-view class="common-view" style="flex-basis: 100px;"></test-native-view>
           <view class="flex-item green"></view>
           <view class="flex-item blue"></view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -263,7 +263,6 @@ flex-basis: content | <'width'>;
     data.flexBasisActualImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-basis') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeFlexBasis = (value: string) => {
     data.flexBasis = value
     viewRef.value?.style.setProperty('flex-basis', value)
@@ -275,7 +274,7 @@ flex-basis: content | <'width'>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFlexBasis = (index: number) => {

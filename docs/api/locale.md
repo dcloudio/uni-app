@@ -5,7 +5,7 @@
 获取当前设置的语言
 
 
-### getLocale 兼容性 
+### getLocale 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -33,7 +33,7 @@ App端可以在[uni.getDeviceInfo](./get-device-info.md)中获取os的language�
 设置当前语言
 
 
-### setLocale 兼容性 
+### setLocale 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -41,9 +41,9 @@ App端可以在[uni.getDeviceInfo](./get-device-info.md)中获取os的language�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| locale | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| locale | string | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
 
 
@@ -58,7 +58,7 @@ App端可以在[uni.getDeviceInfo](./get-device-info.md)中获取os的language�
 设置当前语言
 
 
-### onLocaleChange 兼容性 
+### onLocaleChange 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -66,15 +66,15 @@ App端可以在[uni.getDeviceInfo](./get-device-info.md)中获取os的language�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnLocaleChangeCallbackResult](#onlocalechangecallbackresult-values)) => void | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnLocaleChangeCallbackResult](#onlocalechangecallbackresult-values)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
 ### OnLocaleChangeCallbackResult 的属性值 @onlocalechangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| locale | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 当前语言 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| locale | string | 否 | Android: x; iOS: x; HarmonyOS: x | 当前语言 |
 
 
 
@@ -89,6 +89,6 @@ App端可以在[uni.getDeviceInfo](./get-device-info.md)中获取os的language�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
