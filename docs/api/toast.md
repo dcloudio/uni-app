@@ -29,14 +29,14 @@
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | title | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
-| icon | string | 否 | "success" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | icon值说明 |
-| image | [string.ImageURIString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | 自定义图标的本地路径（app端暂不支持gif） |
-| mask | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | 是否显示透明蒙层，防止触摸穿透 |
+| icon | string | 否 | "success" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.26 | icon值说明 |
+| image | [string.ImageURIString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.26 | 自定义图标的本地路径（app端暂不支持gif） |
+| mask | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.26 | 是否显示透明蒙层，防止触摸穿透 |
 | duration | number | 否 | 1500 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 提示的延迟时间，单位毫秒 |
 | position | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。 |
-| success | (res: ShowToastSuccess) => void | 否 |  | 微信小程序: 4.41 | uni.showToast成功回调函数定义 |
-| fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 |  | 微信小程序: 4.41 | uni.showToast失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.showToast完成回调函数定义 | 
+| success | (res: ShowToastSuccess) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast成功回调函数定义 |
+| fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast完成回调函数定义 | 
 
 ##### icon 的属性描述
 
@@ -83,7 +83,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ui.toast.showToast)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/prompt.html#showtoast)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/interaction/wx.showToast.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=showToast&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=showToast&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=showToast&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=showToast&secondType=all&type=1)
@@ -125,7 +125,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ui.toast.hideToast)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/prompt.html#hidetoast)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/interaction/wx.hideToast.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=hideToast&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=hideToast&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=hideToast&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=hideToast&secondType=all&type=1)

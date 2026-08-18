@@ -18,7 +18,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| level | number | 否 | Web: x | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
+| level | number | 否 | Web: x; 微信小程序: 4.41 | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
 
 
 
@@ -27,7 +27,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.memory.onMemoryWarning)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/memory.html#onmemorywarning)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onMemoryWarning&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/memory/wx.onMemoryWarning.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onMemoryWarning&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onMemoryWarning&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onMemoryWarning&secondType=all&type=1)
@@ -59,7 +59,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| level | number | 否 | Web: x | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
+| level | number | 否 | Web: x; 微信小程序: 4.41 | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
 
 
 
@@ -68,7 +68,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.memory.offMemoryWarning)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/memory.html#offmemorywarning)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offMemoryWarning&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/memory/wx.offMemoryWarning.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offMemoryWarning&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offMemoryWarning&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offMemoryWarning&secondType=all&type=1)

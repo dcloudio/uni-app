@@ -421,6 +421,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 的背景色 |
 | borderStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "black" | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tabbar 上边框的颜色，可选值 black、white，black对应颜色rgba(0,0,0,0.33)，white对应颜色rgba(255,255,255,0.33)。 |
 | blurEffect | 'dark' \| 'extralight' \| 'light' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 高斯模糊效果 |
+| glassEffect | boolean | false | 否 | Web: x; 微信小程序: x; Android: x; iOS 系统版本: 15.0; iOS(VDOM): x; iOS(Vapor): 5.23; HarmonyOS: x | 是否开启玻璃效果 tabBar。iOS 26 及以上使用系统液态玻璃效果，iOS 26 以下降级为系统毛玻璃效果。启用后仅支持图片图标，不支持 iconfont。 |
 | list | Array\<[PagesOptionsTabbarList](#pagesoptionstabbarlist)> |  | 是 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 的列表，详见 list 属性说明，最少2个、最多5个 tab |
 | position | 'top' \| 'bottom' | "bottom" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | tabbar 的位置,可选值 bottom、top。 |
 | fontSize | string | "10px" | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 文字默认大小 |

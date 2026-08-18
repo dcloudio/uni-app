@@ -29,7 +29,7 @@
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址<br/> |
-| data | any | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求的参数 在`app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
+| data | any | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求的参数 在app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 设置请求的 header，header 中不能设置 Referer |
 | method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求方法 |
 | timeout | number | 否 | 60000 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | 超时时间，单位 ms |

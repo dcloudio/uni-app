@@ -64,6 +64,22 @@ getHarmonyAbility
 | :- |
 | UIAbility |
  
+
+#### restart(url?: string): void @restart
+restart
+重启应用
+##### restart 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | 5.31 | x | 5.31 | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| url | string | 否 | Web: x; 微信小程序: x; HarmonyOS: x | 重启后打开的页面地址 | 
+
+
  
 
 

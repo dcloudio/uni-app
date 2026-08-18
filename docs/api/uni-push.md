@@ -70,7 +70,14 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 | 名称 | 类型 | 必填 |
 | :- | :- | :- |
-| callback | (result: [OnPushMessageCallbackResult](#onpushmessagecallbackresult-values)) => void | 是 | 
+| callback | (result: [OnPushMessageCallbackResult](#onpushmessagecallbackresult-values)) => void | 是 |
+| options | **OnPushMessageOptions** | 否 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| requestPermission | boolean | 否 | false | 是否申请通知权限 | 
 
 ### OnPushMessageCallbackResult 的属性值 @onpushmessagecallbackresult-values 
 

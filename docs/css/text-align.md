@@ -37,6 +37,7 @@ text-align: start | end | left | right | center | justify | match-parent;
 | left | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 行内内容向左侧边对齐。 |
 | center | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 行内内容居中。 |
 | right | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 行内内容向右侧边对齐。 |
+| justify | Web: 4.0; Android(VDOM): x; Android(Vapor): 5.25; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.26 | 文字向两侧对齐，对最后一行无效。 |
 
 
 ### 默认值 @default-value 
