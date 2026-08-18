@@ -28,8 +28,9 @@ interface AppThemeConfig {
 }
 
 declare const uni: any
+// runtimeAppId 是 C++ App 实例编号，不是 manifest 中的 appid。
 declare function __uni__app_RegisterThemeConfig(
-  appId: number,
+  runtimeAppId: number,
   config: AppThemeConfig
 ): boolean
 
@@ -302,7 +303,10 @@ function registerThemeConfig() {
 }
 
 export function useTheme() {
-  if (__VAPOR_PLATFORM__ === 'app-harmony') {
+  if (
+    __VAPOR_PLATFORM__ === 'app-harmony' ||
+    __VAPOR_PLATFORM__ === 'app-android'
+  ) {
     registerThemeConfig()
     return
   }
