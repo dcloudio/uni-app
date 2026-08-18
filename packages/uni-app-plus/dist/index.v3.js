@@ -8073,6 +8073,11 @@ var serviceContext = (function () {
   let systemInfo = {};
   let _initSystemInfo = true;
 
+  function getTheme () {
+    if (__uniConfig.darkmode == null || __uniConfig.darkmode === false) return undefined
+    return plus.navigator.getUIStyle()
+  }
+
   function weexGetSystemInfoSync () {
     if (!_initSystemInfo) return
     const { getSystemInfoSync } = weex.requireModule('plus');
@@ -8149,7 +8154,7 @@ var serviceContext = (function () {
       isUniAppX: false,
       language: osLanguage,
       SDKVersion: '',
-      theme: plus.navigator.getUIStyle(),
+      theme: getTheme(),
       uniPlatform,
       uniRuntimeVersion,
       uniCompileVersion,
@@ -8192,9 +8197,6 @@ var serviceContext = (function () {
 
     delete _systemInfo.screenTop;
     delete _systemInfo.enableDebug;
-    if (!__uniConfig.darkmode) {
-      delete _systemInfo.theme;
-    }
 
     return _systemInfo
   }
