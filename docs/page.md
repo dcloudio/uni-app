@@ -214,25 +214,25 @@ app平台vdom模式无页面滚动，且其根节点高度为从导航栏底部�
 
 | 组合式 | 选项式 | 兼容性 | 描述 |
 | :- | :- | :- | :- |
-| onLoad | onLoad | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
-| onPageShow | onShow | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
-| onReady | onReady | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
-| onPageHide | onHide | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
-| onUnload | onUnload | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
-| onPullDownRefresh | onPullDownRefresh | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
-| onReachBottom | onReachBottom | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
-| onPageScroll | onPageScroll | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
-| onResize | onResize | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 页面尺寸改变时触发 |
-| onBackPress | onBackPress | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回 |
-| onInit | onInit | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 生命周期回调 监听页面初始化<br/><br/>页面初始化时触发。一个页面只会调用一次，可以在 onInit 的参数中获取打开当前页面路径中的参数。 |
-| onShareAppMessage | onShareAppMessage | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 用户点击右上角转发<br/><br/>监听用户点击页面内转发按钮（`<button>` 组件 `open-type="share"`）或右上角菜单“转发”按钮的行为，并自定义转发内容。 |
-| onShareTimeline | onShareTimeline | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 用户点击右上角转发到朋友圈<br/><br/>监听右上角菜单“分享到朋友圈”按钮的行为，并自定义发享内容。<br/> |
-| onAddToFavorites | onAddToFavorites | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 用户点击右上角收藏<br/><br/>监听用户点击右上角菜单“收藏”按钮的行为，并自定义收藏内容。<br/> |
-| onTabItemTap | onTabItemTap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 当前是 tab 页时，点击 tab 时触发 |
-| onNavigationBarButtonTap | onNavigationBarButtonTap | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏按钮点击事件 |
-| onNavigationBarSearchInputChanged | onNavigationBarSearchInputChanged | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框输入内容变化事件<br/> |
-| onNavigationBarSearchInputConfirmed | onNavigationBarSearchInputConfirmed | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。<br/> |
-| onNavigationBarSearchInputClicked | onNavigationBarSearchInputClicked | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框点击事件<br/> |
+| onLoad | onLoad | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
+| onPageShow | onShow | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
+| onReady | onReady | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
+| onPageHide | onHide | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
+| onUnload | onUnload | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
+| onPullDownRefresh | onPullDownRefresh | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
+| onReachBottom | onReachBottom | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
+| onPageScroll | onPageScroll | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
+| onResize | onResize | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 页面尺寸改变时触发 |
+| onBackPress | onBackPress | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回 |
+| onInit | onInit | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 生命周期回调 监听页面初始化<br/><br/>页面初始化时触发。一个页面只会调用一次，可以在 onInit 的参数中获取打开当前页面路径中的参数。 |
+| onShareAppMessage | onShareAppMessage | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 用户点击右上角转发<br/><br/>监听用户点击页面内转发按钮（`<button>` 组件 `open-type="share"`）或右上角菜单“转发”按钮的行为，并自定义转发内容。 |
+| onShareTimeline | onShareTimeline | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 用户点击右上角转发到朋友圈<br/><br/>监听右上角菜单“分享到朋友圈”按钮的行为，并自定义发享内容。<br/> |
+| onAddToFavorites | onAddToFavorites | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 用户点击右上角收藏<br/><br/>监听用户点击右上角菜单“收藏”按钮的行为，并自定义收藏内容。<br/> |
+| onTabItemTap | onTabItemTap | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 当前是 tab 页时，点击 tab 时触发 |
+| onNavigationBarButtonTap | onNavigationBarButtonTap | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏按钮点击事件 |
+| onNavigationBarSearchInputChanged | onNavigationBarSearchInputChanged | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框输入内容变化事件<br/> |
+| onNavigationBarSearchInputConfirmed | onNavigationBarSearchInputConfirmed | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。<br/> |
+| onNavigationBarSearchInputClicked | onNavigationBarSearchInputClicked | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框点击事件<br/> |
 
 在 Vue 中，页面也是一种组件，所以也同时支持[组件生命周期](./vue/options-api.md#page-component-options)。
 
@@ -296,32 +296,32 @@ onShow和onHide是成对出现的。
 页面尺寸改变时触发
 
 #### onResize 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **OnResizeOptions** | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 页面尺寸改变时回调参数  |
+| options | **OnResizeOptions** | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 页面尺寸改变时回调参数  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceOrientation | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕方向 |
-| size | **OnResizeSize** | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 新的显示区域尺寸 |
+| deviceOrientation | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕方向 |
+| size | **OnResizeSize** | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 新的显示区域尺寸 |
 
 ##### size 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| screenHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的屏幕高度 |
-| screenWidth | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的屏幕宽度 |
-| windowHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的显示区域高度 |
-| windowWidth | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的显示区域宽度 | 
+| screenHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的屏幕高度 |
+| screenWidth | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的屏幕宽度 |
+| windowHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的显示区域高度 |
+| windowWidth | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的显示区域宽度 | 
 
 
 
@@ -336,9 +336,9 @@ onShow和onHide是成对出现的。
 比如 [onReachBottomDistance](./collocation/pagesjson#pages-globalstyle) 设为50，那么滚动页面到距离底部50px时，就会触发onReachBottom事件。
 
 #### onReachBottom 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.08 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 | 5.08 |
 
 
 
@@ -352,22 +352,22 @@ onShow和onHide是成对出现的。
 监听用户滑动页面事件。
 
 #### onPageScroll 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.13 | 5.21 | 4.61 | 5.08 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | 3.9 | 4.13 | 5.21 | 4.61 | 5.08 |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **OnPageScrollOptions** | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动参数 |
+| options | **OnPageScrollOptions** | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| scrollTop | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 页面在垂直方向已滚动的距离（单位 px） | 
+| scrollTop | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 页面在垂直方向已滚动的距离（单位 px） | 
 
 
 
@@ -381,29 +381,29 @@ onShow和onHide是成对出现的。
 监听页面返回
 
 #### onBackPress 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | 3.9 | 4.11 | 4.61 |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **OnBackPressOptions** | 是 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回回调参数  |
+| options | **OnBackPressOptions** | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回回调参数  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| from | string | 是 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | - backbutton 顶部导航栏左边的返回按钮或 Android 实体返回键<br/>- navigateBack 返回 API，即 uni.navigateBack() |
+| from | string | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | - backbutton 顶部导航栏左边的返回按钮或 Android 实体返回键<br/>- navigateBack 返回 API，即 uni.navigateBack() |
 
 ##### from 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| backbutton | 微信小程序: x |
-| navigateBack | 微信小程序: x | 
+| backbutton | 微信小程序: x; 支付宝小程序: x |
+| navigateBack | 微信小程序: x; 支付宝小程序: x | 
 
 
 #### 返回值 
@@ -500,24 +500,24 @@ onShow和onHide是成对出现的。
 当前是 tab 页时，点击 tab 时触发
 
 #### onTabItemTap 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | x | 4.61 | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **OnTabItemTapOption** | 是 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听 tab 点击回调参数 |
+| options | **OnTabItemTapOption** | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听 tab 点击回调参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| index | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的序号，从0开始 |
-| pagePath | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的页面路径 |
-| text | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的按钮文字 | 
+| index | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的序号，从0开始 |
+| pagePath | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的页面路径 |
+| text | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的按钮文字 | 
 
 
 
@@ -531,22 +531,22 @@ onShow和onHide是成对出现的。
 监听原生标题栏按钮点击事件
 
 #### onNavigationBarButtonTap 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **OnNavigationBarButtonTapOption** | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 原生标题栏按钮点击回调参数  |
+| options | **OnNavigationBarButtonTapOption** | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 原生标题栏按钮点击回调参数  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| index | number | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 原生标题栏按钮数组的下标 | 
+| index | number | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 原生标题栏按钮数组的下标 | 
 
 
 
@@ -557,22 +557,22 @@ onShow和onHide是成对出现的。
 
 
 #### onNavigationBarSearchInputChanged 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| event | **NavigationBarSearchInputEvent** | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索回调参数  |
+| event | **NavigationBarSearchInputEvent** | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索回调参数  |
 
 #### event 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| text | string | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 搜索输入框输入内容 | 
+| text | string | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 搜索输入框输入内容 | 
 
 
 
@@ -583,22 +583,22 @@ onShow和onHide是成对出现的。
 
 
 #### onNavigationBarSearchInputConfirmed 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| event | **NavigationBarSearchInputEvent** | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索回调参数  |
+| event | **NavigationBarSearchInputEvent** | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索回调参数  |
 
 #### event 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| text | string | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 搜索输入框输入内容 | 
+| text | string | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 搜索输入框输入内容 | 
 
 
 

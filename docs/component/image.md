@@ -10,43 +10,43 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| src | string([string.ImageURIString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片资源地址 |
-| mode | string | "scaleToFill" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片裁剪、缩放的模式 |
-| lazy-load | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS: 4.11; HarmonyOS(VDOM): -; HarmonyOS(Vapor): x | 图片懒加载。只针对page与scroll-view下的image有效。 安卓默认懒加载不支持修改 |
-| fade-show | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x | 图片显示动画效果 |
-| webp | boolean | true | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): -; HarmonyOS(Vapor): x | 是否支持 WebP 格式，web、app平台默认支持 WebP 格式，不支持本属性，无法关闭对 WebP 格式的解析。 |
-| show-menu-by-longpress | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 开启长按图片显示识别小程序码菜单 |
-| draggable | boolean | false | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 鼠标长按是否能拖动图片(仅H5平台) |
-| flatten | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
-| @error | (event: [UniImageErrorEvent](#uniimageerrorevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片加载错误时触发，event.detail = { errMsg } |
-| @load | (event: [UniImageLoadEvent](#uniimageloadevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片加载完成时触发，event.detail = { width: '图片宽度px', height: '图片高度px' } |
+| src | string([string.ImageURIString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片资源地址 |
+| mode | string | "scaleToFill" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片裁剪、缩放的模式 |
+| lazy-load | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: 4.11; HarmonyOS(VDOM): -; HarmonyOS(Vapor): x | 图片懒加载。只针对page与scroll-view下的image有效。 安卓默认懒加载不支持修改 |
+| fade-show | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: x; HarmonyOS: x | 图片显示动画效果 |
+| webp | boolean | true | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): -; HarmonyOS(Vapor): x | 是否支持 WebP 格式，web、app平台默认支持 WebP 格式，不支持本属性，无法关闭对 WebP 格式的解析。 |
+| show-menu-by-longpress | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 开启长按图片显示识别小程序码菜单 |
+| draggable | boolean | false | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 鼠标长按是否能拖动图片(仅H5平台) |
+| flatten | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
+| @error | (event: [UniImageErrorEvent](#uniimageerrorevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片加载错误时触发，event.detail = { errMsg } |
+| @load | (event: [UniImageLoadEvent](#uniimageloadevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片加载完成时触发，event.detail = { width: '图片宽度px', height: '图片高度px' } |
 
 #### mode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| scaleToFill | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不保持纵横比缩放图片，使图片的宽高完全拉伸至填满 image 元素 |
-| aspectFit | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 保持纵横比缩放图片，使图片的长边能完全显示出来。也就是说，可以完整地将图片显示出来。 |
-| aspectFill | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 保持纵横比缩放图片，只保证图片的短边能完全显示出来。也就是说，图片通常只在水平或垂直方向是完整的，另一个方向将会发生截取 |
-| widthFix | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 宽度不变，高度自动变化，保持原图宽高比不变 |
-| heightFix | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 高度不变，宽度自动变化，保持原图宽高比不变 |
-| top | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的顶部区域 |
-| bottom | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的底部区域 |
-| center | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的中间区域 |
-| left | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的左边区域 |
-| right | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的右边区域 |
-| top left | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的左上边区域 |
-| top right | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的右上边区域 |
-| bottom left | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的左下边区域 |
-| bottom right | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的右下边区域 |
+| scaleToFill | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不保持纵横比缩放图片，使图片的宽高完全拉伸至填满 image 元素 |
+| aspectFit | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 保持纵横比缩放图片，使图片的长边能完全显示出来。也就是说，可以完整地将图片显示出来。 |
+| aspectFill | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 保持纵横比缩放图片，只保证图片的短边能完全显示出来。也就是说，图片通常只在水平或垂直方向是完整的，另一个方向将会发生截取 |
+| widthFix | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 宽度不变，高度自动变化，保持原图宽高比不变 |
+| heightFix | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 高度不变，宽度自动变化，保持原图宽高比不变 |
+| top | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的顶部区域 |
+| bottom | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的底部区域 |
+| center | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的中间区域 |
+| left | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的左边区域 |
+| right | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的右边区域 |
+| top left | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的左上边区域 |
+| top right | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的右上边区域 |
+| bottom left | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的左下边区域 |
+| bottom right | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 不缩放图片，只显示图片的右下边区域 |
 
 
 ### 事件

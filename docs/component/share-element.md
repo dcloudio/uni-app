@@ -21,19 +21,19 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| share-key | string |   | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 映射标记，页面内唯一 |
-| easing-function | string | "ease-out" | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | `css`缓动函数 |
-| shuttle-on-push | string | "to" | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 指定 push 阶段的飞跃物 |
-| shuttle-on-pop | string | "to" | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 指定 pop 阶段的飞跃物 |
-| transition-on-gesture | boolean | false | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 手势返回时是否进行动画 |
+| share-key | string |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 映射标记，页面内唯一 |
+| easing-function | string | "ease-out" | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | `css`缓动函数 |
+| shuttle-on-push | string | "to" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 指定 push 阶段的飞跃物 |
+| shuttle-on-pop | string | "to" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 指定 pop 阶段的飞跃物 |
+| transition-on-gesture | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 手势返回时是否进行动画 |
 
 #### easing-function 的属性描述
 

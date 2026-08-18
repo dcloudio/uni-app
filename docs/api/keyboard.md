@@ -14,24 +14,24 @@
 
 
 ### hideKeyboard 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| options | **HideKeyboardOptions** | 否 | uni.hideKeyboard参数定义 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **HideKeyboardOptions** | 否 | 支付宝小程序: x | uni.hideKeyboard参数定义 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: HideKeyboardSuccess) => void | 否 | 微信小程序: 4.41 | uni.hideKeyboard成功回调函数定义 |
-| fail | (res: HideKeyboardFail) => void | 否 | 微信小程序: 4.41 | uni.hideKeyboard失败回调函数定义 |
-| complete | (res: any) => void | 否 | 微信小程序: 4.41 | uni.hideKeyboard完成回调函数定义 | 
+| success | (res: HideKeyboardSuccess) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | uni.hideKeyboard成功回调函数定义 |
+| fail | (res: HideKeyboardFail) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | uni.hideKeyboard失败回调函数定义 |
+| complete | (res: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | uni.hideKeyboard完成回调函数定义 | 
 
 
 
@@ -71,22 +71,22 @@
 在input和textarea组件上也有事件用于监听键盘高度变化。本API为全局API，可以全局监听键盘弹出收起和高度变化，尤其是App内嵌web-view中的键盘变化，无法在组件上监听，只能使用本API全局监听。
 
 ### onKeyboardHeightChange 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 5.08 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 | 4.71 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (res: [OnKeyboardHeightChangeCallbackResult](#onkeyboardheightchangecallbackresult-values)) => void | 是 | Web: x; 微信小程序: 4.41 | uni.onKeyboardHeightChange参数定义 | 
+| callback | (res: [OnKeyboardHeightChangeCallbackResult](#onkeyboardheightchangecallbackresult-values)) => void | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | uni.onKeyboardHeightChange参数定义 | 
 
 ### OnKeyboardHeightChangeCallbackResult 的属性值 @onkeyboardheightchangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| height | number | 是 | Web: x; 微信小程序: 4.41 | 键盘高度 |
+| height | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 键盘高度 |
 
 
 ### 返回值 
@@ -130,16 +130,16 @@
 移除键盘高度变化事件的监听函数
 
 ### offKeyboardHeightChange 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 5.08 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 | 4.71 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| id | number | 否 | Web: x | 
+| id | number | 否 | Web: x; 支付宝小程序: x | 
 
 
 
@@ -265,5 +265,5 @@ defineExpose({
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

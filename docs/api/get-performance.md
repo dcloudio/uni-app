@@ -4,9 +4,9 @@
 
 
 ### getPerformance 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 3.91 | 4.25 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.25 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 
@@ -23,15 +23,15 @@
 createObserver
 创建全局性能事件监听器
 ##### createObserver 兼容性 <Help /> 
-| Web | 微信小程序 |
-| :- | :- |
-| x | 4.41 |
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | 4.41 | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (entries: [PerformanceObserverEntryList](#performanceobserverentrylist-values)) => void | 是 | Web: x | 
+| callback | (entries: [PerformanceObserverEntryList](#performanceobserverentrylist-values)) => void | 是 | Web: x; 支付宝小程序: x | 
 
 ##### PerformanceObserverEntryList 的方法 @performanceobserverentrylist-values 
 
@@ -39,9 +39,9 @@ createObserver
 getEntries
 该方法返回当前列表中的所有性能数据
 ###### getEntries 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+| Web | 支付宝小程序 |
+| :- | :- |
+| x | x |
 
 
 
@@ -56,15 +56,15 @@ getEntries
 getEntriesByType
 获取当前列表中所有类型为 \[entryType] 的性能数据
 ###### getEntriesByType 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+| Web | 支付宝小程序 |
+| :- | :- |
+| x | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| entryType | string | 是 | Web: x | 
+| entryType | string | 是 | Web: x; 支付宝小程序: x | 
 
 
 ###### 返回值 
@@ -78,16 +78,16 @@ getEntriesByType
 getEntriesByName
 获取当前列表中所有名称为 \[name] 且类型为 \[entryType] 的性能数据
 ###### getEntriesByName 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+| Web | 支付宝小程序 |
+| :- | :- |
+| x | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| name | string | 是 | Web: x |
-| entryType | string | 是 | Web: x | 
+| name | string | 是 | Web: x; 支付宝小程序: x |
+| entryType | string | 是 | Web: x; 支付宝小程序: x | 
 
 
 ###### 返回值 
@@ -110,22 +110,22 @@ getEntriesByName
 observe
 开始监听
 ###### observe 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+| Web | 支付宝小程序 |
+| :- | :- |
+| x | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **PerformanceObserverOptions** | 是 | Web: x |
+| options | **PerformanceObserverOptions** | 是 | Web: x; 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| buffered | boolean | 否 | Web: x |
-| type | string | 否 | Web: x | 
+| buffered | boolean | 否 | Web: x; 支付宝小程序: x |
+| type | string | 否 | Web: x; 支付宝小程序: x | 
 
 
 
@@ -133,9 +133,9 @@ observe
 disconnect
 停止监听
 ###### disconnect 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+| Web | 支付宝小程序 |
+| :- | :- |
+| x | x |
 
 
 
@@ -144,17 +144,17 @@ disconnect
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| buffered | boolean | 否 | Web: x |
-| type | string | 否 | Web: x |
+| buffered | boolean | 否 | Web: x; 支付宝小程序: x |
+| type | string | 否 | Web: x; 支付宝小程序: x |
  
 
 #### getEntries(): PerformanceEntry\[\] @getentries
 getEntries
 该方法返回当前缓冲区中的所有性能数据
 ##### getEntries 兼容性 <Help /> 
-| Web | 微信小程序 |
-| :- | :- |
-| x | 4.41 |
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | 4.41 | x |
 
 
 
@@ -169,15 +169,15 @@ getEntries
 getEntriesByType
 获取当前缓冲区中所有类型为 \[entryType] 的性能数据
 ##### getEntriesByType 兼容性 <Help /> 
-| Web | 微信小程序 |
-| :- | :- |
-| x | 4.41 |
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | 4.41 | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| entryType | string | 是 | Web: x | 
+| entryType | string | 是 | Web: x; 支付宝小程序: x | 
 
 
 ##### 返回值 
@@ -191,16 +191,16 @@ getEntriesByType
 getEntriesByName
 获取当前缓冲区中所有名称为 \[name] 且类型为 \[entryType] 的性能数据
 ##### getEntriesByName 兼容性 <Help /> 
-| Web | 微信小程序 |
-| :- | :- |
-| x | 4.41 |
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | 4.41 | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| name | string | 是 | Web: x |
-| entryType | string | 是 | Web: x | 
+| name | string | 是 | Web: x; 支付宝小程序: x |
+| entryType | string | 是 | Web: x; 支付宝小程序: x | 
 
 
 ##### 返回值 
@@ -214,15 +214,15 @@ getEntriesByName
 setBufferSize
 设置缓冲区大小，默认缓冲 30 条性能数据
 ##### setBufferSize 兼容性 <Help /> 
-| Web | 微信小程序 |
-| :- | :- |
-| x | 4.41 |
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | 4.41 | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| size | number | 是 | Web: x | 
+| size | number | 是 | Web: x; 支付宝小程序: x | 
 
 
 
@@ -232,9 +232,9 @@ setBufferSize
 getEntries
 该方法返回当前列表中的所有性能数据
 ###### getEntries 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+| Web | 支付宝小程序 |
+| :- | :- |
+| x | x |
 
 
 
@@ -249,15 +249,15 @@ getEntries
 getEntriesByType
 获取当前列表中所有类型为 \[entryType] 的性能数据
 ###### getEntriesByType 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+| Web | 支付宝小程序 |
+| :- | :- |
+| x | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| entryType | string | 是 | Web: x | 
+| entryType | string | 是 | Web: x; 支付宝小程序: x | 
 
 
 ###### 返回值 
@@ -271,16 +271,16 @@ getEntriesByType
 getEntriesByName
 获取当前列表中所有名称为 \[name] 且类型为 \[entryType] 的性能数据
 ###### getEntriesByName 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+| Web | 支付宝小程序 |
+| :- | :- |
+| x | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| name | string | 是 | Web: x |
-| entryType | string | 是 | Web: x | 
+| name | string | 是 | Web: x; 支付宝小程序: x |
+| entryType | string | 是 | Web: x; 支付宝小程序: x | 
 
 
 ###### 返回值 
@@ -296,22 +296,22 @@ getEntriesByName
 observe
 开始监听
 ###### observe 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+| Web | 支付宝小程序 |
+| :- | :- |
+| x | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **PerformanceObserverOptions** | 是 | Web: x |
+| options | **PerformanceObserverOptions** | 是 | Web: x; 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| buffered | boolean | 否 | Web: x |
-| type | string | 否 | Web: x | 
+| buffered | boolean | 否 | Web: x; 支付宝小程序: x |
+| type | string | 否 | Web: x; 支付宝小程序: x | 
 
 
 
@@ -319,9 +319,9 @@ observe
 disconnect
 停止监听
 ###### disconnect 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+| Web | 支付宝小程序 |
+| :- | :- |
+| x | x |
 
 
 
@@ -330,8 +330,8 @@ disconnect
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| buffered | boolean | 否 | Web: x |
-| type | string | 否 | Web: x |
+| buffered | boolean | 否 | Web: x; 支付宝小程序: x |
+| type | string | 否 | Web: x; 支付宝小程序: x |
  
 
 
@@ -359,5 +359,5 @@ disconnect
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

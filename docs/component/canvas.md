@@ -16,9 +16,9 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.21 | 4.41 | 4.25 | 4.25 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.21 | 4.41 | 5.25 | 4.25 | 4.25 | 4.61 |
 
 
 * 截图或海报需求，无需像webview那样通过canvas中转，app平台view直接提供截图API，[takesnapshot](../dom/unielement.html#takesnapshot)。
@@ -36,17 +36,17 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| type | string |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(string)*<br/>指定 canvas 类型，支持 2d (2.9.0) 和 webgl (2.7.0) |
-| canvas-id | string |   | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: x | *(string)*<br/>canvas 组件的唯一标识符，若指定了 type 则无需再指定该属性 |
-| disable-scroll | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当在 canvas 中移动时且有绑定手势事件时，禁止屏幕滚动以及下拉刷新 |
+| type | string |   | Web: -; 微信小程序: 4.41; 支付宝小程序: 5.25; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(string)*<br/>指定 canvas 类型，支持 2d (2.9.0) 和 webgl (2.7.0) |
+| canvas-id | string |   | Web: -; 微信小程序: 4.41; 支付宝小程序: x; Android: -; iOS: -; HarmonyOS: x | *(string)*<br/>canvas 组件的唯一标识符，若指定了 type 则无需再指定该属性 |
+| disable-scroll | boolean |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当在 canvas 中移动时且有绑定手势事件时，禁止屏幕滚动以及下拉刷新 |
 | width | number | 0 | HarmonyOS(Vapor): 5.0 |   |
 | height | number | 0 | HarmonyOS(Vapor): 5.0 |   |
-| @touchstart | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸动作开始 |
-| @touchmove | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸后移动 |
-| @touchend | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸动作结束 |
-| @touchcancel | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸动作被打断，如来电提醒，弹窗 |
-| @longtap | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指长按 500ms 之后触发，触发了长按事件后进行移动不会触发屏幕的滚动 |
-| @error | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>当发生错误时触发 error 事件，detail = {errMsg} |
+| @touchstart | eventhandle |   | Web: 4.21; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸动作开始 |
+| @touchmove | eventhandle |   | Web: 4.21; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸后移动 |
+| @touchend | eventhandle |   | Web: 4.21; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸动作结束 |
+| @touchcancel | eventhandle |   | Web: 4.21; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸动作被打断，如来电提醒，弹窗 |
+| @longtap | eventhandle |   | Web: 4.21; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指长按 500ms 之后触发，触发了长按事件后进行移动不会触发屏幕的滚动 |
+| @error | eventhandle |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>当发生错误时触发 error 事件，detail = {errMsg} |
 
 注意：Android平台默认会开启硬件加速无需额外设置
 

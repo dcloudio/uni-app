@@ -18,9 +18,9 @@
 - [camera组件文档](../component/camera.md)
 
 ### createCameraContext 兼容性 <Help /> 
-| 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.41 | 4.61 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.41 | - | 4.61 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 
@@ -35,7 +35,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| offAndroidCameraOriginalFrame | any | 是 | 微信小程序: 4.41; HarmonyOS: x | 停止获取Android平台的原始帧数据 |
+| offAndroidCameraOriginalFrame | any | 是 | 微信小程序: 4.41; 支付宝小程序: -; HarmonyOS: x | 停止获取Android平台的原始帧数据 |
 #### CameraContext 的方法 @cameracontext-values 
 
 #### onCameraFrame(callback : (frame : CameraContextOnCameraFrame) => void) : CameraContextCameraFrameListener \| null; @oncameraframe
@@ -140,9 +140,9 @@ stop
 onAndroidCameraOriginalFrame
 获取Android平台的原始帧数据，**获取到了ImageProxy使用后一定要close，否则App会触发崩溃
 ##### onAndroidCameraOriginalFrame 兼容性 <Help /> 
-| 微信小程序 | HarmonyOS |
-| :- | :- |
-| 4.41 | x |
+| 微信小程序 | 支付宝小程序 | HarmonyOS |
+| :- | :- | :- |
+| 4.41 | - | x |
 
 ##### 参数 
 
@@ -156,9 +156,9 @@ onAndroidCameraOriginalFrame
 getCurrentZoom
 获取当前缩放级别
 ##### getCurrentZoom 兼容性 <Help /> 
-| 微信小程序 | HarmonyOS |
-| :- | :- |
-| 4.41 | x |
+| 微信小程序 | 支付宝小程序 | HarmonyOS |
+| :- | :- | :- |
+| 4.41 | - | x |
 
 
 
@@ -647,5 +647,5 @@ timeoutCallback
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

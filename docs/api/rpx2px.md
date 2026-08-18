@@ -13,16 +13,16 @@
 将rpx单位值转换成px
 
 ### rpx2px 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.02 | 4.41 | 4.02 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.02 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.02 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| number | number | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| number | number | 是 | 支付宝小程序: x | 
 
 
 ### 返回值 
@@ -132,5 +132,5 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

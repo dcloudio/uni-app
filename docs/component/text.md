@@ -10,9 +10,9 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
 
 
 在app-uvue和app-nvue中，文本只能写在text中，而不能写在view的text区域。文本样式的控制也应该在text组件上写style，而不是在view的样式里写。
@@ -22,16 +22,16 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.24 | 文本是否可选，蒸汽模式（Vapor）推荐使用user-select替换 |
-| space | string |   | Web: 4.0; 微信小程序: -; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 显示连续空格，App平台蒸汽模式（Vapor）已废弃此属性 |
-| decode | boolean | false | Web: 4.0; 微信小程序: -; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 是否解码，App平台蒸汽模式（Vapor）已废弃此属性 |
-| user-select | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.11; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.24 | 文本是否可选，Web平台该属性会使文本节点显示为 inline-block，App平台弹出"复制"菜单 |
-| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "none" | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
-| hover-stop-propagation | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态(祖先节点：指根节点到该节点路径上的所有节点都是这个节点的祖先节点) |
-| hover-start-time | number | 50 | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 按住后多久出现点击态，单位毫秒 |
-| hover-stay-time | number | 400 | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 手指松开后点击态保留时间，单位毫秒 |
-| max-lines | number |   | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 文本的最大行数，默认不限制最大行数 |
-| flatten | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
+| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.24 | 文本是否可选，蒸汽模式（Vapor）推荐使用user-select替换 |
+| space | string |   | Web: 4.0; 微信小程序: -; 支付宝小程序: 5.25; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 显示连续空格，App平台蒸汽模式（Vapor）已废弃此属性 |
+| decode | boolean | false | Web: 4.0; 微信小程序: -; 支付宝小程序: 5.25; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 是否解码，App平台蒸汽模式（Vapor）已废弃此属性 |
+| user-select | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.11; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.24 | 文本是否可选，Web平台该属性会使文本节点显示为 inline-block，App平台弹出"复制"菜单 |
+| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "none" | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
+| hover-stop-propagation | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态(祖先节点：指根节点到该节点路径上的所有节点都是这个节点的祖先节点) |
+| hover-start-time | number | 50 | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 按住后多久出现点击态，单位毫秒 |
+| hover-stay-time | number | 400 | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 手指松开后点击态保留时间，单位毫秒 |
+| max-lines | number |   | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 文本的最大行数，默认不限制最大行数 |
+| flatten | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
 
 #### space 的属性描述
 
@@ -174,7 +174,7 @@ web的默认值preline，虽然支持\n换行，同时会合并\n以外的其他
 ### 子组件 @children-tags
 | 子组件 | 兼容性 |
 | :- | :- |
-| [text](text.md) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| [text](text.md) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 
 text组件在web浏览器渲染（含浏览器、小程序webview渲染模式、app-vue）和uvue中，可以并只能嵌套text组件。
 

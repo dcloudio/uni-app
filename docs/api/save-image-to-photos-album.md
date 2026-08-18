@@ -13,56 +13,56 @@
 保存图片到系统相册
 
 ### saveImageToPhotosAlbum 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **SaveImageToPhotosAlbumOptions** | 是 | Web: x |
+| options | **SaveImageToPhotosAlbumOptions** | 是 | Web: x; 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 图片文件路径，可以是临时文件路径也可以是永久文件路径，不支持网络图片路径 |
-| success | (callback: [SaveImageToPhotosAlbumSuccess](#saveimagetophotosalbumsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 接口调用成功的回调函数 |
-| fail | (callback: [SaveImageToPhotosAlbumFail](#saveimagetophotosalbumfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| filePath | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 图片文件路径，可以是临时文件路径也可以是永久文件路径，不支持网络图片路径 |
+| success | (callback: [SaveImageToPhotosAlbumSuccess](#saveimagetophotosalbumsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 接口调用成功的回调函数 |
+| fail | (callback: [SaveImageToPhotosAlbumFail](#saveimagetophotosalbumfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### SaveImageToPhotosAlbumSuccess 的属性值 @saveimagetophotosalbumsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | 是 | Web: x; Android: 3.9; iOS: 4.11 | 保存到相册的图片路径 |
+| path | string | 是 | Web: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 保存到相册的图片路径 |
 
 #### SaveImageToPhotosAlbumFail 的属性值 @saveimagetophotosalbumfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x | 错误码 |
-| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1101001 | Web: x | 用户取消 |
-| 1101002 | Web: x | urls至少包含一张图片地址 |
-| 1101003 | Web: x | 文件不存在 |
-| 1101004 | Web: x | 图片加载失败 |
-| 1101005 | Web: x | 未获取权限 |
-| 1101006 | Web: x | 图片或视频保存失败 |
-| 1101007 | Web: x | 图片裁剪失败 |
-| 1101008 | Web: x | 拍照或录像失败 |
-| 1101009 | Web: x | 图片压缩失败 |
-| 1101010 | Web: x | 其他错误 |
+| 1101001 | Web: x; 支付宝小程序: x | 用户取消 |
+| 1101002 | Web: x; 支付宝小程序: x | urls至少包含一张图片地址 |
+| 1101003 | Web: x; 支付宝小程序: x | 文件不存在 |
+| 1101004 | Web: x; 支付宝小程序: x | 图片加载失败 |
+| 1101005 | Web: x; 支付宝小程序: x | 未获取权限 |
+| 1101006 | Web: x; 支付宝小程序: x | 图片或视频保存失败 |
+| 1101007 | Web: x; 支付宝小程序: x | 图片裁剪失败 |
+| 1101008 | Web: x; 支付宝小程序: x | 拍照或录像失败 |
+| 1101009 | Web: x; 支付宝小程序: x | 图片压缩失败 |
+| 1101010 | Web: x; 支付宝小程序: x | 其他错误 |
 
 
 
@@ -170,5 +170,5 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

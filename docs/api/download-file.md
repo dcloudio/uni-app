@@ -13,99 +13,99 @@
 下载文件资源到本地，客户端直接发起一个 HTTP GET 请求，返回文件的本地临时路径。
 
 ### downloadFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
 
 
 下载文件常见场景是apk的下载更新，[app升级中心](https://doc.dcloud.net.cn/uniCloud/upgrade-center.html)是一个现成的开源项目，实现下载进度在通知栏显示等复杂交互，可直接使用。
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **DownloadFileOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **DownloadFileOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载资源的 url |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | HTTP 请求 Header，header 中不能设置 Referer |
-| filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 指定文件下载路径<br/>支持相对路径与绝对路径，例：<br/>`/imgs/pic.png`、`/storage/emulated/0/Android/data/io.dcloud.HBuilder/apps/HBuilder/temp/imgs/pic.png`<br/>并且支持指定下载目录，例：<br/>`/imgs/`<br/>支持uni.env的平台兼容性：Android自3.9开始支持uni.env，iOS自4.13开始支持uni.env |
-| timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
-| success | (result: [DownloadFileSuccess](#downloadfilesuccess-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载成功后以 tempFilePath 的形式传给页面，res = {tempFilePath: '文件的临时路径'} |
-| fail | (result: [DownloadFileFail](#downloadfilefail-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 失败的回调函数 |
-| complete | (result: any) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） |
-| enableHttp2 | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>是否开启 http2<br/> |
-| enableProfile | boolean | 否 |  | 微信小程序: 4.41 | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。<br/> |
-| enableQuic | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>是否开启 Quic/h3 协议（iOS 微信目前使用 gQUIC-Q43；Android 微信在 v8.0.54 前使用 gQUIC-Q43，v8.0.54 开始使用 IETF QUIC，即 h3 协议；PC微信使用 IETF QUIC，即 h3 协议）<br/> |
-| useHighPerformanceMode | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `3.4.1`<br/><br/>使用高性能模式，暂仅支持 Android，默认关闭。该模式下有更优的网络性能表现。<br/> | 
+| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载资源的 url |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11 | HTTP 请求 Header，header 中不能设置 Referer |
+| filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 指定文件下载路径<br/>支持相对路径与绝对路径，例：<br/>`/imgs/pic.png`、`/storage/emulated/0/Android/data/io.dcloud.HBuilder/apps/HBuilder/temp/imgs/pic.png`<br/>并且支持指定下载目录，例：<br/>`/imgs/`<br/>支持uni.env的平台兼容性：Android自3.9开始支持uni.env，iOS自4.13开始支持uni.env |
+| timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
+| success | (result: [DownloadFileSuccess](#downloadfilesuccess-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载成功后以 tempFilePath 的形式传给页面，res = {tempFilePath: '文件的临时路径'} |
+| fail | (result: [DownloadFileFail](#downloadfilefail-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 失败的回调函数 |
+| complete | (result: any) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） |
+| enableHttp2 | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.10.4`<br/><br/>是否开启 http2<br/> |
+| enableProfile | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。<br/> |
+| enableQuic | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.10.4`<br/><br/>是否开启 Quic/h3 协议（iOS 微信目前使用 gQUIC-Q43；Android 微信在 v8.0.54 前使用 gQUIC-Q43，v8.0.54 开始使用 IETF QUIC，即 h3 协议；PC微信使用 IETF QUIC，即 h3 协议）<br/> |
+| useHighPerformanceMode | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `3.4.1`<br/><br/>使用高性能模式，暂仅支持 Android，默认关闭。该模式下有更优的网络性能表现。<br/> | 
 
 #### DownloadFileSuccess 的属性值 @downloadfilesuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 临时文件路径，下载后的文件会存储到一个临时文件 |
-| statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
-| filePath | string | 否 | 微信小程序: 4.41 | 用户文件路径 (本地路径)。传入 filePath 时会返回，跟传入的 filePath 一致<br/> |
-| profile | **DownloadFileSuccessProfile** | 否 | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>网络请求过程中一些调试信息，[查看详细说明](https://developers.weixin.qq.com/miniprogram/dev/framework/performance/network.html)<br/> |
+| tempFilePath | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 临时文件路径，下载后的文件会存储到一个临时文件 |
+| statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
+| filePath | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 用户文件路径 (本地路径)。传入 filePath 时会返回，跟传入的 filePath 一致<br/> |
+| profile | **DownloadFileSuccessProfile** | 否 | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.10.4`<br/><br/>网络请求过程中一些调试信息，[查看详细说明](https://developers.weixin.qq.com/miniprogram/dev/framework/performance/network.html)<br/> |
 
 #### profile 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| SSLconnectionEnd | number | 否 | 微信小程序: 4.41 | SSL建立完成的时间,如果不是安全连接,则值为 0<br/> |
-| SSLconnectionStart | number | 否 | 微信小程序: 4.41 | SSL建立连接的时间,如果不是安全连接,则值为 0<br/> |
-| connectEnd | number | 否 | 微信小程序: 4.41 | HTTP（TCP） 完成建立连接的时间（完成握手），如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接完成的时间。注意这里握手结束，包括安全连接建立完成、SOCKS 授权通过<br/> |
-| connectStart | number | 否 | 微信小程序: 4.41 | HTTP（TCP） 开始建立连接的时间，如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接开始的时间<br/> |
-| domainLookUpEnd | number | 否 | 微信小程序: 4.41 | DNS 域名查询完成的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等<br/> |
-| domainLookUpStart | number | 否 | 微信小程序: 4.41 | DNS 域名查询开始的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等<br/> |
-| downstreamThroughputKbpsEstimate | number | 否 | 微信小程序: 4.41 | 评估当前网络下载的kbps<br/> |
-| estimate_nettype | number | 否 | 微信小程序: 4.41 | 评估的网络状态 unknown, offline, slow 2g, 2g, 3g, 4g, last/0, 1, 2, 3, 4, 5, 6<br/> |
-| fetchStart | number | 否 | 微信小程序: 4.41 | 组件准备好使用 HTTP 请求抓取资源的时间，这发生在检查本地缓存之前<br/> |
-| httpRttEstimate | number | 否 | 微信小程序: 4.41 | 协议层根据多个请求评估当前网络的 rtt（仅供参考）<br/> |
-| peerIP | string | 否 | 微信小程序: 4.41 | 当前请求的IP<br/> |
-| port | number | 否 | 微信小程序: 4.41 | 当前请求的端口<br/> |
-| protocol | string | 否 | 微信小程序: 4.41 | 使用协议类型，有效值：http1.1, h2, quic, unknown<br/> |
-| receivedBytedCount | number | 否 | 微信小程序: 4.41 | 收到字节数<br/> |
-| redirectEnd | number | 否 | 微信小程序: 4.41 | 最后一个 HTTP 重定向完成时的时间。有跳转且是同域名内部的重定向才算，否则值为 0<br/> |
-| redirectStart | number | 否 | 微信小程序: 4.41 | 第一个 HTTP 重定向发生时的时间。有跳转且是同域名内的重定向才算，否则值为 0<br/> |
-| requestEnd | number | 否 | 微信小程序: 4.41 | HTTP请求读取真实文档结束的时间<br/> |
-| requestStart | number | 否 | 微信小程序: 4.41 | HTTP请求读取真实文档开始的时间（完成建立连接），包括从本地读取缓存。连接错误重连时，这里显示的也是新建立连接的时间<br/> |
-| responseEnd | number | 否 | 微信小程序: 4.41 | HTTP 响应全部接收完成的时间（获取到最后一个字节），包括从本地读取缓存<br/> |
-| responseStart | number | 否 | 微信小程序: 4.41 | HTTP 开始接收响应的时间（获取到第一个字节），包括从本地读取缓存<br/> |
-| rtt | number | 否 | 微信小程序: 4.41 | 当次请求连接过程中实时 rtt<br/> |
-| sendBytesCount | number | 否 | 微信小程序: 4.41 | 发送的字节数<br/> |
-| socketReused | boolean | 否 | 微信小程序: 4.41 | 是否复用连接<br/> |
-| throughputKbps | number | 否 | 微信小程序: 4.41 | 当前网络的实际下载kbps<br/> |
-| transportRttEstimate | number | 否 | 微信小程序: 4.41 | 传输层根据多个请求评估的当前网络的 rtt（仅供参考）<br/> |
-| usingHighPerformanceMode | boolean | 否 | 微信小程序: 4.41 | 是否走到了高性能模式。基础库 v3.3.4 起支持。<br/> |
+| SSLconnectionEnd | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | SSL建立完成的时间,如果不是安全连接,则值为 0<br/> |
+| SSLconnectionStart | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | SSL建立连接的时间,如果不是安全连接,则值为 0<br/> |
+| connectEnd | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | HTTP（TCP） 完成建立连接的时间（完成握手），如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接完成的时间。注意这里握手结束，包括安全连接建立完成、SOCKS 授权通过<br/> |
+| connectStart | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | HTTP（TCP） 开始建立连接的时间，如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接开始的时间<br/> |
+| domainLookUpEnd | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | DNS 域名查询完成的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等<br/> |
+| domainLookUpStart | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | DNS 域名查询开始的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等<br/> |
+| downstreamThroughputKbpsEstimate | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 评估当前网络下载的kbps<br/> |
+| estimate_nettype | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 评估的网络状态 unknown, offline, slow 2g, 2g, 3g, 4g, last/0, 1, 2, 3, 4, 5, 6<br/> |
+| fetchStart | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 组件准备好使用 HTTP 请求抓取资源的时间，这发生在检查本地缓存之前<br/> |
+| httpRttEstimate | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 协议层根据多个请求评估当前网络的 rtt（仅供参考）<br/> |
+| peerIP | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 当前请求的IP<br/> |
+| port | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 当前请求的端口<br/> |
+| protocol | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 使用协议类型，有效值：http1.1, h2, quic, unknown<br/> |
+| receivedBytedCount | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 收到字节数<br/> |
+| redirectEnd | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最后一个 HTTP 重定向完成时的时间。有跳转且是同域名内部的重定向才算，否则值为 0<br/> |
+| redirectStart | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 第一个 HTTP 重定向发生时的时间。有跳转且是同域名内的重定向才算，否则值为 0<br/> |
+| requestEnd | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | HTTP请求读取真实文档结束的时间<br/> |
+| requestStart | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | HTTP请求读取真实文档开始的时间（完成建立连接），包括从本地读取缓存。连接错误重连时，这里显示的也是新建立连接的时间<br/> |
+| responseEnd | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | HTTP 响应全部接收完成的时间（获取到最后一个字节），包括从本地读取缓存<br/> |
+| responseStart | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | HTTP 开始接收响应的时间（获取到第一个字节），包括从本地读取缓存<br/> |
+| rtt | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 当次请求连接过程中实时 rtt<br/> |
+| sendBytesCount | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 发送的字节数<br/> |
+| socketReused | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: x | 是否复用连接<br/> |
+| throughputKbps | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 当前网络的实际下载kbps<br/> |
+| transportRttEstimate | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 传输层根据多个请求评估的当前网络的 rtt（仅供参考）<br/> |
+| usingHighPerformanceMode | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: x | 是否走到了高性能模式。基础库 v3.3.4 起支持。<br/> |
 
 #### DownloadFileFail 的属性值 @downloadfilefail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 5 | 接口超时 |
-| 1000 | 服务端系统错误 |
-| 100001 | json数据解析错误 |
-| 100002 | 错误信息json解析失败 |
-| 100003 | json解析类型转换失败 |
-| 600003 | 网络中断 |
-| 600008 | data参数类型不合法 |
-| 600009 | URL格式不合法 |
-| 600010 | Cronet模块加载失败 |
-| 602001 | request系统错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 5 | 支付宝小程序: x | 接口超时 |
+| 1000 | 支付宝小程序: x | 服务端系统错误 |
+| 100001 | 支付宝小程序: x | json数据解析错误 |
+| 100002 | 支付宝小程序: x | 错误信息json解析失败 |
+| 100003 | 支付宝小程序: x | json解析类型转换失败 |
+| 600003 | 支付宝小程序: x | 网络中断 |
+| 600008 | 支付宝小程序: x | data参数类型不合法 |
+| 600009 | 支付宝小程序: x | URL格式不合法 |
+| 600010 | 支付宝小程序: x | Cronet模块加载失败 |
+| 602001 | 支付宝小程序: x | request系统错误 |
 
 
 ### 注意事项
@@ -127,9 +127,9 @@
 abort
 中断下载任务
 ##### abort 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | 3.91 | 4.11 | 4.61 |
 
 
 
@@ -138,23 +138,23 @@ abort
 onProgressUpdate
 监听下载进度变化。
 ##### onProgressUpdate 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | 3.91 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: [OnProgressDownloadResult](#onprogressdownloadresult-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnProgressDownloadResult](#onprogressdownloadresult-values)) => void | 是 | 支付宝小程序: x | 
 
 ##### OnProgressDownloadResult 的属性值 @onprogressdownloadresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载进度百分比 |
-| totalBytesWritten | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 已经下载的数据长度，单位 Bytes |
-| totalBytesExpectedToWrite | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 预期需要下载的数据总长度，单位 Bytes |
+| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载进度百分比 |
+| totalBytesWritten | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 已经下载的数据长度，单位 Bytes |
+| totalBytesExpectedToWrite | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 预期需要下载的数据总长度，单位 Bytes |
 
 
 
@@ -162,9 +162,9 @@ onProgressUpdate
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载进度百分比 |
-| totalBytesWritten | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 已经下载的数据长度，单位 Bytes |
-| totalBytesExpectedToWrite | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 预期需要下载的数据总长度，单位 Bytes |
+| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载进度百分比 |
+| totalBytesWritten | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 已经下载的数据长度，单位 Bytes |
+| totalBytesExpectedToWrite | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 预期需要下载的数据总长度，单位 Bytes |
  
 
 
@@ -487,7 +487,7 @@ task = uni.downloadFile({
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
 
 ## tips

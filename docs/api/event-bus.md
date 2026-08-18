@@ -15,17 +15,17 @@
 
 
 ### $on 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.31 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| eventName | string | 是 | 事件名称 |
-| callback | () => void | 是 | 事件回调 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| eventName | string | 是 | 支付宝小程序: x | 事件名称 |
+| callback | () => void | 是 | 支付宝小程序: x | 事件回调 | 
 
 
 ### 返回值 
@@ -60,17 +60,17 @@
 4.31+ 开始第二个参数的类型由 `Function | null` 调整为 `any | null`, 支持传入 `uni.$on`、`uni.$once` 返回的事件监听器 id, 移除指定事件监听器。
 
 ### $off 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.31 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| eventName | string | 是 | 事件名称 |
-| callback | any | 否 | 要移除的事件回调或事件监听器 id | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| eventName | string | 是 | 支付宝小程序: x | 事件名称 |
+| callback | any | 否 | 支付宝小程序: x | 要移除的事件回调或事件监听器 id | 
 
 
 
@@ -99,17 +99,17 @@
 
 
 ### $once 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.31 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| eventName | string | 是 | 事件名称 |
-| callback | () => void | 是 | 事件回调 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| eventName | string | 是 | 支付宝小程序: x | 事件名称 |
+| callback | () => void | 是 | 支付宝小程序: x | 事件回调 | 
 
 
 ### 返回值 
@@ -143,17 +143,17 @@
 在iOS平台UTS环境下或者UTS和JS通信时参数仅支持基础类型、string、Array、UTSJSONObject,其中Array，UTSJSONObject也仅支持包含上述类型,on和emit类型需匹配否则会产生异常
 
 ### $emit 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.31 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| eventName | string | 是 | 事件名称 |
-| args | Array&lt;any&gt; | 否 | 触发事件时传递的参数 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| eventName | string | 是 | 支付宝小程序: x | 事件名称 |
+| args | Array&lt;any&gt; | 否 | 支付宝小程序: x | 触发事件时传递的参数 | 
 
 
 
@@ -336,7 +336,7 @@ uni.$emit('fn', {"a": 1} as UTSJSONObject)
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
 
 ## Tips

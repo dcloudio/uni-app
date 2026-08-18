@@ -13,9 +13,9 @@
 录音管理
 
 ### getRecorderManager 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | 4.61 | 4.61 |
 
 
 web平台可通过插件拉齐，[详见](https://ext.dcloud.net.cn/search?q=getRecorderManager&orderBy=Relevance&cat1=4&cat2=41&uni-app-platforms=&uni-app-x-platforms=)
@@ -34,36 +34,36 @@ web平台可通过插件拉齐，[详见](https://ext.dcloud.net.cn/search?q=get
 start
 开始录音
 ##### start 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 4.61 | 4.61 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **RecorderManagerStartOptions** | 是 | Web: x |
+| options | **RecorderManagerStartOptions** | 是 | Web: x; 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| duration | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 指定录音的时长，单位 ms ，如果传入了合法的 duration ，在到达指定的 duration 后会自动停止录音，默认值 60000（1 分钟)，微信小程序最大值 600000（10 分钟), App 平台没有最大值限制 |
-| sampleRate | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率，有效值 8000/16000/44100, Android平台默认是8000，iOS平台默认是44100 |
-| numberOfChannels | number | 否 | 2 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: x; HarmonyOS: 4.61 | 录音通道数，有效值 1/2 |
-| encodeBitRate | number | 否 | 48000 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 编码码率，有效值见下表格 |
-| format | string | 否 | aac | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 音频格式 |
-| frameSize | number | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 指定帧大小，单位 KB。传入 frameSize 后，每录制指定帧大小的内容后，会回调录制的文件内容，不指定则不会回调。暂仅支持 mp3 格式。 | 
+| duration | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 指定录音的时长，单位 ms ，如果传入了合法的 duration ，在到达指定的 duration 后会自动停止录音，默认值 60000（1 分钟)，微信小程序最大值 600000（10 分钟), App 平台没有最大值限制 |
+| sampleRate | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率，有效值 8000/16000/44100, Android平台默认是8000，iOS平台默认是44100 |
+| numberOfChannels | number | 否 | 2 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: 4.61 | 录音通道数，有效值 1/2 |
+| encodeBitRate | number | 否 | 48000 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 编码码率，有效值见下表格 |
+| format | string | 否 | aac | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 音频格式 |
+| frameSize | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 指定帧大小，单位 KB。传入 frameSize 后，每录制指定帧大小的内容后，会回调录制的文件内容，不指定则不会回调。暂仅支持 mp3 格式。 | 
 
 ##### format 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| aac | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | aac格式 |
-| mp3 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: x; HarmonyOS: 4.61 | mp3格式 |
-| pcm | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | pcm格式 |
-| wav | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | wav格式 |
-| m4a | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | m4a格式 |
+| aac | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | aac格式 |
+| mp3 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: 4.61 | mp3格式 |
+| pcm | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | pcm格式 |
+| wav | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | wav格式 |
+| m4a | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | m4a格式 |
 
 
 
@@ -71,9 +71,9 @@ start
 pause
 暂停录音,App-Android平台在Android 7.0及以后版本支持
 ##### pause 兼容性 <Help /> 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 7.0 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 7.0 | 4.61 | 4.61 | 4.61 |
 
 
 
@@ -82,9 +82,9 @@ pause
 resume
 继续录音，App-Android平台在Android 7.0及以后版本支持
 ##### resume 兼容性 <Help /> 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 7.0 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 7.0 | 4.61 | 4.61 | 4.61 |
 
 
 
@@ -93,9 +93,9 @@ resume
 stop
 停止录音
 ##### stop 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 4.61 | 4.61 | 4.61 |
 
 
 
@@ -104,15 +104,15 @@ stop
 onStart
 录音开始事件
 ##### onStart 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 4.61 | 4.61 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x | 
+| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
 
 
 
@@ -120,9 +120,9 @@ onStart
 offStart
 取消监听录音开始事件
 ##### offStart 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 5.0 | 5.0 | 5.0 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 5.0 | 5.0 | 5.0 |
 
 
 
@@ -131,15 +131,15 @@ offStart
 onPause
 录音暂停事件,App-Android平台在Android 7.0及以后版本支持
 ##### onPause 兼容性 <Help /> 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 7.0 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 7.0 | 4.61 | 4.61 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x | 
+| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
 
 
 
@@ -147,9 +147,9 @@ onPause
 offPause
 取消监听录音暂停事件
 ##### offPause 兼容性 <Help /> 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 7.0 | 5.0 | 5.0 | 5.0 |
+| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 7.0 | 5.0 | 5.0 | 5.0 |
 
 
 
@@ -158,21 +158,21 @@ offPause
 onStop
 录音停止事件，会回调文件地址
 ##### onStop 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 4.61 | 4.61 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: [RecorderManagerOnStopResult](#recordermanageronstopresult-values)) => void | 是 | Web: x | 
+| options | (result: [RecorderManagerOnStopResult](#recordermanageronstopresult-values)) => void | 是 | Web: x; 支付宝小程序: x | 
 
 ##### RecorderManagerOnStopResult 的属性值 @recordermanageronstopresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 录音文件的临时路径 |
+| tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 录音文件的临时路径 |
 
 
 
@@ -180,9 +180,9 @@ onStop
 offStop
 取消监听录音停止事件
 ##### offStop 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 5.0 | 5.0 | 5.0 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 5.0 | 5.0 | 5.0 |
 
 
 
@@ -191,15 +191,15 @@ offStop
 onFrameRecorded
 已录制完指定帧大小的文件，会回调录音分片结果数据。如果设置了 frameSize ，则会回调此事件
 ##### onFrameRecorded 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | x | x | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | x | x | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x | 
+| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
 
 
 
@@ -207,9 +207,9 @@ onFrameRecorded
 offFrameRecorded
 取消监听帧回调事件
 ##### offFrameRecorded 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | x | x | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | x | x | x |
 
 
 
@@ -218,38 +218,38 @@ offFrameRecorded
 onError
 录音错误事件, 会回调错误信息
 ##### onError 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 4.61 | 4.61 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: [IRecorderManagerFail](#irecordermanagerfail-values)) => void | 是 | Web: x | 
+| options | (result: [IRecorderManagerFail](#irecordermanagerfail-values)) => void | 是 | Web: x; 支付宝小程序: x | 
 
 ##### IRecorderManagerFail 的属性值 @irecordermanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x | 错误码 |
-| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1107601 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 没有麦克风权限 |
-| 1107602 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该采样率 |
-| 1107603 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率和编码码率不匹配 |
-| 1107604 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 启动失败 |
-| 1107605 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该音频格式 |
-| 1107606 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 其他错误 |
-| 1107607 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 被打断 |
-| 1107608 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: x; HarmonyOS: x | 正在录音中，请稍后执行此操作 |
+| 1107601 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 没有麦克风权限 |
+| 1107602 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该采样率 |
+| 1107603 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率和编码码率不匹配 |
+| 1107604 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 启动失败 |
+| 1107605 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该音频格式 |
+| 1107606 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 其他错误 |
+| 1107607 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 被打断 |
+| 1107608 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 正在录音中，请稍后执行此操作 |
 
 
 
@@ -257,9 +257,9 @@ onError
 offError
 取消监听录音错误事件
 ##### offError 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 5.0 | 5.0 | 5.0 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 5.0 | 5.0 | 5.0 |
 
 
 
@@ -268,15 +268,15 @@ offError
 onResume
 监听录音继续事件,App-Android平台在Android 7.0及以后版本支持
 ##### onResume 兼容性 <Help /> 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 7.0 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 7.0 | 4.61 | 4.61 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x | 
+| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
 
 
 
@@ -284,9 +284,9 @@ onResume
 offResume
 取消监听录音继续事件
 ##### offResume 兼容性 <Help /> 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 7.0 | 5.0 | 5.0 | 5.0 |
+| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 7.0 | 5.0 | 5.0 | 5.0 |
 
 
 
@@ -295,15 +295,15 @@ offResume
 onInterruptionBegin
 监听录音因为受到系统占用而被中断开始事件
 ##### onInterruptionBegin 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 4.61 | 4.61 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x | 
+| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
 
 
 
@@ -311,9 +311,9 @@ onInterruptionBegin
 offInterruptionBegin
 取消监听录音因为受到系统占用而被中断开始事件
 ##### offInterruptionBegin 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 5.0 | 5.0 | 5.0 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 5.0 | 5.0 | 5.0 |
 
 
 
@@ -322,15 +322,15 @@ offInterruptionBegin
 onInterruptionEnd
 监听录音中断结束事件
 ##### onInterruptionEnd 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 4.61 | 4.61 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x | 
+| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
 
 
 
@@ -338,9 +338,9 @@ onInterruptionEnd
 offInterruptionEnd
 取消监听录音中断结束事件
 ##### offInterruptionEnd 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 5.0 | 5.0 | 5.0 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | 5.0 | 5.0 | 5.0 |
 
 
 
@@ -349,51 +349,51 @@ offInterruptionEnd
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| duration | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 指定录音的时长，单位 ms ，如果传入了合法的 duration ，在到达指定的 duration 后会自动停止录音，默认值 60000（1 分钟)，微信小程序最大值 600000（10 分钟), App 平台没有最大值限制 |
-| sampleRate | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率，有效值 8000/16000/44100, Android平台默认是8000，iOS平台默认是44100 |
-| numberOfChannels | number | 否 | 2 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: x; HarmonyOS: 4.61 | 录音通道数，有效值 1/2 |
-| encodeBitRate | number | 否 | 48000 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 编码码率，有效值见下表格 |
-| format | string | 否 | aac | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 音频格式 |
-| frameSize | number | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 指定帧大小，单位 KB。传入 frameSize 后，每录制指定帧大小的内容后，会回调录制的文件内容，不指定则不会回调。暂仅支持 mp3 格式。 |
+| duration | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 指定录音的时长，单位 ms ，如果传入了合法的 duration ，在到达指定的 duration 后会自动停止录音，默认值 60000（1 分钟)，微信小程序最大值 600000（10 分钟), App 平台没有最大值限制 |
+| sampleRate | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率，有效值 8000/16000/44100, Android平台默认是8000，iOS平台默认是44100 |
+| numberOfChannels | number | 否 | 2 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: 4.61 | 录音通道数，有效值 1/2 |
+| encodeBitRate | number | 否 | 48000 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 编码码率，有效值见下表格 |
+| format | string | 否 | aac | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 音频格式 |
+| frameSize | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 指定帧大小，单位 KB。传入 frameSize 后，每录制指定帧大小的内容后，会回调录制的文件内容，不指定则不会回调。暂仅支持 mp3 格式。 |
 
 #### format 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| aac | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | aac格式 |
-| mp3 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: x; HarmonyOS: 4.61 | mp3格式 |
-| pcm | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | pcm格式 |
-| wav | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | wav格式 |
-| m4a | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | m4a格式 |
+| aac | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | aac格式 |
+| mp3 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: 4.61 | mp3格式 |
+| pcm | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | pcm格式 |
+| wav | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | wav格式 |
+| m4a | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | m4a格式 |
 
 ##### RecorderManagerOnStopResult 的属性值 @recordermanageronstopresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 录音文件的临时路径 |
+| tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 录音文件的临时路径 |
 
 ##### IRecorderManagerFail 的属性值 @irecordermanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x | 错误码 |
-| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1107601 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 没有麦克风权限 |
-| 1107602 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该采样率 |
-| 1107603 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率和编码码率不匹配 |
-| 1107604 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 启动失败 |
-| 1107605 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该音频格式 |
-| 1107606 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 其他错误 |
-| 1107607 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 被打断 |
-| 1107608 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: x; HarmonyOS: x | 正在录音中，请稍后执行此操作 |
+| 1107601 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 没有麦克风权限 |
+| 1107602 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该采样率 |
+| 1107603 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 采样率和编码码率不匹配 |
+| 1107604 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 启动失败 |
+| 1107605 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 不支持该音频格式 |
+| 1107606 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 其他错误 |
+| 1107607 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 被打断 |
+| 1107608 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 正在录音中，请稍后执行此操作 |
  
 
 
@@ -867,5 +867,5 @@ offInterruptionEnd
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
