@@ -233,16 +233,16 @@ function initNavigationBarI18n(navigationBar) {
     ]);
   }
 }
-function initTabBarI18n(tabBar2) {
-  if (isEnableLocale() && tabBar2.list) {
-    tabBar2.list.forEach((item) => {
+function initTabBarI18n(tabBar) {
+  if (isEnableLocale() && tabBar.list) {
+    tabBar.list.forEach((item) => {
       defineI18nProperty(item, ["text"]);
     });
   }
-  if (isEnableLocale() && tabBar2.midButton) {
-    defineI18nProperty(tabBar2.midButton, ["text"]);
+  if (isEnableLocale() && tabBar.midButton) {
+    defineI18nProperty(tabBar.midButton, ["text"]);
   }
-  return tabBar2;
+  return tabBar;
 }
 function initBridge(subscribeNamespace) {
   const emitter = new uniShared.Emitter();
@@ -2896,11 +2896,67 @@ function handleBeforeEntryPageRoutes() {
     navigate(args).then(resolve).catch(reject);
   });
 }
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && vue.reactive(initTabBarI18n(__uniConfig.tabBar));
+function getTheme() {
+  if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
+    return void 0;
+  if (__uniConfig.darkmode !== true)
+    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
   }
+}
+function onThemeChange(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
+  }
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = uniShared.normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactivity = vue.isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
+    vue.watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
+  return reactivePageStyle;
+}
+let _tabBar;
+function useTabBar() {
+  if (!_tabBar) {
+    _tabBar = __uniConfig.tabBar && vue.reactive(initTabBarI18n(__uniConfig.tabBar));
+  }
+  const tabBar = useTheme(_tabBar, () => {
+    const tabBarStyle = parseTheme(_tabBar);
+    tabBar.backgroundColor = tabBarStyle.backgroundColor;
+    tabBar.borderStyle = tabBarStyle.borderStyle;
+    tabBar.color = tabBarStyle.color;
+    tabBar.selectedColor = tabBarStyle.selectedColor;
+    tabBar.blurEffect = tabBarStyle.blurEffect;
+    tabBar.midButton = tabBarStyle.midButton;
+    if (tabBarStyle.list && tabBarStyle.list.length) {
+      tabBarStyle.list.forEach((item, index2) => {
+        tabBar.list[index2].iconPath = item.iconPath;
+        tabBar.list[index2].selectedIconPath = item.selectedIconPath;
+      });
+    }
+  });
   return tabBar;
 }
 const envMethod = /* @__PURE__ */ (() => "env")();
@@ -3514,47 +3570,6 @@ function useDocumentTitle(pageMeta) {
     updateDocumentTitle(pageMeta.navigationBar.titleText);
   }
   vue.watchEffect(update);
-}
-function getTheme() {
-  if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
-    return void 0;
-  if (__uniConfig.darkmode !== true)
-    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
-  try {
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  } catch (error) {
-    return "light";
-  }
-}
-function onThemeChange(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
-  }
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = uniShared.normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactivity = vue.isReactive(pageStyle);
-  const reactivePageStyle = isReactivity ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactivity) {
-    vue.watch(pageStyle, (value) => {
-      const _pageStyle = parseTheme(value);
-      for (const key in _pageStyle) {
-        reactivePageStyle[key] = _pageStyle[key];
-      }
-    });
-  }
-  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
-  return reactivePageStyle;
 }
 function updateBackgroundColorContent(backgroundColorContent) {
   {
@@ -14942,34 +14957,19 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
     const visibleList = vue.ref([]);
-    const _tabBar = useTabBar();
-    const tabBar2 = useTheme(_tabBar, () => {
-      const tabBarStyle = parseTheme(_tabBar);
-      tabBar2.backgroundColor = tabBarStyle.backgroundColor;
-      tabBar2.borderStyle = tabBarStyle.borderStyle;
-      tabBar2.color = tabBarStyle.color;
-      tabBar2.selectedColor = tabBarStyle.selectedColor;
-      tabBar2.blurEffect = tabBarStyle.blurEffect;
-      tabBar2.midButton = tabBarStyle.midButton;
-      if (tabBarStyle.list && tabBarStyle.list.length) {
-        tabBarStyle.list.forEach((item, index2) => {
-          tabBar2.list[index2].iconPath = item.iconPath;
-          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
-        });
-      }
-    });
-    useVisibleList(tabBar2, visibleList);
-    useTabBarCssVar(tabBar2);
-    const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar2, visibleList);
+    const tabBar = useTabBar();
+    useVisibleList(tabBar, visibleList);
+    useTabBarCssVar(tabBar);
+    const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar, visibleList);
     const {
       style,
       borderStyle,
       placeholderStyle
-    } = useTabBarStyle(tabBar2);
+    } = useTabBarStyle(tabBar);
     return () => {
-      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
+      const tabBarItemsTsx = createTabBarItemsTsx(tabBar, onSwitchTab, visibleList);
       return vue.createVNode("uni-tabbar", {
-        "class": "uni-tabbar-" + tabBar2.position
+        "class": "uni-tabbar-" + tabBar.position
       }, [vue.createVNode("div", {
         "class": "uni-tabbar",
         "style": style.value
@@ -14983,22 +14983,22 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function useTabBarCssVar(tabBar2) {
-  vue.watch(() => tabBar2.shown, (value) => {
+function useTabBarCssVar(tabBar) {
+  vue.watch(() => tabBar.shown, (value) => {
     updatePageCssVar({
-      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar2.height) : 0)
+      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar.height) : 0)
     });
   });
 }
-function useVisibleList(tabBar2, visibleList) {
+function useVisibleList(tabBar, visibleList) {
   const internalMidButton = vue.ref(shared.extend({
     type: "midButton"
-  }, tabBar2.midButton));
+  }, tabBar.midButton));
   function setVisibleList() {
     let tempList = [];
-    tempList = tabBar2.list.filter((item) => item.visible !== false);
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar2.midButton) {
-      internalMidButton.value = shared.extend({}, _middleButton, internalMidButton.value, tabBar2.midButton);
+    tempList = tabBar.list.filter((item) => item.visible !== false);
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {
+      internalMidButton.value = shared.extend({}, _middleButton, internalMidButton.value, tabBar.midButton);
       tempList = tempList.filter((item) => !isMidButton(item));
       if (tempList.length % 2 === 0) {
         tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
@@ -15008,13 +15008,13 @@ function useVisibleList(tabBar2, visibleList) {
   }
   vue.watchEffect(setVisibleList);
 }
-function useSwitchTab(route, tabBar2, visibleList) {
+function useSwitchTab(route, tabBar, visibleList) {
   vue.watchEffect(() => {
     const meta = route.meta;
     if (meta.isTabBar) {
       const pagePath = meta.route;
       const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
-      tabBar2.selectedIndex = index2;
+      tabBar.selectedIndex = index2;
     }
   });
   return (tabBarItem, index2) => {
@@ -15061,10 +15061,10 @@ const BORDER_COLORS = {
   white: "rgba(255, 255, 255, 0.33)",
   black: "rgba(0, 0, 0, 0.33)"
 };
-function useTabBarStyle(tabBar2) {
+function useTabBarStyle(tabBar) {
   const style = vue.computed(() => {
-    let backgroundColor = tabBar2.backgroundColor;
-    const blurEffect = tabBar2.blurEffect;
+    let backgroundColor = tabBar.backgroundColor;
+    const blurEffect = tabBar.blurEffect;
     if (!backgroundColor) {
       if (blurEffect && blurEffect !== "none") {
         backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
@@ -15079,7 +15079,7 @@ function useTabBarStyle(tabBar2) {
     const {
       borderStyle: borderStyle2,
       borderColor
-    } = tabBar2;
+    } = tabBar;
     if (borderColor && shared.isString(borderColor)) {
       return {
         backgroundColor: borderColor
@@ -15091,7 +15091,7 @@ function useTabBarStyle(tabBar2) {
   });
   const placeholderStyle = vue.computed(() => {
     return {
-      height: tabBar2.height
+      height: tabBar.height
     };
   });
   return {
@@ -15103,12 +15103,12 @@ function useTabBarStyle(tabBar2) {
 function isMidButton(item) {
   return item.type === "midButton";
 }
-function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
+function createTabBarItemsTsx(tabBar, onSwitchTab, visibleList) {
   const {
     selectedIndex,
     selectedColor,
     color
-  } = tabBar2;
+  } = tabBar;
   return visibleList.value.map((item, index2) => {
     const selected = selectedIndex === index2;
     const textColor = selected ? selectedColor : color;
@@ -15116,37 +15116,37 @@ function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
     const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
     const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
     if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
-      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
     }
-    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
   });
 }
-function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2, index2, onSwitchTab) {
+function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar, index2, onSwitchTab) {
   return vue.createVNode("div", {
     "key": index2,
     "class": "uni-tabbar__item",
     "onClick": onSwitchTab(tabBarItem, index2)
-  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar2)], 8, ["onClick"]);
+  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar)], 8, ["onClick"]);
 }
-function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2) {
+function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar) {
   const {
     height
-  } = tabBar2;
+  } = tabBar;
   return vue.createVNode("div", {
     "class": "uni-tabbar__bd",
     "style": {
       height
     }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
-function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
+function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
   const {
     type,
     text
   } = tabBarItem;
   const {
     iconWidth
-  } = tabBar2;
+  } = tabBar;
   const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
@@ -15159,7 +15159,7 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     "src": getRealPath(iconPath)
   }, null, 8, ["src"])], 6);
 }
-function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
+function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar) {
   var _a;
   const {
     type,
@@ -15167,7 +15167,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
   } = tabBarItem;
   const {
     iconWidth
-  } = tabBar2;
+  } = tabBar;
   const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
@@ -15185,7 +15185,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
     "style": iconfontStyle
   }, [iconfontText], 4)], 6);
 }
-function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
+function createTabBarItemTextTsx(color, tabBarItem, tabBar) {
   const {
     iconPath,
     text
@@ -15193,7 +15193,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
     fontSize,
     spacing
-  } = tabBar2;
+  } = tabBar;
   const style = {
     color,
     fontSize,
@@ -15211,7 +15211,7 @@ function createTabBarItemRedDotTsx(badge) {
     "class": clazz2
   }, [badge], 2);
 }
-function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2, index2, onSwitchTab) {
+function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar, index2, onSwitchTab) {
   const {
     width,
     height,
@@ -15239,7 +15239,7 @@ function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, 
       height: iconWidth
     },
     "src": getRealPath(iconPath)
-  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
+  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar)], 12, ["onClick"]);
 }
 const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
@@ -15435,8 +15435,8 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
 }
 function useShowTabBar(emit2) {
   const route = usePageRoute();
-  const tabBar2 = useTabBar();
-  const showTabBar = vue.computed(() => route.meta.isTabBar && tabBar2.shown);
+  const tabBar = useTabBar();
+  const showTabBar = vue.computed(() => route.meta.isTabBar && tabBar.shown);
   return showTabBar;
 }
 function createTabBarTsx(showTabBar) {
