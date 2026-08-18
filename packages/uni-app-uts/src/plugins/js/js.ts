@@ -12,6 +12,7 @@ export function uniAppJsPlugin(resolvedConfig: ResolvedConfig): Plugin {
       }
       const parseResult = parse(source, {
         sourceType: 'module',
+        plugins: ['typescript'],
       })
       const program = parseResult.program
       const uniExtApis = new Set<string>()
