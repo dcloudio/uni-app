@@ -294,3 +294,23 @@ export default {
   word-break: break-word;
 }
 </style>
+
+## 媒体查询 @media
+
+`@media` 用于根据媒体查询结果应用一组样式。Web 和小程序平台支持媒体查询，具体能力由对应平台决定。
+
+HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒体查询来适配应用暗黑主题（暂不支持尺寸、宽高、屏幕方向、分辨率等其他媒体特性）：
+
+```css
+.page {
+  background-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .page {
+    background-color: #111111;
+  }
+}
+```
+
+详见 [暗黑主题适配教程](https://doc.dcloud.net.cn/uni-app-x/api/theme-change.html)。
