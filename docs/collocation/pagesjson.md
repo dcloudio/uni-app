@@ -67,7 +67,7 @@ globalStyle节点里是所有页面都生效的全局样式配置。它的配置
 | titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
 | pageOrientation | 'auto' \| 'portrait' \| 'landscape' | "portrait" | 否 | Web: x; 微信小程序: 4.41; Android: 4.13; iOS: 4.25; HarmonyOS: 4.61 | 横屏配置，屏幕旋转设置，仅支持 auto / portrait / landscape 详见 [响应显示区域变化](https://uniapp.dcloud.net.cn/collocation/pages.html#globalstyle)。 |
 | hideStatusBar | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统顶部状态栏 |
-| hideBottomNavigationIndicator | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统底部导航栏 |
+| hideBottomNavigationIndicator | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: x | 是否隐藏系统底部导航栏 |
 | androidThreeButtonNavigationTranslucent | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.41; iOS: x; HarmonyOS: x | 页面内容是否可以渲染到虚拟按键区域 |
 | androidThreeButtonNavigationBackgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: 4.51; iOS: x; HarmonyOS: x | 虚拟按键区域背景色 |
 | androidThreeButtonNavigationStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 虚拟按键区域前景色 |

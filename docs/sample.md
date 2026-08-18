@@ -12,21 +12,21 @@
 
 关于[uni-api](https://gitcode.com/dcloud/uni-api)和[uni-component](https://gitcode.com/dcloud/uni-component)，再强调说明下：
 
-uni-app x的组件和API，大多是uts语言开发的。和开发者做的uts插件是一样的。\
+uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts插件是一样的。\
 它们都符合[exi api](https://uniapp.dcloud.net.cn/api/extapi.html)规范，也就是说，把这些uni_modules复制到工程下，会替换内置API和组件的实现。
 
-所以如需修改uni-app x的组件和API，比如修复一些bug或添加一些功能，可以通过这种方式来实现。
+所以如需修改 uni-app x 的组件和API，比如修复一些bug或添加一些功能，可以通过这种方式来实现。
 
 如果这些改动有助于其他开发者，欢迎给开源项目回提pr。
 
-在uni-app x的组件和API文档页面的右上角，也有每个组件和API的源码，都是链接到[uni-api](https://gitcode.com/dcloud/uni-api)和[uni-component](https://gitcode.com/dcloud/uni-component)项目。
+在 uni-app x 的组件和API文档页面的右上角，也有每个组件和API的源码，都是链接到[uni-api](https://gitcode.com/dcloud/uni-api)和[uni-component](https://gitcode.com/dcloud/uni-component)项目。
 
 除此之外，插件市场还有众多插件，[详见](https://ext.dcloud.net.cn/?uni-appx=1)
 
 目前插件市场已经有近千款适配uni-app x的插件，不管是uts还是uvue，已有大量开发者在使用。
 
 上线的App案例：
-由于uni-app x没有运行时数据采集，所以DCloud并不知道哪些开发者在真实使用uni-app x。\
+由于 uni-app x 没有运行时数据采集，所以DCloud并不知道哪些开发者在真实使用uni-app x。\
 希望大型开发者，能主动给本文档提交pr，贡献案例，帮助uni-app x生态发展。
 
 以下列出部分案例：

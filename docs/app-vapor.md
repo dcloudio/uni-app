@@ -9,7 +9,15 @@ uni-app x 的蒸汽模式，包含了去掉虚拟DOM的vue框架，以及App平�
 - HBuilderX 5.11+，iOS支持蒸汽模式
 - HBuilderX 5.21+，Android支持蒸汽模式
 
-小程序和web使用的是webview渲染，不涉及App的蒸汽渲染引擎。uni-app x 蒸汽模式可以直接编译到小程序和web，无需担心使用蒸汽模式后无法编译到web和小程序。
+目前 uni-app x 蒸汽模式编译到小程序和web时，会以VDOM模式运行，后续会升级为蒸汽模式，无需担心使用蒸汽模式后无法编译到web和小程序。
+
+## 体验方式
+
+hello uni-app x的3个App平台示例均已更新为蒸汽模式，下载地址：[http://hellouniappx.dcloud.net.cn/](http://hellouniappx.dcloud.net.cn/)
+
+下载HBuilderX 5.21+，运行[hello uni-app x](https://gitcode.com/dcloud/hello-uni-app-x)。
+
+如在自己的项目下打开蒸汽模式，需要在**manifest.json的可视化界面首页中勾选蒸汽模式**。
 
 ## 虚拟DOM的问题
 近年新兴的前端框架，掀起了新一轮的性能革命，纷纷去掉了虚拟DOM。通过更复杂的编译器，生成更高效的直接操作DOM的代码。
@@ -257,8 +265,6 @@ uni-app x 蒸汽模式 提供了应该是业内最好的rich-text组件。
 
 体验入口：hello uni-app x 选项卡模板 -> rich-text 5万字性能测试。
 
-测试前建议重启手机，不启动其他应用，保持电量在90%且不启用节电模式，也不需要开启性能模式（如有），鸿蒙设备在设置中搜索刷新率，打开强制高刷，然后进行对比测试。不要在运行模式下测性能，请发行为release包测试
-
 #### 其他
 
 除了上述3个性能考验项，DCloud还做了很多性能测试，
@@ -284,7 +290,8 @@ uni-app x 蒸汽模式 提供了应该是业内最好的rich-text组件。
 * [Android真机录屏](https://www.bilibili.com/video/BV1Wyu26wEYH)
 * [iOS真机录屏](https://www.bilibili.com/video/BV1RBMt6bEyx)
 * [鸿蒙真机录屏](https://www.bilibili.com/video/BV1X4PQz8Ert)
-鸿蒙目前版本使用的是arkUI的canvas，还不能做到数万个小球的不掉帧，后续版本会把Android平台的canvas移植到鸿蒙上。
+
+鸿蒙目前版本使用的是鸿蒙原生的canvas，还不能做到数万个小球的不掉帧，后续版本会把Android平台的canvas移植到鸿蒙上。
 
 - 侧滑删除长列表
 
@@ -304,7 +311,7 @@ uni-app x 蒸汽模式 提供了应该是业内最好的rich-text组件。
 - [iOS benchmark](./benchmark/vapor-benchmark-ios.md)
 - [鸿蒙benchmark](./benchmark/vapor-benchmark-harmony.md)
 
-### 释疑
+### 释疑@faq
 关于uni-app x的蒸汽模式为什么这么快，很多人可能有疑问，比如
 
 - uni-app x 的App平台到底是自渲染还是原生渲染？
@@ -335,17 +342,54 @@ App平台因为要编译C代码，所以真机运行的编译速度变慢不少�
 
 uni-app x 蒸汽模式只是使用了原生渲染管线，但几乎没有使用各平台的原生组件，基本都是使用跨平台的C++和uts自己编写的。因为是一套代码，所以可以很好的保持跨平台一致性。
 
-之前uni-app x VDOM模式时，不同平台的组件差异还较多，比如Android的list组件基于recycle-view，iOS的list基于UICollectionView，代码完全不同，细节和bug难免有差异。
+之前 uni-app x VDOM模式时，不同平台的组件差异还较多，比如Android的list组件基于recycle-view，iOS的list基于UICollectionView，代码完全不同，细节和bug难免有差异。
 
-但uni-app x蒸汽模式中，list是基于c和uts一套代码实现的，逻辑上就高度统一。
+但 uni-app x蒸汽模式中，list是基于c和uts一套代码实现的，逻辑上就高度统一。
 
-## 体验方式
+- uni-app x 蒸汽模式为什么把页面驱动从强类型uts改成js了？反而还更快？
 
-hello uni-app x的3个App平台示例均已更新为蒸汽模式，下载地址：[http://hellouniappx.dcloud.net.cn/](http://hellouniappx.dcloud.net.cn/)
+uni-app x 蒸汽模式渲染快的原因，不是语言，而是渲染引擎自身的优化。\
+DCloud推出uts语言，是为了解决性能问题，主要是跨语言通信折损。\
+其实 uni-app x 蒸汽模式最初立项时的方案也是uts语言。\
+但蒸汽渲染引擎做好后，实测比原生快了数倍，不是百分之几。这给我们很大的余地，让我们开始思考不靠强类型语言是不是仍然能做到比原生快。\
+这耽误了些时间，也是Android版推出时间最晚的原因。\
+最终在优化好跨语言通信后，把损耗影响控制在5%以内。\
+在2、3倍的优势面前，5%的损耗几乎看不见，所以js驱动的蒸汽模式仍然比原生快2、3倍。\
+考虑到js在AI熟悉度、易用性、生态丰富度、动态化、以及老uni用户的升级等方面的优势，调整为了js引擎驱动。\
+同时VDOM模式的uts编写的页面，仍可以通过uts2js运行在蒸汽模式上，不会因此造成向下兼容问题。\
+同时 uni-app x 蒸汽模式保留了uts插件中操作UI的能力。\
 
-下载HBuilderX 5.21+，运行[hello uni-app x](https://gitcode.com/dcloud/hello-uni-app-x)。
+至于js和uts本身的执行速度，其实各有千秋。uts的优势主要是跨语言通信折损上。
 
-如果要在自己的项目下打开蒸汽模式，需要在**manifest.json的可视化界面首页中勾选蒸汽模式**。
+- 蒸汽模式快是因为拍平吗？对于不能拍平的场景，uni-app x 会比原生慢吗？
+
+uni-app x 蒸汽模式，在不拍平时一样是原生的数倍，注意仔细看前述测试数据表格中的“非拍平”数据。并且注意视频对比中，Android平台开启了显示布局边界后，每个格子外面都有框，这是未拍平的铁证。\
+uni-app x 组件众多，支持拍平的仅view、text、image，其他组件如rich-text、canvas性能高更和拍平无关。
+
+- 是否存在测试例定向优化？在其他测试例下其实uni-app x性能不如原生的情况？
+
+再次强调 uni-app x 未对测试例做定向优化。\
+	* 4050 view + text，是对 view 和 text这2个核心组件的性能极限测试。\
+开发者可以不使用方格，可以使用任意其他方式来测试对比 uni-app x 和原生的view、text的性能，都能得出一样的结论。\
+开发者还可以使用多种布局方式来对比测试，上面的测试例中Android使用的线性布局，开发者还可以使用约束布局等多种方式测试，uni-app x 蒸汽模式比原生快数倍的结论不会变。\
+	* 死亡长列表，是对list组件的性能极限测试；5万字长图文是对rich-text的性能极限测试。\
+开发者可以构造其他方式的长列表和长图文来做性能测试，一样会得出uni-app x 性能更好的结论。\
+因为不是恰好这些测试例的写法中，uni-app x 表现更好。而是 uni-app x 的这些组件性能确实更好，怎么做极限测试都一样。
+
+当然也不一定 uni-app x 的几十个组件，每个都比原生的性能高。DCloud只对高频和性能压力大的组件做了原生示例进行对比。
+
+- 对比的测试例中，原生的写法是否没有极致优化？
+
+如果原生不使用view、text这些组件，自己绘制、自己测量、自己排版，在某些测试例中可以定向优化。\
+比如4050中假使把宽高定死，不走测量和排版，肯定比用view和text更快。当然实际4050例子中不是定宽高的，大小是由文字撑开的，这个测试例是故意要测排版和测量的性能的。\
+如果原生写死宽高自绘，反而是原生为测试例更好看而搞的定向优化了。\
+uni-app x 自然也可以跳过排版和测量自绘。但注意 uni-app x 中拍平，并不是跳过排版、测量的自绘，它仍然要走排版、测量和绘制。\
+开发者需要使用的是框架和组件，在同一个层面对比。而不是原生中跳过排版和测量自绘，去和uni-app x 中使用组件来对比。\
+其实不管是原生体系还是 uni-app x，本质都是在自绘的基础上提供一套优秀的排版测量系统、组件系统、事件分发系统。\
+谁做的更好，要比的是这套系统。\
+建议对此有怀疑的开发者，在使用原生组件和排版系统的基础上，任意写代码对比测试，看看怎么极致优化原生代码才能得出原生更快的结论，如果有成果，我们定然在官网公布。\
+
+注意：部分开发者在AI上询问 uni-app x 蒸汽模式为什么这么快，除了上面公开的这几点，AI输出的其他观点都是瞎猜。uni-app x 的技术路线是首创的，不存在于AI熟悉的现有技术栈中。
 
 ### 运行注意
 - 运行默认是debug模式，性能较差。

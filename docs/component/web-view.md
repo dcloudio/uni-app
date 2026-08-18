@@ -91,7 +91,7 @@ UniWebViewMessageEvent -- Extends --> UniCustomEvent&ltUniWebViewMessageEventDet
 ###### UniWebViewMessageEventDetail 的属性值
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| data | UTSJSONObject\[\] | 是 | 消息包含的数据，4.13版本之前类型为Map\<string, any \| null> \| null，4.13版本（含）之后类型为Array\<UTSJSONObject> |
+| data | Array&lt;[UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)&gt; | 是 | 消息包含的数据，4.13版本之前类型为Map\<string, any \| null> \| null，4.13版本（含）之后类型为Array\<UTSJSONObject> |
 
 
 #### UniWebViewErrorEvent
