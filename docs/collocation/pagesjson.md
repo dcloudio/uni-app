@@ -75,7 +75,7 @@ globalStyle节点里是所有页面都生效的全局样式配置。它的配置
 | animationDuration | number | 300 | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 窗口显示动画的持续时间，单位为 ms |
 | allowsBounceVertical | 'YES' \| 'NO' | "YES" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否允许向下拉拽。默认 YES。如果需要下拉刷新，值必须为YES |
 | usingComponents | object |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 引用小程序组件，参考 [小程序组件](https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html)。 |
-| renderingMode | string |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 同层渲染，webrtc(实时音视频) 无法正常时尝试配置 seperated 强制关掉同层 |
+| renderingMode | string |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 同层渲染，webrtc(实时音视频) 无法正常时尝试配置 seperated 强制关掉同层 |
 | leftWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 leftWindow时，默认是否显示 leftWindow |
 | topWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 topWindow时，默认是否显示 topWindow |
 | rightWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 rightWindow时，默认是否显示 rightWindow |
