@@ -2,9 +2,39 @@
 
 打开鸿蒙项目文件 entry/src/main/ets/entryability/EntryAbility.ets，增加 uni-app sdk 初始化逻辑。
 
+::: preview
+> VDOM模式
 ```typescript
 import { window } from "@kit.ArkUI";
 import { UniEntryAbility } from "@dcloudio/uni-app-x-runtime";
+import BuildProfile from "BuildProfile";
+
+export default class EntryAbility extends UniEntryAbility {
+  onImport(path: string): Promise<void | Object> {
+    return import(path);
+  }
+
+  constructor() {
+    super("你的APPID", {
+      debug: BuildProfile.DEBUG,
+    });
+  }
+
+  onWindowStageCreate(windowStage: window.WindowStage): void {
+    super.onWindowStageCreate(windowStage, false);
+
+    windowStage.loadContent("pages/Index", (err) => {
+      if (err.code) {
+        return;
+      }
+    });
+  }
+}
+```
+> 蒸汽模式
+```typescript
+import { window } from "@kit.ArkUI";
+import { UniEntryAbility } from "@dcloudio/uni-app-x-vapor-runtime";
 import BuildProfile from "BuildProfile";
 
 export default class EntryAbility extends UniEntryAbility {
@@ -50,8 +80,10 @@ export declare function openUniApp(
 ): void;
 ```
 
-示例代码
+### 示例代码
 
+::: preview
+> VDOM模式
 ```ts
 import { openUniApp } from '@dcloudio/uni-app-x-runtime'
 
@@ -72,10 +104,42 @@ struct Index {
   }
 }
 ```
+> 蒸汽模式
+```ts
+import { openUniApp } from '@dcloudio/uni-app-x-vapor-runtime'
+
+@Entry
+@Component
+struct Index {
+  build() {
+    RelativeContainer() {
+      Button('Open')
+        .onClick(() => {
+          const app = openUniApp('你的APPID', {
+            animationType: 'fade-in',
+          })
+        })
+    }
+    .height('100%')
+    .width('100%')
+  }
+}
+```
 
 ## 退出
 
 退出应用可以在 uni-app x 中调用 uni.exit()，整体退出 uni-app x。
+
+蒸汽模式还可以通过应用实例的 close 方法进行关闭。
+
+```ts
+const app = openUniApp('你的APPID', {
+  animationType: 'fade-in',
+})
+setTimeout(() => {
+  app.close()
+}, 3000)
+```
 
 ## 通信
 
