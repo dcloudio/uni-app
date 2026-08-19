@@ -16,38 +16,38 @@
 ### startPullDownRefresh 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | **StartPullDownRefreshOptions** | 否 | 支付宝小程序: x |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **StartPullDownRefreshOptions** | 否 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: [StartPullDownRefreshSuccess](#startpulldownrefreshsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
-| fail | (result: [StartPullDownRefreshFail](#startpulldownrefreshfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [StartPullDownRefreshSuccess](#startpulldownrefreshsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 接口调用成功的回调函数 |
+| fail | (result: [StartPullDownRefreshFail](#startpulldownrefreshfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StartPullDownRefreshSuccess 的属性值 @startpulldownrefreshsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 是 | 支付宝小程序: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### StartPullDownRefreshFail 的属性值 @startpulldownrefreshfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x | 下拉刷新错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 下拉刷新错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 
 ### 返回值 
@@ -58,9 +58,9 @@
 
 #### Promise\<StartPullDownRefreshSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 是 | 支付宝小程序: x | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 
@@ -97,7 +97,7 @@
 ### stopPullDownRefresh 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
 
 
 使用：
@@ -255,7 +255,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 
 
 ## Tips

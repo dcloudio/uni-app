@@ -16,45 +16,45 @@
 ### setNavigationBarTitle 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.97 | 4.11 | 4.61 |
+| 4.0 | 4.41 | 5.25 | 3.97 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | **SetNavigationBarTitleOptions** | 是 | 支付宝小程序: x |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **SetNavigationBarTitleOptions** | 是 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| title | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 页面标题 |
-| success | (result: [SetNavigationBarTitleSuccess](#setnavigationbartitlesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (error: [SetNavigationBarTitleFail](#setnavigationbartitlefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (res: [SetNavigationBarTitleComplete](#setnavigationbartitlecomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| title | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 页面标题 |
+| success | (result: [SetNavigationBarTitleSuccess](#setnavigationbartitlesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (error: [SetNavigationBarTitleFail](#setnavigationbartitlefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (res: [SetNavigationBarTitleComplete](#setnavigationbartitlecomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### SetNavigationBarTitleSuccess 的属性值 @setnavigationbartitlesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 是 | 支付宝小程序: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### SetNavigationBarTitleFail 的属性值 @setnavigationbartitlefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x | 设置导航栏标题错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 设置导航栏标题错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### SetNavigationBarTitleComplete 的属性值 @setnavigationbartitlecomplete-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 是 | 支付宝小程序: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -65,9 +65,9 @@
 
 #### Promise\<SetNavigationBarTitleSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 是 | 支付宝小程序: x | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 
@@ -215,7 +215,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 
 
 ## Tips

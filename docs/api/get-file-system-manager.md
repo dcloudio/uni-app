@@ -15,7 +15,7 @@
 ### getFileSystemManager 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9.0 | 4.11 | 4.61 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 3.9.0 | 4.11 | 4.61 |
 
 
 文件管理器对象，用于操作应用可访问的本地文件空间，在app平台是应用沙盒目录。
@@ -75,55 +75,55 @@ access
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **AccessOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **AccessOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要判断是否存在的文件/目录路径 (本地路径) |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 通用的正确返回结果回调 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 通用的错误返回结果回调 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 通用的结束返回结果回调 | 
+| path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要判断是否存在的文件/目录路径 (本地路径) |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 通用的正确返回结果回调 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 通用的错误返回结果回调 |
+| complete | (res: any) => void | 否 | Web: x | 通用的结束返回结果回调 | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -139,7 +139,7 @@ FileSystemManager.access 的同步版本
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | 是 | Web: x; 支付宝小程序: x | 要判断是否存在的文件/目录路径 (本地路径) | 
+| path | string | 是 | Web: x | 要判断是否存在的文件/目录路径 (本地路径) | 
 
 
 
@@ -155,65 +155,65 @@ appendFile
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **AppendFileOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **AppendFileOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要追加内容的文件路径 (本地路径) |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | 指定写入文件的字符编码<br/>支持:ascii base64 utf-8<br/>只在 data 类型是 String 时有效 |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要追加内容的文件路径 (本地路径) |
+| encoding | string | 否 | Web: x | 指定写入文件的字符编码<br/>支持:ascii base64 utf-8<br/>只在 data 类型是 String 时有效 |
 | data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 要追加的文本或二进制数据，类型为 String 或 ArrayBuffer，以前类型是string，iOS平台4.61、Android平台4.31及以后支持arraybuffer |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii字符编码 |
-| base64 | Web: x; 支付宝小程序: x | base64字符编码 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8字符编码，默认值 |
+| ascii | Web: x | ascii字符编码 |
+| base64 | Web: x | base64字符编码 |
+| utf-8 | Web: x | utf-8字符编码，默认值 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -229,9 +229,9 @@ FileSystemManager.appendFile 的同步版本
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 | Web: x; 支付宝小程序: x | 要追加内容的文件路径 (本地路径) |
-| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 支付宝小程序: x | 要追加的文本或二进制数据,类型为 String 或 ArrayBuffer，Android平台4.31、iOS平台4.61之前前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | 指定写入文件的字符编码支持:ascii base64 utf-8,只在 data 类型是 String 时有效 | 
+| filePath | string | 是 | Web: x | 要追加内容的文件路径 (本地路径) |
+| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x | 要追加的文本或二进制数据,类型为 String 或 ArrayBuffer，Android平台4.31、iOS平台4.61之前前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer |
+| encoding | string | 否 | Web: x | 指定写入文件的字符编码支持:ascii base64 utf-8,只在 data 类型是 String 时有效 | 
 
 
 
@@ -247,55 +247,55 @@ close
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **CloseOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **CloseOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 需要被关闭的文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| fd | string | 是 | Web: x | 需要被关闭的文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -311,13 +311,13 @@ closeSync
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **CloseSyncOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **CloseSyncOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 需要被关闭的文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 | 
+| fd | string | 是 | Web: x | 需要被关闭的文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 | 
 
 
 
@@ -333,56 +333,56 @@ copyFile
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **CopyFileOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **CopyFileOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| srcPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 源文件路径，支持本地路径 |
-| destPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 新文件路径，支持本地路径<br/>- 传入错误路径：比如无权限的路径，返回 error<br/>- 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存<br/>-传入destPath是目录路径且已存在，则返回错误码1300021<br/>-传入destPath是文件路径且已存在，则覆盖写入<br/>- 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| srcPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 源文件路径，支持本地路径 |
+| destPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 新文件路径，支持本地路径<br/>- 传入错误路径：比如无权限的路径，返回 error<br/>- 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存<br/>-传入destPath是目录路径且已存在，则返回错误码1300021<br/>-传入destPath是文件路径且已存在，则覆盖写入<br/>- 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -398,8 +398,8 @@ FileSystemManager.copyFile 的同步版本
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| srcPath | string | 是 | Web: x; 支付宝小程序: x | 源文件路径，支持本地路径 |
-| destPath | string | 是 | Web: x; 支付宝小程序: x | 新文件路径，支持本地路径 | 
+| srcPath | string | 是 | Web: x | 源文件路径，支持本地路径 |
+| destPath | string | 是 | Web: x | 新文件路径，支持本地路径 | 
 
 
 
@@ -415,31 +415,31 @@ fstat
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **FStatOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **FStatOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| success | (res: [FStatSuccessResult](#fstatsuccessresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| success | (res: [FStatSuccessResult](#fstatsuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FStatSuccessResult 的属性值 @fstatsuccessresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| stats | [Stats](#stats-values) | 是 | Web: x; 支付宝小程序: x | Stats 对象，包含了文件的状态信息 |
+| stats | [Stats](#stats-values) | 是 | Web: x | Stats 对象，包含了文件的状态信息 |
 
 #### stats 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| mode | number | 是 | Web: x; 支付宝小程序: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
-| size | number | 是 | Web: x; 支付宝小程序: x | 文件大小，单位：B，对应 POSIX stat.st_size |
-| lastAccessedTime | number | 是 | Web: x; 支付宝小程序: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
-| lastModifiedTime | number | 是 | Web: x; 支付宝小程序: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
+| mode | number | 是 | Web: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
+| size | number | 是 | Web: x | 文件大小，单位：B，对应 POSIX stat.st_size |
+| lastAccessedTime | number | 是 | Web: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
+| lastModifiedTime | number | 是 | Web: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
 
 ###### Stats 的方法 @stats-values 
 
@@ -481,40 +481,40 @@ isFile
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -531,13 +531,13 @@ fstatSync
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **FStatSyncOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **FStatSyncOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 | 
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 | 
 
 
 ##### 返回值 
@@ -550,10 +550,10 @@ fstatSync
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| mode | number | 是 | Web: x; 支付宝小程序: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
-| size | number | 是 | Web: x; 支付宝小程序: x | 文件大小，单位：B，对应 POSIX stat.st_size |
-| lastAccessedTime | number | 是 | Web: x; 支付宝小程序: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
-| lastModifiedTime | number | 是 | Web: x; 支付宝小程序: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
+| mode | number | 是 | Web: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
+| size | number | 是 | Web: x | 文件大小，单位：B，对应 POSIX stat.st_size |
+| lastAccessedTime | number | 是 | Web: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
+| lastModifiedTime | number | 是 | Web: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
 ###### Stats 的方法 @stats-values 
 
 ###### isDirectory(): boolean; @isdirectory
@@ -603,56 +603,56 @@ ftruncate
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **FTruncateFileOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **FTruncateFileOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| length | number | 是 | Web: x; 支付宝小程序: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| length | number | 是 | Web: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -668,14 +668,14 @@ ftruncateSync
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **FTruncateFileSyncOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **FTruncateFileSyncOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| length | number | 是 | Web: x; 支付宝小程序: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 | 
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| length | number | 是 | Web: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 | 
 
 
 
@@ -691,70 +691,70 @@ getFileInfo
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **GetFileInfoOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **GetFileInfoOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要读取的文件路径 (本地路径) |
-| digestAlgorithm | string | 否 | Web: x; 支付宝小程序: x | 计算文件摘要的算法 |
-| success | (res: [GetFileInfoSuccessResult](#getfileinfosuccessresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的文件路径 (本地路径) |
+| digestAlgorithm | string | 否 | Web: x | 计算文件摘要的算法 |
+| success | (res: [GetFileInfoSuccessResult](#getfileinfosuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### digestAlgorithm 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| md5 | Web: x; 支付宝小程序: x | md5 算法 |
-| sha1 | Web: x; 支付宝小程序: x | sha1 算法 |
+| md5 | Web: x | md5 算法 |
+| sha1 | Web: x | sha1 算法 |
 
 ###### GetFileInfoSuccessResult 的属性值 @getfileinfosuccessresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| digest | string | 是 | Web: x; 支付宝小程序: x | 按照传入的 digestAlgorithm 计算得出的的文件摘要 |
-| size | number | 是 | Web: x; 支付宝小程序: x | 文件大小，以字节为单位 |
+| digest | string | 是 | Web: x | 按照传入的 digestAlgorithm 计算得出的的文件摘要 |
+| size | number | 是 | Web: x | 文件大小，以字节为单位 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -770,54 +770,54 @@ getSavedFileList
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **GetSavedFileListOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **GetSavedFileListOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: GetSavedFileListResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: GetSavedFileListResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -833,56 +833,56 @@ mkdir
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **MkDirOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **MkDirOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 创建的目录路径 (本地路径) |
-| recursive | boolean | 是 | Web: x; 支付宝小程序: x | 是否在递归创建该目录的上级目录后再创建该目录。如果对应的上级目录已经存在，则不创建该上级目录。如 dirPath 为 a/b/c/d 且 recursive 为 true，将创建 a 目录，再在 a 目录下创建 b 目录，以此类推直至创建 a/b/c 目录下的 d 目录。 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 创建的目录路径 (本地路径) |
+| recursive | boolean | 是 | Web: x | 是否在递归创建该目录的上级目录后再创建该目录。如果对应的上级目录已经存在，则不创建该上级目录。如 dirPath 为 a/b/c/d 且 recursive 为 true，将创建 a 目录，再在 a 目录下创建 b 目录，以此类推直至创建 a/b/c 目录下的 d 目录。 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -898,8 +898,8 @@ FileSystemManager.mkdir 的同步版本
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dirPath | string | 是 | Web: x; 支付宝小程序: x | 创建的目录路径 (本地路径) |
-| recursive | boolean | 是 | Web: x; 支付宝小程序: x | 是否在递归创建该目录的上级目录后再创建该目录。如果对应的上级目录已经存在，则不创建该上级目录。如 dirPath 为 a/b/c/d 且 recursive 为 true，将创建 a 目录，再在 a 目录下创建 b 目录，以此类推直至创建 a/b/c 目录下的 d 目录。 | 
+| dirPath | string | 是 | Web: x | 创建的目录路径 (本地路径) |
+| recursive | boolean | 是 | Web: x | 是否在递归创建该目录的上级目录后再创建该目录。如果对应的上级目录已经存在，则不创建该上级目录。如 dirPath 为 a/b/c/d 且 recursive 为 true，将创建 a 目录，再在 a 目录下创建 b 目录，以此类推直至创建 a/b/c 目录下的 d 目录。 | 
 
 
 
@@ -915,77 +915,77 @@ open
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **OpenFileOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **OpenFileOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要追加内容的文件路径 (本地路径) |
-| flag | string | 是 | Web: x; 支付宝小程序: x | 文件系统标志，默认值: 'r' |
-| success | (res: [OpenFileSuccessResult](#openfilesuccessresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要追加内容的文件路径 (本地路径) |
+| flag | string | 是 | Web: x | 文件系统标志，默认值: 'r' |
+| success | (res: [OpenFileSuccessResult](#openfilesuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### flag 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| a | Web: x; 支付宝小程序: x | 打开文件用于追加。 如果文件不存在，则创建该文件 |
-| ax | Web: x; 支付宝小程序: x | 类似于 'a'，但如果路径存在，则失败 |
-| a+ | Web: x; 支付宝小程序: x | 打开文件用于读取和追加。 如果文件不存在，则创建该文件 |
-| ax+ | Web: x; 支付宝小程序: x | 类似于 'a+'，但如果路径存在，则失败 |
-| r | Web: x; 支付宝小程序: x | 打开文件用于读取。 如果文件不存在，则会发生异常 |
-| r+ | Web: x; 支付宝小程序: x | 打开文件用于读取和写入。 如果文件不存在，则会发生异常 |
-| w | Web: x; 支付宝小程序: x | 打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
-| wx | Web: x; 支付宝小程序: x | 类似于 'w'，但如果路径存在，则失败 |
-| w+ | Web: x; 支付宝小程序: x | 打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
-| wx+ | Web: x; 支付宝小程序: x | 类似于 'w+'，但如果路径存在，则失败 |
+| a | Web: x | 打开文件用于追加。 如果文件不存在，则创建该文件 |
+| ax | Web: x | 类似于 'a'，但如果路径存在，则失败 |
+| a+ | Web: x | 打开文件用于读取和追加。 如果文件不存在，则创建该文件 |
+| ax+ | Web: x | 类似于 'a+'，但如果路径存在，则失败 |
+| r | Web: x | 打开文件用于读取。 如果文件不存在，则会发生异常 |
+| r+ | Web: x | 打开文件用于读取和写入。 如果文件不存在，则会发生异常 |
+| w | Web: x | 打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
+| wx | Web: x | 类似于 'w'，但如果路径存在，则失败 |
+| w+ | Web: x | 打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
+| wx+ | Web: x | 类似于 'w+'，但如果路径存在，则失败 |
 
 ###### OpenFileSuccessResult 的属性值 @openfilesuccessresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符 |
+| fd | string | 是 | Web: x | 文件描述符 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1001,29 +1001,29 @@ openSync
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **OpenFileSyncOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **OpenFileSyncOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要追加内容的文件路径 (本地路径) |
-| flag | string | 是 | Web: x; 支付宝小程序: x | 文件系统标志，默认值: 'r' |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要追加内容的文件路径 (本地路径) |
+| flag | string | 是 | Web: x | 文件系统标志，默认值: 'r' |
 
 ##### flag 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| a | Web: x; 支付宝小程序: x | 打开文件用于追加。 如果文件不存在，则创建该文件 |
-| ax | Web: x; 支付宝小程序: x | 类似于 'a'，但如果路径存在，则失败 |
-| a+ | Web: x; 支付宝小程序: x | 打开文件用于读取和追加。 如果文件不存在，则创建该文件 |
-| ax+ | Web: x; 支付宝小程序: x | 类似于 'a+'，但如果路径存在，则失败 |
-| r | Web: x; 支付宝小程序: x | 打开文件用于读取。 如果文件不存在，则会发生异常 |
-| r+ | Web: x; 支付宝小程序: x | 打开文件用于读取和写入。 如果文件不存在，则会发生异常 |
-| w | Web: x; 支付宝小程序: x | 打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
-| wx | Web: x; 支付宝小程序: x | 类似于 'w'，但如果路径存在，则失败 |
-| w+ | Web: x; 支付宝小程序: x | 打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
-| wx+ | Web: x; 支付宝小程序: x | 类似于 'w+'，但如果路径存在，则失败 | 
+| a | Web: x | 打开文件用于追加。 如果文件不存在，则创建该文件 |
+| ax | Web: x | 类似于 'a'，但如果路径存在，则失败 |
+| a+ | Web: x | 打开文件用于读取和追加。 如果文件不存在，则创建该文件 |
+| ax+ | Web: x | 类似于 'a+'，但如果路径存在，则失败 |
+| r | Web: x | 打开文件用于读取。 如果文件不存在，则会发生异常 |
+| r+ | Web: x | 打开文件用于读取和写入。 如果文件不存在，则会发生异常 |
+| w | Web: x | 打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
+| wx | Web: x | 类似于 'w'，但如果路径存在，则失败 |
+| w+ | Web: x | 打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
+| wx+ | Web: x | 类似于 'w+'，但如果路径存在，则失败 | 
 
 
 ##### 返回值 
@@ -1045,25 +1045,25 @@ readFile
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **ReadFileOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **ReadFileOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | base64 / utf-8 / ascii,指定读取文件的字符编码，(iOS平台4.61及以后、Android平台4.31及以后)如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 文件路径，支持相对地址和绝对地址，app-android平台支持代码包文件目录 |
-| success | (res: [ReadFileSuccessResult](#readfilesuccessresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| encoding | string | 否 | Web: x | base64 / utf-8 / ascii,指定读取文件的字符编码，(iOS平台4.61及以后、Android平台4.31及以后)如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件路径，支持相对地址和绝对地址，app-android平台支持代码包文件目录 |
+| success | (res: [ReadFileSuccessResult](#readfilesuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii 字符编码 |
-| base64 | Web: x; 支付宝小程序: x | base64 字符编码 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8 字符编码，默认值 |
+| ascii | Web: x | ascii 字符编码 |
+| base64 | Web: x | base64 字符编码 |
+| utf-8 | Web: x | utf-8 字符编码，默认值 |
 
 ###### ReadFileSuccessResult 的属性值 @readfilesuccessresult-values 
 
@@ -1075,40 +1075,40 @@ readFile
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1124,8 +1124,8 @@ FileSystemManager.readFile 的同步版本参数
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 | Web: x; 支付宝小程序: x | 文件路径，支持相对地址和绝对地址，app-android平台支持代码包文件目录 |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | base64 / utf-8,指定读取文件的字符编码，(iOS平台4.61及以后、Android平台4.31及以后)如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 | 
+| filePath | string | 是 | Web: x | 文件路径，支持相对地址和绝对地址，app-android平台支持代码包文件目录 |
+| encoding | string | 否 | Web: x | base64 / utf-8,指定读取文件的字符编码，(iOS平台4.61及以后、Android平台4.31及以后)如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 | 
 
 
 ##### 返回值 
@@ -1147,59 +1147,59 @@ read
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| option | **ReadOption** | 是 | Web: x; 支付宝小程序: x |
+| option | **ReadOption** | 是 | Web: x |
 
 #### option 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 支付宝小程序: x | 数据写入的缓冲区，必须是 ArrayBuffer 实例 |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| length | number | 否 | Web: x; 支付宝小程序: x | 要从文件中读取的字节数，默认0 |
-| offset | number | 否 | Web: x; 支付宝小程序: x | 缓冲区中的写入偏移量，默认0 |
-| position | number | 否 | Web: x; 支付宝小程序: x | 文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件。 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| success | (result: [ReadSuccessCallbackResult](#readsuccesscallbackresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用成功的回调函数 | 
+| arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x | 数据写入的缓冲区，必须是 ArrayBuffer 实例 |
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| length | number | 否 | Web: x | 要从文件中读取的字节数，默认0 |
+| offset | number | 否 | Web: x | 缓冲区中的写入偏移量，默认0 |
+| position | number | 否 | Web: x | 文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件。 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| success | (result: [ReadSuccessCallbackResult](#readsuccesscallbackresult-values)) => void | 否 | Web: x | 接口调用成功的回调函数 | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ###### ReadSuccessCallbackResult 的属性值 @readsuccesscallbackresult-values 
 
@@ -1222,17 +1222,17 @@ readSync
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| option | **ReadSyncOption** | 是 | Web: x; 支付宝小程序: x |
+| option | **ReadSyncOption** | 是 | Web: x |
 
 #### option 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 数据写入的缓冲区，必须是 ArrayBuffer 实例 |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 [FileSystemManager.open](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.open.html) 或 [FileSystemManager.openSync](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.openSync.html) 接口获得 |
-| length | number | 否 | Web: x; 支付宝小程序: x | 要从文件中读取的字节数，默认0 |
-| offset | number | 否 | Web: x; 支付宝小程序: x | 缓冲区中的写入偏移量，默认0 |
-| position | number | 否 | Web: x; 支付宝小程序: x | 文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件。 | 
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 [FileSystemManager.open](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.open.html) 或 [FileSystemManager.openSync](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.openSync.html) 接口获得 |
+| length | number | 否 | Web: x | 要从文件中读取的字节数，默认0 |
+| offset | number | 否 | Web: x | 缓冲区中的写入偏移量，默认0 |
+| position | number | 否 | Web: x | 文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件。 | 
 
 
 ##### 返回值 
@@ -1260,55 +1260,55 @@ readdir
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **ReadDirOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **ReadDirOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要读取的目录路径 (本地路径) |
-| success | (res: ReadDirSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的目录路径 (本地路径) |
+| success | (res: ReadDirSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1324,7 +1324,7 @@ FileSystemManager.readdir 的同步版本
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dirPath | string | 是 | Web: x; 支付宝小程序: x | 要读取的目录路径 (本地路径) | 
+| dirPath | string | 是 | Web: x | 要读取的目录路径 (本地路径) | 
 
 
 ##### 返回值 
@@ -1346,71 +1346,71 @@ readZipEntry
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **ReadZipEntryOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **ReadZipEntryOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要读取的压缩包的路径 (本地路径)，app-android平台支持代码包文件目录 |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | 统一指定读取文件的字符编码，只在 entries 值为"all"时有效。<br/>4.31及以后版本如果 entries 值为 null 且不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
-| success | (res: [EntriesResult](#entriesresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的压缩包的路径 (本地路径)，app-android平台支持代码包文件目录 |
+| encoding | string | 否 | Web: x | 统一指定读取文件的字符编码，只在 entries 值为"all"时有效。<br/>4.31及以后版本如果 entries 值为 null 且不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
+| success | (res: [EntriesResult](#entriesresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii 字符编码 |
-| base64 | Web: x; 支付宝小程序: x | base64 字符编码 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8 字符编码，默认值 |
+| ascii | Web: x | ascii 字符编码 |
+| base64 | Web: x | base64 字符编码 |
+| utf-8 | Web: x | utf-8 字符编码，默认值 |
 
 ###### EntriesResult 的属性值 @entriesresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| entries | Map\<string, ZipFileItem> | 是 | Web: x; 支付宝小程序: x | 文件路径 |
-| ~~result~~ | Map\<string, ZipFileItem> | 是 | Web: x; 支付宝小程序: x |   **已废弃，使用 entries** |
+| entries | Map\<string, ZipFileItem> | 是 | Web: x | 文件路径 |
+| ~~result~~ | Map\<string, ZipFileItem> | 是 | Web: x |   **已废弃，使用 entries** |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1426,56 +1426,56 @@ rmdir
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **RmDirOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **RmDirOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要删除的目录路径 (本地路径)<br/>删除特殊目录，只删除子，保留本身<br/>- uni.env.SANDBOX_PATH<br/>- uni.env.CACHE_PATH<br/>- uni.env.USER_DATA_PATH<br/>- uni.env.ANDROID_INTERNAL_SANDBOX_PATH<br/>其他创建的目录可以删除子和本身 |
-| recursive | boolean | 是 | Web: x; 支付宝小程序: x | 是否递归删除目录。如果为 true，则删除该目录和该目录下的所有子目录以及文件。 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要删除的目录路径 (本地路径)<br/>删除特殊目录，只删除子，保留本身<br/>- uni.env.SANDBOX_PATH<br/>- uni.env.CACHE_PATH<br/>- uni.env.USER_DATA_PATH<br/>- uni.env.ANDROID_INTERNAL_SANDBOX_PATH<br/>其他创建的目录可以删除子和本身 |
+| recursive | boolean | 是 | Web: x | 是否递归删除目录。如果为 true，则删除该目录和该目录下的所有子目录以及文件。 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1491,8 +1491,8 @@ FileSystemManager.rmdir 的同步版本
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dirPath | string | 是 | Web: x; 支付宝小程序: x | 要删除的目录路径 (本地路径) |
-| recursive | boolean | 是 | Web: x; 支付宝小程序: x | 是否递归删除目录。如果为 true，则删除该目录和该目录下的所有子目录以及文件。 | 
+| dirPath | string | 是 | Web: x | 要删除的目录路径 (本地路径) |
+| recursive | boolean | 是 | Web: x | 是否递归删除目录。如果为 true，则删除该目录和该目录下的所有子目录以及文件。 | 
 
 
 
@@ -1508,56 +1508,56 @@ rename
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **RenameOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **RenameOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| oldPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 源文件路径，支持本地路径 |
-| newPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 新文件路径，支持本地路径 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| oldPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 源文件路径，支持本地路径 |
+| newPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 新文件路径，支持本地路径 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1573,8 +1573,8 @@ FileSystemManager.rename 的同步版本
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| oldPath | string | 是 | Web: x; 支付宝小程序: x | 源文件路径，支持本地路径 |
-| newPath | string | 是 | Web: x; 支付宝小程序: x | 新文件路径，支持本地路径 | 
+| oldPath | string | 是 | Web: x | 源文件路径，支持本地路径 |
+| newPath | string | 是 | Web: x | 新文件路径，支持本地路径 | 
 
 
 
@@ -1590,55 +1590,55 @@ removeSavedFile
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **RemoveSavedFileOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **RemoveSavedFileOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 需要删除的文件路径 (本地路径) |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 需要删除的文件路径 (本地路径) |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1654,62 +1654,62 @@ readCompressedFile
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **ReadCompressedFileOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **ReadCompressedFileOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要读取的文件的路径 (本地用户文件或代码包文件)，app-android平台支持代码包文件目录 |
-| compressionAlgorithm | string | 是 | Web: x; 支付宝小程序: x | 文件压缩类型，目前仅支持 'br'。 |
-| success | (res: [ReadCompressedFileResult](#readcompressedfileresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的文件的路径 (本地用户文件或代码包文件)，app-android平台支持代码包文件目录 |
+| compressionAlgorithm | string | 是 | Web: x | 文件压缩类型，目前仅支持 'br'。 |
+| success | (res: [ReadCompressedFileResult](#readcompressedfileresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### ReadCompressedFileResult 的属性值 @readcompressedfileresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| data | string | 是 | Web: x; 支付宝小程序: x |
+| data | string | 是 | Web: x |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1725,8 +1725,8 @@ readCompressedFileSync
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 | Web: x; 支付宝小程序: x | 要读取的文件的路径 (本地用户文件或代码包文件)，app-android平台支持代码包文件目录 |
-| compressionAlgorithm | string | 是 | Web: x; 支付宝小程序: x | 文件压缩类型，目前仅支持 'br'。 | 
+| filePath | string | 是 | Web: x | 要读取的文件的路径 (本地用户文件或代码包文件)，app-android平台支持代码包文件目录 |
+| compressionAlgorithm | string | 是 | Web: x | 文件压缩类型，目前仅支持 'br'。 | 
 
 
 ##### 返回值 
@@ -1748,62 +1748,62 @@ saveFile
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **SaveFileOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **SaveFileOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 临时存储文件路径 (本地路径) |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 否 | Web: x; 支付宝小程序: x | - 传入nil：默认保存到 uni.env.CACHE_PATH/uni-store/ 目录<br/>- 传入错误路径：比如无权限的路径，返回 error<br/>- 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存<br/>- 传入filePath是目录路径且已存在，则返回错误码1300021<br/>- 传入filePath是文件路径且已存在，则覆盖写入<br/>- 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录 |
-| success | (res: [SaveFileSuccessResult](#savefilesuccessresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数，成功保存后删除临时文件 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| tempFilePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 临时存储文件路径 (本地路径) |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 否 | Web: x | - 传入nil：默认保存到 uni.env.CACHE_PATH/uni-store/ 目录<br/>- 传入错误路径：比如无权限的路径，返回 error<br/>- 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存<br/>- 传入filePath是目录路径且已存在，则返回错误码1300021<br/>- 传入filePath是文件路径且已存在，则覆盖写入<br/>- 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录 |
+| success | (res: [SaveFileSuccessResult](#savefilesuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数，成功保存后删除临时文件 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### SaveFileSuccessResult 的属性值 @savefilesuccessresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| savedFilePath | string | 是 | Web: x; 支付宝小程序: x | 存储后的文件路径 (本地路径)。自 `4.71` 起，返回 `unifile://` 协议的路径<br/>参数filePath=nil, savedFilePath= unifile://cache/uni-store/xxx<br/>否则savedFilePath= unifile://cache/xxx/unifile://usr/xxx/unifile://sandbox/xxx |
+| savedFilePath | string | 是 | Web: x | 存储后的文件路径 (本地路径)。自 `4.71` 起，返回 `unifile://` 协议的路径<br/>参数filePath=nil, savedFilePath= unifile://cache/uni-store/xxx<br/>否则savedFilePath= unifile://cache/xxx/unifile://usr/xxx/unifile://sandbox/xxx |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1819,8 +1819,8 @@ FileSystemManager.saveFile 的同步版本。自 `4.71` 起，返回 `unifile://
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 | Web: x; 支付宝小程序: x | 临时存储文件路径 (本地路径) |
-| filePath | string | 否 | Web: x; 支付宝小程序: x | 要存储的文件路径 (本地路径)，文件已经存在时会直接覆盖  传入不存在的路径\ - App 端自动创建并保存 - 微信小程序会报错 | 
+| tempFilePath | string | 是 | Web: x | 临时存储文件路径 (本地路径) |
+| filePath | string | 否 | Web: x | 要存储的文件路径 (本地路径)，文件已经存在时会直接覆盖  传入不存在的路径\ - App 端自动创建并保存 - 微信小程序会报错 | 
 
 
 ##### 返回值 
@@ -1842,56 +1842,56 @@ stat
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **StatOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **StatOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 文件/目录路径 (本地路径) |
-| recursive | boolean | 是 | Web: x; 支付宝小程序: x | 是否递归获取目录下的每个文件的 Stats 信息 |
-| success | (res: StatSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件/目录路径 (本地路径) |
+| recursive | boolean | 是 | Web: x | 是否递归获取目录下的每个文件的 Stats 信息 |
+| success | (res: StatSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1907,8 +1907,8 @@ FileSystemManager.stat 的同步版本
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | 是 | Web: x; 支付宝小程序: x | 文件/目录路径 (本地路径) |
-| recursive | boolean | 是 | Web: x; 支付宝小程序: x | 是否递归获取目录下的每个文件的 Stats 信息 | 
+| path | string | 是 | Web: x | 文件/目录路径 (本地路径) |
+| recursive | boolean | 是 | Web: x | 是否递归获取目录下的每个文件的 Stats 信息 | 
 
 
 ##### 返回值 
@@ -1930,56 +1930,56 @@ truncate
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **TruncateFileOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **TruncateFileOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要截断的文件路径 (本地路径) |
-| length | number | 是 | Web: x; 支付宝小程序: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要截断的文件路径 (本地路径) |
+| length | number | 是 | Web: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1995,8 +1995,8 @@ truncateSync
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 | Web: x; 支付宝小程序: x | 要截断的文件路径 (本地路径) |
-| length | number | 否 | Web: x; 支付宝小程序: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；如果 length 大于文件长度，不做处理 | 
+| filePath | string | 是 | Web: x | 要截断的文件路径 (本地路径) |
+| length | number | 否 | Web: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；如果 length 大于文件长度，不做处理 | 
 
 
 
@@ -2012,55 +2012,55 @@ unlink
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **UnLinkOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **UnLinkOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 文件路径，只支持绝对地址 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件路径，只支持绝对地址 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -2076,7 +2076,7 @@ FileSystemManager.unlink 的同步版本
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 | Web: x; 支付宝小程序: x | 文件路径，只支持绝对地址 | 
+| filePath | string | 是 | Web: x | 文件路径，只支持绝对地址 | 
 
 
 
@@ -2092,56 +2092,56 @@ unzip
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **UnzipFileOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **UnzipFileOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| zipFilePath | string | 是 | Web: x; 支付宝小程序: x | 源文件路径，支持本地路径, 只可以是 zip 压缩文件 |
-| targetPath | string | 是 | Web: x; 支付宝小程序: x | 目标目录路径, 支持本地路径 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| zipFilePath | string | 是 | Web: x | 源文件路径，支持本地路径, 只可以是 zip 压缩文件 |
+| targetPath | string | 是 | Web: x | 目标目录路径, 支持本地路径 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -2157,65 +2157,65 @@ writeFile
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **WriteFileOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **WriteFileOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 文件路径，只支持绝对地址 |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | 指定写入文件的字符编码,<br/>支持:ascii base64 utf-8，默认值是 utf-8，仅在 data 类型是 String 时有效 |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件路径，只支持绝对地址 |
+| encoding | string | 否 | Web: x | 指定写入文件的字符编码,<br/>支持:ascii base64 utf-8，默认值是 utf-8，仅在 data 类型是 String 时有效 |
 | data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，之前类型是string，iOS平台4.61及以后、Android平台4.31及以后支持ArrayBuffer类型 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii 编码格式 |
-| base64 | Web: x; 支付宝小程序: x | base64 编码格式 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8 编码格式，默认值 |
+| ascii | Web: x | ascii 编码格式 |
+| base64 | Web: x | base64 编码格式 |
+| utf-8 | Web: x | utf-8 编码格式，默认值 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -2231,9 +2231,9 @@ FileSystemManager.writeFile 的同步版本
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 | Web: x; 支付宝小程序: x | 文件路径，只支持绝对地址 |
-| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 支付宝小程序: x | 要写入的文本或二进制数据,Android平台4.31、iOS平台4.61及以后版本支持ArrayBuffer |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | 指定写入文件的字符编码,支持:ascii base64 utf-8, 默认值是utf-8, 仅在 data 类型是 String 时有效 | 
+| filePath | string | 是 | Web: x | 文件路径，只支持绝对地址 |
+| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x | 要写入的文本或二进制数据,Android平台4.31、iOS平台4.61及以后版本支持ArrayBuffer |
+| encoding | string | 否 | Web: x | 指定写入文件的字符编码,支持:ascii base64 utf-8, 默认值是utf-8, 仅在 data 类型是 String 时有效 | 
 
 
 
@@ -2249,74 +2249,74 @@ write
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **WriteOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **WriteOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| fd | string | 是 |  | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| fd | string | 是 |  | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
 | data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，iOS平台4.61、Android平台4.31及以后支持ArrayBuffer |
 | offset | number | 否 | 0 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | Android平台4.31及以后版本新增，只在 data 类型是 ArrayBuffer 时有效，决定 ArrayBuffer 中要被写入的部位，即 ArrayBuffer 中的索引，默认0 |
 | length | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | Android平台4.31及以后版本新增，只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 ArrayBuffer 从0开始偏移 offset 个字节后剩余的字节数 |
 | position | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: x; HarmonyOS: 4.61 | Andorid平台4.31及以后版本新增，指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。 |
-| encoding | string | 否 |  | Web: x; 支付宝小程序: x | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
-| success | (res: [WriteResult](#writeresult-values)) => void | 否 |  | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 |  | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| encoding | string | 否 |  | Web: x | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
+| success | (res: [WriteResult](#writeresult-values)) => void | 否 |  | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 |  | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 |  | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii 字符编码 |
-| base64 | Web: x; 支付宝小程序: x | base64 字符编码 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8 字符编码，默认值 |
+| ascii | Web: x | ascii 字符编码 |
+| base64 | Web: x | base64 字符编码 |
+| utf-8 | Web: x | utf-8 字符编码，默认值 |
 
 ###### WriteResult 的属性值 @writeresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| bytesWritten | number | 是 | Web: x; 支付宝小程序: x | 实际被写入到文件中的字节数（注意，被写入的字节数不一定与被写入的字符串字符数相同） |
+| bytesWritten | number | 是 | Web: x | 实际被写入到文件中的字节数（注意，被写入的字节数不一定与被写入的字符串字符数相同） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -2332,15 +2332,15 @@ writeSync
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **WriteSyncOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **WriteSyncOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
 | data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer类型 |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
+| encoding | string | 否 | Web: x | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
 | length | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 arrayBuffer 从0开始偏移 offset 个字节后剩余的字节数 ，4.31及以后版本新增 |
 | offset | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，决定 arrayBuffer 中要被写入的部位，即 arrayBuffer 中的索引，默认0，4.31及以后版本新增 |
 | position | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。4.31及以后版本新增 | 
@@ -2349,9 +2349,9 @@ writeSync
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii 字符编码 |
-| base64 | Web: x; 支付宝小程序: x | base64 字符编码 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8 字符编码，默认值 |
+| ascii | Web: x | ascii 字符编码 |
+| base64 | Web: x | base64 字符编码 |
+| utf-8 | Web: x | utf-8 字符编码，默认值 |
 
 
 ##### 返回值 
@@ -2364,240 +2364,240 @@ writeSync
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| bytesWritten | number | 是 | Web: x; 支付宝小程序: x | 实际被写入到文件中的字节数（注意，被写入的字节数不一定与被写入的字符串字符数相同） | 
+| bytesWritten | number | 是 | Web: x | 实际被写入到文件中的字节数（注意，被写入的字节数不一定与被写入的字符串字符数相同） | 
 
 ##### AccessOptions 的属性值 @accessoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要判断是否存在的文件/目录路径 (本地路径) |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 通用的正确返回结果回调 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 通用的错误返回结果回调 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 通用的结束返回结果回调 |
+| path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要判断是否存在的文件/目录路径 (本地路径) |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 通用的正确返回结果回调 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 通用的错误返回结果回调 |
+| complete | (res: any) => void | 否 | Web: x | 通用的结束返回结果回调 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### AppendFileOptions 的属性值 @appendfileoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要追加内容的文件路径 (本地路径) |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | 指定写入文件的字符编码<br/>支持:ascii base64 utf-8<br/>只在 data 类型是 String 时有效 |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要追加内容的文件路径 (本地路径) |
+| encoding | string | 否 | Web: x | 指定写入文件的字符编码<br/>支持:ascii base64 utf-8<br/>只在 data 类型是 String 时有效 |
 | data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 要追加的文本或二进制数据，类型为 String 或 ArrayBuffer，以前类型是string，iOS平台4.61、Android平台4.31及以后支持arraybuffer |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii字符编码 |
-| base64 | Web: x; 支付宝小程序: x | base64字符编码 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8字符编码，默认值 |
+| ascii | Web: x | ascii字符编码 |
+| base64 | Web: x | base64字符编码 |
+| utf-8 | Web: x | utf-8字符编码，默认值 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### CloseOptions 的属性值 @closeoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 需要被关闭的文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| fd | string | 是 | Web: x | 需要被关闭的文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### CloseSyncOptions 的属性值 @closesyncoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 需要被关闭的文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| fd | string | 是 | Web: x | 需要被关闭的文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
 
 ##### CopyFileOptions 的属性值 @copyfileoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| srcPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 源文件路径，支持本地路径 |
-| destPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 新文件路径，支持本地路径<br/>- 传入错误路径：比如无权限的路径，返回 error<br/>- 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存<br/>-传入destPath是目录路径且已存在，则返回错误码1300021<br/>-传入destPath是文件路径且已存在，则覆盖写入<br/>- 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| srcPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 源文件路径，支持本地路径 |
+| destPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 新文件路径，支持本地路径<br/>- 传入错误路径：比如无权限的路径，返回 error<br/>- 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存<br/>-传入destPath是目录路径且已存在，则返回错误码1300021<br/>-传入destPath是文件路径且已存在，则覆盖写入<br/>- 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### FStatOptions 的属性值 @fstatoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| success | (res: [FStatSuccessResult](#fstatsuccessresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| success | (res: [FStatSuccessResult](#fstatsuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FStatSuccessResult 的属性值 @fstatsuccessresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| stats | [Stats](#stats-values) | 是 | Web: x; 支付宝小程序: x | Stats 对象，包含了文件的状态信息 |
+| stats | [Stats](#stats-values) | 是 | Web: x | Stats 对象，包含了文件的状态信息 |
 
 #### stats 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| mode | number | 是 | Web: x; 支付宝小程序: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
-| size | number | 是 | Web: x; 支付宝小程序: x | 文件大小，单位：B，对应 POSIX stat.st_size |
-| lastAccessedTime | number | 是 | Web: x; 支付宝小程序: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
-| lastModifiedTime | number | 是 | Web: x; 支付宝小程序: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
+| mode | number | 是 | Web: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
+| size | number | 是 | Web: x | 文件大小，单位：B，对应 POSIX stat.st_size |
+| lastAccessedTime | number | 是 | Web: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
+| lastModifiedTime | number | 是 | Web: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
 
 ###### Stats 的方法 @stats-values 
 
@@ -2639,55 +2639,55 @@ isFile
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### FStatSyncOptions 的属性值 @fstatsyncoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
 
 ##### Stats 的属性值 @stats-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| mode | number | 是 | Web: x; 支付宝小程序: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
-| size | number | 是 | Web: x; 支付宝小程序: x | 文件大小，单位：B，对应 POSIX stat.st_size |
-| lastAccessedTime | number | 是 | Web: x; 支付宝小程序: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
-| lastModifiedTime | number | 是 | Web: x; 支付宝小程序: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
+| mode | number | 是 | Web: x | 文件的类型和存取的权限，对应 POSIX stat.st_mode<br/>注意android中，文件类型只包含是否是目录与文件，<br/>另外在android中这里的权限指的是当前进程对文件或者文件夹是否有读，写，执行的权限，<br/>这里没有与 POSIX stat.st_mode对应的组，其他人等相关权限的数据返回,只有所有者的相关权限 |
+| size | number | 是 | Web: x | 文件大小，单位：B，对应 POSIX stat.st_size |
+| lastAccessedTime | number | 是 | Web: x | 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime<br/>注意：android中由于系统限制无法获取该数据 |
+| lastModifiedTime | number | 是 | Web: x | 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime |
 
 ##### Stats 的方法 @stats-values 
 
@@ -2729,326 +2729,326 @@ isFile
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| length | number | 是 | Web: x; 支付宝小程序: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| length | number | 是 | Web: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### FTruncateFileSyncOptions 的属性值 @ftruncatefilesyncoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| length | number | 是 | Web: x; 支付宝小程序: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 |
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| length | number | 是 | Web: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 |
 
 ##### GetFileInfoOptions 的属性值 @getfileinfooptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要读取的文件路径 (本地路径) |
-| digestAlgorithm | string | 否 | Web: x; 支付宝小程序: x | 计算文件摘要的算法 |
-| success | (res: [GetFileInfoSuccessResult](#getfileinfosuccessresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的文件路径 (本地路径) |
+| digestAlgorithm | string | 否 | Web: x | 计算文件摘要的算法 |
+| success | (res: [GetFileInfoSuccessResult](#getfileinfosuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### digestAlgorithm 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| md5 | Web: x; 支付宝小程序: x | md5 算法 |
-| sha1 | Web: x; 支付宝小程序: x | sha1 算法 |
+| md5 | Web: x | md5 算法 |
+| sha1 | Web: x | sha1 算法 |
 
 ###### GetFileInfoSuccessResult 的属性值 @getfileinfosuccessresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| digest | string | 是 | Web: x; 支付宝小程序: x | 按照传入的 digestAlgorithm 计算得出的的文件摘要 |
-| size | number | 是 | Web: x; 支付宝小程序: x | 文件大小，以字节为单位 |
+| digest | string | 是 | Web: x | 按照传入的 digestAlgorithm 计算得出的的文件摘要 |
+| size | number | 是 | Web: x | 文件大小，以字节为单位 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### GetSavedFileListOptions 的属性值 @getsavedfilelistoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: GetSavedFileListResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| success | (res: GetSavedFileListResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### MkDirOptions 的属性值 @mkdiroptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 创建的目录路径 (本地路径) |
-| recursive | boolean | 是 | Web: x; 支付宝小程序: x | 是否在递归创建该目录的上级目录后再创建该目录。如果对应的上级目录已经存在，则不创建该上级目录。如 dirPath 为 a/b/c/d 且 recursive 为 true，将创建 a 目录，再在 a 目录下创建 b 目录，以此类推直至创建 a/b/c 目录下的 d 目录。 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 创建的目录路径 (本地路径) |
+| recursive | boolean | 是 | Web: x | 是否在递归创建该目录的上级目录后再创建该目录。如果对应的上级目录已经存在，则不创建该上级目录。如 dirPath 为 a/b/c/d 且 recursive 为 true，将创建 a 目录，再在 a 目录下创建 b 目录，以此类推直至创建 a/b/c 目录下的 d 目录。 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### OpenFileOptions 的属性值 @openfileoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要追加内容的文件路径 (本地路径) |
-| flag | string | 是 | Web: x; 支付宝小程序: x | 文件系统标志，默认值: 'r' |
-| success | (res: [OpenFileSuccessResult](#openfilesuccessresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要追加内容的文件路径 (本地路径) |
+| flag | string | 是 | Web: x | 文件系统标志，默认值: 'r' |
+| success | (res: [OpenFileSuccessResult](#openfilesuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### flag 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| a | Web: x; 支付宝小程序: x | 打开文件用于追加。 如果文件不存在，则创建该文件 |
-| ax | Web: x; 支付宝小程序: x | 类似于 'a'，但如果路径存在，则失败 |
-| a+ | Web: x; 支付宝小程序: x | 打开文件用于读取和追加。 如果文件不存在，则创建该文件 |
-| ax+ | Web: x; 支付宝小程序: x | 类似于 'a+'，但如果路径存在，则失败 |
-| r | Web: x; 支付宝小程序: x | 打开文件用于读取。 如果文件不存在，则会发生异常 |
-| r+ | Web: x; 支付宝小程序: x | 打开文件用于读取和写入。 如果文件不存在，则会发生异常 |
-| w | Web: x; 支付宝小程序: x | 打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
-| wx | Web: x; 支付宝小程序: x | 类似于 'w'，但如果路径存在，则失败 |
-| w+ | Web: x; 支付宝小程序: x | 打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
-| wx+ | Web: x; 支付宝小程序: x | 类似于 'w+'，但如果路径存在，则失败 |
+| a | Web: x | 打开文件用于追加。 如果文件不存在，则创建该文件 |
+| ax | Web: x | 类似于 'a'，但如果路径存在，则失败 |
+| a+ | Web: x | 打开文件用于读取和追加。 如果文件不存在，则创建该文件 |
+| ax+ | Web: x | 类似于 'a+'，但如果路径存在，则失败 |
+| r | Web: x | 打开文件用于读取。 如果文件不存在，则会发生异常 |
+| r+ | Web: x | 打开文件用于读取和写入。 如果文件不存在，则会发生异常 |
+| w | Web: x | 打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
+| wx | Web: x | 类似于 'w'，但如果路径存在，则失败 |
+| w+ | Web: x | 打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
+| wx+ | Web: x | 类似于 'w+'，但如果路径存在，则失败 |
 
 ###### OpenFileSuccessResult 的属性值 @openfilesuccessresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符 |
+| fd | string | 是 | Web: x | 文件描述符 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### OpenFileSyncOptions 的属性值 @openfilesyncoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要追加内容的文件路径 (本地路径) |
-| flag | string | 是 | Web: x; 支付宝小程序: x | 文件系统标志，默认值: 'r' |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要追加内容的文件路径 (本地路径) |
+| flag | string | 是 | Web: x | 文件系统标志，默认值: 'r' |
 
 #### flag 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| a | Web: x; 支付宝小程序: x | 打开文件用于追加。 如果文件不存在，则创建该文件 |
-| ax | Web: x; 支付宝小程序: x | 类似于 'a'，但如果路径存在，则失败 |
-| a+ | Web: x; 支付宝小程序: x | 打开文件用于读取和追加。 如果文件不存在，则创建该文件 |
-| ax+ | Web: x; 支付宝小程序: x | 类似于 'a+'，但如果路径存在，则失败 |
-| r | Web: x; 支付宝小程序: x | 打开文件用于读取。 如果文件不存在，则会发生异常 |
-| r+ | Web: x; 支付宝小程序: x | 打开文件用于读取和写入。 如果文件不存在，则会发生异常 |
-| w | Web: x; 支付宝小程序: x | 打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
-| wx | Web: x; 支付宝小程序: x | 类似于 'w'，但如果路径存在，则失败 |
-| w+ | Web: x; 支付宝小程序: x | 打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
-| wx+ | Web: x; 支付宝小程序: x | 类似于 'w+'，但如果路径存在，则失败 |
+| a | Web: x | 打开文件用于追加。 如果文件不存在，则创建该文件 |
+| ax | Web: x | 类似于 'a'，但如果路径存在，则失败 |
+| a+ | Web: x | 打开文件用于读取和追加。 如果文件不存在，则创建该文件 |
+| ax+ | Web: x | 类似于 'a+'，但如果路径存在，则失败 |
+| r | Web: x | 打开文件用于读取。 如果文件不存在，则会发生异常 |
+| r+ | Web: x | 打开文件用于读取和写入。 如果文件不存在，则会发生异常 |
+| w | Web: x | 打开文件用于写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
+| wx | Web: x | 类似于 'w'，但如果路径存在，则失败 |
+| w+ | Web: x | 打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件 |
+| wx+ | Web: x | 类似于 'w+'，但如果路径存在，则失败 |
 
 ##### ReadFileOptions 的属性值 @readfileoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | base64 / utf-8 / ascii,指定读取文件的字符编码，(iOS平台4.61及以后、Android平台4.31及以后)如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 文件路径，支持相对地址和绝对地址，app-android平台支持代码包文件目录 |
-| success | (res: [ReadFileSuccessResult](#readfilesuccessresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| encoding | string | 否 | Web: x | base64 / utf-8 / ascii,指定读取文件的字符编码，(iOS平台4.61及以后、Android平台4.31及以后)如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件路径，支持相对地址和绝对地址，app-android平台支持代码包文件目录 |
+| success | (res: [ReadFileSuccessResult](#readfilesuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii 字符编码 |
-| base64 | Web: x; 支付宝小程序: x | base64 字符编码 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8 字符编码，默认值 |
+| ascii | Web: x | ascii 字符编码 |
+| base64 | Web: x | base64 字符编码 |
+| utf-8 | Web: x | utf-8 字符编码，默认值 |
 
 ###### ReadFileSuccessResult 的属性值 @readfilesuccessresult-values 
 
@@ -3060,92 +3060,92 @@ isFile
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### ReadOption 的属性值 @readoption-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 支付宝小程序: x | 数据写入的缓冲区，必须是 ArrayBuffer 实例 |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| length | number | 否 | Web: x; 支付宝小程序: x | 要从文件中读取的字节数，默认0 |
-| offset | number | 否 | Web: x; 支付宝小程序: x | 缓冲区中的写入偏移量，默认0 |
-| position | number | 否 | Web: x; 支付宝小程序: x | 文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件。 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| success | (result: [ReadSuccessCallbackResult](#readsuccesscallbackresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用成功的回调函数 |
+| arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x | 数据写入的缓冲区，必须是 ArrayBuffer 实例 |
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| length | number | 否 | Web: x | 要从文件中读取的字节数，默认0 |
+| offset | number | 否 | Web: x | 缓冲区中的写入偏移量，默认0 |
+| position | number | 否 | Web: x | 文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件。 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| success | (result: [ReadSuccessCallbackResult](#readsuccesscallbackresult-values)) => void | 否 | Web: x | 接口调用成功的回调函数 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ###### ReadSuccessCallbackResult 的属性值 @readsuccesscallbackresult-values 
 
@@ -3159,10 +3159,10 @@ isFile
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 数据写入的缓冲区，必须是 ArrayBuffer 实例 |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 [FileSystemManager.open](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.open.html) 或 [FileSystemManager.openSync](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.openSync.html) 接口获得 |
-| length | number | 否 | Web: x; 支付宝小程序: x | 要从文件中读取的字节数，默认0 |
-| offset | number | 否 | Web: x; 支付宝小程序: x | 缓冲区中的写入偏移量，默认0 |
-| position | number | 否 | Web: x; 支付宝小程序: x | 文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件。 |
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 [FileSystemManager.open](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.open.html) 或 [FileSystemManager.openSync](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.openSync.html) 接口获得 |
+| length | number | 否 | Web: x | 要从文件中读取的字节数，默认0 |
+| offset | number | 否 | Web: x | 缓冲区中的写入偏移量，默认0 |
+| position | number | 否 | Web: x | 文件读取的起始位置，如不传或传 null，则会从当前文件指针的位置读取。如果 position 是正整数，则文件指针位置会保持不变并从 position 读取文件。 |
 
 ##### ReadResult 的属性值 @readresult-values 
 
@@ -3175,697 +3175,697 @@ isFile
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要读取的目录路径 (本地路径) |
-| success | (res: ReadDirSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的目录路径 (本地路径) |
+| success | (res: ReadDirSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### ReadZipEntryOptions 的属性值 @readzipentryoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要读取的压缩包的路径 (本地路径)，app-android平台支持代码包文件目录 |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | 统一指定读取文件的字符编码，只在 entries 值为"all"时有效。<br/>4.31及以后版本如果 entries 值为 null 且不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
-| success | (res: [EntriesResult](#entriesresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的压缩包的路径 (本地路径)，app-android平台支持代码包文件目录 |
+| encoding | string | 否 | Web: x | 统一指定读取文件的字符编码，只在 entries 值为"all"时有效。<br/>4.31及以后版本如果 entries 值为 null 且不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
+| success | (res: [EntriesResult](#entriesresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii 字符编码 |
-| base64 | Web: x; 支付宝小程序: x | base64 字符编码 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8 字符编码，默认值 |
+| ascii | Web: x | ascii 字符编码 |
+| base64 | Web: x | base64 字符编码 |
+| utf-8 | Web: x | utf-8 字符编码，默认值 |
 
 ###### EntriesResult 的属性值 @entriesresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| entries | Map\<string, ZipFileItem> | 是 | Web: x; 支付宝小程序: x | 文件路径 |
-| ~~result~~ | Map\<string, ZipFileItem> | 是 | Web: x; 支付宝小程序: x |   **已废弃，使用 entries** |
+| entries | Map\<string, ZipFileItem> | 是 | Web: x | 文件路径 |
+| ~~result~~ | Map\<string, ZipFileItem> | 是 | Web: x |   **已废弃，使用 entries** |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### RmDirOptions 的属性值 @rmdiroptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要删除的目录路径 (本地路径)<br/>删除特殊目录，只删除子，保留本身<br/>- uni.env.SANDBOX_PATH<br/>- uni.env.CACHE_PATH<br/>- uni.env.USER_DATA_PATH<br/>- uni.env.ANDROID_INTERNAL_SANDBOX_PATH<br/>其他创建的目录可以删除子和本身 |
-| recursive | boolean | 是 | Web: x; 支付宝小程序: x | 是否递归删除目录。如果为 true，则删除该目录和该目录下的所有子目录以及文件。 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| dirPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要删除的目录路径 (本地路径)<br/>删除特殊目录，只删除子，保留本身<br/>- uni.env.SANDBOX_PATH<br/>- uni.env.CACHE_PATH<br/>- uni.env.USER_DATA_PATH<br/>- uni.env.ANDROID_INTERNAL_SANDBOX_PATH<br/>其他创建的目录可以删除子和本身 |
+| recursive | boolean | 是 | Web: x | 是否递归删除目录。如果为 true，则删除该目录和该目录下的所有子目录以及文件。 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### RenameOptions 的属性值 @renameoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| oldPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 源文件路径，支持本地路径 |
-| newPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 新文件路径，支持本地路径 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| oldPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 源文件路径，支持本地路径 |
+| newPath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 新文件路径，支持本地路径 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### RemoveSavedFileOptions 的属性值 @removesavedfileoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 需要删除的文件路径 (本地路径) |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 需要删除的文件路径 (本地路径) |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### ReadCompressedFileOptions 的属性值 @readcompressedfileoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要读取的文件的路径 (本地用户文件或代码包文件)，app-android平台支持代码包文件目录 |
-| compressionAlgorithm | string | 是 | Web: x; 支付宝小程序: x | 文件压缩类型，目前仅支持 'br'。 |
-| success | (res: [ReadCompressedFileResult](#readcompressedfileresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的文件的路径 (本地用户文件或代码包文件)，app-android平台支持代码包文件目录 |
+| compressionAlgorithm | string | 是 | Web: x | 文件压缩类型，目前仅支持 'br'。 |
+| success | (res: [ReadCompressedFileResult](#readcompressedfileresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### ReadCompressedFileResult 的属性值 @readcompressedfileresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| data | string | 是 | Web: x; 支付宝小程序: x |
+| data | string | 是 | Web: x |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### SaveFileOptions 的属性值 @savefileoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 临时存储文件路径 (本地路径) |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 否 | Web: x; 支付宝小程序: x | - 传入nil：默认保存到 uni.env.CACHE_PATH/uni-store/ 目录<br/>- 传入错误路径：比如无权限的路径，返回 error<br/>- 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存<br/>- 传入filePath是目录路径且已存在，则返回错误码1300021<br/>- 传入filePath是文件路径且已存在，则覆盖写入<br/>- 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录 |
-| success | (res: [SaveFileSuccessResult](#savefilesuccessresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数，成功保存后删除临时文件 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| tempFilePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 临时存储文件路径 (本地路径) |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 否 | Web: x | - 传入nil：默认保存到 uni.env.CACHE_PATH/uni-store/ 目录<br/>- 传入错误路径：比如无权限的路径，返回 error<br/>- 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存<br/>- 传入filePath是目录路径且已存在，则返回错误码1300021<br/>- 传入filePath是文件路径且已存在，则覆盖写入<br/>- 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录 |
+| success | (res: [SaveFileSuccessResult](#savefilesuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数，成功保存后删除临时文件 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### SaveFileSuccessResult 的属性值 @savefilesuccessresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| savedFilePath | string | 是 | Web: x; 支付宝小程序: x | 存储后的文件路径 (本地路径)。自 `4.71` 起，返回 `unifile://` 协议的路径<br/>参数filePath=nil, savedFilePath= unifile://cache/uni-store/xxx<br/>否则savedFilePath= unifile://cache/xxx/unifile://usr/xxx/unifile://sandbox/xxx |
+| savedFilePath | string | 是 | Web: x | 存储后的文件路径 (本地路径)。自 `4.71` 起，返回 `unifile://` 协议的路径<br/>参数filePath=nil, savedFilePath= unifile://cache/uni-store/xxx<br/>否则savedFilePath= unifile://cache/xxx/unifile://usr/xxx/unifile://sandbox/xxx |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### StatOptions 的属性值 @statoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 文件/目录路径 (本地路径) |
-| recursive | boolean | 是 | Web: x; 支付宝小程序: x | 是否递归获取目录下的每个文件的 Stats 信息 |
-| success | (res: StatSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件/目录路径 (本地路径) |
+| recursive | boolean | 是 | Web: x | 是否递归获取目录下的每个文件的 Stats 信息 |
+| success | (res: StatSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### TruncateFileOptions 的属性值 @truncatefileoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 要截断的文件路径 (本地路径) |
-| length | number | 是 | Web: x; 支付宝小程序: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要截断的文件路径 (本地路径) |
+| length | number | 是 | Web: x | 截断位置，默认0。如果 length 小于文件长度（字节），则只有前面 length 个字节会保留在文件中，其余内容会被删除；<br/>如果 length 大于文件长度，不做处理 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### UnLinkOptions 的属性值 @unlinkoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 文件路径，只支持绝对地址 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件路径，只支持绝对地址 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### UnzipFileOptions 的属性值 @unzipfileoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| zipFilePath | string | 是 | Web: x; 支付宝小程序: x | 源文件路径，支持本地路径, 只可以是 zip 压缩文件 |
-| targetPath | string | 是 | Web: x; 支付宝小程序: x | 目标目录路径, 支持本地路径 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| zipFilePath | string | 是 | Web: x | 源文件路径，支持本地路径, 只可以是 zip 压缩文件 |
+| targetPath | string | 是 | Web: x | 目标目录路径, 支持本地路径 |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### WriteFileOptions 的属性值 @writefileoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x; 支付宝小程序: x | 文件路径，只支持绝对地址 |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | 指定写入文件的字符编码,<br/>支持:ascii base64 utf-8，默认值是 utf-8，仅在 data 类型是 String 时有效 |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件路径，只支持绝对地址 |
+| encoding | string | 否 | Web: x | 指定写入文件的字符编码,<br/>支持:ascii base64 utf-8，默认值是 utf-8，仅在 data 类型是 String 时有效 |
 | data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，之前类型是string，iOS平台4.61及以后、Android平台4.31及以后支持ArrayBuffer类型 |
-| success | (res: FileManagerSuccessResult) => void | 否 | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii 编码格式 |
-| base64 | Web: x; 支付宝小程序: x | base64 编码格式 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8 编码格式，默认值 |
+| ascii | Web: x | ascii 编码格式 |
+| base64 | Web: x | base64 编码格式 |
+| utf-8 | Web: x | utf-8 编码格式，默认值 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### WriteOptions 的属性值 @writeoptions-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| fd | string | 是 |  | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| fd | string | 是 |  | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
 | data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，iOS平台4.61、Android平台4.31及以后支持ArrayBuffer |
 | offset | number | 否 | 0 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | Android平台4.31及以后版本新增，只在 data 类型是 ArrayBuffer 时有效，决定 ArrayBuffer 中要被写入的部位，即 ArrayBuffer 中的索引，默认0 |
 | length | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | Android平台4.31及以后版本新增，只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 ArrayBuffer 从0开始偏移 offset 个字节后剩余的字节数 |
 | position | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: x; HarmonyOS: 4.61 | Andorid平台4.31及以后版本新增，指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。 |
-| encoding | string | 否 |  | Web: x; 支付宝小程序: x | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
-| success | (res: [WriteResult](#writeresult-values)) => void | 否 |  | Web: x; 支付宝小程序: x | 接口调用的回调函数 |
-| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 |  | Web: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| encoding | string | 否 |  | Web: x | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
+| success | (res: [WriteResult](#writeresult-values)) => void | 否 |  | Web: x | 接口调用的回调函数 |
+| fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 |  | Web: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 |  | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 #### encoding 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii 字符编码 |
-| base64 | Web: x; 支付宝小程序: x | base64 字符编码 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8 字符编码，默认值 |
+| ascii | Web: x | ascii 字符编码 |
+| base64 | Web: x | base64 字符编码 |
+| utf-8 | Web: x | utf-8 字符编码，默认值 |
 
 ###### WriteResult 的属性值 @writeresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| bytesWritten | number | 是 | Web: x; 支付宝小程序: x | 实际被写入到文件中的字节数（注意，被写入的字节数不一定与被写入的字符串字符数相同） |
+| bytesWritten | number | 是 | Web: x | 实际被写入到文件中的字节数（注意，被写入的字节数不一定与被写入的字符串字符数相同） |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 支付宝小程序: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 ##### WriteSyncOptions 的属性值 @writesyncoptions-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| fd | string | 是 | Web: x; 支付宝小程序: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
+| fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
 | data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer类型 |
-| encoding | string | 否 | Web: x; 支付宝小程序: x | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
+| encoding | string | 否 | Web: x | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
 | length | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 arrayBuffer 从0开始偏移 offset 个字节后剩余的字节数 ，4.31及以后版本新增 |
 | offset | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，决定 arrayBuffer 中要被写入的部位，即 arrayBuffer 中的索引，默认0，4.31及以后版本新增 |
 | position | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。4.31及以后版本新增 |
@@ -3874,15 +3874,15 @@ isFile
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ascii | Web: x; 支付宝小程序: x | ascii 字符编码 |
-| base64 | Web: x; 支付宝小程序: x | base64 字符编码 |
-| utf-8 | Web: x; 支付宝小程序: x | utf-8 字符编码，默认值 |
+| ascii | Web: x | ascii 字符编码 |
+| base64 | Web: x | base64 字符编码 |
+| utf-8 | Web: x | utf-8 字符编码，默认值 |
 
 ##### WriteResult 的属性值 @writeresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| bytesWritten | number | 是 | Web: x; 支付宝小程序: x | 实际被写入到文件中的字节数（注意，被写入的字节数不一定与被写入的字符串字符数相同） |
+| bytesWritten | number | 是 | Web: x | 实际被写入到文件中的字节数（注意，被写入的字节数不一定与被写入的字符串字符数相同） |
  
 
 
@@ -6055,5 +6055,5 @@ isFile
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 

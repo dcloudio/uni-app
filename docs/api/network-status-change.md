@@ -16,14 +16,14 @@
 ### onNetworkStatusChange 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 | 4.61 |
+| 4.0 | 4.41 | 5.25 | 4.81 | 4.81 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| listener | (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 是 | 支付宝小程序: x | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| listener | (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 是 | 
 
 ### OnNetworkStatusChangeCallbackResult 的属性值 @onnetworkstatuschangecallbackresult-values 
 
@@ -81,14 +81,14 @@
 ### offNetworkStatusChange 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 | 4.61 |
+| 4.0 | 4.41 | 5.25 | 4.81 | 4.81 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| listener | number \| (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 否 | 支付宝小程序: x | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| listener | number \| (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 否 | 
 
 ### OnNetworkStatusChangeCallbackResult 的属性值 @onnetworkstatuschangecallbackresult-values 
 
@@ -225,5 +225,5 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 

@@ -15,20 +15,20 @@
 ### getAppBaseInfo 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **GetAppBaseInfoOptions** | 否 | 包含所有字段的过滤对象 | 支付宝小程序: x | \[options=包含所有字段的过滤对象]  过滤的字段对象, 不传参数默认为获取全部字段。 |
+| 名称 | 类型 | 必填 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| options | **GetAppBaseInfoOptions** | 否 | 包含所有字段的过滤对象 | \[options=包含所有字段的过滤对象]  过滤的字段对象, 不传参数默认为获取全部字段。 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| filter | Array&lt;string&gt; | 是 | 支付宝小程序: x | 过滤字段的字符串数组，假如要获取指定字段，传入此数组。 | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| filter | Array&lt;string&gt; | 是 | 过滤字段的字符串数组，假如要获取指定字段，传入此数组。 | 
 
 
 ### 返回值 
@@ -66,55 +66,55 @@
 | bundleName | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 鸿蒙的包名<br/> |
 | bundleId | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 4.11; HarmonyOS: x | iOS的Bundle ID<br/> |
 | signature | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.97; iOS: 4.11; HarmonyOS: x | Android: 应用签名证书的SHA1值（全部为小写，中间不包含“:”）。<br/>iOS: 应用签名证书中绑定的Bundle ID（AppleID）的md5值（全部为小写）。<br/> |
-| SDKVersion | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 客户端基础库版本<br/> |
-| enableDebug | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: x |  |
-| fontSizeScaleFactor | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 微信字体大小缩放比例<br/> |
-| fontSizeSetting | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.23.4`<br/><br/>微信字体大小，单位px<br/> |
-| host | **GetAppBaseInfoResultHost** | 否 | 微信小程序: 4.41; 支付宝小程序: x | 当前小程序运行的宿主环境<br/> |
-| theme | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
+| SDKVersion | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 客户端基础库版本<br/> |
+| enableDebug | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: - |  |
+| fontSizeScaleFactor | number | 否 | 微信小程序: 4.41; 支付宝小程序: - | 微信字体大小缩放比例<br/> |
+| fontSizeSetting | number | 否 | 微信小程序: 4.41; 支付宝小程序: - | 需要基础库： `2.23.4`<br/><br/>微信字体大小，单位px<br/> |
+| host | **GetAppBaseInfoResultHost** | 否 | 微信小程序: 4.41; 支付宝小程序: - | 当前小程序运行的宿主环境<br/> |
+| theme | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
 | ~~version~~ | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 引擎版本号。已废弃，仅为了向下兼容保留  **已废弃，仅为了向下兼容保留** |
 | ~~uniCompileVersion~~ | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: x | uni 编译器版本  **已废弃，仅为了向下兼容保留** |
 | ~~uniCompileVersionCode~~ | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本号  **已废弃，仅为了向下兼容保留** | 
 
 ##### appTheme 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| light | 支付宝小程序: x |
-| dark | 支付宝小程序: x |
-| auto | 支付宝小程序: x |
+| 合法值 |
+| :- |
+| light |
+| dark |
+| auto |
 
 ##### uniPlatform 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| app | 支付宝小程序: x |
-| web | 支付宝小程序: x |
-| mp-weixin | 支付宝小程序: x |
-| mp-alipay | 支付宝小程序: x |
-| mp-baidu | 支付宝小程序: x |
-| mp-toutiao | 支付宝小程序: x |
-| mp-lark | 支付宝小程序: x |
-| mp-qq | 支付宝小程序: x |
-| mp-kuaishou | 支付宝小程序: x |
-| mp-jd | 支付宝小程序: x |
-| mp-360 | 支付宝小程序: x |
-| quickapp-webview | 支付宝小程序: x |
-| quickapp-webview-union | 支付宝小程序: x |
-| quickapp-webview-huawei | 支付宝小程序: x |
+| 合法值 |
+| :- |
+| app |
+| web |
+| mp-weixin |
+| mp-alipay |
+| mp-baidu |
+| mp-toutiao |
+| mp-lark |
+| mp-qq |
+| mp-kuaishou |
+| mp-jd |
+| mp-360 |
+| quickapp-webview |
+| quickapp-webview-union |
+| quickapp-webview-huawei |
 
 ##### host 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| appId | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 宿主 app（第三方App） 对应的 appId （当小程序运行在第三方App环境时才返回）<br/> |
+| appId | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 宿主 app（第三方App） 对应的 appId （当小程序运行在第三方App环境时才返回）<br/> |
 
 ##### theme 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| dark | 支付宝小程序: x |
-| light | 支付宝小程序: x |
+| 合法值 |
+| :- |
+| dark |
+| light |
 
 
 #### appTheme @apptheme
@@ -232,5 +232,5 @@ appTheme返回值为`auto`，代表跟随系统。此时需通过[getSystemInfo]
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 

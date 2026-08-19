@@ -15,14 +15,14 @@
 ### chooseImage 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 4.61 |
+| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | **ChooseImageOptions** | 是 | 支付宝小程序: x |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **ChooseImageOptions** | 是 |
 
 #### options 的属性描述
 
@@ -30,68 +30,68 @@
 | :- | :- | :- | :- |  :-: | :- |
 | pageOrientation | string | 否 |  | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为pages.json中的pageOrientation。 |
 | albumMode | string | 否 | "custom" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.33; iOS: x; HarmonyOS: x | 图片选择模式 |
-| count | number | 否 | 9 | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。 |
-| crop | **ChooseImageCropOptions** | 否 |  | Web: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 图像裁剪参数，设置后 sizeType 失效。 |
-| success | (callback: [ChooseImageSuccess](#chooseimagesuccess-values)) => void | 否 |  | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 成功则返回图片的本地文件路径列表 tempFilePaths |
-| fail | (callback: [ChooseImageFail](#chooseimagefail-values)) => void | 否 |  | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| count | number | 否 | 9 | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。 |
+| crop | **ChooseImageCropOptions** | 否 |  | Web: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 图像裁剪参数，设置后 sizeType 失效。 |
+| success | (callback: [ChooseImageSuccess](#chooseimagesuccess-values)) => void | 否 |  | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 成功则返回图片的本地文件路径列表 tempFilePaths |
+| fail | (callback: [ChooseImageFail](#chooseimagefail-values)) => void | 否 |  | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### pageOrientation 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| auto | 支付宝小程序: x | 自动 |
-| portrait | 支付宝小程序: x | 竖屏显示 |
-| landscape | 支付宝小程序: x | 横屏显示 |
+| 合法值 | 描述 |
+| :- | :- |
+| auto | 自动 |
+| portrait | 竖屏显示 |
+| landscape | 横屏显示 |
 
 ##### albumMode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| custom | 支付宝小程序: x | 自定义媒体选择器 |
-| system | 支付宝小程序: x | 系统媒体选择器 |
+| 合法值 | 描述 |
+| :- | :- |
+| custom | 自定义媒体选择器 |
+| system | 系统媒体选择器 |
 
 ##### crop 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 |  | 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 裁剪的宽度，单位为px，用于计算裁剪宽高比。 |
-| height | number | 是 |  | 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 裁剪的高度，单位为px，用于计算裁剪宽高比。 |
-| quality | number | 否 | 80 | 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 取值范围为1-100，数值越小，质量越低（仅对jpg格式有效）。默认值为80。 |
-| resize | boolean | 否 |  | 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 是否将width和height作为裁剪保存图片真实的像素值。默认值为true。注：设置为false时在裁剪编辑界面显示图片的像素值，设置为true时不显示。 |
+| width | number | 是 |  | Android: 3.9; iOS: 4.11 | 裁剪的宽度，单位为px，用于计算裁剪宽高比。 |
+| height | number | 是 |  | Android: 3.9; iOS: 4.11 | 裁剪的高度，单位为px，用于计算裁剪宽高比。 |
+| quality | number | 否 | 80 | Android: 3.9; iOS: 4.11 | 取值范围为1-100，数值越小，质量越低（仅对jpg格式有效）。默认值为80。 |
+| resize | boolean | 否 |  | Android: 3.9; iOS: 4.11 | 是否将width和height作为裁剪保存图片真实的像素值。默认值为true。注：设置为false时在裁剪编辑界面显示图片的像素值，设置为true时不显示。 |
 
 #### ChooseImageSuccess 的属性值 @chooseimagesuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errSubject | string | 是 | 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 调用API的名称 |
-| errMsg | string | 是 | 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 描述信息 |
-| tempFilePaths | Array&lt;string&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 图片的本地文件路径列表 |
+| errSubject | string | 是 | Android: 3.9; iOS: 4.11 | 调用API的名称 |
+| errMsg | string | 是 | Android: 3.9; iOS: 4.11 | 描述信息 |
+| tempFilePaths | Array&lt;string&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 图片的本地文件路径列表 |
 
 #### ChooseImageFail 的属性值 @chooseimagefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 1101001 | 支付宝小程序: x | 用户取消 |
-| 1101002 | 支付宝小程序: x | urls至少包含一张图片地址 |
-| 1101003 | 支付宝小程序: x | 文件不存在 |
-| 1101004 | 支付宝小程序: x | 图片加载失败 |
-| 1101005 | 支付宝小程序: x | 未获取权限 |
-| 1101006 | 支付宝小程序: x | 图片或视频保存失败 |
-| 1101007 | 支付宝小程序: x | 图片裁剪失败 |
-| 1101008 | 支付宝小程序: x | 拍照或录像失败 |
-| 1101009 | 支付宝小程序: x | 图片压缩失败 |
-| 1101010 | 支付宝小程序: x | 其他错误 |
+| 合法值 | 描述 |
+| :- | :- |
+| 1101001 | 用户取消 |
+| 1101002 | urls至少包含一张图片地址 |
+| 1101003 | 文件不存在 |
+| 1101004 | 图片加载失败 |
+| 1101005 | 未获取权限 |
+| 1101006 | 图片或视频保存失败 |
+| 1101007 | 图片裁剪失败 |
+| 1101008 | 拍照或录像失败 |
+| 1101009 | 图片压缩失败 |
+| 1101010 | 其他错误 |
 
 
 
@@ -500,7 +500,7 @@ const previewImage = (index: number) => {
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 
 
 ## 相册选择的2种方式
