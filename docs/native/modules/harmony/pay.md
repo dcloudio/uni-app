@@ -16,8 +16,23 @@
 
 在uni_modules入口文件`index.generated.ets`内注册支付宝支付provider。
 
+::: preview
+> VDOM模式
 ```typescript
 import { registerUniProvider, uni } from "@dcloudio/uni-app-x-runtime";
+import { UniPaymentAlipayProviderImpl } from '@uni_modules/uni-payment-alipay'
+
+export function initUniModules() {
+  initUniExtApi();
+}
+
+function initUniExtApi() {
+  registerUniProvider('payment', 'alipay', new UniPaymentAlipayProviderImpl())
+}
+```
+> 蒸汽模式
+```typescript
+import { registerUniProvider, uni } from "@dcloudio/uni-app-x-vapor-runtime";
 import { UniPaymentAlipayProviderImpl } from '@uni_modules/uni-payment-alipay'
 
 export function initUniModules() {
@@ -45,8 +60,21 @@ function initUniExtApi() {
 
 在uni_modules入口文件`index.generated.ets`内注册微信支付provider。
 
+::: preview
+> VDOM模式
 ```typescript
 import { registerUniProvider, uni } from "@dcloudio/uni-app-x-runtime";
+import { UniPaymentWxpayProviderImpl } from '@uni_modules/uni-payment-wxpay'
+export function initUniModules() {
+  initUniExtApi();
+}
+function initUniExtApi() {
+  registerUniProvider('payment', 'wxpay', new UniPaymentWxpayProviderImpl())
+}
+```
+> 蒸汽模式
+```typescript
+import { registerUniProvider, uni } from "@dcloudio/uni-app-x-vapor-runtime";
 import { UniPaymentWxpayProviderImpl } from '@uni_modules/uni-payment-wxpay'
 export function initUniModules() {
   initUniExtApi();

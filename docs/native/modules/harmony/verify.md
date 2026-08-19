@@ -12,8 +12,25 @@
 
 在uni_modules入口文件`index.generated.ets`内注册一键登录api。
 
+::: preview
+> VDOM模式
 ```typescript
 import { registerUniProvider, uni } from "@dcloudio/uni-app-x-runtime";
+
+import { getUniVerifyManager } from '@uni_modules/uni-verify'
+
+export function initUniModules() {
+  initUniExtApi()
+
+}
+
+function initUniExtApi() {
+  uni.getUniVerifyManager = getUniVerifyManager
+}
+```
+> 蒸汽模式
+```typescript
+import { registerUniProvider, uni } from "@dcloudio/uni-app-x-vapor-runtime";
 
 import { getUniVerifyManager } from '@uni_modules/uni-verify'
 

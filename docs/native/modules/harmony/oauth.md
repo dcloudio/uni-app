@@ -18,6 +18,8 @@ OAuth模块提供了第三方登录的能力。
 
 在uni_modules入口文件`index.generated.ets`内注册华为登录provider。
 
+::: preview
+> VDOM模式
 ```typescript
 import { registerUniProvider, uni } from "@dcloudio/uni-app-x-runtime";
 import { UniOAuthHuaweiProviderImpl } from '@uni_modules/uni-oauth-huawei'
@@ -30,5 +32,16 @@ function initUniExtApi() {
   registerUniProvider('oauth', 'huawei', new UniOAuthHuaweiProviderImpl())
 }
 ```
+> 蒸汽模式
+```typescript
+import { registerUniProvider, uni } from "@dcloudio/uni-app-x-vapor-runtime";
+import { UniOAuthHuaweiProviderImpl } from '@uni_modules/uni-oauth-huawei'
 
+export function initUniModules() {
+  initUniExtApi();
+}
 
+function initUniExtApi() {
+  registerUniProvider('oauth', 'huawei', new UniOAuthHuaweiProviderImpl())
+}
+```

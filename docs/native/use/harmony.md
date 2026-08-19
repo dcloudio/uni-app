@@ -2,13 +2,13 @@
 
 ## 准备
 
-- HBuilderX （4.71 版本及以上）
-- DevEco Studio（5.0.2 版本及以上）
+- HBuilderX （VDOM模式 4.71 版本及以上、蒸汽模式 5.25 版本及以上）
+- DevEco Studio（VDOM模式 5.0.2 版本及以上、蒸汽模式 6.0 版本及以上）
 - 鸿蒙原生项目
 
 ---
 
-说明：当前文档基于 DevEco Studio 5.0.4 Release 版本。
+说明：当前文档VDOM模式基于 DevEco Studio 5.0.4 Release 版本，蒸汽模式基于 DevEco Studio 6.1.1 Release 版本。
 
 ---
 
@@ -25,7 +25,7 @@
 > VDOM模式
 ```json
 {
-  "modelVersion": "26.0.0",
+  "modelVersion": "5.0.4",
   "description": "Please describe the basic information.",
   "dependencies": {
     // 指定 4.71 版本
@@ -36,7 +36,7 @@
 > 蒸汽模式
 ```json
 {
-  "modelVersion": "26.0.0",
+  "modelVersion": "6.1.1",
   "description": "Please describe the basic information.",
   "dependencies": {
     // 指定 4.71 版本

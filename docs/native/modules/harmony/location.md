@@ -16,8 +16,22 @@
 
 在uni_modules入口文件`index.generated.ets`内注册系统定位api。
 
+::: preview
+> VDOM模式
 ```typescript
 import { registerUniProvider, uni } from '@dcloudio/uni-app-x-runtime'
+import { UniLocationSystemProviderImpl } from '@uni_modules/uni-location-system'
+
+export function initUniModules() {
+  initUniExtApi()
+}
+function initUniExtApi() {
+  registerUniProvider('location', 'system', new UniLocationSystemProviderImpl())
+}
+```
+> 蒸汽模式
+```typescript
+import { registerUniProvider, uni } from '@dcloudio/uni-app-x-vapor-runtime'
 import { UniLocationSystemProviderImpl } from '@uni_modules/uni-location-system'
 
 export function initUniModules() {

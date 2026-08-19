@@ -436,7 +436,7 @@ export default {
 
 > 组合式 API
 ```vue
-<script setup lang="ts">
+<script setup>
   defineOptions({
     data() {
       return {

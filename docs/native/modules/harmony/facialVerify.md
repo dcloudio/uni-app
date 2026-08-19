@@ -14,8 +14,24 @@
 
 在uni_modules入口文件`index.generated.ets`内注册实人认证api。
 
+::: preview
+> VDOM模式
 ```typescript
 import { registerUniProvider, uni } from "@dcloudio/uni-app-x-runtime";
+import { startFacialRecognitionVerify, getFacialRecognitionMetaInfo } from '@uni_modules/uni-facialrecognitionverify'
+
+export function initUniModules() {
+  initUniExtApi();
+}
+
+function initUniExtApi() {
+  uni.startFacialRecognitionVerify = startFacialRecognitionVerify
+  uni.getFacialRecognitionMetaInfo = getFacialRecognitionMetaInfo
+}
+```
+> 蒸汽模式
+```typescript
+import { registerUniProvider, uni } from "@dcloudio/uni-app-x-vapor-runtime";
 import { startFacialRecognitionVerify, getFacialRecognitionMetaInfo } from '@uni_modules/uni-facialrecognitionverify'
 
 export function initUniModules() {
