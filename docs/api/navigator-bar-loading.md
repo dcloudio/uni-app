@@ -16,38 +16,38 @@
 ### showNavigationBarLoading 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **ShowNavigationBarLoadingOptions** | 否 | Android: x; iOS: x |
+| options | **ShowNavigationBarLoadingOptions** | 否 | 支付宝小程序: x; Android: x; iOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| success | (result: [ShowNavigationBarLoadingSuccess](#shownavigationbarloadingsuccess-values)) => void | 否 | Android: x; iOS: x |
-| fail | (error: [ShowNavigationBarLoadingFail](#shownavigationbarloadingfail-values)) => void | 否 | Android: x; iOS: x |
-| complete | () => void | 否 | Android: x; iOS: x | 
+| success | (result: [ShowNavigationBarLoadingSuccess](#shownavigationbarloadingsuccess-values)) => void | 否 | 支付宝小程序: x; Android: x; iOS: x |
+| fail | (error: [ShowNavigationBarLoadingFail](#shownavigationbarloadingfail-values)) => void | 否 | 支付宝小程序: x; Android: x; iOS: x |
+| complete | () => void | 否 | 支付宝小程序: x; Android: x; iOS: x | 
 
 #### ShowNavigationBarLoadingSuccess 的属性值 @shownavigationbarloadingsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 是 | Android: x; iOS: x |
+| errMsg | string | 是 | 支付宝小程序: x; Android: x; iOS: x |
 
 #### ShowNavigationBarLoadingFail 的属性值 @shownavigationbarloadingfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Android: x; iOS: x | 统一错误码 |
-| errSubject | string | 是 | Android: x; iOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Android: x; iOS: x | 错误信息中包含的数据 |
+| errCode | number | 是 | 支付宝小程序: x; Android: x; iOS: x | 统一错误码 |
+| errSubject | string | 是 | 支付宝小程序: x; Android: x; iOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x; Android: x; iOS: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Android: x; iOS: x |  |
+| errMsg | string | 是 | 支付宝小程序: x; Android: x; iOS: x |  |
 
 
 
@@ -88,38 +88,38 @@
 ### hideNavigationBarLoading 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **HideNavigationBarLoadingOptions** | 否 | Android: x; iOS: x |
+| options | **HideNavigationBarLoadingOptions** | 否 | 支付宝小程序: x; Android: x; iOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| success | (result: [HideNavigationBarLoadingSuccess](#hidenavigationbarloadingsuccess-values)) => void | 否 | Android: x; iOS: x |
-| fail | (error: [HideNavigationBarLoadingFail](#hidenavigationbarloadingfail-values)) => void | 否 | Android: x; iOS: x |
-| complete | () => void | 否 | Android: x; iOS: x | 
+| success | (result: [HideNavigationBarLoadingSuccess](#hidenavigationbarloadingsuccess-values)) => void | 否 | 支付宝小程序: x; Android: x; iOS: x |
+| fail | (error: [HideNavigationBarLoadingFail](#hidenavigationbarloadingfail-values)) => void | 否 | 支付宝小程序: x; Android: x; iOS: x |
+| complete | () => void | 否 | 支付宝小程序: x; Android: x; iOS: x | 
 
 #### HideNavigationBarLoadingSuccess 的属性值 @hidenavigationbarloadingsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 是 | Android: x; iOS: x |
+| errMsg | string | 是 | 支付宝小程序: x; Android: x; iOS: x |
 
 #### HideNavigationBarLoadingFail 的属性值 @hidenavigationbarloadingfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Android: x; iOS: x | 统一错误码 |
-| errSubject | string | 是 | Android: x; iOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Android: x; iOS: x | 错误信息中包含的数据 |
+| errCode | number | 是 | 支付宝小程序: x; Android: x; iOS: x | 统一错误码 |
+| errSubject | string | 是 | 支付宝小程序: x; Android: x; iOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x; Android: x; iOS: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Android: x; iOS: x |  |
+| errMsg | string | 是 | 支付宝小程序: x; Android: x; iOS: x |  |
 
 
 
@@ -151,7 +151,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
 
 ## Tips

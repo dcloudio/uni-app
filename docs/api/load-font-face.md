@@ -16,70 +16,70 @@
 ### loadFontFace 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | √ | 4.10 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | √ | 4.10 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **LoadFontFaceOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **LoadFontFaceOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| global | boolean | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: x; HarmonyOS: x | 是否全局生效微信小程序 '2.10.0'起支持全局生效。需在 app.uvue 中调用。 |
-| family | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 定义的字体名称 |
-| source | [string.FontURIString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 字体资源的地址, App-Android 平台不支持 woff、woff2 格式字体文件 |
-| desc | **LoadFontFaceOptionDesc** | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: 4.10; HarmonyOS: x | 可选的字体描述符 |
-| success | (result: [LoadFontFaceSuccess](#loadfontfacesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.10 | 接口调用成功的回调函数 |
-| fail | (error: [LoadFontFaceFail](#loadfontfacefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.10 | 接口调用失败的回调函数 |
-| complete | (res: [LoadFontFaceComplete](#loadfontfacecomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.10 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| global | boolean | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS: x; HarmonyOS: x | 是否全局生效微信小程序 '2.10.0'起支持全局生效。需在 app.uvue 中调用。 |
+| family | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 定义的字体名称 |
+| source | [string.FontURIString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 字体资源的地址, App-Android 平台不支持 woff、woff2 格式字体文件 |
+| desc | **LoadFontFaceOptionDesc** | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: 4.10; HarmonyOS: x | 可选的字体描述符 |
+| success | (result: [LoadFontFaceSuccess](#loadfontfacesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS: 4.10 | 接口调用成功的回调函数 |
+| fail | (error: [LoadFontFaceFail](#loadfontfacefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS: 4.10 | 接口调用失败的回调函数 |
+| complete | (res: [LoadFontFaceComplete](#loadfontfacecomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS: 4.10 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### desc 的属性描述
 
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| style | string | 否 |
-| weight | string | 否 |
-| variant | string | 否 |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| style | string | 否 | 支付宝小程序: x |
+| weight | string | 否 | 支付宝小程序: x |
+| variant | string | 否 | 支付宝小程序: x |
 
 #### LoadFontFaceSuccess 的属性值 @loadfontfacesuccess-values 
 
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| errMsg | string | 是 |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | 支付宝小程序: x |
 
 #### LoadFontFaceFail 的属性值 @loadfontfacefail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |   | 错误码 |
-| status | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 加载字体结果<br/> |
-| errSubject | string | 是 |   | 统一错误主题（模块）名称 |
-| data | any | 否 |   | 错误信息中包含的数据 |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| status | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 加载字体结果<br/> |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |   |  |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 4 | 框架内部异常 |
-| 99 | page is not ready |
-| 101 | 参数错误 |
-| 100001 | family is null |
-| 100002 | source is null |
-| 200001 | local font not found |
-| 300001 | same source task is loading |
-| 300002 | download fail |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 4 | 支付宝小程序: x | 框架内部异常 |
+| 99 | 支付宝小程序: x | page is not ready |
+| 101 | 支付宝小程序: x | 参数错误 |
+| 100001 | 支付宝小程序: x | family is null |
+| 100002 | 支付宝小程序: x | source is null |
+| 200001 | 支付宝小程序: x | local font not found |
+| 300001 | 支付宝小程序: x | same source task is loading |
+| 300002 | 支付宝小程序: x | download fail |
 
 #### LoadFontFaceComplete 的属性值 @loadfontfacecomplete-values 
 
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| errMsg | string | 是 |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | 支付宝小程序: x |
 
 
 ### 返回值 
@@ -90,9 +90,9 @@
 
 #### Promise\<LoadFontFaceSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| errMsg | string | 是 | 
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | 支付宝小程序: x | 
 
 
 ### 注意事项
@@ -382,5 +382,5 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

@@ -15,35 +15,35 @@
 ### openDocument 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 4.71 | 4.71 | 4.61 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **OpenDocumentOptions** | 否 | Web: x | uni.openDocument参数定义 |
+| options | **OpenDocumentOptions** | 否 | Web: x; 支付宝小程序: x | uni.openDocument参数定义 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 | 文件路径，仅支持本地路径 |
+| filePath | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 | 文件路径，仅支持本地路径 |
 | fileType | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 | 文件类型，指定文件类型打开文件，微信小程序仅支持类型：doc, xls, ppt, pdf, docx, xlsx, pptx，App端由系统打开，原则上可以打开任意文件； |
-| success | (res: OpenDocumentSuccess) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | uni.openDocument成功回调函数定义 |
-| fail | (res: [OpenDocumentFail](#opendocumentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | uni.openDocument失败回调函数定义 |
-| complete | (res: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | uni.openDocument完成回调函数定义 |
-| showMenu | boolean | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.11.0`<br/><br/>是否显示右上角菜单<br/> | 
+| success | (res: OpenDocumentSuccess) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | uni.openDocument成功回调函数定义 |
+| fail | (res: [OpenDocumentFail](#opendocumentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | uni.openDocument失败回调函数定义 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | uni.openDocument完成回调函数定义 |
+| showMenu | boolean | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.11.0`<br/><br/>是否显示右上角菜单<br/> | 
 
 #### OpenDocumentFail 的属性值 @opendocumentfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 | 错误码 |
-| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
@@ -360,5 +360,5 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

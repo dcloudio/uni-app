@@ -24,44 +24,44 @@
 ### connectSocket 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **ConnectSocketOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **ConnectSocketOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11 | HTTP 请求 Header，header 中不能设置 Referer |
-| success | (result: [ConnectSocketSuccess](#connectsocketsuccess-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: - | 接口调用成功的回调函数 |
-| fail | (result: [ConnectSocketFail](#connectsocketfail-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: - | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: - | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| forceCellularNetwork | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: - | 需要基础库： `2.29.0`<br/><br/>强制使用蜂窝网络发送请求<br/> |
-| perMessageDeflate | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: - | 需要基础库： `2.8.0`<br/><br/>是否开启压缩扩展<br/> |
-| tcpNoDelay | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: - | 需要基础库： `2.4.0`<br/><br/>建立 TCP 连接的时候的 TCP_NODELAY 设置<br/> |
-| timeout | number | 否 |  | 微信小程序: 4.41; 支付宝小程序: - | 需要基础库： `2.10.0`<br/><br/>超时时间，单位为毫秒<br/> | 
+| url | string | 是 |  | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11 | HTTP 请求 Header，header 中不能设置 Referer |
+| success | (result: [ConnectSocketSuccess](#connectsocketsuccess-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [ConnectSocketFail](#connectsocketfail-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| forceCellularNetwork | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.29.0`<br/><br/>强制使用蜂窝网络发送请求<br/> |
+| perMessageDeflate | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.8.0`<br/><br/>是否开启压缩扩展<br/> |
+| tcpNoDelay | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.4.0`<br/><br/>建立 TCP 连接的时候的 TCP_NODELAY 设置<br/> |
+| timeout | number | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.10.0`<br/><br/>超时时间，单位为毫秒<br/> | 
 
 #### ConnectSocketSuccess 的属性值 @connectsocketsuccess-values 
 
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| errMsg | string | 是 |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | 支付宝小程序: x |
 
 #### ConnectSocketFail 的属性值 @connectsocketfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码<br/>- 600009 URL格式不合法 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码<br/>- 600009 URL格式不合法 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 
 ### 返回值 
@@ -82,36 +82,36 @@ send
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **SendSocketMessageOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **SendSocketMessageOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 需要发送的内容, app平台从 4.61 版本开始支持ArrayBuffer |
-| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用成功的回调函数 |
-| fail | (result: [SendSocketMessageFail](#sendsocketmessagefail-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| data | any | 是 |  | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 需要发送的内容, app平台从 4.61 版本开始支持ArrayBuffer |
+| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [SendSocketMessageFail](#sendsocketmessagefail-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### SendSocketMessageFail 的属性值 @sendsocketmessagefail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 10001 | 发送数据超限，发送队列不能超过16M大小。 |
-| 10002 | websocket未连接 |
-| 602001 | websocket系统错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 10001 | 支付宝小程序: x | 发送数据超限，发送队列不能超过16M大小。 |
+| 10002 | 支付宝小程序: x | websocket未连接 |
+| 602001 | 支付宝小程序: x | websocket系统错误 |
 
 
 
@@ -125,19 +125,19 @@ close
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **CloseSocketOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **CloseSocketOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| code | number | 否 | 1000 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭） |
-| reason | string | 否 | "" | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符） |
-| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用成功的回调函数 |
-| fail | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用失败的回调函数 |
-| complete | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| code | number | 否 | 1000 | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭） |
+| reason | string | 否 | "" | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符） |
+| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -151,9 +151,9 @@ onOpen
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: [OnSocketOpenCallbackResult](#onsocketopencallbackresult-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnSocketOpenCallbackResult](#onsocketopencallbackresult-values)) => void | 是 | 支付宝小程序: x | 
 
 ##### OnSocketOpenCallbackResult 的属性值 @onsocketopencallbackresult-values 
 
@@ -173,9 +173,9 @@ onClose
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -189,9 +189,9 @@ onError
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -205,9 +205,9 @@ onMessage
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: [OnSocketMessageCallbackResult](#onsocketmessagecallbackresult-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnSocketMessageCallbackResult](#onsocketmessagecallbackresult-values)) => void | 是 | 支付宝小程序: x | 
 
 ##### OnSocketMessageCallbackResult 的属性值 @onsocketmessagecallbackresult-values 
 
@@ -221,38 +221,38 @@ onMessage
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 需要发送的内容, app平台从 4.61 版本开始支持ArrayBuffer |
-| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用成功的回调函数 |
-| fail | (result: [SendSocketMessageFail](#sendsocketmessagefail-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| data | any | 是 |  | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 需要发送的内容, app平台从 4.61 版本开始支持ArrayBuffer |
+| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [SendSocketMessageFail](#sendsocketmessagefail-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### SendSocketMessageFail 的属性值 @sendsocketmessagefail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 10001 | 发送数据超限，发送队列不能超过16M大小。 |
-| 10002 | websocket未连接 |
-| 602001 | websocket系统错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 10001 | 支付宝小程序: x | 发送数据超限，发送队列不能超过16M大小。 |
+| 10002 | 支付宝小程序: x | websocket未连接 |
+| 602001 | 支付宝小程序: x | websocket系统错误 |
 
 ##### CloseSocketOptions 的属性值 @closesocketoptions-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| code | number | 否 | 1000 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭） |
-| reason | string | 否 | "" | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符） |
-| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用成功的回调函数 |
-| fail | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用失败的回调函数 |
-| complete | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| code | number | 否 | 1000 | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭） |
+| reason | string | 否 | "" | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符） |
+| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### OnSocketOpenCallbackResult 的属性值 @onsocketopencallbackresult-values 
 
@@ -301,14 +301,14 @@ onMessage
 ### onSocketOpen 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | (result: [OnSocketOpenCallbackResult](#onsocketopencallbackresult-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | (result: [OnSocketOpenCallbackResult](#onsocketopencallbackresult-values)) => void | 是 | 支付宝小程序: x | 
 
 ### OnSocketOpenCallbackResult 的属性值 @onsocketopencallbackresult-values 
 
@@ -352,20 +352,20 @@ onMessage
 ### onSocketError 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: [OnSocketErrorCallbackResult](#onsocketerrorcallbackresult-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnSocketErrorCallbackResult](#onsocketerrorcallbackresult-values)) => void | 是 | 支付宝小程序: x | 
 
 ### OnSocketErrorCallbackResult 的属性值 @onsocketerrorcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
 
 
@@ -403,41 +403,41 @@ onMessage
 ### sendSocketMessage 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **SendSocketMessageOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **SendSocketMessageOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 需要发送的内容, app平台从 4.61 版本开始支持ArrayBuffer |
-| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用成功的回调函数 |
-| fail | (result: [SendSocketMessageFail](#sendsocketmessagefail-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| data | any | 是 |  | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 需要发送的内容, app平台从 4.61 版本开始支持ArrayBuffer |
+| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [SendSocketMessageFail](#sendsocketmessagefail-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### SendSocketMessageFail 的属性值 @sendsocketmessagefail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 10001 | 发送数据超限，发送队列不能超过16M大小。 |
-| 10002 | websocket未连接 |
-| 602001 | websocket系统错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 10001 | 支付宝小程序: x | 发送数据超限，发送队列不能超过16M大小。 |
+| 10002 | 支付宝小程序: x | websocket未连接 |
+| 602001 | 支付宝小程序: x | websocket系统错误 |
 
 
 
@@ -479,14 +479,14 @@ onMessage
 ### onSocketMessage 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: [OnSocketMessageCallbackResult](#onsocketmessagecallbackresult-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnSocketMessageCallbackResult](#onsocketmessagecallbackresult-values)) => void | 是 | 支付宝小程序: x | 
 
 ### OnSocketMessageCallbackResult 的属性值 @onsocketmessagecallbackresult-values 
 
@@ -530,24 +530,24 @@ onMessage
 ### closeSocket 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **CloseSocketOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **CloseSocketOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| code | number | 否 | 1000 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭） |
-| reason | string | 否 | "" | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符） |
-| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用成功的回调函数 |
-| fail | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用失败的回调函数 |
-| complete | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: 5.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| code | number | 否 | 1000 | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭） |
+| reason | string | 否 | "" | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符） |
+| success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -585,14 +585,14 @@ onMessage
 ### onSocketClose 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: [OnSocketCloseCallbackResult](#onsocketclosecallbackresult-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnSocketCloseCallbackResult](#onsocketclosecallbackresult-values)) => void | 是 | 支付宝小程序: x | 
 
 ### OnSocketCloseCallbackResult 的属性值 @onsocketclosecallbackresult-values 
 
@@ -832,5 +832,5 @@ onMessage
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
