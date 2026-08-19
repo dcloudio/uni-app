@@ -359,6 +359,7 @@ export declare function setSharedDataDynamicEvents<S extends UniSharedData>(shar
 export declare function setSharedDataClass<S extends UniSharedData, V>(sharedData: S, key: string, value: V): string[];
 export declare function setSharedDataStyle<S extends UniSharedData, V>(sharedData: S, key: string, value: V): UniElementStyles;
 export declare function setSharedDataAttr<S extends UniSharedData, V>(sharedData: S, key: string, value: V): V;
+export declare function setSharedDataColorOrNull<S extends UniSharedData>(sharedData: S, key: string, value: any | null): number | null;
 export declare function setSharedDataEvent<S extends UniSharedData>(sharedData: S, key: string, value: UniSharedDataFunctionEventListener): UniSharedDataFunctionEventListener;
 /**
 * @deprecated 当前编译流程不再生成该调用，仅保留以兼容历史生成代码。
@@ -376,7 +377,7 @@ export declare function toSharedDataNumber(value: any | null): number;
 export declare function toSharedDataString(value: any | null): string;
 export declare function toSharedDataTeleportTarget(value: any | null): string | null;
 export declare function toSharedDataColor(value: any | null): number;
-export declare function toSharedDataColorOrNull(value: any | null): number | null;
+export declare function toSharedDataColorOrNull(value: any | null): number | null | undefined;
 export declare function createSharedDataVFor<T extends UniSharedData>(scope: UniSharedDataPage, create: () => T): UniSharedDataVFor<T>;
 export declare const createSharedDataVSlot: typeof createSharedDataVFor;
 interface WithSharedDataComponentOptions {
