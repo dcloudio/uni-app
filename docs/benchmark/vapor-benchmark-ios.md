@@ -320,3 +320,5 @@ Compose Multiplatform ，在iOS上使用自渲染，有原生UI生态融合问�
 提升性能，是用户体验发展不变的趋势。页面切换从300ms等待变成150ms，操作任何交互都丝滑流畅，这都是用户选择一个App或放弃另一个App的重要原因。AI + 原生的UI体系并不能实现比uni-app x更高的性能。
 
 另外，欢迎关注[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，它对uni-app系产品的了解程度超过任何AI Coding工具，可以帮助开发者更好的用AI生成uni-app x、uniCloud等产品代码。
+
+更多FAQ[详见](../app-vapor.md#faq)

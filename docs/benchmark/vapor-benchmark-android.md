@@ -411,3 +411,5 @@ hello uni-app x 模板中还提供了日历、竖滑视频、侧滑删除长列�
 2. vue里template和style里的代码，被直接编译为优化度非常高的C代码。它的运行速度远快于java、kotlin及k/n。
 	
 也就是`uni-app x蒸汽模式`，作为跨平台开发框架，实现了业内期盼已久的梦想：**即跨平台，又比原生性能更高**。
+
+更多FAQ[详见](../app-vapor.md#faq)
