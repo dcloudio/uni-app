@@ -376,6 +376,7 @@ export declare function toSharedDataNumber(value: any | null): number;
 export declare function toSharedDataString(value: any | null): string;
 export declare function toSharedDataTeleportTarget(value: any | null): string | null;
 export declare function toSharedDataColor(value: any | null): number;
+export declare function toSharedDataColorOrNull(value: any | null): number | null;
 export declare function createSharedDataVFor<T extends UniSharedData>(scope: UniSharedDataPage, create: () => T): UniSharedDataVFor<T>;
 export declare const createSharedDataVSlot: typeof createSharedDataVFor;
 interface WithSharedDataComponentOptions {
