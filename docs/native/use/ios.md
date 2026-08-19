@@ -1,7 +1,7 @@
 # uni-app x 原生SDK iOS版
 
 ## 准备环境
-* HBuilder X (4.26及以上版本）
+* HBuilder X (VDOM 模式 4.26 及以上版本、蒸汽模式 5.25 及以上版本）
 * Xcode版本建议与[iOS平台云端打包环境](https://doc.dcloud.net.cn/uni-app-x/tutorial/app-env.html#ios%E5%B9%B3%E5%8F%B0%E4%BA%91%E7%AB%AF%E6%89%93%E5%8C%85%E7%8E%AF%E5%A2%83)保持一致
 
 
@@ -29,7 +29,7 @@
 
 ## 原生工程配置
 
-`Target -> General -> Minimum Deployments` 选择 `12.0`   
+`Target -> General -> Minimum Deployments` 选择 `15.0` 及以上版本   
 
 `Target -> Build Settings -> Other Linker Flags` 中添加`-ObjC`、`-ld_classic`、`-weak_framework SwiftUI`
 
@@ -75,13 +75,12 @@
 |  initPrivacyAuthorization   | 是否启动默认同意隐私政策  | 
 
 
-
 ## 集成基础模块
 将以下依赖库(`SDK/Libs 目录下`)添加到工程中
 
 | 依赖库 | 系统依赖库 |
 | ---   | ---|
-| DCloudDebugServe.xcframework `（Do Not Embed）Debug环境下集成）` <br> DCloudUTSFoundation.xcframework `（Embed & Sign）` <br> DCloudUniappRuntime.xcframework `（Embed & Sign）` <br> SDWebImage.xcframework `（Embed & Sign）` <br> DCloudUTSExtAPI.xcframework `（Embed & Sign）` <br> KSCrash.xcframework `（Embed & Sign）`   |   JavaScriptCore.framework <br> c++ |
+| DCloudDebugServe.xcframework `（Do Not Embed）Debug环境下集成）` <br> DCloudUTSFoundation.xcframework `（Embed & Sign）` <br> DCloudUniappRuntime.xcframework `（Embed & Sign）` <br> SDWebImage.xcframework `（Embed & Sign）` <br> DCloudUTSExtAPI.xcframework `（Embed & Sign）` <br> KSCrash.xcframework `（Embed & Sign）` <br> DCloudUniExtComponent.xcframework `（Embed & Sign）蒸汽模式`   |   JavaScriptCore.framework <br> c++ |
 
 > `Target -> Build Phases -> Link Binary With Libraries` 下添加依赖库
 > `Target -> General -> Frameworks,Libraries,and Embedded Content` 下设置`Embed & Sign`
