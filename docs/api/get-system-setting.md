@@ -15,7 +15,7 @@
 ### getSystemSetting 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 4.61 |
 
 
 
@@ -41,8 +41,8 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| portrait | Web: x | 纵向 |
-| landscape | Web: x | 横向 | 
+| portrait | Web: x; 支付宝小程序: x | 纵向 |
+| landscape | Web: x; 支付宝小程序: x | 横向 | 
 
 
 ## 注意事项
@@ -169,6 +169,6 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
 

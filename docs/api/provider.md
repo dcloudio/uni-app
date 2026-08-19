@@ -83,7 +83,7 @@ getProvider的同步方法
 | :- |  :-: | :- |
 | payment | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25 | 支付 (alipay、wxpay) |
 | location | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25 | 定位 (system、tencent) |
-| oauth | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin) |
+| oauth | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin、apple(iOS HBuilderX 5.21+支持)) |
 | share | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享 (weixin) | 
 
 
@@ -105,7 +105,7 @@ getProvider的同步方法
 | :- |  :-: | :- |
 | payment | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 支付 (alipay、wxpay) |
 | location | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 定位 (system、tencent) |
-| oauth | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 （weixin） |
+| oauth | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 （weixin、apple(iOS HBuilderX 5.21+支持)） |
 | share | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 分享（weixin） | 
 
 
@@ -280,7 +280,7 @@ getProvider的同步方法
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
 
 
@@ -323,7 +323,7 @@ getProvider的同步方法
 | :- |  :-: | :- |
 | payment | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.18 | 支付 (alipay、wxpay) |
 | location | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.18 | 定位 (system、tencent) |
-| oauth | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin) |
+| oauth | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin、apple(iOS HBuilderX 5.21+支持)) |
 | share | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 分享 (weixin) |
 
 #### GetProviderSuccess 的属性值 @getprovidersuccess-values 

@@ -16,22 +16,22 @@
 ### hideKeyboard 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 4.71 | 4.71 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| options | **HideKeyboardOptions** | 否 | uni.hideKeyboard参数定义 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **HideKeyboardOptions** | 否 | 支付宝小程序: x | uni.hideKeyboard参数定义 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: HideKeyboardSuccess) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.hideKeyboard成功回调函数定义 |
-| fail | (res: HideKeyboardFail) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.hideKeyboard失败回调函数定义 |
-| complete | (res: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.hideKeyboard完成回调函数定义 | 
+| success | (res: HideKeyboardSuccess) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | uni.hideKeyboard成功回调函数定义 |
+| fail | (res: HideKeyboardFail) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | uni.hideKeyboard失败回调函数定义 |
+| complete | (res: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | uni.hideKeyboard完成回调函数定义 | 
 
 
 
@@ -265,5 +265,5 @@ defineExpose({
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

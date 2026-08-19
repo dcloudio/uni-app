@@ -26,7 +26,7 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 ### createSelectorQuery 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | √ | 3.91 | 4.11 | 4.61 |
 
 
 
@@ -897,5 +897,5 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

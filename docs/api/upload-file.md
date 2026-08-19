@@ -15,30 +15,30 @@
 ### uploadFile 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
 
 
 推荐上传到uniCloud，uniCloud提供了更便宜CDN和更好的易用性，[详见](https://doc.dcloud.net.cn/uniCloud/ext-storage/intro.html)
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **UploadFileOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **UploadFileOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器 url |
-| filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 要上传文件资源的路径, 支持uni.env |
-| name | string | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | HTTP 请求 Header, header 中不能设置 Referer |
-| formData | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | HTTP 请求中其他额外的 form data |
-| timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
-| success | (result: [UploadFileSuccess](#uploadfilesuccess-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 成功返回的回调函数 |
-| fail | (result: [UploadFileFail](#uploadfilefail-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 失败的回调函数 |
-| complete | (result: any) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） |
+| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器 url |
+| filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 要上传文件资源的路径, 支持uni.env |
+| name | string | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | HTTP 请求 Header, header 中不能设置 Referer |
+| formData | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | HTTP 请求中其他额外的 form data |
+| timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
+| success | (result: [UploadFileSuccess](#uploadfilesuccess-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 成功返回的回调函数 |
+| fail | (result: [UploadFileFail](#uploadfilefail-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 失败的回调函数 |
+| complete | (result: any) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） |
 | enableHttp2 | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.10.4`<br/><br/>是否开启 http2<br/> |
 | enableProfile | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。目前仅 iOS 端支持。<br/> |
 | enableQuic | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.10.4`<br/><br/>是否开启 Quic/h3 协议（iOS 微信目前使用 gQUIC-Q43；Android 微信在 v8.0.54 前使用 gQUIC-Q43，v8.0.54 开始使用 IETF QUIC，即 h3 协议；PC微信使用 IETF QUIC，即 h3 协议）<br/> |
@@ -48,33 +48,33 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| data | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据 |
-| statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
+| data | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据 |
+| statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
 
 #### UploadFileFail 的属性值 @uploadfilefail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 5 | 接口超时 |
-| 1000 | 服务端系统错误 |
-| 100001 | json数据解析错误 |
-| 100002 | 错误信息json解析失败 |
-| 100003 | json解析类型转换失败 |
-| 600003 | 网络中断 |
-| 600008 | data参数类型不合法 |
-| 600009 | URL格式不合法 |
-| 600010 | Cronet模块加载失败 |
-| 602001 | request系统错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 5 | 支付宝小程序: x | 接口超时 |
+| 1000 | 支付宝小程序: x | 服务端系统错误 |
+| 100001 | 支付宝小程序: x | json数据解析错误 |
+| 100002 | 支付宝小程序: x | 错误信息json解析失败 |
+| 100003 | 支付宝小程序: x | json解析类型转换失败 |
+| 600003 | 支付宝小程序: x | 网络中断 |
+| 600008 | 支付宝小程序: x | data参数类型不合法 |
+| 600009 | 支付宝小程序: x | URL格式不合法 |
+| 600010 | 支付宝小程序: x | Cronet模块加载失败 |
+| 602001 | 支付宝小程序: x | request系统错误 |
 
 
 ### 返回值 
@@ -91,7 +91,7 @@ abort
 ##### abort 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | x | 3.91 | 4.11 | 4.61 |
 
 
 
@@ -102,21 +102,21 @@ onProgressUpdate
 ##### onProgressUpdate 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | x | 3.91 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: [OnProgressUpdateResult](#onprogressupdateresult-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnProgressUpdateResult](#onprogressupdateresult-values)) => void | 是 | 支付宝小程序: x | 
 
 ##### OnProgressUpdateResult 的属性值 @onprogressupdateresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
-| totalBytesSent | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
-| totalBytesExpectedToSend | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
+| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
+| totalBytesSent | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
+| totalBytesExpectedToSend | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
 
 
 
@@ -124,9 +124,9 @@ onProgressUpdate
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
-| totalBytesSent | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
-| totalBytesExpectedToSend | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
+| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
+| totalBytesSent | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
+| totalBytesExpectedToSend | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
  
 
 
@@ -489,7 +489,7 @@ complete: () => {
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
 
 **注意**

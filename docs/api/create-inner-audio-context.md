@@ -46,7 +46,7 @@
 ### createInnerAudioContext 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 4.33 | 4.41 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.33 | 4.41 | 4.61 |
 
 
 
@@ -73,7 +73,7 @@
 | volume | number | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 音量。范围 0~1。 |
 | playbackRate | number | 否 | 1.0 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: x | 播放的倍率。可取值： 0.5/0.8/1.0/1.25/1.5/2.0，默认值为1.0。（仅 App 支持） |
 | cache | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: x | 是否缓存线上音频资源，默认值为true，当设置false时，不会缓存资源到本地，直播地址需要主动设置为false |
-| referrerPolicy | string | 否 |  | 微信小程序: 4.41; 支付宝小程序: - | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> |
+| referrerPolicy | string | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> |
 #### InnerAudioContext 的方法 @inneraudiocontext-values 
 
 #### pause(): void; @pause
@@ -119,9 +119,9 @@ seek
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| position | number | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| position | number | 是 | 支付宝小程序: x | 
 
 
 
@@ -129,9 +129,9 @@ seek
 destroy
 销毁当前实例
 ##### destroy 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.33 | 4.41 | 4.61 |
+| Web | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | 4.33 | 4.41 | 4.61 |
 
 
 
@@ -146,9 +146,9 @@ onCanplay
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -156,15 +156,15 @@ onCanplay
 onPlay
 音频播放事件
 ##### onPlay 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.33 | 4.41 | 4.61 |
+| Web | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | 4.33 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -178,9 +178,9 @@ onPause
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -194,9 +194,9 @@ onStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -210,9 +210,9 @@ onEnded
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -226,9 +226,9 @@ onTimeUpdate
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -242,30 +242,30 @@ onError
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 是 | 支付宝小程序: x | 
 
 ##### ICreateInnerAudioContextFail 的属性值 @icreateinneraudiocontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1107601 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 系统错误 |
-| 1107602 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 网络错误 |
-| 1107603 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 文件错误 |
-| 1107604 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 格式错误 |
-| 1107605 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 未知错误 |
-| 1107609 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
+| 1107601 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 系统错误 |
+| 1107602 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 网络错误 |
+| 1107603 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 文件错误 |
+| 1107604 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 格式错误 |
+| 1107605 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 未知错误 |
+| 1107609 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
 
 
 
@@ -279,9 +279,9 @@ onWaiting
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -295,9 +295,9 @@ onSeeking
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -311,9 +311,9 @@ onSeeked
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -327,9 +327,9 @@ offCanplay
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -343,9 +343,9 @@ offPlay
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -359,9 +359,9 @@ offPause
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -375,9 +375,9 @@ offStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -391,9 +391,9 @@ offEnded
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -407,9 +407,9 @@ offTimeUpdate
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -423,30 +423,30 @@ offError
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 是 | 支付宝小程序: x | 
 
 ##### ICreateInnerAudioContextFail 的属性值 @icreateinneraudiocontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1107601 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 系统错误 |
-| 1107602 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 网络错误 |
-| 1107603 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 文件错误 |
-| 1107604 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 格式错误 |
-| 1107605 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 未知错误 |
-| 1107609 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
+| 1107601 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 系统错误 |
+| 1107602 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 网络错误 |
+| 1107603 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 文件错误 |
+| 1107604 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 格式错误 |
+| 1107605 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 未知错误 |
+| 1107609 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
 
 
 
@@ -454,15 +454,15 @@ offError
 offWaiting
 取消监听 onWaiting 事件
 ##### offWaiting 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.33 | 4.41 | 4.61 |
+| Web | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | 4.33 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -476,9 +476,9 @@ offSeeking
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
@@ -492,53 +492,53 @@ offSeeked
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: any) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | 支付宝小程序: x | 
 
 
 
 ##### ICreateInnerAudioContextFail 的属性值 @icreateinneraudiocontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1107601 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 系统错误 |
-| 1107602 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 网络错误 |
-| 1107603 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 文件错误 |
-| 1107604 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 格式错误 |
-| 1107605 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 未知错误 |
-| 1107609 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
+| 1107601 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 系统错误 |
+| 1107602 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 网络错误 |
+| 1107603 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 文件错误 |
+| 1107604 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 格式错误 |
+| 1107605 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 未知错误 |
+| 1107609 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
 
 ##### ICreateInnerAudioContextFail 的属性值 @icreateinneraudiocontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1107601 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 系统错误 |
-| 1107602 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 网络错误 |
-| 1107603 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 文件错误 |
-| 1107604 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 格式错误 |
-| 1107605 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 未知错误 |
-| 1107609 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
+| 1107601 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 系统错误 |
+| 1107602 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 网络错误 |
+| 1107603 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 文件错误 |
+| 1107604 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 格式错误 |
+| 1107605 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 未知错误 |
+| 1107609 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
  
 
 
@@ -998,24 +998,24 @@ offSeeked
 
 #### ICreateInnerAudioContextFail 的属性值 @icreateinneraudiocontextfail-values 
 
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1107601 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 系统错误 |
-| 1107602 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 网络错误 |
-| 1107603 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 文件错误 |
-| 1107604 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 格式错误 |
-| 1107605 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 未知错误 |
-| 1107609 | Web: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
+| 1107601 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 系统错误 |
+| 1107602 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 网络错误 |
+| 1107603 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 文件错误 |
+| 1107604 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 格式错误 |
+| 1107605 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 未知错误 |
+| 1107609 | Web: x; 支付宝小程序: x; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
 
 
 
@@ -1223,5 +1223,5 @@ offSeeked
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 

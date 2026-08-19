@@ -15,36 +15,36 @@
 ### request 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| param | [RequestOptions\<T>](#requestoptions-values) | 是 | 网络请求参数 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| param | [RequestOptions\<T>](#requestoptions-values) | 是 | 支付宝小程序: x | 网络请求参数 |
 
 #### param 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址<br/> |
-| data | any | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求的参数 在app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 设置请求的 header，header 中不能设置 Referer |
-| method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求方法 |
-| timeout | number | 否 | 60000 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11 | 超时时间，单位 ms |
+| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址<br/> |
+| data | any | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求的参数 在app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 设置请求的 header，header 中不能设置 Referer |
+| method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求方法 |
+| timeout | number | 否 | 60000 | 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11 | 超时时间，单位 ms |
 | enableQuic | boolean | 否 | false | Web: √; 微信小程序: √; 支付宝小程序: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 是否开启 Quic/h3 协议<br/>`web` 端由服务端和浏览器共同决定是否启用 Quic/h3 协议，无需设置此参数<br/> `Android`端从`HBuilderX 5.23`开始，默认开启Brotli |
-| dataType | string | 否 | "json" | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 如果设为 json，会对返回的数据进行一次 JSON.parse，非 json 不会进行 JSON.parse |
+| dataType | string | 否 | "json" | 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 如果设为 json，会对返回的数据进行一次 JSON.parse，非 json 不会进行 JSON.parse |
 | responseType | string | 否 |  | 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 设置响应的数据类型。 |
-| sslVerify | boolean | 否 |  | Android: x; iOS: x; HarmonyOS: x | 验证 ssl 证书 |
+| sslVerify | boolean | 否 |  | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 验证 ssl 证书 |
 | withCredentials | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 跨域请求时是否携带凭证（cookies）<br/> |
 | firstIpv4 | boolean | 否 | false | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | DNS解析时优先使用ipv4 |
 | enableChunked | boolean | 否 |  | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开启 transfer-encoding chunked。 |
-| success | (option: [RequestSuccess\<T>](#requestsuccess-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 网络请求成功回调。 |
-| fail | (option: [RequestFail](#requestfail-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 网络请求失败回调。 |
-| complete | (option: any) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 网络请求完成回调，成功或者失败都会调用。 |
+| success | (option: [RequestSuccess\<T>](#requestsuccess-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 网络请求成功回调。 |
+| fail | (option: [RequestFail](#requestfail-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 网络请求失败回调。 |
+| complete | (option: any) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 网络请求完成回调，成功或者失败都会调用。 |
 | enableCache | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.10.4`<br/><br/>开启 Http 缓存<br/> |
-| enableHttp2 | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.10.4`<br/><br/>开启 http2<br/> |
+| enableHttp2 | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.10.4`<br/><br/>开启 http2<br/> |
 | enableHttpDNS | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.19.1`<br/><br/>是否开启 HttpDNS 服务。如开启，需要同时填入 httpDNSServiceId 。 HttpDNS 用法详见 [移动解析HttpDNS](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/HTTPDNS.html)<br/> |
 | enableProfile | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。<br/> |
 | forceCellularNetwork | boolean | 否 |  | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.21.0`<br/><br/>强制使用蜂窝网络发送请求<br/> |
@@ -56,33 +56,33 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| GET |   | GET方法请求一个指定资源的表示形式，使用 GET 的请求应该只被用于获取数据。 |
-| POST |   | POST方法用于将实体提交到指定的资源，通常导致在服务器上的状态变化或副作用。 |
-| PUT |   | PUT方法用有效载荷请求替换目标资源的所有当前表示。 |
-| PATCH |   | PATCH方法用于对资源应用部分修改。 |
-| DELETE |   | DELETE方法删除指定的资源。 |
-| HEAD |   | HEAD方法请求一个与GET请求的响应相同的响应，但没有响应体。 |
-| OPTIONS |   | OPTIONS 方法用于描述目标资源的通信选项。 |
-| TRACE | 微信小程序: 4.41; 支付宝小程序: 5.25 |  |
-| CONNECT | 微信小程序: 4.41; 支付宝小程序: 5.25 |  |
+| GET | 支付宝小程序: x | GET方法请求一个指定资源的表示形式，使用 GET 的请求应该只被用于获取数据。 |
+| POST | 支付宝小程序: x | POST方法用于将实体提交到指定的资源，通常导致在服务器上的状态变化或副作用。 |
+| PUT | 支付宝小程序: x | PUT方法用有效载荷请求替换目标资源的所有当前表示。 |
+| PATCH | 支付宝小程序: x | PATCH方法用于对资源应用部分修改。 |
+| DELETE | 支付宝小程序: x | DELETE方法删除指定的资源。 |
+| HEAD | 支付宝小程序: x | HEAD方法请求一个与GET请求的响应相同的响应，但没有响应体。 |
+| OPTIONS | 支付宝小程序: x | OPTIONS 方法用于描述目标资源的通信选项。 |
+| TRACE | 微信小程序: 4.41; 支付宝小程序: x |  |
+| CONNECT | 微信小程序: 4.41; 支付宝小程序: x |  |
 
 ##### redirect 的属性描述
 
-| 合法值 |
-| :- |
-| follow |
-| manual |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| follow | 支付宝小程序: x |
+| manual | 支付宝小程序: x |
 
 #### RequestSuccess\<T> 的属性值 @requestsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| data | T | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据, app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
-| statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
-| header | any | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP Response Header |
+| data | T | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据, app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
+| statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
+| header | any | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP Response Header |
 | cookies | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 cookies，格式为字符串数组 |
 | exception | **RequestSuccessException** | 否 | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `3.0.0`<br/><br/>网络请求过程中的一些异常信息，例如httpdns重试等<br/> |
-| profile | **RequestSuccessProfile** | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.10.4`<br/><br/>网络请求过程中一些调试信息，[查看详细说明](https://developers.weixin.qq.com/miniprogram/dev/framework/performance/network.html)<br/> |
+| profile | **RequestSuccessProfile** | 否 | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.10.4`<br/><br/>网络请求过程中一些调试信息，[查看详细说明](https://developers.weixin.qq.com/miniprogram/dev/framework/performance/network.html)<br/> |
 | useHttpDNS | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `3.4.10`<br/><br/>最终请求是否使用了HttpDNS（仅当enableHttpDNS传true时返回此字段）<br/> |
 
 #### exception 的属性描述
@@ -108,7 +108,7 @@
 | httpRttEstimate | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 协议层根据多个请求评估当前网络的 rtt（仅供参考）<br/> |
 | peerIP | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 当前请求的IP<br/> |
 | port | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 当前请求的端口<br/> |
-| protocol | string | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 使用协议类型，有效值：http1.1, h2, quic, unknown<br/> |
+| protocol | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 使用协议类型，有效值：http1.1, h2, quic, unknown<br/> |
 | receivedBytedCount | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 收到字节数<br/> |
 | redirectEnd | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最后一个 HTTP 重定向完成时的时间。有跳转且是同域名内部的重定向才算，否则值为 0<br/> |
 | redirectStart | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 第一个 HTTP 重定向发生时的时间。有跳转且是同域名内的重定向才算，否则值为 0<br/> |
@@ -118,7 +118,7 @@
 | responseStart | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | HTTP 开始接收响应的时间（获取到第一个字节），包括从本地读取缓存<br/> |
 | rtt | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 当次请求连接过程中实时 rtt<br/> |
 | sendBytesCount | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 发送的字节数<br/> |
-| socketReused | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 是否复用连接<br/> |
+| socketReused | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: x | 是否复用连接<br/> |
 | throughputKbps | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 当前网络的实际下载kbps<br/> |
 | transportRttEstimate | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 传输层根据多个请求评估的当前网络的 rtt（仅供参考）<br/> |
 | usingHighPerformanceMode | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: x | 是否走到了高性能模式。基础库 v3.3.4 起支持。<br/> |
@@ -127,27 +127,27 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |   | 错误码 |
+| errCode | number | 是 | 支付宝小程序: x | 错误码 |
 | errno | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.24.0`<br/><br/>errno 错误码，错误码的详细说明参考 [Errno错误码](https://developers.weixin.qq.com/miniprogram/dev/framework/usability/PublicErrno.html)<br/> |
-| errSubject | string | 是 |   | 统一错误主题（模块）名称 |
-| data | any | 否 |   | 错误信息中包含的数据 |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |   |  |
+| errMsg | string | 是 | 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| 5 | 接口超时 |
-| 1000 | 服务端系统错误 |
-| 100001 | json数据解析错误 |
-| 100002 | 错误信息json解析失败 |
-| 100003 | json解析类型转换失败 |
-| 600003 | 网络中断 |
-| 600008 | data参数类型不合法 |
-| 600009 | URL格式不合法 |
-| 600010 | Cronet模块加载失败 |
-| 602001 | request系统错误 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 5 | 支付宝小程序: x | 接口超时 |
+| 1000 | 支付宝小程序: x | 服务端系统错误 |
+| 100001 | 支付宝小程序: x | json数据解析错误 |
+| 100002 | 支付宝小程序: x | 错误信息json解析失败 |
+| 100003 | 支付宝小程序: x | json解析类型转换失败 |
+| 600003 | 支付宝小程序: x | 网络中断 |
+| 600008 | 支付宝小程序: x | data参数类型不合法 |
+| 600009 | 支付宝小程序: x | URL格式不合法 |
+| 600010 | 支付宝小程序: x | Cronet模块加载失败 |
+| 602001 | 支付宝小程序: x | request系统错误 |
 
 
 ### 返回值 
@@ -164,7 +164,7 @@ abort
 ##### abort 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | x | 3.91 | 4.11 | 4.61 |
 
 
 
@@ -179,9 +179,9 @@ onChunkReceived
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| listener | (result: [RequestTaskOnChunkReceivedListenerResult](#requesttaskonchunkreceivedlistenerresult-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| listener | (result: [RequestTaskOnChunkReceivedListenerResult](#requesttaskonchunkreceivedlistenerresult-values)) => void | 是 | 支付宝小程序: x | 
 
 ##### RequestTaskOnChunkReceivedListenerResult 的属性值 @requesttaskonchunkreceivedlistenerresult-values 
 
@@ -207,9 +207,9 @@ offChunkReceived
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| listener | number \| (result: [RequestTaskOnChunkReceivedListenerResult](#requesttaskonchunkreceivedlistenerresult-values)) => void | 否 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| listener | number \| (result: [RequestTaskOnChunkReceivedListenerResult](#requesttaskonchunkreceivedlistenerresult-values)) => void | 否 | 支付宝小程序: x | 
 
 ##### RequestTaskOnChunkReceivedListenerResult 的属性值 @requesttaskonchunkreceivedlistenerresult-values 
 
@@ -225,19 +225,19 @@ onHeadersReceived
 ##### onHeadersReceived 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.71 | 4.41 | 5.25 | 4.71 | 4.71 | 4.71 |
+| 4.71 | 4.41 | x | 4.71 | 4.71 | 4.71 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| listener | (result: [RequestTaskOnHeadersReceivedListenerResult](#requesttaskonheadersreceivedlistenerresult-values)) => void | 是 | HTTP Response Header 事件的监听函数 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| listener | (result: [RequestTaskOnHeadersReceivedListenerResult](#requesttaskonheadersreceivedlistenerresult-values)) => void | 是 | 支付宝小程序: x | HTTP Response Header 事件的监听函数 | 
 
 ##### RequestTaskOnHeadersReceivedListenerResult 的属性值 @requesttaskonheadersreceivedlistenerresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
 | statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
 
 
@@ -254,19 +254,19 @@ offHeadersReceived
 ##### offHeadersReceived 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.71 | 4.41 | 5.25 | 4.71 | 4.71 | 4.71 |
+| 4.71 | 4.41 | x | 4.71 | 4.71 | 4.71 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| listener | number \| (result: [RequestTaskOnHeadersReceivedListenerResult](#requesttaskonheadersreceivedlistenerresult-values)) => void | 否 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| listener | number \| (result: [RequestTaskOnHeadersReceivedListenerResult](#requesttaskonheadersreceivedlistenerresult-values)) => void | 否 | 支付宝小程序: x | 
 
 ##### RequestTaskOnHeadersReceivedListenerResult 的属性值 @requesttaskonheadersreceivedlistenerresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
 | statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
 
 
@@ -287,14 +287,14 @@ offHeadersReceived
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
 | statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
 
 ##### RequestTaskOnHeadersReceivedListenerResult 的属性值 @requesttaskonheadersreceivedlistenerresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
 | statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
  
 
@@ -1248,5 +1248,5 @@ complete: () => {
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
 
