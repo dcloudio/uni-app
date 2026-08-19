@@ -16,19 +16,31 @@
 
 修改鸿蒙项目根目录文件 oh-package.json5，添加 ohpm 依赖 "@dcloudio/uni-app-x-runtime": "版本号"，点击右上角 Sync Now，并等待 Sync 结束。
 
-> 注意：请使用与导出资源所使用的 HBuilderX 版本对应的 SDK 版本，最低版本为 4.71。
+### 注意
 
+* 请使用与导出资源所使用的 HBuilderX 版本对应的 SDK 版本，VDOM模式最低版本为 4.71。
+* 蒸汽模式请改用 `@dcloudio/uni-app-x-vapor-runtime` 模块，最低版本为 5.25。
+
+::: preview
+> VDOM模式
 ```json
 {
-  "modelVersion": "5.0.4",
+  "modelVersion": "26.0.0",
   "description": "Please describe the basic information.",
   "dependencies": {
     // 指定 4.71 版本
     "@dcloudio/uni-app-x-runtime": "4.71.*"
-  },
-  "devDependencies": {
-    "@ohos/hypium": "1.0.21",
-    "@ohos/hamock": "1.0.0"
+  }
+}
+```
+> 蒸汽模式
+```json
+{
+  "modelVersion": "26.0.0",
+  "description": "Please describe the basic information.",
+  "dependencies": {
+    // 指定 4.71 版本
+    "@dcloudio/uni-app-x-vapor-runtime": "5.25.*"
   }
 }
 ```
@@ -43,6 +55,8 @@
 
 编辑 entry/build-profile.json5 文件，在 buildOption 增加 arkOptions -> runtimeOnly -> sources 配置
 
+::: preview
+> VDOM模式
 ```json
 {
   "apiType": "stageMode",
@@ -52,6 +66,23 @@
         "sources": [
           "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/app-config.ets",
           "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/app-service.ets"
+        ]
+      }
+    }
+  }
+}
+```
+> 蒸汽模式
+```json
+{
+  "apiType": "stageMode",
+  "buildOption": {
+    "arkOptions": {
+      "runtimeOnly": {
+        "sources": [
+          "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/app-config.ets",
+          "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/app-service.ets",
+          "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/dynamic.ets"
         ]
       }
     }
