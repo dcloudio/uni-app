@@ -15,7 +15,7 @@
 ### getAppAuthorizeSetting 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 4.61 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
 
 
 
@@ -30,144 +30,144 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| albumAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.25; iOS: 4.11 | 允许 App 使用相册的开关<br/> |
-| bluetoothAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.25; iOS: 4.11 | 允许 App 使用蓝牙的开关<br/> |
-| cameraAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 允许 App 使用摄像头的开关<br/> |
-| locationAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 允许 App 使用定位的开关<br/> |
-| locationAccuracy | string | 否 | Web: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 定位准确度。<br/> |
-| locationReducedAccuracy | boolean | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: 4.11 | 定位准确度（推荐使用 locationAccuracy 属性）。true 表示模糊定位，false 表示精确定位（仅 iOS 支持） |
-| microphoneAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 允许 App 使用麦克风的开关<br/> |
-| notificationAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11 | 允许 App 通知的开关<br/> |
-| notificationAlertAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: 4.11 | 允许 App 通知带有提醒的开关（仅 iOS 支持）<br/> |
-| notificationBadgeAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: 4.11 | 允许 App 通知带有标记的开关（仅 iOS 支持）<br/> |
-| notificationSoundAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: 4.11 | 允许 App 通知带有声音的开关（仅 iOS 支持）<br/> |
-| phoneCalendarAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 允许读写日历的开关（仅微信小程序支持）<br/> |
-| readPhoneCalendarAuthorized | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 允许读日历的开关（仅鸿蒙支持）<br/> |
-| writePhoneCalendarAuthorized | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 允许写日历的开关（仅鸿蒙支持）<br/> |
-| pasteboardAuthorized | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 允许读取剪切版（仅鸿蒙支持）<br/> |
+| albumAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 4.25; iOS: 4.11 | 允许 App 使用相册的开关<br/> |
+| bluetoothAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 4.25; iOS: 4.11 | 允许 App 使用蓝牙的开关<br/> |
+| cameraAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 允许 App 使用摄像头的开关<br/> |
+| locationAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 允许 App 使用定位的开关<br/> |
+| locationAccuracy | string | 否 | Web: x; Android: 3.9; iOS: 4.11 | 定位准确度。<br/> |
+| locationReducedAccuracy | boolean | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: x; iOS: 4.11 | 定位准确度（推荐使用 locationAccuracy 属性）。true 表示模糊定位，false 表示精确定位（仅 iOS 支持） |
+| microphoneAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 允许 App 使用麦克风的开关<br/> |
+| notificationAuthorized | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 允许 App 通知的开关<br/> |
+| notificationAlertAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: x; iOS: 4.11 | 允许 App 通知带有提醒的开关（仅 iOS 支持）<br/> |
+| notificationBadgeAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: x; iOS: 4.11 | 允许 App 通知带有标记的开关（仅 iOS 支持）<br/> |
+| notificationSoundAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: x; iOS: 4.11 | 允许 App 通知带有声音的开关（仅 iOS 支持）<br/> |
+| phoneCalendarAuthorized | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: x; iOS: x; HarmonyOS: x | 允许读写日历的开关（仅微信小程序支持）<br/> |
+| readPhoneCalendarAuthorized | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 允许读日历的开关（仅鸿蒙支持）<br/> |
+| writePhoneCalendarAuthorized | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 允许写日历的开关（仅鸿蒙支持）<br/> |
+| pasteboardAuthorized | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 允许读取剪切版（仅鸿蒙支持）<br/> |
 
 ##### albumAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x; 支付宝小程序: x | Android平台：表示没有配置[相册相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置相册权限描述 |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| config error | Web: x | Android平台：表示没有配置[相册相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置相册权限描述 |
 
 ##### bluetoothAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请蓝牙相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x; 支付宝小程序: x | Android平台：表示没有配置[蓝牙相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置蓝牙权限描述 |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请蓝牙相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| config error | Web: x | Android平台：表示没有配置[蓝牙相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置蓝牙权限描述 |
 
 ##### cameraAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请摄像头相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x; 支付宝小程序: x | Android平台：表示没有配置 `android.permission.CAMERA` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置相机权限描述 |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请摄像头相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| config error | Web: x | Android平台：表示没有配置 `android.permission.CAMERA` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置相机权限描述 |
 
 ##### locationAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请定位相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x; 支付宝小程序: x | Android平台：表示没有配置 `android.permission.ACCESS_COARSE_LOCATION` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置定位权限描述 |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请定位相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| config error | Web: x | Android平台：表示没有配置 `android.permission.ACCESS_COARSE_LOCATION` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置定位权限描述 |
 
 ##### locationAccuracy 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| reduced | Web: x; 支付宝小程序: x | 模糊定位 |
-| full | Web: x; 支付宝小程序: x | 精准定位 |
-| unsupported | Web: x; 支付宝小程序: x | 不支持（包括用户拒绝定位权限和没有包含定位权限描述） |
+| reduced | Web: x | 模糊定位 |
+| full | Web: x | 精准定位 |
+| unsupported | Web: x | 不支持（包括用户拒绝定位权限和没有包含定位权限描述） |
 
 ##### microphoneAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请麦克风相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x; 支付宝小程序: x | Android平台：表示没有配置 `android.permission.RECORD_AUDIO` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置麦克风权限描述 |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请麦克风相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| config error | Web: x | Android平台：表示没有配置 `android.permission.RECORD_AUDIO` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置麦克风权限描述 |
 
 ##### notificationAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请通知相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x; 支付宝小程序: x | Android平台没有该值；iOS平台：没有包含推送权限描述 |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请通知相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| config error | Web: x | Android平台没有该值；iOS平台：没有包含推送权限描述 |
 
 ##### notificationAlertAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x; 支付宝小程序: x | 当前应用没有配置推送权限描述 |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| config error | Web: x | 当前应用没有配置推送权限描述 |
 
 ##### notificationBadgeAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x; 支付宝小程序: x | 当前应用没有配置推送权限描述 |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| config error | Web: x | 当前应用没有配置推送权限描述 |
 
 ##### notificationSoundAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x; 支付宝小程序: x | 当前应用没有配置推送权限描述 |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| config error | Web: x | 当前应用没有配置推送权限描述 |
 
 ##### phoneCalendarAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权。 |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
-| config error | Web: x; 支付宝小程序: x | 当前应用没有配置读写日历权限描述 |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权。 |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
+| config error | Web: x | 当前应用没有配置读写日历权限描述 |
 
 ##### readPhoneCalendarAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权。 |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
-| config error | Web: x; 支付宝小程序: x | 当前应用没有配置读日历权限描述 |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权。 |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
+| config error | Web: x | 当前应用没有配置读日历权限描述 |
 
 ##### writePhoneCalendarAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权；（此情况需要引导用户打开系统设置，在设置页中打开权限） |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权；（此情况需要引导用户打开系统设置，在设置页中打开权限） |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
 
 ##### pasteboardAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x; 支付宝小程序: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 支付宝小程序: x | 请求授权被拒绝，无法再次请求授权；（此情况需要引导用户打开系统设置，在设置页中打开权限） |
-| not determined | Web: x; 支付宝小程序: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； | 
+| authorized | Web: x | 已经获得授权，无需再次请求授权 |
+| denied | Web: x | 请求授权被拒绝，无法再次请求授权；（此情况需要引导用户打开系统设置，在设置页中打开权限） |
+| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； | 
 
 
 ### 示例
@@ -363,5 +363,5 @@ Android和iOS的权限设计并不相同，比如iOS有相册权限，而Android
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 

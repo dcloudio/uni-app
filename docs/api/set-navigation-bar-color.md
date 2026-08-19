@@ -16,7 +16,7 @@
 ### setNavigationBarColor 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | √ | 4.11 | 4.61 |
+| 4.0 | 4.41 | 5.25 | √ | 4.11 | 4.61 |
 
 
 注意当pages.json中设置导航栏为custom时：
@@ -25,65 +25,65 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | **SetNavigationBarColorOptions** | 是 | 支付宝小程序: x |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **SetNavigationBarColorOptions** | 是 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| frontColor | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 前景颜色值，包括按钮、标题、状态栏的颜色，仅支持 #ffffff 和 #000000 |
-| backgroundColor | [string.ColorString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 背景颜色值，有效值为十六进制颜色 |
-| success | (result: [SetNavigationBarColorSuccess](#setnavigationbarcolorsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (error: [SetNavigationBarColorFail](#setnavigationbarcolorfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (res: [SetNavigationBarColorComplete](#setnavigationbarcolorcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| animation | **SetNavigationBarColorOptionsAnimation** | 否 | 微信小程序: 4.41; 支付宝小程序: x | 动画效果<br/> |
+| frontColor | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 前景颜色值，包括按钮、标题、状态栏的颜色，仅支持 #ffffff 和 #000000 |
+| backgroundColor | [string.ColorString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 背景颜色值，有效值为十六进制颜色 |
+| success | (result: [SetNavigationBarColorSuccess](#setnavigationbarcolorsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (error: [SetNavigationBarColorFail](#setnavigationbarcolorfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (res: [SetNavigationBarColorComplete](#setnavigationbarcolorcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| animation | **SetNavigationBarColorOptionsAnimation** | 否 | 微信小程序: 4.41; 支付宝小程序: - | 动画效果<br/> |
 
 ##### frontColor 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| #ffffff | 支付宝小程序: x |
-| #000000 | 支付宝小程序: x |
+| 合法值 |
+| :- |
+| #ffffff |
+| #000000 |
 
 ##### animation 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| duration | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 动画变化时间，单位 ms<br/> |
-| timingFunc | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 动画变化方式<br/><br/>可选值：<br/>- 'linear': 动画从头到尾的速度是相同的;<br/>- 'easeIn': 动画以低速开始;<br/>- 'easeOut': 动画以低速结束;<br/>- 'easeInOut': 动画以低速开始和结束;<br/> |
+| duration | number | 否 | 微信小程序: 4.41; 支付宝小程序: - | 动画变化时间，单位 ms<br/> |
+| timingFunc | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 动画变化方式<br/><br/>可选值：<br/>- 'linear': 动画从头到尾的速度是相同的;<br/>- 'easeIn': 动画以低速开始;<br/>- 'easeOut': 动画以低速结束;<br/>- 'easeInOut': 动画以低速开始和结束;<br/> |
 
 ###### timingFunc 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| linear | 支付宝小程序: x |
-| easeIn | 支付宝小程序: x |
-| easeOut | 支付宝小程序: x |
-| easeInOut | 支付宝小程序: x | 
+| 合法值 |
+| :- |
+| linear |
+| easeIn |
+| easeOut |
+| easeInOut | 
 
 #### SetNavigationBarColorSuccess 的属性值 @setnavigationbarcolorsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 是 | 支付宝小程序: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### SetNavigationBarColorFail 的属性值 @setnavigationbarcolorfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x | 设置导航栏字体颜色错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 设置导航栏字体颜色错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### SetNavigationBarColorComplete 的属性值 @setnavigationbarcolorcomplete-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 是 | 支付宝小程序: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 ### 返回值 
@@ -94,9 +94,9 @@
 
 #### Promise\<SetNavigationBarColorSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 是 | 支付宝小程序: x | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 | 
 
 
 ### 示例
@@ -215,7 +215,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 
 
 ## Bug & Tips @tips

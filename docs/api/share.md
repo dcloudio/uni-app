@@ -287,7 +287,7 @@ UniShareWeixinProvider(微信分享)继承自 [UniProvider](./provider.md#unipro
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 
 ## 自定义分享provider接入到uni API @customprovider
 

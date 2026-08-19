@@ -13,107 +13,107 @@
 ### startGyroscope 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **StartGyroscopeOptions** | 否 | Web: x; 支付宝小程序: x | 开始监听陀螺仪数据的参数 |
+| options | **StartGyroscopeOptions** | 否 | Web: x | 开始监听陀螺仪数据的参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| interval | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 监听陀螺仪数据回调函数的执行频率 |
-| success | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
-| fail | (res: [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values) \| [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| interval | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 监听陀螺仪数据回调函数的执行频率 |
+| success | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 接口调用成功的回调函数 |
+| fail | (res: [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 接口调用失败的回调函数 |
+| complete | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values) \| [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### interval 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| game | Web: x; 支付宝小程序: x | 适用于更新游戏的回调频率，约 20ms/次 左右 |
-| ui | Web: x; 支付宝小程序: x | 适用于更新 UI 的回调频率，在 60ms/次 左右 |
-| normal | Web: x; 支付宝小程序: x | 普通的回调频率，在 200ms/次 左右 |
+| game | Web: x | 适用于更新游戏的回调频率，约 20ms/次 左右 |
+| ui | Web: x | 适用于更新 UI 的回调频率，在 60ms/次 左右 |
+| normal | Web: x | 普通的回调频率，在 200ms/次 左右 |
 
 #### StartGyroscopeSuccess 的属性值 @startgyroscopesuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 否 | Web: x; 支付宝小程序: x |
+| errMsg | string | 否 | Web: x |
 
 #### StartGyroscopeFail 的属性值 @startgyroscopefail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x |  |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| 501 | Web: x; 支付宝小程序: x |
-| 502 | Web: x; 支付宝小程序: x |
-| 503 | Web: x; 支付宝小程序: x |
-| 504 | Web: x; 支付宝小程序: x |
-| 601 | Web: x; 支付宝小程序: x |
-| 602 | Web: x; 支付宝小程序: x |
-| 603 | Web: x; 支付宝小程序: x |
-| 604 | Web: x; 支付宝小程序: x |
-| 701 | Web: x; 支付宝小程序: x |
-| 702 | Web: x; 支付宝小程序: x |
-| 703 | Web: x; 支付宝小程序: x |
-| 704 | Web: x; 支付宝小程序: x |
-| 801 | Web: x; 支付宝小程序: x |
-| 802 | Web: x; 支付宝小程序: x |
-| 803 | Web: x; 支付宝小程序: x |
-| 804 | Web: x; 支付宝小程序: x |
-| 901 | Web: x; 支付宝小程序: x |
+| 501 | Web: x |
+| 502 | Web: x |
+| 503 | Web: x |
+| 504 | Web: x |
+| 601 | Web: x |
+| 602 | Web: x |
+| 603 | Web: x |
+| 604 | Web: x |
+| 701 | Web: x |
+| 702 | Web: x |
+| 703 | Web: x |
+| 704 | Web: x |
+| 801 | Web: x |
+| 802 | Web: x |
+| 803 | Web: x |
+| 804 | Web: x |
+| 901 | Web: x |
 
 #### StartGyroscopeSuccess 的属性值 @startgyroscopesuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 否 | Web: x; 支付宝小程序: x |
+| errMsg | string | 否 | Web: x |
 
 #### StartGyroscopeFail 的属性值 @startgyroscopefail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x |  |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| 501 | Web: x; 支付宝小程序: x |
-| 502 | Web: x; 支付宝小程序: x |
-| 503 | Web: x; 支付宝小程序: x |
-| 504 | Web: x; 支付宝小程序: x |
-| 601 | Web: x; 支付宝小程序: x |
-| 602 | Web: x; 支付宝小程序: x |
-| 603 | Web: x; 支付宝小程序: x |
-| 604 | Web: x; 支付宝小程序: x |
-| 701 | Web: x; 支付宝小程序: x |
-| 702 | Web: x; 支付宝小程序: x |
-| 703 | Web: x; 支付宝小程序: x |
-| 704 | Web: x; 支付宝小程序: x |
-| 801 | Web: x; 支付宝小程序: x |
-| 802 | Web: x; 支付宝小程序: x |
-| 803 | Web: x; 支付宝小程序: x |
-| 804 | Web: x; 支付宝小程序: x |
-| 901 | Web: x; 支付宝小程序: x |
+| 501 | Web: x |
+| 502 | Web: x |
+| 503 | Web: x |
+| 504 | Web: x |
+| 601 | Web: x |
+| 602 | Web: x |
+| 603 | Web: x |
+| 604 | Web: x |
+| 701 | Web: x |
+| 702 | Web: x |
+| 703 | Web: x |
+| 704 | Web: x |
+| 801 | Web: x |
+| 802 | Web: x |
+| 803 | Web: x |
+| 804 | Web: x |
+| 901 | Web: x |
 
 
 
@@ -157,98 +157,98 @@
 ### stopGyroscope 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **StopGyroscopeOptions** | 否 | Web: x; 支付宝小程序: x | 停止监听陀螺仪数据的参数 |
+| options | **StopGyroscopeOptions** | 否 | Web: x | 停止监听陀螺仪数据的参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
-| fail | (res: [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values) \| [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 接口调用成功的回调函数 |
+| fail | (res: [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 接口调用失败的回调函数 |
+| complete | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values) \| [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StopGyroscopeSuccess 的属性值 @stopgyroscopesuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 否 | Web: x; 支付宝小程序: x |
+| errMsg | string | 否 | Web: x |
 
 #### StopGyroscopeFail 的属性值 @stopgyroscopefail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x |  |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| 501 | Web: x; 支付宝小程序: x |
-| 502 | Web: x; 支付宝小程序: x |
-| 503 | Web: x; 支付宝小程序: x |
-| 504 | Web: x; 支付宝小程序: x |
-| 601 | Web: x; 支付宝小程序: x |
-| 602 | Web: x; 支付宝小程序: x |
-| 603 | Web: x; 支付宝小程序: x |
-| 604 | Web: x; 支付宝小程序: x |
-| 701 | Web: x; 支付宝小程序: x |
-| 702 | Web: x; 支付宝小程序: x |
-| 703 | Web: x; 支付宝小程序: x |
-| 704 | Web: x; 支付宝小程序: x |
-| 801 | Web: x; 支付宝小程序: x |
-| 802 | Web: x; 支付宝小程序: x |
-| 803 | Web: x; 支付宝小程序: x |
-| 804 | Web: x; 支付宝小程序: x |
-| 901 | Web: x; 支付宝小程序: x |
+| 501 | Web: x |
+| 502 | Web: x |
+| 503 | Web: x |
+| 504 | Web: x |
+| 601 | Web: x |
+| 602 | Web: x |
+| 603 | Web: x |
+| 604 | Web: x |
+| 701 | Web: x |
+| 702 | Web: x |
+| 703 | Web: x |
+| 704 | Web: x |
+| 801 | Web: x |
+| 802 | Web: x |
+| 803 | Web: x |
+| 804 | Web: x |
+| 901 | Web: x |
 
 #### StopGyroscopeSuccess 的属性值 @stopgyroscopesuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 否 | Web: x; 支付宝小程序: x |
+| errMsg | string | 否 | Web: x |
 
 #### StopGyroscopeFail 的属性值 @stopgyroscopefail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x |  |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| 501 | Web: x; 支付宝小程序: x |
-| 502 | Web: x; 支付宝小程序: x |
-| 503 | Web: x; 支付宝小程序: x |
-| 504 | Web: x; 支付宝小程序: x |
-| 601 | Web: x; 支付宝小程序: x |
-| 602 | Web: x; 支付宝小程序: x |
-| 603 | Web: x; 支付宝小程序: x |
-| 604 | Web: x; 支付宝小程序: x |
-| 701 | Web: x; 支付宝小程序: x |
-| 702 | Web: x; 支付宝小程序: x |
-| 703 | Web: x; 支付宝小程序: x |
-| 704 | Web: x; 支付宝小程序: x |
-| 801 | Web: x; 支付宝小程序: x |
-| 802 | Web: x; 支付宝小程序: x |
-| 803 | Web: x; 支付宝小程序: x |
-| 804 | Web: x; 支付宝小程序: x |
-| 901 | Web: x; 支付宝小程序: x |
+| 501 | Web: x |
+| 502 | Web: x |
+| 503 | Web: x |
+| 504 | Web: x |
+| 601 | Web: x |
+| 602 | Web: x |
+| 603 | Web: x |
+| 604 | Web: x |
+| 701 | Web: x |
+| 702 | Web: x |
+| 703 | Web: x |
+| 704 | Web: x |
+| 801 | Web: x |
+| 802 | Web: x |
+| 803 | Web: x |
+| 804 | Web: x |
+| 901 | Web: x |
 
 
 
@@ -289,22 +289,22 @@
 ### onGyroscopeChange 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnGyroscopeChangeCallbackResult](#ongyroscopechangecallbackresult-values)) => void | 是 | Web: x; 支付宝小程序: x | 陀螺仪数据事件的监听函数 | 
+| callback | (result: [OnGyroscopeChangeCallbackResult](#ongyroscopechangecallbackresult-values)) => void | 是 | Web: x | 陀螺仪数据事件的监听函数 | 
 
 ### OnGyroscopeChangeCallbackResult 的属性值 @ongyroscopechangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| x | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | x 轴的角速度 |
-| y | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | y 轴的角速度 |
-| z | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | z 轴的角速度 |
+| x | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | x 轴的角速度 |
+| y | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | y 轴的角速度 |
+| z | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | z 轴的角速度 |
 
 
 
@@ -348,22 +348,22 @@
 ### offGyroscopeChange 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnGyroscopeChangeCallbackResult](#ongyroscopechangecallbackresult-values)) => void | 否 | Web: x; 支付宝小程序: x | onGyroscopeChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
+| callback | (result: [OnGyroscopeChangeCallbackResult](#ongyroscopechangecallbackresult-values)) => void | 否 | Web: x | onGyroscopeChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
 
 ### OnGyroscopeChangeCallbackResult 的属性值 @ongyroscopechangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| x | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | x 轴的角速度 |
-| y | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | y 轴的角速度 |
-| z | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | z 轴的角速度 |
+| x | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | x 轴的角速度 |
+| y | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | y 轴的角速度 |
+| z | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | z 轴的角速度 |
 
 
 
@@ -702,7 +702,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 
 
 ### tips

@@ -15,28 +15,28 @@
 ### showToast 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| options | **ShowToastOptions** | 是 | 支付宝小程序: x | uni.showToast参数定义 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **ShowToastOptions** | 是 | uni.showToast参数定义 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
-| icon | string | 否 | "success" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 5.26 | icon值说明 |
+| title | string | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
+| icon | string | 否 | "success" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 5.26 | icon值说明 |
 | image | [string.ImageURIString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 5.26 | 自定义图标的本地路径（app端暂不支持gif） |
 | mask | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 5.26 | 是否显示透明蒙层，防止触摸穿透 |
-| duration | number | 否 | 1500 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 提示的延迟时间，单位毫秒 |
+| duration | number | 否 | 1500 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 提示的延迟时间，单位毫秒 |
 | position | string | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。 |
-| success | (res: ShowToastSuccess) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast成功回调函数定义 |
-| fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast完成回调函数定义 | 
+| success | (res: ShowToastSuccess) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast成功回调函数定义 |
+| fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast完成回调函数定义 | 
 
 ##### icon 的属性描述
 
@@ -59,20 +59,20 @@
 
 #### ShowToastFail 的属性值 @showtoastfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 1 | 支付宝小程序: x | 撤销 |
-| 1001 | 支付宝小程序: x | 请求参数非法 |
+| 合法值 | 描述 |
+| :- | :- |
+| 1 | 撤销 |
+| 1001 | 请求参数非法 |
 
 
 
@@ -112,7 +112,7 @@
 ### hideToast 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.11 | 4.61 |
+| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
 
 
 
@@ -376,7 +376,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 
 
 ## Bug & Tips@tips

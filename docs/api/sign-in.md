@@ -8,14 +8,14 @@
 ### login 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 4.61 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 5.08 | 5.08 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **LoginOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **LoginOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
@@ -23,75 +23,75 @@
 | :- | :- | :- |  :-: | :- |
 | provider | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持微信登录(weixin)<br/> |
 | scopes | any | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）<br/> |
-| timeout | number | 否 | Web: x; 微信小程序: 2.35; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 超时时间，单位 ms |
-| onlyAuthorize | boolean | 否 | Web: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录仅请求授权认证<br/> |
-| success | (result: [LoginSuccess](#loginsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [LoginFail](#loginfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| timeout | number | 否 | Web: x; 微信小程序: 2.35; Android: x; iOS: x; HarmonyOS: x | 超时时间，单位 ms |
+| onlyAuthorize | boolean | 否 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录仅请求授权认证<br/> |
+| success | (result: [LoginSuccess](#loginsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [LoginFail](#loginfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### provider 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| weixin | Web: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录 |
-| qq | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
-| sinaweibo | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 新浪微博登录 |
-| xiaomi | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 小米登录 |
-| apple | Web: x; 支付宝小程序: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple登录 |
-| huawei | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
+| weixin | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录 |
+| qq | Web: x; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
+| sinaweibo | Web: x; Android: x; iOS: x; HarmonyOS: x | 新浪微博登录 |
+| xiaomi | Web: x; Android: x; iOS: x; HarmonyOS: x | 小米登录 |
+| apple | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple登录 |
+| huawei | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
 
 #### LoginSuccess 的属性值 @loginsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 描述信息 |
-| authResult | any | 是 | Web: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 登录服务商提供的登录信息，服务商不同返回的结果不完全相同 |
-| code | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 小程序用户临时登录凭证 |
-| anonymousCode | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 头条小程序当前设备标识 |
-| authCode | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序授权码 |
-| authErrorScope | any | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录失败的授权类型，key是授权失败的 scope，value 是对应的错误码 |
-| appleInfo | **AppleLoginAppleInfo** | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: 5.21; HarmonyOS: x | 苹果登录成功返回的信息 |
+| errMsg | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 描述信息 |
+| authResult | any | 是 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 登录服务商提供的登录信息，服务商不同返回的结果不完全相同 |
+| code | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 小程序用户临时登录凭证 |
+| anonymousCode | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 头条小程序当前设备标识 |
+| authCode | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序授权码 |
+| authErrorScope | any | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录失败的授权类型，key是授权失败的 scope，value 是对应的错误码 |
+| appleInfo | **AppleLoginAppleInfo** | 否 | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | 苹果登录成功返回的信息 |
 
 #### appleInfo 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| authorizationCode | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple 授权码，用于服务端向 Apple 校验或换取凭证 |
-| fullName | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: 5.21; HarmonyOS: x | 用户授权时 Apple 返回的姓名信息，通常仅首次授权时可获取，后续登录多数情况下为空 |
-| identityToken | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple 签发的身份令牌（JWT），主要用于服务端校验当前登录用户身份 |
-| realUserStatus | number | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple 对真实用户状态的评估值，仅作辅助参考(0: 设备不支持检测; 1: 无法确定; 2:高度可能真实) |
-| user | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple 返回给当前 App 的用户唯一标识，不是昵称或用户名 |
+| authorizationCode | string | 否 | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple 授权码，用于服务端向 Apple 校验或换取凭证 |
+| fullName | string | 否 | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | 用户授权时 Apple 返回的姓名信息，通常仅首次授权时可获取，后续登录多数情况下为空 |
+| identityToken | string | 否 | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple 签发的身份令牌（JWT），主要用于服务端校验当前登录用户身份 |
+| realUserStatus | number | 否 | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple 对真实用户状态的评估值，仅作辅助参考(0: 设备不支持检测; 1: 无法确定; 2:高度可能真实) |
+| user | string | 否 | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple 返回给当前 App 的用户唯一标识，不是昵称或用户名 |
 
 #### LoginFail 的属性值 @loginfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 微信登录错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 微信登录错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1310500 | Web: x; 支付宝小程序: x | 未找到微信 APPID |
-| 1310501 | Web: x; 支付宝小程序: x | APPID、appIdentifier、bundleId不匹配 |
-| 1310502 | Web: x; 支付宝小程序: x | 微信可能未安装 |
-| 1310503 | Web: x; 支付宝小程序: x | 未获取到授权凭证 |
-| 1310504 | Web: x; 支付宝小程序: x | 未获取到授权 code |
-| 1310505 | Web: x; 支付宝小程序: x | 授权凭证无效 |
-| 1310506 | Web: x; 支付宝小程序: x | 获取用户信息失败 |
-| 1310507 | Web: x; 支付宝小程序: x | 微信 API 请求失败 |
-| 1310508 | Web: x; 支付宝小程序: x | 微信登录state验证失败 |
-| 1310509 | Web: x; 支付宝小程序: x | 用户取消登录 |
-| 1310510 | Web: x; 支付宝小程序: x | 超时时间必须为正整数 |
-| 1310511 | Web: x; 支付宝小程序: x | 获取用户信息请求超时 |
-| 1310512 | Web: x; 支付宝小程序: x | iOS 没有配置对应的URL Scheme |
-| 1310513 | Web: x; 支付宝小程序: x | iOS 没有配置对应的Universal Link |
-| 1310600 | Web: x; 支付宝小程序: x | 服务供应商获取失败 |
-| 1001502040 | Web: x; 支付宝小程序: x | 登录请求可能被跨站攻击 |
+| 1310500 | Web: x | 未找到微信 APPID |
+| 1310501 | Web: x | APPID、appIdentifier、bundleId不匹配 |
+| 1310502 | Web: x | 微信可能未安装 |
+| 1310503 | Web: x | 未获取到授权凭证 |
+| 1310504 | Web: x | 未获取到授权 code |
+| 1310505 | Web: x | 授权凭证无效 |
+| 1310506 | Web: x | 获取用户信息失败 |
+| 1310507 | Web: x | 微信 API 请求失败 |
+| 1310508 | Web: x | 微信登录state验证失败 |
+| 1310509 | Web: x | 用户取消登录 |
+| 1310510 | Web: x | 超时时间必须为正整数 |
+| 1310511 | Web: x | 获取用户信息请求超时 |
+| 1310512 | Web: x | iOS 没有配置对应的URL Scheme |
+| 1310513 | Web: x | iOS 没有配置对应的Universal Link |
+| 1310600 | Web: x | 服务供应商获取失败 |
+| 1001502040 | Web: x | 登录请求可能被跨站攻击 |
 
 
 
@@ -500,5 +500,5 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 

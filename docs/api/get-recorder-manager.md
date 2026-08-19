@@ -15,7 +15,7 @@
 ### getRecorderManager 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | 4.61 | 4.61 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 4.61 | 4.61 | 4.61 |
 
 
 web平台可通过插件拉齐，[详见](https://ext.dcloud.net.cn/search?q=getRecorderManager&orderBy=Relevance&cat1=4&cat2=41&uni-app-platforms=&uni-app-x-platforms=)
@@ -42,7 +42,7 @@ start
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **RecorderManagerStartOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **RecorderManagerStartOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
@@ -112,7 +112,7 @@ onStart
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -139,7 +139,7 @@ onPause
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -166,7 +166,7 @@ onStop
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: [RecorderManagerOnStopResult](#recordermanageronstopresult-values)) => void | 是 | Web: x; 支付宝小程序: x | 
+| options | (result: [RecorderManagerOnStopResult](#recordermanageronstopresult-values)) => void | 是 | Web: x | 
 
 ##### RecorderManagerOnStopResult 的属性值 @recordermanageronstopresult-values 
 
@@ -199,7 +199,7 @@ onFrameRecorded
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -226,17 +226,17 @@ onError
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: [IRecorderManagerFail](#irecordermanagerfail-values)) => void | 是 | Web: x; 支付宝小程序: x | 
+| options | (result: [IRecorderManagerFail](#irecordermanagerfail-values)) => void | 是 | Web: x | 
 
 ##### IRecorderManagerFail 的属性值 @irecordermanagerfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -276,7 +276,7 @@ onResume
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -303,7 +303,7 @@ onInterruptionBegin
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -330,7 +330,7 @@ onInterruptionEnd
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | (result: any) => void | 是 | Web: x; 支付宝小程序: x | 
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -376,11 +376,11 @@ offInterruptionEnd
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -867,5 +867,5 @@ offInterruptionEnd
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 
