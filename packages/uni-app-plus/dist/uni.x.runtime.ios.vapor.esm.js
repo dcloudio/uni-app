@@ -2088,68 +2088,6 @@ function getAppThemeFallbackOS() {
     return fallbackOSTheme;
   }
 }
-var appThemeChangeCallbackId = -1;
-function clearAppThemeChangeCallbackId() {
-  appThemeChangeCallbackId = -1;
-}
-function registerThemeChange(callback) {
-  try {
-    if (appThemeChangeCallbackId !== -1) {
-      uni.offAppThemeChange(appThemeChangeCallbackId);
-      clearAppThemeChangeCallbackId();
-    }
-    appThemeChangeCallbackId = uni.onAppThemeChange(function(res1) {
-      var appThemeMode = res1["appTheme"];
-      callback(appThemeMode);
-    });
-  } catch (e) {
-  }
-}
-var onThemeChange = function(themeMode) {
-  var handlePage = () => {
-    var pages2 = getAllPages();
-    pages2.forEach((page) => {
-      var basePage = getPage$BasePage(page);
-      var routeOptions = initRouteOptions(basePage.path, "");
-      routeOptions.meta.isQuit = basePage.meta.isQuit;
-      var style = parsePageStyle(routeOptions);
-      page.$page.setPageStyle(new UTSJSONObject(style));
-    });
-  };
-  handlePage();
-  var handleTabBar = () => {
-    var tabBar = getTabBar();
-    if (tabBar !== null) {
-      var tabBarConfig = __uniConfig.getTabBarConfig();
-      normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, themeMode);
-      var tabBarStyle = /* @__PURE__ */ new Map();
-      var tabBarConfigKeys = Object.keys(tabBarConfig);
-      tabBarConfigKeys.forEach((key) => {
-        var value = tabBarConfig[key];
-        if (isString(value)) {
-          tabBarStyle.set(key, value);
-        } else if (isArray(value)) {
-          var valueAsArray = value;
-          var index2 = 0;
-          valueAsArray.forEach((item) => {
-            var tabBarItemMap = /* @__PURE__ */ new Map();
-            tabBarItemMap.set("index", index2);
-            Object.keys(item).forEach((tabBarItemkey) => {
-              if (item[tabBarItemkey] != null) {
-                tabBarItemMap.set(tabBarItemkey, item[tabBarItemkey]);
-              }
-            });
-            tabBar.setTabBarItem(tabBarItemMap);
-            index2++;
-          });
-        }
-      });
-      fixBorderStyle(tabBarStyle);
-      tabBar.setTabBarStyle(tabBarStyle);
-    }
-  };
-  handleTabBar();
-};
 function normalizePageStyles(pageStyle, themeConfig, themeMode) {
   var themeMap = themeConfig === null || themeConfig === void 0 ? void 0 : themeConfig[themeMode];
   if (!themeMap) {
@@ -2189,8 +2127,95 @@ function normalizeTabBarStyles(tabBar, themeConfig, themeMode) {
   }
   normalizeStyles(tabBar, themeMap);
 }
+function hasThemeValue(value) {
+  if (isString(value)) {
+    return value.charCodeAt(0) === 64;
+  }
+  if (isArray(value)) {
+    return value.some(hasThemeValue);
+  }
+  return isPlainObject(value) && Object.keys(value).some((key) => hasThemeValue(value[key]));
+}
+function createThemeVariants(style, themeConfig) {
+  var snapshot = {};
+  Object.keys(style).forEach((key) => {
+    if (hasThemeValue(style[key])) {
+      snapshot[key] = style[key];
+    }
+  });
+  if (Object.keys(snapshot).some((key) => key.startsWith("navigation"))) {
+    Object.keys(style).forEach((key) => {
+      if (key.startsWith("navigation")) {
+        snapshot[key] = style[key];
+      }
+    });
+  }
+  if (Object.keys(snapshot).length === 0) {
+    return null;
+  }
+  var light = JSON.parse(JSON.stringify(snapshot));
+  var dark = JSON.parse(JSON.stringify(snapshot));
+  normalizeStyles(light, themeConfig.light || {});
+  normalizeStyles(dark, themeConfig.dark || {});
+  delete light.navigationStyle;
+  delete dark.navigationStyle;
+  if (JSON.stringify(light) === JSON.stringify(dark)) {
+    return null;
+  }
+  return {
+    light,
+    dark
+  };
+}
+function createThemeSnapshots() {
+  var routes = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : __uniRoutes;
+  var themeConfig = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : __uniConfig.themeConfig;
+  var tabBarConfig = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : __uniConfig.getTabBarConfig();
+  if (themeConfig == null) {
+    return;
+  }
+  var pages2 = {};
+  routes.forEach((route) => {
+    var routePath = route.meta.route || route.path.replace(/^\/+/, "");
+    var style = initRouteOptions(route.path, "").meta;
+    delete style.navigationBar;
+    if (Object.keys(style).some((key) => key.startsWith("navigation")) && style.navigationBarTextStyle !== "custom" && !style.isQuit && routePath !== __uniConfig.realEntryPagePath) {
+      style.navigationBarAutoBackButton = true;
+    }
+    var variants = createThemeVariants(style, themeConfig);
+    if (variants != null) {
+      if (!route.meta.backgroundColorContent && "backgroundColorContent" in variants.light) {
+        variants.preserveDialogBackgroundColorContent = true;
+      }
+      pages2[routePath] = variants;
+    }
+  });
+  var tabBar = tabBarConfig ? createThemeVariants(tabBarConfig, themeConfig) || void 0 : void 0;
+  if (Object.keys(pages2).length === 0 && tabBar == null) {
+    return;
+  }
+  var result = {
+    pages: pages2
+  };
+  if (tabBar != null) {
+    result.tabBar = tabBar;
+  }
+  return result;
+}
+function registerThemeConfig() {
+  var config = createThemeSnapshots();
+  if (config != null) {
+    var app = getNativeApp();
+    if (!__uni__app_RegisterThemeConfig(app.id, config)) {
+      throw new Error("Failed to register app theme config");
+    }
+  }
+}
 function useTheme() {
-  registerThemeChange(onThemeChange);
+  {
+    registerThemeConfig();
+    return;
+  }
 }
 function setStatusBarStyle() {
   var page;

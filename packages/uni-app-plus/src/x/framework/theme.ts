@@ -303,10 +303,7 @@ function registerThemeConfig() {
 }
 
 export function useTheme() {
-  if (
-    __VAPOR_PLATFORM__ === 'app-harmony' ||
-    __VAPOR_PLATFORM__ === 'app-android'
-  ) {
+  if (__VAPOR__) {
     registerThemeConfig()
     return
   }
