@@ -59,6 +59,7 @@ export default class EntryAbility extends UniEntryAbility {
   }
 }
 ```
+:::
 
 ## 启动
 
@@ -125,6 +126,7 @@ struct Index {
   }
 }
 ```
+:::
 
 ## 退出
 
