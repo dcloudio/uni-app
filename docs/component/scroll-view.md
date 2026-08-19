@@ -26,7 +26,7 @@
 | bounces | boolean | true | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 是否开启回弹效果，优先级高于rebound |
 | android-overscroll | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: x; HarmonyOS: x | Android平台是否开启弹簧回弹效果，开启后默认下拉刷新使用圆弧loading样式（推动页面内容），否则默认下拉刷新使用Android系统悬浮圆环样式（不推动页面内容） |
 | android-scrollbar-draggable | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.25; iOS: x; HarmonyOS: x | Android 平台是否允许拖动滚动条以快速定位滚动内容，默认值为 false，当前暂仅支持竖向滚动  |
-| android-refresher-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.25; iOS: x; HarmonyOS: x | 设置 Android 平台 scroll-view 默认下拉刷新样式的前景颜色，优先级高于 refresher-default-style  |
+| android-refresher-color | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.25; iOS: x; HarmonyOS: x | 设置 Android 平台 scroll-view 默认下拉刷新样式的前景颜色，优先级高于 refresher-default-style  |
 | associative-container | string |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61 | 关联的滚动容器 |
 | enable-back-to-top | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: 4.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 点击系统状态栏滚动条返回顶部，只支持竖向 |
 | upper-threshold | number | 50 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
@@ -39,7 +39,7 @@
 | refresher-threshold | number | 45 | Web: 4.11; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置下拉刷新阈值 |
 | refresher-max-drag-distance | number |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置下拉最大拖拽距离（单位px），默认是下拉刷新控件高度的2.5倍 |
 | refresher-default-style | string | "black" | Web: 4.11; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置下拉刷新默认样式，支持设置 black \| white \| none， none 表示不使用默认样式 |
-| refresher-background | string([string.ColorString](/uts/data-type.md#ide-string)) | "transparent" | Web: 4.11; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置下拉刷新区域背景颜色，默认透明 |
+| refresher-background | string([string.ColorString](/uts/data-type.md#ide-string)) | "transparent" | Web: 4.11; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置下拉刷新区域背景颜色，默认透明。Android 平台下，当 android-overscroll=false 时，默认下拉刷新使用悬浮圆环样式，此时背景默认不再透明，而是由 refresher-default-style 决定 |
 | refresher-triggered | boolean | false | Web: 4.11; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发 |
 | show-scrollbar | boolean | true | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 控制是否出现滚动条 |
 | custom-nested-scroll | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: x | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
