@@ -37,8 +37,27 @@
 
 在uni_modules入口文件`index.generated.ets`内注册uni-push api。
 
+::: preview
+> VDOM模式
 ```typescript
 import { uni } from "@dcloudio/uni-app-x-runtime";
+import { getPushClientId,onPushMessage,offPushMessage,createPushMessage,setAppBadgeNumber } from '@uni_modules/uni-push'
+
+export function initUniModules() {
+  initUniExtApi();
+}
+
+function initUniExtApi() {
+  uni.getPushClientId = getPushClientId
+  uni.onPushMessage = onPushMessage
+  uni.offPushMessage = offPushMessage
+  uni.createPushMessage = createPushMessage
+  uni.setAppBadgeNumber = setAppBadgeNumber
+}
+```
+> 蒸汽模式
+```typescript
+import { uni } from "@dcloudio/uni-app-x-vapor-runtime";
 import { getPushClientId,onPushMessage,offPushMessage,createPushMessage,setAppBadgeNumber } from '@uni_modules/uni-push'
 
 export function initUniModules() {

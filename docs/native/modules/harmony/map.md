@@ -27,8 +27,27 @@
 ### 注册模块
 在uni_modules入口文件`index.generated.ets`内注册腾讯地图api。
 
+::: preview
+> VDOM模式
 ```typescript
 import { registerUniProvider, uni } from "@dcloudio/uni-app-x-runtime";
+import { createMapContext } from '@uni_modules/uni-map-tencent'
+import { UniMapElement } from '@uni_modules/uni-map-tencent'
+import * as uniMapTencent from '@uni_modules/uni-map-tencent'
+
+export function initUniModules() {
+  initUniExtApi();
+  uni.registerUTSPlugin('uni_modules/uni-map-tencent', uniMapTencent)
+}
+
+function initUniExtApi() {
+  uni.createMapContext = createMapContext
+  globalThis.UniMapElement = UniMapElement
+}
+```
+> 蒸汽模式
+```typescript
+import { registerUniProvider, uni } from "@dcloudio/uni-app-x-vapor-runtime";
 import { createMapContext } from '@uni_modules/uni-map-tencent'
 import { UniMapElement } from '@uni_modules/uni-map-tencent'
 import * as uniMapTencent from '@uni_modules/uni-map-tencent'

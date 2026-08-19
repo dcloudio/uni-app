@@ -197,6 +197,17 @@
       }}</text>
     </view>
     <child class="mt-10" ref="childRef">ComponentRef</child>
+    <view class="mt-10">
+      <text class="section-title">getCurrentInstance() + $refs</text>
+    </view>
+    <view class="row">
+      <text>$refs 获取 nodeRef:</text>
+      <text>{{ dataInfo.existRefByRefs }}</text>
+    </view>
+    <view class="row">
+      <text>$refs 获取 childRef:</text>
+      <text>{{ dataInfo.existChildRefByRefs }}</text>
+    </view>
   </view>
 </template>
 
@@ -208,13 +219,17 @@ type DataInfo = {
   existChildRef: boolean
   textItemsExpectNum: number
   existTextItems: boolean
+  existRefByRefs: boolean
+  existChildRefByRefs: boolean
 }
 
 const dataInfo = reactive<DataInfo>({
   existRef: false,
   existChildRef: false,
   textItemsExpectNum: 3,
-  existTextItems: false
+  existTextItems: false,
+  existRefByRefs: false,
+  existChildRefByRefs: false
 })
 
 const nodeRef = ref<UniElement | null>(null)
@@ -225,6 +240,11 @@ onReady(() => {
   dataInfo.existRef = nodeRef.value !== null
   dataInfo.existChildRef = childRef.value !== null
   dataInfo.existTextItems = textItems.value?.length === dataInfo.textItemsExpectNum
+
+  // 通过 getCurrentInstance() 获取实例，然后通过 $refs 获取 ref
+  const instance = getCurrentInstance()!.proxy!
+  dataInfo.existRefByRefs = instance.$refs['nodeRef'] != null
+  dataInfo.existChildRefByRefs = instance.$refs['childRef'] != null
 })
 
 defineExpose({
@@ -237,6 +257,9 @@ defineExpose({
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 10px;
+}
+.section-title {
   margin-bottom: 10px;
 }
 </style>
@@ -3401,23 +3424,23 @@ const updateTitle = () => {
 
 
 ##### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | 5.25 | 3.9 | 4.11 | 4.61 |
 
 
 ##### 属性 
 | 名称 | 类型 | 兼容性 |
 | :- | :- |  :-: |
-| setup | Any | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
-| lang | Any | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| setup | Any | Web: 4.0; 微信小程序: √; 支付宝小程序: 5.25; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| lang | Any | Web: 4.0; 微信小程序: √; 支付宝小程序: 5.25; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 
 #### lang 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ts | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x | typescript |
-| uts | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | uts |
+| ts | Web: x; 微信小程序: √; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | typescript |
+| uts | Web: 4.0; 微信小程序: √; 支付宝小程序: 5.25; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | uts |
 
 
 
