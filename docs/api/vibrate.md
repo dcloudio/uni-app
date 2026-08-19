@@ -8,79 +8,79 @@
 ### vibrateShort 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **VibrateShortOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **VibrateShortOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| type | string | 是 | Web: x; 支付宝小程序: x |
-| success | (result: [VibrateShortSuccess](#vibrateshortsuccess-values)) => void | 否 | Web: x; 支付宝小程序: x |
-| fail | (result: [VibrateShortFail](#vibrateshortfail-values)) => void | 否 | Web: x; 支付宝小程序: x |
-| complete | (result: [VibrateShortSuccess](#vibrateshortsuccess-values) \| [VibrateShortFail](#vibrateshortfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 
+| type | string | 是 | Web: x |
+| success | (result: [VibrateShortSuccess](#vibrateshortsuccess-values)) => void | 否 | Web: x |
+| fail | (result: [VibrateShortFail](#vibrateshortfail-values)) => void | 否 | Web: x |
+| complete | (result: [VibrateShortSuccess](#vibrateshortsuccess-values) \| [VibrateShortFail](#vibrateshortfail-values)) => void | 否 | Web: x | 
 
 ##### type 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| heavy | Web: x; 支付宝小程序: x |
-| medium | Web: x; 支付宝小程序: x |
-| light | Web: x; 支付宝小程序: x |
+| heavy | Web: x |
+| medium | Web: x |
+| light | Web: x |
 
 #### VibrateShortSuccess 的属性值 @vibrateshortsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |
+| errMsg | string | 是 | Web: x |
 
 #### VibrateShortFail 的属性值 @vibrateshortfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x |  |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| 9001001 | Web: x; 支付宝小程序: x |
-| 9001002 | Web: x; 支付宝小程序: x |
-| 9001003 | Web: x; 支付宝小程序: x |
+| 9001001 | Web: x |
+| 9001002 | Web: x |
+| 9001003 | Web: x |
 
 #### VibrateShortSuccess 的属性值 @vibrateshortsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |
+| errMsg | string | 是 | Web: x |
 
 #### VibrateShortFail 的属性值 @vibrateshortfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x |  |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| 9001001 | Web: x; 支付宝小程序: x |
-| 9001002 | Web: x; 支付宝小程序: x |
-| 9001003 | Web: x; 支付宝小程序: x |
+| 9001001 | Web: x |
+| 9001002 | Web: x |
+| 9001003 | Web: x |
 
 
 
@@ -115,70 +115,70 @@
 ### vibrateLong 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **VibrateLongOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **VibrateLongOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| success | (result: [VibrateLongSuccess](#vibratelongsuccess-values)) => void | 否 | Web: x; 支付宝小程序: x |
-| fail | (result: [VibrateLongFail](#vibratelongfail-values)) => void | 否 | Web: x; 支付宝小程序: x |
-| complete | (result: [VibrateLongSuccess](#vibratelongsuccess-values) \| [VibrateLongFail](#vibratelongfail-values)) => void | 否 | Web: x; 支付宝小程序: x | 
+| success | (result: [VibrateLongSuccess](#vibratelongsuccess-values)) => void | 否 | Web: x |
+| fail | (result: [VibrateLongFail](#vibratelongfail-values)) => void | 否 | Web: x |
+| complete | (result: [VibrateLongSuccess](#vibratelongsuccess-values) \| [VibrateLongFail](#vibratelongfail-values)) => void | 否 | Web: x | 
 
 #### VibrateLongSuccess 的属性值 @vibratelongsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |
+| errMsg | string | 是 | Web: x |
 
 #### VibrateLongFail 的属性值 @vibratelongfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x |  |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| 9001001 | Web: x; 支付宝小程序: x |
-| 9001002 | Web: x; 支付宝小程序: x |
-| 9001003 | Web: x; 支付宝小程序: x |
+| 9001001 | Web: x |
+| 9001002 | Web: x |
+| 9001003 | Web: x |
 
 #### VibrateLongSuccess 的属性值 @vibratelongsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |
+| errMsg | string | 是 | Web: x |
 
 #### VibrateLongFail 的属性值 @vibratelongfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x |  |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| 9001001 | Web: x; 支付宝小程序: x |
-| 9001002 | Web: x; 支付宝小程序: x |
-| 9001003 | Web: x; 支付宝小程序: x |
+| 9001001 | Web: x |
+| 9001002 | Web: x |
+| 9001003 | Web: x |
 
 
 
@@ -306,4 +306,4 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |

@@ -18,8 +18,8 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 | speed | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 速度，浮点数，单位m/s |
 | accuracy | number | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 位置的精确度 |
 | altitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 高度，单位 m |
@@ -73,8 +73,8 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 | speed | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 速度，浮点数，单位m/s |
 | accuracy | number | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 位置的精确度 |
 | altitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 高度，单位 m |
@@ -855,4 +855,4 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |

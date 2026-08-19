@@ -5,22 +5,22 @@
 ### onCompassChange 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 |
+| 4.0 | 4.41 | 5.25 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| callback | (result: [OnCompassChangeCallbackResult](#oncompasschangecallbackresult-values)) => void | 是 | 支付宝小程序: x | 罗盘数据变化事件的监听函数 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | (result: [OnCompassChangeCallbackResult](#oncompasschangecallbackresult-values)) => void | 是 | 罗盘数据变化事件的监听函数 | 
 
 ### OnCompassChangeCallbackResult 的属性值 @oncompasschangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| direction | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 面对的方向度数 |
-| accuracy | number \| string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 精度 |
-| errMsg | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| direction | number | 是 | 微信小程序: 4.41; 支付宝小程序: - | 面对的方向度数 |
+| accuracy | number \| string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 精度 |
+| errMsg | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 
 
 
@@ -48,22 +48,22 @@
 ### offCompassChange 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 |
+| 4.0 | 4.41 | 5.25 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| callback | (result: [OnCompassChangeCallbackResult](#oncompasschangecallbackresult-values)) => void | 否 | 支付宝小程序: x | onCompassChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | (result: [OnCompassChangeCallbackResult](#oncompasschangecallbackresult-values)) => void | 否 | onCompassChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
 
 ### OnCompassChangeCallbackResult 的属性值 @oncompasschangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| direction | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 面对的方向度数 |
-| accuracy | number \| string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 精度 |
-| errMsg | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| direction | number | 是 | 微信小程序: 4.41; 支付宝小程序: - | 面对的方向度数 |
+| accuracy | number \| string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 精度 |
+| errMsg | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
 
 
 
@@ -92,98 +92,98 @@
 ### startCompass 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| 4.0 | 4.41 | 5.25 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| options | **StartCompassOptions** | 否 | 支付宝小程序: x | 开始监听罗盘数据的参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **StartCompassOptions** | 否 | 开始监听罗盘数据的参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: [StartCompassSuccess](#startcompasssuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 开始监听罗盘数据调用成功的回调函数 |
-| fail | (res: [StartCompassFail](#startcompassfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 开始监听罗盘数据调用失败的回调函数 |
-| complete | (res: [StartCompassSuccess](#startcompasssuccess-values) \| [StartCompassFail](#startcompassfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 开始监听罗盘数据调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: [StartCompassSuccess](#startcompasssuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 开始监听罗盘数据调用成功的回调函数 |
+| fail | (res: [StartCompassFail](#startcompassfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 开始监听罗盘数据调用失败的回调函数 |
+| complete | (res: [StartCompassSuccess](#startcompasssuccess-values) \| [StartCompassFail](#startcompassfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 开始监听罗盘数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StartCompassSuccess 的属性值 @startcompasssuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 否 | 支付宝小程序: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StartCompassFail 的属性值 @startcompassfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x |  |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| 501 | 支付宝小程序: x |
-| 502 | 支付宝小程序: x |
-| 503 | 支付宝小程序: x |
-| 504 | 支付宝小程序: x |
-| 601 | 支付宝小程序: x |
-| 602 | 支付宝小程序: x |
-| 603 | 支付宝小程序: x |
-| 604 | 支付宝小程序: x |
-| 701 | 支付宝小程序: x |
-| 702 | 支付宝小程序: x |
-| 703 | 支付宝小程序: x |
-| 704 | 支付宝小程序: x |
-| 801 | 支付宝小程序: x |
-| 802 | 支付宝小程序: x |
-| 803 | 支付宝小程序: x |
-| 804 | 支付宝小程序: x |
-| 901 | 支付宝小程序: x |
+| 合法值 |
+| :- |
+| 501 |
+| 502 |
+| 503 |
+| 504 |
+| 601 |
+| 602 |
+| 603 |
+| 604 |
+| 701 |
+| 702 |
+| 703 |
+| 704 |
+| 801 |
+| 802 |
+| 803 |
+| 804 |
+| 901 |
 
 #### StartCompassSuccess 的属性值 @startcompasssuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 否 | 支付宝小程序: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StartCompassFail 的属性值 @startcompassfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x |  |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| 501 | 支付宝小程序: x |
-| 502 | 支付宝小程序: x |
-| 503 | 支付宝小程序: x |
-| 504 | 支付宝小程序: x |
-| 601 | 支付宝小程序: x |
-| 602 | 支付宝小程序: x |
-| 603 | 支付宝小程序: x |
-| 604 | 支付宝小程序: x |
-| 701 | 支付宝小程序: x |
-| 702 | 支付宝小程序: x |
-| 703 | 支付宝小程序: x |
-| 704 | 支付宝小程序: x |
-| 801 | 支付宝小程序: x |
-| 802 | 支付宝小程序: x |
-| 803 | 支付宝小程序: x |
-| 804 | 支付宝小程序: x |
-| 901 | 支付宝小程序: x |
+| 合法值 |
+| :- |
+| 501 |
+| 502 |
+| 503 |
+| 504 |
+| 601 |
+| 602 |
+| 603 |
+| 604 |
+| 701 |
+| 702 |
+| 703 |
+| 704 |
+| 801 |
+| 802 |
+| 803 |
+| 804 |
+| 901 |
 
 
 
@@ -212,98 +212,98 @@
 ### stopCompass 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| 4.0 | 4.41 | 5.25 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| options | **StopCompassOptions** | 否 | 支付宝小程序: x | 停止监听罗盘数据的参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **StopCompassOptions** | 否 | 停止监听罗盘数据的参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: [StopCompassSuccess](#stopcompasssuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 停止监听罗盘数据调用成功的回调函数 |
-| fail | (res: [StopCompassFail](#stopcompassfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 停止监听罗盘数据调用失败的回调函数 |
-| complete | (res: [StopCompassSuccess](#stopcompasssuccess-values) \| [StopCompassFail](#stopcompassfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 停止监听罗盘数据调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: [StopCompassSuccess](#stopcompasssuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 停止监听罗盘数据调用成功的回调函数 |
+| fail | (res: [StopCompassFail](#stopcompassfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 停止监听罗盘数据调用失败的回调函数 |
+| complete | (res: [StopCompassSuccess](#stopcompasssuccess-values) \| [StopCompassFail](#stopcompassfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 停止监听罗盘数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StopCompassSuccess 的属性值 @stopcompasssuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 否 | 支付宝小程序: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StopCompassFail 的属性值 @stopcompassfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x |  |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| 501 | 支付宝小程序: x |
-| 502 | 支付宝小程序: x |
-| 503 | 支付宝小程序: x |
-| 504 | 支付宝小程序: x |
-| 601 | 支付宝小程序: x |
-| 602 | 支付宝小程序: x |
-| 603 | 支付宝小程序: x |
-| 604 | 支付宝小程序: x |
-| 701 | 支付宝小程序: x |
-| 702 | 支付宝小程序: x |
-| 703 | 支付宝小程序: x |
-| 704 | 支付宝小程序: x |
-| 801 | 支付宝小程序: x |
-| 802 | 支付宝小程序: x |
-| 803 | 支付宝小程序: x |
-| 804 | 支付宝小程序: x |
-| 901 | 支付宝小程序: x |
+| 合法值 |
+| :- |
+| 501 |
+| 502 |
+| 503 |
+| 504 |
+| 601 |
+| 602 |
+| 603 |
+| 604 |
+| 701 |
+| 702 |
+| 703 |
+| 704 |
+| 801 |
+| 802 |
+| 803 |
+| 804 |
+| 901 |
 
 #### StopCompassSuccess 的属性值 @stopcompasssuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 否 | 支付宝小程序: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StopCompassFail 的属性值 @stopcompassfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x |  |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| 501 | 支付宝小程序: x |
-| 502 | 支付宝小程序: x |
-| 503 | 支付宝小程序: x |
-| 504 | 支付宝小程序: x |
-| 601 | 支付宝小程序: x |
-| 602 | 支付宝小程序: x |
-| 603 | 支付宝小程序: x |
-| 604 | 支付宝小程序: x |
-| 701 | 支付宝小程序: x |
-| 702 | 支付宝小程序: x |
-| 703 | 支付宝小程序: x |
-| 704 | 支付宝小程序: x |
-| 801 | 支付宝小程序: x |
-| 802 | 支付宝小程序: x |
-| 803 | 支付宝小程序: x |
-| 804 | 支付宝小程序: x |
-| 901 | 支付宝小程序: x |
+| 合法值 |
+| :- |
+| 501 |
+| 502 |
+| 503 |
+| 504 |
+| 601 |
+| 602 |
+| 603 |
+| 604 |
+| 701 |
+| 702 |
+| 703 |
+| 704 |
+| 801 |
+| 802 |
+| 803 |
+| 804 |
+| 901 |
 
 
 
@@ -648,4 +648,4 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
