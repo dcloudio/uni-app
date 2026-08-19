@@ -363,7 +363,7 @@ export interface Uni {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "x"
+   *      "unixVer": "5.25"
    *    },
    *    "baidu": {
    *      "hostVer": "√",
