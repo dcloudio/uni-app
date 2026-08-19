@@ -1852,6 +1852,9 @@ importers:
       '@vue/shared':
         specifier: 'catalog:'
         version: 3.4.21
+      jimp:
+        specifier: 'catalog:'
+        version: 0.10.3
     devDependencies:
       mini-types:
         specifier: ^0.1.7
