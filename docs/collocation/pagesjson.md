@@ -62,9 +62,9 @@ globalStyle节点里是所有页面都生效的全局样式配置。它的配置
 | onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
-| titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
-| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
-| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
+| titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
+| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
+| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
 | pageOrientation | 'auto' \| 'portrait' \| 'landscape' | "portrait" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.13; iOS: 4.25; HarmonyOS: 4.61 | 横屏配置，屏幕旋转设置，仅支持 auto / portrait / landscape 详见 [响应显示区域变化](https://uniapp.dcloud.net.cn/collocation/pages.html#globalstyle)。 |
 | hideStatusBar | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统顶部状态栏 |
 | hideBottomNavigationIndicator | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: x | 是否隐藏系统底部导航栏 |
@@ -297,9 +297,9 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | disableSwipeBack | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 4.18; HarmonyOS: x | 是否禁用右滑手势关闭页面 |
 | swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
-| titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
-| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
-| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
+| titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
+| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
+| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
 | enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 | app-plus | [app-plus 配置项列表](#style-app-plus) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 编译到 App 平台的特定样式 |
 | h5 | [h5 配置项列表](#style-h5) |  | 否 |   | 编译到 H5 平台的特定样式 |
@@ -717,9 +717,9 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 | backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | disableSwipeBack | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 4.18; HarmonyOS: x | 是否禁用右滑手势关闭页面 |
 | swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
-| titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
-| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
-| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
+| titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
+| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
+| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
 | enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 | app-plus | [app-plus 配置项列表](#style-app-plus) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 编译到 App 平台的特定样式 |
 | h5 | [h5 配置项列表](#style-h5) |  | 否 |   | 编译到 H5 平台的特定样式 |
