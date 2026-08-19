@@ -9,7 +9,7 @@
 3. `Language`选择为`Objective-C`，点击`Next`即可完成创建
 
 ## 插件工程环境配置
-1.  `Target -> General -> Minimum Deployments` 选择 `13.0`
+1.  `Target -> General -> Minimum Deployments` 选择 `15.0`
 2.  `Target -> Build Settings -> Mach-O Type` 设置为`Dynamic Library`
 3.  `Target -> Build Settings -> Other Linker Flags` 中添加`-ObjC`, 字母o和c大写
  4. `Target -> Build Settings -> Build Libraries for Distribution` 设置为`YES`

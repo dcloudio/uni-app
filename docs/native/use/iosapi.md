@@ -1,7 +1,7 @@
 > * SDK基于Swift开发，因此原生Objective-C语言开发的应用需要新建一个Swift文件用于添加Swift运行环境以及桥接SDK的API，详情可参考UniAppXDemo工程中的`UniAppBridge`
 
 - **SDK 4.81+**：使用新的 UniAppXSDK API（推荐）
-- **SDK 4.81 之前**：使用旧的 UniSDKEngine API
+- **SDK 4.81 之前**：使用旧的 UniSDKEngine API， 蒸汽模式不支持旧API
 
 ## SDK 4.81+ 新 API（推荐）
 
@@ -330,4 +330,5 @@ NotificationCenter.default.post(name = notificationName, object = null, userInfo
 > 注意：消息接收方必须在发送通知前添加监听事件，否则收不到消息 
 
 ### 运行示例
-`UniAppXDemo`工程中，`__UNI__00DC103`为通信示例资源文件，将`Info.plist`中`uniapp-x`节点下的`appid`改为`__UNI__00DC103`，并添加`unimoduleTestIosNotification.xcframework`依赖，即可体验通信示例
+- 蒸汽模式 SDK工程 `UniAppXVaporDemo` 中，`unimoduleTesIosNotification` 为 UTS 插件，用于演示通信示例，UniAppXSample 为对应的 uni-app-x 源码示例工程
+- VDOM 模式SDK工程 `UniAppXDemo`工程中，`__UNI__00DC103`为通信示例资源文件，将`Info.plist`中`uniapp-x`节点下的`appid`改为`__UNI__00DC103`，并添加`unimoduleTestIosNotification.xcframework`依赖，即可体验通信示例

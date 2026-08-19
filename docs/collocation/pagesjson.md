@@ -60,8 +60,8 @@ globalStyle节点里是所有页面都生效的全局样式配置。它的配置
 | backgroundTextStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "dark" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 下拉 loading 的样式，仅支持 dark / light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
-| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
-| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
 | transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
 | titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
@@ -87,8 +87,8 @@ globalStyle节点里是所有页面都生效的全局样式配置。它的配置
 | enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 | app-plus | [app-plus 配置项列表](#globalstyle-app-plus) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 5+ App 特有配置 |
 | h5 | [h5 配置项列表](#globalstyle-h5) |  | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | H5 特有配置 |
-| mp-alipay | [mp-alipay 配置项列表](#globalstyle-mp-alipay) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
-| mp-weixin | [mp-weixin 配置项列表](#globalstyle-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
+| mp-alipay | [mp-alipay 配置项列表](#globalstyle-mp-alipay) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
+| mp-weixin | [mp-weixin 配置项列表](#globalstyle-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
 | mp-baidu | [mp-baidu 配置项列表](#globalstyle-mp-baidu) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 百度小程序特有配置 |
 | mp-toutiao | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 头条小程序特有配置 |
 | mp-qq | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | QQ小程序特有配置 |
@@ -192,7 +192,7 @@ H5 特有配置
 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.25 | x | x | x |
+| x | 4.41 | x | x | x | x |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -293,8 +293,8 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | androidThreeButtonNavigationTranslucent | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: x; HarmonyOS: x | 页面内容是否可以渲染到虚拟按键区域 |
 | androidThreeButtonNavigationBackgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.51; iOS: x; HarmonyOS: x | 虚拟按键区域背景色 |
 | androidThreeButtonNavigationStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 虚拟按键区域前景色 |
-| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
-| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | disableSwipeBack | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 4.18; HarmonyOS: x | 是否禁用右滑手势关闭页面 |
 | swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
 | titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
@@ -303,8 +303,8 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 | app-plus | [app-plus 配置项列表](#style-app-plus) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 编译到 App 平台的特定样式 |
 | h5 | [h5 配置项列表](#style-h5) |  | 否 |   | 编译到 H5 平台的特定样式 |
-| mp-alipay | [mp-alipay 配置项列表](#style-mp-alipay) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
-| mp-weixin | [mp-weixin 配置项列表](#style-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
+| mp-alipay | [mp-alipay 配置项列表](#style-mp-alipay) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
+| mp-weixin | [mp-weixin 配置项列表](#style-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
 | mp-baidu | [mp-baidu 配置项列表](#style-mp-baidu) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 百度小程序特有配置 |
 | mp-toutiao | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 头条小程序特有配置 |
 | mp-qq | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | QQ小程序特有配置 |
@@ -390,7 +390,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.25 | x | x | x |
+| x | 4.41 | x | x | x | x |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -713,8 +713,8 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 | androidThreeButtonNavigationTranslucent | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: x; HarmonyOS: x | 页面内容是否可以渲染到虚拟按键区域 |
 | androidThreeButtonNavigationBackgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.51; iOS: x; HarmonyOS: x | 虚拟按键区域背景色 |
 | androidThreeButtonNavigationStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 虚拟按键区域前景色 |
-| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
-| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | disableSwipeBack | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 4.18; HarmonyOS: x | 是否禁用右滑手势关闭页面 |
 | swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
 | titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
@@ -723,8 +723,8 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 | enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 | app-plus | [app-plus 配置项列表](#style-app-plus) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 编译到 App 平台的特定样式 |
 | h5 | [h5 配置项列表](#style-h5) |  | 否 |   | 编译到 H5 平台的特定样式 |
-| mp-alipay | [mp-alipay 配置项列表](#style-mp-alipay) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
-| mp-weixin | [mp-weixin 配置项列表](#style-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
+| mp-alipay | [mp-alipay 配置项列表](#style-mp-alipay) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
+| mp-weixin | [mp-weixin 配置项列表](#style-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
 | mp-baidu | [mp-baidu 配置项列表](#style-mp-baidu) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 百度小程序特有配置 |
 | mp-toutiao | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 头条小程序特有配置 |
 | mp-qq | object |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | QQ小程序特有配置 |
