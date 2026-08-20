@@ -140,7 +140,7 @@ export const options: UniMiniProgramPluginOptions = {
       allowsBounceVertical: 'allowsBounceVertical',
       titleBarColor: 'navigationBarBackgroundColor',
       optionMenu: 'optionMenu',
-      backgroundColor: 'backgroundColor',
+      backgroundColor: ['backgroundColorContent', 'backgroundColor'], // https://opendocs.alipay.com/mini/framework/app-json?pathHash=1bcdd448#window
       usingComponents: 'usingComponents',
       navigationBarShadow: 'navigationBarShadow',
       titleImage: 'titleImage',
