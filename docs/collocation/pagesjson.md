@@ -196,14 +196,14 @@ H5 特有配置
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| homeButton | boolean | false | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 在非首页、非页面栈最底层页面或非tabbar内页面中的导航栏展示home键 |
-| backgroundColorTop | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
-| backgroundColorBottom | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
-| restartStrategy | 'homePage' \| 'homePageAndLatestPage' | "homePage" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 重新启动策略配置。支持 homePage / homePageAndLatestPage |
-| initialRenderingCache | 'static' \| 'dynamic' |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 页面初始渲染缓存配置。支持 static / dynamic |
-| visualEffectInBackground | 'none' \| 'hidden' | "none" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 切入系统后台时，隐藏页面内容，保护用户隐私。支持 hidden / none |
-| handleWebviewPreload | 'static' \| 'manual' \| 'none' | "static" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 控制预加载下个页面的时机。支持 static / manual / auto |
-| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
+| homeButton | boolean | false | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 在非首页、非页面栈最底层页面或非tabbar内页面中的导航栏展示home键 |
+| backgroundColorTop | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
+| backgroundColorBottom | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
+| restartStrategy | 'homePage' \| 'homePageAndLatestPage' | "homePage" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 重新启动策略配置。支持 homePage / homePageAndLatestPage |
+| initialRenderingCache | 'static' \| 'dynamic' |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 页面初始渲染缓存配置。支持 static / dynamic |
+| visualEffectInBackground | 'none' \| 'hidden' | "none" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 切入系统后台时，隐藏页面内容，保护用户隐私。支持 hidden / none |
+| handleWebviewPreload | 'static' \| 'manual' \| 'none' | "static" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 控制预加载下个页面的时机。支持 static / manual / auto |
+| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 
 ### pages 配置项列表 @pagesoptionspage
 
@@ -394,14 +394,14 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| homeButton | boolean | false | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 在非首页、非页面栈最底层页面或非tabbar内页面中的导航栏展示home键 |
-| backgroundColorTop | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
-| backgroundColorBottom | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
-| restartStrategy | 'homePage' \| 'homePageAndLatestPage' | "homePage" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 重新启动策略配置。支持 homePage / homePageAndLatestPage |
-| initialRenderingCache | 'static' \| 'dynamic' |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 页面初始渲染缓存配置。支持 static / dynamic |
-| visualEffectInBackground | 'none' \| 'hidden' | "none" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 切入系统后台时，隐藏页面内容，保护用户隐私。支持 hidden / none |
-| handleWebviewPreload | 'static' \| 'manual' \| 'none' | "static" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 控制预加载下个页面的时机。支持 static / manual / auto |
-| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
+| homeButton | boolean | false | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 在非首页、非页面栈最底层页面或非tabbar内页面中的导航栏展示home键 |
+| backgroundColorTop | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
+| backgroundColorBottom | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
+| restartStrategy | 'homePage' \| 'homePageAndLatestPage' | "homePage" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 重新启动策略配置。支持 homePage / homePageAndLatestPage |
+| initialRenderingCache | 'static' \| 'dynamic' |  | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 页面初始渲染缓存配置。支持 static / dynamic |
+| visualEffectInBackground | 'none' \| 'hidden' | "none" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 切入系统后台时，隐藏页面内容，保护用户隐私。支持 hidden / none |
+| handleWebviewPreload | 'static' \| 'manual' \| 'none' | "static" | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 控制预加载下个页面的时机。支持 static / manual / auto |
+| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 
 
 ### tabBar 配置项列表 @pages-tabbar
