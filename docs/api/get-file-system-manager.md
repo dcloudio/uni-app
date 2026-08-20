@@ -775,9 +775,15 @@ getSavedFileList
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: GetSavedFileListResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| success | (res: [GetSavedFileListResult](#getsavedfilelistresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+###### GetSavedFileListResult 的属性值 @getsavedfilelistresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| fileList | Array&lt;string&gt; | 是 | Web: x | 文件数组。自 `4.71` 起，返回 `unifile://` 协议的路径<br/>返回 `unifile://cache/uni-store/` (uni.env.CACHE_PATH/uni-store/) 目录中的文件列表 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
@@ -1353,6 +1359,7 @@ readZipEntry
 | :- | :- | :- |  :-: | :- |
 | filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的压缩包的路径 (本地路径)，app-android平台支持代码包文件目录 |
 | encoding | string | 否 | Web: x | 统一指定读取文件的字符编码，只在 entries 值为"all"时有效。<br/>4.31及以后版本如果 entries 值为 null 且不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
+| entries | Array&lt;string&gt; | 否 | Web: x | 要读取的压缩包内的文件列表（当不传入时表示读取压缩包内所有文件） |
 | success | (res: [EntriesResult](#entriesresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -1849,9 +1856,15 @@ stat
 | :- | :- | :- |  :-: | :- |
 | path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件/目录路径 (本地路径) |
 | recursive | boolean | 是 | Web: x | 是否递归获取目录下的每个文件的 Stats 信息 |
-| success | (res: StatSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| success | (res: [StatSuccessResult](#statsuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+###### StatSuccessResult 的属性值 @statsuccessresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| stats | Array&lt;string&gt; | 是 | Web: x | 微信小程序规则：当 recursive 为 false 时，res.stats 是一个 Stats 对象。当 recursive 为 true 且 path 是一个目录的路径时，res.stats 是一个 Array，数组的每一项是一个对象，每个对象包含 path 和 stats<br/>uniapp-x规则为避免返回值是联合类型，均返回数组，具体优化如下：<br/>-—— 当 path = 文件路径，返回数组，仅包含本身stats，返回 stats.path= ""<br/>-—— 当 path = 目录路径 && recursive = false，返回数组，仅包含本身stats，返回 stats.path= "/"<br/>-—— 当 path = 目录路径 && recursive = true，返回数组，包含本身stats和其递归子文件stats和目录文件stats |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
@@ -2847,9 +2860,15 @@ isFile
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (res: GetSavedFileListResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| success | (res: [GetSavedFileListResult](#getsavedfilelistresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+###### GetSavedFileListResult 的属性值 @getsavedfilelistresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| fileList | Array&lt;string&gt; | 是 | Web: x | 文件数组。自 `4.71` 起，返回 `unifile://` 协议的路径<br/>返回 `unifile://cache/uni-store/` (uni.env.CACHE_PATH/uni-store/) 目录中的文件列表 |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
@@ -3224,6 +3243,7 @@ isFile
 | :- | :- | :- |  :-: | :- |
 | filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的压缩包的路径 (本地路径)，app-android平台支持代码包文件目录 |
 | encoding | string | 否 | Web: x | 统一指定读取文件的字符编码，只在 entries 值为"all"时有效。<br/>4.31及以后版本如果 entries 值为 null 且不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 |
+| entries | Array&lt;string&gt; | 否 | Web: x | 要读取的压缩包内的文件列表（当不传入时表示读取压缩包内所有文件） |
 | success | (res: [EntriesResult](#entriesresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
@@ -3544,9 +3564,15 @@ isFile
 | :- | :- | :- |  :-: | :- |
 | path | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件/目录路径 (本地路径) |
 | recursive | boolean | 是 | Web: x | 是否递归获取目录下的每个文件的 Stats 信息 |
-| success | (res: StatSuccessResult) => void | 否 | Web: x | 接口调用的回调函数 |
+| success | (res: [StatSuccessResult](#statsuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
 | complete | (res: any) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+###### StatSuccessResult 的属性值 @statsuccessresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| stats | Array&lt;string&gt; | 是 | Web: x | 微信小程序规则：当 recursive 为 false 时，res.stats 是一个 Stats 对象。当 recursive 为 true 且 path 是一个目录的路径时，res.stats 是一个 Array，数组的每一项是一个对象，每个对象包含 path 和 stats<br/>uniapp-x规则为避免返回值是联合类型，均返回数组，具体优化如下：<br/>-—— 当 path = 文件路径，返回数组，仅包含本身stats，返回 stats.path= ""<br/>-—— 当 path = 目录路径 && recursive = false，返回数组，仅包含本身stats，返回 stats.path= "/"<br/>-—— 当 path = 目录路径 && recursive = true，返回数组，包含本身stats和其递归子文件stats和目录文件stats |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 

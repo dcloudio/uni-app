@@ -20,9 +20,18 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: RequestSystemPermissionSuccess) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x | 申请系统权限成功回调 |
+| permissions | Array&lt;string&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x | 申请的系统权限列表 |
+| success | (result: [RequestSystemPermissionSuccess](#requestsystempermissionsuccess-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x | 申请系统权限成功回调 |
 | fail | (result: [RequestSystemPermissionFail](#requestsystempermissionfail-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x |  |
 | complete | (result: any) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x |  | 
+
+#### RequestSystemPermissionSuccess 的属性值 @requestsystempermissionsuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| grantedList | Array&lt;string&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x | 已授权权限列表，仅包含当前系统支持的权限 |
+| deniedList | Array&lt;string&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x | 已拒绝权限列表 |
+| doNotAskAgainList | Array&lt;string&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x | 不在询问权限列表 |
 
 #### RequestSystemPermissionFail 的属性值 @requestsystempermissionfail-values 
 

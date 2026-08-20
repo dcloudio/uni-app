@@ -33,6 +33,7 @@
 | url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器 url |
 | filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 要上传文件资源的路径, 支持uni.env |
 | name | string | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容 |
+| files | Array&lt;string&gt; | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 需要上传的文件列表。 |
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | HTTP 请求 Header, header 中不能设置 Referer |
 | formData | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | HTTP 请求中其他额外的 form data |
 | timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |

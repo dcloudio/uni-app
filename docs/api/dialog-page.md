@@ -84,7 +84,7 @@ APP 蒸汽模式注意事项：
 | animationType | string | 否 | none | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 窗口显示的动画类型<br/> |
 | animationDuration | number | 否 |  | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 窗口关闭动画的持续时间，单位为 ms |
 | disableEscBack | boolean | 否 | false | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否禁用按键盘 ESC 时关闭 |
-| parentPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 要绑定的父级页面实例 |
+| parentPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要绑定的父级页面实例 |
 | triggerParentHide | boolean | 否 | false | Web: 4.41; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 是否触发父页面的 onHide 生命周期 |
 | success | (result: [OpenDialogPageSuccess](#opendialogpagesuccess-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
 | fail | (result: [OpenDialogPageFail](#opendialogpagefail-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
@@ -185,7 +185,7 @@ APP 蒸汽模式注意事项：
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| dialogPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 要关闭的 dialogPage 实例 |
+| dialogPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要关闭的 dialogPage 实例 |
 | animationType | string | 否 | auto | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 窗口关闭的动画类型<br/> |
 | animationDuration | number | 否 |  | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 窗口关闭动画的持续时间，单位为 ms |
 | success | (result: [CloseDialogPageSuccess](#closedialogpagesuccess-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 接口调用成功的回调函数 |

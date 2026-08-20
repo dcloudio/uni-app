@@ -109,7 +109,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| loadingPage | [UniPage](/api/unipage.md) | 否 | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 期望隐藏的目标LoadingPage 如果为null 会关闭当前栈顶全部LoadingPage |
+| loadingPage | [UniPage](/api/unipage.md) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 期望隐藏的目标LoadingPage 如果为null 会关闭当前栈顶全部LoadingPage |
 | success | (res: [HideLoadingSuccess](#hideloadingsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.hideLoading成功回调函数定义 |
 | fail | (res: [HideLoadingFail](#hideloadingfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.hideLoading失败回调函数定义 |
 | complete | (res: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.hideLoading完成回调函数定义 |
