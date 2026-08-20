@@ -117,7 +117,7 @@ iOS原生自身的优化做的很好，都通过AOT编译为了机器码。Swift
 
 **视频体验：** 
 - [原生UIKit与uni蒸汽4050真机对比视频](https://www.bilibili.com/video/BV1ApMt66Eez)。左边为`UIKit原生`，右边为`uni-app x 蒸汽模式`。
-- [SwiftUI与uni蒸汽4050真机对比视频](https://www.bilibili.com/video/BV1LiGX6kEFA)。左边为`UIKit原生`，右边为`uni-app x 蒸汽模式`。
+- [SwiftUI与uni蒸汽4050真机对比视频](https://www.bilibili.com/video/BV1LiGX6kEFA)。左边为`SwiftUI`，右边为`uni-app x 蒸汽模式`。
 
 **测试结论：** 不同设备的差异倍数不同，以iPhone SE2(iOS26.5)为例，在创建view和text的速度对比中，`uni-app x蒸汽模式`比UIKit快2倍、比SwiftUI快2.43倍。
 而iPhoneXR(iOS18.5)上，SwiftUI表现更差，速度比`uni-app x蒸汽模式`慢3.3倍。
