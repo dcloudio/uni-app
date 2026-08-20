@@ -22,7 +22,7 @@
 |高德		|√	|√			|√		|x			|
 |Google	|√	|x			|x		|x			|
 
-App标准基座里地图是腾讯地图，如需高德地图版本，请在插件市场单独安装，需要自定义基座运行：[官方高德地图插件](https://ext.dcloud.net.cn/plugin?id=25947)。该插件基于独立的 `<amap>` 组件实现，与内置 map 组件存在功能差异：属性、事件、上下文 API 均为内置 map 的子集，且暂不支持 Harmony 平台，详见[高德地图插件功能差异](#高德地图amap)。
+App标准基座里地图是腾讯地图，如需高德地图版本，请在插件市场单独安装，需要自定义基座运行：[官方高德地图插件](https://ext.dcloud.net.cn/plugin?id=25947)。该插件基于独立的 `<amap>` 组件实现，与内置 map 组件存在功能差异：属性、事件、上下文 API 均为内置 map 的子集，且暂不支持 Harmony 平台，详见[高德地图插件功能差异](#amap)。
 
 除了内置支持的图商，还可以在插件市场寻找更多地图解决方案：
 1. [插件市场的三方地图插件](https://ext.dcloud.net.cn/search?q=%E5%9C%B0%E5%9B%BE&orderBy=Relevance&uni-appx=1)
