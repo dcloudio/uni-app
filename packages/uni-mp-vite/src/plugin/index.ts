@@ -51,7 +51,7 @@ export interface UniMiniProgramPluginOptions {
   }
   global: string
   json?: {
-    windowOptionsMap?: Record<string, string>
+    windowOptionsMap?: Record<string, string | string[]>
     tabBarOptionsMap?: Record<string, string>
     tabBarItemOptionsMap?: Record<string, string>
     formatAppJson?: (
