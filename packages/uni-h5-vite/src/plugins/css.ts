@@ -32,7 +32,6 @@ export function uniCssPlugin(): Plugin {
   let isInternational = false
   return {
     name: 'uni:h5-css',
-    apply: 'build',
     enforce: 'pre',
     configResolved(config) {
       resolvedConfig = config
@@ -70,7 +69,10 @@ export function uniCssPlugin(): Plugin {
     },
     transform(code, id) {
       id = normalizePath(id)
-      if (id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'shadow.css')) {
+      if (
+        id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'shadow.css') &&
+        process.env.NODE_ENV !== 'development'
+      ) {
         const url = createShadowImageUrl(0, 'grey', isInternational)
         return {
           code:
