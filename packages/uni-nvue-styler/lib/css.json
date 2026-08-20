@@ -3,27 +3,26 @@
   "properties": [
     {
       "name": "backdrop-filter",
+      "description": "backdrop-filter 属性设置元素的背景滤镜效果，即对其后方（背景透出）的所有内容添加图形效果（如模糊、颜色偏移、对比度调整等）。为了看到效果，必须使元素或其背景至少部分透明。",
       "values": [
         {
           "name": "none",
+          "description": "清除/禁用背景滤镜效果",
           "uniPlatform": {
             "app": {
               "android": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               },
               "ios": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               },
               "harmony": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               }
             },
@@ -41,24 +40,22 @@
         },
         {
           "name": "blur()",
+          "description": "对背景内容添加高斯模糊（Gaussian Blur）滤镜效果",
           "uniPlatform": {
             "app": {
               "android": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               },
               "ios": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               },
               "harmony": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               }
             },
@@ -78,21 +75,18 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "-",
             "uniVer": "√",
-            "unixVer": "-",
+            "unixVer": "x",
             "unixVaporVer": "5.25"
           },
           "ios": {
-            "osVer": "-",
             "uniVer": "√",
-            "unixVer": "-",
+            "unixVer": "x",
             "unixVaporVer": "5.25"
           },
           "harmony": {
-            "osVer": "-",
             "uniVer": "√",
-            "unixVer": "-",
+            "unixVer": "x",
             "unixVaporVer": "5.25"
           }
         },
