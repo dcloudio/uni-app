@@ -17,8 +17,9 @@
   * [隐私信息授权](privacy.md)
 * 页面和路由
   * [UniPage](unipage.md)
-  * [页面跳转](navigator.md)
   * [dialogPage](dialog-page.md)
+  * [页面跳转](navigator.md)
+  * [路由事件](route.md)
   * [设置导航条颜色](set-navigation-bar-color.md)
   * [设置导航条标题](set-navigation-bar-title.md)
   * [设置导航条loading](navigator-bar-loading.md)
