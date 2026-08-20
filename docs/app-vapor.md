@@ -193,7 +193,7 @@ Android的测试非常复杂，因为核调度策略、jit均不透明，很容�
 | uni-app x蒸汽模式	|97.97		|
 | ArkUI							|21.13		|
 
-iOS选择了2台设备，一台为iPhone SE2(iOS26.5)，iOS设备不支持高刷，最大帧率为60。另一台iPhone16PM(iOS26.5)，支持120高刷。
+iOS选择了2台设备，一台为iPhone SE2(iOS26.5)，iPhone SE2不支持高刷，最大帧率为60。另一台iPhone16PM(iOS26.5)，支持120高刷。
 
 | iPhone SE2 iOS26.5 无高刷| 平均帧率	|
 |---								|---:			|
