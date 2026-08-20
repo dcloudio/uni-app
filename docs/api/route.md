@@ -122,12 +122,12 @@ onBeforeAppRoute -> onShow -> onAppRoute
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面路径，不包含开头的斜杠 |
-| query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面参数 |
-| openType | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 应用路由类型。 |
-| notFound | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面是否不存在 |
-| timeStamp | number | 是 | 微信小程序: 4.41; 支付宝小程序: - | 事件触发时的时间戳 |
-| routeEventId | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由事件唯一标识 |
+| path | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面路径，不包含开头的斜杠 |
+| query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面参数 |
+| openType | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 应用路由类型。 |
+| notFound | boolean | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面是否不存在。支付宝小程序不提供该信息，固定为 false |
+| timeStamp | number | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 事件触发时的时间戳 |
+| routeEventId | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由事件唯一标识 |
 | page | IAnyObject | 否 | 微信小程序: 4.41; 支付宝小程序: - | 当前打开页面的相关配置<br/> |
 | pipMode | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 可选值：<br/>- 'min': 视频页面缩小为小窗;<br/>- 'max': 视频小窗还原为页面;<br/> |
 | renderer | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 渲染引擎<br/><br/>可选值：<br/>- 'webview': Webview 渲染引擎;<br/>- 'skyline': Skyline 渲染引擎;<br/>- 'xr-frame': xr-frame 解决方案;<br/> |
@@ -222,12 +222,12 @@ uni.offAppRoute(appRouteCallback)
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面路径，不包含开头的斜杠 |
-| query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面参数 |
-| openType | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 应用路由类型。 |
-| notFound | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面是否不存在 |
-| timeStamp | number | 是 | 微信小程序: 4.41; 支付宝小程序: - | 事件触发时的时间戳 |
-| routeEventId | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由事件唯一标识 |
+| path | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面路径，不包含开头的斜杠 |
+| query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面参数 |
+| openType | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 应用路由类型。 |
+| notFound | boolean | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面是否不存在。支付宝小程序不提供该信息，固定为 false |
+| timeStamp | number | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 事件触发时的时间戳 |
+| routeEventId | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由事件唯一标识 |
 | page | IAnyObject | 否 | 微信小程序: 4.41; 支付宝小程序: - | 当前打开页面的相关配置<br/> |
 | pipMode | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 可选值：<br/>- 'min': 视频页面缩小为小窗;<br/>- 'max': 视频小窗还原为页面;<br/> |
 | renderer | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 渲染引擎<br/><br/>可选值：<br/>- 'webview': Webview 渲染引擎;<br/>- 'skyline': Skyline 渲染引擎;<br/>- 'xr-frame': xr-frame 解决方案;<br/> |
@@ -313,9 +313,9 @@ uni.offAppRoute()
 
 
 ### onBeforeAppRoute 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 5.25 | 5.25 | 5.25 | 5.25 | 5.25 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 5.25 | 5.25 | 5.25 | 5.25 | 5.25 | 5.25 |
 
 
 ### 参数 
@@ -328,11 +328,11 @@ uni.offAppRoute()
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面路径，不包含开头的斜杠 |
-| query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面参数 |
-| openType | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 应用路由类型。 |
-| notFound | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面是否不存在 |
-| routeEventId | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由事件唯一标识 |
+| path | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面路径，不包含开头的斜杠 |
+| query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面参数 |
+| openType | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 应用路由类型。 |
+| notFound | boolean | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面是否不存在。支付宝小程序不提供该信息，固定为 false |
+| routeEventId | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由事件唯一标识 |
 | page | IAnyObject | 否 | 微信小程序: 4.41; 支付宝小程序: - | 当前打开页面的相关配置<br/> |
 | pipMode | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 可选值：<br/>- 'min': 视频页面缩小为小窗;<br/>- 'max': 视频小窗还原为页面;<br/> |
 | renderer | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 渲染引擎<br/><br/>可选值：<br/>- 'webview': Webview 渲染引擎;<br/>- 'skyline': Skyline 渲染引擎;<br/>- 'xr-frame': xr-frame 解决方案;<br/> |
@@ -412,9 +412,9 @@ onLaunch(() => {
 
 
 ### offBeforeAppRoute 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 5.25 | 5.25 | 5.25 | 5.25 | 5.25 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 5.25 | 5.25 | 5.25 | 5.25 | 5.25 | 5.25 |
 
 
 ### 参数 
@@ -427,11 +427,11 @@ onLaunch(() => {
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面路径，不包含开头的斜杠 |
-| query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面参数 |
-| openType | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 应用路由类型。 |
-| notFound | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由页面是否不存在 |
-| routeEventId | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 路由事件唯一标识 |
+| path | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面路径，不包含开头的斜杠 |
+| query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面参数 |
+| openType | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 应用路由类型。 |
+| notFound | boolean | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由页面是否不存在。支付宝小程序不提供该信息，固定为 false |
+| routeEventId | string | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.25; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 路由事件唯一标识 |
 | page | IAnyObject | 否 | 微信小程序: 4.41; 支付宝小程序: - | 当前打开页面的相关配置<br/> |
 | pipMode | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 可选值：<br/>- 'min': 视频页面缩小为小窗;<br/>- 'max': 视频小窗还原为页面;<br/> |
 | renderer | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 渲染引擎<br/><br/>可选值：<br/>- 'webview': Webview 渲染引擎;<br/>- 'skyline': Skyline 渲染引擎;<br/>- 'xr-frame': xr-frame 解决方案;<br/> |
@@ -509,9 +509,9 @@ uni.offBeforeAppRoute()
 
 
 ### rewriteRoute 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.25 | 5.25 | 5.25 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 5.25 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.25 | 5.25 | 5.25 |
 
 
 ### 参数 
@@ -524,11 +524,11 @@ uni.offBeforeAppRoute()
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | 微信小程序: 4.41; 支付宝小程序: x | 重写后的页面路径 |
-| preserveQuery | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: x | 是否保留原路由参数，默认 false |
-| success | (result: [RewriteRouteSuccess](#rewriteroutesuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
-| fail | (result: [RewriteRouteFail](#rewriteroutefail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (result: [RewriteRouteComplete](#rewriteroutecomplete-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数 | 
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 重写后的页面路径 |
+| preserveQuery | boolean | 否 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 是否保留原路由参数，默认 false |
+| success | (result: [RewriteRouteSuccess](#rewriteroutesuccess-values)) => void | 否 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 接口调用成功的回调函数 |
+| fail | (result: [RewriteRouteFail](#rewriteroutefail-values)) => void | 否 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 接口调用失败的回调函数 |
+| complete | (result: [RewriteRouteComplete](#rewriteroutecomplete-values)) => void | 否 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 接口调用结束的回调函数 | 
 
 #### RewriteRouteSuccess 的属性值 @rewriteroutesuccess-values 
 
