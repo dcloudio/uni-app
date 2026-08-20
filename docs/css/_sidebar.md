@@ -57,6 +57,7 @@
   * [box-shadow](box-shadow.md)
   * [box-sizing](box-sizing.md)
   * [color](color.md)
+  * [direction](direction.md)
   * [display](display.md)
   * [flex](flex.md)
   * [flex-basis](flex-basis.md)
