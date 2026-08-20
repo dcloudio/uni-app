@@ -186,6 +186,27 @@ H5 特有配置
 | caption | string | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 下拉刷新控件上显示的标题内容 |
 
 
+#### mp-alipay 配置项列表 @globalstyle-mp-alipay
+
+支付宝小程序特有配置
+
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 5.25 | x | x | x |
+
+| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- | :- |
+| allowsBounceVertical | 'YES' \| 'NO' | "YES" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否允许向下拉拽。支持 YES / NO |
+| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
+| titlePenetrate | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
+| showTitleLoading | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否进入时显示导航栏的 loading。支持 YES / NO |
+| titleImage | string |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址，替换导航栏标题，必须为https的图片链接地址 |
+| backgroundImageUrl | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 下拉露出显示的背景图链接 |
+| backgroundImageColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 下拉露出显示的背景图底色 |
+| gestureBack | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序 iOS 用，是否支持手势返回。支持 YES / NO |
+| enableScrollBar | 'YES' \| 'NO' | "YES" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序 Android 用，是否显示 WebView 滚动条。支持 YES / NO。 |
+
+
 #### mp-weixin 配置项列表 @globalstyle-mp-weixin
 
 微信小程序特有配置
@@ -382,6 +403,27 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | :- | :- | :- | :- | :- |
 | titleNView | [titleNView 配置项列表](#h5-titlenview) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏设置 |
 | pullToRefresh | [pullToRefresh 配置项列表](#h5-pulltorefresh) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 下拉刷新 |
+
+
+##### mp-alipay 配置项列表 @style-mp-alipay
+
+支付宝小程序特有配置
+
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 5.25 | x | x | x |
+
+| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- | :- |
+| allowsBounceVertical | 'YES' \| 'NO' | "YES" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否允许向下拉拽。支持 YES / NO |
+| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
+| titlePenetrate | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
+| showTitleLoading | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否进入时显示导航栏的 loading。支持 YES / NO |
+| titleImage | string |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址，替换导航栏标题，必须为https的图片链接地址 |
+| backgroundImageUrl | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 下拉露出显示的背景图链接 |
+| backgroundImageColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 下拉露出显示的背景图底色 |
+| gestureBack | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序 iOS 用，是否支持手势返回。支持 YES / NO |
+| enableScrollBar | 'YES' \| 'NO' | "YES" | 否 | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序 Android 用，是否显示 WebView 滚动条。支持 YES / NO。 |
 
 
 ##### mp-weixin 配置项列表 @style-mp-weixin
