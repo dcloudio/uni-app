@@ -31,7 +31,7 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 
 以下列出部分案例：
 
-- 发票匣：（蒸汽模式案例）[Android](https://r.app.xiaomi.com/details?id=com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)
+- 发票匣：（蒸汽模式案例）[Android](https://sj.qq.com/appdetail/com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.juxiang.hfapiaoxia&amp;channelId=SHARE&amp;source=appshare)
 - 仪表宝典(化工资料)：（蒸汽模式案例）[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app )
 - e线签（天津数字认证有限公司）：[Android](https://sj.qq.com/appdetail/com.tjca.elinesign)、[iOS](https://apps.apple.com/cn/app/e%E7%BA%BF%E7%AD%BE/id6743433163)
 - Tevau 海外应用：[Google Play](https://play.google.com/store/apps/details?id=uni.UNI2317D55&hl=zh&pli=1)、[iOS](https://apps.apple.com/cn/app/tevau/id6504911110)
