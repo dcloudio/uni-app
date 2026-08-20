@@ -204,6 +204,7 @@ includePoints
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
+| points | Array&lt;string&gt; | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要显示在可视区域内的坐标点列表，\[{latitude, longitude}\] |
 | success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -442,6 +443,7 @@ addMarkers
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
+| markers | Array&lt;string&gt; | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 同传入 map 组件的 marker 属性 |
 | clear | boolean | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否先清空地图上所有 marker |
 | success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
@@ -490,6 +492,7 @@ moveAlong
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markerId | number | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
+| path | Array&lt;string&gt; | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 移动路径的坐标串，坐标点格式 {longitude, latitude} |
 | duration | number | 否 | 1000 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平滑移动的时间 |
 | success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
@@ -584,6 +587,7 @@ removeMarkers
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
+| markerIds | Array&lt;string&gt; | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要被删除的marker的id属性组成的数组 |
 | success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -801,6 +805,7 @@ updateGroundOverlay
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
+| points | Array&lt;string&gt; | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要显示在可视区域内的坐标点列表，\[{latitude, longitude}\] |
 | success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
@@ -975,6 +980,7 @@ updateGroundOverlay
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
+| markers | Array&lt;string&gt; | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 同传入 map 组件的 marker 属性 |
 | clear | boolean | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否先清空地图上所有 marker |
 | success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
@@ -1007,6 +1013,7 @@ updateGroundOverlay
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markerId | number | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
+| path | Array&lt;string&gt; | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 移动路径的坐标串，坐标点格式 {longitude, latitude} |
 | duration | number | 否 | 1000 | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平滑移动的时间 |
 | success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
@@ -1069,6 +1076,7 @@ updateGroundOverlay
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
+| markerIds | Array&lt;string&gt; | 是 |  | 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要被删除的marker的id属性组成的数组 |
 | success | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |

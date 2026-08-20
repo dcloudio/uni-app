@@ -98,6 +98,7 @@ getProvider的同步方法
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | service | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25 | 服务类型<br/> |
+| providerIds | Array&lt;string&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 得到的服务供应商 | 
 
 ##### service 的属性描述
 
@@ -106,7 +107,7 @@ getProvider的同步方法
 | payment | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 支付 (alipay、wxpay) |
 | location | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 定位 (system、tencent) |
 | oauth | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 （weixin、apple(iOS HBuilderX 5.21+支持)） |
-| share | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 分享（weixin） | 
+| share | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 分享（weixin） |
 
 
 
@@ -331,6 +332,7 @@ getProvider的同步方法
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | service | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18 | 服务类型：支付 (payment)<br/> |
+| provider | Array&lt;string&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18 | 得到的服务供应商 |
 
 #### service 的属性描述
 

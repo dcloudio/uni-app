@@ -31,6 +31,9 @@
 | pageOrientation | string | 否 |  | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为pages.json中的pageOrientation。 |
 | albumMode | string | 否 | "custom" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.33; iOS: x; HarmonyOS: x | 图片选择模式 |
 | count | number | 否 | 9 | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。 |
+| sizeType | Array&lt;string&gt; | 否 | \['original','compressed'\] | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | original 原图，compressed 压缩图，默认二者都有 |
+| sourceType | Array&lt;string&gt; | 否 | \['album','camera'\] | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | album 从相册选图，camera 使用相机，默认二者都有 |
+| extension | Array&lt;string&gt; | 否 |  | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。仅H5支持 |
 | crop | **ChooseImageCropOptions** | 否 |  | Web: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 图像裁剪参数，设置后 sizeType 失效。 |
 | success | (callback: [ChooseImageSuccess](#chooseimagesuccess-values)) => void | 否 |  | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 成功则返回图片的本地文件路径列表 tempFilePaths |
 | fail | (callback: [ChooseImageFail](#chooseimagefail-values)) => void | 否 |  | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 接口调用失败的回调函数 |
@@ -67,6 +70,7 @@
 | errSubject | string | 是 | Android: 3.9; iOS: 4.11 | 调用API的名称 |
 | errMsg | string | 是 | Android: 3.9; iOS: 4.11 | 描述信息 |
 | tempFilePaths | Array&lt;string&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 图片的本地文件路径列表 |
+| tempFiles | Array&lt;string&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 图片的本地文件列表 |
 
 #### ChooseImageFail 的属性值 @chooseimagefail-values 
 

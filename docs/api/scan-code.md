@@ -29,6 +29,7 @@
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | onlyFromCamera | boolean | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 是否只能从相机扫码，不允许从相册选择图片 |
+| scanType | Array&lt;string&gt; | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 扫码类型 |
 | success | (res: [ScanCodeSuccess](#scancodesuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | uni.scanCode成功回调函数定义 |
 | fail | (res: ScanCodeFail) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | uni.scanCode失败回调函数定义 |
 | complete | (res: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | uni.scanCode完成回调函数定义 | 

@@ -172,10 +172,10 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| name | string | 是 |   | WebSocket云函数/云对象名称 |
-| query | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 建立连接时需要传递的参数, 仅在 connection 事件中接收到 | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| name | string | 是 | WebSocket云函数/云对象名称 |
+| query | any | 否 | 建立连接时需要传递的参数, 仅在 connection 事件中接收到 | 
 
 
 ### 返回值 

@@ -43,6 +43,7 @@
 
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
+| itemList | Array&lt;string&gt; | 是 | 按钮的文字数组 |
 | itemColor | string | 否 | 按钮的文字颜色，字符串格式，默认为"#000000" |
 | success | (result: [LongPressActionsSuccessResult](#longpressactionssuccessresult-values)) => void | 否 | 接口调用成功的回调函数 |
 | fail | (result: [LongPressActionsFailResult](#longpressactionsfailresult-values)) => void | 否 | 接口调用失败的回调函数 |
