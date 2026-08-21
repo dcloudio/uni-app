@@ -4583,102 +4583,6 @@ function requireUTSPlugin(name) {
   }
   return define;
 }
-function isUniElement(obj) {
-  return obj && typeof obj.getNodeId === "function" && obj.pageId;
-}
-function isComponentPublicInstance(instance) {
-  return instance && instance.$ && instance.$.proxy === instance;
-}
-function isUniPage(value) {
-  return typeof UniPage === "function" && value instanceof UniPage;
-}
-function serializeUniElement(el, type) {
-  var nodeId = "";
-  var pageId = "";
-  if (el && el.getNodeId) {
-    pageId = el.pageId;
-    nodeId = el.getNodeId();
-  }
-  return {
-    __type__: type,
-    pageId,
-    nodeId
-  };
-}
-function serializeComponentPublicInstance(obj) {
-  if (obj.$el) {
-    return serializeUniElement(obj.$el, "ComponentPublicInstance");
-  }
-  return {
-    __type__: "ComponentPublicInstance",
-    pageId: "",
-    nodeId: ""
-  };
-}
-function toRaw(observed) {
-  var seen = /* @__PURE__ */ new WeakSet();
-  var current = observed;
-  while (current) {
-    var raw = current.__v_raw;
-    if (!raw) {
-      return current;
-    }
-    if (typeof current === "object" || typeof current === "function") {
-      if (seen.has(current)) {
-        return current;
-      }
-      seen.add(current);
-    }
-    current = raw;
-  }
-  return current;
-}
-var SKIP_CIRCULAR_REFERENCE = {};
-function serializeArg(arg, stack) {
-  arg = toRaw(arg);
-  if (isUniPage(arg)) {
-    return arg;
-  }
-  if (isUniElement(arg)) {
-    return serializeUniElement(arg, "UniElement");
-  }
-  if (isComponentPublicInstance(arg)) {
-    return serializeComponentPublicInstance(arg);
-  }
-  if (!isArray(arg) && !isPlainObject(arg)) {
-    return arg;
-  }
-  if (stack.has(arg)) {
-    return SKIP_CIRCULAR_REFERENCE;
-  }
-  stack.add(arg);
-  try {
-    if (isArray(arg)) {
-      var serialized2 = new Array(arg.length);
-      arg.forEach((item, index2) => {
-        var value = serializeArg(item, stack);
-        if (value !== SKIP_CIRCULAR_REFERENCE) {
-          serialized2[index2] = value;
-        }
-      });
-      return serialized2;
-    }
-    var serialized = {};
-    Object.keys(arg).forEach((name) => {
-      var value = serializeArg(arg[name], stack);
-      if (value !== SKIP_CIRCULAR_REFERENCE) {
-        serialized[name] = value;
-      }
-    });
-    return serialized;
-  } finally {
-    stack.delete(arg);
-  }
-}
-function serializeArgs(args) {
-  var stack = /* @__PURE__ */ new WeakSet();
-  return args.map((arg) => serializeArg(arg, stack));
-}
 var UTSClassInstanceRegistry;
 function unregisterInstance(id2) {
   var args = {
@@ -4756,7 +4660,7 @@ function initProxyFunction(utsBridgeName, options, instanceOrId, instanceProxy) 
       keepAlive: options.keepAlive,
       instance: typeof instanceOrId === "object" ? instanceOrId : void 0,
       instanceId: typeof instanceOrId === "number" ? instanceOrId : void 0,
-      params: serializeArgs(args)
+      params: args
     };
     if (options.async) {
       return new Promise((resolve, reject) => {
