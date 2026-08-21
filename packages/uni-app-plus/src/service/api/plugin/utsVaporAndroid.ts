@@ -1,4 +1,4 @@
-import { hasOwn, isArray, isPlainObject } from '@vue/shared'
+import { hasOwn } from '@vue/shared'
 
 const pluginDefines: Record<string, Record<string, unknown>> = {}
 export function registerUTSPlugin(
@@ -16,107 +16,6 @@ export function requireUTSPlugin(name: string, silent = false) {
     }
   }
   return define
-}
-
-function isUniElement(obj: any) {
-  return obj && typeof obj.getNodeId === 'function' && obj.pageId
-}
-
-function isComponentPublicInstance(instance: any) {
-  return instance && instance.$ && instance.$.proxy === instance
-}
-
-function isUniPage(value: unknown) {
-  // @ts-expect-error globalThis.UniPage
-  return typeof UniPage === 'function' && value instanceof UniPage
-}
-
-function serializeUniElement(
-  el: any,
-  type: 'UniElement' | 'ComponentPublicInstance'
-) {
-  let nodeId = ''
-  let pageId = ''
-  if (el && el.getNodeId) {
-    pageId = el.pageId
-    nodeId = el.getNodeId()
-  }
-  return { __type__: type, pageId, nodeId }
-}
-
-function serializeComponentPublicInstance(obj: any) {
-  if (obj.$el) {
-    return serializeUniElement(obj.$el, 'ComponentPublicInstance')
-  }
-  return { __type__: 'ComponentPublicInstance', pageId: '', nodeId: '' }
-}
-
-function toRaw(observed?: unknown) {
-  const seen = new WeakSet<object>()
-  let current = observed
-  while (current) {
-    const raw = (current as any).__v_raw
-    if (!raw) {
-      return current
-    }
-    if (typeof current === 'object' || typeof current === 'function') {
-      if (seen.has(current as object)) {
-        return current
-      }
-      seen.add(current as object)
-    }
-    current = raw
-  }
-  return current
-}
-
-const SKIP_CIRCULAR_REFERENCE = {}
-
-function serializeArg(arg: unknown, stack: WeakSet<object>): unknown {
-  arg = toRaw(arg)
-  if (isUniPage(arg)) {
-    return arg
-  }
-  if (isUniElement(arg)) {
-    return serializeUniElement(arg, 'UniElement')
-  }
-  if (isComponentPublicInstance(arg)) {
-    return serializeComponentPublicInstance(arg)
-  }
-  if (!isArray(arg) && !isPlainObject(arg)) {
-    return arg
-  }
-  if (stack.has(arg as object)) {
-    return SKIP_CIRCULAR_REFERENCE
-  }
-  stack.add(arg as object)
-  try {
-    if (isArray(arg)) {
-      const serialized: unknown[] = new Array(arg.length)
-      arg.forEach((item, index) => {
-        const value = serializeArg(item, stack)
-        if (value !== SKIP_CIRCULAR_REFERENCE) {
-          serialized[index] = value
-        }
-      })
-      return serialized
-    }
-    const serialized: Record<string, unknown> = {}
-    Object.keys(arg as object).forEach((name) => {
-      const value = serializeArg((arg as any)[name], stack)
-      if (value !== SKIP_CIRCULAR_REFERENCE) {
-        serialized[name] = value
-      }
-    })
-    return serialized
-  } finally {
-    stack.delete(arg as object)
-  }
-}
-
-function serializeArgs(args: unknown[]) {
-  const stack = new WeakSet<object>()
-  return args.map((arg) => serializeArg(arg, stack))
 }
 
 let UTSClassInstanceRegistry: FinalizationRegistry<number>
@@ -282,7 +181,7 @@ function initProxyFunction(
       keepAlive: options.keepAlive,
       instance: typeof instanceOrId === 'object' ? instanceOrId : undefined,
       instanceId: typeof instanceOrId === 'number' ? instanceOrId : undefined,
-      params: serializeArgs(args),
+      params: args,
     }
     if (options.async) {
       return new Promise((resolve, reject) => {
