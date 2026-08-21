@@ -296,8 +296,10 @@ describe('pipeline/channel/image', () => {
     const arg = requestSpy.mock.calls[0][0] as unknown as {
       url: string
       method: string
+      dataType: string
     }
     expect(arg.method).toBe('GET')
+    expect(arg.dataType).toBe('text')
     expect(arg.url).toContain('/WebTrack?')
     expect(arg.url).not.toContain('.gif')
   })
@@ -319,6 +321,22 @@ describe('pipeline/channel/image', () => {
     })
     await expect(ch.send(PAYLOAD)).rejects.toThrow()
     expect(requestSpy).toHaveBeenCalledTimes(3)
+  })
+
+  test('IM5.b App X request fail 普通对象保留 errMsg', async () => {
+    handle.uni.request = jest.fn(({ fail }: { fail: (e: unknown) => void }) => {
+      fail({ errMsg: 'request:fail dns', errCode: 600003 })
+    })
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'n',
+      rawPlatform: 'app-android',
+      sleep: noSleep,
+      maxRetries: 1,
+    })
+    await expect(ch.send(PAYLOAD)).rejects.toThrow('request:fail dns')
   })
 
   test('IM6 URL 长度超过上限 → 抛 PermanentChannelError，不进 withRetry', async () => {

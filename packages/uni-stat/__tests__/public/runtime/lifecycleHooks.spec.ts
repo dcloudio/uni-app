@@ -36,7 +36,7 @@ import * as sessionMod from '../../../src/public/domain/session/machine'
 import * as visitMod from '../../../src/public/domain/visit/firstVisit'
 import { __resetState as resetEntry } from '../../../src/public/domain/entry/entryPage'
 import { __resetPagesTitleCache } from '../../../src/public/adapter/pagesTitle'
-import { __resetTitle } from '../../../src/public/domain/title'
+import { __resetTitle, setPageTitle } from '../../../src/public/domain/title'
 import { __resetCache as resetDevice } from '../../../src/public/adapter/device'
 import { __resetCache as resetPackage } from '../../../src/public/adapter/package'
 import { __resetCache as resetSystem } from '../../../src/public/adapter/system'
@@ -585,6 +585,44 @@ describe('runtime/lifecycleHooks', () => {
     expect(input.urlref_ts).toBeGreaterThanOrEqual(1)
   })
 
+  test('page_show：hide 冻结旧页标题且 show 保留新页 onLoad 已设置标题', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    handlePageShow(app, { route: 'pages/A' })
+    setPageTitle('A API 标题')
+    app.report('title', 'A 上报标题')
+    handlePageHide(app, { route: 'pages/A' })
+
+    // 模拟新页 onLoad 早于统计 onShow。
+    setPageTitle('B API 标题')
+    app.report('title', 'B 上报标题')
+    handlePageShow(app, { route: 'pages/B' })
+    handlePageHide(app, { route: 'pages/B' })
+
+    setPageTitle('C API 标题')
+    app.report('title', 'C 上报标题')
+    handlePageShow(app, { route: 'pages/C' })
+
+    const pageLogs = reportSpy.mock.calls
+      .map((call) => call[0] as ReportInput)
+      .filter((input) => input.lt === '11')
+    expect(pageLogs).toHaveLength(2)
+    expect(pageLogs[0]).toEqual(
+      expect.objectContaining({
+        url: 'pages/A',
+        ttn: 'A API 标题',
+        ttc: 'A 上报标题',
+      })
+    )
+    expect(pageLogs[1]).toEqual(
+      expect.objectContaining({
+        url: 'pages/B',
+        ttn: 'B API 标题',
+        ttc: 'B 上报标题',
+      })
+    )
+  })
+
   test('page_show：iey/ppiey 解耦（修复 #PPIEY）', () => {
     const { app, reportSpy } = installAppWithSpyReporter()
     handleLaunch(app, {})
@@ -775,6 +813,23 @@ describe('runtime/lifecycleHooks', () => {
       expect(() => jest.runAllTimers()).not.toThrow()
     } finally {
       process.env.UNI_PLATFORM = prev
+      jest.clearAllTimers()
+      jest.useRealTimers()
+    }
+  })
+
+  test('onError：调用方可关闭重抛，仅保留 lt=31 上报', () => {
+    jest.useFakeTimers()
+    try {
+      const { app, reportSpy } = installAppWithSpyReporter()
+      handleLaunch(app, {})
+      reportSpy.mockClear()
+
+      handleError(app, new Error('native-reported'), undefined, false)
+
+      expect(getReportedLts(reportSpy)).toContain('31')
+      expect(jest.getTimerCount()).toBe(0)
+    } finally {
       jest.clearAllTimers()
       jest.useRealTimers()
     }

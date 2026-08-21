@@ -72,6 +72,13 @@ describe('runtime/install', () => {
     expect(first).toBe(second) // 同一引用 → 第二次 noop
   })
 
+  test('I1.b install 将 uni.report 挂到业务可见的 uni 对象', () => {
+    installPublicStat({ skipVueMixin: true })
+    expect(
+      typeof (globalThis as unknown as { uni: { report?: unknown } }).uni.report
+    ).toBe('function')
+  })
+
   test('I2 manifest.uniStatistics → StatApp.install config 透传（超时/间隔/上报通道版本）', () => {
     ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
       JSON.stringify({

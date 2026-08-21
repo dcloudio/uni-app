@@ -160,7 +160,11 @@ function createConfig(entryFile, output, buildOption) {
     createReplacePlugin(buildOption, output.format),
   ]
   if (buildOption.output?.compact) {
-    plugins.push(terser())
+    plugins.push(
+      buildOption.terserOptions
+        ? terser(normalizeTerserOptions(buildOption.terserOptions))
+        : terser()
+    )
   }
   if (process.env.TARGET !== 'uni-push' && process.env.TARGET !== 'uni-stat') {
     plugins.unshift(jscc({
@@ -369,6 +373,24 @@ function createConfig(entryFile, output, buildOption) {
           },
         },
   }
+}
+
+function normalizeTerserOptions(options) {
+  if (!options || typeof options !== 'object') {
+    return {}
+  }
+  const normalized = { ...options }
+  if (
+    normalized.format &&
+    typeof normalized.format === 'object' &&
+    typeof normalized.format.comments === 'string'
+  ) {
+    normalized.format = {
+      ...normalized.format,
+      comments: new RegExp(normalized.format.comments),
+    }
+  }
+  return normalized
 }
 
 function createAliasPlugin(buildOption) {

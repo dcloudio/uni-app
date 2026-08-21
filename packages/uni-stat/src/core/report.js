@@ -90,7 +90,7 @@ if(sys.platform){
     case 'ios':
       statData.p = 'i'
       break
-    case 'harmonyos': 
+    case 'harmonyos':
       statData.p = 'h'
       break
   }
@@ -518,7 +518,15 @@ export default class Report {
    * 获取wgt资源版本
    */
   getProperty(type) {
-    plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
+    const runtime =
+      typeof plus !== 'undefined' && plus && plus.runtime
+        ? plus.runtime
+        : undefined
+    if (!runtime || typeof runtime.getProperty !== 'function') {
+      this.getNetworkInfo(type)
+      return
+    }
+    runtime.getProperty(runtime.appid, (wgtinfo) => {
       this.statData.v = wgtinfo.version || ''
       this.getNetworkInfo(type)
     })

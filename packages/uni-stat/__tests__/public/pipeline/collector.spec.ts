@@ -595,6 +595,37 @@ describe('pipeline/collector', () => {
       expect(deps.retry.ack).toHaveBeenCalledWith('b')
     })
 
+    test('并发调用合并为同一次续传，避免重复发送', async () => {
+      let finishSend: (() => void) | undefined
+      const channel: Channel = {
+        name: 'image',
+        available: () => true,
+        send: jest.fn(
+          () =>
+            new Promise<void>((resolve) => {
+              finishSend = resolve
+            })
+        ),
+      }
+      const deps = makeDeps({
+        selectChannel: jest.fn(() => channel) as MockedDeps['selectChannel'],
+      })
+      deps.retry.loadAll.mockReturnValue([
+        { usv: '3', t: 1, requests: '[]', _id: 'once' },
+      ])
+      const c = createCollector(deps)
+      const first = c.recoverRetry()
+      const second = c.recoverRetry()
+
+      expect(second).toBe(first)
+      await Promise.resolve()
+      expect(channel.send).toHaveBeenCalledTimes(1)
+      finishSend!()
+      await Promise.all([first, second])
+      expect(deps.retry.ack).toHaveBeenCalledTimes(1)
+      expect(deps.retry.loadAll).toHaveBeenCalledTimes(1)
+    })
+
     test('续传重试发送前补齐运行时字段 ch', async () => {
       const items: ReportPayload[] = [
         { usv: '3', t: 1, requests: '[{"lt":"21"}]', _id: 'a' },

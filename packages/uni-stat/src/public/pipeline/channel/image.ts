@@ -42,6 +42,7 @@ interface UniRequestApi {
   request?: (opts: {
     url: string
     method?: 'GET'
+    dataType?: 'text'
     timeout?: number
     success?: (res: { statusCode?: number; data?: unknown }) => void
     fail?: (e: unknown) => void
@@ -468,6 +469,7 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
       u.request!({
         url,
         method: 'GET',
+        dataType: 'text',
         timeout: timeoutMs,
         success: (res) => {
           if (settled) return
@@ -489,7 +491,11 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
           if (settled) return
           settled = true
           clearTimeout(timer)
-          reject(e instanceof Error ? e : new Error(String(e)))
+          reject(
+            e instanceof Error
+              ? e
+              : new Error(summarizeHttpErrorBody(e) || String(e))
+          )
         },
       })
     })

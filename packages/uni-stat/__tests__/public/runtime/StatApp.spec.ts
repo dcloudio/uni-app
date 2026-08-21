@@ -26,6 +26,7 @@ import { __resetTitle, getCurrentTitle } from '../../../src/public/domain/title'
 import { __resetCache as resetDevice } from '../../../src/public/adapter/device'
 import { __resetCache as resetPackage } from '../../../src/public/adapter/package'
 import { __resetCache as resetSystem } from '../../../src/public/adapter/system'
+import { logger } from '../../../src/public/infra/logger'
 
 import type { Channel, ReportPayload } from '../../../src/public/pipeline/types'
 
@@ -161,6 +162,41 @@ describe('runtime/StatApp', () => {
     expect(app.getConfig()?.ch).toBe('campaign-a')
   })
 
+  test('Vapor：windowWidth 缺失时 ww 回退 screenWidth，wh 保留有效窗口高度', async () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STAT_VAPOR = 'true'
+    try {
+      installMockUni({
+        platform: 'app',
+        patch: {
+          getWindowInfo: () => ({
+            windowWidth: 0,
+            windowHeight: 700,
+            screenWidth: 390,
+            screenHeight: 800,
+          }),
+        },
+      })
+      const app = getStatApp()
+      const http = fakeChannel('1.0')
+      app.install(
+        { version: '1' },
+        {
+          channels: { http, cloud: null },
+          skipInterceptors: true,
+          skipMigration: true,
+          skipRecoverRetry: true,
+        }
+      )
+
+      app.report('screen_probe', 'value')
+      await app.getCollector()!.flush(true)
+      expect(http.send.mock.calls[0][0].requests).toMatch(/"ww":390/)
+      expect(http.send.mock.calls[0][0].requests).toMatch(/"wh":700/)
+    } finally {
+      delete (process.env as Record<string, string | undefined>).UNI_STAT_VAPOR
+    }
+  })
+
   test('单例：getInstance / getStatApp 返回同一实例', () => {
     const a = StatApp.getInstance()
     const b = getStatApp()
@@ -279,6 +315,74 @@ describe('runtime/StatApp', () => {
     expect(payload.requests).toMatch(/"lt":"21"/)
     expect(payload.requests).toMatch(/"e_n":"foo"/)
     expect(payload.requests).toMatch(/"e_v":"\{\\"x\\":1\}"/)
+  })
+
+  test('Vapor：即使存在上次 session，onLaunch 前事件仍按原时间暂存并使用新 session', () => {
+    jest.useFakeTimers()
+    try {
+      jest.setSystemTime(new Date('2026-01-01T00:00:00.000Z'))
+      const oldNow = Math.floor(Date.now() / 1000) - 100
+      sessionMod.ensureSession('cold_launch', { now: oldNow })
+      const oldSid = sessionMod.getSnapshot()!.sid
+      const app = getStatApp()
+      app.install(
+        { version: '1' },
+        {
+          deferReportsUntilSession: true,
+          skipInterceptors: true,
+          skipMigration: true,
+          skipRecoverRetry: true,
+        }
+      )
+      const report = jest.spyOn(app.getCollector()!, 'report')
+      app.report('before_launch', 'value')
+      expect(report).not.toHaveBeenCalled()
+
+      const now = Math.floor(Date.now() / 1000)
+      sessionMod.ensureSession('cold_launch', { now })
+      expect(sessionMod.getSnapshot()!.sid).not.toBe(oldSid)
+      jest.setSystemTime(Date.now() + 5_000)
+      app.releaseDeferredReports()
+
+      expect(report).toHaveBeenCalledWith(
+        expect.objectContaining({
+          lt: '21',
+          t: now,
+          custom: { e_n: 'before_launch', e_v: 'value' },
+        })
+      )
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  test('Vapor：启动前事件暂存有上限且仅提示一次', () => {
+    const app = getStatApp()
+    app.install(
+      { version: '1' },
+      {
+        deferReportsUntilSession: true,
+        skipInterceptors: true,
+        skipMigration: true,
+        skipRecoverRetry: true,
+      }
+    )
+    const report = jest.spyOn(app.getCollector()!, 'report')
+    const warn = jest.spyOn(logger, 'warn').mockImplementation(() => {})
+
+    for (let i = 0; i < 102; i++) app.report('before_launch', i)
+    sessionMod.ensureSession('cold_launch', {
+      now: Math.floor(Date.now() / 1000),
+    })
+    app.releaseDeferredReports()
+
+    expect(report).toHaveBeenCalledTimes(100)
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('启动前事件暂存超过上限'),
+      'limit=100'
+    )
+    warn.mockRestore()
   })
 
   test('reportError(Error) → lt=31，errMsg 含 stack（通过 channel 验证）', async () => {

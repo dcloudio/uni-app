@@ -138,6 +138,8 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
   let firstFlushDone = false
   /** 已安排的延迟 flush 定时器，避免重复 schedule。 */
   let deferredFlushTimer: ReturnType<typeof setTimeout> | null = null
+  /** 合并冷启动与网络恢复同时触发的续传，避免同一 payload 重复发送。 */
+  let recoveringRetry: Promise<void> | undefined
 
   /** 取消已安排的延迟首 flush（`flush(true)` 等显式调用前使用）。 */
   function cancelDeferredFlush(): void {
@@ -421,7 +423,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
    *
    * 串行执行，失败的条目保留在队列里（不动 _id），调用方会在下次冷启再次重放。
    */
-  async function recoverRetry(): Promise<void> {
+  async function recoverRetryImpl(): Promise<void> {
     if (deps.isNetworkOffline) {
       let offline = false
       try {
@@ -487,6 +489,17 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         })
       }
     }
+  }
+
+  function recoverRetry(): Promise<void> {
+    if (recoveringRetry) return recoveringRetry
+    const current = recoverRetryImpl()
+    recoveringRetry = current
+    const clear = (): void => {
+      if (recoveringRetry === current) recoveringRetry = undefined
+    }
+    void current.then(clear, clear)
+    return current
   }
 
   /**

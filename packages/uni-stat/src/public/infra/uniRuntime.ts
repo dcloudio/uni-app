@@ -16,6 +16,11 @@
 /** `resolveUniRuntime` 解析结果来源。 */
 export type UniRuntimeSource = 'globalThis' | 'module' | 'injected' | 'none'
 
+/** 当前构建是否启用了 uni-app x Vapor 统计适配。 */
+export function isVaporStatRuntime(): boolean {
+  return process.env.UNI_STAT_VAPOR === 'true'
+}
+
 /** `uni` 两路来源探测时的快照结构。 */
 export interface UniRuntimeProbe {
   resolved: boolean
@@ -42,7 +47,8 @@ export function isUsableUniRuntime(candidate: unknown): boolean {
     typeof u.getStorageSync === 'function' ||
     typeof u.onCreateVueApp === 'function' ||
     typeof u.request === 'function' ||
-    typeof u.onAppShow === 'function'
+    typeof u.onAppShow === 'function' ||
+    typeof u.onAppRoute === 'function'
   )
 }
 
@@ -115,6 +121,10 @@ interface UniRuntimeApis {
   offAppHide?: UniApiFn
   onAppLaunch?: UniApiFn
   offAppLaunch?: UniApiFn
+  onAppRoute?: UniApiFn
+  offAppRoute?: UniApiFn
+  onBeforeAppRoute?: UniApiFn
+  offBeforeAppRoute?: UniApiFn
   getLaunchOptionsSync?: UniApiFn
   addInterceptor?: UniApiFn
   removeInterceptor?: UniApiFn
@@ -155,6 +165,10 @@ function buildInjectedUniRuntime(): Record<string, unknown> | undefined {
     pick('offAppHide', (uni as UniRuntimeApis).offAppHide)
     pick('onAppLaunch', (uni as UniRuntimeApis).onAppLaunch)
     pick('offAppLaunch', (uni as UniRuntimeApis).offAppLaunch)
+    pick('onAppRoute', (uni as UniRuntimeApis).onAppRoute)
+    pick('offAppRoute', (uni as UniRuntimeApis).offAppRoute)
+    pick('onBeforeAppRoute', (uni as UniRuntimeApis).onBeforeAppRoute)
+    pick('offBeforeAppRoute', (uni as UniRuntimeApis).offBeforeAppRoute)
     pick('getLaunchOptionsSync', (uni as UniRuntimeApis).getLaunchOptionsSync)
     pick('addInterceptor', (uni as UniRuntimeApis).addInterceptor)
     pick('removeInterceptor', (uni as UniRuntimeApis).removeInterceptor)

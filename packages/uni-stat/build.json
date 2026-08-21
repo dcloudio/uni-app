@@ -25,10 +25,44 @@
 	},
 	{
 		"input": {
+			"src/private/vapor.js": "dist/uni-cloud-stat-vapor.es.js"
+		},
+		"external": ["@dcloudio/uni-app"],
+		"replacements": {
+			"__STAT_VERSION__": "'2'"
+		}
+	},
+	{
+		"input": {
 			"src/public/index.ts": ["dist/uni-stat-public.es.js", "dist/uni-stat-public.cjs.js"]
 		},
+		"external": ["@dcloudio/uni-app"],
 		"replacements": {
 			"__STAT_VERSION__": "'3'"
+		}
+	},
+	{
+		"input": {
+			"src/public/index.ts": "dist/uni-stat-public.mp-weixin.es.js"
+		},
+		"output": {
+			"format": "es",
+			"compact": true
+		},
+		"terserOptions": {
+			"compress": false,
+			"mangle": {
+				"reserved": ["onAppShow", "onAppHide", "onError"]
+			},
+			"format": {
+				"comments": "^\\s*#(?:ifdef|ifndef|endif|if)\\b"
+			}
+		},
+		"external": ["@dcloudio/uni-app"],
+		"replacements": {
+			"__STAT_VERSION__": "'3'",
+			"process.env.UNI_PLATFORM": "'mp-weixin'",
+			"process.env.VUE_APP_PLATFORM": "'mp-weixin'"
 		}
 	}
 ]

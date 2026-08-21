@@ -17,11 +17,15 @@ function clearGlobal(name: string): void {
 
 describe('adapter/package', () => {
   let originalAppName: string | undefined
+  let originalVapor: string | undefined
 
   beforeEach(() => {
     __resetCache()
     originalAppName = (process.env as Record<string, string | undefined>)
       .UNI_APP_NAME
+    originalVapor = (process.env as Record<string, string | undefined>)
+      .UNI_STAT_VAPOR
+    delete (process.env as Record<string, string | undefined>).UNI_STAT_VAPOR
   })
 
   afterEach(() => {
@@ -37,6 +41,12 @@ describe('adapter/package', () => {
     } else {
       ;(process.env as Record<string, string | undefined>).UNI_APP_NAME =
         originalAppName
+    }
+    if (originalVapor === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_STAT_VAPOR
+    } else {
+      ;(process.env as Record<string, string | undefined>).UNI_STAT_VAPOR =
+        originalVapor
     }
   })
 
@@ -158,6 +168,53 @@ describe('adapter/package', () => {
         tdaid: '__UNI__APP1',
         pkn: 'com.demo.app',
         an: 'DemoApp',
+      })
+    })
+
+    test('无 plus 时回退 getAppBaseInfo（uni-app x / Harmony）', () => {
+      installMockUni({
+        platform: 'app',
+        patch: {
+          getAppBaseInfo: () => ({
+            appId: '__UNI__VAPOR',
+            appName: 'Vapor App',
+            hostPackageName: 'io.dcloud.uniappx',
+          }),
+        },
+      })
+      expect(getPackageInfo()).toEqual({
+        mpn: 'io.dcloud.uniappx',
+        tdaid: '__UNI__VAPOR',
+        pkn: 'io.dcloud.uniappx',
+        an: 'Vapor App',
+      })
+    })
+
+    test('Vapor：pkn/mpn 读取 packageName，且不访问 plus', () => {
+      ;(process.env as Record<string, string | undefined>).UNI_STAT_VAPOR =
+        'true'
+      installMockUni({
+        platform: 'app',
+        patch: {
+          getAppBaseInfo: () => ({
+            appId: '__UNI__VAPOR',
+            appName: 'Vapor App',
+            packageName: 'io.dcloud.uniappx',
+          }),
+        },
+      })
+      Object.defineProperty(globalThis, 'plus', {
+        get() {
+          throw new Error('Vapor must not access plus')
+        },
+        configurable: true,
+      })
+
+      expect(getPackageInfo()).toEqual({
+        mpn: 'io.dcloud.uniappx',
+        tdaid: '__UNI__VAPOR',
+        pkn: 'io.dcloud.uniappx',
+        an: 'Vapor App',
       })
     })
 
