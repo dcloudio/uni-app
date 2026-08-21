@@ -29496,6 +29496,9 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
     const cancelColor = ref(null);
     const backgroundColor = ref(null);
     const language = ref("zhHans");
+    const theme = ref("light");
+    const appTheme = ref(null);
+    const hostTheme = ref(null);
     const isLandscape2 = ref(false);
     const bottomNavigationHeight = ref(0);
     const menuItemClicked = ref(false);
@@ -29525,6 +29528,13 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       cancelButtonClicked.value = true;
       closeActionSheet();
       uni.$emit(failEventName.value, {});
+    };
+    const handleThemeChange = () => {
+      if (hostTheme.value != null) {
+        theme.value = hostTheme.value;
+      } else if (appTheme.value != null) {
+        theme.value = appTheme.value;
+      }
     };
     onLoad((options) => {
       readyEventName.value = options["readyEventName"];
@@ -29563,6 +29573,25 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       } else if (deviceInfo.osLanguage != null) {
         language.value = deviceInfo.osLanguage;
       }
+      const currentAppTheme = appInfo.appTheme;
+      if (currentAppTheme != null && currentAppTheme != "auto") {
+        appTheme.value = currentAppTheme;
+        handleThemeChange();
+      }
+      const currentOsTheme = deviceInfo.osTheme;
+      if (currentOsTheme != null && appTheme.value == null) {
+        appTheme.value = currentOsTheme;
+        handleThemeChange();
+      }
+      const currentHostTheme = appInfo.hostTheme;
+      if (currentHostTheme != null) {
+        hostTheme.value = currentHostTheme;
+        handleThemeChange();
+      }
+      uni.onHostThemeChange((res) => {
+        hostTheme.value = res.theme;
+        handleThemeChange();
+      });
       fixSize();
       window.addEventListener("resize", fixSize);
       const locale = uni.getLocale();
@@ -29601,10 +29630,12 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       return res;
     });
     const triangleStyle = computed(() => {
+      var _a;
       if (Object.keys(popover).length == 0) {
         return {};
       }
       const res = {};
+      const borderColor = (_a = backgroundColor.value) != null ? _a : theme.value == "dark" ? "#2C2C2B" : "#fcfcfd";
       const top = popover.top;
       const left = popover.left;
       const width = popover.width;
@@ -29618,23 +29649,13 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       if (top + height - vcl > vcl - top) {
         res["bottom"] = "-6px";
         res["border-width"] = "6px 6px 0 6px";
-        if (backgroundColor.value != null) {
-          res["border-color"] = `${backgroundColor.value} transparent transparent transparent`;
-        }
+        res["border-color"] = `${borderColor} transparent transparent transparent`;
       } else {
         res["top"] = "-6px";
         res["border-width"] = "0 6px 6px 6px";
-        if (backgroundColor.value != null) {
-          res["border-color"] = `transparent transparent ${backgroundColor.value} transparent`;
-        }
+        res["border-color"] = `transparent transparent ${borderColor} transparent`;
       }
       return res;
-    });
-    const triangleClass = computed(() => {
-      if (Object.keys(popover).length == 0) {
-        return "";
-      }
-      return triangleStyle.value["bottom"] != null ? "uni-action-sheet_dialog__triangle--bottom" : "uni-action-sheet_dialog__triangle--top";
     });
     const cancelText = computed(() => {
       if (optionCancelText.value != null) {
@@ -29657,6 +29678,13 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
         return i18nCancelText["zhHant"];
       }
       return "取消";
+    });
+    const computedBackgroundColor = computed(() => {
+      var _a;
+      return (_a = backgroundColor.value) != null ? _a : theme.value == "dark" ? "#2C2C2B" : "#ffffff";
+    });
+    const hoverClass = computed(() => {
+      return theme.value == "dark" ? "uni-action-sheet_dialog__hover__dark__mode" : "uni-action-sheet_dialog__hover";
     });
     onReady(() => {
       bottomNavigationHeight.value = uniPageInstance.safeAreaInsets.bottom;
@@ -29689,32 +29717,34 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
           }, null, 8, ["class"]),
           createVNode(_component_view, {
             style: normalizeStyle(isWidescreen.value ? containerStyle.value : {}),
-            class: normalizeClass(["uni-action-sheet_dialog__container", { "uni-action-sheet_dialog__show": show.value, "uni-action-sheet_landscape__mode": isLandscape2.value }])
+            class: normalizeClass(["uni-action-sheet_dialog__container", { "uni-action-sheet_dialog__show": show.value, "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value }])
           }, {
             default: withCtx(() => [
               createVNode(_component_view, {
                 style: normalizeStyle(backgroundColor.value != null ? { backgroundColor: backgroundColor.value } : {}),
-                class: normalizeClass(["uni-action-sheet_dialog__menu", { "uni-action-sheet_landscape__mode": isLandscape2.value }])
+                class: normalizeClass(["uni-action-sheet_dialog__menu", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value }])
               }, {
                 default: withCtx(() => [
                   title.value ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
                     createVNode(_component_view, {
-                      class: normalizeClass(["uni-action-sheet_dialog__title border-b", { "uni-action-sheet_landscape__mode": isLandscape2.value }])
+                      class: normalizeClass(["uni-action-sheet_dialog__title border-b", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value }])
                     }, {
                       default: withCtx(() => [
                         createVNode(_component_text, {
                           style: normalizeStyle(titleColor.value != null ? { color: titleColor.value } : {}),
-                          class: "uni-action-sheet_dialog__title__text"
+                          class: normalizeClass(["uni-action-sheet_dialog__title__text", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
                         }, {
                           default: withCtx(() => [
                             createTextVNode(toDisplayString(title.value), 1)
                           ]),
                           _: 1
-                        }, 8, ["style"])
+                        }, 8, ["style", "class"])
                       ]),
                       _: 1
                     }, 8, ["class"]),
-                    createVNode(_component_view, { class: "divider" })
+                    createVNode(_component_view, {
+                      class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
+                    }, null, 8, ["class"])
                   ], 64)) : createCommentVNode("", true),
                   createVNode(_component_view, {
                     class: normalizeClass(["uni-action-sheet_dialog__cell__container", { "uni-action-sheet_landscape__mode": isLandscape2.value }])
@@ -29724,26 +29754,26 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
                         return openBlock(), createElementBlock(Fragment, { key: index2 }, [
                           index2 !== 0 ? (openBlock(), createBlock(_component_view, {
                             key: 0,
-                            class: "divider"
-                          })) : createCommentVNode("", true),
+                            class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
+                          }, null, 8, ["class"])) : createCommentVNode("", true),
                           createVNode(_component_view, {
-                            class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_landscape__mode": isLandscape2.value, "border-t": index2 !== 0 }]),
-                            "hover-class": "uni-action-sheet_dialog__hover",
+                            class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value, "border-t": index2 !== 0 }]),
+                            "hover-class": hoverClass.value,
                             onClick: ($event) => handleMenuItemClick(index2)
                           }, {
                             default: withCtx(() => [
                               createVNode(_component_text, {
                                 style: normalizeStyle(itemColor.value != null ? { color: itemColor.value } : {}),
-                                class: "uni-action-sheet_dialog__cell__text"
+                                class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
                               }, {
                                 default: withCtx(() => [
                                   createTextVNode(toDisplayString(item), 1)
                                 ]),
                                 _: 2
-                              }, 1032, ["style"])
+                              }, 1032, ["style", "class"])
                             ]),
                             _: 2
-                          }, 1032, ["class", "onClick"])
+                          }, 1032, ["class", "hover-class", "onClick"])
                         ], 64);
                       }), 128))
                     ]),
@@ -29754,33 +29784,33 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
               }, 8, ["style", "class"]),
               createVNode(_component_view, {
                 style: normalizeStyle(backgroundColor.value != null ? { backgroundColor: backgroundColor.value } : {}),
-                class: normalizeClass(["uni-action-sheet_dialog__action", { "uni-action-sheet_landscape__mode": isLandscape2.value }]),
-                "hover-class": "uni-action-sheet_dialog__hover",
+                class: normalizeClass(["uni-action-sheet_dialog__action", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value }]),
+                "hover-class": hoverClass.value,
                 onClick: handleCancel
               }, {
                 default: withCtx(() => [
                   createVNode(_component_text, {
                     style: normalizeStyle(cancelColor.value != null ? { color: cancelColor.value } : {}),
-                    class: "uni-action-sheet_dialog__action__text"
+                    class: normalizeClass(["uni-action-sheet_dialog__action__text", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
                   }, {
                     default: withCtx(() => [
                       createTextVNode(toDisplayString(cancelText.value), 1)
                     ]),
                     _: 1
-                  }, 8, ["style"])
+                  }, 8, ["style", "class"])
                 ]),
                 _: 1
-              }, 8, ["style", "class"]),
+              }, 8, ["style", "class", "hover-class"]),
               !isLandscape2.value ? (openBlock(), createBlock(_component_view, {
                 key: 0,
                 class: "uni-action-sheet_dialog__safe-area",
-                style: normalizeStyle(backgroundColor.value != null ? { height: `${bottomNavigationHeight.value}px`, backgroundColor: backgroundColor.value } : { height: `${bottomNavigationHeight.value}px` })
+                style: normalizeStyle({ height: `${bottomNavigationHeight.value}px`, backgroundColor: computedBackgroundColor.value })
               }, null, 8, ["style"])) : createCommentVNode("", true),
               isWidescreen.value && Object.keys(popover).length > 0 ? (openBlock(), createBlock(_component_view, {
                 key: 1,
                 style: normalizeStyle(triangleStyle.value),
-                class: normalizeClass(["uni-action-sheet_dialog__triangle", triangleClass.value])
-              }, null, 8, ["style", "class"])) : createCommentVNode("", true)
+                class: "uni-action-sheet_dialog__triangle"
+              }, null, 8, ["style"])) : createCommentVNode("", true)
             ]),
             _: 1
           }, 8, ["style", "class"])
@@ -29790,7 +29820,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$5 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action,\n  .uni-action-sheet_dialog__safe-area {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n.uni-action-sheet_dialog__triangle--bottom {\n    border-color: #fcfcfd transparent transparent transparent;\n}\n.uni-action-sheet_dialog__triangle--top {\n    border-color: transparent transparent #fcfcfd transparent;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n@media (prefers-color-scheme: dark) {\n.uni-action-sheet_dialog__container {\n      background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu,\n    .uni-action-sheet_dialog__action,\n    .uni-action-sheet_dialog__safe-area {\n      background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title__text {\n      color: #999999;\n}\n.uni-action-sheet_dialog__cell__text,\n    .uni-action-sheet_dialog__action__text {\n      color: #ffffff;\n}\n.uni-action-sheet_dialog__hover {\n      background-color: #1c1c1c;\n}\n.divider {\n      background-color: #2F3131;\n}\n.uni-action-sheet_dialog__triangle--bottom {\n      border-color: #2C2C2B transparent transparent transparent;\n}\n.uni-action-sheet_dialog__triangle--top {\n      border-color: transparent transparent #2C2C2B transparent;\n}\n}\n";
+const _style_0$5 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action,\n  .uni-action-sheet_dialog__safe-area {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.uni-action-sheet_dialog__hover__dark__mode {\n		background-color: #1c1c1c;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n\n\n\n\n\n\n\n\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["styles", [_style_0$5]]]);
 class ShowActionSheetSuccessImpl {
   constructor(tapIndex, errMsg = "showActionSheet:ok") {
@@ -31122,6 +31152,8 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(
 const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   __name: "uniModal",
   setup(__props) {
+    const theme = ref("light");
+    const isDark = computed(() => theme.value == "dark");
     const language = ref("zh-Hans");
     const i18nCancelText = {
       en: "Cancel",
@@ -31148,10 +31180,13 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
     const placeholderText = ref(null);
     const inputConfirmText = ref(null);
     const inputCancelText = ref(null);
+    const cancelColor = ref("#000000");
+    const confirmColor = ref("#4A5E86");
     const inputBottom = ref("0px");
     const maxScrollHeight = ref("192px");
     const inputCancelColor = ref(null);
     const inputConfirmColor = ref(null);
+    const hoverClassName = ref("uni-modal-dialog__action--hover");
     const showAnim = ref(false);
     const isAutoHeight = ref(true);
     const hasTitle = computed(() => {
@@ -31218,12 +31253,19 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
       }
       return hexColorRegex.test(inputColor);
     };
-    const cancelColorStyle = computed(() => {
-      return isValidColor(inputCancelColor.value) ? { color: inputCancelColor.value } : {};
-    });
-    const confirmColorStyle = computed(() => {
-      return isValidColor(inputConfirmColor.value) ? { color: inputConfirmColor.value } : {};
-    });
+    const updateUI = () => {
+      if (isValidColor(inputConfirmColor.value)) {
+        confirmColor.value = inputConfirmColor.value;
+      } else {
+        confirmColor.value = theme.value == "dark" ? "#7388a2" : "#4A5E86";
+      }
+      if (isValidColor(inputCancelColor.value)) {
+        cancelColor.value = inputCancelColor.value;
+      } else {
+        cancelColor.value = theme.value == "dark" ? "#a5a5a5" : "#000000";
+      }
+      hoverClassName.value = theme.value == "dark" ? "uni-modal-dialog__action--hover-dark" : "uni-modal-dialog__action--hover";
+    };
     const closeModal = () => {
       showAnim.value = false;
       setTimeout(() => {
@@ -31265,6 +31307,15 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
       } else if (deviceInfo.osLanguage != null) {
         language.value = deviceInfo.osLanguage;
       }
+      const hostTheme = appBaseInfo.hostTheme;
+      if (hostTheme != null) {
+        theme.value = hostTheme;
+        updateUI();
+      }
+      uni.onThemeChange((res) => {
+        theme.value = res.theme;
+        updateUI();
+      });
       const locale = uni.getLocale();
       language.value = locale;
       uni.onLocaleChange((res) => {
@@ -31304,6 +31355,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
         if (data["cancelColor"] != null) {
           inputCancelColor.value = data["cancelColor"];
         }
+        updateUI();
       });
       uni.$emit(readyEventName.value, {});
     });
@@ -31331,24 +31383,26 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
       }, {
         default: withCtx(() => [
           createVNode(_component_view, {
-            class: normalizeClass(["uni-modal-dialog", { "uni-modal-dialog--show": showAnim.value }]),
+            class: normalizeClass(["uni-modal-dialog", { "uni-modal-dialog--show": showAnim.value, "uni-modal--dark": isDark.value }]),
             style: normalizeStyle({ bottom: inputBottom.value })
           }, {
             default: withCtx(() => [
-              createVNode(_component_view, { class: "uni-modal-dialog__inner" }, {
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-modal-dialog__inner", { "uni-modal--dark": isDark.value }])
+              }, {
                 default: withCtx(() => [
                   createVNode(_component_view, { class: "uni-modal-dialog__title__container" }, {
                     default: withCtx(() => [
                       hasTitle.value ? (openBlock(), createBlock(_component_text, {
                         key: 0,
                         "max-lines": "2",
-                        class: "uni-modal-dialog__title"
+                        class: normalizeClass(["uni-modal-dialog__title", { "uni-modal--dark": isDark.value }])
                       }, {
                         default: withCtx(() => [
                           createTextVNode(toDisplayString(title.value), 1)
                         ]),
                         _: 1
-                      })) : createCommentVNode("", true)
+                      }, 8, ["class"])) : createCommentVNode("", true)
                     ]),
                     _: 1
                   }),
@@ -31360,7 +31414,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
                         key: 0,
                         modelValue: content.value,
                         "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => content.value = $event),
-                        class: "uni-modal-dialog__textarea",
+                        class: normalizeClass(["uni-modal-dialog__textarea", { "uni-modal--dark": isDark.value }]),
                         "placeholder-class": "uni-modal-dialog__textarea-placeholder",
                         focus: true,
                         "adjust-position": false,
@@ -31368,7 +31422,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
                         onKeyboardheightchange: onInputKeyboardChange,
                         "auto-height": isAutoHeight.value,
                         placeholder: placeholderText.value
-                      }, null, 8, ["modelValue", "auto-height", "placeholder"])) : content.value.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
+                      }, null, 8, ["modelValue", "class", "auto-height", "placeholder"])) : content.value.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
                         key: 1,
                         class: "uni-modal-dialog__scroll",
                         "show-scrollbar": "true",
@@ -31387,18 +31441,20 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
                     ]),
                     _: 1
                   }, 8, ["class"]),
-                  createVNode(_component_view, { class: "uni-modal-dialog__divider" }),
+                  createVNode(_component_view, {
+                    class: normalizeClass(["uni-modal-dialog__divider", { "uni-modal--dark": isDark.value }])
+                  }, null, 8, ["class"]),
                   createVNode(_component_view, { class: "uni-modal-dialog__actions" }, {
                     default: withCtx(() => [
                       showCancel.value ? (openBlock(), createBlock(_component_view, {
                         key: 0,
                         class: "uni-modal-dialog__action uni-modal-dialog__action--cancel",
-                        "hover-class": "uni-modal-dialog__action--hover",
+                        "hover-class": hoverClassName.value,
                         onClick: handleCancel
                       }, {
                         default: withCtx(() => [
                           createVNode(_component_text, {
-                            style: normalizeStyle(cancelColorStyle.value),
+                            style: normalizeStyle({ color: cancelColor.value }),
                             "max-lines": "1",
                             class: "uni-modal-dialog__action-text"
                           }, {
@@ -31409,19 +31465,19 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
                           }, 8, ["style"])
                         ]),
                         _: 1
-                      })) : createCommentVNode("", true),
+                      }, 8, ["hover-class"])) : createCommentVNode("", true),
                       showCancel.value ? (openBlock(), createBlock(_component_view, {
                         key: 1,
-                        class: "uni-modal-dialog__split"
-                      })) : createCommentVNode("", true),
+                        class: normalizeClass(["uni-modal-dialog__split", { "uni-modal--dark": isDark.value }])
+                      }, null, 8, ["class"])) : createCommentVNode("", true),
                       createVNode(_component_view, {
                         class: "uni-modal-dialog__action uni-modal-dialog__action--confirm",
-                        "hover-class": "uni-modal-dialog__action--hover",
+                        "hover-class": hoverClassName.value,
                         onClick: handleSure
                       }, {
                         default: withCtx(() => [
                           createVNode(_component_text, {
-                            style: normalizeStyle(confirmColorStyle.value),
+                            style: normalizeStyle({ color: confirmColor.value }),
                             "max-lines": "1",
                             class: "uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm"
                           }, {
@@ -31432,13 +31488,13 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
                           }, 8, ["style"])
                         ]),
                         _: 1
-                      })
+                      }, 8, ["hover-class"])
                     ]),
                     _: 1
                   })
                 ]),
                 _: 1
-              })
+              }, 8, ["class"])
             ]),
             _: 1
           }, 8, ["style", "class"])
@@ -31448,7 +31504,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$3 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n@media screen and (min-width: 768px) {\n.uni-modal-dialog {\n			max-width: 556px;\n}\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		lines: 2;\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 22px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--cancel{\n		padding: 0 4px 0 10px;\n}\n.uni-modal-dialog__action--confirm{\n		padding: 0 10px 0 4px;\n}\n.uni-modal-dialog__action--hover {\n		background-color: #efefef;\n}\n.uni-modal-dialog__action-text {\n		color: #000000;\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n		lines: 1;\n\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n@media (prefers-color-scheme: dark) {\n.uni-modal-dialog,\n		.uni-modal-dialog__inner {\n			background-color: #272727;\n}\n.uni-modal-dialog__title {\n			color: #cfcfcf;\n}\n.uni-modal-dialog__textarea {\n			background-color: #3d3d3d;\n			color: #cfcfcf;\n}\n.uni-modal-dialog__divider,\n		.uni-modal-dialog__split {\n			background-color: #303030;\n}\n.uni-modal-dialog__action--hover {\n			background-color: #1c1c1c;\n}\n.uni-modal-dialog__action-text {\n			color: #a5a5a5;\n}\n.uni-modal-dialog__action-text--confirm {\n			color: #7388a2;\n}\n}\n";
+const _style_0$3 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n@media screen and (min-width: 768px) {\n.uni-modal-dialog {\n			max-width: 556px;\n}\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		lines: 2;\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 22px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--cancel{\n		padding: 0 4px 0 10px;\n}\n.uni-modal-dialog__action--confirm{\n		padding: 0 10px 0 4px;\n}\n.uni-modal-dialog__action--hover {\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		background-color: #1c1c1c;\n}\n.uni-modal-dialog__action-text {\n		color: #000000;\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n		lines: 1;\n\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["styles", [_style_0$3]]]);
 class ShowModalSuccessImpl {
   constructor(cancel, confirm, content = null, errMsg = "showModal:ok") {
