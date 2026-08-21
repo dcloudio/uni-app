@@ -387,6 +387,13 @@ export async function compile(
                 pluginDir,
                 proxyCodeOptions
               )) ?? ''
+            cacheDir &&
+              saveCachedUtssdkJs(
+                pluginRelativeDir,
+                cacheDir,
+                'app-android',
+                code
+              )
           }
         }
         if (!isCompileUniModules && cacheDir) {
