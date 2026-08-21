@@ -102,6 +102,12 @@ interface TitleSnap {
 
 const EMPTY_TITLE_SNAP: TitleSnap = { ttn: '', ttpj: '', ttc: '' }
 
+function resolveEventTimeSec(value?: number): number {
+  return typeof value === 'number' && Number.isFinite(value)
+    ? Math.floor(value)
+    : nowSec()
+}
+
 interface LifecycleState {
   /** 上一个页面 path（不含 query）。 */
   lastRoute: string
@@ -184,6 +190,19 @@ const state: LifecycleState = {
   backgroundEnteredAt: 0,
   suppressNextPageLogAfterResume: false,
   backgroundResumeLt1At: 0,
+}
+
+/** 当前可见页上下文，供 lt=21 / lt=31 与页面生命周期复用同一份路由和标题状态。 */
+export function getCurrentStatPageContext(): {
+  url?: string
+  iey?: boolean
+  ttn?: string
+  ttpj?: string
+  ttc?: string
+} {
+  const url = state.lastRouteFull || state.lastRoute
+  if (!url) return {}
+  return Object.assign({ url, iey: state.lastIey }, getCurrentTitle())
 }
 
 /** Vue2 H5 hide 过程中偶发 page onShow（间隔≈0s），低于此阈值不消费 pending。 */
@@ -425,11 +444,12 @@ export function handleLaunch(
     path?: string
     query?: Record<string, unknown>
   } = {},
-  opts: LifecycleOptions = {}
+  opts: LifecycleOptions = {},
+  eventTimeSec?: number
 ): void {
   const c = safeCollector(app)
   if (!c) return
-  const now = nowSec()
+  const now = resolveEventTimeSec(eventTimeSec)
   const scene = tryRun(() => getLaunchScene(options.scene), '')
   const result = tryRun(
     () => ensureSession('cold_launch', { now, scene }),
@@ -467,7 +487,9 @@ function tryConsumeBackgroundResume(
   app: StatApp,
   options: { scene?: string | number; path?: string } = {},
   _opts: LifecycleOptions = {},
-  _from: string = 'unknown'
+  _from: string = 'unknown',
+  eventTimeSec?: number,
+  trustedAppShow = false
 ): boolean {
   if (!state.pendingBackgroundResume) {
     return false
@@ -482,9 +504,9 @@ function tryConsumeBackgroundResume(
     return false
   }
 
-  const now = nowSec()
+  const now = resolveEventTimeSec(eventTimeSec)
   const elapsed = now - bgEnterAt
-  if (elapsed < BACKGROUND_RESUME_DEBOUNCE_SEC) {
+  if (elapsed < BACKGROUND_RESUME_DEBOUNCE_SEC && !trustedAppShow) {
     state.suppressNextPageLogAfterResume = true
     return true
   }
@@ -545,13 +567,25 @@ function tryConsumeBackgroundResume(
 export function handleAppShow(
   app: StatApp,
   options: { scene?: string | number; path?: string } = {},
-  opts: LifecycleOptions = {}
+  opts: LifecycleOptions = {},
+  eventTimeSec?: number,
+  trustedAppShow = false
 ): void {
-  if (tryConsumeBackgroundResume(app, options, opts, 'handleAppShow')) return
+  if (
+    tryConsumeBackgroundResume(
+      app,
+      options,
+      opts,
+      'handleAppShow',
+      eventTimeSec,
+      trustedAppShow
+    )
+  )
+    return
 
   const c = safeCollector(app)
   if (!c) return
-  const now = nowSec()
+  const now = resolveEventTimeSec(eventTimeSec)
   const scene = tryRun(() => getLaunchScene(options.scene), '')
   if (shouldSkipDuplicateBackgroundResumeLt1(now)) {
     tryRun(() => syncLastScene(scene), undefined)
@@ -592,11 +626,15 @@ export function handleAppShow(
  *   3. 再发 lt=3：保留"应用进入后台"语义（urlref=urlref_ts 指向后台前最后可见页）。
  *   4. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
  */
-export function handleAppHide(app: StatApp, opts: LifecycleOptions = {}): void {
+export function handleAppHide(
+  app: StatApp,
+  opts: LifecycleOptions = {},
+  eventTimeSec?: number
+): void {
   if (state.pendingBackgroundResume) return
   const c = safeCollector(app)
   if (!c) return
-  const now = nowSec()
+  const now = resolveEventTimeSec(eventTimeSec)
   state.wasBackgrounded = true
   state.pendingBackgroundResume = true
   state.backgroundEnteredAt = now
@@ -658,7 +696,8 @@ export function handleAppHide(app: StatApp, opts: LifecycleOptions = {}): void {
 export function handlePageShow(
   app: StatApp,
   vm: PageVm | undefined,
-  opts: LifecycleOptions = {}
+  opts: LifecycleOptions = {},
+  eventTimeSec?: number
 ): void {
   const c = safeCollector(app)
   if (!c) return
@@ -666,9 +705,9 @@ export function handlePageShow(
     state.pendingBackgroundResume &&
     shouldEarlyConsumeBackgroundResumeInMixin()
   ) {
-    tryConsumeBackgroundResume(app, {}, opts, 'handlePageShow')
+    tryConsumeBackgroundResume(app, {}, opts, 'handlePageShow', eventTimeSec)
   }
-  const now = nowSec()
+  const now = resolveEventTimeSec(eventTimeSec)
   const route = tryRun(() => getCurrentRoute(vm), '')
   const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route
   /**
@@ -678,12 +717,8 @@ export function handlePageShow(
   if (!route && !url) return
   const result = tryRun(() => ensureSession('page_show', { now }), null)
   if (!result) return
-  // 每页重置「自定义上报标题」维（ttc）；注入 pages.json 导航标题 → `ttpj`。
-  //
-  // **禁止**在此处调用 `clearPageTitle()`：uni-app 页面 `onLoad` 早于统计 mixin 的 `onShow`，
-  // 业务常在 `onLoad` 里 `uni.setNavigationBarTitle`，拦截器已写入 `ttn`；若此处再清 page，
-  // 会把刚设好的 ttn 抹掉。**跨页**时由 `handlePageHide` 在快照后 `clearPageTitle` 即可。
-  tryRun(() => setReportTitle(''), undefined)
+  // 注入 pages.json 导航标题 → `ttpj`。ttn / ttc 已在上一页 hide 快照后清空；
+  // 不能在 show 再清，否则会抹掉新页面 onLoad 中已设置的标题。
   tryRun(() => setConfigTitle(getPagesJsonNavigationTitle(route)), undefined)
 
   if (result.isNew) {
@@ -772,17 +807,18 @@ export function handlePageShow(
  *
  * 公有版调整（与 `docs/uni统计上报参数.md` 对齐）：
  *   - `lt=11` 不在 onHide 上报；页面离开闭环由「下一次 `handlePageShow` 或 `handleAppHide`」触发。
- *   - onHide 仅做收尾：标记 isHide、清掉自定义 title，避免下次新页空标题。
+ *   - onHide 仅做收尾：标记 isHide、快照并清掉页面级 title，避免串入下一页。
  *   - lastRoute / lastRouteEnterTime / lastIey 保持不变，由 `handlePageShow` 统一切换。
  */
 export function handlePageHide(app: StatApp, _vm: PageVm | undefined): void {
   const c = safeCollector(app)
   if (!c) return
   state.isHide = true
-  // 离开前快照：此时仍保留「本页」ttpj/ttn/ttc；清空 page 维后仅丢 ttn，故必须先快照
+  // 离开前快照：此时仍保留「本页」ttpj/ttn/ttc，必须先快照再清空页面级标题。
   titleSnapGeneration++
   state.lastPageTitleSnap = Object.assign({}, getCurrentTitle())
   tryRun(() => clearPageTitle(), undefined)
+  tryRun(() => setReportTitle(''), undefined)
 }
 
 /**
@@ -857,18 +893,23 @@ const rethrownErrors: WeakSet<object> =
  * 外层 `try/catch` 仅兜底 `reportError` 自身抛错（与私有版一致）；`tryRun` 兜底
  * `setTimeout` 在极端环境（如 SSR / 被 mock 的 timer）下不可用的情况。
  */
-export function handleError(app: StatApp, e: unknown): void {
+export function handleError(
+  app: StatApp,
+  e: unknown,
+  eventTimeSec?: number,
+  rethrow = true
+): void {
   const isObj = typeof e === 'object' && e !== null
   if (isObj && rethrownErrors.has(e as object)) return
   if (isObj) rethrownErrors.add(e as object)
 
   try {
-    app.reportError(e)
+    app.reportError(e, eventTimeSec)
   } catch (err) {
     logger.warn('[uni统计 2.0] handleError failed', err)
   }
 
-  if (isMp()) {
+  if (!rethrow || isMp()) {
     return
   }
 

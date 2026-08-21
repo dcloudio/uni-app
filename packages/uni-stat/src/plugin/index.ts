@@ -13,7 +13,12 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import type { ConfigEnv, UserConfig } from 'vite'
 
-import { shouldAutoImportStatRuntime } from './runtimeEnable'
+import {
+  shouldAutoImportStatRuntime,
+  shouldBootstrapVaporRuntime,
+  shouldRunStatRuntime,
+} from './runtimeEnable'
+import { resolvePublicStatImportPath } from './statRuntime'
 
 type StatType = 'public' | 'private'
 
@@ -103,6 +108,9 @@ export default () => [
      */
     let statType: StatType = 'public'
     let isEnable = false
+    let shouldImportRuntime = false
+    let vaporLifecycleEnabled = false
+    let currentPlatform = process.env.UNI_PLATFORM || ''
     const stats: Record<string, string> = {
       '@dcloudio/uni-stat': resolveBuiltIn(
         '@dcloudio/uni-stat/dist/uni-stat.es.js'
@@ -110,8 +118,14 @@ export default () => [
       '@dcloudio/uni-cloud-stat': resolveBuiltIn(
         '@dcloudio/uni-stat/dist/uni-cloud-stat.es.js'
       ),
+      '@dcloudio/uni-cloud-stat-vapor': resolveBuiltIn(
+        '@dcloudio/uni-stat/dist/uni-cloud-stat-vapor.es.js'
+      ),
       '@dcloudio/uni-stat-public': resolveBuiltIn(
         '@dcloudio/uni-stat/dist/uni-stat-public.es.js'
+      ),
+      '@dcloudio/uni-stat-public-mp-weixin': resolveBuiltIn(
+        '@dcloudio/uni-stat/dist/uni-stat-public.mp-weixin.es.js'
       ),
     }
 
@@ -125,6 +139,7 @@ export default () => [
         }
         const inputDir = process.env.UNI_INPUT_DIR!
         const platform = process.env.UNI_PLATFORM!
+        currentPlatform = platform
         const titlesJson = Object.create(null)
         parsePagesJson(inputDir, platform).pages.forEach((page: any) => {
           const style = page.style || {}
@@ -146,15 +161,28 @@ export default () => [
         if (!isSsr(env.command, config)) {
           const statConfig = getUniStatistics(inputDir, platform)
           // 始终注入完整 manifest.uniStatistics（与 enable 无关）。
-          // enable 仅控制是否自动 import 统计入口；业务手动 import 或 enable:false 调试时，
-          // 运行时仍须能读到 backgroundTimeout / reportInterval 等字段。
+          // enable 仅控制是否注入完整统计入口或 Vapor 桥接；业务手动 import 或
+          // enable:false 调试时，运行时仍须能读到 backgroundTimeout / reportInterval 等字段。
           process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig)
           process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false'
-          // enable 开关：仅以子/根 `enable` 是否显式存在为准（子优先 → 继承根 → 默认开启），
-          // 详见 `runtimeEnable.ts#isUniStatisticsEnabled` 用例矩阵。
-          // uni-app x 不支持自动 import（见 shouldAutoImportStatRuntime），但仍注入 define 配置。
-          isEnable = shouldAutoImportStatRuntime(inputDir, platform)
           statType = resolveUniStatisticsType(statConfig)
+          // Web / 微信小程序和 Vapor App 走 route bridge；VDOM App 保持关闭。
+          shouldImportRuntime = shouldAutoImportStatRuntime(inputDir, platform)
+          vaporLifecycleEnabled = shouldBootstrapVaporRuntime(
+            inputDir,
+            platform
+          )
+          isEnable = shouldImportRuntime || vaporLifecycleEnabled
+
+          // 本地运行默认不采集，避免开发数据污染；发行构建仍只受 enable 控制。
+          if (isEnable && !shouldRunStatRuntime(statConfig.debug)) {
+            shouldImportRuntime = false
+            vaporLifecycleEnabled = false
+            isEnable = false
+            uniStatLog(
+              '本地运行未开启 manifest.json 的 uniStatistics.debug，uni统计不采集、不上报；发行模式不受影响'
+            )
+          }
 
           if (isEnable) {
             const uniCloudConfig = statConfig.uniCloud || {}
@@ -212,6 +240,9 @@ export default () => [
             'process.env.UNI_APP_NAME': JSON.stringify(
               process.env.UNI_APP_NAME ?? ''
             ),
+            'process.env.UNI_STAT_VAPOR': JSON.stringify(
+              vaporLifecycleEnabled ? 'true' : 'false'
+            ),
           },
         }
       },
@@ -219,7 +250,17 @@ export default () => [
         return stats[id] || null
       },
       transform(code: string, id: string) {
-        if (isEnable && opts.filter(id)) {
+        if (isEnable && vaporLifecycleEnabled && opts.filter(id)) {
+          const importPath =
+            statType === 'private'
+              ? '@dcloudio/uni-cloud-stat-vapor'
+              : resolvePublicStatImportPath(currentPlatform)
+          return {
+            code: code + `;import '${importPath}';`,
+            map: null,
+          }
+        }
+        if (isEnable && shouldImportRuntime && opts.filter(id)) {
           // 新编译器只保留类型分流：
           //   public  → @dcloudio/uni-stat-public
           //   private → @dcloudio/uni-cloud-stat
@@ -229,7 +270,7 @@ export default () => [
           const importPath =
             statType === 'private'
               ? '@dcloudio/uni-cloud-stat'
-              : '@dcloudio/uni-stat-public'
+              : resolvePublicStatImportPath(currentPlatform)
           return {
             code: code + `;import '${importPath}';`,
             map: null,

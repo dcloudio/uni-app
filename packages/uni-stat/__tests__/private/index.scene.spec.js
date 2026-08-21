@@ -7,11 +7,12 @@ const mockStat = {
   appShow: jest.fn(),
   sendEvent: jest.fn(),
 }
+const mockStatGetInstance = jest.fn(() => mockStat)
 
 jest.mock('../../src/core/stat.js', () => ({
   __esModule: true,
   default: {
-    getInstance: () => mockStat,
+    getInstance: mockStatGetInstance,
   },
 }))
 
@@ -70,5 +71,15 @@ describe('private index scene wiring', () => {
     const options = { scene: 2002, path: 'pages/index/index' }
     appShowCallback(options)
     expect(mockStat.appShow).toHaveBeenCalledWith('page-vm', options)
+  })
+
+  test('本地未开启 debug 时不创建统计实例', () => {
+    process.env.NODE_ENV = 'development'
+    global.uni = {}
+
+    require('../../src/index.js')
+
+    expect(mockStatGetInstance).not.toHaveBeenCalled()
+    expect(typeof global.uni.report).toBe('function')
   })
 })

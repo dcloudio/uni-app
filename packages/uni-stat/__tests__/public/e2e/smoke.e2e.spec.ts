@@ -12,8 +12,8 @@
  *   S4 长时无操作（前台超时） → 仅发 lt=1，cst=3
  *   S5 wx scene 切换          → 仅发 lt=1，cst=2
  *   S6 入口页 iey/ppiey 序列  → 首页 → A → B → 首页 → 序列符合 §4.2
- *   S7 自定义事件 uni.report  → lt=21，e_n/e_v/sid 正确（seq 不再上行）
- *   S8 错误 throw new Error   → lt=31，em 含 message
+ *   S7 自定义事件 uni.report  → lt=21，e_n/e_v/sid/url/iey 正确（seq 不再上行）
+ *   S8 错误 throw new Error   → lt=31，em/url 正确
  *   S9 弱网 100 条 + 恢复     → 服务端收到 100 条，无重复
  *   S10 老服务端 1.0 通道     → 上行体含 sid/iey 等字段且不报错
  *
@@ -389,10 +389,14 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     expect(ltPages[1].ppiey).toBe(1)
   })
 
-  /** S7 自定义事件 uni.report('foo', {x:1})：lt=21；e_n/e_v 正确；sid/seq 单调。 */
-  test('S7 自定义事件 uni.report → lt=21；e_n/e_v/sid/seq 正确', async () => {
+  /** S7 自定义事件：同时验证业务字段与当前页上下文。 */
+  test('S7 自定义事件 uni.report → lt=21；e_n/e_v/sid/url/iey 正确', async () => {
     const { app, http } = installApp()
     handleLaunch(app, {})
+    handlePageShow(app, {
+      route: 'pages/home/home',
+      $page: { route: 'pages/home/home', fullPath: 'pages/home/home?from=e2e' },
+    })
     await drain(app)
     http.send.mockClear()
 
@@ -415,6 +419,8 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
 
     // sid 都属于同一会话；seq 已不上行，仅本地状态（参数文档对齐）
     expect(customs[0].sid).toBe(customs[1].sid)
+    expect(customs[0].url).toBe('pages/home/home?from=e2e')
+    expect(customs[0].iey).toBe(1)
     expect(customs[0].seq).toBeUndefined()
     expect(customs[1].seq).toBeUndefined()
   })
@@ -430,6 +436,7 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     try {
       const { app, http } = installApp()
       handleLaunch(app, {})
+      handlePageShow(app, { route: 'pages/error/error' })
       await drain(app)
       http.send.mockClear()
 
@@ -441,6 +448,7 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
       expect(errs).toHaveLength(1)
       expect(typeof errs[0].em).toBe('string')
       expect(errs[0].em).toContain('boom-msg')
+      expect(errs[0].url).toBe('pages/error/error')
     } finally {
       jest.clearAllTimers()
       jest.useRealTimers()

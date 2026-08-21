@@ -43,7 +43,7 @@ function getPlatformManifest(
  *
  * ## 范围
  *
- * 仅控制 `shouldAutoImportStatRuntime`；**不**影响 `plugin/index.ts` 对
+ * 仅控制完整运行时或 Vapor 生命周期桥接的注入；**不**影响 `plugin/index.ts` 对
  * `UNI_STATISTICS_CONFIG` 等 define 的注入（配置合并仍走 `getUniStatistics`）。
  *
  * ## enable 判定规则（仅以 `enable` 是否显式存在作为覆盖条件）
@@ -86,17 +86,71 @@ function isUniStatisticsEnabled(inputDir: string, platform?: string): boolean {
   return true
 }
 
-/**
- * 当前是否为 uni-app x 编译目标。
- * x 运行时暂无 `onCreateVueApp` / `vue.mixin` 等页面统计注入能力。
- */
+/** 当前是否为 uni-app x 编译目标。 */
 export function isUniAppXCompile(): boolean {
   return process.env.UNI_APP_X === 'true'
 }
 
 /**
+ * 本地运行仅在 manifest 显式开启 debug 时加载统计；发行构建保持原行为。
+ */
+export function shouldRunStatRuntime(
+  debug: unknown,
+  nodeEnv: string | undefined = process.env.NODE_ENV
+): boolean {
+  return nodeEnv !== 'development' || debug === true
+}
+
+function getCurrentPlatform(platform?: string): string | undefined {
+  return platform ?? process.env.UNI_UTS_PLATFORM ?? process.env.UNI_PLATFORM
+}
+
+function isAppPlatform(platform?: string): boolean {
+  const currentPlatform = getCurrentPlatform(platform)
+  return (
+    currentPlatform === 'app' ||
+    currentPlatform === 'app-plus' ||
+    currentPlatform === 'app-android' ||
+    currentPlatform === 'app-ios' ||
+    currentPlatform === 'app-harmony'
+  )
+}
+
+function isWebOrWeixinPlatform(platform?: string): boolean {
+  const currentPlatform = getCurrentPlatform(platform)
+  return (
+    currentPlatform === 'h5' ||
+    currentPlatform === 'web' ||
+    currentPlatform === 'mp-weixin'
+  )
+}
+
+/** 当前是否使用 uni-app x route bridge 统计方案。 */
+export function isUniAppXVaporCompile(platform?: string): boolean {
+  if (!isUniAppXCompile()) return false
+  if (isAppPlatform(platform)) {
+    return process.env.UNI_APP_X_DOM2 === 'true'
+  }
+  return isWebOrWeixinPlatform(platform)
+}
+
+/**
+ * 是否开启 uni-app x 蒸汽模式的统计入口桥接。
+ */
+export function shouldBootstrapVaporRuntime(
+  inputDir: string,
+  platform?: string
+): boolean {
+  return (
+    isUniAppXVaporCompile(platform) &&
+    isUniStatisticsEnabled(inputDir, platform)
+  )
+}
+
+/**
  * 是否应向 main 入口自动 import 统计运行时。
- * uni-app x 一律跳过自动 import；define 配置注入仍保留，供后续适配或业务手动 import。
+ * uni-app x 不走普通 Vue mixin 运行时：Web / 微信小程序和 Vapor App 使用 route
+ * bridge，VDOM App 与其他小程序保持关闭。define 配置注入始终保留。
  *
  * @param inputDir 工程输入目录
  * @param platform 目标平台；缺省读 `process.env.UNI_PLATFORM`。传入以支持分平台 enable 覆盖。

@@ -1,4 +1,4 @@
-'use strict';
+import { onAppShow, onAppHide, onError } from '@dcloudio/uni-app';
 
 /**
  * 老版本兼容，系统信息
@@ -137,6 +137,31 @@ function safeStringify(value, max = DEFAULT_MAX_LENGTH) {
  */
 /** 当前构建是否启用了 uni-app x Vapor 统计适配。 */
 /**
+ * 判断候选 `uni` 是否具备统计 SDK 可用的最小 API 集合（排除 H5 摇树空桩 `{}`）。
+ *
+ * 任一核心 API 存在即视为可用；与具体平台无关，微信/QQ/抖音/支付宝/百度等
+ * 完整 runtime 均满足，仅「占位空对象」会被过滤。
+ */
+function isUsableUniRuntime(candidate) {
+    if (candidate == null || typeof candidate !== 'object')
+        return false;
+    const u = candidate;
+    return (typeof u.getStorageSync === 'function' ||
+        typeof u.onCreateVueApp === 'function' ||
+        typeof u.request === 'function' ||
+        typeof u.onAppShow === 'function' ||
+        typeof u.onAppRoute === 'function');
+}
+/**
+ * 读取宿主向当前模块注入的 `uni`（小程序等）；不可用时返回 `undefined`。
+ */
+function getModuleUniCandidate() {
+    if (typeof uni === 'undefined' || uni == null || typeof uni !== 'object') {
+        return undefined;
+    }
+    return uni;
+}
+/**
  * H5 兜底：在 `globalThis` / `self` 不可用时尝试读取 `window`。
  *
  * 通过 `Function` 间接访问，避免 ESLint `no-restricted-globals` 对 `window` 标识符的限制；
@@ -171,6 +196,119 @@ function getGlobalObject() {
     if (win)
         return win;
     return {};
+}
+/**
+ * 用字面量 `uni.方法` 引用拼出一个可用的 `uni` facade。
+ *
+ * uni-app 各端构建的 API 注入器仅识别字面量成员表达式 `uni.方法`（H5 → `@dcloudio/uni-h5`，
+ * 小程序 / App 同理），动态 `u.方法` 不会被注入。这里对所需 API 逐个写字面量 `uni.方法`，
+ * 使其被注入后收敛为一个对象供下游适配器使用。
+ *
+ * 仅在 `globalThis.uni` 与模块 `uni` 均不可用时作为兜底（典型：H5 发行摇树后 `window.uni`
+ * 为 `{}` 空桩）。未经注入的环境下 `uni.方法` 读到空桩 / 未声明，拼不出方法时返回 undefined。
+ */
+function buildInjectedUniRuntime() {
+    try {
+        const out = {};
+        const pick = (name, fn) => {
+            if (typeof fn === 'function')
+                out[name] = fn;
+        };
+        // 必须逐个写字面量 `(uni as ...).方法`（emit 后为 `uni.方法`），不可别名 / 循环，否则不会被注入。
+        pick('getStorageSync', uni.getStorageSync);
+        pick('setStorageSync', uni.setStorageSync);
+        pick('removeStorageSync', uni.removeStorageSync);
+        pick('getSystemInfoSync', uni.getSystemInfoSync);
+        pick('getDeviceInfo', uni.getDeviceInfo);
+        pick('getAppBaseInfo', uni.getAppBaseInfo);
+        pick('getWindowInfo', uni.getWindowInfo);
+        pick('getNetworkType', uni.getNetworkType);
+        pick('request', uni.request);
+        pick('onAppShow', uni.onAppShow);
+        pick('offAppShow', uni.offAppShow);
+        pick('onAppHide', uni.onAppHide);
+        pick('offAppHide', uni.offAppHide);
+        pick('onAppLaunch', uni.onAppLaunch);
+        pick('offAppLaunch', uni.offAppLaunch);
+        pick('onAppRoute', uni.onAppRoute);
+        pick('offAppRoute', uni.offAppRoute);
+        pick('onBeforeAppRoute', uni.onBeforeAppRoute);
+        pick('offBeforeAppRoute', uni.offBeforeAppRoute);
+        pick('getLaunchOptionsSync', uni.getLaunchOptionsSync);
+        pick('addInterceptor', uni.addInterceptor);
+        pick('removeInterceptor', uni.removeInterceptor);
+        pick('getPushClientId', uni.getPushClientId);
+        pick('getAccountInfoSync', uni.getAccountInfoSync);
+        pick('onCreateVueApp', uni.onCreateVueApp);
+        return Object.keys(out).length > 0 ? out : undefined;
+    }
+    catch (_e) {
+        // 未注入且 `uni` 未声明（单测 / 极端环境）→ ReferenceError，兜底返回 undefined。
+        return undefined;
+    }
+}
+/**
+ * 探测 `uni` 解析路径（不改变 `resolveUniRuntime` 行为，仅用于 debug 诊断）。
+ */
+function probeUniRuntime() {
+    const globalThisAvailable = typeof globalThis !== 'undefined';
+    const g = getGlobalObject();
+    const globalUni = g.uni;
+    const globalThisHasUni = globalUni != null && typeof globalUni === 'object';
+    const globalThisUniStub = globalThisHasUni && !isUsableUniRuntime(globalUni);
+    const moduleUni = getModuleUniCandidate();
+    const moduleUniDefined = moduleUni != null;
+    if (isUsableUniRuntime(globalUni)) {
+        return {
+            resolved: true,
+            source: 'globalThis',
+            globalThisHasUni: true,
+            globalThisUniStub: false,
+            moduleUniDefined,
+            globalThisAvailable,
+            uni: globalUni,
+        };
+    }
+    if (isUsableUniRuntime(moduleUni)) {
+        return {
+            resolved: true,
+            source: 'module',
+            globalThisHasUni,
+            globalThisUniStub,
+            moduleUniDefined: true,
+            globalThisAvailable,
+            uni: moduleUni,
+        };
+    }
+    // globalThis / 模块 uni 均不可用（典型 H5 发行空桩）时，用注入 facade 兜底。
+    const injectedUni = buildInjectedUniRuntime();
+    if (isUsableUniRuntime(injectedUni)) {
+        return {
+            resolved: true,
+            source: 'injected',
+            globalThisHasUni,
+            globalThisUniStub,
+            moduleUniDefined,
+            globalThisAvailable,
+            uni: injectedUni,
+        };
+    }
+    return {
+        resolved: false,
+        source: 'none',
+        globalThisHasUni,
+        globalThisUniStub,
+        moduleUniDefined,
+        globalThisAvailable,
+        uni: undefined,
+    };
+}
+/**
+ * 返回与业务侧一致的 `uni` 运行时根对象；均不可用时返回 `undefined`。
+ */
+function resolveUniRuntime() {
+    const probe = probeUniRuntime();
+    return probe.resolved ? probe.uni : undefined;
 }
 
 /**
@@ -743,17 +881,6 @@ const get_scene = (options) => {
 };
 
 /**
- * 获取拼接参数
- */
-const get_splicing = (data) => {
-  let str = '';
-  for (var i in data) {
-    str += i + '=' + data[i] + '&';
-  }
-  return str.substr(0, str.length - 1)
-};
-
-/**
  * 获取页面url，不包含参数
  */
 const get_route = (pageVm) => {
@@ -832,7 +959,7 @@ const handle_data = (statData) => {
     rd.forEach((elm) => {
       let newData = '';
       {
-        newData = get_splicing(elm);
+        newData = elm;
       }
       if (i === 0) {
         firstArr.push(newData);
@@ -982,6 +1109,42 @@ const requestData = (done) => {
 };
 
 /**
+ * 获取uniCloud服务空间配置
+ * @returns {Object}
+ */
+const uni_cloud_config = () => {
+  return process.env.UNI_STAT_UNI_CLOUD || {}
+};
+
+/**
+ * 获取服务空间
+ * @param {*} config
+ * @returns
+ */
+const get_space = (config) => {
+  const uniCloudConfig = uni_cloud_config();
+  const { spaceId, provider, clientSecret ,secretKey,secretId} = uniCloudConfig;
+  const space_type = ['tcb', 'tencent', 'aliyun','alipay','private','dcloud'];
+  const is_provider = space_type.indexOf(provider) !== -1;
+  const is_aliyun = provider === 'aliyun' && spaceId && clientSecret;
+  const is_tcb = (provider === 'tcb' || provider === 'tencent') && spaceId;
+  const is_alipay = provider === 'alipay' && spaceId && secretKey && secretId;
+
+  const is_private = provider === 'private' && spaceId && clientSecret;
+  const is_dcloud = provider === 'dcloud' && spaceId && clientSecret;
+
+  if (is_provider && (is_aliyun || is_tcb || is_alipay || is_private || is_dcloud)) {
+    return uniCloudConfig
+  } else {
+    if (config && config.spaceId) {
+      return config
+    }
+  }
+
+  return null
+};
+
+/**
  * 是否开启 debug 模式
  */
 const is_debug = debug;
@@ -1039,6 +1202,17 @@ const is_page_report = ()=>{
     return typeof statPageLog === 'boolean' ? statPageLog : true
   }
   return true
+};
+
+/**
+ * 是否已处理设备 DeviceId
+ * 如果值为 1 则表示已处理
+ */
+const IS_HANDLE_DEVECE_ID = 'is_handle_device_id';
+const is_handle_device = () => {
+  let isHandleDevice = dbGet(IS_HANDLE_DEVECE_ID) || '';
+	dbSet(IS_HANDLE_DEVECE_ID, '1');
+  return isHandleDevice === '1'
 };
 
 // 首次访问时间
@@ -1390,9 +1564,17 @@ function initReportNetwork(sendFn, opts) {
   dispatchSend = sendFn;
   clearStaleInflight();
   installWatcher();
-  {
+  const flushOnInit = !opts || opts.flushOnInit !== false;
+  if (flushOnInit) {
     tryFlushWhenOnline();
   }
+}
+
+/**
+ * 服务空间就绪后 / 需要主动冲刷时调用。
+ */
+function resumeReportNetwork() {
+  tryFlushWhenOnline();
 }
 
 /**
@@ -1501,12 +1683,13 @@ class Report {
       this.interceptShare(true);
       this.interceptRequestPayment();
     }
-
-    // 私有版网络门闸：1.0/云函数共用同一模块，仅 sendFn 不同
     {
-      initReportNetwork((optionsData) => {
-        this.dispatchSendRequestV1(optionsData);
-      });
+      initReportNetwork(
+        (optionsData) => {
+          this.dispatchSendRequestV2(optionsData);
+        },
+        { flushOnInit: false }
+      );
     }
   }
 
@@ -1723,9 +1906,10 @@ class Report {
     // 必须先读 lvts 再写 fvts，保证首启仍上报 0，同时基线已落库
     const last_time = get_last_visit_time();
     const odid = get_odid();
-    // 1.0：仅新用户（lvts=0）附带 odid
+    // 2.0：未处理过设备信息则补发，与是否新用户无关（避免 lvts 基线落库后无法补 odid）
     {
-      if (last_time === 0) {
+      const have_device = is_handle_device();
+      if (!have_device) {
         this.statData.odid = odid;
       }
     }
@@ -1849,15 +2033,6 @@ class Report {
       requests: stat_data,
     };
 
-    {
-      if (statData.ut === 'h5') {
-        gateSend(optionsData, (payload) => {
-          this.imageRequest(payload);
-        });
-        return
-      }
-    }
-
     // XXX 安卓需要延迟上报 ，否则会有未知错误，需要验证处理
     if (get_platform_name() === 'n' && this.statData.p === 'a') {
       setTimeout(() => {
@@ -1968,16 +2143,6 @@ class Report {
     // 重置队列
     dbRemove('__UNI__STAT__DATA');
 
-    {
-      if (data.ut === 'h5') {
-        // H5 1.0 同样走网络门闸，无网挂起
-        gateSend(optionsData, (payload) => {
-          this.imageRequest(payload);
-        });
-        return
-      }
-    }
-
     // XXX 安卓需要延迟上报 ，否则会有未知错误，需要验证处理
     if (get_platform_name() === 'n' && this.statData.p === 'a') {
       setTimeout(() => {
@@ -2000,9 +2165,8 @@ class Report {
   sendRequest(optionsData) {
     {
       gateSend(optionsData, (payload) => {
-        this.dispatchSendRequestV1(payload);
+        this.dispatchSendRequestV2(payload);
       });
-      return
     }
   }
 
@@ -2124,6 +2288,49 @@ class Stat extends Report {
   static getInstance() {
     if (!uni.__stat_instance) {
       uni.__stat_instance = new Stat();
+    }
+
+    // 2.0 init 服务空间
+    {
+      const uniCloudConfig =
+        typeof uniCloud !== 'undefined' && uniCloud
+          ? uniCloud.config
+          : undefined;
+      let space = get_space(uniCloudConfig);
+      let spaceJustReady = false;
+      if (!uni.__stat_uniCloud_space) {
+        //   判断不为空对象
+        if (space && Object.keys(space).length !== 0) {
+          let spaceData = {
+            provider: space.provider,
+            spaceId: space.spaceId,
+            clientSecret: space.clientSecret,
+          };
+
+          if (space.endpoint) {
+            spaceData.endpoint = space.endpoint;
+          }
+
+          if(space.provider === 'alipay'){
+            spaceData.secretKey = space.secretKey;
+            spaceData.accessKey = space.accessKey || space.secretId;
+            spaceData.spaceAppId = space.spaceAppId || space.appId;
+          }
+
+          uni.__stat_uniCloud_space = uniCloud.init(spaceData);
+          spaceJustReady = true;
+          // console.log(
+          //   '=== 当前绑定的统计服务空间spaceId：' +
+          //     uni.__stat_uniCloud_space.config.spaceId
+          // )
+        } else {
+          console.error('应用未关联服务空间，请在uniCloud目录右键关联服务空间');
+        }
+      }
+      // 仅在服务空间刚刚就绪时冲刷一次，避免 getInstance 反复触发
+      if (spaceJustReady) {
+        resumeReportNetwork();
+      }
     }
 
     return uni.__stat_instance
@@ -2267,100 +2474,250 @@ class Stat extends Report {
   }
 }
 
-let stat;
+const SHARED_KEY = '__UNI_STAT_PRIVATE_VAPOR_BRIDGE__';
+const ROUTE_OPEN_TYPES = new Set([
+  'appLaunch',
+  'navigateTo',
+  'navigateBack',
+  'redirectTo',
+  'reLaunch',
+  'switchTab',
+]);
+const MAX_ROUTE_EVENT_IDS = 100;
 
-// 用于判断是隐藏页面还是卸载页面
-let isHide = false;
+function encodeRouteValue(value, platform) {
+  const encoded = encodeURIComponent(value);
+  return platform === 'h5' ? encodeURIComponent(encoded) : encoded
+}
 
-const lifecycle = {
-  onLaunch(options) {
-    // 进入应用上报数据
-    stat.launch(options, this);
-    // 上报push推送id
-    stat.pushEvent(options);
-  },
-  onLoad(options) {
-    stat.load(options, this);
-    // 重写分享，获取分享上报事件
-    if (this.$scope && this.$scope.onShareAppMessage) {
-      let oldShareAppMessage = this.$scope.onShareAppMessage;
-      this.$scope.onShareAppMessage = function (options) {
-        stat.interceptShare(false);
-        return oldShareAppMessage.call(this, options)
-      };
-    }
-  },
-  onShow(options) {
-    isHide = false;
-    stat.show(this, options);
-  },
-  onHide() {
-    isHide = true;
-    stat.hide(this);
-  },
-  onUnload() {
-    if (isHide) {
-      isHide = false;
-      return
-    }
-    stat.hide(this);
-  },
-  onError(e) {
-    // fix by haotian 避免统计内部错误导致堆栈溢出，造成死循环
-    try {
-      stat.error(e);
-    } catch (error) {
-      console.error('uni-stat error:', error);
-    }
-  },
-};
-
-// 加载统计代码
-function load_stat() {
-  stat = Stat.getInstance();
-  // #ifdef VUE3
-  uni.onCreateVueApp((app) => {
-    app.mixin(lifecycle);
-    uni.report = function (type, options) {
-      stat.sendEvent(type, options);
-    };
-  });
-
-  if (get_platform_name() !== 'h5' && get_platform_name() !== 'n') {
-    uni.onAppHide(() => {
-      stat.appHide(get_page_vm());
-    });
-    uni.onAppShow((options) => {
-      stat.appShow(get_page_vm(), options);
-    });
+function normalizeRoute(event) {
+  if (
+    !event ||
+    event.notFound === true ||
+    !ROUTE_OPEN_TYPES.has(event.openType) ||
+    typeof event.path !== 'string' ||
+    !event.path
+  ) {
+    return
   }
-  // #endif
+  const path = event.path.charAt(0) === '/' ? event.path.slice(1) : event.path;
+  const query = event.query && typeof event.query === 'object' ? event.query : {};
+  const platform = get_platform_name();
+  const prefix = platform === 'h5' || platform === 'wx' ? '/' : '';
+  const queryString = Object.keys(query)
+    .map(
+      (key) =>
+        `${encodeRouteValue(key, platform)}=${encodeRouteValue(
+          query[key] == null ? '' : query[key],
+          platform
+        )}`
+    )
+    .join('&');
+  const fullPath = `${prefix}${path}${queryString ? `?${queryString}` : ''}`;
+  return {
+    key: `${path}?${JSON.stringify(
+      Object.keys(query)
+        .sort()
+        .map((key) => [key, String(query[key] == null ? '' : query[key])])
+    )}`,
+    path,
+    query,
+    page: {
+      mpType: 'page',
+      route: path,
+      $page: { route: path, fullPath },
+    },
+  }
+}
 
-  // #ifndef VUE3
-  // eslint-disable-next-line no-restricted-globals
-  const Vue = require('vue')
-  ;(Vue.default || Vue).mixin(lifecycle);
-  uni.report = function (type, options) {
-    stat.sendEvent(type, options);
+function createPrivateVaporSink(stat) {
+  const seenRouteIds = new Set();
+  const routeIdOrder = [];
+  let launched = false;
+  let foreground = false;
+  let backgrounded = false;
+  let activeRoute;
+  let pendingRoute;
+  let routePrepared = false;
+  let resumeRouteKey;
+
+  const rememberRouteId = (id) => {
+    if (!id) return true
+    if (seenRouteIds.has(id)) return false
+    seenRouteIds.add(id);
+    routeIdOrder.push(id);
+    if (routeIdOrder.length > MAX_ROUTE_EVENT_IDS) {
+      seenRouteIds.delete(routeIdOrder.shift());
+    }
+    return true
   };
-  // #endif
+
+  const hidePage = () => {
+    if (!activeRoute || routePrepared) return
+    stat.hide(activeRoute.page);
+    routePrepared = true;
+  };
+
+  const showPage = (route) => {
+    stat.load(route.query, route.page);
+    stat.show(route.page);
+    activeRoute = route;
+    routePrepared = false;
+  };
+
+  return {
+    launch(options) {
+      if (launched) return
+      launched = true;
+      stat.launch(options || {}, null);
+      stat.pushEvent(options || {});
+    },
+    show(options) {
+      if (foreground) return
+      const resumed = backgrounded;
+      stat.appShow(activeRoute && activeRoute.page, options || {});
+      foreground = true;
+      backgrounded = false;
+      const route = pendingRoute || activeRoute;
+      if (route && (resumed || pendingRoute)) showPage(route);
+      resumeRouteKey = resumed && route ? route.key : undefined;
+      pendingRoute = undefined;
+    },
+    hide() {
+      if (!foreground) return
+      hidePage();
+      stat.appHide(activeRoute && activeRoute.page);
+      foreground = false;
+      backgrounded = true;
+      resumeRouteKey = undefined;
+      routePrepared = !!activeRoute;
+    },
+    error(value) {
+      try {
+        stat.error(value, activeRoute && activeRoute.page);
+      } catch (error) {
+        console.error('uni-stat error:', error);
+      }
+    },
+    beforeRoute(event) {
+      if (launched && foreground && normalizeRoute(event)) hidePage();
+    },
+    route(event) {
+      if (!rememberRouteId(event && event.routeEventId)) return
+      const route = normalizeRoute(event);
+      if (!route) return
+      if (!foreground) {
+        pendingRoute = route;
+        return
+      }
+      if (!routePrepared && resumeRouteKey === route.key) {
+        resumeRouteKey = undefined;
+        activeRoute = route;
+        return
+      }
+      resumeRouteKey = undefined;
+      hidePage();
+      showPage(route);
+    },
+  }
 }
 
-function main() {
-  if (is_debug) {
-    {
-      // #ifndef APP-NVUE
-      logger.debug('=== uni统计 1.0 已启用 ===');
-      // #endif
+function mountUniReport(stat) {
+  const report = (type, options) => stat.sendEvent(type, options);
+  try {
+    if (typeof uni === 'object' && uni) uni.report = report;
+  } catch (_error) {}
+  const runtime = resolveUniRuntime();
+  if (runtime && typeof runtime === 'object') runtime.report = report;
+}
+
+function bindLifecycle(shared) {
+  const bind = (key, register, callback) => {
+    if (shared[key]) return
+    try {
+      register(callback);
+      shared[key] = true;
+    } catch (error) {
+      if (!shared.lifecycleWarningShown) {
+        shared.lifecycleWarningShown = true;
+        logger.warn('[vapor] 私有版应用生命周期初始化失败，部分统计可能缺失', error);
+      }
     }
-    load_stat();
-  } else {
-    if (process.env.NODE_ENV === 'development') {
-      uni.report = function (type, options) {};
+  };
+  bind('showBound', onAppShow, (options) => shared.sink.show(options));
+  bind('hideBound', onAppHide, () => shared.sink.hide());
+  bind('errorBound', onError, (value) => shared.sink.error(value));
+}
+
+function install() {
+  const runtime = resolveUniRuntime();
+  if (!runtime || typeof runtime !== 'object') {
+    logger.warn('[vapor] uni 运行时不可用，私有版统计未启用');
+    return
+  }
+  const globalObject = getGlobalObject();
+  let shared = globalObject[SHARED_KEY];
+  if (!shared) {
+    const stat = Stat.getInstance();
+    shared = {
+      sink: createPrivateVaporSink(stat),
+      beforeRouteBound: false,
+      routeBound: false,
+      showBound: false,
+      hideBound: false,
+      errorBound: false,
+      lifecycleWarningShown: false,
+    };
+    globalObject[SHARED_KEY] = shared;
+    mountUniReport(stat);
+  }
+  if (!shared.beforeRouteBound) {
+    if (typeof runtime.onBeforeAppRoute !== 'function') {
+      logger.warn('[vapor] uni.onBeforeAppRoute 不可用，私有版统计未启用');
     } else {
-      load_stat();
+      try {
+        runtime.onBeforeAppRoute((event) => {
+          shared.sink.beforeRoute(event);
+          if (!shared.launched) {
+            shared.launched = true;
+            try {
+              const options = runtime.getLaunchOptionsSync?.() || {};
+              shared.sink.launch(options);
+              shared.sink.show(options);
+            } catch (error) {
+              logger.warn('[vapor] 私有版应用启动统计初始化失败', error);
+            }
+          }
+          bindLifecycle(shared);
+        });
+        shared.beforeRouteBound = true;
+      } catch (error) {
+        logger.warn('[vapor] uni.onBeforeAppRoute 注册失败，私有版统计未启用', error);
+      }
+    }
+  }
+  if (!shared.routeBound) {
+    if (typeof runtime.onAppRoute !== 'function') {
+      logger.warn('[vapor] uni.onAppRoute 不可用，私有版页面统计未启用');
+    } else {
+      try {
+        runtime.onAppRoute((event) => shared.sink.route(event));
+        shared.routeBound = true;
+      } catch (error) {
+        logger.warn('[vapor] uni.onAppRoute 注册失败，私有版页面统计未启用', error);
+      }
     }
   }
 }
 
-main();
+const privateVaporStat = { install };
+
+if (
+  process.env.NODE_ENV !== 'development' ||
+  process.env.UNI_STAT_DEBUG === 'true' ||
+  process.env.UNI_STAT_DEBUG === true
+) {
+  privateVaporStat.install();
+}
+
+export { createPrivateVaporSink, privateVaporStat };

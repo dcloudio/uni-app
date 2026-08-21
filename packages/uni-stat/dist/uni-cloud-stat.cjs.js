@@ -135,12 +135,7 @@ function safeStringify(value, max = DEFAULT_MAX_LENGTH) {
  * 第二路依赖宿主构建对 `uni` 的注入（与业务页面同一套解析规则），
  * 类型兜底见 `packages/uni-stat/src/uni-global.d.ts`。
  */
-/**
- * 判断候选 `uni` 是否具备统计 SDK 可用的最小 API 集合（排除 H5 摇树空桩 `{}`）。
- *
- * 任一核心 API 存在即视为可用；与具体平台无关，微信/QQ/抖音/支付宝/百度等
- * 完整 runtime 均满足，仅「占位空对象」会被过滤。
- */
+/** 当前构建是否启用了 uni-app x Vapor 统计适配。 */
 /**
  * H5 兜底：在 `globalThis` / `self` 不可用时尝试读取 `window`。
  *
@@ -497,6 +492,22 @@ const is_mp_scene_platform = (platformName) => {
     MP_SCENE_PLATFORMS.indexOf(platformName) !== -1
   )
 };
+
+const get_plus_runtime = () => {
+  if (typeof plus === 'undefined' || !plus) return
+  return plus.runtime
+};
+
+const get_app_base_info = () => {
+  if (typeof uni === 'undefined' || typeof uni.getAppBaseInfo !== 'function') {
+    return {}
+  }
+  try {
+    return uni.getAppBaseInfo() || {}
+  } catch (e) {
+    return {}
+  }
+};
 // #ifdef VUE3
 titleJsons = process.env.UNI_STAT_TITLE_JSON;
 // #endif
@@ -529,7 +540,8 @@ function getUuid() {
   let uuid = '';
   if (get_platform_name() === 'n') {
     try {
-      uuid = plus.runtime.getDCloudId();
+      const runtime = get_plus_runtime();
+      uuid = runtime && runtime.getDCloudId ? runtime.getDCloudId() : '';
     } catch (e) {
       uuid = '';
     }
@@ -560,14 +572,16 @@ const get_uuid = (statData) => {
 
 /**
  * 获取老版的 deviceid ,兼容以前的错误 deviceid
- * @param {*} statData 
- * @returns 
+ * @param {*} statData
+ * @returns
  */
 const get_odid = (statData) => {
   let odid  = '';
   if (get_platform_name() === 'n') {
     try {
-      odid = plus.device.uuid;
+      odid = typeof plus !== 'undefined' && plus && plus.device
+        ? plus.device.uuid
+        : sys.deviceId || '';
     } catch (e) {
       odid = '';
     }
@@ -666,7 +680,10 @@ const get_pack_name = () => {
       packName = uni.getAccountInfoSync().miniProgram.appId || '';
     }
   }
-  if (get_platform_name() === 'n') ;
+  if (get_platform_name() === 'n') {
+    const baseInfo = get_app_base_info();
+    packName = baseInfo.packageName || sys.packageName || '';
+  }
   return packName
 };
 
@@ -674,7 +691,11 @@ const get_pack_name = () => {
  * 应用版本
  */
 const get_version = () => {
-  return get_platform_name() === 'n' ? plus.runtime.version : ''
+  if (get_platform_name() !== 'n') return ''
+  const runtime = get_plus_runtime();
+  if (runtime && runtime.version) return runtime.version
+  const baseInfo = get_app_base_info();
+  return baseInfo.appVersion || sys.appVersion || ''
 };
 
 /**
@@ -684,7 +705,12 @@ const get_channel = () => {
   const platformName = get_platform_name();
   let channel = '';
   if (platformName === 'n') {
-    channel = plus.runtime.channel;
+    const runtime = get_plus_runtime();
+    if (runtime) channel = runtime.channel || '';
+    if (!channel) {
+      const baseInfo = get_app_base_info();
+      channel = baseInfo.channel || sys.channel || '';
+    }
   }
   return channel
 };
@@ -1028,7 +1054,7 @@ const is_push_clientid = () => {
 
 /**
  * 是否上报页面数据
- * @returns 
+ * @returns
  */
 const is_page_report = ()=>{
   if(uniStatisticsConfig.collectItems){
@@ -1478,7 +1504,7 @@ if(sys.platform){
     case 'ios':
       statData.p = 'i';
       break
-    case 'harmonyos': 
+    case 'harmonyos':
       statData.p = 'h';
       break
   }
@@ -1884,7 +1910,15 @@ class Report {
    * 获取wgt资源版本
    */
   getProperty(type) {
-    plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
+    const runtime =
+      typeof plus !== 'undefined' && plus && plus.runtime
+        ? plus.runtime
+        : undefined;
+    if (!runtime || typeof runtime.getProperty !== 'function') {
+      this.getNetworkInfo(type);
+      return
+    }
+    runtime.getProperty(runtime.appid, (wgtinfo) => {
       this.statData.v = wgtinfo.version || '';
       this.getNetworkInfo(type);
     });
@@ -2120,7 +2154,11 @@ class Stat extends Report {
 
     // 2.0 init 服务空间
     {
-      let space = get_space(uniCloud.config);
+      const uniCloudConfig =
+        typeof uniCloud !== 'undefined' && uniCloud
+          ? uniCloud.config
+          : undefined;
+      let space = get_space(uniCloudConfig);
       let spaceJustReady = false;
       if (!uni.__stat_uniCloud_space) {
         //   判断不为空对象
@@ -2130,7 +2168,7 @@ class Stat extends Report {
             spaceId: space.spaceId,
             clientSecret: space.clientSecret,
           };
-          
+
           if (space.endpoint) {
             spaceData.endpoint = space.endpoint;
           }
@@ -2256,7 +2294,7 @@ class Stat extends Report {
     // #endif
   }
 
-  error(em) {
+  error(em, self) {
     // 开发工具内不上报错误
     // if (this._platform === 'devtools') {
     //   if (process.env.NODE_ENV === 'development') {
@@ -2273,7 +2311,7 @@ class Stat extends Report {
 
     let route = '';
     try {
-      route = get_route();
+      route = get_route(self);
     } catch (e) {
       // 未获取到页面路径
       route = '';
@@ -2298,7 +2336,7 @@ class Stat extends Report {
   }
 }
 
-const stat = Stat.getInstance();
+let stat;
 
 // 用于判断是隐藏页面还是卸载页面
 let isHide = false;
@@ -2348,6 +2386,7 @@ const lifecycle = {
 
 // 加载统计代码
 function load_stat() {
+  stat = Stat.getInstance();
   // #ifdef VUE3
   uni.onCreateVueApp((app) => {
     app.mixin(lifecycle);

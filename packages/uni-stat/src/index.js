@@ -1,7 +1,7 @@
 import { get_page_vm, get_platform_name, is_debug } from './utils/pageInfo.js'
 import { logger } from './public/infra/logger.ts'
 import Stat from './core/stat.js'
-const stat = Stat.getInstance()
+let stat
 
 // 用于判断是隐藏页面还是卸载页面
 let isHide = false
@@ -51,6 +51,7 @@ const lifecycle = {
 
 // 加载统计代码
 function load_stat() {
+  stat = Stat.getInstance()
   // #ifdef VUE3
   uni.onCreateVueApp((app) => {
     app.mixin(lifecycle)

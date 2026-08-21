@@ -48,14 +48,20 @@ import { nowMs, nowSec } from '../infra/time'
 import { selectChannel } from '../pipeline/channel/selector'
 import { setReportTitle } from '../domain/title'
 import { tryRun } from '../infra/safe'
+import { isVaporStatRuntime } from '../infra/uniRuntime'
 import { isNetworkOffline, onNetworkOnline } from './networkGate'
+import { getCurrentStatPageContext } from './lifecycleHooks'
 
 import * as queue from '../pipeline/queue'
 import * as retry from '../pipeline/retry'
 import * as session from '../domain/session/machine'
 import * as visit from '../domain/visit/firstVisit'
 
-import type { CollectorAPI, CollectorDeps } from '../pipeline/collector'
+import type {
+  CollectorAPI,
+  CollectorDeps,
+  ReportInput,
+} from '../pipeline/collector'
 import type { Channel } from '../pipeline/types'
 import type { StatVersion } from '../pipeline/channel/selector'
 
@@ -124,9 +130,12 @@ export interface StatAppOverrides {
   skipMigration?: boolean
   /** 测试用：跳过 recoverRetry。 */
   skipRecoverRetry?: boolean
+  /** Vapor：首个 session 建立前暂存事件，避免产生无 sid 数据。 */
+  deferReportsUntilSession?: boolean
 }
 
 let instance: StatApp | null = null
+const MAX_DEFERRED_REPORTS = 100
 
 export class StatApp {
   /** install 幂等哨兵。 */
@@ -147,6 +156,10 @@ export class StatApp {
   private statVersion: StatVersion = 'image'
   /** 当前生效的配置；测试用 getConfig 获取。 */
   private config?: StatAppConfig
+  /** Vapor setup 早于 onLaunch 时的短暂内存队列。 */
+  private deferredReports: ReportInput[] = []
+  private deferReportsUntilSession = false
+  private deferredReportsWarningShown = false
 
   static getInstance(): StatApp {
     if (!instance) instance = new StatApp()
@@ -168,6 +181,7 @@ export class StatApp {
     const cfg = this.normalizeConfig(config)
     this.config = cfg
     this.statVersion = cfg.version
+    this.deferReportsUntilSession = overrides.deferReportsUntilSession === true
 
     tryRun(
       () =>
@@ -226,9 +240,8 @@ export class StatApp {
     this.collector = createCollector(this.collectorDeps)
 
     if (!overrides.skipInterceptors) {
-      const c = this.collector
       this.uninstallInterceptors = tryRun(
-        () => installAllInterceptors({ report: (i) => c.report(i) }),
+        () => installAllInterceptors({ report: (i) => this.reportInput(i) }),
         undefined
       )
     }
@@ -282,14 +295,14 @@ export class StatApp {
         : value === undefined
         ? ''
         : String(value)
-    this.collector.report({
+    this.reportInput({
       lt: LT.Event,
       custom: { e_n: type, e_v: ev },
     })
   }
 
   /** 上报 onError 捕获的错误。 */
-  reportError(err: unknown): void {
+  reportError(err: unknown, eventTimeSec?: number): void {
     if (!this.installed || !this.collector) return
     const errMsg =
       err instanceof Error
@@ -297,7 +310,47 @@ export class StatApp {
         : typeof err === 'string'
         ? err
         : tryRun(() => JSON.stringify(err), '')
-    this.collector.report({ lt: LT.Error, errMsg })
+    this.reportInput({ lt: LT.Error, errMsg, t: eventTimeSec })
+  }
+
+  /** 首个 session 前统一暂存事件；非 Vapor 直接透传 collector。 */
+  private reportInput(input: ReportInput): void {
+    if (!this.collector) return
+    const pageContext =
+      input.lt === LT.Event || input.lt === LT.Error
+        ? getCurrentStatPageContext()
+        : undefined
+    const item = Object.assign(
+      {},
+      pageContext,
+      input,
+      input.t === undefined ? { t: nowSec() } : undefined
+    )
+    // Vapor setup 可能读到上次进程持久化的 session；在本次 onLaunch 明确释放前
+    // 必须无条件暂存，否则 setup 事件会带旧 sid，与同批 lt=1 的新 sid 不一致。
+    if (this.deferReportsUntilSession) {
+      if (this.deferredReports.length >= MAX_DEFERRED_REPORTS) {
+        if (!this.deferredReportsWarningShown) {
+          this.deferredReportsWarningShown = true
+          logger.warn(
+            '[vapor] 启动前事件暂存超过上限，后续事件已丢弃，请检查 uni.onBeforeAppRoute 是否可用',
+            'limit=' + MAX_DEFERRED_REPORTS
+          )
+        }
+        return
+      }
+      this.deferredReports.push(item)
+      return
+    }
+    this.collector.report(item)
+  }
+
+  /** onLaunch 建立 session 后释放 setup 阶段暂存的事件。 */
+  releaseDeferredReports(): void {
+    if (!this.collector || !session.getSnapshot()) return
+    this.deferReportsUntilSession = false
+    const pending = this.deferredReports.splice(0)
+    for (const input of pending) this.collector.report(input)
   }
 
   /** 取 collector，供 lifecycleHooks 调度生命周期事件。 */
@@ -350,6 +403,9 @@ export class StatApp {
     this.cloudChannel = undefined
     this.imageChannel = undefined
     this.config = undefined
+    this.deferredReports = []
+    this.deferReportsUntilSession = false
+    this.deferredReportsWarningShown = false
     this.installed = false
   }
 
@@ -410,6 +466,14 @@ export class StatApp {
     patch: Partial<CollectorDeps>
   ): CollectorDeps {
     const platformShort = getPlatform()
+    const initialLocale = tryRun(() => getLocaleAndScreen(), {
+      lang: '',
+      ww: 0,
+      wh: 0,
+      sw: 0,
+      sh: 0,
+      pr: 1,
+    })
     const builder = createStatDataBuilder({
       config: {
         ak: cfg.ak,
@@ -436,14 +500,15 @@ export class StatApp {
         statusBarHeight: 0,
         osP: '',
       }),
-      locale: tryRun(() => getLocaleAndScreen(), {
-        lang: '',
-        ww: 0,
-        wh: 0,
-        sw: 0,
-        sh: 0,
-        pr: 1,
-      }),
+      locale: initialLocale,
+      resolveLocale: isVaporStatRuntime()
+        ? () => {
+            const current = tryRun(() => getLocaleAndScreen(), initialLocale)
+            if (current.ww <= 0) current.ww = current.sw
+            if (current.wh <= 0) current.wh = current.sh
+            return current
+          }
+        : undefined,
       device: {
         // 惰性解析：每次 build 时再调 getUuid()，避免 install 过早（uni 运行时未就绪）冻结临时值。
         get uuid() {

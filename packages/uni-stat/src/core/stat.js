@@ -20,7 +20,11 @@ class Stat extends Report {
 
     // 2.0 init 服务空间
     if (__STAT_VERSION__ === '2') {
-      let space = get_space(uniCloud.config)
+      const uniCloudConfig =
+        typeof uniCloud !== 'undefined' && uniCloud
+          ? uniCloud.config
+          : undefined
+      let space = get_space(uniCloudConfig)
       let spaceJustReady = false
       if (!uni.__stat_uniCloud_space) {
         //   判断不为空对象
@@ -30,7 +34,7 @@ class Stat extends Report {
             spaceId: space.spaceId,
             clientSecret: space.clientSecret,
           }
-          
+
           if (space.endpoint) {
             spaceData.endpoint = space.endpoint
           }
@@ -156,7 +160,7 @@ class Stat extends Report {
     // #endif
   }
 
-  error(em) {
+  error(em, self) {
     // 开发工具内不上报错误
     // if (this._platform === 'devtools') {
     //   if (process.env.NODE_ENV === 'development') {
@@ -173,7 +177,7 @@ class Stat extends Report {
 
     let route = ''
     try {
-      route = get_route()
+      route = get_route(self)
     } catch (e) {
       // 未获取到页面路径
       route = ''

@@ -26,8 +26,12 @@ let warnSpy: jest.SpyInstance
 
 describe('domain/visit/firstVisit（缺陷 #5 修复矩阵 T1~T9）', () => {
   let handle: MockUniHandle
+  let originalVapor: string | undefined
 
   beforeEach(() => {
+    originalVapor = (process.env as Record<string, string | undefined>)
+      .UNI_STAT_VAPOR
+    delete (process.env as Record<string, string | undefined>).UNI_STAT_VAPOR
     ;(process.env as Record<string, string | undefined>).UNI_APP_ID =
       'firstvisit-test'
     handle = installMockUni({ platform: 'mp-weixin' })
@@ -42,6 +46,12 @@ describe('domain/visit/firstVisit（缺陷 #5 修复矩阵 T1~T9）', () => {
     storage.__resetCache()
     __resetState()
     delete (process.env as Record<string, string | undefined>).UNI_APP_ID
+    if (originalVapor === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_STAT_VAPOR
+    } else {
+      ;(process.env as Record<string, string | undefined>).UNI_STAT_VAPOR =
+        originalVapor
+    }
   })
 
   describe('loadVisitSnapshot 纯读，无副作用', () => {
@@ -358,6 +368,36 @@ describe('domain/visit/firstVisit（缺陷 #5 修复矩阵 T1~T9）', () => {
       expect(snap.degraded).toBe(true)
       const fields = buildVisitFields(T2)
       expect(fields).toEqual({ fvts: T2, lvts: 0, tvc: 1 })
+    })
+  })
+
+  describe('Vapor 残缺历史兼容', () => {
+    test('普通公有版保持原逻辑：lvts 缺失仍以 lvts 为新用户唯一判据', () => {
+      handle.storage.setStorageSync(KFV, T1)
+      handle.storage.setStorageSync(KTV, 5)
+
+      const snap = loadVisitSnapshot()
+      expect(snap).toMatchObject({
+        fvts: T1,
+        lvts: 0,
+        tvc: 5,
+        isNewUser: true,
+        degraded: false,
+      })
+      expect(buildVisitFields(T2)).toEqual({ fvts: T2, lvts: 0, tvc: 1 })
+    })
+
+    test('Vapor：存在 fvts/tvc 但 lvts 缺失时按老用户兜底，不重复上报新增', () => {
+      ;(process.env as Record<string, string | undefined>).UNI_STAT_VAPOR =
+        'true'
+      handle.storage.setStorageSync(KFV, T1)
+      handle.storage.setStorageSync(KTV, 5)
+
+      const snap = loadVisitSnapshot()
+      expect(snap.degraded).toBe(false)
+      expect(snap.isNewUser).toBe(true)
+      expect(buildVisitFields(T2)).toEqual({ fvts: T1, lvts: T1, tvc: 6 })
+      expect(handle.storage.__inspect()[KLV]).toBeUndefined()
     })
   })
 

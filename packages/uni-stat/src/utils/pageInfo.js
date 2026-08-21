@@ -38,6 +38,22 @@ const is_mp_scene_platform = (platformName) => {
     MP_SCENE_PLATFORMS.indexOf(platformName) !== -1
   )
 }
+
+const get_plus_runtime = () => {
+  if (typeof plus === 'undefined' || !plus) return
+  return plus.runtime
+}
+
+const get_app_base_info = () => {
+  if (typeof uni === 'undefined' || typeof uni.getAppBaseInfo !== 'function') {
+    return {}
+  }
+  try {
+    return uni.getAppBaseInfo() || {}
+  } catch (e) {
+    return {}
+  }
+}
 // #ifdef VUE3
 titleJsons = process.env.UNI_STAT_TITLE_JSON
 // #endif
@@ -70,7 +86,8 @@ function getUuid() {
   let uuid = ''
   if (get_platform_name() === 'n') {
     try {
-      uuid = plus.runtime.getDCloudId()
+      const runtime = get_plus_runtime()
+      uuid = runtime && runtime.getDCloudId ? runtime.getDCloudId() : ''
     } catch (e) {
       uuid = ''
     }
@@ -101,14 +118,16 @@ export const get_uuid = (statData) => {
 
 /**
  * 获取老版的 deviceid ,兼容以前的错误 deviceid
- * @param {*} statData 
- * @returns 
+ * @param {*} statData
+ * @returns
  */
 export const get_odid = (statData) => {
   let odid  = ''
   if (get_platform_name() === 'n') {
     try {
-      odid = plus.device.uuid
+      odid = typeof plus !== 'undefined' && plus && plus.device
+        ? plus.device.uuid
+        : sys.deviceId || ''
     } catch (e) {
       odid = ''
     }
@@ -208,7 +227,8 @@ export const get_pack_name = () => {
     }
   }
   if (get_platform_name() === 'n') {
-    // TODO APP 获取包名
+    const baseInfo = get_app_base_info()
+    packName = baseInfo.packageName || sys.packageName || ''
   }
   return packName
 }
@@ -217,7 +237,11 @@ export const get_pack_name = () => {
  * 应用版本
  */
 export const get_version = () => {
-  return get_platform_name() === 'n' ? plus.runtime.version : ''
+  if (get_platform_name() !== 'n') return ''
+  const runtime = get_plus_runtime()
+  if (runtime && runtime.version) return runtime.version
+  const baseInfo = get_app_base_info()
+  return baseInfo.appVersion || sys.appVersion || ''
 }
 
 /**
@@ -227,7 +251,12 @@ export const get_channel = () => {
   const platformName = get_platform_name()
   let channel = ''
   if (platformName === 'n') {
-    channel = plus.runtime.channel
+    const runtime = get_plus_runtime()
+    if (runtime) channel = runtime.channel || ''
+    if (!channel) {
+      const baseInfo = get_app_base_info()
+      channel = baseInfo.channel || sys.channel || ''
+    }
   }
   if (platformName === 'wx') {
     // TODO 需要调研小程序二维码渠道如何获取;
@@ -588,7 +617,7 @@ export const is_push_clientid = () => {
 
 /**
  * 是否上报页面数据
- * @returns 
+ * @returns
  */
 export const is_page_report = ()=>{
   if(uniStatisticsConfig.collectItems){

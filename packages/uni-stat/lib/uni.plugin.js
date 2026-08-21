@@ -56,7 +56,7 @@ function getPlatformManifest(manifest, platform) {
  *
  * ## 范围
  *
- * 仅控制 `shouldAutoImportStatRuntime`；**不**影响 `plugin/index.ts` 对
+ * 仅控制完整运行时或 Vapor 生命周期桥接的注入；**不**影响 `plugin/index.ts` 对
  * `UNI_STATISTICS_CONFIG` 等 define 的注入（配置合并仍走 `getUniStatistics`）。
  *
  * ## enable 判定规则（仅以 `enable` 是否显式存在作为覆盖条件）
@@ -99,16 +99,54 @@ function isUniStatisticsEnabled(inputDir, platform) {
     }
     return true;
 }
-/**
- * 当前是否为 uni-app x 编译目标。
- * x 运行时暂无 `onCreateVueApp` / `vue.mixin` 等页面统计注入能力。
- */
+/** 当前是否为 uni-app x 编译目标。 */
 function isUniAppXCompile() {
     return process.env.UNI_APP_X === 'true';
 }
 /**
+ * 本地运行仅在 manifest 显式开启 debug 时加载统计；发行构建保持原行为。
+ */
+function shouldRunStatRuntime(debug, nodeEnv = process.env.NODE_ENV) {
+    return nodeEnv !== 'development' || debug === true;
+}
+function getCurrentPlatform(platform) {
+    var _a;
+    return (_a = platform !== null && platform !== void 0 ? platform : process.env.UNI_UTS_PLATFORM) !== null && _a !== void 0 ? _a : process.env.UNI_PLATFORM;
+}
+function isAppPlatform(platform) {
+    const currentPlatform = getCurrentPlatform(platform);
+    return (currentPlatform === 'app' ||
+        currentPlatform === 'app-plus' ||
+        currentPlatform === 'app-android' ||
+        currentPlatform === 'app-ios' ||
+        currentPlatform === 'app-harmony');
+}
+function isWebOrWeixinPlatform(platform) {
+    const currentPlatform = getCurrentPlatform(platform);
+    return (currentPlatform === 'h5' ||
+        currentPlatform === 'web' ||
+        currentPlatform === 'mp-weixin');
+}
+/** 当前是否使用 uni-app x route bridge 统计方案。 */
+function isUniAppXVaporCompile(platform) {
+    if (!isUniAppXCompile())
+        return false;
+    if (isAppPlatform(platform)) {
+        return process.env.UNI_APP_X_DOM2 === 'true';
+    }
+    return isWebOrWeixinPlatform(platform);
+}
+/**
+ * 是否开启 uni-app x 蒸汽模式的统计入口桥接。
+ */
+function shouldBootstrapVaporRuntime(inputDir, platform) {
+    return (isUniAppXVaporCompile(platform) &&
+        isUniStatisticsEnabled(inputDir, platform));
+}
+/**
  * 是否应向 main 入口自动 import 统计运行时。
- * uni-app x 一律跳过自动 import；define 配置注入仍保留，供后续适配或业务手动 import。
+ * uni-app x 不走普通 Vue mixin 运行时：Web / 微信小程序和 Vapor App 使用 route
+ * bridge，VDOM App 与其他小程序保持关闭。define 配置注入始终保留。
  *
  * @param inputDir 工程输入目录
  * @param platform 目标平台；缺省读 `process.env.UNI_PLATFORM`。传入以支持分平台 enable 覆盖。
@@ -118,6 +156,14 @@ function shouldAutoImportStatRuntime(inputDir, platform) {
         return false;
     }
     return isUniStatisticsEnabled(inputDir, platform);
+}
+
+const PUBLIC_STAT_RUNTIME = '@dcloudio/uni-stat-public';
+const MP_WEIXIN_PUBLIC_STAT_RUNTIME = '@dcloudio/uni-stat-public-mp-weixin';
+function resolvePublicStatImportPath(platform) {
+    return platform === 'mp-weixin'
+        ? MP_WEIXIN_PUBLIC_STAT_RUNTIME
+        : PUBLIC_STAT_RUNTIME;
 }
 
 /**
@@ -195,10 +241,15 @@ var index = () => [
          */
         let statType = 'public';
         let isEnable = false;
+        let shouldImportRuntime = false;
+        let vaporLifecycleEnabled = false;
+        let currentPlatform = process.env.UNI_PLATFORM || '';
         const stats = {
             '@dcloudio/uni-stat': uniCliShared.resolveBuiltIn('@dcloudio/uni-stat/dist/uni-stat.es.js'),
             '@dcloudio/uni-cloud-stat': uniCliShared.resolveBuiltIn('@dcloudio/uni-stat/dist/uni-cloud-stat.es.js'),
+            '@dcloudio/uni-cloud-stat-vapor': uniCliShared.resolveBuiltIn('@dcloudio/uni-stat/dist/uni-cloud-stat-vapor.es.js'),
             '@dcloudio/uni-stat-public': uniCliShared.resolveBuiltIn('@dcloudio/uni-stat/dist/uni-stat-public.es.js'),
+            '@dcloudio/uni-stat-public-mp-weixin': uniCliShared.resolveBuiltIn('@dcloudio/uni-stat/dist/uni-stat-public.mp-weixin.es.js'),
         };
         return {
             name: 'uni:stat',
@@ -211,6 +262,7 @@ var index = () => [
                 }
                 const inputDir = process.env.UNI_INPUT_DIR;
                 const platform = process.env.UNI_PLATFORM;
+                currentPlatform = platform;
                 const titlesJson = Object.create(null);
                 uniCliShared.parsePagesJson(inputDir, platform).pages.forEach((page) => {
                     var _a;
@@ -234,15 +286,22 @@ var index = () => [
                 if (!uniCliShared.isSsr(env.command, config)) {
                     const statConfig = uniCliShared.getUniStatistics(inputDir, platform);
                     // 始终注入完整 manifest.uniStatistics（与 enable 无关）。
-                    // enable 仅控制是否自动 import 统计入口；业务手动 import 或 enable:false 调试时，
-                    // 运行时仍须能读到 backgroundTimeout / reportInterval 等字段。
+                    // enable 仅控制是否注入完整统计入口或 Vapor 桥接；业务手动 import 或
+                    // enable:false 调试时，运行时仍须能读到 backgroundTimeout / reportInterval 等字段。
                     process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
                     process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
-                    // enable 开关：仅以子/根 `enable` 是否显式存在为准（子优先 → 继承根 → 默认开启），
-                    // 详见 `runtimeEnable.ts#isUniStatisticsEnabled` 用例矩阵。
-                    // uni-app x 不支持自动 import（见 shouldAutoImportStatRuntime），但仍注入 define 配置。
-                    isEnable = shouldAutoImportStatRuntime(inputDir, platform);
                     statType = resolveUniStatisticsType(statConfig);
+                    // Web / 微信小程序和 Vapor App 走 route bridge；VDOM App 保持关闭。
+                    shouldImportRuntime = shouldAutoImportStatRuntime(inputDir, platform);
+                    vaporLifecycleEnabled = shouldBootstrapVaporRuntime(inputDir, platform);
+                    isEnable = shouldImportRuntime || vaporLifecycleEnabled;
+                    // 本地运行默认不采集，避免开发数据污染；发行构建仍只受 enable 控制。
+                    if (isEnable && !shouldRunStatRuntime(statConfig.debug)) {
+                        shouldImportRuntime = false;
+                        vaporLifecycleEnabled = false;
+                        isEnable = false;
+                        uniStatLog('本地运行未开启 manifest.json 的 uniStatistics.debug，uni统计不采集、不上报；发行模式不受影响');
+                    }
                     if (isEnable) {
                         const uniCloudConfig = statConfig.uniCloud || {};
                         process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig);
@@ -290,6 +349,7 @@ var index = () => [
                         // manifest 里的 backgroundTimeout / pageInactiveTimeout 等全部丢失（表现为默认 300/1800）。
                         'process.env.UNI_STATISTICS_CONFIG': JSON.stringify((_d = process.env.UNI_STATISTICS_CONFIG) !== null && _d !== void 0 ? _d : '{}'),
                         'process.env.UNI_APP_NAME': JSON.stringify((_e = process.env.UNI_APP_NAME) !== null && _e !== void 0 ? _e : ''),
+                        'process.env.UNI_STAT_VAPOR': JSON.stringify(vaporLifecycleEnabled ? 'true' : 'false'),
                     },
                 };
             },
@@ -297,7 +357,16 @@ var index = () => [
                 return stats[id] || null;
             },
             transform(code, id) {
-                if (isEnable && opts.filter(id)) {
+                if (isEnable && vaporLifecycleEnabled && opts.filter(id)) {
+                    const importPath = statType === 'private'
+                        ? '@dcloudio/uni-cloud-stat-vapor'
+                        : resolvePublicStatImportPath(currentPlatform);
+                    return {
+                        code: code + `;import '${importPath}';`,
+                        map: null,
+                    };
+                }
+                if (isEnable && shouldImportRuntime && opts.filter(id)) {
                     // 新编译器只保留类型分流：
                     //   public  → @dcloudio/uni-stat-public
                     //   private → @dcloudio/uni-cloud-stat
@@ -306,7 +375,7 @@ var index = () => [
                     //   type 缺失时回退 version（2=private，其余=public）
                     const importPath = statType === 'private'
                         ? '@dcloudio/uni-cloud-stat'
-                        : '@dcloudio/uni-stat-public';
+                        : resolvePublicStatImportPath(currentPlatform);
                     return {
                         code: code + `;import '${importPath}';`,
                         map: null,
