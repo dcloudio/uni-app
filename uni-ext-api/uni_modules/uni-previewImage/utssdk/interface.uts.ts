@@ -117,7 +117,7 @@ export type PreviewImageOptions = {
 	*    "alipay": {
 	*        "hostVer": "√",
 	*        "uniVer": "√",
-	*        "unixVer": "x"
+	*        "unixVer": "5.25"
 	*    },
 	*    "baidu": {
 	*        "hostVer": "√",
@@ -250,7 +250,7 @@ export type PreviewImageOptions = {
 	*    "alipay": {
 	*        "hostVer": "√",
 	*        "uniVer": "√",
-	*        "unixVer": "x"
+	*        "unixVer": "5.25"
 	*    },
 	*    "baidu": {
 	*        "hostVer": "√",

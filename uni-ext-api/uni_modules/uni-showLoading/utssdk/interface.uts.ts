@@ -35,7 +35,7 @@ export interface ShowLoadingSuccess {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.25"
         },
         "baidu": {
           "hostVer": "√",
@@ -597,7 +597,7 @@ export interface HideLoadingSuccess {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.25"
         },
         "baidu": {
           "hostVer": "√",
