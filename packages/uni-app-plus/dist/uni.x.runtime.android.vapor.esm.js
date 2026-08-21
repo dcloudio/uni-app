@@ -4541,6 +4541,9 @@ function isUniElement(obj) {
 function isComponentPublicInstance(instance) {
   return instance && instance.$ && instance.$.proxy === instance;
 }
+function isUniPage(value) {
+  return typeof UniPage === "function" && value instanceof UniPage;
+}
 function serializeUniElement(el, type) {
   var nodeId = "";
   var pageId = "";
@@ -4585,6 +4588,9 @@ function toRaw(observed) {
 var SKIP_CIRCULAR_REFERENCE = {};
 function serializeArg(arg, stack) {
   arg = toRaw(arg);
+  if (isUniPage(arg)) {
+    return arg;
+  }
   if (isUniElement(arg)) {
     return serializeUniElement(arg, "UniElement");
   }
