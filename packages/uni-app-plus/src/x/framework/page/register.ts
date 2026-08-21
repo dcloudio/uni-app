@@ -42,6 +42,7 @@ import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import { closeDialogPage } from '../../api/route/closeDialogPage'
 import type { AppRouteContext, AppRouteOpenType } from '@dcloudio/uni-api'
 import { dispatchAppRoute } from '../../api/route/appRoute'
+import { initVaporPageStyle } from './vaporPageStyle'
 
 type PageNodeOptions = {}
 
@@ -266,6 +267,7 @@ export function registerPage(
         nativePage.addPageEventListener(ON_READY, (_) => {
           if (__VAPOR__) {
             // native ready 时页面根节点已渲染，可安全访问 $el
+            initVaporPageStyle(pageComponentPublicInstance, routeOptions.meta)
             initVaporPageLifeCycle(pageComponentPublicInstance, nativePage)
           }
           invokePageOnReady(pageComponentPublicInstance)
