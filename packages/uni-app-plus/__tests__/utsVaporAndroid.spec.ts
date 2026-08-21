@@ -11,16 +11,12 @@ const invokeAsync = jest.fn()
 
 describe('utsVaporAndroid', () => {
   const originalNativeChannel = (globalThis as any).nativeChannel
-  const originalUniPage = (globalThis as any).UniPage
-
-  class TestUniPage {}
 
   beforeAll(() => {
     ;(globalThis as any).nativeChannel = {
       invokeSync,
       invokeAsync,
     }
-    ;(globalThis as any).UniPage = TestUniPage
   })
 
   beforeEach(() => {
@@ -31,11 +27,6 @@ describe('utsVaporAndroid', () => {
   afterAll(() => {
     if (originalNativeChannel !== undefined) {
       ;(globalThis as any).nativeChannel = originalNativeChannel
-    }
-    if (originalUniPage === undefined) {
-      delete (globalThis as any).UniPage
-    } else {
-      ;(globalThis as any).UniPage = originalUniPage
     }
   })
 
@@ -73,7 +64,7 @@ describe('utsVaporAndroid', () => {
     })
   })
 
-  test('serializes UniElement and component public instance parameters', () => {
+  test('passes UniElement and component public instance parameters without serialization', () => {
     invokeSync.mockReturnValue({
       type: 'return',
       params: null,
@@ -101,38 +92,15 @@ describe('utsVaporAndroid', () => {
 
     invoke(element, nested)
 
-    expect(invokeSync).toHaveBeenCalledWith(
-      'APP-SERVICE',
-      expect.objectContaining({
-        params: [
-          { __type__: 'UniElement', pageId: 'page-1', nodeId: 101 },
-          {
-            element: {
-              __type__: 'UniElement',
-              pageId: 'page-1',
-              nodeId: 101,
-            },
-            components: [
-              {
-                __type__: 'ComponentPublicInstance',
-                pageId: 'page-1',
-                nodeId: 101,
-              },
-              {
-                __type__: 'ComponentPublicInstance',
-                pageId: '',
-                nodeId: '',
-              },
-            ],
-          },
-        ],
-      })
-    )
-    expect(nested.element).toBe(element)
-    expect(nested.components[0]).toBe(component)
+    const params = invokeSync.mock.calls[0][1].params
+    expect(params[0]).toBe(element)
+    expect(params[1]).toBe(nested)
+    expect(params[1].element).toBe(element)
+    expect(params[1].components[0]).toBe(component)
+    expect(params[1].components[1]).toBe(componentWithoutElement)
   })
 
-  test('preserves UniPage instances in direct and nested parameters', () => {
+  test('passes page objects in direct and nested parameters without serialization', () => {
     invokeSync.mockReturnValue({
       type: 'return',
       params: null,
@@ -145,19 +113,23 @@ describe('utsVaporAndroid', () => {
       keepAlive: false,
       async: false,
     })
-    const loadingPage = new TestUniPage()
-    const pageLikeObject = {
+    const loadingPage = {
       __nativePageId: 1,
       getNativePage: () => ({ __uniPage: null }),
     }
+    const pageLikeObject = {
+      __nativePageId: 2,
+      getNativePage: () => ({ __uniPage: null }),
+    }
+    const options = { loadingPage, pageLikeObject }
 
-    invoke(loadingPage, { loadingPage, pageLikeObject })
+    invoke(loadingPage, options)
 
     const params = invokeSync.mock.calls[0][1].params
     expect(params[0]).toBe(loadingPage)
+    expect(params[1]).toBe(options)
     expect(params[1].loadingPage).toBe(loadingPage)
-    expect(params[1].pageLikeObject).not.toBe(pageLikeObject)
-    expect(params[1].pageLikeObject).toEqual(pageLikeObject)
+    expect(params[1].pageLikeObject).toBe(pageLikeObject)
   })
 
   test('creates a proxy class and invokes an instance method', () => {
