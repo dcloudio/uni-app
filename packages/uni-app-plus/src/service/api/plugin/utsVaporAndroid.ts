@@ -26,6 +26,11 @@ function isComponentPublicInstance(instance: any) {
   return instance && instance.$ && instance.$.proxy === instance
 }
 
+function isUniPage(value: unknown) {
+  // @ts-expect-error globalThis.UniPage
+  return typeof UniPage === 'function' && value instanceof UniPage
+}
+
 function serializeUniElement(
   el: any,
   type: 'UniElement' | 'ComponentPublicInstance'
@@ -69,6 +74,9 @@ const SKIP_CIRCULAR_REFERENCE = {}
 
 function serializeArg(arg: unknown, stack: WeakSet<object>): unknown {
   arg = toRaw(arg)
+  if (isUniPage(arg)) {
+    return arg
+  }
   if (isUniElement(arg)) {
     return serializeUniElement(arg, 'UniElement')
   }

@@ -11,12 +11,16 @@ const invokeAsync = jest.fn()
 
 describe('utsVaporAndroid', () => {
   const originalNativeChannel = (globalThis as any).nativeChannel
+  const originalUniPage = (globalThis as any).UniPage
+
+  class TestUniPage {}
 
   beforeAll(() => {
     ;(globalThis as any).nativeChannel = {
       invokeSync,
       invokeAsync,
     }
+    ;(globalThis as any).UniPage = TestUniPage
   })
 
   beforeEach(() => {
@@ -27,6 +31,11 @@ describe('utsVaporAndroid', () => {
   afterAll(() => {
     if (originalNativeChannel !== undefined) {
       ;(globalThis as any).nativeChannel = originalNativeChannel
+    }
+    if (originalUniPage === undefined) {
+      delete (globalThis as any).UniPage
+    } else {
+      ;(globalThis as any).UniPage = originalUniPage
     }
   })
 
@@ -121,6 +130,34 @@ describe('utsVaporAndroid', () => {
     )
     expect(nested.element).toBe(element)
     expect(nested.components[0]).toBe(component)
+  })
+
+  test('preserves UniPage instances in direct and nested parameters', () => {
+    invokeSync.mockReturnValue({
+      type: 'return',
+      params: null,
+    })
+    const invoke = initUTSProxyFunction('TestBridge', {
+      name: 'hideLoading',
+      utsBridgeName: 'TestBridge',
+      methodId: 13,
+      type: 'function',
+      keepAlive: false,
+      async: false,
+    })
+    const loadingPage = new TestUniPage()
+    const pageLikeObject = {
+      __nativePageId: 1,
+      getNativePage: () => ({ __uniPage: null }),
+    }
+
+    invoke(loadingPage, { loadingPage, pageLikeObject })
+
+    const params = invokeSync.mock.calls[0][1].params
+    expect(params[0]).toBe(loadingPage)
+    expect(params[1].loadingPage).toBe(loadingPage)
+    expect(params[1].pageLikeObject).not.toBe(pageLikeObject)
+    expect(params[1].pageLikeObject).toEqual(pageLikeObject)
   })
 
   test('creates a proxy class and invokes an instance method', () => {
