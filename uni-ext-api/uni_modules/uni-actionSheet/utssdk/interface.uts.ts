@@ -553,7 +553,7 @@ type ShowActionSheetCompleteCallback = (result: ShowActionSheetComplete) => void
  *    "alipay": {
  *      "hostVer": "√",
  *      "uniVer": "√",
- *      "unixVer": "x"
+ *      "unixVer": "5.25"
  *    },
  *    "baidu": {
  *      "hostVer": "√",
@@ -697,7 +697,7 @@ export type ShowActionSheetOptions = {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "x"
+   *      "unixVer": "5.25"
    *    },
    *    "baidu": {
    *      "hostVer": "√",
@@ -841,7 +841,7 @@ export type ShowActionSheetOptions = {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "x"
+   *      "unixVer": "5.25"
    *    },
    *    "baidu": {
    *      "hostVer": "√",
