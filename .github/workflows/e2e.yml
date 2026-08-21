@@ -40,6 +40,8 @@ jobs:
 
       - name: Build
         run: npm run build:h5
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - name: verify Cypress
         working-directory: ./packages/playground/ssr
