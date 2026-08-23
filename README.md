@@ -6,16 +6,26 @@
 
 `uni-app`分 `uni-app` 和 `uni-app x`。
 
-- uni-app：基于前端技术栈，App引擎采用与小程序相同的技术架构，逻辑层使用js，渲染层使用web-view。
-- uni-app x：是新一代 uni-app，拥有比原生应用更优秀的渲染性能。
+- uni-app：老一代uni-app，App引擎采用与小程序相同的技术架构，逻辑层使用js，渲染层使用web-view。
+- uni-app x：新一代 uni-app，也是本项目的主分支。蒸汽模式支持使用js/ts/uts开发页面，App平台使用原生渲染，但拥有比原生view体系更优秀的渲染性能。
 
-uni-app x 蒸汽模式支持使用js/ts/uts开发页面。uts语言主要用于原生插件扩展。
+1. 在view和text组件性能测试中，uni-app x 在Android、iOS、鸿蒙 3个App平台的渲染速度是原生的2~3倍。
+2. 在长列表掉帧测试中，uni-app x 的长列表帧率，在Android、iOS、鸿蒙 3个App平台，是原生的2~4倍。
 
-uts是一门类ts的、跨平台的语言。uts在Android平台编译为kotlin、在iOS平台编译为swift、在鸿蒙next平台上编译为ArkTS、在Web和小程序平台编译为js。
+除了view、text、list，还有更多评测内容，详见benchmark目录下的3个平台的评测报告。
+- [uni-app x Android平台性能评测报告](https://github.com/dcloudio/uni-app/benchmark/vapor-benchmark-android.md)
+- [uni-app x iOS平台性能评测报告](https://github.com/dcloudio/uni-app/benchmark/vapor-benchmark-ios.md)
+- [uni-app x 鸿蒙平台性能评测报告](https://github.com/dcloudio/uni-app/benchmark/vapor-benchmark-harmony.md)
 
-`uni-app`在手，做啥都不愁。即使不跨端，`uni-app`也是更好的小程序开发框架（[详见](https://ask.dcloud.net.cn/article/35947)）、更好的App跨平台框架、更方便的Web开发框架。不管领导安排什么样的项目，你都可以快速交付，不需要转换开发思维、不需要更改开发习惯。
+uts是一门类ts的、跨平台的语言。uts在Android平台编译为kotlin、在iOS平台编译为swift、在鸿蒙next平台上编译为ArkTS、在Web和小程序平台编译为js。uts语言主要用于原生插件扩展。
 
-`uni-app`是一个AI友好的技术框架，使用AI擅长的vue、js/ts、css即可完成应用开发。同时DCloud公司提供了uni-agent，可以更方便的使用AI开发`uni-app`
+`uni-app`在手，做啥都不愁。不管用户需要做哪个平台的项目，你都可以快速交付，不需要转换开发思维、不需要更改开发习惯。
+
+即使不跨端，`uni-app`也是更好的小程序开发框架、更好的App开发框架、更方便的Web开发框架。
+- 更好的小程序框架：vue的通用性、生态，比小程序厂商自定语法要好的多。
+- 更好的App框架：vue的模板写法，是一种AI熟悉的、简单而成熟的声明式写法。比如原生的命令式写法的开发效率高的多，而原生提供的声明式写法又性能不佳。在AI时代，由于声明式的约束，让AI犯错的机会也少的多、消耗的token也少的多。
+
+`uni-app`是一个AI友好的技术框架，使用AI擅长的vue、js/ts、css即可完成应用开发。`uni-app`还为AI模型训练提供了强化学习工具，[详见](https://doc.dcloud.net.cn/uni-app-x/ai/cli-for-aimodel.html)。同时DCloud公司提供了[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，可以更方便的使用AI开发`uni-app`
 
 ## 快速体验
 
