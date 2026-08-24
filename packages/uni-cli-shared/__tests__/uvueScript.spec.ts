@@ -1,5 +1,4 @@
 import type { Plugin } from 'vite'
-import { SourceMapConsumer } from 'source-map-js'
 import { uniUTSUVueJavaScriptPlugin } from '../src/vite/plugins/uts/uvue'
 
 function getTransform(plugin: Plugin) {
@@ -226,34 +225,19 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     )
   })
 
-  test('returns a source map for the DOM2 script tag transform', () => {
+  test('returns an empty source map for the DOM2 script tag transform', () => {
     process.env.UNI_APP_X_DOM2 = 'true'
     const transform = getTransform(uniUTSUVueJavaScriptPlugin())
-    const id = '/pages/index/index.uvue'
     const result = transform.call(
       {} as any,
       '<script setup lang="js">\nconst value = 1\n</script>',
-      id
+      '/pages/index/index.uvue'
     ) as any
-    const consumer = new SourceMapConsumer(result.map)
 
-    expect(result.map.sources).toEqual([id])
-    expect(result.map.sourcesContent).toEqual([
-      '<script setup lang="js">\nconst value = 1\n</script>',
-    ])
-    expect(
-      consumer.originalPositionFor({
-        line: 2,
-        column: 0,
-      })
-    ).toMatchObject({
-      source: id,
-      line: 2,
-      column: 0,
-    })
+    expect(result.map).toEqual({ mappings: '' })
   })
 
-  test('keeps the DOM2 transform map when build sourcemaps are disabled', () => {
+  test('keeps the empty DOM2 transform map when build sourcemaps are disabled', () => {
     process.env.UNI_APP_X_DOM2 = 'true'
     process.env.UNI_PLATFORM = 'app-harmony'
     const plugin = uniUTSUVueJavaScriptPlugin()
@@ -270,19 +254,8 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     }
 
     const result = transform.call({} as any, source, id) as any
-    const consumer = new SourceMapConsumer(result.map)
 
-    expect(result.map.sources).toEqual([id])
-    expect(
-      consumer.originalPositionFor({
-        line: 1,
-        column: result.code.indexOf('modulePath'),
-      })
-    ).toMatchObject({
-      source: id,
-      line: 1,
-      column: source.indexOf('modulePath'),
-    })
+    expect(result.map).toEqual({ mappings: '' })
   })
 
   test('keeps UTS as the default language in DOM2', () => {
@@ -412,6 +385,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
       ).toEqual(
         expect.objectContaining({
           code: '<script setup lang="ts">const value = 1</script>',
+          map: { mappings: '' },
         })
       )
       if (typeof plugin.configResolved === 'function') {
@@ -420,6 +394,24 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
       expect(config.plugins).toContain(esbuildPlugin)
     }
   )
+
+  test('keeps the legacy empty source map for default UTS scripts on Harmony', () => {
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    process.env.UNI_PLATFORM = 'app-harmony'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+    expect(
+      transform.call(
+        {} as any,
+        '<script>export default {}</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual({
+      code: '<script lang="uts">export default {}</script>',
+      map: { mappings: '' },
+    })
+  })
 
   test('keeps the existing Android VDOM UTS behavior', () => {
     Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')

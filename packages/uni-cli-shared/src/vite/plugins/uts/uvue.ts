@@ -126,7 +126,6 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
         return result
       }
       if (standardScriptSupported) {
-        const source = id.split('?')[0]
         const transformed = new MagicString(code)
         let changed = false
         for (const script of scriptTags) {
@@ -161,12 +160,10 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
         }
         return {
           code: transformed.toString(),
-          // 阶段 map 用于后续编译诊断还原，与发行产物是否输出 sourcemap 无关。
-          map: transformed.generateMap({
-            source,
-            includeContent: true,
-            hires: 'boundary',
-          }),
+          // 此插件只改写 script 开始标签。常规多行脚本的正文行列不变，继续沿用旧的空 map
+          // 可避免后续 SFC 虚拟模块针对同一文件生成不同 sourcesContent。遗留问题：单行
+          // <script>code</script> 中正文的列偏移暂时无法还原。
+          map: { mappings: '' },
         }
       }
       return {
