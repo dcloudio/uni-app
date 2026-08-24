@@ -9,15 +9,22 @@ function getTransform(plugin: Plugin) {
 }
 
 describe('uniUTSUVueJavaScriptPlugin', () => {
+  const originalAppX = process.env.UNI_APP_X
   const originalDom2 = process.env.UNI_APP_X_DOM2
   const originalPlatform = process.env.UNI_PLATFORM
-  const originalVaporScriptLang = process.env.UNI_APP_X_VAPOR_SCRIPT_LANG
+  const originalUtsPlatform = process.env.UNI_UTS_PLATFORM
 
   beforeEach(() => {
-    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'true'
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_UTS_PLATFORM = 'app-android'
   })
 
   afterEach(() => {
+    if (originalAppX === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X')
+    } else {
+      process.env.UNI_APP_X = originalAppX
+    }
     if (originalDom2 === undefined) {
       Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
     } else {
@@ -28,47 +35,11 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     } else {
       process.env.UNI_PLATFORM = originalPlatform
     }
-    if (originalVaporScriptLang === undefined) {
-      Reflect.deleteProperty(process.env, 'UNI_APP_X_VAPOR_SCRIPT_LANG')
+    if (originalUtsPlatform === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_UTS_PLATFORM')
     } else {
-      process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = originalVaporScriptLang
+      process.env.UNI_UTS_PLATFORM = originalUtsPlatform
     }
-  })
-
-  test('keeps the existing DOM2 UTS behavior without script lang support', () => {
-    process.env.UNI_APP_X_DOM2 = 'true'
-    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'false'
-    const plugin = uniUTSUVueJavaScriptPlugin()
-    const transform = getTransform(plugin)
-    const esbuildPlugin = { name: 'vite:esbuild' }
-    const config = { plugins: [esbuildPlugin] }
-
-    expect(
-      transform.call(
-        {} as any,
-        '<script setup lang="ts">const value = 1</script>',
-        '/pages/index/index.uvue'
-      )
-    ).toEqual(
-      expect.objectContaining({
-        code: '<script setup vapor lang="uts">const value = 1</script>',
-      })
-    )
-    expect(
-      transform.call(
-        {} as any,
-        '<script setup lang="js">const value = 1</script>',
-        '/pages/index/index.uvue'
-      )
-    ).toEqual(
-      expect.objectContaining({
-        code: '<script setup vapor lang="js">const value = 1</script>',
-      })
-    )
-    if (typeof plugin.configResolved === 'function') {
-      plugin.configResolved(config as any)
-    }
-    expect(config.plugins).not.toContain(esbuildPlugin)
   })
 
   test('preserves TypeScript and normalizes JavaScript in DOM2', () => {
@@ -409,7 +380,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     )
   })
 
-  test('keeps vite esbuild in DOM2 with script lang support', () => {
+  test('keeps vite esbuild in DOM2', () => {
     process.env.UNI_APP_X_DOM2 = 'true'
     const plugin = uniUTSUVueJavaScriptPlugin()
     const esbuildPlugin = { name: 'vite:esbuild' }
@@ -422,7 +393,35 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     expect(config.plugins).toContain(esbuildPlugin)
   })
 
-  test('keeps the existing non-DOM2 UTS behavior', () => {
+  test.each(['web', 'mp-weixin', 'app-ios', 'app-harmony'] as const)(
+    'supports standard scripts without enabling Vapor on %s',
+    (platform) => {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      process.env.UNI_UTS_PLATFORM = platform
+      const plugin = uniUTSUVueJavaScriptPlugin()
+      const transform = getTransform(plugin)
+      const esbuildPlugin = { name: 'vite:esbuild' }
+      const config = { plugins: [esbuildPlugin] }
+
+      expect(
+        transform.call(
+          {} as any,
+          '<script setup lang="js">const value = 1</script>',
+          '/pages/index/index.uvue'
+        )
+      ).toEqual(
+        expect.objectContaining({
+          code: '<script setup lang="ts">const value = 1</script>',
+        })
+      )
+      if (typeof plugin.configResolved === 'function') {
+        plugin.configResolved(config as any)
+      }
+      expect(config.plugins).toContain(esbuildPlugin)
+    }
+  )
+
+  test('keeps the existing Android VDOM UTS behavior', () => {
     Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
     const plugin = uniUTSUVueJavaScriptPlugin()
     const transform = getTransform(plugin)

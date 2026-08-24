@@ -68,7 +68,7 @@ export function init() {
           uniAppPagesPlugin(),
         ]),
     uniUTSUVueJavaScriptPlugin(),
-    ...(isDom2 && process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
+    ...(isDom2
       ? [
           uniVaporScriptPlugin({
             sharedDataLibName: !isDom2Dynamic

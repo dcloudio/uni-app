@@ -1,6 +1,5 @@
 export * from './sharedData'
 export * from './script'
-export * from './scriptMacros'
 export * from './vue'
 export * from './fontFamily'
 export * from './rootScrollView'

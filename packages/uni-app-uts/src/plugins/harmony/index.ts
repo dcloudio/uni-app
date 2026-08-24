@@ -9,6 +9,7 @@ import {
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
+  uniAppXStandardScriptPlugin,
   uniDecryptUniModulesPlugin,
   uniEasycomPlugin,
   uniEncryptUniModulesAssetsPlugin,
@@ -67,7 +68,7 @@ export function init() {
           uniAppPagesPlugin(),
         ]),
     uniUTSUVueJavaScriptPlugin(),
-    ...(isDom2 && process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
+    ...(isDom2
       ? [
           uniVaporScriptPlugin({
             sharedDataLibName: !isDom2Dynamic
@@ -76,9 +77,13 @@ export function init() {
             uasm,
           }),
         ]
-      : []),
+      : [
+          // 非 DOM2 Harmony 只处理标准脚本宏，不接入仅 H5、MP 需要的 UASM 转换。
+          uniAppXStandardScriptPlugin(),
+        ]),
     resolveUTSCompiler().uts2js({
       dom2: isDom2,
+      excludeStandardTypeScript: true,
       platform: 'app-harmony',
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,

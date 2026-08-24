@@ -308,10 +308,9 @@ export function initPluginVueOptions(
       vueOptions.script.babelParserPlugins.push('decorators')
     }
     if (isDom2) {
-      if (process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true') {
-        ;(vueOptions as any).uniAppXVaporScriptTransform =
-          uniPluginOptions.uniAppXVaporScriptTransform
-      }
+      // 该扩展点依赖定制 plugin-vue，仅用于 compileScript 后的 DOM2 SharedData 等转换。
+      ;(vueOptions as any).uniAppXVaporScriptTransform =
+        uniPluginOptions.uniAppXVaporScriptTransform
       const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
       function isAppVue(id: string) {
         return normalizePath(id) === appVue

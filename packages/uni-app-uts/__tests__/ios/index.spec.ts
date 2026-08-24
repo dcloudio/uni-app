@@ -42,6 +42,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     uniUTSAppUniModulesPlugin: plugin('uni-modules'),
     uniUTSUVueJavaScriptPlugin: plugin('js'),
     uniUniModulesExtApiPlugin: plugin('ext-api'),
+    uniAppXStandardScriptPlugin: plugin('standard-script'),
     uniVaporScriptPlugin: plugin('vapor-script'),
     uniWorkersPlugin: plugin('workers'),
   }
@@ -84,7 +85,6 @@ describe('ios plugin init', () => {
   const originalEnv = {
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
     UNI_APP_X_DOM2_DYNAMIC: process.env.UNI_APP_X_DOM2_DYNAMIC,
-    UNI_APP_X_VAPOR_SCRIPT_LANG: process.env.UNI_APP_X_VAPOR_SCRIPT_LANG,
     UNI_COMPILE_TARGET: process.env.UNI_COMPILE_TARGET,
     UNI_COMPILE_EXT_API_TYPE: process.env.UNI_COMPILE_EXT_API_TYPE,
     UNI_APP_X_CACHE_DIR: process.env.UNI_APP_X_CACHE_DIR,
@@ -111,11 +111,7 @@ describe('ios plugin init', () => {
     jest.resetModules()
   })
 
-  function initPlugins(
-    dynamic = false,
-    dom2 = true,
-    enableVaporScriptLang = true
-  ) {
+  function initPlugins(dynamic = false, dom2 = true) {
     if (dom2) {
       process.env.UNI_APP_X_DOM2 = 'true'
     } else {
@@ -126,9 +122,6 @@ describe('ios plugin init', () => {
     } else {
       Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2_DYNAMIC')
     }
-    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = enableVaporScriptLang
-      ? 'true'
-      : 'false'
     process.env.UNI_APP_X_CACHE_DIR = '/tmp/cache'
     process.env.UNI_INPUT_DIR = '/tmp/input'
     process.env.UNI_COMPILER_VERSION = '1.0.0'
@@ -156,7 +149,7 @@ describe('ios plugin init', () => {
     )
   })
 
-  test('dom2 includes vapor script plugin with script lang support', () => {
+  test('dom2 includes vapor script plugin', () => {
     const plugins = initPlugins()
 
     expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
@@ -164,21 +157,20 @@ describe('ios plugin init', () => {
     )
   })
 
-  test('dom2 excludes vapor script plugin without script lang support', () => {
-    const plugins = initPlugins(false, true, false)
-
-    expect(
-      plugins.map((plugin: { name: string }) => plugin.name)
-    ).not.toContain('vapor-script')
-  })
-
   test('non-dom2 keeps Ext API collection without UASM transform', () => {
-    initPlugins(false, false)
+    const plugins = initPlugins(false, false)
 
     expect(mockInitUasmTransformOptions).not.toHaveBeenCalled()
     expect(mockInitUts2jsExtApiOptions).toHaveBeenCalledTimes(1)
+    expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
+      'standard-script'
+    )
+    expect(
+      plugins.map((plugin: { name: string }) => plugin.name)
+    ).not.toContain('vapor-script')
     expect(mockUts2js).toHaveBeenCalledWith(
       expect.objectContaining({
+        excludeStandardTypeScript: true,
         uasm: undefined,
         extApi: { collectExtApiUsageAst: mockCollectExtApiUsageAst },
       })

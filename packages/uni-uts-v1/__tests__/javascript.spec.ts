@@ -1,24 +1,17 @@
 import { createFilter } from '@rollup/pluginutils'
 import { uts2js } from '../src/tsc/javascript'
 
-describe('uts2js DOM2 routing', () => {
+describe('uts2js standard TypeScript routing', () => {
   const originalUts2js = globalThis.uts2js
-  const originalVaporScriptLang = process.env.UNI_APP_X_VAPOR_SCRIPT_LANG
   const scriptMacros = {
     createUniAppXScriptMacrosTransformer: jest.fn(),
   }
 
   afterEach(() => {
     globalThis.uts2js = originalUts2js
-    if (originalVaporScriptLang === undefined) {
-      delete process.env.UNI_APP_X_VAPOR_SCRIPT_LANG
-    } else {
-      process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = originalVaporScriptLang
-    }
   })
 
   test('excludes standard TypeScript and lang.ts requests', () => {
-    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'true'
     const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])
     globalThis.uts2js = runtimeUts2js
 
@@ -54,13 +47,11 @@ describe('uts2js DOM2 routing', () => {
     ).toBe(false)
   })
 
-  test('keeps TypeScript in uts2js without script lang support', () => {
-    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'false'
+  test('keeps TypeScript in uts2js for non-DOM2 builds', () => {
     const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])
     globalThis.uts2js = runtimeUts2js
 
     uts2js({
-      dom2: true,
       platform: 'app-android',
       inputDir: '/project/src',
       version: 'test',
@@ -72,7 +63,6 @@ describe('uts2js DOM2 routing', () => {
   })
 
   test('excludes standard TypeScript without enabling DOM2 transforms', () => {
-    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'true'
     const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])
     globalThis.uts2js = runtimeUts2js
 

@@ -11,6 +11,7 @@ import {
   isNormalCompileTarget,
   isVueSfcFile,
   resolveUTSCompiler,
+  uniAppXStandardScriptPlugin,
   uniCssScopedPlugin,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesAssetsPlugin,
@@ -19,7 +20,6 @@ import {
   uniJavaScriptWorkersPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniUasmPlugin,
-  uniVaporScriptMacrosPlugin,
   uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 import * as vueCompilerDom from '@vue/compiler-dom'
@@ -52,6 +52,8 @@ if (
 export default () => {
   const isNewStyleIsolation =
     process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
+  const uasm =
+    process.env.UNI_APP_X === 'true' ? initUasmWebTransformOptions() : undefined
   // 从 manifest.json 的 h5.devServer 中解析 HTTPS 扩展配置，按需注入 basic-ssl 插件。
   const h5BasicSslPlugin = resolveH5BasicSslPlugin()
   return [
@@ -64,13 +66,11 @@ export default () => {
           uniDecryptUniModulesPlugin(),
           uniUasmPlugin(),
           uniUTSUVueJavaScriptPlugin(),
-          ...(process.env.UNI_APP_X_DOM2 === 'true' &&
-          process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
-            ? [uniVaporScriptMacrosPlugin()]
-            : []),
+          // H5 的标准 JS/TS 不走 uts2js，脚本宏和 UASM 必须在标准 plugin-vue 前完成转换。
+          uniAppXStandardScriptPlugin({ uasm }),
           resolveUTSCompiler().uts2js({
             platform: 'web',
-            excludeStandardTypeScript: process.env.UNI_APP_X_DOM2 === 'true',
+            excludeStandardTypeScript: true,
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,
             sourceMap: enableSourceMap(),
@@ -87,7 +87,7 @@ export default () => {
                 uniCliShared.createUniAppXScriptMacrosTransformer,
             },
             extApi: initUts2jsExtApiOptions(),
-            uasm: initUasmWebTransformOptions(),
+            uasm,
             workers: {
               extname: '.js',
               resolve: () => {

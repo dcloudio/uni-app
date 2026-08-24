@@ -59,10 +59,7 @@ type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 export const uts2js: uts2js = (options) => {
   const excludeStandardTypeScript = options.excludeStandardTypeScript
   delete options.excludeStandardTypeScript
-  if (
-    (options.dom2 || excludeStandardTypeScript) &&
-    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
-  ) {
+  if (options.dom2 || excludeStandardTypeScript) {
     const exclude = options.exclude
       ? Array.isArray(options.exclude)
         ? options.exclude
@@ -70,7 +67,7 @@ export const uts2js: uts2js = (options) => {
       : []
     options.exclude = [
       ...exclude,
-      // 启用 Vapor JS/TS 脚本时，标准 TypeScript 由 Vite esbuild 处理，uts2js 只保留 UTS 请求。
+      // 标准 TypeScript 由 Vite esbuild 处理，uts2js 只保留 UTS 请求。
       '*.ts',
       '**/*.ts',
       '*.ts[?]*',

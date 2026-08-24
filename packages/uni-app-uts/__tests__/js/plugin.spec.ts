@@ -18,7 +18,6 @@ describe('uni app JS engine plugin', () => {
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
     UNI_APP_X_TSC_DIR: process.env.UNI_APP_X_TSC_DIR,
     UNI_APP_X_UVUE_DIR: process.env.UNI_APP_X_UVUE_DIR,
-    UNI_APP_X_VAPOR_SCRIPT_LANG: process.env.UNI_APP_X_VAPOR_SCRIPT_LANG,
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
     UNI_OUTPUT_DIR: process.env.UNI_OUTPUT_DIR,
   }
@@ -42,38 +41,25 @@ describe('uni app JS engine plugin', () => {
     })
   })
 
-  test.each([
-    ['false', true],
-    [undefined, true],
-    ['true', false],
-  ] as const)(
-    'controls the legacy JS collector with Vapor script lang set to %s',
-    (vaporScriptLang, expected) => {
-      if (vaporScriptLang === undefined) {
-        Reflect.deleteProperty(process.env, 'UNI_APP_X_VAPOR_SCRIPT_LANG')
-      } else {
-        process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = vaporScriptLang
-      }
-      const plugin = createUniAppJsEnginePlugin('app-android')()
-      const config = {
-        plugins: [{ name: 'uni:app-main' }],
-      } as unknown as ResolvedConfig
-      const configResolved =
-        typeof plugin.configResolved === 'function'
-          ? plugin.configResolved
-          : plugin.configResolved!.handler
+  test('skips the legacy JS collector in DOM2', () => {
+    const plugin = createUniAppJsEnginePlugin('app-android')()
+    const config = {
+      plugins: [{ name: 'uni:app-main' }],
+    } as unknown as ResolvedConfig
+    const configResolved =
+      typeof plugin.configResolved === 'function'
+        ? plugin.configResolved
+        : plugin.configResolved!.handler
 
-      configResolved(config)
+    configResolved(config)
 
-      expect(
-        config.plugins.some((plugin) => plugin.name === 'uni:app-js')
-      ).toBe(expected)
-    }
-  )
+    expect(config.plugins.map((plugin) => plugin.name)).not.toContain(
+      'uni:app-js'
+    )
+  })
 
   test('keeps the legacy JS collector for non-Vapor builds', () => {
     Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
-    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'true'
     const plugin = createUniAppJsEnginePlugin('app-android')()
     const config = {
       plugins: [{ name: 'uni:app-main' }],

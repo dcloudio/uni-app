@@ -295,8 +295,8 @@ export function createUniAppJsEnginePlugin(
         if (!isDom2) {
           initUniAppJsEngineDom1CssPlugin(config)
         }
-        // .lang 开启后由 uni:vapor-script 统一处理 JS/TS，避免重复解析普通 JS。
-        if (!isDom2 || process.env.UNI_APP_X_VAPOR_SCRIPT_LANG !== 'true') {
+        // DOM2 由 uni:vapor-script 统一处理 JS/TS，避免重复解析普通 JS。
+        if (!isDom2) {
           insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
         }
         // 如果开启了 vapor 模式，则禁用 vue 的 devtools，让 @vitejs/plugin-vue 不管是开发还是发行，均生成发行代码

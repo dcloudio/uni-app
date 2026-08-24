@@ -24,8 +24,8 @@ describe('initPluginVueOptions', () => {
   const originalEnv = {
     UNI_APP_X: process.env.UNI_APP_X,
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
-    UNI_APP_X_VAPOR_SCRIPT_LANG: process.env.UNI_APP_X_VAPOR_SCRIPT_LANG,
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
+    UNI_UTS_PLATFORM: process.env.UNI_UTS_PLATFORM,
   }
 
   afterEach(() => {
@@ -38,46 +38,49 @@ describe('initPluginVueOptions', () => {
     })
   })
 
-  test('injects the script transform only in uni-app x Vapor mode', () => {
-    process.env.UNI_APP_X = 'true'
-    process.env.UNI_APP_X_DOM2 = 'true'
-    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'true'
-    process.env.UNI_INPUT_DIR = '/project'
-    const uniAppXVaporScriptTransform = jest.fn()
-    const plugin = {
-      name: 'uni:vapor-script',
-      uni: { uniAppXVaporScriptTransform },
+  test.each([
+    ['android-vdom', 'app-android', false, false],
+    ['android-vapor', 'app-android', true, true],
+    ['ios-vdom', 'app-ios', false, false],
+    ['ios-vapor', 'app-ios', true, true],
+    ['harmony-vdom', 'app-harmony', false, false],
+    ['harmony-vapor', 'app-harmony', true, true],
+    ['web', 'web', false, false],
+    ['mp', 'mp-weixin', false, false],
+  ] as const)(
+    'injects the script transform for %s',
+    (_name, platform, isDom2, expected) => {
+      process.env.UNI_APP_X = 'true'
+      process.env.UNI_UTS_PLATFORM = platform
+      if (isDom2) {
+        process.env.UNI_APP_X_DOM2 = 'true'
+      } else {
+        delete process.env.UNI_APP_X_DOM2
+      }
+      process.env.UNI_INPUT_DIR = '/project'
+      const uniAppXVaporScriptTransform = jest.fn()
+      const plugin = {
+        name: 'uni:vapor-script',
+        uni: { uniAppXVaporScriptTransform },
+      }
+      const uniPluginOptions = initPluginUniOptions([plugin])
+      const options = {
+        base: '/',
+        command: 'serve',
+        platform: 'h5',
+        inputDir: '/project',
+        outputDir: '/dist',
+        assetsDir: 'assets',
+      } as any
+
+      const vueOptions = initPluginVueOptions(options, uniPluginOptions)
+
+      expect(!!(vueOptions as any).uniAppXVaporScriptTransform).toBe(expected)
+      if (expected) {
+        expect((vueOptions as any).uniAppXVaporScriptTransform).toBe(
+          uniAppXVaporScriptTransform
+        )
+      }
     }
-    const uniPluginOptions = initPluginUniOptions([plugin])
-    const options = {
-      base: '/',
-      command: 'serve',
-      platform: 'h5',
-      inputDir: '/project',
-      outputDir: '/dist',
-      assetsDir: 'assets',
-    } as any
-
-    const vueOptions = initPluginVueOptions(options, uniPluginOptions)
-
-    expect((vueOptions as any).uniAppXVaporScriptTransform).toBe(
-      uniAppXVaporScriptTransform
-    )
-
-    process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = 'false'
-    options.vueOptions = undefined
-    const disabledVueOptions = initPluginVueOptions(options, uniPluginOptions)
-
-    expect(
-      (disabledVueOptions as any).uniAppXVaporScriptTransform
-    ).toBeUndefined()
-
-    delete process.env.UNI_APP_X_DOM2
-    options.vueOptions = undefined
-    const nonVaporVueOptions = initPluginVueOptions(options, uniPluginOptions)
-
-    expect(
-      (nonVaporVueOptions as any).uniAppXVaporScriptTransform
-    ).toBeUndefined()
-  })
+  )
 })

@@ -1,10 +1,7 @@
 import * as ts from 'typescript'
 import { SourceMapConsumer } from 'source-map-js'
-import {
-  resolveVaporScriptMacrosRequest,
-  transformUniAppXScriptMacros,
-} from '../src/dom2/scriptMacros'
 import { createUniAppXScriptMacrosTransformer } from '../src/uts/scriptMacros'
+import { transformUniAppXStandardScript } from '../src/vite/plugins/uts/standardScript'
 
 describe('UniApp X script macros', () => {
   test('transforms defineMixin and definePlugin AST calls', () => {
@@ -36,7 +33,7 @@ const plugin = definePlugin(() => {})`,
   ignored
 )
 const other = helper.defineMixin(value)`
-    const result = transformUniAppXScriptMacros(source, '/src/index.ts', ts)
+    const result = transformUniAppXStandardScript(source, '/src/index.ts', ts)
 
     expect(result?.code).toBe(`const value = (
   /* before */ (createPlugin()) /* after */)
@@ -47,7 +44,7 @@ const other = helper.defineMixin(value)`)
 
   test('maps generated positions back to the original source', () => {
     const source = 'const value = defineMixin({ value: 1 })'
-    const result = transformUniAppXScriptMacros(source, '/src/index.ts', ts)!
+    const result = transformUniAppXStandardScript(source, '/src/index.ts', ts)!
     const generatedColumn = result.code.indexOf('value: 1')
     const consumer = new SourceMapConsumer(result.map as any)
 
@@ -64,7 +61,7 @@ const other = helper.defineMixin(value)`)
     const source = 'const value = defineMixin(createPlugin() /* keep */)'
 
     expect(
-      transformUniAppXScriptMacros(source, '/src/index.ts', ts)?.code
+      transformUniAppXStandardScript(source, '/src/index.ts', ts)?.code
     ).toBe('const value = (createPlugin() /* keep */)')
   })
 
@@ -74,7 +71,7 @@ const other = helper.defineMixin(value)`)
     'definePlugin(value,)',
   ])('removes the trailing comma from %s', (expression) => {
     expect(
-      transformUniAppXScriptMacros(
+      transformUniAppXStandardScript(
         `const result = ${expression}`,
         '/src/index.ts',
         ts
@@ -82,23 +79,11 @@ const other = helper.defineMixin(value)`)
     ).toBe('const result = (value)')
   })
 
-  test.each([
-    ['/src/index.ts', '/src/index.ts'],
-    ['/src/index.js?v=1', '/src/index.js'],
-    ['/src/index.ts?raw', undefined],
-    ['/src/index.js?url', undefined],
-    ['/src/index.d.ts', undefined],
-    ['/src/index.uts', undefined],
-    ['/pages/index/index.uvue', undefined],
-  ])('resolves Vapor script macro request %s', (id, expected) => {
-    expect(resolveVaporScriptMacrosRequest(id)).toBe(expected)
-  })
-
   test('skips parsing files without script macros', () => {
     const createSourceFile = jest.fn()
 
     expect(
-      transformUniAppXScriptMacros('const value = 1', '/src/index.ts', {
+      transformUniAppXStandardScript('const value = 1', '/src/index.ts', {
         createSourceFile,
       } as any)
     ).toBeUndefined()

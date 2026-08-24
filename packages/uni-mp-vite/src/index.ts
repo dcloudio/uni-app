@@ -7,6 +7,7 @@ import {
   EXTNAME_VUE,
   enableSourceMap,
   getWorkers,
+  initUasmWebTransformOptions,
   initUts2jsExtApiOptions,
   isEnableConsole,
   isInHBuilderX,
@@ -17,6 +18,7 @@ import {
   resolveSourceMapPath,
   resolveUTSCompiler,
   resolveWorkersRootDir,
+  uniAppXStandardScriptPlugin,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
@@ -24,7 +26,7 @@ import {
   uniJavaScriptWorkersPlugin,
   uniSourceMapPlugin,
   uniUTSUVueJavaScriptPlugin,
-  uniVaporScriptMacrosPlugin,
+  uniUasmPlugin,
   uniViteInjectPlugin,
   uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -59,6 +61,8 @@ export default (options: UniMiniProgramPluginOptions) => {
   // 云编译会使用该环境变量
   process.env.UNI_MP_GLOBAL = options.global
   const normalizeComponentName = options.template.component?.normalizeName
+  const uasm =
+    process.env.UNI_APP_X === 'true' ? initUasmWebTransformOptions() : undefined
 
   const sourceMapDir = resolveSourceMapPath(
     process.env.UNI_OUTPUT_DIR,
@@ -79,14 +83,14 @@ export default (options: UniMiniProgramPluginOptions) => {
     ...(process.env.UNI_APP_X === 'true'
       ? [
           uniDecryptUniModulesPlugin(),
+          // 初始化 UASM 模块索引；小程序不需要复制 App 原生库资源。
+          uniUasmPlugin(),
           uniUTSUVueJavaScriptPlugin(),
-          ...(process.env.UNI_APP_X_DOM2 === 'true' &&
-          process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
-            ? [uniVaporScriptMacrosPlugin()]
-            : []),
+          // 小程序标准 JS/TS 不走 uts2js，需要独立处理脚本宏和 UASM。
+          uniAppXStandardScriptPlugin({ uasm }),
           resolveUTSCompiler().uts2js({
             platform: process.env.UNI_PLATFORM as any,
-            excludeStandardTypeScript: process.env.UNI_APP_X_DOM2 === 'true',
+            excludeStandardTypeScript: true,
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,
             sourceMap: enableSourceMap(),
@@ -103,6 +107,7 @@ export default (options: UniMiniProgramPluginOptions) => {
                 uniCliShared.createUniAppXScriptMacrosTransformer,
             },
             extApi: initUts2jsExtApiOptions(),
+            uasm,
             workers: {
               extname: '.js',
               rewriteRootDir: resolveWorkersRootDir(),
