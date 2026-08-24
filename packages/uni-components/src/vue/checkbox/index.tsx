@@ -86,10 +86,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     function getCheckBoxStyle(checked: boolean) {
       if (props.disabled) {
-        return {
-          backgroundColor: '#E1E1E1',
-          borderColor: '#D1D1D1',
-        }
+        return {}
       }
       const style: { borderColor?: string; backgroundColor?: string } = {}
       // 兼容旧版本样式
@@ -209,7 +206,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                 ? createSvgIconVNode(
                     ICON_PATH_SUCCESS_NO_CIRCLE,
                     props.disabled
-                      ? '#ADADAD'
+                      ? 'currentColor'
                       : props.foreColor || props.iconColor || props.color,
                     22
                   )
