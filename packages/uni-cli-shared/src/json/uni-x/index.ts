@@ -21,6 +21,11 @@ export interface UniXPageOptions {
   disableScroll?: boolean
   enablePullDownRefresh?: boolean
   scrollIndicator?: 'none'
+  enableBackToTop?: boolean
+  bounces?: boolean
+  androidOverscroll?: boolean
+  androidRefresherColor?: string
+  backgroundColor?: string
 }
 
 const uniXPageOptionsCache = new Map<string, Map<string, UniXPageOptions>>()
@@ -87,21 +92,31 @@ function updateUniXPageOptions(pagesJson: UniApp.PagesJson) {
   }
   const pageOptions = new Map<string, UniXPageOptions>()
   pagesJson.pages.forEach((page) => {
-    pageOptions.set(page.path, normalizeRootPageOptions(page.style))
+    pageOptions.set(
+      page.path,
+      normalizeRootPageOptions(page.style, pagesJson.globalStyle)
+    )
   })
   uniXPageOptionsCache.set(inputDir, pageOptions)
 }
 
 function normalizeRootPageOptions(
-  pageStyle: UniApp.PagesJsonPageStyle | undefined
+  pageStyle: UniApp.PagesJsonPageStyle | undefined,
+  globalStyle: UniApp.PagesJsonPageStyle
 ): UniXPageOptions {
-  if (!pageStyle) {
-    return {}
-  }
   return {
-    disableScroll: pageStyle.disableScroll === true || undefined,
-    enablePullDownRefresh: isEnablePullDownRefresh(pageStyle) || undefined,
-    scrollIndicator: pageStyle.scrollIndicator,
+    disableScroll: pageStyle?.disableScroll === true || undefined,
+    enablePullDownRefresh:
+      (pageStyle && isEnablePullDownRefresh(pageStyle)) || undefined,
+    scrollIndicator: pageStyle?.scrollIndicator,
+    // 新增的根滚动配置遵循 pages.json 页面样式覆盖全局样式的规则。
+    enableBackToTop: pageStyle?.enableBackToTop ?? globalStyle.enableBackToTop,
+    bounces: pageStyle?.bounces ?? globalStyle.bounces,
+    androidOverscroll:
+      pageStyle?.androidOverscroll ?? globalStyle.androidOverscroll,
+    androidRefresherColor:
+      pageStyle?.androidRefresherColor ?? globalStyle.androidRefresherColor,
+    backgroundColor: pageStyle?.backgroundColor ?? globalStyle.backgroundColor,
   }
 }
 
