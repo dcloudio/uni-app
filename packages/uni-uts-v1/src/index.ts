@@ -601,6 +601,23 @@ export async function compile(
         } else {
           deps.push(...resolveIOSDepFiles(filename))
         }
+        // iOS平台config.json必须提前生成
+        if (utsPlatform === 'app-ios') {
+          // 处理 config.json
+          genConfigJson(
+            utsPlatform,
+            isX,
+            proxyCodeOptions.iOSHookClass || '',
+            components,
+            customElements,
+            pluginRelativeDir,
+            pkg.is_uni_modules,
+            inputDir,
+            outputDir,
+            cacheDir,
+            resolveConfigProvider(utsPlatform, pkg.id, transform)
+          )
+        }
         const res = await getCompiler(compilerType).runDev(filename, {
           components,
           customElements,
@@ -620,23 +637,24 @@ export async function compile(
           sourceMap: !!sourceMap,
           uniModules: uni_modules || [],
         })
-        // 处理 config.json
-        genConfigJson(
-          utsPlatform,
-          isX,
-          (utsPlatform === 'app-android'
-            ? proxyCodeOptions.androidHookClass
-            : proxyCodeOptions.iOSHookClass) || '',
-          components,
-          customElements,
-          pluginRelativeDir,
-          pkg.is_uni_modules,
-          inputDir,
-          outputDir,
-          cacheDir,
-          resolveConfigProvider(utsPlatform, pkg.id, transform),
-          !!(res && hasUTSBridgeCode(res.uts_bridge))
-        )
+        // 安卓平台config.json可以在dex之后生成
+        if (utsPlatform === 'app-android') {
+          // 处理 config.json
+          genConfigJson(
+            utsPlatform,
+            isX,
+            proxyCodeOptions.androidHookClass || '',
+            components,
+            customElements,
+            pluginRelativeDir,
+            pkg.is_uni_modules,
+            inputDir,
+            outputDir,
+            cacheDir,
+            resolveConfigProvider(utsPlatform, pkg.id, transform),
+            !!(res && hasUTSBridgeCode(res.uts_bridge))
+          )
+        }
         if (res) {
           if (res.code) {
             //重要：该日志会被HBuilderX使用，用于识别uts插件编译是否失败，如果调整文案，需要通知HBuilderX。
