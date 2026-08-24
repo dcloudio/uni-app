@@ -5,7 +5,7 @@ import type { Event } from '@dcloudio/uni-app-x/types/native'
 import { getRealPath } from '../route'
 import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import type { ComponentPublicInstance } from 'vue'
-import { ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
+import { ON_HIDE, ON_SHOW, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared'
 import { registerPage } from '../page'
 import { getAppThemeFallbackOS, normalizeTabBarStyles } from '../theme'
 import {
@@ -95,17 +95,22 @@ function init() {
   tabBar0!.initTabBar(tabBarConfig)
   tabBar0!.addEventListener('tabBarItemTap', function (event: Event) {
     const index = (event as TabTapEvent).index
-    if (index !== selected0) {
-      const item = list![index]
-      const path = item.pagePath
-      if (isString(path) && findPageRoute(getRealPath(path, true))) {
-        // 调用 switchTab 拦截器
-        uni.switchTab({
-          url: getRealPath(path, true),
-        })
-      } else {
-        console.error('switchTab: pagePath not found')
-      }
+    const item = list![index]
+    const path = item.pagePath
+    if (isString(path) && findPageRoute(getRealPath(path, true))) {
+      // 调用 switchTab 拦截器
+      uni.switchTab({
+        url: getRealPath(path, true),
+        success() {
+          invokeHook(ON_TAB_ITEM_TAP, {
+            index,
+            pagePath: item.pagePath,
+            text: item.text,
+          })
+        },
+      })
+    } else {
+      console.error('switchTab: pagePath not found')
     }
   })
   tabBar0!.addEventListener('tabBarMidButtonTap', function (event: Event) {
@@ -264,7 +269,8 @@ export function switchSelect(
   callback?: () => void,
   appRouteOpenType?: AppRouteOpenType,
   shouldDispatchAppRoute = true,
-  appRouteContext?: AppRouteContext
+  appRouteContext?: AppRouteContext,
+  onComplete?: () => void
 ) {
   let shouldShow = false
   if (tabBar0 === null) {
@@ -305,5 +311,6 @@ export function switchSelect(
     // 执行afterRoute
     // invokeArrayFns(afterRouteHooks, type)
     invokeAfterRouteHooks(type)
+    onComplete?.()
   })
 }
