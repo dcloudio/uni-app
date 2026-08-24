@@ -268,6 +268,17 @@ export async function prepareProxyCodeAndFillOptions(
   return decls
 }
 
+function genExportModifier(
+  format: FORMATS | undefined,
+  name: string,
+  isDefault: boolean | undefined
+) {
+  if (format === FORMATS.CJS) {
+    return isDefault ? 'exports.default = ' : `exports.${name} = `
+  }
+  return isDefault ? 'export default ' : `export const ${name} = `
+}
+
 export async function genProxyCodeV2(
   bridge: UTSBridge,
   module: string,
@@ -285,6 +296,10 @@ export async function genProxyCodeV2(
   )
   let code = `const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction } = uni\n
 const moduleName = '${utsBridgeName}'\n`
+  const isCJS = options.format === FORMATS.CJS
+  if (isCJS) {
+    code += `const exports = { __esModule: true }\n`
+  }
   if (hasMatchedInterceptor) {
     code += `${interceptor.code}\n`
   }
@@ -296,9 +311,11 @@ const moduleName = '${utsBridgeName}'\n`
     )} })\n`
   })
   classes.forEach((c) => {
-    const exportModifier = c.is_default
-      ? 'export default '
-      : `export const ${c.name} = `
+    const exportModifier = genExportModifier(
+      options.format,
+      c.name,
+      c.is_default
+    )
     const isElement = isUTSElementProxyClass(c.name)
     // TODO 目前仅用于安卓dom2，如果要支持iOS dom2需要屏蔽ElementProxyClass的注册
     if (isElement) {
@@ -318,9 +335,11 @@ const moduleName = '${utsBridgeName}'\n`
     }
   })
   functions.forEach((f) => {
-    const exportModifier = f.is_default
-      ? 'export default '
-      : `export const ${f.name} = `
+    const exportModifier = genExportModifier(
+      options.format,
+      f.name,
+      f.is_default
+    )
     const originalMethod = `initUTSProxyFunction(moduleName, ${stringifyUTSBridgeMethod(
       f
     )})`
@@ -332,6 +351,11 @@ const moduleName = '${utsBridgeName}'\n`
         : originalMethod
     code += `${exportModifier}${proxyMethod}\n`
   })
+  if (isCJS) {
+    code += `uni.registerUTSPlugin('${normalizePath(
+      options.pluginRelativeDir!
+    )}, exports)\n`
+  }
   return code
 }
 
