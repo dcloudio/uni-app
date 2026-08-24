@@ -25,7 +25,7 @@ export type popupStyleType = {
   }
 }
 
-export function usePopupStyle(props: Data) {
+export function usePopupStyle(props: Data, triangleColor = '#fcfcfd') {
   const popupWidth = ref(0)
   const popupHeight = ref(0)
 
@@ -82,14 +82,16 @@ export function usePopupStyle(props: Data) {
         contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`
         triangleStyle.bottom = '-6px'
         triangleStyle['border-width'] = '6px 6px 0 6px'
-        triangleStyle['border-color'] =
-          '#fcfcfd transparent transparent transparent'
+        triangleStyle[
+          'border-color'
+        ] = `${triangleColor} transparent transparent transparent`
       } else {
         contentStyle.top = `${popoverTop + popoverHeight + 6}px`
         triangleStyle.top = '-6px'
         triangleStyle['border-width'] = '0 6px 6px 6px'
-        triangleStyle['border-color'] =
-          'transparent transparent #fcfcfd transparent'
+        triangleStyle[
+          'border-color'
+        ] = `transparent transparent ${triangleColor} transparent`
       }
     }
     return style
