@@ -4,6 +4,9 @@ import { uts2js } from '../src/tsc/javascript'
 describe('uts2js DOM2 routing', () => {
   const originalUts2js = globalThis.uts2js
   const originalVaporScriptLang = process.env.UNI_APP_X_VAPOR_SCRIPT_LANG
+  const scriptMacros = {
+    createUniAppXScriptMacrosTransformer: jest.fn(),
+  }
 
   afterEach(() => {
     globalThis.uts2js = originalUts2js
@@ -25,6 +28,7 @@ describe('uts2js DOM2 routing', () => {
       inputDir: '/project/src',
       version: 'test',
       modules: {},
+      scriptMacros,
     })
 
     const options = runtimeUts2js.mock.calls[0][0]
@@ -61,6 +65,7 @@ describe('uts2js DOM2 routing', () => {
       inputDir: '/project/src',
       version: 'test',
       modules: {},
+      scriptMacros,
     })
 
     expect(runtimeUts2js.mock.calls[0][0].exclude).toBeUndefined()
@@ -77,6 +82,7 @@ describe('uts2js DOM2 routing', () => {
       inputDir: '/project/src',
       version: 'test',
       modules: {},
+      scriptMacros,
     })
 
     const options = runtimeUts2js.mock.calls[0][0]

@@ -44,7 +44,7 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
       typescript: typeof tsTypes
     ): string[] | undefined
   }
-  scriptMacros?: {
+  scriptMacros: {
     createUniAppXScriptMacrosTransformer(options: {
       typescript: typeof tsTypes
     }): tsTypes.TransformerFactory<tsTypes.SourceFile>
