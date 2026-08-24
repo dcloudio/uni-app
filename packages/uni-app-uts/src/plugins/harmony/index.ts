@@ -92,6 +92,10 @@ export function init() {
         vueCompilerDom,
         uniCliShared,
       },
+      scriptMacros: {
+        createUniAppXScriptMacrosTransformer:
+          uniCliShared.createUniAppXScriptMacrosTransformer,
+      },
       workers: {
         extname: '.ets',
         resolve: () => {

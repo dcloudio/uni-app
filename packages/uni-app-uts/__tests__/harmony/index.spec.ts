@@ -4,6 +4,7 @@ const mockUts2js = jest.fn((_options: Record<string, unknown>) => ({
 const mockResolveUasmLoadPath = jest.fn()
 const mockCreateLoadUasmTransformer = jest.fn()
 const mockCollectExtApiUsageAst = jest.fn()
+const mockCreateUniAppXScriptMacrosTransformer = jest.fn()
 const mockInitUts2jsExtApiOptions = jest.fn(() => ({
   collectExtApiUsageAst: mockCollectExtApiUsageAst,
 }))
@@ -22,6 +23,8 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     getWorkers: () => ({}),
     initUts2jsSharedDataOptions: () => undefined,
     initUts2jsExtApiOptions: mockInitUts2jsExtApiOptions,
+    createUniAppXScriptMacrosTransformer:
+      mockCreateUniAppXScriptMacrosTransformer,
     isNormalCompileTarget: () => true,
     initUasmTransformOptions: mockInitUasmTransformOptions,
     parseUniExtApiNamespacesOnce: () => ({}),
@@ -191,6 +194,19 @@ describe('harmony plugin init', () => {
     expect(mockUts2js).toHaveBeenCalledWith(
       expect.objectContaining({
         extApi: { collectExtApiUsageAst: mockCollectExtApiUsageAst },
+      })
+    )
+  })
+
+  test('configures the script macros transformer for uts2js', () => {
+    initPlugins()
+
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({
+        scriptMacros: {
+          createUniAppXScriptMacrosTransformer:
+            mockCreateUniAppXScriptMacrosTransformer,
+        },
       })
     )
   })

@@ -31,6 +31,7 @@ jest.mock('../src/dom2/sharedData', () => ({
 }))
 
 import { uniVaporScriptPlugin } from '../src/dom2/script'
+import { createUniAppXScriptMacrosTransformer } from '../src/uts/scriptMacros'
 import {
   collectExtApiUsageAst,
   initUts2jsExtApiOptions,
@@ -91,6 +92,7 @@ describe('uniVaporScriptPlugin', () => {
     })
     expect(mockDom2ScriptPlugin).toHaveBeenCalledWith({
       typescript: mockTypeScript,
+      createUniAppXScriptMacrosTransformer,
       extApi: { collectExtApiUsageAst },
       uasm: undefined,
       sharedData: {

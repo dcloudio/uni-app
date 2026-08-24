@@ -96,6 +96,10 @@ export function init() {
         vueCompilerDom,
         uniCliShared,
       },
+      scriptMacros: {
+        createUniAppXScriptMacrosTransformer:
+          uniCliShared.createUniAppXScriptMacrosTransformer,
+      },
       workers: {
         resolve: () => {
           return getWorkers()

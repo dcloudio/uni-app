@@ -19,6 +19,7 @@ import {
   uniJavaScriptWorkersPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniUasmPlugin,
+  uniVaporScriptMacrosPlugin,
   uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 import * as vueCompilerDom from '@vue/compiler-dom'
@@ -63,8 +64,13 @@ export default () => {
           uniDecryptUniModulesPlugin(),
           uniUasmPlugin(),
           uniUTSUVueJavaScriptPlugin(),
+          ...(process.env.UNI_APP_X_DOM2 === 'true' &&
+          process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
+            ? [uniVaporScriptMacrosPlugin()]
+            : []),
           resolveUTSCompiler().uts2js({
             platform: 'web',
+            excludeStandardTypeScript: process.env.UNI_APP_X_DOM2 === 'true',
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,
             sourceMap: enableSourceMap(),
@@ -75,6 +81,10 @@ export default () => {
             modules: {
               vueCompilerDom,
               uniCliShared,
+            },
+            scriptMacros: {
+              createUniAppXScriptMacrosTransformer:
+                uniCliShared.createUniAppXScriptMacrosTransformer,
             },
             extApi: initUts2jsExtApiOptions(),
             uasm: initUasmWebTransformOptions(),
