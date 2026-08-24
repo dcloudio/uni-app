@@ -31,7 +31,7 @@ const props = {
   },
   color: {
     type: String,
-    default: '#007aff',
+    default: '',
   },
   backgroundColor: {
     type: String,
@@ -51,7 +51,7 @@ const props = {
   },
   iconColor: {
     type: String,
-    default: '#ffffff',
+    default: '',
   },
 }
 
@@ -75,26 +75,24 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     function getRadioStyle(checked: boolean | string) {
       if (props.disabled) {
-        return {
-          backgroundColor: '#E1E1E1',
-          borderColor: '#D1D1D1',
-        }
+        return
       }
       const style: { borderColor?: string; backgroundColor?: string } = {}
       // 兼容旧版本样式
-      if (radioChecked.value) {
-        style.backgroundColor = props.activeBackgroundColor || props.color
-        style.borderColor = props.activeBorderColor || style.backgroundColor
+      if (checked) {
+        const backgroundColor = props.activeBackgroundColor || props.color
+        if (backgroundColor) {
+          style.backgroundColor = backgroundColor
+          style.borderColor = props.activeBorderColor || backgroundColor
+        } else if (props.activeBorderColor) {
+          style.borderColor = props.activeBorderColor
+        }
       } else {
         if (props.borderColor) style.borderColor = props.borderColor
         if (props.backgroundColor) style.backgroundColor = props.backgroundColor
       }
-      return style
+      return style.borderColor || style.backgroundColor ? style : undefined
     }
-
-    const radioStyle = computed(() => {
-      return getRadioStyle(radioChecked.value)
-    })
 
     watch(
       [() => props.checked, () => props.value],
@@ -151,14 +149,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         },
         set(value: boolean | string) {
           checkedCache.value = value
-          const style = getRadioStyle(value)
-          const checkboxInputElement = rootElement.querySelector(
-            '.uni-checkbox-input'
-          ) as HTMLElement
-          for (const key in style) {
-            const value = style[key as keyof typeof style]
-            value && checkboxInputElement.style.setProperty(key, value)
-          }
         },
       })
       rootElement.attachVmProps(props)
@@ -175,6 +165,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       realCheckValue = radioChecked.value
       //#endif
 
+      const radioStyle = getRadioStyle(realCheckValue)
+      const hoverBorderColor = realCheckValue
+        ? radioStyle?.borderColor
+        : props.activeBorderColor
+      const hoverStyle = hoverBorderColor
+        ? { '--HOVER-BD-COLOR': hoverBorderColor }
+        : undefined
+      const iconColor = props.iconColor || 'currentColor'
+
       return (
         <uni-radio
           {...booleanAttrs}
@@ -182,24 +181,20 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           onClick={_onClick}
           ref={rootRef}
         >
-          <div
-            class="uni-radio-wrapper"
-            style={{
-              '--HOVER-BD-COLOR': !radioChecked.value
-                ? props.activeBorderColor
-                : radioStyle.value.borderColor,
-            }}
-          >
+          <div class="uni-radio-wrapper" style={hoverStyle}>
             <div
               class="uni-radio-input"
               // @ts-expect-error
-              class={{ 'uni-radio-input-disabled': props.disabled }}
-              style={radioStyle.value}
+              class={{
+                'uni-radio-input-checked': realCheckValue,
+                'uni-radio-input-disabled': props.disabled,
+              }}
+              style={radioStyle}
             >
               {realCheckValue
                 ? createSvgIconVNode(
                     ICON_PATH_SUCCESS_NO_CIRCLE,
-                    props.disabled ? '#ADADAD' : props.iconColor,
+                    props.disabled ? 'currentColor' : iconColor,
                     18
                   )
                 : ''}

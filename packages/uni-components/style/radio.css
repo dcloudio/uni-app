@@ -30,6 +30,11 @@ uni-radio[disabled] {
   position: relative;
 }
 
+.uni-radio-input.uni-radio-input-checked {
+  background-color: #007aff;
+  border-color: #007aff;
+}
+
 @media (hover: hover) {
   uni-radio:not([disabled]) .uni-radio-input:hover {
     border-color: var(--HOVER-BD-COLOR, #007aff) !important;
@@ -50,6 +55,22 @@ uni-radio[disabled] {
   border-color: #d1d1d1;
 }
 
-.uni-radio-input.uni-radio-input-disabled svg{
+.uni-radio-input.uni-radio-input-disabled svg {
   color: #adadad;
+}
+
+@media (prefers-color-scheme: dark) {
+  uni-radio .uni-radio-input {
+    background-color: #2c2c2c;
+    border-color: #656565;
+  }
+
+  uni-radio .uni-radio-input.uni-radio-input-disabled {
+    background-color: #2b2b2b;
+    border-color: #373737;
+  }
+
+  uni-radio .uni-radio-input.uni-radio-input-disabled svg {
+    color: #6b6b6b;
+  }
 }
