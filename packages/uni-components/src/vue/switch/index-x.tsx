@@ -50,7 +50,7 @@ const props = {
   },
   backgroundColor: {
     type: String,
-    default: '#e9e9ea',
+    default: '',
   },
   activeBackgroundColor: {
     type: String,
@@ -145,24 +145,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         type,
       } = props
       const booleanAttrs = useBooleanAttr(props, 'disabled')
-      const switchInputStyle: {
-        backgroundColor?: string
-        borderColor?: string
-      } = {}
       const fixColor = activeBackgroundColor || color
       const bgColor = switchChecked.value ? fixColor : backgroundColor
-      if (bgColor) {
-        switchInputStyle['backgroundColor'] = bgColor
-        switchInputStyle['borderColor'] = bgColor
-      }
+      const switchInputStyle = bgColor
+        ? { backgroundColor: bgColor, borderColor: bgColor }
+        : undefined
 
-      const thumbStyle: {
-        backgroundColor?: string
-      } = {}
       const fgColor = switchChecked.value ? activeForeColor : foreColor
-      if (fgColor) {
-        thumbStyle['backgroundColor'] = fgColor
-      }
+      const thumbStyle = fgColor ? { backgroundColor: fgColor } : undefined
 
       let realCheckValue: boolean | string
       realCheckValue = checkedCache.value
@@ -194,7 +184,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               {realCheckValue
                 ? createSvgIconVNode(
                     ICON_PATH_SUCCESS_NO_CIRCLE,
-                    props.color,
+                    props.foreColor || props.color || 'currentColor',
                     22
                   )
                 : ''}
