@@ -204,13 +204,20 @@ uni-picker[disabled] {
 }
 
 @media (prefers-color-scheme: dark) {
-  .uni-picker-container .uni-picker-content {
+  .uni-picker-container {
+    --uni-picker-arrow-color: var(--UI-BG-2);
+  }
+  .uni-picker-container .uni-picker-content,
+  .uni-picker-container .uni-picker-select {
     background-color: var(--UI-BG-2);
   }
   .uni-selector-select .uni-picker-item,
   .uni-picker-container .uni-picker-item,
   .uni-picker-container .uni-picker-action.uni-picker-action-cancel {
     color: var(--UI-FG-0);
+  }
+  .uni-selector-select .uni-picker-item:hover {
+    background-color: var(--UI-BG-COLOR-ACTIVE);
   }
   .uni-picker-container .uni-picker-custom {
     background-color: var(--UI-BG-2);
