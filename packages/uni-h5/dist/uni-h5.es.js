@@ -9041,10 +9041,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
     const checkboxValue = ref(props2.value);
     function getCheckBoxStyle(checked) {
       if (props2.disabled) {
-        return {
-          backgroundColor: "#E1E1E1",
-          borderColor: "#D1D1D1"
-        };
+        return {};
       }
       const style = {};
       if (checked) {
@@ -9109,7 +9106,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -14110,7 +14107,7 @@ const props$o = {
   },
   color: {
     type: String,
-    default: "#007aff"
+    default: ""
   },
   backgroundColor: {
     type: String,
@@ -14130,7 +14127,7 @@ const props$o = {
   },
   iconColor: {
     type: String,
-    default: "#ffffff"
+    default: ""
   }
 };
 const index$m = /* @__PURE__ */ defineBuiltInComponent({
@@ -14144,26 +14141,25 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     const radioValue = ref(props2.value);
     function getRadioStyle(checked) {
       if (props2.disabled) {
-        return {
-          backgroundColor: "#E1E1E1",
-          borderColor: "#D1D1D1"
-        };
+        return;
       }
       const style = {};
-      if (radioChecked.value) {
-        style.backgroundColor = props2.activeBackgroundColor || props2.color;
-        style.borderColor = props2.activeBorderColor || style.backgroundColor;
+      if (checked) {
+        const backgroundColor = props2.activeBackgroundColor || props2.color;
+        if (backgroundColor) {
+          style.backgroundColor = backgroundColor;
+          style.borderColor = props2.activeBorderColor || backgroundColor;
+        } else if (props2.activeBorderColor) {
+          style.borderColor = props2.activeBorderColor;
+        }
       } else {
         if (props2.borderColor)
           style.borderColor = props2.borderColor;
         if (props2.backgroundColor)
           style.backgroundColor = props2.backgroundColor;
       }
-      return style;
+      return style.borderColor || style.backgroundColor ? style : void 0;
     }
-    const radioStyle = computed(() => {
-      return getRadioStyle(radioChecked.value);
-    });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
       radioValue.value = newModelValue;
@@ -14197,21 +14193,26 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       let realCheckValue;
       realCheckValue = radioChecked.value;
+      const radioStyle = getRadioStyle(realCheckValue);
+      const hoverBorderColor = realCheckValue ? radioStyle == null ? void 0 : radioStyle.borderColor : props2.activeBorderColor;
+      const hoverStyle = hoverBorderColor ? {
+        "--HOVER-BD-COLOR": hoverBorderColor
+      } : void 0;
+      const iconColor = props2.iconColor || "currentColor";
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
         "id": props2.id,
         "onClick": _onClick,
         "ref": rootRef
       }), [createVNode("div", {
         "class": "uni-radio-wrapper",
-        "style": {
-          "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
-        }
+        "style": hoverStyle
       }, [createVNode("div", {
         "class": ["uni-radio-input", {
+          "uni-radio-input-checked": realCheckValue,
           "uni-radio-input-disabled": props2.disabled
         }],
-        "style": radioStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+        "style": radioStyle
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -22875,7 +22876,7 @@ function hidePopup(type) {
     showToastState.visible = false;
   }, 10);
 }
-function usePopupStyle(props2) {
+function usePopupStyle(props2, triangleColor = "#fcfcfd") {
   const popupWidth = ref(0);
   const popupHeight = ref(0);
   const isDesktop = computed(
@@ -22931,12 +22932,12 @@ function usePopupStyle(props2) {
         contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
         triangleStyle.bottom = "-6px";
         triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
+        triangleStyle["border-color"] = `${triangleColor} transparent transparent transparent`;
       } else {
         contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
         triangleStyle.top = "-6px";
         triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
+        triangleStyle["border-color"] = `transparent transparent ${triangleColor} transparent`;
       }
     }
     return style;
@@ -25712,7 +25713,7 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
     _createTime();
     _createDate();
     _setValueSync();
-    const popup = usePopupStyle(state2);
+    const popup = usePopupStyle(state2, "var(--uni-picker-arrow-color, #fcfcfd)");
     watchEffect(() => {
       state2.isDesktop = popup.isDesktop.value;
       state2.popupStyle = popup.popupStyle.value;
