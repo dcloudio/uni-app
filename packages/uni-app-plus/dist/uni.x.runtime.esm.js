@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_TAB_ITEM_TAP, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -1887,16 +1887,21 @@ function init() {
   tabBar0.initTabBar(tabBarConfig);
   tabBar0.addEventListener("tabBarItemTap", function(event) {
     var index2 = event.index;
-    if (index2 !== selected0) {
-      var item = list[index2];
-      var path = item.pagePath;
-      if (isString(path) && findPageRoute(getRealPath(path, true))) {
-        uni.switchTab({
-          url: getRealPath(path, true)
-        });
-      } else {
-        console.error("switchTab: pagePath not found");
-      }
+    var item = list[index2];
+    var path = item.pagePath;
+    if (isString(path) && findPageRoute(getRealPath(path, true))) {
+      uni.switchTab({
+        url: getRealPath(path, true),
+        success() {
+          invokeHook(ON_TAB_ITEM_TAP, {
+            index: index2,
+            pagePath: item.pagePath,
+            text: item.text
+          });
+        }
+      });
+    } else {
+      console.error("switchTab: pagePath not found");
     }
   });
   tabBar0.addEventListener("tabBarMidButtonTap", function(event) {
@@ -2010,6 +2015,7 @@ function switchSelect(selected, path) {
   var appRouteOpenType = arguments.length > 5 ? arguments[5] : void 0;
   var shouldDispatchAppRoute = arguments.length > 6 && arguments[6] !== void 0 ? arguments[6] : true;
   var appRouteContext = arguments.length > 7 ? arguments[7] : void 0;
+  var onComplete = arguments.length > 8 ? arguments[8] : void 0;
   var shouldShow = false;
   if (tabBar0 === null) {
     init();
@@ -2039,6 +2045,7 @@ function switchSelect(selected, path) {
     }
     selected0 = selected;
     invokeAfterRouteHooks(type);
+    onComplete === null || onComplete === void 0 || onComplete();
   });
 }
 var APP_THEME_AUTO = "auto";
@@ -2973,7 +2980,7 @@ function _switchTab(_ref2, appRouteOpenType, shouldDispatchAppRoute, appRouteCon
   var pages2 = getCurrentBasePages();
   return new Promise((resolve) => {
     setTimeout(() => {
-      switchSelect(selected, path, query, false, void 0, appRouteOpenType, shouldDispatchAppRoute, appRouteContext);
+      switchSelect(selected, path, query, false, void 0, appRouteOpenType, shouldDispatchAppRoute, appRouteContext, () => resolve(void 0));
       for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
         var page = pages2[index2];
         if (isTabPage(page)) {
@@ -2981,7 +2988,6 @@ function _switchTab(_ref2, appRouteOpenType, shouldDispatchAppRoute, appRouteCon
         }
         closePage(page, "none");
       }
-      resolve(void 0);
     }, 0);
   });
 }
