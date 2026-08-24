@@ -2714,10 +2714,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
     const initialCheckedValue = props2.checked;
     function getCheckBoxStyle(checked) {
       if (props2.disabled) {
-        return {
-          backgroundColor: "#E1E1E1",
-          borderColor: "#D1D1D1"
-        };
+        return {};
       }
       const style = {};
       if (checked) {
@@ -2804,7 +2801,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -16255,7 +16252,7 @@ const props$k = {
   },
   color: {
     type: String,
-    default: "#007aff"
+    default: ""
   },
   backgroundColor: {
     type: String,
@@ -16275,7 +16272,7 @@ const props$k = {
   },
   iconColor: {
     type: String,
-    default: "#ffffff"
+    default: ""
   },
   // 图标颜色,同color,优先级大于iconColor
   foreColor: {
@@ -16301,26 +16298,25 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
     const initialCheckedValue = props2.checked;
     function getRadioStyle(checked) {
       if (props2.disabled) {
-        return {
-          backgroundColor: "#E1E1E1",
-          borderColor: "#D1D1D1"
-        };
+        return;
       }
       const style = {};
-      if (radioChecked.value) {
-        style.backgroundColor = props2.activeBackgroundColor || props2.color;
-        style.borderColor = props2.activeBorderColor || style.backgroundColor;
+      if (checked) {
+        const backgroundColor = props2.activeBackgroundColor || props2.color;
+        if (backgroundColor) {
+          style.backgroundColor = backgroundColor;
+          style.borderColor = props2.activeBorderColor || backgroundColor;
+        } else if (props2.activeBorderColor) {
+          style.borderColor = props2.activeBorderColor;
+        }
       } else {
         if (props2.borderColor)
           style.borderColor = props2.borderColor;
         if (props2.backgroundColor)
           style.backgroundColor = props2.backgroundColor;
       }
-      return style;
+      return style.borderColor || style.backgroundColor ? style : void 0;
     }
-    const radioStyle = computed(() => {
-      return getRadioStyle(radioChecked.value);
-    });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
       radioValue.value = newModelValue;
@@ -16362,12 +16358,6 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
         },
         set(value) {
           checkedCache.value = value;
-          const style = getRadioStyle();
-          const checkboxInputElement = rootElement.querySelector(".uni-checkbox-input");
-          for (const key in style) {
-            const value2 = style[key];
-            value2 && checkboxInputElement.style.setProperty(key, value2);
-          }
         }
       });
       rootElement.attachVmProps(props2);
@@ -16376,20 +16366,25 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       let realCheckValue;
       realCheckValue = checkedCache.value;
+      const radioStyle = getRadioStyle(realCheckValue);
+      const hoverBorderColor = realCheckValue ? radioStyle == null ? void 0 : radioStyle.borderColor : props2.activeBorderColor;
+      const hoverStyle = hoverBorderColor ? {
+        "--HOVER-BD-COLOR": hoverBorderColor
+      } : void 0;
+      const iconColor = props2.foreColor || props2.iconColor || "currentColor";
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
         "onClick": _onClick,
         "ref": rootRef,
         "id": props2.id,
         "class": "uni-radio-wrapper",
-        "style": {
-          "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
-        }
+        "style": hoverStyle
       }), [createVNode("div", {
         "class": ["uni-radio-input", {
+          "uni-radio-input-checked": realCheckValue,
           "uni-radio-input-disabled": props2.disabled
         }],
-        "style": radioStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
+        "style": radioStyle
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
     };
   }
 });
@@ -18445,7 +18440,7 @@ const props$e = {
   },
   backgroundColor: {
     type: String,
-    default: "#e9e9ea"
+    default: ""
   },
   activeBackgroundColor: {
     type: String,
@@ -18524,18 +18519,16 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         type
       } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
-      const switchInputStyle = {};
       const fixColor = activeBackgroundColor || color;
       const bgColor = switchChecked.value ? fixColor : backgroundColor;
-      if (bgColor) {
-        switchInputStyle["backgroundColor"] = bgColor;
-        switchInputStyle["borderColor"] = bgColor;
-      }
-      const thumbStyle = {};
+      const switchInputStyle = bgColor ? {
+        backgroundColor: bgColor,
+        borderColor: bgColor
+      } : void 0;
       const fgColor = switchChecked.value ? activeForeColor : foreColor;
-      if (fgColor) {
-        thumbStyle["backgroundColor"] = fgColor;
-      }
+      const thumbStyle = fgColor ? {
+        backgroundColor: fgColor
+      } : void 0;
       let realCheckValue;
       realCheckValue = checkedCache.value;
       return createVNode("uni-switch", mergeProps({
@@ -18553,7 +18546,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         "style": thumbStyle
       }, null, 6)], 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
         "class": "uni-checkbox-input"
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.foreColor || props2.color || "currentColor", 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
     };
   }
 });
@@ -20514,7 +20507,7 @@ function initApp(app) {
     invokeCreateVueAppHook(app);
   }
 }
-function usePopupStyle(props2) {
+function usePopupStyle(props2, triangleColor = "#fcfcfd") {
   const popupWidth = ref(0);
   const popupHeight = ref(0);
   const isDesktop = computed(
@@ -20570,12 +20563,12 @@ function usePopupStyle(props2) {
         contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
         triangleStyle.bottom = "-6px";
         triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
+        triangleStyle["border-color"] = `${triangleColor} transparent transparent transparent`;
       } else {
         contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
         triangleStyle.top = "-6px";
         triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
+        triangleStyle["border-color"] = `transparent transparent ${triangleColor} transparent`;
       }
     }
     return style;
@@ -27997,7 +27990,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
     _createTime();
     _createDate();
     _setValueSync();
-    const popup = usePopupStyle(state2);
+    const popup = usePopupStyle(state2, "var(--uni-picker-arrow-color, #fcfcfd)");
     watchEffect(() => {
       state2.isDesktop = popup.isDesktop.value;
       state2.popupStyle = popup.popupStyle.value;
