@@ -2,7 +2,7 @@ const startRender = jest.fn()
 const addPageEventListener = jest.fn()
 const isSystemDialogPage = jest.fn(() => false)
 const getSystemDialogPages = jest.fn(() => [] as UniDialogPage[])
-const initRouteOptions = jest.fn(() => ({ meta: {} }))
+const mockInitRouteOptions = jest.fn(() => ({ meta: {} }))
 const createNativePage = () => ({
   pageId: '2',
   document: { body: {} },
@@ -27,7 +27,7 @@ jest.mock('../../../../src/service/framework/webview/utils', () => ({
 }))
 
 jest.mock('../../../../src/service/framework/page/routeOptions', () => ({
-  initRouteOptions: jest.fn(() => ({ meta: {} })),
+  initRouteOptions: mockInitRouteOptions,
 }))
 
 jest.mock('../../../../src/service/framework/page/define', () => ({
@@ -117,8 +117,8 @@ describe('dialogPage DevTools 打开通知', () => {
     createPage.mockClear()
     createDialogPage.mockClear()
     mountPage.mockClear()
-    initRouteOptions.mockReset()
-    initRouteOptions.mockReturnValue({ meta: {} })
+    mockInitRouteOptions.mockReset()
+    mockInitRouteOptions.mockReturnValue({ meta: {} })
     isSystemDialogPage.mockReturnValue(false)
     getSystemDialogPages.mockReset()
     getSystemDialogPages.mockReturnValue([])
@@ -265,6 +265,7 @@ describe('dialogPage DevTools 打开通知', () => {
 
   test('normal page initializes vapor scroll styles on native ready', () => {
     const attributes = new Map<string, unknown>()
+    const initialValues = new Map<string, unknown>()
     const attributeNames: Record<string, string> = {
       enableBackToTop: 'enable-back-to-top',
       bounces: 'bounces',
@@ -284,13 +285,18 @@ describe('dialogPage DevTools 打开通知', () => {
       $basePage: { meta: {} },
       $page: {
         __vaporPageStyleOverrides: new Map(),
+        __setVaporPageStyleInitialValue: jest.fn(
+          (name: string, value: unknown) => {
+            initialValues.set(name, value)
+          }
+        ),
         __setVaporPageStyle: jest.fn((name: string, value: unknown) => {
           attributes.set(attributeNames[name], value)
         }),
       },
     })
     getCurrentPages.mockReturnValue([])
-    initRouteOptions.mockReturnValueOnce({
+    mockInitRouteOptions.mockReturnValueOnce({
       meta: {
         enableBackToTop: true,
         bounces: true,
@@ -319,6 +325,13 @@ describe('dialogPage DevTools 打开通知', () => {
       'android-overscroll': true,
       'android-refresher-color': '#00ff00',
       'refresher-background': '#ff0000',
+    })
+    expect(Object.fromEntries(initialValues)).toEqual({
+      enableBackToTop: true,
+      bounces: true,
+      androidOverscroll: true,
+      androidRefresherColor: '#00ff00',
+      backgroundColor: '#ff0000',
     })
   })
 })
