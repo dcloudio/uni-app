@@ -354,7 +354,7 @@ const moduleName = '${utsBridgeName}'\n`
   if (isCJS) {
     code += `uni.registerUTSPlugin('${normalizePath(
       options.pluginRelativeDir!
-    )}, exports)\n`
+    )}', exports)\n`
   }
   return code
 }
