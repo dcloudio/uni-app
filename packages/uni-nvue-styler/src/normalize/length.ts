@@ -5,6 +5,7 @@ import {
   supportedEnumReason,
   supportedUnitWithAutofixedReason,
 } from '../utils'
+import { normalizeCalc } from './calc'
 
 interface NormalizeLengthOptions {
   removePx?: boolean
@@ -17,8 +18,9 @@ function createNormalizeLength({
 }: NormalizeLengthOptions = {}): Normalize {
   return (v, options) => {
     v = (v || '').toString()
-    if (options.type === 'uvue' && options.dom2 && v.includes('calc(')) {
-      return { value: v }
+    const calcResult = normalizeCalc(v, property, options)
+    if (calcResult) {
+      return calcResult
     }
     if (
       options.type === 'uvue' &&

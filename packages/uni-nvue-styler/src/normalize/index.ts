@@ -124,7 +124,7 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
   let result, log
   const normalize = getNormalizeMap(options)[name]
   const atRule = decl.parent?.type === 'atrule' ? (decl.parent as any).name : ''
-  if (options.type === 'uvue' && !value.includes('calc')) {
+  if (options.type === 'uvue' && !/calc\(/i.test(value)) {
     if (hasCssVar(value)) {
       return {
         value,

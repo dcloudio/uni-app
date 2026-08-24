@@ -221,6 +221,7 @@ describe('uvue-style', () => {
     const { code, messages } = await parse(
       `.content {
           width: calc(100% - 20px);
+          height: CALC(100% - 10px);
           top: calc(var(--window-top) + 10px);
           padding-bottom: calc(100px - env(safe-area-inset-bottom));
           margin: calc(10px + 2px) 5px;
@@ -236,6 +237,33 @@ describe('uvue-style', () => {
 
     expect(messages).toHaveLength(0)
     expect(code).toMatchSnapshot()
+  })
+
+  test('dom2 仅放行底层已支持的 css calc 属性', async () => {
+    const { code, messages } = await parse(
+      `.content {
+          border-width: calc(10px + 2px);
+          border-radius: calc(10px + 2px);
+          font-size: calc(10px + 2px);
+          font-weight: CALC(var(--font-weight) + 100);
+          line-height: calc(10px + 2px);
+          min-width: calc(10px + 2px);
+          min-height: calc(10px + 2px);
+          max-width: calc(10px + 2px);
+          max-height: calc(10px + 2px);
+          flex-basis: calc(10px + 2px);
+        }`,
+      {
+        type: 'uvue',
+        dom2: true,
+        platform: 'app-android',
+        map: true,
+        ts: true,
+      }
+    )
+
+    expect(messages).toHaveLength(16)
+    expect(code).toBe('new Map<string, Map<string, Map<string, any>>>([])')
   })
 
   test('support env', async () => {
