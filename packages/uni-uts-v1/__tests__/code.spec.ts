@@ -228,6 +228,58 @@ function defineGenProxyCodeV2Tests() {
       )
     })
 
+    test('generates CommonJS exports and registers the UTS plugin', async () => {
+      const options = createGenProxyCodeOptions({
+        format: FORMATS.CJS,
+        pluginRelativeDir: 'uni_modules/test-uts',
+      })
+      const code = await genProxyCodeV2(
+        createUTSBridge({
+          classes: [
+            {
+              name: 'User',
+              constructor: createBridgeMethod('User', {
+                type: 'constructor',
+              }),
+              static_methods: [],
+              methods: [],
+            },
+          ],
+          functions: [
+            createBridgeMethod('request', {
+              type: 'function',
+            }),
+          ],
+        }),
+        pluginElementProxyDir,
+        options
+      )
+      const defaultCode = await genProxyCodeV2(
+        createUTSBridge({
+          functions: [
+            {
+              ...createBridgeMethod('request', { type: 'function' }),
+              is_default: true,
+            },
+          ],
+        }),
+        pluginElementProxyDir,
+        options
+      )
+
+      expect(code).toContain('const exports = { __esModule: true }')
+      expect(code).toContain('exports.User = initUTSProxyClass(')
+      expect(code).toContain('exports.request = initUTSProxyFunction(')
+      expect(code).not.toContain('export const ')
+      expect(defaultCode).toContain('exports.default = initUTSProxyFunction(')
+      ;[code, defaultCode].forEach((generatedCode) => {
+        expect(generatedCode).toContain(
+          "uni.registerUTSPlugin('uni_modules/test-uts', exports)"
+        )
+        expect(() => new Function('uni', generatedCode)).not.toThrow()
+      })
+    })
+
     test('uses element proxy class for Uni*Element classes in android DOM2', async () => {
       const code = await withUniAppXEnv(
         { dom2: 'true', x: 'true', platform: 'app-android' },
