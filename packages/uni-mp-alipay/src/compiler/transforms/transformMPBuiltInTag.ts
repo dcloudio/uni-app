@@ -44,6 +44,9 @@ const transformMPBuiltInTagOptions: TransformMPBuiltInTagOptions = {
   },
   tagRename: {
     'list-view': 'scroll-view',
+    'list-item': 'view',
+    'sticky-header': 'view',
+    'sticky-section': 'view',
   },
 }
 
