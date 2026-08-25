@@ -217,6 +217,9 @@ const transformMPBuiltInTagOptions = {
     },
     tagRename: {
         'list-view': 'scroll-view',
+        'list-item': 'view',
+        'sticky-header': 'view',
+        'sticky-section': 'view',
     },
 };
 const transformMPBuiltInTag = uniCliShared.createMPBuiltInTagTransform(transformMPBuiltInTagOptions);
