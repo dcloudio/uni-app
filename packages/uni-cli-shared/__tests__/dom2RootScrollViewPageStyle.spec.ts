@@ -85,4 +85,51 @@ describe('dom2 root scroll-view page style', () => {
       backgroundColor: '#ffffff',
     })
   })
+
+  test('ignores theme references used as root scroll-view colors', () => {
+    normalizeUniAppXAppPagesJson(
+      JSON.stringify({
+        pages: [
+          {
+            path: 'pages/index/index',
+            style: {},
+          },
+        ],
+        globalStyle: {
+          androidRefresherColor: '@refresherColor',
+          backgroundColor: '@backgroundColor',
+        },
+      })
+    )
+
+    const globalThemeOptions = parseUniXPageOptions(
+      path.join(inputDir, 'pages/index/index.uvue')
+    )
+    expect(globalThemeOptions?.androidRefresherColor).toBeUndefined()
+    expect(globalThemeOptions?.backgroundColor).toBeUndefined()
+
+    normalizeUniAppXAppPagesJson(
+      JSON.stringify({
+        pages: [
+          {
+            path: 'pages/index/index',
+            style: {
+              androidRefresherColor: '@pageRefresherColor',
+              backgroundColor: '@pageBackgroundColor',
+            },
+          },
+        ],
+        globalStyle: {
+          androidRefresherColor: '#007aff',
+          backgroundColor: '#f8f8f8',
+        },
+      })
+    )
+
+    const pageThemeOptions = parseUniXPageOptions(
+      path.join(inputDir, 'pages/index/index.uvue')
+    )
+    expect(pageThemeOptions?.androidRefresherColor).toBeUndefined()
+    expect(pageThemeOptions?.backgroundColor).toBeUndefined()
+  })
 })

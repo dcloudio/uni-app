@@ -104,6 +104,10 @@ function normalizeRootPageOptions(
   pageStyle: UniApp.PagesJsonPageStyle | undefined,
   globalStyle: UniApp.PagesJsonPageStyle
 ): UniXPageOptions {
+  const androidRefresherColor =
+    pageStyle?.androidRefresherColor ?? globalStyle.androidRefresherColor
+  const backgroundColor =
+    pageStyle?.backgroundColor ?? globalStyle.backgroundColor
   return {
     disableScroll: pageStyle?.disableScroll === true || undefined,
     enablePullDownRefresh:
@@ -114,9 +118,12 @@ function normalizeRootPageOptions(
     bounces: pageStyle?.bounces ?? globalStyle.bounces,
     androidOverscroll:
       pageStyle?.androidOverscroll ?? globalStyle.androidOverscroll,
-    androidRefresherColor:
-      pageStyle?.androidRefresherColor ?? globalStyle.androidRefresherColor,
-    backgroundColor: pageStyle?.backgroundColor ?? globalStyle.backgroundColor,
+    androidRefresherColor: androidRefresherColor?.startsWith('@')
+      ? undefined
+      : androidRefresherColor,
+    backgroundColor: backgroundColor?.startsWith('@')
+      ? undefined
+      : backgroundColor,
   }
 }
 
