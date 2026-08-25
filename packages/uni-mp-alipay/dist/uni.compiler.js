@@ -328,7 +328,12 @@ const options = {
             defaultTitle: 'navigationBarTitleText',
             navigationBarFrontColor: 'navigationBarTextStyle',
             pullRefresh: 'enablePullDownRefresh',
-            allowsBounceVertical: 'allowsBounceVertical',
+            // uni-app x 使用跨平台 bounces，支付宝产物仍输出 allowsBounceVertical。
+            get allowsBounceVertical() {
+                return process.env.UNI_APP_X === 'true'
+                    ? ['bounces', 'allowsBounceVertical']
+                    : 'allowsBounceVertical';
+            },
             titleBarColor: 'navigationBarBackgroundColor',
             optionMenu: 'optionMenu',
             backgroundColor: ['backgroundColorContent', 'backgroundColor'], // https://opendocs.alipay.com/mini/framework/app-json?pathHash=1bcdd448#window
@@ -352,6 +357,18 @@ const options = {
             name: 'text',
             icon: 'iconPath',
             activeIcon: 'selectedIconPath',
+        },
+        formatAppJson(appJson, _manifestJson, pageJsons) {
+            if (process.env.UNI_APP_X !== 'true') {
+                return;
+            }
+            [appJson.window, ...Object.values(pageJsons)].forEach((options) => {
+                if (typeof (options === null || options === void 0 ? void 0 : options.allowsBounceVertical) === 'boolean') {
+                    options.allowsBounceVertical = options.allowsBounceVertical
+                        ? 'YES'
+                        : 'NO';
+                }
+            });
         },
     },
     app: {
