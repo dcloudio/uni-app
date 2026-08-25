@@ -1,6 +1,7 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import { normalizePath } from '../src/utils'
 
 describe('resolve main path', () => {
   const originalEnv = {
@@ -63,7 +64,7 @@ describe('resolve main path', () => {
   function createEntry(filename: string) {
     const filepath = path.resolve(inputDir, filename)
     fs.writeFileSync(filepath, '')
-    return filepath
+    return normalizePath(filepath)
   }
 
   function resolveMainPath() {
