@@ -9545,10 +9545,10 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       return `${isVertical.value ? "width" : "height"}: 100%;`;
     });
     const placeholderHeadStyle = vue.computed(() => {
-      return `${isVertical.value ? "height" : "width"}: ${state.headPlaceholderSize}px; ${isVertical.value ? "top" : "left"}: 0;`;
+      return `${isVertical.value ? "height" : "width"}: ${state.headPlaceholderSize}px;`;
     });
     const placeholderTailStyle = vue.computed(() => {
-      return `${isVertical.value ? "height" : "width"}: ${state.tailPlaceholderSize}px; ${isVertical.value ? "top" : "left"}: 0;`;
+      return `${isVertical.value ? "height" : "width"}: ${state.tailPlaceholderSize}px;`;
     });
     let visibleVNode = null;
     return () => {
