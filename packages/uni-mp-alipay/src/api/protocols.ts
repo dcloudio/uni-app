@@ -11,6 +11,7 @@ import {
 import { getStorageSync } from './shims'
 
 export {
+  getAppBaseInfo,
   getWindowInfo,
   redirectTo,
   onError,
