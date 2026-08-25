@@ -4,8 +4,8 @@
   </view>
 </template>
 
-<script lang="uts" setup>
-  import { UniCloudDBElement } from './global.uts'
+<script lang="ts" setup>
+  import { UniCloudDBElement } from './global'
 
   defineOptions({
     name: 'unicloud-db',

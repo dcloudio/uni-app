@@ -20,7 +20,7 @@
   <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 import { NativeLoading, UniLoadingElement } from "@/uni_modules/uni-loading";
 // #endif
