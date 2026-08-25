@@ -452,12 +452,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const placeholderHeadStyle = computed(() => {
       return `${isVertical.value ? 'height' : 'width'}: ${
         state.headPlaceholderSize
-      }px; ${isVertical.value ? 'top' : 'left'}: 0;`
+      }px;`
     })
     const placeholderTailStyle = computed(() => {
       return `${isVertical.value ? 'height' : 'width'}: ${
         state.tailPlaceholderSize
-      }px; ${isVertical.value ? 'top' : 'left'}: 0;`
+      }px;`
     })
 
     let visibleVNode = null as VNode | null
