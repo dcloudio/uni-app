@@ -19,6 +19,36 @@ const DOM2_CALC_PROPERTIES = new Set([
   'padding-left',
 ])
 
+const DOM2_RENDER_CALC_PROPERTIES = new Set([
+  'borderBottomLeftRadius',
+  'borderBottomRightRadius',
+  'borderRadius',
+  'borderTopLeftRadius',
+  'borderTopRightRadius',
+  'transform',
+  'transformOrigin',
+  'boxShadow',
+  'textShadow',
+  'backdropFilter',
+  'opacity',
+])
+
+export function createNormalizeDom2RenderCalc(
+  normalize: Normalize,
+  property: string
+): Normalize {
+  if (!DOM2_RENDER_CALC_PROPERTIES.has(property)) {
+    return normalize
+  }
+  return (value, options, context) => {
+    const stringValue = (value || '').toString()
+    if (/calc\(/i.test(stringValue)) {
+      return { value: stringValue.replace(/calc\(/gi, 'calc(') }
+    }
+    return normalize(value, options, context)
+  }
+}
+
 export function normalizeCalc(
   value: string,
   property: string | undefined,

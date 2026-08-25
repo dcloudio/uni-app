@@ -243,7 +243,6 @@ describe('uvue-style', () => {
     const { code, messages } = await parse(
       `.content {
           border-width: calc(10px + 2px);
-          border-radius: calc(10px + 2px);
           font-size: calc(10px + 2px);
           font-weight: CALC(var(--font-weight) + 100);
           line-height: calc(10px + 2px);
@@ -262,8 +261,36 @@ describe('uvue-style', () => {
       }
     )
 
-    expect(messages).toHaveLength(16)
+    expect(messages).toHaveLength(12)
     expect(code).toBe('new Map<string, Map<string, Map<string, any>>>([])')
+  })
+
+  test('dom2 支持 render 属性中的 css calc', async () => {
+    const { code, messages } = await parse(
+      `.content {
+          border-radius: CALC(10% - 2px);
+          border-bottom-left-radius: calc(10% - 2px);
+          border-bottom-right-radius: calc(10% - 2px);
+          border-top-left-radius: calc(10% - 2px);
+          border-top-right-radius: calc(10% - 2px);
+          transform: translateX(CALC(100% - 10px));
+          transform-origin: calc(50% - 10px) calc(50% + 10px);
+          box-shadow: calc(10px + 2px) 0 2px #000000;
+          text-shadow: 0 calc(10px + 2px) 2px #000000;
+          backdrop-filter: blur(CALC(10px + 2px));
+          opacity: calc(1 - 0.2);
+        }`,
+      {
+        type: 'uvue',
+        dom2: true,
+        platform: 'app-android',
+        map: true,
+        ts: true,
+      }
+    )
+
+    expect(messages).toHaveLength(0)
+    expect(code).toMatchSnapshot()
   })
 
   test('support env', async () => {
