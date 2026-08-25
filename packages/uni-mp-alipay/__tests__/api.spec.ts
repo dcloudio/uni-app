@@ -9,6 +9,7 @@ jest.mock('@dcloudio/uni-mp-core', () => {
     isSyncApi: jest.fn(),
     populateParameters: jest.fn(),
     useDeviceId: jest.fn(),
+    getAppBaseInfo: jest.fn(),
     redirectTo: jest.fn(),
     onError: jest.fn(),
     offError: jest.fn(),
@@ -34,9 +35,14 @@ global.my = {
   }),
 }
 
-import { request } from '../src/api/protocols'
+import { getAppBaseInfo as coreGetAppBaseInfo } from '@dcloudio/uni-mp-core'
+import { getAppBaseInfo, request } from '../src/api/protocols'
 
 describe('api', () => {
+  test('api-getAppBaseInfo 使用 core 协议增强返回值', () => {
+    expect(getAppBaseInfo).toBe(coreGetAppBaseInfo)
+  })
+
   test('api-request base-object-data', () => {
     expect(typeof request.args).toBe('function')
 
