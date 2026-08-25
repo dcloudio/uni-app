@@ -4231,9 +4231,12 @@ var env = {
 };
 function loadUasm(module) {
   return new Promise((resolve) => {
-    var app = getNativeApp();
-    resolve(app.loadUasm(module));
+    resolve(loadUasmSync(module));
   });
+}
+function loadUasmSync(module) {
+  var app = getNativeApp();
+  return app.loadUasm(module);
 }
 var _PerformanceEntryStatus;
 var APP_LAUNCH = "appLaunch";
@@ -5401,6 +5404,7 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   initUTSProxyFunction,
   loadFontFace,
   loadUasm,
+  loadUasmSync,
   navigateBack,
   navigateTo,
   offAppRoute,

@@ -146,6 +146,13 @@ describe('uasm', () => {
       ).toContain(
         'uni.loadUasm("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
       )
+      expect(
+        transform(
+          `uni.loadUasmSync<CompressionBridge>('uni_modules/test-uasm')`
+        )
+      ).toContain(
+        'uni.loadUasmSync("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
+      )
     } finally {
       restoreEnv('UNI_APP_X_DOM2', originalDom2)
       restoreEnv('NODE_ENV', originalNodeEnv)
@@ -184,6 +191,13 @@ describe('uasm', () => {
       expect(result).toContain('import "unimoduleTestUasm"')
       expect(result).toContain(
         'uni.loadUasm("test-uasm", () => unimoduleTestUasm.TestUasm.self)'
+      )
+      const syncResult = transform(
+        `uni.loadUasmSync<CompressionBridge>('uni_modules/test-uasm')`
+      )
+      expect(syncResult).toContain('import "unimoduleTestUasm"')
+      expect(syncResult).toContain(
+        'uni.loadUasmSync("test-uasm", () => unimoduleTestUasm.TestUasm.self)'
       )
     } finally {
       restoreEnv('UNI_APP_X_DOM2', originalDom2)
@@ -232,9 +246,20 @@ describe('uasm', () => {
     )
   })
 
-  test('reports a dynamic UASM load path', () => {
-    expect(() => transformLoadUasm(`uni.loadUasm(modulePath)`)).toThrow(
-      'uni.loadUasm(modulePath) 的 modulePath 参数必须是字符串字面量'
+  test.each(['loadUasm', 'loadUasmSync'])(
+    'reports a dynamic UASM load path for %s',
+    (methodName) => {
+      expect(() => transformLoadUasm(`uni.${methodName}(modulePath)`)).toThrow(
+        `uni.${methodName}(modulePath) 的 modulePath 参数必须是字符串字面量`
+      )
+    }
+  )
+
+  test('transforms a synchronous UASM load path', () => {
+    expect(
+      transformLoadUasm(`uni.loadUasmSync<TestUASM>('uni_modules/test-uasm')`)
+    ).toContain(
+      'uni.loadUasmSync("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
     )
   })
 
@@ -336,6 +361,12 @@ describe('uasm', () => {
     ).toThrow(
       '无法加载 uasm 插件[uni_modules/test-uasm]，请确认插件路径正确，且插件已提供入口文件 uni_modules/test-uasm/uasm/web/test-uasm.js'
     )
+  })
+
+  test('does not transform loadUasmSync for web', () => {
+    expect(
+      transformWebLoadUasm(`uni.loadUasmSync('uni_modules/test-uasm')`)
+    ).toBe("uni.loadUasmSync('uni_modules/test-uasm');\n")
   })
 
   test('resolve the first existing target arch from cache', () => {

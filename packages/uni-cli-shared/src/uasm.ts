@@ -34,6 +34,7 @@ export interface LoadUasmTransformOptions {
 
 export interface LoadUasmTransformerOptions extends LoadUasmTransformOptions {
   typescript: TypeScriptCompiler
+  methodNames?: readonly string[]
   resolveLoader?: (modulePath: string) => ResolvedUasmLoader | undefined
   onSourceEdit?: (edit: UasmSourceEdit) => void
   resolveError?: (modulePath: string) => string
@@ -179,6 +180,7 @@ export function initUasmWebTransformOptions(): UasmTransformOptions {
     createLoadUasmTransformer(options) {
       return createLoadUasmTransformer({
         ...options,
+        methodNames: ['loadUasm'],
         resolveError(modulePath) {
           const moduleName = parseUasmModuleName(modulePath)
           const entry = moduleName
@@ -211,6 +213,9 @@ export function createLoadUasmTransformer(
   options: LoadUasmTransformerOptions
 ): TransformerFactory<SourceFile> {
   const { typescript, resolve, reportDiagnostic } = options
+  const methodNames = new Set(
+    options.methodNames || ['loadUasm', 'loadUasmSync']
+  )
   const targetArchs = options.targetArchs?.join(', ') || '未指定'
 
   return (context) => {
@@ -223,10 +228,11 @@ export function createLoadUasmTransformer(
           typescript.isCallExpression(node) &&
           node.arguments.length >= 1 &&
           typescript.isPropertyAccessExpression(node.expression) &&
-          node.expression.name.escapedText === 'loadUasm' &&
+          methodNames.has(node.expression.name.text) &&
           typescript.isIdentifier(node.expression.expression) &&
           node.expression.expression.escapedText === 'uni'
         ) {
+          const methodName = node.expression.name.text
           const firstArg = node.arguments[0]
           if (
             !typescript.isStringLiteral(firstArg) &&
@@ -238,7 +244,7 @@ export function createLoadUasmTransformer(
                 options,
                 sourceFile,
                 firstArg,
-                'uni.loadUasm(modulePath) 的 modulePath 参数必须是字符串字面量'
+                `uni.${methodName}(modulePath) 的 modulePath 参数必须是字符串字面量`
               )
             )
             return node

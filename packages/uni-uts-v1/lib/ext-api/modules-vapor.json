@@ -2248,6 +2248,16 @@
           "swift": "dom2",
           "arkts": false
         }
+      },
+      "loadUasmSync": {
+        "name": "loadUasmSync",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": "dom2",
+          "arkts": false
+        }
       }
     },
     "components": [],

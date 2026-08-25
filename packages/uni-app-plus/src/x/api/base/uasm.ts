@@ -6,7 +6,11 @@ interface UasmNativeApp {
 
 export function loadUasm<T>(module: string): Promise<T> {
   return new Promise<T>((resolve) => {
-    const app = getNativeApp() as unknown as UasmNativeApp
-    resolve(app.loadUasm(module) as T)
+    resolve(loadUasmSync<T>(module))
   })
+}
+
+export function loadUasmSync<T>(module: string): T {
+  const app = getNativeApp() as unknown as UasmNativeApp
+  return app.loadUasm(module) as T
 }
