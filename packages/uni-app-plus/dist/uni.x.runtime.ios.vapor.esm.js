@@ -2331,6 +2331,53 @@ function triggerFailCallback$1(options, errMsg) {
   options === null || options === void 0 || (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
   options === null || options === void 0 || (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
 }
+var VAPOR_PAGE_STYLE_PROPERTIES = [{
+  name: "enableBackToTop",
+  defaultValue: false
+}, {
+  name: "bounces",
+  defaultValue: false
+}, {
+  name: "androidOverscroll",
+  defaultValue: false
+}, {
+  name: "androidRefresherColor",
+  defaultValue: ""
+}, {
+  name: "backgroundColor",
+  defaultValue: "transparent"
+}];
+function normalizeVaporPageStyleValue(value, defaultValue) {
+  return typeof value === typeof defaultValue ? value : defaultValue;
+}
+function initVaporPageStyle(page, pageStyle) {
+  var pageStyleOwner = page.$page;
+  var flushPageStyleQueue = () => {
+    var _pageStyleOwner$__flu;
+    pageStyleOwner === null || pageStyleOwner === void 0 || (_pageStyleOwner$__flu = pageStyleOwner.__flushVaporPageStyleQueue) === null || _pageStyleOwner$__flu === void 0 || _pageStyleOwner$__flu.call(pageStyleOwner);
+  };
+  var rootElement = page.$el;
+  if (!rootElement || rootElement.tagName !== "PAGE" || rootElement instanceof UniViewElementImpl) {
+    flushPageStyleQueue();
+    return;
+  }
+  if (typeof (pageStyleOwner === null || pageStyleOwner === void 0 ? void 0 : pageStyleOwner.__setVaporPageStyle) !== "function") {
+    flushPageStyleQueue();
+    return;
+  }
+  var setVaporPageStyle = pageStyleOwner.__setVaporPageStyle;
+  var setVaporPageStyleInitialValue = pageStyleOwner.__setVaporPageStyleInitialValue;
+  VAPOR_PAGE_STYLE_PROPERTIES.forEach((property) => {
+    var _pageStyleOwner$__vap;
+    var value = normalizeVaporPageStyleValue(pageStyle[property.name], property.defaultValue);
+    setVaporPageStyleInitialValue === null || setVaporPageStyleInitialValue === void 0 || setVaporPageStyleInitialValue.call(pageStyleOwner, property.name, value);
+    if ((_pageStyleOwner$__vap = pageStyleOwner.__vaporPageStyleOverrides) !== null && _pageStyleOwner$__vap !== void 0 && _pageStyleOwner$__vap.has(property.name)) {
+      return;
+    }
+    setVaporPageStyle.call(pageStyleOwner, property.name, value);
+  });
+  flushPageStyleQueue();
+}
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
@@ -2467,6 +2514,7 @@ function registerPage(_ref, onCreated) {
       });
       nativePage.addPageEventListener(ON_READY, (_) => {
         {
+          initVaporPageStyle(pageComponentPublicInstance, routeOptions.meta);
           initVaporPageLifeCycle(pageComponentPublicInstance, nativePage);
         }
         invokePageOnReady(pageComponentPublicInstance);
