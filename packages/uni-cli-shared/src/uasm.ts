@@ -223,7 +223,7 @@ export function createLoadUasmTransformer(
           typescript.isCallExpression(node) &&
           node.arguments.length >= 1 &&
           typescript.isPropertyAccessExpression(node.expression) &&
-          node.expression.name.escapedText === 'loadUASM' &&
+          node.expression.name.escapedText === 'loadUasm' &&
           typescript.isIdentifier(node.expression.expression) &&
           node.expression.expression.escapedText === 'uni'
         ) {
@@ -238,7 +238,7 @@ export function createLoadUasmTransformer(
                 options,
                 sourceFile,
                 firstArg,
-                'uni.loadUASM(modulePath) 的 modulePath 参数必须是字符串字面量'
+                'uni.loadUasm(modulePath) 的 modulePath 参数必须是字符串字面量'
               )
             )
             return node

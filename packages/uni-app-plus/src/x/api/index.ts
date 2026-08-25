@@ -46,7 +46,7 @@ export { getLaunchOptionsSync } from './base/getLaunchOptionsSync'
 export { getEnterOptionsSync } from './base/getEnterOptionsSync'
 export { env } from './base/env'
 // #if _VAPOR_
-export { loadUASM } from './base/uasm'
+export { loadUasm } from './base/uasm'
 // #endif
 
 export * from './performance'

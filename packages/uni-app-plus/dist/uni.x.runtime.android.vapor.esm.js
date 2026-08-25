@@ -4230,10 +4230,10 @@ var env = {
   TEMP_PATH: "unifile://temp/",
   ANDROID_INTERNAL_SANDBOX_PATH: "unifile://androidInternalSandbox/"
 };
-function loadUASM(module) {
+function loadUasm(module) {
   return new Promise((resolve) => {
     var app = getNativeApp();
-    resolve(app.loadUASM(module));
+    resolve(app.loadUasm(module));
   });
 }
 var _PerformanceEntryStatus;
@@ -5098,7 +5098,7 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   initUTSProxyClass,
   initUTSProxyFunction,
   loadFontFace,
-  loadUASM,
+  loadUasm,
   navigateBack,
   navigateTo,
   offAppRoute,

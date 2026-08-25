@@ -138,13 +138,13 @@ describe('uasm', () => {
           compilerOptions: { target: ts.ScriptTarget.ESNext },
           transformers: { before: [creator(ts).before] },
         }).outputText
-      expect(transform(`uni.loadUASM('uni_modules/test-uasm')`)).toContain(
-        'uni.loadUASM("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
+      expect(transform(`uni.loadUasm('uni_modules/test-uasm')`)).toContain(
+        'uni.loadUasm("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
       )
       expect(
-        transform(`uni.loadUASM<CompressionBridge>('uni_modules/test-uasm')`)
+        transform(`uni.loadUasm<CompressionBridge>('uni_modules/test-uasm')`)
       ).toContain(
-        'uni.loadUASM("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
+        'uni.loadUasm("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
       )
     } finally {
       restoreEnv('UNI_APP_X_DOM2', originalDom2)
@@ -179,11 +179,11 @@ describe('uasm', () => {
           transformers: { before: [creator(ts).before] },
         }).outputText
       const result = transform(
-        `uni.loadUASM<CompressionBridge>('uni_modules/test-uasm')`
+        `uni.loadUasm<CompressionBridge>('uni_modules/test-uasm')`
       )
       expect(result).toContain('import "unimoduleTestUasm"')
       expect(result).toContain(
-        'uni.loadUASM("test-uasm", () => unimoduleTestUasm.TestUasm.self)'
+        'uni.loadUasm("test-uasm", () => unimoduleTestUasm.TestUasm.self)'
       )
     } finally {
       restoreEnv('UNI_APP_X_DOM2', originalDom2)
@@ -198,44 +198,51 @@ describe('uasm', () => {
     '@/uni_modules/test-uasm',
   ])('transforms UASM load path %s', (modulePath) => {
     expect(
-      transformLoadUasm(`uni.loadUASM<TestUASM>('${modulePath}')`)
+      transformLoadUasm(`uni.loadUasm<TestUASM>('${modulePath}')`)
     ).toContain(
-      'uni.loadUASM("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
+      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
     )
   })
 
   test('keeps other UASM load arguments', () => {
     expect(
-      transformLoadUasm(`uni.loadUASM('uni_modules/test-uasm', true)`)
+      transformLoadUasm(`uni.loadUasm('uni_modules/test-uasm', true)`)
     ).toContain(
-      'uni.loadUASM("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so", true)'
+      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so", true)'
     )
   })
 
   test('transforms a no-substitution UASM path template literal', () => {
     expect(
-      transformLoadUasm('uni.loadUASM(`uni_modules/test-uasm`)')
+      transformLoadUasm('uni.loadUasm(`uni_modules/test-uasm`)')
     ).toContain(
-      'uni.loadUASM("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
+      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
     )
   })
 
   test('reports an unresolved UASM load path', () => {
-    expect(() => transformLoadUasm(`uni.loadUASM('')`)).toThrow(
+    expect(() => transformLoadUasm(`uni.loadUasm('')`)).toThrow(
       '无法加载 uasm 插件[]，当前设备支持的 ABI：arm64-v8a, armeabi-v7a。请确认插件路径正确，且插件已提供匹配的库文件'
     )
   })
 
   test('reports an unspecified target ABI', () => {
-    expect(() => transformLoadUasm(`uni.loadUASM('')`, [])).toThrow(
+    expect(() => transformLoadUasm(`uni.loadUasm('')`, [])).toThrow(
       '无法加载 uasm 插件[]，当前设备支持的 ABI：未指定。请确认插件路径正确，且插件已提供匹配的库文件'
     )
   })
 
   test('reports a dynamic UASM load path', () => {
-    expect(() => transformLoadUasm(`uni.loadUASM(modulePath)`)).toThrow(
-      'uni.loadUASM(modulePath) 的 modulePath 参数必须是字符串字面量'
+    expect(() => transformLoadUasm(`uni.loadUasm(modulePath)`)).toThrow(
+      'uni.loadUasm(modulePath) 的 modulePath 参数必须是字符串字面量'
     )
+  })
+
+  test('does not transform the legacy loadUASM API', () => {
+    const result = transformLoadUasm(`uni.loadUASM('uni_modules/test-uasm')`)
+
+    expect(result).toContain('uni.loadUASM')
+    expect(result).not.toContain('uasm/app-android')
   })
 
   test('cache all platform and arch resources', () => {
@@ -314,9 +321,9 @@ describe('uasm', () => {
         entry: '@/uni_modules/test-uasm/uasm/web/test-uasm.js',
       })
       expect(
-        transformWebLoadUasm(`uni.loadUASM<TestUASM>('${modulePath}', true)`)
+        transformWebLoadUasm(`uni.loadUasm<TestUASM>('${modulePath}', true)`)
       ).toContain(
-        'uni.loadUASM({ id: "test-uasm", loader: () => import("@/uni_modules/test-uasm/uasm/web/test-uasm.js") }, true)'
+        'uni.loadUasm({ id: "test-uasm", loader: () => import("@/uni_modules/test-uasm/uasm/web/test-uasm.js") }, true)'
       )
     }
   })
@@ -325,7 +332,7 @@ describe('uasm', () => {
     initUasmModules(inputDir)
 
     expect(() =>
-      transformWebLoadUasm(`uni.loadUASM('uni_modules/test-uasm')`)
+      transformWebLoadUasm(`uni.loadUasm('uni_modules/test-uasm')`)
     ).toThrow(
       '无法加载 uasm 插件[uni_modules/test-uasm]，请确认插件路径正确，且插件已提供入口文件 uni_modules/test-uasm/uasm/web/test-uasm.js'
     )

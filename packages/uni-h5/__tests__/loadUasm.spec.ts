@@ -1,13 +1,13 @@
-import { loadUASM } from '../src/x/service/api/base/uasm'
+import { loadUasm } from '../src/x/service/api/base/uasm'
 
 function load<T>(
   id: string,
   loader: () => Promise<{ default: unknown }>
 ): Promise<T> {
-  return loadUASM({ id, loader } as unknown as string)
+  return loadUasm({ id, loader } as unknown as string)
 }
 
-describe('loadUASM', () => {
+describe('loadUasm', () => {
   test('load the default factory', async () => {
     const module = { value: 1 }
     const factory = jest.fn(() => module)
@@ -62,8 +62,8 @@ describe('loadUASM', () => {
   })
 
   test('reject an untransformed parameter', async () => {
-    await expect(loadUASM('uni_modules/test-uasm')).rejects.toThrow(
-      'uni.loadUASM 参数未经过编译处理'
+    await expect(loadUasm('uni_modules/test-uasm')).rejects.toThrow(
+      'uni.loadUasm 参数未经过编译处理'
     )
   })
 })

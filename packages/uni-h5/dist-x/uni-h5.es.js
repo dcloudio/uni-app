@@ -33173,10 +33173,10 @@ const createWorker = /* @__PURE__ */ defineSyncApi(
   }
 );
 const uasmCache = /* @__PURE__ */ new Map();
-function loadUASM(module) {
+function loadUasm(module) {
   const descriptor = module;
   if (!descriptor || typeof descriptor.id !== "string" || typeof descriptor.loader !== "function") {
-    return Promise.reject(new Error("uni.loadUASM 参数未经过编译处理"));
+    return Promise.reject(new Error("uni.loadUasm 参数未经过编译处理"));
   }
   let promise = uasmCache.get(descriptor.id);
   if (!promise) {
@@ -33284,7 +33284,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   interceptors,
   invokePushCallback,
   loadFontFace,
-  loadUASM,
+  loadUasm,
   login,
   makePhoneCall,
   navigateBack,
@@ -33621,7 +33621,7 @@ export {
   interceptors,
   invokePushCallback,
   loadFontFace,
-  loadUASM,
+  loadUasm,
   login,
   makePhoneCall,
   navigateBack,

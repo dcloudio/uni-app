@@ -17,7 +17,7 @@ import type { UasmTransformOptions } from '../../../uasm'
 const JAVASCRIPT_TYPESCRIPT_RE = /\.[jt]s$/i
 const TYPESCRIPT_DECLARATION_RE = /\.d\.ts$/i
 const STANDARD_SFC_RE = /\.u?vue$/i
-const LOAD_UASM = 'loadUASM'
+const LOAD_UASM = 'loadUasm'
 
 type TypeScriptCompiler = typeof import('typescript')
 type StandardScriptRequest = 'module' | 'sfc'

@@ -243,7 +243,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     const plugin = uniUTSUVueJavaScriptPlugin()
     const transform = getTransform(plugin)
     const id = '/pages/index/index.uvue'
-    const source = '<script setup lang="ts">uni.loadUASM(modulePath)</script>'
+    const source = '<script setup lang="ts">uni.loadUasm(modulePath)</script>'
 
     if (typeof plugin.configResolved === 'function') {
       plugin.configResolved({

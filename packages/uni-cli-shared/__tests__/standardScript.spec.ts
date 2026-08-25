@@ -34,21 +34,21 @@ describe('uni-app x standard script', () => {
   })
 
   test('transforms script macros and UASM in one module pass', () => {
-    const source = `const plugin = definePlugin(() => uni.loadUASM<Bridge>('uni_modules/test-uasm'))`
+    const source = `const plugin = definePlugin(() => uni.loadUasm<Bridge>('uni_modules/test-uasm'))`
     const result = transformUniAppXStandardScript(source, '/src/index.ts', ts, {
       uasm,
     })!
 
     expect(result.code).not.toContain('definePlugin')
     expect(result.code).toContain(
-      'uni.loadUASM<Bridge>({ id: "test-uasm", loader: () => import("@/uni_modules/test-uasm/uasm/web/test-uasm.js") })'
+      'uni.loadUasm<Bridge>({ id: "test-uasm", loader: () => import("@/uni_modules/test-uasm/uasm/web/test-uasm.js") })'
     )
     expect(result.map.sourcesContent).toEqual([source])
   })
 
   test.each([
-    `uni . loadUASM('uni_modules/test-uasm')`,
-    `uni /* comment */.loadUASM('uni_modules/test-uasm')`,
+    `uni . loadUasm('uni_modules/test-uasm')`,
+    `uni /* comment */.loadUasm('uni_modules/test-uasm')`,
   ])('transforms UASM calls containing whitespace or comments', (source) => {
     const result = transformUniAppXStandardScript(source, '/src/index.ts', ts, {
       uasm,
@@ -60,7 +60,7 @@ describe('uni-app x standard script', () => {
   })
 
   test('does not transform UASM when the platform does not enable it', () => {
-    const source = `const bridge = uni.loadUASM('uni_modules/test-uasm')`
+    const source = `const bridge = uni.loadUasm('uni_modules/test-uasm')`
 
     expect(
       transformUniAppXStandardScript(source, '/src/index.ts', ts)
@@ -68,8 +68,8 @@ describe('uni-app x standard script', () => {
   })
 
   test('transforms only inline JavaScript and TypeScript SFC blocks', () => {
-    const source = `<script lang="uts">const legacy = defineMixin(uni.loadUASM('uni_modules/test-uasm'))</script>
-<script setup lang="ts">const value = defineMixin(uni.loadUASM('uni_modules/test-uasm'))</script>`
+    const source = `<script lang="uts">const legacy = defineMixin(uni.loadUasm('uni_modules/test-uasm'))</script>
+<script setup lang="ts">const value = defineMixin(uni.loadUasm('uni_modules/test-uasm'))</script>`
     const result = transformUniAppXStandardScript(
       source,
       '/pages/index/index.uvue',
@@ -78,10 +78,10 @@ describe('uni-app x standard script', () => {
     )!
 
     expect(result.code).toContain(
-      `<script lang="uts">const legacy = defineMixin(uni.loadUASM('uni_modules/test-uasm'))</script>`
+      `<script lang="uts">const legacy = defineMixin(uni.loadUasm('uni_modules/test-uasm'))</script>`
     )
     expect(result.code).toContain(
-      `<script setup lang="ts">const value = (uni.loadUASM({ id: "test-uasm", loader: () => import("@/uni_modules/test-uasm/uasm/web/test-uasm.js") }))</script>`
+      `<script setup lang="ts">const value = (uni.loadUasm({ id: "test-uasm", loader: () => import("@/uni_modules/test-uasm/uasm/web/test-uasm.js") }))</script>`
     )
   })
 
@@ -105,7 +105,7 @@ describe('uni-app x standard script', () => {
   })
 
   test('reports UASM diagnostics at the original SFC offset', () => {
-    const source = `<script setup lang="ts">uni.loadUASM('missing')</script>`
+    const source = `<script setup lang="ts">uni.loadUasm('missing')</script>`
 
     try {
       transformUniAppXStandardScript(source, '/pages/index/index.uvue', ts, {

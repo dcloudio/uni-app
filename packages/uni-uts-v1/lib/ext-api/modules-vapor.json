@@ -2239,8 +2239,8 @@
   },
   "uni-uasm": {
     "uni": {
-      "loadUASM": {
-        "name": "loadUASM",
+      "loadUasm": {
+        "name": "loadUasm",
         "app": {
           "js": false,
           "x-js": false,

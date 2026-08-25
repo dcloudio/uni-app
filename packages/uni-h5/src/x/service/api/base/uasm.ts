@@ -5,14 +5,14 @@ interface WebUasmDescriptor {
 
 const uasmCache = new Map<string, Promise<unknown>>()
 
-export function loadUASM<T>(module: string): Promise<T> {
+export function loadUasm<T>(module: string): Promise<T> {
   const descriptor = module as unknown as WebUasmDescriptor
   if (
     !descriptor ||
     typeof descriptor.id !== 'string' ||
     typeof descriptor.loader !== 'function'
   ) {
-    return Promise.reject(new Error('uni.loadUASM 参数未经过编译处理'))
+    return Promise.reject(new Error('uni.loadUasm 参数未经过编译处理'))
   }
 
   let promise = uasmCache.get(descriptor.id)
