@@ -15,7 +15,7 @@ uni-list-view {
 }
 
 .uni-list-view-visible {
-  position: absolute;
+  position: relative;
 }
 
 .uni-list-view-scrollbar-hidden::-webkit-scrollbar {
