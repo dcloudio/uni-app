@@ -126,6 +126,14 @@ const eventMap = {
     // swiper
     animationfinish: 'animationEnd',
     chooseavatar: 'chooseAvatar',
+    // page-container
+    beforeenter: 'beforeEnter',
+    afterenter: 'afterEnter',
+    entercancelled: 'enterCancelled',
+    beforeleave: 'beforeLeave',
+    afterleave: 'afterLeave',
+    leavecancelled: 'leaveCancelled',
+    clickoverlay: 'clickOverlay',
 };
 
 function transformOpenType(node) {
