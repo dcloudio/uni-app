@@ -4230,8 +4230,13 @@ var env = {
   ANDROID_INTERNAL_SANDBOX_PATH: "unifile://androidInternalSandbox/"
 };
 function loadUasm(module) {
-  return new Promise((resolve) => {
-    resolve(loadUasmSync(module));
+  return new Promise((resolve, reject) => {
+    var result = loadUasmSync(module);
+    if (result == null) {
+      reject(new Error("uni.loadUasm[".concat(module, "] 加载失败")));
+      return;
+    }
+    resolve(result);
   });
 }
 function loadUasmSync(module) {

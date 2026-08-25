@@ -5,12 +5,17 @@ interface UasmNativeApp {
 }
 
 export function loadUasm<T>(module: string): Promise<T> {
-  return new Promise<T>((resolve) => {
-    resolve(loadUasmSync<T>(module))
+  return new Promise<T>((resolve, reject) => {
+    const result = loadUasmSync<T>(module)
+    if (result == null) {
+      reject(new Error(`uni.loadUasm[${module}] 加载失败`))
+      return
+    }
+    resolve(result)
   })
 }
 
-export function loadUasmSync<T>(module: string): T {
+export function loadUasmSync<T>(module: string): T | null {
   const app = getNativeApp() as unknown as UasmNativeApp
-  return app.loadUasm(module) as T
+  return app.loadUasm(module) as T | null
 }

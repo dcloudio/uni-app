@@ -45,12 +45,26 @@ describe('loadUasm', () => {
     await expect(loadUasm('libtest-uasm.so')).rejects.toBe(error)
   })
 
+  test('异步加载无结果时 Promise rejection', async () => {
+    loadUasmMock.mockReturnValue(null)
+
+    await expect(loadUasm('libtest-uasm.so')).rejects.toThrow(
+      'uni.loadUasm[libtest-uasm.so] 加载失败'
+    )
+  })
+
   test('同步返回 native app 加载结果', () => {
     const module = { add: (a: number, b: number) => a + b }
     loadUasmMock.mockReturnValue(module)
 
     expect(loadUasmSync<typeof module>('libtest-uasm.so')).toBe(module)
     expect(loadUasmMock).toHaveBeenCalledWith('libtest-uasm.so')
+  })
+
+  test('同步加载无结果时返回 null', () => {
+    loadUasmMock.mockReturnValue(null)
+
+    expect(loadUasmSync('libtest-uasm.so')).toBeNull()
   })
 
   test('同步抛出 native app 加载异常', () => {
