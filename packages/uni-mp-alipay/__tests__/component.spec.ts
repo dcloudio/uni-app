@@ -354,6 +354,47 @@ describe('mp-alipay: transform component x', () => {
     )
   })
 
+  test(`list item and sticky components`, () => {
+    assert(
+      `<list-item/>`,
+      `<view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<sticky-header/>`,
+      `<view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<sticky-section/>`,
+      `<view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
   test(`text`, () => {
     assert(
       `<text user-select/>`,
