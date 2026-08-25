@@ -1258,8 +1258,10 @@ const getAppBaseInfo = {
         };
         try {
             if (typeof my.getAccountInfoSync === 'function') {
-                parameters.packagename =
-                    my.getAccountInfoSync().miniProgram.appId;
+                const miniProgramAppId = my.getAccountInfoSync().miniProgram.appId;
+                if (miniProgramAppId) {
+                    parameters.packagename = miniProgramAppId;
+                }
             }
         }
         catch (error) { }

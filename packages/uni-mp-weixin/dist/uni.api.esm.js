@@ -1299,8 +1299,10 @@ const getAppBaseInfo = {
         };
         try {
             if (typeof wx.getAccountInfoSync === 'function') {
-                parameters.packagename =
-                    wx.getAccountInfoSync().miniProgram.appId;
+                const miniProgramAppId = wx.getAccountInfoSync().miniProgram.appId;
+                if (miniProgramAppId) {
+                    parameters.packagename = miniProgramAppId;
+                }
             }
         }
         catch (error) { }
