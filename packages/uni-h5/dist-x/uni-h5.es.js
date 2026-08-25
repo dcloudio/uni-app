@@ -19255,10 +19255,10 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       return `${isVertical.value ? "width" : "height"}: 100%;`;
     });
     const placeholderHeadStyle = computed(() => {
-      return `${isVertical.value ? "height" : "width"}: ${state2.headPlaceholderSize}px; ${isVertical.value ? "top" : "left"}: 0;`;
+      return `${isVertical.value ? "height" : "width"}: ${state2.headPlaceholderSize}px;`;
     });
     const placeholderTailStyle = computed(() => {
-      return `${isVertical.value ? "height" : "width"}: ${state2.tailPlaceholderSize}px; ${isVertical.value ? "top" : "left"}: 0;`;
+      return `${isVertical.value ? "height" : "width"}: ${state2.tailPlaceholderSize}px;`;
     });
     let visibleVNode = null;
     return () => {
