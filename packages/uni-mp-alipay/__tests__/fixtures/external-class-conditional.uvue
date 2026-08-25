@@ -1,0 +1,25 @@
+<template>
+  <view :class="props.alipayClass" />
+</template>
+
+<script setup lang="uts">
+defineOptions({
+  externalClasses: [
+    // #ifdef MP-ALIPAY
+    'alipay-class',
+    // #endif
+    // #ifdef MP-WEIXIN
+    'weixin-class',
+    // #endif
+  ],
+})
+
+// 两个实现经过条件编译后只会保留当前平台对应的一个。
+// #ifdef MP
+function onTap(): void {}
+// #endif
+
+// #ifndef MP
+function onTap(): void {}
+// #endif
+</script>
