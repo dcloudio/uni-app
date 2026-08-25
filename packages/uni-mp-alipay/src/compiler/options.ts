@@ -137,7 +137,12 @@ export const options: UniMiniProgramPluginOptions = {
       defaultTitle: 'navigationBarTitleText',
       navigationBarFrontColor: 'navigationBarTextStyle',
       pullRefresh: 'enablePullDownRefresh',
-      allowsBounceVertical: 'allowsBounceVertical',
+      // uni-app x 使用跨平台 bounces，支付宝产物仍输出 allowsBounceVertical。
+      get allowsBounceVertical() {
+        return process.env.UNI_APP_X === 'true'
+          ? ['bounces', 'allowsBounceVertical']
+          : 'allowsBounceVertical'
+      },
       titleBarColor: 'navigationBarBackgroundColor',
       optionMenu: 'optionMenu',
       backgroundColor: ['backgroundColorContent', 'backgroundColor'], // https://opendocs.alipay.com/mini/framework/app-json?pathHash=1bcdd448#window
@@ -161,6 +166,19 @@ export const options: UniMiniProgramPluginOptions = {
       name: 'text',
       icon: 'iconPath',
       activeIcon: 'selectedIconPath',
+    },
+    formatAppJson(appJson, _manifestJson, pageJsons) {
+      if (process.env.UNI_APP_X !== 'true') {
+        return
+      }
+      // 支付宝仅接受 YES / NO，同时处理 globalStyle 和页面 style 的生成结果。
+      ;[appJson.window, ...Object.values(pageJsons)].forEach((options) => {
+        if (typeof options?.allowsBounceVertical === 'boolean') {
+          options.allowsBounceVertical = options.allowsBounceVertical
+            ? 'YES'
+            : 'NO'
+        }
+      })
     },
   },
   app: {
