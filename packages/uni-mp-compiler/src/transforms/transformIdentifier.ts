@@ -75,6 +75,8 @@ import {
   parseExternalClasses,
   parseProgram,
   parseStyleIsolation,
+  preHtml,
+  preJs,
   updateMiniProgramComponentExternalClasses,
   updateMiniProgramComponentStyleIsolation,
 } from '@dcloudio/uni-cli-shared'
@@ -664,6 +666,14 @@ function getComponentExternalClasses(
   if (!hasExternalClasses(code) && !code.includes('styleIsolation')) {
     updateMiniProgramComponentExternalClasses(source, { mtime, classes: [] })
     return []
+  }
+
+  // 父模板编译早于 easycom 子组件的正常编译，此处只能按需读取组件源码。
+  // 支付宝样式隔离 2.0 需要提前获得子组件静态选项，因此复用 uni:pre 插件处理
+  // 完整 SFC 时的相同顺序，保证后续分析的是当前平台条件编译后的 script。
+  // 无条件编译文件和其他平台保持原路径，避免引入额外的预处理开销和行为变化。
+  if (isAlipayXStyleIsolation() && code.includes('#endif')) {
+    code = preJs(preHtml(code, source), source)
   }
 
   let scriptContent: string
