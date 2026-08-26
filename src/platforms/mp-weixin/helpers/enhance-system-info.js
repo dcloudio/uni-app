@@ -126,7 +126,7 @@ export function getPlatform (platform) {
 }
 
 export function populateParameters (result) {
-  const {
+  let {
     brand = '', model = '', system = '',
     language = '', theme, version,
     platform, fontSizeSetting,
@@ -135,6 +135,10 @@ export function populateParameters (result) {
   // const isQuickApp = __PLATFORM__.indexOf('quickapp-webview') !== -1
 
   const extraParam = {}
+
+  if (__PLATFORM__ === 'mp-jd') {
+    system = `${system} ${version}`
+  }
 
   // osName osVersion
   const { osName, osVersion, system: updatedSystem } = getOSInfo(system, platform)
