@@ -13,6 +13,7 @@ type ResolvedUasmLoad =
 interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   dom2?: boolean
   excludeStandardTypeScript?: boolean
+  jsonImportMode?: 'uts'
   platform: 'app-android' | 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
   inputDir: string
   version: string
@@ -60,6 +61,8 @@ export const uts2js: uts2js = (options) => {
   const excludeStandardTypeScript = options.excludeStandardTypeScript
   delete options.excludeStandardTypeScript
   if (options.dom2 || excludeStandardTypeScript) {
+    // UTS 导入的 JSON 使用独立模块实例，标准 JS/TS 继续使用 Vite JSON 流程。
+    options.jsonImportMode = 'uts'
     const exclude = options.exclude
       ? Array.isArray(options.exclude)
         ? options.exclude

@@ -40,6 +40,7 @@ describe('uts2js standard TypeScript routing', () => {
       )
     ).toBe(true)
     expect(isExcluded('/project/src/utils.uts')).toBe(false)
+    expect(options.jsonImportMode).toBe('uts')
     expect(
       isExcluded(
         '/project/src/pages/index.uvue?vue&type=script&setup=true&lang.uts'
@@ -60,6 +61,7 @@ describe('uts2js standard TypeScript routing', () => {
     })
 
     expect(runtimeUts2js.mock.calls[0][0].exclude).toBeUndefined()
+    expect(runtimeUts2js.mock.calls[0][0].jsonImportMode).toBeUndefined()
   })
 
   test('excludes standard TypeScript without enabling DOM2 transforms', () => {
@@ -79,6 +81,7 @@ describe('uts2js standard TypeScript routing', () => {
     const filter = createFilter(undefined, options.exclude)
 
     expect(filter('/project/src/utils.ts')).toBe(false)
+    expect(options.jsonImportMode).toBe('uts')
     expect(options.dom2).toBeUndefined()
     expect(options.excludeStandardTypeScript).toBeUndefined()
   })
