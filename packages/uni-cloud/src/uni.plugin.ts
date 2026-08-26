@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import path from 'path'
 import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
@@ -205,6 +206,48 @@ function initUniCloudEnv() {
   } catch (e) {}
 }
 
+function createObfuscatedStringExpression(value: string): string {
+  if (!value) {
+    return JSON.stringify('')
+  }
+
+  const data: number[] = []
+  const mask: number[] = []
+  const randomData = crypto.randomBytes(value.length * 2)
+
+  for (let i = 0; i < value.length; i++) {
+    const maskValue = randomData.readUInt16LE(i * 2)
+    mask.push(maskValue)
+    data.push(value.charCodeAt(i) ^ maskValue)
+  }
+
+  const encodedData = JSON.stringify(data)
+  const encodedMask = JSON.stringify(mask)
+  return `(function(){var d=${encodedData},m=${encodedMask},s='';for(var i=0;i<d.length;i++){s+=String.fromCharCode(d[i]^m[i]);}return s;}())`
+}
+
+function uniCloudProviderObfuscatorPlugin(): UniVitePlugin {
+  const providerToken = 'process.env.UNI_CLOUD_PROVIDER'
+  return {
+    name: 'uni:cloud-provider-obfuscator',
+    enforce: 'pre',
+    apply: 'build',
+    transform(code) {
+      if (!code.includes(providerToken)) {
+        return
+      }
+
+      const providerExpression = createObfuscatedStringExpression(
+        process.env.UNI_CLOUD_PROVIDER || ''
+      )
+      return {
+        code: code.split(providerToken).join(providerExpression),
+        map: null,
+      }
+    },
+  }
+}
+
 export default () => [
   defineUniMainJsPlugin((opts) => {
     return {
@@ -239,6 +282,7 @@ export default () => [
     }
   }),
   uniCloudPlugin(),
+  uniCloudProviderObfuscatorPlugin(),
   // x 里边统一处理
   ...(process.env.UNI_APP_X === 'true'
     ? []
