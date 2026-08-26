@@ -5,6 +5,9 @@ import {
 import navigateTo from 'uni-helpers/navigate-to'
 import redirectTo from '../../../mp-weixin/helpers/redirect-to'
 import getSystemInfo from '../../helpers/system-info'
+import getAppBaseInfo from '../../../mp-weixin/helpers/get-app-base-info'
+import getWindowInfo from '../../../mp-weixin/helpers/get-window-info'
+import getDeviceInfo from '../../../mp-weixin/helpers/get-device-info'
 
 // 不支持的 API 列表
 const todos = [
@@ -508,7 +511,16 @@ const protocols = { // 需要做转换的 API 列表
         toArgs.showMenu = String(fromArgs.showMenu)
       }
     }
-  }
+  },
+  getAppBaseInfo: Object.assign({}, getAppBaseInfo, {
+    name: my.canIUse('getAppBaseInfo') ? 'getAppBaseInfo' : 'getSystemInfoSync'
+  }),
+  getWindowInfo: Object.assign({}, getWindowInfo, {
+    name: my.canIUse('getWindowInfo') ? 'getWindowInfo' : 'getSystemInfoSync'
+  }),
+  getDeviceInfo: Object.assign({}, getDeviceInfo, {
+    name: my.canIUse('getDeviceBaseInfo') ? 'getDeviceBaseInfo' : 'getSystemInfoSync'
+  })
 }
 
 // 钉钉小程序处理
