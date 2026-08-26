@@ -1,6 +1,9 @@
-import { hasOwn, isArray, isObject } from '@vue/shared'
+import { extend, hasOwn, isArray, isObject } from '@vue/shared'
 
 import {
+  getAppBaseInfo as _getAppBaseInfo,
+  getDeviceInfo as _getDeviceInfo,
+  getWindowInfo as _getWindowInfo,
   navigateTo as _navigateTo,
   addSafeAreaInsets,
   isSyncApi,
@@ -11,8 +14,6 @@ import {
 import { getStorageSync } from './shims'
 
 export {
-  getAppBaseInfo,
-  getWindowInfo,
   redirectTo,
   onError,
   offError,
@@ -573,3 +574,14 @@ export const openDocument = {
 export const navigateTo = my.canIUse('page.getOpenerEventChannel')
   ? {}
   : _navigateTo()
+export const getAppBaseInfo = extend({}, _getAppBaseInfo, {
+  name: my.canIUse('getAppBaseInfo') ? 'getAppBaseInfo' : 'getSystemInfoSync',
+})
+export const getWindowInfo = extend({}, _getWindowInfo, {
+  name: my.canIUse('getWindowInfo') ? 'getWindowInfo' : 'getSystemInfoSync',
+})
+export const getDeviceInfo = extend({}, _getDeviceInfo, {
+  name: my.canIUse('getDeviceBaseInfo')
+    ? 'getDeviceBaseInfo'
+    : 'getSystemInfoSync',
+})
