@@ -42,10 +42,10 @@ export function getOSInfo(system: string, platform: string) {
    * weixin: 操作系统及版本
    * qq: 操作系统及版本
    * kuaishou: 操作系统及版本
+   * toutiao/douyin: 操作系统及版本
    *
    * alipay、dingding: 系统版本
    * baidu: 操作系统版本
-   * toutiao/douyin: 操作系统版本
    * jd: 操作系统版本
    * harmony: 操作系统版本
    *
@@ -58,7 +58,6 @@ export function getOSInfo(system: string, platform: string) {
     platform &&
     (__PLATFORM__ === 'mp-alipay' ||
       __PLATFORM__ === 'mp-baidu' ||
-      __PLATFORM__ === 'mp-toutiao' ||
       __PLATFORM__ === 'mp-jd' ||
       __PLATFORM__ === 'mp-harmony')
   ) {
