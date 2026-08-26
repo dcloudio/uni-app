@@ -240,5 +240,11 @@
     "createMediaQueryObserver": [
       "null"
     ]
+  },
+  "uni-report": {
+    "report": [
+      null,
+      "null"
+    ]
   }
 }
