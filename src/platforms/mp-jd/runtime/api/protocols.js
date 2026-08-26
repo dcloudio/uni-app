@@ -16,13 +16,13 @@ export const protocols = {
   getSystemInfoSync: getSystemInfo,
   // getUserProfile,
   getAppBaseInfo: Object.assign({}, getAppBaseInfo, {
-    name: __GLOBAL__.canIUse('getAppBaseInfo') ? 'getAppBaseInfo' : 'getSystemInfoSync'
+    name: typeof __GLOBAL__.getAppBaseInfo === 'function' ? 'getAppBaseInfo' : 'getSystemInfoSync'
   }),
   getWindowInfo: Object.assign({}, getWindowInfo, {
-    name: __GLOBAL__.canIUse('getWindowInfo') ? 'getWindowInfo' : 'getSystemInfoSync'
+    name: typeof __GLOBAL__.getWindowInfo === 'function' ? 'getWindowInfo' : 'getSystemInfoSync'
   }),
   getDeviceInfo: Object.assign({}, getDeviceInfo, {
-    name: __GLOBAL__.canIUse('getDeviceInfo') ? 'getDeviceInfo' : 'getSystemInfoSync'
+    name: typeof __GLOBAL__.getDeviceInfo === 'function' ? 'getDeviceInfo' : 'getSystemInfoSync'
   })
 }
 
