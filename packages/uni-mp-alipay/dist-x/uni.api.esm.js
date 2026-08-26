@@ -1381,10 +1381,10 @@ function getOSInfo(system, platform) {
      * weixin: 操作系统及版本
      * qq: 操作系统及版本
      * kuaishou: 操作系统及版本
+     * toutiao/douyin: 操作系统及版本
      *
      * alipay、dingding: 系统版本
      * baidu: 操作系统版本
-     * toutiao/douyin: 操作系统版本
      * jd: 操作系统版本
      * harmony: 操作系统版本
      *
