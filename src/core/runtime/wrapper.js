@@ -85,12 +85,14 @@ export default function wrapper (methodName, method) {
       if (typeof arg2 !== 'undefined') {
         args.push(arg2)
       }
+      // methodName 保留公开 API 名，仅使用 apiName 调用平台 API
+      let apiName = methodName
       if (isFn(options.name)) {
-        methodName = options.name(arg1)
+        apiName = options.name(arg1)
       } else if (isStr(options.name)) {
-        methodName = options.name
+        apiName = options.name
       }
-      const returnValue = __GLOBAL__[methodName].apply(__GLOBAL__, args)
+      const returnValue = __GLOBAL__[apiName].apply(__GLOBAL__, args)
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
