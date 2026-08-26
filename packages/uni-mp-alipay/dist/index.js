@@ -787,6 +787,20 @@ function removeStorageSync (key) {
   })
 }
 
+const UUID_KEY = '__DC_STAT_UUID';
+let deviceId;
+function useDeviceId (result) {
+  deviceId = deviceId || my.getStorageSync(UUID_KEY);
+  if (!deviceId) {
+    deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
+    my.setStorage({
+      key: UUID_KEY,
+      data: deviceId
+    });
+  }
+  result.deviceId = deviceId;
+}
+
 function addSafeAreaInsets (result) {
   if (result.safeArea) {
     const safeArea = result.safeArea;
@@ -799,17 +813,17 @@ function addSafeAreaInsets (result) {
   }
 }
 
-function getOSInfo (system, platform) {
+function getOSInfo (system = '', platform = '') {
   /**
    * system 枚举值说明：
    *
    * weixin: 操作系统及版本
    * qq: 操作系统及版本
    * kuaishou: 操作系统及版本
+   * toutiao/douyin: 操作系统及版本
    *
    * alipay、dingding: 系统版本
    * baidu: 操作系统版本
-   * toutiao/douyin: 操作系统版本
    * jd: 操作系统版本
    * harmony: 操作系统版本
    *
@@ -820,7 +834,7 @@ function getOSInfo (system, platform) {
 
   if (
     platform &&
-    ("mp-alipay" === 'mp-alipay'    )
+    ("mp-alipay" === 'mp-alipay'   )
   ) {
     osName = platform;
     osVersion = system;
@@ -854,9 +868,9 @@ function getOSInfo (system, platform) {
   }
 
   return {
-    osName,
-    osVersion,
-    system
+    osName: osName.trim(),
+    osVersion: osVersion.trim(),
+    system: system.trim()
   }
 }
 
@@ -893,10 +907,10 @@ function getPlatform (platform) {
 }
 
 function populateParameters (result) {
-  const {
+  let {
     brand = '', model = '', system = '',
-    language = '', theme, version,
-    platform, fontSizeSetting,
+    language = '', theme, version = '',
+    platform = '', fontSizeSetting,
     SDKVersion, pixelRatio, deviceOrientation
   } = result;
   // const isQuickApp = "mp-alipay".indexOf('quickapp-webview') !== -1
@@ -971,7 +985,7 @@ function populateParameters (result) {
   Object.assign(result, parameters, extraParam);
 }
 
-function getGetDeviceType (result, model) {
+function getGetDeviceType (result, model = '') {
   const platform = result.platform || '';
   let deviceType = result.deviceType || 'phone';
   {
@@ -1018,18 +1032,18 @@ function getHostName (result) {
   return _hostName
 }
 
-const UUID_KEY = '__DC_STAT_UUID';
-let deviceId;
+const UUID_KEY$1 = '__DC_STAT_UUID';
+let deviceId$1;
 function addUuid (result) {
-  deviceId = deviceId || getStorageSync(UUID_KEY);
-  if (!deviceId) {
-    deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
+  deviceId$1 = deviceId$1 || getStorageSync(UUID_KEY$1);
+  if (!deviceId$1) {
+    deviceId$1 = Date.now() + '' + Math.floor(Math.random() * 1e7);
     my.setStorage({
-      key: UUID_KEY,
-      data: deviceId
+      key: UUID_KEY$1,
+      data: deviceId$1
     });
   }
-  result.deviceId = deviceId;
+  result.deviceId = deviceId$1;
 }
 
 function normalizePlatform (result) {
@@ -1056,6 +1070,87 @@ var getSystemInfo = {
     addSafeAreaInsets(result);
     populateParameters(result);
     normalizePlatform(result);
+  }
+};
+
+var getAppBaseInfo = {
+  returnValue: function (result) {
+    const { version, language, SDKVersion, theme } = result;
+
+    const _hostName = getHostName(result);
+
+    const hostLanguage = (language || '').replace('_', '-');
+
+    const parameters = {
+      appId: process.env.UNI_APP_ID,
+      appName: process.env.UNI_APP_NAME,
+      appVersion: process.env.UNI_APP_VERSION_NAME,
+      appVersionCode: process.env.UNI_APP_VERSION_CODE,
+      appLanguage: getAppLanguage(hostLanguage),
+      hostVersion: version,
+      hostLanguage,
+      hostName: _hostName,
+      hostSDKVersion: SDKVersion,
+      hostTheme: theme,
+      isUniAppX: false,
+      uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+      uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+      uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
+      uniRuntimeVersion: process.env.UNI_COMPILER_VERSION
+    };
+
+    try {
+      if (typeof my.getAccountInfoSync === 'function') {
+        const miniProgramAppId = my.getAccountInfoSync().miniProgram.appId;
+        if (miniProgramAppId) {
+          parameters.packagename = miniProgramAppId;
+        }
+      }
+    } catch (e) { }
+
+    result = Object.assign(result, parameters);
+  }
+};
+
+var getWindowInfo = {
+  returnValue: function (result) {
+    addSafeAreaInsets(result);
+
+    result = Object.assign(result, {
+      windowTop: 0,
+      windowBottom: 0
+    });
+  }
+};
+
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
+var getDeviceInfo = {
+  returnValue: function (result) {
+    let { brand, model, system = '', platform = '' } = result;
+    const deviceType = getGetDeviceType(result, model);
+    const deviceBrand = getDeviceBrand(brand);
+    useDeviceId(result);
+
+    /**
+     * alipay: 系统及版本，与文档不一致 (https://opendocs.alipay.com/mini/071680?pathHash=92d76c0e)
+     */
+    {
+      system = system.split(' ')[1];
+    }
+
+    const { osName, osVersion } = getOSInfo(system, platform);
+
+    result = Object.assign(result, {
+      deviceType,
+      deviceBrand,
+      deviceModel: model,
+      osName,
+      osVersion,
+      platform: getPlatform(platform)
+    });
   }
 };
 
@@ -1561,7 +1656,16 @@ const protocols = { // 需要做转换的 API 列表
         toArgs.showMenu = String(fromArgs.showMenu);
       }
     }
-  }
+  },
+  getAppBaseInfo: Object.assign({}, getAppBaseInfo, {
+    name: my.canIUse('getAppBaseInfo') ? 'getAppBaseInfo' : 'getSystemInfoSync'
+  }),
+  getWindowInfo: Object.assign({}, getWindowInfo, {
+    name: my.canIUse('getWindowInfo') ? 'getWindowInfo' : 'getSystemInfoSync'
+  }),
+  getDeviceInfo: Object.assign({}, getDeviceInfo, {
+    name: my.canIUse('getDeviceBaseInfo') ? 'getDeviceBaseInfo' : 'getSystemInfoSync'
+  })
 };
 
 // 钉钉小程序处理
@@ -1645,12 +1749,14 @@ function wrapper (methodName, method) {
       if (typeof arg2 !== 'undefined') {
         args.push(arg2);
       }
+      // methodName 保留公开 API 名，仅使用 apiName 调用平台 API
+      let apiName = methodName;
       if (isFn(options.name)) {
-        methodName = options.name(arg1);
+        apiName = options.name(arg1);
       } else if (isStr(options.name)) {
-        methodName = options.name;
+        apiName = options.name;
       }
-      const returnValue = my[methodName].apply(my, args);
+      const returnValue = my[apiName].apply(my, args);
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }

@@ -660,17 +660,17 @@ function addSafeAreaInsets (result) {
   }
 }
 
-function getOSInfo (system, platform) {
+function getOSInfo (system = '', platform = '') {
   /**
    * system 枚举值说明：
    *
    * weixin: 操作系统及版本
    * qq: 操作系统及版本
    * kuaishou: 操作系统及版本
+   * toutiao/douyin: 操作系统及版本
    *
    * alipay、dingding: 系统版本
    * baidu: 操作系统版本
-   * toutiao/douyin: 操作系统版本
    * jd: 操作系统版本
    * harmony: 操作系统版本
    *
@@ -715,9 +715,9 @@ function getOSInfo (system, platform) {
   }
 
   return {
-    osName,
-    osVersion,
-    system
+    osName: osName.trim(),
+    osVersion: osVersion.trim(),
+    system: system.trim()
   }
 }
 
@@ -754,15 +754,20 @@ function getPlatform (platform) {
 }
 
 function populateParameters (result) {
-  const {
+  let {
     brand = '', model = '', system = '',
-    language = '', theme, version,
-    platform, fontSizeSetting,
+    language = '', theme, version = '',
+    platform = '', fontSizeSetting,
     SDKVersion, pixelRatio, deviceOrientation
   } = result;
   // const isQuickApp = "mp-jd".indexOf('quickapp-webview') !== -1
 
   const extraParam = {};
+
+  {
+    system = `${system} ${version}`;
+    system = system.trim();
+  }
 
   // osName osVersion
   const { osName, osVersion, system: updatedSystem } = getOSInfo(system, platform);
@@ -834,7 +839,7 @@ function populateParameters (result) {
   Object.assign(result, parameters, extraParam);
 }
 
-function getGetDeviceType (result, model) {
+function getGetDeviceType (result, model = '') {
   const platform = result.platform || '';
   let deviceType = result.deviceType || 'phone';
   {
@@ -888,8 +893,81 @@ var getSystemInfo = {
   }
 };
 
+var getAppBaseInfo = {
+  returnValue: function (result) {
+    const { version, language, SDKVersion, theme } = result;
+
+    const _hostName = getHostName(result);
+
+    const hostLanguage = (language || '').replace('_', '-');
+
+    const parameters = {
+      appId: process.env.UNI_APP_ID,
+      appName: process.env.UNI_APP_NAME,
+      appVersion: process.env.UNI_APP_VERSION_NAME,
+      appVersionCode: process.env.UNI_APP_VERSION_CODE,
+      appLanguage: getAppLanguage(hostLanguage),
+      hostVersion: version,
+      hostLanguage,
+      hostName: _hostName,
+      hostSDKVersion: SDKVersion,
+      hostTheme: theme,
+      isUniAppX: false,
+      uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+      uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+      uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
+      uniRuntimeVersion: process.env.UNI_COMPILER_VERSION
+    };
+
+    try {
+      if (typeof jd.getAccountInfoSync === 'function') {
+        const miniProgramAppId = jd.getAccountInfoSync().miniProgram.appId;
+        if (miniProgramAppId) {
+          parameters.packagename = miniProgramAppId;
+        }
+      }
+    } catch (e) { }
+
+    result = Object.assign(result, parameters);
+  }
+};
+
+var getWindowInfo = {
+  returnValue: function (result) {
+    addSafeAreaInsets(result);
+
+    result = Object.assign(result, {
+      windowTop: 0,
+      windowBottom: 0
+    });
+  }
+};
+
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
+var getDeviceInfo = {
+  returnValue: function (result) {
+    let { brand, model, system = '', platform = '' } = result;
+    const deviceType = getGetDeviceType(result, model);
+    const deviceBrand = getDeviceBrand(brand);
+    useDeviceId(result);
+
+    const { osName, osVersion } = getOSInfo(system, platform);
+
+    result = Object.assign(result, {
+      deviceType,
+      deviceBrand,
+      deviceModel: model,
+      osName,
+      osVersion,
+      platform: getPlatform(platform)
+    });
+  }
+};
+
 // import navigateTo from 'uni-helpers/navigate-to'
-// import getUserProfile from '../../../mp-weixin/helpers/get-user-profile'
 
 // 需要做转换的 API 列表
 const protocols = {
@@ -897,8 +975,17 @@ const protocols = {
   // redirectTo,
   // previewImage,
   getSystemInfo,
-  getSystemInfoSync: getSystemInfo
-  // getUserProfile
+  getSystemInfoSync: getSystemInfo,
+  // getUserProfile,
+  getAppBaseInfo: Object.assign({}, getAppBaseInfo, {
+    name: typeof jd.getAppBaseInfo === 'function' ? 'getAppBaseInfo' : 'getSystemInfoSync'
+  }),
+  getWindowInfo: Object.assign({}, getWindowInfo, {
+    name: typeof jd.getWindowInfo === 'function' ? 'getWindowInfo' : 'getSystemInfoSync'
+  }),
+  getDeviceInfo: Object.assign({}, getDeviceInfo, {
+    name: typeof jd.getDeviceInfo === 'function' ? 'getDeviceInfo' : 'getSystemInfoSync'
+  })
 };
 
 // 不支持的 API 列表
@@ -980,12 +1067,14 @@ function wrapper (methodName, method) {
       if (typeof arg2 !== 'undefined') {
         args.push(arg2);
       }
+      // methodName 保留公开 API 名，仅使用 apiName 调用平台 API
+      let apiName = methodName;
       if (isFn(options.name)) {
-        methodName = options.name(arg1);
+        apiName = options.name(arg1);
       } else if (isStr(options.name)) {
-        methodName = options.name;
+        apiName = options.name;
       }
-      const returnValue = jd[methodName].apply(jd, args);
+      const returnValue = jd[apiName].apply(jd, args);
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
