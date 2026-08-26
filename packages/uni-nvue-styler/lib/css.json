@@ -210,7 +210,7 @@
             "unixVaporVer": "5.25"
           },
           "ios": {
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.25"
           },
           "harmony": {
             "unixVaporVer": "4.26"
@@ -9732,7 +9732,7 @@
               "ios": {
                 "uniVer": "x",
                 "unixVer": "x",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.25"
               },
               "harmony": {
                 "uniVer": "x",
@@ -14093,7 +14093,7 @@
           "harmony": {
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
