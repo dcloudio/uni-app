@@ -63,7 +63,14 @@ export function registerPage({
 
   const id = parseInt(webview.id!)
 
-  createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions))
+  const pageOptions = initPageOptions(routeOptions)
+  /**
+   * 编译器仅分析pages.json的内容，无法分析页面是否包含css，如果页面style为空则不会生成相应的css文件
+   * 鸿蒙非uni-app-x加载页面css时完全是鸿蒙web组件自主行为，uni没有干涉，此时如果页面不含css，鸿蒙web组件会打印一行警告信息
+   * 此处判断页面css文件是否存在，再次设置css属性，避免鸿蒙web组件打印警告信息
+   */
+  pageOptions.css = (globalThis as any).__checkUniPageCss(pageOptions.route)
+  createVuePage(id, route, query, pageInstance, pageOptions)
 
   return webview
 }
@@ -72,14 +79,6 @@ function initPageOptions({ meta }: UniApp.UniRoute): PageNodeOptions {
   const statusbarHeight = getStatusbarHeight()
   const { platform, pixelRatio, windowWidth } = getBaseSystemInfo()
   return {
-    /**
-     * 此处固定true带来的问题
-     * 鸿蒙非uni-app-x加载页面css时完全是鸿蒙web组件自主行为，uni没有干涉，此时如果页面不含css，鸿蒙web组件会打印一行警告信息
-     *
-     * 改动的困难在于目前__uniRoutes生成仅依赖pages.json的内容，如果再去分析页面是否包含css，会增加复杂度和性能开销
-     * 如果干涉鸿蒙web加载css的过程会降低一丢丢性能，鉴于此警告并不影响功能，暂不处理此问题
-     */
-    // css: meta.hasCss !== false,
     css: true,
     route: meta.route,
     version: 1,
