@@ -9,7 +9,9 @@ jest.mock('@dcloudio/uni-mp-core', () => {
     isSyncApi: jest.fn(),
     populateParameters: jest.fn(),
     useDeviceId: jest.fn(),
-    getAppBaseInfo: jest.fn(),
+    getAppBaseInfo: { returnValue: jest.fn() },
+    getWindowInfo: { returnValue: jest.fn() },
+    getDeviceInfo: { returnValue: jest.fn() },
     redirectTo: jest.fn(),
     onError: jest.fn(),
     offError: jest.fn(),
@@ -27,6 +29,13 @@ global.my = {
   ...global.my,
   request: jest.fn(),
   canIUse: jest.fn().mockImplementation((api) => {
+    if (
+      api === 'getAppBaseInfo' ||
+      api === 'getWindowInfo' ||
+      api === 'getDeviceBaseInfo'
+    ) {
+      return false
+    }
     if (api === 'saveFileToDingTalk') {
       return true
     }
@@ -35,12 +44,35 @@ global.my = {
   }),
 }
 
-import { getAppBaseInfo as coreGetAppBaseInfo } from '@dcloudio/uni-mp-core'
-import { getAppBaseInfo, request } from '../src/api/protocols'
+import {
+  getAppBaseInfo as coreGetAppBaseInfo,
+  getDeviceInfo as coreGetDeviceInfo,
+  getWindowInfo as coreGetWindowInfo,
+} from '@dcloudio/uni-mp-core'
+import {
+  getAppBaseInfo,
+  getDeviceInfo,
+  getWindowInfo,
+  request,
+} from '../src/api/protocols'
 
 describe('api', () => {
-  test('api-getAppBaseInfo 使用 core 协议增强返回值', () => {
-    expect(getAppBaseInfo).toBe(coreGetAppBaseInfo)
+  test('系统信息拆分 API 不可用时回退并保留 core 协议', () => {
+    expect(my.canIUse).toHaveBeenCalledWith('getAppBaseInfo')
+    expect(my.canIUse).toHaveBeenCalledWith('getWindowInfo')
+    expect(my.canIUse).toHaveBeenCalledWith('getDeviceBaseInfo')
+    expect(getAppBaseInfo).toEqual({
+      ...coreGetAppBaseInfo,
+      name: 'getSystemInfoSync',
+    })
+    expect(getWindowInfo).toEqual({
+      ...coreGetWindowInfo,
+      name: 'getSystemInfoSync',
+    })
+    expect(getDeviceInfo).toEqual({
+      ...coreGetDeviceInfo,
+      name: 'getSystemInfoSync',
+    })
   })
 
   test('api-request base-object-data', () => {
