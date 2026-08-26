@@ -156,6 +156,14 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
           }
         }
         if (!changed) {
+          // App 旧流程即使未改写 script 标签也会返回空 map，用于隔离后续
+          // uni:pre-vue 无 map 的条件编译，避免同一 SFC 出现不同 sourcesContent。
+          if (isApp) {
+            return {
+              code,
+              map: { mappings: '' },
+            }
+          }
           return
         }
         return {

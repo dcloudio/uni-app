@@ -436,4 +436,19 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     }
     expect(config.plugins).not.toContain(esbuildPlugin)
   })
+
+  test('keeps the legacy empty source map for explicit UTS scripts on App VDOM', () => {
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    process.env.UNI_PLATFORM = 'app'
+    process.env.UNI_UTS_PLATFORM = 'app-ios'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+    const source = '<script setup lang="uts">const value = 1</script>'
+
+    expect(
+      transform.call({} as any, source, '/pages/index/index.uvue')
+    ).toEqual({
+      code: source,
+      map: { mappings: '' },
+    })
+  })
 })
