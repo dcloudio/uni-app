@@ -2,7 +2,8 @@ const path = require('path')
 const webpack = require('webpack')
 
 const {
-  getPartialIdentifier
+  getPartialIdentifier,
+  createObfuscatedStringExpression
 } = require('./util')
 
 function resolve (dir) {
@@ -158,7 +159,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
       'process.env.UNI_APP_NAME': JSON.stringify(process.env.UNI_APP_NAME),
       'process.env.UNI_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
       'process.env.UNI_SUB_PLATFORM': JSON.stringify(process.env.UNI_SUB_PLATFORM),
-      'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
+      'process.env.UNI_CLOUD_PROVIDER': createObfuscatedStringExpression(process.env.UNI_CLOUD_PROVIDER || ''),
       'process.env.UNI_SECURE_NETWORK_ENABLE': process.env.UNI_SECURE_NETWORK_ENABLE,
       'process.env.UNI_SECURE_NETWORK_CONFIG': process.env.UNI_SECURE_NETWORK_CONFIG || '[]',
       'process.env.UNICLOUD_DEBUG': process.env.UNICLOUD_DEBUG,
