@@ -35,7 +35,7 @@ export function addSafeAreaInsets(
   }
 }
 
-export function getOSInfo(system: string, platform: string) {
+export function getOSInfo(system: string = '', platform: string = '') {
   /**
    * system 枚举值说明：
    *
@@ -95,9 +95,9 @@ export function getOSInfo(system: string, platform: string) {
   }
 
   return {
-    osName,
-    osVersion,
-    system,
+    osName: osName.trim(),
+    osVersion: osVersion.trim(),
+    system: system.trim(),
   }
 }
 
@@ -147,8 +147,8 @@ export function populateParameters(
     system = '',
     language = '',
     theme,
-    version,
-    platform,
+    version = '',
+    platform = '',
     fontSizeSetting,
     SDKVersion,
     pixelRatio,
@@ -158,6 +158,7 @@ export function populateParameters(
 
   if (__PLATFORM__ === 'mp-jd') {
     system = `${system} ${version}`
+    system = system.trim()
   }
 
   // osName osVersion
@@ -262,7 +263,7 @@ export function populateParameters(
   extend(toRes, parameters)
 }
 
-export function getGetDeviceType(fromRes: any, model: string) {
+export function getGetDeviceType(fromRes: any, model: string = '') {
   const platform = fromRes.platform || ''
   // deviceType
   let deviceType = fromRes.deviceType || 'phone'
