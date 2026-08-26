@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, isFunction } from '@vue/shared'
 import {
   getAppBaseInfo as _getAppBaseInfo,
   getDeviceInfo as _getDeviceInfo,
@@ -27,11 +27,11 @@ export {
 
 export const navigateTo = _navigateTo()
 export const getAppBaseInfo = extend({}, _getAppBaseInfo, {
-  name: jd.canIUse('getAppBaseInfo') ? 'getAppBaseInfo' : 'getSystemInfoSync',
+  name: isFunction(jd.getAppBaseInfo) ? 'getAppBaseInfo' : 'getSystemInfoSync',
 })
 export const getWindowInfo = extend({}, _getWindowInfo, {
-  name: jd.canIUse('getWindowInfo') ? 'getWindowInfo' : 'getSystemInfoSync',
+  name: isFunction(jd.getWindowInfo) ? 'getWindowInfo' : 'getSystemInfoSync',
 })
 export const getDeviceInfo = extend({}, _getDeviceInfo, {
-  name: jd.canIUse('getDeviceInfo') ? 'getDeviceInfo' : 'getSystemInfoSync',
+  name: isFunction(jd.getDeviceInfo) ? 'getDeviceInfo' : 'getSystemInfoSync',
 })
