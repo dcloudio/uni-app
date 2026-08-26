@@ -28,7 +28,10 @@ export default {
 
     try {
       if (typeof __GLOBAL__.getAccountInfoSync === 'function') {
-        parameters.packagename = __GLOBAL__.getAccountInfoSync().miniProgram.appId
+        const miniProgramAppId = __GLOBAL__.getAccountInfoSync().miniProgram.appId
+        if (miniProgramAppId) {
+          parameters.packagename = miniProgramAppId
+        }
       }
     } catch (e) { }
 
