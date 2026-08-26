@@ -3807,7 +3807,28 @@ var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (opti
     reject("tabBar is not exist");
     return;
   }
-  var style = /* @__PURE__ */ new Map([["color", options.color], ["selectedColor", options.selectedColor], ["backgroundColor", options.backgroundColor], ["backgroundImage", options.backgroundImage], ["backgroundRepeat", options.backgroundRepeat], ["borderStyle", options.borderStyle], ["borderColor", options.borderColor]]);
+  var style = /* @__PURE__ */ new Map();
+  if (options.color != null) {
+    style.set("color", options.color);
+  }
+  if (options.selectedColor != null) {
+    style.set("selectedColor", options.selectedColor);
+  }
+  if (options.backgroundColor != null) {
+    style.set("backgroundColor", options.backgroundColor);
+  }
+  if (options.backgroundImage != null) {
+    style.set("backgroundImage", options.backgroundImage);
+  }
+  if (options.backgroundRepeat != null) {
+    style.set("backgroundRepeat", options.backgroundRepeat);
+  }
+  if (options.borderStyle != null) {
+    style.set("borderStyle", options.borderStyle);
+  }
+  if (options.borderColor != null) {
+    style.set("borderColor", options.borderColor);
+  }
   if (!!options.midButton) {
     var midButtonOptions = options.midButton;
     var midButton = /* @__PURE__ */ new Map([["width", midButtonOptions.width], ["height", midButtonOptions.height], ["iconPath", midButtonOptions.iconPath], ["text", midButtonOptions.text], ["iconPath", midButtonOptions.iconPath], ["iconWidth", midButtonOptions.iconWidth], ["backgroundImage", midButtonOptions.backgroundImage]]);

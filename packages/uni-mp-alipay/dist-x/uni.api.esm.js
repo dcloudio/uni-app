@@ -1374,7 +1374,7 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
-function getOSInfo(system, platform) {
+function getOSInfo(system = '', platform = '') {
     /**
      * system 枚举值说明：
      *
@@ -1424,9 +1424,9 @@ function getOSInfo(system, platform) {
             break;
     }
     return {
-        osName,
-        osVersion,
-        system,
+        osName: osName.trim(),
+        osVersion: osVersion.trim(),
+        system: system.trim(),
     };
 }
 function getPlatform(platform) {
@@ -1461,8 +1461,7 @@ function getPlatform(platform) {
     return platform;
 }
 function populateParameters(fromRes, toRes) {
-    const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
-    // const isQuickApp = "mp-alipay".indexOf('quickapp-webview') !== -1
+    let { brand = '', model = '', system = '', language = '', theme, version = '', platform = '', fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // osName osVersion
     const { osName, osVersion, system: updatedSystem, } = getOSInfo(system, platform);
     let hostVersion = version;
@@ -1529,7 +1528,7 @@ function populateParameters(fromRes, toRes) {
     }
     extend(toRes, parameters);
 }
-function getGetDeviceType(fromRes, model) {
+function getGetDeviceType(fromRes, model = '') {
     fromRes.platform || '';
     // deviceType
     let deviceType = fromRes.deviceType || 'phone';
@@ -1613,10 +1612,16 @@ const navigateTo$1 = () => {
  */
 const getDeviceInfo$1 = {
     returnValue: (fromRes, toRes) => {
-        const { brand, model, system = '', platform = '' } = fromRes;
+        let { brand, model, system = '', platform = '' } = fromRes;
         let deviceType = getGetDeviceType(fromRes, model);
         let deviceBrand = getDeviceBrand(brand);
         useDeviceId()(fromRes, toRes);
+        /**
+         * alipay: 系统及版本，与文档不一致 (https://opendocs.alipay.com/mini/071680?pathHash=92d76c0e)
+         */
+        {
+            system = system.split(' ')[1];
+        }
         const { osName, osVersion } = getOSInfo(system, platform);
         toRes = extend(toRes, {
             deviceType,

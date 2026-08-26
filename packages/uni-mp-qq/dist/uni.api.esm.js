@@ -1008,7 +1008,7 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
-function getOSInfo(system, platform) {
+function getOSInfo(system = '', platform = '') {
     /**
      * system 枚举值说明：
      *
@@ -1058,9 +1058,9 @@ function getOSInfo(system, platform) {
             break;
     }
     return {
-        osName,
-        osVersion,
-        system,
+        osName: osName.trim(),
+        osVersion: osVersion.trim(),
+        system: system.trim(),
     };
 }
 function getPlatform(platform) {
@@ -1095,8 +1095,7 @@ function getPlatform(platform) {
     return platform;
 }
 function populateParameters(fromRes, toRes) {
-    const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
-    // const isQuickApp = "mp-qq".indexOf('quickapp-webview') !== -1
+    let { brand = '', model = '', system = '', language = '', theme, version = '', platform = '', fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // osName osVersion
     const { osName, osVersion, system: updatedSystem, } = getOSInfo(system, platform);
     let hostVersion = version;
@@ -1153,7 +1152,7 @@ function populateParameters(fromRes, toRes) {
     };
     extend(toRes, parameters);
 }
-function getGetDeviceType(fromRes, model) {
+function getGetDeviceType(fromRes, model = '') {
     fromRes.platform || '';
     // deviceType
     let deviceType = fromRes.deviceType || 'phone';
