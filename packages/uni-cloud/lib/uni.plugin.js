@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const crypto_1 = __importDefault(require("crypto"));
 const path_1 = __importDefault(require("path"));
 const fast_glob_1 = require("fast-glob");
 const shared_1 = require("@vue/shared");
@@ -163,6 +164,40 @@ function initUniCloudEnv() {
     }
     catch (e) { }
 }
+function createObfuscatedStringExpression(value) {
+    if (!value) {
+        return JSON.stringify('');
+    }
+    const data = [];
+    const mask = [];
+    const randomData = crypto_1.default.randomBytes(value.length * 2);
+    for (let i = 0; i < value.length; i++) {
+        const maskValue = randomData.readUInt16LE(i * 2);
+        mask.push(maskValue);
+        data.push(value.charCodeAt(i) ^ maskValue);
+    }
+    const encodedData = JSON.stringify(data);
+    const encodedMask = JSON.stringify(mask);
+    return `(function(){var d=${encodedData},m=${encodedMask},s='';for(var i=0;i<d.length;i++){s+=String.fromCharCode(d[i]^m[i]);}return s;}())`;
+}
+function uniCloudProviderObfuscatorPlugin() {
+    const providerToken = 'process.env.UNI_CLOUD_PROVIDER';
+    return {
+        name: 'uni:cloud-provider-obfuscator',
+        enforce: 'pre',
+        apply: 'build',
+        transform(code) {
+            if (!code.includes(providerToken)) {
+                return;
+            }
+            const providerExpression = createObfuscatedStringExpression(process.env.UNI_CLOUD_PROVIDER || '');
+            return {
+                code: code.split(providerToken).join(providerExpression),
+                map: null,
+            };
+        },
+    };
+}
 exports.default = () => [
     (0, uni_cli_shared_1.defineUniMainJsPlugin)((opts) => {
         return {
@@ -196,6 +231,7 @@ exports.default = () => [
         };
     }),
     uniCloudPlugin(),
+    uniCloudProviderObfuscatorPlugin(),
     // x 里边统一处理
     ...(process.env.UNI_APP_X === 'true'
         ? []
