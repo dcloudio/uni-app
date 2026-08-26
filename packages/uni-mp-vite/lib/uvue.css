@@ -1,8 +1,8 @@
 page {
-  /* #ifndef MP-ALIPAY */ 
+  /* #ifndef MP-ALIPAY */
   height: 100%;
   /* #endif */
-  /* #ifdef MP-ALIPAY */ 
+  /* #ifdef MP-ALIPAY */
   height: 100vh;
   /* #endif */
   display: flex;
@@ -79,6 +79,24 @@ web-view {
   min-width: 0px;
   border-width: medium;
 }
+
+/* #ifdef MP-ALIPAY */
+button {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  min-height: 0px;
+  min-width: 0px;
+  border-width: medium;
+}
+/* #endif */
 
 ad-draw[hidden],
 ad-fullscreen-video[hidden],
