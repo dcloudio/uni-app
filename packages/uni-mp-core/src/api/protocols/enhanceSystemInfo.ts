@@ -141,7 +141,7 @@ export function populateParameters(
   fromRes: any,
   toRes: UniApp.GetSystemInfoResult
 ) {
-  const {
+  let {
     brand = '',
     model = '',
     system = '',
@@ -155,6 +155,10 @@ export function populateParameters(
     deviceOrientation,
   } = fromRes
   // const isQuickApp = __PLATFORM__.indexOf('quickapp-webview') !== -1
+
+  if (__PLATFORM__ === 'mp-jd') {
+    system = `${system} ${version}`
+  }
 
   // osName osVersion
   const {
