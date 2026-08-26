@@ -1008,17 +1008,17 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
-function getOSInfo(system, platform) {
+function getOSInfo(system = '', platform = '') {
     /**
      * system 枚举值说明：
      *
      * weixin: 操作系统及版本
      * qq: 操作系统及版本
      * kuaishou: 操作系统及版本
+     * toutiao/douyin: 操作系统及版本
      *
      * alipay、dingding: 系统版本
      * baidu: 操作系统版本
-     * toutiao/douyin: 操作系统版本
      * jd: 操作系统版本
      * harmony: 操作系统版本
      *
@@ -1058,9 +1058,9 @@ function getOSInfo(system, platform) {
             break;
     }
     return {
-        osName,
-        osVersion,
-        system,
+        osName: osName.trim(),
+        osVersion: osVersion.trim(),
+        system: system.trim(),
     };
 }
 function getPlatform(platform) {
@@ -1095,8 +1095,12 @@ function getPlatform(platform) {
     return platform;
 }
 function populateParameters(fromRes, toRes) {
-    const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
+    let { brand = '', model = '', system = '', language = '', theme, version = '', platform = '', fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // const isQuickApp = "mp-jd".indexOf('quickapp-webview') !== -1
+    {
+        system = `${system} ${version}`;
+        system = system.trim();
+    }
     // osName osVersion
     const { osName, osVersion, system: updatedSystem, } = getOSInfo(system, platform);
     let hostVersion = version;
@@ -1156,7 +1160,7 @@ function populateParameters(fromRes, toRes) {
     };
     extend(toRes, parameters);
 }
-function getGetDeviceType(fromRes, model) {
+function getGetDeviceType(fromRes, model = '') {
     fromRes.platform || '';
     // deviceType
     let deviceType = fromRes.deviceType || 'phone';
@@ -1275,6 +1279,71 @@ const navigateTo$1 = () => {
             fromRes.eventChannel = eventChannel;
         },
     };
+};
+
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
+const getDeviceInfo$1 = {
+    returnValue: (fromRes, toRes) => {
+        let { brand, model, system = '', platform = '' } = fromRes;
+        let deviceType = getGetDeviceType(fromRes, model);
+        let deviceBrand = getDeviceBrand(brand);
+        useDeviceId()(fromRes, toRes);
+        const { osName, osVersion } = getOSInfo(system, platform);
+        toRes = extend(toRes, {
+            deviceType,
+            deviceBrand,
+            deviceModel: model,
+            osName,
+            osVersion,
+            platform: getPlatform(platform),
+        });
+    },
+};
+
+const getAppBaseInfo$1 = {
+    returnValue: (fromRes, toRes) => {
+        const { version, language, SDKVersion, theme } = fromRes;
+        let _hostName = getHostName(fromRes);
+        let hostLanguage = (language || '').replace(/_/g, '-');
+        const parameters = {
+            appId: process.env.UNI_APP_ID,
+            appName: process.env.UNI_APP_NAME,
+            appVersion: process.env.UNI_APP_VERSION_NAME,
+            appVersionCode: process.env.UNI_APP_VERSION_CODE,
+            appLanguage: getAppLanguage(hostLanguage),
+            hostVersion: version,
+            hostLanguage,
+            hostName: _hostName,
+            hostSDKVersion: SDKVersion,
+            hostTheme: theme,
+            isUniAppX: false,
+            uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+            uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+            uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
+            uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+        };
+        try {
+            if (typeof jd.getAccountInfoSync === 'function') {
+                parameters.packagename =
+                    jd.getAccountInfoSync().miniProgram.appId;
+            }
+        }
+        catch (error) { }
+        extend(toRes, parameters);
+    },
+};
+
+const getWindowInfo$1 = {
+    returnValue: (fromRes, toRes) => {
+        addSafeAreaInsets(fromRes, toRes);
+        toRes = extend(toRes, {
+            windowTop: 0,
+            windowBottom: 0,
+        });
+    },
 };
 
 const onError = {
@@ -1411,11 +1480,23 @@ var shims = /*#__PURE__*/Object.freeze({
 });
 
 const navigateTo = navigateTo$1();
+const getAppBaseInfo = extend({}, getAppBaseInfo$1, {
+    name: isFunction(jd.getAppBaseInfo) ? 'getAppBaseInfo' : 'getSystemInfoSync',
+});
+const getWindowInfo = extend({}, getWindowInfo$1, {
+    name: isFunction(jd.getWindowInfo) ? 'getWindowInfo' : 'getSystemInfoSync',
+});
+const getDeviceInfo = extend({}, getDeviceInfo$1, {
+    name: isFunction(jd.getDeviceInfo) ? 'getDeviceInfo' : 'getSystemInfoSync',
+});
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
+  getAppBaseInfo: getAppBaseInfo,
+  getDeviceInfo: getDeviceInfo,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
+  getWindowInfo: getWindowInfo,
   navigateTo: navigateTo,
   offError: offError,
   onError: onError,

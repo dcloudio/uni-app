@@ -1008,17 +1008,17 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
-function getOSInfo(system, platform) {
+function getOSInfo(system = '', platform = '') {
     /**
      * system 枚举值说明：
      *
      * weixin: 操作系统及版本
      * qq: 操作系统及版本
      * kuaishou: 操作系统及版本
+     * toutiao/douyin: 操作系统及版本
      *
      * alipay、dingding: 系统版本
      * baidu: 操作系统版本
-     * toutiao/douyin: 操作系统版本
      * jd: 操作系统版本
      * harmony: 操作系统版本
      *
@@ -1027,7 +1027,7 @@ function getOSInfo(system, platform) {
     let osName = '';
     let osVersion = '';
     if (platform &&
-        ("mp-toutiao" === 'mp-toutiao')) {
+        ("mp-toutiao" === 'mp-harmony')) {
         osName = platform;
         osVersion = system;
         system = `${osName} ${osVersion}`;
@@ -1058,9 +1058,9 @@ function getOSInfo(system, platform) {
             break;
     }
     return {
-        osName,
-        osVersion,
-        system,
+        osName: osName.trim(),
+        osVersion: osVersion.trim(),
+        system: system.trim(),
     };
 }
 function getPlatform(platform) {
@@ -1095,8 +1095,7 @@ function getPlatform(platform) {
     return platform;
 }
 function populateParameters(fromRes, toRes) {
-    const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
-    // const isQuickApp = "mp-toutiao".indexOf('quickapp-webview') !== -1
+    let { brand = '', model = '', system = '', language = '', theme, version = '', platform = '', fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // osName osVersion
     const { osName, osVersion, system: updatedSystem, } = getOSInfo(system, platform);
     let hostVersion = version;
@@ -1153,7 +1152,7 @@ function populateParameters(fromRes, toRes) {
     };
     extend(toRes, parameters);
 }
-function getGetDeviceType(fromRes, model) {
+function getGetDeviceType(fromRes, model = '') {
     fromRes.platform || '';
     // deviceType
     let deviceType = fromRes.deviceType || 'phone';
@@ -1275,6 +1274,28 @@ const navigateTo$1 = () => {
             fromRes.eventChannel = eventChannel;
         },
     };
+};
+
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
+const getDeviceInfo$1 = {
+    returnValue: (fromRes, toRes) => {
+        let { brand, model, system = '', platform = '' } = fromRes;
+        let deviceType = getGetDeviceType(fromRes, model);
+        let deviceBrand = getDeviceBrand(brand);
+        useDeviceId()(fromRes, toRes);
+        const { osName, osVersion } = getOSInfo(system, platform);
+        toRes = extend(toRes, {
+            deviceType,
+            deviceBrand,
+            deviceModel: model,
+            osName,
+            osVersion,
+            platform: getPlatform(platform),
+        });
+    },
 };
 
 const onError = {
@@ -1447,10 +1468,16 @@ const hideTabBar = {
         }
     },
 };
+const getDeviceInfo = extend({}, getDeviceInfo$1, {
+    name: tt.canIUse('getDeviceInfoSync')
+        ? 'getDeviceInfoSync'
+        : 'getSystemInfoSync',
+});
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
   connectSocket: connectSocket,
+  getDeviceInfo: getDeviceInfo,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getUserInfo: getUserInfo,
