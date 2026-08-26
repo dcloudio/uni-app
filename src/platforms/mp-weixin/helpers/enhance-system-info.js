@@ -26,7 +26,7 @@ export function addSafeAreaInsets (result) {
   }
 }
 
-export function getOSInfo (system, platform) {
+export function getOSInfo (system = '', platform = '') {
   /**
    * system 枚举值说明：
    *
@@ -83,9 +83,9 @@ export function getOSInfo (system, platform) {
   }
 
   return {
-    osName,
-    osVersion,
-    system
+    osName: osName.trim(),
+    osVersion: osVersion.trim(),
+    system: system.trim()
   }
 }
 
@@ -128,8 +128,8 @@ export function getPlatform (platform) {
 export function populateParameters (result) {
   let {
     brand = '', model = '', system = '',
-    language = '', theme, version,
-    platform, fontSizeSetting,
+    language = '', theme, version = '',
+    platform = '', fontSizeSetting,
     SDKVersion, pixelRatio, deviceOrientation
   } = result
   // const isQuickApp = __PLATFORM__.indexOf('quickapp-webview') !== -1
@@ -138,6 +138,7 @@ export function populateParameters (result) {
 
   if (__PLATFORM__ === 'mp-jd') {
     system = `${system} ${version}`
+    system = system.trim()
   }
 
   // osName osVersion
@@ -217,7 +218,7 @@ export function populateParameters (result) {
   Object.assign(result, parameters, extraParam)
 }
 
-export function getGetDeviceType (result, model) {
+export function getGetDeviceType (result, model = '') {
   const platform = result.platform || ''
   let deviceType = result.deviceType || 'phone'
   if (__PLATFORM__ !== 'mp-baidu') {
