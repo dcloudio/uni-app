@@ -1234,7 +1234,29 @@ const navigateTo$1 = () => {
     };
 };
 
-const getAppBaseInfo = {
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
+const getDeviceInfo$1 = {
+    returnValue: (fromRes, toRes) => {
+        const { brand, model, system = '', platform = '' } = fromRes;
+        let deviceType = getGetDeviceType(fromRes, model);
+        let deviceBrand = getDeviceBrand(brand);
+        useDeviceId()(fromRes, toRes);
+        const { osName, osVersion } = getOSInfo(system, platform);
+        toRes = extend(toRes, {
+            deviceType,
+            deviceBrand,
+            deviceModel: model,
+            osName,
+            osVersion,
+            platform: getPlatform(platform),
+        });
+    },
+};
+
+const getAppBaseInfo$1 = {
     returnValue: (fromRes, toRes) => {
         const { version, language, SDKVersion, theme } = fromRes;
         let _hostName = getHostName(fromRes);
@@ -1269,7 +1291,7 @@ const getAppBaseInfo = {
     },
 };
 
-const getWindowInfo = {
+const getWindowInfo$1 = {
     returnValue: (fromRes, toRes) => {
         addSafeAreaInsets(fromRes, toRes);
         toRes = extend(toRes, {
@@ -2035,6 +2057,17 @@ const openDocument = {
 const navigateTo = my.canIUse('page.getOpenerEventChannel')
     ? {}
     : navigateTo$1();
+const getAppBaseInfo = extend({}, getAppBaseInfo$1, {
+    name: my.canIUse('getAppBaseInfo') ? 'getAppBaseInfo' : 'getSystemInfoSync',
+});
+const getWindowInfo = extend({}, getWindowInfo$1, {
+    name: my.canIUse('getWindowInfo') ? 'getWindowInfo' : 'getSystemInfoSync',
+});
+const getDeviceInfo = extend({}, getDeviceInfo$1, {
+    name: my.canIUse('getDeviceBaseInfo')
+        ? 'getDeviceBaseInfo'
+        : 'getSystemInfoSync',
+});
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
@@ -2050,6 +2083,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getAppBaseInfo: getAppBaseInfo,
   getBLEDeviceServices: getBLEDeviceServices,
   getClipboardData: getClipboardData,
+  getDeviceInfo: getDeviceInfo,
   getFileInfo: getFileInfo,
   getLocation: getLocation,
   getNetworkType: getNetworkType,

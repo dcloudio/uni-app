@@ -1277,6 +1277,73 @@ const navigateTo$1 = () => {
     };
 };
 
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
+const getDeviceInfo$1 = {
+    returnValue: (fromRes, toRes) => {
+        const { brand, model, system = '', platform = '' } = fromRes;
+        let deviceType = getGetDeviceType(fromRes, model);
+        let deviceBrand = getDeviceBrand(brand);
+        useDeviceId()(fromRes, toRes);
+        const { osName, osVersion } = getOSInfo(system, platform);
+        toRes = extend(toRes, {
+            deviceType,
+            deviceBrand,
+            deviceModel: model,
+            osName,
+            osVersion,
+            platform: getPlatform(platform),
+        });
+    },
+};
+
+const getAppBaseInfo$1 = {
+    returnValue: (fromRes, toRes) => {
+        const { version, language, SDKVersion, theme } = fromRes;
+        let _hostName = getHostName(fromRes);
+        let hostLanguage = (language || '').replace(/_/g, '-');
+        const parameters = {
+            appId: process.env.UNI_APP_ID,
+            appName: process.env.UNI_APP_NAME,
+            appVersion: process.env.UNI_APP_VERSION_NAME,
+            appVersionCode: process.env.UNI_APP_VERSION_CODE,
+            appLanguage: getAppLanguage(hostLanguage),
+            hostVersion: version,
+            hostLanguage,
+            hostName: _hostName,
+            hostSDKVersion: SDKVersion,
+            hostTheme: theme,
+            isUniAppX: false,
+            uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+            uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+            uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
+            uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+        };
+        try {
+            if (typeof jd.getAccountInfoSync === 'function') {
+                const miniProgramAppId = jd.getAccountInfoSync().miniProgram.appId;
+                if (miniProgramAppId) {
+                    parameters.packagename = miniProgramAppId;
+                }
+            }
+        }
+        catch (error) { }
+        extend(toRes, parameters);
+    },
+};
+
+const getWindowInfo$1 = {
+    returnValue: (fromRes, toRes) => {
+        addSafeAreaInsets(fromRes, toRes);
+        toRes = extend(toRes, {
+            windowTop: 0,
+            windowBottom: 0,
+        });
+    },
+};
+
 const onError = {
     args(fromArgs) {
         const app = getApp({ allowDefault: true }) || {};
@@ -1411,11 +1478,23 @@ var shims = /*#__PURE__*/Object.freeze({
 });
 
 const navigateTo = navigateTo$1();
+const getAppBaseInfo = extend({}, getAppBaseInfo$1, {
+    name: jd.canIUse('getAppBaseInfo') ? 'getAppBaseInfo' : 'getSystemInfoSync',
+});
+const getWindowInfo = extend({}, getWindowInfo$1, {
+    name: jd.canIUse('getWindowInfo') ? 'getWindowInfo' : 'getSystemInfoSync',
+});
+const getDeviceInfo = extend({}, getDeviceInfo$1, {
+    name: jd.canIUse('getDeviceInfo') ? 'getDeviceInfo' : 'getSystemInfoSync',
+});
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
+  getAppBaseInfo: getAppBaseInfo,
+  getDeviceInfo: getDeviceInfo,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
+  getWindowInfo: getWindowInfo,
   navigateTo: navigateTo,
   offError: offError,
   onError: onError,

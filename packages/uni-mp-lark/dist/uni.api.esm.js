@@ -1277,6 +1277,28 @@ const navigateTo$1 = () => {
     };
 };
 
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
+const getDeviceInfo$1 = {
+    returnValue: (fromRes, toRes) => {
+        const { brand, model, system = '', platform = '' } = fromRes;
+        let deviceType = getGetDeviceType(fromRes, model);
+        let deviceBrand = getDeviceBrand(brand);
+        useDeviceId()(fromRes, toRes);
+        const { osName, osVersion } = getOSInfo(system, platform);
+        toRes = extend(toRes, {
+            deviceType,
+            deviceBrand,
+            deviceModel: model,
+            osName,
+            osVersion,
+            platform: getPlatform(platform),
+        });
+    },
+};
+
 const onError = {
     args(fromArgs) {
         const app = getApp({ allowDefault: true }) || {};
@@ -1447,10 +1469,16 @@ const hideTabBar = {
         }
     },
 };
+const getDeviceInfo = extend({}, getDeviceInfo$1, {
+    name: tt.canIUse('getDeviceInfoSync')
+        ? 'getDeviceInfoSync'
+        : 'getSystemInfoSync',
+});
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
   connectSocket: connectSocket,
+  getDeviceInfo: getDeviceInfo,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getUserInfo: getUserInfo,
