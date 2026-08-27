@@ -26,6 +26,7 @@ checkbox,
 picker-view,
 radio,
 slider,
+video,
 /* #endif */
 cover-image,
 cover-view,
@@ -62,7 +63,6 @@ template,
 text,
 textarea,
 unicloud-db,
-video,
 view,
 web-view {
   position: relative;
