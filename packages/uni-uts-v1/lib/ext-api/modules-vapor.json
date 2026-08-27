@@ -2237,23 +2237,6 @@
     "easycom": [],
     "customElements": []
   },
-  "uni-uasm": {
-    "uni": {
-      "loadUASM": {
-        "name": "loadUASM",
-        "app": {
-          "js": false,
-          "x-js": false,
-          "kotlin": "dom2",
-          "swift": "dom2",
-          "arkts": false
-        }
-      }
-    },
-    "components": [],
-    "easycom": [],
-    "customElements": []
-  },
   "uni-verify": {
     "uni": {
       "getUniverifyManager": {
