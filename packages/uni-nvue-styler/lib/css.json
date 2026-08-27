@@ -3,27 +3,26 @@
   "properties": [
     {
       "name": "backdrop-filter",
+      "description": "backdrop-filter 属性设置元素的背景滤镜效果，即对其后方（背景透出）的所有内容添加图形效果（如毛玻璃、背景高斯模糊等）。为了看到效果，必须使元素或其背景至少部分透明。",
       "values": [
         {
           "name": "none",
+          "description": "清除/禁用背景滤镜效果",
           "uniPlatform": {
             "app": {
               "android": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               },
               "ios": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               },
               "harmony": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               }
             },
@@ -41,24 +40,22 @@
         },
         {
           "name": "blur()",
+          "description": "对背景内容添加高斯模糊（Gaussian Blur）滤镜效果",
           "uniPlatform": {
             "app": {
               "android": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               },
               "ios": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               },
               "harmony": {
-                "osVer": "-",
                 "uniVer": "√",
-                "unixVer": "-",
+                "unixVer": "x",
                 "unixVaporVer": "5.25"
               }
             },
@@ -78,21 +75,18 @@
       "uniPlatform": {
         "app": {
           "android": {
-            "osVer": "-",
             "uniVer": "√",
-            "unixVer": "-",
+            "unixVer": "x",
             "unixVaporVer": "5.25"
           },
           "ios": {
-            "osVer": "-",
             "uniVer": "√",
-            "unixVer": "-",
+            "unixVer": "x",
             "unixVaporVer": "5.25"
           },
           "harmony": {
-            "osVer": "-",
             "uniVer": "√",
-            "unixVer": "-",
+            "unixVer": "x",
             "unixVaporVer": "5.25"
           }
         },
@@ -216,7 +210,7 @@
             "unixVaporVer": "5.25"
           },
           "ios": {
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.25"
           },
           "harmony": {
             "unixVaporVer": "4.26"
@@ -9738,12 +9732,12 @@
               "ios": {
                 "uniVer": "x",
                 "unixVer": "x",
-                "unixVaporVer": "x"
+                "unixVaporVer": "5.25"
               },
               "harmony": {
                 "uniVer": "x",
                 "unixVer": "x",
-                "unixVaporVer": "5.26"
+                "unixVaporVer": "5.25"
               }
             },
             "mp": {
@@ -14099,7 +14093,7 @@
           "harmony": {
             "uniVer": "4.23",
             "unixVer": "4.61",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -14132,6 +14126,70 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@keyframes",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.25"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.25"
+          },
+          "harmony": {
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.25"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@media",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.25"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.25"
+          },
+          "harmony": {
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.25"
           }
         },
         "mp": {
@@ -14375,38 +14433,6 @@
       }
     },
     {
-      "name": "@keyframes",
-      "uniPlatform": {
-        "app": {
-          "android": {
-            "uniVer": "√",
-            "unixVer": "x",
-            "unixVaporVer": "5.25"
-          },
-          "ios": {
-            "uniVer": "√",
-            "unixVer": "x",
-            "unixVaporVer": "5.25"
-          },
-          "harmony": {
-            "uniVer": "4.23",
-            "unixVer": "x",
-            "unixVaporVer": "5.25"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
-        "web": {
-          "uniVer": "√",
-          "unixVer": "4.0"
-        }
-      }
-    },
-    {
       "name": "@layer",
       "uniPlatform": {
         "app": {
@@ -14424,38 +14450,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
-        "web": {
-          "uniVer": "√",
-          "unixVer": "4.0"
-        }
-      }
-    },
-    {
-      "name": "@media",
-      "uniPlatform": {
-        "app": {
-          "android": {
-            "uniVer": "√",
-            "unixVer": "x",
-            "unixVaporVer": "5.25"
-          },
-          "ios": {
-            "uniVer": "√",
-            "unixVer": "x",
-            "unixVaporVer": "5.25"
-          },
-          "harmony": {
-            "uniVer": "4.23",
-            "unixVer": "x",
-            "unixVaporVer": "5.25"
           }
         },
         "mp": {
