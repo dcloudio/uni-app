@@ -1,14 +1,10 @@
 import { type Ref, onMounted, onUnmounted, watchEffect, ref } from 'vue'
 
-// #ifdef WEB
-export type _Element = HTMLElement
-type _ResizeObserver = ResizeObserver
-// #endif
 
-// #ifdef APP
+
 export type _Element = UniElement
 type _ResizeObserver = UniResizeObserver
-// #endif
+
 
 export function useLoadingStyle(targetElement : Ref<_Element | null>, bold : Ref<boolean>) {
   const loadingSize = ref('16px')
@@ -33,16 +29,8 @@ export function useLoadingStyle(targetElement : Ref<_Element | null>, bold : Ref
   const setupObserver = (cb : (el : _Element) => void) => {
     const el = targetElement.value as _Element
     if (!el) return
-    // #ifdef WEB
-    observer = new ResizeObserver((entries) => {
-      cb(el)
-    })
-    // #endif
-    // #ifdef VUE3-VAPOR
-    observer = new UniResizeObserver((entries) => {
-      cb(el)
-    })
-    // #endif
+
+
     observer!.observe(el)
   }
 
