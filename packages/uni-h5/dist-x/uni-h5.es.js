@@ -20192,9 +20192,10 @@ function useLoadingStyle(targetElement, bold) {
     }
   });
   return {
-    size: loadingSize,
-    borderWidth: loadingBorderWidth,
-    borderRadius: loadingBorderRadius
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
   };
 }
 var __defProp2 = Object.defineProperty;
@@ -20218,6 +20219,7 @@ var __spreadValues = (a2, b) => {
 var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
 const _sfc_main$7 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
   name: "loading",
+  styleIsolation: "app-and-page",
   // @ts-ignore
   rootElement: {
     name: "uni-loading-element",
@@ -20227,7 +20229,8 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues
   __name: "index-x",
   props: {
     paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false }
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
   },
   setup(__props) {
     const props2 = __props;
@@ -20235,20 +20238,17 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues
     const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
     return (_ctx, _cache) => {
       const _component_view = __syscom_3;
-      return openBlock(), createBlock(_component_view, {
-        class: "__uni_loading_container__",
+      return openBlock(), createElementBlock("uni-loading-element", {
+        class: "default __uni_loading_container__",
         ref_key: "LoadingRef",
         ref: LoadingRef,
         style: { "display": "flex" }
-      }, {
-        default: withCtx(() => [
-          createVNode(_component_view, {
-            class: normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
-            style: normalizeStyle([{ "box-sizing": "border-box" }, { width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }])
-          }, null, 8, ["class", "style"])
-        ]),
-        _: 1
-      }, 512);
+      }, [
+        createVNode(_component_view, {
+          class: normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
+          style: normalizeStyle(loadingStyle)
+        }, null, 8, ["class", "style"])
+      ], 512);
     };
   }
 }));

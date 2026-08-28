@@ -10278,11 +10278,12 @@ class UniLoadingElement extends UniVueElement {
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = vue.ref("16px");
   const loadingBorderWidth = vue.ref("1px");
-  const loadingBorderRadius = vue.ref("8px");
+  vue.ref("8px");
   return {
-    size: loadingSize,
-    borderWidth: loadingBorderWidth,
-    borderRadius: loadingBorderRadius
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
   };
 }
 var __defProp2 = Object.defineProperty;
@@ -10306,6 +10307,7 @@ var __spreadValues = (a, b) => {
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValues({}, {
   name: "loading",
+  styleIsolation: "app-and-page",
   // @ts-ignore
   rootElement: {
     name: "uni-loading-element",
@@ -10315,7 +10317,8 @@ const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValu
   __name: "index-x",
   props: {
     paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false }
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
   },
   setup(__props) {
     const props2 = __props;
@@ -10323,20 +10326,17 @@ const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValu
     const loadingStyle = vue.reactive(useLoadingStyle(LoadingRef, vue.computed(() => props2.bold)));
     return (_ctx, _cache) => {
       const _component_view = __syscom_0;
-      return vue.openBlock(), vue.createBlock(_component_view, {
-        class: "__uni_loading_container__",
+      return vue.openBlock(), vue.createElementBlock("uni-loading-element", {
+        class: "default __uni_loading_container__",
         ref_key: "LoadingRef",
         ref: LoadingRef,
         style: { "display": "flex" }
-      }, {
-        default: vue.withCtx(() => [
-          vue.createVNode(_component_view, {
-            class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
-            style: vue.normalizeStyle([{ "box-sizing": "border-box" }, { width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }])
-          }, null, 8, ["class", "style"])
-        ]),
-        _: 1
-      }, 512);
+      }, [
+        vue.createVNode(_component_view, {
+          class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
+          style: vue.normalizeStyle(loadingStyle)
+        }, null, 8, ["class", "style"])
+      ], 512);
     };
   }
 }));
