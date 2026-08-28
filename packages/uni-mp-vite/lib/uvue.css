@@ -93,7 +93,7 @@ button {
   align-content: center;
   justify-content: center;
   min-height: 0px;
-  min-width: 0px;
+  /* min-width: 0px; */
   border-width: medium;
 }
 /* #endif */
