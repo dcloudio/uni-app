@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY -->
+  <!-- #ifdef APP-ANDROID || APP-IOS -->
 
   <!-- #ifdef VUE3-VAPOR -->
   <native-view class="default" @init="onviewinit"></native-view>
@@ -13,6 +13,20 @@
 
   <!-- #endif -->
 
+  <!-- #ifdef APP-HARMONY -->
+  <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+  <view class="default uni_loading_container">
+    <view :id="loadingElementId" :ref="loadingCpp.setElement" class="uni-loading" :loading-color="loadingColor satisfies string"
+      change:loading-color="loadingCpp.setColor" :loading-bold="loadingBold satisfies boolean" change:loading-bold="loadingCpp.setBold"></view>
+  </view>
+  <!-- #endif -->
+  <!-- #ifndef VUE3-VAPOR -->
+  <uni-loading-element class="default">
+    <native-view class="defaultNativeView" @init="onviewinit"></native-view>
+  </uni-loading-element>
+  <!-- #endif -->
+  <!-- #endif -->
+
   <!-- #ifdef WEB || MP -->
   <uni-loading-element class="default __uni_loading_container__" ref="LoadingRef" style="display: flex;">
     <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" :style="loadingStyle"></view>
@@ -20,12 +34,29 @@
   <!-- #endif -->
 </template>
 
+<!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+<script module="loadingCpp" lang="cpp" class-name="LoadingPainter" src="../../cppsdk/app-harmony/loading_painter.h"
+  namespace="uniappx::loading"></script>
+<!-- #endif -->
+
 <script setup lang="uts">
 // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-import { NativeLoading, UniLoadingElement } from "@/uni_modules/uni-loading";
+import { UniLoadingElement } from "@/uni_modules/uni-loading";
+// #endif
+// #ifdef APP-ANDROID || APP-IOS
+import { NativeLoading } from "@/uni_modules/uni-loading";
+// #endif
+// #ifdef APP-HARMONY
+// #ifndef VUE3-VAPOR
+import { NativeLoading } from "@/uni_modules/uni-loading";
+// #endif
 // #endif
 // #ifndef APP
 import { UniLoadingElement } from './element';
+// #endif
+// #ifdef WEB
+import { ref, reactive, computed } from 'vue'
+import { useLoadingStyle } from './useLoadingStyle'
 // #endif
 
 const props = withDefaults(defineProps<{
@@ -76,6 +107,7 @@ const props = withDefaults(defineProps<{
 
 defineOptions({
   name: 'loading',
+  styleIsolation: 'app-and-page',
   // @ts-ignore
   rootElement: {
     name: 'uni-loading-element',
@@ -84,8 +116,6 @@ defineOptions({
 });
 
 // #ifdef WEB
-import { useLoadingStyle } from './useLoadingStyle'
-
 const LoadingRef = ref<HTMLElement | null>(null)
 const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props.bold)))
 // #endif
@@ -140,6 +170,54 @@ const borderColor = computed<string | null>(() => style.get('border-color')?.toS
 const color = computed<string | null>(() => style.get('color')?.toString())
 const timingFunction = computed<string | null>(() => style.get('animation-timing-function')?.toString())
 
+// #ifdef VUE3-VAPOR && APP-HARMONY
+const loadingColor = ref<string>('#FF000000')
+const loadingBold = ref<boolean>(false)
+const instance = getCurrentInstance()
+const loadingElementId = `uni-loading-${instance!.uid}`
+const loadingAnimation = ref<UniAnimation | null>(null)
+
+function getPage(): UniPage {
+  return instance!.proxy!.$page
+}
+
+watchEffect(() => {
+  loadingColor.value = rgba2argb(borderColor.value) ?? '#FF000000'
+  loadingBold.value = props.bold == true
+})
+
+onMounted(() => {
+  const loadingElement = getPage().getElementById(loadingElementId)
+  loadingAnimation.value = loadingElement?.animate(
+    [
+      { transform: 'rotate(0deg)' },
+      { transform: 'rotate(360deg)' }
+    ],
+    {
+      duration: 1333,
+      iterations: Infinity,
+      easing: 'linear'
+    }
+  )
+  if (props.paused) {
+    loadingAnimation.value?.pause()
+  }
+})
+
+watch(() => props.paused, (paused) => {
+  if (paused) {
+    loadingAnimation.value?.pause()
+  } else {
+    loadingAnimation.value?.play()
+  }
+})
+
+onUnmounted(() => {
+  loadingAnimation.value?.cancel()
+})
+// #endif
+
+// #ifdef APP-ANDROID || APP-IOS
 type LoadingState = { nativeLoading : NativeLoading | null }
 const loadingState = reactive<LoadingState>({
   nativeLoading: null
@@ -185,6 +263,33 @@ const onviewinit = (e : UniNativeViewInitEvent) => {
 onUnmounted(() => {
   loadingState.nativeLoading?.destroy()
 })
+// #endif
+
+// #ifdef APP-HARMONY
+// #ifndef VUE3-VAPOR
+type LoadingState = { nativeLoading : NativeLoading | null }
+const loadingState = reactive<LoadingState>({
+  nativeLoading: null
+})
+
+watchEffect(() => {
+  const width = props.bold ? 'thick' : 'medium'
+  loadingState.nativeLoading?.updateStyle(borderColor.value, width)
+})
+
+watchEffect(() => {
+  loadingState.nativeLoading?.updatePaused(props.paused)
+})
+
+const onviewinit = (e : UniNativeViewInitEvent) => {
+  loadingState.nativeLoading = new NativeLoading(e.detail.element);
+}
+
+onUnmounted(() => {
+  loadingState.nativeLoading?.destroy()
+})
+// #endif
+// #endif
 // #endif
 </script>
 <style>
@@ -237,6 +342,18 @@ onUnmounted(() => {
   100% {
     transform: rotate(360deg);
   }
+}
+/* #endif */
+
+/* #ifdef VUE3-VAPOR && APP-HARMONY */
+.uni_loading_container {
+  justify-content: center;
+  align-items: center;
+}
+
+.uni-loading {
+  width: 100%;
+  height: 100%;
 }
 /* #endif */
 </style>
