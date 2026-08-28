@@ -9725,6 +9725,7 @@
           "uniPlatform": {
             "app": {
               "android": {
+                "osVer": "8.0",
                 "uniVer": "x",
                 "unixVer": "x",
                 "unixVaporVer": "5.25"
