@@ -1,29 +1,18 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.syncExtComponentFile = void 0;
-var fs_extra_1 = __importDefault(require("fs-extra"));
-var path_1 = __importDefault(require("path"));
-var compiler_sfc_1 = require("@vue/compiler-sfc");
-var fast_glob_1 = require("fast-glob");
+const fs_extra_1 = __importDefault(require("fs-extra"));
+const path_1 = __importDefault(require("path"));
+const compiler_sfc_1 = require("@vue/compiler-sfc");
+const fast_glob_1 = require("fast-glob");
 function resolve(file) {
     return path_1.default.resolve(__dirname, file);
 }
-var uniComponentsPath = resolve('../packages/uni-components');
-var PREPROCESS_KEYS = [
+const uniComponentsPath = resolve('../packages/uni-components');
+const PREPROCESS_KEYS = [
     'APP',
     'APP_ANDROID',
     'APP_IOS',
@@ -34,13 +23,13 @@ var PREPROCESS_KEYS = [
     'VUE3_VAPOR',
 ];
 function createPreContext(context) {
-    var preContext = PREPROCESS_KEYS.reduce(function (preContext, key) {
+    const preContext = PREPROCESS_KEYS.reduce((preContext, key) => {
         preContext[key] = false;
         return preContext;
     }, {});
-    return __assign(__assign({}, preContext), context);
+    return { ...preContext, ...context };
 }
-var syncTargets = [
+const syncTargets = [
     {
         path: path_1.default.resolve(uniComponentsPath, './lib-x/uniloading'),
         componentName: 'uniloading',
@@ -61,7 +50,7 @@ var syncTargets = [
         stylePath: path_1.default.resolve(uniComponentsPath, './style-x/loading.css'),
     },
 ];
-var components = [
+const components = [
     {
         originName: 'loading',
         targetName: 'uniloading',
@@ -69,13 +58,13 @@ var components = [
 ];
 function syncExtComponentFile(apiDirs) {
     try {
-        var preprocess_1 = require('../packages/uni-preprocess').preprocess;
-        apiDirs.forEach(function (apiDir) {
-            components.forEach(function (component) {
-                var componentDir = "uni-".concat(component.originName);
-                (0, fast_glob_1.sync)(path_1.default.join(apiDir, "./".concat(componentDir, "/package.json"))).forEach(function (packageJsonPath) {
-                    var componentsDir = path_1.default.resolve(packageJsonPath, '../components');
-                    syncComponent(componentsDir, component, preprocess_1, syncTargets);
+        const { preprocess } = require('../packages/uni-preprocess');
+        apiDirs.forEach((apiDir) => {
+            components.forEach((component) => {
+                const componentDir = `uni-${component.originName}`;
+                (0, fast_glob_1.sync)(path_1.default.join(apiDir, `./${componentDir}/package.json`)).forEach((packageJsonPath) => {
+                    const componentsDir = path_1.default.resolve(packageJsonPath, '../components');
+                    syncComponent(componentsDir, component, preprocess, syncTargets);
                 });
             });
         });
@@ -89,36 +78,42 @@ function syncComponent(componentsDir, component, preprocess, targets) {
     if (!fs_extra_1.default.existsSync(componentsDir)) {
         return;
     }
-    var files = (0, fast_glob_1.sync)(path_1.default.join(componentsDir, '**/*'), { onlyFiles: true });
-    var originComponentPath = ['.vue', '.uvue']
-        .map(function (ext) { return path_1.default.join(componentsDir, "".concat(component.originName).concat(ext)); })
-        .find(function (filePath) { return files.includes(filePath); });
-    targets.forEach(function (target) {
-        files.forEach(function (filePath) {
-            var relativePath = path_1.default.relative(componentsDir, filePath);
-            var _a = path_1.default.parse(relativePath), dir = _a.dir, name = _a.name, ext = _a.ext;
-            var code = fs_extra_1.default.readFileSync(filePath, 'utf8');
+    const componentRoot = fs_extra_1.default.existsSync(path_1.default.join(componentsDir, component.originName))
+        ? path_1.default.join(componentsDir, component.originName)
+        : componentsDir;
+    const files = (0, fast_glob_1.sync)(path_1.default.join(componentRoot, '**/*'), { onlyFiles: true });
+    const originComponentPath = ['.vue', '.uvue']
+        .flatMap((ext) => [
+        path_1.default.join(componentRoot, `${component.originName}${ext}`),
+    ])
+        .find((filePath) => files.includes(filePath));
+    targets.forEach((target) => {
+        files.forEach((filePath) => {
+            const relativePath = path_1.default.relative(componentRoot, filePath);
+            const { dir, name, ext } = path_1.default.parse(relativePath);
+            const code = fs_extra_1.default.readFileSync(filePath, 'utf8');
             // MP 使用 UniElement 类型，与 APP 的辅助文件实现相同。
-            var preprocessContext = name === 'useLoadingStyle' && target.context.MP
-                ? __assign(__assign({}, target.context), { APP: true }) : target.context;
-            var preprocessedCode = preprocess(code, {
+            const preprocessContext = name === 'useLoadingStyle' && target.context.MP
+                ? { ...target.context, APP: true }
+                : target.context;
+            const preprocessedCode = preprocess(code, {
                 type: 'auto',
                 context: preprocessContext,
             }).code;
             if (ext === '.vue' || ext === '.uvue') {
-                var isMainComponent = filePath === originComponentPath;
-                var targetName = isMainComponent ? target.componentName : name;
-                var targetCode = normalizeScriptLang(preprocessedCode, target.scriptLang);
-                var targetFilePath = path_1.default.resolve(target.path, dir, "".concat(targetName, ".vue"));
-                var _b = (0, compiler_sfc_1.parse)(targetCode, {
+                const isMainComponent = filePath === originComponentPath;
+                const targetName = isMainComponent ? target.componentName : name;
+                const targetCode = normalizeScriptLang(preprocessedCode, target.scriptLang);
+                const targetFilePath = path_1.default.resolve(target.path, dir, `${targetName}.vue`);
+                const { descriptor, errors } = (0, compiler_sfc_1.parse)(targetCode, {
                     filename: filePath,
-                }), descriptor = _b.descriptor, errors = _b.errors;
+                });
                 if (errors.length) {
-                    console.error("[syncExtComponentFile] parse ".concat(filePath, " error:"), errors);
+                    console.error(`[syncExtComponentFile] parse ${filePath} error:`, errors);
                     return;
                 }
                 if (target.stylePath) {
-                    fs_extra_1.default.outputFileSync(target.stylePath, normalizeTrailingNewline(descriptor.styles.map(function (style) { return style.content; }).join('\n')));
+                    fs_extra_1.default.outputFileSync(target.stylePath, normalizeTrailingNewline(descriptor.styles.map((style) => style.content).join('\n')));
                     fs_extra_1.default.outputFileSync(targetFilePath, removeStyles(targetCode));
                 }
                 else {
@@ -127,24 +122,24 @@ function syncComponent(componentsDir, component, preprocess, targets) {
                 return;
             }
             if (ext === '.ts' || ext === '.js' || ext === '.uts') {
-                fs_extra_1.default.outputFileSync(path_1.default.resolve(target.path, dir, "".concat(name, ".").concat(target.scriptLang)), preprocessedCode);
+                fs_extra_1.default.outputFileSync(path_1.default.resolve(target.path, `${name}.${target.scriptLang}`), preprocessedCode);
             }
         });
     });
 }
 function normalizeScriptLang(code, scriptLang) {
-    return code.replace(/<script\b([^>]*)>/gi, function (_match, attrs) {
-        var langPattern = /\s+lang\s*=\s*(['"])[^'"]*\1/i;
-        var normalizedAttrs = langPattern.test(attrs)
-            ? attrs.replace(langPattern, " lang=\"".concat(scriptLang, "\""))
-            : "".concat(attrs, " lang=\"").concat(scriptLang, "\"");
-        return "<script".concat(normalizedAttrs, ">");
+    return code.replace(/<script\b([^>]*)>/gi, (_match, attrs) => {
+        const langPattern = /\s+lang\s*=\s*(['"])[^'"]*\1/i;
+        const normalizedAttrs = langPattern.test(attrs)
+            ? attrs.replace(langPattern, ` lang="${scriptLang}"`)
+            : `${attrs} lang="${scriptLang}"`;
+        return `<script${normalizedAttrs}>`;
     });
 }
 function removeStyles(code) {
     return normalizeTrailingNewline(code.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ''));
 }
 function normalizeTrailingNewline(code) {
-    var newline = code.includes('\r\n') ? '\r\n' : '\n';
+    const newline = code.includes('\r\n') ? '\r\n' : '\n';
     return code.replace(/(?:\r?\n)+$/, newline);
 }

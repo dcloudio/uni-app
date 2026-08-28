@@ -106,14 +106,19 @@ function syncComponent(
     return
   }
 
-  const files = sync(path.join(componentsDir, '**/*'), { onlyFiles: true })
+  const componentRoot = fs.existsSync(
+    path.join(componentsDir, component.originName)
+  )
+    ? path.join(componentsDir, component.originName)
+    : componentsDir
+  const files = sync(path.join(componentRoot, '**/*'), { onlyFiles: true })
   const originComponentPath = ['.vue', '.uvue']
-    .map((ext) => path.join(componentsDir, `${component.originName}${ext}`))
+    .map((ext) => path.join(componentRoot, `${component.originName}${ext}`))
     .find((filePath) => files.includes(filePath))
 
   targets.forEach((target) => {
     files.forEach((filePath) => {
-      const relativePath = path.relative(componentsDir, filePath)
+      const relativePath = path.relative(componentRoot, filePath)
       const { dir, name, ext } = path.parse(relativePath)
       const code = fs.readFileSync(filePath, 'utf8')
       // MP 使用 UniElement 类型，与 APP 的辅助文件实现相同。
