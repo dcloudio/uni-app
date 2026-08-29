@@ -3,6 +3,8 @@ import os from 'os'
 import path from 'path'
 import {
   addMiniProgramAppJson,
+  addMiniProgramComponentJson,
+  addMiniProgramComponentPackageRoot,
   addMiniProgramPageJson,
   addMiniProgramUsingComponents,
   findChangedJsonFiles,
@@ -28,6 +30,226 @@ describe('miniProgram:jsonFile', () => {
         subscribe: 'plugin://subscribeMsg/subscribe',
         demo: '../../components/demo/demo',
       },
+    })
+  })
+
+  test('moves uni_modules component into each normal subpackage that uses it', () => {
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/foo/foo',
+      'pages-a'
+    )
+    addMiniProgramPageJson('pages-a/pages/index/index', {
+      usingComponents: {
+        foo: '/pages-a/uni_modules/foo/components/foo/foo',
+      },
+    })
+
+    expect(
+      JSON.parse(findChangedJsonFiles().get('pages-a/pages/index/index')!)
+    ).toEqual({
+      usingComponents: {
+        foo: '../../uni_modules/foo/components/foo/foo',
+      },
+    })
+
+    resetMiniProgramJsonFiles()
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/foo/foo',
+      'pages-a'
+    )
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/foo/foo',
+      'pages-b'
+    )
+    addMiniProgramPageJson('pages-a/pages/index/index', {
+      usingComponents: {
+        foo: '/pages-a/uni_modules/foo/components/foo/foo',
+      },
+    })
+    addMiniProgramComponentJson('pages-a/uni_modules/foo/components/foo/foo', {
+      component: true,
+    })
+    addMiniProgramComponentJson('pages-b/uni_modules/foo/components/foo/foo', {
+      component: true,
+    })
+
+    const changedJsonFiles = findChangedJsonFiles()
+    expect(
+      JSON.parse(changedJsonFiles.get('pages-a/pages/index/index')!)
+    ).toEqual({
+      usingComponents: {
+        foo: '../../uni_modules/foo/components/foo/foo',
+      },
+    })
+    expect(
+      changedJsonFiles.has('pages-a/uni_modules/foo/components/foo/foo')
+    ).toBe(true)
+    expect(
+      changedJsonFiles.has('pages-b/uni_modules/foo/components/foo/foo')
+    ).toBe(true)
+    expect(changedJsonFiles.has('uni_modules/foo/components/foo/foo')).toBe(
+      false
+    )
+    expect(
+      JSON.parse(
+        changedJsonFiles.get('pages-a/uni_modules/foo/components/foo/foo')!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {},
+    })
+    expect(
+      JSON.parse(
+        changedJsonFiles.get('pages-b/uni_modules/foo/components/foo/foo')!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {},
+    })
+
+    resetMiniProgramJsonFiles()
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+    addMiniProgramComponentPackageRoot('uni_modules/foo/components/foo/foo')
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/foo/foo',
+      'pages-a'
+    )
+    addMiniProgramPageJson('pages-a/pages/index/index', {
+      usingComponents: {
+        foo: '/pages-a/uni_modules/foo/components/foo/foo',
+      },
+    })
+    addMiniProgramComponentJson('pages-a/uni_modules/foo/components/foo/foo', {
+      component: true,
+    })
+    addMiniProgramComponentJson('uni_modules/foo/components/foo/foo', {
+      component: true,
+    })
+
+    const sharedWithMainJsonFiles = findChangedJsonFiles()
+    expect(
+      JSON.parse(sharedWithMainJsonFiles.get('pages-a/pages/index/index')!)
+    ).toEqual({
+      usingComponents: {
+        foo: '../../../uni_modules/foo/components/foo/foo',
+      },
+    })
+    expect(
+      sharedWithMainJsonFiles.has('pages-a/uni_modules/foo/components/foo/foo')
+    ).toBe(false)
+    expect(
+      JSON.parse(
+        sharedWithMainJsonFiles.get('uni_modules/foo/components/foo/foo')!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {},
+    })
+  })
+
+  test('normalizes nested uni_modules component dependencies by final package roots', () => {
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/rate/rate',
+      'pages-a'
+    )
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/icon/icon',
+      'pages-a'
+    )
+    addMiniProgramComponentJson(
+      'pages-a/uni_modules/foo/components/rate/rate',
+      {
+        component: true,
+        usingComponents: {
+          icon: '/pages-a/uni_modules/foo/components/icon/icon',
+        },
+      }
+    )
+    addMiniProgramComponentJson(
+      'pages-a/uni_modules/foo/components/icon/icon',
+      {
+        component: true,
+      }
+    )
+
+    const singlePackageJsonFiles = findChangedJsonFiles()
+    expect(
+      JSON.parse(
+        singlePackageJsonFiles.get(
+          'pages-a/uni_modules/foo/components/rate/rate'
+        )!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {
+        icon: '../icon/icon',
+      },
+    })
+    expect(
+      JSON.parse(
+        singlePackageJsonFiles.get(
+          'pages-a/uni_modules/foo/components/icon/icon'
+        )!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {},
+    })
+
+    resetMiniProgramJsonFiles()
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/rate/rate',
+      'pages-a'
+    )
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/icon/icon',
+      'pages-a'
+    )
+    addMiniProgramComponentPackageRoot('uni_modules/foo/components/icon/icon')
+    addMiniProgramComponentJson(
+      'pages-a/uni_modules/foo/components/rate/rate',
+      {
+        component: true,
+        usingComponents: {
+          icon: '/pages-a/uni_modules/foo/components/icon/icon',
+        },
+      }
+    )
+    addMiniProgramComponentJson(
+      'pages-a/uni_modules/foo/components/icon/icon',
+      {
+        component: true,
+      }
+    )
+    addMiniProgramComponentJson('uni_modules/foo/components/icon/icon', {
+      component: true,
+    })
+
+    const sharedIconJsonFiles = findChangedJsonFiles()
+    expect(
+      JSON.parse(
+        sharedIconJsonFiles.get('pages-a/uni_modules/foo/components/rate/rate')!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {
+        icon: '../../../../../uni_modules/foo/components/icon/icon',
+      },
+    })
+    expect(
+      sharedIconJsonFiles.has('pages-a/uni_modules/foo/components/icon/icon')
+    ).toBe(false)
+    expect(
+      JSON.parse(
+        sharedIconJsonFiles.get('uni_modules/foo/components/icon/icon')!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {},
     })
   })
 
@@ -242,6 +464,41 @@ describe('miniProgram:jsonFile', () => {
         )
       })
     })
+
+    test('keeps uni_modules components inside independent root', () => {
+      withIndependentPagesJson('package-a', (inputDir) => {
+        process.env.UNI_PLATFORM = 'mp-weixin'
+        process.env.UNI_INPUT_DIR = inputDir
+        const page = 'package-a/pages/index/index'
+        const component = 'package-a/uni_modules/foo/components/foo/foo'
+
+        addMiniProgramAppJson(createIndependentAppJson('package-a'))
+        addMiniProgramComponentPackageRoot(component, 'package-a')
+        addMiniProgramPageJson(page, {
+          usingComponents: {
+            foo: '/package-a/uni_modules/foo/components/foo/foo',
+          },
+        })
+        addMiniProgramComponentJson(component, {
+          component: true,
+        })
+
+        const changedJsonFiles = findChangedJsonFiles(true)
+        expect(JSON.parse(changedJsonFiles.get(page)!)).toEqual({
+          usingComponents: {
+            foo: '../../uni_modules/foo/components/foo/foo',
+          },
+        })
+        expect(changedJsonFiles.has(component)).toBe(true)
+        expect(changedJsonFiles.has('uni_modules/foo/components/foo/foo')).toBe(
+          false
+        )
+        expect(JSON.parse(changedJsonFiles.get(component)!)).toEqual({
+          component: true,
+          usingComponents: {},
+        })
+      })
+    })
   })
 
   describe('miniProgram:jsonFile:findUsingComponentsJson', () => {
@@ -318,5 +575,15 @@ function createIndependentAppJson(root: string) {
         pages: ['pages/index/index'],
       },
     ],
+  }
+}
+
+function createSubPackagesAppJson(roots: string[]) {
+  return {
+    pages: [],
+    subPackages: roots.map((root) => ({
+      root,
+      pages: ['pages/index/index'],
+    })),
   }
 }

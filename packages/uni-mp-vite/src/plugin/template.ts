@@ -1,4 +1,3 @@
-import path from 'path'
 import debug from 'debug'
 import type { EmittedFile, GetModuleInfo } from 'rollup'
 import type { ResolvedConfig } from 'vite'
@@ -7,12 +6,15 @@ import {
   addMiniProgramTemplateFile,
   addMiniProgramTemplateFilter,
   clearMiniProgramTemplateFiles,
+  findMiniProgramComponentPackageRoot,
+  findMiniProgramComponentPackageRoots,
   findMiniProgramTemplateFiles,
   normalizeMiniProgramFilename,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
 import { getFiltersCache } from '../plugins/renderjs'
 import type { UniMiniProgramPluginOptions } from '.'
+import { normalizeMiniProgramComponentFilename } from '../plugins/entry'
 
 const debugTemplate = debug('uni:mp-template')
 
@@ -57,7 +59,9 @@ export function getFilterFiles(
 export function getTemplateFiles(
   template: UniMiniProgramPluginOptions['template']
 ) {
-  const files = findMiniProgramTemplateFiles(template.filter?.generate)
+  const files = normalizeTemplateFiles(
+    findMiniProgramTemplateFiles(template.filter?.generate)
+  )
   clearMiniProgramTemplateFiles()
   return files
 }
@@ -67,8 +71,10 @@ export const emitFile: (emittedFile: EmittedFile) => string = (emittedFile) => {
     const filename = emittedFile.fileName!
     addMiniProgramTemplateFile(
       removeExt(
-        normalizeMiniProgramFilename(
-          path.relative(process.env.UNI_INPUT_DIR, filename)
+        normalizeMiniProgramComponentFilename(
+          filename,
+          process.env.UNI_INPUT_DIR,
+          findMiniProgramComponentPackageRoot(filename)
         )
       ),
       emittedFile.source!.toString()
@@ -77,4 +83,36 @@ export const emitFile: (emittedFile: EmittedFile) => string = (emittedFile) => {
     return filename
   }
   return ''
+}
+
+function normalizeTemplateFiles(files: Record<string, string>) {
+  return Object.keys(files).reduce<Record<string, string>>((res, filename) => {
+    normalizeTemplateFilenames(filename).forEach((normalizedFilename) => {
+      res[normalizedFilename] = files[filename]
+    })
+    return res
+  }, Object.create(null))
+}
+
+function normalizeTemplateFilenames(filename: string) {
+  const relativeFilename = removeExt(
+    normalizeMiniProgramFilename(filename, process.env.UNI_INPUT_DIR)
+  )
+  const uniModulesIndex = relativeFilename.indexOf('uni_modules/')
+  if (uniModulesIndex === -1) {
+    return [relativeFilename]
+  }
+  const componentFilename = relativeFilename.slice(uniModulesIndex)
+  const packageRoots = findMiniProgramComponentPackageRoots(
+    componentFilename
+  ) || [findMiniProgramComponentPackageRoot(componentFilename)]
+  return packageRoots.map((packageRoot) =>
+    removeExt(
+      normalizeMiniProgramComponentFilename(
+        componentFilename,
+        process.env.UNI_INPUT_DIR,
+        packageRoot
+      )
+    )
+  )
 }
