@@ -1619,10 +1619,10 @@ function parse(source, options = {}) {
 				attrs: {
 					setup: true,
 					vapor: true,
-					lang: "uts"
+					lang: "ts"
 				},
 				setup: true,
-				lang: "uts"
+				lang: "ts"
 			};
 		}
 		function createDefaultTemplate() {
@@ -12342,7 +12342,10 @@ function resolveParserPlugins(lang, userPlugins, dts = false) {
 	else if (userPlugins) userPlugins = userPlugins.filter((p) => p !== "jsx");
 	if (lang === "uts" || lang === "ts" || lang === "mts" || lang === "tsx" || lang === "cts" || lang === "mtsx") {
 		plugins.push(["typescript", { dts }], "explicitResourceManagement");
-		if (!userPlugins || !userPlugins.includes("decorators")) plugins.push("decorators-legacy");
+		if (!(userPlugins === null || userPlugins === void 0 ? void 0 : userPlugins.some((plugin) => {
+			const name = (0, _vue_shared.isArray)(plugin) ? plugin[0] : plugin;
+			return name === "decorators" || name === "decorators-legacy";
+		}))) plugins.push(lang === "uts" ? "decorators" : "decorators-legacy");
 	}
 	if (userPlugins) plugins.push(...userPlugins);
 	return plugins;
@@ -16005,7 +16008,8 @@ function compileScript(sfc, options) {
 	if (ctx.optionsRuntimeDecl) definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
 	if (!ctx.hasDefineExposeCall && !inlineMode) setupPreambleLines.push(`__expose();`);
 	const setupPreamble = setupPreambleLines.length ? `  ${setupPreambleLines.join("\n  ")}\n` : "";
-	if (ctx.isTS || ctx.isUTS) {
+	const wrapVaporJS = (scriptLang === "js" || scriptSetupLang === "js") && vapor && !ssr;
+	if (ctx.isTS || ctx.isUTS || wrapVaporJS) {
 		if (ssr && vapor) runtimeOptions += `\n  __vapor: true,`;
 		const def = (defaultExport ? `\n  ...${normalScriptDefaultVar},` : ``) + (definedOptions ? `\n  ...${definedOptions},` : "");
 		ctx.s.prependLeft(startOffset, `\n${genDefaultAs} /*@__PURE__*/${ctx.helper(vapor && !ssr ? `defineVaporSharedDataComponent` : `defineComponent`)}({${def}${runtimeOptions}\n  ${hasAwait ? `async ` : ``}setup(${args}) {\n${setupPreamble}`);
