@@ -146,7 +146,6 @@ getEntriesByName
 | viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
 
-
 ##### 返回值 
 
 | 类型 |

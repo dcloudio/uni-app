@@ -518,7 +518,6 @@ isFile
 
 
 
-
 #### fstatSync(options: FStatSyncOptions): Stats; @fstatsync
 fstatSync
 同步获取文件的状态信息
