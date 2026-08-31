@@ -21,6 +21,7 @@ import {
   getBaseNodeTransforms,
   initVueTemplateCompilerExtraOptions,
   isExternalUrl,
+  isUniAppXStandardScriptSupported,
   isUniPageFile,
   matchEasycom,
   normalizePath,
@@ -291,21 +292,31 @@ export function initPluginVueOptions(
   }
 
   if (isX) {
-    if (!vueOptions.script) {
-      vueOptions.script = {
-        babelParserPlugins: [],
+    // DOM2 的定制 compiler-sfc 会根据 script lang 选择 parser，避免 JS 被按 TS 解析。
+    if (!isDom2) {
+      if (!vueOptions.script) {
+        vueOptions.script = {
+          babelParserPlugins: [],
+        }
       }
-    }
-    if (!vueOptions.script.babelParserPlugins) {
-      vueOptions.script.babelParserPlugins = []
-    }
+      if (!vueOptions.script.babelParserPlugins) {
+        vueOptions.script.babelParserPlugins = []
+      }
 
-    if (!vueOptions.script.babelParserPlugins.includes('typescript')) {
-      vueOptions.script.babelParserPlugins.push('typescript')
-    }
-    // decorators or decorators-legacy
-    if (!vueOptions.script.babelParserPlugins.includes('decorators')) {
-      vueOptions.script.babelParserPlugins.push('decorators')
+      // Android VDOM 保持原有 UTS 兼容；标准脚本平台由 compiler-sfc 按 lang 启用 TypeScript。
+      if (
+        !isUniAppXStandardScriptSupported() &&
+        !vueOptions.script.babelParserPlugins.includes('typescript')
+      ) {
+        vueOptions.script.babelParserPlugins.push('typescript')
+      }
+      // 旧 compiler-sfc 仅用 includes('decorators') 识别现代装饰器，tuple 配置仍需字符串哨兵。
+      const hasDecoratorParser = vueOptions.script.babelParserPlugins.some(
+        (plugin) => plugin === 'decorators' || plugin === 'decorators-legacy'
+      )
+      if (!hasDecoratorParser) {
+        vueOptions.script.babelParserPlugins.push('decorators')
+      }
     }
     if (isDom2) {
       // 该扩展点依赖定制 plugin-vue，仅用于 compileScript 后的 DOM2 SharedData 等转换。

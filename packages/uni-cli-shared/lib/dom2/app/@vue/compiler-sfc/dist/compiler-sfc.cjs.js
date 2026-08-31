@@ -1619,10 +1619,10 @@ function parse(source, options = {}) {
 				attrs: {
 					setup: true,
 					vapor: true,
-					lang: "ts"
+					lang: "uts"
 				},
 				setup: true,
-				lang: "ts"
+				lang: "uts"
 			};
 		}
 		function createDefaultTemplate() {

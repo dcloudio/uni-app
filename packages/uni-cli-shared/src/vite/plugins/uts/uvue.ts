@@ -99,15 +99,6 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
             .map((node) => findScriptTag(code, node))
             .filter((script): script is ScriptTag => !!script)
         : []
-      const setupScript = scriptTags.find((script) => script.setup)
-      // 同一 SFC 的普通 script 与 script setup 必须使用相同语言，因此需要整组归一为 TypeScript。
-      const normalizeJavaScript =
-        !!setupScript &&
-        !scriptTags.some((script) => script.src) &&
-        (setupScript.lang === 'js' || setupScript.lang === 'ts') &&
-        scriptTags.every(
-          (script) => script.lang === 'js' || script.lang === 'ts'
-        )
       const transformScriptTag = (match: string, attributes: string) => {
         let result = ''
         const langMatch = attributes.match(SCRIPT_LANG_RE)
@@ -131,18 +122,15 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
         for (const script of scriptTags) {
           const addVapor = isDom2 && script.setup && !script.vapor
           if (script.langAttr) {
-            const normalizeLang = normalizeJavaScript && script.lang === 'js'
-            if (addVapor || normalizeLang) {
-              const langText = normalizeLang
-                ? 'lang="ts"'
-                : code.slice(
-                    script.langAttr.loc.start.offset,
-                    script.langAttr.loc.end.offset
-                  )
+            if (addVapor) {
+              const langText = code.slice(
+                script.langAttr.loc.start.offset,
+                script.langAttr.loc.end.offset
+              )
               transformed.overwrite(
                 script.langAttr.loc.start.offset,
                 script.langAttr.loc.end.offset,
-                `${addVapor ? 'vapor ' : ''}${langText}`
+                `vapor ${langText}`
               )
               changed = true
             }

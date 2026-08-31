@@ -1203,7 +1203,8 @@ function addMappingInternal(skipable, map, mapping) {
 }
 
 function shouldApplyUniAppXVaporScriptTransform(descriptor, transform) {
-  return !!(transform && descriptor.scriptSetup && descriptor.scriptSetup.lang === "ts" && !descriptor.script?.src && !descriptor.scriptSetup.src);
+  const lang = descriptor.scriptSetup?.lang;
+  return !!(transform && descriptor.scriptSetup && (lang === "js" || lang === "ts") && !descriptor.script?.src && !descriptor.scriptSetup.src);
 }
 function getPosition(source, line, column) {
   let pos = 0;
@@ -2878,7 +2879,10 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
   }
   let resolvedCode = output.join("\n");
   const lang = descriptor.scriptSetup?.lang || descriptor.script?.lang;
-  if (lang && /tsx?$/.test(lang) && !descriptor.script?.src) {
+  if ((lang && /tsx?$/.test(lang) || shouldApplyUniAppXVaporScriptTransform(
+    descriptor,
+    options.uniAppXVaporScriptTransform
+  )) && !descriptor.script?.src) {
     const { transformWithOxc } = await import('vite');
     if (transformWithOxc) {
       const { code: code2, map } = await transformWithOxc(
