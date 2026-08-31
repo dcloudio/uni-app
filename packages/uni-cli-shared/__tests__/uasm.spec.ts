@@ -33,7 +33,7 @@ function transformLoadUasm(
           resolve(modulePath) {
             const normalized = modulePath.replace(/^@?\//, '')
             if (normalized === 'uni_modules/test-uasm') {
-              return `${normalized}/uasm/app-android/libs/arm64-v8a/libtest-uasm.so`
+              return `${normalized}/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so`
             }
           },
           reportDiagnostic(_context, diagnostic) {
@@ -87,13 +87,29 @@ describe('uasm', () => {
     expect(parseUniAppXTargetArchs('{}')).toEqual([])
   })
 
+  test('resolve UASM library file name', () => {
+    const file =
+      'uni_modules/ustd/uasm/app-android/libs/arm64-v8a/libuasmUstd.so'
+    fs.outputFileSync(path.join(inputDir, file), '')
+    initUasmModules(inputDir)
+
+    expect(resolveUasmLoadPath('uni_modules/ustd', 'app-android', true)).toBe(
+      'libuasmUstd.so'
+    )
+    expect(
+      resolveUasmLoadPath('uni_modules/ustd', 'app-android', false, [
+        'arm64-v8a',
+      ])
+    ).toBe(file)
+  })
+
   test('initialize shared transform options', () => {
     const originalTargetArchs = process.env.UNI_APP_X_TARGET_ARCHS
     process.env.UNI_APP_X_TARGET_ARCHS = JSON.stringify(['arm64-v8a'])
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so'
       ),
       ''
     )
@@ -105,7 +121,7 @@ describe('uasm', () => {
     }
 
     expect(options.targetArchs).toEqual(['arm64-v8a'])
-    expect(options.resolve('uni_modules/test-uasm')).toBe('libtest-uasm.so')
+    expect(options.resolve('uni_modules/test-uasm')).toBe('libuasmTestUasm.so')
     expect(options.createLoadUasmTransformer).toBe(createLoadUasmTransformer)
 
     if (originalTargetArchs === undefined) {
@@ -125,7 +141,7 @@ describe('uasm', () => {
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so'
       ),
       ''
     )
@@ -139,19 +155,19 @@ describe('uasm', () => {
           transformers: { before: [creator(ts).before] },
         }).outputText
       expect(transform(`uni.loadUasm('uni_modules/test-uasm')`)).toContain(
-        'uni.loadUasm("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
+        'uni.loadUasm("libuasmTestUasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
       )
       expect(
         transform(`uni.loadUasm<CompressionBridge>('uni_modules/test-uasm')`)
       ).toContain(
-        'uni.loadUasm("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
+        'uni.loadUasm("libuasmTestUasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
       )
       expect(
         transform(
           `uni.loadUasmSync<CompressionBridge>('uni_modules/test-uasm')`
         )
       ).toContain(
-        'uni.loadUasmSync("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
+        'uni.loadUasmSync("libuasmTestUasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
       )
     } finally {
       restoreEnv('UNI_APP_X_DOM2', originalDom2)
@@ -214,7 +230,7 @@ describe('uasm', () => {
     expect(
       transformLoadUasm(`uni.loadUasm<TestUASM>('${modulePath}')`)
     ).toContain(
-      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
+      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so")'
     )
   })
 
@@ -222,7 +238,7 @@ describe('uasm', () => {
     expect(
       transformLoadUasm(`uni.loadUasm('uni_modules/test-uasm', true)`)
     ).toContain(
-      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so", true)'
+      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so", true)'
     )
   })
 
@@ -230,7 +246,7 @@ describe('uasm', () => {
     expect(
       transformLoadUasm('uni.loadUasm(`uni_modules/test-uasm`)')
     ).toContain(
-      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
+      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so")'
     )
   })
 
@@ -259,7 +275,7 @@ describe('uasm', () => {
     expect(
       transformLoadUasm(`uni.loadUasmSync<TestUASM>('uni_modules/test-uasm')`)
     ).toContain(
-      'uni.loadUasmSync("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
+      'uni.loadUasmSync("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so")'
     )
   })
 
@@ -274,14 +290,14 @@ describe('uasm', () => {
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so'
       ),
       ''
     )
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-android/libs/armeabi-v7a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-android/libs/armeabi-v7a/libuasmTestUasm.so'
       ),
       ''
     )
@@ -302,11 +318,11 @@ describe('uasm', () => {
             archs: {
               'arm64-v8a': {
                 dir: 'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a',
-                file: 'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so',
+                file: 'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so',
               },
               'armeabi-v7a': {
                 dir: 'uni_modules/test-uasm/uasm/app-android/libs/armeabi-v7a',
-                file: 'uni_modules/test-uasm/uasm/app-android/libs/armeabi-v7a/libtest-uasm.so',
+                file: 'uni_modules/test-uasm/uasm/app-android/libs/armeabi-v7a/libuasmTestUasm.so',
               },
             },
           },
@@ -380,14 +396,14 @@ describe('uasm', () => {
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libuasmTestUasm.so'
       ),
       ''
     )
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-harmony/libs/armeabi-v7a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-harmony/libs/armeabi-v7a/libuasmTestUasm.so'
       ),
       ''
     )
@@ -404,7 +420,7 @@ describe('uasm', () => {
       platform: 'app-harmony',
       arch: 'arm64-v8a',
       dir: 'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a',
-      file: 'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libtest-uasm.so',
+      file: 'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libuasmTestUasm.so',
     })
     expect(
       resolveUasmTargetArch('test-uasm', 'app-harmony', ['x86_64'])
@@ -415,14 +431,14 @@ describe('uasm', () => {
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so'
       ),
       ''
     )
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libuasmTestUasm.so'
       ),
       ''
     )
@@ -436,7 +452,7 @@ describe('uasm', () => {
     initUasmModules(inputDir)
 
     const androidFile =
-      'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+      'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so'
     for (const modulePath of [
       'uni_modules/test-uasm',
       '/uni_modules/test-uasm',
@@ -450,15 +466,15 @@ describe('uasm', () => {
 
     expect(
       resolveUasmLoadPath('uni_modules/test-uasm', 'app-android', true)
-    ).toBe('libtest-uasm.so')
+    ).toBe('libuasmTestUasm.so')
     expect(
       resolveUasmLoadPath('uni_modules/test-uasm', 'app-harmony', true)
-    ).toBe('libtest-uasm.so')
+    ).toBe('libuasmTestUasm.so')
     expect(
       resolveUasmLoadPath('uni_modules/test-uasm', 'app-harmony', false, [
         'arm64-v8a',
       ])
-    ).toBe('libtest-uasm.so')
+    ).toBe('libuasmTestUasm.so')
     expect(resolveUasmLoadPath('uni_modules/test-uasm', 'app-ios', false)).toBe(
       'test-uasm'
     )
@@ -516,14 +532,14 @@ describe('uasm', () => {
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/module-a/uasm/app-android/libs/arm64-v8a/libmodule-a.so'
+        'uni_modules/module-a/uasm/app-android/libs/arm64-v8a/libuasmModuleA.so'
       ),
       ''
     )
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/module-b/uasm/app-android/libs/x86_64/libmodule-b.so'
+        'uni_modules/module-b/uasm/app-android/libs/x86_64/libuasmModuleB.so'
       ),
       ''
     )
@@ -542,7 +558,7 @@ describe('uasm', () => {
   test('initialize the cache when creating the Vite plugin', () => {
     const arm64File = path.join(
       inputDir,
-      'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+      'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so'
     )
     fs.outputFileSync(arm64File, '')
 

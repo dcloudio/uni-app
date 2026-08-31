@@ -586,6 +586,10 @@ export function parseUasmModuleName(modulePath: string): string | undefined {
   return /^uni_modules\/([^/]+)$/.exec(normalized)?.[1]
 }
 
+function resolveUasmLibraryFileName(moduleName: string): string {
+  return `libuasm${capitalize(camelize(moduleName))}.so`
+}
+
 export function resolveUasmWebLoad(
   modulePath: string
 ): UasmWebLoadDescriptor | undefined {
@@ -614,7 +618,7 @@ export function resolveUasmLoadPath(
   if (platform === 'app-ios') {
     return moduleName
   }
-  const libraryName = `lib${moduleName}.so`
+  const libraryName = resolveUasmLibraryFileName(moduleName)
   if (isProduction) {
     return libraryName
   }
@@ -702,7 +706,7 @@ function scanUasmPlatform(
       }
       const relativeArchDir = normalizePath(path.join(relativeDir, entry.name))
       const file = normalizePath(
-        path.join(relativeArchDir, `lib${moduleName}.so`)
+        path.join(relativeArchDir, resolveUasmLibraryFileName(moduleName))
       )
       if (!fs.existsSync(path.resolve(inputDir, file))) {
         return

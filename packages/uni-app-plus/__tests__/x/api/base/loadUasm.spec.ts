@@ -17,7 +17,7 @@ describe('loadUasm', () => {
     const module = { add: (a: number, b: number) => a + b }
     loadUasmMock.mockReturnValue(module)
     const modulePath =
-      'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+      'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libuasmTestUasm.so'
 
     const result = loadUasm<typeof module>(modulePath)
 
@@ -30,7 +30,7 @@ describe('loadUasm', () => {
     const module = { add: (a: number, b: number) => a + b }
     loadUasmMock.mockReturnValue(module)
 
-    const result = loadUasm<typeof module>('libtest-uasm.so')
+    const result = loadUasm<typeof module>('libuasmTestUasm.so')
 
     expect(result).toBeInstanceOf(Promise)
     await expect(result).resolves.toBe(module)
@@ -42,14 +42,14 @@ describe('loadUasm', () => {
       throw error
     })
 
-    await expect(loadUasm('libtest-uasm.so')).rejects.toBe(error)
+    await expect(loadUasm('libuasmTestUasm.so')).rejects.toBe(error)
   })
 
   test('异步加载无结果时 Promise rejection', async () => {
     loadUasmMock.mockReturnValue(null)
 
-    await expect(loadUasm('libtest-uasm.so')).rejects.toThrow(
-      'uni.loadUasm[libtest-uasm.so] 加载失败'
+    await expect(loadUasm('libuasmTestUasm.so')).rejects.toThrow(
+      'uni.loadUasm[libuasmTestUasm.so] 加载失败'
     )
   })
 
@@ -57,14 +57,14 @@ describe('loadUasm', () => {
     const module = { add: (a: number, b: number) => a + b }
     loadUasmMock.mockReturnValue(module)
 
-    expect(loadUasmSync<typeof module>('libtest-uasm.so')).toBe(module)
-    expect(loadUasmMock).toHaveBeenCalledWith('libtest-uasm.so')
+    expect(loadUasmSync<typeof module>('libuasmTestUasm.so')).toBe(module)
+    expect(loadUasmMock).toHaveBeenCalledWith('libuasmTestUasm.so')
   })
 
   test('同步加载无结果时返回 null', () => {
     loadUasmMock.mockReturnValue(null)
 
-    expect(loadUasmSync('libtest-uasm.so')).toBeNull()
+    expect(loadUasmSync('libuasmTestUasm.so')).toBeNull()
   })
 
   test('同步抛出 native app 加载异常', () => {
@@ -73,6 +73,6 @@ describe('loadUasm', () => {
       throw error
     })
 
-    expect(() => loadUasmSync('libtest-uasm.so')).toThrow(error)
+    expect(() => loadUasmSync('libuasmTestUasm.so')).toThrow(error)
   })
 })
