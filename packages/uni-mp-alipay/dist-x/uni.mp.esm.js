@@ -1114,6 +1114,7 @@ function initCreatePage() {
                 };
                 {
                     updateCssVariables();
+                    initPageInstance(this);
                 }
                 // 初始化 vue 实例
                 this.props = query;
