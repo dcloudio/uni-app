@@ -3,6 +3,8 @@ import type { App } from 'vue'
 import { initApp } from '@dcloudio/uni-vue'
 import { pruneComponentPropsCache } from './helpers/renderProps'
 
+declare const my: any
+
 interface MountOptions {
   independent?: boolean
   createApp?: (instance: any, root?: string) => void
@@ -70,10 +72,8 @@ function getGlobalCreateApp(method: string) {
     typeof (global as any)[method] !== 'undefined'
   ) {
     return (global as any)[method]
-    // @ts-expect-error
   } else if (typeof my !== 'undefined') {
     // 支付宝小程序开启globalObjectMode配置后才会有global
-    // @ts-expect-error
     return (my as any)[method]
   }
 }
