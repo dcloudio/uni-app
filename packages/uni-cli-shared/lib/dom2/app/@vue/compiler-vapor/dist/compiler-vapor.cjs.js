@@ -3546,7 +3546,6 @@ function isDataProp(prop) {
 function transformNativeElement(node, propsResult, staticKey, singleRoot, context, getEffectIndex, omitEndTag, getOperationIndex) {
 	const isDom2 = !!context.options.platform;
 	if (isDom2) omitEndTag = false;
-	if (isDom2) extractElementFlatten(node, propsResult, context);
 	const { tag } = node;
 	const { scopeId } = context.options;
 	let template = "";
@@ -3562,7 +3561,6 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				if (context.options.rootElementFromUniModule) template += ` gen-root-custom-native="${rootElementTagName}"`;
 			}
 		}
-		if (node.flatten) template += ` flatten`;
 	}
 	const dynamicProps = [];
 	if (propsResult[0]) {
