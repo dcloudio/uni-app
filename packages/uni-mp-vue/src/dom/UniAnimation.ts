@@ -6,8 +6,11 @@ import { hyphenate } from '@vue/shared'
 import { toRaw } from 'vue'
 
 // TODO App端实现未继承自EventTarget，如果后续App端调整此处也需要同步调整
+let uniAnimationNextId = 0
+
 export class UniAnimation implements IUniAnimation {
   id: string
+  private _animationId: number = 0
   private _playState: string = 'idle'
   private parsedKeyframes: IParsedKeyframe[] = []
   private scope: any
@@ -49,6 +52,7 @@ export class UniAnimation implements IUniAnimation {
     toRaw(this.scope).setData({
       ['$eA.' + this.id]: JSON.stringify({
         id: this.id,
+        animationId: this._animationId,
         playState: 'idle',
         keyframes: this.parsedKeyframes,
         options: this.options,
@@ -69,9 +73,11 @@ export class UniAnimation implements IUniAnimation {
   }
 
   play(): void {
+    this._animationId = ++uniAnimationNextId
     this.scope.setData({
       ['$eA.' + this.id]: JSON.stringify({
         id: this.id,
+        animationId: this._animationId,
         playState: 'running',
         keyframes: this.parsedKeyframes,
         options: this.options,
