@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-harmony",
-  "version": "3.0.0-alpha-5020520260824002",
+  "version": "3.0.0-alpha-5020520260829001",
   "description": "uni-app mp-harmony",
   "main": "dist/index.js",
   "files": [

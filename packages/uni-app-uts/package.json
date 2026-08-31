@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-uts",
-  "version": "3.0.0-alpha-5020520260824002",
+  "version": "3.0.0-alpha-5020520260829001",
   "description": "uni-app-uts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
