@@ -441,7 +441,7 @@ function copyUasmIOSFrameworks(inputDir: string) {
   }
   const libraryIdentifier =
     process.env.HX_RUN_DEVICE_TYPE === 'ios_simulator'
-      ? 'ios-arm64-simulator'
+      ? 'ios-arm64_x86_64-simulator'
       : 'ios-arm64'
   const targetDir = path.resolve(dependenciesDir, 'modules')
 
