@@ -1,5 +1,8 @@
 import type { ResolvedConfig } from 'vite'
-import { createUniAppJsEnginePlugin } from '../../src/plugins/js/plugin'
+import {
+  createAppServiceManualChunks,
+  createUniAppJsEnginePlugin,
+} from '../../src/plugins/js/plugin'
 
 jest.mock('@dcloudio/uni-cli-shared', () => ({
   ...jest.requireActual('@dcloudio/uni-cli-shared'),
@@ -72,5 +75,48 @@ describe('uni app JS engine plugin', () => {
     configResolved(config)
 
     expect(config.plugins.map((plugin) => plugin.name)).toContain('uni:app-js')
+  })
+
+  describe('app service manual chunks', () => {
+    const inputDir = '/project'
+    const builtInPinia = '/hbuilderx/lib/dom2/pinia/dist/pinia.mjs'
+    const manualChunks = createAppServiceManualChunks(true, inputDir)
+
+    test('groups node_modules and built-in runtimes into vendor', () => {
+      expect(manualChunks('/project/node_modules/dayjs/dayjs.min.js')).toBe(
+        'vendor'
+      )
+      expect(
+        manualChunks(
+          '/project/node_modules/.pnpm/pinia@3.0.4/node_modules/pinia/dist/pinia.mjs'
+        )
+      ).toBe('vendor')
+      expect(
+        manualChunks('C:\\project\\node_modules\\dayjs\\dayjs.min.js')
+      ).toBe('vendor')
+      expect(manualChunks(`${builtInPinia}?commonjs-entry`)).toBe('vendor')
+    })
+
+    test('keeps compiler chunks and application chunks separated', () => {
+      expect(manualChunks('\0plugin-vue:export-helper')).toBe(
+        'plugin-vue-export-helper'
+      )
+      expect(
+        manualChunks('/project/node_modules/@dcloudio/uni-cloud/index.js')
+      ).toBe('@dcloudio/uni-cloud')
+      expect(manualChunks('/project/store/counter.uts')).toBe('store/counter')
+      expect(manualChunks('/outside/source/index.ts')).toBe('vendor')
+      expect(manualChunks('\0virtual:runtime')).toBeUndefined()
+      expect(manualChunks('virtual:runtime')).toBeUndefined()
+    })
+
+    test('does not split non-ESM builds', () => {
+      const iifeManualChunks = createAppServiceManualChunks(false, inputDir)
+
+      expect(
+        iifeManualChunks('/project/node_modules/dayjs/dayjs.min.js')
+      ).toBeUndefined()
+      expect(iifeManualChunks('/project/store/counter.uts')).toBeUndefined()
+    })
   })
 })

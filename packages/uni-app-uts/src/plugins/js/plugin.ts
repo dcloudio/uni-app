@@ -133,6 +133,40 @@ function trimEsbuildTranspileCache(cache: Map<string, any>) {
   }
 }
 
+function normalizeModuleId(id: string) {
+  return normalizePath(id.split('?')[0]).replace(/\\/g, '/')
+}
+
+export function createAppServiceManualChunks(isESM: boolean, inputDir: string) {
+  const normalizedInputDir = normalizeModuleId(inputDir)
+
+  return (id: string) => {
+    if (!isESM) {
+      return
+    }
+
+    const chunkName = normalizeModuleId(id)
+    if (chunkName.startsWith('\0plugin-vue:')) {
+      return 'plugin-vue-' + chunkName.split(':')[1]
+    }
+    if (chunkName.includes('/@dcloudio/uni-cloud/')) {
+      return '@dcloudio/uni-cloud'
+    }
+    if (
+      chunkName.startsWith(normalizedInputDir) &&
+      !chunkName.includes('/node_modules/')
+    ) {
+      return removeExt(
+        normalizePath(path.relative(normalizedInputDir, chunkName))
+      )
+    }
+    // 项目内外的公共运行时统一进入 vendor，虚拟模块继续交给 Rollup 处理。
+    if (path.posix.isAbsolute(chunkName) || path.win32.isAbsolute(chunkName)) {
+      return 'vendor'
+    }
+  }
+}
+
 export function initUniAppJsEngineDom1CssPlugin(config: ResolvedConfig) {
   injectCssPlugin(
     config,
@@ -189,6 +223,7 @@ export function createUniAppJsEnginePlugin(
       process.env.UNI_APP_DYNAMIC_IMPORT = 'true'
     }
     const isESM = process.env.UNI_APP_OUTPUT_FORMAT === 'esm'
+    const manualChunks = createAppServiceManualChunks(isESM, inputDir)
 
     const isAndroid = platform === 'app-android'
     const isIOS = platform === 'app-ios'
@@ -248,22 +283,7 @@ export function createUniAppJsEnginePlugin(
                 entryFileNames: APP_SERVICE_FILENAME,
                 globals,
                 paths,
-                manualChunks(id) {
-                  if (isESM) {
-                    const chunkName = normalizePath(id.split('?')[0])
-                    if (chunkName.startsWith('\0plugin-vue:')) {
-                      return 'plugin-vue-' + chunkName.split(':')[1]
-                    }
-                    if (chunkName.includes('/@dcloudio/uni-cloud/')) {
-                      return '@dcloudio/uni-cloud'
-                    }
-                    if (chunkName.startsWith(inputDir)) {
-                      return removeExt(
-                        normalizePath(path.relative(inputDir, chunkName))
-                      )
-                    }
-                  }
-                },
+                manualChunks,
                 inlineDynamicImports: false,
                 chunkFileNames: isESM ? 'assets/[name].js' : undefined,
                 sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
