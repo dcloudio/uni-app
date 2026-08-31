@@ -349,6 +349,7 @@ export function initAutoImportOptions(
     }
   }
 
+  // node_modules 可能包含依赖 auto import 的 uni-app x 源码包，不能恢复 unplugin 的默认排除项。
   const exclude: (RegExp | string)[] = [/[\\/]\.git[\\/]/]
   if (process.env.UNI_INPUT_DIR) {
     exclude.push(
@@ -359,7 +360,7 @@ export function initAutoImportOptions(
   }
   return {
     ...userOptions,
-    include: [/\.[u]?ts$/, /\.[u]?vue/],
+    include: [/\.(?:js|ts|uts)$/, /\.[u]?vue/],
     exclude,
     imports: (imports as any[]).concat(
       // 旧版 Android x 仍由专有编译流程处理，Android Vapor 对齐 iOS 走通用自动导入
