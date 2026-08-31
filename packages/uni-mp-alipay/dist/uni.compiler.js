@@ -372,6 +372,10 @@ const options = {
                         : 'NO';
                 }
             });
+            const workerPaths = uniCliShared.resolveMiniProgramWorkerPaths();
+            if (workerPaths.length) {
+                appJson.workers = workerPaths;
+            }
         },
     },
     app: {
@@ -380,6 +384,7 @@ const options = {
         independentSubpackages: true,
         plugins: true,
         usingComponents: true,
+        workers: true,
         normalize(appJson) {
             // 支付宝小程序默认主包，分包 js 模块不共享，会导致 getCurrentInstance，setCurrentInstance 不一致
             appJson.subPackageBuildType = 'shared';
