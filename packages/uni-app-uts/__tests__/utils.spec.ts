@@ -56,7 +56,7 @@ describe('createUniOptions', () => {
           inputDir,
           'uni_modules/module-a/uasm',
           platform,
-          'libs/arm64-v8a/libmodule-a.so'
+          'libs/arm64-v8a/libuasmModuleA.so'
         ),
         ''
       )
@@ -65,7 +65,7 @@ describe('createUniOptions', () => {
           inputDir,
           'uni_modules/module-a/uasm',
           platform,
-          'libs/armeabi-v7a/libmodule-a.so'
+          'libs/armeabi-v7a/libuasmModuleA.so'
         ),
         ''
       )
@@ -74,7 +74,7 @@ describe('createUniOptions', () => {
           inputDir,
           'uni_modules/module-b/uasm',
           platform,
-          'libs/x86_64/libmodule-b.so'
+          'libs/x86_64/libuasmModuleB.so'
         ),
         ''
       )
