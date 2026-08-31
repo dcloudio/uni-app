@@ -10,6 +10,7 @@ import {
   createCopyPluginTarget,
   createTransformComponentLink,
   getNativeTags,
+  resolveMiniProgramWorkerPaths,
   transformDirection,
   transformTeleport,
   // transformMatchMedia,
@@ -179,6 +180,10 @@ export const options: UniMiniProgramPluginOptions = {
             : 'NO'
         }
       })
+      const workerPaths = resolveMiniProgramWorkerPaths()
+      if (workerPaths.length) {
+        ;(appJson as Record<string, unknown>).workers = workerPaths
+      }
     },
   },
   app: {
@@ -187,6 +192,7 @@ export const options: UniMiniProgramPluginOptions = {
     independentSubpackages: true,
     plugins: true,
     usingComponents: true,
+    workers: true,
     normalize(appJson) {
       // 支付宝小程序默认主包，分包 js 模块不共享，会导致 getCurrentInstance，setCurrentInstance 不一致
       appJson.subPackageBuildType = 'shared'

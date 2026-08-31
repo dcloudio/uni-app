@@ -221,6 +221,17 @@ export function genAlipayWorkerRuntimeImportCode(
   return `import '${workerRuntimePath}';`
 }
 
+export function resolveMiniProgramWorkerPaths(
+  workerRootDir: string = resolveWorkersRootDir()
+) {
+  return Object.keys(getWorkers()).map((key) => {
+    if (key.startsWith('uni_modules')) {
+      key = workerRootDir + '/' + key
+    }
+    return key.replace(/\.uts$/, '.js')
+  })
+}
+
 export function uniJavaScriptWorkersPlugin(): Plugin {
   // 仅小程序平台外置 uni-worker，支付宝小程序 worker 不支持 require，单独使用 ES module 版本。
   const platform = process.env.UNI_UTS_PLATFORM || ''
@@ -310,14 +321,7 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
       }
     },
     generateBundle(_, bundle) {
-      const workers = getWorkers()
-      const workerRootDir = resolveWorkersRootDir()
-      const workerPaths = Object.keys(workers).map((key) => {
-        if (key.startsWith('uni_modules')) {
-          key = workerRootDir + '/' + key
-        }
-        return key.replace('.uts', '.js')
-      })
+      const workerPaths = resolveMiniProgramWorkerPaths()
       if (workerPaths.length) {
         Object.keys(bundle).forEach((file) => {
           if (workerPaths.includes(file)) {

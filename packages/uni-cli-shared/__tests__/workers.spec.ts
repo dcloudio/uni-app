@@ -3,6 +3,7 @@ import {
   genAlipayWorkerRuntimeImportCode,
   initWorkers,
   normalizeJavaScriptWorkerSource,
+  resolveMiniProgramWorkerPaths,
 } from '../src/workers'
 
 describe('workers', () => {
@@ -34,5 +35,19 @@ describe('workers', () => {
     expect(
       genAlipayWorkerRuntimeImportCode('workers/request/index.js', 'workers')
     ).toBe("import '../uni-worker.js';")
+  })
+
+  test('resolveMiniProgramWorkerPaths maps source files to output files', () => {
+    initWorkers(
+      ['custom-workers', 'uni_modules/test-workers/workers'],
+      path.join(__dirname, 'examples', 'workers')
+    )
+
+    expect(resolveMiniProgramWorkerPaths('custom-workers')).toEqual([
+      'custom-workers/request/index.js',
+      'custom-workers/response/index.js',
+      'custom-workers/uni_modules/test-workers/workers/request/index.js',
+      'custom-workers/uni_modules/test-workers/workers/response/index.js',
+    ])
   })
 })
