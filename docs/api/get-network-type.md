@@ -13,9 +13,9 @@
 获取网络类型
 
 ### getNetworkType 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -26,20 +26,20 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [GetNetworkTypeSuccess](#getnetworktypesuccess-values)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: - | 接口调用成功的回调函数 |
-| fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: - | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 微信小程序: 4.41; 支付宝小程序: - | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: [GetNetworkTypeSuccess](#getnetworktypesuccess-values)) => void | 否 | null | 接口调用成功的回调函数 |
+| fail | (result: [UniError](/err-spec.md#unierror)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetNetworkTypeSuccess 的属性值 @getnetworktypesuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| networkType | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 网络类型 |
-| hasSystemProxy | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: - | 需要基础库： `2.22.1`<br/><br/>设备是否使用了网络代理<br/> |
-| signalStrength | number | 否 | 微信小程序: 4.41; 支付宝小程序: - | 信号强弱，单位 dbm<br/> |
-| weakNet | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: - | 需要基础库： `3.5.3`<br/><br/>是否处于弱网环境<br/> |
+| networkType | string | 是 |   | 网络类型 |
+| hasSystemProxy | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.22.1`<br/><br/>设备是否使用了网络代理<br/> |
+| signalStrength | number | 否 | 微信小程序: 4.41 | 信号强弱，单位 dbm<br/> |
+| weakNet | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `3.5.3`<br/><br/>是否处于弱网环境<br/> |
 
 
 
@@ -168,7 +168,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

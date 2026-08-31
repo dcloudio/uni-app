@@ -281,7 +281,9 @@ HBuilderX4.31 支持打包界面直接勾选广告渠道，参考[App打包配�
 | bz		| AdScope倍孜广告		|x	|4.31	|x		|
 | zy		| Octopus章鱼移动广告		|x	|4.31	|4.31	|
 | fl		| 泛连					|x	|4.31	|x		|
-| jl		| 聚力阅盟				|x	|4.31	|x		|
+| wa		| 旺脉					|x	|5.11	|5.11		|
+| jt		| 佳投					|x	|5.11	|x		|
+| ms		|美数					|x	|5.25	|5.25		|
 | gg		| google AdMob			|x	|4.31	|4.31	|
 | pg		| Pangle				|x	|4.31	|4.31	|
 | inmobi	| inMobi				|x	|4.31	|4.31	|

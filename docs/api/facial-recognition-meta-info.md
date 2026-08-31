@@ -59,7 +59,7 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| land | Web: x | 横屏 |
+| "land" | Web: x | 横屏 |
 | port | Web: x | 竖屏 |
 
 #### StartFacialRecognitionVerifySuccess 的属性值 @startfacialrecognitionverifysuccess-values 
@@ -69,17 +69,7 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 调用API的名称 |
 | errMsg | string | 是 | Web: x | 错误的详细信息 |
-| cause | **SourceError** | 否 | Web: x | 错误来源 |
-
-#### cause 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| subject | string | 否 | Web: x | 源错误模块名称 |
-| message | string | 是 | Web: x | 源错误描述信息 |
-| code | number | 是 | Web: x | 源错误的错误码 |
-| name | string | 是 | Web: x |  |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   |  |
+| cause | [SourceError](/err-spec.md#sourceerror) | 否 |   | 错误来源 |
 
 #### IFacialRecognitionVerifyError 的属性值 @ifacialrecognitionverifyerror-values 
 
@@ -88,20 +78,20 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 10001 | Web: x | certifyId 不能为空 |
-| 10002 | Web: x | 当前设备不支持 |
 | 10010 | Web: x | 刷脸异常 |
-| 10011 | Web: x | 验证中断 |
 | 10012 | Web: x | 网络异常 |
+| 10011 | Web: x | 验证中断 |
 | 10013 | Web: x | 刷脸验证失败 |
 | 10020 | Web: x | 设备设置时间异常 |
+| 10001 | Web: x | certifyId 不能为空 |
+| 10002 | Web: x | 当前设备不支持 |
 
 
 
@@ -215,9 +205,9 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 ## Tips

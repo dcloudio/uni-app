@@ -14,9 +14,9 @@
 
 
 ### showNavigationBarLoading 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -46,7 +46,7 @@
 | errCode | number | 是 | Android: x; iOS: x | 统一错误码 |
 | errSubject | string | 是 | Android: x; iOS: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Android: x; iOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 | Android: x; iOS: x |  |
 
 
@@ -86,9 +86,9 @@
 
 
 ### hideNavigationBarLoading 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -118,7 +118,7 @@
 | errCode | number | 是 | Android: x; iOS: x | 统一错误码 |
 | errSubject | string | 是 | Android: x; iOS: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Android: x; iOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 | Android: x; iOS: x |  |
 
 
@@ -149,9 +149,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 ## Tips

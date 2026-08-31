@@ -17,16 +17,13 @@ allprojects {
 }
 ```
 
-项目应用下的build.gradle
+项目应用下的build.gradle添加线上依赖：
 
-```
+::: preview
 
-android {
-    defaultConfig {
-        buildConfigField 'String', 'UTSEasyCom', '\"[{\\\"class\\\":\\\"uts.sdk.modules.DCloudUniMapTencent.UniMapTencentExtApiComponentsRegister\\\",\\\"method\\\":\\\"register\\\"}]\"'
-    }
-}
+> build.gradle
 
+```groovy
 dependencies {
     implementation 'com.tencent.map:tencent-map-vector-sdk:5.6.0'
     implementation 'com.tencent.map:sdk-utilities:1.0.9'
@@ -34,6 +31,20 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.16.0'
 }
 ```
+
+> build.gradle.kts
+
+```groovy
+dependencies {
+    implementation("com.tencent.map:tencent-map-vector-sdk:5.6.0")
+    implementation("com.tencent.map:sdk-utilities:1.0.9")
+    implementation("com.tencent.map.geolocation:TencentLocationSdk-openplatform:7.5.4.3")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+}
+```
+
+:::
+
 
 ### 本地依赖库
 
@@ -66,9 +77,41 @@ dependencies {
 
 将以下内容添加到主模块的build.gradle。
 
+::: preview
+
+> build.gradle（蒸汽模式）
+
 ```groovy
 defaultConfig {
-    buildConfigField 'String', 'UTSEasyCom', '\"[{\\\"class\\\":\\\"uts.sdk.modules.DCloudUniMapTencent.UniMapTencentExtApiComponentsRegister\\\",\\\"method\\\":\\\"register\\\"}]\"'
+    buildConfigField 'String', 'UTSComponents', '"[{\"delegateClass\":\"uts.sdk.modules.DCloudUniMapTencent.UniMapElementRegister\"}]"'
 }
 ```
+
+> build.gradle.kts（蒸汽模式）
+
+```groovy
+defaultConfig {
+    buildConfigField("String", "UTSComponents", "\"[{\\\"delegateClass\\\":\\\"uts.sdk.modules.DCloudUniMapTencent.UniMapElementRegister\\\"}]\"")
+}
+```
+
+> build.gradle（VDOM模式）
+
+```groovy
+defaultConfig {
+    buildConfigField 'String', 'UTSEasyCom', '"[{\"class\":\"uts.sdk.modules.DCloudUniMapTencent.UniMapTencentExtApiComponentsRegister\",\"method\":\"register\"}]"'
+}
+```
+
+> build.gradle.kts（VDOM模式）
+
+```groovy
+defaultConfig {
+    buildConfigField("String", "UTSEasyCom", "\"[{\\\"class\\\":\\\"uts.sdk.modules.DCloudUniMapTencent.UniMapTencentExtApiComponentsRegister\\\",\\\"method\\\":\\\"register\\\"}]\"")
+}
+```
+
+:::
+
+蒸汽模式（Vapor）还需依赖 `uni-getElementById`。
 

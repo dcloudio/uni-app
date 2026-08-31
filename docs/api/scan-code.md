@@ -13,9 +13,9 @@
 扫码（包括一维码和二维码）
 
 ### scanCode 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 4.71 | 4.71 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
@@ -28,11 +28,20 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| onlyFromCamera | boolean | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 是否只能从相机扫码，不允许从相册选择图片 |
-| scanType | Array&lt;string&gt; | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 扫码类型 |
-| success | (res: [ScanCodeSuccess](#scancodesuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | uni.scanCode成功回调函数定义 |
-| fail | (res: ScanCodeFail) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | uni.scanCode失败回调函数定义 |
-| complete | (res: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | uni.scanCode完成回调函数定义 | 
+| onlyFromCamera | boolean | 否 | Web: x | 是否只能从相机扫码，不允许从相册选择图片 |
+| scanType | Array&lt;string&gt; | 否 | Web: x | 扫码类型 |
+| success | (res: [ScanCodeSuccess](#scancodesuccess-values)) => void | 否 | Web: x | uni.scanCode成功回调函数定义 |
+| fail | (res: ScanCodeFail) => void | 否 | Web: x | uni.scanCode失败回调函数定义 |
+| complete | (res: any) => void | 否 | Web: x | uni.scanCode完成回调函数定义 | 
+
+##### scanType 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| 'barCode' | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
+| qrCode | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
+| datamatrix | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
+| pdf417 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
 
 #### ScanCodeSuccess 的属性值 @scancodesuccess-values 
 
@@ -40,9 +49,9 @@
 | :- | :- | :- |  :-: | :- |
 | result | string | 是 | Web: x |  |
 | scanType | string | 是 | Web: x |  |
-| charSet | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 所扫码的字符集<br/> |
-| path | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 当所扫的码为当前小程序二维码时，会返回此字段，内容为二维码携带的 path<br/> |
-| rawData | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 原始数据，base64编码<br/> |
+| charSet | string | 否 | Web: x; 微信小程序: 4.41 | 所扫码的字符集<br/> |
+| path | string | 否 | Web: x; 微信小程序: 4.41 | 当所扫的码为当前小程序二维码时，会返回此字段，内容为二维码携带的 path<br/> |
+| rawData | string | 否 | Web: x; 微信小程序: 4.41 | 原始数据，base64编码<br/> |
 
 
 
@@ -118,9 +127,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 ### 平台实现说明

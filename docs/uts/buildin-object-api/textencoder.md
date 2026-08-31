@@ -49,9 +49,9 @@ TextEncoder.encode() 方法接受一个字符串作为输入，返回一个对�
 
 
 **返回值**
-| 类型 |
-| :- |
-| Uint8Array | 
+| 类型 | 描述 |
+| :- | :- |
+| Uint8Array | 一个 Uint8Array 对象。 | 
 
 
 ::: preview 

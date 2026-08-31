@@ -11,104 +11,75 @@
 向系统日历添加重复事件
 
 ### addPhoneRepeatCalendar 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **AddPhoneRepeatCalendarOptions** | 是 | Web: x; 支付宝小程序: x | 向系统日历添加重复事件的参数 |
+| options | **AddPhoneRepeatCalendarOptions** | 是 | Web: x | 向系统日历添加重复事件的参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 是 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 日历事件标题 |
-| startTime | number | 是 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 开始时间的 unix 时间戳 (1970年1月1日开始所经过的秒数) |
-| allDay | boolean | 否 | false | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 是否全天事件，默认 false |
-| notes | string | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 事件说明 |
-| location | string | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 事件位置 |
-| endTime | number | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 结束时间的 unix 时间戳，默认与开始时间相同 |
-| alarm | boolean | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 是否提醒，默认 true |
-| alarmOffset | number | 否 | 0 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 提醒提前量，单位秒，默认 0 表示开始时提醒 |
-| path | string | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 跳转小程序路径，必须要和 signature 一起使用，填入后会自动生成跳转链接拼接在事件说明中 |
-| signature | string | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 仅微信小程序支持，App 平台保留该字段但不会使用，跳转小程序路径签名，必须要和 path 一起使用，用 session_key 对 path 签名得到的结果，即 hmac_sha256(session_key, path)。 |
-| repeatInterval | string | 是 | month | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 重复周期，默认 month 每月重复 |
-| repeatEndTime | number | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 重复周期结束时间的 unix 时间戳，不填表示一直重复 |
-| success | (res: [AddPhoneRepeatCalendarSuccess](#addphonerepeatcalendarsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
-| fail | (res: [AddPhoneRepeatCalendarFail](#addphonerepeatcalendarfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: [AddPhoneRepeatCalendarSuccess](#addphonerepeatcalendarsuccess-values) \| [AddPhoneRepeatCalendarFail](#addphonerepeatcalendarfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| description | string | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 事件说明<br/> | 
+| title | string | 是 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 日历事件标题 |
+| startTime | number | 是 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 开始时间的 unix 时间戳 (1970年1月1日开始所经过的秒数) |
+| allDay | boolean | 否 | false | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 是否全天事件，默认 false |
+| notes | string | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 事件说明 |
+| location | string | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 事件位置 |
+| endTime | number | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 结束时间的 unix 时间戳，默认与开始时间相同 |
+| alarm | boolean | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 是否提醒，默认 true |
+| alarmOffset | number | 否 | 0 | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 提醒提前量，单位秒，默认 0 表示开始时提醒 |
+| path | string | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 跳转小程序路径，必须要和 signature 一起使用，填入后会自动生成跳转链接拼接在事件说明中 |
+| signature | string | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 仅微信小程序支持，App 平台保留该字段但不会使用，跳转小程序路径签名，必须要和 path 一起使用，用 session_key 对 path 签名得到的结果，即 hmac_sha256(session_key, path)。 |
+| repeatInterval | string | 是 | month | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 重复周期，默认 month 每月重复 |
+| repeatEndTime | number | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 重复周期结束时间的 unix 时间戳，不填表示一直重复 |
+| success | (res: [AddPhoneRepeatCalendarSuccess](#addphonerepeatcalendarsuccess-values)) => void | 否 |  | Web: x | 接口调用成功的回调函数 |
+| fail | (res: [AddPhoneRepeatCalendarFail](#addphonerepeatcalendarfail-values)) => void | 否 |  | Web: x | 接口调用失败的回调函数 |
+| complete | (res: [AddPhoneRepeatCalendarSuccess](#addphonerepeatcalendarsuccess-values) \| [AddPhoneRepeatCalendarFail](#addphonerepeatcalendarfail-values)) => void | 否 |  | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| description | string | 否 |  | Web: x; 微信小程序: 4.41 | 事件说明<br/> | 
 
 ##### repeatInterval 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| day | Web: x; 支付宝小程序: x | 每天重复 |
-| week | Web: x; 支付宝小程序: x | 每周重复 |
-| month | Web: x; 支付宝小程序: x | 每月重复。该模式日期不能大于 28 日 |
-| year | Web: x; 支付宝小程序: x | 每年重复 |
+| 'day' | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 每天重复 |
+| week | Web: x | 每周重复 |
+| month | Web: x | 每月重复。该模式日期不能大于 28 日 |
+| year | Web: x | 每年重复 |
 
 #### AddPhoneRepeatCalendarSuccess 的属性值 @addphonerepeatcalendarsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 否 | Web: x; 支付宝小程序: x |
+| errMsg | string | 否 | Web: x |
 
 #### AddPhoneRepeatCalendarFail 的属性值 @addphonerepeatcalendarfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 601 | Web: x; 支付宝小程序: x | title is required |
-| 602 | Web: x; 支付宝小程序: x | startTime is invalid |
-| 603 | Web: x; 支付宝小程序: x | endTime is invalid |
-| 604 | Web: x; 支付宝小程序: x | alarmOffset requires alarm |
-| 606 | Web: x; 支付宝小程序: x | repeat rule is invalid |
-| 607 | Web: x; 支付宝小程序: x | calendar service is unavailable |
-| 608 | Web: x; 支付宝小程序: x | add calendar event failed |
-| 609 | Web: x; 支付宝小程序: x | calendar creation canceled |
-
-#### AddPhoneRepeatCalendarSuccess 的属性值 @addphonerepeatcalendarsuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 否 | Web: x; 支付宝小程序: x |
-
-#### AddPhoneRepeatCalendarFail 的属性值 @addphonerepeatcalendarfail-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
-
-#### errCode 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 601 | Web: x; 支付宝小程序: x | title is required |
-| 602 | Web: x; 支付宝小程序: x | startTime is invalid |
-| 603 | Web: x; 支付宝小程序: x | endTime is invalid |
-| 604 | Web: x; 支付宝小程序: x | alarmOffset requires alarm |
-| 606 | Web: x; 支付宝小程序: x | repeat rule is invalid |
-| 607 | Web: x; 支付宝小程序: x | calendar service is unavailable |
-| 608 | Web: x; 支付宝小程序: x | add calendar event failed |
-| 609 | Web: x; 支付宝小程序: x | calendar creation canceled |
+| 601 | Web: x | title is required |
+| 602 | Web: x | startTime is invalid |
+| 603 | Web: x | endTime is invalid |
+| 604 | Web: x | alarmOffset requires alarm |
+| 606 | Web: x | repeat rule is invalid |
+| 607 | Web: x | calendar service is unavailable |
+| 608 | Web: x | add calendar event failed |
+| 609 | Web: x | calendar creation canceled |
 
 
 
@@ -146,93 +117,64 @@
 向系统日历添加事件
 
 ### addPhoneCalendar 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **AddPhoneCalendarOptions** | 是 | Web: x; 支付宝小程序: x | 向系统日历添加事件的参数 |
+| options | **AddPhoneCalendarOptions** | 是 | Web: x | 向系统日历添加事件的参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 是 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 日历事件标题 |
-| startTime | number | 是 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 开始时间的 unix 时间戳 |
-| allDay | boolean | 否 | false | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 是否全天事件，默认 false |
-| notes | string | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 事件说明 |
-| location | string | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 事件位置 |
-| endTime | number | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 结束时间的 unix 时间戳，默认与开始时间相同 |
-| alarm | boolean | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 结束时间的 unix 时间戳，默认与开始时间相同 |
-| alarmOffset | number | 否 | 0 | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 提醒提前量，单位秒，默认 0 表示开始时提醒 |
-| path | string | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 跳转小程序路径，必须要和 signature 一起使用，填入后会自动生成跳转链接拼接在事件说明中 |
-| signature | string | 否 |  | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 仅微信小程序支持，App 平台保留该字段但不会使用，跳转小程序路径签名，必须要和 path 一起使用，用 session_key 对 path 签名得到的结果，即 hmac_sha256(session_key, path)。 |
-| success | (res: [AddPhoneCalendarSuccess](#addphonecalendarsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数 |
-| fail | (res: [AddPhoneCalendarFail](#addphonecalendarfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: [AddPhoneCalendarSuccess](#addphonecalendarsuccess-values) \| [AddPhoneCalendarFail](#addphonecalendarfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| description | string | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 事件说明<br/> | 
+| title | string | 是 |  | Web: x; 微信小程序: √; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 日历事件标题 |
+| startTime | number | 是 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 开始时间的 unix 时间戳 |
+| allDay | boolean | 否 | false | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 是否全天事件，默认 false |
+| notes | string | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 事件说明 |
+| location | string | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 事件位置 |
+| endTime | number | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 结束时间的 unix 时间戳，默认与开始时间相同 |
+| alarm | boolean | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 结束时间的 unix 时间戳，默认与开始时间相同 |
+| alarmOffset | number | 否 | 0 | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 提醒提前量，单位秒，默认 0 表示开始时提醒 |
+| path | string | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 跳转小程序路径，必须要和 signature 一起使用，填入后会自动生成跳转链接拼接在事件说明中 |
+| signature | string | 否 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 仅微信小程序支持，App 平台保留该字段但不会使用，跳转小程序路径签名，必须要和 path 一起使用，用 session_key 对 path 签名得到的结果，即 hmac_sha256(session_key, path)。 |
+| success | (res: [AddPhoneCalendarSuccess](#addphonecalendarsuccess-values)) => void | 否 |  | Web: x | 接口调用成功的回调函数 |
+| fail | (res: [AddPhoneCalendarFail](#addphonecalendarfail-values)) => void | 否 |  | Web: x | 接口调用失败的回调函数 |
+| complete | (res: [AddPhoneCalendarSuccess](#addphonecalendarsuccess-values) \| [AddPhoneCalendarFail](#addphonecalendarfail-values)) => void | 否 |  | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| description | string | 否 |  | Web: x; 微信小程序: 4.41 | 事件说明<br/> | 
 
 #### AddPhoneCalendarSuccess 的属性值 @addphonecalendarsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errMsg | string | 否 | Web: x; 支付宝小程序: x |
+| errMsg | string | 否 | Web: x |
 
 #### AddPhoneCalendarFail 的属性值 @addphonecalendarfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 601 | Web: x; 支付宝小程序: x | title is required |
-| 602 | Web: x; 支付宝小程序: x | startTime is invalid |
-| 603 | Web: x; 支付宝小程序: x | endTime is invalid |
-| 604 | Web: x; 支付宝小程序: x | alarmOffset requires alarm |
-| 606 | Web: x; 支付宝小程序: x | repeat rule is invalid |
-| 607 | Web: x; 支付宝小程序: x | calendar service is unavailable |
-| 608 | Web: x; 支付宝小程序: x | add calendar event failed |
-| 609 | Web: x; 支付宝小程序: x | calendar creation canceled |
-
-#### AddPhoneCalendarSuccess 的属性值 @addphonecalendarsuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 否 | Web: x; 支付宝小程序: x |
-
-#### AddPhoneCalendarFail 的属性值 @addphonecalendarfail-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
-
-#### errCode 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 601 | Web: x; 支付宝小程序: x | title is required |
-| 602 | Web: x; 支付宝小程序: x | startTime is invalid |
-| 603 | Web: x; 支付宝小程序: x | endTime is invalid |
-| 604 | Web: x; 支付宝小程序: x | alarmOffset requires alarm |
-| 606 | Web: x; 支付宝小程序: x | repeat rule is invalid |
-| 607 | Web: x; 支付宝小程序: x | calendar service is unavailable |
-| 608 | Web: x; 支付宝小程序: x | add calendar event failed |
-| 609 | Web: x; 支付宝小程序: x | calendar creation canceled |
+| 601 | Web: x | title is required |
+| 602 | Web: x | startTime is invalid |
+| 603 | Web: x | endTime is invalid |
+| 604 | Web: x | alarmOffset requires alarm |
+| 606 | Web: x | repeat rule is invalid |
+| 607 | Web: x | calendar service is unavailable |
+| 608 | Web: x | add calendar event failed |
+| 609 | Web: x | calendar creation canceled |
 
 
 
@@ -828,9 +770,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 ### tips

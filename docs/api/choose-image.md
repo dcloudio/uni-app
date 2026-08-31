@@ -13,9 +13,9 @@
 从本地相册选择图片或使用相机拍照
 
 ### chooseImage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -28,22 +28,22 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| pageOrientation | string | 否 |  | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为pages.json中的pageOrientation。 |
-| albumMode | string | 否 | "custom" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.33; iOS: x; HarmonyOS: x | 图片选择模式 |
-| count | number | 否 | 9 | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。 |
-| sizeType | Array&lt;string&gt; | 否 | \['original','compressed'\] | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | original 原图，compressed 压缩图，默认二者都有 |
-| sourceType | Array&lt;string&gt; | 否 | \['album','camera'\] | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | album 从相册选图，camera 使用相机，默认二者都有 |
-| extension | Array&lt;string&gt; | 否 |  | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。仅H5支持 |
+| pageOrientation | string | 否 |  | Web: x; 微信小程序: x; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为pages.json中的pageOrientation。 |
+| albumMode | string | 否 | "custom" | Web: x; 微信小程序: x; Android: 4.33; iOS: x; HarmonyOS: x | 图片选择模式 |
+| count | number | 否 | 9 | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。 |
+| sizeType | Array&lt;string&gt; | 否 | \['original','compressed'\] | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | original 原图，compressed 压缩图，默认二者都有 |
+| sourceType | Array&lt;string&gt; | 否 | \['album','camera'\] | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | album 从相册选图，camera 使用相机，默认二者都有 |
+| extension | Array&lt;string&gt; | 否 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。仅H5支持 |
 | crop | **ChooseImageCropOptions** | 否 |  | Web: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 图像裁剪参数，设置后 sizeType 失效。 |
-| success | (callback: [ChooseImageSuccess](#chooseimagesuccess-values)) => void | 否 |  | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 成功则返回图片的本地文件路径列表 tempFilePaths |
-| fail | (callback: [ChooseImageFail](#chooseimagefail-values)) => void | 否 |  | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (callback: [ChooseImageSuccess](#chooseimagesuccess-values)) => void | 否 |  | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 成功则返回图片的本地文件路径列表 tempFilePaths |
+| fail | (callback: [ChooseImageFail](#chooseimagefail-values)) => void | 否 |  | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### pageOrientation 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
-| auto | 自动 |
+| "auto" | 自动 |
 | portrait | 竖屏显示 |
 | landscape | 横屏显示 |
 
@@ -51,7 +51,7 @@
 
 | 合法值 | 描述 |
 | :- | :- |
-| custom | 自定义媒体选择器 |
+| "custom" | 自定义媒体选择器 |
 | system | 系统媒体选择器 |
 
 ##### crop 的属性描述
@@ -69,8 +69,17 @@
 | :- | :- | :- |  :-: | :- |
 | errSubject | string | 是 | Android: 3.9; iOS: 4.11 | 调用API的名称 |
 | errMsg | string | 是 | Android: 3.9; iOS: 4.11 | 描述信息 |
-| tempFilePaths | Array&lt;string&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 图片的本地文件路径列表 |
-| tempFiles | Array&lt;string&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: -; Android: 3.9; iOS: 4.11 | 图片的本地文件列表 |
+| tempFilePaths | Array&lt;string&gt; | 是 | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 图片的本地文件路径列表 |
+| tempFiles | Array&lt;**ChooseImageTempFile**&gt; | 是 | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 图片的本地文件列表 |
+
+#### tempFiles 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | string | 是 | Android: 3.9; iOS: 4.11 | 本地文件路径 |
+| size | number | 是 | Android: 3.9; iOS: 4.11 | 本地文件大小，单位：B |
+| name | string | 否 | Android: x; iOS: x | 包含扩展名的文件名称，仅H5支持 |
+| type | string | 否 | Android: x; iOS: x | 文件类型，仅H5支持 |
 
 #### ChooseImageFail 的属性值 @chooseimagefail-values 
 
@@ -79,7 +88,7 @@
 | errCode | number | 是 | 错误码 |
 | errSubject | string | 是 | 统一错误主题（模块）名称 |
 | data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |  |
 
 #### errCode 的属性描述
@@ -502,9 +511,9 @@ const previewImage = (index: number) => {
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 ## 相册选择的2种方式

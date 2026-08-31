@@ -390,7 +390,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 
 
-#### createPattern(image: Image, repetition?: string \| null): CanvasPattern \| null @createpattern
+#### createPattern(image: Image, repetition?: string): CanvasPattern \| null @createpattern
 
 对指定的图像创建模式的方法，可在指定的方向上重复元图像
 
@@ -404,7 +404,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| image | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 重复的图像源，支持代码包路径和本地临时路径 (本地路径) |
+| image | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 重复的图像源，支持代码包路径和本地临时路径 (本地路径) |
 | repetition | string | 否 |   | 如何重复图像 | 
 
 
@@ -548,7 +548,7 @@ addColorStop
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
+| imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
 | dx | number | 是 |   | imageResource的左上角在目标 canvas 上 x 轴的位置 |
 | dy | number | 是 |   | imageResource的左上角在目标 canvas 上 y 轴的位置 | 
 
@@ -571,7 +571,7 @@ addColorStop
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
+| imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
 | dx | number | 是 |   | imageResource的左上角在目标 canvas 上 x 轴的位置 |
 | dy | number | 是 |   | imageResource的左上角在目标 canvas 上 y 轴的位置 |
 | dWidth | number | 是 |   | 在目标画布上绘制imageResource的宽度，允许对绘制的imageResource进行缩放 |
@@ -596,7 +596,7 @@ addColorStop
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
+| imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
 | sx | number | 是 |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的左上角 x 坐标 |
 | sy | number | 是 |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的左上角 y 坐标 |
 | sWidth | number | 是 |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的宽度 |

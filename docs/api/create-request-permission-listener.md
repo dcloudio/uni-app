@@ -206,7 +206,8 @@ stop
 
 - 如果权限已经申请并且允许之后，`onConfirm`不会触发。
 - 如果同时申请多个权限时，`onComplete`可能会触发多次。
-- uni-app x 中如果请求一个已经被永久拒绝的权限，可能会触发`onConfirm`。目前的临时方案是做延时处理，如下面示例代码。后续会修复此问题。
+- uni-app x 中如果请求一个已经被永久拒绝的权限，可能会触发`onConfirm`。
+- 权限监听仅支持通过调用[uni.requestSystemPermission](https://doc.dcloud.net.cn/uni-app-x/api/request-system-permission.html)和[UTSAndroid.requestSystemPermission](https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#requestsystempermission)申请的权限。
 - 权限列表参考：[https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)
 - 全局监听权限申请可参考插件[uni-registerRequestPermissionTips](https://ext.dcloud.net.cn/plugin?name=uni-registerRequestPermissionTips)。
 
@@ -215,7 +216,7 @@ stop
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

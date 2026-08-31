@@ -18,7 +18,7 @@
 > VDOM模式
 ```typescript
 import { registerUniProvider, uni } from "@dcloudio/uni-app-x-runtime";
-import { startFacialRecognitionVerify, getFacialRecognitionMetaInfo } from '@uni_modules/uni-facialrecognitionverify'
+import { startFacialRecognitionVerify, getFacialRecognitionMetaInfo } from '@uni_modules/uni-facialverify'
 
 export function initUniModules() {
   initUniExtApi();
@@ -32,7 +32,7 @@ function initUniExtApi() {
 > 蒸汽模式
 ```typescript
 import { registerUniProvider, uni } from "@dcloudio/uni-app-x-vapor-runtime";
-import { startFacialRecognitionVerify, getFacialRecognitionMetaInfo } from '@uni_modules/uni-facialrecognitionverify'
+import { startFacialRecognitionVerify, getFacialRecognitionMetaInfo } from '@uni_modules/uni-facialverify'
 
 export function initUniModules() {
   initUniExtApi();

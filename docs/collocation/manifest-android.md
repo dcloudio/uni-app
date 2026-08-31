@@ -15,6 +15,79 @@
 - 修改或配置图标后需提交云端打包才能生效
 
 
+### 自适应图标 @adaptiveicon  
+HBuilderX5.25及以上版本，支持自适应图标，配置的png图标提交云端打包调整到 `res/mipmap-*/icon.png` 目录（原目录为 `res/drawable-*/icon.png` ）。
+
+可通过以下方法自定义配置自适应图标：
+
+- 在项目的 nativeResources\android\res\mipmap-anydpi-v26 目录下添加自适应图标文件 `icon.xml`
+  ```xml
+  <?xml version="1.0" encoding="utf-8"?>
+  <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+      <background android:drawable="@drawable/icon_background" />
+      <foreground android:drawable="@drawable/icon_foreground" />
+      <monochrome android:drawable="@drawable/icon_foreground" />
+  </adaptive-icon>
+  ```
+
+- 在项目的 nativeResources\android\res\drawable 目录下添加 vector 文件 `icon_background.xml`，如下示例
+  ```xml
+  <?xml version="1.0" encoding="utf-8"?>
+  <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+      <path android:fillColor="#3DDC84" android:pathData="M0,0h108v108h-108z" />
+      <path android:fillColor="#00000000" android:pathData="M9,0L9,108" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M19,0L19,108" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M29,0L29,108" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M39,0L39,108" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M49,0L49,108" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M59,0L59,108" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M69,0L69,108" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M79,0L79,108" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M89,0L89,108" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M99,0L99,108" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M0,9L108,9" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M0,19L108,19" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M0,29L108,29" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M0,39L108,39" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M0,49L108,49" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M0,59L108,59" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M0,69L108,69" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M0,79L108,79" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M0,89L108,89" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M0,99L108,99" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M19,29L89,29" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M19,39L89,39" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M19,49L89,49" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M19,59L89,59" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M19,69L89,69" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M19,79L89,79" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M29,19L29,89" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M39,19L39,89" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M49,19L49,89" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M59,19L59,89" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M69,19L69,89" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+      <path android:fillColor="#00000000" android:pathData="M79,19L79,89" android:strokeWidth="0.8" android:strokeColor="#33FFFFFF" />
+  </vector>
+  ```
+
+- 在项目的 nativeResources\android\res\drawable 目录下添加 vector 文件 `icon_foreground.xml`，如下示例
+  ```xml
+  <vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+      <path android:pathData="M31,63.928c0,0 6.4,-11 12.1,-13.1c7.2,-2.6 26,-1.4 26,-1.4l38.1,38.1L107,108.928l-32,-1L31,63.928z">
+          <aapt:attr name="android:fillColor">
+              <gradient android:endX="85.84757" android:endY="92.4963" android:startX="42.9492" android:startY="49.59793" android:type="linear">
+                  <item android:color="#44000000" android:offset="0.0" />
+                  <item android:color="#00000000" android:offset="1.0" />
+              </gradient>
+          </aapt:attr>
+      </path>
+      <path android:fillColor="#FFFFFF" android:fillType="nonZero" android:pathData="M65.3,45.828l3.8,-6.6c0.2,-0.4 0.1,-0.9 -0.3,-1.1c-0.4,-0.2 -0.9,-0.1 -1.1,0.3l-3.9,6.7c-6.3,-2.8 -13.4,-2.8 -19.7,0l-3.9,-6.7c-0.2,-0.4 -0.7,-0.5 -1.1,-0.3C38.8,38.328 38.7,38.828 38.9,39.228l3.8,6.6C36.2,49.428 31.7,56.028 31,63.928h46C76.3,56.028 71.8,49.428 65.3,45.828zM43.4,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2c-0.3,-0.7 -0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C45.3,56.528 44.5,57.328 43.4,57.328L43.4,57.328zM64.6,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2s-0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C66.5,56.528 65.6,57.328 64.6,57.328L64.6,57.328z" android:strokeWidth="1" android:strokeColor="#00000000" />
+  </vector>
+  ```
+
+> 注意：需提交云端打包后才能生效  
+
+
 ### 圆形图标配置 @iconround  
 Android8及以上系统在Google Pixel手机中应用图标在某些地方是圆形的，仅配置普通图标会导致显示较小，可通过以下方法配置适配：
 
@@ -23,12 +96,12 @@ Android8及以上系统在Google Pixel手机中应用图标在某些地方是圆
   <?xml version="1.0" encoding="utf-8"?>  
   <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <application
-      android:roundIcon="@drawable/icon_round" >
+      android:roundIcon="@mipmap/icon_round" >
     </application>
   </manifest>
   ```
 
-- 在项目的nativeResources\android\res\drawable-xxhdpi目录下添加圆形图标文件icon_round.png
+- 在项目的nativeResources\android\res\mipmap-xxhdpi目录下添加圆形图标文件`icon_round.png`或自适应图标`icon_round.xml`
 
 > 注意：需提交云端打包后才能生效  
 

@@ -209,7 +209,7 @@ Map 对象的成员数量。
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| callbackfn | (value: any, key: any, map: Map\<K, V>) => void | 是 | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 key: 每个迭代的键。 map: 正在迭代的 Map。 |
+| callbackfn | (value: V, key: K, map: Map\<K, V>) => void | 是 | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 key: 每个迭代的键。 map: 正在迭代的 Map。 |
 | thisArg | any | 否 | 在 callbackfn 执行中使用的 this 的值。 | 
 
 
@@ -257,7 +257,7 @@ Map 对象的成员数量。
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| callbackfn | (value: any) => void | 是 | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 |
+| callbackfn | (value: V) => void | 是 | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 |
 | thisArg | any | 否 | 在 callbackfn 执行中使用的 this 的值。 | 
 
 
@@ -306,7 +306,7 @@ Map 对象的成员数量。
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| callbackfn | (value: any, key: any) => void | 是 | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 key: 每个迭代的键。 |
+| callbackfn | (value: V, key: K) => void | 是 | Map 中每个元素所要执行的函数。它具有如下的参数： value: 每个迭代的值。 key: 每个迭代的键。 |
 | thisArg | any | 否 | 在 callbackfn 执行中使用的 this 的值。 | 
 
 

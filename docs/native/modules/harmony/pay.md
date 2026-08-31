@@ -4,7 +4,7 @@
 
 #### 配置依赖
 
-依赖har包：`@uni_modules/uni-payment-alipay`，此har包未发布到鸿蒙ohpm需要自行到任意uni-app-x项目编译到鸿蒙的产物（`unpackage/dist/dev/app-harmony/libs/uni_modules__uni_oauth_huawei.har`）内拷贝到鸿蒙原生项目。
+依赖har包：`@uni_modules/uni-payment-alipay`，此har包未发布到鸿蒙ohpm需要自行到任意uni-app-x项目编译到鸿蒙的产物（`unpackage/dist/dev/app-harmony/libs/uni_modules__uni_payment_alipay.har`）内拷贝到鸿蒙原生项目。
 
 在鸿蒙原生项目`oh-package.json5`文件内`dependencies`字段下添加如下内容：
 
@@ -43,6 +43,7 @@ function initUniExtApi() {
   registerUniProvider('payment', 'alipay', new UniPaymentAlipayProviderImpl())
 }
 ```
+:::
 
 ### 微信支付
 
@@ -83,3 +84,4 @@ function initUniExtApi() {
   registerUniProvider('payment', 'wxpay', new UniPaymentWxpayProviderImpl())
 }
 ```
+:::

@@ -13,9 +13,9 @@
 拨打电话
 
 ### makePhoneCall 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 4.63 | 4.63 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.63 | 4.63 | 4.61 |
 
 
 ::: warning 注意
@@ -34,10 +34,10 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| phoneNumber | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 需要拨打的电话号码 |
-| success | (result: MakePhoneCallSuccess) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 成功返回的回调函数 |
-| fail | (result: [MakePhoneCallFail](#makephonecallfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） | 
+| phoneNumber | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 需要拨打的电话号码 |
+| success | (result: MakePhoneCallSuccess) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 成功返回的回调函数 |
+| fail | (result: [MakePhoneCallFail](#makephonecallfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） | 
 
 #### MakePhoneCallFail 的属性值 @makephonecallfail-values 
 
@@ -46,7 +46,7 @@
 | errCode | number | 是 |  |
 | errSubject | string | 是 | 统一错误主题（模块）名称 |
 | data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |  |
 
 #### errCode 的属性描述
@@ -155,7 +155,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

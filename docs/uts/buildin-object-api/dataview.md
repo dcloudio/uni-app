@@ -18,7 +18,7 @@
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | byteLength | number | 是 | Web: √; Android: 4.25; iOS: 4.11; HarmonyOS: 4.61 | ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长度（以字节为单位）。 |
-| BYTES_PER_ELEMENT | any | 否 |   |  |
+| BYTES_PER_ELEMENT | never | 否 |   |  |
 
 ##### ArrayBufferLike & { BYTES_PER_ELEMENT ?: never; } 的方法 @arraybufferlike-values 
 
@@ -961,7 +961,7 @@ ArrayBuffer 是引用该缓冲区的视图。在构造时会被固定，因此�
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | byteLength | number | 是 | Web: √; Android: 4.25; iOS: 4.11; HarmonyOS: 4.61 | ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长度（以字节为单位）。 |
-| BYTES_PER_ELEMENT | any | 否 |   |  |
+| BYTES_PER_ELEMENT | never | 否 |   |  |
 
 ##### ArrayBufferLike & { BYTES_PER_ELEMENT ?: never; } 的方法 @arraybufferlike-values 
 

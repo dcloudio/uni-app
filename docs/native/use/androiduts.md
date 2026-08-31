@@ -33,13 +33,29 @@
 
 **uni-app可以忽略gradle插件配置。**
 
-在build.gradle的plugins节点下添加`io.dcloud.uts.kotlin`的依赖。参考：
+在build.gradle的plugins节点下添加`io.dcloud.uts.kotlin`的依赖。uni-app x（蒸汽模式）需要添加插件`io.dcloud.uts.auto-register`.参考：
 
 ```groovy
 plugins {
     ...
     id 'io.dcloud.uts.kotlin'
+	id 'io.dcloud.uts.auto-register' // 仅uni-app x（蒸汽模式）添加
 }
+```
+
+#### 配置Java版本
+
+::: warning 注意
+仅uni-app x蒸汽模式（Vapor）需要配置
+:::
+
+蒸汽模式（Vapor）下需要设置Java版本为17 
+
+```groovy
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
 ```
 
 #### 添加依赖

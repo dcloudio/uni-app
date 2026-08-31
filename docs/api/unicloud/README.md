@@ -24,7 +24,7 @@ uniCloud是基于serverless的云开发服务，它大幅降低开发者的开�
 | :- | :- | :- |  :-: | :- |
 | config | **UniCloudInitOptions** | 是 |   |  |
 | mixinDatacom | any | 是 |   |  |
-| SSEChannel | any | 是 | Web: 4.71; 微信小程序: 4.71; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 服务端通知通道 | 
+| SSEChannel | [SSEChannel](#ssechannel-values) | 是 | Web: 4.71; 微信小程序: 4.71; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 服务端通知通道 | 
 
 #### config 的属性描述
 
@@ -39,6 +39,74 @@ uniCloud是基于serverless的云开发服务，它大幅降低开发者的开�
 | accessKey | string | 否 | 支付宝云accessKey |
 | secretKey | string | 否 | 支付宝云secretKey |
 | wsEndpoint | string | 否 | 支付宝云 WebSocket Endpoint |
+
+### SSEChannel 的方法 @ssechannel-values 
+
+### open(): Promise\<void>; @open
+open
+开启通道，注意只有开启之后才能把SSEChannel实例传入云函数
+
+
+
+#### 返回值 
+
+| 类型 |
+| :- |
+| Promise\<void> |
+ 
+
+### toJSON(): {    appId: string;    pushClientId: string;    seqId: string;  }; @tojson
+toJSON
+
+
+
+
+#### 返回值 
+
+| 类型 |
+| :- |
+| [{ appId: string; pushClientId: string; seqId: string; }](#appid-values) |
+
+#### { appId: string; pushClientId: string; seqId: string; } 的属性描述
+
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| appId | string | 是 |
+| pushClientId | string | 是 |
+| seqId | string | 是 | 
+
+### close(): void; @close
+close
+关闭通道
+
+
+
+
+### on(event: 'message', callback: (message: string) => void): void; @on
+on
+监听消息接收事件
+
+#### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| event | string | 是 |
+| callback | (message: string) => void | 是 | 
+
+
+
+### off(event: 'message', callback: (message: string) => void): void; @off
+off
+取消监听消息接收事件
+
+#### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| event | string | 是 |
+| callback | (message: string) => void | 是 | 
+
+
 
 
 

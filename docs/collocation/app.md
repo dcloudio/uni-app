@@ -18,15 +18,15 @@
 
 `uni-app-x` 支持如下应用生命周期函数：
 
-### onLaunch?(options: OnLaunchOptions): void; @onlaunch
+### onLaunch(options: OnLaunchOptions): void; @onlaunch
 
 生命周期回调，监听应用初始化，应用初始化完成时触发，全局只触发一次。
 
 
 #### onLaunch 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9 | 4.0 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
 
 
 #### 参数 
@@ -40,20 +40,20 @@
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 |   | 应用启动页面路径 |
-| appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
-| appLink | string | 否 | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.25; HarmonyOS: x | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
+| appScheme | string | 否 | Web: x; 微信小程序: x; Android(VDOM): 4.25; Android(Vapor): 5.25; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
+| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS: x | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
 
 
 
 
-- 如果应用通过scheme或applink（通用链接）启动，可在本生命周期获取相应参数。配置scheme或applink需在AndroidManifest.xml或info.plist中配置，打包后生效。
+- 如果应用通过scheme或applink（通用链接）启动，可在本生命周期获取相应参数。配置scheme或applink需在manifest.json中配置，打包后生效。
 
 #### 参见
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/collocation/App.html#applifecycle)
 
 
 
-### onShow?(options: OnShowOptions): void; @onshow
+### onShow(options: OnShowOptions): void; @onshow
 
 生命周期回调 监听应用显示
 
@@ -61,9 +61,9 @@
 
 
 #### onShow 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9 | 4.0 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
 
 
 #### 参数 
@@ -77,13 +77,13 @@
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 |   | 应用启动页面路径 |
-| appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
-| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: x | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> | 
+| appScheme | string | 否 | Web: x; 微信小程序: x; Android(VDOM): 4.25; Android(Vapor): 5.25; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
+| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS: x | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> | 
 
 
 
 
-- 如果应用通过scheme或applink（通用链接）启动（不管首次启动还是后台激活到前台，均触发本生命周期），可在本生命周期获取。配置scheme或applink需在AndroidManifest.xml或info.plist中配置，打包后生效。
+- 如果应用通过scheme或applink（通用链接）启动（不管首次启动还是后台激活到前台，均触发本生命周期），可在本生命周期获取。配置scheme或applink需在manifest.json中配置，打包后生效。
 - 如开发App页面直达功能，在配置scheme或通用链接并打包后，一般在onShow生命周期里解析scheme或applink参数，然后自行写navigatorTo等路由API跳转页面。onShow的好处是不管首页启动还是后台激活到前台，都触发。当然如果是初次启动，仍然会先打开App的首页再执行开发者编写的路由代码。
 - Web的页面直达无需使用scheme或通用链接，所有页面地址都可以直接在地址栏访问。
 
@@ -94,7 +94,7 @@
 
 
 
-### onHide?(): void; @onhide
+### onHide(): void; @onhide
 
 生命周期回调 监听应用隐藏
 
@@ -102,9 +102,9 @@
 
 
 #### onHide 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9 | 4.0 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
 
 
 
@@ -118,15 +118,15 @@
 
 
 
-### onExit?(): void; @onexit
+### onExit(): void; @onexit
 
 监听应用退出。app-uvue-android 3.9+
 
 
 #### onExit 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.72 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.72 |
 
 
 
@@ -136,7 +136,7 @@
 
 * 参见 [uni.exit](https://doc.dcloud.net.cn/uni-app-x/api/exit.html#exit) 相关文档
 
-### onError?(error: any): void; @onerror
+### onError(error: any): void; @onerror
 
 错误监听函数
 应用发生脚本错误或 API 调用报错时触发
@@ -155,9 +155,9 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 :::
 #### onError 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 4.21 | 4.21 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.21 | 4.21 | 4.61 |
 
 
 #### 参数 
@@ -175,15 +175,15 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 
 
-### onLastPageBackPress?(): void; @onlastpagebackpress
+### onLastPageBackPress(): void; @onlastpagebackpress
 
 最后一个页面按下Android back键，常用于自定义退出。
 
 
 #### onLastPageBackPress 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.71 |
 
 
 
@@ -196,7 +196,7 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 
 
-### onPageNotFound?(options: OnPageNotFoundOption): void; @onpagenotfound
+### onPageNotFound(options: OnPageNotFoundOption): void; @onpagenotfound
 
 页面不存在监听函数
 
@@ -208,9 +208,9 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 
 #### onPageNotFound 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | x | x |
 
 
 #### 参数 
@@ -236,15 +236,15 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 
 
-### onUnhandledRejection?(): void; @onunhandledrejection
+### onUnhandledRejection(): void; @onunhandledrejection
 
 未处理的 Promise 拒绝事件监听函数
 
 
 #### onUnhandledRejection 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | x | x |
 
 
 
@@ -257,15 +257,15 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 
 
-### onThemeChange?(): void; @onthemechange
+### onThemeChange(): void; @onthemechange
 
 监听系统主题变化
 
 
 #### onThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.25 | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | 4.41 | x | x | x |
 
 
 监听主题变化一般不推荐这个生命周期。而是使用uni api方式。详见：[uni-app x主题适配](../api/theme-change.md)

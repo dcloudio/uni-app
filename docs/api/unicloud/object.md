@@ -22,7 +22,7 @@
 | customUI | boolean | 否 |   | 是否移除自动展示的ui |
 | loadingOptions | **UniCloudImportObjectLoadingOptions** | 否 |   | loading界面配置 |
 | errorOptions | **UniCloudImportObjectErrorOptions** | 否 |   | 错误提示配置 |
-| secretMethods | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 指定方法的加密类型 | 
+| secretMethods | Record\<K, T> | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 指定方法的加密类型 | 
 
 ##### loadingOptions 的属性描述
 
@@ -52,7 +52,7 @@
 | _obj | [InternalUniCloudCloudObject](#internalunicloudcloudobject-values) | 是 |
 ##### InternalUniCloudCloudObject 的方法 @internalunicloudcloudobject-values 
 
-##### callMethod\<T = UTSJSONObject>(methodName: string, args: Array\<any \| null>): Promise\<T>; @callmethod
+##### callMethod\<T = UTSJSONObject>(methodName: string, args: Array\<any>): Promise\<T>; @callmethod
 callMethod
 
 
@@ -73,7 +73,7 @@ callMethod
 
 #### UniCloudCloudObjectCaller 的方法 @unicloudcloudobjectcaller-values 
 
-#### _getArgs: protected _getArgs(...args: Array\<any \| null>): Array\<any \| null>; @_getargs
+#### _getArgs: protected _getArgs(...args: Array\<any>): Array\<any \| null>; @_getargs
 _getArgs
 
 

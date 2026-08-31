@@ -4,7 +4,7 @@
 
 |广告SDK			|aar依赖																																										|线上依赖																																																																							|仓库地址																								|说明						|
 |:--			|:--																																										|:--																																																																							|-																									|:--						|
-|基础模块			|uni-ad-release.aar<br/>uni-ad-splash-release.aar<br/>uniad-native-release.aar																								|-																																																																								|-																									|广告基础模块及开屏广告，必选	|
+|基础模块			|uni-ad-release.aar（VDOM模式）<br/>uni-ad-dom2-release.aar（蒸汽模式）<br/>uni-ad-splash-release.aar<br/>uniad-native-release.aar																								|-																																																																								|-																									|广告基础模块及开屏广告，必选	|
 |优量汇			|uniad-gdt-release.aar<br/>GDTSDK.unionNormal.aar																															|-																																																																								|-																									|可选，国内广告				|
 |GroMore		|uniad-gromore-release.aar<br/>open_ad_sdk.aar																																|-																																																																								|-																									|可选，国内广告				|
 |快手			|uniad-ks-release.aar<br/>ks_adsdk-ad.aar																																	|-																																																																								|-																									|可选，国内广告				|
@@ -35,12 +35,27 @@
 
 在主项目的build.gradle的下添加联盟ID：
 
+::: preview
+
+> build.gradle
+
 ```groovy
-	defaultConfig {
-        ...
-        buildConfigField "String", "DCLOUDUnionId", "\"联盟ID\""
-    }
+defaultConfig {
+    ...
+    buildConfigField "String", "DCLOUDUnionId", "\"联盟ID\""
+}
 ```
+
+> build.gradle.kts
+
+```groovy
+defaultConfig {
+    ...
+    buildConfigField("String", "DCLOUDUnionId", "\"联盟ID\"")
+}
+```
+
+:::
 
 ***
 说明：联盟ID位于：[uni-AD后台](https://uniad.dcloud.net.cn/)->首页->联盟ID
@@ -50,8 +65,39 @@
 
 将以下内容添加到主模块的build.gradle，详见[根据configjson配置应用](../../use/androiduts.md#utscomponents)。
 
+::: preview
+
+> build.gradle（蒸汽模式）
+
+```groovy
+defaultConfig {
+    buildConfigField 'String', 'UTSMethodRegister', '"uts.sdk.modules.DCloudUniAdDom2.UniUTSMethodRegister"'
+}
+```
+
+> build.gradle.kts（蒸汽模式）
+
+```groovy
+defaultConfig {
+    buildConfigField("String", "UTSMethodRegister", "\"uts.sdk.modules.DCloudUniAdDom2.UniUTSMethodRegister\"")
+}
+```
+
+> build.gradle（VDOM模式）
+
 ```groovy
 defaultConfig {
     buildConfigField "String", "UTSRegisterComponents", '\"[{\\\"name\\\":\\\"ad\\\",\\\"class\\\":\\\"uts.sdk.modules.DCloudUniAd.AdComponent\\\"}]\"'
 }
 ```
+
+> build.gradle.kts（VDOM模式）
+
+```groovy
+defaultConfig {
+    buildConfigField("String", "UTSRegisterComponents", "\"[{\\\"name\\\":\\\"ad\\\",\\\"class\\\":\\\"uts.sdk.modules.DCloudUniAd.AdComponent\\\"}]\"")
+}
+```
+
+:::
+

@@ -63,6 +63,8 @@ export default class EntryAbility extends UniEntryAbility {
 
 ## 启动
 
+::: preview
+> VDOM模式
 ```typescript
 export type AnimationType =
   | "slide-in-right"
@@ -80,6 +82,28 @@ export declare function openUniApp(
   config?: IOpenUniAppConfig
 ): void;
 ```
+> 蒸汽模式
+```typescript
+export type AnimationType =
+  | "slide-in-right"
+  | "slide-in-left"
+  | "slide-in-top"
+  | "slide-in-bottom"
+  | "fade-in"
+  | "none";
+interface IOpenUniAppConfig {
+  animationType?: AnimationType;
+  animationDuration?: number;
+}
+export interface IUniAppSDK {
+  close(): void
+}
+export declare function openUniApp(
+  appID: string,
+  config?: IOpenUniAppConfig
+): IUniAppSDK;
+```
+:::
 
 ### 示例代码
 

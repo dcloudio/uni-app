@@ -2,13 +2,13 @@
 
 
 
-backdrop-filter CSS 属性可以让你为一个元素后面区域添加图形效果（如模糊或颜色偏移）。因为它适用于元素背后的所有元素，为了看到效果，必须使元素或其背景至少部分透明。
+backdrop-filter 属性设置元素的背景滤镜效果，即对其后方（背景透出）的所有内容添加图形效果（如毛玻璃、背景高斯模糊等）。为了看到效果，必须使元素或其背景至少部分透明。
 
 
 ### uni-app x 兼容性 <Help />
-| Web | Android 系统版本 | Android(VDOM) | Android(Vapor) | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | - | - | 5.25 | - | - | 5.25 | - | - | 5.25 |
+| Web | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 5.25 | x | 5.25 | x | 5.25 |
 
 
 
@@ -25,8 +25,8 @@ backdrop-filter: none | <filter-function-list>;
 ### backdrop-filter 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| none | Web: 4.0; Android 系统版本: -; Android(VDOM): -; Android(Vapor): 5.25; iOS 系统版本: -; iOS(VDOM): -; iOS(Vapor): 5.25; HarmonyOS 系统版本: -; HarmonyOS(VDOM): -; HarmonyOS(Vapor): 5.25 | 没有应用于背景的滤镜。 |
-| blur() | Web: 4.0; Android 系统版本: -; Android(VDOM): -; Android(Vapor): 5.25; iOS 系统版本: -; iOS(VDOM): -; iOS(Vapor): 5.25; HarmonyOS 系统版本: -; HarmonyOS(VDOM): -; HarmonyOS(Vapor): 5.25 | The blur() CSS function applies a Gaussian blur to the input image. Its result is a \<filter-function>. |
+| none | Web: 4.0; Android(VDOM): x; Android(Vapor): 5.25; iOS(VDOM): x; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 清除/禁用背景滤镜效果 |
+| blur() | Web: 4.0; Android(VDOM): x; Android(Vapor): 5.25; iOS(VDOM): x; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 对背景内容添加高斯模糊（Gaussian Blur）滤镜效果 |
 
 
 

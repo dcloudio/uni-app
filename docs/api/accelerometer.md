@@ -3,24 +3,24 @@
 监听加速度数据变化事件
 
 ### onAccelerometerChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 是 | 支付宝小程序: x | 加速度数据事件的监听函数 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 是 | 加速度数据事件的监听函数 | 
 
 ### OnAccelerometerChangeCallbackResult 的属性值 @onaccelerometerchangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| x | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | X 轴加速度数据 |
-| y | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | Y 轴加速度数据 |
-| z | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | Z 轴加速度数据 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | X 轴加速度数据 |
+| y | number | 是 | Y 轴加速度数据 |
+| z | number | 是 | Z 轴加速度数据 |
 
 
 
@@ -52,24 +52,24 @@
 监听加速度数据变化事件
 
 ### offAccelerometerChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 否 | 支付宝小程序: x | onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 否 | onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
 
 ### OnAccelerometerChangeCallbackResult 的属性值 @onaccelerometerchangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| x | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | X 轴加速度数据 |
-| y | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | Y 轴加速度数据 |
-| z | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | Z 轴加速度数据 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | X 轴加速度数据 |
+| y | number | 是 | Y 轴加速度数据 |
+| z | number | 是 | Z 轴加速度数据 |
 
 
 
@@ -98,105 +98,69 @@
 
 
 ### startAccelerometer 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| options | **StartAccelerometerOptions** | 否 | 支付宝小程序: x | 开始监听加速度数据的参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **StartAccelerometerOptions** | 否 | 开始监听加速度数据的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| interval | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 监听加速度数据回调函数的执行频率 |
-| success | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 监听加速度数据调用成功的回调函数 |
-| fail | (res: [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 监听加速度数据调用失败的回调函数 |
-| complete | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values) \| [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| interval | string | 否 | 监听加速度数据回调函数的执行频率 |
+| success | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values)) => void | 否 | 监听加速度数据调用成功的回调函数 |
+| fail | (res: [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 监听加速度数据调用失败的回调函数 |
+| complete | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values) \| [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### interval 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| game | 支付宝小程序: x | 适用于更新游戏的回调频率，约 20ms/次 左右 |
-| ui | 支付宝小程序: x | 适用于更新 UI 的回调频率，约 60ms/次 左右 |
-| normal | 支付宝小程序: x | 普通的回调频率，约 200ms/次 左右 |
+| 合法值 | 描述 |
+| :- | :- |
+| 'game' | 适用于更新游戏的回调频率，约 20ms/次 左右 |
+| ui | 适用于更新 UI 的回调频率，约 60ms/次 左右 |
+| normal | 普通的回调频率，约 200ms/次 左右 |
 
 #### StartAccelerometerSuccess 的属性值 @startaccelerometersuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 否 | 支付宝小程序: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StartAccelerometerFail 的属性值 @startaccelerometerfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x |  |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| 501 | 支付宝小程序: x |
-| 502 | 支付宝小程序: x |
-| 503 | 支付宝小程序: x |
-| 601 | 支付宝小程序: x |
-| 602 | 支付宝小程序: x |
-| 603 | 支付宝小程序: x |
-| 604 | 支付宝小程序: x |
-| 701 | 支付宝小程序: x |
-| 702 | 支付宝小程序: x |
-| 703 | 支付宝小程序: x |
-| 801 | 支付宝小程序: x |
-| 802 | 支付宝小程序: x |
-| 803 | 支付宝小程序: x |
-| 804 | 支付宝小程序: x |
-| 901 | 支付宝小程序: x |
-
-#### StartAccelerometerSuccess 的属性值 @startaccelerometersuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 否 | 支付宝小程序: x |
-
-#### StartAccelerometerFail 的属性值 @startaccelerometerfail-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x |  |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
-
-#### errCode 的属性描述
-
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| 501 | 支付宝小程序: x |
-| 502 | 支付宝小程序: x |
-| 503 | 支付宝小程序: x |
-| 601 | 支付宝小程序: x |
-| 602 | 支付宝小程序: x |
-| 603 | 支付宝小程序: x |
-| 604 | 支付宝小程序: x |
-| 701 | 支付宝小程序: x |
-| 702 | 支付宝小程序: x |
-| 703 | 支付宝小程序: x |
-| 801 | 支付宝小程序: x |
-| 802 | 支付宝小程序: x |
-| 803 | 支付宝小程序: x |
-| 804 | 支付宝小程序: x |
-| 901 | 支付宝小程序: x |
+| 合法值 |
+| :- |
+| 601 |
+| 602 |
+| 603 |
+| 604 |
+| 701 |
+| 702 |
+| 703 |
+| 801 |
+| 802 |
+| 803 |
+| 804 |
+| 501 |
+| 502 |
+| 503 |
+| 901 |
 
 
 
@@ -229,96 +193,60 @@
 
 
 ### stopAccelerometer 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| options | **StopAccelerometerOptions** | 否 | 支付宝小程序: x | 停止监听加速度数据的参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **StopAccelerometerOptions** | 否 | 停止监听加速度数据的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| success | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 停止监听加速度数据调用成功的回调函数 |
-| fail | (res: [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 停止监听加速度数据调用失败的回调函数 |
-| complete | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values) \| [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| success | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values)) => void | 否 | 停止监听加速度数据调用成功的回调函数 |
+| fail | (res: [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 停止监听加速度数据调用失败的回调函数 |
+| complete | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values) \| [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StopAccelerometerSuccess 的属性值 @stopaccelerometersuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 否 | 支付宝小程序: x |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StopAccelerometerFail 的属性值 @stopaccelerometerfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x |  |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| 501 | 支付宝小程序: x |
-| 502 | 支付宝小程序: x |
-| 503 | 支付宝小程序: x |
-| 601 | 支付宝小程序: x |
-| 602 | 支付宝小程序: x |
-| 603 | 支付宝小程序: x |
-| 604 | 支付宝小程序: x |
-| 701 | 支付宝小程序: x |
-| 702 | 支付宝小程序: x |
-| 703 | 支付宝小程序: x |
-| 801 | 支付宝小程序: x |
-| 802 | 支付宝小程序: x |
-| 803 | 支付宝小程序: x |
-| 804 | 支付宝小程序: x |
-| 901 | 支付宝小程序: x |
-
-#### StopAccelerometerSuccess 的属性值 @stopaccelerometersuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| errMsg | string | 否 | 支付宝小程序: x |
-
-#### StopAccelerometerFail 的属性值 @stopaccelerometerfail-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x |  |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
-
-#### errCode 的属性描述
-
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| 501 | 支付宝小程序: x |
-| 502 | 支付宝小程序: x |
-| 503 | 支付宝小程序: x |
-| 601 | 支付宝小程序: x |
-| 602 | 支付宝小程序: x |
-| 603 | 支付宝小程序: x |
-| 604 | 支付宝小程序: x |
-| 701 | 支付宝小程序: x |
-| 702 | 支付宝小程序: x |
-| 703 | 支付宝小程序: x |
-| 801 | 支付宝小程序: x |
-| 802 | 支付宝小程序: x |
-| 803 | 支付宝小程序: x |
-| 804 | 支付宝小程序: x |
-| 901 | 支付宝小程序: x |
+| 合法值 |
+| :- |
+| 601 |
+| 602 |
+| 603 |
+| 604 |
+| 701 |
+| 702 |
+| 703 |
+| 801 |
+| 802 |
+| 803 |
+| 804 |
+| 501 |
+| 502 |
+| 503 |
+| 901 |
 
 
 
@@ -506,9 +434,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 ### tips

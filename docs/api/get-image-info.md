@@ -3,9 +3,9 @@
 获取图片信息
 
 ### getImageInfo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 4.18 | 4.25 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.18 | 4.25 | 4.61 |
 
 
 ### 参数 
@@ -18,33 +18,33 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25 | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
-| success | (callback: [GetImageInfoSuccess](#getimageinfosuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
-| fail | (callback: [GetImageInfoFail](#getimageinfofail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
+| success | (callback: [GetImageInfoSuccess](#getimageinfosuccess-values)) => void | 否 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
+| fail | (callback: [GetImageInfoFail](#getimageinfofail-values)) => void | 否 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetImageInfoSuccess 的属性值 @getimageinfosuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| width | number | 是 | 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25 | 图片宽度，单位px |
-| height | number | 是 | 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25 | 图片高度，单位px |
-| path | string | 是 | 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25 | 返回图片的本地路径 |
-| orientation | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 返回图片的方向 |
-| type | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 返回图片的格式 |
+| width | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片宽度，单位px |
+| height | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片高度，单位px |
+| path | string | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的本地路径 |
+| orientation | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的方向 |
+| type | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的格式 |
 
 #### orientation 的属性描述
 
-| 合法值 |
-| :- |
-| up |
-| down |
-| left |
-| right |
-| up-mirrored |
-| down-mirrored |
-| left-mirrored |
-| right-mirrored |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| 'up' | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 |
+| down |   |
+| left |   |
+| right |   |
+| up-mirrored |   |
+| down-mirrored |   |
+| left-mirrored |   |
+| right-mirrored |   |
 
 #### GetImageInfoFail 的属性值 @getimageinfofail-values 
 
@@ -53,7 +53,7 @@
 | errCode | number | 是 | 错误码 |
 | errSubject | string | 是 | 统一错误主题（模块）名称 |
 | data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |  |
 
 #### errCode 的属性描述
@@ -248,7 +248,7 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

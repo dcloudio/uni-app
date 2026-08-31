@@ -83,7 +83,8 @@ Array.from() 静态方法从可迭代或类数组对象创建一个新的浅拷�
 
 | 名称 | 类型 | 必备 |
 | :- | :- | :- |
-| length | number | 是 | 
+| length | number | 是 |
+| [n: number] | T | 是 | 
 
 
 **返回值**
@@ -201,13 +202,14 @@ Array.fromAsync() 静态方法可以由一个异步可迭代对象、可迭代�
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | arrayLike | [ArrayLike\<T>](#arraylike-values) | 是 | 要转换为数组的异步可迭代、可迭代或类数组对象。 |
-| mapfn | (v: T, k: number) => any | 是 | 为数组中的每个元素执行的函数。如果提供了该函数，则每个要添加到数组中的值都会先通过该函数处理，mapFn 的返回值将代替该值被添加到数组中（在等待兑现后）。该函数被调用时将传入以下参数：element 数组当前正在处理的元素。index 数组当前正在处理的元素的索引。 | 
+| mapfn | (v: T, k: number) => U | 是 | 为数组中的每个元素执行的函数。如果提供了该函数，则每个要添加到数组中的值都会先通过该函数处理，mapFn 的返回值将代替该值被添加到数组中（在等待兑现后）。该函数被调用时将传入以下参数：element 数组当前正在处理的元素。index 数组当前正在处理的元素的索引。 | 
 
 #### arrayLike 的属性描述
 
 | 名称 | 类型 | 必备 |
 | :- | :- | :- |
 | length | number | 是 |
+| [n: number] | T | 是 |
 
 
 **返回值**
@@ -1750,7 +1752,7 @@ map() 方法创建一个新数组，这个新数组由原数组中的每个元�
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| callbackfn | (value: T, index: number, array: Array&lt;T&gt;) => any | 是 | 为数组中的每个元素执行的函数。它的返回值作为一个元素被添加为新数组中。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 map() 的数组本身。 |
+| callbackfn | (value: T, index: number, array: Array&lt;T&gt;) => U | 是 | 为数组中的每个元素执行的函数。它的返回值作为一个元素被添加为新数组中。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 map() 的数组本身。 |
 | thisArg | any | 否 | 执行 callbackFn 时用作 this 的值 | 
 
 
@@ -2163,7 +2165,7 @@ reduce() 方法对数组中的每个元素按序执行一个提供的 reducer �
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| callbackfn | (previousValue: any, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => any | 是 | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array\[0] 的值，否则为 array\[1]。 currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 |
+| callbackfn | (previousValue: U, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => U | 是 | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array\[0] 的值，否则为 array\[1]。 currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 |
 | initialValue | U | 是 | 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。 | 
 
 
@@ -2401,7 +2403,7 @@ reduceRight() 方法对累加器（accumulator）和数组的每个值（按从�
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| callbackfn | (previousValue: any, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => any | 是 | 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。 currentValue:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 reduceRight() 的数组本身。 |
+| callbackfn | (previousValue: U, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => U | 是 | 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。 currentValue:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 reduceRight() 的数组本身。 |
 | initialValue | U | 是 | 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。 | 
 
 

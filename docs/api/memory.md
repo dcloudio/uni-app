@@ -3,22 +3,22 @@
 监听内存不足告警事件。当系统内存不足时，会触发该事件，开发者可以在回调函数中获取当前内存使用情况，并进行相应的处理。
 
 ### onMemoryWarning 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (result: [MemoryWarningCallbackResult](#memorywarningcallbackresult-values)) => void | 是 | Web: x; 支付宝小程序: x | 内存不足告警事件的监听函数 | 
+| callback | (result: [MemoryWarningCallbackResult](#memorywarningcallbackresult-values)) => void | 是 | Web: x | 内存不足告警事件的监听函数 | 
 
 ### MemoryWarningCallbackResult 的属性值 @memorywarningcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| level | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
+| level | number | 否 | Web: x | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
 
 
 
@@ -44,22 +44,22 @@
 取消监听内存不足告警事件。
 
 ### offMemoryWarning 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (result: [MemoryWarningCallbackResult](#memorywarningcallbackresult-values)) => void | 否 | Web: x; 支付宝小程序: x | onMemoryWarning 传入的监听函数。不传此参数则移除所有监听函数。 | 
+| callback | (result: [MemoryWarningCallbackResult](#memorywarningcallbackresult-values)) => void | 否 | Web: x | onMemoryWarning 传入的监听函数。不传此参数则移除所有监听函数。 | 
 
 ### MemoryWarningCallbackResult 的属性值 @memorywarningcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| level | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
+| level | number | 否 | Web: x | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
 
 
 
@@ -284,7 +284,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

@@ -7,22 +7,22 @@
 
 
 ### onUserCaptureScreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (res: [OnUserCaptureScreenCallbackResult](#onusercapturescreencallbackresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (res: [OnUserCaptureScreenCallbackResult](#onusercapturescreencallbackresult-values)) => void | 否 | Web: x | uni.onUserCaptureScreen/uni.offUserCaptureScreen回调函数定义 | 
 
 ### OnUserCaptureScreenCallbackResult 的属性值 @onusercapturescreencallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | 否 | Web: x; 支付宝小程序: x | 截屏文件路径（仅Android返回） |
+| path | string | 否 | Web: x | 截屏文件路径（仅Android返回） |
 
 
 
@@ -52,22 +52,22 @@
 
 
 ### offUserCaptureScreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (res: [OnUserCaptureScreenCallbackResult](#onusercapturescreencallbackresult-values)) => void | 否 | Web: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (res: [OnUserCaptureScreenCallbackResult](#onusercapturescreencallbackresult-values)) => void | 否 | Web: x | uni.onUserCaptureScreen/uni.offUserCaptureScreen回调函数定义 | 
 
 ### OnUserCaptureScreenCallbackResult 的属性值 @onusercapturescreencallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | 否 | Web: x; 支付宝小程序: x | 截屏文件路径（仅Android返回） |
+| path | string | 否 | Web: x | 截屏文件路径（仅Android返回） |
 
 
 
@@ -93,9 +93,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 
@@ -108,35 +108,35 @@
 
 
 ### setUserCaptureScreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **SetUserCaptureScreenOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **SetUserCaptureScreenOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| enable | boolean | 是 | Web: x; 支付宝小程序: x | true: 允许用户截屏 false: 不允许用户截屏，防止用户截屏到应用页面内容 |
-| success | (res: SetUserCaptureScreenSuccess) => void | 否 | Web: x; 支付宝小程序: x | uni.setUserCaptureScreen成功回调函数定义 |
-| fail | (res: [IUniError](#iunierror-values)) => void | 否 | Web: x; 支付宝小程序: x | uni.setUserCaptureScreen失败回调函数定义 |
-| complete | (res: any) => void | 否 | Web: x; 支付宝小程序: x | uni.setUserCaptureScreen完成回调函数定义 | 
+| enable | boolean | 是 | Web: x | true: 允许用户截屏 false: 不允许用户截屏，防止用户截屏到应用页面内容 |
+| success | (res: SetUserCaptureScreenSuccess) => void | 否 | Web: x | uni.setUserCaptureScreen成功回调函数定义 |
+| fail | (res: [IUniError](#iunierror-values)) => void | 否 | Web: x | uni.setUserCaptureScreen失败回调函数定义 |
+| complete | (res: any) => void | 否 | Web: x | uni.setUserCaptureScreen完成回调函数定义 | 
 
 #### IUniError 的属性值 @iunierror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 统一错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errCode | number | 是 | Web: x | 统一错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 
 
@@ -242,9 +242,9 @@ onUnmounted(() => {
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 ## tips

@@ -6,11 +6,11 @@
 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- | :- | :- |
-| id | string(string.IDString) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 组件的唯一标识。需避免同页面中不同组件设置重复id；需避免使用uni-、uni.等前缀 |
-| style | string \| UTSJSONObject \| Array\<string \| UTSJSONObject> | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 组件的内联样式，可以动态设置的内联样式 |
-| class | string(string.ClassString) \| UTSJSONObject \| Array\<string(string.ClassString) \| UTSJSONObject> | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 组件的样式类，在对应的 css 中定义的样式类 |
-| ref | string \| Function | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | vue中组件的唯一标识，用来给子组件注册引用信息，[详见](https://doc.dcloud.net.cn/uni-app-x/vue/built-in.html#ref) |
-| data-* | any | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 自定义属性，组件上触发的事件时，会发送给事件处理函数 |
+| id | string(string.IDString) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 组件的唯一标识。需避免同页面中不同组件设置重复id；需避免使用uni-、uni.等前缀 |
+| style | string \| UTSJSONObject \| Array\<string \| UTSJSONObject> | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 组件的内联样式，可以动态设置的内联样式 |
+| class | string(string.ClassString) \| UTSJSONObject \| Array\<string(string.ClassString) \| UTSJSONObject> | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 组件的样式类，在对应的 css 中定义的样式类 |
+| ref | string \| Function | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | vue中组件的唯一标识，用来给子组件注册引用信息，[详见](https://doc.dcloud.net.cn/uni-app-x/vue/built-in.html#ref) |
+| data-* | any | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 自定义属性，组件上触发的事件时，会发送给事件处理函数 |
 | android-* | any | Web: x; Android: 3.9; iOS: x; HarmonyOS: x | App-Android平台专有属性，详见[App-Android平台专有属性](https://doc.dcloud.net.cn/uni-app-x/component/common.html#attribute-android)章节 |
 
 #### data-*@dataset
@@ -206,20 +206,20 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- | :- | :- |
-| @click | (event: [UniPointerEvent](/component/common.md#unipointerevent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后马上离开。与tap相同，（推荐使用tap事件代替），冒泡事件 |
+| @click | (event: [UniPointerEvent](/component/common.md#unipointerevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后马上离开。与tap相同，（推荐使用tap事件代替），冒泡事件 |
 | @mousedown | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 鼠标在元素上点击后触发 |
 | @mousemove | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 鼠标在元素上移动时触发 |
 | @mouseup | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 鼠标主按钮在元素上松开时触发 |
-| @touchstart | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸动作开始，冒泡事件，event.type 值为 touchstart |
-| @touchmove | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后移动，冒泡事件，event.type 值为 touchmove |
-| @touchcancel | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸动作被打断，如来电提醒，弹窗，冒泡事件，event.type 值为 touchcancel |
-| @touchend | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸动作结束，冒泡事件，event.type 值为 touchend |
-| @tap | (event: [UniPointerEvent](/component/common.md#unipointerevent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后马上离开，冒泡事件 |
-| @longpress | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 如果一个组件被绑定了 longpress 事件，那么当用户手指触摸后，超过350ms再离开会触发，冒泡事件 |
-| @longtap | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后，超过350ms再离开（推荐使用 longpress 事件代替） |
-| @transitionend | (event: [UniEvent](/component/common.md#unievent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | transition 效果结束时触发 |
-| @fullscreenchange | (event: [UniEvent](/component/common.md#unievent)) => void | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 进入或退出全屏模式时触发 |
-| @fullscreenerror | (event: [UniEvent](/component/common.md#unievent)) => void | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 进入或退出全屏模式失败时触发 |
+| @touchstart | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸动作开始，冒泡事件，event.type 值为 touchstart |
+| @touchmove | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后移动，冒泡事件，event.type 值为 touchmove |
+| @touchcancel | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸动作被打断，如来电提醒，弹窗，冒泡事件，event.type 值为 touchcancel |
+| @touchend | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸动作结束，冒泡事件，event.type 值为 touchend |
+| @tap | (event: [UniPointerEvent](/component/common.md#unipointerevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后马上离开，冒泡事件 |
+| @longpress | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 如果一个组件被绑定了 longpress 事件，那么当用户手指触摸后，超过350ms再离开会触发，冒泡事件 |
+| @longtap | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后，超过350ms再离开（推荐使用 longpress 事件代替） |
+| @transitionend | (event: [UniEvent](/component/common.md#unievent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | transition 效果结束时触发 |
+| @fullscreenchange | (event: [UniEvent](/component/common.md#unievent)) => void | Web: x; 微信小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 进入或退出全屏模式时触发 |
+| @fullscreenerror | (event: [UniEvent](/component/common.md#unievent)) => void | Web: x; 微信小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 进入或退出全屏模式失败时触发 |
 
 
 
@@ -1122,7 +1122,7 @@ UniNativeViewEvent -- Extends --> UniCustomEvent
 
 ## UniVideoEvent
 
-通用事件<br/>临时方案，规避组件Event接口无法直接继承UniEvent的问题
+video 通用事件，组件Event接口无法直接继承UniEvent
 
 
 

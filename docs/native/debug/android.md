@@ -68,8 +68,8 @@ versionName为应用的版本名称（字符串），在系统应用管理程序
 **注意：自定义基座不支持aab包。**
 
 ### 2. 将自定义基座添加到uni-app x 项目  
-- 将生成的apk文件重命名为`android_debug.apk`
-- 将`android_debug.apk`拷贝到uni-app x项目的unpackage/debug目录下
+- 将生成的apk文件重命名为`android_debug.apk（VDOM模式）`或`android_debug_vapor.apk（蒸汽模式）`
+- 将apk文件拷贝到uni-app x项目的unpackage/debug目录下
 - 点击 HBuilderX中运行按钮->运行到Android App基座，勾选`使用自定义基座运行`
 
 	![](https://web-ext-storage.dcloud.net.cn/native/doc/android/debug_hx.png)

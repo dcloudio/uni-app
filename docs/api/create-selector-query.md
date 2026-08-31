@@ -24,9 +24,9 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 小程序下有时用本API获取部分组件的上下文context，但这个写法不跨平台。跨平台的获取组件context，应该使用uni.createXXContext()。
 
 ### createSelectorQuery 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.91 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
 
 
 
@@ -45,13 +45,9 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 
 #### SelectorQuery 的方法 @selectorquery-values 
 
-#### in(component: any \| null): SelectorQuery @in
+#### in(component: any): SelectorQuery @in
 in
 将选择器的选取范围更改为自定义组件component内
-##### in 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | - |
 
 ##### 参数 
 
@@ -64,16 +60,12 @@ in
 
 | 类型 |
 | :- |
-| [SelectorQuery](#selectorquery-values) |
+| SelectorQuery |
  
 
 #### select(selector: string): NodesRef @select
 select
 在当前页面下选择第一个匹配选择器selector的节点
-##### select 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | - |
 
 ##### 参数 
 
@@ -90,7 +82,7 @@ select
 
 ###### NodesRef 的方法 @nodesref-values 
 
-###### boundingClientRect( callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @boundingclientrect
+###### boundingClientRect( callback: SelectorQueryNodeInfoCallback,    ): SelectorQuery @boundingclientrect
 boundingClientRect
 添加节点的布局位置的查询请求，相对于显示区域，以像素为单位
 
@@ -105,7 +97,7 @@ boundingClientRect
 
 | 类型 |
 | :- |
-| [SelectorQuery](#selectorquery-values) |
+| SelectorQuery |
  
 
 ###### scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery @scrolloffset
@@ -123,66 +115,66 @@ scrollOffset
 
 | 类型 |
 | :- |
-| [SelectorQuery](#selectorquery-values) |
+| SelectorQuery |
  
 
-###### fields( fields: NodeField,        callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @fields
+###### fields( fields: NodeField,        callback: SelectorQueryNodeInfoCallback,    ): SelectorQuery @fields
 fields
 获取节点的相关信息，需要获取的字段在fields中指定
 ###### fields 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 4.25 | 4.25 |
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| fields | **NodeField** | 是 | 支付宝小程序: x |
-| callback | (result: any) => void | 否 | 支付宝小程序: x | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| fields | **NodeField** | 是 |
+| callback | (result: any) => void | 否 | 
 
 #### fields 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| id | boolean | 否 | 支付宝小程序: x | 是否返回节点 id |
-| dataset | boolean | 否 | 支付宝小程序: x | 是否返回节点 dataset |
-| rect | boolean | 否 | 支付宝小程序: x | 是否返回节点布局位置（left right top bottom） |
-| size | boolean | 否 | 支付宝小程序: x | 是否返回节点尺寸（width height） |
-| scrollOffset | boolean | 否 | 支付宝小程序: x | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
-| properties | Array&lt;string&gt; | 否 | 支付宝小程序: x | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
-| computedStyle | Array&lt;string&gt; | 否 | 支付宝小程序: x | 指定样式名列表，返回节点对应样式名的当前值 |
-| context | boolean | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 是否返回节点对应的 Context 对象 |
-| node | boolean | 否 | 支付宝小程序: x | 是否返回节点对应的 Node 实例 |
+| id | boolean | 否 |   | 是否返回节点 id |
+| dataset | boolean | 否 |   | 是否返回节点 dataset |
+| rect | boolean | 否 |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |   | 是否返回节点对应的 Node 实例 |
 
 
 ###### 返回值 
 
 | 类型 |
 | :- |
-| [SelectorQuery](#selectorquery-values) |
+| SelectorQuery |
  
 
 ###### context(callback: SelectorQueryNodeInfoCallback): SelectorQuery @context
 context
 添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
 ###### context 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 5.04 | 5.04 | 5.04 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (result: any) => void | 是 | 支付宝小程序: x | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: any) => void | 是 | 
 
 
 ###### 返回值 
 
 | 类型 |
 | :- |
-| [SelectorQuery](#selectorquery-values) |
+| SelectorQuery |
  
 
 ###### node(callback: (result: any) => void): SelectorQuery @node
@@ -190,52 +182,34 @@ node
 获取 Node 节点实例。目前支持 Canvas 的获取。
 获取节点的相关信息，需要获取的字段在fields中指定
 ###### node 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 4.25 | 4.25 |
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (result: any) => void | 是 | 支付宝小程序: x | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: any) => void | 是 | 
 
 
 ###### 返回值 
 
 | 类型 |
 | :- |
-| [SelectorQuery](#selectorquery-values) |
+| SelectorQuery |
  
-
-###### NodeField 的属性值 @nodefield-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| id | boolean | 否 | 支付宝小程序: x | 是否返回节点 id |
-| dataset | boolean | 否 | 支付宝小程序: x | 是否返回节点 dataset |
-| rect | boolean | 否 | 支付宝小程序: x | 是否返回节点布局位置（left right top bottom） |
-| size | boolean | 否 | 支付宝小程序: x | 是否返回节点尺寸（width height） |
-| scrollOffset | boolean | 否 | 支付宝小程序: x | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
-| properties | Array&lt;string&gt; | 否 | 支付宝小程序: x | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
-| computedStyle | Array&lt;string&gt; | 否 | 支付宝小程序: x | 指定样式名列表，返回节点对应样式名的当前值 |
-| context | boolean | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 是否返回节点对应的 Context 对象 |
-| node | boolean | 否 | 支付宝小程序: x | 是否返回节点对应的 Node 实例 |
  
 
 #### selectAll(selector: string): NodesRef @selectall
 selectAll
 在当前页面下选择匹配选择器selector的所有节点
-##### selectAll 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| selector | string | 是 | 支付宝小程序: x | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| selector | string | 是 | 
 
 
 ##### 返回值 
@@ -248,10 +222,6 @@ selectAll
 #### selectViewport(): NodesRef @selectviewport
 selectViewport
 选择显示区域
-##### selectViewport 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | x |
 
 
 
@@ -262,19 +232,15 @@ selectViewport
 | [NodesRef](#nodesref-values) |
  
 
-#### exec(callback: (result: Array\<any>) => void \| null): NodesRef \| null @exec
+#### exec(callback: (result: Array\<any>) => void): NodesRef \| null @exec
 exec
 执行所有的请求
-##### exec 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (result: Array&lt;any&gt;) => void | 是 | 支付宝小程序: x | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: Array&lt;any&gt;) => void | 是 | 
 
 
 ##### 返回值 
@@ -899,7 +865,7 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

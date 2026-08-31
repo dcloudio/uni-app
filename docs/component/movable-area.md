@@ -8,9 +8,9 @@ movable-view 的可移动区域
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 之所以有movable-area和movable-view，是因为逻辑层和视图层分离，从视图层发送数据给逻辑层，处理后再传回视图层会产生损耗，导致拖动卡顿。
@@ -24,7 +24,7 @@ movable-view 的可移动区域
 ### 属性 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
-| scale-area | boolean | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | *(Boolean)*<br/>当里面的movable-view设置为支持双指缩放时，设置此值可将缩放手势生效区域修改为整个movable-area |
+| scale-area | boolean | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Boolean)*<br/>当里面的movable-view设置为支持双指缩放时，设置此值可将缩放手势生效区域修改为整个movable-area |
 
 
 

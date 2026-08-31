@@ -3,9 +3,9 @@
 压缩图片
 
 ### compressImage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 4.18 | 4.25 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.18 | 4.25 | 4.61 |
 
 
 ### 参数 
@@ -18,22 +18,22 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 图片路径，图片的路径，可以是相对路径、临时文件路径、存储文件路径 |
-| quality | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效） |
+| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 图片路径，图片的路径，可以是相对路径、临时文件路径、存储文件路径 |
+| quality | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效） |
 | rotate | number | 否 | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 旋转度数，范围0～360 |
-| compressedHeight | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 压缩后图片的高度，单位为px，若不填写则默认以compressedWidth为准等比缩放 |
-| compressedWidth | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 压缩后图片的宽度，单位为px，若不填写则默认以compressedHeight为准等比缩放。 |
-| success | (callback: [CompressImageSuccess](#compressimagesuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (callback: [CompressImageFail](#compressimagefail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| ~~width~~ | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 缩放图片的宽度  **已废弃** |
-| ~~height~~ | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 缩放图片的高度  **已废弃** | 
+| compressedHeight | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 压缩后图片的高度，单位为px，若不填写则默认以compressedWidth为准等比缩放 |
+| compressedWidth | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 压缩后图片的宽度，单位为px，若不填写则默认以compressedHeight为准等比缩放。 |
+| success | (callback: [CompressImageSuccess](#compressimagesuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (callback: [CompressImageFail](#compressimagefail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| ~~width~~ | string | 否 | Web: x | 缩放图片的宽度  **已废弃** |
+| ~~height~~ | string | 否 | Web: x | 缩放图片的高度  **已废弃** | 
 
 #### CompressImageSuccess 的属性值 @compressimagesuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 压缩后图片的临时文件路径 |
+| tempFilePath | string | 是 | Web: x | 压缩后图片的临时文件路径 |
 
 #### CompressImageFail 的属性值 @compressimagefail-values 
 
@@ -42,7 +42,7 @@
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
@@ -317,9 +317,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 ## Tips

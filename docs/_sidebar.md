@@ -70,6 +70,7 @@
   * [适配 glass-easel](mp/mp-weixin-glass-easel.md)
 * 运行和调试
   * [Android/iOS运行](tutorial/run-app.md)
+  * [DevTools 审查元素、网络、存储](tutorial/debug/devtools.md)
   * [uts插件Android运行配置](tutorial/uts-development-android.md)
   * [Android 审查元素](debug/android-inspector.md)
   * [Android Debug断点](tutorial/uni-uts-debug.md)

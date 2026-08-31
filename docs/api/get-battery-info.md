@@ -7,32 +7,32 @@
 
 
 ### getBatteryInfo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.35 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.35 | 3.9 | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | **GetBatteryInfoOptions** | 是 | 支付宝小程序: x |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **GetBatteryInfoOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| success | (res: [GetBatteryInfoSuccess](#getbatteryinfosuccess-values)) => void | 否 | 支付宝小程序: x | 接口调用成功的回调 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| success | (res: [GetBatteryInfoSuccess](#getbatteryinfosuccess-values)) => void | 否 | 接口调用成功的回调 |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetBatteryInfoSuccess 的属性值 @getbatteryinfosuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 支付宝小程序: x |  |
-| level | number | 是 | 支付宝小程序: x | 设备电量，范围1 - 100 |
-| isCharging | boolean | 是 | 支付宝小程序: x | 是否正在充电中 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 |  |
+| level | number | 是 | 设备电量，范围1 - 100 |
+| isCharging | boolean | 是 | 是否正在充电中 |
 
 
 
@@ -114,9 +114,9 @@
 
 
 ### getBatteryInfoSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.35 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.35 | 3.9 | 4.11 | 4.61 |
 
 
 
@@ -129,10 +129,10 @@
 
 #### GetBatteryInfoResult 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| level | number | 是 | 支付宝小程序: x | 设备电量，范围1 - 100 |
-| isCharging | boolean | 是 | 支付宝小程序: x | 是否正在充电中 | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| level | number | 是 | 设备电量，范围1 - 100 |
+| isCharging | boolean | 是 | 是否正在充电中 | 
 
 
 <!-- UTSAPIJSON.getBatteryInfoSync.example -->
@@ -157,7 +157,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

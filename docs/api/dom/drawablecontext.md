@@ -3,9 +3,9 @@
 
 
 ### DrawableContext 兼容性 <Help /> 
- | Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+ | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 
@@ -13,14 +13,14 @@
 ### DrawableContext 的属性值 @drawablecontext-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| font | string | 是 | 10px | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置字体大小 |
-| fillStyle | [string.ColorString](/uts/data-type.md#ide-string) | 是 | #000 (黑色) | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置填充颜色 |
-| lineCap | string | 是 | butt | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 指定如何绘制每一条线条末端的属性，可选值：`butt`线段末端以方形结束；`round`线段末端以圆形结束；`square`线段末端以方形结束，但是会增加一个一半宽度的矩形区域。 |
-| lineDashOffset | number | 是 |  | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置虚线偏移量 |
-| lineJoin | string | 是 | miter | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置 2 个长度不为 0 的线条相连部分如何连接在一起的属性，可选值：`bevel`斜角；`round`圆角；`miter`尖角。 |
-| lineWidth | number | 是 | 1px | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置线条的宽度 |
-| strokeStyle | [string.ColorString](/uts/data-type.md#ide-string) | 是 | #000 (黑色) | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置边框的颜色 |
-| textAlign | string | 是 | left | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置文本的对齐方式，可取值：`left`左对齐；`center`居中对齐；`right`右对齐。 |
+| font | string | 是 | 10px | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置字体大小 |
+| fillStyle | [string.ColorString](/uts/data-type.md#ide-string) | 是 | #000 (黑色) | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置填充颜色 |
+| lineCap | string | 是 | butt | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 指定如何绘制每一条线条末端的属性，可选值：`butt`线段末端以方形结束；`round`线段末端以圆形结束；`square`线段末端以方形结束，但是会增加一个一半宽度的矩形区域。 |
+| lineDashOffset | number | 是 |  | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置虚线偏移量 |
+| lineJoin | string | 是 | miter | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置 2 个长度不为 0 的线条相连部分如何连接在一起的属性，可选值：`bevel`斜角；`round`圆角；`miter`尖角。 |
+| lineWidth | number | 是 | 1px | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置线条的宽度 |
+| strokeStyle | [string.ColorString](/uts/data-type.md#ide-string) | 是 | #000 (黑色) | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置边框的颜色 |
+| textAlign | string | 是 | left | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置文本的对齐方式，可取值：`left`左对齐；`center`居中对齐；`right`右对齐。 |
 
 
 ### DrawableContext 的方法 @drawablecontext-methods
@@ -30,9 +30,9 @@
 创建一个新的空路径
 
 ##### beginPath 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 
@@ -41,26 +41,26 @@
 
 
 
-#### arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean \| null): void @arc
+#### arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean): void @arc
 
 绘制一段弧线
 
 ##### arc 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Web: x; 微信小程序: x; 支付宝小程序: x | 圆心的X轴坐标 |
-| y | number | 是 |  | Web: x; 微信小程序: x; 支付宝小程序: x | 圆心的Y轴坐标 |
-| radius | number | 是 |  | Web: x; 微信小程序: x; 支付宝小程序: x | 圆弧的半径 |
-| startAngle | number | 是 |  | Web: x; 微信小程序: x; 支付宝小程序: x | 圆弧的起始点，x 轴方向开始计算，单位为弧度 |
-| endAngle | number | 是 |  | Web: x; 微信小程序: x; 支付宝小程序: x | 圆弧的终点，单位为弧度 |
-| anticlockwise | boolean | 否 | true | Web: x; 微信小程序: x; 支付宝小程序: x | 圆弧绘制方向，true：逆时针绘制，false：顺时针绘制。 | 
+| x | number | 是 |  | Web: x; 微信小程序: x | 圆心的X轴坐标 |
+| y | number | 是 |  | Web: x; 微信小程序: x | 圆心的Y轴坐标 |
+| radius | number | 是 |  | Web: x; 微信小程序: x | 圆弧的半径 |
+| startAngle | number | 是 |  | Web: x; 微信小程序: x | 圆弧的起始点，x 轴方向开始计算，单位为弧度 |
+| endAngle | number | 是 |  | Web: x; 微信小程序: x | 圆弧的终点，单位为弧度 |
+| anticlockwise | boolean | 否 | true | Web: x; 微信小程序: x | 圆弧绘制方向，true：逆时针绘制，false：顺时针绘制。 | 
 
 
 
@@ -72,17 +72,17 @@
 将一个新的路径的起始点移动到 (x，y) 坐标
 
 ##### moveTo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| x | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 点的X轴坐标 |
-| y | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 点的Y轴坐标 | 
+| x | number | 是 | Web: x; 微信小程序: x | 点的X轴坐标 |
+| y | number | 是 | Web: x; 微信小程序: x | 点的Y轴坐标 | 
 
 
 
@@ -94,19 +94,19 @@
 创建一个矩形路径
 
 ##### rect 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| x | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形起点的X轴坐标 |
-| y | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形起点的Y轴坐标 |
-| width | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形宽度 |
-| height | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形高度 | 
+| x | number | 是 | Web: x; 微信小程序: x | 矩形起点的X轴坐标 |
+| y | number | 是 | Web: x; 微信小程序: x | 矩形起点的Y轴坐标 |
+| width | number | 是 | Web: x; 微信小程序: x | 矩形宽度 |
+| height | number | 是 | Web: x; 微信小程序: x | 矩形高度 | 
 
 
 
@@ -118,17 +118,17 @@
 将路径的最后一个点连接到 (x，y) 坐标
 
 ##### lineTo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| x | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 线终点的X轴坐标 |
-| y | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 线终点的Y轴坐标 | 
+| x | number | 是 | Web: x; 微信小程序: x | 线终点的X轴坐标 |
+| y | number | 是 | Web: x; 微信小程序: x | 线终点的Y轴坐标 | 
 
 
 
@@ -140,9 +140,9 @@
 闭合路径，将最后一个点与起点连接起来。如果图形已经封闭，或者只有一个点，那么此方法不会产生任何效果。
 
 ##### closePath 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 
@@ -156,9 +156,9 @@
 绘制当前或已经存在的路径的边框。
 
 ##### stroke 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 
@@ -172,19 +172,19 @@
 绘制一个矩形框
 
 ##### strokeRect 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| x | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形起点的X轴坐标 |
-| y | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形起点的Y轴坐标 |
-| width | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形宽度 |
-| height | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形高度 | 
+| x | number | 是 | Web: x; 微信小程序: x | 矩形起点的X轴坐标 |
+| y | number | 是 | Web: x; 微信小程序: x | 矩形起点的Y轴坐标 |
+| width | number | 是 | Web: x; 微信小程序: x | 矩形宽度 |
+| height | number | 是 | Web: x; 微信小程序: x | 矩形高度 | 
 
 
 
@@ -196,39 +196,39 @@
 绘制空心字符
 
 ##### strokeText 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| text | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 要绘制的字符 |
-| x | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 字符开始绘制的X轴坐标 |
-| y | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 字符开始绘制的Y轴坐标 | 
+| text | string | 是 | Web: x; 微信小程序: x | 要绘制的字符 |
+| x | number | 是 | Web: x; 微信小程序: x | 字符开始绘制的X轴坐标 |
+| y | number | 是 | Web: x; 微信小程序: x | 字符开始绘制的Y轴坐标 | 
 
 
 
 
 
 
-#### fill(fillRule?: string \| null): void @fill
+#### fill(fillRule?: string): void @fill
 
 填充当前或已存在的路径
 
 ##### fill 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| fillRule | string | 否 | nonzero | Web: x; 微信小程序: x; 支付宝小程序: x | 填充规则。可取值：`nonzero`非零环绕规则；`evenodd`奇偶环绕规则。 | 
+| fillRule | string | 否 | nonzero | Web: x; 微信小程序: x | 填充规则。可取值：`nonzero`非零环绕规则；`evenodd`奇偶环绕规则。 | 
 
 
 
@@ -240,19 +240,19 @@
 绘制一个实心矩形
 
 ##### fillRect 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| x | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形起点的X轴坐标 |
-| y | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形起点的Y轴坐标 |
-| width | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形宽度 |
-| height | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 矩形高度 | 
+| x | number | 是 | Web: x; 微信小程序: x | 矩形起点的X轴坐标 |
+| y | number | 是 | Web: x; 微信小程序: x | 矩形起点的Y轴坐标 |
+| width | number | 是 | Web: x; 微信小程序: x | 矩形宽度 |
+| height | number | 是 | Web: x; 微信小程序: x | 矩形高度 | 
 
 
 
@@ -264,18 +264,18 @@
 绘制实心字符
 
 ##### fillText 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| text | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 要绘制的字符 |
-| x | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 字符开始绘制的X轴坐标 |
-| y | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 字符开始绘制的Y轴坐标 | 
+| text | string | 是 | Web: x; 微信小程序: x | 要绘制的字符 |
+| x | number | 是 | Web: x; 微信小程序: x | 字符开始绘制的X轴坐标 |
+| y | number | 是 | Web: x; 微信小程序: x | 字符开始绘制的Y轴坐标 | 
 
 
 
@@ -287,9 +287,9 @@
 清空绘制数据
 
 ##### reset 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 
@@ -303,9 +303,9 @@
 将所有绘制内容更新到画布上
 
 ##### update 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 
@@ -319,16 +319,16 @@
 设置虚线样式
 
 ##### setLineDash 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| segments | Array&lt;number&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 一组描述交替绘制线段和间距长度的数字。 | 
+| segments | Array&lt;number&gt; | 是 | Web: x; 微信小程序: x | 一组描述交替绘制线段和间距长度的数字。 | 
 
 
 
@@ -340,21 +340,21 @@
 创建三次方贝塞尔曲线路径
 
 ##### bezierCurveTo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| cp1x | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 第一个贝塞尔控制点的 x 坐标 |
-| cp1y | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 第一个贝塞尔控制点的 y 坐标 |
-| cp2x | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 第二个贝塞尔控制点的 x 坐标 |
-| cp2y | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 第二个贝塞尔控制点的 y 坐标 |
-| x | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 结束点的 x 坐标 |
-| y | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 结束点的 y 坐标 | 
+| cp1x | number | 是 | Web: x; 微信小程序: x | 第一个贝塞尔控制点的 x 坐标 |
+| cp1y | number | 是 | Web: x; 微信小程序: x | 第一个贝塞尔控制点的 y 坐标 |
+| cp2x | number | 是 | Web: x; 微信小程序: x | 第二个贝塞尔控制点的 x 坐标 |
+| cp2y | number | 是 | Web: x; 微信小程序: x | 第二个贝塞尔控制点的 y 坐标 |
+| x | number | 是 | Web: x; 微信小程序: x | 结束点的 x 坐标 |
+| y | number | 是 | Web: x; 微信小程序: x | 结束点的 y 坐标 | 
 
 
 

@@ -58,9 +58,9 @@ let wv = uni.getElementById("wv1") as UniWebViewElement
 back
 后退到 web-view 组件网页加载历史的上一页，如果不存在上一页则没有任何效果。
 ##### back 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.9.0 | 4.11 | 4.61 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -69,9 +69,9 @@ back
 forward
 前进到 web-view 组件网页加载历史的下一页，如果不存在下一页则没有任何效果。
 ##### forward 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.9.0 | 4.11 | 4.61 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -80,9 +80,9 @@ forward
 reload
 重新加载 web-view 组件当前页面。
 ##### reload 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.9.0 | 4.11 | 4.61 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -91,9 +91,9 @@ reload
 stop
 停止加载 web-view 组件当前网页，该方法不能阻止已经加载的 html 文档，但是能够阻止未完成的图片及延迟加载的资源。
 ##### stop 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.9.0 | 4.11 | 4.61 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -102,15 +102,15 @@ stop
 evalJS
 在网页中执行指定的js脚本，在 uvue 页面中可通过此方法向 web-view 组件加载的页面发送数据
 ##### evalJS 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.9.0 | 4.11 | 4.61 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| js | string | 是 | Web: x | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| js | string | 是 | 
 
 
 
@@ -118,9 +118,9 @@ evalJS
 getContentHeight
 获取webview内容高度
 ##### getContentHeight 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.63 | 4.63 | 5.08 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.63 | 4.63 | 5.08 |
 
 
 
@@ -135,35 +135,26 @@ getContentHeight
 loadData
 在web-view组件中加载页面内容
 ##### loadData 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.71 | 4.71 | 4.71 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.71 | 4.71 | 4.71 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | **UniWebviewContextLoadDataOptions** | 是 | Web: x |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniWebviewContextLoadDataOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| data | string | 是 | Web: x | 要加载的内容，编码后的字符串 |
-| baseURL | string | 否 | Web: x | 页面的基础URL |
-| mimeType | string | 否 | Web: x | 加载的页面内容类型，默认值为"text/html" |
-| encoding | string | 否 | Web: x | 页面内容的编码类型，默认值为"utf-8" | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | string | 是 | 要加载的内容，编码后的字符串 |
+| baseURL | string | 否 | 页面的基础URL |
+| mimeType | string | 否 | 加载的页面内容类型，默认值为"text/html" |
+| encoding | string | 否 | 页面内容的编码类型，默认值为"utf-8" | 
 
 
-
-##### UniWebviewContextLoadDataOptions 的属性值 @uniwebviewcontextloaddataoptions-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| data | string | 是 | Web: x | 要加载的内容，编码后的字符串 |
-| baseURL | string | 否 | Web: x | 页面的基础URL |
-| mimeType | string | 否 | Web: x | 加载的页面内容类型，默认值为"text/html" |
-| encoding | string | 否 | Web: x | 页面内容的编码类型，默认值为"utf-8" |
  
 
 
@@ -220,7 +211,7 @@ loadData
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | webviewId | [string.WebviewIdString](/uts/data-type.md#ide-string) | 是 | Web: x |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: x | 
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |   | 
 
 
 ### 返回值 
@@ -332,15 +323,6 @@ loadData
 | encoding | string | 否 | Web: x | 页面内容的编码类型，默认值为"utf-8" | 
 
 
-
-##### UniWebviewContextLoadDataOptions 的属性值 @uniwebviewcontextloaddataoptions-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| data | string | 是 | Web: x | 要加载的内容，编码后的字符串 |
-| baseURL | string | 否 | Web: x | 页面的基础URL |
-| mimeType | string | 否 | Web: x | 加载的页面内容类型，默认值为"text/html" |
-| encoding | string | 否 | Web: x | 页面内容的编码类型，默认值为"utf-8" |
  
 
 
@@ -355,9 +337,9 @@ loadData
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 示例代码另见[web-view组件](../component/web-view.md)

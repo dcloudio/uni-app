@@ -37,7 +37,7 @@ text-align: start | end | left | right | center | justify | match-parent;
 | left | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 行内内容向左侧边对齐。 |
 | center | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 行内内容居中。 |
 | right | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 行内内容向右侧边对齐。 |
-| justify | Web: 4.0; Android(VDOM): x; Android(Vapor): 5.25; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.26 | 文字向两侧对齐，对最后一行无效。 |
+| justify | Web: 4.0; Android 系统版本: 8.0; Android(VDOM): x; Android(Vapor): 5.25; iOS(VDOM): x; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 文字向两侧对齐，对最后一行无效。 |
 
 
 ### 默认值 @default-value 
@@ -210,6 +210,9 @@ text-align: start | end | left | right | center | justify | match-parent;
 ```
 
 :::
+
+#### App平台差异
+- app-android 平台，justify 对连续中文文本不生效（部分 ROM 厂商对此可能有定制行为，如：ColorOS 对连续中文有效，但对英文无效），对于中文场景业务层可以在适当的位置插入空格从而实现对齐效果。
 
 
 ### 参见

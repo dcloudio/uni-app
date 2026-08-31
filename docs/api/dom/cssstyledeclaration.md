@@ -31,7 +31,7 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 
 
 
-#### ~~setProperty(name: string \| string.cssPropertyString, value: any \| null): void~~ @setproperty
+#### ~~setProperty(name: string \| string.cssPropertyString, value: any): void~~ @setproperty
 
 对CSS指定样式设置一个新值，如有此样式已存在则更新。  **已废弃，仅为了向下兼容保留**
 

@@ -27,11 +27,25 @@ dependencyResolutionManagement {
 
 2. 将线上依赖库添加到app项目的build.gradle下。
 
+::: preview
+
+> build.gradle
+
 ```groovy
 dependencies {
     implementation "com.getui:gtc-dcloud:3.2.16.7"
 }
 ```
+
+> build.gradle.kts
+
+```groovy
+dependencies {
+    implementation("com.getui:gtc-dcloud:3.2.16.7")
+}
+```
+
+:::
 
 ### 配置应用ID
 
@@ -54,8 +68,38 @@ GETUI_APPID与GY_APP_ID对应[开发者中心](https://dev.dcloud.net.cn/)一键
 
 将以下内容添加到主模块的build.gradle。
 
+::: preview
+
+> build.gradle（蒸汽模式）
+
 ```groovy
 defaultConfig {
-    buildConfigField 'String', 'UTSEasyCom', '\"[{\\\"class\\\":\\\"uts.sdk.modules.DCloudUniVerify.UniVerifyExtApiPagesRegister\\\",\\\"method\\\":\\\"register\\\"}]\"'
+    buildConfigField 'String', 'UTSMethodRegister', '"uts.sdk.modules.DCloudUniVerify.UniUTSMethodRegister"'
 }
 ```
+
+> build.gradle.kts（蒸汽模式）
+
+```groovy
+defaultConfig {
+    buildConfigField("String", "UTSMethodRegister", "\"uts.sdk.modules.DCloudUniVerify.UniUTSMethodRegister\"")
+}
+```
+
+> build.gradle（VDOM模式）
+
+```groovy
+defaultConfig {
+    buildConfigField 'String', 'UTSEasyCom', '"[{\"class\":\"uts.sdk.modules.DCloudUniVerify.UniVerifyExtApiPagesRegister\",\"method\":\"register\"}]"'
+}
+```
+
+> build.gradle.kts（VDOM模式）
+
+```groovy
+defaultConfig {
+    buildConfigField("String", "UTSEasyCom", "\"[{\\\"class\\\":\\\"uts.sdk.modules.DCloudUniVerify.UniVerifyExtApiPagesRegister\\\",\\\"method\\\":\\\"register\\\"}]\"")
+}
+```
+
+:::
