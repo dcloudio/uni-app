@@ -49,13 +49,6 @@ onUploadProgress
 | any |
  
 
-#### UniCloudUploadProgress 的属性值 @uniclouduploadprogress-values 
-
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| loaded | number | 是 | 已上传大小 |
-| total | number | 是 | 总大小 |
-
 
 ### 返回值 
 
@@ -200,45 +193,6 @@ onUploadProgress
 | errMsg | string | 否 | 
 
 
-
-#### UniCloudChooseAndUploadFileResult 的属性值 @unicloudchooseanduploadfileresult-values 
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| tempFiles | Array&lt;**UniCloudChooseAndUploadFileItem**&gt; | 是 |
-| tempFilePaths | Array&lt;string&gt; | 是 |
-
-#### tempFiles 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| name | string | 是 |
-| path | string | 是 |
-| cloudPath | string | 是 |
-| cloudPathAsRealPath | boolean | 否 |
-| url | string | 否 |
-| errMsg | string | 否 |
-
-#### UniCloudChooseAndUploadFileProgressEvent 的属性值 @unicloudchooseanduploadfileprogressevent-values 
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| index | number | 是 |
-| loaded | number | 是 |
-| total | number | 是 |
-| tempFilePath | string | 是 |
-| tempFile | **UniCloudChooseAndUploadFileItem** | 是 |
-
-#### tempFile 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| name | string | 是 |
-| path | string | 是 |
-| cloudPath | string | 是 |
-| cloudPathAsRealPath | boolean | 否 |
-| url | string | 否 |
-| errMsg | string | 否 |
 
 
 ### 返回值 

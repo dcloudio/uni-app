@@ -539,7 +539,7 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 
 ## url
 
-
+根据传递路径读取加载资源。
 
 
 

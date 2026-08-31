@@ -4,9 +4,9 @@
 
 
 ### canvasToTempFilePath 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 * 截图或海报需求，app平台view直接提供截图API，[takesnapshot](../dom/unielement.html#takesnapshot)。
@@ -22,25 +22,25 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| x | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 画布x轴起点（默认0） |
-| y | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 画布y轴起点（默认0） |
-| width | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 画布宽度（默认为canvas宽度-x） |
-| height | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 画布高度（默认为canvas高度-y） |
-| destWidth | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 输出图片宽度（默认为 width * 屏幕像素密度） |
-| destHeight | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 输出图片高度（默认为 height * 屏幕像素密度） |
-| canvasId | string | 是 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 画布标识，传入 \<canvas/> 的 canvas-id |
-| fileType | string | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 目标文件的类型，默认为 'png' |
-| quality | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 图片的质量，取值范围为 (0, 1]，不在范围内时当作1.0处理 |
-| success | (result: [CanvasToTempFilePathSuccess](#canvastotempfilepathsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| canvas | any | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x |  |
+| x | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 画布x轴起点（默认0） |
+| y | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 画布y轴起点（默认0） |
+| width | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 画布宽度（默认为canvas宽度-x） |
+| height | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 画布高度（默认为canvas高度-y） |
+| destWidth | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 输出图片宽度（默认为 width * 屏幕像素密度） |
+| destHeight | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 输出图片高度（默认为 height * 屏幕像素密度） |
+| canvasId | string | 是 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 画布标识，传入 \<canvas/> 的 canvas-id |
+| fileType | string | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 目标文件的类型，默认为 'png' |
+| quality | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 图片的质量，取值范围为 (0, 1]，不在范围内时当作1.0处理 |
+| success | (result: [CanvasToTempFilePathSuccess](#canvastotempfilepathsuccess-values)) => void | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: [UniError](/err-spec.md#unierror)) => void | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| canvas | any | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |  |
 
 #### CanvasToTempFilePathSuccess 的属性值 @canvastotempfilepathsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 | 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 导出生成的图片路径 |
+| tempFilePath | string | 是 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 导出生成的图片路径 |
 | errMsg | string | 否 | Android: x; iOS: x; HarmonyOS: x |  |
 
 
@@ -67,7 +67,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

@@ -405,7 +405,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 | :- | :- | :- | :- |
 | application | UIApplication | 否 | App 的 UIApplicationDelegate 对象。 |
 | userActivity | NSUserActivity | 否 | 包含与用户正在执行的任务相关联的数据的活动对象。使用这些数据来继续用户在iOS应用中的活动。 |
-| restorationHandler | (res?: any) => void | 否 | 需要执行的回调，该回调是可选的，默认值为 null。 | 
+| restorationHandler | (res?: \[any\]) => void | 否 | 需要执行的回调，该回调是可选的，默认值为 null。 | 
 
 
 **返回值**

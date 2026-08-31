@@ -12,7 +12,7 @@
 
 | 名称 | 类型 | 必填 |
 | :- | :- | :- |
-| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 | 
+| callback | (arg: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 | 
 
 ### UniCloudResponseEvent 的属性值 @unicloudresponseevent-values 
 
@@ -43,7 +43,7 @@
 
 | 名称 | 类型 | 必填 |
 | :- | :- | :- |
-| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 | 
+| callback | (arg: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 | 
 
 ### UniCloudResponseEvent 的属性值 @unicloudresponseevent-values 
 
@@ -74,15 +74,14 @@
 
 | 名称 | 类型 | 必填 |
 | :- | :- | :- |
-| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 | 
+| callback | (arg: [UniCloudRefreshTokenEvent](#unicloudrefreshtokenevent-values)) => any | 是 | 
 
-### UniCloudResponseEvent 的属性值 @unicloudresponseevent-values 
+### UniCloudRefreshTokenEvent 的属性值 @unicloudrefreshtokenevent-values 
 
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
-| type | string | 是 | 响应事件类型 |
-| name | string | 是 | 响应事件由哪个云函数触发 |
-| content | any | 是 | 响应结果、错误内容 |
+| token | string | 是 | token内容 |
+| tokenExpired | number | 是 | token过期时间 |
 
 
 
@@ -105,15 +104,14 @@
 
 | 名称 | 类型 | 必填 |
 | :- | :- | :- |
-| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 | 
+| callback | (arg: [UniCloudRefreshTokenEvent](#unicloudrefreshtokenevent-values)) => any | 是 | 
 
-### UniCloudResponseEvent 的属性值 @unicloudresponseevent-values 
+### UniCloudRefreshTokenEvent 的属性值 @unicloudrefreshtokenevent-values 
 
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
-| type | string | 是 | 响应事件类型 |
-| name | string | 是 | 响应事件由哪个云函数触发 |
-| content | any | 是 | 响应结果、错误内容 |
+| token | string | 是 | token内容 |
+| tokenExpired | number | 是 | token过期时间 |
 
 
 
@@ -175,7 +173,7 @@
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
 | name | string | 是 | WebSocket云函数/云对象名称 |
-| query | any | 否 | 建立连接时需要传递的参数, 仅在 connection 事件中接收到 | 
+| query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | 建立连接时需要传递的参数, 仅在 connection 事件中接收到 | 
 
 
 ### 返回值 

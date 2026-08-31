@@ -15,7 +15,7 @@
 
 Web和小程序注意：
 - 没有能力获取os的主题。只能获取浏览器或小程序宿主的主题，即hostTheme。
-- 可以选择不响应hostTheme（darkmode默认为false），也可以根据hostTheme调整自身的表现（darkmode默认为true）。
+- 可以选择不响应hostTheme（darkmode设置为false），也可以根据hostTheme调整自身的表现（darkmode设置为true）。
 - 一旦在manifest里开启darkmode，pages.json的tabbar、导航栏、页面背景色，某些浏览器或小程序自带的组件和涉及UI的API，都会跟随hostTheme变化，开发者的应用无法控制这些ui的主题。比如浏览器的alert()、小程序的showModal。
 
 一般情况下，独立设置主题的场景常见于App平台，所以App平台新增了appTheme的概念。appTheme有几个用途：
@@ -105,194 +105,169 @@ theme.json 里的变量仅能用于 pages.json。uvue页面不能引用。
 1. manifest设置了`darkmode:true`
 2. 浏览器和小程序宿主如微信，主题外观是dark。
 
-在App中，由于appTheme默认值是light，此时theme.json的dark内容不会生效。想要让theme.json的dark内容生效，需要写如下代码：
-```ts
-uni.setAppTheme({"theme": "dark"}) // 显式设置为dark主题。如果给用户提供了独立的应用主题设置，在用户选择暗黑时应执行此代码
+在App中，可以通过manifest.json的[`app.defaultAppTheme`](../collocation/manifest.md#manifest-app)配置应用默认主题，可取值为light、dark、auto，默认值为light。配置为auto时，appTheme会跟随OS主题变化。
 
-uni.setAppTheme({"theme": "auto"}) //跟随OS的主题而变化，设置为auto后，并且osTheme为dark，那么appTheme就会变成dark，此时theme.json里的dark设置才能生效
-
+```json
+{
+	"app": {
+		"defaultAppTheme": "auto"
+	}
+}
 ```
 
-#### 3. app.uvue
+如果应用为用户提供主题切换功能，可以在运行时通过[uni.setAppTheme](#setapptheme)设置light、dark或auto。
 
-app.uvue在主题适配中有2种用途：
-- 获取和监听上家或自身的主题状态
-- 设置全局样式
+完成上述基础配置后，页面和组件的主题样式可以根据平台及版本选择以下一种方案。
 
-如下分别讲述。
+#### 3. 使用媒体查询适配主题（推荐）
 
-web和小程序平台一直支持媒体查询。HBuilderX 5.25+，App平台蒸汽模式支持使用`@media (prefers-color-scheme: light)`和`@media (prefers-color-scheme: dark)`，根据appTheme自动切换样式。详见[@media媒体查询](../css/common/at-rules.md#media)。
+以下平台可以使用`@media (prefers-color-scheme: light)`和`@media (prefers-color-scheme: dark)`设置主题样式：
 
-使用媒体查询设置主题样式时，无需监听主题变化并动态切换class。App平台非蒸汽模式，或需要在逻辑中使用主题状态时，仍需在app.uvue里通过`uni.getAppBaseInfo`、`uni.getDeviceInfo`获取自身或上家的主题设置，保存到vue的响应式变量中，模板的class绑定响应式变量实现动态切换class。
+- Web和小程序平台
+- HBuilderX 5.25+的App平台蒸汽模式
 
-- 在app.uvue的onLaunch生命周期中写代码，获取上家的主题，并监听上家的主题变化。这里需要写条件编译
+在支持上述能力的平台，推荐优先使用媒体查询适配主题。
 
-如果应用只需要跟随上家，不独立设置主题，那么写法是这样：
+媒体查询会根据hostTheme或appTheme自动匹配。主题变化时，匹配的样式也会自动更新，无需监听主题变化、维护响应式变量或动态切换class。详见[@media媒体查询](../css/common/at-rules.md#media)。
+
+页面只需要使用固定的class，通过媒体查询分别定义亮色和暗色样式：
+
+```vue
+<template>
+	<view class="page">
+		<text class="title">根据当前主题显示不同颜色的文字</text>
+	</view>
+</template>
+
+<style>
+	@media (prefers-color-scheme: light) {
+		.page {
+			--text-color: #333333;
+		}
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.page {
+			--text-color: #ffffff;
+		}
+	}
+
+	.title {
+		color: var(--text-color);
+	}
+</style>
+```
+
+在theme.json中已经设置页面背景色的情况下，一般不推荐重复在uvue文件的根组件上重复设置背景色。
+
+如果App平台需要为用户提供light、dark、auto选项，直接调用`uni.setAppTheme`即可。appTheme变化后，媒体查询会自动更新匹配的样式。
+
+#### 4. 监听主题并动态切换class（兼容方案）
+
+以下App平台场景，由于不支持媒体查询，只能通过API使用监听主题变化，然后动态切换class：
+
+- HBuilderX 5.25之前的App平台
+- App平台VDOM模式
+
+在已支持媒体查询的平台，如果业务逻辑还需要读取当前主题状态，可以另外使用主题API获取和监听，但样式仍可使用媒体查询，无需动态切换class。
+
+为了在同一套代码中兼容上述App平台场景，以下示例在各端统一使用动态class。为避免每个页面都监听主题变化，可以在app.uvue中获取并监听主题，将结果存放在`store/index.uts`中，供各页面使用。
+
+如果应用只需要跟随上家，不独立设置主题，App平台需要先将`app.defaultAppTheme`配置为auto，然后可以这样处理：
 
 ```ts
 // app.uvue
 import { state } from '@/store/index.uts'
 
 onLaunch(() => {
-	console.log('App Launch')
 	// #ifdef WEB || MP-WEIXIN
 	state.isDark = (uni.getAppBaseInfo().hostTheme == 'dark')
 	uni.onHostThemeChange((result) => {
-	  state.isDark = (result.hostTheme == 'dark');
-	});
+		state.isDark = (result.hostTheme == 'dark')
+	})
 	// #endif
-	// 在app平台，跟随osTheme而变化的，就要获取和监听osTheme。写法如下：
+
 	// #ifdef APP
-	uni.setAppTheme({"theme": "auto"}) //默认值是light，必须显示设置为auto才能根据系统自动切换
 	state.isDark = (uni.getDeviceInfo().osTheme == 'dark')
-	uni.onOsThemeChange((result:OsThemeChangeResult) => {
-	  state.isDark = (result.osTheme == 'dark');
-	});
+	uni.onOsThemeChange((result: OsThemeChangeResult) => {
+		state.isDark = (result.osTheme == 'dark')
+	})
 	// #endif
 })
-
 ```
 
-为了避免每个页面都监听主题change，在app.uvue里的监听结果，存放在一个独立的 store/index.uts 文件中，每个页面引用这个文件，获取当前主题状态、
+`store/index.uts`的内容如下：
 
-/store/index.uts 的内容如下：
 ```ts
 type State = {
-  // 是否暗黑主题
-  isDark: boolean
+	// 是否为暗黑主题
+	isDark: boolean
 }
+
 export const state = reactive({
-  isDark:false
+	isDark: false
 } as State)
 ```
 
-实际应用中，state上可以挂载很多东西，此处仅以isDark为例。
+如果App平台允许用户独立设置主题，则需要获取和监听appTheme：
 
-如果App平台的主题需要独立设置，即在界面中提供给用户选项，那么App平台的监听对象就不再是osTheme了，而是要改成监听onAppThemeChange，写法是这样：
 ```ts
+// app.uvue
 import { state } from '@/store/index.uts'
 
 onLaunch(() => {
-	console.log('App Launch')
 	// #ifdef WEB || MP-WEIXIN
 	state.isDark = (uni.getAppBaseInfo().hostTheme == 'dark')
 	uni.onHostThemeChange((result) => {
-	  state.isDark = (result.hostTheme == 'dark');
-	});
+		state.isDark = (result.hostTheme == 'dark')
+	})
 	// #endif
-	// 如果app独立设置主题，就要获取和监听appTheme
+
 	// #ifdef APP
-	state.isDark = (uni.getAppBaseInfo().appTheme == 'dark')
-	uni.onAppThemeChange((result:AppThemeChangeResult) => {
-	  state.isDark = (result.appTheme == 'dark');
-	});
+	const appTheme = uni.getAppBaseInfo().appTheme
+	state.isDark = appTheme == 'auto'
+		? uni.getDeviceInfo().osTheme == 'dark'
+		: appTheme == 'dark'
+	uni.onAppThemeChange((result: AppThemeChangeResult) => {
+		state.isDark = (result.appTheme == 'dark')
+	})
 	// #endif
 })
-
 ```
 
-注意：有些平台，os主题变化时会重启App，有些小程序宿主主题变化时会重启小程序，有些则不会。在会重启的场景下，监听上家主题变化其实没有意义。
-
-- app.uvue的全局样式
-
-在全局样式里设置一批css变量，是适配页面主题的好方式。
-
-比如设置如下2个全局class，theme-light和theme-dark，后续在页面中就可以使用它们。（除非页面和组件在样式隔离策略中禁止了全局样式影响）
+可以在app.uvue的全局样式中定义亮色和暗色class。除非页面或组件的样式隔离策略禁止全局样式影响，否则页面可以直接使用这些class。
 
 ```css
 .theme-light {
-	--background-color: #f8f8f8;
 	--text-color: #333333;
 }
 
 .theme-dark {
-	--background-color: #1a1a1a;
 	--text-color: #ffffff;
 }
 ```
 
-#### 4. uvue页面
+页面根节点根据`state.isDark`动态切换class：
 
-以下示例继续使用前文通过API监听主题变化、动态切换class的方案。
-
-在根节点的class中，根据`state.isDark`设置class，让全局样式的`theme-dark`或`theme-light`生效。
-
-这2个class又影响了2个css变量 `--background-color` 和 `--text-color` 的值。
-
-```vue
-<template>
-	<view :class="state.isDark ? 'theme-dark' : 'theme-light'"> <!--根view不需要设背景色，因为页面已经设置过背景色了-->
-		<text class="title">使用css变量设置color的文字</text>
-	</view>
-</template>
-
-<script setup lang="uts">
-	import { state } from '@/store/index.uts'
-</script>
-
-<style>
-	.title {
-		color: var(--text-color); /* 该css变量的值，根据theme-dark和theme-light谁生效而变化*/
-	}
-</style>
-```
-
-
-如需在App的界面中给用户提供主题选择，可使用如下代码：
 ```vue
 <template>
 	<view :class="state.isDark ? 'theme-dark' : 'theme-light'">
-		<text class="title">使用css变量设置color的文字，在根view的class中根据state.isDark设置class，影响了不同的css变量值</text>
-		<text>"state.isDark:" {{state.isDark}}</text>
-		<!-- #ifdef APP -->
-		<text>设置AppTheme</text>
-		<radio-group @change="radioChange">
-		  <radio class="" v-for="(item, index) in appThemeitems" :key="item"
-		    :class="index < appThemeitems.length - 1 ? 'uni-list-cell-line' : ''" :value="item" :checked="index === current">
-		    {{ item }}
-		  </radio>
-		</radio-group>
-		<!-- #endif -->
+		<text class="title">根据当前主题显示不同颜色的文字</text>
 	</view>
 </template>
 
 <script setup lang="uts">
 	import { state } from '@/store/index.uts'
-
-	const current = ref(0)
-	const appThemeitems = ref(["light","dark","auto"] as string[])
-
-	function radioChange(e : UniRadioGroupChangeEvent) {
-	  const theme = e.detail.value
-	  uni.setAppTheme({
-	    theme: theme as 'light' | 'dark' | 'auto',
-	    success: function () {
-	      console.log("设置appTheme为", theme, "成功")
-	    },
-	    fail: function (e : IAppThemeFail) {
-	      console.log("设置appTheme为", theme, "失败,原因:", e.errMsg)
-	    }
-	  })
-	  uni.showToast({
-	    title: '当前选中:' + theme,
-	    icon: 'none'
-	  })
-	}
-
-	onReady(() => {
-	  current.value = appThemeitems.value.indexOf(uni.getAppBaseInfo().appTheme)
-	})
-
 </script>
 
 <style>
 	.title {
-		color: var(--text-color, #005500);
+		color: var(--text-color);
 	}
 </style>
 ```
 
-注意此时app.uvue里监听和获取的都应该是appTheme。
+动态切换class，由于要执行script，性能没有媒体查询高。另外动态切换class的代码，和theme.json的执行可能不在同一帧，会造成theme.json先生效、class后生效，有闪烁感。推荐升级到5.25的蒸汽模式，使用媒体查询方案适配主题。
 
 #### 内置组件和UI相关的API的说明
 
@@ -307,9 +282,8 @@ uni-app x的内置组件，在App和Web平台均支持css设置所有样式，�
 
 ### 示例项目
 
-1. [test-theme](https://gitcode.com/dcloud/test-theme)，是一个专门演示主题设置的项目。
-2. hello uni-app x示例，其在`app.uvue`的onLaunch中调用了`checkSystemTheme()`，该方法来自于`/store/index.uts`，获取当前的主题设置存放在响应式`state.isDarkMode`中。
-然后在组件`components/boolean-data/boolean-data.vue`中，设置computed()的`isDarkMode`，在template中通过响应式变量isDarkMode动态切换class。
+1. hello uni-app x示例目前使用媒体查询适配主题。其`app.uvue`、页面和组件样式中使用`@media (prefers-color-scheme: light)`和`@media (prefers-color-scheme: dark)`定义不同主题下的样式，`pages/CSS/prefers-color-scheme`页面提供了完整示例。
+2. [test-theme](https://gitcode.com/dcloud/test-theme)，是一个基于无媒体查询的、动态切换class的示例项目，演示主题设置。
 
 
 <!-- ## uni.setAppTheme(options) @setapptheme -->
@@ -336,56 +310,56 @@ uni.setAppTheme用于设置App当前主题。开发者仍需为不同主题定�
 uni-app x的UI相关的API（比如showModal），也会响应setAppTheme。
 
 ### setAppTheme 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **SetAppThemeOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 |
+| options | **SetAppThemeOptions** | 是 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| theme | string | 是 |  | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 主题 |
-| success | (result: [SetAppThemeSuccessResult](#setappthemesuccessresult-values)) => void | 否 | null | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 接口调用成功的回调函数 |
-| fail | (result: [AppThemeFail](#appthemefail-values)) => void | 否 | null | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| theme | string | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 主题 |
+| success | (result: [SetAppThemeSuccessResult](#setappthemesuccessresult-values)) => void | 否 | null | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 接口调用成功的回调函数 |
+| fail | (result: [AppThemeFail](#appthemefail-values)) => void | 否 | null | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### theme 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Web: x; 微信小程序: x; 支付宝小程序: x | 亮色模式 |
-| dark | Web: x; 微信小程序: x; 支付宝小程序: x | 深色模式 |
-| auto | Web: x; 微信小程序: x; 支付宝小程序: x | 跟随系统模式 |
+| light | Web: x; 微信小程序: x | 亮色模式 |
+| dark | Web: x; 微信小程序: x | 深色模式 |
+| auto | Web: x; 微信小程序: x | 跟随系统模式 |
 
 #### SetAppThemeSuccessResult 的属性值 @setappthemesuccessresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| theme | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| theme | string | 是 | Web: x; 微信小程序: x |
 
 #### AppThemeFail 的属性值 @appthemefail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 错误码<br/>- 702001  参数错误<br/>- 2002000  未知错误 |
-| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| errCode | number | 是 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 错误码<br/>- 702001  参数错误<br/>- 2002000  未知错误 |
+| errSubject | string | 是 | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 702001 | Web: x; 微信小程序: x; 支付宝小程序: x | 参数错误 |
-| 2002000 | Web: x; 微信小程序: x; 支付宝小程序: x | 未知错误 |
+| 702001 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 参数错误 |
+| 2002000 | Web: x; 微信小程序: x | 未知错误 |
 
 
 
@@ -425,29 +399,29 @@ uni.setAppTheme({
 - HBuilderX 4.19版本调整为：应用的light/dark主题真正发生变化时触发监听回调。无论是手动设置setAppTheme还是跟随osTheme变化，只要真正变化了就会触发本监听。回调参数中的 appTheme 值只能是"light" | "dark"。
 
 ### onAppThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (res: [AppThemeChangeResult](#appthemechangeresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| callback | (res: [AppThemeChangeResult](#appthemechangeresult-values)) => void | 是 | Web: x; 微信小程序: x | 
 
 ### AppThemeChangeResult 的属性值 @appthemechangeresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| appTheme | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 应用主题 |
+| appTheme | string | 是 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 应用主题 |
 
 #### appTheme 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Web: x; 微信小程序: x; 支付宝小程序: x | 亮色模式 |
-| dark | Web: x; 微信小程序: x; 支付宝小程序: x | 深色模式 |
+| light | Web: x; 微信小程序: x | 亮色模式 |
+| dark | Web: x; 微信小程序: x | 深色模式 |
 
 
 ### 返回值 
@@ -527,29 +501,29 @@ uni.offAppThemeChange(this.appThemeChangeId)
 开启监听系统主题变化
 
 ### onOsThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (res: [OsThemeChangeResult](#osthemechangeresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| callback | (res: [OsThemeChangeResult](#osthemechangeresult-values)) => void | 是 | Web: x; 微信小程序: x | 
 
 ### OsThemeChangeResult 的属性值 @osthemechangeresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| osTheme | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 系统主题 |
+| osTheme | string | 是 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 系统主题 |
 
 #### osTheme 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Web: x; 微信小程序: x; 支付宝小程序: x | 亮色模式 |
-| dark | Web: x; 微信小程序: x; 支付宝小程序: x | 深色模式 |
+| light | Web: x; 微信小程序: x | 亮色模式 |
+| dark | Web: x; 微信小程序: x | 深色模式 |
 
 
 ### 返回值 
@@ -590,16 +564,16 @@ val callbackId = uni.onOsThemeChange((res: OsThemeChangeResult)=> {
 取消监听系统主题变化
 
 ### offOsThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| id | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| id | number | 是 | Web: x; 微信小程序: x | 
 
 
 
@@ -635,29 +609,29 @@ uni.offOsThemeChange(callbackId)
 监听宿主题状态变化。
 
 ### onHostThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.35 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.35 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (result: [OnHostThemeChangeCallbackResult](#onhostthemechangecallbackresult-values)) => void | 是 | 支付宝小程序: x; Android: x; iOS: x | 
+| callback | (result: [OnHostThemeChangeCallbackResult](#onhostthemechangecallbackresult-values)) => void | 是 | Android: x; iOS: x | 
 
 ### OnHostThemeChangeCallbackResult 的属性值 @onhostthemechangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| hostTheme | string | 是 | 支付宝小程序: x; Android: x; iOS: x | 主题名称 |
+| hostTheme | string | 是 | Android: x; iOS: x | 主题名称 |
 
 #### hostTheme 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | 支付宝小程序: x; Android: x; iOS: x | 亮色模式 |
-| dark | 支付宝小程序: x; Android: x; iOS: x | 深色模式 |
+| light | Android: x; iOS: x | 亮色模式 |
+| dark | Android: x; iOS: x | 深色模式 |
 
 
 ### 返回值 
@@ -701,16 +675,16 @@ uni.offOsThemeChange(callbackId)
 取消监听宿主题状态变化。
 
 ### offHostThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.35 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.35 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| id | number | 是 | 支付宝小程序: x; Android: x; iOS: x | 
+| id | number | 是 | Android: x; iOS: x | 
 
 
 
@@ -746,29 +720,29 @@ uni.offOsThemeChange(callbackId)
 监听系统主题状态变化。  **已废弃，在web、小程序上推荐使用 onHostThemeChange**
 
 ### onThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 | 支付宝小程序: x; Android: x; iOS: x | 
+| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 | Android: x; iOS: x | 
 
 ### OnThemeChangeCallbackResult 的属性值 @onthemechangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| theme | string | 是 | 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 主题名称 |
+| theme | string | 是 | Android: x; iOS: x | 主题名称 |
 
 #### theme 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | 支付宝小程序: x; Android: x; iOS: x | 亮色模式 |
-| dark | 支付宝小程序: x; Android: x; iOS: x | 深色模式 |
+| light | Android: x; iOS: x | 亮色模式 |
+| dark | Android: x; iOS: x | 深色模式 |
 
 
 
@@ -804,29 +778,29 @@ uni.offOsThemeChange(callbackId)
 取消监听系统主题状态变化。  **已废弃，在web、小程序上推荐使用 offHostThemeChange**
 
 ### offThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 | 支付宝小程序: x; Android: x; iOS: x | 
+| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 | Android: x; iOS: x | 
 
 ### OnThemeChangeCallbackResult 的属性值 @onthemechangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| theme | string | 是 | 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 主题名称 |
+| theme | string | 是 | Android: x; iOS: x | 主题名称 |
 
 #### theme 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | 支付宝小程序: x; Android: x; iOS: x | 亮色模式 |
-| dark | 支付宝小程序: x; Android: x; iOS: x | 深色模式 |
+| light | Android: x; iOS: x | 亮色模式 |
+| dark | Android: x; iOS: x | 深色模式 |
 
 
 
@@ -1013,7 +987,7 @@ uni.offOsThemeChange(callbackId)
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

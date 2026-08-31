@@ -646,20 +646,39 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 - 配置 隐私信息访问的许可描述 需提交云端打包才能生效
 
 
+## TargetName @targetName
+
+>HBuilder4.34版本新增支持
+
+iOS平台配置应用构建目标（Target）的标识名称，自定义基座默认值为“UniAppX”，正式版默认为应用标识（AppID）去掉前缀__UNI__的下滑线后转大写（如__UNI__F4617B0对应值为UNIF4617B0）。
+
+如需更改应用构建目标的标识名称，可在项目 manifest.json 文件的 "app-ios" -> "distribute" 节点配置 targetName，如下示例将应用构建目标的标识名称修改为“MyApp”：
+```json
+{
+  "app-ios": {
+    "distribute": {
+      "targetName": "MyApp"
+    }
+  }
+}
+```
+
+**注意**  
+- 配置 targetName 需提交云端打包才能生效
+
+
 ## CFBundleName @cfbundlename
 
 >HBuilder4.34版本新增支持  
 
-iOS平台配置应用内部名称，默认值为“UniAppX”，最多支持15个字符，详细说明参考[苹果官方文档](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundlename)。  
+iOS平台配置应用内部名称，默认值为[TargetName](#targetName)，最多支持15个字符，详细说明参考[苹果官方文档](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundlename)。  
 
-如需更改应用内部名称，可在项目 manifest.json 文件的 "app" -> "distribute" -> "ios" 节点配置 CFBundleName，如下示例将应用内部名称修改为“MyApp”：
+如需更改应用内部名称，可在项目 manifest.json 文件的 "app-ios" -> "distribute" 节点配置 CFBundleName，如下示例将应用内部名称修改为“MyApp”：
 ```json
 {
-  "app": {
+  "app-ios": {
     "distribute": {
-      "ios": {
-        "CFBundleName": "MyApp"
-      }
+      "CFBundleName": "MyApp"
     }
   }
 }
@@ -675,14 +694,12 @@ iOS平台配置应用内部名称，默认值为“UniAppX”，最多支持15�
 
 iOS平台配置应用在iPad设置是否能够与其他应用程序共享屏幕（分屏显示），需配置应用支持iPad设备时有效，默认值为true（可与其他应用程序共享屏幕）。更多信息参考[苹果官方文档](https://developer.apple.com/documentation/bundleresources/information-property-list/uirequiresfullscreen)。  
 
-如需更改此配置，可在项目 manifest.json 文件的 "app" -> "distribute" -> "ios" 节点配置 UIRequiresFullScreen，如下示例为配置应用不与其他应用共享屏幕：
+如需更改此配置，可在项目 manifest.json 文件的 "app-ios" -> "distribute" 节点配置 UIRequiresFullScreen，如下示例为配置应用不与其他应用共享屏幕：
 ```json
 {
-  "app": {
+  "app-ios": {
     "distribute": {
-      "ios": {
-        "UIRequiresFullScreen": false
-      }
+      "UIRequiresFullScreen": false
     }
   }
 }
@@ -690,4 +707,25 @@ iOS平台配置应用在iPad设置是否能够与其他应用程序共享屏幕�
 
 **注意**  
 - 配置 UIRequiresFullScreen 需提交云端打包才能生效
+
+
+## Minimum Deployment（DeploymentTarget） @deploymenttarget  
+
+>HBuilder5.25版本新增支持
+
+Minimum Deployment（DeploymentTarget）设置应用能安装的最低 iOS 系统版本，从HBuilderX5.25开始默认为 15.0。  
+
+如需更改此配置，可在项目 manifest.json 文件的 "app-ios" -> "distribute" 节点配置 deploymentTarget，如下示例为配置为 18.0：
+```json
+{
+  "app-ios": {
+    "distribute": {
+      "deploymentTarget": "18.0"
+    }
+  }
+}
+```
+
+**注意**  
+- 配置 deploymentTarget 需提交云端打包才能生效
 

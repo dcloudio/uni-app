@@ -14,70 +14,88 @@
 
 
 ### chooseFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | 4.61 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.51 | 4.61 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | **ChooseFileOptions** | 是 | 支付宝小程序: x |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **ChooseFileOptions** | 是 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| count | number | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 最多可以选择的文件数，默认100,注意Android中count只会决定是否是单选/多选，如果count>1 是多选效果，等于1为单选效果, |
-| type | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 选择文件的类型，默认all，可选<br/>- image: 选择图片文件<br/>- video: 选择视频文件<br/>- audio: 选择音频文件<br/>- all: 默认值，选择本地文件，包含图片和视频 |
-| extension | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值, App平台不支持 |
-| sizeType | any | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | original 原图，compressed 压缩图，默认二者都有, App平台不支持 |
-| sourceType | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | album 从相册选图，camera 使用相机，默认二者都有, App平台不支持 |
-| success | (result: [ChooseFileSuccess](#choosefilesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 成功则返回图片的本地文件路径列表 tempFilePaths、tempFiles |
-| fail | (result: [ChooseFileFail](#choosefilefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| count | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 最多可以选择的文件数，默认100,注意Android中count只会决定是否是单选/多选，如果count>1 是多选效果，等于1为单选效果, |
+| type | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 选择文件的类型，默认all，可选<br/>- image: 选择图片文件<br/>- video: 选择视频文件<br/>- audio: 选择音频文件<br/>- all: 默认值，选择本地文件，包含图片和视频 |
+| extension | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值, App平台不支持 |
+| sizeType | any | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | original 原图，compressed 压缩图，默认二者都有, App平台不支持 |
+| sourceType | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | album 从相册选图，camera 使用相机，默认二者都有, App平台不支持 |
+| success | (result: [ChooseFileSuccess](#choosefilesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 成功则返回图片的本地文件路径列表 tempFilePaths、tempFiles |
+| fail | (result: [ChooseFileFail](#choosefilefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| image | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 图片类型 |
-| video | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 视频类型 |
-| audio | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: x | 音频类型 |
-| all | 支付宝小程序: x |  |
+| image | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 图片类型 |
+| video | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 视频类型 |
+| audio | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 音频类型 |
+| all |   |  |
 
 #### ChooseFileSuccess 的属性值 @choosefilesuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePaths | Array&lt;string&gt; | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件的本地文件路径列表, Android平台不支持 |
-| tempFiles | Array&lt;string&gt; | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 文件的本地文件列表，每一项是一个 File 对象 |
+| tempFilePaths | Array&lt;string&gt; | 是 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件的本地文件路径列表, Android平台不支持 |
+| tempFiles | Array&lt;**ChooseFileTempFile**&gt; | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 文件的本地文件列表，每一项是一个 File 对象 |
 
-#### ChooseFileFail 的属性值 @choosefilefail-values 
+#### tempFiles 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| name | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 选择的文件名称 |
+| path | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件路径 |
+| size | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件大小，单位 B |
+| type | string | 是 |   | 选择的文件类型<br/>可选值：<br/>- 'video': 选择了视频文件;<br/>- 'image': 选择了图片文件;<br/>- 'audio': 选择了音频文件;<br/>- 'file': 选择了除图片和视频的文件; |
 
-#### errCode 的属性描述
+##### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1101001 | 支付宝小程序: x | 用户取消 |
-| 1101002 | 支付宝小程序: x | urls至少包含一张图片地址 |
-| 1101003 | 支付宝小程序: x | 文件不存在 |
-| 1101004 | 支付宝小程序: x | 图片加载失败 |
-| 1101005 | 支付宝小程序: x | 未获取权限 |
-| 1101006 | 支付宝小程序: x | 图片或视频保存失败 |
-| 1101007 | 支付宝小程序: x | 图片裁剪失败 |
-| 1101008 | 支付宝小程序: x | 拍照或录像失败 |
-| 1101009 | 支付宝小程序: x | 图片压缩失败 |
-| 1101010 | 支付宝小程序: x | 其他错误 |
+| video | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 视频类型 |
+| image | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 图片类型 |
+| audio | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 音频类型 |
+| file | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 除图片和音视频类型的文件 |
+
+#### ChooseFileFail 的属性值 @choosefilefail-values 
+
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 描述 |
+| :- | :- |
+| 1101001 | 用户取消 |
+| 1101002 | urls至少包含一张图片地址 |
+| 1101003 | 文件不存在 |
+| 1101004 | 图片加载失败 |
+| 1101005 | 未获取权限 |
+| 1101006 | 图片或视频保存失败 |
+| 1101007 | 图片裁剪失败 |
+| 1101008 | 拍照或录像失败 |
+| 1101009 | 图片压缩失败 |
+| 1101010 | 其他错误 |
 
 
 
@@ -395,7 +413,7 @@ Android端返回的路径是content协议。
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

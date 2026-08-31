@@ -4,9 +4,9 @@
 
 
 ### createIntersectionObserver 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -20,10 +20,10 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| thresholds | Array&lt;string&gt; | 否 | 微信小程序: 4.41; 支付宝小程序: -; Android: x; iOS: x; HarmonyOS: x | 所有阈值 |
-| initialRatio | number | 否 | 微信小程序: 4.41; 支付宝小程序: -; Android: x; iOS: x; HarmonyOS: x | 初始的相交比例 |
-| observeAll | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: -; Android: x; iOS: x; HarmonyOS: x | 是否同时观测多个参照节点（而非一个） |
-| nativeMode | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: -; Android: x; iOS: x; HarmonyOS: x | 需要基础库： `3.5.7`<br/><br/>是否使用原生观察器模式。<br/> | 
+| thresholds | Array&lt;any&gt; | 否 | Android: x; iOS: x; HarmonyOS: x | 所有阈值 |
+| initialRatio | number | 否 | Android: x; iOS: x; HarmonyOS: x | 初始的相交比例 |
+| observeAll | boolean | 否 | Android: x; iOS: x; HarmonyOS: x | 是否同时观测多个参照节点（而非一个） |
+| nativeMode | boolean | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 需要基础库： `3.5.7`<br/><br/>是否使用原生观察器模式。<br/> | 
 
 
 ### 返回值 
@@ -38,9 +38,9 @@
 relativeTo
 使用选择器指定一个节点，作为参照区域之一
 ##### relativeTo 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.41 | - | x | x | x |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | x |
 
 ##### 参数 
 
@@ -54,16 +54,16 @@ relativeTo
 
 | 类型 |
 | :- |
-| [IntersectionObserver](#intersectionobserver-values) |
+| IntersectionObserver |
  
 
 #### relativeToViewport(margins?: any): IntersectionObserver; @relativetoviewport
 relativeToViewport
 指定页面显示区域作为参照区域之一
 ##### relativeToViewport 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.41 | - | x | x | x |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | x |
 
 ##### 参数 
 
@@ -76,16 +76,16 @@ relativeToViewport
 
 | 类型 |
 | :- |
-| [IntersectionObserver](#intersectionobserver-values) |
+| IntersectionObserver |
  
 
 #### observe(targetSelector: string, callback: ObserveCallback): void; @observe
 observe
 指定目标节点并开始监听相交状态变化情况
 ##### observe 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.41 | - | x | x | x |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | x |
 
 ##### 参数 
 
@@ -128,40 +128,12 @@ observe
 disconnect
 停止监听
 ##### disconnect 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.41 | - | x | x | x |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | x |
 
 
 
-
-##### ObserveResult 的属性值 @observeresult-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| intersectionRatio | number | 是 | Android: x; iOS: x; HarmonyOS: x | 相交比例 |
-| intersectionRect | any | 是 | Android: x; iOS: x; HarmonyOS: x | 相交区域的边界 |
-| boundingClientRect | **ObserveNodeRect** | 是 | Android: x; iOS: x; HarmonyOS: x | 目标节点布局区域的边界 |
-| relativeRect | **ObserveNodeRect** | 是 | Android: x; iOS: x; HarmonyOS: x | 参照区域的边界 |
-| time | number | 是 | Android: x; iOS: x; HarmonyOS: x | 相交检测时的时间戳 |
-
-#### boundingClientRect 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| left | number | 是 | Android: x; iOS: x; HarmonyOS: x | left |
-| right | number | 是 | Android: x; iOS: x; HarmonyOS: x | right |
-| top | number | 是 | Android: x; iOS: x; HarmonyOS: x | top |
-| bottom | number | 是 | Android: x; iOS: x; HarmonyOS: x | bottom |
-
-#### relativeRect 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| left | number | 是 | Android: x; iOS: x; HarmonyOS: x | left |
-| right | number | 是 | Android: x; iOS: x; HarmonyOS: x | right |
-| top | number | 是 | Android: x; iOS: x; HarmonyOS: x | top |
-| bottom | number | 是 | Android: x; iOS: x; HarmonyOS: x | bottom |
  
 
 
@@ -280,7 +252,7 @@ disconnect
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

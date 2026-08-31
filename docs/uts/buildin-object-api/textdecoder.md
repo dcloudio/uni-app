@@ -50,9 +50,9 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 
 
 **返回值**
-| 类型 |
-| :- |
-| string | 
+| 类型 | 描述 |
+| :- | :- |
+| string | 一个字符串。 | 
 
 
 ::: preview 
@@ -112,9 +112,9 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 
 
 **返回值**
-| 类型 |
-| :- |
-| string | 
+| 类型 | 描述 |
+| :- | :- |
+| string | 一个字符串。 | 
 
 
 <!-- UTSJSON.TextDecoder.decode_1.test -->
@@ -146,9 +146,9 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 
 
 **返回值**
-| 类型 |
-| :- |
-| string | 
+| 类型 | 描述 |
+| :- | :- |
+| string | 一个字符串。 | 
 
 
 <!-- UTSJSON.TextDecoder.decode_2.test -->

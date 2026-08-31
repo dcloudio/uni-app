@@ -89,7 +89,7 @@ onerror 是当发生错误且这个错误事件（error）被 UniEventSource 触
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 是 | Web: x; HarmonyOS: x | 事件回调 | 
+| callback | (error: [UniError](/err-spec.md#unierror)) => void | 是 | Web: x; HarmonyOS: x | 事件回调 | 
 
 
 
@@ -127,22 +127,6 @@ close
 
 
 
-
-##### UniMessageEvent 的属性值 @unimessageevent-values 
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 事件类型。 |
-| data | any | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 消息发射器发出的数据。 |
-| lastEventId | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
-
-##### UniMessageEvent 的属性值 @unimessageevent-values 
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 事件类型。 |
-| data | any | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 消息发射器发出的数据。 |
-| lastEventId | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
  
 
 
@@ -398,7 +382,7 @@ close
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

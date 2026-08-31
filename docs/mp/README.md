@@ -4,8 +4,6 @@
 
 uni-app x 项目在编译到小程序平台时，将部分特性对齐了web与app端，因此和非uni-app x项目编译到小程序端略有差异。
 
-HBuilderX 5.25 起支持编译到支付宝小程序。
-
 与uni-app相比，uni-app x编译到微信小程序有2个显著差别：
 1. uni-app x 支持 Element API
 在微信小程序上开发高性能应用，离不开wxs。但wxs难用且不跨平台。\

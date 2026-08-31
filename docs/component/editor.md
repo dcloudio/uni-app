@@ -8,27 +8,27 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 7.1.1 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 7.1.1 | 5.08 | 5.08 | 5.08 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| read-only | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 设置编辑器为只读 |
-| placeholder | string |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 提示信息 |
-| show-img-size | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 点击图片时显示图片大小控件 |
-| show-img-toolbar | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 点击图片时显示工具栏控件 |
-| show-img-resize | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 点击图片时显示修改尺寸控件 |
-| enable-formats | Array.&lt;string&gt; |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(Array.&lt;string&gt;)*<br/>编辑器允许的名单内的格式 |
-| type | "none" | "null" | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android 系统版本: 8.0.0; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 输入类型，暂只支持<br>  "none": 聚焦时不弹出键盘 |
+| read-only | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 设置编辑器为只读 |
+| placeholder | string |   | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 提示信息 |
+| show-img-size | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 点击图片时显示图片大小控件 |
+| show-img-toolbar | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 点击图片时显示工具栏控件 |
+| show-img-resize | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 点击图片时显示修改尺寸控件 |
+| enable-formats | Array.&lt;string&gt; |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array.&lt;string&gt;)*<br/>编辑器允许的名单内的格式 |
+| type | "none" | "null" | Web: 4.0; 微信小程序: x; Android 系统版本: 8.0.0; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 输入类型，暂只支持<br>  "none": 聚焦时不弹出键盘 |
 | name | string |   |   | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| @ready | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 编辑器初始化完成时触发 |
-| @focus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 5.08; iOS: 5.08 | 编辑器聚焦时触发 |
-| @blur | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 5.08; iOS: 5.08 | 编辑器失去焦点时触发 |
-| @input | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 5.08; iOS: 5.08 | 编辑器内容改变时触发 |
-| @statuschange | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 5.08; iOS: 5.08 | 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式 |
+| @ready | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08 | 编辑器初始化完成时触发 |
+| @focus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08 | 编辑器聚焦时触发 |
+| @blur | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08 | 编辑器失去焦点时触发 |
+| @input | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08 | 编辑器内容改变时触发 |
+| @statuschange | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08 | 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式 |
 
 #### type 的属性描述
 

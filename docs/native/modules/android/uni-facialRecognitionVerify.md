@@ -19,11 +19,56 @@
 将本地依赖库复制到app项目的libs下
 
 ### 线上依赖库
-|线上依赖库名称								|
-|:--										|
-|com.squareup.okhttp3:okhttp:3.11.0			|
-|com.squareup.okio:okio:1.14.0				|
-|com.alibaba:fastjson:1.2.83_noneautotype	|
-|com.aliyun.dpa:oss-android-sdk:2.9.11		|
+
+::: preview
+
+> build.gradle
+
+```groovy
+dependencies {
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.squareup.okio:okio:1.14.0'
+    implementation 'com.alibaba:fastjson:1.2.83_noneautotype'
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.9.11'
+}
+```
+
+> build.gradle.kts
+
+```groovy
+dependencies {
+    implementation("com.squareup.okhttp3:okhttp:3.11.0")
+    implementation("com.squareup.okio:okio:1.14.0")
+    implementation("com.alibaba:fastjson:1.2.83_noneautotype")
+    implementation("com.aliyun.dpa:oss-android-sdk:2.9.11")
+}
+```
+
+:::
+
 
 将线上依赖库添加到app项目的build.gradle下
+
+### 插件注册
+
+VDOM模式无需注册。蒸汽模式（Vapor）需要方法注册，将以下内容添加到主模块的build.gradle。
+
+::: preview
+
+> build.gradle
+
+```groovy
+defaultConfig {
+    buildConfigField 'String', 'UTSMethodRegister', '"uts.sdk.modules.DCloudUniFacialVerify.UniUTSMethodRegister"'
+}
+```
+
+> build.gradle.kts
+
+```groovy
+defaultConfig {
+    buildConfigField("String", "UTSMethodRegister", "\"uts.sdk.modules.DCloudUniFacialVerify.UniUTSMethodRegister\"")
+}
+```
+
+:::

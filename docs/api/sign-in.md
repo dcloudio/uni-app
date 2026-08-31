@@ -6,9 +6,9 @@
 > Android、iOS平台从 HBuilderX5.08 版本开始支持微信登录; iOS平台从 HBuilderX 5.21 版本开始支持Apple登录
 
 ### login 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.25 | 5.08 | 5.08 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | 4.61 |
 
 
 ### 参数 
@@ -21,13 +21,13 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| provider | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持微信登录(weixin)、苹果登录(apple)<br/> |
-| scopes | any | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）<br/> |
+| provider | string | 否 | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持微信登录(weixin)、苹果登录(apple)<br/> |
+| scopes | any | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）<br/> |
 | timeout | number | 否 | Web: x; 微信小程序: 2.35; Android: x; iOS: x; HarmonyOS: x | 超时时间，单位 ms |
 | onlyAuthorize | boolean | 否 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录仅请求授权认证<br/> |
-| success | (result: [LoginSuccess](#loginsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [LoginFail](#loginfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [LoginSuccess](#loginsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [LoginFail](#loginfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### provider 的属性描述
 
@@ -44,9 +44,9 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: - | 描述信息 |
+| errMsg | string | 否 | Web: x | 描述信息 |
 | authResult | any | 是 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 登录服务商提供的登录信息，服务商不同返回的结果不完全相同 |
-| code | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 小程序用户临时登录凭证 |
+| code | string | 是 | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 小程序用户临时登录凭证 |
 | anonymousCode | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 头条小程序当前设备标识 |
 | authCode | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序授权码 |
 | authErrorScopes | any | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录失败的授权类型，key是授权失败的 scope，value 是对应的错误码 |
@@ -70,7 +70,7 @@
 | errCode | number | 是 | Web: x | 微信登录错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
@@ -91,8 +91,8 @@
 | 1310511 | Web: x | 获取用户信息请求超时 |
 | 1310512 | Web: x | iOS 没有配置对应的URL Scheme |
 | 1310513 | Web: x | iOS 没有配置对应的Universal Link |
-| 1310600 | Web: x | 服务供应商获取失败 |
 | 1001502040 | Web: x | 登录请求可能被跨站攻击 |
+| 1310600 | Web: x | 服务供应商获取失败 |
 
 
 
@@ -227,93 +227,93 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 
 ### getUserInfo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **GetUserInfoOptions** | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x |
+| options | **GetUserInfoOptions** | 是 | Web: x; Android: x; iOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| provider | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 授权登录服务提供商，通过uni.getProvider获取 |
-| withCredentials | boolean | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否带上登录态信息，仅微信小程序生效。 |
-| lang | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。默认为en，仅微信小程序生效。 |
-| timeout | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 超时时间，单位 ms |
-| success | (result: [GetUserInfoSuccess](#getuserinfosuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 接口调用成功的回调函数 |
-| fail | (result: [GetUserInfoFail](#getuserinfofail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| provider | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 授权登录服务提供商，通过uni.getProvider获取 |
+| withCredentials | boolean | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否带上登录态信息，仅微信小程序生效。 |
+| lang | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。默认为en，仅微信小程序生效。 |
+| timeout | number | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 超时时间，单位 ms |
+| success | (result: [GetUserInfoSuccess](#getuserinfosuccess-values)) => void | 否 | Web: x; Android: x; iOS: x | 接口调用成功的回调函数 |
+| fail | (result: [GetUserInfoFail](#getuserinfofail-values)) => void | 否 | Web: x; Android: x; iOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; Android: x; iOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### provider 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| weixin | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 微信登录。 - **推荐**: 使用 uniCloud 提供的云函数登录方式，避免在客户端暴露 appSecret。 1. [获取微信openid](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#获取微信openid) 2. [获取App平台微信登录用户信息](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#get-weixin-user-info) |
-| qq | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
-| sinaweibo | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 新浪微博登录 |
-| xiaomi | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 小米登录 |
-| apple | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | Apple登录 |
-| huawei | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
+| weixin | Web: x; Android: x; iOS: x; HarmonyOS: x | 微信登录。 - **推荐**: 使用 uniCloud 提供的云函数登录方式，避免在客户端暴露 appSecret。 1. [获取微信openid](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#获取微信openid) 2. [获取App平台微信登录用户信息](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#get-weixin-user-info) |
+| qq | Web: x; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
+| sinaweibo | Web: x; Android: x; iOS: x; HarmonyOS: x | 新浪微博登录 |
+| xiaomi | Web: x; Android: x; iOS: x; HarmonyOS: x | 小米登录 |
+| apple | Web: x; Android: x; iOS: x; HarmonyOS: x | Apple登录 |
+| huawei | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
 
 #### GetUserInfoSuccess 的属性值 @getuserinfosuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| userInfo | **UserInfo** | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 用户信息对象，不包含 openid 等敏感信息 |
-| rawData | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 不包括敏感信息的原始数据字符串，用于计算签名。 |
-| signature | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息，仅微信小程序生效。 |
-| encryptedData | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法，仅微信小程序生效。 |
-| iv | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 加密算法的初始向量，详细见加密数据解密算法，仅微信小程序生效。 |
-| errMsg | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 描述信息 |
-| cloudID | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 需要基础库： `2.7.0`<br/><br/>敏感数据对应的云 ID，开通[云开发](https://developers.weixin.qq.com/miniprogram/dev/wxcloudservice/wxcloud/basis/getting-started.html)的小程序才会返回，可通过云调用直接获取开放数据，详细见[云调用直接获取开放数据](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html#method-cloud)<br/> |
+| userInfo | **UserInfo** | 是 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 用户信息对象，不包含 openid 等敏感信息 |
+| rawData | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 不包括敏感信息的原始数据字符串，用于计算签名。 |
+| signature | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息，仅微信小程序生效。 |
+| encryptedData | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法，仅微信小程序生效。 |
+| iv | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 加密算法的初始向量，详细见加密数据解密算法，仅微信小程序生效。 |
+| errMsg | string | 是 | Web: x; Android: x; iOS: x | 描述信息 |
+| cloudID | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 需要基础库： `2.7.0`<br/><br/>敏感数据对应的云 ID，开通[云开发](https://developers.weixin.qq.com/miniprogram/dev/wxcloudservice/wxcloud/basis/getting-started.html)的小程序才会返回，可通过云调用直接获取开放数据，详细见[云调用直接获取开放数据](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html#method-cloud)<br/> |
 
 #### userInfo 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| nickName | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 用户昵称 |
-| openId | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 该服务商唯一用户标识 |
-| avatarUrl | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 用户头像 |
-| gender | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.81 | 用户性别（仅微信登录支持） |
-| city | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x |  |
-| country | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x |  |
-| language | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 可选值：<br/>- 'en': 英文;<br/>- 'zh_CN': 简体中文;<br/>- 'zh_TW': 繁体中文;<br/> |
-| province | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x |  |
+| nickName | string | 是 | Web: x; Android: x; iOS: x | 用户昵称 |
+| openId | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 该服务商唯一用户标识 |
+| avatarUrl | string | 是 | Web: x; Android: x; iOS: x | 用户头像 |
+| gender | number | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.81 | 用户性别（仅微信登录支持） |
+| city | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x |  |
+| country | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x |  |
+| language | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 可选值：<br/>- 'en': 英文;<br/>- 'zh_CN': 简体中文;<br/>- 'zh_TW': 繁体中文;<br/> |
+| province | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x |  |
 
 ##### gender 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 0 | Web: x; 支付宝小程序: x; Android: x; iOS: x | 男 |
-| 1 | Web: x; 支付宝小程序: x; Android: x; iOS: x | 女 |
-| 2 | Web: x; 支付宝小程序: x; Android: x; iOS: x | 保密 |
-| 0 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x |  |
-| 1 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x |  |
-| 2 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x |  |
+| 0 | Web: x; Android: x; iOS: x | 男 |
+| 1 | Web: x; Android: x; iOS: x | 女 |
+| 2 | Web: x; Android: x; iOS: x | 保密 |
+| 0 | Web: x; 微信小程序: 4.41; Android: x; iOS: x |  |
+| 1 | Web: x; 微信小程序: 4.41; Android: x; iOS: x |  |
+| 2 | Web: x; 微信小程序: 4.41; Android: x; iOS: x |  |
 
 ##### language 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| en | Web: x; 支付宝小程序: x; Android: x; iOS: x |
-| zh_CN | Web: x; 支付宝小程序: x; Android: x; iOS: x |
-| zh_TW | Web: x; 支付宝小程序: x; Android: x; iOS: x |
+| en | Web: x; Android: x; iOS: x |
+| zh_CN | Web: x; Android: x; iOS: x |
+| zh_TW | Web: x; Android: x; iOS: x |
 
 #### GetUserInfoFail 的属性值 @getuserinfofail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x | 统一错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x |  |
+| errCode | number | 是 | Web: x; Android: x; iOS: x | 统一错误码 |
+| errSubject | string | 是 | Web: x; Android: x; iOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; Android: x; iOS: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; Android: x; iOS: x |  |
 
 
 
@@ -499,7 +499,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

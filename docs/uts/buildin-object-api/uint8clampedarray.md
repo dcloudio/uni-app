@@ -234,6 +234,7 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 | 名称 | 类型 | 必备 |
 | :- | :- | :- |
 | length | number | 是 |
+| [n: number] | number | 是 |
 
 
 **返回值**
@@ -1074,6 +1075,7 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 | 名称 | 类型 | 必备 |
 | :- | :- | :- |
 | length | number | 是 |
+| [n: number] | number | 是 |
 
 
 **返回值**

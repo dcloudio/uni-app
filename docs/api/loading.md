@@ -15,9 +15,9 @@
 它是一个悬浮弹出的、非组件内嵌的加载中提示。
 
 ### showLoading 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 |
 
 
 ### 参数 
@@ -30,17 +30,17 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| title | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
-| mask | boolean | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: x; HarmonyOS: x | 是否显示透明蒙层，防止触摸穿透，默认：false |
-| success | (res: [ShowLoadingSuccess](#showloadingsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.showLoading成功回调函数定义 |
-| fail | (res: [ShowLoadingFail](#showloadingfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.showLoading失败回调函数定义 |
-| complete | (res: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.showLoading完成回调函数定义 | 
+| title | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
+| mask | boolean | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否显示透明蒙层，防止触摸穿透，默认：false |
+| success | (res: [ShowLoadingSuccess](#showloadingsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | uni.showLoading成功回调函数定义 |
+| fail | (res: [ShowLoadingFail](#showloadingfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | uni.showLoading失败回调函数定义 |
+| complete | (res: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | uni.showLoading完成回调函数定义 | 
 
 #### ShowLoadingSuccess 的属性值 @showloadingsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 错误信息 |
+| errMsg | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 错误信息 |
 
 #### ShowLoadingFail 的属性值 @showloadingfail-values 
 
@@ -49,7 +49,7 @@
 | errCode | number | 是 | uni.showLoading失败回调参数 |
 | errSubject | string | 是 | 统一错误主题（模块）名称 |
 | data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |  |
 
 
@@ -94,9 +94,9 @@
 隐藏 loading 提示框。
 
 ### hideLoading 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 |
 
 
 ### 参数 
@@ -109,17 +109,17 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| loadingPage | [UniPage](/api/unipage.md) | 否 | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 期望隐藏的目标LoadingPage 如果为null 会关闭当前栈顶全部LoadingPage |
-| success | (res: [HideLoadingSuccess](#hideloadingsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.hideLoading成功回调函数定义 |
-| fail | (res: [HideLoadingFail](#hideloadingfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.hideLoading失败回调函数定义 |
-| complete | (res: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.hideLoading完成回调函数定义 |
-| noConflict | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: - | 需要基础库： `2.22.1`<br/><br/>目前 toast 和 loading 相关接口可以相互混用，此参数可用于取消混用特性<br/> | 
+| loadingPage | [UniPage](/api/unipage.md) | 否 | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 期望隐藏的目标LoadingPage 如果为null 会关闭当前栈顶全部LoadingPage |
+| success | (res: [HideLoadingSuccess](#hideloadingsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | uni.hideLoading成功回调函数定义 |
+| fail | (res: [HideLoadingFail](#hideloadingfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | uni.hideLoading失败回调函数定义 |
+| complete | (res: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | uni.hideLoading完成回调函数定义 |
+| noConflict | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.22.1`<br/><br/>目前 toast 和 loading 相关接口可以相互混用，此参数可用于取消混用特性<br/> | 
 
 #### HideLoadingSuccess 的属性值 @hideloadingsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 错误信息 |
+| errMsg | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 错误信息 |
 
 #### HideLoadingFail 的属性值 @hideloadingfail-values 
 
@@ -128,7 +128,7 @@
 | errCode | number | 是 | uni.hideLoading失败回调参数 |
 | errSubject | string | 是 | 统一错误主题（模块）名称 |
 | data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |  |
 
 
@@ -407,9 +407,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 ## Tips@tips

@@ -28,22 +28,22 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.31 | 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
-| adpid | string | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告位id，在uniAD官网申请广告位 |
-| unit-id | string | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>广告单元id，可在[小程序管理后台](https://mp.weixin.qq.com)的流量主模块新建 |
-| ad-intervals | number | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>广告自动刷新的间隔时间，单位为秒，参数值必须大于等于30（该参数不传入时 Banner 广告不会自动刷新） |
-| ad-type | string | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>广告类型，默认为展示banner，可通过设置该属性为`video`展示视频广告, `grid`为格子广告 |
-| ad-theme | string | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/> |
-| @load | (event: [UniEvent](/component/common.md#unievent)) => void | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告加载成功的回调 |
-| @close | (event: [UniEvent](/component/common.md#unievent)) => void | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告关闭的回调 |
-| @error | (e:[UniAdErrorEvent](#uniaderrorevent)) => void | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告加载失败的回调 |
+| adpid | string | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告位id，在uniAD官网申请广告位 |
+| unit-id | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>广告单元id，可在[小程序管理后台](https://mp.weixin.qq.com)的流量主模块新建 |
+| ad-intervals | number | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>广告自动刷新的间隔时间，单位为秒，参数值必须大于等于30（该参数不传入时 Banner 广告不会自动刷新） |
+| ad-type | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>广告类型，默认为展示banner，可通过设置该属性为`video`展示视频广告, `grid`为格子广告 |
+| ad-theme | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/> |
+| @load | (event: [UniEvent](/component/common.md#unievent)) => void | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告加载成功的回调 |
+| @close | (event: [UniEvent](/component/common.md#unievent)) => void | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告关闭的回调 |
+| @error | (e:[UniAdErrorEvent](#uniaderrorevent)) => void | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告加载失败的回调 |
 | @clicked | Event |   |   |
 
 
@@ -69,7 +69,7 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 | errCode | number | 是 | 错误码<br/>- -5001 广告位标识adpid为空，请传入有效的adpid<br/>- -5002 无效的广告位标识adpid，请使用正确的adpid<br/>- -5003 广告位未开通广告，请在广告平台申请并确保已审核通过<br/>- -5004 无广告模块，打包时请配置要使用的广告模块<br/>- -5005 广告加载失败，请稍后重试<br/>- -5006 广告已经展示过了，请重新加载<br/>- -5007 广告不可用或已过期，请重新请求<br/>- -5008 广告不可用或已过期，请重新请求<br/>- -5009 广告类型不符，请检查后再试<br/>- -5011 打包或开通的渠道，不支持此类型广告<br/>- -5013 广告播放失败，请重新加载 |
 | errSubject | string | 是 | 统一错误主题（模块）名称 |
 | data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |  |
 
 

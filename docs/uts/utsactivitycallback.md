@@ -328,7 +328,7 @@
 | params | **UniActivityParams** | 是 | 统一返回参数,包括页面路由地址与方法返回值 |
 | requestCode | Int | 是 | 请求代码，标识发送请求的Activity |
 | resultCode | Int | 是 | 结果代码，表明操作是否成功或取消 |
-| data | Intent \| null | 是 | 含返回数据的Intent对象或null | 
+| data | Intent \| null | 否 | 含返回数据的Intent对象或null | 
 
 #### params 的属性描述
 
@@ -372,7 +372,7 @@
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值 |
 | requestCode | Int | 是 | 请求代码 |
 | resultCode | Int | 是 | 结果代码 |
-| data | Intent \| null | 是 | 返回的数据 | 
+| data | Intent \| null | 否 | 返回的数据 | 
 
 #### params 的属性描述
 
@@ -590,7 +590,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数, 包括页面路由地址与方法返回值 |
-| parent | View \| null | 是 | 即将创建视图的父视图 |
+| parent | View \| null | 否 | 即将创建视图的父视图 |
 | name | String | 是 | 视图的标识名 |
 | context | Context | 是 | 视图创建时的上下文 |
 | attrs | AttributeSet | 是 | 视图的属性集 | 
@@ -635,7 +635,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值 |
-| parent | View \| null | 是 | 父视图 |
+| parent | View \| null | 否 | 父视图 |
 | name | string | 是 | 视图名称 |
 | context | Context | 是 | 上下文环境 |
 | attrs | AttributeSet | 是 | 属性集 | 
@@ -938,7 +938,7 @@
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。 |
 | menu | ContextMenu | 是 | 要创建的上下文菜单。 |
 | v | View | 是 | 引发上下文菜单的视图。 |
-| menuInfo | ContextMenu.ContextMenuInfo \| null | 是 | 与上下文菜单关联的上下文菜单信息，如果没有则为 null。 | 
+| menuInfo | ContextMenu.ContextMenuInfo \| null | 否 | 与上下文菜单关联的上下文菜单信息，如果没有则为 null。 | 
 
 #### params 的属性描述
 
@@ -982,7 +982,7 @@
 | params | **UniActivityParams** | 是 | 统一返回参数,包括页面路由地址与方法返回值 |
 | menu | ContextMenu | 是 | 要创建的上下文菜单 |
 | v | View | 是 | 与上下文菜单相关联的视图 |
-| menuInfo | ContextMenu.ContextMenuInfo \| null | 是 | 关联上下文菜单的附加信息，可为空 | 
+| menuInfo | ContextMenu.ContextMenuInfo \| null | 否 | 关联上下文菜单的附加信息，可为空 | 
 
 #### params 的属性描述
 
@@ -1623,7 +1623,7 @@
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。便于开发者获取上下文信息和返回的数据。 |
 | keyCode | Int | 是 | 按下的键的键码。 |
-| event | KeyEvent \| null | 是 | 提供按键事件的详细信息。 | 
+| event | KeyEvent \| null | 否 | 提供按键事件的详细信息。 | 
 
 #### params 的属性描述
 
@@ -1666,7 +1666,7 @@
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供了当前活动上下文以及任何先前操作的结果。 |
 | keyCode | Int | 是 | 表明被按下的键的键码。 |
-| event | KeyEvent \| null | 是 | 提供了关于按键事件的详细信息，包括按键的动作和代码。 | 
+| event | KeyEvent \| null | 否 | 提供了关于按键事件的详细信息，包括按键的动作和代码。 | 
 
 #### params 的属性描述
 
@@ -1709,7 +1709,7 @@
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。开发者可以利用这些返回值进行进一步处理。 |
 | keyCode | Int | 是 | 长按的键的键码。 |
-| event | KeyEvent \| null | 是 | 提供长按键事件的详细信息。 | 
+| event | KeyEvent \| null | 否 | 提供长按键事件的详细信息。 | 
 
 #### params 的属性描述
 
@@ -1752,7 +1752,7 @@
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。这样，开发者可以利用设置的返回参数执行上下文相关的操作。 |
 | keyCode | Int | 是 | 表明长按的键的键码。 |
-| event | KeyEvent \| null | 是 | 提供关于长按键事件的额外信息，允许开发者根据需要来响应事件。 | 
+| event | KeyEvent \| null | 否 | 提供关于长按键事件的额外信息，允许开发者根据需要来响应事件。 | 
 
 #### params 的属性描述
 
@@ -1795,7 +1795,7 @@
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。便于开发者获取和处理返回的数据。 |
 | keyCode | Int | 是 | 松开的键的键码。 |
-| event | KeyEvent \| null | 是 | 提供按键抬起事件的详细信息。 | 
+| event | KeyEvent \| null | 否 | 提供按键抬起事件的详细信息。 | 
 
 #### params 的属性描述
 
@@ -1838,7 +1838,7 @@
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供当前上下文及函数调用的相关结果。 |
 | keyCode | Int | 是 | 表示松开的键的键码。 |
-| event | KeyEvent \| null | 是 | 提供了关于按键事件的详细信息，包含按键的动作和代码等。 | 
+| event | KeyEvent \| null | 否 | 提供了关于按键事件的详细信息，包含按键的动作和代码等。 | 
 
 #### params 的属性描述
 
@@ -1882,7 +1882,7 @@
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。开发者可以根据这些返回值对按键事件进行处理。 |
 | keyCode | Int | 是 | 表示触发多次的键的键码。 |
 | repeatCount | Int | 是 | 按键重复的次数。 |
-| event | KeyEvent \| null | 是 | 提供多个按键事件的详细信息。 | 
+| event | KeyEvent \| null | 否 | 提供多个按键事件的详细信息。 | 
 
 #### params 的属性描述
 
@@ -1926,7 +1926,7 @@
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。可以用来执行基于当前应用状态的操作。 |
 | keyCode | Int | 是 | 表示重复按下的键的键码。 |
 | repeatCount | Int | 是 | 表明此键的重复次数。 |
-| event | KeyEvent \| null | 是 | 提供按键事件的详细信息。 | 
+| event | KeyEvent \| null | 否 | 提供按键事件的详细信息。 | 
 
 #### params 的属性描述
 
@@ -1974,7 +1974,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供了当前的上下文信息和方法调用的结果。 |
-| savedInstanceState | Bundle \| null | 是 | 如果 Activity 正在重新创建，则此参数包含之前保存的状态信息。 | 
+| savedInstanceState | Bundle \| null | 否 | 如果 Activity 正在重新创建，则此参数包含之前保存的状态信息。 | 
 
 #### params 的属性描述
 
@@ -2016,7 +2016,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值，这些参数为开发者提供了当前上下文及函数调用的相关结果。 |
-| savedInstanceState | Bundle \| null | 是 | 如果Activity在之前被销毁，现在正在重新创建，这个Bundle将包含上次保存的状态数据。如果Activity是首次创建，则为null。 | 
+| savedInstanceState | Bundle \| null | 否 | 如果Activity在之前被销毁，现在正在重新创建，这个Bundle将包含上次保存的状态数据。如果Activity是首次创建，则为null。 | 
 
 #### params 的属性描述
 
@@ -3138,7 +3138,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值 |
-| callback | ActionMode.Callback \| null | 是 | 操作模式的回调函数 | 
+| callback | ActionMode.Callback \| null | 否 | 操作模式的回调函数 | 
 
 #### params 的属性描述
 
@@ -3180,7 +3180,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数, 包括页面路由地址与方法返回值 |
-| callback | ActionMode.Callback \| null | 是 | 操作模式的回调 | 
+| callback | ActionMode.Callback \| null | 否 | 操作模式的回调 | 
 
 #### params 的属性描述
 
@@ -3222,7 +3222,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值 |
-| callback | ActionMode.Callback \| null | 是 | 操作模式的回调函数 | 
+| callback | ActionMode.Callback \| null | 否 | 操作模式的回调函数 | 
 
 #### params 的属性描述
 
@@ -3264,7 +3264,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数, 包括页面路由地址与方法返回值 |
-| callback | ActionMode.Callback \| null | 是 | 操作模式的回调 |
+| callback | ActionMode.Callback \| null | 否 | 操作模式的回调 |
 | type | Int | 是 | 操作模式的类型 | 
 
 #### params 的属性描述
@@ -3307,7 +3307,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值 |
-| mode | ActionMode \| null | 是 | 结束的操作模式 | 
+| mode | ActionMode \| null | 否 | 结束的操作模式 | 
 
 #### params 的属性描述
 
@@ -3349,7 +3349,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数, 包括页面路由地址与方法返回值 |
-| mode | ActionMode \| null | 是 | 结束的操作模式 | 
+| mode | ActionMode \| null | 否 | 结束的操作模式 | 
 
 #### params 的属性描述
 
@@ -3391,7 +3391,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值 |
-| mode | ActionMode \| null | 是 | 开始的操作模式 | 
+| mode | ActionMode \| null | 否 | 开始的操作模式 | 
 
 #### params 的属性描述
 
@@ -3433,7 +3433,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数, 包括页面路由地址与方法返回值 |
-| mode | ActionMode \| null | 是 | 开始的操作模式 | 
+| mode | ActionMode \| null | 否 | 开始的操作模式 | 
 
 #### params 的属性描述
 
@@ -3475,8 +3475,8 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值 |
-| data | MutableList\<KeyboardShortcutGroup> \| null | 是 | 键盘快捷键列表 |
-| menu | Menu \| null | 是 | 菜单 |
+| data | MutableList\<KeyboardShortcutGroup> \| null | 否 | 键盘快捷键列表 |
+| menu | Menu \| null | 否 | 菜单 |
 | deviceId | Int | 是 | 设备ID | 
 
 #### params 的属性描述
@@ -3519,8 +3519,8 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数, 包括页面路由地址与方法返回值 |
-| data | MutableList\<KeyboardShortcutGroup> \| null | 是 | 键盘快捷方式群组的列表 |
-| menu | Menu \| null | 是 | 相关联的菜单 |
+| data | MutableList\<KeyboardShortcutGroup> \| null | 否 | 键盘快捷方式群组的列表 |
+| menu | Menu \| null | 否 | 相关联的菜单 |
 | deviceId | Int | 是 | 设备ID | 
 
 #### params 的属性描述
@@ -3647,7 +3647,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值 |
-| event | KeyEvent \| null | 是 | 按键事件 | 
+| event | KeyEvent \| null | 否 | 按键事件 | 
 
 #### params 的属性描述
 
@@ -3689,7 +3689,7 @@
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
 | params | **UniActivityParams** | 是 | 统一返回参数，包括页面路由地址与方法返回值 |
-| event | KeyEvent \| null | 是 | 按键事件 | 
+| event | KeyEvent \| null | 否 | 按键事件 | 
 
 #### params 的属性描述
 

@@ -312,7 +312,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 
-#### exitFullscreen(options: ExitFullscreenOptions \| null): void @exitfullscreen
+#### exitFullscreen(options: ExitFullscreenOptions): void @exitfullscreen
 
 将当前在全屏模式下显示的元素退出全屏模式，恢复全屏之前的状态
 
@@ -346,7 +346,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 | errCode | number | 是 | Web: x; 微信小程序: x | 错误码 |
 | errSubject | string | 是 | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 | Web: x; 微信小程序: x |  |
 
 #### errCode 的属性描述

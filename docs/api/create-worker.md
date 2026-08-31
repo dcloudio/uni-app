@@ -36,9 +36,9 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 CreateWorker
 
 ### createWorker 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 4.41 | - | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.21 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.81 | 4.41 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.21 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 |
 
 
 ### 参数 
@@ -58,22 +58,22 @@ CreateWorker
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| env | **WorkerEnv** | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: x; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: x | worker内的环境变量 |
+| env | **WorkerEnv** | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: x | worker内的环境变量 |
 
 ##### env 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| USER_DATA_PATH | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: -; Android: x; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: x | 文件系统中的用户目录路径 (本地路径)<br/> |
+| USER_DATA_PATH | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: x | 文件系统中的用户目录路径 (本地路径)<br/> |
 #### Worker 的方法 @worker-values 
 
 #### onMessage(callback: WorkerOnMessageCallback): void; @onmessage
 onMessage
 监听 主线程/Worker线程 向当前线程发送的消息的事件。
 ##### onMessage 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 | iOS | iOS UTS 插件 |
-| :- | :- | :- | :- |
-| 4.41 | - | x | 4.81 |
+| Web | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.81 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
 
 ##### 参数 
 
@@ -87,9 +87,9 @@ onMessage
 onError
 监听 Worker 线程错误事件。当 Worker 线程中发生脚本错误时会触发此事件。
 ##### onError 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 | iOS | iOS UTS 插件 |
-| :- | :- | :- | :- |
-| 4.41 | - | x | 4.81 |
+| Web | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.81 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
 
 ##### 参数 
 
@@ -104,7 +104,7 @@ onError
 | errCode | number | 是 | iOS: x; iOS UTS 插件: 4.81 | Worker错误码 |
 | errSubject | string | 是 | iOS: x; iOS UTS 插件: 4.81 | 统一错误主题（模块）名称 |
 | data | any | 否 | iOS: x; iOS UTS 插件: 4.81 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 | iOS: x; iOS UTS 插件: 4.81 |  |
 
 #### errCode 的属性描述
@@ -122,13 +122,13 @@ onError
 
 
 
-#### postMessage(message: any, options?: WorkerPostMessageOptions \| null): void; @postmessage
+#### postMessage(message: any, options?: WorkerPostMessageOptions): void; @postmessage
 postMessage
 向 主线程/Worker线程 发送的消息。
 ##### postMessage 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 | iOS | iOS UTS 插件 |
-| :- | :- | :- | :- |
-| 4.41 | - | x | 4.81 |
+| Web | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.81 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
 
 ##### 参数 
 
@@ -142,50 +142,21 @@ postMessage
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | harmonySendable | boolean | 否 | Web: x; Android: x; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: 4.81 | 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false<br/>仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable<br/> |
-| transfer | Array&lt;string&gt; | 否 | Web: x; Android: x; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: 4.81 | 可转移对象数组，默认值为空数组<br/>仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects<br/> | 
+| transfer | Array&lt;any&gt; | 否 | Web: 4.81; Android: x; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: 4.81 | 可转移对象数组，默认值为空数组<br/>仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects<br/> | 
 
 
 
 #### terminate(): void; @terminate
 terminate
 结束当前 Worker 线程。仅限在主线程 worker 对象上调用。
+
 ##### terminate 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 | iOS | iOS UTS 插件 |
-| :- | :- | :- | :- |
-| 4.41 | - | x | 4.81 |
+| Web | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.81 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
 
 
 
-
-##### WorkerOnErrorCallbackResult 的属性值 @workeronerrorcallbackresult-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | iOS: x; iOS UTS 插件: 4.81 | Worker错误码 |
-| errSubject | string | 是 | iOS: x; iOS UTS 插件: 4.81 | 统一错误主题（模块）名称 |
-| data | any | 否 | iOS: x; iOS UTS 插件: 4.81 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | iOS: x; iOS UTS 插件: 4.81 |  |
-
-#### errCode 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 5000501 | iOS: x; iOS UTS 插件: 4.81 | worker 运行错误 |
-| 5000502 | iOS: x; iOS UTS 插件: 4.81 | worker 序列化失败 |
-| 5000503 | iOS: x; iOS UTS 插件: 4.81 | worker 实例未运行 |
-| 5000504 | iOS: x; iOS UTS 插件: 4.81 | worker 线程中不支持调用的API。 |
-| 5000505 | iOS: x; iOS UTS 插件: 4.81 | worker 线程初始化失败 |
-| 5000506 | iOS: x; iOS UTS 插件: 4.81 | worker 文件路径无效 |
-| 5000510 | iOS: x; iOS UTS 插件: 4.81 | 非主线程调用worker API |
-| 5000511 | iOS: x; iOS UTS 插件: 4.81 | worker 线程无效 |
-
-##### WorkerPostMessageOptions 的属性值 @workerpostmessageoptions-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| harmonySendable | boolean | 否 | Web: x; Android: x; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: 4.81 | 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false<br/>仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable<br/> |
-| transfer | Array&lt;string&gt; | 否 | Web: x; Android: x; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: 4.81 | 可转移对象数组，默认值为空数组<br/>仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects<br/> |
  
 
 
@@ -521,9 +492,9 @@ terminate
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 

@@ -15,9 +15,9 @@
 注意：仅支持本地文件路径，网络路径需先通过 [uni.downloadFile](download-file.md) 下载到本地再调用此 API 安装。
 
 ### installApk 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.94 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.94 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 安装Apk最常见的场景是App的升级，更推荐使用uni的[App升级中心](https://doc.dcloud.net.cn/uniCloud/upgrade-center.html)，这是一个云端一体开源项目，想达到该项目的体验细节需要大量代码，不如直接拿走使用。
@@ -26,32 +26,32 @@
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **InstallApkOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x |
+| options | **InstallApkOptions** | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 |  | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | apk文件地址（仅支持本地文件路径） |
-| success | (res: [InstallApkSuccess](#installapksuccess-values)) => void | 否 | null | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (err: [InstallApkFail](#installapkfail-values)) => void | 否 | null | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | null | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| filePath | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | apk文件地址（仅支持本地文件路径） |
+| success | (res: [InstallApkSuccess](#installapksuccess-values)) => void | 否 | null | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (err: [InstallApkFail](#installapkfail-values)) => void | 否 | null | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | null | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### InstallApkSuccess 的属性值 @installapksuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 安装成功消息 |
+| errMsg | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 安装成功消息 |
 
 #### InstallApkFail 的属性值 @installapkfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 错误码<br/>- 1300002 找不到文件 |
-| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x |  |
+| errCode | number | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 错误码<br/>- 1300002 找不到文件 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  |
 
 
 
@@ -113,7 +113,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

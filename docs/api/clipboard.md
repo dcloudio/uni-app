@@ -14,9 +14,9 @@
 
 
 ### getClipboardData 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 4.71 | 4.71 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
@@ -27,17 +27,17 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| success | (result: [GetClipboardDataSuccess](#getclipboarddatasuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 成功返回的回调函数 |
-| fail | (result: [GetClipboardDataFail](#getclipboarddatafail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 失败的回调函数 |
-| complete | (result: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| success | (result: [GetClipboardDataSuccess](#getclipboarddatasuccess-values)) => void | 否 | 成功返回的回调函数 |
+| fail | (result: [GetClipboardDataFail](#getclipboarddatafail-values)) => void | 否 | 失败的回调函数 |
+| complete | (result: any) => void | 否 | 结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetClipboardDataSuccess 的属性值 @getclipboarddatasuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| data | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 剪贴板的内容 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | string | 是 | 剪贴板的内容 |
 
 #### GetClipboardDataFail 的属性值 @getclipboarddatafail-values 
 
@@ -46,7 +46,7 @@
 | errCode | number | 是 |  |
 | errSubject | string | 是 | 统一错误主题（模块）名称 |
 | data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |  |
 
 
@@ -93,9 +93,9 @@
 
 
 ### setClipboardData 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 4.71 | 4.71 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
@@ -106,13 +106,13 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| data | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 需要设置的内容 |
-| showToast | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: - | 是否弹出提示，默认弹出提示 |
-| success | (result: SetClipboardDataSuccess) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 成功返回的回调函数 |
-| fail | (result: [SetClipboardDataFail](#setclipboarddatafail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 失败的回调函数 |
-| complete | (result: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | string | 是 | 需要设置的内容 |
+| showToast | boolean | 否 | 是否弹出提示，默认弹出提示 |
+| success | (result: SetClipboardDataSuccess) => void | 否 | 成功返回的回调函数 |
+| fail | (result: [SetClipboardDataFail](#setclipboarddatafail-values)) => void | 否 | 失败的回调函数 |
+| complete | (result: any) => void | 否 | 结束的回调函数（调用成功、失败都会执行） | 
 
 #### SetClipboardDataFail 的属性值 @setclipboarddatafail-values 
 
@@ -121,7 +121,7 @@
 | errCode | number | 是 |  |
 | errSubject | string | 是 | 统一错误主题（模块）名称 |
 | data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |  |
 
 
@@ -269,7 +269,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

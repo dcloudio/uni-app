@@ -74,7 +74,7 @@
 
 
 
-#### insertBefore(newChild: UniElement, refChild?: UniElement \| null): UniElement \| null @insertbefore
+#### insertBefore(newChild: UniElement, refChild?: UniElement): UniElement \| null @insertbefore
 
 在参考元素之前插入一个拥有指定父元素的子元素。如果给定的子元素是对文档中现有元素的引用，insertBefore() 会将其从当前位置移动到新位置。
 
@@ -716,7 +716,7 @@ if(webViewElement != null) {
 
 
 
-#### getBoundingClientRectAsync(options?: GetBoundingClientRectAsyncOptions \| null): Promise\<DOMRect> \| null @getboundingclientrectasync
+#### getBoundingClientRectAsync(options?: GetBoundingClientRectAsyncOptions): Promise\<DOMRect> \| null @getboundingclientrectasync
 
 获取元素的大小及其相对于窗口的位置信息 异步。
 
@@ -2155,10 +2155,10 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| keyframes | [UniAnimationKeyframe](#unianimationkeyframe-values) \| Array&lt;[UniAnimationKeyframe](#unianimationkeyframe-values)&gt; | 是 | 关键帧对象数组或一个关键帧对象。 |
-| options | [UniAnimationOption](#unianimationoption-values) \| number | 是 | 动画属性配置。 | 
+| keyframes | [UniAnimationKeyframe](#unianimationkeyframe-values) \| Array&lt;**UniAnimationKeyframe**&gt; | 是 | 关键帧对象数组或一个关键帧对象。 |
+| options | **UniAnimationOption** \| number | 是 | 动画属性配置。 |
 
-##### UniAnimationKeyframe 的属性值 @unianimationkeyframe-values 
+#### keyframes 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
@@ -2189,7 +2189,7 @@ if (view != null && view instanceof WKWebView) {
 | transformOrigin | Array&lt;any&gt; | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制元素变形的原点的过渡效果 |
 | offset | number | 否 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 关键帧的偏移量。为0.0和1.0之间的数字。如果此值缺失，则关键帧将在相邻关键帧之间均匀分布。 |
 
-##### UniAnimationOption 的属性值 @unianimationoption-values 
+#### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
@@ -2198,9 +2198,9 @@ if (view != null && view instanceof WKWebView) {
 | duration | number | 否 | 0 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 动画时长 |
 | easing | string | 否 | linear | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 动画曲线。 |
 | fill | string | 否 |  | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 决定动画效果是否应在播放前反映在元素中 |
-| iterations | number | 否 | 1 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 动画重复的次数。当设置为`Infinity`时，动画将一直重复执行。 |
+| iterations | number | 否 | 1 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 动画重复的次数。当设置为`Infinity`时，动画将一直重复执行。 | 
 
-#### direction 的属性描述
+##### direction 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
@@ -2209,7 +2209,7 @@ if (view != null && view instanceof WKWebView) {
 | alternate | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 每次迭代后切换方向 |
 | alternate-reverse | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 反向运行并在每次迭代后切换方向 |
 
-#### easing 的属性描述
+##### easing 的属性描述
 
 | 合法值 |
 | :- |
@@ -2220,7 +2220,7 @@ if (view != null && view instanceof WKWebView) {
 | linear |
 | cubic-bezier |
 
-#### fill 的属性描述
+##### fill 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
@@ -2287,17 +2287,17 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| id | string | 是 | Web: √; 微信小程序: 4.53; 支付宝小程序: 5.25; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 获取或设置用于标识动画的字符串 |
-| playState | string | 是 | Web: √; 微信小程序: x; 支付宝小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 返回动画播放状态。可选值：`running`动画正在运行；`paused`动画暂停；`finished`动画播放完成；`idle`动画取消或者失败 |
+| id | string | 是 | Web: √; 微信小程序: 4.53; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 获取或设置用于标识动画的字符串 |
+| playState | string | 是 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 返回动画播放状态。可选值：`running`动画正在运行；`paused`动画暂停；`finished`动画播放完成；`idle`动画取消或者失败 |
 ###### UniAnimation 的方法 @unianimation-values 
 
 ###### oncancel: (event: UniAnimationPlaybackEvent) => void @oncancel
 oncancel
 监听动画取消事件
 ###### oncancel 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 5.21 | 5.25 | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| √ | 5.21 | 4.51 | 4.53 | x | 5.08 |
 
 ##### 参数 
 
@@ -2317,9 +2317,9 @@ oncancel
 onfinish
 监听动画完成事件
 ###### onfinish 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | x | x | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| √ | x | 4.51 | 4.53 | x | 5.08 |
 
 ##### 参数 
 
@@ -2339,9 +2339,9 @@ onfinish
 cancel
 终止并取消所有动画
 ###### cancel 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.53 | 5.25 | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| √ | 4.53 | 4.51 | 4.53 | x | 5.08 |
 
 
 
@@ -2350,9 +2350,9 @@ cancel
 finish
 动画跳转到最后一毫秒并立即播放完成
 ###### finish 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | x | x | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| √ | x | 4.51 | 4.53 | x | 5.08 |
 
 
 
@@ -2361,9 +2361,9 @@ finish
 pause
 暂停动画播放
 ###### pause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | x | x | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| √ | x | 4.51 | 4.53 | x | 5.08 |
 
 
 
@@ -2372,24 +2372,12 @@ pause
 play
 开始或恢复动画播放
 ###### play 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.53 | 5.25 | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| √ | 4.53 | 4.51 | 4.53 | x | 5.08 |
 
 
 
-
-###### UniAnimationPlaybackEvent 的属性值 @unianimationplaybackevent-values 
-
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| type | string | 是 | 动画的事件类型 |
-
-###### UniAnimationPlaybackEvent 的属性值 @unianimationplaybackevent-values 
-
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| type | string | 是 | 动画的事件类型 |
  
 
 
@@ -2862,7 +2850,7 @@ play
 
 
 
-#### requestFullscreen(options?: RequestFullscreenOptions \| null): void @requestfullscreen
+#### requestFullscreen(options?: RequestFullscreenOptions): void @requestfullscreen
 
 控制元素进入全屏状态
 
@@ -2913,7 +2901,7 @@ play
 | errCode | number | 是 | Web: x; 微信小程序: x | 错误码 |
 | errSubject | string | 是 | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 | Web: x; 微信小程序: x |  |
 
 #### errCode 的属性描述

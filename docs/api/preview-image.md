@@ -13,9 +13,9 @@
 预览图片
 
 ### previewImage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -28,16 +28,24 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| current | any | 否 | 微信小程序: 4.41; 支付宝小程序: - | current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张。APP平台仅支持索引值。 |
-| urls | Array&lt;[string.ImageURIString](/uts/data-type.md#ide-string)&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: - | 需要预览的图片链接列表 |
-| showmenu | boolean | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 是否显示长按菜单<br/> |
-| indicator | "default" \| "number" \| "none" | 否 | Web: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 图片指示器样式<br/> |
+| current | any | 否 |   | current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张。APP平台仅支持索引值。 |
+| urls | Array&lt;[string.ImageURIString](/uts/data-type.md#ide-string)&gt; | 是 |   | 需要预览的图片链接列表 |
+| showmenu | boolean | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 是否显示长按菜单<br/> |
+| indicator | string | 否 | Web: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 图片指示器样式<br/> |
 | loop | boolean | 否 | Web: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 是否可循环预览 |
-| longPressActions | **LongPressActionsOptions** | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.71; HarmonyOS: x | 长按图片显示操作菜单。 |
-| success | (callback: [PreviewImageSuccess](#previewimagesuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 接口调用成功的回调函数 |
-| fail | (callback: [PreviewImageFail](#previewimagefail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| referrerPolicy | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> | 
+| longPressActions | **LongPressActionsOptions** | 否 | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.71; HarmonyOS: x | 长按图片显示操作菜单。 |
+| success | (callback: [PreviewImageSuccess](#previewimagesuccess-values)) => void | 否 |   | 接口调用成功的回调函数 |
+| fail | (callback: [PreviewImageFail](#previewimagefail-values)) => void | 否 |   | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| referrerPolicy | string | 否 | 微信小程序: 4.41 | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> | 
+
+##### indicator 的属性描述
+
+| 合法值 | 描述 |
+| :- | :- |
+| default | 底部圆点指示器 |
+| number | 顶部数字指示器 |
+| none | 不显示指示器 |
 
 ##### longPressActions 的属性描述
 
@@ -63,7 +71,7 @@
 | errCode | number | 是 | 错误码 |
 | errSubject | string | 是 | 统一错误主题（模块）名称 |
 | data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |  |
 
 #### errCode 的属性描述
@@ -79,10 +87,10 @@
 
 #### PreviewImageSuccess 的属性值 @previewimagesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errSubject | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 调用API的名称 |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 描述信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errSubject | string | 是 | 调用API的名称 |
+| errMsg | string | 是 | 描述信息 |
 
 #### PreviewImageFail 的属性值 @previewimagefail-values 
 
@@ -91,7 +99,7 @@
 | errCode | number | 是 | 错误码 |
 | errSubject | string | 是 | 统一错误主题（模块）名称 |
 | data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |  |
 
 #### errCode 的属性描述
@@ -390,51 +398,51 @@
 关闭图片预览
 
 ### closePreviewImage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **ClosePreviewImageOptions** | 是 | 微信小程序: x; 支付宝小程序: x |
+| options | **ClosePreviewImageOptions** | 是 | 微信小程序: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (callback: [ClosePreviewImageSuccess](#closepreviewimagesuccess-values)) => void | 否 | 微信小程序: x; 支付宝小程序: x | 接口调用成功的回调函数 |
-| fail | (callback: [ClosePreviewImageFail](#closepreviewimagefail-values)) => void | 否 | 微信小程序: x; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 | 微信小程序: x; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (callback: [ClosePreviewImageSuccess](#closepreviewimagesuccess-values)) => void | 否 | 微信小程序: x | 接口调用成功的回调函数 |
+| fail | (callback: [ClosePreviewImageFail](#closepreviewimagefail-values)) => void | 否 | 微信小程序: x | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 | 微信小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### ClosePreviewImageSuccess 的属性值 @closepreviewimagesuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: x; 支付宝小程序: x | 错误信息 |
+| errMsg | string | 是 | 微信小程序: x | 错误信息 |
 
 #### ClosePreviewImageFail 的属性值 @closepreviewimagefail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 微信小程序: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 微信小程序: x; 支付宝小程序: x |  |
+| errCode | number | 是 | 微信小程序: x | 错误码 |
+| errSubject | string | 是 | 微信小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 微信小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 微信小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1001 | 微信小程序: x; 支付宝小程序: x | urls至少包含一张图片地址 |
-| 1101001 | 微信小程序: x; 支付宝小程序: x | 用户取消 |
-| 1101003 | 微信小程序: x; 支付宝小程序: x | 文件不存在 |
-| 1101004 | 微信小程序: x; 支付宝小程序: x | 图片加载失败 |
-| 1101005 | 微信小程序: x; 支付宝小程序: x | 未获取权限 |
-| 1101010 | 微信小程序: x; 支付宝小程序: x | 其他错误 |
+| 1001 | 微信小程序: x | urls至少包含一张图片地址 |
+| 1101001 | 微信小程序: x | 用户取消 |
+| 1101003 | 微信小程序: x | 文件不存在 |
+| 1101004 | 微信小程序: x | 图片加载失败 |
+| 1101005 | 微信小程序: x | 未获取权限 |
+| 1101010 | 微信小程序: x | 其他错误 |
 
 
 
@@ -462,7 +470,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

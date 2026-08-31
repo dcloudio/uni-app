@@ -314,25 +314,25 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 
 
 ##### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 5.25 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | 4.11 | 4.61 |
 
 
 ##### 属性 
 | 名称 | 类型 | 兼容性 |
 | :- | :- |  :-: |
-| lang | string | Web: 4.0; 微信小程序: √; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
-| scoped | boolean | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| module | Any | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| lang | string | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| scoped | boolean | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| module | Any | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 #### lang 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| scss | Web: 4.0; 微信小程序: √; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
-| less | Web: 4.0; 微信小程序: √; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
-| stylus | Web: 4.0; 微信小程序: √; 支付宝小程序: 5.25; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| scss | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| less | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| stylus | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 
 
 

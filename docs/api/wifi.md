@@ -23,7 +23,7 @@
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | success | (res: [UniWifiResult](#uniwifiresult-values)) => void | 否 | HarmonyOS: x |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | HarmonyOS: x |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | HarmonyOS: x |
 | complete | (res: any) => void | 否 | HarmonyOS: x | 
 
 #### UniWifiResult 的属性值 @uniwifiresult-values 
@@ -88,28 +88,28 @@
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| success | (res: [UniWifiResult](#uniwifiresult-values)) => void | 否 | HarmonyOS: x |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | HarmonyOS: x |
-| complete | (res: any) => void | 否 | HarmonyOS: x | 
+| success | (res: [UniWifiResult](#uniwifiresult-values)) => void | 否 | Android: x; HarmonyOS: x |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | Android: x; HarmonyOS: x |
+| complete | (res: any) => void | 否 | Android: x; HarmonyOS: x | 
 
 #### UniWifiResult 的属性值 @uniwifiresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errCode | number | 是 | HarmonyOS: x |
-| errSubject | string | 是 | HarmonyOS: x |
-| errMsg | string | 是 | HarmonyOS: x |
-| wifi | **UniWifiInfo** | 否 | HarmonyOS: x |
+| errCode | number | 是 | Android: x; HarmonyOS: x |
+| errSubject | string | 是 | Android: x; HarmonyOS: x |
+| errMsg | string | 是 | Android: x; HarmonyOS: x |
+| wifi | **UniWifiInfo** | 否 | Android: x; HarmonyOS: x |
 
 #### wifi 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| SSID | string | 是 | HarmonyOS: x |
-| BSSID | string | 否 | HarmonyOS: x |
-| secure | boolean | 否 | HarmonyOS: x |
-| signalStrength | number | 否 | HarmonyOS: x |
-| frequency | number | 否 | HarmonyOS: x |
+| SSID | string | 是 | Android: x; HarmonyOS: x |
+| BSSID | string | 否 | Android: x; HarmonyOS: x |
+| secure | boolean | 否 | Android: x; HarmonyOS: x |
+| signalStrength | number | 否 | Android: x; HarmonyOS: x |
+| frequency | number | 否 | Android: x; HarmonyOS: x |
 
 
 
@@ -156,7 +156,7 @@
 | maunal | boolean | 否 | HarmonyOS: x |
 | partialInfo | boolean | 否 | HarmonyOS: x |
 | success | (res: [UniWifiResult](#uniwifiresult-values)) => void | 否 | HarmonyOS: x |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | HarmonyOS: x |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | HarmonyOS: x |
 | complete | (res: any) => void | 否 | HarmonyOS: x | 
 
 #### UniWifiResult 的属性值 @uniwifiresult-values 
@@ -221,28 +221,28 @@ SetWifiList  暂未实现
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| success | (res: [UniWifiResult](#uniwifiresult-values)) => void | 否 | HarmonyOS: x |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | HarmonyOS: x |
-| complete | (res: any) => void | 否 | HarmonyOS: x | 
+| success | (res: [UniWifiResult](#uniwifiresult-values)) => void | 否 | Android: x; iOS: x; HarmonyOS: x |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | Android: x; iOS: x; HarmonyOS: x |
+| complete | (res: any) => void | 否 | Android: x; iOS: x; HarmonyOS: x | 
 
 #### UniWifiResult 的属性值 @uniwifiresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| errCode | number | 是 | HarmonyOS: x |
-| errSubject | string | 是 | HarmonyOS: x |
-| errMsg | string | 是 | HarmonyOS: x |
-| wifi | **UniWifiInfo** | 否 | HarmonyOS: x |
+| errCode | number | 是 | Android: x; iOS: x; HarmonyOS: x |
+| errSubject | string | 是 | Android: x; iOS: x; HarmonyOS: x |
+| errMsg | string | 是 | Android: x; iOS: x; HarmonyOS: x |
+| wifi | **UniWifiInfo** | 否 | Android: x; iOS: x; HarmonyOS: x |
 
 #### wifi 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| SSID | string | 是 | HarmonyOS: x |
-| BSSID | string | 否 | HarmonyOS: x |
-| secure | boolean | 否 | HarmonyOS: x |
-| signalStrength | number | 否 | HarmonyOS: x |
-| frequency | number | 否 | HarmonyOS: x |
+| SSID | string | 是 | Android: x; iOS: x; HarmonyOS: x |
+| BSSID | string | 否 | Android: x; iOS: x; HarmonyOS: x |
+| secure | boolean | 否 | Android: x; iOS: x; HarmonyOS: x |
+| signalStrength | number | 否 | Android: x; iOS: x; HarmonyOS: x |
+| frequency | number | 否 | Android: x; iOS: x; HarmonyOS: x |
 
 
 
@@ -286,7 +286,7 @@ SetWifiList  暂未实现
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | success | (res: [UniWifiResult](#uniwifiresult-values)) => void | 否 | HarmonyOS: x |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | HarmonyOS: x |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | HarmonyOS: x |
 | complete | (res: any) => void | 否 | HarmonyOS: x | 
 
 #### UniWifiResult 的属性值 @uniwifiresult-values 
@@ -345,7 +345,7 @@ SetWifiList  暂未实现
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (wifiInfo: Record\<string, any>) => void | 是 | HarmonyOS: x | 
+| callback | (wifiInfo: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | HarmonyOS: x | 
 
 
 
@@ -431,7 +431,7 @@ SetWifiList  暂未实现
 | :- | :- | :- |  :-: |
 | partialInfo | boolean | 否 | HarmonyOS: x |
 | success | (res: [UniWifiResult](#uniwifiresult-values)) => void | 否 | HarmonyOS: x |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | HarmonyOS: x |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | HarmonyOS: x |
 | complete | (res: any) => void | 否 | HarmonyOS: x | 
 
 #### UniWifiResult 的属性值 @uniwifiresult-values 
@@ -619,7 +619,7 @@ SetWifiList  暂未实现
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

@@ -15,17 +15,17 @@
 参考：[video组件](../component/video.md)
 
 ### createVideoContext 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | √ | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| videoId | [string.VideoIdString](/uts/data-type.md#ide-string) | 是 | 支付宝小程序: x |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | 支付宝小程序: x | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| videoId | [string.VideoIdString](/uts/data-type.md#ide-string) | 是 |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | 
 
 
 在video组件上设置id属性，即可通过本API获取该组件的上下文对象（videoContext ）。
@@ -63,9 +63,9 @@ let v1 = uni.createVideoContext("video1", getCurrentInstance()!.proxy!)
 play
 播放
 ##### play 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -74,9 +74,9 @@ play
 pause
 暂停
 ##### pause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -85,15 +85,15 @@ pause
 seek
 跳转到指定位置
 ##### seek 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| position | number | 是 | 支付宝小程序: x | 跳转到指定位置(秒) | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| position | number | 是 | 跳转到指定位置(秒) | 
 
 
 
@@ -101,9 +101,9 @@ seek
 stop
 停止视频
 ##### stop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -112,23 +112,23 @@ stop
 sendDanmu
 发送弹幕
 ##### sendDanmu 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| danmu | **Danmu** | 是 | 支付宝小程序: x | text, color |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| danmu | **Danmu** | 是 |
 
 #### danmu 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| text | string | 否 | 支付宝小程序: x | 弹幕文字 |
-| color | string | 否 | 支付宝小程序: x | 弹幕颜色 |
-| time | number | 否 | 支付宝小程序: x | 显示时刻 | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| text | string | 否 | 弹幕文字 |
+| color | string | 否 | 弹幕颜色 |
+| time | number | 否 | 显示时刻 | 
 
 
 
@@ -136,45 +136,56 @@ sendDanmu
 playbackRate
 设置倍速播放，支持倍率 0.5/0.8/1.0/1.25/1.5。(5.25 起支持有效区间任意值)
 
-鸿蒙各 API 版本对于倍速支持情况 (异常值时按 1.0 处理)
-- API 7 ~ 21： 0.75、1.0、1.25、1.75、2.0
-- API 22 ~ 25： 0.125、0.25、0.5、0.75、1.0、1.25、1.5、1.75、2.0、3.0
-- API 26.0.0+： \[0.125, 8] 任意值
+- HarmonyOS 平台各 API 版本对于倍速支持情况 (异常值时按 1.0 处理)
+  - API 7 ~ 21： 0.75、1.0、1.25、1.75、2.0
+  - API 22 ~ 25： 0.125、0.25、0.5、0.75、1.0、1.25、1.5、1.75、2.0、3.0
+  - API 26.0.0+： \[0.125, 8] 任意值
 
-iOS对于倍速支持情况 (异常值时按 1.0 处理, 低于0.125取下限、高于8取上限)
-- \[0.125, 8] 任意值
+- iOS 平台对于倍速支持情况 (异常值时按 1.0 处理, 低于0.125取下限、高于8取上限)
+  - \[0.125, 8] 任意值
+
+- Android 平台
+  - \[0.1, 8] 任意值（异常值时按 1.0 处理）
 ##### playbackRate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| rate | number | 是 | 支付宝小程序: x | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| rate | number | 是 | 
 
 
 
-#### requestFullScreen(direction?: RequestFullScreenOptions \| null): void; @requestfullscreen
+#### requestFullScreen(direction?: RequestFullScreenOptions): void; @requestfullscreen
 requestFullScreen
 进入全屏
 ##### requestFullScreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| direction | **RequestFullScreenOptions** | 否 | 支付宝小程序: x | 0\|正常竖向, 90\|屏幕逆时针90度, -90\|屏幕顺时针90度 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| direction | **RequestFullScreenOptions** | 否 | 0\|正常竖向, 90\|屏幕逆时针90度, -90\|屏幕顺时针90度 |
 
 #### direction 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| direction | 90 \| any | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11 | direction | 
+| direction | number | 否 | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11 | direction |
+
+##### direction 的属性描述
+
+| 合法值 | 描述 |
+| :- | :- |
+| 0 | 正常竖向 |
+| 90 | 屏幕逆时针90度 |
+| -90 | 屏幕顺时针90度 | 
 
 
 
@@ -182,26 +193,12 @@ requestFullScreen
 exitFullScreen
 退出全屏
 ##### exitFullScreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 
-
-##### Danmu 的属性值 @danmu-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| text | string | 否 | 支付宝小程序: x | 弹幕文字 |
-| color | string | 否 | 支付宝小程序: x | 弹幕颜色 |
-| time | number | 否 | 支付宝小程序: x | 显示时刻 |
-
-##### RequestFullScreenOptions 的属性值 @requestfullscreenoptions-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| direction | 90 \| any | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9.0; iOS: 4.11 | direction |
  
 
 
@@ -228,9 +225,9 @@ exitFullScreen
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 示例代码另见[video组件](../component/video.md)

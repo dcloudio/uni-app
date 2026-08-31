@@ -12,17 +12,17 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 5.0 | 5.0 | 5.25 | 5.0 | 5.0 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.0 | 5.0 | 5.0 | 5.0 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| paused | boolean | false | Web: 5.0; 微信小程序: 5.0; 支付宝小程序: 5.25; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 是否暂停动画 |
-| bold | boolean | false | Web: 5.0; 微信小程序: x; 支付宝小程序: 5.25; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 是否加粗线条 |
-| ios-spinner | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: 5.25; Android: x; iOS: 5.0; HarmonyOS: x | iOS是否采用系统雪花状样式 |
+| paused | boolean | false | Web: 5.0; 微信小程序: 5.0; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 是否暂停动画 |
+| bold | boolean | false | Web: 5.0; 微信小程序: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 是否加粗线条 |
+| ios-spinner | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 5.0; HarmonyOS: x | iOS是否采用系统雪花状样式 |
 
 
 

@@ -420,7 +420,6 @@ app平台由于暂不支持伪元素，字体图标需使用unicode直显方式�
 | [backdrop-filter](backdrop-filter.md) |   |
 | [background-clip](background-clip.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [background-image](background-image.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [direction](direction.md) | Android(Vapor): 5.25; iOS(Vapor): x; HarmonyOS(Vapor): 4.26 |
 | [lines](lines.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [overflow](overflow.md) | Android(Vapor): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 |
 | [pointer-events](pointer-events.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |

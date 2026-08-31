@@ -15,7 +15,7 @@ direction CSS 属性用于设置文本水平溢出的方向。
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| 5.25 | x | 4.26 |
+| 5.25 | 5.25 | 4.26 |
 
 
 

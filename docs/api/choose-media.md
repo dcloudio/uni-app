@@ -14,80 +14,101 @@
 
 
 ### chooseMedia 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | 4.51 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.51 | 4.51 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **ChooseMediaOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **ChooseMediaOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| pageOrientation | string | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: x; HarmonyOS: 4.61 | 屏幕方向。默认为pages.json中的pageOrientation。 |
-| count | number | 否 | 9 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 最多可以选择的文件个数 |
-| mediaType | Array&lt;string&gt; | 否 | \['image', 'video'\] | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | image 只能拍摄图片或从相册选择图片，video 只能拍摄视频或从相册选择视频，mix 可同时选择图片和视频，合法值：'image'、'video'、'mix' |
-| sourceType | Array&lt;string&gt; | 否 | \['album', 'camera'\] | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | album 从相册选择，camera 使用相机拍摄 |
-| maxDuration | number | 否 | 10 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 拍摄视频最长拍摄时间，单位秒。时间范围为 3s 至 30s 之间 |
-| camera | string | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 仅在 sourceType 为 camera 时生效，使用前置或后置摄像头<br/> |
-| success | (callback: [ChooseMediaSuccess](#choosemediasuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明 |
-| fail | (callback: [ChooseMediaFail](#choosemediafail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| sizeType | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: x | 是否压缩所选文件，基础库2.25.0前仅对 mediaType 为 image 时有效，2.25.0及以后对全量 mediaType 有效<br/> | 
+| pageOrientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: x; HarmonyOS: 4.61 | 屏幕方向。默认为pages.json中的pageOrientation。 |
+| count | number | 否 | 9 | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 最多可以选择的文件个数 |
+| mediaType | Array&lt;string&gt; | 否 | \['image', 'video'\] | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | image 只能拍摄图片或从相册选择图片，video 只能拍摄视频或从相册选择视频，mix 可同时选择图片和视频，合法值：'image'、'video'、'mix' |
+| sourceType | Array&lt;string&gt; | 否 | \['album', 'camera'\] | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | album 从相册选择，camera 使用相机拍摄 |
+| maxDuration | number | 否 | 10 | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 拍摄视频最长拍摄时间，单位秒。时间范围为 3s 至 30s 之间 |
+| camera | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 仅在 sourceType 为 camera 时生效，使用前置或后置摄像头<br/> |
+| success | (callback: [ChooseMediaSuccess](#choosemediasuccess-values)) => void | 否 |  | Web: x | 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明 |
+| fail | (callback: [ChooseMediaFail](#choosemediafail-values)) => void | 否 |  | Web: x | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| sizeType | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序: 4.41 | 是否压缩所选文件，基础库2.25.0前仅对 mediaType 为 image 时有效，2.25.0及以后对全量 mediaType 有效<br/> | 
 
 ##### pageOrientation 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: x; 支付宝小程序: x | 自动 |
-| portrait | Web: x; 支付宝小程序: x | 竖屏显示 |
-| landscape | Web: x; 支付宝小程序: x | 横屏显示 |
+| "auto" | Web: x | 自动 |
+| portrait | Web: x | 竖屏显示 |
+| landscape | Web: x | 横屏显示 |
 
 ##### camera 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| front | Web: x; 支付宝小程序: x | 前置摄像头 |
-| back | Web: x; 支付宝小程序: x | 后置摄像头 |
+| front | Web: x | 前置摄像头 |
+| back | Web: x | 后置摄像头 |
 
 #### ChooseMediaSuccess 的属性值 @choosemediasuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
-| type | string | 是 | Web: x; 支付宝小程序: x |
+| tempFiles | Array&lt;**ChooseMediaTempFile**&gt; | 是 | Web: x |
+| type | string | 是 | Web: x |
+
+#### tempFiles 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| tempFilePath | string | 是 | Web: x | 选定视频的临时文件路径 |
+| fileType | string | 是 | Web: x | 文件类型 |
+| size | number | 是 | Web: x | 选定视频的数据量大小，单位 kB |
+| byteSize | number | 否 | Web: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 视频文件的字节大小，单位 B |
+| duration | number | 否 | Web: x | 选定视频的时间长度 |
+| height | number | 否 | Web: x | 返回选定视频的长 |
+| width | number | 否 | Web: x | 返回选定视频的宽 |
+| thumbTempFilePath | string | 否 | Web: x | 视频缩略图临时文件路径 |
+
+##### fileType 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| 'image' | Web: x |
+| video | Web: x |
 
 #### type 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| image | Web: x; 支付宝小程序: x |
-| video | Web: x; 支付宝小程序: x |
-| mix | Web: x; 支付宝小程序: x |
+| image | Web: x |
+| video | Web: x |
+| mix | Web: x |
 
 #### ChooseMediaFail 的属性值 @choosemediafail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1101001 | Web: x; 支付宝小程序: x | 用户取消 |
-| 1101005 | Web: x; 支付宝小程序: x | 未获取权限 |
-| 1101006 | Web: x; 支付宝小程序: x | 图片或视频保存失败 |
-| 1101008 | Web: x; 支付宝小程序: x | 拍照或录像失败 |
-| 1101010 | Web: x; 支付宝小程序: x | 其他错误 |
+| 1101001 | Web: x | 用户取消 |
+| 1101005 | Web: x | 未获取权限 |
+| 1101006 | Web: x | 图片或视频保存失败 |
+| 1101008 | Web: x | 拍照或录像失败 |
+| 1101010 | Web: x | 其他错误 |
 
 
 
@@ -453,9 +474,9 @@ Android端返回的路径是content协议。
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 

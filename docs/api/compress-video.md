@@ -3,62 +3,62 @@
 压缩视频
 
 ### compressVideo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.25 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.18 | 4.25 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **CompressVideoOptions** | 是 | Web: x; 支付宝小程序: x |
+| options | **CompressVideoOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| src | [string.VideoURIString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 视频文件路径，可以是临时文件路径也可以是永久文件路径 |
-| quality | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 压缩质量<br/> |
-| bitrate | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: 4.25 | 码率，单位 kbps |
-| fps | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: 4.25 | 帧率 |
-| resolution | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 相对于原视频的分辨率比例，取值范围(0, 1\] |
-| success | (callback: [CompressVideoSuccess](#compressvideosuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
-| fail | (callback: [CompressVideoFail](#compressvideofail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| src | [string.VideoURIString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 视频文件路径，可以是临时文件路径也可以是永久文件路径 |
+| quality | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 压缩质量<br/> |
+| bitrate | number | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: 4.25 | 码率，单位 kbps |
+| fps | number | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: 4.25 | 帧率 |
+| resolution | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 相对于原视频的分辨率比例，取值范围(0, 1\] |
+| success | (callback: [CompressVideoSuccess](#compressvideosuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
+| fail | (callback: [CompressVideoFail](#compressvideofail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### CompressVideoSuccess 的属性值 @compressvideosuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 压缩后的临时文件地址 |
-| size | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.18; iOS: 4.25 | 压缩后的大小，单位 kB |
-| byteSize | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: x | 视频文件的字节大小 |
+| tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 压缩后的临时文件地址 |
+| size | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 压缩后的大小，单位 kB |
+| byteSize | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 视频文件的字节大小 |
 
 #### CompressVideoFail 的属性值 @compressvideofail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 支付宝小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 支付宝小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 支付宝小程序: x |  |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1101001 | Web: x; 支付宝小程序: x | 用户取消 |
-| 1101002 | Web: x; 支付宝小程序: x | urls至少包含一张图片地址 |
-| 1101003 | Web: x; 支付宝小程序: x | 文件不存在 |
-| 1101004 | Web: x; 支付宝小程序: x | 图片加载失败 |
-| 1101005 | Web: x; 支付宝小程序: x | 未获取权限 |
-| 1101006 | Web: x; 支付宝小程序: x | 图片或视频保存失败 |
-| 1101007 | Web: x; 支付宝小程序: x | 图片裁剪失败 |
-| 1101008 | Web: x; 支付宝小程序: x | 拍照或录像失败 |
-| 1101009 | Web: x; 支付宝小程序: x | 图片压缩失败 |
-| 1101010 | Web: x; 支付宝小程序: x | 其他错误 |
+| 1101001 | Web: x | 用户取消 |
+| 1101002 | Web: x | urls至少包含一张图片地址 |
+| 1101003 | Web: x | 文件不存在 |
+| 1101004 | Web: x | 图片加载失败 |
+| 1101005 | Web: x | 未获取权限 |
+| 1101006 | Web: x | 图片或视频保存失败 |
+| 1101007 | Web: x | 图片裁剪失败 |
+| 1101008 | Web: x | 拍照或录像失败 |
+| 1101009 | Web: x | 图片压缩失败 |
+| 1101010 | Web: x | 其他错误 |
 
 
 
@@ -295,9 +295,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 

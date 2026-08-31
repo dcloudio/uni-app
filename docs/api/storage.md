@@ -34,9 +34,9 @@ uni.setStorage函数定义
 
 
 ### setStorage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -52,7 +52,7 @@ uni.setStorage函数定义
 | key | string | 是 | 本地存储中的指定的 key |
 | data | any | 是 | 需要存储的内容，只支持能通过 JSON.stringify 序列化的对象 |
 | success | (res: SetStorageSuccess) => void | 否 | uni.setStorage成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | uni.setStorage失败回调函数定义 |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | uni.setStorage失败回调函数定义 |
 | complete | (res: any) => void | 否 | uni.setStorage完成回调函数定义 | 
 
 
@@ -93,9 +93,9 @@ uni.setStorageSync函数定义
 
 
 ### setStorageSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -143,9 +143,9 @@ uni.getStorage函数定义
 
 
 ### getStorage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -160,7 +160,7 @@ uni.getStorage函数定义
 | :- | :- | :- | :- |
 | key | string | 是 | 本地存储中的指定的 key |
 | success | (res: [GetStorageSuccess](#getstoragesuccess-values)) => void | 否 | uni.getStorage成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | uni.getStorage失败回调函数定义 |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | uni.getStorage失败回调函数定义 |
 | complete | (res: any) => void | 否 | uni.getStorage完成回调函数定义 | 
 
 #### GetStorageSuccess 的属性值 @getstoragesuccess-values 
@@ -217,9 +217,9 @@ uni.getStorageSync函数定义
 
 
 ### getStorageSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -284,9 +284,9 @@ uni.getStorageInfo函数定义
 
 
 ### getStorageInfo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -297,19 +297,19 @@ uni.getStorageInfo函数定义
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| success | (res: [GetStorageInfoSuccess](#getstorageinfosuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.getStorageInfo成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.getStorageInfo失败回调函数定义 |
-| complete | (res: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.getStorageInfo完成回调函数定义 | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| success | (res: [GetStorageInfoSuccess](#getstorageinfosuccess-values)) => void | 否 | uni.getStorageInfo成功回调函数定义 |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | uni.getStorageInfo失败回调函数定义 |
+| complete | (res: any) => void | 否 | uni.getStorageInfo完成回调函数定义 | 
 
 #### GetStorageInfoSuccess 的属性值 @getstorageinfosuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| keys | Array&lt;string&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: - | 当前 storage 中所有的 key |
-| currentSize | number | 是 | 微信小程序: 4.41; 支付宝小程序: - | 当前占用的空间大小, 单位：kb |
-| limitSize | number | 是 | 微信小程序: 4.41; 支付宝小程序: - | 限制的空间大小, 单位：kb |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| keys | Array&lt;string&gt; | 是 | 当前 storage 中所有的 key |
+| currentSize | number | 是 | 当前占用的空间大小, 单位：kb |
+| limitSize | number | 是 | 限制的空间大小, 单位：kb |
 
 
 
@@ -349,9 +349,9 @@ uni.getStorageInfoSync函数定义
 
 
 ### getStorageInfoSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -364,11 +364,11 @@ uni.getStorageInfoSync函数定义
 
 #### GetStorageInfoSuccess 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| keys | Array&lt;string&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: - | 当前 storage 中所有的 key |
-| currentSize | number | 是 | 微信小程序: 4.41; 支付宝小程序: - | 当前占用的空间大小, 单位：kb |
-| limitSize | number | 是 | 微信小程序: 4.41; 支付宝小程序: - | 限制的空间大小, 单位：kb | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| keys | Array&lt;string&gt; | 是 | 当前 storage 中所有的 key |
+| currentSize | number | 是 | 当前占用的空间大小, 单位：kb |
+| limitSize | number | 是 | 限制的空间大小, 单位：kb | 
 
 
 <!-- UTSAPIJSON.getStorageInfoSync.example -->
@@ -406,9 +406,9 @@ uni.removeStorage函数定义
 
 
 ### removeStorage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -419,12 +419,12 @@ uni.removeStorage函数定义
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| key | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 本地存储中的指定的 key |
-| success | (res: RemoveStorageSuccess) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.removeStorage成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.removeStorage失败回调函数定义 |
-| complete | (res: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.removeStorage完成回调函数定义 | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| key | string | 是 | 本地存储中的指定的 key |
+| success | (res: RemoveStorageSuccess) => void | 否 | uni.removeStorage成功回调函数定义 |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | uni.removeStorage失败回调函数定义 |
+| complete | (res: any) => void | 否 | uni.removeStorage完成回调函数定义 | 
 
 
 
@@ -464,9 +464,9 @@ uni.removeStorageSync函数定义
 
 
 ### removeStorageSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -513,9 +513,9 @@ uni.clearStorage函数定义
 
 
 ### clearStorage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -526,11 +526,11 @@ uni.clearStorage函数定义
 
 #### option 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| success | (res: ClearStorageSuccess) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.clearStorage 成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.clearStorage 失败回调函数定义 |
-| complete | (res: any) => void | 否 | 微信小程序: 4.41; 支付宝小程序: - | uni.clearStorage 完成回调函数定义 | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| success | (res: ClearStorageSuccess) => void | 否 | uni.clearStorage 成功回调函数定义 |
+| fail | (res: [UniError](/err-spec.md#unierror)) => void | 否 | uni.clearStorage 失败回调函数定义 |
+| complete | (res: any) => void | 否 | uni.clearStorage 完成回调函数定义 | 
 
 
 
@@ -570,9 +570,9 @@ uni.clearStorageSync函数定义
 
 
 ### clearStorageSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -1141,9 +1141,9 @@ uni.clearStorageSync函数定义
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 
 
 

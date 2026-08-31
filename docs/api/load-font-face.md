@@ -14,9 +14,9 @@
 
 
 ### loadFontFace 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.25 | √ | 4.10 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.10 | 4.61 |
 
 
 ### 参数 
@@ -29,14 +29,14 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| global | boolean | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: x; HarmonyOS: x | 是否全局生效微信小程序 '2.10.0'起支持全局生效。需在 app.uvue 中调用。 |
-| family | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 定义的字体名称 |
-| source | [string.FontURIString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 字体资源的地址, App-Android 平台不支持 woff、woff2 格式字体文件 |
-| desc | **LoadFontFaceOptionDesc** | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: x; iOS: 4.10; HarmonyOS: x | 可选的字体描述符 |
-| success | (result: [LoadFontFaceSuccess](#loadfontfacesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.10 | 接口调用成功的回调函数 |
-| fail | (error: [LoadFontFaceFail](#loadfontfacefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.10 | 接口调用失败的回调函数 |
-| complete | (res: [LoadFontFaceComplete](#loadfontfacecomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: √; iOS: 4.10 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| scopes | Array&lt;string&gt; | 否 | 微信小程序: 4.41; 支付宝小程序: - | 字体作用范围，可选值为 webview / native / skyline，默认全选，设置 native 可在 Canvas 2D 下使用<br/> | 
+| global | boolean | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: x; HarmonyOS: x | 是否全局生效微信小程序 '2.10.0'起支持全局生效。需在 app.uvue 中调用。 |
+| family | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 定义的字体名称 |
+| source | [string.FontURIString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 字体资源的地址, App-Android 平台不支持 woff、woff2 格式字体文件 |
+| desc | **LoadFontFaceOptionDesc** | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 4.10; HarmonyOS: x | 可选的字体描述符 |
+| success | (result: [LoadFontFaceSuccess](#loadfontfacesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10 | 接口调用成功的回调函数 |
+| fail | (error: [LoadFontFaceFail](#loadfontfacefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10 | 接口调用失败的回调函数 |
+| complete | (res: [LoadFontFaceComplete](#loadfontfacecomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| scopes | Array&lt;any&gt; | 否 | 微信小程序: 4.41 | 字体作用范围，可选值为 webview / native / skyline，默认全选，设置 native 可在 Canvas 2D 下使用<br/> | 
 
 ##### desc 的属性描述
 
@@ -57,10 +57,10 @@
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 |   | 错误码 |
-| status | string | 否 | 微信小程序: 4.41; 支付宝小程序: - | 加载字体结果<br/> |
+| status | string | 否 | 微信小程序: 4.41 | 加载字体结果<br/> |
 | errSubject | string | 是 |   | 统一错误主题（模块）名称 |
 | data | any | 否 |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |   |  |
 
 #### errCode 的属性描述
@@ -381,7 +381,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: - | 错误信息 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
 

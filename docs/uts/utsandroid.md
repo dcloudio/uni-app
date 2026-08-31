@@ -439,7 +439,7 @@ console.log("packageName",packageName)
 
 ##### UTSTaskDispatcher 的方法 @utstaskdispatcher-values 
 
-##### async(action : (action : any \| null) => void, param ?: any \| null) : void @async
+##### async(action : (action : any) => void, param ?: any) : void @async
 async
 在当前任务分发器 异步执行任务
 
@@ -568,7 +568,7 @@ bytes
 
 | 类型 |
 | :- |
-| Promise\<Uint8Array\<ArrayBuffer>> |
+| Promise\<[Uint8Array](/uts/buildin-object-api/uint8array.md)> |
  
 
 ##### slice(start?: number, end?: number, contentType?: string): Blob; @slice
