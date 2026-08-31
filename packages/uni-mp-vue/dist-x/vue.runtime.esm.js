@@ -5661,11 +5661,9 @@ function getGlobalCreateApp(method) {
     if (typeof global !== 'undefined' &&
         typeof global[method] !== 'undefined') {
         return global[method];
-        // @ts-expect-error
     }
     else if (typeof my !== 'undefined') {
         // 支付宝小程序开启globalObjectMode配置后才会有global
-        // @ts-expect-error
         return my[method];
     }
 }
@@ -5732,9 +5730,11 @@ function hyphenateCssProperty(str) {
 }
 
 // TODO App端实现未继承自EventTarget，如果后续App端调整此处也需要同步调整
+let uniAnimationNextId = 0;
 class UniAnimation {
     constructor(id, scope, keyframes, options = {}) {
         var _a;
+        this._animationId = 0;
         this._playState = 'idle';
         this.parsedKeyframes = [];
         this.options = {};
@@ -5762,6 +5762,7 @@ class UniAnimation {
         toRaw(this.scope).setData({
             ['$eA.' + this.id]: JSON.stringify({
                 id: this.id,
+                animationId: this._animationId,
                 playState: 'idle',
                 keyframes: this.parsedKeyframes,
                 options: this.options,
@@ -5779,9 +5780,11 @@ class UniAnimation {
         throw new Error('pause not implemented.');
     }
     play() {
+        this._animationId = ++uniAnimationNextId;
         this.scope.setData({
             ['$eA.' + this.id]: JSON.stringify({
                 id: this.id,
+                animationId: this._animationId,
                 playState: 'running',
                 keyframes: this.parsedKeyframes,
                 options: this.options,
