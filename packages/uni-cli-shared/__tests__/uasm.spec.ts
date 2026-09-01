@@ -613,7 +613,7 @@ describe('uasm', () => {
       )
       const simulatorFile = path.resolve(
         xcframeworkDir,
-        `ios-arm64-simulator/${frameworkName}.framework/${frameworkName}`
+        `ios-arm64_x86_64-simulator/${frameworkName}.framework/${frameworkName}`
       )
       fs.outputFileSync(deviceFile, `${frameworkName}-device`)
       fs.outputFileSync(simulatorFile, `${frameworkName}-simulator`)
@@ -641,7 +641,12 @@ describe('uasm', () => {
 
     test.each([
       ['device', undefined, 'ios-arm64', 'zstd-device'],
-      ['simulator', 'ios_simulator', 'ios-arm64-simulator', 'zstd-simulator'],
+      [
+        'simulator',
+        'ios_simulator',
+        'ios-arm64_x86_64-simulator',
+        'zstd-simulator',
+      ],
     ])('copy the %s slice', (_, deviceType, libraryIdentifier, content) => {
       createFramework('zstd')
       if (deviceType) {
