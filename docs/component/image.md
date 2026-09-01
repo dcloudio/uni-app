@@ -160,9 +160,9 @@ svg 是矢量图片，可以无极缩放而不失真。但在以下情况，会�
 >示例
 ```vue
 <template>
-  <view style="flex: 1;">
+  <view class="image-page uni-theme-root">
     <page-head :title="data.title"></page-head>
-    <scroll-view style="flex: 1">
+    <scroll-view class="uni-theme-root" style="flex: 1">
       <view class="uni-padding-wrap">
         <!-- image样式大合集 -->
         <text class="uni-title-text">image样式大合集</text>
@@ -198,7 +198,7 @@ svg 是矢量图片，可以无极缩放而不失真。但在以下情况，会�
         <button class="uni-btn" @tap="imageLong">长图示例</button>
         <button class="uni-btn" @tap="imageOrientation">图片方向修正示例</button>
 
-        <!-- #ifdef VUE3-VAPOR -->
+        <!-- #ifdef VUE3-VAPOR && !MP-ALIPAY -->
         <navigator url="/pages/template/2000-image/2000-image">
           <button class="uni-btn">组件性能测试</button>
         </navigator>
@@ -312,9 +312,13 @@ svg 是矢量图片，可以无极缩放而不失真。但在以下情况，会�
   })
 </script>
 <style>
+  .image-page {
+    flex: 1;
+  }
+
   .styled-image-row {
     flex-direction: row;
-    background: #fff;
+    background-color: var(--list-background-color, #ffffff);
     justify-content: space-around;
     height: 120px;
     align-items: center;
@@ -343,7 +347,7 @@ svg 是矢量图片，可以无极缩放而不失真。但在以下情况，会�
   }
 
   .image-bg {
-    background: #FFFFFF;
+    background-color: var(--list-background-color, #ffffff);
   }
 </style>
 

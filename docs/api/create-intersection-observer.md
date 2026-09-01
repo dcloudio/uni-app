@@ -145,7 +145,7 @@ disconnect
 >示例
 ```vue
 <template>
-	<view>
+	<view class="observer-page uni-theme-root">
 		<page-head :title="data.title"></page-head>
 		<view class="uni-padding-wrap uni-common-mt">
 			<view class="uni-title uni-common-mt">
@@ -202,8 +202,8 @@ disconnect
 <style>
 	.scroll-view {
 		height: 200px;
-		background: #fff;
-		border: 1px solid #ccc;
+		background-color: var(--list-background-color, #fff);
+		border: 1px solid var(--border-color, #ccc);
 		box-sizing: border-box;
 	}
 
@@ -217,6 +217,7 @@ disconnect
 	.notice {
 		margin-top: 75px;
 		margin:75px 0 200px 0;
+		color: var(--text-color, #333333);
 	}
 
 	.ball {

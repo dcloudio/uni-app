@@ -56,14 +56,14 @@ box-shadow: none | <shadow>#;
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view style="flex-grow: 1">
+    <view class="box-shadow-page uni-theme-root" style="flex-grow: 1">
       <view style="margin-bottom: 10px;">
-        <text style="font-weight: bold;">说明：左边是正常版本，右边是拍平版本</text>
+        <text class="box-shadow-label" style="font-weight: bold;">说明：左边是正常版本，右边是拍平版本</text>
       </view>
       <view>
-        <text>box-shadow: 5px 5px black</text>
+        <text class="box-shadow-label">box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -79,7 +79,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: 5px 5px 5px #00FF00</text>
+        <text class="box-shadow-label">box-shadow: 5px 5px 5px #00FF00</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -95,7 +95,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: 5px 5px 5px rgb(0,0,255)</text>
+        <text class="box-shadow-label">box-shadow: 5px 5px 5px rgb(0,0,255)</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -111,7 +111,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: 5px 5px 5px rgba(0,255,255,0.5)</text>
+        <text class="box-shadow-label">box-shadow: 5px 5px 5px rgba(0,255,255,0.5)</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -127,7 +127,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5)</text>
+        <text class="box-shadow-label">box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5)</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -143,7 +143,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: 5rpx 5rpx 5rpx #0000ff80</text>
+        <text class="box-shadow-label">box-shadow: 5rpx 5rpx 5rpx #0000ff80</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -159,7 +159,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: 5px 5px 5px black</text>
+        <text class="box-shadow-label">box-shadow: 5px 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -175,7 +175,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: 5px 10px 5px black</text>
+        <text class="box-shadow-label">box-shadow: 5px 10px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -190,7 +190,7 @@ box-shadow: none | <shadow>#;
         </view>
       </view>
       <view>
-        <text>box-shadow: 5px 5px 5px 5px black（harmony暂不支持阴影扩散半径）</text>
+        <text class="box-shadow-label">box-shadow: 5px 5px 5px 5px black（harmony暂不支持阴影扩散半径）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -206,7 +206,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: -5px -5px 5px black</text>
+        <text class="box-shadow-label">box-shadow: -5px -5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -222,7 +222,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: inset 5px 5px black（harmony暂不支持inset）</text>
+        <text class="box-shadow-label">box-shadow: inset 5px 5px black（harmony暂不支持inset）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -238,7 +238,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: inset 5px 5px 5px black（harmony暂不支持inset）</text>
+        <text class="box-shadow-label">box-shadow: inset 5px 5px 5px black（harmony暂不支持inset）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -254,7 +254,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: inset 5px 10px 5px black（harmony暂不支持inset）</text>
+        <text class="box-shadow-label">box-shadow: inset 5px 10px 5px black（harmony暂不支持inset）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -270,7 +270,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: inset 5px 5px 5px 5px black（harmony暂不支持inset）</text>
+        <text class="box-shadow-label">box-shadow: inset 5px 5px 5px 5px black（harmony暂不支持inset）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -286,7 +286,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: inset -5px -5px 5px black（harmony暂不支持inset）</text>
+        <text class="box-shadow-label">box-shadow: inset -5px -5px 5px black（harmony暂不支持inset）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -302,7 +302,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow: 0px 1px 3px rgba(0,0,0,0.4)</text>
+        <text class="box-shadow-label">box-shadow: 0px 1px 3px rgba(0,0,0,0.4)</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -318,7 +318,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>circle: box-shadow: 5px 5px black（正圆）</text>
+        <text class="box-shadow-label">circle: box-shadow: 5px 5px black（正圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -334,7 +334,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>circle: box-shadow: 5px 5px 5px black（椭圆）</text>
+        <text class="box-shadow-label">circle: box-shadow: 5px 5px 5px black（椭圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -350,7 +350,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>circle: box-shadow: 5px 10px 5px black（正圆）</text>
+        <text class="box-shadow-label">circle: box-shadow: 5px 10px 5px black（正圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -366,7 +366,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>circle: box-shadow: 5px 5px 5px 5px black（椭圆）</text>
+        <text class="box-shadow-label">circle: box-shadow: 5px 5px 5px 5px black（椭圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -382,7 +382,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>circle: box-shadow: -5px -5px 5px black（正圆）</text>
+        <text class="box-shadow-label">circle: box-shadow: -5px -5px 5px black（正圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -398,7 +398,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>circle: box-shadow: 0px 1px 3px rgba(0,0,0,0.4)（椭圆）</text>
+        <text class="box-shadow-label">circle: box-shadow: 0px 1px 3px rgba(0,0,0,0.4)（椭圆）</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -414,7 +414,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>点击动态切换 box-shadow: none</text>
+        <text class="box-shadow-label">点击动态切换 box-shadow: none</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview" @click="changed">
@@ -430,7 +430,7 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>点击动态切换 box-shadow: 非法值</text>
+        <text class="box-shadow-label">点击动态切换 box-shadow: 非法值</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview" @click="changed">
@@ -446,13 +446,29 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text>box-shadow父视图动态改变高度的渲染效果</text>
+        <text class="box-shadow-label">初始小尺寸，延迟1秒自动变大，点击可重放，验证 box-shadow 会随 view 尺寸同步更新</text>
+        <view class="row-container">
+          <view class="row-item">
+            <view class="backgroundview-resize" @click="triggerShadowResizeDemo">
+              <view :class="['resize-shadow-box', shadowResized ? 'resize-shadow-box-expanded' : 'resize-shadow-box-collapsed']"></view>
+            </view>
+          </view>
+          <view class="row-item">
+            <view class="backgroundview-resize" @click="triggerShadowResizeDemo">
+              <view :class="['resize-shadow-box', shadowResized ? 'resize-shadow-box-expanded' : 'resize-shadow-box-collapsed']" flatten></view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view>
+        <text class="box-shadow-label">box-shadow父视图动态改变高度的渲染效果</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
               <view style="justify-content: center;align-items: center;width: 75px;background-color: green;box-shadow: 0 0 10px">
                 <view>
-                  <textarea id="dynamic-height-textarea" style="margin: 10px;background-color: aqua;height: 16px;width: 55px;" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"></textarea>
+                  <textarea id="dynamic-height-textarea" class="shadow-textarea" style="margin: 10px;background-color: aqua;height: 16px;width: 55px;" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"></textarea>
                 </view>
               </view>
             </view>
@@ -461,7 +477,7 @@ box-shadow: none | <shadow>#;
             <view class="backgroundview">
               <view style="justify-content: center;align-items: center;width: 75px;background-color: green;box-shadow: 0 0 10px" flatten>
                 <view>
-                  <textarea id="dynamic-height-textarea-flat" style="margin: 10px;background-color: aqua;height: 16px;width: 55px;" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"></textarea>
+                  <textarea id="dynamic-height-textarea-flat" class="shadow-textarea" style="margin: 10px;background-color: aqua;height: 16px;width: 55px;" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"></textarea>
                 </view>
               </view>
             </view>
@@ -469,7 +485,7 @@ box-shadow: none | <shadow>#;
         </view>
       </view>
       <view>
-        <text>text组件: box-shadow: 5px 5px black</text>
+        <text class="box-shadow-label">text组件: box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -484,7 +500,7 @@ box-shadow: none | <shadow>#;
         </view>
       </view>
       <view>
-        <text>text组件: box-shadow: 5px 5px 5px #00FF00</text>
+        <text class="box-shadow-label">text组件: box-shadow: 5px 5px 5px #00FF00</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -499,11 +515,11 @@ box-shadow: none | <shadow>#;
         </view>
       </view>
       <view>
-        <text style="font-weight: bold; margin-top: 20px;">圆形图片</text>
+        <text class="box-shadow-label" style="font-weight: bold; margin-top: 20px;">圆形图片</text>
       </view>
 
       <view>
-        <text>image组件: box-shadow: 5px 5px black</text>
+        <text class="box-shadow-label">image组件: box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -518,7 +534,7 @@ box-shadow: none | <shadow>#;
         </view>
       </view>
       <view>
-        <text>image组件: box-shadow: 5px 5px 5px #00FF00</text>
+        <text class="box-shadow-label">image组件: box-shadow: 5px 5px 5px #00FF00</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -533,7 +549,7 @@ box-shadow: none | <shadow>#;
         </view>
       </view>
       <view>
-        <text>image组件（正圆）: box-shadow: 5px 5px black</text>
+        <text class="box-shadow-label">image组件（正圆）: box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -549,11 +565,11 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
-        <text style="font-weight: bold; margin-top: 20px;">方形图片</text>
+        <text class="box-shadow-label" style="font-weight: bold; margin-top: 20px;">方形图片</text>
       </view>
 
       <view>
-        <text>image组件: box-shadow: 5px 5px black</text>
+        <text class="box-shadow-label">image组件: box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -568,7 +584,7 @@ box-shadow: none | <shadow>#;
         </view>
       </view>
       <view>
-        <text>image组件: box-shadow: 5px 5px 5px #00FF00</text>
+        <text class="box-shadow-label">image组件: box-shadow: 5px 5px 5px #00FF00</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview-rect">
@@ -583,7 +599,7 @@ box-shadow: none | <shadow>#;
         </view>
       </view>
       <view>
-        <text>image组件（正圆）: box-shadow: 5px 5px black</text>
+        <text class="box-shadow-label">image组件（正圆）: box-shadow: 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
             <view class="backgroundview">
@@ -713,9 +729,23 @@ box-shadow: none | <shadow>#;
   })
 
   const disabled = ref(false)
+  const shadowResized = ref(false)
+  const shadowResizeTimer = ref(-1)
 
   const changed = () => {
     disabled.value = disabled.value == false
+  }
+
+  const triggerShadowResizeDemo = () => {
+    shadowResized.value = false
+    if (shadowResizeTimer.value >= 0) {
+      clearTimeout(shadowResizeTimer.value)
+      shadowResizeTimer.value = -1
+    }
+    shadowResizeTimer.value = setTimeout(() => {
+      shadowResized.value = true
+      shadowResizeTimer.value = -1
+    }, 1000)
   }
 
   const viewRef = ref(null as UniElement | null)
@@ -796,8 +826,16 @@ box-shadow: none | <shadow>#;
     nextTick(() => {
       const element = uni.getElementById("dynamic-height-textarea")
       element?.style.setProperty("height", "26px")
+      triggerShadowResizeDemo()
     })
     getPropertyValues(data.boxShadow as string)
+  })
+
+  onUnload(() => {
+    if (shadowResizeTimer.value >= 0) {
+      clearTimeout(shadowResizeTimer.value)
+      shadowResizeTimer.value = -1
+    }
   })
 
   defineExpose({
@@ -807,6 +845,15 @@ box-shadow: none | <shadow>#;
 </script>
 
 <style>
+  .box-shadow-label {
+    color: var(--text-color, #333333);
+  }
+
+  .shadow-textarea,
+  .scroll-view-label {
+    color: #1a1a1a;
+  }
+
   .common {
     width: 50px;
     height: 50px;
@@ -831,6 +878,16 @@ box-shadow: none | <shadow>#;
     width: 75px;
     height: 50px;
     background-color: white;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .backgroundview-resize {
+    width: 95px;
+    height: 95px;
+    background-color: white;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
   }
@@ -861,6 +918,21 @@ box-shadow: none | <shadow>#;
 
   .invalidShadow {
     box-shadow: abcd;
+  }
+
+  .resize-shadow-box {
+    background-color: #2f8f2f;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.45);
+  }
+
+  .resize-shadow-box-collapsed {
+    width: 36px;
+    height: 36px;
+  }
+
+  .resize-shadow-box-expanded {
+    width: 68px;
+    height: 52px;
   }
 
   .text-shadow {

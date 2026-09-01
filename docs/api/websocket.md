@@ -586,13 +586,22 @@ onMessage
   <view class="uni-padding-wrap">
     <view class="uni-btn-v">
       <text class="websocket-msg">{{ showMsg }}</text>
-      <button class="uni-btn-v" type="primary" @click="connect">
+      <button <!-- #ifndef MP-ALIPAY -->
+        class="uni-btn-v"
+        <!-- #endif -->
+        type="primary" @click="connect">
         连接websocket服务
       </button>
-      <button class="uni-btn-v" v-show="connected" type="primary" @click="send">
+      <button <!-- #ifndef MP-ALIPAY -->
+        class="uni-btn-v"
+        <!-- #endif -->
+        v-show="connected" type="primary" @click="send">
         发送一条消息
       </button>
-      <button class="uni-btn-v" type="primary" @click="close">
+      <button <!-- #ifndef MP-ALIPAY -->
+        class="uni-btn-v"
+        <!-- #endif -->
+        type="primary" @click="close">
         断开websocket服务
       </button>
       <text class="websocket-tips">发送消息后会收到一条服务器返回的消息（与发送的消息内容一致）</text>
@@ -600,7 +609,10 @@ onMessage
         class="websocket-tips" style="color: red;">web端和小程序端uni-push功能、app-android端和app-ios端的web-view组件日志回显、app-harmony端的日志回显会占用一个socket链接，此时使用全局的socket
         api会引发混乱。应使用socketTask操作websocket链接。</text>
       <text class="websocket-tips">小程序端日志回显功能也会占用一个socket链接，如果不希望使用此功能可以在HBuilderX控制台关闭日志回显。</text>
-      <button class="uni-btn-v" type="primary" @click="goSocketTask">
+      <button <!-- #ifndef MP-ALIPAY -->
+        class="uni-btn-v"
+        <!-- #endif -->
+        type="primary" @click="goSocketTask">
         跳转 socketTask 示例
       </button>
     </view>

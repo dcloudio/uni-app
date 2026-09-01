@@ -153,9 +153,9 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="page-scroll-view">
+  <scroll-view class="page-scroll-view uni-theme-root">
   <!-- #endif -->
-    <view class="uni-common-mb uni-common-pb">
+    <view class="swiper-page uni-common-mb uni-common-pb uni-theme-root">
       <page-head title="swiper,可滑动视图"></page-head>
       <view>
         <!-- 微信小程序自身Bug，autoplay为false时更新interval会导致swiper启用自动播放 -->
@@ -186,11 +186,11 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
       </view>
       <view class="uni-list">
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">显示面板指示点</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">显示面板指示点</text></view>
           <switch :checked="data.dotsSelect" @change="dotsChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">定制指示器颜色</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">定制指示器颜色</text></view>
           <switch :checked="data.indicatorColorSelect"
             <!-- #ifndef (APP && VUE3-VAPOR) -->
             :disabled="true"
@@ -198,56 +198,60 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
             @change="indicatorColorChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">禁止 touch 操作</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">禁止 touch 操作</text></view>
           <switch :checked="data.disableTouchSelect" @change="disableTouchChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">是否自动切换</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">是否自动切换</text></view>
           <switch :checked="data.autoplaySelect" @change="autoplayChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">是否衔接滑动</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">是否衔接滑动</text></view>
           <switch :checked="data.circularSelect" @change="circularChange" />
         </view>
-        <view class="uni-title uni-list-cell-padding">间隔时间(毫秒)</view>
+        <view class="uni-title uni-list-cell-padding"><text class="uni-theme-text">间隔时间(毫秒)</text></view>
         <view class="uni-padding-wrap">
           <slider @change="sliderChange" :value="2000" :min="500" :max="5000" :show-value="true" />
         </view>
-        <view class="uni-title uni-list-cell-padding">动画时长(毫秒)</view>
+        <view class="uni-title uni-list-cell-padding"><text class="uni-theme-text">动画时长(毫秒)</text></view>
         <view class="uni-padding-wrap">
           <slider @change="durationSliderChange" :value="500" :min="50" :max="2000" :show-value="true" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">是否纵向滑动</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">是否纵向滑动</text></view>
           <switch :checked="data.verticalSelect" @change="verticalChange" />
         </view>
+        <!-- #ifndef MP-ALIPAY -->
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">是否禁用回弹效果</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">是否禁用回弹效果</text></view>
           <!-- 仅 android ios harmony 支持，web 微信小程序 bounces 为 true -->
           <switch :checked="data.disableBounceSelect" @change="disableBounceSelectChange" />
         </view>
+        <!-- #endif -->
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">指定current为最后一个元素</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">指定current为最后一个元素</text></view>
           <switch :checked="data.currentSelect" @change="currentChange" />
         </view>
+        <!-- #ifndef MP-ALIPAY -->
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">指定current-item-id为最后一个元素</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">指定current-item-id为最后一个元素</text></view>
           <switch :checked="data.currentItemIdSelect" @change="currentItemIdChange" />
         </view>
+        <!-- #endif -->
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">打印 swiperChange 日志</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">打印 swiperChange 日志</text></view>
           <switch :checked="data.swiperChangeSelect" @change="swiperChangeChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">打印 swiperTransition 日志</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">1打印 swiperTransition 日志</text></view>
           <switch :checked="data.swiperTransitionSelect" @change="swiperTransitionChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">打印 swiperAnimationfinish 日志</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">打印 swiperAnimationfinish 日志</text></view>
           <switch :checked="data.swiperAnimationfinishSelect" @change="swiperAnimationfinishChange" />
         </view>
 
-        <view class="uni-list-cell-padding">测试 swiper 默认行为</view>
+        <view class="uni-list-cell-padding"><text class="uni-theme-text">测试 swiper 默认行为</text></view>
         <swiper class="swiper" :autoplay="data.autoplayForDefault" :circular="data.circularForDefault">
           <swiper-item item-id="A">
             <view class="swiper-item uni-bg-red"><text class="swiper-item-Text">A</text></view>
@@ -260,11 +264,11 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
           </swiper-item>
         </swiper>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">是否自动切换</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">是否自动切换</text></view>
           <switch :checked="data.autoplayForDefault" @change="() => {data.autoplayForDefault = !data.autoplayForDefault}" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">是否衔接滑动</view>
+          <view class="uni-list-cell-db"><text class="uni-theme-text">是否衔接滑动</text></view>
           <switch :checked="data.circularForDefault" @change="() => {data.circularForDefault = !data.circularForDefault}" />
         </view>
         <!-- #ifndef MP -->
@@ -279,7 +283,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
         	</button>
         </navigator>
         <!-- #endif -->
-        <!-- #ifdef (APP && VUE3-VAPOR) -->
+        <!-- #ifdef (APP && VUE3-VAPOR) || MP -->
         <navigator url="/pages/component/swiper/swiper-more" style="margin-top: 10px;">
         	<button type="primary">
         		更多 swiper
@@ -288,9 +292,11 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
         <navigator url="/pages/component/swiper/swiper-in-swiper" style="margin-top: 10px;">
           <button type="primary">嵌套测试</button>
         </navigator>
-        <navigator url="/pages/component/swiper/swiper-item-100" style="margin-top: 10px;">
-          <button>组件性能测试</button>
-        </navigator>
+        <!-- #ifndef MP-ALIPAY -->
+          <navigator url="/pages/component/swiper/swiper-item-100" style="margin-top: 10px;">
+            <button>组件性能测试</button>
+          </navigator>
+        <!-- #endif -->
         <!-- #endif -->
       </view>
     </view>
@@ -575,7 +581,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 
 ```uvue
 <template>
-  <view style="flex: 1;">
+  <view class="swiper-list-page uni-theme-root">
     <view class="content-item">
       <text class="text">左右滑动页面，体验swiper嵌套list-view效果。</text>
     </view>
@@ -588,7 +594,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
               <text class="header">上下滑动体验吸顶效果 swiper-item{{index}}</text>
             </sticky-header>
             <list-item v-for="itemIndex in 40" :key="itemIndex" class="item">
-              <text>item----------{{itemIndex}}</text>
+              <text class="item-text">item----------{{itemIndex}}</text>
             </list-item>
           </sticky-section>
         </list-view>
@@ -635,20 +641,20 @@ defineExpose({
   .item {
     padding: 15px;
     margin: 0 0 5px 0;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
     border-radius: 5px;
   }
 
   .text {
     font-size: 14px;
-    color: #666;
+    color: var(--active-color, #666);
     line-height: 20px;
   }
 
   .content-item {
     padding: 15px;
     margin-bottom: 10px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
   }
 
   .header {
@@ -656,6 +662,14 @@ defineExpose({
     padding: 15px;
     text-align: center;
     color: #fff;
+  }
+
+  .swiper-list-page {
+    flex: 1;
+  }
+
+  .item-text {
+    color: var(--text-color, #333333);
   }
 </style>
 
@@ -674,7 +688,7 @@ defineExpose({
 		<text style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px;">Swiper组件演示</text>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">不等高slider测试（Auto Height）harmony 无效：</text>
+			<text style="color: #666; margin-bottom: 10px;">不等高slider测试（Auto Height）harmony 微信小程序 无效：</text>
 			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">容器高度随当前slider内容自动调整</text>
 			<swiper auto-height>
 				<swiper-item>
@@ -806,6 +820,7 @@ defineExpose({
 			</swiper>
 		</view>
 
+		<!-- #ifndef MP-ALIPAY -->
 		<view style="margin-bottom: 20px;">
 			<text style="color: #666; margin-bottom: 10px;">垂直滑动（vertical）且开启 disable-rebound：</text>
 			<swiper vertical :disable-bounce="true" style="height: 200px;">
@@ -826,6 +841,7 @@ defineExpose({
 				</swiper-item>
 			</swiper>
 		</view>
+		<!-- #endif -->
 
 		<view style="margin-bottom: 20px;">
 			<text style="color: #666; margin-bottom: 10px;">垂直滑动（vertical）且开启 circular：</text>
@@ -885,6 +901,7 @@ defineExpose({
 			</swiper>
 		</view>
 
+		<!-- #ifndef MP-ALIPAY -->
 		<view style="margin-bottom: 20px;">
 			<text style="color: #666; margin-bottom: 10px;">指示器短横线样式（item-style）：</text>
 			<swiper style="height: 150px;" :indicator-dots="true" indicator-style="width: 20px; height: 3px; border-radius: 2px;">
@@ -953,6 +970,7 @@ defineExpose({
 				</swiper-item>
 			</swiper>
 		</view>
+		<!-- #endif -->
 
 		<view style="margin-bottom: 20px;">
 			<text style="color: #666; margin-bottom: 10px;">事件监听（@change、@transition、@animationfinish）：</text>
@@ -983,6 +1001,7 @@ defineExpose({
 			</swiper>
 		</view>
 
+		<!-- #ifndef MP-ALIPAY -->
 		<view style="margin-bottom: 20px;">
 			<text style="color: #666; margin-bottom: 10px;">自定义数字指示器（slot）：</text>
 			<swiper @change="handleCustomIndicatorChange" style="height: 150px;">
@@ -1008,7 +1027,9 @@ defineExpose({
 				</template>
 			</swiper>
 		</view>
+		<!-- #endif -->
 
+		<!-- #ifndef MP-ALIPAY -->
 		<view style="margin-bottom: 20px;">
 			<text style="color: #666; margin-bottom: 10px;">自定义指示器并绑定点击事件(仅web支持点击)：</text>
 			<swiper :current='customIndicatorCurrent' style="height: 150px;" @change="handleCustomIndicatorHandleClickChange">
@@ -1034,7 +1055,9 @@ defineExpose({
 				</template>
 			</swiper>
 		</view>
+		<!-- #endif -->
 
+		<!-- #ifndef MP-ALIPAY -->
 		<view style="margin-bottom: 20px;">
 			<text style="color: #666; margin-bottom: 10px;">circular 和 disabled-bounce 同时设置：</text>
 			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">以circular为优先</text>
@@ -1056,6 +1079,7 @@ defineExpose({
 				</swiper-item>
 			</swiper>
 		</view>
+		<!-- #endif -->
 	</view>
 	<!-- #ifdef APP && !VUE3-VAPOR -->
 	</scroll-view>

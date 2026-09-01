@@ -70,12 +70,14 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
         <text class="tip">当前display值：{{data.display}}</text>
       </view>
       <view class="content" :style="{display:data.display}">
-        <text style="background-color: aquamarine;">展示display区域</text>
+        <text class="cyan-text" style="background-color: aquamarine;">展示display区域</text>
         <scroll-view>
           <text class="common-text" style="height: 20px;">scroll-view</text>
         </scroll-view>
-        <text class="common-text" style="height: 20px;">下方有个native-view</text>
-        <test-native-view style="width: 20px;height: 20px;background-color: cyan;"></test-native-view>
+        <!-- #ifndef MP-ALIPAY -->
+          <text class="common-text" style="height: 20px;">下方有个native-view</text>
+          <test-native-view style="width: 20px;height: 20px;background-color: cyan;"></test-native-view>
+        <!-- #endif -->
       </view>
       <button @tap="switchDisplay" class="uni-common-mb">切换display属性</button>
 
@@ -135,13 +137,15 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
         <input-data :defaultValue="data.displayProp" title="display 自定义值" type="text" @confirm="inputChangeDisplay"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: display: flex 和 display: none</text>
-        <view class="demo-box">
-          <test-native-view class="common-view" style="display: flex;width:100px;"></test-native-view>
-          <test-native-view class="common-view" style="display: none;width:100px;"></test-native-view>
+      <!-- #ifndef MP-ALIPAY -->
+        <view class="uni-common-mb">
+          <text>native-view组件: display: flex 和 display: none</text>
+          <view class="demo-box">
+            <test-native-view class="common-view" style="display: flex;width:100px;"></test-native-view>
+            <test-native-view class="common-view" style="display: none;width:100px;"></test-native-view>
+          </view>
         </view>
-      </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -264,6 +268,10 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
     background-color: green;
     font-size: 12px;
     color: white;
+  }
+
+  .cyan-text {
+    color: #1a1a1a;
   }
 
   .common-image {

@@ -460,8 +460,13 @@ getAllChannels
       获取cid | getPushClientId
     </button>
     <button class="normal-button" type="default" @click="handleOnPushMessage">
-      注册回调 | onPushMessage
+      注册回调（默认申请通知权限） | onPushMessage
     </button>
+    <!-- #ifdef APP-ANDROID -->
+    <button class="normal-button" type="default" @click="handleOnPushMessageWithoutPermission">
+      注册回调（不申请通知权限） | onPushMessage
+    </button>
+    <!-- #endif -->
     <button class="normal-button" type="default" @click="handleOffPushMessage">
       注销回调 | offPushMessage
     </button>
@@ -538,6 +543,23 @@ getAllChannels
       return
     }
     uni.onPushMessage(onPushMessageCallback)
+    isRegister.state = true
+    uni.showToast({
+      title: "成功注册"
+    })
+  }
+
+  const handleOnPushMessageWithoutPermission = () => {
+    if (isRegister.state) {
+      uni.showToast({
+        icon: "error",
+        title: "无需重复注册"
+      })
+      return
+    }
+    uni.onPushMessage(onPushMessageCallback, {
+      requestPermission: false
+    })
     isRegister.state = true
     uni.showToast({
       title: "成功注册"

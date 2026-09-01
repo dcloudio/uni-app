@@ -150,12 +150,13 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-selector--test uni-picker-container-wrap" @change="bindPickerChange" :value="data.index"
             :range="data.selectorArray" range-key="name">
-            <text class="uni-input picker-selector--value uni-picker-text">{{data.selectorArray[data.index].name}}</text>
+            <view class="uni-input picker-selector--value uni-picker-text">{{data.selectorArray[data.index].name}}</view>
           </picker>
         </view>
       </view>
     </view>
 
+    <!-- #ifndef MP-ALIPAY -->
     <view class="uni-picker-section-header">
       <text class="uni-title uni-picker-section-title">多列选择器</text>
     </view>
@@ -165,13 +166,14 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-multi--test uni-picker-container-wrap"  mode="multiSelector" @columnchange="bindMultiPickerColumnChange"
             :value="data.multiIndex" :range="data.multiArray">
-            <text class="uni-input picker-multi--value uni-picker-text">
+            <view class="uni-input picker-multi--value uni-picker-text">
               {{data.multiArray[0][data.multiIndex[0]]}}，{{data.multiArray[1][data.multiIndex[1]]}}，{{data.multiArray[2][data.multiIndex[2]]}}
-            </text>
+            </view>
           </picker>
         </view>
       </view>
     </view>
+    <!-- #endif -->
 
     <view class="uni-picker-section-header">
       <text class="uni-title uni-picker-section-title">time选择器</text>
@@ -183,7 +185,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-time--test uni-picker-container-wrap" mode="time" :value="data.time" start="09:01" end="21:01"
             @change="bindTimeChange">
-            <text class="uni-input uni-picker-text">{{data.time}}</text>
+            <view class="uni-input uni-picker-text">{{data.time}}</view>
           </picker>
         </view>
       </view>
@@ -199,7 +201,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-date-day--test uni-picker-container-wrap" mode="date" :value="data.dayDate" :start="data.startDate"
             :end="data.endDate" @change="bindDayDateChange">
-            <text class="uni-input uni-picker-text">{{data.dayDate}}</text>
+            <view class="uni-input uni-picker-text">{{data.dayDate}}</view>
           </picker>
         </view>
       </view>
@@ -215,7 +217,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-date-month--test uni-picker-container-wrap" mode="date" fields="month" :value="data.monthDate"
             :start="data.startDate" :end="data.endDate" @change="bindMonthDateChange">
-            <text class="uni-input uni-picker-text">{{data.monthDate}}</text>
+            <view class="uni-input uni-picker-text">{{data.monthDate}}</view>
           </picker>
         </view>
       </view>
@@ -231,12 +233,13 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-date-year--test uni-picker-container-wrap" mode="date" fields="year" :value="data.yearDate"
             :start="data.startDate" :end="data.endDate" @change="bindYearDateChange">
-            <text class="uni-input uni-picker-text">{{data.yearDate}}</text>
+            <view class="uni-input uni-picker-text">{{data.yearDate}}</view>
           </picker>
         </view>
       </view>
     </view>
 
+    <!-- #ifndef MP-ALIPAY -->
     <view class="uni-picker-section-header">
       <text class="uni-title uni-picker-section-title">省市地区选择器</text>
       <text class="uni-picker-description">省市地区数据并没有内置到uni-app x框架中，仅微信下由微信内置了，其他平台需单独加载地区数据</text>
@@ -248,21 +251,22 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
           <!-- #ifndef MP-WEIXIN -->
           <picker class="picker-city--test uni-picker-container-wrap picker-city-wrap" mode="multiSelector" @change="bindCityPickerChange"
             @cancel="resetCityPicker" @columnchange="bindCityPickerColumnChange" :value="data.cityIndex" :range="data.cityArray">
-            <text class="uni-input picker-city--value uni-picker-text picker-city-text">
+            <view class="uni-input picker-city--value uni-picker-text picker-city-text">
               {{getCityDisplayText()}}
-            </text>
+            </view>
           </picker>
           <!-- #endif -->
           <!-- #ifdef MP-WEIXIN -->
           <picker class="picker-city--test uni-picker-container-wrap" mode="region" @change="bindRegionChange" :value="data.region">
-            <text class="uni-input picker-city--value uni-picker-text">
+            <view class="uni-input picker-city--value uni-picker-text">
               {{data.region[0]}}{{data.region[1] ? '，' : ''}}{{data.region[1]}}{{data.region[2] ? '，' : ''}}{{data.region[2]}}
-            </text>
+            </view>
           </picker>
           <!-- #endif -->
         </view>
       </view>
     </view>
+    <!-- #endif -->
 
     <view class="uni-picker-section-header">
       <text class="uni-title uni-picker-section-title">已禁用的picker，点击无效</text>
@@ -274,7 +278,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
         <view class="uni-list-cell-db">
           <picker class="picker-disabled--test uni-picker-container-wrap" @change="bindPickerChange" disabled :value="data.index"
             :range="data.selectorArray" range-key="name">
-            <text class="uni-input picker-disabled--value uni-picker-text">{{data.selectorArray[data.index].name}}</text>
+            <view class="uni-input picker-disabled--value uni-picker-text">{{data.selectorArray[data.index].name}}</view>
           </picker>
         </view>
       </view>
@@ -285,7 +289,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
   <!-- #endif -->
 </template>
 <script setup lang="uts">
-  // #ifndef MP-WEIXIN
+  // #ifndef MP-WEIXIN || MP-ALIPAY
   import { cityData } from './city.uts'
   // #endif
 
@@ -367,7 +371,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
     time: '12:01'
   } as PageDataType)
 
-  // #ifndef MP-WEIXIN
+  // #ifndef MP-WEIXIN || MP-ALIPAY
   function getSafeCityValue(column : number, index : number) : string {
     if (column < 0 || column >= data.cityArray.length) {
       return ''
@@ -504,7 +508,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
     })
   }
 
-  // #ifndef MP-WEIXIN
+  // #ifndef MP-WEIXIN || MP-ALIPAY
   const bindCityPickerChange = (e : UniPickerChangeEvent) => {
     console.log('picker发送选择改变，携带值为：' + e.detail.value)
     const cityIndex = e.detail.value as number[]
@@ -608,7 +612,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
 
   .uni-picker-container-wrap {
     height: 41px;
-    /* #ifndef ANDROID && VUE3_VAPOR */
+    /* #ifndef APP-ANDROID && !VUE3-VAPOR */
     line-height: 41px;
     /* #endif */
   }
@@ -625,7 +629,9 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
   .picker-city-wrap {
     min-height: 41px;
     height: auto;
+    /* #ifndef APP-ANDROID && !VUE3-VAPOR */
     line-height: 25px;
+    /* #endif */
   }
 
   .picker-city-text {

@@ -344,9 +344,10 @@
 		<text class="margin-v">先注册监听函数，再按不同 interval 启动；停止后会继续保留已绑定监听，直到显式 off。</text>
 		<radio-group class="option-group" @change="handleIntervalChange">
 			<view class="option-item" v-for="item in intervalOptions" :key="item.value">
-				<radio :value="item.value" :checked="activeInterval == item.value">
+				<view class="option-content">
+					<radio :value="item.value" :checked="activeInterval == item.value" />
 					<text class="option-text">{{ item.label }}</text>
-				</radio>
+				</view>
 			</view>
 		</radio-group>
 		<button id="btn-start-gyroscope" class="margin-v" type="primary" @tap="startListening">开始监听</button>
@@ -575,6 +576,12 @@
 		align-items: center;
 		margin-top: 8px;
 		margin-right: 18px;
+	}
+
+	.option-content {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
 	}
 
 	.option-text {

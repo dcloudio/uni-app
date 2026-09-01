@@ -46,7 +46,7 @@ scroll-view 嵌套场景中。外层 scroll-view 滚动时无法与内层 scroll
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/component/nested-scroll-header/nested-scroll-header
 ```uvue
 <template>
-  <scroll-view style="flex:1" type="nested" direction="vertical">
+  <scroll-view class="uni-theme-root" style="flex:1" type="nested" direction="vertical">
     <nested-scroll-header>
       <view class="scroll-header-tiem1">
         <text>会渲染的nested-scroll-header</text>
@@ -101,7 +101,7 @@ scroll-view 嵌套场景中。外层 scroll-view 滚动时无法与内层 scroll
     margin-left: 6px;
     margin-right: 6px;
     margin-top: 6px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
     border-radius: 4px;
   }
 
@@ -110,7 +110,7 @@ scroll-view 嵌套场景中。外层 scroll-view 滚动时无法与内层 scroll
     height: 60px;
     line-height: 60px;
     text-align: center;
-    color: #555;
+    color: var(--text-color, #555555);
   }
 
   .scroll-header-tiem1 {

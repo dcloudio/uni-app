@@ -40,8 +40,8 @@
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 |   | 应用启动页面路径 |
-| appScheme | string | 否 | Web: x; 微信小程序: x; Android(VDOM): 4.25; Android(Vapor): 5.25; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
-| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS: x | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
+| appScheme | string | 否 | Web: x; 微信小程序: x; Android(VDOM): 4.25; Android(Vapor): 5.25; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.25 | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
+| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.25 | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
 
 
 
@@ -77,8 +77,8 @@
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 |   | 应用启动页面路径 |
-| appScheme | string | 否 | Web: x; 微信小程序: x; Android(VDOM): 4.25; Android(Vapor): 5.25; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
-| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS: x | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> | 
+| appScheme | string | 否 | Web: x; 微信小程序: x; Android(VDOM): 4.25; Android(Vapor): 5.25; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.25 | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
+| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.25; iOS(Vapor): 5.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.25 | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> | 
 
 
 
@@ -512,7 +512,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
   <!-- #endif -->
-    <view>
+    <view style="padding-bottom: 20px">
       <page-head title="getApp"></page-head>
       <view class="uni-padding-wrap">
         <button @click="getGlobalData">get globalData</button>

@@ -78,7 +78,7 @@ page-container 的特点：
 >示例
 ```vue
 <template>
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
     <page-intro
       content="本页演示 page-container 页面容器，用于在页面内创建弹出层效果，支持拦截返回操作：顶部/底部/左侧/右侧/居中弹出、圆角、遮罩与透明蒙层、下滑关闭等能力，通过按钮触发不同展示。"></page-intro>
     <view class="uni-padding-wrap uni-common-mt">
@@ -205,7 +205,7 @@ page-container 的特点：
     <!-- #ifndef MP -->
     <!-- 多层堆叠弹层 - 第1层 -->
     <page-container v-if="showStackedPop1" :show="showStackedPop1" position="center" @afterleave="closeStackedLayer1">
-      <view class="stacked-container" style="background-color: #fff; width: 360px;">
+      <view class="stacked-container stacked-container-level-1" style="width: 360px;">
         <text class="container-title">第1层弹层</text>
         <text class="container-content">这是第1层弹层,点击下方按钮可以打开第2层</text>
         <view style="flex-direction: row; justify-content: space-around;">
@@ -217,7 +217,7 @@ page-container 的特点：
 
     <!-- 多层堆叠弹层 - 第2层 -->
     <page-container v-if="showStackedPop2" :show="showStackedPop2" position="center" @afterleave="closeStackedLayer2">
-      <view class="stacked-container" style="background-color: #f0f0f0; width: 340px;">
+      <view class="stacked-container stacked-container-level-2" style="width: 340px;">
         <text class="container-title">第2层弹层</text>
         <text class="container-content">这是第2层弹层,点击下方按钮可以打开第3层</text>
         <view style="flex-direction: row; justify-content: space-around;">
@@ -229,7 +229,7 @@ page-container 的特点：
 
     <!-- 多层堆叠弹层 - 第3层 -->
     <page-container v-if="showStackedPop3" :show="showStackedPop3" position="center" @afterleave="closeStackedLayer3">
-      <view class="stacked-container" style="background-color: #e0e0e0; width: 300px;">
+      <view class="stacked-container stacked-container-level-3" style="width: 300px;">
         <text class="container-title">第3层弹层</text>
         <text class="container-content">这是第3层弹层,最顶层的弹层</text>
         <button @click="closeStackedLayer3" size="default">关闭本层</button>
@@ -543,7 +543,7 @@ page-container 的特点：
 <style scoped>
   .container {
     padding: 20px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     min-height: 300px;
     min-width: 300px;
   }
@@ -551,13 +551,13 @@ page-container 的特点：
   .container-title {
     font-size: 18px;
     font-weight: bold;
-    color: #333;
+    color: var(--text-color, #333);
     margin-bottom: 10px;
   }
 
   .container-content {
     font-size: 14px;
-    color: #666;
+    color: var(--active-color, #666);
     margin-bottom: 15px;
   }
 
@@ -567,7 +567,7 @@ page-container 的特点：
 
   .slider-down-info {
     font-size: 12px;
-    color: #999;
+    color: var(--active-color, #999);
     margin-top: 5px;
     margin-bottom: 20px;
   }
@@ -578,8 +578,20 @@ page-container 的特点：
     min-height: 150px;
   }
 
-  .align-container {
+  .stacked-container-level-1 {
     background-color: #ffffff;
+  }
+
+  .stacked-container-level-2 {
+    background-color: #f0f0f0;
+  }
+
+  .stacked-container-level-3 {
+    background-color: #e0e0e0;
+  }
+
+  .align-container {
+    background-color: var(--list-background-color, #ffffff);
     width: 200px;
     border-radius: 8px;
     margin-top: -1px;
@@ -589,7 +601,7 @@ page-container 的特点：
     padding: 12px;
     border-bottom-width: 1px;
     border-bottom-style: solid;
-    border-bottom-color: #eeeeee;
+    border-bottom-color: var(--border-color, #eeeeee);
   }
 
   .align-menu-item-last {
@@ -598,11 +610,11 @@ page-container 的特点：
 
   .align-menu-text {
     font-size: 14px;
-    color: #333333;
+    color: var(--text-color, #333333);
   }
 
   .align-menu-item-hover {
-    background-color: #f5f5f5;
+    background-color: var(--active-background-color, #f5f5f5);
   }
 
   .align-shell {
@@ -620,6 +632,29 @@ page-container 的特点：
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-bottom: 8px solid #ffffff;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .container-content,
+    .slider-down-info {
+      color: #d0d0d0;
+    }
+
+    .stacked-container-level-1 {
+      background-color: #2d2d2d;
+    }
+
+    .stacked-container-level-2 {
+      background-color: #353535;
+    }
+
+    .stacked-container-level-3 {
+      background-color: #3b3b3b;
+    }
+
+    .align-arrow {
+      border-bottom-color: #2d2d2d;
+    }
   }
 </style>
 

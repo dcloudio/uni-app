@@ -180,11 +180,11 @@
       <page-intro content="uni.showModal 用于弹出模态对话框，可配置标题、内容、是否显示取消/确认按钮及文案、是否带输入框等。本页演示单次/多次弹出、延迟关闭、标题样式、长文案、非法颜色与超长按钮文案等能力，并展示 success/fail/complete 回调结果。"></page-intro>
       <view class="uni-list">
         <radio-group @change="radioChange">
-          <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in data.items" :key="item.value"
-            :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
-            :checked="index === data.current">
-            {{ item.name }}
-          </radio>
+          <view class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in data.items" :key="item.value"
+            :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''">
+            <radio :value="item.value" :checked="index === data.current" />
+            <text>{{ item.name }}</text>
+          </view>
         </radio-group>
       </view>
       <view class="uni-list">
@@ -500,7 +500,12 @@
       return
     }
     uni.showModal({
+      // #ifndef MP-ALIPAY
       title: "onLoad 调用示例,请手动取消"
+      // #endif
+      // #ifdef MP-ALIPAY
+      content: "onLoad 调用示例,请手动取消"
+      // #endif
     })
   })
 

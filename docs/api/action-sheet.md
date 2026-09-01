@@ -151,10 +151,11 @@
     <page-intro content="本页演示 uni.showActionSheet：通过单选切换列表项、开关控制 titleColor/itemColor、超长与空文本 item、cancelText/cancelColor/backgroundColor 等；点击按钮弹出 actionSheet，可查看回调结果。"></page-intro>
     <view class="uni-list">
       <radio-group @change="radioChange">
-        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in data.items" :key="item.value"
-          :class="index < data.items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value" :checked="index === data.current">
-          {{item.name}}
-        </radio>
+        <view class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in data.items" :key="item.value"
+          :class="index < data.items.length - 1 ? 'uni-list-cell-line': ''">
+          <radio :value="item.value" :checked="index === data.current" />
+          <text>{{item.name}}</text>
+        </view>
       </radio-group>
     </view>
     <view class="uni-list">
@@ -191,8 +192,17 @@
     </view>
     <view class="uni-padding-wrap">
       <view class="uni-btn-v">
-        <button class="uni-btn-v" type="default" @tap="showActionSheet" id="btn-action-sheet-show">弹出actionSheet</button>
-        <button class="uni-btn-v uni-btn" type="default" @tap="showActionSheetAndShowAgainInCallback" id="btn-action-sheet-show">showActionSheet 并在回调中再次 showActionSheet</button>
+        <button <!-- #ifndef MP-ALIPAY -->
+          class="uni-btn-v"
+          <!-- #endif -->
+          type="default" @tap="showActionSheet" id="btn-action-sheet-show">弹出actionSheet</button>
+        <button <!-- #ifndef MP-ALIPAY -->
+          class="uni-btn-v uni-btn"
+          <!-- #endif -->
+          <!-- #ifdef MP-ALIPAY -->
+          class="uni-btn"
+          <!-- #endif -->
+          type="default" @tap="showActionSheetAndShowAgainInCallback" id="btn-action-sheet-show">showActionSheet 并在回调中再次 showActionSheet</button>
       </view>
     </view>
   </view>

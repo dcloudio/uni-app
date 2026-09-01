@@ -359,6 +359,13 @@ isPreLoginValid
   const slogan = ref('')
   const privacyName = ref('')
   const privacyUrl = ref('')
+  const modalUniPage = ref<UniPage | null>(null)
+  const onceEventName = 'UNI_VERIFY_CUSTOM_PAGE'
+  const data = reactive({
+    autoTest: false,
+    autoTestPreLoginSuccess: false,
+    loginSuccess: false
+  })
 
   const preLogin = (callback: (() => void)) => {
     uniVerifyManager.value?.preLogin({
@@ -371,9 +378,9 @@ isPreLoginValid
         callback();
       },
       fail: (err) => {
-        console.error("pre login fail => " + JSON.stringify(err));
+        console.log("pre login fail => " + JSON.stringify(err));
         const hasCauseMessage = (err.cause?.cause?.message ?? '').length > 0
-        uni.showModal({
+        modalUniPage.value = uni.showModal({
           title: '预登录失败',
           content: hasCauseMessage ? JSON.parseObject(err.cause?.cause?.message ?? '')?.getString("errorDesc") : err.errMsg,
           showCancel: false
@@ -383,7 +390,7 @@ isPreLoginValid
   }
 
   const pushCustomPage = () => {
-    const url = '/pages/API/get-uni-verify-manager/uni-verify-custom-page?phone=' + phone.value + '&slogan=' + slogan.value + '&name=' + privacyName.value + '&link=' + privacyUrl.value;
+    const url = '/pages/API/get-uni-verify-manager/uni-verify-custom-page?phone=' + phone.value + '&slogan=' + slogan.value + '&name=' + privacyName.value + '&link=' + encodeURIComponent(privacyUrl.value) + '&autoTest=' + JSON.stringify(data.autoTest) + '&onceEventName=' + onceEventName
     uni.openDialogPage({
       url: url,
       animationType: 'slide-in-bottom',
@@ -496,7 +503,28 @@ isPreLoginValid
     uniVerifyManager.value = uni.getUniVerifyManager();
     // 预登录
     preLogin(() => { });
+
+    // #ifdef APP-HARMONY
+    watch(() => data.autoTest, (autoTest) => {
+      if (autoTest) {
+        // @ts-ignore
+        uniVerifyManager.value = uni.getUniVerifyManager(true);
+        preLogin(() => {
+          uni.closeDialogPage({ dialogPage: modalUniPage.value })
+          uni.$once(onceEventName, () => {
+            data.loginSuccess = true
+          })
+          data.autoTestPreLoginSuccess = true
+          pushCustomPage()
+        });
+      }
+    })
+    // #endif
   })
+
+  // #ifdef APP-HARMONY
+  defineExpose({ data })
+  // #endif
 </script>
 
 ```

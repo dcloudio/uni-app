@@ -136,10 +136,10 @@
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
+  <scroll-view class="page-scroll-view uni-theme-root">
   <!-- #endif -->
     <page-head :title="title"></page-head>
-    <view class="uni-common-mt">
+    <view class="uni-common-mt uni-theme-root">
       <view class="uni-list">
         <view class="uni-list-cell cell-pd">
           <text class="uni-list-cell-left uni-label">
@@ -198,31 +198,31 @@
         <view ref="cropOptionNode" class="crop-option"
           :style="{'height':isCrop?'200px':'0px','margin-bottom':isCrop?'11px':'0px'}">
           <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left item_width">
+            <view class="uni-list-cell-left item_width crop-option-label">
               图片质量(%)
             </view>
             <view class="uni-list-cell-right">
-              <input :value="cropPercent" @confirm="cropPercentConfim" type="number" :maxlength="-1" />
+              <input class="crop-option-input" :value="cropPercent" @confirm="cropPercentConfim" type="number" :maxlength="-1" />
             </view>
           </view>
           <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left item_width">
+            <view class="uni-list-cell-left item_width crop-option-label">
               裁剪宽度(px)
             </view>
             <view class="uni-list-cell-right">
-              <input :value="cropWidth" @confirm="cropWidthConfim" type="number" :maxlength="-1" />
+              <input class="crop-option-input" :value="cropWidth" @confirm="cropWidthConfim" type="number" :maxlength="-1" />
             </view>
           </view>
           <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left item_width">
+            <view class="uni-list-cell-left item_width crop-option-label">
               裁剪高度(px)
             </view>
             <view class="uni-list-cell-right">
-              <input :value="cropHeight" @confirm="cropHeightConfim" type="number" :maxlength="-1" />
+              <input class="crop-option-input" :value="cropHeight" @confirm="cropHeightConfim" type="number" :maxlength="-1" />
             </view>
           </view>
           <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left item_width">
+            <view class="uni-list-cell-left item_width crop-option-label">
               保留原宽高
             </view>
             <view class="uni-list-cell-right">
@@ -496,9 +496,20 @@ const previewImage = (index: number) => {
     margin-left: 11px;
     margin-right: 11px;
     border-radius: 11px;
-    background-color: #eee;
+    background-color: var(--active-background-color, #eee);
     transition-property: height, margin-bottom;
     transition-duration: 200ms;
+  }
+
+  .crop-option-label,
+  .crop-option-input {
+    color: var(--text-color, #333333);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .crop-option-input {
+      color: #ffffff;
+    }
   }
 </style>
 

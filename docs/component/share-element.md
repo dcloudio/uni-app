@@ -148,30 +148,34 @@
 
       <text class="uni-common-mt choose-property-title">easing-function:</text>
       <radio-group class="choose-property-type-radio-group" @change="handleEasingFunction">
-        <radio class="ml-10 uni-common-mt" v-for="item in easingFunctionTypeList" :key="item" :value="item"
-          :checked="easingFunctionType == item">{{ item }}
-        </radio>
+        <view class="ml-10 uni-common-mt" v-for="item in easingFunctionTypeList" :key="item">
+          <radio :value="item" :checked="easingFunctionType == item" />
+          <text>{{ item }}</text>
+        </view>
       </radio-group>
 
       <text class="uni-common-mt choose-property-title">shuttle-on-push(仅iOS生效):</text>
       <radio-group class="choose-property-type-radio-group" @change="handleShuttleOnPushType">
-        <radio class="ml-10 uni-common-mt" v-for="item in shuttleOnTypeList" :key="item" :value="item"
-          :checked="shuttleOnPushType == item">{{ item }}
-        </radio>
+        <view class="ml-10 uni-common-mt" v-for="item in shuttleOnTypeList" :key="item">
+          <radio :value="item" :checked="shuttleOnPushType == item" />
+          <text>{{ item }}</text>
+        </view>
       </radio-group>
 
       <text class="uni-common-mt choose-property-title">shuttle-on-pop(仅iOS生效):</text>
       <radio-group class="choose-property-type-radio-group" @change="handleShuttleOnPopType">
-        <radio class="ml-10 uni-common-mt" v-for="item in shuttleOnTypeList" :key="item" :value="item"
-          :checked="shuttleOnPopType == item">{{ item }}
-        </radio>
+        <view class="ml-10 uni-common-mt" v-for="item in shuttleOnTypeList" :key="item">
+          <radio :value="item" :checked="shuttleOnPopType == item" />
+          <text>{{ item }}</text>
+        </view>
       </radio-group>
 
       <text class="uni-common-mt choose-property-title">animationType(页面动画降级):</text>
       <radio-group class="choose-property-type-radio-group" @change="handleOpenAnimationType">
-        <radio class="ml-10 uni-common-mt" v-for="item in openAnimationTypeList" :key="item" :value="item"
-          :checked="openAnimationType == item">{{ item }}
-        </radio>
+        <view class="ml-10 uni-common-mt" v-for="item in openAnimationTypeList" :key="item">
+          <radio :value="item" :checked="openAnimationType == item" />
+          <text>{{ item }}</text>
+        </view>
       </radio-group>
     </view>
   </scroll-view>

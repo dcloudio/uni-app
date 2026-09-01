@@ -58,7 +58,7 @@ editor组件有上下文对象，api为[uni.createEditorContextAsync()](../api/c
 >示例
 ```vue
 <template>
-  <view class="page-root">
+  <view class="page-root uni-theme-root">
     <view class="preview-panel">
       <view class="preview-header">
         <text class="uni-title-text">editor 属性示例</text>
@@ -558,10 +558,10 @@ defineExpose({
 .preview-panel {
   flex-direction: column;
   padding: 10px;
-  background-color: #ffffff;
+  background-color: var(--list-background-color, #ffffff);
   border-bottom-width: 1px;
   border-bottom-style: solid;
-  border-bottom-color: rgba(0, 0, 0, 0.06);
+  border-bottom-color: var(--border-color, rgba(0, 0, 0, 0.06));
 }
 
 .preview-header {
@@ -582,7 +582,7 @@ defineExpose({
   padding-right: 8px;
   padding-bottom: 8px;
   border-radius: 6px;
-  background-color: #f5f6f8;
+  background-color: var(--active-background-color, #f5f6f8);
 }
 
 .preview-toolbar-item {
@@ -593,15 +593,15 @@ defineExpose({
   border-radius: 6px;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--list-background-color, #ffffff);
 }
 
 .preview-toolbar-item-active {
-  background-color: #e6f0ff;
+  background-color: var(--tips-background-color, #e6f0ff);
 }
 
 .preview-toolbar-icon {
-  color: #333333;
+  color: var(--text-color, #333333);
   font-size: 18px;
 }
 
@@ -611,7 +611,7 @@ defineExpose({
 
 .preview-state-text {
   margin-right: 12px;
-  color: #666666;
+  color: var(--active-color, #666666);
   font-size: 13px;
 }
 
@@ -620,15 +620,17 @@ defineExpose({
   height: 150px;
   border-width: 1px;
   border-style: solid;
-  border-color: rgba(0, 0, 0, 0.08);
+  border-color: var(--border-color, rgba(0, 0, 0, 0.08));
   border-radius: 6px;
-  background-color: #ffffff;
+  background-color: var(--list-background-color, #ffffff);
 }
 
 .preview-editor {
   height: 150px;
   min-height: 0px;
   padding: 10px;
+  color: var(--text-color, #333333);
+  background-color: var(--list-background-color, #ffffff);
 }
 
 .props-scroll {
@@ -659,12 +661,12 @@ defineExpose({
   margin-top: 10px;
   padding: 10px;
   border-radius: 6px;
-  background-color: #ffffff;
+  background-color: var(--list-background-color, #ffffff);
 }
 
 .log-text {
   margin-top: 6px;
-  color: #333333;
+  color: var(--text-color, #333333);
   font-size: 12px;
   line-height: 18px;
 }

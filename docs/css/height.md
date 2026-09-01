@@ -61,12 +61,12 @@ height: <viewport-length>{1,2};
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view style="flex-grow: 1;">
+    <view class="css-page uni-theme-root" style="flex-grow: 1;">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
-        <text>height: 100px</text>
+        <text class="theme-label">height: 100px</text>
         <view class="demo-box">
           <view class="common" style="height: 100px;"></view>
           <view class="common" style="height: 100px;" flatten></view>
@@ -74,7 +74,7 @@ height: <viewport-length>{1,2};
       </view>
 
       <view >
-        <text>height: 50%</text>
+        <text class="theme-label">height: 50%</text>
         <view class="demo-box" style="height: 100px;">
           <view class="common" style="height: 50%;"></view>
           <view class="common" style="height: 50%;" flatten></view>
@@ -106,7 +106,7 @@ height: <viewport-length>{1,2};
           <text class="uni-info">获取值: {{data.heightActual}}</text>
           <view class="test-box">
             <view ref="viewRef" class="common-dynamic test-view" :style="{ height: data.height }">
-              <text>view</text>
+              <text class="cyan-label">view</text>
             </view>
           </view>
         </view>
@@ -138,7 +138,7 @@ height: <viewport-length>{1,2};
           <text class="uni-info">获取值: {{data.heightActualFlat}}</text>
           <view class="test-box">
             <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ height: data.height }" flatten>
-              <text>view</text>
+              <text class="cyan-label">view</text>
             </view>
           </view>
         </view>
@@ -168,8 +168,9 @@ height: <viewport-length>{1,2};
         <input-data :defaultValue="data.height" title="height 自定义值" type="text" @confirm="inputChangeHeight"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
-        <text>native-view组件: height: 80px 和 height: 120px</text>
+        <text class="theme-label">native-view组件: height: 80px 和 height: 120px</text>
         <view class="demo-box-native">
           <view class="container-native">
             <native-view style="width: 100px;height: 80px;"></native-view>
@@ -179,6 +180,7 @@ height: <viewport-length>{1,2};
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -261,6 +263,15 @@ height: <viewport-length>{1,2};
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
+  .cyan-label,
+  .scroll-view-label {
+    color: #1a1a1a;
+  }
+
   .common {
     flex: 1;
     margin:0 10px;

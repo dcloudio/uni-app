@@ -119,26 +119,30 @@ app-ios平台safeArea与iOS原生的安全区域概念相同，top与bottom分�
 >示例
 ```vue
 <template>
-  <page-head :title="title"></page-head>
-  <view class="uni-common-mt">
-    <view class="uni-list">
-      <view class="uni-list-cell" v-for="(item, _) in data.items" style="align-items: center">
-        <view class="uni-pd">
-          <view class="uni-label" style="width: 180px">{{ item.label }}</view>
-        </view>
-        <view class="uni-list-cell-db">
-          <text class="uni-list-cell-db-text">{{ item.value == '' ? '未获取' : item.value }}</text>
+  <view class="uni-theme-root">
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt">
+      <view class="uni-list">
+        <view class="uni-list-cell" v-for="(item, _) in data.items" style="align-items: center">
+          <view class="uni-pd">
+            <view class="uni-label" style="width: 180px">
+              <text class="system-info-text">{{ item.label }}</text>
+            </view>
+          </view>
+          <view class="uni-list-cell-db">
+            <text class="uni-list-cell-db-text system-info-text">{{ item.value == '' ? '未获取' : item.value }}</text>
+          </view>
         </view>
       </view>
-    </view>
-    <view class="uni-padding-wrap">
-      <view class="uni-btn-v">
-        <button type="primary" @tap="getWindowInfo">获取窗口信息</button>
-      </view>
-      <view class="uni-btn-v">
-        <navigator url="/pages/API/get-window-info/window-area">
-          <button type="primary">窗口各区域示例</button>
-        </navigator>
+      <view class="uni-padding-wrap">
+        <view class="uni-btn-v">
+          <button type="primary" @tap="getWindowInfo">获取窗口信息</button>
+        </view>
+        <view class="uni-btn-v">
+          <navigator url="/pages/API/get-window-info/window-area">
+            <button type="primary">窗口各区域示例</button>
+          </navigator>
+        </view>
       </view>
     </view>
   </view>
@@ -218,6 +222,10 @@ app-ios平台safeArea与iOS原生的安全区域概念相同，top与bottom分�
 <style>
   .uni-pd {
     padding-left: 15px;
+  }
+
+  .system-info-text {
+    color: var(--text-color, #333333);
   }
 </style>
 

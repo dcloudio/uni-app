@@ -108,31 +108,31 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar
 >示例
 ```vue
 <template>
-	<uni-nav-bar :navigationBarTextStyle="navigationBarTextStyle"></uni-nav-bar>
-	<scroll-view style="flex: 1;padding-bottom: var(--uni-safe-area-inset-bottom);" :class="state.isDarkMode ? 'theme-dark' : 'theme-light'">
+	<uni-nav-bar class="uni-theme-root"></uni-nav-bar>
+	<scroll-view class="page uni-theme-root" style="padding-bottom: var(--uni-safe-area-inset-bottom);">
 		<!-- 正常使用场景应把uni-nav-bar放在template的根节点，本示例为了演示多种导航栏效果把导航栏组件放到了scroll-view里了 -->
 		<uni-nav-bar navigationBarTextStyle="black" title="黑色标题"></uni-nav-bar>
 		<uni-nav-bar navigationBarTextStyle="white" title="青色背景白色标题" style="background-color: cyan;"></uni-nav-bar>
-		<uni-nav-bar :navigationBarTextStyle="navigationBarTextStyle" title="下边带灰线" style="border-bottom: 0.5px #ccc solid;"></uni-nav-bar>
-		<uni-nav-bar :navigationBarTextStyle="navigationBarTextStyle" hideDefaultBack title="隐藏左侧返回箭头"></uni-nav-bar>
-		<uni-nav-bar :navigationBarTextStyle="navigationBarTextStyle" title="标题居左" mid-class="left-title"></uni-nav-bar>
-		<uni-nav-bar :navigationBarTextStyle="navigationBarTextStyle" title="右边有按钮">
+		<uni-nav-bar title="下边带灰线" style="border-bottom: 0.5px #ccc solid;"></uni-nav-bar>
+		<uni-nav-bar hideDefaultBack title="隐藏左侧返回箭头"></uni-nav-bar>
+		<uni-nav-bar title="标题居左" mid-class="left-title"></uni-nav-bar>
+		<uni-nav-bar title="右边有按钮">
 			<template #right>
 				<text class="txt-button" @click="clickButton">⋯</text>
 			</template>
 		</uni-nav-bar>
-		<uni-nav-bar :navigationBarTextStyle="navigationBarTextStyle" title="右边有2个按钮" right-class="two-buttons">
+		<uni-nav-bar title="右边有2个按钮" right-class="two-buttons">
 			<template #right>
 				<text class="txt-button" @click="clickButton">+</text>
 				<text class="txt-button" @click="clickButton">⋯</text>
 			</template>
 		</uni-nav-bar>
-		<uni-nav-bar :navigationBarTextStyle="navigationBarTextStyle" title="左边有按钮">
+		<uni-nav-bar title="左边有按钮">
 			<template #left>
 				<text class="txt-button" @click="clickButton">+</text>
 			</template>
 		</uni-nav-bar>
-		<uni-nav-bar :navigationBarTextStyle="navigationBarTextStyle" title="左右各1个按钮">
+		<uni-nav-bar title="左右各1个按钮">
 			<template #left>
 				<text class="txt-button" @click="clickButton">+</text>
 			</template>
@@ -140,18 +140,18 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar
 				<text class="txt-button" @click="clickButton">⋯</text>
 			</template>
 		</uni-nav-bar>
-		<uni-nav-bar :navigationBarTextStyle="navigationBarTextStyle">
+		<uni-nav-bar>
 			<template #mid>
-				<text :style="{ color: navigationBarTextStyle }">插槽右箭头可以点</text>
+				<text class="uni-theme-text">插槽右箭头可以点</text>
 				<text style="padding: 3px;font-size: 10px;" class="uni-theme-text" @click="clickButton">▼</text>
 			</template>
 		</uni-nav-bar>
-		<uni-nav-bar :navigationBarTextStyle="navigationBarTextStyle">
+		<uni-nav-bar>
 			<template #left>
 				<text class="txt-button" @click="clickButton">+</text>
 			</template>
 			<template #mid>
-				<input placeholder="左中右都是插槽，中间是input" style="border: #ccc 0.5px solid;"/>
+				<input class="slot-input" placeholder="左中右都是插槽，中间是input"/>
 			</template>
 			<template #right>
 				<text class="txt-button" @click="clickButton">⋯</text>
@@ -161,62 +161,17 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar
 </template>
 
 <script setup>
-	import { state } from '@/store/index';
-
-	const navigationBarTextStyle = ref('black')
-
 	function clickButton() {
 		uni.showToast({
 			title: '点击了按钮'
 		});
 	}
-
-	onShow(() => {
-		// Android平台如果在onShow前调用API，会设置上一个页面的导航栏颜色，所以放在onShow里设置颜色
-		// #ifdef APP-ANDROID
-		if (state.isDarkMode) {
-			navigationBarTextStyle.value = 'white'
-			// 本示例中导航栏的背景色和通用背景色不同，前景色无法遵守theme.json的设置，需要单独设颜色
-			uni.setNavigationBarColor({
-				"frontColor":"#ffffff",
-				"backgroundColor":"#000000" //微信规范不可为空
-			})
-		} else {
-			navigationBarTextStyle.value = 'black'
-			// 本示例中导航栏的背景色和通用背景色不同，前景色无法遵守theme.json的设置，需要单独设颜色
-			uni.setNavigationBarColor({
-				"frontColor":"#000000",
-				"backgroundColor":"#ffffff"  //微信规范不可为空
-			})
-		}
-		// #endif
-	})
-
-	watch((): boolean => state.isDarkMode, (newVal: boolean) => {
-		if (newVal) {
-			navigationBarTextStyle.value = 'white'
-			// 本示例中导航栏的背景色和通用背景色不同，前景色无法遵守theme.json的设置，需要单独设颜色
-			uni.setNavigationBarColor({
-				"frontColor":"#ffffff",
-				"backgroundColor":"#000000" //微信规范不可为空
-			})
-		} else {
-			navigationBarTextStyle.value = 'black'
-			// 本示例中导航栏的背景色和通用背景色不同，前景色无法遵守theme.json的设置，需要单独设颜色
-			uni.setNavigationBarColor({
-				"frontColor":"#000000",
-				"backgroundColor":"#ffffff"  //微信规范不可为空
-			})
-		}
-	}
-	// #ifndef APP-ANDROID
-	// TODO Android在设置页面导航栏颜色后，后退页面，上一层页面的导航栏也被改了！原因是这个代码执行太早，activity还没创建好
-	, { immediate: true }
-	// #endif
-	)
 </script>
 
 <style>
+.page {
+	flex: 1;
+}
 .left-title{
 	justify-content: flex-start;
 }
@@ -230,6 +185,20 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar
 	line-height: 44px;
 	text-align: center;
 	color: var(--text-color);
+}
+.slot-input {
+	color: #333333;
+	background-color: #ffffff;
+	border-width: 0.5px;
+	border-style: solid;
+	border-color: #cccccc;
+}
+@media (prefers-color-scheme: dark) {
+	.slot-input {
+		color: #ffffff;
+		background-color: #2d2d2d;
+		border-color: rgba(255, 255, 255, 0.2);
+	}
 }
 </style>
 

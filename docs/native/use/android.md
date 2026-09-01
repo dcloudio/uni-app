@@ -49,13 +49,13 @@
 **蒸汽模式（Vapor）：**
 
 将app-common-release.aar，app-runtime-release.aar，breakpad-build-release.aar，uts-runtime-release.aar，ext-component-release.aar，
-uni-dialogPage-release.aar，uni-event-release.aar，uni-crash-release.aar，uni-getElementById-release.aar，uni-pullDownRefresh-release.aar，uni-uasm-release.aar，
+uni-dialogPage-release.aar，uni-event-release.aar，uni-crash-release.aar，uni-getElementById-release.aar，uni-pullDownRefresh-release.aar，
 uni-storage-release.aar，uni-exit-release.aar，uni-theme-release.aar，
 uni-getAppBaseInfo-release.aar，uni-getDeviceInfo-release.aar，uni-getSystemInfo-release.aar，uni-getAccessibilityInfo-release.aar，
 uni-getAppAuthorizeSetting-release.aar，uni-getSystemSetting-release.aar，
-uni-openAppAuthorizeSetting-release.aar，uni-prompt-release.aar，uni-rpx2px-release.aar，uni-secure-network-release.aar共24个aar拷贝到uni-app x模块的libs下，如果没有libs需要手动创建，参考下图：
+uni-openAppAuthorizeSetting-release.aar，uni-prompt-release.aar，uni-rpx2px-release.aar，uni-secure-network-release.aar共23个aar拷贝到uni-app x模块的libs下，如果没有libs需要手动创建，参考下图：
 
-![](https://web-ext-storage.dcloud.net.cn/native/doc/android/main_libs_2.jpg)
+![](https://web-ext-storage.dcloud.net.cn/native/doc/android/main_libs_vapor_v2.png)
 
 ::: details VDOM模式
 
@@ -316,7 +316,7 @@ buildscript {
 
 **注意：文件uts-kotlin-compiler-plugin-0.0.1.jar、uts-kotlin-gradle-plugin-0.0.1.jar和auto-register-gradle-plugin-1.0.0.jar等jar位于原生SDK中，示例中放到了项目根目录的`plugins`文件夹下。参考：**
 
-![](https://web-ext-storage.dcloud.net.cn/native/doc/android/gradle_plugins.png)
+![](https://web-ext-storage.dcloud.net.cn/native/doc/android/gradle_plugins_vapor.png)
 
 然后在`uniappx`模块的build.gradle下添加插件`io.dcloud.uts.kotlin`的依赖。参考：
 

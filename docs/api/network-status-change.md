@@ -128,25 +128,27 @@
 >示例
 ```vue
 <template>
+  <view class="network-page uni-theme-root">
   <page-head title="networkStatusChange"></page-head>
   <view class="uni-list-cell-padding status-box">
     <text class="uni-title-text">网络状态</text>
     <view class="uni-row uni-common-mt">
       <text class="uni-hello-text">是否连接：</text>
-      <text>{{ isConnected ? '已连接' : '未连接' }}</text>
+      <text class="status-value">{{ isConnected ? '已连接' : '未连接' }}</text>
     </view>
     <view class="uni-row uni-common-mt">
       <text class="uni-hello-text">网络类型：</text>
-      <text>{{ networkType }}</text>
+      <text class="status-value">{{ networkType }}</text>
     </view>
     <view class="uni-row uni-common-mt">
       <text class="uni-hello-text">监听状态：</text>
-      <text>{{ listenStatus }}</text>
+      <text class="status-value">{{ listenStatus }}</text>
     </view>
   </view>
   <view class="uni-list-cell-padding uni-common-mt">
     <button type="primary" @click="startListen">开始监听</button>
     <button type="default" class="uni-common-mt" @click="stopListen">停止监听</button>
+  </view>
   </view>
 </template>
 
@@ -209,8 +211,12 @@
 
 <style>
   .status-box {
-    background-color: #FFFFFF;
+    background-color: var(--list-background-color, #ffffff);
     margin: 0 20px;
+  }
+
+  .status-value {
+    color: var(--text-color, #333333);
   }
 </style>
 

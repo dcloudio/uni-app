@@ -42,12 +42,12 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| "success" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | 显示成功图标 |
-| error | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | 显示错误图标 |
-| fail | Web: x; 微信小程序: x; Android: x; iOS: x | 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效 |
-| exception | Web: x; 微信小程序: x; Android: x; iOS: x | 显示异常图标，此时title文本无长度显示，支付宝小程序生效 |
-| loading | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | 显示加载图标 |
-| none | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | 不显示图标 |
+| "success" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 显示成功图标 |
+| error | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 显示错误图标 |
+| fail | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 5.25 | 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效 |
+| exception | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 5.25 | 显示异常图标，此时title文本无长度显示，支付宝小程序生效 |
+| loading | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 显示加载图标 |
+| none | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 不显示图标 |
 
 ##### position 的属性描述
 
@@ -157,9 +157,11 @@
       </view>
       <view class="uni-list uni-common-pl">
         <radio-group @change="radioChangeIcon">
-          <radio class="uni-list-cell uni-list-cell-pd radio-icon" v-for="(icon, index) in data.icon_enum" :key="icon.value"
-            :class="index < data.icon_enum.length - 1 ? 'uni-list-cell-line' : ''" :value="icon.value"
-            :checked="index === data.icon_current">{{icon.name}}</radio>
+          <view class="uni-list-cell uni-list-cell-pd radio-icon" v-for="(icon, index) in data.icon_enum" :key="icon.value"
+            :class="index < data.icon_enum.length - 1 ? 'uni-list-cell-line' : ''">
+            <radio :value="icon.value" :checked="index === data.icon_current" />
+            <text>{{icon.name}}</text>
+          </view>
         </radio-group>
       </view>
       <view class="uni-list-cell uni-list-cell-padding">
@@ -185,9 +187,11 @@
       </view>
       <view class="uni-list uni-common-pl">
         <radio-group @change="radioChangePosition">
-          <radio class="uni-list-cell uni-list-cell-pd radio-position" v-for="(position, index) in data.position_enum"
-            :key="position.value" :class="index < data.position_enum.length - 1 ? 'uni-list-cell-line' : ''"
-            :value="position.value" :checked="index === data.position_current">{{position.name}}</radio>
+          <view class="uni-list-cell uni-list-cell-pd radio-position" v-for="(position, index) in data.position_enum"
+            :key="position.value" :class="index < data.position_enum.length - 1 ? 'uni-list-cell-line' : ''">
+            <radio :value="position.value" :checked="index === data.position_current" />
+            <text>{{position.name}}</text>
+          </view>
         </radio-group>
       </view>
       <button class="uni-btn uni-common-mb" type="default" @tap="toast2Tap">点击弹出设置position的toast</button>
@@ -255,14 +259,23 @@
     ],
   } as DataType)
 
+  let isAutoTest = false
+
+  onLoad((options : OnLoadOptions) => {
+    isAutoTest = options['autoTest'] == 'true'
+  })
+
   onMounted(() => {
+    const duration = isAutoTest ? 10000 : 3000
     uni.showToast({
       title: 'onMounted 调用示例,3秒后消失',
-      duration: 3000
+      duration: duration
     })
-    setTimeout(function () {
-      uni.hideToast()
-    }, 3000);
+    if (!isAutoTest) {
+      setTimeout(function () {
+        uni.hideToast()
+      }, duration);
+    }
   })
 
   //自动化测试例专用
@@ -340,6 +353,7 @@
     uni.showToast({
       title: "显示一段轻提示,position:" + positionValue,
       position: positionValue,
+      duration: data.intervalSelect,
       success: (res) => {
         data.exeRet = "success:" + JSON.stringify(res)
       },
@@ -385,7 +399,13 @@
 	* position 设为 bottom 时，为系统toast，此时与 App 绑定，而不是与页面绑定。position 不为 bottom 时仍与页面绑定
 	* 系统toast 不支持 icon 图标，仅支持文字
 	* 部分 Android ROM，如 MIUI，调用系统 toast 时，会在 toast 行首自动加上 App 图标。此为 ROM 行为，目的是帮助用户区分该 toast 是哪个 App 弹出的
-- 在 HarmonyOS 平台，目前只有系统 toast ，和 App window 绑定
+- 在 HarmonyOS 平台
+  - 5.24 及以下
+    - 只有系统 toast ，和 App window 绑定
+  	- 不支持 icon 图标，仅支持文字
+  - 5.25 及以上：
+  	* position 设为 bottom 时，为系统 toast。position 不为 bottom 时仍与页面绑定
+  	* 当 position 设为除 bottom 之外的值时，支持 icon、mask、image 参数
 - 当 Toast 和页面绑定时：
   + 当showToast执行时，会寻找当前页面栈顶的窗体（包括 dialogPage），找到后进行绑定，然后弹出 Toast。
 	+ 在支持 dialogPage 的平台（Web和App），[uni.showModal](./modal.md)、[uni.showActionSheet](./action-sheet.md) 也是 dialogPage 实现的，此时 toast 会绑定到这些 dialogPage 上

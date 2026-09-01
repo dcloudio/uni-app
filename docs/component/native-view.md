@@ -125,6 +125,13 @@ UniNativeViewInitEvent -- Extends --> UniCustomEvent&ltUniNativeViewInitEventDet
       <view class="styled-native-container">
         <native-view class="styled-native-view"></native-view>
       </view>
+
+      <text class="uni-title-text">test-native-view fixed + v-if 复现</text>
+      <view class="fixed-case-panel">
+        <button id="toggle-fixed-test-native-view" type="primary" @click="toggleFixedTestNativeView">切换 fixed test-native-view</button>
+      </view>
+
+      <test-native-view v-if="showFixedTestNativeView" id="fixed-test-native-view" class="fixed-test-native-view"></test-native-view>
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -135,6 +142,7 @@ UniNativeViewInitEvent -- Extends --> UniCustomEvent&ltUniNativeViewInitEventDet
 import { createNativeButtonContext } from "@/uni_modules/native-button";
 
 const buttonText = ref("native-button")
+const showFixedTestNativeView = ref(true)
 let isLoad = false
 let clickCount = 0
 let buttonTapValue = ""
@@ -175,7 +183,11 @@ function gotoTimePicker() {
   })
 }
 
-defineExpose({getIsLoadTest, getButtonTapValueTest})
+function toggleFixedTestNativeView() {
+  showFixedTestNativeView.value = !showFixedTestNativeView.value
+}
+
+defineExpose({getIsLoadTest, getButtonTapValueTest, showFixedTestNativeView, toggleFixedTestNativeView})
 
 </script>
 
@@ -202,6 +214,20 @@ defineExpose({getIsLoadTest, getButtonTapValueTest})
     width: 80px;
     height: 80px;
     margin: 20px 30px;
+  }
+
+  .fixed-case-panel {
+    margin-top: 20px;
+    flex-direction: column;
+  }
+
+  .fixed-test-native-view {
+    position: fixed;
+    right: 10px;
+    bottom: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: #ff0000;
   }
 </style>
 

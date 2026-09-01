@@ -851,20 +851,15 @@ uni.offOsThemeChange(callbackId)
         <text class="uni-title-text"> 修改appTheme主题（此处仅为演示API，本应用并未完整适配暗黑模式） </text>
       </view>
     </view>
-    <view class="uni-list uni-common-pl">
-      <radio-group @change="radioChange" class="radio-group">
-        <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in data.items" :key="item"
-          :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''" :value="item" :checked="index === data.current">
-          {{ item }}
-        </radio>
-      </radio-group>
-    </view>
+    <enum-data :items="data.items" title="appTheme" @change="radioChange"></enum-data>
     <!-- #endif -->
 
   </view>
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
   type Data = {
     osThemeChangeId: number;
     appThemeChangeId: number;
@@ -872,7 +867,7 @@ uni.offOsThemeChange(callbackId)
     appTheme: string;
     originalTheme: string;
     current: number;
-    items: string[];
+    items: ItemType[];
   }
 
   const data = reactive({
@@ -883,10 +878,10 @@ uni.offOsThemeChange(callbackId)
     originalTheme: 'light',
     current: 0,
     items: [
-      'light',
-      'dark',
-      'auto'
-    ]
+      { value: 0, name: 'light' },
+      { value: 1, name: 'dark' },
+      { value: 2, name: 'auto' }
+    ] as ItemType[]
   } as Data)
 
   function bindOsThemeChange() : number {
@@ -920,13 +915,9 @@ uni.offOsThemeChange(callbackId)
     })
   }
 
-  function radioChange(e : UniRadioGroupChangeEvent) {
-    const theme = e.detail.value
+  function radioChange(value : number) {
+    const theme = data.items[value].name
     setAppTheme(theme)
-    uni.showToast({
-      icon: 'none',
-      title: '当前选中:' + theme,
-    })
   }
 
   onReady(() => {
@@ -936,7 +927,13 @@ uni.offOsThemeChange(callbackId)
         data.osTheme = res.osTheme!
         data.originalTheme = res.appTheme!
         data.appTheme = res.appTheme == 'auto' ? res.osTheme! : res.appTheme!
-        data.current = data.items.indexOf(res.appTheme!)
+        data.current = data.items.findIndex((item : ItemType) : boolean => {
+          const currentItem = item.name == res.appTheme!
+          if (currentItem) {
+            item.checked = true
+          }
+          return currentItem
+        })
         // #endif
         // #ifdef WEB || MP
         data.appTheme = res.hostTheme!
@@ -971,10 +968,6 @@ uni.offOsThemeChange(callbackId)
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-  }
-
-  .uni-list-cell {
-    justify-content: flex-start;
   }
 </style>
 

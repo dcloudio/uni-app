@@ -206,19 +206,21 @@ flex-grow: <number>;
         <input-data :defaultValue="data.flexGrow" title="flex-grow 自定义值" type="text" @confirm="inputChangeFlexGrow"></input-data>
       </view>
 
-      <text class="uni-title-text uni-common-mt">native-view 组件：flex-grow: 0.5 和 flex-grow: 1</text>
-      <view class="demo-box uni-common-mb">
-        <view class="flex-container-compare" style="margin-right:10px;">
-          <view class="common red width-30-no-grow"></view>
-          <test-native-view class="native-view-grow green" style="flex-grow: 0.5;"></test-native-view>
-          <view class="common blue width-30-no-grow"></view>
+      <!-- #ifndef MP-ALIPAY -->
+        <text class="uni-title-text uni-common-mt">native-view 组件：flex-grow: 0.5 和 flex-grow: 1</text>
+        <view class="demo-box uni-common-mb">
+          <view class="flex-container-compare" style="margin-right:10px;">
+            <view class="common red width-30-no-grow"></view>
+            <test-native-view class="native-view-grow green" style="flex-grow: 0.5;"></test-native-view>
+            <view class="common blue width-30-no-grow"></view>
+          </view>
+          <view class="flex-container-compare">
+            <view class="common red width-30-no-grow"></view>
+            <test-native-view class="native-view-grow green" style="flex-grow: 1;"></test-native-view>
+            <view class="common blue width-30-no-grow"></view>
+          </view>
         </view>
-        <view class="flex-container-compare">
-          <view class="common red width-30-no-grow"></view>
-          <test-native-view class="native-view-grow green" style="flex-grow: 1;"></test-native-view>
-          <view class="common blue width-30-no-grow"></view>
-        </view>
-      </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>

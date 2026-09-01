@@ -79,22 +79,6 @@ dependencies {
 
 ::: preview
 
-> build.gradle（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField 'String', 'UTSComponents', '"[{\"delegateClass\":\"uts.sdk.modules.DCloudUniMapTencent.UniMapElementRegister\"}]"'
-}
-```
-
-> build.gradle.kts（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField("String", "UTSComponents", "\"[{\\\"delegateClass\\\":\\\"uts.sdk.modules.DCloudUniMapTencent.UniMapElementRegister\\\"}]\"")
-}
-```
-
 > build.gradle（VDOM模式）
 
 ```groovy

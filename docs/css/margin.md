@@ -214,6 +214,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
         <input-data :defaultValue="data.margin" title="margin 自定义值" type="text" @confirm="inputChangeMargin"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
         <text>native-view组件: margin: 25px 和 5%</text>
         <view class="demo-box">
@@ -229,6 +230,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
           </view>
         </view>
       </view>
+      <!-- #endif -->
 
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->

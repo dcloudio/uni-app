@@ -117,9 +117,11 @@
     <button @tap="setNavigationBarColor2" class="uni-btn">
       设置导航条背景红色，标题黑色
     </button>
+    <!-- #ifndef MP-ALIPAY -->
     <button @tap="goNavbarLite" class="uni-btn">
       跳转自定义导航栏页面
     </button>
+    <!-- #endif -->
   </view>
 </template>
 
@@ -174,11 +176,13 @@
     })
   }
 
+  // #ifndef MP-ALIPAY
   const goNavbarLite = () => {
     uni.navigateTo({
       url: '/pages/template/keyboard-adjust/keyboard-adjust'
     })
   }
+  // #endif
 
   defineExpose({
     getLifeCycleNum,

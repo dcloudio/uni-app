@@ -229,9 +229,11 @@ UniProgressActiveendEvent -- Extends --> UniCustomEvent&ltUniProgressActiveendEv
       </view>
     </view>
 
-    <navigator class="uni-common-mb" url="/pages/template/progress-100/progress-100">
-      <button>组件性能测试</button>
-    </navigator>
+    <!-- #ifndef MP-ALIPAY -->
+      <navigator class="uni-common-mb" url="/pages/template/progress-100/progress-100">
+        <button>组件性能测试</button>
+      </navigator>
+    <!-- #endif -->
   </scroll-view>
 </template>
 

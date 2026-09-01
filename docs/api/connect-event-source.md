@@ -140,7 +140,6 @@ close
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/connect-event-source/connect-event-source
 ```uvue
 <template>
-
   <page-head :title="data.title"></page-head>
 	<button class="button" type="primary" @click="connect">连接</button>
 	<button class="button" type="primary" @click="close">关闭</button>
@@ -231,7 +230,8 @@ close
 
 	defineExpose({
     data,
-		connect
+		connect,
+    close
 	})
 </script>
 
@@ -271,7 +271,6 @@ close
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/connect-event-source/connect-event-source
 ```uvue
 <template>
-
   <page-head :title="data.title"></page-head>
 	<button class="button" type="primary" @click="connect">连接</button>
 	<button class="button" type="primary" @click="close">关闭</button>
@@ -362,7 +361,8 @@ close
 
 	defineExpose({
     data,
-		connect
+		connect,
+    close
 	})
 </script>
 

@@ -53,12 +53,12 @@ background-color: <color>;
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view style="flex-grow: 1">
+    <view class="css-page uni-theme-root" style="flex-grow: 1">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
-        <text>background-color: blue</text>
+        <text class="theme-label">background-color: blue</text>
         <view class="demo-box">
           <view class="common" style="background-color: blue"></view>
           <view class="common" style="background-color: blue" flatten></view>
@@ -66,7 +66,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: #0000ff</text>
+        <text class="theme-label">background-color: #0000ff</text>
         <view class="demo-box">
           <view class="common" style="background-color: #0000ff"></view>
           <view class="common" style="background-color: #0000ff" flatten></view>
@@ -74,7 +74,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: #00f</text>
+        <text class="theme-label">background-color: #00f</text>
         <view class="demo-box">
           <view class="common" style="background-color: #00f"></view>
           <view class="common" style="background-color: #00f" flatten></view>
@@ -82,7 +82,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: #0000ff80</text>
+        <text class="theme-label">background-color: #0000ff80</text>
         <view class="demo-box">
           <view class="common" style="background-color: #0000ff80"></view>
           <view class="common" style="background-color: #0000ff80" flatten></view>
@@ -90,7 +90,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: #00f8</text>
+        <text class="theme-label">background-color: #00f8</text>
         <view class="demo-box">
           <view class="common" style="background-color: #00f8"></view>
           <view class="common" style="background-color: #00f8" flatten></view>
@@ -98,7 +98,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: rgb(0, 0, 255)</text>
+        <text class="theme-label">background-color: rgb(0, 0, 255)</text>
         <view class="demo-box">
           <view class="common" style="background-color: rgb(0, 0, 255)"></view>
           <view class="common" style="background-color: rgb(0, 0, 255)" flatten></view>
@@ -106,14 +106,14 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: rgba(0, 0, 255, 0.5)</text>
+        <text class="theme-label">background-color: rgba(0, 0, 255, 0.5)</text>
         <view class="demo-box">
           <view class="common" style="background-color: rgba(0, 0, 255, 0.5)"></view>
           <view class="common" style="background-color: rgba(0, 0, 255, 0.5)" flatten></view>
         </view>
       </view>
       <view>
-        <text>background-color: #0000ff80</text>
+        <text class="theme-label">background-color: #0000ff80</text>
         <view class="demo-box">
           <view class="common" style="background-color: #0000ff80"></view>
           <view class="common" style="background-color: #0000ff80" flatten></view>
@@ -128,7 +128,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: blue</text>
+        <text class="theme-label">background-color: blue</text>
         <view class="demo-box">
           <text class="common" style="background-color: blue">文字内容</text>
           <text class="common" style="background-color: blue" flatten>文字内容</text>
@@ -136,7 +136,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: rgba(0, 0, 255, 0.5)</text>
+        <text class="theme-label">background-color: rgba(0, 0, 255, 0.5)</text>
         <view class="demo-box">
           <text class="common" style="background-color: rgba(0, 0, 255, 0.5)">文字内容</text>
           <text class="common" style="background-color: rgba(0, 0, 255, 0.5)" flatten>文字内容</text>
@@ -144,15 +144,15 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: #00ff00</text>
+        <text class="theme-label">background-color: #00ff00</text>
         <view class="demo-box">
-          <text class="common" style="background-color: #00ff00">文字内容</text>
-          <text class="common" style="background-color: #00ff00" flatten>文字内容</text>
+          <text class="common light-background-text" style="background-color: #00ff00">文字内容</text>
+          <text class="common light-background-text" style="background-color: #00ff00" flatten>文字内容</text>
         </view>
       </view>
 
       <view>
-        <text>background-color: #0000ff80</text>
+        <text class="theme-label">background-color: #0000ff80</text>
         <view class="demo-box">
           <text class="common" style="background-color: #0000ff80">文字内容</text>
           <text class="common" style="background-color: #0000ff80" flatten>文字内容</text>
@@ -163,7 +163,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: blue (无src时显示背景色)</text>
+        <text class="theme-label">background-color: blue (无src时显示背景色)</text>
         <view class="demo-box">
           <image class="common-image" style="background-color: blue"></image>
           <image class="common-image" style="background-color: blue" flatten></image>
@@ -171,7 +171,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: rgba(0, 0, 255, 0.5) \n (无src时显示背景色)</text>
+        <text class="theme-label">background-color: rgba(0, 0, 255, 0.5) \n (无src时显示背景色)</text>
         <view class="demo-box">
           <image class="common-image" style="background-color: rgba(0, 0, 255, 0.5)"></image>
           <image class="common-image" style="background-color: rgba(0, 0, 255, 0.5)" flatten></image>
@@ -179,7 +179,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: #00ff00 (无src时显示背景色)</text>
+        <text class="theme-label">background-color: #00ff00 (无src时显示背景色)</text>
         <view class="demo-box">
           <image class="common-image" style="background-color: #00ff00"></image>
           <image class="common-image" style="background-color: #00ff00" flatten></image>
@@ -187,14 +187,14 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: #0000ff80 (无src时显示背景色)</text>
+        <text class="theme-label">background-color: #0000ff80 (无src时显示背景色)</text>
         <view class="demo-box">
           <image class="common-image" style="background-color: #0000ff80"></image>
           <image class="common-image" style="background-color: #0000ff80" flatten></image>
         </view>
       </view>
       <view>
-        <text>background-color: yellow \n (有src时，背景色在图片加载失败或透明区域显示)</text>
+        <text class="theme-label">background-color: yellow \n (有src时，背景色在图片加载失败或透明区域显示)</text>
         <view class="demo-box">
           <image class="common-image" style="background-color: yellow" src="/static/test-image/logo.png"></image>
           <image class="common-image" style="background-color: yellow" src="/static/test-image/logo.png" flatten></image>
@@ -224,7 +224,7 @@ background-color: <color>;
           <text class="uni-info">获取值: {{data.backgroundColorActual}}</text>
           <view class="test-box">
             <view ref="viewRef" class="common-view test-view" :style="{ backgroundColor: data.backgroundColor }">
-              <text style="font-size: 12px;">view</text>
+              <text class="light-background-text" style="font-size: 12px;">view</text>
             </view>
           </view>
         </view>
@@ -259,7 +259,7 @@ background-color: <color>;
           <text class="uni-info">获取值: {{data.backgroundColorActualFlat}}</text>
           <view class="test-box">
             <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ backgroundColor: data.backgroundColor }" flatten>
-              <text style="font-size: 12px;">view</text>
+              <text class="light-background-text" style="font-size: 12px;">view</text>
             </view>
           </view>
         </view>
@@ -378,6 +378,18 @@ background-color: <color>;
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
+  .light-background-text {
+    color: #1a1a1a;
+  }
+
+  .scroll-view-label {
+    color: #ffffff;
+  }
+
   .common {
     width: 150px;
     height: 50px;

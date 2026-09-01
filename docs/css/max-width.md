@@ -58,17 +58,17 @@ max-width: <viewport-length>;
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view style="flex-grow: 1;">
+    <view class="uni-theme-root" style="flex-grow: 1;">
       <view>
         <text>max-width: 200px</text>
         <view class="common" style="max-width: 200px;">
-          <text>width: 400px</text>
+          <text class="cyan-label">width: 400px</text>
         </view>
         <text>拍平</text>
         <view class="common" style="max-width: 200px;" flatten>
-          <text>width: 400px</text>
+          <text class="cyan-label">width: 400px</text>
         </view>
       </view>
 
@@ -97,7 +97,7 @@ max-width: <viewport-length>;
           <text class="uni-info">获取值: {{data.maxWidthActual}}</text>
           <view class="test-box">
             <view ref="viewRef" class="common-dynamic test-view" :style="{ maxWidth: data.maxWidth }">
-              <text>view</text>
+              <text class="cyan-label">view</text>
             </view>
           </view>
         </view>
@@ -165,6 +165,7 @@ max-width: <viewport-length>;
           @confirm="inputChangeMaxWidth"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
         <text>native-view组件: max-width: 100px 和 max-width: 200px</text>
         <view class="demo-box-native">
@@ -176,6 +177,7 @@ max-width: <viewport-length>;
           </view>
         </view>
       </view>
+      <!-- #endif -->
 
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
@@ -274,12 +276,14 @@ max-width: <viewport-length>;
 
   .common-text {
     width: 50px;
+    color: #1a1a1a;
   }
 
   .common-dynamic {
     width: 100px;
     height: 80px;
     background-color: cyan;
+    color: #1a1a1a;
   }
 
   .test-container {
@@ -308,6 +312,11 @@ max-width: <viewport-length>;
   .scroll-view-label {
     font-size: 12px;
     text-align: center;
+    color: #1a1a1a;
+  }
+
+  .cyan-label {
+    color: #1a1a1a;
   }
 
   .demo-box-native {

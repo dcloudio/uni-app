@@ -59,39 +59,40 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/get-system-setting/get-system-setting
 ```uvue
 <template>
+  <view class="uni-theme-root">
   <page-head :title="title"></page-head>
   <view class="uni-common-mt">
     <view class="uni-list">
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">蓝牙的系统开关</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">蓝牙的系统开关</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.bluetoothEnabled" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.bluetoothEnabled" />
         </view>
       </view>
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">地理位置的系统开关</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">地理位置的系统开关</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.locationEnabled" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.locationEnabled" />
         </view>
       </view>
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">Wi-Fi 的系统开关</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">Wi-Fi 的系统开关</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.wifiEnabled" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.wifiEnabled" />
         </view>
       </view>
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">设备方向</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">设备方向</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.deviceOrientation" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.deviceOrientation" />
         </view>
       </view>
     </view>
@@ -100,6 +101,7 @@
         <button type="primary" @tap="getSystemSetting">获取系统设置</button>
       </view>
     </view>
+  </view>
   </view>
 </template>
 
@@ -140,6 +142,15 @@
 <style>
   .uni-pd {
     padding-left: 15px;
+  }
+
+  .system-info-text,
+  .system-info-input {
+    color: var(--text-color, #333333);
+  }
+
+  .system-info-placeholder {
+    color: var(--active-color, #999999);
   }
 </style>
 

@@ -118,7 +118,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
     ],
     testEvent: false,
     text: '未选中',
-    wrapText: 'uni-app x，终极跨平台方案\nuts，大一统语言',
+    wrapText: 'uni-app x，终极跨平台方案 uts，大一统语言',
     value: [],
     disabled: true,
     checked: true,
@@ -230,12 +230,15 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
 
 <template>
   <view class="main">
-    <checkbox :disabled="data.disabled_boolean" :checked="data.checked_boolean" :color="data.color_input"
-      :iconColor="data.iconColor_input" :foreColor="data.foreColor_input" :backgroundColor="data.backgroundColor_input"
-      :borderColor="data.borderColor_input" :activeBackgroundColor="data.activeBackgroundColor_input"
-      :activeBorderColor="data.activeBorderColor_input" @click="checkbox_click" @touchstart="checkbox_touchstart"
-      @touchmove="checkbox_touchmove" @touchcancel="checkbox_touchcancel" @touchend="checkbox_touchend"
-      @tap="checkbox_tap" @longpress="checkbox_longpress"><text>uni-app-x</text></checkbox>
+    <view class="control-row">
+      <checkbox :disabled="data.disabled_boolean" :checked="data.checked_boolean" :color="data.color_input"
+        :iconColor="data.iconColor_input" :foreColor="data.foreColor_input" :backgroundColor="data.backgroundColor_input"
+        :borderColor="data.borderColor_input" :activeBackgroundColor="data.activeBackgroundColor_input"
+        :activeBorderColor="data.activeBorderColor_input" @click="checkbox_click" @touchstart="checkbox_touchstart"
+        @touchmove="checkbox_touchmove" @touchcancel="checkbox_touchcancel" @touchend="checkbox_touchend"
+        @tap="checkbox_tap" @longpress="checkbox_longpress" />
+      <text class="control-row-text">uni-app-x</text>
+    </view>
   </view>
 
   <scroll-view style="flex: 1">
@@ -253,14 +256,20 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
         </view>
         <view>
           <checkbox-group class="uni-row checkbox-group" @change="testChange" style="flex-wrap: wrap">
-            <checkbox value="cb" :checked="data.checked" :color="data.color" :iconColor="data.iconColor"
-              :foreColor="data.foreColor" style="margin-right: 15px" class="checkbox cb">选中
-            </checkbox>
-            <checkbox value="cb1" style="margin-right: 15px" class="checkbox cb1">{{ data.text }}</checkbox>
-            <checkbox value="cb2" :disabled="data.disabled" class="checkbox cb2">禁用</checkbox>
-            <checkbox value="cb3" style="margin-top: 10px" class="checkbox cb3">
-              {{ data.wrapText }}
-            </checkbox>
+            <view style="margin-right: 15px" class="checkbox">
+              <checkbox class="cb" value="cb" :checked="data.checked" :color="data.color" :iconColor="data.iconColor"
+                :foreColor="data.foreColor">选中</checkbox>
+            </view>
+            <view style="margin-right: 15px" class="checkbox">
+              <checkbox class="cb1" value="cb1">{{ data.text }}</checkbox>
+            </view>
+            <view class="checkbox">
+              <checkbox class="cb2" value="cb2" :disabled="data.disabled">禁用</checkbox>
+            </view>
+            <view style="margin-top: 10px" class="checkbox cb3">
+              <checkbox value="cb3" />
+              <text>{{ data.wrapText }}</text>
+            </view>
           </checkbox-group>
         </view>
         <view class="uni-title uni-common-mt">
@@ -269,17 +278,25 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
         <view>
           <checkbox-group class="uni-row checkbox-group">
             <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
-            <checkbox value="cb1" :checked="true" color="#FFCC33" style="transform: scale(0.7); margin-right: 15px"
-              class="checkbox">选中
-            </checkbox>
-            <checkbox value="cb" color="#FFCC33" style="transform: scale(0.7)" class="checkbox">未选中</checkbox>
+            <view style="transform: scale(0.7); margin-right: 15px" class="checkbox">
+              <checkbox value="cb1" :checked="true" color="#FFCC33" />
+              <text>选中</text>
+            </view>
+            <view style="transform: scale(0.7)" class="checkbox">
+              <checkbox value="cb" color="#FFCC33" />
+              <text>未选中</text>
+            </view>
             <!-- #endif -->
 
             <!-- #ifdef VUE3-VAPOR && !MP -->
-            <checkbox value="cb1" :checked="true" icon-class="custom-icon"
-              style="transform: scale(0.7); margin-right: 15px" class="checkbox">选中
-            </checkbox>
-            <checkbox value="cb" icon-class="custom-icon" style="transform: scale(0.7)" class="checkbox">未选中</checkbox>
+            <view style="transform: scale(0.7); margin-right: 15px" class="checkbox">
+              <checkbox value="cb1" :checked="true" icon-class="custom-icon" />
+              <text>选中</text>
+            </view>
+            <view style="transform: scale(0.7)" class="checkbox">
+              <checkbox value="cb" icon-class="custom-icon" />
+              <text>未选中</text>
+            </view>
             <!-- #endif -->
           </checkbox-group>
         </view>
@@ -288,7 +305,10 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
         </view>
         <view>
           <checkbox-group class="uni-row checkbox-group">
-            <checkbox class="justify-test">justify-content样式测试</checkbox>
+            <view class="justify-test">
+              <checkbox />
+              <text>justify-content样式测试</text>
+            </view>
           </checkbox-group>
         </view>
       </view>
@@ -311,13 +331,13 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
       </view>
       <view class="uni-list uni-common-pl">
         <checkbox-group @change="checkboxChange" class="checkbox-group" id="trigger-change">
-          <checkbox class="uni-list-cell uni-list-cell-pd checkbox" v-for="(item, index) in data.items"
-            :key="item.value" :value="item.value" :checked="item.checked" :class="[
+          <view class="uni-list-cell uni-list-cell-pd checkbox" v-for="(item, index) in data.items"
+            :key="item.value" :class="[
               index < data.items.length - 1 ? 'uni-list-cell-line' : '',
-              'checkbox-item-' + index,
             ]">
-            {{ item.name }}
-          </checkbox>
+            <checkbox :class="'checkbox-item-' + index" :value="item.value" :checked="item.checked" />
+            <text>{{ item.name }}</text>
+          </view>
         </checkbox-group>
       </view>
     </view>
@@ -340,9 +360,11 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
     </view>
     <!-- #endif -->
 
-    <navigator class="uni-common-mb" url="/pages/template/checkbox-200/checkbox-200">
-      <button class="uni-common-mt">组件性能测试</button>
-    </navigator>
+    <!-- #ifndef MP-ALIPAY -->
+      <navigator class="uni-common-mb" url="/pages/template/checkbox-200/checkbox-200">
+        <button class="uni-common-mt">组件性能测试</button>
+      </navigator>
+    <!-- #endif -->
   </scroll-view>
 </template>
 
@@ -359,7 +381,21 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
     justify-content: flex-start;
   }
 
+  .checkbox,
+  .control-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .control-row-text {
+    margin-left: 5px;
+  }
+
   .justify-test {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     width: 100%;
     justify-content: space-between;
   }

@@ -31,7 +31,7 @@
 
 `Target -> General -> Minimum Deployments` 选择 `15.0` 及以上版本   
 
-`Target -> Build Settings -> Other Linker Flags` 中添加`-ObjC`、`-ld_classic`、`-weak_framework SwiftUI`
+`Target -> Build Settings -> Other Linker Flags` 中添加`-ObjC`
 
 1. 若HBuilderX项目`根目录`下包含`Info.plist`文件，需要将该文件内容拷贝到`原生主工程`的`Target -> Info` 下
 2. 在`Target -> Info` 下，添加如下配置

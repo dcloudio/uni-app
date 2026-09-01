@@ -62,17 +62,17 @@ min-height: <viewport-length>;
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view style="flex-grow: 1;">
+    <view class="css-page uni-theme-root" style="flex-grow: 1;">
       <view>
-        <text>min-height: 150px</text>
+        <text class="theme-label">min-height: 150px</text>
         <view class="common" style="min-height: 150px;">
-          <text>height: 50px</text>
+          <text class="cyan-label">height: 50px</text>
         </view>
-        <text>拍平</text>
+        <text class="theme-label">拍平</text>
         <view class="common" style="min-height: 150px;" flatten>
-          <text>height: 50px</text>
+          <text class="cyan-label">height: 50px</text>
         </view>
       </view>
 
@@ -101,7 +101,7 @@ min-height: <viewport-length>;
           <text class="uni-info">获取值: {{data.minHeightActual}}</text>
           <view class="test-box">
             <view ref="viewRef" class="common-dynamic test-view" :style="{ minHeight: data.minHeight }">
-              <text>view</text>
+              <text class="cyan-label">view</text>
             </view>
           </view>
         </view>
@@ -135,7 +135,7 @@ min-height: <viewport-length>;
           <view class="test-box">
             <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ minHeight: data.minHeight }"
               flatten>
-              <text>view</text>
+              <text class="cyan-label">view</text>
             </view>
           </view>
         </view>
@@ -169,8 +169,9 @@ min-height: <viewport-length>;
           @confirm="inputChangeMinHeight"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
-        <text>native-view组件: min-height: 100px 和 min-height: 150px</text>
+        <text class="theme-label">native-view组件: min-height: 100px 和 min-height: 150px</text>
         <view class="demo-box-native">
           <view class="container-native">
             <native-view style="min-height: 100px; width:100px; height: 50px;"></native-view>
@@ -180,6 +181,7 @@ min-height: <viewport-length>;
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -260,6 +262,15 @@ min-height: <viewport-length>;
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
+  .cyan-label,
+  .scroll-view-label {
+    color: #1a1a1a;
+  }
+
   .common {
     width: 200px;
     height: 50px;

@@ -32,8 +32,8 @@
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 首次启动时的页面路径。返回值与App.onLaunch的回调参数一致<br/> |
-| appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.26 | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
-| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.26 | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> |
+| appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.25 | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
+| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.25 | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> |
 | query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: √; HarmonyOS: 4.81 | 启动时的 query 参数<br/> |
 | apiCategory | string | 否 | 微信小程序: 4.41 | 需要基础库： `2.20.0`<br/><br/>API 类别<br/><br/>可选值：<br/>- 'default': 默认类别;<br/>- 'nativeFunctionalized': 原生功能化，视频号直播商品、商品橱窗等场景打开的小程序;<br/>- 'browseOnly': 仅浏览，朋友圈快照页等场景打开的小程序;<br/>- 'embedded': 内嵌，通过打开半屏小程序能力打开的小程序;<br/>- 'chatTool': 聊天工具，通过打开聊天工具能力打开的小程序;<br/> |
 | forwardMaterials | any | 否 | 微信小程序: 4.41 | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数<br/> |
@@ -207,8 +207,8 @@ uni.getEnterOptionsSync 和 uni.getLaunchOptionsSync 的区别，相当于应用
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 本次启动时页面的路径<br/> |
-| appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.26 | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
-| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.26 | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> |
+| appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.25 | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
+| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.25 | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> |
 | query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: √; HarmonyOS: 4.81 | 启动时的 query 参数<br/> |
 | apiCategory | string | 否 | 微信小程序: 4.41 | 需要基础库： `2.20.0`<br/><br/>API 类别<br/><br/>可选值：<br/>- 'default': 默认类别;<br/>- 'nativeFunctionalized': 原生功能化，视频号直播商品、商品橱窗等场景打开的小程序;<br/>- 'browseOnly': 仅浏览，朋友圈快照页等场景打开的小程序;<br/>- 'embedded': 内嵌，通过打开半屏小程序能力打开的小程序;<br/>- 'chatTool': 聊天工具，通过打开聊天工具能力打开的小程序;<br/> |
 | forwardMaterials | any | 否 | 微信小程序: 4.41 | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数<br/> |

@@ -59,9 +59,9 @@ box-sizing: content-box | border-box;
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-  <view style="flex-grow: 1;">
+  <view class="uni-theme-root" style="flex-grow: 1;">
     <view>
       <text class="desc-text">content-box（标准盒模型，默认值）</text>
       <text class="help-text">width 只包括内容宽度，padding 和 border 在盒子外部向外扩展</text>
@@ -215,14 +215,16 @@ box-sizing: content-box | border-box;
       <input-data :defaultValue="data.boxSizing" title="box-sizing 自定义值" type="text" @confirm="inputChangeBoxSizing"></input-data>
     </view>
 
-    <view class="uni-common-mb">
-      <text>native-view组件: box-sizing: content-box 和 border-box</text>
-      <text class="help-text">设置 width: 100px, padding: 10px, border: 10px</text>
-      <view class="demo-box">
-        <test-native-view class="native-view-box-sizing" style="box-sizing: content-box;"></test-native-view>
-        <test-native-view class="native-view-box-sizing" style="box-sizing: border-box;"></test-native-view>
+    <!-- #ifndef MP-ALIPAY -->
+      <view class="uni-common-mb">
+        <text>native-view组件: box-sizing: content-box 和 border-box</text>
+        <text class="help-text">设置 width: 100px, padding: 10px, border: 10px</text>
+        <view class="demo-box">
+          <test-native-view class="native-view-box-sizing" style="box-sizing: content-box;"></test-native-view>
+          <test-native-view class="native-view-box-sizing" style="box-sizing: border-box;"></test-native-view>
+        </view>
       </view>
-    </view>
+    <!-- #endif -->
   </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -301,20 +303,20 @@ box-sizing: content-box | border-box;
 <style>
   .desc-text {
     font-size: 14px;
-    color: #333;
+    color: var(--text-color, #333);
     font-weight: bold;
     line-height: 22px;
   }
 
   .title-text {
     font-size: 16px;
-    color: #333;
+    color: var(--text-color, #333);
     font-weight: bold;
   }
 
   .help-text {
     font-size: 12px;
-    color: #666;
+    color: var(--active-color, #666);
     margin-top: 5px;
     line-height: 18px;
   }
@@ -333,7 +335,7 @@ box-sizing: content-box | border-box;
   }
 
   .compare-container {
-    background-color: #f5f5f5;
+    background-color: var(--active-background-color, #f5f5f5);
     padding: 10px;
     border: 1px dashed #999;
   }
@@ -350,21 +352,21 @@ box-sizing: content-box | border-box;
 
   .box-label {
     font-size: 13px;
-    color: #fff;
+    color: #1a1a1a;
     font-weight: bold;
     text-align: center;
   }
 
   .box-label-small {
     font-size: 12px;
-    color: #fff;
+    color: #1a1a1a;
     font-weight: bold;
     text-align: center;
   }
 
   .box-info {
     font-size: 10px;
-    color: #fff;
+    color: #1a1a1a;
     text-align: center;
     margin-top: 3px;
   }
@@ -375,10 +377,12 @@ box-sizing: content-box | border-box;
     background-color: cyan;
     padding: 10px;
     border: 10px solid #d8dde5;
+    color: #1a1a1a;
   }
 
   .common-text {
     width: 50px;
+    color: #1a1a1a;
   }
   .font-size-12{
     font-size: 12px;
@@ -413,6 +417,7 @@ box-sizing: content-box | border-box;
     padding: 10px;
     border: 10px solid cyan;
     background-color: #4ecdc4;
+    color: #1a1a1a;
   }
 
   .native-view-box-sizing {

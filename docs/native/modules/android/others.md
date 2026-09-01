@@ -168,6 +168,19 @@ dependencies {
   <tr><td>本地依赖库</td><td>uni-network-release.aar</td></tr>
 </table>
 
+**enableQuic 配置**
+
+当使用 [uni.request](../../../api/request.md) 的 `enableQuic` 属性开启 Quic/h3 协议时，需要根据发布渠道额外引入对应的 cronet 库（拷贝到 app 模块的 libs 目录下）：
+
+| 发布渠道 | 本地依赖库 |
+| --- | --- |
+| 谷歌渠道（GMS） | uni-network-cronet-gms-release.aar |
+| 非谷歌渠道 | uni-network-cronet-release.aar |
+
+::: warning 注意
+谷歌渠道与非谷歌渠道的 cronet 库不能同时引入。
+:::
+
 **配置线上依赖库**
 
 ::: preview
@@ -604,22 +617,6 @@ dependencies {
 
 ::: preview
 
-> build.gradle（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField 'String', 'UTSComponents', '"[{\"delegateClass\":\"uts.sdk.modules.DCloudUniCamera.UniCameraElementRegister\"}]"'
-}
-```
-
-> build.gradle.kts（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField("String", "UTSComponents", "\"[{\\\"delegateClass\\\":\\\"uts.sdk.modules.DCloudUniCamera.UniCameraElementRegister\\\"}]\"")
-}
-```
-
 > build.gradle（VDOM模式）
 
 ```groovy
@@ -963,22 +960,6 @@ dependencies {
 
 ::: preview
 
-> build.gradle（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField 'String', 'UTSComponents', '"[{\"delegateClass\":\"uts.sdk.modules.DCloudUniLivePlayer.UniLivePlayerElementRegister\"}]"'
-}
-```
-
-> build.gradle.kts（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField("String", "UTSComponents", "\"[{\\\"delegateClass\\\":\\\"uts.sdk.modules.DCloudUniLivePlayer.UniLivePlayerElementRegister\\\"}]\"")
-}
-```
-
 > build.gradle（VDOM模式）
 
 ```groovy
@@ -1035,22 +1016,6 @@ dependencies {
 
 ::: preview
 
-> build.gradle（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField 'String', 'UTSComponents', '"[{\"delegateClass\":\"uts.sdk.modules.DCloudUniLivePusher.UniLivePusherElementRegister\"}]"'
-}
-```
-
-> build.gradle.kts（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField("String", "UTSComponents", "\"[{\\\"delegateClass\\\":\\\"uts.sdk.modules.DCloudUniLivePusher.UniLivePusherElementRegister\\\"}]\"")
-}
-```
-
 > build.gradle（VDOM模式）
 
 ```groovy
@@ -1079,22 +1044,6 @@ defaultConfig {
 **插件注册**
 
 ::: preview
-
-> build.gradle（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField 'String', 'UTSComponents', '"[{\"delegateClass\":\"uts.sdk.modules.DCloudUniLoading.UniLoadingElementRegister\"}]"'
-}
-```
-
-> build.gradle.kts（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField("String", "UTSComponents", "\"[{\\\"delegateClass\\\":\\\"uts.sdk.modules.DCloudUniLoading.UniLoadingElementRegister\\\"}]\"")
-}
-```
 
 > build.gradle（VDOM模式）
 
@@ -1178,22 +1127,6 @@ dependencies {
 **插件注册**
 
 ::: preview
-
-> build.gradle（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField 'String', 'UTSComponents', '"[{\"delegateClass\":\"uts.sdk.modules.DCloudUniWebView.UniWebViewElementRegister\"}]"'
-}
-```
-
-> build.gradle.kts（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField("String", "UTSComponents", "\"[{\\\"delegateClass\\\":\\\"uts.sdk.modules.DCloudUniWebView.UniWebViewElementRegister\\\"}]\"")
-}
-```
 
 > build.gradle（VDOM模式）
 
@@ -1412,28 +1345,6 @@ defaultConfig {
   <tr><td>依赖的模块</td><td>uni-theme<br/>uni-getSystemInfo<br/>uni-dialogPage<br/>uni-event</td></tr>
 </table>
 
-**插件注册**
-
-::: preview
-
-> build.gradle
-
-```groovy
-defaultConfig {
-    buildConfigField 'String', 'UTSComponents', '"[{\"delegateClass\":\"uts.sdk.modules.DCloudUniForm.UniInputElementRegister\"},{\"delegateClass\":\"uts.sdk.modules.DCloudUniForm.UniTextareaElementRegister\"}]"'
-}
-```
-
-> build.gradle.kts
-
-```groovy
-defaultConfig {
-    buildConfigField("String", "UTSComponents", "\"[{\\\"delegateClass\\\":\\\"uts.sdk.modules.DCloudUniForm.UniInputElementRegister\\\"},{\\\"delegateClass\\\":\\\"uts.sdk.modules.DCloudUniForm.UniTextareaElementRegister\\\"}]\"")
-}
-```
-
-:::
-
 ### uni-requestSystemPermission
 
 <table>
@@ -1490,22 +1401,6 @@ dependencies {
 将以下内容添加到主模块的build.gradle，详见[根据configjson配置应用](../../use/androiduts.md#utscomponents)。
 
 ::: preview
-
-> build.gradle（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField 'String', 'UTSComponents', '"[{\"delegateClass\":\"uts.sdk.modules.DCloudUniCanvasDom2.UniCanvasElementRegister\"}]"'
-}
-```
-
-> build.gradle.kts（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField("String", "UTSComponents", "\"[{\\\"delegateClass\\\":\\\"uts.sdk.modules.DCloudUniCanvasDom2.UniCanvasElementRegister\\\"}]\"")
-}
-```
 
 > build.gradle（VDOM模式）
 

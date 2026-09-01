@@ -170,7 +170,7 @@ terminate
 >示例
 ```vue
 <template>
-  <scroll-view class="container">
+  <scroll-view class="container uni-theme-root">
     <view class="status-section">
       <text class="status-label">Worker状态: </text>
       <text class="status-text">{{statusText}}</text>
@@ -180,8 +180,10 @@ terminate
       <text class="description-text">操作步骤：1.创建Worker 2.添加消息监听 3.发送数据测试</text>
       <button class="btn" type="primary" :disabled="created_boolean" @click="create">创建Worker</button>
       <button class="btn" type="primary" @click="onWorkerMsg">添加消息监听</button>
+      <!-- #ifndef MP-ALIPAY -->
       <button class="btn" type="primary" @click="onWorkerError">添加错误监听</button>
-      <button class="btn" @click="destory" :disabled="workerStatus != 'created'">销毁Worker</button>
+      <!-- #endif -->
+      <button class="btn secondary-btn" @click="destory" :disabled="workerStatus != 'created'">销毁Worker</button>
     </view>
 
     <view class="input-section">
@@ -273,6 +275,7 @@ terminate
     })
   }
 
+  // #ifndef MP-ALIPAY
   const onWorkerError = () => {
     if (worker.value == null) {
       addLog('请先创建worker', 'warning');
@@ -283,6 +286,7 @@ terminate
       // addLog(`Worker错误: ${error.message}`, 'error');
     })
   }
+  // #endif
 
   // 向workerTask发送消息
   const sendMessage = () => {
@@ -346,19 +350,20 @@ terminate
     justify-content: center;
     margin-bottom: 20px;
     padding: 10px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 8px;
   }
 
   .status-label {
     font-size: 16px;
-    color: #666666;
+    color: var(--active-color, #666666);
   }
 
   .status-text {
     font-size: 16px;
     font-weight: bold;
     margin-left: 8px;
+    color: var(--text-color, #333333);
   }
 
 
@@ -370,12 +375,12 @@ terminate
   .input-section {
     margin-bottom: 20px;
     padding: 15px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 8px;
   }
 
   .input-field {
-    /* #ifdef MP-WEIXIN */
+    /* #ifdef MP */
     height: 3em;
     /* #endif */
     width: 100%;
@@ -384,20 +389,23 @@ terminate
     border-radius: 6px;
     font-size: 16px;
     margin: 10px 0;
+    color: #333333;
     background-color: #ffffff;
   }
 
   .btn {
     /*  height: 50px; */
     margin-bottom: 10px;
+    /* #ifndef MP-ALIPAY */
     padding: 5px 10px;
+    /* #endif */
     border-radius: 6px;
     font-size: 14px;
     text-align: center;
   }
 
   .log-section {
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 8px;
     padding: 15px;
   }
@@ -405,17 +413,17 @@ terminate
   .section-title {
     font-size: 18px;
     font-weight: bold;
-    color: #333333;
+    color: var(--text-color, #333333);
     margin-bottom: 10px;
   }
 
   .log-container {
     height: 300px;
-    border: 1px solid #dddddd;
+    border: 1px solid var(--border-color, #dddddd);
     border-radius: 4px;
     padding: 10px;
     margin: 10px 0;
-    background-color: #fafafa;
+    background-color: var(--active-background-color, #fafafa);
   }
 
   .log-item {
@@ -452,9 +460,11 @@ terminate
   }
 
   .clear-btn {
-    background-color: #ff9800;
+    background-color: #b45309;
     font-size: 12px;
+    /* #ifndef MP-ALIPAY */
     padding: 8px 12px;
+    /* #endif */
     color: #ffffff;
     border-radius: 4px;
     text-align: center;
@@ -462,9 +472,23 @@ terminate
 
   .description-text {
     font-size: 14px;
-    color: #666666;
+    color: var(--active-color, #666666);
     line-height: 1.4;
     margin-bottom: 10px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .input-field {
+      color: #ffffff;
+      background-color: #2d2d2d;
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .secondary-btn {
+      color: #ffffff;
+      background-color: #3b3b3b;
+      border-color: rgba(255, 255, 255, 0.18);
+    }
   }
 </style>
 

@@ -73,7 +73,7 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       <view class="text-container">
         <text class="uni-title-text">text 组件 transform-origin ：</text>
         <text class="uni-subtitle-text">点击下方 text 组件，不同 transform-origin 值（60px 30px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
-        <text ref="textTransformView" class="text-view" @click="changeTextTransform">点击 text 测试 transform-origin</text>
+        <text ref="textTransformView" class="text-view cyan-text" @click="changeTextTransform">点击 text 测试 transform-origin</text>
       </view>
 
       <view class="image-container">
@@ -87,7 +87,7 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
         <text class="uni-subtitle-text">点击下方 scroll-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
         <view class="scroll-view-item">
           <scroll-view ref="scrollViewTransformView" class="scroll-view-base transform" @click="changeScrollViewTransform">
-            <text>点击 scroll-view 测试 transform-origin</text>
+            <text class="cyan-text">点击 scroll-view 测试 transform-origin</text>
           </scroll-view>
         </view>
       </view>
@@ -164,13 +164,15 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
         <input-data :defaultValue="data.transformOrigin" title="transform-origin 自定义值" type="text" @confirm="inputChangeTransformOrigin"></input-data>
       </view>
 
-      <view class="scroll-view-container">
-        <text class="uni-title-text">native-view 组件 transform-origin ：</text>
-        <text class="uni-subtitle-text">点击下方 native-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
-        <view class="scroll-view-item">
-          <test-native-view ref="nativeViewTransformView" class="scroll-view-base transform-native" @click="changeNativeViewTransform"></test-native-view>
+      <!-- #ifndef MP-ALIPAY -->
+        <view class="scroll-view-container">
+          <text class="uni-title-text">native-view 组件 transform-origin ：</text>
+          <text class="uni-subtitle-text">点击下方 native-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
+          <view class="scroll-view-item">
+            <test-native-view ref="nativeViewTransformView" class="scroll-view-base transform-native" @click="changeNativeViewTransform"></test-native-view>
+          </view>
         </view>
-      </view>
+      <!-- #endif -->
 
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
@@ -547,6 +549,10 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
 
   .transform-native {
     background-color: #00FFFF80;
+  }
+
+  .cyan-text {
+    color: #1a1a1a;
   }
 
 </style>

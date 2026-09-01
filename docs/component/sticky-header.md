@@ -67,7 +67,7 @@
 >示例
 ```vue
 <template>
-  <list-view :scroll-y="true" class="page" bounces="false" show-scrollbar=false :scroll-top="data.scroll_top_input"
+  <list-view :scroll-y="true" class="page uni-theme-root" bounces="false" show-scrollbar=false :scroll-top="data.scroll_top_input"
     :refresher-enabled="data.refresher_enabled_boolean" :refresher-triggered="data.refresher_triggered_boolean"
     @refresherrefresh="list_view_refresherrefresh">
     <list-item type=1>
@@ -83,7 +83,7 @@
     </list-item>
     <sticky-section>
       <sticky-header>
-        <scroll-view style="background-color: #f5f5f5; flex-direction: row;" direction="horizontal"
+        <scroll-view class="sticky-tab-bar" direction="horizontal"
           :show-scrollbar="false">
           <view style="align-self: flex-start; flex-direction: row;">
             <text ref="swipertab" class="sift-item" v-for="(name,index) in data.sift_item" @click="clickTH(index)">
@@ -159,7 +159,11 @@
 <style>
   .page {
     flex: 1;
-    background-color: #f5f5f5;
+  }
+
+  .sticky-tab-bar {
+    background-color: var(--background-color, #f5f5f5);
+    flex-direction: row;
   }
 
   .content-item {
@@ -168,14 +172,14 @@
 
   .content-item-text {
     font-size: 14px;
-    color: #666;
+    color: var(--text-color, #666666);
     line-height: 20px;
     padding: 15px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .sift-item {
-    color: #555;
+    color: var(--text-color, #555555);
     font-size: 16px;
     padding: 12px 15px;
   }

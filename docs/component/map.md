@@ -300,6 +300,7 @@ map组件的操作api为[uni.createMapContext()](../api/create-map-context.md)�
     moveToLocationMsg : string,
     scale : number,
     eventDetailJsonStringify: string,
+    regionChangeType: string,
   }
 
   const testMarkers :Marker[]= [{
@@ -585,7 +586,8 @@ map组件的操作api为[uni.createMapContext()](../api/create-map-context.md)�
     },
     moveToLocationMsg: "",
     scale: 0,
-    eventDetailJsonStringify: "{}"
+    eventDetailJsonStringify: "{}",
+    regionChangeType: ""
   } as TypeJestResult);
 
 
@@ -945,6 +947,7 @@ map组件的操作api为[uni.createMapContext()](../api/create-map-context.md)�
 
   const onregionchange = (e : UniMapRegionChangeEvent) => {
     // console.log('视野发生变化时触发', e.detail)
+    jestResult.regionChangeType = e.type
     jestResult.eventDetailJsonStringify = JSON.stringify(e.detail)
   };
 

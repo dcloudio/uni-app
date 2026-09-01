@@ -61,9 +61,9 @@ width: <viewport-length>{1,2};
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-  <view style="flex-grow: 1;">
+  <view class="uni-theme-root" style="flex-grow: 1;">
     <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
     <view>
       <text>width: 100px</text>
@@ -114,7 +114,7 @@ width: <viewport-length>{1,2};
         <text class="uni-info">获取值: {{data.widthActual}}</text>
         <view class="test-box">
           <view ref="viewRef" class="common test-view" :style="{ width: data.width }">
-            <text>view</text>
+            <text class="cyan-label">view</text>
           </view>
         </view>
       </view>
@@ -146,7 +146,7 @@ width: <viewport-length>{1,2};
         <text class="uni-info">获取值: {{data.widthActualFlat}}</text>
         <view class="test-box">
           <view ref="viewRefFlat" class="common test-view-flatten" :style="{ width: data.width }" flatten>
-            <text>view</text>
+            <text class="cyan-label">view</text>
           </view>
         </view>
       </view>
@@ -379,6 +379,7 @@ width: <viewport-length>{1,2};
   .common {
     height: 80px;
     background-color: cyan;
+    color: #1a1a1a;
   }
   .demo-box {
     flex-direction: row;
@@ -407,6 +408,11 @@ width: <viewport-length>{1,2};
     font-size: 12px;
     line-height: 100px;
     text-align: center;
+    color: #1a1a1a;
+  }
+
+  .cyan-label {
+    color: #1a1a1a;
   }
 
   .demo-box-native {

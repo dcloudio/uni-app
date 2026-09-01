@@ -106,7 +106,7 @@ if (view != null && view instanceof UIView) {
 ```vue
 <template>
   <page-head title="view"></page-head>
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
     <view class="uni-padding-wrap uni-common-mt">
       <!-- view样式大合集 -->
       <text class="uni-title-text">view样式大合集</text>
@@ -127,7 +127,7 @@ if (view != null && view instanceof UIView) {
 
       <text class="uni-title-text uni-common-mt">Hover 点击态效果</text>
       <view id="view" class="main" :hover-class="data.hover_class ? 'is-parent-hover' : 'none'">
-        <view id="view-child1" class="test-view" :class="isDarkMode ? 'theme-dark' : 'theme-light'" :hover-class="data.hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="data.stop_propagation"
+        <view id="view-child1" class="test-view" :hover-class="data.hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="data.stop_propagation"
           :hover-start-time="data.start_time" :hover-stay-time="data.stay_time">
         </view>
       </view>
@@ -140,7 +140,7 @@ if (view != null && view instanceof UIView) {
         <enum-data :items="data.stay_time_enum" title="手指松开后点击态保留时间" @change="radio_change_stay_time_enum"></enum-data>
       </view>
 
-      <!-- #ifdef VUE3-VAPOR -->
+      <!-- #ifdef VUE3-VAPOR && !MP-ALIPAY -->
       <navigator url="/pages/template/4050/4050">
         <button style="margin:20px;">组件性能测试</button>
       </navigator>
@@ -151,7 +151,6 @@ if (view != null && view instanceof UIView) {
 </template>
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
-  import { state } from '@/store/index.uts'
   import Child from './child.uvue'
 
   type DataType = {
@@ -172,10 +171,6 @@ if (view != null && view instanceof UIView) {
     start_time_enum: [{ "value": 50, "name": "50毫秒" }, { "value": 200, "name": "200毫秒" }],
     stay_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }]
   } as DataType)
-
-  const isDarkMode = computed((): boolean => {
-    return state.isDarkMode
-  })
 
   const change_hover_class_boolean = (checked: boolean) => {
     data.hover_class = checked
@@ -201,7 +196,7 @@ if (view != null && view instanceof UIView) {
 <style>
   .styled-view-row {
     flex-direction: row;
-    background: #fff;
+    background-color: var(--list-background-color, #ffffff);
     justify-content: space-around;
     height: 120px;
     align-items: center;
@@ -241,12 +236,11 @@ if (view != null && view instanceof UIView) {
   .test-view {
     height: 200px;
     width: 200px;
-    --view-child1-hover-bg: #179b16;
     background-color: var(--list-background-color,#ffffff);
   }
 
   .is-hover {
-    background-color: var(--view-child1-hover-bg, #179b16);
+    background-color: #179b16;
   }
 
   .is-parent-hover {

@@ -205,7 +205,7 @@ position: static | relative | absolute | sticky | fixed;
         <text class="uni-subtitle-text">position: relative 和 position: absolute</text>
         <view class="position-test-box">
           <scroll-view class="scroll-view-common" style="position: relative; top: 20px; left: 20px; background-color: cyan;">
-            <text>relative</text>
+            <text class="cyan-text">relative</text>
           </scroll-view>
           <scroll-view class="scroll-view-common" style="position: absolute; top: 65px; left: 65px; background-color: green;">
             <text>absolute</text>
@@ -260,6 +260,7 @@ position: static | relative | absolute | sticky | fixed;
         <input-data :defaultValue="data.position" title="position 自定义值" type="text" @confirm="inputChangePosition"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
         <text>native-view组件: position: relative 和 position: absolute</text>
         <view class="position-test-box">
@@ -267,6 +268,7 @@ position: static | relative | absolute | sticky | fixed;
           <test-native-view class="scroll-view-common" style="position: absolute; top: 65px; left: 65px; background-color: green;"></test-native-view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -472,6 +474,10 @@ position: static | relative | absolute | sticky | fixed;
   .scroll-view-common {
     width: 80px;
     height: 60px;
+  }
+
+  .cyan-text {
+    color: #1a1a1a;
   }
 </style>
 

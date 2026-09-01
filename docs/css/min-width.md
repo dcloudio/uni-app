@@ -62,17 +62,17 @@ min-width: <viewport-length>;
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view style="flex-grow: 1;">
+    <view class="uni-theme-root" style="flex-grow: 1;">
       <view>
         <text>min-width: 250px</text>
         <view class="common" style="min-width: 250px;">
-          <text>width: 50px</text>
+          <text class="cyan-label">width: 50px</text>
         </view>
         <text>拍平</text>
         <view class="common" style="min-width: 250px;" flatten>
-          <text>width: 50px</text>
+          <text class="cyan-label">width: 50px</text>
         </view>
       </view>
 
@@ -101,7 +101,7 @@ min-width: <viewport-length>;
           <text class="uni-info">获取值: {{data.minWidthActual}}</text>
           <view class="test-box">
             <view ref="viewRef" class="common-dynamic test-view" :style="{ minWidth: data.minWidth }">
-              <text>view</text>
+              <text class="cyan-label">view</text>
             </view>
           </view>
         </view>
@@ -135,7 +135,7 @@ min-width: <viewport-length>;
           <view class="test-box">
             <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ minWidth: data.minWidth }"
               flatten>
-              <text>view</text>
+              <text class="cyan-label">view</text>
             </view>
           </view>
         </view>
@@ -169,6 +169,7 @@ min-width: <viewport-length>;
           @confirm="inputChangeMinWidth"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
         <text>native-view组件: min-width: 100px 和 min-width: 200px</text>
         <view class="demo-box-native">
@@ -180,6 +181,7 @@ min-width: <viewport-length>;
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -273,6 +275,7 @@ min-width: <viewport-length>;
     width: 50px;
     height: 80px;
     background-color: cyan;
+    color: #1a1a1a;
   }
 
   .test-container {
@@ -301,6 +304,11 @@ min-width: <viewport-length>;
   .scroll-view-label {
     font-size: 12px;
     text-align: center;
+    color: #1a1a1a;
+  }
+
+  .cyan-label {
+    color: #1a1a1a;
   }
 
   .demo-box-native {

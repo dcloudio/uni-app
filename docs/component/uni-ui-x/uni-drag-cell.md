@@ -380,10 +380,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 ```vue
 <template>
 	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1; padding: 15px;">
+	<scroll-view class="page uni-theme-root" style="padding: 15px;">
 	<!-- #endif -->
 		<!-- #ifndef APP -->
-		<view style="padding: 15px;">
+		<view class="uni-theme-root" style="padding: 15px;">
 		<!-- #endif -->
 			<text class="page-title">drag-cell 拖拽排序组件</text>
 
@@ -717,6 +717,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 </script>
 
 <style>
+	.page {
+		flex: 1;
+	}
+
 	.page-title {
 		font-size: 24px;
 		font-weight: bold;
@@ -850,7 +854,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		background-color: #f8f9fa;
+		background-color: var(--active-background-color, #f8f9fa);
 		border-radius: 8px;
 		padding: 10px;
 	}
@@ -862,7 +866,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 		justify-content: center;
 		width: 50px;
 		height: 50px;
-		background-color: #e9ecef;
+		background-color: var(--list-background-color, #e9ecef);
 		border-radius: 25px;
 		margin-bottom: 5px;
 	}
@@ -870,12 +874,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 	.icon-emoji {
 		font-size: 24px;
 		font-weight: bold;
-		color: #333333;
+		color: var(--text-color, #333333);
 	}
 
 	.icon-label {
 		font-size: 12px;
-		color: #333333;
+		color: var(--text-color, #333333);
 	}
 
 	.image-grid-slot {
@@ -890,7 +894,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 		align-items: center;
 		justify-content: center;
 		height: 104px;
-		background-color: #f5f5f5;
+		background-color: var(--active-background-color, #f5f5f5);
 		border-radius: 12px;
 		overflow: hidden;
 	}
@@ -908,17 +912,17 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 		align-items: center;
 		justify-content: center;
 		height: 104px;
-		background-color: #fafafa;
+		background-color: var(--active-background-color, #fafafa);
 		border-width: 1px;
 		border-style: dashed;
-		border-color: #d9d9d9;
+		border-color: var(--border-color, #d9d9d9);
 		border-radius: 12px;
 	}
 
 	.image-grid-plus-icon {
 		font-size: 36px;
 		font-weight: bold;
-		color: #999999;
+		color: var(--arrow-color, #999999);
 	}
 
 	.handle-demo-slot {
@@ -930,10 +934,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		background-color: #f7f8fa;
+		background-color: var(--active-background-color, #f7f8fa);
 		border-width: 1px;
 		border-style: solid;
-		border-color: #e5e6eb;
+		border-color: var(--border-color, #e5e6eb);
 		border-radius: 10px;
 		padding: 16px 52px 16px 14px;
 	}
@@ -948,7 +952,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 	}
 
 	.handle-demo-text {
-		color: #333333;
+		color: var(--text-color, #333333);
 		font-size: 14px;
 	}
 
@@ -962,7 +966,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 	}
 
 	.handle-demo-grip-text {
-		color: #999999;
+		color: var(--arrow-color, #999999);
 		font-size: 24px;
 		font-weight: bold;
 	}

@@ -193,9 +193,9 @@ complete: () => {
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
+  <scroll-view class="page-scroll-view uni-theme-root">
   <!-- #endif -->
-    <view>
+    <view class="upload-page uni-theme-root">
       <page-head :title="data.title"></page-head>
       <view class="uni-padding-wrap uni-common-mt">
         <view class="demo">
@@ -483,7 +483,7 @@ complete: () => {
   }
 
   .demo {
-    background: #fff;
+    background-color: var(--list-background-color, #ffffff);
     padding: 25px;
     justify-content: center;
     align-items: center;
@@ -491,11 +491,11 @@ complete: () => {
 
   .uni-hello-addfile {
     text-align: center;
-    background: #fff;
+    background-color: var(--list-background-color, #ffffff);
     padding: 25px;
     margin-top: 10px;
     font-size: 19px;
-    color: #808080;
+    color: var(--active-color, #808080);
   }
 </style>
 

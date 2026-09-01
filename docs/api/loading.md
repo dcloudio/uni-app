@@ -172,11 +172,11 @@
 			</view>
 			<view class="uni-list uni-common-pl">
 				<radio-group @change="radioChange">
-					<radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in data.items"
-						:key="item.value" :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''"
-						:value="item.value" :checked="index === data.current">
-						{{ item.name }}
-					</radio>
+					<view class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in data.items"
+						:key="item.value" :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''">
+						<radio :value="item.value" :checked="index === data.current" />
+						<text>{{ item.name }}</text>
+					</view>
 				</radio-group>
 			</view>
 		</view>

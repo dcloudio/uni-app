@@ -325,9 +325,11 @@ if (view != null && view instanceof UITextView) {
     adjust_position: boolean;
     disabled: boolean;
     jest_result: boolean;
+    inputEventTriggered: boolean;
     isAutoTest: boolean;
     changeValue: string;
     textareaRect: DOMRect | null;
+    customFontValue: string;
   }
   // 使用reactive避免ref数据在自动化测试中无法访问
   const data = reactive({
@@ -357,9 +359,11 @@ if (view != null && view instanceof UITextView) {
     adjust_position: false,
     disabled: false,
     jest_result: false,
+    inputEventTriggered: false,
     isAutoTest: false,
     changeValue: "",
-    textareaRect: null
+    textareaRect: null,
+    customFontValue: "Textarea Font"
   } as DataType)
 
   // #ifdef APP
@@ -384,9 +388,9 @@ if (view != null && view instanceof UITextView) {
   const textarea_longpress = () => { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") }
   const textarea_confirm = () => { console.log("点击完成时， 触发 confirm 事件，event.detail = {value: value}") }
 
-  const textarea_input = (e: UniInputEvent) => {
+  const textarea_input = (_e: UniInputEvent) => {
     console.log("当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上")
-    data.jest_result = e.detail.value == '1\n2\n3\n4\n5\n61'
+    data.inputEventTriggered = true
   }
 
   const textarea_linechange = () => { console.log("输入框行数变化时调用，event.detail = {height: 0, height: 0, lineCount: 0}") }
@@ -459,10 +463,10 @@ if (view != null && view instanceof UITextView) {
 
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view class="main">
-      <textarea :value="data.default_value" id="uni-textarea" class="uni-textarea" :auto-focus="true" :focus="data.focus_boolean"
+    <view class="main uni-theme-root">
+      <textarea :value="data.default_value" id="uni-textarea" class="uni-textarea themed-textarea" :auto-focus="true" :focus="data.focus_boolean"
         :confirm-hold="data.confirm_hold_boolean" :auto-height="data.auto_height_boolean" :fixed="data.fixed_boolean"
         :show-confirm-bar="data.show_confirm_bar_boolean" :adjust-position="data.adjust_position_boolean"
         :cursor-color="data.cursor_color" :cursor="data.cursor" :placeholder="data.placeholder_value"
@@ -472,9 +476,9 @@ if (view != null && view instanceof UITextView) {
         @touchend="textarea_touchend" @tap="textarea_tap" @longpress="textarea_longpress" @confirm="textarea_confirm"
         @input="textarea_input" @linechange="textarea_linechange" @blur="textarea_blur"
         @keyboardheightchange="textarea_keyboardheightchange" @focus="textarea_focus" @change="textarea_change"
-        style="padding: 10px; border: 1px solid #666;height: 200px" />
+        style="padding: 10px;height: 200px" />
     </view>
-    <view style="margin-bottom: 40px;">
+    <view class="textarea-page uni-theme-root">
       <boolean-data :defaultValue="false" title="键盘弹起时，是否自动上推页面（限非 Web 平台）"
         @change="change_adjust_position_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="是否自动增高，设置auto-height时，style.height不生效"
@@ -484,12 +488,16 @@ if (view != null && view instanceof UITextView) {
       <boolean-data :defaultValue="false" title="改变光标颜色为透明" @change="change_cursor_color_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="设置禁用输入框"
         @change="change_disabled_boolean"></boolean-data>
+      <!-- #ifndef MP-ALIPAY -->
       <enum-data :items="data.confirm_type_list" title="confirm-type，设置键盘右下角按钮。"
         @change="radio_change_confirm_type"></enum-data>
+      <!-- #endif -->
       <boolean-data :defaultValue="false" title="点击软键盘右下角按钮时是否保持键盘不收起(confirm-type为return时必然不收起)"
         @change="change_confirm_hold_boolean"></boolean-data>
+      <!-- #ifndef MP-ALIPAY -->
       <enum-data :items="data.inputmode_enum" title="input-mode，控制软键盘类型。（仅限 Web 平台符合条件的高版本浏览器或webview）。"
         @change="radio_change_inputmode_enum"></enum-data>
+      <!-- #endif -->
       <boolean-data :defaultValue="false" title="是否显示键盘上方带有“完成”按钮那一栏（仅限小程序平台）"
         @change="change_show_confirm_bar_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true（仅限小程序平台）"
@@ -505,14 +513,14 @@ if (view != null && view instanceof UITextView) {
       </view>
 
       <view class="title-wrap">
-        <view>cursor-spacing、placeholder-class、placeholder-style例子(harmony 不支持设置 placeholder backgroundColor)</view>
+        <view class="textarea-title-text">cursor-spacing、placeholder-class、placeholder-style例子(harmony 不支持设置 placeholder backgroundColor)</view>
       </view>
       <view class="textarea-wrap">
         <textarea id="textarea-height-exception" class="textarea-instance" placeholder="底部textarea测试键盘遮挡"
           placeholder-class="placeholder" placeholder-style="background-color:red" :cursor-spacing="300" />
       </view>
       <view class="title-wrap">
-        <view @click="setSelection(2, 5)">设置输入框聚焦时光标的起始位置和结束位置（点击生效）</view>
+        <view class="textarea-title-text" @click="setSelection(2, 5)">设置输入框聚焦时光标的起始位置和结束位置（点击生效）</view>
       </view>
       <view class="textarea-wrap">
         <textarea id="textarea-instance-2" class="textarea-instance" value="Hello UniApp X Textarea TestCase" :focus="data.isSelectionFocus"
@@ -642,11 +650,21 @@ if (view != null && view instanceof UITextView) {
         <textarea class="textarea-all-styles" value="样式效果：文本颜色深蓝色、字号16px、字重400、行高1.5、文本居左对齐；外边距10px、内边距10px；圆角8px；浅蓝色渐变背景、蓝色边框、透明度70%、阴影效果。" />
       </view>
 
-      <navigator url="/pages/component/textarea/textarea-performance" style="margin: 10px;">
-        <button type="primary">
-          textarea 性能测试
-        </button>
-      </navigator>
+      <!-- #ifndef MP-ALIPAY -->
+        <navigator url="/pages/component/textarea/textarea-performance" style="margin: 10px;">
+          <button type="primary">
+            textarea 性能测试
+          </button>
+        </navigator>
+      <!-- #endif -->
+
+      <view class="title-wrap">
+        <view>textarea 设置自定义字体</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance pacifico-font" v-model="data.customFontValue" :auto-height="true"
+          :adjust-position="true" />
+      </view>
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -654,10 +672,16 @@ if (view != null && view instanceof UITextView) {
 </template>
 
 <style>
+  @font-face {
+    font-family: Pacifico;
+    src: url('/static/font/Pacifico-Regular.ttf');
+  }
+
   .main {
     min-height: 100px;
     padding: 5px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
+    background-color: var(--background-color, #f8f8f8);
     flex-direction: row;
     justify-content: center;
   }
@@ -666,6 +690,11 @@ if (view != null && view instanceof UITextView) {
     width: 100px;
     height: 100px;
     background-color: aqua;
+    color: #1a1a1a;
+  }
+
+  .textarea-page {
+    margin-bottom: 40px;
   }
 
   .textarea-wrap {
@@ -677,11 +706,22 @@ if (view != null && view instanceof UITextView) {
     flex-direction: row;
     align-items: center;
     margin-left: 10px;
+    color: var(--text-color, #333333);
+  }
+
+  .textarea-title-text {
+    flex: 1;
+  }
+
+  .themed-textarea,
+  .textarea-instance {
+    color: #333333;
+    background-color: #ffffff;
+    border: 1px solid #666666;
   }
 
   .textarea-instance {
     flex: 1;
-    border: 1px solid #666;
     margin: 10px;
     font-size: 15px;
   }
@@ -691,6 +731,11 @@ if (view != null && view instanceof UITextView) {
   }
   .placeholder-class{
     font-size: 30px;
+  }
+
+  .pacifico-font {
+    font-family: Pacifico;
+    font-size: 18px;
   }
 
   .textarea-all-styles {
@@ -713,6 +758,15 @@ if (view != null && view instanceof UITextView) {
     border: 1px solid #007aff;
     opacity: 0.7;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .themed-textarea,
+    .textarea-instance {
+      color: #ffffff;
+      background-color: #2d2d2d;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
   }
 </style>
 

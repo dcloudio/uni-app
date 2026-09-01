@@ -139,7 +139,6 @@ stop
   const watchPermissionRRequest = () => {
     permissionListener.value = uni.createRequestPermissionListener()
     permissionListener.value!.onConfirm((_) => {
-      // TODO 目前onConfirm监听实现的在时间上不够精确，暂时需要延迟弹框，后续修复
       // TODO 这里的弹框仅为演示，实际开发中监听权限申请的代码应该在app.uvue中，弹框应全局处理，可参考https://gitcode.net/dcloud/uni-api/-/tree/master/uni_modules/uni-prompt/utssdk/app-android 代码自行封装一个uts的全局弹框
       timeoutId.value = setTimeout(() => {
         isPermissionAlertShow.value = true
@@ -153,21 +152,19 @@ stop
 
   const requestPermission = () => {
     // #ifdef APP-ANDROID
-    if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, ["android.permission.READ_CALENDAR"])) {
-      uni.showToast({
-        title: "权限已经同意了，不需要再申请",
-        position: "bottom"
-      })
-      return
-    }
-    UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, ["android.permission.READ_CALENDAR"], (_ : boolean, p : string[]) => {
-      console.log(p)
-    }, (_ : boolean, p : string[]) => {
-      uni.showToast({
-        title: "权限被拒绝了",
-        position: "bottom"
-      })
-      console.log(p)
+    uni.requestSystemPermission({
+      permissions: ["android.permission.READ_CALENDAR"],
+      success: (res) => {
+        console.log(res.grantedList)
+        console.log(res.deniedList)
+      },
+      fail: (err) => {
+        uni.showToast({
+          title: "权限被拒绝了",
+          position: "bottom"
+        })
+        console.log(err.errCode)
+      }
     })
     // #endif
   }

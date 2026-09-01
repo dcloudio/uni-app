@@ -195,10 +195,10 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap uni-common-mt">
+    <view class="text-page uni-padding-wrap uni-common-mt uni-theme-root">
       <!-- 单行文本测试 -->
       <text class="uni-title-text">单行文本</text>
       <view class="text-box">
@@ -262,7 +262,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         </button>
         <!-- #endif -->
       </view>
-      <!-- #ifdef VUE3-VAPOR -->
+      <!-- #ifdef VUE3-VAPOR && !MP-ALIPAY -->
       <navigator url="/pages/template/4050/4050">
         <button class="uni-btn uni-common-mb">组件性能测试</button>
       </navigator>
@@ -342,7 +342,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 <style>
   .view-row {
     flex-direction: row;
-    background: #fff;
+    background-color: var(--list-background-color, #ffffff);
     justify-content: space-around;
   }
   .text-box {
@@ -350,7 +350,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
     padding: 10px;
     display: flex;
     min-height: 60px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     justify-content: center;
     align-items: center;
   }
@@ -362,7 +362,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
     font-size: 16px;
     font-weight: 500;
     font-style: italic;
-    color: #1a1a1a;
+    color: var(--text-color, #1a1a1a);
     /* 行高与字间距 */
     line-height: 1.8;
     letter-spacing: 1px;
@@ -376,9 +376,9 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
     width: 100%;
     margin: 5px 0;
     padding: 8px 12px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-color, #e0e0e0);
     border-radius: 4px;
-    background-color: #f9f9f9;
+    background-color: var(--active-background-color, #f9f9f9);
   }
 
   /* 单行文本特定样式 */
@@ -393,8 +393,8 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
     padding: 10px;
     display: flex;
     min-height: 50px;
-    background-color: #ffffff;
-    border: 1px solid #dddddd;
+    background-color: var(--list-background-color, #ffffff);
+    border: 1px solid var(--border-color, #dddddd);
     border-radius: 5px;
     justify-content: center;
     align-items: center;
@@ -402,7 +402,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 
   .text {
     font-size: 14px;
-    color: #353535;
+    color: var(--text-color, #353535);
     line-height: 22px;
     text-align: center;
   }
@@ -418,9 +418,9 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 
 ```uvue
 <template>
-	<view class="page-container">
+	<view class="page-container uni-theme-root">
 		<!-- #ifndef MP -->
-		<fps></fps>
+		<fps v-if="showFPS"></fps>
 		<!-- #endif -->
 		<!-- 打字机效果区域 -->
 		<view class="typewriter-container">
@@ -483,6 +483,10 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 		{ text: '进行开发～', className: 'text-small-gray-15' }
 	]
 
+	const showFPS = ref(true)
+	// #ifdef WEB
+	showFPS.value = window.self == window.top
+	// #endif
 	const showCursor = ref(true)
 	const displayedSegments = ref<TextSegment[]>([])
 	let typingTimer : number | null = null
@@ -559,7 +563,6 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 
 <style>
 	.page-container {
-		background-color: #F8F8F8;
 		flex: 1;
 		position: relative;
 	}
@@ -567,7 +570,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 	.typewriter-container {
 		margin: 20px;
 		padding: 30px 20px;
-		background-color: #ffffff;
+		background-color: var(--list-background-color, #ffffff);
 		border-radius: 16px;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 	}
@@ -575,13 +578,13 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 	.typewriter-title {
 		margin-bottom: 20px;
 		padding-bottom: 15px;
-		border-bottom: 2px solid #f0f0f0;
+		border-bottom: 2px solid var(--border-color, #f0f0f0);
 	}
 
 	.title-text {
 		font-size: 20px;
 		font-weight: bold;
-		color: #333333;
+		color: var(--text-color, #333333);
 	}
 
 	.typewriter-box {
@@ -748,6 +751,30 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 		font-size: 15px;
 		color: #666666;
 	}
+
+	@media (prefers-color-scheme: dark) {
+		.text-normal,
+		.text-normal-small {
+			color: #ffffff;
+		}
+
+		.text-small-gray,
+		.text-small-gray-15 {
+			color: #c7c7c7;
+		}
+
+		.text-small-light {
+			color: #b3b3b3;
+		}
+
+		.text-ai-highlight {
+			background-color: #18352b;
+		}
+
+		.text-purple-highlight {
+			background-color: #352b1f;
+		}
+	}
 </style>
 
 ```
@@ -761,7 +788,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
   <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
-    <view style="background-color: #EEE;">
+    <view class="text-page uni-theme-root">
       <page-head :title="title"></page-head>
       <view class="uni-padding-wrap uni-common-mt">
         <view class="uni-title">
@@ -772,43 +799,38 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
           <text class="uni-subtitle-text">根据宽度自动折行</text>
         </view>
         <view class="text-box">
-          <text>{{ multiLineText }}</text>
+          <text class="text">{{ multiLineText }}</text>
         </view>
         <text class="uni-subtitle-text">根据宽度自动折行，拍平测试</text>
         <view class="text-box">
-          <text flatten>{{ multiLineText }}</text>
+          <text class="text" flatten>{{ multiLineText }}</text>
         </view>
 
         <view class="uni-title">
           <text class="uni-subtitle-text">\\n换行</text>
         </view>
         <view class="text-box">
-          <text>\n 换行</text>
-          <text>\\n 换行</text>
-          <text>\\\n 换行</text>
-          <text>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
-          <text>\n\n连续换行\n\n连续换行\n\n连续换行</text>
+          <text class="text">\n 换行</text>
+          <text class="text">\\n 换行</text>
+          <text class="text">\\\n 换行</text>
+          <text class="text">\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
+          <text class="text">\n\n连续换行\n\n连续换行\n\n连续换行</text>
         </view>
 
         <text class="uni-subtitle-text">\\n换行，拍平测试</text>
         <view class="text-box">
-          <text flatten>\n 换行</text>
-          <text flatten>\\n 换行</text>
-          <text flatten>\\\n 换行</text>
-          <text flatten>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
-          <text flatten>\n\n连续换行\n\n连续换行\n\n连续换行</text>
+          <text class="text" flatten>\n 换行</text>
+          <text class="text" flatten>\\n 换行</text>
+          <text class="text" flatten>\\\n 换行</text>
+          <text class="text" flatten>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
+          <text class="text" flatten>\n\n连续换行\n\n连续换行\n\n连续换行</text>
         </view>
 
         <view class="uni-title">
-          <text class="uni-subtitle-text">selectable属性（鸿蒙蒸汽暂不支持）</text>
+          <text class="uni-subtitle-text">selectable属性</text>
         </view>
         <view class="text-box">
-          <!-- #ifdef APP-HARMONY -->
-          <text>{{ singleLineText }}</text>
-          <!-- #endif -->
-          <!-- #ifndef APP-HARMONY -->
-          <text :selectable="true">{{ singleLineText }}</text>
-          <!-- #endif -->
+          <text class="text" :selectable="true">{{ singleLineText }}</text>
         </view>
 
         <view class="uni-title">
@@ -817,14 +839,14 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         </view>
         <view class="text-box">
           <!-- #ifndef VUE3-VAPOR && APP -->
-          <text space="nbsp">{{ singleLineText }}</text>
-          <text space="ensp">{{ singleLineText }}</text>
-          <text space="emsp">{{ singleLineText }}</text>
+          <text class="text" space="nbsp">{{ singleLineText }}</text>
+          <text class="text" space="ensp">{{ singleLineText }}</text>
+          <text class="text" space="emsp">{{ singleLineText }}</text>
           <!-- #endif -->
           <!-- #ifdef VUE3-VAPOR && APP -->
-          <text>{{ singleLineText }}</text>
-          <text>{{ singleLineText }}</text>
-          <text>{{ singleLineText }}</text>
+          <text class="text">{{ singleLineText }}</text>
+          <text class="text">{{ singleLineText }}</text>
+          <text class="text">{{ singleLineText }}</text>
           <!-- #endif -->
         </view>
 
@@ -834,16 +856,16 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         </view>
         <view class="text-box">
           <!-- #ifndef VUE3-VAPOR && APP -->
-          <text :decode="data.decode">{{ decodeStr }}</text>
-          <text :decode="data.decode">uni-app&nbsp;x，终极跨平台方案</text>
-          <text :decode="data.decode">uni-app&ensp;x，终极跨平台方案</text>
-          <text :decode="data.decode">uni-app&emsp;x，终极跨平台方案</text>
+          <text class="text" :decode="data.decode">{{ decodeStr }}</text>
+          <text class="text" :decode="data.decode">uni-app&nbsp;x，终极跨平台方案</text>
+          <text class="text" :decode="data.decode">uni-app&ensp;x，终极跨平台方案</text>
+          <text class="text" :decode="data.decode">uni-app&emsp;x，终极跨平台方案</text>
           <!-- #endif -->
           <!-- #ifdef VUE3-VAPOR && APP -->
-          <text>{{ decodeStr }}</text>
-          <text>uni-app&nbsp;x，终极跨平台方案</text>
-          <text>uni-app&ensp;x，终极跨平台方案</text>
-          <text>uni-app&emsp;x，终极跨平台方案</text>
+          <text class="text">{{ decodeStr }}</text>
+          <text class="text">uni-app&nbsp;x，终极跨平台方案</text>
+          <text class="text">uni-app&ensp;x，终极跨平台方案</text>
+          <text class="text">uni-app&emsp;x，终极跨平台方案</text>
           <!-- #endif -->
         </view>
 
@@ -851,7 +873,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
           <text class="uni-subtitle-text">嵌套1</text>
         </view>
         <view class="text-box">
-          <text @tap="nestedText1Tap">一级节点黑色
+          <text class="text" @tap="nestedText1Tap">一级节点黑/白色
             <text style="color: red;background-color: yellow;" @tap="nestedText2Tap">二级节点红色且背景色黄色
               <text style="text-decoration-line:underline;color:blue;" @tap="nestedText3Tap">App三级节点不继承二级的颜色</text>
             </text>
@@ -860,7 +882,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         </view>
         <text class="uni-subtitle-text">嵌套1，拍平测试</text>
         <view class="text-box">
-          <text flatten @tap="nestedText1Tap">一级节点黑色
+          <text class="text" flatten @tap="nestedText1Tap">一级节点黑/白色
             <text style="color: red;background-color: yellow;" @tap="nestedText2Tap">二级节点红色且背景色黄色
               <text style="text-decoration-line:underline;color:blue;" @tap="nestedText3Tap">App三级节点不继承二级的颜色</text>
             </text>
@@ -877,7 +899,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
           <text class="uni-subtitle-text">空嵌套测试</text>
         </view>
         <view class="text-box">
-          <text>
+          <text class="text">
             <text>
               文字应居中显示<text></text>
             </text>
@@ -885,7 +907,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         </view>
         <text class="uni-subtitle-text">空嵌套测试（根拍平）</text>
         <view class="text-box">
-          <text flatten>
+          <text class="text" flatten>
             <text>
               文字应居中显示<text></text>
             </text>
@@ -896,12 +918,12 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
           <text class="uni-subtitle-text">含换行符的多行文本(3行)，但不自动换行，可横向滚动</text>
         </view>
         <scroll-view class="text-container" direction="horizontal">
-          <text style="white-space: nowrap;align-self: flex-start;">HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
+          <text class="text" style="white-space: nowrap;align-self: flex-start;">HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
         </scroll-view>
 
         <text class="uni-subtitle-text">含换行符的多行文本(3行)，但不自动换行，可横向滚动【拍平测试】</text>
         <scroll-view class="text-container" direction="horizontal">
-          <text flatten style="white-space: nowrap;align-self: flex-start;">HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
+          <text class="text" flatten style="white-space: nowrap;align-self: flex-start;">HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
         </scroll-view>
 
         <!-- #ifdef APP -->
@@ -918,9 +940,8 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         <view class="uni-title">
           <text class="uni-title-text">hover-class 测试</text>
         </view>
-        <text id="text-hover-parent" class="text-hover-main"
+        <text id="text-hover-parent" class="text text-hover-main"
           :hover-class="hoverData.hover_class ? 'is-parent-hover' : 'none'"
-          :class="isDarkMode ? 'theme-dark' : 'theme-light'"
           :hover-start-time="hoverData.start_time"
           :hover-stay-time="hoverData.stay_time"
         >
@@ -966,7 +987,6 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
-  import { state } from '@/store/index.uts'
 
 const decodeStr = ref('&lt; &gt; &amp; &apos;')
 const title = ref('text-props')
@@ -991,10 +1011,6 @@ const textArr= ref(["嵌套 text 1 ","嵌套 text 2 ","嵌套 text 3 "])
     start_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 1000, "name": "1000毫秒" }],
     stay_time_enum: [{ "value": 600, "name": "600毫秒" }, { "value": 1000, "name": "1000毫秒" }]
   } as HoverDataType)
-
-  const isDarkMode = computed((): boolean => {
-    return state.isDarkMode
-  })
 
   const change_hover_class_boolean = (checked: boolean) => {
     hoverData.hover_class = checked
@@ -1112,20 +1128,20 @@ defineExpose({
   .text-box {
     margin-bottom: 20px;
     padding: 20px 0;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     justify-content: center;
     align-items: center;
   }
 
   .text-container {
     width: 100%;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     padding: 10px;
   }
 
   .text {
     font-size: 15px;
-    color: #353535;
+    color: var(--text-color, #353535);
     line-height: 27px;
     text-align: center;
   }
@@ -1148,7 +1164,7 @@ defineExpose({
     padding: 5px 0;
     flex-direction: row;
     justify-content: center;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .is-parent-hover {

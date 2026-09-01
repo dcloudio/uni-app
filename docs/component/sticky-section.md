@@ -74,7 +74,7 @@ preload属性用于控制sticky-section组件的预加载行为，默认值为fa
 ```vue
 <template>
   <page-head title="sticky-section"></page-head>
-  <list-view id="list-view" ref="listViewRef" show-scrollbar=false class="page" :scroll-into-view="pageData.scrollIntoView"
+  <list-view id="list-view" ref="listViewRef" show-scrollbar=false class="page uni-theme-root" :scroll-into-view="pageData.scrollIntoView"
     @scroll="onScroll" @scrollend="onScrollEnd" bounces="false" refresher-enabled="true" :refresher-triggered="pageData.refresherTriggered" @refresherrefresh="onRefresherrefresh">
     <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
       <button @click="gotoStickyHeader('C')" size="mini">跳转到id为C的sticky-header位置上</button>
@@ -242,14 +242,13 @@ preload属性用于控制sticky-section组件的预加载行为，默认值为fa
 <style>
   .page {
     flex: 1;
-    background-color: #f5f5f5;
   }
 
   .sticky-header-text {
     font-size: 16px;
     padding: 8px;
-    color: #959595;
-    background-color: #f5f5f5;
+    color: var(--active-color, #959595);
+    background-color: var(--background-color, #f5f5f5);
   }
 
   .content-section {
@@ -265,7 +264,8 @@ preload属性用于控制sticky-section组件的预加载行为，默认值为fa
 
   .content-item-text {
     padding: 15px;
-    background-color: #fff;
+    color: var(--text-color, #333333);
+    background-color: var(--list-background-color, #ffffff);
   }
 </style>
 

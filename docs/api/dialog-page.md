@@ -265,31 +265,31 @@ APP 蒸汽模式注意事项：
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
+  <scroll-view class="uni-theme-root" style="flex: 1;">
   <!-- #endif -->
   <page-intro content="本页演示 dialog 弹窗与页面信息：展示 pageBody、safeAreaInsets、窗口尺寸等；通过按钮跳转下一页、打开各 dialog 示例（含错误路径、triggerParentHide、页面样式等）。"></page-intro>
-  <view class="uni-padding-wrap">
-    <view class="uni-common-mt flex-row" v-if="data.pageBody != null"><text>pageBody: {</text>
-      <text>top: </text><text id="page-body-top">{{data.pageBody!.top}}</text><text>,</text>
-      <text>right: </text><text id="page-body-right">{{data.pageBody!.right}}</text><text>,</text>
-      <text>bottom: </text><text id="page-body-bottom">{{data.pageBody!.bottom}}</text><text>,</text>
-      <text>left: </text><text id="page-body-left">{{data.pageBody!.left}}</text><text>,</text>
-      <text>width: </text><text id="page-body-width">{{data.pageBody!.width}}</text><text>,</text>
-      <text>height: </text><text id="page-body-height">{{data.pageBody!.height}}</text>
-      <text>}</text>
+  <view class="uni-padding-wrap uni-theme-root">
+    <view class="uni-common-mt flex-row" v-if="data.pageBody != null"><text class="dialog-page-text">pageBody: {</text>
+      <text class="dialog-page-text">top: </text><text id="page-body-top" class="dialog-page-text">{{data.pageBody!.top}}</text><text class="dialog-page-text">,</text>
+      <text class="dialog-page-text">right: </text><text id="page-body-right" class="dialog-page-text">{{data.pageBody!.right}}</text><text class="dialog-page-text">,</text>
+      <text class="dialog-page-text">bottom: </text><text id="page-body-bottom" class="dialog-page-text">{{data.pageBody!.bottom}}</text><text class="dialog-page-text">,</text>
+      <text class="dialog-page-text">left: </text><text id="page-body-left" class="dialog-page-text">{{data.pageBody!.left}}</text><text class="dialog-page-text">,</text>
+      <text class="dialog-page-text">width: </text><text id="page-body-width" class="dialog-page-text">{{data.pageBody!.width}}</text><text class="dialog-page-text">,</text>
+      <text class="dialog-page-text">height: </text><text id="page-body-height" class="dialog-page-text">{{data.pageBody!.height}}</text>
+      <text class="dialog-page-text">}</text>
     </view>
-    <view class="uni-common-mt flex-row" v-if="data.safeAreaInsets != null"><text>safeAreaInsets: {</text>
-      <text>top: </text><text id="page-safe-area-insets-top">{{data.safeAreaInsets!.top}}</text><text>,</text>
-      <text>right: </text><text id="page-safe-area-insets-right">{{data.safeAreaInsets!.right}}</text><text>,</text>
-      <text>bottom: </text><text id="page-safe-area-insets-bottom">{{data.safeAreaInsets!.bottom}}</text><text>,</text>
-      <text>left: </text><text id="page-safe-area-insets-left">{{data.safeAreaInsets!.left}}</text><text>}</text>
+    <view class="uni-common-mt flex-row" v-if="data.safeAreaInsets != null"><text class="dialog-page-text">safeAreaInsets: {</text>
+      <text class="dialog-page-text">top: </text><text id="page-safe-area-insets-top" class="dialog-page-text">{{data.safeAreaInsets!.top}}</text><text class="dialog-page-text">,</text>
+      <text class="dialog-page-text">right: </text><text id="page-safe-area-insets-right" class="dialog-page-text">{{data.safeAreaInsets!.right}}</text><text class="dialog-page-text">,</text>
+      <text class="dialog-page-text">bottom: </text><text id="page-safe-area-insets-bottom" class="dialog-page-text">{{data.safeAreaInsets!.bottom}}</text><text class="dialog-page-text">,</text>
+      <text class="dialog-page-text">left: </text><text id="page-safe-area-insets-left" class="dialog-page-text">{{data.safeAreaInsets!.left}}</text><text class="dialog-page-text">}</text>
     </view>
     <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || WEB -->
-    <view class="uni-common-mt flex-row" v-if="data.width != null"><text>width: </text><text id="page-width">{{data.width!}}</text>
+    <view class="uni-common-mt flex-row" v-if="data.width != null"><text class="dialog-page-text">width: </text><text id="page-width" class="dialog-page-text">{{data.width!}}</text>
     </view>
-    <view class="uni-common-mt flex-row" v-if="data.height != null"><text>height: </text><text id="page-height">{{data.height!}}</text>
+    <view class="uni-common-mt flex-row" v-if="data.height != null"><text class="dialog-page-text">height: </text><text id="page-height" class="dialog-page-text">{{data.height!}}</text>
     </view>
-    <view class="uni-common-mt flex-row" v-if="data.statusBarHeight != null"><text>statusBarHeight: </text><text id="page-statusBarHeight">{{data.statusBarHeight!}}</text>
+    <view class="uni-common-mt flex-row" v-if="data.statusBarHeight != null"><text class="dialog-page-text">statusBarHeight: </text><text id="page-statusBarHeight" class="dialog-page-text">{{data.statusBarHeight!}}</text>
     </view>
     <!-- #endif -->
     <button class="uni-common-mt" id="go-next-page" @click="goNextPage">
@@ -331,11 +331,12 @@ APP 蒸汽模式注意事项：
     <button class="uni-common-mt" @click="openDialogWithInput">
       openDialog with input
     </button>
-    <text class="uni-common-mt choose-open-animation-type-title">choose open dialogPage animationType</text>
+    <text class="uni-common-mt choose-open-animation-type-title dialog-page-text">choose open dialogPage animationType</text>
     <radio-group class="choose-open-animation-type-radio-group" @change="handleOpenAnimationType">
-      <radio class="ml-10 uni-common-mt" v-for="item in data.openAnimationTypeList" :key="item" :value="item"
-        :checked="data.openAnimationType == item">{{ item }}
-      </radio>
+      <view class="ml-10 uni-common-mt dialog-page-radio" v-for="item in data.openAnimationTypeList" :key="item">
+        <radio :value="item" :checked="data.openAnimationType == item" />
+        <text>{{ item }}</text>
+      </view>
     </radio-group>
   </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
@@ -797,6 +798,17 @@ APP 蒸汽模式注意事项：
   .flex-row{
     flex-direction: row;
     flex-wrap: wrap;
+  }
+
+  .dialog-page-text,
+  .dialog-page-radio {
+    color: var(--text-color, #333333);
+  }
+
+  .dialog-page-radio {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 </style>
 

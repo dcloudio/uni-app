@@ -230,7 +230,7 @@
 
   const navigateToChild = () => {
     uni.navigateTo({
-      url: 'buttonstatus',
+      url: '/pages/component/button/buttonstatus',
     })
   }
 
@@ -286,9 +286,11 @@
       <!-- #endif -->
     </view>
 
-    <navigator url="/pages/template/button-100/button-100">
-      <button>组件性能测试</button>
-    </navigator>
+    <!-- #ifndef MP-ALIPAY -->
+      <navigator url="/pages/template/button-100/button-100">
+        <button>组件性能测试</button>
+      </navigator>
+    <!-- #endif -->
   </scroll-view>
 </template>
 
