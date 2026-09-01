@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.5
+  * @vue/compiler-vapor v3.6.0-rc.6
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -180,7 +180,8 @@ function resolveExpression(exp, isComponent) {
 }
 function parseStaticAttrBooleanExpression(exp) {
 	try {
-		return (0, _vue_shared.includeBooleanAttr)(exp.isStatic ? exp.content : new Function(`return ${exp.content}`)());
+		const result = exp.isStatic ? exp.content : new Function(`return ${exp.content}`)();
+		return (0, _vue_shared.includeBooleanAttr)(result);
 	} catch (e) {}
 	return null;
 }
@@ -534,8 +535,10 @@ function transformNode(context) {
 	const exitFns = [];
 	for (const nodeTransform of nodeTransforms) {
 		const onExit = nodeTransform(node, context);
-		if (onExit) if ((0, _vue_shared.isArray)(onExit)) exitFns.push(...onExit);
-		else exitFns.push(onExit);
+		if (onExit) {
+			if ((0, _vue_shared.isArray)(onExit)) exitFns.push(...onExit);
+			else exitFns.push(onExit);
+		}
 		if (!context.node) return;
 		else node = context.node;
 	}
@@ -809,17 +812,18 @@ function genIdentifier(raw, context, loc, assignment, id, parent, parentStack, s
 	const idMap = identifiers[raw];
 	if (idMap && idMap.length) {
 		const replacement = idMap[0];
-		if ((0, _vue_shared.isString)(replacement)) if (parent && parent.type === "ObjectProperty" && parent.shorthand) return [[
-			`${name}: ${replacement}`,
-			-2,
-			loc
-		]];
-		else return [[
-			replacement,
-			-2,
-			loc
-		]];
-		else return genExpression(replacement, context, assignment);
+		if ((0, _vue_shared.isString)(replacement)) {
+			if (parent && parent.type === "ObjectProperty" && parent.shorthand) return [[
+				`${name}: ${replacement}`,
+				-2,
+				loc
+			]];
+			else return [[
+				replacement,
+				-2,
+				loc
+			]];
+		} else return genExpression(replacement, context, assignment);
 	}
 	let prefix;
 	const type = bindingMetadata && bindingMetadata[raw];
@@ -876,8 +880,10 @@ function genIdentifier(raw, context, loc, assignment, id, parent, parentStack, s
 		default: raw = withAssignment(raw);
 	}
 	else {
-		if (canPrefix(raw)) if (type === "props-aliased") raw = `$props['${bindingMetadata.__propsAliases[raw]}']`;
-		else raw = `${type === "props" ? "$props" : "_ctx"}.${raw}`;
+		if (canPrefix(raw)) {
+			if (type === "props-aliased") raw = `$props['${bindingMetadata.__propsAliases[raw]}']`;
+			else raw = `${type === "props" ? "$props" : "_ctx"}.${raw}`;
+		}
 		raw = withAssignment(raw);
 	}
 	return [prefix, [
@@ -1527,12 +1533,13 @@ function parseValueDestructure(value, context) {
 					for (let i = 0; i < parentStack.length; i++) {
 						const parent = parentStack[i];
 						const child = parentStack[i + 1] || id;
-						if (parent.type === "ObjectProperty" && parent.value === child) if (parent.key.type === "StringLiteral") path += `[${JSON.stringify(parent.key.value)}]`;
-						else if (parent.computed) {
-							isDynamic = true;
-							path += `[${rawValue.slice(parent.key.start - 1, parent.key.end - 1)}]`;
-						} else path += `.${parent.key.name}`;
-						else if (parent.type === "ArrayPattern") {
+						if (parent.type === "ObjectProperty" && parent.value === child) {
+							if (parent.key.type === "StringLiteral") path += `[${JSON.stringify(parent.key.value)}]`;
+							else if (parent.computed) {
+								isDynamic = true;
+								path += `[${rawValue.slice(parent.key.start - 1, parent.key.end - 1)}]`;
+							} else path += `.${parent.key.name}`;
+						} else if (parent.type === "ArrayPattern") {
 							const index = parent.elements.indexOf(child);
 							if (child.type === "RestElement") path += `.slice(${index})`;
 							else path += `[${index}]`;
@@ -1704,8 +1711,10 @@ function genIf(oper, context, isNested = false) {
 	];
 	let positiveArg = genBlock(positive, context);
 	let negativeArg = false;
-	if (negative) if (negative.type === 1) negativeArg = genBlock(negative, context);
-	else negativeArg = ["() => ", ...genIf(negative, context, true)];
+	if (negative) {
+		if (negative.type === 1) negativeArg = genBlock(negative, context);
+		else negativeArg = ["() => ", ...genIf(negative, context, true)];
+	}
 	if (!isNested) push(NEWLINE, `const n${oper.id} = `);
 	push(...genCall(helper("createIf"), conditionExpr, positiveArg, negativeArg, flags));
 	return frag;
@@ -1792,11 +1801,13 @@ function resolveClassName(values, context) {
 		const staticValue = getLiteralExpressionValue(value, true);
 		if (staticValue != null) {
 			const normalized = (0, _vue_shared.normalizeClass)(staticValue);
-			if (normalized) if (sawSuffix) suffix = appendClass$1(suffix, normalized);
-			else if (sawDynamic) {
-				sawSuffix = true;
-				suffix = appendClass$1(suffix, normalized);
-			} else prefix = appendClass$1(prefix, normalized);
+			if (normalized) {
+				if (sawSuffix) suffix = appendClass$1(suffix, normalized);
+				else if (sawDynamic) {
+					sawSuffix = true;
+					suffix = appendClass$1(suffix, normalized);
+				} else prefix = appendClass$1(prefix, normalized);
+			}
 			continue;
 		}
 		const ast = value.ast;
@@ -1941,8 +1952,10 @@ function genPropValue(values, context) {
 function getRuntimeHelper(tag, key, modifier) {
 	const tagName = tag.toUpperCase();
 	const isSVG = (0, _vue_shared.isSVGTag)(tag);
-	if (modifier) if (modifier === ".") return getSpecialHelper(key, tagName, isSVG) || helpers.setDOMProp;
-	else return isSVG ? (0, _vue_shared.extend)({ isSVG: true }, helpers.setAttr) : helpers.setAttr;
+	if (modifier) {
+		if (modifier === ".") return getSpecialHelper(key, tagName, isSVG) || helpers.setDOMProp;
+		else return isSVG ? (0, _vue_shared.extend)({ isSVG: true }, helpers.setAttr) : helpers.setAttr;
+	}
 	const helper = getSpecialHelper(key, tagName, isSVG);
 	if (helper) return helper;
 	if (/aria[A-Z]/.test(key)) return helpers.setDOMProp;
@@ -2057,7 +2070,8 @@ function genDirectivesForElement(id, context) {
 function genCustomDirectives(opers, context) {
 	const { helper } = context;
 	const element = `n${opers[0].element}`;
-	const directives = genMulti(DELIMITERS_ARRAY, ...opers.map(genDirectiveItem));
+	const directiveItems = opers.map(genDirectiveItem);
+	const directives = genMulti(DELIMITERS_ARRAY, ...directiveItems);
 	return [NEWLINE, ...genCall(helper("withVaporDirectives"), element, directives)];
 	function genDirectiveItem({ dir, name, asset }) {
 		const directiveVar = asset ? (0, _vue_compiler_dom.toValidAssetId)(name, "directive") : genExpression((0, _vue_shared.extend)((0, _vue_compiler_dom.createSimpleExpression)(name, false), { ast: null }), context);
@@ -2096,30 +2110,32 @@ function genCreateComponent(operation, context) {
 	const rawSlots = genRawSlots(slots, context);
 	const [ids, handlers] = processInlineHandlers(props, context);
 	const rawProps = context.withId(() => genRawProps(props, context, true), ids);
+	const inlineHandlers = handlers.reduce((acc, { name, value }) => {
+		const handler = genEventHandler(context, [value]);
+		return [
+			...acc,
+			`const ${name} = `,
+			...handler,
+			NEWLINE
+		];
+	}, []);
 	return [
 		NEWLINE,
-		...handlers.reduce((acc, { name, value }) => {
-			const handler = genEventHandler(context, [value]);
-			return [
-				...acc,
-				`const ${name} = `,
-				...handler,
-				NEWLINE
-			];
-		}, []),
+		...inlineHandlers,
 		`const n${operation.id} = `,
 		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags : root ? "true" : false, isRuntimeDynamicComponent ? false : once && "true", isRuntimeDynamicComponent ? false : maybeSelfReference && "true"),
 		...genDirectivesForElement(operation.id, context)
 	];
 	function genTag() {
 		if (operation.useCreateElement) return JSON.stringify(operation.tag);
-		else if (operation.dynamic) if (operation.dynamic.isStatic) return genCall(helper("resolveDynamicComponent"), genExpression(operation.dynamic, context));
-		else return [
-			"() => (",
-			...genExpression(operation.dynamic, context),
-			")"
-		];
-		else if (useAssetComponentHelper) {
+		else if (operation.dynamic) {
+			if (operation.dynamic.isStatic) return genCall(helper("resolveDynamicComponent"), genExpression(operation.dynamic, context));
+			else return [
+				"() => (",
+				...genExpression(operation.dynamic, context),
+				")"
+			];
+		} else if (useAssetComponentHelper) {
 			const name = maybeSelfReference ? operation.tag.slice(0, -6) : operation.tag;
 			return JSON.stringify(name);
 		} else if (operation.asset) return (0, _vue_compiler_dom.toValidAssetId)(operation.tag, "component");
@@ -2276,31 +2292,32 @@ function genDynamicProps(props, context, directStaticLiteralProps = false) {
 		if ((0, _vue_shared.isArray)(p)) {
 			if (p.length) frags.push(genStaticProps(p, context, void 0, directStaticLiteralProps));
 			continue;
-		} else if (p.kind === 1) if (p.model) {
-			const entries = [genProp(p, context)];
-			const updateKey = p.key.isStatic ? [JSON.stringify(`onUpdate:${(0, _vue_shared.camelize)(p.key.content)}`)] : [
-				"[\"onUpdate:\" + ",
-				...genExpression(p.key, context),
-				"]"
-			];
-			entries.push([
-				...updateKey,
-				": ",
-				...genModelHandler(p.values[0], context)
-			]);
-			const { modelModifiers } = p;
-			if (modelModifiers && modelModifiers.length) {
-				const modifiersKey = p.key.isStatic ? genStaticModifierPropKey(p.key.content) : [
-					"[",
+		} else if (p.kind === 1) {
+			if (p.model) {
+				const entries = [genProp(p, context)];
+				const updateKey = p.key.isStatic ? [JSON.stringify(`onUpdate:${(0, _vue_shared.camelize)(p.key.content)}`)] : [
+					"[\"onUpdate:\" + ",
 					...genExpression(p.key, context),
-					" + \"Modifiers\"]"
+					"]"
 				];
-				const modifiersVal = genDirectiveModifiers(modelModifiers);
-				entries.push([...modifiersKey, `: { ${modifiersVal} }`]);
-			}
-			expr = genMulti(DELIMITERS_OBJECT_NEWLINE, ...entries);
-		} else expr = genMulti(DELIMITERS_OBJECT, genProp(p, context, false, false));
-		else {
+				entries.push([
+					...updateKey,
+					": ",
+					...genModelHandler(p.values[0], context)
+				]);
+				const { modelModifiers } = p;
+				if (modelModifiers && modelModifiers.length) {
+					const modifiersKey = p.key.isStatic ? genStaticModifierPropKey(p.key.content) : [
+						"[",
+						...genExpression(p.key, context),
+						" + \"Modifiers\"]"
+					];
+					const modifiersVal = genDirectiveModifiers(modelModifiers);
+					entries.push([...modifiersKey, `: { ${modifiersVal} }`]);
+				}
+				expr = genMulti(DELIMITERS_OBJECT_NEWLINE, ...entries);
+			} else expr = genMulti(DELIMITERS_OBJECT, genProp(p, context, false, false));
+		} else {
 			expr = genExpression(p.value, context);
 			if (p.handler) expr = genCall(helper("toHandlers"), expr);
 		}
@@ -2403,9 +2420,7 @@ function genDynamicSlot(slot, context, withFunction = false) {
 		case 2:
 			frag = genLoopSlot(slot, context);
 			break;
-		case 3:
-			frag = genConditionalSlot(slot, context);
-			break;
+		case 3: frag = genConditionalSlot(slot, context);
 	}
 	if (!withFunction) return frag;
 	return [
@@ -2499,10 +2514,12 @@ function genSlotBlockWithProps(oper, context, emitNonStableFlag = true) {
 	let depth;
 	const { props } = oper;
 	const idToPathMap = props ? parseValueDestructure(props, context) : /* @__PURE__ */ new Map();
-	if (props) if (props.ast) {
-		[depth, exitScope] = context.enterScope();
-		propsName = `_slotProps${depth}`;
-	} else propsName = props.content;
+	if (props) {
+		if (props.ast) {
+			[depth, exitScope] = context.enterScope();
+			propsName = `_slotProps${depth}`;
+		} else propsName = props.content;
+	}
 	const idMap = idToPathMap.size ? buildDestructureIdMap(idToPathMap, propsName || "", context.options.expressionPlugins) : {};
 	if (propsName) idMap[propsName] = null;
 	const exitSlotBlock = context.enterSlotBlock();
@@ -2550,16 +2567,16 @@ function hasComponentOrSlotInOperations(operations) {
 		case 14:
 			if (hasComponentOrSlotInIf(op)) return true;
 			break;
-		case 15:
-			if (hasComponentOrSlotInBlock(op.render)) return true;
-			break;
+		case 15: if (hasComponentOrSlotInBlock(op.render)) return true;
 	}
 	return false;
 }
 function hasComponentOrSlotInIf(node) {
 	if (hasComponentOrSlotInBlock(node.positive)) return true;
-	if (node.negative) if ("positive" in node.negative) return hasComponentOrSlotInIf(node.negative);
-	else return hasComponentOrSlotInBlock(node.negative);
+	if (node.negative) {
+		if ("positive" in node.negative) return hasComponentOrSlotInIf(node.negative);
+		else return hasComponentOrSlotInBlock(node.negative);
+	}
 	return false;
 }
 //#endregion
@@ -3064,8 +3081,10 @@ function collectSingleUseAssetComponents(block) {
 		switch (operation.type) {
 			case 14:
 				visitBlock(operation.positive, false);
-				if (operation.negative) if (operation.negative.type === 14) visitOperation(operation.negative, false);
-				else visitBlock(operation.negative, false);
+				if (operation.negative) {
+					if (operation.negative.type === 14) visitOperation(operation.negative, false);
+					else visitBlock(operation.negative, false);
+				}
 				break;
 			case 15:
 				visitBlock(operation.render, false);
@@ -3073,9 +3092,7 @@ function collectSingleUseAssetComponents(block) {
 			case 16:
 				visitBlock(operation.block, false);
 				break;
-			case 12:
-				if (operation.fallback) visitBlock(operation.fallback, false);
-				break;
+			case 12: if (operation.fallback) visitBlock(operation.fallback, false);
 		}
 	}
 	function visitSlots(slots) {
@@ -3090,7 +3107,6 @@ function collectSingleUseAssetComponents(block) {
 			case 3:
 				visitSlots([slot.positive]);
 				if (slot.negative) visitSlots([slot.negative]);
-				break;
 		}
 	}
 }
@@ -3295,7 +3311,8 @@ function normalizeBindShorthand(arg, context) {
 		context.options.onError((0, _vue_compiler_dom.createCompilerError)(53, arg.loc));
 		return (0, _vue_compiler_dom.createSimpleExpression)("", true, arg.loc);
 	}
-	const exp = (0, _vue_compiler_dom.createSimpleExpression)((0, _vue_shared.camelize)(arg.content), false, arg.loc);
+	const propName = (0, _vue_shared.camelize)(arg.content);
+	const exp = (0, _vue_compiler_dom.createSimpleExpression)(propName, false, arg.loc);
 	exp.ast = null;
 	return exp;
 }
@@ -3315,8 +3332,10 @@ const transformVBind = (dir, node, context) => {
 	arg = resolveExpression(arg);
 	if (arg.isStatic && isReservedProp(arg.content)) return;
 	let camel = false;
-	if (modifiersString.includes("camel")) if (arg.isStatic) arg = (0, _vue_shared.extend)({}, arg, { content: (0, _vue_shared.camelize)(arg.content) });
-	else camel = true;
+	if (modifiersString.includes("camel")) {
+		if (arg.isStatic) arg = (0, _vue_shared.extend)({}, arg, { content: (0, _vue_shared.camelize)(arg.content) });
+		else camel = true;
+	}
 	return {
 		key: arg,
 		value: exp,
@@ -3373,7 +3392,7 @@ const VaporErrorMessages = {
 };
 //#endregion
 //#region packages/compiler-vapor/src/transforms/transformElement.ts
-const isReservedProp = /* @__PURE__ */ (0, _vue_shared.makeMap)(",key,ref,ref_for,ref_key,");
+const isReservedProp = /*#__PURE__*/ (0, _vue_shared.makeMap)(",key,ref,ref_for,ref_key,");
 const transformElement = (node, context) => {
 	let effectIndex = context.block.effect.length;
 	const getEffectIndex = () => effectIndex++;
@@ -3697,7 +3716,8 @@ function foldStyleValues(values) {
 		if (!evaluated || !isStaticStyleValue(evaluated.value)) return;
 		evaluatedValues.push(evaluated.value);
 	}
-	return (0, _vue_shared.stringifyStyle)((0, _vue_shared.normalizeStyle)(evaluatedValues.length === 1 ? evaluatedValues[0] : evaluatedValues));
+	const normalized = (0, _vue_shared.normalizeStyle)(evaluatedValues.length === 1 ? evaluatedValues[0] : evaluatedValues);
+	return (0, _vue_shared.stringifyStyle)(normalized);
 }
 function isStaticStyleValue(value) {
 	if (typeof value === "string") return true;
@@ -3835,9 +3855,10 @@ function buildProps(node, context, isComponent, isDynamicComponent, getEffectInd
 			if (prop.name === "bind") {
 				if (prop.exp) {
 					const objectLiteralProps = isComponent ? resolveComponentObjectLiteralBindProps(prop.exp, context, props, prop) : resolveNativeObjectLiteralBindProps(prop.exp, context, props, prop);
-					if (objectLiteralProps) if (isComponent) pushStaticObjectLiteralProps(objectLiteralProps);
-					else results.push(...objectLiteralProps.map(toDirectiveResult));
-					else {
+					if (objectLiteralProps) {
+						if (isComponent) pushStaticObjectLiteralProps(objectLiteralProps);
+						else results.push(...objectLiteralProps.map(toDirectiveResult));
+					} else {
 						dynamicExpr.push(prop.exp);
 						pushMergeArg();
 						dynamicArgs.push({
@@ -3848,25 +3869,26 @@ function buildProps(node, context, isComponent, isDynamicComponent, getEffectInd
 				} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(34, prop.loc));
 				continue;
 			} else if (prop.name === "on") {
-				if (prop.exp) if (isComponent) {
-					const objectLiteralProps = resolveComponentObjectLiteralOnProps(prop.exp, context, props, prop);
-					if (objectLiteralProps) pushStaticObjectLiteralProps(objectLiteralProps);
-					else {
-						dynamicExpr.push(prop.exp);
-						pushMergeArg();
-						dynamicArgs.push({
-							kind: 0,
-							value: prop.exp,
-							handler: true
-						});
-					}
-				} else context.registerEffect([prop.exp], {
-					type: 7,
-					node,
-					element: context.reference(),
-					event: prop.exp
-				}, getEffectIndex);
-				else context.options.onError((0, _vue_compiler_dom.createCompilerError)(35, prop.loc));
+				if (prop.exp) {
+					if (isComponent) {
+						const objectLiteralProps = resolveComponentObjectLiteralOnProps(prop.exp, context, props, prop);
+						if (objectLiteralProps) pushStaticObjectLiteralProps(objectLiteralProps);
+						else {
+							dynamicExpr.push(prop.exp);
+							pushMergeArg();
+							dynamicArgs.push({
+								kind: 0,
+								value: prop.exp,
+								handler: true
+							});
+						}
+					} else context.registerEffect([prop.exp], {
+						type: 7,
+						node,
+						element: context.reference(),
+						event: prop.exp
+					}, getEffectIndex);
+				} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(35, prop.loc));
 				continue;
 			}
 		}
@@ -4331,7 +4353,7 @@ function isTextLike(node) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vText.ts
-const isRawTextContainer = /* @__PURE__ */ (0, _vue_shared.makeMap)("iframe,noembed,noframes,noscript,script,style,xmp");
+const isRawTextContainer = /*@__PURE__*/ (0, _vue_shared.makeMap)("iframe,noembed,noframes,noscript,script,style,xmp");
 const transformVText = (dir, node, context) => {
 	let { exp, loc } = dir;
 	if (!exp) {
@@ -4352,16 +4374,17 @@ const transformVText = (dir, node, context) => {
 	};
 	const literal = getLiteralExpressionValue(exp);
 	const useCreateElement = shouldUseCreateElement(context.node, context);
-	if (literal != null) if (useCreateElement || isRawTextContainer(node.tag)) {
-		const id = registerSyntheticTextChild(context, "", [exp]);
-		context.registerOperation({
-			type: 10,
-			node,
-			elements: [id],
-			parent: context.reference()
-		});
-	} else context.childrenTemplate = [(0, _vue_shared.escapeHtml)(literal)];
-	else {
+	if (literal != null) {
+		if (useCreateElement || isRawTextContainer(node.tag)) {
+			const id = registerSyntheticTextChild(context, "", [exp]);
+			context.registerOperation({
+				type: 10,
+				node,
+				elements: [id],
+				parent: context.reference()
+			});
+		} else context.childrenTemplate = [(0, _vue_shared.escapeHtml)(literal)];
+	} else {
 		let id;
 		if (useCreateElement) {
 			id = registerSyntheticTextChild(context, "");
@@ -4404,7 +4427,7 @@ function isConstantVTextExpression(exp, bindings) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vOn.ts
-const delegatedEvents = /* @__PURE__ */ (0, _vue_shared.makeMap)("beforeinput,click,dblclick,contextmenu,focusin,focusout,input,keydown,keyup,mousedown,mousemove,mouseout,mouseover,mouseup,pointerdown,pointermove,pointerout,pointerover,pointerup,touchend,touchmove,touchstart");
+const delegatedEvents = /*#__PURE__*/ (0, _vue_shared.makeMap)("beforeinput,click,dblclick,contextmenu,focusin,focusout,input,keydown,keyup,mousedown,mousemove,mouseout,mouseover,mouseup,pointerdown,pointermove,pointerout,pointerover,pointerup,touchend,touchmove,touchstart");
 const transformVOn = (dir, node, context) => {
 	let { arg, exp, loc, modifiers } = dir;
 	const isComponent = node.tagType === 1;
@@ -4563,30 +4586,29 @@ const transformVModel = (dir, node, context) => {
 	const { tag } = node;
 	const isCustomElement = context.options.isCustomElement(tag);
 	let modelType = "text";
-	if (tag === "input" || tag === "textarea" || tag === "select" || isCustomElement) if (tag === "input" || isCustomElement) {
-		const type = (0, _vue_compiler_dom.findProp)(node, "type");
-		if (type) {
-			if (type.type === 7) modelType = "dynamic";
-			else if (type.value) switch (type.value.content) {
-				case "radio":
-					modelType = "radio";
-					break;
-				case "checkbox":
-					modelType = "checkbox";
-					break;
-				case "file":
-					modelType = void 0;
-					context.options.onError((0, _vue_compiler_dom.createDOMCompilerError)(60, dir.loc));
-					break;
-				default:
-					checkDuplicatedValue();
-					break;
-			}
-		} else if ((0, _vue_compiler_dom.hasDynamicKeyVBind)(node)) modelType = "dynamic";
+	if (tag === "input" || tag === "textarea" || tag === "select" || isCustomElement) {
+		if (tag === "input" || isCustomElement) {
+			const type = (0, _vue_compiler_dom.findProp)(node, "type");
+			if (type) {
+				if (type.type === 7) modelType = "dynamic";
+				else if (type.value) switch (type.value.content) {
+					case "radio":
+						modelType = "radio";
+						break;
+					case "checkbox":
+						modelType = "checkbox";
+						break;
+					case "file":
+						modelType = void 0;
+						context.options.onError((0, _vue_compiler_dom.createDOMCompilerError)(60, dir.loc));
+						break;
+					default: checkDuplicatedValue();
+				}
+			} else if ((0, _vue_compiler_dom.hasDynamicKeyVBind)(node)) modelType = "dynamic";
+			else checkDuplicatedValue();
+		} else if (tag === "select") modelType = "select";
 		else checkDuplicatedValue();
-	} else if (tag === "select") modelType = "select";
-	else checkDuplicatedValue();
-	else context.options.onError((0, _vue_compiler_dom.createDOMCompilerError)(58, dir.loc));
+	} else context.options.onError((0, _vue_compiler_dom.createDOMCompilerError)(58, dir.loc));
 	if (modelType) context.registerOperation({
 		type: 13,
 		node,
@@ -4820,14 +4842,17 @@ const transformSlotOutlet = (node, context) => {
 	let slotName;
 	const slotProps = [];
 	for (const prop of node.props) if (prop.type === 6) {
-		if (prop.value) if (prop.name === "name") slotName = (0, _vue_compiler_dom.createSimpleExpression)(prop.value.content, true, prop.loc);
-		else slotProps.push((0, _vue_shared.extend)({}, prop, { name: (0, _vue_shared.camelize)(prop.name) }));
-	} else if (prop.name === "bind" && (0, _vue_compiler_dom.isStaticArgOf)(prop.arg, "name")) if (prop.exp) slotName = prop.exp;
-	else {
-		slotName = (0, _vue_compiler_dom.createSimpleExpression)((0, _vue_shared.camelize)(prop.arg.content), false, prop.arg.loc);
-		slotName.ast = null;
-	}
-	else {
+		if (prop.value) {
+			if (prop.name === "name") slotName = (0, _vue_compiler_dom.createSimpleExpression)(prop.value.content, true, prop.loc);
+			else slotProps.push((0, _vue_shared.extend)({}, prop, { name: (0, _vue_shared.camelize)(prop.name) }));
+		}
+	} else if (prop.name === "bind" && (0, _vue_compiler_dom.isStaticArgOf)(prop.arg, "name")) {
+		if (prop.exp) slotName = prop.exp;
+		else {
+			slotName = (0, _vue_compiler_dom.createSimpleExpression)((0, _vue_shared.camelize)(prop.arg.content), false, prop.arg.loc);
+			slotName.ast = null;
+		}
+	} else {
 		let slotProp = prop;
 		if (slotProp.name === "bind" && slotProp.arg && (0, _vue_compiler_dom.isStaticExp)(slotProp.arg)) slotProp = (0, _vue_shared.extend)({}, prop, { arg: (0, _vue_shared.extend)({}, slotProp.arg, { content: (0, _vue_shared.camelize)(slotProp.arg.content) }) });
 		slotProps.push(slotProp);
@@ -4913,12 +4938,13 @@ function transformComponentSlot(node, dir, context) {
 			context.options.onError((0, _vue_compiler_dom.createCompilerError)(37, dir.loc));
 			return;
 		}
-		if (nonSlotTemplateChildren.length) if (hasStaticSlot(slots, "default")) context.options.onError((0, _vue_compiler_dom.createCompilerError)(39, nonSlotTemplateChildren[0].loc));
-		else {
-			registerSlot(slots, arg, block);
-			context.slots = slots;
-		}
-		else if (hasOtherSlots) context.slots = slots;
+		if (nonSlotTemplateChildren.length) {
+			if (hasStaticSlot(slots, "default")) context.options.onError((0, _vue_compiler_dom.createCompilerError)(39, nonSlotTemplateChildren[0].loc));
+			else {
+				registerSlot(slots, arg, block);
+				context.slots = slots;
+			}
+		} else if (hasOtherSlots) context.slots = slots;
 	};
 }
 function transformTemplateSlot(node, dir, context) {
@@ -4964,16 +4990,18 @@ function transformTemplateSlot(node, dir, context) {
 			};
 			ifNode.negative = negative;
 		} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(30, vElse.loc));
-	} else if (vFor) if (vFor.forParseResult) {
-		const keyProp = findProp$1(node, "key");
-		registerDynamicSlot(slots, {
-			slotType: 2,
-			name: arg,
-			fn: block,
-			loop: vFor.forParseResult,
-			keyProp: keyProp && propToExpression(keyProp)
-		});
-	} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(32, vFor.loc));
+	} else if (vFor) {
+		if (vFor.forParseResult) {
+			const keyProp = findProp$1(node, "key");
+			registerDynamicSlot(slots, {
+				slotType: 2,
+				name: arg,
+				fn: block,
+				loop: vFor.forParseResult,
+				keyProp: keyProp && propToExpression(keyProp)
+			});
+		} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(32, vFor.loc));
+	}
 	return onExit;
 }
 function ensureStaticSlots(slots) {

@@ -1,7 +1,6 @@
 import { ComputedGetter, ComputedGetter as ComputedGetter$1, ComputedRef, ComputedSetter, CustomRefFactory, DebuggerEvent, DebuggerEvent as DebuggerEvent$1, DebuggerEventExtraInfo, DebuggerOptions, DebuggerOptions as DebuggerOptions$1, DeepReadonly, EffectScheduler, EffectScope, MaybeRef, MaybeRefOrGetter, OnCleanup, Raw, Reactive, ReactiveEffect, ReactiveEffect as ReactiveEffect$1, ReactiveEffectOptions, ReactiveEffectRunner, ReactiveFlags, ReactiveMarker, Ref, Ref as Ref$1, ShallowReactive, ShallowRef, ShallowRef as ShallowRef$1, ShallowUnwrapRef, ShallowUnwrapRef as ShallowUnwrapRef$1, ToRef, ToRefs, TrackOpTypes, TriggerOpTypes, UnwrapNestedRefs, UnwrapNestedRefs as UnwrapNestedRefs$1, UnwrapRef, WatchCallback, WatchCallback as WatchCallback$1, WatchEffect, WatchEffect as WatchEffect$1, WatchErrorCodes, WatchHandle, WatchHandle as WatchHandle$1, WatchSource, WatchSource as WatchSource$1, WatchStopHandle, WritableComputedOptions, WritableComputedOptions as WritableComputedOptions$1, WritableComputedRef, computed as computed$1, customRef, effect, effectScope, getCurrentScope, getCurrentWatcher, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, onWatcherCleanup, proxyRefs, reactive, reactive as reactive$1, readonly, ref as ref$1, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from "@vue/reactivity";
 import { IfAny, IsKeyValues, LooseRequired, OverloadParameters, Prettify, UnionToIntersection, camelize, capitalize, toDisplayString, toHandlerKey } from "@vue/shared";
 import { normalizeClass, normalizeProps, normalizeStyle } from "@dcloudio/uni-shared";
-
 //#region temp/packages/runtime-core/src/apiComputed.d.ts
 export declare const computed: typeof computed$1;
 //#endregion
@@ -16,7 +15,7 @@ export type SlotsType<T extends Record<string, any> = Record<string, any>> = {
   [SlotSymbol]?: T;
 };
 type StrictUnwrapSlotsType<S extends SlotsType, T = NonNullable<S[typeof SlotSymbol]>> = [keyof S] extends [never] ? Slots : Readonly<T> & T;
-type UnwrapSlotsType<S extends SlotsType, T = NonNullable<S[typeof SlotSymbol]>> = [keyof S] extends [never] ? Slots : Readonly<Prettify<{ [K in keyof T]: NonNullable<T[K]> extends ((...args: any[]) => any) ? T[K] : Slot<T[K]> }>>;
+type UnwrapSlotsType<S extends SlotsType, T = NonNullable<S[typeof SlotSymbol]>> = [keyof S] extends [never] ? Slots : Readonly<Prettify<{ [K in keyof T]: NonNullable<T[K]> extends ((...args: any[]) => any) ? T[K] : Slot<T[K]>; }>>;
 type RawSlots = {
   [name: string]: unknown;
   $stable?: boolean;
@@ -26,39 +25,39 @@ type RawSlots = {
 declare enum SchedulerJobFlags {
   QUEUED = 1,
   /**
-  * Indicates whether the effect is allowed to recursively trigger itself
-  * when managed by the scheduler.
-  *
-  * By default, a job cannot trigger itself because some built-in method calls,
-  * e.g. Array.prototype.push actually performs reads as well (#1740) which
-  * can lead to confusing infinite loops.
-  * The allowed cases are component update functions and watch callbacks.
-  * Component update functions may update child component props, which in turn
-  * trigger flush: "pre" watch callbacks that mutates state that the parent
-  * relies on (#1801). Watch callbacks doesn't track its dependencies so if it
-  * triggers itself again, it's likely intentional and it is the user's
-  * responsibility to perform recursive state mutation that eventually
-  * stabilizes (#1727).
-  */
+   * Indicates whether the effect is allowed to recursively trigger itself
+   * when managed by the scheduler.
+   *
+   * By default, a job cannot trigger itself because some built-in method calls,
+   * e.g. Array.prototype.push actually performs reads as well (#1740) which
+   * can lead to confusing infinite loops.
+   * The allowed cases are component update functions and watch callbacks.
+   * Component update functions may update child component props, which in turn
+   * trigger flush: "pre" watch callbacks that mutates state that the parent
+   * relies on (#1801). Watch callbacks doesn't track its dependencies so if it
+   * triggers itself again, it's likely intentional and it is the user's
+   * responsibility to perform recursive state mutation that eventually
+   * stabilizes (#1727).
+   */
   ALLOW_RECURSE = 2,
   DISPOSED = 4,
   /**
-  * Requeue a Suspense effect if its pending branch is discarded.
-  * @internal
-  */
+   * Requeue a Suspense effect if its pending branch is discarded.
+   * @internal
+   */
   REQUEUE_ON_SUSPENSE_DISCARD = 8
 }
 export interface SchedulerJob extends Function {
   order?: number;
   /**
-  * flags can technically be undefined, but it can still be used in bitwise
-  * operations just like 0.
-  */
+   * flags can technically be undefined, but it can still be used in bitwise
+   * operations just like 0.
+   */
   flags?: SchedulerJobFlags;
   /**
-  * Attached by renderer.ts when setting up a component's render effect
-  * Used to obtain component information when reporting max recursive updates.
-  */
+   * Attached by renderer.ts when setting up a component's render effect
+   * Used to obtain component information when reporting max recursive updates.
+   */
   i?: GenericComponentInstance;
 }
 type SchedulerJobs = SchedulerJob | SchedulerJob[];
@@ -69,7 +68,7 @@ export declare function queuePostFlushCb(jobs: SchedulerJobs, id?: number): void
 //#endregion
 //#region temp/packages/runtime-core/src/componentProps.d.ts
 export type ComponentPropsOptions<P = Data> = ComponentObjectPropsOptions<P> | string[];
-export type ComponentObjectPropsOptions<P = Data> = { [K in keyof P]: Prop<P[K]> | null };
+export type ComponentObjectPropsOptions<P = Data> = { [K in keyof P]: Prop<P[K]> | null; };
 export type Prop<T, D = T> = PropOptions<T, D> | PropType<T>;
 type DefaultFactory<T> = (props: Data) => T | null | undefined;
 interface PropOptions<T = any, D = T> {
@@ -97,7 +96,7 @@ type RequiredKeys<T> = { [K in keyof T]: T[K] extends {
   type: BooleanConstructor;
 } ? T[K] extends {
   default: undefined | (() => undefined);
-} ? never : K : never }[keyof T];
+} ? never : K : never; }[keyof T];
 type OptionalKeys<T> = Exclude<keyof T, RequiredKeys<T>>;
 type DefaultKeys<T> = { [K in keyof T]: T[K] extends {
   default: any;
@@ -106,7 +105,7 @@ type DefaultKeys<T> = { [K in keyof T]: T[K] extends {
 } ? T[K] extends {
   type: BooleanConstructor;
   required: true;
-} ? never : K : never }[keyof T];
+} ? never : K : never; }[keyof T];
 type InferPropType<T, NullAsAny = true> = [T] extends [null] ? NullAsAny extends true ? any : null : [T] extends [{
   type: null | true;
 }] ? any : [T] extends [ObjectConstructor | {
@@ -119,171 +118,171 @@ type InferPropType<T, NullAsAny = true> = [T] extends [null] ? NullAsAny extends
   type: (infer U)[];
 }] ? U extends DateConstructor ? Date | InferPropType<U, false> : InferPropType<U, false> : [T] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : T;
 /**
-* Extract prop types from a runtime props options object.
-* The extracted types are **internal** - i.e. the resolved props received by
-* the component.
-* - Boolean props are always present
-* - Props with default values are always present
-*
-* To extract accepted props from the parent, use {@link ExtractPublicPropTypes}.
-*/
+ * Extract prop types from a runtime props options object.
+ * The extracted types are **internal** - i.e. the resolved props received by
+ * the component.
+ * - Boolean props are always present
+ * - Props with default values are always present
+ *
+ * To extract accepted props from the parent, use {@link ExtractPublicPropTypes}.
+ */
 export type ExtractPropTypes<O> = { [K in keyof Pick<O, RequiredKeys<O>>]: O[K] extends {
   default: any;
-} ? Exclude<InferPropType<O[K]>, undefined> : InferPropType<O[K]> } & { [K in keyof Pick<O, OptionalKeys<O>>]?: InferPropType<O[K]> };
+} ? Exclude<InferPropType<O[K]>, undefined> : InferPropType<O[K]>; } & { [K in keyof Pick<O, OptionalKeys<O>>]?: InferPropType<O[K]>; };
 type PublicRequiredKeys<T> = { [K in keyof T]: T[K] extends {
   required: true;
-} ? K : never }[keyof T];
+} ? K : never; }[keyof T];
 type PublicOptionalKeys<T> = Exclude<keyof T, PublicRequiredKeys<T>>;
 /**
-* Extract prop types from a runtime props options object.
-* The extracted types are **public** - i.e. the expected props that can be
-* passed to component.
-*/
-export type ExtractPublicPropTypes<O> = { [K in keyof Pick<O, PublicRequiredKeys<O>>]: InferPropType<O[K]> } & { [K in keyof Pick<O, PublicOptionalKeys<O>>]?: InferPropType<O[K]> };
+ * Extract prop types from a runtime props options object.
+ * The extracted types are **public** - i.e. the expected props that can be
+ * passed to component.
+ */
+export type ExtractPublicPropTypes<O> = { [K in keyof Pick<O, PublicRequiredKeys<O>>]: InferPropType<O[K]>; } & { [K in keyof Pick<O, PublicOptionalKeys<O>>]?: InferPropType<O[K]>; };
 declare enum BooleanFlags {
   shouldCast = 0,
   shouldCastTrue = 1,
   externalClasses = 2
 }
-export type ExtractDefaultPropTypes<O> = O extends object ? { [K in keyof Pick<O, DefaultKeys<O>>]: InferPropType<O[K]> } : {};
+export type ExtractDefaultPropTypes<O> = O extends object ? { [K in keyof Pick<O, DefaultKeys<O>>]: InferPropType<O[K]>; } : {};
 type NormalizedProp = PropOptions & {
   [BooleanFlags.shouldCast]?: boolean;
   [BooleanFlags.shouldCastTrue]?: boolean;
   [BooleanFlags.externalClasses]?: boolean;
 };
 /**
-* normalized value is a tuple of the actual normalized options
-* and an array of prop keys that need value casting (booleans and defaults)
-*/
+ * normalized value is a tuple of the actual normalized options
+ * and an array of prop keys that need value casting (booleans and defaults)
+ */
 type NormalizedProps = Record<string, NormalizedProp>;
 export type NormalizedPropsOptions = [NormalizedProps, string[]] | [];
 //#endregion
 //#region temp/packages/runtime-core/src/apiSetupHelpers.d.ts
 /**
-* Vue `<script setup>` compiler macro for declaring component props. The
-* expected argument is the same as the component `props` option.
-*
-* Example runtime declaration:
-* ```js
-* // using Array syntax
-* const props = defineProps(['foo', 'bar'])
-* // using Object syntax
-* const props = defineProps({
-*   foo: String,
-*   bar: {
-*     type: Number,
-*     required: true
-*   }
-* })
-* ```
-*
-* Equivalent type-based declaration:
-* ```ts
-* // will be compiled into equivalent runtime declarations
-* const props = defineProps<{
-*   foo?: string
-*   bar: number
-* }>()
-* ```
-*
-* @see {@link https://vuejs.org/api/sfc-script-setup.html#defineprops-defineemits}
-*
-* This is only usable inside `<script setup>`, is compiled away in the
-* output and should **not** be actually called at runtime.
-*/
-export declare function defineProps<PropNames extends string = string>(props: PropNames[]): Prettify<Readonly<{ [key in PropNames]?: any }>>;
+ * Vue `<script setup>` compiler macro for declaring component props. The
+ * expected argument is the same as the component `props` option.
+ *
+ * Example runtime declaration:
+ * ```js
+ * // using Array syntax
+ * const props = defineProps(['foo', 'bar'])
+ * // using Object syntax
+ * const props = defineProps({
+ *   foo: String,
+ *   bar: {
+ *     type: Number,
+ *     required: true
+ *   }
+ * })
+ * ```
+ *
+ * Equivalent type-based declaration:
+ * ```ts
+ * // will be compiled into equivalent runtime declarations
+ * const props = defineProps<{
+ *   foo?: string
+ *   bar: number
+ * }>()
+ * ```
+ *
+ * @see {@link https://vuejs.org/api/sfc-script-setup.html#defineprops-defineemits}
+ *
+ * This is only usable inside `<script setup>`, is compiled away in the
+ * output and should **not** be actually called at runtime.
+ */
+export declare function defineProps<PropNames extends string = string>(props: PropNames[]): Prettify<Readonly<{ [key in PropNames]?: any; }>>;
 export declare function defineProps<PP extends ComponentObjectPropsOptions = ComponentObjectPropsOptions>(props: PP): Prettify<Readonly<ExtractPropTypes<PP>>>;
 export declare function defineProps<TypeProps>(): DefineProps<LooseRequired<TypeProps>, BooleanKey<TypeProps>>;
-export type DefineProps<T, BKeys extends keyof T> = Readonly<T> & { readonly [K in BKeys]-?: boolean };
+export type DefineProps<T, BKeys extends keyof T> = Readonly<T> & { readonly [K in BKeys]-?: boolean; };
 type BooleanKey<T, K extends keyof T = keyof T> = K extends any ? T[K] extends boolean | undefined ? T[K] extends never | undefined ? never : K : never : never;
 /**
-* Vue `<script setup>` compiler macro for declaring a component's emitted
-* events. The expected argument is the same as the component `emits` option.
-*
-* Example runtime declaration:
-* ```js
-* const emit = defineEmits(['change', 'update'])
-* ```
-*
-* Example type-based declaration:
-* ```ts
-* const emit = defineEmits<{
-*   // <eventName>: <expected arguments>
-*   change: []
-*   update: [value: number] // named tuple syntax
-* }>()
-*
-* emit('change')
-* emit('update', 1)
-* ```
-*
-* This is only usable inside `<script setup>`, is compiled away in the
-* output and should **not** be actually called at runtime.
-*
-* @see {@link https://vuejs.org/api/sfc-script-setup.html#defineprops-defineemits}
-*/
+ * Vue `<script setup>` compiler macro for declaring a component's emitted
+ * events. The expected argument is the same as the component `emits` option.
+ *
+ * Example runtime declaration:
+ * ```js
+ * const emit = defineEmits(['change', 'update'])
+ * ```
+ *
+ * Example type-based declaration:
+ * ```ts
+ * const emit = defineEmits<{
+ *   // <eventName>: <expected arguments>
+ *   change: []
+ *   update: [value: number] // named tuple syntax
+ * }>()
+ *
+ * emit('change')
+ * emit('update', 1)
+ * ```
+ *
+ * This is only usable inside `<script setup>`, is compiled away in the
+ * output and should **not** be actually called at runtime.
+ *
+ * @see {@link https://vuejs.org/api/sfc-script-setup.html#defineprops-defineemits}
+ */
 export declare function defineEmits<EE extends string = string>(emitOptions: EE[]): EmitFn<EE[]>;
 export declare function defineEmits<E extends EmitsOptions = EmitsOptions>(emitOptions: E): EmitFn<E>;
 export declare function defineEmits<T extends ComponentTypeEmits>(): T extends ((...args: any[]) => any) ? T : ShortEmits<T>;
 export type ComponentTypeEmits = ((...args: any[]) => any) | Record<string, any>;
 type RecordToUnion<T extends Record<string, any>> = T[keyof T];
-type ShortEmits<T extends Record<string, any>> = UnionToIntersection<RecordToUnion<{ [K in keyof T]: (evt: K, ...args: T[K]) => void }>>;
+type ShortEmits<T extends Record<string, any>> = UnionToIntersection<RecordToUnion<{ [K in keyof T]: (evt: K, ...args: T[K]) => void; }>>;
 /**
-* Vue `<script setup>` compiler macro for declaring a component's exposed
-* instance properties when it is accessed by a parent component via template
-* refs.
-*
-* `<script setup>` components are closed by default - i.e. variables inside
-* the `<script setup>` scope is not exposed to parent unless explicitly exposed
-* via `defineExpose`.
-*
-* This is only usable inside `<script setup>`, is compiled away in the
-* output and should **not** be actually called at runtime.
-*
-* @see {@link https://vuejs.org/api/sfc-script-setup.html#defineexpose}
-*/
+ * Vue `<script setup>` compiler macro for declaring a component's exposed
+ * instance properties when it is accessed by a parent component via template
+ * refs.
+ *
+ * `<script setup>` components are closed by default - i.e. variables inside
+ * the `<script setup>` scope is not exposed to parent unless explicitly exposed
+ * via `defineExpose`.
+ *
+ * This is only usable inside `<script setup>`, is compiled away in the
+ * output and should **not** be actually called at runtime.
+ *
+ * @see {@link https://vuejs.org/api/sfc-script-setup.html#defineexpose}
+ */
 export declare function defineExpose<Exposed extends Record<string, any> = Record<string, any>>(exposed?: Exposed): void;
 /**
-* Vue `<script setup>` compiler macro for declaring a component's additional
-* options. This should be used only for options that cannot be expressed via
-* Composition API - e.g. `inheritAttrs`.
-*
-* @see {@link https://vuejs.org/api/sfc-script-setup.html#defineoptions}
-*/
+ * Vue `<script setup>` compiler macro for declaring a component's additional
+ * options. This should be used only for options that cannot be expressed via
+ * Composition API - e.g. `inheritAttrs`.
+ *
+ * @see {@link https://vuejs.org/api/sfc-script-setup.html#defineoptions}
+ */
 export declare function defineOptions<RawBindings = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin>(options?: ComponentOptionsBase<{}, RawBindings, D, C, M, Mixin, Extends, {}> & {
   /**
-  * props should be defined via defineProps().
-  */
+   * props should be defined via defineProps().
+   */
   props?: never;
   /**
-  * emits should be defined via defineEmits().
-  */
+   * emits should be defined via defineEmits().
+   */
   emits?: never;
   /**
-  * expose should be defined via defineExpose().
-  */
+   * expose should be defined via defineExpose().
+   */
   expose?: never;
   /**
-  * slots should be defined via defineSlots().
-  */
+   * slots should be defined via defineSlots().
+   */
   slots?: never;
 }): void;
 /**
-* Vue `<script setup>` compiler macro for providing type hints to IDEs for
-* slot name and slot props type checking.
-*
-* Example usage:
-* ```ts
-* const slots = defineSlots<{
-*   default(props: { msg: string }): any
-* }>()
-* ```
-*
-* This is only usable inside `<script setup>`, is compiled away in the
-* output and should **not** be actually called at runtime.
-*
-* @see {@link https://vuejs.org/api/sfc-script-setup.html#defineslots}
-*/
+ * Vue `<script setup>` compiler macro for providing type hints to IDEs for
+ * slot name and slot props type checking.
+ *
+ * Example usage:
+ * ```ts
+ * const slots = defineSlots<{
+ *   default(props: { msg: string }): any
+ * }>()
+ * ```
+ *
+ * This is only usable inside `<script setup>`, is compiled away in the
+ * output and should **not** be actually called at runtime.
+ *
+ * @see {@link https://vuejs.org/api/sfc-script-setup.html#defineslots}
+ */
 export declare function defineSlots<S extends Record<string, any> = Record<string, any>>(): StrictUnwrapSlotsType<SlotsType<S>>;
 export type ModelRef<T, M extends PropertyKey = string, G = T, S = T> = Ref$1<G> & [ModelRef<T, M, G, S>, Record<M, true | undefined>];
 type DefineModelOptions<T = any, G = T, S = T> = {
@@ -293,38 +292,38 @@ type DefineModelOptions<T = any, G = T, S = T> = {
 type DefineModelRuntimeOptions<T, G, S> = Omit<PropOptions<T>, "default"> & DefineModelOptions<T, G, S>;
 type DefineModelDefault<T> = InferDefault<Data, T>;
 /**
-* Vue `<script setup>` compiler macro for declaring a
-* two-way binding prop that can be consumed via `v-model` from the parent
-* component. This will declare a prop with the same name and a corresponding
-* `update:propName` event.
-*
-* If the first argument is a string, it will be used as the prop name;
-* Otherwise the prop name will default to "modelValue". In both cases, you
-* can also pass an additional object which will be used as the prop's options.
-*
-* The returned ref behaves differently depending on whether the parent
-* provided the corresponding v-model props or not:
-* - If yes, the returned ref's value will always be in sync with the parent
-*   prop.
-* - If not, the returned ref will behave like a normal local ref.
-*
-* @example
-* ```ts
-* // default model (consumed via `v-model`)
-* const modelValue = defineModel<string>()
-* modelValue.value = "hello"
-*
-* // default model with options
-* const modelValue = defineModel<string>({ required: true })
-*
-* // with specified name (consumed via `v-model:count`)
-* const count = defineModel<number>('count')
-* count.value++
-*
-* // with specified name and default value
-* const count = defineModel<number>('count', { default: 0 })
-* ```
-*/
+ * Vue `<script setup>` compiler macro for declaring a
+ * two-way binding prop that can be consumed via `v-model` from the parent
+ * component. This will declare a prop with the same name and a corresponding
+ * `update:propName` event.
+ *
+ * If the first argument is a string, it will be used as the prop name;
+ * Otherwise the prop name will default to "modelValue". In both cases, you
+ * can also pass an additional object which will be used as the prop's options.
+ *
+ * The returned ref behaves differently depending on whether the parent
+ * provided the corresponding v-model props or not:
+ * - If yes, the returned ref's value will always be in sync with the parent
+ *   prop.
+ * - If not, the returned ref will behave like a normal local ref.
+ *
+ * @example
+ * ```ts
+ * // default model (consumed via `v-model`)
+ * const modelValue = defineModel<string>()
+ * modelValue.value = "hello"
+ *
+ * // default model with options
+ * const modelValue = defineModel<string>({ required: true })
+ *
+ * // with specified name (consumed via `v-model:count`)
+ * const count = defineModel<number>('count')
+ * count.value++
+ *
+ * // with specified name and default value
+ * const count = defineModel<number>('count', { default: 0 })
+ * ```
+ */
 export declare function defineModel<T, M extends PropertyKey = string, G = T, S = T>(options: DefineModelRuntimeOptions<T, G, S> & ({
   default: DefineModelDefault<T>;
 } | {
@@ -338,31 +337,31 @@ export declare function defineModel<T, M extends PropertyKey = string, G = T, S 
 })): ModelRef<T, M, G, S>;
 export declare function defineModel<T, M extends PropertyKey = string, G = T, S = T>(name: string, options?: DefineModelRuntimeOptions<T, G, S>): ModelRef<T | undefined, M, G | undefined, S | undefined>;
 type NotUndefined<T> = T extends undefined ? never : T;
-type MappedOmit<T, K extends keyof any> = { [P in keyof T as P extends K ? never : P]: T[P] };
-type InferDefaults<T> = { [K in keyof T]?: InferDefault<T, T[K]> };
+type MappedOmit<T, K extends keyof any> = { [P in keyof T as P extends K ? never : P]: T[P]; };
+type InferDefaults<T> = { [K in keyof T]?: InferDefault<T, T[K]>; };
 type NativeType = null | undefined | number | string | boolean | symbol | Function;
 type InferDefault<P, T> = ((props: P) => T & {}) | (T extends NativeType ? T : never);
-type PropsWithDefaults<T, Defaults extends InferDefaults<T>, BKeys extends keyof T> = T extends unknown ? Readonly<MappedOmit<T, keyof Defaults>> & { readonly [K in keyof Defaults as K extends keyof T ? K : never]-?: K extends keyof T ? Defaults[K] extends undefined ? IfAny<Defaults[K], NotUndefined<T[K]>, T[K]> : NotUndefined<T[K]> : never } & { readonly [K in BKeys]-?: K extends keyof Defaults ? Defaults[K] extends undefined ? boolean | undefined : boolean : boolean } : never;
+type PropsWithDefaults<T, Defaults extends InferDefaults<T>, BKeys extends keyof T> = T extends unknown ? Readonly<MappedOmit<T, keyof Defaults>> & { readonly [K in keyof Defaults as K extends keyof T ? K : never]-?: K extends keyof T ? Defaults[K] extends undefined ? IfAny<Defaults[K], NotUndefined<T[K]>, T[K]> : NotUndefined<T[K]> : never; } & { readonly [K in BKeys]-?: K extends keyof Defaults ? Defaults[K] extends undefined ? boolean | undefined : boolean : boolean; } : never;
 /**
-* Vue `<script setup>` compiler macro for providing props default values when
-* using type-based `defineProps` declaration.
-*
-* Example usage:
-* ```ts
-* withDefaults(defineProps<{
-*   size?: number
-*   labels?: string[]
-* }>(), {
-*   size: 3,
-*   labels: () => ['default label']
-* })
-* ```
-*
-* This is only usable inside `<script setup>`, is compiled away in the output
-* and should **not** be actually called at runtime.
-*
-* @see {@link https://vuejs.org/guide/typescript/composition-api.html#typing-component-props}
-*/
+ * Vue `<script setup>` compiler macro for providing props default values when
+ * using type-based `defineProps` declaration.
+ *
+ * Example usage:
+ * ```ts
+ * withDefaults(defineProps<{
+ *   size?: number
+ *   labels?: string[]
+ * }>(), {
+ *   size: 3,
+ *   labels: () => ['default label']
+ * })
+ * ```
+ *
+ * This is only usable inside `<script setup>`, is compiled away in the output
+ * and should **not** be actually called at runtime.
+ *
+ * @see {@link https://vuejs.org/guide/typescript/composition-api.html#typing-component-props}
+ */
 export declare function withDefaults<T, BKeys extends keyof T, Defaults extends InferDefaults<T>>(props: DefineProps<T, BKeys>, defaults: Defaults): PropsWithDefaults<T, Defaults, BKeys>;
 export declare function useSlots(): SetupContext["slots"];
 export declare function useAttrs(): SetupContext["attrs"];
@@ -370,12 +369,12 @@ export declare function useAttrs(): SetupContext["attrs"];
 //#region temp/packages/runtime-core/src/componentEmits.d.ts
 export type ObjectEmitsOptions = Record<string, ((...args: any[]) => any) | null | any[]>;
 export type EmitsOptions = ObjectEmitsOptions | string[];
-export type EmitsToProps<T extends EmitsOptions | ComponentTypeEmits> = T extends string[] ? { [K in `on${Capitalize<T[number]>}`]?: (...args: any[]) => any } : T extends ObjectEmitsOptions ? { [K in string & keyof T as `on${Capitalize<K>}`]?: (...args: T[K] extends ((...args: infer P) => any) ? P : T[K] extends null ? any[] : T[K] extends any[] ? T[K] : never) => any } : {};
-export type TypeEmitsToOptions<T extends ComponentTypeEmits> = { [K in keyof T & string]: T[K] extends [...args: infer Args] ? (...args: Args) => any : () => any } & (T extends ((...args: any[]) => any) ? ParametersToFns<OverloadParameters<T>> : {});
-type ParametersToFns<T extends any[]> = { [K in T[0]]: IsStringLiteral<K> extends true ? (...args: T extends [e: infer E, ...args: infer P] ? K extends E ? P : never : never) => any : never };
+export type EmitsToProps<T extends EmitsOptions | ComponentTypeEmits> = T extends string[] ? { [K in `on${Capitalize<T[number]>}`]?: (...args: any[]) => any; } : T extends ObjectEmitsOptions ? { [K in string & keyof T as `on${Capitalize<K>}`]?: (...args: T[K] extends ((...args: infer P) => any) ? P : T[K] extends null ? any[] : T[K] extends any[] ? T[K] : never) => any; } : {};
+export type TypeEmitsToOptions<T extends ComponentTypeEmits> = { [K in keyof T & string]: T[K] extends [...args: infer Args] ? (...args: Args) => any : () => any; } & (T extends ((...args: any[]) => any) ? ParametersToFns<OverloadParameters<T>> : {});
+type ParametersToFns<T extends any[]> = { [K in T[0]]: IsStringLiteral<K> extends true ? (...args: T extends [e: infer E, ...args: infer P] ? K extends E ? P : never : never) => any : never; };
 type IsStringLiteral<T> = T extends string ? string extends T ? false : true : false;
-export type ShortEmitsToObject<E> = E extends Record<string, any[]> ? { [K in keyof E]: (...args: E[K]) => any } : E;
-export type EmitFn<Options = ObjectEmitsOptions, Event extends keyof Options = keyof Options> = Options extends Array<infer V> ? (event: V, ...args: any[]) => void : {} extends Options ? (event: string, ...args: any[]) => void : UnionToIntersection<{ [key in Event]: Options[key] extends ((...args: infer Args) => any) ? (event: key, ...args: Args) => void : Options[key] extends any[] ? (event: key, ...args: Options[key]) => void : (event: key, ...args: any[]) => void }[Event]>;
+export type ShortEmitsToObject<E> = E extends Record<string, any[]> ? { [K in keyof E]: (...args: E[K]) => any; } : E;
+export type EmitFn<Options = ObjectEmitsOptions, Event extends keyof Options = keyof Options> = Options extends Array<infer V> ? (event: V, ...args: any[]) => void : {} extends Options ? (event: string, ...args: any[]) => void : UnionToIntersection<{ [key in Event]: Options[key] extends ((...args: infer Args) => any) ? (event: key, ...args: Args) => void : Options[key] extends any[] ? (event: key, ...args: Options[key]) => void : (event: key, ...args: any[]) => void; }[Event]>;
 //#endregion
 //#region temp/packages/runtime-core/src/directives.d.ts
 export interface DirectiveBinding<Value = any, Modifiers extends string = string, Arg = any> {
@@ -404,36 +403,36 @@ export type Directive<HostElement = any, Value = any, Modifiers extends string =
 export type DirectiveModifiers<K extends string = string> = Partial<Record<K, boolean>>;
 export type DirectiveArguments = Array<[Directive | undefined] | [Directive | undefined, any] | [Directive | undefined, any, any] | [Directive | undefined, any, any, DirectiveModifiers]>;
 /**
-* Adds directives to a VNode.
-*/
+ * Adds directives to a VNode.
+ */
 export declare function withDirectives<T extends VNode>(vnode: T, directives: DirectiveArguments): T;
 //#endregion
 //#region temp/packages/runtime-core/src/componentPublicInstance.d.ts
 /**
-* Custom properties added to component instances in any way and can be accessed through `this`
-*
-* @example
-* Here is an example of adding a property `$router` to every component instance:
-* ```ts
-* import { createApp } from 'vue'
-* import { Router, createRouter } from 'vue-router'
-*
-* declare module 'vue' {
-*   interface ComponentCustomProperties {
-*     $router: Router
-*   }
-* }
-*
-* // effectively adding the router to every component instance
-* const app = createApp({})
-* const router = createRouter()
-* app.config.globalProperties.$router = router
-*
-* const vm = app.mount('#app')
-* // we can access the router from the instance
-* vm.$router.push('/')
-* ```
-*/
+ * Custom properties added to component instances in any way and can be accessed through `this`
+ *
+ * @example
+ * Here is an example of adding a property `$router` to every component instance:
+ * ```ts
+ * import { createApp } from 'vue'
+ * import { Router, createRouter } from 'vue-router'
+ *
+ * declare module 'vue' {
+ *   interface ComponentCustomProperties {
+ *     $router: Router
+ *   }
+ * }
+ *
+ * // effectively adding the router to every component instance
+ * const app = createApp({})
+ * const router = createRouter()
+ * app.config.globalProperties.$router = router
+ *
+ * const vm = app.mount('#app')
+ * // we can access the router from the instance
+ * vm.$router.push('/')
+ * ```
+ */
 export interface ComponentCustomProperties {}
 type IsDefaultMixinComponent<T> = T extends ComponentOptionsMixin ? ComponentOptionsMixin extends T ? true : false : false;
 type MixinToOptionTypes<T> = T extends ComponentOptionsBase<infer P, infer B, infer D, infer C, infer M, infer Mixin, infer Extends, any, any, infer Defaults, any, any, any, any, any, any, any> ? OptionTypesType<P & {}, B & {}, D & {}, C & {}, M & {}, Defaults & {}> & IntersectionMixin<Mixin> & IntersectionMixin<Extends> : never;
@@ -450,17 +449,17 @@ type ComponentPublicInstanceConstructor<T extends ComponentPublicInstance<Props,
   new (...args: any[]): T;
 };
 /**
-* @deprecated This is no longer used internally, but exported and relied on by
-* existing library types generated by vue-tsc.
-*/
+ * @deprecated This is no longer used internally, but exported and relied on by
+ * existing library types generated by vue-tsc.
+ */
 export type CreateComponentPublicInstance<P = {}, B = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = {}, PublicProps = P, Defaults = {}, MakeDefaultsOptional extends boolean = false, I extends ComponentInjectOptions = {}, S extends SlotsType = {}, PublicMixin = IntersectionMixin<Mixin> & IntersectionMixin<Extends>, PublicP = UnwrapMixinsType<PublicMixin, "P"> & EnsureNonVoid<P>, PublicB = UnwrapMixinsType<PublicMixin, "B"> & EnsureNonVoid<B>, PublicD = UnwrapMixinsType<PublicMixin, "D"> & EnsureNonVoid<D>, PublicC extends ComputedOptions = UnwrapMixinsType<PublicMixin, "C"> & EnsureNonVoid<C>, PublicM extends MethodOptions = UnwrapMixinsType<PublicMixin, "M"> & EnsureNonVoid<M>, PublicDefaults = UnwrapMixinsType<PublicMixin, "Defaults"> & EnsureNonVoid<Defaults>> = ComponentPublicInstance<PublicP, PublicB, PublicD, PublicC, PublicM, E, PublicProps, PublicDefaults, MakeDefaultsOptional, ComponentOptionsBase<P, B, D, C, M, Mixin, Extends, E, string, Defaults, {}, string, S>, I, S>;
 /**
-* This is the same as `CreateComponentPublicInstance` but adds local components,
-* global directives, exposed, and provide inference.
-* It changes the arguments order so that we don't need to repeat mixin
-* inference everywhere internally, but it has to be a new type to avoid
-* breaking types that relies on previous arguments order (#10842)
-*/
+ * This is the same as `CreateComponentPublicInstance` but adds local components,
+ * global directives, exposed, and provide inference.
+ * It changes the arguments order so that we don't need to repeat mixin
+ * inference everywhere internally, but it has to be a new type to avoid
+ * breaking types that relies on previous arguments order (#10842)
+ */
 export type CreateComponentPublicInstanceWithMixins<P = {}, B = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = {}, PublicProps = P, Defaults = {}, MakeDefaultsOptional extends boolean = false, I extends ComponentInjectOptions = {}, S extends SlotsType = {}, LC extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, TypeRefs extends Data = {}, TypeEl = any, Provide extends ComponentProvideOptions = ComponentProvideOptions, PublicMixin = IntersectionMixin<Mixin> & IntersectionMixin<Extends>, PublicP = UnwrapMixinsType<PublicMixin, "P"> & EnsureNonVoid<P>, PublicB = UnwrapMixinsType<PublicMixin, "B"> & EnsureNonVoid<B>, PublicD = UnwrapMixinsType<PublicMixin, "D"> & EnsureNonVoid<D>, PublicC extends ComputedOptions = UnwrapMixinsType<PublicMixin, "C"> & EnsureNonVoid<C>, PublicM extends MethodOptions = UnwrapMixinsType<PublicMixin, "M"> & EnsureNonVoid<M>, PublicDefaults = UnwrapMixinsType<PublicMixin, "Defaults"> & EnsureNonVoid<Defaults>> = ComponentPublicInstance<PublicP, PublicB, PublicD, PublicC, PublicM, E, PublicProps, PublicDefaults, MakeDefaultsOptional, ComponentOptionsBase<P, B, D, C, M, Mixin, Extends, E, string, Defaults, {}, string, S, LC, Directives, Exposed, Provide>, I, S, Exposed, TypeRefs, TypeEl>;
 type ExposedKeys<T, Exposed extends string & keyof T> = "" extends Exposed ? T : Pick<T, Exposed>;
 export type ComponentPublicInstance<P = {}, B = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, E extends EmitsOptions = {}, PublicProps = {}, Defaults = {}, MakeDefaultsOptional extends boolean = false, Options = ComponentOptionsBase<any, any, any, any, any, any, any, any, any>, I extends ComponentInjectOptions = {}, S extends SlotsType = {}, Exposed extends string = "", TypeRefs extends Data = {}, TypeEl = any> = {
@@ -512,15 +511,15 @@ export interface SuspenseProps {
   onPending?: () => void;
   onFallback?: () => void;
   /**
-  * Switch to fallback content if it takes longer than `timeout` milliseconds to render the new default content.
-  * A `timeout` value of `0` will cause the fallback content to be displayed immediately when default content is replaced.
-  */
+   * Switch to fallback content if it takes longer than `timeout` milliseconds to render the new default content.
+   * A `timeout` value of `0` will cause the fallback content to be displayed immediately when default content is replaced.
+   */
   timeout?: string | number;
   /**
-  * Allow suspense to be captured by parent suspense
-  *
-  * @default false
-  */
+   * Allow suspense to be captured by parent suspense
+   *
+   * @default false
+   */
   suspensible?: boolean;
 }
 declare const SuspenseImpl: {
@@ -700,20 +699,20 @@ export declare enum MoveType {
   REORDER = 2
 }
 /**
-* The createRenderer function accepts two generic arguments:
-* HostNode and HostElement, corresponding to Node and Element types in the
-* host environment. For example, for runtime-dom, HostNode would be the DOM
-* `Node` interface and HostElement would be the DOM `Element` interface.
-*
-* Custom renderers can pass in the platform specific types like this:
-*
-* ``` js
-* const { render, createApp } = createRenderer<Node, Element>({
-*   patchProp,
-*   ...nodeOps
-* })
-* ```
-*/
+ * The createRenderer function accepts two generic arguments:
+ * HostNode and HostElement, corresponding to Node and Element types in the
+ * host environment. For example, for runtime-dom, HostNode would be the DOM
+ * `Node` interface and HostElement would be the DOM `Element` interface.
+ *
+ * Custom renderers can pass in the platform specific types like this:
+ *
+ * ``` js
+ * const { render, createApp } = createRenderer<Node, Element>({
+ *   patchProp,
+ *   ...nodeOps
+ * })
+ * ```
+ */
 export declare function createRenderer<HostNode = RendererNode, HostElement = RendererElement>(options: RendererOptions<HostNode, HostElement>): Renderer<HostElement>;
 export declare function createHydrationRenderer(options: RendererOptions<Node, Element>): HydrationRenderer;
 //#endregion
@@ -813,36 +812,36 @@ declare function configureCompat(config: CompatConfig): void;
 //#endregion
 //#region temp/packages/runtime-core/src/componentOptions.d.ts
 /**
-* Interface for declaring custom options.
-*
-* @example
-* ```ts
-* declare module 'vue' {
-*   interface ComponentCustomOptions {
-*     beforeRouteUpdate?(
-*       to: Route,
-*       from: Route,
-*       next: () => void
-*     ): void
-*   }
-* }
-* ```
-*/
+ * Interface for declaring custom options.
+ *
+ * @example
+ * ```ts
+ * declare module 'vue' {
+ *   interface ComponentCustomOptions {
+ *     beforeRouteUpdate?(
+ *       to: Route,
+ *       from: Route,
+ *       next: () => void
+ *     ): void
+ *   }
+ * }
+ * ```
+ */
 export interface ComponentCustomOptions {}
 /**
-* Registry for additional render result types.
-*
-* @example
-* ```ts
-* import type { VaporRenderResult } from 'vue'
-*
-* declare module 'vue' {
-*   interface RenderResultExtensions {
-*     vapor: VaporRenderResult
-*   }
-* }
-* ```
-*/
+ * Registry for additional render result types.
+ *
+ * @example
+ * ```ts
+ * import type { VaporRenderResult } from 'vue'
+ *
+ * declare module 'vue' {
+ *   interface RenderResultExtensions {
+ *     vapor: VaporRenderResult
+ *   }
+ * }
+ * ```
+ */
 export interface RenderResultExtensions {}
 type RenderResult = VNodeChild | RenderResultExtensions[keyof RenderResultExtensions] | RenderResult[];
 export type RenderFunction = () => RenderResult;
@@ -866,8 +865,8 @@ export interface ComponentOptionsBase<Props, RawBindings, D, C extends ComputedO
   __defaults?: Defaults;
 }
 /**
-* Subset of compiler options that makes sense for the runtime.
-*/
+ * Subset of compiler options that makes sense for the runtime.
+ */
 export interface RuntimeCompilerOptions {
   isCustomElement?: (tag: string) => boolean;
   whitespace?: "preserve" | "condense";
@@ -882,7 +881,7 @@ export interface MethodOptions {
 }
 type ExtractComputedReturns<T extends any> = { [key in keyof T]: T[key] extends {
   get: (...args: any[]) => infer TReturn;
-} ? TReturn : T[key] extends ((...args: any[]) => infer TReturn) ? TReturn : never };
+} ? TReturn : T[key] extends ((...args: any[]) => infer TReturn) ? TReturn : never; };
 type ObjectWatchOptionItem = {
   handler: WatchCallback | string;
 } & WatchOptions;
@@ -897,7 +896,7 @@ type ObjectInjectOptions = Record<string | symbol, string | symbol | {
   from?: string | symbol;
   default?: unknown;
 }>;
-type InjectToObject<T extends ComponentInjectOptions> = T extends string[] ? { [K in T[number]]?: any } : T extends ObjectInjectOptions ? { [K in keyof T]?: any } : never;
+type InjectToObject<T extends ComponentInjectOptions> = T extends string[] ? { [K in T[number]]?: any; } : T extends ObjectInjectOptions ? { [K in keyof T]?: any; } : never;
 interface LegacyOptions<Props, D, C extends ComputedOptions, M extends MethodOptions, Mixin extends ComponentOptionsMixin, Extends extends ComponentOptionsMixin, I extends ComponentInjectOptions, II extends string, Provide extends ComponentProvideOptions = ComponentProvideOptions> {
   compatConfig?: CompatConfig;
   [key: string]: any;
@@ -928,18 +927,18 @@ interface LegacyOptions<Props, D, C extends ComputedOptions, M extends MethodOpt
   renderTriggered?: DebuggerHook;
   errorCaptured?: ErrorCapturedHook;
   /**
-  * runtime compile only
-  * @deprecated use `compilerOptions.delimiters` instead.
-  */
+   * runtime compile only
+   * @deprecated use `compilerOptions.delimiters` instead.
+   */
   delimiters?: [string, string];
   /**
-  * #3468
-  *
-  * type-only, used to assist Mixin's type inference,
-  * TypeScript will try to simplify the inferred `Mixin` type,
-  * with the `__differentiator`, TypeScript won't be able to combine different mixins,
-  * because the `__differentiator` will be different
-  */
+   * #3468
+   *
+   * type-only, used to assist Mixin's type inference,
+   * TypeScript will try to simplify the inferred `Mixin` type,
+   * with the `__differentiator`, TypeScript won't be able to combine different mixins,
+   * because the `__differentiator` will be different
+   */
   __differentiator?: keyof D | keyof C | keyof M;
 }
 type MergedHook<T = () => void> = T | T[];
@@ -951,9 +950,11 @@ type MergedComponentOptionsOverride = {
   beforeUpdate?: MergedHook;
   updated?: MergedHook;
   activated?: MergedHook;
-  deactivated?: MergedHook; /** @deprecated use `beforeUnmount` instead */
+  deactivated?: MergedHook;
+  /** @deprecated use `beforeUnmount` instead */
   beforeDestroy?: MergedHook;
-  beforeUnmount?: MergedHook; /** @deprecated use `unmounted` instead */
+  beforeUnmount?: MergedHook;
+  /** @deprecated use `unmounted` instead */
   destroyed?: MergedHook;
   unmounted?: MergedHook;
   renderTracked?: MergedHook<DebuggerHook>;
@@ -970,28 +971,28 @@ type OptionTypesType<P = {}, B = {}, D = {}, C extends ComputedOptions = {}, M e
   Defaults: Defaults;
 };
 /**
-* @deprecated
-*/
-export type ComponentOptionsWithoutProps<Props = {}, RawBindings = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = {}, EE extends string = string, I extends ComponentInjectOptions = {}, II extends string = string, S extends SlotsType = {}, LC extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions, TE extends ComponentTypeEmits = {}, ResolvedEmits extends EmitsOptions = ({} extends E ? TypeEmitsToOptions<TE> : E), PE = Props & EmitsToProps<ResolvedEmits>> = ComponentOptionsBase<PE, RawBindings, D, C, M, Mixin, Extends, E, EE, {}, I, II, S, LC, Directives, Exposed, Provide> & {
+ * @deprecated
+ */
+export type ComponentOptionsWithoutProps<Props = {}, RawBindings = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = {}, EE extends string = string, I extends ComponentInjectOptions = {}, II extends string = string, S extends SlotsType = {}, LC extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions, TE extends ComponentTypeEmits = {}, ResolvedEmits extends EmitsOptions = {} extends E ? TypeEmitsToOptions<TE> : E, PE = Props & EmitsToProps<ResolvedEmits>> = ComponentOptionsBase<PE, RawBindings, D, C, M, Mixin, Extends, E, EE, {}, I, II, S, LC, Directives, Exposed, Provide> & {
   props?: never;
   /**
-  * @private for language-tools use only
-  */
+   * @private for language-tools use only
+   */
   __typeProps?: Props;
   /**
-  * @private for language-tools use only
-  */
+   * @private for language-tools use only
+   */
   __typeEmits?: TE;
 } & ThisType<CreateComponentPublicInstanceWithMixins<PE, RawBindings, D, C, M, Mixin, Extends, ResolvedEmits, EE, {}, false, I, S, LC, Directives, string>>;
 /**
-* @deprecated
-*/
-export type ComponentOptionsWithArrayProps<PropNames extends string = string, RawBindings = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = EmitsOptions, EE extends string = string, I extends ComponentInjectOptions = {}, II extends string = string, S extends SlotsType = {}, LC extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions, Props = Prettify<Readonly<{ [key in PropNames]?: any } & EmitsToProps<E>>>> = ComponentOptionsBase<Props, RawBindings, D, C, M, Mixin, Extends, E, EE, {}, I, II, S, LC, Directives, Exposed, Provide> & {
+ * @deprecated
+ */
+export type ComponentOptionsWithArrayProps<PropNames extends string = string, RawBindings = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = EmitsOptions, EE extends string = string, I extends ComponentInjectOptions = {}, II extends string = string, S extends SlotsType = {}, LC extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions, Props = Prettify<Readonly<{ [key in PropNames]?: any; } & EmitsToProps<E>>>> = ComponentOptionsBase<Props, RawBindings, D, C, M, Mixin, Extends, E, EE, {}, I, II, S, LC, Directives, Exposed, Provide> & {
   props: PropNames[];
 } & ThisType<CreateComponentPublicInstanceWithMixins<Props, RawBindings, D, C, M, Mixin, Extends, E, Props, {}, false, I, S, LC, Directives, string>>;
 /**
-* @deprecated
-*/
+ * @deprecated
+ */
 export type ComponentOptionsWithObjectProps<PropsOptions = ComponentObjectPropsOptions, RawBindings = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = EmitsOptions, EE extends string = string, I extends ComponentInjectOptions = {}, II extends string = string, S extends SlotsType = {}, LC extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions, Props = Prettify<Readonly<ExtractPropTypes<PropsOptions>> & Readonly<EmitsToProps<E>>>, Defaults = ExtractDefaultPropTypes<PropsOptions>> = ComponentOptionsBase<Props, RawBindings, D, C, M, Mixin, Extends, E, EE, Defaults, I, II, S, LC, Directives, Exposed, Provide> & {
   props: PropsOptions & ThisType<void>;
 } & ThisType<CreateComponentPublicInstanceWithMixins<Props, RawBindings, D, C, M, Mixin, Extends, E, Props, Defaults, false, I, S, LC, Directives>>;
@@ -1004,10 +1005,10 @@ export declare function inject<T>(key: InjectionKey<T> | string): T | undefined;
 export declare function inject<T>(key: InjectionKey<T> | string, defaultValue: T, treatDefaultAsFactory?: false): T;
 export declare function inject<T>(key: InjectionKey<T> | string, defaultValue: T | (() => T), treatDefaultAsFactory: true): T;
 /**
-* Returns true if `inject()` can be used without warning about being called in the wrong place (e.g. outside of
-* setup()). This is used by libraries that want to use `inject()` internally without triggering a warning to the end
-* user. One example is `useRoute()` in `vue-router`.
-*/
+ * Returns true if `inject()` can be used without warning about being called in the wrong place (e.g. outside of
+ * setup()). This is used by libraries that want to use `inject()` internally without triggering a warning to the end
+ * user. One example is `useRoute()` in `vue-router`.
+ */
 export declare function hasInjectionContext(): boolean;
 //#endregion
 //#region temp/packages/runtime-core/src/apiDefineComponent.d.ts
@@ -1028,33 +1029,33 @@ export declare function defineComponent<Props extends Record<string, any>, E ext
   emits?: E | EE[];
   slots?: S;
 }): DefineSetupFnComponent<Props, E, S>;
-export declare function defineComponent<TypeProps, RuntimePropsOptions extends ComponentObjectPropsOptions = ComponentObjectPropsOptions, RuntimePropsKeys extends string = string, TypeEmits extends ComponentTypeEmits = {}, RuntimeEmitsOptions extends EmitsOptions = {}, RuntimeEmitsKeys extends string = string, Data = {}, SetupBindings = {}, Computed extends ComputedOptions = {}, Methods extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, InjectOptions extends ComponentInjectOptions = {}, InjectKeys extends string = string, Slots extends SlotsType = {}, LocalComponents extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions, ResolvedEmits extends EmitsOptions = ({} extends RuntimeEmitsOptions ? TypeEmitsToOptions<TypeEmits> : RuntimeEmitsOptions), InferredProps = (IsKeyValues<TypeProps> extends true ? TypeProps : string extends RuntimePropsKeys ? ComponentObjectPropsOptions extends RuntimePropsOptions ? {} : ExtractPropTypes<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), TypeRefs extends Record<string, unknown> = {}, TypeEl = any, ClassName extends string = string>(options: {
+export declare function defineComponent<TypeProps, RuntimePropsOptions extends ComponentObjectPropsOptions = ComponentObjectPropsOptions, RuntimePropsKeys extends string = string, TypeEmits extends ComponentTypeEmits = {}, RuntimeEmitsOptions extends EmitsOptions = {}, RuntimeEmitsKeys extends string = string, Data = {}, SetupBindings = {}, Computed extends ComputedOptions = {}, Methods extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, InjectOptions extends ComponentInjectOptions = {}, InjectKeys extends string = string, Slots extends SlotsType = {}, LocalComponents extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions, ResolvedEmits extends EmitsOptions = {} extends RuntimeEmitsOptions ? TypeEmitsToOptions<TypeEmits> : RuntimeEmitsOptions, InferredProps = IsKeyValues<TypeProps> extends true ? TypeProps : string extends RuntimePropsKeys ? ComponentObjectPropsOptions extends RuntimePropsOptions ? {} : ExtractPropTypes<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any; }, TypeRefs extends Record<string, unknown> = {}, TypeEl = any, ClassName extends string = string>(options: {
   props?: (RuntimePropsOptions & ThisType<void>) | RuntimePropsKeys[];
   /**
-  * @private for language-tools use only
-  */
+   * @private for language-tools use only
+   */
   __typeProps?: TypeProps;
   /**
-  * @private for language-tools use only
-  */
+   * @private for language-tools use only
+   */
   __typeEmits?: TypeEmits;
   /**
-  * @private for language-tools use only
-  */
+   * @private for language-tools use only
+   */
   __typeRefs?: TypeRefs;
   /**
-  * @private for language-tools use only
-  */
+   * @private for language-tools use only
+   */
   __typeEl?: TypeEl;
   /**
-  * fixed by uts
-  * @private for type inference
-  */
+   * fixed by uts
+   * @private for type inference
+   */
   __className?: ClassName;
   /**
-  * fixed by uts
-  * @private for internal use only, not a user facing option
-  */
+   * fixed by uts
+   * @private for internal use only, not a user facing option
+   */
   __dynamicSharedData?: boolean;
 } & ComponentOptionsBase<ToResolvedProps<InferredProps, ResolvedEmits>, SetupBindings, Data, Computed, Methods, Mixin, Extends, RuntimeEmitsOptions, RuntimeEmitsKeys, {}, InjectOptions, InjectKeys, Slots, LocalComponents, Directives, Exposed, Provide> & ThisType<CreateComponentPublicInstanceWithMixins<ToResolvedProps<InferredProps, ResolvedEmits>, SetupBindings, Data, Computed, Methods, Mixin, Extends, ResolvedEmits, {}, {}, false, InjectOptions, Slots, LocalComponents, Directives, string>>): DefineComponent<InferredProps, SetupBindings, Data, Computed, Methods, Mixin, Extends, ResolvedEmits, RuntimeEmitsKeys, PublicProps, ToResolvedProps<InferredProps, ResolvedEmits>, ExtractDefaultPropTypes<RuntimePropsOptions>, Slots, LocalComponents, Directives, Exposed, Provide, unknown extends TypeProps ? true : false, TypeRefs, TypeEl, ClassName, InjectOptions>;
 //#endregion
@@ -1075,11 +1076,11 @@ export interface App<HostElement = any> {
   onUnmount(cb: () => void): void;
   provide<T, K = InjectionKey<T> | string | number>(key: K, value: K extends InjectionKey<infer V> ? V : T): this;
   /**
-  * Runs a function with the app as active instance. This allows using of `inject()` within the function to get access
-  * to variables provided via `app.provide()`.
-  *
-  * @param fn - function to run with the app as active instance
-  */
+   * Runs a function with the app as active instance. This allows using of `inject()` within the function to get access
+   * to variables provided via `app.provide()`.
+   *
+   * @param fn - function to run with the app as active instance
+   */
   runWithContext<T>(fn: () => T): T;
   _uid: number;
   _component: GenericComponent;
@@ -1088,28 +1089,28 @@ export interface App<HostElement = any> {
   _context: AppContext;
   _instance: GenericComponentInstance | null;
   /**
-  * v2 compat only
-  */
+   * v2 compat only
+   */
   filter?(name: string): Function | undefined;
   filter?(name: string, filter: Function): this;
 }
 export type OptionMergeFunction = (to: unknown, from: unknown) => any;
 /**
-* Shared app config between vdom and vapor
-*/
+ * Shared app config between vdom and vapor
+ */
 interface GenericAppConfig {
   performance?: boolean;
   errorHandler?: (err: unknown, instance: ComponentPublicInstance | null, info: string) => void;
   warnHandler?: (msg: string, instance: ComponentPublicInstance | null, trace: string) => void;
   /**
-  * Whether to throw unhandled errors in production.
-  * Default is `false` to avoid crashing on any error (and only logs it)
-  * But in some cases, e.g. SSR, throwing might be more desirable.
-  */
+   * Whether to throw unhandled errors in production.
+   * Default is `false` to avoid crashing on any error (and only logs it)
+   * But in some cases, e.g. SSR, throwing might be more desirable.
+   */
   throwUnhandledErrorInProduction?: boolean;
   /**
-  * Prefix for all useId() calls within this app
-  */
+   * Prefix for all useId() calls within this app
+   */
   idPrefix?: string;
   uniX?: {
     beforeSetupPage: (props: any, instance: GenericComponentInstance) => void;
@@ -1122,18 +1123,18 @@ export interface AppConfig extends GenericAppConfig {
   optionMergeStrategies: Record<string, OptionMergeFunction>;
   globalProperties: ComponentCustomProperties & Record<string, any>;
   /**
-  * Options to pass to `@vue/compiler-dom`.
-  * Only supported in runtime compiler build.
-  */
+   * Options to pass to `@vue/compiler-dom`.
+   * Only supported in runtime compiler build.
+   */
   compilerOptions: RuntimeCompilerOptions;
   /**
-  * @deprecated use config.compilerOptions.isCustomElement
-  */
+   * @deprecated use config.compilerOptions.isCustomElement
+   */
   isCustomElement?: (tag: string) => boolean;
 }
 /**
-* Minimal app context shared between vdom and vapor
-*/
+ * Minimal app context shared between vdom and vapor
+ */
 export interface GenericAppContext {
   app: App;
   config: GenericAppConfig;
@@ -1152,7 +1153,7 @@ export type ObjectPlugin<Options = any[]> = {
   install: PluginInstallFunction<Options>;
 };
 export type FunctionPlugin<Options = any[]> = PluginInstallFunction<Options> & Partial<ObjectPlugin<Options>>;
-export type Plugin<Options = any[], P extends unknown[] = (Options extends unknown[] ? Options : [Options])> = FunctionPlugin<P> | ObjectPlugin<P>;
+export type Plugin<Options = any[], P extends unknown[] = Options extends unknown[] ? Options : [Options]> = FunctionPlugin<P> | ObjectPlugin<P>;
 export type CreateAppFunction<HostElement, Comp = Component> = (rootComponent: Comp, rootProps?: Data | null) => App<HostElement>;
 //#endregion
 //#region temp/packages/runtime-core/src/components/Teleport.d.ts
@@ -1166,12 +1167,7 @@ declare const TeleportImpl: {
   name: string;
   __isTeleport: boolean;
   process(n1: TeleportVNode | null, n2: TeleportVNode, container: RendererElement, anchor: RendererNode | null, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, namespace: ElementNamespace, slotScopeIds: string[] | null, optimized: boolean, internals: RendererInternals): void;
-  remove(vnode: VNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, {
-    um: unmount,
-    o: {
-      remove: hostRemove
-    }
-  }: RendererInternals, doRemove: boolean): void;
+  remove(vnode: VNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, { um: unmount, o: { remove: hostRemove } }: RendererInternals, doRemove: boolean): void;
   move: typeof moveTeleport;
   hydrate: typeof hydrateTeleport;
 };
@@ -1180,21 +1176,8 @@ declare enum TeleportMoveTypes {
   TOGGLE = 1,
   REORDER = 2
 }
-declare function moveTeleport(vnode: VNode, container: RendererElement, parentAnchor: RendererNode | null, {
-  o: {
-    insert
-  },
-  m: move
-}: RendererInternals, parentComponent: ComponentInternalInstance | null, moveType?: TeleportMoveTypes): void;
-declare function hydrateTeleport(node: Node, vnode: TeleportVNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean, {
-  o: {
-    nextSibling,
-    parentNode,
-    querySelector,
-    insert,
-    createText
-  }
-}: RendererInternals<Node, Element>, hydrateChildren: (node: Node | null, vnode: VNode, container: Element, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean) => Node | null, container: RendererElement): Node | null;
+declare function moveTeleport(vnode: VNode, container: RendererElement, parentAnchor: RendererNode | null, { o: { insert }, m: move }: RendererInternals, parentComponent: ComponentInternalInstance | null, moveType?: TeleportMoveTypes): void;
+declare function hydrateTeleport(node: Node, vnode: TeleportVNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean, { o: { nextSibling, parentNode, querySelector, insert, createText } }: RendererInternals<Node, Element>, hydrateChildren: (node: Node | null, vnode: VNode, container: Element, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean) => Node | null, container: RendererElement): Node | null;
 export declare const Teleport: {
   __isTeleport: true;
   new (): {
@@ -1207,17 +1190,17 @@ export declare const Teleport: {
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/resolveAssets.d.ts
 /**
-* @private
-*/
+ * @private
+ */
 export declare function resolveComponent(name: string, maybeSelfReference?: boolean): ConcreteComponent | string;
 export declare const NULL_DYNAMIC_COMPONENT: unique symbol;
 /**
-* @private
-*/
+ * @private
+ */
 export declare function resolveDynamicComponent(component: unknown): VNodeTypes;
 /**
-* @private
-*/
+ * @private
+ */
 export declare function resolveDirective(name: string): Directive | undefined;
 //#endregion
 //#region temp/packages/runtime-core/src/vnode.d.ts
@@ -1235,20 +1218,20 @@ export type VNodeTypes = string | VNode | Component | typeof Text | typeof Stati
 export type VNodeRef = string | Ref$1 | ((ref: Element | ComponentPublicInstance | null, refs: Record<string, any>) => void);
 type VNodeNormalizedRefAtom = {
   /**
-  * component instance
-  */
+   * component instance
+   */
   i: ComponentInternalInstance;
   /**
-  * Actual ref
-  */
+   * Actual ref
+   */
   r: VNodeRef;
   /**
-  * setup ref key
-  */
+   * setup ref key
+   */
   k?: string;
   /**
-  * refInFor marker
-  */
+   * refInFor marker
+   */
   f?: boolean;
 };
 type VNodeNormalizedRef = VNodeNormalizedRefAtom | VNodeNormalizedRefAtom[];
@@ -1278,9 +1261,9 @@ export interface VNode<HostNode = RendererNode, HostElement = RendererElement, E
   key: PropertyKey | null;
   ref: VNodeNormalizedRef | null;
   /**
-  * SFC only. This is assigned on vnode creation using currentScopeId
-  * which is set alongside currentRenderingInstance.
-  */
+   * SFC only. This is assigned on vnode creation using currentScopeId
+   * which is set alongside currentRenderingInstance.
+   */
   scopeId: string | null;
   children: VNodeNormalizedChildren;
   component: ComponentInternalInstance | null;
@@ -1299,59 +1282,59 @@ export interface VNode<HostNode = RendererNode, HostElement = RendererElement, E
   hostInstance: ComponentInternalInstance | null;
 }
 /**
-* Open a block.
-* This must be called before `createBlock`. It cannot be part of `createBlock`
-* because the children of the block are evaluated before `createBlock` itself
-* is called. The generated code typically looks like this:
-*
-* ```js
-* function render() {
-*   return (openBlock(),createBlock('div', null, [...]))
-* }
-* ```
-* disableTracking is true when creating a v-for fragment block, since a v-for
-* fragment always diffs its children.
-*
-* @private
-*/
+ * Open a block.
+ * This must be called before `createBlock`. It cannot be part of `createBlock`
+ * because the children of the block are evaluated before `createBlock` itself
+ * is called. The generated code typically looks like this:
+ *
+ * ```js
+ * function render() {
+ *   return (openBlock(),createBlock('div', null, [...]))
+ * }
+ * ```
+ * disableTracking is true when creating a v-for fragment block, since a v-for
+ * fragment always diffs its children.
+ *
+ * @private
+ */
 export declare function openBlock(disableTracking?: boolean): void;
 /**
-* Block tracking sometimes needs to be disabled, for example during the
-* creation of a tree that needs to be cached by v-once. The compiler generates
-* code like this:
-*
-* ``` js
-* _cache[1] || (
-*   setBlockTracking(-1, true),
-*   _cache[1] = createVNode(...),
-*   setBlockTracking(1),
-*   _cache[1]
-* )
-* ```
-*
-* @private
-*/
+ * Block tracking sometimes needs to be disabled, for example during the
+ * creation of a tree that needs to be cached by v-once. The compiler generates
+ * code like this:
+ *
+ * ``` js
+ * _cache[1] || (
+ *   setBlockTracking(-1, true),
+ *   _cache[1] = createVNode(...),
+ *   setBlockTracking(1),
+ *   _cache[1]
+ * )
+ * ```
+ *
+ * @private
+ */
 export declare function setBlockTracking(value: number, inVOnce?: boolean): void;
 /**
-* @private
-*/
+ * @private
+ */
 export declare function createElementBlock(type: string | typeof Fragment, props?: Record<string, any> | null, children?: any, patchFlag?: number, dynamicProps?: string[], shapeFlag?: number): VNode;
 /**
-* Create a block root vnode. Takes the same exact arguments as `createVNode`.
-* A block root keeps track of dynamic nodes within the block in the
-* `dynamicChildren` array.
-*
-* @private
-*/
+ * Create a block root vnode. Takes the same exact arguments as `createVNode`.
+ * A block root keeps track of dynamic nodes within the block in the
+ * `dynamicChildren` array.
+ *
+ * @private
+ */
 export declare function createBlock(type: VNodeTypes | ClassComponent, props?: Record<string, any> | null, children?: any, patchFlag?: number, dynamicProps?: string[]): VNode;
 export declare function isVNode(value: any): value is VNode;
 declare let vnodeArgsTransformer: ((args: Parameters<typeof _createVNode>, instance: ComponentInternalInstance | null) => Parameters<typeof _createVNode>) | undefined;
 /**
-* Internal API for registering an arguments transform for createVNode
-* used for creating stubs in the test-utils
-* It is *internal* but needs to be exposed for test-utils to pick up proper
-* typings
-*/
+ * Internal API for registering an arguments transform for createVNode
+ * used for creating stubs in the test-utils
+ * It is *internal* but needs to be exposed for test-utils to pick up proper
+ * typings
+ */
 export declare function transformVNodeArgs(transformer?: typeof vnodeArgsTransformer): void;
 export declare function createBaseVNode(type: VNodeTypes | ClassComponent | typeof NULL_DYNAMIC_COMPONENT, props?: (Data & VNodeProps) | null, children?: unknown, patchFlag?: number, dynamicProps?: string[] | null, shapeFlag?: number, isBlockNode?: boolean, needFullChildrenNormalization?: boolean): VNode;
 export declare const createVNode: typeof _createVNode;
@@ -1359,90 +1342,90 @@ declare function _createVNode(type: VNodeTypes | ClassComponent | typeof NULL_DY
 export declare function guardReactiveProps(props: (Data & VNodeProps) | null): (Data & VNodeProps) | null;
 export declare function cloneVNode<T, U>(vnode: VNode<T, U>, extraProps?: (Data & VNodeProps) | null, mergeRef?: boolean, cloneTransition?: boolean): VNode<T, U>;
 /**
-* @private
-*/
+ * @private
+ */
 export declare function createTextVNode(text?: string, flag?: number): VNode;
 /**
-* @private
-*/
+ * @private
+ */
 export declare function createStaticVNode(content: string, numberOfNodes: number): VNode;
 /**
-* @private
-*/
+ * @private
+ */
 export declare function createCommentVNode(text?: string, asBlock?: boolean): VNode;
 export declare function mergeProps(...args: (Data & VNodeProps)[]): Data;
 //#endregion
 //#region temp/packages/runtime-core/src/componentCurrentInstance.d.ts
 /**
-* fixed by uts 移除 internal 注解
-*/
+ * fixed by uts 移除 internal 注解
+ */
 export declare const getCurrentGenericInstance: () => GenericComponentInstance | null;
 /**
-* fixed by uts
-* @returns
-*/
+ * fixed by uts
+ * @returns
+ */
 export declare const getCurrentInstance: () => ComponentInternalInstance | null;
 export declare let isInSSRComponentSetup: boolean;
 //#endregion
 //#region temp/packages/runtime-core/src/component.d.ts
 type Data = Record<string, unknown>;
 /**
-* For extending allowed non-declared attrs on components in TSX
-*/
+ * For extending allowed non-declared attrs on components in TSX
+ */
 export interface AllowedAttrs {}
 export type Attrs = Data & AllowedAttrs;
 /**
-* Public utility type for extracting the instance type of a component.
-* Works with all valid component definition types. This is intended to replace
-* the usage of `InstanceType<typeof Comp>` which only works for
-* constructor-based component definition types.
-*
-* @example
-* ```ts
-* const MyComp = { ... }
-* declare const instance: ComponentInstance<typeof MyComp>
-* ```
-*/
+ * Public utility type for extracting the instance type of a component.
+ * Works with all valid component definition types. This is intended to replace
+ * the usage of `InstanceType<typeof Comp>` which only works for
+ * constructor-based component definition types.
+ *
+ * @example
+ * ```ts
+ * const MyComp = { ... }
+ * declare const instance: ComponentInstance<typeof MyComp>
+ * ```
+ */
 export type ComponentInstance<T> = T extends {
   new (): ComponentPublicInstance;
 } ? InstanceType<T> : T extends FunctionalComponent<infer Props, infer Emits> ? ComponentPublicInstance<Props, {}, {}, {}, {}, ShortEmitsToObject<Emits>> : T extends Component<infer PropsOrInstance, infer RawBindings, infer D, infer C, infer M> ? PropsOrInstance extends {
   $props: unknown;
 } ? PropsOrInstance : ComponentPublicInstance<unknown extends PropsOrInstance ? {} : PropsOrInstance, unknown extends RawBindings ? {} : RawBindings, unknown extends D ? {} : D, C, M> : never;
 /**
-* For extending allowed non-declared props on components in TSX
-*/
+ * For extending allowed non-declared props on components in TSX
+ */
 export interface ComponentCustomProps {}
 /**
-* For globally defined Directives
-* Here is an example of adding a directive `VTooltip` as global directive:
-*
-* @example
-* ```ts
-* import VTooltip from 'v-tooltip'
-*
-* declare module '@vue/runtime-core' {
-*   interface GlobalDirectives {
-*     VTooltip
-*   }
-* }
-* ```
-*/
+ * For globally defined Directives
+ * Here is an example of adding a directive `VTooltip` as global directive:
+ *
+ * @example
+ * ```ts
+ * import VTooltip from 'v-tooltip'
+ *
+ * declare module '@vue/runtime-core' {
+ *   interface GlobalDirectives {
+ *     VTooltip
+ *   }
+ * }
+ * ```
+ */
 export interface GlobalDirectives {}
 /**
-* For globally defined Components
-* Here is an example of adding a component `RouterView` as global component:
-*
-* @example
-* ```ts
-* import { RouterView } from 'vue-router'
-*
-* declare module '@vue/runtime-core' {
-*   interface GlobalComponents {
-*     RouterView
-*   }
-* }
-* ```
-*/
+ * For globally defined Components
+ * Here is an example of adding a component `RouterView` as global component:
+ *
+ * @example
+ * ```ts
+ * import { RouterView } from 'vue-router'
+ *
+ * declare module '@vue/runtime-core' {
+ *   interface GlobalComponents {
+ *     RouterView
+ *   }
+ * }
+ * ```
+ */
 export interface GlobalComponents {
   Teleport: DefineComponent<TeleportProps>;
   Suspense: DefineComponent<SuspenseProps>;
@@ -1450,36 +1433,36 @@ export interface GlobalComponents {
   BaseTransition: DefineComponent<BaseTransitionProps>;
 }
 /**
-* Default allowed non-declared props on component in TSX
-*/
+ * Default allowed non-declared props on component in TSX
+ */
 export interface AllowedComponentProps {
   class?: unknown;
   style?: unknown;
 }
 export interface ComponentInternalOptions {
   /**
-  * indicates vapor component
-  */
+   * indicates vapor component
+   */
   __vapor?: boolean;
   /**
-  * whether this vapor component has multiple root nodes
-  */
+   * whether this vapor component has multiple root nodes
+   */
   __multiRoot?: boolean;
   /**
-  * indicates keep-alive component
-  */
+   * indicates keep-alive component
+   */
   __isKeepAlive?: boolean;
   /**
-  * Compat build only, for bailing out of certain compatibility behavior
-  */
+   * Compat build only, for bailing out of certain compatibility behavior
+   */
   __isBuiltIn?: boolean;
   /**
-  * This one should be exposed so that devtools can make use of it
-  */
+   * This one should be exposed so that devtools can make use of it
+   */
   __file?: string;
   /**
-  * name inferred from filename
-  */
+   * name inferred from filename
+   */
   __name?: string;
 }
 export interface AsyncComponentInternalOptions<R = ConcreteComponent, I = ComponentInternalInstance> {}
@@ -1497,24 +1480,24 @@ interface ClassComponent {
   __vccOpts: ComponentOptions;
 }
 /**
-* Type used where a function accepts both vdom and vapor components.
-*/
+ * Type used where a function accepts both vdom and vapor components.
+ */
 type GenericComponent = ({
   name?: string;
 } | ((() => any) & {
   displayName?: string;
 })) & ComponentInternalOptions;
 /**
-* Concrete component type matches its actual value: it's either an options
-* object, or a function. Use this where the code expects to work with actual
-* values, e.g. checking if its a function or not. This is mostly for internal
-* implementation code.
-*/
+ * Concrete component type matches its actual value: it's either an options
+ * object, or a function. Use this where the code expects to work with actual
+ * values, e.g. checking if its a function or not. This is mostly for internal
+ * implementation code.
+ */
 export type ConcreteComponent<Props = {}, RawBindings = any, D = any, C extends ComputedOptions = ComputedOptions, M extends MethodOptions = MethodOptions, E extends EmitsOptions | Record<string, any[]> = {}, S extends Record<string, any> = any> = ComponentOptions<Props, RawBindings, D, C, M> | FunctionalComponent<Props, E, S>;
 /**
-* A type used in public APIs where a component type is expected.
-* The constructor type is an artificial type returned by defineComponent().
-*/
+ * A type used in public APIs where a component type is expected.
+ * The constructor type is an artificial type returned by defineComponent().
+ */
 export type Component<PropsOrInstance = any, RawBindings = any, D = any, C extends ComputedOptions = ComputedOptions, M extends MethodOptions = MethodOptions, E extends EmitsOptions | Record<string, any[]> = {}, S extends Record<string, any> = any> = ConcreteComponent<PropsOrInstance, RawBindings, D, C, M, E, S> | ComponentPublicInstanceConstructor<PropsOrInstance>;
 export type LifecycleHook<TFn = Function> = (TFn & SchedulerJob)[] | null;
 export type SetupContext<E = EmitsOptions, S extends SlotsType = {}> = E extends any ? {
@@ -1524,10 +1507,10 @@ export type SetupContext<E = EmitsOptions, S extends SlotsType = {}> = E extends
   expose: <Exposed extends Record<string, any> = Record<string, any>>(exposed?: Exposed) => void;
 } : never;
 /**
-* Base component instance interface that is shared between vdom mode and vapor
-* mode, so that we can have a mixed instance tree and reuse core logic that
-* operate on both.
-*/
+ * Base component instance interface that is shared between vdom mode and vapor
+ * mode, so that we can have a mixed instance tree and reuse core logic that
+ * operate on both.
+ */
 export interface GenericComponentInstance {
   vapor?: boolean;
   uid: number;
@@ -1536,8 +1519,8 @@ export interface GenericComponentInstance {
   parent: GenericComponentInstance | null;
   appContext: GenericAppContext;
   /**
-  * render function will have different types between vdom and vapor
-  */
+   * render function will have different types between vdom and vapor
+   */
   render?: Function | null;
   props: Data;
   attrs: Data;
@@ -1549,16 +1532,16 @@ export interface GenericComponentInstance {
   isUnmounted: boolean;
   isDeactivated: boolean;
   /**
-  * Public instance proxy, vdom only
-  */
+   * Public instance proxy, vdom only
+   */
   proxy?: any;
   vnode?: VNode;
   subTree?: VNode;
 }
 /**
-* We expose a subset of properties on the internal instance as they are
-* useful for advanced external libraries and tools.
-*/
+ * We expose a subset of properties on the internal instance as they are
+ * useful for advanced external libraries and tools.
+ */
 export interface ComponentInternalInstance extends GenericComponentInstance {
   vapor?: never;
   uid: number;
@@ -1567,24 +1550,24 @@ export interface ComponentInternalInstance extends GenericComponentInstance {
   root: GenericComponentInstance;
   appContext: AppContext;
   /**
-  * Vnode representing this component in its parent's vdom tree
-  */
+   * Vnode representing this component in its parent's vdom tree
+   */
   vnode: VNode;
   /**
-  * Root vnode of this component's own vdom tree
-  */
+   * Root vnode of this component's own vdom tree
+   */
   subTree: VNode;
   /**
-  * Render effect instance
-  */
+   * Render effect instance
+   */
   effect: ReactiveEffect$1;
   /**
-  * Force update render effect
-  */
+   * Force update render effect
+   */
   update: () => void;
   /**
-  * Render effect job to be passed to scheduler (checks if dirty)
-  */
+   * Render effect job to be passed to scheduler (checks if dirty)
+   */
   job: SchedulerJob;
   proxy: ComponentPublicInstance | null;
   data: Data;
@@ -1593,16 +1576,16 @@ export interface ComponentInternalInstance extends GenericComponentInstance {
   exposeProxy: Record<string, any> | null;
 }
 /**
-* For runtime-dom to register the compiler.
-* Note the exported method uses any to avoid d.ts relying on the compiler types.
-*/
+ * For runtime-dom to register the compiler.
+ * Note the exported method uses any to avoid d.ts relying on the compiler types.
+ */
 export declare function registerRuntimeCompiler(_compile: any): void;
 export declare const isRuntimeOnly: () => boolean;
 export interface ComponentCustomElementInterface {}
 //#endregion
 //#region temp/packages/runtime-core/src/apiWatch.d.ts
 type MaybeUndefined<T, I> = I extends true ? T | undefined : T;
-type MapSources<T, Immediate> = { [K in keyof T]: T[K] extends WatchSource$1<infer V> ? MaybeUndefined<V, Immediate> : T[K] extends object ? MaybeUndefined<T[K], Immediate> : never };
+type MapSources<T, Immediate> = { [K in keyof T]: T[K] extends WatchSource$1<infer V> ? MaybeUndefined<V, Immediate> : T[K] extends object ? MaybeUndefined<T[K], Immediate> : never; };
 export interface WatchEffectOptions extends DebuggerOptions$1 {
   flush?: "pre" | "post" | "sync";
 }
@@ -1622,14 +1605,14 @@ export declare function watch<T extends object, Immediate extends Readonly<boole
 //#endregion
 //#region temp/packages/runtime-core/src/hydrationStrategies.d.ts
 /**
-* A lazy hydration strategy for async components.
-* @param hydrate - call this to perform the actual hydration.
-* @param forEachElement - iterate through the root elements of the component's
-*                         non-hydrated DOM, accounting for possible fragments.
-* @returns a teardown function to be called if the async component is unmounted
-*          before it is hydrated. This can be used to e.g. remove DOM event
-*          listeners.
-*/
+ * A lazy hydration strategy for async components.
+ * @param hydrate - call this to perform the actual hydration.
+ * @param forEachElement - iterate through the root elements of the component's
+ *                         non-hydrated DOM, accounting for possible fragments.
+ * @returns a teardown function to be called if the async component is unmounted
+ *          before it is hydrated. This can be used to e.g. remove DOM event
+ *          listeners.
+ */
 export type HydrationStrategy = (hydrate: () => void, forEachElement: (cb: (el: Element) => any) => void) => (() => void) | void;
 export type HydrationStrategyFactory<Options> = (options?: Options) => HydrationStrategy;
 //#endregion
@@ -1750,9 +1733,9 @@ interface DevtoolsHook {
   off: (event: string, handler: Function) => void;
   appRecords: AppRecord[];
   /**
-  * Added at https://github.com/vuejs/devtools/commit/f2ad51eea789006ab66942e5a27c0f0986a257f9
-  * Returns whether the arg was buffered or not
-  */
+   * Added at https://github.com/vuejs/devtools/commit/f2ad51eea789006ab66942e5a27c0f0986a257f9
+   * Returns whether the arg was buffered or not
+   */
   cleanupBuffer?: (matchArg: unknown) => boolean;
 }
 declare function setDevtoolsHook$1(hook: DevtoolsHook, target: any): void;
@@ -1770,66 +1753,72 @@ declare function reload(id: string, newComp: HMRComponent): void;
 //#endregion
 //#region temp/packages/runtime-core/src/componentRenderContext.d.ts
 /**
-* Set scope id when creating hoisted vnodes.
-* @private compiler helper
-*/
+ * Set scope id when creating hoisted vnodes.
+ * @private compiler helper
+ */
 export declare function pushScopeId(id: string | null): void;
 /**
-* Technically we no longer need this after 3.0.8 but we need to keep the same
-* API for backwards compat w/ code generated by compilers.
-* @private
-*/
+ * Technically we no longer need this after 3.0.8 but we need to keep the same
+ * API for backwards compat w/ code generated by compilers.
+ * @private
+ */
 export declare function popScopeId(): void;
 /**
-* Only for backwards compat
-* @private
-*/
+ * Only for backwards compat
+ * @private
+ */
 export declare const withScopeId: (_id: string) => typeof withCtx;
 /**
-* Wrap a slot function to memoize current rendering instance
-* @private compiler helper
-*/
+ * Wrap a slot function to memoize current rendering instance
+ * @private compiler helper
+ */
 export declare function withCtx(fn: Function, ctx?: ComponentInternalInstance | null, isNonScopedSlot?: boolean): Function;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/renderList.d.ts
 /**
-* v-for string
-* @private
-*/
+ * v-for string
+ * @private
+ */
 export declare function renderList(source: string, renderItem: (value: string, index: number) => VNodeChild): VNodeChild[];
 /**
-* v-for number
-*/
+ * v-for number
+ */
 export declare function renderList(source: number, renderItem: (value: number, index: number) => VNodeChild): VNodeChild[];
 /**
-* v-for array
-*/
+ * v-for array
+ */
 export declare function renderList<T>(source: T[], renderItem: (value: T, index: number) => VNodeChild): VNodeChild[];
 /**
-* v-for iterable
-*/
+ * v-for iterable
+ */
 export declare function renderList<T>(source: Iterable<T>, renderItem: (value: T, index: number) => VNodeChild): VNodeChild[];
 /**
-* v-for object
-*/
+ * v-for object
+ */
 export declare function renderList<T>(source: T, renderItem: <K extends keyof T>(value: T[K], key: string, index: number) => VNodeChild): VNodeChild[];
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/toHandlers.d.ts
 /**
-* For prefixing keys in v-on="obj" with "on"
-* @private
-*/
+ * For prefixing keys in v-on="obj" with "on"
+ * @private
+ */
 export declare function toHandlers(obj: Record<string, any>, preserveCaseIfNecessary?: boolean): Record<string, any>;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/renderSlot.d.ts
+/**
+ * Marks a compiler-generated slot fallback as VDOM-rendered so the vapor
+ * interop fallback chain renders it through the VDOM renderer. Internal to
+ * vapor interop.
+ */
+declare const vdomSlotFallbackKey: unique symbol;
 type SlotFallback = {
   (): VNodeArrayChildren;
-  __vdom?: boolean;
+  [vdomSlotFallbackKey]?: boolean;
 };
 /**
-* Compiler runtime helper for rendering `<slot/>`
-* @private
-*/
+ * Compiler runtime helper for rendering `<slot/>`
+ * @private
+ */
 export declare function renderSlot(slots: Slots, name: string, props?: Data | null, fallback?: SlotFallback, noSlotted?: boolean, branchKey?: PropertyKey): VNode;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/createSlots.d.ts
@@ -1840,9 +1829,9 @@ interface CompiledSlotDescriptor {
   key?: string;
 }
 /**
-* Compiler runtime helper for creating dynamic slots object
-* @private
-*/
+ * Compiler runtime helper for creating dynamic slots object
+ * @private
+ */
 export declare function createSlots(slots: Record<string, SSRSlot>, dynamicSlots: (CompiledSlotDescriptor | CompiledSlotDescriptor[] | undefined)[]): Record<string, SSRSlot>;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/withMemo.d.ts
@@ -1852,28 +1841,28 @@ export declare function isMemoSame(cached: VNode, memo: any[]): boolean;
 //#region temp/packages/runtime-core/src/compat/globalConfig.d.ts
 export type LegacyConfig = {
   /**
-  * @deprecated `config.silent` option has been removed
-  */
+   * @deprecated `config.silent` option has been removed
+   */
   silent?: boolean;
   /**
-  * @deprecated use __VUE_PROD_DEVTOOLS__ compile-time feature flag instead
-  * https://github.com/vuejs/core/tree/main/packages/vue#bundler-build-feature-flags
-  */
+   * @deprecated use __VUE_PROD_DEVTOOLS__ compile-time feature flag instead
+   * https://github.com/vuejs/core/tree/main/packages/vue#bundler-build-feature-flags
+   */
   devtools?: boolean;
   /**
-  * @deprecated use `config.isCustomElement` instead
-  * https://v3-migration.vuejs.org/breaking-changes/global-api.html#config-ignoredelements-is-now-config-iscustomelement
-  */
+   * @deprecated use `config.isCustomElement` instead
+   * https://v3-migration.vuejs.org/breaking-changes/global-api.html#config-ignoredelements-is-now-config-iscustomelement
+   */
   ignoredElements?: (string | RegExp)[];
   /**
-  * @deprecated
-  * https://v3-migration.vuejs.org/breaking-changes/keycode-modifiers.html
-  */
+   * @deprecated
+   * https://v3-migration.vuejs.org/breaking-changes/keycode-modifiers.html
+   */
   keyCodes?: Record<string, number | number[]>;
   /**
-  * @deprecated
-  * https://v3-migration.vuejs.org/breaking-changes/global-api.html#config-productiontip-removed
-  */
+   * @deprecated
+   * https://v3-migration.vuejs.org/breaking-changes/global-api.html#config-productiontip-removed
+   */
   productionTip?: boolean;
 };
 //#endregion
@@ -1894,10 +1883,10 @@ interface LegacyPublicProperties {
 //#endregion
 //#region temp/packages/runtime-core/src/compat/global.d.ts
 /**
-* @deprecated the default `Vue` export has been removed in Vue 3. The type for
-* the default export is provided only for migration purposes. Please use
-* named imports instead - e.g. `import { createApp } from 'vue'`.
-*/
+ * @deprecated the default `Vue` export has been removed in Vue 3. The type for
+ * the default export is provided only for migration purposes. Please use
+ * named imports instead - e.g. `import { createApp } from 'vue'`.
+ */
 export type CompatVue = Pick<App, "version" | "component" | "directive"> & {
   configureCompat: typeof configureCompat;
   new (options?: ComponentOptions): LegacyPublicInstance;
@@ -1913,24 +1902,24 @@ export type CompatVue = Pick<App, "version" | "component" | "directive"> & {
   directive<T = any, V = any>(name: string, directive: Directive<T, V>): CompatVue;
   compile(template: string): RenderFunction;
   /**
-  * @deprecated Vue 3 no longer supports extending constructors.
-  */
+   * @deprecated Vue 3 no longer supports extending constructors.
+   */
   extend: (options?: ComponentOptions) => CompatVue;
   /**
-  * @deprecated Vue 3 no longer needs set() for adding new properties.
-  */
+   * @deprecated Vue 3 no longer needs set() for adding new properties.
+   */
   set(target: any, key: PropertyKey, value: any): void;
   /**
-  * @deprecated Vue 3 no longer needs delete() for property deletions.
-  */
+   * @deprecated Vue 3 no longer needs delete() for property deletions.
+   */
   delete(target: any, key: PropertyKey): void;
   /**
-  * @deprecated use `reactive` instead.
-  */
+   * @deprecated use `reactive` instead.
+   */
   observable: typeof reactive$1;
   /**
-  * @deprecated filters have been removed from Vue 3.
-  */
+   * @deprecated filters have been removed from Vue 3.
+   */
   filter(name: string, arg?: any): null;
 };
 //#endregion
@@ -1948,16 +1937,16 @@ declare module "@vue/reactivity" {
 }
 export declare const DeprecationTypes: typeof DeprecationTypes$1;
 /**
-* @private
-*/
+ * @private
+ */
 export declare const withModifiers: <T extends (event: Event, ...args: unknown[]) => any>(fn: T & {
   _withMods?: {
     [key: string]: T;
   } | undefined;
 }, modifiers: string[]) => T;
 /**
-* @private
-*/
+ * @private
+ */
 export declare const withKeys: <T extends (event: KeyboardEvent) => any>(fn: T & {
   _withKeys?: {
     [k: string]: T;
@@ -1965,10 +1954,10 @@ export declare const withKeys: <T extends (event: KeyboardEvent) => any>(fn: T &
 }, modifiers: string[]) => T;
 export declare const vShow: ObjectDirective;
 export declare function defineMixin<Props = {}, RawBindings = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = {}, EE extends string = string, S extends SlotsType = {}, I extends ComponentInjectOptions = {}, II extends string = string>(options: ComponentOptionsWithoutProps<Props, RawBindings, D, C, M, Mixin, Extends, E, EE, I, II, S>): ComponentOptions<Props, RawBindings, D, C, M, any, any, E, string, {}, {}, string, S>;
-export declare function defineMixin<PropNames extends string, RawBindings, D, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = {}, EE extends string = string, S extends SlotsType = {}, I extends ComponentInjectOptions = {}, II extends string = string, Props = Readonly<{ [key in PropNames]?: any }>>(options: ComponentOptionsWithArrayProps<PropNames, RawBindings, D, C, M, Mixin, Extends, E, EE, I, II, S>): ComponentOptions<Props, RawBindings, D, C, M, any, any, E, string, {}, {}, string, S>;
+export declare function defineMixin<PropNames extends string, RawBindings, D, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = {}, EE extends string = string, S extends SlotsType = {}, I extends ComponentInjectOptions = {}, II extends string = string, Props = Readonly<{ [key in PropNames]?: any; }>>(options: ComponentOptionsWithArrayProps<PropNames, RawBindings, D, C, M, Mixin, Extends, E, EE, I, II, S>): ComponentOptions<Props, RawBindings, D, C, M, any, any, E, string, {}, {}, string, S>;
 export declare function defineMixin<PropsOptions extends Readonly<ComponentPropsOptions>, RawBindings, D, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = {}, EE extends string = string, S extends SlotsType = {}, I extends ComponentInjectOptions = {}, II extends string = string, Props = ResolveProps<PropsOptions, EmitsOptions>>(options: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE, I, II, S>): ComponentOptions<Props, RawBindings, D, C, M, any, any, E, string, {}, {}, string, S>;
 //#endregion
-export { Comment$1 as Comment, type ComputedGetter, type ComputedRef, type ComputedSetter, type CustomRefFactory, type DebuggerEvent, type DebuggerEventExtraInfo, type DebuggerOptions, type DeepReadonly, type EffectScheduler, EffectScope, type MaybeRef, type MaybeRefOrGetter, type ObjectDirective$1 as ObjectDirective, type Raw, type Reactive, ReactiveEffect, type ReactiveEffectOptions, type ReactiveEffectRunner, type ReactiveFlags, type Ref, type ShallowReactive, type ShallowRef, type ShallowUnwrapRef, type ToRef, type ToRefs, TrackOpTypes, TriggerOpTypes, type UnwrapNestedRefs, type UnwrapRef, type WatchCallback, type WatchEffect, type WatchHandle, type WatchEffectOptions as WatchOptionsBase, type WatchSource, type WatchStopHandle, type WritableComputedOptions, type WritableComputedRef, camelize, capitalize, createBaseVNode as createElementVNode, customRef, effect, effectScope, getCurrentScope, getCurrentWatcher, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, normalizeClass, normalizeProps, normalizeStyle, onScopeDispose, onWatcherCleanup, proxyRefs, reactive, readonly, ref$1 as ref, shallowReactive, shallowReadonly, shallowRef, stop, toDisplayString, toHandlerKey, toRaw, toRef, toRefs, toValue, triggerRef, unref,  };
+export { Comment$1 as Comment, type ComputedGetter, type ComputedRef, type ComputedSetter, type CustomRefFactory, type DebuggerEvent, type DebuggerEventExtraInfo, type DebuggerOptions, type DeepReadonly, type EffectScheduler, EffectScope, type MaybeRef, type MaybeRefOrGetter, type ObjectDirective$1 as ObjectDirective, type Raw, type Reactive, ReactiveEffect, type ReactiveEffectOptions, type ReactiveEffectRunner, type ReactiveFlags, type Ref, type ShallowReactive, type ShallowRef, type ShallowUnwrapRef, type ToRef, type ToRefs, TrackOpTypes, TriggerOpTypes, type UnwrapNestedRefs, type UnwrapRef, type WatchCallback, type WatchEffect, type WatchHandle, type WatchEffectOptions as WatchOptionsBase, type WatchSource, type WatchStopHandle, type WritableComputedOptions, type WritableComputedRef, camelize, capitalize, createBaseVNode as createElementVNode, customRef, effect, effectScope, getCurrentScope, getCurrentWatcher, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, normalizeClass, normalizeProps, normalizeStyle, onScopeDispose, onWatcherCleanup, proxyRefs, reactive, readonly, ref$1 as ref, shallowReactive, shallowReadonly, shallowRef, stop, toDisplayString, toHandlerKey, toRaw, toRef, toRefs, toValue, triggerRef, unref };
 // Note: this file is auto concatenated to the end of the bundled d.ts during
 // build.
 

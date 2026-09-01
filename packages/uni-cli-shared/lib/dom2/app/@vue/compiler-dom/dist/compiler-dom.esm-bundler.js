@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-rc.5
+  * @vue/compiler-dom v3.6.0-rc.6
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -187,9 +187,7 @@ const transformModel$1 = (dir, node, context) => {
 						isInvalidType = true;
 						context.onError(createDOMCompilerError(60, dir.loc));
 						break;
-					default:
-						process.env.NODE_ENV !== "production" && checkDuplicatedValue();
-						break;
+					default: process.env.NODE_ENV !== "production" && checkDuplicatedValue();
 				}
 			} else if (hasDynamicKeyVBind(node)) directiveToUse = V_MODEL_DYNAMIC;
 			else process.env.NODE_ENV !== "production" && checkDuplicatedValue();
@@ -202,10 +200,10 @@ const transformModel$1 = (dir, node, context) => {
 };
 //#endregion
 //#region packages/compiler-dom/src/transforms/vOn.ts
-const isEventOptionModifier = /* @__PURE__ */ makeMap(`passive,once,capture`);
-const isNonKeyModifier = /* @__PURE__ */ makeMap("stop,prevent,self,ctrl,shift,alt,meta,exact,middle");
-const maybeKeyModifier = /* @__PURE__ */ makeMap("left,right");
-const isKeyboardEvent = /* @__PURE__ */ makeMap(`onkeyup,onkeydown,onkeypress`);
+const isEventOptionModifier = /*@__PURE__*/ makeMap(`passive,once,capture`);
+const isNonKeyModifier = /*@__PURE__*/ makeMap("stop,prevent,self,ctrl,shift,alt,meta,exact,middle");
+const maybeKeyModifier = /*@__PURE__*/ makeMap("left,right");
+const isKeyboardEvent = /*@__PURE__*/ makeMap(`onkeyup,onkeydown,onkeypress`);
 const resolveModifiers = (key, modifiers, context, loc) => {
 	const keyModifiers = [];
 	const nonKeyModifiers = [];
@@ -224,13 +222,15 @@ const resolveModifiers = (key, modifiers, context, loc) => {
 		else if (isEventOptionModifier(modifier)) eventOptionModifiers.push(modifier);
 		else {
 			const keyString = isString(key) ? key : isStaticExp(key) ? key.content : null;
-			if (maybeKeyModifier(modifier)) if (keyString) if (isKeyboardEvent(keyString.toLowerCase())) keyModifiers.push(modifier);
-			else nonKeyModifiers.push(modifier);
-			else {
-				keyModifiers.push(modifier);
-				nonKeyModifiers.push(modifier);
-			}
-			else if (isNonKeyModifier(modifier)) nonKeyModifiers.push(modifier);
+			if (maybeKeyModifier(modifier)) {
+				if (keyString) {
+					if (isKeyboardEvent(keyString.toLowerCase())) keyModifiers.push(modifier);
+					else nonKeyModifiers.push(modifier);
+				} else {
+					keyModifiers.push(modifier);
+					nonKeyModifiers.push(modifier);
+				}
+			} else if (isNonKeyModifier(modifier)) nonKeyModifiers.push(modifier);
 			else keyModifiers.push(modifier);
 		}
 	}
@@ -345,7 +345,7 @@ function isValidHTMLNesting(parent, child) {
 	}
 	return true;
 }
-const headings = new Set([
+const headings = /* @__PURE__ */ new Set([
 	"h1",
 	"h2",
 	"h3",
@@ -357,7 +357,7 @@ const emptySet = /* @__PURE__ */ new Set([]);
 /**
 * maps element to set of elements that can be it's children, no other */
 const onlyValidChildren = {
-	head: new Set([
+	head: /* @__PURE__ */ new Set([
 		"base",
 		"basefront",
 		"bgsound",
@@ -370,24 +370,24 @@ const onlyValidChildren = {
 		"script",
 		"template"
 	]),
-	optgroup: new Set(["option"]),
-	select: new Set([
+	optgroup: /* @__PURE__ */ new Set(["option"]),
+	select: /* @__PURE__ */ new Set([
 		"optgroup",
 		"option",
 		"hr"
 	]),
-	table: new Set([
+	table: /* @__PURE__ */ new Set([
 		"caption",
 		"colgroup",
 		"tbody",
 		"tfoot",
 		"thead"
 	]),
-	tr: new Set(["td", "th"]),
-	colgroup: new Set(["col"]),
-	tbody: new Set(["tr"]),
-	thead: new Set(["tr"]),
-	tfoot: new Set(["tr"]),
+	tr: /* @__PURE__ */ new Set(["td", "th"]),
+	colgroup: /* @__PURE__ */ new Set(["col"]),
+	tbody: /* @__PURE__ */ new Set(["tr"]),
+	thead: /* @__PURE__ */ new Set(["tr"]),
+	tfoot: /* @__PURE__ */ new Set(["tr"]),
 	script: emptySet,
 	iframe: emptySet,
 	option: emptySet,
@@ -398,30 +398,30 @@ const onlyValidChildren = {
 /** maps elements to set of elements which can be it's parent, no other */
 const onlyValidParents = {
 	html: emptySet,
-	body: new Set(["html"]),
-	head: new Set(["html"]),
-	td: new Set(["tr"]),
-	colgroup: new Set(["table"]),
-	caption: new Set(["table"]),
-	tbody: new Set(["table"]),
-	tfoot: new Set(["table"]),
-	col: new Set(["colgroup"]),
-	th: new Set(["tr"]),
-	thead: new Set(["table"]),
-	tr: new Set([
+	body: /* @__PURE__ */ new Set(["html"]),
+	head: /* @__PURE__ */ new Set(["html"]),
+	td: /* @__PURE__ */ new Set(["tr"]),
+	colgroup: /* @__PURE__ */ new Set(["table"]),
+	caption: /* @__PURE__ */ new Set(["table"]),
+	tbody: /* @__PURE__ */ new Set(["table"]),
+	tfoot: /* @__PURE__ */ new Set(["table"]),
+	col: /* @__PURE__ */ new Set(["colgroup"]),
+	th: /* @__PURE__ */ new Set(["tr"]),
+	thead: /* @__PURE__ */ new Set(["table"]),
+	tr: /* @__PURE__ */ new Set([
 		"tbody",
 		"thead",
 		"tfoot"
 	]),
-	dd: new Set(["dl", "div"]),
-	dt: new Set(["dl", "div"]),
-	figcaption: new Set(["figure"]),
-	summary: new Set(["details"]),
-	area: new Set(["map"])
+	dd: /* @__PURE__ */ new Set(["dl", "div"]),
+	dt: /* @__PURE__ */ new Set(["dl", "div"]),
+	figcaption: /* @__PURE__ */ new Set(["figure"]),
+	summary: /* @__PURE__ */ new Set(["details"]),
+	area: /* @__PURE__ */ new Set(["map"])
 };
 /** maps element to set of elements that can not be it's children, others can */
 const knownInvalidChildren = {
-	p: new Set([
+	p: /* @__PURE__ */ new Set([
 		"address",
 		"article",
 		"aside",
@@ -456,7 +456,7 @@ const knownInvalidChildren = {
 		"table",
 		"ul"
 	]),
-	svg: new Set([
+	svg: /* @__PURE__ */ new Set([
 		"b",
 		"blockquote",
 		"br",
@@ -497,12 +497,12 @@ const knownInvalidChildren = {
 };
 /** maps element to set of elements that can not be it's parent, others can */
 const knownInvalidParents = {
-	a: new Set(["a"]),
-	button: new Set(["button"]),
-	dd: new Set(["dd", "dt"]),
-	dt: new Set(["dd", "dt"]),
-	form: new Set(["form"]),
-	li: new Set(["li"]),
+	a: /* @__PURE__ */ new Set(["a"]),
+	button: /* @__PURE__ */ new Set(["button"]),
+	dd: /* @__PURE__ */ new Set(["dd", "dt"]),
+	dt: /* @__PURE__ */ new Set(["dd", "dt"]),
+	form: /* @__PURE__ */ new Set(["form"]),
+	li: /* @__PURE__ */ new Set(["li"]),
 	h1: headings,
 	h2: headings,
 	h3: headings,

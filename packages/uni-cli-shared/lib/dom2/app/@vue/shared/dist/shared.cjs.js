@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.5
+  * @vue/shared v3.6.0-rc.6
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -15,7 +15,7 @@ Object.defineProperties(exports, {
 * \/\*#\_\_PURE\_\_\*\/
 * So that they can be tree-shaken if necessary.
 */
-/* @__NO_SIDE_EFFECTS__ */
+/*@__NO_SIDE_EFFECTS__*/
 function makeMap(str) {
 	const map = Object.create(null);
 	for (const key of str.split(",")) map[key] = 1;
@@ -63,9 +63,9 @@ const toRawType = (value) => {
 };
 const isPlainObject = (val) => toTypeString(val) === "[object Object]";
 const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key || typeof key === "number" && Number.isInteger(key) && key >= 0;
-const isReservedProp = /* @__PURE__ */ makeMap(",key,ref,ref_for,ref_key,__cid,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
-const isBuiltInTag = /* @__PURE__ */ makeMap("slot,component");
-const isBuiltInDirective = /* @__PURE__ */ makeMap("bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo");
+const isReservedProp = /*@__PURE__*/ makeMap(",key,ref,ref_for,ref_key,__cid,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
+const isBuiltInTag = /*#__PURE__*/ makeMap("slot,component");
+const isBuiltInDirective = /*@__PURE__*/ makeMap("bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo");
 const cacheStringFunction = (fn) => {
 	const cache = Object.create(null);
 	return ((str) => {
@@ -259,7 +259,7 @@ const slotFlagsText = {
 	[2]: "DYNAMIC",
 	[3]: "FORWARDED"
 };
-const isGloballyAllowed = /* @__PURE__ */ makeMap("Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error,Symbol");
+const isGloballyAllowed = /*@__PURE__*/ makeMap("Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error,Symbol");
 /** @deprecated use `isGloballyAllowed` instead */
 const isGloballyWhitelisted = isGloballyAllowed;
 //#endregion
@@ -372,42 +372,42 @@ const BLOCK_TAGS = "address,article,aside,blockquote,dd,details,dialog,div,dl,dt
 * Compiler only.
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
-const isHTMLTag = /* @__PURE__ */ makeMap(HTML_TAGS);
+const isHTMLTag = /*@__PURE__*/ makeMap(HTML_TAGS);
 /**
 * Compiler only.
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
-const isSVGTag = /* @__PURE__ */ makeMap(SVG_TAGS);
+const isSVGTag = /*@__PURE__*/ makeMap(SVG_TAGS);
 /**
 * Compiler only.
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
-const isMathMLTag = /* @__PURE__ */ makeMap(MATH_TAGS);
+const isMathMLTag = /*@__PURE__*/ makeMap(MATH_TAGS);
 /**
 * Compiler only.
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
-const isVoidTag = /* @__PURE__ */ makeMap(VOID_TAGS);
+const isVoidTag = /*@__PURE__*/ makeMap(VOID_TAGS);
 /**
 * Compiler only.
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
-const isFormattingTag = /* @__PURE__ */ makeMap(FORMATTING_TAGS);
+const isFormattingTag = /*@__PURE__*/ makeMap(FORMATTING_TAGS);
 /**
 * Compiler only.
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
-const isAlwaysCloseTag = /* @__PURE__ */ makeMap(ALWAYS_CLOSE_TAGS);
+const isAlwaysCloseTag = /*@__PURE__*/ makeMap(ALWAYS_CLOSE_TAGS);
 /**
 * Compiler only.
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
-const isInlineTag = /* @__PURE__ */ makeMap(INLINE_TAGS);
+const isInlineTag = /*@__PURE__*/ makeMap(INLINE_TAGS);
 /**
 * Compiler only.
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
-const isBlockTag = /* @__PURE__ */ makeMap(BLOCK_TAGS);
+const isBlockTag = /*@__PURE__*/ makeMap(BLOCK_TAGS);
 //#endregion
 //#region packages/shared/src/domAttrConfig.ts
 /**
@@ -422,11 +422,11 @@ const isBlockTag = /* @__PURE__ */ makeMap(BLOCK_TAGS);
 * - readonly -> readOnly
 */
 const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
-const isSpecialBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs);
+const isSpecialBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs);
 /**
 * The full list is needed during SSR to produce the correct initial markup.
 */
-const isBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs + ",async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
+const isBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs + ",async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
 /**
 * Boolean attributes should be included if the value is truthy or ''.
 * e.g. `<select multiple>` compiles to `{ multiple: '' }`
@@ -434,7 +434,7 @@ const isBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs + ",async,auto
 function includeBooleanAttr(value) {
 	return !!value || value === "";
 }
-const unsafeAttrCharRE = /[>/="'\u0009\u000a\u000c\u0020]/;
+const unsafeAttrCharRE = /[>/="'\u0009\u000a\u000c\u000d\u0020]/;
 const attrValidationCache = {};
 function isSSRSafeAttrName(name) {
 	if (attrValidationCache.hasOwnProperty(name)) return attrValidationCache[name];
@@ -454,15 +454,15 @@ const propsToAttrMap = {
 * Don't also forget to allow `data-*` and `aria-*`!
 * Generated from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
 */
-const isKnownHtmlAttr = /* @__PURE__ */ makeMap("accept,accept-charset,accesskey,action,align,allow,alt,async,autocapitalize,autocomplete,autofocus,autoplay,background,bgcolor,border,buffered,capture,challenge,charset,checked,cite,class,code,codebase,color,cols,colspan,content,contenteditable,contextmenu,controls,coords,crossorigin,csp,data,datetime,decoding,default,defer,dir,dirname,disabled,download,draggable,dropzone,enctype,enterkeyhint,for,form,formaction,formenctype,formmethod,formnovalidate,formtarget,headers,height,hidden,high,href,hreflang,http-equiv,icon,id,importance,inert,integrity,ismap,itemprop,keytype,kind,label,lang,language,loading,list,loop,low,manifest,max,maxlength,minlength,media,min,multiple,muted,name,novalidate,open,optimum,pattern,ping,placeholder,poster,preload,radiogroup,readonly,referrerpolicy,rel,required,reversed,rows,rowspan,sandbox,scope,scoped,selected,shape,size,sizes,slot,span,spellcheck,src,srcdoc,srclang,srcset,start,step,style,summary,tabindex,target,title,translate,type,usemap,value,width,wrap");
+const isKnownHtmlAttr = /*@__PURE__*/ makeMap("accept,accept-charset,accesskey,action,align,allow,alt,async,autocapitalize,autocomplete,autofocus,autoplay,background,bgcolor,border,buffered,capture,challenge,charset,checked,cite,class,code,codebase,color,cols,colspan,content,contenteditable,contextmenu,controls,coords,crossorigin,csp,data,datetime,decoding,default,defer,dir,dirname,disabled,download,draggable,dropzone,enctype,enterkeyhint,for,form,formaction,formenctype,formmethod,formnovalidate,formtarget,headers,height,hidden,high,href,hreflang,http-equiv,icon,id,importance,inert,integrity,ismap,itemprop,keytype,kind,label,lang,language,loading,list,loop,low,manifest,max,maxlength,minlength,media,min,multiple,muted,name,novalidate,open,optimum,pattern,ping,placeholder,poster,preload,radiogroup,readonly,referrerpolicy,rel,required,reversed,rows,rowspan,sandbox,scope,scoped,selected,shape,size,sizes,slot,span,spellcheck,src,srcdoc,srclang,srcset,start,step,style,summary,tabindex,target,title,translate,type,usemap,value,width,wrap");
 /**
 * Generated from https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute
 */
-const isKnownSvgAttr = /* @__PURE__ */ makeMap("xmlns,accent-height,accumulate,additive,alignment-baseline,alphabetic,amplitude,arabic-form,ascent,attributeName,attributeType,azimuth,baseFrequency,baseline-shift,baseProfile,bbox,begin,bias,by,calcMode,cap-height,class,clip,clipPathUnits,clip-path,clip-rule,color,color-interpolation,color-interpolation-filters,color-profile,color-rendering,contentScriptType,contentStyleType,crossorigin,cursor,cx,cy,d,decelerate,descent,diffuseConstant,direction,display,divisor,dominant-baseline,dur,dx,dy,edgeMode,elevation,enable-background,end,exponent,fill,fill-opacity,fill-rule,filter,filterRes,filterUnits,flood-color,flood-opacity,font-family,font-size,font-size-adjust,font-stretch,font-style,font-variant,font-weight,format,from,fr,fx,fy,g1,g2,glyph-name,glyph-orientation-horizontal,glyph-orientation-vertical,glyphRef,gradientTransform,gradientUnits,hanging,height,href,hreflang,horiz-adv-x,horiz-origin-x,id,ideographic,image-rendering,in,in2,intercept,k,k1,k2,k3,k4,kernelMatrix,kernelUnitLength,kerning,keyPoints,keySplines,keyTimes,lang,lengthAdjust,letter-spacing,lighting-color,limitingConeAngle,local,marker-end,marker-mid,marker-start,markerHeight,markerUnits,markerWidth,mask,maskContentUnits,maskUnits,mathematical,max,media,method,min,mode,name,numOctaves,offset,opacity,operator,order,orient,orientation,origin,overflow,overline-position,overline-thickness,panose-1,paint-order,path,pathLength,patternContentUnits,patternTransform,patternUnits,ping,pointer-events,points,pointsAtX,pointsAtY,pointsAtZ,preserveAlpha,preserveAspectRatio,primitiveUnits,r,radius,referrerPolicy,refX,refY,rel,rendering-intent,repeatCount,repeatDur,requiredExtensions,requiredFeatures,restart,result,rotate,rx,ry,scale,seed,shape-rendering,slope,spacing,specularConstant,specularExponent,speed,spreadMethod,startOffset,stdDeviation,stemh,stemv,stitchTiles,stop-color,stop-opacity,strikethrough-position,strikethrough-thickness,string,stroke,stroke-dasharray,stroke-dashoffset,stroke-linecap,stroke-linejoin,stroke-miterlimit,stroke-opacity,stroke-width,style,surfaceScale,systemLanguage,tabindex,tableValues,target,targetX,targetY,text-anchor,text-decoration,text-rendering,textLength,to,transform,transform-origin,type,u1,u2,underline-position,underline-thickness,unicode,unicode-bidi,unicode-range,units-per-em,v-alphabetic,v-hanging,v-ideographic,v-mathematical,values,vector-effect,version,vert-adv-y,vert-origin-x,vert-origin-y,viewBox,viewTarget,visibility,width,widths,word-spacing,writing-mode,x,x-height,x1,x2,xChannelSelector,xlink:actuate,xlink:arcrole,xlink:href,xlink:role,xlink:show,xlink:title,xlink:type,xmlns:xlink,xml:base,xml:lang,xml:space,y,y1,y2,yChannelSelector,z,zoomAndPan");
+const isKnownSvgAttr = /*@__PURE__*/ makeMap("xmlns,accent-height,accumulate,additive,alignment-baseline,alphabetic,amplitude,arabic-form,ascent,attributeName,attributeType,azimuth,baseFrequency,baseline-shift,baseProfile,bbox,begin,bias,by,calcMode,cap-height,class,clip,clipPathUnits,clip-path,clip-rule,color,color-interpolation,color-interpolation-filters,color-profile,color-rendering,contentScriptType,contentStyleType,crossorigin,cursor,cx,cy,d,decelerate,descent,diffuseConstant,direction,display,divisor,dominant-baseline,dur,dx,dy,edgeMode,elevation,enable-background,end,exponent,fill,fill-opacity,fill-rule,filter,filterRes,filterUnits,flood-color,flood-opacity,font-family,font-size,font-size-adjust,font-stretch,font-style,font-variant,font-weight,format,from,fr,fx,fy,g1,g2,glyph-name,glyph-orientation-horizontal,glyph-orientation-vertical,glyphRef,gradientTransform,gradientUnits,hanging,height,href,hreflang,horiz-adv-x,horiz-origin-x,id,ideographic,image-rendering,in,in2,intercept,k,k1,k2,k3,k4,kernelMatrix,kernelUnitLength,kerning,keyPoints,keySplines,keyTimes,lang,lengthAdjust,letter-spacing,lighting-color,limitingConeAngle,local,marker-end,marker-mid,marker-start,markerHeight,markerUnits,markerWidth,mask,maskContentUnits,maskUnits,mathematical,max,media,method,min,mode,name,numOctaves,offset,opacity,operator,order,orient,orientation,origin,overflow,overline-position,overline-thickness,panose-1,paint-order,path,pathLength,patternContentUnits,patternTransform,patternUnits,ping,pointer-events,points,pointsAtX,pointsAtY,pointsAtZ,preserveAlpha,preserveAspectRatio,primitiveUnits,r,radius,referrerPolicy,refX,refY,rel,rendering-intent,repeatCount,repeatDur,requiredExtensions,requiredFeatures,restart,result,rotate,rx,ry,scale,seed,shape-rendering,slope,spacing,specularConstant,specularExponent,speed,spreadMethod,startOffset,stdDeviation,stemh,stemv,stitchTiles,stop-color,stop-opacity,strikethrough-position,strikethrough-thickness,string,stroke,stroke-dasharray,stroke-dashoffset,stroke-linecap,stroke-linejoin,stroke-miterlimit,stroke-opacity,stroke-width,style,surfaceScale,systemLanguage,tabindex,tableValues,target,targetX,targetY,text-anchor,text-decoration,text-rendering,textLength,to,transform,transform-origin,type,u1,u2,underline-position,underline-thickness,unicode,unicode-bidi,unicode-range,units-per-em,v-alphabetic,v-hanging,v-ideographic,v-mathematical,values,vector-effect,version,vert-adv-y,vert-origin-x,vert-origin-y,viewBox,viewTarget,visibility,width,widths,word-spacing,writing-mode,x,x-height,x1,x2,xChannelSelector,xlink:actuate,xlink:arcrole,xlink:href,xlink:role,xlink:show,xlink:title,xlink:type,xmlns:xlink,xml:base,xml:lang,xml:space,y,y1,y2,yChannelSelector,z,zoomAndPan");
 /**
 * Generated from https://developer.mozilla.org/en-US/docs/Web/MathML/Attribute
 */
-const isKnownMathMLAttr = /* @__PURE__ */ makeMap("accent,accentunder,actiontype,align,alignmentscope,altimg,altimg-height,altimg-valign,altimg-width,alttext,bevelled,close,columnsalign,columnlines,columnspan,denomalign,depth,dir,display,displaystyle,encoding,equalcolumns,equalrows,fence,fontstyle,fontweight,form,frame,framespacing,groupalign,height,href,id,indentalign,indentalignfirst,indentalignlast,indentshift,indentshiftfirst,indentshiftlast,indextype,justify,largetop,largeop,lquote,lspace,mathbackground,mathcolor,mathsize,mathvariant,maxsize,minlabelspacing,mode,other,overflow,position,rowalign,rowlines,rowspan,rquote,rspace,scriptlevel,scriptminsize,scriptsizemultiplier,selection,separator,separators,shift,side,src,stackalign,stretchy,subscriptshift,superscriptshift,symmetric,voffset,width,widths,xlink:href,xlink:show,xlink:type,xmlns");
+const isKnownMathMLAttr = /*@__PURE__*/ makeMap("accent,accentunder,actiontype,align,alignmentscope,altimg,altimg-height,altimg-valign,altimg-width,alttext,bevelled,close,columnsalign,columnlines,columnspan,denomalign,depth,dir,display,displaystyle,encoding,equalcolumns,equalrows,fence,fontstyle,fontweight,form,frame,framespacing,groupalign,height,href,id,indentalign,indentalignfirst,indentalignlast,indentshift,indentshiftfirst,indentshiftlast,indextype,justify,largetop,largeop,lquote,lspace,mathbackground,mathcolor,mathsize,mathvariant,maxsize,minlabelspacing,mode,other,overflow,position,rowalign,rowlines,rowspan,rquote,rspace,scriptlevel,scriptminsize,scriptsizemultiplier,selection,separator,separators,shift,side,src,stackalign,stretchy,subscriptshift,superscriptshift,symmetric,voffset,width,widths,xlink:href,xlink:show,xlink:type,xmlns");
 /**
 * Shared between server-renderer and runtime-core hydration logic
 */
@@ -547,6 +547,21 @@ function looseCompareArrays(a, b) {
 	for (let i = 0; equal && i < a.length; i++) equal = looseEqual(a[i], b[i]);
 	return equal;
 }
+function looseCompareCollections(a, b) {
+	if (a.size !== b.size) return false;
+	const candidates = Array.from(b);
+	const matched = new Uint8Array(candidates.length);
+	for (const item of a) {
+		let index = -1;
+		for (let i = 0; i < candidates.length; i++) if (!matched[i] && looseEqual(item, candidates[i])) {
+			index = i;
+			break;
+		}
+		if (index < 0) return false;
+		matched[index] = 1;
+	}
+	return true;
+}
 function looseEqual(a, b) {
 	if (a === b) return true;
 	let aValidType = isDate(a);
@@ -562,6 +577,12 @@ function looseEqual(a, b) {
 	bValidType = isObject(b);
 	if (aValidType || bValidType) {
 		if (!aValidType || !bValidType) return false;
+		aValidType = isMap(a);
+		bValidType = isMap(b);
+		if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b) : false;
+		aValidType = isSet(a);
+		bValidType = isSet(b);
+		if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b) : false;
 		if (Object.keys(a).length !== Object.keys(b).length) return false;
 		for (const key in a) {
 			const aHasKey = a.hasOwnProperty(key);

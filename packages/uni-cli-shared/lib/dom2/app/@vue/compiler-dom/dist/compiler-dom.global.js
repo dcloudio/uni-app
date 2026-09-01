@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-rc.5
+  * @vue/compiler-dom v3.6.0-rc.6
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -13,7 +13,7 @@ var VueCompilerDOM = (function(exports) {
 	* \/\*#\_\_PURE\_\_\*\/
 	* So that they can be tree-shaken if necessary.
 	*/
-	/* @__NO_SIDE_EFFECTS__ */
+	/*@__NO_SIDE_EFFECTS__*/
 	function makeMap(str) {
 		const map = Object.create(null);
 		for (const key of str.split(",")) map[key] = 1;
@@ -34,8 +34,8 @@ var VueCompilerDOM = (function(exports) {
 	const isString = (val) => typeof val === "string";
 	const isSymbol = (val) => typeof val === "symbol";
 	const isObject = (val) => val !== null && typeof val === "object";
-	const isReservedProp = /* @__PURE__ */ makeMap(",key,ref,ref_for,ref_key,__cid,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
-	const isBuiltInDirective = /* @__PURE__ */ makeMap("bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo");
+	const isReservedProp = /*@__PURE__*/ makeMap(",key,ref,ref_for,ref_key,__cid,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
+	const isBuiltInDirective = /*@__PURE__*/ makeMap("bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo");
 	const cacheStringFunction = (fn) => {
 		const cache = Object.create(null);
 		return ((str) => {
@@ -163,22 +163,22 @@ var VueCompilerDOM = (function(exports) {
 	* Compiler only.
 	* Do NOT use in runtime code paths unless behind `__DEV__` flag.
 	*/
-	const isHTMLTag = /* @__PURE__ */ makeMap(HTML_TAGS);
+	const isHTMLTag = /*@__PURE__*/ makeMap(HTML_TAGS);
 	/**
 	* Compiler only.
 	* Do NOT use in runtime code paths unless behind `__DEV__` flag.
 	*/
-	const isSVGTag = /* @__PURE__ */ makeMap(SVG_TAGS);
+	const isSVGTag = /*@__PURE__*/ makeMap(SVG_TAGS);
 	/**
 	* Compiler only.
 	* Do NOT use in runtime code paths unless behind `__DEV__` flag.
 	*/
-	const isMathMLTag = /* @__PURE__ */ makeMap(MATH_TAGS);
+	const isMathMLTag = /*@__PURE__*/ makeMap(MATH_TAGS);
 	/**
 	* Compiler only.
 	* Do NOT use in runtime code paths unless behind `__DEV__` flag.
 	*/
-	const isVoidTag = /* @__PURE__ */ makeMap(VOID_TAGS);
+	const isVoidTag = /*@__PURE__*/ makeMap(VOID_TAGS);
 	//#endregion
 	//#region packages/compiler-core/src/runtimeHelpers.ts
 	const FRAGMENT = Symbol(`Fragment`);
@@ -723,13 +723,14 @@ var VueCompilerDOM = (function(exports) {
 			}
 		}
 		stateInterpolationOpen(c) {
-			if (c === this.delimiterOpen[this.delimiterIndex]) if (this.delimiterIndex === this.delimiterOpen.length - 1) {
-				const start = this.index + 1 - this.delimiterOpen.length;
-				if (start > this.sectionStart) this.cbs.ontext(this.sectionStart, start);
-				this.state = 3;
-				this.sectionStart = start;
-			} else this.delimiterIndex++;
-			else if (this.inRCDATA) {
+			if (c === this.delimiterOpen[this.delimiterIndex]) {
+				if (this.delimiterIndex === this.delimiterOpen.length - 1) {
+					const start = this.index + 1 - this.delimiterOpen.length;
+					if (start > this.sectionStart) this.cbs.ontext(this.sectionStart, start);
+					this.state = 3;
+					this.sectionStart = start;
+				} else this.delimiterIndex++;
+			} else if (this.inRCDATA) {
 				this.state = 32;
 				this.stateInRCDATA(c);
 			} else {
@@ -745,13 +746,14 @@ var VueCompilerDOM = (function(exports) {
 			}
 		}
 		stateInterpolationClose(c) {
-			if (c === this.delimiterClose[this.delimiterIndex]) if (this.delimiterIndex === this.delimiterClose.length - 1) {
-				this.cbs.oninterpolation(this.sectionStart, this.index + 1);
-				if (this.inRCDATA) this.state = 32;
-				else this.state = 1;
-				this.sectionStart = this.index + 1;
-			} else this.delimiterIndex++;
-			else {
+			if (c === this.delimiterClose[this.delimiterIndex]) {
+				if (this.delimiterIndex === this.delimiterClose.length - 1) {
+					this.cbs.oninterpolation(this.sectionStart, this.index + 1);
+					if (this.inRCDATA) this.state = 32;
+					else this.state = 1;
+					this.sectionStart = this.index + 1;
+				} else this.delimiterIndex++;
+			} else {
 				this.state = 3;
 				this.stateInterpolation(c);
 			}
@@ -866,9 +868,10 @@ var VueCompilerDOM = (function(exports) {
 				this.sectionStart = this.index;
 				if (this.mode === 0) this.state = 6;
 				else if (this.inSFCRoot) this.state = 34;
-				else if (!this.inXML) if (c === 116) this.state = 30;
-				else this.state = c === 115 ? 29 : 6;
-				else this.state = 6;
+				else if (!this.inXML) {
+					if (c === 116) this.state = 30;
+					else this.state = c === 115 ? 29 : 6;
+				} else this.state = 6;
 			} else if (c === 47) this.state = 8;
 			else {
 				this.state = 1;
@@ -1221,9 +1224,7 @@ var VueCompilerDOM = (function(exports) {
 					case 24:
 						this.stateInProcessingInstruction(c);
 						break;
-					case 33:
-						this.stateInEntity();
-						break;
+					case 33: this.stateInEntity();
 				}
 				this.index++;
 			}
@@ -1252,9 +1253,10 @@ var VueCompilerDOM = (function(exports) {
 		handleTrailingData() {
 			const endIndex = this.buffer.length;
 			if (this.sectionStart >= endIndex) return;
-			if (this.state === 28) if (this.currentSequence === Sequences.CdataEnd) this.cbs.oncdata(this.sectionStart, endIndex);
-			else this.cbs.oncomment(this.sectionStart, endIndex);
-			else if (this.state === 6 || this.state === 11 || this.state === 18 || this.state === 17 || this.state === 12 || this.state === 13 || this.state === 14 || this.state === 15 || this.state === 16 || this.state === 20 || this.state === 19 || this.state === 21 || this.state === 9) {} else this.cbs.ontext(this.sectionStart, endIndex);
+			if (this.state === 28) {
+				if (this.currentSequence === Sequences.CdataEnd) this.cbs.oncdata(this.sectionStart, endIndex);
+				else this.cbs.oncomment(this.sectionStart, endIndex);
+			} else if (this.state === 6 || this.state === 11 || this.state === 18 || this.state === 17 || this.state === 12 || this.state === 13 || this.state === 14 || this.state === 15 || this.state === 16 || this.state === 20 || this.state === 19 || this.state === 21 || this.state === 9) {} else this.cbs.ontext(this.sectionStart, endIndex);
 		}
 		emitCodePoint(cp, consumed) {}
 	};
@@ -1587,9 +1589,7 @@ var VueCompilerDOM = (function(exports) {
 			case "RestElement":
 				extractIdentifiers(param.argument, nodes);
 				break;
-			case "AssignmentPattern":
-				extractIdentifiers(param.left, nodes);
-				break;
+			case "AssignmentPattern": extractIdentifiers(param.left, nodes);
 		}
 		return nodes;
 	}
@@ -1663,13 +1663,6 @@ var VueCompilerDOM = (function(exports) {
 	}
 	const nonIdentifierRE = /^$|^\d|[^\$\w\xA0-\uFFFF]/;
 	const isSimpleIdentifier = (name) => !nonIdentifierRE.test(name);
-	var MemberExpLexState = /* @__PURE__ */ function(MemberExpLexState) {
-		MemberExpLexState[MemberExpLexState["inMemberExp"] = 0] = "inMemberExp";
-		MemberExpLexState[MemberExpLexState["inBrackets"] = 1] = "inBrackets";
-		MemberExpLexState[MemberExpLexState["inParens"] = 2] = "inParens";
-		MemberExpLexState[MemberExpLexState["inString"] = 3] = "inString";
-		return MemberExpLexState;
-	}(MemberExpLexState || {});
 	const validFirstIdentCharRE = /[A-Za-z_$\xA0-\uFFFF]/;
 	const validIdentCharRE = /[\.\?\w$\xA0-\uFFFF]/;
 	const whitespaceRE = /\s+[.[]\s*|\s*[.[]\s+/g;
@@ -1722,12 +1715,10 @@ var VueCompilerDOM = (function(exports) {
 						if (!--currentOpenParensCount) state = stateStack.pop();
 					}
 					break;
-				case 3:
-					if (char === currentStringType) {
-						state = stateStack.pop();
-						currentStringType = null;
-					}
-					break;
+				case 3: if (char === currentStringType) {
+					state = stateStack.pop();
+					currentStringType = null;
+				}
 			}
 		}
 		return !currentOpenBracketCount && !currentOpenParensCount;
@@ -1798,7 +1789,7 @@ var VueCompilerDOM = (function(exports) {
 	function isSlotOutlet(node) {
 		return node.type === 1 && node.tagType === 2;
 	}
-	const propsHelperSet = new Set([NORMALIZE_PROPS, GUARD_REACTIVE_PROPS]);
+	const propsHelperSet = /* @__PURE__ */ new Set([NORMALIZE_PROPS, GUARD_REACTIVE_PROPS]);
 	function getUnnormalizedProps(props, callPath = []) {
 		if (props && !isString(props) && props.type === 14) {
 			const callee = props.callee;
@@ -1841,9 +1832,10 @@ var VueCompilerDOM = (function(exports) {
 			propsWithInjection = createCallExpression(context.helper(MERGE_PROPS), [createObjectExpression([prop]), props]);
 			if (parentCall && parentCall.callee === GUARD_REACTIVE_PROPS) parentCall = callPath[callPath.length - 2];
 		}
-		if (node.type === 13) if (parentCall) parentCall.arguments[0] = propsWithInjection;
-		else node.props = propsWithInjection;
-		else if (parentCall) parentCall.arguments[0] = propsWithInjection;
+		if (node.type === 13) {
+			if (parentCall) parentCall.arguments[0] = propsWithInjection;
+			else node.props = propsWithInjection;
+		} else if (parentCall) parentCall.arguments[0] = propsWithInjection;
 		else node.arguments[2] = propsWithInjection;
 	}
 	function injectSlotKey(node, prop) {
@@ -2158,10 +2150,7 @@ var VueCompilerDOM = (function(exports) {
 				case 18:
 				case 19:
 				case 20:
-				case 21:
-					emitError(9, end);
-					break;
-				default: break;
+				case 21: emitError(9, end);
 			}
 			for (let index = 0; index < stack.length; index++) {
 				onCloseTag(stack[index], end - 1);
@@ -2311,7 +2300,7 @@ var VueCompilerDOM = (function(exports) {
 		while (currentInput.charCodeAt(i) !== c && i >= 0) i--;
 		return i;
 	}
-	const specialTemplateDir = new Set([
+	const specialTemplateDir = /* @__PURE__ */ new Set([
 		"if",
 		"else",
 		"else-if",
@@ -2347,16 +2336,18 @@ var VueCompilerDOM = (function(exports) {
 		let removedWhitespace = false;
 		for (let i = 0; i < nodes.length; i++) {
 			const node = nodes[i];
-			if (node.type === 2) if (!inPre) {
-				if (isAllWhitespace(node.content)) {
-					const prev = nodes[i - 1] && nodes[i - 1].type;
-					const next = nodes[i + 1] && nodes[i + 1].type;
-					if (!prev || !next || shouldCondense && (prev === 3 && (next === 3 || next === 1) || prev === 1 && (next === 3 || next === 1 && hasNewlineChar(node.content)))) {
-						removedWhitespace = true;
-						nodes[i] = null;
-					} else node.content = " ";
-				} else if (shouldCondense) node.content = condense(node.content);
-			} else node.content = node.content.replace(windowsNewlineRE, "\n");
+			if (node.type === 2) {
+				if (!inPre) {
+					if (isAllWhitespace(node.content)) {
+						const prev = nodes[i - 1] && nodes[i - 1].type;
+						const next = nodes[i + 1] && nodes[i + 1].type;
+						if (!prev || !next || shouldCondense && (prev === 3 && (next === 3 || next === 1) || prev === 1 && (next === 3 || next === 1 && hasNewlineChar(node.content)))) {
+							removedWhitespace = true;
+							nodes[i] = null;
+						} else node.content = " ";
+					} else if (shouldCondense) node.content = condense(node.content);
+				} else node.content = node.content.replace(windowsNewlineRE, "\n");
+			}
 		}
 		return removedWhitespace ? nodes.filter(Boolean) : nodes;
 	}
@@ -2422,13 +2413,6 @@ var VueCompilerDOM = (function(exports) {
 		}
 		return attr;
 	}
-	var ExpParseMode = /* @__PURE__ */ function(ExpParseMode) {
-		ExpParseMode[ExpParseMode["Normal"] = 0] = "Normal";
-		ExpParseMode[ExpParseMode["Params"] = 1] = "Params";
-		ExpParseMode[ExpParseMode["Statements"] = 2] = "Statements";
-		ExpParseMode[ExpParseMode["Skip"] = 3] = "Skip";
-		return ExpParseMode;
-	}(ExpParseMode || {});
 	function createExp(content, isStatic = false, loc, constType = 0, parseMode = 0) {
 		return createSimpleExpression(content, isStatic, loc, constType);
 	}
@@ -2624,7 +2608,7 @@ var VueCompilerDOM = (function(exports) {
 			default: return 0;
 		}
 	}
-	const allowHoistedHelperSet = new Set([
+	const allowHoistedHelperSet = /* @__PURE__ */ new Set([
 		NORMALIZE_CLASS,
 		NORMALIZE_STYLE,
 		NORMALIZE_PROPS,
@@ -2785,7 +2769,7 @@ var VueCompilerDOM = (function(exports) {
 		traverseNode(root, context);
 		if (options.hoistStatic) cacheStatic(root, context);
 		if (!options.ssr) createRootCodegen(root, context);
-		root.helpers = new Set([...context.helpers.keys()]);
+		root.helpers = /* @__PURE__ */ new Set([...context.helpers.keys()]);
 		root.components = [...context.components];
 		root.directives = [...context.directives];
 		root.imports = context.imports;
@@ -2832,8 +2816,10 @@ var VueCompilerDOM = (function(exports) {
 		const exitFns = [];
 		for (let i = 0; i < nodeTransforms.length; i++) {
 			const onExit = nodeTransforms[i](node, context);
-			if (onExit) if (isArray(onExit)) exitFns.push(...onExit);
-			else exitFns.push(onExit);
+			if (onExit) {
+				if (isArray(onExit)) exitFns.push(...onExit);
+				else exitFns.push(onExit);
+			}
 			if (!context.currentNode) return;
 			else node = context.currentNode;
 		}
@@ -2850,9 +2836,7 @@ var VueCompilerDOM = (function(exports) {
 			case 10:
 			case 11:
 			case 1:
-			case 0:
-				traverseChildren(node, context);
-				break;
+			case 0: traverseChildren(node, context);
 		}
 		context.currentNode = node;
 		let i = exitFns.length;
@@ -3058,10 +3042,12 @@ var VueCompilerDOM = (function(exports) {
 			if (isString(node)) push(node, -3);
 			else if (isArray(node)) genNodeListAsArray(node, context);
 			else genNode(node, context);
-			if (i < nodes.length - 1) if (multilines) {
-				comma && push(",");
-				newline();
-			} else comma && push(", ");
+			if (i < nodes.length - 1) {
+				if (multilines) {
+					comma && push(",");
+					newline();
+				} else comma && push(", ");
+			}
 		}
 	}
 	function genNode(node, context) {
@@ -3173,8 +3159,10 @@ var VueCompilerDOM = (function(exports) {
 		const { push, helper, pure } = context;
 		const { tag, props, children, patchFlag, dynamicProps, directives, isBlock, disableTracking, isComponent } = node;
 		let patchFlagString;
-		if (patchFlag) if (patchFlag < 0) patchFlagString = patchFlag + ` /* ${PatchFlagNames[patchFlag]} */`;
-		else patchFlagString = patchFlag + ` /* ${Object.keys(PatchFlagNames).map(Number).filter((n) => n > 0 && patchFlag & n).map((n) => PatchFlagNames[n]).join(`, `)} */`;
+		if (patchFlag) {
+			if (patchFlag < 0) patchFlagString = patchFlag + ` /* ${PatchFlagNames[patchFlag]} */`;
+			else patchFlagString = patchFlag + ` /* ${Object.keys(PatchFlagNames).map(Number).filter((n) => n > 0 && patchFlag & n).map((n) => PatchFlagNames[n]).join(`, `)} */`;
+		}
 		if (directives) push(helper(WITH_DIRECTIVES) + `(`);
 		if (isBlock) push(`(${helper(OPEN_BLOCK)}(${disableTracking ? `true` : ``}), `);
 		if (pure) push(PURE_ANNOTATION);
@@ -3336,7 +3324,7 @@ var VueCompilerDOM = (function(exports) {
 	}
 	//#endregion
 	//#region packages/compiler-core/src/transforms/transformExpression.ts
-	const isLiteralWhitelisted = /* @__PURE__ */ makeMap("true,false,null,this");
+	const isLiteralWhitelisted = /*@__PURE__*/ makeMap("true,false,null,this");
 	const transformExpression = (node, context) => {
 		if (node.type === 5) node.content = processExpression(node.content, context);
 		else if (node.type === 1) {
@@ -3449,16 +3437,17 @@ var VueCompilerDOM = (function(exports) {
 		const keyProperty = createObjectProperty(`key`, createSimpleExpression(`${keyIndex}`, false, locStub, 2));
 		const { children } = branch;
 		const firstChild = children[0];
-		if (children.length !== 1 || firstChild.type !== 1) if (children.length === 1 && firstChild.type === 11) {
-			const vnodeCall = firstChild.codegenNode;
-			injectProp(vnodeCall, keyProperty, context);
-			return vnodeCall;
+		if (children.length !== 1 || firstChild.type !== 1) {
+			if (children.length === 1 && firstChild.type === 11) {
+				const vnodeCall = firstChild.codegenNode;
+				injectProp(vnodeCall, keyProperty, context);
+				return vnodeCall;
+			} else {
+				let patchFlag = 64;
+				if (!branch.isTemplateIf && children.filter((c) => c.type !== 3).length === 1) patchFlag |= 2048;
+				return createVNodeCall(context, helper(FRAGMENT), createObjectExpression([keyProperty]), children, patchFlag, void 0, void 0, true, false, false, branch.loc);
+			}
 		} else {
-			let patchFlag = 64;
-			if (!branch.isTemplateIf && children.filter((c) => c.type !== 3).length === 1) patchFlag |= 2048;
-			return createVNodeCall(context, helper(FRAGMENT), createObjectExpression([keyProperty]), children, patchFlag, void 0, void 0, true, false, false, branch.loc);
-		}
-		else {
 			const ret = firstChild.codegenNode;
 			const vnodeCall = getMemoedVNodeCall(ret);
 			if (vnodeCall.type === 13) convertToBlock(vnodeCall, context);
@@ -3479,9 +3468,10 @@ var VueCompilerDOM = (function(exports) {
 		return true;
 	}
 	function getParentCondition(node) {
-		while (true) if (node.type === 19) if (node.alternate.type === 19) node = node.alternate;
-		else return node;
-		else if (node.type === 20) node = node.value;
+		while (true) if (node.type === 19) {
+			if (node.alternate.type === 19) node = node.alternate;
+			else return node;
+		} else if (node.type === 20) node = node.value;
 	}
 	//#endregion
 	//#region packages/compiler-core/src/transforms/vFor.ts
@@ -3520,10 +3510,12 @@ var VueCompilerDOM = (function(exports) {
 					childBlock = children[0].codegenNode;
 					if (isTemplate && keyProperty) injectProp(childBlock, keyProperty, context);
 					const shouldUseBlock = !isStableFragment || childBlock.isBlockRequired === true;
-					if (childBlock.isBlock !== shouldUseBlock) if (childBlock.isBlock) {
-						removeHelper(OPEN_BLOCK);
-						removeHelper(getVNodeBlockHelper(context.inSSR, childBlock.isComponent));
-					} else removeHelper(getVNodeHelper(context.inSSR, childBlock.isComponent));
+					if (childBlock.isBlock !== shouldUseBlock) {
+						if (childBlock.isBlock) {
+							removeHelper(OPEN_BLOCK);
+							removeHelper(getVNodeBlockHelper(context.inSSR, childBlock.isComponent));
+						} else removeHelper(getVNodeHelper(context.inSSR, childBlock.isComponent));
+					}
 					childBlock.isBlock = shouldUseBlock;
 					if (childBlock.isBlock) {
 						helper(OPEN_BLOCK);
@@ -3725,8 +3717,10 @@ var VueCompilerDOM = (function(exports) {
 				return createObjectProperty(`default`, fn);
 			};
 			if (!hasTemplateSlots) slotsProperties.push(buildDefaultSlotProperty(void 0, children));
-			else if (implicitDefaultChildren.length && !implicitDefaultChildren.every(isWhitespaceText)) if (hasNamedDefaultSlot) context.onError(createCompilerError(39, implicitDefaultChildren[0].loc));
-			else slotsProperties.push(buildDefaultSlotProperty(void 0, implicitDefaultChildren));
+			else if (implicitDefaultChildren.length && !implicitDefaultChildren.every(isWhitespaceText)) {
+				if (hasNamedDefaultSlot) context.onError(createCompilerError(39, implicitDefaultChildren[0].loc));
+				else slotsProperties.push(buildDefaultSlotProperty(void 0, implicitDefaultChildren));
+			}
 		}
 		const slotFlag = hasDynamicSlots ? 2 : hasForwardedSlots(node.children) ? 3 : 1;
 		let slots = createObjectExpression(slotsProperties.concat(createObjectProperty(`_`, createSimpleExpression(slotFlag + ` /* ${slotFlagsText[slotFlag]} */`, false))), loc);
@@ -3752,10 +3746,7 @@ var VueCompilerDOM = (function(exports) {
 					if (hasForwardedSlots(child.branches)) return true;
 					break;
 				case 10:
-				case 11:
-					if (hasForwardedSlots(child.children)) return true;
-					break;
-				default: break;
+				case 11: if (hasForwardedSlots(child.children)) return true;
 			}
 		}
 		return false;
@@ -3916,29 +3907,30 @@ var VueCompilerDOM = (function(exports) {
 				if (isVBind && isStaticArgOf(arg, "ref")) pushRefVForMarker();
 				if (!arg && (isVBind || isVOn)) {
 					hasDynamicKeys = true;
-					if (exp) if (isVBind) {
-						pushMergeArg();
-						if (mergeArgs.some((arg) => {
-							if (arg.type === 15) return arg.properties.some(({ key }) => {
-								if (key.type !== 4 || !key.isStatic) return true;
-								return key.content !== "class" && key.content !== "style" && !isOn(key.content);
-							});
-							else return true;
-						})) checkCompatEnabled("COMPILER_V_BIND_OBJECT_ORDER", context, loc);
-						if (isCompatEnabled("COMPILER_V_BIND_OBJECT_ORDER", context)) {
-							mergeArgs.unshift(exp);
-							continue;
-						}
-						pushRefVForMarker();
-						pushMergeArg();
-						mergeArgs.push(exp);
-					} else pushMergeArg({
-						type: 14,
-						loc,
-						callee: context.helper(TO_HANDLERS),
-						arguments: isComponent ? [exp] : [exp, `true`]
-					});
-					else context.onError(createCompilerError(isVBind ? 34 : 35, loc));
+					if (exp) {
+						if (isVBind) {
+							pushMergeArg();
+							if (mergeArgs.some((arg) => {
+								if (arg.type === 15) return arg.properties.some(({ key }) => {
+									if (key.type !== 4 || !key.isStatic) return true;
+									return key.content !== "class" && key.content !== "style" && !isOn(key.content);
+								});
+								else return true;
+							})) checkCompatEnabled("COMPILER_V_BIND_OBJECT_ORDER", context, loc);
+							if (isCompatEnabled("COMPILER_V_BIND_OBJECT_ORDER", context)) {
+								mergeArgs.unshift(exp);
+								continue;
+							}
+							pushRefVForMarker();
+							pushMergeArg();
+							mergeArgs.push(exp);
+						} else pushMergeArg({
+							type: 14,
+							loc,
+							callee: context.helper(TO_HANDLERS),
+							arguments: isComponent ? [exp] : [exp, `true`]
+						});
+					} else context.onError(createCompilerError(isVBind ? 34 : 35, loc));
 					continue;
 				}
 				if (isVBind && modifiers.some((mod) => mod.content === "prop")) patchFlag |= 32;
@@ -3996,9 +3988,7 @@ var VueCompilerDOM = (function(exports) {
 				} else propsExpression = createCallExpression(context.helper(NORMALIZE_PROPS), [propsExpression]);
 				break;
 			case 14: break;
-			default:
-				propsExpression = createCallExpression(context.helper(NORMALIZE_PROPS), [createCallExpression(context.helper(GUARD_REACTIVE_PROPS), [propsExpression])]);
-				break;
+			default: propsExpression = createCallExpression(context.helper(NORMALIZE_PROPS), [createCallExpression(context.helper(GUARD_REACTIVE_PROPS), [propsExpression])]);
 		}
 		return {
 			props: propsExpression,
@@ -4104,10 +4094,12 @@ var VueCompilerDOM = (function(exports) {
 		for (let i = 0; i < node.props.length; i++) {
 			const p = node.props[i];
 			if (p.type === 6) {
-				if (p.value) if (p.name === "name") slotName = JSON.stringify(p.value.content);
-				else {
-					p.name = camelize(p.name);
-					nonNameProps.push(p);
+				if (p.value) {
+					if (p.name === "name") slotName = JSON.stringify(p.value.content);
+					else {
+						p.name = camelize(p.name);
+						nonNameProps.push(p);
+					}
 				}
 			} else if (p.name === "bind" && isStaticArgOf(p.arg, "name")) {
 				if (p.exp) slotName = p.exp;
@@ -4133,17 +4125,18 @@ var VueCompilerDOM = (function(exports) {
 		const { loc, modifiers, arg } = dir;
 		if (!dir.exp && !modifiers.length) context.onError(createCompilerError(35, loc));
 		let eventName;
-		if (arg.type === 4) if (arg.isStatic) {
-			let rawName = arg.content;
-			if (rawName.startsWith("vnode")) context.onError(createCompilerError(52, arg.loc));
-			if (rawName.startsWith("vue:")) rawName = `vnode-${rawName.slice(4)}`;
-			eventName = createSimpleExpression(node.tagType !== 0 || rawName.startsWith("vnode") || !/[A-Z]/.test(rawName) ? toHandlerKey(camelize(rawName)) : `on:${rawName}`, true, arg.loc);
-		} else eventName = createCompoundExpression([
-			`${context.helperString(TO_HANDLER_KEY)}(`,
-			arg,
-			`)`
-		]);
-		else {
+		if (arg.type === 4) {
+			if (arg.isStatic) {
+				let rawName = arg.content;
+				if (rawName.startsWith("vnode")) context.onError(createCompilerError(52, arg.loc));
+				if (rawName.startsWith("vue:")) rawName = `vnode-${rawName.slice(4)}`;
+				eventName = createSimpleExpression(node.tagType !== 0 || rawName.startsWith("vnode") || !/[A-Z]/.test(rawName) ? toHandlerKey(camelize(rawName)) : `on:${rawName}`, true, arg.loc);
+			} else eventName = createCompoundExpression([
+				`${context.helperString(TO_HANDLER_KEY)}(`,
+				arg,
+				`)`
+			]);
+		} else {
 			eventName = arg;
 			eventName.children.unshift(`${context.helperString(TO_HANDLER_KEY)}(`);
 			eventName.children.push(`)`);
@@ -4179,11 +4172,14 @@ var VueCompilerDOM = (function(exports) {
 			arg.children.unshift(`(`);
 			arg.children.push(`) || ""`);
 		} else if (!arg.isStatic) arg.content = arg.content ? `${arg.content} || ""` : `""`;
-		if (modifiers.some((mod) => mod.content === "camel")) if (arg.type === 4) if (arg.isStatic) arg.content = camelize(arg.content);
-		else arg.content = `${context.helperString(CAMELIZE)}(${arg.content})`;
-		else {
-			arg.children.unshift(`${context.helperString(CAMELIZE)}(`);
-			arg.children.push(`)`);
+		if (modifiers.some((mod) => mod.content === "camel")) {
+			if (arg.type === 4) {
+				if (arg.isStatic) arg.content = camelize(arg.content);
+				else arg.content = `${context.helperString(CAMELIZE)}(${arg.content})`;
+			} else {
+				arg.children.unshift(`${context.helperString(CAMELIZE)}(`);
+				arg.children.push(`)`);
+			}
 		}
 		if (!context.inSSR) {
 			if (modifiers.some((mod) => mod.content === "prop")) injectPrefix(arg, ".");
@@ -4192,9 +4188,10 @@ var VueCompilerDOM = (function(exports) {
 		return { props: [createObjectProperty(arg, exp)] };
 	};
 	const injectPrefix = (arg, prefix) => {
-		if (arg.type === 4) if (arg.isStatic) arg.content = prefix + arg.content;
-		else arg.content = `\`${prefix}\${${arg.content}}\``;
-		else {
+		if (arg.type === 4) {
+			if (arg.isStatic) arg.content = prefix + arg.content;
+			else arg.content = `\`${prefix}\${${arg.content}}\``;
+		} else {
 			arg.children.unshift(`'${prefix}' + (`);
 			arg.children.push(`)`);
 		}
@@ -4341,11 +4338,12 @@ var VueCompilerDOM = (function(exports) {
 				if (c === 96 && prev !== 92) inTemplateString = false;
 			} else if (inRegex) {
 				if (c === 47 && prev !== 92) inRegex = false;
-			} else if (c === 124 && exp.charCodeAt(i + 1) !== 124 && exp.charCodeAt(i - 1) !== 124 && !curly && !square && !paren) if (expression === void 0) {
-				lastFilterIndex = i + 1;
-				expression = exp.slice(0, i).trim();
-			} else pushFilter();
-			else {
+			} else if (c === 124 && exp.charCodeAt(i + 1) !== 124 && exp.charCodeAt(i - 1) !== 124 && !curly && !square && !paren) {
+				if (expression === void 0) {
+					lastFilterIndex = i + 1;
+					expression = exp.slice(0, i).trim();
+				} else pushFilter();
+			} else {
 				switch (c) {
 					case 34:
 						inDouble = true;
@@ -4371,9 +4369,7 @@ var VueCompilerDOM = (function(exports) {
 					case 123:
 						curly++;
 						break;
-					case 125:
-						curly--;
-						break;
+					case 125: curly--;
 				}
 				if (c === 47) {
 					let j = i - 1;
@@ -4689,9 +4685,7 @@ var VueCompilerDOM = (function(exports) {
 							isInvalidType = true;
 							context.onError(createDOMCompilerError(60, dir.loc));
 							break;
-						default:
-							checkDuplicatedValue();
-							break;
+						default: checkDuplicatedValue();
 					}
 				} else if (hasDynamicKeyVBind(node)) directiveToUse = V_MODEL_DYNAMIC;
 				else checkDuplicatedValue();
@@ -4704,10 +4698,10 @@ var VueCompilerDOM = (function(exports) {
 	};
 	//#endregion
 	//#region packages/compiler-dom/src/transforms/vOn.ts
-	const isEventOptionModifier = /* @__PURE__ */ makeMap(`passive,once,capture`);
-	const isNonKeyModifier = /* @__PURE__ */ makeMap("stop,prevent,self,ctrl,shift,alt,meta,exact,middle");
-	const maybeKeyModifier = /* @__PURE__ */ makeMap("left,right");
-	const isKeyboardEvent = /* @__PURE__ */ makeMap(`onkeyup,onkeydown,onkeypress`);
+	const isEventOptionModifier = /*@__PURE__*/ makeMap(`passive,once,capture`);
+	const isNonKeyModifier = /*@__PURE__*/ makeMap("stop,prevent,self,ctrl,shift,alt,meta,exact,middle");
+	const maybeKeyModifier = /*@__PURE__*/ makeMap("left,right");
+	const isKeyboardEvent = /*@__PURE__*/ makeMap(`onkeyup,onkeydown,onkeypress`);
 	const resolveModifiers = (key, modifiers, context, loc) => {
 		const keyModifiers = [];
 		const nonKeyModifiers = [];
@@ -4726,13 +4720,15 @@ var VueCompilerDOM = (function(exports) {
 			else if (isEventOptionModifier(modifier)) eventOptionModifiers.push(modifier);
 			else {
 				const keyString = isString(key) ? key : isStaticExp(key) ? key.content : null;
-				if (maybeKeyModifier(modifier)) if (keyString) if (isKeyboardEvent(keyString.toLowerCase())) keyModifiers.push(modifier);
-				else nonKeyModifiers.push(modifier);
-				else {
-					keyModifiers.push(modifier);
-					nonKeyModifiers.push(modifier);
-				}
-				else if (isNonKeyModifier(modifier)) nonKeyModifiers.push(modifier);
+				if (maybeKeyModifier(modifier)) {
+					if (keyString) {
+						if (isKeyboardEvent(keyString.toLowerCase())) keyModifiers.push(modifier);
+						else nonKeyModifiers.push(modifier);
+					} else {
+						keyModifiers.push(modifier);
+						nonKeyModifiers.push(modifier);
+					}
+				} else if (isNonKeyModifier(modifier)) nonKeyModifiers.push(modifier);
 				else keyModifiers.push(modifier);
 			}
 		}
@@ -4847,7 +4843,7 @@ var VueCompilerDOM = (function(exports) {
 		}
 		return true;
 	}
-	const headings = new Set([
+	const headings = /* @__PURE__ */ new Set([
 		"h1",
 		"h2",
 		"h3",
@@ -4859,7 +4855,7 @@ var VueCompilerDOM = (function(exports) {
 	/**
 	* maps element to set of elements that can be it's children, no other */
 	const onlyValidChildren = {
-		head: new Set([
+		head: /* @__PURE__ */ new Set([
 			"base",
 			"basefront",
 			"bgsound",
@@ -4872,24 +4868,24 @@ var VueCompilerDOM = (function(exports) {
 			"script",
 			"template"
 		]),
-		optgroup: new Set(["option"]),
-		select: new Set([
+		optgroup: /* @__PURE__ */ new Set(["option"]),
+		select: /* @__PURE__ */ new Set([
 			"optgroup",
 			"option",
 			"hr"
 		]),
-		table: new Set([
+		table: /* @__PURE__ */ new Set([
 			"caption",
 			"colgroup",
 			"tbody",
 			"tfoot",
 			"thead"
 		]),
-		tr: new Set(["td", "th"]),
-		colgroup: new Set(["col"]),
-		tbody: new Set(["tr"]),
-		thead: new Set(["tr"]),
-		tfoot: new Set(["tr"]),
+		tr: /* @__PURE__ */ new Set(["td", "th"]),
+		colgroup: /* @__PURE__ */ new Set(["col"]),
+		tbody: /* @__PURE__ */ new Set(["tr"]),
+		thead: /* @__PURE__ */ new Set(["tr"]),
+		tfoot: /* @__PURE__ */ new Set(["tr"]),
 		script: emptySet,
 		iframe: emptySet,
 		option: emptySet,
@@ -4900,30 +4896,30 @@ var VueCompilerDOM = (function(exports) {
 	/** maps elements to set of elements which can be it's parent, no other */
 	const onlyValidParents = {
 		html: emptySet,
-		body: new Set(["html"]),
-		head: new Set(["html"]),
-		td: new Set(["tr"]),
-		colgroup: new Set(["table"]),
-		caption: new Set(["table"]),
-		tbody: new Set(["table"]),
-		tfoot: new Set(["table"]),
-		col: new Set(["colgroup"]),
-		th: new Set(["tr"]),
-		thead: new Set(["table"]),
-		tr: new Set([
+		body: /* @__PURE__ */ new Set(["html"]),
+		head: /* @__PURE__ */ new Set(["html"]),
+		td: /* @__PURE__ */ new Set(["tr"]),
+		colgroup: /* @__PURE__ */ new Set(["table"]),
+		caption: /* @__PURE__ */ new Set(["table"]),
+		tbody: /* @__PURE__ */ new Set(["table"]),
+		tfoot: /* @__PURE__ */ new Set(["table"]),
+		col: /* @__PURE__ */ new Set(["colgroup"]),
+		th: /* @__PURE__ */ new Set(["tr"]),
+		thead: /* @__PURE__ */ new Set(["table"]),
+		tr: /* @__PURE__ */ new Set([
 			"tbody",
 			"thead",
 			"tfoot"
 		]),
-		dd: new Set(["dl", "div"]),
-		dt: new Set(["dl", "div"]),
-		figcaption: new Set(["figure"]),
-		summary: new Set(["details"]),
-		area: new Set(["map"])
+		dd: /* @__PURE__ */ new Set(["dl", "div"]),
+		dt: /* @__PURE__ */ new Set(["dl", "div"]),
+		figcaption: /* @__PURE__ */ new Set(["figure"]),
+		summary: /* @__PURE__ */ new Set(["details"]),
+		area: /* @__PURE__ */ new Set(["map"])
 	};
 	/** maps element to set of elements that can not be it's children, others can */
 	const knownInvalidChildren = {
-		p: new Set([
+		p: /* @__PURE__ */ new Set([
 			"address",
 			"article",
 			"aside",
@@ -4958,7 +4954,7 @@ var VueCompilerDOM = (function(exports) {
 			"table",
 			"ul"
 		]),
-		svg: new Set([
+		svg: /* @__PURE__ */ new Set([
 			"b",
 			"blockquote",
 			"br",
@@ -4999,12 +4995,12 @@ var VueCompilerDOM = (function(exports) {
 	};
 	/** maps element to set of elements that can not be it's parent, others can */
 	const knownInvalidParents = {
-		a: new Set(["a"]),
-		button: new Set(["button"]),
-		dd: new Set(["dd", "dt"]),
-		dt: new Set(["dd", "dt"]),
-		form: new Set(["form"]),
-		li: new Set(["li"]),
+		a: /* @__PURE__ */ new Set(["a"]),
+		button: /* @__PURE__ */ new Set(["button"]),
+		dd: /* @__PURE__ */ new Set(["dd", "dt"]),
+		dt: /* @__PURE__ */ new Set(["dd", "dt"]),
+		form: /* @__PURE__ */ new Set(["form"]),
+		li: /* @__PURE__ */ new Set(["li"]),
 		h1: headings,
 		h2: headings,
 		h3: headings,

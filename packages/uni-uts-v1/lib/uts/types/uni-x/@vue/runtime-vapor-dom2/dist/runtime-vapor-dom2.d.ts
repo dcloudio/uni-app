@@ -1,9 +1,15 @@
 import { AppContext, ComponentInternalOptions, ComponentPropsOptions, ComponentPublicInstance, CreateAppFunction, EffectScope, EmitFn, EmitsOptions, GenericAppContext, GenericComponentInstance, LifecycleHook, NormalizedPropsOptions, ObjectEmitsOptions, SuspenseBoundary, defineComponent, defineComponent as defineVaporSharedDataComponent, ref, shallowRef } from "@vue/runtime-core";
 import { VaporSlotFlags, extend, hyphenate } from "@vue/shared";
 import { EffectScope as EffectScope$1, Reactive, Ref, ShallowRef } from "@vue/reactivity";
+import "@vue/compiler-dom";
+import "@vue/compiler-vapor";
+import "@vue/compiler-sfc";
+import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSTransform";
+import "@dcloudio/uni-app-x/types/dom2-internal/UniNativeDefines";
+import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSProperty";
+import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSTransition";
 import { Element as Element$1 } from "@dcloudio/uni-app-x/types/native";
 export * from "@vue/runtime-x";
-
 //#region temp/packages/runtime-vapor-dom2/src/fragment.d.ts
 declare class VaporFragment {
   readonly __vf = true;
@@ -94,23 +100,23 @@ interface ObjectVaporSharedDataComponent extends ComponentInternalOptions, Share
 }
 interface SharedInternalOptions {
   /**
-  * Cached normalized props options.
-  * In vapor mode there are no mixins so normalized options can be cached
-  * directly on the component
-  */
+   * Cached normalized props options.
+   * In vapor mode there are no mixins so normalized options can be cached
+   * directly on the component
+   */
   __propsOptions?: NormalizedPropsOptions;
   /**
-  * Cached normalized props proxy handlers.
-  */
+   * Cached normalized props proxy handlers.
+   */
   __propsHandlers?: [ProxyHandler<any> | null, ProxyHandler<any>];
   /**
-  * Cached normalized emits options.
-  */
+   * Cached normalized emits options.
+   */
   __emitsOptions?: ObjectEmitsOptions;
   /**
-  * fixed by uts
-  * Cached external classes options.
-  */
+   * fixed by uts
+   * Cached external classes options.
+   */
   __externalClassesOptions?: string[];
 }
 type LooseRawProps = Record<string, unknown> & {
@@ -119,13 +125,13 @@ type LooseRawProps = Record<string, unknown> & {
 type LooseRawSlots = Record<string, VaporSlot | DynamicSlotSource[]> & {
   $?: DynamicSlotSource[];
 };
-export declare function createSharedDataComponent<C = any, SharedData extends string = (C extends {
+export declare function createSharedDataComponent<C = any, SharedData extends string = C extends {
   __className: infer K extends string;
-} ? `${K}SharedData` : string)>(definedComponent: C, rawCid?: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, flags?: number, appContext?: GenericAppContext): VaporSharedDataComponentInstance<SharedData>;
+} ? `${K}SharedData` : string>(definedComponent: C, rawCid?: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, flags?: number, appContext?: GenericAppContext): VaporSharedDataComponentInstance<SharedData>;
 declare class VaporSharedDataComponentInstance<SharedData extends string = string> implements GenericComponentInstance {
   pageId?: number;
   sharedData?: InferSharedData<SharedData, UniSharedDataComponent> | InferSharedData<SharedData, UniSharedDataPage>;
-  component!: UniSharedDataComponent;
+  component: UniSharedDataComponent;
   _sharedDataScope?: UniSharedDataPage;
   get sharedDataScope(): UniSharedDataPage;
   set sharedDataScope(scope: UniSharedDataPage);
@@ -182,16 +188,16 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
   sp?: LifecycleHook<() => Promise<unknown>>;
   effectCount: number;
   /**
-  * fixed by uts
-  * 页面 ready 之前收集到的 mounted 事件列表，包括自己和子组件的
-  * 为了确保 mounted 事件在页面 ready 之前执行
-  * 目前页面 ready 是 c 层 waitNativeRender 触发的
-  * 如果在 mountComponent 的时候，把 mounted 放到 waitNativeRender 里执行，此时还没有任务，会导致执行过早
-  * 如果放到 nextTick 或 queuePostFlushCb 里执行，又会导致执行过晚(比如页面 ready 之后才执行)
-  * 所以简单起见先收集，等页面 ready 了，再统一执行
-  * 另一个方案是 mounted 也由 c 层触发，但这样还要判断开发者是否监听了 mounted 事件，还牵扯多次跨语言通讯的问题
-  * 所以采用方案1，简单处理
-  */
+   * fixed by uts
+   * 页面 ready 之前收集到的 mounted 事件列表，包括自己和子组件的
+   * 为了确保 mounted 事件在页面 ready 之前执行
+   * 目前页面 ready 是 c 层 waitNativeRender 触发的
+   * 如果在 mountComponent 的时候，把 mounted 放到 waitNativeRender 里执行，此时还没有任务，会导致执行过早
+   * 如果放到 nextTick 或 queuePostFlushCb 里执行，又会导致执行过晚(比如页面 ready 之后才执行)
+   * 所以简单起见先收集，等页面 ready 了，再统一执行
+   * 另一个方案是 mounted 也由 c 层触发，但这样还要判断开发者是否监听了 mounted 事件，还牵扯多次跨语言通讯的问题
+   * 所以采用方案1，简单处理
+   */
   mountedJobs?: Array<() => void>;
   setupState?: Record<string, any>;
   devtoolsRawSetupState?: any;
@@ -201,10 +207,10 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
   emitsOptions?: ObjectEmitsOptions | null;
   isSingleRoot?: boolean;
   /**
-  * dev only flag to track whether $attrs was used during render.
-  * If $attrs was used during render then the warning for failed attrs
-  * fallthrough can be suppressed.
-  */
+   * dev only flag to track whether $attrs was used during render.
+   * If $attrs was used during render then the warning for failed attrs
+   * fallthrough can be suppressed.
+   */
   accessedAttrs: boolean;
   renderer: "app" | "page" | "component";
   componentFlags: number;
@@ -212,19 +218,19 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
   private cachedCid;
   constructor(comp: VaporSharedDataComponent, rawProps?: RawProps | null, rawSlots?: RawSlots | null, rawCid?: string, flags?: number, appContext?: GenericAppContext, once?: boolean);
   /**
-  * Expose `getKeysFromRawProps` on the instance so it can be used in code
-  * paths where it's needed, e.g. `useModel`
-  */
+   * Expose `getKeysFromRawProps` on the instance so it can be used in code
+   * paths where it's needed, e.g. `useModel`
+   */
   rawKeys(): string[];
   $waitNativeRender(fn: () => void): void;
   get cid(): string;
 }
 export declare function isVaporSharedDataComponent(value: unknown): value is VaporSharedDataComponentInstance;
 /**
-* Used when a component cannot be resolved at compile time
-* and needs rely on runtime resolution - where it might fallback to a plain
-* element if the resolution fails.
-*/
+ * Used when a component cannot be resolved at compile time
+ * and needs rely on runtime resolution - where it might fallback to a plain
+ * element if the resolution fails.
+ */
 export declare function createSharedDataComponentWithFallback(comp: VaporSharedDataComponent | string | any, rawCid?: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, flags?: number, appContext?: GenericAppContext): VaporSharedDataComponentInstance | null;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateApp.d.ts
@@ -289,9 +295,9 @@ declare class RecycleContext {}
 export declare function createRecycleContext(): RecycleContext;
 export declare const createSharedDataRecycleFor: <S extends UniSharedData, Source>(recycleContext: RecycleContext, sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => VaporSharedDataComponentInstance | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getType?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number) => void;
 /**
-* list-item内的组件在进入等待复用状态时不会触发onUnmount钩子
-* 复用时如果需要移除此时会触发onUnmount钩子
-*/
+ * list-item内的组件在进入等待复用状态时不会触发onUnmount钩子
+ * 复用时如果需要移除此时会触发onUnmount钩子
+ */
 export declare function useRecycleState<T>(getState: () => T): Ref<T>;
 declare function onReused(callback: () => void): void;
 declare function onBeforeRecycle(callback: () => void): void;
@@ -306,15 +312,15 @@ export declare function createSharedDataDynamicComponent(getter: () => any, sett
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateFragment.d.ts
 /**
-* Create a dynamic fragment keyed by a reactive value for Vapor transitions.
-* The fragment is re-rendered when the key changes to trigger enter/leave
-* animations.
-*
-* Example:
-* <VaporTransition>
-*   <h1 :key="count">{{ count }}</h1>
-* </VaporTransition>
-*/
+ * Create a dynamic fragment keyed by a reactive value for Vapor transitions.
+ * The fragment is re-rendered when the key changes to trigger enter/leave
+ * animations.
+ *
+ * Example:
+ * <VaporTransition>
+ *   <h1 :key="count">{{ count }}</h1>
+ * </VaporTransition>
+ */
 export declare function createSharedDataKeyedFragment(key: () => any, render: BlockFn): Block;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateTeleport.d.ts
@@ -331,13 +337,13 @@ export declare function createSharedDataTeleport(propSetters?: SharedDataTelepor
 //#region temp/packages/runtime-vapor-dom2/src/apiUseComputedStyle.d.ts
 type UseComputedStyleOptions = {
   /**
-  * 需要监听的样式属性列表
-  */
+   * 需要监听的样式属性列表
+   */
   properties: string[];
   /**
-  * 是否从原根节点过滤 properties 中的属性，默认过滤
-  * @default true
-  */
+   * 是否从原根节点过滤 properties 中的属性，默认过滤
+   * @default true
+   */
   filterProperties?: boolean | null;
 };
 export declare function useComputedStyle(options: UseComputedStyleOptions): Map<string, any | null>;
@@ -350,10 +356,10 @@ export declare function nextSharedDataTick(fn: () => void): Promise<void>;
 type SharedDataRootDatasetSource = "own" | "fallthrough";
 export declare function setSharedData<S extends UniSharedData, V>(sharedData: S, key: string, value: V, useCache?: boolean): V;
 /**
-* 仅用于当前 scope 持有生命周期的 UniSharedDataVFor（createSharedDataVSlot 也是 VFor 别名）。
-* scope dispose 时只释放 _cacheProps 引用和 scoped value，不清空 sharedData[key]，也不通知宿主侧。
-* 后续验证稳定后，可考虑将 value 类型扩展到其他 UniSharedData，统一管理 sharedData dispose。
-*/
+ * 仅用于当前 scope 持有生命周期的 UniSharedDataVFor（createSharedDataVSlot 也是 VFor 别名）。
+ * scope dispose 时只释放 _cacheProps 引用和 scoped value，不清空 sharedData[key]，也不通知宿主侧。
+ * 后续验证稳定后，可考虑将 value 类型扩展到其他 UniSharedData，统一管理 sharedData dispose。
+ */
 export declare function setSharedDataScoped<S extends UniSharedData, V extends UniSharedDataVFor<any> | null | undefined>(sharedData: S, key: string, value: V): V;
 export declare function setSharedDataDynamicProps<S extends UniSharedData>(sharedData: S, key: string, value: any[], root?: boolean): UniSharedDataJSONObject;
 export declare function setSharedDataDynamicEvents<S extends UniSharedData>(sharedData: S, key: string, events: Record<string, (...args: any[]) => any>): UniSharedDataJSONObject;
@@ -363,8 +369,8 @@ export declare function setSharedDataAttr<S extends UniSharedData, V>(sharedData
 export declare function setSharedDataColorOrNull<S extends UniSharedData>(sharedData: S, key: string, value: any | null): number | null;
 export declare function setSharedDataEvent<S extends UniSharedData>(sharedData: S, key: string, value: UniSharedDataFunctionEventListener): UniSharedDataFunctionEventListener;
 /**
-* @deprecated 当前编译流程不再生成该调用，仅保留以兼容历史生成代码。
-*/
+ * @deprecated 当前编译流程不再生成该调用，仅保留以兼容历史生成代码。
+ */
 export declare function setSharedDataModel<S extends UniSharedData, V>(sharedData: S, key: string, get: () => V, set: (v: V) => void, modifiers?: {
   [key: string]: true;
 }): UniSharedDataFunctionEventListener;
@@ -388,11 +394,11 @@ export declare function useSharedDataRenderer(): "app" | "page" | "component";
 export declare function withSharedDataPage<T extends UniSharedDataPage>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
 export declare function withSharedDataComponent<T extends UniSharedDataComponent>(sharedData: T, options?: WithSharedDataComponentOptions | null): T;
 /**
-* 仅限页面 renderSharedData 紧跟着 useSharedDataPage 使用，用于及时给页面示例挂靠 sharedDataScope
-* 这样组件 create 的时候，就可以及时获取到sharedDataScope
-* @param scope
-* @returns
-*/
+ * 仅限页面 renderSharedData 紧跟着 useSharedDataPage 使用，用于及时给页面示例挂靠 sharedDataScope
+ * 这样组件 create 的时候，就可以及时获取到sharedDataScope
+ * @param scope
+ * @returns
+ */
 export declare function useSharedDataScope<T extends UniSharedDataPage>(scope?: T): T;
 export declare function useSharedDataPageId(): number;
 declare enum UniSharedDataComponentStyleIsolation {
@@ -417,23 +423,23 @@ interface UniSharedDataComponentOptions {
 }
 interface UniDynamicSharedDataComponentOptions extends UniSharedDataComponentOptions, UniDynamicSharedDataInitOptions {}
 /**
-* 动态 sharedData 的初始化参数。
-*
-* 这是 renderSharedData 直接使用的构造参数。
-*/
+ * 动态 sharedData 的初始化参数。
+ *
+ * 这是 renderSharedData 直接使用的构造参数。
+ */
 interface UniDynamicSharedDataInitOptions {
   /**
-  * 当前动态 bundle 的稳定标识。
-  */
+   * 当前动态 bundle 的稳定标识。
+   */
   readonly bundleKey: string;
   /**
-  * 当前实例对应的 sharedData class 编号。
-  *
-  * 约束：
-  * - root page：0
-  * - root component：0
-  * - scoped sharedData：编译器分配的实际 classId
-  */
+   * 当前实例对应的 sharedData class 编号。
+   *
+   * 约束：
+   * - root page：0
+   * - root component：0
+   * - scoped sharedData：编译器分配的实际 classId
+   */
   readonly sharedDataClassId: number;
 }
 export declare function useSharedDataPageOptions(options?: UniDynamicSharedDataInitOptions): UniSharedDataComponentOptions | UniDynamicSharedDataComponentOptions;
@@ -441,10 +447,10 @@ export declare function useSharedDataComponentOptions(options?: UniDynamicShared
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/sharedData/enum/global.d.ts
 /**
-* 将字符串值转换为 UniSlotType 枚举类型
-* @param value - 字符串值
-* @returns UniSlotType 枚举值
-*/
+ * 将字符串值转换为 UniSlotType 枚举类型
+ * @param value - 字符串值
+ * @returns UniSlotType 枚举值
+ */
 export declare function toSharedDataGlobalSlot(value: string): UniSlotType;
 export declare const toSharedDataViewSlot: (value: string) => UniSlotType;
 export declare const toSharedDataTextSlot: (value: string) => UniSlotType;
@@ -458,44 +464,44 @@ export declare const toSharedDataGlassEffectViewSlot: (value: string) => UniSlot
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/sharedData/enum/image.d.ts
 /**
-* 将字符串值转换为 UniImageModeType 枚举类型
-* @param value - 字符串值
-* @returns UniImageModeType 枚举值
-*/
+ * 将字符串值转换为 UniImageModeType 枚举类型
+ * @param value - 字符串值
+ * @returns UniImageModeType 枚举值
+ */
 export declare function toSharedDataImageMode(value: string): UniImageModeType;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/sharedData/enum/scroll-view.d.ts
 /**
-* 将字符串值转换为 UniNativeScrollViewDirectionType 枚举类型
-* @param value - 字符串值
-* @returns UniNativeScrollViewDirectionType 枚举值
-*/
+ * 将字符串值转换为 UniNativeScrollViewDirectionType 枚举类型
+ * @param value - 字符串值
+ * @returns UniNativeScrollViewDirectionType 枚举值
+ */
 export declare function toSharedDataScrollViewDirection(value: string): UniNativeScrollViewDirectionType;
 /**
-* 将字符串值转换为 UniNativeScrollViewRefresherStyleType 枚举类型
-* @param value - 字符串值
-* @returns UniNativeScrollViewRefresherStyleType 枚举值
-*/
+ * 将字符串值转换为 UniNativeScrollViewRefresherStyleType 枚举类型
+ * @param value - 字符串值
+ * @returns UniNativeScrollViewRefresherStyleType 枚举值
+ */
 export declare function toSharedDataScrollViewRefresherDefaultStyle(value: string): UniNativeScrollViewRefresherStyleType;
 /**
-* 将字符串值转换为 UniNativeScrollViewType 枚举类型
-* @param value - 字符串值
-* @returns UniNativeScrollViewType 枚举值
-*/
+ * 将字符串值转换为 UniNativeScrollViewType 枚举类型
+ * @param value - 字符串值
+ * @returns UniNativeScrollViewType 枚举值
+ */
 export declare function toSharedDataScrollViewType(value: string): UniNativeScrollViewType;
 /**
-* 将字符串值转换为 UniNativeScrollViewAssociativeContainerType 枚举类型
-* @param value - 字符串值
-* @returns UniNativeScrollViewAssociativeContainerType 枚举值
-*/
+ * 将字符串值转换为 UniNativeScrollViewAssociativeContainerType 枚举类型
+ * @param value - 字符串值
+ * @returns UniNativeScrollViewAssociativeContainerType 枚举值
+ */
 export declare function toSharedDataScrollViewAssociativeContainer(value: string): UniNativeScrollViewAssociativeContainerType;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/sharedData/enum/glass-effect-view.d.ts
 /**
-* 将字符串值转换为 UniGlassEffectViewStyle 枚举类型
-* @param value - 字符串值
-* @returns UniGlassEffectViewStyle 枚举值
-*/
+ * 将字符串值转换为 UniGlassEffectViewStyle 枚举类型
+ * @param value - 字符串值
+ * @returns UniGlassEffectViewStyle 枚举值
+ */
 export declare function toSharedDataGlassEffectViewGlassStyle(value: string): UniGlassEffectViewStyle;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/common.d.ts
@@ -580,10 +586,10 @@ export declare function nextNativeView(node: UniNativeBaseView): UniNativeBaseVi
 export declare function nthChildNativeView(node: UniNativeBaseView, i: number): UniNativeBaseView;
 export declare function childNativeView(node: UniNativeBaseView): UniNativeBaseView;
 /**
-* 因为nativeView本身并没有提供树状结构，需要内部通过ext存储子元素的树形结构，然后next，child，nthChild等API从ext中获取
-* @param node
-* @param child
-*/
+ * 因为nativeView本身并没有提供树状结构，需要内部通过ext存储子元素的树形结构，然后next，child，nthChild等API从ext中获取
+ * @param node
+ * @param child
+ */
 export declare function appendNativeViewChild(node: UniNativeBaseView, child: UniNativeBaseView | null): void;
 export declare function createNativeViewFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source> | string | number, renderItem: (shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index: number | undefined) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
@@ -622,17 +628,17 @@ export declare function createUserClass<T>(): T;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/registry.d.ts
 /**
-* 根据 uid 查找 Vue 实例
-* 主要用于 root element 通过 uid 获取对应的 vue 实例，以访问组件数据和方法
-* 1. 内置组件的 Element 暴露的属性方法需要访问组件实例
-* 2. 自动化测试框架需要通过 Element 获取组件实例，以访问组件数据和方法
-* @param uid
-* @returns
-*/
+ * 根据 uid 查找 Vue 实例
+ * 主要用于 root element 通过 uid 获取对应的 vue 实例，以访问组件数据和方法
+ * 1. 内置组件的 Element 暴露的属性方法需要访问组件实例
+ * 2. 自动化测试框架需要通过 Element 获取组件实例，以访问组件数据和方法
+ * @param uid
+ * @returns
+ */
 export declare function findVueInstanceByUid(uid: number): VaporSharedDataComponentInstance | null;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/index.d.ts
 export declare const ssrRef: typeof ref;
 export declare const shallowSsrRef: typeof shallowRef;
 //#endregion
-export { defineVaporSharedDataComponent, extend, hyphenate,  };
+export { defineVaporSharedDataComponent, extend, hyphenate };

@@ -1,12 +1,10 @@
 import { AllNode, AttributeNode, BaseCodegenResult, BindingMetadata, CodegenOptions as CodegenOptions$1, CodegenSourceMapGenerator, CommentNode, CompilerCompatOptions, CompilerError, CompilerOptions as CompilerOptions$1, CompoundExpressionNode, DirectiveNode, ElementNode, Node as Node$1, NodeTypes, RootNode, SimpleExpressionNode, SourceLocation, TemplateChildNode, TemplateNode, TransformOptions, parse } from "@vue/compiler-dom";
 import { App, BaseTransitionProps, Component, ComponentCustomElementInterface, ComponentInjectOptions, ComponentObjectPropsOptions, ComponentOptions, ComponentOptionsBase, ComponentOptionsMixin, ComponentProvideOptions, ComponentPublicInstance, ComputedOptions, ConcreteComponent, CreateAppFunction, CreateComponentPublicInstanceWithMixins, DefineComponent, Directive, EmitsOptions, EmitsToProps, ExtractPropTypes, FunctionalComponent, GenericComponentInstance, HydrationRenderer, MethodOptions, ObjectDirective, RenderFunction, Renderer, RendererOptions, RootHydrateFunction, RootRenderFunction, SetupContext, SlotsType, VNodeRef } from "@vue/runtime-core";
-import { AllowedComponentProps, AsyncComponentInternalOptions, AsyncComponentLoader, AsyncComponentOptions, ComponentCustomProps, ComponentInternalOptions, ComponentObjectPropsOptions as ComponentObjectPropsOptions$1, ComponentPropsOptions, ComponentTypeEmits, CreateAppFunction as CreateAppFunction$1, CustomElementOptions, DirectiveModifiers, EffectScope, EmitFn, EmitsOptions as EmitsOptions$1, EmitsToProps as EmitsToProps$1, ExtractDefaultPropTypes, ExtractPropTypes as ExtractPropTypes$1, GenericAppContext, GenericComponentInstance as GenericComponentInstance$1, KeepAliveProps, LifecycleHook, MoveType, NULL_DYNAMIC_COMPONENT, NormalizedPropsOptions, ObjectEmitsOptions, Plugin, ReservedProps, SchedulerJob, ShallowUnwrapRef, SuspenseBoundary, TeleportProps, TransitionGroupProps, TransitionHooks, TransitionProps, TransitionState, TypeEmitsToOptions, VNode, VueElementBase } from "@vue/runtime-dom";
-import { EffectScope as EffectScope$1, ReactiveEffect, Ref, ShallowRef } from "@vue/reactivity";
+import { AllowedComponentProps, AsyncComponentInternalOptions, AsyncComponentLoader, AsyncComponentOptions, ComponentCustomElementInterface as ComponentCustomElementInterface$1, ComponentCustomProps, ComponentInternalOptions, ComponentObjectPropsOptions as ComponentObjectPropsOptions$1, ComponentPropsOptions, ComponentTypeEmits, CreateAppFunction as CreateAppFunction$1, CustomElementOptions, DirectiveModifiers, EffectScope, EmitFn, EmitsOptions as EmitsOptions$1, EmitsToProps as EmitsToProps$1, ExtractDefaultPropTypes, ExtractPropTypes as ExtractPropTypes$1, GenericAppContext, GenericComponentInstance as GenericComponentInstance$1, KeepAliveProps, LifecycleHook, MoveType, NULL_DYNAMIC_COMPONENT, NormalizedPropsOptions, ObjectEmitsOptions, Plugin, ReservedProps, SchedulerJob, ShallowUnwrapRef, SuspenseBoundary, TeleportProps, TransitionGroupProps, TransitionHooks, TransitionProps, TransitionState, TypeEmitsToOptions, VNode, VueElementBase } from "@vue/runtime-dom";
+import { EffectScope as EffectScope$1, Ref, ShallowRef } from "@vue/reactivity";
 import { IsKeyValues, Namespace, NormalizedStyle, Prettify, VaporSlotFlags, extend } from "@vue/shared";
 import { ImportItem } from "@vue/compiler-core";
 import { ParserOptions } from "@babel/parser";
-
-//#region \0rolldown/runtime.js
 //#endregion
 //#region packages/runtime-dom/src/directives/vShow.d.ts
 declare const vShowOriginalDisplay: unique symbol;
@@ -64,9 +62,9 @@ interface ElementWithTransition extends HTMLElement {
 }
 declare const TransitionPropsValidators: any;
 /**
-* DOM Transition is a higher-order-component based on the platform-agnostic
-* base Transition component, with DOM-specific logic.
-*/
+ * DOM Transition is a higher-order-component based on the platform-agnostic
+ * base Transition component, with DOM-specific logic.
+ */
 declare const Transition: FunctionalComponent<TransitionProps$1>;
 declare function resolveTransitionProps(rawProps: TransitionProps$1): BaseTransitionProps<Element>;
 declare function forceReflow(el?: Node): number;
@@ -97,8 +95,8 @@ type CompatModifiers = keyof typeof keyNames;
 type VOnModifiers = SystemModifiers | ModifierGuards | CompatModifiers;
 type ModifierGuards = "shift" | "ctrl" | "alt" | "meta" | "left" | "right" | "stop" | "prevent" | "self" | "middle" | "exact";
 /**
-* @private
-*/
+ * @private
+ */
 declare const withModifiers: <T extends (event: Event, ...args: unknown[]) => any>(fn: T & {
   _withMods?: {
     [key: string]: T;
@@ -106,8 +104,8 @@ declare const withModifiers: <T extends (event: Event, ...args: unknown[]) => an
 }, modifiers: VOnModifiers[]) => T;
 declare const keyNames: Record<"esc" | "space" | "up" | "left" | "right" | "down" | "delete", string>;
 /**
-* @private
-*/
+ * @private
+ */
 declare const withKeys: <T extends (event: KeyboardEvent) => any>(fn: T & {
   _withKeys?: {
     [k: string]: T;
@@ -122,42 +120,44 @@ declare const initialValueKey: unique symbol;
 type ModelDirective<T, Modifiers extends string = string> = ObjectDirective<T & {
   [assignKey]: AssignerFn;
   [initialValueKey]?: string;
-  _assigning?: boolean;
+  _pendingValue?: [multiple: boolean, value: any];
 }, any, Modifiers>;
 declare const vModelText: ModelDirective<HTMLInputElement | HTMLTextAreaElement, "trim" | "number" | "lazy">;
 /**
-* @internal
-*/
+ * @internal
+ */
 declare const vModelTextInit: (el: HTMLInputElement | HTMLTextAreaElement, trim: boolean | undefined, number: boolean | undefined, lazy: boolean | undefined, set?: (v: any) => void) => void;
 /**
-* @internal
-*/
+ * @internal
+ */
 declare const vModelTextUpdate: (el: HTMLInputElement | HTMLTextAreaElement, oldValue: any, value: any, trim: boolean | undefined, number: boolean | undefined, lazy: boolean | undefined) => void;
 declare const vModelCheckbox: ModelDirective<HTMLInputElement>;
 /**
-* @internal
-*/
+ * @internal
+ */
 declare const vModelCheckboxInit: (el: HTMLInputElement, set?: (v: any) => void) => void;
 /**
-* @internal
-*/
+ * @internal
+ */
 declare const vModelCheckboxUpdate: (el: HTMLInputElement, oldValue: any, value: any, rawValue?: any) => void;
 declare const vModelRadio: ModelDirective<HTMLInputElement>;
 declare const vModelSelect: ModelDirective<HTMLSelectElement, "number">;
 /**
-* @internal
-*/
+ * @internal
+ */
 declare const vModelSelectInit: (el: HTMLSelectElement & {
   [assignKey]?: AssignerFn;
-  _assigning?: boolean;
+  _pendingValue?: [multiple: boolean, value: any];
 }, value: any, number: boolean | undefined, set?: (v: any) => void) => void;
 /**
-* @internal
-*/
-declare const vModelSetSelected: (el: HTMLSelectElement, value: any) => void;
+ * @internal
+ */
+declare const vModelSetSelected: (el: HTMLSelectElement & {
+  _pendingValue?: [multiple: boolean, value: any];
+}, value: any) => void;
 /**
-* @internal retrieve raw value set via :value bindings
-*/
+ * @internal retrieve raw value set via :value bindings
+ */
 declare function getValue(el: HTMLOptionElement | HTMLInputElement): any;
 declare const vModelDynamic: ObjectDirective<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
 type VModelDirective = typeof vModelText | typeof vModelCheckbox | typeof vModelSelect | typeof vModelRadio | typeof vModelDynamic;
@@ -20336,13 +20336,13 @@ declare namespace DataType {
 //#region packages/runtime-dom/src/jsx.d.ts
 interface CSSProperties extends Properties<string | number>, PropertiesHyphen<string | number> {
   /**
-  * The index signature was removed to enable closed typing for style
-  * using CSSType. You're able to use type assertion or module augmentation
-  * to add properties or an index signature of your own.
-  *
-  * For examples and more information, visit:
-  * https://github.com/frenic/csstype#what-should-i-do-when-i-get-type-errors
-  */
+   * The index signature was removed to enable closed typing for style
+   * using CSSType. You're able to use type assertion or module augmentation
+   * to add properties or an index signature of your own.
+   *
+   * For examples and more information, visit:
+   * https://github.com/frenic/csstype#what-should-i-do-when-i-get-type-errors
+   */
   [v: `--${string}`]: string | number | undefined;
 }
 type Booleanish = boolean | "true" | "false";
@@ -20353,99 +20353,99 @@ interface AriaAttributes {
   /** Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. */
   "aria-atomic"?: Booleanish | undefined;
   /**
-  * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
-  * presented if they are made.
-  */
+   * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
+   * presented if they are made.
+   */
   "aria-autocomplete"?: "none" | "inline" | "list" | "both" | undefined;
   /** Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. */
   "aria-busy"?: Booleanish | undefined;
   /**
-  * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
-  * @see aria-pressed @see aria-selected.
-  */
+   * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
+   * @see aria-pressed @see aria-selected.
+   */
   "aria-checked"?: Booleanish | "mixed" | undefined;
   /**
-  * Defines the total number of columns in a table, grid, or treegrid.
-  * @see aria-colindex.
-  */
+   * Defines the total number of columns in a table, grid, or treegrid.
+   * @see aria-colindex.
+   */
   "aria-colcount"?: Numberish | undefined;
   /**
-  * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
-  * @see aria-colcount @see aria-colspan.
-  */
+   * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
+   * @see aria-colcount @see aria-colspan.
+   */
   "aria-colindex"?: Numberish | undefined;
   /**
-  * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
-  * @see aria-colindex @see aria-rowspan.
-  */
+   * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
+   * @see aria-colindex @see aria-rowspan.
+   */
   "aria-colspan"?: Numberish | undefined;
   /**
-  * Identifies the element (or elements) whose contents or presence are controlled by the current element.
-  * @see aria-owns.
-  */
+   * Identifies the element (or elements) whose contents or presence are controlled by the current element.
+   * @see aria-owns.
+   */
   "aria-controls"?: string | undefined;
   /** Indicates the element that represents the current item within a container or set of related elements. */
   "aria-current"?: Booleanish | "page" | "step" | "location" | "date" | "time" | undefined;
   /**
-  * Identifies the element (or elements) that describes the object.
-  * @see aria-labelledby
-  */
+   * Identifies the element (or elements) that describes the object.
+   * @see aria-labelledby
+   */
   "aria-describedby"?: string | undefined;
   /**
-  * Identifies the element that provides a detailed, extended description for the object.
-  * @see aria-describedby.
-  */
+   * Identifies the element that provides a detailed, extended description for the object.
+   * @see aria-describedby.
+   */
   "aria-details"?: string | undefined;
   /**
-  * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
-  * @see aria-hidden @see aria-readonly.
-  */
+   * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
+   * @see aria-hidden @see aria-readonly.
+   */
   "aria-disabled"?: Booleanish | undefined;
   /**
-  * Indicates what functions can be performed when a dragged object is released on the drop target.
-  * @deprecated in ARIA 1.1
-  */
+   * Indicates what functions can be performed when a dragged object is released on the drop target.
+   * @deprecated in ARIA 1.1
+   */
   "aria-dropeffect"?: "none" | "copy" | "execute" | "link" | "move" | "popup" | undefined;
   /**
-  * Identifies the element that provides an error message for the object.
-  * @see aria-invalid @see aria-describedby.
-  */
+   * Identifies the element that provides an error message for the object.
+   * @see aria-invalid @see aria-describedby.
+   */
   "aria-errormessage"?: string | undefined;
   /** Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. */
   "aria-expanded"?: Booleanish | undefined;
   /**
-  * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
-  * allows assistive technology to override the general default of reading in document source order.
-  */
+   * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
+   * allows assistive technology to override the general default of reading in document source order.
+   */
   "aria-flowto"?: string | undefined;
   /**
-  * Indicates an element's "grabbed" state in a drag-and-drop operation.
-  * @deprecated in ARIA 1.1
-  */
+   * Indicates an element's "grabbed" state in a drag-and-drop operation.
+   * @deprecated in ARIA 1.1
+   */
   "aria-grabbed"?: Booleanish | undefined;
   /** Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. */
   "aria-haspopup"?: Booleanish | "menu" | "listbox" | "tree" | "grid" | "dialog" | undefined;
   /**
-  * Indicates whether the element is exposed to an accessibility API.
-  * @see aria-disabled.
-  */
+   * Indicates whether the element is exposed to an accessibility API.
+   * @see aria-disabled.
+   */
   "aria-hidden"?: Booleanish | undefined;
   /**
-  * Indicates the entered value does not conform to the format expected by the application.
-  * @see aria-errormessage.
-  */
+   * Indicates the entered value does not conform to the format expected by the application.
+   * @see aria-errormessage.
+   */
   "aria-invalid"?: Booleanish | "grammar" | "spelling" | undefined;
   /** Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. */
   "aria-keyshortcuts"?: string | undefined;
   /**
-  * Defines a string value that labels the current element.
-  * @see aria-labelledby.
-  */
+   * Defines a string value that labels the current element.
+   * @see aria-labelledby.
+   */
   "aria-label"?: string | undefined;
   /**
-  * Identifies the element (or elements) that labels the current element.
-  * @see aria-describedby.
-  */
+   * Identifies the element (or elements) that labels the current element.
+   * @see aria-describedby.
+   */
   "aria-labelledby"?: string | undefined;
   /** Defines the hierarchical level of an element within a structure. */
   "aria-level"?: Numberish | undefined;
@@ -20460,64 +20460,64 @@ interface AriaAttributes {
   /** Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. */
   "aria-orientation"?: "horizontal" | "vertical" | undefined;
   /**
-  * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
-  * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
-  * @see aria-controls.
-  */
+   * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
+   * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
+   * @see aria-controls.
+   */
   "aria-owns"?: string | undefined;
   /**
-  * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
-  * A hint could be a sample value or a brief description of the expected format.
-  */
+   * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
+   * A hint could be a sample value or a brief description of the expected format.
+   */
   "aria-placeholder"?: string | undefined;
   /**
-  * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
-  * @see aria-setsize.
-  */
+   * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
+   * @see aria-setsize.
+   */
   "aria-posinset"?: Numberish | undefined;
   /**
-  * Indicates the current "pressed" state of toggle buttons.
-  * @see aria-checked @see aria-selected.
-  */
+   * Indicates the current "pressed" state of toggle buttons.
+   * @see aria-checked @see aria-selected.
+   */
   "aria-pressed"?: Booleanish | "mixed" | undefined;
   /**
-  * Indicates that the element is not editable, but is otherwise operable.
-  * @see aria-disabled.
-  */
+   * Indicates that the element is not editable, but is otherwise operable.
+   * @see aria-disabled.
+   */
   "aria-readonly"?: Booleanish | undefined;
   /**
-  * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
-  * @see aria-atomic.
-  */
+   * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
+   * @see aria-atomic.
+   */
   "aria-relevant"?: "additions" | "additions removals" | "additions text" | "all" | "removals" | "removals additions" | "removals text" | "text" | "text additions" | "text removals" | undefined;
   /** Indicates that user input is required on the element before a form may be submitted. */
   "aria-required"?: Booleanish | undefined;
   /** Defines a human-readable, author-localized description for the role of an element. */
   "aria-roledescription"?: string | undefined;
   /**
-  * Defines the total number of rows in a table, grid, or treegrid.
-  * @see aria-rowindex.
-  */
+   * Defines the total number of rows in a table, grid, or treegrid.
+   * @see aria-rowindex.
+   */
   "aria-rowcount"?: Numberish | undefined;
   /**
-  * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
-  * @see aria-rowcount @see aria-rowspan.
-  */
+   * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
+   * @see aria-rowcount @see aria-rowspan.
+   */
   "aria-rowindex"?: Numberish | undefined;
   /**
-  * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
-  * @see aria-rowindex @see aria-colspan.
-  */
+   * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
+   * @see aria-rowindex @see aria-colspan.
+   */
   "aria-rowspan"?: Numberish | undefined;
   /**
-  * Indicates the current "selected" state of various widgets.
-  * @see aria-checked @see aria-pressed.
-  */
+   * Indicates the current "selected" state of various widgets.
+   * @see aria-checked @see aria-pressed.
+   */
   "aria-selected"?: Booleanish | undefined;
   /**
-  * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
-  * @see aria-posinset.
-  */
+   * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
+   * @see aria-posinset.
+   */
   "aria-setsize"?: Numberish | undefined;
   /** Indicates if items in a table or grid are sorted in ascending or descending order. */
   "aria-sort"?: "none" | "ascending" | "descending" | "other" | undefined;
@@ -20526,9 +20526,9 @@ interface AriaAttributes {
   /** Defines the minimum allowed value for a range widget. */
   "aria-valuemin"?: Numberish | undefined;
   /**
-  * Defines the current value for a range widget.
-  * @see aria-valuetext.
-  */
+   * Defines the current value for a range widget.
+   * @see aria-valuetext.
+   */
   "aria-valuenow"?: Numberish | undefined;
   /** Defines the human readable text alternative of aria-valuenow for a range widget. */
   "aria-valuetext"?: string | undefined;
@@ -20546,8 +20546,8 @@ interface HTMLAttributes extends AriaAttributes, EventHandlers<Events> {
   draggable?: Booleanish | undefined;
   enterkeyhint?: "enter" | "done" | "go" | "next" | "previous" | "search" | "send" | undefined;
   /**
-  * @deprecated Use `enterkeyhint` instead.
-  */
+   * @deprecated Use `enterkeyhint` instead.
+   */
   enterKeyHint?: HTMLAttributes["enterkeyhint"];
   hidden?: Booleanish | "" | "hidden" | "until-found" | undefined;
   id?: string | undefined;
@@ -20581,22 +20581,22 @@ interface HTMLAttributes extends AriaAttributes, EventHandlers<Events> {
   security?: string | undefined;
   unselectable?: "on" | "off" | undefined;
   /**
-  * Hints at the type of data that might be entered by the user while editing the element or its contents
-  * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute
-  */
+   * Hints at the type of data that might be entered by the user while editing the element or its contents
+   * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute
+   */
   inputmode?: "none" | "text" | "tel" | "url" | "email" | "numeric" | "decimal" | "search" | undefined;
   /**
-  * Specify that a standard HTML element should behave like a defined custom built-in element
-  * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is
-  */
+   * Specify that a standard HTML element should behave like a defined custom built-in element
+   * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is
+   */
   is?: string | undefined;
   /**
-  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/exportparts
-  */
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/exportparts
+   */
   exportparts?: string;
   /**
-  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/part
-  */
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/part
+   */
   part?: string;
 }
 type HTMLAttributeReferrerPolicy = "" | "no-referrer" | "no-referrer-when-downgrade" | "origin" | "origin-when-cross-origin" | "same-origin" | "strict-origin" | "strict-origin-when-cross-origin" | "unsafe-url";
@@ -21007,9 +21007,9 @@ interface WebViewHTMLAttributes extends HTMLAttributes {
 interface SVGAttributes extends AriaAttributes, EventHandlers<Events> {
   innerHTML?: string | undefined;
   /**
-  * SVG Styling Attributes
-  * @see https://www.w3.org/TR/SVG/styling.html#ElementSpecificStyling
-  */
+   * SVG Styling Attributes
+   * @see https://www.w3.org/TR/SVG/styling.html#ElementSpecificStyling
+   */
   class?: ClassValue | undefined;
   style?: StyleValue | undefined;
   color?: string | undefined;
@@ -21536,14 +21536,14 @@ interface Events {
   onTransitionrun: TransitionEvent;
   onTransitionstart: TransitionEvent;
 }
-type EventHandlers<E> = { [K in keyof E]?: E[K] extends ((...args: any) => any) ? E[K] : (payload: E[K]) => void };
+type EventHandlers<E> = { [K in keyof E]?: E[K] extends ((...args: any) => any) ? E[K] : (payload: E[K]) => void; };
 interface ReservedProps$1 {
   key?: PropertyKey | undefined;
   ref?: VNodeRef | undefined;
   ref_for?: boolean | undefined;
   ref_key?: string | undefined;
 }
-type NativeElements = { [K in keyof IntrinsicElementAttributes]: IntrinsicElementAttributes[K] & ReservedProps$1 };
+type NativeElements = { [K in keyof IntrinsicElementAttributes]: IntrinsicElementAttributes[K] & ReservedProps$1; };
 //#endregion
 //#region packages/runtime-dom/src/apiCustomElement.d.ts
 type VueElementConstructor<P = {}> = {
@@ -21562,7 +21562,7 @@ declare function defineCustomElement<Props, RawBindings = object>(setup: (props:
 declare function defineCustomElement<Props, RawBindings = object>(setup: (props: Props, ctx: SetupContext) => RawBindings | RenderFunction, options?: Pick<ComponentOptions, "name" | "inheritAttrs" | "emits"> & CustomElementOptions$1 & {
   props?: ComponentObjectPropsOptions<Props>;
 }): VueElementConstructor<Props>;
-declare function defineCustomElement<RuntimePropsOptions extends ComponentObjectPropsOptions = ComponentObjectPropsOptions, PropsKeys extends string = string, RuntimeEmitsOptions extends EmitsOptions = {}, EmitsKeys extends string = string, Data = {}, SetupBindings = {}, Computed extends ComputedOptions = {}, Methods extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, InjectOptions extends ComponentInjectOptions = {}, InjectKeys extends string = string, Slots extends SlotsType = {}, LocalComponents extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions, InferredProps = (string extends PropsKeys ? ComponentObjectPropsOptions extends RuntimePropsOptions ? {} : ExtractPropTypes<RuntimePropsOptions> : { [key in PropsKeys]?: any }), ResolvedProps = InferredProps & EmitsToProps<RuntimeEmitsOptions>>(options: CustomElementOptions$1 & {
+declare function defineCustomElement<RuntimePropsOptions extends ComponentObjectPropsOptions = ComponentObjectPropsOptions, PropsKeys extends string = string, RuntimeEmitsOptions extends EmitsOptions = {}, EmitsKeys extends string = string, Data = {}, SetupBindings = {}, Computed extends ComputedOptions = {}, Methods extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, InjectOptions extends ComponentInjectOptions = {}, InjectKeys extends string = string, Slots extends SlotsType = {}, LocalComponents extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions, InferredProps = string extends PropsKeys ? ComponentObjectPropsOptions extends RuntimePropsOptions ? {} : ExtractPropTypes<RuntimePropsOptions> : { [key in PropsKeys]?: any; }, ResolvedProps = InferredProps & EmitsToProps<RuntimeEmitsOptions>>(options: CustomElementOptions$1 & {
   props?: (RuntimePropsOptions & ThisType<void>) | PropsKeys[];
 } & ComponentOptionsBase<ResolvedProps, SetupBindings, Data, Computed, Methods, Mixin, Extends, RuntimeEmitsOptions, EmitsKeys, {}, InjectOptions, InjectKeys, Slots, LocalComponents, Directives, Exposed, Provide> & ThisType<CreateComponentPublicInstanceWithMixins<Readonly<ResolvedProps>, SetupBindings, Data, Computed, Methods, Mixin, Extends, RuntimeEmitsOptions, EmitsKeys, {}, false, InjectOptions, Slots, LocalComponents, Directives, Exposed>>, extraOptions?: CustomElementOptions$1): VueElementConstructor<ResolvedProps>;
 declare function defineCustomElement<T extends {
@@ -21576,24 +21576,24 @@ declare abstract class VueElementBase$1<E = Element, C = Component, Def extends 
 } = InnerComponentDef> extends BaseClass implements ComponentCustomElementInterface {
   _isVueCE: boolean;
   /**
-  * @internal
-  */
+   * @internal
+   */
   _instance: GenericComponentInstance | null;
   /**
-  * @internal
-  */
+   * @internal
+   */
   _app: App | null;
   /**
-  * @internal
-  */
+   * @internal
+   */
   _root: Element | ShadowRoot;
   /**
-  * @internal
-  */
+   * @internal
+   */
   _nonce: string | undefined;
   /**
-  * @internal
-  */
+   * @internal
+   */
   _teleportTargets?: Set<Element>;
   protected _connected: boolean;
   protected _resolved: boolean;
@@ -21608,20 +21608,20 @@ declare abstract class VueElementBase$1<E = Element, C = Component, Def extends 
   protected _props: Record<string, any>;
   protected _createApp: CreateAppFunction<E, C>;
   /**
-  * dev only
-  */
+   * dev only
+   */
   protected _styles?: HTMLStyleElement[];
   /**
-  * dev only
-  */
+   * dev only
+   */
   protected _childStyles?: Map<string, HTMLStyleElement[]>;
   protected _ob?: MutationObserver | null;
   protected _slots?: Record<string, Node[]>;
   /**
-  * Check if this custom element needs hydration.
-  * Returns true if it has a pre-rendered declarative shadow root that
-  * needs to be hydrated.
-  */
+   * Check if this custom element needs hydration.
+   * Returns true if it has a pre-rendered declarative shadow root that
+   * needs to be hydrated.
+   */
   protected abstract _needsHydration(): boolean;
   protected abstract _mount(def: Def): void;
   protected abstract _update(): void;
@@ -21637,8 +21637,8 @@ declare abstract class VueElementBase$1<E = Element, C = Component, Def extends 
   protected _inheritParentContext(parent?: VueElementBase$1 | undefined): void;
   private _processMutations;
   /**
-  * resolve inner component definition (handle possible async component)
-  */
+   * resolve inner component definition (handle possible async component)
+   */
   private _resolveDef;
   private _mountComponent;
   protected _processExposed(): void;
@@ -21646,47 +21646,47 @@ declare abstract class VueElementBase$1<E = Element, C = Component, Def extends 
   private _resolveProps;
   private _setAttr;
   /**
-  * @internal
-  */
+   * @internal
+   */
   protected _getProp(key: string): any;
   /**
-  * @internal
-  */
+   * @internal
+   */
   _setProp(key: string, val: any, shouldReflect?: boolean, shouldUpdate?: boolean): void;
   protected _applyStyles(styles: string[] | undefined, owner?: ConcreteComponent, parentComp?: ConcreteComponent): void;
   private _getStyleAnchor;
   private _getRootStyleInsertionAnchor;
   /**
-  * Only called when shadowRoot is false
-  */
+   * Only called when shadowRoot is false
+   */
   private _parseSlots;
   /**
-  * Only called when shadowRoot is false
-  */
+   * Only called when shadowRoot is false
+   */
   protected _renderSlots(): void;
   /**
-  * @internal
-  */
+   * @internal
+   */
   private _getSlots;
   /**
-  * @internal
-  */
+   * @internal
+   */
   _injectChildStyle(comp: ConcreteComponent & CustomElementOptions$1, parentComp?: ConcreteComponent): void;
   /**
-  * @internal
-  */
+   * @internal
+   */
   _beginPatch(): void;
   /**
-  * @internal
-  */
+   * @internal
+   */
   _endPatch(): void;
   /**
-  * @internal
-  */
+   * @internal
+   */
   _hasShadowRoot(): boolean;
   /**
-  * @internal
-  */
+   * @internal
+   */
   _removeChildStyle(comp: ConcreteComponent): void;
 }
 declare class VueElement extends VueElementBase$1<Element, Component, InnerComponentDef> {
@@ -21696,8 +21696,8 @@ declare class VueElement extends VueElementBase$1<Element, Component, InnerCompo
   protected _update(): void;
   protected _unmount(): void;
   /**
-  * Only called when shadowRoot is false
-  */
+   * Only called when shadowRoot is false
+   */
   protected _updateSlotNodes(replacements: Map<Node, {
     nodes: Node[];
     usedFallback: boolean;
@@ -21706,9 +21706,9 @@ declare class VueElement extends VueElementBase$1<Element, Component, InnerCompo
 }
 declare function useHost(caller?: string): VueElementBase$1 | null;
 /**
-* Retrieve the shadowRoot of the current custom element. Only usable in setup()
-* of a `defineCustomElement` component.
-*/
+ * Retrieve the shadowRoot of the current custom element. Only usable in setup()
+ * of a `defineCustomElement` component.
+ */
 declare function useShadowRoot(): ShadowRoot | null;
 //#endregion
 //#region packages/runtime-dom/src/helpers/useCssModule.d.ts
@@ -21716,19 +21716,19 @@ declare function useCssModule(name?: string): Record<string, string>;
 //#endregion
 //#region packages/runtime-dom/src/helpers/useCssVars.d.ts
 /**
-* Runtime helper for SFC's CSS variable injection feature.
-* @private
-*/
+ * Runtime helper for SFC's CSS variable injection feature.
+ * @private
+ */
 declare function useCssVars(getter: (ctx: any) => Record<string, unknown>): void;
 /**
-* @internal
-* shared between vdom and vapor
-*/
+ * @internal
+ * shared between vdom and vapor
+ */
 declare function baseUseCssVars(instance: GenericComponentInstance | null, getParentNode: () => Node, getVars: () => Record<string, any>, setVars: (vars: Record<string, any>) => void): void;
 /**
-* @internal
-* shared between vdom and vapor
-*/
+ * @internal
+ * shared between vdom and vapor
+ */
 declare function setVarsOnNode(el: Node, vars: Record<string, string>): void;
 //#endregion
 //#region packages/runtime-dom/src/modules/style.d.ts
@@ -21745,10 +21745,10 @@ declare namespace index_d_exports$1 {
 }
 import * as import__vue_runtime_core from "@vue/runtime-core";
 /**
-* This is a stub implementation to prevent the need to use dom types.
-*
-* To enable proper types, add `"dom"` to `"lib"` in your `tsconfig.json`.
-*/
+ * This is a stub implementation to prevent the need to use dom types.
+ *
+ * To enable proper types, add `"dom"` to `"lib"` in your `tsconfig.json`.
+ */
 type DomType<T> = typeof globalThis extends {
   window: unknown;
 } ? T : never;
@@ -21782,12 +21782,12 @@ declare const hydrate: RootHydrateFunction;
 declare const createApp: CreateAppFunction<Element, Component>;
 declare const createSSRApp: CreateAppFunction<Element>;
 /**
-* @internal
-*/
+ * @internal
+ */
 declare function normalizeContainer<T extends ParentNode>(container: T | string): T | null;
 /**
-* @internal
-*/
+ * @internal
+ */
 declare const initDirectivesForSSR: () => void;
 //#endregion
 //#region packages/runtime-vapor/src/apiTemplateRef.d.ts
@@ -21796,10 +21796,10 @@ type RefEl = Element | VaporComponentInstance | DynamicFragment | VaporFragment;
 type setRefFn = (el: RefEl, ref: NodeRef, refFor?: boolean, refKey?: string) => void;
 declare function createTemplateRefSetter(): setRefFn;
 /**
-* Static refs never change value, so they need no old-ref tracking and no
-* per-element state - only the fragment re-apply hook shared with the
-* stateful path.
-*/
+ * Static refs never change value, so they need no old-ref tracking and no
+ * per-element state - only the fragment re-apply hook shared with the
+ * stateful path.
+ */
 declare function setStaticTemplateRef(el: RefEl, ref: NodeRef, refFor?: boolean, refKey?: string): void;
 declare function setTemplateRefBinding(el: RefEl, getter: () => any, refFor?: boolean, refKey?: string): void;
 //#endregion
@@ -21859,9 +21859,9 @@ interface VaporKeepAliveContext {
 //#region packages/runtime-vapor/src/fragment.d.ts
 declare class VaporFragment<T extends Block = Block> implements TransitionOptions {
   /**
-  * @internal fragment protocol flags. Role checks use a shared field instead
-  * of class references so unused fragment implementations remain tree-shakable.
-  */
+   * @internal fragment protocol flags. Role checks use a shared field instead
+   * of class references so unused fragment implementations remain tree-shakable.
+   */
   readonly __vf: number;
   $key?: any;
   $transition?: VaporTransitionHooks | undefined;
@@ -21873,6 +21873,19 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   remove?: (parent?: ParentNode, transitionHooks?: TransitionHooks) => void;
   hydrate?(...args: any[]): void;
   setRef?: (instance: VaporComponentInstance, ref: NodeRef, refFor: boolean, refKey: string | undefined) => void;
+  /**
+   * @internal vdom interop protocol, implemented by interop fragments so
+   * structural features act on VDOM-backed content without reaching into the
+   * backing vnode. `hasVDOMContent` is dynamic: an interop slot fragment
+   * exposing a vapor fallback has no backing vnode at that moment.
+   */
+  hasVDOMContent?: (this: VaporFragment) => boolean;
+  /** @internal mirrors a block key onto the backing vnode for keyed paths */
+  setKey?: (this: VaporFragment, key: any) => void;
+  /** @internal resolved transition child type of the backing vnode */
+  getTransitionType?: (this: VaporFragment) => any;
+  /** @internal live transition element of the backing vnode's subtree */
+  getTransitionElement?: (this: VaporFragment) => Element | undefined;
   onRemove?: (() => void)[];
   onBeforeUpdate?: (() => void)[];
   onUpdated?: ((nodes?: Block) => void)[];
@@ -21904,12 +21917,11 @@ declare class DynamicFragment extends RenderContextFragment {
   };
   anchorLabel?: string;
   keyed?: boolean;
-  nativeChildren?: boolean;
   inTransition?: boolean;
   fallthrough?: (nodes: Block) => void;
   scopeIdOwners?: VaporComponentInstance[];
   everUpdated: boolean;
-  constructor(anchorLabel?: string, keyed?: boolean, locate?: boolean, trackSlotBoundary?: boolean, onInvalid?: () => void, adoptAnchor?: Node, flags?: number);
+  constructor(flags?: number, anchorLabel?: string, keyed?: boolean, locate?: boolean, trackSlotBoundary?: boolean, onInvalid?: () => void, adoptAnchor?: Node);
   protected get autoHydrate(): boolean;
   update(render?: BlockFn, key?: any, noScope?: boolean): void;
   protected getBranchParent(): ParentNode | null;
@@ -21935,20 +21947,6 @@ type BlockFn = (...args: any[]) => Block;
 declare function insert(block: Block, parent: ParentNode, anchor?: Node | null, parentSuspense?: any): void;
 declare function remove(block: Block, parent?: ParentNode): void;
 //#endregion
-//#region packages/runtime-vapor/src/renderEffect.d.ts
-declare class RenderEffect extends ReactiveEffect {
-  i: VaporComponentInstance | null;
-  job?: SchedulerJob;
-  updateJob?: SchedulerJob;
-  render: () => void;
-  order: number;
-  constructor(render: () => void, noLifecycle?: boolean);
-  createJob(): SchedulerJob;
-  fn(): void;
-  notify(): void;
-}
-declare function renderEffect(fn: () => void, noLifecycle?: boolean): void;
-//#endregion
 //#region packages/runtime-vapor/src/apiDefineComponent.d.ts
 type VaporPublicProps = ReservedProps & AllowedComponentProps & ComponentCustomProps;
 type VaporRenderResult<T = Block> = VNode | T | VaporRenderResult<T>[];
@@ -21958,7 +21956,7 @@ type VaporComponentInstanceConstructor<T extends VaporComponentInstance> = {
   __isSuspense?: never;
   new (...args: any[]): T;
 };
-type DefineVaporComponent<RuntimePropsOptions = {}, RuntimePropsKeys extends string = string, InferredProps = (string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, TypeRefs extends Record<string, unknown> = {}, MakeDefaultsOptional extends boolean = true, PublicProps = VaporPublicProps, ResolvedProps = InferredProps & EmitsToProps$1<Emits>, Defaults = ExtractDefaultPropTypes<RuntimePropsOptions>> = VaporComponentInstanceConstructor<VaporComponentInstance<MakeDefaultsOptional extends true ? keyof Defaults extends never ? Prettify<ResolvedProps> & PublicProps : Partial<Defaults> & Omit<Prettify<ResolvedProps> & PublicProps, keyof Defaults> : Prettify<ResolvedProps> & PublicProps, Emits, Slots, Exposed, TypeBlock, TypeRefs>> & VaporComponentOptions<RuntimePropsOptions | RuntimePropsKeys[], Emits, RuntimeEmitsKeys, Slots, Exposed>;
+type DefineVaporComponent<RuntimePropsOptions = {}, RuntimePropsKeys extends string = string, InferredProps = string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any; }, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, TypeRefs extends Record<string, unknown> = {}, MakeDefaultsOptional extends boolean = true, PublicProps = VaporPublicProps, ResolvedProps = InferredProps & EmitsToProps$1<Emits>, Defaults = ExtractDefaultPropTypes<RuntimePropsOptions>> = VaporComponentInstanceConstructor<VaporComponentInstance<MakeDefaultsOptional extends true ? keyof Defaults extends never ? Prettify<ResolvedProps> & PublicProps : Partial<Defaults> & Omit<Prettify<ResolvedProps> & PublicProps, keyof Defaults> : Prettify<ResolvedProps> & PublicProps, Emits, Slots, Exposed, TypeBlock, TypeRefs>> & VaporComponentOptions<RuntimePropsOptions | RuntimePropsKeys[], Emits, RuntimeEmitsKeys, Slots, Exposed>;
 type DefineVaporSetupFnComponent<Props extends Record<string, any> = {}, Emits extends EmitsOptions$1 = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, ResolvedProps extends Record<string, any> = Props & EmitsToProps$1<Emits> & VaporPublicProps> = new () => VaporComponentInstance<ResolvedProps, Emits, Slots, Exposed, TypeBlock>;
 declare function defineVaporComponent<Props extends Record<string, any>, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block>(setup: (props: Props, ctx: {
   emit: EmitFn<Emits>;
@@ -21972,23 +21970,23 @@ declare function defineVaporComponent<Props extends Record<string, any>, Emits e
   attrs: Record<string, any>;
   expose: (exposed: Exposed) => void;
 }) => VaporRenderResult<TypeBlock> | void, extraOptions?: VaporComponentOptions<ComponentObjectPropsOptions$1<Props>, Emits, RuntimeEmitsKeys, Slots, Exposed> & ThisType<void>): DefineVaporSetupFnComponent<Props, Emits, Slots, Exposed, TypeBlock>;
-declare function defineVaporComponent<TypeProps, RuntimePropsOptions extends ComponentObjectPropsOptions$1 = ComponentObjectPropsOptions$1, RuntimePropsKeys extends string = string, TypeEmits extends ComponentTypeEmits = {}, RuntimeEmitsOptions extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, ResolvedEmits extends EmitsOptions$1 = ({} extends RuntimeEmitsOptions ? TypeEmitsToOptions<TypeEmits> : RuntimeEmitsOptions), InferredProps = (IsKeyValues<TypeProps> extends true ? TypeProps : string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), TypeRefs extends Record<string, unknown> = {}, TypeBlock extends Block = Block>(options: VaporComponentOptions<RuntimePropsOptions | RuntimePropsKeys[], ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed, TypeBlock, InferredProps> & {
+declare function defineVaporComponent<TypeProps, RuntimePropsOptions extends ComponentObjectPropsOptions$1 = ComponentObjectPropsOptions$1, RuntimePropsKeys extends string = string, TypeEmits extends ComponentTypeEmits = {}, RuntimeEmitsOptions extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, ResolvedEmits extends EmitsOptions$1 = {} extends RuntimeEmitsOptions ? TypeEmitsToOptions<TypeEmits> : RuntimeEmitsOptions, InferredProps = IsKeyValues<TypeProps> extends true ? TypeProps : string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any; }, TypeRefs extends Record<string, unknown> = {}, TypeBlock extends Block = Block>(options: VaporComponentOptions<RuntimePropsOptions | RuntimePropsKeys[], ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed, TypeBlock, InferredProps> & {
   [key: string]: any;
   /**
-  * @private for language-tools use only
-  */
+   * @private for language-tools use only
+   */
   __typeProps?: TypeProps;
   /**
-  * @private for language-tools use only
-  */
+   * @private for language-tools use only
+   */
   __typeEmits?: TypeEmits;
   /**
-  * @private for language-tools use only
-  */
+   * @private for language-tools use only
+   */
   __typeRefs?: TypeRefs;
   /**
-  * @private for language-tools use only
-  */
+   * @private for language-tools use only
+   */
   __typeEl?: TypeBlock;
 } & ThisType<void>): DefineVaporComponent<RuntimePropsOptions, RuntimePropsKeys, InferredProps, ResolvedEmits, RuntimeEmitsKeys, Slots, Block extends Exposed ? Record<string, any> : Exposed, TypeBlock, TypeRefs, unknown extends TypeProps ? true : false>;
 //#endregion
@@ -22002,7 +22000,7 @@ type FunctionalVaporComponent<Props = {}, Emits extends EmitsOptions$1 = {}, Slo
 }) => VaporRenderResult) & Omit<VaporComponentOptions<ComponentPropsOptions<Props>, Emits, string, Slots>, "setup"> & {
   displayName?: string;
 } & SharedInternalOptions;
-interface VaporComponentOptions<Props = {}, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, InferredProps = (ComponentObjectPropsOptions$1 extends Props ? {} : ExtractPropTypes$1<Props>)> extends ComponentInternalOptions, AsyncComponentInternalOptions<VaporComponentOptions, VaporComponentInstance>, SharedInternalOptions {
+interface VaporComponentOptions<Props = {}, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, InferredProps = ComponentObjectPropsOptions$1 extends Props ? {} : ExtractPropTypes$1<Props>> extends ComponentInternalOptions, AsyncComponentInternalOptions<VaporComponentOptions, VaporComponentInstance>, SharedInternalOptions {
   inheritAttrs?: boolean;
   props?: Props;
   emits?: Emits | RuntimeEmitsKeys[];
@@ -22020,18 +22018,18 @@ interface VaporComponentOptions<Props = {}, Emits extends EmitsOptions$1 = {}, R
 }
 interface SharedInternalOptions {
   /**
-  * Cached normalized props options.
-  * In vapor mode there are no mixins so normalized options can be cached
-  * directly on the component
-  */
+   * Cached normalized props options.
+   * In vapor mode there are no mixins so normalized options can be cached
+   * directly on the component
+   */
   __propsOptions?: NormalizedPropsOptions;
   /**
-  * Cached normalized props proxy handlers.
-  */
+   * Cached normalized props proxy handlers.
+   */
   __propsHandlers?: [ProxyHandler<any> | null, ProxyHandler<any>];
   /**
-  * Cached normalized emits options.
-  */
+   * Cached normalized emits options.
+   */
   __emitsOptions?: ObjectEmitsOptions;
 }
 type LooseRawProps = Record<string, unknown> & {
@@ -22078,6 +22076,7 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   inputScope?: EffectScope;
   $key?: any;
   deferredKeepAliveUpdates?: DeferredKeepAliveUpdates;
+  ce?: ComponentCustomElementInterface$1;
   oncePropsCache?: Record<string | symbol, any>;
   isOnce: boolean;
   isMounted: boolean;
@@ -22106,37 +22105,37 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   propsOptions?: NormalizedPropsOptions;
   emitsOptions?: ObjectEmitsOptions | null;
   isSingleRoot?: boolean;
-  renderEffects?: RenderEffect[];
+  renderScope?: EffectScope;
   /**
-  * dev only flag to track whether $attrs was used during render.
-  * If $attrs was used during render then the warning for failed attrs
-  * fallthrough can be suppressed.
-  */
+   * dev only flag to track whether $attrs was used during render.
+   * If $attrs was used during render then the warning for failed attrs
+   * fallthrough can be suppressed.
+   */
   accessedAttrs: boolean;
   /**
-  * @deprecated only used for JSX to detect props types.
-  */
+   * @deprecated only used for JSX to detect props types.
+   */
   $props: Props;
   constructor(comp: VaporComponent, rawProps?: RawProps | null, rawSlots?: LooseRawSlots | null, appContext?: GenericAppContext, once?: boolean, ce?: (instance: VaporComponentInstance) => void);
   /**
-  * Expose `getKeysFromRawProps` on the instance so it can be used in code
-  * paths where it's needed, e.g. `useModel`
-  */
+   * Expose `getKeysFromRawProps` on the instance so it can be used in code
+   * paths where it's needed, e.g. `useModel`
+   */
   rawKeys(): string[];
   $waitNativeRender(fn: () => void): void;
 }
 declare function isVaporComponent(value: unknown): value is VaporComponentInstance;
 /**
-* Resolve an asset component by name before passing it to the fallback helper;
-* a string passed directly to `createComponentWithFallback` is plain element
-* fallback, not a component name.
-*/
+ * Resolve an asset component by name before passing it to the fallback helper;
+ * a string passed directly to `createComponentWithFallback` is plain element
+ * fallback, not a component name.
+ */
 declare function createAssetComponent(name: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, maybeSelfReference?: boolean, appContext?: GenericAppContext): HTMLElement | VaporComponentInstance;
 /**
-* Used when a component cannot be resolved at compile time
-* and needs rely on runtime resolution - where it might fallback to a plain
-* element if the resolution fails.
-*/
+ * Used when a component cannot be resolved at compile time
+ * and needs rely on runtime resolution - where it might fallback to a plain
+ * element if the resolution fails.
+ */
 declare function createComponentWithFallback(comp: VaporComponent | typeof NULL_DYNAMIC_COMPONENT | string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, appContext?: GenericAppContext): HTMLElement | VaporComponentInstance;
 declare function createPlainElement(comp: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean): HTMLElement;
 declare function unmountComponent(instance: VaporComponentInstance, parentNode?: ParentNode, parentSuspense?: SuspenseBoundary | null): void;
@@ -22192,7 +22191,7 @@ declare function defineVaporCustomElement<Props, RawBindings = object>(setup: (p
 }) => RawBindings | VaporRenderResult, options?: Pick<VaporComponentOptions, "name" | "inheritAttrs" | "emits"> & CustomElementOptions & {
   props?: ComponentObjectPropsOptions$1<Props>;
 }): VaporElementConstructor<Props>;
-declare function defineVaporCustomElement<RuntimePropsOptions extends ComponentObjectPropsOptions$1 = ComponentObjectPropsOptions$1, RuntimePropsKeys extends string = string, RuntimeEmitsOptions extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, InferredProps = (string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), ResolvedProps = InferredProps & EmitsToProps$1<RuntimeEmitsOptions>>(options: CustomElementOptions & {
+declare function defineVaporCustomElement<RuntimePropsOptions extends ComponentObjectPropsOptions$1 = ComponentObjectPropsOptions$1, RuntimePropsKeys extends string = string, RuntimeEmitsOptions extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, InferredProps = string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any; }, ResolvedProps = InferredProps & EmitsToProps$1<RuntimeEmitsOptions>>(options: CustomElementOptions & {
   props?: (RuntimePropsOptions & ThisType<void>) | RuntimePropsKeys[];
   emits?: RuntimeEmitsOptions | RuntimeEmitsKeys[];
   slots?: Slots;
@@ -22213,16 +22212,16 @@ declare class VaporElement extends VueElementBase<ParentNode, VaporComponent, Va
   protected _update(): void;
   protected _unmount(): void;
   /**
-  * Only called when shadowRoot is false
-  */
+   * Only called when shadowRoot is false
+   */
   protected _updateSlotNodes(replacements: Map<Node, {
     nodes: Node[];
     usedFallback: boolean;
   }>): void;
   /**
-  * Replace slot nodes with their replace content
-  * @internal
-  */
+   * Replace slot nodes with their replace content
+   * @internal
+   */
   private _updateFragmentNodes;
   private _createComponent;
 }
@@ -22232,17 +22231,20 @@ type InsertionParent = ParentNode & {
   $llc?: Node | null;
 };
 /**
-* This function is called before a block type that requires insertion
-* (component, slot outlet, if, for) is created.
-*
-* - `anchor` is a Node: insert before this template `<!>` placeholder during
-*   client render; during hydration the located placeholder unit is the
-*   block's hydration target.
-* - `anchor` is a number: append; the value is the hydration start unit index
-*   (the count of preceding logical units), omitted by codegen when 0.
-* - `anchor` absent: append with no preceding units.
-*/
+ * This function is called before a block type that requires insertion
+ * (component, slot outlet, if, for) is created.
+ *
+ * - `anchor` is a Node: insert before this template `<!>` placeholder during
+ *   client render; during hydration the located placeholder unit is the
+ *   block's hydration target.
+ * - `anchor` is a number: append; the value is the hydration start unit index
+ *   (the count of preceding logical units), omitted by codegen when 0.
+ * - `anchor` absent: append with no preceding units.
+ */
 declare function setInsertionState(parent: ParentNode, anchor?: Node | number): void;
+//#endregion
+//#region packages/runtime-vapor/src/renderEffect.d.ts
+declare function renderEffect(fn: () => void, noLifecycle?: boolean): void;
 //#endregion
 //#region packages/runtime-vapor/src/dom/template.d.ts
 declare function template(html: string, flags?: number, ns?: Namespace): () => Node & {
@@ -22274,16 +22276,16 @@ declare function setClassName(el: TargetElement, flags: number, cls: string | st
 declare function setStyle(el: TargetElement, value: any): void;
 declare function setValue(el: TargetElement, value: any, forceHydrate?: boolean): void;
 /**
-* Only called on text nodes!
-* Compiler should also ensure value passed here is already converted by
-* `toDisplayString`
-*/
+ * Only called on text nodes!
+ * Compiler should also ensure value passed here is already converted by
+ * `toDisplayString`
+ */
 declare function setText(el: Text & {
   $txt?: string;
 }, value: string): void;
 /**
-* Used by setDynamicProps only, so need to guard with `toDisplayString`
-*/
+ * Used by setDynamicProps only, so need to guard with `toDisplayString`
+ */
 declare function setElementText(el: Node & {
   $txt?: string;
 }, value: unknown): void;
@@ -22308,15 +22310,15 @@ declare function createIf(condition: () => any, b1: BlockFn, b2?: BlockFn, flags
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateFragment.d.ts
 /**
-* Create a dynamic fragment keyed by a reactive value for Vapor transitions.
-* The fragment is re-rendered when the key changes to trigger enter/leave
-* animations.
-*
-* Example:
-* <VaporTransition>
-*   <h1 :key="count">{{ count }}</h1>
-* </VaporTransition>
-*/
+ * Create a dynamic fragment keyed by a reactive value for Vapor transitions.
+ * The fragment is re-rendered when the key changes to trigger enter/leave
+ * animations.
+ *
+ * Example:
+ * <VaporTransition>
+ *   <h1 :key="count">{{ count }}</h1>
+ * </VaporTransition>
+ */
 declare function createKeyedFragment(key: () => any, render: BlockFn, trackSlotBoundary?: boolean): Block;
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateFor.d.ts
@@ -22325,24 +22327,24 @@ declare const createFor: (src: () => Source, renderItem: (item: ShallowRef<any>,
 interface ForSelector {
   (key: any, oper: () => void): void;
   /**
-  * Bulk-reset the selector's internal state. Hook into a v-for's fast-reset
-  * paths via `forFragment.onReset(selector.reset)` so the lazy per-item
-  * `onScopeDispose` teardowns short-circuit instead of doing N individual
-  * Map.delete() calls.
-  */
+   * Bulk-reset the selector's internal state. Hook into a v-for's fast-reset
+   * paths via `forFragment.onReset(selector.reset)` so the lazy per-item
+   * `onScopeDispose` teardowns short-circuit instead of doing N individual
+   * Map.delete() calls.
+   */
   reset(): void;
 }
 /**
-* Builds a key-indexed selector that activates only the opers registered with
-* the key matching the current source value. Compared to letting each item
-* subscribe directly, this keeps re-renders on source change O(2) instead of
-* O(N) (only previous and new active item re-run).
-*
-* Selector cleanup follows the current scope. Per-item teardown is auto-wired
-* via `onScopeDispose` so callers (typically v-for item scopes) don't need
-* explicit deregistration. For bulk-reset hot paths, attach the selector to
-* the v-for via `frag.onReset(selector.reset)` to skip the per-item Map ops.
-*/
+ * Builds a key-indexed selector that activates only the opers registered with
+ * the key matching the current source value. Compared to letting each item
+ * subscribe directly, this keeps re-renders on source change O(2) instead of
+ * O(N) (only previous and new active item re-run).
+ *
+ * Selector cleanup follows the current scope. Per-item teardown is auto-wired
+ * via `onScopeDispose` so callers (typically v-for item scopes) don't need
+ * explicit deregistration. For bulk-reset hot paths, attach the selector to
+ * the v-for via `frag.onReset(selector.reset)` to skip the per-item Map ops.
+ */
 declare function createSelector(source: () => any): ForSelector;
 declare function createForSlots(rawSource: () => Source, renderSlot: (item: ShallowRef, key?: ShallowRef, index?: ShallowRef) => VaporSlot, getName: (item: any, key: any, index?: number) => unknown, getKey?: (item: any, key: any, index?: number) => unknown): () => DynamicSlot[];
 declare function getRestElement(val: any, keys: string[]): any;
@@ -22366,7 +22368,7 @@ declare function withAsyncContext(getAwaitable: () => any): [any, () => void];
 declare function applyVShow(target: Block, source: () => any): void;
 //#endregion
 //#region packages/runtime-vapor/src/directives/vModel.d.ts
-type VaporModelDirective<T extends HTMLElement = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, Modifiers extends string = string> = (el: T, get: () => any, set: (v: any) => void, modifiers?: { [key in Modifiers]?: true }) => void;
+type VaporModelDirective<T extends HTMLElement = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, Modifiers extends string = string> = (el: T, get: () => any, set: (v: any) => void, modifiers?: { [key in Modifiers]?: true; }) => void;
 declare const applyTextModel: VaporModelDirective<HTMLInputElement | HTMLTextAreaElement, "trim" | "number" | "lazy">;
 declare const applyCheckboxModel: VaporModelDirective<HTMLInputElement>;
 declare const applyRadioModel: VaporModelDirective<HTMLInputElement>;
@@ -22386,15 +22388,15 @@ declare namespace index_d_exports {
 export interface IRProp extends Omit<DirectiveTransformResult, "value"> {
   values: SimpleExpressionNode[];
   /**
-  * fixed by uts 当前整个IRProp表达式对应的标识符，目前用于合并class+:class、style+:style的表达式
-  */
+   * fixed by uts 当前整个IRProp表达式对应的标识符，目前用于合并class+:class、style+:style的表达式
+   */
   sharedData?: {
     ident?: string;
     classRef?: string;
   };
   /**
-  * fixed by uts synthetic data-* group for dom2 dataset callbacks.
-  */
+   * fixed by uts synthetic data-* group for dom2 dataset callbacks.
+   */
   datasetProps?: IRProp[];
 }
 export declare enum IRDynamicPropsKind {
@@ -22483,10 +22485,10 @@ export interface EffectBoundary {
   effectIndex?: number;
 }
 /**
-* Insertion state shared by block operations (if / for / key / component /
-* slot outlet). `anchor` references a template `<!>` placeholder id;
-* `appendIndex` is the hydration start unit index for appends.
-*/
+ * Insertion state shared by block operations (if / for / key / component /
+ * slot outlet). `anchor` references a template `<!>` placeholder id;
+ * `appendIndex` is the hydration start unit index for appends.
+ */
 export interface InsertionState {
   parent?: number;
   anchor?: number;
@@ -22570,8 +22572,8 @@ export interface SetPropIRNode extends BaseIRNode {
   prop: IRProp;
   tag: string;
   /**
-  * fixed by uts 当前操作的目标元素是否为组件模板单根根节点，可用于后续 root-only 逻辑。
-  */
+   * fixed by uts 当前操作的目标元素是否为组件模板单根根节点，可用于后续 root-only 逻辑。
+   */
   root?: boolean;
   isChangeProp?: boolean;
 }
@@ -22581,12 +22583,12 @@ export interface SetDynamicPropsIRNode extends BaseIRNode {
   props: IRProps[];
   tag: string;
   /**
-  * fixed by uts 当前操作的目标元素是否为组件模板单根根节点，可用于后续 root-only 逻辑。
-  */
+   * fixed by uts 当前操作的目标元素是否为组件模板单根根节点，可用于后续 root-only 逻辑。
+   */
   root?: boolean;
   /**
-  * fixed by uts 当前整个动态绑定表达式对应的标识符，因为动态绑定需要在sharedData层对数据做格式化，不能单个生成标识符，不然需要在c层再格式化一次
-  */
+   * fixed by uts 当前整个动态绑定表达式对应的标识符，因为动态绑定需要在sharedData层对数据做格式化，不能单个生成标识符，不然需要在c层再格式化一次
+   */
   sharedData?: SimpleExpressionNode["sharedData"];
 }
 export interface SetDynamicEventsIRNode extends BaseIRNode {
@@ -22616,8 +22618,8 @@ export interface SetEventIRNode extends BaseIRNode {
   /** Whether it's in effect */
   effect: boolean;
   /**
-  * fixed by uts 因为 value 可能不存在，所以挂在 SetEventIRNode 上
-  */
+   * fixed by uts 因为 value 可能不存在，所以挂在 SetEventIRNode 上
+   */
   sharedData?: SimpleExpressionNode["sharedData"];
 }
 export interface SetHtmlIRNode extends BaseIRNode {
@@ -22660,12 +22662,12 @@ export interface CreateComponentIRNode extends BaseIRNode, EffectBoundary, Inser
   dynamic?: SimpleExpressionNode;
   useCreateElement: boolean;
   /**
-  * fixed by uts 当前表达式对应的标识符
-  */
+   * fixed by uts 当前表达式对应的标识符
+   */
   sharedData?: SimpleExpressionNode["sharedData"];
   /**
-  * fixed by uts DOM2 组件 flatten 静态值。
-  */
+   * fixed by uts DOM2 组件 flatten 静态值。
+   */
   flatten?: boolean;
 }
 export interface SlotOutletIRNode extends BaseIRNode, EffectBoundary, InsertionState {
@@ -22694,16 +22696,16 @@ export type OperationNode = SetBlockKeyIRNode | SetPropIRNode | SetDynamicPropsI
 export declare enum DynamicFlag {
   NONE = 0,
   /**
-  * This node is referenced and needs to be saved as a variable.
-  */
+   * This node is referenced and needs to be saved as a variable.
+   */
   REFERENCED = 1,
   /**
-  * This node is not generated from template, but is generated dynamically.
-  */
+   * This node is not generated from template, but is generated dynamically.
+   */
   NON_TEMPLATE = 2,
   /**
-  * This node needs to be inserted back into the template.
-  */
+   * This node needs to be inserted back into the template.
+   */
   INSERT = 4
 }
 export interface IRDynamicInfo {
@@ -22721,8 +22723,8 @@ export interface IREffect {
   expressions: SimpleExpressionNode[];
   operations: OperationNode[];
   /**
-  * fixed by uts 标记当前 effect 是否已生成代码
-  */
+   * fixed by uts 标记当前 effect 是否已生成代码
+   */
   generated?: boolean;
 }
 type Overwrite<T, U> = Pick<T, Exclude<keyof T, keyof U>> & Pick<U, Extract<keyof U, keyof T>>;
@@ -22793,10 +22795,7 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   nextIfIndex(): number;
   private getTemplateNamespace;
   private canUseStaticTemplate;
-  pushTemplate(content: string, {
-    root,
-    static: isStatic
-  }?: {
+  pushTemplate(content: string, { root, static: isStatic }?: {
     root?: boolean;
     static?: boolean;
   }): number;
@@ -22816,16 +22815,16 @@ export declare class TransformContext<T extends AllNode = AllNode> {
 export declare function transform(node: RootNode, options?: TransformOptions$1): RootIRNode;
 export declare function createStructuralDirectiveTransform(name: string | string[], fn: StructuralDirectiveTransform): NodeTransform;
 /**
-* Build a "next-id" map from an occupied number set.
-* For each consecutive range [start..end], map every v in the range to end + 1.
-* Example: input [0, 1, 2, 4] => { 0: 3, 1: 3, 2: 3, 4: 5 }.
-*/
+ * Build a "next-id" map from an occupied number set.
+ * For each consecutive range [start..end], map every v in the range to end + 1.
+ * Example: input [0, 1, 2, 4] => { 0: 3, 1: 3, 2: 3, 4: 5 }.
+ */
 export declare function buildNextIdMap(nums: Iterable<number>): Map<number, number>;
 /**
-* Return the available id for n using a map built by buildNextIdMap:
-* - If n is not occupied, return n.
-* - If n is occupied, return the mapped value
-*/
+ * Return the available id for n using a map built by buildNextIdMap:
+ * - If n is not occupied, return n.
+ * - If n is occupied, return the mapped value
+ */
 export declare function getNextId(map: Map<number, number> | null | undefined, n: number): number;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generate.d.ts
@@ -23031,14 +23030,14 @@ export declare function collectSingleUseAssetComponents(block: BlockIRNode): Set
 //#region temp/packages/compiler-vapor/src/generators/component.d.ts
 export declare function genDynamicComponentFlags(root: boolean | undefined, once: boolean | undefined, slotRoot: boolean | undefined, extraFlags?: [flag: number, name: string][]): string | false;
 /**
-* Static literal values are safe to emit directly because reading them cannot
-* touch reactive state. Keep handlers, v-model values, and dynamic expressions
-* as getter sources to preserve lazy access and merge semantics.
-*/
+ * Static literal values are safe to emit directly because reading them cannot
+ * touch reactive state. Keep handlers, v-model values, and dynamic expressions
+ * as getter sources to preserve lazy access and merge semantics.
+ */
 export declare function isDirectStaticLiteralProp(prop: IRProp, context: CodegenContext): boolean;
 export declare function needsVaporCtx(block: BlockIRNode): boolean;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/slotOutlet.d.ts
 export declare function genSlotFlags(flags: number): string | undefined;
 //#endregion
-export { parse,  };
+export { parse };
