@@ -152,12 +152,14 @@ transition-duration: <time>#;
         <input-data :defaultValue="data.transitionDurationDynamic" title="transition-duration 自定义值" type="text" @confirm="inputChangeTransitionDuration"></input-data>
       </view>
 
-      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-duration: 2s</text>
-      <test-native-view :class="nativeViewClassValue"></test-native-view>
-      <view class="button-container">
-        <button class="button-item" @click="nativeViewStart">native-view start</button>
-        <button class="button-item" @click="nativeViewReset">native-view reset</button>
-      </view>
+      <!-- #ifndef MP-ALIPAY -->
+        <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-duration: 2s</text>
+        <test-native-view :class="nativeViewClassValue"></test-native-view>
+        <view class="button-container">
+          <button class="button-item" @click="nativeViewStart">native-view start</button>
+          <button class="button-item" @click="nativeViewReset">native-view reset</button>
+        </view>
+      <!-- #endif -->
 
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->

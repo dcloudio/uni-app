@@ -303,10 +303,10 @@ if (view != null && view instanceof UITextField) {
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
     <page-head :title="data.title"></page-head>
-    <view class="uni-common-mt uni-padding-wrap" style="padding-bottom: 30px;">
+    <view class="input-page uni-common-mt uni-padding-wrap uni-theme-root" style="padding-bottom: 30px;">
       <view>
         <view class="uni-title">
           <text class="uni-title-text">设置输入框的初始内容</text>
@@ -336,7 +336,7 @@ if (view != null && view instanceof UITextField) {
         <view class="input-wrapper">
           <input id="uni-input-type-tel" class="uni-input" :type="data.inputTypeTel" placeholder="电话输入键盘" />
         </view>
-        <!-- #ifndef MP-WEIXIN -->
+        <!-- #ifndef MP -->
         <view class="input-wrapper">
           <input id="uni-input-type-search" class="uni-input" type="search" placeholder="搜索输入键盘" />
         </view>
@@ -695,6 +695,29 @@ if (view != null && view instanceof UITextField) {
         </view>
       </view>
 
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">height:32px 时内容垂直居中</text>
+        </view>
+        <view class="input-vertical-center-wrapper">
+          <view class="input-vertical-center-line"></view>
+          <input id="uni-input-vertical-center-placeholder" class="input-vertical-center" placeholder="placeholder" />
+        </view>
+        <view class="input-vertical-center-wrapper">
+          <view class="input-vertical-center-line"></view>
+          <input id="uni-input-vertical-center-value" class="input-vertical-center" value="value" />
+        </view>
+      </view>
+
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">direction: rtl</text>
+        </view>
+        <view class="input-wrapper">
+          <input id="uni-input-direction-rtl" class="uni-input" style="direction: rtl" placeholder="direction: rtl" value="hello مرحبا" />
+        </view>
+      </view>
+
       <!-- 保证这个示例在页面底部，添加新的示例时请放在上面 -->
       <view>
         <view class="uni-title">
@@ -703,8 +726,17 @@ if (view != null && view instanceof UITextField) {
             v-if="data.keyboardHeightChangeEventDetail">{{ data.keyboardHeightChangeEventDetail }}</text>
         </view>
         <view class="input-wrapper">
-          <input class="uni-input" @keyboardheightchange="onKeyboardHeightChange"
+          <input id="keyboard-adjust-default-input" class="uni-input" @focus="onKeyboardAdjustDefaultFocus"
+            @blur="onKeyboardAdjustDefaultBlur"
+            @keyboardheightchange="onKeyboardHeightChange"
             :focus="data.focusedForKeyboardHeightChangeTest" />
+        </view>
+        <view v-if="data.showKeyboardAdjustTargetInput" class="input-wrapper">
+          <input id="keyboard-adjust-target-input" class="uni-input"
+            @focus="onKeyboardAdjustTargetFocus"
+            @blur="onKeyboardAdjustTargetBlur"
+            @keyboardheightchange="onKeyboardHeightChange"
+            :focus="data.keyboardAdjustTargetFocus" />
         </view>
       </view>
 
@@ -718,7 +750,7 @@ if (view != null && view instanceof UITextField) {
           <text class="uni-title-text">font-size:30px</text>
         </view>
         <view class="input-wrapper">
-          <input style="border: 1px solid #ccc;border-radius: 4px;font-size:30px" placeholder="请输入..." value="font-size 超出默认高度" />
+          <input style="width: 100%;border: 1px solid #ccc;border-radius: 4px;font-size:30px" placeholder="请输入..." value="font-size 超出默认高度" />
         </view>
       </view>
 
@@ -727,16 +759,18 @@ if (view != null && view instanceof UITextField) {
           <text class="uni-title-text">color: green</text>
         </view>
         <view class="input-wrapper">
-          <input style="border: 1px solid #ccc;border-radius: 4px;color: green;" placeholder="请输入..." value="字体颜色为绿色" />
+          <input style="width: 100%;border: 1px solid #ccc;border-radius: 4px;color: green;" placeholder="请输入..." value="字体颜色为绿色" />
         </view>
       </view>
 
       <!-- 保证这个示例在页面底部，添加新的示例时请放在上面 -->
-      <navigator url="/pages/component/input/input-performance" style="margin-top: 10px;">
-        <button type="primary">
-          input 性能测试
-        </button>
-      </navigator>
+      <!-- #ifndef MP-ALIPAY -->
+        <navigator url="/pages/component/input/input-performance" style="margin-top: 10px;">
+          <button type="primary">
+            input 性能测试
+          </button>
+        </navigator>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -771,10 +805,16 @@ if (view != null && view instanceof UITextField) {
     onMaxLengthInputValue: string;
     inputMaxLengthFocus: boolean;
     inputPasswordValue: string;
-    inputFocusKeyBoardChangeValue: boolean;
     holdKeyboard: boolean;
     keyboardHeight: number;
+    keyboardHeightChangeCount: number;
     focusedForKeyboardHeightChangeTest: boolean;
+    keyboardAdjustDefaultFocusCount: number;
+    keyboardAdjustDefaultFocused: boolean;
+    keyboardAdjustTargetFocus: boolean;
+    keyboardAdjustTargetFocusCount: number;
+    keyboardAdjustTargetFocused: boolean;
+    showKeyboardAdjustTargetInput: boolean;
     demoValue: string;
     demoValue2: string;
     adjustPosition: boolean;
@@ -815,10 +855,16 @@ if (view != null && view instanceof UITextField) {
     onMaxLengthInputValue: "",
     inputMaxLengthFocus: false,
     inputPasswordValue: "cipher",
-    inputFocusKeyBoardChangeValue: true,
     holdKeyboard: false,
     keyboardHeight: 0,
+    keyboardHeightChangeCount: 0,
     focusedForKeyboardHeightChangeTest: false,
+    keyboardAdjustDefaultFocusCount: 0,
+    keyboardAdjustDefaultFocused: false,
+    keyboardAdjustTargetFocus: false,
+    keyboardAdjustTargetFocusCount: 0,
+    keyboardAdjustTargetFocused: false,
+    showKeyboardAdjustTargetInput: false,
     demoValue: '123',
     demoValue2: '123',
     adjustPosition: false,
@@ -835,7 +881,8 @@ if (view != null && view instanceof UITextField) {
   }
 
   const inputFocusKeyBoardChange = (e : UniInputKeyboardHeightChangeEvent) => {
-    data.inputFocusKeyBoardChangeValue = e.detail.height > 50
+    data.keyboardHeight = e.detail.height
+    data.keyboardHeightChangeCount++
   }
 
   const onMaxLengthInput = (event : UniInputEvent) => {
@@ -912,6 +959,27 @@ if (view != null && view instanceof UITextField) {
     console.log("键盘高度发生变化", JSON.stringify(event.detail));
     data.keyboardHeightChangeEventDetail = JSON.stringify(event.detail);
     data.keyboardHeight = event.detail.height;
+    data.keyboardHeightChangeCount++
+  }
+
+  const onKeyboardAdjustDefaultFocus = () => {
+    data.keyboardAdjustDefaultFocusCount++
+    data.keyboardAdjustDefaultFocused = true
+  }
+
+  const onKeyboardAdjustDefaultBlur = () => {
+    data.keyboardAdjustDefaultFocused = false
+    data.focusedForKeyboardHeightChangeTest = false
+  }
+
+  const onKeyboardAdjustTargetFocus = () => {
+    data.keyboardAdjustTargetFocusCount++
+    data.keyboardAdjustTargetFocused = true
+  }
+
+  const onKeyboardAdjustTargetBlur = () => {
+    data.keyboardAdjustTargetFocused = false
+    data.keyboardAdjustTargetFocus = false
   }
 
   const test_check_input_value = () : number => {
@@ -953,6 +1021,24 @@ if (view != null && view instanceof UITextField) {
     }
   }
 
+  const getKeyboardAdjustInputRect = () : DOMRect | null => {
+    return uni.getElementById('keyboard-adjust-default-input')?.getBoundingClientRect() ?? null
+  }
+
+  const getKeyboardAdjustTargetInputRect = () : DOMRect | null => {
+    return uni.getElementById('keyboard-adjust-target-input')?.getBoundingClientRect() ?? null
+  }
+
+  const blurKeyboardAdjustInputsForTest = () => {
+    uni.getElementById('uni-input-focus')?.blur()
+    uni.getElementById('keyboard-adjust-default-input')?.blur()
+    uni.getElementById('keyboard-adjust-target-input')?.blur()
+  }
+
+  const hideKeyboardForTest = () => {
+    uni.hideKeyboard()
+  }
+
 
   const changeCheckedTypeNoneAndFocusCase = (checked : boolean) => {
     data.showTypeNoneAndFocusCase = checked
@@ -960,16 +1046,21 @@ if (view != null && view instanceof UITextField) {
 
   defineExpose({
     data,
-    triggerFocusOrBlur
+    triggerFocusOrBlur,
+    getKeyboardAdjustInputRect,
+    getKeyboardAdjustTargetInputRect,
+    blurKeyboardAdjustInputsForTest,
+    hideKeyboardForTest
   })
 </script>
 
 <style scoped>
   .input-wrapper {
     display: flex;
+    flex-direction: row;
     padding: 8px 13px;
     margin: 5px 0;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .uni-input {
@@ -977,6 +1068,7 @@ if (view != null && view instanceof UITextField) {
     font-size: 15px;
     padding: 0px;
     flex: 1;
+    color: #333333;
     background-color: #ffffff;
   }
 
@@ -991,6 +1083,32 @@ if (view != null && view instanceof UITextField) {
 
   .placeholder-class{
     font-size: 30px;
+  }
+  
+  .input-vertical-center-wrapper {
+    position: relative;
+    height: 32px;
+    margin: 5px 0;
+    background-color: #ededed;
+  }
+
+  .input-vertical-center {
+    width: 100%;
+    height: 32px;
+    padding: 0 5px;
+    font-size: 16px;
+    color: #333333;
+    background-color: #ffffff;
+  }
+
+  .input-vertical-center-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    z-index: 2;
+    height: 1px;
+    background-color: #ff0000;
   }
 
   .input-wrap {
@@ -1020,6 +1138,19 @@ if (view != null && view instanceof UITextField) {
   @font-face {
     font-family: AlimamaDaoLiTiOTF;
     src: url('/static/font/AlimamaDaoLiTi.otf');
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .uni-input,
+    .input-vertical-center {
+      color: #ffffff;
+      background-color: #2d2d2d;
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .input-vertical-center-wrapper {
+      background-color: #3b3b3b;
+    }
   }
 </style>
 

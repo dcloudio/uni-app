@@ -140,12 +140,12 @@
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
+  <scroll-view class="uni-theme-root" style="flex: 1;">
   <!-- #endif -->
     <!-- 实际开发中，长列表应该使用list-view -->
-    <view class="uni-padding-wrap uni-common-mt">
+    <view class="refresh-page uni-padding-wrap uni-common-mt uni-theme-root">
       <text class="text" v-for="(num,index) in listData" :key="index">list - {{num}}</text>
-      <view v-if="showLoadMore">{{loadMoreText}}</view>
+      <view v-if="showLoadMore" class="load-more-text">{{loadMoreText}}</view>
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -235,12 +235,16 @@
   .text {
     margin: 6px 0;
     width: 100%;
-    background-color: #fff;
+    background-color: var(--list-background-color, #ffffff);
     height: 52px;
     line-height: 52px;
     text-align: center;
-    color: #555;
+    color: var(--text-color, #555555);
     border-radius: 4px;
+  }
+
+  .load-more-text {
+    color: var(--text-color, #333333);
   }
 </style>
 

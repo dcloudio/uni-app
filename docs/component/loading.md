@@ -52,7 +52,7 @@
 >示例
 ```vue
 <template>
-  <scroll-view class="container">
+  <scroll-view class="container uni-theme-root">
    <page-head title="loading组件"></page-head>
    <view class="section">
       <view class="row">
@@ -71,15 +71,15 @@
         <view class="item">
           <text class="label">背景圈黑色，前景白色</text>
           <!-- #ifndef APP-HARMONY -->
-          <view style="width: 17px;height: 17px;border-radius: 8.5px;border: black 2px solid;align-items: center;justify-content: center;overflow: visible;">
-            <loading style="border-color: white;" bold />
+          <view class="loading-background" style="width: 17px;height: 17px;border-radius: 8.5px;border-width: 2px;border-style: solid;align-items: center;justify-content: center;overflow: visible;">
+            <loading class="loading-inner" bold />
           </view>
           <!-- #endif -->
           <!-- #ifdef APP-HARMONY -->
           <!-- 鸿蒙上父 border 会覆盖在子上 -->
-          <view style="width: 17px;height: 17px;background-color:black;border-radius:50%;align-items: center;justify-content: center;overflow: visible;position: relative;">
-            <view style="width: 13px;height: 13px;background-color:white;border-radius:50%;position: absolute;"></view>
-            <loading style="border-color: white;" bold />
+          <view class="loading-background" style="width: 17px;height: 17px;border-radius:50%;align-items: center;justify-content: center;overflow: visible;position: relative;">
+            <view class="loading-foreground" style="width: 13px;height: 13px;border-radius:50%;position: absolute;"></view>
+            <loading class="loading-inner" bold />
           </view>
           <!-- #endif -->
         </view>
@@ -168,9 +168,9 @@
       </view>
     </view>
 
-   <navigator class="uni-common-mb" url="/pages/template/loading-100/loading-100">
-      <button>组件性能测试</button>
-    </navigator>
+    <!-- #ifndef MP-ALIPAY -->
+      <button class="uni-common-mb" @click="navigateTo('/pages/template/loading-100/loading-100')">组件性能测试</button>
+    <!-- #endif -->
   </scroll-view>
 </template>
 
@@ -229,13 +229,18 @@ const setPaused = () => {
 const setIOSSpinner = () => {
   iosSpinner.value = !iosSpinner.value
 }
+
+const navigateTo = (url: string) => {
+  uni.navigateTo({
+    url
+  })
+}
 </script>
 
 <style>
 .container {
   flex: 1;
   padding: 8px;
-  background-color: #f8f8f8;
 }
 
 .header {
@@ -246,20 +251,20 @@ const setIOSSpinner = () => {
 .title {
   font-size: 22px;
   font-weight: bold;
-  color: #333;
+  color: var(--text-color, #333333);
   text-align: center;
 }
 
 .subtitle {
   font-size: 14px;
-  color: #666;
+  color: var(--active-color, #666666);
   margin-top: 6px;
   text-align: center;
 }
 
 .section {
   margin-bottom: 18px;
-  background-color: #fff;
+  background-color: var(--list-background-color, #ffffff);
   border-radius: 10px;
   padding: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -268,10 +273,10 @@ const setIOSSpinner = () => {
 .section-title {
   font-size: 16px;
   font-weight: bold;
-  color: #444;
+  color: var(--text-color, #444444);
   margin-bottom: 10px;
   text-align: center;
-  background-color: #f0f0f0;
+  background-color: var(--active-background-color, #f0f0f0);
   padding: 6px;
   border-radius: 6px;
 }
@@ -289,7 +294,7 @@ const setIOSSpinner = () => {
 
 .label {
   font-size: 12px;
-  color: #666;
+  color: var(--text-color, #666666);
   margin-bottom: 8px;
   text-align: center;
 }
@@ -300,7 +305,7 @@ const setIOSSpinner = () => {
 
 /* NOTE mp-weixin 类名需要加上父级以提高优先级，否则 class 样式无法生效 */
 
-/* #ifdef MP-WEIXIN */
+/* #ifdef MP */
 .item .size-80 { width: 80px; height: 80px; }
 .item .size-100 { width: 100px; height: 100px; }
 .item .size-140 { width: 140px; height: 140px; }
@@ -309,9 +314,12 @@ const setIOSSpinner = () => {
 .item .bc-red { border-color: red; }
 .item .bc-green { border-color: green; }
 .item .bc-yellow { border-color: yellow; }
+.loading-inner .__uni-loading__ {
+  border-width: 3px;
+}
 /* #endif */
 
-/* #ifndef MP-WEIXIN */
+/* #ifndef MP */
 .size-80 { width: 80px; height: 80px; }
 .size-100 { width: 100px; height: 100px; }
 .size-140 { width: 140px; height: 140px; }
@@ -322,6 +330,38 @@ const setIOSSpinner = () => {
 .bc-yellow { border-color: yellow; }
 /* #endif */
 
+/* #ifdef APP-HARMONY */
+.loading-foreground {
+  background-color: var(--list-background-color);
+}
+.loading-background {
+  background-color: black;
+}
+/* #endif */
+/* #ifndef APP-HARMONY */
+.loading-background {
+  border-color: black;
+}
+/* #endif */
+.loading-inner {
+  border-color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* #ifdef APP-HARMONY */
+  .loading-background {
+    background-color: white;
+  }
+  /* #endif */
+  /* #ifndef APP-HARMONY */
+  .loading-background {
+    border-color: white;
+  }
+  /* #endif */
+  .loading-inner {
+    border-color: var(--list-background-color);
+  }
+}
 </style>
 
 ```

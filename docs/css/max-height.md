@@ -58,17 +58,17 @@ max-height: <viewport-length>;
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view style="flex-grow: 1;">
+    <view class="css-page uni-theme-root" style="flex-grow: 1;">
       <view>
-        <text>max-height: 100px</text>
+        <text class="theme-label">max-height: 100px</text>
         <view class="common" style="max-height: 100px;">
-          <text>height: 400px</text>
+          <text class="cyan-label">height: 400px</text>
         </view>
-        <text>拍平</text>
+        <text class="theme-label">拍平</text>
         <view class="common" style="max-height: 100px;" flatten>
-          <text>height: 400px</text>
+          <text class="cyan-label">height: 400px</text>
         </view>
       </view>
 
@@ -97,7 +97,7 @@ max-height: <viewport-length>;
           <text class="uni-info">获取值: {{data.maxHeightActual}}</text>
           <view class="test-box">
             <view ref="viewRef" class="common-dynamic test-view" :style="{ maxHeight: data.maxHeight }">
-              <text style="font-size: 12px;">view</text>
+              <text class="cyan-label" style="font-size: 12px;">view</text>
             </view>
           </view>
         </view>
@@ -131,7 +131,7 @@ max-height: <viewport-length>;
           <view class="test-box">
             <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ maxHeight: data.maxHeight }"
               flatten>
-              <text style="font-size: 12px;">view</text>
+              <text class="cyan-label" style="font-size: 12px;">view</text>
             </view>
           </view>
         </view>
@@ -165,8 +165,9 @@ max-height: <viewport-length>;
           @confirm="inputChangeMaxHeight"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
-        <text>native-view组件: max-height: 80px 和 max-height: 120px</text>
+        <text class="theme-label">native-view组件: max-height: 80px 和 max-height: 120px</text>
         <view class="demo-box-native">
           <view class="container-native">
             <native-view style="max-height: 80px; width:100px; height: 400px;"></native-view>
@@ -176,6 +177,7 @@ max-height: <viewport-length>;
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -257,6 +259,15 @@ max-height: <viewport-length>;
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
+  .cyan-label,
+  .scroll-view-label {
+    color: #1a1a1a;
+  }
+
   .common {
     width: 200px;
     height: 400px;

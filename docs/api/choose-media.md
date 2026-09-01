@@ -142,16 +142,16 @@ Android端返回的路径是content协议。
 ```uvue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
+  <scroll-view class="page-scroll-view uni-theme-root">
   <!-- #endif -->
-    <view>
+    <view class="uni-theme-root">
       <page-head :title="title"></page-head>
       <view class="uni-common-mt">
         <view class="uni-list">
 
           <view class="uni-list-cell cell-pd">
             <view class="uni-list-cell-left uni-label">
-              来源
+              <text class="media-label">来源</text>
             </view>
             <view class="uni-list-cell-right" @click="chooseMediaSource">
               <text class="click-t">{{sourceTypes[sourceTypeIndex].title}}</text>
@@ -160,7 +160,7 @@ Android端返回的路径是content协议。
 
           <view class="uni-list-cell cell-pd">
             <view class="uni-list-cell-left uni-label">
-              方式
+              <text class="media-label">方式</text>
             </view>
             <view class="uni-list-cell-right" @click="chooseMediaType">
               <text class="click-t">{{(mediaTypes[mediaTypeIndex] as ChooseSource).title}}</text>
@@ -169,7 +169,7 @@ Android端返回的路径是content协议。
 
           <view class="uni-list-cell cell-pd">
             <view class="uni-list-cell-left uni-label">
-              数量限制
+              <text class="media-label">数量限制</text>
             </view>
             <view class="uni-list-cell-right">
               <input class="click-t" ref="refCountInput" :value="count" type="number" :maxlength="1" @blur="chooseMediaCount"/>
@@ -179,7 +179,7 @@ Android端返回的路径是content协议。
           <!-- #ifdef APP-ANDROID -->
           <view class="uni-list-cell cell-pd">
             <view class="uni-list-cell-left uni-label">
-              屏幕方向
+              <text class="media-label">屏幕方向</text>
             </view>
             <view class="uni-list-cell-right" @click="chooseOrientationType">
               <text class="click-t">{{orientationTypes[orientationTypeIndex].title}}</text>
@@ -189,7 +189,7 @@ Android端返回的路径是content协议。
 
           <view class="uni-list-cell cell-pd">
             <view class="uni-list-cell-left uni-label">
-              摄像头
+              <text class="media-label">摄像头</text>
             </view>
             <view class="uni-list-cell-right" @click="chooseCameraType">
               <text class="click-t">{{cameraTypes[cameraTypeIndex].title}}</text>
@@ -201,7 +201,9 @@ Android端返回的路径是content协议。
         <!-- #endif -->
         <view class="uni-list list-pd" style="padding: 15px;">
           <view class="uni-row" style="margin-bottom: 10px;">
-            <view class="uni-list-cell-left">点击预览</view>
+            <view class="uni-list-cell-left">
+              <text class="media-label">点击预览</text>
+            </view>
             <view style="margin-left: auto;">
               <text class="click-t">{{mediaList.length}}/{{count}}</text>
             </view>
@@ -429,6 +431,10 @@ Android端返回的路径是content协议。
     color: darkgray;
   }
 
+  .media-label {
+    color: var(--text-color, #333333);
+  }
+
   .list-pd {
     margin-top: 25px;
   }
@@ -438,6 +444,16 @@ Android端返回的路径是content协议。
     width: 104px;
     height: 104px;
     border: 1px solid #D9D9D9;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .click-t {
+      color: #b8b8b8;
+    }
+
+    .uni-uploader__input-box {
+      border-color: var(--border-color, rgba(255, 255, 255, 0.1));
+    }
   }
 
   .uni-uploader__input {

@@ -193,19 +193,23 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-fab-butto
 		border-radius: 0px;
 	}
 	.move-fab-placeholder {
-		width: 44px;
-		height: 44px;
+		width: 56px;
+		height: 56px;
 	}
 	.move-fab {
-		width: 44px;
-		height: 44px;
+		width: 56px;
+		height: 56px;
+		align-items: center;
+		justify-content: center;
 	}
 	.right-bottom {
 		position: absolute;
-		right: 44px;
-		bottom: 44px;
-		width: 44px;
-		height: 44px;
+		right: 38px;
+		bottom: 38px;
+		width: 56px;
+		height: 56px;
+		align-items: center;
+		justify-content: center;
 		opacity: 1;
 		transform: scale(1);
 		transform-origin: center center;

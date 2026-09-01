@@ -55,9 +55,9 @@ top: <length> | <percentage> | auto;
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view style="flex-grow: 1;">
+    <view class="css-page uni-theme-root" style="flex-grow: 1;">
       <view class="uni-common-mb">
         <text class="uni-title-text">top: 20px (距离顶部 20px) - 右侧：拍平</text>
         <view class="test-container">
@@ -192,8 +192,9 @@ top: <length> | <percentage> | auto;
         <input-data :defaultValue="data.top" title="top 自定义值" type="text" @confirm="inputChangeTop"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
-        <text>native-view组件: top: 10% 和 top: 30px</text>
+        <text class="theme-label">native-view组件: top: 10% 和 top: 30px</text>
         <view class="test-container">
           <view class="example-box">
             <test-native-view class="common-native" style="top: 10%;"></test-native-view>
@@ -203,6 +204,7 @@ top: <length> | <percentage> | auto;
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -285,6 +287,10 @@ top: <length> | <percentage> | auto;
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
   .example-box {
     position: relative;
     flex: 1;
@@ -304,6 +310,7 @@ top: <length> | <percentage> | auto;
   .common-text {
     width: 50px;
     font-size: 12px;
+    color: #1a1a1a;
   }
 
   .test-container {

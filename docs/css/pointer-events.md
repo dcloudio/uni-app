@@ -55,12 +55,12 @@ pointer-events: auto | none | visiblePainted | visibleFill | visibleStroke | vis
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view>
+    <view class="pointer-page uni-theme-root">
       <page-intro content="本页演示 pointer-events：通过开关控制父 view、遮罩层、text、image 的 pointer-events（auto/none），观察点击是否穿透或响应；点击可修改 view/text/image 宽度，用于验证事件是否命中目标。"></page-intro>
       <view class="container1">
-        <text>控制父视图pointer-events打开时可以点击</text>
+        <text class="switch-label">控制父视图pointer-events打开时可以点击</text>
         <switch :checked="true" @change="onChange1" />
       </view>
       <view class="container" :style="{ 'pointer-events': pointerEvents1 }">
@@ -68,7 +68,7 @@ pointer-events: auto | none | visiblePainted | visibleFill | visibleStroke | vis
         <view class="base-style transition-width" id="widthOrHeight" @click="changeWidthOrHeight"></view>
       </view>
       <view class="container1">
-        <text>控制遮罩层pointer-events关闭时可以点击</text>
+        <text class="switch-label">控制遮罩层pointer-events关闭时可以点击</text>
         <switch :checked="true" @change="onChange2" />
       </view>
       <view class="container">
@@ -77,7 +77,7 @@ pointer-events: auto | none | visiblePainted | visibleFill | visibleStroke | vis
         <view class="mask" :style="{ 'pointer-events': pointerEvents2 }"></view>
       </view>
       <view class="container1">
-        <text>控制text组件pointer-events打开时可以点击</text>
+        <text class="switch-label">控制text组件pointer-events打开时可以点击</text>
         <switch :checked="true" @change="onChange3" />
       </view>
       <view class="container" :style="{ 'pointer-events': pointerEvents3 }">
@@ -85,7 +85,7 @@ pointer-events: auto | none | visiblePainted | visibleFill | visibleStroke | vis
         <text class="text-pointer transition-width" id="textPointer" @click="changeTextWidth">测试文本</text>
       </view>
       <view class="container1">
-        <text>控制image组件pointer-events打开时可以点击</text>
+        <text class="switch-label">控制image组件pointer-events打开时可以点击</text>
         <switch :checked="true" @change="onChange4" />
       </view>
       <view class="container" :style="{ 'pointer-events': pointerEvents4 }">
@@ -176,12 +176,17 @@ pointer-events: auto | none | visiblePainted | visibleFill | visibleStroke | vis
 
   .container {
     margin: 7px;
-    background-color: white;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .text {
     margin-top: 10px;
     margin-bottom: 16px;
+    color: var(--text-color, #333333);
+  }
+
+  .switch-label {
+    color: var(--text-color, #333333);
   }
 
   .base-style {

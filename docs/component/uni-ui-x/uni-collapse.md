@@ -138,21 +138,21 @@ uni-collapse-item的标题栏的自定义：
 >示例
 ```vue
 <template>
-  <scroll-view class="page">
+  <scroll-view class="page uni-theme-root">
     <view class="section">
       <text class="section-title">手风琴模式</text>
       <uni-collapse :accordion="true">
-        <uni-collapse-item title="面板 A（默认展开）" :open="data.enableOpen" @change="onPanelAChange">
+        <uni-collapse-item class="theme-collapse-item" title="面板 A（默认展开）" :open="data.enableOpen" @change="onPanelAChange" title-wrap-class="theme-collapse-title-wrap" title-class="theme-collapse-title" content-wrap-class="theme-collapse-content-wrap" arrow-class="theme-collapse-arrow">
           <view class="content-box" @click="onPanelAClick">
             <text class="content-text">手风琴模式下，同时只会保持一个面板展开。点击当前标题会自动收起其他面板。</text>
           </view>
         </uni-collapse-item>
-        <uni-collapse-item title="面板 B" @change="onPanelBChange">
+        <uni-collapse-item class="theme-collapse-item" title="面板 B" @change="onPanelBChange" title-wrap-class="theme-collapse-title-wrap" title-class="theme-collapse-title" content-wrap-class="theme-collapse-content-wrap" arrow-class="theme-collapse-arrow">
           <view id="panel-b" class="content-box">
             <text class="content-text">当前项展开时，其他已展开的项会自动收起。这里用于验证切换动画和事件回调。</text>
           </view>
         </uni-collapse-item>
-        <uni-collapse-item title="禁用项" :disabled="true">
+        <uni-collapse-item class="theme-collapse-item" title="禁用项" :disabled="true" title-wrap-class="theme-collapse-title-wrap" title-class="theme-collapse-title" content-wrap-class="theme-collapse-content-wrap" arrow-class="theme-collapse-arrow">
           <view class="content-box">
             <text class="content-text">禁用状态下不会响应点击，也不会触发展开或收起。</text>
           </view>
@@ -163,7 +163,7 @@ uni-collapse-item的标题栏的自定义：
     <view class="section">
       <text class="section-title">普通模式-可同时展开的分组折叠列表</text>
       <uni-collapse :accordion="false">
-        <uni-collapse-item v-for="(group, index) in categoryGroups" :key="group.title" :title="group.title" @change="onCategoryChange(group.title, $event as boolean)">
+        <uni-collapse-item v-for="(group, index) in categoryGroups" :key="group.title" class="theme-collapse-item" :title="group.title" @change="onCategoryChange(group.title, $event as boolean)" title-wrap-class="theme-collapse-title-wrap" title-class="theme-collapse-title" content-wrap-class="theme-collapse-content-wrap" arrow-class="theme-collapse-arrow">
           <view class="category-list">
             <view v-for="(item, itemIndex) in group.items" :key="item.title" class="category-list-item"
               :class="{'category-list-item--last': itemIndex == group.items.length - 1}">
@@ -178,17 +178,17 @@ uni-collapse-item的标题栏的自定义：
     <view class="section">
       <text class="section-title">externalClass 示例</text>
       <uni-collapse :accordion="false">
-        <uni-collapse-item title="自定义标题文字" title-class="demo-title-emphasis">
+        <uni-collapse-item class="theme-collapse-item" title="自定义标题文字" title-wrap-class="theme-collapse-title-wrap" title-class="theme-collapse-title demo-title-emphasis" content-wrap-class="theme-collapse-content-wrap" arrow-class="theme-collapse-arrow">
           <view class="content-box">
             <text class="content-text">通过 title-class 可以覆盖 title 属性对应 text 组件的样式。</text>
           </view>
         </uni-collapse-item>
-        <uni-collapse-item title="自定义箭头样式" arrow-class="demo-arrow-large">
+        <uni-collapse-item class="theme-collapse-item" title="自定义箭头样式" title-wrap-class="theme-collapse-title-wrap" title-class="theme-collapse-title" content-wrap-class="theme-collapse-content-wrap" arrow-class="theme-collapse-arrow demo-arrow-large">
           <view class="content-box">
             <text class="content-text">通过 arrow-class 可以覆盖默认箭头 view 的尺寸、边框粗细和颜色。</text>
           </view>
         </uni-collapse-item>
-        <uni-collapse-item title="同时自定义标题和箭头" title-class="demo-title-accent" arrow-class="demo-arrow-accent">
+        <uni-collapse-item class="theme-collapse-item" title="同时自定义标题和箭头" title-wrap-class="theme-collapse-title-wrap" title-class="theme-collapse-title demo-title-accent" content-wrap-class="theme-collapse-content-wrap" arrow-class="theme-collapse-arrow demo-arrow-accent">
           <view class="content-box">
             <text class="content-text">title-class 和 arrow-class 可以组合使用。</text>
           </view>
@@ -199,7 +199,7 @@ uni-collapse-item的标题栏的自定义：
     <view class="section">
       <text class="section-title">具名插槽标题</text>
       <uni-collapse :accordion="false">
-        <uni-collapse-item>
+        <uni-collapse-item class="theme-collapse-item" title-wrap-class="theme-collapse-title-wrap" content-wrap-class="theme-collapse-content-wrap" arrow-class="theme-collapse-arrow">
           <template #title="{ open, disabled }">
             <view class="slot-title-wrap">
               <view class="slot-title-icon" :class="{'slot-title-icon--open': open, 'slot-title-icon--disabled': disabled}"></view>
@@ -211,7 +211,7 @@ uni-collapse-item的标题栏的自定义：
             <text class="content-text">通过 #title 可以自定义标题区域结构，例如在文字前增加图标、状态徽标和辅助说明。</text>
           </view>
         </uni-collapse-item>
-        <uni-collapse-item>
+        <uni-collapse-item class="theme-collapse-item" title-wrap-class="theme-collapse-title-wrap" content-wrap-class="theme-collapse-content-wrap" arrow-class="theme-collapse-arrow">
           <template #title="{ open }">
             <view class="slot-title-wrap">
               <view class="slot-title-icon slot-title-icon--secondary" :class="{'slot-title-icon--open': open}"></view>
@@ -337,6 +337,21 @@ uni-collapse-item的标题栏的自定义：
   .page {
     flex: 1;
     padding: 12px;
+  }
+
+  .theme-collapse-item,
+  .theme-collapse-title-wrap,
+  .theme-collapse-content-wrap {
+    background-color: #ffffff;
+  }
+
+  .theme-collapse-title {
+    color: #333333;
+  }
+
+  .theme-collapse-arrow {
+    border-right-color: #999999;
+    border-bottom-color: #999999;
   }
 
   .section {
@@ -605,6 +620,36 @@ uni-collapse-item的标题栏的自定义：
   .log-text {
     font-size: 13px;
     color: #2563eb;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .theme-collapse-item,
+    .theme-collapse-title-wrap,
+    .theme-collapse-content-wrap {
+      background-color: #2d2d2d;
+    }
+
+    .theme-collapse-title {
+      color: #ffffff;
+    }
+
+    .theme-collapse-arrow {
+      border-right-color: #ffffff;
+      border-bottom-color: #ffffff;
+    }
+
+    .demo-title-accent {
+      color: #5eead4;
+    }
+
+    .demo-arrow-accent {
+      border-right-color: #5eead4;
+      border-bottom-color: #5eead4;
+    }
+
+    .slot-title-note {
+      color: #cbd5e1;
+    }
   }
 </style>
 

@@ -149,13 +149,13 @@ const onSelect = (index: string) => {
 				<button class="control-btn" @click="toggleStyle">{{ data.useCustomStyle ? '默认样式' : '自定义样式' }}</button>
 				<button class="control-btn" @click="toggleIndexs">{{ data.useCustomIndexs ? '根据数据设索引' : '自定义索引' }}</button>
 			</view>
-			<list-view ref="listRef" style="flex: 1;" class="city-list" :scroll-into-view="data.indexViewID">
-			<sticky-section v-for="group in cityGroups" :key="group.index"
+			<list-view ref="listRef" style="flex: 1;" class="city-list" :scroll-into-view="data.indexViewID" :scroll-with-animation="data.scrollWithAnimation">
+			<sticky-section v-for="group in cityGroups" :key="group.index" :id="'idx-' + group.index"
 			<!-- #ifdef APP && VUE3-VAPOR -->
 			:preload="true"
 			<!-- #endif -->
 			>
-				<sticky-header :id="'idx-' + group.index">
+				<sticky-header>
 					<view class="group-header">
 						<text class="group-header-text">{{ group.index }}</text>
 					</view>
@@ -190,12 +190,14 @@ const onSelect = (index: string) => {
 		useCustomStyle: boolean
 		useCustomIndexs: boolean
 		indexViewID: string
+		scrollWithAnimation: boolean
 	}
 
 	const data = reactive<Data>({
 		useCustomStyle: false,
 		useCustomIndexs: false,
-		indexViewID: ""
+		indexViewID: "",
+		scrollWithAnimation: false
 	})
 
 	// 当前使用的索引
@@ -217,6 +219,7 @@ const onSelect = (index: string) => {
 			return
 		}
 		// console.log('选择了索引：', index)
+		data.scrollWithAnimation = false
 		const childId = 'idx-' + index
 		data.indexViewID = childId
 	}

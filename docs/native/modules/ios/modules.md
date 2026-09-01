@@ -23,10 +23,10 @@
 
 | 源文件 | 依赖库 | 资源文件 |
 | ---   | ---| ---|
-| UTSOC.h <br> UTSOC.mm <br> uni-getAppAuthorizeSetting-index.swift <br> uni-getAppBaseInfo-index.swift <br> uni-getDeviceInfo-index.swift <br> uni-getSystemInfo-index.swift <br> uni-getSystemSetting-index.swift <br> uni-openAppAuthorizeSetting-index.swift <br> uni-prompt-index.swift <br> uni-rpx2px-index.swift <br> uni-storage-index.swift <br> uni-theme-index.swift <br> uni-getElementById-DCUniGetElementById.swift <br> uni-getElementById-index.swift <br> uni-crash-index.swift <br> uni-crash-UniCrashManager.swift <br> uni-privacy-index.swift <br> uni-dialogPage-index.swift <br> uni-dialogPage-native.swift <br> uni-event-index.swift <br> uni-event-native.swift <br> uni-exit-index.swift <br> uni-actionSheet-index.swift <br> uni-modal-index(4.61+)  <br> uni-prompt-UniAlert-DCActionSheetActionCell.swift(4.61+) <br> uni-prompt-UniAlert-DCActionSheetController.swift(4.61+) <br> uni-prompt-UniAlert-DCActionSheetHeader.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertContentView.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertControllerUtil.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertView.Blocks.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertViewController.swift(4.61+) <br> uni-prompt-UniAlert-DCBottomMenuController.swift(4.61+) <br> uni-prompt-UniAlert-DCloudAlertControllerComponents.swift(4.61+) <br> uni-prompt-UniAlert-DCloudTextView.swift(4.61+) <br> uni-prompt-UniAlert-DCRIButtonItem.swift(4.61+) <br> uni-prompt-UniAlert-UIView.Layout.swift(4.61+) <br> uni-prompt-UniToast-MCToast.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Loading.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Remove.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Status.swift(4.61+) <br> uni-prompt-UniToast-MCToast+StatusBar.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Text.swift(4.61+) <br> uni-prompt-UniToast-MCToastConfig.swift(4.61+) <br> uni-prompt-UniToast-MCToastHelper.swift(4.61+) <br> uni-form-dom1-index.swift `VDOM` <br> uni-form-index.swift `蒸汽` <br>| DCloudUniappRuntime.xcframework <br> DCloudUTSFoundation.xcframework <br> KSCrash.xcframework <br> storage.framework| uts-config.json |
+| UTSOC.h <br> UTSOC.mm <br> uni-getAppAuthorizeSetting-index.swift <br> uni-getAppBaseInfo-index.swift <br> uni-getDeviceInfo-index.swift <br> uni-getSystemInfo-index.swift <br> uni-getSystemSetting-index.swift <br> uni-openAppAuthorizeSetting-index.swift <br> uni-prompt-index.swift <br> uni-rpx2px-index.swift <br> uni-storage-index.swift <br> uni-theme-index.swift <br> uni-getElementById-DCUniGetElementById.swift <br> uni-getElementById-index.swift <br> uni-crash-index.swift <br> uni-crash-UniCrashManager.swift <br> uni-privacy-index.swift <br> uni-dialogPage-index.swift <br> uni-dialogPage-native.swift <br> uni-event-index.swift <br> uni-event-native.swift <br> uni-exit-index.swift <br> uni-actionSheet-index.swift <br> uni-modal-index(4.61+)  <br> uni-prompt-UniAlert-DCActionSheetActionCell.swift(4.61+) <br> uni-prompt-UniAlert-DCActionSheetController.swift(4.61+) <br> uni-prompt-UniAlert-DCActionSheetHeader.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertContentView.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertControllerUtil.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertView.Blocks.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertViewController.swift(4.61+) <br> uni-prompt-UniAlert-DCBottomMenuController.swift(4.61+) <br> uni-prompt-UniAlert-DCloudAlertControllerComponents.swift(4.61+) <br> uni-prompt-UniAlert-DCloudTextView.swift(4.61+) <br> uni-prompt-UniAlert-DCRIButtonItem.swift(4.61+) <br> uni-prompt-UniAlert-UIView.Layout.swift(4.61+) <br> uni-prompt-UniToast-MCToast.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Loading.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Remove.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Status.swift(4.61+) <br> uni-prompt-UniToast-MCToast+StatusBar.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Text.swift(4.61+) <br> uni-prompt-UniToast-MCToastConfig.swift(4.61+) <br> uni-prompt-UniToast-MCToastHelper.swift(4.61+) <br> uni-form-dom1-index.swift `VDOM` <br> uni-form-index.swift `蒸汽` <br> uni-form-UniInputView.swift `蒸汽` <br> uni-form-UniTextareaView.swift `蒸汽` <br>| DCloudUniappRuntime.xcframework <br> DCloudUTSFoundation.xcframework <br> KSCrash.xcframework <br> storage.framework| uts-config.json |
 
 * 注意： 
-1. checkbox-group、form、picker-view、radio、textarea、checkbox、input、picker、picker-view-column、radio-group、switch 组件均依赖 uni-form-dom1-index.swift(vdom), uni-form-index.swift(蒸汽)
+1. checkbox-group、form、picker-view、radio、textarea、checkbox、input、picker、picker-view-column、radio-group、switch 组件均依赖 uni-form-dom1-index.swift(vdom), uni-form-index.swift(蒸汽)、uni-form-UniInputView.swift(蒸汽)、uni-form-UniTextareaView.swift(蒸汽)
 2. VDOM 模式原生sdk5.08之前命名是uni-form-index.swift ，5.08+ 版本之后更新为 uni-form-dom1-index.swift
 
 ### 配置其他模块(可选)
@@ -48,7 +48,8 @@
 | uni-video(5.08+) | uni-video-index.swift <br> uni-video-VideoPlayer-Core-UniVideoPlayerActor.swift <br> uni-video-VideoPlayer-Managers-BrightnessHandler.swift <br> uni-video-VideoPlayer-Managers-CacheManager.swift <br> uni-video-VideoPlayer-Managers-DRMContentKeyDelegate.swift <br> uni-video-VideoPlayer-Managers-DRMManager.swift <br> uni-video-VideoPlayer-Managers-GestureManager.swift <br> uni-video-VideoPlayer-Managers-LocalM3U8Handler.swift <br> uni-video-VideoPlayer-Managers-PIPManager.swift <br> uni-video-VideoPlayer-Managers-UniVideoPlayerManager.swift <br> uni-video-VideoPlayer-Managers-VolumeHandler.swift <br> uni-video-VideoPlayer-Models-UniVideoPlayerConfiguration.swift <br> uni-video-VideoPlayer-Models-UniVideoPlayerEvent.swift <br> uni-video-VideoPlayer-Models-UniVideoPlayerState.swift <br> uni-video-VideoPlayer-Protocols-M3U8ResourceLoaderDelegate.swift <br> uni-video-VideoPlayer-Protocols-UniVideoPlayerDelegate.swift <br> uni-video-VideoPlayer-UniVideoPlayerInstance.swift <br> uni-video-VideoPlayer-UniVideoPlayerView.swift | KTVHTTPCache.xcframework | |
 | uni-push | uni-push-index.swift | GTCommonSDK.xcframework <br> GTSDK.xcframework <br> ZXSDK.framework | c++ <br> resolv <br> z <br> sqlite3 <br> MobileCoreServices <br> Security <br> SystemConfiguration <br> CoreTelephony <br> AVFoundation <br> UserNotifications <br> AdSupport |
 | uni-verify | uni-verify-index.swift <br> uni-network-index.swift | GTCommonSDK.xcframework <br> GeYanSdk.xcframework | resolv.9 <br> c++ <br> z <br> sqlite3.0、WebKit <br> CoreFoundation <br> Network <br> AdSupport |
-| uni-ad | uni-ad-index.swift | DCUniAdFoundation.xcframework | |
+| uni-ad `VDOM`  | uni-ad-index.swift | DCUniAdFoundation.xcframework | |
+| uni-ad `蒸汽`  |  uni-ad-dom2-index.swift | DCUniAdFoundation.xcframework | |
 | uni-facialRecognitionVerify | ~~uni-facialRecognitionVerify-index.swift~~ <br>(4.61+使用)uni-facialVerify-index.swift| AliyunFaceAuthFacade.framework <br> AliyunMobileRPC.framework <br> AliyunOSSiOS.framework <br> APBToygerFacade.framework <br> APPSecuritySDK.framework <br> BioAuthAPI.framework <br> BioAuthEngine.framework <br> deviceiOS.framework <br> DTFIdentityManager.framework <br> DTFSensorServices.framework <br> DTFUIModule.framework <br> DTFUtility.framework <br> MPRemoteLogging.framework <br> ToygerNative.framework <br> ToygerService.framework | c++ <br> z <br> resolv <br> c++.1 <br> c++abi <br> z.1.2.8 <br> Accelerate <br> AssetsLibrary <br> QuartzCore <br> CoreFoundation <br> CoreLocation <br> ImageIO <br> CoreMedia <br> CoreMotion <br> AVFoundation <br> WebKit <br> AudioToolbox <br> CFNetwork <br> MobileCoreServices <br> SystemConfiguration <br> CoreTelephony <br> QuartzCore <br> CoreGraphics、AdSupport |
 | uni-cloud-client | uni-websocket-index.swift <br> uni-network-index.swift <br> uni-media-index.swift| DCloudMediaPicker.xcframework |AssetsLibrary <br> Photos <br> AVFoundation <br> CoreServices <br> CoreFoundation <br> CoreGraphics <br> CoreImage <br> GLKit <br> MetalKit <br> MobileCoreServices <br> QuartzCore <br> ImageIO <br> MediaPlayer <br> CoreText|
 | uni-map-tencent | uni-map-tencent-animation-AnimationLocation.swift <br> uni-map-tencent-circle-DCCircle.swift <br> uni-map-tencent-circle-DCCircleModel.swift <br> uni-map-tencent-control-DCControl.swift <br> uni-map-tencent-control-DCControlModel.swift <br> uni-map-tencent-DCLatLng.swift <br> uni-map-tencent-ground-DCGroundOverlayModel.swift <br> uni-map-tencent-IInternalMap.swift <br> uni-map-tencent-index.swift <br> uni-map-tencent-marker-DCMakerModel.swift <br> uni-map-tencent-marker-DCMarker.swift <br> uni-map-tencent-polygon-DCPolygon.swift <br> uni-map-tencent-polygon-DCPolygonModel.swift <br> uni-map-tencent-polyline-DCPolyline.swift <br> uni-map-tencent-polyline-DCPolylineModel.swift <br> uni-map-tencent-TencentMapImpl.swift | QMapFoundationKit.framework <br> QMapKit.framework <br> QMapSDKUtils.framework <br> QMapVisualPlugin.framework | sqlite3 <br> c++|
@@ -89,11 +90,74 @@
 | uni-share-weixin(5.08+) | uni-share-weixin-index.swift <br> uni-share-index.swift | libWeChatSDK.a | CoreGraphics.framework <br> WebKit.framework <br> Security.framework |
 | uni-share-weixin(5.08+) | uni-share-weixin-index.swift <br> uni-share-index.swift | libWeChatSDK.a | CoreGraphics.framework <br> WebKit.framework <br> Security.framework |
 | uni-oauth-apple(5.21+) | uni-oauth-weixin-index.swift <br> uni-oauth-index.swift <br> uni-oauth-apple-AppleLoginNativeManager.swift |  | AuthenticationServices.framework <br> Security.framework <br> LocalAuthentication.framework |
+| uni-progress`VDOM, 蒸汽不需要` | uni-progress-index.swift | | |
 
 
 ### 配置uts-config.json(可选)
 
 在`DCloudUTSExtAPI`工程中新建 `uts-config.json` 文件，
+
+`uni-progress`模块需要添加如下配置
+
+`VDOM`
+```
+{
+  "components": [
+    {
+      "type": "customElement",
+      "name": "progress",
+      "class": "UTSSDKModulesDCloudUniProgressUniProgressElement",
+      "delegateClass": "UniProgressElementRegister"
+    }
+  ]
+}
+```
+
+`uni-live-player`模块需要添加如下配置
+
+`蒸汽`
+```
+{
+  "components": [
+    {
+      "delegateClass": "UniLivePlayerElementRegister"
+    }
+  ]
+}
+```
+`VDOM`
+```
+{
+  "components": [
+    {
+      "delegateClass": "UniLivePlayerComponentRegister"
+    }
+  ]
+}
+```
+
+`uni-live-pusher`模块需要添加如下配置
+
+`蒸汽`
+```
+{
+  "components": [
+    {
+      "delegateClass": "UniLivePusherElementRegister"
+    }
+  ]
+}
+```
+`VDOM`
+```
+{
+  "components": [
+    {
+      "delegateClass": "UniLivePusherComponentRegister"
+    }
+  ]
+}
+```
 
 `uni-oauth-apple`模块需要添加如下配置
 ```
@@ -133,6 +197,18 @@
 }
 ```  
 `uni-loading`模块需要添加如下配置
+
+`蒸汽`
+```
+{
+  "components": [
+    {
+      "delegateClass": "UniLoadingElementRegister"
+    }
+  ]
+}
+```
+`VDOM`
 ```
 {
   "components": [
@@ -143,6 +219,18 @@
 }
 ```
 `uni-web-view`、`uni-editor`模块需要添加如下配置
+
+`蒸汽`
+```
+{
+	"components": [
+    {
+      "delegateClass": "UniWebViewElementRegister"
+    }
+  ]
+}
+```
+`VDOM`
 ```
 {
 	"components": [
@@ -154,17 +242,25 @@
 ```
 
 `uni-video`模块需要添加如下配置
+
+`蒸汽`
 ```
 {
 	"components": [{
-		"name": "video",
-		"class": "UTSSDKModulesDCloudUniVideoVideoComponent",
+		"delegateClass": "UniVideoElementRegister"
+	}]
+}
+```
+`VDOM 5.08- 之前`
+```
+{
+	"components": [{
 		"delegateClass": "VideoComponentRegister"
 	}]
 }
 ```
 
-5.08之后应该如下配置
+`VDOM 5.08+ 之后`
 ```
 {
 	"components": [{
@@ -234,6 +330,16 @@
 ``` 
 
 `uni-map-tencent`模块需要添加如下配置
+
+`蒸汽`
+  ```
+{
+    "components": [{
+		"delegateClass": "UniMapElementRegister"
+	}]
+}
+``` 
+`VDOM`
   ```
 {
     "components": [{
@@ -252,6 +358,16 @@
 ```
 
 `uni-camera`模块需要添加如下配置
+
+`蒸汽`
+  ```
+{
+   "components": [{
+		"delegateClass": "UniCameraElementRegister"
+	}]
+}
+```  
+`VDOM`
   ```
 {
    "components": [{

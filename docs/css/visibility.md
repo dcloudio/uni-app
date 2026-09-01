@@ -58,21 +58,21 @@ visibility: visible | hidden | collapse;
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view style="flex-grow: 1;">
+    <view class="css-page uni-theme-root" style="flex-grow: 1;">
       <text class="uni-tips">visibility: {{data.visibility}} ，说明：点击切换</text>
       <view class="demo-box">
         <view @click="changeVisibility">
-          <text>view组件: {{data.visibility}}</text>
+          <text class="theme-label">view组件: {{data.visibility}}</text>
           <view class="common" :style="{'visibility': data.visibility}"></view>
         </view>
         <view @click="changeVisibility">
-          <text>text组件: {{data.visibility}}</text>
-          <text class="common" :style="{'visibility': data.visibility}">文本</text>
+          <text class="theme-label">text组件: {{data.visibility}}</text>
+          <text class="common cyan-label" :style="{'visibility': data.visibility}">文本</text>
         </view>
         <view @click="changeVisibility">
-          <text>image组件: {{data.visibility}}</text>
+          <text class="theme-label">image组件: {{data.visibility}}</text>
           <image class="common" :style="{'visibility': data.visibility}" src="/static/test-image/logo.png"></image>
         </view>
       </view>
@@ -81,11 +81,11 @@ visibility: visible | hidden | collapse;
         <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
         <view class="demo-box">
           <view>
-            <text>scroll-view: visible</text>
+            <text class="theme-label">scroll-view: visible</text>
             <scroll-view class="common" style="visibility: visible;"></scroll-view>
           </view>
           <view>
-            <text>scroll-view: hidden</text>
+            <text class="theme-label">scroll-view: hidden</text>
             <scroll-view class="common" style="visibility: hidden;"></scroll-view>
           </view>
         </view>
@@ -103,7 +103,7 @@ visibility: visible | hidden | collapse;
           <text class="uni-info">获取值: {{data.visibilityActual}}</text>
           <view class="test-box">
             <view ref="viewRef" class="common-dynamic test-view" :style="{ visibility: data.visibilityValue }">
-              <text>view</text>
+              <text class="cyan-label">view</text>
             </view>
           </view>
         </view>
@@ -133,19 +133,21 @@ visibility: visible | hidden | collapse;
         <input-data :defaultValue="data.visibilityValue" title="visibility 自定义值" type="text" @confirm="inputChangeVisibility"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
-        <text>native-view 组件</text>
+        <text class="theme-label">native-view 组件</text>
         <view class="demo-box">
           <view>
-            <text>native-view: visible</text>
+            <text class="theme-label">native-view: visible</text>
             <test-native-view class="common" style="visibility: visible;"></test-native-view>
           </view>
           <view>
-            <text>native-view: hidden</text>
+            <text class="theme-label">native-view: hidden</text>
             <test-native-view class="common" style="visibility: hidden;"></test-native-view>
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -223,6 +225,14 @@ visibility: visible | hidden | collapse;
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
+  .cyan-label {
+    color: #1a1a1a;
+  }
+
   .common {
     width: 100px;
     height: 100px;

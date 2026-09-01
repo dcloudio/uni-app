@@ -60,8 +60,9 @@ transition暂不支持结束属性值为百分比。
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
+  <view class="transition-page uni-theme-root">
     <view class="container">
       <text class="text">点击修改宽度</text>
       <view class="base-style transition-width" id="widthOrHeight" @click="changeWidthOrHeight"></view>
@@ -192,7 +193,7 @@ transition暂不支持结束属性值为百分比。
     </view>
 
     <view style="margin-top: 20px; margin-left: 7px;">
-      <text style="font-size: 18px; font-weight: bold;">text 组件 transition </text>
+      <text class="transition-heading">text 组件 transition </text>
     </view>
 
     <view class="container">
@@ -211,7 +212,7 @@ transition暂不支持结束属性值为百分比。
     </view>
 
     <view style="margin-top: 20px; margin-left: 7px;">
-      <text style="font-size: 18px; font-weight: bold;">image 组件 transition </text>
+      <text class="transition-heading">image 组件 transition </text>
     </view>
 
     <view class="container">
@@ -239,10 +240,10 @@ transition暂不支持结束属性值为百分比。
 
     <view class="demo-box">
       <scroll-view ref="scrollView1" class="base-style" style="transition: width 1s;" @click="changeScrollViewWidth1">
-        <text>transition: width 1s</text>
+        <text class="colored-box-text">transition: width 1s</text>
       </scroll-view>
       <scroll-view ref="scrollView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeScrollViewWidth2">
-        <text>transition: width 2s ease-in-out</text>
+        <text class="colored-box-text">transition: width 2s ease-in-out</text>
       </scroll-view>
     </view>
 
@@ -257,7 +258,7 @@ transition暂不支持结束属性值为百分比。
         <text class="uni-info">获取值: {{data.transitionActual}}</text>
         <view class="test-box">
           <view ref="viewRefTransition" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionView">
-            <text style="font-size: 12px;">点击view</text>
+            <text class="colored-box-text" style="font-size: 12px;">点击view</text>
           </view>
         </view>
       </view>
@@ -288,7 +289,7 @@ transition暂不支持结束属性值为百分比。
         <text class="uni-info">获取值: {{data.transitionActualFlat}}</text>
         <view class="test-box">
           <view ref="viewRefTransitionFlat" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionView" flatten>
-            <text style="font-size: 12px;">点击view</text>
+            <text class="colored-box-text" style="font-size: 12px;">点击view</text>
           </view>
         </view>
       </view>
@@ -318,12 +319,14 @@ transition暂不支持结束属性值为百分比。
       <input-data :defaultValue="data.transitionValue" title="transition 自定义值" type="text" @confirm="inputChangeTransition"></input-data>
     </view>
 
-    <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
-    <text class="text">点击 native-view 查看 transition 效果</text>
-    <view class="demo-box">
-      <test-native-view ref="nativeView1" class="base-style" style="transition: width 1s;" @click="changeNativeViewWidth1"></test-native-view>
-      <test-native-view ref="nativeView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeNativeViewWidth2"></test-native-view>
-    </view>
+    <!-- #ifndef MP-ALIPAY -->
+      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
+      <text class="text">点击 native-view 查看 transition 效果</text>
+      <view class="demo-box">
+        <test-native-view ref="nativeView1" class="base-style" style="transition: width 1s;" @click="changeNativeViewWidth1"></test-native-view>
+        <test-native-view ref="nativeView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeNativeViewWidth2"></test-native-view>
+      </view>
+    <!-- #endif -->
 
 		<view style="margin: 7px; height: 60px;">
 			<navigator url="/pages/CSS/transition/transition-transform" hover-class="none">
@@ -332,6 +335,7 @@ transition暂不支持结束属性值为百分比。
 				</button>
 			</navigator>
 		</view>
+  </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
@@ -948,12 +952,23 @@ transition暂不支持结束属性值为百分比。
 <style>
   .container {
     margin: 7px;
-    background-color: white;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .text {
     margin-top: 10px;
     margin-bottom: 16px;
+    color: var(--text-color, #333333);
+  }
+
+  .transition-heading {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-color, #333333);
+  }
+
+  .colored-box-text {
+    color: #ffffff;
   }
 
   .base-style {
@@ -1063,6 +1078,7 @@ transition暂不支持结束属性值为百分比。
     font-size: 16px;
     text-align: center;
     background-color: lightblue;
+    color: #1a1a1a;
   }
 
   .image-base-style {

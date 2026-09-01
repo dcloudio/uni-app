@@ -58,15 +58,12 @@ uni-app迁移到uni-app x，是一个大型工程。
 	b. 隐私协议
 	
 	老uni的隐私弹框是原生的，UI很难自定义。而uni-app x未提供原生的隐私弹框，需要开发者自己做一个uvue页面来显示隐私协议。\
-	开发者需要在app.uvue的onLaunch里判断隐私接受状态，通过dialogPage的方式弹出自定义隐私协议页面。可以参考hello uni-app x的app.uvue里的onLaunch里的`uni.getPrivacySetting`部分。
-	
+	开发者需要在app.uvue的onLaunch里判断隐私接受状态，通过dialogPage的方式弹出自定义隐私协议页面。可以参考 hello uni-app x 的app.uvue里的onLaunch里的`uni.getPrivacySetting`部分。
 	
 	如果你之前有web版和微信小程序，那么改造后首先运行到 uni-app x 的web和微信小程序上，看看是否正常。
 
 	同时注意uni-app x的 [web开发注意](./web/README.md) 和 [小程序开发注意](./mp/README.md)
 	
-	如果你的app之前有manifest原生配置的隐私框，
-
 6. 再次适配css
 
 	之前在uni-app中适配过一次css，但[css样式重置](./css/README.md#css-reset)、[样式隔离策略2.0](./css/common/style-isolation.md)，这2个在uni-app下没有，还得在uni-app x环境中再次适配。

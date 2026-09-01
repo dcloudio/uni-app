@@ -144,9 +144,9 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
+  <scroll-view class="uni-theme-root" style="flex: 1;">
   <!-- #endif -->
-		<view class="uni-padding-wrap uni-common-mt">
+		<view class="rich-text-page uni-padding-wrap uni-common-mt uni-theme-root">
       <navigator url="/pages/component/rich-text/rich-text-tags" class="uni-btn-v">
         <button>rich-text渲染单个HTML标签示例</button>
       </navigator>
@@ -156,9 +156,11 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
       <navigator url="/pages/component/rich-text/rich-text-highlight" class="uni-btn-v">
         <button>rich-text高亮覆盖测试</button>
       </navigator>
-      <navigator url="/pages/template/long-rich-text/long-rich-text" class="uni-btn-v">
-        <button class="uni-btn">组件性能测试</button>
-      </navigator>
+      <!-- #ifndef MP-ALIPAY -->
+        <navigator url="/pages/template/long-rich-text/long-rich-text" class="uni-btn-v">
+          <button class="uni-btn">组件性能测试</button>
+        </navigator>
+      <!-- #endif -->
 			<view class="uni-title">
 				<button type="default" @click="changeText">修改文本内容</button>
 			</view>
@@ -175,18 +177,18 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 				<button type="default" @click="changeFontFamily">切换 font-family ({{ data.currentFontFamily }})</button>
 			</view>
 			<view class="text-box" id="rich-text-parent" @click="richTextParentClick">
-				<rich-text id='rich-text' :style="data.richTextStyle" :nodes="data.text" mode="native">
+				<rich-text id='rich-text' class="rich-text-content" :style="data.richTextStyle" :nodes="data.text" mode="native">
 				</rich-text>
 				<view>
-					<text>rich-text-parent</text>
-					<text id='rich-text-str'>{{ data.richTextStr }}</text>
+					<text class="rich-text-label">rich-text-parent</text>
+					<text id='rich-text-str' class="rich-text-label">{{ data.richTextStr }}</text>
 				</view>
 			</view>
 			<view class="uni-title">
-				<text class="uni-subtitle-text">selectable</text>
+				<text class="uni-subtitle-text">user-select</text>
 			</view>
 			<view class="text-box2">
-				<rich-text style="height: 80px;" :selectable="true" :nodes="data.text"></rich-text>
+				<rich-text id="user-select-rich-text" class="rich-text-content" style="height: 80px;" :user-select="data.userSelect" :nodes="data.text"></rich-text>
 			</view>
 		</view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
@@ -209,6 +211,11 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		colorIndex : number;
 		lineHeightIndex : number;
 		fontFamilyIndex : number;
+		userSelect : boolean;
+		userSelectRectX : number;
+		userSelectRectY : number;
+		userSelectRectWidth : number;
+		userSelectRectHeight : number;
 	}
 	// 定义各属性的可选值
 	const fontSizeList : string[] = ["默认", "12px", "16px", "20px", "24px", "32px"]
@@ -230,8 +237,17 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		fontSizeIndex: 0,
 		colorIndex: 0,
 		lineHeightIndex: 0,
-		fontFamilyIndex: 0
+		fontFamilyIndex: 0,
+		userSelect: true,
+		userSelectRectX: 0,
+		userSelectRectY: 0,
+		userSelectRectWidth: 0,
+		userSelectRectHeight: 0
 	} as DataType)
+
+  const onUserSelectChange = (checked: boolean) => {
+    data.userSelect = checked
+  }
 
 	const updateRichTextHeight = () => {
 		if (data.richTextElement != null) {
@@ -332,6 +348,19 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		uni.closeDialogPage();
 	}
 
+	function queryUserSelectRect() {
+		const el = uni.getElementById('user-select-rich-text')
+		const rect = el?.getBoundingClientRect()
+		if (rect != null) {
+			const windowInfo = uni.getWindowInfo()
+			const offsetY = windowInfo.safeAreaInsets.top + 44
+			data.userSelectRectX = rect.left
+			data.userSelectRectY = rect.top + offsetY
+			data.userSelectRectWidth = rect.width
+			data.userSelectRectHeight = rect.height
+		}
+	}
+
 	defineExpose({
 		data,
 		changeText,
@@ -341,19 +370,24 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		changeFontFamily,
 		getBoundingClientRectForTest,
 		testOpenDialogPage,
-		testCloseDialogPage
+		testCloseDialogPage,
+		queryUserSelectRect
 	})
 </script>
 
 <style>
 	.text-box {
 		padding: 20px 0;
-		background-color: white;
+		background-color: #ffffff;
 	}
 
 	.text-box2 {
 		top: 20px;
-		background-color: white;
+		background-color: #ffffff;
+	}
+
+	.rich-text-label {
+		color: #333333;
 	}
 </style>
 

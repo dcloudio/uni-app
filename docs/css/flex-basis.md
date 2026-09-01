@@ -206,19 +206,21 @@ flex-basis: content | <'width'>;
         <input-data :defaultValue="data.flexBasis" title="flex-basis 自定义值" type="text" @confirm="inputChangeFlexBasis"></input-data>
       </view>
 
-      <text class="uni-title-text">native-view 组件：flex-basis: 50px 和 100px</text>
-      <view class="demo-box uni-common-mb">
-        <view class="flex-container">
-          <test-native-view class="common-view" style="flex-basis: 50px;"></test-native-view>
-          <view class="flex-item green"></view>
-          <view class="flex-item blue"></view>
+      <!-- #ifndef MP-ALIPAY -->
+        <text class="uni-title-text">native-view 组件：flex-basis: 50px 和 100px</text>
+        <view class="demo-box uni-common-mb">
+          <view class="flex-container">
+            <test-native-view class="common-view" style="flex-basis: 50px;"></test-native-view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
+          <view class="flex-container">
+            <test-native-view class="common-view" style="flex-basis: 100px;"></test-native-view>
+            <view class="flex-item green"></view>
+            <view class="flex-item blue"></view>
+          </view>
         </view>
-        <view class="flex-container">
-          <test-native-view class="common-view" style="flex-basis: 100px;"></test-native-view>
-          <view class="flex-item green"></view>
-          <view class="flex-item blue"></view>
-        </view>
-      </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>

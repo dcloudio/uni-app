@@ -141,21 +141,25 @@ appTheme返回值为`auto`，代表跟随系统。此时需通过[getSystemInfo]
 >示例
 ```vue
 <template>
-  <page-head :title="title"></page-head>
-  <view class="uni-common-mt">
-    <view class="uni-list">
-      <view class="uni-list-cell" v-for="(item, index) in data.items" :key="index" style="align-items: center;">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">{{item.label}}</view>
-        </view>
-        <view class="uni-list-cell-db">
-          <text class="uni-list-cell-db-text">{{ item.value == '' ? '未获取' : item.value }}</text>
+  <view class="uni-theme-root">
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt">
+      <view class="uni-list">
+        <view class="uni-list-cell" v-for="(item, index) in data.items" :key="index" style="align-items: center;">
+          <view class="uni-pd">
+            <view class="uni-label" style="width:180px;">
+              <text class="system-info-text">{{item.label}}</text>
+            </view>
+          </view>
+          <view class="uni-list-cell-db">
+            <text class="uni-list-cell-db-text system-info-text">{{ item.value == '' ? '未获取' : item.value }}</text>
+          </view>
         </view>
       </view>
-    </view>
-    <view class="uni-padding-wrap">
-      <view class="uni-btn-v">
-        <button type="primary" @tap="getAppBaseInfo">获取App基础信息</button>
+      <view class="uni-padding-wrap">
+        <view class="uni-btn-v">
+          <button type="primary" @tap="getAppBaseInfo">获取App基础信息</button>
+        </view>
       </view>
     </view>
   </view>
@@ -203,6 +207,10 @@ appTheme返回值为`auto`，代表跟随系统。此时需通过[getSystemInfo]
 <style>
   .uni-pd {
     padding-left: 15px;
+  }
+
+  .system-info-text {
+    color: var(--text-color, #333333);
   }
 </style>
 

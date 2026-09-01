@@ -73,7 +73,7 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| nested-scroll-view | Web: x; Android: x; iOS: x; HarmonyOS: 5.25 | 关联 scroll-view 滚动容器。在所有方向上优先滚动 scroll-view |
+| nested-scroll-view | Web: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 关联 scroll-view 滚动容器。在所有方向上优先滚动 scroll-view |
 
 
 ### 事件
@@ -309,6 +309,13 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
           <button type="primary">scroll-view嵌套web-view</button>
         </navigator>
       </view>
+      <!-- #ifdef APP-HARMONY || APP-ANDROID || APP-IOS -->
+      <view class="uni-btn-v">
+        <navigator url="/pages/component/web-view/web-view-associative-container">
+          <button type="primary">associative-container嵌套滚动</button>
+        </navigator>
+      </view>
+      <!-- #endif -->
       <!-- #ifdef APP-ANDROID || APP-HARMONY || APP-IOS -->
       <view class="uni-row uni-btn-v">
         <view class="uni-row uni-flex-item align-items-center">

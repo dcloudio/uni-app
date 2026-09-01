@@ -443,7 +443,7 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
 >示例
 ```vue
 <template>
-  <view id="video-parent" class="uni-flex-item" @touchstart="onVideoParentTouchStart" @touchmove="onVideoParentTouchMove"
+  <view id="video-parent" class="video-page uni-flex-item uni-theme-root" @touchstart="onVideoParentTouchStart" @touchmove="onVideoParentTouchMove"
     @touchend="onVideoParentTouchEnd">
     <video class="video" ref="video" id="video" :header="data.header" :src="data.src" :autoplay="data.autoplay" :loop="data.loop"
       :muted="data.muted" :initial-time="data.initialTime" :duration="data.duration" :controls="data.controls" :danmu-btn="data.danmuBtn && fullscreenShowDanmuBtn"
@@ -460,11 +460,12 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
         src="../../../static/test-video/fast-backward.png" @tap.stop="fastBackward"></image>
       <image v-if="data.subCompEnable && data.subCompShow" class="img-fast-forward"
         src="../../../static/test-video/fast-forward.png" @tap.stop="fastForward"></image>
+      <!-- #ifndef MP-ALIPAY -->
       <input v-if="data.subCompEnable && data.subCompShow" id="input-send-danmu" class="input-send-danmu" placeholder="请输入弹幕内容"
         placeholder-style="color: white;" confirm-type="send" @confirm="onSendDanmuConfirm"
         @keyboardheightchange="onSendDanmuKeyboardHeightChange" @blur="onSendDanmuBlur"></input>
+      <!-- #endif -->
 
-      <!-- #ifdef APP-HARMONY -->
       <template #controls>
         <view  v-if="data.subCompControlsShow" class="video-fullscreen_controls">
           <view style="flex-direction: row;justify-content: center;align-items: center;">
@@ -486,9 +487,8 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
           </view>
         </view>
       </template>
-      <!-- #endif -->
     </video>
-    <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
+    <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item uni-theme-root">
       <view class="uni-btn-v">
         <navigator url="/pages/component/video/video-format">
           <button type="primary" @click="pause">视频格式示例</button>
@@ -501,17 +501,22 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
         </navigator>
       </view>
       <!-- #endif -->
-      <!-- #ifdef APP-HARMONY -->
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-btn-v">
         <button type="primary" @click="openDialogPageVideo">dialogPage 视频格式示例</button>
       </view>
+      <!-- #endif -->
       <view class="uni-row uni-btn-v" style="justify-content: space-between;align-items: center;">
         <text class="uni-title" style="width: 80%;">全屏后自定义 controls</text>
         <switch :checked="data.subCompControlsEnable" @change="onSubCompControlsEnable" />
       </view>
-      <!-- #endif -->
       <view class="uni-row uni-btn-v" style="justify-content: space-between;align-items: center;">
+        <!-- #ifndef MP-ALIPAY -->
         <text class="uni-title" style="width: 80%;">子组件实现快进、快退、发送弹幕功能（全屏后显示）</text>
+        <!-- #endif -->
+        <!-- #ifdef MP-ALIPAY -->
+        <text class="uni-title" style="width: 80%;">子组件实现快进、快退功能（全屏后显示）</text>
+        <!-- #endif -->
         <switch :checked="data.subCompEnable" @change="onSubCompEnableChange" />
       </view>
       <view class="uni-title">
@@ -538,11 +543,13 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
       <view class="uni-btn-v">
         <button type="primary" @click="stop">停止</button>
       </view>
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-btn-v">
         <input class="input" placeholder="输入弹幕" value="{ 'text': '要显示的文本', 'color': '#FF0000' }" type="string"
           @input="onSendDanmuInput"></input>
         <button type="primary" :disabled="!data.enableDanmu" @click="sendDanmu">发送弹幕</button>
       </view>
+      <!-- #endif -->
       <view class="uni-btn-v">
         <enum-data title="选择倍速" :items="data.rateItemTypes" @change="onPlaybackRateChange"></enum-data>
         <button type="primary" @click="playbackRate">设置倍速</button>
@@ -562,12 +569,16 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
         <input class="input margin-10" type="string" placeholder="设置header(json格式)" @confirm="onHeaderComfirm"></input>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <boolean-data title="设置是否展示弹幕（播放前设置有效）" :defaultValue="data.enableDanmu" @change="onEnableDanmuChange"></boolean-data>
+      <!-- #endif -->
       <boolean-data title="设置是否自动播放（播放前设置有效）" :defaultValue="data.autoplay" @change="onAutoplayChange"></boolean-data>
       <boolean-data title="设置是否循环播放（播放完成后生效）" :defaultValue="data.loop" @change="onLoopChange"></boolean-data>
       <boolean-data title="设置是否静音播放" :defaultValue="data.muted" @change="onMutedChange"></boolean-data>
       <boolean-data title="设置是否显示默认播放控件" :defaultValue="data.controls" @change="onControlsChange"></boolean-data>
+      <!-- #ifndef MP-ALIPAY -->
       <boolean-data title="设置是否显示弹幕按钮" :defaultValue="data.danmuBtn" @change="onDanmuBtnChange"></boolean-data>
+      <!-- #endif -->
       <boolean-data title="设置是否显示进度条" :defaultValue="data.showProgress" @change="onShowProgressChange"></boolean-data>
       <boolean-data title="设置是否显示全屏按钮" :defaultValue="data.showFullscreenBtn"
         @change="onShowFullscreenBtnChange"></boolean-data>
@@ -801,16 +812,20 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
   }
 
   const openDialogPageVideo = () => {
+    // #ifndef MP-ALIPAY
     pause()
     data.dialogPageVideo = uni.openDialogPage({
       url: '/pages/component/video/video-dialog-page'
     })
+    // #endif
   }
 
   const closeDialogPageVideo = () => {
+    // #ifndef MP-ALIPAY
     uni.closeDialogPage({
       dialogPage: data.dialogPageVideo
     })
+    // #endif
   }
 
   const getDialogPageVideoFullscreenBtnRect = (): DOMRect | null => {
@@ -854,11 +869,14 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
   }
 
   const sendDanmu = () => {
+    // #ifndef MP-ALIPAY
     console.log("sendDanmu -> " + data.danmu);
     data.videoContext?.sendDanmu(data.danmu);
+    // #endif
   }
 
   const continuousSendDanmu = () => {
+    // #ifndef MP-ALIPAY
     const colors = ['#FF0000', '#31ff23', '#f13ef8', '#4972f8', '#FF9800', '#9C27B0']
     for (let i = 0; i < colors.length; i++) {
       const color = colors[i]
@@ -870,6 +888,7 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
         });
       }, i * 500);
     }
+    // #endif
   }
 
   const onSendDanmuInput = (event : UniInputEvent) => {
@@ -924,10 +943,12 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
   }
 
   const onSendDanmuConfirm = (event : UniInputConfirmEvent) => {
+    // #ifndef MP-ALIPAY
     data.videoContext?.sendDanmu({
       text: event.detail.value,
       color: '#ff0000'
     } as Danmu);
+    // #endif
   }
 
   const onSendDanmuKeyboardHeightChange = (event : UniInputKeyboardHeightChangeEvent) => {
@@ -1335,7 +1356,8 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
 
   .input {
     height: 40px;
-    background: #FFF;
+    color: #333333;
+    background-color: #ffffff;
     padding: 8px 13px;
   }
 
@@ -1370,10 +1392,7 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
   .video-fullscreen_controls {
     padding-left: var(--uni-safe-area-inset-left);
     padding-right: var(--uni-safe-area-inset-right);
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 8px;
+    padding-bottom: 10px;
     height: 50px;
     flex-direction: row;
     justify-content: space-between;
@@ -1393,6 +1412,13 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     font-size: 24px;
     color: rgba(255, 255, 255, 0.8);
     text-align: center;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .input {
+      color: #ffffff;
+      background-color: #2d2d2d;
+    }
   }
 </style>
 

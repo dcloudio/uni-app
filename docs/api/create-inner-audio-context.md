@@ -559,13 +559,12 @@ offSeeked
         style="padding-left: 10px;padding-top: 10px;padding-right: 10px;">播放倍率(Web/HarmonyOS 不支持)</text>
       <radio-group class="uni-row radio-group" @change="playbackRateChange"
         style="flex-wrap: wrap;padding: 10px;">
-        <radio value="0.5" style="margin-right: 3px">0.5
-        </radio>
-        <radio value="0.8" style="margin-right: 3px">0.8</radio>
-        <radio value="1.0" style="margin-right: 3px" :checked="data.playbackRateChecked">1.0</radio>
-        <radio value="1.25" style="margin-right: 3px">1.25</radio>
-        <radio value="1.5" style="margin-right: 3px">1.5</radio>
-        <radio value="2.0">2.0</radio>
+        <view class="playback-rate-item" style="margin-right: 3px"><radio value="0.5" /><text>0.5</text></view>
+        <view class="playback-rate-item" style="margin-right: 3px"><radio value="0.8" /><text>0.8</text></view>
+        <view class="playback-rate-item" style="margin-right: 3px"><radio value="1.0" :checked="data.playbackRateChecked" /><text>1.0</text></view>
+        <view class="playback-rate-item" style="margin-right: 3px"><radio value="1.25" /><text>1.25</text></view>
+        <view class="playback-rate-item" style="margin-right: 3px"><radio value="1.5" /><text>1.5</text></view>
+        <view class="playback-rate-item"><radio value="2.0" /><text>2.0</text></view>
       </radio-group>
 
       <view class="uni-title">
@@ -648,6 +647,14 @@ offSeeked
     onWaitingTest: false
   } as DataType)
 
+  const updateVolumeFromAudioContext = () => {
+    const volume = data._audioContext!.volume
+    // 避免拿到空值/无效值时 加音量计算出 NaN
+    if (typeof volume === 'number' && !isNaN(volume)) {
+      data.volume = volume
+    }
+  }
+
   const position = computed(() : number => {
     return data.isPlayEnd ? 0 : data.currentTime;
   })
@@ -670,7 +677,7 @@ offSeeked
       data.isCanplay = true;
       // #ifdef MP
       // 微信小程序安卓端过早的时机获取的volume为undefine，改为在此处获取
-      data.volume = data._audioContext!.volume;
+      updateVolumeFromAudioContext()
       // #endif
       // 当音频可以播放时，获取缓冲信息
       data.buffered = data._audioContext!.buffered;
@@ -833,7 +840,7 @@ offSeeked
   onReady(() => {
     data._audioContext = uni.createInnerAudioContext();
     data._audioContext!.src = audioUrl;
-    data.volume = data._audioContext!.volume;
+    updateVolumeFromAudioContext()
     onCanplay()
     data._audioContext!.onPlay(() => {
       data.isPaused = false;
@@ -909,6 +916,12 @@ offSeeked
   .icon-play {
     width: 60px;
     height: 60px;
+  }
+
+  .playback-rate-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 </style>
 
@@ -1009,21 +1022,21 @@ offSeeked
     <page-head title="setInnerAudioOption"></page-head>
     <text class="labelText">是否允许与其他音频同时播放</text>
     <radio-group class="uni-row radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'mixWithOther')">
-      <radio value="1" :checked="true">是</radio>
-      <radio value="0" class="radioItem">否</radio>
+      <view class="audio-option-item"><radio value="1" :checked="true" /><text>是</text></view>
+      <view class="radioItem audio-option-item"><radio value="0" /><text>否</text></view>
     </radio-group>
 
     <text class="labelText">是否允许扬声器播放</text>
     <radio-group class="uni-row radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'speakerOn')">
-      <radio value="1" :checked="true">是</radio>
-      <radio value="0" class="radioItem">否</radio>
+      <view class="audio-option-item"><radio value="1" :checked="true" /><text>是</text></view>
+      <view class="radioItem audio-option-item"><radio value="0" /><text>否</text></view>
     </radio-group>
 
 <!-- #ifdef APP-IOS -->
     <text class="labelText">（仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音</text>
     <radio-group class="uni-row radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'obeyMuteSwitch')">
-      <radio value="1" :checked="true">是</radio>
-      <radio value="0" class="radioItem">否</radio>
+      <view class="audio-option-item"><radio value="1" :checked="true" /><text>是</text></view>
+      <view class="radioItem audio-option-item"><radio value="0" /><text>否</text></view>
     </radio-group>
 <!-- #endif -->
 
@@ -1162,6 +1175,12 @@ offSeeked
 
 .radioItem {
   margin-left: 16px
+}
+
+.audio-option-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .buttonContainer {

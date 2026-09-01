@@ -198,6 +198,7 @@ margin-left: <length> | <percentage> | auto;
         <input-data :defaultValue="data.marginLeft" title="margin-left 自定义值" type="text" @confirm="inputChangeMarginLeft"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
         <text>native-view组件: margin-left: 25px 和 10%</text>
         <view class="demo-box">
@@ -213,6 +214,7 @@ margin-left: <length> | <percentage> | auto;
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>

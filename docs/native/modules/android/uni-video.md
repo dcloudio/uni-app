@@ -51,22 +51,6 @@ dependencies {
 
 ::: preview
 
-> build.gradle（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField 'String', 'UTSComponents', '"[{\"delegateClass\":\"uts.sdk.modules.DCloudUniVideo.UniVideoElementRegister\"}]"'
-}
-```
-
-> build.gradle.kts（蒸汽模式）
-
-```groovy
-defaultConfig {
-    buildConfigField("String", "UTSComponents", "\"[{\\\"delegateClass\\\":\\\"uts.sdk.modules.DCloudUniVideo.UniVideoElementRegister\\\"}]\"")
-}
-```
-
 > build.gradle（VDOM模式）
 
 ```groovy

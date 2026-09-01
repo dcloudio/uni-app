@@ -635,7 +635,217 @@ C -> onAppRoute(routeEventId=3)
 
 完整示例代码参考 [hello uni-app x 应用路由事件示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/dev/pages/API/app-route/app-route.uvue)。
 
-<!-- UTSAPIJSON.app-route.example -->
+## 示例
+
+示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/API/app-route/app-route.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/API/app-route/app-route.uvue) 
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/API/app-route/app-route
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/app-route/app-route
+
+>示例
+```vue
+<template>
+  <view class="route-page uni-theme-root">
+    <page-head title="应用路由事件"></page-head>
+    <view class="uni-padding-wrap">
+      <view class="uni-list-cell-padding status-box">
+        <text class="uni-title-text">监听状态</text>
+        <text class="status-text">{{ data.isListening ? '监听中' : '已停止' }}</text>
+        <text class="status-text">onBeforeAppRoute：{{ data.beforeAppRouteCount }} 次</text>
+        <text class="status-text">onAppRoute：{{ data.appRouteCount }} 次</text>
+      </view>
+
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @click="navigateToTarget">普通跳转</button>
+        <button @click="navigateToRewriteTarget">重写下一次跳转</button>
+        <button @click="startListen">开始监听</button>
+        <button @click="stopListen">停止监听</button>
+        <button @click="clearRecords">清空记录</button>
+      </view>
+
+      <view class="event-box uni-common-mt">
+        <text class="uni-title-text">onBeforeAppRoute 记录</text>
+        <text v-if="data.beforeAppRouteEvents.length == 0" class="event-text">暂无记录</text>
+        <view v-for="(event, index) in data.beforeAppRouteEvents" :key="index" class="event-item">
+          <text class="event-index">#{{ index + 1 }}</text>
+          <text class="event-text">{{ event }}</text>
+        </view>
+      </view>
+      <view class="event-box uni-common-mt">
+        <text class="uni-title-text">onAppRoute 记录</text>
+        <text v-if="data.appRouteEvents.length == 0" class="event-text">暂无记录</text>
+        <view v-for="(event, index) in data.appRouteEvents" :key="index" class="event-item">
+          <text class="event-index">#{{ index + 1 }}</text>
+          <text class="event-text">{{ event }}</text>
+        </view>
+      </view>
+      <view class="event-box uni-common-mt">
+        <text class="uni-title-text">最近一次 rewriteRoute 结果</text>
+        <text class="event-text">{{ data.rewriteRouteResult }}</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const TARGET_PATH = 'pages/API/app-route/app-route-target'
+  const TARGET_URL = `/${TARGET_PATH}`
+
+  type DataType = {
+    isListening : boolean
+    beforeAppRouteCount : number
+    appRouteCount : number
+    beforeAppRouteEvents : string[]
+    appRouteEvents : string[]
+    lastNavigateToBeforePath : string
+    lastNavigateToAppRoutePath : string
+    rewriteRouteResult : string
+  }
+
+  const data = reactive({
+    isListening: false,
+    beforeAppRouteCount: 0,
+    appRouteCount: 0,
+    beforeAppRouteEvents: [] as string[],
+    appRouteEvents: [] as string[],
+    lastNavigateToBeforePath: '',
+    lastNavigateToAppRoutePath: '',
+    rewriteRouteResult: ''
+  } as DataType)
+
+  let rewriteNextRoute = false
+
+  const appRouteCallback = (event : AppRouteEvent) => {
+    data.appRouteCount++
+    data.appRouteEvents.push(JSON.stringify(event))
+    if (event.openType == 'navigateTo') {
+      data.lastNavigateToAppRoutePath = event.path
+    }
+  }
+
+  const beforeAppRouteCallback = (event : BeforeAppRouteEvent) => {
+    data.beforeAppRouteCount++
+    data.beforeAppRouteEvents.push(JSON.stringify(event))
+    if (event.openType == 'navigateTo') {
+      data.lastNavigateToBeforePath = event.path
+    }
+
+    if (rewriteNextRoute && event.openType == 'navigateTo' && event.path == TARGET_PATH) {
+      rewriteNextRoute = false
+      uni.rewriteRoute({
+        url: `${TARGET_URL}?from=rewrite`,
+        success: (result) => {
+          data.rewriteRouteResult = result.errMsg
+        },
+        fail: (error) => {
+          data.rewriteRouteResult = error.errMsg
+        }
+      })
+    }
+  }
+
+  const startListen = () => {
+    if (data.isListening) {
+      return
+    }
+    uni.onAppRoute(appRouteCallback)
+    uni.onBeforeAppRoute(beforeAppRouteCallback)
+    data.isListening = true
+  }
+
+  const stopListen = () => {
+    if (!data.isListening) {
+      return
+    }
+    uni.offAppRoute(appRouteCallback)
+    uni.offBeforeAppRoute(beforeAppRouteCallback)
+    data.isListening = false
+    rewriteNextRoute = false
+  }
+
+  const clearRecords = () => {
+    data.beforeAppRouteCount = 0
+    data.appRouteCount = 0
+    data.beforeAppRouteEvents.length = 0
+    data.appRouteEvents.length = 0
+    data.lastNavigateToBeforePath = ''
+    data.lastNavigateToAppRoutePath = ''
+    data.rewriteRouteResult = ''
+  }
+
+  const navigateToTarget = () => {
+    rewriteNextRoute = false
+    uni.navigateTo({
+      url: `${TARGET_URL}?from=normal`
+    })
+  }
+
+  const enableRewriteNextRoute = () => {
+    rewriteNextRoute = true
+  }
+
+  const navigateToRewriteTarget = () => {
+    enableRewriteNextRoute()
+    uni.navigateTo({
+      url: `${TARGET_URL}?from=source`,
+      fail: () => {
+        rewriteNextRoute = false
+      }
+    })
+  }
+
+  onLoad(() => {
+    startListen()
+  })
+
+  onUnload(() => {
+    stopListen()
+  })
+
+  defineExpose({
+    data,
+    startListen,
+    stopListen,
+    clearRecords,
+    enableRewriteNextRoute,
+    navigateToTarget,
+    navigateToRewriteTarget
+  })
+</script>
+
+<style>
+  .status-box,
+  .event-box {
+    padding: 12px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .status-text,
+  .event-text {
+    margin-top: 8px;
+    color: var(--text-color, #333333);
+  }
+
+  .event-text {
+    width: 100%;
+  }
+
+  .event-item {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--border-color, #eeeeee);
+  }
+
+  .event-index {
+    color: var(--active-color, #999999);
+  }
+</style>
+
+```
+
+:::
 
 ## 通用类型
 

@@ -96,7 +96,7 @@ restart
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
   <!-- #endif -->
-    <view>
+    <view style="padding-bottom: 20px">
       <page-head title="getApp"></page-head>
       <view class="uni-padding-wrap">
         <button @click="getGlobalData">get globalData</button>

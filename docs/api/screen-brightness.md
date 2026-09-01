@@ -218,9 +218,9 @@
 ```vue
 <template>
 	<!-- #ifdef APP -->
-	<scroll-view class="page-scroll">
+	<scroll-view class="page-scroll uni-theme-root">
 	<!-- #endif -->
-		<view class="page-body">
+		<view class="page-body uni-theme-root">
 			<view class="panel">
 				<text class="panel-title">接口说明</text>
 				<text class="panel-text">`uni.setScreenBrightness`：设置当前页面亮度，示例覆盖 value、success、fail、complete。</text>
@@ -421,7 +421,7 @@
 	}
 
 	.panel {
-		background-color: #ffffff;
+		background-color: var(--list-background-color, #ffffff);
 		border-radius: 10px;
 		padding: 12px;
 		margin-bottom: 12px;
@@ -429,13 +429,13 @@
 
 	.panel-title {
 		font-size: 15px;
-		color: #222222;
+		color: var(--text-color, #222222);
 		margin-bottom: 10px;
 	}
 
 	.panel-text {
 		font-size: 13px;
-		color: #666666;
+		color: var(--active-color, #666666);
 		line-height: 20px;
 		margin-bottom: 6px;
 	}
@@ -449,6 +449,8 @@
 		padding-left: 10px;
 		padding-right: 10px;
 		margin-bottom: 10px;
+		color: #333333;
+		background-color: #ffffff;
 	}
 
 	.button-row {
@@ -466,7 +468,7 @@
 
 	.result-text {
 		font-size: 12px;
-		color: #444444;
+		color: var(--text-color, #444444);
 		line-height: 18px;
 		margin-top: 4px;
 	}
@@ -476,13 +478,21 @@
 		padding-bottom: 6px;
 		border-bottom-width: 1px;
 		border-bottom-style: solid;
-		border-bottom-color: #f0f0f0;
+		border-bottom-color: var(--border-color, #f0f0f0);
 	}
 
 	.log-text {
 		font-size: 12px;
-		color: #555555;
+		color: var(--text-color, #555555);
 		line-height: 18px;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.input-box {
+			color: #ffffff;
+			background-color: #2d2d2d;
+			border-color: rgba(255, 255, 255, 0.18);
+		}
 	}
 </style>
 

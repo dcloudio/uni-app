@@ -136,6 +136,15 @@ border: <line-width> || <line-style> || <color>;
         </scroll-view>
       </view>
 
+      <view>
+        <text>父视图包含大尺寸子视图的border效果</text>
+        <view class="demo-box">
+          <view class="border-child-overlap">
+            <view style="width: 150px;height: 150px;background-color: red;"></view>
+          </view>
+        </view>
+      </view>
+
       <view class="uni-common-mt">
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
@@ -297,6 +306,16 @@ border: <line-width> || <line-style> || <color>;
     height: 50px;
     background-color: gray;
   }
+
+  .border-child-overlap {
+    width: 150px;
+    height: 150px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: rgba(255, 255, 0, 0.5);
+    border-radius: 6px;
+  }
+
   .demo-box{
     flex-direction: row;
     margin-top: 10px;

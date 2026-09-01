@@ -180,90 +180,91 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/get-app-authorize-setting/get-app-authorize-setting
 ```uvue
 <template>
+  <view class="uni-theme-root">
   <page-head :title="title"></page-head>
   <view class="uni-common-mt">
     <view class="uni-list">
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">是否授权使用相册</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用相册</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.albumAuthorized" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.albumAuthorized" />
         </view>
       </view>
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">是否授权使用蓝牙</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用蓝牙</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.bluetoothAuthorized" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.bluetoothAuthorized" />
         </view>
       </view>
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">是否授权使用摄像头</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用摄像头</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.cameraAuthorized" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.cameraAuthorized" />
         </view>
       </view>
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">是否授权使用定位</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用定位</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.locationAuthorized" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.locationAuthorized" />
         </view>
       </view>
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">定位准确度</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">定位准确度</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.locationAccuracy" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.locationAccuracy" />
         </view>
       </view>
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">是否授权使用麦克风</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用麦克风</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.microphoneAuthorized" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.microphoneAuthorized" />
         </view>
       </view>
 
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">是否授权通知</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权通知</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.notificationAuthorized" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.notificationAuthorized" />
         </view>
       </view>
       <!-- #ifdef APP-IOS -->
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">是否允许通知带有提醒</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否允许通知带有提醒</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.notificationAlertAuthorized" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.notificationAlertAuthorized" />
         </view>
       </view>
 
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">是否允许通知带有标记</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否允许通知带有标记</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.notificationBadgeAuthorized" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.notificationBadgeAuthorized" />
         </view>
       </view>
       <view class="uni-list-cell">
         <view class="uni-pd">
-          <view class="uni-label" style="width:180px;">是否允许通知带有声音</view>
+          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否允许通知带有声音</text></view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="data.notificationSoundAuthorized" />
+          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.notificationSoundAuthorized" />
         </view>
       </view>
       <!-- #endif -->
@@ -273,6 +274,7 @@
         <button type="primary" @tap="getAppAuthorizeSetting">获取App授权设置</button>
       </view>
     </view>
+  </view>
   </view>
 </template>
 <script setup lang="uts">
@@ -324,6 +326,15 @@
 <style>
   .uni-pd {
     padding-left: 15px;
+  }
+
+  .system-info-text,
+  .system-info-input {
+    color: var(--text-color, #333333);
+  }
+
+  .system-info-placeholder {
+    color: var(--active-color, #999999);
   }
 </style>
 

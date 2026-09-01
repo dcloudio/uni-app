@@ -138,9 +138,11 @@ App平台蒸汽模式从 5.25+ 起内置适配 switch 默认样式的暗黑模�
       <!-- #endif -->
     </view>
 
-    <navigator class="uni-common-mb" url="/pages/template/switch-100/switch-100">
-      <button>组件性能测试</button>
-    </navigator>
+    <!-- #ifndef MP-ALIPAY -->
+      <navigator class="uni-common-mb" url="/pages/template/switch-100/switch-100">
+        <button>组件性能测试</button>
+      </navigator>
+    <!-- #endif -->
   </view>
 </template>
 

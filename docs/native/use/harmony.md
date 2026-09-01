@@ -39,7 +39,7 @@
   "modelVersion": "6.1.1",
   "description": "Please describe the basic information.",
   "dependencies": {
-    // 指定 4.71 版本
+    // 指定 5.25 版本
     "@dcloudio/uni-app-x-vapor-runtime": "5.25.*"
   }
 }

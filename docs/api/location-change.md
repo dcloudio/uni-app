@@ -548,20 +548,20 @@
   <view class="uni-list">
     <text style="margin-bottom: 4px"> 请选择定位服务提供商：</text>
     <radio-group class="uni-row" @change="providerChange" style="flex-wrap: wrap">
-      <radio class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in data.providerList" :key="item.id"
-        :value="item.id" :checked="index === data.currentSelectedProvider">
-        {{ item.name }}
-      </radio>
+      <view class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in data.providerList" :key="item.id">
+        <radio :value="item.id" :checked="index === data.currentSelectedProvider" />
+        <text>{{ item.name }}</text>
+      </view>
     </radio-group>
   </view>
 
   <view class="uni-list">
     <text style="margin-bottom: 4px"> 请选择坐标系：</text>
     <radio-group class="uni-row" @change="typeChange" style="flex-wrap: wrap">
-      <radio class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in types" :key="item.value"
-        :value="item.value" :checked="index === data.currentSelectedType">
-        {{ item.name }}
-      </radio>
+      <view class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in types" :key="item.value">
+        <radio :value="item.value" :checked="index === data.currentSelectedType" />
+        <text>{{ item.name }}</text>
+      </view>
     </radio-group>
   </view>
 

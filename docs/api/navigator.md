@@ -568,7 +568,9 @@
 
   onBackPress((options : OnBackPressOptions) : boolean | null => {
     console.log('onBackPress', Date.now())
+    // #ifndef MP-ALIPAY
     console.log('onBackPress from', options.from)
+    // #endif
     return null
   })
 

@@ -124,21 +124,26 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 
 支持当前页面 `style` 节点属性（注意并非所有 pages.json 的 pageStyle 都可以动态修改）
 
-|属性                          |类型    |Android|iOS   |HarmonyOS|web  |默认值  |
-|:-:                          |:-:    |:-:    |:-:  |:-:  |:-:  |:-:    |
-|enablePullDownRefresh        |Boolean|4.13    |4.13  |4.61 |4.13  |false  |
-|backgroundColorContent        |String  |4.15  |4.15  |4.61 |4.18  |#ffffff|
-|navigationBarBackgroundColor  |String  |4.18  |4.18  |4.61 |4.18  |#007AFF|
-|navigationBarTextStyle        |String  |4.18  |4.18  |4.61 |4.18  |white  |
-|navigationBarTitleText        |String  |4.18  |4.18  |4.61 |4.18  |""    |
-|navigationStyle              |String  |x      |x     |4.61 |4.18  |default|
-|backgroundColor              |String  |4.18   |4.18  |4.61 |x     |#ffffff|
-|backgroundTextStyle          |String  |4.31   |4.31  |x    |x     |dark  |
-|onReachBottomDistance        |Number  |x      |x     |4.61 |4.18  |50      |
-|pageOrientation              |String  |4.18   |4.25  |x    |x     |auto    |
-|disableSwipeBack              |Boolean|x      |4.18  |x    |x     |false |
-|hideStatusBar                  |Boolean|4.31  |x     |x    |x     |false|
-|hideBottomNavigationIndicator  |Boolean|4.31  |x     |x    |x     |false|
+|属性                          |类型    |Android|Android(Vapor)|iOS   |iOS(Vapor)|HarmonyOS|HarmonyOS(Vapor)|web  |默认值  |
+|:-:                           |:-:    |:-:    |:-:           |:-:   |:-:       |:-:      |:-:             |:-:  |:-:    |
+|enablePullDownRefresh         |Boolean|4.13   |x             |4.13  |x         |4.61     |5.0             |4.13  |false  |
+|backgroundColorContent        |String  |4.15  |x             |4.15  |x         |4.61     |5.0             |4.18  |#ffffff|
+|navigationBarBackgroundColor  |String  |4.18  |x             |4.18  |x         |4.61     |5.0             |4.18  |#007AFF|
+|navigationBarTextStyle        |String  |4.18  |x             |4.18  |x         |4.61     |5.0             |4.18  |white  |
+|navigationBarTitleText        |String  |4.18  |x             |4.18  |x         |4.61     |5.0             |4.18  |""     |
+|navigationStyle               |String  |x     |x             |x     |x         |4.61     |5.0             |4.18  |default|
+|backgroundColor               |String  |4.18  |5.25          |4.18  |5.25      |4.61     |5.0             |x     |#ffffff|
+|backgroundTextStyle           |String  |4.31  |x             |4.31  |x         |x        |x               |x     |dark   |
+|onReachBottomDistance         |Number  |x     |5.21          |x     |5.21      |4.61     |5.08            |4.18  |50     |
+|pageOrientation               |String  |4.18  |x             |4.25  |x         |x        |5.0             |x     |auto   |
+|disableSwipeBack              |Boolean|x      |x             |4.18  |x         |x        |x               |x     |false  |
+|hideStatusBar                 |Boolean|4.31   |x             |x     |x         |x        |5.0             |x     |false  |
+|hideBottomNavigationIndicator |Boolean|4.31   |x             |x     |x         |x        |x               |x     |false  |
+|enableBackToTop               |Boolean|x      |x             |x     |5.25      |x        |5.25            |x     |false  |
+|bounces                       |Boolean|x      |5.25          |x     |5.25      |x        |5.25            |x     |false  |
+|androidOverscroll             |Boolean|x      |5.25          |x     |x         |x        |x               |x     |false  |
+|androidRefresherColor         |String |x      |5.25          |x     |x         |x        |x               |x     |""     |
+|backgroundColor               |String |x      |5.25          |x     |5.25      |x        |5.0             |x     |transparent|
 
 **注意事项**
 - web端由于会自动摇树优化未使用的特性，如果整个项目中都没有使用到下拉刷新`enablePullDownRefresh`，那么下拉刷新功能会被摇掉，此时设置打开下拉刷新将无效。
@@ -785,16 +790,16 @@ querySelectorAll
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
+  <scroll-view class="page-scroll-view uni-theme-root">
   <!-- #endif -->
-    <view id="container">
+    <view id="container" class="current-pages-page uni-theme-root">
       <page-head title="getCurrentPages"></page-head>
       <view class="uni-padding-wrap">
         <button @click="_getCurrentPages">getCurrentPages</button>
         <view v-if="data.pages.length" style="padding: 15px 0px">
-          <text>当前页面栈中 {{ data.pages.length }} 个页面，列表如下：</text>
+          <text class="page-stack-text">当前页面栈中 {{ data.pages.length }} 个页面，列表如下：</text>
           <template v-for="(page, index) in data.pages" :key="page">
-            <text style="margin-top: 5px">index: {{ index }}, route: {{ page }}</text>
+            <text class="page-stack-text" style="margin-top: 5px">index: {{ index }}, route: {{ page }}</text>
           </template>
         </view>
         <button class="uni-common-mt" @click="check$page">page check $page</button>
@@ -856,8 +861,10 @@ querySelectorAll
           </view>
           <view class="set-value" v-else-if="item.type == 'string'">
             <radio-group class="radio-set-value" @change="radioChange(item.key, $event as RadioGroupChangeEvent)">
-              <radio class="radio-value" v-for="(item2, index2) in item.value" :key="index2" :value="item2">{{ item2 }}
-              </radio>
+              <view class="radio-value" v-for="(item2, index2) in item.value" :key="index2">
+                <radio :value="item2" />
+                <text>{{ item2 }}</text>
+              </view>
             </radio-group>
           </view>
         </view>
@@ -1162,7 +1169,7 @@ querySelectorAll
   .page-style-item {
     padding: 10px;
     margin-top: 10px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 5px;
   }
 
@@ -1172,10 +1179,16 @@ querySelectorAll
 
   .item-text-key {
     font-weight: bold;
+    color: var(--text-color, #333333);
   }
 
   .item-text-value {
     margin-left: 5px;
+    color: var(--text-color, #333333);
+  }
+
+  .page-stack-text {
+    color: var(--text-color, #333333);
   }
 
   .set-value {
@@ -1187,6 +1200,9 @@ querySelectorAll
   }
 
   .radio-value {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     margin-left: 10px;
   }
 </style>

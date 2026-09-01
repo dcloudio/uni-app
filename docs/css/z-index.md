@@ -82,54 +82,51 @@ z-index: auto | <integer>;
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
+  <view class="z-index-page uni-theme-root">
     <view style="flex-grow: 1;">
       <view style="position:absolute;z-index:0;">
         <view class="common fixed default">
-          <text>position: fixed</text>
-          <text>z-index: 10</text>
+          <text class="dark-block-text">position: fixed</text>
+          <text class="dark-block-text">z-index: 10</text>
         </view>
         <view class="common fixed specified">
-          <text>position: fixed</text>
-          <text>z-index: 5</text>
+          <text class="dark-block-text">position: fixed</text>
+          <text class="dark-block-text">z-index: 5</text>
         </view>
         <view class="common fixed floor">
-          <text>position: fixed</text>
-          <text>z-index: -1</text>
+          <text class="dark-block-text">position: fixed</text>
+          <text class="dark-block-text">z-index: -1</text>
         </view>
       </view>
       <view style="top: 170px;">
         <view class="common" style="background-color: cyan;z-index: 10;">
-          <text>z-index: 10</text>
+          <text class="cyan-text">z-index: 10</text>
         </view>
         <view ref="view" class="common" style="background-color: green;z-index: 5;top: -100px;left: 100px;"
           @click="changeZIndex(20)">
-          <text>z-index: {{data.zIndex}}</text>
-          <text>点击修改z-index</text>
+          <text class="light-block-text">z-index: {{data.zIndex}}</text>
+          <text class="light-block-text">点击修改z-index</text>
         </view>
         <view class="common" style="background-color: blue;top: -120px;left: 175px;">
-          <text>z-index: 0</text>
+          <text class="light-block-text">z-index: 0</text>
         </view>
       </view>
       <view>
         <view>
           <view class="common fixed popup" style="background-color: yellow;z-index: 5;">
-            <text>position: fixed</text>
-            <text>z-index: 5</text>
+            <text class="dark-block-text">position: fixed</text>
+            <text class="dark-block-text">z-index: 5</text>
           </view>
         </view>
       </view>
     </view>
-    <view v-if="data.autoTest">
-      <view style="z-index: 1;position: fixed;">111</view>
-      <view style="width: 750rpx;">222</view>
-    </view>
     <view style="top: 50px;">
       <text class="uni-title-text uni-common-mt">text 组件</text>
-      <text class="common-text" style="background-color: cyan;z-index: 10;text-align: right;">text组件: z-index: 10</text>
-      <text class="common-text" style="background-color: green;top: -37px;left: 87px;z-index: 5;text-align: right;">text组件: z-index: 5</text>
-      <text class="common-text" style="background-color: blue;top: -75px;left: 175px;z-index: 0;text-align: right;">text组件: z-index: 0</text>
+      <text class="common-text cyan-text" style="background-color: cyan;z-index: 10;text-align: right;">text组件: z-index: 10</text>
+      <text class="common-text light-block-text" style="background-color: green;top: -37px;left: 87px;z-index: 5;text-align: right;">text组件: z-index: 5</text>
+      <text class="common-text light-block-text" style="background-color: blue;top: -75px;left: 175px;z-index: 0;text-align: right;">text组件: z-index: 0</text>
     </view>
     <view style="top: 50px;">
       <text class="uni-title-text uni-common-mt">image 组件</text>
@@ -142,10 +139,10 @@ z-index: auto | <integer>;
       <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
       <text class="uni-subtitle-text">z-index: 10 和 z-index: 5</text>
       <scroll-view class="common" style="z-index: 10; background-color: cyan;">
-        <text>z-index: 10</text>
+        <text class="cyan-text">z-index: 10</text>
       </scroll-view>
       <scroll-view class="common" style="top: -40px;left: 30px;z-index: 5;background-color: green;">
-        <text style="line-height: 100px;">z-index: 5</text>
+        <text class="light-block-text" style="line-height: 100px;">z-index: 5</text>
       </scroll-view>
     </view>
 
@@ -161,7 +158,7 @@ z-index: auto | <integer>;
               <text class="common-text-bg">蓝色view</text>
             </view>
             <view ref="viewRef" class="common-dynamic test-view" style="background-color: cyan;" :style="{ zIndex: data.zIndexValue }">
-              <text class="common-text-bg">青色view</text>
+              <text class="common-text-bg cyan-text">青色view</text>
             </view>
           </view>
         </view>
@@ -172,7 +169,7 @@ z-index: auto | <integer>;
           <text class="uni-info">获取值: {{data.zIndexActualText}}</text>
           <view class="test-box">
             <text class="common-bg common-text-bg" style="background-color: blue; z-index: 1;">蓝色text</text>
-            <text ref="textRef" class="common-dynamic common-text-bg test-text" style="background-color: cyan;" :style="{ zIndex: data.zIndexValue }">青色text</text>
+            <text ref="textRef" class="common-dynamic common-text-bg cyan-text test-text" style="background-color: cyan;" :style="{ zIndex: data.zIndexValue }">青色text</text>
           </view>
         </view>
 
@@ -193,13 +190,15 @@ z-index: auto | <integer>;
         <input-data :defaultValue="data.zIndexValue.toString()" title="z-index 自定义值" type="number" @confirm="inputChangeZIndex"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb" style="top: 50px;">
-        <text>native-view组件: z-index: 10 和 z-index: 5</text>
+        <text class="theme-label">native-view组件: z-index: 10 和 z-index: 5</text>
         <test-native-view class="common-text" style="z-index: 10; background-color: cyan;"></test-native-view>
         <test-native-view class="common-text" style="top: -40px;left: 30px;z-index: 5;background-color: green;"></test-native-view>
       </view>
+      <!-- #endif -->
     </view>
-
+  </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
@@ -210,7 +209,6 @@ z-index: auto | <integer>;
 
   type DataType = {
     zIndex : number
-    autoTest : boolean
     zIndexValue : number
     zIndexActual : string
     zIndexActualText : string
@@ -219,7 +217,6 @@ z-index: auto | <integer>;
 
   const data = reactive({
     zIndex: 5,
-    autoTest: false,
     zIndexValue: 5,
     zIndexActual: '',
     zIndexActualText: '',
@@ -289,6 +286,22 @@ z-index: auto | <integer>;
 </script>
 
 <style>
+  .cyan-text {
+    color: #1a1a1a;
+  }
+
+  .dark-block-text {
+    color: #1a1a1a;
+  }
+
+  .light-block-text {
+    color: #ffffff;
+  }
+
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
   .common {
     width: 125px;
     height: 125px;

@@ -206,14 +206,16 @@ flex-shrink: <number>;
         <input-data :defaultValue="data.flexShrink" title="flex-shrink 自定义值" type="text" @confirm="inputChangeFlexShrink"></input-data>
       </view>
 
-      <text class="uni-title-text uni-common-mt">native-view 组件：flex-shrink: 1 、2、3</text>
-      <view class="demo-box uni-common-mb">
-        <view class="flex-container-shrink">
-          <test-native-view class="native-view-shrink red" style="width: 100px; flex-shrink: 1;"></test-native-view>
-          <test-native-view class="native-view-shrink green" style="width: 100px; flex-shrink: 2;"></test-native-view>
-          <test-native-view class="native-view-shrink blue" style="width: 100px; flex-shrink: 3;"></test-native-view>
+      <!-- #ifndef MP-ALIPAY -->
+        <text class="uni-title-text uni-common-mt">native-view 组件：flex-shrink: 1 、2、3</text>
+        <view class="demo-box uni-common-mb">
+          <view class="flex-container-shrink">
+            <test-native-view class="native-view-shrink red" style="width: 100px; flex-shrink: 1;"></test-native-view>
+            <test-native-view class="native-view-shrink green" style="width: 100px; flex-shrink: 2;"></test-native-view>
+            <test-native-view class="native-view-shrink blue" style="width: 100px; flex-shrink: 3;"></test-native-view>
+          </view>
         </view>
-      </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>

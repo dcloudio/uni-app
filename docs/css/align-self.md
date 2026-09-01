@@ -59,12 +59,12 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-  <view style="flex-grow: 1;">
+  <view class="css-page uni-theme-root" style="flex-grow: 1;">
     <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
     <view>
-      <text>align-self: auto</text>
+      <text class="theme-label">align-self: auto</text>
       <view class="demo-box">
         <view class="demo-container align-start">
           <view class="common" style="align-self: auto;"></view>
@@ -76,7 +76,7 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
     </view>
 
     <view class="uni-common-mt">
-      <text>align-self: center</text>
+      <text class="theme-label">align-self: center</text>
       <view class="demo-box">
         <view class="demo-container align-center">
           <view class="common" style="align-self: center;"></view>
@@ -88,7 +88,7 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
     </view>
 
     <view class="uni-common-mt">
-      <text>align-self: flex-start</text>
+      <text class="theme-label">align-self: flex-start</text>
       <view class="demo-box">
         <view class="demo-container align-start">
           <view class="common" style="align-self: flex-start;"></view>
@@ -100,7 +100,7 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
     </view>
 
     <view class="uni-common-mt">
-      <text>align-self: flex-end</text>
+      <text class="theme-label">align-self: flex-end</text>
       <view class="demo-box">
         <view class="demo-container">
           <view class="common" style="align-self: flex-end;"></view>
@@ -112,7 +112,7 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
     </view>
 
     <view class="uni-common-mt">
-      <text>align-self: stretch</text>
+      <text class="theme-label">align-self: stretch</text>
       <view class="demo-box">
         <view class="demo-container">
           <view class="common" style="align-self: stretch;"></view>
@@ -162,7 +162,7 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
         <text class="uni-info">设置值: {{data.alignSelf}}</text>
         <text class="uni-info">获取值: {{data.alignSelfActualText}}</text>
         <view class="test-box">
-          <text ref="textRef" class="common test-text" :style="{ alignSelf: data.alignSelf }">text</text>
+          <text ref="textRef" class="common cyan-label test-text" :style="{ alignSelf: data.alignSelf }">text</text>
         </view>
       </view>
 
@@ -194,7 +194,7 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
         <text class="uni-info">设置值: {{data.alignSelf}}</text>
         <text class="uni-info">获取值: {{data.alignSelfActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common test-text-flatten" :style="{ alignSelf: data.alignSelf }" flatten>text</text>
+          <text ref="textRefFlat" class="common cyan-label test-text-flatten" :style="{ alignSelf: data.alignSelf }" flatten>text</text>
         </view>
       </view>
 
@@ -214,16 +214,18 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
       <input-data :defaultValue="data.alignSelf" title="align-self 自定义值" type="text" @confirm="inputChangeAlignSelf"></input-data>
     </view>
 
-    <text class="uni-title-text uni-common-mt">native-view 组件：align-self: center 和 flex-start</text>
-    <text class="uni-subtitle-text">native-view 作为 flex 子项</text>
-    <view class="demo-box uni-common-mb">
-      <view class="demo-container align-center">
-        <test-native-view class="common" style="align-self: center;"></test-native-view>
+    <!-- #ifndef MP-ALIPAY -->
+      <text class="uni-title-text uni-common-mt">native-view 组件：align-self: center 和 flex-start</text>
+      <text class="uni-subtitle-text">native-view 作为 flex 子项</text>
+      <view class="demo-box uni-common-mb">
+        <view class="demo-container align-center">
+          <test-native-view class="common" style="align-self: center;"></test-native-view>
+        </view>
+        <view class="demo-container align-center">
+          <test-native-view class="common" style="align-self: flex-start;"></test-native-view>
+        </view>
       </view>
-      <view class="demo-container align-center">
-        <test-native-view class="common" style="align-self: flex-start;"></test-native-view>
-      </view>
-    </view>
+    <!-- #endif -->
   </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -303,6 +305,16 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
+  .cyan-label,
+  .common-text,
+  .scroll-view-label {
+    color: #1a1a1a;
+  }
+
   .demo-container {
     display: flex;
     background-color: #cdcbcb;

@@ -10,7 +10,7 @@
 > uni-app x 4.0+ 提供内置 CSS 变量。
 > uni-app x 4.52+ 全平台提供了安全区域相关 CSS 变量 --uni-safe-area-inset-* 。
 > uni-app x 4.71+ App平台补充了自定义css变量
-> 部分内置组件的特殊样式属性暂不支持CSS变量：input、textarea 的 placeholder-style、placeholder-class，picker-view 的 indicator-style、indicator-class、mask-style、mask-class
+> uni-app x 5.25+ App平台 蒸汽模式 useComputedStyle 支持 css 变量。同时基于useComputedStyle的input、textarea、loading也支持了css变量
 
 ### 预置的 CSS 变量 @preset-var
 
@@ -25,7 +25,7 @@
   1. 这2个css变量仅处理了导航栏和tabbar，未处理LeftWindow等Window、未处理手机屏幕的底部手势横条和摄像头挖孔区等内容。
   2. 这2个css变量未包含left、right，宽屏适配和横屏时无法友好兼容
   3. 这2个css变量的命名未包含 `uni` 前缀，容易和开发者的代码中的自定义css变量命名冲突。
-- 小程序平台目前这些预置CSS变量对应的值均为估计值，并不准确
+- 小程序平台目前支持 `--status-bar-height` 和 `--uni-safe-area-inset-bottom`，其他css变量均为0px。
 
 ### 自定义 CSS 变量 @customvar
 > HBuilderX4.71起 App平台支持自定义变量
@@ -36,9 +36,9 @@ CSS自定义变量规范参考[MDN Reference](https://developer.mozilla.org/zh-C
 App平台相比web平台，有以下差异：
 - 定义变量时不支持值为var(--*) ex: --color: var(--color)
 - 回退值不支持var(--*) ex: --height: var(--height1 , var(--height2))
-- transtion暂不支持使用var
-- VDOM模式的部分组件的样式不支持CSS变量：input、textarea 的 placeholder-style、placeholder-class
-- 蒸汽模式的部分组件的样式暂不支持CSS变量：input、textarea、loading的class。
+- App平台 VDOM模式transtion暂不支持使用var，App平台 蒸汽模式仅transtion长写属性支持var
+- App平台 VDOM模式的部分组件的样式不支持CSS变量：input、textarea 的 placeholder-style、placeholder-class；picker-view 的 indicator-style、indicator-class、mask-style、mask-class。
+- 蒸汽模式的部分组件使用了useComputedStyle，这类组件的样式支持CSS变量需HBuilderX 5.25+，包括input、textarea、loading组件的class。
 - App平台不支持:root伪类。蒸汽模式可以使用page选择器替代。vdom模式需要自行在页面根元素或合适的父级元素的class中定义css变量，以便在子元素生效。
 
 ### 示例 
@@ -50,37 +50,37 @@ App平台相比web平台，有以下差异：
 >示例
 ```vue
 <template>
-  <view class="page">
+  <view class="page uni-theme-root">
     <view class="status-bar-height">
-      <text>通过var(--status-bar-height)获取状态栏高度</text>
+      <text class="light-label">通过var(--status-bar-height)获取状态栏高度</text>
     </view>
     <view class="status-bar-window" :style="{ height: statusBarHeight + 'px' }">
-      <text>通过uni.getWindowInfo获取状态栏高度</text>
+      <text class="dark-label">通过uni.getWindowInfo获取状态栏高度</text>
     </view>
     <view class="status-bar-unipage" :style="{ height: statusBarHeight2 + 'px' }">
-      <text>通过this.$page.statusBarHeight获取状态栏高度</text>
+      <text class="dark-label">通过this.$page.statusBarHeight获取状态栏高度</text>
     </view>
     <view class="window-top">
-      <text>window top</text>
+      <text class="light-label">window top</text>
     </view>
     <view class="window-bottom">
-      <text>window bottom</text>
+      <text class="light-label">window bottom</text>
     </view>
 
     <view class="uni-safe-area-inset-top">
-      <text>height:var(--uni-safe-area-inset-top)</text>
+      <text class="dark-label">height:var(--uni-safe-area-inset-top)</text>
     </view>
     <view class="uni-safe-area-inset-left">
-      <text>height:var(--uni-safe-area-inset-left)</text>
+      <text class="dark-label">height:var(--uni-safe-area-inset-left)</text>
     </view>
     <view class="uni-safe-area-inset-right">
-      <text>height:var(--uni-safe-area-inset-right)</text>
+      <text class="light-label">height:var(--uni-safe-area-inset-right)</text>
     </view>
     <view class="uni-safe-area-inset-bottom">
-      <text>height:var(--uni-safe-area-inset-bottom)</text>
+      <text class="dark-label">height:var(--uni-safe-area-inset-bottom)</text>
     </view>
     <view class="uni-fixed-bottom">
-      <text>此区域应显示在安全区域内</text>
+      <text class="light-label">此区域应显示在安全区域内</text>
     </view>
   </view>
 </template>
@@ -103,6 +103,14 @@ App平台相比web平台，有以下差异：
 <style>
   .page {
     flex: 1;
+  }
+
+  .dark-label {
+    color: #1a1a1a;
+  }
+
+  .light-label {
+    color: #ffffff;
   }
 
   .status-bar-height {
@@ -187,7 +195,7 @@ App平台相比web平台，有以下差异：
 内置 CSS 环境变量，即`env()`。
 
 **注意：**\
-env()主要用于在App平台补齐 web 规范。但浏览器的env不会考虑uni-app x的pages.json中配置的顶部导航栏和底部tabbar。\
+env()主要用于在App平台补齐 web 规范。但浏览器的env不会考虑 uni-app x 的pages.json中配置的顶部导航栏和底部tabbar。\
 所以实际开发中处理安全区时，更推荐使用本文档上方的 [--uni-safe-area-inset-xxx 系列css变量](#var)。
 
 ### 语法
@@ -657,3 +665,51 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 ```
 
 :::
+
+
+## calc @calc
+> uni-app x 5.27+ App平台 蒸汽模式支持calc方法
+
+calc() 函数允许在声明 CSS 属性值时执行计算。
+
+### 语法
+`calc()` 函数使用表达式作为参数，并将表达式的计算结果作为属性值。表达式可以由以下运算符组合而成，并遵循标准运算符的处理规则。
+
+- `+`：加法。
+- `-`：减法。
+- `*`：乘法，乘数中至少有一个是 `<number>`。
+- `/`：除法，除数（`/` 右侧的数）必须是 `<number>`。
+
+表达式中的运算对象可以使用任意 `<length>` 值，也可以混用不同单位。必要时，可以使用括号控制计算顺序。
+
+`+` 和 `-` 运算符的两边必须有空白字符。例如，`calc(50% -8px)` 会被解析为无效表达式，结果相当于一个百分比后跟一个负数长度值；带空白的有效表达式 `calc(8px + -50%)` 则会被解析为一个长度、一个加号和一个负百分比。
+`*` 和 `/` 运算符前后不要求空白字符，但为了保持格式统一，仍然建议添加空白。
+
+单位必填：在 calc() 中，像 10 这样的纯数字不能直接与长度单位相加（例如 calc(100% - 10) 是错误的，必须写成 calc(100% - 10px)）。
+混合单位：它支持跨单位计算，比如用百分比减去固定像素（100% - 20px）
+优先级控制：乘除法的优先级高于加减法，如果你想先算加减，必须用圆括号 () 括起来，例如 calc((100% - 20px) / 2)
+
+### 形式化语法
+```css 
+<calc()> =
+  calc( <calc-sum> )
+
+<calc-sum> =
+  <calc-product> [ [ '+' | '-' ] <calc-product> ]*
+
+<calc-product> =
+  <calc-value> [ [ '*' | / ] <calc-value> ]*
+
+<calc-value> =
+  <number> |
+  <dimension> |
+  <percentage> |
+  ( <calc-sum> )
+```
+
+**注意：**
+App平台相比web平台，calc有以下差异：
+- `calc`中只支持`var` 方法, 不支持 `<frequency>`, `<angle>`, `<time>`, `<color-function>`,`<resolution>`, `<flex>`
+- 支持的属性`<width>`,`<height>`,`<padding-*>`,`<maring-*>`,`<border-*>`,`<top>`,`<left>`,`<right>`,`<bottom>`,`<flex-basis>`
+- `border-*-radius`目前不支持两值，如：border-bottom-right-radius: 10px 20px; 如果使用了 `calc` 且含百分比会根据width进行计算，如：border-bottom-right-radius: calc(50%); 且宽为 40px 计算之后的样式为:border-bottom-right-radius: 20px;
+- `border-width-*` 目前不支持百分比，该属性的calc也不支持

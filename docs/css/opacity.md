@@ -194,6 +194,7 @@ opacity: <alpha-value>;
         <input-data :defaultValue="data.opacity" title="opacity 自定义值" type="text" @confirm="inputChangeOpacity"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
         <text>native-view组件: opacity: 0.5 和 opacity: 0.2</text>
         <view class="demo-row uni-common-mt">
@@ -207,6 +208,7 @@ opacity: <alpha-value>;
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>

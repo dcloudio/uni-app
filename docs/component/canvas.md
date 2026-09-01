@@ -289,6 +289,13 @@ canvas相关的API较多，参考如下：
     return data.testCanvasCtx1 && data.testCanvasCtx2
   })
 
+  // #ifdef MP
+  const testImageSrc = "../../../static/test-image/logo.png"
+  // #endif
+  // #ifndef MP
+  const testImageSrc = "/static/test-image/logo.png"
+  // #endif
+
   function hidpi(canvas : UniCanvasElement) {
     const context = canvas.getContext("2d")!;
     const dpr = uni.getWindowInfo().pixelRatio;
@@ -312,7 +319,7 @@ canvas相关的API较多，参考如下：
   const onCreateImage = () => {
     data.renderingContext!.clearRect(0, 0, data.canvasWidth, data.canvasHeight)
     let image = data.canvasContext!.createImage();
-    image.src = "/static/test-image/logo.png"
+    image.src = testImageSrc
     image.onload = () => {
       data.testCreateImage = true
       data.renderingContext?.drawImage(image, 0, 0, 100, 100);

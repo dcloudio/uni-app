@@ -401,10 +401,10 @@ offInterruptionEnd
       <view class="uni-list">
         <text style="margin-bottom: 10px"> 请选择录音格式：</text>
         <radio-group class="uni-row" @change="radioChange" style="flex-wrap: wrap">
-          <radio class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in items" :key="item.value"
-            :value="item.value" :checked="index === current">
-            {{ item.name }}
-          </radio>
+          <view class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in items" :key="item.value">
+            <radio :value="item.value" :checked="index === current" />
+            <text>{{ item.name }}</text>
+          </view>
         </radio-group>
       </view>
       <button class="btnstyle" size="default" :disabled="disableStartBtn" id="btn-startRecord"
@@ -581,7 +581,7 @@ offInterruptionEnd
     uni.showToast({
       title: 'already registeronInterruptionEnd'
     })
-    recorderManager.value?.onInterruptionBegin(() => {
+    recorderManager.value?.onInterruptionEnd(() => {
       console.log('recorder registeronInterruptionEnd');
     })
   }

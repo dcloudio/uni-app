@@ -303,9 +303,11 @@ show-value属性设为true后，会在横条右侧显示一个数字。
         <slider style="padding: 5px 0;margin-left: 10px" :show-value="true" backgroundColor="rgba(32,32,32,0.5)" valueColor="#555" track-class="dark-track" thumb-class="dark-thumb"/>
       </view>
 
-      <navigator class="uni-common-mb" url="/pages/template/slider-100/slider-100">
-        <button>组件性能测试</button>
-      </navigator>
+      <!-- #ifndef MP-ALIPAY -->
+        <navigator class="uni-common-mb" url="/pages/template/slider-100/slider-100">
+          <button>组件性能测试</button>
+        </navigator>
+      <!-- #endif -->
 
       <navigator class="uni-common-mb" url="./slider-in-swiper">
         <button>slider in swiper</button>

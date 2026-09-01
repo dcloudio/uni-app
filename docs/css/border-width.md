@@ -61,11 +61,12 @@ border-width: <line-width>{1,4};
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="border-width-page uni-theme-root" style="flex: 1">
   <!-- #endif -->
+  <view class="border-width-page uni-theme-root">
     <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
     <view>
-      <text>border-width: 5px (无 border-style)</text>
+      <text class="theme-label">border-width: 5px (无 border-style)</text>
       <view class="demo-box">
         <view class="common" style="border-width: 5px;"></view>
         <view class="common" style="border-width: 5px;" flatten></view>
@@ -73,7 +74,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>border-width: 5px</text>
+      <text class="theme-label">border-width: 5px</text>
       <view class="demo-box">
         <view class="common" style="border-width: 5px; border-style: solid;"></view>
         <view class="common" style="border-width: 5px; border-style: solid;" flatten></view>
@@ -81,7 +82,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>border-left-width: 5px</text>
+      <text class="theme-label">border-left-width: 5px</text>
       <view class="demo-box">
         <view class="common" style="border-left-width: 5px; border-left-style: solid; "></view>
         <view class="common" style="border-left-width: 5px; border-left-style: solid; " flatten></view>
@@ -89,7 +90,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>border-top-width: 10px</text>
+      <text class="theme-label">border-top-width: 10px</text>
       <view class="demo-box">
         <view class="common" style="border-top-width: 10px; border-top-style: solid; "></view>
         <view class="common" style="border-top-width: 10px; border-top-style: solid; " flatten></view>
@@ -97,7 +98,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>border-right-width: 15px</text>
+      <text class="theme-label">border-right-width: 15px</text>
       <view class="demo-box">
         <view class="common" style="border-right-width: 15px; border-right-style: solid; "></view>
         <view class="common" style="border-right-width: 15px; border-right-style: solid; " flatten></view>
@@ -105,7 +106,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>border-bottom-width: 20px</text>
+      <text class="theme-label">border-bottom-width: 20px</text>
       <view class="demo-box">
         <view class="common" style="border-bottom-width: 20px; border-bottom-style: solid; "></view>
         <view class="common" style="border-bottom-width: 20px; border-bottom-style: solid; " flatten></view>
@@ -113,7 +114,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>左下细边框蓝色</text>
+      <text class="theme-label">左下细边框蓝色</text>
       <view class="demo-box">
         <view class="common"
           style="border-left-width: 0.5px; border-bottom-width: 0.5px; border-left-style: solid; border-bottom-style: solid; border-color:blue;">
@@ -126,7 +127,7 @@ border-width: <line-width>{1,4};
 
     <!-- 圆角测试 -->
     <view>
-      <text>border-width: 5px (无 border-style)</text>
+      <text class="theme-label">border-width: 5px (无 border-style)</text>
       <view class="demo-box">
         <view class="common-circle" style="border-width: 5px;"></view>
         <view class="common-circle" style="border-width: 5px;" flatten></view>
@@ -134,7 +135,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>border-width: 5px</text>
+      <text class="theme-label">border-width: 5px</text>
       <view class="demo-box">
         <view class="common-circle" style="border-width: 5px; border-style: solid;"></view>
         <view class="common-circle" style="border-width: 5px; border-style: solid;" flatten></view>
@@ -142,7 +143,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>border-left-width: 5px</text>
+      <text class="theme-label">border-left-width: 5px</text>
       <view class="demo-box">
         <view class="common-circle" style="border-left-width: 5px; border-left-style: solid; "></view>
         <view class="common-circle" style="border-left-width: 5px; border-left-style: solid; " flatten></view>
@@ -150,7 +151,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>border-top-width: 10px</text>
+      <text class="theme-label">border-top-width: 10px</text>
       <view class="demo-box">
         <view class="common-circle" style="border-top-width: 10px; border-top-style: solid; "></view>
         <view class="common-circle" style="border-top-width: 10px; border-top-style: solid; " flatten></view>
@@ -158,7 +159,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>border-right-width: 15px</text>
+      <text class="theme-label">border-right-width: 15px</text>
       <view class="demo-box">
         <view class="common-circle" style="border-right-width: 15px; border-right-style: solid; "></view>
         <view class="common-circle" style="border-right-width: 15px; border-right-style: solid; " flatten></view>
@@ -166,7 +167,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>border-bottom-width: 20px</text>
+      <text class="theme-label">border-bottom-width: 20px</text>
       <view class="demo-box">
         <view class="common-circle" style="border-bottom-width: 20px; border-bottom-style: solid; "></view>
         <view class="common-circle" style="border-bottom-width: 20px; border-bottom-style: solid; " flatten></view>
@@ -174,7 +175,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>左下细边框蓝色</text>
+      <text class="theme-label">左下细边框蓝色</text>
       <view class="demo-box">
         <view class="common-circle"
           style="border-left-width: 0.5px; border-bottom-width: 0.5px; border-left-style: solid; border-bottom-style: solid; border-color:blue;">
@@ -186,7 +187,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>裁剪展现半圆</text>
+      <text class="theme-label">裁剪展现半圆</text>
       <view class="demo-box">
         <view style="width: 100px;height: 50px; /* 高度是宽度的一半 */
             overflow: hidden; /* 隐藏下半部分 */
@@ -213,7 +214,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>底边透明，3边上色的 3/4 圆弧</text>
+      <text class="theme-label">底边透明，3边上色的 3/4 圆弧</text>
       <view class="demo-box">
         <view style="width: 40px; height: 40px;
           /* 1. 基础边框：厚度、样式、透明色 */
@@ -239,7 +240,7 @@ border-width: <line-width>{1,4};
     </view>
 
     <view>
-      <text>底边上色，1/4边透明的 3/4 圆弧 加scale缩小</text>
+      <text class="theme-label">底边上色，1/4边透明的 3/4 圆弧 加scale缩小</text>
       <view class="demo-box">
         <view style="width: 32px;height: 32px;
           border-radius: 16px;
@@ -280,7 +281,7 @@ border-width: <line-width>{1,4};
         <text class="uni-info">获取值: {{data.borderWidthActual}}</text>
         <view class="test-box">
           <view ref="viewRef" class="common-dynamic test-view" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }">
-            <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
+            <view style="flex-grow: 1;background-color: cyan;"><text class="cyan-text">view</text></view>
           </view>
         </view>
       </view>
@@ -315,7 +316,7 @@ border-width: <line-width>{1,4};
         <view class="test-box">
           <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
             flatten>
-            <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
+            <view style="flex-grow: 1;background-color: cyan;"><text class="cyan-text">view</text></view>
           </view>
         </view>
       </view>
@@ -348,7 +349,7 @@ border-width: <line-width>{1,4};
       <input-data :defaultValue="data.borderWidth" title="border-width 自定义值" type="text"
         @confirm="inputChangeBorderWidth"></input-data>
     </view>
-
+  </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
@@ -428,6 +429,14 @@ border-width: <line-width>{1,4};
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
+  .cyan-text {
+    color: #1a1a1a;
+  }
+
   .common {
     width: 150px;
     height: 50px;

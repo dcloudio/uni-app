@@ -163,22 +163,22 @@ reset在浏览器W3C的策略是还原、重置。
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="scroll-view">
+  <scroll-view class="scroll-view uni-theme-root">
   <!-- #endif -->
-    <view class="page">
+    <view class="page uni-theme-root">
       <form @submit="onFormSubmit" @reset="onFormReset">
         <view class="uni-form-item">
           <text class="title">姓名</text>
-          <input class="uni-input" name="nickname" :value="data.nickname" placeholder="请输入姓名" :maxlength="-1" />
+          <input class="uni-input form-input" name="nickname" :value="data.nickname" placeholder="请输入姓名" :maxlength="-1" />
         </view>
         <view class="uni-form-item">
           <text class="title">性别</text>
           <radio-group name="gender" class="flex-row">
             <view class="group-item">
-              <radio value="0" :checked="data.gender=='0'" /><text>男</text>
+              <radio value="0" :checked="data.gender=='0'" /><text class="form-text">男</text>
             </view>
             <view class="group-item">
-              <radio value="1" :checked="data.gender=='1'" /><text>女</text>
+              <radio value="1" :checked="data.gender=='1'" /><text class="form-text">女</text>
             </view>
           </radio-group>
         </view>
@@ -186,10 +186,10 @@ reset在浏览器W3C的策略是还原、重置。
           <text class="title">爱好</text>
           <checkbox-group name="loves" class="flex-row">
             <view class="group-item">
-              <checkbox value="0" :checked="data.loves.indexOf('0')>-1" /><text>读书</text>
+              <checkbox value="0" :checked="data.loves.indexOf('0')>-1" /><text class="form-text">读书</text>
             </view>
             <view class="group-item">
-              <checkbox value="1" :checked="data.loves.indexOf('1')>-1" /><text>写字</text>
+              <checkbox value="1" :checked="data.loves.indexOf('1')>-1" /><text class="form-text">写字</text>
             </view>
           </checkbox-group>
         </view>
@@ -199,13 +199,13 @@ reset在浏览器W3C的策略是还原、重置。
         </view>
         <view class="uni-form-item">
           <text class="title">保留选项</text>
-          <view>
+          <view style="display: flex;flex-direction: row;">
             <switch name="switch" :checked="data.switch" />
           </view>
         </view>
         <view class="uni-form-item">
           <text class="title">备注</text>
-          <textarea name="comment" :value="data.comment" placeholder="请输入备注" style="background: #FFF;" />
+          <textarea class="comment-textarea" name="comment" :value="data.comment" placeholder="请输入备注" />
           <!-- <textarea class="uni-input" name="comment" :value="comment" placeholder="这个class的写法，导致iOS和Android产生了高度差异"/> -->
         </view>
         <!-- picker -->
@@ -215,6 +215,7 @@ reset在浏览器W3C的策略是还原、重置。
             <view class="uni-picker-select-value pickerValue">{{data.timeZoneList[data.timeZoneIndex]}}</view>
           </picker>
         </view>
+        <!-- #ifndef MP-ALIPAY -->
         <view class="uni-form-item flex-row">
           <text class="picker-title">多列选择器</text>
           <picker class="picker pickerMulti" name="picker-mode-multiSelector" mode="multiSelector" @columnchange="onMultiPickerColumnChange"
@@ -224,6 +225,7 @@ reset在浏览器W3C的策略是还原、重置。
             </view>
           </picker>
         </view>
+        <!-- #endif -->
         <view class="uni-form-item flex-row">
           <text class="picker-title">时间选择器</text>
           <picker class="picker pickerTime" name="picker-mode-time" mode="time" :value="data.timePickerValue" start="09:01" end="21:01" @change="onTimeChange">
@@ -451,10 +453,12 @@ reset在浏览器W3C的策略是还原、重置。
   .title {
     margin-bottom: 10px;
     opacity: 0.8;
+    color: var(--text-color, #333333);
   }
 
   .picker-title {
     opacity: 0.8;
+    color: var(--text-color, #333333);
   }
 
   .picker {
@@ -479,6 +483,7 @@ reset在浏览器W3C的策略是还原、重置。
   .picker-view-text {
     line-height: 50px;
     text-align: center;
+    color: var(--text-color, #333333);
   }
 
   .btn {
@@ -495,20 +500,49 @@ reset在浏览器W3C的策略是还原、重置。
 
   .result {
     margin-top: 30px;
+    color: var(--text-color, #333333);
+  }
+
+  .comment-textarea,
+  .textarea {
+    color: #333333;
+    background-color: #ffffff;
+  }
+
+  .comment-textarea {
+    padding: 10px;
   }
 
   .textarea {
     margin-top: 5px;
     padding: 5px;
-    background-color: #fff;
+  }
+
+  .form-input {
+    color: #333333;
+    background-color: #ffffff;
+  }
+
+  .form-text {
+    color: var(--text-color, #333333);
   }
 
   .uni-picker-select-value {
     height: 41px;
     padding: 0 13px;
     font-size: 14px;
-    background: var(--list-background-color,#ffffff);
+    color: var(--text-color, #333333);
+    background-color: var(--list-background-color,#ffffff);
     justify-content: center;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .comment-textarea,
+    .textarea,
+    .form-input {
+      color: #ffffff;
+      background-color: #2d2d2d;
+    }
   }
 </style>
 

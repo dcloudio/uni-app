@@ -109,7 +109,7 @@ padding-left: <length> | <percentage>;
           <text class="uni-info">获取值: {{data.paddingLeftActual}}</text>
           <view class="test-box">
             <view ref="viewRef" class="common-dynamic test-view" :style="{ paddingLeft: data.paddingLeft }">
-              <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
+              <view style="flex-grow: 1;background-color: cyan;"><text class="cyan-text">view</text></view>
             </view>
           </view>
         </view>
@@ -141,7 +141,7 @@ padding-left: <length> | <percentage>;
           <text class="uni-info">获取值: {{data.paddingLeftActualFlat}}</text>
           <view class="test-box">
             <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ paddingLeft: data.paddingLeft }" flatten>
-              <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
+              <view style="flex-grow: 1;background-color: cyan;"><text class="cyan-text">view</text></view>
             </view>
           </view>
         </view>
@@ -265,6 +265,10 @@ padding-left: <length> | <percentage>;
   .inner-content {
     flex-grow: 1;
     background-color: cyan;
+  }
+
+  .cyan-text {
+    color: #1a1a1a;
   }
 
   .common-dynamic {

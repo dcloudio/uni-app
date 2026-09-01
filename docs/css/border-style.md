@@ -86,6 +86,14 @@ border-style: <line-style>{1,4};
       </view>
 
       <view>
+        <text>border-style: dashed; border-radius: 10px</text>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-style: dashed; border-radius: 10px"></view>
+          <view class="common" style="border-width: 5px; border-style: dashed; border-radius: 10px" flatten></view>
+        </view>
+      </view>
+
+      <view>
         <text>border-right-style: dotted</text>
         <view class="demo-box">
           <view class="common" style="border-right-width: 5px; border-right-style: dotted"></view>

@@ -242,7 +242,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
       <!-- #endif -->
       <button @click="getPropertyValue">getPropertyValue获取背景色值</button>
 
-      <child id="child" ref="childRef"></child>
+      <child id="child"></child>
       <button @click="getBoundingClientRectAsyncChild">获取自定义组件child元素信息</button>
       <view class="rect-info" v-if="data.rectInfo">
         <view class="node-info-item">
@@ -278,6 +278,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
           <text class="node-info-item-v">{{data.rectInfo.bottom}}</text>
         </view>
       </view>
+      <!-- #ifndef MP-ALIPAY -->
       <scroll-view ref="scrollViewRef" class="scroll-view_H" direction="horizontal">
         <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
         <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
@@ -291,6 +292,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
       <view id="scaledView" style="transform: scale(2);background-color: green;width: 50px;height: 50px;margin-top: 45px;margin-left: 25px;"></view>
 
       <button type="default" @click="handleGetScaledViewSize" style="margin-top: 30px;">获取scale后的view尺寸信息</button>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -801,6 +803,7 @@ if(webViewElement != null) {
         </view>
       </view>
 
+      <!-- #ifndef MP -->
       <!-- 新增 getBoundingClientRect 同步方法测试 -->
       <view class="section-divider"></view>
       <text class="section-title">getBoundingClientRect 方法测试</text>
@@ -1027,6 +1030,7 @@ if(webViewElement != null) {
         </view>
       </view>
 
+      <!-- #endif -->
    </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -1237,7 +1241,9 @@ if(webViewElement != null) {
   }
 
   .btn-small {
+    /* #ifndef MP-ALIPAY */
     padding: 5px 15px;
+    /* #endif */
     font-size: 13px;
     border-radius: 4px;
     flex: 1;
@@ -2391,14 +2397,15 @@ play
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
+  <scroll-view class="uni-theme-root" style="flex:1">
   <!-- #endif -->
+  <view class="animate-page uni-theme-root">
     <page-intro content="本页演示 uni.createAnimation 与 uni.createAnimateContext：点击开始/暂停/恢复/取消动画，可点击各 view 修改宽度、高度、margin、padding 等属性动画。"></page-intro>
     <view id="main" style="width: 100px;height: 100px; background-color: brown; transform: scale(1);"></view>
 
     <button @click="startAnimate">开始动画</button>
     <!-- #ifndef !VUE3-VAPOR && APP-HARMONY -->
-    <!-- #ifndef MP-WEIXIN -->
+    <!-- #ifndef MP -->
     <button @click="pauseAnimate">暂停动画</button>
     <!-- #endif -->
     <button @click="resumeAnimate">恢复动画</button>
@@ -2408,88 +2415,74 @@ play
     <image src="/static/test-image/logo.png" id="roll" style="width: 100px; height: 100px;margin: 10px;"></image>
 
 
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改宽度</text>
+   <view class="animation-item">
+     <text class="animation-label">修改宽度</text>
      <view id="widthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="widthProperty"></view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改高度</text>
+   <view class="animation-item">
+     <text class="animation-label">修改高度</text>
      <view id="height1" style="width: 100px;height: 100px;background-color: brown;" @click="heightProperty"></view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改margin</text>
+   <view class="animation-item">
+     <text class="animation-label">修改margin</text>
      <view id="marginProperty" style="width: 100px;height: 100px;background-color: brown;" @click="marginProperty"></view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改padding</text>
+   <view class="animation-item">
+     <text class="animation-label">修改padding</text>
      <view id="paddingProperty" style="width: 100px;height: 100px;background-color: brown;" @click="paddingProperty">
        <view style="width: 50px;height: 50px;background-color: black;"></view>
      </view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改border颜色</text>
+   <view class="animation-item">
+     <text class="animation-label">修改border颜色</text>
      <view id="borderProperty"
        style="width: 100px;height: 100px;background-color: brown;border-width: 10px;border-color: black;border-style: solid;"
        @click="borderProperty"></view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改transform</text>
+   <view class="animation-item">
+     <text class="animation-label">修改transform</text>
      <view id="transformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="transformProperty"></view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改position</text>
+   <view class="animation-item">
+     <text class="animation-label">修改position</text>
      <view id="positionProperty" style="width: 100px;height: 100px;background-color: brown;" @click="positionProperty"></view>
    </view>
    <!-- #ifndef MP-WEIXIN -->
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改背景色和宽度</text>
+   <view class="animation-item">
+     <text class="animation-label">修改背景色和宽度</text>
      <view id="backgroundAndWidthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndWidthProperty"></view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">执行的动画只有一个值1</text>
+   <view class="animation-item">
+     <text class="animation-label">执行的动画只有一个值1</text>
      <view id="oneProperty1" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty1"></view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">执行的动画只有一个值2</text>
+   <view class="animation-item">
+     <text class="animation-label">执行的动画只有一个值2</text>
      <view id="oneProperty2" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty2"></view>
    </view>
    <!-- #endif -->
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改背景色和margin-left(关键帧)</text>
+   <view class="animation-item">
+     <text class="animation-label">修改背景色和margin-left(关键帧)</text>
      <view id="backgroundAndMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndMarginLeftProperty"></view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改背景色和transform(关键帧)</text>
+   <view class="animation-item">
+     <text class="animation-label">修改背景色和transform(关键帧)</text>
      <view id="backgroundAndTransformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndTransformProperty"></view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改背景色(关键帧)</text>
+   <view class="animation-item">
+     <text class="animation-label">修改背景色(关键帧)</text>
      <view id="backgroundProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundProperty"></view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改opacity(关键帧)</text>
+   <view class="animation-item">
+     <text class="animation-label">修改opacity(关键帧)</text>
      <view id="opacityProperty" style="width: 100px;height: 100px;background-color: brown;" @click="opacityProperty"></view>
    </view>
-   <view
-     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
-     <text style="margin-bottom: 4px;">修改border-color和margin-left(关键帧)</text>
+   <view class="animation-item">
+     <text class="animation-label">修改border-color和margin-left(关键帧)</text>
      <view id="borderColorMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;border-width: 5px;border-style: solid;"
        @click="borderColorMarginLeftProperty"></view>
    </view>
+  </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
@@ -2786,6 +2779,20 @@ play
 </script>
 
 <style>
+  .animation-item {
+    border-radius: 5px;
+    margin: 4px;
+    padding: 4px;
+    border-style: solid;
+    background-color: var(--list-background-color, #eeeeee);
+    border-color: var(--border-color, #eeeeee);
+  }
+
+  .animation-label {
+    margin-bottom: 4px;
+    color: var(--text-color, #333333);
+  }
+
   .view-margin {
     margin: 8px;
   }
@@ -2926,7 +2933,7 @@ play
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/element-request-fullscreen/element-request-fullscreen
 ```uvue
 <template>
-  <scroll-view class="content" direction="vertical">
+  <scroll-view class="content uni-theme-root" direction="vertical">
     <view id="fullscreen" class="view1" @click="fullscreen" @fullscreenchange="fullscreenchange" @fullscreenerror="fullscreenerror">
       <text style="color: white;">{{ text }}</text>
     </view>
@@ -3041,6 +3048,12 @@ play
   .content {
     flex: 1;
     background-color: #f0f0f0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .content {
+      background-color: var(--background-color, #1a1a1a);
+    }
   }
 
   .view1 {

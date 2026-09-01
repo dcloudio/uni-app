@@ -359,9 +359,9 @@ exec
       </view>
       <node-child class="node-child"></node-child>
       <text>子组件多根节点</text>
-      <multi-child ref="multiChildRef" id="multi-child"></multi-child>
+      <multi-child ref="multiChildRef"></multi-child>
       <text>子组件多根节点(仅测试，用于验证查询是否超出范围)</text>
-      <multi-child id="multi-child-2"></multi-child>
+      <multi-child></multi-child>
       <view>
         <text>测试.fields</text>
         <text>{{data.fieldsResultContainNode}}</text>

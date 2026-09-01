@@ -109,7 +109,9 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
     <view class="uni-center">微信小程序平台暂不支持测试广告位，需要开通uni-ad后可测试</view>
     <!-- #endif -->
     <view v-if="tips" class="uni-center">信息流广告加载失败，请退出当前页面重试。</view>
+    <!-- #ifndef MP-ALIPAY -->
     <button @click="pushList">列表-信息流</button>
+    <!-- #endif -->
     <button @click="pushVideoAd">视频贴片-非全屏</button>
     <button @click="pushVideoAdL">视频贴片-横向全屏</button>
     <button @click="pushVideoAdP">视频贴片-竖向全屏</button>
@@ -119,11 +121,13 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 <script setup lang="uts">
   const tips = ref(false)
 
+  // #ifndef MP-ALIPAY
   const pushList = () => {
     uni.navigateTo({
       url: '/pages/component/ad/list-view-ad',
     })
   }
+  // #endif
 
   const pushVideoAd = () => {
     uni.navigateTo({

@@ -127,41 +127,45 @@
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view style="padding-left: 8px; padding-right: 8px">
+    <view class="preview-page uni-theme-root">
+      <!-- #ifndef MP-ALIPAY -->
       <view>
         <text class="text-desc">图片指示器样式</text>
-        <radio-group class="cell-ct" style="background-color: white" @change="onIndicatorChanged">
+        <radio-group class="cell-ct option-panel" @change="onIndicatorChanged">
           <view class="indicator-it" v-for="(item, index) in indicator" :key="item.value">
-            <radio :disabled="isWeb" :checked="index == 0" :value="item.value">{{
-              item.name
-            }}</radio>
+            <view class="option-item">
+              <radio :disabled="isWeb" :checked="index == 0" :value="item.value" />
+              <text>{{ item.name }}</text>
+            </view>
           </view>
         </radio-group>
       </view>
       <view>
         <checkbox-group @change="onCheckboxChange" style="margin-top: 16px; margin-left: 8px">
-          <checkbox :disabled="isWeb" :checked="isLoop" style="margin-right: 15px">循环播放</checkbox>
+          <view class="option-item" style="margin-right: 15px"><checkbox :disabled="isWeb" :checked="isLoop" /><text>循环播放</text></view>
         </checkbox-group>
       </view>
       <view>
         <text class="text-desc">长按行为</text>
-        <radio-group class="cell-ct" style="background-color: white; margin-bottom: 16px;" @change="onLongPressCheckboxChange">
+        <radio-group class="cell-ct option-panel long-press-panel" @change="onLongPressCheckboxChange">
           <view class="indicator-it" v-for="(item, index) in longPressAction" :key="item.value">
-            <radio :disabled="isWeb" :checked="index == 1" :value="item.value">{{
-              item.name
-            }}</radio>
+            <view class="option-item">
+              <radio :disabled="isWeb" :checked="index == 1" :value="item.value" />
+              <text>{{ item.name }}</text>
+            </view>
           </view>
         </radio-group>
       </view>
-      <view style="background-color: white">
+      <!-- #endif -->
+      <view class="image-panel">
         <text class="text-desc">点击图片开始预览</text>
         <view class="cell-ct" style="margin: 8px;">
           <view class="cell cell-choose-image" v-for="(image, index) in imageList" :key="index">
             <text style="width: 100px; height: 100px;background-color: lightgray; color: red; text-align: center; line-height: 100px;font-size: 14px;" v-if="image.error"
               @click="previewImage(index)">图片路径非法</text>
-            <image style="width: 100px; height: 100px;background-color: white;" mode="aspectFit" :src="image.src"
+            <image class="preview-image" mode="aspectFit" :src="image.src"
               v-if="!image.error" @click="previewImage(index)"
               @error="onImageLoadError(index,$event as ImageErrorEvent)">
             </image>
@@ -170,10 +174,10 @@
           </image>
         </view>
       </view>
-      <view style="margin:8px;">
-        <text style="color: black;font-size: 18px;margin-bottom: 4px;">注意事项:</text>
-        <text style="font-size: 17px;margin-left: 4px;color: darkgray;">1、indicator属性仅App平台支持。</text>
-        <text style="font-size: 17px;margin-left: 4px;color: darkgray;">2、Web平台不支持loop属性。</text>
+      <view class="notice-panel">
+        <text class="notice-title">注意事项:</text>
+        <text class="notice-text">1、indicator属性仅App平台支持。</text>
+        <text class="notice-text">2、Web平台不支持loop属性。</text>
       </view>
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
@@ -200,8 +204,11 @@
 
   const imageList = ref([
     { src: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", error: false },
+    // 只支持 http 图片链接
+    // #ifndef MP-ALIPAY
     { src: "/static/test-image/logo.png", error: false },
     { src: "/static/test-image/logo.svg", error: false },
+    // #endif
     // #ifdef APP
     { src: "/static/uni2.png", error: false },
     // #endif
@@ -253,6 +260,10 @@
     uni.previewImage({
       urls: list,
       current: index,
+      // #ifdef MP-ALIPAY
+      enableSavePhoto:true,
+      // #endif
+      // #ifndef MP-ALIPAY
       indicator: currentIndicator.value,
       loop: isLoop.value,
       longPressActions: (isLongPress.value ? ({
@@ -271,6 +282,7 @@
           })
         }
       } as LongPressActionsOptions) : null)
+      // #endif
     })
   }
 
@@ -320,17 +332,54 @@
 </script>
 
 <style>
+  .preview-page {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
   .text-desc {
     margin-top: 16px;
     margin-left: 8px;
     margin-bottom: 16px;
     font-weight: bold;
+    color: var(--text-color, #333333);
   }
 
   .cell-ct {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+  }
+
+  .option-panel,
+  .image-panel,
+  .preview-image {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .long-press-panel {
+    margin-bottom: 16px;
+  }
+
+  .preview-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .notice-panel {
+    margin: 8px;
+  }
+
+  .notice-title {
+    color: var(--text-color, #333333);
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .notice-text {
+    font-size: 17px;
+    margin-left: 4px;
+    color: var(--active-color, #808080);
   }
 
   .cell {
@@ -343,12 +392,19 @@
   .cell-choose-image {
     border-width: 1px;
     border-style: solid;
-    border-color: lightgray;
+    border-color: var(--border-color, lightgray);
   }
 
   .indicator-it {
     margin: 8px;
   }
+
+  .option-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
   .cell-pd {
     padding: 11px 0px;
   }

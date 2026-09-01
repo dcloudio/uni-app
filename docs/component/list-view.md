@@ -586,7 +586,7 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
           list-item v-if v-show 组合增删
         </button>
       </navigator>
-      <navigator url="/pages/template/im/im">
+      <navigator url="/pages/template/chat-stream-reply/chat-stream-reply">
         <button type="primary" class="button">
           list-item 中设置长按事件测试
         </button>

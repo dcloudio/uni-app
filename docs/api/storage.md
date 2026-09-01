@@ -705,7 +705,9 @@ uni.clearStorageSync函数定义
           </view>
         </view>
       </view>
+      <!-- #ifndef MP-ALIPAY -->
       <button type="primary" @click="goto">前往storage管理器</button>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -1116,11 +1118,13 @@ uni.clearStorageSync函数定义
     data.jest_saveUTSJSONObjectArraySyncResult = dataSync[0].get('a') as number
   }
 
+  // #ifndef MP-ALIPAY
   const goto = () => {
     uni.navigateTo({
       url:"/pages/API/storage/storagemanage"
     })
   }
+  // #endif
 
   defineExpose({
     data,

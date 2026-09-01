@@ -1,9 +1,10 @@
 > * SDK基于Swift开发，因此原生Objective-C语言开发的应用需要新建一个Swift文件用于添加Swift运行环境以及桥接SDK的API，详情可参考UniAppXDemo工程中的`UniAppBridge`
 
-- **SDK 4.81+**：使用新的 UniAppXSDK API（推荐）
-- **SDK 4.81 之前**：使用旧的 UniSDKEngine API， 蒸汽模式不支持旧API
+> **SDK 5.24 及以上**：iOS 使用 `UIScene` 生命周期。请按照下方 `SceneDelegate` 示例接入，不再在 `AppDelegate` 中处理窗口和前后台生命周期。
 
-## SDK 4.81+ 新 API（推荐）
+> **注意**：4.81 之前版本请先升级到 4.81 及以上版本，再按照本文集成 SDK。
+
+## UniAppXSDK API
 
 ### 初始化 SDK
 
@@ -120,154 +121,109 @@ options.animationType = .custom
 * uni-app x项目中退出调用[uni.exit()](https://doc.dcloud.net.cn/uni-app-x/api/exit.html)
 
 ### 生命周期集成
+
+5.24 及以上版本使用 `UIScene` 生命周期。先在 `Info.plist` 中声明 scene 配置；`SceneDelegate` 类名需与下方示例保持一致。
+
+```xml
+<key>UIApplicationSceneManifest</key>
+<dict>
+    <key>UIApplicationSupportsMultipleScenes</key>
+    <false/>
+    <key>UISceneConfigurations</key>
+    <dict>
+        <key>UIWindowSceneSessionRoleApplication</key>
+        <array>
+            <dict>
+                <key>UISceneConfigurationName</key>
+                <string>Default Configuration</string>
+                <key>UISceneDelegateClassName</key>
+                <string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+            </dict>
+        </array>
+    </dict>
+</dict>
+```
+
+`AppDelegate` 中初始化 SDK，并配置 scene delegate；窗口创建、前后台切换、URL Scheme 和 Universal Link 回调转发到 `UniAppRootSceneDelegate`。如果工程已有自己的 `SceneDelegate`，请将下面的转发代码合并进去。
+
 ```swift
+// AppDelegate.swift
 import UIKit
 import DCloudUniappRuntime
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        // 集成 uni-app x 生命周期
+    var window: UIWindow?
+
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        UniAppXSDK.initSDK()
         UniAppXSDK.applicationDidFinishLaunchingWithOptions(application, launchOptions)
-        
         return true
     }
-    
+
+    @available(iOS 13.0, *)
+    func application(_ application: UIApplication,
+                     configurationForConnecting connectingSceneSession: UISceneSession,
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        let configuration = UISceneConfiguration(name: "Default Configuration",
+                                                  sessionRole: connectingSceneSession.role)
+        configuration.delegateClass = SceneDelegate.self
+        return configuration
+    }
+
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         UniAppXSDK.didRegisterForRemoteNotifications(deviceToken)
     }
-    
+
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         UniAppXSDK.didFailToRegisterForRemoteNotifications(error)
     }
-    
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         UniAppXSDK.applicationDidReceiveRemoteNotificationCompletionHandler(application, userInfo, completionHandler)
     }
-    
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        return UniAppXSDK.applicationOpenURLOptions(app, url, options)
-    }
-    
-    func applicationWillResignActive(_ application: UIApplication) {
-        UniAppXSDK.applicationWillResignActive(application)
-    }
-    
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        UniAppXSDK.applicationDidBecomeActive(application)
-    }
-    
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        UniAppXSDK.applicationDidEnterBackground(application)
-    }
-    
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        UniAppXSDK.applicationWillEnterForeground(application)
-    }
-    
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        return UniAppXSDK.applicationContinueUserActivityRestorationHandler(application, userActivity, restorationHandler)
-    }
 }
 ```
 
-## SDK 4.81 之前旧 API
-
-### 初始化 SDK
-
 ```swift
-import DCloudUniappRuntime
-
-// 在 AppDelegate 的 didFinishLaunchingWithOptions 中初始化
-UniSDKEngine.shared.create()
-```
-
-### 打开 SDK 页面
-
-```swift
-// 检查并创建应用实例
-if UniSDKEngine.shared.getAppManager()?.getCurrentApp() == nil {
-    // uni.exit()方法会销毁app,所以在这里需要判断currentApp是否为空
-    UniSDKEngine.shared.getAppManager()?.create()
-}
-let viewController = UniAppRootViewController()
-self.navigationController?.pushViewController(viewController, animated: true)
-```
-
-### 退出 SDK 页面
-
-仅支持在 uni-app x 中调用[uni.exit()](https://doc.dcloud.net.cn/uni-app-x/api/exit.html)退出
-
-### 生命周期集成
-
-```swift
+// SceneDelegate.swift
 import UIKit
 import DCloudUniappRuntime
 
-@main
-class AppDelegate: UIResponder, UIApplicationDelegate {
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        // 在 AppDelegate 的 didFinishLaunchingWithOptions 中初始化
-        UniSDKEngine.shared.create()
-        
-        // 在 AppDelegate 的 didFinishLaunchingWithOptions 调用
-        UniSDKEngine.applicationDidFinishLaunchingWithOptions(application, launchOptions)
-        
-        return true
+@available(iOS 13.0, *)
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
+    private let sdkSceneDelegate = UniAppRootSceneDelegate()
+
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession,
+               options connectionOptions: UIScene.ConnectionOptions) {
+        sdkSceneDelegate.scene(scene, willConnectTo: session, options: connectionOptions)
+        guard let windowScene = scene as? UIWindowScene else { return }
+
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let initialViewController = storyboard.instantiateInitialViewController()!
+        window = sdkSceneDelegate.window ?? UIWindow(windowScene: windowScene)
+        window?.rootViewController = UINavigationController(rootViewController: initialViewController)
+        (UIApplication.shared.delegate as? AppDelegate)?.window = window
+        window?.makeKeyAndVisible()
     }
-    
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        // 在 AppDelegate 的 applicationDidBecomeActive 调用
-        UniSDKEngine.applicationDidBecomeActive(application)
+
+    func sceneDidBecomeActive(_ scene: UIScene) { sdkSceneDelegate.sceneDidBecomeActive(scene) }
+    func sceneWillResignActive(_ scene: UIScene) { sdkSceneDelegate.sceneWillResignActive(scene) }
+    func sceneWillEnterForeground(_ scene: UIScene) { sdkSceneDelegate.sceneWillEnterForeground(scene) }
+    func sceneDidEnterBackground(_ scene: UIScene) { sdkSceneDelegate.sceneDidEnterBackground(scene) }
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        sdkSceneDelegate.scene(scene, openURLContexts: URLContexts)
     }
-    
-    func applicationWillResignActive(_ application: UIApplication) {
-        // 在 AppDelegate 的 applicationWillResignActive 调用
-        UniSDKEngine.applicationWillResignActive(application)
-    }
-    
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        // 在 AppDelegate 的 applicationDidEnterBackground 调用
-        UniSDKEngine.applicationDidEnterBackground(application)
-    }
-    
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        // 在 AppDelegate 的 applicationWillEnterForeground 调用
-        UniSDKEngine.applicationWillEnterForeground(application)
-    }
-    
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        // 在 AppDelegate 的 openURL 调用
-        return UniSDKEngine.applicationOpenURLOptions(app, url, options)
-    }
-    
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        // 在 AppDelegate 的 continueUserActivity 调用
-        return UniSDKEngine.applicationContinueUserActivityRestorationHandler(application, userActivity, restorationHandler)
-    }
-    
-    // 监听推送相关函数回调(可选)
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        // 在 AppDelegate 的 didRegisterForRemoteNotificationsWithDeviceToken 调用
-        UniSDKEngine.didRegisterForRemoteNotifications(deviceToken)
-    }
-    
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        // 在 AppDelegate 的 didFailToRegisterForRemoteNotificationsWithError 调用
-        UniSDKEngine.didFailToRegisterForRemoteNotifications(error)
-    }
-    
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        // 在 AppDelegate 的 didReceiveRemoteNotification 调用
-        UniSDKEngine.applicationDidReceiveRemoteNotificationCompletionHandler(application, userInfo, completionHandler)
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        sdkSceneDelegate.scene(scene, continue: userActivity)
     }
 }
 ```
 
+推送相关回调仍在 `AppDelegate` 中处理；其他生命周期和 URL/Universal Link 回调均在 `SceneDelegate` 中转发。
 
 ## 通信
 iOS平台目前不支持直接在uvue页面调用原生API，开发者可通过UTS插件`发送/接收 通知消息`实现与原生App通信，具体实现代码如下：

@@ -248,22 +248,22 @@ HarmonyOS平台调用此 API 需要申请定位权限`ohos.permission.APPROXIMAT
       <view class="uni-list-cell-db">定位服务商provider(如系统定位，腾讯定位等)</view>
       <view class="uni-list" style="margin-bottom: 20px">
         <radio-group @change="radioChangePV">
-          <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in providerList" :key="item.id"
-            :class="index < providerList.length - 1 ? 'uni-list-cell-line' : ''" :value="item.id"
-            :checked="index === currentProvider">
-            {{ item.name }}
-          </radio>
+          <view class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in providerList" :key="item.id"
+            :class="index < providerList.length - 1 ? 'uni-list-cell-line' : ''">
+            <radio :value="item.id" :checked="index === currentProvider" />
+            <text>{{ item.name }}</text>
+          </view>
         </radio-group>
       </view>
       <!-- #endif -->
       <view class="uni-list-cell-db">定位类型</view>
       <view class="uni-list">
         <radio-group @change="radioChange">
-          <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
-            :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
-            :checked="index === current">
-            {{ item.name }}
-          </radio>
+          <view class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
+            :class="index < items.length - 1 ? 'uni-list-cell-line' : ''">
+            <radio :value="item.value" :checked="index === current" />
+            <text>{{ item.name }}</text>
+          </view>
         </radio-group>
       </view>
       <view class="uni-list-cell uni-list-cell-pd" style="margin-top: 20px">

@@ -492,7 +492,16 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
         </button>
       </navigator>
       <view class="uni-common-pb"></view>
+      <!-- #ifdef VUE3-VAPOR -->
+      <navigator url="/pages/component/scroll-view/scroll-view-props-direction-all" hover-class="none">
+        <button type="primary" class="button">
+          direction=all 属性示例
+        </button>
+      </navigator>
+      <view class="uni-common-pb"></view>
+      <!-- #endif -->
 
+      <!-- #ifndef MP-ALIPAY -->
       <navigator url="/pages/component/scroll-view/scroll-view-refresher-props" hover-class="none">
         <button type="primary" class="button">
           下拉刷新的属性示例
@@ -509,6 +518,7 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
         </button>
       </navigator>
       <view class="uni-common-pb"></view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>

@@ -174,16 +174,16 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 <template>
 	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
 		<!-- 内容区域 -->
-		<uni-tab-content>
-			<tabContent1 ref="tabContent1Ref" />
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent1 ref="tabContent1Ref" @contentscroll="handleTabContent1Scroll" />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent2 />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent3 />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent4 />
 		</uni-tab-content>
 
@@ -229,14 +229,16 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	// import tabContent2 from './tab-content2.uvue'
 	import tabContent3 from './tab-content3.uvue'
 	import tabContent4 from './tab-content4.uvue'
-
-	const TAB_CONTENT1_SCROLL_EVENT = 'uni-tab-bar-tab-content1-scroll'
 	const TAB_CONTENT1_SWITCH_OFFSET = 100 // 当 tab-content1 滚动超过这个距离（单位px）时显示回到顶部按钮，如需调节请自行定义
 	const TAB_CONTENT2_INDEX = 1
 	const tabContent1Ref = ref<ComponentPublicInstance | null>(null)
 	let tabContentHeightFull = false
-	// #ifdef MP
+	// #ifdef MP-WEIXIN
 	tabContentHeightFull = true
+	// #endif
+	let tabContentStyle = ''
+	// #ifdef MP-ALIPAY
+	tabContentStyle = 'flex: 1; min-height: 0px;'
 	// #endif
 
 	  // 当前激活的索引
@@ -306,14 +308,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 				break
 		}
 	}
-
-	onLoad(() => {
-		uni.$on(TAB_CONTENT1_SCROLL_EVENT, handleTabContent1Scroll)
-	})
-
-	onUnload(() => {
-		uni.$off(TAB_CONTENT1_SCROLL_EVENT, handleTabContent1Scroll)
-	})
 
 	provide('tabContent2Index', TAB_CONTENT2_INDEX)
 	provide('tabContent2SetBadgeNumber', setTabContent2BadgeNumber)
@@ -422,17 +416,17 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 <template>
 	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
 		<!-- 内容区域 -->
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<!-- TODO 小程序下这些Class不生效，界面没有变黑！ -->
-			<tabContent1 ref="tabContent1Ref" class="dark-tab-content dark-tab-content-home" />
+			<tabContent1 ref="tabContent1Ref" class="dark-tab-content dark-tab-content-home" @contentscroll="handleTabContent1Scroll" />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent2 class="dark-tab-content dark-tab-content-api" />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent3 class="dark-tab-content dark-tab-content-css" />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent4 class="dark-tab-content dark-tab-content-template" />
 		</uni-tab-content>
 
@@ -476,13 +470,15 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	import tabContent2 from './tab-content2.uvue'
 	import tabContent3 from './tab-content3.uvue'
 	import tabContent4 from './tab-content4.uvue'
-
-	const TAB_CONTENT1_SCROLL_EVENT = 'uni-tab-bar-tab-content1-scroll'
 	const TAB_CONTENT1_SWITCH_OFFSET = 100
 	const tabContent1Ref = ref<ComponentPublicInstance | null>(null)
 	let tabContentHeightFull = false
-	// #ifdef MP
+	// #ifdef MP-WEIXIN
 	tabContentHeightFull = true
+	// #endif
+	let tabContentStyle = ''
+	// #ifdef MP-ALIPAY
+	tabContentStyle = 'flex: 1; min-height: 0px;'
 	// #endif
 
 	const activeIndex = ref<number>(0)
@@ -527,14 +523,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 				break
 		}
 	}
-
-	onLoad(() => {
-		uni.$on(TAB_CONTENT1_SCROLL_EVENT, handleTabContent1Scroll)
-	})
-
-	onUnload(() => {
-		uni.$off(TAB_CONTENT1_SCROLL_EVENT, handleTabContent1Scroll)
-	})
 </script>
 
 <style>
@@ -806,6 +794,341 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 ```
 
 :::
+#### tab-bar-blur
+半透明毛玻璃
+示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/uni-ui/tab-bar/tab-bar-blur.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/uni-ui/tab-bar/tab-bar-blur.uvue) 
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/uni-ui/tab-bar/tab-bar-blur
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/uni-ui/tab-bar/tab-bar-blur
+
+>示例
+```vue
+<template>
+	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-bar-height="TAB_BAR_HEIGHT" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
+		<uni-tab-content :style="tabContentStyle">
+			<scroll-view class="blur-scroll blur-scene-morning" direction="vertical">
+				<view class="blur-content-inner">
+					<text class="blur-title">精选</text>
+					<text class="blur-desc">uni-tab-bar 使用半透明背景和 backdrop-filter，让底部内容自然透出并形成毛玻璃效果。</text>
+					<view class="blur-card-list">
+						<view class="blur-card blur-card-blue">
+							<text class="blur-card-title">轻量导航</text>
+							<text class="blur-card-desc">半透明底栏覆盖在内容上方，背景仍然保持可见。</text>
+						</view>
+						<view class="blur-card blur-card-green">
+							<text class="blur-card-title">内容延伸</text>
+							<text class="blur-card-desc">开启 tab-content-height-full 后，列表会铺到 tab-bar 下方。</text>
+						</view>
+						<view class="blur-card blur-card-yellow">
+							<text class="blur-card-title">毛玻璃层</text>
+							<text class="blur-card-desc">卡片边缘和文字经过底栏时，可以看到背景模糊。</text>
+						</view>
+						<view class="blur-card blur-card-coral">
+							<text class="blur-card-title">浮层边界</text>
+							<text class="blur-card-desc">圆角底栏遮住列表内容时，能看出清晰内容和模糊内容的差异。</text>
+						</view>
+						<view class="blur-card blur-card-blue">
+							<text class="blur-card-title">列表底部</text>
+							<text class="blur-card-desc">更多内容让页面底部始终有卡片进入 tab-bar 背景区域。</text>
+						</view>
+						<view class="blur-card blur-card-green">
+							<text class="blur-card-title">轻量展示</text>
+							<text class="blur-card-desc">不需要额外图片，普通 view 和 text 就能提供可模糊的背景细节。</text>
+						</view>
+						<view class="blur-card blur-card-yellow">
+							<text class="blur-card-title">全屏滚动</text>
+							<text class="blur-card-desc">scroll-view 占满内容区，列表可以持续滚动到悬浮底栏下面。</text>
+						</view>
+						<view class="blur-card blur-card-coral">
+							<text class="blur-card-title">底部内容</text>
+							<text class="blur-card-desc">最后几项会经过 tab-bar 背后，让 Web 端也能观察到模糊效果。</text>
+						</view>
+					</view>
+				</view>
+			</scroll-view>
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<scroll-view class="blur-scroll blur-scene-coral" direction="vertical">
+				<view class="blur-content-inner">
+					<text class="blur-title">趋势</text>
+					<text class="blur-desc">悬浮 tab-bar 距离页面左右和底部留出间距，配合圆角让底栏更像独立的浮层。</text>
+					<view class="blur-card-list">
+						<view class="blur-card blur-card-coral">
+							<text class="blur-card-title">圆角浮层</text>
+							<text class="blur-card-desc">左右和底部留白让底栏脱离页面边缘，视觉更轻。</text>
+						</view>
+						<view class="blur-card blur-card-yellow">
+							<text class="blur-card-title">透明叠色</text>
+							<text class="blur-card-desc">不同卡片颜色经过底栏时，会产生自然的半透明叠加。</text>
+						</view>
+						<view class="blur-card blur-card-blue">
+							<text class="blur-card-title">固定高度</text>
+							<text class="blur-card-desc">示例显式设置高度和 padding，避免不同端底部安全区差异。</text>
+						</view>
+						<view class="blur-card blur-card-green">
+							<text class="blur-card-title">内容穿透</text>
+							<text class="blur-card-desc">列表向下铺开后，底栏下方会持续出现真实内容。</text>
+						</view>
+						<view class="blur-card blur-card-coral">
+							<text class="blur-card-title">视觉层次</text>
+							<text class="blur-card-desc">半透明背景和阴影一起区分底栏与页面内容。</text>
+						</view>
+						<view class="blur-card blur-card-yellow">
+							<text class="blur-card-title">底部观察</text>
+							<text class="blur-card-desc">靠近页面底部的卡片会成为毛玻璃效果的主要背景。</text>
+						</view>
+						<view class="blur-card blur-card-green">
+							<text class="blur-card-title">滚动区域</text>
+							<text class="blur-card-desc">外层 scroll-view 负责全屏滚动，内层内容只处理布局。</text>
+						</view>
+						<view class="blur-card blur-card-blue">
+							<text class="blur-card-title">背后采样</text>
+							<text class="blur-card-desc">滚动到列表底部时，卡片会进入 backdrop-filter 的采样范围。</text>
+						</view>
+					</view>
+				</view>
+			</scroll-view>
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<scroll-view class="blur-scroll blur-scene-ink" direction="vertical">
+				<view class="blur-content-inner">
+					<text class="blur-title">我的</text>
+					<text class="blur-desc">内容区延伸到 tab-bar 下方，不同背景色可以更直观看到半透明叠加后的层次。</text>
+					<view class="blur-card-list">
+						<view class="blur-card blur-card-green">
+							<text class="blur-card-title">跨端样式</text>
+							<text class="blur-card-desc">使用 rgba 写法，避免部分端不识别现代 rgb 透明语法。</text>
+						</view>
+						<view class="blur-card blur-card-blue">
+							<text class="blur-card-title">动态宽度</text>
+							<text class="blur-card-desc">通过窗口宽度计算 px，避免在鸿蒙端依赖 calc。</text>
+						</view>
+						<view class="blur-card blur-card-coral">
+							<text class="blur-card-title">真实内容</text>
+							<text class="blur-card-desc">列表内容比装饰线条更适合作为毛玻璃背景。</text>
+						</view>
+						<view class="blur-card blur-card-yellow">
+							<text class="blur-card-title">背景采样</text>
+							<text class="blur-card-desc">backdrop-filter 会采样底栏背后的卡片颜色和文字轮廓。</text>
+						</view>
+						<view class="blur-card blur-card-green">
+							<text class="blur-card-title">跨端预览</text>
+							<text class="blur-card-desc">Web 端和 App 端都需要保证底栏背后有实际内容。</text>
+						</view>
+						<view class="blur-card blur-card-blue">
+							<text class="blur-card-title">页面留白</text>
+							<text class="blur-card-desc">底部 padding 给悬浮 tab-bar 留出空间，同时允许内容透到下方。</text>
+						</view>
+						<view class="blur-card blur-card-coral">
+							<text class="blur-card-title">列表延展</text>
+							<text class="blur-card-desc">更多列表项可以保证大屏 Web 下也有足够滚动距离。</text>
+						</view>
+						<view class="blur-card blur-card-yellow">
+							<text class="blur-card-title">底栏覆盖</text>
+							<text class="blur-card-desc">滚动到底部时，卡片内容会从悬浮底栏下方经过。</text>
+						</view>
+					</view>
+				</view>
+			</scroll-view>
+		</uni-tab-content>
+
+		<uni-tab-bar class="blur-tab-list" :style="tabBarStyle">
+			<uni-tab-item class="blur-tab-item">
+				<text class="blur-tab-label" :class="activeIndex == 0 ? 'blur-tab-label-active' : ''">精选</text>
+			</uni-tab-item>
+			<uni-tab-item class="blur-tab-item">
+				<text class="blur-tab-label" :class="activeIndex == 1 ? 'blur-tab-label-active' : ''">趋势</text>
+			</uni-tab-item>
+			<uni-tab-item class="blur-tab-item">
+				<text class="blur-tab-label" :class="activeIndex == 2 ? 'blur-tab-label-active' : ''">我的</text>
+			</uni-tab-item>
+		</uni-tab-bar>
+	</uni-tab>
+</template>
+
+<script setup lang="uts">
+	const TAB_BAR_MARGIN = 24
+	const TAB_BAR_BOTTOM = 40
+	const TAB_BAR_HEIGHT = 64
+
+	function buildTabBarStyle() : string {
+		const windowInfo = uni.getWindowInfo()
+		const tabBarWidth = Math.max(0, windowInfo.windowWidth - TAB_BAR_MARGIN * 2)
+		return 'left: ' + TAB_BAR_MARGIN + 'px; bottom: ' + TAB_BAR_BOTTOM + 'px; width: ' + tabBarWidth + 'px; height: ' + TAB_BAR_HEIGHT + 'px; padding-bottom: 0px; align-items: center; border-radius: 22px; overflow: hidden; border-top-width: 0px; background-color: rgba(255, 255, 255, 0.12);'
+	}
+
+	const activeIndex = ref<number>(0)
+	const tabBarStyle = ref<string>(buildTabBarStyle())
+	let tabContentHeightFull = true
+	let tabContentStyle = ''
+	// #ifdef MP-ALIPAY
+	tabContentHeightFull = false
+	tabContentStyle = 'flex: 1; min-height: 0px;'
+	// #endif
+
+	function syncTabBarStyle() : void {
+		tabBarStyle.value = buildTabBarStyle()
+	}
+
+	function syncNavigationBar(index : number) : void {
+		switch (index) {
+			case 0:
+				uni.setNavigationBarTitle({ title: '精选' })
+				uni.setNavigationBarColor({
+					frontColor: '#000000',
+					backgroundColor: '#f2f7fb'
+				})
+				break
+			case 1:
+				uni.setNavigationBarTitle({ title: '趋势' })
+				uni.setNavigationBarColor({
+					frontColor: '#000000',
+					backgroundColor: '#fbf5eb'
+				})
+				break
+			case 2:
+				uni.setNavigationBarTitle({ title: '我的' })
+				uni.setNavigationBarColor({
+					frontColor: '#000000',
+					backgroundColor: '#f1f8f3'
+				})
+				break
+		}
+	}
+
+	function handleChange(index : number) : void {
+		activeIndex.value = index
+		syncNavigationBar(index)
+	}
+
+	onLoad(() => {
+		syncTabBarStyle()
+		syncNavigationBar(activeIndex.value)
+	})
+
+	onReady(() => {
+		syncTabBarStyle()
+	})
+</script>
+
+<style>
+	.blur-scroll {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		min-height: 0px;
+		flex: 1;
+	}
+
+	.blur-content-inner {
+		width: 100%;
+		box-sizing: border-box;
+		padding-top: 36px;
+		padding-right: 20px;
+		padding-bottom: 170px;
+		padding-left: 20px;
+		flex-direction: column;
+	}
+
+	.blur-scene-morning {
+		background-color: #f2f7fb;
+	}
+
+	.blur-scene-coral {
+		background-color: #fbf5eb;
+	}
+
+	.blur-scene-ink {
+		background-color: #f1f8f3;
+	}
+
+	.blur-title {
+		position: relative;
+		font-size: 32px;
+		font-weight: bold;
+		color: #1f2937;
+	}
+
+	.blur-desc {
+		position: relative;
+		margin-top: 10px;
+		font-size: 15px;
+		line-height: 22px;
+		color: rgba(31, 41, 55, 0.72);
+	}
+
+	.blur-card-list {
+		margin-top: 24px;
+		flex-direction: column;
+	}
+
+	.blur-card {
+		margin-top: 14px;
+		padding: 16px;
+		min-height: 100px;
+		border-radius: 8px;
+		flex-direction: column;
+	}
+
+	.blur-card-blue {
+		background-color: #9cc9ff;
+	}
+
+	.blur-card-green {
+		background-color: #9fd8bd;
+	}
+
+	.blur-card-yellow {
+		background-color: #f7d88a;
+	}
+
+	.blur-card-coral {
+		background-color: #f4b2a6;
+	}
+
+	.blur-card-title {
+		font-size: 17px;
+		font-weight: bold;
+		color: #1f2937;
+	}
+
+	.blur-card-desc {
+		margin-top: 8px;
+		font-size: 13px;
+		line-height: 20px;
+		color: rgba(31, 41, 55, 0.66);
+	}
+
+	.blur-tab-list {
+		backdrop-filter: blur(5px);
+		box-shadow: 0px 8px 24px rgba(31, 41, 55, 0.10);
+	}
+
+	/* #ifdef WEB */
+	.blur-tab-list {
+		-webkit-backdrop-filter: blur(5px);
+	}
+	/* #endif */
+
+	.blur-tab-item {
+		position: relative;
+		z-index: 1;
+		transform: scaleX(1.005);
+	}
+
+	.blur-tab-label {
+		font-size: 15px;
+		color: rgba(31, 41, 55, 0.72);
+	}
+
+	.blur-tab-label-active {
+		color: #0f766e;
+	}
+</style>
+
+```
+
+:::
 
 
 ### 参见
@@ -924,16 +1247,16 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 ```vue
 <template>
 	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent1 />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent2 />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent3 />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent4 />
 		</uni-tab-content>
 
@@ -976,8 +1299,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	const activeIndex = ref<number>(0)
 	const midButtonClickCount = ref<number>(0)
 	let tabContentHeightFull = false
-	// #ifdef MP
+	// #ifdef MP-WEIXIN
 	tabContentHeightFull = true
+	// #endif
+	let tabContentStyle = ''
+	// #ifdef MP-ALIPAY
+	tabContentStyle = 'flex: 1; min-height: 0px;'
 	// #endif
 
 	function handleChange(index : number) : void {
@@ -1073,17 +1400,17 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 >示例
 ```vue
 <template>
-	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-content-height-full="true" @change="handleChange">
-		<uni-tab-content>
+	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent1 />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent2 />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent3 />
 		</uni-tab-content>
-		<uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
 			<tabContent4 />
 		</uni-tab-content>
 
@@ -1116,7 +1443,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 				<text class="tab-label" :class="activeIndex == 3 ? 'tab-label-active' : ''">我的</text>
 			</uni-tab-item>
 		</uni-tab-bar>
-		<view class="tab-bg" style="width: 100%; height: var(--uni-safe-area-inset-bottom);position: absolute; bottom: 0;"></view> <!-- 因为要镂空，tabbar不能整体设背景色，只能加一个占位view覆盖安全区的颜色，-->
+		<view class="tab-bg tab-safe-area-bg"></view> <!-- 因为要镂空，tabbar不能整体设背景色，只能加一个占位view覆盖安全区的颜色，-->
 	</uni-tab>
 </template>
 
@@ -1128,6 +1455,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 	const activeIndex = ref<number>(0)
 	const midButtonClickCount = ref<number>(0)
+	let tabContentHeightFull = true
+	let tabContentStyle = ''
+	// #ifdef MP-ALIPAY
+	tabContentHeightFull = false
+	tabContentStyle = 'flex: 1; min-height: 0px;'
+	// #endif
 
 	function handleChange(index : number) : void {
 		activeIndex.value = index
@@ -1179,6 +1512,32 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 		/* margin-right: -1px; */
 	}
 
+	/* #ifdef MP-ALIPAY */
+	.tab-bg {
+		transform: none;
+		margin-left: -1px;
+		margin-right: -1px;
+	}
+	/* #endif */
+
+	.tab-safe-area-bg {
+		width: 100%;
+		height: var(--uni-safe-area-inset-bottom);
+		position: absolute;
+		bottom: 0;
+	}
+
+	/* #ifdef MP-ALIPAY */
+	.tab-safe-area-bg {
+		height: calc(var(--uni-safe-area-inset-bottom) + 1px);
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 9;
+	}
+	/* #endif */
+
 	.notch-svg {
 		width: 108px;
 		height: 50px;
@@ -1188,6 +1547,16 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 		bottom: 0;
 		pointer-events: none; /* 不拦截点击。 TODO 鸿蒙上有bug，svg图仍然遮挡了点击区，导致加号的下半部分点不着*/
 	}
+
+	/* #ifdef MP-ALIPAY */
+	.notch-svg {
+		width: 112px;
+		height: 51px;
+		margin-left: -3px;
+		margin-right: -3px;
+		bottom: -1px;
+	}
+	/* #endif */
 
 	.floating-ball {
 		position: relative;

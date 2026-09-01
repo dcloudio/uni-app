@@ -198,6 +198,7 @@ margin-bottom: <length> | <percentage> | auto;
         <input-data :defaultValue="data.marginBottom" title="margin-bottom 自定义值" type="text" @confirm="inputChangeMarginBottom"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
         <text>native-view组件: margin-bottom: 25px 和 10%</text>
         <view class="demo-box">
@@ -213,6 +214,7 @@ margin-bottom: <length> | <percentage> | auto;
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>

@@ -109,6 +109,9 @@
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
+    <!-- #ifdef MP-ALIPAY -->
+    <text class="uni-tips">提示：支付宝小程序调用 getVideoInfo 需要真机运行</text>
+    <!-- #endif -->
     <view class="uni-padding-wrap">
       <view class="uni-title">
         <text class="uni-subtitle-text">获取本地绝对路径视频信息</text>

@@ -83,7 +83,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-time-form
 >示例
 ```vue
 <template>
-  <scroll-view class="page">
+  <scroll-view class="page uni-theme-root">
     <view class="section">
       <text class="section-title">当前时间不同格式</text>
       <view class="row">
@@ -303,11 +303,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-time-form
     margin-bottom: 6px;
     border-width: 1px;
     border-style: solid;
-    border-color: var(--border-color, #dddddd);
+    border-color: #dddddd;
     height: 38px;
     padding-left: 10px;
     padding-right: 10px;
-    color: var(--text-color, #333333);
+    color: #333333;
+    background-color: #ffffff;
   }
 
   .row {
@@ -328,6 +329,14 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-time-form
     font-size: 12px;
     color: var(--text-color, #333333);
     opacity: 0.6;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .datetime-input {
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      background-color: #2d2d2d;
+    }
   }
 </style>
 

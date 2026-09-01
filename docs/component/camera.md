@@ -218,10 +218,10 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 						<text class="uni-title-text">拍摄照片示例</text>
 						<button type="default" @click="handleTakePhoto">拍摄照片</button>
 						<radio-group style="flex-direction: row;" name="成像质量" @change="takePhotoQualityChange">
-							<radio value="normal" :checked="true">普通质量</radio>
-							<radio value="low">低质量</radio>
-							<radio value="high">高质量</radio>
-							<radio value="original">原图</radio>
+							<view><radio value="normal" :checked="true" /><text>普通质量</text></view>
+							<view><radio value="low" /><text>低质量</text></view>
+							<view><radio value="high" /><text>高质量</text></view>
+							<view><radio value="original" /><text>原图</text></view>
 						</radio-group>
 					</view>
 					<view class="uni-camera-wrapper">
@@ -245,8 +245,8 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 						<button type="default" @click="stopRecord">停止录制</button>
 						<radio-group style="flex-direction: row;margin-top: 8px;" name="是否压缩"
 							@change="startRecordCompressChange">
-							<radio value="0" :checked="true">未启动视频压缩</radio>
-							<radio value="1">启动视频压缩</radio>
+							<view><radio value="0" :checked="true" /><text>未启动视频压缩</text></view>
+							<view><radio value="1" /><text>启动视频压缩</text></view>
 						</radio-group>
 					</view>
 					<view class="uni-camera-wrapper">

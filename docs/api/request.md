@@ -336,26 +336,68 @@ offHeadersReceived
         <text>设置请求方式</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px; margin-right: 10px;" type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px; margin-right: 10px;"
+            <!-- #endif -->
+            <!-- #ifdef MP-ALIPAY -->
+            style="margin-right: 10px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="changeMethod('GET')">GET</button>
-          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px; margin-right: 10px; "
+            <!-- #endif -->
+            <!-- #ifdef MP-ALIPAY -->
+            style="margin-right: 10px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="changeMethod('POST')">POST</button>
-          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px; margin-right: 10px; "
+            <!-- #endif -->
+            <!-- #ifdef MP-ALIPAY -->
+            style="margin-right: 10px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="changeMethod('PUT')">PUT</button>
-          <button style="padding: 5px; margin-right: 10px;" type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px; margin-right: 10px;"
+            <!-- #endif -->
+            <!-- #ifdef MP-ALIPAY -->
+            style="margin-right: 10px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="changeMethod('DELETE')">DELETE</button>
-          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px; margin-right: 10px; "
+            <!-- #endif -->
+            <!-- #ifdef MP-ALIPAY -->
+            style="margin-right: 10px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="changeMethod('PATCH')">PATCH</button>
-          <button style="padding: 5px;margin-right: 10px;" type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;margin-right: 10px;"
+            <!-- #endif -->
+            <!-- #ifdef MP-ALIPAY -->
+            style="margin-right: 10px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="changeMethod('OPTIONS')">OPTIONS</button>
-          <button style="padding: 5px;" type="primary" size="mini" @click="changeMethod('HEAD')">HEAD</button>
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini" @click="changeMethod('HEAD')">HEAD</button>
         </view>
       </view>
       <view style="padding: 20px;">
         <text>请求返回错误码的接口（默认为GET）</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.errorCodeUrls" :key="index"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini" v-for="(item, index) in data.errorCodeUrls" :key="index"
             @click="changeUrl(item)">{{item}}</button>
         </view>
       </view>
@@ -363,7 +405,10 @@ offHeadersReceived
         <text>请求不同header的接口（默认为GET）</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.headerUrls" :key="index"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini" v-for="(item, index) in data.headerUrls" :key="index"
             @click="changeUrl(item)">{{item}}</button>
         </view>
       </view>
@@ -378,7 +423,10 @@ offHeadersReceived
         <text>请求不同content-type的接口（默认为GET）</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.contentTypeUrls" :key="index"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini" v-for="(item, index) in data.contentTypeUrls" :key="index"
             @click="changeUrl(item)">{{item}}</button>
         </view>
       </view>
@@ -387,7 +435,10 @@ offHeadersReceived
         <text>POST请求(有body)</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.postUrls" :key="index"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini" v-for="(item, index) in data.postUrls" :key="index"
             @click="changeUrlFromPost(item)">{{item}}</button>
         </view>
       </view>
@@ -396,9 +447,15 @@ offHeadersReceived
         <text>ArrayBuffer 测试</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="sendArrayBuffer(false)">请求body为ArrayBuffer，response也为ArrayBuffer</button>
-          <button style="padding: 5px;" type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="sendArrayBuffer(true)">请求response为ArrayBuffer</button>
         </view>
       </view>
@@ -695,7 +752,7 @@ offHeadersReceived
     })
   }
 
-  // #ifdef APP | MP-WEIXIN | WEB
+  // #ifdef APP || MP-WEIXIN || WEB
   const sendArrayBuffer = (onlyResponse : boolean) => {
     data.method = "POST"
     data.url = "/api/http/contentType/arrayBuffer/post"
@@ -1146,7 +1203,9 @@ offHeadersReceived
 
   defineExpose({
     data,
+    // #ifdef APP || MP-WEIXIN || WEB
     sendArrayBuffer,
+    // #endif
     jest_request,
     jest_set_cookie,
     jest_set_cookie_expires,

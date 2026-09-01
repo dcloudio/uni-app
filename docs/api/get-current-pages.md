@@ -41,16 +41,16 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
+  <scroll-view class="page-scroll-view uni-theme-root">
   <!-- #endif -->
-    <view id="container">
+    <view id="container" class="current-pages-page uni-theme-root">
       <page-head title="getCurrentPages"></page-head>
       <view class="uni-padding-wrap">
         <button @click="_getCurrentPages">getCurrentPages</button>
         <view v-if="data.pages.length" style="padding: 15px 0px">
-          <text>当前页面栈中 {{ data.pages.length }} 个页面，列表如下：</text>
+          <text class="page-stack-text">当前页面栈中 {{ data.pages.length }} 个页面，列表如下：</text>
           <template v-for="(page, index) in data.pages" :key="page">
-            <text style="margin-top: 5px">index: {{ index }}, route: {{ page }}</text>
+            <text class="page-stack-text" style="margin-top: 5px">index: {{ index }}, route: {{ page }}</text>
           </template>
         </view>
         <button class="uni-common-mt" @click="check$page">page check $page</button>
@@ -112,8 +112,10 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
           </view>
           <view class="set-value" v-else-if="item.type == 'string'">
             <radio-group class="radio-set-value" @change="radioChange(item.key, $event as RadioGroupChangeEvent)">
-              <radio class="radio-value" v-for="(item2, index2) in item.value" :key="index2" :value="item2">{{ item2 }}
-              </radio>
+              <view class="radio-value" v-for="(item2, index2) in item.value" :key="index2">
+                <radio :value="item2" />
+                <text>{{ item2 }}</text>
+              </view>
             </radio-group>
           </view>
         </view>
@@ -418,7 +420,7 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
   .page-style-item {
     padding: 10px;
     margin-top: 10px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 5px;
   }
 
@@ -428,10 +430,16 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
 
   .item-text-key {
     font-weight: bold;
+    color: var(--text-color, #333333);
   }
 
   .item-text-value {
     margin-left: 5px;
+    color: var(--text-color, #333333);
+  }
+
+  .page-stack-text {
+    color: var(--text-color, #333333);
   }
 
   .set-value {
@@ -443,6 +451,9 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
   }
 
   .radio-value {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     margin-left: 10px;
   }
 </style>

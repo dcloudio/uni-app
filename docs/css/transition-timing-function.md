@@ -134,12 +134,14 @@ App平台不支持指定多个过渡效果。
         <input-data :defaultValue="data.transitionTimingFunctionDynamic" title="transition-timing-function 自定义值" type="text" @confirm="inputChangeTransitionTimingFunction"></input-data>
       </view>
 
-      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-timing-function：ease-in-out</text>
-      <test-native-view :class="nativeViewClassValue"></test-native-view>
-      <view class="button-container">
-        <button class="button-item" @click="nativeViewStart">native-view start</button>
-        <button class="button-item" @click="nativeViewReset">native-view reset</button>
-      </view>
+      <!-- #ifndef MP-ALIPAY -->
+        <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-timing-function：ease-in-out</text>
+        <test-native-view :class="nativeViewClassValue"></test-native-view>
+        <view class="button-container">
+          <button class="button-item" @click="nativeViewStart">native-view start</button>
+          <button class="button-item" @click="nativeViewReset">native-view reset</button>
+        </view>
+      <!-- #endif -->
 
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->

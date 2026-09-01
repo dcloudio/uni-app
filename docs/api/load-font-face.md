@@ -140,17 +140,18 @@
     <text class="font-size-20 line-height-40" style="font-family: UniFontFamily">font-family: uni.ttf</text>
     <view style="flex-direction: row;">
       <!-- 微信小程序只支持加载网络字体 -->
-      <!-- #ifdef MP-WEIXIN -->
+      <!-- #ifdef MP -->
       <text class="font-size-20" style="font-family: UniFontFamily2;">{{data.uniIcon3}}</text>
       <text class="icon-text">\ue102</text>
       <!-- #endif -->
-      <!-- #ifndef MP-WEIXIN -->
+      <!-- #ifndef MP -->
       <text class="font-size-20" style="font-family: UniFontFamily;">{{data.uniIcon1}}</text>
       <text class="icon-text">\ue100</text>
       <text class="font-size-20" style="font-family: UniFontFamily;">{{data.uniIcon2}}</text>
       <text style="margin-left:5px;line-height:22px;">\ue101</text>
       <!-- #endif -->
     </view>
+    <!-- #ifndef MP-ALIPAY -->
     <text class="font-size-20 line-height-40" style="font-family: UniFontFamily">实体字符</text>
     <view style="flex-direction: row;">
       <!-- #ifdef MP-WEIXIN -->
@@ -161,6 +162,7 @@
       <text class="font-size-20" style="font-family: UniFontFamily; margin-left: 5px;">&#xe101; &amp;#xe101;</text>
       <!-- #endif -->
     </view>
+    <!-- #endif -->
     <!-- #ifndef APP-HARMONY -->
     <text class="uni-common-mt font-size-20">非全局加载字体：</text>
     <!-- #endif -->

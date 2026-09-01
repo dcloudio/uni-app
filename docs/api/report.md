@@ -66,223 +66,156 @@ uni.report({
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
-    <page-head title="report"></page-head>
-    <view class="tips">
-      <view class="tips-title">调用信息：</view>
-      <view class="tips-content">{{msg.value}}</view>
-    </view>
-    <view class="page">
-
-      <button class="normal-button" type="default" @click="handleAppLaunch">
-        模拟应用启动
-      </button>
-      <button class="normal-button" type="default" @click="handleAppHide">
-        模拟应用切入后台
-      </button>
-      <button class="normal-button" type="default" @click="handleAppShow">
-        模拟应用切入前台
-      </button>
-      <button class="normal-button" type="default" @click="handleAppError">
-        模拟应用错误
-      </button>
-      <button class="normal-button" type="default" @click="handleTitle">
-        模拟自定义title
-      </button>
-      <button class="normal-button" type="default" @click="handleEvent">
-        模拟自定义事件
-      </button>
-      <text class="instructions">
-        当前页面调用API均为模拟，请查看文档，在特定场景下使用以上 API。请在main.uts中设置统计debug配置为true，并点击按钮查控制台输出。
-      </text>
+  <scroll-view class="page">
+    <page-head title="uni统计 2.0"></page-head>
+    <view class="status-panel">
+      <text class="status-title">最近操作</text>
+      <text class="status-content">{{ state.message }}</text>
     </view>
 
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+    <view class="section">
+      <text class="section-title">自定义事件</text>
+      <button class="normal-button" @click="reportObject">对象参数事件</button>
+      <button class="normal-button" @click="reportString">字符串参数事件</button>
+      <button class="normal-button" @click="reportEmpty">空参数事件</button>
+      <button class="normal-button" @click="reportPair">连续上报两个同名事件</button>
+    </view>
+
+    <view class="section">
+      <text class="section-title">上下文与参数</text>
+      <button class="normal-button" @click="reportTitle">标题上下文</button>
+      <button class="normal-button" @click="reportBaseInfo">基础信息快照</button>
+      <button class="normal-button" @click="goBack">返回上一页</button>
+    </view>
   </scroll-view>
-  <!-- #endif -->
 </template>
 
 <script setup lang="uts">
-  type MsgType = {
-    value: string
+  type StateType = {
+    message: string
   }
-  // 使用reactive避免ref数据在自动化测试中无法访问
-  const msg = reactive({ value: '点击按钮，测试上报' } as MsgType)
+
+  const state = reactive({ message: '页面打开事件已触发' } as StateType)
+
+  const reportStat = (type: string, value?: any): boolean => {
+    uni.report(type, value)
+    return true
+  }
 
   onLoad(() => {
-    uni.report({
-      name: '自定义上报-report页面打开',
-      options: '1'
+    const marker = Date.now()
+    reportStat('report_page_open', {
+      marker: marker,
+      route: 'pages/API/report/report'
     })
   })
 
-  onUnmounted(() => {
-    // #ifndef APP-IOS
-    uni.report({
-      name: '自定义上报-report页面关闭',
-      options: '1'
-    })
-    // #endif
-
-  })
-
-  const handleAppLaunch = () => {
-    const options = uni.getLaunchOptionsSync()
-    // #ifndef APP-IOS
-    uni.report({
-      name: 'uni-app-launch',
-      options: options,
-      success: (res) => {
-        msg.value = 'onLaunch --> ' + res.errMsg
-        console.log(res);
-      }, fail: (err) => {
-        msg.value = 'onLaunch --> ' + err.errMsg
-        console.log(err);
-      }
-    })
-    // #endif
-
+  const reportObject = () => {
+    const marker = Date.now()
+    if (reportStat('object_probe', {
+      marker: marker,
+      source: 'hello-uni-app-x',
+      count: 1
+    })) {
+      state.message = 'object_probe：' + marker
+    }
   }
 
-  const handleAppHide = () => {
-    // #ifndef APP-IOS
-    uni.report({
-      name: 'uni-app-hide',
-      success: (res) => {
-        msg.value = 'onAppHide --> ' + res.errMsg
-        console.log(res);
-      }, fail: (err) => {
-        msg.value = 'onAppHide --> ' + err.errMsg
-        console.log(err);
-      }
-    })
-    // #endif
-
+  const reportString = () => {
+    if (reportStat('string_probe', '中文 a&b=c ? # 空格')) {
+      state.message = 'string_probe：特殊字符'
+    }
   }
 
-  const handleAppShow = () => {
-    // const options = uni.getLaunchOptionsSync()
-    // #ifndef APP-IOS
-    uni.report({
-      name: 'uni-app-show',
-      success: (res) => {
-        msg.value = 'onAppShow --> ' + res.errMsg
-        console.log(res);
-      }, fail: (err) => {
-        msg.value = 'onAppShow --> ' + err.errMsg
-        console.log(err);
-      }
-    })
-    // #endif
-
+  const reportEmpty = () => {
+    if (reportStat('empty_probe')) {
+      state.message = 'empty_probe：无参数'
+    }
   }
 
-  const handleAppError = () => {
-    const errmsg = '测试错误'
-    // #ifndef APP-IOS
-    uni.report({
-      name: 'uni-app-error',
-      options: errmsg,
-      success: (res) => {
-        msg.value = 'onAppError --> ' + res.errMsg
-        console.log(res);
-      }, fail: (err) => {
-        msg.value = 'onAppError --> ' + err.errMsg
-        console.log(err);
-      }
-    })
-    // #endif
-
+  const reportPair = () => {
+    const marker = Date.now()
+    const first = reportStat('duplicate_probe', { marker: marker, index: 1 })
+    const second = reportStat('duplicate_probe', { marker: marker, index: 2 })
+    if (first && second) {
+      state.message = 'duplicate_probe：连续两次 ' + marker
+    }
   }
 
-  const handleEvent = () => {
-    // 此处name为用户自定义
-    // #ifndef APP-IOS
-    uni.report({
-      name: 'custom-event',
-      options: {
-        title: '自定义事件',
-        total: 1
-      },
-      success: (res) => {
-        msg.value = '自定义事件 --> ' + res.errMsg
-        console.log(res);
-      }, fail: (err) => {
-        msg.value = '自定义事件 --> ' + err.errMsg
-        console.log(err);
-      }
-    })
-    // #endif
-
+  const reportTitle = () => {
+    const marker = Date.now()
+    uni.setNavigationBarTitle({ title: 'uni统计标题测试' })
+    const titleReported = reportStat('title', '业务统计标题')
+    const probeReported = reportStat('title_context_probe', { marker: marker })
+    if (titleReported && probeReported) {
+      state.message = 'title_context_probe：' + marker
+    }
   }
 
-  const handleTitle = () => {
-    // 此处name为用户自定义
-    // #ifndef APP-IOS
-    uni.report({
-      name: 'title',
-      options: '自定义title测试上报',
-      success: (res) => {
-        msg.value = '自定义title --> ' + res.errMsg
-        console.log(res);
-      }, fail: (err) => {
-        msg.value = '自定义title --> ' + err.errMsg
-        console.log(err);
-      }
-    })
-    // #endif
+  const reportBaseInfo = () => {
+    const marker = Date.now()
+    const app = uni.getAppBaseInfo()
+    const device = uni.getDeviceInfo()
+    const windowInfo = uni.getWindowInfo()
+    const launch = uni.getLaunchOptionsSync()
+    if (reportStat('base_info_probe', {
+      marker: marker,
+      app: JSON.stringify(app),
+      device: JSON.stringify(device),
+      window: JSON.stringify(windowInfo),
+      launch: JSON.stringify(launch)
+    })) {
+      state.message = 'base_info_probe：' + marker
+    }
+  }
 
+  const goBack = () => {
+    uni.navigateBack()
   }
 
   defineExpose({
-    msg,
-    handleAppLaunch,
-    handleAppHide,
-    handleAppShow,
-    handleAppError,
-    handleEvent,
-    handleTitle
+    state,
+    reportObject,
+    reportString,
+    reportEmpty,
+    reportPair,
+    reportTitle,
+    reportBaseInfo,
+    goBack
   })
 </script>
 
 <style>
   .page {
-    padding: 15px;
+    flex: 1;
+    background-color: #f5f6f8;
   }
 
-  .tips {
-    margin: 15px;
-    padding: 15px;
-    background-color: #f5f5f5;
+  .status-panel,
+  .section {
+    margin: 12px 16px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 8px;
+  }
+
+  .status-title,
+  .section-title {
+    display: flex;
+    margin-bottom: 12px;
+    color: #202124;
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .status-content {
+    color: #5f6673;
     font-size: 14px;
-    text-align: center;
-  }
-
-  .tips-title {
-    font-size: 16px;
-    color: #333;
-    margin-bottom: 10px;
-  }
-
-  .tips-content {
-    font-size: 14px;
-    color: #999;
   }
 
   .normal-button {
     width: 100%;
-    margin-bottom: 10px;
-  }
-
-  .instructions {
     margin-top: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
-    background-color: #eee;
-    font-size: 12px;
-    color: #999;
   }
 </style>
 

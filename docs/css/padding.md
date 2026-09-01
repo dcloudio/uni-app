@@ -377,6 +377,7 @@ padding: [ <length> | <percentage> ]{1,4};
 
   .common-text {
     font-size: 12px;
+    color: #1a1a1a;
   }
 
   .native-view-container-large {

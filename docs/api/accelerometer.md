@@ -289,9 +289,10 @@
 		<text class="uni-h3">采样频率</text>
 		<radio-group class="option-group" @change="handleIntervalChange">
 			<view class="option-item" v-for="item in intervalOptions" :key="item.value">
-				<radio :value="item.value" :checked="activeInterval == item.value">
+				<view class="option-content">
+					<radio :value="item.value" :checked="activeInterval == item.value" />
 					<text class="option-text">{{ item.label }}</text>
-				</radio>
+				</view>
 			</view>
 		</radio-group>
 		<button class="margin-v" type="primary" @tap="startListen">开始监听</button>
@@ -405,6 +406,12 @@
 		align-items: center;
 		margin-right: 18px;
 		margin-top: 8px;
+	}
+
+	.option-content {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
 	}
 
 	.option-text {

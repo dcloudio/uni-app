@@ -92,7 +92,9 @@ UniPickerViewChangeEvent -- Extends --> UniCustomEvent&ltUniPickerViewChangeEven
         <view class="item" v-for="(item,index) in data.days" :key="index"><text class="text">{{item}}日</text></view>
       </picker-view-column>
     </picker-view>
+    <!-- #ifndef MP-ALIPAY -->
     <boolean-data :defaultValue="false" title="设置选择器中间选中框的样式" @change="setIndicatorStyle"></boolean-data>
+    <!-- #endif -->
     <!-- #ifdef WEB || MP-WEIXIN -->
     <boolean-data :defaultValue="false" title="设置选择器中间选中框的类名" @change="setIndicatorClass"></boolean-data>
     <boolean-data :defaultValue="false" title="设置蒙层的样式" @change="setMaskStyle"></boolean-data>

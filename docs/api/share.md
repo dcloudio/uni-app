@@ -124,19 +124,20 @@
 ```uvue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
+  <scroll-view class="uni-theme-root" style="flex:1">
   <!-- #endif -->
+    <view class="uni-theme-root">
     <page-head :title="title"></page-head>
     <view class="uni-list-cell-padding status-box">
       <view class="uni-title uni-common-mt">
-        <text class="uni-title-text">分享内容：</text>
+        <text class="uni-title-text share-text">分享内容：</text>
       </view>
-      <textarea style="max-height: 100px;padding: 10px;background-color:aliceblue;border: 1px solid black;"
+      <textarea class="share-content"
         :auto-height=" true" :value="shareContent"></textarea>
     </view>
     <view class="uni-list-cell-padding status-box">
       <view class="uni-title uni-common-mt">
-        <text class="uni-title-text">分享图片：</text>
+        <text class="uni-title-text share-text">分享图片：</text>
       </view>
       <view style="flex-wrap: wrap;">
         <image v-if="imageURL != null" style="width: 104px; height: 104px;" :src="imageURL">
@@ -146,31 +147,28 @@
     </view>
     <view class="uni-list-cell-padding status-box">
       <view class="uni-title uni-common-mt">
-        <text class="uni-title-text">分享类型：</text>
+        <text class="uni-title-text share-text">分享类型：</text>
       </view>
       <radio-group class="uni-row" @change="typeChange">
-        <radio class="uni-common-mt" value="0" :checked="true">
-          图文
-        </radio>
-        <radio class="uni-common-mt" value="1">纯文字</radio>
-        <radio class="uni-common-mt" value="2">纯图片</radio>
+        <view class="uni-common-mt share-radio"><radio value="0" :checked="true" /><text>图文</text></view>
+        <view class="uni-common-mt share-radio"><radio value="1" /><text>纯文字</text></view>
+        <view class="uni-common-mt share-radio"><radio value="2" /><text>纯图片</text></view>
       </radio-group>
     </view>
     <view class="uni-list-cell-padding status-box">
       <view class="uni-title uni-common-mt">
-        <text class="uni-title-text">分享到：</text>
+        <text class="uni-title-text share-text">分享到：</text>
       </view>
       <radio-group class="uni-row" style="flex-wrap: wrap;" @change="sceneChange">
-        <radio class="uni-common-mt" value="WXSceneSession" :checked="true">
-          聊天界面
-        </radio>
-        <radio class="uni-common-mt" value="WXSceneTimeline">朋友圈</radio>
-        <radio class="uni-common-mt" value="WXSceneFavorite" :disabled="true" style="color: gray;">微信收藏（暂不支持）</radio>
+        <view class="uni-common-mt share-radio"><radio value="WXSceneSession" :checked="true" /><text>聊天界面</text></view>
+        <view class="uni-common-mt share-radio"><radio value="WXSceneTimeline" /><text>朋友圈</text></view>
+        <view class="uni-common-mt share-radio"><radio value="WXSceneFavorite" :disabled="true" style="color: gray;" /><text>微信收藏（暂不支持）</text></view>
       </radio-group>
     </view>
 
     <view class="uni-padding-wrap uni-common-mt">
       <button type="primary" @click="share">分享</button>
+    </view>
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -246,8 +244,39 @@
   }
 
   .status-box {
-    background-color: #FFFFFF;
+    background-color: var(--list-background-color, #ffffff);
     margin: 0 20px;
+  }
+
+  .share-text,
+  .share-radio {
+    color: var(--text-color, #333333);
+  }
+
+  .share-radio {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .share-content {
+    max-height: 100px;
+    padding: 10px;
+    color: #333333;
+    background-color: aliceblue;
+    border: 1px solid black;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .share-content {
+      color: var(--text-color, #ffffff);
+      background-color: var(--list-background-color, #2d2d2d);
+      border-color: var(--border-color, rgba(255, 255, 255, 0.1));
+    }
+
+    .uni-uploader__input-box {
+      border-color: var(--border-color, rgba(255, 255, 255, 0.1));
+    }
   }
 </style>
 

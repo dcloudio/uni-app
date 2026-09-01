@@ -45,7 +45,7 @@ App平台可以用view加事件来替代label。
           <label class="uni-list-cell uni-list-cell-pd checkboxItemsTest label" v-for="item in data.checkboxItems"
             :key="item.name">
             <view>
-              <checkbox :value="item.name" :checked="item.checked"></checkbox>
+              <checkbox :value="item.name" :checked="item.checked" />
             </view>
             <view>{{item.value}}</view>
           </label>
@@ -58,7 +58,7 @@ App平台可以用view加事件来替代label。
         <radio-group class="uni-list radio-group" @change="radioChange">
           <view class="uni-list-cell uni-list-cell-pd" v-for="(item,index) in data.radioItems" :key="index">
             <view>
-              <radio :id="item.name" :value="item.name" :checked="item.checked"></radio>
+              <radio :id="item.name" :value="item.name" :checked="item.checked" />
             </view>
             <label class="label-2-text" :for="item.name">
               <text>{{item.value}}</text>
@@ -73,16 +73,10 @@ App平台可以用view加事件来替代label。
         <checkbox-group class="uni-list" @change="checkboxForChange">
           <label class="label-3 label">
             <view class="uni-list-cell uni-list-cell-pd">
-              <checkbox value="for1">选项一</checkbox>
-              <!-- #ifdef MP-ALIPAY -->
-              <text>选项一</text>
-              <!-- #endif -->
+              <checkbox value="for1" /><text>选项一</text>
             </view>
             <view class="uni-list-cell uni-list-cell-pd">
-              <checkbox value="for2">选项二</checkbox>
-              <!-- #ifdef MP-ALIPAY -->
-              <text>选项二</text>
-              <!-- #endif -->
+              <checkbox value="for2" /><text>选项二</text>
             </view>
             <view class="uni-center" style="margin:10px 0;">
               <text class="uni-link">点击该label下的文字默认选中第一个checkbox</text>
@@ -92,9 +86,11 @@ App平台可以用view加事件来替代label。
       </view>
     </view>
 
-    <navigator class="uni-common-mb" url="/pages/template/label-100/label-100">
-      <button>组件性能测试</button>
-    </navigator>
+    <!-- #ifndef MP-ALIPAY -->
+      <navigator class="uni-common-mb" url="/pages/template/label-100/label-100">
+        <button>组件性能测试</button>
+      </navigator>
+    <!-- #endif -->
   </view>
 </template>
 <script setup lang="uts">
