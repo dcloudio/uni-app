@@ -587,7 +587,7 @@ export function parseUasmModuleName(modulePath: string): string | undefined {
 }
 
 function resolveUasmLibraryFileName(moduleName: string): string {
-  return `libuasm${capitalize(camelize(moduleName))}.so`
+  return `libUasm${capitalize(camelize(moduleName))}.so`
 }
 
 export function resolveUasmWebLoad(
