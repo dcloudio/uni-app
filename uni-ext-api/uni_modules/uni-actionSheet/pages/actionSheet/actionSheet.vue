@@ -327,7 +327,7 @@
     }
     const res = {}
     // #ifndef VUE3-VAPOR
-    const borderColor = backgroundColor.value ?? (theme.value == 'dark' ? '#2C2C2B' : '#fcfcfd')
+    const borderColor = backgroundColor.value ?? (theme.value == 'dark' ? '#2C2C2C' : '#fcfcfd')
     // #endif
     const top = popover.top
     const left = popover.left
@@ -403,7 +403,7 @@
   })
   // #ifndef VUE3-VAPOR
   const computedBackgroundColor = computed((): string => {
-    return backgroundColor.value ?? (theme.value == 'dark' ? '#2C2C2B' : '#ffffff')
+    return backgroundColor.value ?? (theme.value == 'dark' ? '#2C2C2C' : '#ffffff')
   })
   const hoverClass = computed((): string => {
     return theme.value == 'dark' ? 'uni-action-sheet_dialog__hover__dark__mode' : 'uni-action-sheet_dialog__hover'
@@ -549,7 +549,7 @@
 	}
   /* #ifndef VUE3-VAPOR */
 	.uni-action-sheet_dialog__hover__dark__mode {
-		background-color: #1c1c1c;
+		background-color: #414141;
 	}
   /* #endif */
   /* #ifdef WEB */
@@ -571,7 +571,7 @@
   }
   .uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,
   .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {
-    background-color: #2C2C2B;
+    background-color: #2C2C2C;
   }
   .uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {
     color: #999999;
@@ -709,7 +709,7 @@
     .uni-action-sheet_dialog__menu,
     .uni-action-sheet_dialog__action,
     .uni-action-sheet_dialog__safe-area {
-      background-color: #2C2C2B;
+      background-color: #2C2C2C;
     }
     .uni-action-sheet_dialog__title__text {
       color: #999999;
@@ -719,7 +719,7 @@
       color: #ffffff;
     }
     .uni-action-sheet_dialog__hover {
-      background-color: #1c1c1c;
+      background-color: #414141;
     }
     /* #ifdef APP */
     .border-t {
@@ -734,10 +734,10 @@
       background-color: #2F3131;
     }
     .uni-action-sheet_dialog__triangle--bottom {
-      border-color: #2C2C2B transparent transparent transparent;
+      border-color: #2C2C2C transparent transparent transparent;
     }
     .uni-action-sheet_dialog__triangle--top {
-      border-color: transparent transparent #2C2C2B transparent;
+      border-color: transparent transparent #2C2C2C transparent;
     }
     /* #endif */
   }

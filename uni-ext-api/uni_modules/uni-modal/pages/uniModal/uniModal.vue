@@ -591,7 +591,7 @@
 
 	/* #ifndef VUE3-VAPOR */
 	.uni-modal-dialog__action--hover-dark {
-		background-color: #1c1c1c;
+		background-color: #414141;
 	}
 	/* #endif */
 
@@ -648,7 +648,7 @@
 			background-color: #303030;
 		}
 		.uni-modal-dialog__action--hover {
-			background-color: #1c1c1c;
+			background-color: #414141;
 		}
 		.uni-modal-dialog__action-text {
 			color: #a5a5a5;
