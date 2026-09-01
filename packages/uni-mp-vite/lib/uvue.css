@@ -92,6 +92,10 @@ button {
   align-items: center;
   align-content: center;
   justify-content: center;
+  white-space: normal;
+  word-break: break-all;
+  text-align: center;
+  height: auto;
   min-height: 0px;
   /* min-width: 0px; */
   border-width: medium;
