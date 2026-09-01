@@ -68,6 +68,9 @@ describe('autoImport', () => {
     expect(isIncluded('/src/node_modules/uni-app-x-package/index.js')).toBe(
       true
     )
+    expect(isIncluded('/src/vendor/uni-cloud-x.es.js')).toBe(false)
+    expect(isIncluded('C:\\src\\vendor\\uni-cloud-x.es.js')).toBe(false)
+    expect(isIncluded('/src/vendor/custom-uni-cloud-x.es.js')).toBe(true)
     expect(isIncluded('/src/store/index.ts')).toBe(true)
     expect(isIncluded('/src/store/index.uts')).toBe(true)
     expect(isIncluded('/src/pages/index.uvue?vue&type=script')).toBe(true)

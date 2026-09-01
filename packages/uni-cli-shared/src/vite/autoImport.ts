@@ -350,7 +350,11 @@ export function initAutoImportOptions(
   }
 
   // node_modules 可能包含依赖 auto import 的 uni-app x 源码包，不能恢复 unplugin 的默认排除项。
-  const exclude: (RegExp | string)[] = [/[\\/]\.git[\\/]/]
+  const exclude: (RegExp | string)[] = [
+    /[\\/]\.git[\\/]/,
+    // uni-cloud 的预构建入口内部使用全局 uniCloud，参与自动导入会产生对自身的引用。
+    /(?:^|[\\/])uni-cloud-x\.es\.js$/,
+  ]
   if (process.env.UNI_INPUT_DIR) {
     exclude.push(
       ...resolveWorkersDir(process.env.UNI_INPUT_DIR).map((dir) =>
