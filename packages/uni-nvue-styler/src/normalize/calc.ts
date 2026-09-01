@@ -1,8 +1,13 @@
+import { camelize } from '@vue/shared'
 import { type Normalize, supportedEnumReason } from '../utils'
 
-const DOM2_CALC_PROPERTIES = new Set([
+const DOM2_CALC_PROPERTIES = [
   'width',
   'height',
+  'min-width',
+  'min-height',
+  'max-width',
+  'max-height',
   'top',
   'right',
   'bottom',
@@ -17,27 +22,43 @@ const DOM2_CALC_PROPERTIES = new Set([
   'padding-right',
   'padding-bottom',
   'padding-left',
-])
-
-const DOM2_RENDER_CALC_PROPERTIES = new Set([
-  'borderBottomLeftRadius',
-  'borderBottomRightRadius',
-  'borderRadius',
-  'borderTopLeftRadius',
-  'borderTopRightRadius',
+  'flex-basis',
+  'border',
+  'border-top',
+  'border-right',
+  'border-bottom',
+  'border-left',
+  'border-width',
+  'border-top-width',
+  'border-right-width',
+  'border-bottom-width',
+  'border-left-width',
+  'border-radius',
+  'border-top-left-radius',
+  'border-top-right-radius',
+  'border-bottom-right-radius',
+  'border-bottom-left-radius',
   'transform',
-  'transformOrigin',
-  'boxShadow',
-  'textShadow',
-  'backdropFilter',
+  'transform-origin',
+  'box-shadow',
+  'text-shadow',
+  'backdrop-filter',
   'opacity',
-])
+  'font-size',
+  'line-height',
+  'z-index',
+] as const
 
-export function createNormalizeDom2RenderCalc(
+const DOM2_CALC_PROPERTY_SET = new Set<string>(DOM2_CALC_PROPERTIES)
+const DOM2_CAMELIZED_CALC_PROPERTY_SET = new Set(
+  DOM2_CALC_PROPERTIES.map(camelize)
+)
+
+export function createNormalizeDom2Calc(
   normalize: Normalize,
   property: string
 ): Normalize {
-  if (!DOM2_RENDER_CALC_PROPERTIES.has(property)) {
+  if (!DOM2_CAMELIZED_CALC_PROPERTY_SET.has(property)) {
     return normalize
   }
   return (value, options, context) => {
@@ -63,7 +84,7 @@ export function normalizeCalc(
     options.type === 'uvue' &&
     options.dom2 &&
     property &&
-    DOM2_CALC_PROPERTIES.has(property)
+    DOM2_CALC_PROPERTY_SET.has(property)
   ) {
     return { value: canonicalValue }
   }

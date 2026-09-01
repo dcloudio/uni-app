@@ -29,7 +29,7 @@ import { normalizeFontFace, normalizeSrc } from './fontFace'
 import { normalizeFlexFlow } from './flexFlow'
 import { animationNormalizeFactoryMap } from './animation'
 import { normalizeBackdropFilter } from './backdropFilter'
-import { createNormalizeDom2RenderCalc } from './calc'
+import { createNormalizeDom2Calc } from './calc'
 
 // transition-property 不读 css.json
 // 从 property.ts 中移动到 map 里，避免循环依赖
@@ -265,7 +265,7 @@ function getUVueNormalizeMap(options: NormalizeOptions) {
       }
     }
     result[prop] = normalizePlatform(
-      dom2 ? createNormalizeDom2RenderCalc(normalize, prop) : normalize,
+      dom2 ? createNormalizeDom2Calc(normalize, prop) : normalize,
       property.uniPlatform
     )
   }
