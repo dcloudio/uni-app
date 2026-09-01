@@ -76,7 +76,7 @@
 | 4 |
 
 
-- 如果应用通过scheme或applink（通用链接）启动，可以通过本API获取相应参数。配置scheme或applink需在AndroidManifest.xml或info.plist中配置，打包后生效。如开发直达页面功能，一般在应用的onShow生命周期监听。[详见](../collocation/app.md#onshow)
+- 如果应用通过scheme或applink（通用链接）启动，可以通过本API获取相应参数。配置scheme或applink需manifest.json中配置，或者在原生的AndroidManifest.xml、iOS的info.plist、鸿蒙的json5中配置，打包后生效。如开发直达页面功能，一般在应用的onShow生命周期监听。[详见](../collocation/app.md#onshow)
 
 ### 示例
 
