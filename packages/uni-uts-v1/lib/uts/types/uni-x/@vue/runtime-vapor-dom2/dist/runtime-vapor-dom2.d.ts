@@ -23,6 +23,7 @@ declare class DynamicFragment extends VaporFragment {
   scope: EffectScope$1 | undefined;
   current?: BlockFn;
   fallback?: BlockFn;
+  everUpdated: boolean;
   getScope?: (key: any) => EffectScope$1 | undefined;
   hasFallthroughAttrs?: true;
   constructor(anchorLabel?: string);
@@ -33,10 +34,10 @@ declare class DynamicFragment extends VaporFragment {
 //#region temp/packages/runtime-vapor-dom2/src/apiTemplateRef.d.ts
 type NodeRef = string | Ref | ((ref: Element) => void);
 type RefEl = UniElement | VaporSharedDataComponentInstance | DynamicFragment | VaporFragment;
-type setRefFn = (el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
+type setRefFn = (el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null) => void;
 export declare function createSharedDataTemplateRefSetter(): setRefFn;
-export declare function setSharedDataStaticTemplateRef(el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null): NodeRef | undefined;
-export declare function setSharedDataTemplateRefBinding(el: RefEl | null, getter: () => any, setter?: setRefFn, refFor?: boolean | null, refKey?: string | null): void;
+export declare function setSharedDataStaticTemplateRef(el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null): void;
+export declare function setSharedDataTemplateRefBinding(el: RefEl | null, getter: () => any, refFor?: boolean | null, refKey?: string | null): void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/block.d.ts
 type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[] | RefEl;

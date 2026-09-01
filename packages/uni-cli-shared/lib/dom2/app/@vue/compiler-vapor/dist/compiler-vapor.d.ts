@@ -21793,16 +21793,22 @@ declare const initDirectivesForSSR: () => void;
 //#region packages/runtime-vapor/src/apiTemplateRef.d.ts
 type NodeRef = string | Ref | ((ref: Element | VaporComponentInstance, refs: Record<string, any>) => void);
 type RefEl = Element | VaporComponentInstance | DynamicFragment | VaporFragment;
-type setRefFn = (el: RefEl, ref: NodeRef, refFor?: boolean, refKey?: string) => NodeRef | undefined;
+type setRefFn = (el: RefEl, ref: NodeRef, refFor?: boolean, refKey?: string) => void;
 declare function createTemplateRefSetter(): setRefFn;
-declare function setStaticTemplateRef(el: RefEl, ref: NodeRef, refFor?: boolean, refKey?: string): NodeRef | undefined;
-declare function setTemplateRefBinding(el: RefEl, getter: () => any, setter?: setRefFn, refFor?: boolean, refKey?: string): void;
+/**
+* Static refs never change value, so they need no old-ref tracking and no
+* per-element state - only the fragment re-apply hook shared with the
+* stateful path.
+*/
+declare function setStaticTemplateRef(el: RefEl, ref: NodeRef, refFor?: boolean, refKey?: string): void;
+declare function setTemplateRefBinding(el: RefEl, getter: () => any, refFor?: boolean, refKey?: string): void;
 //#endregion
 //#region packages/runtime-vapor/src/slotBoundary.d.ts
 interface SlotBoundaryContext {
   parent: SlotBoundaryContext | null;
   getFallback: () => BlockFn | undefined;
   run<R>(fn: () => R, scope?: EffectScope$1): R;
+  getScopeIds?: () => string[] | null;
   markDirty: (force?: boolean) => void;
   onContentInvalid?: (() => void)[];
 }
@@ -21867,7 +21873,6 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   remove?: (parent?: ParentNode, transitionHooks?: TransitionHooks) => void;
   hydrate?(...args: any[]): void;
   setRef?: (instance: VaporComponentInstance, ref: NodeRef, refFor: boolean, refKey: string | undefined) => void;
-  onBeforeInsert?: ((nodes: Block) => void)[];
   onRemove?: (() => void)[];
   onBeforeUpdate?: (() => void)[];
   onUpdated?: ((nodes?: Block) => void)[];
@@ -21878,6 +21883,8 @@ declare class RenderContextFragment<T extends Block = Block> extends VaporFragme
   readonly slotOwner: VaporComponentInstance | null;
   readonly keepAliveCtx?: VaporKeepAliveContext | null;
   readonly slotBoundary: SlotBoundaryContext | null;
+  readonly renderSuspense?: SuspenseBoundary | null;
+  slotScopeIds: string[] | null;
   constructor(nodes: T, flags?: number);
   protected runWithRenderCtx<R>(fn: () => R, scope?: EffectScope$1): R;
 }
@@ -21899,7 +21906,8 @@ declare class DynamicFragment extends RenderContextFragment {
   keyed?: boolean;
   nativeChildren?: boolean;
   inTransition?: boolean;
-  hasFallthroughAttrs?: true;
+  fallthrough?: (nodes: Block) => void;
+  scopeIdOwners?: VaporComponentInstance[];
   everUpdated: boolean;
   constructor(anchorLabel?: string, keyed?: boolean, locate?: boolean, trackSlotBoundary?: boolean, onInvalid?: () => void, adoptAnchor?: Node, flags?: number);
   protected get autoHydrate(): boolean;
@@ -21930,11 +21938,12 @@ declare function remove(block: Block, parent?: ParentNode): void;
 //#region packages/runtime-vapor/src/renderEffect.d.ts
 declare class RenderEffect extends ReactiveEffect {
   i: VaporComponentInstance | null;
-  job: SchedulerJob;
+  job?: SchedulerJob;
   updateJob?: SchedulerJob;
   render: () => void;
   order: number;
   constructor(render: () => void, noLifecycle?: boolean);
+  createJob(): SchedulerJob;
   fn(): void;
   notify(): void;
 }
@@ -22046,6 +22055,7 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   propsDefaults: Record<string, any> | null;
   slots: Slots;
   scopeId?: string | null;
+  slotScopeIds?: string[] | null;
   rawPropsRef?: ShallowRef<any>;
   rawSlotsRef?: ShallowRef<any>;
   emit: EmitFn<Emits>;
@@ -22826,7 +22836,6 @@ export declare class CodegenContext {
   bindingNames: Set<string>;
   helpers: Map<string, string>;
   needsTemplateRefSetter: boolean;
-  staticTemplateRefHelperCandidate?: SetTemplateRefIRNode;
   inSlotBlock: boolean;
   helper: (name: CoreHelper | VaporHelper) => string;
   delegates: Set<string>;

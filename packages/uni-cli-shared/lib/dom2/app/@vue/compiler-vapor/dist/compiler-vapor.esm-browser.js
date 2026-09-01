@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.4
+  * @vue/compiler-vapor v3.6.0-rc.5
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -20972,7 +20972,7 @@ function getSpecialHelper(keyName, tagName, isSVG) {
 const setTemplateRefIdent = `_setTemplateRef`;
 function genSetTemplateRef(oper, context) {
 	const [refValue, refKey] = genRefValue(oper.value, context);
-	if (context.staticTemplateRefHelperCandidate === oper) return genSetStaticTemplateRef(oper, refValue, refKey, context);
+	if (!oper.effect && !oper.refFor && oper.value.isStatic) return genSetStaticTemplateRef(oper, refValue, refKey, context);
 	context.needsTemplateRefSetter = true;
 	return [NEWLINE, ...genCall(setTemplateRefIdent, `n${oper.element}`, refValue, oper.refFor && "true", refKey)];
 }
@@ -20981,13 +20981,7 @@ function genSetStaticTemplateRef(oper, refValue, refKey, context) {
 }
 function genSetTemplateRefBinding(oper, context) {
 	const [refValue, refKey] = genRefValue(oper.value, context);
-	const setter = context.inSlotBlock && setTemplateRefIdent;
-	if (context.inSlotBlock) context.needsTemplateRefSetter = true;
-	return [NEWLINE, ...genCall([context.helper("setTemplateRefBinding"), "undefined"], `n${oper.element}`, ["() => ", ...refValue], ...setter || oper.refFor || refKey ? [
-		setter,
-		oper.refFor && "true",
-		refKey
-	] : [])];
+	return [NEWLINE, ...genCall([context.helper("setTemplateRefBinding"), "undefined"], `n${oper.element}`, ["() => ", ...refValue], ...oper.refFor || refKey ? [oper.refFor && "true", refKey] : [])];
 }
 function genRefValue(value, context) {
 	if (value && context.options.inline) {
@@ -22253,7 +22247,6 @@ var CodegenContext = class {
 		this.block = ir.block;
 		this.bindingNames = new Set(this.options.bindingMetadata ? Object.keys(this.options.bindingMetadata) : []);
 		this.initNextIdMap();
-		this.staticTemplateRefHelperCandidate = getStaticTemplateRefHelperCandidate(ir.block);
 	}
 };
 function generate(ir, options = {}) {
@@ -22304,11 +22297,6 @@ function genAssetImports({ ir }) {
 		imports += `import ${name} from '${assetImport.path}';\n`;
 	}
 	return imports;
-}
-function getStaticTemplateRefHelperCandidate(block) {
-	if (block.operation.length !== 1) return;
-	const operation = block.operation[0];
-	if (operation.type === 9 && !operation.effect && !operation.refFor && operation.value.isStatic) return operation;
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vBind.ts
