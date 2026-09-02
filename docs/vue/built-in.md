@@ -2131,6 +2131,7 @@ const incrementNum = () =>{
 **注意：**
 - App-Android 平台暂不支持动态修改 `to` 属性。
 - 鸿蒙和 ios 非蒸汽模式 暂不支持 `to` 设置为 `body`。
+- App 和 web VDOM 模式 teleport 首次挂载时会立即查找目标节点，如果目标节点当时还没渲染出来，就会出现 Failed to locate Teleport target 警告，解决方法是用 v-if 配合 onReady 延迟显示。
 
 
 
