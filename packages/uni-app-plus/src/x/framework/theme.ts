@@ -9,8 +9,8 @@ import { initRouteOptions } from '../../service/framework/page/routeOptions'
 import { fixBorderStyle } from './app/utils'
 import { UTSJSONObject } from '@dcloudio/uni-shared'
 import { getNativeApp } from './app/app'
+import type { IApp } from '@dcloudio/uni-app-x/types/native'
 
-const APP_THEME_AUTO = 'auto'
 export const THEME_KEY_PREFIX = '@'
 
 type IThemeMode = 'dark' | 'light'
@@ -34,23 +34,9 @@ declare function __uni__app_RegisterThemeConfig(
   config: AppThemeConfig
 ): boolean
 
-// 获取 appTheme > osTheme
+// 获取当前 App 主题
 export function getAppThemeFallbackOS(): IThemeMode {
-  let fallbackOSTheme: IThemeMode = 'light'
-
-  try {
-    const appTheme = uni.getAppBaseInfo().appTheme as IThemeMode & 'auto'
-
-    fallbackOSTheme = appTheme
-    if (appTheme === APP_THEME_AUTO) {
-      const osTheme = uni.getDeviceInfo().osTheme as IThemeMode
-      fallbackOSTheme = osTheme
-    }
-    return fallbackOSTheme
-  } catch (e) {
-    console.error(e)
-    return fallbackOSTheme
-  }
+  return (getNativeApp() as IApp).isDarkTheme ? 'dark' : 'light'
 }
 
 // 监听主题 id，用来 off
