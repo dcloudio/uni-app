@@ -4,7 +4,7 @@
 ## nested-scroll-body
 :::
 
-> 组件类型：UniNestedScrollHeaderElement 
+> 组件类型：UniNestedScrollBodyElement 
 
  scroll-view 嵌套模式场景中属于嵌套内层 scroll-view 的父节点，仅支持作为 \<scroll-view type='nested'\> 嵌套模式的直接子节点。不支持复数子节点，渲染时会取其第一个子节点来渲染
 
