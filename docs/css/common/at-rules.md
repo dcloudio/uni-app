@@ -28,7 +28,6 @@
 不支持的css功能，并不影响业务开发。因为css本质是一种编写元素的样式属性的一种描述性写法。元素的所有样式设置，都可以脱离css这种写法，由API完成。
 
 - `@keyframes关键帧动画`，在App平台，可以使用API方式实现，暂不支持通过css方式实现。详见[UniElement的animate方法](../../dom/unielement.md#animate)
-- `@media媒体查询`，宽屏适配可使用`<match-media>组件`，[详见](../../component/match-media.md)。暗黑主题适配，[详见](https://doc.dcloud.net.cn/uni-app-x/api/theme-change.html)
 
 ## 字体 @font
 
@@ -298,7 +297,7 @@ export default {
 
 `@media` 用于根据媒体查询结果应用一组样式。Web 和小程序平台支持媒体查询，具体能力由对应平台决定。
 
-HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒体查询来适配应用暗黑主题（暂不支持尺寸、宽高、屏幕方向、分辨率等其他媒体特性）：
+HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒体查询来适配应用暗黑主题：
 
 ```css
 .page {
@@ -312,4 +311,8 @@ HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒�
 }
 ```
 
+以上代码仅为举例。如果要适配小程序，一般不在page选择器上设背景。因为小程序上适配暗黑，页面背景需要在theme.json里配置，通过page选择器配置容易生效较晚、产生白屏。如果已经在theme.json中配置了，就无需通过页面内的page选择器重复设置了。
+
 详见 [暗黑主题适配教程](https://doc.dcloud.net.cn/uni-app-x/api/theme-change.html)。
+
+目前App平台`@media`暂不支持尺寸、宽高、屏幕方向、分辨率等其他媒体特性的匹配，如需适配宽屏，请使用专门的`<match-media>组件`，[详见](../../component/match-media.md)。
