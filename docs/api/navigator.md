@@ -454,10 +454,7 @@
       <page-head title="navigate"></page-head>
       <page-intro content="本页演示页面路由：展示 onLoad/onShow/onReady 等生命周期时间戳；通过按钮跳转新页、返回、redirect 等，可传递参数。"></page-intro>
       <!-- #ifdef APP && !VUE3-VAPOR -->
-      <view style="flex-direction: row;">
-        <switch @change="onChange"></switch>
-        <view class="uni-title">是否启用共享元素动画</view>
-      </view>
+      <boolean-data :defaultValue="false" title="是否启用共享元素动画" @change="onChange"></boolean-data>
       <share-element :share-key="data.shareElementKey">
         <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
       </share-element>
@@ -525,7 +522,7 @@
     onReadyTime: number;
     onHideTime: number;
     shareElementKey: string;
-    animationTypeList: string[];
+    animationTypeList: AnimationType[];
   }
 
   const data = reactive<DataType>({
@@ -543,8 +540,9 @@
       'fade-in',
       'zoom-out',
       'zoom-fade-out',
-      'none'
-    ]
+      'none',
+      'auto'
+    ] as AnimationType[]
   })
   onLoad(() => {
     data.onLoadTime = Date.now()
@@ -877,8 +875,8 @@
     setLifeCycleNum(num)
   }
 
-  const onChange = (event: UniSwitchChangeEvent) => {
-    if (event.detail.value) {
+  const onChange = (value : boolean) => {
+    if (value) {
       data.shareElementKey = "test-share-element-key"
     } else {
       data.shareElementKey = ""
