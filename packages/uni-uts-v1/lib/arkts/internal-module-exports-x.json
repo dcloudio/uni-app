@@ -2878,6 +2878,9 @@
       "UnzipFileOptions"
     ],
     [
+      "UnzipSyncOptions"
+    ],
+    [
       "UploadFile"
     ],
     [
