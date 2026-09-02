@@ -29288,13 +29288,13 @@ function processInterpolation(context) {
 	const values = processTextLikeChildren(collectAdjacentText(context), context);
 	if (values.length === 0 && parentNode.type !== 0) return;
 	const literalValues = values.map((v) => getLiteralExpressionValue(v));
-	if (literalValues.every((v) => v != null) && parentNode.type !== 0) {
-		const text = literalValues.join("");
+	const text = literalValues.every((v) => v != null) ? literalValues.join("") : null;
+	const isElementChild = parentNode.type === 1 && parentNode.tagType === 0;
+	if (text !== null && parentNode.type !== 0 && (isElementChild || text !== "")) {
 		if (parentNode.type === 1 && shouldUseCreateElement(parentNode, context.parent) && text[0] === "<") {
 			materializeLiteralTextNode(createSimpleExpression(text, true, context.node.loc), context);
 			return;
 		}
-		const isElementChild = parentNode.type === 1 && parentNode.tagType === 0;
 		context.template += isElementChild ? escapeHtml(text) : text;
 		return;
 	}
