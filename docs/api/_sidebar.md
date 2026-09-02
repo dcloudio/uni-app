@@ -27,6 +27,8 @@
   * [页面下拉刷新](pull-down-refresh.md)
   * [将页面滚动到指定位置](page-scroll-to.md)
   * [监听中间按钮的点击事件](on-tab-bar-mid-button-tap.md)
+  * [窗口](window.md)
+  * [宽屏适配](wide-screen-adaptation.md)
 * element和node
   * [通过 id 获取 element](get-element-by-id.md)
   * [创建 SelectorQuery 实例](create-selector-query.md)
