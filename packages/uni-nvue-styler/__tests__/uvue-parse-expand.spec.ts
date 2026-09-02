@@ -255,6 +255,151 @@ describe('test esm expand', () => {
       })
     )
   })
+
+  test('expands variable shorthands only for dom2', () => {
+    const processNVueDeclaration = expand({ type: 'nvue' }).Declaration as (
+      decl: Declaration
+    ) => void
+    const processLegacyUVueDeclaration = expand({
+      type: 'uvue',
+      dom2: false,
+    }).Declaration as (decl: Declaration) => void
+    const processDom2Declaration = expand({
+      type: 'uvue',
+      dom2: true,
+    }).Declaration as (decl: Declaration) => void
+
+    const flexFlowValue = 'var(--direction, row) wrap'
+    for (const processor of [
+      processNVueDeclaration,
+      processLegacyUVueDeclaration,
+    ]) {
+      expect(normalizeStyle('flex-flow', flexFlowValue, processor)).toEqual([
+        expect.objectContaining({ prop: 'flex-flow', value: flexFlowValue }),
+      ])
+    }
+
+    expect(
+      normalizeStyle(
+        'background',
+        'var(--background, #ffffff)',
+        processLegacyUVueDeclaration
+      )
+    ).toEqual([
+      expect.objectContaining({
+        prop: 'background',
+        value: 'var(--background, #ffffff)',
+      }),
+    ])
+
+    expect(
+      normalizeStyle(
+        'font',
+        'italic 16px var(--family)',
+        processLegacyUVueDeclaration
+      )
+    ).toEqual([
+      expect.objectContaining({
+        prop: 'font',
+        value: 'italic 16px var(--family)',
+      }),
+    ])
+
+    expect(
+      normalizeStyle('border', 'var(--border)', processLegacyUVueDeclaration)
+        .filter(({ prop }) => prop.endsWith('-top-width'))
+        .map(({ value }) => value)
+    ).toEqual(['var(--border)'])
+    expect(
+      normalizeStyle('border', 'var(--border)', processLegacyUVueDeclaration)
+        .filter(({ prop }) =>
+          ['border-top-style', 'border-top-color'].includes(prop)
+        )
+        .map(({ value }) => value)
+    ).toEqual(['none', '#000000'])
+
+    expect(
+      normalizeStyle('flex', 'var(--flex)', processLegacyUVueDeclaration).map(
+        ({ prop, value }) => ({ prop, value })
+      )
+    ).toEqual([
+      { prop: 'flex-grow', value: '1' },
+      { prop: 'flex-shrink', value: '1' },
+      { prop: 'flex-basis', value: 'var(--flex)' },
+    ])
+
+    expect(
+      normalizeStyle('flex-flow', flexFlowValue, processDom2Declaration).map(
+        ({ prop, value }) => ({ prop, value })
+      )
+    ).toEqual([
+      { prop: 'flex-direction', value: 'var(--direction, row)' },
+      { prop: 'flex-wrap', value: 'wrap' },
+    ])
+
+    for (const { shorthand, value, expected } of [
+      {
+        shorthand: 'background',
+        value: 'linear-gradient(red, blue) var(--color, red)',
+        expected: [
+          {
+            prop: 'background-image',
+            value: 'linear-gradient(red, blue)',
+          },
+          { prop: 'background-color', value: 'var(--color, red)' },
+        ],
+      },
+      {
+        shorthand: 'border',
+        value: '1px solid var(--color, red)',
+        expected: [
+          ...[
+            'border-top-width',
+            'border-right-width',
+            'border-bottom-width',
+            'border-left-width',
+          ].map((prop) => ({ prop, value: '1px' })),
+          ...[
+            'border-top-style',
+            'border-right-style',
+            'border-bottom-style',
+            'border-left-style',
+          ].map((prop) => ({ prop, value: 'solid' })),
+          ...[
+            'border-top-color',
+            'border-right-color',
+            'border-bottom-color',
+            'border-left-color',
+          ].map((prop) => ({ prop, value: 'var(--color, red)' })),
+        ],
+      },
+      {
+        shorthand: 'flex',
+        value: 'var(--grow, 1) 1 20px',
+        expected: [
+          { prop: 'flex-grow', value: 'var(--grow, 1)' },
+          { prop: 'flex-shrink', value: '1' },
+          { prop: 'flex-basis', value: '20px' },
+        ],
+      },
+      {
+        shorthand: 'transition',
+        value: 'opacity var(--duration)',
+        expected: [
+          'transition-property',
+          'transition-duration',
+          'transition-timing-function',
+          'transition-delay',
+        ].map((prop) => ({ prop, value: 'opacity var(--duration)' })),
+      },
+    ]) {
+      expect(
+        normalizeStyle(shorthand, value, processDom2Declaration).map(
+          ({ prop, value }) => ({ prop, value })
+        )
+      ).toEqual(expected)
+    }
+  })
 })
 
 const props = ['border-left', 'border-right', 'border-top', 'border-bottom']

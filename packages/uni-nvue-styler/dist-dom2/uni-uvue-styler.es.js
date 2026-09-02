@@ -117,11 +117,85 @@ function splitValues(value) {
     return parts;
 }
 
+function isSingleCssVarValue(value) {
+    const trimmedValue = value.trim();
+    if (splitValues(trimmedValue).length !== 1 || !/^var\(/i.test(trimmedValue)) {
+        return false;
+    }
+    let depth = 0;
+    for (let i = 0; i < trimmedValue.length; i++) {
+        const char = trimmedValue[i];
+        if (char === '(') {
+            depth++;
+        }
+        else if (char === ')') {
+            if (depth === 0) {
+                return false;
+            }
+            depth--;
+            if (depth === 0 && trimmedValue.slice(i + 1).trim()) {
+                return false;
+            }
+        }
+    }
+    return depth === 0;
+}
+function tryExpandSingleValueVarShorthand(decl, props, value, dom2) {
+    // 只在 dom2 运行时兜底展开，避免影响其它平台现有行为。
+    if (!dom2) {
+        return null;
+    }
+    // 当整个简写值只有一个 var() 时，无法静态判断它属于哪个子属性，
+    // 这里直接复制到每个长属性，交给运行时再解析。
+    if (!isSingleCssVarValue(value)) {
+        return null;
+    }
+    return expandShorthand(decl, props, value);
+}
+function expandShorthand(decl, props, value) {
+    const { important, raws, source } = decl;
+    return props.map((prop) => createDecl(prop, value, important, raws, source));
+}
+
 const backgroundColor = 'background-color' ;
 const backgroundImage = 'background-image' ;
-const handleTransformBackground = (decl) => {
+function isCssVarValue$3(value) {
+    return /^var\(/i.test(value);
+}
+function isBackgroundImageValue(value) {
+    return value === 'none' || /^linear-gradient(.+)$/.test(value);
+}
+function isBackgroundColorValue(value) {
+    return (!isCssVarValue$3(value) &&
+        !isBackgroundImageValue(value) &&
+        (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)));
+}
+const handleTransformBackground = (decl, dom2) => {
     let { value, important, raws, source } = decl;
     value = value.trim();
+    const singleVarResult = tryExpandSingleValueVarShorthand(decl, [backgroundImage, backgroundColor], value, dom2);
+    if (singleVarResult) {
+        return singleVarResult;
+    }
+    if (dom2) {
+        const values = splitValues(value);
+        if (values.length === 2) {
+            const variableIndex = values.findIndex(isCssVarValue$3);
+            const otherIndex = variableIndex === 0 ? 1 : 0;
+            if (variableIndex >= 0 &&
+                !isCssVarValue$3(values[otherIndex]) &&
+                (isBackgroundImageValue(values[otherIndex]) ||
+                    isBackgroundColorValue(values[otherIndex]))) {
+                const variableValue = values[variableIndex];
+                const otherValue = values[otherIndex];
+                const variableIsImage = isBackgroundColorValue(otherValue);
+                return [
+                    createDecl(backgroundImage, variableIsImage ? variableValue : otherValue, important, raws, source),
+                    createDecl(backgroundColor, variableIsImage ? otherValue : variableValue, important, raws, source),
+                ];
+            }
+        }
+    }
     if (value === 'none') {
         return [
             createDecl(backgroundImage, 'none', important, raws, source),
@@ -146,12 +220,14 @@ const handleTransformBackground = (decl) => {
             createDecl(backgroundColor, 'transparent', important, raws, source),
         ];
     }
-    return [decl];
+    return dom2 && /\bvar\(/i.test(value)
+        ? expandShorthand(decl, [backgroundImage, backgroundColor], value)
+        : [decl];
 };
 function createTransformBackground(options) {
     return (decl) => {
         {
-            return handleTransformBackground(decl);
+            return handleTransformBackground(decl, !!options.dom2);
         }
     };
 }
@@ -194,39 +270,6 @@ const transformBorderStyle = transformBorderColor;
 
 const transformBorderWidth = transformBorderColor;
 
-function isSingleCssVarValue(value) {
-    const trimmedValue = value.trim();
-    if (splitValues(trimmedValue).length !== 1 || !/^var\(/i.test(trimmedValue)) {
-        return false;
-    }
-    let depth = 0;
-    for (let i = 0; i < trimmedValue.length; i++) {
-        const char = trimmedValue[i];
-        if (char === '(') {
-            depth++;
-        }
-        else if (char === ')') {
-            if (depth === 0) {
-                return false;
-            }
-            depth--;
-            if (depth === 0 && trimmedValue.slice(i + 1).trim()) {
-                return false;
-            }
-        }
-    }
-    return depth === 0;
-}
-function tryExpandSingleValueVarShorthand(decl, props, value) {
-    // 当整个简写值只有一个 var() 时，无法静态判断它属于哪个子属性，
-    // 这里直接复制到每个长属性，交给运行时再解析。
-    if (!isSingleCssVarValue(value)) {
-        return null;
-    }
-    const { important, raws, source } = decl;
-    return props.map((prop) => createDecl(prop, value, important, raws, source));
-}
-
 const borderWidth = '-width' ;
 const borderStyle = '-style' ;
 const borderColor = '-color' ;
@@ -236,23 +279,23 @@ const BORDER_STYLE_REGEXP = /^(?:none|hidden|dotted|dashed|solid|double|groove|r
 function createBorderVarOrderWarning(prop, value) {
     return supportedValueWithTipsReason(prop, value, '(border shorthand with CSS variables must follow `width style color`, for example: `1px solid var(--color, #999999)`)');
 }
-function isCssVarValue(value) {
+function isCssVarValue$2(value) {
     return value.startsWith('var(');
 }
 function isBorderWidthValue(value) {
-    return isCssVarValue(value) || BORDER_WIDTH_REGEXP.test(value);
+    return isCssVarValue$2(value) || BORDER_WIDTH_REGEXP.test(value);
 }
 function isBorderStyleValue(value) {
-    return isCssVarValue(value) || BORDER_STYLE_REGEXP.test(value);
+    return isCssVarValue$2(value) || BORDER_STYLE_REGEXP.test(value);
 }
 function isBorderColorValue(value) {
-    return (isCssVarValue(value) ||
+    return (isCssVarValue$2(value) ||
         (!BORDER_WIDTH_REGEXP.test(value) && !BORDER_STYLE_REGEXP.test(value)));
 }
 function createTransformBorder(options) {
     return (decl, onWarning) => {
         const { prop, value, important, raws, source } = decl;
-        const singleVarResult = tryExpandSingleValueVarShorthand(decl, [prop + borderWidth, prop + borderStyle, prop + borderColor], value);
+        const singleVarResult = tryExpandSingleValueVarShorthand(decl, [prop + borderWidth, prop + borderStyle, prop + borderColor], value, !!options.dom2);
         // 单个 var() 无法提前判断是 width/style/color，dom2 下先平铺后继续展开。
         if (singleVarResult) {
             return [
@@ -348,30 +391,42 @@ const transformBorderRadius = (decl) => {
 
 const flexDirection = 'flex-direction' ;
 const flexWrap = 'flex-wrap' ;
-const transformFlexFlow = (decl) => {
+function transformFlexFlowDecl(decl, dom2) {
     let { value, important, raws, source } = decl;
     value = value.trim();
     const splitResult = splitValues(value);
-    const singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexDirection, flexWrap], value);
+    const singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexDirection, flexWrap], value, dom2);
     // 单个 var() 无法提前判断是 direction 还是 wrap，dom2 下直接平铺。
     if (singleVarResult) {
         return singleVarResult;
     }
-    const result = [
+    const matchers = [
         /^(column|column-reverse|row|row-reverse)$/,
         /^(nowrap|wrap|wrap-reverse)$/,
-    ].map((item) => {
+    ];
+    const result = matchers.map((item) => {
         const index = splitResult.findIndex((str) => item.test(str));
         return index < 0 ? null : splitResult.splice(index, 1)[0];
     });
+    if (dom2 &&
+        splitResult.length === 1 &&
+        /^var\(/i.test(splitResult[0]) &&
+        (result[0] === null || result[1] === null)) {
+        result[result[0] === null ? 0 : 1] = splitResult.pop();
+    }
     if (splitResult.length) {
-        return [decl];
+        return dom2 && /\bvar\(/i.test(value)
+            ? expandShorthand(decl, [flexDirection, flexWrap], value)
+            : [decl];
     }
     return [
         createDecl(flexDirection, result[0] || 'column', important, raws, source),
         createDecl(flexWrap, result[1] || 'nowrap', important, raws, source),
     ];
-};
+}
+function createTransformFlexFlow(dom2) {
+    return (decl) => transformFlexFlowDecl(decl, dom2);
+}
 
 const top = '-top' ;
 const right = '-right' ;
@@ -411,9 +466,50 @@ const transitionDuration = 'transition-duration'
 const transitionTimingFunction = 'transition-timing-function'
     ;
 const transitionDelay = 'transition-delay' ;
-const transformTransition = (decl) => {
+const transitionLonghands = [
+    transitionProperty,
+    transitionDuration,
+    transitionTimingFunction,
+    transitionDelay,
+];
+const TRANSITION_TIME_REGEXP = /^\d*\.?\d+(?:ms|s)$/;
+function isCssVarValue$1(value) {
+    return /^var\(/i.test(value);
+}
+function containsCssVar(value) {
+    return /\bvar\(/i.test(value);
+}
+function tryTransformTransitionNestedVariable(decl, dom2) {
+    if (!dom2) {
+        return null;
+    }
+    const values = splitValues(decl.value);
+    if (values.length < 2 ||
+        values.length > 4 ||
+        !values.some(containsCssVar) ||
+        values.some(isCssVarValue$1) ||
+        TRANSITION_TIME_REGEXP.test(values[0]) ||
+        !TRANSITION_TIME_REGEXP.test(values[1]) ||
+        (values[3] && !TRANSITION_TIME_REGEXP.test(values[3]))) {
+        return null;
+    }
+    const { important, raws, source } = decl;
+    return values.map((value, index) => createDecl(transitionLonghands[index], value, important, raws, source));
+}
+function transformTransitionDecl(decl, dom2) {
     let { value, important, raws, source } = decl;
     value = value.trim();
+    const singleVarResult = tryExpandSingleValueVarShorthand(decl, transitionLonghands, value, dom2);
+    if (singleVarResult) {
+        return singleVarResult;
+    }
+    const variableResult = tryTransformTransitionNestedVariable(decl, dom2);
+    if (variableResult) {
+        return variableResult;
+    }
+    if (dom2 && /\bvar\(/i.test(value)) {
+        return expandShorthand(decl, transitionLonghands, value);
+    }
     const result = [];
     let match;
     // 针对 cubic-bezier 特殊处理
@@ -438,21 +534,30 @@ const transformTransition = (decl) => {
     match[4] &&
         result.push(createDecl(transitionDelay, match[4], important, raws, source));
     return result;
-};
+}
+function createTransformTransition(dom2) {
+    return (decl) => transformTransitionDecl(decl, dom2);
+}
 
 const flexGrow = 'flex-grow' ;
 const flexShrink = 'flex-shrink' ;
 const flexBasis = 'flex-basis' ;
-const transformFlex = (decl) => {
+function isCssVarValue(value) {
+    return /^var\(/i.test(value);
+}
+function transformFlexDecl(decl, dom2) {
     let { value, important, raws, source } = decl;
     value = value.trim();
     const result = [];
     const splitResult = splitValues(value);
-    const singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexGrow, flexShrink, flexBasis], value);
-    // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按 border 的兜底逻辑平铺。
+    const singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexGrow, flexShrink, flexBasis], value, dom2);
+    // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按完整简写平铺。
     if (singleVarResult) {
         return singleVarResult;
     }
+    const variableResult = dom2 && /\bvar\(/i.test(value)
+        ? expandShorthand(decl, [flexGrow, flexShrink, flexBasis], value)
+        : null;
     // 是否 flex-grow 的有效值 <number [0,∞]>
     const isFlexGrowValid = (v) => isNumber(Number(v)) && !Number.isNaN(Number(v));
     const isFlexShrinkValid = (v) => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
@@ -490,36 +595,43 @@ const transformFlex = (decl) => {
     }
     else if (splitResult.length === 2) {
         const [v1, v2] = splitResult;
-        if (isFlexGrowValid(v1)) {
+        if (isFlexGrowValid(v1) || (dom2 && isCssVarValue(v1))) {
             if (isFlexShrinkValid(v2)) {
                 // flex: 1 2 => 1 2 0%
                 result.push(createDecl(flexGrow, v1, important, raws, source), createDecl(flexShrink, v2, important, raws, source), createDecl(flexBasis, '0%', important, raws, source));
                 return result;
             }
             else {
+                if (dom2 && isCssVarValue(v2)) {
+                    return variableResult || [decl];
+                }
                 // flex: 1 100px => 1 1 100px
                 result.push(createDecl(flexGrow, v1, important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, v2, important, raws, source));
                 return result;
             }
         }
         else {
-            return [decl];
+            return variableResult || [decl];
         }
     }
     else if (splitResult.length === 3) {
         const [v1, v2, v3] = splitResult;
-        if (isFlexGrowValid(v1) && isFlexShrinkValid(v2)) {
+        if ((isFlexGrowValid(v1) || (dom2 && isCssVarValue(v1))) &&
+            (isFlexShrinkValid(v2) || (dom2 && isCssVarValue(v2)))) {
             result.push(createDecl(flexGrow, v1, important, raws, source), createDecl(flexShrink, v2, important, raws, source), createDecl(flexBasis, v3, important, raws, source));
             return result;
         }
         else {
             // fallback
-            return [decl];
+            return variableResult || [decl];
         }
     }
     // 其它情况，原样返回
-    return [decl];
-};
+    return variableResult || [decl];
+}
+function createTransformFlex(dom2) {
+    return (decl) => transformFlexDecl(decl, dom2);
+}
 
 function createEnumNormalize(items) {
     return (v) => {
@@ -891,13 +1003,13 @@ const animationLonghands = [
 function createTransformAnimation(options) {
     return (decl, onWarning) => {
         const { value, important, raws, source } = decl;
-        const singleVarResult = tryExpandSingleValueVarShorthand(decl, animationLonghands, value);
+        const singleVarResult = tryExpandSingleValueVarShorthand(decl, animationLonghands, value, !!options.dom2);
         if (singleVarResult) {
             return singleVarResult;
         }
-        // 无法静态确定变量所属槽位时，完整平铺并由运行时按目标 longhand 投影。
+        // animation 的各值域无法仅凭变量位置可靠判断，保留完整值交给运行时投影。
         if (/\bvar\(/i.test(value)) {
-            return animationLonghands.map((prop) => createDecl(prop, value, important, raws, source));
+            return expandShorthand(decl, animationLonghands, value);
         }
         const animation = parseAnimation(value.trim());
         if (!animation) {
@@ -917,12 +1029,12 @@ function createTransformAnimation(options) {
 }
 
 function getDeclTransforms(options, dom2) {
-    const transformBorder = createTransformBorder()
+    const transformBorder = createTransformBorder(options)
         ;
     const styleMap = {
-        transition: transformTransition,
+        transition: createTransformTransition(dom2),
         border: transformBorder,
-        background: createTransformBackground(),
+        background: createTransformBackground(options),
         ['border-top' ]: transformBorder,
         ['border-right' ]: transformBorder,
         ['border-bottom' ]: transformBorder,
@@ -936,13 +1048,13 @@ function getDeclTransforms(options, dom2) {
         // margin,padding继续展开，确保样式的优先级
         margin: transformMargin,
         padding: transformPadding,
-        ['flex-flow' ]: transformFlexFlow,
+        ['flex-flow' ]: createTransformFlexFlow(dom2),
     };
     if (dom2) {
-        styleMap.animation = createTransformAnimation();
+        styleMap.animation = createTransformAnimation(options);
     }
     {
-        styleMap.flex = transformFlex;
+        styleMap.flex = createTransformFlex(dom2);
     }
     let result = {};
     {

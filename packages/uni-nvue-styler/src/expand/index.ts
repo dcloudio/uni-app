@@ -15,12 +15,12 @@ import {
 } from './borderRadius'
 import { transformBorderStyle, transformBorderStyleNvue } from './borderStyle'
 import { transformBorderWidth, transformBorderWidthNvue } from './borderWidth'
-import { transformFlexFlow } from './flexFlow'
+import { createTransformFlexFlow } from './flexFlow'
 import { transformFont } from './font'
 import { transformMargin } from './margin'
 import { transformPadding } from './padding'
-import { transformTransition } from './transition'
-import { transformFlex } from './flex'
+import { createTransformTransition } from './transition'
+import { createTransformFlex } from './flex'
 import { createTransformAnimation } from './animation'
 
 function getDeclTransforms(
@@ -32,7 +32,7 @@ function getDeclTransforms(
       ? createTransformBorder(options)
       : createTransformBorderNvue(options)
   const styleMap: Record<string, TransformDecl> = {
-    transition: transformTransition,
+    transition: createTransformTransition(dom2),
     border: transformBorder,
     background: createTransformBackground(options),
     [__RUN_TIME__ && __HYPHENATE__ ? 'border-top' : 'borderTop']:
@@ -58,14 +58,14 @@ function getDeclTransforms(
     margin: transformMargin,
     padding: transformPadding,
     [__RUN_TIME__ && __HYPHENATE__ ? 'flex-flow' : 'flexFlow']:
-      transformFlexFlow,
+      createTransformFlexFlow(dom2),
   }
 
   if (options.type === 'uvue' && dom2) {
     styleMap.animation = createTransformAnimation(options)
   }
   if (options.type === 'uvue') {
-    styleMap.flex = transformFlex
+    styleMap.flex = createTransformFlex(dom2)
   }
 
   let result: Record<string, TransformDecl> = {}

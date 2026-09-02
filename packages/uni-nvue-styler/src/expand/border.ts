@@ -54,7 +54,8 @@ export function createTransformBorder(
     const singleVarResult = tryExpandSingleValueVarShorthand(
       decl,
       [prop + borderWidth, prop + borderStyle, prop + borderColor],
-      value
+      value,
+      !!options.dom2
     )
     // 单个 var() 无法提前判断是 width/style/color，dom2 下先平铺后继续展开。
     if (singleVarResult) {

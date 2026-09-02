@@ -5,12 +5,18 @@ import { transformBorderColor } from '../src/expand/borderColor'
 import { transformBorderRadius } from '../src/expand/borderRadius'
 import { transformBorderStyle } from '../src/expand/borderStyle'
 import { transformBorderWidth } from '../src/expand/borderWidth'
-import { transformFlexFlow } from '../src/expand/flexFlow'
+import {
+  createTransformFlexFlow,
+  transformFlexFlow,
+} from '../src/expand/flexFlow'
 import { transformFont } from '../src/expand/font'
 import { createTransformBox } from '../src/expand/margin'
-import { transformTransition } from '../src/expand/transition'
+import {
+  createTransformTransition,
+  transformTransition,
+} from '../src/expand/transition'
 import { fillBorderPostion, postionTypes } from './test_utils'
-import { transformFlex } from '../src/expand/flex'
+import { createTransformFlex, transformFlex } from '../src/expand/flex'
 export type { Declaration } from 'postcss'
 
 function parseDecl(input: string) {
@@ -1170,7 +1176,7 @@ describe('nvue-styler: expand', () => {
     ;(globalThis as any).__HYPHENATE__ = true
 
     try {
-      const transform = createTransformBorder({ type: 'uvue' })
+      const transform = createTransformBorder({ type: 'uvue', dom2: true })
       const decl = parseDecl(`.test { border: var(--composite-border) }`)
       expect(transform(decl)).toEqual([
         {
@@ -1272,7 +1278,7 @@ describe('nvue-styler: expand', () => {
     ;(globalThis as any).__HYPHENATE__ = true
 
     try {
-      const transform = createTransformBorder({ type: 'uvue' })
+      const transform = createTransformBorder({ type: 'uvue', dom2: true })
       const decl = parseDecl(
         `.test { border-left: var(--composite-border, 1px solid red) }`
       )
@@ -1342,13 +1348,6 @@ describe('nvue-styler: expand', () => {
     expect(result[1].value).toBe('5px')
   })
 
-  test('transform flex-flow with var', () => {
-    const decl = parseDecl(`.test { flex-flow: var(--direction, row) wrap }`)
-    const result = transformFlexFlow(decl)
-    expect(result.length).toBe(1)
-    expect(result[0]).toBe(decl)
-  })
-
   test('transform flex with single var in dom2', () => {
     const prevRunTime = (globalThis as any).__RUN_TIME__
     const prevHyphenate = (globalThis as any).__HYPHENATE__
@@ -1358,7 +1357,7 @@ describe('nvue-styler: expand', () => {
 
     try {
       const decl = parseDecl(`.test { flex: var(--composite-flex) }`)
-      expect(transformFlex(decl)).toEqual([
+      expect(createTransformFlex(true)(decl)).toEqual([
         {
           type: 'decl',
           prop: 'flex-grow',
@@ -1396,7 +1395,7 @@ describe('nvue-styler: expand', () => {
 
     try {
       const decl = parseDecl(`.test { flex-flow: var(--composite-flow) }`)
-      expect(transformFlexFlow(decl)).toEqual([
+      expect(createTransformFlexFlow(true)(decl)).toEqual([
         {
           type: 'decl',
           prop: 'flex-direction',
@@ -1429,7 +1428,7 @@ describe('nvue-styler: expand', () => {
       const decl = parseDecl(
         `.test { flex-flow: var(--composite-flow, row wrap) }`
       )
-      expect(transformFlexFlow(decl)).toEqual([
+      expect(createTransformFlexFlow(true)(decl)).toEqual([
         {
           type: 'decl',
           prop: 'flex-direction',
@@ -1460,5 +1459,169 @@ describe('nvue-styler: expand', () => {
     // Preservation of spaces inside parentheses (normalized)
     expect(result[0].value).toBe('rgba(0, 0, 0, 0.5)')
     expect(result[1].value).toBe('rgba(255, 255, 255, 1)')
+  })
+
+  test.each([
+    {
+      name: 'background',
+      transform: createTransformBackground({ type: 'uvue', dom2: true }),
+      value: 'var(--background, #ffffff)',
+      properties: ['background-image', 'background-color'],
+    },
+    {
+      name: 'transition',
+      transform: createTransformTransition(true),
+      value: 'var(--transition, opacity 1s ease)',
+      properties: [
+        'transition-property',
+        'transition-duration',
+        'transition-timing-function',
+        'transition-delay',
+      ],
+    },
+    {
+      name: 'background',
+      transform: createTransformBackground({ type: 'uvue', dom2: true }),
+      value: 'var(--image) var(--color)',
+      properties: ['background-image', 'background-color'],
+    },
+    {
+      name: 'flex',
+      transform: createTransformFlex(true),
+      value: '1 var(--value)',
+      properties: ['flex-grow', 'flex-shrink', 'flex-basis'],
+    },
+    {
+      name: 'flex-flow',
+      transform: createTransformFlexFlow(true),
+      value: 'var(--direction) var(--wrap)',
+      properties: ['flex-direction', 'flex-wrap'],
+    },
+  ])('transform ambiguous $name var shorthand in dom2', (testCase) => {
+    const decl = parseDecl(
+      `.test { ${testCase.name}: ${testCase.value} !important }`
+    )
+
+    expect(testCase.transform(decl)).toEqual(
+      testCase.properties.map((prop) => ({
+        type: 'decl',
+        prop,
+        value: testCase.value,
+        important: true,
+        raws: decl.raws,
+        source: decl.source,
+      }))
+    )
+  })
+
+  test('transform flex-flow with mixed var in dom2', () => {
+    const decl = parseDecl(
+      `.test { flex-flow: var(--direction, row) wrap !important }`
+    )
+
+    expect(createTransformFlexFlow(true)(decl)).toEqual([
+      {
+        type: 'decl',
+        prop: 'flex-direction',
+        value: 'var(--direction, row)',
+        important: true,
+        raws: decl.raws,
+        source: decl.source,
+      },
+      {
+        type: 'decl',
+        prop: 'flex-wrap',
+        value: 'wrap',
+        important: true,
+        raws: decl.raws,
+        source: decl.source,
+      },
+    ])
+  })
+
+  test.each([
+    {
+      name: 'background',
+      transform: createTransformBackground({ type: 'uvue', dom2: true }),
+      value: 'linear-gradient(red, blue) var(--color, red)',
+      expected: [
+        ['background-image', 'linear-gradient(red, blue)'],
+        ['background-color', 'var(--color, red)'],
+      ],
+    },
+    {
+      name: 'background',
+      transform: createTransformBackground({ type: 'uvue', dom2: true }),
+      value: 'red var(--image, none)',
+      expected: [
+        ['background-image', 'var(--image, none)'],
+        ['background-color', 'red'],
+      ],
+    },
+    {
+      name: 'border',
+      transform: createTransformBorder({ type: 'uvue', dom2: true }),
+      value: '1px solid var(--color, red)',
+      expected: [
+        ['border-top-width', '1px'],
+        ['border-right-width', '1px'],
+        ['border-bottom-width', '1px'],
+        ['border-left-width', '1px'],
+        ['border-top-style', 'solid'],
+        ['border-right-style', 'solid'],
+        ['border-bottom-style', 'solid'],
+        ['border-left-style', 'solid'],
+        ['border-top-color', 'var(--color, red)'],
+        ['border-right-color', 'var(--color, red)'],
+        ['border-bottom-color', 'var(--color, red)'],
+        ['border-left-color', 'var(--color, red)'],
+      ],
+    },
+    {
+      name: 'flex',
+      transform: createTransformFlex(true),
+      value: 'var(--grow, 1) 1 20px',
+      expected: [
+        ['flex-grow', 'var(--grow, 1)'],
+        ['flex-shrink', '1'],
+        ['flex-basis', '20px'],
+      ],
+    },
+    {
+      name: 'transition',
+      transform: createTransformTransition(true),
+      value: 'opacity var(--duration, 1s) ease',
+      expected: [
+        'transition-property',
+        'transition-duration',
+        'transition-timing-function',
+        'transition-delay',
+      ].map((prop) => [prop, 'opacity var(--duration, 1s) ease']),
+    },
+    {
+      name: 'transition',
+      transform: createTransformTransition(true),
+      value: 'opacity 1s cubic-bezier(var(--x, 0.42), 0, 1, 1)',
+      expected: [
+        ['transition-property', 'opacity'],
+        ['transition-duration', '1s'],
+        ['transition-timing-function', 'cubic-bezier(var(--x, 0.42), 0, 1, 1)'],
+      ],
+    },
+  ])('transform $name with mixed var in dom2', (testCase) => {
+    const decl = parseDecl(
+      `.test { ${testCase.name}: ${testCase.value} !important }`
+    )
+
+    expect(testCase.transform(decl)).toEqual(
+      testCase.expected.map(([prop, value]) => ({
+        type: 'decl',
+        prop,
+        value,
+        important: true,
+        raws: decl.raws,
+        source: decl.source,
+      }))
+    )
   })
 })

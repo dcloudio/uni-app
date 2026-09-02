@@ -1,4 +1,10 @@
-import { type Declaration, type TransformDecl, createDecl } from '../utils'
+import {
+  type Declaration,
+  type TransformDecl,
+  createDecl,
+  splitValues,
+} from '../utils'
+import { expandShorthand, tryExpandSingleValueVarShorthand } from './shorthand'
 
 const transitionProperty = __HYPHENATE__
   ? 'transition-property'
@@ -10,9 +16,70 @@ const transitionTimingFunction = __HYPHENATE__
   ? 'transition-timing-function'
   : 'transitionTimingFunction'
 const transitionDelay = __HYPHENATE__ ? 'transition-delay' : 'transitionDelay'
-export const transformTransition: TransformDecl = (decl) => {
+const transitionLonghands = [
+  transitionProperty,
+  transitionDuration,
+  transitionTimingFunction,
+  transitionDelay,
+]
+const TRANSITION_TIME_REGEXP = /^\d*\.?\d+(?:ms|s)$/
+
+function isCssVarValue(value: string) {
+  return /^var\(/i.test(value)
+}
+
+function containsCssVar(value: string) {
+  return /\bvar\(/i.test(value)
+}
+
+function tryTransformTransitionNestedVariable(
+  decl: Declaration,
+  dom2: boolean
+): Declaration[] | null {
+  if (!dom2) {
+    return null
+  }
+  const values = splitValues(decl.value)
+  if (
+    values.length < 2 ||
+    values.length > 4 ||
+    !values.some(containsCssVar) ||
+    values.some(isCssVarValue) ||
+    TRANSITION_TIME_REGEXP.test(values[0]) ||
+    !TRANSITION_TIME_REGEXP.test(values[1]) ||
+    (values[3] && !TRANSITION_TIME_REGEXP.test(values[3]))
+  ) {
+    return null
+  }
+  const { important, raws, source } = decl
+  return values.map((value, index) =>
+    createDecl(transitionLonghands[index], value, important, raws, source)
+  )
+}
+
+function transformTransitionDecl(
+  decl: Declaration,
+  dom2: boolean
+): Declaration[] {
   let { value, important, raws, source } = decl
   value = value.trim()
+
+  const singleVarResult = tryExpandSingleValueVarShorthand(
+    decl,
+    transitionLonghands,
+    value,
+    dom2
+  )
+  if (singleVarResult) {
+    return singleVarResult
+  }
+  const variableResult = tryTransformTransitionNestedVariable(decl, dom2)
+  if (variableResult) {
+    return variableResult
+  }
+  if (dom2 && /\bvar\(/i.test(value)) {
+    return expandShorthand(decl, transitionLonghands, value)
+  }
 
   const result: Declaration[] = []
 
@@ -51,3 +118,9 @@ export const transformTransition: TransformDecl = (decl) => {
     result.push(createDecl(transitionDelay, match[4], important, raws, source))
   return result
 }
+
+export function createTransformTransition(dom2: boolean): TransformDecl {
+  return (decl) => transformTransitionDecl(decl, dom2)
+}
+
+export const transformTransition = createTransformTransition(false)

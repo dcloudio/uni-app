@@ -628,7 +628,8 @@ describe('uvue-styler: normalize', () => {
 
   // test --border-top-color: red
   test('test --border-top-color: red', async () => {
-    const { json } = await objectifierRule(`
+    const { json } = await objectifierRule(
+      `
 .test {
 --border-top-color: red;
 border-top-color: var(--border-top-color);
@@ -652,7 +653,9 @@ border-color: var(--default-border);
   --default-border: 1px;
   border: var(--default-border);
 }
-  `)
+  `,
+      { dom2: true }
+    )
     expect(json).toEqual({
       test: {
         '': {
