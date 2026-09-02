@@ -2048,22 +2048,9 @@ function switchSelect(selected, path) {
     onComplete === null || onComplete === void 0 || onComplete();
   });
 }
-var APP_THEME_AUTO = "auto";
 var THEME_KEY_PREFIX = "@";
 function getAppThemeFallbackOS() {
-  var fallbackOSTheme = "light";
-  try {
-    var appTheme = uni.getAppBaseInfo().appTheme;
-    fallbackOSTheme = appTheme;
-    if (appTheme === APP_THEME_AUTO) {
-      var osTheme = uni.getDeviceInfo().osTheme;
-      fallbackOSTheme = osTheme;
-    }
-    return fallbackOSTheme;
-  } catch (e) {
-    console.error(e);
-    return fallbackOSTheme;
-  }
+  return getNativeApp().isDarkTheme ? "dark" : "light";
 }
 var appThemeChangeCallbackId = -1;
 function clearAppThemeChangeCallbackId() {
