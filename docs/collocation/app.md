@@ -83,8 +83,15 @@
 
 
 
-- 如果应用通过scheme或applink（通用链接）启动（不管首次启动还是后台激活到前台，均触发本生命周期），可在本生命周期获取。配置scheme或applink需在manifest.json中配置，打包后生效。
-- 如开发App页面直达功能，在配置scheme或通用链接并打包后，一般在onShow生命周期里解析scheme或applink参数，然后自行写navigatorTo等路由API跳转页面。onShow的好处是不管首页启动还是后台激活到前台，都触发。当然如果是初次启动，仍然会先打开App的首页再执行开发者编写的路由代码。
+- App平台可通过以下方法配置使用 scheme（deeplink） 启动应用，打包后生效
+  + Android平台在 `manifest.json` 的可视化界面配置 scheme，参考[Android平台配置URL Schemes](../collocation/manifest-android.md#urlschemes)
+  + iOS平台在 `manifest.json` 的可视化界面配置 scheme，参考[Android平台配置URL Schemes](../collocation/manifest-ios.md#urlschemes)
+  + 鸿蒙平台需在原生工程的 json5 中配置
+- App平台可通过以下方法配置使用 applink（通用链接） 启动应用，打包后生效
+  + Android平台暂未支持 applink（通用链接）
+  + iOS平台需先在 `manifest.json` 的可视化界面配置[关联域（Associated Domains）](../collocation/manifest-ios.md#associateddomains)，再在服务器配置`apple-app-site-association`，完整教程参考[iOS通用链接配置教程](https://uniapp.dcloud.net.cn/tutorial/app-ios-capabilities.html#%E9%80%9A%E7%94%A8%E9%93%BE%E6%8E%A5-universal-link)
+  + 鸿蒙平台需在原生工程的 json5 中配置
+- 如开发App页面直达功能，需先配置 scheme（deeplink） 或 applink（通用链接） 启动应用，在应用的 `onShow` 生命周期获取启动并解析appScheme或appLink参数，然后自行写 [uni.navigatorTo](../api/navigator.md#navigateto) 等路由API跳转页面。 `onShow` 生命周期的好处是不管首页启动还是后台激活到前台都触发，当然如果是初次启动，仍然会先打开App的首页再执行开发者编写的路由代码。
 - Web的页面直达无需使用scheme或通用链接，所有页面地址都可以直接在地址栏访问。
 
 在微信小程序下，关闭弹出的原生窗体也会触发应用的onShow。比如关闭chooseImage、chooseVideo、chooseMedia、previewImage、chooseLocation、openLocation、scanCode等弹出的窗体。
