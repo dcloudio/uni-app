@@ -1,4 +1,327 @@
 {
+  "uni-base": {
+    "offWifiConnectedWithPartialInfo": [
+      "null"
+    ],
+    "authPrivateMessage": [
+      "null"
+    ],
+    "checkDeviceSupportHevc": [
+      "null"
+    ],
+    "checkEmployeeRelation": [
+      "null"
+    ],
+    "checkIsOpenAccessibility": [
+      "null"
+    ],
+    "checkIsSupportFacialRecognition": [
+      "null"
+    ],
+    "chooseInvoice": [
+      "null"
+    ],
+    "chooseLicensePlate": [
+      "null"
+    ],
+    "createAudioContext": [
+      null,
+      "null"
+    ],
+    "createBLEPeripheralServer": [
+      "null"
+    ],
+    "createOffscreenCanvas": [
+      null,
+      null,
+      "null"
+    ],
+    "createTCPSocket": [
+      "null"
+    ],
+    "createUDPSocket": [
+      "null",
+      "null"
+    ],
+    "disableAlertBeforeUnload": [
+      "null"
+    ],
+    "exitMiniProgram": [
+      "null"
+    ],
+    "exitVoIPChat": [
+      "null"
+    ],
+    "getAvailableAudioSources": [
+      "null"
+    ],
+    "getBackgroundAudioPlayerState": [
+      "null"
+    ],
+    "getBackgroundFetchToken": [
+      "null"
+    ],
+    "getChannelsShareKey": [
+      "null"
+    ],
+    "getDeviceBenchmarkInfo": [
+      "null"
+    ],
+    "getDeviceVoIPList": [
+      "null"
+    ],
+    "getExptInfoSync": [
+      "null"
+    ],
+    "getHCEState": [
+      "null"
+    ],
+    "getInferenceEnvInfo": [
+      "null"
+    ],
+    "getRendererUserAgent": [
+      "null"
+    ],
+    "getScreenRecordingState": [
+      "null"
+    ],
+    "getShowSplashAdStatus": [
+      "null"
+    ],
+    "getSkylineInfo": [
+      "null"
+    ],
+    "getSystemInfoAsync": [
+      "null"
+    ],
+    "getTransitCardCPLC": [
+      "null"
+    ],
+    "getWeRunData": [
+      "null"
+    ],
+    "initFaceDetect": [
+      "null"
+    ],
+    "offAfterPageLoad": [
+      "null"
+    ],
+    "offAfterPageUnload": [
+      "null"
+    ],
+    "offApiCategoryChange": [
+      "null"
+    ],
+    "offAppHide": [
+      "null"
+    ],
+    "offAppRouteDone": [
+      "null"
+    ],
+    "offAppShow": [
+      "null"
+    ],
+    "offAudioInterruptionBegin": [
+      "null"
+    ],
+    "offAudioInterruptionEnd": [
+      "null"
+    ],
+    "offBLEConnectionStateChange": [
+      "null"
+    ],
+    "offBLEMTUChange": [
+      "null"
+    ],
+    "offBLEPeripheralConnectionStateChanged": [
+      "null"
+    ],
+    "offBatteryInfoChange": [
+      "null"
+    ],
+    "offBeforePageLoad": [
+      "null"
+    ],
+    "offBeforePageUnload": [
+      "null"
+    ],
+    "offDeviceMotionChange": [
+      "null"
+    ],
+    "offEmbeddedMiniProgramHeightChange": [
+      "null"
+    ],
+    "offHCEMessage": [
+      "null"
+    ],
+    "offKeyDown": [
+      "null"
+    ],
+    "offKeyUp": [
+      "null"
+    ],
+    "offLazyLoadError": [
+      "null"
+    ],
+    "offLocalServiceDiscoveryStop": [
+      "null"
+    ],
+    "offLocalServiceFound": [
+      "null"
+    ],
+    "offLocalServiceLost": [
+      "null"
+    ],
+    "offLocalServiceResolveFail": [
+      "null"
+    ],
+    "offMenuButtonBoundingClientRectWeightChange": [
+      "null"
+    ],
+    "offNetworkWeakChange": [
+      "null"
+    ],
+    "offPageNotFound": [
+      "null"
+    ],
+    "offParallelStateChange": [
+      "null"
+    ],
+    "offScreenRecordingStateChanged": [
+      "null"
+    ],
+    "offUserOffTranslation": [
+      "null"
+    ],
+    "offUserTriggerTranslation": [
+      "null"
+    ],
+    "offVoIPChatInterrupted": [
+      "null"
+    ],
+    "offVoIPChatMembersChanged": [
+      "null"
+    ],
+    "offVoIPChatSpeakersChanged": [
+      "null"
+    ],
+    "offVoIPChatStateChanged": [
+      "null"
+    ],
+    "offVoIPVideoMembersChanged": [
+      "null"
+    ],
+    "offWindowStateChange": [
+      "null"
+    ],
+    "openSystemBluetoothSetting": [
+      "null"
+    ],
+    "pauseBackgroundAudio": [
+      "null"
+    ],
+    "pauseVoice": [
+      "null"
+    ],
+    "pluginLogin": [
+      "null"
+    ],
+    "preloadSkylineView": [
+      "null"
+    ],
+    "preloadWebview": [
+      "null"
+    ],
+    "reportEvent": [
+      null,
+      "null"
+    ],
+    "reportPerformance": [
+      null,
+      null,
+      "null"
+    ],
+    "requestIdleCallback": [
+      null,
+      "null"
+    ],
+    "startDeviceMotionListening": [
+      "null"
+    ],
+    "startRecord": [
+      "null"
+    ],
+    "stopBackgroundAudio": [
+      "null"
+    ],
+    "stopDeviceMotionListening": [
+      "null"
+    ],
+    "stopFaceDetect": [
+      "null"
+    ],
+    "stopHCE": [
+      "null"
+    ],
+    "stopLocalServiceDiscovery": [
+      "null"
+    ],
+    "stopRecord": [
+      "null"
+    ],
+    "stopVoice": [
+      "null"
+    ],
+    "updateWeChatApp": [
+      "null"
+    ],
+    "createAnimation": [
+      "null"
+    ],
+    "getBatteryInfo": [
+      "null"
+    ],
+    "getWifiList": [
+      "null"
+    ],
+    "offError": [
+      "null"
+    ],
+    "offGetWifiList": [
+      "null"
+    ],
+    "offWifiConnected": [
+      "null"
+    ],
+    "openSetting": [
+      "null"
+    ],
+    "startWifi": [
+      "null"
+    ],
+    "stopWifi": [
+      "null"
+    ],
+    "$off": [
+      null,
+      "null"
+    ],
+    "$emit": [
+      null,
+      "null"
+    ],
+    "removeInterceptor": [
+      null,
+      "null"
+    ],
+    "offKeyboardHeightChange": [
+      "null"
+    ],
+    "__f__": [
+      null,
+      "null"
+    ]
+  },
   "uni-accelerometer": {
     "offAccelerometerChange": [
       "null"
@@ -39,27 +362,6 @@
   },
   "uni-dialogPage": {
     "closeDialogPage": [
-      "null"
-    ]
-  },
-  "uni-base": {
-    "$off": [
-      null,
-      "null"
-    ],
-    "$emit": [
-      null,
-      "null"
-    ],
-    "removeInterceptor": [
-      null,
-      "null"
-    ],
-    "offKeyboardHeightChange": [
-      "null"
-    ],
-    "__f__": [
-      null,
       "null"
     ]
   },
