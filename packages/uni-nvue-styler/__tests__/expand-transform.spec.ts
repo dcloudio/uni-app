@@ -1624,4 +1624,57 @@ describe('nvue-styler: expand', () => {
       }))
     )
   })
+
+  test.each([
+    {
+      property: 'border',
+      value: 'calc(1px + 1px) solid red',
+      expected: [
+        ...['top', 'right', 'bottom', 'left'].map((position) => [
+          `border-${position}-width`,
+          'calc(1px + 1px)',
+        ]),
+        ...['top', 'right', 'bottom', 'left'].map((position) => [
+          `border-${position}-style`,
+          'solid',
+        ]),
+        ...['top', 'right', 'bottom', 'left'].map((position) => [
+          `border-${position}-color`,
+          'red',
+        ]),
+      ],
+    },
+    {
+      property: 'border-left',
+      value: 'calc(var(--width, 1px) + 1px) solid red',
+      expected: [
+        ['border-left-width', 'calc(var(--width, 1px) + 1px)'],
+        ['border-left-style', 'solid'],
+        ['border-left-color', 'red'],
+      ],
+    },
+  ])('transform $property with calc width in dom2', (testCase) => {
+    const decl = parseDecl(
+      `.test { ${testCase.property}: ${testCase.value} !important }`
+    )
+
+    expect(createTransformBorder({ type: 'uvue', dom2: true })(decl)).toEqual(
+      testCase.expected.map(([prop, value]) => ({
+        type: 'decl',
+        prop,
+        value,
+        important: true,
+        raws: decl.raws,
+        source: decl.source,
+      }))
+    )
+  })
+
+  test('does not transform border calc width outside dom2', () => {
+    const decl = parseDecl(`.test { border: calc(1px + 1px) solid red }`)
+
+    expect(createTransformBorder({ type: 'uvue', dom2: false })(decl)).toEqual([
+      decl,
+    ])
+  })
 })

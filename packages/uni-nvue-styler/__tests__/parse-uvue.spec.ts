@@ -306,6 +306,30 @@ describe('uvue-style', () => {
     }
   })
 
+  test('dom2 展开 border 简写中的 calc width', async () => {
+    const { code, messages } = await parse(
+      `.all {
+        border: calc(1px + 1px) solid red;
+      }
+      .left {
+        border-left: calc(var(--width, 1px) + 1px) solid blue;
+      }`,
+      {
+        type: 'uvue',
+        dom2: true,
+        platform: 'app-android',
+        map: true,
+        ts: true,
+      }
+    )
+
+    expect(messages).toHaveLength(0)
+    for (const position of ['Top', 'Right', 'Bottom', 'Left']) {
+      expect(code).toContain(`["border${position}Width", calc(1px + 1px)]`)
+    }
+    expect(code).toContain('["borderLeftWidth", calc(var(--width, 1px) + 1px)]')
+  })
+
   test('dom2 支持 render 属性中的 css calc', async () => {
     const { code, messages } = await parse(
       `.content {

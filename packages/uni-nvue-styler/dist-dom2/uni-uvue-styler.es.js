@@ -274,6 +274,7 @@ const borderWidth = '-width' ;
 const borderStyle = '-style' ;
 const borderColor = '-color' ;
 const BORDER_WIDTH_REGEXP = /^(?:[\d.]+\S*|thin|medium|thick)$/;
+const BORDER_CALC_WIDTH_REGEXP = /^calc\(.+\)$/i;
 // 这里按完整 CSS line-style 识别，后续再交给 border-*-style 的既有校验逻辑报精确错误。
 const BORDER_STYLE_REGEXP = /^(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/;
 function createBorderVarOrderWarning(prop, value) {
@@ -282,20 +283,23 @@ function createBorderVarOrderWarning(prop, value) {
 function isCssVarValue$2(value) {
     return value.startsWith('var(');
 }
-function isBorderWidthValue(value) {
-    return isCssVarValue$2(value) || BORDER_WIDTH_REGEXP.test(value);
+function isBorderWidthValue(value, dom2) {
+    return (isCssVarValue$2(value) ||
+        BORDER_WIDTH_REGEXP.test(value) ||
+        (dom2 && BORDER_CALC_WIDTH_REGEXP.test(value)));
 }
 function isBorderStyleValue(value) {
     return isCssVarValue$2(value) || BORDER_STYLE_REGEXP.test(value);
 }
-function isBorderColorValue(value) {
+function isBorderColorValue(value, dom2) {
     return (isCssVarValue$2(value) ||
-        (!BORDER_WIDTH_REGEXP.test(value) && !BORDER_STYLE_REGEXP.test(value)));
+        (!isBorderWidthValue(value, dom2) && !BORDER_STYLE_REGEXP.test(value)));
 }
 function createTransformBorder(options) {
     return (decl, onWarning) => {
         const { prop, value, important, raws, source } = decl;
-        const singleVarResult = tryExpandSingleValueVarShorthand(decl, [prop + borderWidth, prop + borderStyle, prop + borderColor], value, !!options.dom2);
+        const dom2 = !!options.dom2;
+        const singleVarResult = tryExpandSingleValueVarShorthand(decl, [prop + borderWidth, prop + borderStyle, prop + borderColor], value, dom2);
         // 单个 var() 无法提前判断是 width/style/color，dom2 下先平铺后继续展开。
         if (singleVarResult) {
             return [
@@ -311,9 +315,9 @@ function createTransformBorder(options) {
         if (havVar) {
             if (splitResult.length > 3 ||
                 (splitResult.length === 3 &&
-                    (!isBorderWidthValue(splitResult[0]) ||
+                    (!isBorderWidthValue(splitResult[0], dom2) ||
                         !isBorderStyleValue(splitResult[1]) ||
-                        !isBorderColorValue(splitResult[2])))) {
+                        !isBorderColorValue(splitResult[2], dom2)))) {
                 onWarning?.(createBorderVarOrderWarning(prop, value));
                 return [];
             }
@@ -321,8 +325,12 @@ function createTransformBorder(options) {
             splitResult = [];
         }
         else {
-            result = [BORDER_WIDTH_REGEXP, BORDER_STYLE_REGEXP, /\S+/].map((item) => {
-                const index = splitResult.findIndex((str) => item.test(str));
+            result = [
+                (str) => isBorderWidthValue(str, dom2),
+                (str) => BORDER_STYLE_REGEXP.test(str),
+                (str) => /\S+/.test(str),
+            ].map((matches) => {
+                const index = splitResult.findIndex(matches);
                 return index < 0 ? null : splitResult.splice(index, 1)[0];
             });
         }
