@@ -278,28 +278,10 @@
     "createAnimation": [
       "null"
     ],
-    "getBatteryInfo": [
-      "null"
-    ],
-    "getWifiList": [
-      "null"
-    ],
     "offError": [
       "null"
     ],
-    "offGetWifiList": [
-      "null"
-    ],
-    "offWifiConnected": [
-      "null"
-    ],
     "openSetting": [
-      "null"
-    ],
-    "startWifi": [
-      "null"
-    ],
-    "stopWifi": [
       "null"
     ],
     "$off": [
