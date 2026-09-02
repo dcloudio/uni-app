@@ -21,7 +21,7 @@ export const transformTeleport = function (node: RootNode | TemplateChildNode) {
   if (!isElementNode(node)) {
     return
   }
-  if (node.tag !== 'teleport') {
+  if (node.tag.toLowerCase() !== 'teleport') {
     return
   }
 
