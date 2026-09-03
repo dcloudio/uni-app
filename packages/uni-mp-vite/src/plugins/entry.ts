@@ -59,12 +59,17 @@ export function parseComponentStyleIsolation(content: string) {
 
 let hasOptimizationSubPackages = false // 是否开启分包优化配置
 let subPackages: string[] = []
+let independentSubPackages: string[] = []
+function normalizeSubPackageRoot(root: string) {
+  return `${root.replace(/\/$/, '')}/`
+}
 function initSubPackages() {
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
   const pagesJsonFile = path.resolve(inputDir, 'pages.json')
   if (!fs.existsSync(pagesJsonFile)) {
     hasOptimizationSubPackages = false
     subPackages = []
+    independentSubPackages = []
     return
   }
   const platform = process.env.UNI_PLATFORM
@@ -76,14 +81,19 @@ function initSubPackages() {
     platform,
     { subpackages: true }
   )
-  subPackages = Object.values(appJson.subPackages || appJson.subpackages || {})
-    .filter(Boolean)
-    .map(({ root }) => `${root.replace(/\/$/, '')}/`)
+  const packages = Object.values(
+    appJson.subPackages || appJson.subpackages || {}
+  ).filter(Boolean)
+  subPackages = packages.map(({ root }) => normalizeSubPackageRoot(root))
+  independentSubPackages = packages
+    .filter((pkg) => pkg.independent)
+    .map(({ root }) => normalizeSubPackageRoot(root))
 }
 export function getSubPackages() {
   return {
     hasOptimizationSubPackages,
     subPackages,
+    independentSubPackages,
   }
 }
 
