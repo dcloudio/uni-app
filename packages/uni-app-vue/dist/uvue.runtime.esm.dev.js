@@ -1989,6 +1989,9 @@ function transformTransitionDecl(decl, dom2) {
     source
   } = decl;
   value = value.trim();
+  if (TRANSITION_TIME_REGEXP.test(value)) {
+    return [createDecl(transitionDuration, value, important, raws, source)];
+  }
   var singleVarResult = tryExpandSingleValueVarShorthand(decl, transitionLonghands, value, dom2);
   if (singleVarResult) {
     return singleVarResult;
