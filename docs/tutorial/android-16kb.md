@@ -1,17 +1,17 @@
 ## 概述  
-16K，是指C语言等可操作内存的语言使用内存的规范，对齐16K可以提升C代码的运行性能。如果使用js、java，不涉及16K。
+16K，是指C语言等可操作内存的语言使用内存的规范，对齐16K可以提升C代码的运行性能。只有so库涉及。如果使用js、java，不涉及16K问题。
 
 Google Play 的政策要求：  
 自 2025 年 11 月 1 日起，提交到 Google Play 且以 Android15（API 级别 35）及更高版本的设备为目标平台的所有新应用和现有应用更新都必须支持 16KB 的页面大小。  
 [详情](https://android-developers.googleblog.com/2025/05/prepare-play-apps-for-devices-with-16kb-page-size.html)。
 
-> HBuilderX4.81版本已适配支持 16KB 内存页面大小
+> HBuilderX4.81+，DCloud的自有so库已适配支持 16KB 内存页面大小
 
-**注意**  
-Android17开始系统默认会开启16KB兼容性检测，如果应用中包含未适配支持 16KB 内存页面大小的 so 库在启动时会弹出 `Android 应用兼容性` 提示框。  
-提示内容为：“此应用不符合 16KB 对齐要求。ELF文件对齐检查失败。”
+但是，某些三方sdk的so库未适配16K，见下。
 
-如碰到此问题，可先不使用下面列出的不支持 16KB 的模块。  
+**注意**  ：
+Android17+，默认会开启16KB兼容性检测，如果应用中包含未适配支持 16KB 的 so 库，在启动时会弹出 `Android 应用兼容性` 提示框。  
+提示内容为：“此应用不符合 16KB 对齐要求。ELF文件对齐检查失败。”虽然这个列表中也会出现 DCloud的自有so库，但其实是因为三方sdk不支持16KB导致打包时被降级了。如去掉不支持16KB的三方sdk再打包，可以正常通过16K校验。
 
 
 ## 不支持 16KB 的模块  
@@ -63,7 +63,7 @@ Android17开始系统默认会开启16KB兼容性检测，如果应用中包含�
 
 
 ### [uni-push](../api/uni-push.md)
-`uni-push`是由 DCloud 与合作伙伴个推共同推出的统一推送服务，在国内环境下，该服务依赖`卓信ID SDK`，但该 SDK 目前未适配支持 16KB 内存页面大小。  
+`uni-push`使用了个推的sdk，在国内环境下，该sdk又依赖`卓信ID SDK`，但`卓信ID SDK` 目前未适配支持 16KB 内存页面大小。  
 为满足 Google Play 的要求，应用在提交至 Google Play 时需避免使用`卓信ID SDK`。按以下方式配置，使用`uni-push`时将不会包含`卓信ID SDK`：  
 1. 项目manifest.json可视化界面，在 “安卓App配置” 下的 “uni-push（消息推送）” 中只勾选 “Google FCM推送SDK”  
   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/uni-push/android-16k-unipush-fcm.png)  
