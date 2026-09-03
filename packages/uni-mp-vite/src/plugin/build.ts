@@ -31,6 +31,7 @@ import {
   parseVirtualComponentPath,
   parseVirtualPagePath,
 } from '../plugins/entry'
+import { IndependentVendorChunk } from './independentVendorChunk'
 
 const debugChunk = debug('uni:chunk')
 
@@ -240,7 +241,8 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
         }
         return
       }
-      const { hasOptimizationSubPackages, subPackages } = getSubPackages()
+      const { hasOptimizationSubPackages, subPackages, independentSubPackages } =
+        getSubPackages()
       // 处理子包引用的 node_modules 中的文件
       if (
         hasOptimizationSubPackages &&
@@ -263,6 +265,17 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
         if (matchSubPackages.size === 1) {
           return `${matchSubPackages.values().next().value}common/vendor`
         }
+      }
+      // 独立分包不能引用主包 JS。仅被某一个独立分包引用的 npm 打进该分包 vendor。
+      // 不依赖 optimization.subPackages：这是微信运行时正确性，不是体积优化。
+      const independentVendor = IndependentVendorChunk.resolve(
+        getModuleInfo(id)?.importers || [],
+        inputDir,
+        independentSubPackages
+      )
+      if (independentVendor) {
+        debugChunk(independentVendor, normalizedId)
+        return independentVendor
       }
       // 非项目内的 js 资源，均打包到 vendor
       debugChunk('common/vendor', normalizedId)
