@@ -97,6 +97,7 @@ button {
   text-align: center;
   height: auto;
   min-height: 0px;
+  padding: 0 14px;
   /* min-width: 0px; */
   border-width: medium;
 }
