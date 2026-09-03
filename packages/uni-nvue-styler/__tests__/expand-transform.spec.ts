@@ -93,6 +93,25 @@ describe('nvue-styler: expand', () => {
     ])
   })
 
+  test.each(['5000ms', '5s', '0ms', '0s'])(
+    'transform transition duration-only shorthand: %s',
+    (duration) => {
+      const decl = parseDecl(`.test {
+  transition: ${duration} !important
+}`)
+      expect(transformTransition(decl)).toEqual([
+        {
+          type: 'decl',
+          prop: 'transition-duration',
+          value: duration,
+          important: true,
+          raws: decl.raws,
+          source: decl.source,
+        },
+      ])
+    }
+  )
+
   test('transform transition all/none', () => {
     const propertyVal = ['all', 'none', 'width,height', 'all,width,height']
     propertyVal.forEach((property) => {

@@ -507,6 +507,9 @@ function tryTransformTransitionNestedVariable(decl, dom2) {
 function transformTransitionDecl(decl, dom2) {
     let { value, important, raws, source } = decl;
     value = value.trim();
+    if (TRANSITION_TIME_REGEXP.test(value)) {
+        return [createDecl(transitionDuration, value, important, raws, source)];
+    }
     const singleVarResult = tryExpandSingleValueVarShorthand(decl, transitionLonghands, value, dom2);
     if (singleVarResult) {
         return singleVarResult;

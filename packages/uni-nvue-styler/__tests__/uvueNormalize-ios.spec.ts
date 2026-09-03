@@ -393,6 +393,27 @@ describe('uvue-styler: normalize', () => {
       'ERROR: property value `abc` is not supported for `transition-delay` (supported values are: `number of seconds`|`milliseconds`)'
     )
   })
+  test('transition duration-only shorthand', async () => {
+    const { json, messages } = await objectifierRule(`
+  .foo {
+    transition: 5000ms
+  }
+  `)
+
+    expect(json).toEqual({
+      '@TRANSITION': {
+        foo: {
+          duration: '5000ms',
+        },
+      },
+      foo: {
+        '': {
+          transitionDuration: '5000ms',
+        },
+      },
+    })
+    expect(messages).toHaveLength(0)
+  })
   test('transition-timing-function', async () => {
     const { json, messages } = await objectifierRule(`
   .foo {
