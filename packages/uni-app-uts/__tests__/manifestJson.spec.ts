@@ -1,6 +1,10 @@
 import { validateThemeValue } from '@dcloudio/uni-cli-shared'
 import { normalizeManifestJson } from '../src/plugins/utils'
 
+jest.mock('../src/plugins/bytecodeVersion', () => ({
+  getDom2BytecodeVersion: () => 1,
+}))
+
 describe('x-ios x-harmony manifestJson', () => {
   beforeEach(() => {
     process.env.UNI_INPUT_DIR = '/mock/input/dir'
@@ -12,6 +16,8 @@ describe('x-ios x-harmony manifestJson', () => {
     process.env.UNI_INPUT_DIR = undefined as any
     process.env.UNI_PLATFORM = undefined as any
     process.env.UNI_UTS_PLATFORM = undefined as any
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_VAPOR_RENDER_TARGET')
   })
 
   const mockManifestJson = {
@@ -105,6 +111,39 @@ describe('x-ios x-harmony manifestJson', () => {
       const result = normalizeManifestJson('app-ios', mockManifestJson) as any
       // iOS 平台应该也能访问 theme 配置
       expect(result.app?.defaultAppTheme).toBe('dark')
+    })
+  })
+
+  describe('DOM2 bytecode version', () => {
+    test('should write compiler bytecode version for DOM2 bytecode target', () => {
+      process.env.UNI_APP_X_DOM2 = 'true'
+      const manifest = normalizeManifestJson('app-ios', {
+        ...mockManifestJson,
+        'uni-app-x': { bytecodeVersion: 999 },
+      }) as any
+
+      expect(manifest['uni-app-x'].bytecodeVersion).toBe(1)
+    })
+
+    test('should omit bytecode version for DOM2 nativecode target', () => {
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
+      const manifest = normalizeManifestJson('app-ios', {
+        ...mockManifestJson,
+        'uni-app-x': { bytecodeVersion: 999 },
+      }) as any
+
+      expect(manifest['uni-app-x'].bytecodeVersion).toBeUndefined()
+    })
+
+    test('should omit bytecode version for non-DOM2 builds', () => {
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
+      const manifest = normalizeManifestJson('app-ios', {
+        ...mockManifestJson,
+        'uni-app-x': { bytecodeVersion: 999 },
+      }) as any
+
+      expect(manifest['uni-app-x'].bytecodeVersion).toBeUndefined()
     })
   })
 
