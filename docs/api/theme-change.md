@@ -52,22 +52,13 @@ web 端、小程序需要配置 [manifest.json](../collocation/manifest.md) 中 
 
 [pages.json](../collocation/pagesjson.md)的亮黑设置，需要通过[theme.json](../collocation/themejson.md)处理。
 
-要特别注意，**适配暗黑模式，在项目根目录下放置theme.json文件是必不可少的环节**。
-
-该文件除了处理tabbar和导航栏之外，非常重要的是globalStyle里的页面style的backgroundColorContent属性。
-
-尤其是在小程序下，前端页面设置的背景色生效时间较晚，在页面刚创建并开始动画的时候，页面的原生背景色是浅色，然后前端设置页面背景色为深色，就会出现闪白现象。
-
-所以适配暗黑，就必须要在项目下新建theme.json文件，并且在pages.json的globalStyle里，把页面在dark模式下的背景色统一掉。
-
-然后每个页面的根view或scroll-view，反而不用设背景色，使用globalStyle的backgroundColorContent的配置就好了。
+要特别注意，**适配暗黑模式，如果要适配pages.json中的tabbar和Navigationbar，需放置theme.json文件**。
 
 下面是pages.json中的globalStyle设置，在属性值中，通过@来引用theme.json中定义的值：
 ```json
 "globalStyle": {
 	"navigationBarTextStyle": "@navigationBarTextStyle",
 	"navigationBarBackgroundColor": "@navigationBarBackgroundColor",
-	"backgroundColorContent": "@backgroundColorContent",
 	"backgroundColor": "@backgroundColor",
 	"backgroundTextStyle": "@backgroundTextStyle"
 },
@@ -82,7 +73,6 @@ web 端、小程序需要配置 [manifest.json](../collocation/manifest.md) 中 
     "navigationBarTextStyle": "white",
     "navigationBarBackgroundColor": "#007AFF",
     "backgroundColor": "#efeff4",
-    "backgroundColorContent": "#efeff4",
     "tabBarPagebackgroundColorContent": "#efeff4",
     "backgroundTextStyle": "dark"
   },
@@ -90,7 +80,6 @@ web 端、小程序需要配置 [manifest.json](../collocation/manifest.md) 中 
     "navigationBarTextStyle": "white",
     "navigationBarBackgroundColor": "#1F1F1F",
     "backgroundColor": "#1F1F1F",
-    "backgroundColorContent": "#646464",
     "tabBarPagebackgroundColorContent": "#1F1F1F",
     "backgroundTextStyle": "light"
   }
@@ -158,11 +147,11 @@ theme.json 里的变量仅能用于 pages.json。uvue页面不能引用。
 </style>
 ```
 
-在theme.json中已经设置页面背景色的情况下，一般不推荐重复在uvue文件的根组件上重复设置背景色。
+媒体查询和page选择器，可以在app.uvue里使用，从而实现所有页面的效果批量控制。除非页面配置了禁止全局样式影响。
 
 如果App平台需要为用户提供light、dark、auto选项，直接调用`uni.setAppTheme`即可。appTheme变化后，媒体查询会自动更新匹配的样式。
 
-#### 4. 监听主题并动态切换class（兼容方案）
+#### 4. 监听主题并动态切换class（老版兼容方案）
 
 以下App平台场景，由于不支持媒体查询，只能通过API使用监听主题变化，然后动态切换class：
 
