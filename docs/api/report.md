@@ -66,7 +66,7 @@ uni.report({
 >示例
 ```vue
 <template>
-  <scroll-view class="page">
+  <scroll-view class="page uni-theme-root">
     <page-head title="uni统计 2.0"></page-head>
     <view class="status-panel">
       <text class="status-title">最近操作</text>
@@ -187,15 +187,25 @@ uni.report({
 
 <style>
   .page {
+    --report-surface-background: #ffffff;
+    --report-title-color: #202124;
+    --report-content-color: #5f6673;
     flex: 1;
-    background-color: #f5f6f8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .page {
+      --report-surface-background: #2d2d2d;
+      --report-title-color: #ffffff;
+      --report-content-color: #a0a0a0;
+    }
   }
 
   .status-panel,
   .section {
     margin: 12px 16px;
     padding: 16px;
-    background-color: #ffffff;
+    background-color: var(--report-surface-background, #ffffff);
     border-radius: 8px;
   }
 
@@ -203,13 +213,13 @@ uni.report({
   .section-title {
     display: flex;
     margin-bottom: 12px;
-    color: #202124;
+    color: var(--report-title-color, #202124);
     font-size: 17px;
     font-weight: 600;
   }
 
   .status-content {
-    color: #5f6673;
+    color: var(--report-content-color, #5f6673);
     font-size: 14px;
   }
 

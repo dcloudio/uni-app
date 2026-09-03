@@ -248,10 +248,7 @@
 			</view>
 
 			<view class="field-group">
-				<view class="switch-row">
-					<text class="field-label">全天 allDay</text>
-					<switch :checked="allDay" @change="handleAllDayChange" />
-				</view>
+				<boolean-data :defaultValue="allDay" title="全天 allDay" @change="handleAllDayChange"></boolean-data>
 			</view>
 
 			<view class="field-group">
@@ -281,10 +278,7 @@
 			</view>
 
 			<view class="field-group">
-				<view class="switch-row">
-					<text class="field-label">提醒 alarm</text>
-					<switch :checked="alarm" @change="handleAlarmChange" />
-				</view>
+				<boolean-data :defaultValue="alarm" title="提醒 alarm" @change="handleAlarmChange"></boolean-data>
 			</view>
 
 			<view class="field-group">
@@ -564,12 +558,12 @@
 		repeatIntervalIndex.value = event.detail.value as number
 	}
 
-	function handleAllDayChange(event : UniSwitchChangeEvent) : void {
-		allDay.value = event.detail.value
+	function handleAllDayChange(value : boolean) : void {
+		allDay.value = value
 	}
 
-	function handleAlarmChange(event : UniSwitchChangeEvent) : void {
-		alarm.value = event.detail.value
+	function handleAlarmChange(value : boolean) : void {
+		alarm.value = value
 	}
 
 	const repeatIntervalText = computed(() : string => {

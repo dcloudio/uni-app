@@ -173,10 +173,8 @@
     <page-head :title="title"></page-head>
     <view class="uni-common-mt">
       <text class="uni-title">截屏状态：{{ captureStatus }}</text>
-      <view style="flex-direction: row;">
-        <text class="uni-title">是否允许截屏</text>
-        <switch :checked="allowCapture" @change="(e: UniSwitchChangeEvent) => toggleCaptureScreen(e.detail.value)" />
-      </view>
+      <boolean-data :defaultValue="allowCapture" title="是否允许截屏"
+        @change="toggleCaptureScreen"></boolean-data>
 
       <view class="uni-btn">
         <button @click="startCaptureListener" type="primary" class="uni-common-mt">开启截屏监听</button>
@@ -231,7 +229,6 @@ onUnmounted(() => {
   stopCaptureListener()
 })
 </script>
-
 
 
 ```

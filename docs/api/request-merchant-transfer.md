@@ -90,11 +90,11 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
     <button class="button" @click="transfer" :disabled="disabled">接受0.1元转账</button>
     <text class="tips" v-if="disabled" style="color: #ff5a5f;">请先支付 0.2 元，才能体验接收转账 0.1 元</text>
     <!-- #ifdef MP-WEIXIN -->
-    <view class="tips" v-else><text style="color: #42b983;">若已支付 0.2 元，请点击“接受0.1元转账”按钮</text></view>
+    <view v-else><text class="tips" style="color: #42b983;">若已支付 0.2 元，请点击“接受0.1元转账”按钮</text></view>
     <!-- #endif -->
 
     <!-- #ifndef MP-WEIXIN -->
-    <view class="tips" v-else><text style="color: #42b983;">已支付 0.2 元，请点击“接受0.1元转账”按钮</text></view>
+    <view v-else><text class="tips" style="color: #42b983;">已支付 0.2 元，请点击“接受0.1元转账”按钮</text></view>
     <!-- #endif -->
   </view>
 </template>

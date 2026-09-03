@@ -188,42 +188,15 @@
         </radio-group>
       </view>
       <view class="uni-list">
-        <view class="uni-list-cell uni-list-cell-pd">
-          <view class="uni-list-cell-db">提示内容为空</view>
-          <switch :checked="data.emptyContent" @change="emptyContentChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-pd">
-          <view class="uni-list-cell-db">是否显示过长文字</view>
-          <switch :checked="data.showLongContent" @change="showLongContentChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-pd">
-          <view class="uni-list-cell-db">是否显示取消按钮</view>
-          <switch :checked="data.showCancelSelect" @change="showCancelChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-pd">
-          <view class="uni-list-cell-db">定制取消文案</view>
-          <switch :checked="data.cancelTextSelect" @change="cancelTextChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-pd">
-          <view class="uni-list-cell-db">定制确认文案</view>
-          <switch :checked="data.confirmTextSelect" @change="confirmTextChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-pd">
-          <view class="uni-list-cell-db">测试非法的颜色</view>
-          <switch :checked="data.illegalColorSelect" @change="illegalColorChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-pd">
-          <view class="uni-list-cell-db">测试超长的按钮文本</view>
-          <switch :checked="data.illegalButtonTextSelect" @change="illegalButtonTextChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-pd">
-          <view class="uni-list-cell-db">是否显示输入框</view>
-          <switch :checked="data.editableSelect" @change="editableChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-pd">
-          <view class="uni-list-cell-db">是否定制输入提示词</view>
-          <switch :checked="data.placeholderTextSelect" @change="placeholderTextChange" />
-        </view>
+        <boolean-data :defaultValue="data.emptyContent" title="提示内容为空" @change="emptyContentChange"></boolean-data>
+        <boolean-data :defaultValue="data.showLongContent" title="是否显示过长文字" @change="showLongContentChange"></boolean-data>
+        <boolean-data :defaultValue="data.showCancelSelect" title="是否显示取消按钮" @change="showCancelChange"></boolean-data>
+        <boolean-data :defaultValue="data.cancelTextSelect" title="定制取消文案" @change="cancelTextChange"></boolean-data>
+        <boolean-data :defaultValue="data.confirmTextSelect" title="定制确认文案" @change="confirmTextChange"></boolean-data>
+        <boolean-data :defaultValue="data.illegalColorSelect" title="测试非法的颜色" @change="illegalColorChange"></boolean-data>
+        <boolean-data :defaultValue="data.illegalButtonTextSelect" title="测试超长的按钮文本" @change="illegalButtonTextChange"></boolean-data>
+        <boolean-data :defaultValue="data.editableSelect" title="是否显示输入框" @change="editableChange"></boolean-data>
+        <boolean-data :defaultValue="data.placeholderTextSelect" title="是否定制输入提示词" @change="placeholderTextChange"></boolean-data>
       </view>
       <view class="uni-padding-wrap uni-common-mt">
         <text>complete 执行结果：{{ data.timesShowRet }}</text>
@@ -320,41 +293,41 @@
     timesShowRet: [] as Array<any>,
   } as DataType)
 
-  const showLongContentChange = (e : UniSwitchChangeEvent) => {
-    data.showLongContent = e.detail.value
+  const showLongContentChange = (value : boolean) => {
+    data.showLongContent = value
   }
 
-  const emptyContentChange = (e : UniSwitchChangeEvent) => {
-    data.emptyContent = e.detail.value
+  const emptyContentChange = (value : boolean) => {
+    data.emptyContent = value
   }
 
-  const illegalColorChange = (e : UniSwitchChangeEvent) => {
-    data.illegalColorSelect = e.detail.value
+  const illegalColorChange = (value : boolean) => {
+    data.illegalColorSelect = value
   }
 
-  const illegalButtonTextChange = (e : UniSwitchChangeEvent) => {
-    data.illegalButtonTextSelect = e.detail.value
+  const illegalButtonTextChange = (value : boolean) => {
+    data.illegalButtonTextSelect = value
   }
 
-  const showCancelChange = (e : UniSwitchChangeEvent) => {
-    data.showCancelSelect = e.detail.value
+  const showCancelChange = (value : boolean) => {
+    data.showCancelSelect = value
   }
 
-  const cancelTextChange = (e : UniSwitchChangeEvent) => {
-    data.cancelTextSelect = e.detail.value
+  const cancelTextChange = (value : boolean) => {
+    data.cancelTextSelect = value
   }
 
-  const confirmTextChange = (e : UniSwitchChangeEvent) => {
-    data.confirmTextSelect = e.detail.value
+  const confirmTextChange = (value : boolean) => {
+    data.confirmTextSelect = value
   }
 
-  const editableChange = (e : UniSwitchChangeEvent) => {
-    data.editableSelect = e.detail.value
+  const editableChange = (value : boolean) => {
+    data.editableSelect = value
   }
 
-  const placeholderTextChange = (e : UniSwitchChangeEvent) => {
-    data.editableSelect = e.detail.value
-    data.placeholderTextSelect = e.detail.value
+  const placeholderTextChange = (value : boolean) => {
+    data.editableSelect = value
+    data.placeholderTextSelect = value
   }
 
   const radioChange = (e : UniRadioGroupChangeEvent) => {

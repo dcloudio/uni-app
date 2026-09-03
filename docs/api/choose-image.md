@@ -187,14 +187,7 @@
           </view>
         </view>
         <!-- #endif -->
-        <view class="uni-list-cell cell-pd">
-          <text class="uni-list-cell-left uni-label">
-            图像裁剪
-          </text>
-          <view class="uni-list-cell-right">
-            <switch :checked="isCrop" @change="switchCrop"></switch>
-          </view>
-        </view>
+        <boolean-data :defaultValue="isCrop" title="图像裁剪" @change="switchCrop"></boolean-data>
         <view ref="cropOptionNode" class="crop-option"
           :style="{'height':isCrop?'200px':'0px','margin-bottom':isCrop?'11px':'0px'}">
           <view class="uni-list-cell cell-pd">
@@ -221,14 +214,7 @@
               <input class="crop-option-input" :value="cropHeight" @confirm="cropHeightConfim" type="number" :maxlength="-1" />
             </view>
           </view>
-          <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left item_width crop-option-label">
-              保留原宽高
-            </view>
-            <view class="uni-list-cell-right">
-              <switch :checked="cropResize" @change="cropResizeChange"></switch>
-            </view>
-          </view>
+          <boolean-data :defaultValue="cropResize" title="保留原宽高" @change="cropResizeChange"></boolean-data>
         </view>
       </view>
 
@@ -355,12 +341,12 @@ const albumModeChange = () => {
   })
 }
 
-const cropResizeChange = (e: UniSwitchChangeEvent) => {
-  cropResize.value = e.detail.value
+const cropResizeChange = (value : boolean) => {
+  cropResize.value = value
 }
 
-const switchCrop = (e: UniSwitchChangeEvent) => {
-  isCrop.value = e.detail.value
+const switchCrop = (value : boolean) => {
+  isCrop.value = value
 }
 
 const removeImage = (index: number) => {

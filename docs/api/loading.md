@@ -164,22 +164,7 @@
 <template>
 	<view>
 		<page-head :title="data.title"></page-head>
-		<view class="uni-list">
-			<view class="uni-padding-wrap">
-				<view class="uni-title uni-common-mt">
-					<text class="uni-title-text"> 设置标题 </text>
-				</view>
-			</view>
-			<view class="uni-list uni-common-pl">
-				<radio-group @change="radioChange">
-					<view class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in data.items"
-						:key="item.value" :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''">
-						<radio :value="item.value" :checked="index === data.current" />
-						<text>{{ item.name }}</text>
-					</view>
-				</radio-group>
-			</view>
-		</view>
+		<enum-data :items="titleOptions" title="设置标题" @change="radioChange"></enum-data>
 
 <!-- 		<view class="uni-padding-wrap uni-common-mt" style="flex-direction: row; justify-content: space-between; align-items: center;">
 			<text class="uni-title-text"> iOS 雪花样式 </text>
@@ -203,6 +188,8 @@
 	</view>
 </template>
 <script setup lang="uts">
+	import { ItemType as EnumItemType } from '@/components/enum-data/enum-data-types'
+
 	type ItemType = {
 		value : string
 		name : string
@@ -240,6 +227,16 @@
 		iosSpinner: true
 	} as DataType)
 
+	const titleOptions = computed(() : EnumItemType[] => {
+		return data.items.map((item, index) : EnumItemType => {
+			return {
+				value: index,
+				name: item.name,
+				checked: index == data.current
+			}
+		})
+	})
+
 	const jest_getWindowInfo = () : GetWindowInfoResult => {
 		return uni.getWindowInfo();
 	}
@@ -252,11 +249,8 @@
 		data.titleSelect = data.items[index].value
 	}
 
-	const radioChange = (e : UniRadioGroupChangeEvent) => {
-		const selectedIndex = data.items.findIndex((item) : boolean => {
-			return item.value == e.detail.value
-		})
-		selectTitle(selectedIndex)
+	const radioChange = (value : number) => {
+		selectTitle(value)
 	}
 
 	const iosSpinnerChange = (e : UniSwitchChangeEvent) => {

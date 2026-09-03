@@ -878,9 +878,9 @@ uni.offOsThemeChange(callbackId)
     originalTheme: 'light',
     current: 0,
     items: [
-      { value: 0, name: 'light' },
-      { value: 1, name: 'dark' },
-      { value: 2, name: 'auto' }
+      { value: 0, name: 'light', checked: false },
+      { value: 1, name: 'dark', checked: false },
+      { value: 2, name: 'auto', checked: false }
     ] as ItemType[]
   } as Data)
 

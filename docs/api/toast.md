@@ -152,26 +152,12 @@
   <!-- #endif -->
     <page-head :title="data.title"></page-head>
     <view class="uni-padding-wrap">
-      <view class="uni-padding-wrap">
-        <text class="uni-title-text uni-common-mb">设置icon</text>
-      </view>
-      <view class="uni-list uni-common-pl">
-        <radio-group @change="radioChangeIcon">
-          <view class="uni-list-cell uni-list-cell-pd radio-icon" v-for="(icon, index) in data.icon_enum" :key="icon.value"
-            :class="index < data.icon_enum.length - 1 ? 'uni-list-cell-line' : ''">
-            <radio :value="icon.value" :checked="index === data.icon_current" />
-            <text>{{icon.name}}</text>
-          </view>
-        </radio-group>
-      </view>
-      <view class="uni-list-cell uni-list-cell-padding">
-        <view class="uni-list-cell-db">是否显示自定义图标</view>
-        <switch :checked="data.imageSelect" @change="change_image_boolean" />
-      </view>
-      <view class="uni-list-cell uni-list-cell-padding">
-        <view class="uni-list-cell-db">是否显示透明蒙层-屏蔽点击事件</view>
-        <switch :checked="data.maskSelect" @change="change_mask_boolean" />
-      </view>
+      <enum-data :items="iconOptions" title="设置icon" item-class="radio-icon"
+        @change="radioChangeIcon"></enum-data>
+      <boolean-data :defaultValue="data.imageSelect" title="是否显示自定义图标"
+        @change="change_image_boolean"></boolean-data>
+      <boolean-data :defaultValue="data.maskSelect" title="是否显示透明蒙层-屏蔽点击事件"
+        @change="change_mask_boolean"></boolean-data>
       <view class="uni-title uni-list-cell-padding">提示的延迟时间，默认：1500（单位毫秒）</view>
       <view class="uni-list-cell-padding">
         <slider @change="sliderChange" foreColor="#007AFF" :value="data.intervalSelect" :min="1500" :max="5000"
@@ -182,18 +168,8 @@
         <button type="default" @tap="hideToast" id="btn-toast-hide">点击隐藏toast</button>
       </view>
       <!-- #ifdef APP -->
-      <view class="uni-padding-wrap uni-common-mt">
-        <text class="uni-title-text uni-common-mb"> 设置position，仅App生效 </text>
-      </view>
-      <view class="uni-list uni-common-pl">
-        <radio-group @change="radioChangePosition">
-          <view class="uni-list-cell uni-list-cell-pd radio-position" v-for="(position, index) in data.position_enum"
-            :key="position.value" :class="index < data.position_enum.length - 1 ? 'uni-list-cell-line' : ''">
-            <radio :value="position.value" :checked="index === data.position_current" />
-            <text>{{position.name}}</text>
-          </view>
-        </radio-group>
-      </view>
+      <enum-data :items="positionOptions" title="设置position，仅App生效" item-class="radio-position"
+        @change="radioChangePosition"></enum-data>
       <button class="uni-btn uni-common-mb" type="default" @tap="toast2Tap">点击弹出设置position的toast</button>
       <!-- #endif -->
       <text>{{data.exeRet}}</text>
@@ -204,6 +180,8 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
   type IconItemType = {
     value : "success" | "error" | "fail" | "exception" | "loading" | "none";
     name : string
@@ -259,6 +237,26 @@
     ],
   } as DataType)
 
+  const iconOptions = computed(() : ItemType[] => {
+    return data.icon_enum.map((item, index) : ItemType => {
+      return {
+        value: index,
+        name: item.name,
+        checked: index == data.icon_current
+      }
+    })
+  })
+
+  const positionOptions = computed(() : ItemType[] => {
+    return data.position_enum.map((item, index) : ItemType => {
+      return {
+        value: index,
+        name: item.name,
+        checked: index == data.position_current
+      }
+    })
+  })
+
   let isAutoTest = false
 
   onLoad((options : OnLoadOptions) => {
@@ -283,34 +281,24 @@
     return uni.getWindowInfo();
   }
 
-  const radioChangeIcon = (e : UniRadioGroupChangeEvent) => {
-    for (let i = 0; i < data.icon_enum.length; i++) {
-      if (data.icon_enum[i].value === e.detail.value) {
-        data.icon_current = i;
-        break;
-      }
-    }
+  const radioChangeIcon = (value : number) => {
+    data.icon_current = value
   }
 
-  const change_image_boolean = (e : UniSwitchChangeEvent) => {
-    data.imageSelect = e.detail.value
+  const change_image_boolean = (value : boolean) => {
+    data.imageSelect = value
   }
 
-  const change_mask_boolean = (e : UniSwitchChangeEvent) => {
-    data.maskSelect = e.detail.value
+  const change_mask_boolean = (value : boolean) => {
+    data.maskSelect = value
   }
 
   const sliderChange = (e : UniSliderChangeEvent) => {
     data.intervalSelect = e.detail.value
   }
 
-  const radioChangePosition = (e : UniRadioGroupChangeEvent) => {
-    for (let i = 0; i < data.position_enum.length; i++) {
-      if (data.position_enum[i].value === e.detail.value) {
-        data.position_current = i;
-        break;
-      }
-    }
+  const radioChangePosition = (value : number) => {
+    data.position_current = value
   }
 
   const toast1Tap = () => {
