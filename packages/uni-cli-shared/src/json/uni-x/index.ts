@@ -26,6 +26,7 @@ export interface UniXPageOptions {
   androidOverscroll?: boolean
   androidRefresherColor?: string
   backgroundColor?: string
+  backgroundTextStyle?: 'dark' | 'light'
 }
 
 const uniXPageOptionsCache = new Map<string, Map<string, UniXPageOptions>>()
@@ -108,6 +109,8 @@ function normalizeRootPageOptions(
     pageStyle?.androidRefresherColor ?? globalStyle.androidRefresherColor
   const backgroundColor =
     pageStyle?.backgroundColor ?? globalStyle.backgroundColor
+  const backgroundTextStyle =
+    pageStyle?.backgroundTextStyle ?? globalStyle.backgroundTextStyle
   return {
     disableScroll: pageStyle?.disableScroll === true || undefined,
     enablePullDownRefresh:
@@ -124,6 +127,7 @@ function normalizeRootPageOptions(
     backgroundColor: backgroundColor?.startsWith('@')
       ? undefined
       : backgroundColor,
+    backgroundTextStyle,
   }
 }
 

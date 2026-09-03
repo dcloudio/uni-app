@@ -253,6 +253,7 @@ declare namespace UniNamespace {
     onReachBottomDistance?: number
     pageOrientation?: 'auto' | 'portrait' | 'landscape'
     backgroundColor?: string
+    backgroundTextStyle?: 'dark' | 'light'
     backgroundColorContent?: string
     navigationStyle?: 'default' | 'custom'
     maxWidth?: string | number

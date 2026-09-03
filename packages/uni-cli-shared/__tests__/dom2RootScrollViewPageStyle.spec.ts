@@ -35,6 +35,7 @@ describe('dom2 root scroll-view page style', () => {
               androidOverscroll: false,
               androidRefresherColor: '',
               backgroundColor: '',
+              backgroundTextStyle: 'dark',
             },
           },
         ],
@@ -50,6 +51,7 @@ describe('dom2 root scroll-view page style', () => {
       androidOverscroll: false,
       androidRefresherColor: '',
       backgroundColor: '',
+      backgroundTextStyle: 'dark',
     })
   })
 
@@ -62,6 +64,7 @@ describe('dom2 root scroll-view page style', () => {
             style: {
               bounces: false,
               backgroundColor: '#ffffff',
+              backgroundTextStyle: 'light',
             },
           },
         ],
@@ -71,6 +74,7 @@ describe('dom2 root scroll-view page style', () => {
           androidOverscroll: true,
           androidRefresherColor: '#007aff',
           backgroundColor: '#f8f8f8',
+          backgroundTextStyle: 'dark',
         },
       })
     )
@@ -83,6 +87,7 @@ describe('dom2 root scroll-view page style', () => {
       androidOverscroll: true,
       androidRefresherColor: '#007aff',
       backgroundColor: '#ffffff',
+      backgroundTextStyle: 'light',
     })
   })
 
