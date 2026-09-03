@@ -1,4 +1,7 @@
-import { addMiniProgramPageJson } from '@dcloudio/uni-cli-shared'
+import {
+  addMiniProgramPageJson,
+  transformTeleport,
+} from '@dcloudio/uni-cli-shared'
 import { customElements } from '../src/compiler/options'
 import { assert } from './testUtils'
 import { transformMPBuiltInTag } from '../src/compiler/transforms/transformMPBuiltInTag'
@@ -421,5 +424,58 @@ describe('mp-alipay: transform component x', () => {
         nodeTransforms: [transformMPBuiltInTag],
       }
     )
+  })
+
+  describe('teleport', () => {
+    const originalPlatform = process.env.UNI_PLATFORM
+    const originalAppX = process.env.UNI_APP_X
+
+    beforeAll(() => {
+      process.env.UNI_PLATFORM = 'mp-alipay'
+      process.env.UNI_APP_X = 'true'
+    })
+
+    afterAll(() => {
+      if (originalPlatform === undefined) {
+        delete (process.env as Record<string, string | undefined>).UNI_PLATFORM
+      } else {
+        process.env.UNI_PLATFORM = originalPlatform
+      }
+      if (originalAppX === undefined) {
+        delete (process.env as Record<string, string | undefined>).UNI_APP_X
+      } else {
+        process.env.UNI_APP_X = originalAppX
+      }
+    })
+
+    test('single root', () => {
+      assert(
+        `<teleport to="#foo" disabled defer><view/></teleport>`,
+        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"><view class="a-page"><view/></view></root-portal>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+        {
+          isX: true,
+          nodeTransforms: [transformTeleport],
+        }
+      )
+    })
+
+    test('multiple roots', () => {
+      assert(
+        `<teleport to="#foo" disabled defer><view/><view/></teleport>`,
+        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"><view class="a-page"><view/><view/></view></root-portal>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+        {
+          isX: true,
+          nodeTransforms: [transformTeleport],
+        }
+      )
+    })
   })
 })
