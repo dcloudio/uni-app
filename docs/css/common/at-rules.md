@@ -311,8 +311,6 @@ HBuilderX 5.25+，App 平台蒸汽模式支持通过 `prefers-color-scheme` 媒�
 }
 ```
 
-以上代码仅为举例。如果要适配小程序，一般不在page选择器上设背景。因为小程序上适配暗黑，页面背景需要在theme.json里配置，通过page选择器配置容易生效较晚、产生白屏。如果已经在theme.json中配置了，就无需通过页面内的page选择器重复设置了。
-
 详见 [暗黑主题适配教程](https://doc.dcloud.net.cn/uni-app-x/api/theme-change.html)。
 
 目前App平台`@media`暂不支持尺寸、宽高、屏幕方向、分辨率等其他媒体特性的匹配，如需适配宽屏，请使用专门的`<match-media>组件`，[详见](../../component/match-media.md)。
