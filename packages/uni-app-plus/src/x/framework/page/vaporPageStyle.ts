@@ -5,6 +5,7 @@ type VaporPageStyleValue = boolean | string
 interface VaporPageStyleProperty {
   name: string
   defaultValue: VaporPageStyleValue
+  allowedValues?: readonly VaporPageStyleValue[]
 }
 
 interface VaporPageStyleOverrideOwner {
@@ -28,6 +29,12 @@ const VAPOR_PAGE_STYLE_PROPERTIES: VaporPageStyleProperty[] = [
     defaultValue: false,
   },
   {
+    name: 'backgroundTextStyle',
+    defaultValue: 'dark',
+    allowedValues: ['dark', 'light'],
+  },
+  // Apply the Android-specific color after the default refresher style.
+  {
     name: 'androidRefresherColor',
     defaultValue: '',
   },
@@ -39,8 +46,12 @@ const VAPOR_PAGE_STYLE_PROPERTIES: VaporPageStyleProperty[] = [
 
 function normalizeVaporPageStyleValue(
   value: unknown,
-  defaultValue: VaporPageStyleValue
+  property: VaporPageStyleProperty
 ): VaporPageStyleValue {
+  const { allowedValues, defaultValue } = property
+  if (allowedValues && !allowedValues.includes(value as VaporPageStyleValue)) {
+    return defaultValue
+  }
   return typeof value === typeof defaultValue
     ? (value as VaporPageStyleValue)
     : defaultValue
@@ -75,10 +86,13 @@ export function initVaporPageStyle(
   VAPOR_PAGE_STYLE_PROPERTIES.forEach((property) => {
     const value = normalizeVaporPageStyleValue(
       (pageStyle as unknown as Record<string, unknown>)[property.name],
-      property.defaultValue
+      property
     )
     setVaporPageStyleInitialValue?.call(pageStyleOwner, property.name, value)
-    if (pageStyleOwner.__vaporPageStyleOverrides?.has(property.name)) {
+    if (
+      value === property.defaultValue ||
+      pageStyleOwner.__vaporPageStyleOverrides?.has(property.name)
+    ) {
       return
     }
     setVaporPageStyle.call(pageStyleOwner, property.name, value)

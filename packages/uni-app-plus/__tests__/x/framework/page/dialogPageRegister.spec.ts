@@ -271,6 +271,7 @@ describe('dialogPage DevTools 打开通知', () => {
       bounces: 'bounces',
       androidOverscroll: 'android-overscroll',
       androidRefresherColor: 'android-refresher-color',
+      backgroundTextStyle: 'refresher-default-style',
       backgroundColor: 'refresher-background',
     }
     const rootElement = {
@@ -302,6 +303,7 @@ describe('dialogPage DevTools 打开通知', () => {
         bounces: true,
         androidOverscroll: true,
         androidRefresherColor: '#00ff00',
+        backgroundTextStyle: 'light',
         backgroundColor: '#ff0000',
       },
     })
@@ -323,6 +325,7 @@ describe('dialogPage DevTools 打开通知', () => {
       'enable-back-to-top': true,
       bounces: true,
       'android-overscroll': true,
+      'refresher-default-style': 'light',
       'android-refresher-color': '#00ff00',
       'refresher-background': '#ff0000',
     })
@@ -330,6 +333,7 @@ describe('dialogPage DevTools 打开通知', () => {
       enableBackToTop: true,
       bounces: true,
       androidOverscroll: true,
+      backgroundTextStyle: 'light',
       androidRefresherColor: '#00ff00',
       backgroundColor: '#ff0000',
     })
