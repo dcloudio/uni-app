@@ -1,4 +1,4 @@
-import { createBindDirectiveNode } from '../utils'
+import { createAttributeNode, createBindDirectiveNode } from '../utils'
 import {
   isAttributeNode,
   isCompoundExpressionNode,
@@ -10,10 +10,12 @@ import {
   type CompoundExpressionNode,
   ElementTypes,
   type ExpressionNode,
+  NodeTypes,
   type RootNode,
   type TemplateChildNode,
   createSimpleExpression,
   findProp,
+  locStub,
 } from '@vue/compiler-core'
 import { isString, isSymbol } from '@vue/shared'
 
@@ -57,6 +59,23 @@ export const transformTeleport = function (node: RootNode | TemplateChildNode) {
   if (deferProp) {
     // delete `defer` prop since it is not supported in mini program
     node.props.splice(node.props.indexOf(deferProp), 1)
+  }
+
+  if (
+    process.env.UNI_PLATFORM === 'mp-alipay' &&
+    process.env.UNI_APP_X === 'true' &&
+    node.children.length
+  ) {
+    node.children = [
+      {
+        type: NodeTypes.ELEMENT,
+        tag: 'view',
+        tagType: ElementTypes.ELEMENT,
+        props: [createAttributeNode('class', 'a-page')],
+        children: node.children,
+        loc: locStub,
+      } as TemplateChildNode,
+    ]
   }
 }
 
