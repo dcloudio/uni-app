@@ -52,14 +52,7 @@ Google Play 的政策要求：
 - libti-monitor.so
 
 
-国外广告 `applovin`、`pangle(海外穿山甲)` 广告渠道 SDK 未适配支持 16KB 内存页面大小，需等待官方升级相关 SDK 版本解决。  
-如果应用用于提交 Google Play 时不要包含这些广告渠道 SDK。  
-
-涉及的so库文件列表：
-- libapplovin-native-crash-report.so
-- libnms.so
-- libpglarmor.so
-- libtobEmbedPageEncrypt.so
+> HBuilder4.83及以上版本 国外广告 `applovin`、`pangle(海外穿山甲)` 广告渠道 SDK 已适配支持 16KB 内存页面大小。  
 
 
 ### [uni-push](../api/uni-push.md)
