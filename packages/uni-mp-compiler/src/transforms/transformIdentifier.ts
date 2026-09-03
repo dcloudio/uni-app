@@ -535,6 +535,16 @@ function wrapAlipayStyleIsolationClassAttribute(
   )
 }
 
+const ALIPAY_STYLE_ISOLATION_CLASS_ATTRIBUTES: Record<
+  string,
+  true | readonly string[]
+> = {
+  'hover-class': true,
+  'placeholder-class': ['input', 'textarea'],
+  'indicator-class': ['picker-view'],
+  'mask-class': ['picker-view'],
+}
+
 function isAlipayStyleIsolationClassAttribute(
   node: TemplateChildNode,
   prop: DirectiveNode | AttributeNode
@@ -550,11 +560,8 @@ function isAlipayStyleIsolationClassAttribute(
       prop.arg.isStatic
     ? prop.arg.content
     : ''
-  const matched =
-    name === 'hover-class' ||
-    (name === 'placeholder-class' &&
-      (node.tag === 'input' || node.tag === 'textarea'))
-  return matched
+  const supportedElements = ALIPAY_STYLE_ISOLATION_CLASS_ATTRIBUTES[name]
+  return supportedElements === true || !!supportedElements?.includes(node.tag)
 }
 
 /**

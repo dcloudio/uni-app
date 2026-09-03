@@ -57,6 +57,15 @@ describe('mp-alipay: styleIsolation 2.0 class attributes', () => {
 }`,
       { filename: pageFilename, isX: true }
     )
+    assert(
+      '<picker-view indicator-class="indicator" mask-class="mask muted"/><view indicator-class="indicator" mask-class="mask"/>',
+      '<picker-view indicator-class="indicator -a-indicator -p-indicator" mask-class="mask -a-mask -p-mask muted -a-muted -p-muted" style="{{\'--status-bar-height:\' + a + \';\' + (\'--uni-safe-area-inset-bottom:\' + b)}}"/><view indicator-class="indicator" mask-class="mask" style="{{\'--status-bar-height:\' + c + \';\' + (\'--uni-safe-area-inset-bottom:\' + d)}}"/>',
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      { filename: pageFilename, isX: true }
+    )
   })
 
   test('动态原生 class 属性复用 helper 并使用当前作用域 mask', () => {
@@ -78,15 +87,37 @@ describe('mp-alipay: styleIsolation 2.0 class attributes', () => {
 }`,
       { filename: componentFilename, isX: true }
     )
+    assert(
+      '<picker-view :indicator-class="indicatorClass" :mask-class="maskClass"/>',
+      '<picker-view indicator-class="{{uV.c(a,4)}}" mask-class="{{uV.c(b,4)}}" style="{{\'--status-bar-height:\' + c + \';\' + (\'--uni-safe-area-inset-bottom:\' + d)}}"/>',
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _ctx.indicatorClass, b: _ctx.maskClass, c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      { filename: componentFilename, isX: true }
+    )
   })
 
   test('非支付宝隔离 2.0 不改写原生 class 属性', () => {
     process.env.UNI_PLATFORM = 'mp-weixin'
     assert(
-      '<view :hover-class="hoverClass"/><input :placeholder-class="placeholderClass"/>',
-      "<view hover-class=\"{{a}}\" style=\"{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}\"/><input placeholder-class=\"{{d}}\" style=\"{{'--status-bar-height:' + e + ';' + ('--uni-safe-area-inset-bottom:' + f)}}\"/>",
+      '<view :hover-class="hoverClass"/><input :placeholder-class="placeholderClass"/><picker-view :indicator-class="indicatorClass" :mask-class="maskClass"/>',
+      "<view hover-class=\"{{a}}\" style=\"{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}\"/><input placeholder-class=\"{{d}}\" style=\"{{'--status-bar-height:' + e + ';' + ('--uni-safe-area-inset-bottom:' + f)}}\"/><picker-view indicator-class=\"{{g}}\" mask-class=\"{{h}}\" style=\"{{'--status-bar-height:' + i + ';' + ('--uni-safe-area-inset-bottom:' + j)}}\"/>",
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.hoverClass, b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\`, d: _ctx.placeholderClass, e: \`\${_ctx.u_s_b_h}px\`, f: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _ctx.hoverClass, b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\`, d: _ctx.placeholderClass, e: \`\${_ctx.u_s_b_h}px\`, f: \`\${_ctx.u_s_a_i_b}px\`, g: _ctx.indicatorClass, h: _ctx.maskClass, i: \`\${_ctx.u_s_b_h}px\`, j: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      { filename: pageFilename, isX: true }
+    )
+  })
+
+  test('支付宝非样式隔离 2.0 不改写 picker-view class 属性', () => {
+    Reflect.set(process.env, 'UNI_APP_STYLE_ISOLATION_VERSION', '1')
+    assert(
+      '<picker-view :indicator-class="indicatorClass" :mask-class="maskClass"/>',
+      '<picker-view indicator-class="{{a}}" mask-class="{{b}}" style="{{\'--status-bar-height:\' + c + \';\' + (\'--uni-safe-area-inset-bottom:\' + d)}}"/>',
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _ctx.indicatorClass, b: _ctx.maskClass, c: \`\${_ctx.u_s_b_h}px\`, d: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       { filename: pageFilename, isX: true }
