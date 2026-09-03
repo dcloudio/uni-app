@@ -11,3 +11,5 @@
 * [AndroidManifest.xml](app-nativeresource-android.md)
 * [Info.plist](app-nativeresource-ios.md)
 * [uni.scss](uni-scss.md)
+* [vue.config.js](vue-config.md)
+* [vite.config.js](vite-config.md)
