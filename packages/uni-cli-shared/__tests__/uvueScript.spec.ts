@@ -288,6 +288,12 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     ).toEqual(
       expect.objectContaining({
         code: '<script setup vapor lang="uts">const value = 1</script>',
+        meta: {
+          uniAppXScript: {
+            hasImplicitLang: true,
+            defaultLang: 'uts',
+          },
+        },
       })
     )
   })
@@ -422,6 +428,42 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     ).toEqual({
       code: '<script lang="uts">export default {}</script>',
       map: { mappings: '' },
+      meta: {
+        uniAppXScript: {
+          hasImplicitLang: true,
+          defaultLang: 'uts',
+        },
+      },
+    })
+  })
+
+  test('clears implicit language metadata when HMR adds an explicit language', () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+    const moduleInfo = {
+      meta: {
+        uniAppXScript: {
+          hasImplicitLang: true,
+          defaultLang: 'uts',
+        },
+      },
+    }
+
+    expect(
+      transform.call(
+        {
+          getModuleInfo: () => moduleInfo,
+        } as any,
+        '<script lang="ts">const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual({
+      code: '<script lang="ts">const value = 1</script>',
+      meta: {
+        uniAppXScript: {
+          hasImplicitLang: false,
+        },
+      },
     })
   })
 

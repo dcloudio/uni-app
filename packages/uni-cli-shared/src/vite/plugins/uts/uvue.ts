@@ -119,6 +119,8 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
       if (standardScriptSupported) {
         const transformed = new MagicString(code)
         let changed = false
+        // fixed by uts 记录原始 SFC 是否未显式配置 lang，供后续 plugin-vue 生成元数据。
+        let hasImplicitLang = false
         for (const script of scriptTags) {
           const addVapor = isDom2 && script.setup && !script.vapor
           if (script.langAttr) {
@@ -141,8 +143,15 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
               `${addVapor ? ' vapor' : ''} lang="uts"`
             )
             changed = true
+            // fixed by uts 该标记必须在改写 script 标签前记录，避免丢失原始状态。
+            hasImplicitLang = true
           }
         }
+        // fixed by uts HMR 从隐式 lang 切换为显式 lang 时，覆盖模块缓存中的旧元数据。
+        const previousScriptMeta = this.getModuleInfo?.(id)?.meta
+          ?.uniAppXScript as { hasImplicitLang?: boolean } | undefined
+        const shouldClearImplicitLangMeta =
+          previousScriptMeta?.hasImplicitLang === true
         if (!changed) {
           // App 旧流程即使未改写 script 标签也会返回空 map，用于隔离后续
           // uni:pre-vue 无 map 的条件编译，避免同一 SFC 出现不同 sourcesContent。
@@ -150,6 +159,23 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
             return {
               code,
               map: { mappings: '' },
+              meta: shouldClearImplicitLangMeta
+                ? {
+                    uniAppXScript: {
+                      hasImplicitLang: false,
+                    },
+                  }
+                : undefined,
+            }
+          }
+          if (shouldClearImplicitLangMeta) {
+            return {
+              code,
+              meta: {
+                uniAppXScript: {
+                  hasImplicitLang: false,
+                },
+              },
             }
           }
           return
@@ -160,6 +186,12 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
           // 可避免后续 SFC 虚拟模块针对同一文件生成不同 sourcesContent。遗留问题：单行
           // <script>code</script> 中正文的列偏移暂时无法还原。
           map: { mappings: '' },
+          meta: {
+            uniAppXScript: {
+              hasImplicitLang,
+              defaultLang: 'uts',
+            },
+          },
         }
       }
       return {
