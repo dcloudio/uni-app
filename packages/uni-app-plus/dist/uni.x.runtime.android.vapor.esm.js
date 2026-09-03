@@ -2325,23 +2325,42 @@ function triggerFailCallback$1(options, errMsg) {
   options === null || options === void 0 || (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
   options === null || options === void 0 || (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
 }
-var VAPOR_PAGE_STYLE_PROPERTIES = [{
-  name: "enableBackToTop",
-  defaultValue: false
-}, {
-  name: "bounces",
-  defaultValue: false
-}, {
-  name: "androidOverscroll",
-  defaultValue: false
-}, {
-  name: "androidRefresherColor",
-  defaultValue: ""
-}, {
-  name: "backgroundColor",
-  defaultValue: "transparent"
-}];
-function normalizeVaporPageStyleValue(value, defaultValue) {
+var VAPOR_PAGE_STYLE_PROPERTIES = [
+  {
+    name: "enableBackToTop",
+    defaultValue: false
+  },
+  {
+    name: "bounces",
+    defaultValue: false
+  },
+  {
+    name: "androidOverscroll",
+    defaultValue: false
+  },
+  {
+    name: "backgroundTextStyle",
+    defaultValue: "dark",
+    allowedValues: ["dark", "light"]
+  },
+  // Apply the Android-specific color after the default refresher style.
+  {
+    name: "androidRefresherColor",
+    defaultValue: ""
+  },
+  {
+    name: "backgroundColor",
+    defaultValue: "transparent"
+  }
+];
+function normalizeVaporPageStyleValue(value, property) {
+  var {
+    allowedValues,
+    defaultValue
+  } = property;
+  if (allowedValues && !allowedValues.includes(value)) {
+    return defaultValue;
+  }
   return typeof value === typeof defaultValue ? value : defaultValue;
 }
 function initVaporPageStyle(page, pageStyle) {
@@ -2363,9 +2382,9 @@ function initVaporPageStyle(page, pageStyle) {
   var setVaporPageStyleInitialValue = pageStyleOwner.__setVaporPageStyleInitialValue;
   VAPOR_PAGE_STYLE_PROPERTIES.forEach((property) => {
     var _pageStyleOwner$__vap;
-    var value = normalizeVaporPageStyleValue(pageStyle[property.name], property.defaultValue);
+    var value = normalizeVaporPageStyleValue(pageStyle[property.name], property);
     setVaporPageStyleInitialValue === null || setVaporPageStyleInitialValue === void 0 || setVaporPageStyleInitialValue.call(pageStyleOwner, property.name, value);
-    if ((_pageStyleOwner$__vap = pageStyleOwner.__vaporPageStyleOverrides) !== null && _pageStyleOwner$__vap !== void 0 && _pageStyleOwner$__vap.has(property.name)) {
+    if (value === property.defaultValue || (_pageStyleOwner$__vap = pageStyleOwner.__vaporPageStyleOverrides) !== null && _pageStyleOwner$__vap !== void 0 && _pageStyleOwner$__vap.has(property.name)) {
       return;
     }
     setVaporPageStyle.call(pageStyleOwner, property.name, value);
