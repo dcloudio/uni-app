@@ -80,31 +80,31 @@ describe('shared:cache', () => {
   })
 
   it('mp-toutiao generate component.json', () => {
+    const prevPlatform = process.env.UNI_PLATFORM
     process.env.UNI_PLATFORM = 'mp-toutiao'
-    const name = 'components/component-tag-name'
+    // 独立 name：覆盖 add 与 update。不得再强制注入 componentPlaceholder（#6057）
+    const name = 'components/toutiao-no-force-placeholder'
     let usingComponents = {
       'my-component': '/components/component-tag-name'
-    }
-    const componentPlaceholder = {
-      'my-component': 'view'
     }
     updateUsingComponents(name, usingComponents, 'Component')
     let componentJsonStr = getChangedJsonFileMap().get(name + '.json')
     expect(componentJsonStr).toBe(JSON.stringify({
       usingComponents,
-      component: true,
-      componentPlaceholder
+      component: true
     }, null, 2))
     expect(0).toBe(getChangedJsonFileMap().size)
 
-    usingComponents = {}
+    usingComponents = {
+      'u-icon': '/components/u-icon'
+    }
     updateUsingComponents(name, usingComponents, 'Component')
     componentJsonStr = getChangedJsonFileMap().get(name + '.json')
     expect(componentJsonStr).toBe(JSON.stringify({
       usingComponents,
-      component: true,
-      componentPlaceholder
+      component: true
     }, null, 2))
     expect(0).toBe(getChangedJsonFileMap().size)
+    process.env.UNI_PLATFORM = prevPlatform
   })
 })
