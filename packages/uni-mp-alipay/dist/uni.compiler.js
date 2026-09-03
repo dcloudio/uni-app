@@ -322,6 +322,7 @@ const options = {
                     },
                 },
                 uniCliShared.createCopyPluginTarget(['ext.json']),
+                ...uniCliShared.copyMiniProgramThemeJson(),
             ],
         },
     },
@@ -361,7 +362,12 @@ const options = {
             icon: 'iconPath',
             activeIcon: 'selectedIconPath',
         },
-        formatAppJson(appJson, _manifestJson, pageJsons) {
+        formatAppJson(appJson, manifestJson, pageJsons) {
+            const { darkmode } = manifestJson[process.env.UNI_PLATFORM] || {};
+            delete appJson.darkmode;
+            if (typeof darkmode === 'boolean') {
+                appJson.darkMode = darkmode;
+            }
             if (process.env.UNI_APP_X !== 'true') {
                 return;
             }
@@ -379,7 +385,7 @@ const options = {
         },
     },
     app: {
-        darkmode: false,
+        darkmode: true,
         subpackages: true,
         independentSubpackages: true,
         plugins: true,
