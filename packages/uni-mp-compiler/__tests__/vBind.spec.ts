@@ -106,7 +106,7 @@ describe('compiler: transform v-bind', () => {
         },
       },
     })
-    parseWithVBind(`<view v-bind:arg />`, { onError })
+    parseWithVBind(`<view v-bind:arg="" />`, { onError })
     expect(onError.mock.calls[1][0]).toMatchObject({
       code: ErrorCodes.X_V_BIND_NO_EXPRESSION,
       loc: {
@@ -116,10 +116,34 @@ describe('compiler: transform v-bind', () => {
         },
         end: {
           line: 1,
-          column: 17,
+          column: 20,
         },
       },
     })
+  })
+
+  test('same-name shorthand (Vue 3.4)', () => {
+    assert(
+      `<view :id/>`,
+      `<view id="{{a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.id }
+}`
+    )
+    assert(
+      `<view v-bind:arg />`,
+      `<view arg="{{a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.arg }
+}`
+    )
+    assert(
+      `<view :foo-bar/>`,
+      `<view foo-bar="{{a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.fooBar }
+}`
+    )
   })
 
   test('.camel modifier', () => {
