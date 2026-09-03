@@ -65,7 +65,7 @@
 >示例
 ```vue
 <template>
-  <view>
+  <view class="open-location-page uni-theme-root">
     <page-head :title="title"></page-head>
     <view class="uni-common-mt">
       <view class="uni-list">
@@ -103,7 +103,7 @@
         </view>
       </view>
       <view class="uni-padding-wrap">
-        <view class="tips">注意：需要正确配置地图服务商的Key才能正常显示位置</view>
+        <view class="tips"><text class="tips-text">注意：需要正确配置地图服务商的Key才能正常显示位置</text></view>
         <view class="uni-btn-v uni-common-mt">
           <button type="primary" @click="openLocation">查看位置</button>
         </view>
@@ -185,8 +185,12 @@
 </script>
 
 <style>
+  .open-location-page {
+    --open-location-hint-color: #999999;
+  }
+
   .readonly-text {
-    color: #999999;
+    color: var(--open-location-hint-color, #999999);
     font-size: 14px;
     line-height: 22px;
     padding-top: 10px;
@@ -198,9 +202,18 @@
   }
 
   .tips {
-    font-size: 12px;
     margin-top: 15px;
     opacity: 0.8;
+  }
+
+  .tips-text {
+    font-size: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .open-location-page {
+      --open-location-hint-color: #a0a0a0;
+    }
   }
 </style>
 

@@ -583,7 +583,7 @@ onMessage
 ```vue
 <template>
   <page-head title="websocket通讯示例"></page-head>
-  <view class="uni-padding-wrap">
+  <view class="uni-padding-wrap websocket-page uni-theme-root">
     <view class="uni-btn-v">
       <text class="websocket-msg">{{ showMsg }}</text>
       <button <!-- #ifndef MP-ALIPAY -->
@@ -773,7 +773,7 @@ onMessage
     text-align: center;
     font-size: 14px;
     line-height: 40px;
-    color: #666666;
+    color: var(--websocket-secondary-color, #666666);
   }
 
   .websocket-tips {
@@ -781,7 +781,17 @@ onMessage
     text-align: center;
     font-size: 14px;
     line-height: 24px;
-    color: #666666;
+    color: var(--websocket-secondary-color, #666666);
+  }
+
+  .websocket-page {
+    --websocket-secondary-color: #666666;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .websocket-page {
+      --websocket-secondary-color: #a0a0a0;
+    }
   }
 </style>
 

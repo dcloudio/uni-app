@@ -102,9 +102,8 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
             }}</text>
           </view>
           <view class="set-value" v-if="item.type == 'boolean'">
-            <switch :checked="data.currentPageStyle.getBoolean(item.key)"
-              @change="switchChange(item.key, $event as UniSwitchChangeEvent)">
-            </switch>
+            <boolean-data :defaultValue="data.currentPageStyle.getBoolean(item.key)" :title="item.key"
+              @change="switchChange(item.key, $event)"></boolean-data>
           </view>
           <view class="set-value" v-else-if="item.type == 'number'">
             <slider :value="data.currentPageStyle.getNumber(item.key)" :show-value="true"
@@ -231,8 +230,8 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
   const sliderChange = (key : string, e : UniSliderChangeEvent) => {
     setStyleValue(key, e.detail.value);
   }
-  const switchChange = (key : string, e : UniSwitchChangeEvent) => {
-    setStyleValue(key, e.detail.value);
+  const switchChange = (key : string, value : boolean) => {
+    setStyleValue(key, value);
   }
 
   const goSetDisablePullDownRefresh = () => {

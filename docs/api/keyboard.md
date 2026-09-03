@@ -172,7 +172,7 @@
 >示例
 ```vue
 <template>
-	<view class="container">
+	<view class="container uni-theme-root">
 		<view class="input-section">
 			<input id="uni-input-box" class="input-box" type="text" :value="data.inputValue" placeholder="点击输入框显示键盘" :focus="data.isFocus" hold-keyboard="true" />
 			<button class="btn" @click="hideKeyboard">隐藏键盘</button>
@@ -226,6 +226,8 @@ defineExpose({
 
 <style>
 .container {
+	--keyboard-border-color: #ccc;
+	--keyboard-text-color: #333;
 	padding: 20px;
 }
 .input-section {
@@ -234,7 +236,7 @@ defineExpose({
 .input-box {
 	width: 100%;
 	height: 40px;
-	border: 1px solid #ccc;
+	border: 1px solid var(--keyboard-border-color, #ccc);
 	border-radius: 4px;
 	padding: 0 10px;
 	margin-bottom: 10px;
@@ -250,7 +252,14 @@ defineExpose({
 	width: 100%;
 	margin-bottom: 10px;
 	font-size: 16px;
-	color: #333;
+	color: var(--keyboard-text-color, #333);
+}
+
+@media (prefers-color-scheme: dark) {
+	.container {
+		--keyboard-border-color: rgba(255, 255, 255, 0.1);
+		--keyboard-text-color: #ffffff;
+	}
 }
 </style>
 

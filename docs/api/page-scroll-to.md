@@ -92,9 +92,9 @@ app-uvue下，其实没有页面级滚动。但本API做了一定兼容，当页
 ```vue
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1" scroll-with-animation="true">
+  <scroll-view class="uni-theme-root" style="flex: 1" scroll-with-animation="true">
   <!-- #endif -->
-    <view class="uni-padding-wrap">
+    <view class="uni-padding-wrap uni-theme-root">
       <page-head :title="title"></page-head>
       <button type="default" class="btn-scrollTo" @click="scrollTo">
         scrollTo
@@ -148,6 +148,11 @@ app-uvue下，其实没有页面级滚动。但本API做了一定兼容，当页
   .list-item {
     height: 100px;
     padding-left: 30px;
+  }
+
+  .list-item,
+  .custom-element {
+    color: var(--text-color, #333333);
   }
 </style>
 

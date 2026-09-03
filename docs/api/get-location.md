@@ -245,7 +245,7 @@ HarmonyOS平台调用此 API 需要申请定位权限`ohos.permission.APPROXIMAT
 
     <view class="uni-padding-wrap uni-common-mt">
       <!-- #ifdef APP-ANDROID || APP-IOS -->
-      <view class="uni-list-cell-db">定位服务商provider(如系统定位，腾讯定位等)</view>
+      <view class="uni-list-cell-db"><text class="uni-list-cell-db-text">定位服务商provider(如系统定位，腾讯定位等)</text></view>
       <view class="uni-list" style="margin-bottom: 20px">
         <radio-group @change="radioChangePV">
           <view class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in providerList" :key="item.id"
@@ -256,7 +256,7 @@ HarmonyOS平台调用此 API 需要申请定位权限`ohos.permission.APPROXIMAT
         </radio-group>
       </view>
       <!-- #endif -->
-      <view class="uni-list-cell-db">定位类型</view>
+      <view class="uni-list-cell-db"><text class="uni-list-cell-db-text">定位类型</text></view>
       <view class="uni-list">
         <radio-group @change="radioChange">
           <view class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
@@ -266,18 +266,12 @@ HarmonyOS平台调用此 API 需要申请定位权限`ohos.permission.APPROXIMAT
           </view>
         </radio-group>
       </view>
-      <view class="uni-list-cell uni-list-cell-pd" style="margin-top: 20px">
-        <view class="uni-list-cell-db">高度信息</view>
-        <switch :checked="altitudeSelect" @change="altitudeChange" />
-      </view>
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">开启高精度定位</view>
-        <switch :checked="isHighAccuracySelect" @change="highAccuracySelectChange" />
-      </view>
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">是否解析地址信息</view>
-        <switch :checked="geocodeSelect" @change="geocodeChange" />
-      </view>
+      <boolean-data style="margin-top: 20px" :defaultValue="altitudeSelect" title="高度信息"
+        @change="altitudeChange"></boolean-data>
+      <boolean-data :defaultValue="isHighAccuracySelect" title="开启高精度定位"
+        @change="highAccuracySelectChange"></boolean-data>
+      <boolean-data :defaultValue="geocodeSelect" title="是否解析地址信息"
+        @change="geocodeChange"></boolean-data>
       <view class="get-location-result">{{ exeRet }}</view>
       <view class="uni-btn-v">
         <button class="uni-btn" type="default" @tap="getLocationTap">
@@ -368,16 +362,16 @@ HarmonyOS平台调用此 API 需要申请定位权限`ohos.permission.APPROXIMAT
     // #endif
   }
 
-  const altitudeChange = (e : UniSwitchChangeEvent) => {
-    altitudeSelect.value = e.detail.value
+  const altitudeChange = (value : boolean) => {
+    altitudeSelect.value = value
   }
 
-  const geocodeChange = (e : UniSwitchChangeEvent) => {
-    geocodeSelect.value = e.detail.value
+  const geocodeChange = (value : boolean) => {
+    geocodeSelect.value = value
   }
 
-  const highAccuracySelectChange = (e : UniSwitchChangeEvent) => {
-    isHighAccuracySelect.value = e.detail.value
+  const highAccuracySelectChange = (value : boolean) => {
+    isHighAccuracySelect.value = value
   }
 
   const radioChange = (e : UniRadioGroupChangeEvent) => {

@@ -684,12 +684,12 @@ defineExpose({
 	<!-- #ifdef APP && !VUE3-VAPOR -->
 	<scroll-view style="flex: 1;">
 	<!-- #endif -->
-	<view style="padding: 10px;">
-		<text style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px;">Swiper组件演示</text>
+	<view class="swiper-more-page uni-theme-root" style="padding: 10px;">
+		<text style="font-size: 18px; font-weight: bold; color: var(--swiper-title-color, #333); margin-bottom: 10px;">Swiper组件演示</text>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">不等高slider测试（Auto Height）harmony 微信小程序 无效：</text>
-			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">容器高度随当前slider内容自动调整</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">不等高slider测试（Auto Height）harmony 微信小程序 无效：</text>
+			<text style="color: var(--swiper-note-color, #999); font-size: 12px; margin-bottom: 5px;">容器高度随当前slider内容自动调整</text>
 			<swiper auto-height>
 				<swiper-item>
 					<view style="background-color: #ff6b6b; padding: 20px;">
@@ -720,7 +720,7 @@ defineExpose({
 		</view>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">基础用法（横向滑动，测试指示器可见性）：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">基础用法（横向滑动，测试指示器可见性）：</text>
 			<swiper style="height: 150px;" :indicator-dots="true">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #ff6b6b; align-items: center; justify-content: center;">
@@ -741,7 +741,7 @@ defineExpose({
 		</view>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">3D卡片（previousMargin + nextMargin + circular），应用层实现缩放：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">3D卡片（previousMargin + nextMargin + circular），应用层实现缩放：</text>
 			<swiper
 				circular
 				previous-margin="40px"
@@ -774,7 +774,7 @@ defineExpose({
 		</view>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">3D卡片（previousMargin + nextMargin + circular），应用层实现缩放：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">3D卡片（previousMargin + nextMargin + circular），应用层实现缩放：</text>
 			<swiper
 				circular
 				previous-margin="40px"
@@ -800,7 +800,7 @@ defineExpose({
 		</view>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">垂直滑动（vertical）：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">垂直滑动（vertical）：</text>
 			<swiper vertical style="height: 200px;">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #8e44ad; align-items: center; justify-content: center;">
@@ -822,7 +822,7 @@ defineExpose({
 
 		<!-- #ifndef MP-ALIPAY -->
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">垂直滑动（vertical）且开启 disable-rebound：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">垂直滑动（vertical）且开启 disable-rebound：</text>
 			<swiper vertical :disable-bounce="true" style="height: 200px;">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #8e44ad; align-items: center; justify-content: center;">
@@ -844,7 +844,7 @@ defineExpose({
 		<!-- #endif -->
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">垂直滑动（vertical）且开启 circular：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">垂直滑动（vertical）且开启 circular：</text>
 			<swiper vertical circular style="height: 200px;">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #8e44ad; align-items: center; justify-content: center;">
@@ -865,7 +865,7 @@ defineExpose({
 		</view>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">自动播放 + 循环（autoplay + circular）：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">自动播放 + 循环（autoplay + circular）：</text>
 			<swiper autoplay circular :interval="2000" style="height: 150px;">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #ee5a6f; align-items: center; justify-content: center;">
@@ -886,7 +886,7 @@ defineExpose({
 		</view>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">2卡片 + 循环circular：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">2卡片 + 循环circular：</text>
 			<swiper circular :interval="2000" style="height: 150px;">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #ee5a6f; align-items: center; justify-content: center;">
@@ -903,7 +903,7 @@ defineExpose({
 
 		<!-- #ifndef MP-ALIPAY -->
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">指示器短横线样式（item-style）：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">指示器短横线样式（item-style）：</text>
 			<swiper style="height: 150px;" :indicator-dots="true" indicator-style="width: 20px; height: 3px; border-radius: 2px;">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #9b59b6; align-items: center; justify-content: center;">
@@ -924,7 +924,7 @@ defineExpose({
 		</view>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">高亮指示器加长（item-active-style）：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">高亮指示器加长（item-active-style）：</text>
 			<swiper style="height: 150px;" :indicator-dots="true" indicator-style="width: 8px; height: 8px;" indicator-active-style="width: 12px; height: 8px;">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #e84118; align-items: center; justify-content: center;">
@@ -940,7 +940,7 @@ defineExpose({
 		</view>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">指示器class定制（item-class + item-active-class）：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">指示器class定制（item-class + item-active-class）：</text>
 			<swiper style="height: 150px;" :indicator-dots="true" indicator-class="custom-item" indicator-active-class="custom-item-active">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #f39c12; align-items: center; justify-content: center;">
@@ -956,7 +956,7 @@ defineExpose({
 		</view>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">指示器样式定制（item-style + item-active-style）：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">指示器样式定制（item-style + item-active-style）：</text>
 			<swiper style="height: 150px;" :indicator-dots="true" indicator-style="width: 16px; height: 4px; border-radius: 2px; background-color: rgba(100, 100, 255, 0.5);" indicator-active-style="width: 24px; background-color: rgba(100, 100, 255, 1);">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #8e44ad; align-items: center; justify-content: center;">
@@ -973,10 +973,10 @@ defineExpose({
 		<!-- #endif -->
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">事件监听（@change、@transition、@animationfinish）：</text>
-			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">当前索引: {{eventCurrentIndex}}</text>
-			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">上次触发: {{eventSource}}</text>
-			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">过渡位置: dx={{transitionDx}}, dy={{transitionDy}}</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">事件监听（@change、@transition、@animationfinish）：</text>
+			<text style="color: var(--swiper-note-color, #999); font-size: 12px; margin-bottom: 5px;">当前索引: {{eventCurrentIndex}}</text>
+			<text style="color: var(--swiper-note-color, #999); font-size: 12px; margin-bottom: 5px;">上次触发: {{eventSource}}</text>
+			<text style="color: var(--swiper-note-color, #999); font-size: 12px; margin-bottom: 5px;">过渡位置: dx={{transitionDx}}, dy={{transitionDy}}</text>
 			<swiper
 				@change="handleChange"
 				@transition="handleTransition"
@@ -1003,7 +1003,7 @@ defineExpose({
 
 		<!-- #ifndef MP-ALIPAY -->
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">自定义数字指示器（slot）：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">自定义数字指示器（slot）：</text>
 			<swiper @change="handleCustomIndicatorChange" style="height: 150px;">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #16a085; align-items: center; justify-content: center;">
@@ -1031,7 +1031,7 @@ defineExpose({
 
 		<!-- #ifndef MP-ALIPAY -->
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">自定义指示器并绑定点击事件(仅web支持点击)：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">自定义指示器并绑定点击事件(仅web支持点击)：</text>
 			<swiper :current='customIndicatorCurrent' style="height: 150px;" @change="handleCustomIndicatorHandleClickChange">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #16a085; align-items: center; justify-content: center;">
@@ -1059,8 +1059,8 @@ defineExpose({
 
 		<!-- #ifndef MP-ALIPAY -->
 		<view style="margin-bottom: 20px;">
-			<text style="color: #666; margin-bottom: 10px;">circular 和 disabled-bounce 同时设置：</text>
-			<text style="color: #999; font-size: 12px; margin-bottom: 5px;">以circular为优先</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">circular 和 disabled-bounce 同时设置：</text>
+			<text style="color: var(--swiper-note-color, #999); font-size: 12px; margin-bottom: 5px;">以circular为优先</text>
 			<swiper :disable-bounce="false" :circular="true" style="height: 150px;">
 				<swiper-item>
 					<view style="width: 100%; height: 100%; background-color: #3742fa; align-items: center; justify-content: center;">
@@ -1135,6 +1135,12 @@ defineExpose({
 </script>
 
 <style>
+	.swiper-more-page {
+		--swiper-title-color: #333;
+		--swiper-description-color: #666;
+		--swiper-note-color: #999;
+	}
+
 	.scale-card {
 		width: 100%;
 		height: 100%;
@@ -1170,6 +1176,14 @@ defineExpose({
 		font-size: 18px;
 		color: yellow;
 		font-weight: bold;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.swiper-more-page {
+			--swiper-title-color: #ffffff;
+			--swiper-description-color: #a0a0a0;
+			--swiper-note-color: #a0a0a0;
+		}
 	}
 </style>
 
