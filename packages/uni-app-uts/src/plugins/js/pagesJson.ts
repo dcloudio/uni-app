@@ -30,9 +30,16 @@ export function uniAppPagesPlugin(): Plugin {
 
   let allPagePaths: string[] = []
   let isFirst = true
+  const loggedPagePaths = new Set<string>()
   return {
     name: 'uni:app-pages-json',
     apply: 'build',
+    buildStart() {
+      // 进度日志按一次构建记录页面，避免插件实例复用时沿用上一轮记录。
+      if (isFirst) {
+        loggedPagePaths.clear()
+      }
+    },
     resolveId(id) {
       if (isPages(id)) {
         return pagesJsonUTSPath
@@ -51,23 +58,24 @@ export function uniAppPagesPlugin(): Plugin {
     },
     transform(code, id) {
       if (isFirst && allPagePaths.length) {
-        const { filename } = parseVueRequest(id)
-        if (isVue(filename)) {
+        const { filename, query } = parseVueRequest(id)
+        // 只记录 SFC 主请求，?vue&type=... 是同一个文件的内部子模块。
+        if (isVue(filename) && !query.vue) {
           const vueFilename = removeExt(
             normalizePath(path.relative(process.env.UNI_INPUT_DIR, filename))
           )
           // 项目内的
           if (!vueFilename.startsWith('.')) {
-            // const index = allPagePaths.indexOf(pagePath)
-            // if (index > -1) {
-            if (runByHBuilderX()) {
-              console.log(
-                `当前工程${
-                  allPagePaths.length
-                }个页面，正在编译${vueFilename}...${'\u200D'}`
-              )
+            if (!loggedPagePaths.has(vueFilename)) {
+              loggedPagePaths.add(vueFilename)
+              if (runByHBuilderX()) {
+                console.log(
+                  `当前工程${
+                    allPagePaths.length
+                  }个页面，正在编译${vueFilename}...${'\u200D'}`
+                )
+              }
             }
-            // }
           }
         }
       }

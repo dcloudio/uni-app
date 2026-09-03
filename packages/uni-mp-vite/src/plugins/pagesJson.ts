@@ -61,6 +61,7 @@ export function uniPagesJsonPlugin(
   return defineUniPagesJsonPlugin((opts) => {
     let allPagePaths: string[] = []
     let isFirst = true
+    const loggedPagePaths = new Set<string>()
     let pagesJsonState: PagesJsonState | undefined
 
     const parsePagesJsonState = (
@@ -187,14 +188,24 @@ export function uniPagesJsonPlugin(
     return {
       name: 'uni:mp-pages-json',
       enforce: 'pre',
+      buildStart() {
+        // 进度日志按一次构建记录页面，避免插件实例复用时沿用上一轮记录。
+        if (isFirst) {
+          loggedPagePaths.clear()
+        }
+      },
       configResolved(config) {
         resolvedConfig = config
       },
       transform(code, id) {
         if (process.env.UNI_APP_X === 'true') {
           if (isFirst && allPagePaths.length) {
-            const { filename } = parseVueRequest(id)
-            if (filename.endsWith('.vue') || filename.endsWith('.uvue')) {
+            const { filename, query } = parseVueRequest(id)
+            // 只记录 SFC 主请求，?vue&type=... 是同一个文件的内部子模块。
+            if (
+              (filename.endsWith('.vue') || filename.endsWith('.uvue')) &&
+              !query.vue
+            ) {
               const vueFilename = removeExt(
                 normalizePath(
                   path.relative(process.env.UNI_INPUT_DIR, filename)
@@ -202,16 +213,16 @@ export function uniPagesJsonPlugin(
               )
               // 项目内的
               if (!vueFilename.startsWith('.')) {
-                // const index = allPagePaths.indexOf(pagePath)
-                // if (index > -1) {
-                if (runByHBuilderX()) {
-                  console.log(
-                    `当前工程${
-                      allPagePaths.length
-                    }个页面，正在编译${vueFilename}...${'\u200D'}`
-                  )
+                if (!loggedPagePaths.has(vueFilename)) {
+                  loggedPagePaths.add(vueFilename)
+                  if (runByHBuilderX()) {
+                    console.log(
+                      `当前工程${
+                        allPagePaths.length
+                      }个页面，正在编译${vueFilename}...${'\u200D'}`
+                    )
+                  }
                 }
-                // }
               }
             }
           }
