@@ -543,6 +543,8 @@ const ALIPAY_STYLE_ISOLATION_CLASS_ATTRIBUTES: Record<
   'placeholder-class': ['input', 'textarea'],
   'indicator-class': ['picker-view'],
   'mask-class': ['picker-view'],
+  'active-class': ['swiper'],
+  'changing-class': ['swiper'],
 }
 
 function isAlipayStyleIsolationClassAttribute(
