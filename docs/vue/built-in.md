@@ -29,9 +29,33 @@
 
   v-text 将覆盖元素中所有现有的内容。
 
-示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-text/v-text-options.uvue)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-text/v-text-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-text/v-text-options
+::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-text/v-text-composition
+
+> 组合式 API
+
+```vue
+<template>
+  <view class="page">
+    <view class="flex flex-row justify-between mb-10">
+      <text>v-txt for text:</text>
+      <text id="v-text-text" v-text="vTextForText"></text>
+    </view>
+    <view class="flex flex-row justify-between mb-10">
+      <text>v-txt for view:</text>
+      <view id="v-text-view" v-text="vTextForView"></view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+const vTextForText = ref('v-text for text')
+const vTextForView = ref('v-text for view')
+</script>
+
+```
+
 
 >选项式 API
 
@@ -62,29 +86,6 @@ export default {
 
 ```
 
-> 组合式 API
-
-```vue
-<template>
-  <view class="page">
-    <view class="flex flex-row justify-between mb-10">
-      <text>v-txt for text:</text>
-      <text id="v-text-text" v-text="vTextForText"></text>
-    </view>
-    <view class="flex flex-row justify-between mb-10">
-      <text>v-txt for view:</text>
-      <view id="v-text-view" v-text="vTextForView"></view>
-    </view>
-  </view>
-</template>
-
-<script setup lang="uts">
-const vTextForText = ref('v-text for text')
-const vTextForView = ref('v-text for view')
-</script>
-
-```
-
 :::
 
 ### v-html
@@ -97,11 +98,24 @@ const vTextForView = ref('v-text for view')
 绑定 `v-html` 的标签内的内容会被忽略，`v-html` 指令的内容会编译为 `rich-text` 组件渲染为该标签的子节点。
 :::
 
-示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-html/v-html-options.uvue)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-html/v-html-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-html/v-html-options
+::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-html/v-html-composition
 
->选项式 API
+> 组合式 API
+
+```vue
+<template>
+  <view v-html="html" />
+</template>
+
+<script setup lang="uts">
+const  html = '<p class="p" style="color: red;">hello world for composition API!</p>'
+</script>
+
+```
+
+> 选项式 API
 
 ```vue
 <template>
@@ -120,19 +134,6 @@ export default {
 
 ```
 
-> 组合式 API
-
-```vue
-<template>
-  <view v-html="html" />
-</template>
-
-<script setup lang="uts">
-const  html = '<p class="p" style="color: red;">hello world for composition API!</p>'
-</script>
-
-```
-
 :::
 
 
@@ -140,11 +141,67 @@ const  html = '<p class="p" style="color: red;">hello world for composition API!
 
 基于表达式值的真假性，来改变元素的可见性。
 
-示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-show/v-show-options.uvue)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-show/v-show-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-show/v-show-options
+::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-show/v-show-composition
 
->选项式 API
+> 组合式 API
+
+```vue
+<template>
+  <view class="page">
+    <button id="toggle-btn" @click="toggleShow">toggle show/hide</button>
+    <text>点击上方按钮，切换下方 view 显示/隐藏</text>
+    <text>show default true: {{dataInfo.showDefaultTrue}}</text>
+    <view class="mt-10 default-true" id="v-show-element-default-true" v-show="dataInfo.showDefaultTrue"></view>
+    <text>show default false: {{dataInfo.showDefaultFalse}}</text>
+    <view class="mt-10 default-false" id="v-show-element-default-false" v-show="dataInfo.showDefaultFalse"></view>
+    <Foo v-show="dataInfo.showDefaultFalse" />
+  </view>
+</template>
+
+<script setup lang="uts">
+  import Foo from './Foo.uvue'
+
+  type DataInfo = {
+    showDefaultTrue : boolean
+    showDefaultFalse : boolean
+  }
+
+  const dataInfo = reactive({
+    showDefaultTrue: true,
+    showDefaultFalse: false
+  } as DataInfo)
+
+  const toggleShow = () => {
+    dataInfo.showDefaultTrue = !dataInfo.showDefaultTrue
+    dataInfo.showDefaultFalse = !dataInfo.showDefaultFalse
+  }
+
+  defineExpose({
+    dataInfo
+  })
+</script>
+
+<style>
+  .default-true,
+  .default-false {
+    display: flex;
+    width: 100px;
+    height: 50px;
+  }
+
+  .default-true {
+    background-color: greenyellow;
+  }
+
+  .default-false {
+    background-color: antiquewhite;
+  }
+</style>
+```
+
+> 选项式 API
 
 ```vue
 <template>
@@ -204,62 +261,6 @@ const  html = '<p class="p" style="color: red;">hello world for composition API!
 </style>
 ```
 
-> 组合式 API
-
-```vue
-<template>
-  <view class="page">
-    <button id="toggle-btn" @click="toggleShow">toggle show/hide</button>
-    <text>点击上方按钮，切换下方 view 显示/隐藏</text>
-    <text>show default true: {{dataInfo.showDefaultTrue}}</text>
-    <view class="mt-10 default-true" id="v-show-element-default-true" v-show="dataInfo.showDefaultTrue"></view>
-    <text>show default false: {{dataInfo.showDefaultFalse}}</text>
-    <view class="mt-10 default-false" id="v-show-element-default-false" v-show="dataInfo.showDefaultFalse"></view>
-    <Foo v-show="dataInfo.showDefaultFalse" />
-  </view>
-</template>
-
-<script setup lang="uts">
-  import Foo from './Foo.uvue'
-
-  type DataInfo = {
-    showDefaultTrue : boolean
-    showDefaultFalse : boolean
-  }
-
-  const dataInfo = reactive({
-    showDefaultTrue: true,
-    showDefaultFalse: false
-  } as DataInfo)
-
-  const toggleShow = () => {
-    dataInfo.showDefaultTrue = !dataInfo.showDefaultTrue
-    dataInfo.showDefaultFalse = !dataInfo.showDefaultFalse
-  }
-
-  defineExpose({
-    dataInfo
-  })
-</script>
-
-<style>
-  .default-true,
-  .default-false {
-    display: flex;
-    width: 100px;
-    height: 50px;
-  }
-
-  .default-true {
-    background-color: greenyellow;
-  }
-
-  .default-false {
-    background-color: antiquewhite;
-  }
-</style>
-```
-
 :::
 
 ### v-if
@@ -272,56 +273,9 @@ const  html = '<p class="p" style="color: red;">hello world for composition API!
 
   可用于 `<template>` 表示仅包含文本或多个元素的条件块。
 
-示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-if/v-if-options.uvue)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-if/v-if-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-if/v-if-options
-
->选项式 API
-
-```vue
-<template>
-  <view class="page">
-    <view class="mb-10 flex justify-between flex-row">
-      <text>v-if</text>
-      <text id="v-if-show" v-if="show">show</text>
-    </view>
-    <button id="switch-v-if-btn" @click="show = !show">switch v-if</button>
-
-    <view class="mt-10 mb-10 flex justify-between flex-row">
-      <text>num:</text>
-      <text id="num">{{ num }}</text>
-    </view>
-    <view class="mb-10 flex justify-between flex-row">
-      <text>v-if v-else-if v-else</text>
-      <text id="num-v-if" v-if="num == 1">v-if num = 1</text>
-      <text id="num-v-else-if" v-else-if="num == 2">v-else-if num = 2</text>
-      <text id="num-v-else" v-else>v-else</text>
-    </view>
-    <button id="change-num-btn" @click="changeNum">change num</button>
-  </view>
-</template>
-
-<script lang="uts">
-export default {
-  data() {
-    return {
-      show: true,
-      num: 1
-    }
-  },
-  methods: {
-    changeNum() {
-      if(this.num<3) {
-        this.num++
-      } else {
-        this.num = 1
-      }
-    },
-  }
-}
-</script>
-
-```
+::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-if/v-if-composition
 
 > 组合式 API
 
@@ -534,6 +488,53 @@ const changeNum = () => {
 
 ```
 
+> 选项式 API
+
+```vue
+<template>
+  <view class="page">
+    <view class="mb-10 flex justify-between flex-row">
+      <text>v-if</text>
+      <text id="v-if-show" v-if="show">show</text>
+    </view>
+    <button id="switch-v-if-btn" @click="show = !show">switch v-if</button>
+
+    <view class="mt-10 mb-10 flex justify-between flex-row">
+      <text>num:</text>
+      <text id="num">{{ num }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>v-if v-else-if v-else</text>
+      <text id="num-v-if" v-if="num == 1">v-if num = 1</text>
+      <text id="num-v-else-if" v-else-if="num == 2">v-else-if num = 2</text>
+      <text id="num-v-else" v-else>v-else</text>
+    </view>
+    <button id="change-num-btn" @click="changeNum">change num</button>
+  </view>
+</template>
+
+<script lang="uts">
+export default {
+  data() {
+    return {
+      show: true,
+      num: 1
+    }
+  },
+  methods: {
+    changeNum() {
+      if(this.num<3) {
+        this.num++
+      } else {
+        this.num = 1
+      }
+    },
+  }
+}
+</script>
+
+```
+
 :::
 
 ### v-for
@@ -559,171 +560,9 @@ const changeNum = () => {
   </view>
   ```
 
-示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-for/v-for-options.uvue)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-for/v-for-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-for/v-for-options
-
->选项式 API
-
-```vue
-<template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-    <!-- #endif -->
-    <view class="page">
-      <text class="bold mb-10">v-for number</text>
-      <view class="mb-10" v-for="item in 3" :key="item">
-        <text :id="`number-${item}`">{{ item }}</text>
-      </view>
-      
-      <view class="mb-10" v-for="item in utsNumber" :key="item">
-        <text :id="`uts-number-${item}`">{{ item }}</text>
-      </view>
-
-      <view class="bold mb-10">v-for object</view>
-      <view
-        v-for="(value, key) in object"
-        :key="key"
-        class="mb-10 flex justify-between flex-row">
-        <text :id="key">{{ key }}</text>
-        <text :id="value">{{ value }}</text>
-      </view>
-
-      <view class="bold mb-10">v-for & v-if list items</view>
-      <view
-        id="v-for-v-if-list-items"
-        v-for="item in listItems"
-        :key="item.name">
-        <template v-if="item.show">
-          <view class="mb-10 flex justify-between flex-row">
-            <text :id="item.name">{{ item.name }}</text>
-            <text @click="item.count++" :id="`v-if-${item.name}-count`">{{
-              item.count
-            }}</text>
-          </view>
-          <template v-for="child in item.items">
-            <view
-              v-if="child.show"
-              :key="child.name"
-              class="mb-10 flex justify-between flex-row">
-              <text :id="child.name">{{ child.name }}</text>
-              <text @click="child.count++" :id="`v-if-${child.name}-count`">{{
-                child.count
-              }}</text>
-            </view>
-          </template>
-        </template>
-      </view>
-
-      <view class="bold mb-10">v-for & v-show list items</view>
-      <view
-        id="v-for-v-show-list-items"
-        v-for="item in listItems"
-        v-show="item.show"
-        :key="item.name">
-        <view class="mb-10 flex justify-between flex-row">
-          <text :id="item.name">{{ item.name }}</text>
-          <text @click="item.count++" :id="`v-show-${item.name}-count`">{{
-            item.count
-          }}</text>
-        </view>
-        <view
-          v-for="child in item.items"
-          v-show="child.show"
-          :key="child.name"
-          class="mb-10 flex justify-between flex-row">
-          <text :id="child.name">{{ child.name }}</text>
-          <text @click="child.count++" :id="`v-show-${child.name}-count`">{{
-            child.count
-          }}</text>
-        </view>
-      </view>
-
-      <view
-        class="mb-10 flex justify-between flex-row"
-        v-for="item in mapList"
-        :key="item[0]">
-        <text>{{ item[0] }}</text>
-        <text :id="item[0]">{{ item[1] }}</text>
-      </view>
-
-      <view class="mb-10" v-for="(item, index) in setList" :key="index">
-        <text :id="`set-value-${index + 1}`">{{ item }}</text>
-      </view>
-
-      <view class="bold mb-10">v-for UTSJSONObject</view>
-      <view
-        v-for="(value, key) in utsJSONObject"
-        :key="key"
-        class="mb-10 flex justify-between flex-row">
-        <text :id="key">{{ key }}</text>
-        <text :id="value">{{ value }}</text>
-      </view>
-    </view>
-    <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
-</template>
-
-<script lang="uts">
-type VForObject = {
-  key1 : string
-  key2 : string
-  key3 : string
-}
-
-type ListItem = {
-  name: string
-  count : number
-  show: boolean
-  items?: ListItem[]
-}
-
-// TODO: v-for map set deep array 动态增加删除
-export default {
-  data() {
-    return {
-      object: { key1: 'value1', key2: 'value2', key3: 'value3' } as VForObject,
-      listItems: [
-        { name: '1',
-          count: 0,
-          show: true,
-          items:[
-            { name: '1-1', count: 0, show: false },
-            { name: '1-2', count: 0, show: true },
-          ]
-        },
-        { name: '2',
-          count: 0,
-          show: true,
-          items:[
-            { name: '2-1', count: 0, show: true },
-            { name: '2-2', count: 0, show: false },
-          ]
-        },
-        { name: '3',
-          count: 0,
-          show: false,
-          items:[
-            { name: '3-1', count: 0, show: true },
-            { name: '3-2', count: 0, show: true },
-          ]
-        },
-      ] as ListItem[],
-      mapList: new Map<string, string>([
-        ['map-key-1', 'map value 1'],
-        ['map-key-2', 'map value 2'],
-        ['map-key-3', 'map value 3'],
-      ]),
-      setList: new Set<string>(['set value 1', 'set value 2', 'set value 3']),
-      utsJSONObject: { utsKey1: 'UTSJSONObject-value1', utsKey2: 'UTSJSONObject-value2', utsKey3: 'UTSJSONObject-value3' },
-      utsNumber: JSON.parse("3") as number
-    }
-  }
-}
-</script>
-
-```
+::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-for/v-for-composition
 
 > 组合式 API
 
@@ -885,6 +724,168 @@ const utsNumber = JSON.parse("3") as number
 
 ```
 
+> 选项式 API
+
+```vue
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page">
+      <text class="bold mb-10">v-for number</text>
+      <view class="mb-10" v-for="item in 3" :key="item">
+        <text :id="`number-${item}`">{{ item }}</text>
+      </view>
+      
+      <view class="mb-10" v-for="item in utsNumber" :key="item">
+        <text :id="`uts-number-${item}`">{{ item }}</text>
+      </view>
+
+      <view class="bold mb-10">v-for object</view>
+      <view
+        v-for="(value, key) in object"
+        :key="key"
+        class="mb-10 flex justify-between flex-row">
+        <text :id="key">{{ key }}</text>
+        <text :id="value">{{ value }}</text>
+      </view>
+
+      <view class="bold mb-10">v-for & v-if list items</view>
+      <view
+        id="v-for-v-if-list-items"
+        v-for="item in listItems"
+        :key="item.name">
+        <template v-if="item.show">
+          <view class="mb-10 flex justify-between flex-row">
+            <text :id="item.name">{{ item.name }}</text>
+            <text @click="item.count++" :id="`v-if-${item.name}-count`">{{
+              item.count
+            }}</text>
+          </view>
+          <template v-for="child in item.items">
+            <view
+              v-if="child.show"
+              :key="child.name"
+              class="mb-10 flex justify-between flex-row">
+              <text :id="child.name">{{ child.name }}</text>
+              <text @click="child.count++" :id="`v-if-${child.name}-count`">{{
+                child.count
+              }}</text>
+            </view>
+          </template>
+        </template>
+      </view>
+
+      <view class="bold mb-10">v-for & v-show list items</view>
+      <view
+        id="v-for-v-show-list-items"
+        v-for="item in listItems"
+        v-show="item.show"
+        :key="item.name">
+        <view class="mb-10 flex justify-between flex-row">
+          <text :id="item.name">{{ item.name }}</text>
+          <text @click="item.count++" :id="`v-show-${item.name}-count`">{{
+            item.count
+          }}</text>
+        </view>
+        <view
+          v-for="child in item.items"
+          v-show="child.show"
+          :key="child.name"
+          class="mb-10 flex justify-between flex-row">
+          <text :id="child.name">{{ child.name }}</text>
+          <text @click="child.count++" :id="`v-show-${child.name}-count`">{{
+            child.count
+          }}</text>
+        </view>
+      </view>
+
+      <view
+        class="mb-10 flex justify-between flex-row"
+        v-for="item in mapList"
+        :key="item[0]">
+        <text>{{ item[0] }}</text>
+        <text :id="item[0]">{{ item[1] }}</text>
+      </view>
+
+      <view class="mb-10" v-for="(item, index) in setList" :key="index">
+        <text :id="`set-value-${index + 1}`">{{ item }}</text>
+      </view>
+
+      <view class="bold mb-10">v-for UTSJSONObject</view>
+      <view
+        v-for="(value, key) in utsJSONObject"
+        :key="key"
+        class="mb-10 flex justify-between flex-row">
+        <text :id="key">{{ key }}</text>
+        <text :id="value">{{ value }}</text>
+      </view>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+type VForObject = {
+  key1 : string
+  key2 : string
+  key3 : string
+}
+
+type ListItem = {
+  name: string
+  count : number
+  show: boolean
+  items?: ListItem[]
+}
+
+// TODO: v-for map set deep array 动态增加删除
+export default {
+  data() {
+    return {
+      object: { key1: 'value1', key2: 'value2', key3: 'value3' } as VForObject,
+      listItems: [
+        { name: '1',
+          count: 0,
+          show: true,
+          items:[
+            { name: '1-1', count: 0, show: false },
+            { name: '1-2', count: 0, show: true },
+          ]
+        },
+        { name: '2',
+          count: 0,
+          show: true,
+          items:[
+            { name: '2-1', count: 0, show: true },
+            { name: '2-2', count: 0, show: false },
+          ]
+        },
+        { name: '3',
+          count: 0,
+          show: false,
+          items:[
+            { name: '3-1', count: 0, show: true },
+            { name: '3-2', count: 0, show: true },
+          ]
+        },
+      ] as ListItem[],
+      mapList: new Map<string, string>([
+        ['map-key-1', 'map value 1'],
+        ['map-key-2', 'map value 2'],
+        ['map-key-3', 'map value 3'],
+      ]),
+      setList: new Set<string>(['set value 1', 'set value 2', 'set value 3']),
+      utsJSONObject: { utsKey1: 'UTSJSONObject-value1', utsKey2: 'UTSJSONObject-value2', utsKey3: 'UTSJSONObject-value3' },
+      utsNumber: JSON.parse("3") as number
+    }
+  }
+}
+</script>
+
+```
+
 :::
 
 ### v-on
@@ -903,87 +904,9 @@ const utsNumber = JSON.parse("3") as number
 
 - 详见[事件修饰符](https://uniapp.dcloud.net.cn/tutorial/vue3-basics.html#%E4%BA%8B%E4%BB%B6%E4%BF%AE%E9%A5%B0%E7%AC%A6)。
 
-示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-on/v-on-options.uvue)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-on/v-on-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-on/v-on-options
-
->选项式 API
-
-```vue
-<template>
-  <view class="page">
-    <text class="bold mb-10">下方按钮点击累加 count</text>
-    <view class="flex justify-between flex-row mb-10">
-      <text>count:</text>
-      <text id="count">{{ count }}</text>
-    </view>
-    <button class="mb-10 btn" @click="handleClick">@click="handleClick" 缩写</button>
-    <button class="mb-10 btn" v-on:click="handleClick">
-      v-on:click="handleClick" 方法处理函数
-    </button>
-    <button class="mb-10 btn" v-on:click="count++">
-      v-on:click="count++" 内联事件
-    </button>
-    <button class="mb-10 btn" v-on:click="handleClick($event as MouseEvent)">
-      v-on:click="handleClick($event as MouseEvent)"
-      内联声明，注意要显式声明$event的类型
-    </button>
-    <!-- #ifndef MP -->
-    <button class="mb-10 btn" v-on:[event]="handleClick">
-      v-on:[event]="handleClick" 动态事件
-    </button>
-    <button class="mb-10 btn" v-on="{ click: handleClick }">
-      v-on="{ click: handleClick }" 对象语法
-    </button>
-    <!-- #endif -->
-    <!-- TODO: ios 不支持 -->
-    <!-- #ifndef APP-IOS || MP || APP-HARMONY -->
-    <button class="mb-10 btn" id="btn-once" @click.once="handleClick">@click once</button>
-    <!-- #endif -->
-    <view @click="handleClick">
-      <button class="mb-10 btn" id="btn-stop" @click.stop="handleClick">@click stop</button>
-    </view>
-    <button class="mb-10" id="btn-prevent" @touchstart.prevent="handleTouchstart" @click="handleClick">@touch prevent</button>
-  </view>
-</template>
-
-<script lang="uts">
-type BtnPreventRect = {
-  value: DOMRect | null
-}
-  
-export default {
-  data() {
-    return {
-      count: 0,
-      event: 'click',
-      btnPreventRect: {
-        value: null as DOMRect | null
-      } as BtnPreventRect
-    }
-  },
-	// #ifdef APP
-  onReady(){
-    const btnPrevent = uni.getElementById("btn-prevent")
-    console.log('btnPrevent', btnPrevent);
-    this.btnPreventRect.value = btnPrevent?.getBoundingClientRect()
-    console.log('btnPreventRect', this.btnPreventRect.value);
-    this.btnPreventRect.value!.y += uni.getSystemInfoSync().safeArea.top + 44
-  },
-	// #endif
-  methods: {
-    handleTouchstart(){
-      console.log('handleTouchstart')
-    },
-    handleClick(e : MouseEvent) {
-      this.count++
-      console.log('handleClick', e)
-    }
-  }
-}
-</script>
-
-```
+::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-on/v-on-composition
 
 > 组合式 API
 
@@ -1063,6 +986,84 @@ defineExpose({
 
 ```
 
+> 选项式 API
+
+```vue
+<template>
+  <view class="page">
+    <text class="bold mb-10">下方按钮点击累加 count</text>
+    <view class="flex justify-between flex-row mb-10">
+      <text>count:</text>
+      <text id="count">{{ count }}</text>
+    </view>
+    <button class="mb-10 btn" @click="handleClick">@click="handleClick" 缩写</button>
+    <button class="mb-10 btn" v-on:click="handleClick">
+      v-on:click="handleClick" 方法处理函数
+    </button>
+    <button class="mb-10 btn" v-on:click="count++">
+      v-on:click="count++" 内联事件
+    </button>
+    <button class="mb-10 btn" v-on:click="handleClick($event as MouseEvent)">
+      v-on:click="handleClick($event as MouseEvent)"
+      内联声明，注意要显式声明$event的类型
+    </button>
+    <!-- #ifndef MP -->
+    <button class="mb-10 btn" v-on:[event]="handleClick">
+      v-on:[event]="handleClick" 动态事件
+    </button>
+    <button class="mb-10 btn" v-on="{ click: handleClick }">
+      v-on="{ click: handleClick }" 对象语法
+    </button>
+    <!-- #endif -->
+    <!-- TODO: ios 不支持 -->
+    <!-- #ifndef APP-IOS || MP || APP-HARMONY -->
+    <button class="mb-10 btn" id="btn-once" @click.once="handleClick">@click once</button>
+    <!-- #endif -->
+    <view @click="handleClick">
+      <button class="mb-10 btn" id="btn-stop" @click.stop="handleClick">@click stop</button>
+    </view>
+    <button class="mb-10" id="btn-prevent" @touchstart.prevent="handleTouchstart" @click="handleClick">@touch prevent</button>
+  </view>
+</template>
+
+<script lang="uts">
+type BtnPreventRect = {
+  value: DOMRect | null
+}
+  
+export default {
+  data() {
+    return {
+      count: 0,
+      event: 'click',
+      btnPreventRect: {
+        value: null as DOMRect | null
+      } as BtnPreventRect
+    }
+  },
+	// #ifdef APP
+  onReady(){
+    const btnPrevent = uni.getElementById("btn-prevent")
+    console.log('btnPrevent', btnPrevent);
+    this.btnPreventRect.value = btnPrevent?.getBoundingClientRect()
+    console.log('btnPreventRect', this.btnPreventRect.value);
+    this.btnPreventRect.value!.y += uni.getSystemInfoSync().safeArea.top + 44
+  },
+	// #endif
+  methods: {
+    handleTouchstart(){
+      console.log('handleTouchstart')
+    },
+    handleClick(e : MouseEvent) {
+      this.count++
+      console.log('handleClick', e)
+    }
+  }
+}
+</script>
+
+```
+
 :::
 
 ### v-bind
@@ -1085,136 +1086,9 @@ defineExpose({
 
   当不带参数使用时，可以用于绑定一个包含了多个 attribute 名称-绑定值对的对象。
 
-示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-bind/v-bind-options.uvue)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-bind/v-bind-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-bind/v-bind-options
-
->选项式 API
-
-```vue
-<template>
-<!-- #ifdef APP -->
-<scroll-view style="flex: 1">
-  <!-- #endif -->
-  <view class="page">
-    <!-- v-bind attribute -->
-    <button id="disabled-btn" class="mb-10" :disabled="true">:disabled true</button>
-    <button id="v-bind-disabled-btn" class="mb-10" v-bind:disabled="false">v-bind:disabled false</button>
-
-    <!-- v-bind style -->
-    <view class="flex justify-between flex-row mb-10">
-      <text>bind object style fontSize:</text>
-      <text id="bind-object-style" :style="{ fontSize: dataInfo.fontSize }">
-        {{ dataInfo.fontSize }}
-      </text>
-    </view>
-    <view id="bind-array-style" class="mb-10 p-10" :style="[dataInfo.backgroundColor, dataInfo.border]">
-      <view>bind arr style</view>
-      <view class="my-10">{{ dataInfo.backgroundColor }}</view>
-      <view>{{ dataInfo.border }}</view>
-    </view>
-    <view class="mb-10 p-10">
-        <text id="bind-raw-object-style" :style="rawObjectStyle">rawObjectStyle</text>
-    </view>
-    <view class="mb-10 p-10">
-        <text id="bind-raw-array-style" :style="rawArrayStyle">rawArrayStyle</text>
-    </view>
-
-    <!-- v-bind props -->
-    <Foo class="foo-props" :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
-
-    <!-- v-bind props -->
-    <Foo checked />
-    
-    <!-- #ifndef MP -->
-    <!-- 绑定对象 -->
-    <Foo v-bind="{ title: dataInfo.fooProps.title,num: dataInfo.fooProps.num,obj: dataInfo.fooProps.obj }" />
-    <Foo v-bind="fooProps"/>
-    <Foo id="bindObj1" v-bind="{ title: dataInfo.fooProps.title,num: dataInfo.fooProps.num,obj: dataInfo.fooProps.obj }" />
-    <!-- 绑定对象合并 v-bind 在前 -->
-    <Foo v-bind="{ title: dataInfo.fooProps.title,num: dataInfo.fooProps.num,obj: dataInfo.fooProps.obj }" id="bindObj2" :title="dataInfo.fooProps.title + ' override'" />
-    <!-- 绑定对象合并 v-bind 在后 -->
-    <Foo id="bindObj3" title="foo" v-bind="{ title: dataInfo.fooProps.title,num: dataInfo.fooProps.num,obj: dataInfo.fooProps.obj }" />
-    <!-- 绑定对象合并 v-bind 在中间（UTSJSONObject）-->
-    <Foo id="bindObj4" v-bind="fooProps" title="foo title(json) override" />
-    <!-- 绑定对象合并（UTSJSONObject）-->
-    <Foo id="bindObj5" title="foo" v-bind="fooProps" />
-    <!-- #endif -->
-    
-    <!-- v-bind in style -->
-    <!-- #ifdef WEB -->
-    <view class="mb-10 v-bind-css"></view>
-    <!-- #endif -->
-  </view>
-<!-- #ifdef APP -->
-</scroll-view>
-<!-- #endif -->
-</template>
-
-<script lang="uts">
-  import Foo from './Foo-options.uvue'
-  import { FooProps, FooPropsObj } from './type.uts'
-
-  type DataInfo = {
-    fontSize : string
-    backgroundColor : string
-    border : string
-    fooProps : FooProps
-    vBindClassBackgroundColor : string
-    vBindClassRpxHeight : string
-  }
-
-  export default {
-    components: { Foo },
-    data() {
-      return {
-        dataInfo: {
-          fontSize: '20px',
-          backgroundColor: 'background-color: green',
-          border: 'border: 2px solid red',
-          fooProps: {
-            title: 'foo title',
-            num: 1,
-            obj: {
-              name: 'foo obj name'
-            } as FooPropsObj
-          },
-          vBindClassBackgroundColor: 'red',
-          vBindClassRpxHeight: '300rpx'
-        } as DataInfo,
-        fooProps:{
-            title: 'foo title(json)',
-            num: 2,
-        },
-        rawObjectStyle: {
-            width: '100%',
-            height: '30px',
-            'background-color': 'red'
-        },
-        rawArrayStyle: [
-            {
-              width: '100%',
-              height: '30px'
-            },
-            {
-              'background-color': 'red'
-            }
-        ]
-      }
-    }
-  }
-</script>
-
-<style>
-  /* #ifdef WEB */
-  .v-bind-css {
-    background-color: v-bind(dataInfo.vBindClassBackgroundColor);
-    height: v-bind(dataInfo.vBindClassRpxHeight);
-  }
-  /* #endif */
-</style>
-
-```
+::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-bind/v-bind-composition
 
 > 组合式 API
 
@@ -1344,6 +1218,133 @@ defineExpose({
 
 ```
 
+> 选项式 API
+
+```vue
+<template>
+<!-- #ifdef APP -->
+<scroll-view style="flex: 1">
+  <!-- #endif -->
+  <view class="page">
+    <!-- v-bind attribute -->
+    <button id="disabled-btn" class="mb-10" :disabled="true">:disabled true</button>
+    <button id="v-bind-disabled-btn" class="mb-10" v-bind:disabled="false">v-bind:disabled false</button>
+
+    <!-- v-bind style -->
+    <view class="flex justify-between flex-row mb-10">
+      <text>bind object style fontSize:</text>
+      <text id="bind-object-style" :style="{ fontSize: dataInfo.fontSize }">
+        {{ dataInfo.fontSize }}
+      </text>
+    </view>
+    <view id="bind-array-style" class="mb-10 p-10" :style="[dataInfo.backgroundColor, dataInfo.border]">
+      <view>bind arr style</view>
+      <view class="my-10">{{ dataInfo.backgroundColor }}</view>
+      <view>{{ dataInfo.border }}</view>
+    </view>
+    <view class="mb-10 p-10">
+        <text id="bind-raw-object-style" :style="rawObjectStyle">rawObjectStyle</text>
+    </view>
+    <view class="mb-10 p-10">
+        <text id="bind-raw-array-style" :style="rawArrayStyle">rawArrayStyle</text>
+    </view>
+
+    <!-- v-bind props -->
+    <Foo class="foo-props" :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
+
+    <!-- v-bind props -->
+    <Foo checked />
+    
+    <!-- #ifndef MP -->
+    <!-- 绑定对象 -->
+    <Foo v-bind="{ title: dataInfo.fooProps.title,num: dataInfo.fooProps.num,obj: dataInfo.fooProps.obj }" />
+    <Foo v-bind="fooProps"/>
+    <Foo id="bindObj1" v-bind="{ title: dataInfo.fooProps.title,num: dataInfo.fooProps.num,obj: dataInfo.fooProps.obj }" />
+    <!-- 绑定对象合并 v-bind 在前 -->
+    <Foo v-bind="{ title: dataInfo.fooProps.title,num: dataInfo.fooProps.num,obj: dataInfo.fooProps.obj }" id="bindObj2" :title="dataInfo.fooProps.title + ' override'" />
+    <!-- 绑定对象合并 v-bind 在后 -->
+    <Foo id="bindObj3" title="foo" v-bind="{ title: dataInfo.fooProps.title,num: dataInfo.fooProps.num,obj: dataInfo.fooProps.obj }" />
+    <!-- 绑定对象合并 v-bind 在中间（UTSJSONObject）-->
+    <Foo id="bindObj4" v-bind="fooProps" title="foo title(json) override" />
+    <!-- 绑定对象合并（UTSJSONObject）-->
+    <Foo id="bindObj5" title="foo" v-bind="fooProps" />
+    <!-- #endif -->
+    
+    <!-- v-bind in style -->
+    <!-- #ifdef WEB -->
+    <view class="mb-10 v-bind-css"></view>
+    <!-- #endif -->
+  </view>
+<!-- #ifdef APP -->
+</scroll-view>
+<!-- #endif -->
+</template>
+
+<script lang="uts">
+  import Foo from './Foo-options.uvue'
+  import { FooProps, FooPropsObj } from './type.uts'
+
+  type DataInfo = {
+    fontSize : string
+    backgroundColor : string
+    border : string
+    fooProps : FooProps
+    vBindClassBackgroundColor : string
+    vBindClassRpxHeight : string
+  }
+
+  export default {
+    components: { Foo },
+    data() {
+      return {
+        dataInfo: {
+          fontSize: '20px',
+          backgroundColor: 'background-color: green',
+          border: 'border: 2px solid red',
+          fooProps: {
+            title: 'foo title',
+            num: 1,
+            obj: {
+              name: 'foo obj name'
+            } as FooPropsObj
+          },
+          vBindClassBackgroundColor: 'red',
+          vBindClassRpxHeight: '300rpx'
+        } as DataInfo,
+        fooProps:{
+            title: 'foo title(json)',
+            num: 2,
+        },
+        rawObjectStyle: {
+            width: '100%',
+            height: '30px',
+            'background-color': 'red'
+        },
+        rawArrayStyle: [
+            {
+              width: '100%',
+              height: '30px'
+            },
+            {
+              'background-color': 'red'
+            }
+        ]
+      }
+    }
+  }
+</script>
+
+<style>
+  /* #ifdef WEB */
+  .v-bind-css {
+    background-color: v-bind(dataInfo.vBindClassBackgroundColor);
+    height: v-bind(dataInfo.vBindClassRpxHeight);
+  }
+  /* #endif */
+</style>
+
+```
+
 :::
 
 ### v-model
@@ -1361,77 +1362,9 @@ defineExpose({
   - `.number` - 将输入的合法字符串转为数字
   - `.trim` - 移除输入内容两端空格
 
-示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-model/v-model-options.uvue)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-model/v-model-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-model/v-model-options
-
->选项式 API
-
-```vue
-<template>
-  <view class="page">
-    <view class="mb-10 flex justify-between flex-row">
-      <text>str:</text>
-      <text id="str">{{ str }}</text>
-    </view>
-    <input class="mb-10 input" id="model-str" v-model="str" @input="onInput" />
-    <input class="mb-10 input" id="model-num" v-model.number="num" type="text" />
-    <input class="mb-10 input" id="model-str-trim" v-model.trim="strForTrim" />
-    <input class="mb-10 input" id="model-str-lazy" v-model.lazy="str" type="text" />
-    <view class="mb-10 flex justify-between flex-row">
-      <text>typeof num:</text>
-      <text id="typeof-num">{{ typeof num }}</text>
-    </view>
-    <view class="mb-10 flex justify-between flex-row">
-      <text>str for trim length:</text>
-      <text id="str-length">{{ strForTrim.length }}</text>
-    </view>
-    <Parent id="parent-component" v-model="value"></Parent>
-    <Parent v-model="utsObj['modelValue']"></Parent>
-    <Parent v-model="typeObj.modelValue"></Parent>
-    <Parent v-model="typeObj.modelValue as string"></Parent>
-  </view>
-</template>
-
-<script lang="uts">
-import Parent from './Parent.uvue'
-import { VModelObj } from './types.uts'
-export default {
-  data(){
-    return {
-      str: 'str',
-      num: 1,
-      strForTrim: ' abc ',
-      value: 'nested',
-      utsObj: {
-        modelValue: 'utsObj.value'
-      },
-      typeObj: {
-        modelValue: 'typeObj.value'
-      } as VModelObj
-    }
-  },
-  components: {
-      Parent
-  },
-  methods: {
-    onInput(){
-      // noop
-    }
-  }
-}
-</script>
-
-<style>
-.input {
-  padding: 0px 10px;
-  height: 40px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-</style>
-
-```
+::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-model/v-model-composition
 
 > 组合式 API
 
@@ -1511,6 +1444,74 @@ function onInput(){
 
 ```
 
+> 选项式 API
+
+```vue
+<template>
+  <view class="page">
+    <view class="mb-10 flex justify-between flex-row">
+      <text>str:</text>
+      <text id="str">{{ str }}</text>
+    </view>
+    <input class="mb-10 input" id="model-str" v-model="str" @input="onInput" />
+    <input class="mb-10 input" id="model-num" v-model.number="num" type="text" />
+    <input class="mb-10 input" id="model-str-trim" v-model.trim="strForTrim" />
+    <input class="mb-10 input" id="model-str-lazy" v-model.lazy="str" type="text" />
+    <view class="mb-10 flex justify-between flex-row">
+      <text>typeof num:</text>
+      <text id="typeof-num">{{ typeof num }}</text>
+    </view>
+    <view class="mb-10 flex justify-between flex-row">
+      <text>str for trim length:</text>
+      <text id="str-length">{{ strForTrim.length }}</text>
+    </view>
+    <Parent id="parent-component" v-model="value"></Parent>
+    <Parent v-model="utsObj['modelValue']"></Parent>
+    <Parent v-model="typeObj.modelValue"></Parent>
+    <Parent v-model="typeObj.modelValue as string"></Parent>
+  </view>
+</template>
+
+<script lang="uts">
+import Parent from './Parent.uvue'
+import { VModelObj } from './types.uts'
+export default {
+  data(){
+    return {
+      str: 'str',
+      num: 1,
+      strForTrim: ' abc ',
+      value: 'nested',
+      utsObj: {
+        modelValue: 'utsObj.value'
+      },
+      typeObj: {
+        modelValue: 'typeObj.value'
+      } as VModelObj
+    }
+  },
+  components: {
+      Parent
+  },
+  methods: {
+    onInput(){
+      // noop
+    }
+  }
+}
+</script>
+
+<style>
+.input {
+  padding: 0px 10px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+</style>
+
+```
+
 :::
 
 ### v-pre
@@ -1549,11 +1550,41 @@ function onInput(){
 
   在随后的重新渲染，元素/组件及其所有子项将被当作静态内容并跳过渲染。这可以用来优化更新时的性能。
 
-示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-once/v-once-options.uvue)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-once/v-once-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-once/v-once-options
+::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-once/v-once-composition
 
->选项式 API
+> 组合式 API
+
+```vue
+<template>
+  <view class="page">
+    <!-- #ifndef MP -->
+    <view class="flex flex-row justify-between mb-10" v-once>
+      <text>This msg will never change:</text>
+      <text id='v-once-msg'>{{ msg }}</text>
+    </view>
+    <!-- #endif -->
+    <view class="flex flex-row justify-between mb-10">
+      <text>msg:</text>
+      <text id="msg">{{ msg }}</text>
+    </view>
+    <button id="btn" class="mb-10" type="primary" @click="changeMessage">
+      change message
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const msg = ref('hello world')
+  const changeMessage = () => {
+    msg.value = 'msg changed'
+  }
+</script>
+
+```
+
+> 选项式 API
 
 ```vue
 <template>
@@ -1591,36 +1622,6 @@ export default {
 
 ```
 
-> 组合式 API
-
-```vue
-<template>
-  <view class="page">
-    <!-- #ifndef MP -->
-    <view class="flex flex-row justify-between mb-10" v-once>
-      <text>This msg will never change:</text>
-      <text id='v-once-msg'>{{ msg }}</text>
-    </view>
-    <!-- #endif -->
-    <view class="flex flex-row justify-between mb-10">
-      <text>msg:</text>
-      <text id="msg">{{ msg }}</text>
-    </view>
-    <button id="btn" class="mb-10" type="primary" @click="changeMessage">
-      change message
-    </button>
-  </view>
-</template>
-
-<script setup lang="uts">
-  const msg = ref('hello world')
-  const changeMessage = () => {
-    msg.value = 'msg changed'
-  }
-</script>
-
-```
-
 :::
 
 ### v-slot
@@ -1637,11 +1638,79 @@ export default {
   - `<template>`
   - [components](./component.md) (用于带有 prop 的单个默认插槽)
 
-示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-slot/v-slot-options.uvue)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-slot/v-slot-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-slot/v-slot-options
+::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-slot/v-slot-composition
 
->选项式 API
+> 组合式 API
+
+```vue
+<template>
+  <view class="page">
+    <Foo>
+      <template #header="{ msg }">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>header slot msg:</text>
+          <text id="slot-header">{{ msg }}</text>
+        </view>
+      </template>
+      <template #default="{ num }">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>default slot num:</text>
+          <text id="slot-default">{{ num }}</text>
+        </view>
+      </template>
+      <!-- #ifndef MP -->
+      <template v-for="item in 2" #[`num${item}`]="{ num }">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>num{{ item }} slot:</text>
+          <text :id="`slot-num${item}`">{{ num }}</text>
+        </view>
+      </template>
+      <template v-if="msgTrue['isShow']" #[msgTrue['name']]="{ msg }">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>{{ msgTrue['name'] }} slot msg:</text>
+          <text id="slot-msg-true">{{ msg }}</text>
+        </view>
+      </template>
+      <template v-if="msgFalse['isShow']" #[msgFalse['name']]="{ msg }">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>{{ msgFalse['name'] }} slot msg:</text>
+          <text id="slot-msg-false">{{ msg }}</text>
+        </view>
+      </template>
+      <!-- #endif -->
+      <template #footer="{ arr }">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>footer slot arr:</text>
+          <text id="slot-footer">{{ JSON.stringify(arr) }}</text>
+        </view>
+      </template>
+      <template #withFor="{ item }">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>v-for slot item:</text>
+          <text :id="`slot-for-${item}`">{{ item }}</text>
+        </view>
+      </template>
+    </Foo>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import Foo from './Foo-composition.uvue'
+
+  const msgTrue = ref({
+    isShow: true,
+    name: 'msgTrue'
+  })
+  const msgFalse = ref({
+    isShow: false,
+    name: 'msgFalse'
+  })
+</script>
+```
+
+> 选项式 API
 
 ```vue
 <template>
@@ -1716,74 +1785,6 @@ export default {
 
 ```
 
-> 组合式 API
-
-```vue
-<template>
-  <view class="page">
-    <Foo>
-      <template #header="{ msg }">
-        <view class="mb-10 flex justify-between flex-row">
-          <text>header slot msg:</text>
-          <text id="slot-header">{{ msg }}</text>
-        </view>
-      </template>
-      <template #default="{ num }">
-        <view class="mb-10 flex justify-between flex-row">
-          <text>default slot num:</text>
-          <text id="slot-default">{{ num }}</text>
-        </view>
-      </template>
-      <!-- #ifndef MP -->
-      <template v-for="item in 2" #[`num${item}`]="{ num }">
-        <view class="mb-10 flex justify-between flex-row">
-          <text>num{{ item }} slot:</text>
-          <text :id="`slot-num${item}`">{{ num }}</text>
-        </view>
-      </template>
-      <template v-if="msgTrue['isShow']" #[msgTrue['name']]="{ msg }">
-        <view class="mb-10 flex justify-between flex-row">
-          <text>{{ msgTrue['name'] }} slot msg:</text>
-          <text id="slot-msg-true">{{ msg }}</text>
-        </view>
-      </template>
-      <template v-if="msgFalse['isShow']" #[msgFalse['name']]="{ msg }">
-        <view class="mb-10 flex justify-between flex-row">
-          <text>{{ msgFalse['name'] }} slot msg:</text>
-          <text id="slot-msg-false">{{ msg }}</text>
-        </view>
-      </template>
-      <!-- #endif -->
-      <template #footer="{ arr }">
-        <view class="mb-10 flex justify-between flex-row">
-          <text>footer slot arr:</text>
-          <text id="slot-footer">{{ JSON.stringify(arr) }}</text>
-        </view>
-      </template>
-      <template #withFor="{ item }">
-        <view class="mb-10 flex justify-between flex-row">
-          <text>v-for slot item:</text>
-          <text :id="`slot-for-${item}`">{{ item }}</text>
-        </view>
-      </template>
-    </Foo>
-  </view>
-</template>
-
-<script setup lang="uts">
-  import Foo from './Foo-composition.uvue'
-
-  const msgTrue = ref({
-    isShow: true,
-    name: 'msgTrue'
-  })
-  const msgFalse = ref({
-    isShow: false,
-    name: 'msgFalse'
-  })
-</script>
-```
-
 :::
 
 ### v-memo
@@ -1814,11 +1815,65 @@ export default {
 
   `v-memo` 也能被用于在一些默认优化失败的边际情况下，手动避免子组件出现不需要的更新。但是一样的，开发者需要负责指定正确的依赖数组以免跳过必要的更新。
 
-示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-memo/v-memo-options.uvue)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-memo/v-memo-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-memo/v-memo-options
+::: preview https://hellouvue.dcloud.net.cn/#/pages/directive/v-memo/v-memo-composition
 
->选项式 API
+> 组合式 API
+
+```vue
+<template>
+  <view class="page">
+    <view class="flex flex-row justify-between mb-10" v-memo="[]">
+      <text>msg will never change:</text>
+      <text id="v-memo-never-change-msg">{{ msg }}</text>
+    </view>
+    <view class="flex flex-row justify-between mb-10">
+      <text>msg:</text>
+      <text id="msg">{{ msg }}</text>
+    </view>
+    <view class="flex flex-row justify-between mb-10" v-memo="[num]">
+      <text>msg will change when num chang:</text>
+      <text id="v-memo-num-change-msg">{{ msg }}</text>
+    </view>
+    <view class="flex flex-row justify-between mb-10">
+      <text>num:</text>
+      <text id="num">{{ num }}</text>
+    </view>
+    <button
+      id="change-message-btn"
+      class="mb-10"
+      type="primary"
+      @click="changeMessage">
+      change message
+    </button>
+    <button
+      id="increment-num-btn"
+      class="mb-10"
+      type="primary"
+      @click="incrementNum">
+      increment num
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+const msg = ref('hello world')
+
+const num = ref(0)
+
+const changeMessage = () => {
+  msg.value = 'msg changed'
+}
+
+const incrementNum = () =>{
+  num.value++
+}
+</script>
+
+```
+
+> 选项式 API
 
 ```vue
 <template>
@@ -1877,60 +1932,6 @@ export default {
 
 ```
 
-> 组合式 API
-
-```vue
-<template>
-  <view class="page">
-    <view class="flex flex-row justify-between mb-10" v-memo="[]">
-      <text>msg will never change:</text>
-      <text id="v-memo-never-change-msg">{{ msg }}</text>
-    </view>
-    <view class="flex flex-row justify-between mb-10">
-      <text>msg:</text>
-      <text id="msg">{{ msg }}</text>
-    </view>
-    <view class="flex flex-row justify-between mb-10" v-memo="[num]">
-      <text>msg will change when num chang:</text>
-      <text id="v-memo-num-change-msg">{{ msg }}</text>
-    </view>
-    <view class="flex flex-row justify-between mb-10">
-      <text>num:</text>
-      <text id="num">{{ num }}</text>
-    </view>
-    <button
-      id="change-message-btn"
-      class="mb-10"
-      type="primary"
-      @click="changeMessage">
-      change message
-    </button>
-    <button
-      id="increment-num-btn"
-      class="mb-10"
-      type="primary"
-      @click="incrementNum">
-      increment num
-    </button>
-  </view>
-</template>
-
-<script setup lang="uts">
-const msg = ref('hello world')
-
-const num = ref(0)
-
-const changeMessage = () => {
-  msg.value = 'msg changed'
-}
-
-const incrementNum = () =>{
-  num.value++
-}
-</script>
-
-```
-
 :::
 
 ## 组件 @component
@@ -1968,7 +1969,154 @@ const incrementNum = () =>{
 
 
 
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/built-in/component/keep-alive/keep-alive-composition.uvue)
 
+::: preview https://hellouvue.dcloud.net.cn/#/pages/built-in/component/keep-alive/keep-alive-composition
+
+> 组合式 API
+
+```vue
+<template>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page">
+      <text class="bold mb-10">include="Counter,Message"</text>
+      <KeepAlive include="Counter,Message">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mt-10 mb-10">:include="/Counter|Message/"</text>
+      <KeepAlive :include="/Counter|Message/">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mb-10 mb-10">:include="['Counter', 'Message']"</text>
+      <KeepAlive :include="['Counter', 'Message']">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mt-10 mb-10">exclude="ShouldExclude"</text>
+      <KeepAlive exclude="ShouldExclude">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mt-10 mb-10">:max="2"</text>
+      <KeepAlive :max="2">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <button class="mt-10 show-counter" @click="changeComponent('Counter')">show Counter</button>
+      <button class="mt-10 show-message" @click="changeComponent('Message')">show Message</button>
+      <button class="mt-10 show-should-exclude" @click="changeComponent('ShouldExclude')">show ShouldExclude</button>
+    </view>
+    <!-- #ifdef APP && !VUE3-VAPOR -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+import Counter from '@/components/keep-alive/Counter.uvue'
+import Message from '@/components/keep-alive/Message.uvue'
+import ShouldExclude from '@/components/keep-alive/ShouldExclude.uvue'
+
+defineOptions({
+  components: {
+    Counter,
+    Message,
+    ShouldExclude
+  }
+})
+
+const currentComponent = ref<string>('ShouldExclude')
+
+const changeComponent = (componentName: string) => {
+  currentComponent.value = componentName
+}
+</script>
+
+<style>
+.hr {
+  margin: 30rpx 0;
+  border-bottom: 1px solid #ccc;
+}
+</style>
+```
+
+>选项式 API
+
+```vue
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="page">
+      <text class="bold mb-10">include "Counter,Message"</text>
+      <KeepAlive include="Counter,Message">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mt-10 mb-10">include "/Counter|Message/"</text>
+      <KeepAlive :include="/Counter|Message/">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mt-10 mb-10">include "['Counter', 'Message']"</text>
+      <KeepAlive :include="['Counter', 'Message']">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mt-10 mb-10">exclude "ShouldExclude"</text>
+      <KeepAlive exclude="ShouldExclude">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <text class="bold mt-10 mb-10">max 2</text>
+      <KeepAlive :max="2">
+        <component :is="currentComponent"></component>
+      </KeepAlive>
+      <view class="hr"></view>
+      <button class="mt-10 show-counter" @click="changeComponent('Counter')">show Counter</button>
+      <button class="mt-10 show-message" @click="changeComponent('Message')">show Message</button>
+      <button class="mt-10 show-should-exclude" @click="changeComponent('ShouldExclude')">show ShouldExclude</button>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script lang="uts">
+import Counter from '@/components/keep-alive/Counter.uvue'
+import Message from '@/components/keep-alive/Message.uvue'
+import ShouldExclude from '@/components/keep-alive/ShouldExclude.uvue'
+export default {
+  components: {
+    Counter,
+    Message,
+    ShouldExclude
+  },
+  data() {
+    return {
+      currentComponent: 'ShouldExclude'
+    }
+  },
+  methods: {
+    changeComponent(componentName: string) {
+      this.currentComponent = componentName
+    }
+  }
+}
+</script>
+
+<style>
+.hr {
+  margin-top: 30rpx;
+  border-bottom: 1px solid #ccc;
+}
+</style>
+```
+
+:::
 
 
 
@@ -2136,7 +2284,168 @@ const incrementNum = () =>{
 
 
 
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/built-in/component/teleport/teleport-composition.uvue)
 
+::: preview https://hellouvue.dcloud.net.cn/#/pages/built-in/component/teleport/teleport-composition
+
+> 组合式 API
+
+```vue
+<template>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view id="container" class="container">
+      <text class="text">.container 区域</text>
+      <view id="content1" class="content content-1">
+        <text class="text">content1 区域</text>
+      </view>
+      <view id="content2" class="content content-2">
+        <text class="text">content2 区域</text>
+      </view>
+      <teleport v-if="show" to="#content1" :disabled="disabled">
+        <view class="send-content">
+          <text class="send-content-text">内容在.container中，使用teleport在#content1元素中展示</text>
+        </view>
+      </teleport>
+    </view>
+    <!-- #ifdef APP && !VUE3-VAPOR -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+const to = ref<string>('content1')
+const showingString = ref<string>('穿梭内容在 body 中')
+const disabled = ref<boolean>(false)
+const show = ref<boolean>(false)
+
+onReady(() => {
+  // 需要等内容挂载后，teleport才生效
+  show.value = true
+})
+const changePosition = () => {
+  to.value = '#content1'
+}
+
+defineExpose({
+  changePosition
+})
+</script>
+
+<style>
+.container {
+  background-color: #f5f5f5;
+  border: 1px #ccc solid;
+  margin: 5px;
+  padding: 10px;
+}
+
+.text {
+  margin: 5px 0;
+}
+
+.content {
+  height: 120px;
+  border: 1px #ccc solid;
+  margin: 5px;
+  padding: 10px;
+}
+
+.send-content {
+  padding: 5px;
+  background-color: #ff5a5f;
+  height: 50px;
+}
+
+.send-content-text {
+  color: #fff;
+  font-size: 12px;
+}
+</style>
+```
+
+>选项式 API
+
+```vue
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view id="container" class="container">
+      <text class="text">.container 区域</text>
+      <view id="content1" class="content content-1">
+        <text class="text">content1 区域</text>
+      </view>
+      <view id="content2" class="content content-2">
+        <text class="text">content2 区域</text>
+      </view>
+      <teleport v-if="show" to="#content1" :disabled="disabled">
+        <view class="send-content">
+          <text class="send-content-text">内容在.container中，使用teleport在#content1元素中展示</text>
+        </view>
+      </teleport>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      to: 'content1',
+      disabled: false,
+      showingString: '穿梭内容在 body 中',
+      show: false
+    }
+  },
+  onReady() {
+    // 需要等内容挂载后，teleport才生效
+    this.show = true
+  },
+  methods: {
+    changePosition() {
+      this.to = '#content1'
+    }
+  }
+}
+</script>
+
+<style>
+.container {
+  background-color: #f5f5f5;
+  border: 1px #ccc solid;
+  margin: 5px;
+  padding: 10px;
+}
+.text {
+  margin: 5px 0;
+}
+
+.content {
+  height: 120px;
+  border: 1px #ccc solid;
+  margin: 5px;
+  padding: 10px;
+}
+
+.send-content {
+  padding: 5px;
+  background-color: #ff5a5f;
+  height: 50px;
+}
+
+.send-content-text {
+  color: #fff;
+  font-size: 12px;
+}
+</style>
+
+```
+
+:::
 
 
 
@@ -2207,7 +2516,153 @@ const incrementNum = () =>{
 
 
 
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/built-in/special-elements/template/template-composition.uvue)
 
+::: preview https://hellouvue.dcloud.net.cn/#/pages/built-in/special-elements/template/template-composition
+
+> 组合式 API
+
+```vue
+<template>
+  <view class="page">
+    <template v-if="dataInfo.isShow">
+      <text id="title">{{ title }}</text>
+    </template>
+    <template v-else>
+      <text>隐藏标题时显示</text>
+    </template>
+    <!-- vapor button 调整实现，自动化测试无法通过 innerText 获取文本内容，重构为 text  -->
+    <text class="mt-10 btn" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
+    <template v-for="(item, index) in list" :key="index">
+      <text :class="'item'">{{ index + 1 }}.{{ item.name }}</text>
+    </template>
+    <button @click="goMapStyle">跳转绑定 Map 类型 style 页面</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+type DataInfo = {
+  isShow: boolean
+}
+type ListItem = {
+  name: string
+}
+
+const dataInfo = reactive({
+  isShow: false
+} as DataInfo)
+
+const title = ref<string>('hello')
+const list = ref<ListItem[]>([
+  {
+    name: 'foo1'
+  },
+  {
+    name: 'foo2'
+  }
+])
+
+const handleShow = () => {
+  dataInfo.isShow = !dataInfo.isShow
+}
+
+const goMapStyle = () => {
+  uni.navigateTo({ url: '/pages/built-in/special-elements/template/template-map-style-composition' })
+}
+
+defineExpose({
+  dataInfo,
+  goMapStyle
+})
+</script>
+
+<style>
+.btn{
+  border: 1px solid #eee;
+  border-radius: 4px;
+  text-align: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.item {
+  margin: 15px;
+  padding: 4px 8px;
+  border: #eee solid 1px;
+}
+</style>
+```
+
+>选项式 API
+
+```vue
+<template>
+  <view class="page">
+    <template v-if="dataInfo.isShow">
+      <text id="title">{{ title }}</text>
+    </template>
+    <template v-else>
+      <text>隐藏标题时显示</text>
+    </template>
+    <text class="mt-10 btn" id="show-botton" @click="handleShow">{{ dataInfo.isShow ? '点击隐藏' : '点击显示' }}</text>
+    <template v-for="(item, index) in list" :key="index">
+      <text :class="'item'">{{ index + 1 }}.{{ item.name }}</text>
+    </template>
+    <button @click="goMapStyle">跳转绑定 Map 类型 style 页面</button>
+  </view>
+</template>
+
+<script lang='uts'>
+type DataInfo = {
+  isShow: boolean
+}
+type objType = {
+  name : string
+}
+export default {
+  data() {
+    return {
+      title: "hello",
+      dataInfo: {
+        isShow: false,
+      } as DataInfo,
+      list: [{
+        name: 'foo1'
+      },
+      {
+        name: 'foo2'
+      }
+      ] as objType[]
+    }
+  },
+  methods: {
+    handleShow() {
+      this.dataInfo.isShow = !this.dataInfo.isShow
+    },
+    goMapStyle() {
+      uni.navigateTo({ url: '/pages/built-in/special-elements/template/template-map-style-options' })
+    }
+  }
+}
+</script>
+
+<style>
+.btn{
+  border: 1px solid #eee;
+  border-radius: 4px;
+  text-align: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.item {
+  margin: 15px;
+  padding: 4px 8px;
+  border: #eee solid 1px;
+}
+</style>
+
+```
+
+:::
 
 
 
@@ -2236,7 +2691,62 @@ const incrementNum = () =>{
 
 
 
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/built-in/special-elements/slots/slots-composition.uvue)
 
+::: preview https://hellouvue.dcloud.net.cn/#/pages/built-in/special-elements/slots/slots-composition
+
+> 组合式 API
+
+```vue
+<template>
+  <view class="content">
+    <child>
+      <template v-slot:header="slotProps">
+        <view class="header">{{ slotProps.msg }}</view>
+      </template>
+      <template v-slot:default="{ msg }">
+        <view class="main">{{ msg }}</view>
+      </template>
+      <template #footer="{ msg: text }">
+        <view class="footer">{{ text }}</view>
+      </template>
+    </child>
+  </view>
+</template>
+
+<script setup lang="uts">
+import child from './child-composition.uvue'
+</script>
+```
+
+>选项式 API
+
+```vue
+<template>
+  <view class="content">
+    <child>
+      <template v-slot:header="slotProps">
+        <view class="header">{{ slotProps.msg }}</view>
+      </template>
+      <template v-slot:default="{ msg }">
+        <view class="main">{{ msg }}</view>
+      </template>
+      <template #footer="{ msg: text }">
+        <view class="footer">{{ text }}</view>
+      </template>
+    </child>
+  </view>
+</template>
+
+<script lang="uts">
+import child from './child-options.uvue'
+export default {
+  components: { child }
+}
+</script>
+```
+
+:::
 
 
 
@@ -2265,7 +2775,108 @@ const incrementNum = () =>{
 
 
 
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/built-in/special-elements/component/component-composition.uvue)
 
+::: preview https://hellouvue.dcloud.net.cn/#/pages/built-in/special-elements/component/component-composition
+
+> 组合式 API
+
+```vue
+<template>
+  <view class="container">
+    <component :is="currentComponentInstance" />
+    <component :is="myInput" :value="inputValue" id="my-input" />
+    <button @click="changeCurrentComponent">change current component</button>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import Foo from '../../../../components/Foo.uvue'
+  import Bar from '../../../../components/Bar.uvue'
+
+  const currentComponentStr = ref('Foo')
+  const currentComponentInstance = shallowRef(Foo)
+  const myInput = ref('input')
+  const inputValue = ref('default value')
+
+  const changeCurrentComponent = () => {
+    if (currentComponentStr.value === 'Foo') {
+      currentComponentStr.value = 'Bar'
+      currentComponentInstance.value = Bar
+    } else {
+      currentComponentStr.value = 'Foo'
+      currentComponentInstance.value = Foo
+    }
+  }
+
+  defineExpose({
+    changeCurrentComponent
+  })
+</script>
+
+<style>
+  .item {
+    display: flex;
+    flex-direction: row;
+    margin: 15px;
+    border: #eee solid 1px;
+  }
+</style>
+```
+
+>选项式 API
+
+```vue
+<template>
+  <view class="container">
+    <component :is="currentComponentStr" />
+    <component :is="currentComponentInstance" />
+    <component :is="myInput" :value="inputValue" id="my-input" />
+    <button @click="changeCurrentComponent">change current component</button>
+  </view>
+</template>
+
+<script lang="uts">
+  import Foo from '../../../../components/Foo.uvue'
+  import Bar from '../../../../components/Bar.uvue'
+  export default {
+    components: {
+      Foo,
+      Bar
+    },
+    data() {
+      return {
+        currentComponentStr: 'Foo',
+        currentComponentInstance: Foo,
+        myInput: 'input',
+        inputValue: 'default value'
+      }
+    },
+    methods: {
+      changeCurrentComponent() {
+        if (this.currentComponentStr === 'Foo') {
+          this.currentComponentStr = 'Bar'
+          this.currentComponentInstance = Bar
+        } else {
+          this.currentComponentStr = 'Foo'
+          this.currentComponentInstance = Foo
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  .item {
+    display: flex;
+    flex-direction: row;
+    margin: 15px;
+    border: #eee solid 1px;
+  }
+</style>
+```
+
+:::
 
 
 
@@ -2280,8 +2891,6 @@ const incrementNum = () =>{
 | key | 4.0 | √ | 3.9 | 4.11 | 4.61 |
 | ref | 4.0 | √ | 3.9 | 4.11 | 4.61 |
 | is | 4.0 | √ | 3.99 | 4.11 | 4.61 |
-
-
 
 ### key
 
@@ -2443,3 +3052,35 @@ const incrementNum = () =>{
 用于绑定动态组件。
 
 - 预期：`string | Component`
+
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/built-in/special-attributes/key/key-composition.uvue)
+
+::: preview https://hellouvue.dcloud.net.cn/#/pages/built-in/special-attributes/key/key-composition
+
+```vue
+<template>
+    <view style="flex: 1; padding: 20px;">
+        <button id="btn" @click="switchItem">切换详情</button>
+
+        <text>页面当前 currentId: </text>
+        <text id="current-id">{{ currentId }}</text>
+
+        <!-- 小程序平台不支持 :key，该页面已在页面注册和入口处通过条件编译屏蔽 -->
+        <view v-if="currentId != ''" style="margin-top: 20px;">
+            <Child :key="currentId" :id="currentId" />
+        </view>
+    </view>
+</template>
+
+<script setup lang="uts">
+    import Child from './child-composition.uvue'
+
+    const currentId = ref('a')
+
+    function switchItem() {
+        currentId.value = currentId.value == 'a' ? 'b' : 'a'
+    }
+</script>
+```
+
+:::

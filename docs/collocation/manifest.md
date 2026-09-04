@@ -747,7 +747,6 @@ Web平台配置
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
 | title | string | 默认为应用名称 |
-| template | string | 默认为空可定制生成的html代码，参考：https://uniapp.dcloud.net.cn/collocation/manifest.html#h5-template |
 | router | [router 配置项列表](#web-router) |   |
 | devServer | [devServer 配置项列表](#web-devserver) |   |
 | optimization | [optimization 配置项列表](#web-optimization) |   |
@@ -755,6 +754,7 @@ Web平台配置
 | sdkConfigs | [sdkConfigs 配置项列表](#web-sdkconfigs) |   |
 | darkmode | boolean | 是否开启暗黑模式 |
 
+**注：** 可通过修改项目根目录 `index.html` 文件来自定义模板
 
 #### web router 配置项列表 @web-router
 

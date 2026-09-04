@@ -136,7 +136,7 @@ UniImageLoadEvent -- Extends --> UniEvent
 	* 支持http、https。
 	* 安卓端image组件内部使用facebook的[fresco](https://github.com/facebook/fresco)库(2.5.0)，自带缓存策略，也会自动清理缓存。
 	* iOS端image组件内部使用[SDWebImage](https://github.com/SDWebImage/SDWebImage)库(5.10.0)，自带缓存策略，默认7天缓存，缓存过期后会自动清理。
-	* 鸿蒙平台非蒸汽模式image组件使用arkUI的image组件，缓存策略[另见](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-basic-components-image?ha_source=Dcloud&ha_sourceId=89000448)
+	* 鸿蒙平台 VDOM 模式 image 组件使用 arkUI 的 image 组件，缓存策略[另见](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-basic-components-image?ha_source=Dcloud&ha_sourceId=89000448)
 	* 鸿蒙平台蒸汽模式image组件使用[imageknifepro](https://gitcode.com/openharmony-sig/imageknifepro)库(1.0.12)，自带缓存策略，内存缓存256张128MB，磁盘缓存512张128MB，超限采用LRU淘汰。
 
 ### 关于svg格式的矢量能力@svg-support

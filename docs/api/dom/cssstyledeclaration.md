@@ -313,8 +313,8 @@ App平台获取样式值与Web平台存在部分差异：
 
 **蒸汽模式（Vapor）**
 
-蒸汽模式（Vapor）为了提升 CSS 的性能，App平台将所有样式数据在编译器和运行期都做了类型化转换，丢失了原始字符串数据（即获取值与设置值不完全一致），与非蒸汽模式存在以下差异：
-- 没有设置的样式，App平台蒸汽模式（Vapor）下通过 `getPropertyValue` 获取将返回默认值，非蒸汽模式返回空字符串。
+蒸汽模式（Vapor）为了提升 CSS 的性能，App平台将所有样式数据在编译器和运行期都做了类型化转换，丢失了原始字符串数据（即获取值与设置值不完全一致），与 VDOM 模式存在以下差异：
+- 没有设置的样式，App平台蒸汽模式（Vapor）下通过 `getPropertyValue` 获取将返回默认值，VDOM 模式返回空字符串。
   如下示例，没有设置 flex-direction 样式，App平台在蒸汽模式（Vapor）下通过 getPropertyValue 获取 flex-direction 返回 "column"，非蒸汽模式下返回空字符串：
   ```vue
   <template>
@@ -341,7 +341,7 @@ App平台获取样式值与Web平台存在部分差异：
     //获取flex-direction样式
     const borderStyle = testElement.value!.style.getPropertyValue('flex-direction')
     //App平台蒸汽模式（Vapor） 获取flex-direction的值为 "column"
-    //App平台非蒸汽模式 获取flex-direction的值为 ""
+    //App平台 VDOM 模式 获取flex-direction的值为 ""
 
     text.value = `border-style=${borderStyle}`;
   }
@@ -389,7 +389,7 @@ App平台获取样式值与Web平台存在部分差异：
     //获取简写flex样式
     const borderStyle = testElement.value!.style.getPropertyValue('flex')
     //App平台蒸汽模式（Vapor） 获取flex的值为 "1 1 0%"
-    //App平台非蒸汽模式 获取flex的值为 "1"
+    //App平台 VDOM 模式 获取flex的值为 "1"
 
     text.value = `border-style=${borderStyle}`;
   }
@@ -409,7 +409,7 @@ App平台获取样式值与Web平台存在部分差异：
   }
   </style>
   ```
-  注意：这里 flex 简写样式在非蒸汽模式不会拆解
+  注意：这里 flex 简写样式在 VDOM 模式不会拆解
 
 - 通过 `getPropertyValue` 获取的颜色值（如background-color、color、border-color、border-*-color）格式为十六进制颜色八值语法“#RRGGBBAA”，其中 RR、GG、BB、AA分别对应红色、绿色、蓝色、透明值，使用大写字符。
   如下示例，设置 background-color 为 "blue"，App平台在蒸汽模式（Vapor）下通过getPropertyValue 获取 background-color 返回 "#0000FFFF"：
@@ -438,7 +438,7 @@ App平台获取样式值与Web平台存在部分差异：
     //获取background-color样式
     const borderStyle = testElement.value!.style.getPropertyValue('background-color')
     //App平台蒸汽模式（Vapor） 获取background-color的值为 "#0000FFFF"
-    //App平台非蒸汽模式 获取background-color的值为 "blue"
+    //App平台 VDOM 模式 获取background-color的值为 "blue"
 
     text.value = `border-style=${borderStyle}`;
   }
