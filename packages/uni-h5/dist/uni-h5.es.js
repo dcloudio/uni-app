@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, createElementVNode, normalizeStyle } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, h, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, createElementVNode, normalizeStyle } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_THEME_CHANGE, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -14389,6 +14389,8 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
     if (!isPlainObject(node)) {
       return;
     }
+    if ((!hasOwn(node, "type") || node.type === "text") && isString(node.text) && node.text !== "")
+      return createTextVNode(decodeEntities(node.text || ""));
     if (!hasOwn(node, "type") || node.type === "node") {
       if (!isString(node.name) || !node.name) {
         return;
@@ -14408,8 +14410,6 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
         nodeList2VNode(scopeId, triggerItemClick, node.children)
       );
     }
-    if (node.type === "text" && isString(node.text) && node.text !== "")
-      return createTextVNode(decodeEntities(node.text || ""));
   });
 };
 function removeDOCTYPE(html) {

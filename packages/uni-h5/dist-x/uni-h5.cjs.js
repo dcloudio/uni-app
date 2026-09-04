@@ -7383,6 +7383,8 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
     if (!shared.isPlainObject(node)) {
       return;
     }
+    if ((!shared.hasOwn(node, "type") || node.type === "text") && shared.isString(node.text) && node.text !== "")
+      return vue.createTextVNode(decodeEntities(node.text || ""));
     if (!shared.hasOwn(node, "type") || node.type === "node") {
       if (!shared.isString(node.name) || !node.name) {
         return;
@@ -7399,8 +7401,6 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
         nodeList2VNode(scopeId, triggerItemClick, node.children)
       );
     }
-    if (node.type === "text" && shared.isString(node.text) && node.text !== "")
-      return vue.createTextVNode(decodeEntities(node.text || ""));
   });
 };
 function removeDOCTYPE(html) {
