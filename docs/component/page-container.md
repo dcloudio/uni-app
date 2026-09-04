@@ -62,7 +62,7 @@ page-container 的特点：
 - 小程序不支持 `左侧弹出`，App 和 Web 支持
 - 小程序 `enter` 和 `leave` 相关事件的回调函数有参数 `event`，App 和 Web 平台没有
 - 开启 `closeOnSlideDown` 后，小程序需要快速下滑才生效，而 App 和 Web 会跟着手指拖动滑动
-- 支付宝小程序同一个页面最多只能有一个 `page-container`，如果页面中有多个 `page-container`，则只有一个 `page-container` 能够正常弹出，其他的 `page-container` 无法弹出，即使设置了 `v-if` 条件渲染也无法弹出，而微信小程序无此限制。App 和 Web 支持弹出多个 `page-container` 组件，后弹覆盖先弹。
+- 小程序页面最多只有1个 `page-container`，已存在 `page-container` 时无法再弹出新的 `page-container`。支付宝小程序同一页面存在多个 `page-container` 时，第二个及后续打开的 `page-container` 可能无法弹出。App 和 Web 支持弹出多个 `page-container` 组件，后弹覆盖先弹。
 - Web 暂不支持拦截侧滑返回和浏览器的后退按钮
 - `overlay-style` 设置 `pointer-events: none` 可以实现点击遮罩层不关闭弹窗
 - 居中弹出为全屏显示。此行为是为了对齐小程序的表现。由于遮罩层被覆盖，并不会触发 `click-overlay` 事件，可以自行调整 `custom-style` 的样式来规避此行为
