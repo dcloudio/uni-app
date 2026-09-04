@@ -634,7 +634,7 @@ App 平台文本相关样式不继承，例如 `color`、`font-size`、`font-fam
 - `font-family` 不支持使用逗号分隔的多个字体回退列表。
 - `text-decoration` 简写在 App 平台不支持，推荐使用 `text-decoration-line`。
 - `text-decoration-line` 仅支持 `underline` 和 `line-through`。
-- `text-decoration-color` 在 Android 平台不支持自定义修饰线颜色；iOS 非蒸汽模式也不支持。
+- `text-decoration-color` 在 Android 平台不支持自定义修饰线颜色；iOS VDOM 模式也不支持。
 - `text-decoration-style`、`text-decoration-thickness` 在 App 平台暂不支持。
 - `text-shadow` 支持范围以属性文档为准，阴影颜色默认使用文本颜色，主要适用于 `text`、`button`。
 - `text-overflow` 不会截断单个字符的一部分。

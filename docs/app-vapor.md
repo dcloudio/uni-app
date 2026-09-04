@@ -453,7 +453,7 @@ ninja: error: failed recompaction: Permission denied。
 
 ## 开发注意
 
-对比非蒸汽，蒸汽模式有一些变更调整，说明如下：
+对比 VDOM 模式，蒸汽模式有一些变更调整，说明如下：
 
 ### vue蒸汽模式自身变更
 

@@ -436,8 +436,8 @@ button 组件没有 url 属性，点击后需要跳转页面时，可在 @click 
 
 ## 文本显示
 
-- 如果 button 组件的文本内容包含 `\n`，非蒸汽模式 APP 和 web 会被渲染为字符，不会换行，微信小程序会移除换行符号。蒸汽模式 APP 会移除 `\n` 旁的文字。
-- 非蒸汽模式 button 默认文字大小为 18px，文字行高为 2.5。自定义高度时，需要同步调整 line-height。
+- 如果 button 组件的文本内容包含 `\n`，VDOM 模式 APP 和 web 会被渲染为字符，不会换行，微信小程序会移除换行符号。蒸汽模式 APP 会移除 `\n` 旁的文字。
+- VDOM 模式 button 默认文字大小为 18px，文字行高为 2.5。自定义高度时，需要同步调整 line-height。
 - APP 蒸汽模式下，button 的文字居中依赖 padding。调整 height 和 line-height 时，建议同时将 padding-top、padding-bottom 设置为 0。
 
 ```html
