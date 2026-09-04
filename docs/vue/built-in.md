@@ -2128,10 +2128,11 @@ const incrementNum = () =>{
 | to | string | Web: 4.0; 微信小程序: x; Android(VDOM): 4.0; Android(Vapor): 5.25; iOS(VDOM): 4.11; iOS(Vapor): 5.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.25 | 必须是有效的查询选择器或 HTMLElement (如果在浏览器环境中使用)。指定将在其中移动 \<teleport> 内容的目标元素 |
 | disabled | boolean | Web: 4.0; 微信小程序: 5.14; Android(VDOM): 4.0; Android(Vapor): 5.25; iOS(VDOM): 4.11; iOS(Vapor): 5.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.25 | 此可选属性可用于禁用 \<teleport> 的功能，这意味着其插槽内容将不会移动到任何位置，而是在您在周围父组件中指定了 \<teleport> 的位置渲染。 |
 
-**注意：**
-- App-Android 平台暂不支持动态修改 `to` 属性。
-- 鸿蒙和 ios 非蒸汽模式 暂不支持 `to` 设置为 `body`。
-- App 和 web VDOM 模式 teleport 首次挂载时会立即查找目标节点，如果目标节点当时还没渲染出来，就会出现 Failed to locate Teleport target 警告，解决方法是用 v-if 配合 onReady 延迟显示。
+**VDOM模式注意事项**
+
+- Android平台暂不支持动态修改 `to` 属性。
+- 鸿蒙平台和iOS平台暂不支持 `to` 设置为 `body`。
+- App平台和web平台 teleport 首次挂载时会立即查找目标节点，如果目标节点当时还没渲染出来，就会出现 Failed to locate Teleport target 警告，解决方法是用 v-if 配合 onReady 延迟显示。
 
 
 
