@@ -59,35 +59,27 @@ pointer-events: auto | none | visiblePainted | visibleFill | visibleStroke | vis
   <!-- #endif -->
     <view class="pointer-page uni-theme-root">
       <page-intro content="本页演示 pointer-events：通过开关控制父 view、遮罩层、text、image 的 pointer-events（auto/none），观察点击是否穿透或响应；点击可修改 view/text/image 宽度，用于验证事件是否命中目标。"></page-intro>
-      <view class="container1">
-        <text class="switch-label">控制父视图pointer-events打开时可以点击</text>
-        <switch :checked="true" @change="onChange1" />
-      </view>
+      <boolean-data :defaultValue="true" title="控制父视图pointer-events打开时可以点击"
+        @change="onChange1"></boolean-data>
       <view class="container" :style="{ 'pointer-events': pointerEvents1 }">
         <text class="text">点击修改宽度</text>
         <view class="base-style transition-width" id="widthOrHeight" @click="changeWidthOrHeight"></view>
       </view>
-      <view class="container1">
-        <text class="switch-label">控制遮罩层pointer-events关闭时可以点击</text>
-        <switch :checked="true" @change="onChange2" />
-      </view>
+      <boolean-data :defaultValue="true" title="控制遮罩层pointer-events关闭时可以点击"
+        @change="onChange2"></boolean-data>
       <view class="container">
         <text class="text">点击修改宽度(递增)</text>
         <view class="width-progress transition-width" id="widthProgress" @click="changeWidthProgress"></view>
         <view class="mask" :style="{ 'pointer-events': pointerEvents2 }"></view>
       </view>
-      <view class="container1">
-        <text class="switch-label">控制text组件pointer-events打开时可以点击</text>
-        <switch :checked="true" @change="onChange3" />
-      </view>
+      <boolean-data :defaultValue="true" title="控制text组件pointer-events打开时可以点击"
+        @change="onChange3"></boolean-data>
       <view class="container" :style="{ 'pointer-events': pointerEvents3 }">
         <text class="text">点击修改宽度</text>
         <text class="text-pointer transition-width" id="textPointer" @click="changeTextWidth">测试文本</text>
       </view>
-      <view class="container1">
-        <text class="switch-label">控制image组件pointer-events打开时可以点击</text>
-        <switch :checked="true" @change="onChange4" />
-      </view>
+      <boolean-data :defaultValue="true" title="控制image组件pointer-events打开时可以点击"
+        @change="onChange4"></boolean-data>
       <view class="container" :style="{ 'pointer-events': pointerEvents4 }">
         <text class="text">点击修改宽度</text>
         <image class="image-pointer transition-width" id="imagePointer" @click="changeImageWidth" src="/static/test-image/logo.png"></image>
@@ -134,12 +126,12 @@ pointer-events: auto | none | visiblePainted | visibleFill | visibleStroke | vis
     widthProgress?.style?.setProperty("width", progressWidth + 'px')
   }
 
-  const onChange1 = (e : UniSwitchChangeEvent) => {
-    pointerEvents1.value = e.detail.value ? 'auto' : 'none'
+  const onChange1 = (value : boolean) => {
+    pointerEvents1.value = value ? 'auto' : 'none'
   }
 
-  const onChange2 = (e : UniSwitchChangeEvent) => {
-    pointerEvents2.value = e.detail.value ? 'auto' : 'none'
+  const onChange2 = (value : boolean) => {
+    pointerEvents2.value = value ? 'auto' : 'none'
   }
 
   const changeTextWidth = () => {
@@ -156,12 +148,12 @@ pointer-events: auto | none | visiblePainted | visibleFill | visibleStroke | vis
     isImageWidth = !isImageWidth
   }
 
-  const onChange3 = (e : UniSwitchChangeEvent) => {
-    pointerEvents3.value = e.detail.value ? 'auto' : 'none'
+  const onChange3 = (value : boolean) => {
+    pointerEvents3.value = value ? 'auto' : 'none'
   }
 
-  const onChange4 = (e : UniSwitchChangeEvent) => {
-    pointerEvents4.value = e.detail.value ? 'auto' : 'none'
+  const onChange4 = (value : boolean) => {
+    pointerEvents4.value = value ? 'auto' : 'none'
   }
 </script>
 

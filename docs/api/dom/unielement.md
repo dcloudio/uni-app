@@ -761,9 +761,9 @@ if(webViewElement != null) {
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
+  <scroll-view class="page-scroll-view uni-theme-root">
   <!-- #endif -->
-    <view class="page" id="page">
+    <view class="page uni-theme-root" id="page">
       <page-head :title="title"></page-head>
       <page-intro content="本页演示元素获取布局矩形：getBoundingClientRectAsync 异步接口与 getBoundingClientRect 同步方法，返回 x、y、width、height、left、top、right、bottom；对 view、text、image、scroll-view 等组件分别测试，并含拍平（flatten）对比，以及 box-shadow 导致尺寸变大的现象演示。"></page-intro>
       <button class="uni-common-mt" @click="getBoundingClientRectAsync">getBoundingClientRectAsync</button>
@@ -1188,6 +1188,11 @@ if(webViewElement != null) {
 
 <style>
   .page {
+    --rect-divider-color: #e0e0e0;
+    --rect-title-color: #333;
+    --rect-muted-color: #909399;
+    --rect-border-color: #e4e7ed;
+    --rect-text-color: #606266;
     padding: 15px;
   }
 
@@ -1219,14 +1224,14 @@ if(webViewElement != null) {
   .section-divider {
     margin-top: 30px;
     height: 1px;
-    background-color: #e0e0e0;
+    background-color: var(--rect-divider-color, #e0e0e0);
   }
 
   .section-title {
     margin-top: 15px;
     font-size: 16px;
     font-weight: bold;
-    color: #333;
+    color: var(--rect-title-color, #333);
   }
 
   .test-group {
@@ -1254,7 +1259,7 @@ if(webViewElement != null) {
     margin-bottom: 10px;
     font-size: 12px;
     line-height: 18px;
-    color: #909399;
+    color: var(--rect-muted-color, #909399);
   }
 
   .test-elements {
@@ -1303,7 +1308,7 @@ if(webViewElement != null) {
     flex-direction: row;
     margin-bottom: 15px;
     padding-bottom: 15px;
-    border-bottom: 1px solid #e4e7ed;
+    border-bottom: 1px solid var(--rect-border-color, #e4e7ed);
   }
 
   .rect-data-col {
@@ -1315,7 +1320,7 @@ if(webViewElement != null) {
   .rect-data-item {
     font-size: 12px;
     line-height: 1.8;
-    color: #606266;
+    color: var(--rect-text-color, #606266);
   }
 
   .rect-test-scrollview {
@@ -1337,6 +1342,16 @@ if(webViewElement != null) {
     line-height: 30px;
     font-size: 14px;
     color: #606266;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .page {
+      --rect-divider-color: rgba(255, 255, 255, 0.1);
+      --rect-title-color: #ffffff;
+      --rect-muted-color: #a0a0a0;
+      --rect-border-color: rgba(255, 255, 255, 0.1);
+      --rect-text-color: #d0d0d0;
+    }
   }
 
 </style>
@@ -1729,9 +1744,9 @@ if (view != null && view instanceof WKWebView) {
 ```uvue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
+  <scroll-view class="page-scroll-view uni-theme-root">
   <!-- #endif -->
-    <view id="snapshot-content">
+    <view id="snapshot-content" class="snapshot-content uni-theme-root">
       <page-head title="对本页面根view截图"></page-head>
       <view class="uni-padding-wrap">
         <text>this is text</text>
@@ -1965,17 +1980,25 @@ if (view != null && view instanceof WKWebView) {
 </script>
 
 <style>
+  .snapshot-content {
+    --snapshot-divider-color: #e0e0e0;
+    --snapshot-title-color: #333;
+    --snapshot-panel-background: #f5f7fa;
+    --snapshot-panel-border-color: #dcdfe6;
+    --snapshot-placeholder-color: #909399;
+  }
+
   .section-divider {
     margin-top: 30px;
     height: 1px;
-    background-color: #e0e0e0;
+    background-color: var(--snapshot-divider-color, #e0e0e0);
   }
 
   .section-title {
     margin-top: 15px;
     font-size: 16px;
     font-weight: bold;
-    color: #333;
+    color: var(--snapshot-title-color, #333);
   }
 
   .test-group {
@@ -2027,8 +2050,8 @@ if (view != null && view instanceof WKWebView) {
   .snapshot-row {
     flex-direction: row;
     margin-top: 10px;
-    background-color: #f5f7fa;
-    border: 1px solid #dcdfe6;
+    background-color: var(--snapshot-panel-background, #f5f7fa);
+    border: 1px solid var(--snapshot-panel-border-color, #dcdfe6);
     border-radius: 4px;
     padding: 10px;
   }
@@ -2056,7 +2079,7 @@ if (view != null && view instanceof WKWebView) {
 
   .snapshot-placeholder {
     font-size: 12px;
-    color: #909399;
+    color: var(--snapshot-placeholder-color, #909399);
     padding: 20px 0;
   }
 
@@ -2076,7 +2099,7 @@ if (view != null && view instanceof WKWebView) {
 
   .snapshot-placeholder-center {
     font-size: 12px;
-    color: #909399;
+    color: var(--snapshot-placeholder-color, #909399);
     text-align: center;
     margin-top: 10px;
   }
@@ -2104,6 +2127,16 @@ if (view != null && view instanceof WKWebView) {
 
   .snapshot-test-component {
     margin-top: 15px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .snapshot-content {
+      --snapshot-divider-color: rgba(255, 255, 255, 0.1);
+      --snapshot-title-color: #ffffff;
+      --snapshot-panel-background: #2d2d2d;
+      --snapshot-panel-border-color: rgba(255, 255, 255, 0.1);
+      --snapshot-placeholder-color: #a0a0a0;
+    }
   }
 </style>
 
