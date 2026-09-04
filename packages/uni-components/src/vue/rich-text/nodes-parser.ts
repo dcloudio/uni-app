@@ -174,6 +174,13 @@ export const nodeList2VNode = /*#__PURE__*/ (
     if (!isPlainObject(node)) {
       return
     }
+    // 存在 node.text 且 type 为空或为 'text' 时当作 text 节点处理
+    if (
+      (!hasOwn(node, 'type') || node.type === 'text') &&
+      isString(node.text) &&
+      node.text !== ''
+    )
+      return createTextVNode(decodeEntities(node.text || ''))
     if (!hasOwn(node, 'type') || node.type === 'node') {
       if (!isString(node.name) || !node.name) {
         return
@@ -195,7 +202,5 @@ export const nodeList2VNode = /*#__PURE__*/ (
         nodeList2VNode(scopeId, triggerItemClick, node.children)
       )
     }
-    if (node.type === 'text' && isString(node.text) && node.text !== '')
-      return createTextVNode(decodeEntities(node.text || ''))
   })
 }
