@@ -93,6 +93,81 @@ describe('nvue-styler: expand', () => {
     ])
   })
 
+  test.each([
+    [
+      'ease 1s',
+      [
+        ['transition-duration', '1s'],
+        ['transition-timing-function', 'ease'],
+      ],
+    ],
+    [
+      '1s ease',
+      [
+        ['transition-duration', '1s'],
+        ['transition-timing-function', 'ease'],
+      ],
+    ],
+    [
+      'EASE 1s',
+      [
+        ['transition-duration', '1s'],
+        ['transition-timing-function', 'ease'],
+      ],
+    ],
+    [
+      'opacity ease 1s',
+      [
+        ['transition-property', 'opacity'],
+        ['transition-duration', '1s'],
+        ['transition-timing-function', 'ease'],
+      ],
+    ],
+    [
+      'opacity 1s ease -100ms',
+      [
+        ['transition-property', 'opacity'],
+        ['transition-duration', '1s'],
+        ['transition-timing-function', 'ease'],
+        ['transition-delay', '-100ms'],
+      ],
+    ],
+  ])('transform transition value grammar: %s', (value, expected) => {
+    const decl = parseDecl(`.test {
+  transition: ${value}
+}`)
+    expect(transformTransition(decl)).toEqual(
+      expected.map(([prop, expectedValue]) => ({
+        type: 'decl',
+        prop,
+        value: expectedValue,
+        raws: decl.raws,
+        source: decl.source,
+      }))
+    )
+  })
+
+  test('does not treat a duplicate timing function as a property', () => {
+    const decl = parseDecl(`.test {
+  transition: ease linear
+}`)
+    expect(transformTransition(decl)).toEqual([])
+  })
+
+  test('does not accept a signed duration', () => {
+    const decl = parseDecl(`.test {
+  transition: +1s
+}`)
+    expect(transformTransition(decl)).toEqual([])
+  })
+
+  test('does not expand multiple transitions', () => {
+    const decl = parseDecl(`.test {
+  transition: opacity 1s, transform 2s
+}`)
+    expect(transformTransition(decl)).toEqual([])
+  })
+
   test.each(['5000ms', '5s', '0ms', '0s'])(
     'transform transition duration-only shorthand: %s',
     (duration) => {

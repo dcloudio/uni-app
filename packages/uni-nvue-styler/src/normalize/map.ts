@@ -19,7 +19,7 @@ import { normalizeNumber } from './number'
 import { normalizeString } from './string'
 import { normalizeShorthandLength } from './shorthandLength'
 import { normalizeTransform } from './transform'
-import { normalizeInterval } from './interval'
+import { normalizeInterval, normalizeTransitionDelay } from './interval'
 import { normalizeTimingFunction } from './timingFunction'
 import { createCombinedNormalize } from './combined'
 import { normalizeGradient, normalizeUrl } from './image'
@@ -195,6 +195,7 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   textShadow: normalizeDefault,
   // transition-property 支持逗号多值分割
   transitionProperty: normalizeProperty,
+  transitionDelay: normalizeTransitionDelay,
   transitionTimingFunction: normalizeTimingFunction,
 }
 
