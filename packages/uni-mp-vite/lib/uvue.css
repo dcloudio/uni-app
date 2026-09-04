@@ -212,13 +212,13 @@ progress {
   flex-direction: row;
   align-items: center;
 }
-
+/* #ifndef MP-ALIPAY */
 radio,
 checkbox {
   flex-direction: row;
   align-items: center;
 }
-
+/* #endif */
 /* #ifdef MP-WEIXIN */
 /* 
  * radio目前仅适配微信小程序，其他小程序平台需要额外适配
