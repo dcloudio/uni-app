@@ -103,6 +103,7 @@ describe('dom2 root scroll-view page style', () => {
         globalStyle: {
           androidRefresherColor: '@refresherColor',
           backgroundColor: '@backgroundColor',
+          backgroundTextStyle: '@backgroundTextStyle',
         },
       })
     )
@@ -112,6 +113,7 @@ describe('dom2 root scroll-view page style', () => {
     )
     expect(globalThemeOptions?.androidRefresherColor).toBeUndefined()
     expect(globalThemeOptions?.backgroundColor).toBeUndefined()
+    expect(globalThemeOptions?.backgroundTextStyle).toBeUndefined()
 
     normalizeUniAppXAppPagesJson(
       JSON.stringify({
@@ -121,6 +123,7 @@ describe('dom2 root scroll-view page style', () => {
             style: {
               androidRefresherColor: '@pageRefresherColor',
               backgroundColor: '@pageBackgroundColor',
+              backgroundTextStyle: '@pageBackgroundTextStyle',
             },
           },
         ],
@@ -136,5 +139,6 @@ describe('dom2 root scroll-view page style', () => {
     )
     expect(pageThemeOptions?.androidRefresherColor).toBeUndefined()
     expect(pageThemeOptions?.backgroundColor).toBeUndefined()
+    expect(pageThemeOptions?.backgroundTextStyle).toBeUndefined()
   })
 })

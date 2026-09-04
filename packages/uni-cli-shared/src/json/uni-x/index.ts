@@ -127,7 +127,9 @@ function normalizeRootPageOptions(
     backgroundColor: backgroundColor?.startsWith('@')
       ? undefined
       : backgroundColor,
-    backgroundTextStyle,
+    backgroundTextStyle: backgroundTextStyle?.startsWith('@')
+      ? undefined
+      : backgroundTextStyle,
   }
 }
 
