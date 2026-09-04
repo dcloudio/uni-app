@@ -1879,19 +1879,73 @@ var transitionDuration = 'transitionDuration';
 var transitionTimingFunction = 'transitionTimingFunction';
 var transitionDelay = 'transitionDelay';
 var transitionLonghands = [transitionProperty, transitionDuration, transitionTimingFunction, transitionDelay];
-var TRANSITION_TIME_REGEXP = /^\d*\.?\d+(?:ms|s)$/;
+var TRANSITION_TIME_REGEXP = /^-?(?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
+var TRANSITION_DURATION_REGEXP = /^(?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
+var TRANSITION_SIGNED_TIME_REGEXP = /^[+-](?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
+var TRANSITION_TIMING_FUNCTION_REGEXP = /^(?:linear|ease(?:-in-out|-in|-out)?|cubic-bezier\(\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*\))$/i;
 function isCssVarValue$1(value) {
   return /^var\(/i.test(value);
 }
 function containsCssVar(value) {
   return /\bvar\(/i.test(value);
 }
+function isTransitionTimingFunction(value) {
+  return TRANSITION_TIMING_FUNCTION_REGEXP.test(value);
+}
+function parseTransitionItem(value) {
+  var tokens = splitValues(value);
+  if (!tokens.length) {
+    return null;
+  }
+  var result = {};
+  var hasProperty = false;
+  var hasDuration = false;
+  var hasTimingFunction = false;
+  var hasDelay = false;
+  for (var i = 0; i < tokens.length; i++) {
+    var token = tokens[i];
+    if (isTransitionTimingFunction(token)) {
+      if (hasTimingFunction) {
+        return null;
+      }
+      result.timingFunction = token.toLowerCase();
+      hasTimingFunction = true;
+      continue;
+    }
+    if (TRANSITION_TIME_REGEXP.test(token)) {
+      if (!hasDuration) {
+        // transition-duration 不允许负值，负时间只能作为 delay。
+        if (token[0] === '-') {
+          return null;
+        }
+        result.duration = token;
+        hasDuration = true;
+      } else if (!hasDelay) {
+        result.delay = token;
+        hasDelay = true;
+      } else {
+        return null;
+      }
+      continue;
+    }
+    if (TRANSITION_SIGNED_TIME_REGEXP.test(token)) {
+      return null;
+    }
+    if (!hasProperty) {
+      result.property = token;
+      hasProperty = true;
+      continue;
+    }
+    return null;
+  }
+  return result;
+}
 function tryTransformTransitionNestedVariable(decl, dom2) {
   if (!dom2) {
     return null;
   }
   var values = splitValues(decl.value);
-  if (values.length < 2 || values.length > 4 || !values.some(containsCssVar) || values.some(isCssVarValue$1) || TRANSITION_TIME_REGEXP.test(values[0]) || !TRANSITION_TIME_REGEXP.test(values[1]) || values[3] && !TRANSITION_TIME_REGEXP.test(values[3])) {
+  if (values.length < 2 || values.length > 4 || !values.some(containsCssVar) || values.some(isCssVarValue$1) || TRANSITION_TIME_REGEXP.test(values[0]) || !TRANSITION_DURATION_REGEXP.test(values[1]) || values[3] && !TRANSITION_TIME_REGEXP.test(values[3])) {
     return null;
   }
   var {
@@ -1909,7 +1963,7 @@ function transformTransitionDecl(decl, dom2) {
     source
   } = decl;
   value = value.trim();
-  if (TRANSITION_TIME_REGEXP.test(value)) {
+  if (TRANSITION_DURATION_REGEXP.test(value)) {
     return [createDecl(transitionDuration, value, important, raws, source)];
   }
   var singleVarResult = tryExpandSingleValueVarShorthand(decl, transitionLonghands, value, dom2);
@@ -1923,24 +1977,23 @@ function transformTransitionDecl(decl, dom2) {
   if (dom2 && /\bvar\(/i.test(value)) {
     return expandShorthand(decl, transitionLonghands, value);
   }
+  var parsed = parseTransitionItem(value);
+  if (!parsed) {
+    return [];
+  }
   var result = [];
-  var match;
-  // 针对 cubic-bezier 特殊处理
-  // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
-  if (value.includes('cubic-bezier')) {
-    var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/;
-    match = value.match(CHUNK_REGEXP);
-  } else {
-    var _CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/;
-    match = value.match(_CHUNK_REGEXP);
+  if (parsed.property !== undefined) {
+    result.push(createDecl(transitionProperty, parsed.property, important, raws, source));
   }
-  if (!match) {
-    return result;
+  if (parsed.duration !== undefined) {
+    result.push(createDecl(transitionDuration, parsed.duration, important, raws, source));
   }
-  match[1] && result.push(createDecl(transitionProperty, match[1], important, raws, source));
-  match[2] && result.push(createDecl(transitionDuration, match[2], important, raws, source));
-  match[3] && result.push(createDecl(transitionTimingFunction, match[3], important, raws, source));
-  match[4] && result.push(createDecl(transitionDelay, match[4], important, raws, source));
+  if (parsed.timingFunction !== undefined) {
+    result.push(createDecl(transitionTimingFunction, parsed.timingFunction, important, raws, source));
+  }
+  if (parsed.delay !== undefined) {
+    result.push(createDecl(transitionDelay, parsed.delay, important, raws, source));
+  }
   return result;
 }
 function createTransformTransition(dom2) {
