@@ -46,6 +46,7 @@ const nativeApp = { id: 0, isDarkTheme: false }
 jest.mock('../../../../src/x/framework/app/app', () => ({
   getNativeApp: jest.fn(() => nativeApp),
 }))
+;(globalThis as any).__VAPOR__ = true
 
 import {
   createThemeSnapshots,
@@ -71,6 +72,35 @@ describe('test: getAppThemeFallbackOS', () => {
 
     expect(getAppThemeFallbackOS()).toBe('dark')
   })
+})
+
+describe('test: getAppThemeFallbackOS in VDOM', () => {
+  beforeEach(() => {
+    ;(globalThis as any).__VAPOR__ = false
+  })
+
+  afterEach(() => {
+    ;(globalThis as any).__VAPOR__ = true
+  })
+
+  it.each([
+    ['light', 'light'],
+    ['dark', 'dark'],
+  ])('returns appTheme %s', (appTheme, expected) => {
+    uni.getAppBaseInfo = jest.fn(() => ({ appTheme })) as any
+
+    expect(getAppThemeFallbackOS()).toBe(expected)
+  })
+
+  it.each(['light', 'dark'])(
+    'returns osTheme %s when appTheme is auto',
+    (osTheme) => {
+      uni.getAppBaseInfo = jest.fn(() => ({ appTheme: 'auto' })) as any
+      uni.getDeviceInfo = jest.fn(() => ({ osTheme })) as any
+
+      expect(getAppThemeFallbackOS()).toBe(osTheme)
+    }
+  )
 })
 
 describe('test: normalizePageStyles', () => {

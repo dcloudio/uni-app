@@ -12,6 +12,9 @@ import { getNativeApp } from './app/app'
 import type { IApp } from '@dcloudio/uni-app-x/types/native'
 
 export const THEME_KEY_PREFIX = '@'
+const APP_THEME_AUTO = 'auto' as const
+const APP_THEME_LIGHT = 'light' as const
+const APP_THEME_DARK = 'dark' as const
 
 type IThemeMode = 'dark' | 'light'
 type ThemeStyleSnapshot = Record<string, unknown>
@@ -36,7 +39,29 @@ declare function __uni__app_RegisterThemeConfig(
 
 // 获取当前 App 主题
 export function getAppThemeFallbackOS(): IThemeMode {
-  return (getNativeApp() as IApp).isDarkTheme ? 'dark' : 'light'
+  let fallbackOSTheme: IThemeMode = APP_THEME_LIGHT
+  if (__VAPOR__) {
+    return (getNativeApp() as IApp).isDarkTheme
+      ? APP_THEME_DARK
+      : fallbackOSTheme
+  } else {
+    try {
+      const appTheme = uni.getAppBaseInfo().appTheme as
+        | IThemeMode
+        | typeof APP_THEME_AUTO
+
+      if (appTheme === APP_THEME_AUTO) {
+        const osTheme = uni.getDeviceInfo().osTheme as IThemeMode
+        fallbackOSTheme = osTheme
+      } else {
+        fallbackOSTheme = appTheme
+      }
+      return fallbackOSTheme
+    } catch (e) {
+      console.error(e)
+      return fallbackOSTheme
+    }
+  }
 }
 
 // 监听主题 id，用来 off
