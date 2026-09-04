@@ -480,12 +480,68 @@ const transitionLonghands = [
     transitionTimingFunction,
     transitionDelay,
 ];
-const TRANSITION_TIME_REGEXP = /^\d*\.?\d+(?:ms|s)$/;
+const TRANSITION_TIME_REGEXP = /^-?(?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
+const TRANSITION_DURATION_REGEXP = /^(?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
+const TRANSITION_SIGNED_TIME_REGEXP = /^[+-](?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
+const TRANSITION_TIMING_FUNCTION_REGEXP = /^(?:linear|ease(?:-in-out|-in|-out)?|cubic-bezier\(\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*\))$/i;
 function isCssVarValue$1(value) {
     return /^var\(/i.test(value);
 }
 function containsCssVar(value) {
     return /\bvar\(/i.test(value);
+}
+function isTransitionTimingFunction(value) {
+    return TRANSITION_TIMING_FUNCTION_REGEXP.test(value);
+}
+function parseTransitionItem(value) {
+    const tokens = splitValues(value);
+    if (!tokens.length) {
+        return null;
+    }
+    const result = {};
+    let hasProperty = false;
+    let hasDuration = false;
+    let hasTimingFunction = false;
+    let hasDelay = false;
+    for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+        if (isTransitionTimingFunction(token)) {
+            if (hasTimingFunction) {
+                return null;
+            }
+            result.timingFunction = token.toLowerCase();
+            hasTimingFunction = true;
+            continue;
+        }
+        if (TRANSITION_TIME_REGEXP.test(token)) {
+            if (!hasDuration) {
+                // transition-duration 不允许负值，负时间只能作为 delay。
+                if (token[0] === '-') {
+                    return null;
+                }
+                result.duration = token;
+                hasDuration = true;
+            }
+            else if (!hasDelay) {
+                result.delay = token;
+                hasDelay = true;
+            }
+            else {
+                return null;
+            }
+            continue;
+        }
+        if (TRANSITION_SIGNED_TIME_REGEXP.test(token)) {
+            return null;
+        }
+        if (!hasProperty) {
+            result.property = token;
+            hasProperty = true;
+            continue;
+        }
+        return null;
+    }
+    return result;
 }
 function tryTransformTransitionNestedVariable(decl, dom2) {
     if (!dom2) {
@@ -497,7 +553,7 @@ function tryTransformTransitionNestedVariable(decl, dom2) {
         !values.some(containsCssVar) ||
         values.some(isCssVarValue$1) ||
         TRANSITION_TIME_REGEXP.test(values[0]) ||
-        !TRANSITION_TIME_REGEXP.test(values[1]) ||
+        !TRANSITION_DURATION_REGEXP.test(values[1]) ||
         (values[3] && !TRANSITION_TIME_REGEXP.test(values[3]))) {
         return null;
     }
@@ -507,7 +563,7 @@ function tryTransformTransitionNestedVariable(decl, dom2) {
 function transformTransitionDecl(decl, dom2) {
     let { value, important, raws, source } = decl;
     value = value.trim();
-    if (TRANSITION_TIME_REGEXP.test(value)) {
+    if (TRANSITION_DURATION_REGEXP.test(value)) {
         return [createDecl(transitionDuration, value, important, raws, source)];
     }
     const singleVarResult = tryExpandSingleValueVarShorthand(decl, transitionLonghands, value, dom2);
@@ -521,29 +577,23 @@ function transformTransitionDecl(decl, dom2) {
     if (dom2 && /\bvar\(/i.test(value)) {
         return expandShorthand(decl, transitionLonghands, value);
     }
+    const parsed = parseTransitionItem(value);
+    if (!parsed) {
+        return [];
+    }
     const result = [];
-    let match;
-    // 针对 cubic-bezier 特殊处理
-    // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
-    if (value.includes('cubic-bezier')) {
-        const CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/;
-        match = value.match(CHUNK_REGEXP);
+    if (parsed.property !== undefined) {
+        result.push(createDecl(transitionProperty, parsed.property, important, raws, source));
     }
-    else {
-        const CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/;
-        match = value.match(CHUNK_REGEXP);
+    if (parsed.duration !== undefined) {
+        result.push(createDecl(transitionDuration, parsed.duration, important, raws, source));
     }
-    if (!match) {
-        return result;
+    if (parsed.timingFunction !== undefined) {
+        result.push(createDecl(transitionTimingFunction, parsed.timingFunction, important, raws, source));
     }
-    match[1] &&
-        result.push(createDecl(transitionProperty, match[1], important, raws, source));
-    match[2] &&
-        result.push(createDecl(transitionDuration, match[2], important, raws, source));
-    match[3] &&
-        result.push(createDecl(transitionTimingFunction, match[3], important, raws, source));
-    match[4] &&
-        result.push(createDecl(transitionDelay, match[4], important, raws, source));
+    if (parsed.delay !== undefined) {
+        result.push(createDecl(transitionDelay, parsed.delay, important, raws, source));
+    }
     return result;
 }
 function createTransformTransition(dom2) {
