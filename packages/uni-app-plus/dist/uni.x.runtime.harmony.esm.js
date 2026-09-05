@@ -2049,8 +2049,25 @@ function switchSelect(selected, path) {
   });
 }
 var THEME_KEY_PREFIX = "@";
+var APP_THEME_AUTO = "auto";
+var APP_THEME_LIGHT = "light";
 function getAppThemeFallbackOS() {
-  return getNativeApp().isDarkTheme ? "dark" : "light";
+  var fallbackOSTheme = APP_THEME_LIGHT;
+  {
+    try {
+      var appTheme = uni.getAppBaseInfo().appTheme;
+      if (appTheme === APP_THEME_AUTO) {
+        var osTheme = uni.getDeviceInfo().osTheme;
+        fallbackOSTheme = osTheme;
+      } else {
+        fallbackOSTheme = appTheme;
+      }
+      return fallbackOSTheme;
+    } catch (e) {
+      console.error(e);
+      return fallbackOSTheme;
+    }
+  }
 }
 var appThemeChangeCallbackId = -1;
 function clearAppThemeChangeCallbackId() {

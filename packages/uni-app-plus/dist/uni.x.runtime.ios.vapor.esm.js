@@ -2079,8 +2079,13 @@ function switchSelect(selected, path) {
   });
 }
 var THEME_KEY_PREFIX = "@";
+var APP_THEME_LIGHT = "light";
+var APP_THEME_DARK = "dark";
 function getAppThemeFallbackOS() {
-  return getNativeApp().isDarkTheme ? "dark" : "light";
+  var fallbackOSTheme = APP_THEME_LIGHT;
+  {
+    return getNativeApp().isDarkTheme ? APP_THEME_DARK : fallbackOSTheme;
+  }
 }
 function normalizePageStyles(pageStyle, themeConfig, themeMode) {
   var themeMap = themeConfig === null || themeConfig === void 0 ? void 0 : themeConfig[themeMode];
