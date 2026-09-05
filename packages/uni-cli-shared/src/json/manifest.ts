@@ -26,6 +26,24 @@ export const parseManifestJson = (inputDir: string) => {
 
 export const parseManifestJsonOnce = once(parseManifestJson)
 
+export type UniAppXVaporScriptLang = 'js' | 'ts' | 'uts'
+
+export function resolveUniAppXVaporScriptLang(
+  manifestJson: Record<string, any>
+): UniAppXVaporScriptLang {
+  const lang = manifestJson['uni-app-x']?.['vapor-default-script-lang']
+  return lang === 'js' || lang === 'ts' || lang === 'uts' ? lang : 'ts'
+}
+
+export function getUniAppXVaporScriptLang(
+  inputDir?: string
+): UniAppXVaporScriptLang {
+  if (!inputDir) {
+    return 'ts'
+  }
+  return resolveUniAppXVaporScriptLang(parseManifestJsonOnce(inputDir))
+}
+
 export const parseRpx2UnitOnce = once(
   (inputDir: string, platform: UniApp.PLATFORM = 'h5') => {
     const rpx2unit =

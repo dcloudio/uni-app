@@ -9,6 +9,7 @@ import {
   isUniAppXStandardScriptSupported,
   isUniAppXVapor,
 } from '../src/x'
+import { resolveUniAppXVaporScriptLang } from '../src/json'
 
 describe('uni-app x predicates', () => {
   const originalEnv = {
@@ -95,4 +96,31 @@ describe('uni-app x predicates', () => {
       expect(isUniAppXStandardScriptSupported()).toBe(true)
     }
   )
+})
+
+describe('uni-app x Vapor script language', () => {
+  test('uses TypeScript by default', () => {
+    expect(resolveUniAppXVaporScriptLang({})).toBe('ts')
+  })
+
+  test('accepts configured JavaScript and UTS values', () => {
+    expect(
+      resolveUniAppXVaporScriptLang({
+        'uni-app-x': { 'vapor-default-script-lang': 'js' },
+      })
+    ).toBe('js')
+    expect(
+      resolveUniAppXVaporScriptLang({
+        'uni-app-x': { 'vapor-default-script-lang': 'uts' },
+      })
+    ).toBe('uts')
+  })
+
+  test('falls back to TypeScript for invalid values', () => {
+    expect(
+      resolveUniAppXVaporScriptLang({
+        'uni-app-x': { 'vapor-default-script-lang': 'jsx' },
+      })
+    ).toBe('ts')
+  })
 })

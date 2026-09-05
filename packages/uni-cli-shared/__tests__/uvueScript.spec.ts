@@ -1,3 +1,6 @@
+import fs from 'fs'
+import os from 'os'
+import path from 'path'
 import type { Plugin } from 'vite'
 import { uniUTSUVueJavaScriptPlugin } from '../src/vite/plugins/uts/uvue'
 
@@ -12,6 +15,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
   const originalDom2 = process.env.UNI_APP_X_DOM2
   const originalPlatform = process.env.UNI_PLATFORM
   const originalUtsPlatform = process.env.UNI_UTS_PLATFORM
+  const originalInputDir = process.env.UNI_INPUT_DIR
 
   beforeEach(() => {
     process.env.UNI_APP_X = 'true'
@@ -38,6 +42,11 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
       Reflect.deleteProperty(process.env, 'UNI_UTS_PLATFORM')
     } else {
       process.env.UNI_UTS_PLATFORM = originalUtsPlatform
+    }
+    if (originalInputDir === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_INPUT_DIR')
+    } else {
+      process.env.UNI_INPUT_DIR = originalInputDir
     }
   })
 
@@ -172,7 +181,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     )
   })
 
-  test('keeps UTS and implicit UTS scripts unchanged', () => {
+  test('keeps explicit UTS and applies the default language to implicit scripts', () => {
     process.env.UNI_APP_X_DOM2 = 'true'
     const transform = getTransform(uniUTSUVueJavaScriptPlugin())
 
@@ -195,7 +204,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
       )
     ).toEqual(
       expect.objectContaining({
-        code: '<script lang="uts">export default {}</script>\n<script setup vapor lang="js">const value = 1</script>',
+        code: '<script lang="ts">export default {}</script>\n<script setup vapor lang="js">const value = 1</script>',
       })
     )
   })
@@ -275,7 +284,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     expect(result.map).toEqual({ mappings: '' })
   })
 
-  test('keeps UTS as the default language in DOM2', () => {
+  test('uses TypeScript as the default language in DOM2', () => {
     process.env.UNI_APP_X_DOM2 = 'true'
     const transform = getTransform(uniUTSUVueJavaScriptPlugin())
 
@@ -287,11 +296,11 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
       )
     ).toEqual(
       expect.objectContaining({
-        code: '<script setup vapor lang="uts">const value = 1</script>',
+        code: '<script setup vapor lang="ts">const value = 1</script>',
         meta: {
           uniAppXScript: {
             hasImplicitLang: true,
-            defaultLang: 'uts',
+            defaultLang: 'ts',
           },
         },
       })
@@ -371,7 +380,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
       )
     ).toEqual(
       expect.objectContaining({
-        code: '<script setup data-lang="js" vapor lang="uts">const value = 1</script>',
+        code: '<script setup data-lang="js" vapor lang="ts">const value = 1</script>',
       })
     )
   })
@@ -444,7 +453,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
       meta: {
         uniAppXScript: {
           hasImplicitLang: true,
-          defaultLang: 'uts',
+          defaultLang: 'ts',
         },
       },
     }
@@ -504,5 +513,77 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
       code: source,
       map: { mappings: '' },
     })
+  })
+
+  test('keeps UTS as the default language outside uni-app x', () => {
+    process.env.UNI_APP_X = 'false'
+    process.env.UNI_UTS_PLATFORM = 'web'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+    expect(
+      transform.call(
+        {} as any,
+        '<script setup>const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script setup lang="uts">const value = 1</script>',
+      })
+    )
+  })
+
+  test.each(['app-ios', 'app-harmony'] as const)(
+    'uses the manifest default language in Vapor mode on %s',
+    (platform) => {
+      process.env.UNI_UTS_PLATFORM = platform
+      process.env.UNI_APP_X_DOM2 = 'true'
+      const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+      expect(
+        transform.call(
+          {} as any,
+          '<script setup>const value = 1</script>',
+          '/pages/index/index.uvue'
+        )
+      ).toEqual(
+        expect.objectContaining({
+          code: '<script setup vapor lang="ts">const value = 1</script>',
+        })
+      )
+    }
+  )
+
+  test('uses the manifest default language for implicit scripts', () => {
+    const inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-vapor-script-'))
+    fs.writeFileSync(
+      path.join(inputDir, 'manifest.json'),
+      JSON.stringify({
+        'uni-app-x': { 'vapor-default-script-lang': 'js' },
+      })
+    )
+    process.env.UNI_INPUT_DIR = inputDir
+    process.env.UNI_APP_X_DOM2 = 'true'
+
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+    expect(
+      transform.call(
+        {} as any,
+        '<script setup>const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual(
+      expect.objectContaining({
+        code: '<script setup vapor lang="js">const value = 1</script>',
+        meta: {
+          uniAppXScript: {
+            hasImplicitLang: true,
+            defaultLang: 'js',
+          },
+        },
+      })
+    )
+    fs.rmSync(inputDir, { recursive: true, force: true })
   })
 })

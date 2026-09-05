@@ -7,7 +7,12 @@ import {
 } from '@vue/compiler-core'
 import { parse } from '@vue/compiler-dom'
 import { isVueSfcFile } from '../../../vue'
-import { isUniAppXStandardScriptSupported } from '../../../x'
+import { getUniAppXVaporScriptLang } from '../../../json'
+import {
+  isUniAppX,
+  isUniAppXStandardScriptSupported,
+  isUniAppXVapor,
+} from '../../../x'
 
 const SCRIPT_OPEN_TAG_RE = /<script([^>]*)>/gi
 const SCRIPT_LANG_RE =
@@ -62,6 +67,14 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const standardScriptSupported = isUniAppXStandardScriptSupported()
+  const platform = process.env.UNI_UTS_PLATFORM || process.env.UNI_PLATFORM
+  const vaporScriptPlatform =
+    isUniAppXVapor() ||
+    (isUniAppX() &&
+      (platform === 'web' || platform?.startsWith('mp-') === true))
+  const defaultScriptLang = vaporScriptPlatform
+    ? getUniAppXVaporScriptLang(process.env.UNI_INPUT_DIR)
+    : 'uts'
   return {
     name: 'uni:uts-uvue',
     enforce: 'pre',
@@ -137,10 +150,10 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
               changed = true
             }
           } else {
-            // 未声明 lang 时保持现有 UTS 默认行为，并将 vapor 放在 lang 前。
+            // 未声明 lang 时使用 Vapor 脚本默认语言，并将 vapor 放在 lang 前。
             transformed.appendLeft(
               script.end - 1,
-              `${addVapor ? ' vapor' : ''} lang="uts"`
+              `${addVapor ? ' vapor' : ''} lang="${defaultScriptLang}"`
             )
             changed = true
             // fixed by uts 该标记必须在改写 script 标签前记录，避免丢失原始状态。
@@ -189,7 +202,7 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
           meta: {
             uniAppXScript: {
               hasImplicitLang,
-              defaultLang: 'uts',
+              defaultLang: defaultScriptLang,
             },
           },
         }
