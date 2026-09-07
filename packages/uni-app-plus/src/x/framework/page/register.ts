@@ -88,13 +88,10 @@ export function parsePageStyle(
     'navigationBarTextStyle',
     'navigationStyle',
   ]
+  const theme = getAppThemeFallbackOS()
 
   // 替换 dark mode 中的变量
-  normalizePageStyles(
-    routeMeta,
-    __uniConfig.themeConfig,
-    getAppThemeFallbackOS()
-  )
+  normalizePageStyles(routeMeta, __uniConfig.themeConfig, theme)
 
   Object.keys(routeMeta).forEach((key) => {
     // 使用黑名单机制兼容后续新增的属性
@@ -102,6 +99,15 @@ export function parsePageStyle(
       style.set(key, (routeMeta as Record<string, any>)[key])
     }
   })
+
+  const pageSelectorBackgroundColor = resolvePageSelectorBackgroundColor(
+    routeMeta,
+    theme
+  )
+  if (pageSelectorBackgroundColor !== undefined) {
+    // page 选择器作用于根节点，首帧背景需要在原生页面创建时直接设置。
+    style.set('backgroundColorContent', pageSelectorBackgroundColor)
+  }
 
   const navigationBar: Record<string, unknown> = {}
   navKeys.forEach((key) => {
@@ -124,6 +130,32 @@ export function parsePageStyle(
   }
 
   return style
+}
+
+function resolvePageSelectorBackgroundColor(
+  routeMeta: UniApp.PageRouteMeta,
+  theme: 'light' | 'dark'
+) {
+  const pageSelectorBackgroundColor = (__uniConfig as any)
+    .pageSelectorBackgroundColor
+  const pageColor =
+    pageSelectorBackgroundColor &&
+    pageSelectorBackgroundColor.pages &&
+    pageSelectorBackgroundColor.pages[routeMeta.route]
+  const globalColor =
+    pageSelectorBackgroundColor && pageSelectorBackgroundColor.global
+  return (
+    resolvePageSelectorBackgroundColorVariant(pageColor, theme) ??
+    resolvePageSelectorBackgroundColorVariant(globalColor, theme)
+  )
+}
+
+function resolvePageSelectorBackgroundColorVariant(
+  value: { light?: string; dark?: string } | undefined,
+  theme: 'light' | 'dark'
+) {
+  if (!value) return undefined
+  return value[theme]
 }
 
 /**
@@ -398,7 +430,10 @@ export function registerDialogPage(
   if (!routePageMeta?.navigationStyle) {
     pageStyle.set('navigationStyle', 'custom')
   }
-  if (!routePageMeta?.backgroundColorContent) {
+  if (
+    !routePageMeta?.backgroundColorContent &&
+    !pageStyle.get('backgroundColorContent')
+  ) {
     pageStyle.set('backgroundColorContent', 'transparent')
   }
   if (typeof pageStyle.get('disableSwipeBack') !== 'boolean') {

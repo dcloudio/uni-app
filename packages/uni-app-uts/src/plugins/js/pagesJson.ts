@@ -18,6 +18,7 @@ import {
 import type { Plugin } from 'vite'
 import { isPages, setGlobalPageOrientation } from '../utils'
 import { isVue } from '../utils'
+import { applyPageSelectorBackgroundColors } from '../dom2/pageBackground'
 
 export function uniAppPagesPlugin(): Plugin {
   const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
@@ -30,6 +31,8 @@ export function uniAppPagesPlugin(): Plugin {
 
   let allPagePaths: string[] = []
   let isFirst = true
+  let pagesJson: UniApp.PagesJson | undefined
+  let manifestJson: Record<string, any> | undefined
   const loggedPagePaths = new Set<string>()
   return {
     name: 'uni:app-pages-json',
@@ -91,7 +94,7 @@ export function uniAppPagesPlugin(): Plugin {
         )
 
         // pages.json
-        const pagesJson = normalizeUniAppXAppPagesJson(code)
+        pagesJson = normalizeUniAppXAppPagesJson(code)
 
         // add themeConfig - can move to uni-x/index.ts
         pagesJson.themeConfig = readThemeJSONFile()
@@ -100,14 +103,15 @@ export function uniAppPagesPlugin(): Plugin {
 
         allPagePaths = pagesJson.pages.map((p) => p.path)
 
+        const currentManifestJson = parseManifestJsonOnce(
+          process.env.UNI_INPUT_DIR
+        )
+        manifestJson = currentManifestJson
         this.emitFile({
           fileName: APP_CONFIG,
           type: 'asset',
           // 生成 app-config.js
-          source: normalizeUniAppXAppConfig(
-            pagesJson,
-            parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-          ),
+          source: normalizeUniAppXAppConfig(pagesJson!, currentManifestJson),
         })
         if (process.env.UNI_PLATFORM === 'app-harmony') {
           this.emitFile({
@@ -129,6 +133,14 @@ export function uniAppPagesPlugin(): Plugin {
           map: { mappings: '' },
         }
       }
+    },
+    generateBundle(_, bundle) {
+      const output = bundle[APP_CONFIG]
+      if (!output || output.type !== 'asset' || !pagesJson || !manifestJson) {
+        return
+      }
+      applyPageSelectorBackgroundColors(pagesJson)
+      output.source = normalizeUniAppXAppConfig(pagesJson, manifestJson)
     },
     buildEnd() {
       isFirst = false

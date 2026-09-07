@@ -2417,12 +2417,17 @@ function parsePageStyle(route) {
     "navigationBar"
   ];
   var navKeys = ["navigationBarTitleText", "navigationBarBackgroundColor", "navigationBarTextStyle", "navigationStyle"];
-  normalizePageStyles(routeMeta, __uniConfig.themeConfig, getAppThemeFallbackOS());
+  var theme = getAppThemeFallbackOS();
+  normalizePageStyles(routeMeta, __uniConfig.themeConfig, theme);
   Object.keys(routeMeta).forEach((key) => {
     if (!routeKeys.includes(key) && !navKeys.includes(key)) {
       style.set(key, routeMeta[key]);
     }
   });
+  var pageSelectorBackgroundColor = resolvePageSelectorBackgroundColor(routeMeta, theme);
+  if (pageSelectorBackgroundColor !== void 0) {
+    style.set("backgroundColorContent", pageSelectorBackgroundColor);
+  }
   var navigationBar = {};
   navKeys.forEach((key) => {
     if (key in routeMeta) {
@@ -2438,6 +2443,18 @@ function parsePageStyle(route) {
     });
   }
   return style;
+}
+function resolvePageSelectorBackgroundColor(routeMeta, theme) {
+  var _resolvePageSelectorB;
+  var pageSelectorBackgroundColor = __uniConfig.pageSelectorBackgroundColor;
+  var pageColor = pageSelectorBackgroundColor && pageSelectorBackgroundColor.pages && pageSelectorBackgroundColor.pages[routeMeta.route];
+  var globalColor = pageSelectorBackgroundColor && pageSelectorBackgroundColor.global;
+  return (_resolvePageSelectorB = resolvePageSelectorBackgroundColorVariant(pageColor, theme)) !== null && _resolvePageSelectorB !== void 0 ? _resolvePageSelectorB : resolvePageSelectorBackgroundColorVariant(globalColor, theme);
+}
+function resolvePageSelectorBackgroundColorVariant(value, theme) {
+  if (!value)
+    return void 0;
+  return value[theme];
 }
 function invokeMountedJobs(proxy2) {
   var {
@@ -2628,7 +2645,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.navigationStyle)) {
     pageStyle.set("navigationStyle", "custom");
   }
-  if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.backgroundColorContent)) {
+  if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.backgroundColorContent) && !pageStyle.get("backgroundColorContent")) {
     pageStyle.set("backgroundColorContent", "transparent");
   }
   if (typeof pageStyle.get("disableSwipeBack") !== "boolean") {

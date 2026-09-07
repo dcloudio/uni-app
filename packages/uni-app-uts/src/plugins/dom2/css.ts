@@ -27,6 +27,11 @@ import {
 } from '@jridgewell/trace-mapping'
 
 import { DOM2_CSS_CACHE_MAP, isVue } from '../utils'
+import {
+  collectPageSelectorBackgroundColor,
+  resetPageSelectorBackgroundColors,
+  restoreCachedPageSelectorBackgroundColor,
+} from './pageBackground'
 
 const CSS_FILE_ID_MAP = new Map<string, string>()
 
@@ -42,6 +47,9 @@ export function uniAppCssPrePlugin(): Plugin {
     // 所以需要在它之前做替换
     enforce: 'pre',
     apply: 'build',
+    buildStart() {
+      resetPageSelectorBackgroundColors()
+    },
     configResolved(config) {
       removePlugins(['vite:css', 'vite:css-post'], config)
       // 强制启用 css source map
@@ -51,6 +59,7 @@ export function uniAppCssPrePlugin(): Plugin {
         platform: process.env.UNI_PLATFORM,
         includeComponentCss: false,
         preserveModules: true,
+        onCssChunkCacheHit: restoreCachedPageSelectorBackgroundColor,
         chunkCssFilename(id: string) {
           // 暂不支持多style标签
           const { filename } = parseVueRequest(id)
@@ -69,11 +78,21 @@ export function uniAppCssPrePlugin(): Plugin {
           cssCode = parseAssets(config, cssCode)
           const output =
             process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code'
-          const { code, bytes, messages, fontFaces } = await parseCss(cssCode, {
+          const {
+            code,
+            bytes,
+            messages,
+            fontFaces,
+            pageSelectorBackgroundColor,
+          } = await parseCss(cssCode, {
             platform: process.env.UNI_UTS_PLATFORM,
             helper: requireUniHelpers(),
             output,
           })
+          collectPageSelectorBackgroundColor(
+            filename,
+            pageSelectorBackgroundColor
+          )
           if (isDom2 && fontFaces?.length) {
             const id = CSS_FILE_ID_MAP.get(filename)
             if (id) {

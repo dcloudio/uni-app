@@ -231,6 +231,28 @@ describe('dialogPage DevTools 打开通知', () => {
     expect(getCurrentPages).not.toHaveBeenCalled()
   })
 
+  test('dialogPage 的空背景配置仍使用默认透明背景', () => {
+    const { dialogPage } = createDialogPages()
+    mockInitRouteOptions.mockReturnValueOnce({
+      meta: {
+        backgroundColorContent: '',
+      },
+    })
+
+    registerDialogPage(
+      {
+        url: '/pages/dialog/dialog',
+        path: '/pages/dialog/dialog',
+        query: {},
+        openType: 'navigateTo',
+      },
+      dialogPage
+    )
+
+    const pageStyle = (createDialogPage.mock.calls as any)[0][3]
+    expect(pageStyle.get('backgroundColorContent')).toBe('transparent')
+  })
+
   test('首页创建后分别迁移用户和系统 dialogPage', () => {
     const dialogPages: UniDialogPage[] = []
     const systemDialogPages: UniDialogPage[] = []
