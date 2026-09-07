@@ -2383,21 +2383,5 @@
     "components": [],
     "easycom": [],
     "customElements": []
-  },
-  "uni-zstd-decompress": {
-    "uni": {
-      "zstdDecompress": {
-        "name": "decompressFile",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": false
-        }
-      }
-    },
-    "components": [],
-    "easycom": [],
-    "customElements": []
   }
 }

@@ -2470,8 +2470,8 @@
         "name": "decompressFile",
         "app": {
           "js": false,
-          "kotlin": true,
-          "swift": true,
+          "kotlin": "dom2",
+          "swift": "dom2",
           "arkts": false
         }
       }
