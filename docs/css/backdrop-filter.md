@@ -318,3 +318,7 @@ backdrop-filter: none | <filter-function-list>;
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/backdrop-filter)
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.backdrop-filter)
+
+
+## tips
+毛玻璃并非iOS液态玻璃，iOS液态玻璃另见[文档](../component/glass-effect-view.md)

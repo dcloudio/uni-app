@@ -497,7 +497,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
     1. tabbar页面刚开始只载入第一个子tab组件，其他tab组件是在点击相应的选项卡时v-if设为true来创建
     2. 一个子tab一旦被v-if加载后，不要再v-if设为false去掉，也不通过v-show控制，而是通过css的visibility来控制显示和隐藏。这样可以保留每个子tab的状态，比如滚动位置、输入框内容。切换tab也会更快速。
 
-- glassEffect（液体玻璃效果）
+- tabbar的glassEffect（液态玻璃效果）
 	- 启用 glassEffect 后，iOS 所有支持版本均使用系统 UITabBar，iOS26 及以上 backgroundColor、borderStyle、color 和 height 属性将无效，玻璃材质的具体表现由系统版本决定。
 	- 启用 glassEffect 后，tabbar 以悬浮方式覆盖在页面内容上方。页面不再以 tabbar 顶部作为底部边界，而是延伸到屏幕底部。iOS 26 以下降级为毛玻璃 tabbar 时，页面布局行为保持一致，对应变化如下：
         - 页面排版高度包含 TabBar 覆盖区域。
@@ -508,6 +508,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 		- CSS 变量 env(safe-area-inset-bottom) 和 --uni-safe-area-inset-bottom 与 UniPage.safeAreaInsets.bottom 保持一致。
 		- 显示或隐藏悬浮 TabBar 不改变页面高度，因此不会仅因 TabBar 显隐触发页面尺寸变化。
 		- 隐藏 TabBar 后，页面底部安全区恢复为系统原始安全区。
+	- 液态玻璃（Liquid Glass）是iOS26起提供的专有技术，如果开发者想在其他平台也使用悬浮毛玻璃tabbar，可以条件编译，在非iOS平台下使用 css 的 backdrop-filter。uni-ui x 中的 [uni-tab-bar](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-tab.html) 的已提供毛玻璃示例。使用毛玻璃tabbar时，页面统一通顶，tabbar悬浮在安全区上方。但注意自定义tabbar的选项卡是组件而不是页面。
 
 #### PagesOptionsTabbarList 配置项列表 @pagesoptionstabbarlist
 

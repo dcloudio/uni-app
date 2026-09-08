@@ -6,6 +6,10 @@
 
  玻璃效果视图容器。iOS 26 及以上使用系统液态玻璃效果，iOS 26 以下降级为系统毛玻璃效果。
 
+本组件适合在iOS26以上制作顶部的左上返回箭头或右上悬浮按钮。
+液态玻璃的tabbar，一般不使用本组件，而是在[pages.json](../collocation/pagesjson.md#pages-tabbar)中配置tabbar的glassEffect属性。
+如果使用本组件实现tabbar，自定义性会强于pages.json的tabbar，但无法实现iOS UITabBar左右滑动item的动效。
+
 
 
 
@@ -16,7 +20,7 @@
 
 
 - iOS26以下：组件降级为系统毛玻璃效果，"regular" 映射为系统标准毛玻璃材质，"clear" 映射为更轻、更透明的毛玻璃材质，interactive、tint-color 属性将不生效。
-- 液态玻璃是iOS26特有效果。它和毛玻璃效果不同。如需其他平台上使用毛玻璃效果，应使用css的[backdrop-filter](../css/backdrop-filter.md)
+- 液态玻璃（Liquid Glass）是iOS26特有效果。它和毛玻璃在显示效果、触摸效果上并不一样。如需其他平台上使用毛玻璃效果，应使用css的[backdrop-filter](../css/backdrop-filter.md)
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
