@@ -39,7 +39,7 @@ HBuilderX/uni-app x，会跟踪vue版本的升级，版本映射表如下
 
 注意html中，根节点是`<html>`，`<script>`和`<style>`是子节点。但在uvue中，这3个节点都是一级节点。
 
-vue的script分组合式和选项式，下面先提供1个基于组合式的数据绑定和修改的示例，点击按钮，修改按钮的文字。
+vue的script分组合式和选项式。选项式属于比较老的技术，在新的蒸汽模式下已经不再被支持。下面先提供1个基于组合式的数据绑定和修改的示例，点击按钮，修改按钮的文字。
 
 ```vue
 <template>
@@ -129,7 +129,16 @@ uvue中只能有一个script标签。
 
 script标签的属性如下：
 - lang
-lang 仅支持uts，不管script的lang属性写成什么，都按uts编译。注意在iOS的js引擎驱动的uvue页面里，uts会被编译为js。
+目前不推荐设置此项。
+
+在VDOM模式，lang只能使用uts，Android平台按uts2kt执行。其他平台按uts2js执行。
+
+在蒸汽模式，在HBuilderX 5.27以前，仅支持uts，按uts2js执行，强行设置ts/js会触发bug。从5.27+，lang可以设置ts和js。
+
+设置js、ts、uts，会影响编译速度，编译速度逐渐变慢。ts需要执行ts2js编译，uts还需要再追加uts2js编译。
+
+uts2js，为了拉齐uts编译的强类型整体表现，支持UTSJSONObject、把部分js内置API返回值从undefined改为null、type没有擦除而是编译成了class。不使用uts时，将无法再使用UTSJSONObject，type会被擦除，所有API表现均与标准js一致。
+
 - setup
 setup属性声明代表script里的代码为组合式写法，如果没有setup属性则为选项式写法。
 
