@@ -61,7 +61,8 @@ export interface RegisterPageOptions {
 
 // parsePageStyle
 export function parsePageStyle(
-  route: UniApp.UniRoute
+  route: UniApp.UniRoute,
+  includeGlobalPageSelector = true
 ): Map<string, any | null> {
   const style = new Map<string, any | null>()
   const routeMeta = route.meta
@@ -102,7 +103,8 @@ export function parsePageStyle(
 
   const pageSelectorBackgroundColor = resolvePageSelectorBackgroundColor(
     routeMeta,
-    theme
+    theme,
+    includeGlobalPageSelector
   )
   if (pageSelectorBackgroundColor !== undefined) {
     // page 选择器作用于根节点，优先级高于 pages.json 的 backgroundColorContent，
@@ -135,7 +137,8 @@ export function parsePageStyle(
 
 function resolvePageSelectorBackgroundColor(
   routeMeta: UniApp.PageRouteMeta,
-  theme: 'light' | 'dark'
+  theme: 'light' | 'dark',
+  includeGlobal = true
 ) {
   const pageSelectorBackgroundColor = (__uniConfig as any)
     .pageSelectorBackgroundColor
@@ -147,7 +150,9 @@ function resolvePageSelectorBackgroundColor(
     pageSelectorBackgroundColor && pageSelectorBackgroundColor.global
   return (
     resolvePageSelectorBackgroundColorVariant(pageColor, theme) ??
-    resolvePageSelectorBackgroundColorVariant(globalColor, theme)
+    (includeGlobal
+      ? resolvePageSelectorBackgroundColorVariant(globalColor, theme)
+      : undefined)
   )
 }
 
@@ -425,15 +430,23 @@ export function registerDialogPage(
 ) {
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
-  const pageStyle = parsePageStyle(routeOptions)
+  const pageStyle = parsePageStyle(routeOptions, false)
+  const pageSelectorBackgroundColor = resolvePageSelectorBackgroundColor(
+    routeOptions.meta,
+    getAppThemeFallbackOS(),
+    false
+  )
 
   const routePageMeta = __uniRoutes.find((route) => route.path === path)?.meta
   if (!routePageMeta?.navigationStyle) {
     pageStyle.set('navigationStyle', 'custom')
   }
-  // 保持 dialogPage 的历史行为：全局 backgroundColorContent 不影响透明兜底，
-  // 只有页面自身配置 backgroundColorContent 时才使用页面配置。
-  if (!routePageMeta?.backgroundColorContent) {
+  // 保持 dialogPage 的历史行为：全局背景配置不影响透明兜底，
+  // 只有页面自身配置或页面级 page 选择器背景时才使用对应配置。
+  if (
+    !routePageMeta?.backgroundColorContent &&
+    pageSelectorBackgroundColor === undefined
+  ) {
     pageStyle.set('backgroundColorContent', 'transparent')
   }
   if (typeof pageStyle.get('disableSwipeBack') !== 'boolean') {

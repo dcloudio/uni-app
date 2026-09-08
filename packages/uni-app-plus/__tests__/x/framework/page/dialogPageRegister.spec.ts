@@ -119,6 +119,7 @@ describe('dialogPage DevTools 打开通知', () => {
     mountPage.mockClear()
     mockInitRouteOptions.mockReset()
     mockInitRouteOptions.mockReturnValue({ meta: {} })
+    delete (testGlobal.__uniConfig as any).pageSelectorBackgroundColor
     isSystemDialogPage.mockReturnValue(false)
     getSystemDialogPages.mockReset()
     getSystemDialogPages.mockReturnValue([])
@@ -277,6 +278,9 @@ describe('dialogPage DevTools 打开通知', () => {
 
   test('dialogPage 使用页面自身 backgroundColorContent 配置', () => {
     const { dialogPage } = createDialogPages()
+    ;(testGlobal.__uniConfig as any).pageSelectorBackgroundColor = {
+      global: { light: '#000000' },
+    }
     testGlobal.__uniRoutes = [
       {
         path: '/pages/dialog/dialog',
@@ -304,6 +308,58 @@ describe('dialogPage DevTools 打开通知', () => {
     const pageStyle = (createDialogPage.mock.calls as any)[0][3]
     expect(pageStyle.get('backgroundColorContent')).toBe('#ffffff')
     testGlobal.__uniRoutes = []
+  })
+
+  test('dialogPage 不使用全局 page 选择器背景', () => {
+    const { dialogPage } = createDialogPages()
+    ;(testGlobal.__uniConfig as any).pageSelectorBackgroundColor = {
+      global: { light: '#000000' },
+    }
+    mockInitRouteOptions.mockReturnValueOnce({
+      meta: {
+        route: 'pages/dialog/dialog',
+      },
+    })
+
+    registerDialogPage(
+      {
+        url: '/pages/dialog/dialog',
+        path: '/pages/dialog/dialog',
+        query: {},
+        openType: 'navigateTo',
+      },
+      dialogPage
+    )
+
+    const pageStyle = (createDialogPage.mock.calls as any)[0][3]
+    expect(pageStyle.get('backgroundColorContent')).toBe('transparent')
+  })
+
+  test('dialogPage 使用页面级 page 选择器背景', () => {
+    const { dialogPage } = createDialogPages()
+    ;(testGlobal.__uniConfig as any).pageSelectorBackgroundColor = {
+      pages: {
+        'pages/dialog/dialog': { light: '#ffffff' },
+      },
+    }
+    mockInitRouteOptions.mockReturnValueOnce({
+      meta: {
+        route: 'pages/dialog/dialog',
+      },
+    })
+
+    registerDialogPage(
+      {
+        url: '/pages/dialog/dialog',
+        path: '/pages/dialog/dialog',
+        query: {},
+        openType: 'navigateTo',
+      },
+      dialogPage
+    )
+
+    const pageStyle = (createDialogPage.mock.calls as any)[0][3]
+    expect(pageStyle.get('backgroundColorContent')).toBe('#ffffff')
   })
 
   test('首页创建后分别迁移用户和系统 dialogPage', () => {
