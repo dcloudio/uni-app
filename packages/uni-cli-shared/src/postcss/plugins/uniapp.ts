@@ -7,6 +7,8 @@ import {
   defaultRpx2Unit,
   isBuiltInComponent,
 } from '@dcloudio/uni-shared'
+import { BG_PROPS } from './constants'
+import { adaptAlipayPageBackground } from './alipayPageBackground'
 
 export interface UniAppCssProcessorOptions {
   unit?: string // 目标单位，默认rem
@@ -15,18 +17,6 @@ export interface UniAppCssProcessorOptions {
 }
 
 const defaultUniAppCssProcessorOptions = extend({}, defaultRpx2Unit)
-
-const BG_PROPS = [
-  'background',
-  'background-clip',
-  'background-color',
-  'background-image',
-  'background-origin',
-  'background-position',
-  'background-repeat',
-  'background-size',
-  'background-attachment',
-]
 
 function transform(
   selector: selectorParser.Node,
@@ -147,6 +137,7 @@ const uniapp = (opts?: UniAppCssProcessorOptions) => {
           root.walkDecls(walkDecls(rpx2unit))
           const rewriteTag = transforms[platform]
           filterPrefersColorScheme(root)
+          adaptAlipayPageBackground(root)
           if (rewriteTag) {
             root.walkRules(
               walkRules({
