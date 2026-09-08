@@ -1,4 +1,4 @@
-import type { Declaration, Root, Rule } from 'postcss'
+import type { Declaration, Node, Root, Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import { BG_PROPS } from './constants'
 
@@ -8,10 +8,17 @@ function isCssVarDeclaration(decl: Declaration) {
   return decl.prop.startsWith('--')
 }
 
-function shouldMirrorCssVars(nodes: Declaration[]) {
-  return nodes.some(
-    (node) => BG_PROPS.includes(node.prop) && node.value.includes('var(')
-  )
+function isDeclaration(node: Node): node is Declaration {
+  return node.type === 'decl'
+}
+
+function shouldMirrorCssVars(nodes: Node[]) {
+  return nodes.some((node) => {
+    if (!isDeclaration(node)) {
+      return false
+    }
+    return BG_PROPS.includes(node.prop) && node.value.includes('var(')
+  })
 }
 
 function isPageRule(rule: Rule) {
@@ -35,7 +42,7 @@ export function createBackgroundRule(origRule: Rule, selector: string) {
   const bgDecls: Declaration[] = []
   const nodes = origRule.nodes ? [...origRule.nodes] : []
   let hasBackgroundDecl = false
-  const mirrorCssVars = shouldMirrorCssVars(nodes as Declaration[])
+  const mirrorCssVars = shouldMirrorCssVars(nodes)
 
   for (const node of nodes) {
     if (node.type !== 'decl') {
