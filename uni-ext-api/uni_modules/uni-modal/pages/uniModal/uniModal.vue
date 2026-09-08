@@ -574,8 +574,8 @@
 	}
 
 	.uni-modal-dialog__action {
+		width: 50%;
 		justify-content: center;
-		flex-grow: 1;
 	}
 	
 	.uni-modal-dialog__action--cancel{
@@ -603,6 +603,8 @@
 		/* #ifndef VUE3-VAPOR */
 		lines: 1;
 		/* #endif */
+		overflow: hidden;
+		text-overflow: ellipsis;
 		white-space: nowrap;
 		font-weight: 600;
 	}
