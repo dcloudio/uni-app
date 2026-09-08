@@ -3557,12 +3557,6 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
       return reject("cancel");
     }
   }
-  try {
-    uni.hideToast();
-    uni.hideLoading();
-  } catch (error) {
-    console.warn(error);
-  }
   if (getPage$BasePage(page).meta.isQuit) {
     invokeHook(getApp().vm, ON_LAST_PAGE_BACK_PRESS);
   } else {
