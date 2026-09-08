@@ -2647,7 +2647,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.navigationStyle)) {
     pageStyle.set("navigationStyle", "custom");
   }
-  if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.backgroundColorContent) && !pageStyle.get("backgroundColorContent")) {
+  if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.backgroundColorContent)) {
     pageStyle.set("backgroundColorContent", "transparent");
   }
   if (typeof pageStyle.get("disableSwipeBack") !== "boolean") {
