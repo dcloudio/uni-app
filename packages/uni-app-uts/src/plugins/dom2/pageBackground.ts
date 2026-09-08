@@ -85,6 +85,8 @@ export function applyPageSelectorBackgroundColors(pagesJson: UniApp.PagesJson) {
   }
   if (config.global || config.pages) {
     ;(pagesJson as any)[PAGE_SELECTOR_BACKGROUND_COLOR] = config
+  } else {
+    delete (pagesJson as any)[PAGE_SELECTOR_BACKGROUND_COLOR]
   }
 }
 function getTarget(filename: string): 'global' | string | undefined {

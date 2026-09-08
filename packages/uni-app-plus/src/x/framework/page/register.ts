@@ -105,7 +105,8 @@ export function parsePageStyle(
     theme
   )
   if (pageSelectorBackgroundColor !== undefined) {
-    // page 选择器作用于根节点，首帧背景需要在原生页面创建时直接设置。
+    // page 选择器作用于根节点，优先级高于 pages.json 的 backgroundColorContent，
+    // 首帧背景需要在原生页面创建时直接设置。
     style.set('backgroundColorContent', pageSelectorBackgroundColor)
   }
 

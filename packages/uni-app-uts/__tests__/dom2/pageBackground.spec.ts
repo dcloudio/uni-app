@@ -89,6 +89,9 @@ describe('dom2 page selector background colors', () => {
     } as UniApp.PagesJson
 
     collectPageSelectorBackgroundColor(pageFilename, { light: '#ffffff' })
+    applyPageSelectorBackgroundColors(pagesJson)
+    expect(pagesJson).toHaveProperty('pageSelectorBackgroundColor')
+
     resetPageSelectorBackgroundColors()
     collectPageSelectorBackgroundColor(pageFilename, undefined)
     applyPageSelectorBackgroundColors(pagesJson)

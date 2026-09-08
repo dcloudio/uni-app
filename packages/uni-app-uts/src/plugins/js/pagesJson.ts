@@ -134,13 +134,18 @@ export function uniAppPagesPlugin(): Plugin {
         }
       }
     },
-    generateBundle(_, bundle) {
-      const output = bundle[APP_CONFIG]
-      if (!output || output.type !== 'asset' || !pagesJson || !manifestJson) {
-        return
-      }
-      applyPageSelectorBackgroundColors(pagesJson)
-      output.source = normalizeUniAppXAppConfig(pagesJson, manifestJson)
+    generateBundle: {
+      // page 选择器样式优先级高于 pages.json 的 backgroundColorContent，
+      // 必须在 CSS 插件采集完成后再回写 app-config。
+      order: 'post',
+      handler(_, bundle) {
+        const output = bundle[APP_CONFIG]
+        if (!output || output.type !== 'asset' || !pagesJson || !manifestJson) {
+          return
+        }
+        applyPageSelectorBackgroundColors(pagesJson)
+        output.source = normalizeUniAppXAppConfig(pagesJson, manifestJson)
+      },
     },
     buildEnd() {
       isFirst = false

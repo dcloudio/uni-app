@@ -112,7 +112,8 @@ describe('uni app pages json compile progress', () => {
       (asset) => asset.fileName === APP_CONFIG
     )
     expect(appConfig).toBeDefined()
-    plugin.generateBundle.call(context, {}, { [APP_CONFIG]: appConfig })
+    expect(plugin.generateBundle.order).toBe('post')
+    plugin.generateBundle.handler.call(context, {}, { [APP_CONFIG]: appConfig })
 
     expect(appConfig.source).toContain(
       '"pageSelectorBackgroundColor":{"pages":{"pages/index/index":{"light":"#f8f8f8"}}}'
