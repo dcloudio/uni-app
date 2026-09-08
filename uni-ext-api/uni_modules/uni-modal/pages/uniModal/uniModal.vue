@@ -576,6 +576,7 @@
 	.uni-modal-dialog__action {
 		width: 50%;
 		justify-content: center;
+		flex-grow: 1;
 	}
 	
 	.uni-modal-dialog__action--cancel{
