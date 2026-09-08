@@ -431,10 +431,9 @@ export function registerDialogPage(
   if (!routePageMeta?.navigationStyle) {
     pageStyle.set('navigationStyle', 'custom')
   }
-  if (
-    !routePageMeta?.backgroundColorContent &&
-    !pageStyle.get('backgroundColorContent')
-  ) {
+  // 保持 dialogPage 的历史行为：全局 backgroundColorContent 不影响透明兜底，
+  // 只有页面自身配置 backgroundColorContent 时才使用页面配置。
+  if (!routePageMeta?.backgroundColorContent) {
     pageStyle.set('backgroundColorContent', 'transparent')
   }
   if (typeof pageStyle.get('disableSwipeBack') !== 'boolean') {
