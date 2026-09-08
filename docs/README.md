@@ -239,6 +239,7 @@ uni-app x 引擎仅在引擎崩溃时有数据收集以用于产品改进，且�
 
 uni-app x 在2026年会陆续完成
 - app热更新
+- web平台蒸汽模式
 - 支付宝小程序、抖音小程序
 
 其他计划，将根据社区的反馈意见来排优先级。
@@ -379,18 +380,20 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
 
 - 老 uni-app 还维护吗？\
   
-	官方已于2024年停止nvue和5+的维护。
+	官方已于2024年停止nvue和5+的维护。并将于2027年初停止uni-app的App平台的维护。
 	
-	因为 uni-app x蒸汽模式 已经兼容js/ts写法，开发者可以方便的将 老uni-app 升级到 uni-app x蒸汽模式。所以 老uni-app、尤其是 老uni-app 的app平台的维护意义也不大了。
+	因为 uni-app x蒸汽模式 已经兼容js/ts写法，开发者可以方便的将 老uni-app 升级到 uni-app x蒸汽模式。所以 老uni-app 的app平台的维护意义也不大了。
 	
 	不再维护不是下线，而是没有重大问题的话（如新手机不兼容）不会再更新了。
 
-  如果只开发小程序和Web，那使用 uni-app 或 uni-app x 哪个都差不多。如果开发App，那么推荐改用 uni-app x。另外未来 uni-app x 的web平台也会升级蒸汽模式，而 老uni-app不会升级。所以后续web平台也推荐使用 uni-app x。
+  如果只开发小程序，那使用 uni-app 或 uni-app x 哪个都差不多。如果开发App，那么推荐改用 uni-app x。另外未来 uni-app x 的web平台也会升级蒸汽模式，而 老uni-app不会升级。所以后续web平台也推荐使用 uni-app x。
 
   不管 uni-app 还是 uni-app x，都支持uts插件生态，原生扩展的api插件是复用的。但原生组件插件在老uni-app 和 uni-app x 蒸汽模式之间不能复用。
 
   包括官方的API也是复用的，比如电量API [uni.getbatteryinfo](https://ext.dcloud.net.cn/plugin?id=9295)，它们使用uts开发，在 uni-app 和 uni-app x 上，调用的都是一套代码。
 
+
+本章节是概述性FAQ。蒸汽模式性能相关的FAQ，另见[蒸汽模式](./app-vapor.md#faq)
 
 ::: tip 加群交流
 欢迎加入 uni-app x 专用群交流

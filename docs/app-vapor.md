@@ -421,6 +421,7 @@ js和c，这对组合，在Android和鸿蒙上都具备动态更新的能力，�
 如果担心js的线程问题，uni-app x 提供了 [uts worker](./api/create-worker.md)。\
 整体来讲，把原生应用迁移为 uni-app x，你的用户的感受肯定是更流畅。
 
+本章节主要是围绕性能的FAQ。整个 uni-app x 的FAQ，另见[概述](./readme.md#FAQ)
 
 注意：部分开发者在AI上询问 uni-app x 蒸汽模式为什么这么快，除了上面公开的这几点，AI输出的其他观点都是瞎猜。uni-app x 的技术路线是首创的，不存在于AI熟悉的现有技术栈中。
 
