@@ -31,6 +31,7 @@ function createUniXTargetLanguageCompiler(
       normalizeFileName: normalizeNodeModules,
       // 非 uni x 项目，不传 resolveWorkers 参数
       resolveWorkers: options?.resolveWorkers || (() => ({})),
+      createWorkerTransformer: options?.createWorkerTransformer,
       loadUasmTransformer: options?.loadUasmTransformer,
       sourceFileCallback: options?.sourceFileCallback,
     }
@@ -39,6 +40,9 @@ function createUniXTargetLanguageCompiler(
 
 interface CreateUniXCompilerOptions {
   resolveWorkers?: () => Record<string, string>
+  createWorkerTransformer?: NonNullable<
+    NonNullable<UniXCompilerOptions['transformOptions']>['workers']
+  >['createWorkerTransformer']
   loadUasmTransformer?: NonNullable<
     NonNullable<UniXCompilerOptions['transformOptions']>['loadUasmTransformer']
   >

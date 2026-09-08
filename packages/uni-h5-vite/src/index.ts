@@ -6,11 +6,13 @@ import {
   getWorkers,
   initUasmWebTransformOptions,
   initUts2jsExtApiOptions,
+  initWorkerTransformOptions,
   isAppVue,
   isEnableConsole,
   isNormalCompileTarget,
   isVueSfcFile,
   resolveUTSCompiler,
+  resolveWorkersRootDir,
   uniAppXStandardScriptPlugin,
   uniCssScopedPlugin,
   uniDecryptUniModulesPlugin,
@@ -67,7 +69,10 @@ export default () => {
           uniUasmPlugin(),
           uniUTSUVueJavaScriptPlugin(),
           // H5 的标准 JS/TS 不走 uts2js，脚本宏和 UASM 必须在标准 plugin-vue 前完成转换。
-          uniAppXStandardScriptPlugin({ uasm }),
+          uniAppXStandardScriptPlugin({
+            uasm,
+            workers: initWorkerTransformOptions(),
+          }),
           resolveUTSCompiler().uts2js({
             platform: 'web',
             excludeStandardTypeScript: true,
@@ -90,6 +95,8 @@ export default () => {
             uasm,
             workers: {
               extname: '.js',
+              rewriteRootDir: resolveWorkersRootDir(),
+              createWorkerTransformer: uniCliShared.createWorkerTransformer,
               resolve: () => {
                 return getWorkers()
               },

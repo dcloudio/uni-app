@@ -9,6 +9,7 @@ import {
   buildNonTreeShakingUniModules,
   buildUniExtApis,
   createErrorWithBlockFlag,
+  createWorkerTransformer,
   emptyDir,
   enableSourceMap,
   getCssDepMap,
@@ -102,6 +103,7 @@ export function uniAppPlugin(): UniVitePlugin {
     process.env.UNI_APP_X_TSC === 'true'
       ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
           resolveWorkers,
+          createWorkerTransformer,
           loadUasmTransformer: initUasmTransformerCreator('app-android'),
           sourceFileCallback: initSourceFileCallback(),
         })

@@ -35,6 +35,7 @@ import {
   resolveEncryptUniModule,
 } from '../../../uni_modules.cloud'
 import { isUniAppXJsEngine } from '../../../x'
+import { createWorkerTransformer } from '../../../workers'
 import {
   camelize,
   capitalize,
@@ -377,6 +378,7 @@ export function uniUTSAppUniModulesPlugin(
       process.env.UNI_UTS_PLATFORM === 'app')
       ? createUniXKotlinCompilerOnce({
           resolveWorkers,
+          createWorkerTransformer,
           loadUasmTransformer: initUasmTransformerCreator('app-android'),
           sourceFileCallback: initSourceFileCallback(),
         })
@@ -387,13 +389,17 @@ export function uniUTSAppUniModulesPlugin(
       process.env.UNI_UTS_PLATFORM === 'app')
       ? createUniXSwiftCompilerOnce({
           resolveWorkers,
+          createWorkerTransformer,
           loadUasmTransformer: initUasmTransformerCreator('app-ios'),
         })
       : null
   const uniXArkTSCompiler =
     process.env.UNI_APP_X_TSC === 'true' &&
     process.env.UNI_UTS_PLATFORM === 'app-harmony'
-      ? createUniXArkTSCompilerOnce({ resolveWorkers })
+      ? createUniXArkTSCompilerOnce({
+          resolveWorkers,
+          createWorkerTransformer,
+        })
       : null
 
   if (uniXKotlinCompiler) {

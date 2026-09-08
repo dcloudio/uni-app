@@ -22,6 +22,11 @@ type TargetLanguage = `${UniXCompilerOptions['targetLanguage']}`
 type LoadUasmTransformer = NonNullable<
   NonNullable<UniXCompilerOptions['transformOptions']>['loadUasmTransformer']
 >
+type WorkerTransformerCreator = NonNullable<
+  NonNullable<
+    NonNullable<UniXCompilerOptions['transformOptions']>['workers']
+  >['createWorkerTransformer']
+>
 
 const hbxVersion = process.env.HX_Version || ''
 const hxDev = hbxVersion.endsWith('-dev')
@@ -38,6 +43,7 @@ export function createUniXCompiler(
     normalizeFileName: (str: string) => string
     isPureSwift?: boolean
     resolveWorkers: () => Record<string, string>
+    createWorkerTransformer?: WorkerTransformerCreator
     loadUasmTransformer?: LoadUasmTransformer
     sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
   }
@@ -106,15 +112,18 @@ export function createUniXCompiler(
       // TODO 调整参数传递方式
       isPureSwift: options.isPureSwift,
       disableUTSBooleanConversion: process.env.UNI_COMPILE_TARGET === 'ext-api',
-      workers: {
-        resolve: options.resolveWorkers,
-        extname:
-          targetLanguage === 'ArkTS'
-            ? '.ets'
-            : targetLanguage === 'JavaScript'
-            ? '.js'
-            : undefined,
-      },
+      workers: options.createWorkerTransformer
+        ? {
+            resolve: options.resolveWorkers,
+            createWorkerTransformer: options.createWorkerTransformer,
+            extname:
+              targetLanguage === 'ArkTS'
+                ? '.ets'
+                : targetLanguage === 'JavaScript'
+                ? '.js'
+                : undefined,
+          }
+        : undefined,
       loadUasmTransformer: options.loadUasmTransformer,
     },
     // dom2: process.env.UNI_APP_X_DOM2 === 'true',

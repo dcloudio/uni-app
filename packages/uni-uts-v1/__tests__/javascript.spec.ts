@@ -85,4 +85,26 @@ describe('uts2js standard TypeScript routing', () => {
     expect(options.dom2).toBeUndefined()
     expect(options.excludeStandardTypeScript).toBeUndefined()
   })
+
+  test('passes the shared worker transformer to the runtime compiler', () => {
+    const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])
+    globalThis.uts2js = runtimeUts2js
+    const createWorkerTransformer = jest.fn()
+
+    uts2js({
+      platform: 'mp-weixin',
+      inputDir: '/project/src',
+      version: 'test',
+      modules: {},
+      scriptMacros,
+      workers: {
+        resolve: () => ({}),
+        createWorkerTransformer,
+      },
+    })
+
+    expect(runtimeUts2js.mock.calls[0][0].workers.createWorkerTransformer).toBe(
+      createWorkerTransformer
+    )
+  })
 })

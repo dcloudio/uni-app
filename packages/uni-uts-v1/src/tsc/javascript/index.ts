@@ -2,6 +2,11 @@ import { extend, isFunction } from '@vue/shared'
 import type { RPT2Options } from 'rollup-plugin-typescript2'
 import type tsTypes from 'typescript'
 import { createBasicUtsOptions } from '../utils/options'
+import type { UniXCompilerOptions } from '../../../lib/uni-x/dist/compiler'
+
+type WorkerTransformerCreator = NonNullable<
+  NonNullable<UniXCompilerOptions['transformOptions']>['workers']
+>['createWorkerTransformer']
 
 type ResolvedUasmLoad =
   | string
@@ -25,6 +30,7 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
     resolve: () => Record<string, string>
     extname?: string
     rewriteRootDir?: string
+    createWorkerTransformer: WorkerTransformerCreator
   }
   uasm?: {
     targetArchs?: string[]

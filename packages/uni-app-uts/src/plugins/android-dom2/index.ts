@@ -100,6 +100,7 @@ export function init() {
           uniCliShared.createUniAppXScriptMacrosTransformer,
       },
       workers: {
+        createWorkerTransformer: uniCliShared.createWorkerTransformer,
         resolve: () => {
           return getWorkers()
         },

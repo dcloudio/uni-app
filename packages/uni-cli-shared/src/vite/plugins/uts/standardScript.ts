@@ -13,11 +13,13 @@ import {
   hasUniAppXScriptMacros,
 } from '../../../uts/scriptMacros'
 import type { UasmTransformOptions } from '../../../uasm'
+import type { WorkerTransformPluginOptions } from '../../../workers'
 
 const JAVASCRIPT_TYPESCRIPT_RE = /\.[jt]s$/i
 const TYPESCRIPT_DECLARATION_RE = /\.d\.ts$/i
 const STANDARD_SFC_RE = /\.u?vue$/i
 const LOAD_UASM = 'loadUasm'
+const CREATE_WORKER = 'createWorker'
 
 type TypeScriptCompiler = typeof import('typescript')
 type StandardScriptRequest = 'module' | 'sfc'
@@ -30,6 +32,7 @@ interface SourceEdit {
 
 export interface UniAppXStandardScriptPluginOptions {
   uasm?: UasmTransformOptions
+  workers?: WorkerTransformPluginOptions
 }
 
 function cleanUrl(id: string) {
@@ -84,7 +87,8 @@ function collectStandardScriptEdits(
 ) {
   const transformScriptMacros = hasUniAppXScriptMacros(code)
   const transformUasm = !!options.uasm && code.includes(LOAD_UASM)
-  if (!transformScriptMacros && !transformUasm) {
+  const transformWorker = !!options.workers && code.includes(CREATE_WORKER)
+  if (!transformScriptMacros && !transformUasm && !transformWorker) {
     return
   }
 
@@ -122,6 +126,18 @@ function collectStandardScriptEdits(
       })
     )
   }
+  if (transformWorker) {
+    transformers.push(
+      options.workers!.createWorkerTransformer({
+        ...options.workers!,
+        typescript,
+        onSourceEdit,
+        reportDiagnostic(_context, diagnostic) {
+          throw createTransformError(typescript, diagnostic, id, offset)
+        },
+      })
+    )
+  }
 
   const transformed = typescript.transform(sourceFile, transformers)
   transformed.dispose()
@@ -135,7 +151,8 @@ export function transformUniAppXStandardScript(
 ): { code: string; map: ExistingRawSourceMap } | undefined {
   const transformScriptMacros = hasUniAppXScriptMacros(code)
   const transformUasm = !!options.uasm && code.includes(LOAD_UASM)
-  if (!transformScriptMacros && !transformUasm) {
+  const transformWorker = !!options.workers && code.includes(CREATE_WORKER)
+  if (!transformScriptMacros && !transformUasm && !transformWorker) {
     return
   }
 

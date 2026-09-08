@@ -5,6 +5,7 @@ import {
   transformUniAppXStandardScript,
 } from '../src/vite/plugins/uts/standardScript'
 import { createLoadUasmTransformer } from '../src/uasm'
+import { createWorkerTransformer } from '../src/workers'
 
 const uasm = {
   resolve(modulePath: string) {
@@ -16,6 +17,16 @@ const uasm = {
       : undefined
   },
   createLoadUasmTransformer,
+}
+
+const workers = {
+  extname: '.js',
+  rewriteRootDir: 'workers',
+  resolve: () => ({
+    'workers/helloWorkerTask.uts': 'HelloWorkerTask',
+    'uni_modules/test-worker/workers/task.uts': 'Task',
+  }),
+  createWorkerTransformer,
 }
 
 describe('uni-app x standard script', () => {
@@ -44,6 +55,103 @@ describe('uni-app x standard script', () => {
       'uni.loadUasm<Bridge>({ id: "test-uasm", loader: () => import("@/uni_modules/test-uasm/uasm/web/test-uasm.js") })'
     )
     expect(result.map.sourcesContent).toEqual([source])
+  })
+
+  test('transforms createWorker paths in standard TypeScript', () => {
+    const source = `uni.createWorker('workers/helloWorkerTask.uts')`
+    const result = transformUniAppXStandardScript(source, '/src/index.ts', ts, {
+      workers,
+    })!
+
+    expect(result.code).toContain(
+      `uni.createWorker("workers/helloWorkerTask.js")`
+    )
+  })
+
+  test('rewrites plugin worker paths to the configured worker root', () => {
+    const source = `uni.createWorker('uni_modules/test-worker/workers/task.uts')`
+    const result = transformUniAppXStandardScript(source, '/src/index.ts', ts, {
+      workers,
+    })!
+
+    expect(result.code).toContain(
+      `uni.createWorker("/workers/uni_modules/test-worker/workers/task.js")`
+    )
+  })
+
+  test('reports invalid createWorker paths', () => {
+    const source = `uni.createWorker(workerPath)`
+    expect(() =>
+      transformUniAppXStandardScript(source, '/src/index.ts', ts, { workers })
+    ).toThrow('workerPath 参数必须是字符串字面量')
+  })
+
+  test('keeps worker paths unchanged when no output extension is configured', () => {
+    const source = `uni.createWorker('workers/helloWorkerTask.uts')`
+    const result = transformUniAppXStandardScript(source, '/src/index.ts', ts, {
+      workers: { ...workers, extname: undefined },
+    })
+
+    expect(result).toBeUndefined()
+  })
+
+  test.each(['Kotlin', 'Swift'] as const)(
+    'generates the native worker task factory for %s',
+    (targetLanguage) => {
+      const sourceFile = ts.createSourceFile(
+        '/src/index.uts',
+        `uni.createWorker('workers/helloWorkerTask.uts')`,
+        ts.ScriptTarget.Latest,
+        false,
+        ts.ScriptKind.TS
+      )
+      const transformed = ts.transform(sourceFile, [
+        createWorkerTransformer({
+          ...workers,
+          typescript: ts,
+          platform: targetLanguage === 'Kotlin' ? 'app-android' : 'app-ios',
+          targetLanguage,
+          reportDiagnostic(_context, diagnostic) {
+            throw new Error(String(diagnostic.messageText))
+          },
+        }),
+      ])
+      const code = ts.createPrinter().printFile(transformed.transformed[0])
+      transformed.dispose()
+
+      expect(code).toContain(
+        `import { HelloWorkerTask } from "@/workers/helloWorkerTask.uts";`
+      )
+      expect(code).toContain(
+        `uni.createWorker((): WorkerTaskImpl => new HelloWorkerTask());`
+      )
+    }
+  )
+
+  test('rewrites worker paths for ArkTS', () => {
+    const sourceFile = ts.createSourceFile(
+      '/src/index.uts',
+      `uni.createWorker('workers/helloWorkerTask.uts')`,
+      ts.ScriptTarget.Latest,
+      false,
+      ts.ScriptKind.TS
+    )
+    const transformed = ts.transform(sourceFile, [
+      createWorkerTransformer({
+        ...workers,
+        typescript: ts,
+        platform: 'app-harmony',
+        targetLanguage: 'ArkTS',
+        extname: '.ets',
+        reportDiagnostic(_context, diagnostic) {
+          throw new Error(String(diagnostic.messageText))
+        },
+      }),
+    ])
+    const code = ts.createPrinter().printFile(transformed.transformed[0])
+    transformed.dispose()
+
+    expect(code).toContain(`uni.createWorker("workers/helloWorkerTask.ets");`)
   })
 
   test.each([

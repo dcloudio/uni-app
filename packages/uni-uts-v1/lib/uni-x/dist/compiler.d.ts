@@ -1,7 +1,7 @@
 import { IUTSCompiler } from '@uts/compiler';
 import * as tsTypes from 'typescript';
 import tsTypes__default, { CompilerOptions } from 'typescript';
-import { UTSTransformerFactoryCreator } from '@uts/transforms_base';
+import { UTSTransformerFactoryCreator, WorkerTransformerCreator } from '@uts/transforms_base';
 
 declare function isTypeRelatedTo(ts: typeof tsTypes__default, typeChecker: tsTypes__default.TypeChecker, source: tsTypes__default.Type, target: tsTypes__default.Type): true | undefined;
 
@@ -35,6 +35,7 @@ interface CreateTransformerOptions {
         resolve?: () => Record<string, string>;
         extname?: '.ets' | '.js';
         rewriteRootDir?: string;
+        createWorkerTransformer: WorkerTransformerCreator;
     };
     loadUasmTransformer?: UTSTransformerFactoryCreator;
     disableUTSBooleanConversion?: boolean;

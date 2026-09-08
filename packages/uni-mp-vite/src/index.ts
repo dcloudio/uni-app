@@ -9,6 +9,7 @@ import {
   getWorkers,
   initUasmWebTransformOptions,
   initUts2jsExtApiOptions,
+  initWorkerTransformOptions,
   isEnableConsole,
   isInHBuilderX,
   isNormalCompileTarget,
@@ -87,7 +88,10 @@ export default (options: UniMiniProgramPluginOptions) => {
           uniUasmPlugin(),
           uniUTSUVueJavaScriptPlugin(),
           // 小程序标准 JS/TS 不走 uts2js，需要独立处理脚本宏和 UASM。
-          uniAppXStandardScriptPlugin({ uasm }),
+          uniAppXStandardScriptPlugin({
+            uasm,
+            workers: initWorkerTransformOptions(),
+          }),
           resolveUTSCompiler().uts2js({
             platform: process.env.UNI_PLATFORM as any,
             excludeStandardTypeScript: true,
@@ -111,6 +115,7 @@ export default (options: UniMiniProgramPluginOptions) => {
             workers: {
               extname: '.js',
               rewriteRootDir: resolveWorkersRootDir(),
+              createWorkerTransformer: uniCliShared.createWorkerTransformer,
               resolve: () => {
                 return getWorkers()
               },
