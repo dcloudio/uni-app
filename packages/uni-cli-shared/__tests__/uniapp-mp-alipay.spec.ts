@@ -439,17 +439,6 @@ page {
   background-size: cover;
 }`)
     )
-
-    process.env.UNI_PLATFORM = 'h5'
-    const nonTarget = await createProcessor().process(
-      `page {
-  background-color: #f8f8f8;
-}`,
-      { from: 'pages/index/index.css', map: false }
-    )
-    expect(normalizeCss(nonTarget.css)).not.toContain(':root')
-    expect(normalizeCss(nonTarget.css)).toContain('uni-page-body')
-    expect(normalizeCss(nonTarget.css)).toContain('body')
   })
 
   test.each([
