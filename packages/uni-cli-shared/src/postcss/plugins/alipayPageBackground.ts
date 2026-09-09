@@ -12,12 +12,21 @@ function isDeclaration(node: Node): node is Declaration {
   return node.type === 'decl'
 }
 
-function shouldMirrorCssVars(nodes: Node[]) {
+function hasCssVarDeclaration(nodes: Node[]) {
   return nodes.some((node) => {
     if (!isDeclaration(node)) {
       return false
     }
-    return BG_PROPS.includes(node.prop) && node.value.includes('var(')
+    return isCssVarDeclaration(node)
+  })
+}
+
+function hasBackgroundDeclaration(nodes: Node[]) {
+  return nodes.some((node) => {
+    if (!isDeclaration(node)) {
+      return false
+    }
+    return BG_PROPS.includes(node.prop)
   })
 }
 
@@ -41,19 +50,7 @@ function isPageRule(rule: Rule) {
 export function createBackgroundRule(origRule: Rule, selector: string) {
   const bgDecls: Declaration[] = []
   const nodes = origRule.nodes ? [...origRule.nodes] : []
-  let hasBackgroundDecl = false
-  const mirrorCssVars = shouldMirrorCssVars(nodes)
-
-  for (const node of nodes) {
-    if (node.type !== 'decl') {
-      continue
-    }
-    if (BG_PROPS.includes(node.prop)) {
-      hasBackgroundDecl = true
-    }
-  }
-
-  if (!hasBackgroundDecl) {
+  if (!hasCssVarDeclaration(nodes) && !hasBackgroundDeclaration(nodes)) {
     return
   }
 
@@ -61,12 +58,12 @@ export function createBackgroundRule(origRule: Rule, selector: string) {
     if (node.type !== 'decl') {
       continue
     }
-    if (BG_PROPS.includes(node.prop)) {
+    if (isCssVarDeclaration(node)) {
       bgDecls.push(node.clone())
       node.remove()
       continue
     }
-    if (mirrorCssVars && isCssVarDeclaration(node)) {
+    if (BG_PROPS.includes(node.prop)) {
       bgDecls.push(node.clone())
       node.remove()
     }
@@ -77,6 +74,9 @@ export function createBackgroundRule(origRule: Rule, selector: string) {
   }
   const { rule } = require('postcss')
   origRule.after(rule({ selector }).append(bgDecls))
+  if (!origRule.nodes?.length) {
+    origRule.remove()
+  }
 }
 
 export function adaptAlipayPageBackground(root: Root) {

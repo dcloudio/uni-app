@@ -28,7 +28,7 @@ describe('uniapp postcss plugin', () => {
   const normalizeCss = (css: string) => css.replace(/\s+/g, ' ').trim()
   const createProcessor = () => postcss([uniappPlugin()])
 
-  test('moves plain background-color from page to body selector', async () => {
+  test('moves plain background-color to body selector', async () => {
     const result = await createProcessor().process(
       `page {
   color: red;
@@ -43,6 +43,21 @@ describe('uniapp postcss plugin', () => {
 }
 :root > :is(body) {
   background-color: #f8f8f8;
+}`)
+    )
+  })
+
+  test('removes page rules when only background declarations are moved', async () => {
+    const result = await createProcessor().process(
+      `page {
+  background-color: #f8f8f8;
+}`,
+      { from: 'pages/index/index.css', map: false }
+    )
+
+    expect(normalizeCss(result.css)).toBe(
+      normalizeCss(`:root > :is(body) {
+  background-color: #f8f8f8
 }`)
     )
   })
@@ -65,7 +80,7 @@ describe('uniapp postcss plugin', () => {
 :root > :is(body) {
   --other-color: #fff;
   --my-color: #f8f8f8;
-        background-color: var(--my-color);
+  background-color: var(--my-color);
 }`)
     )
   })
@@ -86,12 +101,12 @@ describe('uniapp postcss plugin', () => {
 }
 :root > :is(body) {
   --page-bg: #f8f8f8;
-      background-color: var(--page-bg)
+  background-color: var(--page-bg)
 }`)
     )
   })
 
-  test('keeps page rules with comments and css var usage untouched', async () => {
+  test('moves css vars when there is no background declaration', async () => {
     const result = await createProcessor().process(
       `page {
   /* comment */
@@ -104,8 +119,10 @@ describe('uniapp postcss plugin', () => {
     expect(normalizeCss(result.css)).toBe(
       normalizeCss(`page {
   /* comment */
-  --page-bg: #f8f8f8;
   color: var(--page-bg);
+}
+:root > :is(body) {
+  --page-bg: #f8f8f8;
 }`)
     )
   })
@@ -123,10 +140,12 @@ describe('uniapp postcss plugin', () => {
 
     expect(normalizeCss(result.css)).toBe(
       normalizeCss(`page {
-  --other-color: #fff;
-  --my-color: #f8f8f8;
   color: red;
   /* background-color: var(--my-color); */
+}
+:root > :is(body) {
+  --other-color: #fff;
+  --my-color: #f8f8f8
 }`)
     )
   })
@@ -138,7 +157,7 @@ describe('uniapp postcss plugin', () => {
   --text-color: #333333;
   color: var(--text-color);
 
-  /* 微信小程序 backgroundColorContent 不支持 theme.json */
+  /* backgroundColorContent 不支持 theme.json */
   background-color: var(--background-color);
 }`,
       { from: 'pages/index/index.css', map: false }
@@ -147,7 +166,7 @@ describe('uniapp postcss plugin', () => {
     expect(normalizeCss(result.css)).toBe(
       normalizeCss(`page {
   color: var(--text-color);
-  /* 微信小程序 backgroundColorContent 不支持 theme.json */
+  /* backgroundColorContent 不支持 theme.json */
 }
 :root > :is(body) {
   --background-color: #efeff4;
@@ -167,16 +186,14 @@ describe('uniapp postcss plugin', () => {
     )
 
     expect(normalizeCss(result.css)).toBe(
-      normalizeCss(`page.data-v-4e8ee40a {
-}
-:root > :is(body) {
+      normalizeCss(`:root > :is(body) {
   --page-bg: #f8f8f8;
   background: var(--page-bg)
 }`)
     )
   })
 
-  test('keeps page rules without background untouched', async () => {
+  test('moves css vars even without background declarations', async () => {
     const result = await createProcessor().process(
       `page {
   --page-bg: #f8f8f8;
@@ -187,8 +204,10 @@ describe('uniapp postcss plugin', () => {
 
     expect(normalizeCss(result.css)).toBe(
       normalizeCss(`page {
-  --page-bg: #f8f8f8;
   color: red;
+}
+:root > :is(body) {
+  --page-bg: #f8f8f8;
 }`)
     )
   })
@@ -208,7 +227,7 @@ describe('uniapp postcss plugin', () => {
     )
   })
 
-  test('keeps page rules with css var declaration and color var untouched', async () => {
+  test('moves css var declarations used by non-background properties', async () => {
     const result = await createProcessor().process(
       `page {
   --my-color: #fff;
@@ -219,13 +238,15 @@ describe('uniapp postcss plugin', () => {
 
     expect(normalizeCss(result.css)).toBe(
       normalizeCss(`page {
-  --my-color: #fff;
   color: var(--my-color);
+}
+:root > :is(body) {
+  --my-color: #fff;
 }`)
     )
   })
 
-  test('keeps page rules with only css var declarations untouched', async () => {
+  test('removes page rules when all declarations are moved', async () => {
     const result = await createProcessor().process(
       `page {
   --page-padding: 16px;
@@ -234,13 +255,13 @@ describe('uniapp postcss plugin', () => {
     )
 
     expect(normalizeCss(result.css)).toBe(
-      normalizeCss(`page {
-  --page-padding: 16px;
+      normalizeCss(`:root > :is(body) {
+  --page-padding: 16px
 }`)
     )
   })
 
-  test('keeps page rules with background-like css vars untouched', async () => {
+  test('moves background-like css vars', async () => {
     const result = await createProcessor().process(
       `page {
   --background-color: #efeff4;
@@ -249,13 +270,13 @@ describe('uniapp postcss plugin', () => {
     )
 
     expect(normalizeCss(result.css)).toBe(
-      normalizeCss(`page {
-  --background-color: #efeff4;
+      normalizeCss(`:root > :is(body) {
+  --background-color: #efeff4
 }`)
     )
   })
 
-  test('keeps css vars on page for plain background declarations', async () => {
+  test('moves css vars and plain background declarations', async () => {
     const result = await createProcessor().process(
       `page {
   --background-color: #fff;
@@ -267,10 +288,10 @@ describe('uniapp postcss plugin', () => {
 
     expect(normalizeCss(result.css)).toBe(
       normalizeCss(`page {
-  --background-color: #fff;
   color: red;
 }
 :root > :is(body) {
+  --background-color: #fff;
   background-color: #f8f8f4;
 }`)
     )
