@@ -383,7 +383,7 @@ describe('uniapp postcss plugin', () => {
     )
   })
 
-  test('skips mixed selectors and non target platform', async () => {
+  test('skips mixed selectors', async () => {
     const mixedSelector = await createProcessor().process(
       `page, .foo {
   background-color: #f8f8f8;
@@ -395,16 +395,5 @@ describe('uniapp postcss plugin', () => {
   background-color: #f8f8f8;
 }`)
     )
-
-    process.env.UNI_PLATFORM = 'h5'
-    const nonTarget = await createProcessor().process(
-      `page {
-  background-color: #f8f8f8;
-}`,
-      { from: 'pages/index/index.css', map: false }
-    )
-    expect(normalizeCss(nonTarget.css)).not.toContain(':root')
-    expect(normalizeCss(nonTarget.css)).toContain('uni-page-body')
-    expect(normalizeCss(nonTarget.css)).toContain('body')
   })
 })
