@@ -4,8 +4,10 @@ import path from 'path'
 import {
   applyPageSelectorBackgroundColors,
   collectPageSelectorBackgroundColor,
+  collectPageSelectorBackgroundDeclarations,
   resetPageSelectorBackgroundColors,
   restoreCachedPageSelectorBackgroundColor,
+  setPageSelectorBackgroundValueResolver,
 } from '../../src/plugins/dom2/pageBackground'
 
 describe('dom2 page selector background colors', () => {
@@ -23,6 +25,12 @@ describe('dom2 page selector background colors', () => {
       'pages/index/index',
       'pages/about/about',
     ])
+    setPageSelectorBackgroundValueResolver((value, vars) =>
+      value.replace(
+        /var\s*\(\s*(--[\w-]+)\s*\)/gi,
+        (_, name: string) => vars[name] || ''
+      )
+    )
     resetPageSelectorBackgroundColors()
   })
 
@@ -82,6 +90,35 @@ describe('dom2 page selector background colors', () => {
     })
   })
 
+  test('restores raw declarations before resolving cached page variables', () => {
+    const pageFilename = path.join(inputDir, 'pages/about/about.vue')
+    collectPageSelectorBackgroundDeclarations('App.uvue', {
+      base: { vars: { '--page-bg': '#ff0000' } },
+      light: { vars: {} },
+      dark: { vars: {} },
+    })
+    collectPageSelectorBackgroundDeclarations(pageFilename, {
+      base: { vars: {}, backgroundValue: 'var(--page-bg)' },
+      light: { vars: {} },
+      dark: { vars: {} },
+    })
+
+    resetPageSelectorBackgroundColors()
+    restoreCachedPageSelectorBackgroundColor('App.uvue')
+    restoreCachedPageSelectorBackgroundColor(pageFilename)
+
+    const pagesJson = {
+      pages: [{ path: 'pages/about/about' }],
+    } as UniApp.PagesJson
+    applyPageSelectorBackgroundColors(pagesJson)
+
+    expect((pagesJson as any).pageSelectorBackgroundColor).toEqual({
+      pages: {
+        'pages/about/about': { light: '#ff0000', dark: '#ff0000' },
+      },
+    })
+  })
+
   test('removes stale metadata when a changed chunk has no page background', () => {
     const pageFilename = path.join(inputDir, 'pages/index/index.vue')
     const pagesJson = {
@@ -114,6 +151,118 @@ describe('dom2 page selector background colors', () => {
       global: { light: '#ffffff' },
       pages: {
         'pages/index/index': { dark: '#000000' },
+      },
+    })
+  })
+
+  test('resolves a page background with variables from App.uvue', () => {
+    const pageFilename = path.join(inputDir, 'pages/index/index.vue')
+
+    collectPageSelectorBackgroundDeclarations('App.uvue', {
+      base: { vars: { '--page-bg': '#ff0000' } },
+      light: { vars: {} },
+      dark: { vars: {} },
+    })
+    collectPageSelectorBackgroundDeclarations(pageFilename, {
+      base: { vars: {}, backgroundValue: 'var(--page-bg)' },
+      light: { vars: {} },
+      dark: { vars: {} },
+    })
+
+    const pagesJson = {
+      pages: [{ path: 'pages/index/index' }],
+    } as UniApp.PagesJson
+    applyPageSelectorBackgroundColors(pagesJson)
+
+    expect((pagesJson as any).pageSelectorBackgroundColor).toEqual({
+      pages: {
+        'pages/index/index': { light: '#ff0000', dark: '#ff0000' },
+      },
+    })
+  })
+
+  test('recognizes whitespace and case variations of var()', () => {
+    const pageFilename = path.join(inputDir, 'pages/index/index.vue')
+
+    collectPageSelectorBackgroundDeclarations('App.uvue', {
+      base: { vars: { '--page-bg': '#ff0000' } },
+      light: { vars: {} },
+      dark: { vars: {} },
+    })
+    collectPageSelectorBackgroundDeclarations(pageFilename, {
+      base: { vars: {}, backgroundValue: 'VAR (--page-bg)' },
+      light: { vars: {} },
+      dark: { vars: {} },
+    })
+
+    const pagesJson = {
+      pages: [{ path: 'pages/index/index' }],
+    } as UniApp.PagesJson
+    applyPageSelectorBackgroundColors(pagesJson)
+
+    expect((pagesJson as any).pageSelectorBackgroundColor).toEqual({
+      pages: {
+        'pages/index/index': { light: '#ff0000', dark: '#ff0000' },
+      },
+    })
+  })
+
+  test('resolves a page variable override against the global background', () => {
+    const pageFilename = path.join(inputDir, 'pages/index/index.vue')
+
+    collectPageSelectorBackgroundDeclarations('App.uvue', {
+      base: {
+        vars: { '--page-bg': '#ff0000' },
+        backgroundValue: 'var(--page-bg)',
+      },
+      light: { vars: {} },
+      dark: { vars: {} },
+    })
+    collectPageSelectorBackgroundDeclarations(pageFilename, {
+      base: { vars: { '--page-bg': '#0000ff' } },
+      light: { vars: {} },
+      dark: { vars: {} },
+    })
+
+    const pagesJson = {
+      pages: [{ path: 'pages/index/index' }],
+    } as UniApp.PagesJson
+    applyPageSelectorBackgroundColors(pagesJson)
+
+    expect((pagesJson as any).pageSelectorBackgroundColor).toEqual({
+      global: { light: '#ff0000', dark: '#ff0000' },
+      pages: {
+        'pages/index/index': { light: '#0000ff', dark: '#0000ff' },
+      },
+    })
+  })
+
+  test('merges base and theme-specific variables before resolving colors', () => {
+    const pageFilename = path.join(inputDir, 'pages/index/index.vue')
+
+    collectPageSelectorBackgroundDeclarations('App.uvue', {
+      base: {
+        vars: { '--page-bg': '#ff0000' },
+        backgroundValue: 'var(--page-bg)',
+      },
+      light: { vars: {} },
+      dark: { vars: { '--page-bg': '#000000' } },
+    })
+    collectPageSelectorBackgroundDeclarations(pageFilename, {
+      base: { vars: {} },
+      light: { vars: { '--page-bg': '#00ff00' } },
+      dark: { vars: {} },
+    })
+
+    const pagesJson = {
+      pages: [{ path: 'pages/index/index' }],
+    } as UniApp.PagesJson
+    applyPageSelectorBackgroundColors(pagesJson)
+
+    expect((pagesJson as any).pageSelectorBackgroundColor).toEqual({
+      global: { light: '#ff0000', dark: '#000000' },
+      pages: {
+        'pages/index/index': { light: '#00ff00' },
       },
     })
   })
