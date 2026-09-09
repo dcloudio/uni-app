@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import colors from 'picocolors'
 import { extend } from '@vue/shared'
-import { type BuildOptions, type ServerOptions, createLogger } from 'vite'
+import type { BuildOptions, ServerOptions } from 'vite'
 import {
   APP_CONFIG_SERVICE,
   APP_SERVICE_FILENAME,
@@ -241,9 +241,10 @@ export async function runBuild(options: CliOptions & BuildOptions) {
     await (options.ssr && options.platform === 'h5'
       ? buildSSR(options)
       : build(options))
-    await stopProfiler((message) =>
-      createLogger(options.logLevel).info(message)
+    const logger = await import('vite').then(({ createLogger }) =>
+      createLogger(options.logLevel)
     )
+    await stopProfiler((message) => logger.info(message))
     console.log(M['build.done'])
     if (options.platform !== 'h5') {
       showRunPrompt(options.platform as PLATFORM)
@@ -258,8 +259,11 @@ export async function runBuild(options: CliOptions & BuildOptions) {
     }
   } catch (e: any) {
     if (isInHBuilderX()) {
+      const logger = await import('vite').then(({ createLogger }) =>
+        createLogger(options.logLevel)
+      )
       initLogger({
-        logger: createLogger(options.logLevel),
+        logger,
       }).error(e.message || e)
     } else {
       console.error(e.message || e)

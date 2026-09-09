@@ -93,6 +93,22 @@ export function addConfigFile(inlineConfig: InlineConfig) {
   return inlineConfig
 }
 
+export function initBuildSourceMapEnv(options: CliOptions) {
+  const buildOptions = options as BuildOptions
+  if (process.env.SOURCEMAP) {
+    process.env.UNI_APP_SOURCEMAP = process.env.SOURCEMAP
+  }
+  if (buildOptions.sourcemap) {
+    process.env.UNI_APP_SOURCEMAP = 'true'
+    return
+  }
+  if (buildOptions.watch && !process.env.UNI_APP_SOURCEMAP) {
+    // build + watch 默认关闭 sourcemap，减少热更新时的 map 编码、解码和合并成本；
+    // 需要调试时可通过 UNI_APP_SOURCEMAP / SOURCEMAP / --sourcemap 显式打开。
+    process.env.UNI_APP_SOURCEMAP = 'false'
+  }
+}
+
 let initialized = false
 export function initEnv(
   type: 'unknown' | 'dev' | 'build',
@@ -312,17 +328,7 @@ export function initEnv(
     )
   }
 
-  // 兼容旧版本 SOURCEMAP 参数
-  if (process.env.SOURCEMAP) {
-    process.env.UNI_APP_SOURCEMAP = process.env.SOURCEMAP
-  }
-
-  if (
-    (options as BuildOptions).sourcemap &&
-    process.env.NODE_ENV !== 'development'
-  ) {
-    process.env.UNI_APP_SOURCEMAP = 'true'
-  }
+  initBuildSourceMapEnv(options)
 
   initModulePaths()
 

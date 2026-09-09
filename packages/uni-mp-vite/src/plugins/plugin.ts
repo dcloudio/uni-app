@@ -16,9 +16,9 @@ export function uniMiniProgramPluginPlugin({
   style: { extname },
 }: UniMiniProgramPluginOptions): Plugin {
   const entry = initPluginEntry()
-  const rollupOptions: BuildOptions['rollupOptions'] = {}
+  const rolldownOptions: BuildOptions['rolldownOptions'] = {}
   if (entry) {
-    rollupOptions.input = extend(
+    rolldownOptions.input = extend(
       {
         app: resolveMainPathOnce(process.env.UNI_INPUT_DIR),
       },
@@ -31,7 +31,7 @@ export function uniMiniProgramPluginPlugin({
     config() {
       return {
         build: {
-          rollupOptions,
+          rolldownOptions,
         },
       }
     },

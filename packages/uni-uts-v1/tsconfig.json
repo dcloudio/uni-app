@@ -2,7 +2,16 @@
   "extends": "../../tsconfig.node.json",
   "compilerOptions": {
     "outDir": "dist",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "vite": [
+        "node_modules/vite/dist/node/index.d.ts"
+      ]
+    }
   },
-  "include": ["src", "../shims-node.d.ts", "../shims-uni-app.d.ts"]
+  "include": [
+    "src",
+    "../shims-node.d.ts",
+    "../shims-uni-app.d.ts"
+  ]
 }

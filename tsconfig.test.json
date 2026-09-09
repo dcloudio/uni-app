@@ -6,7 +6,8 @@
       "types/alias": ["packages/uni-cli-shared/types/alias.d.ts"],
       "@dcloudio/*": ["packages/*/src"],
       "@dcloudio/uni-app-plus/*": ["packages/uni-app-plus/src/*"],
-      "@dcloudio/uni-platform": ["packages/uni-h5/src/platform/index.ts"]
+      "@dcloudio/uni-platform": ["packages/uni-h5/src/platform/index.ts"],
+      "vite": ["node_modules/vite/dist/node/index.d.ts"]
     }
   }
 }

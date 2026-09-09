@@ -33,7 +33,8 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 let _vue_compiler_core = require("@vue/compiler-core");
 let _vue_compiler_dom = require("@vue/compiler-dom");
 _vue_compiler_dom = __toESM(_vue_compiler_dom);
-let source_map_js = require("source-map-js");
+let gen_mapping = require("@jridgewell/gen-mapping");
+let trace_mapping = require("@jridgewell/trace-mapping");
 let _vue_shared = require("@vue/shared");
 let path = require("path");
 path = __toESM(path);
@@ -1880,27 +1881,30 @@ const splitRE = /\r?\n/g;
 const emptyRE = /^(?:\/\/)?\s*$/;
 const replaceRE = /./g;
 function generateSourceMap(filename, source, generated, sourceRoot, lineOffset, columnOffset) {
-	const map = new source_map_js.SourceMapGenerator({
+	const map = new gen_mapping.GenMapping({
 		file: filename.replace(/\\/g, "/"),
 		sourceRoot: sourceRoot.replace(/\\/g, "/")
 	});
-	map.setSourceContent(filename, source);
-	map._sources.add(filename);
+	gen_mapping.setSourceContent(map, filename, source);
 	generated.split(splitRE).forEach((line, index) => {
 		if (!emptyRE.test(line)) {
 			const originalLine = index + 1 + lineOffset;
 			const generatedLine = index + 1;
-			for (let i = 0; i < line.length; i++) if (!/\s/.test(line[i])) map._mappings.add({
-				originalLine,
-				originalColumn: i + columnOffset,
-				generatedLine,
-				generatedColumn: i,
+			for (let i = 0; i < line.length; i++) if (!/\s/.test(line[i])) gen_mapping.addMapping(map, {
+				original: {
+					line: originalLine,
+					column: i + columnOffset
+				},
+				generated: {
+					line: generatedLine,
+					column: i
+				},
 				source: filename,
 				name: null
 			});
 		}
 	});
-	return map.toJSON();
+	return normalizeSourceMap(gen_mapping.toEncodedMap(map));
 }
 function padContent(content, block, pad) {
 	content = content.slice(0, block.loc.start.offset);
@@ -3771,17 +3775,20 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 function mapLines(oldMap, newMap) {
 	if (!oldMap) return newMap;
 	if (!newMap) return oldMap;
-	const oldMapConsumer = new source_map_js.SourceMapConsumer(oldMap);
-	const newMapConsumer = new source_map_js.SourceMapConsumer(newMap);
-	const mergedMapGenerator = new source_map_js.SourceMapGenerator();
-	newMapConsumer.eachMapping((m) => {
+	const oldMapConsumer = new trace_mapping.TraceMap(oldMap);
+	const newMapConsumer = new trace_mapping.TraceMap(newMap);
+	const mergedMapGenerator = new gen_mapping.GenMapping({
+		file: oldMap.file ?? newMap.file,
+		sourceRoot: oldMap.sourceRoot ?? newMap.sourceRoot
+	});
+	trace_mapping.eachMapping(newMapConsumer, (m) => {
 		if (m.originalLine == null) return;
-		const origPosInOldMap = oldMapConsumer.originalPositionFor({
+		const origPosInOldMap = trace_mapping.originalPositionFor(oldMapConsumer, {
 			line: m.originalLine,
 			column: m.originalColumn
 		});
 		if (origPosInOldMap.source == null) return;
-		mergedMapGenerator.addMapping({
+		gen_mapping.addMapping(mergedMapGenerator, {
 			generated: {
 				line: m.generatedLine,
 				column: m.generatedColumn
@@ -3794,15 +3801,26 @@ function mapLines(oldMap, newMap) {
 			name: origPosInOldMap.name
 		});
 	});
-	const generator = mergedMapGenerator;
 	oldMapConsumer.sources.forEach((sourceFile) => {
-		generator._sources.add(sourceFile);
-		const sourceContent = oldMapConsumer.sourceContentFor(sourceFile);
-		if (sourceContent != null) mergedMapGenerator.setSourceContent(sourceFile, sourceContent);
+		if (!sourceFile) return;
+		const sourceContent = trace_mapping.sourceContentFor(oldMapConsumer, sourceFile);
+		if (sourceContent != null) gen_mapping.setSourceContent(mergedMapGenerator, sourceFile, sourceContent);
 	});
-	generator._sourceRoot = oldMap.sourceRoot;
-	generator._file = oldMap.file;
-	return generator.toJSON();
+	return normalizeSourceMap(gen_mapping.toEncodedMap(mergedMapGenerator));
+}
+
+function normalizeSourceMap(map) {
+	const normalized = {
+		version: map.version,
+		sources: map.sources,
+		names: map.names,
+		mappings: map.mappings
+	};
+	if (map.sourcesContent != null) normalized.sourcesContent = map.sourcesContent;
+	if (map.file != null) normalized.file = map.file;
+	if (map.sourceRoot != null) normalized.sourceRoot = map.sourceRoot;
+	if (map.ignoreList?.length) normalized.ignoreList = map.ignoreList;
+	return normalized;
 }
 function patchErrors(errors, source, inMap) {
 	const originalSource = inMap.sourcesContent[0];
@@ -16375,17 +16393,16 @@ function canNeverBeRef(node, userReactiveImport) {
 	}
 }
 function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
-	const generator = new source_map_js.SourceMapGenerator();
+	const scriptMapTracer = new trace_mapping.TraceMap(scriptMap);
+	const templateMapTracer = new trace_mapping.TraceMap(templateMap);
+	const generator = new gen_mapping.GenMapping({
+		file: scriptMap.file,
+		sourceRoot: scriptMap.sourceRoot
+	});
 	const addMapping = (map, lineOffset = 0) => {
-		const consumer = new source_map_js.SourceMapConsumer(map);
-		consumer.sources.forEach((sourceFile) => {
-			generator._sources.add(sourceFile);
-			const sourceContent = consumer.sourceContentFor(sourceFile);
-			if (sourceContent != null) generator.setSourceContent(sourceFile, sourceContent);
-		});
-		consumer.eachMapping((m) => {
+		trace_mapping.eachMapping(map, (m) => {
 			if (m.originalLine == null) return;
-			generator.addMapping({
+			gen_mapping.addMapping(generator, {
 				generated: {
 					line: m.generatedLine + lineOffset,
 					column: m.generatedColumn
@@ -16399,11 +16416,23 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 			});
 		});
 	};
-	addMapping(scriptMap);
-	addMapping(templateMap, templateLineOffset);
-	generator._sourceRoot = scriptMap.sourceRoot;
-	generator._file = scriptMap.file;
-	return generator.toJSON();
+	scriptMapTracer.sources.forEach((sourceFile, index) => {
+		if (!sourceFile) return;
+		const sourceContent = scriptMapTracer.sourcesContent?.[index];
+		if (sourceContent != null) {
+			gen_mapping.setSourceContent(generator, sourceFile, sourceContent);
+		}
+	});
+	templateMapTracer.sources.forEach((sourceFile, index) => {
+		if (!sourceFile) return;
+		const sourceContent = templateMapTracer.sourcesContent?.[index];
+		if (sourceContent != null) {
+			gen_mapping.setSourceContent(generator, sourceFile, sourceContent);
+		}
+	});
+	addMapping(scriptMapTracer);
+	addMapping(templateMapTracer, templateLineOffset);
+	return normalizeSourceMap(gen_mapping.toEncodedMap(generator));
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts

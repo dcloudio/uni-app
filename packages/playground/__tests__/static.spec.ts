@@ -57,7 +57,13 @@ describe('static playground', () => {
     scripts.forEach((script) => {
       const mode = script.split(':')[0]
       const platform = script.split(':')[1]
-      test(`${type} ${script}`, async () => {
+      const testCase =
+        type === 'uni-app-x' &&
+        script === 'dev:app-android' &&
+        !process.env.UNI_HBUILDERX_PLUGINS
+          ? test.skip
+          : test
+      testCase(`${type} ${script}`, async () => {
         const outDir = path.resolve(distDir, mode, type, platform)
         console.log(`${type} npm run ${script} start`)
         await execa('npm', ['run', script], {

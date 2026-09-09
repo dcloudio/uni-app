@@ -243,7 +243,10 @@ export function uniMiniProgramPlugin(
             }
           }
         }
-        const filterFiles = getFilterFiles(resolvedConfig, this.getModuleInfo)
+        const filterFiles = getFilterFiles(
+          resolvedConfig,
+          this.getModuleInfo as any
+        )
         Object.keys(filterFiles).forEach((filename) => {
           const { code } = filterFiles[filename]
           this.emitFile({

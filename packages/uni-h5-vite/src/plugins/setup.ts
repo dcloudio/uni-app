@@ -7,7 +7,6 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 const debugSetup = debug('uni:setup')
-
 export function uniSetupPlugin(): Plugin {
   let appVuePath: string
   let resolvedConfig: ResolvedConfig

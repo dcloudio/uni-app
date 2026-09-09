@@ -39,10 +39,13 @@ describe('commonjs playground', () => {
           expectFile = 'common/vendor.js'
         }
         if (expectFile) {
+          const code = fs.readFileSync(
+            path.resolve(outDir, expectFile),
+            'utf-8'
+          )
           expect(
-            fs
-              .readFileSync(path.resolve(outDir, expectFile), 'utf-8')
-              .includes('const name = "test";')
+            code.includes('const name = "test";') ||
+              code.includes('name = "test";')
           ).toBe(true)
         }
       })

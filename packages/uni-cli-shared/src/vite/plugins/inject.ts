@@ -77,8 +77,7 @@ export function uniViteInjectPlugin(
   }
 
   const firstpass = new RegExp(
-    `(?:${Array.from(modulesMap.keys()).map(escape).join('|')})`,
-    'g'
+    `(?:${Array.from(modulesMap.keys()).map(escape).join('|')})`
   )
   let sourceMap = options.sourceMap !== false
   const callback = options.callback

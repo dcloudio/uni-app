@@ -154,19 +154,22 @@ export async function compileUniModuleWithTsc(
     preprocessor
   )
 
-  // 添加入口
-  const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(platform, pluginDir)
-  for (const vueFile of vueFiles) {
-    await uniXCompiler.addRootFile(vueFile)
-  }
+  // 把入口文件合并后一次性提交，避免每个 addRootFile 都触发一次全量诊断扫描。
+  const compilerRootFiles = resolveTscUniModuleUTSSDKVueFileNames(
+    platform,
+    pluginDir
+  )
   const indexFileName = resolveTscUniModuleIndexFileName(platform, pluginDir)
   if (indexFileName) {
-    await uniXCompiler.addRootFile(indexFileName)
+    compilerRootFiles.push(indexFileName)
   }
   const userRootFiles =
     typeof rootFiles === 'function' ? rootFiles(platform) : rootFiles
   if (userRootFiles && userRootFiles.length) {
-    await uniXCompiler.addRootFiles(userRootFiles)
+    compilerRootFiles.push(...userRootFiles)
+  }
+  if (compilerRootFiles.length) {
+    await uniXCompiler.addRootFiles([...new Set(compilerRootFiles)])
   }
   await uniXCompiler.close()
 }

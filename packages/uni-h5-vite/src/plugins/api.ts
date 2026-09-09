@@ -1,10 +1,8 @@
 import type { Plugin, ViteDevServer } from 'vite'
 import { AliYunCloudAuthWebSDK } from '../utils'
 import { normalizePath } from '@dcloudio/uni-cli-shared'
-import type { OutputChunk } from 'rollup'
 
 let enableFacialRecognition = false
-
 function isEnableFacialRecognition() {
   return enableFacialRecognition
 }
@@ -52,13 +50,8 @@ export function uniApiPlugin(): Plugin {
       if (!isEnableFacialRecognition()) {
         const filesNames = Object.keys(bundle)
         for (const fileName of filesNames) {
-          const chunk = bundle[fileName] as OutputChunk
-          if (
-            chunk &&
-            chunk.type === 'chunk' &&
-            chunk.code &&
-            !isEnableFacialRecognition()
-          ) {
+          const chunk = bundle[fileName]
+          if (chunk && chunk.type === 'chunk' && chunk.code) {
             setEnableFacialRecognition(
               checkFacialRecognition(chunk.code) || checkGetMetaInfo(chunk.code)
             )

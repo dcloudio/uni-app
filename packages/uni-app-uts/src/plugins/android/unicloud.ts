@@ -1,4 +1,3 @@
-import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
 import crypto from 'crypto'
 import path from 'path'
@@ -58,11 +57,11 @@ export function uniCloudPlugin(): Plugin {
         return
       }
 
-      if (bundle[ENTRY_FILENAME()]) {
+      const asset = bundle[ENTRY_FILENAME()]
+      if (asset && asset.type === 'asset') {
         const inputDir = process.env.UNI_INPUT_DIR!
         const platform = process.env.UNI_UTS_PLATFORM!
         const isSecureNetworkEnabled = isEnableSecureNetwork(inputDir, platform)
-        const asset = bundle[ENTRY_FILENAME()] as OutputAsset
         const spaceList = JSON.stringify(
           uniCloudSpaceList.map((item) => {
             const itemCopy = { ...item }

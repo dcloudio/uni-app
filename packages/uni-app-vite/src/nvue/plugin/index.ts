@@ -1,4 +1,3 @@
-import type { PreRenderedChunk } from 'rollup'
 import type { Plugin } from 'vite'
 import path from 'path'
 import colors from 'picocolors'
@@ -20,6 +19,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 import { nvueOutDir } from '../../utils'
+import { replaceRolldownAppExternalRequire } from '../../plugins/rolldown'
 // import { transformRenderWhole } from './transforms/transformRenderWhole'
 // import { transformAppendAsTree } from './transforms/transformAppendAsTree'
 import { transformVideo } from './transforms/transformVideo'
@@ -91,8 +91,9 @@ export function uniAppNVuePlugin({
             formats: [appService ? 'iife' : 'es'],
           },
           outDir: appService ? process.env.UNI_OUTPUT_DIR : nvueOutDir(),
-          rollupOptions: {
+          rolldownOptions: {
             external: external(appService),
+            plugins: [dynamicImportPolyfill(true)],
             output: {
               entryFileNames(chunk) {
                 if (chunk.name === 'main' && chunk.isEntry) {
@@ -101,7 +102,6 @@ export function uniAppNVuePlugin({
                 return chunk.name + '.js'
               },
               chunkFileNames: createChunkFileNames(inputDir),
-              plugins: [dynamicImportPolyfill(true)],
               globals: globals(appService),
             },
           },
@@ -154,13 +154,25 @@ export function uniAppNVuePlugin({
         }
       },
     }),
+    generateBundle(_, bundle) {
+      if (appService) {
+        Object.values(bundle).forEach((chunk) => {
+          if (chunk.type === 'chunk') {
+            chunk.code = replaceRolldownAppExternalRequire(chunk.code)
+          }
+        })
+      }
+    },
   }
 }
 
-function createChunkFileNames(
-  inputDir: string
-): (chunkInfo: PreRenderedChunk) => string {
-  return function chunkFileNames(chunk) {
+type ChunkFileInfo = {
+  isDynamicEntry?: boolean
+  facadeModuleId?: string | null
+}
+
+function createChunkFileNames(inputDir: string) {
+  return function chunkFileNames(chunk: ChunkFileInfo) {
     if (chunk.isDynamicEntry && chunk.facadeModuleId) {
       const { filename } = parseVueRequest(chunk.facadeModuleId)
       if (filename.endsWith('.nvue')) {

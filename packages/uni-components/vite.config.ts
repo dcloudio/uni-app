@@ -44,7 +44,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/nvue/components.ts'),
       formats: ['es'],
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: ['uni', 'vue', 'weex', '@vue/shared', '@dcloudio/uni-shared'],
       output: {
         entryFileNames: 'components.js',

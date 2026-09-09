@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import { once, parseUrl } from '@dcloudio/uni-shared'
 import { dataToEsm } from '@rollup/pluginutils'
-import type { ChangeEvent, PluginContext } from 'rollup'
+import type { ChangeEvent } from 'rollup'
 import type {
   CompileResult,
   SyncUniModulesFilePreprocessor,
@@ -295,9 +295,13 @@ const emptyHarmonyCacheDirOnce = once(() => {
   emptyCacheDir('app-harmony')
 })
 
+type WatchFileContext = {
+  addWatchFile(file: string): void
+}
+
 const handleCompileResult = (
   result: CompileResult,
-  pluginContext?: PluginContext
+  pluginContext?: WatchFileContext
 ) => {
   process.env.UNI_APP_UTS_CHANGED = 'true'
   if (pluginContext) {
@@ -419,7 +423,7 @@ export function uniUTSAppUniModulesPlugin(
 
   const compilePlugin = async (
     pluginDir: string,
-    pluginContext?: PluginContext
+    pluginContext?: WatchFileContext
   ) => {
     const pluginId = path.basename(pluginDir)
 
@@ -457,37 +461,31 @@ export function uniUTSAppUniModulesPlugin(
       utsPlugins.add(pluginId)
       if (uniXKotlinCompiler) {
         const platform = 'app-android'
-        const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(
+        const rootFiles = resolveTscUniModuleUTSSDKVueFileNames(
           platform,
           pluginDir
         )
-        for (const vueFile of vueFiles) {
-          await uniXKotlinCompiler.addRootFile(vueFile)
-        }
         const indexFileName = resolveTscUniModuleIndexFileName(
           platform,
           pluginDir
         )
-        if (indexFileName) {
-          await uniXKotlinCompiler.addRootFile(indexFileName)
-        }
+        await uniXKotlinCompiler.addRootFiles([
+          ...new Set([...rootFiles, indexFileName].filter(Boolean)),
+        ] as string[])
       }
       if (uniXSwiftCompiler) {
         const platform = 'app-ios'
-        const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(
+        const rootFiles = resolveTscUniModuleUTSSDKVueFileNames(
           platform,
           pluginDir
         )
-        for (const vueFile of vueFiles) {
-          await uniXSwiftCompiler.addRootFile(vueFile)
-        }
         const indexFileName = resolveTscUniModuleIndexFileName(
           platform,
           pluginDir
         )
-        if (indexFileName) {
-          await uniXSwiftCompiler.addRootFile(indexFileName)
-        }
+        await uniXSwiftCompiler.addRootFiles([
+          ...new Set([...rootFiles, indexFileName].filter(Boolean)),
+        ] as string[])
       }
       if (uniXArkTSCompiler) {
         const platform = 'app-harmony'
@@ -496,7 +494,7 @@ export function uniUTSAppUniModulesPlugin(
           pluginDir
         )
         if (indexFileName) {
-          await uniXArkTSCompiler.addRootFile(indexFileName)
+          await uniXArkTSCompiler.addRootFiles([indexFileName])
         }
       }
     }

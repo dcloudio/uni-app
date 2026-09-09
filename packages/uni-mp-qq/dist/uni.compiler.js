@@ -13,6 +13,7 @@ var fs__default = /*#__PURE__*/_interopDefault(fs);
 
 let isFixed = false;
 function fix2648(bundle) {
+    var _a;
     if (isFixed) {
         return;
     }
@@ -21,7 +22,11 @@ function fix2648(bundle) {
         return;
     }
     try {
-        const { usingComponents } = JSON.parse(appJsonAsset.source.toString());
+        const source = (_a = appJsonAsset.source) === null || _a === void 0 ? void 0 : _a.toString();
+        if (!source) {
+            return;
+        }
+        const { usingComponents } = JSON.parse(source);
         if (usingComponents && usingComponents['fix-2648']) {
             fs__default.default.outputFileSync(path__default.default.resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.json'), `{"component":true}`);
             fs__default.default.outputFileSync(path__default.default.resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.qml'), `<!-- https://github.com/dcloudio/uni-app/issues/2648 -->`);
@@ -29,7 +34,7 @@ function fix2648(bundle) {
         }
         isFixed = true;
     }
-    catch (_a) { }
+    catch (_b) { }
 }
 
 var description = "项目配置文件。";

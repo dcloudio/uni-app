@@ -5,7 +5,6 @@ import { UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS } from '@dcloudio/uni-shared'
 import { isVueSfcFile } from '@dcloudio/uni-cli-shared'
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
-
 export function uniCustomElementPlugin(): Plugin {
   return {
     name: 'uni:h5-custom-element',

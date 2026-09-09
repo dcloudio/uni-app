@@ -16,11 +16,10 @@ import type {
   Statement,
 } from '@babel/types'
 import { walk } from 'estree-walker'
-import {
-  type RawSourceMap,
-  SourceMapConsumer,
-  SourceMapGenerator,
-} from 'source-map-js'
+import type { RawSourceMap } from 'source-map-js'
+import { addMapping, fromMap, toEncodedMap } from '@jridgewell/gen-mapping'
+import type { EncodedSourceMap as TraceEncodedSourceMap } from '@jridgewell/trace-mapping'
+import { TraceMap, eachMapping } from '@jridgewell/trace-mapping'
 import { processNormalScript, processTemplate } from './script/normalScript'
 import type { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { warnOnce } from './warn'
@@ -293,6 +292,7 @@ export function compileScript(
     process.env.NODE_ENV === 'development' ||
     process.env.UNI_RUST_TEST === 'true'
   ) {
+    const shouldRewriteSourceMap = options.sourceMap !== false
     if (scriptAst) {
       // 仅 dev 处理
       const scriptContent = ctx.descriptor.script!.content
@@ -312,11 +312,14 @@ export function compileScript(
           startOffset,
         })
       }
-      rewriteSourceMap(scriptAst, ctx.s, {
-        fileName: relativeFilename,
-        startLine,
-        startOffset,
-      })
+      if (shouldRewriteSourceMap) {
+        // sourceMap 关闭时，跳过原位置注入，少做一轮 AST walk，watch 里会快很多。
+        rewriteSourceMap(scriptAst, ctx.s, {
+          fileName: relativeFilename,
+          startLine,
+          startOffset,
+        })
+      }
     }
     if (scriptSetupAst) {
       const scriptSetupContent = ctx.descriptor.scriptSetup!.content
@@ -336,11 +339,14 @@ export function compileScript(
           startOffset,
         })
       }
-      rewriteSourceMap(scriptSetupAst, ctx.s, {
-        fileName: relativeFilename,
-        startLine,
-        startOffset,
-      })
+      if (shouldRewriteSourceMap) {
+        // sourceMap 关闭时，跳过原位置注入，少做一轮 AST walk，watch 里会快很多。
+        rewriteSourceMap(scriptSetupAst, ctx.s, {
+          fileName: relativeFilename,
+          startLine,
+          startOffset,
+        })
+      }
     }
   }
 
@@ -1130,25 +1136,19 @@ function generateScriptMap(
   templateMap: RawSourceMap,
   scriptMap: RawSourceMap
 ): RawSourceMap {
-  const templateMapConsumer = new SourceMapConsumer(templateMap)
-  const scriptMapConsumer = new SourceMapConsumer(scriptMap)
-  const scriptMapGenerator = new SourceMapGenerator()
-  scriptMapConsumer.eachMapping((m) => {
-    scriptMapGenerator.addMapping({
-      original: {
-        line: m.originalLine ?? 0,
-        column: m.originalColumn ?? 0,
-      },
-      generated: {
-        line: m.generatedLine,
-        column: m.generatedColumn,
-      },
-      source: m.source,
-      name: m.name,
-    })
-  })
-  templateMapConsumer.eachMapping((m) => {
-    scriptMapGenerator.addMapping({
+  const scriptMapGenerator = fromMap(
+    scriptMap as Omit<RawSourceMap, 'version'> as TraceEncodedSourceMap
+  )
+  const templateMapConsumer = new TraceMap(
+    templateMap as Omit<RawSourceMap, 'version'> as TraceEncodedSourceMap
+  )
+
+  // 直接复用已有 script map，避免 source-map-js 重新解析和序列化。
+  eachMapping(templateMapConsumer, (m) => {
+    if (m.source == null) {
+      return
+    }
+    const mapping = {
       original: {
         line: m.originalLine ?? 0,
         column: m.originalColumn ?? 0,
@@ -1157,19 +1157,40 @@ function generateScriptMap(
         line: m.generatedLine + offset,
         column: m.generatedColumn,
       },
-      source: m.source,
-      name: m.name,
-    })
-  })
-
-  scriptMap.sources.forEach(function (sourceFile) {
-    const sourceContent = scriptMapConsumer.sourceContentFor(sourceFile)
-    if (sourceContent != null) {
-      scriptMapGenerator.setSourceContent(sourceFile, sourceContent)
+      source: m.source!,
+    }
+    if (m.name != null) {
+      addMapping(scriptMapGenerator, { ...mapping, name: m.name })
+    } else {
+      addMapping(scriptMapGenerator, mapping)
     }
   })
 
-  return JSON.parse(scriptMapGenerator.toString())
+  return normalizeSourceMap(toEncodedMap(scriptMapGenerator))
+}
+
+function normalizeSourceMap(
+  map: ReturnType<typeof toEncodedMap>
+): RawSourceMap {
+  const normalized: Record<string, any> = {
+    version: map.version,
+    sources: map.sources,
+    names: map.names,
+    mappings: map.mappings,
+  }
+  if (map.sourcesContent != null) {
+    normalized.sourcesContent = map.sourcesContent
+  }
+  if (map.file != null) {
+    normalized.file = map.file
+  }
+  if (map.sourceRoot != null) {
+    normalized.sourceRoot = map.sourceRoot
+  }
+  if (map.ignoreList?.length) {
+    normalized.ignoreList = map.ignoreList
+  }
+  return normalized as RawSourceMap
 }
 
 function registerBinding(

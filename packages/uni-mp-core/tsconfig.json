@@ -1,7 +1,19 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["mini-types", "miniprogram-api-typings", "node", "@dcloudio/types"]
+    "types": [
+      "mini-types",
+      "miniprogram-api-typings",
+      "node",
+      "@dcloudio/types"
+    ],
+    "paths": {
+      "vite": [
+        "node_modules/vite/dist/node/index.d.ts"
+      ]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

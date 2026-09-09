@@ -4,7 +4,7 @@ import type {
   ParserOptions,
   RootNode,
 } from '@vue/compiler-core'
-import type { TransformPluginContext } from 'rollup'
+import type { TransformPluginContextLike as TransformPluginContext } from '../../../context'
 import type { RawSourceMap } from 'source-map-js'
 import type { DirectiveTransform, NodeTransform } from './transform'
 

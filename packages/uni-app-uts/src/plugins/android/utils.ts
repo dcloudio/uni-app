@@ -16,7 +16,7 @@ import { isArray, isPlainObject, isString } from '@vue/shared'
 
 import { type Import, createUnimport } from 'unimport'
 
-import type { /*SourceMapInput, */ PluginContext } from 'rollup'
+import type { PluginContextLike as PluginContext } from '../context'
 import type { Position, SourceLocation } from '@vue/compiler-core'
 
 import { createCompilerError } from './uvue/compiler/errors'

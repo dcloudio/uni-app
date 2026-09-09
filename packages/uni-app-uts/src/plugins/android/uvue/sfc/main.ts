@@ -1,13 +1,18 @@
 import path from 'path'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import type {
-  PluginContext,
+  PluginContextLike as PluginContext,
   SourceMapInput,
-  TransformPluginContext,
-} from 'rollup'
-import { type RawSourceMap, SourceMapConsumer } from 'source-map-js'
+  TransformPluginContextLike as TransformPluginContext,
+} from '../../../context'
+import type { RawSourceMap } from 'source-map-js'
 import type { EncodedSourceMap as TraceEncodedSourceMap } from '@jridgewell/trace-mapping'
-import { TraceMap, eachMapping } from '@jridgewell/trace-mapping'
+import {
+  TraceMap,
+  eachMapping,
+  originalPositionFor,
+  sourceContentFor,
+} from '@jridgewell/trace-mapping'
 import type { EncodedSourceMap as GenEncodedSourceMap } from '@jridgewell/gen-mapping'
 import {
   GenMapping,
@@ -399,6 +404,9 @@ function createTryResolve(
   ignore?: (source: string) => boolean,
   external: boolean = true
 ) {
+  const resolvedMapTracer = new TraceMap(
+    resolvedMap as Omit<RawSourceMap, 'version'> as TraceEncodedSourceMap
+  )
   return async (source: string, code: string, { ss, se }: ImportSpecifier) => {
     if (ignore && ignore(source)) {
       return false
@@ -408,8 +416,7 @@ function createTryResolve(
     // 模板中仅支持使用相对路径或绝对路径如："./logo.png" 或 "/static/logo.png" 或 "@/static/logo.png"
     if (!resolved || (!external && resolved.external)) {
       const { start, end } = offsetToStartAndEnd(code, ss, se)
-      const consumer = new SourceMapConsumer(resolvedMap)
-      const startPos = consumer.originalPositionFor({
+      const startPos = originalPositionFor(resolvedMapTracer, {
         line: start.line,
         column: start.column,
       })
@@ -418,7 +425,7 @@ function createTryResolve(
         startPos.column != null &&
         startPos.source != null
       ) {
-        const endPos = consumer.originalPositionFor({
+        const endPos = originalPositionFor(resolvedMapTracer, {
           line: end.line,
           column: end.column,
         })
@@ -426,7 +433,7 @@ function createTryResolve(
           startPos.column = startPos.column + 1
           endPos.column = endPos.column + 1
           throw createResolveError(
-            consumer.sourceContentFor(startPos.source) ?? '',
+            sourceContentFor(resolvedMapTracer, startPos.source) ?? '',
             createResolveErrorMsg(source, importer),
             startPos as unknown as Position,
             endPos as unknown as Position

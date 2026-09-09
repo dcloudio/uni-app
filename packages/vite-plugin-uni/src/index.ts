@@ -1,12 +1,8 @@
 import fs from 'fs'
 // import debug from 'debug'
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
-import type { Options as VueOptions } from '@vitejs/plugin-vue'
-import type ViteLegacyPlugin from '@vitejs/plugin-legacy'
 import type { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
-import vueJsxPlugin from '@vitejs/plugin-vue-jsx'
-import legacyPlugin from '@vitejs/plugin-legacy'
 
 import {
   type AutoImportOptions,
@@ -30,6 +26,7 @@ import {
 
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
+import { createUniResolveIdPlugin } from './config/resolve'
 import { uniCopyPlugin } from './plugins/copy'
 import { uniMovePlugin } from './plugins/move'
 import {
@@ -49,7 +46,16 @@ import { uniUVuePlugin } from './uvue/plugins'
 import path from 'path'
 import { rewriteImportVuePlugin } from './uvue/plugins/rewriteImportVue'
 
-export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
+type VueOptions = any
+export type ViteLegacyOptions = any
+
+function interopDefault<T = any>(mod: any): T {
+  return mod.default || mod
+}
+
+function requireViteEsmPlugin<T = any>(id: string): T {
+  return interopDefault(require(id))
+}
 
 // const debugUni = debug('uni:plugin')
 
@@ -155,6 +161,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
 
   // 仅限 h5
   if (options.viteLegacyOptions && options.platform === 'h5') {
+    const legacyPlugin = requireViteEsmPlugin<Function>('@vitejs/plugin-legacy')
     plugins.push(
       ...(legacyPlugin(
         initPluginViteLegacyOptions(options)
@@ -174,6 +181,9 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
   options.copyOptions = uniPluginOptions.copyOptions
 
   if (options.vueJsxOptions) {
+    const vueJsxPlugin = requireViteEsmPlugin<Function>(
+      '@vitejs/plugin-vue-jsx'
+    )
     plugins.push(
       vueJsxPlugin(
         initPluginVueJsxOptions(
@@ -190,6 +200,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
     config: createConfig(options, uniPlugins),
     configResolved: createConfigResolved(options),
   })
+  plugins.push(createUniResolveIdPlugin(options))
   plugins.push(...uniPlugins)
 
   // plugins.push(...initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR))
@@ -292,7 +303,7 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
 
   options.copyOptions = uniPluginOptions.copyOptions
 
-  plugins.push(uniUVuePlugin(options))
+  plugins.push(uniUVuePlugin(options), createUniResolveIdPlugin(options))
 
   plugins.push(...uniPlugins)
 

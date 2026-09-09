@@ -16,7 +16,7 @@ import {
   parseUniExtApi,
   resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
-import type { OutputChunk, PluginContext } from 'rollup'
+import type { Rolldown } from 'vite'
 import ExternalModules from './external-modules.json'
 import ExternalModulesX from './external-modules-x.json'
 import ExternalModulesDom2 from './external-modules-dom2.json'
@@ -123,7 +123,7 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
     config() {
       return {
         build: {
-          rollupOptions: {
+          rolldownOptions: {
             external: [
               ...Object.keys(commandGlobals),
               ...harmonyGlobals,
@@ -164,8 +164,8 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
         // 此方法仅需要处理非provider
         genAppHarmonyUniModules(this, process.env.UNI_INPUT_DIR, utsExtApis)
         for (const key in bundle) {
-          const serviceBundle = bundle[key] as OutputChunk
-          if (serviceBundle.code) {
+          const serviceBundle = bundle[key]
+          if (serviceBundle.type === 'chunk') {
             serviceBundle.code =
               generateHarmonyImportExternalCode(serviceBundle.imports) +
               serviceBundle.code
@@ -342,7 +342,7 @@ function getRelatedModules(inputDir: string): string[] {
   return modules
 }
 
-function getTreeshakeModules(context: PluginContext) {
+function getTreeshakeModules(context: Rolldown.PluginContext) {
   const ids = Array.from(context.getModuleIds())
   const uniExtApis = new Set<string>()
   ids.forEach((id) => {
@@ -377,7 +377,7 @@ function getTreeshakeModules(context: PluginContext) {
 }
 
 function genAppHarmonyUniModules(
-  context: PluginContext,
+  context: Rolldown.PluginContext,
   inputDir: string,
   utsPlugins: Set<string>
 ) {

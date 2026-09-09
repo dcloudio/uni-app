@@ -2,7 +2,14 @@
   "extends": "../../tsconfig.node.json",
   "compilerOptions": {
     "outDir": "dist",
-    "removeComments": false
+    "removeComments": false,
+    "paths": {
+      "vite": [
+        "node_modules/vite/dist/node/index.d.ts"
+      ]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

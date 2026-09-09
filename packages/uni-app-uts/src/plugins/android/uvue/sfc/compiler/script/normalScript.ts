@@ -14,7 +14,7 @@ import { resolveDefineCode } from './utils'
 import { resolveGenTemplateCodeOptions } from '../../template'
 import { addExtApiComponents } from '../../../../../utils'
 import { genTemplateCode } from '../../../code/template'
-import type { TransformPluginContext } from 'rollup'
+import type { TransformPluginContextLike as TransformPluginContext } from '../../../../../context'
 
 export function processNormalScript(
   ctx: ScriptCompileContext,

@@ -4,7 +4,6 @@ import { type SFCScriptCompileOptions, parse } from '@vue/compiler-sfc'
 import { ScriptCompileContext } from '../../../../src/plugins/android/uvue/sfc/compiler/script/context'
 import {
   inferRuntimeType,
-  invalidateTypeCache,
   recordImports,
   resolveTypeElements,
 } from '../../../../src/plugins/android/uvue/sfc/compiler/script/resolveType'
@@ -959,8 +958,7 @@ describe('resolveType', () => {
         defineProps<Foo<number>>()`,
         files,
         undefined,
-        `/Two.vue`,
-        false /* do not invalidate cache */
+        `/Two.vue`
       )
       expect(props2).toStrictEqual({
         value: ['Number'],
@@ -1093,8 +1091,7 @@ function resolve(
   code: string,
   files: Record<string, string> = {},
   options?: Partial<SFCScriptCompileOptions>,
-  sourceFileName: string = '/Test.vue',
-  invalidateCache = true
+  sourceFileName: string = '/Test.vue'
 ) {
   const { descriptor } = parse(`<script setup lang="ts">\n${code}\n</script>`, {
     filename: sourceFileName,
@@ -1111,12 +1108,6 @@ function resolve(
     },
     ...options,
   })
-
-  if (invalidateCache) {
-    for (const file in files) {
-      invalidateTypeCache(file)
-    }
-  }
 
   // ctx.userImports is collected when calling compileScript(), but we are
   // skipping that here, so need to manually register imports

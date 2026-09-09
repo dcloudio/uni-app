@@ -1,4 +1,10 @@
-import { type BuildOptions, type ServerOptions, createLogger } from 'vite'
+import type {
+  BuildOptions,
+  LogLevel,
+  Logger,
+  Rolldown,
+  ServerOptions,
+} from 'vite'
 import { extend, hasOwn } from '@vue/shared'
 import {
   M,
@@ -12,13 +18,21 @@ import {
   resolveComponentsLibDirs,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
-import type { RollupWatcher } from 'rollup'
 
 import type { CliOptions } from '.'
-import { buildByVite, initBuildOptions } from './build'
-import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
+import {
+  type ViteBuildResult,
+  buildByVite,
+  cleanBuildOptions,
+  initBuildOptions,
+} from './build'
+import { addConfigFile, printStartupDuration } from './utils'
 import { initEasycom } from '../utils/easycom'
 import { stopProfiler } from './action'
+
+function createViteLogger(level?: LogLevel): Logger {
+  return require('vite').createLogger(level)
+}
 
 export function initUVueEnv() {
   // 直接指定了
@@ -55,7 +69,12 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
     return process.exit(0)
   }
   initEasycom()
-  const watcher = (await buildUVue(options)) as RollupWatcher
+  const watcher = await buildUVue(options)
+  if (!isViteWatcher(watcher)) {
+    const logger = createViteLogger(options.logLevel)
+    await stopProfiler((message) => logger.info(message))
+    return
+  }
   let isFirstStart = true
   let isFirstEnd = true
   watcher.on('event', async (event) => {
@@ -75,10 +94,9 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
         // 首次全量同步
         isFirstEnd = false
         output('log', M['dev.watching.end'])
-        printStartupDuration(createLogger(options.logLevel), false)
-        await stopProfiler((message) =>
-          createLogger(options.logLevel).info(message)
-        )
+        const logger = createViteLogger(options.logLevel)
+        printStartupDuration(logger, false)
+        await stopProfiler((message) => logger.info(message))
         return
       }
       if (dex) {
@@ -111,9 +129,8 @@ export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
       isX: true,
     })
     await buildUVue(options)
-    await stopProfiler((message) =>
-      createLogger(options.logLevel).info(message)
-    )
+    const logger = createViteLogger(options.logLevel)
+    await stopProfiler((message) => logger.info(message))
     console.log(M['build.done'])
     // 开发者可能用了三方插件，三方插件有可能阻止退出，导致HBuilderX打包状态识别不正确
     if (isInHBuilderX()) {
@@ -139,15 +156,19 @@ export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
  *  4. uvue、vue、uts 文件发生变化，调用 uts 编译器
  * @param options
  */
-export async function buildUVue(
-  options: CliOptions
-): Promise<RollupWatcher | void> {
+export async function buildUVue(options: CliOptions): Promise<ViteBuildResult> {
   return buildByVite(
     addConfigFile(
       extend(
         { nvueAppService: true, uvue: true },
-        initBuildOptions(options, cleanOptions(options) as BuildOptions)
+        initBuildOptions(options, cleanBuildOptions(options))
       )
     )
-  ) as Promise<RollupWatcher | void>
+  )
+}
+
+function isViteWatcher(
+  result: ViteBuildResult
+): result is Rolldown.RolldownWatcher {
+  return typeof result === 'object' && !Array.isArray(result) && 'on' in result
 }

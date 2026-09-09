@@ -23,7 +23,7 @@ import {
   parseIndependentRoot,
   withoutIndependentRoot,
 } from './independentUtils'
-import type { CustomPluginOptions, ResolvedId } from 'rollup'
+import type { CustomPluginOptions } from 'rollup'
 
 export function uniUsingComponentsPlugin(
   options: {
@@ -67,7 +67,7 @@ export function uniUsingComponentsPlugin(
           isEntry?: boolean
           skipSelf?: boolean
         }
-      ): Promise<ResolvedId | null> => {
+      ): Promise<any> => {
         const id = resolveUTSModule(
           source,
           importer
@@ -77,7 +77,7 @@ export function uniUsingComponentsPlugin(
         if (id) {
           source = id
         }
-        return this.resolve(source, importer, options)
+        return this.resolve(source, importer, options as any)
       }
       if (query.vue) {
         if (query.type === 'script') {

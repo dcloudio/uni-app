@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import type { Plugin } from 'vite'
-import type { EmittedAsset } from 'rollup'
+import type { Plugin, ResolvedConfig, Rolldown } from 'vite'
 import type { ExistingRawSourceMap } from 'rollup'
 import type { ParserOptions } from '@vue/compiler-core'
 import type {
@@ -37,7 +36,7 @@ interface UniVitePluginUniOptions {
   styleOptions?: Pick<SFCStyleCompileOptions, 'postcssPlugins'>
   compilerOptions?: {
     miniProgram?: {
-      emitFile?: (emittedFile: EmittedAsset) => string
+      emitFile?: (emittedFile: Rolldown.EmittedAsset) => string
     }
     isNativeTag?: ParserOptions['isNativeTag']
     isVoidTag?: ParserOptions['isVoidTag']
@@ -51,7 +50,17 @@ interface UniVitePluginUniOptions {
   }
   copyOptions?: CopyOptions | (() => CopyOptions)
 }
-export interface UniVitePlugin extends Plugin {
+
+type UniViteConfigResolvedHook =
+  | ((config: ResolvedConfig) => void | Promise<void>)
+  | {
+      handler: (config: ResolvedConfig) => void | Promise<void>
+      order?: 'pre' | 'post' | null
+      sequential?: boolean
+    }
+
+export interface UniVitePlugin extends Omit<Plugin, 'configResolved'> {
+  configResolved?: UniViteConfigResolvedHook
   uni?: UniVitePluginUniOptions
 }
 

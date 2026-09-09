@@ -1,5 +1,4 @@
 import type { Plugin } from 'vite'
-import type { PluginContext } from 'rollup'
 import fs from 'fs-extra'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import {
@@ -18,6 +17,12 @@ declare module '@vue/compiler-sfc' {
 }
 
 export const APP_CSS_JS = './app.css.js'
+
+type PluginContext = {
+  addWatchFile(id: string): void
+  error(error: unknown): never
+}
+
 export function uniAppCssPlugin(): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const appVueFilename = resolveAppVue(inputDir)

@@ -54,6 +54,10 @@ import { parseVueRequest } from '../../../utils'
 import { getIsStaticFile } from './static'
 // const debug = createDebugger('vite:css')
 
+type CssModuleContext = {
+  getModuleInfo(moduleId: string): { importedIds: string[] } | null
+}
+
 export interface CSSOptions {
   /**
    * https://github.com/css-modules/postcss-modules
@@ -315,7 +319,7 @@ export function cssPlugin(
 }
 
 function findCssModuleIds(
-  this: PluginContext,
+  this: CssModuleContext,
   moduleId: string,
   includeComponentCss: boolean = true,
   cssModuleIds?: Set<string>,

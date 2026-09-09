@@ -55,7 +55,7 @@ export function uniMainJsPlugin(
             typeof updateMiniProgramGlobalComponents
           >[2] & { root?: string } = {
             inputDir,
-            resolve: this.resolve,
+            resolve: this.resolve.bind(this) as any,
             normalizeComponentName,
             root: independentRoot,
           }

@@ -20904,7 +20904,7 @@ function back(delta, animationType, animationDuration) {
     _backWebview(currentPage, backPage);
 }
 
-const $navigateTo =  (args, { resolve, reject }) => {
+const $navigateTo = (args, { resolve, reject }) => {
     const { url, events, animationType, animationDuration } = args;
     const { path, query } = parseUrl(url);
     const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);

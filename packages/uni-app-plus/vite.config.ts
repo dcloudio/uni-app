@@ -8,12 +8,26 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import babel from '@rollup/plugin-babel'
 
-import { cssTarget } from '@dcloudio/uni-cli-shared'
+import {
+  cssTarget,
+  initPreContext,
+  uniPrePlugin,
+} from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
 }
+
+initPreContext('app', {}, 'app', false)
+
+const prePlugin = uniPrePlugin({} as any, {
+  // 先剥离条件编译，再交给 vue / jsx 解析，避免带 #if/#endif 的 TSX 直接进入语义解析并触发报错。
+  // 这个前置处理也会减少无效解析的工作量。
+  include: ['**/*.vue', '**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx'],
+  exclude: ['**/node_modules/**'],
+})
+prePlugin.enforce = 'pre'
 
 const rollupPlugins = [
   replace({
@@ -119,6 +133,7 @@ export default defineConfig({
     },
   },
   plugins: [
+    prePlugin,
     vue({
       template: {
         compilerOptions: {
@@ -128,11 +143,11 @@ export default defineConfig({
     }),
     vueJsx({ optimize: true, isCustomElement: isH5CustomElement }),
   ],
-  esbuild: {
+  oxc: {
     // 强制为 es2015，否则默认为 esnext，将会生成 __publicField 代码，
     // 部分 API 写的时候，使用了动态定义 prototype 的方式，与 __publicField 冲突，比如 createCanvasContext
     target: 'es2015',
-  },
+  } as any,
   build: {
     target: 'es2015',
     cssTarget,
@@ -141,11 +156,14 @@ export default defineConfig({
     lib: {
       name: 'uni-app-view',
       fileName: 'uni-app-view',
+      cssFileName: 'style',
       entry: path.resolve(__dirname, 'src/view/index.ts'),
       formats: ['umd'],
     },
     assetsDir: '.',
-    rollupOptions: {
+    rolldownOptions: {
+      // 允许类型导出在 Rolldown 里以空值占位，避免缺失导出直接中断构建。
+      shimMissingExports: true,
       // output: {
       //   globals: {
       //     vue: 'Vue',

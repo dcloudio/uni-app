@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
+    "baseUrl": ".",
     "moduleResolution": "node",
     "strict": true,
     "declaration": false,
@@ -12,6 +13,9 @@
     "module": "commonjs",
     "lib": ["ESNext"],
     "sourceMap": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "vite": ["node_modules/vite/dist/node/index.d.ts"]
+    }
   }
 }

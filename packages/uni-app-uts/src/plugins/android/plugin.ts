@@ -135,7 +135,7 @@ export function uniAppPlugin(): UniVitePlugin {
             entry: resolveMainPathOnce(inputDir),
             formats: ['cjs'],
           },
-          rollupOptions: {
+          rolldownOptions: {
             external(source) {
               if (
                 ['vue', 'vuex', 'pinia', '@dcloudio/uni-app'].includes(source)

@@ -11,10 +11,9 @@ export {
   createNativeEvent,
   $nne as normalizeNativeEvent,
 } from './plugin/componentInstance'
+export type { WxsElement, ComponentDescriptorVm } from './plugin/componentWxs'
 export {
-  WxsElement,
   ComponentDescriptor,
-  ComponentDescriptorVm,
   getComponentDescriptor,
   createComponentDescriptorVm,
 } from './plugin/componentWxs'

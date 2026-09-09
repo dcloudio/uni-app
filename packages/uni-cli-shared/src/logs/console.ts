@@ -1,5 +1,6 @@
 import MagicString from 'magic-string'
 import type { TransformResult } from 'vite'
+import type { SourceMap } from 'magic-string'
 import type * as tsTypes from 'typescript'
 import { normalizePath } from '../utils'
 import { shouldUseHighResolutionSourceMap } from '../x'
@@ -28,11 +29,27 @@ export function rewriteConsoleExpr(
     return {
       code: s.toString(),
       map: sourceMap
-        ? s.generateMap({ hires: shouldUseHighResolutionSourceMap() })
+        ? normalizeSourceMap(
+            s.generateMap({ hires: shouldUseHighResolutionSourceMap() })
+          )
         : { mappings: '' },
     }
   }
   return { code, map: null }
+}
+
+function normalizeSourceMap(
+  map: SourceMap
+): NonNullable<TransformResult['map']> {
+  return {
+    ...map,
+    file: map.file || '',
+    names: map.names || [],
+    sources: map.sources || [],
+    sourcesContent: map.sourcesContent || [],
+    toString: () => map.toString(),
+    toUrl: () => map.toUrl(),
+  }
 }
 
 export function restoreConsoleExpr(code: string): string {

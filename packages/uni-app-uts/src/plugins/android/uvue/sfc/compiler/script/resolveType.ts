@@ -900,32 +900,17 @@ function resolveExt(filename: string, fs: FS) {
   )
 }
 
-// const fileToScopeCache = createCache<TypeScope>()
-
-/**
- * @private
- */
-export function invalidateTypeCache(filename: string) {
-  // filename = normalizePath(filename)
-  // fileToScopeCache.delete(filename)
-}
-
 export function fileToScope(
   ctx: TypeResolveContext,
   filename: string,
   asGlobal = false
 ): TypeScope {
-  // const cached = fileToScopeCache.get(filename)
-  // if (cached) {
-  //   return cached
-  // }
   // fs should be guaranteed to exist here
   const fs = resolveFS(ctx)!
   const source = preUVueJs(fs.readFile(filename) || '', filename)
   const body = parseFile(filename, source, ctx.options.babelParserPlugins)
   const scope = new TypeScope(filename, source, 0, recordImports(body))
   recordTypes(ctx, body, scope, asGlobal)
-  // fileToScopeCache.set(filename, scope)
   return scope
 }
 

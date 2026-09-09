@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "../..",
     "outDir": "dist",
     "sourceMap": false,
     "declaration": true,
@@ -14,8 +15,19 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "removeComments": false,
-    "lib": ["ESNext"],
-    "types": ["node"]
+    "lib": [
+      "ESNext"
+    ],
+    "types": [
+      "node"
+    ],
+    "paths": {
+      "vite": [
+        "node_modules/vite/dist/node/index.d.ts"
+      ]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

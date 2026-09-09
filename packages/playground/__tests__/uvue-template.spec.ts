@@ -21,7 +21,7 @@ const actions = {
     'dev:mp-weixin': [
       {
         filename: 'pages/index/index.js',
-        includes: `vue.isRef(value) ? value.value = $event.detail.value : null`,
+        includes: `value.value = $event.detail.value`,
       },
     ],
     'build:app-android': [
@@ -39,13 +39,13 @@ const actions = {
     'build:app-ios': [
       {
         filename: 'app-service.js',
-        includes: `vue.isRef(value) ? value.value = $event : null`,
+        includes: `value.value = $event`,
       },
     ],
     'build:mp-weixin': [
       {
         filename: 'pages/index/index.js',
-        includes: `vue.isRef(value) ? value.value = $event.detail.value : null`,
+        includes: `value.value = $event.detail.value`,
       },
     ],
     'build:web': [

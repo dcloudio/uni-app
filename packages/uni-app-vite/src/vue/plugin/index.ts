@@ -19,11 +19,12 @@ import {
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import { restoreGlobalCode } from '@dcloudio/uni-cli-shared/dist/json/app/pages/code'
-import type { OutputBundle } from 'rollup'
+import type { Rolldown } from 'vite'
 import { APP_RENDERJS_JS, APP_WXS_JS } from '../plugins/renderjs'
 
 import { createConfigResolved } from '../../plugin/configResolved'
 import { templateDir } from '../../utils'
+import { replaceRolldownAppExternalRequire } from '../../plugins/rolldown'
 
 export function uniAppVuePlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -45,12 +46,14 @@ export function uniAppVuePlugin(): UniVitePlugin {
           },
         },
         build: {
-          rollupOptions: {
+          rolldownOptions: {
             external: ['vue', '@vue/shared'],
             output: {
               name: 'AppService',
               banner: polyfillCode + restoreGlobalCode,
-              format: process.env.UNI_APP_CODE_SPLITTING ? 'amd' : 'iife',
+              format: (process.env.UNI_APP_CODE_SPLITTING
+                ? 'amd'
+                : 'iife') as Rolldown.OutputOptions['format'],
               amd: {
                 autoId: true,
               },
@@ -109,6 +112,11 @@ export function uniAppVuePlugin(): UniVitePlugin {
       },
     }),
     generateBundle(_, bundle) {
+      Object.values(bundle).forEach((chunk) => {
+        if (chunk.type === 'chunk') {
+          chunk.code = replaceRolldownAppExternalRequire(chunk.code)
+        }
+      })
       if (isNormalCompileTarget()) {
         this.emitFile({
           fileName: '__uniappview.html',
@@ -120,7 +128,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
   }
 }
 
-function genViewHtml(bundle: OutputBundle) {
+function genViewHtml(bundle: Rolldown.OutputBundle) {
   const viewHtmlStr = fs.readFileSync(
     path.join(templateDir, '__uniappview.html'),
     'utf8'

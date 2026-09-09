@@ -92,7 +92,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         process.env.UNI_UTS_PLATFORM,
         process.env.UNI_INPUT_DIR
       )
-      Object.keys(build.rollupOptions?.input || {}).forEach((key) => {
+      Object.keys(build.rolldownOptions?.input || {}).forEach((key) => {
         encryptModuleOutputFiles.push(key + '.js')
       })
       return {
@@ -110,7 +110,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       }
       // 编译组件时，禁用内联资源
       config.build.assetsInlineLimit = 0
-      config.build.rollupOptions.external = createExternal(config)
+      config.build.rolldownOptions.external = createExternal(config)
       resolvedConfig = config
     },
     resolveId(id, importer) {
@@ -151,12 +151,9 @@ export function uniEncryptUniModulesPlugin(): Plugin {
           }
           delete bundle[fileName]
           const pkg = `uni_modules/${uniModuleId}/package.json`
-          bundle[pkg] = {
+          this.emitFile({
             type: 'asset',
             fileName: pkg,
-            name: pkg,
-            originalFileName: null,
-            needsCodeReference: false,
             source: genUniModulesPackageJson(
               uniModuleId,
               process.env.UNI_INPUT_DIR,
@@ -164,7 +161,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
                 env: initCheckEnv(),
               }
             ),
-          }
+          })
         } else if (fileName.endsWith('.js')) {
           if (isMp) {
             const output = bundle[fileName]
@@ -220,6 +217,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       if (uniXKotlinCompiler) {
         const tscOutputDir = tscOutDir('app-android')
         const uniModulesDir = path.resolve(tscOutputDir, 'uni_modules')
+        const rootFiles: string[] = []
         if (fs.existsSync(uniModulesDir)) {
           for (const plugin of fs.readdirSync(uniModulesDir)) {
             const indexFileName = path.join(
@@ -228,9 +226,12 @@ export function uniEncryptUniModulesPlugin(): Plugin {
               'index.module.uts.ts'
             )
             if (fs.existsSync(indexFileName)) {
-              await uniXKotlinCompiler.addRootFile(indexFileName)
+              rootFiles.push(indexFileName)
             }
           }
+        }
+        if (rootFiles.length) {
+          await uniXKotlinCompiler.addRootFiles([...new Set(rootFiles)])
         }
         await uniXKotlinCompiler.close()
       }
@@ -409,7 +410,7 @@ function initEncryptUniModulesBuildOptions(
     lib: false, // 不使用 lib 模式，lib模式会直接内联资源
     cssCodeSplit: false,
     // outDir: process.env.UNI_OUTPUT_DIR,
-    rollupOptions: {
+    rolldownOptions: {
       preserveEntrySignatures: 'strict',
       input,
       output: {

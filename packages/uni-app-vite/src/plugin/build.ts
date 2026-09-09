@@ -18,6 +18,7 @@ export function buildOptions(
   userConfig: UserConfig,
   _: ConfigEnv
 ): UserConfig['build'] {
+  type BuildSourcemap = boolean | 'inline' | 'hidden'
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // 开始编译时，清空输出目录
@@ -45,18 +46,23 @@ export function buildOptions(
       emptyOutDir()
     }
   }
-  const sourcemap =
-    process.env.UNI_APP_SOURCEMAP === 'true'
-      ? 'hidden'
-      : userConfig.build?.sourcemap
-      ? 'inline'
-      : false
+  const sourcemapSetting = process.env.UNI_APP_SOURCEMAP
+  // false 时直接关闭 sourcemap，避免构建阶段继续生成和处理映射，能明显减少
+  // rollup decode/encode 以及后续 map 合并的耗时；代价是调试定位能力下降。
+  let sourcemap: BuildSourcemap = false
+  if (sourcemapSetting === 'true') {
+    sourcemap = 'hidden'
+  } else if (sourcemapSetting === 'false') {
+    sourcemap = false
+  } else if (userConfig.build?.sourcemap) {
+    sourcemap = 'inline'
+  }
   return {
     // App 端目前仅提供 inline
     sourcemap,
     emptyOutDir: false, // 不清空输出目录，否则会影响 webpack 的输出
     assetsInlineLimit: 0,
-    rollupOptions: {
+    rolldownOptions: {
       input: resolveMainPathOnce(inputDir),
       output: {
         sourcemapPathTransform(relativeSourcePath, sourcemapPath) {
@@ -71,8 +77,7 @@ export function buildOptions(
           }
           return 'uni-app:///' + sourcePath
         },
-        manualChunks: {},
-        inlineDynamicImports: false,
+        codeSplitting: true,
         chunkFileNames(chunk) {
           if (chunk.isDynamicEntry && chunk.facadeModuleId) {
             const filepath = path.relative(inputDir, chunk.facadeModuleId)

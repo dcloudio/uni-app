@@ -21,7 +21,6 @@ export function uniPrePlugin(
     .concat(isX ? X_EXTNAME_VUE : EXTNAME_VUE)
     .concat(EXTNAME_JS) // 因为 1.0 也会使用 uts uni_modules，所以 EXTNAME_JS 直接包含了 .uts 后缀
   const PRE_HTML_EXTNAME = isX ? X_EXTNAME_VUE : EXTNAME_VUE
-
   const filter = createFilter(options.include, options.exclude)
   const isNVue = (config as any).nvue
   const preJsFile = isNVue ? preNVueJs : preJs

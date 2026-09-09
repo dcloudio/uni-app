@@ -1,4 +1,4 @@
-import type { TransformPluginContext } from 'rollup'
+import type { TransformPluginContextLike as TransformPluginContext } from '../../../context'
 import type {
   BindingMetadata,
   CompilerOptions,

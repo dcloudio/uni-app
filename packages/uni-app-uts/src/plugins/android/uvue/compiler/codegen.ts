@@ -1,4 +1,9 @@
-import { SourceMapGenerator } from 'source-map-js'
+import {
+  GenMapping,
+  addMapping as addGeneratedMapping,
+  setSourceContent,
+  toEncodedMap,
+} from '@jridgewell/gen-mapping'
 import {
   type ArrayExpression,
   CREATE_COMMENT,
@@ -90,7 +95,7 @@ export interface CodegenContext
   column: number
   offset: number
   indentLevel: number
-  map?: SourceMapGenerator
+  map?: GenMapping
   expressionPlugins: ParserPlugin[]
   helper(key: symbol): string
   push(code: string, node?: CodegenNode): void
@@ -180,9 +185,8 @@ function createCodegenContext(
   }
 
   function addMapping(loc: Position, name?: string) {
-    context.map!.addMapping({
-      name,
-      source: context.filename,
+    const mapping = {
+      source: context.filename!,
       original: {
         line: loc.line + originalLineOffset,
         column: loc.column - 1, // source-map column is 0 based
@@ -191,13 +195,19 @@ function createCodegenContext(
         line: context.line + generatedLineOffset,
         column: context.column - 1,
       },
-    })
+    }
+    if (name != null) {
+      addGeneratedMapping(context.map!, { ...mapping, name })
+      return
+    }
+    addGeneratedMapping(context.map!, mapping)
   }
 
   if (sourceMap) {
-    // lazy require source-map implementation, only in non-browser builds
-    context.map = new SourceMapGenerator()
-    context.map!.setSourceContent(filename, context.source)
+    // 改用 @jridgewell/gen-mapping，避免 source-map-js 在 watch 里反复解析和序列化，
+    // 这部分在模板编译里会被高频调用。
+    context.map = new GenMapping({ file: filename })
+    setSourceContent(context.map, filename, context.source)
   }
 
   return context
@@ -265,11 +275,10 @@ export function generate(
     code: context.code,
     preamble: preambleContext.code,
     preambleMap: preambleContext.map
-      ? (preambleContext.map as any).toJSON()
+      ? (toEncodedMap(preambleContext.map) as any)
       : undefined,
     easyComponentAutoImports: context.easyComponentAutoImports,
-    // SourceMapGenerator does have toJSON() method but it's not in the types
-    map: context.map ? (context.map as any).toJSON() : undefined,
+    map: context.map ? (toEncodedMap(context.map) as any) : undefined,
     // @ts-expect-error
     elements: ast.elements,
   }

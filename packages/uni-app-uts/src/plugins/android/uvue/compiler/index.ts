@@ -36,11 +36,20 @@ import { transformStyle } from './transforms/transformStyle'
 import { transformVHtml } from './transforms/vHtml'
 import { transformMemo } from './transforms/vMemo'
 import { transformOnce } from './transforms/vOnce'
+import type { RawSourceMap } from 'source-map-js'
 import {
-  type RawSourceMap,
-  SourceMapConsumer,
-  SourceMapGenerator,
-} from 'source-map-js'
+  GenMapping,
+  addMapping,
+  setSourceContent,
+  toEncodedMap,
+} from '@jridgewell/gen-mapping'
+import type { EncodedSourceMap as TraceEncodedSourceMap } from '@jridgewell/trace-mapping'
+import {
+  TraceMap,
+  eachMapping,
+  originalPositionFor,
+  sourceContentFor,
+} from '@jridgewell/trace-mapping'
 import { trackSlotScopes, trackVForSlotScopes } from './transforms/vSlot'
 import { transformElement } from './transforms/transformElement'
 import {
@@ -172,16 +181,24 @@ function mapLines(oldMap: RawSourceMap, newMap: RawSourceMap): RawSourceMap {
   if (!oldMap) return newMap
   if (!newMap) return oldMap
 
-  const oldMapConsumer = new SourceMapConsumer(oldMap)
-  const newMapConsumer = new SourceMapConsumer(newMap)
-  const mergedMapGenerator = new SourceMapGenerator()
+  const oldMapTracer = new TraceMap(
+    oldMap as Omit<RawSourceMap, 'version'> as TraceEncodedSourceMap
+  )
+  const newMapTracer = new TraceMap(
+    newMap as Omit<RawSourceMap, 'version'> as TraceEncodedSourceMap
+  )
+  const mergedMapGenerator = new GenMapping({
+    file: oldMap.file ?? newMap.file,
+    sourceRoot: oldMap.sourceRoot ?? newMap.sourceRoot,
+  })
 
-  newMapConsumer.eachMapping((m) => {
+  // 直接在 @jridgewell/gen-mapping 上重建映射，减少 source-map-js 的解析与序列化开销。
+  eachMapping(newMapTracer, (m) => {
     if (m.originalLine == null) {
       return
     }
 
-    const origPosInOldMap = oldMapConsumer.originalPositionFor({
+    const origPosInOldMap = originalPositionFor(oldMapTracer, {
       line: m.originalLine,
       column: m.originalColumn ?? 0,
     })
@@ -190,7 +207,7 @@ function mapLines(oldMap: RawSourceMap, newMap: RawSourceMap): RawSourceMap {
       return
     }
 
-    mergedMapGenerator.addMapping({
+    const mapping = {
       generated: {
         line: m.generatedLine,
         column: m.generatedColumn,
@@ -201,24 +218,50 @@ function mapLines(oldMap: RawSourceMap, newMap: RawSourceMap): RawSourceMap {
         // does not
         column: m.originalColumn ?? 0,
       },
-      source: origPosInOldMap.source,
-      name: origPosInOldMap.name,
-    })
-  })
-
-  // source-map's type definition is incomplete
-  const generator = mergedMapGenerator as any
-  ;(oldMapConsumer as any).sources.forEach((sourceFile: string) => {
-    generator._sources.add(sourceFile)
-    const sourceContent = oldMapConsumer.sourceContentFor(sourceFile)
-    if (sourceContent != null) {
-      mergedMapGenerator.setSourceContent(sourceFile, sourceContent)
+      source: origPosInOldMap.source!,
+    }
+    if (origPosInOldMap.name != null) {
+      addMapping(mergedMapGenerator, { ...mapping, name: origPosInOldMap.name })
+    } else {
+      addMapping(mergedMapGenerator, mapping)
     }
   })
 
-  generator._sourceRoot = oldMap.sourceRoot
-  generator._file = oldMap.file
-  return generator.toJSON()
+  oldMapTracer.sources.forEach((sourceFile) => {
+    if (!sourceFile) {
+      return
+    }
+    const sourceContent = sourceContentFor(oldMapTracer, sourceFile)
+    if (sourceContent != null) {
+      setSourceContent(mergedMapGenerator, sourceFile, sourceContent)
+    }
+  })
+
+  return normalizeSourceMap(toEncodedMap(mergedMapGenerator))
+}
+
+function normalizeSourceMap(
+  map: ReturnType<typeof toEncodedMap>
+): RawSourceMap {
+  const normalized: Record<string, any> = {
+    version: map.version,
+    sources: map.sources,
+    names: map.names,
+    mappings: map.mappings,
+  }
+  if (map.sourcesContent != null) {
+    normalized.sourcesContent = map.sourcesContent
+  }
+  if (map.file != null) {
+    normalized.file = map.file
+  }
+  if (map.sourceRoot != null) {
+    normalized.sourceRoot = map.sourceRoot
+  }
+  if (map.ignoreList?.length) {
+    normalized.ignoreList = map.ignoreList
+  }
+  return normalized as RawSourceMap
 }
 
 function wrapOptionsLog(source: string, options: TemplateCompilerOptions) {

@@ -40,8 +40,10 @@ if (!process.env.UNI_APP_EXT_API_DIR) {
 // }
 
 export function uts2ts({ target, platform }: Options): Plugin {
+  const extApiResolveCache = new Map<string, string>()
   return {
     name: 'uts2ts',
+    enforce: 'pre',
     config() {
       return {
         resolve: {
@@ -64,27 +66,29 @@ export function uts2ts({ target, platform }: Options): Plugin {
               find: '@dcloudio/uni-h5',
               replacement: resolve('../packages/uni-h5/src/index.ts'),
             },
-            {
-              find: /^@dcloudio\/uni-ext-api\/(.*)/,
-              replacement: '$1',
-              async customResolver(source) {
-                return resolveExtApi(target, platform, source).then(
-                  (fileName) => fileName.replace(/\\/g, '/')
-                )
-              },
-            },
-            {
-              find: /^@\/uni_modules\/(.*)/,
-              replacement: '$1',
-              async customResolver(source) {
-                return resolveExtApi(target, platform, source).then(
-                  (fileName) => fileName.replace(/\\/g, '/')
-                )
-              },
-            },
           ],
         },
       }
+    },
+    // 改成 pre resolveId 后，既能避开 Vite 8 对 alias.customResolver 的弃用警告，
+    // 也少走一层 alias 归一化；ext-api 命中后直接返回临时目录路径。
+    async resolveId(source) {
+      const extApiSource = resolveExtApiSource(source)
+      if (!extApiSource) {
+        return
+      }
+      const cached = extApiResolveCache.get(source)
+      if (cached) {
+        return cached
+      }
+      const resolved = await resolveExtApi(
+        target,
+        platform,
+        extApiSource.pathname
+      )
+      const resolvedId = resolved.replace(/\\/g, '/') + extApiSource.query
+      extApiResolveCache.set(source, resolvedId)
+      return resolvedId
     },
     buildStart() {
       // clearExtApiTempDir(target)
@@ -133,6 +137,23 @@ async function resolveExtApi(
   return fs.existsSync(filename)
     ? filename
     : path.resolve(extApiTempDir, name, 'utssdk', 'index.uts.ts')
+}
+
+function resolveExtApiSource(source: string) {
+  const queryIndex = source.indexOf('?')
+  const pathname = queryIndex === -1 ? source : source.slice(0, queryIndex)
+  if (pathname.startsWith('@dcloudio/uni-ext-api/')) {
+    return {
+      pathname: pathname.slice('@dcloudio/uni-ext-api/'.length),
+      query: queryIndex === -1 ? '' : source.slice(queryIndex),
+    }
+  }
+  if (pathname.startsWith('@/uni_modules/')) {
+    return {
+      pathname: pathname.slice('@/uni_modules/'.length),
+      query: queryIndex === -1 ? '' : source.slice(queryIndex),
+    }
+  }
 }
 
 const extApiChecked = new Set<string>()

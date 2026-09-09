@@ -365,14 +365,16 @@ export async function initUniXCompilerRootWorkers(
   compiler: UniXCompiler
 ) {
   const workers = getWorkers()
+  const rootFiles: string[] = []
   if (Object.keys(workers).length) {
     for (const key in workers) {
       const file = path.join(rootDir, key + '.ts')
       if (fs.existsSync(file)) {
-        if (!compiler.hasRootFile(file)) {
-          await compiler.addRootFile(file)
-        }
+        rootFiles.push(file)
       }
     }
+  }
+  if (rootFiles.length) {
+    await compiler.addRootFiles([...new Set(rootFiles)])
   }
 }

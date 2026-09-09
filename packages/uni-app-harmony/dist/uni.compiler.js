@@ -350,7 +350,7 @@ function uniAppHarmonyPlugin() {
         config() {
             return {
                 build: {
-                    rollupOptions: {
+                    rolldownOptions: {
                         external: [
                             ...Object.keys(commandGlobals),
                             ...harmonyGlobals,
@@ -387,7 +387,7 @@ function uniAppHarmonyPlugin() {
                 genAppHarmonyUniModules(this, process.env.UNI_INPUT_DIR, utsExtApis);
                 for (const key in bundle) {
                     const serviceBundle = bundle[key];
-                    if (serviceBundle.code) {
+                    if (serviceBundle.type === 'chunk') {
                         serviceBundle.code =
                             generateHarmonyImportExternalCode(serviceBundle.imports) +
                                 serviceBundle.code;

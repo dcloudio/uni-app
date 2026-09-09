@@ -25,7 +25,6 @@ import {
   resolveMainPathOnce,
   resolveWorkersRootDir,
 } from '@dcloudio/uni-cli-shared'
-import type { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
 import {
   getSubPackages,
   isUniComponentUrl,
@@ -69,7 +68,20 @@ export function createBuildOptions(
   platform: UniApp.PLATFORM,
   options: MiniProgramBuildOptions = {}
 ): BuildOptions {
-  const { renderDynamicImport } = dynamicImportPolyfill()
+  const dynamicImportPlugin = dynamicImportPolyfill()
+  const miniProgramDynamicImportPlugin: any = {
+    ...dynamicImportPlugin,
+    renderDynamicImport(options: any) {
+      const { targetModuleId } = options
+      if (targetModuleId && isMiniProgramAssetFile(targetModuleId)) {
+        return {
+          left: 'Promise.resolve(require(',
+          right: '))',
+        }
+      }
+      return dynamicImportPlugin.renderDynamicImport.call(this)
+    },
+  }
   return {
     // TODO 待优化，不同小程序平台sourcemap处理逻辑可能不同
     // TODO 目前存在两层sourcemap，一层是vite的，一层是小程序的，目前拿不到小程序的sourcemap，导致没法还原到源码，所以暂时不默认启用
@@ -85,7 +97,8 @@ export function createBuildOptions(
             entry: resolveMainPathOnce(inputDir),
             formats: ['cjs'],
           },
-    rollupOptions: {
+    rolldownOptions: {
+      plugins: [miniProgramDynamicImportPlugin],
       input:
         process.env.UNI_COMPILE_TARGET === 'uni_modules'
           ? {}
@@ -110,21 +123,6 @@ export function createBuildOptions(
         format: 'cjs',
         manualChunks: createMoveToVendorChunkFn(),
         chunkFileNames: createChunkFileNames(inputDir),
-        plugins: [
-          {
-            name: 'dynamic-import-polyfill',
-            renderDynamicImport(options) {
-              const { targetModuleId } = options
-              if (targetModuleId && isMiniProgramAssetFile(targetModuleId)) {
-                return {
-                  left: 'Promise.resolve(require(',
-                  right: '))',
-                }
-              }
-              return (renderDynamicImport as Function).call(this, options)
-            },
-          },
-        ],
       },
     },
   }
@@ -245,14 +243,14 @@ function isVueJs(id: string) {
 
 const chunkFileNameBlackList = ['main', 'pages.json', 'manifest.json']
 
-function createMoveToVendorChunkFn(): GetManualChunk | undefined {
+function createMoveToVendorChunkFn() {
   // 云端编译时，不拆分文件
   if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
     return undefined
   }
   const cache = new Map<string, boolean>()
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
-  return (id, { getModuleInfo }) => {
+  return (id: string, { getModuleInfo }: any) => {
     const independentRoot = parseIndependentRoot(id)
     const idWithoutIndependentRoot = independentRoot
       ? withoutIndependentRoot(id)
@@ -375,7 +373,7 @@ function resolveWorkerChunkName(chunkFileName: string) {
 
 function staticImportedByEntry(
   id: string,
-  getModuleInfo: GetModuleInfo,
+  getModuleInfo: any,
   cache: Map<string, boolean>,
   importStack: string[] = []
 ): boolean {
@@ -409,10 +407,8 @@ function staticImportedByEntry(
   return someImporterIs
 }
 
-function createChunkFileNames(
-  inputDir: string
-): (chunkInfo: PreRenderedChunk) => string {
-  return function chunkFileNames(chunk) {
+function createChunkFileNames(inputDir: string) {
+  return function chunkFileNames(chunk: any) {
     if (chunk.isDynamicEntry && chunk.facadeModuleId) {
       let id = chunk.facadeModuleId
       let independentRoot = parseIndependentRoot(id)
@@ -463,7 +459,7 @@ function createChunkFileNames(
   }
 }
 
-function findIndependentChunkRoot(chunk: PreRenderedChunk) {
+function findIndependentChunkRoot(chunk: { moduleIds?: string[] }) {
   return chunk.moduleIds?.map(parseIndependentRoot).find(Boolean)
 }
 

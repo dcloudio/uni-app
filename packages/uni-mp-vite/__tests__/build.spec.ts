@@ -34,7 +34,7 @@ async function withMiniProgramProject(
 function getRollupOutput(inputDir: string) {
   return createBuildOptions(inputDir, 'mp-weixin', {
     app: { independentSubpackages: true },
-  }).rollupOptions!.output as Record<string, Function>
+  }).rolldownOptions!.output as Record<string, Function>
 }
 
 function clearCompileTarget() {
@@ -127,14 +127,14 @@ describe('mp vite build options', () => {
       expect(
         createBuildOptions(inputDir, 'mp-weixin', {
           app: { independentSubpackages: true },
-        }).rollupOptions!.input
+        }).rolldownOptions!.input
       ).toMatchObject({
         'package-a/common/main': expect.any(String),
       })
       expect(
         createBuildOptions(inputDir, 'mp-weixin', {
           app: { independentSubpackages: false },
-        }).rollupOptions!.input
+        }).rolldownOptions!.input
       ).not.toHaveProperty('package-a/common/main')
     })
   })

@@ -6,7 +6,6 @@ import {
   NodeTypes,
 } from '@vue/compiler-core'
 import { parse } from '@vue/compiler-dom'
-import { isVueSfcFile } from '../../../vue'
 import { getUniAppXVaporScriptLang } from '../../../json'
 import {
   isUniAppX,
@@ -15,8 +14,16 @@ import {
 } from '../../../x'
 
 const SCRIPT_OPEN_TAG_RE = /<script([^>]*)>/gi
+const SCRIPT_TAG_RE = /<script/i
 const SCRIPT_LANG_RE =
   /(^|\s)lang\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/i
+
+function isAppPlatform() {
+  const platform = process.env.UNI_PLATFORM
+  return (
+    platform === 'app' || platform === 'app-plus' || platform === 'app-harmony'
+  )
+}
 
 interface ScriptTag {
   end: number
@@ -68,6 +75,7 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const standardScriptSupported = isUniAppXStandardScriptSupported()
   const platform = process.env.UNI_UTS_PLATFORM || process.env.UNI_PLATFORM
+  const isApp = isAppPlatform()
   const vaporScriptPlatform =
     isUniAppXVapor() ||
     (isUniAppX() &&
@@ -90,14 +98,36 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
       }
     },
     transform(code, id) {
-      if (!isVueSfcFile(id)) {
+      const previousScriptMeta = this.getModuleInfo?.(id)?.meta
+        ?.uniAppXScript as { hasImplicitLang?: boolean } | undefined
+      const shouldClearImplicitLangMeta =
+        previousScriptMeta?.hasImplicitLang === true
+      if (!SCRIPT_TAG_RE.test(code)) {
+        if (isApp) {
+          return {
+            code,
+            map: { mappings: '' },
+            meta: shouldClearImplicitLangMeta
+              ? {
+                  uniAppXScript: {
+                    hasImplicitLang: false,
+                  },
+                }
+              : undefined,
+          }
+        }
+        if (shouldClearImplicitLangMeta) {
+          return {
+            code,
+            meta: {
+              uniAppXScript: {
+                hasImplicitLang: false,
+              },
+            },
+          }
+        }
         return
       }
-      const platform = process.env.UNI_PLATFORM
-      const isApp =
-        platform === 'app' ||
-        platform === 'app-plus' ||
-        platform === 'app-harmony'
       const scriptTags = standardScriptSupported
         ? parse(code, {
             parseMode: 'sfc',
@@ -161,10 +191,6 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
           }
         }
         // fixed by uts HMR 从隐式 lang 切换为显式 lang 时，覆盖模块缓存中的旧元数据。
-        const previousScriptMeta = this.getModuleInfo?.(id)?.meta
-          ?.uniAppXScript as { hasImplicitLang?: boolean } | undefined
-        const shouldClearImplicitLangMeta =
-          previousScriptMeta?.hasImplicitLang === true
         if (!changed) {
           // App 旧流程即使未改写 script 标签也会返回空 map，用于隔离后续
           // uni:pre-vue 无 map 的条件编译，避免同一 SFC 出现不同 sourcesContent。
@@ -223,15 +249,19 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
  * @returns
  */
 export function uniUVueTypeScriptPlugin(options = {}): Plugin {
+  const isApp = isAppPlatform()
   return {
     name: 'uni:uvue-ts',
     enforce: 'pre',
-    transform(code, id) {
-      if (!isVueSfcFile(id)) {
-        return
+    transform(code) {
+      if (!SCRIPT_TAG_RE.test(code)) {
+        return {
+          code,
+          map: isApp ? { mappings: '' } : null,
+        }
       }
       return {
-        code: code.replace(/<script([^>]*)>/gi, (match, attributes) => {
+        code: code.replace(SCRIPT_OPEN_TAG_RE, (match, attributes) => {
           // 如果 <script> 标签中没有 lang 属性，添加 lang="uts"
           if (!/lang=["']?[^"']*["']?/.test(attributes)) {
             return `<script${attributes} lang="ts">`
@@ -239,7 +269,8 @@ export function uniUVueTypeScriptPlugin(options = {}): Plugin {
           // 否则，将现有的 lang 属性替换为 lang="uts"
           return match.replace(/lang=["']?uts["']?/, 'lang="ts"')
         }),
-        map: { mappings: '' },
+        // app 平台仍保留空 map，避免后续 sourcemap 行为变化
+        map: isApp ? { mappings: '' } : null,
       }
     },
   }

@@ -5,5 +5,12 @@
     "../global.d.ts",
     "../shims-uni-app.d.ts",
     "../shims-vue-runtime.d.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "paths": {
+      "vite": [
+        "node_modules/vite/dist/node/index.d.ts"
+      ]
+    }
+  }
 }

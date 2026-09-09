@@ -19,7 +19,8 @@ import {
 import autoprefixer from 'autoprefixer'
 import { uts2ts } from '../../scripts/ext-api'
 
-import { initUniAppJsEngineDom1CssPlugin } from '@dcloudio/uni-app-uts'
+// 直接引更窄的源码入口，避免 x 构建依赖已生成的 dist/index.js，也绕开不必要的包入口解析。
+import { initUniAppJsEngineDom1CssPlugin } from '../uni-app-uts/src/plugins/js/plugin'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -77,6 +78,27 @@ const rollupPlugins = [
 ]
 
 type X_RUNTIME_PLATFORM = 'app-harmony' | 'app-ios' | 'app-android'
+
+const moduleBuildTarget = [
+  'es2020',
+  'edge88',
+  'firefox78',
+  'chrome87',
+  'safari14',
+]
+
+const prePlugin = uniPrePlugin({} as any, {
+  // x 链路里带条件编译的核心源码多在 .ts/.tsx 中，必须在解析前先剥离。
+  include: [
+    '**/*.vue',
+    '**/*.js',
+    '**/*.ts',
+    '**/*.jsx',
+    '**/*.tsx',
+    '**/*.uts',
+  ],
+})
+prePlugin.enforce = 'pre'
 
 function resolveEntryFileName(platform: X_RUNTIME_PLATFORM, isVapor: boolean) {
   if (isVapor) {
@@ -164,7 +186,7 @@ function createConfig(
       },
     },
     plugins: [
-      uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts'] }),
+      prePlugin,
       uniUVueTypeScriptPlugin(),
       uniRemoveCssScopedPlugin(),
       {
@@ -190,8 +212,10 @@ function createConfig(
     ],
     build: {
       emptyOutDir: false,
-      target: 'modules',
+      // Vite 8/Rolldown no longer expands `modules` before passing the target to Oxc.
+      target: moduleBuildTarget,
       cssTarget,
+      // 这里仍用 terser，esbuild 在当前 target 下会触发转译失败；代价是构建更慢，但产物更稳。
       minify: 'terser',
       cssCodeSplit: false,
       lib: {
@@ -199,14 +223,14 @@ function createConfig(
         entry: path.resolve(__dirname, 'src/x/index.ts'),
         formats: ['es'],
       },
-      polyfillModulePreload: false,
       modulePreload: false,
       assetsDir: '.',
-      rollupOptions: {
-        treeshake: 'smallest',
+      rolldownOptions: {
+        // 允许类型导出在 Rolldown 里以空值占位，避免缺失导出直接中断构建。
+        shimMissingExports: true,
+        treeshake: true,
         output: {
           dir: 'dist',
-          freeze: false,
           entryFileNames: resolveEntryFileName(platform, isVapor),
         },
         preserveEntrySignatures: 'strict',

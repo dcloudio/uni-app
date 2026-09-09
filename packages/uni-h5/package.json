@@ -37,6 +37,7 @@
     "@dcloudio/uni-i18n": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
     "@vue/server-renderer": "catalog:",
+    "@vue/devtools-api": "^6.6.4",
     "@vue/shared": "catalog:",
     "debug": "catalog:",
     "localstorage-polyfill": "^1.0.1",

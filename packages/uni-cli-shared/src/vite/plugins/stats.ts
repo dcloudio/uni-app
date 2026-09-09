@@ -1,5 +1,4 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { OutputBundle } from 'rollup'
 import fs from 'fs-extra'
 import { hash } from '../../utils'
 import { parseJson } from '../../json'
@@ -52,7 +51,7 @@ function appendChangedFile(
 function appendImporterFiles(
   changedFiles: string[],
   seenFiles: Set<string>,
-  bundle: OutputBundle
+  bundle: Record<string, any>
 ) {
   const importerMap = new Map<string, string[]>()
 

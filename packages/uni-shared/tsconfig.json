@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "../..",
     "outDir": "dist",
     "sourceMap": false,
     "declaration": true,
@@ -17,7 +18,12 @@
     "lib": [
       "ESNext",
       "DOM"
-    ]
+    ],
+    "paths": {
+      "vite": [
+        "node_modules/vite/dist/node/index.d.ts"
+      ]
+    }
   },
   "include": [
     "src",

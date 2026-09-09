@@ -83,7 +83,10 @@ export function uniInjectPlugin(): Plugin {
       )
     },
     transform(code, id) {
-      return (injectPlugin.transform as Function).call(this, code, id)
+      const transform = injectPlugin.transform as any
+      return (
+        typeof transform === 'function' ? transform : transform.handler
+      ).call(this, code, id)
     },
   }
 }

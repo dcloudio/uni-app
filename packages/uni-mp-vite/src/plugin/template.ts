@@ -1,6 +1,5 @@
 import path from 'path'
 import debug from 'debug'
-import type { EmittedFile, GetModuleInfo } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import {
   type MiniProgramFilterOptions,
@@ -15,6 +14,9 @@ import { getFiltersCache } from '../plugins/renderjs'
 import type { UniMiniProgramPluginOptions } from '.'
 
 const debugTemplate = debug('uni:mp-template')
+
+type EmittedFile = any
+type GetModuleInfo = any
 
 export function getFilterFiles(
   resolvedConfig: ResolvedConfig,

@@ -51,11 +51,11 @@ exports[`assets playground uni-app build:mp-alipay: assets/pages-index-static_in
 
 exports[`assets playground uni-app build:mp-alipay: common/assets.js 1`] = `
 [
+  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""/static/static_logo.png"",
   ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
   ""/static/static_logo.png"",
   ""/pages/sub/static/pages-sub-static_2.jpg"",
-  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
-  ""/static/static_logo.png"",
 ]
 `;
 
@@ -71,11 +71,11 @@ exports[`assets playground uni-app build:mp-baidu: assets/pages-index-static_inv
 
 exports[`assets playground uni-app build:mp-baidu: common/assets.js 1`] = `
 [
+  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""/static/static_logo.png"",
   ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
   ""/static/static_logo.png"",
   ""/pages/sub/static/pages-sub-static_2.jpg"",
-  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
-  ""/static/static_logo.png"",
 ]
 `;
 
@@ -91,11 +91,11 @@ exports[`assets playground uni-app build:mp-kuaishou: assets/pages-index-static_
 
 exports[`assets playground uni-app build:mp-kuaishou: common/assets.js 1`] = `
 [
+  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""/static/static_logo.png"",
   ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
   ""/static/static_logo.png"",
   ""/pages/sub/static/pages-sub-static_2.jpg"",
-  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
-  ""/static/static_logo.png"",
 ]
 `;
 
@@ -111,11 +111,11 @@ exports[`assets playground uni-app build:mp-lark: assets/pages-index-static_inva
 
 exports[`assets playground uni-app build:mp-lark: common/assets.js 1`] = `
 [
+  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""/static/static_logo.png"",
   ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
   ""/static/static_logo.png"",
   ""/pages/sub/static/pages-sub-static_2.jpg"",
-  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
-  ""/static/static_logo.png"",
 ]
 `;
 
@@ -131,11 +131,11 @@ exports[`assets playground uni-app build:mp-qq: assets/pages-index-static_invali
 
 exports[`assets playground uni-app build:mp-qq: common/assets.js 1`] = `
 [
+  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""/static/static_logo.png"",
   ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
   ""/static/static_logo.png"",
   ""/pages/sub/static/pages-sub-static_2.jpg"",
-  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
-  ""/static/static_logo.png"",
 ]
 `;
 
@@ -151,11 +151,11 @@ exports[`assets playground uni-app build:mp-toutiao: assets/pages-index-static_i
 
 exports[`assets playground uni-app build:mp-toutiao: common/assets.js 1`] = `
 [
+  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""/static/static_logo.png"",
   ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
   ""/static/static_logo.png"",
   ""/pages/sub/static/pages-sub-static_2.jpg"",
-  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
-  ""/static/static_logo.png"",
 ]
 `;
 
@@ -171,11 +171,11 @@ exports[`assets playground uni-app build:mp-weixin: assets/pages-index-static_in
 
 exports[`assets playground uni-app build:mp-weixin: common/assets.js 1`] = `
 [
+  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""/static/static_logo.png"",
   ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
   ""/static/static_logo.png"",
   ""/pages/sub/static/pages-sub-static_2.jpg"",
-  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
-  ""/static/static_logo.png"",
 ]
 `;
 
@@ -207,6 +207,16 @@ exports[`assets playground uni-app-x build:app-android: uni_modules/test-com/sta
 
 exports[`assets playground uni-app-x build:app-android: uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg 1`] = `"uni_modules-test-com-static_shuijiao.jpg"`;
 
+exports[`assets playground uni-app-x build:app-ios: .uniappx/android/src/index.kt 1`] = `
+[
+  ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
+  ""/static/static_logo.png"",
+  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""/static/static_logo.png"",
+  ""/pages/sub/static/pages-sub-static_2.jpg"",
+]
+`;
+
 exports[`assets playground uni-app-x build:app-ios: app-service.js 1`] = `
 [
   ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
@@ -219,13 +229,43 @@ exports[`assets playground uni-app-x build:app-ios: app-service.js 1`] = `
 
 exports[`assets playground uni-app-x build:app-ios: assets/pages-index-static_invalid-static.34ae5d3b.jpg 1`] = `"pages-index-static_invalid-static.34ae5d3b.jpg"`;
 
+exports[`assets playground uni-app-x build:app-ios: assets/pages-index-static_invalid-static.34ae5d3b.jpg 2`] = `"pages-index-static_invalid-static.34ae5d3b.jpg"`;
+
 exports[`assets playground uni-app-x build:app-ios: pages/sub/static/pages-sub-static_2.jpg 1`] = `"pages-sub-static_2.jpg"`;
+
+exports[`assets playground uni-app-x build:app-ios: pages/sub/static/pages-sub-static_2.jpg 2`] = `"pages-sub-static_2.jpg"`;
 
 exports[`assets playground uni-app-x build:app-ios: static/static_logo.png 1`] = `"static_logo.png"`;
 
+exports[`assets playground uni-app-x build:app-ios: static/static_logo.png 2`] = `"static_logo.png"`;
+
 exports[`assets playground uni-app-x build:app-ios: uni_modules/test-com/static/uni_modules-test-com-static_logo.png 1`] = `"uni_modules-test-com-static_logo.png"`;
 
+exports[`assets playground uni-app-x build:app-ios: uni_modules/test-com/static/uni_modules-test-com-static_logo.png 2`] = `"uni_modules-test-com-static_logo.png"`;
+
 exports[`assets playground uni-app-x build:app-ios: uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg 1`] = `"uni_modules-test-com-static_shuijiao.jpg"`;
+
+exports[`assets playground uni-app-x build:app-ios: uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg 2`] = `"uni_modules-test-com-static_shuijiao.jpg"`;
+
+exports[`assets playground uni-app-x build:h5: .uniappx/android/src/index.kt 1`] = `
+[
+  ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
+  ""/static/static_logo.png"",
+  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""/static/static_logo.png"",
+  ""/pages/sub/static/pages-sub-static_2.jpg"",
+]
+`;
+
+exports[`assets playground uni-app-x build:h5: app-service.js 1`] = `
+[
+  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""/static/static_logo.png"",
+  ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
+  ""/static/static_logo.png"",
+  ""/pages/sub/static/pages-sub-static_2.jpg"",
+]
+`;
 
 exports[`assets playground uni-app-x build:h5: assets/pages-index-index.js 1`] = `
 [
@@ -233,6 +273,10 @@ exports[`assets playground uni-app-x build:h5: assets/pages-index-index.js 1`] =
   ""/assets/pages-index-static_invalid-static-CONWi2JP.jpg"",
 ]
 `;
+
+exports[`assets playground uni-app-x build:h5: assets/pages-index-static_invalid-static.34ae5d3b.jpg 1`] = `"pages-index-static_invalid-static.34ae5d3b.jpg"`;
+
+exports[`assets playground uni-app-x build:h5: assets/pages-index-static_invalid-static.34ae5d3b.jpg 2`] = `"pages-index-static_invalid-static.34ae5d3b.jpg"`;
 
 exports[`assets playground uni-app-x build:h5: assets/pages-index-static_invalid-static-CONWi2JP.jpg 1`] = `"pages-index-static_invalid-static-CONWi2JP.jpg"`;
 
@@ -248,21 +292,37 @@ exports[`assets playground uni-app-x build:h5: assets/uni_modules-test-com-stati
 
 exports[`assets playground uni-app-x build:h5: pages/sub/static/pages-sub-static_2.jpg 1`] = `"pages-sub-static_2.jpg"`;
 
+exports[`assets playground uni-app-x build:h5: pages/sub/static/pages-sub-static_2.jpg 2`] = `"pages-sub-static_2.jpg"`;
+
+exports[`assets playground uni-app-x build:h5: pages/sub/static/pages-sub-static_2.jpg 3`] = `"pages-sub-static_2.jpg"`;
+
 exports[`assets playground uni-app-x build:h5: static/static_logo.png 1`] = `"static_logo.png"`;
+
+exports[`assets playground uni-app-x build:h5: static/static_logo.png 2`] = `"static_logo.png"`;
+
+exports[`assets playground uni-app-x build:h5: static/static_logo.png 3`] = `"static_logo.png"`;
 
 exports[`assets playground uni-app-x build:h5: uni_modules/test-com/static/uni_modules-test-com-static_logo.png 1`] = `"uni_modules-test-com-static_logo.png"`;
 
+exports[`assets playground uni-app-x build:h5: uni_modules/test-com/static/uni_modules-test-com-static_logo.png 2`] = `"uni_modules-test-com-static_logo.png"`;
+
+exports[`assets playground uni-app-x build:h5: uni_modules/test-com/static/uni_modules-test-com-static_logo.png 3`] = `"uni_modules-test-com-static_logo.png"`;
+
 exports[`assets playground uni-app-x build:h5: uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg 1`] = `"uni_modules-test-com-static_shuijiao.jpg"`;
+
+exports[`assets playground uni-app-x build:h5: uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg 2`] = `"uni_modules-test-com-static_shuijiao.jpg"`;
+
+exports[`assets playground uni-app-x build:h5: uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg 3`] = `"uni_modules-test-com-static_shuijiao.jpg"`;
 
 exports[`assets playground uni-app-x build:mp-weixin: assets/pages-index-static_invalid-static.34ae5d3b.jpg 1`] = `"pages-index-static_invalid-static.34ae5d3b.jpg"`;
 
 exports[`assets playground uni-app-x build:mp-weixin: common/assets.js 1`] = `
 [
+  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""/static/static_logo.png"",
   ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
   ""/static/static_logo.png"",
   ""/pages/sub/static/pages-sub-static_2.jpg"",
-  ""/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
-  ""/static/static_logo.png"",
 ]
 `;
 
@@ -275,14 +335,6 @@ exports[`assets playground uni-app-x build:mp-weixin: uni_modules/test-com/stati
 exports[`assets playground uni-app-x build:mp-weixin: uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg 1`] = `"uni_modules-test-com-static_shuijiao.jpg"`;
 
 exports[`assets playground uni-app-x dev:app-android: assets/pages-index-static_invalid-static.34ae5d3b.jpg 1`] = `"pages-index-static_invalid-static.34ae5d3b.jpg"`;
-
-exports[`assets playground uni-app-x dev:app-android: pages/sub/static/pages-sub-static_2.jpg 1`] = `"pages-sub-static_2.jpg"`;
-
-exports[`assets playground uni-app-x dev:app-android: static/static_logo.png 1`] = `"static_logo.png"`;
-
-exports[`assets playground uni-app-x dev:app-android: uni_modules/test-com/static/uni_modules-test-com-static_logo.png 1`] = `"uni_modules-test-com-static_logo.png"`;
-
-exports[`assets playground uni-app-x dev:app-android: uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg 1`] = `"uni_modules-test-com-static_shuijiao.jpg"`;
 
 exports[`assets playground uni-app-x dev:app-ios: app-service.js 1`] = `
 [

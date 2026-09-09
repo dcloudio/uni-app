@@ -27,7 +27,7 @@ import {
   transformUTSComponent,
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
-import type { ResolvedConfig } from 'vite'
+import type { ResolvedConfig, Rolldown } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 import { getDom2BytecodeVersion } from './bytecodeVersion'
 
@@ -183,10 +183,45 @@ export function configResolved(config: ResolvedConfig, isAndroidVdom = false) {
       (isAndroidVdom || plugin !== 'vite:esbuild')
   )
   removePlugins(removedPlugins, config)
+  normalizeRolldownExternal(config)
   // console.log(plugins.map((p) => p.name))
   // 强制不inline
   config.build.assetsInlineLimit = 0
   injectAssetPlugin(config, { isAndroidX: isAndroidVdom })
+}
+
+type ExternalFunction = (
+  source: string,
+  importer: string | undefined,
+  isResolved: boolean
+) => boolean | null | void
+
+function normalizeRolldownExternal(config: ResolvedConfig) {
+  const rolldownOptions = config.build?.rolldownOptions
+  if (!rolldownOptions) {
+    return
+  }
+  const external = rolldownOptions.external
+  if (
+    !Array.isArray(external) ||
+    !external.some((item) => typeof item === 'function')
+  ) {
+    return
+  }
+  // Rolldown 支持纯数组 external（字符串/正则）和函数 external，
+  // 但不支持 Vite 多插件配置合并后产生的混合数组。
+  // 统一转换为回调，保持原有逐项匹配语义；只增加一次配置归一化开销，
+  // 不会缓存编译结果，也不会增加 watch 期间的长期内存占用。
+  rolldownOptions.external = ((source, importer, isResolved) =>
+    external.some((item) => {
+      if (typeof item === 'function') {
+        return (item as ExternalFunction)(source, importer, isResolved)
+      }
+      if (item instanceof RegExp) {
+        return item.test(source)
+      }
+      return item === source
+    })) as Rolldown.ExternalOption
 }
 
 export function relativeInputDir(filename: string) {

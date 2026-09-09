@@ -4,12 +4,6 @@ import {
   normalizePath,
   relativeFile,
 } from '@dcloudio/uni-cli-shared'
-import type {
-  EmittedFile,
-  OutputAsset,
-  OutputBundle,
-  OutputChunk,
-} from 'rollup'
 import type { Plugin } from 'vite'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import {
@@ -30,6 +24,11 @@ import {
 import { resolveIndependentMainPath } from './independentMain'
 
 const INDEPENDENT_RUNTIME_FLAG = '__UNI_MP_INDEPENDENT_RUNTIME__'
+
+type EmittedFile = any
+type OutputAsset = any
+type OutputBundle = Record<string, any>
+type OutputChunk = any
 
 export function uniIndependentSubpackagePlugin(
   options: UniMiniProgramPluginOptions

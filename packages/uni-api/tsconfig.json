@@ -1,4 +1,13 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src"]
+  "include": [
+    "src"
+  ],
+  "compilerOptions": {
+    "paths": {
+      "vite": [
+        "node_modules/vite/dist/node/index.d.ts"
+      ]
+    }
+  }
 }

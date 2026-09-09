@@ -4,7 +4,8 @@
     "baseUrl": "./",
     "outDir": "dist",
     "paths": {
-      "types/alias": ["types/alias.d.ts"]
+      "types/alias": ["types/alias.d.ts"],
+      "vite": ["../../node_modules/vite/dist/node/index.d.ts"]
     }
   },
   "include": [

@@ -272,7 +272,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     const source = '<script setup lang="ts">uni.loadUasm(modulePath)</script>'
 
     if (typeof plugin.configResolved === 'function') {
-      plugin.configResolved({
+      ;(plugin.configResolved as any)({
         command: 'build',
         build: { sourcemap: false },
         plugins: [],
@@ -392,7 +392,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     const config = { plugins: [esbuildPlugin] }
 
     if (typeof plugin.configResolved === 'function') {
-      plugin.configResolved(config as any)
+      ;(plugin.configResolved as any)(config as any)
     }
 
     expect(config.plugins).toContain(esbuildPlugin)
@@ -416,11 +416,60 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
       )
       expect(result).toBeUndefined()
       if (typeof plugin.configResolved === 'function') {
-        plugin.configResolved(config as any)
+        ;(plugin.configResolved as any)(config as any)
       }
       expect(config.plugins).toContain(esbuildPlugin)
     }
   )
+
+  test('skips parsing template-only SFCs in app-harmony', () => {
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    process.env.UNI_PLATFORM = 'app-harmony'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+    expect(
+      transform.call(
+        {} as any,
+        '<template><view/></template>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual({
+      code: '<template><view/></template>',
+      map: { mappings: '' },
+    })
+  })
+
+  test('clears stale implicit lang metadata for template-only SFCs', () => {
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    process.env.UNI_PLATFORM = 'app-harmony'
+    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+
+    expect(
+      transform.call(
+        {
+          getModuleInfo: () => ({
+            meta: {
+              uniAppXScript: {
+                hasImplicitLang: true,
+              },
+            },
+          }),
+        } as any,
+        '<template><view/></template>',
+        '/pages/index/index.uvue'
+      )
+    ).toEqual({
+      code: '<template><view/></template>',
+      map: { mappings: '' },
+      meta: {
+        uniAppXScript: {
+          hasImplicitLang: false,
+        },
+      },
+    })
+  })
 
   test('keeps the legacy empty source map for default UTS scripts on Harmony', () => {
     Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
@@ -495,7 +544,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
       })
     )
     if (typeof plugin.configResolved === 'function') {
-      plugin.configResolved(config as any)
+      ;(plugin.configResolved as any)(config as any)
     }
     expect(config.plugins).not.toContain(esbuildPlugin)
   })

@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.uts",
+    "src/**/*.d.ts"
+  ]
+}

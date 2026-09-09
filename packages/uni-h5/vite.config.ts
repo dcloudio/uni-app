@@ -39,10 +39,18 @@ const FORMAT = process.env.FORMAT as 'es' | 'cjs'
 const isX = process.env.UNI_APP_X === 'true'
 const isX_VAPOR = process.env.UNI_APP_X_VAPOR === 'true'
 
+const moduleBuildTarget = [
+  'es2020',
+  'edge88',
+  'firefox78',
+  'chrome87',
+  'safari14',
+]
+
+initPreContext('web', {}, 'web', isX)
+
 let systemPagePaths: Record<string, string> = {}
 if (isX) {
-  initPreContext('web', {}, 'web', true)
-
   const apiDirs: string[] = []
   if (process.env.UNI_APP_EXT_API_DIR) {
     apiDirs.push(process.env.UNI_APP_EXT_API_DIR)
@@ -105,12 +113,20 @@ function realIsH5CustomElement(tag: string) {
   return isH5CustomElement(tag, isX)
 }
 
-let prePlugin: any
-if (isX) {
-  // 仅给vue,uts.ts增加条件编译
-  prePlugin = uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts.ts'] })
-  prePlugin.enforce = 'pre'
-}
+// 先剥离条件编译，再交给 vue / jsx 解析，避免带 #if/#endif 的 TSX 直接进入语义解析并触发报错。
+// 同时排除 node_modules，避免把第三方包里的注释块也扫进去。
+const prePlugin = uniPrePlugin({} as any, {
+  include: [
+    '**/*.vue',
+    '**/*.js',
+    '**/*.ts',
+    '**/*.jsx',
+    '**/*.tsx',
+    '**/*.uts',
+  ],
+  exclude: ['**/node_modules/**'],
+})
+prePlugin.enforce = 'pre'
 const autoImportOptions = initAutoImportOptions('web', {})
 autoImportOptions.imports = autoImportOptions.imports!.filter(
   (item: any) => item.from !== '@dcloudio/uni-cloud'
@@ -158,10 +174,10 @@ export default defineConfig({
     ],
   },
   plugins: [
+    prePlugin,
     ...(isX
       ? [
           uniUVueTypeScriptPlugin(),
-          prePlugin,
           AutoImport(autoImportOptions),
           uniExtApi(),
           uts2ts({ target: 'uni-h5', platform: 'web' }),
@@ -181,25 +197,28 @@ export default defineConfig({
     ...(isX ? [uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE })] : []),
     ...(isX ? [replacePagePaths(systemPagePaths)] : []),
   ],
-  esbuild: {
-    // 强制为 es2015，否则默认为 esnext，将会生成 __publicField 代码，
-    // 部分 API 写的时候，使用了动态定义 prototype 的方式，与 __publicField 冲突，比如 createCanvasContext
+  oxc: {
+    // 强制为 es2015，否则默认是 esnext，会生成更激进的转译结果，
+    // 部分 API 写的时候使用了动态定义 prototype 的方式，和这些结果会冲突，比如 createCanvasContext
     target: 'es2015',
   },
   build: {
     cssCodeSplit: true,
-    target: 'modules', // keep import.meta...
+    // Vite 8/Rolldown no longer expands `modules` before passing the target to Oxc.
+    target: moduleBuildTarget, // keep import.meta...
     emptyOutDir: FORMAT === 'es',
+    outDir: isX_VAPOR ? 'dist-x-vapor' : isX ? 'dist-x' : 'dist',
     minify: false,
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       formats: [FORMAT],
     },
     assetsDir: '.',
-    rollupOptions: {
+    rolldownOptions: {
+      // 允许类型导出在 Rolldown 里以空值占位，避免缺失导出直接中断构建。
+      shimMissingExports: true,
       output: {
         dir: isX_VAPOR ? 'dist-x-vapor' : isX ? 'dist-x' : 'dist',
-        freeze: false, // uni 对象需要可被修改
         entryFileNames: 'uni-h5.' + FORMAT + '.js',
       },
       external(source) {

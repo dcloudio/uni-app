@@ -7,7 +7,7 @@ import type {
   TemplateCompilerOptions,
 } from '../compiler/options'
 import { genRenderFunctionDecl } from '../compiler/utils'
-import type { TransformPluginContext } from 'rollup'
+import type { TransformPluginContextLike as TransformPluginContext } from '../../../context'
 import { getDescriptor, getResolvedOptions } from '../descriptorCache'
 
 export function genTemplate(

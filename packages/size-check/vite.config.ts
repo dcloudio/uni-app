@@ -10,11 +10,11 @@ export default {
       entry: path.resolve(__dirname, 'src/main.ts'),
       formats: ['es'],
     },
-    rollupOptions: {
+    rolldownOptions: {
       // external: ['vue', '@vue/shared'],
       plugins: [terser()],
       output: {
-        inlineDynamicImports: true,
+        codeSplitting: false,
         entryFileNames: 'size-check.es.js',
       },
     },

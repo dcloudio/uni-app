@@ -1,8 +1,7 @@
 import os from 'os'
 import fs from 'fs'
 import path from 'path'
-import type { SourcemapPathTransformOption } from 'rollup'
-import type { Plugin, ResolvedConfig, ServerOptions } from 'vite'
+import type { Plugin, ResolvedConfig, Rolldown, ServerOptions } from 'vite'
 import { extend, hasOwn, isPlainObject } from '@vue/shared'
 import {
   getDevServerOptions,
@@ -18,7 +17,7 @@ import {
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { createDefine } from '../utils'
-import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
+import { rolldownPrePlugin } from './rolldown/rolldownPrePlugin'
 import { external } from './configureServer/ssr'
 
 export interface ManifestBasicSslOptions {
@@ -98,8 +97,9 @@ export function createConfig(options: {
       }
     }
 
-    let sourcemapPathTransform: SourcemapPathTransformOption | undefined =
-      undefined
+    let sourcemapPathTransform:
+      | Rolldown.OutputOptions['sourcemapPathTransform']
+      | undefined = undefined
     if (
       // 仅在 uni-app-x 模式下，且非开发模式，且需要 sourcemap 时，才进行 sourcemap 路径转换
       process.env.UNI_APP_X === 'true' &&
@@ -109,10 +109,6 @@ export function createConfig(options: {
       sourcemapPathTransform = transformSourcemapPath
     }
     return {
-      legacy: {
-        // 目前先使用旧模式
-        proxySsrExternalModules: true,
-      },
       css: {
         postcss: {
           plugins: initPostcssPlugin({
@@ -121,10 +117,11 @@ export function createConfig(options: {
         },
       },
       optimizeDeps: {
-        entries: resolveMainPathOnce(inputDir),
+        // Vite 8 将 optimizeDeps.entries 按 glob 处理，项目路径中的特殊字符需要转义。
+        entries: escapeOptimizeDepsEntry(resolveMainPathOnce(inputDir)),
         exclude: external,
-        esbuildOptions: {
-          plugins: [esbuildPrePlugin()],
+        rolldownOptions: {
+          plugins: [rolldownPrePlugin()],
         },
       },
       define: createDefine(env.command, config),
@@ -137,7 +134,7 @@ export function createConfig(options: {
           process.env.UNI_APP_X === 'true'
             ? ['es2015', 'edge79', 'firefox62', 'chrome64', 'safari11.1']
             : undefined,
-        rollupOptions: {
+        rolldownOptions: {
           // resolveSSRExternal 会判定package.json，hbx 工程可能没有，通过 rollup 来配置
           external: isSsr(env.command, config) ? external : [],
           output: {
@@ -181,6 +178,10 @@ export function createConfig(options: {
       },
     }
   }
+}
+
+function escapeOptimizeDepsEntry(filename: string) {
+  return normalizePath(filename).replace(/([*?[\]{}()!+@])/g, '\\$1')
 }
 
 export function resolveManifestServerOptions(inputDir: string) {
