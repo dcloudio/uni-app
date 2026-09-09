@@ -127,6 +127,7 @@
       * [uni-push2.0、uni-id、uni统计的组合](https://doc.dcloud.net.cn/uniCloud/uni-cloud-push/mate.html)
     * [安卓、鸿蒙厂商推送配置](uni-push/vendor_config.md)
     * [谷歌FCM配置](uni-push/google-fcm.md)
+  * [uni统计](https://uniapp.dcloud.net.cn/uni-stat-uniappx)
 * cursor/vscode插件
   * [语言服务插件](tutorial/ls-plugin.md)
   * [AI Rules/MCP](tutorial/rules_mcp.md)
