@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.6
+  * @vue/shared v3.6.0-rc.7
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -696,7 +696,9 @@ const VaporVForFlags = {
 	"IS_FRAGMENT": 16,
 	"16": "IS_FRAGMENT",
 	"SLOT_ROOT": 32,
-	"32": "SLOT_ROOT"
+	"32": "SLOT_ROOT",
+	"WRAPPED_ROWS": 64,
+	"64": "WRAPPED_ROWS"
 };
 const VaporBlockShape = {
 	"EMPTY": 0,
@@ -754,14 +756,26 @@ const VaporSlotFlags = {
 	"1": "NO_SLOTTED",
 	"ONCE": 2,
 	"2": "ONCE",
-	"SLOT_ROOT": 4,
-	"4": "SLOT_ROOT",
-	"NON_STABLE": 8,
-	"8": "NON_STABLE",
-	"SHARED_FALLBACK": 16,
-	"16": "SHARED_FALLBACK",
-	"INHERIT_FALLBACK": 32,
-	"32": "INHERIT_FALLBACK"
+	"FORWARDED": 4,
+	"4": "FORWARDED",
+	"SHARED_FALLBACK": 8,
+	"8": "SHARED_FALLBACK"
+};
+function isForwardedSlot(flags) {
+	return !!(flags & 12);
+}
+function slotInheritsFallback(flags) {
+	return isForwardedSlot(flags) && !(flags & 8);
+}
+function slotNotifiesBoundary(flags) {
+	return isForwardedSlot(flags) && !(flags & 2);
+}
+/**
+* Per-slot-function metadata attached by the compiler as `fn._`.
+*/
+const VaporSlotStability = {
+	"NON_STABLE": 1,
+	"1": "NON_STABLE"
 };
 const VaporDynamicComponentFlags = {
 	"SINGLE_ROOT": 1,
@@ -790,6 +804,7 @@ exports.VaporBlockShape = VaporBlockShape;
 exports.VaporDynamicComponentFlags = VaporDynamicComponentFlags;
 exports.VaporIfFlags = VaporIfFlags;
 exports.VaporSlotFlags = VaporSlotFlags;
+exports.VaporSlotStability = VaporSlotStability;
 exports.VaporVForFlags = VaporVForFlags;
 exports.YES = YES;
 exports.camelize = camelize;
@@ -820,6 +835,7 @@ exports.isBuiltInDirective = isBuiltInDirective;
 exports.isBuiltInTag = isBuiltInTag;
 exports.isDate = isDate;
 exports.isFormattingTag = isFormattingTag;
+exports.isForwardedSlot = isForwardedSlot;
 exports.isFunction = isFunction;
 exports.isGloballyAllowed = isGloballyAllowed;
 exports.isGloballyWhitelisted = isGloballyWhitelisted;
@@ -861,6 +877,8 @@ exports.propsToAttrMap = propsToAttrMap;
 exports.remove = remove;
 exports.shouldSetAsAttr = shouldSetAsAttr;
 exports.slotFlagsText = slotFlagsText;
+exports.slotInheritsFallback = slotInheritsFallback;
+exports.slotNotifiesBoundary = slotNotifiesBoundary;
 exports.stringifyStyle = stringifyStyle;
 exports.toDisplayString = toDisplayString;
 exports.toHandlerKey = toHandlerKey;

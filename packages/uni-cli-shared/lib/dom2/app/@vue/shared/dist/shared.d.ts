@@ -423,7 +423,15 @@ export declare enum VaporVForFlags {
    * v-for sits on a slot content/fallback root chain and can change slot
    * validity.
    */
-  SLOT_ROOT = 32
+  SLOT_ROOT = 32,
+  /**
+   * The server wraps every row in `<!--[-->...<!--]-->`: the row template is
+   * not a single element and the list is not a direct child of a Transition
+   * or TransitionGroup (compiler-ssr `needFragmentWrapper`). Hydration then
+   * treats a leading `<!--[-->` as the row wrapper rather than as the row
+   * content's own marker.
+   */
+  WRAPPED_ROWS = 64
 }
 export declare enum VaporBlockShape {
   EMPTY = 0,
@@ -491,10 +499,17 @@ export declare enum TemplateFlags {
 export declare enum VaporSlotFlags {
   NO_SLOTTED = 1,
   ONCE = 2,
-  SLOT_ROOT = 4,
-  NON_STABLE = 8,
-  SHARED_FALLBACK = 16,
-  INHERIT_FALLBACK = 32
+  FORWARDED = 4,
+  SHARED_FALLBACK = 8
+}
+export declare function isForwardedSlot(flags: number): boolean;
+export declare function slotInheritsFallback(flags: number): boolean;
+export declare function slotNotifiesBoundary(flags: number): boolean;
+/**
+ * Per-slot-function metadata attached by the compiler as `fn._`.
+ */
+export declare enum VaporSlotStability {
+  NON_STABLE = 1
 }
 export declare enum VaporDynamicComponentFlags {
   SINGLE_ROOT = 1,
