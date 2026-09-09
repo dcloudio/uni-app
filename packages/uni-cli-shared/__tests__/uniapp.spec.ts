@@ -65,7 +65,94 @@ describe('uniapp postcss plugin', () => {
 :root > :is(body) {
   --other-color: #fff;
   --my-color: #f8f8f8;
-  background-color: var(--my-color);
+        background-color: var(--my-color);
+}`)
+    )
+  })
+
+  test('handles comments inside page rules', async () => {
+    const result = await createProcessor().process(
+      `page {
+  /* comment */
+  --page-bg: #f8f8f8;
+  background-color: var(--page-bg);
+}`,
+      { from: 'pages/index/index.css', map: false }
+    )
+
+    expect(normalizeCss(result.css)).toBe(
+      normalizeCss(`page {
+  /* comment */
+}
+:root > :is(body) {
+  --page-bg: #f8f8f8;
+      background-color: var(--page-bg)
+}`)
+    )
+  })
+
+  test('keeps page rules with comments and css var usage untouched', async () => {
+    const result = await createProcessor().process(
+      `page {
+  /* comment */
+  --page-bg: #f8f8f8;
+  color: var(--page-bg);
+}`,
+      { from: 'pages/index/index.css', map: false }
+    )
+
+    expect(normalizeCss(result.css)).toBe(
+      normalizeCss(`page {
+  /* comment */
+  --page-bg: #f8f8f8;
+  color: var(--page-bg);
+}`)
+    )
+  })
+
+  test('ignores commented out background declarations', async () => {
+    const result = await createProcessor().process(
+      `page {
+  --other-color: #fff;
+  --my-color: #f8f8f8;
+  color: red;
+  /* background-color: var(--my-color); */
+}`,
+      { from: 'pages/index/index.css', map: false }
+    )
+
+    expect(normalizeCss(result.css)).toBe(
+      normalizeCss(`page {
+  --other-color: #fff;
+  --my-color: #f8f8f8;
+  color: red;
+  /* background-color: var(--my-color); */
+}`)
+    )
+  })
+
+  test('handles background color vars with comments and multiple css vars', async () => {
+    const result = await createProcessor().process(
+      `page {
+  --background-color: #efeff4;
+  --text-color: #333333;
+  color: var(--text-color);
+
+  /* 微信小程序 backgroundColorContent 不支持 theme.json */
+  background-color: var(--background-color);
+}`,
+      { from: 'pages/index/index.css', map: false }
+    )
+
+    expect(normalizeCss(result.css)).toBe(
+      normalizeCss(`page {
+  color: var(--text-color);
+  /* 微信小程序 backgroundColorContent 不支持 theme.json */
+}
+:root > :is(body) {
+  --background-color: #efeff4;
+  --text-color: #333333;
+  background-color: var(--background-color)
 }`)
     )
   })
