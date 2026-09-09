@@ -7,8 +7,8 @@ import {
   defaultRpx2Unit,
   isBuiltInComponent,
 } from '@dcloudio/uni-shared'
-import { BG_PROPS } from './constants'
 import { adaptAlipayPageBackground } from './alipayPageBackground'
+import { createH5PageBackgroundRule } from './h5PageBackground'
 
 export interface UniAppCssProcessorOptions {
   unit?: string // 目标单位，默认rem
@@ -34,19 +34,6 @@ function transform(
   }
 }
 
-function createBodyBackgroundRule(origRule: Rule) {
-  const bgDecls: Declaration[] = []
-  origRule.walkDecls((decl) => {
-    if (BG_PROPS.indexOf(decl.prop) !== -1) {
-      bgDecls.push(decl.clone())
-    }
-  })
-  if (bgDecls.length) {
-    const { rule } = require('postcss')
-    origRule.after(rule({ selector: 'body' }).append(bgDecls))
-  }
-}
-
 type RewriteTag = (tag: string) => string
 
 interface TransformOptions {
@@ -59,7 +46,7 @@ function walkRules(options: TransformOptions) {
     rule.selector = selectorParser((selectors) =>
       selectors.walk((selector) => transform(selector, state, options))
     ).processSync(rule.selector)
-    state.bg && createBodyBackgroundRule(rule)
+    state.bg && createH5PageBackgroundRule(rule)
   }
 }
 
