@@ -2,7 +2,7 @@ import type { Declaration, Node, Root, Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import { BG_PROPS } from './constants'
 
-const ALIPAY_PAGE_BACKGROUND_SELECTOR = ':root > :is(body)'
+const ALIPAY_PAGE_BACKGROUND_SELECTOR = ':root'
 
 function isCssVarDeclaration(decl: Declaration) {
   return decl.prop.startsWith('--')

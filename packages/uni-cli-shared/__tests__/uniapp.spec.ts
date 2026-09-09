@@ -41,7 +41,7 @@ describe('uniapp postcss plugin', () => {
       normalizeCss(`page {
   color: red;
 }
-:root > :is(body) {
+:root {
   background-color: #f8f8f8;
 }`)
     )
@@ -56,7 +56,7 @@ describe('uniapp postcss plugin', () => {
     )
 
     expect(normalizeCss(result.css)).toBe(
-      normalizeCss(`:root > :is(body) {
+      normalizeCss(`:root {
   background-color: #f8f8f8
 }`)
     )
@@ -77,7 +77,7 @@ describe('uniapp postcss plugin', () => {
       normalizeCss(`page {
   color: red;
 }
-:root > :is(body) {
+:root {
   --other-color: #fff;
   --my-color: #f8f8f8;
   background-color: var(--my-color);
@@ -99,7 +99,7 @@ describe('uniapp postcss plugin', () => {
       normalizeCss(`page {
   /* comment */
 }
-:root > :is(body) {
+:root {
   --page-bg: #f8f8f8;
   background-color: var(--page-bg)
 }`)
@@ -121,7 +121,7 @@ describe('uniapp postcss plugin', () => {
   /* comment */
   color: var(--page-bg);
 }
-:root > :is(body) {
+:root {
   --page-bg: #f8f8f8;
 }`)
     )
@@ -143,7 +143,7 @@ describe('uniapp postcss plugin', () => {
   color: red;
   /* background-color: var(--my-color); */
 }
-:root > :is(body) {
+:root {
   --other-color: #fff;
   --my-color: #f8f8f8
 }`)
@@ -168,7 +168,7 @@ describe('uniapp postcss plugin', () => {
   color: var(--text-color);
   /* backgroundColorContent 不支持 theme.json */
 }
-:root > :is(body) {
+:root {
   --background-color: #efeff4;
   --text-color: #333333;
   background-color: var(--background-color)
@@ -186,7 +186,7 @@ describe('uniapp postcss plugin', () => {
     )
 
     expect(normalizeCss(result.css)).toBe(
-      normalizeCss(`:root > :is(body) {
+      normalizeCss(`:root {
   --page-bg: #f8f8f8;
   background: var(--page-bg)
 }`)
@@ -206,7 +206,7 @@ describe('uniapp postcss plugin', () => {
       normalizeCss(`page {
   color: red;
 }
-:root > :is(body) {
+:root {
   --page-bg: #f8f8f8;
 }`)
     )
@@ -240,7 +240,7 @@ describe('uniapp postcss plugin', () => {
       normalizeCss(`page {
   color: var(--my-color);
 }
-:root > :is(body) {
+:root {
   --my-color: #fff;
 }`)
     )
@@ -255,7 +255,7 @@ describe('uniapp postcss plugin', () => {
     )
 
     expect(normalizeCss(result.css)).toBe(
-      normalizeCss(`:root > :is(body) {
+      normalizeCss(`:root {
   --page-padding: 16px
 }`)
     )
@@ -270,7 +270,7 @@ describe('uniapp postcss plugin', () => {
     )
 
     expect(normalizeCss(result.css)).toBe(
-      normalizeCss(`:root > :is(body) {
+      normalizeCss(`:root {
   --background-color: #efeff4
 }`)
     )
@@ -290,7 +290,7 @@ describe('uniapp postcss plugin', () => {
       normalizeCss(`page {
   color: red;
 }
-:root > :is(body) {
+:root {
   --background-color: #fff;
   background-color: #f8f8f4;
 }`)
@@ -349,7 +349,7 @@ describe('uniapp postcss plugin', () => {
       normalizeCss(`page {
   color: red;
 }
-:root > :is(body) {
+:root {
   --page-bg: #f8f8f8;
   background: var(--page-bg);
   background-position: center;
@@ -375,7 +375,7 @@ describe('uniapp postcss plugin', () => {
   page {
     color: red;
   }
-  :root > :is(body) {
+  :root {
     --page-bg: #f8f8f8;
     background-color: var(--page-bg);
   }
@@ -403,7 +403,7 @@ describe('uniapp postcss plugin', () => {
 }`,
       { from: 'pages/index/index.css', map: false }
     )
-    expect(normalizeCss(nonTarget.css)).not.toContain(':root > :is(body)')
+    expect(normalizeCss(nonTarget.css)).not.toContain(':root')
     expect(normalizeCss(nonTarget.css)).toContain('uni-page-body')
     expect(normalizeCss(nonTarget.css)).toContain('body')
   })
