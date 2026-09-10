@@ -4,7 +4,7 @@ import fs from 'fs-extra'
 import { hash } from '../../utils'
 import { parseJson } from '../../json'
 import { M } from '../../messages'
-import { resolveUniAppXHarmonyJsRuntime } from '../../utils'
+import { resolveUniAppXHarmonyScriptEngine } from '../../utils'
 import { isUniAppXVapor } from '../../x'
 
 const emittedHashMap = new WeakMap<ResolvedConfig, Map<string, string>>()
@@ -143,10 +143,10 @@ export function uniStatsPlugin(options: UniStatsPluginOptions = {}): Plugin {
           if (
             isUniAppXVapor() &&
             process.env.UNI_PLATFORM === 'app-harmony' &&
-            resolveUniAppXHarmonyJsRuntime(manifest) !==
-              process.env.UNI_APP_X_HARMONY_JS_RUNTIME
+            resolveUniAppXHarmonyScriptEngine(manifest) !==
+              process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE
           ) {
-            console.warn(M['dev.watching.restart.js.runtime'])
+            console.warn(M['dev.watching.restart.script.engine'])
             process.exit(0)
           }
         } catch (e) {}

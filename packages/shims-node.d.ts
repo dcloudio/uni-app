@@ -57,7 +57,7 @@ declare namespace NodeJS {
     UNI_APP_X_SINGLE_THREAD?: string
     UNI_APP_X_SETUP?: string
     UNI_APP_X_UVUE_SCRIPT_ENGINE?: 'native' | 'js'
-    UNI_APP_X_HARMONY_JS_RUNTIME?: 'arkts' | 'jsvm'
+    UNI_APP_X_HARMONY_SCRIPT_ENGINE?: 'arkts' | 'jsvm'
 
     UNI_COMPILE_TARGET?: 'uni_modules' | 'ext-api'
     UNI_COMPILE_CLOUD_DIR?: string

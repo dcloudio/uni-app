@@ -351,20 +351,24 @@ export function getHarmonyRuntimePackageName(
   }
 }
 
-export const defaultUniAppXHarmonyJsRuntime = 'arkts'
-export function resolveUniAppXHarmonyJsRuntime(
+export const defaultUniAppXHarmonyScriptEngine = 'arkts'
+export function resolveUniAppXHarmonyScriptEngine(
   manifestJson: Record<string, any>
 ) {
-  const harmonyJsRuntime =
-    manifestJson['app-harmony']?.['jsRuntime'] ?? defaultUniAppXHarmonyJsRuntime
-  switch (harmonyJsRuntime) {
+  const harmonyScriptEngine =
+    manifestJson['app-harmony']?.['scriptEngine'] ??
+    defaultUniAppXHarmonyScriptEngine
+  switch (harmonyScriptEngine) {
     case 'arkts':
     case 'jsvm':
-      return harmonyJsRuntime
+      return harmonyScriptEngine
     default:
       console.warn(
-        M['harmony.vapor.js.runtime'].replace('{runtime}', harmonyJsRuntime)
+        M['harmony.vapor.script.engine'].replace(
+          '{engine}',
+          harmonyScriptEngine
+        )
       )
-      return defaultUniAppXHarmonyJsRuntime
+      return defaultUniAppXHarmonyScriptEngine
   }
 }
