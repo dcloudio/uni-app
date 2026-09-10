@@ -44,8 +44,8 @@
 | :- |  :-: | :- |
 | "success" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 显示成功图标 |
 | error | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 显示错误图标 |
-| fail | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 5.25 | 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效 |
-| exception | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 5.25 | 显示异常图标，此时title文本无长度显示，支付宝小程序生效 |
+| fail | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效 |
+| exception | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 显示异常图标，此时title文本无长度显示，支付宝小程序生效 |
 | loading | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 显示加载图标 |
 | none | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 不显示图标 |
 
