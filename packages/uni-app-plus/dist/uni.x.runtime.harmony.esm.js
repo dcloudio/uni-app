@@ -2283,6 +2283,7 @@ function triggerFailCallback$1(options, errMsg) {
   options === null || options === void 0 || (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
 }
 function parsePageStyle(route) {
+  var includeGlobalPageSelector = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : true;
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
   var routeKeys = [
@@ -2310,7 +2311,7 @@ function parsePageStyle(route) {
       style.set(key, routeMeta[key]);
     }
   });
-  var pageSelectorBackgroundColor = resolvePageSelectorBackgroundColor(routeMeta, theme);
+  var pageSelectorBackgroundColor = resolvePageSelectorBackgroundColor(routeMeta, theme, includeGlobalPageSelector);
   if (pageSelectorBackgroundColor !== void 0) {
     style.set("backgroundColorContent", pageSelectorBackgroundColor);
   }
@@ -2332,10 +2333,11 @@ function parsePageStyle(route) {
 }
 function resolvePageSelectorBackgroundColor(routeMeta, theme) {
   var _resolvePageSelectorB;
+  var includeGlobal = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true;
   var pageSelectorBackgroundColor = __uniConfig.pageSelectorBackgroundColor;
   var pageColor = pageSelectorBackgroundColor && pageSelectorBackgroundColor.pages && pageSelectorBackgroundColor.pages[routeMeta.route];
   var globalColor = pageSelectorBackgroundColor && pageSelectorBackgroundColor.global;
-  return (_resolvePageSelectorB = resolvePageSelectorBackgroundColorVariant(pageColor, theme)) !== null && _resolvePageSelectorB !== void 0 ? _resolvePageSelectorB : resolvePageSelectorBackgroundColorVariant(globalColor, theme);
+  return (_resolvePageSelectorB = resolvePageSelectorBackgroundColorVariant(pageColor, theme)) !== null && _resolvePageSelectorB !== void 0 ? _resolvePageSelectorB : includeGlobal ? resolvePageSelectorBackgroundColorVariant(globalColor, theme) : void 0;
 }
 function resolvePageSelectorBackgroundColorVariant(value, theme) {
   if (!value)
@@ -2470,12 +2472,13 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
-  var pageStyle = parsePageStyle(routeOptions);
+  var pageStyle = parsePageStyle(routeOptions, false);
+  var pageSelectorBackgroundColor = resolvePageSelectorBackgroundColor(routeOptions.meta, getAppThemeFallbackOS(), false);
   var routePageMeta = (_uniRoutes$find = __uniRoutes.find((route2) => route2.path === path)) === null || _uniRoutes$find === void 0 ? void 0 : _uniRoutes$find.meta;
   if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.navigationStyle)) {
     pageStyle.set("navigationStyle", "custom");
   }
-  if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.backgroundColorContent)) {
+  if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.backgroundColorContent) && pageSelectorBackgroundColor === void 0) {
     pageStyle.set("backgroundColorContent", "transparent");
   }
   if (typeof pageStyle.get("disableSwipeBack") !== "boolean") {
