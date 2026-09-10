@@ -288,6 +288,7 @@ export async function genProxyCodeV2(
     functions,
     classes,
     interfaces,
+    variables,
     uts_bridge_name: utsBridgeName,
   } = bridge
   const interceptor = await parseInterceptor(options.platform, module, options)
@@ -351,6 +352,12 @@ const moduleName = '${utsBridgeName}'\n`
         : originalMethod
     code += `${exportModifier}${proxyMethod}\n`
   })
+  if (variables && variables.length) {
+    variables.forEach(({ name, value }) => {
+      const exportModifier = genExportModifier(options.format, name, false)
+      code += `${exportModifier}${JSON.stringify(value)}\n`
+    })
+  }
   if (isCJS) {
     code += `uni.registerUTSPlugin('${normalizePath(
       options.pluginRelativeDir!
