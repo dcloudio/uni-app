@@ -47,7 +47,6 @@
 | appVersionCode | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | `manifest.json` 中的应用版本号<br/> |
 | appLanguage | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | 应用的语言en、zh-Hans、zh-Hant、fr、es<br/> |
 | appTheme | string | 否 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 应用的主题<br/> |
-| channel | string | 否 | Web: x; 微信小程序: x; Android: 4.28; iOS: 4.31; HarmonyOS: x | 应用的分发渠道<br/> |
 | language | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | 应用设置的语言<br/> |
 | appWgtVersion | string | 否 | Web: x; 微信小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 应用资源（wgt）的版本名称<br/> |
 | hostLanguage | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 小程序宿主语言<br/> |
@@ -56,12 +55,13 @@
 | hostPackageName | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 小程序宿主包名<br/> |
 | hostSDKVersion | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | uni小程序SDK版本、小程序客户端基础库版本<br/> |
 | hostTheme | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 系统当前主题，取值为light或dark。微信小程序全局配置"darkmode":true时才能获取，否则为 null （不支持小游戏）<br/> |
-| isUniAppX | boolean | 否 | Web: 4.18; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | 是否uni-app x<br/> |
-| uniCompilerVersion | string | 否 | Web: 4.18; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本<br/> |
+| isUniAppX | boolean | 否 | Web: 4.18; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 是否 uni-app x 项目<br/> |
+| uniCompilerVersion | string | 否 | Web: 4.18; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本名称<br/> |
 | uniCompilerVersionCode | number | 否 | Web: 4.18; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本号<br/> |
-| uniRuntimeVersion | string | 否 | Web: 4.18; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.0 | uni 运行时版本<br/> |
+| uniRuntimeVersion | string | 否 | Web: 4.18; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 5.0 | uni 运行时版本名称<br/> |
 | uniRuntimeVersionCode | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni 运行时版本号<br/> |
 | uniPlatform | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni-app 运行平台<br/> |
+| channel | string | 否 | Web: x; 微信小程序: x; Android: 4.28; iOS: 4.31; HarmonyOS: x | 应用的分发渠道<br/> |
 | packageName | string | 否 | Web: x; 微信小程序: 5.13; Android: 3.97; iOS: 5.11; HarmonyOS: 4.61 | 微信小程序: 小程序appId<br/>Android: 包名<br/>iOS: Bundle ID<br/>鸿蒙: bundleName<br/> |
 | bundleName | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 鸿蒙的包名<br/> |
 | bundleId | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: 4.11; HarmonyOS: x | iOS的Bundle ID<br/> |
@@ -73,9 +73,9 @@
 | fontSizeSetting | number | 否 | 微信小程序: 4.41 | 需要基础库： `2.23.4`<br/><br/>微信字体大小，单位px<br/> |
 | host | **GetAppBaseInfoResultHost** | 否 | 微信小程序: 4.41 | 当前小程序运行的宿主环境<br/> |
 | theme | string | 否 | 微信小程序: 4.41 | 系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
-| ~~version~~ | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 引擎版本号。已废弃，仅为了向下兼容保留  **已废弃，仅为了向下兼容保留** |
-| ~~uniCompileVersion~~ | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | uni 编译器版本  **已废弃，仅为了向下兼容保留** |
-| ~~uniCompileVersionCode~~ | number | 否 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本号  **已废弃，仅为了向下兼容保留** | 
+| ~~uniCompileVersion~~ | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | uni 编译器版本名称  **已废弃，仅为了向下兼容保留** |
+| ~~uniCompileVersionCode~~ | number | 否 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本号  **已废弃，仅为了向下兼容保留** |
+| ~~version~~ | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 引擎版本号  **已废弃，仅为了向下兼容保留** | 
 
 ##### appTheme 的属性描述
 
