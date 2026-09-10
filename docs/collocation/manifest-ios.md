@@ -712,6 +712,7 @@ iOS平台配置应用在iPad设置是否能够与其他应用程序共享屏幕�
 ## Minimum Deployment（DeploymentTarget） @deploymenttarget  
 
 >HBuilder5.25版本新增支持
+>HBuilderX5.24版本云端打包2026年9月11更新支持
 
 Minimum Deployment（DeploymentTarget）设置应用能安装的最低 iOS 系统版本，从HBuilderX5.25开始默认为 15.0。  
 
