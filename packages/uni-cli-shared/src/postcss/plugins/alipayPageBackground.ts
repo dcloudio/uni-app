@@ -30,20 +30,34 @@ function hasBackgroundDeclaration(nodes: Node[]) {
   })
 }
 
-function isPageRule(rule: Rule) {
+function isPageSelector(selector: selectorParser.Selector) {
+  if (selector.nodes.some((node) => node.type === 'combinator')) {
+    return false
+  }
+  const first = selector.nodes[0]
+  return !!first && first.type === 'tag' && first.value === 'page'
+}
+
+function getPageSelectorInfo(rule: Rule) {
   try {
     const selectorRoot = selectorParser().astSync(rule.selector)
-    if (selectorRoot.nodes.length !== 1) {
-      return false
+    const pageSelector = selectorRoot.nodes
+      .filter(isPageSelector)
+      .map((selector) => selector.toString())
+      .join(', ')
+    if (!pageSelector) {
+      return
     }
-    const selector = selectorRoot.nodes[0]
-    if (selector.nodes.some((node) => node.type === 'combinator')) {
-      return false
+    const nonPageSelector = selectorRoot.nodes
+      .filter((selector) => !isPageSelector(selector))
+      .map((selector) => selector.toString())
+      .join(', ')
+    return {
+      pageSelector,
+      nonPageSelector,
     }
-    const first = selector.nodes[0]
-    return !!first && first.type === 'tag' && first.value === 'page'
   } catch {
-    return false
+    return
   }
 }
 
@@ -73,7 +87,9 @@ export function createBackgroundRule(origRule: Rule, selector: string) {
     return
   }
   const { rule } = require('postcss')
-  origRule.after(rule({ selector }).append(bgDecls))
+  const backgroundRule = rule({ selector }).append(bgDecls)
+  backgroundRule.raws.before = origRule.raws.before || '\n'
+  origRule.after(backgroundRule)
   if (!origRule.nodes?.length) {
     origRule.remove()
   }
@@ -87,8 +103,22 @@ export function adaptAlipayPageBackground(root: Root) {
     return
   }
   root.walkRules((rule) => {
-    if (isPageRule(rule)) {
-      createBackgroundRule(rule, ALIPAY_PAGE_BACKGROUND_SELECTOR)
+    const pageSelectorInfo = getPageSelectorInfo(rule)
+    if (!pageSelectorInfo) {
+      return
     }
+    const nodes = rule.nodes ? [...rule.nodes] : []
+    if (!hasCssVarDeclaration(nodes) && !hasBackgroundDeclaration(nodes)) {
+      return
+    }
+    if (pageSelectorInfo.nonPageSelector) {
+      const pageRule = rule.clone({ selector: pageSelectorInfo.pageSelector })
+      pageRule.raws.before = rule.raws.before || '\n'
+      rule.selector = pageSelectorInfo.nonPageSelector
+      rule.after(pageRule)
+      createBackgroundRule(pageRule, ALIPAY_PAGE_BACKGROUND_SELECTOR)
+      return
+    }
+    createBackgroundRule(rule, ALIPAY_PAGE_BACKGROUND_SELECTOR)
   })
 }

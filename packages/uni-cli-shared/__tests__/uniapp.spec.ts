@@ -383,16 +383,60 @@ describe('uniapp postcss plugin', () => {
     )
   })
 
-  test('skips mixed selectors and non target platform', async () => {
+  test('handles comprehensive mixed selector styles', async () => {
     const mixedSelector = await createProcessor().process(
-      `page, .foo {
-  background-color: #f8f8f8;
+      `.class1, #testId, page {
+  /* shared page styles */
+  --page-padding: 16px;
+  --page-bg: #f8f8f8;
+  --text-color: #333;
+  flex: 1;
+  padding: var(--page-padding);
+  color: var(--text-color);
+
+  /* page background styles */
+  background: var(--page-bg);
+  background-color: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }`,
       { from: 'pages/index/index.css', map: false }
     )
     expect(normalizeCss(mixedSelector.css)).toBe(
-      normalizeCss(`page, .foo {
-  background-color: #f8f8f8;
+      normalizeCss(`.class1, #testId {
+  /* shared page styles */
+  --page-padding: 16px;
+  --page-bg: #f8f8f8;
+  --text-color: #333;
+  flex: 1;
+  padding: var(--page-padding);
+  color: var(--text-color);
+
+  /* page background styles */
+  background: var(--page-bg);
+  background-color: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+page {
+  /* shared page styles */
+  flex: 1;
+  padding: var(--page-padding);
+  color: var(--text-color);
+
+  /* page background styles */
+}
+:root {
+  --page-padding: 16px;
+  --page-bg: #f8f8f8;
+  --text-color: #333;
+  background: var(--page-bg);
+  background-color: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }`)
     )
 
@@ -406,5 +450,35 @@ describe('uniapp postcss plugin', () => {
     expect(normalizeCss(nonTarget.css)).not.toContain(':root')
     expect(normalizeCss(nonTarget.css)).toContain('uni-page-body')
     expect(normalizeCss(nonTarget.css)).toContain('body')
+  })
+
+  test.each([
+    ['#testId, page', '#testId'],
+    ['page, button', 'button'],
+    ['.class1, #testId, page', '.class1, #testId'],
+  ])('handles mixed selector list: %s', async (selector, nonPageSelector) => {
+    const result = await createProcessor().process(
+      `${selector} {
+  --page-bg: #f8f8f8;
+  color: red;
+  background-color: var(--page-bg);
+}`,
+      { from: 'pages/index/index.css', map: false }
+    )
+
+    expect(normalizeCss(result.css)).toBe(
+      normalizeCss(`${nonPageSelector} {
+  --page-bg: #f8f8f8;
+  color: red;
+  background-color: var(--page-bg);
+}
+page {
+  color: red;
+}
+:root {
+  --page-bg: #f8f8f8;
+  background-color: var(--page-bg);
+}`)
+    )
   })
 })
