@@ -213,10 +213,11 @@ export function createUniAppJsEnginePlugin(
     }
     emptyTscDir()
 
+    // 目前仅鸿蒙蒸汽模式支持UNI_APP_X_HARMONY_SCRIPT_ENGINE jsvm，jsvm 模式不生成esm格式代码
     if (
       process.env.UNI_UTS_PLATFORM === 'app-harmony' &&
       isNormalCompileTarget() &&
-      process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE === 'arkts'
+      process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE !== 'jsvm'
     ) {
       // 拆分模式
       process.env.UNI_APP_OUTPUT_FORMAT = 'esm'
