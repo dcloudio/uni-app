@@ -36,11 +36,14 @@ CSS自定义变量规范参考[MDN Reference](https://developer.mozilla.org/zh-C
 App平台相比web平台，有以下差异：
 - 定义变量时不支持值为var(--*) ex: --color: var(--color)
 - 回退值不支持var(--*) ex: --height: var(--height1 , var(--height2))
-- App平台 VDOM模式简写属性不支持使用var，比如：--padding: 10px 20px; padding: var(--padding);
-- App平台 VDOM模式transtion暂不支持使用var，App平台 蒸汽模式仅transtion长写属性支持var
-- App平台 VDOM模式的部分组件的样式不支持CSS变量：input、textarea 的 placeholder-style、placeholder-class；picker-view 的 indicator-style、indicator-class、mask-style、mask-class。
-- 蒸汽模式的部分组件使用了useComputedStyle，这类组件的样式支持CSS变量需HBuilderX 5.25+，包括input、textarea、loading组件的class。
+- App平台蒸汽模式的部分组件使用了useComputedStyle，这类组件的样式支持CSS变量需HBuilderX 5.25+，包括input、textarea、loading组件的class。
 - App平台不支持:root伪类。蒸汽模式可以使用page选择器替代。vdom模式需要自行在页面根元素或合适的父级元素的class中定义css变量，以便在子元素生效。
+
+App平台 VDOM模式注意事项：
+- App平台 VDOM模式简写属性(如padding、margin等)不支持使用var，比如：--padding: 10px 20px; padding: var(--padding);。需展开后使用，比如展开成padding-left。
+- App平台 VDOM模式transtion暂不支持使用var。App平台 蒸汽模式仅transtion长写属性支持var
+- App平台 VDOM模式的部分组件的样式不支持CSS变量：input、textarea 的 placeholder-style、placeholder-class；picker-view 的 indicator-style、indicator-class、mask-style、mask-class。
+
 
 ### 示例 
  示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/variable/variable.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/CSS/variable/variable.uvue) 
