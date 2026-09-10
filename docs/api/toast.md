@@ -392,8 +392,8 @@
     - 只有系统 toast ，和 App window 绑定
   	- 不支持 icon 图标，仅支持文字
   - 5.25 及以上：
-  	* position 设为 bottom 时，为系统 toast。position 不为 bottom 时仍与页面绑定
-  	* 当 position 设为除 bottom 之外的值时，支持 icon、mask、image 参数
+  	* position 设为 top、center、bottom 时，为系统 toast，和页面绑定
+  	* 当没有传递 position 参数时，支持 icon、mask、image 参数，和页面绑定
 - 当 Toast 和页面绑定时：
   + 当showToast执行时，会寻找当前页面栈顶的窗体（包括 dialogPage），找到后进行绑定，然后弹出 Toast。
 	+ 在支持 dialogPage 的平台（Web和App），[uni.showModal](./modal.md)、[uni.showActionSheet](./action-sheet.md) 也是 dialogPage 实现的，此时 toast 会绑定到这些 dialogPage 上
