@@ -5,6 +5,7 @@ const mockResolveUasmLoadPath = jest.fn()
 const mockCreateLoadUasmTransformer = jest.fn()
 const mockCollectExtApiUsageAst = jest.fn()
 const mockCreateUniAppXScriptMacrosTransformer = jest.fn()
+const mockCreateSharedDataTransformer = jest.fn()
 const mockInitUts2jsExtApiOptions = jest.fn(() => ({
   collectExtApiUsageAst: mockCollectExtApiUsageAst,
 }))
@@ -21,7 +22,10 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     UNI_EASYCOM_EXCLUDE: [],
     enableSourceMap: () => false,
     getWorkers: () => ({}),
-    initUts2jsSharedDataOptions: () => undefined,
+    initUts2jsSharedDataOptions: () => ({
+      resolveFieldMeta: jest.fn(),
+      createSharedDataTransformer: mockCreateSharedDataTransformer,
+    }),
     initUts2jsExtApiOptions: mockInitUts2jsExtApiOptions,
     createUniAppXScriptMacrosTransformer:
       mockCreateUniAppXScriptMacrosTransformer,
@@ -209,6 +213,18 @@ describe('android-dom2 plugin init', () => {
           createUniAppXScriptMacrosTransformer:
             mockCreateUniAppXScriptMacrosTransformer,
         },
+      })
+    )
+  })
+
+  test('configures the SharedData transformer for uts2js', () => {
+    initPlugins()
+
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sharedData: expect.objectContaining({
+          createSharedDataTransformer: mockCreateSharedDataTransformer,
+        }),
       })
     )
   })

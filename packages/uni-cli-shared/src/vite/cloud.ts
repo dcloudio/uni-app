@@ -25,7 +25,7 @@ import {
 import { removePlugins } from './utils'
 import { findChangedJsonFiles } from '../json'
 import { createWorkerTransformer, getWorkers } from '../workers'
-import { initSourceFileCallback } from '../dom2'
+import { initSourceFileCallback, initUts2jsSharedDataOptions } from '../dom2'
 import { isUniAppXAndroidNative } from '../x'
 import { initUasmTransformerCreator } from '../uasm'
 
@@ -215,6 +215,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
               resolveWorkers: () => getWorkers(),
               createWorkerTransformer,
               loadUasmTransformer: initUasmTransformerCreator('app-android'),
+              sharedData: initUts2jsSharedDataOptions(),
               sourceFileCallback: initSourceFileCallback(),
             })
           : null
@@ -504,17 +505,20 @@ export function compileCloudUniModuleWithTsc(
           resolveWorkers,
           createWorkerTransformer,
           loadUasmTransformer: initUasmTransformerCreator('app-android'),
+          sharedData: initUts2jsSharedDataOptions(),
           sourceFileCallback: initSourceFileCallback(),
         })
       : platform === 'app-harmony'
       ? createUniXArkTSCompilerOnce({
           resolveWorkers,
           createWorkerTransformer,
+          sharedData: initUts2jsSharedDataOptions(),
         })
       : createUniXSwiftCompilerOnce({
           resolveWorkers,
           createWorkerTransformer,
           loadUasmTransformer: initUasmTransformerCreator('app-ios'),
+          sharedData: initUts2jsSharedDataOptions(),
         }),
     {
       rootFiles: [],

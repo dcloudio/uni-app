@@ -848,6 +848,10 @@ export interface BuildUniModulesOptions {
   ) => Promise<string>
   rootFiles?: string[]
   sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
+  /** DOM2 SharedData 使用的统一 AST transformer 配置。 */
+  sharedData?: NonNullable<
+    NonNullable<UniXCompilerOptions['transformOptions']>['sharedData']
+  >
 }
 
 export async function buildUniModules(
@@ -874,6 +878,7 @@ export async function buildUniModules(
       createUniXKotlinCompiler({
         resolveWorkers: () => ({}),
         sourceFileCallback: options.sourceFileCallback,
+        sharedData: options.sharedData,
       }),
       {
         rootFiles: options.rootFiles,
@@ -889,6 +894,7 @@ export async function buildUniModules(
       pluginDir,
       createUniXSwiftCompiler({
         resolveWorkers: () => ({}),
+        sharedData: options.sharedData,
       }),
       {
         rootFiles: options.rootFiles,
@@ -904,6 +910,7 @@ export async function buildUniModules(
       pluginDir,
       createUniXArkTSCompiler({
         resolveWorkers: () => ({}),
+        sharedData: options.sharedData,
       }),
       {
         rootFiles: options.rootFiles,

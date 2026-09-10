@@ -27,6 +27,9 @@ type WorkerTransformerCreator = NonNullable<
     NonNullable<UniXCompilerOptions['transformOptions']>['workers']
   >['createWorkerTransformer']
 >
+type SharedDataTransformerOptions = NonNullable<
+  NonNullable<UniXCompilerOptions['transformOptions']>['sharedData']
+>
 
 const hbxVersion = process.env.HX_Version || ''
 const hxDev = hbxVersion.endsWith('-dev')
@@ -45,6 +48,7 @@ export function createUniXCompiler(
     resolveWorkers: () => Record<string, string>
     createWorkerTransformer?: WorkerTransformerCreator
     loadUasmTransformer?: LoadUasmTransformer
+    sharedData?: SharedDataTransformerOptions
     sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
   }
 ) {
@@ -125,6 +129,7 @@ export function createUniXCompiler(
           }
         : undefined,
       loadUasmTransformer: options.loadUasmTransformer,
+      sharedData: options.sharedData,
     },
     // dom2: process.env.UNI_APP_X_DOM2 === 'true',
     ...options,

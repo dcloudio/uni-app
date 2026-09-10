@@ -4,6 +4,10 @@ import type tsTypes from 'typescript'
 import { createBasicUtsOptions } from '../utils/options'
 import type { UniXCompilerOptions } from '../../../lib/uni-x/dist/compiler'
 
+type SharedDataTransformerCreator = NonNullable<
+  NonNullable<UniXCompilerOptions['transformOptions']>['sharedData']
+>['createSharedDataTransformer']
+
 type WorkerTransformerCreator = NonNullable<
   NonNullable<UniXCompilerOptions['transformOptions']>['workers']
 >['createWorkerTransformer']
@@ -59,6 +63,7 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   disableUTSBooleanConversion?: boolean
   sharedData?: {
     resolveFieldMeta(name: string): { fieldId: number }
+    createSharedDataTransformer?: SharedDataTransformerCreator
   }
 }
 type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]

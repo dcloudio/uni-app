@@ -20,6 +20,7 @@ import {
   initSourceFileCallback,
   initUTSKotlinAutoImportsOnce,
   initUasmTransformerCreator,
+  initUts2jsSharedDataOptions,
   isNormalCompileTarget,
   normalizeEmitAssetFileName,
   normalizePath,
@@ -105,6 +106,7 @@ export function uniAppPlugin(): UniVitePlugin {
           resolveWorkers,
           createWorkerTransformer,
           loadUasmTransformer: initUasmTransformerCreator('app-android'),
+          sharedData: initUts2jsSharedDataOptions(),
           sourceFileCallback: initSourceFileCallback(),
         })
       : null
