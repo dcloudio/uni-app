@@ -36,6 +36,7 @@ CSS自定义变量规范参考[MDN Reference](https://developer.mozilla.org/zh-C
 App平台相比web平台，有以下差异：
 - 定义变量时不支持值为var(--*) ex: --color: var(--color)
 - 回退值不支持var(--*) ex: --height: var(--height1 , var(--height2))
+- App平台 VDOM模式简写属性不支持使用var，比如：--padding: 10px 20px; padding: var(--padding);
 - App平台 VDOM模式transtion暂不支持使用var，App平台 蒸汽模式仅transtion长写属性支持var
 - App平台 VDOM模式的部分组件的样式不支持CSS变量：input、textarea 的 placeholder-style、placeholder-class；picker-view 的 indicator-style、indicator-class、mask-style、mask-class。
 - 蒸汽模式的部分组件使用了useComputedStyle，这类组件的样式支持CSS变量需HBuilderX 5.25+，包括input、textarea、loading组件的class。
