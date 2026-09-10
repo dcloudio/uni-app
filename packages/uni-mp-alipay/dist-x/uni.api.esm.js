@@ -1523,6 +1523,9 @@ function populateParameters(fromRes, toRes) {
         try {
             parameters.uniCompilerVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             parameters.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
+            if ("mp-alipay" === 'mp-alipay') {
+                delete parameters.uniCompileVersion;
+            }
         }
         catch (error) { }
     }
@@ -1671,6 +1674,9 @@ const getAppBaseInfo$1 = {
                 parameters.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             }
             catch (error) { }
+            {
+                delete parameters.uniCompileVersion;
+            }
         }
         extend(toRes, parameters);
     },

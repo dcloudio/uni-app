@@ -1372,6 +1372,7 @@ function populateParameters(fromRes, toRes) {
         try {
             parameters.uniCompilerVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             parameters.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
+            if ("mp-toutiao" === 'mp-alipay') ;
         }
         catch (error) { }
     }
