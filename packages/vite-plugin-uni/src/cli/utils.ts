@@ -17,6 +17,7 @@ import {
   output,
   parseManifestJsonOnce,
   parseScripts,
+  resolveUniAppXHarmonyJsRuntime,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 
@@ -270,6 +271,10 @@ export function initEnv(
     }
     if (manifestJson['uni-app-x']?.['styleIsolationVersion'] == 2) {
       process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
+    }
+    if (isUniAppXVapor() && process.env.UNI_PLATFORM === 'app-harmony') {
+      process.env.UNI_APP_X_HARMONY_JS_RUNTIME =
+        resolveUniAppXHarmonyJsRuntime(manifestJson)
     }
   } catch (e) {}
 

@@ -22,10 +22,14 @@ export default {
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
   'dev.watching.restart.vapor':
     'DONE  Restart required. Switching vapor mode requires restarting to take effect.',
+  'dev.watching.restart.js.runtime':
+    'DONE  Restart required. JS runtime changes require restarting to take effect.',
   'dev.watching.restart.independentSubPackages':
     'DONE  Restart required. Changing independent subpackage roots requires restarting to take effect.',
   'dev.watching.vapor.render.target':
     'vapor-render-target in manifest.json was changed to {manifestTarget}, but the running console is still {runtimeTarget}.',
+  'harmony.vapor.js.runtime':
+    'Invalid Harmony JS runtime ({runtime}) specified, using default.',
   'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': 'Build failed with errors.',
   'stat.warn.appid':

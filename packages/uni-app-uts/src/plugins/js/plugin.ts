@@ -215,7 +215,8 @@ export function createUniAppJsEnginePlugin(
 
     if (
       process.env.UNI_UTS_PLATFORM === 'app-harmony' &&
-      isNormalCompileTarget()
+      isNormalCompileTarget() &&
+      process.env.UNI_APP_X_HARMONY_JS_RUNTIME === 'arkts'
     ) {
       // 拆分模式
       process.env.UNI_APP_OUTPUT_FORMAT = 'esm'

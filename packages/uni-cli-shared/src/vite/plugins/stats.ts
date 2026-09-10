@@ -4,6 +4,8 @@ import fs from 'fs-extra'
 import { hash } from '../../utils'
 import { parseJson } from '../../json'
 import { M } from '../../messages'
+import { resolveUniAppXHarmonyJsRuntime } from '../../utils'
+import { isUniAppXVapor } from '../../x'
 
 const emittedHashMap = new WeakMap<ResolvedConfig, Map<string, string>>()
 
@@ -136,6 +138,15 @@ export function uniStatsPlugin(options: UniStatsPluginOptions = {}): Plugin {
             isVapor = uniAppX.vapor === true
             console.warn(M['dev.watching.restart.vapor'])
             // 主动退出，避免后续会打印正在编译中等日志
+            process.exit(0)
+          }
+          if (
+            isUniAppXVapor() &&
+            process.env.UNI_PLATFORM === 'app-harmony' &&
+            resolveUniAppXHarmonyJsRuntime(manifest) !==
+              process.env.UNI_APP_X_HARMONY_JS_RUNTIME
+          ) {
+            console.warn(M['dev.watching.restart.js.runtime'])
             process.exit(0)
           }
         } catch (e) {}

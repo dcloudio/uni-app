@@ -22,6 +22,7 @@ import type { ParserPlugin } from '@babel/parser'
 import { getPlatformDir } from './platform'
 import { isInHBuilderX } from './hbx'
 import { parseManifestJsonOnce } from './json'
+import { M } from './messages'
 
 // 专为 uts.ts 服务
 export { camelize, capitalize, isArray } from '@vue/shared'
@@ -347,5 +348,23 @@ export function getHarmonyRuntimePackageName(
     return '@dcloudio/uni-app-x-runtime'
   } else {
     return '@dcloudio/uni-app-x-vapor-runtime'
+  }
+}
+
+export const defaultUniAppXHarmonyJsRuntime = 'arkts'
+export function resolveUniAppXHarmonyJsRuntime(
+  manifestJson: Record<string, any>
+) {
+  const harmonyJsRuntime =
+    manifestJson['app-harmony']?.['jsRuntime'] ?? defaultUniAppXHarmonyJsRuntime
+  switch (harmonyJsRuntime) {
+    case 'arkts':
+    case 'jsvm':
+      return harmonyJsRuntime
+    default:
+      console.warn(
+        M['harmony.vapor.js.runtime'].replace('{runtime}', harmonyJsRuntime)
+      )
+      return defaultUniAppXHarmonyJsRuntime
   }
 }
