@@ -16,7 +16,68 @@ function isWebOrMpPlatform(platform?: string) {
   return platform === 'h5' || platform === 'web' || platform?.startsWith('mp-')
 }
 
+function resolveUniCliPlatform() {
+  const entry = process.argv[1]
+  if (!entry || !['uni', 'uni.js'].includes(path.basename(entry))) {
+    return
+  }
+
+  const args = process.argv.slice(2)
+  for (let index = 0; index < args.length; index++) {
+    const arg = args[index]
+    if (arg === '--') {
+      break
+    }
+    if (arg === '-p' || arg === '--platform') {
+      const platform = args[index + 1]
+      if (platform && !platform.startsWith('-')) {
+        return platform
+      }
+    } else if (arg.startsWith('-p=') || arg.startsWith('--platform=')) {
+      const platform = arg.slice(arg.indexOf('=') + 1)
+      if (platform) {
+        return platform
+      }
+    }
+  }
+
+  return 'h5'
+}
+
+export function normalizeUniAppXVaporEnv() {
+  // UNI_APP_X_VAPOR 是对外开关，显式传入时优先覆盖内部 DOM2 状态。
+  if (process.env.UNI_APP_X_VAPOR === 'true') {
+    process.env.UNI_APP_X_DOM2 = 'true'
+  } else if (process.env.UNI_APP_X_VAPOR === 'false') {
+    delete process.env.UNI_APP_X_DOM2
+  }
+
+  // alias 初始化早于 CLI 环境初始化，优先读取 CLI 参数，否则使用预置的平台环境变量。
+  // web 和小程序目前强制关闭 Vapor。
+  const utsPlatform = process.env.UNI_UTS_PLATFORM
+  const uniPlatform = process.env.UNI_PLATFORM
+  const cliPlatform = resolveUniCliPlatform()
+  const shouldDisableVapor = cliPlatform
+    ? isWebOrMpPlatform(cliPlatform)
+    : isWebOrMpPlatform(utsPlatform) || isWebOrMpPlatform(uniPlatform)
+  if (shouldDisableVapor) {
+    delete process.env.UNI_APP_X_DOM2
+  }
+
+  // 将平台归一化后的实际状态同步回对外开关。
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    process.env.UNI_APP_X_VAPOR = 'true'
+  } else {
+    delete process.env.UNI_APP_X_DOM2
+    delete process.env.UNI_APP_X_VAPOR
+    delete process.env.UNI_APP_X_DOM2_DYNAMIC
+    delete process.env.UNI_APP_X_VAPOR_RENDER_TARGET
+  }
+}
+
 export function initModuleAlias() {
+  normalizeUniAppXVaporEnv()
+
   const libDir = path.resolve(__dirname, '../../lib')
   const compilerSfcPath = path.resolve(libDir, '@vue/compiler-sfc')
   const serverRendererPath = require.resolve('@vue/server-renderer')
@@ -36,15 +97,6 @@ export function initModuleAlias() {
     process.env.UNI_APP_X_DOM2_CPP_DIR =
       process.env.UNI_APP_HARMONY_DOM2_CPP_DIR
   }
-  // alias 初始化可能早于 CLI 环境初始化，这里仅依据外部预置的平台环境变量判断。
-  // 如果是 web 和小程序，目前强制非蒸汽。
-  const utsPlatform = process.env.UNI_UTS_PLATFORM
-  const uniPlatform = process.env.UNI_PLATFORM
-  if (isWebOrMpPlatform(utsPlatform) || isWebOrMpPlatform(uniPlatform)) {
-    delete process.env.UNI_APP_X_DOM2
-    delete process.env.UNI_APP_X_DOM2_DYNAMIC
-  }
-
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     if (
       process.env.UNI_OUTPUT_DIR &&

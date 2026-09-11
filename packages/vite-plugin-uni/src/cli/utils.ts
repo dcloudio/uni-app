@@ -14,6 +14,7 @@ import {
   isNormalCompileTarget,
   isUniAppX,
   isUniAppXVapor,
+  normalizeUniAppXVaporEnv,
   output,
   parseManifestJsonOnce,
   parseScripts,
@@ -166,6 +167,8 @@ export function initEnv(
     UniApp.PLATFORM,
     'app-android' | 'app-ios'
   >
+
+  normalizeUniAppXVaporEnv()
 
   // 需要提前初始化
   initUVueEnv()

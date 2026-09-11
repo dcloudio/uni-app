@@ -8,6 +8,7 @@ export { formatAtFilename, createErrorWithBlockFlag } from './log'
 export * from './env'
 export {
   initModuleAlias,
+  normalizeUniAppXVaporEnv,
   installHBuilderXPlugin,
   formatInstallHBuilderXPluginTips,
 } from './alias'
