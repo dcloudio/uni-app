@@ -22,36 +22,31 @@ uts 采用了与 ts 基本一致的语法规范，支持绝大部分 ES6 API。
 
 uts是一门语言。也仅是一门语言，不包含ui框架。
 
-uvue是DCloud提供的跨平台的、基于uts的、使用vue方式的ui框架。
-
-uts相当于js，uvue相当于html和css。它们类似于v8和webkit的关系，或者类似于dart和flutter的关系。
-
 uts这门语言，有2个用途：
 
 1. 开发uni-app 和 uni-app x 的原生扩展插件：因为uts可以调用所有原生能力。
-2. uts和uvue一起组合，开发原生级的项目，也就是 uni-app x 项目
+2. 在 uvue 页面里使用，uni-app x 的 VDOM 模式的 Android 平台，支持uvue里使用 uts，编译为kotlin。
 
-从HBuilderX 3.9起，支持uni-app x项目。详见[uni-app x](../readme.md)
+在 uni-app x 蒸汽模式中，编写 uts 会通过 uts2js 编译器转到js引擎下运行。
 
-也就是说，uts可以在uni-app中使用，也可以在uni-app x中使用。
+也就是说，uts可以在uni-app中使用，也可以在uni-app x中使用。它的主要用途是插件开发。
 
-- 在uni-app中，主编程语言是js。uts可以开发原生插件，包括API插件和组件插件。
-- 在uni-app x中，主编程语言是uts。不管是应用逻辑还是扩展插件，均使用uts编程。仅在Web平台和iOS的js驱动模式下可以使用js。
+**在蒸汽模式下，如果你不是原生插件作者，可以不必学习uts语言。**
 
-如果插件作者，开发了uts插件，也可以同时在uni-app和uni-app x中使用。比如这2个uts插件：
+**在AI时代，不懂原生也可以让uni-agent帮助开发uts原生插件**
+
+如果插件作者，开发了uts插件，也可以同时在uni-app和uni-app x中使用。比如这个uts插件：
 - 电量：[https://ext.dcloud.net.cn/plugin?id=9295](https://ext.dcloud.net.cn/plugin?id=9295)
-- lottie组件：[https://ext.dcloud.net.cn/plugin?id=10674](https://ext.dcloud.net.cn/plugin?id=10674)
 
-这2个uts插件，一个是api插件，一个是组件插件，它们同时兼容uni-app和uni-app x。
-
-可以通过表格更清晰的了解uts语言在uni-app和uni-app x下的编译关系。
+可以通过表格更清晰的了解uts语言在uni-app和uni-app x下的编译产物。
 
 <table>
   <thead>
     <tr>
       <th></th>
-      <th colspan="2">uni-app</th>
-      <th colspan="2">uni-app x</th>
+      <th colspan="3">uni-app</th>
+      <th colspan="3">uni-app x VDOM模式</th>
+			<th colspan="3">uni-app x 蒸汽模式</th>
     </tr>
   </thead>
   <tbody>
@@ -61,6 +56,8 @@ uts这门语言，有2个用途：
       <td>uts插件</td>
       <td>普通页面和脚本</td>
       <td>uts插件</td>
+			<td>普通页面和脚本</td>
+			<td>uts插件</td>
     </tr>
     <tr>
       <td>Web和小程序</td>
@@ -68,6 +65,8 @@ uts这门语言，有2个用途：
       <td>JS</td>
       <td>JS</td>
       <td>JS</td>
+			<td>JS</td>
+			<td>JS</td>
     </tr>
     <tr>
       <td>Android</td>
@@ -75,34 +74,37 @@ uts这门语言，有2个用途：
       <td>Kotlin</td>
       <td>Kotlin</td>
       <td>Kotlin</td>
+			<td>JS</td>
+			<td>Kotlin</td>
     </tr>
     <tr>
       <td>iOS</td>
       <td>JS</td>
       <td>Swift</td>
-      <td>JS(JS驱动时)</td>
+      <td>JS</td>
       <td>Swift</td>
+			<td>JS</td>
+			<td>Swift</td>
     </tr>
     <tr>
       <td>HarmonyNext</td>
       <td>JS</td>
-      <td>ArkTS</td>
-      <td>x</td>
-      <td>x</td>
+      <td>ets</td>
+      <td>js（运行在ArkTS引擎中）</td>
+      <td>ets</td>
+			<td>js（可选择运行在ArkTS或jsvm中）</td>
+			<td>ets</td>
     </tr>
   </tbody>
 </table>
 
 这里的概念解释是：
 - uts插件，指`uni_modules`目录下utssdk目录下的代码
-- 除uts插件外，其他都属于 `普通页面和脚本`，包含vue、nvue、uvue等页面及单独的uts文件
-- 在uni-app x的iOS平台，目前`普通页面和脚本`是编译为js的，而不是Swift。
-	这个策略主要是为了解决windows电脑开发uni-app x的问题。它并不影响性能，uni-app x的iOS通过优化解决了js性能问题。同时未来也会提供js驱动和Swift驱动双选
+- 除uts插件外，其他都属于 `普通页面和脚本`，包含vue、uvue等页面及单独的uts文件
 
 除了查阅表格，也可以简单的记3个原则：
 1. 所有的uts插件，都会编译为原生语言
-2. web和小程序上，原生语言就是js
-3. App上，目前仅uni-app x的Android平台会编译为原生语言，其他都编译为js
+2. 仅App-Android VDOM模式的页面中的uts会编译为原生语言，其他都编译为js
 
 本文是 uts 的基本语法介绍。
 - 想了解 uni-app 下如何开发 uts插件，另见文档[https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html](../plugin/uts-plugin.md)
