@@ -967,6 +967,9 @@ importers:
       '@dcloudio/vite-plugin-uni':
         specifier: ../../vite-plugin-uni
         version: link:../../vite-plugin-uni
+      cypress:
+        specifier: 'catalog:'
+        version: 10.11.0
       vite:
         specifier: 'catalog:'
         version: 5.2.8(@types/node@18.19.50)(sass@1.87.0)(terser@5.32.0)
