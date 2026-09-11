@@ -22876,6 +22876,7 @@ function hidePopup(type) {
     showToastState.visible = false;
   }, 10);
 }
+const POPUP_EDGE = 6;
 function usePopupStyle(props2, triangleColor = "#fcfcfd") {
   const popupWidth = ref(0);
   const popupHeight = ref(0);
@@ -22902,9 +22903,27 @@ function usePopupStyle(props2, triangleColor = "#fcfcfd") {
     const triangleStyle = style.triangle;
     const popover = props2.popover;
     function getNumber(value) {
-      return Number(value) || 0;
+      try {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : 0;
+      } catch (e2) {
+        return 0;
+      }
     }
     if (isDesktop.value && popover) {
+      const popoverLeft = Math.max(0, getNumber(popover.left));
+      const width = getNumber(popover.width);
+      const popoverWidth = width > 0 ? width : 300;
+      const popoverTop = Math.max(0, getNumber(popover.top));
+      const popoverHeight = Math.max(0, getNumber(popover.height));
+      const center = popoverLeft + popoverWidth / 2;
+      const contentLeft = Math.max(
+        POPUP_EDGE,
+        Math.min(
+          popupWidth.value - popoverWidth - POPUP_EDGE,
+          center - popoverWidth / 2
+        )
+      );
       extend(triangleStyle, {
         position: "absolute",
         width: "0",
@@ -22912,29 +22931,31 @@ function usePopupStyle(props2, triangleColor = "#fcfcfd") {
         "margin-left": "-6px",
         "border-style": "solid"
       });
-      const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width ? popover.width : 300);
-      const popoverTop = getNumber(popover.top);
-      const popoverHeight = getNumber(popover.height);
-      const center = popoverLeft + popoverWidth / 2;
       contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - popoverWidth / 2);
       contentStyle.left = `${contentLeft}px`;
-      if (popover.width) {
+      if (width > 0) {
         contentStyle.width = `${popoverWidth}px`;
       }
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(popoverWidth - 12, triangleLeft);
+      const triangleLeft = Math.max(
+        12,
+        Math.min(popoverWidth - 12, center - contentLeft)
+      );
       triangleStyle.left = `${triangleLeft}px`;
       const vcl = popupHeight.value / 2;
       if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
         contentStyle.top = "auto";
-        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
+        contentStyle.bottom = `${Math.max(
+          POPUP_EDGE,
+          popupHeight.value - popoverTop + POPUP_EDGE
+        )}px`;
         triangleStyle.bottom = "-6px";
         triangleStyle["border-width"] = "6px 6px 0 6px";
         triangleStyle["border-color"] = `${triangleColor} transparent transparent transparent`;
       } else {
-        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
+        contentStyle.top = `${Math.max(
+          POPUP_EDGE,
+          popoverTop + popoverHeight + POPUP_EDGE
+        )}px`;
         triangleStyle.top = "-6px";
         triangleStyle["border-width"] = "0 6px 6px 6px";
         triangleStyle["border-color"] = `transparent transparent ${triangleColor} transparent`;
@@ -22944,9 +22965,12 @@ function usePopupStyle(props2, triangleColor = "#fcfcfd") {
   });
   onMounted(() => {
     const fixSize = () => {
-      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
-      popupWidth.value = windowWidth;
-      popupHeight.value = windowHeight + (windowTop || 0);
+      try {
+        const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
+        popupWidth.value = windowWidth;
+        popupHeight.value = windowHeight + (windowTop || 0);
+      } catch (e2) {
+      }
     };
     window.addEventListener("resize", fixSize);
     fixSize();
