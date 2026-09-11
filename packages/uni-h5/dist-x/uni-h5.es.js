@@ -25458,7 +25458,7 @@ const Toast = /* @__PURE__ */ defineComponent({
   }
 });
 function useToastIcon(props2) {
-  const iconColor = ref(getIconColor(getTheme()));
+  const iconColor = ref(getIconColor(getTheme() ?? "light"));
   const _onThemeChange = ({
     theme
   }) => iconColor.value = getIconColor(theme);
