@@ -9877,7 +9877,7 @@ function setupPage(comp, path) {
     setup(instance2) {
       instance2.$pageInstance = instance2;
       const route = usePageRoute();
-      const router = useRouter();
+      const router = __UNI_FEATURE_PAGES__ ? useRouter() : void 0;
       const query = decodedQuery(route.query);
       instance2.attrs.__pageQuery = query;
       {
@@ -9911,9 +9911,7 @@ function setupPage(comp, path) {
         {
           const pageInstance = getPageInstanceByChild(instance2);
           if (!isDialogPageInstance(pageInstance)) {
-            dispatchWebAppRoute(
-              __UNI_FEATURE_PAGES__ ? router.currentRoute.value : void 0
-            );
+            dispatchWebAppRoute(router == null ? void 0 : router.currentRoute.value);
           }
         }
       });
@@ -9941,9 +9939,7 @@ function setupPage(comp, path) {
             if (!isDialogPageInstance(pageInstance)) {
               const { onShow } = instance2;
               onShow && invokeArrayFns$1(onShow);
-              dispatchWebAppRoute(
-                __UNI_FEATURE_PAGES__ ? router.currentRoute.value : void 0
-              );
+              dispatchWebAppRoute(router == null ? void 0 : router.currentRoute.value);
               invokeLastDialogPageHookByUniPage(
                 (_a = instance2.proxy) == null ? void 0 : _a.$page,
                 ON_SHOW
