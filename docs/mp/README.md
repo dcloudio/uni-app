@@ -18,10 +18,6 @@ uni-app x中全平台统一使用flex布局。
 uni-app x主要是在这个版本库上适配。
 已知过老的基础库版本上，scroll-view区域大小会不准确。请开发者检查并确保基础库版本大于3.7.1。
 
-## uts
-
-推荐使用uts跨端开发，但微信小程序上也支持js/ts。
-
 ## vue
 
 ### 自定义组件启用virtualHost带来的影响@virtualHost

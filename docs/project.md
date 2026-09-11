@@ -4,15 +4,14 @@
 
 首先需下载最新版[HBuilder](https://www.dcloud.io/hbuilderx.html)
 
-在菜单文件>新建>项目中，选择新建uni-app项目。（或工具链左上角的新建快捷菜单，或者快捷键Ctrl+N）
+在菜单文件>新建>项目中，选择新建项目。（或工具链左上角的新建快捷菜单，或者快捷键Ctrl+N）
 
-可以选择空项目，也可以选择hello uni-app x示例项目，这个项目有几百个页面，演示了uni-app x的各种组件和API的用法。
-
-注意这里区分uni-app和uni-app x项目，在该界面的底部有一个checkbox：uni-app x。**勾选后**会新建为uni-app x项目。
-
-不要错选成uni-app！
+- HBuilderX 5.25+，新建项目默认为 uni-app x 蒸汽模式。
+- 低于5.25时，新建项目默认是uni-app，需要注意区分uni-app和uni-app x项目，在新建项目界面的底部有一个checkbox：uni-app x。**勾选后**会新建为uni-app x项目。
 
 ![](./static/newproject.png)
+
+可以选择空项目，也可以选择hello uni-app x示例项目，这个项目有几百个页面，演示了uni-app x的各种组件和API的用法。
 
 uni-app x只支持vue3，无法勾选vue2。
 
@@ -62,7 +61,7 @@ uni-app x的项目结构与[uni-app老版的项目结构](https://uniapp.dcloud.
 ├─hybrid                App端存放web-view组件使用的本地html文件的目录，<a href="./component/web-view">详见</a>
 ├─wxcomponents          微信小程序平台wxml组件专用目录
 ├─unpackage             非工程代码，一般存放运行或发行的编译结果、App自定义基座。默认应配置git忽略
-├─main.uts              Vue初始化入口文件
+├─main.uts/ts/js        Vue初始化入口文件。HBuilderX 5.28+ 蒸汽模式支持ts/js后缀
 ├─App.uvue              应用配置，用来配置App全局样式以及监听 <a href="./collocation/App#应用生命周期">详见</a>
 ├─pages.json            配置页面路由、导航条、选项卡等页面类信息，<a href="./collocation/pages">详见</a>
 ├─manifest.json         配置应用名称、appid、logo、版本等打包信息，<a href="./collocation/manifest">详见</a>
