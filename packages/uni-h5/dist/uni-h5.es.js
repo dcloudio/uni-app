@@ -22745,7 +22745,7 @@ const Toast = /* @__PURE__ */ defineComponent({
   }
 });
 function useToastIcon(props2) {
-  const iconColor = ref(getIconColor(getTheme()));
+  const iconColor = ref(getIconColor(getTheme() ?? "light"));
   const _onThemeChange = ({
     theme
   }) => iconColor.value = getIconColor(theme);
@@ -23197,7 +23197,7 @@ function useOnThemeChange(props2) {
       actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor = props2.itemColor;
       if (props2.itemColor === "#000") {
         _onThemeChange({
-          theme: getTheme()
+          theme: getTheme() ?? "light"
         });
         onThemeChange$2(_onThemeChange);
       }
@@ -23245,7 +23245,7 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
         nextTick(() => showActionSheetState.visible = true))
       );
     } else {
-      extend(showActionSheetState, args);
+      extend(showActionSheetState, { popover: null }, args);
       showActionSheetState.visible = true;
     }
   },
