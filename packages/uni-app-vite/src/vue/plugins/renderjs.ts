@@ -20,6 +20,8 @@ export const APP_RENDERJS_JS = 'app-renderjs.js'
 
 const wxsModulesCache = new WeakMap<ResolvedConfig, Map<string, string>>()
 const renderjsModulesCache = new WeakMap<ResolvedConfig, Map<string, string>>()
+// resolvedConfig 在 configResolved 之后不再变化，alias 映射可安全缓存
+const esbuildAliasCache = new WeakMap<ResolvedConfig, Record<string, string>>()
 export function uniRenderjsPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
   let userConfig: UserConfig
@@ -67,7 +69,8 @@ export function uniRenderjsPlugin(): Plugin {
               filename,
               `__${globalName}['${moduleHashId}']`,
               isProduction,
-              userConfig
+              userConfig,
+              resolvedConfig
             ),
         globalName,
         isProduction
@@ -155,7 +158,8 @@ function transformRenderjs(
   filename: string,
   globalName: string,
   isProduction: boolean,
-  config: UserConfig
+  config: UserConfig,
+  resolvedConfig: ResolvedConfig
 ) {
   return transformWithEsbuild(code, filename, {
     format: 'iife',
@@ -164,10 +168,29 @@ function transformRenderjs(
     minify: isProduction ? true : false,
     bundle: true,
     write: false,
+    alias: resolveEsbuildAlias(resolvedConfig),
   }).then((res) => {
     if (res.outputFiles) {
       return res.outputFiles[0].text
     }
     return ''
   })
+}
+
+// renderjs 块由独立 esbuild 打包（bundle: true），拿不到 vite 的 resolve.alias，
+// 依赖库中的 import('node:module') 之类会解析失败，这里用 resolvedConfig 的 alias 补齐。
+// esbuild 的 alias 仅支持精确匹配/<key>/ 前缀替换，故只透传 string 型 find。
+function resolveEsbuildAlias(resolvedConfig: ResolvedConfig) {
+  let alias = esbuildAliasCache.get(resolvedConfig)
+  if (!alias) {
+    const next: Record<string, string> = {}
+    for (const { find, replacement } of resolvedConfig.resolve.alias) {
+      if (typeof find === 'string') {
+        next[find] = replacement
+      }
+    }
+    alias = next
+    esbuildAliasCache.set(resolvedConfig, next)
+  }
+  return alias
 }
