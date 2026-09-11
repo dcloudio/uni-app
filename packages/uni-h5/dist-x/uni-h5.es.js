@@ -32042,6 +32042,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     const screenHeight = ref(0);
     const scaleSize = ref(1);
     const lastSlideTouch = ref(null);
+    const lastTouchPointerTime = ref(0);
     const imageTop = ref(0);
     const imageMarginTop = ref(0);
     const imageLeft = ref(0);
@@ -32355,7 +32356,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       isPreviewImaqeClosed.value = true;
       uni.$emit("__UNIPREVIEWIMAGECLOSE");
     }
-    const onstart = (e2) => {
+    const handleStart = (e2) => {
       if (isPreviewImaqeClosed.value)
         return;
       inScaleMode.value = false;
@@ -32392,7 +32393,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
         }, 350);
       }
     };
-    const onmove = (e2) => {
+    const handleMove = (e2) => {
       if (isPreviewImaqeClosed.value)
         return;
       if (e2.touches.length == 1) {
@@ -32495,7 +32496,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
         lastSlideTouch.value = e2.touches;
       }
     };
-    const onend = (e2) => {
+    const handleEnd = (e2) => {
       if (isPreviewImaqeClosed.value)
         return;
       const wasScaleMode = inScaleMode.value || scaleGestureActive.value || scaleGestureInProgress.value;
@@ -32617,14 +32618,90 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       delegateMoveToParent.value = false;
       setSwiperTouchDisabled(false);
     };
-    const oncancel = (e2) => {
-      onend(e2);
+    const handleCancel = (e2) => {
+      handleEnd(e2);
       clearTimeout(clickTimeoutId.value);
       inScaleMode.value = false;
       scaleGestureActive.value = false;
       scaleGestureInProgress.value = false;
       delegateMoveToParent.value = false;
       setSwiperTouchDisabled(false);
+    };
+    const toPreviewEvent = (e2) => {
+      const points = [];
+      for (var i = 0; i < e2.touches.length; i++) {
+        const touch = e2.touches[i];
+        points.push({ clientX: touch.clientX, clientY: touch.clientY });
+      }
+      const event = {
+        type: e2.type,
+        timeStamp: e2.timeStamp,
+        touches: points,
+        preventDefault: () => {
+          e2.preventDefault();
+        },
+        stopPropagation: () => {
+          e2.stopPropagation();
+        }
+      };
+      return event;
+    };
+    const onstart = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleStart(toPreviewEvent(e2));
+    };
+    const onmove = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleMove(toPreviewEvent(e2));
+    };
+    const onend = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleEnd(toPreviewEvent(e2));
+    };
+    const oncancel = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleCancel(toPreviewEvent(e2));
+    };
+    const mousePressed = ref(false);
+    const isSimulatedMouseEvent = () => {
+      return Date.now() - lastTouchPointerTime.value < 600;
+    };
+    const toPreviewEventFromMouse = (e2, type) => {
+      const points = [];
+      if (type != "touchend") {
+        points.push({ clientX: e2.clientX, clientY: e2.clientY });
+      }
+      const event = {
+        type,
+        timeStamp: e2.timeStamp,
+        touches: points,
+        preventDefault: () => {
+          e2.preventDefault();
+        },
+        stopPropagation: () => {
+          e2.stopPropagation();
+        }
+      };
+      return event;
+    };
+    const onMouseStart = (e2) => {
+      if (isSimulatedMouseEvent())
+        return;
+      mousePressed.value = true;
+      handleStart(toPreviewEventFromMouse(e2, "touchstart"));
+    };
+    const onMouseMove = (e2) => {
+      if (!mousePressed.value)
+        return;
+      if (isSimulatedMouseEvent())
+        return;
+      handleMove(toPreviewEventFromMouse(e2, "touchmove"));
+    };
+    const onMouseEnd = (e2) => {
+      mousePressed.value = false;
+      if (isSimulatedMouseEvent())
+        return;
+      handleEnd(toPreviewEventFromMouse(e2, "touchend"));
     };
     const caculatorImageSize = (imgWidth, imgHeight) => {
       var _a, _b;
@@ -32708,7 +32785,10 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
             onTouchstart: onstart,
             onTouchmove: onmove,
             onTouchend: onend,
-            onTouchcancel: oncancel
+            onTouchcancel: oncancel,
+            onMousedown: onMouseStart,
+            onMousemove: onMouseMove,
+            onMouseup: onMouseEnd
           }, null, 512),
           !loadingFinished.value ? (openBlock(), createBlock(_component_view, {
             key: 0,
