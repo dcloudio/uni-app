@@ -90,6 +90,8 @@
   * [Android性能评测基准报告](benchmark/vapor-benchmark-android.md)
   * [iOS性能评测基准报告](benchmark/vapor-benchmark-ios.md)
   * [鸿蒙性能评测基准报告](benchmark/vapor-benchmark-harmony.md)
+* 选型参考
+	* [一文讲透原生渲染和自渲染](./select/native-render-and-self-render.md)
 * [uni-app 升级 uni-app x](./uniapptox.md)
 * 安全专题
   * [综述](tutorial/safe.md)
