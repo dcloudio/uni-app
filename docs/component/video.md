@@ -369,15 +369,20 @@ UniVideoReuseEvent -- Extends --> UniCustomEvent&ltUniVideoReuseEventDetail&gt
 
 ### app平台组件实现
 
-#### HBuilderX5.08及以上版本  
-App-Android平台使用 ExoPlayer 库实现，不再支持 codec、play-strategy 属性  
-App-iOS平台使用系统 AVPlayer 实现，不再支持 codec、play-strategy 属性  
+#### HBuilderX5.08及以上版本
+- App-Android平台 使用 Google ExoPlayer 库实现，不再支持 codec、play-strategy 属性
+- App-iOS平台 使用iOS系统自带的AVPlayer 实现，不再支持 codec、play-strategy 属性
+- App-Harmony平台 使用系统video实现
+
+新版本放弃ijkplayer，主要原因是该库原作者已不维护。使用系统的video虽然会损失一些功能，如下：
 
 > 不再支持流媒体 rtmp/rtsp，仅支持hls协议  
 > 不再支持flv视频格式  
 
+但系统video的性能、质量和包体积占用更有优势。
 
 #### HBuilderX5.08以下版本  
+
 App-Android/iOS平台video组件使用ijkplayer库实现：[https://github.com/bilibili/ijkplayer](https://github.com/bilibili/ijkplayer)；
 
 弹幕功能使用DanmakuFlameMaster库实现：[https://github.com/bilibili/DanmakuFlameMaster](https://github.com/bilibili/DanmakuFlameMaster)
@@ -386,7 +391,6 @@ ijkplayer库底层又使用了ffmpeg，这些库的功能较多，官方的video
 
 video组件的源码[详见](https://gitcode.com/dcloud/uni-component/tree/master/uni_modules/uni-video)。下载该uni_modules到工程下，修改源码打包，可覆盖内置的video组件。
 
-另外ijkplayer作为一个开源库，比腾讯视频等商业sdk仍有差距。如无法在开源库上满足需求，可在插件市场寻找其他插件：见插件市场[视频播放](https://ext.dcloud.net.cn/search?q=%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE&orderBy=Relevance&uni-appx=1)
 
 ### 子组件 @children-tags
 支持所有组件
