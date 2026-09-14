@@ -56,6 +56,39 @@
 以上代码示例，当我们把 `rowDesc` 变量从 `row-desc1` 变为 `row-desc2` 时，会更新 `text` 节点样式，但是如果把 `docBody` 变量从 `doc-body1` 变为 `doc-body2`，是不会更新 `text` 节点样式的。\
 因为 `doc-body` 不是最后一个选择器，非末尾的选择器变更有可能影响很多 DOM 元素，从而影响到渲染性能。
 
+## 示例：css选择器
+
+示例源码 [pages/CSS/selector/selector.uvue](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/selector/selector.uvue)
+
+```uvue
+<template>
+  <view>
+    默认通过page选择器设置padding: 16px
+    <!-- WEB 和 MP-WEIXIN 暂不支持动态修改 page 的 style，因此不展示切换按钮 -->
+    <!-- #ifndef WEB || MP-WEIXIN -->
+    <button id="setPagePaddingButton" @tap="setPagePadding">切换page padding为20px</button>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script setup lang="uts">
+// #ifndef WEB || MP-WEIXIN
+const setPagePadding = () => {
+  const pages = getCurrentPages()
+  pages[pages.length - 1].querySelector('page')?.style.setProperty('padding', 'var(--page-padding-change)')
+}
+// #endif
+</script>
+
+<style>
+  page {
+    --page-padding-change: 20px;
+    padding: var(--page-padding);
+  }
+</style>
+
+```
+
 ::: warning 注意
 App端相邻选择器暂不支持动态新增或删减节点，为了优化性能减少一些重新渲染工作，示例 [https://issues.dcloud.net.cn/pages/issues/detail?id=1452](https://issues.dcloud.net.cn/pages/issues/detail?id=1452)
 :::
