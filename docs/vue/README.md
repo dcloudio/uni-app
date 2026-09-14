@@ -129,18 +129,25 @@ uvue中只能有一个script标签。
 
 script标签的属性如下：
 - lang
-目前不推荐设置此项。
 
-在VDOM模式，lang只能使用uts，Android平台按uts2kt执行。其他平台按uts2js执行。
+在VDOM模式，lang只能使用uts，Android平台按uts2kt执行，此时要求强类型。其他平台按uts2js执行，不要求强类型。
 
-在蒸汽模式，在HBuilderX 5.27以前，仅支持uts，按uts2js执行，强行设置ts/js会触发bug。从5.27+，lang可以设置ts和js。
+在蒸汽模式，lang最终运行在js环境中，不再要求强类型。
+* 在HBuilderX 5.31以前，不能手动指定lang，script均按uts2js执行，强行设置lang为ts/js反而会触发bug。
+* 从5.31+，lang可以设置ts和js。
 
-设置js、ts、uts，会影响编译速度，编译速度逐渐变慢。ts需要执行ts2js编译，uts还需要再追加uts2js编译。
+蒸汽模式下，使用uts、ts，实际也需要经过uts2js、ts2js的编译流程。uts、ts和js的区别：
+* js：没有额外的编译流程。编译速度快。
+* ts：需执行ts2js的编译器，类型仅对开发阶段生效，实际运行时会擦除类型。编译速度中。
+* uts：需执行uts2js编译器。编译速度慢。为了拉齐uts编译原生强类型的跨端表现，运行时与标准js有略微差异：
+	+ 支持UTSJSONObject
+	+ type没有擦除而是编译成了class
+	+ 把部分js内置API返回值从undefined改为null
 
-uts2js，为了拉齐uts编译的强类型整体表现，支持UTSJSONObject、把部分js内置API返回值从undefined改为null、type没有擦除而是编译成了class。不使用uts时，将无法再使用UTSJSONObject，type会被擦除，所有API表现均与标准js一致。
+	不使用uts时，将无法再使用UTSJSONObject，type会被擦除，运行时内置API被改成`null`的会还原为`undefined`。
 
 - setup
-setup属性声明代表script里的代码为组合式写法，如果没有setup属性则为选项式写法。
+setup属性声明代表script里的代码为组合式写法，如果没有setup属性则为选项式写法。蒸汽模式只支持setup。
 
 **注意：** 所有 `vue` 公开的 `API` 都是不需要 `import` 的, `uni-app x` 会自动引入。
 
@@ -151,9 +158,11 @@ import { ref } from 'vue';
 
 ### 组合式和选项式的区别
 
-vue最初只有选项式API，从vue3起，新增了组合式API。uni-app x仅支持vue3。
+vue自身最初只有选项式API，从vue3起，新增了组合式API。再推出蒸汽模式后仅支持组合式API。
 
-所谓选项式，就是把script的内容在export default {} 中约定不同的对象，在其中通过多个选项的对象来定义data、method和生命周期。
+uni-app x 仅支持vue3，uni-app x 蒸汽模式也仅支持组合式API。
+
+所谓选项式，就是把script的内容在 `export default {}` 中约定不同的对象，在其中通过多个选项的对象来定义data、method和生命周期。
 
 框定好这些后，开发者就在这个框框里分别写自己的业务逻辑。
 
@@ -170,17 +179,18 @@ vue3新增的组合式API，是纯编程的，解决了选项式不够灵活的�
 
 但注意不支持一个页面/组件有2个script，分别写选项式和组合式。
 
+以及，uni-app x 蒸汽模式的App平台，仅支持组合式，不支持选项式混合使用。
+
 开发者可以根据自己的喜好选择2种写法，但还有几个差别需要注意：
 1. vue推出了蒸汽模式，该模式抛弃了VNode，让页面加载速度更快。但该模式仅支持组合式。为了更高的性能，推荐使用组合式。
 1. 组合式API的组件，可以监听引用其页面的页面级生命周期。而选项式是不能的。有相关需求的组件，需使用组合式API，或在选项式中使用setup函数。[详见](./component.md#component-page-lifecycle)
 2. 选项式的type类型定义在`export default {}`外，这些都是应用级全局的，略微影响性能。[见下](#export-default-out)
-3. uts插件的兼容模式组件，其中的根index.vue，只支持选项式。兼容模式组件已经不再推荐使用，推荐使用标准模式组件。
+3. uts插件的兼容模式组件，其中的根index.vue，只支持选项式。兼容模式组件已经不再推荐使用，蒸汽模式也不支持，推荐使用uts标准模式组件。
 
 
 一般推荐的建议是：
-1. 如果有历史的选项式代码需要复用，这些选项式代码仍然可以使用。
-2. 如果新写页面和组件，建议直接使用组合式。
-3. 虽然选项式可以用，但强烈推荐通过[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)来转换选项式代码为组合式，可以使用如下提示词：[见下](#ai)
+1. 如果新写页面和组件，建议直接使用组合式。
+2. 历史选项式页面和组件，强烈推荐通过[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)来转换选项式代码为组合式，其已经内置了转换相关的skill。如果使用其他AI，可以参考如下的提示词 [见下](#ai)
 
 ### 组合式API
 组合式 API，也称 Composition API，或 setup函数。
@@ -309,7 +319,7 @@ JSX/TSX 是编写在 JavaScript/TypeScript 中的表达式语法，目前不支�
 
 ## style（CSS功能） @css
 
-style的写法与web的css基本相同。但在App端，由于并非webview渲染，支持的css有限。[详见](../css/README.md)
+style的写法与web的css基本相同。但在App端，由于并非webview渲染，支持的css是子集。[详见](../css/README.md)
 
 本章节重点讲解uvue下样式的使用注意事项。
 
@@ -356,8 +366,8 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 
 ### Class 与 Style 绑定 @class-style
 
-- `uni-app x` 支持绑定  `UTSJSONObject` 和 `Map` 类型数据。
-- 在App-Android平台上 `Map` 的性能高于 `UTSJSONObject` 数据类型。从 `uni-app x 4.01` 起，Web平台也支持了 `Map` 类型绑定。
+- `uni-app x` 在VDOM模式下支持绑定  `UTSJSONObject` 和 `Map` 类型数据。蒸汽模式不支持。
+- VDOM模式下，在App-Android平台上 `Map` 的性能高于 `UTSJSONObject` 数据类型。从 `uni-app x 4.01` 起，Web平台也支持了 `Map` 类型绑定。
 
 如下示例中，给 view 组件的 style 和 class 分别绑定了两个响应式变量，就可以通过在逻辑代码里修改变量而实现动态修改样式。
 ```vue
