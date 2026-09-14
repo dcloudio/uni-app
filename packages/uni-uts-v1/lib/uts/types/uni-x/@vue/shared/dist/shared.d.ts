@@ -516,6 +516,8 @@ export declare enum VaporDynamicComponentFlags {
   ONCE = 2,
   SLOT_ROOT = 4,
   DOM2_FLATTEN_TRUE = 65536,
-  DOM2_FLATTEN_FALSE = 131072
+  DOM2_FLATTEN_FALSE = 131072,
+  NS_SVG = 8,
+  NS_MATHML = 16
 }
 //#endregion

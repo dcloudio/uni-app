@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.7
+  * @vue/shared v3.6.0-rc.8
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -785,7 +785,11 @@ const VaporDynamicComponentFlags = {
 	"DOM2_FLATTEN_TRUE": 65536,
 	"65536": "DOM2_FLATTEN_TRUE",
 	"DOM2_FLATTEN_FALSE": 131072,
-	"131072": "DOM2_FLATTEN_FALSE"
+	"131072": "DOM2_FLATTEN_FALSE",
+	"NS_SVG": 8,
+	"8": "NS_SVG",
+	"NS_MATHML": 16,
+	"16": "NS_MATHML"
 };
 //#endregion
 export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, TemplateFlags, VaporBlockShape, VaporDynamicComponentFlags, VaporIfFlags, VaporSlotFlags, VaporSlotStability, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isAlwaysCloseTag, isArray, isBlockTag, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isForwardedSlot, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isInlineTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, slotInheritsFallback, slotNotifiesBoundary, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };

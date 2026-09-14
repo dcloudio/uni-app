@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.7
+  * @vue/compiler-vapor v3.6.0-rc.8
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -19232,6 +19232,9 @@ function isTeleportTag(tag) {
 	tag = tag.toLowerCase();
 	return tag === "teleport" || tag === "vaporteleport";
 }
+function isComponentTag(tag) {
+	return tag === "component" || tag === "Component";
+}
 function isBuiltInComponent(tag) {
 	if (isTeleportTag(tag)) return "VaporTeleport";
 	else if (tag === "Suspense" || tag === "suspense") return "Suspense";
@@ -19414,6 +19417,7 @@ var TransformContext = class TransformContext {
 			node,
 			parent: this,
 			index,
+			inVOnce: this.inVOnce && !isComponentNode(this.node),
 			template: "",
 			templateRoot: false,
 			childrenTemplate: [],
@@ -19596,9 +19600,19 @@ function getNextId(map, n) {
 	if (map && map.has(n)) return map.get(n);
 	return n;
 }
+function isComponentNode(node) {
+	return node.type === 1 && node.tagType === 1;
+}
 //#endregion
 //#region packages/compiler-vapor/src/generators/utils.ts
 var import_source_map = require_source_map();
+/**
+* Run a helper call inside the once ambient: a helper that creates its own
+* effects at a v-once site has them run once like compiled ones do.
+*/
+function genOnce(call, context) {
+	return genCall(context.helper("withOnce"), ["() => ", ...call]);
+}
 const IMPORT_EXP_START = "__IMPORT_EXP_START__";
 const IMPORT_EXP_END = "__IMPORT_EXP_END__";
 const IMPORT_EXPR_RE = new RegExp(`${IMPORT_EXP_START}(.*?)${IMPORT_EXP_END}`, "g");
@@ -21088,11 +21102,11 @@ function genGetTextChild(oper, context) {
 //#region packages/compiler-vapor/src/generators/vShow.ts
 function genVShow(oper, context) {
 	const { element } = oper;
-	return [NEWLINE, ...genCall(context.helper("applyVShow"), `n${element}`, [
+	return genCall(context.helper("applyVShow"), `n${element}`, [
 		`() => (`,
 		...genExpression(oper.dir.exp, context),
 		`)`
-	])];
+	]);
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/modifier.ts
@@ -21110,11 +21124,11 @@ const helperMap = {
 };
 function genVModel(oper, context) {
 	const { modelType, element, dir: { exp, modifiers } } = oper;
-	return [NEWLINE, ...genCall(context.helper(helperMap[modelType]), `n${element}`, [
+	return genCall(context.helper(helperMap[modelType]), `n${element}`, [
 		`() => (`,
 		...genExpression(exp, context),
 		`)`
-	], genModelHandler(exp, context), modifiers.length ? `{ ${genDirectiveModifiers(modifiers.map((e) => e.content))} }` : void 0)];
+	], genModelHandler(exp, context), modifiers.length ? `{ ${genDirectiveModifiers(modifiers.map((e) => e.content))} }` : void 0);
 }
 function genModelHandler(exp, context) {
 	return [
@@ -21126,11 +21140,17 @@ function genModelHandler(exp, context) {
 //#endregion
 //#region packages/compiler-vapor/src/generators/directive.ts
 function genBuiltinDirective(oper, context) {
+	let call;
 	switch (oper.name) {
-		case "show": return genVShow(oper, context);
-		case "model": return genVModel(oper, context);
+		case "show":
+			call = genVShow(oper, context);
+			break;
+		case "model":
+			call = genVModel(oper, context);
+			break;
 		default: return [];
 	}
+	return [NEWLINE, ...oper.once ? genOnce(call, context) : call];
 }
 /**
 * user directives via `withVaporDirectives`
@@ -21144,7 +21164,8 @@ function genCustomDirectives(opers, context) {
 	const element = `n${opers[0].element}`;
 	const directiveItems = opers.map(genDirectiveItem);
 	const directives = genMulti(DELIMITERS_ARRAY, ...directiveItems);
-	return [NEWLINE, ...genCall(helper("withVaporDirectives"), element, directives)];
+	const call = genCall(helper("withVaporDirectives"), element, directives);
+	return [NEWLINE, ...opers[0].once ? genOnce(call, context) : call];
 	function genDirectiveItem({ dir, name, asset }) {
 		const directiveVar = asset ? toValidAssetId(name, "directive") : genExpression(extend(createSimpleExpression(name, false), { ast: null }), context);
 		const value = dir.exp && [
@@ -21178,7 +21199,8 @@ function genCreateComponent(operation, context) {
 	const tag = genTag();
 	const { root, props, slots, once, slotRoot } = operation;
 	const isRuntimeDynamicComponent = !!(operation.dynamic && !operation.dynamic.isStatic);
-	const dynamicComponentFlags = isRuntimeDynamicComponent ? genDynamicComponentFlags(root, once, slotRoot) : false;
+	const dynamicComponentFlags = isRuntimeDynamicComponent ? genDynamicComponentFlags(root, once, slotRoot, operation.ns) : false;
+	const nsArg = !isRuntimeDynamicComponent && (operation.useCreateElement || operation.asset || !!operation.dynamic) && operation.ns ? String(operation.ns) : false;
 	const rawSlots = genRawSlots(slots, context);
 	const [ids, handlers] = processInlineHandlers(props, context);
 	const rawProps = context.withId(() => genRawProps(props, context, true), ids);
@@ -21195,7 +21217,11 @@ function genCreateComponent(operation, context) {
 		NEWLINE,
 		...inlineHandlers,
 		`const n${operation.id} = `,
-		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags : root ? "true" : false, isRuntimeDynamicComponent ? false : once && "true", isRuntimeDynamicComponent ? false : maybeSelfReference && "true"),
+		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags : root ? "true" : false, isRuntimeDynamicComponent ? operation.key && [
+			"() => (",
+			...genExpression(operation.key, context),
+			")"
+		] : once && "true", useAssetComponentHelper ? maybeSelfReference && "true" : nsArg, useAssetComponentHelper && nsArg),
 		...genDirectivesForElement(operation.id, context)
 	];
 	function genTag() {
@@ -21222,9 +21248,11 @@ function genCreateComponent(operation, context) {
 		}
 	}
 }
-function genDynamicComponentFlags(root, once, slotRoot, extraFlags) {
+function genDynamicComponentFlags(root, once, slotRoot, nsOrExtra, ns) {
 	let flags = 0;
 	const names = [];
+	const extraFlags = Array.isArray(nsOrExtra) ? nsOrExtra : void 0;
+	const namespace = Array.isArray(nsOrExtra) ? ns : nsOrExtra;
 	if (root) {
 		flags |= 1;
 		names.push("SINGLE_ROOT");
@@ -21240,6 +21268,13 @@ function genDynamicComponentFlags(root, once, slotRoot, extraFlags) {
 	if (extraFlags) for (const [flag, name] of extraFlags) {
 		flags |= flag;
 		names.push(name);
+	}
+	if (namespace === 1) {
+		flags |= 8;
+		names.push("NS_SVG");
+	} else if (namespace === 2) {
+		flags |= 16;
+		names.push("NS_MATHML");
 	}
 	if (!flags) return false;
 	return genFlags(flags, names);
@@ -21823,7 +21858,8 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 			continue;
 		}
 		const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
-		if (id === void 0 && !child.hasDynamicChild) {
+		const ownsSubtree = child.operation !== void 0;
+		if (id === void 0 && (!child.hasDynamicChild || ownsSubtree)) {
 			flushBeforeDynamic && flushBeforeDynamic(child, push);
 			push(...genSelf(child, context, flushBeforeDynamic));
 			continue;
@@ -21860,7 +21896,7 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 			variable = id === void 0 ? context.pName(context.block.tempId++) : `n${id}`;
 			pushBlock(NEWLINE, id === void 0 ? `let ${variable} = ` : `const ${variable} = `, ...accessPath);
 		}
-		if (id === child.anchor && !child.hasDynamicChild) {
+		if (id === child.anchor && (!child.hasDynamicChild || ownsSubtree)) {
 			flushBeforeDynamic && flushBeforeDynamic(child, push);
 			push(...genSelf(child, context, flushBeforeDynamic));
 		}
@@ -21870,7 +21906,7 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 			elementIndex,
 			id === void 0
 		];
-		push(...genChildren(child, context, pushBlock, variable, flushBeforeDynamic));
+		if (!ownsSubtree) push(...genChildren(child, context, pushBlock, variable, flushBeforeDynamic));
 	}
 	return frag;
 }
@@ -22406,6 +22442,37 @@ const transformVBind = (dir, node, context) => {
 	};
 };
 //#endregion
+//#region packages/compiler-vapor/src/transforms/transformKey.ts
+const dynamicComponentKeys = /* @__PURE__ */ new WeakMap();
+const transformKey = (node, context) => {
+	if (node.type !== 1 || context.inVOnce || findDir(node, "for")) return;
+	const dir = findProp(node, "key", true, true);
+	if (!dir || dir.type === 6) return;
+	let value;
+	value = dir.exp || normalizeBindShorthand(dir.arg, context);
+	if (isStaticExpression(value, context.options.bindingMetadata)) return;
+	if (isComponentTag(node.tag) && findProp(node, "is", true, true)) {
+		dynamicComponentKeys.set(node, value);
+		return;
+	}
+	let id = context.reference();
+	context.dynamic.flags |= 6;
+	context.node = node = wrapTemplate(node, ["key"]);
+	const block = newBlock(node);
+	const exitBlock = context.enterBlock(block);
+	return () => {
+		exitBlock();
+		context.dynamic.operation = _objectSpread2(_objectSpread2({
+			type: 16,
+			node,
+			id
+		}, context.effectBoundary()), {}, {
+			value,
+			block
+		});
+	};
+};
+//#endregion
 //#region packages/compiler-vapor/src/transforms/vHtml.ts
 function ignoreVHtmlChildren(node, context, clear) {
 	if (!node.children.length) return;
@@ -22518,6 +22585,13 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 	let asset = true;
 	if (!dynamicComponent && !useCreateElement) {
 		const { isEasyComponent } = context.options;
+		const isProp = findProp(node, "is");
+		if (isProp && isProp.type === 6 && isVueIsValue(isProp)) tag = isProp.value.content.slice(4);
+		const fromSetup = resolveSetupReference(tag, context);
+		if (fromSetup) {
+			tag = fromSetup;
+			asset = false;
+		}
 		const isEasyCom = isEasyComponent && isEasyComponent(tag);
 		if (!isEasyCom) {
 			const fromSetup = resolveSetupReference(tag, context);
@@ -22560,7 +22634,9 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 		once: context.inVOnce,
 		dynamic: dynamicComponent,
 		useCreateElement,
-		flatten
+		flatten,
+		ns: node.ns || void 0,
+		key: dynamicComponentKeys.get(node)
 	});
 	if (staticKey) context.registerOperation(createSetBlockKey(id, staticKey, node));
 	context.slots = [];
@@ -22590,6 +22666,9 @@ function extractStaticBooleanProp(propsResult, name, onInvalid) {
 			}
 		}
 	}
+}
+function isVueIsValue(prop) {
+	return !!prop.value && prop.value.content.startsWith("vue:");
 }
 function resolveDynamicComponent(node) {
 	const isProp = findProp(node, "is", false, true);
@@ -22950,7 +23029,7 @@ function buildProps(node, context, isComponent, isDynamicComponent, getEffectInd
 				continue;
 			}
 		}
-		if (isDynamicComponent && (prop.type === 6 && prop.name === "is" || prop.type === 7 && prop.name === "bind" && isStaticArgOf(prop.arg, "is"))) continue;
+		if (prop.type === 6 ? prop.name === "is" && (isDynamicComponent || isVueIsValue(prop)) : isDynamicComponent && prop.name === "bind" && isStaticArgOf(prop.arg, "is")) continue;
 		const result = transformProp(prop, node, context);
 		if (result) {
 			dynamicExpr.push(result.key, result.value);
@@ -23136,7 +23215,8 @@ function transformProp(prop, node, context) {
 			element: context.reference(),
 			dir: prop,
 			name,
-			asset: !fromSetup
+			asset: !fromSetup,
+			once: context.inVOnce
 		});
 	}
 }
@@ -23176,9 +23256,6 @@ function toDirectiveResult(prop) {
 function mergePropValues(existing, incoming) {
 	const newValues = incoming.values;
 	existing.values.push(...newValues);
-}
-function isComponentTag(tag) {
-	return tag === "component" || tag === "Component";
 }
 function shouldUseCreateElement(node, context) {
 	return context.options.isCustomElement(node.tag) || node.tagType === 0 && node.tag === "template";
@@ -23588,7 +23665,8 @@ const transformVShow = (dir, node, context) => {
 		element: context.reference(),
 		dir,
 		name: "show",
-		builtin: true
+		builtin: true,
+		once: context.inVOnce
 	});
 };
 //#endregion
@@ -23674,7 +23752,8 @@ const transformVModel = (dir, node, context) => {
 		dir,
 		name: "model",
 		modelType,
-		builtin: true
+		builtin: true,
+		once: context.inVOnce
 	});
 	function checkDuplicatedValue() {
 		const value = findDir$1(node, "bind");
@@ -24123,32 +24202,6 @@ function hasMultipleChildren(node) {
 	if (children.length > 0 && children.every((c, index) => c.type === 1 && (!isTemplateNode(c) || !hasMultipleChildren(c)) && !findDir(c, "for") && (index === 0 ? findDir(c, "if") : hasElse(c)))) return false;
 	return children.length !== 1;
 }
-//#endregion
-//#region packages/compiler-vapor/src/transforms/transformKey.ts
-const transformKey = (node, context) => {
-	if (node.type !== 1 || context.inVOnce || findDir(node, "for")) return;
-	const dir = findProp(node, "key", true, true);
-	if (!dir || dir.type === 6) return;
-	let value;
-	value = dir.exp || normalizeBindShorthand(dir.arg, context);
-	if (isStaticExpression(value, context.options.bindingMetadata)) return;
-	let id = context.reference();
-	context.dynamic.flags |= 6;
-	context.node = node = wrapTemplate(node, ["key"]);
-	const block = newBlock(node);
-	const exitBlock = context.enterBlock(block);
-	return () => {
-		exitBlock();
-		context.dynamic.operation = _objectSpread2(_objectSpread2({
-			type: 16,
-			node,
-			id
-		}, context.effectBoundary()), {}, {
-			value,
-			block
-		});
-	};
-};
 //#endregion
 //#region packages/compiler-vapor/src/compile.ts
 function compile(source, options = {}) {

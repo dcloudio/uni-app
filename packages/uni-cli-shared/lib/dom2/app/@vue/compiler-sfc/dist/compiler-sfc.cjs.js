@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.7
+  * @vue/compiler-sfc v3.6.0-rc.8
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -16202,7 +16202,7 @@ function compileScript(sfc, options) {
 		}
 		if (preamble) ctx.s.prepend(preamble);
 		if (helpers && (helpers.has(_vue_compiler_dom.UNREF) || helpers.has("unref"))) ctx.helperImports.delete("unref");
-		returned = code;
+		returned = vapor && !ssr && hasAwait ? `return () => {${code}}` : code;
 	} else returned = `() => {}`;
 	if (!inlineMode && true) ctx.s.appendRight(endOffset, `\nconst __returned__ = ${returned}\nObject.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true })\nreturn __returned__\n}\n\n`);
 	else ctx.s.appendRight(endOffset, `\n${vapor && !ssr ? `` : `return `}${returned}\n}\n\n`);
@@ -16407,7 +16407,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-rc.7";
+const version = "3.6.0-rc.8";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,

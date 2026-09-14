@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.7
+  * @vue/shared v3.6.0-rc.8
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -787,7 +787,11 @@ const VaporDynamicComponentFlags = {
 	"DOM2_FLATTEN_TRUE": 65536,
 	"65536": "DOM2_FLATTEN_TRUE",
 	"DOM2_FLATTEN_FALSE": 131072,
-	"131072": "DOM2_FLATTEN_FALSE"
+	"131072": "DOM2_FLATTEN_FALSE",
+	"NS_SVG": 8,
+	"8": "NS_SVG",
+	"NS_MATHML": 16,
+	"16": "NS_MATHML"
 };
 //#endregion
 exports.EMPTY_ARR = EMPTY_ARR;
