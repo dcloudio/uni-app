@@ -164,7 +164,7 @@ describe('compiler: transform v-bind="$attrs"', () => {
     )
 
     expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
-      `[foo, $attrs.onClick]`
+      `($attrs.onClick ? [foo, $attrs.onClick] : foo)`
     )
     expect((getProp(node, 'class')!.exp as SimpleExpression).content).toBe(
       `[$attrs.class, bar]`

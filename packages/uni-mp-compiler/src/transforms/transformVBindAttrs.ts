@@ -124,10 +124,17 @@ function mergeOnProp(
     return
   }
 
+  const localHandler = prop.exp.content
+  // Keep the merged handler as an expression value. transformOn must not wrap
+  // this in an arrow function, because the MP runtime does not execute an
+  // array returned from an event callback.
   prop.exp.content =
     propIndex < vBindIndex
-      ? `[${prop.exp.content}, ${attrsExp}]`
-      : `[${attrsExp}, ${prop.exp.content}]`
+      ? `(${attrsExp} ? [${localHandler}, ${attrsExp}] : ${localHandler})`
+      : `(${attrsExp} ? [${attrsExp}, ${localHandler}] : ${localHandler})`
+  ;(
+    prop.exp as SimpleExpressionNode & { __uniMergedEvent?: boolean }
+  ).__uniMergedEvent = true
 }
 
 function hasFollowingId(props: ElementNode['props'], index: number) {
