@@ -175,7 +175,7 @@ iOS的液态玻璃效果，被开发者吐槽精准打击 flutter 和 compose-m
 
 那开发者不在界面上使用液态玻璃效果是否就能规避此问题？iOS系统有很多隐密的坑，输入框长按的上下文菜单也是液态玻璃的，这个菜单在透显自渲染和自渲染框架下的原生视图都有问题。
 
-注：uni-app x 蒸汽模式，提供了内置的液态玻璃组件，使用系统原生能力，就不会有完全自渲染带来的问题。
+注：uni-app x 蒸汽模式，提供了内置的液态玻璃组件，使用系统原生能力，就不会有完全自渲染带来的问题。可以在iOS 26+设备上体验[hello uni-app x](http://hellouniappx.dcloud.net.cn/)。录屏如下：
 
 <video id="video" preload="none" controls="controls" width="90%" poster="https://web-ext-storage.dcloud.net.cn/doc/app/ios/tabbar-glass-effec-poster.png" src="https://web-ext-storage.dcloud.net.cn/doc/app/ios/tabbar-glass-effect.mp4"></video>
 
