@@ -2466,7 +2466,7 @@
   },
   "uni-zstd-decompress": {
     "uni": {
-      "zstdDecompress": {
+      "decompressFile": {
         "name": "decompressFile",
         "app": {
           "js": false,
