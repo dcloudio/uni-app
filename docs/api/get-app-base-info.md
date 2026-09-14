@@ -41,14 +41,13 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| appId | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中的应用标识，即DCloud AppID<br/> |
-| appName | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中的应用名称<br/> |
-| appVersion | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中的应用版本名称<br/> |
-| appVersionCode | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | `manifest.json` 中的应用版本号<br/> |
-| appLanguage | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | 应用的语言en、zh-Hans、zh-Hant、fr、es<br/> |
+| appId | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 应用的标识，即DCloud AppID<br/> |
+| appName | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 应用的名称<br/> |
+| appVersion | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 应用的版本名称，app平台为原生应用安装包的版本名称<br/> |
+| appVersionCode | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | 应用的版本号，app平台为原生应用安装包的版本名称<br/> |
+| appLanguage | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | 应用的语言，如en、zh-Hans、zh-Hant、fr、es<br/> |
 | appTheme | string | 否 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 应用的主题<br/> |
-| language | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | 应用设置的语言<br/> |
-| appWgtVersion | string | 否 | Web: x; 微信小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 应用资源（wgt）的版本名称<br/> |
+| appWgtVersion | string | 否 | Web: x; 微信小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 应用资源（wgt）的版本名称，app平台为当前应用资源`manifest.json`中的版本名称<br/> |
 | hostLanguage | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 小程序宿主语言<br/> |
 | hostVersion | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | App、小程序宿主版本。<br/> |
 | hostName | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 小程序宿主名称<br/> |
@@ -75,6 +74,7 @@
 | theme | string | 否 | 微信小程序: 4.41 | 系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
 | ~~uniCompileVersion~~ | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | uni 编译器版本名称  **已废弃，仅为了向下兼容保留** |
 | ~~uniCompileVersionCode~~ | number | 否 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本号  **已废弃，仅为了向下兼容保留** |
+| ~~language~~ | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: x | 应用的语言  **已废弃，仅为了向下兼容保留** |
 | ~~version~~ | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 引擎版本号  **已废弃，仅为了向下兼容保留** | 
 
 ##### appTheme 的属性描述

@@ -1675,7 +1675,7 @@ readCompressedFile
 ##### readCompressedFile 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| x | 4.41 | 4.13 | 4.61 | x |
 
 ##### 参数 
 
@@ -1746,7 +1746,7 @@ readCompressedFileSync
 ##### readCompressedFileSync 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| x | 4.41 | 4.13 | 4.61 | x |
 
 ##### 参数 
 
