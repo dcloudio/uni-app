@@ -248,7 +248,7 @@ map组件的操作api为[uni.createMapContext()](../api/create-map-context.md)�
       :enable-traffic="enableTraffic" @markertap="onmarkertap" @callouttap="oncallouttap" @controltap="oncontroltap"
       @regionchange="onregionchange" @tap="maptap" @updated="onupdated" @poitap="onpoitap"></map>
     <scroll-view class="scrollview">
-      <view class="tips">注意：App和Web需要正确配置地图服务商的Key才能显示地图组件</view>
+      <view class="tips"><text class="tips-text">注意：App和Web需要正确配置地图服务商的Key才能显示地图组件</text></view>
       <view class="uni-title">
         <text class="uni-title-text">属性示例</text>
       </View>
@@ -1013,9 +1013,12 @@ map组件的操作api为[uni.createMapContext()](../api/create-map-context.md)�
   }
 
   .tips {
-    font-size: 12px;
     margin-top: 15px;
     opacity: .8;
+  }
+
+  .tips-text {
+    font-size: 12px;
   }
 </style>
 

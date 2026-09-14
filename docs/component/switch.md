@@ -82,7 +82,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 switch 默认样式的暗黑模�
 >示例
 ```vue
 <template>
-  <view>
+  <view class="uni-theme-root">
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title">默认样式</view>
       <view class="flex-row">
@@ -121,14 +121,8 @@ App平台蒸汽模式从 5.25+ 起内置适配 switch 默认样式的暗黑模�
       <view class="uni-title">推荐展示样式</view>
     </view>
     <view class="uni-list">
-      <view class="uni-list-cell uni-list-cell-padding">
-        <view class="uni-list-cell-db">开启中</view>
-        <switch :checked="true" />
-      </view>
-      <view class="uni-list-cell uni-list-cell-padding">
-        <view class="uni-list-cell-db">关闭</view>
-        <switch />
-      </view>
+      <boolean-data :defaultValue="true" title="开启中"></boolean-data>
+      <boolean-data :defaultValue="false" title="关闭"></boolean-data>
 
       <!-- #ifdef VUE3-VAPOR && !MP -->
       <view class="uni-list-cell uni-list-cell-padding">

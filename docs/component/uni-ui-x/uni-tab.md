@@ -640,7 +640,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 >示例
 ```vue
 <template>
-	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-bar-height="40" @change="handleChange">
+	<uni-tab class="uni-theme-root" style="flex: 1" :active-index="activeIndex" :tab-bar-height="40" @change="handleChange">
 		<uni-tab-content>
 			<view class="custom-panel custom-panel-emerald">
 				<text class="custom-panel-kicker">自定义 tab-bar</text>
@@ -686,27 +686,36 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 <script setup lang="uts">
 	const activeIndex = ref<number>(0)
 
+	function isDarkTheme() : boolean {
+		// #ifdef APP
+		const systemInfo = uni.getSystemInfoSync()
+		return systemInfo.appTheme == 'dark' || (systemInfo.appTheme == 'auto' && systemInfo.osTheme == 'dark')
+		// #endif
+		return false
+	}
+
 	function syncNavigationBar(index : number) : void {
+		const dark = isDarkTheme()
 		switch (index) {
 			case 0:
 				uni.setNavigationBarTitle({ title: '精选' })
 				uni.setNavigationBarColor({
-					frontColor: '#000000',
-					backgroundColor: '#dff3e8'
+					frontColor: dark ? '#ffffff' : '#000000',
+					backgroundColor: dark ? '#17372a' : '#dff3e8'
 				})
 				break
 			case 1:
 				uni.setNavigationBarTitle({ title: '趋势' })
 				uni.setNavigationBarColor({
-					frontColor: '#000000',
-					backgroundColor: '#f6ddbf'
+					frontColor: dark ? '#ffffff' : '#000000',
+					backgroundColor: dark ? '#43331f' : '#f6ddbf'
 				})
 				break
 			case 2:
 				uni.setNavigationBarTitle({ title: '我的' })
 				uni.setNavigationBarColor({
-					frontColor: '#000000',
-					backgroundColor: '#dde7ea'
+					frontColor: dark ? '#ffffff' : '#000000',
+					backgroundColor: dark ? '#26363b' : '#dde7ea'
 				})
 				break
 		}
@@ -718,6 +727,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	}
 
 	onLoad(() => {
+		syncNavigationBar(activeIndex.value)
+	})
+
+	onShow(() => {
 		syncNavigationBar(activeIndex.value)
 	})
 </script>
@@ -789,6 +802,23 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	.custom-tab-label-active {
 		color: #1d9f5f;
 	}
+
+	@media (prefers-color-scheme: dark) {
+		.custom-panel-emerald { background-color: #17372a; }
+		.custom-panel-sand { background-color: #43331f; }
+		.custom-panel-ink { background-color: #26363b; }
+
+		.custom-panel-kicker,
+		.custom-panel-desc,
+		.custom-tab-label {
+			color: rgba(255, 255, 255, 0.68);
+		}
+
+		.custom-panel-title { color: #ffffff; }
+		.custom-tab-list-shell { background-color: #242424; }
+		.custom-tab-list-root { background: linear-gradient(to right, #40301e, #173b34); }
+		.custom-tab-label-active { color: #5ee29b; }
+	}
 </style>
 
 ```
@@ -804,7 +834,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 >示例
 ```vue
 <template>
-	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-bar-height="TAB_BAR_HEIGHT" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
+	<uni-tab class="uni-theme-root" style="flex: 1" :active-index="activeIndex" :tab-bar-height="TAB_BAR_HEIGHT" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
 		<uni-tab-content :style="tabContentStyle">
 			<scroll-view class="blur-scroll blur-scene-morning" direction="vertical">
 				<view class="blur-content-inner">
@@ -970,27 +1000,36 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 		tabBarStyle.value = buildTabBarStyle()
 	}
 
+	function isDarkTheme() : boolean {
+		// #ifdef APP
+		const systemInfo = uni.getSystemInfoSync()
+		return systemInfo.appTheme == 'dark' || (systemInfo.appTheme == 'auto' && systemInfo.osTheme == 'dark')
+		// #endif
+		return false
+	}
+
 	function syncNavigationBar(index : number) : void {
+		const dark = isDarkTheme()
 		switch (index) {
 			case 0:
 				uni.setNavigationBarTitle({ title: '精选' })
 				uni.setNavigationBarColor({
-					frontColor: '#000000',
-					backgroundColor: '#f2f7fb'
+					frontColor: dark ? '#ffffff' : '#000000',
+					backgroundColor: dark ? '#1a1a1a' : '#f2f7fb'
 				})
 				break
 			case 1:
 				uni.setNavigationBarTitle({ title: '趋势' })
 				uni.setNavigationBarColor({
-					frontColor: '#000000',
-					backgroundColor: '#fbf5eb'
+					frontColor: dark ? '#ffffff' : '#000000',
+					backgroundColor: dark ? '#1a1a1a' : '#fbf5eb'
 				})
 				break
 			case 2:
 				uni.setNavigationBarTitle({ title: '我的' })
 				uni.setNavigationBarColor({
-					frontColor: '#000000',
-					backgroundColor: '#f1f8f3'
+					frontColor: dark ? '#ffffff' : '#000000',
+					backgroundColor: dark ? '#1a1a1a' : '#f1f8f3'
 				})
 				break
 		}
@@ -1008,6 +1047,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 	onReady(() => {
 		syncTabBarStyle()
+	})
+
+	onShow(() => {
+		syncNavigationBar(activeIndex.value)
 	})
 </script>
 
@@ -1123,6 +1166,31 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 	.blur-tab-label-active {
 		color: #0f766e;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.blur-scene-morning,
+		.blur-scene-coral,
+		.blur-scene-ink {
+			background-color: #1a1a1a;
+		}
+
+		.blur-title,
+		.blur-card-title {
+			color: #ffffff;
+		}
+
+		.blur-desc,
+		.blur-card-desc,
+		.blur-tab-label {
+			color: rgba(255, 255, 255, 0.72);
+		}
+
+		.blur-card-blue { background-color: #18324d; }
+		.blur-card-green { background-color: #19382d; }
+		.blur-card-yellow { background-color: #493b18; }
+		.blur-card-coral { background-color: #492823; }
+		.blur-tab-label-active { color: #5eead4; }
 	}
 </style>
 

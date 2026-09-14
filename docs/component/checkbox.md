@@ -229,7 +229,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
 </script>
 
 <template>
-  <view class="main">
+  <view class="main uni-theme-root">
     <view class="control-row">
       <checkbox :disabled="data.disabled_boolean" :checked="data.checked_boolean" :color="data.color_input"
         :iconColor="data.iconColor_input" :foreColor="data.foreColor_input" :backgroundColor="data.backgroundColor_input"
@@ -241,7 +241,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
     </view>
   </view>
 
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
     <view class="content">
       <page-head title="组件属性"></page-head>
       <boolean-data :defaultValue="false" title="当前是否选中，可用来设置默认选中" @change="change_checked_boolean"></boolean-data>

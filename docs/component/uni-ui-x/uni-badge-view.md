@@ -80,10 +80,10 @@ badge组件的badge-class和badge-style属性，直接作用在角标view上，�
 ```vue
 <template>
 	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1;padding: 20px 5px 5px;">
+	<scroll-view class="uni-theme-root" style="flex: 1;padding: 20px 5px 5px;">
 	<!-- #endif -->
 	<!-- #ifndef APP -->
-	<view style="padding: 20px 5px 5px;">
+	<view class="uni-theme-root" style="padding: 20px 5px 5px;">
 	<!-- #endif -->
 	<uni-badge-view text="99+" >
 		<view style="width: 50px; height: 20px; background-color: green;"></view>

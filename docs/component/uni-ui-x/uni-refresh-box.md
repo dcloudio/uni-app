@@ -130,7 +130,7 @@ function onRefresherabort1() {
 >示例
 ```vue
 <template>
-  <view style="flex: 1;">
+  <view class="uni-theme-root" style="flex: 1;">
     <scroll-view
       style="flex: 1;"
       :refresher-enabled="true"

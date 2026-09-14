@@ -317,26 +317,15 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
       </view>
       <!-- #endif -->
       <!-- #ifdef APP-ANDROID || APP-HARMONY || APP-IOS -->
-      <view class="uni-row uni-btn-v">
-        <view class="uni-row uni-flex-item align-items-center">
-          <text>显示横向滚动条</text>
-          <switch :checked="true" @change="changeHorizontalScrollBarAccess"></switch>
-        </view>
-        <view class="uni-row uni-flex-item align-items-center">
-          <text>显示竖向滚动条</text>
-          <switch :checked="true" @change="changeVerticalScrollBarAccess"></switch>
-        </view>
-      </view>
-      <view class="uni-row uni-btn-v">
-        <view class="uni-row uni-flex-item align-items-center">
-          <text>开启bounces</text>
-          <switch :checked="true" @change="changeBounces"></switch>
-          <!-- #ifdef APP-ANDROID || APP-IOS-->
-          <text>禁用选择菜单</text>
-          <switch :checked="false" @change="changeDisableUserSelectMenu"></switch>
-          <!-- #endif -->
-        </view>
-      </view>
+      <boolean-data :defaultValue="true" title="显示横向滚动条"
+        @change="changeHorizontalScrollBarAccess"></boolean-data>
+      <boolean-data :defaultValue="true" title="显示竖向滚动条"
+        @change="changeVerticalScrollBarAccess"></boolean-data>
+      <boolean-data :defaultValue="true" title="开启bounces" @change="changeBounces"></boolean-data>
+      <!-- #ifdef APP-ANDROID || APP-IOS-->
+      <boolean-data :defaultValue="false" title="禁用选择菜单"
+        @change="changeDisableUserSelectMenu"></boolean-data>
+      <!-- #endif -->
       <!-- #endif -->
       <!-- #ifdef APP-IOS -->
       <view class="uni-row uni-btn-v" v-if="isProd() === false">
@@ -565,20 +554,20 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     data.src = url;
   }
 
-  const changeHorizontalScrollBarAccess = (event: UniSwitchChangeEvent) => {
-    data.horizontalScrollBarAccess = event.detail.value;
+  const changeHorizontalScrollBarAccess = (value : boolean) => {
+    data.horizontalScrollBarAccess = value;
   }
 
-  const changeVerticalScrollBarAccess = (event: UniSwitchChangeEvent) => {
-    data.verticalScrollBarAccess = event.detail.value;
+  const changeVerticalScrollBarAccess = (value : boolean) => {
+    data.verticalScrollBarAccess = value;
   }
 
-  const changeBounces = (event: UniSwitchChangeEvent) => {
-    data.bounces = event.detail.value;
+  const changeBounces = (value : boolean) => {
+    data.bounces = value;
   }
 
-  const changeDisableUserSelectMenu = (event: UniSwitchChangeEvent) => {
-    data.disableUserSelectMenu = event.detail.value;
+  const changeDisableUserSelectMenu = (value : boolean) => {
+    data.disableUserSelectMenu = value;
   }
 
   const touchstart = (event: UniTouchEvent) => {
