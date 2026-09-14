@@ -28,7 +28,12 @@ afterEach(() => {
 
 function runTransform(
   template: string,
-  options: { isX?: boolean; platform?: string } = {}
+  options: {
+    isX?: boolean
+    platform?: string
+    isTS?: boolean
+    expressionPlugins?: CompilerOptions['expressionPlugins']
+  } = {}
 ) {
   if (typeof options.platform === 'undefined') {
     Reflect.deleteProperty(process.env, 'UNI_PLATFORM')
@@ -44,6 +49,8 @@ function runTransform(
   })
   transform(ast as any, {
     isX: options.isX ?? true,
+    isTS: options.isTS,
+    expressionPlugins: options.expressionPlugins,
     nodeTransforms: [transformVBindAttrs as any],
   })
   return ast.children[0] as ElementNode
@@ -194,7 +201,7 @@ describe('compiler: transform v-bind="$attrs"', () => {
     )
 
     expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
-      `($attrs.onClick ? [].concat(foo, $attrs.onClick) : foo)`
+      `($attrs.onClick ? [].concat((foo) || [], $attrs.onClick) : foo)`
     )
     expect((getProp(node, 'class')!.exp as SimpleExpression).content).toBe(
       `[$attrs.class, bar]`
@@ -213,7 +220,7 @@ describe('compiler: transform v-bind="$attrs"', () => {
       })
 
       expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
-        `($attrs.onClick ? [].concat(($event) => (${handler}), $attrs.onClick) : ($event) => (${handler}))`
+        `($attrs.onClick ? [].concat((($event) => (${handler})) || [], $attrs.onClick) : ($event) => (${handler}))`
       )
     }
   )
@@ -227,10 +234,35 @@ describe('compiler: transform v-bind="$attrs"', () => {
       })
 
       expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
-        `($attrs.onClick ? [].concat(${handler}, $attrs.onClick) : ${handler})`
+        `($attrs.onClick ? [].concat((${handler}) || [], $attrs.onClick) : ${handler})`
       )
     }
   )
+
+  test('合并空 click 处理器时生成有效的空函数', () => {
+    const node = runTransform(`<view @click="" v-bind="$attrs"/>`, {
+      isX: true,
+      platform: 'mp-weixin',
+    })
+
+    expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
+      `($attrs.onClick ? [].concat((() => {}) || [], $attrs.onClick) : () => {})`
+    )
+  })
+
+  test('合并带 TS 类型断言的函数处理器时保留原函数', () => {
+    const handler = '(() => foo()) as Handler'
+    const node = runTransform(`<view @click="${handler}" v-bind="$attrs"/>`, {
+      isX: true,
+      isTS: true,
+      expressionPlugins: ['typescript'],
+      platform: 'mp-weixin',
+    })
+
+    expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
+      `($attrs.onClick ? [].concat((${handler}) || [], $attrs.onClick) : ${handler})`
+    )
+  })
 
   test('编译结果不会在渲染阶段执行内联 click 处理器', () => {
     const code = compileRenderCode(`<view @click="foo()" v-bind="$attrs"/>`, {
@@ -238,7 +270,7 @@ describe('compiler: transform v-bind="$attrs"', () => {
     })
 
     expect(code).toContain(
-      '_o(_ctx.$attrs.onClick ? [].concat($event => _ctx.foo()'
+      '_o(_ctx.$attrs.onClick ? [].concat(($event => _ctx.foo()) || [],'
     )
     expect(code).not.toContain('_o($event => _ctx.foo()')
   })

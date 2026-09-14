@@ -1,5 +1,10 @@
 import { parseExpression } from '@babel/parser'
-import { isFunction } from '@babel/types'
+import {
+  type Expression,
+  isFunction,
+  isTSAsExpression,
+  isTSNonNullExpression,
+} from '@babel/types'
 import {
   type DirectiveNode,
   type ElementNode,
@@ -134,8 +139,8 @@ function mergeOnProp(
   // array returned from an event callback.
   prop.exp.content =
     propIndex < vBindIndex
-      ? `(${attrsExp} ? [].concat(${localHandler}, ${attrsExp}) : ${localHandler})`
-      : `(${attrsExp} ? [].concat(${attrsExp}, ${localHandler}) : ${localHandler})`
+      ? `(${attrsExp} ? [].concat((${localHandler}) || [], ${attrsExp}) : ${localHandler})`
+      : `(${attrsExp} ? [].concat(${attrsExp}, (${localHandler}) || []) : ${localHandler})`
   ;(
     prop.exp as SimpleExpressionNode & { __uniMergedEvent?: boolean }
   ).__uniMergedEvent = true
@@ -145,6 +150,9 @@ function normalizeLocalHandler(
   handler: string,
   context: TransformContext
 ): string {
+  if (!handler.trim()) {
+    return '() => {}'
+  }
   if (
     isMemberExpression(handler, context as any) ||
     isFunctionExpression(handler, context)
@@ -162,11 +170,13 @@ function isFunctionExpression(
   context: TransformContext
 ): boolean {
   try {
-    return isFunction(
-      parseExpression(content, {
-        plugins: context.expressionPlugins,
-      })
-    )
+    let expression: Expression = parseExpression(content, {
+      plugins: context.expressionPlugins,
+    })
+    while (isTSAsExpression(expression) || isTSNonNullExpression(expression)) {
+      expression = expression.expression
+    }
+    return isFunction(expression)
   } catch {
     return false
   }
