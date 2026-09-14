@@ -57,7 +57,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-fab-butto
 >示例
 ```vue
 <template>
-	<view style="flex: 1;position: relative;padding: 15px 15px 0 15px;">
+	<view class="uni-theme-root" style="flex: 1;position: relative;padding: 15px 15px 0 15px;">
 		<text class="label first-label">标准uni-fab-button</text>
 		<uni-fab-button></uni-fab-button>
 		<text class="label">自定义fab样式</text>

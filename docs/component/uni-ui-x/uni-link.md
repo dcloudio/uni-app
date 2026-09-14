@@ -105,7 +105,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-link
 >示例
 ```vue
 <template>
-  <scroll-view class="page">
+  <scroll-view class="page uni-theme-root">
     <view class="section">
       <text class="section-title">基础用法</text>
       <view class="link-block">

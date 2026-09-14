@@ -113,10 +113,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-number-bo
 ```vue
 <template>
 	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1; padding: 15px;">
+	<scroll-view class="uni-theme-root" style="flex: 1; padding: 15px;">
 	<!-- #endif -->
 	<!-- #ifndef APP -->
-	<view style="padding: 15px;">
+	<view class="uni-theme-root" style="padding: 15px;">
 	<!-- #endif -->
 		<text class="page-title">NumberBox 数字输入框</text>
 

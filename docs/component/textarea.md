@@ -436,13 +436,11 @@ if (view != null && view instanceof UITextView) {
     data.selectionEnd = 0;
   }
 
-  const changeHoldKeyboard = (event: UniSwitchChangeEvent) => {
-    const checked = event.detail.value;
+  const changeHoldKeyboard = (checked : boolean) => {
     data.hold_keyboard = checked;
   }
 
-  const changeAdjustPosition = (event: UniSwitchChangeEvent) => {
-    const checked = event.detail.value;
+  const changeAdjustPosition = (checked : boolean) => {
     data.adjust_position = checked;
   }
 
@@ -527,10 +525,8 @@ if (view != null && view instanceof UITextView) {
           :selection-start="data.selectionStart" :selection-end="data.selectionEnd" @blur="onSelectionBlurChange" />
       </view>
 
-      <view class="title-wrap">
-        <view>设置hold-keyboard</view>
-        <switch style="margin-left: 10px;" @change="changeHoldKeyboard" :checked="data.hold_keyboard"></switch>
-      </view>
+      <boolean-data :defaultValue="data.hold_keyboard" title="设置hold-keyboard"
+        @change="changeHoldKeyboard"></boolean-data>
       <view class="textarea-wrap">
         <textarea class="textarea-instance" :hold-keyboard="data.hold_keyboard" />
       </view>
@@ -542,10 +538,8 @@ if (view != null && view instanceof UITextView) {
           <textarea id="both-model-value" class="textarea-instance" v-model='data.defaultModel' value='456'></textarea>
       </view>
 
-      <view class="title-wrap">
-        <view>设置adjust-position</view>
-        <switch style="margin-left: 10px;" @change="changeAdjustPosition" :checked="data.adjust_position"></switch>
-      </view>
+      <boolean-data :defaultValue="data.adjust_position" title="设置adjust-position"
+        @change="changeAdjustPosition"></boolean-data>
       <view class="textarea-wrap">
         <textarea class="textarea-instance" :adjust-position="data.adjust_position" />
       </view>

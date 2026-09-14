@@ -488,10 +488,8 @@ if (view != null && view instanceof UITextField) {
       </view>
 
       <view>
-        <view class="uni-title" style="flex-direction: row; align-items: center">
-          <text class="uni-title-text" style="flex-shrink: 1;">设置光标颜色为红色（Android的微信小程序非skyline下仅支持黑和绿）</text>
-          <switch style="margin-left: 10px" @change="changeCursorColor" :checked="data.cursor_color == '#FF0000'"></switch>
-        </view>
+        <boolean-data :defaultValue="data.cursor_color == '#FF0000'" title="设置光标颜色为红色（Android的微信小程序非skyline下仅支持黑和绿）"
+          @change="changeCursorColor"></boolean-data>
         <view class="input-wrapper">
           <input id="uni-input-cursor-color" class="uni-input" :cursor-color="data.cursor_color" :focus="data.cursorColorInputFocus" @blur="cursorColorInputBlur" value="光标颜色" />
         </view>
@@ -507,10 +505,8 @@ if (view != null && view instanceof UITextField) {
       </view>
 
       <view>
-        <view class="uni-title" style="flex-direction: row; align-items: center">
-          <text class="uni-title-text" style="flex-shrink: 1;">设置hold-keyboard</text>
-          <switch style="margin-left: 10px" @change="changeHoldKeyboard" :checked="data.holdKeyboard"></switch>
-        </view>
+        <boolean-data :defaultValue="data.holdKeyboard" title="设置hold-keyboard"
+          @change="changeHoldKeyboard"></boolean-data>
         <view class="input-wrapper">
           <input class="uni-input" :hold-keyboard="data.holdKeyboard" value="hold keyboard " />
         </view>
@@ -616,10 +612,8 @@ if (view != null && view instanceof UITextField) {
       </view>
 
       <view>
-        <view class="uni-title" style="flex-direction: row; align-items: center">
-          <text class="uni-title-text" style="flex-shrink: 1;">设置adjust-position</text>
-          <switch style="margin-left: 10px" @change="changeAdjustPosition" :checked="data.adjustPosition"></switch>
-        </view>
+        <boolean-data :defaultValue="data.adjustPosition" title="设置adjust-position"
+          @change="changeAdjustPosition"></boolean-data>
         <view class="input-wrapper">
           <input class="uni-input" :adjust-position="data.adjustPosition" />
         </view>
@@ -986,8 +980,7 @@ if (view != null && view instanceof UITextField) {
     return data.onMaxLengthInputValue.length
   }
 
-  const changeCursorColor = (event : UniSwitchChangeEvent) => {
-    const checked = event.detail.value;
+  const changeCursorColor = (checked : boolean) => {
     if (checked) {
       data.cursor_color = "#FF0000"
     } else {
@@ -1000,13 +993,11 @@ if (view != null && view instanceof UITextField) {
     data.cursorColorInputFocus = false
   }
 
-  const changeHoldKeyboard = (event : UniSwitchChangeEvent) => {
-    const checked = event.detail.value;
+  const changeHoldKeyboard = (checked : boolean) => {
     data.holdKeyboard = checked
   }
 
-  const changeAdjustPosition = (event : UniSwitchChangeEvent) => {
-    const checked = event.detail.value;
+  const changeAdjustPosition = (checked : boolean) => {
     data.adjustPosition = checked
   }
 

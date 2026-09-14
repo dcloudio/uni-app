@@ -510,18 +510,17 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
         <button type="primary" @click="openDialogPageVideo">dialogPage 视频格式示例</button>
       </view>
       <!-- #endif -->
-      <view class="uni-row uni-btn-v" style="justify-content: space-between;align-items: center;">
-        <text class="uni-title" style="width: 80%;">全屏后自定义 controls</text>
-        <switch :checked="data.subCompControlsEnable" @change="onSubCompControlsEnable" />
-      </view>
-      <view class="uni-row uni-btn-v" style="justify-content: space-between;align-items: center;">
+      <boolean-data :defaultValue="data.subCompControlsEnable" title="全屏后自定义 controls"
+        @change="onSubCompControlsEnable"></boolean-data>
+      <view>
         <!-- #ifndef MP-ALIPAY -->
-        <text class="uni-title" style="width: 80%;">子组件实现快进、快退、发送弹幕功能（全屏后显示）</text>
+        <boolean-data :defaultValue="data.subCompEnable" title="子组件实现快进、快退、发送弹幕功能（全屏后显示）"
+          @change="onSubCompEnableChange"></boolean-data>
         <!-- #endif -->
         <!-- #ifdef MP-ALIPAY -->
-        <text class="uni-title" style="width: 80%;">子组件实现快进、快退功能（全屏后显示）</text>
+        <boolean-data :defaultValue="data.subCompEnable" title="子组件实现快进、快退功能（全屏后显示）"
+          @change="onSubCompEnableChange"></boolean-data>
         <!-- #endif -->
-        <switch :checked="data.subCompEnable" @change="onSubCompEnableChange" />
       </view>
       <view class="uni-title">
         <text class="uni-title-text">API示例</text>
@@ -1113,12 +1112,12 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     console.log("header -> " + JSON.stringify(data.header))
   }
 
-  const onSubCompEnableChange = (event : UniSwitchChangeEvent) => {
-    data.subCompEnable = event.detail.value;
+  const onSubCompEnableChange = (value : boolean) => {
+    data.subCompEnable = value;
   }
 
-  function onSubCompControlsEnable(event: UniSwitchChangeEvent) {
-    data.subCompControlsEnable = event.detail.value;
+  function onSubCompControlsEnable(value : boolean) {
+    data.subCompControlsEnable = value;
   }
 
   const isHorizontalFullscreen = ref(false)

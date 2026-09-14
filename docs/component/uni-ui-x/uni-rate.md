@@ -85,10 +85,10 @@ rate组件有onChange事件，事件回调中会给出点击触发的新评分�
 ```vue
 <template>
 	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1;padding: 15px 15px 30px 15px;">
+	<scroll-view class="uni-theme-root" style="flex: 1;padding: 15px 15px 30px 15px;">
 	<!-- #endif -->
 	<!-- #ifndef APP -->
-	<view style="padding: 15px 15px 30px 15px;">
+	<view class="uni-theme-root" style="padding: 15px 15px 30px 15px;">
 	<!-- #endif -->
 		<text class="desc">评分组件用于商品评价打分、服务态度评价、用户满意度等场景。\n
 		高性能模式仅有一个text组件，不可修改评分，适合长列表中显示的场景。\n

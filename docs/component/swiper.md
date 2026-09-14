@@ -185,30 +185,15 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
         </swiper>
       </view>
       <view class="uni-list">
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">显示面板指示点</text></view>
-          <switch :checked="data.dotsSelect" @change="dotsChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">定制指示器颜色</text></view>
-          <switch :checked="data.indicatorColorSelect"
+        <boolean-data :defaultValue="data.dotsSelect" title="显示面板指示点" @change="dotsChange"></boolean-data>
+        <boolean-data :defaultValue="data.indicatorColorSelect" title="定制指示器颜色"
             <!-- #ifndef (APP && VUE3-VAPOR) -->
             :disabled="true"
             <!-- #endif -->
-            @change="indicatorColorChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">禁止 touch 操作</text></view>
-          <switch :checked="data.disableTouchSelect" @change="disableTouchChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">是否自动切换</text></view>
-          <switch :checked="data.autoplaySelect" @change="autoplayChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">是否衔接滑动</text></view>
-          <switch :checked="data.circularSelect" @change="circularChange" />
-        </view>
+            @change="indicatorColorChange"></boolean-data>
+        <boolean-data :defaultValue="data.disableTouchSelect" title="禁止 touch 操作" @change="disableTouchChange"></boolean-data>
+        <boolean-data :defaultValue="data.autoplaySelect" title="是否自动切换" @change="autoplayChange"></boolean-data>
+        <boolean-data :defaultValue="data.circularSelect" title="是否衔接滑动" @change="circularChange"></boolean-data>
         <view class="uni-title uni-list-cell-padding"><text class="uni-theme-text">间隔时间(毫秒)</text></view>
         <view class="uni-padding-wrap">
           <slider @change="sliderChange" :value="2000" :min="500" :max="5000" :show-value="true" />
@@ -217,39 +202,22 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
         <view class="uni-padding-wrap">
           <slider @change="durationSliderChange" :value="500" :min="50" :max="2000" :show-value="true" />
         </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">是否纵向滑动</text></view>
-          <switch :checked="data.verticalSelect" @change="verticalChange" />
-        </view>
+        <boolean-data :defaultValue="data.verticalSelect" title="是否纵向滑动" @change="verticalChange"></boolean-data>
         <!-- #ifndef MP-ALIPAY -->
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">是否禁用回弹效果</text></view>
-          <!-- 仅 android ios harmony 支持，web 微信小程序 bounces 为 true -->
-          <switch :checked="data.disableBounceSelect" @change="disableBounceSelectChange" />
-        </view>
+        <!-- 仅 android ios harmony 支持，web 微信小程序 bounces 为 true -->
+        <boolean-data :defaultValue="data.disableBounceSelect" title="是否禁用回弹效果"
+          @change="disableBounceSelectChange"></boolean-data>
         <!-- #endif -->
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">指定current为最后一个元素</text></view>
-          <switch :checked="data.currentSelect" @change="currentChange" />
-        </view>
+        <boolean-data :defaultValue="data.currentSelect" title="指定current为最后一个元素" @change="currentChange"></boolean-data>
         <!-- #ifndef MP-ALIPAY -->
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">指定current-item-id为最后一个元素</text></view>
-          <switch :checked="data.currentItemIdSelect" @change="currentItemIdChange" />
-        </view>
+        <boolean-data :defaultValue="data.currentItemIdSelect" title="指定current-item-id为最后一个元素"
+          @change="currentItemIdChange"></boolean-data>
         <!-- #endif -->
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">打印 swiperChange 日志</text></view>
-          <switch :checked="data.swiperChangeSelect" @change="swiperChangeChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">1打印 swiperTransition 日志</text></view>
-          <switch :checked="data.swiperTransitionSelect" @change="swiperTransitionChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">打印 swiperAnimationfinish 日志</text></view>
-          <switch :checked="data.swiperAnimationfinishSelect" @change="swiperAnimationfinishChange" />
-        </view>
+        <boolean-data :defaultValue="data.swiperChangeSelect" title="打印 swiperChange 日志" @change="swiperChangeChange"></boolean-data>
+        <boolean-data :defaultValue="data.swiperTransitionSelect" title="1打印 swiperTransition 日志"
+          @change="swiperTransitionChange"></boolean-data>
+        <boolean-data :defaultValue="data.swiperAnimationfinishSelect" title="打印 swiperAnimationfinish 日志"
+          @change="swiperAnimationfinishChange"></boolean-data>
 
         <view class="uni-list-cell-padding"><text class="uni-theme-text">测试 swiper 默认行为</text></view>
         <swiper class="swiper" :autoplay="data.autoplayForDefault" :circular="data.circularForDefault">
@@ -263,14 +231,10 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
             <view class="swiper-item uni-bg-blue"><text class="swiper-item-Text">C</text></view>
           </swiper-item>
         </swiper>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">是否自动切换</text></view>
-          <switch :checked="data.autoplayForDefault" @change="() => {data.autoplayForDefault = !data.autoplayForDefault}" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db"><text class="uni-theme-text">是否衔接滑动</text></view>
-          <switch :checked="data.circularForDefault" @change="() => {data.circularForDefault = !data.circularForDefault}" />
-        </view>
+        <boolean-data :defaultValue="data.autoplayForDefault" title="是否自动切换"
+          @change="autoplayForDefaultChange"></boolean-data>
+        <boolean-data :defaultValue="data.circularForDefault" title="是否衔接滑动"
+          @change="circularForDefaultChange"></boolean-data>
         <!-- #ifndef MP -->
         <navigator url="/pages/component/swiper/swiper-list-view">
           <button type="primary">
@@ -471,36 +435,36 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
   }
 
 
-  const dotsChange = (e : UniSwitchChangeEvent) => {
-    data.dotsSelect = e.detail.value
+  const dotsChange = (value : boolean) => {
+    data.dotsSelect = value
   }
 
-  const swiperTransitionChange = (e : UniSwitchChangeEvent) => {
-    data.swiperTransitionSelect = e.detail.value
+  const swiperTransitionChange = (value : boolean) => {
+    data.swiperTransitionSelect = value
   }
 
-  const swiperChangeChange = (e : UniSwitchChangeEvent) => {
-    data.swiperChangeSelect = e.detail.value
+  const swiperChangeChange = (value : boolean) => {
+    data.swiperChangeSelect = value
   }
 
-  const swiperAnimationfinishChange = (e : UniSwitchChangeEvent) => {
-    data.swiperAnimationfinishSelect = e.detail.value
+  const swiperAnimationfinishChange = (value : boolean) => {
+    data.swiperAnimationfinishSelect = value
   }
 
-  const autoplayChange = (e : UniSwitchChangeEvent) => {
-    data.autoplaySelect = e.detail.value
+  const autoplayChange = (value : boolean) => {
+    data.autoplaySelect = value
   }
 
-  const verticalChange = (e : UniSwitchChangeEvent) => {
-    data.verticalSelect = e.detail.value
+  const verticalChange = (value : boolean) => {
+    data.verticalSelect = value
   }
 
-  const disableTouchChange = (e : UniSwitchChangeEvent) => {
-    data.disableTouchSelect = e.detail.value
+  const disableTouchChange = (value : boolean) => {
+    data.disableTouchSelect = value
   }
 
-  const currentItemIdChange = (e : UniSwitchChangeEvent) => {
-    data.currentItemIdSelect = e.detail.value
+  const currentItemIdChange = (value : boolean) => {
+    data.currentItemIdSelect = value
     if (data.currentItemIdSelect) {
       data.currentItemIdVal = 'C'
     } else {
@@ -508,8 +472,8 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
     }
   }
 
-  const currentChange = (e : UniSwitchChangeEvent) => {
-    data.currentSelect = e.detail.value
+  const currentChange = (value : boolean) => {
+    data.currentSelect = value
     if (data.currentSelect) {
       data.currentVal = 2
     } else {
@@ -517,13 +481,13 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
     }
   }
 
-  const circularChange = (e : UniSwitchChangeEvent) => {
-    data.circularSelect = e.detail.value
+  const circularChange = (value : boolean) => {
+    data.circularSelect = value
     console.log(data.circularSelect)
   }
 
-  const disableBounceSelectChange = (e : UniSwitchChangeEvent) => {
-    data.disableBounceSelect = e.detail.value
+  const disableBounceSelectChange = (value : boolean) => {
+    data.disableBounceSelect = value
     console.log(data.disableBounceSelect)
   }
 
@@ -535,8 +499,8 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
     data.durationSelect = e.detail.value
   }
 
-  const indicatorColorChange = (e : UniSwitchChangeEvent) => {
-    data.indicatorColorSelect = e.detail.value
+  const indicatorColorChange = (value : boolean) => {
+    data.indicatorColorSelect = value
     if (data.indicatorColorSelect) {
       // 选择了定制指示器颜色
       data.indicatorColor = "#ff00ff"
@@ -546,6 +510,14 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
       data.indicatorColor = ""
       data.indicatorColorActive = ""
     }
+  }
+
+  const autoplayForDefaultChange = (value : boolean) => {
+    data.autoplayForDefault = value
+  }
+
+  const circularForDefaultChange = (value : boolean) => {
+    data.circularForDefault = value
   }
 
   defineExpose({

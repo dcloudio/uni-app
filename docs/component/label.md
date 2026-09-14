@@ -36,7 +36,7 @@ App平台可以用view加事件来替代label。
 >示例
 ```vue
 <template>
-  <view>
+  <view class="label-page uni-theme-root">
     <page-head :title="data.title"></page-head>
     <view class="uni-common-mt">
       <view class="uni-form-item uni-column">
@@ -159,7 +159,8 @@ App平台可以用view加事件来替代label。
 
 <style>
   .uni-list-cell {
-    justify-content: flex-start
+    justify-content: flex-start;
+    color: var(--text-color, #333333);
   }
 
   .label-3 {
