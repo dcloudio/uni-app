@@ -1523,6 +1523,9 @@ function populateParameters(fromRes, toRes) {
         try {
             parameters.uniCompilerVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             parameters.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
+            if ("mp-alipay" === 'mp-alipay') {
+                delete parameters.uniCompileVersion;
+            }
         }
         catch (error) { }
     }
@@ -1671,6 +1674,9 @@ const getAppBaseInfo$1 = {
                 parameters.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             }
             catch (error) { }
+            {
+                delete parameters.uniCompileVersion;
+            }
         }
         extend(toRes, parameters);
     },
@@ -2452,6 +2458,34 @@ const getSavedFileInfo = {
         filePath: 'apFilePath',
     },
 };
+const normalizedFileSystemManagers = new WeakSet();
+const getFileSystemManager = {
+    returnValue(manager) {
+        const stat = manager.stat;
+        if (isFunction(stat) === false ||
+            normalizedFileSystemManagers.has(manager)) {
+            return;
+        }
+        normalizedFileSystemManagers.add(manager);
+        const normalizedStat = function (options) {
+            if (isObject(options) && options.recursive === true) {
+                ['success', 'complete'].forEach((name) => {
+                    const callback = options[name];
+                    if (isFunction(callback)) {
+                        options[name] = function (res) {
+                            if (res && isObject(res.stats) && !isArray(res.stats)) {
+                                res.stats = Object.values(res.stats);
+                            }
+                            return callback.call(this, res);
+                        };
+                    }
+                });
+            }
+            return stat.call(this, options);
+        };
+        manager.stat = normalizedStat;
+    },
+};
 const getSavedFileList = {
     returnValue(fromRes, toRes) {
         toRes.fileList = fromRes.fileList.map((file) => {
@@ -2682,6 +2716,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getClipboardData: getClipboardData,
   getDeviceInfo: getDeviceInfo,
   getFileInfo: getFileInfo,
+  getFileSystemManager: getFileSystemManager,
   getLocation: getLocation,
   getNetworkType: getNetworkType,
   getSavedFileInfo: getSavedFileInfo,

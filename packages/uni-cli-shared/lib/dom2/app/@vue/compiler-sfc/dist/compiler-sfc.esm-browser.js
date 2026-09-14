@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.6
+  * @vue/compiler-sfc v3.6.0-rc.7
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -25264,6 +25264,10 @@ function isInTransition(context) {
 function isTransitionNode(node) {
 	return node.type === 1 && isTransitionTag(node.tag);
 }
+/** Transition or TransitionGroup: hosts whose children render specially. */
+function isTransitionHostNode(node) {
+	return node.type === 1 && (isTransitionTag(node.tag) || isTransitionGroupTag(node.tag));
+}
 function isTransitionTag(tag) {
 	tag = tag.toLowerCase();
 	return tag === "transition" || tag === "vaportransition";
@@ -25789,6 +25793,10 @@ function codeFragmentToString(code, context) {
 			name
 		});
 	}
+}
+/** Formats a numeric flags argument with its dev-only name annotation. */
+function genFlags(flags, names) {
+	return `${flags} /* ${names.join(", ")} */`;
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/dom.ts
@@ -26439,7 +26447,7 @@ function isConstantBinding(value, context) {
 //#region packages/compiler-vapor/src/generators/for.ts
 function genFor(oper, context) {
 	const { helper } = context;
-	const { source, value, key, index, render, keyProp, once, id, component, onlyChild, slotRoot } = oper;
+	const { source, value, key, index, render, keyProp, once, id, component, onlyChild, slotRoot, wrappedRows } = oper;
 	const rawValue = value && value.content;
 	const rawKey = key && key.content;
 	const rawIndex = index && index.content;
@@ -26492,7 +26500,7 @@ function genFor(oper, context) {
 		return frag;
 	}, idMap);
 	exitScope();
-	const flags = genForFlags(onlyChild, component, isFragmentBlock(render), !component && isSingleNodeBlock(render), once, slotRoot);
+	const flags = genForFlags(onlyChild, component, isFragmentBlock(render), !component && isSingleNodeBlock(render), once, slotRoot, wrappedRows);
 	const onResetCalls = [];
 	for (let i = 0; i < selectorPatterns.length; i++) onResetCalls.push(NEWLINE, `n${id}.onReset(${selectorName(i)}.reset)`);
 	return [
@@ -26524,7 +26532,7 @@ function genFor(oper, context) {
 		return idMap;
 	}
 }
-function genForFlags(onlyChild, component, isFragment, isSingleNode, once, slotRoot) {
+function genForFlags(onlyChild, component, isFragment, isSingleNode, once, slotRoot, wrappedRows) {
 	let flags = 0;
 	const names = [];
 	if (onlyChild) {
@@ -26551,8 +26559,12 @@ function genForFlags(onlyChild, component, isFragment, isSingleNode, once, slotR
 		flags |= 32;
 		names.push("SLOT_ROOT");
 	}
+	if (wrappedRows) {
+		flags |= 64;
+		names.push("WRAPPED_ROWS");
+	}
 	if (!flags) return;
-	return `${flags} /* ${names.join(", ")} */`;
+	return genFlags(flags, names);
 }
 function isSingleNodeBlock(block) {
 	const child = getSingleReturnedChild(block);
@@ -26776,7 +26788,7 @@ function genIfFlags(blockShape, once, slotRoot, index) {
 	if (once) flags |= 16;
 	else if (index !== void 0) flags |= index + 1 << 8;
 	if (flags === 1) return false;
-	return `${flags} /* ${genIfFlagNames(once, slotRoot, index, blockShape)} */`;
+	return genFlags(flags, genIfFlagNames(once, slotRoot, index, blockShape));
 }
 function genIfFlagNames(once, slotRoot, index, blockShape) {
 	const names = [`TRUE_${genBlockShapeName(blockShape)}`];
@@ -26788,7 +26800,7 @@ function genIfFlagNames(once, slotRoot, index, blockShape) {
 	if (once) names.push("ONCE");
 	if (slotRoot) names.push("SLOT_ROOT");
 	if (!once && index !== void 0) names.push(`KEYED_INDEX_${index}`);
-	return names.join(", ");
+	return names;
 }
 function genBlockShapeName(flags) {
 	switch (flags & 3) {
@@ -27221,7 +27233,7 @@ function genDynamicComponentFlags(root, once, slotRoot, extraFlags) {
 		names.push(name);
 	}
 	if (!flags) return false;
-	return `${flags} /* ${names.join(", ")} */`;
+	return genFlags(flags, names);
 }
 function getUniqueHandlerName(context, name) {
 	const { seenInlineHandlerNames } = context;
@@ -27577,18 +27589,10 @@ function genSlotBlockWithProps(oper, context, emitNonStableFlag = true) {
 	const hasStableRoot = hasStableSlotRoot(oper, context);
 	if (!hasStableRoot) markSlotRootOperations(oper, context);
 	let blockFn = context.withId(() => genBlock(oper, context, propsName ? [propsName] : []), idMap);
-	if (emitNonStableFlag && !hasStableRoot) blockFn = genCall(context.helper("extend"), blockFn, [`{ _: ${genSlotFlags$1(8)} }`]);
+	if (emitNonStableFlag && !hasStableRoot) blockFn = genCall(context.helper("extend"), blockFn, [`{ _: ${genFlags(1, ["NON_STABLE"])} }`]);
 	exitSlotBlock();
 	exitScope && exitScope();
 	return blockFn;
-}
-function genSlotFlags$1(flags) {
-	const names = [];
-	if (flags & 1) names.push("NO_SLOTTED");
-	if (flags & 2) names.push("ONCE");
-	if (flags & 4) names.push("SLOT_ROOT");
-	if (flags & 8) names.push("NON_STABLE");
-	return `${flags} /* ${names.join(", ")} */`;
 }
 function needsVaporCtx(block) {
 	return hasComponentOrSlotInBlock(block);
@@ -27656,10 +27660,9 @@ function genSlotFlags(flags) {
 	const names = [];
 	if (flags & 1) names.push("NO_SLOTTED");
 	if (flags & 2) names.push("ONCE");
-	if (flags & 4) names.push("SLOT_ROOT");
-	if (flags & 16) names.push("SHARED_FALLBACK");
-	if (flags & 32) names.push("INHERIT_FALLBACK");
-	return `${flags} /* ${names.join(", ")} */`;
+	if (flags & 4) names.push("FORWARDED");
+	if (flags & 8) names.push("SHARED_FALLBACK");
+	return genFlags(flags, names);
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/key.ts
@@ -28028,9 +28031,8 @@ function markSlotRootOperationsImpl(block, context, sharedFallback, respectStabl
 			markSlotRootOperationsImpl(operation.block, context, sharedFallback, respectStableRoot);
 		} else if (operation.type === 11) markSlotRootComponent(operation);
 		else if (operation.type === 12) {
-			if (!(operation.flags & 2)) operation.flags |= 4;
-			if (sharedFallback) operation.flags |= 16;
-			else operation.flags |= 32;
+			operation.flags |= 4;
+			if (sharedFallback) operation.flags |= 8;
 		}
 	}
 }
@@ -28555,11 +28557,11 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 	if (staticKey) context.registerOperation(createSetBlockKey(id, staticKey, node));
 	context.slots = [];
 }
-function extractElementFlatten(node, propsResult, context) {
+function extractElementFlatten(node, propsResult, context, reportInvalid = true) {
 	if (!context.options.platform) return;
-	const flatten = extractStaticBooleanProp(propsResult, "flatten", (loc) => {
+	const flatten = extractStaticBooleanProp(propsResult, "flatten", reportInvalid ? (loc) => {
 		context.options.onError(createVaporCompilerError(101, loc));
-	});
+	} : void 0);
 	if (flatten != null) node.flatten = flatten;
 	return flatten;
 }
@@ -28655,6 +28657,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				}
 				for (let i = indicesToRemove.length - 1; i >= 0; i--) props.splice(indicesToRemove[i], 1);
 			}
+			if (extractElementFlatten(node, propsResult, context, false)) template += ` flatten`;
 		}
 		let hasStaticStyle = false;
 		let hasClass = false;
@@ -29847,6 +29850,8 @@ function processFor(node, dir, context) {
 	const idProp = findProp(node, "id");
 	const idProperty = idProp && propToExpression(idProp);
 	const isComponent = node.tagType === 1 || isTemplateWithSingleComponent(node);
+	const parentNode = context.parent && context.parent.node;
+	const wrappedRows = node.tagType === 3 && !(parentNode && isTransitionHostNode(parentNode)) && (node.children.length !== 1 || node.children[0].type !== 1 || !!findDir(node.children[0], ROW_FRAGMENT_DIR_RE));
 	context.node = node = wrapTemplate(node, ["for", "key"]);
 	context.dynamic.flags |= 6;
 	const id = context.reference();
@@ -29872,10 +29877,12 @@ function processFor(node, dir, context) {
 			render,
 			once: context.inVOnce || isStaticExpression(source, context.options.bindingMetadata),
 			component: isComponent && node.children[0].type === 1 && node.children[0].tagType === 1,
-			onlyChild: !!isOnlyChild
+			onlyChild: !!isOnlyChild,
+			wrappedRows
 		});
 	};
 }
+const ROW_FRAGMENT_DIR_RE = /^(?:if|for)$/;
 function isTemplateWithSingleComponent(node) {
 	if (node.tag !== "template") return false;
 	const nonCommentChildren = node.children.filter((c) => c.type !== 3);
@@ -29963,10 +29970,11 @@ function transformComponentSlot(node, dir, context) {
 	const { children } = node;
 	const arg = dir && dir.arg;
 	const hasTemplateSlots = children.some(isSlotTemplateChild);
+	const isTransitionHost = isTransitionHostNode(node);
 	const emptyTextNodes = [];
 	const nonSlotTemplateChildren = children.filter((n) => {
 		if (isSlotTemplateChild(n)) return false;
-		if (n.type === 3 && hasTemplateSlots) {
+		if (n.type === 3 && (hasTemplateSlots || isTransitionHost)) {
 			ignoreComment(n, context);
 			return false;
 		}
@@ -44004,7 +44012,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
 init_objectSpread2();
-const version = "3.6.0-rc.6";
+const version = "3.6.0-rc.7";
 const parseCache = parseCache$1;
 const errorMessages = _objectSpread2(_objectSpread2({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

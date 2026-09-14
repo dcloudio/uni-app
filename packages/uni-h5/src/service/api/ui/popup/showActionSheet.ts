@@ -57,7 +57,7 @@ export const showActionSheet = defineAsyncApi<API_TYPE_SHOW_ACTION_SHEET>(
         )
       )
     } else {
-      extend(showActionSheetState, args)
+      extend(showActionSheetState, { popover: null }, args)
       showActionSheetState.visible = true
     }
   },

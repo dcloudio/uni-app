@@ -33,6 +33,7 @@ function createUniXTargetLanguageCompiler(
       resolveWorkers: options?.resolveWorkers || (() => ({})),
       createWorkerTransformer: options?.createWorkerTransformer,
       loadUasmTransformer: options?.loadUasmTransformer,
+      sharedData: options?.sharedData,
       sourceFileCallback: options?.sourceFileCallback,
     }
   )
@@ -45,6 +46,9 @@ interface CreateUniXCompilerOptions {
   >['createWorkerTransformer']
   loadUasmTransformer?: NonNullable<
     NonNullable<UniXCompilerOptions['transformOptions']>['loadUasmTransformer']
+  >
+  sharedData?: NonNullable<
+    NonNullable<UniXCompilerOptions['transformOptions']>['sharedData']
   >
   sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
 }

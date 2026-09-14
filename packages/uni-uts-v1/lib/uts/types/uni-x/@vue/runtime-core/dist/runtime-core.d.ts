@@ -631,7 +631,7 @@ export interface TransitionHooksContext {
   setLeavingNodeCache: (node: any) => void;
   unsetLeavingNodeCache: (node: any) => void;
   earlyRemove: () => void;
-  cloneHooks: (node: any) => TransitionHooks;
+  cloneHooks?: (node: any) => TransitionHooks;
 }
 export declare function resolveTransitionHooks(vnode: VNode, props: BaseTransitionProps<any>, state: TransitionState, instance: GenericComponentInstance, postClone?: (hooks: TransitionHooks) => void): TransitionHooks;
 export declare function setTransitionHooks(vnode: VNode, hooks: TransitionHooks): TransitionHooks;

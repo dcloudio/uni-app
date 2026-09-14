@@ -20503,6 +20503,7 @@ function initApp(app) {
     invokeCreateVueAppHook(app);
   }
 }
+const POPUP_EDGE = 6;
 function usePopupStyle(props2, triangleColor = "#fcfcfd") {
   const popupWidth = ref(0);
   const popupHeight = ref(0);
@@ -20529,9 +20530,27 @@ function usePopupStyle(props2, triangleColor = "#fcfcfd") {
     const triangleStyle = style.triangle;
     const popover = props2.popover;
     function getNumber(value) {
-      return Number(value) || 0;
+      try {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : 0;
+      } catch (e2) {
+        return 0;
+      }
     }
     if (isDesktop.value && popover) {
+      const popoverLeft = Math.max(0, getNumber(popover.left));
+      const width = getNumber(popover.width);
+      const popoverWidth = width > 0 ? width : 300;
+      const popoverTop = Math.max(0, getNumber(popover.top));
+      const popoverHeight = Math.max(0, getNumber(popover.height));
+      const center = popoverLeft + popoverWidth / 2;
+      const contentLeft = Math.max(
+        POPUP_EDGE,
+        Math.min(
+          popupWidth.value - popoverWidth - POPUP_EDGE,
+          center - popoverWidth / 2
+        )
+      );
       extend(triangleStyle, {
         position: "absolute",
         width: "0",
@@ -20539,29 +20558,31 @@ function usePopupStyle(props2, triangleColor = "#fcfcfd") {
         "margin-left": "-6px",
         "border-style": "solid"
       });
-      const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width ? popover.width : 300);
-      const popoverTop = getNumber(popover.top);
-      const popoverHeight = getNumber(popover.height);
-      const center = popoverLeft + popoverWidth / 2;
       contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - popoverWidth / 2);
       contentStyle.left = `${contentLeft}px`;
-      if (popover.width) {
+      if (width > 0) {
         contentStyle.width = `${popoverWidth}px`;
       }
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(popoverWidth - 12, triangleLeft);
+      const triangleLeft = Math.max(
+        12,
+        Math.min(popoverWidth - 12, center - contentLeft)
+      );
       triangleStyle.left = `${triangleLeft}px`;
       const vcl = popupHeight.value / 2;
       if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
         contentStyle.top = "auto";
-        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
+        contentStyle.bottom = `${Math.max(
+          POPUP_EDGE,
+          popupHeight.value - popoverTop + POPUP_EDGE
+        )}px`;
         triangleStyle.bottom = "-6px";
         triangleStyle["border-width"] = "6px 6px 0 6px";
         triangleStyle["border-color"] = `${triangleColor} transparent transparent transparent`;
       } else {
-        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
+        contentStyle.top = `${Math.max(
+          POPUP_EDGE,
+          popoverTop + popoverHeight + POPUP_EDGE
+        )}px`;
         triangleStyle.top = "-6px";
         triangleStyle["border-width"] = "0 6px 6px 6px";
         triangleStyle["border-color"] = `transparent transparent ${triangleColor} transparent`;
@@ -20571,9 +20592,12 @@ function usePopupStyle(props2, triangleColor = "#fcfcfd") {
   });
   onMounted(() => {
     const fixSize = () => {
-      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
-      popupWidth.value = windowWidth;
-      popupHeight.value = windowHeight + (windowTop || 0);
+      try {
+        const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
+        popupWidth.value = windowWidth;
+        popupHeight.value = windowHeight + (windowTop || 0);
+      } catch (e2) {
+      }
     };
     window.addEventListener("resize", fixSize);
     fixSize();
@@ -25458,7 +25482,7 @@ const Toast = /* @__PURE__ */ defineComponent({
   }
 });
 function useToastIcon(props2) {
-  const iconColor = ref(getIconColor(getTheme()));
+  const iconColor = ref(getIconColor(getTheme() ?? "light"));
   const _onThemeChange = ({
     theme
   }) => iconColor.value = getIconColor(theme);
@@ -29500,13 +29524,16 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       windowWidth.value = windowInfo.windowWidth;
       windowHeight.value = windowInfo.windowHeight + (windowInfo.windowTop || 0);
     };
+    const getCloseAnimationDelay = () => {
+      return 250;
+    };
     const closeActionSheet = () => {
       show.value = false;
       setTimeout(() => {
         uni.closeDialogPage({
           dialogPage: uniPageInstance
         });
-      }, 250);
+      }, getCloseAnimationDelay());
     };
     const handleMenuItemClick = (tapIndex) => {
       menuItemClicked.value = true;
@@ -29809,7 +29836,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$5 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action,\n  .uni-action-sheet_dialog__safe-area {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.uni-action-sheet_dialog__hover__dark__mode {\n		background-color: #414141;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2C;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n\n\n\n\n\n\n\n\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+const _style_0$5 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n\n    transition-property: transform;\n    transition-duration: 0.15s;\n\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action,\n  .uni-action-sheet_dialog__safe-area {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.uni-action-sheet_dialog__hover__dark__mode {\n		background-color: #414141;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2C;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n\n\n\n\n\n\n\n\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["styles", [_style_0$5]]]);
 class ShowActionSheetSuccessImpl {
   constructor(tapIndex, errMsg = "showActionSheet:ok") {
@@ -31255,6 +31282,9 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
       }
       hoverClassName.value = theme.value == "dark" ? "uni-modal-dialog__action--hover-dark" : "uni-modal-dialog__action--hover";
     };
+    const getCloseAnimationDelay = () => {
+      return 300;
+    };
     const closeModal = () => {
       showAnim.value = false;
       setTimeout(() => {
@@ -31262,7 +31292,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
         uni.closeDialogPage({
           dialogPage: (_a = instance2 == null ? void 0 : instance2.proxy) == null ? void 0 : _a.$page
         });
-      }, 300);
+      }, getCloseAnimationDelay());
     };
     const handleCancel = () => {
       closeModal();
@@ -31493,7 +31523,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$3 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n@media screen and (min-width: 768px) {\n.uni-modal-dialog {\n			max-width: 556px;\n}\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		lines: 2;\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 22px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--cancel{\n		padding: 0 4px 0 10px;\n}\n.uni-modal-dialog__action--confirm{\n		padding: 0 10px 0 4px;\n}\n.uni-modal-dialog__action--hover {\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		background-color: #414141;\n}\n.uni-modal-dialog__action-text {\n		color: #000000;\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n		lines: 1;\n\n		overflow: hidden;\n		text-overflow: ellipsis;\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+const _style_0$3 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n@media screen and (min-width: 768px) {\n.uni-modal-dialog {\n			max-width: 556px;\n}\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		lines: 2;\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 22px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--cancel{\n		padding: 0 4px 0 10px;\n}\n.uni-modal-dialog__action--confirm{\n		padding: 0 10px 0 4px;\n}\n.uni-modal-dialog__action--hover {\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		background-color: #414141;\n}\n.uni-modal-dialog__action-text {\n		color: #000000;\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n		lines: 1;\n\n		overflow: hidden;\n		text-overflow: ellipsis;\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["styles", [_style_0$3]]]);
 class ShowModalSuccessImpl {
   constructor(cancel, confirm, content = null, errMsg = "showModal:ok") {
@@ -32012,6 +32042,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     const screenHeight = ref(0);
     const scaleSize = ref(1);
     const lastSlideTouch = ref(null);
+    const lastTouchPointerTime = ref(0);
     const imageTop = ref(0);
     const imageMarginTop = ref(0);
     const imageLeft = ref(0);
@@ -32325,7 +32356,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       isPreviewImaqeClosed.value = true;
       uni.$emit("__UNIPREVIEWIMAGECLOSE");
     }
-    const onstart = (e2) => {
+    const handleStart = (e2) => {
       if (isPreviewImaqeClosed.value)
         return;
       inScaleMode.value = false;
@@ -32362,7 +32393,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
         }, 350);
       }
     };
-    const onmove = (e2) => {
+    const handleMove = (e2) => {
       if (isPreviewImaqeClosed.value)
         return;
       if (e2.touches.length == 1) {
@@ -32465,7 +32496,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
         lastSlideTouch.value = e2.touches;
       }
     };
-    const onend = (e2) => {
+    const handleEnd = (e2) => {
       if (isPreviewImaqeClosed.value)
         return;
       const wasScaleMode = inScaleMode.value || scaleGestureActive.value || scaleGestureInProgress.value;
@@ -32587,14 +32618,90 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       delegateMoveToParent.value = false;
       setSwiperTouchDisabled(false);
     };
-    const oncancel = (e2) => {
-      onend(e2);
+    const handleCancel = (e2) => {
+      handleEnd(e2);
       clearTimeout(clickTimeoutId.value);
       inScaleMode.value = false;
       scaleGestureActive.value = false;
       scaleGestureInProgress.value = false;
       delegateMoveToParent.value = false;
       setSwiperTouchDisabled(false);
+    };
+    const toPreviewEvent = (e2) => {
+      const points = [];
+      for (var i = 0; i < e2.touches.length; i++) {
+        const touch = e2.touches[i];
+        points.push({ clientX: touch.clientX, clientY: touch.clientY });
+      }
+      const event = {
+        type: e2.type,
+        timeStamp: e2.timeStamp,
+        touches: points,
+        preventDefault: () => {
+          e2.preventDefault();
+        },
+        stopPropagation: () => {
+          e2.stopPropagation();
+        }
+      };
+      return event;
+    };
+    const onstart = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleStart(toPreviewEvent(e2));
+    };
+    const onmove = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleMove(toPreviewEvent(e2));
+    };
+    const onend = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleEnd(toPreviewEvent(e2));
+    };
+    const oncancel = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleCancel(toPreviewEvent(e2));
+    };
+    const mousePressed = ref(false);
+    const isSimulatedMouseEvent = () => {
+      return Date.now() - lastTouchPointerTime.value < 600;
+    };
+    const toPreviewEventFromMouse = (e2, type) => {
+      const points = [];
+      if (type != "touchend") {
+        points.push({ clientX: e2.clientX, clientY: e2.clientY });
+      }
+      const event = {
+        type,
+        timeStamp: e2.timeStamp,
+        touches: points,
+        preventDefault: () => {
+          e2.preventDefault();
+        },
+        stopPropagation: () => {
+          e2.stopPropagation();
+        }
+      };
+      return event;
+    };
+    const onMouseStart = (e2) => {
+      if (isSimulatedMouseEvent())
+        return;
+      mousePressed.value = true;
+      handleStart(toPreviewEventFromMouse(e2, "touchstart"));
+    };
+    const onMouseMove = (e2) => {
+      if (!mousePressed.value)
+        return;
+      if (isSimulatedMouseEvent())
+        return;
+      handleMove(toPreviewEventFromMouse(e2, "touchmove"));
+    };
+    const onMouseEnd = (e2) => {
+      mousePressed.value = false;
+      if (isSimulatedMouseEvent())
+        return;
+      handleEnd(toPreviewEventFromMouse(e2, "touchend"));
     };
     const caculatorImageSize = (imgWidth, imgHeight) => {
       var _a, _b;
@@ -32678,7 +32785,10 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
             onTouchstart: onstart,
             onTouchmove: onmove,
             onTouchend: onend,
-            onTouchcancel: oncancel
+            onTouchcancel: oncancel,
+            onMousedown: onMouseStart,
+            onMousemove: onMouseMove,
+            onMouseup: onMouseEnd
           }, null, 512),
           !loadingFinished.value ? (openBlock(), createBlock(_component_view, {
             key: 0,

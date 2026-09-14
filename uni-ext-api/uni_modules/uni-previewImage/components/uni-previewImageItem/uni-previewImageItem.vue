@@ -2,8 +2,11 @@
 	<view style="flex:1;" class="uni-preview-image-item-background">
 		<image ref="imageView" :mode="imageMode" class="uni-preview-image-item" :src="srcPath"
 			@error="previewImageError" @load="onImageLoad"></image>
-		<view ref="mask" class="uni-preview-image-patch" @touchstart="onstart" @touchmove="onmove" @touchend="onend"
-			@touchcancel="oncancel"></view>
+		<view ref="mask" class="uni-preview-image-patch" @touchstart="onstart" @touchmove="onmove" @touchend="onend" @touchcancel="oncancel"
+			<!--#ifdef WEB -->
+			@mousedown="onMouseStart" @mousemove="onMouseMove" @mouseup="onMouseEnd"
+			<!--#endif-->
+			></view>
 		<view class="uni-preview-image-loading" v-if="!loadingFinished">
 			<loading style="margin: auto;width:54px;height: 54px;border-color:#d3d3d3;"></loading>
 		</view>
@@ -58,6 +61,22 @@
 		y : number
 	}
 
+	// 内部统一的触摸点结构，touch 与 mouse 归一后都使用它
+	type PreviewTouch = {
+		clientX : number,
+		clientY : number
+	}
+
+	// 内部统一的手势事件结构：把 UniTouchEvent / UniMouseEvent 都归一成“触摸语义”，
+	// 从而让原有手势逻辑无需区分事件来源。
+	type PreviewPointerEvent = {
+		type : string,
+		timeStamp : number,
+		touches : Array<PreviewTouch>,
+		preventDefault : () => void,
+		stopPropagation : () => void
+	}
+
 	// Props
 	const props = defineProps({
 		src: {
@@ -97,7 +116,9 @@
 	/* 放大系数 */
 	const scaleSize = ref<number>(1)
 	/* 上次触摸事件 */
-	const lastSlideTouch = ref<Array<UniTouch> | null>(null)
+	const lastSlideTouch = ref<Array<PreviewTouch> | null>(null)
+	/* 最近一次 touch 事件时间，用于在 Web 上抑制触摸后浏览器补发的模拟鼠标事件 */
+	const lastTouchPointerTime = ref<number>(0)
 	/* 图片竖向滑动的距离 */
 	const imageTop = ref<number>(0)
 	/* 图片横向滑动的距离 */
@@ -297,7 +318,7 @@
 		}
 	}
 
-	const preventDefaultScall = (e : UniTouchEvent | null) => {
+	const preventDefaultScall = (e : PreviewPointerEvent | null) => {
 		e?.preventDefault()
 		e?.stopPropagation()
 	}
@@ -335,7 +356,7 @@
 		bounceTransitionUntil.value = Date.now() + ANIMATION_DURATION
 	}
 
-	const onInterceptTouchEvent = (e : UniTouchEvent | null) => {
+	const onInterceptTouchEvent = (e : PreviewPointerEvent | null) => {
 		if (inScaleMode.value || scaleGestureActive.value) {
 			setSwiperTouchDisabled(true)
 			preventDefaultScall(e)
@@ -368,7 +389,7 @@
 		return imageLeft.value >= maxLeft || imageLeft.value <= minLeft
 	}
 
-	const delegateCurrentMoveToParent = (e : UniTouchEvent, currentSlideTouch : UniTouch) => {
+	const delegateCurrentMoveToParent = (e : PreviewPointerEvent, currentSlideTouch : PreviewTouch) => {
 		inScaleMode.value = false
 		scaleGestureActive.value = false
 		scaleGestureInProgress.value = false
@@ -385,7 +406,7 @@
 	}
 
 	// 计算transform-origin主要代码
-	const caculatorTransformOrigin = (e : UniTouchEvent | null) => {
+	const caculatorTransformOrigin = (e : PreviewPointerEvent | null) => {
 		var originalCenterX : number
 		var originalCenterY : number
 		if (e != null) {
@@ -423,7 +444,7 @@
 		}
 	}
 
-	const updateStyle = (e : UniTouchEvent | null, xDistance : number, yDistance : number) => {
+	const updateStyle = (e : PreviewPointerEvent | null, xDistance : number, yDistance : number) => {
 		caculatorTransformOrigin(e)
 		if (1 < scaleSize.value) {
 			var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value)
@@ -511,7 +532,7 @@
 		uni.$emit("__UNIPREVIEWIMAGECLOSE")
 	}
 
-	const onstart = (e : UniTouchEvent) => {
+	const handleStart = (e : PreviewPointerEvent) => {
 		if (isPreviewImaqeClosed.value) return
 		// #ifdef APP-ANDROID
 		// if (androidView.value == null)
@@ -554,7 +575,7 @@
 		}
 	}
 
-	const onmove = (e : UniTouchEvent) => {
+	const handleMove = (e : PreviewPointerEvent) => {
 		if (isPreviewImaqeClosed.value) return
 		if (e.touches.length == 1) {
 			var currentSlideTouch = e.touches[0]
@@ -660,8 +681,9 @@
 		}
 	}
 
-	const onend = (e : UniTouchEvent) => {
+	const handleEnd = (e : PreviewPointerEvent) => {
 		if (isPreviewImaqeClosed.value) return
+
 
 		const wasScaleMode = inScaleMode.value || scaleGestureActive.value || scaleGestureInProgress.value
 		if (wasScaleMode) {
@@ -790,8 +812,8 @@
 		// #endif
 	}
 
-	const oncancel = (e : UniTouchEvent) => {
-		onend(e)
+	const handleCancel = (e : PreviewPointerEvent) => {
+		handleEnd(e)
 		clearTimeout(clickTimeoutId.value)
 		inScaleMode.value = false
 		scaleGestureActive.value = false
@@ -799,6 +821,88 @@
 		delegateMoveToParent.value = false
 		setSwiperTouchDisabled(false)
 	}
+
+	// 将 touch 事件归一成内部统一结构，原有手势逻辑只依赖 PreviewPointerEvent
+	const toPreviewEvent = (e : UniTouchEvent) : PreviewPointerEvent => {
+		const points : Array<PreviewTouch> = []
+		for (var i = 0; i < e.touches.length; i++) {
+			const touch = e.touches[i]
+			points.push({ clientX: touch.clientX, clientY: touch.clientY } as PreviewTouch)
+		}
+		const event : PreviewPointerEvent = {
+			type: e.type,
+			timeStamp: e.timeStamp,
+			touches: points,
+			preventDefault: () => { e.preventDefault() },
+			stopPropagation: () => { e.stopPropagation() }
+		}
+		return event
+	}
+
+	// touch 事件入口
+	const onstart = (e : UniTouchEvent) => {
+		lastTouchPointerTime.value = Date.now()
+		handleStart(toPreviewEvent(e))
+	}
+
+	const onmove = (e : UniTouchEvent) => {
+		lastTouchPointerTime.value = Date.now()
+		handleMove(toPreviewEvent(e))
+	}
+
+	const onend = (e : UniTouchEvent) => {
+		lastTouchPointerTime.value = Date.now()
+		handleEnd(toPreviewEvent(e))
+	}
+
+	const oncancel = (e : UniTouchEvent) => {
+		lastTouchPointerTime.value = Date.now()
+		handleCancel(toPreviewEvent(e))
+	}
+
+	// #ifdef WEB
+	// 鼠标左键是否按下，避免未按下时的 mousemove 误触发拖拽
+	const mousePressed = ref(false)
+
+	// 触摸设备上浏览器会在触摸后补发模拟鼠标事件，按时间窗口忽略以避免重复处理
+	const isSimulatedMouseEvent = () : boolean => {
+		return Date.now() - lastTouchPointerTime.value < 600
+	}
+
+	// 将鼠标事件归一成内部统一结构：按单指触摸语义处理，抬起时 touches 置空以对齐 touchend
+	const toPreviewEventFromMouse = (e : UniMouseEvent, type : string) : PreviewPointerEvent => {
+		const points : Array<PreviewTouch> = []
+		if (type != "touchend") {
+			points.push({ clientX: e.clientX, clientY: e.clientY } as PreviewTouch)
+		}
+		const event : PreviewPointerEvent = {
+			type: type,
+			timeStamp: e.timeStamp,
+			touches: points,
+			preventDefault: () => { e.preventDefault() },
+			stopPropagation: () => { e.stopPropagation() }
+		}
+		return event
+	}
+
+	const onMouseStart = (e : UniMouseEvent) => {
+		if (isSimulatedMouseEvent()) return
+		mousePressed.value = true
+		handleStart(toPreviewEventFromMouse(e, "touchstart"))
+	}
+
+	const onMouseMove = (e : UniMouseEvent) => {
+		if (!mousePressed.value) return
+		if (isSimulatedMouseEvent()) return
+		handleMove(toPreviewEventFromMouse(e, "touchmove"))
+	}
+
+	const onMouseEnd = (e : UniMouseEvent) => {
+		mousePressed.value = false
+		if (isSimulatedMouseEvent()) return
+		handleEnd(toPreviewEventFromMouse(e, "touchend"))
+	}
+	// #endif
 
 	const caculatorImageSize = (imgWidth : number, imgHeight : number) => {
 		var scaleImageSize = (imgHeight / (imgWidth / screenWidth.value))

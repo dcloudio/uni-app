@@ -46,6 +46,10 @@ export const getAppBaseInfo: MPProtocol = {
           process.env.UNI_COMPILER_VERSION
         )
       } catch (error) {}
+
+      if (__PLATFORM__ === 'mp-alipay') {
+        delete parameters.uniCompileVersion
+      }
     }
 
     extend(toRes, parameters)

@@ -158,6 +158,10 @@ export interface UTSBridgeFunction extends UTSBridgeMethod {
   is_default?: boolean
 }
 
+export interface UTSBridgeVariable {
+  name: string
+  value: number | boolean | string
+}
 export interface UTSBridgeClass {
   name: string
   is_default?: boolean
@@ -176,6 +180,7 @@ export interface UTSBridge {
   functions: UTSBridgeFunction[]
   classes: UTSBridgeClass[]
   interfaces: UTSBridgeInterface[]
+  variables?: UTSBridgeVariable[]
 }
 
 export interface UTSResult {

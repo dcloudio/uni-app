@@ -1,7 +1,7 @@
 import { IUTSCompiler } from '@uts/compiler';
 import * as tsTypes from 'typescript';
 import tsTypes__default, { CompilerOptions } from 'typescript';
-import { UTSTransformerFactoryCreator, WorkerTransformerCreator } from '@uts/transforms_base';
+import { UTSTransformerFactoryCreator, WorkerTransformerCreator, SharedDataTransformerCreator } from '@uts/transforms_base';
 
 declare function isTypeRelatedTo(ts: typeof tsTypes__default, typeChecker: tsTypes__default.TypeChecker, source: tsTypes__default.Type, target: tsTypes__default.Type): true | undefined;
 
@@ -43,6 +43,8 @@ interface CreateTransformerOptions {
         resolveFieldMeta(name: string): {
             fieldId: number;
         };
+        /** 注入不依赖 TypeChecker 的 SharedData AST transformer。 */
+        createSharedDataTransformer?: SharedDataTransformerCreator;
     };
 }
 declare function initTargetTransformers(targetLanguage: TargetLanguage, options?: CreateTransformerOptions): UTSTransformerFactoryCreator[];
@@ -72,6 +74,7 @@ type UniXCompilerOptions = {
     paths?: CompilerOptions['paths'];
     incremental?: boolean;
     sharedDataLibName?: string;
+    sharedDataLibAsGlobal?: boolean;
     normalizeFileName: (fileName: string) => string;
     watchFile?(path: string, callback: tsTypes__default.FileWatcherCallback, pollingInterval?: number, options?: tsTypes__default.WatchOptions): tsTypes__default.FileWatcher;
     sourceFileCallback?: (sourceFile: tsTypes__default.SourceFile) => void;

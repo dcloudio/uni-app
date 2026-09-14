@@ -1,5 +1,5 @@
 import { AppContext, ComponentInternalOptions, ComponentPropsOptions, ComponentPublicInstance, CreateAppFunction, EffectScope, EmitFn, EmitsOptions, GenericAppContext, GenericComponentInstance, LifecycleHook, NormalizedPropsOptions, ObjectEmitsOptions, SuspenseBoundary, defineComponent, defineComponent as defineVaporSharedDataComponent, ref, shallowRef } from "@vue/runtime-core";
-import { VaporSlotFlags, extend, hyphenate } from "@vue/shared";
+import { VaporSlotStability, extend, hyphenate } from "@vue/shared";
 import { EffectScope as EffectScope$1, Reactive, Ref, ShallowRef } from "@vue/reactivity";
 import "@vue/compiler-dom";
 import "@vue/compiler-vapor";
@@ -62,11 +62,11 @@ type RawSlots = Record<string, VaporSlot> & {
 type StaticSlots = Record<string, VaporSlot>;
 type VaporSlot<T extends UniSharedData = any> = BlockFn & {
   sharedDataVFor?: UniSharedDataVFor<T>;
-  _?: VaporSlotFlags.NON_STABLE;
+  _?: VaporSlotStability.NON_STABLE;
 };
 type VaporScopedSlot<T extends UniSharedData = any> = ((slotProps: any, sharedData: T) => void) & {
   sharedDataVFor?: UniSharedDataVFor<T>;
-  _?: VaporSlotFlags.NON_STABLE;
+  _?: VaporSlotStability.NON_STABLE;
 };
 type DynamicSlot = {
   name: string;

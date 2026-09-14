@@ -1,13 +1,19 @@
 <template>
   <view>
-    <view class="uni-action-sheet_dialog__mask" :class="{ 'uni-action-sheet_dialog__mask__show': show }"
+    <view class="uni-action-sheet_dialog__mask"
+      <!-- #ifdef VUE3-VAPOR -->
+      :class="maskAnimationClass"
+      <!-- #endif -->
+      <!-- #ifndef VUE3-VAPOR -->
+      :class="{ 'uni-action-sheet_dialog__mask__show': show }"
+      <!-- #endif -->
       @click="handleCancel"></view>
     <view <!-- #ifdef WEB -->
       :style="isWidescreen ? containerStyle : {}"
       <!-- #endif -->
       class="uni-action-sheet_dialog__container"
       <!-- #ifdef VUE3-VAPOR -->
-      :class="{ 'uni-action-sheet_dialog__show': show, 'uni-action-sheet_landscape__mode': isLandscape }">
+      :class="containerAnimationClass">
       <!-- #endif -->
       <!-- #ifndef VUE3-VAPOR -->
       :class="{ 'uni-action-sheet_dialog__show': show, 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
@@ -130,6 +136,27 @@
   const uniPageInstance = pageInstance.$page
 
   const show = ref(false)
+  // #ifdef VUE3-VAPOR
+  const isClosing = ref(false)
+  const maskAnimationClass = computed((): string => {
+    if (isClosing.value) {
+      return 'uni-action-sheet_dialog__mask__hide'
+    }
+    return show.value ? 'uni-action-sheet_dialog__mask__show' : ''
+  })
+  const containerAnimationClass = computed((): string => {
+    const classes : Array<string> = []
+    if (isClosing.value) {
+      classes.push('uni-action-sheet_dialog__hide')
+    } else if (show.value) {
+      classes.push('uni-action-sheet_dialog__show')
+    }
+    if (isLandscape.value) {
+      classes.push('uni-action-sheet_landscape__mode')
+    }
+    return classes.join(' ')
+  })
+  // #endif
   type I18nCancelText = {
     en: string,
     es: string,
@@ -180,13 +207,28 @@
     windowHeight.value = windowInfo.windowHeight + (windowInfo.windowTop || 0)
   }
   // #endif
+  const getCloseAnimationDelay = (): number => {
+    // #ifdef VUE3-VAPOR
+    // Vapor 动画时长为 150ms，额外预留 30ms 确保退场完成
+    return 180
+    // #endif
+    // #ifndef VUE3-VAPOR
+    return 250
+    // #endif
+  }
   const closeActionSheet = () => {
+    // #ifdef VUE3-VAPOR
+    if (isClosing.value) {
+      return
+    }
+    isClosing.value = true
+    // #endif
     show.value = false
     setTimeout(() => {
       uni.closeDialogPage({
         dialogPage: uniPageInstance
       })
-    }, 250)
+    }, getCloseAnimationDelay())
   }
   const handleMenuItemClick = (tapIndex: number) => {
     menuItemClicked.value = true
@@ -417,9 +459,21 @@
       bottomNavigationHeight.value = windowInfo.safeAreaInsets.bottom
     }
     // #endif
+    // #ifdef VUE3-VAPOR
+    // 确保隐藏首帧完成提交后再启动关键帧，避免首帧闪烁
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (!isClosing.value) {
+          show.value = true
+        }
+      })
+    })
+    // #endif
+    // #ifndef VUE3-VAPOR
     setTimeout(() => {
       show.value = true
     }, 10)
+    // #endif
   })
   onResize((_ : OnResizeOptions) => {
     const deviceInfo = uni.getDeviceInfo()
@@ -453,12 +507,26 @@
     bottom: 0;
     opacity: 0;
     background-color: rgba(0, 0, 0, 0.6);
+    /* #ifndef VUE3-VAPOR */
     transition: opacity 0.1s;
+    /* #endif */
   }
 
+  /* #ifndef VUE3-VAPOR */
   .uni-action-sheet_dialog__mask__show {
     opacity: 1;
   }
+  /* #endif */
+
+  /* #ifdef VUE3-VAPOR */
+  .uni-action-sheet_dialog__mask__hide {
+    animation: uni-action-sheet-mask-fade-out 0.15s ease-in forwards;
+  }
+
+  .uni-action-sheet_dialog__mask__show {
+    animation: uni-action-sheet-mask-fade-in 0.15s ease-out forwards;
+  }
+  /* #endif */
 
   .uni-action-sheet_dialog__container {
     position: fixed;
@@ -467,8 +535,10 @@
     bottom: 0;
     z-index: 999;
     transform: translate(0, 100%);
+    /* #ifndef VUE3-VAPOR */
     transition-property: transform;
     transition-duration: 0.15s;
+    /* #endif */
     background-color: #f7f7f7;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
@@ -479,9 +549,21 @@
     overflow: hidden;
   }
 
+  /* #ifndef VUE3-VAPOR */
   .uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {
     transform: translate(0, 0);
   }
+  /* #endif */
+
+  /* #ifdef VUE3-VAPOR */
+  .uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {
+    animation: uni-action-sheet-slide-in 0.15s ease-out forwards;
+  }
+
+  .uni-action-sheet_dialog__container.uni-action-sheet_dialog__hide {
+    animation: uni-action-sheet-slide-out 0.15s ease-in forwards;
+  }
+  /* #endif */
 
   .uni-action-sheet_dialog__title,
   .uni-action-sheet_dialog__cell,
@@ -596,6 +678,9 @@
     border-top-right-radius: 5px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    /* #ifdef VUE3-VAPOR */
+    animation: none;
+    /* #endif */
   }
 
   .uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {
@@ -673,6 +758,13 @@
       transform: translate(-50%, -50%);
       box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);
     }
+    /* #ifdef VUE3-VAPOR */
+    .uni-action-sheet_dialog__container.uni-action-sheet_dialog__show,
+    .uni-action-sheet_dialog__container.uni-action-sheet_dialog__hide {
+      transform: translate(-50%, -50%);
+      animation: none;
+    }
+    /* #endif */
     .uni-action-sheet_dialog__show {
       transform: translate(-50%, -50%) !important;
     }
@@ -740,6 +832,44 @@
       border-color: transparent transparent #2C2C2C transparent;
     }
     /* #endif */
+  }
+  /* #endif */
+
+  /* #ifdef VUE3-VAPOR */
+  @keyframes uni-action-sheet-mask-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes uni-action-sheet-mask-fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes uni-action-sheet-slide-in {
+    from {
+      transform: translate(0, 100%);
+    }
+    to {
+      transform: translate(0, 0);
+    }
+  }
+
+  @keyframes uni-action-sheet-slide-out {
+    from {
+      transform: translate(0, 0);
+    }
+    to {
+      transform: translate(0, 100%);
+    }
   }
   /* #endif */
 </style>

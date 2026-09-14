@@ -28,9 +28,10 @@ import {
 
 import { DOM2_CSS_CACHE_MAP, isVue } from '../utils'
 import {
-  collectPageSelectorBackgroundColor,
+  collectPageSelectorBackgroundDeclarations,
   resetPageSelectorBackgroundColors,
   restoreCachedPageSelectorBackgroundColor,
+  setPageSelectorBackgroundValueResolver,
 } from './pageBackground'
 
 const CSS_FILE_ID_MAP = new Map<string, string>()
@@ -39,7 +40,11 @@ export function uniAppCssPrePlugin(): Plugin {
   const name = 'uni:app-uvue-css-pre'
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   const appUVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
-  const { parseCss } = require('@dcloudio/compiler-vapor-dom2')
+  const compiler = require('@dcloudio/compiler-vapor-dom2')
+  const { parseCss } = compiler
+  setPageSelectorBackgroundValueResolver(
+    compiler.resolvePageSelectorBackgroundValue
+  )
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return {
     name,
@@ -83,15 +88,15 @@ export function uniAppCssPrePlugin(): Plugin {
             bytes,
             messages,
             fontFaces,
-            pageSelectorBackgroundColor,
+            pageSelectorBackgroundDeclarations,
           } = await parseCss(cssCode, {
             platform: process.env.UNI_UTS_PLATFORM,
             helper: requireUniHelpers(),
             output,
           })
-          collectPageSelectorBackgroundColor(
+          collectPageSelectorBackgroundDeclarations(
             filename,
-            pageSelectorBackgroundColor
+            pageSelectorBackgroundDeclarations
           )
           if (isDom2 && fontFaces?.length) {
             const id = CSS_FILE_ID_MAP.get(filename)
@@ -195,7 +200,11 @@ export function uniAppCssPrePlugin(): Plugin {
 
 export function uniAppCssPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
-  const { parseCss } = require('@dcloudio/compiler-vapor-dom2')
+  const compiler = require('@dcloudio/compiler-vapor-dom2')
+  const { parseCss } = compiler
+  setPageSelectorBackgroundValueResolver(
+    compiler.resolvePageSelectorBackgroundValue
+  )
   return {
     name: 'uni:app-uvue-css',
     apply: 'build',

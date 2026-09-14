@@ -1,8 +1,14 @@
 <template>
-	<view class="uni-modal-mask" :class="{ 'uni-modal-mask--show': showAnim, 'uni-modal-mask--hide': !showAnim }">
+	<view class="uni-modal-mask"
+		<!-- #ifdef VUE3-VAPOR -->
+		:class="maskAnimationClass">
+		<!-- #endif -->
+		<!-- #ifndef VUE3-VAPOR -->
+		:class="{ 'uni-modal-mask--show': showAnim, 'uni-modal-mask--hide': !showAnim }">
+		<!-- #endif -->
 		<view class="uni-modal-dialog" :style="{ bottom: inputBottom }"
 			<!-- #ifdef VUE3-VAPOR -->
-			:class="{ 'uni-modal-dialog--show': showAnim }">
+			:class="dialogAnimationClass">
 			<!-- #endif -->
 			<!-- #ifndef VUE3-VAPOR -->
 			:class="{ 'uni-modal-dialog--show': showAnim, 'uni-modal--dark': isDark }">
@@ -143,6 +149,21 @@
 	const hoverClassName = ref('uni-modal-dialog__action--hover')
 	// #endif
 	const showAnim = ref(false)
+	// #ifdef VUE3-VAPOR
+	const isClosing = ref(false)
+	const maskAnimationClass = computed((): string => {
+		if (isClosing.value) {
+			return 'uni-modal-mask--hide'
+		}
+		return showAnim.value ? 'uni-modal-mask--show' : ''
+	})
+	const dialogAnimationClass = computed((): string => {
+		if (isClosing.value) {
+			return 'uni-modal-dialog--hide'
+		}
+		return showAnim.value ? 'uni-modal-dialog--show' : ''
+	})
+	// #endif
 	const isAutoHeight = ref(true)
 	// #ifdef (APP-ANDROID || APP-IOS || APP-HARMONY) && !VUE3-VAPOR
 	const appThemeChangeCallbackId = ref(-1)
@@ -252,13 +273,29 @@
 	}
 	// #endif
 
+	const getCloseAnimationDelay = (): number => {
+		// #ifdef VUE3-VAPOR
+		// Vapor 动画时长为 150ms，额外预留 30ms 确保退场完成
+		return 180
+		// #endif
+		// #ifndef VUE3-VAPOR
+		return 300
+		// #endif
+	}
+
 	const closeModal = () => {
+		// #ifdef VUE3-VAPOR
+		if (isClosing.value) {
+			return
+		}
+		isClosing.value = true
+		// #endif
 		showAnim.value = false
 		setTimeout(() => {
 			uni.closeDialogPage({
 				dialogPage: instance?.proxy?.$page
 			})
-		}, 300)
+		}, getCloseAnimationDelay())
 	}
 
 	const handleCancel = () => {
@@ -282,9 +319,21 @@
 
 	// onReady 生命周期
 	onReady(() => {
+		// #ifdef VUE3-VAPOR
+		// 确保隐藏首帧完成提交后再启动关键帧，避免首帧闪烁
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				if (!isClosing.value) {
+					showAnim.value = true
+				}
+			})
+		})
+		// #endif
+		// #ifndef VUE3-VAPOR
 		setTimeout(() => {
 			showAnim.value = true
 		}, 10)
+		// #endif
 	})
 
 	// onLoad 生命周期
@@ -413,9 +462,15 @@
 		justify-content: center;
 		align-items: center;
 		background-color: rgba(0, 0, 0, 0.55);
+		/* #ifndef VUE3-VAPOR */
 		transition-property: opacity;
+		/* #endif */
+		/* #ifdef VUE3-VAPOR */
+		opacity: 0;
+		/* #endif */
 	}
 
+	/* #ifndef VUE3-VAPOR */
 	.uni-modal-mask--hide {
 		transition-duration: 0s;
 		opacity: 0;
@@ -425,6 +480,35 @@
 		transition-duration: 0.1s;
 		opacity: 1;
 	}
+	/* #endif */
+
+	/* #ifdef VUE3-VAPOR */
+	.uni-modal-mask--hide {
+		animation: uni-modal-mask-fade-out 0.15s ease-in forwards;
+	}
+
+	.uni-modal-mask--show {
+		animation: uni-modal-mask-fade-in 0.15s ease-out forwards;
+	}
+
+	@keyframes uni-modal-mask-fade-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes uni-modal-mask-fade-out {
+		from {
+			opacity: 1;
+		}
+		to {
+			opacity: 0;
+		}
+	}
+	/* #endif */
 
 	/**
 	 * 居中的内容展示区域
@@ -438,8 +522,10 @@
 		border-radius: 16px;
 		opacity: 0;
 		transform: scale(0.9);
+		/* #ifndef VUE3-VAPOR */
 		transition-duration: 0.1s;
 		transition-property: opacity, transform;
+		/* #endif */
 	}
 
 	/* #ifdef WEB */
@@ -450,10 +536,44 @@
 	}
 	/* #endif */
 
+	/* #ifndef VUE3-VAPOR */
 	.uni-modal-dialog.uni-modal-dialog--show {
 		opacity: 1;
 		transform: scale(1);
 	}
+	/* #endif */
+
+	/* #ifdef VUE3-VAPOR */
+	.uni-modal-dialog--show {
+		animation: uni-modal-dialog-scale-in 0.15s ease-out forwards;
+	}
+
+	.uni-modal-dialog--hide {
+		animation: uni-modal-dialog-scale-out 0.15s ease-in forwards;
+	}
+
+	@keyframes uni-modal-dialog-scale-in {
+		from {
+			opacity: 0;
+			transform: scale(0.9);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+
+	@keyframes uni-modal-dialog-scale-out {
+		from {
+			opacity: 1;
+			transform: scale(1);
+		}
+		to {
+			opacity: 0;
+			transform: scale(0.9);
+		}
+	}
+	/* #endif */
 
 	/* #ifndef VUE3-VAPOR */
 	.uni-modal-dialog.uni-modal--dark {

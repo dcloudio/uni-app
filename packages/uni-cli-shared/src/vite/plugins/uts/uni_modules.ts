@@ -36,6 +36,7 @@ import {
 } from '../../../uni_modules.cloud'
 import { isUniAppXJsEngine } from '../../../x'
 import { createWorkerTransformer } from '../../../workers'
+import { initUts2jsSharedDataOptions } from '../../../dom2'
 import {
   camelize,
   capitalize,
@@ -380,6 +381,7 @@ export function uniUTSAppUniModulesPlugin(
           resolveWorkers,
           createWorkerTransformer,
           loadUasmTransformer: initUasmTransformerCreator('app-android'),
+          sharedData: initUts2jsSharedDataOptions(),
           sourceFileCallback: initSourceFileCallback(),
         })
       : null
@@ -391,6 +393,7 @@ export function uniUTSAppUniModulesPlugin(
           resolveWorkers,
           createWorkerTransformer,
           loadUasmTransformer: initUasmTransformerCreator('app-ios'),
+          sharedData: initUts2jsSharedDataOptions(),
         })
       : null
   const uniXArkTSCompiler =
@@ -399,6 +402,7 @@ export function uniUTSAppUniModulesPlugin(
       ? createUniXArkTSCompilerOnce({
           resolveWorkers,
           createWorkerTransformer,
+          sharedData: initUts2jsSharedDataOptions(),
         })
       : null
 

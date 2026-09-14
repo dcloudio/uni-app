@@ -24,7 +24,7 @@ import {
   createAppIosUniModulesSyncFilePreprocessorOnce,
 } from './vite/plugins/uts/uni_modules'
 import { resolveBuiltIn } from './resolve'
-import { initSourceFileCallback } from './dom2'
+import { initSourceFileCallback, initUts2jsSharedDataOptions } from './dom2'
 import { initUasmTransformerCreator } from './uasm'
 
 const debugWorkers = debug('uni:workers')
@@ -316,6 +316,7 @@ export function uniWorkersPlugin(): Plugin {
           resolveWorkers,
           createWorkerTransformer,
           loadUasmTransformer: initUasmTransformerCreator('app-android'),
+          sharedData: initUts2jsSharedDataOptions(),
           sourceFileCallback: initSourceFileCallback(),
         })
       : null
@@ -326,6 +327,7 @@ export function uniWorkersPlugin(): Plugin {
           resolveWorkers,
           createWorkerTransformer,
           loadUasmTransformer: initUasmTransformerCreator('app-ios'),
+          sharedData: initUts2jsSharedDataOptions(),
         })
       : null
 
@@ -334,6 +336,7 @@ export function uniWorkersPlugin(): Plugin {
       ? resolveUTSCompiler().createUniXArkTSCompilerOnce({
           resolveWorkers,
           createWorkerTransformer,
+          sharedData: initUts2jsSharedDataOptions(),
         })
       : null
 
