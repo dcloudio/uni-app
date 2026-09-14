@@ -1,3 +1,4 @@
+import { parseExpression } from '@babel/parser'
 import { isFunction } from '@babel/types'
 import {
   type DirectiveNode,
@@ -15,7 +16,6 @@ import {
   isPlainElementNode,
 } from '@dcloudio/uni-cli-shared'
 import type { NodeTransform, TransformContext } from '../transform'
-import { parseExpr } from '../ast'
 
 const V_BIND_ATTRS = '$attrs'
 
@@ -134,8 +134,8 @@ function mergeOnProp(
   // array returned from an event callback.
   prop.exp.content =
     propIndex < vBindIndex
-      ? `(${attrsExp} ? [${localHandler}, ${attrsExp}] : ${localHandler})`
-      : `(${attrsExp} ? [${attrsExp}, ${localHandler}] : ${localHandler})`
+      ? `(${attrsExp} ? [].concat(${localHandler}, ${attrsExp}) : ${localHandler})`
+      : `(${attrsExp} ? [].concat(${attrsExp}, ${localHandler}) : ${localHandler})`
   ;(
     prop.exp as SimpleExpressionNode & { __uniMergedEvent?: boolean }
   ).__uniMergedEvent = true
@@ -145,12 +145,9 @@ function normalizeLocalHandler(
   handler: string,
   context: TransformContext
 ): string {
-  const expression = handler.includes(';')
-    ? undefined
-    : parseExpr(handler, context)
   if (
     isMemberExpression(handler, context as any) ||
-    (expression && isFunction(expression))
+    isFunctionExpression(handler, context)
   ) {
     return handler
   }
@@ -158,6 +155,21 @@ function normalizeLocalHandler(
   const eventParam = context.isTS ? '($event: any)' : '($event)'
   const body = handler.includes(';') ? `{${handler}}` : `(${handler})`
   return `${eventParam} => ${body}`
+}
+
+function isFunctionExpression(
+  content: string,
+  context: TransformContext
+): boolean {
+  try {
+    return isFunction(
+      parseExpression(content, {
+        plugins: context.expressionPlugins,
+      })
+    )
+  } catch {
+    return false
+  }
 }
 
 function hasFollowingId(props: ElementNode['props'], index: number) {

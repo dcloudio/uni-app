@@ -194,7 +194,7 @@ describe('compiler: transform v-bind="$attrs"', () => {
     )
 
     expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
-      `($attrs.onClick ? [foo, $attrs.onClick] : foo)`
+      `($attrs.onClick ? [].concat(foo, $attrs.onClick) : foo)`
     )
     expect((getProp(node, 'class')!.exp as SimpleExpression).content).toBe(
       `[$attrs.class, bar]`
@@ -213,7 +213,21 @@ describe('compiler: transform v-bind="$attrs"', () => {
       })
 
       expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
-        `($attrs.onClick ? [($event) => (${handler}), $attrs.onClick] : ($event) => (${handler}))`
+        `($attrs.onClick ? [].concat(($event) => (${handler}), $attrs.onClick) : ($event) => (${handler}))`
+      )
+    }
+  )
+
+  test.each(['function ($event) { foo(); }', '$event => { foo(); }'])(
+    '合并带代码块的函数处理器时保留原函数: %s',
+    (handler) => {
+      const node = runTransform(`<view @click="${handler}" v-bind="$attrs"/>`, {
+        isX: true,
+        platform: 'mp-weixin',
+      })
+
+      expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
+        `($attrs.onClick ? [].concat(${handler}, $attrs.onClick) : ${handler})`
       )
     }
   )
@@ -223,7 +237,9 @@ describe('compiler: transform v-bind="$attrs"', () => {
       isX: true,
     })
 
-    expect(code).toContain('_o(_ctx.$attrs.onClick ? [$event => _ctx.foo()')
+    expect(code).toContain(
+      '_o(_ctx.$attrs.onClick ? [].concat($event => _ctx.foo()'
+    )
     expect(code).not.toContain('_o($event => _ctx.foo()')
   })
 
