@@ -1,8 +1,10 @@
+import { isFunction } from '@babel/types'
 import {
   type DirectiveNode,
   type ElementNode,
   NodeTypes,
   type SimpleExpressionNode,
+  isMemberExpression,
   isStaticArgOf,
 } from '@vue/compiler-core'
 import {
@@ -13,6 +15,7 @@ import {
   isPlainElementNode,
 } from '@dcloudio/uni-cli-shared'
 import type { NodeTransform, TransformContext } from '../transform'
+import { parseExpr } from '../ast'
 
 const V_BIND_ATTRS = '$attrs'
 
@@ -36,7 +39,7 @@ export const transformVBindAttrs: NodeTransform = (node, context) => {
     // class/style/click 需要尽量保留原有声明顺序，避免覆盖规则变化。
     mergeBindProp(props, 'class', `${attrsExp}.class`, i, newProps)
     mergeBindProp(props, 'style', `${attrsExp}.style`, i, newProps)
-    mergeOnProp(props, 'click', `${attrsExp}.onClick`, i, newProps)
+    mergeOnProp(props, 'click', `${attrsExp}.onClick`, i, newProps, context)
 
     // id 与现有逻辑保持一致：只在后面没有显式 id 时补充，
     // 这样可以继续复用“后写覆盖前写”的规则。
@@ -105,7 +108,8 @@ function mergeOnProp(
   name: string,
   attrsExp: string,
   vBindIndex: number,
-  newProps: DirectiveNode[]
+  newProps: DirectiveNode[],
+  context: TransformContext
 ) {
   const propIndex = props.findIndex(
     (prop) =>
@@ -124,7 +128,7 @@ function mergeOnProp(
     return
   }
 
-  const localHandler = prop.exp.content
+  const localHandler = normalizeLocalHandler(prop.exp.content, context)
   // Keep the merged handler as an expression value. transformOn must not wrap
   // this in an arrow function, because the MP runtime does not execute an
   // array returned from an event callback.
@@ -135,6 +139,25 @@ function mergeOnProp(
   ;(
     prop.exp as SimpleExpressionNode & { __uniMergedEvent?: boolean }
   ).__uniMergedEvent = true
+}
+
+function normalizeLocalHandler(
+  handler: string,
+  context: TransformContext
+): string {
+  const expression = handler.includes(';')
+    ? undefined
+    : parseExpr(handler, context)
+  if (
+    isMemberExpression(handler, context as any) ||
+    (expression && isFunction(expression))
+  ) {
+    return handler
+  }
+
+  const eventParam = context.isTS ? '($event: any)' : '($event)'
+  const body = handler.includes(';') ? `{${handler}}` : `(${handler})`
+  return `${eventParam} => ${body}`
 }
 
 function hasFollowingId(props: ElementNode['props'], index: number) {

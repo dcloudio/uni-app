@@ -82,6 +82,36 @@ function compileTemplate(
   return source
 }
 
+function compileRenderCode(
+  template: string,
+  options: CompilerOptions = {},
+  platform = 'mp-weixin'
+) {
+  process.env.UNI_PLATFORM = platform as any
+  return compile(template, {
+    root: '',
+    mode: 'module',
+    filename: 'foo.vue',
+    prefixIdentifiers: true,
+    inline: true,
+    isNativeTag: options.isX
+      ? isMiniProgramUVueNativeTag
+      : isMiniProgramNativeTag,
+    isCustomElement: createIsCustomElement([]),
+    generatorOpts: {
+      concise: true,
+    },
+    miniProgram: {
+      ...miniProgram,
+      ...options.miniProgram,
+      emitFile() {
+        return ''
+      },
+    },
+    ...options,
+  }).code
+}
+
 function getProp(node: ElementNode, name: string) {
   return node.props.find((prop) => {
     return (
@@ -172,6 +202,29 @@ describe('compiler: transform v-bind="$attrs"', () => {
     expect((getProp(node, 'style')!.exp as SimpleExpression).content).toBe(
       `[$attrs.style, baz]`
     )
+  })
+
+  test.each(['foo()', 'count++'])(
+    '合并内联 click 处理器时保留回调语义: %s',
+    (handler) => {
+      const node = runTransform(`<view @click="${handler}" v-bind="$attrs"/>`, {
+        isX: true,
+        platform: 'mp-weixin',
+      })
+
+      expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
+        `($attrs.onClick ? [($event) => (${handler}), $attrs.onClick] : ($event) => (${handler}))`
+      )
+    }
+  )
+
+  test('编译结果不会在渲染阶段执行内联 click 处理器', () => {
+    const code = compileRenderCode(`<view @click="foo()" v-bind="$attrs"/>`, {
+      isX: true,
+    })
+
+    expect(code).toContain('_o(_ctx.$attrs.onClick ? [$event => _ctx.foo()')
+    expect(code).not.toContain('_o($event => _ctx.foo()')
   })
 
   test('uni-app 下仍保持原有报错', () => {
