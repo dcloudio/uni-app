@@ -1,4 +1,4 @@
-import { extend, hasOwn, isArray, isObject } from '@vue/shared'
+import { extend, hasOwn, isArray, isFunction, isObject } from '@vue/shared'
 
 import {
   getAppBaseInfo as _getAppBaseInfo,
@@ -362,6 +362,41 @@ export const getSavedFileInfo = {
     filePath: 'apFilePath',
   },
 }
+// #if _X_
+const normalizedFileSystemManagers = new WeakSet()
+export const getFileSystemManager = {
+  returnValue(manager: Record<string, any>) {
+    const stat = manager.stat
+    if (
+      isFunction(stat) === false ||
+      normalizedFileSystemManagers.has(manager)
+    ) {
+      return
+    }
+    normalizedFileSystemManagers.add(manager)
+    const normalizedStat = function (
+      this: unknown,
+      options: Record<string, any>
+    ) {
+      if (isObject(options) && options.recursive === true) {
+        ;(['success', 'complete'] as const).forEach((name) => {
+          const callback = options[name]
+          if (isFunction(callback)) {
+            options[name] = function (this: unknown, res: Record<string, any>) {
+              if (res && isObject(res.stats) && !isArray(res.stats)) {
+                res.stats = Object.values(res.stats)
+              }
+              return callback.call(this, res)
+            }
+          }
+        })
+      }
+      return stat.call(this, options)
+    }
+    manager.stat = normalizedStat
+  },
+}
+// #endif
 export const getSavedFileList = {
   returnValue(
     fromRes: my.IGetSavedFileListSuccessResult,
