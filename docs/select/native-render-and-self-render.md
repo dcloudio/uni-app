@@ -166,13 +166,18 @@ flutter的渲染系统，内部计算自己的widget的层级和半透明关系�
 所以如果一个界面没有platform view，性能有时能超过原生渲染。
 但一旦有带有层级的platform view，性能就不行了。
 
-iOS的液态玻璃效果，被开发者吐槽精准打击flutter。
+iOS的液态玻璃效果，被开发者吐槽精准打击 flutter 和 compose-multiplatform iOS版。
 
-这个透明效果与众不同，动态材质、手势变化、光照形变都非常复杂，Apple并未公开其算法。原生开发可以直接用iOS提供的API，但自渲染很难精准模拟。
+这个透明效果与众不同，动态材质、手势变化、光照形变都非常复杂，Apple并未公开其算法。
+原生开发可以直接用iOS提供的API，但自渲染很难精准模拟，也达不到系统的省电效果。
 
-更麻烦的是合成，如果液态玻璃下面，一会展现flutter渲染的widget、一会展现原生或其他渲染方式的platform view，实现起来各种兼容性问题，高性能更不可能。
+更麻烦的是合成，如果液态玻璃下面，一会展现自渲染的组件、一会展现原生或其他渲染方式的platform view，实现起来各种兼容性问题，高性能更不可能。
+
+那开发者不在界面上使用液态玻璃效果是否就能规避此问题？iOS系统有很多隐密的坑，输入框长按的上下文菜单也是液态玻璃的，这个菜单在透显自渲染和自渲染框架下的原生视图都有问题。
 
 注：uni-app x 蒸汽模式，提供了内置的液态玻璃组件，使用系统原生能力，就不会有完全自渲染带来的问题。
+
+<video id="video" preload="none" controls="controls" width="90%" poster="https://web-ext-storage.dcloud.net.cn/doc/app/ios/tabbar-glass-effec-poster.png" src="https://web-ext-storage.dcloud.net.cn/doc/app/ios/tabbar-glass-effect.mp4"></video>
 
 ### 2. 滚动同步
 
