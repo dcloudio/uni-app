@@ -757,7 +757,8 @@ function handleRef(ref) {
     const instance = this.$vm.$;
     const refs = instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs;
     const { setupState } = instance;
-    const refValue = ref.$vm;
+    // native alipay components do not create a Vue $vm; expose their instance to template refs.
+    const refValue = ref.$vm || (ref.props && ref.props.uT === 'm' ? ref : undefined);
     if (refName) {
         if (isString(refName)) {
             refs[refName] = refValue;
