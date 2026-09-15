@@ -38,6 +38,7 @@ import { hasOwn } from '@vue/shared'
 
 import TabBar from './tabBar'
 import { usePageRoute } from '../../setup/provide'
+import { syncScopeIdsToBody } from '../../../helpers/scope'
 
 type KeepAliveRoute = ReturnType<typeof useKeepAliveRoute>
 
@@ -64,6 +65,9 @@ export default /*#__PURE__*/ defineSystemComponent({
     const showTabBar = (__UNI_FEATURE_TABBAR__ &&
       useShowTabBar(emit)) as ComputedRef<boolean>
     const clazz = useAppClass(showTabBar)
+    onMounted(() => {
+      syncScopeIdsToBody(rootRef.value, document.body)
+    })
     globalLayoutState = layoutState
     return () => {
       const layoutTsx = createLayoutTsx(
