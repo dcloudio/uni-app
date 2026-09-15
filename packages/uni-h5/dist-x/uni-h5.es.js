@@ -26169,6 +26169,29 @@ function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, 
     "src": getRealPath(iconPath)
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar)], 12, ["onClick"]);
 }
+const scopeIdRE = /^data-v-[a-z0-9]+(?:-s)?$/i;
+const currentScopeIds = /* @__PURE__ */ new WeakMap();
+function isScopeId(name) {
+  return name !== "data-v-inspector" && scopeIdRE.test(name);
+}
+function syncScopeIdsToBody(source, target) {
+  const nextScopeIds = /* @__PURE__ */ new Set();
+  if (source) {
+    Array.from(source.attributes).forEach((attribute) => {
+      if (isScopeId(attribute.name)) {
+        nextScopeIds.add(attribute.name);
+      }
+    });
+  }
+  const previousScopeIds = currentScopeIds.get(target);
+  previousScopeIds == null ? void 0 : previousScopeIds.forEach((scopeId) => {
+    if (!nextScopeIds.has(scopeId)) {
+      target.removeAttribute(scopeId);
+    }
+  });
+  nextScopeIds.forEach((scopeId) => target.setAttribute(scopeId, ""));
+  currentScopeIds.set(target, nextScopeIds);
+}
 const DEFAULT_CSS_VAR_VALUE = "0px";
 let globalLayoutState = void 0;
 function getLayoutState() {
@@ -26192,6 +26215,9 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
     const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
     const showTabBar2 = __UNI_FEATURE_TABBAR__ && useShowTabBar();
     const clazz2 = useAppClass(showTabBar2);
+    onMounted(() => {
+      syncScopeIdsToBody(rootRef.value, document.body);
+    });
     globalLayoutState = layoutState;
     return () => {
       const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
