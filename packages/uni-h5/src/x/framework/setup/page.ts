@@ -414,17 +414,8 @@ export function initXPage(
     vm.$.page = vm.$pageLayoutInstance?.$dialogPage!
     pageInstance.$dialogPage!.vm = vm
     pageInstance.$dialogPage!.$vm = vm
-    // fix dialogPage $basePage.fullPath & $basePage.id
+    // fix dialogPage $basePage.fullPath
     vm.$basePage.fullPath = vm.$basePage.path
-    const parentPage = (vm.$page as UniPage).getParentPage()
-    if (parentPage) {
-      if (!parentPage.vm.$dialogPagesNum) {
-        parentPage.vm.$dialogPagesNum = 0
-      }
-      parentPage.vm.$dialogPagesNum++
-      vm.$basePage.id =
-        parentPage.vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum
-    }
   }
 }
 

@@ -159,6 +159,16 @@ export function createPageState(type: NavigateType, __id__?: number) {
   }
 }
 
+//#if _X_
+// 弹页使用独立的负数 ID，避免与普通页面及浏览器历史中的正数 ID 冲突。
+// 从安全整数下界递增，保持后创建的弹页 ID 更大，并避开窗口的 -1、-2、-3。
+let dialogPageId = Number.MIN_SAFE_INTEGER
+
+export function createDialogPageId() {
+  return ++dialogPageId
+}
+//#endif
+
 export function initPublicPage(route: RouteLocationNormalizedLoaded) {
   const meta = usePageMeta()
 
