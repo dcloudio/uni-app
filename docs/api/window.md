@@ -6,6 +6,8 @@
 
 文档: [http://uniapp.dcloud.io/api/ui/window?id=onwindowresize](http://uniapp.dcloud.io/api/ui/window?id=onwindowresize)
 
+App平台暂未提供全局的uni监听API，而是需要在页面生命周期onResize 中监听页面尺寸变化。[另见](../page.md#onresize)
+
 ### onWindowResize 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
