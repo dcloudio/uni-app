@@ -34,7 +34,7 @@ import {
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
 //#if _X_ && !_NODE_JS_
-import { closeDialogPage } from '../../x/service/api/route/closeDialogPage'
+import { clearDialogPages } from '../../x/service/api/route/utils'
 //#endif
 //#if _X_
 import { initXPage } from '../../x/framework/setup/page'
@@ -129,17 +129,7 @@ function removeRouteCache(routeKey: string) {
 export function removePage(routeKey: string, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
   if (__X__ && !__NODE_JS__) {
-    const dialogPages = (pageVm.$page as UniPage).getDialogPages()
-    for (let i = dialogPages.length - 1; i >= 0; i--) {
-      closeDialogPage({ dialogPage: dialogPages[i] })
-    }
-    const systemDialogPages =
-      pageVm.$pageLayoutInstance?.$systemDialogPages?.value
-    if (systemDialogPages) {
-      for (let i = systemDialogPages.length - 1; i >= 0; i--) {
-        closeDialogPage({ dialogPage: systemDialogPages[i] })
-      }
-    }
+    clearDialogPages(pageVm.$page as UniPage)
   }
   pageVm.$.__isUnload = true
   invokeHook(pageVm, ON_UNLOAD)

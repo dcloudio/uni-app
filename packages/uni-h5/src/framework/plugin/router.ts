@@ -29,10 +29,6 @@ import {
   normalizeRouteKey,
   removePage,
 } from '../setup/page'
-//#if _X_ && !_NODE_JS_
-import { hideActionSheet } from '../../service/api/ui/popup/showActionSheet'
-import { hideModal } from '../../service/api/ui/popup/showModal'
-//#endif
 
 export function initRouter(app: App) {
   const router = createRouter(createRouterOptions())
@@ -40,24 +36,6 @@ export function initRouter(app: App) {
   initWebAppRouteListener(router, {
     onRouteConfirmed: cleanupWebAppRoute,
     onMissingRoute: handleBeforeEntryPageRoutes,
-  })
-  //#endif
-  //#if _X_ && !_NODE_JS_
-  router.beforeEach((to, from) => {
-    hideActionSheet()
-    hideModal()
-    uni.hideToast()
-    // @ts-expect-error
-    uni.hideLoading({
-      fail(error) {
-        const pages = getCurrentBasePages()
-        const currentPage = pages[pages.length - 1]
-        if (!currentPage) {
-          return
-        }
-        throw new Error(error.errMsg)
-      },
-    })
   })
   //#endif
 
