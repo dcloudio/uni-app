@@ -86,11 +86,11 @@
 - App平台可通过以下方法配置使用 scheme（deeplink） 启动应用，打包后生效
   + Android平台在 `manifest.json` 的可视化界面配置 scheme，参考[Android平台配置URL Schemes](../collocation/manifest-android.md#urlschemes)
   + iOS平台在 `manifest.json` 的可视化界面配置 scheme，参考[Android平台配置URL Schemes](../collocation/manifest-ios.md#urlschemes)
-  + 鸿蒙平台需在原生工程的 json5 中配置
+  + 鸿蒙平台在HBuilderX 5.26+ 支持在manifest中配置。低版本需在原生工程的 json5 中配置
 - App平台可通过以下方法配置使用 applink（通用链接） 启动应用，打包后生效
   + Android平台暂未支持 applink（通用链接）
   + iOS平台需先在 `manifest.json` 的可视化界面配置[关联域（Associated Domains）](../collocation/manifest-ios.md#associateddomains)，再在服务器配置`apple-app-site-association`，完整教程参考[iOS通用链接配置教程](https://uniapp.dcloud.net.cn/tutorial/app-ios-capabilities.html#%E9%80%9A%E7%94%A8%E9%93%BE%E6%8E%A5-universal-link)
-  + 鸿蒙平台需在原生工程的 json5 中配置
+  + 鸿蒙平台在HBuilderX 5.26+ 支持在manifest中配置。低版本需在原生工程的 json5 中配置
 - 如开发App页面直达功能，需先配置 scheme（deeplink） 或 applink（通用链接） 启动应用，在应用的 `onShow` 生命周期获取启动并解析appScheme或appLink参数，然后自行写 [uni.navigatorTo](../api/navigator.md#navigateto) 等路由API跳转页面。 `onShow` 生命周期的好处是不管首页启动还是后台激活到前台都触发，当然如果是初次启动，仍然会先打开App的首页再执行开发者编写的路由代码。
 - Web的页面直达无需使用scheme或通用链接，所有页面地址都可以直接在地址栏访问。
 
@@ -158,7 +158,7 @@
 
 无法监听异步逻辑（例如：`setTimeout`）中的错误和应用初始化之前、 App 崩溃等错误。
 
-onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，导致无法精准定位问题。真机运行时尽量避免全局监听onError。
+onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，导致无法精准定位问题所在代码行号。真机运行时尽量避免全局监听onError。
 
 :::
 #### onError 兼容性 <Help /> 
@@ -429,7 +429,12 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 > HBuilderX 3.99+
 
-小程序有 globalData，这是一种简单的全局变量机制。这套机制在 uni-app-x 里也可以使用，仅 `iOS uts 插件` 环境不支持。
+小程序有 globalData，这是一种简单的全局变量机制。这套机制在 uni-app x 里也可以使用。
+
+globalData依赖于vue和js环境，在页面里都使用，但在uts插件中使用有限制：
+
+- VDOM模式：仅 `iOS uts 插件` 环境不支持。
+- 蒸汽模式：Android和iOS的uts插件环境均不支持，鸿蒙在页面script驱动为ArkTS时，uts插件可以globalData，但页面script驱动为jsvm时，uts插件也不能使用globalData
 
 **以下是 App.uvue 中定义globalData的相关配置：**
 
@@ -498,7 +503,7 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 ::: warning 注意
 - `uni-app x` 中 `globalData` 的数据结构与类型通过 `App.uvue` 中的 `globalData` 初始值定义，后续只能读取或修改，不能新增或删除。
-- 在组合式 API App.uvue 中使用 `globalData` 时，无法像选项式 API 那样通过 `this.globalData` 访问，而是需要通过 `getApp().globalData` 访问。但部分生命周期中 App 实例还未初始化，需要注意时机问题。
+- 在组合式 API App.uvue 中使用 `globalData` 时，无法像选项式 API 那样通过 `this.globalData` 访问，而是需要通过 `getApp().globalData` 访问。但部分生命周期中 App 实例可能还未初始化，需要注意时机问题。
 :::
 
 globalData是简单的全局变量，其他状态管理方式，可参考文档[全局变量和状态管理](../tutorial/store.md)。

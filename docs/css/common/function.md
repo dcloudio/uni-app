@@ -672,7 +672,7 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 
 
 ## calc @calc
-> uni-app x 5.27+ App平台 蒸汽模式支持calc方法
+> uni-app x 5.31+ App平台 蒸汽模式支持calc方法
 
 calc() 函数允许在声明 CSS 属性值时执行计算。
 
