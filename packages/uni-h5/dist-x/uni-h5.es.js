@@ -8798,14 +8798,6 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
-    const parentPage = vm.$page.getParentPage();
-    if (parentPage) {
-      if (!parentPage.vm.$dialogPagesNum) {
-        parentPage.vm.$dialogPagesNum = 0;
-      }
-      parentPage.vm.$dialogPagesNum++;
-      vm.$basePage.id = parentPage.vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum;
-    }
   }
 }
 function useBackgroundColorContent$1(vm) {
@@ -8993,6 +8985,10 @@ function createPageState(type, __id__) {
     __id__: __id__ || ++id$1,
     __type__: type
   };
+}
+let dialogPageId = Number.MIN_SAFE_INTEGER;
+function createDialogPageId() {
+  return ++dialogPageId;
 }
 function initPublicPage(route) {
   const meta = usePageMeta();
@@ -10983,6 +10979,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
           );
           pageMeta = Object.assign(pageMeta, routePageMeta);
         }
+        pageMeta.id = createDialogPageId();
         if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {
           pageMeta.backgroundColorContent = "transparent";
         }
