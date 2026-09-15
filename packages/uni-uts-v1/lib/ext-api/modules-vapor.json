@@ -464,6 +464,24 @@
     "easycom": [],
     "customElements": []
   },
+  "uni-drama": {
+    "uni": {
+      "createDramaAd": {
+        "name": "createDramaAd",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    },
+    "components": [],
+    "easycom": [
+      "ad-drama"
+    ],
+    "customElements": []
+  },
   "uni-editor": {
     "components": [],
     "easycom": [
@@ -2466,7 +2484,7 @@
   },
   "uni-zstd-decompress": {
     "uni": {
-      "decompressFile": {
+      "__zstdDecompressFile": {
         "name": "decompressFile",
         "app": {
           "js": false,
