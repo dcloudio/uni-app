@@ -2485,7 +2485,6 @@
   "uni-zstd-decompress": {
     "uni": {
       "__zstdDecompressFile": {
-        "name": "decompressFile",
         "app": {
           "js": false,
           "kotlin": "dom2",
