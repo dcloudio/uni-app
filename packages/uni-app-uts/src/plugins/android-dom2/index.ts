@@ -67,7 +67,7 @@ export function init() {
           uniAppManifestPlugin('app-android'),
           uniAppPagesPlugin(),
         ]),
-    uniUTSUVueJavaScriptPlugin(),
+    uniUTSUVueJavaScriptPlugin({ useSfcDescriptorTransform: isDom2 }),
     ...(isDom2
       ? [
           uniVaporScriptPlugin({

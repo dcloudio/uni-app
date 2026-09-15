@@ -1,6 +1,6 @@
 import { Plugin, ViteDevServer } from 'vite';
 import * as _compiler from 'vue/compiler-sfc';
-import { SFCScriptCompileOptions, SFCTemplateCompileOptions, SFCStyleCompileOptions } from 'vue/compiler-sfc';
+import { SFCDescriptor, SFCScriptCompileOptions, SFCTemplateCompileOptions, SFCStyleCompileOptions } from 'vue/compiler-sfc';
 
 interface StartOfSourceMap {
     file?: string;
@@ -20,6 +20,7 @@ interface UniAppXVaporScriptTransformInput {
     id: string;
     lang?: string;
 }
+type UniAppXVaporSfcTransform = (descriptor: SFCDescriptor) => void;
 interface UniAppXVaporScriptTransformResult {
     code: string;
     map?: RawSourceMap;
@@ -69,6 +70,8 @@ interface Options {
     compiler?: typeof _compiler;
     /** uni-app x Vapor 脚本转换扩展点。 */
     readonly uniAppXVaporScriptTransform?: UniAppXVaporScriptTransform;
+    /** uni-app x App DOM2 SFC descriptor 预处理扩展点。 */
+    readonly uniAppXVaporSfcTransform?: UniAppXVaporSfcTransform;
     /**
      * Requires @vitejs/plugin-vue@^5.1.0
      */

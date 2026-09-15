@@ -78,6 +78,23 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     )
   })
 
+  test('skips SFC text transforms when App DOM2 uses descriptor preprocessing', () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_PLATFORM = 'app-harmony'
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    const transform = getTransform(
+      uniUTSUVueJavaScriptPlugin({ useSfcDescriptorTransform: true })
+    )
+
+    expect(
+      transform.call(
+        {} as any,
+        '<script setup>const value = 1</script>',
+        '/pages/index/index.uvue'
+      )
+    ).toBeUndefined()
+  })
+
   test('keeps normal and external JavaScript scripts unchanged in DOM2', () => {
     process.env.UNI_APP_X_DOM2 = 'true'
     const transform = getTransform(uniUTSUVueJavaScriptPlugin())

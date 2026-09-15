@@ -19,8 +19,10 @@ import {
   createResolveStaticAsset,
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
+  getUniAppXVaporScriptLang,
   initVueTemplateCompilerExtraOptions,
   isExternalUrl,
+  isUniAppXAppPlatform,
   isUniAppXStandardScriptSupported,
   isUniPageFile,
   matchEasycom,
@@ -322,6 +324,40 @@ export function initPluginVueOptions(
       // 该扩展点依赖定制 plugin-vue，仅用于 compileScript 后的 DOM2 SharedData 等转换。
       ;(vueOptions as any).uniAppXVaporScriptTransform =
         uniPluginOptions.uniAppXVaporScriptTransform
+      const utsPlatform =
+        process.env.UNI_UTS_PLATFORM || process.env.UNI_PLATFORM
+      if (isUniAppXAppPlatform(utsPlatform)) {
+        const defaultLang = getUniAppXVaporScriptLang(process.env.UNI_INPUT_DIR)
+        ;(vueOptions as any).uniAppXVaporSfcTransform = (
+          descriptor: SFCDescriptor
+        ) => {
+          const scripts = [descriptor.script, descriptor.scriptSetup].filter(
+            (script): script is NonNullable<typeof script> => !!script
+          )
+          let hasImplicitLang = false
+          scripts.forEach((script) => {
+            if (script.lang == null) {
+              script.lang = defaultLang
+              script.attrs.lang = defaultLang
+              hasImplicitLang = true
+            }
+          })
+          if (descriptor.scriptSetup) {
+            ;(descriptor as SFCDescriptor & { vapor?: boolean }).vapor = true
+          }
+          ;(
+            descriptor as SFCDescriptor & {
+              __uniAppXVaporSfcMeta?: {
+                hasImplicitLang: boolean
+                defaultLang: string
+              }
+            }
+          ).__uniAppXVaporSfcMeta = {
+            hasImplicitLang,
+            defaultLang,
+          }
+        }
+      }
       const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
       function isAppVue(id: string) {
         return normalizePath(id) === appVue

@@ -4,6 +4,7 @@ import {
   isUniAppXAndroidJsEngine,
   isUniAppXAndroidNative,
   isUniAppXAndroidVapor,
+  isUniAppXAppPlatform,
   isUniAppXIOS,
   isUniAppXJsEngine,
   isUniAppXStandardScriptSupported,
@@ -36,6 +37,7 @@ describe('uni-app x predicates', () => {
     process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'js'
 
     expect(isUniAppX()).toBe(false)
+    expect(isUniAppXAppPlatform()).toBe(false)
     expect(isUniAppXAndroid()).toBe(false)
     expect(isUniAppXVapor()).toBe(false)
     expect(isUniAppXJsEngine()).toBe(false)
@@ -49,6 +51,7 @@ describe('uni-app x predicates', () => {
     Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
 
     expect(isUniAppX()).toBe(true)
+    expect(isUniAppXAppPlatform()).toBe(true)
     expect(isUniAppXIOS()).toBe(true)
     expect(isUniAppXVapor()).toBe(false)
     expect(isUniAppXJsEngine()).toBe(true)
@@ -63,6 +66,7 @@ describe('uni-app x predicates', () => {
     process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'js'
 
     expect(isUniAppXAndroid()).toBe(true)
+    expect(isUniAppXAppPlatform()).toBe(true)
     expect(isUniAppXVapor()).toBe(true)
     expect(isUniAppXAndroidVapor()).toBe(true)
     expect(isUniAppXJsEngine()).toBe(true)
@@ -78,6 +82,7 @@ describe('uni-app x predicates', () => {
     process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'native'
 
     expect(isUniAppXAndroid()).toBe(true)
+    expect(isUniAppXAppPlatform()).toBe(true)
     expect(isUniAppXVapor()).toBe(false)
     expect(isUniAppXAndroidVapor()).toBe(false)
     expect(isUniAppXJsEngine()).toBe(false)
@@ -94,6 +99,16 @@ describe('uni-app x predicates', () => {
       Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
 
       expect(isUniAppXStandardScriptSupported()).toBe(true)
+    }
+  )
+
+  test.each(['app', 'app-plus', 'web', 'mp-weixin'] as const)(
+    'does not classify %s as an App X platform',
+    (platform) => {
+      process.env.UNI_APP_X = 'true'
+      process.env.UNI_UTS_PLATFORM = platform
+
+      expect(isUniAppXAppPlatform()).toBe(false)
     }
   )
 })

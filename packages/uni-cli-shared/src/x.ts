@@ -4,6 +4,17 @@ export function isUniAppX() {
   return process.env.UNI_APP_X === 'true'
 }
 
+export function isUniAppXAppPlatform(
+  platform: AppXPlatform = process.env.UNI_UTS_PLATFORM
+) {
+  return (
+    isUniAppX() &&
+    (platform === 'app-android' ||
+      platform === 'app-ios' ||
+      platform === 'app-harmony')
+  )
+}
+
 export function isUniAppXAndroid(
   platform: AppXPlatform = process.env.UNI_UTS_PLATFORM
 ) {

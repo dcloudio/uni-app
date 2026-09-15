@@ -10,6 +10,7 @@ import { isVueSfcFile } from '../../../vue'
 import { getUniAppXVaporScriptLang } from '../../../json'
 import {
   isUniAppX,
+  isUniAppXAppPlatform,
   isUniAppXStandardScriptSupported,
   isUniAppXVapor,
 } from '../../../x'
@@ -25,6 +26,10 @@ interface ScriptTag {
   src: boolean
   lang?: string
   langAttr?: AttributeNode
+}
+
+interface UniUTSUVueJavaScriptPluginOptions {
+  useSfcDescriptorTransform?: boolean
 }
 
 function findScriptTag(code: string, node: ElementNode): ScriptTag | undefined {
@@ -63,11 +68,14 @@ function findScriptTag(code: string, node: ElementNode): ScriptTag | undefined {
   }
 }
 
-export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
+export function uniUTSUVueJavaScriptPlugin(
+  options: UniUTSUVueJavaScriptPluginOptions = {}
+): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const standardScriptSupported = isUniAppXStandardScriptSupported()
   const platform = process.env.UNI_UTS_PLATFORM || process.env.UNI_PLATFORM
+  const isAppDom2 = isDom2 && isUniAppXAppPlatform(platform)
   const vaporScriptPlatform =
     isUniAppXVapor() ||
     (isUniAppX() &&
@@ -91,6 +99,14 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
     },
     transform(code, id) {
       if (!isVueSfcFile(id)) {
+        return
+      }
+      // fixed by uts App DOM2 在 plugin-vue 的 descriptor 阶段处理 vapor/lang，避免重复改写 SFC 和 sourcemap。
+      if (
+        options.useSfcDescriptorTransform &&
+        isAppDom2 &&
+        standardScriptSupported
+      ) {
         return
       }
       const platform = process.env.UNI_PLATFORM

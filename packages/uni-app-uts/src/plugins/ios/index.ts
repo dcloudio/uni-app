@@ -69,7 +69,7 @@ export function init() {
           uniAppManifestPlugin('app-ios'),
           uniAppPagesPlugin(),
         ]),
-    uniUTSUVueJavaScriptPlugin(),
+    uniUTSUVueJavaScriptPlugin({ useSfcDescriptorTransform: isDom2 }),
     ...(isDom2
       ? [
           uniVaporScriptPlugin({
