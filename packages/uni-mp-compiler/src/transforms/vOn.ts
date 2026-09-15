@@ -86,6 +86,10 @@ export const transformOn: DirectiveTransform = (
   let shouldCache: boolean = context.cacheHandlers && !exp && !context.inVOnce
   if (exp) {
     const isMemberExp = isMemberExpression(exp.content, context as any)
+    const isMergedEvent =
+      context.isX &&
+      (exp as SimpleExpressionNode & { __uniMergedEvent?: boolean })
+        .__uniMergedEvent === true
     const isInlineStatement = !(isMemberExp || fnExpRE.test(exp.content))
     const hasMultipleStatements = exp.content.includes(`;`)
 
@@ -132,7 +136,7 @@ export const transformOn: DirectiveTransform = (
       }
     }
 
-    if (isInlineStatement || (shouldCache && isMemberExp)) {
+    if (!isMergedEvent && (isInlineStatement || (shouldCache && isMemberExp))) {
       // wrap inline statement in a function expression
       exp = createCompoundExpression([
         `${

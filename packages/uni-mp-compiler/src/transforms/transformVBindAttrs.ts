@@ -1,8 +1,16 @@
+import { parseExpression } from '@babel/parser'
+import {
+  type Expression,
+  isFunction,
+  isTSAsExpression,
+  isTSNonNullExpression,
+} from '@babel/types'
 import {
   type DirectiveNode,
   type ElementNode,
   NodeTypes,
   type SimpleExpressionNode,
+  isMemberExpression,
   isStaticArgOf,
 } from '@vue/compiler-core'
 import {
@@ -36,7 +44,7 @@ export const transformVBindAttrs: NodeTransform = (node, context) => {
     // class/style/click 需要尽量保留原有声明顺序，避免覆盖规则变化。
     mergeBindProp(props, 'class', `${attrsExp}.class`, i, newProps)
     mergeBindProp(props, 'style', `${attrsExp}.style`, i, newProps)
-    mergeOnProp(props, 'click', `${attrsExp}.onClick`, i, newProps)
+    mergeOnProp(props, 'click', `${attrsExp}.onClick`, i, newProps, context)
 
     // id 与现有逻辑保持一致：只在后面没有显式 id 时补充，
     // 这样可以继续复用“后写覆盖前写”的规则。
@@ -105,7 +113,8 @@ function mergeOnProp(
   name: string,
   attrsExp: string,
   vBindIndex: number,
-  newProps: DirectiveNode[]
+  newProps: DirectiveNode[],
+  context: TransformContext
 ) {
   const propIndex = props.findIndex(
     (prop) =>
@@ -124,10 +133,53 @@ function mergeOnProp(
     return
   }
 
+  const localHandler = normalizeLocalHandler(prop.exp.content, context)
+  // Keep the merged handler as an expression value. transformOn must not wrap
+  // this in an arrow function, because the MP runtime does not execute an
+  // array returned from an event callback.
   prop.exp.content =
     propIndex < vBindIndex
-      ? `[${prop.exp.content}, ${attrsExp}]`
-      : `[${attrsExp}, ${prop.exp.content}]`
+      ? `(${attrsExp} ? [].concat((${localHandler}) || [], ${attrsExp}) : ${localHandler})`
+      : `(${attrsExp} ? [].concat(${attrsExp}, (${localHandler}) || []) : ${localHandler})`
+  ;(
+    prop.exp as SimpleExpressionNode & { __uniMergedEvent?: boolean }
+  ).__uniMergedEvent = true
+}
+
+function normalizeLocalHandler(
+  handler: string,
+  context: TransformContext
+): string {
+  if (!handler.trim()) {
+    return '() => {}'
+  }
+  if (
+    isMemberExpression(handler, context as any) ||
+    isFunctionExpression(handler, context)
+  ) {
+    return handler
+  }
+
+  const eventParam = context.isTS ? '($event: any)' : '($event)'
+  const body = handler.includes(';') ? `{${handler}}` : `(${handler})`
+  return `${eventParam} => ${body}`
+}
+
+function isFunctionExpression(
+  content: string,
+  context: TransformContext
+): boolean {
+  try {
+    let expression: Expression = parseExpression(content, {
+      plugins: context.expressionPlugins,
+    })
+    while (isTSAsExpression(expression) || isTSNonNullExpression(expression)) {
+      expression = expression.expression
+    }
+    return isFunction(expression)
+  } catch {
+    return false
+  }
 }
 
 function hasFollowingId(props: ElementNode['props'], index: number) {

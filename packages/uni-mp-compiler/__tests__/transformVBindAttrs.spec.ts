@@ -28,7 +28,12 @@ afterEach(() => {
 
 function runTransform(
   template: string,
-  options: { isX?: boolean; platform?: string } = {}
+  options: {
+    isX?: boolean
+    platform?: string
+    isTS?: boolean
+    expressionPlugins?: CompilerOptions['expressionPlugins']
+  } = {}
 ) {
   if (typeof options.platform === 'undefined') {
     Reflect.deleteProperty(process.env, 'UNI_PLATFORM')
@@ -44,6 +49,8 @@ function runTransform(
   })
   transform(ast as any, {
     isX: options.isX ?? true,
+    isTS: options.isTS,
+    expressionPlugins: options.expressionPlugins,
     nodeTransforms: [transformVBindAttrs as any],
   })
   return ast.children[0] as ElementNode
@@ -80,6 +87,36 @@ function compileTemplate(
     ...options,
   })
   return source
+}
+
+function compileRenderCode(
+  template: string,
+  options: CompilerOptions = {},
+  platform = 'mp-weixin'
+) {
+  process.env.UNI_PLATFORM = platform as any
+  return compile(template, {
+    root: '',
+    mode: 'module',
+    filename: 'foo.vue',
+    prefixIdentifiers: true,
+    inline: true,
+    isNativeTag: options.isX
+      ? isMiniProgramUVueNativeTag
+      : isMiniProgramNativeTag,
+    isCustomElement: createIsCustomElement([]),
+    generatorOpts: {
+      concise: true,
+    },
+    miniProgram: {
+      ...miniProgram,
+      ...options.miniProgram,
+      emitFile() {
+        return ''
+      },
+    },
+    ...options,
+  }).code
 }
 
 function getProp(node: ElementNode, name: string) {
@@ -164,7 +201,7 @@ describe('compiler: transform v-bind="$attrs"', () => {
     )
 
     expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
-      `[foo, $attrs.onClick]`
+      `($attrs.onClick ? [].concat((foo) || [], $attrs.onClick) : foo)`
     )
     expect((getProp(node, 'class')!.exp as SimpleExpression).content).toBe(
       `[$attrs.class, bar]`
@@ -172,6 +209,70 @@ describe('compiler: transform v-bind="$attrs"', () => {
     expect((getProp(node, 'style')!.exp as SimpleExpression).content).toBe(
       `[$attrs.style, baz]`
     )
+  })
+
+  test.each(['foo()', 'count++'])(
+    '合并内联 click 处理器时保留回调语义: %s',
+    (handler) => {
+      const node = runTransform(`<view @click="${handler}" v-bind="$attrs"/>`, {
+        isX: true,
+        platform: 'mp-weixin',
+      })
+
+      expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
+        `($attrs.onClick ? [].concat((($event) => (${handler})) || [], $attrs.onClick) : ($event) => (${handler}))`
+      )
+    }
+  )
+
+  test.each(['function ($event) { foo(); }', '$event => { foo(); }'])(
+    '合并带代码块的函数处理器时保留原函数: %s',
+    (handler) => {
+      const node = runTransform(`<view @click="${handler}" v-bind="$attrs"/>`, {
+        isX: true,
+        platform: 'mp-weixin',
+      })
+
+      expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
+        `($attrs.onClick ? [].concat((${handler}) || [], $attrs.onClick) : ${handler})`
+      )
+    }
+  )
+
+  test('合并空 click 处理器时生成有效的空函数', () => {
+    const node = runTransform(`<view @click="" v-bind="$attrs"/>`, {
+      isX: true,
+      platform: 'mp-weixin',
+    })
+
+    expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
+      `($attrs.onClick ? [].concat((() => {}) || [], $attrs.onClick) : () => {})`
+    )
+  })
+
+  test('合并带 TS 类型断言的函数处理器时保留原函数', () => {
+    const handler = '(() => foo()) as Handler'
+    const node = runTransform(`<view @click="${handler}" v-bind="$attrs"/>`, {
+      isX: true,
+      isTS: true,
+      expressionPlugins: ['typescript'],
+      platform: 'mp-weixin',
+    })
+
+    expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
+      `($attrs.onClick ? [].concat((${handler}) || [], $attrs.onClick) : ${handler})`
+    )
+  })
+
+  test('编译结果不会在渲染阶段执行内联 click 处理器', () => {
+    const code = compileRenderCode(`<view @click="foo()" v-bind="$attrs"/>`, {
+      isX: true,
+    })
+
+    expect(code).toContain(
+      '_o(_ctx.$attrs.onClick ? [].concat(($event => _ctx.foo()) || [],'
+    )
+    expect(code).not.toContain('_o($event => _ctx.foo()')
   })
 
   test('uni-app 下仍保持原有报错', () => {
