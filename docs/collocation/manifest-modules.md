@@ -331,8 +331,8 @@ app平台默认`启动界面`为白色（暗黑模式下为黑色），为了避
 
 uni-app x 项目中 uni-oauth 基于 [provider](../api/provider.md) 机制实现。  
 需在 `manifest.json` 中手动配置三方登录服务供应商：  
-- [Android平台](manifest-android.md#modulesOauth)  
-- [iOS平台](manifest-ios.md#modulesOauth)  
+- [Android平台](manifest-android.md#modulesoauth)  
+- [iOS平台](manifest-ios.md#modulesoauth)  
 
 **注意**  
 - 标准基座已包含 `微信登录`  
@@ -344,8 +344,8 @@ uni-app x 项目中 uni-oauth 基于 [provider](../api/provider.md) 机制实现
 
 uni-app x 项目中 uni-share 基于 [provider](../api/provider.md) 机制实现。  
 需在 `manifest.json` 中手动配置三方分享服务供应商：  
-- [Android平台](manifest-android.md#modulesShare)  
-- [iOS平台](manifest-ios.md#modulesShare)  
+- [Android平台](manifest-android.md#modulesshare)  
+- [iOS平台](manifest-ios.md#modulesshare)  
 
 **注意**  
 - 标准基座已包含 `微信分享`  
@@ -358,8 +358,8 @@ uni-app x 项目中 uni-share 基于 [provider](../api/provider.md) 机制实现
 
 uni-app x 项目中 uni-payment 基于 [provider](../api/provider.md) 机制实现。  
 需在 `manifest.json` 中手动配置三方支付服务供应商：  
-- [Android平台](manifest-android.md#modulesPayment)  
-- [iOS平台](manifest-ios.md#modulesPayment)  
+- [Android平台](manifest-android.md#modulespayment)  
+- [iOS平台](manifest-ios.md#modulespayment)  
 
 **注意**  
 - 标准基座已包含 `微信支付`、`支付宝支付`  
@@ -372,8 +372,8 @@ uni-app x 项目中 uni-payment 基于 [provider](../api/provider.md) 机制实�
 
 uni-app x 项目中 uni-location 基于 [provider](../api/provider.md) 机制实现。  
 需在 `manifest.json` 中手动配置三方定位服务供应商：  
-- [Android平台](manifest-android.md#modulesLocation)  
-- [iOS平台](manifest-ios.md#modulesLocation)  
+- [Android平台](manifest-android.md#moduleslocation)  
+- [iOS平台](manifest-ios.md#moduleslocation)  
 
 **注意**  
 - 标准基座已包含 `系统定位`、`腾讯定位`  
@@ -388,8 +388,8 @@ uni-app x 项目中 uni-location 基于 [provider](../api/provider.md) 机制实
 
 使用腾讯地图需到 [腾讯位置服务](https://lbs.qq.com/) 官网申请TencentLBSAPIKey，并配置到应用中。 
 
-- [Android平台](manifest-android.md#mapTencent)  
-- [iOS平台](manifest-ios.md#mapTencent)  
+- [Android平台](manifest-android.md#maptencent)  
+- [iOS平台](manifest-ios.md#maptencent)  
 
 #### Harmony平台配置腾讯地图Key @uni-map-tencent-harmony-key
 

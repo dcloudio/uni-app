@@ -206,13 +206,13 @@ iOS平台在iPad设备默认是支持`多任务处理`的，即支持悬浮窗�
  - 注意：根据apple审核要求，支持任何三方登录，必须同时支持Apple 登录功能，否则审核失败； 具体请参考[Apple App Review Guidelines - Login Services说明](https://developer.apple.com/app-store/review/guidelines/#design)
 
 
-### uni-location（定位） @modulesLocation
+### uni-location（定位） @moduleslocation
 
 定位相关功能使用 [provider机制](../api/provider.md) 实现，uni-app x 项目中使用 [uni.getLocation](../api/get-location.md)，[uni.onLocationChange](../api/location-change.md#onlocationchange)，[uni.offLocationChange](../api/location-change.md#offlocationchange) 等API时依赖此模块。
 
 支持以下定位 provider ：
 
-#### 系统定位 @locationSystem
+#### 系统定位 @locationsystem
 使用系统自带定位功能，由苹果iOS系统实现
 
 使用此模块，需在manifest.json中配置：  
@@ -253,11 +253,11 @@ iOS平台在iPad设备默认是支持`多任务处理`的，即支持悬浮窗�
   ```
 
 
-#### 腾讯定位 @locationTencent
+#### 腾讯定位 @locationtencent
 
 使用 [腾讯位置服务](https://lbs.qq.com/) 的 “iOS定位SDK” 实现，使用前需申请Key。  
 
-> 同时使用 [腾讯地图](#mapTencent) 时，要求使用相同的Key  
+> 同时使用 [腾讯地图](#maptencent) 时，要求使用相同的Key  
 
 使用此模块，需在manifest.json中配置：  
 
@@ -337,17 +337,17 @@ iOS平台在iPad设备默认是支持`多任务处理`的，即支持悬浮窗�
 </plist>
 ```
 
-### uni-map（地图） @modulesMap
+### uni-map（地图） @modulesmap
 
 uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocation](../api/choose-location.md) API时依赖此模块。
 
 地图是商业服务，授权较贵，如需购买，请点击[获取优惠](https://ask.dcloud.net.cn/explore/map/)。  
 
-#### 腾讯地图 @mapTencent
+#### 腾讯地图 @maptencent
 
 使用 [腾讯位置服务](https://lbs.qq.com/) 的 “iOS地图SDK” 实现，使用前需申请Key，并在腾讯后台申请 Key 界面勾选“SDK”。  
 
-> 同时使用 [腾讯定位](#locationTencent) 时，要求使用相同的Key  
+> 同时使用 [腾讯定位](#locationtencent) 时，要求使用相同的Key  
 
 使用此模块，需在manifest.json中配置：  
 
@@ -406,13 +406,13 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
   ```
 
 
-### uni-payment（支付） @modulesPayment
+### uni-payment（支付） @modulespayment
 
 请求支付功能使用 [provider机制](../api/provider.md) 实现，uni-app x 项目中使用 [uni.requestPayment](../api/request-payment.md) API时依赖此模块。
 
 支持以下支付 provider ：
 
-#### 支付宝支付 @paymentAlipay
+#### 支付宝支付 @paymentalipay
 使用 “App支付宝客户端SDK” 实现。使用此模块，需在manifest.json中配置：  
 
 - HBuilderX 4.71 及以上版本  
@@ -451,7 +451,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
   ```
 
 
-#### 微信支付 @paymentWeixin
+#### 微信支付 @paymentweixin
 使用 “微信 Open SDK for iOS” 实现，使用前需到[微信开放平台](https://open.weixin.qq.com/)创建移动应用并在开发配置中正确配置`iOS应用`的 Bundle ID 和 Universal Links。  
 在uni-app x项目中使用此模块，需在manifest.json中配置：  
 
@@ -564,7 +564,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 
 
 
-## URL Schemes @urlSchemes
+## URL Schemes @urlschemes
 
 > HBuilderX 4.71 及以上版本支持可视化配置URL Schemes。  
 > HBuilderX 4.71 以下版本未提供 url scheme 配置，需在 app 原生应用配置文件中进行设置，详情参考：[iOS平台 URL Scheme 配置](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#urlscheme)。  
@@ -579,7 +579,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 标准基座可通过此网页体验 Url Scheme 启动 App：[https://uniappx.dcloud.net.cn/scheme.html](https://uniappx.dcloud.net.cn/scheme.html)
 
 
-## 关联域（Associated Domains） @associatedDomains
+## 关联域（Associated Domains） @associateddomains
 
 关联域（Associated Domains）是配置应用通用链接的前置条件，需将通用链接的域名加“applinks:”前缀配置为关联域。如应用需设置通用链接值“https://uniappx.dcloud.net.cn/ulinks”，其域名为“uniappx.dcloud.net.cn”，对应的关联域值则为“applinks:uniappx.dcloud.net.cn”。
 
@@ -610,7 +610,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 - 配置 应用访问白名单 需提交云端打包才能生效
 
 
-## 后台运行能力 @backgroundModes
+## 后台运行能力 @backgroundmodes
 
 声明应用在后台（App 进入后台或被挂起时）需要继续执行的任务类型。​​向系统申请特定的后台运行权限​​，确保应用在后台仍能完成必要操作（如播放音乐、获取位置更新等）。
 
@@ -624,7 +624,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 - 配置 后台运行能力 需提交云端打包才能生效
 
 
-## 隐私信息访问的许可描述 @usageDescription
+## 隐私信息访问的许可描述 @usagedescription
 
 `隐私信息访问的许可描述`向用户解释应用为何需要访问敏感数据或功能（如相机、相册、位置等），这些描述会在系统首次请求权限时展示给用户，直接影响用户是否授权。
 
@@ -646,7 +646,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 - 配置 隐私信息访问的许可描述 需提交云端打包才能生效
 
 
-## TargetName @targetName
+## TargetName @targetname
 
 >HBuilder4.34版本新增支持
 
@@ -671,7 +671,7 @@ iOS平台配置应用构建目标（Target）的标识名称，自定义基座�
 
 >HBuilder4.34版本新增支持  
 
-iOS平台配置应用内部名称，默认值为[TargetName](#targetName)，最多支持15个字符，详细说明参考[苹果官方文档](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundlename)。  
+iOS平台配置应用内部名称，默认值为[TargetName](#targetname)，最多支持15个字符，详细说明参考[苹果官方文档](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundlename)。  
 
 如需更改应用内部名称，可在项目 manifest.json 文件的 "app-ios" -> "distribute" 节点配置 CFBundleName，如下示例将应用内部名称修改为“MyApp”：
 ```json

@@ -125,7 +125,7 @@ uni-app x 的 app-android 平台，启动界面有以下策略：
 - 启动图片
 - Google SplashScreen
 
-### 启动图配置 @splascreenDefault  
+### 启动图配置 @splascreendefault  
 
 打开项目的manifest.json文件，在可视化界面中配置各分辨率启动图：  
 
@@ -170,7 +170,7 @@ Android Studio 已经集成 .9.png 图片编辑工具，使用详情可参考 An
 
 可以参考开发者在[插件市场](https://ext.dcloud.net.cn/search?q=.9)做好的.9样例工程
 
-### Google SplashScreen配置 @splashscreenAndroid12
+### Google SplashScreen配置 @splashscreenandroid12
 
 Android 12（API 31）开始强制开启 [SplashScreen](https://developer.android.google.cn/guide/topics/ui/splash-screen?hl=zh-cn) 。
 
@@ -270,7 +270,7 @@ HBuilderX4.75及以上版本，如果没有配置启动图，配置启动界面�
 + 配置Android 12应用启动界面后仅影响Android 12及以上版本应用启动界面，Android 12以下版本依然使用启动图展示splash
 + Android 12启动界面中部logo图标在部分系统设备会被裁剪成圆形，部分设备不会裁剪，需要注意圆形logo适配
 
-### 不同Splash方式的选择参考 @splashscreenSelect  
+### 不同Splash方式的选择参考 @splashscreenselect  
 
 Splash是因为主界面渲染慢，给用户一个等待过渡。但注意复杂的Splash，也一样会影响启动速度。
 
@@ -297,7 +297,7 @@ Splash是因为主界面渲染慢，给用户一个等待过渡。但注意复�
 
 uni-app js引擎版的Android App启动时那个默认的logo转圈效果，其实不是splash，是应用启动后原生view绘制的一个动画。所以点击桌面应用图标后界面不会立即有反应。这个设计影响启动速度，在uni-app x上被废弃了。
 
-### Android平台splash关闭时机 @splashscreenClose  
+### Android平台splash关闭时机 @splashscreenclose  
 
 splash默认是在首页onShow时关闭。但可配置，打开项目的manifest.json文件，选择源码视图，在app->splashScreen节点下设置autoClose值域，控制splash关闭时机，默认onShow。
 
@@ -342,7 +342,7 @@ onReady触发时机要比onShow晚一些。
 - splash关闭后才显示开屏广告  
 :::
 
-### 不同启动方式对splash的影响 @splashscreenStart  
+### 不同启动方式对splash的影响 @splashscreenstart  
 
 应用的启动有冷启动、温启动、切换到前台，这三种方式splash展示时间是有区别的。
 
@@ -396,13 +396,13 @@ onReady触发时机要比onShow晚一些。
   ```
 
 
-### uni-location（定位） @modulesLocation  
+### uni-location（定位） @moduleslocation  
 
 定位相关功能使用 [provider机制](../api/provider.md) 实现，uni-app x 项目中使用 [uni.getLocation](../api/get-location.md)，[uni.onLocationChange](../api/location-change.md#onlocationchange)，[uni.offLocationChange](../api/location-change.md#offlocationchange) 等API时依赖此模块。
 
 支持以下定位 provider ：
 
-#### 系统定位 @locationSystem  
+#### 系统定位 @locationsystem  
 使用系统自带定位功能，由ROM系统实现。使用此模块，需在manifest.json中配置：  
 
 - HBuilderX 4.71 及以上版本  
@@ -440,10 +440,10 @@ onReady触发时机要比onShow晚一些。
   }
   ```
 
-#### 腾讯定位 @locationTencent  
+#### 腾讯定位 @locationtencent  
 使用 [腾讯位置服务](https://lbs.qq.com/) 的 “Android定位SDK” 实现，使用前需申请Key。
 
-> 同时使用 [腾讯地图](#mapTencent) 时，要求使用相同的Key  
+> 同时使用 [腾讯地图](#maptencent) 时，要求使用相同的Key  
 
 使用此模块，需在manifest.json中配置：  
 
@@ -505,17 +505,17 @@ onReady触发时机要比onShow晚一些。
   ```
 
 
-### uni-map（地图） @modulesMap  
+### uni-map（地图） @modulesmap  
 
 uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocation](../api/choose-location.md) API时依赖此模块。  
 
 地图是商业服务，授权较贵，如需购买，请点击[获取优惠](https://ask.dcloud.net.cn/explore/map/)。  
 
-#### 腾讯地图 @mapTencent  
+#### 腾讯地图 @maptencent  
 
 使用 [腾讯位置服务](https://lbs.qq.com/) 的 “Android地图SDK” 实现，使用前需申请Key，并在腾讯后台申请 Key 界面勾选“SDK”。  
 
-> 同时使用 [腾讯定位](#locationTencent) 时，要求使用相同的Key  
+> 同时使用 [腾讯定位](#locationtencent) 时，要求使用相同的Key  
 
 使用此模块，需在manifest.json中配置：  
 
@@ -577,13 +577,13 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
   ```
 
 
-### uni-payment（支付） @modulesPayment  
+### uni-payment（支付） @modulespayment  
 
 请求支付功能使用 [provider机制](../api/provider.md) 实现，uni-app x 项目中使用 [uni.requestPayment](../api/request-payment.md) API时依赖此模块。
 
 支持以下支付 provider ：
 
-#### 支付宝支付 @paymentAlipay  
+#### 支付宝支付 @paymentalipay  
 使用 “App支付宝客户端SDK” 实现。使用此模块，需在manifest.json中配置：  
 
 - HBuilderX 4.71 及以上版本  
@@ -622,7 +622,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
   ```
 
 
-#### 微信支付 @paymentWeixin  
+#### 微信支付 @paymentweixin  
 使用 “微信 Open SDK for Android” 实现，使用前需到[微信开放平台](https://open.weixin.qq.com/)创建移动应用并在开发配置中正确配置`Android应用`的包名和签名。
 
 在uni-app x项目中使用此模块，需在manifest.json中配置：  
