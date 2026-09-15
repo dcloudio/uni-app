@@ -482,6 +482,13 @@
       "null"
     ]
   },
+  "uni-zstd-decompress": {
+    "decompressFile": [
+      null,
+      null,
+      "null"
+    ]
+  },
   "uni-live-player": {
     "createLivePlayerContext": [
       null,
