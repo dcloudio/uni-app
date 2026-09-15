@@ -8907,6 +8907,29 @@ function triggerFailCallback$1(options, errMsg) {
   (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
+function clearDialogPages(uniPage) {
+  var _a, _b;
+  const dialogPages = uniPage.getDialogPages();
+  for (let i = dialogPages.length - 1; i >= 0; i--) {
+    closeDialogPage({ dialogPage: dialogPages[i] });
+  }
+  const systemDialogPages = (_b = (_a = uniPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages) == null ? void 0 : _b.value;
+  if (systemDialogPages) {
+    for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+      closeDialogPage({ dialogPage: systemDialogPages[i] });
+    }
+  }
+}
+function closePreSystemDialogPage(dialogPages, type) {
+  const targetSystemDialogPages = dialogPages.filter(
+    (page) => page.route.startsWith(type)
+  );
+  if (targetSystemDialogPages.length > 1) {
+    setTimeout(() => {
+      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1);
+    }, 150);
+  }
+}
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
 function getPage$BasePage(page) {
@@ -8957,19 +8980,9 @@ function removeRouteCache(routeKey) {
   }
 }
 function removePage(routeKey, removeRouteCaches = true) {
-  var _a, _b;
   const pageVm = currentPagesMap.get(routeKey);
   {
-    const dialogPages = pageVm.$page.getDialogPages();
-    for (let i = dialogPages.length - 1; i >= 0; i--) {
-      closeDialogPage({ dialogPage: dialogPages[i] });
-    }
-    const systemDialogPages = (_b = (_a = pageVm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages) == null ? void 0 : _b.value;
-    if (systemDialogPages) {
-      for (let i = systemDialogPages.length - 1; i >= 0; i--) {
-        closeDialogPage({ dialogPage: systemDialogPages[i] });
-      }
-    }
+    clearDialogPages(pageVm.$page);
   }
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, ON_UNLOAD);
@@ -20500,218 +20513,11 @@ function initApp(app) {
     invokeCreateVueAppHook(app);
   }
 }
-const POPUP_EDGE = 6;
-function usePopupStyle(props2, triangleColor = "#fcfcfd") {
-  const popupWidth = ref(0);
-  const popupHeight = ref(0);
-  const isDesktop = computed(
-    () => popupWidth.value >= 500 && popupHeight.value >= 500
-  );
-  const popupStyle = computed(() => {
-    const style = {
-      content: {
-        transform: "",
-        left: "",
-        top: "",
-        bottom: ""
-      },
-      triangle: {
-        left: "",
-        top: "",
-        bottom: "",
-        "border-width": "",
-        "border-color": ""
-      }
-    };
-    const contentStyle = style.content;
-    const triangleStyle = style.triangle;
-    const popover = props2.popover;
-    function getNumber(value) {
-      try {
-        const number = Number(value);
-        return Number.isFinite(number) ? number : 0;
-      } catch (e2) {
-        return 0;
-      }
-    }
-    if (isDesktop.value && popover) {
-      const popoverLeft = Math.max(0, getNumber(popover.left));
-      const width = getNumber(popover.width);
-      const popoverWidth = width > 0 ? width : 300;
-      const popoverTop = Math.max(0, getNumber(popover.top));
-      const popoverHeight = Math.max(0, getNumber(popover.height));
-      const center = popoverLeft + popoverWidth / 2;
-      const contentLeft = Math.max(
-        POPUP_EDGE,
-        Math.min(
-          popupWidth.value - popoverWidth - POPUP_EDGE,
-          center - popoverWidth / 2
-        )
-      );
-      extend(triangleStyle, {
-        position: "absolute",
-        width: "0",
-        height: "0",
-        "margin-left": "-6px",
-        "border-style": "solid"
-      });
-      contentStyle.transform = "none !important";
-      contentStyle.left = `${contentLeft}px`;
-      if (width > 0) {
-        contentStyle.width = `${popoverWidth}px`;
-      }
-      const triangleLeft = Math.max(
-        12,
-        Math.min(popoverWidth - 12, center - contentLeft)
-      );
-      triangleStyle.left = `${triangleLeft}px`;
-      const vcl = popupHeight.value / 2;
-      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
-        contentStyle.top = "auto";
-        contentStyle.bottom = `${Math.max(
-          POPUP_EDGE,
-          popupHeight.value - popoverTop + POPUP_EDGE
-        )}px`;
-        triangleStyle.bottom = "-6px";
-        triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = `${triangleColor} transparent transparent transparent`;
-      } else {
-        contentStyle.top = `${Math.max(
-          POPUP_EDGE,
-          popoverTop + popoverHeight + POPUP_EDGE
-        )}px`;
-        triangleStyle.top = "-6px";
-        triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = `transparent transparent ${triangleColor} transparent`;
-      }
-    }
-    return style;
-  });
-  onMounted(() => {
-    const fixSize = () => {
-      try {
-        const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
-        popupWidth.value = windowWidth;
-        popupHeight.value = windowHeight + (windowTop || 0);
-      } catch (e2) {
-      }
-    };
-    window.addEventListener("resize", fixSize);
-    fixSize();
-    onUnmounted(() => {
-      window.removeEventListener("resize", fixSize);
-    });
-  });
-  return {
-    isDesktop,
-    popupStyle
-  };
-}
-const KEY_MAPS = {
-  esc: ["Esc", "Escape"],
-  // tab: ['Tab'],
-  enter: ["Enter"]
-  // space: [' ', 'Spacebar'],
-  // up: ['Up', 'ArrowUp'],
-  // left: ['Left', 'ArrowLeft'],
-  // right: ['Right', 'ArrowRight'],
-  // down: ['Down', 'ArrowDown'],
-  // delete: ['Backspace', 'Delete', 'Del'],
-};
-const KEYS = Object.keys(KEY_MAPS);
-function useKeyboard() {
-  const key = ref("");
-  const disable = ref(false);
-  const onKeyup = (evt) => {
-    if (disable.value) {
-      return;
-    }
-    const res = KEYS.find(
-      (key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1
-    );
-    if (res) {
-      key.value = res;
-    }
-    nextTick(() => key.value = "");
-  };
-  onMounted(() => {
-    document.addEventListener("keyup", onKeyup);
-  });
-  onBeforeUnmount(() => {
-    document.removeEventListener("keyup", onKeyup);
-  });
-  return {
-    key,
-    disable
-  };
-}
-function createRootApp(component, rootState, callback) {
-  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
-  return createApp(
-    defineComponent({
-      setup() {
-        return () => (openBlock(), createBlock(
-          component,
-          rootState,
-          null,
-          16
-          /* FULL_PROPS */
-        ));
-      }
-    })
-  );
-}
-function ensureRoot(id2) {
-  let rootEl = document.getElementById(id2);
-  if (!rootEl) {
-    rootEl = document.createElement("div");
-    rootEl.id = id2;
-    document.body.append(rootEl);
-  }
-  return rootEl;
-}
-function usePopup(props2, {
-  onEsc,
-  onEnter
-}) {
-  const visible = ref(props2.visible);
-  const { key, disable } = useKeyboard();
-  watch(
-    () => props2.visible,
-    (value) => visible.value = value
-  );
-  watch(
-    () => visible.value,
-    (value) => disable.value = !value
-  );
-  watchEffect(() => {
-    const { value } = key;
-    if (value === "esc") {
-      onEsc && onEsc();
-    } else if (value === "enter") {
-      onEnter && onEnter();
-    }
-  });
-  return visible;
-}
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
   initWebAppRouteListener(router, {
     onRouteConfirmed: cleanupWebAppRoute,
     onMissingRoute: handleBeforeEntryPageRoutes
-  });
-  router.beforeEach((to, from) => {
-    uni.hideToast();
-    uni.hideLoading({
-      fail(error) {
-        const pages = getCurrentBasePages();
-        const currentPage = pages[pages.length - 1];
-        if (!currentPage) {
-          return;
-        }
-        throw new Error(error.errMsg);
-      }
-    });
   });
   router.beforeEach((to, from) => {
     if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
@@ -24105,6 +23911,93 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
   ChooseImageProtocol,
   ChooseImageOptions
 );
+const KEY_MAPS = {
+  esc: ["Esc", "Escape"],
+  // tab: ['Tab'],
+  enter: ["Enter"]
+  // space: [' ', 'Spacebar'],
+  // up: ['Up', 'ArrowUp'],
+  // left: ['Left', 'ArrowLeft'],
+  // right: ['Right', 'ArrowRight'],
+  // down: ['Down', 'ArrowDown'],
+  // delete: ['Backspace', 'Delete', 'Del'],
+};
+const KEYS = Object.keys(KEY_MAPS);
+function useKeyboard() {
+  const key = ref("");
+  const disable = ref(false);
+  const onKeyup = (evt) => {
+    if (disable.value) {
+      return;
+    }
+    const res = KEYS.find(
+      (key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1
+    );
+    if (res) {
+      key.value = res;
+    }
+    nextTick(() => key.value = "");
+  };
+  onMounted(() => {
+    document.addEventListener("keyup", onKeyup);
+  });
+  onBeforeUnmount(() => {
+    document.removeEventListener("keyup", onKeyup);
+  });
+  return {
+    key,
+    disable
+  };
+}
+function createRootApp(component, rootState, callback) {
+  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
+  return createApp(
+    defineComponent({
+      setup() {
+        return () => (openBlock(), createBlock(
+          component,
+          rootState,
+          null,
+          16
+          /* FULL_PROPS */
+        ));
+      }
+    })
+  );
+}
+function ensureRoot(id2) {
+  let rootEl = document.getElementById(id2);
+  if (!rootEl) {
+    rootEl = document.createElement("div");
+    rootEl.id = id2;
+    document.body.append(rootEl);
+  }
+  return rootEl;
+}
+function usePopup(props2, {
+  onEsc,
+  onEnter
+}) {
+  const visible = ref(props2.visible);
+  const { key, disable } = useKeyboard();
+  watch(
+    () => props2.visible,
+    (value) => visible.value = value
+  );
+  watch(
+    () => visible.value,
+    (value) => disable.value = !value
+  );
+  watchEffect(() => {
+    const { value } = key;
+    if (value === "esc") {
+      onEsc && onEsc();
+    } else if (value === "enter") {
+      onEnter && onEnter();
+    }
+  });
+  return visible;
+}
 let index$9 = 0;
 let overflow = "";
 function preventScroll(prevent) {
@@ -25586,6 +25479,113 @@ function hidePopup(type) {
   setTimeout(() => {
     showToastState.visible = false;
   }, 10);
+}
+const POPUP_EDGE = 6;
+function usePopupStyle(props2, triangleColor = "#fcfcfd") {
+  const popupWidth = ref(0);
+  const popupHeight = ref(0);
+  const isDesktop = computed(
+    () => popupWidth.value >= 500 && popupHeight.value >= 500
+  );
+  const popupStyle = computed(() => {
+    const style = {
+      content: {
+        transform: "",
+        left: "",
+        top: "",
+        bottom: ""
+      },
+      triangle: {
+        left: "",
+        top: "",
+        bottom: "",
+        "border-width": "",
+        "border-color": ""
+      }
+    };
+    const contentStyle = style.content;
+    const triangleStyle = style.triangle;
+    const popover = props2.popover;
+    function getNumber(value) {
+      try {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : 0;
+      } catch (e2) {
+        return 0;
+      }
+    }
+    if (isDesktop.value && popover) {
+      const popoverLeft = Math.max(0, getNumber(popover.left));
+      const width = getNumber(popover.width);
+      const popoverWidth = width > 0 ? width : 300;
+      const popoverTop = Math.max(0, getNumber(popover.top));
+      const popoverHeight = Math.max(0, getNumber(popover.height));
+      const center = popoverLeft + popoverWidth / 2;
+      const contentLeft = Math.max(
+        POPUP_EDGE,
+        Math.min(
+          popupWidth.value - popoverWidth - POPUP_EDGE,
+          center - popoverWidth / 2
+        )
+      );
+      extend(triangleStyle, {
+        position: "absolute",
+        width: "0",
+        height: "0",
+        "margin-left": "-6px",
+        "border-style": "solid"
+      });
+      contentStyle.transform = "none !important";
+      contentStyle.left = `${contentLeft}px`;
+      if (width > 0) {
+        contentStyle.width = `${popoverWidth}px`;
+      }
+      const triangleLeft = Math.max(
+        12,
+        Math.min(popoverWidth - 12, center - contentLeft)
+      );
+      triangleStyle.left = `${triangleLeft}px`;
+      const vcl = popupHeight.value / 2;
+      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
+        contentStyle.top = "auto";
+        contentStyle.bottom = `${Math.max(
+          POPUP_EDGE,
+          popupHeight.value - popoverTop + POPUP_EDGE
+        )}px`;
+        triangleStyle.bottom = "-6px";
+        triangleStyle["border-width"] = "6px 6px 0 6px";
+        triangleStyle["border-color"] = `${triangleColor} transparent transparent transparent`;
+      } else {
+        contentStyle.top = `${Math.max(
+          POPUP_EDGE,
+          popoverTop + popoverHeight + POPUP_EDGE
+        )}px`;
+        triangleStyle.top = "-6px";
+        triangleStyle["border-width"] = "0 6px 6px 6px";
+        triangleStyle["border-color"] = `transparent transparent ${triangleColor} transparent`;
+      }
+    }
+    return style;
+  });
+  onMounted(() => {
+    const fixSize = () => {
+      try {
+        const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
+        popupWidth.value = windowWidth;
+        popupHeight.value = windowHeight + (windowTop || 0);
+      } catch (e2) {
+      }
+    };
+    window.addEventListener("resize", fixSize);
+    fixSize();
+    onUnmounted(() => {
+      window.removeEventListener("resize", fixSize);
+    });
+  });
+  return {
+    isDesktop,
+    popupStyle
+  };
 }
 const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   API_LOAD_FONT_FACE,
@@ -29385,16 +29385,6 @@ const getElementById = /* @__PURE__ */ defineSyncApi(
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
 );
-function closePreSystemDialogPage(dialogPages, type) {
-  const targetSystemDialogPages = dialogPages.filter(
-    (page) => page.route.startsWith(type)
-  );
-  if (targetSystemDialogPages.length > 1) {
-    setTimeout(() => {
-      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1);
-    }, 150);
-  }
-}
 const openDialogPage = (options) => {
   var _a, _b, _c;
   if (!options.url) {
