@@ -78,6 +78,8 @@ export const switchTabPagesBeforeEntryPages: SwitchTabPage[] = []
 export const redirectToPagesBeforeEntryPages: RedirectToPage[] = []
 export const reLaunchPagesBeforeEntryPages: ReLaunchPage[] = []
 
+let currentAppScopeId: string | undefined
+
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id) => {
     if ((page as unknown as ComponentPublicInstance).$.isUnmounted) {
@@ -305,9 +307,21 @@ export function onPageShow(
 }
 
 export function onPageReady(instance: ComponentInternalInstance) {
+  updateAppBodyScopeId(instance)
   if (!updateCurPageBodyScopeId(instance) && __DEV__) {
     console.warn('uni-page-body not found')
   }
+}
+
+function updateAppBodyScopeId(instance: ComponentInternalInstance) {
+  const scopeId = getScopeId(instance.root)
+  if (scopeId === currentAppScopeId) {
+    return
+  }
+  const { body } = document
+  currentAppScopeId && body.removeAttribute(currentAppScopeId)
+  scopeId && body.setAttribute(scopeId, '')
+  currentAppScopeId = scopeId
 }
 
 function updateCurPageBodyScopeId(instance: ComponentInternalInstance) {
