@@ -466,7 +466,7 @@
       "createDramaAd": {
         "name": "createDramaAd",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": false,
           "arkts": false
