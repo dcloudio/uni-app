@@ -153,23 +153,23 @@ web平台也分系统定位的SDK定位。系统定位只有wgs84坐标。三方
 
 
 #### Android平台
-参考 [Android平台配置“uni-location（定位）”](../collocation/manifest-android.md#modulesLocation)  
+参考 [Android平台配置“uni-location（定位）”](../collocation/manifest-android.md#moduleslocation)  
 
-使用腾讯定位时，需配置对应的Key，参考[Android平台配置腾讯定位](../collocation/manifest-android.md#locationTencent)
+使用腾讯定位时，需配置对应的Key，参考[Android平台配置腾讯定位](../collocation/manifest-android.md#locationtencent)
 
 #### iOS平台
-参考 [iOS平台配置“uni-location（定位）”](../collocation/manifest-ios.md#modulesLocation)。
+参考 [iOS平台配置“uni-location（定位）”](../collocation/manifest-ios.md#moduleslocation)。
 
 使用腾讯定位时，需配置对应的Key，参考[iOS平台配置腾讯定位](../collocation/manifest-ios.md#locationtencent)。
 
 使用高精度定位，需要配置 `NSLocationTemporaryUsageDescriptionDictionary`，参考[](../collocation/manifest-ios.md#hightprecision)。
 
-如果应用需要后台定位能力，需在 `manifest.json` 中的 [后台运行能力](../collocation/manifest-ios.md#backgroundModes) 配置 `location`。  
+如果应用需要后台定位能力，需在 `manifest.json` 中的 [后台运行能力](../collocation/manifest-ios.md#backgroundmodes) 配置 `location`。  
 
 #### 鸿蒙平台
-参考 [鸿蒙平台配置“uni-location（定位）”](../collocation/manifest-harmony#modulesLocation)。
+参考 [鸿蒙平台配置“uni-location（定位）”](../collocation/manifest-harmony#moduleslocation)。
 
-鸿蒙平台暂时仅支持系统定位，参考 [鸿蒙平台配置“系统定位”](../collocation/manifest-harmony.md#locationSystem)。
+鸿蒙平台暂时仅支持系统定位，参考 [鸿蒙平台配置“系统定位”](../collocation/manifest-harmony.md#locationsystem)。
 
 
 ### 权限@permission
