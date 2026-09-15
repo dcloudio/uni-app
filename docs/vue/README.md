@@ -366,7 +366,7 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 
 ### Class 与 Style 绑定 @class-style
 
-- `uni-app x` 在VDOM模式下支持绑定  `UTSJSONObject` 和 `Map` 类型数据。蒸汽模式不支持。
+- `uni-app x` 在VDOM模式下支持绑定  `UTSJSONObject` 和 `Map` 类型数据。蒸汽模式不支持 `Map` 类型数据。
 - VDOM模式下，在App-Android平台上 `Map` 的性能高于 `UTSJSONObject` 数据类型。从 `uni-app x 4.01` 起，Web平台也支持了 `Map` 类型绑定。
 
 如下示例中，给 view 组件的 style 和 class 分别绑定了两个响应式变量，就可以通过在逻辑代码里修改变量而实现动态修改样式。
