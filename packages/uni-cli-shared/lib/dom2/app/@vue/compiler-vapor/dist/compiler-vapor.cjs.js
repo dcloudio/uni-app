@@ -3528,11 +3528,6 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 		const { isEasyComponent } = context.options;
 		const isProp = findProp$1(node, "is");
 		if (isProp && isProp.type === 6 && isVueIsValue(isProp)) tag = isProp.value.content.slice(4);
-		const fromSetup = resolveSetupReference(tag, context);
-		if (fromSetup) {
-			tag = fromSetup;
-			asset = false;
-		}
 		const isEasyCom = isEasyComponent && isEasyComponent(tag);
 		if (!isEasyCom) {
 			const fromSetup = resolveSetupReference(tag, context);
