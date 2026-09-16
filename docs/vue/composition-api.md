@@ -4023,6 +4023,10 @@ const updateValue = () => {
 
 在 `<script setup>` 使用 `slots` 和 `attrs` 的情况应该是相对来说较为罕见的，因为可以在模板中直接通过 `$slots` 和 `$attrs` 来访问它们。在你的确需要使用它们的罕见场景中，可以分别用 `useSlots` 和 `useAttrs` 两个辅助函数：
 
+::: warning 注意
+- `useSlots` 在 App 蒸汽模式下仅能用于判断插槽是否存在，不能调用插槽函数获取 dom 节点数组。
+:::
+
 #### useSlots() 示例 @useslots-example
 
 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-slot/v-slot-composition.uvue)
