@@ -474,7 +474,9 @@
       }
     },
     "components": [],
-    "easycom": [],
+    "easycom": [
+      "ad-drama"
+    ],
     "customElements": []
   },
   "uni-editor": {
