@@ -47,6 +47,27 @@ describe('uniapp postcss plugin', () => {
     )
   })
 
+  test('moves background-color with CSS variable to root', async () => {
+    const result = await createProcessor().process(
+      `page {
+  color: red;
+  --uni-background-color: #f8f8f8;
+  background-color: var(--uni-background-color, #fff) !important;
+}`,
+      { from: 'pages/index/index.css', map: false }
+    )
+
+    expect(normalizeCss(result.css)).toBe(
+      normalizeCss(`page {
+  color: red;
+}
+:root {
+  --uni-background-color: #f8f8f8;
+  background-color: var(--uni-background-color, #fff) !important;
+}`)
+    )
+  })
+
   test('removes page rules when only background declarations are moved', async () => {
     const result = await createProcessor().process(
       `page {
