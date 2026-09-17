@@ -56,7 +56,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     const registerItem = inject('__listViewRegisterItem') as Function
     const unregisterItem = inject('__listViewUnregisterItem') as Function
-    const firstItemRendered = inject('__listViewFirstItemRendered') as Function
     onMounted(() => {
       registerItem(status)
     })
@@ -75,7 +74,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         }
         status.cachedSize = getSize(isVertical.value, rootNode)
         status.cachedSizeUpdated = true
-        firstItemRendered(status)
       }
     }
     watch(visible, (value) => {
