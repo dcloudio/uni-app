@@ -840,6 +840,10 @@ function emptyDir(dir: string) {
  * @param param2
  * @param compilerOptions
  */
+type BuildUniModulesTransformOptions = NonNullable<
+  UniXCompilerOptions['transformOptions']
+>
+
 export interface BuildUniModulesOptions {
   syncUniModulesFilePreprocessors: {
     android: SyncUniModulesFilePreprocessor
@@ -850,8 +854,17 @@ export interface BuildUniModulesOptions {
     platform: UniXCompilerPlatform,
     fileName: string
   ) => Promise<string>
-  rootFiles?: string[]
+  rootFiles?:
+    | string[]
+    | ((platform: UniXCompilerPlatform) => string[] | Promise<string[]>)
   sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
+  workers?: Pick<
+    NonNullable<BuildUniModulesTransformOptions['workers']>,
+    'resolve' | 'createWorkerTransformer'
+  >
+  loadUasmTransformer?: (
+    platform: UniXCompilerPlatform
+  ) => BuildUniModulesTransformOptions['loadUasmTransformer']
   /** DOM2 SharedData 使用的统一 AST transformer 配置。 */
   sharedData?: NonNullable<
     NonNullable<UniXCompilerOptions['transformOptions']>['sharedData']
@@ -880,7 +893,9 @@ export async function buildUniModules(
       'app-android',
       pluginDir,
       createUniXKotlinCompiler({
-        resolveWorkers: () => ({}),
+        resolveWorkers: options.workers?.resolve,
+        createWorkerTransformer: options.workers?.createWorkerTransformer,
+        loadUasmTransformer: options.loadUasmTransformer?.(platform),
         sourceFileCallback: options.sourceFileCallback,
         sharedData: options.sharedData,
       }),
@@ -897,7 +912,9 @@ export async function buildUniModules(
       'app-ios',
       pluginDir,
       createUniXSwiftCompiler({
-        resolveWorkers: () => ({}),
+        resolveWorkers: options.workers?.resolve,
+        createWorkerTransformer: options.workers?.createWorkerTransformer,
+        loadUasmTransformer: options.loadUasmTransformer?.(platform),
         sharedData: options.sharedData,
       }),
       {
@@ -913,7 +930,9 @@ export async function buildUniModules(
       'app-harmony',
       pluginDir,
       createUniXArkTSCompiler({
-        resolveWorkers: () => ({}),
+        resolveWorkers: options.workers?.resolve,
+        createWorkerTransformer: options.workers?.createWorkerTransformer,
+        loadUasmTransformer: options.loadUasmTransformer?.(platform),
         sharedData: options.sharedData,
       }),
       {

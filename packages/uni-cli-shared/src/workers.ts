@@ -346,7 +346,7 @@ export function uniWorkersPlugin(): Plugin {
     async buildStart() {
       if (refreshWorkers()) {
         if (preprocessor) {
-          await syncWorkersFiles(platform, inputDir, preprocessor, cache)
+          await syncWorkersFiles(platform, inputDir, preprocessor, { cache })
         }
       }
       // 需要等待 workers 文件同步完之后，添加到 rootFiles 中，触发 tsc 的编译
@@ -372,20 +372,24 @@ export function uniWorkersPlugin(): Plugin {
   }
 }
 
-async function syncWorkersFiles(
+export async function syncWorkersFiles(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string,
   preprocessor: SyncUniModulesFilePreprocessor,
-  cache?: Record<string, number>
+  options: {
+    cache?: Record<string, number>
+    workersDirs?: string[]
+    resolvePreprocessor?: (workersDir: string) => SyncUniModulesFilePreprocessor
+  } = {}
 ) {
   if (
     platform !== 'app-harmony' &&
     platform !== 'app-android' &&
     platform !== 'app-ios'
   ) {
-    return
+    return []
   }
-  const workersDirs = resolveWorkersDir(inputDir)
+  const workersDirs = options.workersDirs || resolveWorkersDir(inputDir)
   if (workersDirs.length) {
     const { syncUTSFiles } = resolveUTSCompiler()
     for (const workersDir of workersDirs) {
@@ -394,11 +398,12 @@ async function syncWorkersFiles(
         inputDir,
         tscOutDir(platform as 'app-android' | 'app-ios' | 'app-harmony'),
         true,
-        preprocessor,
-        cache
+        options.resolvePreprocessor?.(workersDir) || preprocessor,
+        options.cache
       )
     }
   }
+  return resolveUniXCompilerWorkerRootFiles(tscOutDir(platform))
 }
 
 export function resolveWorkersDir(inputDir: string): Array<string> {
@@ -598,15 +603,15 @@ export async function initUniXCompilerRootWorkers(
   rootDir: string,
   compiler: UniXCompiler
 ) {
-  const workers = getWorkers()
-  if (Object.keys(workers).length) {
-    for (const key in workers) {
-      const file = path.join(rootDir, key + '.ts')
-      if (fs.existsSync(file)) {
-        if (!compiler.hasRootFile(file)) {
-          await compiler.addRootFile(file)
-        }
-      }
+  for (const file of resolveUniXCompilerWorkerRootFiles(rootDir)) {
+    if (!compiler.hasRootFile(file)) {
+      await compiler.addRootFile(file)
     }
   }
+}
+
+function resolveUniXCompilerWorkerRootFiles(rootDir: string) {
+  return Object.keys(getWorkers())
+    .map((key) => path.join(rootDir, key + '.ts'))
+    .filter((file) => fs.existsSync(file))
 }

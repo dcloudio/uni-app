@@ -148,7 +148,9 @@ export async function compileUniModuleWithTsc(
     rootFiles,
     preprocessor,
   }: {
-    rootFiles?: string[] | ((platform: UniXCompilerPlatform) => string[])
+    rootFiles?:
+      | string[]
+      | ((platform: UniXCompilerPlatform) => string[] | Promise<string[]>)
     preprocessor: SyncUniModulesFilePreprocessor
   }
 ) {
@@ -172,7 +174,7 @@ export async function compileUniModuleWithTsc(
     await uniXCompiler.addRootFile(indexFileName)
   }
   const userRootFiles =
-    typeof rootFiles === 'function' ? rootFiles(platform) : rootFiles
+    typeof rootFiles === 'function' ? await rootFiles(platform) : rootFiles
   if (userRootFiles && userRootFiles.length) {
     await uniXCompiler.addRootFiles(userRootFiles)
   }
