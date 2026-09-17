@@ -8437,6 +8437,28 @@ function normalizeWindowTop(windowTop) {
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
 }
+const launchOptions = /* @__PURE__ */ createLaunchOptions();
+const enterOptions = /* @__PURE__ */ createLaunchOptions();
+function getEnterOptions() {
+  return extend({}, enterOptions);
+}
+function getLaunchOptions() {
+  return extend({}, launchOptions);
+}
+function initLaunchOptions({
+  path,
+  query
+}) {
+  extend(launchOptions, {
+    path,
+    query
+  });
+  extend(enterOptions, launchOptions);
+  return extend({}, launchOptions);
+}
+function getScopeId(instance2) {
+  return instance2.type.__scopeId;
+}
 const SAFE_AREA_INSET_PROPERTY_PREFIX = "--uni-safe-area-inset-";
 function getSafeAreaInset(style, position) {
   const value = parseFloat(
@@ -8942,7 +8964,6 @@ const navigateToPagesBeforeEntryPages = [];
 const switchTabPagesBeforeEntryPages = [];
 const redirectToPagesBeforeEntryPages = [];
 const reLaunchPagesBeforeEntryPages = [];
-let currentAppScopeId;
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id2) => {
     if (page.$.isUnmounted) {
@@ -9096,20 +9117,9 @@ function onPageShow(instance2, pageMeta) {
   initPageScrollListener(instance2, pageMeta);
 }
 function onPageReady(instance2) {
-  updateAppBodyScopeId(instance2);
   if (!updateCurPageBodyScopeId(instance2) && process.env.NODE_ENV !== "production") {
     console.warn("uni-page-body not found");
   }
-}
-function updateAppBodyScopeId(instance2) {
-  const scopeId = getScopeId(instance2.root);
-  if (scopeId === currentAppScopeId) {
-    return;
-  }
-  const { body } = document;
-  currentAppScopeId && body.removeAttribute(currentAppScopeId);
-  scopeId && body.setAttribute(scopeId, "");
-  currentAppScopeId = scopeId;
 }
 function updateCurPageBodyScopeId(instance2) {
   var _a, _b, _c;
@@ -9126,9 +9136,6 @@ function updateCurPageBodyScopeId(instance2) {
   const pageScopeId = getScopeId(instance2);
   pageScopeId && pageBodyEl.setAttribute(pageScopeId, "");
   return true;
-}
-function getScopeId(instance2) {
-  return instance2.type.__scopeId;
 }
 let curScopeId;
 function updateBodyScopeId(instance2) {
@@ -9724,25 +9731,6 @@ function revokeObjectURL(url) {
   URL.revokeObjectURL(url);
   delete files[url];
 }
-const launchOptions = /* @__PURE__ */ createLaunchOptions();
-const enterOptions = /* @__PURE__ */ createLaunchOptions();
-function getEnterOptions() {
-  return extend({}, enterOptions);
-}
-function getLaunchOptions() {
-  return extend({}, launchOptions);
-}
-function initLaunchOptions({
-  path,
-  query
-}) {
-  extend(launchOptions, {
-    path,
-    query
-  });
-  extend(enterOptions, launchOptions);
-  return extend({}, launchOptions);
-}
 const clazz = { class: "uni-async-loading" };
 const loadingVNode = /* @__PURE__ */ createVNode(
   "i",
@@ -9819,6 +9807,15 @@ function initApp$1(vm) {
   defineGlobalData(appVm);
   initService();
   initView();
+  {
+    updateAppBodyScopeId(appVm);
+  }
+}
+function updateAppBodyScopeId(vm) {
+  const scopeId = getScopeId(vm.$);
+  if (scopeId) {
+    document.body.setAttribute(scopeId, "");
+  }
 }
 var __async$2 = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -19086,10 +19083,6 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       childStatus.splice(index2, 1);
       rearrangeDebounce();
     });
-    provide("__listViewFirstItemRendered", (status) => {
-      state2.defaultItemSize = status.cachedSize;
-      state2.defaultItemSizeUpdated = true;
-    });
     watch(() => {
       return state2.defaultHeaderSize;
     }, (value) => {
@@ -19675,7 +19668,6 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     });
     const registerItem = inject("__listViewRegisterItem");
     const unregisterItem = inject("__listViewUnregisterItem");
-    const firstItemRendered = inject("__listViewFirstItemRendered");
     onMounted(() => {
       registerItem(status);
     });
@@ -19694,7 +19686,6 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         }
         status.cachedSize = getSize(isVertical.value, rootNode);
         status.cachedSizeUpdated = true;
-        firstItemRendered(status);
       }
     }
     watch(visible, (value) => {
