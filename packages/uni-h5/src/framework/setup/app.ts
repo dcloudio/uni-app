@@ -8,6 +8,7 @@ import {
   initView,
 } from '@dcloudio/uni-core'
 import { getCurrentBasePages } from './page'
+import { getScopeId } from './utils'
 import type { UniApp } from '@dcloudio/uni-app-x/types/app'
 
 let appVm: ComponentPublicInstance
@@ -62,4 +63,14 @@ export function initApp(vm: ComponentPublicInstance) {
   defineGlobalData(appVm)
   initService()
   initView()
+  if (!__NODE_JS__) {
+    updateAppBodyScopeId(appVm)
+  }
+}
+
+function updateAppBodyScopeId(vm: ComponentPublicInstance) {
+  const scopeId = getScopeId(vm.$)
+  if (scopeId) {
+    document.body.setAttribute(scopeId, '')
+  }
 }
