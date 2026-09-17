@@ -11,7 +11,7 @@ export function initNativePage(vm: ComponentPublicInstance) {
   const pageId = instance.root.attrs.__pageId
   vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + '')
   // 必须先执行 setupXPage 之后，才有 $page
-  if (vm.$page) {
+  if (vm.$page && vm.$nativePage) {
     // @ts-expect-error
     vm.$page.__nativePageId = vm.$nativePage.pageId
   }

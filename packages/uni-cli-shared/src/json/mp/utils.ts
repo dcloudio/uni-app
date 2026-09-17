@@ -1,4 +1,4 @@
-import { extend, hasOwn } from '@vue/shared'
+import { extend, hasOwn, isArray } from '@vue/shared'
 import { removePlatformStyle } from '../pages'
 import type { AppWindowOptions, PageWindowOptions, TabBar } from './types'
 
@@ -26,10 +26,27 @@ function convert(
   return to
 }
 
+function convertWindowOptions(
+  to: Record<string, any>,
+  from: Record<string, any>,
+  map: Record<string, string | string[]>
+) {
+  Object.entries(map).forEach(([key, value]) => {
+    const names = isArray(value) ? value : [value]
+    for (const name of names) {
+      if (hasOwn(from, name)) {
+        to[key] = from[name]
+        break
+      }
+    }
+  })
+  return to
+}
+
 export function parseWindowOptions(
   style: UniApp.PagesJsonPageStyle,
   platform: UniApp.PLATFORM,
-  windowOptionsMap?: Record<string, string>
+  windowOptionsMap?: Record<string, string | string[]>
 ): PageWindowOptions | AppWindowOptions {
   if (!style) {
     return {}
@@ -38,7 +55,10 @@ export function parseWindowOptions(
   removePlatformStyle(trimJson(style) as any)
   const res: PageWindowOptions | AppWindowOptions = {}
   if (windowOptionsMap) {
-    return extend(convert(res, style, windowOptionsMap), platformStyle)
+    return extend(
+      convertWindowOptions(res, style, windowOptionsMap),
+      platformStyle
+    )
   }
   return extend(res, style, platformStyle)
 }

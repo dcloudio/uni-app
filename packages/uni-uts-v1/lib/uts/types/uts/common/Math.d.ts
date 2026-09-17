@@ -1144,14 +1144,12 @@ interface Math {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "√",
                 "unixVer": "x"
             },
@@ -1650,14 +1648,12 @@ interface Math {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "√",
                 "unixVer": "x"
             },
@@ -1763,14 +1759,12 @@ interface Math {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "√",
                 "unixVer": "x"
             },

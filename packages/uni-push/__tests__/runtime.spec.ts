@@ -1,3 +1,5 @@
+export {}
+
 const ENV_KEYS = ['UNI_PLATFORM', 'UNI_APP_ID'] as const
 const GLOBAL_KEYS = [
   'uni',

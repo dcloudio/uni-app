@@ -1,17 +1,17 @@
-# uni-modal
-实现模态弹窗功能。  
-[API规范文档](https://doc.dcloud.net.cn/uni-app-x/api/modal.html)  
+# uni-showLoading
+显示 loading 提示框, 需主动调用 uni.hideLoading 才能关闭提示框。
+[API规范文档](https://doc.dcloud.net.cn/uni-app-x/api/loading.html)
 
 
-## uts 语言介绍  
+## uts 语言介绍
 uts，全称 uni type script，是一门跨平台的、高性能的、强类型的现代编程语言。
 
 它可以被编译为不同平台的编程语言，如：
 
-Android平台：编译为Kotlin  
-iOS平台：编译Swift  
-鸿蒙OS平台：编译为ArkTS  
-web平台/小程序：编译为JavaScript  
+Android平台：编译为Kotlin
+iOS平台：编译Swift
+鸿蒙OS平台：编译为ArkTS
+web平台/小程序：编译为JavaScript
 
 uts 采用了与 ts 基本一致的语法规范，支持绝大部分 ES6 API。
 
@@ -23,9 +23,9 @@ uts 采用了与 ts 基本一致的语法规范，支持绝大部分 ES6 API。
 
 
 ## uts 插件介绍
-UTS 插件是一种特定的 uni_modules 插件，其核心目的是允许 uni-app/uni-app x 开发者使用 UTS 语法来调用扩展 API（封装原生系统的API或三方SDK）。  
+UTS 插件是一种特定的 uni_modules 插件，其核心目的是允许 uni-app/uni-app x 开发者使用 UTS 语法来调用扩展 API（封装原生系统的API或三方SDK）。
 
-UTS 插件的实现代码主要位于 utssdk 目录下，并按平台进行分离和组织：  
+UTS 插件的实现代码主要位于 utssdk 目录下，并按平台进行分离和组织：
 | 目录/文件 | 目标平台 | 实现语言 | 作用描述 |
 | -- | -- | -- | -- |
 |utssdk/app-android|Android|UTS, Kotlin, Java|存放 UTS 插件在 Android 平台上的具体实现源码|
@@ -34,11 +34,11 @@ UTS 插件的实现代码主要位于 utssdk 目录下，并按平台进行分�
 |utssdk/*.uts|多平台共用|UTS|存放使用 UTS 语言编写的、可供 所有平台 共用的实现源码|
 
 
-## 参考文档  
+## 参考文档
 - [uts 语言介绍](https://doc.dcloud.net.cn/uni-app-x/uts/)
 - [uts 和 ts 的差异](https://doc.dcloud.net.cn/uni-app-x/uts/uts_diff_ts.html)
 - [uts 插件开发文档](https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html)
 - [uts 插件原生语言混编开发文档](https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin-hybrid.html)
 - [uts 插件 Android 平台开发注意事项](https://doc.dcloud.net.cn/uni-app-x/plugin/uts-for-android.html)
 - [uts 插件 iOS 平台开发注意事项](https://doc.dcloud.net.cn/uni-app-x/plugin/uts-for-ios.html)
-- [uts 插件 HarmonyOS 平台开发注意事项](https://doc.dcloud.net.cn/uni-app-x/plugin/uts-for-ios.html)
+- [uts 插件 HarmonyOS 平台开发注意事项](https://doc.dcloud.net.cn/uni-app-x/plugin/uts-for-harmony.html)

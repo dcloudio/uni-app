@@ -1,0 +1,7 @@
+export function request(): string {
+  return 'request'
+}
+
+export function other(): string {
+  return 'other'
+}

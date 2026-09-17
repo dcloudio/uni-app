@@ -1,6 +1,7 @@
 import {
   API_RE_LAUNCH,
   type API_TYPE_RE_LAUNCH,
+  type AppRouteOpenType,
   type DefineAsyncApiFn,
   ReLaunchOptions,
   ReLaunchProtocol,
@@ -18,6 +19,7 @@ import {
   entryPageState,
   reLaunchPagesBeforeEntryPages,
 } from '../../framework/app'
+import { type ResolvedAppRoute, resolveAppRoute } from './appRoute'
 
 interface ReLaunchOptions extends RouteOptions {}
 
@@ -42,7 +44,14 @@ export const $reLaunch: DefineAsyncApiFn<API_TYPE_RE_LAUNCH> = (
     .catch(reject)
 }
 
-function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
+export function _reLaunch(
+  options: ReLaunchOptions,
+  appRouteOpenType: AppRouteOpenType = API_RE_LAUNCH,
+  resolvedAppRoute?: ResolvedAppRoute
+): Promise<undefined> {
+  const appRoute =
+    resolvedAppRoute || resolveAppRoute(options.url, appRouteOpenType)
+  const { path, query } = parseUrl(appRoute.url)
   return new Promise((resolve) => {
     setTimeout(() => {
       const pages = getAllPages().slice(0)
@@ -61,10 +70,12 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
       if (selected === -1) {
         showWebview(
           registerPage({
-            url,
+            url: appRoute.url,
             path,
             query,
             openType: 'reLaunch',
+            appRouteOpenType,
+            appRouteContext: appRoute.context,
             onRegistered() {
               isRegistered = true
               callback()
@@ -80,7 +91,16 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
       } else {
         isRegistered = true
         isShown = true
-        switchSelect(selected, path, query, true, callback)
+        switchSelect(
+          selected,
+          path,
+          query,
+          true,
+          callback,
+          appRouteOpenType,
+          true,
+          appRoute.context
+        )
       }
     }, 0)
   })

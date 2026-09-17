@@ -122,6 +122,30 @@ describe('domain/statData', () => {
       const data = builder.build({ lt: LT.Page, t: 1 })
       expect(data.net).toBe('unknown')
     })
+
+    test('提供 resolveLocale 时每次事件重新读取 ww/wh', () => {
+      let current: LocaleAndScreen = {
+        lang: 'zh-CN',
+        ww: 360,
+        wh: 720,
+        sw: 360,
+        sh: 800,
+        pr: 3,
+      }
+      const builder = createStatDataBuilder(
+        makeDeps({ resolveLocale: () => current })
+      )
+
+      expect(builder.build({ lt: LT.Launch, t: 1 })).toMatchObject({
+        ww: 360,
+        wh: 720,
+      })
+      current = Object.assign({}, current, { ww: 720, wh: 360 })
+      expect(builder.build({ lt: LT.Page, t: 2 })).toMatchObject({
+        ww: 720,
+        wh: 360,
+      })
+    })
   })
 
   describe('session 字段', () => {
@@ -170,7 +194,7 @@ describe('domain/statData', () => {
     })
   })
 
-  describe('入口字段（仅 lt=11）', () => {
+  describe('入口字段（lt=11 / lt=21）', () => {
     test('lt=11 时 iey/ppiey 转 0/1 上行', () => {
       const builder = createStatDataBuilder(makeDeps())
       const data = builder.build({ lt: LT.Page, t: 1, iey: true, ppiey: false })
@@ -204,10 +228,10 @@ describe('domain/statData', () => {
       expect(data.ppiey).toBeUndefined()
     })
 
-    test('lt=21（自定义事件）时不携带 iey/ppiey', () => {
+    test('lt=21（自定义事件）只携带当前页 iey', () => {
       const builder = createStatDataBuilder(makeDeps())
       const data = builder.build({ lt: LT.Event, t: 1, iey: true, ppiey: true })
-      expect(data.iey).toBeUndefined()
+      expect(data.iey).toBe(1)
       expect(data.ppiey).toBeUndefined()
     })
   })

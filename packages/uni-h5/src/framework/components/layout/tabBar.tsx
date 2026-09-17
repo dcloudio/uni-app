@@ -13,7 +13,6 @@ import { useTabBar } from '../../setup/state'
 import { cssBackdropFilter } from '../../../service/api/base/canIUse'
 import { loadFontFace } from '../../../service/api/ui/loadFontFace'
 import { normalizeWindowBottom } from '../../../helpers/cssVar'
-import { parseTheme, useTheme } from '../../../helpers/theme'
 
 const UNI_TABBAR_ICON_FONT = 'UniTabbarIconFont'
 
@@ -27,22 +26,7 @@ export default /*#__PURE__*/ defineSystemComponent({
   name: 'TabBar',
   setup() {
     const visibleList = ref<UniApp.TabBarItemOptions[]>([])
-    const _tabBar = useTabBar()!
-    const tabBar = useTheme(_tabBar, () => {
-      const tabBarStyle = parseTheme(_tabBar)
-      tabBar.backgroundColor = tabBarStyle.backgroundColor
-      tabBar.borderStyle = tabBarStyle.borderStyle
-      tabBar.color = tabBarStyle.color
-      tabBar.selectedColor = tabBarStyle.selectedColor
-      tabBar.blurEffect = tabBarStyle.blurEffect
-      tabBar.midButton = tabBarStyle.midButton
-      if (tabBarStyle.list && tabBarStyle.list.length) {
-        tabBarStyle.list.forEach((item, index) => {
-          tabBar.list[index].iconPath = item.iconPath
-          tabBar.list[index].selectedIconPath = item.selectedIconPath
-        })
-      }
-    })
+    const tabBar = useTabBar()!
     useVisibleList(tabBar, visibleList)
     useTabBarCssVar(tabBar)
     const onSwitchTab = useSwitchTab(useRoute(), tabBar, visibleList)

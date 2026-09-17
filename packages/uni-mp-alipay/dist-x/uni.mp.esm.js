@@ -1,6 +1,6 @@
 import { getGlobal, UTS, UTSJSONObject, UTSValueIterable, UniError, VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, UNI_STATUS_BAR_HEIGHT, UNI_SAFE_AREA_INSET_BOTTOM, customizeEvent, createUniDOMStringMap, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
 export { UTS, UTSJSONObject, UTSValueIterable, UniError } from '@dcloudio/uni-shared';
-import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isString } from '@vue/shared';
+import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isString, camelize } from '@vue/shared';
 import { onUpdated, pruneUniElements, onUnmounted, destroyUniElements, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
@@ -570,9 +570,14 @@ function updateMiniProgramComponentProperties(up, mpInstance) {
         mpInstance.setData(nextProps);
     }
 }
-function updateComponentProps(up, instance) {
+function updateComponentProps(up, instance, extraProps) {
     const prevProps = toRaw(instance.props);
-    const nextProps = findComponentPropsData(up) || {};
+    // 仅支付宝 externalClass 更新时可能没有 uP，此时保留其他现有 props，避免默认值被误判为删除。
+    const nextProps = findComponentPropsData(up) ||
+        (extraProps ? Object.assign({}, prevProps) : {});
+    if (extraProps) {
+        Object.assign(nextProps, extraProps);
+    }
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
         if (hasQueueJob(instance.update)) {
@@ -755,6 +760,85 @@ function handleLink$1(event) {
     detail.parent = parentVm;
 }
 
+function findTemplateUniElementRef(instance, key) {
+    if (!isString(key)) {
+        return;
+    }
+    const templateRefs = instance.$templateUniElementRefs;
+    for (let i = templateRefs.length - 1; i >= 0; i--) {
+        const templateRef = templateRefs[i];
+        const refKey = isString(templateRef.r) ? templateRef.r : templateRef.k;
+        if (refKey === key) {
+            return templateRef;
+        }
+    }
+}
+function initRefs(instance) {
+    const rawRefs = instance.refs === EMPTY_OBJ || !Object.isExtensible(instance.refs)
+        ? Object.assign({}, instance.refs)
+        : instance.refs;
+    instance.refs = new Proxy(rawRefs, {
+        get(target, key, receiver) {
+            const templateRef = findTemplateUniElementRef(instance, key);
+            return templateRef ? templateRef.v : Reflect.get(target, key, receiver);
+        },
+        has(target, key) {
+            return (!!findTemplateUniElementRef(instance, key) || Reflect.has(target, key));
+        },
+        set(target, key, value) {
+            return Reflect.set(target, key, value, target);
+        },
+        ownKeys(target) {
+            const keys = Reflect.ownKeys(target);
+            instance.$templateUniElementRefs.forEach((templateRef) => {
+                const refKey = isString(templateRef.r) ? templateRef.r : templateRef.k;
+                if (refKey && !keys.includes(refKey)) {
+                    keys.push(refKey);
+                }
+            });
+            return keys;
+        },
+        getOwnPropertyDescriptor(target, key) {
+            const templateRef = findTemplateUniElementRef(instance, key);
+            if (templateRef) {
+                return {
+                    configurable: true,
+                    enumerable: true,
+                    value: templateRef.v,
+                    writable: true,
+                };
+            }
+            return Reflect.getOwnPropertyDescriptor(target, key);
+        },
+    });
+}
+
+function createVueRuntimeOptions(vueOptions, externalClasses) {
+    return (externalClasses === null || externalClasses === void 0 ? void 0 : externalClasses.length)
+        ? Object.assign({}, vueOptions, { externalClasses: undefined })
+        : vueOptions;
+}
+/**
+ * 支付宝 externalClass 的真实值由原生 props 提供，不经过 uP props 缓存。
+ * Vue prop 使用驼峰命名，因此优先读取 boxClass，同时兼容平台返回 box-class 的情况。
+ */
+function getExternalClassProps(nativeProps, externalClasses) {
+    if (!(externalClasses === null || externalClasses === void 0 ? void 0 : externalClasses.length)) {
+        return;
+    }
+    const props = {};
+    externalClasses.forEach((name) => {
+        const camelizedName = camelize(name);
+        if (hasOwn(nativeProps, camelizedName)) {
+            props[camelizedName] = nativeProps[camelizedName];
+        }
+        else if (hasOwn(nativeProps, name)) {
+            props[camelizedName] = nativeProps[name];
+        }
+    });
+    return props;
+}
+
 const isComponent2 = my.canIUse('component2');
 const mocks = ['$id'];
 function initRelation(mpInstance, detail) {
@@ -861,6 +945,15 @@ function setRef(ref, refValue, refs, setupState, isRefInVFor = false) {
         if (isTemplateRef(templateRef)) {
             setTemplateRef(templateRef, refValue, setupState);
             // 对于 template ref，需要手动同步到 refs，否则 getCurrentInstance().proxy.$refs 获取不到
+            if (!templateRef.k && isString(templateRef.r)) {
+                if (isRefInVFor) {
+                    (refs[templateRef.r] || (refs[templateRef.r] = [])).push(refValue);
+                }
+                else {
+                    refs[templateRef.r] = refValue;
+                }
+                return;
+            }
             if (!templateRef.k || !isRef(templateRef.r)) {
                 return;
             }
@@ -889,15 +982,18 @@ function triggerEvent(type, detail) {
     });
 }
 // const IGNORES = ['$slots', '$scopedSlots']
-function initPropsObserver(componentOptions) {
+function initPropsObserver(componentOptions, externalClasses) {
     const observe = function observe(props) {
         const nextProps = isComponent2 ? props : this.props;
         const up = nextProps.uP;
-        if (!up) {
+        const externalClassProps = (externalClasses === null || externalClasses === void 0 ? void 0 : externalClasses.length)
+            ? getExternalClassProps(nextProps, externalClasses)
+            : undefined;
+        if (!up && !externalClassProps) {
             return;
         }
         if (this.$vm) {
-            updateComponentProps(up, this.$vm.$);
+            updateComponentProps(up, this.$vm.$, externalClassProps);
         }
         else if (this.props.uT === 'm') {
             // 小程序组件
@@ -929,20 +1025,26 @@ const handleLink = (function () {
         (this._$childVues || (this._$childVues = [])).unshift(detail);
     };
 })();
-function createVueComponent(mpType, mpInstance, vueOptions, parent) {
-    return $createComponent({
+function createVueComponent(mpType, mpInstance, vueOptions, parent, externalClasses) {
+    const props = findPropsData(mpInstance.props, mpType === 'page');
+    Object.assign(props, getExternalClassProps(mpInstance.props, externalClasses));
+    const vm = $createComponent({
         type: vueOptions,
-        props: findPropsData(mpInstance.props, mpType === 'page'),
+        props,
     }, {
         mpType,
         mpInstance,
         slots: mpInstance.props.uS || {}, // vueSlots
         parentComponent: parent && parent.$,
         onBeforeSetup(instance, options) {
+            {
+                initRefs(instance);
+            }
             initMocks(instance, mpInstance, mocks);
             initComponentInstance(instance, options);
         },
     });
+    return vm;
 }
 
 const MPComponent = Component;
@@ -1123,11 +1225,16 @@ function initCreateComponent() {
     return function createComponent(vueOptions) {
         var _a, _b, _c;
         vueOptions = vueOptions.default || vueOptions;
+        // __X_STYLE_ISOLATION__ 仅在 DOM2 样式隔离构建中注入。
+        const externalClasses = __X_STYLE_ISOLATION__ ? vueOptions.externalClasses : undefined;
+        // 支付宝由原生 Component 承载 externalClass；Vue 内部只需接收真实 class 字符串，
+        // 不能继续启用微信/App 的 externalClass 归一化，否则值会被替换为属性名。
+        const vueRuntimeOptions = createVueRuntimeOptions(vueOptions, externalClasses);
         const mpComponentOptions = {
             props: initComponentProps(vueOptions.props),
             didMount() {
                 const createComponent = (parent) => {
-                    return createVueComponent('component', this, vueOptions, parent);
+                    return createVueComponent('component', this, vueRuntimeOptions, parent, externalClasses);
                 };
                 if (my.dd) {
                     // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
@@ -1159,12 +1266,16 @@ function initCreateComponent() {
         if (vueOptions.options) {
             mpComponentOptions.options = vueOptions.options;
         }
+        // __X_STYLE_ISOLATION__ 仅在 DOM2 样式隔离构建中注入。
         if (__X_STYLE_ISOLATION__) {
             mpComponentOptions.options = (_a = mpComponentOptions.options) !== null && _a !== void 0 ? _a : {};
+            // 支付宝原生不支持 uni-app x 的 isolated/app/app-and-page 抽象值。
+            // 原生层统一开放必要的样式可见性，最终是否命中仍由编译期生成的来源 class 控制。
+            mpComponentOptions.options.styleIsolation = 'apply-shared';
             mpComponentOptions.options.externalClasses =
                 (_c = (_b = vueOptions.options) === null || _b === void 0 ? void 0 : _b.externalClasses) !== null && _c !== void 0 ? _c : true;
-            if (vueOptions.externalClasses) {
-                mpComponentOptions.externalClasses = vueOptions.externalClasses;
+            if (externalClasses) {
+                mpComponentOptions.externalClasses = externalClasses;
             }
         }
         if (__VUE_OPTIONS_API__) {
@@ -1174,11 +1285,11 @@ function initCreateComponent() {
         if (isComponent2) {
             mpComponentOptions.onInit = function onInit() {
                 initVm(this, (parent) => {
-                    return createVueComponent('component', this, vueOptions, parent);
+                    return createVueComponent('component', this, vueRuntimeOptions, parent, externalClasses);
                 });
             };
         }
-        initPropsObserver(mpComponentOptions);
+        initPropsObserver(mpComponentOptions, externalClasses);
         initWxsCallMethods(mpComponentOptions.methods, vueOptions.wxsCallMethods);
         return Component(mpComponentOptions);
     };

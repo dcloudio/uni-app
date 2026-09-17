@@ -108,7 +108,7 @@ export default /*#__PURE__*/ defineComponent({
 })
 
 function useToastIcon(props: ToastProps) {
-  const iconColor = ref(getIconColor(getTheme()))
+  const iconColor = ref(getIconColor(getTheme() ?? 'light'))
   const _onThemeChange = ({ theme }: { theme: UniApp.ThemeMode }) =>
     (iconColor.value = getIconColor(theme))
 

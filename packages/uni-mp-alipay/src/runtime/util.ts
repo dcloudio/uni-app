@@ -28,6 +28,8 @@ import {
   createUniDOMStringMap,
   customizeEvent,
 } from '@dcloudio/uni-shared'
+import { initRefs } from './refs'
+import { getExternalClassProps } from './externalClasses'
 
 type MPPageInstance = tinyapp.IPageInstance<Record<string, any>>
 export type MPComponentInstance = tinyapp.IComponentInstance<
@@ -184,6 +186,16 @@ function setRef(
     if (isTemplateRef(templateRef)) {
       setTemplateRef(templateRef, refValue, setupState)
       // 对于 template ref，需要手动同步到 refs，否则 getCurrentInstance().proxy.$refs 获取不到
+      if (!templateRef.k && isString(templateRef.r)) {
+        if (isRefInVFor) {
+          ;(
+            (refs[templateRef.r] || (refs[templateRef.r] = [])) as unknown[]
+          ).push(refValue)
+        } else {
+          refs[templateRef.r] = refValue
+        }
+        return
+      }
       if (!templateRef.k || !isRef(templateRef.r)) {
         return
       }
@@ -222,18 +234,24 @@ export function triggerEvent(
 
 // const IGNORES = ['$slots', '$scopedSlots']
 
-export function initPropsObserver(componentOptions: tinyapp.ComponentOptions) {
+export function initPropsObserver(
+  componentOptions: tinyapp.ComponentOptions,
+  externalClasses?: string[]
+) {
   const observe = function observe(
     this: MPComponentInstance,
     props: Record<string, any>
   ) {
     const nextProps = isComponent2 ? props : this.props
     const up = nextProps.uP
-    if (!up) {
+    const externalClassProps = externalClasses?.length
+      ? getExternalClassProps(nextProps, externalClasses)
+      : undefined
+    if (!up && !externalClassProps) {
       return
     }
     if (this.$vm) {
-      updateComponentProps(up, this.$vm.$)
+      updateComponentProps(up, this.$vm.$, externalClassProps)
     } else if (this.props.uT === 'm') {
       // 小程序组件
       updateMiniProgramComponentProperties(up, this as any)
@@ -277,12 +295,15 @@ export function createVueComponent(
   mpType: 'page' | 'component',
   mpInstance: MPPageInstance | MPComponentInstance,
   vueOptions: ComponentOptions,
-  parent?: ComponentPublicInstance
+  parent?: ComponentPublicInstance,
+  externalClasses?: string[]
 ) {
-  return $createComponent(
+  const props = findPropsData(mpInstance.props, mpType === 'page')
+  Object.assign(props, getExternalClassProps(mpInstance.props, externalClasses))
+  const vm = $createComponent(
     {
       type: vueOptions,
-      props: findPropsData(mpInstance.props, mpType === 'page'),
+      props,
     },
     {
       mpType,
@@ -293,9 +314,13 @@ export function createVueComponent(
         instance: ComponentInternalInstance,
         options: CreateComponentOptions
       ) {
+        if (__X__) {
+          initRefs(instance)
+        }
         initMocks(instance, mpInstance as any, mocks)
         initComponentInstance(instance, options)
       },
     }
   ) as ComponentPublicInstance
+  return vm
 }

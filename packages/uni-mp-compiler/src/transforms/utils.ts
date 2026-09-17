@@ -59,6 +59,20 @@ export const FILTER_SET_ELEMENT_ANIMATION = 'sA' // setAnimation
 
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
 
+export function addUniViewAutoImportFilter(context: TransformContext) {
+  const hasFilter = context.autoImportFilters.some(
+    (filter) => filter.name === FILTER_MODULE_NAME
+  )
+  if (hasFilter) {
+    return
+  }
+  context.autoImportFilters.push({
+    name: FILTER_MODULE_NAME,
+    id: FILTER_MODULE_FILE_NAME,
+    type: 'filter',
+  })
+}
+
 export function filterObserverName(name: string) {
   return ATTR_CHANGE_PREFIX + name
 }

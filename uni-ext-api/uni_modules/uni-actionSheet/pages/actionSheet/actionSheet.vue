@@ -6,20 +6,41 @@
       :style="isWidescreen ? containerStyle : {}"
       <!-- #endif -->
       class="uni-action-sheet_dialog__container"
-      :class="{ 'uni-action-sheet_dialog__show': show,'uni-action-sheet_dark__mode': theme == 'dark',
-      'uni-action-sheet_landscape__mode': isLandscape }">
+      <!-- #ifdef VUE3-VAPOR -->
+      :class="{ 'uni-action-sheet_dialog__show': show, 'uni-action-sheet_landscape__mode': isLandscape }">
+      <!-- #endif -->
+      <!-- #ifndef VUE3-VAPOR -->
+      :class="{ 'uni-action-sheet_dialog__show': show, 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
+      <!-- #endif -->
       <view :style="backgroundColor != null ? {backgroundColor} : {}" class="uni-action-sheet_dialog__menu"
+        <!-- #ifdef VUE3-VAPOR -->
+        :class="{ 'uni-action-sheet_landscape__mode': isLandscape }">
+        <!-- #endif -->
+        <!-- #ifndef VUE3-VAPOR -->
         :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
+        <!-- #endif -->
         <template v-if="title">
           <view class="uni-action-sheet_dialog__title border-b"
+            <!-- #ifdef VUE3-VAPOR -->
+            :class="{ 'uni-action-sheet_landscape__mode': isLandscape }">
+            <!-- #endif -->
+            <!-- #ifndef VUE3-VAPOR -->
             :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
+            <!-- #endif -->
             <text :style="titleColor != null ? { color: titleColor } : {}" class="uni-action-sheet_dialog__title__text"
-              :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
+              <!-- #ifndef VUE3-VAPOR -->
+              :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"
+              <!-- #endif -->
+              >
               {{ title }}
             </text>
           </view>
           <!-- #ifdef WEB -->
-          <view class="divider" :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"></view>
+          <view class="divider"
+            <!-- #ifndef VUE3-VAPOR -->
+            :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"
+            <!-- #endif -->
+            ></view>
           <!-- #endif -->
         </template>
         <!-- #ifdef WEB -->
@@ -32,14 +53,27 @@
           <!-- #endif -->
             <template v-for="(item, index) in itemList" :key="index">
             <!-- #ifdef WEB -->
-            <view v-if="index !== 0" class="divider" :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"></view>
+            <view v-if="index !== 0" class="divider"
+              <!-- #ifndef VUE3-VAPOR -->
+              :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"
+              <!-- #endif -->
+              ></view>
             <!-- #endif -->
               <view class="uni-action-sheet_dialog__cell"
+                <!-- #ifdef VUE3-VAPOR -->
+                :class="{ 'uni-action-sheet_landscape__mode': isLandscape, 'border-t': index !== 0 }"
+                hover-class="uni-action-sheet_dialog__hover"
+                <!-- #endif -->
+                <!-- #ifndef VUE3-VAPOR -->
                 :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape, 'border-t': index !== 0 }"
                 :hover-class="hoverClass"
+                <!-- #endif -->
                 @click="handleMenuItemClick(index)">
                 <text :style="itemColor != null ? { color: itemColor } : {}" class="uni-action-sheet_dialog__cell__text"
-                  :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
+                  <!-- #ifndef VUE3-VAPOR -->
+                  :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"
+                  <!-- #endif -->
+                  >
                   {{ item }}
                 </text>
               </view>
@@ -52,23 +86,43 @@
         <!-- #endif -->
       </view>
       <view :style="backgroundColor != null ? {backgroundColor} : {}" class="uni-action-sheet_dialog__action"
+        <!-- #ifdef VUE3-VAPOR -->
+        :class="{ 'uni-action-sheet_landscape__mode': isLandscape }"
+        hover-class="uni-action-sheet_dialog__hover"
+        <!-- #endif -->
+        <!-- #ifndef VUE3-VAPOR -->
         :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }"
         :hover-class="hoverClass"
+        <!-- #endif -->
         @click="handleCancel">
         <text :style="cancelColor != null ? { color: cancelColor } : {}" class="uni-action-sheet_dialog__action__text"
-          :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
+          <!-- #ifndef VUE3-VAPOR -->
+          :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"
+          <!-- #endif -->
+          >
           {{ cancelText }}
         </text>
       </view>
-      <view v-if="!isLandscape" :style="{height: `${bottomNavigationHeight}px`, backgroundColor: computedBackgroundColor}"></view>
+      <view v-if="!isLandscape" class="uni-action-sheet_dialog__safe-area"
+        <!-- #ifdef VUE3-VAPOR -->
+        :style="backgroundColor != null ? { height: `${bottomNavigationHeight}px`, backgroundColor } : { height: `${bottomNavigationHeight}px` }"></view>
+        <!-- #endif -->
+        <!-- #ifndef VUE3-VAPOR -->
+        :style="{ height: `${bottomNavigationHeight}px`, backgroundColor: computedBackgroundColor }"></view>
+        <!-- #endif -->
       <!-- #ifdef WEB -->
-      <view v-if='isWidescreen && Object.keys(popover).length > 0' :style='triangleStyle' class="uni-action-sheet_dialog__triangle" />
+      <view v-if='isWidescreen && Object.keys(popover).length > 0' :style='triangleStyle'
+        class="uni-action-sheet_dialog__triangle"
+        <!-- #ifdef VUE3-VAPOR -->
+        :class="triangleClass"
+        <!-- #endif -->
+        />
       <!-- #endif -->
     </view>
   </view>
 </template>
 
-<script setup lang='ts'>
+<script setup>
   import { getCurrentInstance, reactive, ref, computed } from 'vue'
   import { onLoad, onReady, onResize } from '@dcloudio/uni-app'
 
@@ -102,11 +156,13 @@
   const cancelColor = ref<string | null>(null)
   const backgroundColor = ref<string | null>(null)
   const language = ref('zhHans')
+  // #ifndef VUE3-VAPOR
   const theme = ref('light')
-  const isLandscape = ref(false)
-  const bottomNavigationHeight = ref(0)
   const appTheme = ref<string | null>(null)
   const hostTheme = ref<string | null>(null)
+  // #endif
+  const isLandscape = ref(false)
+  const bottomNavigationHeight = ref(0)
   const menuItemClicked = ref(false)
   const cancelButtonClicked = ref(false)
   // #ifdef WEB
@@ -114,11 +170,9 @@
   const windowHeight = ref(0)
   const popover = reactive({})
   // #endif
-  // #ifdef APP-ANDROID || APP-IOS
+  // #ifdef (APP-ANDROID || APP-IOS || APP-HARMONY) && !VUE3-VAPOR
   const appThemeChangeCallbackId = ref(-1)
-  const osThemeChangeCallbackId = ref(-1)
   // #endif
-
   // #ifdef WEB
   const fixSize = () => {
     const windowInfo = uni.getWindowInfo()
@@ -144,14 +198,15 @@
     closeActionSheet()
     uni.$emit(failEventName.value, {})
   }
+  // #ifndef VUE3-VAPOR
   const handleThemeChange = () => {
-    if(hostTheme.value != null){
+    if (hostTheme.value != null) {
       theme.value = hostTheme.value
-    } else if(appTheme.value != null){
+    } else if (appTheme.value != null) {
       theme.value = appTheme.value
     }
   }
-
+  // #endif
   onLoad((options) => {
     readyEventName.value = options['readyEventName']!
     optionsEventName.value = options['optionsEventName']!
@@ -192,6 +247,7 @@
     } else if (deviceInfo.osLanguage != null) {
       language.value = deviceInfo.osLanguage
     }
+    // #ifndef VUE3-VAPOR
     const currentAppTheme = appInfo.appTheme
     if (currentAppTheme != null && currentAppTheme != 'auto') {
       appTheme.value = currentAppTheme
@@ -202,7 +258,9 @@
       appTheme.value = currentOsTheme
       handleThemeChange()
     }
+    // #endif
     // #ifdef WEB
+    // #ifndef VUE3-VAPOR
     const currentHostTheme = appInfo.hostTheme
     if (currentHostTheme != null) {
       hostTheme.value = currentHostTheme
@@ -211,7 +269,8 @@
     uni.onHostThemeChange((res) => {
       hostTheme.value = res.theme
       handleThemeChange()
-    });
+    })
+    // #endif
     fixSize()
     window.addEventListener('resize', fixSize)
 
@@ -224,10 +283,10 @@
     })
     // #endif
     isLandscape.value = deviceInfo.deviceOrientation == 'landscape'
-    // #ifdef APP-ANDROID || APP-IOS
+    // #ifdef (APP-ANDROID || APP-IOS || APP-HARMONY) && !VUE3-VAPOR
     appThemeChangeCallbackId.value = uni.onAppThemeChange((res: AppThemeChangeResult) => {
       const callbackAppTheme = res.appTheme
-      if (callbackAppTheme != null && callbackAppTheme != "auto") {
+      if (callbackAppTheme != null && callbackAppTheme != 'auto') {
         appTheme.value = callbackAppTheme
         handleThemeChange()
       }
@@ -267,7 +326,9 @@
       return {}
     }
     const res = {}
-    const borderColor = backgroundColor.value || (theme.value == 'dark' ? '#2C2C2B' : '#fcfcfd')
+    // #ifndef VUE3-VAPOR
+    const borderColor = backgroundColor.value ?? (theme.value == 'dark' ? '#2C2C2B' : '#fcfcfd')
+    // #endif
     const top = popover.top
     const left = popover.left
     const width = popover.width
@@ -281,16 +342,42 @@
     if (top + height - vcl > vcl - top) {
       res['bottom'] = '-6px'
       res['border-width'] = '6px 6px 0 6px'
+      // #ifdef VUE3-VAPOR
+      if (backgroundColor.value != null) {
+        res['border-color'] =
+          `${backgroundColor.value} transparent transparent transparent`
+      }
+      // #endif
+      // #ifndef VUE3-VAPOR
       res['border-color'] =
         `${borderColor} transparent transparent transparent`
+      // #endif
     } else {
       res['top'] = '-6px'
       res['border-width'] = '0 6px 6px 6px'
+      // #ifdef VUE3-VAPOR
+      if (backgroundColor.value != null) {
+        res['border-color'] =
+          `transparent transparent ${backgroundColor.value} transparent`
+      }
+      // #endif
+      // #ifndef VUE3-VAPOR
       res['border-color'] =
         `transparent transparent ${borderColor} transparent`
+      // #endif
     }
     return res
   })
+  // #ifdef VUE3-VAPOR
+  const triangleClass = computed((): string => {
+    if (Object.keys(popover).length == 0) {
+      return ''
+    }
+    return triangleStyle.value['bottom'] != null
+      ? 'uni-action-sheet_dialog__triangle--bottom'
+      : 'uni-action-sheet_dialog__triangle--top'
+  })
+  // #endif
   // #endif
   const cancelText = computed((): string => {
     if (optionCancelText.value != null) {
@@ -314,13 +401,14 @@
     }
     return '取消'
   })
+  // #ifndef VUE3-VAPOR
   const computedBackgroundColor = computed((): string => {
-    return backgroundColor.value !== null ? backgroundColor.value : (theme.value == 'dark' ? '#2C2C2B' : '#ffffff')
+    return backgroundColor.value ?? (theme.value == 'dark' ? '#2C2C2B' : '#ffffff')
   })
   const hoverClass = computed((): string => {
     return theme.value == 'dark' ? 'uni-action-sheet_dialog__hover__dark__mode' : 'uni-action-sheet_dialog__hover'
   })
-
+  // #endif
   onReady(() => {
     bottomNavigationHeight.value = uniPageInstance.safeAreaInsets.bottom
     // #ifdef APP-ANDROID
@@ -349,9 +437,8 @@
     // #ifdef WEB
     window.removeEventListener('resize', fixSize)
     // #endif
-    // #ifdef APP-ANDROID || APP-IOS
+    // #ifdef (APP-ANDROID || APP-IOS || APP-HARMONY) && !VUE3-VAPOR
     uni.offAppThemeChange(appThemeChangeCallbackId.value)
-    uni.offOsThemeChange(osThemeChangeCallbackId.value)
     // #endif
   })
 </script>
@@ -406,15 +493,19 @@
 	.border-t{
 		border-top: 1rpx solid #e5e5e5;
 	}
+  /* #ifndef VUE3-VAPOR */
   .border-t.uni-action-sheet_dark__mode {
     border-top-color: #2F3131;
   }
+  /* #endif */
   .border-b{
     border-bottom: 1rpx solid #e5e5e5;
   }
+  /* #ifndef VUE3-VAPOR */
   .border-b.uni-action-sheet_dark__mode {
     border-bottom-color: #2F3131;
   }
+  /* #endif */
   /* #endif */
 
   .uni-action-sheet_dialog__title__text,
@@ -439,7 +530,8 @@
     color: #000000;
   }
   .uni-action-sheet_dialog__menu,
-  .uni-action-sheet_dialog__action {
+  .uni-action-sheet_dialog__action,
+  .uni-action-sheet_dialog__safe-area {
     background-color: #ffffff;
   }
 
@@ -452,24 +544,28 @@
     /* #endif */
   }
 
-  .uni-action-sheet_dialog__hover {
+	.uni-action-sheet_dialog__hover {
 		background-color: #efefef;
 	}
+  /* #ifndef VUE3-VAPOR */
 	.uni-action-sheet_dialog__hover__dark__mode {
 		background-color: #1c1c1c;
 	}
+  /* #endif */
   /* #ifdef WEB */
   .divider{
     height: 1px;
     background-color: #e5e5e5;
     transform: scaleY(0.5);
   }
+  /* #ifndef VUE3-VAPOR */
   .divider.uni-action-sheet_dark__mode {
     background-color: #2F3131;
   }
   /* #endif */
+  /* #endif */
 
-  /* dark mode */
+  /* #ifndef VUE3-VAPOR */
   .uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {
     background-color: #1D1E1E;
   }
@@ -484,6 +580,7 @@
   .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {
     color: #ffffff;
   }
+  /* #endif */
 
   /* landscape mode */
   .uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {
@@ -550,6 +647,14 @@
     margin-left: -6px;
     border-style: solid;
   }
+  /* #ifdef VUE3-VAPOR */
+  .uni-action-sheet_dialog__triangle--bottom {
+    border-color: #fcfcfd transparent transparent transparent;
+  }
+  .uni-action-sheet_dialog__triangle--top {
+    border-color: transparent transparent #fcfcfd transparent;
+  }
+  /* #endif */
   /* web wide screen */
   @media screen and (min-width: 500px) and (min-height: 500px) {
     .uni-action-sheet_dialog__mask {
@@ -593,6 +698,48 @@
     .uni-action-sheet_dialog__action {
       padding: 10px 6px;
     }
+  }
+  /* #endif */
+
+  /* #ifdef VUE3-VAPOR */
+  @media (prefers-color-scheme: dark) {
+    .uni-action-sheet_dialog__container {
+      background-color: #1D1E1E;
+    }
+    .uni-action-sheet_dialog__menu,
+    .uni-action-sheet_dialog__action,
+    .uni-action-sheet_dialog__safe-area {
+      background-color: #2C2C2B;
+    }
+    .uni-action-sheet_dialog__title__text {
+      color: #999999;
+    }
+    .uni-action-sheet_dialog__cell__text,
+    .uni-action-sheet_dialog__action__text {
+      color: #ffffff;
+    }
+    .uni-action-sheet_dialog__hover {
+      background-color: #1c1c1c;
+    }
+    /* #ifdef APP */
+    .border-t {
+      border-top-color: #2F3131;
+    }
+    .border-b {
+      border-bottom-color: #2F3131;
+    }
+    /* #endif */
+    /* #ifdef WEB */
+    .divider {
+      background-color: #2F3131;
+    }
+    .uni-action-sheet_dialog__triangle--bottom {
+      border-color: #2C2C2B transparent transparent transparent;
+    }
+    .uni-action-sheet_dialog__triangle--top {
+      border-color: transparent transparent #2C2C2B transparent;
+    }
+    /* #endif */
   }
   /* #endif */
 </style>

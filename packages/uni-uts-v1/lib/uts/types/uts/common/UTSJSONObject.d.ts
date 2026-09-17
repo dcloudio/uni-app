@@ -666,7 +666,7 @@ interface UTSJSONObject {
 interface UTSJSONObjectConstructor {
   new(value?: any): UTSJSONObject;
   /**
-     以数组的形式返回指定UTSJSONObjetc 对象内可枚举属性的名称列表
+     以数组的形式返回指定UTSJSONObject 对象内可枚举属性的名称列表
      @param item 需要检索的UTSJSONObject 实例对象
      @return 返回 Array<string> 类型的可枚举属性的名称列表
      @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/utsjsonobject.html#keys

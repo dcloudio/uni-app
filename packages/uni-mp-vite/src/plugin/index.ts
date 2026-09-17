@@ -19,7 +19,7 @@ import {
   removeExt,
   resolveBuiltIn,
   resolvePiniaAlias,
-  resolveVueI18nRuntimeAlias,
+  resolveVueI18nAlias,
 } from '@dcloudio/uni-cli-shared'
 
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
@@ -51,7 +51,7 @@ export interface UniMiniProgramPluginOptions {
   }
   global: string
   json?: {
-    windowOptionsMap?: Record<string, string>
+    windowOptionsMap?: Record<string, string | string[]>
     tabBarOptionsMap?: Record<string, string>
     tabBarItemOptionsMap?: Record<string, string>
     formatAppJson?: (
@@ -175,7 +175,7 @@ export function uniMiniProgramPlugin(
                 process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist'
               }/vue.runtime.esm.js`
             ),
-            ...resolveVueI18nRuntimeAlias(),
+            ...resolveVueI18nAlias(),
             // 项目未安装 pinia 时使用内部版本及其依赖
             ...resolvePiniaAlias(),
             '@vue/devtools-api': resolveBuiltIn('@dcloudio/uni-mp-vue'),

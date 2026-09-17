@@ -91,6 +91,8 @@ export interface StatDataDeps {
   system: SystemInfoStatic
   /** 实时 locale + 屏幕。 */
   locale: LocaleAndScreen
+  /** 可选的事件时快照读取器；缺省时保持使用 install 时的 locale。 */
+  resolveLocale?: () => LocaleAndScreen
   /** 设备 ID（`uuid` 出口映射为上行 `did`）。 */
   device: { uuid: string }
   /** 网络快照（异步获取后由 collector 缓存）。 */
@@ -153,7 +155,6 @@ export function createStatDataBuilder(deps: StatDataDeps) {
       config,
       platform,
       system,
-      locale,
       device,
       net,
       location,
@@ -161,6 +162,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
       legacy,
       web,
     } = deps
+    const locale = deps.resolveLocale ? deps.resolveLocale() : deps.locale
     return {
       ak: s(config.ak),
       usv: s(config.usv),
@@ -218,15 +220,16 @@ export function createStatDataBuilder(deps: StatDataDeps) {
     return out
   }
 
-  /**
-   * 入口标记：**仅 lt=11** 携带 iey + ppiey（缺省按 0）；lt=1 / lt=3 等不参与入口字段。
-   */
+  /** 入口标记：lt=11 携带 iey + ppiey；lt=21 只携带当前页 iey。 */
   function entryFields(ctx: EventContext): StatData {
     if (ctx.lt === '11') {
       return {
         iey: toIey(ctx.iey !== undefined ? ctx.iey : false) as IEYValue,
         ppiey: toIey(ctx.ppiey !== undefined ? ctx.ppiey : false) as IEYValue,
       }
+    }
+    if (ctx.lt === '21' && ctx.iey !== undefined) {
+      return { iey: toIey(ctx.iey) as IEYValue }
     }
     return {}
   }

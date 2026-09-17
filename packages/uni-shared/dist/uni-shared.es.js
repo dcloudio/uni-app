@@ -2577,6 +2577,7 @@ const APP_NATIVE_TAGS = [
     'rich-text-native',
     'cover-image',
     'cover-view',
+    'glass-effect-view',
 ];
 /**
  * 可能后续会添加的tags，native或easycom

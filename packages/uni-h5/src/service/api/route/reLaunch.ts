@@ -33,12 +33,12 @@ export const reLaunch = defineAsyncApi<API_TYPE_RE_LAUNCH>(
       return
     }
 
-    return (
-      removeAllPages(),
-      navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting })
-        .then(resolve)
-        .catch(reject)
-    )
+    if (!__X__) {
+      removeAllPages()
+    }
+    return navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting })
+      .then(resolve)
+      .catch(reject)
   },
   ReLaunchProtocol,
   ReLaunchOptions

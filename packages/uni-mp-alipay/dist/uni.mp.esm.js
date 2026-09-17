@@ -542,9 +542,11 @@ function updateMiniProgramComponentProperties(up, mpInstance) {
         mpInstance.setData(nextProps);
     }
 }
-function updateComponentProps(up, instance) {
+function updateComponentProps(up, instance, extraProps) {
     const prevProps = toRaw(instance.props);
-    const nextProps = findComponentPropsData(up) || {};
+    // 仅支付宝 externalClass 更新时可能没有 uP，此时保留其他现有 props，避免默认值被误判为删除。
+    const nextProps = findComponentPropsData(up) ||
+        ({});
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
         if (hasQueueJob(instance.update)) {
@@ -672,6 +674,19 @@ function handleLink$1(event) {
     detail.parent = parentVm;
 }
 
+function createVueRuntimeOptions(vueOptions, externalClasses) {
+    return vueOptions;
+}
+/**
+ * 支付宝 externalClass 的真实值由原生 props 提供，不经过 uP props 缓存。
+ * Vue prop 使用驼峰命名，因此优先读取 boxClass，同时兼容平台返回 box-class 的情况。
+ */
+function getExternalClassProps(nativeProps, externalClasses) {
+    {
+        return;
+    }
+}
+
 const isComponent2 = my.canIUse('component2');
 const mocks = ['$id'];
 function initRelation(mpInstance, detail) {
@@ -775,6 +790,15 @@ function setRef(ref, refValue, refs, setupState, isRefInVFor = false) {
         if (isTemplateRef(templateRef)) {
             setTemplateRef(templateRef, refValue, setupState);
             // 对于 template ref，需要手动同步到 refs，否则 getCurrentInstance().proxy.$refs 获取不到
+            if (!templateRef.k && isString(templateRef.r)) {
+                if (isRefInVFor) {
+                    (refs[templateRef.r] || (refs[templateRef.r] = [])).push(refValue);
+                }
+                else {
+                    refs[templateRef.r] = refValue;
+                }
+                return;
+            }
             if (!templateRef.k || !isRef(templateRef.r)) {
                 return;
             }
@@ -803,11 +827,12 @@ function triggerEvent(type, detail) {
     });
 }
 // const IGNORES = ['$slots', '$scopedSlots']
-function initPropsObserver(componentOptions) {
+function initPropsObserver(componentOptions, externalClasses) {
     const observe = function observe(props) {
         const nextProps = isComponent2 ? props : this.props;
         const up = nextProps.uP;
-        if (!up) {
+        const externalClassProps = undefined;
+        if (!up && !externalClassProps) {
             return;
         }
         if (this.$vm) {
@@ -843,10 +868,12 @@ const handleLink = (function () {
         (this._$childVues || (this._$childVues = [])).unshift(detail);
     };
 })();
-function createVueComponent(mpType, mpInstance, vueOptions, parent) {
-    return $createComponent({
+function createVueComponent(mpType, mpInstance, vueOptions, parent, externalClasses) {
+    const props = findPropsData(mpInstance.props, mpType === 'page');
+    Object.assign(props, getExternalClassProps(mpInstance.props));
+    const vm = $createComponent({
         type: vueOptions,
-        props: findPropsData(mpInstance.props, mpType === 'page'),
+        props,
     }, {
         mpType,
         mpInstance,
@@ -857,6 +884,7 @@ function createVueComponent(mpType, mpInstance, vueOptions, parent) {
             initComponentInstance(instance, options);
         },
     });
+    return vm;
 }
 
 const MPComponent = Component;
@@ -1024,11 +1052,14 @@ function initVm(mpInstance, createComponent) {
 function initCreateComponent() {
     return function createComponent(vueOptions) {
         vueOptions = vueOptions.default || vueOptions;
+        // 支付宝由原生 Component 承载 externalClass；Vue 内部只需接收真实 class 字符串，
+        // 不能继续启用微信/App 的 externalClass 归一化，否则值会被替换为属性名。
+        const vueRuntimeOptions = createVueRuntimeOptions(vueOptions);
         const mpComponentOptions = {
             props: initComponentProps(vueOptions.props),
             didMount() {
                 const createComponent = (parent) => {
-                    return createVueComponent('component', this, vueOptions, parent);
+                    return createVueComponent('component', this, vueRuntimeOptions, parent);
                 };
                 if (my.dd) {
                     // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
@@ -1067,7 +1098,7 @@ function initCreateComponent() {
         if (isComponent2) {
             mpComponentOptions.onInit = function onInit() {
                 initVm(this, (parent) => {
-                    return createVueComponent('component', this, vueOptions, parent);
+                    return createVueComponent('component', this, vueRuntimeOptions, parent);
                 });
             };
         }

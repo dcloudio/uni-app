@@ -35,17 +35,17 @@ export function addSafeAreaInsets(
   }
 }
 
-export function getOSInfo(system: string, platform: string) {
+export function getOSInfo(system: string = '', platform: string = '') {
   /**
    * system 枚举值说明：
    *
    * weixin: 操作系统及版本
    * qq: 操作系统及版本
    * kuaishou: 操作系统及版本
+   * toutiao/douyin: 操作系统及版本
    *
    * alipay、dingding: 系统版本
    * baidu: 操作系统版本
-   * toutiao/douyin: 操作系统版本
    * jd: 操作系统版本
    * harmony: 操作系统版本
    *
@@ -58,7 +58,6 @@ export function getOSInfo(system: string, platform: string) {
     platform &&
     (__PLATFORM__ === 'mp-alipay' ||
       __PLATFORM__ === 'mp-baidu' ||
-      __PLATFORM__ === 'mp-toutiao' ||
       __PLATFORM__ === 'mp-jd' ||
       __PLATFORM__ === 'mp-harmony')
   ) {
@@ -96,9 +95,9 @@ export function getOSInfo(system: string, platform: string) {
   }
 
   return {
-    osName,
-    osVersion,
-    system,
+    osName: osName.trim(),
+    osVersion: osVersion.trim(),
+    system: system.trim(),
   }
 }
 
@@ -142,20 +141,25 @@ export function populateParameters(
   fromRes: any,
   toRes: UniApp.GetSystemInfoResult
 ) {
-  const {
+  let {
     brand = '',
     model = '',
     system = '',
     language = '',
     theme,
-    version,
-    platform,
+    version = '',
+    platform = '',
     fontSizeSetting,
     SDKVersion,
     pixelRatio,
     deviceOrientation,
   } = fromRes
   // const isQuickApp = __PLATFORM__.indexOf('quickapp-webview') !== -1
+
+  if (__PLATFORM__ === 'mp-jd') {
+    system = `${system} ${version}`
+    system = system.trim()
+  }
 
   // osName osVersion
   const {
@@ -259,7 +263,7 @@ export function populateParameters(
   extend(toRes, parameters)
 }
 
-export function getGetDeviceType(fromRes: any, model: string) {
+export function getGetDeviceType(fromRes: any, model: string = '') {
   const platform = fromRes.platform || ''
   // deviceType
   let deviceType = fromRes.deviceType || 'phone'

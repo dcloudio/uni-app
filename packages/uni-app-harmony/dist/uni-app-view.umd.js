@@ -14464,10 +14464,7 @@
       var checkboxValue = ref(props2.value);
       function getCheckBoxStyle(checked) {
         if (props2.disabled) {
-          return {
-            backgroundColor: "#E1E1E1",
-            borderColor: "#D1D1D1"
-          };
+          return {};
         }
         var style = {};
         if (checked) {
@@ -14533,7 +14530,7 @@
             "uni-checkbox-input-disabled": props2.disabled
           }],
           "style": checkboxStyle.value
-        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
       };
     }
   });
@@ -19574,7 +19571,7 @@
     },
     color: {
       type: String,
-      default: "#007aff"
+      default: ""
     },
     backgroundColor: {
       type: String,
@@ -19594,7 +19591,7 @@
     },
     iconColor: {
       type: String,
-      default: "#ffffff"
+      default: ""
     }
   };
   const Radio = /* @__PURE__ */ defineBuiltInComponent({
@@ -19609,26 +19606,25 @@
       var radioValue = ref(props2.value);
       function getRadioStyle(checked) {
         if (props2.disabled) {
-          return {
-            backgroundColor: "#E1E1E1",
-            borderColor: "#D1D1D1"
-          };
+          return;
         }
         var style = {};
-        if (radioChecked.value) {
-          style.backgroundColor = props2.activeBackgroundColor || props2.color;
-          style.borderColor = props2.activeBorderColor || style.backgroundColor;
+        if (checked) {
+          var backgroundColor = props2.activeBackgroundColor || props2.color;
+          if (backgroundColor) {
+            style.backgroundColor = backgroundColor;
+            style.borderColor = props2.activeBorderColor || backgroundColor;
+          } else if (props2.activeBorderColor) {
+            style.borderColor = props2.activeBorderColor;
+          }
         } else {
           if (props2.borderColor)
             style.borderColor = props2.borderColor;
           if (props2.backgroundColor)
             style.backgroundColor = props2.backgroundColor;
         }
-        return style;
+        return style.borderColor || style.backgroundColor ? style : void 0;
       }
-      var radioStyle = computed(() => {
-        return getRadioStyle(radioChecked.value);
-      });
       watch([() => props2.checked, () => props2.value], (_ref2) => {
         var [newChecked, newModelValue] = _ref2;
         radioChecked.value = newChecked;
@@ -19663,21 +19659,26 @@
         var booleanAttrs = useBooleanAttr(props2, "disabled");
         var realCheckValue;
         realCheckValue = radioChecked.value;
+        var radioStyle = getRadioStyle(realCheckValue);
+        var hoverBorderColor = realCheckValue ? radioStyle === null || radioStyle === void 0 ? void 0 : radioStyle.borderColor : props2.activeBorderColor;
+        var hoverStyle = hoverBorderColor ? {
+          "--HOVER-BD-COLOR": hoverBorderColor
+        } : void 0;
+        var iconColor = props2.iconColor || "currentColor";
         return createVNode("uni-radio", mergeProps(booleanAttrs, {
           "id": props2.id,
           "onClick": _onClick,
           "ref": rootRef
         }), [createVNode("div", {
           "class": "uni-radio-wrapper",
-          "style": {
-            "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
-          }
+          "style": hoverStyle
         }, [createVNode("div", {
           "class": ["uni-radio-input", {
+            "uni-radio-input-checked": realCheckValue,
             "uni-radio-input-disabled": props2.disabled
           }],
-          "style": radioStyle.value
-        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+          "style": radioStyle
+        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
       };
     }
   });
@@ -19969,6 +19970,15 @@
       default: function() {
         return [];
       }
+    },
+    /** @deprecated 请使用 user-select */
+    selectable: {
+      type: [Boolean, String],
+      default: false
+    },
+    userSelect: {
+      type: [Boolean, String],
+      default: false
     }
   };
   const RichText = /* @__PURE__ */ defineBuiltInComponent({
@@ -20003,7 +20013,8 @@
         deep: true
       });
       return () => h("uni-rich-text", {
-        ref: rootRef
+        ref: rootRef,
+        selectable: props2.userSelect || props2.selectable ? true : null
       }, h("div", {}, _vnode.value));
     }
   });
@@ -20635,6 +20646,16 @@
       _scrollLeftChanged
     };
   }
+  function createBackgroundColorStyle(color) {
+    return color ? {
+      backgroundColor: color
+    } : void 0;
+  }
+  function withBackgroundColor(style, color) {
+    return color ? Object.assign(style, {
+      backgroundColor: color
+    }) : style;
+  }
   var props$i = {
     name: {
       type: String,
@@ -20661,24 +20682,19 @@
       default: false
     },
     color: {
-      type: String,
-      default: "#e9e9e9"
+      type: String
     },
     backgroundColor: {
-      type: String,
-      default: "#e9e9e9"
+      type: String
     },
     activeColor: {
-      type: String,
-      default: "#007aff"
+      type: String
     },
     selectedColor: {
-      type: String,
-      default: "#007aff"
+      type: String
     },
     blockColor: {
-      type: String,
-      default: "#ffffff"
+      type: String
     },
     blockSize: {
       type: [Number, String],
@@ -20734,17 +20750,17 @@
         }, [createVNode("div", {
           "class": "uni-slider-tap-area"
         }, [createVNode("div", {
-          "style": setBgColor.value,
+          "style": setBgColor(),
           "class": "uni-slider-handle-wrapper"
         }, [createVNode("div", {
           "ref": sliderHandleRef,
-          "style": setBlockBg.value,
+          "style": setBlockBg(),
           "class": "uni-slider-handle"
         }, null, 4), createVNode("div", {
-          "style": setBlockStyle.value,
+          "style": setBlockStyle(),
           "class": "uni-slider-thumb"
         }, null, 4), createVNode("div", {
-          "style": setActiveColor.value,
+          "style": setActiveColor(),
           "class": "uni-slider-track"
         }, null, 4)], 4)]), withDirectives(createVNode("span", {
           "ref": sliderValueRef,
@@ -20763,32 +20779,41 @@
       return getValueWidth(sliderValue.value, props2.min, props2.max);
     };
     var _getBgColor = () => {
-      return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
+      var backgroundColor = props2.backgroundColor;
+      var color = props2.color;
+      if (backgroundColor && backgroundColor !== "#e9e9e9") {
+        return backgroundColor;
+      }
+      if (color && color !== "#007aff")
+        return color;
+      return backgroundColor || color;
     };
     var _getActiveColor = () => {
-      return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+      var activeColor = props2.activeColor;
+      var selectedColor = props2.selectedColor;
+      if (activeColor && activeColor !== "#007aff")
+        return activeColor;
+      if (selectedColor && selectedColor !== "#e9e9e9") {
+        return selectedColor;
+      }
+      return activeColor || selectedColor;
     };
-    var state = {
-      setBgColor: computed(() => ({
-        backgroundColor: _getBgColor()
-      })),
-      setBlockBg: computed(() => ({
+    return {
+      setBgColor: () => createBackgroundColorStyle(_getBgColor()),
+      setBlockBg: () => ({
         left: _getValueWidth()
-      })),
-      setActiveColor: computed(() => ({
-        backgroundColor: _getActiveColor(),
+      }),
+      setActiveColor: () => withBackgroundColor({
         width: _getValueWidth()
-      })),
-      setBlockStyle: computed(() => ({
+      }, _getActiveColor()),
+      setBlockStyle: () => withBackgroundColor({
         width: props2.blockSize + "px",
         height: props2.blockSize + "px",
         marginLeft: -props2.blockSize / 2 + "px",
         marginTop: -props2.blockSize / 2 + "px",
-        left: _getValueWidth(),
-        backgroundColor: props2.blockColor
-      }))
+        left: _getValueWidth()
+      }, props2.blockColor)
     };
-    return state;
   }
   function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger2) {
     var truthStep = computed(() => {

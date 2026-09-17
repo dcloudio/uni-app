@@ -18,6 +18,7 @@ import {
   getWorkers,
   initSourceFileCallback,
   initUTSKotlinAutoImportsOnce,
+  initUasmTransformerCreator,
   isNormalCompileTarget,
   normalizeEmitAssetFileName,
   normalizePath,
@@ -101,6 +102,7 @@ export function uniAppPlugin(): UniVitePlugin {
     process.env.UNI_APP_X_TSC === 'true'
       ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
           resolveWorkers,
+          loadUasmTransformer: initUasmTransformerCreator('app-android'),
           sourceFileCallback: initSourceFileCallback(),
         })
       : null

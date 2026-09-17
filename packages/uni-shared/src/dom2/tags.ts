@@ -11,6 +11,7 @@ const APP_NATIVE_TAGS = [
   'rich-text-native',
   'cover-image',
   'cover-view',
+  'glass-effect-view',
 ]
 
 /**

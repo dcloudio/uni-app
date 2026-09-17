@@ -98,6 +98,7 @@ describe('pages.json', () => {
       navigationBarTitleText: 'uni-app',
       navigationBarBackgroundColor: '#F8F8F8',
       backgroundColor: '#F8F8F8',
+      backgroundColorContent: '#EFEFEF',
       enablePullDownRefresh: true,
       allowsBounceVertical: true,
       optionMenu: {
@@ -137,7 +138,7 @@ describe('pages.json', () => {
       defaultTitle: 'uni-app',
       navigationBarFrontColor: 'black',
       titleBarColor: '#F8F8F8',
-      backgroundColor: '#F8F8F8',
+      backgroundColor: '#EFEFEF',
       pullRefresh: true,
       allowsBounceVertical: true,
       optionMenu: {
@@ -161,6 +162,16 @@ describe('pages.json', () => {
       onReachBottomDistance: 34,
       responsive: true,
       showTitleLoading: 'YES',
+    })
+    const fallbackWindowOptions = parseWindowOptions(
+      {
+        backgroundColor: '#F8F8F8',
+      } as any,
+      'mp-alipay',
+      alipayOptions.json!.windowOptionsMap
+    )
+    expect(fallbackWindowOptions).toStrictEqual({
+      backgroundColor: '#F8F8F8',
     })
   })
 

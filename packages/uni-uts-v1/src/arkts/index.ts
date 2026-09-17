@@ -15,7 +15,7 @@ import type { CompileResult } from '../index'
 import { sync } from 'fast-glob'
 import { parseJson } from '../shared'
 import { parseUTSSyntaxError } from '../stacktrace'
-import { getArkTSAutoImports, getRuntimePackageName } from './utils'
+import { getArkTSAutoImports, getHarmonyRuntimePackageName } from './utils'
 import { compileEncrypt } from './encrypt'
 import { isEncrypt } from '../encrypt'
 
@@ -79,6 +79,7 @@ export async function compileArkTSExtApi(
     rewriteConsoleExpr,
   }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   let filename = resolveAppHarmonyIndexFile(pluginDir)
   if (!filename) {
     // 如果有自定义组件，则使用自定义组件生成的index.uts
@@ -88,13 +89,13 @@ export async function compileArkTSExtApi(
     }
     filename = path.resolve(pluginDir, 'utssdk/app-harmony/index.uts')
   }
-  const runtimePackageName = getRuntimePackageName(isX)
+  const runtimePackageName = getHarmonyRuntimePackageName(!!isX, isDom2)
 
   const { bundle, UTSTarget } = getUTSCompiler()
   const pluginId = path.basename(pluginDir)
   const outputUniModuleDir = outputDir
 
-  let autoImportExternals = getArkTSAutoImports(isX)
+  let autoImportExternals = getArkTSAutoImports(!!isX, isDom2)
 
   if (isOhpmPackage) {
     // 只保留uni-app-runtime
@@ -129,13 +130,13 @@ export async function compileArkTSExtApi(
       sourceMap: sourceMap
         ? path.resolve(resolveUTSSourceMapPath(), 'uni_modules', pluginId)
         : false,
-      isDom2: process.env.UNI_APP_X_DOM2 === 'true',
+      isDom2,
       extname: '.ets',
       logFilename: false,
       isPlugin: true,
       transform: {
         autoImportExternals,
-        uniExtApiDefaultNamespace: '@dcloudio/uni-app-x-runtime',
+        uniExtApiDefaultNamespace: getHarmonyRuntimePackageName(!!isX, isDom2),
       },
       treeshake: {
         noSideEffects: true,

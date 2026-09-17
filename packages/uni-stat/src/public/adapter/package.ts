@@ -13,7 +13,11 @@
  *   - `an`：应用展示名（App = plus.runtime.appname；小程序/H5 = `process.env.UNI_APP_NAME` 等）。
  */
 
-import { getGlobalObject, resolveUniRuntime } from '../infra/uniRuntime'
+import {
+  getGlobalObject,
+  isVaporStatRuntime,
+  resolveUniRuntime,
+} from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
 import { getPlatform, isApp, isH5, isMp } from './platform'
@@ -44,9 +48,19 @@ interface PlusLike {
   os?: { name?: string }
 }
 
+interface AppBaseInfoLike {
+  appId?: string
+  appName?: string
+  hostPackageName?: string
+  packageName?: string
+  bundleId?: string
+  bundleName?: string
+}
+
 interface UniWithCanIUse {
   canIUse?: (k: string) => boolean
   getAccountInfoSync?: () => { miniProgram?: { appId?: string } }
+  getAppBaseInfo?: () => AppBaseInfoLike
 }
 
 function getUni(): UniWithCanIUse | undefined {
@@ -56,6 +70,10 @@ function getUni(): UniWithCanIUse | undefined {
 
 function getPlus(): PlusLike | undefined {
   return getGlobalObject().plus as PlusLike | undefined
+}
+
+function getAppBaseInfo(): AppBaseInfoLike {
+  return tryRun(() => getUni()?.getAppBaseInfo?.() ?? {}, {})
 }
 
 /**
@@ -211,9 +229,23 @@ export function getPackageInfo(): PackageInfo {
   let an = ''
 
   if (isApp()) {
-    tdaid = tryRun(() => getPlus()?.runtime?.appid ?? '', '')
-    pkn = getAppPkn() || tdaid
-    an = getAppName() || getEnvAppName()
+    const base = getAppBaseInfo()
+    if (isVaporStatRuntime()) {
+      // uni-app x Vapor 不提供 plus，只读取当前已公开的 getAppBaseInfo 字段。
+      tdaid = base.appId || ''
+      pkn =
+        base.packageName ||
+        base.bundleId ||
+        base.bundleName ||
+        base.hostPackageName ||
+        ''
+      an = base.appName || getEnvAppName()
+    } else {
+      tdaid =
+        tryRun(() => getPlus()?.runtime?.appid ?? '', '') || base.appId || ''
+      pkn = getAppPkn() || base.hostPackageName || tdaid
+      an = getAppName() || base.appName || getEnvAppName()
+    }
     mpn = pkn || tdaid
   } else if (isMp()) {
     tdaid = getMpTdaid(platform)

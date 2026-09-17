@@ -2,6 +2,31 @@ import { Plugin, ViteDevServer } from 'vite';
 import * as _compiler from 'vue/compiler-sfc';
 import { SFCScriptCompileOptions, SFCTemplateCompileOptions, SFCStyleCompileOptions } from 'vue/compiler-sfc';
 
+interface StartOfSourceMap {
+    file?: string;
+    sourceRoot?: string;
+}
+
+interface RawSourceMap extends StartOfSourceMap {
+    version: string;
+    sources: string[];
+    names: string[];
+    sourcesContent?: string[];
+    mappings: string;
+}
+
+interface UniAppXVaporScriptTransformInput {
+    code: string;
+    id: string;
+    lang?: string;
+}
+interface UniAppXVaporScriptTransformResult {
+    code: string;
+    map?: RawSourceMap;
+    meta?: Record<string, unknown>;
+}
+type UniAppXVaporScriptTransform = (input: UniAppXVaporScriptTransformInput) => UniAppXVaporScriptTransformResult | undefined;
+
 interface VueQuery {
     vue?: boolean;
     src?: string;
@@ -42,6 +67,8 @@ interface Options {
      * Use custom compiler-sfc instance. Can be used to force a specific version.
      */
     compiler?: typeof _compiler;
+    /** uni-app x Vapor 脚本转换扩展点。 */
+    readonly uniAppXVaporScriptTransform?: UniAppXVaporScriptTransform;
     /**
      * Requires @vitejs/plugin-vue@^5.1.0
      */

@@ -1,5 +1,9 @@
 import path from 'path'
-import { initWorkers, normalizeJavaScriptWorkerSource } from '../src/workers'
+import {
+  genAlipayWorkerRuntimeImportCode,
+  initWorkers,
+  normalizeJavaScriptWorkerSource,
+} from '../src/workers'
 
 describe('workers', () => {
   test('initWorkers', () => {
@@ -21,5 +25,14 @@ describe('workers', () => {
         'export class HelloWorkerTask extends WorkerTaskImpl {\n}'
       )
     ).toContain('class HelloWorkerTask extends WorkerTaskImpl {\n}\nexport {}')
+  })
+
+  test('genAlipayWorkerRuntimeImportCode keeps runtime relative', () => {
+    expect(
+      genAlipayWorkerRuntimeImportCode('workers/index.js', 'workers')
+    ).toBe("import './uni-worker.js';")
+    expect(
+      genAlipayWorkerRuntimeImportCode('workers/request/index.js', 'workers')
+    ).toBe("import '../uni-worker.js';")
   })
 })

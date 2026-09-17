@@ -126,6 +126,14 @@ const eventMap = {
     // swiper
     animationfinish: 'animationEnd',
     chooseavatar: 'chooseAvatar',
+    // page-container
+    beforeenter: 'beforeEnter',
+    afterenter: 'afterEnter',
+    entercancelled: 'enterCancelled',
+    beforeleave: 'beforeLeave',
+    afterleave: 'afterLeave',
+    leavecancelled: 'leaveCancelled',
+    clickoverlay: 'clickOverlay',
 };
 
 function transformOpenType(node) {
@@ -188,6 +196,16 @@ const transformMPBuiltInTagOptions = {
         canvas: {
             canvasId: 'id',
         },
+        user: {
+            canvasId: 'id',
+        },
+        picker: {
+            headerText: 'title',
+        },
+        // 支付宝小程序不支持 text 的 user-select 属性 https://opendocs.alipay.com/mini/component/text?pathHash=f8422b38#%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E
+        text: {
+            userSelect: 'selectable',
+        },
     },
     propAdd: {
         canvas: [
@@ -199,6 +217,9 @@ const transformMPBuiltInTagOptions = {
     },
     tagRename: {
         'list-view': 'scroll-view',
+        'list-item': 'view',
+        'sticky-header': 'view',
+        'sticky-section': 'view',
     },
 };
 const transformMPBuiltInTag = uniCliShared.createMPBuiltInTagTransform(transformMPBuiltInTagOptions);
@@ -310,10 +331,15 @@ const options = {
             defaultTitle: 'navigationBarTitleText',
             navigationBarFrontColor: 'navigationBarTextStyle',
             pullRefresh: 'enablePullDownRefresh',
-            allowsBounceVertical: 'allowsBounceVertical',
+            // uni-app x 使用跨平台 bounces，支付宝产物仍输出 allowsBounceVertical。
+            get allowsBounceVertical() {
+                return process.env.UNI_APP_X === 'true'
+                    ? ['bounces', 'allowsBounceVertical']
+                    : 'allowsBounceVertical';
+            },
             titleBarColor: 'navigationBarBackgroundColor',
             optionMenu: 'optionMenu',
-            backgroundColor: 'backgroundColor',
+            backgroundColor: ['backgroundColorContent', 'backgroundColor'], // https://opendocs.alipay.com/mini/framework/app-json?pathHash=1bcdd448#window
             usingComponents: 'usingComponents',
             navigationBarShadow: 'navigationBarShadow',
             titleImage: 'titleImage',
@@ -334,6 +360,18 @@ const options = {
             name: 'text',
             icon: 'iconPath',
             activeIcon: 'selectedIconPath',
+        },
+        formatAppJson(appJson, _manifestJson, pageJsons) {
+            if (process.env.UNI_APP_X !== 'true') {
+                return;
+            }
+            [appJson.window, ...Object.values(pageJsons)].forEach((options) => {
+                if (typeof (options === null || options === void 0 ? void 0 : options.allowsBounceVertical) === 'boolean') {
+                    options.allowsBounceVertical = options.allowsBounceVertical
+                        ? 'YES'
+                        : 'NO';
+                }
+            });
         },
     },
     app: {

@@ -15,6 +15,7 @@ import {
   getWorkers,
   hash,
   initI18nOptionsOnce,
+  isAlipayXStyleIsolation,
   mergeMiniProgramAppJson,
   normalizePagePath,
   normalizePath,
@@ -162,6 +163,10 @@ export function uniPagesJsonPlugin(
       allPagePaths = []
       Object.keys(pageJsons).forEach((name) => {
         if (isNormalPage(name)) {
+          if (isAlipayXStyleIsolation()) {
+            // 页面样式需要具备进入组件的原生可见性，最终是否命中仍由模板前缀 class 决定。
+            pageJsons[name].styleIsolation = 'shared'
+          }
           addMiniProgramPageJson(name, pageJsons[name])
           allPagePaths.push(name)
         }

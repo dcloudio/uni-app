@@ -12,6 +12,7 @@ describe('utils', () => {
   function genIOSConfigJson(pluginId: string, indexContent: string) {
     const inputDir = resolve(tempDir, 'input')
     const outputDir = resolve(tempDir, 'output')
+    const cacheDir = resolve(tempDir, 'cache')
     const utsInputDir = resolve(
       inputDir,
       'uni_modules',
@@ -30,10 +31,11 @@ describe('utils', () => {
       `uni_modules/${pluginId}`,
       true,
       inputDir,
-      outputDir
+      outputDir,
+      cacheDir
     )
 
-    return fs.readJSONSync(
+    const configJson = fs.readJSONSync(
       resolve(
         outputDir,
         'uni_modules',
@@ -43,6 +45,19 @@ describe('utils', () => {
         'config.json'
       )
     )
+    expect(
+      fs.readJSONSync(
+        resolve(
+          cacheDir,
+          'app-ios',
+          'uts',
+          'uni_modules',
+          pluginId,
+          'config.json'
+        )
+      )
+    ).toEqual(configJson)
+    return configJson
   }
 
   beforeEach(() => {

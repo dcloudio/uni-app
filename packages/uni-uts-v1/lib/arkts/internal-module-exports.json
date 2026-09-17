@@ -1666,6 +1666,24 @@
       "RequestSuccessCallback"
     ],
     [
+      "RequestSystemPermission"
+    ],
+    [
+      "RequestSystemPermissionComplete"
+    ],
+    [
+      "RequestSystemPermissionErrorCode"
+    ],
+    [
+      "RequestSystemPermissionFail"
+    ],
+    [
+      "RequestSystemPermissionOptions"
+    ],
+    [
+      "RequestSystemPermissionSuccess"
+    ],
+    [
       "RequestTask"
     ],
     [
@@ -2465,6 +2483,9 @@
     ],
     [
       "Worker"
+    ],
+    [
+      "WorkerEnv"
     ],
     [
       "WorkerOnErrorCallback"

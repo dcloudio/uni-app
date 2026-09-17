@@ -3297,7 +3297,6 @@ function mergeWatchOptions(to, from) {
   }
   return merged;
 }
-
 function initProps(instance, rawProps, isStateful, isSSR = false) {
   const props = {};
   const attrs = {};
@@ -3332,6 +3331,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
   } = instance;
   const rawCurrentProps = toRaw(props);
   const [options] = instance.propsOptions;
+  const externalClassesSourceIsPage = false;
   let hasAttrsChanged = false;
   if (
     // always force full diff in dev
@@ -3350,7 +3350,10 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
         if (options) {
           if (hasOwn(attrs, key)) {
             if (value !== attrs[key]) {
-              attrs[key] = normalizeInheritAttrsValue(instance, key, value);
+              attrs[key] = normalizeInheritAttrsValue(
+                instance,
+                key,
+                value);
               hasAttrsChanged = true;
             }
           } else {
@@ -3361,12 +3364,16 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
               camelizedKey,
               value,
               instance,
-              false
+              false,
+              externalClassesSourceIsPage
             );
           }
         } else {
           if (value !== attrs[key]) {
-            attrs[key] = normalizeInheritAttrsValue(instance, key, value);
+            attrs[key] = normalizeInheritAttrsValue(
+              instance,
+              key,
+              value);
             hasAttrsChanged = true;
           }
         }
@@ -3418,6 +3425,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
 }
 function setFullProps(instance, rawProps, props, attrs) {
   const [options, needCastKeys] = instance.propsOptions;
+  const externalClassesSourceIsPage = false;
   let hasAttrsChanged = false;
   let rawCastValues;
   if (rawProps) {
@@ -3437,7 +3445,10 @@ function setFullProps(instance, rawProps, props, attrs) {
         }
       } else if (!isEmitListener(instance.emitsOptions, key)) {
         if (!(key in attrs) || value !== attrs[key]) {
-          attrs[key] = normalizeInheritAttrsValue(instance, key, value);
+          attrs[key] = normalizeInheritAttrsValue(
+            instance,
+            key,
+            value);
           hasAttrsChanged = true;
         }
       }
@@ -3454,16 +3465,17 @@ function setFullProps(instance, rawProps, props, attrs) {
         key,
         castValues[key],
         instance,
-        !hasOwn(castValues, key)
+        !hasOwn(castValues, key),
+        externalClassesSourceIsPage
       );
     }
   }
   return hasAttrsChanged;
 }
-function normalizeInheritAttrsValue(instance, key, value) {
+function normalizeInheritAttrsValue(instance, key, value, sourceIsPage) {
   return value;
 }
-function resolvePropValue(options, props, key, value, instance, isAbsent) {
+function resolvePropValue(options, props, key, value, instance, isAbsent, sourceIsPage = false) {
   const result = _resolvePropValue(
     options,
     props,
@@ -5489,8 +5501,10 @@ function initApp(app) {
 
 const propsCaches = Object.create(null);
 function renderProps(props) {
-    const { uid, __counter } = getCurrentInstance();
-    const propsId = (propsCaches[uid] || (propsCaches[uid] = [])).push(guardReactiveProps(props)) - 1;
+    const instance = getCurrentInstance();
+    const { uid, __counter } = instance;
+    const rawProps = guardReactiveProps(props);
+    const propsId = (propsCaches[uid] || (propsCaches[uid] = [])).push(rawProps) - 1;
     // 强制每次更新
     return uid + ',' + propsId + ',' + __counter;
 }

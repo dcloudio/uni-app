@@ -386,10 +386,11 @@ function invokeFail(id, name, errMsg, errRes = {}) {
     let res = extend({ errMsg: apiErrMsg }, errRes);
     {
         if (typeof UniError !== 'undefined') {
-            res =
-                typeof errRes.errCode !== 'undefined'
-                    ? new UniError(name, errRes.errCode, apiErrMsg)
-                    : new UniError(apiErrMsg, errRes);
+            const errOptions = extend({}, errRes);
+            if (typeof errOptions.errSubject === 'undefined') {
+                errOptions.errSubject = name;
+            }
+            res = new UniError(apiErrMsg, errOptions);
         }
     }
     return invokeCallback(id, res);
@@ -1019,11 +1020,42 @@ function shouldKeepReturnValue(methodName) {
 }
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
+const ON_API_RE = /^on[A-Z]/;
+const OFF_API_RE = /^off[A-Z]/;
+function getOnApiName(methodName) {
+    return OFF_API_RE.test(methodName) ? `on${methodName.slice(3)}` : '';
+}
 function initWrapper(protocols) {
+    const eventCallbackMap = new WeakMap();
     function processCallback(methodName, method, returnValue) {
         return function (res) {
             return method(processReturnValue(methodName, res, returnValue));
         };
+    }
+    function processEventCallback(methodName, callback, returnValue) {
+        if (ON_API_RE.test(methodName)) {
+            let methodCallbackMap = eventCallbackMap.get(callback);
+            if (!methodCallbackMap) {
+                methodCallbackMap = new Map();
+                eventCallbackMap.set(callback, methodCallbackMap);
+            }
+            let eventCallback = methodCallbackMap.get(methodName);
+            if (!eventCallback) {
+                eventCallback = processCallback(methodName, callback, returnValue);
+                methodCallbackMap.set(methodName, eventCallback);
+            }
+            return eventCallback;
+        }
+        if (OFF_API_RE.test(methodName)) {
+            const onMethodName = getOnApiName(methodName);
+            const methodCallbackMap = eventCallbackMap.get(callback);
+            const eventCallback = methodCallbackMap === null || methodCallbackMap === void 0 ? void 0 : methodCallbackMap.get(onMethodName);
+            if (eventCallback) {
+                return eventCallback;
+            }
+            return callback;
+        }
+        return processCallback(methodName, callback, returnValue);
     }
     function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
         if (isPlainObject(fromArgs)) {
@@ -1069,7 +1101,8 @@ function initWrapper(protocols) {
             if (isFunction(argsOption)) {
                 argsOption(fromArgs, {});
             }
-            fromArgs = processCallback(methodName, fromArgs, returnValue);
+            // 事件 API 需要保证 on/off 传给平台的回调引用一致。
+            fromArgs = processEventCallback(methodName, fromArgs, returnValue);
         }
         return fromArgs;
     }
@@ -1089,10 +1122,13 @@ function initWrapper(protocols) {
          * - 开发者自定义的方法属性也会进入此方法，此时method为undefined，应返回undefined
          */
         const hasProtocol = hasOwn(protocols, methodName);
+        const onMethodName = getOnApiName(methodName);
+        const hasOnProtocol = !!onMethodName && hasOwn(protocols, onMethodName);
         if (!hasProtocol && typeof tt[methodName] !== 'function') {
             return method;
         }
         const needWrapper = hasProtocol ||
+            hasOnProtocol ||
             isFunction(protocols.returnValue) ||
             isContextApi(methodName) ||
             isTaskApi(methodName);
@@ -1190,17 +1226,17 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
-function getOSInfo(system, platform) {
+function getOSInfo(system = '', platform = '') {
     /**
      * system 枚举值说明：
      *
      * weixin: 操作系统及版本
      * qq: 操作系统及版本
      * kuaishou: 操作系统及版本
+     * toutiao/douyin: 操作系统及版本
      *
      * alipay、dingding: 系统版本
      * baidu: 操作系统版本
-     * toutiao/douyin: 操作系统版本
      * jd: 操作系统版本
      * harmony: 操作系统版本
      *
@@ -1209,7 +1245,7 @@ function getOSInfo(system, platform) {
     let osName = '';
     let osVersion = '';
     if (platform &&
-        ("mp-toutiao" === 'mp-toutiao')) {
+        ("mp-toutiao" === 'mp-harmony')) {
         osName = platform;
         osVersion = system;
         system = `${osName} ${osVersion}`;
@@ -1240,9 +1276,9 @@ function getOSInfo(system, platform) {
             break;
     }
     return {
-        osName,
-        osVersion,
-        system,
+        osName: osName.trim(),
+        osVersion: osVersion.trim(),
+        system: system.trim(),
     };
 }
 function getPlatform(platform) {
@@ -1277,8 +1313,7 @@ function getPlatform(platform) {
     return platform;
 }
 function populateParameters(fromRes, toRes) {
-    const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
-    // const isQuickApp = "mp-toutiao".indexOf('quickapp-webview') !== -1
+    let { brand = '', model = '', system = '', language = '', theme, version = '', platform = '', fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // osName osVersion
     const { osName, osVersion, system: updatedSystem, } = getOSInfo(system, platform);
     let hostVersion = version;
@@ -1342,7 +1377,7 @@ function populateParameters(fromRes, toRes) {
     }
     extend(toRes, parameters);
 }
-function getGetDeviceType(fromRes, model) {
+function getGetDeviceType(fromRes, model = '') {
     fromRes.platform || '';
     // deviceType
     let deviceType = fromRes.deviceType || 'phone';
@@ -1464,6 +1499,28 @@ const navigateTo$1 = () => {
             fromRes.eventChannel = eventChannel;
         },
     };
+};
+
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
+const getDeviceInfo$1 = {
+    returnValue: (fromRes, toRes) => {
+        let { brand, model, system = '', platform = '' } = fromRes;
+        let deviceType = getGetDeviceType(fromRes, model);
+        let deviceBrand = getDeviceBrand(brand);
+        useDeviceId()(fromRes, toRes);
+        const { osName, osVersion } = getOSInfo(system, platform);
+        toRes = extend(toRes, {
+            deviceType,
+            deviceBrand,
+            deviceModel: model,
+            osName,
+            osVersion,
+            platform: getPlatform(platform),
+        });
+    },
 };
 
 const onError = {
@@ -1641,10 +1698,16 @@ const hideTabBar = {
         }
     },
 };
+const getDeviceInfo = extend({}, getDeviceInfo$1, {
+    name: tt.canIUse('getDeviceInfoSync')
+        ? 'getDeviceInfoSync'
+        : 'getSystemInfoSync',
+});
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
   connectSocket: connectSocket,
+  getDeviceInfo: getDeviceInfo,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getUserInfo: getUserInfo,

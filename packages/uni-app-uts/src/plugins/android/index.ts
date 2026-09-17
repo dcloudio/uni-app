@@ -6,6 +6,7 @@ import {
   uniSharedDataPlugin,
   uniStatsPlugin,
   uniUTSAppUniModulesPlugin,
+  uniUasmPlugin,
   uniUniModulesExtApiPlugin,
   uniViteSfcSrcImportPlugin,
   uniWorkersPlugin,
@@ -22,6 +23,7 @@ import { uniCloudPlugin } from './unicloud'
 export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return [
+    uniUasmPlugin(),
     uniAppCssPrePlugin(),
     ...(isNormalCompileTarget()
       ? [

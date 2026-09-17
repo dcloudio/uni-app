@@ -12,7 +12,10 @@ export function normalizePlatform(
   return (v, options, declInfo) => {
     // platform 未定义时候忽略
     const currentPlatform = options.platform!
-    const supportedPlatforms = getSupportedPlatforms(uniPlatform)
+    const supportedPlatforms = getSupportedPlatforms(
+      uniPlatform,
+      !!options.dom2
+    )
     // TODO 未跨平台支持的属性特殊提示
     if (!supportedPlatforms.includes(currentPlatform)) {
       return {

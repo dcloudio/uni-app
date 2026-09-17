@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-beta.17
+  * @vue/compiler-sfc v3.6.0-rc.4
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -389,7 +389,7 @@ const isBlockTag = /* @__PURE__ */ makeMap(BLOCK_TAGS);
 /**
 * The full list is needed during SSR to produce the correct initial markup.
 */
-const isBooleanAttr = /* @__PURE__ */ makeMap("itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly,async,autofocus,autoplay,controls,default,defer,disabled,hidden,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
+const isBooleanAttr = /* @__PURE__ */ makeMap("itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly,async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
 /**
 * Boolean attributes should be included if the value is truthy or ''.
 * e.g. `<select multiple>` compiles to `{ multiple: '' }`
@@ -3608,7 +3608,7 @@ const errorMessages$1 = {
 	[54]: ``
 };
 //#endregion
-//#region node_modules/.pnpm/@babel+parser@7.29.7/node_modules/@babel/parser/lib/index.js
+//#region node_modules/.pnpm/@babel+parser@7.29.8/node_modules/@babel/parser/lib/index.js
 var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	function _objectWithoutPropertiesLoose(r, e) {
@@ -3795,6 +3795,7 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		SloppyFunctionAnnexB: "In non-strict mode code, functions can only be declared at top level, inside a block, or as the body of an if statement.",
 		SourcePhaseImportRequiresDefault: "Only `import source x from \"./module\"` is valid.",
 		StaticPrototype: "Classes may not have static property named prototype.",
+		SuperCallNotNewExpression: "Cannot use new with super(...).",
 		SuperNotAllowed: "`super()` is only valid inside a class constructor of a subclass. Maybe a typo in the method name ('constructor') or not extending another class?",
 		SuperPrivateField: "Private fields can't be accessed on super.",
 		TrailingDecorator: "Decorators must be attached to a class element.",
@@ -3817,7 +3818,6 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		UnexpectedTokenUnaryExponentiation: "Illegal expression. Wrap left hand side or entire exponentiation in parentheses.",
 		UnexpectedUsingDeclaration: "Using declaration cannot appear in the top level when source type is `script` or in the bare case statement.",
 		UnexpectedVoidPattern: "Unexpected void binding.",
-		UnsupportedBind: "Binding should be performed on object property.",
 		UnsupportedDecoratorExport: "A decorated export must export a class declaration.",
 		UnsupportedDefaultExport: "Only expressions, functions or classes are allowed as the `default` export.",
 		UnsupportedImport: "`import` can only be used in `import()` or `import.meta`.",
@@ -3873,6 +3873,10 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		PrimaryTopicNotAllowed: "Topic reference was used in a lexical context without topic binding.",
 		PrimaryTopicRequiresSmartPipeline: "Topic reference is used, but the pipelineOperator plugin was not passed a \"proposal\": \"hack\" or \"smart\" option."
 	});
+	var FunctionBindErrors = {
+		UnsupportedBind: "Binding should be performed on object property.",
+		UnsupportedBindRHS: "The right-hand side of binding can not be super or import."
+	};
 	const _excluded = ["message"];
 	function defineHidden(obj, key, value) {
 		Object.defineProperty(obj, key, {
@@ -3937,7 +3941,7 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		}
 		return ParseErrorConstructors;
 	}
-	const Errors = Object.assign({}, ParseErrorEnum(ModuleErrors), ParseErrorEnum(StandardErrors), ParseErrorEnum(StrictModeErrors), ParseErrorEnum(ParseExpressionErrors), ParseErrorEnum`pipelineOperator`(PipelineOperatorErrors));
+	const Errors = Object.assign({}, ParseErrorEnum(ModuleErrors), ParseErrorEnum(StandardErrors), ParseErrorEnum(StrictModeErrors), ParseErrorEnum(ParseExpressionErrors), ParseErrorEnum`pipelineOperator`(PipelineOperatorErrors), ParseErrorEnum`functionBind`(FunctionBindErrors));
 	function createDefaultOptions() {
 		return {
 			sourceType: "script",
@@ -13512,7 +13516,7 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		}
 		parseSubscript(base, startLoc, noCalls, state) {
 			const { type } = this.state;
-			if (!noCalls && type === 15) return this.parseBind(base, startLoc, noCalls, state);
+			if (!noCalls && type === 15) return this.parseBind(base, startLoc, state);
 			else if (tokenIsTemplate(type)) return this.parseTaggedTemplateExpression(base, startLoc, state);
 			let optional = false;
 			if (type === 18) {
@@ -13551,13 +13555,16 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 				return this.finishNode(node, "OptionalMemberExpression");
 			} else return this.finishNode(node, "MemberExpression");
 		}
-		parseBind(base, startLoc, noCalls, state) {
+		parseBind(base, startLoc, state) {
 			const node = this.startNodeAt(startLoc);
 			node.object = base;
 			this.next();
-			node.callee = this.parseNoCallExpr();
+			const isImport = this.match(83);
+			const callee = this.parseNoCallExpr();
+			if (callee.type === "Super" || isImport && callee.type === "ImportExpression" || callee.type === "Import") throw this.raise(Errors.UnsupportedBindRHS, callee);
+			node.callee = callee;
 			state.stop = true;
-			return this.parseSubscripts(this.finishNode(node, "BindExpression"), startLoc, noCalls);
+			return this.parseSubscripts(this.finishNode(node, "BindExpression"), startLoc, false);
 		}
 		parseCoverCallAndAsyncArrowHead(base, startLoc, state, optional) {
 			const oldMaybeInArrowParameters = this.state.maybeInArrowParameters;
@@ -14014,7 +14021,8 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 			const isImport = this.match(83);
 			const callee = this.parseNoCallExpr();
 			node.callee = callee;
-			if (isImport && (callee.type === "Import" || callee.type === "ImportExpression")) this.raise(Errors.ImportCallNotNewExpression, callee);
+			if (isImport && callee.type === "ImportExpression" || callee.type === "Import") this.raise(Errors.ImportCallNotNewExpression, callee);
+			if (callee.type === "Super") this.raise(Errors.SuperCallNotNewExpression, callee);
 		}
 		parseTemplateElement(isTagged) {
 			const { start, startLoc, end, value } = this.state;
@@ -16796,6 +16804,7 @@ function getUnnormalizedProps(props, callPath = []) {
 	return [props, callPath];
 }
 function injectProp(node, prop, context) {
+	if (node.type !== 13 && injectSlotKey(node, prop)) return;
 	let propsWithInjection;
 	/**
 	* 1. mergeProps(...)
@@ -16833,6 +16842,20 @@ function injectProp(node, prop, context) {
 	else node.props = propsWithInjection;
 	else if (parentCall) parentCall.arguments[0] = propsWithInjection;
 	else node.arguments[2] = propsWithInjection;
+}
+function injectSlotKey(node, prop) {
+	var _node$arguments, _node$arguments2, _node$arguments3;
+	if (prop.key.type !== 4 || prop.key.content !== "key") return false;
+	const props = node.arguments[2];
+	if (props && !isString$1(props)) {
+		const [unnormalizedProps] = getUnnormalizedProps(props);
+		if (unnormalizedProps && !isString$1(unnormalizedProps) && unnormalizedProps.type === 15 && hasProp(prop, unnormalizedProps)) return true;
+	}
+	(_node$arguments = node.arguments)[2] || (_node$arguments[2] = "{}");
+	(_node$arguments2 = node.arguments)[3] || (_node$arguments2[3] = "undefined");
+	(_node$arguments3 = node.arguments)[4] || (_node$arguments3[4] = "undefined");
+	node.arguments[5] = prop.value;
+	return true;
 }
 function hasProp(prop, props) {
 	let result = false;
@@ -17622,7 +17645,7 @@ function getSelfName(filename) {
 }
 function createTransformContext(root, { filename = "", prefixIdentifiers = false, hoistStatic = false, hmr = false, cacheHandlers = false, nodeTransforms = [], directiveTransforms = {}, transformHoist = null, isBuiltInComponent = NOOP, isCustomElement = NOOP, isUserComponent = (element) => {
 	return element.tagType === 1;
-}, expressionPlugins = [], scopeId = null, slotted = true, ssr = false, inSSR = false, ssrCssVars = ``, bindingMetadata = EMPTY_OBJ, inline = false, isTS = false, eventDelegation = true, onError = defaultOnError, onWarn = defaultOnWarn, compatConfig }) {
+}, expressionPlugins = [], scopeId = null, slotted = true, ssr = false, inSSR = false, ssrCssVars = ``, bindingMetadata = EMPTY_OBJ, inline = false, isTS = false, onError = defaultOnError, onWarn = defaultOnWarn, compatConfig }) {
 	const context = {
 		filename,
 		selfName: getSelfName(filename),
@@ -17645,7 +17668,6 @@ function createTransformContext(root, { filename = "", prefixIdentifiers = false
 		bindingMetadata,
 		inline,
 		isTS,
-		eventDelegation,
 		onError,
 		onWarn,
 		compatConfig,
@@ -20812,15 +20834,22 @@ const transformFor = createStructuralDirectiveTransform$1("for", (node, dir, con
 			else {
 				childBlock = children[0].codegenNode;
 				if (isTemplate && keyProperty) injectProp(childBlock, keyProperty, context);
-				if (childBlock.isBlock !== !isStableFragment) if (childBlock.isBlock) {
+				const shouldUseBlock = !isStableFragment || childBlock.isBlockRequired === true;
+				if (childBlock.isBlock !== shouldUseBlock) if (childBlock.isBlock) {
 					removeHelper(OPEN_BLOCK);
 					removeHelper(getVNodeBlockHelper(context.inSSR, childBlock.isComponent));
 				} else removeHelper(getVNodeHelper(context.inSSR, childBlock.isComponent));
-				childBlock.isBlock = !isStableFragment;
+				childBlock.isBlock = shouldUseBlock;
 				if (childBlock.isBlock) {
 					helper(OPEN_BLOCK);
 					helper(getVNodeBlockHelper(context.inSSR, childBlock.isComponent));
-				} else helper(getVNodeHelper(context.inSSR, childBlock.isComponent));
+				} else {
+					helper(getVNodeHelper(context.inSSR, childBlock.isComponent));
+					if (childBlock.needsPatch) {
+						var _childBlock$patchFlag;
+						childBlock.patchFlag = ((_childBlock$patchFlag = childBlock.patchFlag) !== null && _childBlock$patchFlag !== void 0 ? _childBlock$patchFlag : 0) | 512;
+					}
+				}
 			}
 			if (memo) {
 				const loop = createFunctionExpression(createForLoopParams(forNode.parseResult, [createSimpleExpression(`_cached`)]));
@@ -21076,12 +21105,16 @@ const transformElement$1 = (node, context) => {
 		let vnodeDynamicProps;
 		let dynamicPropNames;
 		let vnodeDirectives;
+		let needsPatch = false;
+		let isBlockRequired = false;
 		let shouldUseBlock = isDynamicComponent || vnodeTag === TELEPORT || vnodeTag === SUSPENSE || !isComponent && (tag === "svg" || tag === "foreignObject" || tag === "math");
 		if (props.length > 0) {
 			const propsBuildResult = buildProps$1(node, context, void 0, isComponent, isDynamicComponent);
 			vnodeProps = propsBuildResult.props;
 			patchFlag = propsBuildResult.patchFlag;
 			dynamicPropNames = propsBuildResult.dynamicPropNames;
+			needsPatch = propsBuildResult.needsPatch;
+			isBlockRequired = propsBuildResult.isBlockRequired;
 			const directives = propsBuildResult.directives;
 			vnodeDirectives = directives && directives.length ? createArrayExpression(directives.map((dir) => buildDirectiveArgs(dir, context))) : void 0;
 			if (propsBuildResult.shouldUseBlock) shouldUseBlock = true;
@@ -21110,7 +21143,10 @@ const transformElement$1 = (node, context) => {
 			} else vnodeChildren = node.children;
 		}
 		if (dynamicPropNames && dynamicPropNames.length) vnodeDynamicProps = stringifyDynamicPropNames(dynamicPropNames);
-		node.codegenNode = createVNodeCall(context, vnodeTag, vnodeProps, vnodeChildren, patchFlag === 0 ? void 0 : patchFlag, vnodeDynamicProps, vnodeDirectives, !!shouldUseBlock, false, isComponent, node.loc);
+		const vnodeCall = node.codegenNode = createVNodeCall(context, vnodeTag, vnodeProps, vnodeChildren, patchFlag === 0 ? void 0 : patchFlag, vnodeDynamicProps, vnodeDirectives, !!shouldUseBlock, false, isComponent, node.loc);
+		needsPatch = needsPatch && (patchFlag === 0 || patchFlag === 32);
+		if (needsPatch) vnodeCall.needsPatch = true;
+		if (isBlockRequired) vnodeCall.isBlockRequired = true;
 	};
 };
 function resolveComponentType(node, context, ssr = false) {
@@ -21195,6 +21231,7 @@ function buildProps$1(node, context, props = node.props, isComponent, isDynamicC
 	const runtimeDirectives = [];
 	const hasChildren = children.length > 0;
 	let shouldUseBlock = false;
+	let isBlockRequired = false;
 	let patchFlag = 0;
 	let hasRef = false;
 	let hasClassBinding = false;
@@ -21219,12 +21256,12 @@ function buildProps$1(node, context, props = node.props, isComponent, isDynamicC
 			const isEventHandler = isOn(name);
 			if (isEventHandler && (!isComponent || isDynamicComponent) && name.toLowerCase() !== "onclick" && name !== "onUpdate:modelValue" && !isReservedProp$1(name)) hasHydrationEventBinding = true;
 			if (isEventHandler && isReservedProp$1(name)) hasVnodeHook = true;
+			if (name === "ref") hasRef = true;
 			if (isEventHandler && value.type === 14) value = value.arguments[0];
 			if (value.type === 20 || (value.type === 4 || value.type === 8) && getConstantType(value, context) > 0) return;
-			if (name === "ref") hasRef = true;
-			else if (name === "class") hasClassBinding = true;
+			if (name === "class") hasClassBinding = true;
 			else if (name === "style") hasStyleBinding = true;
-			else if (name !== "key" && !dynamicPropNames.includes(name)) dynamicPropNames.push(name);
+			else if (name !== "ref" && name !== "key" && !dynamicPropNames.includes(name)) dynamicPropNames.push(name);
 			if (isComponent && (name === "class" || name === "style") && !dynamicPropNames.includes(name)) dynamicPropNames.push(name);
 		} else hasDynamicKeys = true;
 	};
@@ -21257,7 +21294,11 @@ function buildProps$1(node, context, props = node.props, isComponent, isDynamicC
 			if (name === "once" || name === "memo") continue;
 			if (name === "is" || isVBind && isStaticArgOf(arg, "is") && (isComponentTag$1(tag) || false)) continue;
 			if (isVOn && ssr) continue;
-			if (isVBind && isStaticArgOf(arg, "key") || isVOn && hasChildren && isStaticArgOf(arg, "vue:before-update")) shouldUseBlock = true;
+			if (isVBind && isStaticArgOf(arg, "key")) shouldUseBlock = true;
+			if (isVOn && hasChildren && arg && isStaticExp(arg) && camelize(arg.content) === "vue:beforeUpdate") {
+				shouldUseBlock = true;
+				isBlockRequired = true;
+			}
 			if (isVBind && isStaticArgOf(arg, "ref")) pushRefVForMarker();
 			if (!arg && (isVBind || isVOn)) {
 				hasDynamicKeys = true;
@@ -21287,7 +21328,10 @@ function buildProps$1(node, context, props = node.props, isComponent, isDynamicC
 				}
 			} else if (!isBuiltInDirective(name)) {
 				runtimeDirectives.push(prop);
-				if (hasChildren) shouldUseBlock = true;
+				if (hasChildren) {
+					shouldUseBlock = true;
+					isBlockRequired = true;
+				}
 			}
 		}
 	}
@@ -21304,7 +21348,8 @@ function buildProps$1(node, context, props = node.props, isComponent, isDynamicC
 		if (dynamicPropNames.length) patchFlag |= 8;
 		if (hasHydrationEventBinding) patchFlag |= 32;
 	}
-	if (!shouldUseBlock && (patchFlag === 0 || patchFlag === 32) && (hasRef || hasVnodeHook || runtimeDirectives.length > 0)) patchFlag |= 512;
+	const needsPatch = (patchFlag === 0 || patchFlag === 32) && (hasRef || hasVnodeHook || runtimeDirectives.length > 0);
+	if (!shouldUseBlock && needsPatch) patchFlag |= 512;
 	if (!context.inSSR && propsExpression) switch (propsExpression.type) {
 		case 15:
 			let classKeyIndex = -1;
@@ -21334,7 +21379,9 @@ function buildProps$1(node, context, props = node.props, isComponent, isDynamicC
 		directives: runtimeDirectives,
 		patchFlag,
 		dynamicPropNames,
-		shouldUseBlock
+		shouldUseBlock,
+		needsPatch,
+		isBlockRequired
 	};
 }
 function dedupeProperties$1(properties) {
@@ -21959,6 +22006,14 @@ const resolveModifiers = (key, modifiers, context, loc) => {
 	const eventOptionModifiers = [];
 	for (let i = 0; i < modifiers.length; i++) {
 		const modifier = modifiers[i].content;
+		if (modifier === "delegate") {
+			if (context) {
+				const error = /* @__PURE__ */ new SyntaxError(`.delegate modifier is only supported in Vapor components.`);
+				error.loc = modifiers[i].loc;
+				context.onWarn(error);
+			}
+			continue;
+		}
 		if (isEventOptionModifier(modifier)) eventOptionModifiers.push(modifier);
 		else {
 			const keyString = isString$1(key) ? key : isStaticExp(key) ? key.content : null;
@@ -22034,7 +22089,7 @@ function postTransformTransition(node, onError, hasMultipleChildren = defaultHas
 			source: ""
 		}));
 		const child = node.children[0];
-		if (child.type === 1) {
+		if (child.type === 1 && !findDir$1(child, "if")) {
 			for (const p of child.props) if (p.type === 7 && p.name === "show") node.props.push({
 				type: 6,
 				name: "persisted",
@@ -22209,10 +22264,11 @@ function stringifyElement(node, context) {
 					res += ` ${p.arg.content}="__VUE_EXP_START__${exp.content}__VUE_EXP_END__"`;
 					continue;
 				}
-				if (isBooleanAttr(p.arg.content) && exp.content === "false") continue;
+				if ((isBooleanAttr(p.arg.content) || p.arg.content === "hidden") && exp.content === "false") continue;
 				let evaluated = evaluateConstant(exp);
 				if (evaluated != null) {
 					const arg = p.arg && p.arg.content;
+					if (arg === "hidden" && typeof evaluated === "number" && !includeBooleanAttr(evaluated)) continue;
 					if (arg === "class") evaluated = normalizeClass(evaluated);
 					else if (arg === "style") evaluated = stringifyStyle(normalizeStyle(evaluated));
 					res += ` ${p.arg.content}="${escapeHtml(evaluated)}"`;
@@ -22966,6 +23022,16 @@ function createCache(max = 500) {
 	return /* @__PURE__ */ new Map();
 }
 //#endregion
+//#region packages/compiler-sfc/src/template/resolveTemplateAST.ts
+function resolveTemplateAST(inAST, options) {
+	if (!(inAST === null || inAST === void 0 ? void 0 : inAST.transformed)) return inAST;
+	const { compiler = src_exports$2, compilerOptions, ssr, onError } = options;
+	return createRoot((ssr ? src_exports$2 : compiler).parse(inAST.source, _objectSpread2(_objectSpread2({ prefixIdentifiers: true }, compilerOptions), {}, {
+		parseMode: "sfc",
+		onError
+	})).children.find((node) => node.type === 1 && node.tag === "template").children, inAST.source);
+}
+//#endregion
 //#region packages/compiler-sfc/src/script/importUsageCheck.ts
 /**
 * Check if an identifier is used in the SFC's template.
@@ -22973,23 +23039,28 @@ function createCache(max = 500) {
 *   when not using inline mode.
 * - 2.check whether the built-in properties such as $attrs, $slots, $emit are used in the template
 */
-function isUsedInTemplate(identifier, sfc) {
-	return resolveTemplateUsedIdentifiers(sfc).has(identifier);
+function isUsedInTemplate(identifier, sfc, options) {
+	return resolveTemplateUsedIdentifiers(sfc, options).has(identifier);
 }
 const templateAnalysisCache = createCache();
-function resolveTemplateVModelIdentifiers(sfc) {
-	return resolveTemplateAnalysisResult(sfc, false).vModelIds;
+function resolveTemplateVModelIdentifiers(sfc, options) {
+	return resolveTemplateAnalysisResult(sfc, false, options).vModelIds;
 }
-function resolveTemplateUsedIdentifiers(sfc) {
-	return resolveTemplateAnalysisResult(sfc).usedIds;
+function resolveTemplateUsedIdentifiers(sfc, options) {
+	return resolveTemplateAnalysisResult(sfc, true, options).usedIds;
 }
-function resolveTemplateAnalysisResult(sfc, collectUsedIds = true) {
+function resolveTemplateAnalysisResult(sfc, collectUsedIds = true, options) {
 	const { content, ast } = sfc.template;
 	const cached = templateAnalysisCache.get(content);
 	if (cached && (!collectUsedIds || cached.usedIds)) return cached;
 	const ids = collectUsedIds ? /* @__PURE__ */ new Set() : void 0;
 	const vModelIds = /* @__PURE__ */ new Set();
-	ast.children.forEach(walk);
+	resolveTemplateAST(ast, {
+		compiler: options === null || options === void 0 ? void 0 : options.compiler,
+		compilerOptions: options === null || options === void 0 ? void 0 : options.compilerOptions,
+		ssr: options === null || options === void 0 ? void 0 : options.ssr,
+		onError: () => {}
+	}).children.forEach(walk);
 	function walk(node) {
 		switch (node.type) {
 			case 1:
@@ -23226,6 +23297,7 @@ const isJS = (...langs) => langs.some((lang) => lang === "js" || lang === "jsx")
 const isTS = (...langs) => langs.some((lang) => lang === "ts" || lang === "tsx" || lang === "uts");
 //#endregion
 //#region packages/compiler-sfc/src/parse.ts
+init_objectSpread2();
 const DEFAULT_FILENAME = "anonymous.vue";
 const parseCache$1 = createCache();
 function parse(source, options = {}) {
@@ -24950,26 +25022,24 @@ const IRNodeTypes = {
 	"9": "SET_TEMPLATE_REF",
 	"INSERT_NODE": 10,
 	"10": "INSERT_NODE",
-	"PREPEND_NODE": 11,
-	"11": "PREPEND_NODE",
-	"CREATE_COMPONENT_NODE": 12,
-	"12": "CREATE_COMPONENT_NODE",
-	"SLOT_OUTLET_NODE": 13,
-	"13": "SLOT_OUTLET_NODE",
-	"DIRECTIVE": 14,
-	"14": "DIRECTIVE",
-	"IF": 15,
-	"15": "IF",
-	"FOR": 16,
-	"16": "FOR",
-	"KEY": 17,
-	"17": "KEY",
-	"GET_TEXT_CHILD": 18,
-	"18": "GET_TEXT_CHILD",
-	"GET_INSERTION_PARENT": 19,
-	"19": "GET_INSERTION_PARENT",
-	"SET_CHANGE_PROP": 20,
-	"20": "SET_CHANGE_PROP"
+	"CREATE_COMPONENT_NODE": 11,
+	"11": "CREATE_COMPONENT_NODE",
+	"SLOT_OUTLET_NODE": 12,
+	"12": "SLOT_OUTLET_NODE",
+	"DIRECTIVE": 13,
+	"13": "DIRECTIVE",
+	"IF": 14,
+	"14": "IF",
+	"FOR": 15,
+	"15": "FOR",
+	"KEY": 16,
+	"16": "KEY",
+	"GET_TEXT_CHILD": 17,
+	"17": "GET_TEXT_CHILD",
+	"GET_INSERTION_PARENT": 18,
+	"18": "GET_INSERTION_PARENT",
+	"SET_CHANGE_PROP": 19,
+	"19": "SET_CHANGE_PROP"
 };
 var TemplateRegistry = class {
 	constructor() {
@@ -24991,7 +25061,7 @@ const DynamicFlag = {
 };
 function isBlockOperation(op) {
 	const type = op.type;
-	return type === 12 || type === 13 || type === 15 || type === 17 || type === 16;
+	return type === 11 || type === 12 || type === 14 || type === 16 || type === 15;
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/utils.ts
@@ -25356,7 +25426,7 @@ var TransformContext = class TransformContext {
 	isSingleRootChild(childInfo) {
 		if (this.inVFor || !childInfo.hasSingleRootChild) return false;
 		if (this.node.type === 0) return true;
-		return this.node.type === 1 && this.node.tagType === 3 && !!this.parent && this.isSingleRoot;
+		return this.node.type === 1 && (this.node.tagType === 3 || isTransitionNode(this.node)) && !!this.parent && this.isSingleRoot;
 	}
 };
 function hasSingleRootChild(children) {
@@ -25405,7 +25475,6 @@ const defaultOptions = {
 	bindingMetadata: EMPTY_OBJ,
 	inline: false,
 	isTS: false,
-	eventDelegation: true,
 	onError: defaultOnError,
 	onWarn: defaultOnWarn
 };
@@ -25637,9 +25706,6 @@ function genInsertNode({ parent, elements, anchor }, { helper }) {
 	let element = elements.map((el) => `n${el}`).join(", ");
 	if (elements.length > 1) element = `[${element}]`;
 	return [NEWLINE, ...genCall(helper("insert"), element, `n${parent}`, anchor === void 0 ? void 0 : `n${anchor}`)];
-}
-function genPrependNode(oper, { helper }) {
-	return [NEWLINE, ...genCall(helper("prepend"), `n${oper.parent}`, ...oper.elements.map((el) => `n${el}`))];
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/expression.ts
@@ -26085,16 +26151,14 @@ function genDeclarations(declarations, context, shouldDeclare) {
 	const varNames = /* @__PURE__ */ new Set();
 	declarations.forEach(({ name, isIdentifier, value }) => {
 		if (isIdentifier) {
-			const varName = ids[name] = `_${name}`;
-			varNames.add(varName);
+			const varName = ids[name] = context.getUniqueLocalName(`_${name}`, varNames);
 			if (shouldDeclare) push(`const `);
 			push(`${varName} = `, ...genExpression(value, context), NEWLINE);
 		}
 	});
 	declarations.forEach(({ name, isIdentifier, value }) => {
 		if (!isIdentifier) {
-			const varName = `_${name}`;
-			varNames.add(varName);
+			const varName = context.getUniqueLocalName(`_${name}`, varNames);
 			if (shouldDeclare) push(`const `);
 			push(`${varName} = `, ...context.withId(() => genExpression(value, context), ids), NEWLINE);
 			ids[name] = varName;
@@ -26142,7 +26206,10 @@ function extractMemberExpression(exp, onIdentifier) {
 		case "CallExpression": return `${extractMemberExpression(exp.callee, onIdentifier)}(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
 		case "OptionalCallExpression": return `${extractMemberExpression(exp.callee, onIdentifier)}?.(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
 		case "MemberExpression":
-		case "OptionalMemberExpression": return `${extractMemberExpression(exp.object, onIdentifier)}${exp.computed ? `[${extractMemberExpression(exp.property, onIdentifier)}]` : `.${extractMemberExpression(exp.property, NOOP)}`}`;
+		case "OptionalMemberExpression":
+			const object = extractMemberExpression(exp.object, onIdentifier);
+			const optional = exp.type === "OptionalMemberExpression" && exp.optional;
+			return `${object}${exp.computed ? `${optional ? "?." : ""}[${extractMemberExpression(exp.property, onIdentifier)}]` : `${optional ? "?." : "."}${extractMemberExpression(exp.property, NOOP)}`}`;
 		case "TSNonNullExpression": return `${extractMemberExpression(exp.expression, onIdentifier)}`;
 		default: return "";
 	}
@@ -26402,7 +26469,7 @@ function isFragmentBlock(block) {
 	const child = getSingleReturnedChild(block);
 	const operation = child && child.operation;
 	if (!operation) return false;
-	return operation.type === 13 || operation.type === 16 || operation.type === 17 || operation.type === 15 && !operation.once || operation.type === 12 && !!operation.dynamic && !operation.dynamic.isStatic;
+	return operation.type === 12 || operation.type === 15 || operation.type === 16 || operation.type === 14 && !operation.once || operation.type === 11 && !!operation.dynamic && !operation.dynamic.isStatic;
 }
 function getSingleReturnedChild(block) {
 	if (block.returns.length !== 1) return;
@@ -26584,8 +26651,8 @@ function isKeyOnlyBinding(expr, key, source) {
 //#region packages/compiler-vapor/src/generators/html.ts
 function genSetHtml(oper, context) {
 	const { helper } = context;
-	const { value, element, isComponent } = oper;
-	return [NEWLINE, ...genCall(isComponent ? helper("setBlockHtml") : helper("setHtml"), `n${element}`, genExpression(value, context))];
+	const { value, element } = oper;
+	return [NEWLINE, ...genCall(helper("setHtml"), `n${element}`, genExpression(value, context))];
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/if.ts
@@ -26887,9 +26954,9 @@ function genRefValue(value, context) {
 //#region packages/compiler-vapor/src/generators/text.ts
 function genSetText(oper, context) {
 	const { helper } = context;
-	const { element, values, generated, isComponent } = oper;
+	const { element, values, generated } = oper;
 	const texts = combineValues(values, context);
-	return [NEWLINE, ...genCall(isComponent ? helper("setBlockText") : helper("setText"), `${generated && !isComponent ? "x" : "n"}${element}`, texts)];
+	return [NEWLINE, ...genCall(helper("setText"), `${generated ? "x" : "n"}${element}`, texts)];
 }
 function combineValues(values, context) {
 	return values.flatMap((value, i) => {
@@ -26964,7 +27031,11 @@ function genCustomDirectives(opers, context) {
 	return [NEWLINE, ...genCall(helper("withVaporDirectives"), element, directives)];
 	function genDirectiveItem({ dir, name, asset }) {
 		const directiveVar = asset ? toValidAssetId(name, "directive") : genExpression(extend(createSimpleExpression(name, false), { ast: null }), context);
-		const value = dir.exp && ["() => ", ...genExpression(dir.exp, context)];
+		const value = dir.exp && [
+			"() => (",
+			...genExpression(dir.exp, context),
+			")"
+		];
 		const argument = dir.arg && genExpression(dir.arg, context);
 		const modifiers = !!dir.modifiers.length && [
 			"{ ",
@@ -26975,7 +27046,7 @@ function genCustomDirectives(opers, context) {
 	}
 }
 function filterCustomDirectives(id, operations) {
-	return operations.filter((oper) => oper.type === 14 && oper.element === id && !oper.builtin);
+	return operations.filter((oper) => oper.type === 13 && oper.element === id && !oper.builtin);
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/component.ts
@@ -27212,7 +27283,8 @@ function genDynamicProps(props, context, directStaticLiteralProps = false) {
 	if (frags.length) return genMulti(DELIMITERS_ARRAY_NEWLINE, ...frags);
 }
 function genProp(prop, context, isStatic, wrapHandler = true, directStaticLiteral = false) {
-	const values = genPropValue(prop.values, context);
+	let values = genPropValue(prop.values, context);
+	if (prop.toDisplayString) values = genCall(context.helper("toDisplayString"), values);
 	return [
 		...genPropKey(prop, context),
 		": ",
@@ -27290,7 +27362,7 @@ function genStaticSlots({ slots }, context, dynamicSlots) {
 	return genMulti(DELIMITERS_OBJECT_NEWLINE, ...args);
 }
 function genDynamicSlots(slots, context) {
-	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, true)));
+	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, slot.slotType !== 2)));
 }
 function genDynamicSlot(slot, context, withFunction = false) {
 	let frag;
@@ -27317,26 +27389,65 @@ function genBasicDynamicSlot(slot, context) {
 	return genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...genExpression(name, context)], ["fn: ", ...genSlotBlockWithProps(fn, context, false)]);
 }
 function genLoopSlot(slot, context) {
-	const { name, fn, loop } = slot;
+	const { name, fn, loop, keyProp } = slot;
 	const { value, key, index, source } = loop;
 	const rawValue = value && value.content;
 	const rawKey = key && key.content;
 	const rawIndex = index && index.content;
-	const idMap = {};
-	if (rawValue) idMap[rawValue] = rawValue;
-	if (rawKey) idMap[rawKey] = rawKey;
-	if (rawIndex) idMap[rawIndex] = rawIndex;
-	const slotExpr = genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...context.withId(() => genExpression(name, context), idMap)], ["fn: ", ...context.withId(() => genSlotBlockWithProps(fn, context, false), idMap)]);
-	return [...genCall(context.helper("createForSlots"), genExpression(source, context), [
+	const idToPathMap = parseValueDestructure(value, context);
+	const [depth, exitScope] = context.enterScope();
+	const itemVar = `_for_item${depth}`;
+	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, context.options.expressionPlugins);
+	idMap[itemVar] = null;
+	const args = [itemVar];
+	if (rawKey) {
+		const keyVar = `_for_key${depth}`;
+		args.push(keyVar);
+		idMap[rawKey] = `${keyVar}.value`;
+		idMap[keyVar] = null;
+	} else if (rawIndex) args.push("_");
+	if (rawIndex) {
+		const indexVar = `_for_index${depth}`;
+		args.push(indexVar);
+		idMap[rawIndex] = `${indexVar}.value`;
+		idMap[indexVar] = null;
+	}
+	const renderSlot = [
 		...genMulti([
 			"(",
 			")",
 			", "
-		], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex),
+		], ...args),
+		" => ",
+		...context.withId(() => genSlotBlockWithProps(fn, context, false), idMap)
+	];
+	exitScope();
+	const rawIdMap = {};
+	if (rawKey) rawIdMap[rawKey] = null;
+	if (rawIndex) rawIdMap[rawIndex] = null;
+	idToPathMap.forEach((_, id) => rawIdMap[id] = null);
+	const rawParams = genMulti([
+		"(",
+		")",
+		", "
+	], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex);
+	const getName = [
+		...rawParams,
 		" => (",
-		...slotExpr,
+		...context.withId(() => genExpression(name, context), rawIdMap),
 		")"
-	])];
+	];
+	const getKey = keyProp && [
+		...rawParams,
+		" => (",
+		...context.withId(() => genExpression(keyProp, context), rawIdMap),
+		")"
+	];
+	return [...genCall(context.helper("createForSlots"), [
+		"() => (",
+		...genExpression(source, context),
+		")"
+	], renderSlot, getName, getKey)];
 }
 function genConditionalSlot(slot, context) {
 	const { condition, positive, negative } = slot;
@@ -27366,7 +27477,7 @@ function genSlotBlockWithProps(oper, context, emitNonStableFlag = true) {
 	if (propsName) idMap[propsName] = null;
 	const exitSlotBlock = context.enterSlotBlock();
 	const hasStableRoot = hasStableSlotRoot(oper, context);
-	if (!hasStableRoot) markSlotRootOperations(oper);
+	if (!hasStableRoot) markSlotRootOperations(oper, context);
 	let blockFn = context.withId(() => genBlock(oper, context, propsName ? [propsName] : []), idMap);
 	if (emitNonStableFlag && !hasStableRoot) blockFn = genCall(context.helper("extend"), blockFn, [`{ _: ${genSlotFlags$1(8)} }`]);
 	exitSlotBlock();
@@ -27381,40 +27492,6 @@ function genSlotFlags$1(flags) {
 	if (flags & 8) names.push("NON_STABLE");
 	return `${flags} /* ${names.join(", ")} */`;
 }
-const commentOnlyTemplateRE = /^(?:<!--[\s\S]*?-->)+$/;
-function hasStableSlotRoot(block, context) {
-	let hasValidRoot = false;
-	for (let i = 0; i < block.returns.length; i++) {
-		const id = block.returns[i];
-		const child = findReturnedDynamic$1(block, id);
-		const operation = child && child.operation;
-		if (!operation) {
-			if (child && isStableTemplateSlotRoot(child, context)) hasValidRoot = true;
-			continue;
-		}
-		switch (operation.type) {
-			case 12:
-				if (!operation.dynamic || operation.dynamic.isStatic) {
-					hasValidRoot = true;
-					continue;
-				}
-				continue;
-			case 17:
-				if (hasStableSlotRoot(operation.block, context)) {
-					hasValidRoot = true;
-					continue;
-				}
-				continue;
-			default: continue;
-		}
-	}
-	return hasValidRoot;
-}
-function isStableTemplateSlotRoot(child, context) {
-	if (child.template == null) return false;
-	const content = context.ir.template.entries[child.template].content;
-	return content !== "" && !commentOnlyTemplateRE.test(content.trim());
-}
 function needsVaporCtx(block) {
 	return hasComponentOrSlotInBlock(block);
 }
@@ -27425,11 +27502,11 @@ function hasComponentOrSlotInBlock(block) {
 function hasComponentOrSlotInDynamic(dynamic) {
 	if (dynamic.operation) {
 		const type = dynamic.operation.type;
-		if (type === 12 || type === 13) return true;
-		if (type === 15) {
+		if (type === 11 || type === 12) return true;
+		if (type === 14) {
 			if (hasComponentOrSlotInIf(dynamic.operation)) return true;
 		}
-		if (type === 16) {
+		if (type === 15) {
 			if (hasComponentOrSlotInBlock(dynamic.operation.render)) return true;
 		}
 	}
@@ -27438,12 +27515,12 @@ function hasComponentOrSlotInDynamic(dynamic) {
 }
 function hasComponentOrSlotInOperations(operations) {
 	for (const op of operations) switch (op.type) {
-		case 12:
-		case 13: return true;
-		case 15:
+		case 11:
+		case 12: return true;
+		case 14:
 			if (hasComponentOrSlotInIf(op)) return true;
 			break;
-		case 16:
+		case 15:
 			if (hasComponentOrSlotInBlock(op.render)) return true;
 			break;
 	}
@@ -27463,7 +27540,7 @@ function genSlotOutlet(oper, context) {
 	const [frag, push] = buildCodeFragment();
 	let fallbackArg;
 	if (fallback) {
-		if (context.inSlotBlock) markSlotRootOperations(fallback);
+		if (context.inSlotBlock) markSlotRootOperations(fallback, context);
 		fallbackArg = genBlock(fallback, context);
 	}
 	const createSlot = helper("createSlot");
@@ -27482,19 +27559,21 @@ function genSlotFlags(flags) {
 	if (flags & 1) names.push("NO_SLOTTED");
 	if (flags & 2) names.push("ONCE");
 	if (flags & 4) names.push("SLOT_ROOT");
+	if (flags & 16) names.push("SHARED_FALLBACK");
+	if (flags & 32) names.push("INHERIT_FALLBACK");
 	return `${flags} /* ${names.join(", ")} */`;
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/key.ts
 function genKey(oper, context) {
-	const { id, value, block } = oper;
+	const { id, value, block, slotRoot } = oper;
 	const [frag, push] = buildCodeFragment();
 	const blockFn = genBlock(block, context);
 	push(NEWLINE, `const n${id} = `, ...genCall(context.helper("createKeyedFragment"), [
 		`() => (`,
 		...genExpression(value, context),
 		")"
-	], blockFn));
+	], blockFn, slotRoot ? "true" : false));
 	return frag;
 }
 function genSetBlockKey(oper, context) {
@@ -27524,16 +27603,15 @@ function genOperation(oper, context) {
 		case 8: return genSetHtml(oper, context);
 		case 9: return genSetTemplateRef(oper, context);
 		case 10: return genInsertNode(oper, context);
-		case 11: return genPrependNode(oper, context);
-		case 15: return genIf(oper, context);
-		case 16: return genFor(oper, context);
-		case 17: return genKey(oper, context);
-		case 12: return genCreateComponent(oper, context);
-		case 13: return genSlotOutlet(oper, context);
-		case 14: return genBuiltinDirective(oper, context);
-		case 18: return genGetTextChild(oper, context);
+		case 14: return genIf(oper, context);
+		case 15: return genFor(oper, context);
+		case 16: return genKey(oper, context);
+		case 11: return genCreateComponent(oper, context);
+		case 12: return genSlotOutlet(oper, context);
+		case 13: return genBuiltinDirective(oper, context);
+		case 17: return genGetTextChild(oper, context);
+		case 18: return [];
 		case 19: return [];
-		case 20: return [];
 		default: throw new Error(`Unhandled operation type in genOperation: ${oper}`);
 	}
 }
@@ -27581,8 +27659,8 @@ function genEffect({ operations }, context) {
 	return frag;
 }
 function genInsertionState(operation, context) {
-	const { parent, anchor, logicalIndex, append } = operation;
-	return [NEWLINE, ...genCall(context.helper("setInsertionState"), `n${parent}`, anchor == null ? void 0 : anchor === -1 ? `0` : append ? "null" : `n${anchor}`, logicalIndex !== void 0 ? String(logicalIndex) : void 0)];
+	const { parent, anchor, appendIndex } = operation;
+	return [NEWLINE, ...genCall(context.helper("setInsertionState"), `n${parent}`, anchor != null ? `n${anchor}` : appendIndex ? String(appendIndex) : void 0)];
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/template.ts
@@ -27620,6 +27698,16 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 	for (const [index, child] of children.entries()) {
 		if (child.flags & 2) offset--;
 		if (child.flags & 4 && child.template != null) {
+			if (child.anchor !== void 0) {
+				const elementIndex = index + offset;
+				const variable = `n${child.anchor}`;
+				pushBlock(NEWLINE, `const ${variable} = `, ...genAccessPath(context, from, elementIndex, prev));
+				prev = [
+					variable,
+					elementIndex,
+					false
+				];
+			}
 			flushBeforeDynamic && flushBeforeDynamic(child, push);
 			push(...genSelf(child, context, flushBeforeDynamic));
 			continue;
@@ -27631,9 +27719,8 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 			continue;
 		}
 		const elementIndex = index + offset;
-		const logicalIndex = child.logicalIndex !== void 0 ? String(child.logicalIndex) : void 0;
 		const inlinePlaceholder = id === void 0 && canInlinePlaceholder(child) && child.template == null && child.operation === void 0 && !(child.flags & 6);
-		const accessPath = genAccessPath(context, from, child, elementIndex, logicalIndex, prev);
+		const accessPath = genAccessPath(context, from, elementIndex, prev);
 		if (inlinePlaceholder) {
 			if (prev && prev[2]) {
 				push(...genChildren(child, context, pushBlock, [
@@ -27681,11 +27768,14 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 * Build one DOM lookup path while preserving the fast sibling walk:
 * adjacent nodes use _next(prev), otherwise fall back to _nthChild(parent).
 */
-function genAccessPath({ helper }, from, child, elementIndex, logicalIndex, prev) {
-	if (prev) return elementIndex - prev[1] === 1 ? genCall(helper("next"), prev[0], logicalIndex) : genNthChild(helper("nthChild"), from, elementIndex, logicalIndex);
-	if (elementIndex === 0) return genCall(helper("child"), from, child.logicalIndex !== 0 ? logicalIndex : void 0);
-	const firstChild = genCall(helper("child"), from);
-	return elementIndex === 1 ? genCall(helper("next"), firstChild, logicalIndex) : genNthChild(helper("nthChild"), from, elementIndex, logicalIndex);
+function genAccessPath({ helper }, from, elementIndex, prev) {
+	if (prev) return elementIndex - prev[1] === 1 ? genCall(helper("next"), prev[0]) : genCall(helper("nthChild"), from, String(elementIndex));
+	if (elementIndex === 0) return genCall(helper("child"), from);
+	if (elementIndex === 1) {
+		const firstChild = genCall(helper("child"), from);
+		return genCall(helper("next"), firstChild);
+	}
+	return genCall(helper("nthChild"), from, String(elementIndex));
 }
 /**
 * Only inline a placeholder when materializing it would not save a parent
@@ -27698,13 +27788,15 @@ function canInlinePlaceholder(dynamic) {
 /**
 * A following access can reuse the current placeholder cursor only when it is
 * the next DOM sibling. Gapped siblings need _nthChild(parent, index) instead.
+* Kept in lockstep with genChildren's traversal rules.
 */
 function hasAdjacentFollowingAccessChild(children, index, elementIndex, offset) {
 	let futureOffset = offset;
 	for (let i = index + 1; i < children.length; i++) {
 		const child = children[i];
 		if (child.flags & 2) futureOffset--;
-		if (!(child.flags & 4 && child.template != null) && (!!(child.flags & 1) || child.hasDynamicChild)) return i + futureOffset - elementIndex === 1;
+		if (child.flags & 4 && child.anchor === void 0) continue;
+		if (!!(child.flags & 1) || child.hasDynamicChild) return i + futureOffset - elementIndex === 1;
 	}
 	return false;
 }
@@ -27719,7 +27811,7 @@ function countParentAccessUsages(dynamic) {
 	let prev;
 	for (const [index, child] of dynamic.children.entries()) {
 		if (child.flags & 2) offset--;
-		if (child.flags & 4 && child.template != null) continue;
+		if (child.flags & 4 && child.template != null && child.anchor === void 0) continue;
 		const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
 		if (id === void 0 && !child.hasDynamicChild) continue;
 		const elementIndex = index + offset;
@@ -27740,10 +27832,6 @@ function countParentAccessUsages(dynamic) {
 	}
 	return usages;
 }
-function genNthChild(nthChild, from, elementIndex, logicalIndex) {
-	const index = String(elementIndex);
-	return genCall(nthChild, from, index, logicalIndex === index ? void 0 : logicalIndex);
-}
 //#endregion
 //#region packages/compiler-vapor/src/generators/block.ts
 function genBlock(oper, context, args = [], root) {
@@ -27761,6 +27849,7 @@ function genBlock(oper, context, args = [], root) {
 function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffectIndexes) {
 	const [frag, push] = buildCodeFragment();
 	const { dynamic, effect, operation, returns } = block;
+	const modelOperations = operation.filter(isVModelOperation);
 	const resetBlock = context.enterBlock(block);
 	const singleUseAssetComponentNames = root ? collectSingleUseAssetComponents(block) : void 0;
 	const prevSingleUseAssetComponentNames = context.singleUseAssetComponentNames;
@@ -27779,7 +27868,8 @@ function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffec
 	let effectIndex = 0;
 	const flushPendingOperations = (operationEnd, effectEnd, push) => {
 		while (operationIndex < operationEnd) {
-			push(...genOperationWithInsertionState(operation[operationIndex], context));
+			const oper = operation[operationIndex];
+			if (!isVModelOperation(oper)) push(...genOperationWithInsertionState(oper, context));
 			operationIndex++;
 		}
 		if (effectIndex < effectEnd) {
@@ -27796,9 +27886,10 @@ function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffec
 		push(...genSelf(child, context, flushBeforeDynamic));
 	}
 	for (const child of dynamic.children) if (!child.hasDynamicChild) push(...genChildren(child, context, push, `n${child.id}`, flushBeforeDynamic));
-	if (operationIndex < operation.length) push(...genOperations(operation.slice(operationIndex), context));
+	if (operationIndex < operation.length) push(...genOperations(operation.slice(operationIndex).filter((oper) => !isVModelOperation(oper)), context));
 	if (effectIndex < effect.length) push(...genEffectRange(effectIndex, effect.length, genEffectsExtraFrag));
 	else if (genEffectsExtraFrag) push(...genEffects([], context, genEffectsExtraFrag));
+	if (modelOperations.length) push(...genOperations(modelOperations, context));
 	push(NEWLINE, `return `);
 	const returnNodes = returns.map((n) => `n${n}`);
 	push(...returnNodes.length > 1 ? genMulti(DELIMITERS_ARRAY, ...returnNodes) : [returnNodes[0] || "[]"]);
@@ -27816,27 +27907,54 @@ function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffec
 		for (const name of context.ir[kind]) push(NEWLINE, `const ${toValidAssetId(name, kind)} = `, ...genCall(context.helper(helper), JSON.stringify(name)));
 	}
 }
-function markSlotRootOperations(block) {
+function isVModelOperation(oper) {
+	return oper.type === 13 && oper.builtin === true && oper.name === "model";
+}
+function markSlotRootOperations(block, context, sharedFallback = false) {
+	markSlotRootOperationsImpl(block, context, sharedFallback, true);
+}
+function markSlotRootOperationsForDom2(block, context, sharedFallback = false) {
+	markSlotRootOperationsImpl(block, context, sharedFallback, false);
+}
+function markSlotRootOperationsImpl(block, context, sharedFallback, respectStableRoot) {
+	if (respectStableRoot && hasStableSlotRoot(block, context)) return;
+	sharedFallback = sharedFallback || hasMultipleDynamicSlotRoots(block);
 	for (let i = 0; i < block.returns.length; i++) {
 		const child = findReturnedDynamic$1(block, block.returns[i]);
 		const operation = child && child.operation;
 		if (!operation) continue;
-		if (operation.type === 15) markSlotRootIf(operation);
-		else if (operation.type === 16) markSlotRootFor(operation);
-		else if (operation.type === 12) markSlotRootComponent(operation);
+		if (operation.type === 14) markSlotRootIf(operation, context, sharedFallback, respectStableRoot);
+		else if (operation.type === 15) markSlotRootFor(operation, context, respectStableRoot);
+		else if (operation.type === 16) {
+			operation.slotRoot = true;
+			markSlotRootOperationsImpl(operation.block, context, sharedFallback, respectStableRoot);
+		} else if (operation.type === 11) markSlotRootComponent(operation);
+		else if (operation.type === 12) {
+			if (!(operation.flags & 2)) operation.flags |= 4;
+			if (sharedFallback) operation.flags |= 16;
+			else operation.flags |= 32;
+		}
 	}
 }
-function markSlotRootIf(operation) {
+function markSlotRootIf(operation, context, sharedFallback, respectStableRoot) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperations(operation.positive);
+	markSlotRootOperationsImpl(operation.positive, context, sharedFallback, respectStableRoot);
 	const negative = operation.negative;
 	if (!negative) return;
-	if (negative.type === 15) markSlotRootIf(negative);
-	else markSlotRootOperations(negative);
+	if (negative.type === 14) markSlotRootIf(negative, context, sharedFallback, respectStableRoot);
+	else markSlotRootOperationsImpl(negative, context, sharedFallback, respectStableRoot);
 }
-function markSlotRootFor(operation) {
+function markSlotRootFor(operation, context, respectStableRoot) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperations(operation.render);
+	markSlotRootOperationsImpl(operation.render, context, true, respectStableRoot);
+}
+function hasMultipleDynamicSlotRoots(block) {
+	let count = 0;
+	for (let i = 0; i < block.returns.length; i++) {
+		const child = findReturnedDynamic$1(block, block.returns[i]);
+		if (child && child.operation && ++count > 1) return true;
+	}
+	return false;
 }
 function markSlotRootComponent(operation) {
 	if (!operation.once && operation.dynamic && !operation.dynamic.isStatic) operation.slotRoot = true;
@@ -27846,6 +27964,40 @@ function findReturnedDynamic$1(block, id) {
 		const child = block.dynamic.children[i];
 		if (child.id === id) return child;
 	}
+}
+const commentOnlyTemplateRE = /^(?:<!--[\s\S]*?-->)+$/;
+function hasStableSlotRoot(block, context) {
+	let hasValidRoot = false;
+	for (let i = 0; i < block.returns.length; i++) {
+		const id = block.returns[i];
+		const child = findReturnedDynamic$1(block, id);
+		const operation = child && child.operation;
+		if (!operation) {
+			if (child && isStableTemplateSlotRoot(child, context)) hasValidRoot = true;
+			continue;
+		}
+		switch (operation.type) {
+			case 11:
+				if (!operation.dynamic || operation.dynamic.isStatic) {
+					hasValidRoot = true;
+					continue;
+				}
+				continue;
+			case 16:
+				if (hasStableSlotRoot(operation.block, context)) {
+					hasValidRoot = true;
+					continue;
+				}
+				continue;
+			default: continue;
+		}
+	}
+	return hasValidRoot;
+}
+function isStableTemplateSlotRoot(child, context) {
+	if (child.template == null) return false;
+	const content = context.ir.template.entries[child.template].content;
+	return content !== "" && !commentOnlyTemplateRE.test(content.trim());
 }
 function collectSingleUseAssetComponents(block) {
 	const usageMap = /* @__PURE__ */ new Map();
@@ -27866,7 +28018,7 @@ function collectSingleUseAssetComponents(block) {
 	function visitOperation(operation, rootCandidate) {
 		if (seenOperations.has(operation)) return;
 		seenOperations.add(operation);
-		if (operation.type === 12) {
+		if (operation.type === 11) {
 			if (operation.asset) {
 				const usage = usageMap.get(operation.tag) || {
 					count: 0,
@@ -27880,18 +28032,18 @@ function collectSingleUseAssetComponents(block) {
 			return;
 		}
 		switch (operation.type) {
-			case 15:
+			case 14:
 				visitBlock(operation.positive, false);
-				if (operation.negative) if (operation.negative.type === 15) visitOperation(operation.negative, false);
+				if (operation.negative) if (operation.negative.type === 14) visitOperation(operation.negative, false);
 				else visitBlock(operation.negative, false);
 				break;
-			case 16:
+			case 15:
 				visitBlock(operation.render, false);
 				break;
-			case 17:
+			case 16:
 				visitBlock(operation.block, false);
 				break;
-			case 13:
+			case 12:
 				if (operation.fallback) visitBlock(operation.fallback, false);
 				break;
 		}
@@ -27960,10 +28112,27 @@ var CodegenContext = class {
 	enterScope() {
 		return [this.scopeLevel++, () => this.scopeLevel--];
 	}
-	isHelperNameAvailable(name) {
-		if (this.bindingNames.has(name)) return false;
+	getUniqueLocalName(base, scopeNames) {
+		const name = this.findAvailableName(base, scopeNames);
+		scopeNames.add(name);
+		this.generatedLocalNames.add(name);
+		return name;
+	}
+	isNameAvailable(name, reservedNames) {
+		if (this.bindingNames.has(name) || reservedNames.has(name)) return false;
 		for (const alias of this.helpers.values()) if (alias === name) return false;
 		return true;
+	}
+	findAvailableName(base, reservedNames) {
+		if (this.isNameAvailable(base, reservedNames)) return base;
+		const map = this.nextIdMap.get(base);
+		let next = 1;
+		while (true) {
+			const id = getNextId(map, next);
+			const name = `${base}${id}`;
+			if (this.isNameAvailable(name, reservedNames)) return name;
+			next = id + 1;
+		}
 	}
 	initNextIdMap() {
 		if (this.bindingNames.size === 0) return;
@@ -28004,20 +28173,9 @@ var CodegenContext = class {
 		this.helper = (name) => {
 			if (this.helpers.has(name)) return this.helpers.get(name);
 			const base = `_${helperNameAliases[name] || name}`;
-			if (this.isHelperNameAvailable(base)) {
-				this.helpers.set(name, base);
-				return base;
-			}
-			const map = this.nextIdMap.get(base);
-			let next = 1;
-			while (true) {
-				const alias = `${base}${getNextId(map, next)}`;
-				if (this.isHelperNameAvailable(alias)) {
-					this.helpers.set(name, alias);
-					return alias;
-				}
-				next++;
-			}
+			const alias = this.findAvailableName(base, this.generatedLocalNames);
+			this.helpers.set(name, alias);
+			return alias;
 		};
 		this.delegates = /* @__PURE__ */ new Set();
 		this.identifiers = Object.create(null);
@@ -28027,6 +28185,7 @@ var CodegenContext = class {
 		this.templateVars = /* @__PURE__ */ new Map();
 		this.nextIdMap = /* @__PURE__ */ new Map();
 		this.lastIdMap = /* @__PURE__ */ new Map();
+		this.generatedLocalNames = /* @__PURE__ */ new Set();
 		this.lastTIndex = -1;
 		const defaultOptions = {
 			mode: "module",
@@ -28159,12 +28318,15 @@ const transformVHtml = (dir, node, context) => {
 		exp = EMPTY_EXPRESSION;
 	}
 	ignoreVHtmlChildren(node, context, "template");
+	if (node.tagType === 1) return {
+		key: createSimpleExpression("innerHTML", true, loc),
+		value: exp
+	};
 	context.registerEffect([exp], {
 		type: 8,
 		node,
 		element: context.reference(),
-		value: exp,
-		isComponent: node.tagType === 1
+		value: exp
 	});
 };
 //#endregion
@@ -28283,7 +28445,7 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 	const id = context.reference();
 	const flatten = extractElementFlatten(node, propsResult, context);
 	context.dynamic.operation = _objectSpread2(_objectSpread2({
-		type: 12,
+		type: 11,
 		node,
 		id
 	}, context.effectBoundary()), {}, {
@@ -28406,14 +28568,12 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 		let hasStaticStyle = false;
 		let hasClass = false;
 		const datasetProps = [];
-		let prevWasQuoted = false;
 		const appendTemplateProp = (key, value = "", generated = false) => {
-			if (!prevWasQuoted) template += ` `;
-			template += key;
+			template += ` ${key}`;
 			if (value) {
 				const escapedValue = generated ? escapeGeneratedAttrValue(value) : value.replace(/"/g, "&quot;");
-				template += (prevWasQuoted = NEEDS_QUOTES_RE.test(value)) ? `="${escapedValue}"` : `=${escapedValue}`;
-			} else prevWasQuoted = false;
+				template += NEEDS_QUOTES_RE.test(value) ? `="${escapedValue}"` : `=${escapedValue}`;
+			}
 		};
 		for (const prop of propsResult[1]) {
 			const { key, values } = prop;
@@ -28428,7 +28588,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 					dynamicProps.push(key.content);
 					values[0].isStatic = false;
 					context.registerEffect(values, {
-						type: 20,
+						type: 19,
 						node,
 						prop
 					}, getEffectIndex);
@@ -28436,11 +28596,8 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				}
 				if (key.content === "class") hasClass = true;
 			}
-			if (canStringifyAttrName && context.imports.some((imported) => values[0].content.includes(imported.exp.content))) {
-				if (!prevWasQuoted) template += ` `;
-				template += `${key.content}="${IMPORT_EXP_START}${values[0].content}${IMPORT_EXP_END}"`;
-				prevWasQuoted = true;
-			} else if (canStringifyAttrName && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content)) {
+			if (canStringifyAttrName && context.imports.some((imported) => values[0].content.includes(imported.exp.content))) template += ` ${key.content}="${IMPORT_EXP_START}${values[0].content}${IMPORT_EXP_END}"`;
+			else if (canStringifyAttrName && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content)) {
 				if (isDom2 && key.content === "style") {
 					hasStaticStyle = true;
 					const checkStaticStyle = context.options.checkStaticStyle;
@@ -28462,7 +28619,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				}
 				const value = values[0].content === "''" ? "" : values[0].content;
 				appendTemplateProp(key.content, value);
-			} else if (canStringifyAttrName && !prop.modifier && isBooleanAttr(key.content) && (foldedValue = foldBooleanAttrValue(values)) != null) {
+			} else if (canStringifyAttrName && !prop.modifier && (isBooleanAttr(key.content) || key.content === "hidden") && (foldedValue = foldBooleanAttrValue(key.content, values)) != null) {
 				if (foldedValue) appendTemplateProp(key.content);
 			} else if (canStringifyAttrName && !prop.modifier && !isDom2 && hasBoundValue(values) && (foldedValue = key.content === "class" ? foldClassValues(values) : key.content === "style" ? foldStyleValues(values) : void 0) != null) {
 				if (foldedValue) appendTemplateProp(key.content, foldedValue, true);
@@ -28501,11 +28658,12 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 function escapeGeneratedAttrValue(value) {
 	return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 }
-function foldBooleanAttrValue(values) {
+function foldBooleanAttrValue(key, values) {
 	if (values.length !== 1) return;
 	const evaluated = evaluateConstantExpression(values[0]);
 	if (!evaluated) return;
 	const value = evaluated.value;
+	if (key === "hidden" && typeof value === "number") return includeBooleanAttr(value);
 	if (value === true || value === false || value == null) return includeBooleanAttr(value);
 }
 function foldStyleValues(values) {
@@ -28869,7 +29027,7 @@ function transformProp(prop, node, context) {
 		if (fromSetup) name = fromSetup;
 		else context.directive.add(name);
 		context.registerOperation({
-			type: 14,
+			type: 13,
 			node,
 			element: context.reference(),
 			dir: prop,
@@ -28890,7 +29048,8 @@ function dedupeProperties(results) {
 		const name = prop.key.content;
 		const existing = knownProps.get(name);
 		if (existing && existing.handler === prop.handler) {
-			if (name === "style" || name === "class" || prop.handler || name === "hover-class") mergePropValues(existing, prop);
+			if (prop.handler) deduped.push(prop);
+			else if (name === "style" || name === "class" || name === "hover-class") mergePropValues(existing, prop);
 		} else {
 			knownProps.set(name, prop);
 			deduped.push(prop);
@@ -28953,50 +29112,34 @@ const transformChildren = (node, context) => {
 	if (!isFragment) processDynamicChildren(context);
 };
 function processDynamicChildren(context) {
-	let prevDynamics = [];
-	let staticCount = 0;
 	const children = context.dynamic.children;
-	let logicalIndex = 0;
-	for (const [index, child] of children.entries()) {
-		if (child.flags & 4) {
-			child.logicalIndex = logicalIndex;
-			prevDynamics.push(child);
-			logicalIndex++;
-		}
-		if (!(child.flags & 2)) {
-			child.logicalIndex = logicalIndex;
-			if (prevDynamics.length) {
-				if (staticCount) {
-					context.childrenTemplate[index - prevDynamics.length] = `<!>`;
-					prevDynamics[0].flags -= 2;
-					const anchor = prevDynamics[0].anchor = context.increaseId();
-					registerInsertion(prevDynamics, context, anchor);
-				} else registerInsertion(prevDynamics, context, -1);
-				prevDynamics = [];
-			}
-			staticCount++;
-			logicalIndex++;
-		}
+	let lastTemplateIndex = -1;
+	for (let i = children.length - 1; i >= 0; i--) if (!(children[i].flags & 2)) {
+		lastTemplateIndex = i;
+		break;
 	}
-	if (prevDynamics.length) registerInsertion(prevDynamics, context, prevDynamics[0].logicalIndex, true);
-}
-function registerInsertion(dynamics, context, anchor, append) {
-	for (const child of dynamics) {
-		const logicalIndex = child.logicalIndex;
-		if (child.template != null) context.registerOperation({
+	let unitIndex = 0;
+	for (const [index, child] of children.entries()) if (child.flags & 4) {
+		let anchor;
+		if (index < lastTemplateIndex) {
+			context.childrenTemplate[index] = `<!>`;
+			child.flags = child.flags - 2 | 1;
+			anchor = child.anchor = context.increaseId();
+		}
+		if (child.template != null) child.operation = {
 			type: 10,
 			node: context.node,
-			elements: dynamics.map((child) => child.id),
+			elements: [child.id],
 			parent: context.reference(),
-			anchor: append ? void 0 : anchor
-		});
+			anchor
+		};
 		else if (child.operation && isBlockOperation(child.operation)) {
 			child.operation.parent = context.reference();
-			child.operation.anchor = anchor;
-			child.operation.logicalIndex = logicalIndex;
-			child.operation.append = append;
+			if (anchor !== void 0) child.operation.anchor = anchor;
+			else child.operation.appendIndex = unitIndex;
 		}
-	}
+		unitIndex++;
+	} else if (!(child.flags & 2)) unitIndex++;
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vOnce.ts
@@ -29104,7 +29247,7 @@ function processTextContainer(children, context) {
 	else {
 		context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
 		context.registerOperation({
-			type: 18,
+			type: 17,
 			node: context.node,
 			parent: context.reference()
 		});
@@ -29164,6 +29307,7 @@ function isTextLike(node) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vText.ts
+const isRawTextContainer = /* @__PURE__ */ makeMap("iframe,noembed,noframes,noscript,script,style,xmp");
 const transformVText = (dir, node, context) => {
 	let { exp, loc } = dir;
 	if (!exp) {
@@ -29176,9 +29320,15 @@ const transformVText = (dir, node, context) => {
 		for (const child of node.children) markNonTemplate(child, context);
 	}
 	if (isVoidTag(context.node.tag)) return;
+	const isComponent = node.tagType === 1;
+	if (isComponent) return {
+		key: createSimpleExpression("textContent", true),
+		value: exp,
+		toDisplayString: !isConstantVTextExpression(exp, context.options.bindingMetadata)
+	};
 	const literal = getLiteralExpressionValue(exp);
 	const useCreateElement = shouldUseCreateElement(context.node, context);
-	if (literal != null) if (useCreateElement) {
+	if (literal != null) if (useCreateElement || isRawTextContainer(node.tag)) {
 		const id = registerSyntheticTextChild(context, "", [exp]);
 		context.registerOperation({
 			type: 10,
@@ -29186,9 +29336,8 @@ const transformVText = (dir, node, context) => {
 			elements: [id],
 			parent: context.reference()
 		});
-	} else context.childrenTemplate = [String(literal)];
+	} else context.childrenTemplate = [escapeHtml(literal)];
 	else {
-		const isComponent = node.tagType === 1;
 		let id;
 		if (useCreateElement) {
 			id = registerSyntheticTextChild(context, "");
@@ -29201,7 +29350,7 @@ const transformVText = (dir, node, context) => {
 		} else {
 			context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
 			if (!isComponent) context.registerOperation({
-				type: 18,
+				type: 17,
 				node,
 				parent: context.reference()
 			});
@@ -29211,11 +29360,24 @@ const transformVText = (dir, node, context) => {
 			node,
 			element: useCreateElement ? id : context.reference(),
 			values: [exp],
-			generated: !useCreateElement,
-			isComponent
+			generated: !useCreateElement
 		});
 	}
 };
+function isConstantVTextExpression(exp, bindings) {
+	if (isConstantExpression(exp)) return true;
+	if (exp.ast === null) {
+		const type = bindings[exp.content];
+		return type === "setup-const" || type === "literal-const";
+	}
+	if (!exp.ast) return false;
+	let isConstant = true;
+	walkIdentifiers(exp.ast, (id, parent, _parentStack, isReferenced) => {
+		if (parent && isStaticPropertyKey(id, parent)) return;
+		if (isReferenced && !isGloballyAllowed(id.name) && id.name !== "require" || (parent === null || parent === void 0 ? void 0 : parent.type) === "CallExpression" || (parent === null || parent === void 0 ? void 0 : parent.type) === "NewExpression" || (parent === null || parent === void 0 ? void 0 : parent.type) === "MemberExpression") isConstant = false;
+	}, true);
+	return isConstant;
+}
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vOn.ts
 const delegatedEvents = /* @__PURE__ */ makeMap("beforeinput,click,dblclick,contextmenu,focusin,focusout,input,keydown,keyup,mousedown,mousemove,mouseout,mouseover,mouseup,pointerdown,pointermove,pointerout,pointerover,pointerup,touchend,touchmove,touchstart");
@@ -29224,6 +29386,16 @@ const transformVOn = (dir, node, context) => {
 	const isComponent = node.tagType === 1;
 	const isSlotOutlet = node.tag === "slot";
 	if (!exp && !modifiers.length) context.options.onError(createCompilerError(35, loc));
+	let delegateModifier;
+	let nonDelegateModifiers;
+	for (let i = 0; i < modifiers.length; i++) {
+		const modifier = modifiers[i];
+		if (modifier.content === "delegate") {
+			delegateModifier || (delegateModifier = modifier);
+			nonDelegateModifiers || (nonDelegateModifiers = modifiers.slice(0, i));
+		} else if (nonDelegateModifiers) nonDelegateModifiers.push(modifier);
+	}
+	if (nonDelegateModifiers) modifiers = nonDelegateModifiers;
 	arg = resolveExpression(arg);
 	if (arg.isStatic && arg.content.startsWith("vue:")) arg = extend({}, arg, { content: `vnode-${arg.content.slice(4)}` });
 	const { keyModifiers, nonKeyModifiers, eventOptionModifiers } = resolveModifiers(arg.isStatic ? `on${arg.content}` : arg, modifiers, null, loc);
@@ -29236,17 +29408,24 @@ const transformVOn = (dir, node, context) => {
 	}
 	arg = normalizeStaticEventArg(arg, nonKeyModifiers);
 	if (keyModifiers.length && isStaticExp(arg) && !isKeyboardEvent(`on${arg.content.toLowerCase()}`)) keyModifiers.length = 0;
-	if (isComponent || isSlotOutlet) return {
-		key: arg,
-		value: exp || EMPTY_EXPRESSION,
-		handler: true,
-		handlerModifiers: {
-			keys: keyModifiers,
-			nonKeys: nonKeyModifiers,
-			options: eventOptionModifiers
-		}
-	};
-	const delegate = context.options.eventDelegation && arg.isStatic && !eventOptionModifiers.length && !hasStopHandlerForStaticEvent(node, arg.content) && delegatedEvents(arg.content);
+	if (isComponent || isSlotOutlet) {
+		if (delegateModifier) warnDelegate(context, delegateModifier, ".delegate modifier is only supported on native DOM elements. The modifier will be ignored.");
+		return {
+			key: arg,
+			value: exp || EMPTY_EXPRESSION,
+			handler: true,
+			handlerModifiers: {
+				keys: keyModifiers,
+				nonKeys: nonKeyModifiers,
+				options: eventOptionModifiers
+			}
+		};
+	}
+	const isDelegatableEvent = !!delegateModifier && arg.isStatic && delegatedEvents(arg.content);
+	const hasStopHandler = isDelegatableEvent && !eventOptionModifiers.length && hasStopHandlerForStaticEvent(node, arg.content);
+	if (delegateModifier && !arg.isStatic) warnDelegate(context, delegateModifier, ".delegate modifier requires a static event name. The listener will be attached directly.");
+	else if (delegateModifier && !isDelegatableEvent) warnDelegate(context, delegateModifier, `.delegate modifier is not supported on the "${arg.content}" event. The listener will be attached directly.`);
+	const delegate = isDelegatableEvent && !eventOptionModifiers.length && !hasStopHandler;
 	const operation = {
 		type: 6,
 		node,
@@ -29281,6 +29460,11 @@ function hasStopHandlerForStaticEvent(node, eventName) {
 		return nonKeyModifiers.includes("stop") && normalizeStaticEventArg(arg, nonKeyModifiers).content === eventName;
 	});
 }
+function warnDelegate(context, modifier, message) {
+	const error = new SyntaxError(message);
+	error.loc = modifier.loc;
+	context.options.onWarn(error);
+}
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vShow.ts
 const transformVShow = (dir, node, context) => {
@@ -29294,7 +29478,7 @@ const transformVShow = (dir, node, context) => {
 		return;
 	}
 	context.registerOperation({
-		type: 14,
+		type: 13,
 		node,
 		element: context.reference(),
 		dir,
@@ -29380,7 +29564,7 @@ const transformVModel = (dir, node, context) => {
 	else checkDuplicatedValue();
 	else context.options.onError(createDOMCompilerError(58, dir.loc));
 	if (modelType) context.registerOperation({
-		type: 14,
+		type: 13,
 		node,
 		element: context.reference(),
 		dir,
@@ -29446,7 +29630,7 @@ function processIf(node, dir, context) {
 		return () => {
 			onExit();
 			context.dynamic.operation = _objectSpread2(_objectSpread2({
-				type: 15,
+				type: 14,
 				node,
 				id
 			}, context.effectBoundary()), {}, {
@@ -29463,16 +29647,16 @@ function processIf(node, dir, context) {
 		let lastIfNode;
 		if (siblings) {
 			let i = siblings.length;
-			while (i--) if (siblings[i].operation && siblings[i].operation.type === 15) {
+			while (i--) if (siblings[i].operation && siblings[i].operation.type === 14) {
 				lastIfNode = siblings[i].operation;
 				break;
 			}
 		}
-		if (!siblingIf || !lastIfNode || lastIfNode.type !== 15) {
+		if (!siblingIf || !lastIfNode || lastIfNode.type !== 14) {
 			context.options.onError(createCompilerError(30, node.loc));
 			return;
 		}
-		while (lastIfNode.negative && lastIfNode.negative.type === 15) lastIfNode = lastIfNode.negative;
+		while (lastIfNode.negative && lastIfNode.negative.type === 14) lastIfNode = lastIfNode.negative;
 		if (dir.name === "else-if" && lastIfNode.negative) context.options.onError(createCompilerError(30, node.loc));
 		const comments = context.comment;
 		if (comments.length) {
@@ -29485,7 +29669,7 @@ function processIf(node, dir, context) {
 		const [branch, onExit] = createIfBranch(node, context);
 		if (dir.name === "else") lastIfNode.negative = branch;
 		else lastIfNode.negative = {
-			type: 15,
+			type: 14,
 			node,
 			id: -1,
 			condition: dir.exp,
@@ -29496,7 +29680,7 @@ function processIf(node, dir, context) {
 		};
 		return () => {
 			onExit();
-			if (lastIfNode.negative.type === 15) lastIfNode.negative.blockShape = encodeIfBlockShape(lastIfNode.negative.positive, forceMultiRoot, void 0, allowNoScope);
+			if (lastIfNode.negative.type === 14) lastIfNode.negative.blockShape = encodeIfBlockShape(lastIfNode.negative.positive, forceMultiRoot, void 0, allowNoScope);
 			lastIfNode.blockShape = encodeIfBlockShape(lastIfNode.positive, forceMultiRoot, lastIfNode.negative, allowNoScope);
 		};
 	}
@@ -29515,12 +29699,12 @@ function createIfBranch(node, context) {
 function encodeIfBlockShape(positive, forceMultiRoot = false, negative, allowNoScope = true) {
 	if (forceMultiRoot) return 10;
 	const positiveNoScope = allowNoScope && canSkipIfBranchScope(positive);
-	const negativeNoScope = allowNoScope && negative && negative.type !== 15 && canSkipIfBranchScope(negative);
+	const negativeNoScope = allowNoScope && negative && negative.type !== 14 && canSkipIfBranchScope(negative);
 	return getBlockShape(positive) | getNegativeIfBranchShape(negative) << 2 | (positiveNoScope ? 32 : 0) | (negativeNoScope ? 64 : 0);
 }
 function getNegativeIfBranchShape(negative) {
 	if (!negative) return 0;
-	return negative.type === 15 ? 1 : getBlockShape(negative);
+	return negative.type === 14 ? 1 : getBlockShape(negative);
 }
 function canSkipIfBranchScope(block) {
 	if (block.effect.length || block.operation.length) return false;
@@ -29567,6 +29751,8 @@ function processFor(node, dir, context) {
 	const keyProperty = keyProp && propToExpression(keyProp);
 	const typeProp = findProp(node, "type");
 	const typeProperty = typeProp && propToExpression(typeProp);
+	const idProp = findProp(node, "id");
+	const idProperty = idProp && propToExpression(idProp);
 	const isComponent = node.tagType === 1 || isTemplateWithSingleComponent(node);
 	context.node = node = wrapTemplate(node, ["for", "key"]);
 	context.dynamic.flags |= 6;
@@ -29579,7 +29765,7 @@ function processFor(node, dir, context) {
 		const { parent } = context;
 		const isOnlyChild = parent && parent.block.node !== parent.node && parent.node.children.length === 1;
 		context.dynamic.operation = _objectSpread2(_objectSpread2({
-			type: 16,
+			type: 15,
 			node,
 			id
 		}, context.effectBoundary()), {}, {
@@ -29589,6 +29775,7 @@ function processFor(node, dir, context) {
 			index,
 			keyProp: keyProperty,
 			typeProp: typeProperty,
+			idProp: idProperty,
 			render,
 			once: context.inVOnce || isStaticExpression(source, context.options.bindingMetadata),
 			component: isComponent && node.children[0].type === 1 && node.children[0].tagType === 1,
@@ -29629,7 +29816,7 @@ const transformSlotOutlet = (node, context) => {
 	if (slotProps.length) {
 		const [isDynamic, props] = buildProps(extend({}, node, { props: slotProps }), context, true);
 		irProps = isDynamic ? props : [props];
-		const runtimeDirective = context.block.operation.find((oper) => oper.type === 14 && oper.element === id);
+		const runtimeDirective = context.block.operation.find((oper) => oper.type === 13 && oper.element === id);
 		if (runtimeDirective) context.options.onError(createCompilerError(36, runtimeDirective.dir.loc));
 	}
 	return () => {
@@ -29638,7 +29825,7 @@ const transformSlotOutlet = (node, context) => {
 		if (context.options.scopeId && !context.options.slotted) flags |= 1;
 		if (context.inVOnce) flags |= 2;
 		context.dynamic.operation = _objectSpread2(_objectSpread2({
-			type: 13,
+			type: 12,
 			node,
 			id
 		}, context.effectBoundary()), {}, {
@@ -29756,13 +29943,16 @@ function transformTemplateSlot(node, dir, context) {
 			};
 			ifNode.negative = negative;
 		} else context.options.onError(createCompilerError(30, vElse.loc));
-	} else if (vFor) if (vFor.forParseResult) registerDynamicSlot(slots, {
-		slotType: 2,
-		name: arg,
-		fn: block,
-		loop: vFor.forParseResult
-	});
-	else context.options.onError(createCompilerError(32, vFor.loc));
+	} else if (vFor) if (vFor.forParseResult) {
+		const keyProp = findProp(node, "key");
+		registerDynamicSlot(slots, {
+			slotType: 2,
+			name: arg,
+			fn: block,
+			loop: vFor.forParseResult,
+			keyProp: keyProp && propToExpression(keyProp)
+		});
+	} else context.options.onError(createCompilerError(32, vFor.loc));
 	return onExit;
 }
 function ensureStaticSlots(slots) {
@@ -29839,7 +30029,7 @@ const transformKey = (node, context) => {
 	return () => {
 		exitBlock();
 		context.dynamic.operation = _objectSpread2(_objectSpread2({
-			type: 17,
+			type: 16,
 			node,
 			id
 		}, context.effectBoundary()), {}, {
@@ -29916,7 +30106,9 @@ var src_exports$1 = /* @__PURE__ */ __exportAll({
 	analyzeExpressions: () => analyzeExpressions,
 	buildCodeFragment: () => buildCodeFragment,
 	buildDestructureIdMap: () => buildDestructureIdMap,
+	buildNextIdMap: () => buildNextIdMap,
 	codeFragmentToString: () => codeFragmentToString,
+	collectSingleUseAssetComponents: () => collectSingleUseAssetComponents,
 	compile: () => compile$1,
 	createStructuralDirectiveTransform: () => createStructuralDirectiveTransform,
 	createVaporCompilerError: () => createVaporCompilerError,
@@ -29928,6 +30120,7 @@ var src_exports$1 = /* @__PURE__ */ __exportAll({
 	generate: () => generate,
 	getBaseTransformPreset: () => getBaseTransformPreset,
 	getLiteralExpressionValue: () => getLiteralExpressionValue,
+	getNextId: () => getNextId,
 	getParserOptions: () => getParserOptions,
 	hasStableSlotRoot: () => hasStableSlotRoot,
 	isBlockOperation: () => isBlockOperation,
@@ -29940,6 +30133,7 @@ var src_exports$1 = /* @__PURE__ */ __exportAll({
 	isTransitionGroupTag: () => isTransitionGroupTag,
 	isTransitionTag: () => isTransitionTag,
 	markSlotRootOperations: () => markSlotRootOperations,
+	markSlotRootOperationsForDom2: () => markSlotRootOperationsForDom2,
 	matchKeyOnlyBindingPattern: () => matchKeyOnlyBindingPattern,
 	matchSelectorPattern: () => matchSelectorPattern,
 	needsVaporCtx: () => needsVaporCtx,
@@ -30230,6 +30424,7 @@ const ssrTransformElement = (node, context) => {
 								else {
 									attrName = node.tag.indexOf("-") > 0 ? attrName : propsToAttrMap[attrName] || attrName.toLowerCase();
 									if (isBooleanAttr(attrName)) openTag.push(createConditionalExpression(createCallExpression(context.helper(SSR_INCLUDE_BOOLEAN_ATTR), [value]), createSimpleExpression(" " + attrName, true), createSimpleExpression("", true), false));
+									else if (attrName === "hidden") openTag.push(createCallExpression(context.helper(SSR_RENDER_DYNAMIC_ATTR), [key, value]));
 									else if (isSSRSafeAttrName(attrName)) openTag.push(createCallExpression(context.helper(SSR_RENDER_ATTR), [key, value]));
 									else context.onError(createSSRCompilerError(65, key.loc));
 								}
@@ -30882,10 +31077,12 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 	const defaultCompiler = ssr ? src_exports : vapor ? src_exports$1 : src_exports$2;
 	compiler = compiler || defaultCompiler;
 	if (compiler !== defaultCompiler) inAST = void 0;
-	if (inAST === null || inAST === void 0 ? void 0 : inAST.transformed) inAST = createRoot((ssr ? src_exports$2 : compiler).parse(inAST.source, _objectSpread2(_objectSpread2({ prefixIdentifiers: true }, compilerOptions), {}, {
-		parseMode: "sfc",
+	inAST = resolveTemplateAST(inAST, {
+		compiler,
+		compilerOptions,
+		ssr,
 		onError: (e) => errors.push(e)
-	})).children.find((node) => node.type === 1 && node.tag === "template").children, inAST.source);
+	});
 	let { code, ast, preamble, map, helpers } = compiler.compile(inAST || source, _objectSpread2(_objectSpread2({
 		mode: "module",
 		prefixIdentifiers: true,
@@ -31037,10 +31234,10 @@ var require_picocolors_browser = /* @__PURE__ */ __commonJSMin(((exports, module
 	module.exports.createColors = create;
 }));
 //#endregion
-//#region (ignored) node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/terminal-highlight
+//#region (ignored) node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/terminal-highlight
 var require_terminal_highlight = /* @__PURE__ */ __commonJSMin((() => {}));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/css-syntax-error.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/css-syntax-error.js
 var require_css_syntax_error = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let pico = require_picocolors_browser();
 	let terminalHighlight = require_terminal_highlight();
@@ -31115,8 +31312,15 @@ var require_css_syntax_error = /* @__PURE__ */ __commonJSMin(((exports, module) 
 	CssSyntaxError.default = CssSyntaxError;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/stringifier.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/stringifier.js
 var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	const STYLE_TAG = /(<)(\/?style\b)/gi;
+	const COMMENT_OPEN = /(<)(!--)/g;
+	function escapeHTMLInCSS(str) {
+		if (typeof str !== "string") return str;
+		if (!str.includes("<")) return str;
+		return str.replace(STYLE_TAG, "\\3c $2").replace(COMMENT_OPEN, "\\3c $2");
+	}
 	const DEFAULT_RAW = {
 		after: "\n",
 		beforeClose: "\n",
@@ -31134,19 +31338,53 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	function capitalize(str) {
 		return str[0].toUpperCase() + str.slice(1);
 	}
-	var Stringifier = class {
+	function atruleStart(str, node) {
+		let name = "@" + node.name;
+		let params = node.params ? str.rawValue(node, "params") : "";
+		if (typeof node.raws.afterName !== "undefined") name += node.raws.afterName;
+		else if (params) name += " ";
+		return name + params;
+	}
+	function pushBody(str, stack, node) {
+		let nodes = node.nodes;
+		let last = nodes.length - 1;
+		while (last > 0) {
+			if (nodes[last].type !== "comment") break;
+			last -= 1;
+		}
+		let semicolon = str.raw(node, "semicolon");
+		let isDocument = node.type === "document";
+		for (let i = nodes.length - 1; i >= 0; i--) stack.push({
+			document: isDocument,
+			node: nodes[i],
+			semicolon: last !== i || semicolon
+		});
+	}
+	function pushBlock(str, stack, node, start) {
+		let between = str.raw(node, "between", "beforeOpen");
+		str.builder(escapeHTMLInCSS(start + between) + "{", node, "start");
+		let hasNodes = node.nodes && node.nodes.length;
+		let close = () => {
+			let after = hasNodes ? str.raw(node, "after") : str.raw(node, "after", "emptyBody");
+			if (after) str.builder(escapeHTMLInCSS(after));
+			str.builder("}", node, "end");
+			if (node.type === "rule" && node.raws.ownSemicolon) str.builder(escapeHTMLInCSS(node.raws.ownSemicolon), node, "end");
+		};
+		if (hasNodes) {
+			stack.push(close);
+			pushBody(str, stack, node);
+		} else close();
+	}
+	var Stringifier = class Stringifier {
 		constructor(builder) {
 			this.builder = builder;
 		}
 		atrule(node, semicolon) {
-			let name = "@" + node.name;
-			let params = node.params ? this.rawValue(node, "params") : "";
-			if (typeof node.raws.afterName !== "undefined") name += node.raws.afterName;
-			else if (params) name += " ";
-			if (node.nodes) this.block(node, name + params);
+			let start = atruleStart(this, node);
+			if (node.nodes) this.block(node, start);
 			else {
 				let end = (node.raws.between || "") + (semicolon ? ";" : "");
-				this.builder(name + params + end, node);
+				this.builder(escapeHTMLInCSS(start + end), node);
 			}
 		}
 		beforeAfter(node, detect) {
@@ -31169,40 +31407,52 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		block(node, start) {
 			let between = this.raw(node, "between", "beforeOpen");
-			this.builder(start + between + "{", node, "start");
+			this.builder(escapeHTMLInCSS(start + between) + "{", node, "start");
 			let after;
 			if (node.nodes && node.nodes.length) {
 				this.body(node);
 				after = this.raw(node, "after");
 			} else after = this.raw(node, "after", "emptyBody");
-			if (after) this.builder(after);
+			if (after) this.builder(escapeHTMLInCSS(after));
 			this.builder("}", node, "end");
 		}
 		body(node) {
-			let last = node.nodes.length - 1;
-			while (last > 0) {
-				if (node.nodes[last].type !== "comment") break;
-				last -= 1;
-			}
-			let semicolon = this.raw(node, "semicolon");
-			for (let i = 0; i < node.nodes.length; i++) {
-				let child = node.nodes[i];
+			let proto = Stringifier.prototype;
+			let expandable = [
+				"atrule",
+				"block",
+				"body",
+				"rule",
+				"stringify"
+			].every((method) => this[method] === proto[method]);
+			let stack = [];
+			pushBody(this, stack, node);
+			while (stack.length > 0) {
+				let entry = stack.pop();
+				if (typeof entry === "function") {
+					entry();
+					continue;
+				}
+				let child = entry.node;
 				let before = this.raw(child, "before");
-				if (before) this.builder(before);
-				this.stringify(child, last !== i || semicolon);
+				if (before) this.builder(entry.document ? before : escapeHTMLInCSS(before));
+				if (expandable && child.type === "rule") pushBlock(this, stack, child, this.rawValue(child, "selector"));
+				else if (expandable && child.type === "atrule" && child.nodes) pushBlock(this, stack, child, atruleStart(this, child));
+				else this.stringify(child, entry.semicolon);
 			}
 		}
 		comment(node) {
 			let left = this.raw(node, "left", "commentLeft");
 			let right = this.raw(node, "right", "commentRight");
-			this.builder("/*" + left + node.text + right + "*/", node);
+			this.builder(escapeHTMLInCSS("/*" + left + node.text + right + "*/"), node);
 		}
 		decl(node, semicolon) {
+			let raws = node.raws;
 			let between = this.raw(node, "between", "colon");
 			let string = node.prop + between + this.rawValue(node, "value");
-			if (node.important) string += node.raws.important || " !important";
+			if (node.important) string += raws.important || " !important";
 			if (semicolon) string += ";";
-			this.builder(string, node);
+			this.builder(escapeHTMLInCSS(string), node);
 		}
 		document(node) {
 			this.body(node);
@@ -31221,8 +31471,8 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			}
 			if (!parent) return DEFAULT_RAW[detect];
 			let root = node.root();
-			if (!root.rawCache) root.rawCache = {};
-			if (typeof root.rawCache[detect] !== "undefined") return root.rawCache[detect];
+			let cache = root.rawCache || (root.rawCache = {});
+			if (typeof cache[detect] !== "undefined") return cache[detect];
 			if (detect === "before" || detect === "after") return this.beforeAfter(node, detect);
 			else {
 				let method = "raw" + capitalize(detect);
@@ -31233,7 +31483,7 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				});
 			}
 			if (typeof value === "undefined") value = DEFAULT_RAW[detect];
-			root.rawCache[detect] = value;
+			cache[detect] = value;
 			return value;
 		}
 		rawBeforeClose(root) {
@@ -31354,11 +31604,15 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		root(node) {
 			this.body(node);
-			if (node.raws.after) this.builder(node.raws.after);
+			if (node.raws.after) {
+				let after = node.raws.after;
+				let isDocument = node.parent && node.parent.type === "document";
+				this.builder(isDocument ? after : escapeHTMLInCSS(after));
+			}
 		}
 		rule(node) {
 			this.block(node, this.rawValue(node, "selector"));
-			if (node.raws.ownSemicolon) this.builder(node.raws.ownSemicolon, node, "end");
+			if (node.raws.ownSemicolon) this.builder(escapeHTMLInCSS(node.raws.ownSemicolon), node, "end");
 		}
 		stringify(node, semicolon) {
 			/* c8 ignore start */
@@ -31371,7 +31625,7 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Stringifier.default = Stringifier;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/stringify.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/stringify.js
 var require_stringify = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Stringifier = require_stringifier();
 	function stringify(node, builder) {
@@ -31381,13 +31635,13 @@ var require_stringify = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	stringify.default = stringify;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/symbols.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/symbols.js
 var require_symbols = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports.isClean = Symbol("isClean");
 	module.exports.my = Symbol("my");
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/node.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/node.js
 var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let CssSyntaxError = require_css_syntax_error();
 	let Stringifier = require_stringifier();
@@ -31395,20 +31649,47 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let { isClean, my } = require_symbols();
 	function cloneNode(obj, parent) {
 		let cloned = new obj.constructor();
-		for (let i in obj) {
-			if (!Object.prototype.hasOwnProperty.call(obj, i))
+		let stack = [[
+			obj,
+			cloned,
+			parent
+		]];
+		while (stack.length > 0) {
+			let [source, target, targetParent] = stack.pop();
+			for (let i in source) {
+				if (!Object.prototype.hasOwnProperty.call(source, i))
  /* c8 ignore next 2 */
-			continue;
-			if (i === "proxyCache") continue;
-			let value = obj[i];
-			let type = typeof value;
-			if (i === "parent" && type === "object") {
-				if (parent) cloned[i] = parent;
-			} else if (i === "source") cloned[i] = value;
-			else if (Array.isArray(value)) cloned[i] = value.map((j) => cloneNode(j, cloned));
-			else {
-				if (type === "object" && value !== null) value = cloneNode(value);
-				cloned[i] = value;
+				continue;
+				if (i === "proxyCache") continue;
+				let value = source[i];
+				let type = typeof value;
+				if (i === "parent" && type === "object") {
+					if (targetParent) target[i] = targetParent;
+				} else if (i === "source") target[i] = value;
+				else if (Array.isArray(value)) {
+					let children = [];
+					target[i] = children;
+					for (let j of value) {
+						let childClone = new j.constructor();
+						children.push(childClone);
+						stack.push([
+							j,
+							childClone,
+							target
+						]);
+					}
+				} else {
+					if (type === "object" && value !== null) {
+						let valueClone = new value.constructor();
+						stack.push([
+							value,
+							valueClone,
+							void 0
+						]);
+						value = valueClone;
+					}
+					target[i] = value;
+				}
 			}
 		}
 		return cloned;
@@ -31430,7 +31711,7 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		return offset;
 	}
-	var Node = class {
+	var Node = class Node {
 		get proxyOf() {
 			return this;
 		}
@@ -31438,11 +31719,14 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			this.raws = {};
 			this[isClean] = false;
 			this[my] = true;
-			for (let name in defaults) if (name === "nodes") {
-				this.nodes = [];
-				for (let node of defaults[name]) if (typeof node.clone === "function") this.append(node.clone());
-				else this.append(node);
-			} else this[name] = defaults[name];
+			for (let name of Object.keys(defaults)) {
+				if (name === "__proto__") continue;
+				if (name === "nodes") {
+					this.nodes = [];
+					for (let node of defaults[name]) if (typeof node.clone === "function" && node.parent) this.append(node.clone());
+					else this.append(node);
+				} else this[name] = defaults[name];
+			}
 		}
 		addToError(error) {
 			error.postcssNode = this;
@@ -31529,10 +31813,14 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return this.parent.nodes[index + 1];
 		}
 		positionBy(opts = {}) {
-			let pos = this.source.start;
+			let inputString = "document" in this.source.input ? this.source.input.document : this.source.input.css;
+			let pos = {
+				column: this.source.start.column,
+				line: this.source.start.line,
+				offset: sourceOffset(inputString, this.source.start)
+			};
 			if (opts.index) pos = this.positionInside(opts.index);
 			else if (opts.word) {
-				let inputString = "document" in this.source.input ? this.source.input.document : this.source.input.css;
 				let index = inputString.slice(sourceOffset(inputString, this.source.start), sourceOffset(inputString, this.source.end)).indexOf(opts.word);
 				if (index !== -1) pos = this.positionInside(index);
 			}
@@ -31587,14 +31875,14 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 					line: opts.start.line,
 					offset: sourceOffset(inputString, opts.start)
 				};
-				else if (opts.index) start = this.positionInside(opts.index);
+				else if (typeof opts.index === "number") start = this.positionInside(opts.index);
 				if (opts.end) end = {
 					column: opts.end.column,
 					line: opts.end.line,
 					offset: sourceOffset(inputString, opts.end)
 				};
 				else if (typeof opts.endIndex === "number") end = this.positionInside(opts.endIndex);
-				else if (opts.index) end = this.positionInside(opts.index + 1);
+				else if (typeof opts.index === "number") end = this.positionInside(opts.index + 1);
 			}
 			if (end.line < start.line || end.line === start.line && end.column <= start.column) end = {
 				column: start.column + 1,
@@ -31633,36 +31921,59 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return result;
 		}
 		toJSON(_, inputs) {
-			let fixed = {};
 			let emitInputs = inputs == null;
 			inputs = inputs || /* @__PURE__ */ new Map();
-			let inputsNextIndex = 0;
-			for (let name in this) {
-				if (!Object.prototype.hasOwnProperty.call(this, name))
+			let holderOfRoot = [];
+			let queue = [[
+				this,
+				holderOfRoot,
+				0
+			]];
+			for (let step = 0; step < queue.length; step++) {
+				let [node, holder, key] = queue[step];
+				let fixed = {};
+				holder[key] = fixed;
+				for (let name in node) {
+					if (!Object.prototype.hasOwnProperty.call(node, name))
  /* c8 ignore next 2 */
-				continue;
-				if (name === "parent" || name === "proxyCache") continue;
-				let value = this[name];
-				if (Array.isArray(value)) fixed[name] = value.map((i) => {
-					if (typeof i === "object" && i.toJSON) return i.toJSON(null, inputs);
-					else return i;
-				});
-				else if (typeof value === "object" && value.toJSON) fixed[name] = value.toJSON(null, inputs);
-				else if (name === "source") {
-					if (value == null) continue;
-					let inputId = inputs.get(value.input);
-					if (inputId == null) {
-						inputId = inputsNextIndex;
-						inputs.set(value.input, inputsNextIndex);
-						inputsNextIndex++;
-					}
-					fixed[name] = {
-						end: value.end,
-						inputId,
-						start: value.start
-					};
-				} else fixed[name] = value;
+					continue;
+					if (name === "parent" || name === "proxyCache") continue;
+					let value = node[name];
+					if (Array.isArray(value)) {
+						let fixedArray = [];
+						fixed[name] = fixedArray;
+						for (let i = 0; i < value.length; i++) {
+							let item = value[i];
+							if (typeof item === "object" && item.toJSON) if (item.toJSON === Node.prototype.toJSON) queue.push([
+								item,
+								fixedArray,
+								i
+							]);
+							else fixedArray[i] = item.toJSON(null, inputs);
+							else fixedArray[i] = item;
+						}
+					} else if (typeof value === "object" && value.toJSON) if (value.toJSON === Node.prototype.toJSON) queue.push([
+						value,
+						fixed,
+						name
+					]);
+					else fixed[name] = value.toJSON(null, inputs);
+					else if (name === "source") {
+						if (value == null) continue;
+						let inputId = inputs.get(value.input);
+						if (inputId == null) {
+							inputId = inputs.size;
+							inputs.set(value.input, inputId);
+						}
+						fixed[name] = {
+							end: value.end,
+							inputId,
+							start: value.start
+						};
+					} else fixed[name] = value;
+				}
 			}
+			let fixed = holderOfRoot[0];
 			if (emitInputs) fixed.inputs = [...inputs.keys()].map((input) => input.toJSON());
 			return fixed;
 		}
@@ -31688,7 +31999,7 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Node.default = Node;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/comment.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/comment.js
 var require_comment$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Node = require_node$1();
 	var Comment = class extends Node {
@@ -31701,7 +32012,7 @@ var require_comment$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Comment.default = Comment;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/declaration.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/declaration.js
 var require_declaration = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let Node = require_node$1();
@@ -31719,7 +32030,7 @@ var require_declaration = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Declaration.default = Declaration;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/container.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/container.js
 var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Comment = require_comment$1();
 	let Declaration = require_declaration();
@@ -31727,15 +32038,24 @@ var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let { isClean, my } = require_symbols();
 	let AtRule, parse, Root, Rule;
 	function cleanSource(nodes) {
-		return nodes.map((i) => {
-			if (i.nodes) i.nodes = cleanSource(i.nodes);
-			delete i.source;
-			return i;
-		});
+		let stack = nodes.slice();
+		while (stack.length > 0) {
+			let node = stack.pop();
+			delete node.source;
+			if (node.nodes) {
+				node.nodes = node.nodes.slice();
+				for (let i of node.nodes) stack.push(i);
+			}
+		}
+		return nodes.slice();
 	}
 	function markTreeDirty(node) {
-		node[isClean] = false;
-		if (node.proxyOf.nodes) for (let i of node.proxyOf.nodes) markTreeDirty(i);
+		let stack = [node];
+		while (stack.length > 0) {
+			let next = stack.pop();
+			next[isClean] = false;
+			if (next.proxyOf.nodes) for (let i of next.proxyOf.nodes) stack.push(i);
+		}
 	}
 	var Container = class Container extends Node {
 		get first() {
@@ -31755,8 +32075,16 @@ var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return this;
 		}
 		cleanRaws(keepBetween) {
-			super.cleanRaws(keepBetween);
-			if (this.nodes) for (let node of this.nodes) node.cleanRaws(keepBetween);
+			let stack = [this];
+			while (stack.length > 0) {
+				let node = stack.pop();
+				if (node !== this && node.cleanRaws !== Container.prototype.cleanRaws) {
+					node.cleanRaws(keepBetween);
+					continue;
+				}
+				Node.prototype.cleanRaws.call(node, keepBetween);
+				if (node.nodes) for (let child of node.nodes) stack.push(child);
+			}
 		}
 		each(callback) {
 			if (!this.proxyOf.nodes) return void 0;
@@ -31923,16 +32251,38 @@ var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return this.nodes.some(condition);
 		}
 		walk(callback) {
-			return this.each((child, i) => {
+			if (!this.proxyOf.nodes) return void 0;
+			let stack = [{
+				iterator: this.getIterator(),
+				node: this.proxyOf
+			}];
+			while (stack.length > 0) {
+				let { iterator, node } = stack[stack.length - 1];
+				let index = node.indexes[iterator];
+				if (index >= node.proxyOf.nodes.length) {
+					delete node.indexes[iterator];
+					stack.pop();
+					let parent = stack[stack.length - 1];
+					if (parent) parent.node.indexes[parent.iterator] += 1;
+					continue;
+				}
+				let child = node.proxyOf.nodes[index];
 				let result;
 				try {
-					result = callback(child, i);
+					result = callback(child, index);
 				} catch (e) {
 					throw child.addToError(e);
 				}
-				if (result !== false && child.walk) result = child.walk(callback);
-				return result;
-			});
+				if (result === false) {
+					for (let opened of stack) delete opened.node.indexes[opened.iterator];
+					return false;
+				}
+				if (child.walk && child.proxyOf.nodes) stack.push({
+					iterator: child.getIterator(),
+					node: child
+				});
+				else node.indexes[iterator] += 1;
+			}
 		}
 		walkAtRules(name, callback) {
 			if (!callback) {
@@ -31998,20 +32348,22 @@ var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.default = Container;
 	/* c8 ignore start */
 	Container.rebuild = (node) => {
-		if (node.type === "atrule") Object.setPrototypeOf(node, AtRule.prototype);
-		else if (node.type === "rule") Object.setPrototypeOf(node, Rule.prototype);
-		else if (node.type === "decl") Object.setPrototypeOf(node, Declaration.prototype);
-		else if (node.type === "comment") Object.setPrototypeOf(node, Comment.prototype);
-		else if (node.type === "root") Object.setPrototypeOf(node, Root.prototype);
-		node[my] = true;
-		if (node.nodes) node.nodes.forEach((child) => {
-			Container.rebuild(child);
-		});
+		let stack = [node];
+		while (stack.length > 0) {
+			let next = stack.pop();
+			if (next.type === "atrule") Object.setPrototypeOf(next, AtRule.prototype);
+			else if (next.type === "rule") Object.setPrototypeOf(next, Rule.prototype);
+			else if (next.type === "decl") Object.setPrototypeOf(next, Declaration.prototype);
+			else if (next.type === "comment") Object.setPrototypeOf(next, Comment.prototype);
+			else if (next.type === "root") Object.setPrototypeOf(next, Root.prototype);
+			next[my] = true;
+			if (next.nodes) for (let child of next.nodes) stack.push(child);
+		}
 	};
 }));
 /* c8 ignore stop */
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/at-rule.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/at-rule.js
 var require_at_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	var AtRule = class extends Container {
@@ -32033,7 +32385,7 @@ var require_at_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerAtRule(AtRule);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/document.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/document.js
 var require_document = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let Container = require_container$1();
@@ -32106,14 +32458,14 @@ var require_non_secure = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region (ignored) node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib
+//#region (ignored) node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib
 var require_lib = /* @__PURE__ */ __commonJSMin((() => {}));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/previous-map.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/previous-map.js
 var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_buffer();
 	let { existsSync, readFileSync } = (init__polyfill_node_fs(), __toCommonJS(_polyfill_node_fs_exports));
-	let { dirname, join } = (init__polyfill_node_path(), __toCommonJS(_polyfill_node_path_exports));
+	let { dirname, isAbsolute, join, relative, sep } = (init__polyfill_node_path(), __toCommonJS(_polyfill_node_path_exports));
 	let { SourceMapConsumer, SourceMapGenerator } = require_lib();
 	function fromBase64(str) {
 		if (Buffer$1) return Buffer$1.from(str, "base64").toString();
@@ -32124,6 +32476,7 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var PreviousMap = class {
 		constructor(css, opts) {
 			if (opts.map === false) return;
+			if (opts.unsafeMap) this.unsafeMap = true;
 			this.loadAnnotation(css);
 			this.inline = this.startWith(this.annotation, "data:");
 			let prev = opts.map ? opts.map.prev : void 0;
@@ -32133,7 +32486,7 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (text) this.text = text;
 		}
 		consumer() {
-			if (!this.consumerCache) this.consumerCache = new SourceMapConsumer(this.text);
+			if (!this.consumerCache) this.consumerCache = new SourceMapConsumer(this.json || this.text);
 			return this.consumerCache;
 		}
 		decodeInline(text) {
@@ -32143,7 +32496,8 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (uriMatch) return decodeURIComponent(text.substr(uriMatch[0].length));
 			let baseUriMatch = text.match(baseCharsetUri) || text.match(baseUri);
 			if (baseUriMatch) return fromBase64(text.substr(baseUriMatch[0].length));
-			let encoding = text.match(/data:application\/json;([^,]+),/)[1];
+			let encoding = text.slice(22);
+			encoding = encoding.slice(0, encoding.indexOf(","));
 			throw new Error("Unsupported source map encoding " + encoding);
 		}
 		getAnnotationURL(sourceMapString) {
@@ -32160,7 +32514,14 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			let end = css.indexOf("*/", start);
 			if (start > -1 && end > -1) this.annotation = this.getAnnotationURL(css.substring(start, end));
 		}
-		loadFile(path) {
+		loadFile(path, cssFile, trusted) {
+			if (!trusted && !this.unsafeMap) {
+				if (!/\.map$/i.test(path)) return;
+				if (cssFile) {
+					let relativePath = relative(dirname(cssFile), path);
+					if (relativePath === ".." || relativePath.startsWith(".." + sep) || isAbsolute(relativePath)) return;
+				}
+			}
 			this.root = dirname(path);
 			if (existsSync(path)) {
 				this.mapFile = path;
@@ -32173,7 +32534,7 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			else if (typeof prev === "function") {
 				let prevPath = prev(file);
 				if (prevPath) {
-					let map = this.loadFile(prevPath);
+					let map = this.loadFile(prevPath, file, true);
 					if (!map) throw new Error("Unable to load previous source map: " + prevPath.toString());
 					return map;
 				}
@@ -32185,7 +32546,14 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			else if (this.annotation) {
 				let map = this.annotation;
 				if (file) map = join(dirname(file), map);
-				return this.loadFile(map);
+				let unknown = this.loadFile(map, file, false);
+				if (unknown) try {
+					/* c8 ignore next 4 */
+					this.json = JSON.parse(unknown.replace(/^\)]}'[^\n]*\n/, ""));
+				} catch (_unused) {
+					return;
+				}
+				return unknown;
 			}
 		}
 		startWith(string, start) {
@@ -32200,7 +32568,7 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	PreviousMap.default = PreviousMap;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/input.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/input.js
 var require_input = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let { nanoid } = require_non_secure();
@@ -32346,21 +32714,24 @@ var require_input = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (!this.map) return false;
 			let consumer = this.map.consumer();
 			let from = consumer.originalPositionFor({
-				column,
+				column: column - 1,
 				line
 			});
 			if (!from.source) return false;
 			let to;
-			if (typeof endLine === "number") to = consumer.originalPositionFor({
-				column: endColumn,
-				line: endLine
-			});
+			if (typeof endLine === "number") {
+				let toPosition = consumer.originalPositionFor({
+					column: endColumn - 1,
+					line: endLine
+				});
+				if (toPosition.source) to = toPosition;
+			}
 			let fromUrl;
 			if (isAbsolute(from.source)) fromUrl = pathToFileURL(from.source);
 			else fromUrl = new URL(from.source, this.map.consumer().sourceRoot || pathToFileURL(this.map.mapFile));
 			let result = {
-				column: from.column,
-				endColumn: to && to.column,
+				column: from.column + 1,
+				endColumn: to && to.column + 1,
 				endLine: to && to.line,
 				line: from.line,
 				url: fromUrl.toString()
@@ -32393,7 +32764,7 @@ var require_input = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	if (terminalHighlight && terminalHighlight.registerInput) terminalHighlight.registerInput(Input);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/root.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/root.js
 var require_root$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let LazyResult, Processor;
@@ -32404,11 +32775,15 @@ var require_root$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (!this.nodes) this.nodes = [];
 		}
 		normalize(child, sample, type) {
+			let keepBefore = /* @__PURE__ */ new Set();
+			for (let node of Array.isArray(child) ? child : [child]) if (node && typeof node === "object" && !node.parent && node.raws && typeof node.raws.before !== "undefined") keepBefore.add(node.raws);
 			let nodes = super.normalize(child);
 			if (sample) {
 				if (type === "prepend") if (this.nodes.length > 1) sample.raws.before = this.nodes[1].raws.before;
 				else delete sample.raws.before;
-				else if (this.first !== sample) for (let node of nodes) node.raws.before = sample.raws.before;
+				else if (this.first !== sample) {
+					for (let node of nodes) if (!keepBefore.has(node.raws)) node.raws.before = sample.raws.before;
+				}
 			}
 			return nodes;
 		}
@@ -32432,7 +32807,7 @@ var require_root$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerRoot(Root);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/list.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/list.js
 var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let list = {
 		comma(string) {
@@ -32481,7 +32856,7 @@ var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	list.default = list;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/rule.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/rule.js
 var require_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let list = require_list();
@@ -32505,11 +32880,11 @@ var require_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerRule(Rule);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/fromJSON.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/fromJSON.js
 var require_fromJSON = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	init_objectWithoutProperties();
 	init_objectSpread2();
-	const _excluded = ["inputs"], _excluded2 = ["inputId"];
+	init_objectWithoutProperties();
+	const _excluded = ["inputId"];
 	let AtRule = require_at_rule();
 	let Comment = require_comment$1();
 	let Declaration = require_declaration();
@@ -32517,35 +32892,71 @@ var require_fromJSON = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let PreviousMap = require_previous_map();
 	let Root = require_root$1();
 	let Rule = require_rule();
-	function fromJSON(json, inputs) {
-		if (Array.isArray(json)) return json.map((n) => fromJSON(n));
-		let { inputs: ownInputs } = json, defaults = _objectWithoutProperties(json, _excluded);
-		if (ownInputs) {
-			inputs = [];
-			for (let input of ownInputs) {
-				let inputHydrated = _objectSpread2(_objectSpread2({}, input), {}, { __proto__: Input.prototype });
-				if (inputHydrated.map) inputHydrated.map = _objectSpread2(_objectSpread2({}, inputHydrated.map), {}, { __proto__: PreviousMap.prototype });
-				inputs.push(inputHydrated);
-			}
-		}
-		if (defaults.nodes) defaults.nodes = json.nodes.map((n) => fromJSON(n, inputs));
+	function hydrateInputs(json, inputs) {
+		if (!json.inputs) return inputs;
+		return json.inputs.map((input) => {
+			let inputHydrated = _objectSpread2(_objectSpread2({}, input), {}, { __proto__: Input.prototype });
+			if (inputHydrated.map) inputHydrated.map = _objectSpread2(_objectSpread2({}, inputHydrated.map), {}, { __proto__: PreviousMap.prototype });
+			return inputHydrated;
+		});
+	}
+	function constructNode(json, inputs, children) {
+		let defaults = _objectSpread2({}, json);
+		delete defaults.inputs;
+		delete defaults.nodes;
 		if (defaults.source) {
 			let _defaults$source = defaults.source, { inputId } = _defaults$source;
-			defaults.source = _objectWithoutProperties(_defaults$source, _excluded2);
+			defaults.source = _objectWithoutProperties(_defaults$source, _excluded);
 			if (inputId != null) defaults.source.input = inputs[inputId];
 		}
-		if (defaults.type === "root") return new Root(defaults);
-		else if (defaults.type === "decl") return new Declaration(defaults);
-		else if (defaults.type === "rule") return new Rule(defaults);
-		else if (defaults.type === "comment") return new Comment(defaults);
-		else if (defaults.type === "atrule") return new AtRule(defaults);
+		let node;
+		if (defaults.type === "root") node = new Root(defaults);
+		else if (defaults.type === "decl") node = new Declaration(defaults);
+		else if (defaults.type === "rule") node = new Rule(defaults);
+		else if (defaults.type === "comment") node = new Comment(defaults);
+		else if (defaults.type === "atrule") node = new AtRule(defaults);
 		else throw new Error("Unknown node type: " + json.type);
+		if (children) {
+			node.nodes = children;
+			for (let child of children) child.parent = node;
+		}
+		return node;
+	}
+	function fromJSON(json, inputs) {
+		if (Array.isArray(json)) return json.map((n) => fromJSON(n));
+		let result;
+		let stack = [{
+			childIndex: 0,
+			children: [],
+			inputs: hydrateInputs(json, inputs),
+			json
+		}];
+		while (stack.length > 0) {
+			let frame = stack[stack.length - 1];
+			let jsonNodes = frame.json.nodes;
+			if (jsonNodes && frame.childIndex < jsonNodes.length) {
+				let childJson = jsonNodes[frame.childIndex];
+				frame.childIndex += 1;
+				stack.push({
+					childIndex: 0,
+					children: [],
+					inputs: hydrateInputs(childJson, frame.inputs),
+					json: childJson
+				});
+				continue;
+			}
+			stack.pop();
+			let node = constructNode(frame.json, frame.inputs, jsonNodes ? frame.children : void 0);
+			if (stack.length > 0) stack[stack.length - 1].children.push(node);
+			else result = node;
+		}
+		return result;
 	}
 	module.exports = fromJSON;
 	fromJSON.default = fromJSON;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/map-generator.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/map-generator.js
 var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_buffer();
 	let { dirname, relative, resolve, sep } = (init__polyfill_node_path(), __toCommonJS(_polyfill_node_path_exports));
@@ -32598,7 +33009,15 @@ var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 					if (node.type !== "comment") continue;
 					if (node.text.startsWith("# sourceMappingURL=")) this.root.removeChild(i);
 				}
-			} else if (this.css) this.css = this.css.replace(/\n*\/\*#[\S\s]*?\*\/$/gm, "");
+			} else if (this.css) {
+				let startIndex;
+				while ((startIndex = this.css.lastIndexOf("/*#")) !== -1) {
+					let endIndex = this.css.indexOf("*/", startIndex + 3);
+					if (endIndex === -1) break;
+					while (startIndex > 0 && this.css[startIndex - 1] === "\n") startIndex--;
+					this.css = this.css.slice(0, startIndex) + this.css.slice(endIndex + 2);
+				}
+			}
 		}
 		generate() {
 			this.clearAnnotation();
@@ -32806,7 +33225,7 @@ var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 	module.exports = MapGenerator;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/tokenize.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/tokenize.js
 var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const SINGLE_QUOTE = "'".charCodeAt(0);
 	const DOUBLE_QUOTE = "\"".charCodeAt(0);
@@ -32840,6 +33259,7 @@ var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		let pos = 0;
 		let buffer = [];
 		let returned = [];
+		let lastBadParen = -1;
 		function position() {
 			return pos;
 		}
@@ -32908,15 +33328,22 @@ var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 							next
 						];
 						pos = next;
-					} else {
+					} else if (pos <= lastBadParen) currentToken = [
+						"(",
+						"(",
+						pos
+					];
+					else {
 						next = css.indexOf(")", pos + 1);
 						content = css.slice(pos, next + 1);
-						if (next === -1 || RE_BAD_BRACKET.test(content)) currentToken = [
-							"(",
-							"(",
-							pos
-						];
-						else {
+						if (next === -1 || RE_BAD_BRACKET.test(content)) {
+							lastBadParen = next === -1 ? length : next;
+							currentToken = [
+								"(",
+								"(",
+								pos
+							];
+						} else {
 							currentToken = [
 								"brackets",
 								content,
@@ -33031,7 +33458,7 @@ var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/parser.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/parser.js
 var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let AtRule = require_at_rule();
 	let Comment = require_comment$1();
@@ -33049,6 +33476,11 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			let pos = token[3] || token[2];
 			if (pos) return pos;
 		}
+	}
+	function tokensToString(tokens, from, to) {
+		let result = "";
+		for (let i = from; i < to; i++) result += tokens[i][1];
+		return result;
 	}
 	var Parser = class {
 		constructor(input) {
@@ -33167,7 +33599,7 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			node.source.end = this.getPosition(token[3] || token[2]);
 			node.source.end.offset++;
 			let text = token[1].slice(2, -2);
-			if (/^\s*$/.test(text)) {
+			if (!text.trim()) {
 				node.text = "";
 				node.raws.left = text;
 				node.raws.right = "";
@@ -33191,40 +33623,41 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			}
 			node.source.end = this.getPosition(last[3] || last[2] || findLastWithPosition(tokens));
 			node.source.end.offset++;
-			while (tokens[0][0] !== "word") {
-				if (tokens.length === 1) this.unknownWord(tokens);
-				node.raws.before += tokens.shift()[1];
+			let start = 0;
+			while (tokens[start][0] !== "word") {
+				if (start === tokens.length - 1) this.unknownWord([tokens[start]]);
+				start++;
 			}
-			node.source.start = this.getPosition(tokens[0][2]);
-			node.prop = "";
-			while (tokens.length) {
-				let type = tokens[0][0];
+			node.raws.before += tokensToString(tokens, 0, start);
+			node.source.start = this.getPosition(tokens[start][2]);
+			let propStart = start;
+			while (start < tokens.length) {
+				let type = tokens[start][0];
 				if (type === ":" || type === "space" || type === "comment") break;
-				node.prop += tokens.shift()[1];
+				start++;
 			}
-			node.raws.between = "";
+			node.prop = tokensToString(tokens, propStart, start);
+			let betweenStart = start;
 			let token;
-			while (tokens.length) {
-				token = tokens.shift();
-				if (token[0] === ":") {
-					node.raws.between += token[1];
-					break;
-				} else {
-					if (token[0] === "word" && /\w/.test(token[1])) this.unknownWord([token]);
-					node.raws.between += token[1];
-				}
+			while (start < tokens.length) {
+				token = tokens[start];
+				start++;
+				if (token[0] === ":") break;
+				if (token[0] === "word" && /\w/.test(token[1])) this.unknownWord([token]);
 			}
+			node.raws.between = tokensToString(tokens, betweenStart, start);
 			if (node.prop[0] === "_" || node.prop[0] === "*") {
 				node.raws.before += node.prop[0];
 				node.prop = node.prop.slice(1);
 			}
-			let firstSpaces = [];
-			let next;
-			while (tokens.length) {
-				next = tokens[0][0];
+			let firstSpacesStart = start;
+			while (start < tokens.length) {
+				let next = tokens[start][0];
 				if (next !== "space" && next !== "comment") break;
-				firstSpaces.push(tokens.shift());
+				start++;
 			}
+			let firstSpaces = tokens.slice(firstSpacesStart, start);
+			tokens = tokens.slice(start);
 			this.precheckMissedSemicolon(tokens);
 			for (let i = tokens.length - 1; i >= 0; i--) {
 				token = tokens[i];
@@ -33484,7 +33917,7 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = Parser;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/parse.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/parse.js
 var require_parse = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let Input = require_input();
@@ -33508,7 +33941,7 @@ var require_parse = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerParse(parse);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/warning.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/warning.js
 var require_warning = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var Warning = class {
 		constructor(text, opts = {}) {
@@ -33537,7 +33970,7 @@ var require_warning = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Warning.default = Warning;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/result.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/result.js
 var require_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Warning = require_warning();
 	var Result = class {
@@ -33571,7 +34004,7 @@ var require_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Result.default = Result;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/warn-once.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/warn-once.js
 var require_warn_once = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let printed = {};
 	module.exports = function warnOnce(message) {
@@ -33581,7 +34014,7 @@ var require_warn_once = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/lazy-result.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/lazy-result.js
 var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	init_asyncToGenerator();
@@ -33677,8 +34110,12 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 	}
 	function cleanMarks(node) {
-		node[isClean] = false;
-		if (node.nodes) node.nodes.forEach((i) => cleanMarks(i));
+		let stack = [node];
+		while (stack.length > 0) {
+			let next = stack.pop();
+			next[isClean] = false;
+			if (next.nodes) for (let i of next.nodes) stack.push(i);
+		}
 		return node;
 	}
 	let postcss = {};
@@ -33867,6 +34304,15 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (opts.syntax) str = opts.syntax.stringify;
 			if (opts.stringifier) str = opts.stringifier;
 			if (str.stringify) str = str.stringify;
+			let rootSource = this.result.root.source;
+			if (opts.map === void 0 && !(rootSource && rootSource.input && rootSource.input.map)) {
+				let result = "";
+				str(this.result.root, (i) => {
+					result += i;
+				});
+				this.result.css = result;
+				return this.result;
+			}
 			let data = new MapGenerator(str, this.result.root, this.result.opts).generate();
 			this.result.css = data[0];
 			this.result.map = data[1];
@@ -33964,16 +34410,51 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		walkSync(node) {
 			node[isClean] = true;
-			let events = getEvents(node);
-			for (let event of events) if (event === CHILDREN) {
-				if (node.nodes) node.each((child) => {
-					if (!child[isClean]) this.walkSync(child);
-				});
-			} else {
-				let visitors = this.listeners[event];
-				if (visitors) {
-					if (this.visitSync(visitors, node.toProxy())) return;
+			let stack = [{
+				eventIndex: 0,
+				events: getEvents(node),
+				iterator: 0,
+				node
+			}];
+			while (stack.length > 0) {
+				let visit = stack[stack.length - 1];
+				let visitNode = visit.node;
+				if (visit.iterator !== 0) {
+					let iterator = visit.iterator;
+					let child;
+					let descended = false;
+					while (child = visitNode.nodes[visitNode.indexes[iterator]]) {
+						visitNode.indexes[iterator] += 1;
+						if (!child[isClean]) {
+							child[isClean] = true;
+							stack.push({
+								eventIndex: 0,
+								events: getEvents(child),
+								iterator: 0,
+								node: child
+							});
+							descended = true;
+							break;
+						}
+					}
+					if (descended) continue;
+					visit.iterator = 0;
+					delete visitNode.indexes[iterator];
 				}
+				if (visit.eventIndex < visit.events.length) {
+					let event = visit.events[visit.eventIndex];
+					visit.eventIndex += 1;
+					if (event === CHILDREN) {
+						if (visitNode.nodes && visitNode.nodes.length) visit.iterator = visitNode.getIterator();
+					} else {
+						let visitors = this.listeners[event];
+						if (visitors) {
+							if (this.visitSync(visitors, visitNode.toProxy())) stack.pop();
+						}
+					}
+					continue;
+				}
+				stack.pop();
 			}
 		}
 		warnings() {
@@ -33989,11 +34470,11 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Document.registerLazyResult(LazyResult);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/no-work-result.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/no-work-result.js
 var require_no_work_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let MapGenerator = require_map_generator();
 	let parse = require_parse();
-	const Result = require_result();
+	let Result = require_result();
 	let stringify = require_stringify();
 	let warnOnce = require_warn_once();
 	var NoWorkResult = class {
@@ -34040,15 +34521,14 @@ var require_no_work_result = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 			this._css = css;
 			this._opts = opts;
 			this._map = void 0;
-			let root;
 			let str = stringify;
-			this.result = new Result(this._processor, root, this._opts);
+			this.result = new Result(this._processor, void 0, this._opts);
 			this.result.css = css;
 			let self = this;
 			Object.defineProperty(this.result, "root", { get() {
 				return self.root;
 			} });
-			let map = new MapGenerator(str, root, this._opts, css);
+			let map = new MapGenerator(str, void 0, this._opts, css);
 			if (map.isMap()) {
 				let [generatedCSS, generatedMap] = map.generate();
 				if (generatedCSS) this.result.css = generatedCSS;
@@ -34087,7 +34567,7 @@ var require_no_work_result = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 	NoWorkResult.default = NoWorkResult;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/processor.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/processor.js
 var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Document = require_document();
 	let LazyResult = require_lazy_result();
@@ -34095,7 +34575,7 @@ var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Root = require_root$1();
 	var Processor = class {
 		constructor(plugins = []) {
-			this.version = "8.5.6";
+			this.version = "8.5.19";
 			this.plugins = this.normalize(plugins);
 		}
 		normalize(plugins) {
@@ -34126,7 +34606,7 @@ var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Document.registerProcessor(Processor);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/postcss.mjs
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/postcss.mjs
 var import_postcss = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_process();
 	let AtRule = require_at_rule();
@@ -41581,7 +42061,13 @@ function resolveTypeReference(ctx, node, scope, name, onlyExported = false) {
 		return node._resolvedReference;
 	}
 	const resolved = innerResolveTypeReference(ctx, scope || ctxToScope(ctx), name || getReferenceName(node), node, onlyExported);
-	return canCache ? node._resolvedReference = resolved : resolved;
+	if (canCache) Object.defineProperty(node, "_resolvedReference", {
+		value: resolved,
+		writable: true,
+		configurable: true,
+		enumerable: false
+	});
+	return resolved;
 }
 function innerResolveTypeReference(ctx, scope, name, node, onlyExported) {
 	if (typeof name === "string") if (scope.imports[name]) return resolveTypeFromImport(ctx, node, name, scope);
@@ -42835,7 +43321,7 @@ function compileScript(sfc, options) {
 	}
 	function registerUserImport(source, local, imported, isType, isFromSetup, needTemplateUsageCheck) {
 		let isImportUsed = needTemplateUsageCheck;
-		if (needTemplateUsageCheck && (ctx.isTS || ctx.isUTS) && sfc.template && !sfc.template.src && !sfc.template.lang) isImportUsed = isUsedInTemplate(local, sfc);
+		if (needTemplateUsageCheck && (ctx.isTS || ctx.isUTS) && sfc.template && !sfc.template.src && !sfc.template.lang) isImportUsed = isUsedInTemplate(local, sfc, options.templateOptions);
 		ctx.userImports[local] = {
 			isType,
 			imported,
@@ -43039,7 +43525,7 @@ function compileScript(sfc, options) {
 	for (const key in scriptBindings) ctx.bindingMetadata[key] = scriptBindings[key];
 	for (const key in setupBindings) ctx.bindingMetadata[key] = setupBindings[key];
 	if (sfc.template && !sfc.template.src && sfc.template.ast) {
-		const vModelIds = resolveTemplateVModelIdentifiers(sfc);
+		const vModelIds = resolveTemplateVModelIdentifiers(sfc, options.templateOptions);
 		if (vModelIds.size) {
 			const toDemote = /* @__PURE__ */ new Set();
 			for (const id of vModelIds) if (setupBindings[id] === "setup-reactive-const") toDemote.add(id);
@@ -43353,7 +43839,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
 init_objectSpread2();
-const version = "3.6.0-beta.17";
+const version = "3.6.0-rc.4";
 const parseCache = parseCache$1;
 const errorMessages = _objectSpread2(_objectSpread2({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

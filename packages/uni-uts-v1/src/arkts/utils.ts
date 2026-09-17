@@ -1,5 +1,14 @@
-export function getRuntimePackageName(isX = false) {
-  return isX ? '@dcloudio/uni-app-x-runtime' : '@dcloudio/uni-app-runtime'
+export function getHarmonyRuntimePackageName(
+  isX: boolean,
+  isDom2: boolean
+): string {
+  if (!isX) {
+    return '@dcloudio/uni-app-runtime'
+  } else if (!isDom2) {
+    return '@dcloudio/uni-app-x-runtime'
+  } else {
+    return '@dcloudio/uni-app-x-vapor-runtime'
+  }
 }
 
 function tryRequire(file: string) {
@@ -12,8 +21,11 @@ function tryRequire(file: string) {
 
 type AutoImportOptions = Record<string, [string, (string | undefined)?][]>
 
-export function getArkTSAutoImports(isX = false): AutoImportOptions {
-  const runtimePackageName = getRuntimePackageName(isX)
+export function getArkTSAutoImports(
+  isX: boolean,
+  isDom2: boolean
+): AutoImportOptions {
+  const runtimePackageName = getHarmonyRuntimePackageName(isX, isDom2)
   const runtimeExports: [string][] = [
     // uts basic
     ['UTS'],
@@ -50,6 +62,8 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
   if (isX) {
     runtimeExports.push(
       // uni-app-x-runtime ets
+
+      // dom
       ['customElements'],
       ['UniCustomElement'],
       // ['UniElement'],
@@ -80,21 +94,9 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniWebViewLoadEvent'],
       ['UniWebViewLoadEventDetail'],
       ['UniWebViewElementLoadDataOptions'],
-      ['uni'],
-      ['UTSHarmony'],
       ['UniCustomEvent'],
       ['UniCustomEventOptions'],
       ['getCurrentPages'],
-      ['UniRefresherEventDetail'],
-      ['UniRefresherEvent'],
-      ['UniScrollEventDetail'],
-      ['UniScrollEvent'],
-      ['UniScrollToLowerEventDetail'],
-      ['UniScrollToLowerEvent'],
-      ['UniScrollToUpperEventDetail'],
-      ['UniScrollToUpperEvent'],
-      ['DOMRect'],
-      ['DrawableContext'],
       ['UniResizeObserver'],
       ['UniResizeObserverEntry'],
       ['UniBorderBoxSize'],
@@ -107,6 +109,65 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniIntersectionObserverRectResult'],
       ['UniIntersectionObserverObserveCallbackResult'],
       ['UniIntersectionObserverObserveCallback'],
+      ['CSSStyleDeclaration'],
+      ['DOMRect'],
+      ['INodeData'],
+      ['UniCallbackWrapper'],
+      ['Element'],
+      ['UniNativePage'],
+      ['Event'],
+      ['TakeSnapshotOptions'],
+      ['TakeSnapshotSuccess'],
+      ['TakeSnapshotFail'],
+      ['GetBoundingClientRectAsyncOptions'],
+      ['DrawableContext'],
+      ['UniEvent'],
+      ['UniAnimationKeyframe'],
+      ['UniAnimationOption'],
+      ['UniAnimation'],
+      ['RequestFullscreenOptions'],
+      ['UniCommentElement'],
+      ['UniPageBody'],
+      ['ExitFullscreenOptions'],
+      ['UniPageManager'],
+      ['UniNativeApp'],
+      ['UniKeyEvent'],
+      ['UniDocument'],
+      ['UniPageEvent'],
+      ['UniPageScrollEvent'],
+      ['ViewToTempFilePathOptions'],
+      ['ViewToTempFilePathSuccess'],
+      ['ViewToTempFilePathFail'],
+      ['UniScrollViewElement'],
+      ['UniImageElement'],
+      ['MouseEvent'],
+      ['InputEvent'],
+      ['InputEventDetail'],
+      ['PointerEvent'],
+      ['Touch'],
+      ['TouchEvent'],
+      ['CustomEvent'],
+      ['CustomEventOptions'],
+      ['UniImageLoadEventDetail'],
+      ['UniImageLoadEvent'],
+      ['UniImageErrorEventDetail'],
+      ['UniImageErrorEvent'],
+      ['UniScrollEventDetail'],
+      ['UniScrollEvent'],
+      ['UniScrollToLowerEventDetail'],
+      ['UniScrollToLowerEvent'],
+      ['UniScrollToUpperEventDetail'],
+      ['UniScrollToUpperEvent'],
+      ['UniRefresherEvent'],
+      ['UniRefresherEventDetail'],
+      ['UniNativeViewInitEventDetail'],
+      ['UniNativeViewInitEvent'],
+      ['FullscreenError'],
+      ['FullscreenErrorCode'],
+
+      // utils
+      ['uni'],
+      ['UTSHarmony'],
       ['TextDecoder'],
       ['TextEncoder'],
       ['ShowModalOptions'],
@@ -349,8 +410,6 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['WorkerPostMessageOptions']
     )
   }
-
-  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
   if (isDom2) {
     // dom2 特有

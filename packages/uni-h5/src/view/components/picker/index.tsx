@@ -266,7 +266,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     _createDate()
     _setValueSync()
 
-    const popup = usePopupStyle(state)
+    const popup = usePopupStyle(state, 'var(--uni-picker-arrow-color, #fcfcfd)')
     watchEffect(() => {
       state.isDesktop = popup.isDesktop.value
       state.popupStyle = popup.popupStyle.value

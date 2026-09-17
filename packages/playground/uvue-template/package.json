@@ -10,6 +10,8 @@
     "dev:app-harmony": "uni -p app-harmony",
     "dev:app-ios": "uni -p app-ios",
     "dev:h5": "uni",
+    "dev:e2e:web": "uni --port 5175",
+    "test:e2e:web": "cypress run --config-file cypress.web.config.js",
     "test:h5": "uni dev",
     "dev:h5:ssr": "uni --ssr",
     "dev:mp-360": "uni -p mp-360",
@@ -63,6 +65,7 @@
     "@dcloudio/uni-cli-shared": "../../uni-cli-shared",
     "@dcloudio/uni-uts-v1": "../../uni-uts-v1",
     "@dcloudio/vite-plugin-uni": "../../vite-plugin-uni",
+    "cypress": "catalog:",
     "vite": "catalog:"
   }
 }

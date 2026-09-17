@@ -342,7 +342,7 @@ function useOnThemeChange(props: Props) {
         props.itemColor
       // #000 by default in protocols
       if (props.itemColor === '#000') {
-        _onThemeChange({ theme: getTheme() })
+        _onThemeChange({ theme: getTheme() ?? 'light' })
         onThemeChange(_onThemeChange)
       }
     } else {

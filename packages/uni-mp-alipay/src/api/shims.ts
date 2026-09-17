@@ -4,6 +4,16 @@ import { initGetProvider } from '@dcloudio/uni-mp-core'
 
 import { $off, $on } from '@dcloudio/uni-api/src/service/base/eventBus'
 
+//#if _X_
+export {
+  offAppRoute,
+  offBeforeAppRoute,
+  onAppRoute,
+  onBeforeAppRoute,
+  rewriteRoute,
+} from '../x/api/appRoute'
+//#endif
+
 type OnKeyboardHeightChangeCallback = (result: { height: number }) => void
 
 let onKeyboardHeightChangeCallback: undefined | OnKeyboardHeightChangeCallback

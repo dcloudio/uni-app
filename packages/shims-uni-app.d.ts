@@ -244,6 +244,10 @@ declare namespace UniNamespace {
     isSubNVue?: boolean
     disableScroll?: boolean
     enablePullDownRefresh?: boolean
+    enableBackToTop?: boolean
+    bounces?: boolean
+    androidOverscroll?: boolean
+    androidRefresherColor?: string
     navigationBar: PageNavigationBar
     pullToRefresh?: PageRefreshOptions
     onReachBottomDistance?: number

@@ -48,7 +48,6 @@ declare var NaN: number;
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
@@ -84,7 +83,7 @@ declare var NaN: number;
    */
 declare var Infinity: number;
 
-declare type RequestAnimationFrameCallback = (task: number) => void
+declare type RequestAnimationFrameCallback = (timestamp: number) => void
 
 
 /**

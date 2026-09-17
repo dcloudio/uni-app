@@ -1,6 +1,7 @@
 import { extend } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import {
+  clearMiniProgramComponentStyleIsolation,
   createDefaultSFCStyleBlock,
   findMiniProgramComponentStyleIsolation,
   isAppVue,
@@ -96,6 +97,9 @@ function rewriteCompileScript(extname: string) {
           // @ts-expect-error
           options.__isPage
         )
+      } else {
+        // 热更新删除显式配置后必须清理旧值，否则模板会继续使用上一次编译的 class mask。
+        clearMiniProgramComponentStyleIsolation(sfc.filename)
       }
     }
     return res

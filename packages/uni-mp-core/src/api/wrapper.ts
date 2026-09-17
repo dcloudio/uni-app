@@ -11,8 +11,16 @@ import { shouldKeepReturnValue } from './protocols/x'
 import { isContextApi, isSyncApi, isTaskApi } from './promise'
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete']
+const ON_API_RE = /^on[A-Z]/
+const OFF_API_RE = /^off[A-Z]/
+
+function getOnApiName(methodName: string) {
+  return OFF_API_RE.test(methodName) ? `on${methodName.slice(3)}` : ''
+}
 
 export function initWrapper(protocols: MPProtocols) {
+  const eventCallbackMap = new WeakMap<Function, Map<string, Function>>()
+
   function processCallback(
     methodName: string,
     method: Function,
@@ -21,6 +29,38 @@ export function initWrapper(protocols: MPProtocols) {
     return function (res: Record<string, any>) {
       return method(processReturnValue(methodName, res, returnValue))
     }
+  }
+
+  function processEventCallback(
+    methodName: string,
+    callback: Function,
+    returnValue: unknown
+  ) {
+    if (ON_API_RE.test(methodName)) {
+      let methodCallbackMap = eventCallbackMap.get(callback)
+      if (!methodCallbackMap) {
+        methodCallbackMap = new Map()
+        eventCallbackMap.set(callback, methodCallbackMap)
+      }
+      let eventCallback = methodCallbackMap.get(methodName)
+      if (!eventCallback) {
+        eventCallback = processCallback(methodName, callback, returnValue)
+        methodCallbackMap.set(methodName, eventCallback)
+      }
+      return eventCallback
+    }
+
+    if (OFF_API_RE.test(methodName)) {
+      const onMethodName = getOnApiName(methodName)
+      const methodCallbackMap = eventCallbackMap.get(callback)
+      const eventCallback = methodCallbackMap?.get(onMethodName)
+      if (eventCallback) {
+        return eventCallback
+      }
+      return callback
+    }
+
+    return processCallback(methodName, callback, returnValue)
   }
 
   function processArgs(
@@ -73,7 +113,8 @@ export function initWrapper(protocols: MPProtocols) {
       if (isFunction(argsOption)) {
         argsOption(fromArgs, {})
       }
-      fromArgs = processCallback(methodName, fromArgs, returnValue)
+      // 事件 API 需要保证 on/off 传给平台的回调引用一致。
+      fromArgs = processEventCallback(methodName, fromArgs, returnValue)
     }
     return fromArgs
   }
@@ -107,11 +148,14 @@ export function initWrapper(protocols: MPProtocols) {
      */
 
     const hasProtocol = hasOwn(protocols, methodName)
+    const onMethodName = getOnApiName(methodName)
+    const hasOnProtocol = !!onMethodName && hasOwn(protocols, onMethodName)
     if (!hasProtocol && typeof __GLOBAL__[methodName] !== 'function') {
       return method
     }
     const needWrapper =
       hasProtocol ||
+      hasOnProtocol ||
       isFunction(protocols.returnValue) ||
       isContextApi(methodName) ||
       isTaskApi(methodName)

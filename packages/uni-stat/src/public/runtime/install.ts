@@ -264,6 +264,8 @@ export interface InstallOptions {
   skipVueMixin?: boolean
   /** 测试用：跳过 `uni.report = ...` 全局赋值。 */
   skipUniReport?: boolean
+  /** uni-app x Vapor：只安装公有版核心，生命周期由独立桥接接入。 */
+  vapor?: boolean
 }
 
 /**
@@ -287,7 +289,16 @@ export function installPublicStat(opts: InstallOptions = {}): void {
   )
 
   const app = getStatApp()
-  tryRun(() => app.install(finalConfig, opts.overrides), undefined)
+  tryRun(
+    () =>
+      app.install(
+        finalConfig,
+        Object.assign({}, opts.overrides, {
+          deferReportsUntilSession: opts.vapor === true,
+        })
+      ),
+    undefined
+  )
 
   // 启动摘要：与生命周期解耦，保证 StatApp.install 完成后立刻可打印（不依赖 uni 是否已挂载）。
   tryRun(() => {
@@ -322,7 +333,11 @@ export function installPublicStat(opts: InstallOptions = {}): void {
     logBoot(Object.assign({}, bootBase, { vueMode: 'Vue2' }))
     // #endif
     // #ifdef VUE3
-    logBoot(Object.assign({}, bootBase, { vueMode: 'Vue3' }))
+    logBoot(
+      Object.assign({}, bootBase, {
+        vueMode: opts.vapor ? 'Vapor' : 'Vue3',
+      })
+    )
     // #endif
   }, undefined)
 
@@ -365,7 +380,13 @@ export function installPublicStat(opts: InstallOptions = {}): void {
     }
   }
 
-  finishLifecycleInstall()
+  if (opts.vapor) {
+    if (!opts.skipUniReport) {
+      tryRun(() => mountUniReport(app), undefined)
+    }
+  } else {
+    finishLifecycleInstall()
+  }
 }
 
 /**
@@ -480,6 +501,7 @@ function scheduleVueAppMixinRetry(mixin: Record<string, unknown>): void {
  *
  * @returns 是否注入成功
  */
+// #ifndef VUE3
 function mountVue2GlobalMixin(mixin: Record<string, unknown>): boolean {
   // eslint-disable-next-line no-restricted-globals
   const Vue = require('vue') as {
@@ -494,6 +516,7 @@ function mountVue2GlobalMixin(mixin: Record<string, unknown>): boolean {
   logger.warn('[uni统计 2.0] Vue2: vue.mixin 不可用，请检查是否已安装 vue 依赖')
   return false
 }
+// #endif
 
 /**
  * 把 `uni.report` 桥到 StatApp.report。
@@ -502,15 +525,19 @@ function mountVue2GlobalMixin(mixin: Record<string, unknown>): boolean {
  * `window.uni.report` 调用；故在可用 runtime 缺失时回退 `getGlobalObject().uni`。
  */
 function mountUniReport(app: ReturnType<typeof getStatApp>): void {
+  const report = (type: string, value?: unknown): void => {
+    app.report(type, value)
+  }
+
+  // App-Plus 的模块级 `uni` 与 globalThis.uni 可能不是同一引用，必须字面量挂载。
+  tryRun(() => {
+    if (typeof uni === 'object' && uni) uni.report = report
+  }, undefined)
+
   const g = getGlobalObject()
   const u = (getUni() ?? g.uni) as UniGlobal | undefined
   if (!u || typeof u !== 'object') return
-  ;(u as { report?: (type: string, value?: unknown) => void }).report = (
-    type,
-    value
-  ): void => {
-    app.report(type, value)
-  }
+  ;(u as { report?: (type: string, value?: unknown) => void }).report = report
 }
 
 /** 仅供测试：重置 install 哨兵；调用方应同时调 `__resetStatApp()`。 */

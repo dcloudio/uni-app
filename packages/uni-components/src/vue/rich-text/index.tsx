@@ -64,6 +64,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         'uni-rich-text',
         {
           ref: rootRef,
+          selectable: props.userSelect || props.selectable ? true : null,
         },
         h('div', {}, _vnode.value)
       )

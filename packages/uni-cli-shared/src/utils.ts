@@ -336,3 +336,16 @@ export function getEscaper(
     return result + data.substring(lastIndex)
   }
 }
+
+export function getHarmonyRuntimePackageName(
+  isX: boolean,
+  isDom2: boolean
+): string {
+  if (!isX) {
+    return '@dcloudio/uni-app-runtime'
+  } else if (!isDom2) {
+    return '@dcloudio/uni-app-x-runtime'
+  } else {
+    return '@dcloudio/uni-app-x-vapor-runtime'
+  }
+}

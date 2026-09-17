@@ -38,8 +38,13 @@ const APP_IOS_VUE_ERROR_RE = /@([^\s]+\.js)\:(\d+)\:(\d+)/
 // app-harmony aaa\n    at testArr (entry/src/main/resources/resfile/uni-app-x/apps/HBuilder/www/app-service.js:530:15)
 const APP_HARMONY_JS_ERROR_RE =
   /(.*?)\s*at\s+(?:.*?)\s+\(.*?\/www\/(.*?\.js):(\d+):(\d+)\)/
-// app-android Error: aaa\n@/data/data/io.dcloud.uniappx/apps/__UNI__49FE874/www/app-service.js:115:24
-const APP_ANDROID_VUE_ERROR_RE = /@(?:.*?\/www\/)?([^\s/]+\.js):(\d+):(\d+)/
+// app-android 同时兼容 @file.js:1:1、at file.js:1:1 和 at fn (file.js:1:1)
+const APP_ANDROID_VUE_ERROR_RE =
+  /(?:@|\bat\s+(?:(?:.*?)\s+\()?)(?:.*?\/www\/)?([^\s/()]+\.js):(\d+):(\d+)/
+
+export function isAppAndroidJavaScriptRuntimeStacktrace(stacktrace: string) {
+  return APP_ANDROID_VUE_ERROR_RE.test(stacktrace)
+}
 
 export function parseUTSJavaScriptRuntimeStacktrace(
   stacktrace: string,

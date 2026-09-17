@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import type { Plugin } from 'vite'
 import type { EmittedAsset } from 'rollup'
+import type { ExistingRawSourceMap } from 'rollup'
 import type { ParserOptions } from '@vue/compiler-core'
 import type {
   CompilerOptions,
@@ -22,6 +23,17 @@ export interface CopyOptions {
 
 interface UniVitePluginUniOptions {
   compiler?: TemplateCompiler
+  uniAppXVaporScriptTransform?: (input: {
+    code: string
+    id: string
+    lang?: string
+  }) =>
+    | {
+        code: string
+        map?: ExistingRawSourceMap
+        meta?: Record<string, unknown>
+      }
+    | undefined
   styleOptions?: Pick<SFCStyleCompileOptions, 'postcssPlugins'>
   compilerOptions?: {
     miniProgram?: {

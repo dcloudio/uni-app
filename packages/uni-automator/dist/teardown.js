@@ -1,1 +1,1 @@
-"use strict";module.exports=async function(){const o=global.program;o&&o.teardown(),await new Promise((o=>{setTimeout((()=>{o(void 0)}),3e3)}))};
+"use strict";module.exports=async function(){const t=global.program;if(!t||"function"!=typeof t.teardown)return;let o;const e=new Promise((t=>{o=setTimeout((()=>{console.warn("[uni-automator] program teardown timed out after 10000ms"),t()}),1e4)}));try{await Promise.race([t.teardown(),e])}finally{clearTimeout(o)}};

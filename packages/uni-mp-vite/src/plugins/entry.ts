@@ -8,6 +8,7 @@ import {
   decodeBase64Url,
   encodeBase64Url,
   getUniModulesEncryptType,
+  isAlipayXStyleIsolation,
   normalizeMiniProgramFilename,
   normalizePath,
   parseManifestJsonOnce,
@@ -167,7 +168,10 @@ ${root ? '__uniCreatePage' : `${global}.createPage`}(MiniProgramPage)`,
           styleIsolation: undefined,
         }
 
-        if (process.env.UNI_PLATFORM === 'mp-alipay') {
+        if (isAlipayXStyleIsolation()) {
+          // 隔离命中由前缀 class 控制，原生层统一开放全局样式可见性且不向外泄漏组件样式。
+          json.styleIsolation = 'apply-shared'
+        } else if (process.env.UNI_PLATFORM === 'mp-alipay') {
           json.styleIsolation =
             parseComponentStyleIsolation(fs.readFileSync(filepath, 'utf-8')) ||
             platformOptions.styleIsolation ||

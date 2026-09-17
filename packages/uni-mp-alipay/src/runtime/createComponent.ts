@@ -23,6 +23,7 @@ import {
   isComponent2,
   triggerEvent,
 } from './util'
+import { createVueRuntimeOptions } from './externalClasses'
 
 declare function Component<
   P extends Record<string, any>,
@@ -94,6 +95,15 @@ function initVm(
 export function initCreateComponent() {
   return function createComponent(vueOptions: ComponentOptions) {
     vueOptions = vueOptions.default || vueOptions
+    // __X_STYLE_ISOLATION__ 仅在 DOM2 样式隔离构建中注入。
+    const externalClasses =
+      __X__ && __X_STYLE_ISOLATION__ ? vueOptions.externalClasses : undefined
+    // 支付宝由原生 Component 承载 externalClass；Vue 内部只需接收真实 class 字符串，
+    // 不能继续启用微信/App 的 externalClass 归一化，否则值会被替换为属性名。
+    const vueRuntimeOptions = createVueRuntimeOptions(
+      vueOptions,
+      externalClasses
+    )
     const mpComponentOptions: tinyapp.ComponentOptions & {
       options?: any
       externalClasses?: string[]
@@ -101,7 +111,13 @@ export function initCreateComponent() {
       props: initComponentProps(vueOptions.props),
       didMount() {
         const createComponent = (parent?: ComponentPublicInstance) => {
-          return createVueComponent('component', this, vueOptions, parent)
+          return createVueComponent(
+            'component',
+            this,
+            vueRuntimeOptions,
+            parent,
+            externalClasses
+          )
         }
         if ((my as any).dd) {
           // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
@@ -133,12 +149,16 @@ export function initCreateComponent() {
     if (vueOptions.options) {
       mpComponentOptions.options = vueOptions.options
     }
+    // __X_STYLE_ISOLATION__ 仅在 DOM2 样式隔离构建中注入。
     if (__X__ && __X_STYLE_ISOLATION__) {
       mpComponentOptions.options = mpComponentOptions.options ?? {}
+      // 支付宝原生不支持 uni-app x 的 isolated/app/app-and-page 抽象值。
+      // 原生层统一开放必要的样式可见性，最终是否命中仍由编译期生成的来源 class 控制。
+      mpComponentOptions.options.styleIsolation = 'apply-shared'
       mpComponentOptions.options.externalClasses =
         vueOptions.options?.externalClasses ?? true
-      if (vueOptions.externalClasses) {
-        mpComponentOptions.externalClasses = vueOptions.externalClasses
+      if (externalClasses) {
+        mpComponentOptions.externalClasses = externalClasses
       }
     }
     if (__VUE_OPTIONS_API__) {
@@ -149,12 +169,18 @@ export function initCreateComponent() {
     if (isComponent2) {
       mpComponentOptions.onInit = function onInit(this: MPComponentInstance) {
         initVm(this, (parent?: ComponentPublicInstance) => {
-          return createVueComponent('component', this, vueOptions, parent)
+          return createVueComponent(
+            'component',
+            this,
+            vueRuntimeOptions,
+            parent,
+            externalClasses
+          )
         })
       }
     }
 
-    initPropsObserver(mpComponentOptions)
+    initPropsObserver(mpComponentOptions, externalClasses)
 
     initWxsCallMethods(
       mpComponentOptions.methods as WechatMiniprogram.Component.MethodOption,

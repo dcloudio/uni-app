@@ -43,7 +43,7 @@ interface MapResult extends NormalizeResult {
 }
 
 export interface Message {
-  type: MessageType
+  type: Exclude<MessageType, 'warn'> | 'warning'
   args: Array<any>
 }
 
@@ -51,16 +51,17 @@ export function formatMessage(
   type: MessageType,
   args: Array<any | null>
 ): Message {
+  const messageType = type === 'warn' ? 'warning' : type
   try {
     return {
-      type,
+      type: messageType,
       args: formatArgs(args),
     }
   } catch (e) {
     // originalConsole.error(e)
   }
   return {
-    type,
+    type: messageType,
     args: [],
   }
 }

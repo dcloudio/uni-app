@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-beta.17
+  * @vue/compiler-dom v3.6.0-rc.4
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -212,6 +212,14 @@ const resolveModifiers = (key, modifiers, context, loc) => {
 	const eventOptionModifiers = [];
 	for (let i = 0; i < modifiers.length; i++) {
 		const modifier = modifiers[i].content;
+		if (modifier === "delegate") {
+			if (context) {
+				const error = /* @__PURE__ */ new SyntaxError(`.delegate modifier is only supported in Vapor components.`);
+				error.loc = modifiers[i].loc;
+				context.onWarn(error);
+			}
+			continue;
+		}
 		if (modifier === "native" && context && checkCompatEnabled("COMPILER_V_ON_NATIVE", context, loc)) eventOptionModifiers.push(modifier);
 		else if (isEventOptionModifier(modifier)) eventOptionModifiers.push(modifier);
 		else {
@@ -288,7 +296,7 @@ function postTransformTransition(node, onError, hasMultipleChildren = defaultHas
 			source: ""
 		}));
 		const child = node.children[0];
-		if (child.type === 1) {
+		if (child.type === 1 && !findDir(child, "if")) {
 			for (const p of child.props) if (p.type === 7 && p.name === "show") node.props.push({
 				type: 6,
 				name: "persisted",

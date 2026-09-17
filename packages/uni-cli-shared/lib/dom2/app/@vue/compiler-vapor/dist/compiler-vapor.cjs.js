@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-beta.17
+  * @vue/compiler-vapor v3.6.0-rc.4
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -56,26 +56,24 @@ const IRNodeTypes = {
 	"9": "SET_TEMPLATE_REF",
 	"INSERT_NODE": 10,
 	"10": "INSERT_NODE",
-	"PREPEND_NODE": 11,
-	"11": "PREPEND_NODE",
-	"CREATE_COMPONENT_NODE": 12,
-	"12": "CREATE_COMPONENT_NODE",
-	"SLOT_OUTLET_NODE": 13,
-	"13": "SLOT_OUTLET_NODE",
-	"DIRECTIVE": 14,
-	"14": "DIRECTIVE",
-	"IF": 15,
-	"15": "IF",
-	"FOR": 16,
-	"16": "FOR",
-	"KEY": 17,
-	"17": "KEY",
-	"GET_TEXT_CHILD": 18,
-	"18": "GET_TEXT_CHILD",
-	"GET_INSERTION_PARENT": 19,
-	"19": "GET_INSERTION_PARENT",
-	"SET_CHANGE_PROP": 20,
-	"20": "SET_CHANGE_PROP"
+	"CREATE_COMPONENT_NODE": 11,
+	"11": "CREATE_COMPONENT_NODE",
+	"SLOT_OUTLET_NODE": 12,
+	"12": "SLOT_OUTLET_NODE",
+	"DIRECTIVE": 13,
+	"13": "DIRECTIVE",
+	"IF": 14,
+	"14": "IF",
+	"FOR": 15,
+	"15": "FOR",
+	"KEY": 16,
+	"16": "KEY",
+	"GET_TEXT_CHILD": 17,
+	"17": "GET_TEXT_CHILD",
+	"GET_INSERTION_PARENT": 18,
+	"18": "GET_INSERTION_PARENT",
+	"SET_CHANGE_PROP": 19,
+	"19": "SET_CHANGE_PROP"
 };
 var TemplateRegistry = class {
 	constructor() {
@@ -97,7 +95,7 @@ const DynamicFlag = {
 };
 function isBlockOperation(op) {
 	const type = op.type;
-	return type === 12 || type === 13 || type === 15 || type === 17 || type === 16;
+	return type === 11 || type === 12 || type === 14 || type === 16 || type === 15;
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/utils.ts
@@ -462,7 +460,7 @@ var TransformContext = class TransformContext {
 	isSingleRootChild(childInfo) {
 		if (this.inVFor || !childInfo.hasSingleRootChild) return false;
 		if (this.node.type === 0) return true;
-		return this.node.type === 1 && this.node.tagType === 3 && !!this.parent && this.isSingleRoot;
+		return this.node.type === 1 && (this.node.tagType === 3 || isTransitionNode(this.node)) && !!this.parent && this.isSingleRoot;
 	}
 };
 function hasSingleRootChild(children) {
@@ -511,7 +509,6 @@ const defaultOptions = {
 	bindingMetadata: _vue_shared.EMPTY_OBJ,
 	inline: false,
 	isTS: false,
-	eventDelegation: true,
 	onError: _vue_compiler_dom.defaultOnError,
 	onWarn: _vue_compiler_dom.defaultOnWarn
 };
@@ -743,9 +740,6 @@ function genInsertNode({ parent, elements, anchor }, { helper }) {
 	let element = elements.map((el) => `n${el}`).join(", ");
 	if (elements.length > 1) element = `[${element}]`;
 	return [NEWLINE, ...genCall(helper("insert"), element, `n${parent}`, anchor === void 0 ? void 0 : `n${anchor}`)];
-}
-function genPrependNode(oper, { helper }) {
-	return [NEWLINE, ...genCall(helper("prepend"), `n${oper.parent}`, ...oper.elements.map((el) => `n${el}`))];
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/expression.ts
@@ -1193,16 +1187,14 @@ function genDeclarations(declarations, context, shouldDeclare) {
 	const varNames = /* @__PURE__ */ new Set();
 	declarations.forEach(({ name, isIdentifier, value }) => {
 		if (isIdentifier) {
-			const varName = ids[name] = `_${name}`;
-			varNames.add(varName);
+			const varName = ids[name] = context.getUniqueLocalName(`_${name}`, varNames);
 			if (shouldDeclare) push(`const `);
 			push(`${varName} = `, ...genExpression(value, context), NEWLINE);
 		}
 	});
 	declarations.forEach(({ name, isIdentifier, value }) => {
 		if (!isIdentifier) {
-			const varName = `_${name}`;
-			varNames.add(varName);
+			const varName = context.getUniqueLocalName(`_${name}`, varNames);
 			if (shouldDeclare) push(`const `);
 			push(`${varName} = `, ...context.withId(() => genExpression(value, context), ids), NEWLINE);
 			ids[name] = varName;
@@ -1250,7 +1242,10 @@ function extractMemberExpression(exp, onIdentifier) {
 		case "CallExpression": return `${extractMemberExpression(exp.callee, onIdentifier)}(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
 		case "OptionalCallExpression": return `${extractMemberExpression(exp.callee, onIdentifier)}?.(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
 		case "MemberExpression":
-		case "OptionalMemberExpression": return `${extractMemberExpression(exp.object, onIdentifier)}${exp.computed ? `[${extractMemberExpression(exp.property, onIdentifier)}]` : `.${extractMemberExpression(exp.property, _vue_shared.NOOP)}`}`;
+		case "OptionalMemberExpression":
+			const object = extractMemberExpression(exp.object, onIdentifier);
+			const optional = exp.type === "OptionalMemberExpression" && exp.optional;
+			return `${object}${exp.computed ? `${optional ? "?." : ""}[${extractMemberExpression(exp.property, onIdentifier)}]` : `${optional ? "?." : "."}${extractMemberExpression(exp.property, _vue_shared.NOOP)}`}`;
 		case "TSNonNullExpression": return `${extractMemberExpression(exp.expression, onIdentifier)}`;
 		default: return "";
 	}
@@ -1510,7 +1505,7 @@ function isFragmentBlock(block) {
 	const child = getSingleReturnedChild(block);
 	const operation = child && child.operation;
 	if (!operation) return false;
-	return operation.type === 13 || operation.type === 16 || operation.type === 17 || operation.type === 15 && !operation.once || operation.type === 12 && !!operation.dynamic && !operation.dynamic.isStatic;
+	return operation.type === 12 || operation.type === 15 || operation.type === 16 || operation.type === 14 && !operation.once || operation.type === 11 && !!operation.dynamic && !operation.dynamic.isStatic;
 }
 function getSingleReturnedChild(block) {
 	if (block.returns.length !== 1) return;
@@ -1692,8 +1687,8 @@ function isKeyOnlyBinding(expr, key, source) {
 //#region packages/compiler-vapor/src/generators/html.ts
 function genSetHtml(oper, context) {
 	const { helper } = context;
-	const { value, element, isComponent } = oper;
-	return [NEWLINE, ...genCall(isComponent ? helper("setBlockHtml") : helper("setHtml"), `n${element}`, genExpression(value, context))];
+	const { value, element } = oper;
+	return [NEWLINE, ...genCall(helper("setHtml"), `n${element}`, genExpression(value, context))];
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/if.ts
@@ -1995,9 +1990,9 @@ function genRefValue(value, context) {
 //#region packages/compiler-vapor/src/generators/text.ts
 function genSetText(oper, context) {
 	const { helper } = context;
-	const { element, values, generated, isComponent } = oper;
+	const { element, values, generated } = oper;
 	const texts = combineValues(values, context);
-	return [NEWLINE, ...genCall(isComponent ? helper("setBlockText") : helper("setText"), `${generated && !isComponent ? "x" : "n"}${element}`, texts)];
+	return [NEWLINE, ...genCall(helper("setText"), `${generated ? "x" : "n"}${element}`, texts)];
 }
 function combineValues(values, context) {
 	return values.flatMap((value, i) => {
@@ -2072,7 +2067,11 @@ function genCustomDirectives(opers, context) {
 	return [NEWLINE, ...genCall(helper("withVaporDirectives"), element, directives)];
 	function genDirectiveItem({ dir, name, asset }) {
 		const directiveVar = asset ? (0, _vue_compiler_dom.toValidAssetId)(name, "directive") : genExpression((0, _vue_shared.extend)((0, _vue_compiler_dom.createSimpleExpression)(name, false), { ast: null }), context);
-		const value = dir.exp && ["() => ", ...genExpression(dir.exp, context)];
+		const value = dir.exp && [
+			"() => (",
+			...genExpression(dir.exp, context),
+			")"
+		];
 		const argument = dir.arg && genExpression(dir.arg, context);
 		const modifiers = !!dir.modifiers.length && [
 			"{ ",
@@ -2083,7 +2082,7 @@ function genCustomDirectives(opers, context) {
 	}
 }
 function filterCustomDirectives(id, operations) {
-	return operations.filter((oper) => oper.type === 14 && oper.element === id && !oper.builtin);
+	return operations.filter((oper) => oper.type === 13 && oper.element === id && !oper.builtin);
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/component.ts
@@ -2320,7 +2319,8 @@ function genDynamicProps(props, context, directStaticLiteralProps = false) {
 	if (frags.length) return genMulti(DELIMITERS_ARRAY_NEWLINE, ...frags);
 }
 function genProp(prop, context, isStatic, wrapHandler = true, directStaticLiteral = false) {
-	const values = genPropValue(prop.values, context);
+	let values = genPropValue(prop.values, context);
+	if (prop.toDisplayString) values = genCall(context.helper("toDisplayString"), values);
 	return [
 		...genPropKey(prop, context),
 		": ",
@@ -2398,7 +2398,7 @@ function genStaticSlots({ slots }, context, dynamicSlots) {
 	return genMulti(DELIMITERS_OBJECT_NEWLINE, ...args);
 }
 function genDynamicSlots(slots, context) {
-	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, true)));
+	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, slot.slotType !== 2)));
 }
 function genDynamicSlot(slot, context, withFunction = false) {
 	let frag;
@@ -2425,26 +2425,65 @@ function genBasicDynamicSlot(slot, context) {
 	return genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...genExpression(name, context)], ["fn: ", ...genSlotBlockWithProps(fn, context, false)]);
 }
 function genLoopSlot(slot, context) {
-	const { name, fn, loop } = slot;
+	const { name, fn, loop, keyProp } = slot;
 	const { value, key, index, source } = loop;
 	const rawValue = value && value.content;
 	const rawKey = key && key.content;
 	const rawIndex = index && index.content;
-	const idMap = {};
-	if (rawValue) idMap[rawValue] = rawValue;
-	if (rawKey) idMap[rawKey] = rawKey;
-	if (rawIndex) idMap[rawIndex] = rawIndex;
-	const slotExpr = genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...context.withId(() => genExpression(name, context), idMap)], ["fn: ", ...context.withId(() => genSlotBlockWithProps(fn, context, false), idMap)]);
-	return [...genCall(context.helper("createForSlots"), genExpression(source, context), [
+	const idToPathMap = parseValueDestructure(value, context);
+	const [depth, exitScope] = context.enterScope();
+	const itemVar = `_for_item${depth}`;
+	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, context.options.expressionPlugins);
+	idMap[itemVar] = null;
+	const args = [itemVar];
+	if (rawKey) {
+		const keyVar = `_for_key${depth}`;
+		args.push(keyVar);
+		idMap[rawKey] = `${keyVar}.value`;
+		idMap[keyVar] = null;
+	} else if (rawIndex) args.push("_");
+	if (rawIndex) {
+		const indexVar = `_for_index${depth}`;
+		args.push(indexVar);
+		idMap[rawIndex] = `${indexVar}.value`;
+		idMap[indexVar] = null;
+	}
+	const renderSlot = [
 		...genMulti([
 			"(",
 			")",
 			", "
-		], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex),
+		], ...args),
+		" => ",
+		...context.withId(() => genSlotBlockWithProps(fn, context, false), idMap)
+	];
+	exitScope();
+	const rawIdMap = {};
+	if (rawKey) rawIdMap[rawKey] = null;
+	if (rawIndex) rawIdMap[rawIndex] = null;
+	idToPathMap.forEach((_, id) => rawIdMap[id] = null);
+	const rawParams = genMulti([
+		"(",
+		")",
+		", "
+	], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex);
+	const getName = [
+		...rawParams,
 		" => (",
-		...slotExpr,
+		...context.withId(() => genExpression(name, context), rawIdMap),
 		")"
-	])];
+	];
+	const getKey = keyProp && [
+		...rawParams,
+		" => (",
+		...context.withId(() => genExpression(keyProp, context), rawIdMap),
+		")"
+	];
+	return [...genCall(context.helper("createForSlots"), [
+		"() => (",
+		...genExpression(source, context),
+		")"
+	], renderSlot, getName, getKey)];
 }
 function genConditionalSlot(slot, context) {
 	const { condition, positive, negative } = slot;
@@ -2474,7 +2513,7 @@ function genSlotBlockWithProps(oper, context, emitNonStableFlag = true) {
 	if (propsName) idMap[propsName] = null;
 	const exitSlotBlock = context.enterSlotBlock();
 	const hasStableRoot = hasStableSlotRoot(oper, context);
-	if (!hasStableRoot) markSlotRootOperations(oper);
+	if (!hasStableRoot) markSlotRootOperations(oper, context);
 	let blockFn = context.withId(() => genBlock(oper, context, propsName ? [propsName] : []), idMap);
 	if (emitNonStableFlag && !hasStableRoot) blockFn = genCall(context.helper("extend"), blockFn, [`{ _: ${genSlotFlags$1(8)} }`]);
 	exitSlotBlock();
@@ -2489,40 +2528,6 @@ function genSlotFlags$1(flags) {
 	if (flags & 8) names.push("NON_STABLE");
 	return `${flags} /* ${names.join(", ")} */`;
 }
-const commentOnlyTemplateRE = /^(?:<!--[\s\S]*?-->)+$/;
-function hasStableSlotRoot(block, context) {
-	let hasValidRoot = false;
-	for (let i = 0; i < block.returns.length; i++) {
-		const id = block.returns[i];
-		const child = findReturnedDynamic$1(block, id);
-		const operation = child && child.operation;
-		if (!operation) {
-			if (child && isStableTemplateSlotRoot(child, context)) hasValidRoot = true;
-			continue;
-		}
-		switch (operation.type) {
-			case 12:
-				if (!operation.dynamic || operation.dynamic.isStatic) {
-					hasValidRoot = true;
-					continue;
-				}
-				continue;
-			case 17:
-				if (hasStableSlotRoot(operation.block, context)) {
-					hasValidRoot = true;
-					continue;
-				}
-				continue;
-			default: continue;
-		}
-	}
-	return hasValidRoot;
-}
-function isStableTemplateSlotRoot(child, context) {
-	if (child.template == null) return false;
-	const content = context.ir.template.entries[child.template].content;
-	return content !== "" && !commentOnlyTemplateRE.test(content.trim());
-}
 function needsVaporCtx(block) {
 	return hasComponentOrSlotInBlock(block);
 }
@@ -2533,11 +2538,11 @@ function hasComponentOrSlotInBlock(block) {
 function hasComponentOrSlotInDynamic(dynamic) {
 	if (dynamic.operation) {
 		const type = dynamic.operation.type;
-		if (type === 12 || type === 13) return true;
-		if (type === 15) {
+		if (type === 11 || type === 12) return true;
+		if (type === 14) {
 			if (hasComponentOrSlotInIf(dynamic.operation)) return true;
 		}
-		if (type === 16) {
+		if (type === 15) {
 			if (hasComponentOrSlotInBlock(dynamic.operation.render)) return true;
 		}
 	}
@@ -2546,12 +2551,12 @@ function hasComponentOrSlotInDynamic(dynamic) {
 }
 function hasComponentOrSlotInOperations(operations) {
 	for (const op of operations) switch (op.type) {
-		case 12:
-		case 13: return true;
-		case 15:
+		case 11:
+		case 12: return true;
+		case 14:
 			if (hasComponentOrSlotInIf(op)) return true;
 			break;
-		case 16:
+		case 15:
 			if (hasComponentOrSlotInBlock(op.render)) return true;
 			break;
 	}
@@ -2571,7 +2576,7 @@ function genSlotOutlet(oper, context) {
 	const [frag, push] = buildCodeFragment();
 	let fallbackArg;
 	if (fallback) {
-		if (context.inSlotBlock) markSlotRootOperations(fallback);
+		if (context.inSlotBlock) markSlotRootOperations(fallback, context);
 		fallbackArg = genBlock(fallback, context);
 	}
 	const createSlot = helper("createSlot");
@@ -2590,19 +2595,21 @@ function genSlotFlags(flags) {
 	if (flags & 1) names.push("NO_SLOTTED");
 	if (flags & 2) names.push("ONCE");
 	if (flags & 4) names.push("SLOT_ROOT");
+	if (flags & 16) names.push("SHARED_FALLBACK");
+	if (flags & 32) names.push("INHERIT_FALLBACK");
 	return `${flags} /* ${names.join(", ")} */`;
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/key.ts
 function genKey(oper, context) {
-	const { id, value, block } = oper;
+	const { id, value, block, slotRoot } = oper;
 	const [frag, push] = buildCodeFragment();
 	const blockFn = genBlock(block, context);
 	push(NEWLINE, `const n${id} = `, ...genCall(context.helper("createKeyedFragment"), [
 		`() => (`,
 		...genExpression(value, context),
 		")"
-	], blockFn));
+	], blockFn, slotRoot ? "true" : false));
 	return frag;
 }
 function genSetBlockKey(oper, context) {
@@ -2632,16 +2639,15 @@ function genOperation(oper, context) {
 		case 8: return genSetHtml(oper, context);
 		case 9: return genSetTemplateRef(oper, context);
 		case 10: return genInsertNode(oper, context);
-		case 11: return genPrependNode(oper, context);
-		case 15: return genIf(oper, context);
-		case 16: return genFor(oper, context);
-		case 17: return genKey(oper, context);
-		case 12: return genCreateComponent(oper, context);
-		case 13: return genSlotOutlet(oper, context);
-		case 14: return genBuiltinDirective(oper, context);
-		case 18: return genGetTextChild(oper, context);
+		case 14: return genIf(oper, context);
+		case 15: return genFor(oper, context);
+		case 16: return genKey(oper, context);
+		case 11: return genCreateComponent(oper, context);
+		case 12: return genSlotOutlet(oper, context);
+		case 13: return genBuiltinDirective(oper, context);
+		case 17: return genGetTextChild(oper, context);
+		case 18: return [];
 		case 19: return [];
-		case 20: return [];
 		default: throw new Error(`Unhandled operation type in genOperation: ${oper}`);
 	}
 }
@@ -2689,8 +2695,8 @@ function genEffect({ operations }, context) {
 	return frag;
 }
 function genInsertionState(operation, context) {
-	const { parent, anchor, logicalIndex, append } = operation;
-	return [NEWLINE, ...genCall(context.helper("setInsertionState"), `n${parent}`, anchor == null ? void 0 : anchor === -1 ? `0` : append ? "null" : `n${anchor}`, logicalIndex !== void 0 ? String(logicalIndex) : void 0)];
+	const { parent, anchor, appendIndex } = operation;
+	return [NEWLINE, ...genCall(context.helper("setInsertionState"), `n${parent}`, anchor != null ? `n${anchor}` : appendIndex ? String(appendIndex) : void 0)];
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/template.ts
@@ -2728,6 +2734,16 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 	for (const [index, child] of children.entries()) {
 		if (child.flags & 2) offset--;
 		if (child.flags & 4 && child.template != null) {
+			if (child.anchor !== void 0) {
+				const elementIndex = index + offset;
+				const variable = `n${child.anchor}`;
+				pushBlock(NEWLINE, `const ${variable} = `, ...genAccessPath(context, from, elementIndex, prev));
+				prev = [
+					variable,
+					elementIndex,
+					false
+				];
+			}
 			flushBeforeDynamic && flushBeforeDynamic(child, push);
 			push(...genSelf(child, context, flushBeforeDynamic));
 			continue;
@@ -2739,9 +2755,8 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 			continue;
 		}
 		const elementIndex = index + offset;
-		const logicalIndex = child.logicalIndex !== void 0 ? String(child.logicalIndex) : void 0;
 		const inlinePlaceholder = id === void 0 && canInlinePlaceholder(child) && child.template == null && child.operation === void 0 && !(child.flags & 6);
-		const accessPath = genAccessPath(context, from, child, elementIndex, logicalIndex, prev);
+		const accessPath = genAccessPath(context, from, elementIndex, prev);
 		if (inlinePlaceholder) {
 			if (prev && prev[2]) {
 				push(...genChildren(child, context, pushBlock, [
@@ -2789,11 +2804,14 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 * Build one DOM lookup path while preserving the fast sibling walk:
 * adjacent nodes use _next(prev), otherwise fall back to _nthChild(parent).
 */
-function genAccessPath({ helper }, from, child, elementIndex, logicalIndex, prev) {
-	if (prev) return elementIndex - prev[1] === 1 ? genCall(helper("next"), prev[0], logicalIndex) : genNthChild(helper("nthChild"), from, elementIndex, logicalIndex);
-	if (elementIndex === 0) return genCall(helper("child"), from, child.logicalIndex !== 0 ? logicalIndex : void 0);
-	const firstChild = genCall(helper("child"), from);
-	return elementIndex === 1 ? genCall(helper("next"), firstChild, logicalIndex) : genNthChild(helper("nthChild"), from, elementIndex, logicalIndex);
+function genAccessPath({ helper }, from, elementIndex, prev) {
+	if (prev) return elementIndex - prev[1] === 1 ? genCall(helper("next"), prev[0]) : genCall(helper("nthChild"), from, String(elementIndex));
+	if (elementIndex === 0) return genCall(helper("child"), from);
+	if (elementIndex === 1) {
+		const firstChild = genCall(helper("child"), from);
+		return genCall(helper("next"), firstChild);
+	}
+	return genCall(helper("nthChild"), from, String(elementIndex));
 }
 /**
 * Only inline a placeholder when materializing it would not save a parent
@@ -2806,13 +2824,15 @@ function canInlinePlaceholder(dynamic) {
 /**
 * A following access can reuse the current placeholder cursor only when it is
 * the next DOM sibling. Gapped siblings need _nthChild(parent, index) instead.
+* Kept in lockstep with genChildren's traversal rules.
 */
 function hasAdjacentFollowingAccessChild(children, index, elementIndex, offset) {
 	let futureOffset = offset;
 	for (let i = index + 1; i < children.length; i++) {
 		const child = children[i];
 		if (child.flags & 2) futureOffset--;
-		if (!(child.flags & 4 && child.template != null) && (!!(child.flags & 1) || child.hasDynamicChild)) return i + futureOffset - elementIndex === 1;
+		if (child.flags & 4 && child.anchor === void 0) continue;
+		if (!!(child.flags & 1) || child.hasDynamicChild) return i + futureOffset - elementIndex === 1;
 	}
 	return false;
 }
@@ -2827,7 +2847,7 @@ function countParentAccessUsages(dynamic) {
 	let prev;
 	for (const [index, child] of dynamic.children.entries()) {
 		if (child.flags & 2) offset--;
-		if (child.flags & 4 && child.template != null) continue;
+		if (child.flags & 4 && child.template != null && child.anchor === void 0) continue;
 		const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
 		if (id === void 0 && !child.hasDynamicChild) continue;
 		const elementIndex = index + offset;
@@ -2848,10 +2868,6 @@ function countParentAccessUsages(dynamic) {
 	}
 	return usages;
 }
-function genNthChild(nthChild, from, elementIndex, logicalIndex) {
-	const index = String(elementIndex);
-	return genCall(nthChild, from, index, logicalIndex === index ? void 0 : logicalIndex);
-}
 //#endregion
 //#region packages/compiler-vapor/src/generators/block.ts
 function genBlock(oper, context, args = [], root) {
@@ -2869,6 +2885,7 @@ function genBlock(oper, context, args = [], root) {
 function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffectIndexes) {
 	const [frag, push] = buildCodeFragment();
 	const { dynamic, effect, operation, returns } = block;
+	const modelOperations = operation.filter(isVModelOperation);
 	const resetBlock = context.enterBlock(block);
 	const singleUseAssetComponentNames = root ? collectSingleUseAssetComponents(block) : void 0;
 	const prevSingleUseAssetComponentNames = context.singleUseAssetComponentNames;
@@ -2887,7 +2904,8 @@ function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffec
 	let effectIndex = 0;
 	const flushPendingOperations = (operationEnd, effectEnd, push) => {
 		while (operationIndex < operationEnd) {
-			push(...genOperationWithInsertionState(operation[operationIndex], context));
+			const oper = operation[operationIndex];
+			if (!isVModelOperation(oper)) push(...genOperationWithInsertionState(oper, context));
 			operationIndex++;
 		}
 		if (effectIndex < effectEnd) {
@@ -2904,9 +2922,10 @@ function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffec
 		push(...genSelf(child, context, flushBeforeDynamic));
 	}
 	for (const child of dynamic.children) if (!child.hasDynamicChild) push(...genChildren(child, context, push, `n${child.id}`, flushBeforeDynamic));
-	if (operationIndex < operation.length) push(...genOperations(operation.slice(operationIndex), context));
+	if (operationIndex < operation.length) push(...genOperations(operation.slice(operationIndex).filter((oper) => !isVModelOperation(oper)), context));
 	if (effectIndex < effect.length) push(...genEffectRange(effectIndex, effect.length, genEffectsExtraFrag));
 	else if (genEffectsExtraFrag) push(...genEffects([], context, genEffectsExtraFrag));
+	if (modelOperations.length) push(...genOperations(modelOperations, context));
 	push(NEWLINE, `return `);
 	const returnNodes = returns.map((n) => `n${n}`);
 	push(...returnNodes.length > 1 ? genMulti(DELIMITERS_ARRAY, ...returnNodes) : [returnNodes[0] || "[]"]);
@@ -2924,27 +2943,54 @@ function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffec
 		for (const name of context.ir[kind]) push(NEWLINE, `const ${(0, _vue_compiler_dom.toValidAssetId)(name, kind)} = `, ...genCall(context.helper(helper), JSON.stringify(name)));
 	}
 }
-function markSlotRootOperations(block) {
+function isVModelOperation(oper) {
+	return oper.type === 13 && oper.builtin === true && oper.name === "model";
+}
+function markSlotRootOperations(block, context, sharedFallback = false) {
+	markSlotRootOperationsImpl(block, context, sharedFallback, true);
+}
+function markSlotRootOperationsForDom2(block, context, sharedFallback = false) {
+	markSlotRootOperationsImpl(block, context, sharedFallback, false);
+}
+function markSlotRootOperationsImpl(block, context, sharedFallback, respectStableRoot) {
+	if (respectStableRoot && hasStableSlotRoot(block, context)) return;
+	sharedFallback = sharedFallback || hasMultipleDynamicSlotRoots(block);
 	for (let i = 0; i < block.returns.length; i++) {
 		const child = findReturnedDynamic$1(block, block.returns[i]);
 		const operation = child && child.operation;
 		if (!operation) continue;
-		if (operation.type === 15) markSlotRootIf(operation);
-		else if (operation.type === 16) markSlotRootFor(operation);
-		else if (operation.type === 12) markSlotRootComponent(operation);
+		if (operation.type === 14) markSlotRootIf(operation, context, sharedFallback, respectStableRoot);
+		else if (operation.type === 15) markSlotRootFor(operation, context, respectStableRoot);
+		else if (operation.type === 16) {
+			operation.slotRoot = true;
+			markSlotRootOperationsImpl(operation.block, context, sharedFallback, respectStableRoot);
+		} else if (operation.type === 11) markSlotRootComponent(operation);
+		else if (operation.type === 12) {
+			if (!(operation.flags & 2)) operation.flags |= 4;
+			if (sharedFallback) operation.flags |= 16;
+			else operation.flags |= 32;
+		}
 	}
 }
-function markSlotRootIf(operation) {
+function markSlotRootIf(operation, context, sharedFallback, respectStableRoot) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperations(operation.positive);
+	markSlotRootOperationsImpl(operation.positive, context, sharedFallback, respectStableRoot);
 	const negative = operation.negative;
 	if (!negative) return;
-	if (negative.type === 15) markSlotRootIf(negative);
-	else markSlotRootOperations(negative);
+	if (negative.type === 14) markSlotRootIf(negative, context, sharedFallback, respectStableRoot);
+	else markSlotRootOperationsImpl(negative, context, sharedFallback, respectStableRoot);
 }
-function markSlotRootFor(operation) {
+function markSlotRootFor(operation, context, respectStableRoot) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperations(operation.render);
+	markSlotRootOperationsImpl(operation.render, context, true, respectStableRoot);
+}
+function hasMultipleDynamicSlotRoots(block) {
+	let count = 0;
+	for (let i = 0; i < block.returns.length; i++) {
+		const child = findReturnedDynamic$1(block, block.returns[i]);
+		if (child && child.operation && ++count > 1) return true;
+	}
+	return false;
 }
 function markSlotRootComponent(operation) {
 	if (!operation.once && operation.dynamic && !operation.dynamic.isStatic) operation.slotRoot = true;
@@ -2954,6 +3000,40 @@ function findReturnedDynamic$1(block, id) {
 		const child = block.dynamic.children[i];
 		if (child.id === id) return child;
 	}
+}
+const commentOnlyTemplateRE = /^(?:<!--[\s\S]*?-->)+$/;
+function hasStableSlotRoot(block, context) {
+	let hasValidRoot = false;
+	for (let i = 0; i < block.returns.length; i++) {
+		const id = block.returns[i];
+		const child = findReturnedDynamic$1(block, id);
+		const operation = child && child.operation;
+		if (!operation) {
+			if (child && isStableTemplateSlotRoot(child, context)) hasValidRoot = true;
+			continue;
+		}
+		switch (operation.type) {
+			case 11:
+				if (!operation.dynamic || operation.dynamic.isStatic) {
+					hasValidRoot = true;
+					continue;
+				}
+				continue;
+			case 16:
+				if (hasStableSlotRoot(operation.block, context)) {
+					hasValidRoot = true;
+					continue;
+				}
+				continue;
+			default: continue;
+		}
+	}
+	return hasValidRoot;
+}
+function isStableTemplateSlotRoot(child, context) {
+	if (child.template == null) return false;
+	const content = context.ir.template.entries[child.template].content;
+	return content !== "" && !commentOnlyTemplateRE.test(content.trim());
 }
 function collectSingleUseAssetComponents(block) {
 	const usageMap = /* @__PURE__ */ new Map();
@@ -2974,7 +3054,7 @@ function collectSingleUseAssetComponents(block) {
 	function visitOperation(operation, rootCandidate) {
 		if (seenOperations.has(operation)) return;
 		seenOperations.add(operation);
-		if (operation.type === 12) {
+		if (operation.type === 11) {
 			if (operation.asset) {
 				const usage = usageMap.get(operation.tag) || {
 					count: 0,
@@ -2988,18 +3068,18 @@ function collectSingleUseAssetComponents(block) {
 			return;
 		}
 		switch (operation.type) {
-			case 15:
+			case 14:
 				visitBlock(operation.positive, false);
-				if (operation.negative) if (operation.negative.type === 15) visitOperation(operation.negative, false);
+				if (operation.negative) if (operation.negative.type === 14) visitOperation(operation.negative, false);
 				else visitBlock(operation.negative, false);
 				break;
-			case 16:
+			case 15:
 				visitBlock(operation.render, false);
 				break;
-			case 17:
+			case 16:
 				visitBlock(operation.block, false);
 				break;
-			case 13:
+			case 12:
 				if (operation.fallback) visitBlock(operation.fallback, false);
 				break;
 		}
@@ -3068,10 +3148,27 @@ var CodegenContext = class {
 	enterScope() {
 		return [this.scopeLevel++, () => this.scopeLevel--];
 	}
-	isHelperNameAvailable(name) {
-		if (this.bindingNames.has(name)) return false;
+	getUniqueLocalName(base, scopeNames) {
+		const name = this.findAvailableName(base, scopeNames);
+		scopeNames.add(name);
+		this.generatedLocalNames.add(name);
+		return name;
+	}
+	isNameAvailable(name, reservedNames) {
+		if (this.bindingNames.has(name) || reservedNames.has(name)) return false;
 		for (const alias of this.helpers.values()) if (alias === name) return false;
 		return true;
+	}
+	findAvailableName(base, reservedNames) {
+		if (this.isNameAvailable(base, reservedNames)) return base;
+		const map = this.nextIdMap.get(base);
+		let next = 1;
+		while (true) {
+			const id = getNextId(map, next);
+			const name = `${base}${id}`;
+			if (this.isNameAvailable(name, reservedNames)) return name;
+			next = id + 1;
+		}
 	}
 	initNextIdMap() {
 		if (this.bindingNames.size === 0) return;
@@ -3112,20 +3209,9 @@ var CodegenContext = class {
 		this.helper = (name) => {
 			if (this.helpers.has(name)) return this.helpers.get(name);
 			const base = `_${helperNameAliases[name] || name}`;
-			if (this.isHelperNameAvailable(base)) {
-				this.helpers.set(name, base);
-				return base;
-			}
-			const map = this.nextIdMap.get(base);
-			let next = 1;
-			while (true) {
-				const alias = `${base}${getNextId(map, next)}`;
-				if (this.isHelperNameAvailable(alias)) {
-					this.helpers.set(name, alias);
-					return alias;
-				}
-				next++;
-			}
+			const alias = this.findAvailableName(base, this.generatedLocalNames);
+			this.helpers.set(name, alias);
+			return alias;
 		};
 		this.delegates = /* @__PURE__ */ new Set();
 		this.identifiers = Object.create(null);
@@ -3135,6 +3221,7 @@ var CodegenContext = class {
 		this.templateVars = /* @__PURE__ */ new Map();
 		this.nextIdMap = /* @__PURE__ */ new Map();
 		this.lastIdMap = /* @__PURE__ */ new Map();
+		this.generatedLocalNames = /* @__PURE__ */ new Set();
 		this.lastTIndex = -1;
 		const defaultOptions = {
 			mode: "module",
@@ -3267,12 +3354,15 @@ const transformVHtml = (dir, node, context) => {
 		exp = EMPTY_EXPRESSION;
 	}
 	ignoreVHtmlChildren(node, context, "template");
+	if (node.tagType === 1) return {
+		key: (0, _vue_compiler_dom.createSimpleExpression)("innerHTML", true, loc),
+		value: exp
+	};
 	context.registerEffect([exp], {
 		type: 8,
 		node,
 		element: context.reference(),
-		value: exp,
-		isComponent: node.tagType === 1
+		value: exp
 	});
 };
 //#endregion
@@ -3390,7 +3480,7 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 	const id = context.reference();
 	const flatten = extractElementFlatten(node, propsResult, context);
 	context.dynamic.operation = {
-		type: 12,
+		type: 11,
 		node,
 		id,
 		...context.effectBoundary(),
@@ -3513,14 +3603,12 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 		let hasStaticStyle = false;
 		let hasClass = false;
 		const datasetProps = [];
-		let prevWasQuoted = false;
 		const appendTemplateProp = (key, value = "", generated = false) => {
-			if (!prevWasQuoted) template += ` `;
-			template += key;
+			template += ` ${key}`;
 			if (value) {
 				const escapedValue = generated ? escapeGeneratedAttrValue(value) : value.replace(/"/g, "&quot;");
-				template += (prevWasQuoted = NEEDS_QUOTES_RE.test(value)) ? `="${escapedValue}"` : `=${escapedValue}`;
-			} else prevWasQuoted = false;
+				template += NEEDS_QUOTES_RE.test(value) ? `="${escapedValue}"` : `=${escapedValue}`;
+			}
 		};
 		for (const prop of propsResult[1]) {
 			const { key, values } = prop;
@@ -3535,7 +3623,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 					dynamicProps.push(key.content);
 					values[0].isStatic = false;
 					context.registerEffect(values, {
-						type: 20,
+						type: 19,
 						node,
 						prop
 					}, getEffectIndex);
@@ -3543,11 +3631,8 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				}
 				if (key.content === "class") hasClass = true;
 			}
-			if (canStringifyAttrName && context.imports.some((imported) => values[0].content.includes(imported.exp.content))) {
-				if (!prevWasQuoted) template += ` `;
-				template += `${key.content}="${IMPORT_EXP_START}${values[0].content}${IMPORT_EXP_END}"`;
-				prevWasQuoted = true;
-			} else if (canStringifyAttrName && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content)) {
+			if (canStringifyAttrName && context.imports.some((imported) => values[0].content.includes(imported.exp.content))) template += ` ${key.content}="${IMPORT_EXP_START}${values[0].content}${IMPORT_EXP_END}"`;
+			else if (canStringifyAttrName && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content)) {
 				if (isDom2 && key.content === "style") {
 					hasStaticStyle = true;
 					const checkStaticStyle = context.options.checkStaticStyle;
@@ -3569,7 +3654,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				}
 				const value = values[0].content === "''" ? "" : values[0].content;
 				appendTemplateProp(key.content, value);
-			} else if (canStringifyAttrName && !prop.modifier && (0, _vue_shared.isBooleanAttr)(key.content) && (foldedValue = foldBooleanAttrValue(values)) != null) {
+			} else if (canStringifyAttrName && !prop.modifier && ((0, _vue_shared.isBooleanAttr)(key.content) || key.content === "hidden") && (foldedValue = foldBooleanAttrValue(key.content, values)) != null) {
 				if (foldedValue) appendTemplateProp(key.content);
 			} else if (canStringifyAttrName && !prop.modifier && !isDom2 && hasBoundValue(values) && (foldedValue = key.content === "class" ? foldClassValues(values) : key.content === "style" ? foldStyleValues(values) : void 0) != null) {
 				if (foldedValue) appendTemplateProp(key.content, foldedValue, true);
@@ -3611,11 +3696,12 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 function escapeGeneratedAttrValue(value) {
 	return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 }
-function foldBooleanAttrValue(values) {
+function foldBooleanAttrValue(key, values) {
 	if (values.length !== 1) return;
 	const evaluated = evaluateConstantExpression(values[0]);
 	if (!evaluated) return;
 	const value = evaluated.value;
+	if (key === "hidden" && typeof value === "number") return (0, _vue_shared.includeBooleanAttr)(value);
 	if (value === true || value === false || value == null) return (0, _vue_shared.includeBooleanAttr)(value);
 }
 function foldStyleValues(values) {
@@ -3979,7 +4065,7 @@ function transformProp(prop, node, context) {
 		if (fromSetup) name = fromSetup;
 		else context.directive.add(name);
 		context.registerOperation({
-			type: 14,
+			type: 13,
 			node,
 			element: context.reference(),
 			dir: prop,
@@ -4000,7 +4086,8 @@ function dedupeProperties(results) {
 		const name = prop.key.content;
 		const existing = knownProps.get(name);
 		if (existing && existing.handler === prop.handler) {
-			if (name === "style" || name === "class" || prop.handler || name === "hover-class") mergePropValues(existing, prop);
+			if (prop.handler) deduped.push(prop);
+			else if (name === "style" || name === "class" || name === "hover-class") mergePropValues(existing, prop);
 		} else {
 			knownProps.set(name, prop);
 			deduped.push(prop);
@@ -4063,76 +4150,40 @@ const transformChildren = (node, context) => {
 	if (!isFragment) processDynamicChildren(context);
 };
 function processDynamicChildren(context) {
-	let prevDynamics = [];
-	let staticCount = 0;
 	const children = context.dynamic.children;
-	let logicalIndex = 0;
-	for (const [index, child] of children.entries()) {
-		if (child.flags & 4) {
-			child.logicalIndex = logicalIndex;
-			prevDynamics.push(child);
-			logicalIndex++;
-		}
-		if (!(child.flags & 2)) {
-			child.logicalIndex = logicalIndex;
-			if (prevDynamics.length) {
-				if (staticCount) {
-					context.childrenTemplate[index - prevDynamics.length] = `<!>`;
-					prevDynamics[0].flags -= 2;
-					const anchor = prevDynamics[0].anchor = context.increaseId();
-					registerInsertion(prevDynamics, context, anchor);
-				} else registerInsertion(prevDynamics, context, -1);
-				prevDynamics = [];
-			}
-			staticCount++;
-			logicalIndex++;
-		}
+	let lastTemplateIndex = -1;
+	for (let i = children.length - 1; i >= 0; i--) if (!(children[i].flags & 2)) {
+		lastTemplateIndex = i;
+		break;
 	}
-	if (prevDynamics.length) registerInsertion(prevDynamics, context, prevDynamics[0].logicalIndex, true);
-}
-function registerInsertion(dynamics, context, anchor, append) {
-	for (const child of dynamics) {
-		const logicalIndex = child.logicalIndex;
-		if (child.template != null) context.registerOperation({
+	let unitIndex = 0;
+	for (const [index, child] of children.entries()) if (child.flags & 4) {
+		let anchor;
+		if (index < lastTemplateIndex) {
+			context.childrenTemplate[index] = `<!>`;
+			child.flags = child.flags - 2 | 1;
+			anchor = child.anchor = context.increaseId();
+		}
+		if (child.template != null) child.operation = {
 			type: 10,
 			node: context.node,
-			elements: dynamics.map((child) => child.id),
+			elements: [child.id],
 			parent: context.reference(),
-			anchor: append ? void 0 : anchor
-		});
+			anchor
+		};
 		else if (child.operation && isBlockOperation(child.operation)) {
 			child.operation.parent = context.reference();
-			child.operation.anchor = anchor;
-			child.operation.logicalIndex = logicalIndex;
-			child.operation.append = append;
+			if (anchor !== void 0) child.operation.anchor = anchor;
+			else child.operation.appendIndex = unitIndex;
 		}
-	}
+		unitIndex++;
+	} else if (!(child.flags & 2)) unitIndex++;
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vOnce.ts
 const transformVOnce = (node, context) => {
 	if (node.type === 1 && (0, _vue_compiler_dom.findDir)(node, "once", true)) context.inVOnce = true;
 };
-//#endregion
-//#region packages/shared/src/makeMap.ts
-/**
-* Make a map and return a function for checking if a key
-* is in that map.
-* IMPORTANT: all calls of this function must be prefixed with
-* \/\*#\_\_PURE\_\_\*\/
-* So that they can be tree-shaken if necessary.
-*/
-/* @__NO_SIDE_EFFECTS__ */
-function makeMap$1(str) {
-	const map = Object.create(null);
-	for (const key of str.split(",")) map[key] = 1;
-	return (val) => val in map;
-}
-/**
-* Compiler only.
-* Do NOT use in runtime code paths unless behind `__DEV__` flag.
-*/
-const isVoidTag = /* @__PURE__ */ makeMap$1("area,base,br,col,embed,hr,img,input,link,meta,param,source,track,wbr");
 //#endregion
 //#region packages/compiler-vapor/src/transforms/transformText.ts
 const seen = /* @__PURE__ */ new WeakMap();
@@ -4234,7 +4285,7 @@ function processTextContainer(children, context) {
 	else {
 		context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
 		context.registerOperation({
-			type: 18,
+			type: 17,
 			node: context.node,
 			parent: context.reference()
 		});
@@ -4294,6 +4345,7 @@ function isTextLike(node) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vText.ts
+const isRawTextContainer = /* @__PURE__ */ (0, _vue_shared.makeMap)("iframe,noembed,noframes,noscript,script,style,xmp");
 const transformVText = (dir, node, context) => {
 	let { exp, loc } = dir;
 	if (!exp) {
@@ -4305,10 +4357,16 @@ const transformVText = (dir, node, context) => {
 		context.childrenTemplate.length = 0;
 		for (const child of node.children) markNonTemplate(child, context);
 	}
-	if (isVoidTag(context.node.tag)) return;
+	if ((0, _vue_shared.isVoidTag)(context.node.tag)) return;
+	const isComponent = node.tagType === 1;
+	if (isComponent) return {
+		key: (0, _vue_compiler_dom.createSimpleExpression)("textContent", true),
+		value: exp,
+		toDisplayString: !isConstantVTextExpression(exp, context.options.bindingMetadata)
+	};
 	const literal = getLiteralExpressionValue(exp);
 	const useCreateElement = shouldUseCreateElement(context.node, context);
-	if (literal != null) if (useCreateElement) {
+	if (literal != null) if (useCreateElement || isRawTextContainer(node.tag)) {
 		const id = registerSyntheticTextChild(context, "", [exp]);
 		context.registerOperation({
 			type: 10,
@@ -4316,9 +4374,8 @@ const transformVText = (dir, node, context) => {
 			elements: [id],
 			parent: context.reference()
 		});
-	} else context.childrenTemplate = [String(literal)];
+	} else context.childrenTemplate = [(0, _vue_shared.escapeHtml)(literal)];
 	else {
-		const isComponent = node.tagType === 1;
 		let id;
 		if (useCreateElement) {
 			id = registerSyntheticTextChild(context, "");
@@ -4331,7 +4388,7 @@ const transformVText = (dir, node, context) => {
 		} else {
 			context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
 			if (!isComponent) context.registerOperation({
-				type: 18,
+				type: 17,
 				node,
 				parent: context.reference()
 			});
@@ -4341,11 +4398,24 @@ const transformVText = (dir, node, context) => {
 			node,
 			element: useCreateElement ? id : context.reference(),
 			values: [exp],
-			generated: !useCreateElement,
-			isComponent
+			generated: !useCreateElement
 		});
 	}
 };
+function isConstantVTextExpression(exp, bindings) {
+	if (isConstantExpression(exp)) return true;
+	if (exp.ast === null) {
+		const type = bindings[exp.content];
+		return type === "setup-const" || type === "literal-const";
+	}
+	if (!exp.ast) return false;
+	let isConstant = true;
+	(0, _vue_compiler_dom.walkIdentifiers)(exp.ast, (id, parent, _parentStack, isReferenced) => {
+		if (parent && (0, _vue_compiler_dom.isStaticPropertyKey)(id, parent)) return;
+		if (isReferenced && !(0, _vue_shared.isGloballyAllowed)(id.name) && id.name !== "require" || (parent === null || parent === void 0 ? void 0 : parent.type) === "CallExpression" || (parent === null || parent === void 0 ? void 0 : parent.type) === "NewExpression" || (parent === null || parent === void 0 ? void 0 : parent.type) === "MemberExpression") isConstant = false;
+	}, true);
+	return isConstant;
+}
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vOn.ts
 const delegatedEvents = /* @__PURE__ */ (0, _vue_shared.makeMap)("beforeinput,click,dblclick,contextmenu,focusin,focusout,input,keydown,keyup,mousedown,mousemove,mouseout,mouseover,mouseup,pointerdown,pointermove,pointerout,pointerover,pointerup,touchend,touchmove,touchstart");
@@ -4354,6 +4424,16 @@ const transformVOn = (dir, node, context) => {
 	const isComponent = node.tagType === 1;
 	const isSlotOutlet = node.tag === "slot";
 	if (!exp && !modifiers.length) context.options.onError((0, _vue_compiler_dom.createCompilerError)(35, loc));
+	let delegateModifier;
+	let nonDelegateModifiers;
+	for (let i = 0; i < modifiers.length; i++) {
+		const modifier = modifiers[i];
+		if (modifier.content === "delegate") {
+			delegateModifier || (delegateModifier = modifier);
+			nonDelegateModifiers || (nonDelegateModifiers = modifiers.slice(0, i));
+		} else if (nonDelegateModifiers) nonDelegateModifiers.push(modifier);
+	}
+	if (nonDelegateModifiers) modifiers = nonDelegateModifiers;
 	arg = resolveExpression(arg);
 	if (arg.isStatic && arg.content.startsWith("vue:")) arg = (0, _vue_shared.extend)({}, arg, { content: `vnode-${arg.content.slice(4)}` });
 	const { keyModifiers, nonKeyModifiers, eventOptionModifiers } = (0, _vue_compiler_dom.resolveModifiers)(arg.isStatic ? `on${arg.content}` : arg, modifiers, null, loc);
@@ -4366,17 +4446,24 @@ const transformVOn = (dir, node, context) => {
 	}
 	arg = normalizeStaticEventArg(arg, nonKeyModifiers);
 	if (keyModifiers.length && (0, _vue_compiler_dom.isStaticExp)(arg) && !(0, _vue_compiler_dom.isKeyboardEvent)(`on${arg.content.toLowerCase()}`)) keyModifiers.length = 0;
-	if (isComponent || isSlotOutlet) return {
-		key: arg,
-		value: exp || EMPTY_EXPRESSION,
-		handler: true,
-		handlerModifiers: {
-			keys: keyModifiers,
-			nonKeys: nonKeyModifiers,
-			options: eventOptionModifiers
-		}
-	};
-	const delegate = context.options.eventDelegation && arg.isStatic && !eventOptionModifiers.length && !hasStopHandlerForStaticEvent(node, arg.content) && delegatedEvents(arg.content);
+	if (isComponent || isSlotOutlet) {
+		if (delegateModifier) warnDelegate(context, delegateModifier, ".delegate modifier is only supported on native DOM elements. The modifier will be ignored.");
+		return {
+			key: arg,
+			value: exp || EMPTY_EXPRESSION,
+			handler: true,
+			handlerModifiers: {
+				keys: keyModifiers,
+				nonKeys: nonKeyModifiers,
+				options: eventOptionModifiers
+			}
+		};
+	}
+	const isDelegatableEvent = !!delegateModifier && arg.isStatic && delegatedEvents(arg.content);
+	const hasStopHandler = isDelegatableEvent && !eventOptionModifiers.length && hasStopHandlerForStaticEvent(node, arg.content);
+	if (delegateModifier && !arg.isStatic) warnDelegate(context, delegateModifier, ".delegate modifier requires a static event name. The listener will be attached directly.");
+	else if (delegateModifier && !isDelegatableEvent) warnDelegate(context, delegateModifier, `.delegate modifier is not supported on the "${arg.content}" event. The listener will be attached directly.`);
+	const delegate = isDelegatableEvent && !eventOptionModifiers.length && !hasStopHandler;
 	const operation = {
 		type: 6,
 		node,
@@ -4411,6 +4498,11 @@ function hasStopHandlerForStaticEvent(node, eventName) {
 		return nonKeyModifiers.includes("stop") && normalizeStaticEventArg(arg, nonKeyModifiers).content === eventName;
 	});
 }
+function warnDelegate(context, modifier, message) {
+	const error = new SyntaxError(message);
+	error.loc = modifier.loc;
+	context.options.onWarn(error);
+}
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vShow.ts
 const transformVShow = (dir, node, context) => {
@@ -4424,7 +4516,7 @@ const transformVShow = (dir, node, context) => {
 		return;
 	}
 	context.registerOperation({
-		type: 14,
+		type: 13,
 		node,
 		element: context.reference(),
 		dir,
@@ -4510,7 +4602,7 @@ const transformVModel = (dir, node, context) => {
 	else checkDuplicatedValue();
 	else context.options.onError((0, _vue_compiler_dom.createDOMCompilerError)(58, dir.loc));
 	if (modelType) context.registerOperation({
-		type: 14,
+		type: 13,
 		node,
 		element: context.reference(),
 		dir,
@@ -4575,7 +4667,7 @@ function processIf(node, dir, context) {
 		return () => {
 			onExit();
 			context.dynamic.operation = {
-				type: 15,
+				type: 14,
 				node,
 				id,
 				...context.effectBoundary(),
@@ -4592,16 +4684,16 @@ function processIf(node, dir, context) {
 		let lastIfNode;
 		if (siblings) {
 			let i = siblings.length;
-			while (i--) if (siblings[i].operation && siblings[i].operation.type === 15) {
+			while (i--) if (siblings[i].operation && siblings[i].operation.type === 14) {
 				lastIfNode = siblings[i].operation;
 				break;
 			}
 		}
-		if (!siblingIf || !lastIfNode || lastIfNode.type !== 15) {
+		if (!siblingIf || !lastIfNode || lastIfNode.type !== 14) {
 			context.options.onError((0, _vue_compiler_dom.createCompilerError)(30, node.loc));
 			return;
 		}
-		while (lastIfNode.negative && lastIfNode.negative.type === 15) lastIfNode = lastIfNode.negative;
+		while (lastIfNode.negative && lastIfNode.negative.type === 14) lastIfNode = lastIfNode.negative;
 		if (dir.name === "else-if" && lastIfNode.negative) context.options.onError((0, _vue_compiler_dom.createCompilerError)(30, node.loc));
 		const comments = context.comment;
 		if (comments.length) {
@@ -4614,7 +4706,7 @@ function processIf(node, dir, context) {
 		const [branch, onExit] = createIfBranch(node, context);
 		if (dir.name === "else") lastIfNode.negative = branch;
 		else lastIfNode.negative = {
-			type: 15,
+			type: 14,
 			node,
 			id: -1,
 			condition: dir.exp,
@@ -4625,7 +4717,7 @@ function processIf(node, dir, context) {
 		};
 		return () => {
 			onExit();
-			if (lastIfNode.negative.type === 15) lastIfNode.negative.blockShape = encodeIfBlockShape(lastIfNode.negative.positive, forceMultiRoot, void 0, allowNoScope);
+			if (lastIfNode.negative.type === 14) lastIfNode.negative.blockShape = encodeIfBlockShape(lastIfNode.negative.positive, forceMultiRoot, void 0, allowNoScope);
 			lastIfNode.blockShape = encodeIfBlockShape(lastIfNode.positive, forceMultiRoot, lastIfNode.negative, allowNoScope);
 		};
 	}
@@ -4644,12 +4736,12 @@ function createIfBranch(node, context) {
 function encodeIfBlockShape(positive, forceMultiRoot = false, negative, allowNoScope = true) {
 	if (forceMultiRoot) return 10;
 	const positiveNoScope = allowNoScope && canSkipIfBranchScope(positive);
-	const negativeNoScope = allowNoScope && negative && negative.type !== 15 && canSkipIfBranchScope(negative);
+	const negativeNoScope = allowNoScope && negative && negative.type !== 14 && canSkipIfBranchScope(negative);
 	return getBlockShape(positive) | getNegativeIfBranchShape(negative) << 2 | (positiveNoScope ? 32 : 0) | (negativeNoScope ? 64 : 0);
 }
 function getNegativeIfBranchShape(negative) {
 	if (!negative) return 0;
-	return negative.type === 15 ? 1 : getBlockShape(negative);
+	return negative.type === 14 ? 1 : getBlockShape(negative);
 }
 function canSkipIfBranchScope(block) {
 	if (block.effect.length || block.operation.length) return false;
@@ -4695,6 +4787,8 @@ function processFor(node, dir, context) {
 	const keyProperty = keyProp && propToExpression(keyProp);
 	const typeProp = findProp$1(node, "type");
 	const typeProperty = typeProp && propToExpression(typeProp);
+	const idProp = findProp$1(node, "id");
+	const idProperty = idProp && propToExpression(idProp);
 	const isComponent = node.tagType === 1 || isTemplateWithSingleComponent(node);
 	context.node = node = wrapTemplate(node, ["for", "key"]);
 	context.dynamic.flags |= 6;
@@ -4707,7 +4801,7 @@ function processFor(node, dir, context) {
 		const { parent } = context;
 		const isOnlyChild = parent && parent.block.node !== parent.node && parent.node.children.length === 1;
 		context.dynamic.operation = {
-			type: 16,
+			type: 15,
 			node,
 			id,
 			...context.effectBoundary(),
@@ -4717,6 +4811,7 @@ function processFor(node, dir, context) {
 			index,
 			keyProp: keyProperty,
 			typeProp: typeProperty,
+			idProp: idProperty,
 			render,
 			once: context.inVOnce || isStaticExpression(source, context.options.bindingMetadata),
 			component: isComponent && node.children[0].type === 1 && node.children[0].tagType === 1,
@@ -4756,7 +4851,7 @@ const transformSlotOutlet = (node, context) => {
 	if (slotProps.length) {
 		const [isDynamic, props] = buildProps((0, _vue_shared.extend)({}, node, { props: slotProps }), context, true);
 		irProps = isDynamic ? props : [props];
-		const runtimeDirective = context.block.operation.find((oper) => oper.type === 14 && oper.element === id);
+		const runtimeDirective = context.block.operation.find((oper) => oper.type === 13 && oper.element === id);
 		if (runtimeDirective) context.options.onError((0, _vue_compiler_dom.createCompilerError)(36, runtimeDirective.dir.loc));
 	}
 	return () => {
@@ -4765,7 +4860,7 @@ const transformSlotOutlet = (node, context) => {
 		if (context.options.scopeId && !context.options.slotted) flags |= 1;
 		if (context.inVOnce) flags |= 2;
 		context.dynamic.operation = {
-			type: 13,
+			type: 12,
 			node,
 			id,
 			...context.effectBoundary(),
@@ -4883,13 +4978,16 @@ function transformTemplateSlot(node, dir, context) {
 			};
 			ifNode.negative = negative;
 		} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(30, vElse.loc));
-	} else if (vFor) if (vFor.forParseResult) registerDynamicSlot(slots, {
-		slotType: 2,
-		name: arg,
-		fn: block,
-		loop: vFor.forParseResult
-	});
-	else context.options.onError((0, _vue_compiler_dom.createCompilerError)(32, vFor.loc));
+	} else if (vFor) if (vFor.forParseResult) {
+		const keyProp = findProp$1(node, "key");
+		registerDynamicSlot(slots, {
+			slotType: 2,
+			name: arg,
+			fn: block,
+			loop: vFor.forParseResult,
+			keyProp: keyProp && propToExpression(keyProp)
+		});
+	} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(32, vFor.loc));
 	return onExit;
 }
 function ensureStaticSlots(slots) {
@@ -4965,7 +5063,7 @@ const transformKey = (node, context) => {
 	return () => {
 		exitBlock();
 		context.dynamic.operation = {
-			type: 17,
+			type: 16,
 			node,
 			id,
 			...context.effectBoundary(),
@@ -5040,7 +5138,9 @@ exports.VaporErrorMessages = VaporErrorMessages;
 exports.analyzeExpressions = analyzeExpressions;
 exports.buildCodeFragment = buildCodeFragment;
 exports.buildDestructureIdMap = buildDestructureIdMap;
+exports.buildNextIdMap = buildNextIdMap;
 exports.codeFragmentToString = codeFragmentToString;
+exports.collectSingleUseAssetComponents = collectSingleUseAssetComponents;
 exports.compile = compile;
 exports.createStructuralDirectiveTransform = createStructuralDirectiveTransform;
 exports.createVaporCompilerError = createVaporCompilerError;
@@ -5052,6 +5152,7 @@ exports.genSlotFlags = genSlotFlags;
 exports.generate = generate;
 exports.getBaseTransformPreset = getBaseTransformPreset;
 exports.getLiteralExpressionValue = getLiteralExpressionValue;
+exports.getNextId = getNextId;
 exports.getParserOptions = getParserOptions;
 exports.hasStableSlotRoot = hasStableSlotRoot;
 exports.isBlockOperation = isBlockOperation;
@@ -5064,6 +5165,7 @@ exports.isTeleportTag = isTeleportTag;
 exports.isTransitionGroupTag = isTransitionGroupTag;
 exports.isTransitionTag = isTransitionTag;
 exports.markSlotRootOperations = markSlotRootOperations;
+exports.markSlotRootOperationsForDom2 = markSlotRootOperationsForDom2;
 exports.matchKeyOnlyBindingPattern = matchKeyOnlyBindingPattern;
 exports.matchSelectorPattern = matchSelectorPattern;
 exports.needsVaporCtx = needsVaporCtx;

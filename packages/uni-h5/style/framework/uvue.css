@@ -373,7 +373,7 @@ body .uni-toast {
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  background-color: #4c4c4c;
+  background-color: rgba(76, 76, 76, 0.95);
 }
 
 body .uni-toast__icon {

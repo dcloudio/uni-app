@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
 import { pathToGlob } from '@dcloudio/uni-cli-shared'
+import { FileWatcher } from '../../uni-cli-shared/src/watcher'
 import { isSameOrSubPath, uniCopyPlugin } from '../src/plugins/copy'
 
 describe('copy path', () => {
@@ -38,16 +39,30 @@ describe('copy', () => {
     UNI_APP_X_DOM2_CPP_DIR: process.env.UNI_APP_X_DOM2_CPP_DIR,
   }
   let tempDir: string
+  let watchSpy: jest.SpyInstance
 
-  afterEach(() => {
-    fs.removeSync(tempDir)
-    Object.entries(originalEnv).forEach(([key, value]) => {
-      if (value === undefined) {
-        delete process.env[key]
-      } else {
-        process.env[key] = value
+  beforeEach(() => {
+    watchSpy = jest.spyOn(FileWatcher.prototype, 'watch')
+  })
+
+  afterEach(async () => {
+    try {
+      await Promise.all(
+        watchSpy.mock.results.map(({ value: watcher }) => watcher.close())
+      )
+      if (tempDir) {
+        fs.removeSync(tempDir)
       }
-    })
+    } finally {
+      jest.restoreAllMocks()
+      Object.entries(originalEnv).forEach(([key, value]) => {
+        if (value === undefined) {
+          delete process.env[key]
+        } else {
+          process.env[key] = value
+        }
+      })
+    }
   })
 
   test('copy static files when project path contains glob symbols', async () => {
@@ -73,6 +88,7 @@ describe('copy', () => {
     ;(plugin.configResolved as Function)({ build: { ssr: false } })
     await (plugin.writeBundle as Function)()
 
+    expect(watchSpy).toHaveBeenCalledTimes(1)
     expect(
       fs.readFileSync(path.join(outputDir, 'static', 'logo.png'), 'utf8')
     ).toBe('logo')

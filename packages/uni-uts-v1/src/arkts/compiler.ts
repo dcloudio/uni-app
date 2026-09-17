@@ -1,6 +1,6 @@
 import type { UTSBundleOptions } from '@dcloudio/uts'
 import path from 'path'
-import { getArkTSAutoImports, getRuntimePackageName } from './utils'
+import { getArkTSAutoImports, getHarmonyRuntimePackageName } from './utils'
 import {
   addPluginInjectApis,
   getUTSCompiler,
@@ -30,7 +30,8 @@ export async function bundleArkTS({
   banner,
   footer,
 }: BundleArkTSOptions) {
-  const runtimePackageName = getRuntimePackageName(isX)
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const runtimePackageName = getHarmonyRuntimePackageName(isX, isDom2)
   const buildOptions: UTSBundleOptions = {
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     vapor: process.env.UNI_APP_X_DOM2 === 'true',
@@ -56,13 +57,13 @@ export async function bundleArkTS({
       footer,
       imports: [],
       sourceMap: sourceMap ? path.resolve(resolveUTSSourceMapPath()) : false,
-      isDom2: process.env.UNI_APP_X_DOM2 === 'true',
+      isDom2,
       extname: '.ets',
       logFilename: false,
       isPlugin: true,
       transform: {
-        autoImportExternals: getArkTSAutoImports(isX),
-        uniExtApiDefaultNamespace: '@dcloudio/uni-app-x-runtime',
+        autoImportExternals: getArkTSAutoImports(isX, isDom2),
+        uniExtApiDefaultNamespace: getHarmonyRuntimePackageName(isX, isDom2),
       },
       treeshake: {
         noSideEffects: true,

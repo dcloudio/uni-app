@@ -1,0 +1,9 @@
+<template>
+  <view :class="props.boxClass" />
+</template>
+
+<script setup>
+defineOptions({
+  externalClasses: ['box-class', 'empty-class'],
+})
+</script>

@@ -6,6 +6,7 @@ export * from './hbx'
 export * from './ssr'
 export * from './vue'
 export * from './uts'
+export * from './uts/extApi'
 export * from './x'
 export * from './logs'
 export * from './dom2'
@@ -25,6 +26,7 @@ export * from './scripts'
 export * from './platform'
 export * from './utsUtils'
 export * from './workers'
+export * from './uasm'
 
 export {
   parseUniExtApi,

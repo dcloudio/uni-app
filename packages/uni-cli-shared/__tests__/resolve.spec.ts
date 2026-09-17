@@ -8,9 +8,9 @@ import {
   resolveProjectPinia,
   resolveProjectVueI18n,
   resolveVueI18n,
+  resolveVueI18nAlias,
   resolveVueI18nDependencies,
   resolveVueI18nRuntime,
-  resolveVueI18nRuntimeAlias,
 } from '../src/resolve'
 
 describe('resolve vue-i18n', () => {
@@ -61,6 +61,10 @@ describe('resolve vue-i18n', () => {
     expect(resolveVueI18nDependencies()).toEqual({})
     expect(resolvePiniaDependencies()).toEqual({})
     expect(resolvePiniaAlias()).toEqual({})
+    expect(resolveVueI18nAlias()['vue-i18n/runtime']).toBe(
+      resolveVueI18nRuntime()
+    )
+    expect(resolveVueI18nAlias()['vue-i18n']).toBe(resolveVueI18nRuntime())
   })
 
   test('uses vue-i18n 11 and its vendored dependencies for uni-app x', () => {
@@ -92,6 +96,13 @@ describe('resolve vue-i18n', () => {
     })
     expect(fs.existsSync(resolveVueI18n())).toBe(true)
     expect(fs.existsSync(resolveVueI18nRuntime())).toBe(true)
+    expect(resolveVueI18nAlias()['vue-i18n/runtime']).toBe(
+      resolveVueI18nRuntime()
+    )
+    expect(resolveVueI18nAlias()['vue-i18n']).toBe(resolveVueI18n())
+    expect(fs.existsSync(resolveVueI18nAlias()['vue-i18n/package.json'])).toBe(
+      true
+    )
   })
 
   test('uses vue-i18n resolved from the project', () => {
@@ -122,7 +133,7 @@ describe('resolve vue-i18n', () => {
       path.join(vueI18nDir, 'package.json')
     )
     expect(resolveVueI18nDependencies()).toEqual({})
-    expect(resolveVueI18nRuntimeAlias()).toEqual({})
+    expect(resolveVueI18nAlias()).toEqual({})
   })
 
   test('uses pinia 3 and its vendored dependencies for uni-app x', () => {
@@ -139,6 +150,7 @@ describe('resolve vue-i18n', () => {
       expect(fs.existsSync(filename)).toBe(true)
     })
     expect(fs.existsSync(resolvePinia())).toBe(true)
+    expect(fs.existsSync(resolvePiniaAlias()['pinia/package.json'])).toBe(true)
     const devtoolsApi = fs.readFileSync(
       dependencies['@vue/devtools-api'],
       'utf8'
@@ -208,9 +220,7 @@ describe('resolve vue-i18n', () => {
 
     expect(resolveProjectVueI18n()).toBeUndefined()
     expect(resolveProjectPinia()).toBeUndefined()
-    expect(resolveVueI18nRuntimeAlias()['vue-i18n']).toBe(
-      resolveVueI18nRuntime()
-    )
+    expect(resolveVueI18nAlias()['vue-i18n']).toBe(resolveVueI18n())
     expect(resolvePiniaAlias().pinia).toBe(resolvePinia())
   })
 

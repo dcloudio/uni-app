@@ -32,6 +32,8 @@ export interface PageWindowOptions extends ShareWindowOptions {
   style?: Style
   singlePage?: SinglePage
   restartStrategy?: RestartStrategy
+  // mp-alipay
+  styleIsolation?: 'shared' | 'isolated'
 }
 
 export interface AppWindowOptions extends ShareWindowOptions {

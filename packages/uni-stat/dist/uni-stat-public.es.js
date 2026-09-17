@@ -1,3 +1,5 @@
+import { onAppShow, onAppHide, onError } from '@dcloudio/uni-app';
+
 /**
  * 事件类型与会话创建类型常量。
  *
@@ -196,6 +198,10 @@ function defaultSleep(ms) {
  * 第二路依赖宿主构建对 `uni` 的注入（与业务页面同一套解析规则），
  * 类型兜底见 `packages/uni-stat/src/uni-global.d.ts`。
  */
+/** 当前构建是否启用了 uni-app x Vapor 统计适配。 */
+function isVaporStatRuntime() {
+    return process.env.UNI_STAT_VAPOR === 'true';
+}
 /**
  * 判断候选 `uni` 是否具备统计 SDK 可用的最小 API 集合（排除 H5 摇树空桩 `{}`）。
  *
@@ -209,7 +215,8 @@ function isUsableUniRuntime(candidate) {
     return (typeof u.getStorageSync === 'function' ||
         typeof u.onCreateVueApp === 'function' ||
         typeof u.request === 'function' ||
-        typeof u.onAppShow === 'function');
+        typeof u.onAppShow === 'function' ||
+        typeof u.onAppRoute === 'function');
 }
 /**
  * 读取宿主向当前模块注入的 `uni`（小程序等）；不可用时返回 `undefined`。
@@ -289,6 +296,10 @@ function buildInjectedUniRuntime() {
         pick('offAppHide', uni.offAppHide);
         pick('onAppLaunch', uni.onAppLaunch);
         pick('offAppLaunch', uni.offAppLaunch);
+        pick('onAppRoute', uni.onAppRoute);
+        pick('offAppRoute', uni.offAppRoute);
+        pick('onBeforeAppRoute', uni.onBeforeAppRoute);
+        pick('offBeforeAppRoute', uni.offBeforeAppRoute);
         pick('getLaunchOptionsSync', uni.getLaunchOptionsSync);
         pick('addInterceptor', uni.addInterceptor);
         pick('removeInterceptor', uni.removeInterceptor);
@@ -841,6 +852,10 @@ function isLikelyFreshDevice(snap) {
  */
 function isTrustworthyNewUser(snap) {
     if (!snap.isNewUser)
+        return false;
+    // Vapor 接入前可能只留下 fvts/tvc。仅在 Vapor 下把这种残缺历史视为老用户，
+    // 避免改变现有公有版以 lvts 为唯一新用户信号的既有口径。
+    if (isVaporStatRuntime() && !isLikelyFreshDevice(snap))
         return false;
     return !snap.degraded || isLikelyFreshDevice(snap);
 }
@@ -2269,6 +2284,11 @@ function getPushClientId(opts = {}) {
  * adapter 调用全部走 `tryRun` 兜底，单端缺失不影响调度。
  */
 const EMPTY_TITLE_SNAP = { ttn: '', ttpj: '', ttc: '' };
+function resolveEventTimeSec(value) {
+    return typeof value === 'number' && Number.isFinite(value)
+        ? Math.floor(value)
+        : nowSec();
+}
 /** 模块级状态。`bindLifecycle` 返回的 unbind 仅断订阅，不重置 state。 */
 const state$1 = {
     lastRoute: '',
@@ -2286,6 +2306,13 @@ const state$1 = {
     suppressNextPageLogAfterResume: false,
     backgroundResumeLt1At: 0,
 };
+/** 当前可见页上下文，供 lt=21 / lt=31 与页面生命周期复用同一份路由和标题状态。 */
+function getCurrentStatPageContext() {
+    const url = state$1.lastRouteFull || state$1.lastRoute;
+    if (!url)
+        return {};
+    return Object.assign({ url, iey: state$1.lastIey }, getCurrentTitle());
+}
 /** Vue2 H5 hide 过程中偶发 page onShow（间隔≈0s），低于此阈值不消费 pending。 */
 const BACKGROUND_RESUME_DEBOUNCE_SEC = 1;
 /** 同一次回前台多 hook 重复 lt=1 的去重窗口（秒）。 */
@@ -2476,11 +2503,11 @@ function scheduleDeferredTitleSnapshot() {
  *   3. 异步抓 push CID，成功后发 lt=101。
  *   4. 兜底 onLaunch options 可能携带 scene / path（小程序）；path 透传成 lt=1 的 url。
  */
-function handleLaunch(app, options = {}, opts = {}) {
+function handleLaunch(app, options = {}, opts = {}, eventTimeSec) {
     const c = safeCollector(app);
     if (!c)
         return;
-    const now = nowSec();
+    const now = resolveEventTimeSec(eventTimeSec);
     const scene = tryRun(() => getLaunchScene(options.scene), '');
     const result = tryRun(() => ensureSession('cold_launch', { now, scene }), null);
     if (!result)
@@ -2512,7 +2539,7 @@ function handleLaunch(app, options = {}, opts = {}) {
  * Vue2：Page onShow 常早于 App onShow，且 hide 过程中可能误触发一次 page onShow，
  * 若在那时清空 pending/wasBackgrounded，App onShow 将看不到后台标记（用户截图现象）。
  */
-function tryConsumeBackgroundResume(app, options = {}, _opts = {}, _from = 'unknown') {
+function tryConsumeBackgroundResume(app, options = {}, _opts = {}, _from = 'unknown', eventTimeSec, trustedAppShow = false) {
     if (!state$1.pendingBackgroundResume) {
         return false;
     }
@@ -2524,9 +2551,9 @@ function tryConsumeBackgroundResume(app, options = {}, _opts = {}, _from = 'unkn
     if (!c) {
         return false;
     }
-    const now = nowSec();
+    const now = resolveEventTimeSec(eventTimeSec);
     const elapsed = now - bgEnterAt;
-    if (elapsed < BACKGROUND_RESUME_DEBOUNCE_SEC) {
+    if (elapsed < BACKGROUND_RESUME_DEBOUNCE_SEC && !trustedAppShow) {
         state$1.suppressNextPageLogAfterResume = true;
         return true;
     }
@@ -2565,13 +2592,13 @@ function tryConsumeBackgroundResume(app, options = {}, _opts = {}, _from = 'unkn
  *   2. isNew=true 时发一条 lt=1，并 **flush(true)**。
  *   3. 无 pending 时仅处理 scene 变化等（少见）。
  */
-function handleAppShow(app, options = {}, opts = {}) {
-    if (tryConsumeBackgroundResume(app, options, opts, 'handleAppShow'))
+function handleAppShow(app, options = {}, opts = {}, eventTimeSec, trustedAppShow = false) {
+    if (tryConsumeBackgroundResume(app, options, opts, 'handleAppShow', eventTimeSec, trustedAppShow))
         return;
     const c = safeCollector(app);
     if (!c)
         return;
-    const now = nowSec();
+    const now = resolveEventTimeSec(eventTimeSec);
     const scene = tryRun(() => getLaunchScene(options.scene), '');
     if (shouldSkipDuplicateBackgroundResumeLt1(now)) {
         tryRun(() => syncLastScene(scene), undefined);
@@ -2602,13 +2629,13 @@ function handleAppShow(app, options = {}, opts = {}) {
  *   3. 再发 lt=3：保留"应用进入后台"语义（urlref=urlref_ts 指向后台前最后可见页）。
  *   4. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
  */
-function handleAppHide(app, opts = {}) {
+function handleAppHide(app, opts = {}, eventTimeSec) {
     if (state$1.pendingBackgroundResume)
         return;
     const c = safeCollector(app);
     if (!c)
         return;
-    const now = nowSec();
+    const now = resolveEventTimeSec(eventTimeSec);
     state$1.wasBackgrounded = true;
     state$1.pendingBackgroundResume = true;
     state$1.backgroundEnteredAt = now;
@@ -2666,15 +2693,15 @@ function handleAppHide(app, opts = {}) {
  *
  * 首次应用内 onShow（无前序页面）不发 `lt=11`。`enablePageLog=false` 时跳过整段 `lt=11`。
  */
-function handlePageShow(app, vm, opts = {}) {
+function handlePageShow(app, vm, opts = {}, eventTimeSec) {
     const c = safeCollector(app);
     if (!c)
         return;
     if (state$1.pendingBackgroundResume &&
         shouldEarlyConsumeBackgroundResumeInMixin()) {
-        tryConsumeBackgroundResume(app, {}, opts, 'handlePageShow');
+        tryConsumeBackgroundResume(app, {}, opts, 'handlePageShow', eventTimeSec);
     }
-    const now = nowSec();
+    const now = resolveEventTimeSec(eventTimeSec);
     const route = tryRun(() => getCurrentRoute(vm), '');
     const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route;
     /**
@@ -2686,12 +2713,8 @@ function handlePageShow(app, vm, opts = {}) {
     const result = tryRun(() => ensureSession('page_show', { now }), null);
     if (!result)
         return;
-    // 每页重置「自定义上报标题」维（ttc）；注入 pages.json 导航标题 → `ttpj`。
-    //
-    // **禁止**在此处调用 `clearPageTitle()`：uni-app 页面 `onLoad` 早于统计 mixin 的 `onShow`，
-    // 业务常在 `onLoad` 里 `uni.setNavigationBarTitle`，拦截器已写入 `ttn`；若此处再清 page，
-    // 会把刚设好的 ttn 抹掉。**跨页**时由 `handlePageHide` 在快照后 `clearPageTitle` 即可。
-    tryRun(() => setReportTitle(''), undefined);
+    // 注入 pages.json 导航标题 → `ttpj`。ttn / ttc 已在上一页 hide 快照后清空；
+    // 不能在 show 再清，否则会抹掉新页面 onLoad 中已设置的标题。
     tryRun(() => setConfigTitle(getPagesJsonNavigationTitle(route)), undefined);
     if (result.isNew) {
         // 新会话：清 entry → 先登记当前页为会话入口（与 lt=1「落地即入口」一致）→ 再发 lt=1。
@@ -2764,7 +2787,7 @@ function handlePageShow(app, vm, opts = {}) {
  *
  * 公有版调整（与 `docs/uni统计上报参数.md` 对齐）：
  *   - `lt=11` 不在 onHide 上报；页面离开闭环由「下一次 `handlePageShow` 或 `handleAppHide`」触发。
- *   - onHide 仅做收尾：标记 isHide、清掉自定义 title，避免下次新页空标题。
+ *   - onHide 仅做收尾：标记 isHide、快照并清掉页面级 title，避免串入下一页。
  *   - lastRoute / lastRouteEnterTime / lastIey 保持不变，由 `handlePageShow` 统一切换。
  */
 function handlePageHide(app, _vm) {
@@ -2772,10 +2795,11 @@ function handlePageHide(app, _vm) {
     if (!c)
         return;
     state$1.isHide = true;
-    // 离开前快照：此时仍保留「本页」ttpj/ttn/ttc；清空 page 维后仅丢 ttn，故必须先快照
+    // 离开前快照：此时仍保留「本页」ttpj/ttn/ttc，必须先快照再清空页面级标题。
     titleSnapGeneration++;
     state$1.lastPageTitleSnap = Object.assign({}, getCurrentTitle());
     tryRun(() => clearPageTitle(), undefined);
+    tryRun(() => setReportTitle(''), undefined);
 }
 /**
  * 已经被本模块"异步重抛"过的错误实例，用于阻断 `onError → 重抛 → onError` 死循环。
@@ -2847,19 +2871,19 @@ const rethrownErrors = typeof WeakSet === 'function'
  * 外层 `try/catch` 仅兜底 `reportError` 自身抛错（与私有版一致）；`tryRun` 兜底
  * `setTimeout` 在极端环境（如 SSR / 被 mock 的 timer）下不可用的情况。
  */
-function handleError(app, e) {
+function handleError(app, e, eventTimeSec, rethrow = true) {
     const isObj = typeof e === 'object' && e !== null;
     if (isObj && rethrownErrors.has(e))
         return;
     if (isObj)
         rethrownErrors.add(e);
     try {
-        app.reportError(e);
+        app.reportError(e, eventTimeSec);
     }
     catch (err) {
         logger.warn('[uni统计 2.0] handleError failed', err);
     }
-    if (isMp()) {
+    if (!rethrow || isMp()) {
         return;
     }
     tryRun(() => {
@@ -3728,6 +3752,8 @@ function createCollector(deps) {
     let firstFlushDone = false;
     /** 已安排的延迟 flush 定时器，避免重复 schedule。 */
     let deferredFlushTimer = null;
+    /** 合并冷启动与网络恢复同时触发的续传，避免同一 payload 重复发送。 */
+    let recoveringRetry;
     /** 取消已安排的延迟首 flush（`flush(true)` 等显式调用前使用）。 */
     function cancelDeferredFlush() {
         if (deferredFlushTimer == null)
@@ -4000,7 +4026,7 @@ function createCollector(deps) {
      *
      * 串行执行，失败的条目保留在队列里（不动 _id），调用方会在下次冷启再次重放。
      */
-    function recoverRetry() {
+    function recoverRetryImpl() {
         return __awaiter(this, void 0, void 0, function* () {
             if (deps.isNetworkOffline) {
                 let offline = false;
@@ -4069,6 +4095,18 @@ function createCollector(deps) {
                 }
             }
         });
+    }
+    function recoverRetry() {
+        if (recoveringRetry)
+            return recoveringRetry;
+        const current = recoverRetryImpl();
+        recoveringRetry = current;
+        const clear = () => {
+            if (recoveringRetry === current)
+                recoveringRetry = undefined;
+        };
+        void current.then(clear, clear);
+        return current;
     }
     /**
      * 对外 flush：显式调用（含 `flush(true)`）立即发送，并取消尚未触发的延迟首 flush。
@@ -4528,6 +4566,7 @@ function createImageChannel(opts = {}) {
             u.request({
                 url,
                 method: 'GET',
+                dataType: 'text',
                 timeout: timeoutMs,
                 success: (res) => {
                     var _a;
@@ -4548,7 +4587,9 @@ function createImageChannel(opts = {}) {
                         return;
                     settled = true;
                     clearTimeout(timer);
-                    reject(e instanceof Error ? e : new Error(String(e)));
+                    reject(e instanceof Error
+                        ? e
+                        : new Error(summarizeHttpErrorBody(e) || String(e)));
                 },
             });
         });
@@ -4698,7 +4739,8 @@ function createStatDataBuilder(deps) {
      */
     function baseFields() {
         var _a, _b, _c;
-        const { config, platform, system, locale, device, net, location, pkg, legacy, web, } = deps;
+        const { config, platform, system, device, net, location, pkg, legacy, web, } = deps;
+        const locale = deps.resolveLocale ? deps.resolveLocale() : deps.locale;
         return {
             ak: s(config.ak),
             usv: s(config.usv),
@@ -4760,15 +4802,16 @@ function createStatDataBuilder(deps) {
             out.ttc = s(ctx.ttc);
         return out;
     }
-    /**
-     * 入口标记：**仅 lt=11** 携带 iey + ppiey（缺省按 0）；lt=1 / lt=3 等不参与入口字段。
-     */
+    /** 入口标记：lt=11 携带 iey + ppiey；lt=21 只携带当前页 iey。 */
     function entryFields(ctx) {
         if (ctx.lt === '11') {
             return {
                 iey: toIey(ctx.iey !== undefined ? ctx.iey : false),
                 ppiey: toIey(ctx.ppiey !== undefined ? ctx.ppiey : false),
             };
+        }
+        if (ctx.lt === '21' && ctx.iey !== undefined) {
+            return { iey: toIey(ctx.iey) };
         }
         return {};
     }
@@ -4858,11 +4901,11 @@ function createStatDataBuilder(deps) {
 /**
  * App 渠道包标识适配（对齐私有版 `utils/pageInfo.js#get_channel`）。
  *
- * HBuilderX 云打包会为每个渠道包写入 `plus.runtime.channel`（如 huawei、oppo），
- * 统计上行字段 `ch` 应优先读取该运行时值，而非 manifest 静态配置。
+ * VDOM App 读取 `plus.runtime.channel`；Vapor App 不提供 plus，改读
+ * `uni.getAppBaseInfo().channel`。
  *
  * 职责：
- *   - App 端（`isApp()`）尝试读取 `plus.runtime.channel`。
+ *   - App 端按 VDOM / Vapor 选择对应渠道 API。
  *   - 若构建期平台变量缺失但运行时已存在 `plus.runtime`，也信任原生运行时作为 App 信号。
  *   - 任意 API 缺失 / 抛错 → 降级 `''`，不阻断 install。
  *   - 返回值统一为 `string`（原生偶发返回数字时转为字符串）。
@@ -4881,13 +4924,19 @@ function normalizeChannelValue(value) {
     return '';
 }
 /**
- * 读取 App 渠道包标识（`plus.runtime.channel`）。
+ * 读取 App 渠道包标识。
  *
  * 与私有版 `get_channel()` 对齐：仅原生 App 有意义；小程序 / H5 恒为 `''`。
  *
  * @returns 渠道字符串；未配置或读取失败时为 `''`。
  */
 function getAppChannel() {
+    if (isVaporStatRuntime()) {
+        if (!isApp())
+            return '';
+        const u = resolveUniRuntime();
+        return normalizeChannelValue(tryRun(() => { var _a; return (_a = u === null || u === void 0 ? void 0 : u.getAppBaseInfo) === null || _a === void 0 ? void 0 : _a.call(u).channel; }, undefined));
+    }
     const plus = getGlobalObject().plus;
     if (!isApp() && !(plus === null || plus === void 0 ? void 0 : plus.runtime))
         return '';
@@ -5138,6 +5187,9 @@ function getUni$3() {
 function getPlus() {
     return getGlobalObject().plus;
 }
+function getAppBaseInfo() {
+    return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = getUni$3()) === null || _a === void 0 ? void 0 : _a.getAppBaseInfo) === null || _b === void 0 ? void 0 : _b.call(_a)) !== null && _c !== void 0 ? _c : {}; }, {});
+}
 /**
  * 取小程序系列的 tdaid。各端 API 不同：
  *   - 微信/QQ：`uni.getAccountInfoSync().miniProgram.appId`（基础库 ≥ 1.10.0）。
@@ -5259,9 +5311,24 @@ function getPackageInfo() {
     let pkn = '';
     let an = '';
     if (isApp()) {
-        tdaid = tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = getPlus()) === null || _a === void 0 ? void 0 : _a.runtime) === null || _b === void 0 ? void 0 : _b.appid) !== null && _c !== void 0 ? _c : ''; }, '');
-        pkn = getAppPkn() || tdaid;
-        an = getAppName() || getEnvAppName();
+        const base = getAppBaseInfo();
+        if (isVaporStatRuntime()) {
+            // uni-app x Vapor 不提供 plus，只读取当前已公开的 getAppBaseInfo 字段。
+            tdaid = base.appId || '';
+            pkn =
+                base.packageName ||
+                    base.bundleId ||
+                    base.bundleName ||
+                    base.hostPackageName ||
+                    '';
+            an = base.appName || getEnvAppName();
+        }
+        else {
+            tdaid =
+                tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = getPlus()) === null || _a === void 0 ? void 0 : _a.runtime) === null || _b === void 0 ? void 0 : _b.appid) !== null && _c !== void 0 ? _c : ''; }, '') || base.appId || '';
+            pkn = getAppPkn() || base.hostPackageName || tdaid;
+            an = getAppName() || base.appName || getEnvAppName();
+        }
         mpn = pkn || tdaid;
     }
     else if (isMp()) {
@@ -6288,12 +6355,17 @@ function markAttempt(id) {
  *   - 单例：`StatApp.getInstance()` 全局唯一；`__resetStatApp()` 仅供测试。
  */
 let instance = null;
+const MAX_DEFERRED_REPORTS = 100;
 class StatApp {
     constructor() {
         /** install 幂等哨兵。 */
         this.installed = false;
         /** 已生效的协议版本（'1' / '2' / 'image'）。 */
         this.statVersion = 'image';
+        /** Vapor setup 早于 onLaunch 时的短暂内存队列。 */
+        this.deferredReports = [];
+        this.deferReportsUntilSession = false;
+        this.deferredReportsWarningShown = false;
     }
     static getInstance() {
         if (!instance)
@@ -6313,6 +6385,7 @@ class StatApp {
         const cfg = this.normalizeConfig(config);
         this.config = cfg;
         this.statVersion = cfg.version;
+        this.deferReportsUntilSession = overrides.deferReportsUntilSession === true;
         tryRun(() => configure$1({
             backgroundTimeoutSec: cfg.backgroundTimeoutSec,
             pageInactiveTimeoutSec: cfg.pageInactiveTimeoutSec,
@@ -6357,8 +6430,7 @@ class StatApp {
         this.collectorDeps = this.buildCollectorDeps(cfg, (_e = overrides.collectorDepsPatch) !== null && _e !== void 0 ? _e : {});
         this.collector = createCollector(this.collectorDeps);
         if (!overrides.skipInterceptors) {
-            const c = this.collector;
-            this.uninstallInterceptors = tryRun(() => installAllInterceptors({ report: (i) => c.report(i) }), undefined);
+            this.uninstallInterceptors = tryRun(() => installAllInterceptors({ report: (i) => this.reportInput(i) }), undefined);
         }
         if (!overrides.skipRecoverRetry) {
             void this.collector
@@ -6399,13 +6471,13 @@ class StatApp {
             : value === undefined
                 ? ''
                 : String(value);
-        this.collector.report({
+        this.reportInput({
             lt: LT.Event,
             custom: { e_n: type, e_v: ev },
         });
     }
     /** 上报 onError 捕获的错误。 */
-    reportError(err) {
+    reportError(err, eventTimeSec) {
         var _a;
         if (!this.installed || !this.collector)
             return;
@@ -6414,7 +6486,39 @@ class StatApp {
             : typeof err === 'string'
                 ? err
                 : tryRun(() => JSON.stringify(err), '');
-        this.collector.report({ lt: LT.Error, errMsg });
+        this.reportInput({ lt: LT.Error, errMsg, t: eventTimeSec });
+    }
+    /** 首个 session 前统一暂存事件；非 Vapor 直接透传 collector。 */
+    reportInput(input) {
+        if (!this.collector)
+            return;
+        const pageContext = input.lt === LT.Event || input.lt === LT.Error
+            ? getCurrentStatPageContext()
+            : undefined;
+        const item = Object.assign({}, pageContext, input, input.t === undefined ? { t: nowSec() } : undefined);
+        // Vapor setup 可能读到上次进程持久化的 session；在本次 onLaunch 明确释放前
+        // 必须无条件暂存，否则 setup 事件会带旧 sid，与同批 lt=1 的新 sid 不一致。
+        if (this.deferReportsUntilSession) {
+            if (this.deferredReports.length >= MAX_DEFERRED_REPORTS) {
+                if (!this.deferredReportsWarningShown) {
+                    this.deferredReportsWarningShown = true;
+                    logger.warn('[vapor] 启动前事件暂存超过上限，后续事件已丢弃，请检查 uni.onBeforeAppRoute 是否可用', 'limit=' + MAX_DEFERRED_REPORTS);
+                }
+                return;
+            }
+            this.deferredReports.push(item);
+            return;
+        }
+        this.collector.report(item);
+    }
+    /** onLaunch 建立 session 后释放 setup 阶段暂存的事件。 */
+    releaseDeferredReports() {
+        if (!this.collector || !getSnapshot())
+            return;
+        this.deferReportsUntilSession = false;
+        const pending = this.deferredReports.splice(0);
+        for (const input of pending)
+            this.collector.report(input);
     }
     /** 取 collector，供 lifecycleHooks 调度生命周期事件。 */
     getCollector() {
@@ -6461,6 +6565,9 @@ class StatApp {
         this.cloudChannel = undefined;
         this.imageChannel = undefined;
         this.config = undefined;
+        this.deferredReports = [];
+        this.deferReportsUntilSession = false;
+        this.deferredReportsWarningShown = false;
         this.installed = false;
     }
     /**
@@ -6512,6 +6619,14 @@ class StatApp {
      */
     buildCollectorDeps(cfg, patch) {
         const platformShort = getPlatform();
+        const initialLocale = tryRun(() => getLocaleAndScreen(), {
+            lang: '',
+            ww: 0,
+            wh: 0,
+            sw: 0,
+            sh: 0,
+            pr: 1,
+        });
         const builder = createStatDataBuilder({
             config: {
                 ak: cfg.ak,
@@ -6538,14 +6653,17 @@ class StatApp {
                 statusBarHeight: 0,
                 osP: '',
             }),
-            locale: tryRun(() => getLocaleAndScreen(), {
-                lang: '',
-                ww: 0,
-                wh: 0,
-                sw: 0,
-                sh: 0,
-                pr: 1,
-            }),
+            locale: initialLocale,
+            resolveLocale: isVaporStatRuntime()
+                ? () => {
+                    const current = tryRun(() => getLocaleAndScreen(), initialLocale);
+                    if (current.ww <= 0)
+                        current.ww = current.sw;
+                    if (current.wh <= 0)
+                        current.wh = current.sh;
+                    return current;
+                }
+                : undefined,
             device: {
                 // 惰性解析：每次 build 时再调 getUuid()，避免 install 过早（uni 运行时未就绪）冻结临时值。
                 get uuid() {
@@ -6857,7 +6975,9 @@ function installPublicStat(opts = {}) {
     const fromManifest = readManifestStatConfig();
     const finalConfig = Object.assign({}, fromManifest, opts.config);
     const app = getStatApp();
-    tryRun(() => app.install(finalConfig, opts.overrides), undefined);
+    tryRun(() => app.install(finalConfig, Object.assign({}, opts.overrides, {
+        deferReportsUntilSession: opts.vapor === true,
+    })), undefined);
     // 启动摘要：与生命周期解耦，保证 StatApp.install 完成后立刻可打印（不依赖 uni 是否已挂载）。
     tryRun(() => {
         var _a, _b, _c;
@@ -6887,7 +7007,9 @@ function installPublicStat(opts = {}) {
         logBoot(Object.assign({}, bootBase, { vueMode: 'Vue2' }));
         // #endif
         // #ifdef VUE3
-        logBoot(Object.assign({}, bootBase, { vueMode: 'Vue3' }));
+        logBoot(Object.assign({}, bootBase, {
+            vueMode: opts.vapor ? 'Vapor' : 'Vue3',
+        }));
         // #endif
     }, undefined);
     /**
@@ -6919,7 +7041,14 @@ function installPublicStat(opts = {}) {
             scheduleUniAppHookRetry(() => tryBindUniAppLifecycle(app, lifecycleOpts));
         }
     };
-    finishLifecycleInstall();
+    if (opts.vapor) {
+        if (!opts.skipUniReport) {
+            tryRun(() => mountUniReport(app), undefined);
+        }
+    }
+    else {
+        finishLifecycleInstall();
+    }
 }
 /**
  * 仅 Vue3 小程序等重试 `uni.onAppShow` / `onAppHide`；Vue2 不调用。
@@ -7030,6 +7159,7 @@ function scheduleVueAppMixinRetry(mixin) {
  *
  * @returns 是否注入成功
  */
+// #ifndef VUE3
 function mountVue2GlobalMixin(mixin) {
     var _a;
     // eslint-disable-next-line no-restricted-globals
@@ -7042,6 +7172,7 @@ function mountVue2GlobalMixin(mixin) {
     logger.warn('[uni统计 2.0] Vue2: vue.mixin 不可用，请检查是否已安装 vue 依赖');
     return false;
 }
+// #endif
 /**
  * 把 `uni.report` 桥到 StatApp.report。
  *
@@ -7050,13 +7181,19 @@ function mountVue2GlobalMixin(mixin) {
  */
 function mountUniReport(app) {
     var _a;
+    const report = (type, value) => {
+        app.report(type, value);
+    };
+    // App-Plus 的模块级 `uni` 与 globalThis.uni 可能不是同一引用，必须字面量挂载。
+    tryRun(() => {
+        if (typeof uni === 'object' && uni)
+            uni.report = report;
+    }, undefined);
     const g = getGlobalObject();
     const u = ((_a = getUni()) !== null && _a !== void 0 ? _a : g.uni);
     if (!u || typeof u !== 'object')
         return;
-    u.report = (type, value) => {
-        app.report(type, value);
-    };
+    u.report = report;
 }
 /** 仅供测试：重置 install 哨兵；调用方应同时调 `__resetStatApp()`。 */
 function __resetInstall() {
@@ -7075,15 +7212,357 @@ function __resetInstall() {
     bootstrapped = false;
 }
 
+const SHARED_KEY = '__UNI_STAT_VAPOR_BRIDGE__';
+const MAX_ROUTE_EVENT_IDS = 100;
+const MAX_PRE_LAUNCH_EVENTS = 100;
+const ROUTE_OPEN_TYPES = new Set([
+    'appLaunch',
+    'navigateTo',
+    'navigateBack',
+    'redirectTo',
+    'reLaunch',
+    'switchTab',
+]);
+let fallbackSharedState;
+function createSharedState() {
+    return {
+        beforeRouteBound: false,
+        routeBound: false,
+        beforeRouteWarningShown: false,
+        routeWarningShown: false,
+        lifecycleWarningShown: false,
+        lifecycleStarted: false,
+    };
+}
+function getSharedState() {
+    const globalObject = getGlobalObject();
+    const current = globalObject[SHARED_KEY];
+    if (current)
+        return current;
+    if (fallbackSharedState)
+        return fallbackSharedState;
+    const created = createSharedState();
+    fallbackSharedState = created;
+    try {
+        Object.defineProperty(globalObject, SHARED_KEY, {
+            configurable: true,
+            value: created,
+        });
+        return created;
+    }
+    catch (_error) {
+        return created;
+    }
+}
+function eventTimeSec(timeMs) {
+    return Math.floor(timeMs / 1000);
+}
+function normalizePath(path) {
+    return path.startsWith('/') ? path.slice(1) : path;
+}
+function queryEntries(query) {
+    return Object.keys(query).map((key) => { var _a; return [key, String((_a = query[key]) !== null && _a !== void 0 ? _a : '')]; });
+}
+function encodeRouteQuery(value, isH5) {
+    const encoded = encodeURIComponent(value);
+    return isH5 ? encodeURIComponent(encoded) : encoded;
+}
+function toRouteSnapshot(event) {
+    var _a;
+    if (event.notFound === true ||
+        !ROUTE_OPEN_TYPES.has(event.openType) ||
+        typeof event.path !== 'string' ||
+        event.path.length === 0) {
+        return;
+    }
+    const path = normalizePath(event.path);
+    const platform = getPlatform();
+    const isH5 = platform === 'h5';
+    // 公有版 Web / 微信小程序的页面路径均以 `/` 开头；App 保持无前导斜杠。
+    const pathPrefix = isH5 || platform === 'wx' ? '/' : '';
+    const entries = queryEntries((_a = event.query) !== null && _a !== void 0 ? _a : {});
+    const query = entries
+        .map(([key, value]) => `${encodeRouteQuery(key, isH5)}=${encodeRouteQuery(value, isH5)}`)
+        .join('&');
+    const sortedEntries = entries
+        .slice()
+        .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+    const key = `${path}?${JSON.stringify(sortedEntries)}`;
+    return {
+        path,
+        fullPath: `${pathPrefix}${path}${query ? `?${query}` : ''}`,
+        key,
+        timeMs: typeof event.timeStamp === 'number' && Number.isFinite(event.timeStamp)
+            ? event.timeStamp
+            : Date.now(),
+    };
+}
+function pageVm(route) {
+    return {
+        mpType: 'page',
+        route: route.path,
+        $page: { route: route.path, fullPath: route.fullPath },
+    };
+}
+function lifecycleOptions(app) {
+    var _a, _b;
+    const config = app.getConfig();
+    return {
+        enablePush: (_a = config === null || config === void 0 ? void 0 : config.enablePush) !== null && _a !== void 0 ? _a : false,
+        enablePageLog: (_b = config === null || config === void 0 ? void 0 : config.enablePageLog) !== null && _b !== void 0 ? _b : true,
+    };
+}
+function createVaporSink(app) {
+    const opts = lifecycleOptions(app);
+    const pending = [];
+    const seenRouteIds = new Set();
+    const routeIdOrder = [];
+    let launched = false;
+    let foreground = false;
+    let backgrounded = false;
+    let activeRoute;
+    let routePrepared = false;
+    let pendingRoute;
+    let resumeRouteKey;
+    const rememberRouteId = (id) => {
+        if (!id)
+            return true;
+        if (seenRouteIds.has(id))
+            return false;
+        seenRouteIds.add(id);
+        routeIdOrder.push(id);
+        if (routeIdOrder.length > MAX_ROUTE_EVENT_IDS) {
+            seenRouteIds.delete(routeIdOrder.shift());
+        }
+        return true;
+    };
+    const startPage = (route, timeMs) => {
+        if (activeRoute && !routePrepared)
+            handlePageHide(app, pageVm(activeRoute));
+        handlePageShow(app, pageVm(route), opts, eventTimeSec(timeMs));
+        activeRoute = route;
+        routePrepared = false;
+    };
+    const prepareRoute = (event) => {
+        if (routePrepared ||
+            !foreground ||
+            !activeRoute ||
+            !toRouteSnapshot(event)) {
+            return;
+        }
+        handlePageHide(app, pageVm(activeRoute));
+        routePrepared = true;
+    };
+    const processRoute = (event, fallbackTimeMs) => {
+        if (!rememberRouteId(event.routeEventId))
+            return;
+        const route = toRouteSnapshot(event);
+        if (!route)
+            return;
+        if (!foreground) {
+            pendingRoute = route;
+            return;
+        }
+        if (resumeRouteKey) {
+            const isSameResume = !routePrepared && resumeRouteKey === route.key;
+            resumeRouteKey = undefined;
+            if (isSameResume) {
+                activeRoute = route;
+                routePrepared = false;
+                return;
+            }
+        }
+        startPage(route, route.timeMs || fallbackTimeMs);
+    };
+    const processShow = (value, timeMs) => {
+        var _a;
+        if (foreground)
+            return;
+        const resumed = backgrounded;
+        const route = pendingRoute !== null && pendingRoute !== void 0 ? pendingRoute : activeRoute;
+        handleAppShow(app, { scene: value.scene, path: (_a = route === null || route === void 0 ? void 0 : route.path) !== null && _a !== void 0 ? _a : value.path }, opts, eventTimeSec(timeMs), true);
+        foreground = true;
+        backgrounded = false;
+        if (route && (resumed || pendingRoute)) {
+            startPage(route, timeMs);
+        }
+        if (resumed && route) {
+            resumeRouteKey = route.key;
+        }
+        pendingRoute = undefined;
+    };
+    const processHide = (timeMs) => {
+        if (!foreground)
+            return;
+        if (activeRoute && !routePrepared)
+            handlePageHide(app, pageVm(activeRoute));
+        handleAppHide(app, opts, eventTimeSec(timeMs));
+        foreground = false;
+        backgrounded = true;
+        resumeRouteKey = undefined;
+        // 后台前旧页已经收尾；恢复同页或采用后台最终路由时只需重新 show。
+        routePrepared = !!activeRoute;
+    };
+    const process = (event) => {
+        if (event.type === 'show')
+            processShow(event.value, event.timeMs);
+        else if (event.type === 'hide')
+            processHide(event.timeMs);
+        else if (event.type === 'error') {
+            // uni-app x 会先把原始异常送入原生异常通路；SDK 再异步重抛会被
+            // onError 包装成新对象反复回调，造成 lt=31 上报死循环。
+            handleError(app, event.value, eventTimeSec(event.timeMs), false);
+        }
+        else
+            processRoute(event.value, event.timeMs);
+    };
+    const enqueueOrProcess = (event) => {
+        if (!launched) {
+            if (pending.length < MAX_PRE_LAUNCH_EVENTS)
+                pending.push(event);
+            return;
+        }
+        process(event);
+    };
+    return {
+        launch(value, timeMs) {
+            if (launched)
+                return;
+            handleLaunch(app, value, opts, eventTimeSec(timeMs));
+            app.releaseDeferredReports();
+            launched = true;
+            pending.splice(0).forEach(process);
+        },
+        show(value, timeMs) {
+            enqueueOrProcess({ type: 'show', value, timeMs });
+        },
+        hide(timeMs) {
+            enqueueOrProcess({ type: 'hide', timeMs });
+        },
+        error(value, timeMs) {
+            enqueueOrProcess({ type: 'error', value, timeMs });
+        },
+        beforeRoute(value) {
+            if (launched)
+                prepareRoute(value);
+        },
+        route(value) {
+            enqueueOrProcess({
+                type: 'route',
+                value,
+                timeMs: typeof value.timeStamp === 'number' ? value.timeStamp : Date.now(),
+            });
+        },
+    };
+}
+function bindRoute(shared) {
+    const runtime = resolveUniRuntime();
+    if (!shared.beforeRouteBound) {
+        if (typeof (runtime === null || runtime === void 0 ? void 0 : runtime.onBeforeAppRoute) !== 'function') {
+            if (!shared.beforeRouteWarningShown) {
+                shared.beforeRouteWarningShown = true;
+                logger.warn('[vapor] uni.onBeforeAppRoute 不可用，应用启动统计未启用');
+            }
+        }
+        else {
+            shared.beforeRouteCallback = (event) => {
+                var _a, _b, _c, _d, _e;
+                const current = getSharedState();
+                (_a = current.sink) === null || _a === void 0 ? void 0 : _a.beforeRoute(event);
+                if (current.lifecycleStarted)
+                    return;
+                current.lifecycleStarted = true;
+                try {
+                    const options = (_c = (_b = runtime.getLaunchOptionsSync) === null || _b === void 0 ? void 0 : _b.call(runtime)) !== null && _c !== void 0 ? _c : {};
+                    (_d = current.sink) === null || _d === void 0 ? void 0 : _d.launch(options, Date.now());
+                    (_e = current.sink) === null || _e === void 0 ? void 0 : _e.show(options, Date.now());
+                    onAppShow((value) => { var _a; return (_a = getSharedState().sink) === null || _a === void 0 ? void 0 : _a.show(value !== null && value !== void 0 ? value : {}, Date.now()); });
+                    onAppHide(() => { var _a; return (_a = getSharedState().sink) === null || _a === void 0 ? void 0 : _a.hide(Date.now()); });
+                    onError((value) => { var _a; return (_a = getSharedState().sink) === null || _a === void 0 ? void 0 : _a.error(value, Date.now()); });
+                }
+                catch (error) {
+                    if (!current.lifecycleWarningShown) {
+                        current.lifecycleWarningShown = true;
+                        logger.warn('[vapor] 应用生命周期初始化失败，部分统计可能缺失', error);
+                    }
+                }
+            };
+            try {
+                runtime.onBeforeAppRoute(shared.beforeRouteCallback);
+                shared.beforeRouteBound = true;
+            }
+            catch (error) {
+                shared.beforeRouteCallback = undefined;
+                if (!shared.beforeRouteWarningShown) {
+                    shared.beforeRouteWarningShown = true;
+                    logger.warn('[vapor] uni.onBeforeAppRoute 注册失败，应用启动统计未启用', error);
+                }
+            }
+        }
+    }
+    if (shared.routeBound)
+        return;
+    if (!runtime || typeof runtime.onAppRoute !== 'function') {
+        if (!shared.routeWarningShown) {
+            shared.routeWarningShown = true;
+            logger.warn('[vapor] uni.onAppRoute 不可用，页面统计已停用');
+        }
+        return;
+    }
+    shared.routeCallback = (event) => { var _a; return (_a = getSharedState().sink) === null || _a === void 0 ? void 0 : _a.route(event); };
+    try {
+        runtime.onAppRoute(shared.routeCallback);
+        shared.routeBound = true;
+    }
+    catch (error) {
+        shared.routeCallback = undefined;
+        if (!shared.routeWarningShown) {
+            shared.routeWarningShown = true;
+            logger.warn('[vapor] uni.onAppRoute 注册失败，页面统计已停用', error);
+        }
+    }
+}
+const vaporStat = {
+    install() {
+        var _a;
+        const shared = getSharedState();
+        shared.sink = (_a = shared.sink) !== null && _a !== void 0 ? _a : createVaporSink(getStatApp());
+        bindRoute(shared);
+    },
+};
+/** 单测用：解绑 route 并清空进程级桥接。 */
+function __resetVaporStat() {
+    const shared = getSharedState();
+    const runtime = resolveUniRuntime();
+    if (shared.beforeRouteCallback &&
+        typeof (runtime === null || runtime === void 0 ? void 0 : runtime.offBeforeAppRoute) === 'function') {
+        tryRun(() => runtime.offBeforeAppRoute(shared.beforeRouteCallback), undefined);
+    }
+    if (shared.routeCallback && typeof (runtime === null || runtime === void 0 ? void 0 : runtime.offAppRoute) === 'function') {
+        tryRun(() => runtime.offAppRoute(shared.routeCallback), undefined);
+    }
+    const globalObject = getGlobalObject();
+    tryRun(() => Reflect.deleteProperty(globalObject, SHARED_KEY), false);
+    fallbackSharedState = undefined;
+}
+
 /**
  * 公有版统计入口。
  *
- * 与私有版 `src/index.js#main()` 等价：模块加载即触发安装。宿主无需手动调用，
- * 只需 `import '@dcloudio/uni-stat-public'`（或对应 dist 路径）即可。
+ * 与私有版 `src/index.js#main()` 等价：发行模式或本地 debug 模式下，模块加载即触发
+ * 安装。宿主无需手动调用，只需 import 对应运行时即可。
  *
  * 也对外导出 `installPublicStat / getStatApp` 以便调试或自定义场景手动重装。
  */
-// 自动安装：与私有版行为一致，加载即触发。
-installPublicStat();
+// 本地运行仅在 manifest 显式开启 debug 时安装；发行模式保持原行为。
+const shouldInstall = process.env.NODE_ENV !== 'development' ||
+    process.env.UNI_STAT_DEBUG === 'true' ||
+    process.env.UNI_STAT_DEBUG === true;
+if (shouldInstall) {
+    const vapor = process.env.UNI_STAT_VAPOR === 'true';
+    installPublicStat({ vapor });
+    if (vapor)
+        vaporStat.install();
+}
 
-export { __resetInstall, __resetStatApp, getStatApp, installPublicStat };
+export { __resetInstall, __resetStatApp, __resetVaporStat, getStatApp, installPublicStat, vaporStat };

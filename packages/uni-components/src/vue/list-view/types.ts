@@ -17,5 +17,6 @@ export type StickySectionStatus = {
   type: 'StickySection'
   headSize: Ref<number>
   tailSize: Ref<number>
-  placeholderSize: Ref<number>
+  headPlaceholderSize: Ref<number>
+  tailPlaceholderSize: Ref<number>
 }

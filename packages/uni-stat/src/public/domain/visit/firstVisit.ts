@@ -29,6 +29,7 @@
 
 import { logger } from '../../infra/logger'
 import { storage } from '../../infra/storage'
+import { isVaporStatRuntime } from '../../infra/uniRuntime'
 
 const KEY_FVTS = 'visit:fvts'
 const KEY_LVTS = 'visit:lvts'
@@ -126,6 +127,9 @@ function isLikelyFreshDevice(snap: VisitSnapshot): boolean {
  */
 function isTrustworthyNewUser(snap: VisitSnapshot): boolean {
   if (!snap.isNewUser) return false
+  // Vapor 接入前可能只留下 fvts/tvc。仅在 Vapor 下把这种残缺历史视为老用户，
+  // 避免改变现有公有版以 lvts 为唯一新用户信号的既有口径。
+  if (isVaporStatRuntime() && !isLikelyFreshDevice(snap)) return false
   return !snap.degraded || isLikelyFreshDevice(snap)
 }
 

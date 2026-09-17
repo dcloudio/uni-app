@@ -3,6 +3,8 @@ import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
   getWorkers,
+  initUasmTransformOptions,
+  initUts2jsExtApiOptions,
   initUts2jsSharedDataOptions,
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
@@ -16,7 +18,9 @@ import {
   uniStatsPlugin,
   uniUTSAppUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
+  uniUasmPlugin,
   uniUniModulesExtApiPlugin,
+  uniVaporScriptPlugin,
   uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 
@@ -28,14 +32,17 @@ import { uniAppJsEngineMainPlugin } from '../js/mainUTS'
 import { uniAppManifestPlugin } from '../js/manifestJson'
 import { uniAppPagesPlugin } from '../js/pagesJson'
 import { createUniAppJsEnginePlugin } from '../js/plugin'
-import { SHARED_DATA_LIB_NAME } from '../utils'
+import { SHARED_DATA_LIB_GLOBAL_NAME } from '../utils'
 import { uniAppXAndroidEngineDevPlugin } from './devPlugin'
 
 export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const isDom2Dynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
   const isDev = process.env.NODE_ENV === 'development'
+  const uasm = isDom2 ? initUasmTransformOptions('app-android') : undefined
+  const extApi = initUts2jsExtApiOptions()
   return [
+    uniUasmPlugin(),
     ...(isDom2 ? [uniAppCssPrePlugin()] : []),
     ...(isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniDecryptUniModulesPlugin()]
@@ -61,6 +68,17 @@ export function init() {
           uniAppPagesPlugin(),
         ]),
     uniUTSUVueJavaScriptPlugin(),
+    ...(isDom2 && process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
+      ? [
+          uniVaporScriptPlugin({
+            sharedDataLibName: !isDom2Dynamic
+              ? SHARED_DATA_LIB_GLOBAL_NAME
+              : undefined,
+            sharedDataLibAsGlobal: !isDom2Dynamic,
+            uasm,
+          }),
+        ]
+      : []),
     resolveUTSCompiler().uts2js({
       dom2: isDom2,
       platform: 'app-android',
@@ -69,8 +87,10 @@ export function init() {
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
       sourceMap: enableSourceMap(),
       sharedDataLibName:
-        isDom2 && !isDom2Dynamic ? SHARED_DATA_LIB_NAME : undefined,
+        isDom2 && !isDom2Dynamic ? SHARED_DATA_LIB_GLOBAL_NAME : undefined,
+      sharedDataLibAsGlobal: isDom2 && !isDom2Dynamic,
       sharedData: initUts2jsSharedDataOptions(),
+      extApi,
       modules: {
         vueCompilerDom,
         uniCliShared,
@@ -80,6 +100,7 @@ export function init() {
           return getWorkers()
         },
       },
+      uasm,
     }),
     ...(isDom2 ? [uniSharedDataPlugin()] : []),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'

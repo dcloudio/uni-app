@@ -32,16 +32,22 @@ export function createEnumNormalize(items: Array<string | number>): Normalize {
 export function createEnumNormalizeWithPlatform(
   items: Array<PropertyValue>
 ): Normalize {
-  return (v, { platform }) => {
+  return (v, { platform, dom2 }) => {
     const property = items.find((item) => item.name === v)
     const supportedEnum = items
       .filter((item) => {
-        const supportedPlatforms = getSupportedPlatforms(item.uniPlatform)
+        const supportedPlatforms = getSupportedPlatforms(
+          item.uniPlatform,
+          !!dom2
+        )
         return supportedPlatforms.includes(platform!)
       })
       .map((item) => item.name)
     if (property) {
-      const supportedPlatforms = getSupportedPlatforms(property.uniPlatform)
+      const supportedPlatforms = getSupportedPlatforms(
+        property.uniPlatform,
+        !!dom2
+      )
       // TODO 未跨平台支持的属性特殊提示
       if (!supportedPlatforms.includes(platform!)) {
         return {

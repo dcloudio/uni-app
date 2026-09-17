@@ -1,18 +1,34 @@
 <template>
 	<view class="uni-modal-mask" :class="{ 'uni-modal-mask--show': showAnim, 'uni-modal-mask--hide': !showAnim }">
 		<view class="uni-modal-dialog" :style="{ bottom: inputBottom }"
+			<!-- #ifdef VUE3-VAPOR -->
+			:class="{ 'uni-modal-dialog--show': showAnim }">
+			<!-- #endif -->
+			<!-- #ifndef VUE3-VAPOR -->
 			:class="{ 'uni-modal-dialog--show': showAnim, 'uni-modal--dark': isDark }">
+			<!-- #endif -->
 			<!-- ios need -->
-			<view class="uni-modal-dialog__inner" :class="{ 'uni-modal--dark': isDark }">
+			<view class="uni-modal-dialog__inner"
+				<!-- #ifndef VUE3-VAPOR -->
+				:class="{ 'uni-modal--dark': isDark }"
+				<!-- #endif -->
+				>
 				<view class="uni-modal-dialog__title__container">
-					<text v-if="hasTitle" max-lines="2" class="uni-modal-dialog__title" :class="{ 'uni-modal--dark': isDark }">
+					<text v-if="hasTitle" max-lines="2" class="uni-modal-dialog__title"
+						<!-- #ifndef VUE3-VAPOR -->
+						:class="{ 'uni-modal--dark': isDark }"
+						<!-- #endif -->
+						>
 						{{ title }}
 					</text>
 				</view>
 
 				<view class="uni-modal-dialog__body" :class="{'no-title' : !hasTitle}">
 					<textarea v-if="editable" v-model="content" class="uni-modal-dialog__textarea"
-						placeholder-class="uni-modal-dialog__textarea-placeholder" :class="{ 'uni-modal--dark': isDark }"
+						placeholder-class="uni-modal-dialog__textarea-placeholder"
+						<!-- #ifndef VUE3-VAPOR -->
+						:class="{ 'uni-modal--dark': isDark }"
+						<!-- #endif -->
 						:focus="true" :adjust-position="false" @blur="onInputBlur"
 						@keyboardheightchange="onInputKeyboardChange" :auto-height="isAutoHeight"
 						:placeholder="placeholderText" />
@@ -25,17 +41,50 @@
 					</scroll-view>
 				</view>
 
-				<view class="uni-modal-dialog__divider" :class="{ 'uni-modal--dark': isDark }"></view>
+				<view class="uni-modal-dialog__divider"
+					<!-- #ifndef VUE3-VAPOR -->
+					:class="{ 'uni-modal--dark': isDark }"
+					<!-- #endif -->
+					></view>
 				<view class="uni-modal-dialog__actions">
 					<view v-if="showCancel" class="uni-modal-dialog__action uni-modal-dialog__action--cancel"
+						<!-- #ifdef VUE3-VAPOR -->
+						hover-class="uni-modal-dialog__action--hover" @click="handleCancel">
+						<!-- #endif -->
+						<!-- #ifndef VUE3-VAPOR -->
 						:hover-class="hoverClassName" @click="handleCancel">
-						<text :style="{ color: cancelColor }" max-lines="1" class="uni-modal-dialog__action-text">
+						<!-- #endif -->
+						<text
+							<!-- #ifdef VUE3-VAPOR -->
+							:style="cancelColorStyle"
+							<!-- #endif -->
+							<!-- #ifndef VUE3-VAPOR -->
+							:style="{ color: cancelColor }"
+							<!-- #endif -->
+							max-lines="1" class="uni-modal-dialog__action-text">
 							{{ cancelText }}
 						</text>
 					</view>
-					<view v-if="showCancel" class="uni-modal-dialog__split" :class="{ 'uni-modal--dark': isDark }"></view>
-					<view class="uni-modal-dialog__action uni-modal-dialog__action--confirm" :hover-class="hoverClassName" @click="handleSure">
-						<text :style="{ color: confirmColor }" max-lines="1"
+					<view v-if="showCancel" class="uni-modal-dialog__split"
+						<!-- #ifndef VUE3-VAPOR -->
+						:class="{ 'uni-modal--dark': isDark }"
+						<!-- #endif -->
+						></view>
+					<view class="uni-modal-dialog__action uni-modal-dialog__action--confirm"
+						<!-- #ifdef VUE3-VAPOR -->
+						hover-class="uni-modal-dialog__action--hover" @click="handleSure">
+						<!-- #endif -->
+						<!-- #ifndef VUE3-VAPOR -->
+						:hover-class="hoverClassName" @click="handleSure">
+						<!-- #endif -->
+						<text
+							<!-- #ifdef VUE3-VAPOR -->
+							:style="confirmColorStyle"
+							<!-- #endif -->
+							<!-- #ifndef VUE3-VAPOR -->
+							:style="{ color: confirmColor }"
+							<!-- #endif -->
+							max-lines="1"
 							class="uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm">
 							{{ confirmText }}
 						</text>
@@ -45,15 +94,17 @@
 		</view>
 	</view>
 </template>
-<script setup lang='ts'>
+<script setup>
 	import {
 		ref,
 		computed,
 		getCurrentInstance
 	} from 'vue'
 
+	// #ifndef VUE3-VAPOR
 	const theme = ref('light')
 	const isDark = computed((): boolean => theme.value == 'dark')
+	// #endif
 	const language = ref('zh-Hans')
 	const i18nCancelText = {
 		en: 'Cancel',
@@ -80,16 +131,20 @@
 	const placeholderText = ref<string | null>(null)
 	const inputConfirmText = ref<string | null>(null)
 	const inputCancelText = ref<string | null>(null)
+	// #ifndef VUE3-VAPOR
 	const cancelColor = ref('#000000')
 	const confirmColor = ref('#4A5E86')
+	// #endif
 	const inputBottom = ref('0px')
 	const maxScrollHeight = ref('192px')
 	const inputCancelColor = ref<string | null>(null)
 	const inputConfirmColor = ref<string | null>(null)
+	// #ifndef VUE3-VAPOR
 	const hoverClassName = ref('uni-modal-dialog__action--hover')
+	// #endif
 	const showAnim = ref(false)
 	const isAutoHeight = ref(true)
-	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+	// #ifdef (APP-ANDROID || APP-IOS || APP-HARMONY) && !VUE3-VAPOR
 	const appThemeChangeCallbackId = ref(-1)
 	// #endif
 
@@ -170,38 +225,32 @@
 		return hexColorRegex.test(inputColor)
 	}
 
-	/**
-	 * update ui when theme change.
-	 */
+	// #ifdef VUE3-VAPOR
+	const cancelColorStyle = computed((): UTSJSONObject => {
+		return isValidColor(inputCancelColor.value) ? { color: inputCancelColor.value! } : {}
+	})
+	const confirmColorStyle = computed((): UTSJSONObject => {
+		return isValidColor(inputConfirmColor.value) ? { color: inputConfirmColor.value! } : {}
+	})
+	// #endif
+
+	// #ifndef VUE3-VAPOR
 	const updateUI = () => {
 		if (isValidColor(inputConfirmColor.value)) {
 			confirmColor.value = inputConfirmColor.value!
 		} else {
-			/**
-			 * init text color with theme
-			 */
-			if (theme.value == 'dark') {
-				confirmColor.value = '#7388a2'
-			} else {
-				confirmColor.value = '#4A5E86'
-			}
+			confirmColor.value = theme.value == 'dark' ? '#7388a2' : '#4A5E86'
 		}
 		if (isValidColor(inputCancelColor.value)) {
 			cancelColor.value = inputCancelColor.value!
 		} else {
-			if (theme.value == 'dark') {
-				cancelColor.value = '#a5a5a5'
-			} else {
-				cancelColor.value = '#000000'
-			}
+			cancelColor.value = theme.value == 'dark' ? '#a5a5a5' : '#000000'
 		}
-
-		if (theme.value == 'dark') {
-			hoverClassName.value = 'uni-modal-dialog__action--hover-dark'
-		} else {
-			hoverClassName.value = 'uni-modal-dialog__action--hover'
-		}
+		hoverClassName.value = theme.value == 'dark'
+			? 'uni-modal-dialog__action--hover-dark'
+			: 'uni-modal-dialog__action--hover'
 	}
+	// #endif
 
 	const closeModal = () => {
 		showAnim.value = false
@@ -257,6 +306,7 @@
 			language.value = deviceInfo.osLanguage
 		}
 		// #ifdef WEB
+		// #ifndef VUE3-VAPOR
 		const hostTheme = appBaseInfo.hostTheme
 		if (hostTheme != null) {
 			theme.value = hostTheme
@@ -266,6 +316,7 @@
 			theme.value = res.theme
 			updateUI()
 		})
+		// #endif
 		// 监听浏览器的语言设置
 		const locale = uni.getLocale()
 		language.value = locale
@@ -275,11 +326,11 @@
 			}
 		})
 		// #endif
-		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+		// #ifdef (APP-ANDROID || APP-IOS || APP-HARMONY) && !VUE3-VAPOR
 		const appTheme = appBaseInfo.appTheme
 		if (appTheme != null) {
 			const osTheme = deviceInfo.osTheme ?? 'light'
-			theme.value = ('auto' == appTheme) ? osTheme : appTheme
+			theme.value = appTheme == 'auto' ? osTheme : appTheme
 		}
 		appThemeChangeCallbackId.value = uni.onAppThemeChange((res: AppThemeChangeResult) => {
 			theme.value = res.appTheme
@@ -322,8 +373,9 @@
 			if (data['cancelColor'] != null) {
 				inputCancelColor.value = data['cancelColor'] as string
 			}
-
+			// #ifndef VUE3-VAPOR
 			updateUI()
+			// #endif
 		})
 
 		uni.$emit(readyEventName.value, {})
@@ -335,7 +387,7 @@
 		uni.$off(readyEventName.value, null)
 		uni.$off(successEventName.value, null)
 		uni.$off(failEventName.value, null)
-		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+		// #ifdef (APP-ANDROID || APP-IOS || APP-HARMONY) && !VUE3-VAPOR
 		uni.offAppThemeChange(appThemeChangeCallbackId.value)
 		// #endif
 	})
@@ -403,9 +455,11 @@
 		transform: scale(1);
 	}
 
+	/* #ifndef VUE3-VAPOR */
 	.uni-modal-dialog.uni-modal--dark {
 		background-color: #272727;
 	}
+	/* #endif */
 
 	.uni-modal-dialog__inner {
 		width: 100%;
@@ -414,9 +468,11 @@
 		border-radius: 8px;
 	}
 
+	/* #ifndef VUE3-VAPOR */
 	.uni-modal-dialog__inner.uni-modal--dark {
 		background-color: #272727;
 	}
+	/* #endif */
 
 	.uni-modal-dialog__title__container {
 		padding: 33px 24px 18px;
@@ -438,9 +494,11 @@
 		/* #endif */
 	}
 
+	/* #ifndef VUE3-VAPOR */
 	.uni-modal-dialog__title.uni-modal--dark {
 		color: #cfcfcf;
 	}
+	/* #endif */
 
 	.uni-modal-dialog__body {
 		justify-content: center;
@@ -483,10 +541,12 @@
 		/* #endif */
 	}
 
+	/* #ifndef VUE3-VAPOR */
 	.uni-modal-dialog__textarea.uni-modal--dark {
 		background-color: #3d3d3d;
 		color: #cfcfcf;
 	}
+	/* #endif */
 
 	.uni-modal-dialog__textarea-placeholder {
 		color: #808080;
@@ -499,9 +559,11 @@
 		background-color: #e3e3e3;
 	}
 
+	/* #ifndef VUE3-VAPOR */
 	.uni-modal-dialog__divider.uni-modal--dark {
 		background-color: #303030;
 	}
+	/* #endif */
 
 	.uni-modal-dialog__actions {
 		display: flex;
@@ -512,6 +574,7 @@
 	}
 
 	.uni-modal-dialog__action {
+		width: 50%;
 		justify-content: center;
 		flex-grow: 1;
 	}
@@ -527,17 +590,22 @@
 		background-color: #efefef;
 	}
 
+	/* #ifndef VUE3-VAPOR */
 	.uni-modal-dialog__action--hover-dark {
 		background-color: #1c1c1c;
 	}
+	/* #endif */
 
 	.uni-modal-dialog__action-text {
+		color: #000000;
 		letter-spacing: 1px;
 		font-size: 17px;
 		text-align: center;
 		/* #ifndef VUE3-VAPOR */
 		lines: 1;
 		/* #endif */
+		overflow: hidden;
+		text-overflow: ellipsis;
 		white-space: nowrap;
 		font-weight: 600;
 	}
@@ -553,13 +621,44 @@
 		background-color: #e3e3e3;
 	}
 
+	/* #ifndef VUE3-VAPOR */
 	.uni-modal-dialog__split.uni-modal--dark {
 		background-color: #303030;
 	}
+	/* #endif */
 
 	/* #ifdef WEB */
 	.uni-textarea-wrapper {
 		min-height: 18px !important;
+	}
+	/* #endif */
+
+	/* #ifdef VUE3-VAPOR */
+	@media (prefers-color-scheme: dark) {
+		.uni-modal-dialog,
+		.uni-modal-dialog__inner {
+			background-color: #272727;
+		}
+		.uni-modal-dialog__title {
+			color: #cfcfcf;
+		}
+		.uni-modal-dialog__textarea {
+			background-color: #3d3d3d;
+			color: #cfcfcf;
+		}
+		.uni-modal-dialog__divider,
+		.uni-modal-dialog__split {
+			background-color: #303030;
+		}
+		.uni-modal-dialog__action--hover {
+			background-color: #1c1c1c;
+		}
+		.uni-modal-dialog__action-text {
+			color: #a5a5a5;
+		}
+		.uni-modal-dialog__action-text--confirm {
+			color: #7388a2;
+		}
 	}
 	/* #endif */
 </style>

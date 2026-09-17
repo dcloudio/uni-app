@@ -39,13 +39,13 @@ export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
       return
     }
 
-    return (
-      // TODO exists 属性未实现
-      removeLastPage(),
-      navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting })
-        .then(resolve)
-        .catch(reject)
-    )
+    // TODO exists 属性未实现
+    if (!__X__) {
+      removeLastPage()
+    }
+    return navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting })
+      .then(resolve)
+      .catch(reject)
   },
   RedirectToProtocol,
   RedirectToOptions

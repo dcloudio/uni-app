@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 export {
   redirectTo,
   previewImage,
@@ -6,7 +7,10 @@ export {
   onError,
   offError,
 } from '@dcloudio/uni-mp-core'
-import { navigateTo as _navigateTo } from '@dcloudio/uni-mp-core'
+import {
+  getDeviceInfo as _getDeviceInfo,
+  navigateTo as _navigateTo,
+} from '@dcloudio/uni-mp-core'
 export const navigateTo = _navigateTo()
 export const connectSocket = {
   args: {
@@ -57,3 +61,8 @@ export const hideTabBar = {
     }
   },
 }
+export const getDeviceInfo = extend({}, _getDeviceInfo, {
+  name: tt.canIUse('getDeviceInfoSync')
+    ? 'getDeviceInfoSync'
+    : 'getSystemInfoSync',
+})

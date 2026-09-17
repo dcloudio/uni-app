@@ -80,7 +80,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   const split = !!options.split
   const { bundle, UTSTarget } = getUTSCompiler()
   const imports = [...DEFAULT_IMPORTS]
-  if (process.env.UNI_APP_X_DOM2) {
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
     imports.push(...DEFAULT_IMPORTS_X_DOM2)
   } else {
     imports.push(...DEFAULT_IMPORTS_X)

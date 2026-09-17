@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import type { Plugin, ResolvedConfig } from 'vite'
 
 import {
@@ -30,7 +32,13 @@ import { DOM2_CSS_CACHE_MAP, isVue } from '../utils'
 
 const CSS_FILE_ID_MAP = new Map<string, string>()
 
+export function isAnimationEnabled() {
+  const inputDir = process.env.UNI_INPUT_DIR
+  return !!inputDir && fs.existsSync(path.resolve(inputDir, '.animation'))
+}
+
 export function uniAppCssPrePlugin(): Plugin {
+  const enableAnimation = isAnimationEnabled()
   const name = 'uni:app-uvue-css-pre'
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   const appUVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
@@ -67,11 +75,13 @@ export function uniAppCssPrePlugin(): Plugin {
         async chunkCssCode(filename, cssCode) {
           // filename
           cssCode = parseAssets(config, cssCode)
+          const output =
+            process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code'
           const { code, bytes, messages, fontFaces } = await parseCss(cssCode, {
             platform: process.env.UNI_UTS_PLATFORM,
             helper: requireUniHelpers(),
-            output:
-              process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code',
+            output,
+            enableAnimation,
           })
           if (isDom2 && fontFaces?.length) {
             const id = CSS_FILE_ID_MAP.get(filename)
@@ -114,7 +124,16 @@ export function uniAppCssPrePlugin(): Plugin {
         },
         emitFile(filename, cssCode) {
           const { ASDSF } = requireUniHelpers()
-          ASDSF(normalizePath(filename), cssCode, process.env.UNI_UTS_PLATFORM)
+          const styleSheetOptions =
+            typeof cssCode === 'string'
+              ? { styleSheetTypeName: 'UniCSSStyleSheet' }
+              : undefined
+          ASDSF(
+            normalizePath(filename),
+            cssCode,
+            process.env.UNI_UTS_PLATFORM,
+            styleSheetOptions
+          )
         },
       })
       const uvueCssInlinePostPlugin: Plugin = {
@@ -165,6 +184,7 @@ export function uniAppCssPrePlugin(): Plugin {
 }
 
 export function uniAppCssPlugin(): Plugin {
+  const enableAnimation = isAnimationEnabled()
   let resolvedConfig: ResolvedConfig
   const { parseCss } = require('@dcloudio/compiler-vapor-dom2')
   return {
@@ -185,10 +205,13 @@ export function uniAppCssPlugin(): Plugin {
       }
       source = parseAssets(resolvedConfig, source)
       // 仅做校验使用
+      const output =
+        process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code'
       const { messages } = await parseCss(source, {
         platform: process.env.UNI_UTS_PLATFORM,
         helper: requireUniHelpers(),
-        output: process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code',
+        output,
+        enableAnimation,
       })
       let cssSourceMap: SourceMapInput | undefined
       if (messages.find((m) => m.type === 'warning')) {

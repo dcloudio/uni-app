@@ -8,6 +8,7 @@ import {
   formatExtApiProviderName,
   getCurrentCompiledUTSPlugins,
   getCurrentCompiledUTSProviders,
+  getHarmonyRuntimePackageName,
   getUTSPluginCustomElements,
   getUniExtApiProviderRegisters,
   isNormalCompileTarget,
@@ -574,9 +575,10 @@ function genAppHarmonyUniModules(
   importIds.push('uni')
 
   importCodes.unshift(
-    `import { ${importIds.join(', ')} } from '${
-      !isX ? '@dcloudio/uni-app-runtime' : '@dcloudio/uni-app-x-runtime'
-    }'`
+    `import { ${importIds.join(', ')} } from '${getHarmonyRuntimePackageName(
+      isX,
+      isDom2
+    )}'`
   )
 
   context.emitFile({

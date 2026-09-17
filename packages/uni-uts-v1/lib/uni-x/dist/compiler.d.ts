@@ -1,7 +1,7 @@
 import { IUTSCompiler } from '@uts/compiler';
 import * as tsTypes from 'typescript';
 import tsTypes__default, { CompilerOptions } from 'typescript';
-import * as _uts_transforms_base from '@uts/transforms_base';
+import { UTSTransformerFactoryCreator } from '@uts/transforms_base';
 
 declare function isTypeRelatedTo(ts: typeof tsTypes__default, typeChecker: tsTypes__default.TypeChecker, source: tsTypes__default.Type, target: tsTypes__default.Type): true | undefined;
 
@@ -36,6 +36,7 @@ interface CreateTransformerOptions {
         extname?: '.ets' | '.js';
         rewriteRootDir?: string;
     };
+    loadUasmTransformer?: UTSTransformerFactoryCreator;
     disableUTSBooleanConversion?: boolean;
     sharedData?: {
         resolveFieldMeta(name: string): {
@@ -43,7 +44,7 @@ interface CreateTransformerOptions {
         };
     };
 }
-declare function initTargetTransformers(targetLanguage: TargetLanguage, options?: CreateTransformerOptions): _uts_transforms_base.UTSTransformerFactoryCreator[];
+declare function initTargetTransformers(targetLanguage: TargetLanguage, options?: CreateTransformerOptions): UTSTransformerFactoryCreator[];
 
 interface TransformOptions {
     transformArguments?: {

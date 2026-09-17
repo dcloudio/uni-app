@@ -56,7 +56,7 @@
   </view>
 </template>
 
-<script lang="ts" setup>
+<script setup>
   import { ref, reactive, computed, watch } from 'vue'
 
   // #ifdef APP-ANDROID && !VUE3-VAPOR

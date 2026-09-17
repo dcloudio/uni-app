@@ -2,8 +2,12 @@ import { parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
 
 import {
   isUniAppXCompile,
+  isUniAppXVaporCompile,
   shouldAutoImportStatRuntime,
+  shouldBootstrapVaporRuntime,
+  shouldRunStatRuntime,
 } from '../../src/plugin/runtimeEnable'
+import { resolvePublicStatImportPath } from '../../src/plugin/statRuntime'
 
 jest.mock('@dcloudio/uni-cli-shared', () => {
   const actual = jest.requireActual('@dcloudio/uni-cli-shared')
@@ -17,9 +21,11 @@ const mockedParseManifestJsonOnce = parseManifestJsonOnce as jest.Mock
 
 describe('plugin/index', () => {
   const originalUniAppX = process.env.UNI_APP_X
+  const originalUniAppXDom2 = process.env.UNI_APP_X_DOM2
 
   afterEach(() => {
     process.env.UNI_APP_X = originalUniAppX
+    process.env.UNI_APP_X_DOM2 = originalUniAppXDom2
     mockedParseManifestJsonOnce.mockReset()
   })
 
@@ -33,12 +39,121 @@ describe('plugin/index', () => {
     expect(isUniAppXCompile()).toBe(false)
   })
 
-  test('uni-app x 下无论 manifest 如何配置都不自动 import', () => {
+  test.each([
+    ['development', false, false],
+    ['development', undefined, false],
+    ['development', true, true],
+    ['production', false, true],
+    ['production', undefined, true],
+    ['production', true, true],
+  ])('运行模式闸门 NODE_ENV=%s debug=%s => %s', (nodeEnv, debug, expected) => {
+    expect(shouldRunStatRuntime(debug, nodeEnv)).toBe(expected)
+  })
+
+  test('uni-app x App 不走普通统计运行时', () => {
     process.env.UNI_APP_X = 'true'
     mockedParseManifestJsonOnce.mockReturnValue({
       uniStatistics: { enable: true },
     })
-    expect(shouldAutoImportStatRuntime('/project')).toBe(false)
+    expect(shouldAutoImportStatRuntime('/project', 'app-android')).toBe(false)
+  })
+
+  test('uni-app x Web 走 route bridge', () => {
+    process.env.UNI_APP_X = 'true'
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    mockedParseManifestJsonOnce.mockReturnValue({
+      uniStatistics: { enable: true },
+    })
+    expect(shouldAutoImportStatRuntime('/project', 'web')).toBe(false)
+    expect(shouldBootstrapVaporRuntime('/project', 'web')).toBe(true)
+  })
+
+  test('uni-app x 微信小程序走 route bridge', () => {
+    process.env.UNI_APP_X = 'true'
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    mockedParseManifestJsonOnce.mockReturnValue({
+      uniStatistics: { enable: true },
+    })
+    expect(shouldAutoImportStatRuntime('/project', 'mp-weixin')).toBe(false)
+    expect(shouldBootstrapVaporRuntime('/project', 'mp-weixin')).toBe(true)
+    expect(resolvePublicStatImportPath('mp-weixin')).toBe(
+      '@dcloudio/uni-stat-public-mp-weixin'
+    )
+  })
+
+  test('非微信公有版保持完整运行时', () => {
+    expect(resolvePublicStatImportPath('h5')).toBe('@dcloudio/uni-stat-public')
+    expect(resolvePublicStatImportPath('mp-qq')).toBe(
+      '@dcloudio/uni-stat-public'
+    )
+  })
+
+  test.each(['mp-alipay', 'mp-baidu', 'mp-toutiao', 'mp-qq'])(
+    'uni-app x 暂不为 %s 注入 Vapor bridge',
+    (platform) => {
+      process.env.UNI_APP_X = 'true'
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      mockedParseManifestJsonOnce.mockReturnValue({
+        uniStatistics: { enable: true },
+      })
+      expect(isUniAppXVaporCompile(platform)).toBe(false)
+      expect(shouldBootstrapVaporRuntime('/project', platform)).toBe(false)
+    }
+  )
+
+  test.each(['app-android', 'app-ios', 'app-harmony'])(
+    'uni-app x %s 蒸汽模式下开启生命周期桥接',
+    (platform) => {
+      process.env.UNI_APP_X = 'true'
+      process.env.UNI_APP_X_DOM2 = 'true'
+      mockedParseManifestJsonOnce.mockReturnValue({
+        uniStatistics: { enable: true },
+      })
+      expect(isUniAppXVaporCompile(platform)).toBe(true)
+      expect(shouldBootstrapVaporRuntime('/project', platform)).toBe(true)
+    }
+  )
+
+  test.each(['app-android', 'app-ios', 'app-harmony'])(
+    'uni-app x %s VDOM 不注入生命周期桥接',
+    (platform) => {
+      process.env.UNI_APP_X = 'true'
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      mockedParseManifestJsonOnce.mockReturnValue({
+        uniStatistics: { enable: true },
+      })
+      expect(isUniAppXVaporCompile(platform)).toBe(false)
+      expect(shouldBootstrapVaporRuntime('/project', platform)).toBe(false)
+    }
+  )
+
+  test('Web route bridge 在 enable=false 时不注入', () => {
+    process.env.UNI_APP_X = 'true'
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    mockedParseManifestJsonOnce.mockReturnValue({
+      uniStatistics: { enable: false },
+    })
+    expect(shouldBootstrapVaporRuntime('/project', 'web')).toBe(false)
+  })
+
+  test('Web route bridge 不依赖 UNI_APP_X_DOM2', () => {
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_APP_X_DOM2 = 'true'
+    mockedParseManifestJsonOnce.mockReturnValue({
+      uniStatistics: { enable: true },
+    })
+    expect(isUniAppXVaporCompile('web')).toBe(true)
+    expect(shouldBootstrapVaporRuntime('/project', 'web')).toBe(true)
+    expect(shouldAutoImportStatRuntime('/project', 'web')).toBe(false)
+  })
+
+  test('蒸汽模式 enable=false 时不注入生命周期桥接', () => {
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_APP_X_DOM2 = 'true'
+    mockedParseManifestJsonOnce.mockReturnValue({
+      uniStatistics: { enable: false },
+    })
+    expect(shouldBootstrapVaporRuntime('/project', 'app-android')).toBe(false)
   })
 
   test('uni-app 无 uniStatistics 节点时默认自动 import', () => {

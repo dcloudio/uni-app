@@ -15,7 +15,7 @@ interface ParsePagesJsonOptions {
   darkmode?: boolean
   subpackages: boolean
   independentSubpackages?: boolean
-  windowOptionsMap?: Record<string, string>
+  windowOptionsMap?: Record<string, string | string[]>
   tabBarOptionsMap?: Record<string, string>
   tabBarItemOptionsMap?: Record<string, string>
   networkTimeout?: NetworkTimeout

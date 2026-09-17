@@ -9,10 +9,24 @@ function clearGlobal(name: string): void {
 }
 
 describe('adapter/channel', () => {
+  let originalVapor: string | undefined
+
+  beforeEach(() => {
+    originalVapor = (process.env as Record<string, string | undefined>)
+      .UNI_STAT_VAPOR
+    delete (process.env as Record<string, string | undefined>).UNI_STAT_VAPOR
+  })
+
   afterEach(() => {
     restoreMockUni()
     restoreMockPlus()
     clearGlobal('plus')
+    if (originalVapor === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_STAT_VAPOR
+    } else {
+      ;(process.env as Record<string, string | undefined>).UNI_STAT_VAPOR =
+        originalVapor
+    }
   })
 
   test('非 App 端 → 恒为 空字符串', () => {
@@ -55,5 +69,21 @@ describe('adapter/channel', () => {
       configurable: true,
     })
     expect(getAppChannel()).toBe('')
+  })
+
+  test('Vapor App：从 getAppBaseInfo.channel 获取，且不访问 plus', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STAT_VAPOR = 'true'
+    installMockUni({
+      platform: 'app',
+      patch: { getAppBaseInfo: () => ({ channel: 'xiaomi' }) },
+    })
+    Object.defineProperty(globalThis, 'plus', {
+      get() {
+        throw new Error('Vapor must not access plus')
+      },
+      configurable: true,
+    })
+
+    expect(getAppChannel()).toBe('xiaomi')
   })
 })

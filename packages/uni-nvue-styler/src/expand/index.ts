@@ -2,14 +2,12 @@ import type { Declaration, Helpers, Plugin } from 'postcss'
 import {
   type NormalizeOptions,
   type TransformDecl,
+  appendDom2Docs,
+  getDom2PropertyDocsUrl,
   hyphenateStyleProperty,
 } from '../utils'
 import { createTransformBackground } from './background'
-import {
-  BORDER_SHORTHAND_VAR_ORDER_WARNING,
-  createTransformBorder,
-  createTransformBorderNvue,
-} from './border'
+import { createTransformBorder, createTransformBorderNvue } from './border'
 import { transformBorderColor, transformBorderColorNvue } from './borderColor'
 import {
   transformBorderRadius,
@@ -23,9 +21,11 @@ import { transformMargin } from './margin'
 import { transformPadding } from './padding'
 import { transformTransition } from './transition'
 import { transformFlex } from './flex'
+import { createTransformAnimation } from './animation'
 
 function getDeclTransforms(
-  options: NormalizeOptions
+  options: NormalizeOptions,
+  dom2: boolean
 ): Record<string, TransformDecl> {
   const transformBorder =
     options.type === 'uvue'
@@ -61,6 +61,9 @@ function getDeclTransforms(
       transformFlexFlow,
   }
 
+  if (options.type === 'uvue' && dom2) {
+    styleMap.animation = createTransformAnimation(options)
+  }
   if (options.type === 'uvue') {
     styleMap.flex = transformFlex
   }
@@ -77,23 +80,27 @@ function getDeclTransforms(
   return result
 }
 
-let DeclTransforms: Record<string, TransformDecl>
+const declTransforms: Record<string, Record<string, TransformDecl>> = {}
 const expanded = Symbol('expanded')
 export function expand(options: NormalizeOptions): Plugin {
+  const type = options.type || 'nvue'
+  const dom2 = !!options.dom2
+  const transformCacheKey = `${type}:${dom2}:${options.platform || ''}`
   const plugin: Plugin = {
     postcssPlugin: `${options.type || 'nvue'}:expand`,
     Declaration(decl, helper) {
       if ((decl as any)[expanded]) {
         return
       }
-      if (!DeclTransforms) {
-        DeclTransforms = getDeclTransforms(options)
-      }
-      const transform = DeclTransforms[decl.prop]
+      const transforms =
+        declTransforms[transformCacheKey] ||
+        (declTransforms[transformCacheKey] = getDeclTransforms(options, dom2))
+      const transform = transforms[decl.prop]
       if (transform) {
-        const res = transform(decl)
-        const reason = (decl as any)[BORDER_SHORTHAND_VAR_ORDER_WARNING]
-        if (reason && helper && decl.warn) {
+        const res = transform(decl, (reason, property = decl.prop) => {
+          if (!helper || !decl.warn) {
+            return
+          }
           let needLog = false
           if (options.logLevel === 'NOTE') {
             needLog = true
@@ -107,10 +114,15 @@ export function expand(options: NormalizeOptions): Plugin {
             }
           }
           if (needLog) {
-            decl.warn(helper.result, reason)
+            decl.warn(
+              helper.result,
+              appendDom2Docs(
+                reason,
+                dom2 ? getDom2PropertyDocsUrl(property) : undefined
+              )
+            )
           }
-          delete (decl as any)[BORDER_SHORTHAND_VAR_ORDER_WARNING]
-        }
+        })
         const isSame = res.length === 1 && res[0] === decl
         if (!isSame) {
           decl.replaceWith(res)

@@ -47,7 +47,6 @@ interface Array<T> {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                "unixVer": "3.90"
                "uniUtsPlugin": "√",
@@ -843,7 +842,6 @@ interface Array<T> {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                 "unixVer": "x"
             },
@@ -1085,7 +1083,6 @@ interface Array<T> {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                 "unixVer": "x"
             },
@@ -1288,7 +1285,6 @@ interface Array<T> {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                 "unixVer": "x"
             },
@@ -1447,7 +1443,6 @@ interface Array<T> {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "√",
                 "unixVer": "x"
             },

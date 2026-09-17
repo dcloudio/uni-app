@@ -686,7 +686,7 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
         importIds.push('customElements');
     }
     importIds.push('uni');
-    importCodes.unshift(`import { ${importIds.join(', ')} } from '${!isX ? '@dcloudio/uni-app-runtime' : '@dcloudio/uni-app-x-runtime'}'`);
+    importCodes.unshift(`import { ${importIds.join(', ')} } from '${uniCliShared.getHarmonyRuntimePackageName(isX, isDom2)}'`);
     context.emitFile({
         type: 'asset',
         fileName: 'uni_modules/index.generated.ets',

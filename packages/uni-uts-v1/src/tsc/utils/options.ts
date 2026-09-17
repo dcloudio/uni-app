@@ -31,15 +31,18 @@ function createTsConfigPaths(
       ]
     })
   }
+  const commonPaths = {
+    '@dcloudio/uni-app': [
+      path.resolve(__dirname, '../../../lib/tsconfig/types/dcloudio__uni-app'),
+    ],
+    vuex: [path.resolve(cliVitePath, 'node_modules/vuex')],
+    pinia: [path.resolve(cliVitePath, 'node_modules/pinia')],
+    'vue-i18n': [path.resolve(cliVitePath, 'node_modules/vue-i18n')],
+    ...virtualPaths,
+  }
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     const uniXTypesDir = path.resolve(__dirname, '../../../lib/uts/types/uni-x')
     return {
-      '@dcloudio/uni-app': [
-        path.resolve(
-          __dirname,
-          '../../../lib/tsconfig/types/dcloudio__uni-app'
-        ),
-      ],
       '@vue/shared': [
         path.resolve(uniXTypesDir, '@vue/shared/dist/shared.d.ts'),
       ],
@@ -56,23 +59,15 @@ function createTsConfigPaths(
         ),
       ],
       vue: [path.resolve(uniXTypesDir, '@vue/vue/dist/vue.d.ts')],
-      vuex: [path.resolve(cliVitePath, 'node_modules/vuex')],
-      ...virtualPaths,
+      ...commonPaths,
     }
   } else {
     return {
-      '@dcloudio/uni-app': [
-        path.resolve(
-          __dirname,
-          '../../../lib/tsconfig/types/dcloudio__uni-app'
-        ),
-      ],
       '@vue/runtime-core': [
         path.resolve(cliVitePath, 'node_modules/@vue/runtime-core'),
       ],
       vue: [path.resolve(cliVitePath, 'node_modules/@vue/runtime-core')],
-      vuex: [path.resolve(cliVitePath, 'node_modules/vuex')],
-      ...virtualPaths,
+      ...commonPaths,
     }
   }
 }

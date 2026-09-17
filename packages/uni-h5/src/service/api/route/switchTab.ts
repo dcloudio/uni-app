@@ -17,7 +17,7 @@ import {
 import { navigate } from './utils'
 import { ON_HIDE } from '@dcloudio/uni-shared'
 
-export function removeNonTabBarPages() {
+export function removeNonTabBarPages(targetPageId?: number) {
   const curTabBarPageVm = getCurrentPageVm()
   if (!curTabBarPageVm) {
     return
@@ -29,10 +29,15 @@ export function removeNonTabBarPages() {
     if (!page.$.__isTabBar) {
       removePage(routeKey)
     } else {
-      page.$.__isActive = false
+      page.$.__isActive =
+        targetPageId !== undefined && getPage$BasePage(page).id === targetPageId
     }
   }
-  if (curTabBarPageVm.$.__isTabBar) {
+  if (
+    curTabBarPageVm.$.__isTabBar &&
+    (targetPageId === undefined ||
+      getPage$BasePage(curTabBarPageVm).id !== targetPageId)
+  ) {
     curTabBarPageVm.$.__isVisible = false
     invokeHook(curTabBarPageVm, ON_HIDE)
   }
@@ -72,15 +77,15 @@ export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
       return
     }
 
-    return (
-      removeNonTabBarPages(),
-      navigate(
-        { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-        getTabBarPageId(url)
-      )
-        .then(resolve)
-        .catch(reject)
+    if (!__X__) {
+      removeNonTabBarPages()
+    }
+    return navigate(
+      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+      __X__ ? undefined : getTabBarPageId(url)
     )
+      .then(resolve)
+      .catch(reject)
   },
   SwitchTabProtocol,
   SwitchTabOptions

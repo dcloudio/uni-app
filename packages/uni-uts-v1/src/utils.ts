@@ -1,6 +1,7 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
 import type {
+  UTSBridge,
   UTSOutputOptions,
   UTSResult,
   UTSTarget,
@@ -29,6 +30,7 @@ import type { ClassMeta } from './code'
 import { uvueOutDir } from './uvue'
 import type { KotlinCompilerServer } from './kotlin'
 import type { SwiftCompilerServer } from './swift'
+import { resolveConfigJsonCacheFile } from './manifest/config'
 
 type UTSPluginPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 interface ToOptions {
@@ -224,6 +226,7 @@ export interface UTSPlatformResourceOptions {
   result: UTSResult
   provider?: { name: string; service: string; class: string }
   uniModules: string[]
+  utsBridge?: boolean
 }
 
 export function genUTSPlatformResource(
@@ -283,7 +286,8 @@ export function genUTSPlatformResource(
     options.components,
     options.customElements,
     options.package,
-    options.provider
+    options.provider,
+    options.utsBridge
   )
 
   // 生产模式下，需要将生成的平台文件转移到 src 下
@@ -654,7 +658,9 @@ export function genConfigJson(
   is_uni_modules: boolean,
   inputDir: string,
   outputDir: string,
-  provider?: { name: string; service: string; class: string }
+  cacheDir: string,
+  provider?: { name: string; service: string; class: string },
+  utsBridge?: boolean
 ) {
   // 不过滤了，只要有，就copy
   // if (!Object.keys(components).length && !hookClass && !provider) {
@@ -684,8 +690,19 @@ export function genConfigJson(
     platform === 'app-android'
       ? parseKotlinPackageWithPluginId(pluginId, is_uni_modules) + '.'
       : parseSwiftPackageWithPluginId(pluginId, is_uni_modules),
-    provider
+    provider,
+    utsBridge
   )
+  // 存储到缓存目录，缓存有效时直接恢复
+  const configJsonCacheFile = resolveConfigJsonCacheFile(
+    pluginRelativeDir,
+    cacheDir,
+    platform
+  )
+  const configJsonDestFile = resolve(utsOutputDir, 'config.json')
+  if (configJsonCacheFile && fs.existsSync(configJsonDestFile)) {
+    fs.copySync(configJsonDestFile, configJsonCacheFile)
+  }
 }
 
 function copyConfigJson(
@@ -697,7 +714,8 @@ function copyConfigJson(
   componentsObj: Record<string, string>,
   customElementsObj: Record<string, string> | undefined,
   namespace: string,
-  provider?: { name: string; service: string; class: string }
+  provider?: { name: string; service: string; class: string },
+  utsBridge?: boolean
 ) {
   const configJsonFilename = resolve(inputDir, 'config.json')
   const outputConfigJsonFilename = resolve(outputDir, 'config.json')
@@ -720,7 +738,8 @@ function copyConfigJson(
     hasCustomElements ||
     hasHookClass ||
     hasProvider ||
-    delegateClassList.length
+    delegateClassList.length ||
+    utsBridge
   ) {
     //存在组件
     if (hasComponents) {
@@ -775,6 +794,10 @@ function copyConfigJson(
       } else if (Array.isArray(configJson.components)) {
         addComponentDelegateClass(configJson.components, delegateClassList)
       }
+    }
+
+    if (utsBridge) {
+      configJson.utsMethodRegister = `${namespace}UniUTSMethodRegister`
     }
 
     fs.outputFileSync(
@@ -1516,4 +1539,18 @@ export function requireUTSPluginCode(pluginId: string, _isExtApi: boolean) {
   //   return `export default uni`
   // }
   return `export default uni.requireUTSPlugin('uni_modules/${pluginId}')`
+}
+
+export function hasUTSBridgeCode(
+  bridge?: UTSBridge | undefined
+): bridge is UTSBridge {
+  if (!bridge) {
+    return false
+  }
+  return (
+    !!bridge.uts_bridge_name &&
+    (bridge.classes.length > 0 ||
+      bridge.functions.length > 0 ||
+      bridge.interfaces.length > 0)
+  )
 }

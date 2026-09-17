@@ -61,6 +61,13 @@ export * from '../../../service/api/route/redirectTo'
 export * from '../../../service/api/route/reLaunch'
 export * from '../../../service/api/route/switchTab'
 export * from '../../../service/api/route/preloadPage'
+export {
+  onAppRoute,
+  offAppRoute,
+  onBeforeAppRoute,
+  offBeforeAppRoute,
+  rewriteRoute,
+} from '../../../service/api/route/appRoute'
 
 export { showToast, hideToast } from '../../../service/api/ui/popup/showToast'
 export * from '../../../service/api/ui/loadFontFace'
@@ -137,6 +144,7 @@ export * from './route/openDialogPage'
 export * from './route/closeDialogPage'
 export * from './pages'
 export * from './worker/createWorker'
+export * from './base/uasm'
 //#endif
 
 // export * from '@dcloudio/uni-ext-api/uni-getLaunchOptionsSync'

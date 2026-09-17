@@ -1,0 +1,9 @@
+<template>
+  <view class="global-class" />
+</template>
+
+<script setup>
+defineOptions({
+  styleIsolation: 'app',
+})
+</script>

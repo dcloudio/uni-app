@@ -22,7 +22,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   setup(props, { slots, expose }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const isVertical = inject('__listViewIsVertical') as ComputedRef<boolean>
-    const placeholderSize = ref(0)
+    /**
+     * headPlaceholderSize的处理会显得比较怪，但是并不影响sticky-header的显示
+     */
+    const headPlaceholderSize = ref(0)
+    const tailPlaceholderSize = ref(0)
     const style = computed(() => {
       const padding = props.padding
       const paddingTop = padding[0]
@@ -30,16 +34,22 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const paddingBottom = padding[2]
       const paddingLeft = padding[3]
       return {
-        paddingTop: paddingTop + 'px',
-        paddingRight: paddingRight + 'px',
+        paddingTop:
+          (isVertical.value
+            ? paddingTop + headPlaceholderSize.value
+            : paddingTop) + 'px',
+        paddingRight:
+          (isVertical.value
+            ? paddingRight
+            : paddingRight + tailPlaceholderSize.value) + 'px',
         paddingBottom:
           (isVertical.value
-            ? paddingBottom + placeholderSize.value
+            ? paddingBottom + tailPlaceholderSize.value
             : paddingBottom) + 'px',
         paddingLeft:
           (isVertical.value
             ? paddingLeft
-            : paddingLeft + placeholderSize.value) + 'px',
+            : paddingLeft + headPlaceholderSize.value) + 'px',
       }
     })
 
@@ -53,7 +63,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       type: 'StickySection',
       headSize,
       tailSize,
-      placeholderSize,
+      headPlaceholderSize,
+      tailPlaceholderSize,
     }
     expose({
       __listViewChildStatus: status,
