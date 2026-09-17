@@ -285,6 +285,8 @@ export async function compile(
   const useProxyCodeV2 =
     process.env.UNI_APP_X_DOM2 === 'true' &&
     process.env.UNI_UTS_PLATFORM === 'app-android'
+  const isWgtProxyCode =
+    process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' && useProxyCodeV2
 
   const decls = await prepareProxyCodeAndFillOptions(
     pluginDir,
@@ -297,9 +299,10 @@ export async function compile(
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
-    // uts 插件 wgt 模式，本地资源模式不需要编译、ext-api模式也不需要编译（已经有前置编译过了）
+    // WGT 的 Android 蒸汽模式仍需转译 UTS，以获取生成代理代码所需的桥接信息。
+    // 其他 WGT 模式及已前置编译的 ext-api 无需再次编译。
     if (
-      process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
+      (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' && !useProxyCodeV2) ||
       // 当编译 ext-api 中的 pages/components 时，不需要编译 utssdk 插件
       (process.env.UNI_COMPILE_TARGET === 'ext-api' &&
         (process.env.UNI_COMPILE_EXT_API_TYPE === 'pages' ||
@@ -368,12 +371,13 @@ export async function compile(
                 join(pluginRelativeDir, 'utssdk', 'app-android', 'index.kt')
               )
             : '',
+          noEmit: isWgtProxyCode,
         })
         if (result) {
-          if (result.inject_apis) {
+          if (!isWgtProxyCode && result.inject_apis) {
             inject_apis.push(...result.inject_apis)
           }
-          if (result.scoped_slots) {
+          if (!isWgtProxyCode && result.scoped_slots) {
             scoped_slots.push(...result.scoped_slots)
           }
           const custom_elements = result.custom_elements || {}
@@ -396,7 +400,7 @@ export async function compile(
               )
           }
         }
-        if (!isCompileUniModules && cacheDir) {
+        if (!isCompileUniModules && !isWgtProxyCode && cacheDir) {
           // 存储 sourcemap
           storeSourceMap(
             'app-android',
