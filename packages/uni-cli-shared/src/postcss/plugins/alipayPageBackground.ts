@@ -61,6 +61,15 @@ function getPageSelectorInfo(rule: Rule) {
   }
 }
 
+function isRemovableRule(rule: Rule) {
+  const nodes = rule.nodes
+  // The rule can be removed when it has no child nodes, or only comments left
+  // (comments do not need to be kept)
+  return (
+    !nodes || !nodes.length || nodes.every((node) => node.type === 'comment')
+  )
+}
+
 export function createBackgroundRule(origRule: Rule, selector: string) {
   const bgDecls: Declaration[] = []
   const nodes = origRule.nodes ? [...origRule.nodes] : []
@@ -90,7 +99,7 @@ export function createBackgroundRule(origRule: Rule, selector: string) {
   const backgroundRule = rule({ selector }).append(bgDecls)
   backgroundRule.raws.before = origRule.raws.before || '\n'
   origRule.after(backgroundRule)
-  if (!origRule.nodes?.length) {
+  if (isRemovableRule(origRule)) {
     origRule.remove()
   }
 }

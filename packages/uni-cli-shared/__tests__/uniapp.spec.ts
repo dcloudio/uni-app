@@ -106,7 +106,7 @@ describe('uniapp postcss plugin', () => {
     )
   })
 
-  test('handles comments inside page rules', async () => {
+  test('removes page rule when only comments are left', async () => {
     const result = await createProcessor().process(
       `page {
   /* comment */
@@ -117,10 +117,7 @@ describe('uniapp postcss plugin', () => {
     )
 
     expect(normalizeCss(result.css)).toBe(
-      normalizeCss(`page {
-  /* comment */
-}
-:root {
+      normalizeCss(`:root {
   --page-bg: #f8f8f8;
   background-color: var(--page-bg)
 }`)
