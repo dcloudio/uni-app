@@ -26,17 +26,17 @@ export function addSafeAreaInsets (result) {
   }
 }
 
-export function getOSInfo (system, platform) {
+export function getOSInfo (system = '', platform = '') {
   /**
    * system 枚举值说明：
    *
    * weixin: 操作系统及版本
    * qq: 操作系统及版本
    * kuaishou: 操作系统及版本
+   * toutiao/douyin: 操作系统及版本
    *
    * alipay、dingding: 系统版本
    * baidu: 操作系统版本
-   * toutiao/douyin: 操作系统版本
    * jd: 操作系统版本
    * harmony: 操作系统版本
    *
@@ -47,7 +47,7 @@ export function getOSInfo (system, platform) {
 
   if (
     platform &&
-    (__PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-jd' || __PLATFORM__ === 'mp-harmony')
+    (__PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-jd' || __PLATFORM__ === 'mp-harmony')
   ) {
     osName = platform
     osVersion = system
@@ -83,9 +83,9 @@ export function getOSInfo (system, platform) {
   }
 
   return {
-    osName,
-    osVersion,
-    system
+    osName: osName.trim(),
+    osVersion: osVersion.trim(),
+    system: system.trim()
   }
 }
 
@@ -126,15 +126,20 @@ export function getPlatform (platform) {
 }
 
 export function populateParameters (result) {
-  const {
+  let {
     brand = '', model = '', system = '',
-    language = '', theme, version,
-    platform, fontSizeSetting,
+    language = '', theme, version = '',
+    platform = '', fontSizeSetting,
     SDKVersion, pixelRatio, deviceOrientation
   } = result
   // const isQuickApp = __PLATFORM__.indexOf('quickapp-webview') !== -1
 
   const extraParam = {}
+
+  if (__PLATFORM__ === 'mp-jd') {
+    system = `${system} ${version}`
+    system = system.trim()
+  }
 
   // osName osVersion
   const { osName, osVersion, system: updatedSystem } = getOSInfo(system, platform)
@@ -213,7 +218,7 @@ export function populateParameters (result) {
   Object.assign(result, parameters, extraParam)
 }
 
-export function getGetDeviceType (result, model) {
+export function getGetDeviceType (result, model = '') {
   const platform = result.platform || ''
   let deviceType = result.deviceType || 'phone'
   if (__PLATFORM__ !== 'mp-baidu') {

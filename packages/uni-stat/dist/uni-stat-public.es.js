@@ -3086,6 +3086,14 @@ const MP_WEIXIN_PRELOAD_TIMEOUT_MS = 30000;
  */
 const MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS = 2000;
 /**
+ * App 渠道首包 flush 延迟（ms）。
+ *
+ * App 自定义渠道来自原生 `plus.runtime.channel`。极少数设备/基座上，统计 install
+ * 或首个 lt=1 入队时该值可能还未就绪；给首个自动 flush 一个很短的窗口，发送前
+ * `collector.resolveUploadFields` 会再次读取并补齐 `ch`。设为 `0` 可关闭。
+ */
+const APP_CHANNEL_FIRST_FLUSH_DELAY_MS = 300;
+/**
  * 单条事件序列化后允许的最大字节数。
  *
  * 阈值取舍：
@@ -3781,6 +3789,66 @@ function createCollector(deps) {
         }, undefined);
     }
     /**
+     * flush 前补运行时字段。
+     *
+     * 典型场景：App 端首个 Launch 事件入队时 `plus.runtime.channel` 暂不可读，
+     * 但真正发送前已经就绪；此时应以发送前的原生运行时值覆盖本批事件的 `ch`。
+     */
+    function applyUploadFields(bucket) {
+        const fields = deps.resolveUploadFields ? deps.resolveUploadFields() : {};
+        const keys = Object.keys(fields).filter((key) => {
+            const v = fields[key];
+            return v !== '' && v !== undefined && v !== null;
+        });
+        if (keys.length === 0)
+            return;
+        for (const lt of Object.keys(bucket)) {
+            const list = bucket[lt];
+            if (!Array.isArray(list))
+                continue;
+            for (let i = 0; i < list.length; i++) {
+                const item = list[i];
+                for (let j = 0; j < keys.length; j++) {
+                    const key = keys[j];
+                    item[key] = fields[key];
+                }
+            }
+        }
+    }
+    function applyUploadFieldsToRequests(requests) {
+        const fields = deps.resolveUploadFields ? deps.resolveUploadFields() : {};
+        const keys = Object.keys(fields).filter((key) => {
+            const v = fields[key];
+            return v !== '' && v !== undefined && v !== null;
+        });
+        if (keys.length === 0)
+            return requests;
+        try {
+            const events = JSON.parse(requests);
+            if (!Array.isArray(events))
+                return requests;
+            for (let i = 0; i < events.length; i++) {
+                const item = events[i];
+                if (!item || typeof item !== 'object')
+                    continue;
+                for (let j = 0; j < keys.length; j++) {
+                    const key = keys[j];
+                    item[key] = fields[key];
+                }
+            }
+            return JSON.stringify(events);
+        }
+        catch (_a) {
+            return requests;
+        }
+    }
+    function applyUploadFieldsToPayload(payload) {
+        const requests = applyUploadFieldsToRequests(payload.requests);
+        if (requests === payload.requests)
+            return payload;
+        return Object.assign({}, payload, { requests });
+    }
+    /**
      * 真正发送：取快照、序列化、挑通道、按双阈值切片、串行发送，根据结果 commit/persist。
      *
      * 切片策略（修复 image url too long 死循环）：
@@ -3816,6 +3884,7 @@ function createCollector(deps) {
             const snapshot = deps.queue.flush();
             if (!snapshot)
                 return;
+            applyUploadFields(snapshot);
             const channel = deps.selectChannel();
             if (!channel) {
                 logger.warn('[uni统计 2.0] 无可用上报线路，本批已回滚队列');
@@ -3958,8 +4027,9 @@ function createCollector(deps) {
             let i = 0;
             for (const payload of items) {
                 i++;
+                const uploadPayload = applyUploadFieldsToPayload(payload);
                 try {
-                    yield channel.send(payload);
+                    yield channel.send(uploadPayload);
                     if (payload._id)
                         deps.retry.ack(payload._id);
                     logRecoverItem({
@@ -4792,7 +4862,8 @@ function createStatDataBuilder(deps) {
  * 统计上行字段 `ch` 应优先读取该运行时值，而非 manifest 静态配置。
  *
  * 职责：
- *   - 仅 App 端（`isApp()`）尝试读取 `plus.runtime.channel`。
+ *   - App 端（`isApp()`）尝试读取 `plus.runtime.channel`。
+ *   - 若构建期平台变量缺失但运行时已存在 `plus.runtime`，也信任原生运行时作为 App 信号。
  *   - 任意 API 缺失 / 抛错 → 降级 `''`，不阻断 install。
  *   - 返回值统一为 `string`（原生偶发返回数字时转为字符串）。
  */
@@ -4817,9 +4888,9 @@ function normalizeChannelValue(value) {
  * @returns 渠道字符串；未配置或读取失败时为 `''`。
  */
 function getAppChannel() {
-    if (!isApp())
-        return '';
     const plus = getGlobalObject().plus;
+    if (!isApp() && !(plus === null || plus === void 0 ? void 0 : plus.runtime))
+        return '';
     const raw = tryRun(() => { var _a; return (_a = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _a === void 0 ? void 0 : _a.channel; }, undefined);
     return normalizeChannelValue(raw);
 }
@@ -6395,14 +6466,27 @@ class StatApp {
     /**
      * 解析上行渠道字段 `ch`。
      *
-     * 优先级：显式配置（manifest / install 入参）> `plus.runtime.channel`（云打包渠道包）> `''`。
-     * 与私有版一致，默认从原生运行时读取；仅当业务方显式传入非空 `ch` 时才覆盖。
+     * App 渠道包标识只能以原生运行时为准：`plus.runtime.channel`。
+     * `manifest.uniStatistics.ch` 是静态配置，不能区分同一项目打出的多渠道包。
+     * 非 App 端没有 `plus.runtime.channel` 语义，保留手动 install 传入 `ch` 的能力。
      */
     resolveChannel(explicit) {
+        if (isApp()) {
+            return getAppChannel();
+        }
         if (typeof explicit === 'string' && explicit.length > 0) {
             return explicit;
         }
-        return getAppChannel();
+        return '';
+    }
+    resolveFirstFlushDeferMs() {
+        if (getRawPlatform() === 'mp-weixin' && MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT) {
+            return MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS;
+        }
+        if (isApp() && !getAppChannel()) {
+            return APP_CHANNEL_FIRST_FLUSH_DELAY_MS;
+        }
+        return 0;
     }
     normalizeConfig(c) {
         var _a, _b, _c, _d;
@@ -6428,7 +6512,14 @@ class StatApp {
     buildCollectorDeps(cfg, patch) {
         const platformShort = getPlatform();
         const builder = createStatDataBuilder({
-            config: { ak: cfg.ak, usv: STAT_VERSION_PUBLIC, v: cfg.v, ch: cfg.ch },
+            config: {
+                ak: cfg.ak,
+                usv: STAT_VERSION_PUBLIC,
+                v: cfg.v,
+                get ch() {
+                    return isApp() ? getAppChannel() : cfg.ch;
+                },
+            },
             platform: {
                 ut: platformShort,
             },
@@ -6501,11 +6592,13 @@ class StatApp {
                 touch: touch,
             },
             config: { usv: STAT_VERSION_PUBLIC },
+            resolveUploadFields: () => {
+                const ch = getAppChannel();
+                return ch ? { ch } : {};
+            },
             nowMs,
             nowSec,
-            firstFlushDeferMs: getRawPlatform() === 'mp-weixin' && MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
-                ? MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS
-                : 0,
+            firstFlushDeferMs: this.resolveFirstFlushDeferMs(),
             isNetworkOffline,
         };
         return Object.assign(base, patch);
@@ -6548,7 +6641,7 @@ function __resetStatApp() {
  */
 /**
  * 从 `process.env.UNI_STATISTICS_CONFIG`（plugin 注入的 manifest.uniStatistics 序列化串）
- * 读取业务配置，把已知字段映射为 StatApp.install 的 partial config。
+ * 读取业务配置，把已知行为字段映射为 StatApp.install 的 partial config。
  *
  * ## 字段命名严格对齐私有版
  *
@@ -6576,6 +6669,12 @@ function __resetStatApp() {
  * 公有版早期内部测试用了带 `Sec` 后缀的命名（`reportIntervalSec / backgroundTimeoutSec /
  * pageInactiveTimeoutSec`），未对外发布但已在示例中出现过；本函数同时接受这两套写法，
  * **优先取私有版命名**（无后缀），别名仅作向后兼容。
+ *
+ * ## 上行身份字段不从 manifest 读取
+ *
+ * `ak / v / ch` 均有更可信的数据源：`ak` 取构建期应用 AppID，`v` 取运行时版本，
+ * App 端 `ch` 取 `plus.runtime.channel`。这些字段不应由
+ * `manifest.uniStatistics` 静态覆盖，尤其多渠道包会因此被固定到默认渠道。
  *
  * ## 内部接入参数不可自定义
  *
@@ -6657,12 +6756,6 @@ function readManifestStatConfig() {
                 cfg.enablePageLog = items.uniStatPageLog;
             }
         }
-        if (typeof obj.ak === 'string' && obj.ak)
-            cfg.ak = obj.ak;
-        if (typeof obj.v === 'string')
-            cfg.v = obj.v;
-        if (typeof obj.ch === 'string')
-            cfg.ch = obj.ch;
         return Object.keys(cfg).length > 0 ? cfg : undefined;
     }
     catch (e) {
@@ -6759,6 +6852,7 @@ function installPublicStat(opts = {}) {
     // 优先级：opts.config（手动覆盖） > manifest.uniStatistics（plugin 注入） > 默认值。
     // 这样业务/灰度同学既能在 manifest 里改超时阈值（生产路径），
     // 也能用 installPublicStat({ config: {...} }) 在测试环境强行覆盖（接入调试）。
+    // 注意：manifest 仅解析行为配置，不解析 ak/v/ch；App 渠道始终由 plus.runtime.channel 决定。
     const fromManifest = readManifestStatConfig();
     const finalConfig = Object.assign({}, fromManifest, opts.config);
     const app = getStatApp();

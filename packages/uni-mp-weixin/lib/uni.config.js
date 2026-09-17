@@ -34,6 +34,7 @@ module.exports = {
       'custom-tab-bar',
       'functional-pages',
       'project.private.config.json',
+      'project.config.json',
       ...getMiniProgramAIPaths(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM)
     ]
     const dirs = getSubpackageRoots().map((root) => normalizePath(path.join(root, COMPONENTS_DIR_NAME)))

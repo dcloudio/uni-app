@@ -828,17 +828,17 @@ function addSafeAreaInsets (result) {
   }
 }
 
-function getOSInfo (system, platform) {
+function getOSInfo (system = '', platform = '') {
   /**
    * system 枚举值说明：
    *
    * weixin: 操作系统及版本
    * qq: 操作系统及版本
    * kuaishou: 操作系统及版本
+   * toutiao/douyin: 操作系统及版本
    *
    * alipay、dingding: 系统版本
    * baidu: 操作系统版本
-   * toutiao/douyin: 操作系统版本
    * jd: 操作系统版本
    * harmony: 操作系统版本
    *
@@ -849,7 +849,7 @@ function getOSInfo (system, platform) {
 
   if (
     platform &&
-    ( "mp-toutiao" === 'mp-toutiao'  )
+    ( "mp-toutiao" === 'mp-harmony')
   ) {
     osName = platform;
     osVersion = system;
@@ -883,9 +883,9 @@ function getOSInfo (system, platform) {
   }
 
   return {
-    osName,
-    osVersion,
-    system
+    osName: osName.trim(),
+    osVersion: osVersion.trim(),
+    system: system.trim()
   }
 }
 
@@ -922,10 +922,10 @@ function getPlatform (platform) {
 }
 
 function populateParameters (result) {
-  const {
+  let {
     brand = '', model = '', system = '',
-    language = '', theme, version,
-    platform, fontSizeSetting,
+    language = '', theme, version = '',
+    platform = '', fontSizeSetting,
     SDKVersion, pixelRatio, deviceOrientation
   } = result;
   // const isQuickApp = "mp-toutiao".indexOf('quickapp-webview') !== -1
@@ -999,7 +999,7 @@ function populateParameters (result) {
   Object.assign(result, parameters, extraParam);
 }
 
-function getGetDeviceType (result, model) {
+function getGetDeviceType (result, model = '') {
   const platform = result.platform || '';
   let deviceType = result.deviceType || 'phone';
   {
@@ -1053,6 +1053,30 @@ var getSystemInfo = {
     useDeviceId(result);
     addSafeAreaInsets(result);
     populateParameters(result);
+  }
+};
+
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
+var getDeviceInfo = {
+  returnValue: function (result) {
+    let { brand, model, system = '', platform = '' } = result;
+    const deviceType = getGetDeviceType(result, model);
+    const deviceBrand = getDeviceBrand(brand);
+    useDeviceId(result);
+
+    const { osName, osVersion } = getOSInfo(system, platform);
+
+    result = Object.assign(result, {
+      deviceType,
+      deviceBrand,
+      deviceModel: model,
+      osName,
+      osVersion,
+      platform: getPlatform(platform)
+    });
   }
 };
 
@@ -1210,7 +1234,10 @@ const protocols = {
         toArgs.animation = false;
       }
     }
-  }
+  },
+  getDeviceInfo: Object.assign({}, getDeviceInfo, {
+    name: tt.canIUse('getDeviceInfoSync') ? 'getDeviceInfoSync' : 'getSystemInfoSync'
+  })
 };
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
@@ -1284,12 +1311,14 @@ function wrapper (methodName, method) {
       if (typeof arg2 !== 'undefined') {
         args.push(arg2);
       }
+      // methodName 保留公开 API 名，仅使用 apiName 调用平台 API
+      let apiName = methodName;
       if (isFn(options.name)) {
-        methodName = options.name(arg1);
+        apiName = options.name(arg1);
       } else if (isStr(options.name)) {
-        methodName = options.name;
+        apiName = options.name;
       }
-      const returnValue = tt[methodName].apply(tt, args);
+      const returnValue = tt[apiName].apply(tt, args);
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }
