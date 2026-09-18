@@ -385,6 +385,88 @@ describe('uasm', () => {
     ).toBe("uni.loadUasmSync('uni_modules/test-uasm');\n")
   })
 
+  test('transform Harmony UTS loadUasm to the library name', () => {
+    const originalDom2 = process.env.UNI_APP_X_DOM2
+    const originalTargetArchs = process.env.UNI_APP_X_TARGET_ARCHS
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_APP_X_TARGET_ARCHS = JSON.stringify(['arm64-v8a'])
+    fs.outputFileSync(
+      path.join(
+        inputDir,
+        'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libUasmTestUasm.so'
+      ),
+      ''
+    )
+    initUasmModules(inputDir)
+
+    try {
+      const creator = initUasmTransformerCreator('app-harmony')!
+      const output = ts.transpileModule(
+        `uni.loadUasmSync('uni_modules/test-uasm')`,
+        {
+          transformers: {
+            before: [creator(ts).before],
+          },
+        }
+      ).outputText
+
+      expect(output).toContain(
+        `import { TestUasm } from "@/uni_modules/test-uasm";`
+      )
+      expect(output).toContain(`uni.loadUasmSync("libUasmTestUasm.so")`)
+    } finally {
+      if (originalDom2 === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      } else {
+        process.env.UNI_APP_X_DOM2 = originalDom2
+      }
+      if (originalTargetArchs === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_APP_X_TARGET_ARCHS')
+      } else {
+        process.env.UNI_APP_X_TARGET_ARCHS = originalTargetArchs
+      }
+    }
+  })
+
+  test('resolve Harmony UASM type imports across plugins', () => {
+    const originalDom2 = process.env.UNI_APP_X_DOM2
+    process.env.UNI_APP_X_DOM2 = 'true'
+    fs.outputFileSync(
+      path.join(
+        inputDir,
+        'uni_modules/plugin-b/uasm/app-harmony/libs/arm64-v8a/libUasmPluginB.so'
+      ),
+      ''
+    )
+    initUasmModules(inputDir)
+
+    try {
+      const creator = initUasmTransformerCreator('app-harmony')!
+      const output = ts.transpileModule(
+        `uni.loadUasmSync('uni_modules/plugin-b')`,
+        {
+          fileName: path.join(
+            inputDir,
+            'uni_modules/plugin-a/utssdk/app-harmony/index.uts.ts'
+          ),
+          transformers: {
+            before: [creator(ts).before],
+          },
+        }
+      ).outputText
+
+      expect(output).toContain(
+        `import { PluginB } from "@/uni_modules/plugin-b";`
+      )
+    } finally {
+      if (originalDom2 === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      } else {
+        process.env.UNI_APP_X_DOM2 = originalDom2
+      }
+    }
+  })
+
   test('resolve the first existing target arch from cache', () => {
     fs.outputFileSync(
       path.join(

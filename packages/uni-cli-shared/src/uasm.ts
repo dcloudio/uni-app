@@ -36,6 +36,7 @@ export interface LoadUasmTransformerOptions extends LoadUasmTransformOptions {
   typescript: TypeScriptCompiler
   methodNames?: readonly string[]
   resolveLoader?: (modulePath: string) => ResolvedUasmLoader | undefined
+  resolveType?: (modulePath: string) => UasmTypeDescriptor | undefined
   onSourceEdit?: (edit: UasmSourceEdit) => void
   resolveError?: (modulePath: string) => string
   reportDiagnostic(
@@ -85,6 +86,11 @@ export interface UasmLoaderDescriptor {
   type: string
   value: string
   imports?: string[]
+}
+
+export interface UasmTypeDescriptor {
+  name: string
+  source: string
 }
 
 export type ResolvedUasmLoader = string | UasmLoaderDescriptor
@@ -160,6 +166,8 @@ export function initUasmTransformerCreator(
           : platform === 'app-ios'
           ? resolveUasmIOSLoader
           : undefined,
+      resolveType:
+        platform === 'app-harmony' ? resolveUasmHarmonyType : undefined,
       reportDiagnostic(context, diagnostic) {
         const utsContext = context as TransformationContext & {
           error?(diagnostic: DiagnosticWithLocation): void
@@ -223,6 +231,7 @@ export function createLoadUasmTransformer(
 
     return (sourceFile) => {
       const imports = new Set<string>()
+      const typeImports = new Map<string, string>()
       const visitor = (node: Node): VisitResult<Node> => {
         if (
           typescript.isCallExpression(node) &&
@@ -270,6 +279,11 @@ export function createLoadUasmTransformer(
             loader.imports?.forEach((module) => imports.add(module))
           }
 
+          const type = options.resolveType?.(firstArg.text)
+          if (type && !node.typeArguments?.length) {
+            typeImports.set(type.source, type.name)
+          }
+
           options.onSourceEdit?.({
             start: firstArg.getStart(sourceFile),
             end: firstArg.getEnd(),
@@ -278,7 +292,9 @@ export function createLoadUasmTransformer(
           return factory.updateCallExpression(
             node,
             node.expression,
-            node.typeArguments,
+            type && !node.typeArguments?.length
+              ? [factory.createTypeReferenceNode(type.name)]
+              : node.typeArguments,
             [
               typeof resolved === 'string'
                 ? factory.createStringLiteral(resolved)
@@ -324,7 +340,7 @@ export function createLoadUasmTransformer(
         sourceFile,
         visitor
       ) as SourceFile
-      if (!imports.size) {
+      if (!imports.size && !typeImports.size) {
         return transformed
       }
       return factory.updateSourceFile(transformed, [
@@ -333,6 +349,23 @@ export function createLoadUasmTransformer(
             undefined,
             undefined,
             factory.createStringLiteral(module)
+          )
+        ),
+        ...Array.from(typeImports).map(([source, name]) =>
+          factory.createImportDeclaration(
+            undefined,
+            factory.createImportClause(
+              false,
+              undefined,
+              factory.createNamedImports([
+                factory.createImportSpecifier(
+                  false,
+                  undefined,
+                  factory.createIdentifier(name)
+                ),
+              ])
+            ),
+            factory.createStringLiteral(source)
           )
         ),
         ...transformed.statements,
@@ -363,6 +396,20 @@ function resolveUasmIOSLoader(modulePath: string) {
     type: `${type}.Type`,
     value: `${type}.self`,
     imports: [swiftModule],
+  }
+}
+
+function resolveUasmHarmonyType(
+  modulePath: string
+): UasmTypeDescriptor | undefined {
+  const moduleName = parseUasmModuleName(modulePath)
+  if (!moduleName) {
+    return
+  }
+  const typeName = capitalize(camelize(moduleName))
+  return {
+    name: typeName,
+    source: `@/uni_modules/${moduleName}`,
   }
 }
 
