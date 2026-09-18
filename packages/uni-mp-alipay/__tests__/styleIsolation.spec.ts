@@ -70,6 +70,18 @@ describe('mp-alipay: styleIsolation 2.0', () => {
     )
   })
 
+  test('v-pre 保留支付宝静态 class 隔离前缀', () => {
+    assert(
+      '<text v-pre class="label">{{title}}</text>',
+      `<text class="label -a-label -p-label">{{'{{'}}title{{'}}'}}</text>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = {}
+  return __returned__
+}`,
+      { filename, isX: true }
+    )
+  })
+
   test('动态 class 通过现有 uniView SJS 展开', () => {
     assert(
       '<view :class="klass"/>',
