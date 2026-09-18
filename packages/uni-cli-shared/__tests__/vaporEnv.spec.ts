@@ -160,17 +160,18 @@ describe('normalizeUniAppXVaporEnv', () => {
     }
   )
 
-  test('普通 uni-app Web 项目不因 .vapor 启用 Vapor', () => {
+  test('Web 项目根目录有 .vapor 时启用 Vapor', () => {
     setProjectDir(true)
     process.env.UNI_PLATFORM = 'h5'
 
     normalizeUniAppXVaporEnv()
 
-    expect(process.env.UNI_APP_X_VAPOR).toBeUndefined()
-    expect(process.env.UNI_APP_X_DOM2).toBeUndefined()
+    expect(process.env.UNI_APP_X).toBe('true')
+    expect(process.env.UNI_APP_X_VAPOR).toBe('true')
+    expect(process.env.UNI_APP_X_DOM2).toBe('true')
   })
 
-  test('Web Vapor 不从 manifest.json 补充 UNI_APP_X', () => {
+  test('Web Vapor 不依赖 manifest.json，仅读取 .vapor', () => {
     const projectDir = setProjectDir(true)
     const inputDir = path.join(projectDir, 'src')
     fs.mkdirSync(inputDir)
@@ -182,9 +183,9 @@ describe('normalizeUniAppXVaporEnv', () => {
 
     normalizeUniAppXVaporEnv()
 
-    expect(process.env.UNI_APP_X).toBeUndefined()
-    expect(process.env.UNI_APP_X_VAPOR).toBeUndefined()
-    expect(process.env.UNI_APP_X_DOM2).toBeUndefined()
+    expect(process.env.UNI_APP_X).toBe('true')
+    expect(process.env.UNI_APP_X_VAPOR).toBe('true')
+    expect(process.env.UNI_APP_X_DOM2).toBe('true')
   })
 
   test.each([

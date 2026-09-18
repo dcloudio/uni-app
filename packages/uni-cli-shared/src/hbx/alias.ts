@@ -147,11 +147,13 @@ export function normalizeUniAppXVaporEnv() {
   const uniPlatform = process.env.UNI_PLATFORM
   const cliPlatform = resolveUniCliPlatform()
   const platform = cliPlatform || utsPlatform || uniPlatform
-  // UNI_APP_X 必须由启动方在 alias 初始化前注入。若未来改为读取 manifest.json，
-  // 需要重构启动顺序，在加载任何 compiler 模块前完成项目识别和 alias 初始化，
-  // 不能在这里增加延迟识别，否则会造成不同版本的 Vue compiler 混用。
   const webVaporConfigured = isWebPlatform(platform) && hasWebVaporConfig()
-  const isWebVapor = process.env.UNI_APP_X === 'true' && webVaporConfigured
+  // Web 以项目根目录的 .vapor 作为显式开关。HBuilderX dev 不会预先注入
+  // UNI_APP_X，因此这里需要同步补齐 uni-app x 环境标记。
+  const isWebVapor = webVaporConfigured
+  if (isWebVapor) {
+    process.env.UNI_APP_X = 'true'
+  }
 
   if (process.env.UNI_APP_X_VAPOR === 'true' || isWebVapor) {
     process.env.UNI_APP_X_DOM2 = 'true'
