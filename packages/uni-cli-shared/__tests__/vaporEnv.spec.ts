@@ -15,7 +15,6 @@ describe('normalizeUniAppXVaporEnv', () => {
     'UNI_INPUT_DIR',
     'UNI_PLATFORM',
     'UNI_UTS_PLATFORM',
-    'VITE_ROOT_DIR',
   ] as const
   const originalEnv = Object.fromEntries(
     envNames.map((name) => [name, process.env[name]])
@@ -28,7 +27,7 @@ describe('normalizeUniAppXVaporEnv', () => {
     if (withVapor) {
       fs.writeFileSync(path.join(projectDir, '.vapor'), '')
     }
-    process.env.VITE_ROOT_DIR = projectDir
+    process.env.UNI_INPUT_DIR = projectDir
     return projectDir
   }
 
@@ -123,9 +122,8 @@ describe('normalizeUniAppXVaporEnv', () => {
   test.each(['h5', 'web'])(
     '%s 平台根目录有 .vapor 时启用 Vapor 和 DOM2 状态',
     (platform) => {
-      const projectDir = setProjectDir(true)
+      setProjectDir(true)
       process.env.UNI_APP_X = 'true'
-      process.env.UNI_INPUT_DIR = path.join(projectDir, 'src')
       process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
 
       normalizeUniAppXVaporEnv()

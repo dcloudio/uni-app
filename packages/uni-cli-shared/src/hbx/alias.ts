@@ -108,10 +108,9 @@ function hasWebVaporConfig() {
   if (process.env.UNI_APP_X_VAPOR_BUILD === 'true') {
     return true
   }
-  // .vapor 位于 Vite 项目根目录。
-  const projectDir =
-    process.env.VITE_ROOT_DIR || process.env.UNI_INPUT_DIR || process.cwd()
-  return fs.existsSync(path.resolve(projectDir, '.vapor'))
+  // HBuilderX/CLI 会在加载框架前传入项目根目录。
+  const inputDir = process.env.UNI_INPUT_DIR
+  return !!inputDir && fs.existsSync(path.resolve(inputDir, '.vapor'))
 }
 
 function resolveUniCliPlatform() {
