@@ -5601,7 +5601,7 @@ function stringify(styles) {
     return ret;
 }
 
-function vOn(value, key) {
+function vOn(value, key, flags = 0) {
     const instance = getCurrentInstance();
     const ctx = instance.ctx;
     // 微信小程序，QQ小程序，当 setData diff 的时候，若事件不主动同步过去，会导致事件绑定不更新，（question/137217）
@@ -5626,12 +5626,16 @@ function vOn(value, key) {
     }
     else {
         // add
-        mpInstance[name] = createInvoker(value, instance);
+        mpInstance[name] = createInvoker(value, instance, (flags & 1 /* RuntimeEventFlags.Once */) !== 0);
     }
     return name;
 }
-function createInvoker(initialValue, instance) {
+function createInvoker(initialValue, instance, isOnce = false) {
     const invoker = (e) => {
+        if (invoker.once && invoker.called) {
+            return;
+        }
+        invoker.called = true;
         patchMPEvent(e);
         let args = [e];
         if (instance && instance.ctx.$getTriggerEventDetail) {
@@ -5662,6 +5666,8 @@ function createInvoker(initialValue, instance) {
             return res;
         }
     };
+    invoker.once = isOnce;
+    invoker.called = false;
     invoker.value = initialValue;
     return invoker;
 }
@@ -5945,7 +5951,7 @@ function setupDevtoolsPlugin() {
     // noop
 }
 
-const o = (value, key) => vOn(value, key);
+const o = (value, key, flags) => vOn(value, key, flags);
 const f = (source, renderItem) => vFor(source, renderItem);
 const d = (names, key) => dynamicSlot(names, key);
 const r = (name, props, key) => renderSlot(name, props, key);
