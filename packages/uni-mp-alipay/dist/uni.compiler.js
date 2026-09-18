@@ -314,6 +314,9 @@ const options = {
         copyOptions: {
             assets: uniCliShared.createCopyComponentDirs(COMPONENTS_DIR),
             targets: [
+                ...(process.env.UNI_APP_X === 'true'
+                    ? [uniCliShared.createMiniProgramUasmCopyTarget('mp-alipay')]
+                    : []),
                 ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
                     src: ['customize-tab-bar', 'preload.json', 'sitemap.json'],
