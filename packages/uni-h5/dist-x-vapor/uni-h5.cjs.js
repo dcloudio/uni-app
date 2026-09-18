@@ -1,4 +1,10 @@
 "use strict";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const uniShared = require("@dcloudio/uni-shared");
 const vue = require("vue");
@@ -227,16 +233,16 @@ function initNavigationBarI18n(navigationBar) {
     ]);
   }
 }
-function initTabBarI18n(tabBar2) {
-  if (isEnableLocale() && tabBar2.list) {
-    tabBar2.list.forEach((item) => {
+function initTabBarI18n(tabBar) {
+  if (isEnableLocale() && tabBar.list) {
+    tabBar.list.forEach((item) => {
       defineI18nProperty(item, ["text"]);
     });
   }
-  if (isEnableLocale() && tabBar2.midButton) {
-    defineI18nProperty(tabBar2.midButton, ["text"]);
+  if (isEnableLocale() && tabBar.midButton) {
+    defineI18nProperty(tabBar.midButton, ["text"]);
   }
-  return tabBar2;
+  return tabBar;
 }
 function initBridge(subscribeNamespace) {
   const emitter = new uniShared.Emitter();
@@ -651,7 +657,21 @@ function invokeHook(vm, name, args) {
     return;
   }
   const hooks = vm.$[name];
+  if (name === uniShared.ON_BACK_PRESS) {
+    return hooks && uniShared.invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true);
+  }
   return hooks && uniShared.invokeArrayFns(hooks, args);
+}
+function normalizeRoute(toRoute) {
+  if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
+    return toRoute;
+  }
+  let fromRoute = "";
+  const pages = getCurrentPages();
+  if (pages.length) {
+    fromRoute = get$pageByPage(pages[pages.length - 1]).route;
+  }
+  return getRealRoute(fromRoute, toRoute);
 }
 function getRealRoute(fromRoute, toRoute) {
   if (toRoute.indexOf("/") === 0) {
@@ -678,6 +698,52 @@ function getRouteOptions(path, alias = false) {
     );
   }
   return __uniRoutes.find((route) => route.path === path);
+}
+const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
+function isSystemDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
+}
+function getSystemDialogPages(parentPage) {
+  if (!parentPage)
+    return [];
+  return parentPage.$getSystemDialogPages();
+}
+function invokeNewDialogPageHook(page, hook) {
+  const currentPage = getCurrentPage();
+  let shouldInvoke = false;
+  if (!currentPage) {
+    shouldInvoke = true;
+  } else {
+    if (isSystemDialogPage(page)) {
+      const systemDialogPages = getSystemDialogPages(currentPage);
+      shouldInvoke = systemDialogPages.includes(page);
+    } else {
+      const dialogPages = currentPage.getDialogPages();
+      shouldInvoke = dialogPages.includes(page);
+    }
+  }
+  shouldInvoke && invokeHook(page.vm, hook);
+}
+function getPageInstanceByChild(child) {
+  var _a;
+  let pageInstance = child;
+  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
+const DIALOG_TAG = "dialog";
+const SYSTEM_DIALOG_TAG = "systemDialog";
+function isDialogPageInstance(vm) {
+  if (!vm)
+    return false;
+  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
+}
+function isNormalDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === DIALOG_TAG;
+}
+function isSystemDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
 }
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 let invokeViewMethodId = 1;
@@ -895,8 +961,7 @@ function useCustomEvent(ref, emit2) {
   };
 }
 function normalizeCustomEvent(name, domEvt, el, detail) {
-  let target;
-  target = uniShared.normalizeTarget(el);
+  const target = uniShared.normalizeTarget(el);
   return {
     type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
@@ -1013,13 +1078,106 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-uniShared.createRpx2Unit(
+const rpx2Unit = uniShared.createRpx2Unit(
   uniShared.defaultRpx2Unit.unit,
   uniShared.defaultRpx2Unit.unitRatio,
   uniShared.defaultRpx2Unit.unitPrecision
 );
+function transformRpx(value) {
+  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
+    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
+      return rpx2Unit(num + "rpx");
+    });
+  }
+  return value;
+}
+class UniElement extends Object {
+  constructor() {
+    super();
+    this._props = {};
+    this.__isUniElement = true;
+  }
+  attachVmProps(props2) {
+    this._props = props2;
+  }
+  getAttribute(qualifiedName) {
+    const name = shared.camelize(qualifiedName);
+    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
+    return attr2 === void 0 ? null : attr2;
+  }
+  getPage() {
+    var _a, _b;
+    return ((_b = (_a = this.__vnode) == null ? void 0 : _a.ctx) == null ? void 0 : _b.page) || null;
+  }
+  get uniPage() {
+    return this.getPage();
+  }
+  get dataset() {
+    if (!this.__uniDatasetMap) {
+      this.__uniDatasetMap = uniShared.createUniDOMStringMap(
+        this.__uniDataset || {}
+      );
+    }
+    return this.__uniDatasetMap;
+  }
+  setAttribute(qualifiedName, value) {
+    super.setAttribute(qualifiedName, value);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.set(qualifiedName, value);
+    }
+  }
+  removeAttribute(qualifiedName) {
+    super.removeAttribute(qualifiedName);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.delete(qualifiedName);
+    }
+  }
+  getBoundingClientRectAsync(callback) {
+    var _a, _b;
+    if (callback) {
+      const domRect = this.getBoundingClientRect();
+      try {
+        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      try {
+        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      return;
+    }
+    return new Promise((resolve, reject) => {
+      const domRect = this.getBoundingClientRect();
+      resolve(domRect);
+    });
+  }
+  get style() {
+    const originalStyle = super.style;
+    if (originalStyle.__patchRpx__) {
+      return originalStyle;
+    }
+    originalStyle.__patchRpx__ = true;
+    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
+    super.style.setProperty = function(property, value, priority) {
+      return originalSetProperty(
+        property,
+        value ? transformRpx(value + "") : value,
+        priority || void 0
+      );
+    };
+    return super.style;
+  }
+  get tagName() {
+    return super.tagName.replace(/^UNI-/, "");
+  }
+  get nodeName() {
+    return super.nodeName.replace(/^UNI-/, "");
+  }
+}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1079,7 +1237,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1155,7 +1313,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1239,7 +1397,7 @@ const props$q = {
     default: ""
   }
 };
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$q,
   emits: ["change"],
@@ -1340,7 +1498,7 @@ const props$p = {
     default: ""
   }
 };
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$p,
   setup(props2, {
@@ -1354,10 +1512,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
     const checkboxValue = vue.ref(props2.value);
     function getCheckBoxStyle(checked) {
       if (props2.disabled) {
-        return {
-          backgroundColor: "#E1E1E1",
-          borderColor: "#D1D1D1"
-        };
+        return {};
       }
       const style = {};
       if (checked) {
@@ -1416,7 +1571,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -1767,6 +1922,49 @@ function invokeCallback(id2, res, extras) {
   }
   return res;
 }
+function findInvokeCallbackByName(name) {
+  for (const key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      return true;
+    }
+  }
+  return false;
+}
+function removeKeepAliveApiCallback(name, callback) {
+  for (const key in invokeCallbacks) {
+    const item = invokeCallbacks[key];
+    if (item.callback === callback && item.name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
+}
+function removeAllKeepAliveApiCallbacks(name) {
+  for (const key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
+}
+function offKeepAliveApiCallback(name, eventTransport2) {
+  const eventName = eventTransport2 ? name : "api." + name;
+  const transport = eventTransport2 || UniServiceJSBridge;
+  transport.off(eventName);
+}
+function onKeepAliveApiCallback(name, eventTransport2) {
+  const eventName = eventTransport2 ? name : "api." + name;
+  const transport = eventTransport2 || UniServiceJSBridge;
+  transport.on(eventName, (res) => {
+    for (const key in invokeCallbacks) {
+      const opts = invokeCallbacks[key];
+      if (opts.name === name) {
+        opts.callback(res);
+      }
+    }
+  });
+}
+function createKeepAliveApiCallback(name, callback) {
+  return addInvokeCallback(invokeCallbackId++, name, callback, true);
+}
 const API_SUCCESS = "success";
 const API_FAIL = "fail";
 const API_COMPLETE = "complete";
@@ -1948,18 +2146,28 @@ function promisify(name, fn) {
     );
   };
 }
-function formatApiArgs(args, options) {
+function normalizeFormatApiParams(args) {
   const params = args[0];
-  if (!options || !options.formatArgs || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
+  if (shared.isPlainObject(params)) {
+    return params;
+  }
+  const normalizedParams = {};
+  args[0] = normalizedParams;
+  return normalizedParams;
+}
+function formatApiArgs(args, options) {
+  const rawParams = args[0];
+  if (!options || !options.formatArgs || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(rawParams)) {
     return;
   }
+  const params = normalizeFormatApiParams(args);
   const formatArgs = options.formatArgs;
   const keys = Object.keys(formatArgs);
   for (let i = 0; i < keys.length; i++) {
     const name = keys[i];
     const formatterOrDefaultValue = formatArgs[name];
     if (shared.isFunction(formatterOrDefaultValue)) {
-      const errMsg = formatterOrDefaultValue(args[0][name], params);
+      const errMsg = formatterOrDefaultValue(params[name], params);
       if (shared.isString(errMsg)) {
         return errMsg;
       }
@@ -1992,7 +2200,11 @@ function invokeFail(id2, name, errMsg, errRes = {}) {
   let res = shared.extend({ errMsg: apiErrMsg }, errRes);
   {
     if (typeof UniError !== "undefined") {
-      res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
+      const errOptions = shared.extend({}, errRes);
+      if (typeof errOptions.errSubject === "undefined") {
+        errOptions.errSubject = name;
+      }
+      res = new UniError(apiErrMsg, errOptions);
     }
   }
   return invokeCallback(id2, res);
@@ -2011,6 +2223,56 @@ function beforeInvokeApi(name, args, protocol, options) {
   if (errMsg) {
     return errMsg;
   }
+}
+function checkCallback(callback) {
+  if (!shared.isFunction(callback)) {
+    throw new Error(
+      'Invalid args: type check failed for args "callback". Expected Function'
+    );
+  }
+}
+function wrapperOnApi(name, fn, options) {
+  return (callback) => {
+    checkCallback(callback);
+    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
+    createKeepAliveApiCallback(name, callback);
+    if (isFirstInvokeOnApi) {
+      onKeepAliveApiCallback(name, options == null ? void 0 : options.eventTransport);
+      fn();
+    }
+  };
+}
+function wrapperOffApi(name, fn, options) {
+  return (callback) => {
+    const clearAll = (options == null ? void 0 : options.allowClearAll) === true && callback == null;
+    if (!clearAll) {
+      checkCallback(callback);
+    }
+    const errMsg = beforeInvokeApi(
+      name,
+      clearAll ? [] : [callback],
+      void 0,
+      options
+    );
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    const onApiName = name.replace("off", "on");
+    if (clearAll) {
+      removeAllKeepAliveApiCallbacks(onApiName);
+    } else {
+      removeKeepAliveApiCallback(onApiName, callback);
+    }
+    const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
+    if (!hasInvokeOnApi) {
+      offKeepAliveApiCallback(onApiName, options == null ? void 0 : options.eventTransport);
+      fn();
+    }
+  };
 }
 function parseErrMsg(errMsg) {
   if (!errMsg || shared.isString(errMsg)) {
@@ -2046,6 +2308,12 @@ function wrapperSyncApi(name, fn, protocol, options) {
 function wrapperAsyncApi(name, fn, protocol, options) {
   return wrapperTaskApi(name, fn, protocol, options);
 }
+function defineOnApi(name, fn, options) {
+  return wrapperOnApi(name, fn, options);
+}
+function defineOffApi(name, fn, options) {
+  return wrapperOffApi(name, fn, options);
+}
 function defineTaskApi(name, fn, protocol, options) {
   return promisify(
     name,
@@ -2078,6 +2346,155 @@ const getLocale = /* @__PURE__ */ defineSyncApi(
     return useI18n().getLocale();
   }
 );
+const API_ON_APP_ROUTE = "onAppRoute";
+const API_OFF_APP_ROUTE = "offAppRoute";
+const API_ON_BEFORE_APP_ROUTE = "onBeforeAppRoute";
+const API_OFF_BEFORE_APP_ROUTE = "offBeforeAppRoute";
+const API_REWRITE_ROUTE = "rewriteRoute";
+const eventTransport = /* @__PURE__ */ new uniShared.Emitter();
+let activeBeforeAppRouteContext;
+const MAX_APP_ROUTE_REWRITE_COUNT = 100;
+const APP_ROUTE_ERROR_CODE = 4;
+function createAppRouteRuntime(options = {}) {
+  let routeEventId = 0;
+  const onAppRoute = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
+  }, {
+    eventTransport
+  });
+  const offAppRoute = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
+  }, {
+    allowClearAll: true,
+    eventTransport
+  });
+  const onBeforeAppRoute = /* @__PURE__ */ defineOnApi(
+    API_ON_BEFORE_APP_ROUTE,
+    () => {
+    },
+    { eventTransport }
+  );
+  const offBeforeAppRoute = /* @__PURE__ */ defineOffApi(
+    API_OFF_BEFORE_APP_ROUTE,
+    () => {
+    },
+    {
+      allowClearAll: true,
+      eventTransport
+    }
+  );
+  const rewriteRoute = /* @__PURE__ */ defineAsyncApi(
+    API_REWRITE_ROUTE,
+    ({ url, preserveQuery }, { resolve, reject }) => {
+      const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
+      const context = activeBeforeAppRouteContext;
+      if (!context) {
+        rejectRewriteRoute(
+          "rewriteRoute is only allowed in a onBeforeAppRoute callback"
+        );
+        return;
+      }
+      if (context.event.openType === "navigateBack") {
+        rejectRewriteRoute(
+          'a "navigateBack" event is not allowed to be rewritten'
+        );
+        return;
+      }
+      if (context.rewrite) {
+        rejectRewriteRoute(
+          `rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`
+        );
+        return;
+      }
+      if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
+        rejectRewriteRoute(
+          `rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`
+        );
+        return;
+      }
+      if (!context.normalizeRewriteRoute) {
+        rejectRewriteRoute("not supported");
+        return;
+      }
+      const rewrite = context.normalizeRewriteRoute(
+        { url, preserveQuery },
+        context.event
+      );
+      if (typeof rewrite === "string") {
+        rejectRewriteRoute(rewrite);
+        return;
+      }
+      context.rewrite = rewrite;
+      resolve();
+    },
+    {
+      url: {
+        type: String,
+        required: true
+      },
+      preserveQuery: Boolean
+    }
+  );
+  function createAppRouteContext2(event) {
+    var _a, _b;
+    const timeStamp = (_a = event.timeStamp) != null ? _a : Date.now();
+    return {
+      event: {
+        path: event.path,
+        query: Object.assign({}, event.query),
+        openType: event.openType,
+        notFound: event.notFound,
+        timeStamp,
+        routeEventId: (_b = event.routeEventId) != null ? _b : `${timeStamp}-${++routeEventId}`
+      },
+      normalizeRewriteRoute: options.normalizeRewriteRoute
+    };
+  }
+  function dispatchBeforeAppRoute(context) {
+    const event = context.event;
+    const beforeEvent = {
+      path: event.path,
+      query: Object.assign({}, event.query),
+      openType: event.openType,
+      notFound: event.notFound,
+      routeEventId: event.routeEventId
+    };
+    const previousContext = activeBeforeAppRouteContext;
+    activeBeforeAppRouteContext = context;
+    try {
+      eventTransport.emit(API_ON_BEFORE_APP_ROUTE, beforeEvent);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      activeBeforeAppRouteContext = previousContext;
+    }
+    return context.rewrite;
+  }
+  function dispatchAppRoute(context) {
+    const event = context.event;
+    try {
+      const routeEvent = {
+        path: event.path,
+        query: Object.assign({}, event.query),
+        openType: event.openType,
+        notFound: event.notFound,
+        timeStamp: event.timeStamp,
+        routeEventId: event.routeEventId
+      };
+      eventTransport.emit(API_ON_APP_ROUTE, routeEvent);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  return {
+    onAppRoute,
+    offAppRoute,
+    onBeforeAppRoute,
+    offBeforeAppRoute,
+    rewriteRoute,
+    createAppRouteContext: createAppRouteContext2,
+    dispatchBeforeAppRoute,
+    dispatchAppRoute
+  };
+}
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -2200,6 +2617,81 @@ const RequestOptions = {
     }
   }
 };
+function encodeQueryString(url) {
+  if (!shared.isString(url)) {
+    return url;
+  }
+  const index2 = url.indexOf("?");
+  if (index2 === -1) {
+    return url;
+  }
+  const query = url.slice(index2 + 1).trim().replace(/^(\?|#|&)/, "");
+  if (!query) {
+    return url;
+  }
+  url = url.slice(0, index2);
+  const params = [];
+  query.split("&").forEach((param) => {
+    const parts = param.replace(/\+/g, " ").split("=");
+    const key = parts.shift();
+    const val = parts.length > 0 ? parts.join("=") : "";
+    params.push(key + "=" + encodeURIComponent(val));
+  });
+  return params.length ? url + "?" + params.join("&") : url;
+}
+const API_NAVIGATE_TO = "navigateTo";
+const API_REDIRECT_TO = "redirectTo";
+const API_SWITCH_TAB = "switchTab";
+const API_PRELOAD_PAGE = "preloadPage";
+const API_UN_PRELOAD_PAGE = "unPreloadPage";
+let navigatorLock;
+function createNormalizeUrl(type, options = {}) {
+  return function normalizeUrl(url, params) {
+    if (!url) {
+      return `Missing required args: "url"`;
+    }
+    url = normalizeRoute(url);
+    const pagePath = url.split("?")[0];
+    const routeOptions = getRouteOptions(pagePath, true);
+    if (!routeOptions) {
+      return "page `" + url + "` is not found";
+    }
+    if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
+      if (routeOptions.meta.isTabBar) {
+        return `can not ${type} a tabbar page`;
+      }
+    } else if (type === API_SWITCH_TAB) {
+      if (!routeOptions.meta.isTabBar) {
+        return "can not switch to no-tabBar page";
+      }
+    }
+    if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) && routeOptions.meta.isTabBar && params.openType !== "appLaunch") {
+      url = pagePath;
+    }
+    if (routeOptions.meta.isEntry) {
+      url = url.replace(routeOptions.alias, "/");
+    }
+    params.url = encodeQueryString(url);
+    if (type === API_UN_PRELOAD_PAGE) {
+      return;
+    } else if (type === API_PRELOAD_PAGE) {
+      if (routeOptions.meta.isTabBar) {
+        const pages = getCurrentPages();
+        const tabBarPagePath = routeOptions.path.slice(1);
+        if (pages.find((page) => page.route === tabBarPagePath)) {
+          return "tabBar page `" + tabBarPagePath + "` already exists";
+        }
+      }
+      return;
+    }
+    if (!options.skipNavigatorLock && navigatorLock === url && params.openType !== "appLaunch") {
+      return `${navigatorLock} locked`;
+    }
+    if (!options.skipNavigatorLock && __uniConfig.ready) {
+      navigatorLock = url;
+    }
+  };
+}
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
 const SetNavigationBarTitleProtocol = {
@@ -2210,52 +2702,94 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
-function removeNonTabBarPages() {
-  const curTabBarPageVm = getCurrentPageVm();
-  if (!curTabBarPageVm) {
-    return;
+function normalizeAppRoutePath(path) {
+  const route = getRouteOptions(path, true);
+  const pagePath = route == null ? void 0 : route.meta.route;
+  return typeof pagePath === "string" ? pagePath : uniShared.removeLeadingSlash((route == null ? void 0 : route.path) || path);
+}
+function normalizeRewriteRoute({ url, preserveQuery }, event) {
+  if (preserveQuery) {
+    url = uniShared.parseUrl(url).path + uniShared.stringifyQuery(event.query);
   }
-  const pagesMap = getCurrentPagesMap();
-  const keys = pagesMap.keys();
-  for (const routeKey of keys) {
-    const page = pagesMap.get(routeKey);
-    if (!page.$.__isTabBar) {
-      removePage(routeKey);
-    } else {
-      page.$.__isActive = false;
+  const params = { url, openType: event.openType };
+  const errMsg = createNormalizeUrl(event.openType, {
+    skipNavigatorLock: true
+  })(url, params);
+  if (errMsg) {
+    return errMsg;
+  }
+  const { path, query } = uniShared.parseUrl(params.url);
+  return {
+    url: params.url,
+    path: normalizeAppRoutePath(path),
+    query: uniShared.decodedQuery(query),
+    notFound: false
+  };
+}
+const appRouteRuntime = createAppRouteRuntime({ normalizeRewriteRoute });
+const pendingProgrammaticRoutes = [];
+new Promise((resolve) => {
+});
+function createAppRouteContext(path, query, openType, notFound = false) {
+  return appRouteRuntime.createAppRouteContext({
+    path: normalizeAppRoutePath(path),
+    query: uniShared.decodedQuery(query),
+    openType,
+    notFound
+  });
+}
+function resolveAppRoute(url, openType, notFound = false) {
+  let routeUrl = url;
+  let routeNotFound = notFound;
+  let rewriteCount = 0;
+  while (true) {
+    const { path, query } = uniShared.parseUrl(routeUrl);
+    const context = createAppRouteContext(path, query, openType, routeNotFound);
+    context.rewriteCount = rewriteCount;
+    const rewrite = appRouteRuntime.dispatchBeforeAppRoute(context);
+    if (!rewrite) {
+      return { url: routeUrl, context };
     }
-  }
-  if (curTabBarPageVm.$.__isTabBar) {
-    curTabBarPageVm.$.__isVisible = false;
-    invokeHook(curTabBarPageVm, uniShared.ON_HIDE);
+    routeUrl = rewrite.url;
+    routeNotFound = rewrite.notFound;
+    rewriteCount++;
   }
 }
-function isSamePage(url, $page) {
-  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+function createWebAppRouteTransaction(finalFullPath, openType, context) {
+  return {
+    finalFullPath,
+    openType,
+    context
+  };
 }
-function getTabBarPageId(url) {
+function queueWebAppRouteTransaction(transaction) {
+  pendingProgrammaticRoutes.push(transaction);
+}
+function discardWebAppRouteTransaction(transaction) {
+  transaction.cancelled = true;
+  const index2 = pendingProgrammaticRoutes.indexOf(transaction);
+  if (index2 !== -1) {
+    pendingProgrammaticRoutes.splice(index2, 1);
+  }
+}
+function isCurrentTabBarPage(url) {
+  const pages = getCurrentBasePages();
+  const currentPage = pages[pages.length - 1];
+  if (!(currentPage == null ? void 0 : currentPage.$.__isTabBar)) {
+    return false;
+  }
+  const path = uniShared.parseUrl(url).path;
+  const $page = getPage$BasePage(currentPage);
+  return path === $page.path || path === "/" && $page.meta.isEntry;
+}
+function findTabBarPageId(url) {
+  const path = uniShared.parseUrl(url).path;
   const pages = getCurrentPagesMap().values();
   for (const page of pages) {
     const $page = getPage$BasePage(page);
-    if (isSamePage(url, $page)) {
-      page.$.__isActive = true;
+    if (path === $page.path || path === "/" && $page.meta.isEntry) {
       return $page.id;
     }
-  }
-}
-function removeLastPage() {
-  var _a;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
-  if (!page) {
-    return;
-  }
-  const $page = getPage$BasePage(page);
-  removePage(normalizeRouteKey($page.path, $page.id));
-}
-function removeAllPages() {
-  const keys = getCurrentPagesMap().keys();
-  for (const routeKey of keys) {
-    removePage(routeKey);
   }
 }
 function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
@@ -2265,20 +2799,40 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
     );
   }
   const router = getApp().vm.$router;
-  const { path, query } = uniShared.parseUrl(url);
   return new Promise((resolve, reject) => {
-    const state = createPageState(type, __id__);
-    router[type === "navigateTo" ? "push" : "replace"]({
+    let routeUrl = url;
+    let transaction;
+    {
+      const shouldDispatchAppRoute = type !== "switchTab" || !isCurrentTabBarPage(url);
+      const appRoute = shouldDispatchAppRoute ? resolveAppRoute(url, type) : void 0;
+      routeUrl = (appRoute == null ? void 0 : appRoute.url) || url;
+      const { path: path2, query: query2 } = uniShared.parseUrl(routeUrl);
+      transaction = createWebAppRouteTransaction(
+        router.resolve({ path: path2, query: query2 }).fullPath,
+        type,
+        appRoute == null ? void 0 : appRoute.context
+      );
+    }
+    const { path, query } = uniShared.parseUrl(routeUrl);
+    const tabBarPageId = type === "switchTab" ? findTabBarPageId(routeUrl) : __id__;
+    const state = createPageState(type, tabBarPageId);
+    if (transaction) {
+      transaction.pageId = state.__id__;
+      queueWebAppRouteTransaction(transaction);
+    }
+    const navigation = router[type === "navigateTo" ? "push" : "replace"]({
       path,
       query,
       state,
       force: true
     }).then((failure) => {
       if (vueRouter.isNavigationFailure(failure)) {
+        transaction && discardWebAppRouteTransaction(transaction);
         return reject(failure.message);
       }
       if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
+        const finalTabBarText = routeUrl === url ? tabBarText : router.resolve({ path, query }).meta.tabBarText;
+        router.currentRoute.value.meta.tabBarText = finalTabBarText;
       }
       if (type === "navigateTo") {
         const meta = router.currentRoute.value.meta;
@@ -2302,6 +2856,12 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       }
       return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve();
     });
+    {
+      navigation.catch((error) => {
+        transaction && discardWebAppRouteTransaction(transaction);
+        reject(error instanceof Error ? error.message : error);
+      });
+    }
   });
 }
 function handleBeforeEntryPageRoutes() {
@@ -2319,41 +2879,86 @@ function handleBeforeEntryPageRoutes() {
   );
   const switchTabPages = [...switchTabPagesBeforeEntryPages];
   switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
+  switchTabPages.forEach(({ args, resolve, reject }) => {
+    navigate(args, void 0).then(resolve).catch(reject);
+  });
   const redirectToPages = [...redirectToPagesBeforeEntryPages];
   redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
+  redirectToPages.forEach(({ args, resolve, reject }) => {
+    navigate(args).then(resolve).catch(reject);
+  });
   const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
   reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
+  reLaunchPages.forEach(({ args, resolve, reject }) => {
+    navigate(args).then(resolve).catch(reject);
+  });
 }
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && vue.reactive(initTabBarI18n(__uniConfig.tabBar));
+function getTheme() {
+  if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
+    return void 0;
+  if (__uniConfig.darkmode !== true)
+    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
   }
+}
+function onThemeChange(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
+  }
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = uniShared.normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactivity = vue.isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
+    vue.watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
+  return reactivePageStyle;
+}
+let _tabBar;
+function useTabBar() {
+  if (!_tabBar) {
+    _tabBar = __uniConfig.tabBar && vue.reactive(initTabBarI18n(__uniConfig.tabBar));
+  }
+  const tabBar = useTheme(_tabBar, () => {
+    const tabBarStyle = parseTheme(_tabBar);
+    tabBar.backgroundColor = tabBarStyle.backgroundColor;
+    tabBar.borderStyle = tabBarStyle.borderStyle;
+    tabBar.color = tabBarStyle.color;
+    tabBar.selectedColor = tabBarStyle.selectedColor;
+    tabBar.blurEffect = tabBarStyle.blurEffect;
+    tabBar.midButton = tabBarStyle.midButton;
+    if (tabBarStyle.list && tabBarStyle.list.length) {
+      tabBarStyle.list.forEach((item, index2) => {
+        tabBar.list[index2].iconPath = item.iconPath;
+        tabBar.list[index2].selectedIconPath = item.selectedIconPath;
+      });
+    }
+  });
   return tabBar;
 }
 const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
-}
-const DIALOG_TAG = "dialog";
-const SYSTEM_DIALOG_TAG = "systemDialog";
-function isDialogPageInstance(vm) {
-  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
-}
-function isNormalDialogPageInstance(vm) {
-  return vm.attrs["data-type"] === DIALOG_TAG;
-}
-function isSystemDialogPageInstance(vm) {
-  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
 }
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
@@ -2469,8 +3074,9 @@ class UniPageImpl {
     }
   }
   querySelectorAll(selector) {
+    const res = [];
     {
-      return null;
+      return res;
     }
   }
   getAndroidView() {
@@ -2501,6 +3107,28 @@ class UniPageImpl {
   }
   createElement() {
     return null;
+  }
+  onLayoutChange() {
+    return -1;
+  }
+  offLayoutChange() {
+  }
+  onRenderChange() {
+    return -1;
+  }
+  offRenderChange() {
+  }
+  onTouchStart() {
+    return -1;
+  }
+  offTouchStart() {
+  }
+  onTouchEnd() {
+    return -1;
+  }
+  offTouchEnd() {
+  }
+  takeSnapshot() {
   }
 }
 class UniNormalPageImpl extends UniPageImpl {
@@ -2570,14 +3198,6 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
-    const parentPage = vm.$page.getParentPage();
-    if (parentPage) {
-      if (!parentPage.vm.$dialogPagesNum) {
-        parentPage.vm.$dialogPagesNum = 0;
-      }
-      parentPage.vm.$dialogPagesNum++;
-      vm.$basePage.id = parentPage.vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum;
-    }
   }
 }
 const SEP = "$$";
@@ -2622,26 +3242,16 @@ function getCurrentBasePages() {
   }
   return curPages;
 }
-function removeRouteCache(routeKey) {
-  const vnode = pageCacheMap.get(routeKey);
-  if (vnode) {
-    pageCacheMap.delete(routeKey);
-    routeCache.pruneCacheEntry(vnode);
-  }
-}
-function removePage(routeKey, removeRouteCaches = true) {
-  const pageVm = currentPagesMap.get(routeKey);
-  pageVm.$.__isUnload = true;
-  invokeHook(pageVm, uniShared.ON_UNLOAD);
-  currentPagesMap.delete(routeKey);
-  removeRouteCaches && removeRouteCache(routeKey);
-}
 let id = /* @__PURE__ */ getStateId();
 function createPageState(type, __id__) {
   return {
     __id__: __id__ || ++id,
     __type__: type
   };
+}
+let dialogPageId = Number.MIN_SAFE_INTEGER;
+function createDialogPageId() {
+  return ++dialogPageId;
 }
 function initPublicPage(route) {
   const meta = usePageMeta();
@@ -2759,14 +3369,6 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-function getPageInstanceByChild(child) {
-  var _a;
-  let pageInstance = child;
-  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
-    pageInstance = pageInstance.parent;
-  }
-  return pageInstance;
-}
 const clazz = { class: "uni-async-loading" };
 const loadingVNode = /* @__PURE__ */ vue.createVNode(
   "i",
@@ -2856,10 +3458,10 @@ function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, 
       return oldSetup(props2, ctx);
     }
   };
-  if (type === "page") {
+  if (type === "page" || type === "window") {
     const styleIsolation = comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename];
     if (styleIsolation !== "isolated") {
-      comp.styleIsolation = "app-shared";
+      comp.styleIsolation = "app";
     }
   }
   return comp;
@@ -2872,6 +3474,7 @@ function setupComponent(comp, options) {
 }
 function setupWindow(comp, id2) {
   return setupComponent(comp, {
+    type: "window",
     init: (vm) => {
       {
         vm.$basePage = {
@@ -2899,13 +3502,16 @@ function setupPage(comp, path) {
     setup(instance) {
       instance.$pageInstance = instance;
       const route = usePageRoute();
+      __UNI_FEATURE_PAGES__ ? vueRouter.useRouter() : void 0;
       const query = uniShared.decodedQuery(route.query);
       instance.attrs.__pageQuery = query;
       {
         const pageInstance = getPageInstanceByChild(instance);
         if (isDialogPageInstance(pageInstance)) {
           instance.attrs.__pageQuery = uniShared.decodedQuery(
-            uniShared.parseQuery(pageInstance.attrs.route.split("?")[1] || "")
+            uniShared.parseQuery(
+              (pageInstance == null ? void 0 : pageInstance.attrs.route).split("?")[1] || ""
+            )
           );
         }
       }
@@ -2957,45 +3563,6 @@ function useDocumentTitle(pageMeta) {
     updateDocumentTitle(pageMeta.navigationBar.titleText);
   }
   vue.watchEffect(update);
-}
-function getTheme() {
-  if (__uniConfig.darkmode !== true)
-    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
-  try {
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  } catch (error) {
-    return "light";
-  }
-}
-function onThemeChange(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
-  }
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = uniShared.normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactivity = vue.isReactive(pageStyle);
-  const reactivePageStyle = isReactivity ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactivity) {
-    vue.watch(pageStyle, (value) => {
-      const _pageStyle = parseTheme(value);
-      for (const key in _pageStyle) {
-        reactivePageStyle[key] = _pageStyle[key];
-      }
-    });
-  }
-  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
-  return reactivePageStyle;
 }
 function updateBackgroundColorContent(backgroundColorContent) {
   {
@@ -3413,7 +3980,7 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main$1 = {
+const _sfc_main$2 = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -3432,22 +3999,13 @@ const _export_sfc = (sfc, props2) => {
 };
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
-const _hoisted_3 = /* @__PURE__ */ vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
-const _hoisted_4 = /* @__PURE__ */ vue.createElementVNode("path", {
-  d: "M0 0h24v24H0z",
-  fill: "none"
-}, null, -1);
-const _hoisted_5 = [
-  _hoisted_3,
-  _hoisted_4
-];
-const _hoisted_6 = {
+const _hoisted_3 = {
   class: "uni-page-refresh__spinner",
   width: "24",
   height: "24",
   viewBox: "25 25 50 50"
 };
-const _hoisted_7 = ["stroke"];
+const _hoisted_4 = ["stroke"];
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createElementBlock("uni-page-refresh", null, [
     vue.createElementVNode("div", {
@@ -3461,8 +4019,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           width: "24",
           height: "24",
           viewBox: "0 0 24 24"
-        }, _hoisted_5, 8, _hoisted_2)),
-        (vue.openBlock(), vue.createElementBlock("svg", _hoisted_6, [
+        }, [..._cache[0] || (_cache[0] = [
+          vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1),
+          vue.createElementVNode("path", {
+            d: "M0 0h24v24H0z",
+            fill: "none"
+          }, null, -1)
+        ])], 8, _hoisted_2)),
+        (vue.openBlock(), vue.createElementBlock("svg", _hoisted_3, [
           vue.createElementVNode("circle", {
             stroke: $setup.color,
             class: "uni-page-refresh__path",
@@ -3472,13 +4036,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             fill: "none",
             "stroke-width": "4",
             "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_7)
+          }, null, 8, _hoisted_4)
         ]))
       ])
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render]]);
 const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
@@ -3539,6 +4103,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
           );
           pageMeta = Object.assign(pageMeta, routePageMeta);
         }
+        pageMeta.id = createDialogPageId();
         if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {
           pageMeta.backgroundColorContent = "transparent";
         }
@@ -3812,6 +4377,11 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
     }
   );
+  vue.watch(
+    () => props2.type,
+    (value) => {
+    }
+  );
   useContextInfo();
   useSubscribe();
 }
@@ -3823,6 +4393,10 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
   readOnly: {
     type: [Boolean, String],
     default: false
+  },
+  type: {
+    type: String,
+    default: ""
   },
   placeholder: {
     type: String,
@@ -3841,7 +4415,7 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
     default: false
   }
 });
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$n,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -3902,7 +4476,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -3967,8 +4541,9 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
     const rootEl = rootRef.value;
     if (!rootEl)
       return;
-    size.width = rootEl.offsetWidth;
-    size.height = rootEl.offsetHeight;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
     reset();
   };
 }
@@ -4021,7 +4596,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$m,
   setup(props2, {
@@ -4479,6 +5054,7 @@ function useValueSync(props2, state, emit2, trigger, fieldRef) {
   }, 100);
   const triggerInput = (event, detail, force) => {
     valueChangeFn.cancel();
+    detail.value;
     triggerInputFn(event, detail);
     if (force) {
       triggerInputFn.flush();
@@ -4631,6 +5207,8 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
+uniShared.once(() => {
+});
 const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
   placeholderClass: {
     type: String,
@@ -4640,8 +5218,6 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     type: String,
     default: ""
   }
-});
-uniShared.once(() => {
 });
 function isPaste(event) {
   return event.inputType === "insertFromPaste";
@@ -4686,6 +5262,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         case "digit":
           type2 = "number";
           break;
+        case "none":
+          type2 = "text";
+          break;
         default:
           type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
@@ -4699,16 +5278,21 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       return AUTOCOMPLETES[index2];
     });
     const inputmode = vue.computed(() => {
-      if (props2.inputmode) {
+      if (props2.inputmode !== void 0) {
         return props2.inputmode;
       }
-      {
-        const inputmodeMap = {
-          number: "numeric",
-          digit: "decimal"
-        };
-        return Object.values(INPUT_MODES).includes(props2.type) ? props2.type : inputmodeMap[props2.type];
+      if (INPUT_MODES.includes(props2.type)) {
+        return props2.type;
       }
+      let inputmodeMap = {};
+      {
+        inputmodeMap = {
+          number: "numeric",
+          digit: "decimal",
+          idcard: "text"
+        };
+      }
+      return inputmodeMap[props2.type];
     });
     let cache = useCache(props2, type);
     const rootRef = vue.ref(null);
@@ -4767,8 +5351,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
+        "inputmode": inputmode.value,
         "onFocus": (event) => event.target.blur()
-      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : vue.createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "value": state.value,
@@ -4877,7 +5462,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -5425,7 +6010,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -6038,41 +6623,49 @@ function createNavigatorOnClick(props2) {
       return;
     }
     const animationDuration = parseInt(props2.animationDuration);
+    const onFail = (error) => {
+      console.error(error.errMsg);
+    };
     switch (props2.openType) {
       case "navigate":
         uni.navigateTo({
           url: props2.url,
           animationType: props2.animationType || "pop-in",
-          animationDuration
+          animationDuration,
+          fail: onFail
         });
         break;
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          exists: props2.exists
+          exists: props2.exists,
+          fail: onFail
         });
         break;
       case "switchTab":
         uni.switchTab({
-          url: props2.url
+          url: props2.url,
+          fail: onFail
         });
         break;
       case "reLaunch":
         uni.reLaunch({
-          url: props2.url
+          url: props2.url,
+          fail: onFail
         });
         break;
       case "navigateBack":
         uni.navigateBack({
           delta: props2.delta,
           animationType: props2.animationType || "pop-out",
-          animationDuration
+          animationDuration,
+          fail: onFail
         });
         break;
     }
   };
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -6394,7 +6987,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -6484,7 +7077,7 @@ const props$j = {
     default: ""
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$j,
   // emits: ['change'],
@@ -6574,7 +7167,7 @@ const props$i = {
   },
   color: {
     type: String,
-    default: "#007aff"
+    default: ""
   },
   backgroundColor: {
     type: String,
@@ -6594,7 +7187,7 @@ const props$i = {
   },
   iconColor: {
     type: String,
-    default: "#ffffff"
+    default: ""
   },
   // 图标颜色,同color,优先级大于iconColor
   foreColor: {
@@ -6613,26 +7206,25 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
     const radioValue = vue.ref(props2.value);
     function getRadioStyle(checked) {
       if (props2.disabled) {
-        return {
-          backgroundColor: "#E1E1E1",
-          borderColor: "#D1D1D1"
-        };
+        return;
       }
       const style = {};
-      if (radioChecked.value) {
-        style.backgroundColor = props2.activeBackgroundColor || props2.color;
-        style.borderColor = props2.activeBorderColor || style.backgroundColor;
+      if (checked) {
+        const backgroundColor = props2.activeBackgroundColor || props2.color;
+        if (backgroundColor) {
+          style.backgroundColor = backgroundColor;
+          style.borderColor = props2.activeBorderColor || backgroundColor;
+        } else if (props2.activeBorderColor) {
+          style.borderColor = props2.activeBorderColor;
+        }
       } else {
         if (props2.borderColor)
           style.borderColor = props2.borderColor;
         if (props2.backgroundColor)
           style.backgroundColor = props2.backgroundColor;
       }
-      return style;
+      return style.borderColor || style.backgroundColor ? style : void 0;
     }
-    const radioStyle = vue.computed(() => {
-      return getRadioStyle(radioChecked.value);
-    });
     vue.watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
       radioValue.value = newModelValue;
@@ -6660,20 +7252,25 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       let realCheckValue;
       realCheckValue = radioChecked.value;
+      const radioStyle = getRadioStyle(realCheckValue);
+      const hoverBorderColor = realCheckValue ? radioStyle == null ? void 0 : radioStyle.borderColor : props2.activeBorderColor;
+      const hoverStyle = hoverBorderColor ? {
+        "--HOVER-BD-COLOR": hoverBorderColor
+      } : void 0;
+      const iconColor = props2.foreColor || props2.iconColor || "currentColor";
       return vue.createVNode("uni-radio", vue.mergeProps(booleanAttrs, {
         "onClick": _onClick,
         "ref": rootRef,
         "id": props2.id,
         "class": "uni-radio-wrapper",
-        "style": {
-          "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
-        }
+        "style": hoverStyle
       }), [vue.createVNode("div", {
         "class": ["uni-radio-input", {
+          "uni-radio-input-checked": realCheckValue,
           "uni-radio-input-disabled": props2.disabled
         }],
-        "style": radioStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
+        "style": radioStyle
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
     };
   }
 });
@@ -6708,73 +7305,6 @@ function useRadioInject(radioChecked, radioValue, reset) {
     field
   };
 }
-const TAGS = {
-  a: "",
-  abbr: "",
-  address: "",
-  article: "",
-  aside: "",
-  b: "",
-  bdi: "",
-  bdo: ["dir"],
-  big: "",
-  blockquote: "",
-  br: "",
-  caption: "",
-  center: "",
-  cite: "",
-  code: "",
-  col: ["span", "width"],
-  colgroup: ["span", "width"],
-  dd: "",
-  del: "",
-  div: "",
-  dl: "",
-  dt: "",
-  em: "",
-  fieldset: "",
-  font: "",
-  footer: "",
-  h1: "",
-  h2: "",
-  h3: "",
-  h4: "",
-  h5: "",
-  h6: "",
-  header: "",
-  hr: "",
-  i: "",
-  img: ["alt", "src", "height", "width"],
-  ins: "",
-  label: "",
-  legend: "",
-  li: "",
-  mark: "",
-  nav: "",
-  ol: ["start", "type"],
-  p: "",
-  pre: "",
-  q: "",
-  rt: "",
-  ruby: "",
-  s: "",
-  section: "",
-  small: "",
-  span: "",
-  strong: "",
-  sub: "",
-  sup: "",
-  table: ["width"],
-  tbody: "",
-  td: ["colspan", "height", "rowspan", "width"],
-  tfoot: "",
-  th: ["colspan", "height", "rowspan", "width"],
-  thead: "",
-  tr: ["colspan", "height", "rowspan", "width"],
-  tt: "",
-  u: "",
-  ul: ""
-};
 const CHARS = {
   amp: "&",
   gt: ">",
@@ -6803,14 +7333,14 @@ function decodeEntities(htmlString) {
         return String.fromCharCode(stage.slice(1));
       }
       if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-        return String.fromCharCode(0 + stage.slice(1));
+        return String.fromCharCode(Number("0" + stage.slice(1)));
       }
       return match;
     }
   );
 }
 function processClickEvent(node, triggerItemClick) {
-  if (["a", "img"].includes(node.name) && triggerItemClick) {
+  if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
     return {
       onClickCapture: (e2) => {
         if (node.name === "a") {
@@ -6825,36 +7355,39 @@ function processClickEvent(node, triggerItemClick) {
     };
   }
 }
+function normalizeValue(tagName, name, value) {
+  if (tagName === "img" && name === "src" && shared.isString(value)) {
+    return getRealPath(value);
+  }
+  return value;
+}
 function normalizeAttrs(tagName, attrs2) {
   if (!shared.isPlainObject(attrs2))
     return;
-  for (const key in attrs2) {
-    if (shared.hasOwn(attrs2, key)) {
-      const value = attrs2[key];
-      if (tagName === "img" && key === "src")
-        attrs2[key] = getRealPath(value);
-    }
-  }
+  const normalizedAttrs = {};
+  Object.keys(attrs2).forEach((name) => {
+    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
+  });
+  return normalizedAttrs;
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || shared.isArray(nodeList) && !nodeList.length)
+  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
-    var _a;
     if (!shared.isPlainObject(node)) {
       return;
     }
+    if ((!shared.hasOwn(node, "type") || node.type === "text") && shared.isString(node.text) && node.text !== "")
+      return vue.createTextVNode(decodeEntities(node.text || ""));
     if (!shared.hasOwn(node, "type") || node.type === "node") {
-      let nodeProps = { [scopeId]: "" };
-      const tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
-      if (!shared.hasOwn(TAGS, tagName)) {
+      if (!shared.isString(node.name) || !node.name) {
         return;
       }
-      normalizeAttrs(tagName, node.attrs);
-      nodeProps = shared.extend(
-        nodeProps,
+      const tagName = node.name.toLowerCase();
+      const nodeProps = shared.extend(
+        { [scopeId]: "" },
         processClickEvent(node, triggerItemClick),
-        node.attrs
+        normalizeAttrs(tagName, node.attrs)
       );
       return vue.h(
         node.name,
@@ -6862,8 +7395,6 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
         nodeList2VNode(scopeId, triggerItemClick, node.children)
       );
     }
-    if (node.type === "text" && shared.isString(node.text) && node.text !== "")
-      return vue.createTextVNode(decodeEntities(node.text || ""));
   });
 };
 function removeDOCTYPE(html) {
@@ -6964,9 +7495,18 @@ const props$h = {
     default: function() {
       return [];
     }
+  },
+  /** @deprecated 请使用 user-select */
+  selectable: {
+    type: [Boolean, String],
+    default: false
+  },
+  userSelect: {
+    type: [Boolean, String],
+    default: false
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -6979,7 +7519,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     const vm = vue.getCurrentInstance();
     const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = vue.ref(null);
-    const _vnode = vue.ref([]);
+    const _vnode = vue.shallowRef([]);
     const trigger = useCustomEvent(rootRef, emit2);
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
@@ -6996,7 +7536,8 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       deep: true
     });
     return () => vue.h("uni-rich-text", {
-      ref: rootRef
+      ref: rootRef,
+      selectable: props2.userSelect || props2.selectable ? true : null
     }, vue.h("div", {}, _vnode.value));
   }
 });
@@ -7170,7 +7711,7 @@ const props$g = {
     default: false
   }
 };
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -7467,6 +8008,12 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     _scrollLeftChanged
   };
 }
+function createBackgroundColorStyle(color) {
+  return color ? { backgroundColor: color } : void 0;
+}
+function withBackgroundColor(style, color) {
+  return color ? Object.assign(style, { backgroundColor: color }) : style;
+}
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
 const props$f = {
@@ -7495,38 +8042,30 @@ const props$f = {
     default: false
   },
   color: {
-    type: String,
-    default: "#e9e9e9"
+    type: String
   },
   backgroundColor: {
-    type: String,
-    default: "#e9e9e9"
+    type: String
   },
   // 优先级高于 activeColor
   activeBackgroundColor: {
-    type: String,
-    default: ""
+    type: String
   },
   activeColor: {
-    type: String,
-    default: "#007aff"
+    type: String
   },
   selectedColor: {
-    type: String,
-    default: "#007aff"
+    type: String
   },
   blockColor: {
-    type: String,
-    default: "#ffffff"
+    type: String
   },
   // 优先级高于blockColor
   foreColor: {
-    type: String,
-    default: ""
+    type: String
   },
   valueColor: {
-    type: String,
-    default: "#888888"
+    type: String
   },
   blockSize: {
     type: [Number, String],
@@ -7571,16 +8110,16 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.createVNode("div", {
         "class": "uni-slider-input"
       }, [vue.createVNode("div", {
-        "style": setTrackBgColor.value,
+        "style": setTrackBgColor(),
         "class": "uni-slider-track"
       }, [vue.createVNode("div", {
-        "style": setActiveColor.value,
+        "style": setActiveColor(),
         "class": "uni-slider-track-value"
       }, null, 4)], 4), vue.createVNode("div", {
-        "style": thumbTrackStyle.value,
+        "style": thumbTrackStyle(),
         "class": "uni-slider-thumb-track"
       }, [vue.createVNode("div", {
-        "style": setThumbStyle.value,
+        "style": setThumbStyle(),
         "class": "uni-slider-thumb-value"
       }, null, 4)], 4), vue.createVNode("input", {
         "class": "uni-slider-browser-input-range",
@@ -7593,7 +8132,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
         "onChange": withWebEvent(_onChange)
       }, null, 40, ["min", "max", "step", "value", "onInput", "onChange"])]), vue.withDirectives(vue.createVNode("span", {
         "ref": sliderValueRef,
-        "style": setValueStyle.value,
+        "style": setValueStyle(),
         "class": "uni-slider-value"
       }, null, 4), [[vue.vShow, props2.showValue]])])], 512);
     };
@@ -7601,36 +8140,46 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useSliderState(props2) {
   const _getBgColor = () => {
-    return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
+    const backgroundColor = props2.backgroundColor;
+    const color = props2.color;
+    if (backgroundColor && backgroundColor !== "#e9e9e9") {
+      return backgroundColor;
+    }
+    if (color && color !== "#007aff")
+      return color;
+    return backgroundColor || color;
   };
   const _getActiveColor = () => {
     const activeColor = props2.activeBackgroundColor || props2.activeColor;
-    return activeColor !== "#007aff" ? activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+    const selectedColor = props2.selectedColor;
+    if (activeColor && activeColor !== "#007aff")
+      return activeColor;
+    if (selectedColor && selectedColor !== "#e9e9e9") {
+      return selectedColor;
+    }
+    return activeColor || selectedColor;
+  };
+  const _getBlockColor = () => {
+    return props2.foreColor || props2.blockColor;
   };
   const _getBlockSizeString = () => {
     const blockSize = Math.min(Math.max(Number(props2.blockSize), SLIDER_BLOCK_SIZE_MIN_VALUE), SLIDER_BLOCK_SIZE_MAX_VALUE);
     return blockSize + "px";
   };
-  const state = {
-    setTrackBgColor: vue.computed(() => ({
-      backgroundColor: _getBgColor()
-    })),
-    setActiveColor: vue.computed(() => ({
-      backgroundColor: _getActiveColor()
-    })),
-    thumbTrackStyle: vue.computed(() => ({
+  return {
+    setTrackBgColor: () => createBackgroundColorStyle(_getBgColor()),
+    setActiveColor: () => createBackgroundColorStyle(_getActiveColor()),
+    thumbTrackStyle: () => ({
       marginRight: _getBlockSizeString()
-    })),
-    setThumbStyle: vue.computed(() => ({
+    }),
+    setThumbStyle: () => withBackgroundColor({
       width: _getBlockSizeString(),
-      height: _getBlockSizeString(),
-      backgroundColor: props2.foreColor || props2.blockColor
-    })),
-    setValueStyle: vue.computed(() => ({
+      height: _getBlockSizeString()
+    }, _getBlockColor()),
+    setValueStyle: () => props2.valueColor ? {
       color: props2.valueColor
-    }))
+    } : void 0
   };
-  return state;
 }
 function useSliderLoader(props2, sliderRef, trigger) {
   const _onInput = (event) => {
@@ -8069,7 +8618,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$e,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -8300,7 +8849,7 @@ const props$d = {
     default: ""
   }
 };
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$d,
   setup(props2, {
@@ -8346,7 +8895,7 @@ const props$c = {
   },
   backgroundColor: {
     type: String,
-    default: "#e9e9ea"
+    default: ""
   },
   activeBackgroundColor: {
     type: String,
@@ -8401,18 +8950,16 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         type
       } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
-      const switchInputStyle = {};
       const fixColor = activeBackgroundColor || color;
       const bgColor = switchChecked.value ? fixColor : backgroundColor;
-      if (bgColor) {
-        switchInputStyle["backgroundColor"] = bgColor;
-        switchInputStyle["borderColor"] = bgColor;
-      }
-      const thumbStyle = {};
+      const switchInputStyle = bgColor ? {
+        backgroundColor: bgColor,
+        borderColor: bgColor
+      } : void 0;
       const fgColor = switchChecked.value ? activeForeColor : foreColor;
-      if (fgColor) {
-        thumbStyle["backgroundColor"] = fgColor;
-      }
+      const thumbStyle = fgColor ? {
+        backgroundColor: fgColor
+      } : void 0;
       let realCheckValue;
       realCheckValue = checkedCache.value;
       return vue.createVNode("uni-switch", vue.mergeProps({
@@ -8430,7 +8977,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         "style": thumbStyle
       }, null, 6)], 6), [[vue.vShow, type === "switch"]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-checkbox-input"
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vue.vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.foreColor || props2.color || "currentColor", 22) : ""], 512), [[vue.vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
     };
   }
 });
@@ -8493,7 +9040,7 @@ function normalizeText(text, { space, decode }) {
 function parseTextIgnoreLinefeed(text, options) {
   return normalizeText(text, options);
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -8568,7 +9115,7 @@ const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
   emits: ["confirm", "change", "linechange", ...emit],
@@ -8728,7 +9275,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ shared.extend({}, hoverProps),
   setup(props2, {
@@ -8818,11 +9365,10 @@ const props$a = {
     type: [Number, String],
     default: 0
   },
-  // 暂不支持
-  // scrollIntoView: {
-  //   type: String,
-  //   default: '',
-  // },
+  scrollIntoView: {
+    type: String,
+    default: ""
+  },
   scrollWithAnimation: {
     type: [Boolean, String],
     default: false
@@ -8949,6 +9495,34 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
+    vue.watch(() => props2.scrollIntoView, (val) => {
+      _scrollIntoViewChanged(val);
+    });
+    function _scrollIntoViewChanged(val) {
+      if (val) {
+        if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
+          console.error(`id error: scroll-into-view=${val}`);
+          return;
+        }
+        let element = containerRef.value.querySelector("#" + val);
+        if (element) {
+          let mainRect = containerRef.value.getBoundingClientRect();
+          let elRect = element.getBoundingClientRect();
+          if (!isVertical.value) {
+            let left = elRect.left - mainRect.left;
+            let scrollLeft = containerRef.value.scrollLeft;
+            let x = scrollLeft + left;
+            containerRef.value.scrollLeft = x;
+          }
+          if (isVertical.value) {
+            let top = elRect.top - mainRect.top;
+            let scrollTop = containerRef.value.scrollTop;
+            let y = scrollTop + top;
+            containerRef.value.scrollTop = y;
+          }
+        }
+      }
+    }
     function onResize() {
       childStatus.forEach((status) => {
         status.cachedSizeUpdated = false;
@@ -8961,11 +9535,14 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     const containerStyle = vue.computed(() => {
       return `${props2.direction === "none" ? "overflow: hidden;" : props2.direction === "all" ? "overflow: auto;" : isVertical.value ? "overflow: hidden auto;" : "overflow: auto hidden;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
     });
-    const contentStyle = vue.computed(() => {
-      return `position: relative; ${isVertical.value ? "height" : "width"}: ${state.totalSize}px;`;
-    });
     const visibleStyle = vue.computed(() => {
-      return `position: absolute; ${isVertical.value ? "width" : "height"}: 100%; ${isVertical.value ? "top" : "left"}: ${state.placehoderSize}px;`;
+      return `${isVertical.value ? "width" : "height"}: 100%;`;
+    });
+    const placeholderHeadStyle = vue.computed(() => {
+      return `${isVertical.value ? "height" : "width"}: ${state.headPlaceholderSize}px;`;
+    });
+    const placeholderTailStyle = vue.computed(() => {
+      return `${isVertical.value ? "height" : "width"}: ${state.tailPlaceholderSize}px;`;
     });
     let visibleVNode = null;
     return () => {
@@ -9001,9 +9578,13 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       }, {
         default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
       }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, vue.createVNode("div", {
-        "class": "uni-list-view-content",
-        "style": contentStyle.value
-      }, [visibleVNode], 4)], 4), vue.createVNode(ResizeSensor, {
+        "class": "uni-list-view-content"
+      }, [vue.createVNode("div", {
+        "style": placeholderHeadStyle.value
+      }, null, 4), visibleVNode, vue.createVNode("div", {
+        "style": placeholderTailStyle.value
+      }, null, 4)])], 4), vue.createVNode(ResizeSensor, {
+        "initial": true,
         "onResize": onResize
       }, null, 8, ["onResize"])], 512);
     };
@@ -9019,13 +9600,16 @@ function useListViewState(props2) {
     defaultHeaderSize: 40,
     defaultHeaderSizeUpdated: false,
     totalSize: 0,
-    placehoderSize: 0,
+    headPlaceholderSize: 0,
+    tailPlaceholderSize: 0,
     visibleSize: 0,
     containerSize: 0,
     cacheScreenCount: 10,
     loadScreenThreshold: 8,
     refresherHeight: 0,
-    refreshState: ""
+    refreshState: "",
+    lastRenderOffsetMin: 0,
+    lastRenderOffsetMax: 0
   });
   return {
     state,
@@ -9043,9 +9627,12 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
   const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
   const offsetMin = Math.max(offset - state.containerSize * state.cacheScreenCount, 0);
   const offsetMax = Math.max(offset + state.containerSize * (state.cacheScreenCount + 1), offsetMin + 1);
+  state.lastRenderOffsetMin = offsetMin;
+  state.lastRenderOffsetMax = offsetMax;
   let tempTotalSize = 0;
   let tempVisibleSize = 0;
-  let tempPlaceholderSize = 0;
+  let tempHeadPlaceholderSize = 0;
+  let tempTailPlaceholderSize = 0;
   let start = false, end = false;
   function callback(child) {
     var _a, _b, _c;
@@ -9054,11 +9641,61 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
     if (childType === "StickySection") {
       const {
         headSize,
-        tailSize
+        tailSize,
+        headPlaceholderSize,
+        tailPlaceholderSize
       } = status;
       tempTotalSize += headSize.value;
-      traverseStickySection(child, callback);
+      let tempTailPlaceholderSizeOfSection = 0;
+      let tempHeadPlaceholderSizeOfSection = 0;
+      traverseStickySection(child, (child2) => {
+        var _a2, _b2, _c2;
+        const childType2 = (_a2 = child2.component) == null ? void 0 : _a2.type.name;
+        const status2 = (_c2 = (_b2 = child2.component) == null ? void 0 : _b2.exposed) == null ? void 0 : _c2.__listViewChildStatus;
+        if (childType2 === "StickyHeader") {
+          const {
+            cachedSize,
+            cachedSizeUpdated
+          } = status2;
+          if (cachedSizeUpdated && cachedSize > 0 && !state.defaultHeaderSizeUpdated) {
+            state.defaultHeaderSize = cachedSize;
+            state.defaultHeaderSizeUpdated = true;
+          }
+          tempTotalSize += cachedSize || state.defaultHeaderSize;
+          tempVisibleSize += cachedSize;
+        } else if (childType2 === "ListItem") {
+          const {
+            cachedSize,
+            cachedSizeUpdated
+          } = status2;
+          if (cachedSizeUpdated && cachedSize > 0 && !state.defaultItemSizeUpdated) {
+            state.defaultItemSize = cachedSize;
+            state.defaultItemSizeUpdated = true;
+          }
+          const itemSize = cachedSize || state.defaultItemSize;
+          tempTotalSize += itemSize;
+          if (!start && tempTotalSize > offsetMin) {
+            start = true;
+          }
+          if (start && !end) {
+            tempVisibleSize += itemSize;
+            status2.visible.value = true;
+          } else if (start && end) {
+            status2.visible.value = false;
+            tempTailPlaceholderSizeOfSection += itemSize;
+          } else {
+            status2.visible.value = false;
+            tempHeadPlaceholderSizeOfSection += itemSize;
+          }
+          if (!end && tempTotalSize >= offsetMax) {
+            end = true;
+          }
+        }
+      });
+      tempVisibleSize += tempHeadPlaceholderSizeOfSection + tempTailPlaceholderSizeOfSection;
       tempTotalSize += tailSize.value;
+      headPlaceholderSize.value = tempHeadPlaceholderSizeOfSection;
+      tailPlaceholderSize.value = tempTailPlaceholderSizeOfSection;
     } else if (childType === "ListItem") {
       const {
         cachedSize,
@@ -9074,7 +9711,9 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
         start = true;
       }
       if (!start) {
-        tempPlaceholderSize += itemSize;
+        tempHeadPlaceholderSize += itemSize;
+      } else if (start && end) {
+        tempTailPlaceholderSize += itemSize;
       }
       if (start && !end) {
         tempVisibleSize += itemSize;
@@ -9101,7 +9740,8 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
   traverseListView(visibleVNode, callback);
   state.totalSize = tempTotalSize;
   state.visibleSize = tempVisibleSize;
-  state.placehoderSize = tempPlaceholderSize;
+  state.headPlaceholderSize = tempHeadPlaceholderSize;
+  state.tailPlaceholderSize = tempTailPlaceholderSize;
 }
 function handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit2) {
   let beforeRefreshing = false;
@@ -9196,17 +9836,24 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     vue.inject("__listViewRegisterItem");
     vue.inject("__listViewUnregisterItem");
     const firstItemRendered = vue.inject("__listViewFirstItemRendered");
-    vue.watch(visible, (value) => {
-      if (!value || status.cachedSizeUpdated) {
+    function updateSize() {
+      if (!visible.value || status.cachedSizeUpdated) {
         return;
       }
-      vue.nextTick(() => {
-        const rootNode = rootRef.value;
-        if (isHTMlElement(rootNode)) {
-          status.cachedSize = getSize(isVertical.value, rootNode);
-          status.cachedSizeUpdated = true;
-          firstItemRendered(status);
+      const rootNode = rootRef.value;
+      if (isHTMlElement(rootNode)) {
+        const size = getSize(isVertical.value, rootNode);
+        if (isNaN(size)) {
+          return;
         }
+        status.cachedSize = getSize(isVertical.value, rootNode);
+        status.cachedSizeUpdated = true;
+        firstItemRendered(status);
+      }
+    }
+    vue.watch(visible, (value) => {
+      vue.nextTick(() => {
+        updateSize();
       });
     });
     return () => {
@@ -9233,12 +9880,19 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = vue.ref(null);
     const isVertical = vue.inject("__listViewIsVertical");
+    const headPlaceholderSize = vue.ref(0);
+    const tailPlaceholderSize = vue.ref(0);
     const style = vue.computed(() => {
+      const padding = props2.padding;
+      const paddingTop = padding[0];
+      const paddingRight = padding[1];
+      const paddingBottom = padding[2];
+      const paddingLeft = padding[3];
       return {
-        paddingTop: props2.padding[0] + "px",
-        paddingRight: props2.padding[1] + "px",
-        paddingBottom: props2.padding[2] + "px",
-        paddingLeft: props2.padding[3] + "px"
+        paddingTop: (isVertical.value ? paddingTop + headPlaceholderSize.value : paddingTop) + "px",
+        paddingRight: (isVertical.value ? paddingRight : paddingRight + tailPlaceholderSize.value) + "px",
+        paddingBottom: (isVertical.value ? paddingBottom + tailPlaceholderSize.value : paddingBottom) + "px",
+        paddingLeft: (isVertical.value ? paddingLeft : paddingLeft + headPlaceholderSize.value) + "px"
       };
     });
     const headSize = vue.computed(() => {
@@ -9250,7 +9904,9 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     const status = {
       type: "StickySection",
       headSize,
-      tailSize
+      tailSize,
+      headPlaceholderSize,
+      tailPlaceholderSize
     };
     expose({
       __listViewChildStatus: status
@@ -9304,6 +9960,310 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = vue.getCurrentInstance()) => {
+  if (vue.isInSSRComponentSetup)
+    return;
+  vue.injectHook(lifecycle, hook, target);
+};
+const onBackPress = /* @__PURE__ */ createLifeCycleHook(
+  uniShared.ON_BACK_PRESS,
+  2
+  /* HookFlags.PAGE */
+);
+class UniPageContainerElement extends UniElement {
+}
+var __defProp$1 = Object.defineProperty;
+var __defProps$1 = Object.defineProperties;
+var __getOwnPropDescs$1 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$1 = Object.getOwnPropertySymbols;
+var __hasOwnProp$1 = Object.prototype.hasOwnProperty;
+var __propIsEnum$1 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$1 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$1.call(b, prop))
+      __defNormalProp$1(a, prop, b[prop]);
+  if (__getOwnPropSymbols$1)
+    for (var prop of __getOwnPropSymbols$1(b)) {
+      if (__propIsEnum$1.call(b, prop))
+        __defNormalProp$1(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$1 = (a, b) => __defProps$1(a, __getOwnPropDescs$1(b));
+const t0$1 = vue.template("<div uni-view class=uni-page-container-overlay>");
+const t1 = vue.template("<div uni-view>");
+const MAX_SLIDER_DISTANCE = 100;
+const MIN_SLIDER_VELOCITY = 0.3;
+const _sfc_main$1 = /* @__PURE__ */ vue.defineVaporComponent(__spreadProps$1(__spreadValues$1({}, {
+  name: "page-container",
+  rootElement: {
+    name: "uni-page-container",
+    class: UniPageContainerElement
+  }
+}), {
+  __name: "index",
+  props: {
+    show: { type: Boolean, default: false },
+    duration: { default: 300, type: Number },
+    zIndex: { default: 100, type: Number },
+    overlay: { type: Boolean, default: true },
+    round: { type: Boolean, default: false },
+    position: { default: "bottom", type: String },
+    customStyle: { default: "", type: String },
+    overlayStyle: { default: "", type: String },
+    closeOnSlideDown: { type: Boolean, default: false }
+  },
+  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
+  __multiRoot: true,
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    const emits = __emit;
+    const showPageContainer = vue.ref(false);
+    const isAnimating = vue.ref(false);
+    const transitionTimer = vue.ref(null);
+    const isEntered = vue.ref(false);
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isDragging = false;
+    const translateValue = vue.ref(0);
+    const overlayStyleMap = vue.computed(() => {
+      const styleObj = {
+        "z-index": props2.zIndex,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (isEntered.value) {
+        styleObj["opacity"] = "1";
+        styleObj["pointer-events"] = "auto";
+      }
+      return styleObj;
+    });
+    const innerStyleMap = vue.computed(() => {
+      const styleObj = {
+        "z-index": props2.zIndex + 1,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (translateValue.value != 0 && isDragging) {
+        let transformValue = "";
+        switch (props2.position) {
+          case "bottom":
+          case "top":
+            transformValue = `translateY(${translateValue.value}px)`;
+            break;
+          case "left":
+          case "right":
+            transformValue = `translateX(${translateValue.value}px)`;
+            break;
+        }
+        if (transformValue != "") {
+          styleObj["transform"] = transformValue;
+          styleObj["transition"] = "none";
+        }
+      } else if (translateValue.value != 0 && !isDragging) {
+        styleObj["transition"] = `transform ${props2.duration}ms ease`;
+      }
+      return styleObj;
+    });
+    const popupClasses = vue.computed(() => {
+      const classes = [];
+      if (props2.position != null) {
+        classes.push(`uni-page-container-popup-${props2.position}`);
+      }
+      if (props2.round) {
+        classes.push("uni-page-container-popup-round");
+      }
+      if (isEntered.value) {
+        classes.push("uni-page-container-popup-enter");
+      }
+      return classes;
+    });
+    function clearTransitionTimer() {
+      if (transitionTimer.value != null) {
+        clearTimeout(transitionTimer.value);
+        transitionTimer.value = null;
+      }
+    }
+    function onAnimationEnd(type) {
+      isAnimating.value = false;
+      clearTransitionTimer();
+      if (type == "enter") {
+        emits("afterenter");
+      } else if (type == "leave") {
+        showPageContainer.value = false;
+        emits("afterleave");
+      }
+    }
+    function listenTransitionEnd(type) {
+      clearTransitionTimer();
+      transitionTimer.value = setTimeout(() => {
+        onAnimationEnd(type);
+      }, props2.duration);
+    }
+    function resetDragState() {
+      isDragging = false;
+      translateValue.value = 0;
+    }
+    function openContainer() {
+      emits("beforeenter");
+      showPageContainer.value = true;
+      isEntered.value = false;
+      resetDragState();
+      vue.nextTick(() => {
+        emits("enter");
+        isAnimating.value = true;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            isEntered.value = true;
+            listenTransitionEnd("enter");
+          });
+        });
+      });
+    }
+    function closeContainer() {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("beforeleave");
+      isAnimating.value = true;
+      vue.nextTick(() => {
+        isEntered.value = false;
+        emits("leave");
+        listenTransitionEnd("leave");
+      });
+    }
+    vue.watch(
+      () => props2.show,
+      (newVal) => {
+        if (newVal && !showPageContainer.value) {
+          openContainer();
+        } else if (!newVal && showPageContainer.value) {
+          closeContainer();
+        }
+      }
+    );
+    function onClickOverlay(event) {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("clickoverlay", event);
+      vue.nextTick(() => {
+        closeContainer();
+      });
+    }
+    function onTouchStart(e2) {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        touchStartX = clientX;
+        touchStartY = clientY;
+        touchStartTime = Date.now();
+        isDragging = false;
+      }
+    }
+    function onTouchMove(e2) {
+      if (!props2.closeOnSlideDown) {
+        e2.preventDefault();
+        e2.stopPropagation();
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        const deltaX = clientX - touchStartX;
+        const deltaY = clientY - touchStartY;
+        let shouldDrag = false;
+        let dragValue = 0;
+        switch (props2.position) {
+          case "bottom":
+            if (deltaY > 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "top":
+            if (deltaY < 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "left":
+            if (deltaX < 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+          case "right":
+            if (deltaX > 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+        }
+        if (shouldDrag) {
+          isDragging = true;
+          translateValue.value = dragValue;
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }
+    }
+    function onTouchEnd() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        const deltaTime = Date.now() - touchStartTime;
+        const velocity = Math.abs(translateValue.value) / deltaTime;
+        if (Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY) {
+          resetDragState();
+          closeContainer();
+        } else {
+          resetDragState();
+        }
+      }
+    }
+    function onTouchCancel() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        resetDragState();
+      }
+    }
+    onBackPress(() => {
+      if (showPageContainer.value) {
+        closeContainer();
+        return true;
+      }
+      return false;
+    });
+    const n0 = vue.createIf(() => __props.overlay && showPageContainer.value, () => {
+      const n2 = t0$1();
+      vue.on(n2, "click", onClickOverlay);
+      vue.on(n2, "touchmove", vue.withModifiers(() => {
+      }, ["prevent", "stop"]));
+      vue.renderEffect(() => vue.setStyle(n2, [overlayStyleMap.value, __props.overlayStyle]));
+      return n2;
+    });
+    const n3 = vue.createIf(() => showPageContainer.value, () => {
+      const n6 = t1();
+      vue.renderEffect(() => {
+        vue.setClass(n6, ["uni-page-container-popup", popupClasses.value]);
+        vue.setStyle(n6, [innerStyleMap.value, __props.customStyle]);
+      });
+      vue.setInsertionState(n6);
+      vue.createSlot();
+      vue.on(n6, "touchstart", onTouchStart);
+      vue.on(n6, "touchmove", onTouchMove);
+      vue.on(n6, "touchend", onTouchEnd);
+      vue.on(n6, "touchcancel", onTouchCancel);
+      return n6;
+    });
+    return [n0, n3];
+  }
+}));
 class UniVueElement extends Object {
 }
 class UniLoadingElement extends UniVueElement {
@@ -9311,34 +10271,37 @@ class UniLoadingElement extends UniVueElement {
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = vue.ref("16px");
   const loadingBorderWidth = vue.ref("1px");
-  const loadingBorderRadius = vue.ref("8px");
+  vue.ref("8px");
   return {
-    size: loadingSize,
-    borderWidth: loadingBorderWidth,
-    borderRadius: loadingBorderRadius
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
   };
 }
-var __defProp = Object.defineProperty;
+var __defProp2 = Object.defineProperty;
 var __defProps = Object.defineProperties;
 var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp2 = (obj, key, value) => key in obj ? __defProp2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __spreadValues = (a, b) => {
   for (var prop in b || (b = {}))
     if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
+      __defNormalProp2(a, prop, b[prop]);
   if (__getOwnPropSymbols)
     for (var prop of __getOwnPropSymbols(b)) {
       if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
+        __defNormalProp2(a, prop, b[prop]);
     }
   return a;
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValues({}, {
+const t0 = vue.template("<div uni-view>");
+const _sfc_main = /* @__PURE__ */ vue.defineVaporComponent(__spreadProps(__spreadValues({}, {
   name: "loading",
+  styleIsolation: "app-and-page",
   // @ts-ignore
   rootElement: {
     name: "uni-loading-element",
@@ -9348,29 +10311,25 @@ const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValu
   __name: "index-x",
   props: {
     paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false }
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
   },
   setup(__props) {
     const props2 = __props;
     const LoadingRef = vue.ref(null);
     const loadingStyle = vue.reactive(useLoadingStyle(LoadingRef, vue.computed(() => props2.bold)));
-    return (_ctx, _cache) => {
-      const _component_view = __syscom_0;
-      return vue.openBlock(), vue.createBlock(_component_view, {
-        class: "__uni_loading_container__",
-        ref_key: "LoadingRef",
-        ref: LoadingRef,
-        style: { "display": "flex" }
-      }, {
-        default: vue.withCtx(() => [
-          vue.createVNode(_component_view, {
-            class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
-            style: vue.normalizeStyle([{ "box-sizing": "border-box" }, { width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }])
-          }, null, 8, ["class", "style"])
-        ]),
-        _: 1
-      }, 512);
-    };
+    const n1 = vue.createPlainElement("uni-loading-element", {
+      class: "default __uni_loading_container__",
+      style: "display: flex;"
+    }, null, true);
+    const n0 = t0();
+    vue.insert(n0, n1);
+    vue.setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
+    vue.renderEffect(() => {
+      vue.setClassName(n0, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
+      vue.setStyle(n0, loadingStyle);
+    });
+    return n1;
   }
 }));
 function useSubscribe(callback, name, multiple, pageId) {
@@ -9426,7 +10385,11 @@ function initHooks(options, instance, publicThis) {
       const $basePage = true ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
-          invokeHook(publicThis, uniShared.ON_SHOW);
+          if (isDialogPageInstance(getPageInstanceByChild(instance))) {
+            invokeNewDialogPageHook(publicThis.$page, uniShared.ON_SHOW);
+          } else {
+            invokeHook(publicThis, uniShared.ON_SHOW);
+          }
         }
       }
     } catch (e2) {
@@ -9665,7 +10628,7 @@ function formatTime(val) {
   }
   return str;
 }
-function useGesture(props2, videoRef, fullscreenState) {
+function useGesture(props2, videoState, videoRef, fullscreenState) {
   const state = vue.reactive({
     seeking: false,
     gestureType: "none",
@@ -9706,10 +10669,15 @@ function useGesture(props2, videoRef, fullscreenState) {
     touchStartOrigin.y = toucher.pageY;
     state.gestureType = "none";
     state.volumeOld = 0;
+    if (fullscreenState.fullscreen) {
+      event.stopPropagation();
+    }
   }
   function onTouchmove(event) {
     function stop() {
-      event.stopPropagation();
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
       event.preventDefault();
     }
     if (fullscreenState.fullscreen) {
@@ -9731,6 +10699,7 @@ function useGesture(props2, videoRef, fullscreenState) {
       changeVolume(pageY - origin.y);
     }
     if (gestureType !== "none") {
+      stop();
       return;
     }
     if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
@@ -9759,7 +10728,9 @@ function useGesture(props2, videoRef, fullscreenState) {
   function onTouchend(event) {
     const video = videoRef.value;
     if (state.gestureType !== "none" && state.gestureType !== "stop") {
-      event.stopPropagation();
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
       event.preventDefault();
     }
     if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {
@@ -9768,8 +10739,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     state.gestureType = "none";
   }
   function changeProgress(x) {
-    const video = videoRef.value;
-    const duration = video.duration;
+    const duration = videoState.currentDuration;
     let currentTimeNew = x / 600 * duration + state.currentTimeOld;
     if (currentTimeNew < 0) {
       currentTimeNew = 0;
@@ -9881,6 +10851,7 @@ function useVideo(props2, attrs2, trigger) {
     playing: false,
     currentTime: 0,
     duration: 0,
+    currentDuration: 0,
     progress: 0,
     buffered: 0,
     muted,
@@ -9898,6 +10869,11 @@ function useVideo(props2, attrs2, trigger) {
   vue.watch(() => muted.value, (muted2) => {
     const video = videoRef.value;
     video.muted = muted2;
+  });
+  vue.watch([() => state.duration, () => props2.duration], () => {
+    let _duration = Number(props2.duration);
+    isNaN(_duration) && (_duration = 0);
+    state.currentDuration = _duration > 0 ? _duration : state.duration;
   });
   function onDurationChange({
     target
@@ -10033,7 +11009,7 @@ function useControls(props2, videoState, seek, seeking) {
     let progress = 0;
     if (x >= 0 && x <= w) {
       progress = x / w;
-      seek(videoState.duration * progress);
+      seek(videoState.currentDuration * progress);
     }
   }
   function toggleControls() {
@@ -10160,10 +11136,15 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
       controlsState.controlsVisible = val;
     }
   });
-  vue.watch([() => videoState.currentTime, () => {
-    props$9.duration;
-  }], () => {
-    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  vue.watch([() => videoState.currentTime, () => videoState.currentDuration], () => {
+    if (videoState.currentDuration > 0) {
+      videoState.progress = videoState.currentTime / videoState.currentDuration * 100;
+    } else {
+      videoState.progress = 0;
+    }
+    videoState.progress > 100 && (videoState.progress = 100);
+  }, {
+    immediate: true
   });
   vue.watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
     videoState.currentTime = currentTimeNew;
@@ -10278,7 +11259,6 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    useI18n();
     initI18nVideoMsgsOnce();
     const {
       videoRef,
@@ -10319,7 +11299,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       onTouchstart,
       onTouchend,
       onTouchmove
-    } = useGesture(props2, videoRef, fullscreenState);
+    } = useGesture(props2, videoState, videoRef, fullscreenState);
     const {
       state: controlsState,
       progressRef,
@@ -10426,7 +11406,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-inner"
       }, null)], 6)], 2)], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
+      }, [formatTime(videoState.currentDuration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
         "class": {
           "uni-video-icon": true,
           "uni-video-danmu-button": true,
@@ -10479,7 +11459,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title"
       }, [vue.createVNode("span", {
         "class": "uni-video-toast-title-current-time"
-      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), vue.createVNode("div", {
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -11840,7 +12820,8 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function usePopupStyle(props2) {
+const POPUP_EDGE = 6;
+function usePopupStyle(props2, triangleColor = "#fcfcfd") {
   const popupWidth = vue.ref(0);
   const popupHeight = vue.ref(0);
   const isDesktop = vue.computed(
@@ -11866,9 +12847,27 @@ function usePopupStyle(props2) {
     const triangleStyle = style.triangle;
     const popover = props2.popover;
     function getNumber(value) {
-      return Number(value) || 0;
+      try {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : 0;
+      } catch (e2) {
+        return 0;
+      }
     }
     if (isDesktop.value && popover) {
+      const popoverLeft = Math.max(0, getNumber(popover.left));
+      const width = getNumber(popover.width);
+      const popoverWidth = width > 0 ? width : 300;
+      const popoverTop = Math.max(0, getNumber(popover.top));
+      const popoverHeight = Math.max(0, getNumber(popover.height));
+      const center = popoverLeft + popoverWidth / 2;
+      const contentLeft = Math.max(
+        POPUP_EDGE,
+        Math.min(
+          popupWidth.value - popoverWidth - POPUP_EDGE,
+          center - popoverWidth / 2
+        )
+      );
       shared.extend(triangleStyle, {
         position: "absolute",
         width: "0",
@@ -11876,32 +12875,34 @@ function usePopupStyle(props2) {
         "margin-left": "-6px",
         "border-style": "solid"
       });
-      const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width ? popover.width : 300);
-      const popoverTop = getNumber(popover.top);
-      const popoverHeight = getNumber(popover.height);
-      const center = popoverLeft + popoverWidth / 2;
       contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - popoverWidth / 2);
       contentStyle.left = `${contentLeft}px`;
-      if (popover.width) {
+      if (width > 0) {
         contentStyle.width = `${popoverWidth}px`;
       }
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(popoverWidth - 12, triangleLeft);
+      const triangleLeft = Math.max(
+        12,
+        Math.min(popoverWidth - 12, center - contentLeft)
+      );
       triangleStyle.left = `${triangleLeft}px`;
       const vcl = popupHeight.value / 2;
       if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
         contentStyle.top = "auto";
-        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
+        contentStyle.bottom = `${Math.max(
+          POPUP_EDGE,
+          popupHeight.value - popoverTop + POPUP_EDGE
+        )}px`;
         triangleStyle.bottom = "-6px";
         triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
+        triangleStyle["border-color"] = `${triangleColor} transparent transparent transparent`;
       } else {
-        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
+        contentStyle.top = `${Math.max(
+          POPUP_EDGE,
+          popoverTop + popoverHeight + POPUP_EDGE
+        )}px`;
         triangleStyle.top = "-6px";
         triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
+        triangleStyle["border-color"] = `transparent transparent ${triangleColor} transparent`;
       }
     }
     return style;
@@ -12101,7 +13102,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
     _createTime();
     _createDate();
     _setValueSync();
-    const popup = usePopupStyle(state);
+    const popup = usePopupStyle(state, "var(--uni-picker-arrow-color, #fcfcfd)");
     vue.watchEffect(() => {
       state.isDesktop = popup.isDesktop.value;
       state.popupStyle = popup.popupStyle.value;
@@ -12669,7 +13670,659 @@ function usePickerForm(_resetFormData, _getFormData) {
     uniForm.addField(field);
   }
 }
-const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const _AdConfig = class _AdConfig {
+  constructor() {
+    __publicField(this, "_adConfig", null);
+    __publicField(this, "_isLoading", false);
+    __publicField(this, "_callbacks", []);
+    __publicField(this, "_configLast", 0);
+  }
+  static get instance() {
+    if (!_AdConfig._instance) {
+      _AdConfig._instance = new _AdConfig();
+      _AdConfig._instance._init();
+    }
+    return _AdConfig._instance;
+  }
+  get adConfig() {
+    return this._adConfig;
+  }
+  get isExpired() {
+    if (this._adConfig == null) {
+      return true;
+    }
+    if (!this._configLast) {
+      return true;
+    }
+    return Math.abs(Date.now() - this._configLast) > _AdConfig.CACHE_TIME;
+  }
+  _init() {
+    var config = this._getConfig();
+    if (config === null || !config.last) {
+      return;
+    }
+    if (Math.abs(Date.now() - config.last) <= _AdConfig.CACHE_TIME) {
+      this._adConfig = config.data;
+      this._configLast = config.last;
+    }
+  }
+  get(adpid, success, fail) {
+    _AdConfig.IC++;
+    if (this._adConfig != null) {
+      this._doCallback(adpid, success, fail);
+      if (this.isExpired) {
+        this._loadAdConfig(adpid);
+      }
+      return;
+    }
+    this._callbacks.push({
+      adpid,
+      success,
+      fail
+    });
+    this._loadAdConfig(adpid);
+  }
+  _doCallback(adpid, success, fail) {
+    _AdConfig.IS++;
+    var {
+      a,
+      b
+    } = this._adConfig;
+    const adData = a[adpid];
+    if (adData) {
+      success(b, Array.isArray(adData) ? adData : [adData]);
+    } else {
+      fail(_AdConfig.ERROR_INVALID_ADPID);
+    }
+  }
+  _loadAdConfig(adpid) {
+    if (this._isLoading === true) {
+      return;
+    }
+    this._isLoading = true;
+    const appid = typeof __uniConfig !== "undefined" ? __uniConfig.appId ?? "" : "";
+    uni.request({
+      url: _AdConfig.URL,
+      method: "GET",
+      timeout: 8e3,
+      data: {
+        d: location.hostname,
+        a: adpid,
+        appid
+      },
+      dataType: "json",
+      success: (res) => {
+        const rd = res.data;
+        if (rd.ret === 0) {
+          const data = rd.data;
+          this._adConfig = data;
+          this._configLast = Date.now();
+          this._setConfig(data);
+          this._callbacks.forEach(({
+            adpid: adpid2,
+            success,
+            fail
+          }) => {
+            this._doCallback(adpid2, success, fail);
+          });
+        } else {
+          this._callbacks.forEach((i) => {
+            i.fail({
+              errCode: rd.ret,
+              errMsg: rd.msg
+            });
+          });
+        }
+        this._callbacks = [];
+      },
+      fail: (err) => {
+        this._callbacks.forEach((i) => {
+          i.fail(err);
+        });
+        this._callbacks = [];
+      },
+      complete: (c) => {
+        this._isLoading = false;
+      }
+    });
+  }
+  _getConfig() {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    var data = localStorage.getItem(_AdConfig.KEY);
+    return data ? JSON.parse(data) : null;
+  }
+  _setConfig(data) {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    localStorage.setItem(_AdConfig.KEY, JSON.stringify({
+      last: Date.now(),
+      data
+    }));
+  }
+};
+__publicField(_AdConfig, "IC", 0);
+__publicField(_AdConfig, "IS", 0);
+// 生产环境地址
+// private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+// 生产环境地址v2
+__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5v2");
+// 测试环境地址
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5v2'
+__publicField(_AdConfig, "KEY", "uni_app_ad_config");
+__publicField(_AdConfig, "CACHE_TIME", 1e3 * 60 * 10);
+__publicField(_AdConfig, "ERROR_INVALID_ADPID", {
+  "-5002": "invalid adpid"
+});
+let AdConfig = _AdConfig;
+const _AdReport = class _AdReport {
+  static get instance() {
+    if (!_AdReport._instance) {
+      _AdReport._instance = new _AdReport();
+    }
+    return _AdReport._instance;
+  }
+  constructor() {
+    var config = this._getConfig();
+    if (config && config.guid) {
+      this._guid = config.guid;
+      return;
+    }
+    this._guid = this._newGUID();
+    this._setConfig(this._guid);
+  }
+  get(data) {
+    this._process(Object.assign(data, {
+      d: location.hostname,
+      i: this._guid
+    }));
+  }
+  _process(data) {
+    uni.request({
+      url: _AdReport.URL,
+      method: "GET",
+      data,
+      dataType: "json",
+      success: () => {
+      }
+    });
+  }
+  _newGUID() {
+    let guid = "";
+    const format = "xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx";
+    for (let i = 0; i < format.length; i++) {
+      if (format[i] === "x") {
+        guid += (Math.random() * 16 | 0).toString(16);
+      } else {
+        guid += format[i];
+      }
+    }
+    return guid.toUpperCase();
+  }
+  _getConfig() {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    var data = localStorage.getItem(_AdReport.KEY);
+    return data ? JSON.parse(data) : null;
+  }
+  _setConfig(guid) {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    localStorage.setItem(_AdReport.KEY, JSON.stringify({
+      last: Date.now(),
+      guid
+    }));
+  }
+};
+__publicField(_AdReport, "URL", "https://has1.dcloud.net.cn/ahl");
+__publicField(_AdReport, "KEY", "uni_app_ad_guid");
+let AdReport = _AdReport;
+class AdScript {
+  static get instance() {
+    if (!AdScript._instance) {
+      AdScript._instance = new AdScript();
+    }
+    return AdScript._instance;
+  }
+  constructor() {
+    this._callback = {};
+    this._cache = {};
+  }
+  load(data, success, fail) {
+    const provider = data.provider;
+    if (this._cache[provider] === void 0) {
+      this.loadScript(data);
+    }
+    if (this._cache[provider] === 1) {
+      success();
+    } else {
+      if (!this._callback[provider]) {
+        this._callback[provider] = [];
+      }
+      this._callback[provider].push({
+        success,
+        fail
+      });
+    }
+  }
+  loadScript(data) {
+    const provider = data.provider;
+    this._cache[provider] = 0;
+    const domid = "uniad_provider" + provider;
+    const adScriptDom = document.getElementById(domid);
+    const src = adScriptDom && adScriptDom.getAttribute("src");
+    if (src) {
+      this._cache[provider] = 1;
+      return;
+    }
+    var ads = document.createElement("script");
+    ads.setAttribute("id", domid);
+    const script = data.script;
+    for (const var1 in script) {
+      ads.setAttribute(var1, script[var1]);
+    }
+    ads.onload = () => {
+      this._cache[provider] = 1;
+      this._callback[provider].forEach(({
+        success
+      }) => {
+        success();
+      });
+      this._callback[provider].length = 0;
+    };
+    ads.onerror = (err) => {
+      this._cache[provider] = void 0;
+      this._callback[provider].forEach(({
+        fail
+      }) => {
+        fail(err);
+      });
+      this._callback[provider].length = 0;
+    };
+    document.body.append(ads);
+  }
+}
+const CHECK_RENDER_DELAY = 1e3;
+const CHECK_RENDER_RETRY = 5;
+const AD_PROVIDER = {
+  GDT: "2",
+  TUIA: "10035"
+};
+class AdRender {
+  constructor(props2, trigger, rootRef, options) {
+    __publicField(this, "_pi", 0);
+    __publicField(this, "_pl", []);
+    __publicField(this, "_b", {});
+    __publicField(this, "_checkTimerCount", 0);
+    __publicField(this, "_currentChannel", null);
+    __publicField(this, "_tuiaData", null);
+    this._checkTimer = null;
+    this._adpid = props2.adpid;
+    this._adpidWidescreen = props2.adpidWidescreen;
+    this._widescreenWidth = props2.widescreenWidth;
+    this._trigger = trigger;
+    this._rootRef = rootRef;
+    this._currentAdpid = this._adpid;
+    this._hasCustomTuiaMaterial = options.hasCustomTuiaMaterial;
+    this._setCustomTuiaVisible = options.setCustomTuiaVisible;
+  }
+  renderTuiaFromCustomMaterial() {
+    if (!this._tuiaData) {
+      return;
+    }
+    this._renderTuia(this._tuiaData);
+  }
+  get isWidescreen() {
+    return this._rootRef.value && this._rootRef.value.clientWidth > this._widescreenWidth;
+  }
+  load(adpid) {
+    this._currentAdpid = adpid || (this.isWidescreen ? this._adpidWidescreen : this._adpid);
+    this._reset();
+    AdConfig.instance.get(this._currentAdpid, (b, a) => {
+      this._b = b;
+      this._pl = a;
+      this._renderAd();
+    }, (err) => {
+      this._trigger("error", {}, err);
+    });
+  }
+  dispose() {
+    this._clearCheckTimer();
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = "";
+    }
+  }
+  _renderAd() {
+    if (this._pi > this._pl.length - 1) {
+      return;
+    }
+    const data = this._pl[this._pi];
+    if (!data) {
+      this._renderNext();
+      return;
+    }
+    const providerId = String(data.a1);
+    const providerConfig = this._b[providerId];
+    if (!providerConfig) {
+      this._renderNext();
+      return;
+    }
+    const script = providerConfig.script || providerConfig.s;
+    this._currentChannel = providerId;
+    const id2 = this._randomId();
+    this._createView(id2);
+    if (providerId === AD_PROVIDER.GDT) {
+      window.TencentGDT = window.TencentGDT || [];
+      AdScript.instance.load({
+        provider: providerId,
+        script
+      }, () => {
+        this._renderGdt(id2, data);
+      }, (err) => {
+        this._trigger("error", {}, err);
+        this._renderNext();
+      });
+      return;
+    }
+    if (providerId === AD_PROVIDER.TUIA) {
+      AdScript.instance.load({
+        provider: providerId,
+        script
+      }, () => {
+        this._renderTuiaMaterial(id2, data);
+      }, (err) => {
+        this._trigger("error", {}, err);
+        this._renderNext();
+      });
+      return;
+    }
+    this._renderNext();
+  }
+  _createView(id2) {
+    if (!this._rootRef.value) {
+      return null;
+    }
+    var adView = document.createElement("div");
+    adView.setAttribute("id", id2);
+    adView.setAttribute("class", id2);
+    this._rootRef.value.innerHTML = "";
+    this._rootRef.value.append(adView);
+    return adView;
+  }
+  _renderGdt(id2, data) {
+    window.TencentGDT.push({
+      placement_id: data.a3,
+      app_id: data.a2,
+      type: "native",
+      count: 1,
+      onComplete: (res) => {
+        if (res && res.constructor === Array && res.length > 0) {
+          window.TencentGDT.NATIVE.renderAd(res[0], id2);
+          this._trigger("load", {}, {});
+        } else {
+          this._trigger("error", {}, res || {
+            errMsg: "No advertisement"
+          });
+          this._renderNext();
+        }
+      }
+    });
+    this._startCheckTimer();
+  }
+  _renderTuiaMaterial(id2, data) {
+    const adView = document.getElementById(id2);
+    if (!adView) {
+      this._trigger("error", {}, {
+        errMsg: "Invalid ad container"
+      });
+      this._renderNext();
+      return;
+    }
+    this._tuiaData = data;
+    if (this._hasCustomTuiaMaterial()) {
+      adView.innerHTML = "";
+      this._setCustomTuiaVisible(true);
+      this.report(40, this._currentChannel || void 0);
+      this._trigger("load", {}, {});
+      return;
+    }
+    this._setCustomTuiaVisible(false);
+    const materialSrc = this._getRandomTuiaMaterial(data == null ? void 0 : data.imgs, data == null ? void 0 : data.img);
+    if (!materialSrc) {
+      this._trigger("error", {}, {
+        errMsg: "Invalid tuia material imgs/img"
+      });
+      this._renderNext();
+      return;
+    }
+    const img = document.createElement("img");
+    img.src = materialSrc;
+    img.onerror = () => {
+      this._trigger("error", {}, {
+        errMsg: "Tuia material load fail"
+      });
+      this._renderNext();
+    };
+    img.alt = "ad";
+    img.setAttribute("draggable", "false");
+    img.style.width = "100%";
+    img.style.height = "auto";
+    img.style.display = "block";
+    img.style.cursor = "pointer";
+    img.onclick = () => {
+      this._renderTuia(data);
+    };
+    adView.innerHTML = "";
+    adView.append(img);
+    this.report(40, this._currentChannel || void 0);
+    this._trigger("load", {}, {});
+  }
+  _getRandomTuiaMaterial(imgs, img) {
+    if (Array.isArray(imgs)) {
+      const list = imgs.filter((item) => typeof item === "string" && item);
+      if (list.length) {
+        const index2 = Math.floor(Math.random() * list.length);
+        return list[index2];
+      }
+    }
+    if (typeof img === "string") {
+      return img;
+    }
+    return "";
+  }
+  _renderTuia(data) {
+    this._setCustomTuiaVisible(false);
+    const tuia = window.TuiaSDKLite;
+    if (!tuia || typeof tuia.execute !== "function") {
+      this._trigger("error", {}, {
+        errMsg: "Invalid TuiaSDKLite"
+      });
+      this._renderNext();
+      return;
+    }
+    tuia.execute({
+      data: {
+        pid: data.a3,
+        fail_message: "ad load fail",
+        product_name: document.title || location.hostname
+      },
+      success: (res) => {
+        this._trigger("load", {}, res || {});
+      },
+      fail: (err) => {
+        this._trigger("error", {}, err || {
+          errMsg: "TuiaSDKLite execute fail"
+        });
+        this._renderNext();
+      }
+    });
+  }
+  _renderAdView(provider, data) {
+    var randomId = this._randomId();
+    var adView = document.createElement("div");
+    adView.setAttribute("class", randomId);
+    this._rootRef.value.innerHTML = "";
+    this._rootRef.value.append(adView);
+    const scriptPath = provider.s || provider.script;
+    if (!scriptPath || typeof scriptPath !== "string") {
+      this._trigger("error", {}, {
+        errMsg: "Invalid provider script"
+      });
+      this._renderNext();
+      return;
+    }
+    try {
+      let bindThis = window;
+      const fn = scriptPath.split(".").reduce((total, currentValue) => {
+        bindThis = total;
+        return total[currentValue];
+      }, window);
+      fn.bind(bindThis)(data.a2, randomId, 2);
+    } catch (err) {
+      this._trigger("error", {}, err);
+      this._renderNext();
+      return;
+    }
+    this._startCheckTimer();
+  }
+  _renderNext() {
+    if (this._pi >= this._pl.length - 1) {
+      return;
+    }
+    this._pi++;
+    this._renderAd();
+  }
+  _checkRender() {
+    if (!this._rootRef.value) {
+      return false;
+    }
+    var hasContent = this._rootRef.value.children.length > 0 && this._rootRef.value.clientHeight > 40;
+    if (hasContent) {
+      this.report(40, this._currentChannel || void 0);
+    }
+    return hasContent;
+  }
+  _startCheckTimer() {
+    this._clearCheckTimer();
+    this._checkTimer = setInterval(() => {
+      this._checkTimerCount++;
+      if (this._checkTimerCount >= CHECK_RENDER_RETRY) {
+        this._clearCheckTimer();
+        this._renderNext();
+        return;
+      }
+      if (this._checkRender()) {
+        this._clearCheckTimer();
+      }
+    }, CHECK_RENDER_DELAY);
+  }
+  _clearCheckTimer() {
+    this._checkTimerCount = 0;
+    if (this._checkTimer != null) {
+      window.clearInterval(this._checkTimer);
+      this._checkTimer = null;
+    }
+  }
+  report(type, currentChannel) {
+    const compilerVersion = typeof __uniConfig !== "undefined" ? __uniConfig.compilerVersion ?? "" : "";
+    const reportData = {
+      h: compilerVersion,
+      a: this._currentAdpid,
+      at: type
+    };
+    if (currentChannel) {
+      reportData.t = currentChannel;
+    }
+    AdReport.instance.get(reportData);
+  }
+  _randomId() {
+    var result = "";
+    for (let i = 0; i < 4; i++) {
+      result += (65536 * (1 + Math.random()) | 0).toString(16).substring(1);
+    }
+    return "_u" + result;
+  }
+  _reset() {
+    this._b = {};
+    this._pl = [];
+    this._pi = 0;
+    this._tuiaData = null;
+    this._setCustomTuiaVisible(false);
+    this._clearCheckTimer();
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = "";
+    }
+  }
+}
+const DEFAULT_WIDESCREEN_WIDTH = 750;
+const index$5 = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "Ad",
+  props: {
+    adpid: {
+      type: String,
+      default: ""
+    },
+    adpidWidescreen: {
+      type: String,
+      default: ""
+    },
+    widescreenWidth: {
+      type: Number,
+      default: DEFAULT_WIDESCREEN_WIDTH
+    }
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = vue.ref(null);
+    const customTuiaVisible = vue.ref(false);
+    const {
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const trigger = useCustomEvent(rootRef, emit2);
+    const ad = new AdRender(props2, trigger, rootRef, {
+      hasCustomTuiaMaterial: () => Boolean(slots.default && slots.default().length),
+      setCustomTuiaVisible: (visible) => {
+        customTuiaVisible.value = visible;
+      }
+    });
+    vue.watch(() => props2.adpid, (val) => {
+      ad.load(val);
+    });
+    vue.watch(() => props2.adpidWidescreen, (val) => {
+      ad.load(val);
+    });
+    return () => {
+      const {
+        adpid,
+        adpidWidescreen,
+        widescreenWidth
+      } = props2;
+      return vue.createVNode(vue.Fragment, null, [vue.createVNode("uni-ad", vue.mergeProps($listeners.value, $excludeAttrs.value, {
+        "adpid": adpid,
+        "adpidWidescreen": adpidWidescreen,
+        "widescreenWidth": widescreenWidth
+      }), [vue.createVNode("div", {
+        "ref": rootRef,
+        "class": "uni-ad-container",
+        "onClick": () => ad.report(41)
+      }, null, 8, ["onClick"]), customTuiaVisible.value && slots.default ? vue.createVNode("div", {
+        "class": "uni-ad-custom-material",
+        "onClick": () => ad.renderTuiaFromCustomMaterial()
+      }, [slots.default()], 8, ["onClick"]) : null], 16, ["adpid", "adpidWidescreen", "widescreenWidth"])]);
+    };
+  }
+});
 const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
 const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
@@ -13178,10 +14831,10 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       deviceOrientation,
       deviceType,
       model,
-      platform,
-      system,
       osName: osname ? osname.toLowerCase() : void 0,
-      osVersion: osversion
+      osVersion: osversion,
+      platform,
+      system
     });
   }
 );
@@ -13205,15 +14858,15 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         hostVersion: browserVersion,
         hostTheme: theme,
         hostLanguage: language,
+        isUniAppX: true,
         language,
         SDKVersion: "",
         theme,
-        version: "",
         uniPlatform: "web",
-        isUniAppX: true,
         uniCompileVersion: __uniConfig.compilerVersion,
         uniCompilerVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion
+        uniRuntimeVersion: __uniConfig.compilerVersion,
+        version: ""
       },
       {
         uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
@@ -13316,34 +14969,19 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
     const visibleList = vue.ref([]);
-    const _tabBar = useTabBar();
-    const tabBar2 = useTheme(_tabBar, () => {
-      const tabBarStyle = parseTheme(_tabBar);
-      tabBar2.backgroundColor = tabBarStyle.backgroundColor;
-      tabBar2.borderStyle = tabBarStyle.borderStyle;
-      tabBar2.color = tabBarStyle.color;
-      tabBar2.selectedColor = tabBarStyle.selectedColor;
-      tabBar2.blurEffect = tabBarStyle.blurEffect;
-      tabBar2.midButton = tabBarStyle.midButton;
-      if (tabBarStyle.list && tabBarStyle.list.length) {
-        tabBarStyle.list.forEach((item, index2) => {
-          tabBar2.list[index2].iconPath = item.iconPath;
-          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
-        });
-      }
-    });
-    useVisibleList(tabBar2, visibleList);
-    useTabBarCssVar(tabBar2);
-    const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar2, visibleList);
+    const tabBar = useTabBar();
+    useVisibleList(tabBar, visibleList);
+    useTabBarCssVar(tabBar);
+    const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar, visibleList);
     const {
       style,
       borderStyle,
       placeholderStyle
-    } = useTabBarStyle(tabBar2);
+    } = useTabBarStyle(tabBar);
     return () => {
-      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
+      const tabBarItemsTsx = createTabBarItemsTsx(tabBar, onSwitchTab, visibleList);
       return vue.createVNode("uni-tabbar", {
-        "class": "uni-tabbar-" + tabBar2.position
+        "class": "uni-tabbar-" + tabBar.position
       }, [vue.createVNode("div", {
         "class": "uni-tabbar",
         "style": style.value
@@ -13357,22 +14995,22 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function useTabBarCssVar(tabBar2) {
-  vue.watch(() => tabBar2.shown, (value) => {
+function useTabBarCssVar(tabBar) {
+  vue.watch(() => tabBar.shown, (value) => {
     updatePageCssVar({
-      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar2.height) : 0)
+      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar.height) : 0)
     });
   });
 }
-function useVisibleList(tabBar2, visibleList) {
+function useVisibleList(tabBar, visibleList) {
   const internalMidButton = vue.ref(shared.extend({
     type: "midButton"
-  }, tabBar2.midButton));
+  }, tabBar.midButton));
   function setVisibleList() {
     let tempList = [];
-    tempList = tabBar2.list.filter((item) => item.visible !== false);
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar2.midButton) {
-      internalMidButton.value = shared.extend({}, _middleButton, internalMidButton.value, tabBar2.midButton);
+    tempList = tabBar.list.filter((item) => item.visible !== false);
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {
+      internalMidButton.value = shared.extend({}, _middleButton, internalMidButton.value, tabBar.midButton);
       tempList = tempList.filter((item) => !isMidButton(item));
       if (tempList.length % 2 === 0) {
         tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
@@ -13382,13 +15020,13 @@ function useVisibleList(tabBar2, visibleList) {
   }
   vue.watchEffect(setVisibleList);
 }
-function useSwitchTab(route, tabBar2, visibleList) {
+function useSwitchTab(route, tabBar, visibleList) {
   vue.watchEffect(() => {
     const meta = route.meta;
     if (meta.isTabBar) {
       const pagePath = meta.route;
       const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
-      tabBar2.selectedIndex = index2;
+      tabBar.selectedIndex = index2;
     }
   });
   return (tabBarItem, index2) => {
@@ -13435,10 +15073,10 @@ const BORDER_COLORS = {
   white: "rgba(255, 255, 255, 0.33)",
   black: "rgba(0, 0, 0, 0.33)"
 };
-function useTabBarStyle(tabBar2) {
+function useTabBarStyle(tabBar) {
   const style = vue.computed(() => {
-    let backgroundColor = tabBar2.backgroundColor;
-    const blurEffect = tabBar2.blurEffect;
+    let backgroundColor = tabBar.backgroundColor;
+    const blurEffect = tabBar.blurEffect;
     if (!backgroundColor) {
       if (blurEffect && blurEffect !== "none") {
         backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
@@ -13453,7 +15091,7 @@ function useTabBarStyle(tabBar2) {
     const {
       borderStyle: borderStyle2,
       borderColor
-    } = tabBar2;
+    } = tabBar;
     if (borderColor && shared.isString(borderColor)) {
       return {
         backgroundColor: borderColor
@@ -13465,7 +15103,7 @@ function useTabBarStyle(tabBar2) {
   });
   const placeholderStyle = vue.computed(() => {
     return {
-      height: tabBar2.height
+      height: tabBar.height
     };
   });
   return {
@@ -13477,12 +15115,12 @@ function useTabBarStyle(tabBar2) {
 function isMidButton(item) {
   return item.type === "midButton";
 }
-function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
+function createTabBarItemsTsx(tabBar, onSwitchTab, visibleList) {
   const {
     selectedIndex,
     selectedColor,
     color
-  } = tabBar2;
+  } = tabBar;
   return visibleList.value.map((item, index2) => {
     const selected = selectedIndex === index2;
     const textColor = selected ? selectedColor : color;
@@ -13490,37 +15128,37 @@ function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
     const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
     const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
     if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
-      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
     }
-    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
   });
 }
-function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2, index2, onSwitchTab) {
+function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar, index2, onSwitchTab) {
   return vue.createVNode("div", {
     "key": index2,
     "class": "uni-tabbar__item",
     "onClick": onSwitchTab(tabBarItem, index2)
-  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar2)], 8, ["onClick"]);
+  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar)], 8, ["onClick"]);
 }
-function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2) {
+function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar) {
   const {
     height
-  } = tabBar2;
+  } = tabBar;
   return vue.createVNode("div", {
     "class": "uni-tabbar__bd",
     "style": {
       height
     }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
-function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
+function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
   const {
     type,
     text
   } = tabBarItem;
   const {
     iconWidth
-  } = tabBar2;
+  } = tabBar;
   const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
@@ -13533,7 +15171,7 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     "src": getRealPath(iconPath)
   }, null, 8, ["src"])], 6);
 }
-function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
+function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar) {
   var _a;
   const {
     type,
@@ -13541,7 +15179,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
   } = tabBarItem;
   const {
     iconWidth
-  } = tabBar2;
+  } = tabBar;
   const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
@@ -13559,7 +15197,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
     "style": iconfontStyle
   }, [iconfontText], 4)], 6);
 }
-function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
+function createTabBarItemTextTsx(color, tabBarItem, tabBar) {
   const {
     iconPath,
     text
@@ -13567,7 +15205,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
     fontSize,
     spacing
-  } = tabBar2;
+  } = tabBar;
   const style = {
     color,
     fontSize,
@@ -13585,7 +15223,7 @@ function createTabBarItemRedDotTsx(badge) {
     "class": clazz2
   }, [badge], 2);
 }
-function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2, index2, onSwitchTab) {
+function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar, index2, onSwitchTab) {
   const {
     width,
     height,
@@ -13613,7 +15251,7 @@ function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, 
       height: iconWidth
     },
     "src": getRealPath(iconPath)
-  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
+  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar)], 12, ["onClick"]);
 }
 const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
@@ -13809,8 +15447,8 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
 }
 function useShowTabBar(emit2) {
   const route = usePageRoute();
-  const tabBar2 = useTabBar();
-  const showTabBar = vue.computed(() => route.meta.isTabBar && tabBar2.shown);
+  const tabBar = useTabBar();
+  const showTabBar = vue.computed(() => route.meta.isTabBar && tabBar.shown);
   return showTabBar;
 }
 function createTabBarTsx(showTabBar) {
@@ -13864,6 +15502,7 @@ function useTopWindow(layoutState) {
     updateWindow();
   });
   vue.watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => vue.nextTick(updateWindow));
+  vue.watch(() => layoutState.topWindowStyle, () => vue.nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
     component,
@@ -13896,6 +15535,7 @@ function useLeftWindow(layoutState) {
     updateWindow();
   });
   vue.watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => vue.nextTick(updateWindow));
+  vue.watch(() => layoutState.leftWindowStyle, () => vue.nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
     component,
@@ -13928,6 +15568,7 @@ function useRightWindow(layoutState) {
     updateWindow();
   });
   vue.watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => vue.nextTick(updateWindow));
+  vue.watch(() => layoutState.rightWindowStyle, () => vue.nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {
     component,
@@ -14013,19 +15654,19 @@ exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$x;
+exports.Button = index$y;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;
-exports.Checkbox = index$v;
-exports.CheckboxGroup = index$w;
+exports.Checkbox = index$w;
+exports.CheckboxGroup = index$x;
 exports.CoverImage = index$7;
 exports.CoverView = index$8;
-exports.Editor = index$u;
-exports.Form = index$z;
-exports.Icon = index$t;
-exports.Image = index$s;
+exports.Editor = index$v;
+exports.Form = index$A;
+exports.Icon = index$u;
+exports.Image = index$t;
 exports.Input = Input;
-exports.Label = index$y;
+exports.Label = index$z;
 exports.LayoutComponent = LayoutComponent;
 exports.ListItem = index$f;
 exports.ListView = index$g;
@@ -14033,31 +15674,32 @@ exports.LivePlayer = index$1;
 exports.LivePusher = index;
 exports.Loading = _sfc_main;
 exports.Map = index$9;
-exports.MovableArea = index$r;
-exports.MovableView = index$q;
-exports.Navigator = index$p;
+exports.MovableArea = index$s;
+exports.MovableView = index$r;
+exports.Navigator = index$q;
 exports.PageComponent = PageComponent;
+exports.PageContainer = _sfc_main$1;
 exports.Picker = index$6;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$o;
+exports.Progress = index$p;
 exports.Radio = indexX$3;
-exports.RadioGroup = index$n;
+exports.RadioGroup = index$o;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$m;
-exports.ScrollView = index$l;
+exports.RichText = index$n;
+exports.ScrollView = index$m;
 exports.Slider = indexX$2;
 exports.StickyHeader = index$d;
 exports.StickySection = index$e;
-exports.Swiper = index$k;
-exports.SwiperItem = index$j;
+exports.Swiper = index$l;
+exports.SwiperItem = index$k;
 exports.Switch = indexX$1;
-exports.Text = index$i;
-exports.Textarea = index$h;
+exports.Text = index$j;
+exports.Textarea = index$i;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
 exports.Video = index$a;
-exports.View = __syscom_0;
+exports.View = index$h;
 exports.WebView = indexX;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;

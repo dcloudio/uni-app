@@ -102,6 +102,7 @@ function rewriteUniH5Tags(tag: string) {
   if (tag === 'page') {
     return 'uni-page-body'
   }
+  // TODO: Web Vapor 需将 view、text、image 转换为对应的 attribute 宿主选择器。
   if (isBuiltInComponent(tag)) {
     return COMPONENT_SELECTOR_PREFIX + tag
   }

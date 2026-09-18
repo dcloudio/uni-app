@@ -9,7 +9,7 @@
     "lib"
   ],
   "engines": {
-    "node": "^14.18.0 || >=16.0.0"
+    "node": ">=22.12.0"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,7 @@
     "@intlify/core-base": "9.1.9",
     "@intlify/shared": "9.1.9",
     "@intlify/vue-devtools": "9.1.9",
+    "@rolldown/pluginutils": "^1.0.1",
     "@rollup/pluginutils": "catalog:",
     "@vue/compiler-core": "catalog:",
     "@vue/compiler-dom": "catalog:",

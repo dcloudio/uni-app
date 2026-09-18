@@ -1,4 +1,5 @@
 // 注意：该文件尽可能少依赖其他文件，否则可能会导致还没有alias的时候，就加载了目标模块
+import fs from 'fs'
 import path from 'path'
 import moduleAlias from 'module-alias'
 import { isInHBuilderX } from './utils'
@@ -12,8 +13,105 @@ const hbxPlugins = {
   pug: 'compile-pug-cli/node_modules/pug',
 } as const
 
+const commonVuePackages = [
+  '@vue/compiler-core',
+  '@vue/compiler-dom',
+  '@vue/compiler-sfc',
+  '@vue/shared',
+]
+const vaporVuePackages = [...commonVuePackages, '@vue/compiler-vapor']
+const webVaporVuePackages = [
+  ...commonVuePackages,
+  '@vue/compiler-ssr',
+  '@vue/compiler-vapor',
+  '@vue/server-renderer',
+]
+
+function addVaporVuePackageAliases(
+  vueDir: string,
+  packages: readonly string[]
+) {
+  const aliases: Record<string, string> = {}
+  packages.forEach((pkg) => {
+    aliases[pkg] = path.resolve(vueDir, pkg.slice(pkg.lastIndexOf('/') + 1))
+  })
+  moduleAlias.addAliases(aliases)
+}
+
+export function resolveWebVaporPackage(packageName: string) {
+  return path.resolve(__dirname, '../../lib/dom2/web', packageName)
+}
+
+function resolveWebVaporPluginVue() {
+  return resolveWebVaporPackage('@vitejs/plugin-vue/dist/index.cjs')
+}
+
+export function initWebVaporAliases() {
+  const webDir = resolveWebVaporPackage('')
+  const webVueDir = path.join(webDir, '@vue')
+  addVaporVuePackageAliases(webVueDir, webVaporVuePackages)
+  moduleAlias.addAliases({
+    '@vitejs/plugin-vue': resolveWebVaporPluginVue(),
+    '@dcloudio/compiler-vapor-web': path.join(webVueDir, 'compiler-vapor-web'),
+    'vue/compiler-sfc': path.join(webVueDir, 'compiler-sfc'),
+    'vue/server-renderer': path.join(webVueDir, 'server-renderer'),
+  })
+}
+
+function addAppVaporAliases(libDir: string) {
+  const appVueDir = path.resolve(libDir, 'dom2', 'app', '@vue')
+  addVaporVuePackageAliases(appVueDir, vaporVuePackages)
+  moduleAlias.addAliases({
+    '@vitejs/plugin-vue': path.resolve(
+      libDir,
+      'dom2',
+      'app',
+      '@vitejs',
+      'plugin-vue'
+    ),
+    '@dcloudio/compiler-vapor-dom2': path.join(
+      appVueDir,
+      'compiler-vapor-dom2'
+    ),
+  })
+}
+
+function addNonVaporVuePackageAliases(
+  libDir: string,
+  compilerSfcPath: string,
+  serverRendererPath: string
+) {
+  moduleAlias.addAliases({
+    '@vue/shared': require.resolve('@vue/shared'),
+    '@vue/shared/dist/shared.esm-bundler.js': require.resolve(
+      '@vue/shared/dist/shared.esm-bundler.js'
+    ),
+    '@vue/compiler-core': path.resolve(libDir, '@vue/compiler-core'),
+    '@vue/compiler-dom': require.resolve('@vue/compiler-dom'),
+    '@vue/compiler-sfc': compilerSfcPath,
+    '@vue/server-renderer': serverRendererPath,
+    'vue/compiler-sfc': compilerSfcPath,
+    'vue/server-renderer': serverRendererPath,
+  })
+}
+
 function isWebOrMpPlatform(platform?: string) {
   return platform === 'h5' || platform === 'web' || platform?.startsWith('mp-')
+}
+
+function isWebPlatform(platform?: string) {
+  return platform === 'h5' || platform === 'web'
+}
+
+function hasWebVaporConfig() {
+  // 框架自身生成 dist-x-vapor 时没有用户项目目录，通过内部构建标记绕过配置文件检查。
+  if (process.env.UNI_APP_X_VAPOR_BUILD === 'true') {
+    return true
+  }
+  // .vapor 位于 Vite 项目根目录。
+  const projectDir =
+    process.env.VITE_ROOT_DIR || process.env.UNI_INPUT_DIR || process.cwd()
+  return fs.existsSync(path.resolve(projectDir, '.vapor'))
 }
 
 function resolveUniCliPlatform() {
@@ -45,26 +143,39 @@ function resolveUniCliPlatform() {
 }
 
 export function normalizeUniAppXVaporEnv() {
-  // UNI_APP_X_VAPOR 是对外开关，显式传入时优先覆盖内部 DOM2 状态。
-  if (process.env.UNI_APP_X_VAPOR === 'true') {
+  // App 使用 UNI_APP_X_VAPOR 作为对外开关；Web 仅在项目根目录存在 .vapor 时启用。
+  const utsPlatform = process.env.UNI_UTS_PLATFORM
+  const uniPlatform = process.env.UNI_PLATFORM
+  const cliPlatform = resolveUniCliPlatform()
+  const platform = cliPlatform || utsPlatform || uniPlatform
+  // UNI_APP_X 必须由启动方在 alias 初始化前注入。若未来改为读取 manifest.json，
+  // 需要重构启动顺序，在加载任何 compiler 模块前完成项目识别和 alias 初始化，
+  // 不能在这里增加延迟识别，否则会造成不同版本的 Vue compiler 混用。
+  const webVaporConfigured = isWebPlatform(platform) && hasWebVaporConfig()
+  const isWebVapor = process.env.UNI_APP_X === 'true' && webVaporConfigured
+
+  if (process.env.UNI_APP_X_VAPOR === 'true' || isWebVapor) {
     process.env.UNI_APP_X_DOM2 = 'true'
   } else if (process.env.UNI_APP_X_VAPOR === 'false') {
     delete process.env.UNI_APP_X_DOM2
   }
 
   // alias 初始化早于 CLI 环境初始化，优先读取 CLI 参数，否则使用预置的平台环境变量。
-  // web 和小程序目前强制关闭 Vapor。
-  const utsPlatform = process.env.UNI_UTS_PLATFORM
-  const uniPlatform = process.env.UNI_PLATFORM
-  const cliPlatform = resolveUniCliPlatform()
+  // 小程序仍关闭 Vapor，Web 平台使用独立的 Web Vapor 产物。
   const shouldDisableVapor = cliPlatform
-    ? isWebOrMpPlatform(cliPlatform)
-    : isWebOrMpPlatform(utsPlatform) || isWebOrMpPlatform(uniPlatform)
+    ? isWebOrMpPlatform(cliPlatform) && !isWebVapor
+    : (isWebOrMpPlatform(utsPlatform) || isWebOrMpPlatform(uniPlatform)) &&
+      !isWebVapor
   if (shouldDisableVapor) {
     delete process.env.UNI_APP_X_DOM2
   }
 
   // 将平台归一化后的实际状态同步回对外开关。
+  if (isWebVapor) {
+    process.env.UNI_APP_X_VAPOR = 'true'
+    process.env.UNI_APP_X_DOM2 = 'true'
+  }
+
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     process.env.UNI_APP_X_VAPOR = 'true'
   } else {
@@ -97,7 +208,15 @@ export function initModuleAlias() {
     process.env.UNI_APP_X_DOM2_CPP_DIR =
       process.env.UNI_APP_HARMONY_DOM2_CPP_DIR
   }
-  if (process.env.UNI_APP_X_DOM2 === 'true') {
+  const platform =
+    resolveUniCliPlatform() ||
+    process.env.UNI_UTS_PLATFORM ||
+    process.env.UNI_PLATFORM
+  const webVapor =
+    process.env.UNI_APP_X_VAPOR === 'true' && isWebPlatform(platform)
+  if (webVapor) {
+    initWebVaporAliases()
+  } else if (process.env.UNI_APP_X_DOM2 === 'true') {
     if (
       process.env.UNI_OUTPUT_DIR &&
       (process.env.UNI_PLATFORM === 'app' ||
@@ -156,41 +275,10 @@ export function initModuleAlias() {
       }
     }
   }
-  if (process.env.UNI_APP_X_DOM2 === 'true') {
-    const vuePkgs = [
-      '@vue/compiler-core',
-      '@vue/compiler-dom',
-      '@vue/compiler-sfc',
-      '@vue/compiler-vapor',
-      '@vue/shared',
-    ]
-    vuePkgs.forEach((pkg) => {
-      moduleAlias.addAlias(
-        pkg,
-        path.resolve(libDir, 'dom2', 'app', '@vue', pkg.split('/').pop()!)
-      )
-    })
-    moduleAlias.addAlias(
-      '@vitejs/plugin-vue',
-      path.resolve(libDir, 'dom2', 'app', '@vitejs', 'plugin-vue')
-    )
-    moduleAlias.addAlias(
-      '@dcloudio/compiler-vapor-dom2',
-      path.resolve(libDir, 'dom2', 'app', '@vue', 'compiler-vapor-dom2')
-    )
-  } else {
-    moduleAlias.addAliases({
-      '@vue/shared': require.resolve('@vue/shared'),
-      '@vue/shared/dist/shared.esm-bundler.js': require.resolve(
-        '@vue/shared/dist/shared.esm-bundler.js'
-      ),
-      '@vue/compiler-core': path.resolve(libDir, '@vue/compiler-core'),
-      '@vue/compiler-dom': require.resolve('@vue/compiler-dom'),
-      '@vue/compiler-sfc': compilerSfcPath,
-      '@vue/server-renderer': serverRendererPath,
-      'vue/compiler-sfc': compilerSfcPath,
-      'vue/server-renderer': serverRendererPath,
-    })
+  if (process.env.UNI_APP_X_DOM2 === 'true' && !webVapor) {
+    addAppVaporAliases(libDir)
+  } else if (!webVapor) {
+    addNonVaporVuePackageAliases(libDir, compilerSfcPath, serverRendererPath)
   }
   if (process.env.VITEST) {
     moduleAlias.addAliases({
@@ -223,10 +311,7 @@ export function initModuleAlias() {
       )
     })
     // web 平台用了 vite 内置 css 插件，该插件会加载预编译器如scss、less等，需要转向到 HBuilderX 的对应编译器插件
-    if (
-      process.env.UNI_PLATFORM === 'h5' ||
-      process.env.UNI_PLATFORM === 'web'
-    ) {
+    if (isWebPlatform(process.env.UNI_PLATFORM)) {
       // https://github.com/vitejs/vite/blob/main/packages/vite/src/node/packages.ts#L92
       // 拦截预编译器
       const join = path.join

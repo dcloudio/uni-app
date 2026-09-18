@@ -12,10 +12,10 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node_version: [18.20.0]
+        node_version: [22.22.2]
         include:
           - os: macos-latest
-            node_version: 18.20.0
+            node_version: 22.22.2
           - os: windows-latest
             node_version: 22.22.2
       fail-fast: false

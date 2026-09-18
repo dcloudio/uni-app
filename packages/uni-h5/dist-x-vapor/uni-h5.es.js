@@ -4,9 +4,9 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_READY, onCreateVueApp } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, isInSSRComponentSetup, toDisplayString, createCommentVNode } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, template, defineVaporComponent, createIf, on as on$1, renderEffect, setStyle, setClass, setInsertionState, createSlot, createPlainElement, insert, setStaticTemplateRef, setClassName, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, child, next, txt, setText, normalizeUniText, toDisplayString, createFor, setHover, createAssetComponent, createComponentWithFallback, extend as extend$1, withImageEventDetail, setImageMode, setImageSrc, createComponent, applyVShow, unref } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -464,16 +464,16 @@ function initNavigationBarI18n(navigationBar) {
     ]);
   }
 }
-function initTabBarI18n(tabBar2) {
-  if (isEnableLocale() && tabBar2.list) {
-    tabBar2.list.forEach((item) => {
+function initTabBarI18n(tabBar) {
+  if (isEnableLocale() && tabBar.list) {
+    tabBar.list.forEach((item) => {
       defineI18nProperty(item, ["text"]);
     });
   }
-  if (isEnableLocale() && tabBar2.midButton) {
-    defineI18nProperty(tabBar2.midButton, ["text"]);
+  if (isEnableLocale() && tabBar.midButton) {
+    defineI18nProperty(tabBar.midButton, ["text"]);
   }
-  return tabBar2;
+  return tabBar;
 }
 function initBridge(subscribeNamespace) {
   const emitter = new Emitter();
@@ -615,12 +615,12 @@ function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
   return isNaN(newValue) ? defaultValue : newValue;
 }
-const isApple = () => /^Apple/.test(navigator.vendor);
+const isApple$1 = () => /^Apple/.test(navigator.vendor);
 function getWindowWidth$1() {
-  const screenFix = isApple() && typeof window.orientation === "number";
-  const landscape = screenFix && Math.abs(window.orientation) === 90;
-  var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-  var windowWidth = screenFix ? Math.min(
+  const isApple2 = /^Apple/.test(navigator.vendor);
+  const screenFix = isApple2 && window.matchMedia("(orientation:landscape)").matches;
+  var screenWidth = screenFix ? Math.max(screen.width, screen.height) : screen.width;
+  var windowWidth = isApple2 ? Math.min(
     window.innerWidth,
     document.documentElement.clientWidth,
     screenWidth
@@ -640,7 +640,7 @@ function useRem() {
   document.addEventListener("DOMContentLoaded", updateRem);
   window.addEventListener("load", updateRem);
   window.addEventListener("resize", updateRem);
-  if (isApple()) {
+  if (isApple$1()) {
     window.addEventListener("orientationchange", () => {
       updateRem();
       setTimeout(updateRem, 50);
@@ -674,7 +674,7 @@ function init() {
     });
     return;
   }
-  function setStyle(el, style) {
+  function setStyle2(el, style) {
     var elStyle = el.style;
     Object.keys(style).forEach(function(key) {
       var val = style[key];
@@ -716,15 +716,15 @@ function init() {
       overflow: "hidden",
       paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
     };
-    setStyle(a1, aStyle);
-    setStyle(a2, aStyle);
-    setStyle(a1Children, {
+    setStyle2(a1, aStyle);
+    setStyle2(a2, aStyle);
+    setStyle2(a1Children, {
       transition: "0s",
       animation: "none",
       width: "400px",
       height: "400px"
     });
-    setStyle(a2Children, {
+    setStyle2(a2Children, {
       transition: "0s",
       animation: "none",
       width: "250%",
@@ -759,7 +759,7 @@ function init() {
     });
   }
   var parentDiv = document.createElement("div");
-  setStyle(parentDiv, {
+  setStyle2(parentDiv, {
     position: "absolute",
     left: "0",
     top: "0",
@@ -1107,6 +1107,9 @@ function invokeHook(vm, name, args) {
     return;
   }
   const hooks = vm.$[name];
+  if (name === ON_BACK_PRESS) {
+    return hooks && invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true);
+  }
   return hooks && invokeArrayFns(hooks, args);
 }
 function disableScrollListener(evt) {
@@ -1216,9 +1219,9 @@ function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
     const { meta } = newTabBarRoute;
     meta.tabBarIndex = index2;
     meta.isQuit = meta.isTabBar = true;
-    const tabBar2 = __uniConfig.tabBar;
-    if (tabBar2 && tabBar2.list && tabBar2.list[index2]) {
-      tabBar2.list[index2].pagePath = removeLeadingSlash(newPagePath);
+    const tabBar = __uniConfig.tabBar;
+    if (tabBar && tabBar.list && tabBar.list[index2]) {
+      tabBar.list[index2].pagePath = removeLeadingSlash(newPagePath);
     }
   }
 }
@@ -1262,9 +1265,9 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHi
     }
   }
   if (triggerParentHideDialogPageNum <= 1) {
-    const systemDialogPage = getSystemDialogPages(parentPage);
-    for (let i = 0; i < systemDialogPage.length; i++) {
-      if (!!systemDialogPage[i].$triggerParentHide) {
+    const systemDialogPages = getSystemDialogPages(parentPage);
+    for (let i = 0; i < systemDialogPages.length; i++) {
+      if (!!systemDialogPages[i].$triggerParentHide) {
         triggerParentHideDialogPageNum++;
         if (triggerParentHideDialogPageNum > 1) {
           return;
@@ -1280,28 +1283,73 @@ function getSystemDialogPages(parentPage) {
   return parentPage.$getSystemDialogPages();
 }
 function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
-  var _a, _b, _c, _d;
   if (!parentPage)
     return;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
   if (!currentPage || parentPage !== currentPage)
     return;
-  const dialogPages = currentPage.getDialogPages();
-  const systemDialogPage = getSystemDialogPages(parentPage);
-  const lastSystemDialogPage = systemDialogPage[systemDialogPage.length - 1];
-  const lastDialogPage = dialogPages[dialogPages.length - 1];
-  let prevDialogPage;
-  if (!lastDialogPage) {
-    prevDialogPage = lastSystemDialogPage;
-  } else if (!lastSystemDialogPage) {
-    prevDialogPage = lastDialogPage;
-  } else {
-    const lastSystemDialogPageId = ((_b = (_a = lastSystemDialogPage.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
-    const lastDialogPageId = ((_d = (_c = lastDialogPage.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
-    prevDialogPage = lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
-  }
+  let prevDialogPage = getLastDialogPage(currentPage);
   prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle);
+}
+function getLastDialogPage(parentPage) {
+  var _a, _b, _c, _d;
+  if (!parentPage)
+    return null;
+  const dialogPages = parentPage.getDialogPages();
+  const systemDialogPages = getSystemDialogPages(parentPage);
+  const lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+  const lastDialogPage = dialogPages[dialogPages.length - 1];
+  if (!lastDialogPage)
+    return lastSystemDialogPage;
+  if (!lastSystemDialogPage)
+    return lastDialogPage;
+  const lastSystemDialogPageId = ((_b = (_a = lastSystemDialogPage.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
+  const lastDialogPageId = ((_d = (_c = lastDialogPage.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
+  return lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
+}
+function invokeLastDialogPageHookByUniPage(parentPage, hook) {
+  const lastDialogPage = getLastDialogPage(parentPage);
+  if (lastDialogPage) {
+    invokeHook(lastDialogPage.vm, hook);
+  }
+}
+function invokeNewDialogPageHook(page, hook) {
+  const currentPage = getCurrentPage();
+  let shouldInvoke = false;
+  if (!currentPage) {
+    shouldInvoke = true;
+  } else {
+    if (isSystemDialogPage(page)) {
+      const systemDialogPages = getSystemDialogPages(currentPage);
+      shouldInvoke = systemDialogPages.includes(page);
+    } else {
+      const dialogPages = currentPage.getDialogPages();
+      shouldInvoke = dialogPages.includes(page);
+    }
+  }
+  shouldInvoke && invokeHook(page.vm, hook);
+}
+function getPageInstanceByChild(child2) {
+  var _a;
+  let pageInstance = child2;
+  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
+const DIALOG_TAG = "dialog";
+const SYSTEM_DIALOG_TAG = "systemDialog";
+function isDialogPageInstance(vm) {
+  if (!vm)
+    return false;
+  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
+}
+function isNormalDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === DIALOG_TAG;
+}
+function isSystemDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
 }
 function initView() {
   useRem();
@@ -1576,7 +1624,7 @@ function createNativeEvent(evt, htmlElement = false) {
     detail: {},
     currentTarget: realCurrentTarget
   };
-  if (evt instanceof CustomEvent && isPlainObject(evt.detail)) {
+  if (typeof CustomEvent !== "undefined" && evt instanceof CustomEvent && isPlainObject(evt.detail)) {
     event.detail = evt.detail;
   }
   if (evt._stopped) {
@@ -1973,8 +2021,7 @@ function useCustomEvent(ref2, emit2) {
   };
 }
 function normalizeCustomEvent(name, domEvt, el, detail) {
-  let target;
-  target = el;
+  const target = el;
   return {
     type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
@@ -2108,7 +2155,6 @@ class UniElement extends HTMLElement {
   constructor() {
     super();
     this._props = {};
-    this._page = null;
     this.__isUniElement = true;
   }
   attachVmProps(props2) {
@@ -2120,17 +2166,31 @@ class UniElement extends HTMLElement {
     return attr2 === void 0 ? null : attr2;
   }
   getPage() {
-    if (this._page) {
-      return this._page;
-    }
-    let parent = this.parentNode;
-    while (parent && !parent._page) {
-      parent = parent.parentNode;
-    }
-    return (parent == null ? void 0 : parent._page) || null;
+    var _a, _b;
+    return ((_b = (_a = this.__vnode) == null ? void 0 : _a.ctx) == null ? void 0 : _b.page) || null;
   }
   get uniPage() {
     return this.getPage();
+  }
+  get dataset() {
+    if (!this.__uniDatasetMap) {
+      this.__uniDatasetMap = createUniDOMStringMap(
+        this.__uniDataset || {}
+      );
+    }
+    return this.__uniDatasetMap;
+  }
+  setAttribute(qualifiedName, value) {
+    super.setAttribute(qualifiedName, value);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.set(qualifiedName, value);
+    }
+  }
+  removeAttribute(qualifiedName) {
+    super.removeAttribute(qualifiedName);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.delete(qualifiedName);
+    }
   }
   getBoundingClientRectAsync(callback) {
     var _a, _b;
@@ -2179,7 +2239,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2249,7 +2309,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2392,7 +2452,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -2457,7 +2517,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$v = {
+const props$t = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -2493,7 +2553,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$v,
+  props: props$t,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -2516,7 +2576,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$u = {
+const props$s = {
   name: {
     type: String,
     default: ""
@@ -2524,9 +2584,9 @@ const props$u = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$u,
+  props: props$s,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -2586,7 +2646,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$t = {
+const props$r = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2635,9 +2695,9 @@ const props$t = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$t,
+  props: props$r,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -2654,10 +2714,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
     const initialCheckedValue = props2.checked;
     function getCheckBoxStyle(checked) {
       if (props2.disabled) {
-        return {
-          backgroundColor: "#E1E1E1",
-          borderColor: "#D1D1D1"
-        };
+        return {};
       }
       const style = {};
       if (checked) {
@@ -2744,7 +2801,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -2778,7 +2835,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$s = {
+const props$q = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -3084,9 +3141,9 @@ function assertType(value, type) {
   let valid;
   const expectedType = getType(type);
   if (isSimpleType(expectedType)) {
-    const t2 = typeof value;
-    valid = t2 === expectedType.toLowerCase();
-    if (!valid && t2 === "object") {
+    const t8 = typeof value;
+    valid = t8 === expectedType.toLowerCase();
+    if (!valid && t8 === "object") {
       valid = value instanceof type;
     }
   } else if (expectedType === "Object") {
@@ -3185,11 +3242,22 @@ function removeKeepAliveApiCallback(name, callback) {
     }
   }
 }
-function offKeepAliveApiCallback(name) {
-  UniServiceJSBridge.off("api." + name);
+function removeAllKeepAliveApiCallbacks(name) {
+  for (const key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
 }
-function onKeepAliveApiCallback(name) {
-  UniServiceJSBridge.on("api." + name, (res) => {
+function offKeepAliveApiCallback(name, eventTransport2) {
+  const eventName = eventTransport2 ? name : "api." + name;
+  const transport = eventTransport2 || UniServiceJSBridge;
+  transport.off(eventName);
+}
+function onKeepAliveApiCallback(name, eventTransport2) {
+  const eventName = eventTransport2 ? name : "api." + name;
+  const transport = eventTransport2 || UniServiceJSBridge;
+  transport.on(eventName, (res) => {
     for (const key in invokeCallbacks) {
       const opts = invokeCallbacks[key];
       if (opts.name === name) {
@@ -3382,18 +3450,28 @@ function promisify(name, fn) {
     );
   };
 }
-function formatApiArgs(args, options) {
+function normalizeFormatApiParams(args) {
   const params = args[0];
-  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+  if (isPlainObject(params)) {
+    return params;
+  }
+  const normalizedParams = {};
+  args[0] = normalizedParams;
+  return normalizedParams;
+}
+function formatApiArgs(args, options) {
+  const rawParams = args[0];
+  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(rawParams)) {
     return;
   }
+  const params = normalizeFormatApiParams(args);
   const formatArgs = options.formatArgs;
   const keys = Object.keys(formatArgs);
   for (let i = 0; i < keys.length; i++) {
     const name = keys[i];
     const formatterOrDefaultValue = formatArgs[name];
     if (isFunction(formatterOrDefaultValue)) {
-      const errMsg = formatterOrDefaultValue(args[0][name], params);
+      const errMsg = formatterOrDefaultValue(params[name], params);
       if (isString(errMsg)) {
         return errMsg;
       }
@@ -3426,7 +3504,11 @@ function invokeFail(id2, name, errMsg, errRes = {}) {
   let res = extend({ errMsg: apiErrMsg }, errRes);
   {
     if (typeof UniError !== "undefined") {
-      res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
+      const errOptions = extend({}, errRes);
+      if (typeof errOptions.errSubject === "undefined") {
+        errOptions.errSubject = name;
+      }
+      res = new UniError(apiErrMsg, errOptions);
     }
   }
   return invokeCallback(id2, res);
@@ -3463,23 +3545,35 @@ function wrapperOnApi(name, fn, options) {
     const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
     createKeepAliveApiCallback(name, callback);
     if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name);
+      onKeepAliveApiCallback(name, options == null ? void 0 : options.eventTransport);
       fn();
     }
   };
 }
 function wrapperOffApi(name, fn, options) {
   return (callback) => {
-    checkCallback(callback);
-    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    const clearAll = (options == null ? void 0 : options.allowClearAll) === true && callback == null;
+    if (!clearAll) {
+      checkCallback(callback);
+    }
+    const errMsg = beforeInvokeApi(
+      name,
+      clearAll ? [] : [callback],
+      void 0,
+      options
+    );
     if (errMsg) {
       throw new Error(errMsg);
     }
-    name = name.replace("off", "on");
-    removeKeepAliveApiCallback(name, callback);
-    const hasInvokeOnApi = findInvokeCallbackByName(name);
+    const onApiName = name.replace("off", "on");
+    if (clearAll) {
+      removeAllKeepAliveApiCallbacks(onApiName);
+    } else {
+      removeKeepAliveApiCallback(onApiName, callback);
+    }
+    const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
     if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(name);
+      offKeepAliveApiCallback(onApiName, options == null ? void 0 : options.eventTransport);
       fn();
     }
   };
@@ -4297,39 +4391,39 @@ const predefinedColor = {
 };
 function checkColor(e2) {
   e2 = e2 || "#000000";
-  let t2 = null;
-  if ((t2 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
-    const n = parseInt(t2[1].slice(0, 2), 16);
-    const o2 = parseInt(t2[1].slice(2, 4), 16);
-    const r = parseInt(t2[1].slice(4), 16);
+  let t8 = null;
+  if ((t8 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
+    const n = parseInt(t8[1].slice(0, 2), 16);
+    const o2 = parseInt(t8[1].slice(2, 4), 16);
+    const r = parseInt(t8[1].slice(4), 16);
     return [n, o2, r, 255];
   }
-  if ((t2 = /^#([0-9|A-F|a-f]{3})$/.exec(e2)) != null) {
-    let n = t2[1].slice(0, 1);
-    let o2 = t2[1].slice(1, 2);
-    let r = t2[1].slice(2, 3);
+  if ((t8 = /^#([0-9|A-F|a-f]{3})$/.exec(e2)) != null) {
+    let n = t8[1].slice(0, 1);
+    let o2 = t8[1].slice(1, 2);
+    let r = t8[1].slice(2, 3);
     n = parseInt(n + n, 16);
     o2 = parseInt(o2 + o2, 16);
     r = parseInt(r + r, 16);
     return [n, o2, r, 255];
   }
-  if ((t2 = /^rgb\((.+)\)$/.exec(e2)) != null) {
-    return t2[1].split(",").map(function(e22) {
+  if ((t8 = /^rgb\((.+)\)$/.exec(e2)) != null) {
+    return t8[1].split(",").map(function(e22) {
       return Math.min(255, parseInt(e22.trim()));
     }).concat(255);
   }
-  if ((t2 = /^rgba\((.+)\)$/.exec(e2)) != null) {
-    return t2[1].split(",").map(function(e22, t22) {
+  if ((t8 = /^rgba\((.+)\)$/.exec(e2)) != null) {
+    return t8[1].split(",").map(function(e22, t22) {
       return t22 === 3 ? Math.floor(255 * parseFloat(e22.trim())) : Math.min(255, parseInt(e22.trim()));
     });
   }
   var i = e2.toLowerCase();
   if (hasOwn(predefinedColor, i)) {
-    t2 = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
-    const n = parseInt(t2[1].slice(0, 2), 16);
-    const o2 = parseInt(t2[1].slice(2, 4), 16);
-    const r = parseInt(t2[1].slice(4, 6), 16);
-    let a2 = parseInt(t2[1].slice(6, 8), 16);
+    t8 = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
+    const n = parseInt(t8[1].slice(0, 2), 16);
+    const o2 = parseInt(t8[1].slice(2, 4), 16);
+    const r = parseInt(t8[1].slice(4, 6), 16);
+    let a2 = parseInt(t8[1].slice(6, 8), 16);
     a2 = a2 >= 0 ? a2 : 255;
     return [n, o2, r, a2];
   }
@@ -5086,6 +5180,88 @@ const innerAudioContextOffEventNames = [
   "offSeeking",
   "offSeeked"
 ];
+let index$r = 0;
+let optionsCache = {};
+function operateEditor(componentId, pageId, type, options) {
+  const data = { options };
+  const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
+  if (needCallOptions) {
+    const callbackId = String(index$r++);
+    data.callbackId = callbackId;
+    optionsCache[callbackId] = options;
+  }
+  UniServiceJSBridge.invokeViewMethod(
+    `editor.${componentId}`,
+    {
+      type,
+      data
+    },
+    pageId,
+    ({ callbackId, data: data2 }) => {
+      if (needCallOptions) {
+        callOptions(optionsCache[callbackId], data2);
+        delete optionsCache[callbackId];
+      }
+    }
+  );
+}
+class EditorContext {
+  constructor(id2, pageId) {
+    this.id = id2;
+    this.pageId = pageId;
+  }
+  format(name, value) {
+    this._exec("format", {
+      name,
+      value
+    });
+  }
+  insertDivider() {
+    this._exec("insertDivider");
+  }
+  insertMention(options) {
+    this._exec("insertMention", options);
+  }
+  insertLink(options) {
+    this._exec("insertLink", options);
+  }
+  insertImage(options) {
+    this._exec("insertImage", options);
+  }
+  insertText(options) {
+    this._exec("insertText", options);
+  }
+  setContents(options) {
+    this._exec("setContents", options);
+  }
+  getContents(options) {
+    this._exec("getContents", options);
+  }
+  clear(options) {
+    this._exec("clear", options);
+  }
+  removeFormat(options) {
+    this._exec("removeFormat", options);
+  }
+  undo(options) {
+    this._exec("undo", options);
+  }
+  redo(options) {
+    this._exec("redo", options);
+  }
+  blur(options) {
+    this._exec("blur", options);
+  }
+  getSelectionText(options) {
+    this._exec("getSelectionText", options);
+  }
+  scrollIntoView(options) {
+    this._exec("scrollIntoView", options);
+  }
+  _exec(method, options) {
+    operateEditor(this.id, this.pageId, method, options);
+  }
+}
 const defaultOptions = {
   thresholds: [0],
   initialRatio: 0,
@@ -5189,82 +5365,6 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$p = 0;
-let optionsCache = {};
-function operateEditor(componentId, pageId, type, options) {
-  const data = { options };
-  const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
-  if (needCallOptions) {
-    const callbackId = String(index$p++);
-    data.callbackId = callbackId;
-    optionsCache[callbackId] = options;
-  }
-  UniServiceJSBridge.invokeViewMethod(
-    `editor.${componentId}`,
-    {
-      type,
-      data
-    },
-    pageId,
-    ({ callbackId, data: data2 }) => {
-      if (needCallOptions) {
-        callOptions(optionsCache[callbackId], data2);
-        delete optionsCache[callbackId];
-      }
-    }
-  );
-}
-class EditorContext {
-  constructor(id2, pageId) {
-    this.id = id2;
-    this.pageId = pageId;
-  }
-  format(name, value) {
-    this._exec("format", {
-      name,
-      value
-    });
-  }
-  insertDivider() {
-    this._exec("insertDivider");
-  }
-  insertImage(options) {
-    this._exec("insertImage", options);
-  }
-  insertText(options) {
-    this._exec("insertText", options);
-  }
-  setContents(options) {
-    this._exec("setContents", options);
-  }
-  getContents(options) {
-    this._exec("getContents", options);
-  }
-  clear(options) {
-    this._exec("clear", options);
-  }
-  removeFormat(options) {
-    this._exec("removeFormat", options);
-  }
-  undo(options) {
-    this._exec("undo", options);
-  }
-  redo(options) {
-    this._exec("redo", options);
-  }
-  blur(options) {
-    this._exec("blur", options);
-  }
-  getSelectionText(options) {
-    this._exec("getSelectionText", options);
-  }
-  scrollIntoView(options) {
-    this._exec("scrollIntoView", options);
-  }
-  _exec(method, options) {
-    operateEditor(this.id, this.pageId, method, options);
-  }
-}
 const ContextClasss = {
   canvas: CanvasContext,
   map: MapContext,
@@ -5695,6 +5795,155 @@ const getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(
     return getLaunchOptions();
   }
 );
+const API_ON_APP_ROUTE = "onAppRoute";
+const API_OFF_APP_ROUTE = "offAppRoute";
+const API_ON_BEFORE_APP_ROUTE = "onBeforeAppRoute";
+const API_OFF_BEFORE_APP_ROUTE = "offBeforeAppRoute";
+const API_REWRITE_ROUTE = "rewriteRoute";
+const eventTransport = /* @__PURE__ */ new Emitter();
+let activeBeforeAppRouteContext;
+const MAX_APP_ROUTE_REWRITE_COUNT = 100;
+const APP_ROUTE_ERROR_CODE = 4;
+function createAppRouteRuntime(options = {}) {
+  let routeEventId = 0;
+  const onAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
+  }, {
+    eventTransport
+  });
+  const offAppRoute2 = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
+  }, {
+    allowClearAll: true,
+    eventTransport
+  });
+  const onBeforeAppRoute2 = /* @__PURE__ */ defineOnApi(
+    API_ON_BEFORE_APP_ROUTE,
+    () => {
+    },
+    { eventTransport }
+  );
+  const offBeforeAppRoute2 = /* @__PURE__ */ defineOffApi(
+    API_OFF_BEFORE_APP_ROUTE,
+    () => {
+    },
+    {
+      allowClearAll: true,
+      eventTransport
+    }
+  );
+  const rewriteRoute2 = /* @__PURE__ */ defineAsyncApi(
+    API_REWRITE_ROUTE,
+    ({ url, preserveQuery }, { resolve, reject }) => {
+      const rejectRewriteRoute = (errMsg) => reject(errMsg, { errCode: APP_ROUTE_ERROR_CODE });
+      const context = activeBeforeAppRouteContext;
+      if (!context) {
+        rejectRewriteRoute(
+          "rewriteRoute is only allowed in a onBeforeAppRoute callback"
+        );
+        return;
+      }
+      if (context.event.openType === "navigateBack") {
+        rejectRewriteRoute(
+          'a "navigateBack" event is not allowed to be rewritten'
+        );
+        return;
+      }
+      if (context.rewrite) {
+        rejectRewriteRoute(
+          `rewriteRoute can only be called once in a route event, this page has been rewritten to "${context.rewrite.path}"`
+        );
+        return;
+      }
+      if ((context.rewriteCount || 0) >= MAX_APP_ROUTE_REWRITE_COUNT) {
+        rejectRewriteRoute(
+          `rewriteRoute exceeded the maximum rewrite count of ${MAX_APP_ROUTE_REWRITE_COUNT}`
+        );
+        return;
+      }
+      if (!context.normalizeRewriteRoute) {
+        rejectRewriteRoute("not supported");
+        return;
+      }
+      const rewrite = context.normalizeRewriteRoute(
+        { url, preserveQuery },
+        context.event
+      );
+      if (typeof rewrite === "string") {
+        rejectRewriteRoute(rewrite);
+        return;
+      }
+      context.rewrite = rewrite;
+      resolve();
+    },
+    {
+      url: {
+        type: String,
+        required: true
+      },
+      preserveQuery: Boolean
+    }
+  );
+  function createAppRouteContext2(event) {
+    var _a, _b;
+    const timeStamp = (_a = event.timeStamp) != null ? _a : Date.now();
+    return {
+      event: {
+        path: event.path,
+        query: Object.assign({}, event.query),
+        openType: event.openType,
+        notFound: event.notFound,
+        timeStamp,
+        routeEventId: (_b = event.routeEventId) != null ? _b : `${timeStamp}-${++routeEventId}`
+      },
+      normalizeRewriteRoute: options.normalizeRewriteRoute
+    };
+  }
+  function dispatchBeforeAppRoute(context) {
+    const event = context.event;
+    const beforeEvent = {
+      path: event.path,
+      query: Object.assign({}, event.query),
+      openType: event.openType,
+      notFound: event.notFound,
+      routeEventId: event.routeEventId
+    };
+    const previousContext = activeBeforeAppRouteContext;
+    activeBeforeAppRouteContext = context;
+    try {
+      eventTransport.emit(API_ON_BEFORE_APP_ROUTE, beforeEvent);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      activeBeforeAppRouteContext = previousContext;
+    }
+    return context.rewrite;
+  }
+  function dispatchAppRoute2(context) {
+    const event = context.event;
+    try {
+      const routeEvent = {
+        path: event.path,
+        query: Object.assign({}, event.query),
+        openType: event.openType,
+        notFound: event.notFound,
+        timeStamp: event.timeStamp,
+        routeEventId: event.routeEventId
+      };
+      eventTransport.emit(API_ON_APP_ROUTE, routeEvent);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  return {
+    onAppRoute: onAppRoute2,
+    offAppRoute: offAppRoute2,
+    onBeforeAppRoute: onBeforeAppRoute2,
+    offBeforeAppRoute: offBeforeAppRoute2,
+    rewriteRoute: rewriteRoute2,
+    createAppRouteContext: createAppRouteContext2,
+    dispatchBeforeAppRoute,
+    dispatchAppRoute: dispatchAppRoute2
+  };
+}
 let cid;
 let cidErrMsg;
 let enabled;
@@ -5803,8 +6052,8 @@ const SetClipboardDataOptions = {
   beforeSuccess(res, params) {
     if (!params.showToast)
       return;
-    const { t: t2 } = useI18n();
-    const title = t2("uni.setClipboardData.success");
+    const { t: t8 } = useI18n();
+    const title = t8("uni.setClipboardData.success");
     if (title) {
       uni.showToast({
         title,
@@ -5833,6 +6082,7 @@ const API_START_COMPASS = "startCompass";
 const API_STOP_COMPASS = "stopCompass";
 const API_VIBRATE_SHORT = "vibrateShort";
 const API_VIBRATE_LONG = "vibrateLong";
+const API_SET_KEEP_SCREEN_ON = "setKeepScreenOn";
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -6075,32 +6325,6 @@ const GetImageInfoProtocol = {
   }
 };
 const API_PREVIEW_IMAGE = "previewImage";
-const PreviewImageOptions = {
-  formatArgs: {
-    urls(urls, params) {
-      params.urls = urls.map(
-        (url) => isString(url) && url ? getRealPath(url) : ""
-      );
-    },
-    current(current, params) {
-      if (typeof current === "number") {
-        params.current = current > 0 && current < params.urls.length ? current : 0;
-      } else if (isString(current) && current) {
-        params.current = getRealPath(current);
-      }
-    }
-  }
-};
-const PreviewImageProtocol = {
-  urls: {
-    type: Array,
-    required: true
-  },
-  current: {
-    type: [Number, String]
-  }
-};
-const API_CLOSE_PREVIEW_IMAGE = "closePreviewImage";
 const API_GET_VIDEO_INFO = "getVideoInfo";
 const GetVideoInfoOptions = {
   formatArgs: {
@@ -6417,7 +6641,7 @@ function createRouteOptions(type) {
     beforeAll: beforeRoute
   };
 }
-function createNormalizeUrl(type) {
+function createNormalizeUrl(type, options = {}) {
   return function normalizeUrl(url, params) {
     if (!url) {
       return `Missing required args: "url"`;
@@ -6456,10 +6680,10 @@ function createNormalizeUrl(type) {
       }
       return;
     }
-    if (navigatorLock === url && params.openType !== "appLaunch") {
+    if (!options.skipNavigatorLock && navigatorLock === url && params.openType !== "appLaunch") {
       return `${navigatorLock} locked`;
     }
-    if (__uniConfig.ready) {
+    if (!options.skipNavigatorLock && __uniConfig.ready) {
       navigatorLock = url;
     }
   };
@@ -6816,13 +7040,13 @@ const initIntersectionObserverPolyfill = function() {
     var threshold = opt_threshold || [0];
     if (!Array.isArray(threshold))
       threshold = [threshold];
-    return threshold.sort().filter(function(t2, i, a2) {
-      if (typeof t2 != "number" || isNaN(t2) || t2 < 0 || t2 > 1) {
+    return threshold.sort().filter(function(t8, i, a2) {
+      if (typeof t8 != "number" || isNaN(t8) || t8 < 0 || t8 > 1) {
         throw new Error(
           "threshold must be a number between 0 and 1 inclusively"
         );
       }
-      return t2 !== a2[i - 1];
+      return t8 !== a2[i - 1];
     });
   };
   IntersectionObserver2.prototype._parseRootMargin = function(opt_rootMargin) {
@@ -7186,8 +7410,8 @@ const initIntersectionObserverPolyfill = function() {
       right: left + parentIntersectionRect.width
     };
   }
-  function containsDeep(parent, child) {
-    var node = child;
+  function containsDeep(parent, child2) {
+    var node = child2;
     while (node) {
       if (node == parent)
         return true;
@@ -7226,6 +7450,10 @@ function normalizeRect(rect) {
     width
   };
 }
+function createDatasetSnapshot$1(el) {
+  const dataset = getCustomDataset(el);
+  return createUniDOMStringMap(dataset);
+}
 function rectifyIntersectionRatio(entrie) {
   const {
     intersectionRatio,
@@ -7248,7 +7476,7 @@ function requestComponentObserver($el, options, callback) {
           boundingClientRect: normalizeRect(entrie.boundingClientRect),
           relativeRect: normalizeRect(entrie.rootBounds),
           time: Date.now(),
-          dataset: getCustomDataset(entrie.target),
+          dataset: createDatasetSnapshot$1(entrie.target),
           id: entrie.target.id
         });
       });
@@ -7278,7 +7506,7 @@ function requestComponentObserver($el, options, callback) {
   }
   return intersectionObserver;
 }
-function removeNonTabBarPages() {
+function removeNonTabBarPages(targetPageId) {
   const curTabBarPageVm = getCurrentPageVm();
   if (!curTabBarPageVm) {
     return;
@@ -7290,10 +7518,10 @@ function removeNonTabBarPages() {
     if (!page.$.__isTabBar) {
       removePage(routeKey);
     } else {
-      page.$.__isActive = false;
+      page.$.__isActive = targetPageId !== void 0 && getPage$BasePage(page).id === targetPageId;
     }
   }
-  if (curTabBarPageVm.$.__isTabBar) {
+  if (curTabBarPageVm.$.__isTabBar && (targetPageId === void 0 || getPage$BasePage(curTabBarPageVm).id !== targetPageId)) {
     curTabBarPageVm.$.__isVisible = false;
     invokeHook(curTabBarPageVm, ON_HIDE);
   }
@@ -7323,9 +7551,9 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return removeNonTabBarPages(), navigate(
+    return navigate(
       { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-      getTabBarPageId(url)
+      void 0
     ).then(resolve).catch(reject);
   },
   SwitchTabProtocol,
@@ -7352,10 +7580,7 @@ const redirectTo = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return (
-      // TODO exists 属性未实现
-      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
-    );
+    return navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
   RedirectToProtocol,
   RedirectToOptions
@@ -7378,11 +7603,365 @@ const reLaunch = /* @__PURE__ */ defineAsyncApi(
       });
       return;
     }
-    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
+    return navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
   ReLaunchProtocol,
   ReLaunchOptions
 );
+var __async$3 = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+function normalizeAppRoutePath(path) {
+  const route = getRouteOptions(path, true);
+  const pagePath = route == null ? void 0 : route.meta.route;
+  return typeof pagePath === "string" ? pagePath : removeLeadingSlash((route == null ? void 0 : route.path) || path);
+}
+function normalizeRewriteRoute({ url, preserveQuery }, event) {
+  if (preserveQuery) {
+    url = parseUrl(url).path + stringifyQuery$1(event.query);
+  }
+  const params = { url, openType: event.openType };
+  const errMsg = createNormalizeUrl(event.openType, {
+    skipNavigatorLock: true
+  })(url, params);
+  if (errMsg) {
+    return errMsg;
+  }
+  const { path, query } = parseUrl(params.url);
+  return {
+    url: params.url,
+    path: normalizeAppRoutePath(path),
+    query: decodedQuery(query),
+    notFound: false
+  };
+}
+const appRouteRuntime = createAppRouteRuntime({ normalizeRewriteRoute });
+const pendingProgrammaticRoutes = [];
+const routeTransactions = /* @__PURE__ */ new WeakMap();
+let pendingHistoryRoute;
+let appRouteStarted = false;
+let launchExecutor;
+let resolveLaunchExecutor;
+const launchExecutorReady = new Promise((resolve) => {
+  resolveLaunchExecutor = resolve;
+});
+let singlePageAppRouteContext;
+const onAppRoute = appRouteRuntime.onAppRoute;
+const offAppRoute = appRouteRuntime.offAppRoute;
+const onBeforeAppRoute = appRouteRuntime.onBeforeAppRoute;
+const offBeforeAppRoute = appRouteRuntime.offBeforeAppRoute;
+const rewriteRoute = appRouteRuntime.rewriteRoute;
+function createAppRouteContext(path, query, openType, notFound = false) {
+  return appRouteRuntime.createAppRouteContext({
+    path: normalizeAppRoutePath(path),
+    query: decodedQuery(query),
+    openType,
+    notFound
+  });
+}
+function resolveAppRoute(url, openType, notFound = false) {
+  let routeUrl = url;
+  let routeNotFound = notFound;
+  let rewriteCount = 0;
+  while (true) {
+    const { path, query } = parseUrl(routeUrl);
+    const context = createAppRouteContext(path, query, openType, routeNotFound);
+    context.rewriteCount = rewriteCount;
+    const rewrite = appRouteRuntime.dispatchBeforeAppRoute(context);
+    if (!rewrite) {
+      return { url: routeUrl, context };
+    }
+    routeUrl = rewrite.url;
+    routeNotFound = rewrite.notFound;
+    rewriteCount++;
+  }
+}
+function dispatchAppRoute(context) {
+  const event = context.event;
+  if (event.notFound) {
+    invokeHook(getApp().vm, ON_PAGE_NOT_FOUND, {
+      path: event.path,
+      query: Object.assign({}, event.query),
+      isEntryPage: event.openType === "appLaunch"
+    });
+  }
+  appRouteRuntime.dispatchAppRoute(context);
+}
+function createWebAppRouteTransaction(finalFullPath, openType, context) {
+  return {
+    finalFullPath,
+    openType,
+    context
+  };
+}
+function queueWebAppRouteTransaction(transaction) {
+  pendingProgrammaticRoutes.push(transaction);
+}
+function discardWebAppRouteTransaction(transaction) {
+  transaction.cancelled = true;
+  const index2 = pendingProgrammaticRoutes.indexOf(transaction);
+  if (index2 !== -1) {
+    pendingProgrammaticRoutes.splice(index2, 1);
+  }
+}
+function takePendingProgrammaticRoute(to) {
+  const redirectedFrom = getOriginalRoute(to.redirectedFrom);
+  for (let index2 = pendingProgrammaticRoutes.length - 1; index2 >= 0; index2--) {
+    const transaction = pendingProgrammaticRoutes[index2];
+    if (!transaction.cancelled && (transaction.finalFullPath === to.fullPath || transaction.finalFullPath === (redirectedFrom == null ? void 0 : redirectedFrom.fullPath))) {
+      return pendingProgrammaticRoutes.splice(index2, 1)[0];
+    }
+  }
+}
+function takePendingHistoryRoute(to) {
+  const redirectedFrom = getOriginalRoute(to.redirectedFrom);
+  if (pendingHistoryRoute && (pendingHistoryRoute.fullPath === to.fullPath || pendingHistoryRoute.fullPath === (redirectedFrom == null ? void 0 : redirectedFrom.fullPath))) {
+    const route = pendingHistoryRoute;
+    pendingHistoryRoute = void 0;
+    return route;
+  }
+}
+function getOriginalRoute(route) {
+  while (route == null ? void 0 : route.redirectedFrom) {
+    route = route.redirectedFrom;
+  }
+  return route;
+}
+function getRouteUrl(route) {
+  return route.fullPath || route.path;
+}
+function resolveFullPath(router, url) {
+  const { path, query } = parseUrl(url);
+  return router.resolve({ path, query }).fullPath;
+}
+function toRouteLocation(url) {
+  const { path, query } = parseUrl(url);
+  return { path, query };
+}
+function bindRouteTransaction(route, transaction) {
+  routeTransactions.set(route, transaction);
+  const originalRoute = getOriginalRoute(route.redirectedFrom);
+  if (originalRoute) {
+    routeTransactions.set(originalRoute, transaction);
+  }
+}
+function findRouteTransaction(route) {
+  const transaction = routeTransactions.get(route) || (getOriginalRoute(route.redirectedFrom) ? routeTransactions.get(getOriginalRoute(route.redirectedFrom)) : void 0);
+  return (transaction == null ? void 0 : transaction.cancelled) ? void 0 : transaction;
+}
+function replaceTransactionRoute(router, transaction, route) {
+  const routeUrl = getRouteUrl(route);
+  const resolved = resolveAppRoute(
+    routeUrl,
+    transaction.openType,
+    route.matched.length === 0
+  );
+  transaction.finalFullPath = resolveFullPath(router, resolved.url);
+  transaction.context = resolved.context;
+  return resolved;
+}
+function bindOrRedirectTransaction(router, to, transaction) {
+  if (transaction.finalFullPath !== to.fullPath) {
+    const resolved = replaceTransactionRoute(router, transaction, to);
+    if (transaction.finalFullPath !== to.fullPath) {
+      pendingProgrammaticRoutes.push(transaction);
+      return toRouteLocation(resolved.url);
+    }
+  }
+  bindRouteTransaction(to, transaction);
+}
+function createLaunchTransaction(router, to) {
+  return __async$3(this, null, function* () {
+    yield launchExecutorReady;
+    const originalRoute = getOriginalRoute(to) || to;
+    const resolved = yield launchExecutor(originalRoute);
+    const sourceFullPath = originalRoute.fullPath;
+    const transaction = createWebAppRouteTransaction(
+      resolveFullPath(router, resolved.url),
+      "appLaunch",
+      resolved.context
+    );
+    if (transaction.finalFullPath !== sourceFullPath) {
+      pendingProgrammaticRoutes.push(transaction);
+      return {
+        transaction,
+        redirect: toRouteLocation(resolved.url)
+      };
+    }
+    return { transaction };
+  });
+}
+function registerWebAppRouteLaunchExecutor(executor) {
+  launchExecutor = executor;
+  resolveLaunchExecutor == null ? void 0 : resolveLaunchExecutor();
+  resolveLaunchExecutor = void 0;
+}
+function setSinglePageAppRoute(resolved, originalUrl) {
+  singlePageAppRouteContext = resolved.context;
+  if (resolved.url === originalUrl) {
+    return;
+  }
+  const queryIndex = resolved.url.indexOf("?");
+  const search = queryIndex === -1 ? "" : resolved.url.slice(queryIndex);
+  const url = location.pathname + search + location.hash;
+  history.replaceState(history.state, "", url);
+}
+function dispatchWebAppRoute(route) {
+  let context;
+  if (route) {
+    const transaction = findRouteTransaction(route);
+    if (transaction && !transaction.cancelled) {
+      context = transaction.context;
+      routeTransactions.delete(route);
+      const originalRoute = getOriginalRoute(route.redirectedFrom);
+      if (originalRoute) {
+        routeTransactions.delete(originalRoute);
+      }
+    }
+  } else {
+    context = singlePageAppRouteContext;
+    singlePageAppRouteContext = void 0;
+  }
+  if (context) {
+    dispatchAppRoute(context);
+  }
+}
+function setWebAppRouteHistoryDirection(fullPath, direction2, delta = 0) {
+  pendingHistoryRoute = {
+    fullPath,
+    openType: direction2 === "back" ? API_NAVIGATE_BACK : API_NAVIGATE_TO,
+    delta: Math.abs(delta)
+  };
+}
+function initWebAppRouteListener(router, { onRouteConfirmed, onMissingRoute }) {
+  router.beforeEach((to) => __async$3(this, null, function* () {
+    const route = to;
+    if (!appRouteStarted) {
+      appRouteStarted = true;
+      const launch = yield createLaunchTransaction(router, route);
+      if (launch.redirect) {
+        return launch.redirect;
+      }
+      return bindOrRedirectTransaction(router, route, launch.transaction);
+    }
+    let transaction = takePendingProgrammaticRoute(route);
+    if (!transaction) {
+      const historyRoute = takePendingHistoryRoute(route);
+      if (historyRoute) {
+        const originalRoute = getOriginalRoute(route.redirectedFrom) || route;
+        const resolved = resolveAppRoute(
+          historyRoute.fullPath,
+          historyRoute.openType,
+          originalRoute.matched.length === 0
+        );
+        transaction = createWebAppRouteTransaction(
+          resolveFullPath(router, resolved.url),
+          historyRoute.openType,
+          resolved.context
+        );
+        transaction.delta = historyRoute.delta;
+        if (transaction.finalFullPath !== historyRoute.fullPath) {
+          pendingProgrammaticRoutes.push(transaction);
+          return toRouteLocation(resolved.url);
+        }
+      }
+    }
+    if (!transaction) {
+      transaction = findRouteTransaction(route);
+    }
+    if (!transaction) {
+      const originalRoute = getOriginalRoute(route.redirectedFrom) || route;
+      const resolved = resolveAppRoute(
+        getRouteUrl(originalRoute),
+        API_NAVIGATE_TO,
+        originalRoute.matched.length === 0
+      );
+      transaction = createWebAppRouteTransaction(
+        resolveFullPath(router, resolved.url),
+        API_NAVIGATE_TO,
+        resolved.context
+      );
+      if (transaction.finalFullPath !== originalRoute.fullPath) {
+        pendingProgrammaticRoutes.push(transaction);
+        return toRouteLocation(resolved.url);
+      }
+    }
+    return bindOrRedirectTransaction(router, route, transaction);
+  }));
+  router.afterEach((to, _from, failure) => {
+    var _a;
+    const route = to;
+    const transaction = findRouteTransaction(route);
+    if (!transaction) {
+      return;
+    }
+    if (failure) {
+      discardWebAppRouteTransaction(transaction);
+      routeTransactions.delete(route);
+      return;
+    }
+    if (!transaction.cleaned) {
+      transaction.cleaned = true;
+      onRouteConfirmed(transaction);
+    }
+    if (!transaction.context) {
+      routeTransactions.delete(route);
+      return;
+    }
+    if ((_a = transaction.context) == null ? void 0 : _a.event.notFound) {
+      dispatchWebAppRoute(route);
+      onMissingRoute(transaction);
+    }
+  });
+  router.onError((_error, to) => {
+    if (!to) {
+      return;
+    }
+    const route = to;
+    const transaction = findRouteTransaction(route);
+    if (transaction) {
+      discardWebAppRouteTransaction(transaction);
+      routeTransactions.delete(route);
+    }
+  });
+}
+function isCurrentTabBarPage(url) {
+  const pages = getCurrentBasePages();
+  const currentPage = pages[pages.length - 1];
+  if (!(currentPage == null ? void 0 : currentPage.$.__isTabBar)) {
+    return false;
+  }
+  const path = parseUrl(url).path;
+  const $page = getPage$BasePage(currentPage);
+  return path === $page.path || path === "/" && $page.meta.isEntry;
+}
+function findTabBarPageId(url) {
+  const path = parseUrl(url).path;
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = getPage$BasePage(page);
+    if (path === $page.path || path === "/" && $page.meta.isEntry) {
+      return $page.id;
+    }
+  }
+}
 function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
   if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
     console.warn(
@@ -7390,20 +7969,40 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
     );
   }
   const router = getApp().vm.$router;
-  const { path, query } = parseUrl(url);
   return new Promise((resolve, reject) => {
-    const state2 = createPageState(type, __id__);
-    router[type === "navigateTo" ? "push" : "replace"]({
+    let routeUrl = url;
+    let transaction;
+    {
+      const shouldDispatchAppRoute = type !== "switchTab" || !isCurrentTabBarPage(url);
+      const appRoute = shouldDispatchAppRoute ? resolveAppRoute(url, type) : void 0;
+      routeUrl = (appRoute == null ? void 0 : appRoute.url) || url;
+      const { path: path2, query: query2 } = parseUrl(routeUrl);
+      transaction = createWebAppRouteTransaction(
+        router.resolve({ path: path2, query: query2 }).fullPath,
+        type,
+        appRoute == null ? void 0 : appRoute.context
+      );
+    }
+    const { path, query } = parseUrl(routeUrl);
+    const tabBarPageId = type === "switchTab" ? findTabBarPageId(routeUrl) : __id__;
+    const state2 = createPageState(type, tabBarPageId);
+    if (transaction) {
+      transaction.pageId = state2.__id__;
+      queueWebAppRouteTransaction(transaction);
+    }
+    const navigation = router[type === "navigateTo" ? "push" : "replace"]({
       path,
       query,
       state: state2,
       force: true
     }).then((failure) => {
       if (isNavigationFailure(failure)) {
+        transaction && discardWebAppRouteTransaction(transaction);
         return reject(failure.message);
       }
       if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
+        const finalTabBarText = routeUrl === url ? tabBarText : router.resolve({ path, query }).meta.tabBarText;
+        router.currentRoute.value.meta.tabBarText = finalTabBarText;
       }
       if (type === "navigateTo") {
         const meta = router.currentRoute.value.meta;
@@ -7427,6 +8026,12 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       }
       return isAutomatedTesting ? resolve({ __id__: state2.__id__ }) : resolve();
     });
+    {
+      navigation.catch((error) => {
+        transaction && discardWebAppRouteTransaction(transaction);
+        reject(error instanceof Error ? error.message : error);
+      });
+    }
   });
 }
 function handleBeforeEntryPageRoutes() {
@@ -7444,25 +8049,343 @@ function handleBeforeEntryPageRoutes() {
   );
   const switchTabPages = [...switchTabPagesBeforeEntryPages];
   switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
+  switchTabPages.forEach(({ args, resolve, reject }) => {
+    navigate(args, void 0).then(resolve).catch(reject);
+  });
   const redirectToPages = [...redirectToPagesBeforeEntryPages];
   redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
+  redirectToPages.forEach(({ args, resolve, reject }) => {
+    navigate(args).then(resolve).catch(reject);
+  });
   const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
   reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
+  reLaunchPages.forEach(({ args, resolve, reject }) => {
+    navigate(args).then(resolve).catch(reject);
+  });
 }
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
+const ua = navigator.userAgent;
+const isAndroid = /* @__PURE__ */ /android/i.test(ua);
+const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
+const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
+const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+const isHarmony = /OpenHarmony/i.test(ua);
+const isHarmony2in1 = isHarmony && /PC/i.test(ua);
+const isHarmonyTablet = isHarmony && /Tablet/i.test(ua);
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth() {
+  const screenFix = getScreenFix();
+  if (screenFix) {
+    const screenWidth = getScreenWidth(screenFix, isLandscape(screenFix));
+    return Math.min(
+      window.innerWidth,
+      document.documentElement.clientWidth,
+      screenWidth
+    ) || screenWidth;
+  } else {
+    return Math.min(window.innerWidth, document.documentElement.clientWidth);
   }
+}
+function getBaseSystemInfo() {
+  const windowWidth = getWindowWidth();
+  return {
+    platform: isIOS ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
+function IEVersion() {
+  const userAgent = navigator.userAgent;
+  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
+  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
+  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
+  if (isIE) {
+    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+    reIE.test(userAgent);
+    const fIEVersion = parseFloat(RegExp.$1);
+    if (fIEVersion > 6) {
+      return fIEVersion;
+    } else {
+      return 6;
+    }
+  } else if (isEdge) {
+    return -1;
+  } else if (isIE11) {
+    return 11;
+  } else {
+    return -1;
+  }
+}
+function getTheme() {
+  if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
+    return void 0;
+  if (__uniConfig.darkmode !== true)
+    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
+  }
+}
+function getBrowserInfo() {
+  let osname;
+  let osversion = "0";
+  let model;
+  let deviceType = "phone";
+  let platform = "";
+  let deviceBrand;
+  const language = navigator.language;
+  if (isIOS) {
+    deviceBrand = "iPhone";
+    osname = "iOS";
+    const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
+    if (osversionFind) {
+      osversion = osversionFind[1].replace(/_/g, ".");
+    }
+    const iosVersion = osversion.split(".")[0];
+    if (Number(iosVersion) >= 18) {
+      const versionMatch = ua.match(/Version\/([\d\.]+)/);
+      if (versionMatch) {
+        osversion = versionMatch[1];
+      }
+    }
+    const modelFind = ua.match(/\(([a-zA-Z]+);/);
+    if (modelFind) {
+      model = modelFind[1];
+    }
+  } else if (isAndroid) {
+    osname = "Android";
+    const osversionFind = ua.match(/Android[\s/]([\w\.]+)[;\s]/);
+    if (osversionFind) {
+      osversion = osversionFind[1];
+    }
+    const infoFind = ua.match(/\((.+?)\)/);
+    const infos = infoFind ? infoFind[1].split(";") : ua.split(" ");
+    const otherInfo = [
+      /\bAndroid\b/i,
+      /\bLinux\b/i,
+      /\bU\b/i,
+      /^\s?[a-z][a-z]$/i,
+      /^\s?[a-z][a-z]-[a-z][a-z]$/i,
+      /\bwv\b/i,
+      /\/[\d\.,]+$/,
+      /^\s?[\d\.,]+$/,
+      /\bBrowser\b/i,
+      /\bMobile\b/i
+    ];
+    for (let i = 0; i < infos.length; i++) {
+      const info = infos[i];
+      if (info.indexOf("Build") > 0) {
+        model = info.split("Build")[0].trim();
+        break;
+      }
+      let other;
+      for (let o2 = 0; o2 < otherInfo.length; o2++) {
+        if (otherInfo[o2].test(info)) {
+          other = true;
+          break;
+        }
+      }
+      if (!other) {
+        model = info.trim();
+        break;
+      }
+    }
+  } else if (isIPadOS) {
+    deviceBrand = "iPad";
+    model = "iPad";
+    osname = "iOS";
+    deviceType = "pad";
+    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
+    if (parseInt(osversion) === 14) {
+      const versionMatched = ua.match(/Version\/(\S*)\b/);
+      if (versionMatched) {
+        osversion = versionMatched[1];
+      }
+    }
+  } else if (isWindows || isMac || isLinux) {
+    model = "PC";
+    osname = "PC";
+    deviceType = "pc";
+    osversion = "0";
+    let osversionFind = ua.match(/\((.+?)\)/)[1];
+    if (isWindows) {
+      osname = "Windows";
+      switch (isWindows[1]) {
+        case "5.1":
+          osversion = "XP";
+          break;
+        case "6.0":
+          osversion = "Vista";
+          break;
+        case "6.1":
+          osversion = "7";
+          break;
+        case "6.2":
+          osversion = "8";
+          break;
+        case "6.3":
+          osversion = "8.1";
+          break;
+        case "10.0":
+          osversion = "10";
+          break;
+      }
+      const framework = osversionFind && osversionFind.match(/[Win|WOW]([\d]+)/);
+      if (framework) {
+        osversion += ` x${framework[1]}`;
+      }
+    } else if (isMac) {
+      osname = "macos";
+      platform = "mac";
+      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
+      if (osversion) {
+        osversion = _osversion[1].replace(/_/g, ".");
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
+      }
+    } else if (isLinux) {
+      osname = "Linux";
+      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
+      if (_osversion) {
+        osversion = _osversion[1];
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
+      }
+    }
+  } else if (isHarmony) {
+    deviceBrand = "HUAWEI";
+    osname = "harmonyos";
+    deviceType = isHarmony2in1 ? "pc" : isHarmonyTablet ? "pad" : "phone";
+    const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/);
+    if (osversionFind) {
+      osversion = osversionFind[1];
+    }
+    model = void 0;
+  } else {
+    osname = "Other";
+    osversion = "0";
+    deviceType = "unknown";
+  }
+  const system = `${osname} ${osversion}`;
+  if (!platform)
+    platform = osname.toLowerCase();
+  let browserName = "";
+  let browserVersion = String(IEVersion());
+  if (browserVersion !== "-1") {
+    browserName = "IE";
+  } else {
+    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
+    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
+    for (let index2 = 0; index2 < browseVendors.length; index2++) {
+      const vendor = browseVendors[index2];
+      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
+      if (reg.test(ua)) {
+        browserName = vendors[index2];
+        browserVersion = ua.match(reg)[2];
+      }
+    }
+  }
+  let deviceOrientation = "portrait";
+  if (window.matchMedia) {
+    try {
+      if (window.matchMedia("(orientation:landscape)").matches) {
+        deviceOrientation = "landscape";
+      }
+    } catch (e2) {
+    }
+  }
+  if (deviceOrientation === "portrait" && window.screen.orientation !== void 0) {
+    deviceOrientation = [90, 270].includes(window.screen.orientation.angle) ? "landscape" : "portrait";
+  }
+  if (deviceOrientation === "portrait" && window.orientation != null) {
+    deviceOrientation = Math.abs(window.orientation) === 90 ? "landscape" : "portrait";
+  }
+  return {
+    deviceBrand,
+    brand: deviceBrand,
+    deviceModel: model,
+    deviceOrientation,
+    model,
+    system,
+    platform,
+    browserName: browserName.toLocaleLowerCase(),
+    browserVersion,
+    language,
+    deviceType,
+    ua,
+    osname,
+    osversion,
+    theme: getTheme()
+  };
+}
+function onThemeChange$2(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
+  }
+}
+function offThemeChange$1(callback) {
+  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactivity = isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
+    watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange$2(onThemeChangeCallback);
+  return reactivePageStyle;
+}
+let _tabBar;
+function useTabBar() {
+  if (!_tabBar) {
+    _tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
+  }
+  const tabBar = useTheme(_tabBar, () => {
+    const tabBarStyle = parseTheme(_tabBar);
+    tabBar.backgroundColor = tabBarStyle.backgroundColor;
+    tabBar.borderStyle = tabBarStyle.borderStyle;
+    tabBar.color = tabBarStyle.color;
+    tabBar.selectedColor = tabBarStyle.selectedColor;
+    tabBar.blurEffect = tabBarStyle.blurEffect;
+    tabBar.midButton = tabBarStyle.midButton;
+    if (tabBarStyle.list && tabBarStyle.list.length) {
+      tabBarStyle.list.forEach((item, index2) => {
+        tabBar.list[index2].iconPath = item.iconPath;
+        tabBar.list[index2].selectedIconPath = item.selectedIconPath;
+      });
+    }
+  });
   return tabBar;
 }
 function cssSupports(css) {
@@ -7500,8 +8423,8 @@ function updateCurPageCssVar(pageMeta) {
     windowTopValue = NAVBAR_HEIGHT;
   }
   if (__UNI_FEATURE_TABBAR__ && pageMeta.isTabBar) {
-    const tabBar2 = useTabBar();
-    tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
+    const tabBar = useTabBar();
+    tabBar.shown && (windowBottomValue = parseInt(tabBar.height));
   }
   updatePageCssVar({
     "--window-top": normalizeWindowTop(windowTopValue),
@@ -7513,6 +8436,13 @@ function normalizeWindowTop(windowTop) {
 }
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+}
+const SAFE_AREA_INSET_PROPERTY_PREFIX = "--uni-safe-area-inset-";
+function getSafeAreaInset(style, position) {
+  const value = parseFloat(
+    style.getPropertyValue(`${SAFE_AREA_INSET_PROPERTY_PREFIX}${position}`)
+  );
+  return isNaN(value) ? safeAreaInsets$1[position] : value;
 }
 function getPageWrapperInfo(pageBody) {
   const pageWrapper = pageBody || document.querySelector("uni-page-wrapper");
@@ -7528,11 +8458,20 @@ function getPageWrapperInfo(pageBody) {
   };
 }
 const getSystemSafeAreaInsets = function() {
+  if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+    return {
+      top: safeAreaInsets$1.top,
+      right: safeAreaInsets$1.right,
+      bottom: safeAreaInsets$1.bottom,
+      left: safeAreaInsets$1.left
+    };
+  }
+  const bodyStyle = getComputedStyle(document.body);
   return {
-    top: safeAreaInsets$1.top,
-    right: safeAreaInsets$1.right,
-    bottom: safeAreaInsets$1.bottom,
-    left: safeAreaInsets$1.left
+    top: getSafeAreaInset(bodyStyle, "top"),
+    right: getSafeAreaInset(bodyStyle, "right"),
+    bottom: getSafeAreaInset(bodyStyle, "bottom"),
+    left: getSafeAreaInset(bodyStyle, "left")
   };
 };
 function getSafeAreaInsets(pageBody) {
@@ -7544,17 +8483,6 @@ function getSafeAreaInsets(pageBody) {
     right: Math.max(pageWrapperEdge.right, systemSafeAreaInsets.right),
     bottom: Math.max(pageWrapperEdge.bottom, systemSafeAreaInsets.bottom)
   };
-}
-const DIALOG_TAG = "dialog";
-const SYSTEM_DIALOG_TAG = "systemDialog";
-function isDialogPageInstance(vm) {
-  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
-}
-function isNormalDialogPageInstance(vm) {
-  return vm.attrs["data-type"] === DIALOG_TAG;
-}
-function isSystemDialogPageInstance(vm) {
-  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
 }
 let escBackPageNum = 0;
 const homeDialogPages = [];
@@ -7694,20 +8622,20 @@ class UniPageImpl {
     return uniPageBody ? uniPageBody.querySelector(selector) : null;
   }
   querySelectorAll(selector) {
+    const res = [];
     const currentPage = getCurrentPage();
     if (currentPage !== this) {
-      return null;
+      return res;
     }
     const uniPageBody = document.querySelector("uni-page-body");
     if (!uniPageBody) {
-      return null;
+      return res;
     }
     const nodeList = uniPageBody.querySelectorAll(selector);
-    const res = [];
     nodeList.forEach((node) => {
       res.push(node);
     });
-    return res.length ? res : null;
+    return res;
   }
   getAndroidView() {
     return null;
@@ -7739,6 +8667,28 @@ class UniPageImpl {
   }
   createElement() {
     return null;
+  }
+  onLayoutChange() {
+    return -1;
+  }
+  offLayoutChange() {
+  }
+  onRenderChange() {
+    return -1;
+  }
+  offRenderChange() {
+  }
+  onTouchStart() {
+    return -1;
+  }
+  offTouchStart() {
+  }
+  onTouchEnd() {
+    return -1;
+  }
+  offTouchEnd() {
+  }
+  takeSnapshot() {
   }
 }
 class UniNormalPageImpl extends UniPageImpl {
@@ -7848,14 +8798,6 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
-    const parentPage = vm.$page.getParentPage();
-    if (parentPage) {
-      if (!parentPage.vm.$dialogPagesNum) {
-        parentPage.vm.$dialogPagesNum = 0;
-      }
-      parentPage.vm.$dialogPagesNum++;
-      vm.$basePage.id = parentPage.vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum;
-    }
   }
 }
 function useBackgroundColorContent$1(vm) {
@@ -7965,6 +8907,29 @@ function triggerFailCallback$1(options, errMsg) {
   (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
+function clearDialogPages(uniPage) {
+  var _a, _b;
+  const dialogPages = uniPage.getDialogPages();
+  for (let i = dialogPages.length - 1; i >= 0; i--) {
+    closeDialogPage({ dialogPage: dialogPages[i] });
+  }
+  const systemDialogPages = (_b = (_a = uniPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages) == null ? void 0 : _b.value;
+  if (systemDialogPages) {
+    for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+      closeDialogPage({ dialogPage: systemDialogPages[i] });
+    }
+  }
+}
+function closePreSystemDialogPage(dialogPages, type) {
+  const targetSystemDialogPages = dialogPages.filter(
+    (page) => page.route.startsWith(type)
+  );
+  if (targetSystemDialogPages.length > 1) {
+    setTimeout(() => {
+      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1);
+    }, 150);
+  }
+}
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
 function getPage$BasePage(page) {
@@ -8015,19 +8980,9 @@ function removeRouteCache(routeKey) {
   }
 }
 function removePage(routeKey, removeRouteCaches = true) {
-  var _a, _b;
   const pageVm = currentPagesMap.get(routeKey);
   {
-    const dialogPages = pageVm.$page.getDialogPages();
-    for (let i = dialogPages.length - 1; i >= 0; i--) {
-      closeDialogPage({ dialogPage: dialogPages[i] });
-    }
-    const systemDialogPages = (_b = (_a = pageVm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages) == null ? void 0 : _b.value;
-    if (systemDialogPages) {
-      for (let i = systemDialogPages.length - 1; i >= 0; i--) {
-        closeDialogPage({ dialogPage: systemDialogPages[i] });
-      }
-    }
+    clearDialogPages(pageVm.$page);
   }
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, ON_UNLOAD);
@@ -8043,6 +8998,10 @@ function createPageState(type, __id__) {
     __id__: __id__ || ++id$1,
     __type__: type
   };
+}
+let dialogPageId = Number.MIN_SAFE_INTEGER;
+function createDialogPageId() {
+  return ++dialogPageId;
 }
 function initPublicPage(route) {
   const meta = usePageMeta();
@@ -8126,22 +9085,35 @@ function updateCurPageAttrs(pageMeta) {
   }
 }
 function onPageShow(instance2, pageMeta) {
+  updateCurPageBodyScopeId(instance2);
   updateBodyScopeId(instance2);
   updateCurPageCssVar(pageMeta);
   updateCurPageAttrs();
+  if (isDialogPageInstance(getPageInstanceByChild(instance2))) {
+    return;
+  }
   initPageScrollListener(instance2, pageMeta);
 }
 function onPageReady(instance2) {
-  const scopeId = getScopeId(instance2);
-  scopeId && updateCurPageBodyScopeId(scopeId);
-}
-function updateCurPageBodyScopeId(scopeId) {
-  const pageBodyEl = document.querySelector("uni-page-body");
-  if (pageBodyEl) {
-    pageBodyEl.setAttribute(scopeId, "");
-  } else if (process.env.NODE_ENV !== "production") {
+  if (!updateCurPageBodyScopeId(instance2) && process.env.NODE_ENV !== "production") {
     console.warn("uni-page-body not found");
   }
+}
+function updateCurPageBodyScopeId(instance2) {
+  var _a, _b, _c;
+  const pageRoot = (_b = (_a = getPageInstanceByChild(instance2)) == null ? void 0 : _a.subTree) == null ? void 0 : _b.el;
+  const pageBodyEl = (_c = pageRoot == null ? void 0 : pageRoot.querySelector) == null ? void 0 : _c.call(pageRoot, "uni-page-body");
+  if (!pageBodyEl) {
+    return false;
+  }
+  const type = instance2.type;
+  if (type.styleIsolation !== "isolated") {
+    const appScopeId = getScopeId(instance2.root);
+    appScopeId && pageBodyEl.setAttribute(appScopeId, "");
+  }
+  const pageScopeId = getScopeId(instance2);
+  pageScopeId && pageBodyEl.setAttribute(pageScopeId, "");
+  return true;
 }
 function getScopeId(instance2) {
   return instance2.type.__scopeId;
@@ -8288,47 +9260,6 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const ua = navigator.userAgent;
-const isAndroid = /* @__PURE__ */ /android/i.test(ua);
-const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
-const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
-const isIPadOS = isMac && navigator.maxTouchPoints > 0;
-const isHarmony = /OpenHarmony/i.test(ua);
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth() {
-  const screenFix = getScreenFix();
-  if (screenFix) {
-    const screenWidth = getScreenWidth(screenFix, isLandscape(screenFix));
-    return Math.min(
-      window.innerWidth,
-      document.documentElement.clientWidth,
-      screenWidth
-    ) || screenWidth;
-  } else {
-    return Math.min(window.innerWidth, document.documentElement.clientWidth);
-  }
-}
-function getBaseSystemInfo() {
-  const windowWidth = getWindowWidth();
-  return {
-    platform: isIOS ? "ios" : "other",
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
-  };
-}
 function operateVideoPlayer(videoId, pageId, type, data) {
   UniServiceJSBridge.invokeViewMethod(
     "video." + videoId,
@@ -8351,13 +9282,16 @@ function operateMap(id2, pageId, type, data, operateMapCallback2) {
     operateMapCallback2
   );
 }
+function createDatasetSnapshot(dataset) {
+  return createUniDOMStringMap(dataset);
+}
 function getRootInfo(fields2) {
   const info = {};
   if (fields2.id) {
     info.id = "";
   }
   if (fields2.dataset) {
-    info.dataset = {};
+    info.dataset = createDatasetSnapshot({});
   }
   if (fields2.rect) {
     info.left = 0;
@@ -8392,7 +9326,7 @@ function getNodeInfo(el, fields2) {
     info.id = el.id;
   }
   if (fields2.dataset) {
-    info.dataset = getCustomDataset(el);
+    info.dataset = createDatasetSnapshot(getCustomDataset(el));
   }
   if (fields2.rect || fields2.size) {
     const rect = el.getBoundingClientRect();
@@ -8409,8 +9343,8 @@ function getNodeInfo(el, fields2) {
   }
   if (isArray(fields2.properties)) {
     fields2.properties.forEach((prop) => {
-      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
-        return t2.toUpperCase();
+      prop = prop.replace(/-([a-z])/g, function(e2, t8) {
+        return t8.toUpperCase();
       });
     });
   }
@@ -8429,9 +9363,9 @@ function getNodeInfo(el, fields2) {
     }
   }
   if (isArray(fields2.computedStyle)) {
-    const sytle = getComputedStyle(el);
+    const style = getComputedStyle(el);
     fields2.computedStyle.forEach((name) => {
-      info[name] = sytle[name];
+      info[name] = style[name];
     });
   }
   if (fields2.context) {
@@ -8572,7 +9506,9 @@ class QuerySelectorHelper {
       nodeInfo.node = element;
     }
     if (fields2.dataset) {
-      nodeInfo.dataset = {};
+      nodeInfo.dataset = createDatasetSnapshot(
+        getCustomDataset(element)
+      );
     }
     return nodeInfo;
   }
@@ -8591,7 +9527,7 @@ function getNodesInfo(pageVm, component, selector, single, fields2) {
       selector,
       fields2,
       !single,
-      component == null ? void 0 : component.$.subTree
+      (component || pageVm).$.subTree
     );
   if (single) {
     const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
@@ -8795,14 +9731,6 @@ function initLaunchOptions({
   extend(enterOptions, launchOptions);
   return extend({}, launchOptions);
 }
-function getPageInstanceByChild(child) {
-  var _a;
-  let pageInstance = child;
-  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
-    pageInstance = pageInstance.parent;
-  }
-  return pageInstance;
-}
 const clazz = { class: "uni-async-loading" };
 const loadingVNode = /* @__PURE__ */ createVNode(
   "i",
@@ -8826,12 +9754,12 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   setup() {
     initI18nAsyncMsgsOnce();
     const {
-      t: t2
+      t: t8
     } = useI18n();
     return () => createVNode("div", {
       "class": "uni-async-error",
       "onClick": reload
-    }, [t2("uni.async.error")], 8, ["onClick"]);
+    }, [t8("uni.async.error")], 8, ["onClick"]);
   }
 });
 let appVm;
@@ -8880,6 +9808,26 @@ function initApp$1(vm) {
   initService();
   initView();
 }
+var __async$2 = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
 function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
     comp = extend({}, comp);
@@ -8894,10 +9842,10 @@ function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, 
       return oldSetup(props2, ctx);
     }
   };
-  if (type === "page") {
+  if (type === "page" || type === "window") {
     const styleIsolation = comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename];
     if (styleIsolation !== "isolated") {
-      comp.styleIsolation = "app-shared";
+      comp.styleIsolation = "app";
     }
   }
   return comp;
@@ -8910,6 +9858,7 @@ function setupComponent(comp, options) {
 }
 function setupWindow(comp, id2) {
   return setupComponent(comp, {
+    type: "window",
     init: (vm) => {
       {
         vm.$basePage = {
@@ -8937,13 +9886,16 @@ function setupPage(comp, path) {
     setup(instance2) {
       instance2.$pageInstance = instance2;
       const route = usePageRoute();
+      const router = __UNI_FEATURE_PAGES__ ? useRouter() : void 0;
       const query = decodedQuery(route.query);
       instance2.attrs.__pageQuery = query;
       {
         const pageInstance = getPageInstanceByChild(instance2);
         if (isDialogPageInstance(pageInstance)) {
           instance2.attrs.__pageQuery = decodedQuery(
-            parseQuery(pageInstance.attrs.route.split("?")[1] || "")
+            parseQuery(
+              (pageInstance == null ? void 0 : pageInstance.attrs.route).split("?")[1] || ""
+            )
           );
         }
       }
@@ -8965,18 +9917,21 @@ function setupPage(comp, path) {
       );
       onBeforeMount(() => {
         onPageShow(instance2, pageMeta);
+        {
+          const pageInstance = getPageInstanceByChild(instance2);
+          if (!isDialogPageInstance(pageInstance)) {
+            dispatchWebAppRoute(router == null ? void 0 : router.currentRoute.value);
+          }
+        }
       });
       onMounted(() => {
-        var _a, _b;
+        var _a;
         {
-          if (instance2.subTree.el) {
-            instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
-          }
           const pageInstance = getPageInstanceByChild(instance2);
           if (isDialogPageInstance(pageInstance)) {
             useBackgroundColorContent$1(instance2.proxy);
           }
-          dialogPageTriggerParentHide((_b = instance2.proxy) == null ? void 0 : _b.$page);
+          dialogPageTriggerParentHide((_a = instance2.proxy) == null ? void 0 : _a.$page);
         }
         onPageReady(instance2);
         const { onReady: onReady2 } = instance2;
@@ -8984,17 +9939,29 @@ function setupPage(comp, path) {
         invokeOnTabItemTap(route);
       });
       onBeforeActivate(() => {
+        var _a;
         if (!instance2.__isVisible) {
           onPageShow(instance2, pageMeta);
           instance2.__isVisible = true;
-          const { onShow } = instance2;
-          onShow && invokeArrayFns$1(onShow);
+          {
+            const pageInstance = getPageInstanceByChild(instance2);
+            if (!isDialogPageInstance(pageInstance)) {
+              const { onShow } = instance2;
+              onShow && invokeArrayFns$1(onShow);
+              dispatchWebAppRoute(router == null ? void 0 : router.currentRoute.value);
+              invokeLastDialogPageHookByUniPage(
+                (_a = instance2.proxy) == null ? void 0 : _a.$page,
+                ON_SHOW
+              );
+            }
+          }
           nextTick(() => {
             invokeOnTabItemTap(route);
           });
         }
       });
       onBeforeDeactivate(() => {
+        var _a;
         if (instance2.__isVisible && !instance2.__isUnload) {
           instance2.__isVisible = false;
           {
@@ -9002,6 +9969,10 @@ function setupPage(comp, path) {
             if (!isDialogPageInstance(pageInstance)) {
               const { onHide } = instance2;
               onHide && invokeArrayFns$1(onHide);
+              invokeLastDialogPageHookByUniPage(
+                (_a = instance2.proxy) == null ? void 0 : _a.$page,
+                ON_HIDE
+              );
             }
           }
         }
@@ -9010,11 +9981,6 @@ function setupPage(comp, path) {
       subscribeViewMethod(pageId);
       onBeforeUnmount(() => {
         unsubscribeViewMethod(pageId);
-        {
-          if (instance2.subTree.el) {
-            instance2.subTree.el._page = null;
-          }
-        }
       });
       return query;
     }
@@ -9028,32 +9994,32 @@ function setupApp(comp) {
     init: initApp$1,
     setup(instance2) {
       const route = usePageRoute();
-      const onLaunch = () => {
+      const onLaunch = (launchRoute = route) => {
         injectAppHooks(instance2);
         const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2 } = instance2;
-        const path = route.path.slice(1);
+        const path = launchRoute.path.slice(1);
         const launchOptions2 = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query)
+          query: decodedQuery(launchRoute.query)
         });
         onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
         onShow && invokeArrayFns$1(onShow, launchOptions2);
-        if (__UNI_FEATURE_PAGES__) {
-          if (!route.matched.length) {
-            const pageNotFoundOptions = {
-              notFound: true,
-              openType: "appLaunch",
-              path: route.path,
-              query: decodedQuery(route.query),
-              scene: 1001
-            };
-            handleBeforeEntryPageRoutes();
-            onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
-          }
+        const originalUrl = __UNI_FEATURE_PAGES__ ? launchRoute.fullPath : launchRoute.path + stringifyQuery$1(launchRoute.query);
+        const resolved = resolveAppRoute(
+          originalUrl,
+          "appLaunch",
+          __UNI_FEATURE_PAGES__ && !launchRoute.matched.length
+        );
+        if (!__UNI_FEATURE_PAGES__) {
+          setSinglePageAppRoute(resolved, originalUrl);
         }
+        return resolved;
       };
       if (__UNI_FEATURE_PAGES__) {
-        useRouter().isReady().then(onLaunch);
+        registerWebAppRouteLaunchExecutor((launchRoute) => __async$2(this, null, function* () {
+          yield Promise.resolve();
+          return onLaunch(launchRoute);
+        }));
       } else {
         onBeforeMount(onLaunch);
       }
@@ -9063,8 +10029,8 @@ function setupApp(comp) {
           debounce(onResize$1, 50, { setTimeout, clearTimeout })
         );
         window.addEventListener("message", onMessage);
-        document.addEventListener("visibilitychange", onVisibilityChange);
-        onThemeChange$2();
+        document.addEventListener("visibilitychange", onVisibilityChange$1);
+        onThemeChange$1();
       });
       return route.query;
     },
@@ -9105,7 +10071,7 @@ function onMessage(evt) {
     );
   }
 }
-function onVisibilityChange() {
+function onVisibilityChange$1() {
   const { emit: emit2 } = UniServiceJSBridge;
   if (document.visibilityState === "visible") {
     emit2(ON_APP_ENTER_FOREGROUND, getEnterOptions());
@@ -9113,7 +10079,7 @@ function onVisibilityChange() {
     emit2(ON_APP_ENTER_BACKGROUND);
   }
 }
-function onThemeChange$2() {
+function onThemeChange$1() {
   let mediaQueryList = null;
   try {
     mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
@@ -9155,245 +10121,6 @@ function useDocumentTitle(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
-function IEVersion() {
-  const userAgent = navigator.userAgent;
-  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
-  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
-  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
-  if (isIE) {
-    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
-    reIE.test(userAgent);
-    const fIEVersion = parseFloat(RegExp.$1);
-    if (fIEVersion > 6) {
-      return fIEVersion;
-    } else {
-      return 6;
-    }
-  } else if (isEdge) {
-    return -1;
-  } else if (isIE11) {
-    return 11;
-  } else {
-    return -1;
-  }
-}
-function getTheme() {
-  if (__uniConfig.darkmode !== true)
-    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
-  try {
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  } catch (error) {
-    return "light";
-  }
-}
-function getBrowserInfo() {
-  let osname;
-  let osversion = "0";
-  let model = "";
-  let deviceType = "phone";
-  const language = navigator.language;
-  if (isIOS) {
-    osname = "iOS";
-    const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
-    if (osversionFind) {
-      osversion = osversionFind[1].replace(/_/g, ".");
-    }
-    const iosVersion = osversion.split(".")[0];
-    if (Number(iosVersion) >= 18) {
-      const versionMatch = ua.match(/Version\/([\d\.]+)/);
-      if (versionMatch) {
-        osversion = versionMatch[1];
-      }
-    }
-    const modelFind = ua.match(/\(([a-zA-Z]+);/);
-    if (modelFind) {
-      model = modelFind[1];
-    }
-  } else if (isAndroid) {
-    osname = "Android";
-    const osversionFind = ua.match(/Android[\s/]([\w\.]+)[;\s]/);
-    if (osversionFind) {
-      osversion = osversionFind[1];
-    }
-    const infoFind = ua.match(/\((.+?)\)/);
-    const infos = infoFind ? infoFind[1].split(";") : ua.split(" ");
-    const otherInfo = [
-      /\bAndroid\b/i,
-      /\bLinux\b/i,
-      /\bU\b/i,
-      /^\s?[a-z][a-z]$/i,
-      /^\s?[a-z][a-z]-[a-z][a-z]$/i,
-      /\bwv\b/i,
-      /\/[\d\.,]+$/,
-      /^\s?[\d\.,]+$/,
-      /\bBrowser\b/i,
-      /\bMobile\b/i
-    ];
-    for (let i = 0; i < infos.length; i++) {
-      const info = infos[i];
-      if (info.indexOf("Build") > 0) {
-        model = info.split("Build")[0].trim();
-        break;
-      }
-      let other;
-      for (let o2 = 0; o2 < otherInfo.length; o2++) {
-        if (otherInfo[o2].test(info)) {
-          other = true;
-          break;
-        }
-      }
-      if (!other) {
-        model = info.trim();
-        break;
-      }
-    }
-  } else if (isIPadOS) {
-    model = "iPad";
-    osname = "iOS";
-    deviceType = "pad";
-    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
-    if (parseInt(osversion) === 14) {
-      const versionMatched = ua.match(/Version\/(\S*)\b/);
-      if (versionMatched) {
-        osversion = versionMatched[1];
-      }
-    }
-  } else if (isWindows || isMac || isLinux) {
-    model = "PC";
-    osname = "PC";
-    deviceType = "pc";
-    osversion = "0";
-    let osversionFind = ua.match(/\((.+?)\)/)[1];
-    if (isWindows) {
-      osname = "Windows";
-      switch (isWindows[1]) {
-        case "5.1":
-          osversion = "XP";
-          break;
-        case "6.0":
-          osversion = "Vista";
-          break;
-        case "6.1":
-          osversion = "7";
-          break;
-        case "6.2":
-          osversion = "8";
-          break;
-        case "6.3":
-          osversion = "8.1";
-          break;
-        case "10.0":
-          osversion = "10";
-          break;
-      }
-      const framework = osversionFind && osversionFind.match(/[Win|WOW]([\d]+)/);
-      if (framework) {
-        osversion += ` x${framework[1]}`;
-      }
-    } else if (isMac) {
-      osname = "macOS";
-      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
-      if (osversion) {
-        osversion = _osversion[1].replace(/_/g, ".");
-        if (osversion.indexOf(";") !== -1) {
-          osversion = osversion.split(";")[0];
-        }
-      }
-    } else if (isLinux) {
-      osname = "Linux";
-      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
-      if (_osversion) {
-        osversion = _osversion[1];
-        if (osversion.indexOf(";") !== -1) {
-          osversion = osversion.split(";")[0];
-        }
-      }
-    }
-  } else if (isHarmony) {
-    osname = "Harmony";
-    deviceType = "phone";
-    const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/);
-    if (osversionFind) {
-      osversion = osversionFind[1];
-    }
-    model = "";
-  } else {
-    osname = "Other";
-    osversion = "0";
-    deviceType = "unknown";
-  }
-  const system = `${osname} ${osversion}`;
-  const platform = osname.toLowerCase();
-  let browserName = "";
-  let browserVersion = String(IEVersion());
-  if (browserVersion !== "-1") {
-    browserName = "IE";
-  } else {
-    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
-    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
-    for (let index2 = 0; index2 < browseVendors.length; index2++) {
-      const vendor = browseVendors[index2];
-      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
-      if (reg.test(ua)) {
-        browserName = vendors[index2];
-        browserVersion = ua.match(reg)[2];
-      }
-    }
-  }
-  let deviceOrientation = "portrait";
-  const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
-  deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
-  return {
-    deviceBrand: void 0,
-    brand: void 0,
-    deviceModel: model,
-    deviceOrientation,
-    model,
-    system,
-    platform,
-    browserName: browserName.toLowerCase(),
-    browserVersion,
-    language,
-    deviceType,
-    ua,
-    osname,
-    osversion,
-    theme: getTheme()
-  };
-}
-function onThemeChange$1(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
-  }
-}
-function offThemeChange$1(callback) {
-  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactivity = isReactive(pageStyle);
-  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactivity) {
-    watch(pageStyle, (value) => {
-      const _pageStyle = parseTheme(value);
-      for (const key in _pageStyle) {
-        reactivePageStyle[key] = _pageStyle[key];
-      }
-    });
-  }
-  onThemeChangeCallback && onThemeChange$1(onThemeChangeCallback);
-  return reactivePageStyle;
-}
 function updateBackgroundColorContent(backgroundColorContent) {
   if (backgroundColorContent) {
     document.body.style.setProperty(
@@ -9410,9 +10137,11 @@ function useBackgroundColorContent(pageMeta) {
       updateBackgroundColorContent(
         parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
       );
+    } else {
+      updateBackgroundColorContent("transparent");
     }
   }
-  onThemeChange$1(update);
+  onThemeChange$2(update);
   watchEffect(update);
   onActivated(update);
 }
@@ -9666,7 +10395,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": placeholderClass
   }, [createVNode("div", {
     "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_0$2, {
     "disabled": true,
     "style": {
       color
@@ -9675,7 +10404,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": "uni-page-head-search-input",
     "confirm-type": "search",
     "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3, {
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_0$2, {
     "focus": autoFocus,
     "style": {
       color
@@ -9870,7 +10599,7 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main$5 = {
+const _sfc_main$9 = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -9889,22 +10618,13 @@ const _export_sfc = (sfc, props2) => {
 };
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
-const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
-const _hoisted_4 = /* @__PURE__ */ createElementVNode("path", {
-  d: "M0 0h24v24H0z",
-  fill: "none"
-}, null, -1);
-const _hoisted_5 = [
-  _hoisted_3,
-  _hoisted_4
-];
-const _hoisted_6 = {
+const _hoisted_3 = {
   class: "uni-page-refresh__spinner",
   width: "24",
   height: "24",
   viewBox: "25 25 50 50"
 };
-const _hoisted_7 = ["stroke"];
+const _hoisted_4 = ["stroke"];
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("uni-page-refresh", null, [
     createElementVNode("div", {
@@ -9918,8 +10638,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           width: "24",
           height: "24",
           viewBox: "0 0 24 24"
-        }, _hoisted_5, 8, _hoisted_2)),
-        (openBlock(), createElementBlock("svg", _hoisted_6, [
+        }, [..._cache[0] || (_cache[0] = [
+          createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1),
+          createElementVNode("path", {
+            d: "M0 0h24v24H0z",
+            fill: "none"
+          }, null, -1)
+        ])], 8, _hoisted_2)),
+        (openBlock(), createElementBlock("svg", _hoisted_3, [
           createElementVNode("circle", {
             stroke: $setup.color,
             class: "uni-page-refresh__path",
@@ -9929,13 +10655,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             fill: "none",
             "stroke-width": "4",
             "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_7)
+          }, null, 8, _hoisted_4)
         ]))
       ])
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render]]);
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -10263,6 +10989,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
           );
           pageMeta = Object.assign(pageMeta, routePageMeta);
         }
+        pageMeta.id = createDialogPageId();
         if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {
           pageMeta.backgroundColorContent = "transparent";
         }
@@ -10693,10 +11420,10 @@ function list(Quill) {
     }
     optimize(context) {
       super.optimize(context);
-      const next = this.next;
-      if (next != null && next.prev === this && next.statics.blotName === this.statics.blotName && next.domNode.tagName === this.domNode.tagName && next.domNode.getAttribute("data-checked") === this.domNode.getAttribute("data-checked")) {
-        next.moveChildren(this);
-        next.remove();
+      const next2 = this.next;
+      if (next2 != null && next2.prev === this && next2.statics.blotName === this.statics.blotName && next2.domNode.tagName === this.domNode.tagName && next2.domNode.getAttribute("data-checked") === this.domNode.getAttribute("data-checked")) {
+        next2.moveChildren(this);
+        next2.remove();
       }
     }
     replace(target) {
@@ -10855,6 +11582,70 @@ function link(Quill) {
     return Link.PROTOCOL_WHITELIST.concat("file").indexOf(protocol) > -1 ? url : Link.SANITIZED_URL;
   };
 }
+const SupportStyleList = ["color", "background", "padding", "radius"];
+const MentionStyleMap = {
+  color: "color",
+  background: "background",
+  padding: "padding",
+  radius: "border-radius"
+};
+function getMentionStyleValue(node, styleKey) {
+  const cssName = MentionStyleMap[styleKey];
+  if (!cssName) {
+    return "";
+  }
+  return node.style.getPropertyValue(cssName).trim();
+}
+const isApple = /^Apple/.test(navigator.vendor);
+function mention(Quill) {
+  const Embed = Quill.import("blots/embed");
+  class MentionBlot extends Embed {
+    static create(data) {
+      const node = super.create();
+      const id2 = data.id == null ? "" : data.id;
+      const name = data.name == null ? "" : data.name;
+      if (!isApple) {
+        node.setAttribute("contenteditable", "false");
+      }
+      node.setAttribute("data-id", id2);
+      node.setAttribute("data-name", name);
+      let style = "";
+      if (isApple) {
+        style += "-webkit-user-select: none;";
+      }
+      SupportStyleList.forEach((item) => {
+        const styleName = MentionStyleMap[item] || item;
+        if (data[item]) {
+          style += `${hyphenate(styleName)}: ${data[item]};`;
+        }
+      });
+      if (style) {
+        node.setAttribute("style", style);
+      }
+      node.innerText = `@${name}`;
+      return node;
+    }
+    static value(node) {
+      const value = {
+        id: node.dataset.id == null ? "" : node.dataset.id,
+        name: node.dataset.name == null ? "" : node.dataset.name
+      };
+      SupportStyleList.forEach((item) => {
+        const styleValue2 = getMentionStyleValue(node, item);
+        if (styleValue2) {
+          value[item] = styleValue2;
+        }
+      });
+      return value;
+    }
+  }
+  MentionBlot.blotName = "mention";
+  MentionBlot.tagName = "span";
+  MentionBlot.className = "mention";
+  return {
+    "formats/mention": MentionBlot
+  };
+}
 function register(Quill) {
   const formats = {
     divider,
@@ -10867,12 +11658,14 @@ function register(Quill) {
     font,
     text,
     image,
-    link
+    link,
+    mention
   };
   const options = {};
   Object.values(formats).forEach((value) => extend(options, value(Quill)));
   Quill.register(options, true);
 }
+const STATUS_KEY_MAP = { "code-block": "codeBlock" };
 function useQuill(props2, rootRef, trigger) {
   let quillReady;
   let skipMatcher;
@@ -10882,7 +11675,7 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
       if (quillReady) {
         quill.enable(!value);
-        if (!value) {
+        if (value) {
           quill.blur();
         }
       }
@@ -10893,6 +11686,14 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
       if (quillReady) {
         setPlaceHolder(value);
+      }
+    }
+  );
+  watch(
+    () => props2.type,
+    (value) => {
+      if (quillReady) {
+        setInputMode(value);
       }
     }
   );
@@ -10923,7 +11724,10 @@ function useQuill(props2, rootRef, trigger) {
       "ol",
       "ul",
       "li",
-      "br"
+      "br",
+      "blockquote",
+      "pre",
+      "code"
     ];
     let content = "";
     let disable;
@@ -10969,16 +11773,39 @@ function useQuill(props2, rootRef, trigger) {
     const QuillRoot = quill.root;
     QuillRoot.getAttribute(placeHolderAttrName) !== placeholder && QuillRoot.setAttribute(placeHolderAttrName, placeholder);
   }
+  function setInputMode(type) {
+    const QuillRoot = quill.root;
+    if (type === "none") {
+      QuillRoot.setAttribute("inputmode", "none");
+    } else {
+      QuillRoot.removeAttribute("inputmode");
+    }
+  }
   let oldStatus = {};
   function updateStatus(range) {
     const status = range ? quill.getFormat(range) : {};
     const keys = Object.keys(status);
     if (keys.length !== Object.keys(oldStatus).length || keys.find((key) => status[key] !== oldStatus[key])) {
       oldStatus = status;
-      trigger("statuschange", {}, status);
+      const normalizedStatus = {};
+      Object.keys(status).forEach((k) => {
+        normalizedStatus[STATUS_KEY_MAP[k] || k] = status[k];
+      });
+      trigger("statuschange", {}, normalizedStatus);
+    }
+  }
+  function fixCursor() {
+    var _a;
+    const range = quill.getSelection();
+    if (!range)
+      return;
+    const [leaf] = quill.getLeaf(range.index - 1);
+    if (((_a = leaf == null ? void 0 : leaf.statics) == null ? void 0 : _a.blotName) === "mention") {
+      quill.setSelection(range.index, 0, "silent");
     }
   }
   function textChangeHandler() {
+    fixCursor();
     trigger("input", {}, getContents());
   }
   function initQuill(imageResizeModules) {
@@ -10995,6 +11822,7 @@ function useQuill(props2, rootRef, trigger) {
         window.ImageResize.default
       );
       options.modules = {
+        syntax: true,
         ImageResize: {
           modules: imageResizeModules
         }
@@ -11002,6 +11830,7 @@ function useQuill(props2, rootRef, trigger) {
     }
     const rootEl = rootRef.value;
     quill = new Quill(rootEl, options);
+    setInputMode(props2.type);
     const $el = quill.root;
     const events = ["focus", "blur", "input"];
     events.forEach((name) => {
@@ -11032,7 +11861,7 @@ function useQuill(props2, rootRef, trigger) {
         return delta;
       }
       if (delta.ops) {
-        delta.ops = delta.ops.filter(({ insert }) => isString(insert)).map(({ insert }) => ({ insert }));
+        delta.ops = delta.ops.filter(({ insert: insert2 }) => isString(insert2)).map(({ insert: insert2 }) => ({ insert: insert2 }));
       }
       return delta;
     });
@@ -11053,6 +11882,9 @@ function useQuill(props2, rootRef, trigger) {
             {
               let { name = "", value = false } = options;
               range = quill.getSelection(true);
+              if (!name) {
+                break;
+              }
               let format = quill.getFormat(range)[name] || false;
               if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
                 value = !format;
@@ -11086,6 +11918,14 @@ function useQuill(props2, rootRef, trigger) {
             quill.insertText(range.index, LINEFEED, "user");
             quill.insertEmbed(range.index + 1, "divider", true, "user");
             quill.setSelection(range.index + 2, 0, "silent");
+            break;
+          case "insertMention":
+            {
+              range = quill.getSelection(true);
+              const mentionData = extend({ id: "", name: "" }, options);
+              quill.insertEmbed(range.index, "mention", mentionData, "user");
+              quill.setSelection(range.index + 1, 0);
+            }
             break;
           case "insertImage":
             {
@@ -11126,6 +11966,21 @@ function useQuill(props2, rootRef, trigger) {
               const { text: text2 = "" } = options;
               quill.insertText(range.index, text2, "user");
               quill.setSelection(range.index + text2.length, 0, "silent");
+            }
+            break;
+          case "insertLink":
+            {
+              range = quill.getSelection(true);
+              const { text: text2 = "", href = "" } = options;
+              if (!href)
+                break;
+              if (range.length > 0) {
+                quill.format("link", href, "user");
+              } else {
+                const linkText = text2 || href;
+                quill.insertText(range.index, linkText, "link", href, "user");
+                quill.setSelection(range.index + linkText.length, 0, "silent");
+              }
             }
             break;
           case "setContents":
@@ -11209,19 +12064,22 @@ function useQuill(props2, rootRef, trigger) {
       imageResizeModules.push("Resize");
     }
     const quillSrc = "https://unpkg.com/quill@1.3.7/dist/quill.min.js";
-    loadScript(window.Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
-        loadScript(window.ImageResize, imageResizeSrc, () => {
+    const quillHighlightSrc = "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/highlight.min.js";
+    loadScript("hljs", quillHighlightSrc, () => {
+      loadScript(window.Quill, quillSrc, () => {
+        if (imageResizeModules.length) {
+          const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
+          loadScript(window.ImageResize, imageResizeSrc, () => {
+            initQuill(imageResizeModules);
+          });
+        } else {
           initQuill(imageResizeModules);
-        });
-      } else {
-        initQuill(imageResizeModules);
-      }
+        }
+      });
     });
   });
 }
-const props$r = /* @__PURE__ */ extend({}, props$s, {
+const props$p = /* @__PURE__ */ extend({}, props$q, {
   id: {
     type: String,
     default: ""
@@ -11229,6 +12087,10 @@ const props$r = /* @__PURE__ */ extend({}, props$s, {
   readOnly: {
     type: [Boolean, String],
     default: false
+  },
+  type: {
+    type: String,
+    default: ""
   },
   placeholder: {
     type: String,
@@ -11249,9 +12111,9 @@ const props$r = /* @__PURE__ */ extend({}, props$s, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$r,
+  props: props$p,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   rootElement: {
     name: "uni-editor",
@@ -11321,7 +12183,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -11395,8 +12257,9 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
     const rootEl = rootRef.value;
     if (!rootEl)
       return;
-    size.width = rootEl.offsetWidth;
-    size.height = rootEl.offsetHeight;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
     reset();
   };
 }
@@ -11427,7 +12290,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$q = {
+const props$o = {
   src: {
     type: String,
     default: ""
@@ -11466,9 +12329,9 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$q,
+  props: props$o,
   rootElement: {
     name: "uni-image",
     class: UniImageElement
@@ -11831,7 +12694,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$p = /* @__PURE__ */ extend(
+const props$n = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -11921,7 +12784,7 @@ const props$p = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$s
+  props$q
 );
 const emit = [
   "input",
@@ -12010,6 +12873,7 @@ function useValueSync(props2, state2, emit2, trigger, fieldRef) {
   }, 100);
   const triggerInput = (event, detail, force) => {
     valueChangeFn.cancel();
+    detail.value;
     triggerInputFn(event, detail);
     if (force) {
       triggerInputFn.flush();
@@ -12171,16 +13035,6 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$o = /* @__PURE__ */ extend({}, props$p, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  textContentType: {
-    type: String,
-    default: ""
-  }
-});
 once(() => {
   {
     const ua2 = navigator.userAgent;
@@ -12195,6 +13049,16 @@ once(() => {
       }
     }
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
+  }
+});
+const props$m = /* @__PURE__ */ extend({}, props$n, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  textContentType: {
+    type: String,
+    default: ""
   }
 });
 function isPaste(event) {
@@ -12221,9 +13085,9 @@ class UniInputElement extends UniElement {
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$o,
+  props: props$m,
   emits: ["confirm", ...emit],
   rootElement: {
     name: "uni-input",
@@ -12250,6 +13114,9 @@ const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
         case "digit":
           type2 = "number";
           break;
+        case "none":
+          type2 = "text";
+          break;
         default:
           type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
@@ -12263,16 +13130,21 @@ const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
       return AUTOCOMPLETES[index2];
     });
     const inputmode = computed(() => {
-      if (props2.inputmode) {
+      if (props2.inputmode !== void 0) {
         return props2.inputmode;
       }
-      {
-        const inputmodeMap = {
-          number: "numeric",
-          digit: "decimal"
-        };
-        return Object.values(INPUT_MODES).includes(props2.type) ? props2.type : inputmodeMap[props2.type];
+      if (INPUT_MODES.includes(props2.type)) {
+        return props2.type;
       }
+      let inputmodeMap = {};
+      {
+        inputmodeMap = {
+          number: "numeric",
+          digit: "decimal",
+          idcard: "text"
+        };
+      }
+      return inputmodeMap[props2.type];
     });
     let cache = useCache(props2, type);
     const rootRef = ref(null);
@@ -12343,8 +13215,9 @@ const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
+        "inputmode": inputmode.value,
         "onFocus": (event) => event.target.blur()
-      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "value": state2.value,
@@ -12578,8 +13451,8 @@ function useMovableAreaState(props2, rootRef) {
     }
     return get(target);
   }
-  const _onTouchstart = withWebEvent((t2) => {
-    let i = t2.touches;
+  const _onTouchstart = withWebEvent((t8) => {
+    let i = t8.touches;
     if (i) {
       if (i.length > 1) {
         let r = {
@@ -12597,11 +13470,11 @@ function useMovableAreaState(props2, rootRef) {
       }
     }
   });
-  const _onTouchmove = withWebEvent((t2) => {
-    let n = t2.touches;
+  const _onTouchmove = withWebEvent((t8) => {
+    let n = t8.touches;
     if (n) {
       if (n.length > 1) {
-        t2.preventDefault();
+        t8.preventDefault();
         let i = {
           x: n[1].pageX - n[0].pageX,
           y: n[1].pageY - n[0].pageY
@@ -12616,8 +13489,8 @@ function useMovableAreaState(props2, rootRef) {
     }
   });
   const _onTouchend = withWebEvent((e2) => {
-    let t2 = e2.touches;
-    if (!(t2 && t2.length)) {
+    let t8 = e2.touches;
+    if (!(t8 && t8.length)) {
       if (e2.changedTouches) {
         gapV.x = 0;
         gapV.y = 0;
@@ -12798,24 +13671,24 @@ function useTouchtrack(element, method, useCancel) {
     }
   });
 }
-function e(e2, t2, n) {
-  return e2 > t2 - n && e2 < t2 + n;
+function e(e2, t8, n) {
+  return e2 > t8 - n && e2 < t8 + n;
 }
-function t(t2, n) {
-  return e(t2, 0, n);
+function t(t8, n) {
+  return e(t8, 0, n);
 }
 function Decline() {
 }
 Decline.prototype.x = function(e2) {
   return Math.sqrt(e2);
 };
-function Friction$1(e2, t2) {
+function Friction$2(e2, t8) {
   this._m = e2;
-  this._f = 1e3 * t2;
+  this._f = 1e3 * t8;
   this._startTime = 0;
   this._v = 0;
 }
-Friction$1.prototype.setV = function(x, y) {
+Friction$2.prototype.setV = function(x, y) {
   const n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
   this._x_v = x;
   this._y_v = y;
@@ -12825,20 +13698,20 @@ Friction$1.prototype.setV = function(x, y) {
   this._lastDt = null;
   this._startTime = (/* @__PURE__ */ new Date()).getTime();
 };
-Friction$1.prototype.setS = function(x, y) {
+Friction$2.prototype.setS = function(x, y) {
   this._x_s = x;
   this._y_s = y;
 };
-Friction$1.prototype.s = function(t2) {
-  if (void 0 === t2) {
-    t2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction$2.prototype.s = function(t8) {
+  if (void 0 === t8) {
+    t8 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t2 > this._t) {
-    t2 = this._t;
-    this._lastDt = t2;
+  if (t8 > this._t) {
+    t8 = this._t;
+    this._lastDt = t8;
   }
-  let x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
-  let y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
+  let x = this._x_v * t8 + 0.5 * this._x_a * Math.pow(t8, 2) + this._x_s;
+  let y = this._y_v * t8 + 0.5 * this._y_a * Math.pow(t8, 2) + this._y_s;
   if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
     x = this._endPositionX;
   }
@@ -12850,37 +13723,37 @@ Friction$1.prototype.s = function(t2) {
     y
   };
 };
-Friction$1.prototype.ds = function(t2) {
-  if (void 0 === t2) {
-    t2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction$2.prototype.ds = function(t8) {
+  if (void 0 === t8) {
+    t8 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t2 > this._t) {
-    t2 = this._t;
+  if (t8 > this._t) {
+    t8 = this._t;
   }
   return {
-    dx: this._x_v + this._x_a * t2,
-    dy: this._y_v + this._y_a * t2
+    dx: this._x_v + this._x_a * t8,
+    dy: this._y_v + this._y_a * t8
   };
 };
-Friction$1.prototype.delta = function() {
+Friction$2.prototype.delta = function() {
   return {
     x: -1.5 * Math.pow(this._x_v, 2) / this._x_a || 0,
     y: -1.5 * Math.pow(this._y_v, 2) / this._y_a || 0
   };
 };
-Friction$1.prototype.dt = function() {
+Friction$2.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
-Friction$1.prototype.done = function() {
-  const t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+Friction$2.prototype.done = function() {
+  const t8 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
-  return t2;
+  return t8;
 };
-Friction$1.prototype.setEnd = function(x, y) {
+Friction$2.prototype.setEnd = function(x, y) {
   this._endPositionX = x;
   this._endPositionY = y;
 };
-Friction$1.prototype.reconfigure = function(m, f2) {
+Friction$2.prototype.reconfigure = function(m, f2) {
   this._m = m;
   this._f = 1e3 * f2;
 };
@@ -12892,7 +13765,7 @@ function Spring$1(m, k, c) {
   this._endPosition = 0;
   this._startTime = 0;
 }
-Spring$1.prototype._solve = function(e2, t2) {
+Spring$1.prototype._solve = function(e2, t8) {
   const n = this._c;
   const i = this._m;
   const r = this._k;
@@ -12900,70 +13773,70 @@ Spring$1.prototype._solve = function(e2, t2) {
   if (o2 === 0) {
     const a2 = -n / (2 * i);
     const s = e2;
-    const l = t2 / (a2 * e2);
+    const l = t8 / (a2 * e2);
     return {
       x: function(e3) {
         return (s + l * e3) * Math.pow(Math.E, a2 * e3);
       },
       dx: function(e3) {
-        const t3 = Math.pow(Math.E, a2 * e3);
-        return a2 * (s + l * e3) * t3 + l * t3;
+        const t9 = Math.pow(Math.E, a2 * e3);
+        return a2 * (s + l * e3) * t9 + l * t9;
       }
     };
   }
   if (o2 > 0) {
     const c = (-n - Math.sqrt(o2)) / (2 * i);
     const u = (-n + Math.sqrt(o2)) / (2 * i);
-    const d = (t2 - c * e2) / (u - c);
+    const d = (t8 - c * e2) / (u - c);
     const h2 = e2 - d;
     return {
       x: function(e3) {
-        let t3;
+        let t9;
         let n2;
         if (e3 === this._t) {
-          t3 = this._powER1T;
+          t9 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t3) {
-          t3 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t9) {
+          t9 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h2 * t3 + d * n2;
+        return h2 * t9 + d * n2;
       },
       dx: function(e3) {
-        let t3;
+        let t9;
         let n2;
         if (e3 === this._t) {
-          t3 = this._powER1T;
+          t9 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t3) {
-          t3 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t9) {
+          t9 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h2 * c * t3 + d * u * n2;
+        return h2 * c * t9 + d * u * n2;
       }
     };
   }
   const p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
   const f2 = -n / 2 * i;
   const v2 = e2;
-  const g2 = (t2 - f2 * e2) / p2;
+  const g2 = (t8 - f2 * e2) / p2;
   return {
     x: function(e3) {
       return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
     },
     dx: function(e3) {
-      const t3 = Math.pow(Math.E, f2 * e3);
+      const t9 = Math.pow(Math.E, f2 * e3);
       const n2 = Math.cos(p2 * e3);
       const i2 = Math.sin(p2 * e3);
-      return t3 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t3 * (g2 * i2 + v2 * n2);
+      return t9 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t9 * (g2 * i2 + v2 * n2);
     }
   };
 };
@@ -13024,9 +13897,9 @@ Spring$1.prototype.done = function(n) {
   }
   return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
 };
-Spring$1.prototype.reconfigure = function(m, t2, c) {
+Spring$1.prototype.reconfigure = function(m, t8, c) {
   this._m = m;
-  this._k = t2;
+  this._k = t8;
   this._c = c;
   if (!this.done()) {
     this._solution = this._solve(this.x() - this._endPosition, this.dx());
@@ -13040,11 +13913,11 @@ Spring$1.prototype.damping = function() {
   return this._c;
 };
 Spring$1.prototype.configuration = function() {
-  function e2(e3, t3) {
-    e3.reconfigure(1, t3, e3.damping());
+  function e2(e3, t9) {
+    e3.reconfigure(1, t9, e3.damping());
   }
-  function t2(e3, t3) {
-    e3.reconfigure(1, e3.springConstant(), t3);
+  function t8(e3, t9) {
+    e3.reconfigure(1, e3.springConstant(), t9);
   }
   return [
     {
@@ -13057,22 +13930,22 @@ Spring$1.prototype.configuration = function() {
     {
       label: "Damping",
       read: this.damping.bind(this),
-      write: t2.bind(this, this),
+      write: t8.bind(this, this),
       min: 1,
       max: 500
     }
   ];
 };
-function STD(e2, t2, n) {
-  this._springX = new Spring$1(e2, t2, n);
-  this._springY = new Spring$1(e2, t2, n);
-  this._springScale = new Spring$1(e2, t2, n);
+function STD(e2, t8, n) {
+  this._springX = new Spring$1(e2, t8, n);
+  this._springY = new Spring$1(e2, t8, n);
+  this._springScale = new Spring$1(e2, t8, n);
   this._startTime = 0;
 }
-STD.prototype.setEnd = function(e2, t2, n, i) {
+STD.prototype.setEnd = function(e2, t8, n, i) {
   const r = (/* @__PURE__ */ new Date()).getTime();
   this._springX.setEnd(e2, i, r);
-  this._springY.setEnd(t2, i, r);
+  this._springY.setEnd(t8, i, r);
   this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
@@ -13088,10 +13961,10 @@ STD.prototype.done = function() {
   const e2 = (/* @__PURE__ */ new Date()).getTime();
   return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
 };
-STD.prototype.reconfigure = function(e2, t2, n) {
-  this._springX.reconfigure(e2, t2, n);
-  this._springY.reconfigure(e2, t2, n);
-  this._springScale.reconfigure(e2, t2, n);
+STD.prototype.reconfigure = function(e2, t8, n) {
+  this._springX.reconfigure(e2, t8, n);
+  this._springY.reconfigure(e2, t8, n);
+  this._springScale.reconfigure(e2, t8, n);
 };
 const movableViewProps = {
   direction: {
@@ -13192,19 +14065,19 @@ function _requestAnimationFrame(e2) {
     });
   }
 }
-function p(t2, n) {
-  if (t2 === n) {
+function p(t8, n) {
+  if (t8 === n) {
     return 0;
   }
-  let i = t2.offsetLeft;
-  return t2.offsetParent ? i += p(t2.offsetParent, n) : 0;
+  let i = t8.offsetLeft;
+  return t8.offsetParent ? i += p(t8.offsetParent, n) : 0;
 }
-function f(t2, n) {
-  if (t2 === n) {
+function f(t8, n) {
+  if (t8 === n) {
     return 0;
   }
-  let i = t2.offsetTop;
-  return t2.offsetParent ? i += f(t2.offsetParent, n) : 0;
+  let i = t8.offsetTop;
+  return t8.offsetParent ? i += f(t8.offsetParent, n) : 0;
 }
 function g(friction, execute, endCallback) {
   let record = {
@@ -13638,7 +14511,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     let val = Number(props2.friction);
     return isNaN(val) || val <= 0 ? 2 : val;
   });
-  const _friction = new Friction$1(1, frictionNumber.value);
+  const _friction = new Friction$2(1, frictionNumber.value);
   watch(() => props2.disabled, () => {
     __handleTouchStart();
   });
@@ -13790,9 +14663,9 @@ function useMovableViewState(props2, trigger, rootRef) {
         }
         _friction.setEnd(x, y);
         _FA = g(_friction, function() {
-          let t2 = _friction.s();
-          let x2 = t2.x;
-          let y2 = t2.y;
+          let t8 = _friction.s();
+          let x2 = t8.x;
+          let y2 = t8.y;
           _setTransform(x2, y2, _scale.value, "friction");
         }, function() {
           _FA.cancel();
@@ -13939,35 +14812,43 @@ function createNavigatorOnClick(props2) {
       return;
     }
     const animationDuration = parseInt(props2.animationDuration);
+    const onFail = (error) => {
+      console.error(error.errMsg);
+    };
     switch (props2.openType) {
       case "navigate":
         uni.navigateTo({
           url: props2.url,
           animationType: props2.animationType || "pop-in",
-          animationDuration
+          animationDuration,
+          fail: onFail
         });
         break;
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          exists: props2.exists
+          exists: props2.exists,
+          fail: onFail
         });
         break;
       case "switchTab":
         uni.switchTab({
-          url: props2.url
+          url: props2.url,
+          fail: onFail
         });
         break;
       case "reLaunch":
         uni.reLaunch({
-          url: props2.url
+          url: props2.url,
+          fail: onFail
         });
         break;
       case "navigateBack":
         uni.navigateBack({
           delta: props2.delta,
           animationType: props2.animationType || "pop-out",
-          animationDuration
+          animationDuration,
+          fail: onFail
         });
         break;
     }
@@ -13975,7 +14856,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -14176,7 +15057,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class Friction {
+let Friction$1 = class Friction {
   constructor(drag) {
     this._drag = drag;
     this._dragLog = Math.log(drag);
@@ -14196,27 +15077,27 @@ class Friction {
     if (e2 === void 0) {
       e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
     }
-    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+    const t8 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
     this._dt = e2;
-    return this._x + this._v * t2 / this._dragLog - this._v / this._dragLog;
+    return this._x + this._v * t8 / this._dragLog - this._v / this._dragLog;
   }
   dx(e2) {
     if (e2 === void 0) {
       e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
     }
-    const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+    const t8 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
     this._dt = e2;
-    return this._v * t2;
+    return this._v * t8;
   }
   done() {
     return Math.abs(this.dx()) < 3;
   }
   reconfigure(e2) {
-    const t2 = this.x();
+    const t8 = this.x();
     const n = this.dx();
     this._drag = e2;
     this._dragLog = Math.log(e2);
-    this.set(t2, n);
+    this.set(t8, n);
   }
   configuration() {
     const e2 = this;
@@ -14226,8 +15107,8 @@ class Friction {
         read: function() {
           return e2._drag;
         },
-        write: function(t2) {
-          e2.reconfigure(t2);
+        write: function(t8) {
+          e2.reconfigure(t8);
         },
         min: 1e-3,
         max: 0.1,
@@ -14235,12 +15116,12 @@ class Friction {
       }
     ];
   }
+};
+function o(e2, t8, n) {
+  return e2 > t8 - n && e2 < t8 + n;
 }
-function o(e2, t2, n) {
-  return e2 > t2 - n && e2 < t2 + n;
-}
-function a(e2, t2) {
-  return o(e2, 0, t2);
+function a(e2, t8) {
+  return o(e2, 0, t8);
 }
 class Spring {
   constructor(m, k, c) {
@@ -14251,7 +15132,7 @@ class Spring {
     this._endPosition = 0;
     this._startTime = 0;
   }
-  _solve(e2, t2) {
+  _solve(e2, t8) {
     const n = this._c;
     const i = this._m;
     const r = this._k;
@@ -14259,7 +15140,7 @@ class Spring {
     if (o2 === 0) {
       const a3 = -n / (2 * i);
       const s2 = e2;
-      const l2 = t2 / (a3 * e2);
+      const l2 = t8 / (a3 * e2);
       return {
         x: function(e22) {
           return (s2 + l2 * e22) * Math.pow(Math.E, a3 * e22);
@@ -14273,7 +15154,7 @@ class Spring {
     if (o2 > 0) {
       const c = (-n - Math.sqrt(o2)) / (2 * i);
       const u = (-n + Math.sqrt(o2)) / (2 * i);
-      const l2 = (t2 - c * e2) / (u - c);
+      const l2 = (t8 - c * e2) / (u - c);
       const s2 = e2 - l2;
       return {
         x: function(e22) {
@@ -14313,7 +15194,7 @@ class Spring {
     const d = Math.sqrt(4 * i * r - n * n) / (2 * i);
     const a2 = -n / 2 * i;
     const s = e2;
-    const l = (t2 - a2 * e2) / d;
+    const l = (t8 - a2 * e2) / d;
     return {
       x: function(e22) {
         return Math.pow(Math.E, a2 * e22) * (s * Math.cos(d * e22) + l * Math.sin(d * e22));
@@ -14338,29 +15219,29 @@ class Spring {
     }
     return this._solution ? this._solution.dx(e2) : 0;
   }
-  setEnd(e2, t2, n) {
+  setEnd(e2, t8, n) {
     if (!n) {
       n = (/* @__PURE__ */ new Date()).getTime();
     }
-    if (e2 !== this._endPosition || !a(t2, 0.4)) {
-      t2 = t2 || 0;
+    if (e2 !== this._endPosition || !a(t8, 0.4)) {
+      t8 = t8 || 0;
       let i = this._endPosition;
       if (this._solution) {
-        if (a(t2, 0.4)) {
-          t2 = this._solution.dx((n - this._startTime) / 1e3);
+        if (a(t8, 0.4)) {
+          t8 = this._solution.dx((n - this._startTime) / 1e3);
         }
         i = this._solution.x((n - this._startTime) / 1e3);
-        if (a(t2, 0.4)) {
-          t2 = 0;
+        if (a(t8, 0.4)) {
+          t8 = 0;
         }
         if (a(i, 0.4)) {
           i = 0;
         }
         i += this._endPosition;
       }
-      if (!(this._solution && a(i - e2, 0.4) && a(t2, 0.4))) {
+      if (!(this._solution && a(i - e2, 0.4) && a(t8, 0.4))) {
         this._endPosition = e2;
-        this._solution = this._solve(i - this._endPosition, t2);
+        this._solution = this._solve(i - this._endPosition, t8);
         this._startTime = n;
       }
     }
@@ -14383,9 +15264,9 @@ class Spring {
     }
     return o(this.x(), this._endPosition, 0.4) && a(this.dx(), 0.4);
   }
-  reconfigure(e2, t2, n) {
+  reconfigure(e2, t8, n) {
     this._m = e2;
-    this._k = t2;
+    this._k = t8;
     this._c = n;
     if (!this.done()) {
       this._solution = this._solve(this.x() - this._endPosition, this.dx());
@@ -14402,7 +15283,7 @@ class Spring {
     function e2(e22, t22) {
       e22.reconfigure(1, t22, e22.damping());
     }
-    function t2(e22, t22) {
+    function t8(e22, t22) {
       e22.reconfigure(1, e22.springConstant(), t22);
     }
     return [
@@ -14416,7 +15297,7 @@ class Spring {
       {
         label: "Damping",
         read: this.damping.bind(this),
-        write: t2.bind(this, this),
+        write: t8.bind(this, this),
         min: 1,
         max: 500
       }
@@ -14426,27 +15307,27 @@ class Spring {
 class Scroll {
   constructor(extent, friction, spring) {
     this._extent = extent;
-    this._friction = friction || new Friction(0.01);
+    this._friction = friction || new Friction$1(0.01);
     this._spring = spring || new Spring(1, 90, 20);
     this._startTime = 0;
     this._springing = false;
     this._springOffset = 0;
   }
-  snap(e2, t2) {
+  snap(e2, t8) {
     this._springOffset = 0;
     this._springing = true;
     this._spring.snap(e2);
-    this._spring.setEnd(t2);
+    this._spring.setEnd(t8);
   }
-  set(e2, t2) {
-    this._friction.set(e2, t2);
-    if (e2 > 0 && t2 >= 0) {
+  set(e2, t8) {
+    this._friction.set(e2, t8);
+    if (e2 > 0 && t8 >= 0) {
       this._springOffset = 0;
       this._springing = true;
       this._spring.snap(e2);
       this._spring.setEnd(0);
     } else {
-      if (e2 < -this._extent && t2 <= 0) {
+      if (e2 < -this._extent && t8 <= 0) {
         this._springOffset = 0;
         this._springing = true;
         this._spring.snap(e2);
@@ -14467,30 +15348,30 @@ class Scroll {
     if (this._springing) {
       return this._spring.x() + this._springOffset;
     }
-    let t2 = this._friction.x(e2);
+    let t8 = this._friction.x(e2);
     let n = this.dx(e2);
-    if (t2 > 0 && n >= 0 || t2 < -this._extent && n <= 0) {
+    if (t8 > 0 && n >= 0 || t8 < -this._extent && n <= 0) {
       this._springing = true;
       this._spring.setEnd(0, n);
-      if (t2 < -this._extent) {
+      if (t8 < -this._extent) {
         this._springOffset = -this._extent;
       } else {
         this._springOffset = 0;
       }
-      t2 = this._spring.x() + this._springOffset;
+      t8 = this._spring.x() + this._springOffset;
     }
-    return t2;
+    return t8;
   }
   dx(e2) {
-    let t2;
+    let t8;
     if (this._lastTime === e2) {
-      t2 = this._lastDx;
+      t8 = this._lastDx;
     } else {
-      t2 = this._springing ? this._spring.dx(e2) : this._friction.dx(e2);
+      t8 = this._springing ? this._spring.dx(e2) : this._friction.dx(e2);
     }
     this._lastTime = e2;
-    this._lastDx = t2;
-    return t2;
+    this._lastDx = t8;
+    return t8;
   }
   done() {
     return this._springing ? this._spring.done() : this._friction.done();
@@ -14503,6 +15384,9 @@ class Scroll {
     e2.push.apply(e2, this._spring.configuration());
     return e2;
   }
+}
+function calculateSnapIndex(position, itemSize) {
+  return Math.round(Math.abs(position) / itemSize);
 }
 function createAnimation(scroll, onScroll, onEnd) {
   const state2 = {
@@ -14622,7 +15506,7 @@ class Scroller {
     this._lastDelay = 0;
     this._scrolling = true;
     this._lastChangePos = this._position;
-    this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
+    this._lastIdx = calculateSnapIndex(this._position, this._itemSize);
     this._animation = createAnimation(
       this._scroll,
       () => {
@@ -14646,7 +15530,7 @@ class Scroller {
           }
           if (isFunction(this._options.onSnap)) {
             this._options.onSnap(
-              Math.floor(Math.abs(this._position) / this._itemSize)
+              calculateSnapIndex(this._position, this._itemSize)
             );
           }
         }
@@ -14675,7 +15559,7 @@ class Scroller {
       this.scrollTo(-i);
       if (isFunction(this._options.onSnap)) {
         this._options.onSnap(
-          Math.floor(Math.abs(this._position) / this._itemSize)
+          Math.round(Math.abs(this._position) / this._itemSize)
         );
       }
     }
@@ -14743,7 +15627,7 @@ class Scroller {
       this.dispatchScroll();
       if (isFunction(this._options.onSnap)) {
         this._options.onSnap(
-          Math.floor(Math.abs(this._position) / this._itemSize)
+          Math.round(Math.abs(this._position) / this._itemSize)
         );
       }
     }
@@ -14922,7 +15806,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const resizeSensorRef = ref(null);
     const initIndicatorHeight = () => {
       const resizeSensor = resizeSensorRef.value;
-      indicatorHeight.value = resizeSensor.$el.offsetHeight;
+      indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
     };
     {
       onMounted(initIndicatorHeight);
@@ -14999,7 +15883,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         enableX: false,
         enableSnap: true,
         itemSize: indicatorHeight.value,
-        friction: new Friction(1e-4),
+        friction: new Friction$1(1e-4),
         spring: new Spring(2, 90, 20),
         onSnap: (index2) => {
           if (!isNaN(index2) && index2 !== state2.current) {
@@ -15142,7 +16026,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -15250,7 +16134,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$n = {
+const props$l = {
   name: {
     type: String,
     default: ""
@@ -15258,9 +16142,9 @@ const props$n = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$n,
+  props: props$l,
   // emits: ['change'],
   rootElement: {
     name: "uni-radio-group",
@@ -15352,7 +16236,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$m = {
+const props$k = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -15371,7 +16255,7 @@ const props$m = {
   },
   color: {
     type: String,
-    default: "#007aff"
+    default: ""
   },
   backgroundColor: {
     type: String,
@@ -15391,7 +16275,7 @@ const props$m = {
   },
   iconColor: {
     type: String,
-    default: "#ffffff"
+    default: ""
   },
   // 图标颜色,同color,优先级大于iconColor
   foreColor: {
@@ -15403,7 +16287,7 @@ class UniRadioElement extends UniElement {
 }
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$m,
+  props: props$k,
   rootElement: {
     name: "uni-radio",
     class: UniRadioElement
@@ -15417,26 +16301,25 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
     const initialCheckedValue = props2.checked;
     function getRadioStyle(checked) {
       if (props2.disabled) {
-        return {
-          backgroundColor: "#E1E1E1",
-          borderColor: "#D1D1D1"
-        };
+        return;
       }
       const style = {};
-      if (radioChecked.value) {
-        style.backgroundColor = props2.activeBackgroundColor || props2.color;
-        style.borderColor = props2.activeBorderColor || style.backgroundColor;
+      if (checked) {
+        const backgroundColor = props2.activeBackgroundColor || props2.color;
+        if (backgroundColor) {
+          style.backgroundColor = backgroundColor;
+          style.borderColor = props2.activeBorderColor || backgroundColor;
+        } else if (props2.activeBorderColor) {
+          style.borderColor = props2.activeBorderColor;
+        }
       } else {
         if (props2.borderColor)
           style.borderColor = props2.borderColor;
         if (props2.backgroundColor)
           style.backgroundColor = props2.backgroundColor;
       }
-      return style;
+      return style.borderColor || style.backgroundColor ? style : void 0;
     }
-    const radioStyle = computed(() => {
-      return getRadioStyle(radioChecked.value);
-    });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
       radioValue.value = newModelValue;
@@ -15478,12 +16361,6 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
         },
         set(value) {
           checkedCache.value = value;
-          const style = getRadioStyle();
-          const checkboxInputElement = rootElement.querySelector(".uni-checkbox-input");
-          for (const key in style) {
-            const value2 = style[key];
-            value2 && checkboxInputElement.style.setProperty(key, value2);
-          }
         }
       });
       rootElement.attachVmProps(props2);
@@ -15492,20 +16369,25 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       let realCheckValue;
       realCheckValue = checkedCache.value;
+      const radioStyle = getRadioStyle(realCheckValue);
+      const hoverBorderColor = realCheckValue ? radioStyle == null ? void 0 : radioStyle.borderColor : props2.activeBorderColor;
+      const hoverStyle = hoverBorderColor ? {
+        "--HOVER-BD-COLOR": hoverBorderColor
+      } : void 0;
+      const iconColor = props2.foreColor || props2.iconColor || "currentColor";
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
         "onClick": _onClick,
         "ref": rootRef,
         "id": props2.id,
         "class": "uni-radio-wrapper",
-        "style": {
-          "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
-        }
+        "style": hoverStyle
       }), [createVNode("div", {
         "class": ["uni-radio-input", {
+          "uni-radio-input-checked": realCheckValue,
           "uni-radio-input-disabled": props2.disabled
         }],
-        "style": radioStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
+        "style": radioStyle
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
     };
   }
 });
@@ -15544,73 +16426,6 @@ function useRadioInject(radioChecked, radioValue, reset) {
     field
   };
 }
-const TAGS = {
-  a: "",
-  abbr: "",
-  address: "",
-  article: "",
-  aside: "",
-  b: "",
-  bdi: "",
-  bdo: ["dir"],
-  big: "",
-  blockquote: "",
-  br: "",
-  caption: "",
-  center: "",
-  cite: "",
-  code: "",
-  col: ["span", "width"],
-  colgroup: ["span", "width"],
-  dd: "",
-  del: "",
-  div: "",
-  dl: "",
-  dt: "",
-  em: "",
-  fieldset: "",
-  font: "",
-  footer: "",
-  h1: "",
-  h2: "",
-  h3: "",
-  h4: "",
-  h5: "",
-  h6: "",
-  header: "",
-  hr: "",
-  i: "",
-  img: ["alt", "src", "height", "width"],
-  ins: "",
-  label: "",
-  legend: "",
-  li: "",
-  mark: "",
-  nav: "",
-  ol: ["start", "type"],
-  p: "",
-  pre: "",
-  q: "",
-  rt: "",
-  ruby: "",
-  s: "",
-  section: "",
-  small: "",
-  span: "",
-  strong: "",
-  sub: "",
-  sup: "",
-  table: ["width"],
-  tbody: "",
-  td: ["colspan", "height", "rowspan", "width"],
-  tfoot: "",
-  th: ["colspan", "height", "rowspan", "width"],
-  thead: "",
-  tr: ["colspan", "height", "rowspan", "width"],
-  tt: "",
-  u: "",
-  ul: ""
-};
 const CHARS = {
   amp: "&",
   gt: ">",
@@ -15639,14 +16454,14 @@ function decodeEntities(htmlString) {
         return String.fromCharCode(stage.slice(1));
       }
       if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-        return String.fromCharCode(0 + stage.slice(1));
+        return String.fromCharCode(Number("0" + stage.slice(1)));
       }
       return match;
     }
   );
 }
 function processClickEvent(node, triggerItemClick) {
-  if (["a", "img"].includes(node.name) && triggerItemClick) {
+  if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
     return {
       onClickCapture: (e2) => {
         if (node.name === "a") {
@@ -15661,36 +16476,39 @@ function processClickEvent(node, triggerItemClick) {
     };
   }
 }
+function normalizeValue(tagName, name, value) {
+  if (tagName === "img" && name === "src" && isString(value)) {
+    return getRealPath(value);
+  }
+  return value;
+}
 function normalizeAttrs(tagName, attrs2) {
   if (!isPlainObject(attrs2))
     return;
-  for (const key in attrs2) {
-    if (hasOwn(attrs2, key)) {
-      const value = attrs2[key];
-      if (tagName === "img" && key === "src")
-        attrs2[key] = getRealPath(value);
-    }
-  }
+  const normalizedAttrs = {};
+  Object.keys(attrs2).forEach((name) => {
+    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
+  });
+  return normalizedAttrs;
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || isArray(nodeList) && !nodeList.length)
+  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
-    var _a;
     if (!isPlainObject(node)) {
       return;
     }
+    if ((!hasOwn(node, "type") || node.type === "text") && isString(node.text) && node.text !== "")
+      return createTextVNode(decodeEntities(node.text || ""));
     if (!hasOwn(node, "type") || node.type === "node") {
-      let nodeProps = { [scopeId]: "" };
-      const tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
-      if (!hasOwn(TAGS, tagName)) {
+      if (!isString(node.name) || !node.name) {
         return;
       }
-      normalizeAttrs(tagName, node.attrs);
-      nodeProps = extend(
-        nodeProps,
+      const tagName = node.name.toLowerCase();
+      const nodeProps = extend(
+        { [scopeId]: "" },
         processClickEvent(node, triggerItemClick),
-        node.attrs
+        normalizeAttrs(tagName, node.attrs)
       );
       return h(
         node.name,
@@ -15698,8 +16516,6 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
         nodeList2VNode(scopeId, triggerItemClick, node.children)
       );
     }
-    if (node.type === "text" && isString(node.text) && node.text !== "")
-      return createTextVNode(decodeEntities(node.text || ""));
   });
 };
 function removeDOCTYPE(html) {
@@ -15794,22 +16610,31 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$l = {
+const props$j = {
   nodes: {
     type: [Array, String],
     default: function() {
       return [];
     }
+  },
+  /** @deprecated 请使用 user-select */
+  selectable: {
+    type: [Boolean, String],
+    default: false
+  },
+  userSelect: {
+    type: [Boolean, String],
+    default: false
   }
 };
 class UniRichTextElement extends UniElement {
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: props$l,
+  props: props$j,
   emits: ["itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -15821,7 +16646,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     const vm = getCurrentInstance();
     const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = ref(null);
-    const _vnode = ref([]);
+    const _vnode = shallowRef([]);
     const trigger = useCustomEvent(rootRef, emit2);
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
@@ -15842,7 +16667,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => h("uni-rich-text", {
-      ref: rootRef
+      ref: rootRef,
+      selectable: props2.userSelect || props2.selectable ? true : null
     }, h("div", {}, _vnode.value));
   }
 });
@@ -15951,7 +16777,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$k = {
+const props$i = {
   direction: {
     type: [String],
     default: "vertical"
@@ -16019,12 +16845,12 @@ const props$k = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
   },
-  props: props$k,
+  props: props$i,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   rootElement: {
     name: "uni-scroll-view",
@@ -16519,9 +17345,15 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     _scrollLeftChanged
   };
 }
+function createBackgroundColorStyle(color) {
+  return color ? { backgroundColor: color } : void 0;
+}
+function withBackgroundColor(style, color) {
+  return color ? Object.assign(style, { backgroundColor: color }) : style;
+}
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$j = {
+const props$h = {
   name: {
     type: String,
     default: ""
@@ -16547,38 +17379,30 @@ const props$j = {
     default: false
   },
   color: {
-    type: String,
-    default: "#e9e9e9"
+    type: String
   },
   backgroundColor: {
-    type: String,
-    default: "#e9e9e9"
+    type: String
   },
   // 优先级高于 activeColor
   activeBackgroundColor: {
-    type: String,
-    default: ""
+    type: String
   },
   activeColor: {
-    type: String,
-    default: "#007aff"
+    type: String
   },
   selectedColor: {
-    type: String,
-    default: "#007aff"
+    type: String
   },
   blockColor: {
-    type: String,
-    default: "#ffffff"
+    type: String
   },
   // 优先级高于blockColor
   foreColor: {
-    type: String,
-    default: ""
+    type: String
   },
   valueColor: {
-    type: String,
-    default: "#888888"
+    type: String
   },
   blockSize: {
     type: [Number, String],
@@ -16630,7 +17454,7 @@ class UniSliderElement extends UniElement {
 }
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$j,
+  props: props$h,
   emits: ["changing", "change"],
   rootElement: {
     name: "uni-slider",
@@ -16672,16 +17496,16 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "class": "uni-slider-input"
       }, [createVNode("div", {
-        "style": setTrackBgColor.value,
+        "style": setTrackBgColor(),
         "class": "uni-slider-track"
       }, [createVNode("div", {
-        "style": setActiveColor.value,
+        "style": setActiveColor(),
         "class": "uni-slider-track-value"
       }, null, 4)], 4), createVNode("div", {
-        "style": thumbTrackStyle.value,
+        "style": thumbTrackStyle(),
         "class": "uni-slider-thumb-track"
       }, [createVNode("div", {
-        "style": setThumbStyle.value,
+        "style": setThumbStyle(),
         "class": "uni-slider-thumb-value"
       }, null, 4)], 4), createVNode("input", {
         "class": "uni-slider-browser-input-range",
@@ -16694,7 +17518,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
         "onChange": withWebEvent(_onChange)
       }, null, 40, ["min", "max", "step", "value", "onInput", "onChange"])]), withDirectives(createVNode("span", {
         "ref": sliderValueRef,
-        "style": setValueStyle.value,
+        "style": setValueStyle(),
         "class": "uni-slider-value"
       }, null, 4), [[vShow, props2.showValue]])])], 512);
     };
@@ -16702,36 +17526,46 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useSliderState(props2) {
   const _getBgColor = () => {
-    return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
+    const backgroundColor = props2.backgroundColor;
+    const color = props2.color;
+    if (backgroundColor && backgroundColor !== "#e9e9e9") {
+      return backgroundColor;
+    }
+    if (color && color !== "#007aff")
+      return color;
+    return backgroundColor || color;
   };
   const _getActiveColor = () => {
     const activeColor = props2.activeBackgroundColor || props2.activeColor;
-    return activeColor !== "#007aff" ? activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+    const selectedColor = props2.selectedColor;
+    if (activeColor && activeColor !== "#007aff")
+      return activeColor;
+    if (selectedColor && selectedColor !== "#e9e9e9") {
+      return selectedColor;
+    }
+    return activeColor || selectedColor;
+  };
+  const _getBlockColor = () => {
+    return props2.foreColor || props2.blockColor;
   };
   const _getBlockSizeString = () => {
     const blockSize = Math.min(Math.max(Number(props2.blockSize), SLIDER_BLOCK_SIZE_MIN_VALUE), SLIDER_BLOCK_SIZE_MAX_VALUE);
     return blockSize + "px";
   };
-  const state2 = {
-    setTrackBgColor: computed(() => ({
-      backgroundColor: _getBgColor()
-    })),
-    setActiveColor: computed(() => ({
-      backgroundColor: _getActiveColor()
-    })),
-    thumbTrackStyle: computed(() => ({
+  return {
+    setTrackBgColor: () => createBackgroundColorStyle(_getBgColor()),
+    setActiveColor: () => createBackgroundColorStyle(_getActiveColor()),
+    thumbTrackStyle: () => ({
       marginRight: _getBlockSizeString()
-    })),
-    setThumbStyle: computed(() => ({
+    }),
+    setThumbStyle: () => withBackgroundColor({
       width: _getBlockSizeString(),
-      height: _getBlockSizeString(),
-      backgroundColor: props2.foreColor || props2.blockColor
-    })),
-    setValueStyle: computed(() => ({
+      height: _getBlockSizeString()
+    }, _getBlockColor()),
+    setValueStyle: () => props2.valueColor ? {
       color: props2.valueColor
-    }))
+    } : void 0
   };
-  return state2;
 }
 function useSliderLoader(props2, sliderRef, trigger) {
   const _onInput = (event) => {
@@ -16780,7 +17614,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$i = {
+const props$g = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -17211,10 +18045,10 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
     }
     function handleTrackEnd(isCancel) {
       state2.userTracking = false;
-      const t2 = contentTrackSpeed / Math.abs(contentTrackSpeed);
+      const t8 = contentTrackSpeed / Math.abs(contentTrackSpeed);
       let n = 0;
       if (!isCancel && Math.abs(contentTrackSpeed) > 0.2) {
-        n = 0.5 * t2;
+        n = 0.5 * t8;
       }
       const current = normalizeCurrentValue(viewportPosition + n);
       if (isCancel) {
@@ -17244,12 +18078,12 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
         if (state2.userTracking) {
           if (!userDirectionChecked) {
             userDirectionChecked = true;
-            const t2 = Math.abs(event.detail.dx);
+            const t8 = Math.abs(event.detail.dx);
             const n = Math.abs(event.detail.dy);
-            if (t2 >= n && props2.vertical) {
+            if (t8 >= n && props2.vertical) {
               state2.userTracking = false;
             } else {
-              if (t2 <= n && !props2.vertical) {
+              if (t8 <= n && !props2.vertical) {
                 state2.userTracking = false;
               }
             }
@@ -17283,7 +18117,7 @@ class UniSwiperElement extends UniElement {
 }
 const Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$i,
+  props: props$g,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   rootElement: {
     name: "uni-swiper",
@@ -17515,7 +18349,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$h = {
+const props$f = {
   itemId: {
     type: String,
     default: ""
@@ -17523,9 +18357,9 @@ const props$h = {
 };
 class UniSwiperItemElement extends UniElement {
 }
-const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$h,
+  props: props$f,
   rootElement: {
     name: "uni-swiper-item",
     class: UniSwiperItemElement
@@ -17582,7 +18416,7 @@ const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$g = {
+const props$e = {
   name: {
     type: String,
     default: ""
@@ -17609,7 +18443,7 @@ const props$g = {
   },
   backgroundColor: {
     type: String,
-    default: "#e9e9ea"
+    default: ""
   },
   activeBackgroundColor: {
     type: String,
@@ -17628,7 +18462,7 @@ class UniSwitchElement extends UniElement {
 }
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$g,
+  props: props$e,
   emits: ["change"],
   rootElement: {
     name: "uni-switch",
@@ -17688,18 +18522,16 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         type
       } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
-      const switchInputStyle = {};
       const fixColor = activeBackgroundColor || color;
       const bgColor = switchChecked.value ? fixColor : backgroundColor;
-      if (bgColor) {
-        switchInputStyle["backgroundColor"] = bgColor;
-        switchInputStyle["borderColor"] = bgColor;
-      }
-      const thumbStyle = {};
+      const switchInputStyle = bgColor ? {
+        backgroundColor: bgColor,
+        borderColor: bgColor
+      } : void 0;
       const fgColor = switchChecked.value ? activeForeColor : foreColor;
-      if (fgColor) {
-        thumbStyle["backgroundColor"] = fgColor;
-      }
+      const thumbStyle = fgColor ? {
+        backgroundColor: fgColor
+      } : void 0;
       let realCheckValue;
       realCheckValue = checkedCache.value;
       return createVNode("uni-switch", mergeProps({
@@ -17717,7 +18549,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         "style": thumbStyle
       }, null, 6)], 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
         "class": "uni-checkbox-input"
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.foreColor || props2.color || "currentColor", 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
     };
   }
 });
@@ -17785,7 +18617,7 @@ function parseTextIgnoreLinefeed(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const __syscom_1$1 = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -17849,7 +18681,7 @@ const __syscom_1$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$f = /* @__PURE__ */ extend({}, props$p, {
+const props$d = /* @__PURE__ */ extend({}, props$n, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -17878,9 +18710,9 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$f,
+  props: props$d,
   emits: ["confirm", "change", "linechange", ...emit],
   rootElement: {
     name: "uni-textarea",
@@ -18059,7 +18891,7 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ extend({}, hoverProps),
   rootElement: {
@@ -18118,18 +18950,18 @@ function walk(vnode, children) {
 function traverseListView(visibleVNode, callback) {
   const children = getChildren(visibleVNode);
   for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    callback(child);
+    const child2 = children[i];
+    callback(child2);
   }
 }
 function traverseStickySection(stickySectionVNode, callback) {
   const children = getChildren(stickySectionVNode.component.subTree);
   for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    callback(child);
+    const child2 = children[i];
+    callback(child2);
   }
 }
-const props$e = {
+const props$c = {
   direction: {
     type: String,
     default: "vertical",
@@ -18157,11 +18989,10 @@ const props$e = {
     type: [Number, String],
     default: 0
   },
-  // 暂不支持
-  // scrollIntoView: {
-  //   type: String,
-  //   default: '',
-  // },
+  scrollIntoView: {
+    type: String,
+    default: ""
+  },
   scrollWithAnimation: {
     type: [Boolean, String],
     default: false
@@ -18191,7 +19022,7 @@ class UniListViewElement extends UniElement {
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: props$e,
+  props: props$c,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -18297,12 +19128,41 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
+    watch(() => props2.scrollIntoView, (val) => {
+      _scrollIntoViewChanged(val);
+    });
+    function _scrollIntoViewChanged(val) {
+      if (val) {
+        if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
+          console.error(`id error: scroll-into-view=${val}`);
+          return;
+        }
+        let element = containerRef.value.querySelector("#" + val);
+        if (element) {
+          let mainRect = containerRef.value.getBoundingClientRect();
+          let elRect = element.getBoundingClientRect();
+          if (!isVertical.value) {
+            let left = elRect.left - mainRect.left;
+            let scrollLeft = containerRef.value.scrollLeft;
+            let x = scrollLeft + left;
+            containerRef.value.scrollLeft = x;
+          }
+          if (isVertical.value) {
+            let top = elRect.top - mainRect.top;
+            let scrollTop = containerRef.value.scrollTop;
+            let y = scrollTop + top;
+            containerRef.value.scrollTop = y;
+          }
+        }
+      }
+    }
     let lastScrollLeft = 0;
     let lastScrollTop = 0;
     onActivated(() => {
       if (containerRef.value) {
         containerRef.value.scrollLeft = lastScrollLeft;
         containerRef.value.scrollTop = lastScrollTop;
+        resetContainerSize();
       }
     });
     onMounted(() => {
@@ -18394,11 +19254,14 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     const containerStyle = computed(() => {
       return `${props2.direction === "none" ? "overflow: hidden;" : props2.direction === "all" ? "overflow: auto;" : isVertical.value ? "overflow: hidden auto;" : "overflow: auto hidden;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
     });
-    const contentStyle = computed(() => {
-      return `position: relative; ${isVertical.value ? "height" : "width"}: ${state2.totalSize}px;`;
-    });
     const visibleStyle = computed(() => {
-      return `position: absolute; ${isVertical.value ? "width" : "height"}: 100%; ${isVertical.value ? "top" : "left"}: ${state2.placehoderSize}px;`;
+      return `${isVertical.value ? "width" : "height"}: 100%;`;
+    });
+    const placeholderHeadStyle = computed(() => {
+      return `${isVertical.value ? "height" : "width"}: ${state2.headPlaceholderSize}px;`;
+    });
+    const placeholderTailStyle = computed(() => {
+      return `${isVertical.value ? "height" : "width"}: ${state2.tailPlaceholderSize}px;`;
     });
     let visibleVNode = null;
     return () => {
@@ -18434,9 +19297,13 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       }, {
         default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
       }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
-        "class": "uni-list-view-content",
-        "style": contentStyle.value
-      }, [visibleVNode], 4)], 4), createVNode(ResizeSensor, {
+        "class": "uni-list-view-content"
+      }, [createVNode("div", {
+        "style": placeholderHeadStyle.value
+      }, null, 4), visibleVNode, createVNode("div", {
+        "style": placeholderTailStyle.value
+      }, null, 4)])], 4), createVNode(ResizeSensor, {
+        "initial": true,
         "onResize": onResize2
       }, null, 8, ["onResize"])], 512);
     };
@@ -18452,13 +19319,16 @@ function useListViewState(props2) {
     defaultHeaderSize: 40,
     defaultHeaderSizeUpdated: false,
     totalSize: 0,
-    placehoderSize: 0,
+    headPlaceholderSize: 0,
+    tailPlaceholderSize: 0,
     visibleSize: 0,
     containerSize: 0,
     cacheScreenCount: 10,
     loadScreenThreshold: 8,
     refresherHeight: 0,
-    refreshState: ""
+    refreshState: "",
+    lastRenderOffsetMin: 0,
+    lastRenderOffsetMax: 0
   });
   return {
     state: state2,
@@ -18468,9 +19338,9 @@ function useListViewState(props2) {
 function shouldRearrange(containerRef, isVertical, state2) {
   const offset = isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
   const loadScreenThresholdSize = state2.containerSize * state2.loadScreenThreshold;
-  const rearrangeOffsetMin = state2.placehoderSize + loadScreenThresholdSize;
-  const rearrangeOffsetMax = state2.placehoderSize + state2.visibleSize - loadScreenThresholdSize;
-  return offset < rearrangeOffsetMin && state2.placehoderSize > 0 || offset > rearrangeOffsetMax && state2.placehoderSize + state2.visibleSize < state2.totalSize;
+  const rearrangeOffsetMin = state2.lastRenderOffsetMin + loadScreenThresholdSize;
+  const rearrangeOffsetMax = state2.lastRenderOffsetMax - loadScreenThresholdSize;
+  return offset < rearrangeOffsetMin || offset > rearrangeOffsetMax;
 }
 function rearrange(visibleVNode, containerRef, isVertical, state2) {
   if (!visibleVNode) {
@@ -18483,22 +19353,75 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
   const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
   const offsetMin = Math.max(offset - state2.containerSize * state2.cacheScreenCount, 0);
   const offsetMax = Math.max(offset + state2.containerSize * (state2.cacheScreenCount + 1), offsetMin + 1);
+  state2.lastRenderOffsetMin = offsetMin;
+  state2.lastRenderOffsetMax = offsetMax;
   let tempTotalSize = 0;
   let tempVisibleSize = 0;
-  let tempPlaceholderSize = 0;
+  let tempHeadPlaceholderSize = 0;
+  let tempTailPlaceholderSize = 0;
   let start = false, end = false;
-  function callback(child) {
+  function callback(child2) {
     var _a, _b, _c;
-    const childType = (_a = child.component) == null ? void 0 : _a.type.name;
-    const status = (_c = (_b = child.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
+    const childType = (_a = child2.component) == null ? void 0 : _a.type.name;
+    const status = (_c = (_b = child2.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
     if (childType === "StickySection") {
       const {
         headSize,
-        tailSize
+        tailSize,
+        headPlaceholderSize,
+        tailPlaceholderSize
       } = status;
       tempTotalSize += headSize.value;
-      traverseStickySection(child, callback);
+      let tempTailPlaceholderSizeOfSection = 0;
+      let tempHeadPlaceholderSizeOfSection = 0;
+      traverseStickySection(child2, (child22) => {
+        var _a2, _b2, _c2;
+        const childType2 = (_a2 = child22.component) == null ? void 0 : _a2.type.name;
+        const status2 = (_c2 = (_b2 = child22.component) == null ? void 0 : _b2.exposed) == null ? void 0 : _c2.__listViewChildStatus;
+        if (childType2 === "StickyHeader") {
+          const {
+            cachedSize,
+            cachedSizeUpdated
+          } = status2;
+          if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultHeaderSizeUpdated) {
+            state2.defaultHeaderSize = cachedSize;
+            state2.defaultHeaderSizeUpdated = true;
+          }
+          tempTotalSize += cachedSize || state2.defaultHeaderSize;
+          tempVisibleSize += cachedSize;
+        } else if (childType2 === "ListItem") {
+          const {
+            cachedSize,
+            cachedSizeUpdated
+          } = status2;
+          if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultItemSizeUpdated) {
+            state2.defaultItemSize = cachedSize;
+            state2.defaultItemSizeUpdated = true;
+          }
+          const itemSize = cachedSize || state2.defaultItemSize;
+          tempTotalSize += itemSize;
+          if (!start && tempTotalSize > offsetMin) {
+            start = true;
+          }
+          if (start && !end) {
+            tempVisibleSize += itemSize;
+            status2.visible.value = true;
+          } else if (start && end) {
+            status2.visible.value = false;
+            tempTailPlaceholderSizeOfSection += itemSize;
+          } else {
+            status2.visible.value = false;
+            tempHeadPlaceholderSizeOfSection += itemSize;
+          }
+          if (!end && tempTotalSize >= offsetMax) {
+            end = true;
+          }
+        }
+      });
+      tempVisibleSize += tempHeadPlaceholderSizeOfSection + tempTailPlaceholderSizeOfSection;
       tempTotalSize += tailSize.value;
+      headPlaceholderSize.value = tempHeadPlaceholderSizeOfSection;
+      tailPlaceholderSize.value = tempTailPlaceholderSizeOfSection;
     } else if (childType === "ListItem") {
       const {
         cachedSize,
@@ -18514,7 +19437,9 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
         start = true;
       }
       if (!start) {
-        tempPlaceholderSize += itemSize;
+        tempHeadPlaceholderSize += itemSize;
+      } else if (start && end) {
+        tempTailPlaceholderSize += itemSize;
       }
       if (start && !end) {
         tempVisibleSize += itemSize;
@@ -18541,7 +19466,8 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
   traverseListView(visibleVNode, callback);
   state2.totalSize = tempTotalSize;
   state2.visibleSize = tempVisibleSize;
-  state2.placehoderSize = tempPlaceholderSize;
+  state2.headPlaceholderSize = tempHeadPlaceholderSize;
+  state2.tailPlaceholderSize = tempTailPlaceholderSize;
 }
 function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emit2) {
   let beforeRefreshing = false;
@@ -18741,17 +19667,24 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     onBeforeUnmount(() => {
       unregisterItem(status);
     });
-    watch(visible, (value) => {
-      if (!value || status.cachedSizeUpdated) {
+    function updateSize() {
+      if (!visible.value || status.cachedSizeUpdated) {
         return;
       }
-      nextTick(() => {
-        const rootNode = rootRef.value;
-        if (isHTMlElement(rootNode)) {
-          status.cachedSize = getSize(isVertical.value, rootNode);
-          status.cachedSizeUpdated = true;
-          firstItemRendered(status);
+      const rootNode = rootRef.value;
+      if (isHTMlElement(rootNode)) {
+        const size = getSize(isVertical.value, rootNode);
+        if (isNaN(size)) {
+          return;
         }
+        status.cachedSize = getSize(isVertical.value, rootNode);
+        status.cachedSizeUpdated = true;
+        firstItemRendered(status);
+      }
+    }
+    watch(visible, (value) => {
+      nextTick(() => {
+        updateSize();
       });
     });
     return () => {
@@ -18784,12 +19717,19 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = ref(null);
     const isVertical = inject("__listViewIsVertical");
+    const headPlaceholderSize = ref(0);
+    const tailPlaceholderSize = ref(0);
     const style = computed(() => {
+      const padding = props2.padding;
+      const paddingTop = padding[0];
+      const paddingRight = padding[1];
+      const paddingBottom = padding[2];
+      const paddingLeft = padding[3];
       return {
-        paddingTop: props2.padding[0] + "px",
-        paddingRight: props2.padding[1] + "px",
-        paddingBottom: props2.padding[2] + "px",
-        paddingLeft: props2.padding[3] + "px"
+        paddingTop: (isVertical.value ? paddingTop + headPlaceholderSize.value : paddingTop) + "px",
+        paddingRight: (isVertical.value ? paddingRight : paddingRight + tailPlaceholderSize.value) + "px",
+        paddingBottom: (isVertical.value ? paddingBottom + tailPlaceholderSize.value : paddingBottom) + "px",
+        paddingLeft: (isVertical.value ? paddingLeft : paddingLeft + headPlaceholderSize.value) + "px"
       };
     });
     const headSize = computed(() => {
@@ -18801,7 +19741,9 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     const status = {
       type: "StickySection",
       headSize,
-      tailSize
+      tailSize,
+      headPlaceholderSize,
+      tailPlaceholderSize
     };
     expose({
       __listViewChildStatus: status
@@ -18875,6 +19817,338 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
+  if (isInSSRComponentSetup)
+    return;
+  injectHook(lifecycle, hook, target);
+};
+const onLoad = /* @__PURE__ */ createLifeCycleHook(
+  ON_LOAD,
+  2
+  /* HookFlags.PAGE */
+);
+const onReady = /* @__PURE__ */ createLifeCycleHook(
+  ON_READY,
+  2
+  /* HookFlags.PAGE */
+);
+const onUnload = /* @__PURE__ */ createLifeCycleHook(
+  ON_UNLOAD,
+  2
+  /* HookFlags.PAGE */
+);
+const onResize = /* @__PURE__ */ createLifeCycleHook(
+  ON_RESIZE,
+  2
+  /* HookFlags.PAGE */
+);
+const onBackPress = /* @__PURE__ */ createLifeCycleHook(
+  ON_BACK_PRESS,
+  2
+  /* HookFlags.PAGE */
+);
+class UniPageContainerElement extends UniElement {
+}
+var __defProp$1 = Object.defineProperty;
+var __defProps$1 = Object.defineProperties;
+var __getOwnPropDescs$1 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$1 = Object.getOwnPropertySymbols;
+var __hasOwnProp$1 = Object.prototype.hasOwnProperty;
+var __propIsEnum$1 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$1 = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$1.call(b, prop))
+      __defNormalProp$1(a2, prop, b[prop]);
+  if (__getOwnPropSymbols$1)
+    for (var prop of __getOwnPropSymbols$1(b)) {
+      if (__propIsEnum$1.call(b, prop))
+        __defNormalProp$1(a2, prop, b[prop]);
+    }
+  return a2;
+};
+var __spreadProps$1 = (a2, b) => __defProps$1(a2, __getOwnPropDescs$1(b));
+const t0$7 = template("<div uni-view class=uni-page-container-overlay>");
+const t1$6 = template("<div uni-view>");
+const MAX_SLIDER_DISTANCE = 100;
+const MIN_SLIDER_VELOCITY = 0.3;
+const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent(__spreadProps$1(__spreadValues$1({}, {
+  name: "page-container",
+  rootElement: {
+    name: "uni-page-container",
+    class: UniPageContainerElement
+  }
+}), {
+  __name: "index",
+  props: {
+    show: { type: Boolean, default: false },
+    duration: { default: 300, type: Number },
+    zIndex: { default: 100, type: Number },
+    overlay: { type: Boolean, default: true },
+    round: { type: Boolean, default: false },
+    position: { default: "bottom", type: String },
+    customStyle: { default: "", type: String },
+    overlayStyle: { default: "", type: String },
+    closeOnSlideDown: { type: Boolean, default: false }
+  },
+  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
+  __multiRoot: true,
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    const emits = __emit;
+    const showPageContainer = ref(false);
+    const isAnimating = ref(false);
+    const transitionTimer = ref(null);
+    const isEntered = ref(false);
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isDragging = false;
+    const translateValue = ref(0);
+    const overlayStyleMap = computed(() => {
+      const styleObj = {
+        "z-index": props2.zIndex,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (isEntered.value) {
+        styleObj["opacity"] = "1";
+        styleObj["pointer-events"] = "auto";
+      }
+      return styleObj;
+    });
+    const innerStyleMap = computed(() => {
+      const styleObj = {
+        "z-index": props2.zIndex + 1,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (translateValue.value != 0 && isDragging) {
+        let transformValue = "";
+        switch (props2.position) {
+          case "bottom":
+          case "top":
+            transformValue = `translateY(${translateValue.value}px)`;
+            break;
+          case "left":
+          case "right":
+            transformValue = `translateX(${translateValue.value}px)`;
+            break;
+        }
+        if (transformValue != "") {
+          styleObj["transform"] = transformValue;
+          styleObj["transition"] = "none";
+        }
+      } else if (translateValue.value != 0 && !isDragging) {
+        styleObj["transition"] = `transform ${props2.duration}ms ease`;
+      }
+      return styleObj;
+    });
+    const popupClasses = computed(() => {
+      const classes = [];
+      if (props2.position != null) {
+        classes.push(`uni-page-container-popup-${props2.position}`);
+      }
+      if (props2.round) {
+        classes.push("uni-page-container-popup-round");
+      }
+      if (isEntered.value) {
+        classes.push("uni-page-container-popup-enter");
+      }
+      return classes;
+    });
+    function clearTransitionTimer() {
+      if (transitionTimer.value != null) {
+        clearTimeout(transitionTimer.value);
+        transitionTimer.value = null;
+      }
+    }
+    function onAnimationEnd(type) {
+      isAnimating.value = false;
+      clearTransitionTimer();
+      if (type == "enter") {
+        emits("afterenter");
+      } else if (type == "leave") {
+        showPageContainer.value = false;
+        emits("afterleave");
+      }
+    }
+    function listenTransitionEnd(type) {
+      clearTransitionTimer();
+      transitionTimer.value = setTimeout(() => {
+        onAnimationEnd(type);
+      }, props2.duration);
+    }
+    function resetDragState() {
+      isDragging = false;
+      translateValue.value = 0;
+    }
+    function openContainer() {
+      emits("beforeenter");
+      showPageContainer.value = true;
+      isEntered.value = false;
+      resetDragState();
+      nextTick(() => {
+        emits("enter");
+        isAnimating.value = true;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            isEntered.value = true;
+            listenTransitionEnd("enter");
+          });
+        });
+      });
+    }
+    function closeContainer() {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("beforeleave");
+      isAnimating.value = true;
+      nextTick(() => {
+        isEntered.value = false;
+        emits("leave");
+        listenTransitionEnd("leave");
+      });
+    }
+    watch(
+      () => props2.show,
+      (newVal) => {
+        if (newVal && !showPageContainer.value) {
+          openContainer();
+        } else if (!newVal && showPageContainer.value) {
+          closeContainer();
+        }
+      }
+    );
+    function onClickOverlay(event) {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("clickoverlay", event);
+      nextTick(() => {
+        closeContainer();
+      });
+    }
+    function onTouchStart(e2) {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        touchStartX = clientX;
+        touchStartY = clientY;
+        touchStartTime = Date.now();
+        isDragging = false;
+      }
+    }
+    function onTouchMove(e2) {
+      if (!props2.closeOnSlideDown) {
+        e2.preventDefault();
+        e2.stopPropagation();
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        const deltaX = clientX - touchStartX;
+        const deltaY = clientY - touchStartY;
+        let shouldDrag = false;
+        let dragValue = 0;
+        switch (props2.position) {
+          case "bottom":
+            if (deltaY > 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "top":
+            if (deltaY < 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "left":
+            if (deltaX < 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+          case "right":
+            if (deltaX > 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+        }
+        if (shouldDrag) {
+          isDragging = true;
+          translateValue.value = dragValue;
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }
+    }
+    function onTouchEnd() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        const deltaTime = Date.now() - touchStartTime;
+        const velocity = Math.abs(translateValue.value) / deltaTime;
+        if (Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY) {
+          resetDragState();
+          closeContainer();
+        } else {
+          resetDragState();
+        }
+      }
+    }
+    function onTouchCancel() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        resetDragState();
+      }
+    }
+    onBackPress(() => {
+      if (showPageContainer.value) {
+        closeContainer();
+        return true;
+      }
+      return false;
+    });
+    onMounted(() => {
+      if (props2.show) {
+        openContainer();
+      }
+    });
+    onBeforeUnmount(() => {
+      clearTransitionTimer();
+    });
+    const n0 = createIf(() => __props.overlay && showPageContainer.value, () => {
+      const n2 = t0$7();
+      on$1(n2, "click", onClickOverlay);
+      on$1(n2, "touchmove", withModifiers(() => {
+      }, ["prevent", "stop"]));
+      renderEffect(() => setStyle(n2, [overlayStyleMap.value, __props.overlayStyle]));
+      return n2;
+    });
+    const n3 = createIf(() => showPageContainer.value, () => {
+      const n6 = t1$6();
+      renderEffect(() => {
+        setClass(n6, ["uni-page-container-popup", popupClasses.value]);
+        setStyle(n6, [innerStyleMap.value, __props.customStyle]);
+      });
+      setInsertionState(n6);
+      createSlot();
+      on$1(n6, "touchstart", onTouchStart);
+      on$1(n6, "touchmove", onTouchMove);
+      on$1(n6, "touchend", onTouchEnd);
+      on$1(n6, "touchcancel", onTouchCancel);
+      return n6;
+    });
+    return [n0, n3];
+  }
+}));
 class UniVueElement extends HTMLElement {
 }
 class UniLoadingElement extends UniVueElement {
@@ -18920,9 +20194,10 @@ function useLoadingStyle(targetElement, bold) {
     }
   });
   return {
-    size: loadingSize,
-    borderWidth: loadingBorderWidth,
-    borderRadius: loadingBorderRadius
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
   };
 }
 var __defProp2 = Object.defineProperty;
@@ -18944,8 +20219,10 @@ var __spreadValues = (a2, b) => {
   return a2;
 };
 var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
-const _sfc_main$4 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
+const t0$6 = template("<div uni-view>");
+const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent(__spreadProps(__spreadValues({}, {
   name: "loading",
+  styleIsolation: "app-and-page",
   // @ts-ignore
   rootElement: {
     name: "uni-loading-element",
@@ -18955,29 +20232,25 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues
   __name: "index-x",
   props: {
     paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false }
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
   },
   setup(__props) {
     const props2 = __props;
     const LoadingRef = ref(null);
     const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
-    return (_ctx, _cache) => {
-      const _component_view = __syscom_2;
-      return openBlock(), createBlock(_component_view, {
-        class: "__uni_loading_container__",
-        ref_key: "LoadingRef",
-        ref: LoadingRef,
-        style: { "display": "flex" }
-      }, {
-        default: withCtx(() => [
-          createVNode(_component_view, {
-            class: normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
-            style: normalizeStyle([{ "box-sizing": "border-box" }, { width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }])
-          }, null, 8, ["class", "style"])
-        ]),
-        _: 1
-      }, 512);
-    };
+    const n1 = createPlainElement("uni-loading-element", {
+      class: "default __uni_loading_container__",
+      style: "display: flex;"
+    }, null, true);
+    const n0 = t0$6();
+    insert(n0, n1);
+    setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
+    renderEffect(() => {
+      setClassName(n0, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
+      setStyle(n0, loadingStyle);
+    });
+    return n1;
   }
 }));
 function normalizeEvent(vm, id2) {
@@ -19090,7 +20363,11 @@ function initHooks(options, instance2, publicThis) {
       const $basePage = true ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
-          invokeHook(publicThis, ON_SHOW);
+          if (isDialogPageInstance(getPageInstanceByChild(instance2))) {
+            invokeNewDialogPageHook(publicThis.$page, ON_SHOW);
+          } else {
+            invokeHook(publicThis, ON_SHOW);
+          }
         }
       }
     } catch (e2) {
@@ -19231,190 +20508,11 @@ function initApp(app) {
     invokeCreateVueAppHook(app);
   }
 }
-function usePopupStyle(props2) {
-  const popupWidth = ref(0);
-  const popupHeight = ref(0);
-  const isDesktop = computed(
-    () => popupWidth.value >= 500 && popupHeight.value >= 500
-  );
-  const popupStyle = computed(() => {
-    const style = {
-      content: {
-        transform: "",
-        left: "",
-        top: "",
-        bottom: ""
-      },
-      triangle: {
-        left: "",
-        top: "",
-        bottom: "",
-        "border-width": "",
-        "border-color": ""
-      }
-    };
-    const contentStyle = style.content;
-    const triangleStyle = style.triangle;
-    const popover = props2.popover;
-    function getNumber(value) {
-      return Number(value) || 0;
-    }
-    if (isDesktop.value && popover) {
-      extend(triangleStyle, {
-        position: "absolute",
-        width: "0",
-        height: "0",
-        "margin-left": "-6px",
-        "border-style": "solid"
-      });
-      const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width ? popover.width : 300);
-      const popoverTop = getNumber(popover.top);
-      const popoverHeight = getNumber(popover.height);
-      const center = popoverLeft + popoverWidth / 2;
-      contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - popoverWidth / 2);
-      contentStyle.left = `${contentLeft}px`;
-      if (popover.width) {
-        contentStyle.width = `${popoverWidth}px`;
-      }
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(popoverWidth - 12, triangleLeft);
-      triangleStyle.left = `${triangleLeft}px`;
-      const vcl = popupHeight.value / 2;
-      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
-        contentStyle.top = "auto";
-        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
-        triangleStyle.bottom = "-6px";
-        triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
-      } else {
-        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
-        triangleStyle.top = "-6px";
-        triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
-      }
-    }
-    return style;
-  });
-  onMounted(() => {
-    const fixSize = () => {
-      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
-      popupWidth.value = windowWidth;
-      popupHeight.value = windowHeight + (windowTop || 0);
-    };
-    window.addEventListener("resize", fixSize);
-    fixSize();
-    onUnmounted(() => {
-      window.removeEventListener("resize", fixSize);
-    });
-  });
-  return {
-    isDesktop,
-    popupStyle
-  };
-}
-const KEY_MAPS = {
-  esc: ["Esc", "Escape"],
-  // tab: ['Tab'],
-  enter: ["Enter"]
-  // space: [' ', 'Spacebar'],
-  // up: ['Up', 'ArrowUp'],
-  // left: ['Left', 'ArrowLeft'],
-  // right: ['Right', 'ArrowRight'],
-  // down: ['Down', 'ArrowDown'],
-  // delete: ['Backspace', 'Delete', 'Del'],
-};
-const KEYS = Object.keys(KEY_MAPS);
-function useKeyboard() {
-  const key = ref("");
-  const disable = ref(false);
-  const onKeyup = (evt) => {
-    if (disable.value) {
-      return;
-    }
-    const res = KEYS.find(
-      (key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1
-    );
-    if (res) {
-      key.value = res;
-    }
-    nextTick(() => key.value = "");
-  };
-  onMounted(() => {
-    document.addEventListener("keyup", onKeyup);
-  });
-  onBeforeUnmount(() => {
-    document.removeEventListener("keyup", onKeyup);
-  });
-  return {
-    key,
-    disable
-  };
-}
-function createRootApp(component, rootState, callback) {
-  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
-  return createApp(
-    defineComponent({
-      setup() {
-        return () => (openBlock(), createBlock(
-          component,
-          rootState,
-          null,
-          16
-          /* FULL_PROPS */
-        ));
-      }
-    })
-  );
-}
-function ensureRoot(id2) {
-  let rootEl = document.getElementById(id2);
-  if (!rootEl) {
-    rootEl = document.createElement("div");
-    rootEl.id = id2;
-    document.body.append(rootEl);
-  }
-  return rootEl;
-}
-function usePopup(props2, {
-  onEsc,
-  onEnter
-}) {
-  const visible = ref(props2.visible);
-  const { key, disable } = useKeyboard();
-  watch(
-    () => props2.visible,
-    (value) => visible.value = value
-  );
-  watch(
-    () => visible.value,
-    (value) => disable.value = !value
-  );
-  watchEffect(() => {
-    const { value } = key;
-    if (value === "esc") {
-      onEsc && onEsc();
-    } else if (value === "enter") {
-      onEnter && onEnter();
-    }
-  });
-  return visible;
-}
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
-  router.beforeEach((to, from) => {
-    uni.hideToast();
-    uni.hideLoading({
-      fail(error) {
-        const pages = getCurrentBasePages();
-        const currentPage = pages[pages.length - 1];
-        if (!currentPage) {
-          return;
-        }
-        throw new Error(error.errMsg);
-      }
-    });
+  initWebAppRouteListener(router, {
+    onRouteConfirmed: cleanupWebAppRoute,
+    onMissingRoute: handleBeforeEntryPageRoutes
   });
   router.beforeEach((to, from) => {
     if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
@@ -19469,16 +20567,30 @@ function removeCurrentPages(delta = 1) {
     removePage(normalizeRouteKey(page.path, page.id), false);
   }
 }
+function cleanupWebAppRoute(transaction) {
+  switch (transaction.openType) {
+    case API_REDIRECT_TO:
+      removeLastPage();
+      break;
+    case API_RE_LAUNCH:
+      removeAllPages();
+      break;
+    case API_SWITCH_TAB:
+      removeNonTabBarPages(transaction.pageId);
+      break;
+    case API_NAVIGATE_BACK:
+      removeCurrentPages(transaction.delta || 1);
+      break;
+  }
+}
 function initHistory() {
   let { routerBase } = __uniConfig.router;
   if (routerBase === "/") {
     routerBase = "";
   }
   const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(routerBase) : createWebHashHistory(routerBase);
-  history2.listen((_to, _from, info) => {
-    if (info.direction === "back") {
-      removeCurrentPages(Math.abs(info.delta));
-    }
+  history2.listen((to, _from, info) => {
+    setWebAppRouteHistoryDirection(to, info.direction, info.delta);
   });
   return history2;
 }
@@ -19527,7 +20639,7 @@ function formatTime(val) {
   }
   return str;
 }
-function useGesture(props2, videoRef, fullscreenState) {
+function useGesture(props2, videoState, videoRef, fullscreenState) {
   const state2 = reactive({
     seeking: false,
     gestureType: "none",
@@ -19568,10 +20680,15 @@ function useGesture(props2, videoRef, fullscreenState) {
     touchStartOrigin.y = toucher.pageY;
     state2.gestureType = "none";
     state2.volumeOld = 0;
+    if (fullscreenState.fullscreen) {
+      event.stopPropagation();
+    }
   }
   function onTouchmove(event) {
     function stop() {
-      event.stopPropagation();
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
       event.preventDefault();
     }
     if (fullscreenState.fullscreen) {
@@ -19593,6 +20710,7 @@ function useGesture(props2, videoRef, fullscreenState) {
       changeVolume(pageY - origin.y);
     }
     if (gestureType !== "none") {
+      stop();
       return;
     }
     if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
@@ -19621,7 +20739,9 @@ function useGesture(props2, videoRef, fullscreenState) {
   function onTouchend(event) {
     const video = videoRef.value;
     if (state2.gestureType !== "none" && state2.gestureType !== "stop") {
-      event.stopPropagation();
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
       event.preventDefault();
     }
     if (state2.gestureType === "progress" && state2.currentTimeOld !== state2.currentTimeNew) {
@@ -19630,8 +20750,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     state2.gestureType = "none";
   }
   function changeProgress(x) {
-    const video = videoRef.value;
-    const duration = video.duration;
+    const duration = videoState.currentDuration;
     let currentTimeNew = x / 600 * duration + state2.currentTimeOld;
     if (currentTimeNew < 0) {
       currentTimeNew = 0;
@@ -19744,6 +20863,7 @@ function useVideo(props2, attrs2, trigger) {
     playing: false,
     currentTime: 0,
     duration: 0,
+    currentDuration: 0,
     progress: 0,
     buffered: 0,
     muted,
@@ -19761,6 +20881,11 @@ function useVideo(props2, attrs2, trigger) {
   watch(() => muted.value, (muted2) => {
     const video = videoRef.value;
     video.muted = muted2;
+  });
+  watch([() => state2.duration, () => props2.duration], () => {
+    let _duration = Number(props2.duration);
+    isNaN(_duration) && (_duration = 0);
+    state2.currentDuration = _duration > 0 ? _duration : state2.duration;
   });
   function onDurationChange({
     target
@@ -19896,7 +21021,7 @@ function useControls(props2, videoState, seek, seeking) {
     let progress = 0;
     if (x >= 0 && x <= w) {
       progress = x / w;
-      seek(videoState.duration * progress);
+      seek(videoState.currentDuration * progress);
     }
   }
   function toggleControls() {
@@ -19951,7 +21076,7 @@ function useControls(props2, videoState, seek, seeking) {
         progress = 100;
       }
       videoState.progress = progress;
-      seeking == null ? void 0 : seeking(videoState.duration * progress / 100);
+      seeking == null ? void 0 : seeking(videoState.currentDuration * progress / 100);
       state2.seeking = true;
       event.preventDefault();
       event.stopPropagation();
@@ -19963,7 +21088,7 @@ function useControls(props2, videoState, seek, seeking) {
         if (!moveOnce) {
           event.preventDefault();
           event.stopPropagation();
-          seek(videoState.duration * videoState.progress / 100);
+          seek(videoState.currentDuration * videoState.progress / 100);
         }
         state2.touching = false;
       }
@@ -20109,17 +21234,22 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
       controlsState.controlsVisible = val;
     }
   });
-  watch([() => videoState.currentTime, () => {
-    props$d.duration;
-  }], () => {
-    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  watch([() => videoState.currentTime, () => videoState.currentDuration], () => {
+    if (videoState.currentDuration > 0) {
+      videoState.progress = videoState.currentTime / videoState.currentDuration * 100;
+    } else {
+      videoState.progress = 0;
+    }
+    videoState.progress > 100 && (videoState.progress = 100);
+  }, {
+    immediate: true
   });
   watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
     videoState.currentTime = currentTimeNew;
   });
   return progressing;
 }
-const props$d = {
+const props$b = {
   id: {
     type: String,
     default: ""
@@ -20211,7 +21341,7 @@ class UniVideoElement extends UniElement {
 }
 const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$d,
+  props: props$b,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   rootElement: {
     name: "uni-video",
@@ -20233,7 +21363,6 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    useI18n();
     initI18nVideoMsgsOnce();
     const {
       videoRef,
@@ -20274,7 +21403,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
       onTouchstart,
       onTouchend,
       onTouchmove
-    } = useGesture(props2, videoRef, fullscreenState);
+    } = useGesture(props2, videoState, videoRef, fullscreenState);
     const {
       state: controlsState,
       progressRef,
@@ -20397,7 +21526,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-inner"
       }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
+      }, [formatTime(videoState.currentDuration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
         "class": {
           "uni-video-icon": true,
           "uni-video-danmu-button": true,
@@ -20450,7 +21579,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title"
       }, [createVNode("span", {
         "class": "uni-video-toast-title-current-time"
-      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), createVNode("div", {
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -20480,7 +21609,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$c = {
+const props$a = {
   src: {
     type: String,
     default: ""
@@ -20491,7 +21620,7 @@ class UniWebViewElement extends UniElement {
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$c,
+  props: props$a,
   emits: ["load"],
   rootElement: {
     name: "uni-web-view",
@@ -20948,7 +22077,7 @@ function translateCoordinateSystem(type, coords, skip) {
     )
   );
 }
-const props$b = {
+const props$9 = {
   id: {
     type: [Number, String],
     default: ""
@@ -21034,7 +22163,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$b,
+  props: props$9,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -21377,7 +22506,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$a = {
+const props$8 = {
   points: {
     type: Array,
     require: true
@@ -21423,7 +22552,7 @@ const props$a = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$a,
+  props: props$8,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -21512,7 +22641,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$9 = {
+const props$7 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -21544,7 +22673,7 @@ const props$9 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$9,
+  props: props$7,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -21620,7 +22749,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$8 = {
+const props$6 = {
   id: {
     type: [Number, String],
     default: ""
@@ -21644,7 +22773,7 @@ const props$8 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$8,
+  props: props$6,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -21921,10 +23050,10 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       deviceOrientation,
       deviceType,
       model,
-      platform,
-      system,
       osName: osname ? osname.toLowerCase() : void 0,
-      osVersion: osversion
+      osVersion: osversion,
+      platform,
+      system
     });
   }
 );
@@ -21948,15 +23077,15 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         hostVersion: browserVersion,
         hostTheme: theme,
         hostLanguage: language,
+        isUniAppX: true,
         language,
         SDKVersion: "",
         theme,
-        version: "",
         uniPlatform: "web",
-        isUniAppX: true,
         uniCompileVersion: __uniConfig.compilerVersion,
         uniCompilerVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion
+        uniRuntimeVersion: __uniConfig.compilerVersion,
+        version: ""
       },
       {
         uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
@@ -21982,24 +23111,22 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
       deviceInfo,
       appBaseInfo,
       {
-        ua: ua2,
         browserName,
         browserVersion,
-        uniPlatform: "web",
-        uniCompileVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion,
         fontSizeSetting: void 0,
         osName: osname.toLowerCase(),
         osVersion: osversion,
         osLanguage: void 0,
-        osTheme: void 0
+        osTheme: void 0,
+        ua: ua2,
+        uniPlatform: "web",
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion
       }
     );
     delete systemInfo.screenTop;
     delete systemInfo.enableDebug;
-    if (!__uniConfig.darkmode)
-      delete systemInfo.theme;
-    return sortObject(systemInfo);
+    return systemInfo;
   }
 );
 const getSystemInfo = /* @__PURE__ */ defineAsyncApi(
@@ -22199,7 +23326,7 @@ const vibrateLong = /* @__PURE__ */ defineAsyncApi(
     }
   }
 );
-var __async = (__this, __arguments, generator) => {
+var __async$1 = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     var fulfilled = (value) => {
       try {
@@ -22221,22 +23348,22 @@ var __async = (__this, __arguments, generator) => {
 };
 const getClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_GET_CLIPBOARD_DATA,
-  (_0, _1) => __async(void 0, [_0, _1], function* (_, { resolve, reject }) {
+  (_0, _1) => __async$1(void 0, [_0, _1], function* (_, { resolve, reject }) {
     initI18nGetClipboardDataMsgsOnce();
-    const { t: t2 } = useI18n();
+    const { t: t8 } = useI18n();
     try {
       const data = yield navigator.clipboard.readText();
       resolve({ data });
     } catch (error) {
       _getClipboardData(resolve, () => {
-        reject(`${error} ${t2("uni.getClipboardData.fail")}`);
+        reject(`${error} ${t8("uni.getClipboardData.fail")}`);
       });
     }
   })
 );
 const setClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_SET_CLIPBOARD_DATA,
-  (_0, _1) => __async(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
+  (_0, _1) => __async$1(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
     try {
       yield navigator.clipboard.writeText(data);
       resolve();
@@ -22671,7 +23798,7 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
     extension
   }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t2 } = useI18n();
+    const { t: t8 } = useI18n();
     if (fileInput) {
       document.body.removeChild(fileInput);
       fileInput = null;
@@ -22714,7 +23841,7 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
     });
     fileInput.click();
     if (!getInteractStatus()) {
-      console.warn(t2("uni.chooseFile.notUserActivation"));
+      console.warn(t8("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseFileProtocol,
@@ -22730,7 +23857,7 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
     extension
   }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t2 } = useI18n();
+    const { t: t8 } = useI18n();
     if (imageInput) {
       document.body.removeChild(imageInput);
       imageInput = null;
@@ -22773,12 +23900,99 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
     });
     imageInput.click();
     if (!getInteractStatus()) {
-      console.warn(t2("uni.chooseFile.notUserActivation"));
+      console.warn(t8("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseImageProtocol,
   ChooseImageOptions
 );
+const KEY_MAPS = {
+  esc: ["Esc", "Escape"],
+  // tab: ['Tab'],
+  enter: ["Enter"]
+  // space: [' ', 'Spacebar'],
+  // up: ['Up', 'ArrowUp'],
+  // left: ['Left', 'ArrowLeft'],
+  // right: ['Right', 'ArrowRight'],
+  // down: ['Down', 'ArrowDown'],
+  // delete: ['Backspace', 'Delete', 'Del'],
+};
+const KEYS = Object.keys(KEY_MAPS);
+function useKeyboard() {
+  const key = ref("");
+  const disable = ref(false);
+  const onKeyup = (evt) => {
+    if (disable.value) {
+      return;
+    }
+    const res = KEYS.find(
+      (key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1
+    );
+    if (res) {
+      key.value = res;
+    }
+    nextTick(() => key.value = "");
+  };
+  onMounted(() => {
+    document.addEventListener("keyup", onKeyup);
+  });
+  onBeforeUnmount(() => {
+    document.removeEventListener("keyup", onKeyup);
+  });
+  return {
+    key,
+    disable
+  };
+}
+function createRootApp(component, rootState, callback) {
+  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
+  return createApp(
+    defineComponent({
+      setup() {
+        return () => (openBlock(), createBlock(
+          component,
+          rootState,
+          null,
+          16
+          /* FULL_PROPS */
+        ));
+      }
+    })
+  );
+}
+function ensureRoot(id2) {
+  let rootEl = document.getElementById(id2);
+  if (!rootEl) {
+    rootEl = document.createElement("div");
+    rootEl.id = id2;
+    document.body.append(rootEl);
+  }
+  return rootEl;
+}
+function usePopup(props2, {
+  onEsc,
+  onEnter
+}) {
+  const visible = ref(props2.visible);
+  const { key, disable } = useKeyboard();
+  watch(
+    () => props2.visible,
+    (value) => visible.value = value
+  );
+  watch(
+    () => visible.value,
+    (value) => disable.value = !value
+  );
+  watchEffect(() => {
+    const { value } = key;
+    if (value === "esc") {
+      onEsc && onEsc();
+    } else if (value === "enter") {
+      onEnter && onEnter();
+    }
+  });
+  return visible;
+}
 let index$9 = 0;
 let overflow = "";
 function preventScroll(prevent) {
@@ -22799,269 +24013,12 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$7 = {
-  src: {
-    type: String,
-    default: ""
-  }
-};
-const ImageView = /* @__PURE__ */ defineSystemComponent({
-  name: "ImageView",
-  props: props$7,
-  setup(props2) {
-    const state2 = reactive({
-      direction: "none"
-    });
-    let scale = 1;
-    let imgWidth = 0;
-    let imgHeight = 0;
-    let width = 0;
-    let height = 0;
-    function onScale({
-      detail
-    }) {
-      scale = detail.scale;
-    }
-    function onImgLoad(event) {
-      const target = event.target;
-      const rect = target.getBoundingClientRect();
-      imgWidth = rect.width;
-      imgHeight = rect.height;
-    }
-    function onTouchStart(event) {
-      const target = event.target;
-      const rect = target.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-      checkDirection(event);
-    }
-    function onTouchEnd(event) {
-      const horizontal = scale * imgWidth > width;
-      const vertical = scale * imgHeight > height;
-      if (horizontal && vertical) {
-        state2.direction = "all";
-      } else if (horizontal) {
-        state2.direction = "horizontal";
-      } else if (vertical) {
-        state2.direction = "vertical";
-      } else {
-        state2.direction = "none";
-      }
-      checkDirection(event);
-    }
-    function checkDirection(event) {
-      if (state2.direction === "all" || state2.direction === "horizontal") {
-        event.stopPropagation();
-      }
-    }
-    return () => {
-      const viewStyle = {
-        position: "absolute",
-        left: "0",
-        top: "0",
-        width: "100%",
-        height: "100%"
-      };
-      return createVNode(MovableArea, {
-        "style": viewStyle,
-        "onTouchstart": withWebEvent(onTouchStart),
-        "onTouchmove": withWebEvent(checkDirection),
-        "onTouchend": withWebEvent(onTouchEnd)
-      }, {
-        default: () => [createVNode(MovableView, {
-          "style": viewStyle,
-          "direction": state2.direction,
-          "inertia": true,
-          "scale": true,
-          "scale-min": "1",
-          "scale-max": "4",
-          "onScale": onScale
-        }, {
-          default: () => [createVNode("img", {
-            "src": props2.src,
-            "style": {
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-              maxHeight: "100%",
-              maxWidth: "100%"
-            },
-            "onLoad": onImgLoad
-          }, null, 40, ["src", "onLoad"])]
-        }, 8, ["style", "direction", "inertia", "scale", "onScale"])]
-      }, 8, ["style", "onTouchstart", "onTouchmove", "onTouchend"]);
-    };
-  }
-});
-function _isSlot$1(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-const props$6 = {
-  urls: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  current: {
-    type: [Number, String],
-    default: 0
-  }
-};
-function getIndex(props2) {
-  let index2 = typeof props2.current === "number" ? props2.current : props2.urls.indexOf(props2.current);
-  index2 = index2 < 0 ? 0 : index2;
-  return index2;
-}
-const ImagePreview = /* @__PURE__ */ defineSystemComponent({
-  name: "ImagePreview",
-  props: props$6,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    usePreventScroll();
-    const {
-      key
-    } = useKeyboard();
-    const rootRef = ref(null);
-    const indexRef = ref(getIndex(props2));
-    watch(() => props2.current, () => indexRef.value = getIndex(props2));
-    watch(() => key.value, (value) => {
-      if (value === "esc") {
-        onClick();
-      }
-    });
-    let preventDefault;
-    onMounted(() => {
-      const el = rootRef.value;
-      const MAX_MOVE = 20;
-      let x = 0;
-      let y = 0;
-      el.addEventListener("mousedown", (event) => {
-        preventDefault = false;
-        x = event.clientX;
-        y = event.clientY;
-      });
-      el.addEventListener("mouseup", (event) => {
-        if (Math.abs(event.clientX - x) > MAX_MOVE || Math.abs(event.clientY - y) > MAX_MOVE) {
-          preventDefault = true;
-        }
-      });
-    });
-    function onClick() {
-      if (!preventDefault) {
-        nextTick(() => {
-          emit2("close");
-        });
-      }
-    }
-    function onChange2(event) {
-      indexRef.value = event.detail.current;
-    }
-    const closeBtnStyle = {
-      position: "absolute",
-      "box-sizing": "border-box",
-      top: "0",
-      right: "0",
-      width: "60px",
-      height: "44px",
-      padding: "6px",
-      "line-height": "32px",
-      "font-size": "26px",
-      color: "white",
-      "text-align": "center",
-      cursor: "pointer"
-    };
-    return () => {
-      let _slot;
-      return createVNode("div", {
-        "ref": rootRef,
-        "style": {
-          display: "block",
-          position: "fixed",
-          left: "0",
-          top: "0",
-          width: "100%",
-          height: "100%",
-          zIndex: 999,
-          background: "rgba(0,0,0,0.8)"
-        },
-        "onClick": onClick
-      }, [createVNode(Swiper, {
-        "navigation": "auto",
-        "current": indexRef.value,
-        "onChange": onChange2,
-        "indicator-dots": false,
-        "autoplay": false,
-        "style": {
-          position: "absolute",
-          left: "0",
-          top: "0",
-          width: "100%",
-          height: "100%"
-        }
-      }, _isSlot$1(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
-        default: () => [createVNode(ImageView, {
-          "src": src
-        }, null, 8, ["src"])]
-      }))) ? _slot : {
-        default: () => [_slot],
-        _: 1
-      }, 8, ["current", "onChange"]), createVNode("div", {
-        "style": closeBtnStyle
-      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 4)], 8, ["onClick"]);
-    };
-  }
-});
-let state$1 = null;
-let imagePreviewInstance;
-const closePreviewImageView = () => {
-  state$1 = null;
-  nextTick(() => {
-    imagePreviewInstance == null ? void 0 : imagePreviewInstance.unmount();
-    imagePreviewInstance = null;
-  });
-};
-const previewImage = /* @__PURE__ */ defineAsyncApi(
-  API_PREVIEW_IMAGE,
-  (args, { resolve }) => {
-    if (!state$1) {
-      state$1 = reactive(args);
-      nextTick(() => {
-        imagePreviewInstance = createRootApp(
-          ImagePreview,
-          state$1,
-          closePreviewImageView
-        );
-        imagePreviewInstance.mount(ensureRoot("u-a-p"));
-      });
-    } else {
-      extend(state$1, args);
-    }
-    resolve();
-  },
-  PreviewImageProtocol,
-  PreviewImageOptions
-);
-const closePreviewImage = /* @__PURE__ */ defineAsyncApi(
-  API_CLOSE_PREVIEW_IMAGE,
-  (_, { resolve, reject }) => {
-    if (imagePreviewInstance) {
-      closePreviewImageView();
-      resolve();
-    } else {
-      reject();
-    }
-  }
-);
 let videoInput = null;
 const chooseVideo = /* @__PURE__ */ defineAsyncApi(
   API_CHOOSE_VIDEO,
   ({ sourceType, extension }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t2 } = useI18n();
+    const { t: t8 } = useI18n();
     if (videoInput) {
       document.body.removeChild(videoInput);
       videoInput = null;
@@ -23119,7 +24076,7 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(
     });
     videoInput.click();
     if (!getInteractStatus()) {
-      console.warn(t2("uni.chooseFile.notUserActivation"));
+      console.warn(t8("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseVideoProtocol,
@@ -24121,7 +25078,7 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
     return () => {
       return createVNode("div", {
         "class": "uni-system-open-location"
-      }, [createVNode(__syscom_0, {
+      }, [createVNode(Map$1, {
         "latitude": state2.center.latitude,
         "longitude": state2.center.longitude,
         "class": "map",
@@ -24410,13 +25367,13 @@ const Toast = /* @__PURE__ */ defineComponent({
   }
 });
 function useToastIcon(props2) {
-  const iconColor = ref(getIconColor(getTheme()));
+  const iconColor = ref(getIconColor(getTheme() ?? "light"));
   const _onThemeChange = ({
     theme
   }) => iconColor.value = getIconColor(theme);
   watchEffect(() => {
     if (props2.visible) {
-      onThemeChange$1(_onThemeChange);
+      onThemeChange$2(_onThemeChange);
     } else {
       offThemeChange$1(_onThemeChange);
     }
@@ -24500,15 +25457,15 @@ const hideToast = /* @__PURE__ */ defineAsyncApi(
   }
 );
 function hidePopup(type) {
-  const { t: t2 } = useI18n();
+  const { t: t8 } = useI18n();
   if (!showType) {
     return;
   }
   let warnMsg = "";
   if (type === "onHideToast" && showType !== "onShowToast") {
-    warnMsg = t2("uni.showToast.unpaired");
+    warnMsg = t8("uni.showToast.unpaired");
   } else if (type === "onHideLoading" && showType !== "onShowLoading") {
-    warnMsg = t2("uni.showLoading.unpaired");
+    warnMsg = t8("uni.showLoading.unpaired");
   }
   if (warnMsg) {
     return console.warn(warnMsg);
@@ -24517,6 +25474,113 @@ function hidePopup(type) {
   setTimeout(() => {
     showToastState.visible = false;
   }, 10);
+}
+const POPUP_EDGE = 6;
+function usePopupStyle(props2, triangleColor = "#fcfcfd") {
+  const popupWidth = ref(0);
+  const popupHeight = ref(0);
+  const isDesktop = computed(
+    () => popupWidth.value >= 500 && popupHeight.value >= 500
+  );
+  const popupStyle = computed(() => {
+    const style = {
+      content: {
+        transform: "",
+        left: "",
+        top: "",
+        bottom: ""
+      },
+      triangle: {
+        left: "",
+        top: "",
+        bottom: "",
+        "border-width": "",
+        "border-color": ""
+      }
+    };
+    const contentStyle = style.content;
+    const triangleStyle = style.triangle;
+    const popover = props2.popover;
+    function getNumber(value) {
+      try {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : 0;
+      } catch (e2) {
+        return 0;
+      }
+    }
+    if (isDesktop.value && popover) {
+      const popoverLeft = Math.max(0, getNumber(popover.left));
+      const width = getNumber(popover.width);
+      const popoverWidth = width > 0 ? width : 300;
+      const popoverTop = Math.max(0, getNumber(popover.top));
+      const popoverHeight = Math.max(0, getNumber(popover.height));
+      const center = popoverLeft + popoverWidth / 2;
+      const contentLeft = Math.max(
+        POPUP_EDGE,
+        Math.min(
+          popupWidth.value - popoverWidth - POPUP_EDGE,
+          center - popoverWidth / 2
+        )
+      );
+      extend(triangleStyle, {
+        position: "absolute",
+        width: "0",
+        height: "0",
+        "margin-left": "-6px",
+        "border-style": "solid"
+      });
+      contentStyle.transform = "none !important";
+      contentStyle.left = `${contentLeft}px`;
+      if (width > 0) {
+        contentStyle.width = `${popoverWidth}px`;
+      }
+      const triangleLeft = Math.max(
+        12,
+        Math.min(popoverWidth - 12, center - contentLeft)
+      );
+      triangleStyle.left = `${triangleLeft}px`;
+      const vcl = popupHeight.value / 2;
+      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
+        contentStyle.top = "auto";
+        contentStyle.bottom = `${Math.max(
+          POPUP_EDGE,
+          popupHeight.value - popoverTop + POPUP_EDGE
+        )}px`;
+        triangleStyle.bottom = "-6px";
+        triangleStyle["border-width"] = "6px 6px 0 6px";
+        triangleStyle["border-color"] = `${triangleColor} transparent transparent transparent`;
+      } else {
+        contentStyle.top = `${Math.max(
+          POPUP_EDGE,
+          popoverTop + popoverHeight + POPUP_EDGE
+        )}px`;
+        triangleStyle.top = "-6px";
+        triangleStyle["border-width"] = "0 6px 6px 6px";
+        triangleStyle["border-color"] = `transparent transparent ${triangleColor} transparent`;
+      }
+    }
+    return style;
+  });
+  onMounted(() => {
+    const fixSize = () => {
+      try {
+        const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
+        popupWidth.value = windowWidth;
+        popupHeight.value = windowHeight + (windowTop || 0);
+      } catch (e2) {
+      }
+    };
+    window.addEventListener("resize", fixSize);
+    fixSize();
+    onUnmounted(() => {
+      window.removeEventListener("resize", fixSize);
+    });
+  });
+  return {
+    isDesktop,
+    popupStyle
+  };
 }
 const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   API_LOAD_FONT_FACE,
@@ -24691,16 +25755,16 @@ function setTabBar(type, args, resolve, reject) {
       return reject(`tabbar item not found`);
     }
   }
-  const tabBar2 = useTabBar();
+  const tabBar = useTabBar();
   switch (type) {
     case API_SHOW_TAB_BAR:
-      tabBar2.shown = true;
+      tabBar.shown = true;
       break;
     case API_HIDE_TAB_BAR:
-      tabBar2.shown = false;
+      tabBar.shown = false;
       break;
     case API_SET_TAB_BAR_ITEM:
-      const tabBarItem = tabBar2.list[index2];
+      const tabBarItem = tabBar.list[index2];
       const oldPagePath = tabBarItem.pagePath;
       setProperties(tabBarItem, setTabBarItemProps, args);
       const { pagePath } = args;
@@ -24712,23 +25776,23 @@ function setTabBar(type, args, resolve, reject) {
       }
       break;
     case API_SET_TAB_BAR_STYLE:
-      setProperties(tabBar2, setTabBarStyleProps, args);
+      setProperties(tabBar, setTabBarStyleProps, args);
       break;
     case API_SHOW_TAB_BAR_RED_DOT:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+      setProperties(tabBar.list[index2], setTabBarBadgeProps, {
         badge: "",
         redDot: true
       });
       break;
     case API_SET_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+      setProperties(tabBar.list[index2], setTabBarBadgeProps, {
         badge: args.text,
         redDot: true
       });
       break;
     case API_HIDE_TAB_BAR_RED_DOT:
     case API_REMOVE_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+      setProperties(tabBar.list[index2], setTabBarBadgeProps, {
         badge: "",
         redDot: false
       });
@@ -24808,42 +25872,27 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
     const visibleList = ref([]);
-    const _tabBar = useTabBar();
-    const tabBar2 = useTheme(_tabBar, () => {
-      const tabBarStyle = parseTheme(_tabBar);
-      tabBar2.backgroundColor = tabBarStyle.backgroundColor;
-      tabBar2.borderStyle = tabBarStyle.borderStyle;
-      tabBar2.color = tabBarStyle.color;
-      tabBar2.selectedColor = tabBarStyle.selectedColor;
-      tabBar2.blurEffect = tabBarStyle.blurEffect;
-      tabBar2.midButton = tabBarStyle.midButton;
-      if (tabBarStyle.list && tabBarStyle.list.length) {
-        tabBarStyle.list.forEach((item, index2) => {
-          tabBar2.list[index2].iconPath = item.iconPath;
-          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
-        });
-      }
-    });
-    useVisibleList(tabBar2, visibleList);
-    useTabBarCssVar(tabBar2);
-    const onSwitchTab = useSwitchTab(useRoute(), tabBar2, visibleList);
+    const tabBar = useTabBar();
+    useVisibleList(tabBar, visibleList);
+    useTabBarCssVar(tabBar);
+    const onSwitchTab = useSwitchTab(useRoute(), tabBar, visibleList);
     const {
       style,
       borderStyle,
       placeholderStyle
-    } = useTabBarStyle(tabBar2);
+    } = useTabBarStyle(tabBar);
     onMounted(() => {
-      if (tabBar2.iconfontSrc) {
+      if (tabBar.iconfontSrc) {
         loadFontFace({
           family: UNI_TABBAR_ICON_FONT,
-          source: `url("${tabBar2.iconfontSrc}")`
+          source: `url("${tabBar.iconfontSrc}")`
         });
       }
     });
     return () => {
-      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
+      const tabBarItemsTsx = createTabBarItemsTsx(tabBar, onSwitchTab, visibleList);
       return createVNode("uni-tabbar", {
-        "class": "uni-tabbar-" + tabBar2.position
+        "class": "uni-tabbar-" + tabBar.position
       }, [createVNode("div", {
         "class": "uni-tabbar",
         "style": style.value
@@ -24857,22 +25906,22 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function useTabBarCssVar(tabBar2) {
-  watch(() => tabBar2.shown, (value) => {
+function useTabBarCssVar(tabBar) {
+  watch(() => tabBar.shown, (value) => {
     updatePageCssVar({
-      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar2.height) : 0)
+      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar.height) : 0)
     });
   });
 }
-function useVisibleList(tabBar2, visibleList) {
+function useVisibleList(tabBar, visibleList) {
   const internalMidButton = ref(extend({
     type: "midButton"
-  }, tabBar2.midButton));
+  }, tabBar.midButton));
   function setVisibleList() {
     let tempList = [];
-    tempList = tabBar2.list.filter((item) => item.visible !== false);
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar2.midButton) {
-      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar2.midButton);
+    tempList = tabBar.list.filter((item) => item.visible !== false);
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {
+      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar.midButton);
       tempList = tempList.filter((item) => !isMidButton(item));
       if (tempList.length % 2 === 0) {
         tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
@@ -24882,13 +25931,13 @@ function useVisibleList(tabBar2, visibleList) {
   }
   watchEffect(setVisibleList);
 }
-function useSwitchTab(route, tabBar2, visibleList) {
+function useSwitchTab(route, tabBar, visibleList) {
   watchEffect(() => {
     const meta = route.meta;
     if (meta.isTabBar) {
       const pagePath = meta.route;
       const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
-      tabBar2.selectedIndex = index2;
+      tabBar.selectedIndex = index2;
     }
   });
   return (tabBarItem, index2) => {
@@ -24935,10 +25984,10 @@ const BORDER_COLORS = {
   white: "rgba(255, 255, 255, 0.33)",
   black: "rgba(0, 0, 0, 0.33)"
 };
-function useTabBarStyle(tabBar2) {
+function useTabBarStyle(tabBar) {
   const style = computed(() => {
-    let backgroundColor = tabBar2.backgroundColor;
-    const blurEffect = tabBar2.blurEffect;
+    let backgroundColor = tabBar.backgroundColor;
+    const blurEffect = tabBar.blurEffect;
     if (!backgroundColor) {
       if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
         backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
@@ -24953,7 +26002,7 @@ function useTabBarStyle(tabBar2) {
     const {
       borderStyle: borderStyle2,
       borderColor
-    } = tabBar2;
+    } = tabBar;
     if (borderColor && isString(borderColor)) {
       return {
         backgroundColor: borderColor
@@ -24965,7 +26014,7 @@ function useTabBarStyle(tabBar2) {
   });
   const placeholderStyle = computed(() => {
     return {
-      height: tabBar2.height
+      height: tabBar.height
     };
   });
   return {
@@ -24977,12 +26026,12 @@ function useTabBarStyle(tabBar2) {
 function isMidButton(item) {
   return item.type === "midButton";
 }
-function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
+function createTabBarItemsTsx(tabBar, onSwitchTab, visibleList) {
   const {
     selectedIndex,
     selectedColor,
     color
-  } = tabBar2;
+  } = tabBar;
   return visibleList.value.map((item, index2) => {
     const selected = selectedIndex === index2;
     const textColor = selected ? selectedColor : color;
@@ -24990,37 +26039,37 @@ function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
     const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
     const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
     if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
-      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
     }
-    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
   });
 }
-function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2, index2, onSwitchTab) {
+function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar, index2, onSwitchTab) {
   return createVNode("div", {
     "key": index2,
     "class": "uni-tabbar__item",
     "onClick": onSwitchTab(tabBarItem, index2)
-  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar2)], 8, ["onClick"]);
+  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar)], 8, ["onClick"]);
 }
-function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2) {
+function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar) {
   const {
     height
-  } = tabBar2;
+  } = tabBar;
   return createVNode("div", {
     "class": "uni-tabbar__bd",
     "style": {
       height
     }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
-function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
+function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
   const {
     type,
     text: text2
   } = tabBarItem;
   const {
     iconWidth
-  } = tabBar2;
+  } = tabBar;
   const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
@@ -25033,7 +26082,7 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     "src": getRealPath(iconPath)
   }, null, 8, ["src"])], 6);
 }
-function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
+function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar) {
   var _a;
   const {
     type,
@@ -25041,7 +26090,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
   } = tabBarItem;
   const {
     iconWidth
-  } = tabBar2;
+  } = tabBar;
   const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
@@ -25059,7 +26108,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
     "style": iconfontStyle
   }, [iconfontText], 4)], 6);
 }
-function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
+function createTabBarItemTextTsx(color, tabBarItem, tabBar) {
   const {
     iconPath,
     text: text2
@@ -25067,7 +26116,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
     fontSize,
     spacing
-  } = tabBar2;
+  } = tabBar;
   const style = {
     color,
     fontSize,
@@ -25085,7 +26134,7 @@ function createTabBarItemRedDotTsx(badge) {
     "class": clazz2
   }, [badge], 2);
 }
-function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2, index2, onSwitchTab) {
+function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar, index2, onSwitchTab) {
   const {
     width,
     height,
@@ -25113,7 +26162,7 @@ function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, 
       height: iconWidth
     },
     "src": getRealPath(iconPath)
-  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
+  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar)], 12, ["onClick"]);
 }
 const DEFAULT_CSS_VAR_VALUE = "0px";
 let globalLayoutState = void 0;
@@ -25338,10 +26387,10 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
 }
 function useShowTabBar(emit2) {
   const route = usePageRoute();
-  const tabBar2 = useTabBar();
-  const showTabBar2 = computed(() => route.meta.isTabBar && tabBar2.shown);
+  const tabBar = useTabBar();
+  const showTabBar2 = computed(() => route.meta.isTabBar && tabBar.shown);
   updateCssVar({
-    "--tab-bar-height": tabBar2.height
+    "--tab-bar-height": tabBar.height
   });
   return showTabBar2;
 }
@@ -25396,6 +26445,7 @@ function useTopWindow(layoutState) {
     updateWindow();
   });
   watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.topWindowStyle, () => nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
     component,
@@ -25428,6 +26478,7 @@ function useLeftWindow(layoutState) {
     updateWindow();
   });
   watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.leftWindowStyle, () => nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
     component,
@@ -25460,6 +26511,7 @@ function useRightWindow(layoutState) {
     updateWindow();
   });
   watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.rightWindowStyle, () => nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {
     component,
@@ -25638,13 +26690,6 @@ const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle",
     state2.rightWindowStyle = style;
   }
 });
-const getElementById = /* @__PURE__ */ defineSyncApi(
-  "getElementById",
-  (id2) => {
-    const uniPageBody = document.querySelector("uni-page-body");
-    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
-  }
-);
 const getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi(
   "getFacialRecognitionMetaInfo",
   () => {
@@ -25673,6 +26718,127 @@ const getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi(
         "getFacialRecognitionMetaInfo:fail window对象缺少getMetaInfo方法，请参考文档引用：https://doc.dcloud.net.cn/uniCloud/frv/dev.html#window-get-meta-info"
       );
       return "";
+    }
+  }
+);
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+let keepScreenOn = false;
+let wakeLockSentinel = null;
+let wakeLockRequest = null;
+let visibilityChangeListenerAdded = false;
+function getWakeLockManager() {
+  const currentNavigator = navigator;
+  if (currentNavigator.wakeLock != null) {
+    return currentNavigator.wakeLock;
+  }
+  return null;
+}
+function getUnsupportedMessage() {
+  return `method 'uni.${API_SET_KEEP_SCREEN_ON}' not supported`;
+}
+function getErrorMessage(error) {
+  return error == null ? void 0 : `${error}`;
+}
+function onWakeLockRelease(event) {
+  const sentinel = event.target;
+  if (sentinel) {
+    sentinel.removeEventListener("release", onWakeLockRelease);
+  }
+  if (wakeLockSentinel === sentinel) {
+    wakeLockSentinel = null;
+  }
+}
+function requestWakeLock() {
+  const wakeLockManager = getWakeLockManager();
+  if (wakeLockManager == null) {
+    return Promise.reject(getUnsupportedMessage());
+  }
+  if (wakeLockSentinel && !wakeLockSentinel.released) {
+    return Promise.resolve(wakeLockSentinel);
+  }
+  if (wakeLockRequest) {
+    return wakeLockRequest;
+  }
+  wakeLockRequest = wakeLockManager.request("screen").then((sentinel) => {
+    wakeLockSentinel = sentinel;
+    sentinel.addEventListener("release", onWakeLockRelease);
+    return sentinel;
+  }).finally(() => {
+    wakeLockRequest = null;
+  });
+  return wakeLockRequest;
+}
+function releaseWakeLock() {
+  return __async(this, null, function* () {
+    if (wakeLockRequest) {
+      yield wakeLockRequest.catch(() => null);
+    }
+    const sentinel = wakeLockSentinel;
+    wakeLockSentinel = null;
+    if (sentinel == null) {
+      return;
+    }
+    sentinel.removeEventListener("release", onWakeLockRelease);
+    if (!sentinel.released) {
+      yield sentinel.release();
+    }
+  });
+}
+function onVisibilityChange() {
+  if (document.visibilityState === "visible" && keepScreenOn) {
+    requestWakeLock().catch(() => {
+    });
+  }
+}
+function addVisibilityChangeListener() {
+  if (!visibilityChangeListenerAdded) {
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    visibilityChangeListenerAdded = true;
+  }
+}
+function removeVisibilityChangeListener() {
+  if (visibilityChangeListenerAdded) {
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    visibilityChangeListenerAdded = false;
+  }
+}
+const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(
+  API_SET_KEEP_SCREEN_ON,
+  ({ keepScreenOn: value }, { resolve, reject }) => {
+    keepScreenOn = !!value;
+    if (keepScreenOn) {
+      addVisibilityChangeListener();
+      requestWakeLock().then(() => {
+        resolve();
+      }).catch((error) => {
+        keepScreenOn = false;
+        removeVisibilityChangeListener();
+        reject(getErrorMessage(error));
+      });
+    } else {
+      removeVisibilityChangeListener();
+      releaseWakeLock().then(resolve).catch((error) => {
+        reject(getErrorMessage(error));
+      });
     }
   }
 );
@@ -25753,11 +26919,6 @@ const API_GET_SCREEN_BRIGHTNESS = "getScreenBrightness";
 const getScreenBrightness = /* @__PURE__ */ defineAsyncApi(
   API_GET_SCREEN_BRIGHTNESS,
   createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS)
-);
-const API_SET_KEEP_SCREEN_ON = "setKeepScreenOn";
-const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(
-  API_SET_KEEP_SCREEN_ON,
-  createUnsupportedAsyncApi(API_SET_KEEP_SCREEN_ON)
 );
 const API_ON_USER_CAPTURE_SCREEN = "onUserCaptureScreen";
 const onUserCaptureScreen = /* @__PURE__ */ defineOnApi(
@@ -25850,6 +27011,53 @@ const createCanvasContextAsync = function(options) {
           (_b = options.fail) == null ? void 0 : _b.call(options, uniError);
         }
         (_c = options.complete) == null ? void 0 : _c.call(options);
+      }
+    );
+  });
+};
+const ERR_SUBJECT = "uni-createEditorContextAsync";
+const createEditorContextAsync = function(options) {
+  nextTick(() => {
+    var _a;
+    const pages = getCurrentBasePages();
+    const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
+    requestComponentInfo(
+      currentPage,
+      [
+        {
+          component: currentPage,
+          selector: "#" + options.id,
+          single: true,
+          fields: {
+            context: true
+          }
+        }
+      ],
+      (result) => {
+        var _a2, _b, _c, _d;
+        if (result.length > 0) {
+          const contextInfo = result[0].contextInfo;
+          const id2 = contextInfo == null ? void 0 : contextInfo.id;
+          const page = contextInfo == null ? void 0 : contextInfo.page;
+          if (id2 != null && page != null) {
+            (_a2 = options.success) == null ? void 0 : _a2.call(options, new EditorContext(id2, page));
+          } else {
+            const uniError = new UniError(
+              ERR_SUBJECT,
+              -2,
+              "Editor context information not found."
+            );
+            (_b = options.fail) == null ? void 0 : _b.call(options, uniError);
+          }
+        } else {
+          const uniError = new UniError(
+            ERR_SUBJECT,
+            -1,
+            "Editor id or component invalid."
+          );
+          (_c = options.fail) == null ? void 0 : _c.call(options, uniError);
+        }
+        (_d = options.complete) == null ? void 0 : _d.call(options);
       }
     );
   });
@@ -26459,7 +27667,7 @@ function useMap(props2, rootRef, emit2) {
 }
 class UniMapElement extends UniElement {
 }
-const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
+const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$2,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -26760,7 +27968,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     initI18nPickerMsgsOnce();
     const {
-      t: t2
+      t: t8
     } = useI18n();
     const rootRef = ref(null);
     const pickerRef = ref(null);
@@ -26794,7 +28002,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
     _createTime();
     _createDate();
     _setValueSync();
-    const popup = usePopupStyle(state2);
+    const popup = usePopupStyle(state2, "var(--uni-picker-arrow-color, #fcfcfd)");
     watchEffect(() => {
       state2.isDesktop = popup.isDesktop.value;
       state2.popupStyle = popup.popupStyle.value;
@@ -26853,10 +28061,10 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "class": "uni-picker-action uni-picker-action-cancel",
         "onClick": withWebEvent(_cancel)
-      }, [t2("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
+      }, [t8("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
         "class": "uni-picker-action uni-picker-action-confirm",
         "onClick": _change
-      }, [t2("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
+      }, [t8("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
         "value": _l10nColumn(valueArray),
         "class": "uni-picker-content",
         "onChange": _pickerViewChange
@@ -27392,45 +28600,683 @@ function usePickerForm(_resetFormData, _getFormData) {
     });
   }
 }
-const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const _AdConfig = class _AdConfig {
+  constructor() {
+    __publicField(this, "_adConfig", null);
+    __publicField(this, "_isLoading", false);
+    __publicField(this, "_callbacks", []);
+    __publicField(this, "_configLast", 0);
+  }
+  static get instance() {
+    if (!_AdConfig._instance) {
+      _AdConfig._instance = new _AdConfig();
+      _AdConfig._instance._init();
+    }
+    return _AdConfig._instance;
+  }
+  get adConfig() {
+    return this._adConfig;
+  }
+  get isExpired() {
+    if (this._adConfig == null) {
+      return true;
+    }
+    if (!this._configLast) {
+      return true;
+    }
+    return Math.abs(Date.now() - this._configLast) > _AdConfig.CACHE_TIME;
+  }
+  _init() {
+    var config = this._getConfig();
+    if (config === null || !config.last) {
+      return;
+    }
+    if (Math.abs(Date.now() - config.last) <= _AdConfig.CACHE_TIME) {
+      this._adConfig = config.data;
+      this._configLast = config.last;
+    }
+  }
+  get(adpid, success, fail) {
+    _AdConfig.IC++;
+    if (this._adConfig != null) {
+      this._doCallback(adpid, success, fail);
+      if (this.isExpired) {
+        this._loadAdConfig(adpid);
+      }
+      return;
+    }
+    this._callbacks.push({
+      adpid,
+      success,
+      fail
+    });
+    this._loadAdConfig(adpid);
+  }
+  _doCallback(adpid, success, fail) {
+    _AdConfig.IS++;
+    var {
+      a: a2,
+      b
+    } = this._adConfig;
+    const adData = a2[adpid];
+    if (adData) {
+      success(b, Array.isArray(adData) ? adData : [adData]);
+    } else {
+      fail(_AdConfig.ERROR_INVALID_ADPID);
+    }
+  }
+  _loadAdConfig(adpid) {
+    if (this._isLoading === true) {
+      return;
+    }
+    this._isLoading = true;
+    const appid = typeof __uniConfig !== "undefined" ? __uniConfig.appId ?? "" : "";
+    uni.request({
+      url: _AdConfig.URL,
+      method: "GET",
+      timeout: 8e3,
+      data: {
+        d: location.hostname,
+        a: adpid,
+        appid
+      },
+      dataType: "json",
+      success: (res) => {
+        const rd = res.data;
+        if (rd.ret === 0) {
+          const data = rd.data;
+          this._adConfig = data;
+          this._configLast = Date.now();
+          this._setConfig(data);
+          this._callbacks.forEach(({
+            adpid: adpid2,
+            success,
+            fail
+          }) => {
+            this._doCallback(adpid2, success, fail);
+          });
+        } else {
+          this._callbacks.forEach((i) => {
+            i.fail({
+              errCode: rd.ret,
+              errMsg: rd.msg
+            });
+          });
+        }
+        this._callbacks = [];
+      },
+      fail: (err) => {
+        this._callbacks.forEach((i) => {
+          i.fail(err);
+        });
+        this._callbacks = [];
+      },
+      complete: (c) => {
+        this._isLoading = false;
+      }
+    });
+  }
+  _getConfig() {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    var data = localStorage.getItem(_AdConfig.KEY);
+    return data ? JSON.parse(data) : null;
+  }
+  _setConfig(data) {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    localStorage.setItem(_AdConfig.KEY, JSON.stringify({
+      last: Date.now(),
+      data
+    }));
+  }
+};
+__publicField(_AdConfig, "IC", 0);
+__publicField(_AdConfig, "IS", 0);
+// 生产环境地址
+// private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+// 生产环境地址v2
+__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5v2");
+// 测试环境地址
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5v2'
+__publicField(_AdConfig, "KEY", "uni_app_ad_config");
+__publicField(_AdConfig, "CACHE_TIME", 1e3 * 60 * 10);
+__publicField(_AdConfig, "ERROR_INVALID_ADPID", {
+  "-5002": "invalid adpid"
+});
+let AdConfig = _AdConfig;
+const _AdReport = class _AdReport {
+  static get instance() {
+    if (!_AdReport._instance) {
+      _AdReport._instance = new _AdReport();
+    }
+    return _AdReport._instance;
+  }
+  constructor() {
+    var config = this._getConfig();
+    if (config && config.guid) {
+      this._guid = config.guid;
+      return;
+    }
+    this._guid = this._newGUID();
+    this._setConfig(this._guid);
+  }
+  get(data) {
+    this._process(Object.assign(data, {
+      d: location.hostname,
+      i: this._guid
+    }));
+  }
+  _process(data) {
+    uni.request({
+      url: _AdReport.URL,
+      method: "GET",
+      data,
+      dataType: "json",
+      success: () => {
+      }
+    });
+  }
+  _newGUID() {
+    let guid = "";
+    const format = "xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx";
+    for (let i = 0; i < format.length; i++) {
+      if (format[i] === "x") {
+        guid += (Math.random() * 16 | 0).toString(16);
+      } else {
+        guid += format[i];
+      }
+    }
+    return guid.toUpperCase();
+  }
+  _getConfig() {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    var data = localStorage.getItem(_AdReport.KEY);
+    return data ? JSON.parse(data) : null;
+  }
+  _setConfig(guid) {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    localStorage.setItem(_AdReport.KEY, JSON.stringify({
+      last: Date.now(),
+      guid
+    }));
+  }
+};
+__publicField(_AdReport, "URL", "https://has1.dcloud.net.cn/ahl");
+__publicField(_AdReport, "KEY", "uni_app_ad_guid");
+let AdReport = _AdReport;
+class AdScript {
+  static get instance() {
+    if (!AdScript._instance) {
+      AdScript._instance = new AdScript();
+    }
+    return AdScript._instance;
+  }
+  constructor() {
+    this._callback = {};
+    this._cache = {};
+  }
+  load(data, success, fail) {
+    const provider = data.provider;
+    if (this._cache[provider] === void 0) {
+      this.loadScript(data);
+    }
+    if (this._cache[provider] === 1) {
+      success();
+    } else {
+      if (!this._callback[provider]) {
+        this._callback[provider] = [];
+      }
+      this._callback[provider].push({
+        success,
+        fail
+      });
+    }
+  }
+  loadScript(data) {
+    const provider = data.provider;
+    this._cache[provider] = 0;
+    const domid = "uniad_provider" + provider;
+    const adScriptDom = document.getElementById(domid);
+    const src = adScriptDom && adScriptDom.getAttribute("src");
+    if (src) {
+      this._cache[provider] = 1;
+      return;
+    }
+    var ads = document.createElement("script");
+    ads.setAttribute("id", domid);
+    const script = data.script;
+    for (const var1 in script) {
+      ads.setAttribute(var1, script[var1]);
+    }
+    ads.onload = () => {
+      this._cache[provider] = 1;
+      this._callback[provider].forEach(({
+        success
+      }) => {
+        success();
+      });
+      this._callback[provider].length = 0;
+    };
+    ads.onerror = (err) => {
+      this._cache[provider] = void 0;
+      this._callback[provider].forEach(({
+        fail
+      }) => {
+        fail(err);
+      });
+      this._callback[provider].length = 0;
+    };
+    document.body.append(ads);
+  }
+}
+const CHECK_RENDER_DELAY = 1e3;
+const CHECK_RENDER_RETRY = 5;
+const AD_PROVIDER = {
+  GDT: "2",
+  TUIA: "10035"
+};
+class AdRender {
+  constructor(props2, trigger, rootRef, options) {
+    __publicField(this, "_pi", 0);
+    __publicField(this, "_pl", []);
+    __publicField(this, "_b", {});
+    __publicField(this, "_checkTimerCount", 0);
+    __publicField(this, "_currentChannel", null);
+    __publicField(this, "_tuiaData", null);
+    this._checkTimer = null;
+    this._adpid = props2.adpid;
+    this._adpidWidescreen = props2.adpidWidescreen;
+    this._widescreenWidth = props2.widescreenWidth;
+    this._trigger = trigger;
+    this._rootRef = rootRef;
+    this._currentAdpid = this._adpid;
+    this._hasCustomTuiaMaterial = options.hasCustomTuiaMaterial;
+    this._setCustomTuiaVisible = options.setCustomTuiaVisible;
+  }
+  renderTuiaFromCustomMaterial() {
+    if (!this._tuiaData) {
+      return;
+    }
+    this._renderTuia(this._tuiaData);
+  }
+  get isWidescreen() {
+    return this._rootRef.value && this._rootRef.value.clientWidth > this._widescreenWidth;
+  }
+  load(adpid) {
+    this._currentAdpid = adpid || (this.isWidescreen ? this._adpidWidescreen : this._adpid);
+    this._reset();
+    AdConfig.instance.get(this._currentAdpid, (b, a2) => {
+      this._b = b;
+      this._pl = a2;
+      this._renderAd();
+    }, (err) => {
+      this._trigger("error", {}, err);
+    });
+  }
+  dispose() {
+    this._clearCheckTimer();
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = "";
+    }
+  }
+  _renderAd() {
+    if (this._pi > this._pl.length - 1) {
+      return;
+    }
+    const data = this._pl[this._pi];
+    if (!data) {
+      this._renderNext();
+      return;
+    }
+    const providerId = String(data.a1);
+    const providerConfig = this._b[providerId];
+    if (!providerConfig) {
+      this._renderNext();
+      return;
+    }
+    const script = providerConfig.script || providerConfig.s;
+    this._currentChannel = providerId;
+    const id2 = this._randomId();
+    this._createView(id2);
+    if (providerId === AD_PROVIDER.GDT) {
+      window.TencentGDT = window.TencentGDT || [];
+      AdScript.instance.load({
+        provider: providerId,
+        script
+      }, () => {
+        this._renderGdt(id2, data);
+      }, (err) => {
+        this._trigger("error", {}, err);
+        this._renderNext();
+      });
+      return;
+    }
+    if (providerId === AD_PROVIDER.TUIA) {
+      AdScript.instance.load({
+        provider: providerId,
+        script
+      }, () => {
+        this._renderTuiaMaterial(id2, data);
+      }, (err) => {
+        this._trigger("error", {}, err);
+        this._renderNext();
+      });
+      return;
+    }
+    this._renderNext();
+  }
+  _createView(id2) {
+    if (!this._rootRef.value) {
+      return null;
+    }
+    var adView = document.createElement("div");
+    adView.setAttribute("id", id2);
+    adView.setAttribute("class", id2);
+    this._rootRef.value.innerHTML = "";
+    this._rootRef.value.append(adView);
+    return adView;
+  }
+  _renderGdt(id2, data) {
+    window.TencentGDT.push({
+      placement_id: data.a3,
+      app_id: data.a2,
+      type: "native",
+      count: 1,
+      onComplete: (res) => {
+        if (res && res.constructor === Array && res.length > 0) {
+          window.TencentGDT.NATIVE.renderAd(res[0], id2);
+          this._trigger("load", {}, {});
+        } else {
+          this._trigger("error", {}, res || {
+            errMsg: "No advertisement"
+          });
+          this._renderNext();
+        }
+      }
+    });
+    this._startCheckTimer();
+  }
+  _renderTuiaMaterial(id2, data) {
+    const adView = document.getElementById(id2);
+    if (!adView) {
+      this._trigger("error", {}, {
+        errMsg: "Invalid ad container"
+      });
+      this._renderNext();
+      return;
+    }
+    this._tuiaData = data;
+    if (this._hasCustomTuiaMaterial()) {
+      adView.innerHTML = "";
+      this._setCustomTuiaVisible(true);
+      this.report(40, this._currentChannel || void 0);
+      this._trigger("load", {}, {});
+      return;
+    }
+    this._setCustomTuiaVisible(false);
+    const materialSrc = this._getRandomTuiaMaterial(data == null ? void 0 : data.imgs, data == null ? void 0 : data.img);
+    if (!materialSrc) {
+      this._trigger("error", {}, {
+        errMsg: "Invalid tuia material imgs/img"
+      });
+      this._renderNext();
+      return;
+    }
+    const img = document.createElement("img");
+    img.src = materialSrc;
+    img.onerror = () => {
+      this._trigger("error", {}, {
+        errMsg: "Tuia material load fail"
+      });
+      this._renderNext();
+    };
+    img.alt = "ad";
+    img.setAttribute("draggable", "false");
+    img.style.width = "100%";
+    img.style.height = "auto";
+    img.style.display = "block";
+    img.style.cursor = "pointer";
+    img.onclick = () => {
+      this._renderTuia(data);
+    };
+    adView.innerHTML = "";
+    adView.append(img);
+    this.report(40, this._currentChannel || void 0);
+    this._trigger("load", {}, {});
+  }
+  _getRandomTuiaMaterial(imgs, img) {
+    if (Array.isArray(imgs)) {
+      const list2 = imgs.filter((item) => typeof item === "string" && item);
+      if (list2.length) {
+        const index2 = Math.floor(Math.random() * list2.length);
+        return list2[index2];
+      }
+    }
+    if (typeof img === "string") {
+      return img;
+    }
+    return "";
+  }
+  _renderTuia(data) {
+    this._setCustomTuiaVisible(false);
+    const tuia = window.TuiaSDKLite;
+    if (!tuia || typeof tuia.execute !== "function") {
+      this._trigger("error", {}, {
+        errMsg: "Invalid TuiaSDKLite"
+      });
+      this._renderNext();
+      return;
+    }
+    tuia.execute({
+      data: {
+        pid: data.a3,
+        fail_message: "ad load fail",
+        product_name: document.title || location.hostname
+      },
+      success: (res) => {
+        this._trigger("load", {}, res || {});
+      },
+      fail: (err) => {
+        this._trigger("error", {}, err || {
+          errMsg: "TuiaSDKLite execute fail"
+        });
+        this._renderNext();
+      }
+    });
+  }
+  _renderAdView(provider, data) {
+    var randomId = this._randomId();
+    var adView = document.createElement("div");
+    adView.setAttribute("class", randomId);
+    this._rootRef.value.innerHTML = "";
+    this._rootRef.value.append(adView);
+    const scriptPath = provider.s || provider.script;
+    if (!scriptPath || typeof scriptPath !== "string") {
+      this._trigger("error", {}, {
+        errMsg: "Invalid provider script"
+      });
+      this._renderNext();
+      return;
+    }
+    try {
+      let bindThis = window;
+      const fn = scriptPath.split(".").reduce((total, currentValue) => {
+        bindThis = total;
+        return total[currentValue];
+      }, window);
+      fn.bind(bindThis)(data.a2, randomId, 2);
+    } catch (err) {
+      this._trigger("error", {}, err);
+      this._renderNext();
+      return;
+    }
+    this._startCheckTimer();
+  }
+  _renderNext() {
+    if (this._pi >= this._pl.length - 1) {
+      return;
+    }
+    this._pi++;
+    this._renderAd();
+  }
+  _checkRender() {
+    if (!this._rootRef.value) {
+      return false;
+    }
+    var hasContent = this._rootRef.value.children.length > 0 && this._rootRef.value.clientHeight > 40;
+    if (hasContent) {
+      this.report(40, this._currentChannel || void 0);
+    }
+    return hasContent;
+  }
+  _startCheckTimer() {
+    this._clearCheckTimer();
+    this._checkTimer = setInterval(() => {
+      this._checkTimerCount++;
+      if (this._checkTimerCount >= CHECK_RENDER_RETRY) {
+        this._clearCheckTimer();
+        this._renderNext();
+        return;
+      }
+      if (this._checkRender()) {
+        this._clearCheckTimer();
+      }
+    }, CHECK_RENDER_DELAY);
+  }
+  _clearCheckTimer() {
+    this._checkTimerCount = 0;
+    if (this._checkTimer != null) {
+      window.clearInterval(this._checkTimer);
+      this._checkTimer = null;
+    }
+  }
+  report(type, currentChannel) {
+    const compilerVersion = typeof __uniConfig !== "undefined" ? __uniConfig.compilerVersion ?? "" : "";
+    const reportData = {
+      h: compilerVersion,
+      a: this._currentAdpid,
+      at: type
+    };
+    if (currentChannel) {
+      reportData.t = currentChannel;
+    }
+    AdReport.instance.get(reportData);
+  }
+  _randomId() {
+    var result = "";
+    for (let i = 0; i < 4; i++) {
+      result += (65536 * (1 + Math.random()) | 0).toString(16).substring(1);
+    }
+    return "_u" + result;
+  }
+  _reset() {
+    this._b = {};
+    this._pl = [];
+    this._pi = 0;
+    this._tuiaData = null;
+    this._setCustomTuiaVisible(false);
+    this._clearCheckTimer();
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = "";
+    }
+  }
+}
+const DEFAULT_WIDESCREEN_WIDTH = 750;
+const index$5 = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "Ad",
+  props: {
+    adpid: {
+      type: String,
+      default: ""
+    },
+    adpidWidescreen: {
+      type: String,
+      default: ""
+    },
+    widescreenWidth: {
+      type: Number,
+      default: DEFAULT_WIDESCREEN_WIDTH
+    }
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const customTuiaVisible = ref(false);
+    const {
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const trigger = useCustomEvent(rootRef, emit2);
+    const ad = new AdRender(props2, trigger, rootRef, {
+      hasCustomTuiaMaterial: () => Boolean(slots.default && slots.default().length),
+      setCustomTuiaVisible: (visible) => {
+        customTuiaVisible.value = visible;
+      }
+    });
+    watch(() => props2.adpid, (val) => {
+      ad.load(val);
+    });
+    watch(() => props2.adpidWidescreen, (val) => {
+      ad.load(val);
+    });
+    onMounted(() => {
+      const compilerVersion = typeof __uniConfig !== "undefined" ? __uniConfig.compilerVersion ?? "" : "";
+      ad.load(null);
+      AdReport.instance.get({
+        h: compilerVersion,
+        a: props2.adpid,
+        at: -3,
+        ic: AdConfig.IC,
+        is: AdConfig.IS
+      });
+    });
+    onBeforeUnmount(() => {
+      ad.dispose();
+    });
+    return () => {
+      const {
+        adpid,
+        adpidWidescreen,
+        widescreenWidth
+      } = props2;
+      return createVNode(Fragment, null, [createVNode("uni-ad", mergeProps($listeners.value, $excludeAttrs.value, {
+        "adpid": adpid,
+        "adpidWidescreen": adpidWidescreen,
+        "widescreenWidth": widescreenWidth
+      }), [createVNode("div", {
+        "ref": rootRef,
+        "class": "uni-ad-container",
+        "onClick": () => ad.report(41)
+      }, null, 8, ["onClick"]), customTuiaVisible.value && slots.default ? createVNode("div", {
+        "class": "uni-ad-custom-material",
+        "onClick": () => ad.renderTuiaFromCustomMaterial()
+      }, [slots.default()], 8, ["onClick"]) : null], 16, ["adpid", "adpidWidescreen", "widescreenWidth"])]);
+    };
+  }
+});
 const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
 const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
 const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
 const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
-const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
-  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
-};
-const onLoad = /* @__PURE__ */ createLifeCycleHook(
-  ON_LOAD,
-  2
-  /* HookFlags.PAGE */
-);
-const onReady = /* @__PURE__ */ createLifeCycleHook(
-  ON_READY,
-  2
-  /* HookFlags.PAGE */
-);
-const onUnload = /* @__PURE__ */ createLifeCycleHook(
-  ON_UNLOAD,
-  2
-  /* HookFlags.PAGE */
-);
-const onResize = /* @__PURE__ */ createLifeCycleHook(
-  ON_RESIZE,
-  2
-  /* HookFlags.PAGE */
-);
-const onBackPress = /* @__PURE__ */ createLifeCycleHook(
-  ON_BACK_PRESS,
-  2
-  /* HookFlags.PAGE */
-);
 const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
 class UniMatchMediaElement extends UniViewElement {
   constructor() {
     super();
-    this._experssions = [];
+    this._expressions = [];
   }
   static get observedAttributes() {
     return [
@@ -27444,7 +29290,7 @@ class UniMatchMediaElement extends UniViewElement {
     ];
   }
   connectedCallback() {
-    this._experssions = this.getExpressions();
+    this._expressions = this.getExpressions();
     this.uniPage.vm.$.$waitNativeRender(() => {
       this.toggleElement(this.isValid({
         width: this.uniPage.pageBody.width,
@@ -27461,7 +29307,7 @@ class UniMatchMediaElement extends UniViewElement {
     }, this.uniPage.vm.$);
   }
   attributeChangedCallback(name, oldValue, newValue) {
-    if (this._experssions.length == 0 || newValue == null) {
+    if (this._expressions.length == 0 || newValue == null) {
       return;
     }
     const matches2 = name.match(RE_MQ_FEATURE);
@@ -27470,7 +29316,7 @@ class UniMatchMediaElement extends UniViewElement {
     }
     const modifier = matches2[1] != null ? matches2[1] : "";
     const feature = matches2[2] != null ? matches2[2].toLowerCase() : "";
-    const expression = this._experssions.find((expr) => expr.feature == feature && expr.modifier == modifier);
+    const expression = this._expressions.find((expr) => expr.feature == feature && expr.modifier == modifier);
     if (expression == null) {
       return;
     }
@@ -27501,7 +29347,7 @@ class UniMatchMediaElement extends UniViewElement {
     this.style.setProperty("display", show ? "flex" : "none");
   }
   isValid(values) {
-    return this._experssions.every((expression) => {
+    return this._expressions.every((expression) => {
       switch (expression.feature) {
         case "orientation":
           return values[expression.feature] === this.getAttribute(expression.feature);
@@ -27527,16 +29373,13 @@ const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-function closePreSystemDialogPage(dialogPages, type) {
-  const targetSystemDialogPages = dialogPages.filter(
-    (page) => page.route.startsWith(type)
-  );
-  if (targetSystemDialogPages.length > 1) {
-    setTimeout(() => {
-      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1);
-    }, 150);
+const getElementById = /* @__PURE__ */ defineSyncApi(
+  "getElementById",
+  (id2) => {
+    const uniPageBody = document.querySelector("uni-page-body");
+    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
-}
+);
 const openDialogPage = (options) => {
   var _a, _b, _c;
   if (!options.url) {
@@ -27546,7 +29389,7 @@ const openDialogPage = (options) => {
   let { path, query } = parseUrl(options.url);
   path = normalizeRoute(path);
   const normalizeUrl = createNormalizeUrl("navigateTo");
-  const errMsg = normalizeUrl(path, {});
+  const errMsg = normalizeUrl(options.url, {});
   if (errMsg) {
     triggerFailCallback(options, errMsg);
     return null;
@@ -27554,14 +29397,16 @@ const openDialogPage = (options) => {
   const targetRoute = __uniRoutes.find((route) => {
     return route.path === path || `/${route.meta.route}` === path;
   });
-  const dialogPage = new UniDialogPageImpl({
-    route: removeLeadingSlash(path),
-    options: new UTSJSONObject(query),
-    $component: targetRoute.component,
-    getParentPage: () => null,
-    $disableEscBack: options.disableEscBack,
-    $triggerParentHide: !!options.triggerParentHide
-  });
+  const dialogPage = markRaw(
+    new UniDialogPageImpl({
+      route: removeLeadingSlash(path),
+      options: new UTSJSONObject(query),
+      $component: targetRoute.component,
+      getParentPage: () => null,
+      $disableEscBack: options.disableEscBack,
+      $triggerParentHide: !!options.triggerParentHide
+    })
+  );
   let parentPage = options.parentPage;
   const currentPages = getCurrentPages();
   if (parentPage) {
@@ -27621,7 +29466,13 @@ function triggerFailCallback(options, errMsg) {
   (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
-const _sfc_main$3 = /* @__PURE__ */ defineComponent({
+const t0$5 = template("<div uni-view><span uni-text> </div>");
+const t1$5 = template("<div uni-view>");
+const t2$4 = template("<div uni-view><span uni-text> ");
+const t3$2 = template("<div uni-view class=uni-action-sheet_dialog__safe-area>");
+const t4$2 = template("<div uni-view class=uni-action-sheet_dialog__triangle>");
+const t5$1 = template("<div uni-view><div uni-view></div><div uni-view><div uni-view><!><div uni-view></div></div><div uni-view><span uni-text> </div>", 1);
+const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
   __name: "actionSheet",
   setup(__props) {
     const pageInstance = getCurrentInstance().proxy;
@@ -27647,19 +29498,22 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     const backgroundColor = ref(null);
     const language = ref("zhHans");
     const theme = ref("light");
-    const isLandscape2 = ref(false);
-    const bottomNavigationHeight = ref(0);
     const appTheme = ref(null);
     const hostTheme = ref(null);
+    const isLandscape2 = ref(false);
+    const bottomNavigationHeight = ref(0);
     const menuItemClicked = ref(false);
     const cancelButtonClicked = ref(false);
     const windowWidth = ref(0);
     const windowHeight = ref(0);
     const popover = reactive({});
     const fixSize = () => {
-      const systemInfo = uni.getSystemInfoSync();
-      windowWidth.value = systemInfo.windowWidth;
-      windowHeight.value = systemInfo.windowHeight + (systemInfo.windowTop || 0);
+      const windowInfo = uni.getWindowInfo();
+      windowWidth.value = windowInfo.windowWidth;
+      windowHeight.value = windowInfo.windowHeight + (windowInfo.windowTop || 0);
+    };
+    const getCloseAnimationDelay = () => {
+      return 250;
     };
     const closeActionSheet = () => {
       show.value = false;
@@ -27667,7 +29521,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
         uni.closeDialogPage({
           dialogPage: uniPageInstance
         });
-      }, 250);
+      }, getCloseAnimationDelay());
     };
     const handleMenuItemClick = (tapIndex) => {
       menuItemClicked.value = true;
@@ -27716,35 +29570,33 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
         }
       });
       uni.$emit(readyEventName.value, {});
-      const systemInfo = uni.getSystemInfoSync();
-      const osLanguage = systemInfo.osLanguage;
-      const appLanguage = systemInfo.appLanguage;
-      if (appLanguage != null) {
-        language.value = appLanguage;
-      } else if (osLanguage != null) {
-        language.value = osLanguage;
+      const deviceInfo = uni.getDeviceInfo();
+      const appInfo = uni.getAppBaseInfo();
+      if (appInfo.appLanguage != null) {
+        language.value = appInfo.appLanguage;
+      } else if (deviceInfo.osLanguage != null) {
+        language.value = deviceInfo.osLanguage;
       }
-      const systemAppTheme = systemInfo.appTheme;
-      if (systemAppTheme != null && systemAppTheme != "auto") {
-        appTheme.value = systemAppTheme;
+      const currentAppTheme = appInfo.appTheme;
+      if (currentAppTheme != null && currentAppTheme != "auto") {
+        appTheme.value = currentAppTheme;
         handleThemeChange();
       }
-      const systemOsTheme = systemInfo.osTheme;
-      if (systemOsTheme != null && appTheme.value == null) {
-        appTheme.value = systemOsTheme;
+      const currentOsTheme = deviceInfo.osTheme;
+      if (currentOsTheme != null && appTheme.value == null) {
+        appTheme.value = currentOsTheme;
         handleThemeChange();
       }
-      const systemHostTheme = systemInfo.hostTheme;
-      if (systemHostTheme != null) {
-        hostTheme.value = systemHostTheme;
+      const currentHostTheme = appInfo.hostTheme;
+      if (currentHostTheme != null) {
+        hostTheme.value = currentHostTheme;
         handleThemeChange();
       }
       uni.onHostThemeChange((res) => {
         hostTheme.value = res.theme;
         handleThemeChange();
       });
-      windowWidth.value = systemInfo.windowWidth;
-      windowHeight.value = systemInfo.windowHeight;
+      fixSize();
       window.addEventListener("resize", fixSize);
       const locale = uni.getLocale();
       language.value = locale;
@@ -27753,7 +29605,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
           language.value = res.locale;
         }
       });
-      isLandscape2.value = systemInfo.deviceOrientation == "landscape";
+      isLandscape2.value = deviceInfo.deviceOrientation == "landscape";
     });
     const isWidescreen = computed(() => {
       return windowHeight.value >= 500 && windowWidth.value >= 500;
@@ -27782,11 +29634,12 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
       return res;
     });
     const triangleStyle = computed(() => {
+      var _a;
       if (Object.keys(popover).length == 0) {
         return {};
       }
       const res = {};
-      const borderColor = backgroundColor.value || (theme.value == "dark" ? "#2C2C2B" : "#fcfcfd");
+      const borderColor = (_a = backgroundColor.value) != null ? _a : theme.value == "dark" ? "#2C2C2C" : "#fcfcfd";
       const top = popover.top;
       const left = popover.left;
       const width = popover.width;
@@ -27831,7 +29684,8 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
       return "取消";
     });
     const computedBackgroundColor = computed(() => {
-      return backgroundColor.value !== null ? backgroundColor.value : theme.value == "dark" ? "#2C2C2B" : "#ffffff";
+      var _a;
+      return (_a = backgroundColor.value) != null ? _a : theme.value == "dark" ? "#2C2C2C" : "#ffffff";
     });
     const hoverClass = computed(() => {
       return theme.value == "dark" ? "uni-action-sheet_dialog__hover__dark__mode" : "uni-action-sheet_dialog__hover";
@@ -27843,10 +29697,10 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
       }, 10);
     });
     onResize((_) => {
-      const systemInfo = uni.getSystemInfoSync();
-      isLandscape2.value = systemInfo.deviceOrientation == "landscape";
+      const deviceInfo = uni.getDeviceInfo();
+      isLandscape2.value = deviceInfo.deviceOrientation == "landscape";
     });
-    onUnload(() => {
+    onBeforeUnmount(() => {
       if (!menuItemClicked.value && !cancelButtonClicked.value) {
         uni.$emit(failEventName.value, {});
       }
@@ -27856,125 +29710,115 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
       uni.$off(failEventName.value, null);
       window.removeEventListener("resize", fixSize);
     });
-    return (_ctx, _cache) => {
-      const _component_view = __syscom_2;
-      const _component_text = __syscom_1$1;
-      return openBlock(), createBlock(_component_view, null, {
-        default: withCtx(() => [
-          createVNode(_component_view, {
-            class: normalizeClass(["uni-action-sheet_dialog__mask", { "uni-action-sheet_dialog__mask__show": show.value }]),
-            onClick: handleCancel
-          }, null, 8, ["class"]),
-          createVNode(_component_view, {
-            style: normalizeStyle(isWidescreen.value ? containerStyle.value : {}),
-            class: normalizeClass(["uni-action-sheet_dialog__container", {
-              "uni-action-sheet_dialog__show": show.value,
-              "uni-action-sheet_dark__mode": theme.value == "dark",
-              "uni-action-sheet_landscape__mode": isLandscape2.value
-            }])
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_view, {
-                style: normalizeStyle(backgroundColor.value != null ? { backgroundColor: backgroundColor.value } : {}),
-                class: normalizeClass(["uni-action-sheet_dialog__menu", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value }])
-              }, {
-                default: withCtx(() => [
-                  title.value ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
-                    createVNode(_component_view, {
-                      class: normalizeClass(["uni-action-sheet_dialog__title border-b", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value }])
-                    }, {
-                      default: withCtx(() => [
-                        createVNode(_component_text, {
-                          style: normalizeStyle(titleColor.value != null ? { color: titleColor.value } : {}),
-                          class: normalizeClass(["uni-action-sheet_dialog__title__text", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
-                        }, {
-                          default: withCtx(() => [
-                            createTextVNode(toDisplayString(title.value), 1)
-                          ]),
-                          _: 1
-                        }, 8, ["style", "class"])
-                      ]),
-                      _: 1
-                    }, 8, ["class"]),
-                    createVNode(_component_view, {
-                      class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
-                    }, null, 8, ["class"])
-                  ], 64)) : createCommentVNode("", true),
-                  createVNode(_component_view, {
-                    class: normalizeClass(["uni-action-sheet_dialog__cell__container", { "uni-action-sheet_landscape__mode": isLandscape2.value }])
-                  }, {
-                    default: withCtx(() => [
-                      (openBlock(true), createElementBlock(Fragment, null, renderList(itemList.value, (item, index2) => {
-                        return openBlock(), createElementBlock(Fragment, { key: index2 }, [
-                          index2 !== 0 ? (openBlock(), createBlock(_component_view, {
-                            key: 0,
-                            class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
-                          }, null, 8, ["class"])) : createCommentVNode("", true),
-                          createVNode(_component_view, {
-                            class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value, "border-t": index2 !== 0 }]),
-                            "hover-class": hoverClass.value,
-                            onClick: ($event) => handleMenuItemClick(index2)
-                          }, {
-                            default: withCtx(() => [
-                              createVNode(_component_text, {
-                                style: normalizeStyle(itemColor.value != null ? { color: itemColor.value } : {}),
-                                class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
-                              }, {
-                                default: withCtx(() => [
-                                  createTextVNode(toDisplayString(item), 1)
-                                ]),
-                                _: 2
-                              }, 1032, ["style", "class"])
-                            ]),
-                            _: 2
-                          }, 1032, ["class", "hover-class", "onClick"])
-                        ], 64);
-                      }), 128))
-                    ]),
-                    _: 1
-                  }, 8, ["class"])
-                ]),
-                _: 1
-              }, 8, ["style", "class"]),
-              createVNode(_component_view, {
-                style: normalizeStyle(backgroundColor.value != null ? { backgroundColor: backgroundColor.value } : {}),
-                class: normalizeClass(["uni-action-sheet_dialog__action", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value }]),
-                "hover-class": hoverClass.value,
-                onClick: handleCancel
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_text, {
-                    style: normalizeStyle(cancelColor.value != null ? { color: cancelColor.value } : {}),
-                    class: normalizeClass(["uni-action-sheet_dialog__action__text", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
-                  }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString(cancelText.value), 1)
-                    ]),
-                    _: 1
-                  }, 8, ["style", "class"])
-                ]),
-                _: 1
-              }, 8, ["style", "class", "hover-class"]),
-              !isLandscape2.value ? (openBlock(), createBlock(_component_view, {
-                key: 0,
-                style: normalizeStyle({ height: `${bottomNavigationHeight.value}px`, backgroundColor: computedBackgroundColor.value })
-              }, null, 8, ["style"])) : createCommentVNode("", true),
-              isWidescreen.value && Object.keys(popover).length > 0 ? (openBlock(), createBlock(_component_view, {
-                key: 1,
-                style: normalizeStyle(triangleStyle.value),
-                class: "uni-action-sheet_dialog__triangle"
-              }, null, 8, ["style"])) : createCommentVNode("", true)
-            ]),
-            _: 1
-          }, 8, ["style", "class"])
-        ]),
-        _: 1
-      });
-    };
+    const n25 = t5$1();
+    const n0 = child(n25);
+    const n24 = next(n0);
+    const n15 = child(n24);
+    const n14 = child(n15);
+    const n13 = next(n14);
+    const n17 = next(n15);
+    const n16 = child(n17);
+    on$1(n0, "click", handleCancel);
+    renderEffect(() => {
+      const _show = show.value;
+      const _theme = theme.value;
+      const _isLandscape = isLandscape2.value;
+      const _backgroundColor = backgroundColor.value;
+      setClassName(n0, _show ? 1 : 0, " uni-action-sheet_dialog__mask__show", "uni-action-sheet_dialog__mask");
+      setStyle(n24, isWidescreen.value ? containerStyle.value : {});
+      setClassName(n24, (_show ? 1 : 0) | (_theme == "dark" ? 2 : 0) | (_isLandscape ? 4 : 0), [" uni-action-sheet_dialog__show", " uni-action-sheet_dark__mode", " uni-action-sheet_landscape__mode"], "uni-action-sheet_dialog__container");
+      setStyle(n15, _backgroundColor != null ? { backgroundColor: _backgroundColor } : {});
+      setClassName(n15, (_theme == "dark" ? 1 : 0) | (_isLandscape ? 2 : 0), [" uni-action-sheet_dark__mode", " uni-action-sheet_landscape__mode"], "uni-action-sheet_dialog__menu");
+    });
+    setInsertionState(n15, n14);
+    createIf(
+      () => title.value,
+      () => {
+        const n4 = t0$5();
+        const n3 = child(n4);
+        const n5 = t1$5();
+        const x3 = txt(n3);
+        renderEffect(() => {
+          const _theme = theme.value;
+          const _titleColor = titleColor.value;
+          const __uni_action_sheet_dark_mode_theme_dark = { "uni-action-sheet_dark__mode": _theme == "dark" };
+          setClassName(n4, (_theme == "dark" ? 1 : 0) | (isLandscape2.value ? 2 : 0), [" uni-action-sheet_dark__mode", " uni-action-sheet_landscape__mode"], "uni-action-sheet_dialog__title border-b");
+          setStyle(n3, _titleColor != null ? { color: _titleColor } : {});
+          setClass(n3, ["uni-action-sheet_dialog__title__text", __uni_action_sheet_dark_mode_theme_dark]);
+          setText(x3, normalizeUniText("\n              " + toDisplayString(title.value) + "\n            "));
+          setClass(n5, ["divider", __uni_action_sheet_dark_mode_theme_dark]);
+        });
+        return [n4, n5];
+      },
+      null,
+      2
+      /* TRUE_MULTI_ROOT */
+    );
+    renderEffect(() => setClassName(n13, isLandscape2.value ? 1 : 0, " uni-action-sheet_landscape__mode", "uni-action-sheet_dialog__cell__container"));
+    setInsertionState(n13);
+    createFor(
+      () => itemList.value,
+      (_for_item0, _for_key0) => {
+        const n8 = createIf(
+          () => _for_key0.value !== 0,
+          () => {
+            const n10 = t1$5();
+            renderEffect(() => setClassName(n10, theme.value == "dark" ? 1 : 0, " uni-action-sheet_dark__mode", "divider"));
+            return n10;
+          },
+          null,
+          10
+          /* TRUE_MULTI_ROOT, FALSE_MULTI_ROOT */
+        );
+        const n12 = t2$4();
+        const n11 = child(n12);
+        const x11 = txt(n11);
+        on$1(n12, "click", () => handleMenuItemClick(_for_key0.value));
+        renderEffect(() => {
+          const _theme = theme.value;
+          const _itemColor = itemColor.value;
+          setHover(n12, hoverClass.value, false, 50, 400, "");
+          setClassName(n12, (_theme == "dark" ? 1 : 0) | (isLandscape2.value ? 2 : 0) | (_for_key0.value !== 0 ? 4 : 0), [" uni-action-sheet_dark__mode", " uni-action-sheet_landscape__mode", " border-t"], "uni-action-sheet_dialog__cell");
+          setStyle(n11, _itemColor != null ? { color: _itemColor } : {});
+          setClassName(n11, _theme == "dark" ? 1 : 0, " uni-action-sheet_dark__mode", "uni-action-sheet_dialog__cell__text");
+          setText(x11, normalizeUniText("\n                  " + toDisplayString(_for_item0.value) + "\n                "));
+        });
+        return [n8, n12];
+      },
+      (item, index2) => index2,
+      65
+      /* FAST_REMOVE, WRAPPED_ROWS */
+    );
+    const x16 = txt(n16);
+    on$1(n17, "click", handleCancel);
+    renderEffect(() => {
+      const _backgroundColor = backgroundColor.value;
+      const _theme = theme.value;
+      const _cancelColor = cancelColor.value;
+      setHover(n17, hoverClass.value, false, 50, 400, "");
+      setStyle(n17, _backgroundColor != null ? { backgroundColor: _backgroundColor } : {});
+      setClassName(n17, (_theme == "dark" ? 1 : 0) | (isLandscape2.value ? 2 : 0), [" uni-action-sheet_dark__mode", " uni-action-sheet_landscape__mode"], "uni-action-sheet_dialog__action");
+      setStyle(n16, _cancelColor != null ? { color: _cancelColor } : {});
+      setClassName(n16, _theme == "dark" ? 1 : 0, " uni-action-sheet_dark__mode", "uni-action-sheet_dialog__action__text");
+      setText(x16, normalizeUniText("\n          " + toDisplayString(cancelText.value) + "\n        "));
+    });
+    setInsertionState(n24, 2);
+    createIf(() => !isLandscape2.value, () => {
+      const n20 = t3$2();
+      renderEffect(() => setStyle(n20, { height: `${bottomNavigationHeight.value}px`, backgroundColor: computedBackgroundColor.value }));
+      return n20;
+    });
+    setInsertionState(n24, 3);
+    createIf(() => isWidescreen.value && Object.keys(popover).length > 0, () => {
+      const n23 = t4$2();
+      renderEffect(() => setStyle(n23, triangleStyle.value));
+      return n23;
+    });
+    return n25;
   }
 });
-const _style_0$3 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.uni-action-sheet_dialog__hover__dark__mode {\n		background-color: #1c1c1c;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["styles", [_style_0$3]]]);
+const _style_0$5 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n\n    transition-property: transform;\n    transition-duration: 0.15s;\n\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action,\n  .uni-action-sheet_dialog__safe-area {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.uni-action-sheet_dialog__hover__dark__mode {\n		background-color: #414141;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2C;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n\n\n\n\n\n\n\n\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["styles", [_style_0$5]]]);
 class ShowActionSheetSuccessImpl {
   constructor(tapIndex, errMsg = "showActionSheet:ok") {
     this.errMsg = errMsg;
@@ -28064,7 +29908,15 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+const t0$4 = template("<span uni-text class=uni-choose-location-poi-search-cancel> ");
+const t1$4 = template("<div uni-view class=uni-choose-location-poi-search-error><span uni-text> ");
+const t2$3 = template("<div uni-view class=uni-choose-location-poi-search-loading><span uni-text> ");
+const t3$1 = template("<div uni-view class=uni-choose-location-poi-search-loading>");
+const t4$1 = template('<span uni-text class="uni-choose-location-icons uni-choose-location-poi-item-selected-icon"> ');
+const t5 = template("<div uni-view><div uni-view><div uni-view><span uni-text> </div><div uni-view><span uni-text> </div></div><!><div uni-view></div>");
+const t6 = template("<div uni-view><div uni-view><div uni-view><span uni-text> </div>");
+const t7 = template('<div uni-view><div uni-view><!><div uni-view class=uni-choose-location-map-target><span uni-text class="uni-choose-location-icons uni-choose-location-map-target-icon"> </div><div uni-view><span uni-text> </div></div><div uni-view class=uni-choose-location-nav><div uni-view><span uni-text class="uni-choose-location-nav-text uni-choose-location-nav-back-text"> </div><div uni-view><span uni-text class="uni-choose-location-nav-text uni-choose-location-nav-confirm-text"> </div></div>', 1);
+const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
   __name: "chooseLocation",
   setup(__props) {
     const defaultPoi = {
@@ -28645,290 +30497,225 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     onResize(() => {
       getSystemInfo2();
     });
-    return (_ctx, _cache) => {
-      const _component_map = __syscom_0;
-      const _component_text = __syscom_1$1;
-      const _component_view = __syscom_2;
-      const _component_input = __syscom_3;
-      const _component_loading = _sfc_main$4;
-      const _component_scroll_view = __syscom_2$1;
-      return openBlock(), createBlock(_component_view, {
-        class: normalizeClass(["uni-choose-location", darkClassCom.value])
+    const _component_input = __syscom_0$2;
+    const _component_loading = _sfc_main$7;
+    const _component_scroll_view = __syscom_1;
+    const n51 = t7();
+    const n6 = child(n51);
+    const n5 = child(n6);
+    const n2 = next(n5);
+    const n1 = child(n2);
+    const n4 = next(n2);
+    const n3 = child(n4);
+    const n11 = next(n6);
+    const n8 = child(n11);
+    const n7 = child(n8);
+    const n10 = next(n8);
+    const n9 = child(n10);
+    renderEffect(() => {
+      setClass(n51, ["uni-choose-location", darkClassCom.value]);
+      setClass(n6, ["uni-choose-location-map-box", [landscapeClassCom.value]]);
+      setStyle(n6, mapBoxStyleCom.value);
+    });
+    setInsertionState(n6, n5);
+    createAssetComponent("map", {
+      class: "uni-choose-location-map",
+      id: () => mapId.value,
+      latitude: () => latitude.value,
+      longitude: () => longitude.value,
+      "layer-style": () => theme.value == "dark" ? "2" : "1",
+      "show-compass": false,
+      "enable-zoom": true,
+      "enable-scroll": true,
+      "enable-rotate": false,
+      "enable-poi": true,
+      "show-location": true,
+      onRegionchange: () => regionchange
+    });
+    const x1 = txt(n1);
+    setStaticTemplateRef(n2, mapTargetRef, null, "mapTargetRef");
+    const x3 = txt(n3);
+    on$1(n4, "click", mapReset);
+    const x7 = txt(n7);
+    on$1(n7, "click", back);
+    const x9 = txt(n9);
+    on$1(n10, "click", confirm);
+    renderEffect(() => {
+      const _icon = icon;
+      const _landscapeClassCom = landscapeClassCom.value;
+      const _darkClassCom = darkClassCom.value;
+      const _safeArea = safeArea;
+      const _languageCom = languageCom.value;
+      const _safeArea_top = _safeArea.top;
+      const _safeArea_top_0_top_safeArea_top_px = _safeArea_top > 0 ? "top: " + _safeArea_top + "px;" : "";
+      setText(x1, normalizeUniText(toDisplayString(_icon.target)));
+      setClass(n4, ["uni-choose-location-map-reset", [_landscapeClassCom, _darkClassCom]]);
+      setStyle(n4, resetStyleCom.value);
+      setClass(n3, ["uni-choose-location-icons uni-choose-location-map-reset-icon", [_darkClassCom]]);
+      setText(x3, normalizeUniText(toDisplayString(_icon.position)));
+      setStyle(n11, "height:" + (60 + _safeArea_top) + "px;");
+      setClass(n8, ["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [_landscapeClassCom]]);
+      setStyle(n8, _safeArea_top_0_top_safeArea_top_px);
+      setText(x7, normalizeUniText(toDisplayString(_languageCom["cancel"])));
+      setClass(n10, ["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [_landscapeClassCom, selected.value < 0 && !callUniMapCoErr.value ? "disable" : "active"]]);
+      setStyle(n10, _safeArea_top_0_top_safeArea_top_px);
+      setText(x9, normalizeUniText(toDisplayString(_languageCom["ok"])));
+    });
+    setInsertionState(n51, 2);
+    createIf(() => useUniCloud.value, () => {
+      const n50 = t6();
+      const n20 = child(n50);
+      const n16 = child(n20);
+      const n14 = child(n16);
+      const x14 = txt(n14);
+      renderEffect(() => {
+        const _darkClassCom = darkClassCom.value;
+        const __darkClassCom = [_darkClassCom];
+        setClass(n50, ["uni-choose-location-poi", [landscapeClassCom.value, _darkClassCom]]);
+        setStyle(n50, poiBoxStyleCom.value);
+        setClass(n20, ["uni-choose-location-poi-search", __darkClassCom]);
+        setClass(n16, ["uni-choose-location-poi-search-box", __darkClassCom]);
+        setClass(n14, ["uni-choose-location-icons uni-choose-location-search-icon", __darkClassCom]);
+        setText(x14, normalizeUniText(toDisplayString(icon.search)));
+      });
+      setInsertionState(n16, 1);
+      const _on_focus = () => isFocus.value = true;
+      const _on_confirm = () => poiSearch("poiSearch");
+      createComponentWithFallback(_component_input, {
+        modelValue: () => searchValue.value,
+        "onUpdate:modelValue": () => (_value) => searchValue.value = _value,
+        type: "text",
+        placeholder: () => languageCom.value["search"],
+        class: () => ["uni-choose-location-poi-search-input uni-choose-location-icons", [darkClassCom.value]],
+        onFocus: () => _on_focus,
+        onConfirm: () => _on_confirm,
+        onInput: () => searchValueChange
+      });
+      setInsertionState(n20, 1);
+      createIf(() => isFocus.value || searchValue.value != "", () => {
+        const n19 = t0$4();
+        const x19 = txt(n19);
+        on$1(n19, "click", cancelSearch);
+        renderEffect(() => setText(x19, normalizeUniText(toDisplayString(languageCom.value["cancel"]))));
+        return n19;
+      });
+      setInsertionState(n50, 1);
+      const n49 = createComponentWithFallback(_component_scroll_view, {
+        "scroll-with-animation": false,
+        direction: "vertical",
+        "scroll-top": () => scrollTop.value,
+        "lower-threshold": 50,
+        onScrolltolower: () => scrolltolower,
+        class: "uni-choose-location-poi-list"
+      }, extend$1(() => {
+        const n21 = createIf(
+          () => errMsg.value != "",
+          () => {
+            const n24 = t1$4();
+            const n23 = child(n24);
+            const x23 = txt(n23);
+            renderEffect(() => {
+              setClass(n23, ["uni-choose-location-poi-search-error-text", [darkClassCom.value]]);
+              setText(x23, normalizeUniText(toDisplayString(errMsg.value)));
+            });
+            return n24;
+          },
+          () => createIf(
+            () => locationLoading.value,
+            () => {
+              const n27 = t2$3();
+              const n26 = child(n27);
+              const x26 = txt(n26);
+              renderEffect(() => {
+                setClass(n26, ["uni-choose-location-poi-search-loading-text", [darkClassCom.value]]);
+                setText(x26, normalizeUniText(toDisplayString(languageCom.value["locationLoading"])));
+              });
+              return n27;
+            },
+            () => createIf(
+              () => searchLoading.value && pageIndex.value == 1,
+              () => {
+                const n31 = t3$1();
+                setInsertionState(n31);
+                createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] });
+                return n31;
+              },
+              () => {
+                const n34 = createFor(
+                  () => pois.value,
+                  (_for_item0, _for_key0) => {
+                    const n43 = t5();
+                    let p0 = child(n43);
+                    let p1 = child(p0);
+                    const n36 = child(p1);
+                    const n37 = child(p1 = next(p1));
+                    const n42 = next(p0);
+                    const n41 = next(n42);
+                    const x36 = txt(n36);
+                    const x37 = txt(n37);
+                    renderEffect(() => {
+                      const _item = _for_item0.value;
+                      const __darkClassCom = [darkClassCom.value];
+                      setClass(n43, ["uni-choose-location-poi-item", [landscapeClassCom.value]]);
+                      setClass(n36, ["uni-choose-location-poi-item-title-text", __darkClassCom]);
+                      setText(x36, normalizeUniText(toDisplayString(_item.title)));
+                      setClass(n37, ["uni-choose-location-poi-item-detail-text", __darkClassCom]);
+                      setText(x37, normalizeUniText(toDisplayString(_item.distance > 0 ? _item.distanceStr + " | " : "") + toDisplayString(_item.address)));
+                    });
+                    setInsertionState(n43, n42);
+                    createIf(() => selected.value == _for_key0.value, () => {
+                      const n40 = t4$1();
+                      const x40 = txt(n40);
+                      renderEffect(() => setText(x40, normalizeUniText(toDisplayString(icon.success))));
+                      return n40;
+                    });
+                    on$1(n43, "click", () => selectPoi(_for_item0.value, _for_key0.value));
+                    renderEffect(() => setClass(n41, ["uni-choose-location-poi-item-after", [darkClassCom.value]]));
+                    return n43;
+                  },
+                  (item, index2) => index2,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n34;
+              },
+              1157
+              /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, SLOT_ROOT, KEYED_INDEX_3 */
+            ),
+            901
+            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, SLOT_ROOT, KEYED_INDEX_2 */
+          ),
+          645
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, SLOT_ROOT, KEYED_INDEX_1 */
+        );
+        const n45 = createIf(
+          () => searchLoading.value && pageIndex.value > 1,
+          () => {
+            const n48 = t3$1();
+            setInsertionState(n48);
+            createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] });
+            return n48;
+          },
+          null,
+          129
+          /* TRUE_SINGLE_ROOT, SLOT_ROOT */
+        );
+        return [n21, n45];
       }, {
-        default: withCtx(() => [
-          createVNode(_component_view, {
-            class: normalizeClass(["uni-choose-location-map-box", [landscapeClassCom.value]]),
-            style: normalizeStyle(mapBoxStyleCom.value)
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_map, {
-                class: "uni-choose-location-map",
-                id: mapId.value,
-                latitude: latitude.value,
-                longitude: longitude.value,
-                "layer-style": theme.value == "dark" ? "2" : "1",
-                "show-compass": false,
-                "enable-zoom": true,
-                "enable-scroll": true,
-                "enable-rotate": false,
-                "enable-poi": true,
-                "show-location": true,
-                onRegionchange: regionchange
-              }, null, 8, ["id", "latitude", "longitude", "layer-style"]),
-              createVNode(_component_view, {
-                class: "uni-choose-location-map-target",
-                ref_key: "mapTargetRef",
-                ref: mapTargetRef
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-target-icon" }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString(icon.target), 1)
-                    ]),
-                    _: 1
-                  })
-                ]),
-                _: 1
-              }, 512),
-              createVNode(_component_view, {
-                class: normalizeClass(["uni-choose-location-map-reset", [landscapeClassCom.value, darkClassCom.value]]),
-                onClick: mapReset,
-                style: normalizeStyle(resetStyleCom.value)
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_text, {
-                    class: normalizeClass(["uni-choose-location-icons uni-choose-location-map-reset-icon", [darkClassCom.value]])
-                  }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString(icon.position), 1)
-                    ]),
-                    _: 1
-                  }, 8, ["class"])
-                ]),
-                _: 1
-              }, 8, ["class", "style"])
-            ]),
-            _: 1
-          }, 8, ["class", "style"]),
-          createVNode(_component_view, {
-            class: "uni-choose-location-nav",
-            style: normalizeStyle("height:" + (60 + safeArea.top) + "px;")
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_view, {
-                class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [landscapeClassCom.value]]),
-                style: normalizeStyle(safeArea.top > 0 ? "top: " + safeArea.top + "px;" : "")
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_text, {
-                    class: "uni-choose-location-nav-text uni-choose-location-nav-back-text",
-                    onClick: back
-                  }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString(languageCom.value["cancel"]), 1)
-                    ]),
-                    _: 1
-                  })
-                ]),
-                _: 1
-              }, 8, ["class", "style"]),
-              createVNode(_component_view, {
-                class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [landscapeClassCom.value, selected.value < 0 && !callUniMapCoErr.value ? "disable" : "active"]]),
-                style: normalizeStyle(safeArea.top > 0 ? "top: " + safeArea.top + "px;" : ""),
-                onClick: confirm
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_text, { class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text" }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString(languageCom.value["ok"]), 1)
-                    ]),
-                    _: 1
-                  })
-                ]),
-                _: 1
-              }, 8, ["class", "style"])
-            ]),
-            _: 1
-          }, 8, ["style"]),
-          useUniCloud.value ? (openBlock(), createBlock(_component_view, {
-            key: 0,
-            class: normalizeClass(["uni-choose-location-poi", [landscapeClassCom.value, darkClassCom.value]]),
-            style: normalizeStyle(poiBoxStyleCom.value)
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_view, {
-                class: normalizeClass(["uni-choose-location-poi-search", [darkClassCom.value]])
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_view, {
-                    class: normalizeClass(["uni-choose-location-poi-search-box", [darkClassCom.value]])
-                  }, {
-                    default: withCtx(() => [
-                      createVNode(_component_text, {
-                        class: normalizeClass(["uni-choose-location-icons uni-choose-location-search-icon", [darkClassCom.value]])
-                      }, {
-                        default: withCtx(() => [
-                          createTextVNode(toDisplayString(icon.search), 1)
-                        ]),
-                        _: 1
-                      }, 8, ["class"]),
-                      createVNode(_component_input, {
-                        modelValue: searchValue.value,
-                        "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => searchValue.value = $event),
-                        type: "text",
-                        placeholder: languageCom.value["search"],
-                        class: normalizeClass(["uni-choose-location-poi-search-input uni-choose-location-icons", [darkClassCom.value]]),
-                        onFocus: _cache[1] || (_cache[1] = ($event) => isFocus.value = true),
-                        onConfirm: _cache[2] || (_cache[2] = ($event) => poiSearch("poiSearch")),
-                        onInput: searchValueChange
-                      }, null, 8, ["modelValue", "placeholder", "class"])
-                    ]),
-                    _: 1
-                  }, 8, ["class"]),
-                  isFocus.value || searchValue.value != "" ? (openBlock(), createBlock(_component_text, {
-                    key: 0,
-                    class: "uni-choose-location-poi-search-cancel",
-                    onClick: cancelSearch
-                  }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString(languageCom.value["cancel"]), 1)
-                    ]),
-                    _: 1
-                  })) : createCommentVNode("", true)
-                ]),
-                _: 1
-              }, 8, ["class"]),
-              createVNode(_component_scroll_view, {
-                ref_key: "scrollRef",
-                ref: scrollRef,
-                "scroll-with-animation": false,
-                direction: "vertical",
-                "scroll-top": scrollTop.value,
-                "lower-threshold": 50,
-                onScrolltolower: scrolltolower,
-                class: "uni-choose-location-poi-list"
-              }, {
-                default: withCtx(() => [
-                  errMsg.value != "" ? (openBlock(), createBlock(_component_view, {
-                    key: 0,
-                    class: "uni-choose-location-poi-search-error"
-                  }, {
-                    default: withCtx(() => [
-                      createVNode(_component_text, {
-                        class: normalizeClass(["uni-choose-location-poi-search-error-text", [darkClassCom.value]])
-                      }, {
-                        default: withCtx(() => [
-                          createTextVNode(toDisplayString(errMsg.value), 1)
-                        ]),
-                        _: 1
-                      }, 8, ["class"])
-                    ]),
-                    _: 1
-                  })) : locationLoading.value ? (openBlock(), createBlock(_component_view, {
-                    key: 1,
-                    class: "uni-choose-location-poi-search-loading"
-                  }, {
-                    default: withCtx(() => [
-                      createVNode(_component_text, {
-                        class: normalizeClass(["uni-choose-location-poi-search-loading-text", [darkClassCom.value]])
-                      }, {
-                        default: withCtx(() => [
-                          createTextVNode(toDisplayString(languageCom.value["locationLoading"]), 1)
-                        ]),
-                        _: 1
-                      }, 8, ["class"])
-                    ]),
-                    _: 1
-                  })) : searchLoading.value && pageIndex.value == 1 ? (openBlock(), createBlock(_component_view, {
-                    key: 2,
-                    class: "uni-choose-location-poi-search-loading"
-                  }, {
-                    default: withCtx(() => [
-                      createVNode(_component_loading, {
-                        class: normalizeClass(["uni-choose-location-poi-search-loading-item", [darkClassCom.value]])
-                      }, null, 8, ["class"])
-                    ]),
-                    _: 1
-                  })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList(pois.value, (item, index2) => {
-                    return openBlock(), createBlock(_component_view, {
-                      key: index2,
-                      class: normalizeClass(["uni-choose-location-poi-item", [landscapeClassCom.value]]),
-                      onClick: ($event) => selectPoi(item, index2)
-                    }, {
-                      default: withCtx(() => [
-                        createVNode(_component_view, null, {
-                          default: withCtx(() => [
-                            createVNode(_component_view, null, {
-                              default: withCtx(() => [
-                                createVNode(_component_text, {
-                                  class: normalizeClass(["uni-choose-location-poi-item-title-text", [darkClassCom.value]])
-                                }, {
-                                  default: withCtx(() => [
-                                    createTextVNode(toDisplayString(item.title), 1)
-                                  ]),
-                                  _: 2
-                                }, 1032, ["class"])
-                              ]),
-                              _: 2
-                            }, 1024),
-                            createVNode(_component_view, null, {
-                              default: withCtx(() => [
-                                createVNode(_component_text, {
-                                  class: normalizeClass(["uni-choose-location-poi-item-detail-text", [darkClassCom.value]])
-                                }, {
-                                  default: withCtx(() => [
-                                    createTextVNode(toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)
-                                  ]),
-                                  _: 2
-                                }, 1032, ["class"])
-                              ]),
-                              _: 2
-                            }, 1024)
-                          ]),
-                          _: 2
-                        }, 1024),
-                        selected.value == index2 ? (openBlock(), createBlock(_component_text, {
-                          key: 0,
-                          class: "uni-choose-location-icons uni-choose-location-poi-item-selected-icon"
-                        }, {
-                          default: withCtx(() => [
-                            createTextVNode(toDisplayString(icon.success), 1)
-                          ]),
-                          _: 1
-                        })) : createCommentVNode("", true),
-                        createVNode(_component_view, {
-                          class: normalizeClass(["uni-choose-location-poi-item-after", [darkClassCom.value]])
-                        }, null, 8, ["class"])
-                      ]),
-                      _: 2
-                    }, 1032, ["class", "onClick"]);
-                  }), 128)),
-                  searchLoading.value && pageIndex.value > 1 ? (openBlock(), createBlock(_component_view, {
-                    key: 4,
-                    class: "uni-choose-location-poi-search-loading"
-                  }, {
-                    default: withCtx(() => [
-                      createVNode(_component_loading, {
-                        class: normalizeClass(["uni-choose-location-poi-search-loading-item", [darkClassCom.value]])
-                      }, null, 8, ["class"])
-                    ]),
-                    _: 1
-                  })) : createCommentVNode("", true)
-                ]),
-                _: 1
-              }, 8, ["scroll-top"])
-            ]),
-            _: 1
-          }, 8, ["class", "style"])) : createCommentVNode("", true)
-        ]),
         _: 1
-      }, 8, ["class"]);
-    };
+        /* NON_STABLE */
+      }));
+      setStaticTemplateRef(n49, scrollRef, null, "scrollRef");
+      return n50;
+    });
+    return n51;
   }
 });
-const _style_0$2 = `
+const _style_0$4 = `
 @font-face {
     font-family: UniChooseLocationFontFamily;
+
+
     src: url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8Rkp9AAABjAAAAGBjbWFw0euemwAAAgAAAAGyZ2x5ZuUB/iAAAAPAAAACsGhlYWQp23fyAAAA4AAAADZoaGVhB94DhgAAALwAAAAkaG10eBQAAAAAAAHsAAAAFGxvY2EBUAG+AAADtAAAAAxtYXhwARIAfQAAARgAAAAgbmFtZUTMSfwAAAZwAAADS3Bvc3RLRtf0AAAJvAAAAFIAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAUAAQAAAAEAAIZo1N5fDzz1AAsEAAAAAADjXhn6AAAAAONeGfoAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABQBxAAMAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYx560DgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAAAAAFAAAAAwAAACwAAAAEAAABcgABAAAAAABsAAMAAQAAACwAAwAKAAABcgAEAEAAAAAKAAgAAgAC5jHmU+aD563//wAA5jHmU+aD563//wAAAAAAAAAAAAEACgAKAAoACgAAAAIAAwAEAAEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAEAAAAAAAAAABAAA5jEAAOYxAAAAAgAA5lMAAOZTAAAAAwAA5oMAAOaDAAAABAAA560AAOetAAAAAQAAAAAAAABIAGYBCAFYAAIAAP/SA4cDNgAdACoAACUGBwYnLgEnJjc+ATc2Fx4BFxYHBgcXHgEOAiYnJTI+ATQuASIOARQeAQJlSFdVT1FsDQwdHodWU1JTeBQUFhc+7AUFBAsPEAX+T0uASkqAln9LS3/MMwkIICKLV1RQUnMQEBoagVZTUlU+7AYPDwsEBAbrSoCWf0tLf5aASgAAAAEAAAAAA8ACyAANAAATNwU3Njc2NxcHBgcGB0A5AQdAVGaPnxdXbWuWfAGPN986TFl8hTpVbG6aiQAAAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAwYeAj4BNC4CDgEBwCU1JiY1JWoGBEAEB0d1ISIpJ0RFokVEJykiIXX9AiRATEImJT9KQCdUEhkZIxkZAXH+iAQGBgQBeApTP0FJUUVEJykpJ0RFUUlBP1MBIiZDJwImQks/JQEjPQAAABIA3gABAAAAAAAAABMAAAABAAAAAAABABsAEwABAAAAAAACAAcALgABAAAAAAADABsANQABAAAAAAAEABsAUAABAAAAAAAFAAsAawABAAAAAAAGABsAdgABAAAAAAAKACsAkQABAAAAAAALABMAvAADAAEECQAAACYAzwADAAEECQABADYA9QADAAEECQACAA4BKwADAAEECQADADYBOQADAAEECQAEADYBbwADAAEECQAFABYBpQADAAEECQAGADYBuwADAAEECQAKAFYB8QADAAEECQALACYCR0NyZWF0ZWQgYnkgaWNvbmZvbnRVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlSZWd1bGFyVW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VmVyc2lvbiAxLjBVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlHZW5lcmF0ZWQgYnkgc3ZnMnR0ZiBmcm9tIEZvbnRlbGxvIHByb2plY3QuaHR0cDovL2ZvbnRlbGxvLmNvbQBDAHIAZQBhAHQAZQBkACAAYgB5ACAAaQBjAG8AbgBmAG8AbgB0AFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFIAZQBnAHUAbABhAHIAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVgBlAHIAcwBpAG8AbgAgADEALgAwAFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AEcAZQBuAGUAcgBhAHQAZQBkACAAYgB5ACAAcwB2AGcAMgB0AHQAZgAgAGYAcgBvAG0AIABGAG8AbgB0AGUAbABsAG8AIABwAHIAbwBqAGUAYwB0AC4AaAB0AHQAcAA6AC8ALwBmAG8AbgB0AGUAbABsAG8ALgBjAG8AbQAAAgAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAQIBAwEEAQUBBgAGc291c3VvB2dvdXh1YW4HZGluZ3dlaQtkaXR1LXR1ZGluZwAAAAA=') format('truetype');
 }
 .uni-choose-location-icons {
@@ -29235,37 +31022,9 @@ const _style_0$2 = `
     border-color: #d1d1d1;
 }
   /* 暗黑模式样式结束 */
-uni-image {
-    display: inline-block;
-    overflow: hidden;
-    position: relative;
-}
-uni-image[hidden] {
-    display: none;
-}
-uni-image > div {
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-}
-uni-image > img {
-    -webkit-touch-callout: none;
-    user-select: none;
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-}
-uni-image > .uni-image-will-change {
-    will-change: transform;
-}
-
 
 `;
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$2]]]);
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["styles", [_style_0$4]]]);
 class ChooseLocationFailImpl extends UniError {
   constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
     super();
@@ -29328,10 +31087,16 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main$1 = /* @__PURE__ */ defineComponent({
+const t0$3 = template("<span uni-text> ");
+const t1$3 = template("<span uni-text class=uni-modal-dialog__message> ");
+const t2$2 = template('<div uni-view class="uni-modal-dialog__action uni-modal-dialog__action--cancel"><span uni-text class=uni-modal-dialog__action-text> ');
+const t3 = template("<div uni-view>");
+const t4 = template('<div uni-view><div uni-view><div uni-view><div uni-view class=uni-modal-dialog__title__container></div><div uni-view></div><div uni-view></div><div uni-view class=uni-modal-dialog__actions><!><!><div uni-view class="uni-modal-dialog__action uni-modal-dialog__action--confirm"><span uni-text class="uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm"> ', 1);
+const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
   __name: "uniModal",
   setup(__props) {
     const theme = ref("light");
+    const isDark = computed(() => theme.value == "dark");
     const language = ref("zh-Hans");
     const i18nCancelText = {
       en: "Cancel",
@@ -29364,14 +31129,16 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     const maxScrollHeight = ref("192px");
     const inputCancelColor = ref(null);
     const inputConfirmColor = ref(null);
-    const hoverClassName = ref("uni-modal_dialog__content__bottom__button__hover");
+    const hoverClassName = ref("uni-modal-dialog__action--hover");
     const showAnim = ref(false);
     const isAutoHeight = ref(true);
+    const hasTitle = computed(() => {
+      return title.value != "";
+    });
     const instance2 = getCurrentInstance();
     const cancelText = computed(() => {
       if (inputCancelText.value != null) {
-        const res = inputCancelText.value;
-        return res;
+        return inputCancelText.value;
       }
       if (language.value.startsWith("en")) {
         return i18nCancelText["en"];
@@ -29392,8 +31159,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     });
     const confirmText = computed(() => {
       if (inputConfirmText.value != null) {
-        const res = inputConfirmText.value;
-        return res;
+        return inputConfirmText.value;
       }
       if (language.value.startsWith("en")) {
         return i18nConfirmText["en"];
@@ -29418,10 +31184,9 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       }, 220);
     };
     const onInputKeyboardChange = (e2) => {
-      let keyBoardHeight = e2.detail.height;
+      const keyBoardHeight = e2.detail.height;
       if (keyBoardHeight > 0) {
-        let calcBottom = keyBoardHeight / 2;
-        inputBottom.value = `${calcBottom}px`;
+        inputBottom.value = `${keyBoardHeight / 2}px`;
       }
     };
     const isValidColor = (inputColor) => {
@@ -29435,26 +31200,17 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       if (isValidColor(inputConfirmColor.value)) {
         confirmColor.value = inputConfirmColor.value;
       } else {
-        if (theme.value == "dark") {
-          confirmColor.value = "#7388a2";
-        } else {
-          confirmColor.value = "#4A5E86";
-        }
+        confirmColor.value = theme.value == "dark" ? "#7388a2" : "#4A5E86";
       }
       if (isValidColor(inputCancelColor.value)) {
         cancelColor.value = inputCancelColor.value;
       } else {
-        if (theme.value == "dark") {
-          cancelColor.value = "#a5a5a5";
-        } else {
-          cancelColor.value = "#000000";
-        }
+        cancelColor.value = theme.value == "dark" ? "#a5a5a5" : "#000000";
       }
-      if (theme.value == "dark") {
-        hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
-      } else {
-        hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover";
-      }
+      hoverClassName.value = theme.value == "dark" ? "uni-modal-dialog__action--hover-dark" : "uni-modal-dialog__action--hover";
+    };
+    const getCloseAnimationDelay = () => {
+      return 300;
     };
     const closeModal = () => {
       showAnim.value = false;
@@ -29463,11 +31219,11 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
         uni.closeDialogPage({
           dialogPage: (_a = instance2 == null ? void 0 : instance2.proxy) == null ? void 0 : _a.$page
         });
-      }, 300);
+      }, getCloseAnimationDelay());
     };
     const handleCancel = () => {
       closeModal();
-      let ret = {
+      const ret = {
         cancel: true,
         confirm: false
       };
@@ -29475,7 +31231,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
     const handleSure = () => {
       closeModal();
-      let ret = {
+      const ret = {
         cancel: false,
         confirm: true,
         content: editable.value ? content.value : null
@@ -29488,17 +31244,16 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       }, 10);
     });
     onLoad((options) => {
-      const systemInfo = uni.getSystemInfoSync();
-      const osLanguage = systemInfo.osLanguage;
-      const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55);
-      maxScrollHeight.value = scrollHeight + "px";
-      const appLanguage = systemInfo.appLanguage;
-      if (appLanguage != null) {
-        language.value = appLanguage;
-      } else if (osLanguage != null) {
-        language.value = osLanguage;
+      const deviceInfo = uni.getDeviceInfo();
+      const windowInfo = uni.getWindowInfo();
+      maxScrollHeight.value = `${Math.floor(windowInfo.screenHeight * 0.55)}px`;
+      const appBaseInfo = uni.getAppBaseInfo();
+      if (appBaseInfo.appLanguage != null) {
+        language.value = appBaseInfo.appLanguage;
+      } else if (deviceInfo.osLanguage != null) {
+        language.value = deviceInfo.osLanguage;
       }
-      const hostTheme = systemInfo.hostTheme;
+      const hostTheme = appBaseInfo.hostTheme;
       if (hostTheme != null) {
         theme.value = hostTheme;
         updateUI();
@@ -29557,144 +31312,129 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       uni.$off(failEventName.value, null);
     });
     onBackPress((_) => {
-      let ret = {
+      const ret = {
         cancel: false,
         confirm: false
       };
       uni.$emit(successEventName.value, JSON.stringify(ret));
       return false;
     });
-    return (_ctx, _cache) => {
-      const _component_text = __syscom_1$1;
-      const _component_textarea = __syscom_1;
-      const _component_scroll_view = __syscom_2$1;
-      const _component_view = __syscom_2;
-      return openBlock(), createBlock(_component_view, {
-        class: normalizeClass(["uni-modal_dialog__mask", { "uni-modal_dialog__mask__show": showAnim.value }])
-      }, {
-        default: withCtx(() => [
-          createVNode(_component_view, {
-            class: normalizeClass(["uni-modal_dialog__container", { "uni-modal_dialog__show": showAnim.value, "uni-modal_dark__mode": theme.value == "dark" }]),
-            id: "modal_content",
-            style: normalizeStyle({ bottom: inputBottom.value })
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_view, {
-                class: normalizeClass(["uni-modal_dialog__container__wrapper", { "uni-modal_dark__mode": theme.value == "dark" }])
-              }, {
-                default: withCtx(() => [
-                  title.value ? (openBlock(), createBlock(_component_text, {
-                    key: 0,
-                    class: normalizeClass(["uni-modal_dialog__title__text", { "uni-modal_dark__mode": theme.value == "dark" }])
-                  }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString(title.value), 1)
-                    ]),
-                    _: 1
-                  }, 8, ["class"])) : createCommentVNode("", true),
-                  createVNode(_component_view, { class: "uni-modal_dialog__content" }, {
-                    default: withCtx(() => [
-                      editable.value ? (openBlock(), createBlock(_component_textarea, {
-                        key: 0,
-                        modelValue: content.value,
-                        "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => content.value = $event),
-                        class: normalizeClass(["uni-modal_dialog__content__textarea", { "uni-modal_dark__mode": theme.value == "dark" }]),
-                        "placeholder-class": "modalContent_content_edit_placeholder",
-                        "adjust-position": false,
-                        onBlur: onInputBlur,
-                        onKeyboardheightchange: onInputKeyboardChange,
-                        id: "textarea_content_input",
-                        ref: "ref_textarea_content_input",
-                        "auto-height": isAutoHeight.value,
-                        placeholder: placeholderText.value
-                      }, null, 8, ["modelValue", "class", "auto-height", "placeholder"])) : createCommentVNode("", true),
-                      !editable.value && content.value.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
-                        key: 1,
-                        class: "uni-modal_dialog__content__scrollview",
-                        "show-scrollbar": "true",
-                        style: normalizeStyle({ maxHeight: maxScrollHeight.value })
-                      }, {
-                        default: withCtx(() => [
-                          createVNode(_component_text, { class: "uni-modal_dialog__content__scrollview__text" }, {
-                            default: withCtx(() => [
-                              createTextVNode(toDisplayString(content.value), 1)
-                            ]),
-                            _: 1
-                          })
-                        ]),
-                        _: 1
-                      }, 8, ["style"])) : createCommentVNode("", true)
-                    ]),
-                    _: 1
-                  }),
-                  createVNode(_component_view, {
-                    class: normalizeClass(["uni-modal_dialog__content__topline", { "uni-modal_dark__mode": theme.value == "dark" }])
-                  }, null, 8, ["class"]),
-                  createVNode(_component_view, { class: "uni-modal_dialog__content__bottom" }, {
-                    default: withCtx(() => [
-                      showCancel.value ? (openBlock(), createBlock(_component_view, {
-                        key: 0,
-                        class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": theme.value == "dark" }]),
-                        "hover-class": hoverClassName.value,
-                        onClick: handleCancel
-                      }, {
-                        default: withCtx(() => [
-                          createVNode(_component_text, {
-                            style: normalizeStyle({ color: cancelColor.value }),
-                            class: "uni-modal_dialog__content__bottom__button__text"
-                          }, {
-                            default: withCtx(() => [
-                              createTextVNode(toDisplayString(cancelText.value), 1)
-                            ]),
-                            _: 1
-                          }, 8, ["style"])
-                        ]),
-                        _: 1
-                      }, 8, ["class", "hover-class"])) : createCommentVNode("", true),
-                      showCancel.value ? (openBlock(), createBlock(_component_view, {
-                        key: 1,
-                        class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", { "uni-modal_dark__mode": theme.value == "dark" }])
-                      }, null, 8, ["class"])) : createCommentVNode("", true),
-                      createVNode(_component_view, {
-                        class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": theme.value == "dark" }]),
-                        "hover-class": hoverClassName.value,
-                        onClick: handleSure
-                      }, {
-                        default: withCtx(() => [
-                          createVNode(_component_text, {
-                            style: normalizeStyle({ color: confirmColor.value }),
-                            class: "uni-modal_dialog__content__bottom__button__text__sure"
-                          }, {
-                            default: withCtx(() => [
-                              createTextVNode(toDisplayString(confirmText.value), 1)
-                            ]),
-                            _: 1
-                          }, 8, ["style"])
-                        ]),
-                        _: 1
-                      }, 8, ["class", "hover-class"])
-                    ]),
-                    _: 1
-                  })
-                ]),
-                _: 1
-              }, 8, ["class"])
-            ]),
-            _: 1
-          }, 8, ["style", "class"])
-        ]),
-        _: 1
-      }, 8, ["class"]);
-    };
+    const _component_textarea = __syscom_0;
+    const _component_scroll_view = __syscom_1;
+    const n26 = t4();
+    const n25 = child(n26);
+    const n24 = child(n25);
+    const n3 = child(n24);
+    const n10 = next(n3);
+    const n11 = next(n10);
+    const n22 = next(n11);
+    const n21 = child(n22);
+    const n23 = next(n21);
+    const n20 = next(n23);
+    const n19 = child(n20);
+    renderEffect(() => {
+      const _showAnim = showAnim.value;
+      const _isDark = isDark.value;
+      setClassName(n26, (_showAnim ? 1 : 0) | (!_showAnim ? 2 : 0), [" uni-modal-mask--show", " uni-modal-mask--hide"], "uni-modal-mask");
+      setClassName(n25, (_showAnim ? 1 : 0) | (_isDark ? 2 : 0), [" uni-modal-dialog--show", " uni-modal--dark"], "uni-modal-dialog");
+      setStyle(n25, { bottom: inputBottom.value });
+      setClassName(n24, _isDark ? 1 : 0, " uni-modal--dark", "uni-modal-dialog__inner");
+    });
+    setInsertionState(n3);
+    createIf(() => hasTitle.value, () => {
+      const n2 = t0$3();
+      const x2 = txt(n2);
+      renderEffect(() => {
+        setClassName(n2, isDark.value ? 1 : 0, " uni-modal--dark", "uni-modal-dialog__title");
+        setText(x2, normalizeUniText("\n						" + toDisplayString(title.value) + "\n					"));
+      });
+      return n2;
+    });
+    renderEffect(() => setClassName(n10, !hasTitle.value ? 1 : 0, " no-title", "uni-modal-dialog__body"));
+    setInsertionState(n10);
+    createIf(
+      () => editable.value,
+      () => {
+        const n6 = createComponentWithFallback(_component_textarea, {
+          modelValue: () => content.value,
+          "onUpdate:modelValue": () => (_value) => content.value = _value,
+          class: () => ["uni-modal-dialog__textarea", { "uni-modal--dark": isDark.value }],
+          "placeholder-class": "uni-modal-dialog__textarea-placeholder",
+          focus: true,
+          "adjust-position": false,
+          onBlur: () => onInputBlur,
+          onKeyboardheightchange: () => onInputKeyboardChange,
+          "auto-height": () => isAutoHeight.value,
+          placeholder: () => placeholderText.value
+        });
+        return n6;
+      },
+      () => createIf(() => content.value.length > 0, () => {
+        const n9 = createComponentWithFallback(_component_scroll_view, {
+          class: "uni-modal-dialog__scroll",
+          "show-scrollbar": "true",
+          style: () => ({ maxHeight: maxScrollHeight.value })
+        }, () => {
+          const n8 = t1$3();
+          const x8 = txt(n8);
+          renderEffect(() => setText(x8, normalizeUniText("\n							" + toDisplayString(content.value) + "\n						")));
+          return n8;
+        });
+        return n9;
+      }),
+      517
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+    );
+    renderEffect(() => setClassName(n11, isDark.value ? 1 : 0, " uni-modal--dark", "uni-modal-dialog__divider"));
+    setInsertionState(n22, n21);
+    createIf(() => showCancel.value, () => {
+      const n15 = t2$2();
+      const n14 = child(n15);
+      const x14 = txt(n14);
+      on$1(n15, "click", handleCancel);
+      renderEffect(() => {
+        setHover(n15, hoverClassName.value, false, 50, 400, "uni-modal-dialog__action uni-modal-dialog__action--cancel");
+        setStyle(n14, { color: cancelColor.value });
+        setText(x14, normalizeUniText("\n							" + toDisplayString(cancelText.value) + "\n						"));
+      });
+      return n15;
+    });
+    setInsertionState(n22, n23);
+    createIf(() => showCancel.value, () => {
+      const n18 = t3();
+      renderEffect(() => setClassName(n18, isDark.value ? 1 : 0, " uni-modal--dark", "uni-modal-dialog__split"));
+      return n18;
+    });
+    const x19 = txt(n19);
+    on$1(n20, "click", handleSure);
+    renderEffect(() => {
+      setHover(n20, hoverClassName.value, false, 50, 400, "uni-modal-dialog__action uni-modal-dialog__action--confirm");
+      setStyle(n19, { color: confirmColor.value });
+      setText(x19, normalizeUniText("\n							" + toDisplayString(confirmText.value) + "\n						"));
+    });
+    return n26;
   }
 });
-const _style_0$1 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		line-height: 1.5;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
-const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
+const _style_0$3 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n@media screen and (min-width: 768px) {\n.uni-modal-dialog {\n			max-width: 556px;\n}\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		lines: 2;\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 22px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--cancel{\n		padding: 0 4px 0 10px;\n}\n.uni-modal-dialog__action--confirm{\n		padding: 0 10px 0 4px;\n}\n.uni-modal-dialog__action--hover {\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		background-color: #414141;\n}\n.uni-modal-dialog__action-text {\n		color: #000000;\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n		lines: 1;\n\n		overflow: hidden;\n		text-overflow: ellipsis;\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["styles", [_style_0$3]]]);
+class ShowModalSuccessImpl {
+  constructor(cancel, confirm, content = null, errMsg = "showModal:ok") {
+    this.errMsg = errMsg;
+    this.content = content;
+    this.cancel = cancel;
+    this.confirm = confirm;
+  }
+}
 class ShowModalFailImpl extends UniError {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
+  }
+}
+class HideModalSuccessImpl {
+  constructor(errMsg = "hideModal:ok") {
+    this.errMsg = errMsg;
   }
 }
 class HideModalFailImpl extends UniError {
@@ -29713,32 +31453,32 @@ const showModal$1 = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options);
+    uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)) : {});
   });
   uni.$on(successEventName, (inputParamStr) => {
     var _a2, _b2;
-    let inputParam = JSON.parse(inputParamStr);
-    let res = {
-      cancel: inputParam["cancel"],
-      confirm: inputParam["confirm"],
-      content: inputParam["content"]
-    };
-    (_a2 = options.success) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+    const inputParam = JSON.parse(inputParamStr);
+    const res2 = new ShowModalSuccessImpl(
+      inputParam["cancel"],
+      inputParam["confirm"],
+      inputParam["content"]
+    );
+    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res = new ShowModalFailImpl();
-    (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+    const res2 = new ShowModalFailImpl();
+    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
-  let openRet = uni.openDialogPage({
+  const openRet = uni.openDialogPage({
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
-      (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
-      (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+      const res2 = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
+      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
       uni.$off(readyEventName);
       uni.$off(successEventName);
       uni.$off(failEventName);
@@ -29746,60 +31486,47 @@ const showModal$1 = (options) => {
   });
   if (openRet != null) {
     return openRet;
-  } else {
-    const res = new ShowModalFailImpl();
-    (_a = options.fail) == null ? void 0 : _a.call(options, res);
-    (_b = options.complete) == null ? void 0 : _b.call(options, res);
-    return null;
   }
+  const res = new ShowModalFailImpl();
+  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+  return null;
 };
-const hideModal$1 = function(options) {
-  var _a, _b, _c, _d, _e;
+const SYSTEM_DIALOG_MODAL_PAGE_PATH = "uni:uniModal";
+const hideModal$1 = (options) => {
+  var _a, _b, _c, _d;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  if (!currentPage) {
+  if (currentPage == null) {
     const res2 = new HideModalFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
   }
-  const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
-  let shallClosePages = [];
-  for (let perPage of systemDialogPages) {
-    if (isSystemModalDialogPage(perPage)) {
-      if ((options == null ? void 0 : options.modalPage) == null) {
-        shallClosePages.push(perPage);
-      } else {
-        if (perPage.options["optionsEventName"] === options.modalPage.options["optionsEventName"]) {
-          shallClosePages.push(perPage);
-          break;
-        }
+  const systemDialogPages = currentPage.$getSystemDialogPages();
+  const modalPage = options == null ? void 0 : options.modalPage;
+  for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+    const page = systemDialogPages[i];
+    if (!page.route.startsWith(SYSTEM_DIALOG_MODAL_PAGE_PATH)) {
+      continue;
+    }
+    if (modalPage == null) {
+      uni.closeDialogPage({
+        dialogPage: page
+      });
+    } else {
+      if (modalPage === page) {
+        uni.closeDialogPage({
+          dialogPage: page
+        });
+        break;
       }
     }
   }
-  shallClosePages.forEach((item) => {
-    const index2 = systemDialogPages.indexOf(item);
-    if (index2 > -1) {
-      notifyClosedDialog(systemDialogPages[index2]);
-      systemDialogPages.splice(index2, 1);
-    }
-  });
-  let res = {};
-  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, res);
-  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
+  const res = new HideModalSuccessImpl();
+  (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, res);
+  (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, res);
 };
-function notifyClosedDialog(perPage) {
-  let ret = {
-    cancel: false,
-    confirm: false
-  };
-  if (perPage.options["successEventName"] != null) {
-    uni.$emit(perPage.options["successEventName"], JSON.stringify(ret));
-  }
-}
-function isSystemModalDialogPage(page) {
-  return page.route.startsWith("uni:uniModal");
-}
 const API_HIDE_MODAL = "hideModal";
 const registerModalOnce = /* @__PURE__ */ once(() => {
   registerSystemRoute("uni:uniModal", UniModalPage);
@@ -29827,7 +31554,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_MODAL,
   (args, { resolve, reject }) => {
     registerModalOnce();
-    showModal$1(
+    return showModal$1(
       extend(
         {
           success: (res) => {
@@ -29842,7 +31569,9 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const _sfc_main = /* @__PURE__ */ defineComponent({
+const t0$2 = template("<span uni-text class=uni-loading-dialog__title> ");
+const t1$2 = template("<div uni-view><div uni-view>", 1);
+const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
   __name: "showLoading",
   setup(__props) {
     const readyEventName = ref("");
@@ -29851,6 +31580,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     const failEventName = ref("");
     const title = ref("");
     const showAnim = ref(false);
+    const iosSpinner = ref(true);
     onReady(() => {
       setTimeout(() => {
         showAnim.value = true;
@@ -29865,6 +31595,9 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
         if (data["title"] != null) {
           title.value = data["title"];
         }
+        if (data["iosSpinner"] != null) {
+          iosSpinner.value = data["iosSpinner"];
+        }
       });
       uni.$emit(readyEventName.value, {});
       uni.$emit(successEventName.value, "");
@@ -29875,44 +31608,45 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       uni.$off(successEventName.value, null);
       uni.$off(failEventName.value, null);
     });
-    return (_ctx, _cache) => {
-      const _component_loading = _sfc_main$4;
-      const _component_text = __syscom_1$1;
-      const _component_view = __syscom_2;
-      return openBlock(), createBlock(_component_view, {
-        class: normalizeClass(["uni-loading_dialog__mask", { "uni-loading_dialog__mask__show": showAnim.value }])
-      }, {
-        default: withCtx(() => [
-          createVNode(_component_view, {
-            class: normalizeClass(["uni-loading_dialog__container", { "uni-loading_dialog__show": showAnim.value }])
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_loading, { class: "uni-loading_dialog__container__loading" }),
-              title.value ? (openBlock(), createBlock(_component_text, {
-                key: 0,
-                class: "uni-loading_dialog__container__title"
-              }, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString(title.value), 1)
-                ]),
-                _: 1
-              })) : createCommentVNode("", true)
-            ]),
-            _: 1
-          }, 8, ["class"])
-        ]),
-        _: 1
-      }, 8, ["class"]);
-    };
+    const n5 = t1$2();
+    const n4 = child(n5);
+    renderEffect(() => {
+      const _showAnim = showAnim.value;
+      setClassName(n5, _showAnim ? 1 : 0, " uni-loading-mask--show", "uni-loading-mask");
+      setClassName(n4, _showAnim ? 1 : 0, " uni-loading-dialog--show", "uni-loading-dialog");
+    });
+    setInsertionState(n4);
+    createAssetComponent("loading", {
+      class: "uni-loading-dialog__spinner",
+      "ios-spinner": () => iosSpinner.value
+    });
+    setInsertionState(n4, 1);
+    createIf(() => title.value, () => {
+      const n3 = t0$2();
+      const x3 = txt(n3);
+      renderEffect(() => setText(x3, normalizeUniText(toDisplayString(title.value))));
+      return n3;
+    });
+    return n5;
   }
 });
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n\n	\n";
-const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["styles", [_style_0]]]);
+const _style_0$2 = "\n	/**\n	 * 透明背景\n	 */\n.uni-loading-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading-mask--show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading-dialog {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n\n\n\n\n		max-width: 80%;\n\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 0.95);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 10px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-loading-dialog.uni-loading-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading-dialog__spinner {\n		width: 36px;\n		height: 36px;\n		border-color: white;\n}\n.uni-loading-dialog__title {\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines: 1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n";
+const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["styles", [_style_0$2]]]);
+class ShowLoadingSuccessImpl {
+  constructor(errMsg = "showLoading:ok") {
+    this.errMsg = errMsg;
+  }
+}
 class ShowLoadingFailImpl extends UniError {
   constructor(errMsg = "showLoading:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
+  }
+}
+class HideLoadingSuccessImpl {
+  constructor(errMsg = "hideLoading:ok") {
+    this.errMsg = errMsg;
   }
 }
 class HideLoadingFailImpl extends UniError {
@@ -29931,27 +31665,27 @@ const showLoading$1 = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options);
+    uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)) : {});
   });
-  uni.$on(successEventName, (inputParamStr) => {
+  uni.$on(successEventName, (_) => {
     var _a2, _b2;
-    let res = {};
-    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+    const res2 = new ShowLoadingSuccessImpl();
+    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res = new ShowLoadingFailImpl();
-    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+    const res2 = new ShowLoadingFailImpl();
+    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
-  let openRet = uni.openDialogPage({
+  const openRet = uni.openDialogPage({
     url: `uni:showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
-      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res);
-      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+      const res2 = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
+      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
       uni.$off(readyEventName);
       uni.$off(successEventName);
       uni.$off(failEventName);
@@ -29959,50 +31693,47 @@ const showLoading$1 = (options) => {
   });
   if (openRet != null) {
     return openRet;
-  } else {
-    const res = new ShowLoadingFailImpl();
-    (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
-    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
-    return null;
   }
+  const res = new ShowLoadingFailImpl();
+  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+  return null;
 };
-const hideLoading$1 = function(options) {
-  var _a, _b, _c, _d, _e;
+const SYSTEM_DIALOG_LOADING_PAGE_PATH = "uni:showLoading";
+const hideLoading$1 = (options) => {
+  var _a, _b, _c, _d;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  if (!currentPage) {
+  if (currentPage == null) {
     const res2 = new HideLoadingFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
   }
-  const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
-  let shallClosePages = [];
-  for (let perPage of systemDialogPages) {
-    if (isSystemShowLoadingDialogPage(perPage)) {
-      if ((options == null ? void 0 : options.loadingPage) == null) {
-        shallClosePages.push(perPage);
-      } else {
-        if (perPage.options["optionsEventName"] === options.loadingPage.options["optionsEventName"]) {
-          shallClosePages.push(perPage);
-          break;
-        }
+  const loadingPage = options == null ? void 0 : options.loadingPage;
+  const systemDialogPages = currentPage.$getSystemDialogPages();
+  for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+    const page = systemDialogPages[i];
+    if (!page.route.startsWith(SYSTEM_DIALOG_LOADING_PAGE_PATH)) {
+      continue;
+    }
+    if (loadingPage == null) {
+      uni.closeDialogPage({
+        dialogPage: page
+      });
+    } else {
+      if (loadingPage === page) {
+        uni.closeDialogPage({
+          dialogPage: page
+        });
+        break;
       }
     }
   }
-  shallClosePages.forEach((item) => {
-    const index2 = systemDialogPages.indexOf(item);
-    if (index2 > -1) {
-      systemDialogPages.splice(index2, 1);
-    }
-  });
-  let res = {};
-  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, res);
-  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
+  const res = new HideLoadingSuccessImpl();
+  (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, res);
+  (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, res);
 };
-function isSystemShowLoadingDialogPage(page) {
-  return page.route.startsWith("uni:showLoading");
-}
 const API_HIDE_LOADING = "hideLoading";
 const registerLoadingOnce = /* @__PURE__ */ once(() => {
   registerSystemRoute("uni:showLoading", UniLoadingPage);
@@ -30032,6 +31763,1334 @@ const showLoading = /* @__PURE__ */ defineAsyncApi(
     registerLoadingOnce();
     return showLoading$1(
       extend(
+        {
+          success: (res) => {
+            resolve(res);
+          },
+          fail: (err) => {
+            reject(err);
+          }
+        },
+        args
+      )
+    );
+  }
+);
+class Friction2 {
+  // 构造函数，初始化物体的质量（m）、摩擦力大小（f，这里假设是牛顿单位的力，但乘以1000可能是为了转换为某种特定单位）
+  constructor(mass, frictionForce) {
+    this.endPosition = null;
+    this.lastTimeElapsed = null;
+    this.totalTimeToStop = 0;
+    this.mass = mass;
+    this.frictionForce = 1e3 * frictionForce;
+    this.startTime = 0;
+    this.velocity = { x: 0, y: 0 };
+    this.acceleration = { x: 0, y: 0 };
+    this.startPosition = { x: 0, y: 0 };
+    this.endPosition = null;
+    this.lastTimeElapsed = null;
+  }
+  // 设置物体的速度
+  setVelocity(x, y) {
+    const speed = Math.sqrt(x * x + y * y);
+    this.velocity = { x, y };
+    this.acceleration = {
+      x: -this.frictionForce * x / speed,
+      y: -this.frictionForce * y / speed
+    };
+    this.totalTimeToStop = Math.abs(x / this.acceleration.x);
+    if (Number.isNaN(this.totalTimeToStop)) {
+      this.totalTimeToStop = Math.abs(y / this.acceleration.y);
+    }
+    if (Number.isNaN(this.totalTimeToStop)) {
+      this.totalTimeToStop = 0;
+    }
+    this.startTime = Date.now();
+    this.lastTimeElapsed = null;
+  }
+  // 设置物体的起始位置
+  setStartPosition(x, y) {
+    this.startPosition = { x, y };
+  }
+  // 设置物体的结束位置
+  setEndPosition(x, y) {
+    this.endPosition = { x, y };
+  }
+  // 计算并返回物体在时间 t 时的位置
+  positionAtTime(t8) {
+    if (t8 == null) {
+      t8 = (Date.now() - this.startTime) / 1e3;
+    }
+    if (t8 > this.totalTimeToStop) {
+      t8 = this.totalTimeToStop;
+      this.lastTimeElapsed = t8;
+    }
+    var x = this.velocity.x * t8 + 0.5 * this.acceleration.x * t8 * t8 + this.startPosition.x;
+    var y = this.velocity.y * t8 + 0.5 * this.acceleration.y * t8 * t8 + this.startPosition.y;
+    if (this.acceleration.x > 0 && x < this.endPosition.x || this.acceleration.x < 0 && x > this.endPosition.x) {
+      x = this.endPosition.x;
+    }
+    if (this.acceleration.y > 0 && y < this.endPosition.y || this.acceleration.y < 0 && y > this.endPosition.y) {
+      y = this.endPosition.y;
+    }
+    return { x, y };
+  }
+  // 计算并返回物体在时间 t 时的速度
+  velocityAtTime(t8) {
+    if (t8 == null) {
+      t8 = (Date.now() - this.startTime) / 1e3;
+    }
+    if (t8 > this.totalTimeToStop) {
+      t8 = this.totalTimeToStop;
+    }
+    return {
+      dx: this.velocity.x + this.acceleration.x * t8,
+      dy: this.velocity.y + this.acceleration.y * t8
+    };
+  }
+  // 计算物体停止前的位移量（这里的方法名可能不准确，因为 delta 通常表示变化量）
+  // 注意：这个方法可能是错误的，因为它基于一个不准确的加速度公式
+  displacement() {
+    var tx = -1.5 * Math.pow(this.velocity.x, 2) / this.acceleration.x;
+    if (Number.isNaN(tx)) {
+      tx = 0;
+    }
+    var ty = -1.5 * Math.pow(this.velocity.y, 2) / this.acceleration.y;
+    if (Number.isNaN(ty)) {
+      ty = 0;
+    }
+    return {
+      x: tx,
+      y: ty
+    };
+  }
+  // 计算物体停止所需的时间（这个方法实际上是多余的，因为已经在 setVelocity 中计算过了）
+  timeToStop() {
+    return -this.velocity.x / this.acceleration.x;
+  }
+  // 检查物体是否已经停止或到达结束位置
+  isDone() {
+    const currentPosition = this.positionAtTime(null);
+    return currentPosition.x === this.endPosition.x && currentPosition.y === this.endPosition.y || this.lastTimeElapsed === this.totalTimeToStop;
+  }
+  // 重新配置物体的质量和摩擦力大小
+  reconfigure(mass, frictionForce) {
+    this.mass = mass;
+    this.frictionForce = 1e3 * frictionForce;
+  }
+}
+const t0$1 = template("<div uni-view class=uni-preview-image-loading>");
+const t1$1 = template('<div uni-view style="align-items: center;justify-content: center;position: absolute;top: 0;bottom: 0;left: 0;right: 0;"><img uni-image mode=aspectFit style="width: 70px;height: 70px;" draggable=false>');
+const t2$1 = template("<div uni-view style=flex:1; class=uni-preview-image-item-background><img uni-image class=uni-preview-image-item draggable=false><div uni-view class=uni-preview-image-patch></div>", 1);
+const DEFAULT_DISTANCE = 4;
+const FAST_SLIDE_LENGTH = 10;
+const SCALE_BOUNDARY_BUFFER = 2;
+const MIN_SCALE = 1;
+const MAX_SCALE = 3;
+const ANIMATION_DURATION = 200;
+const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
+  __name: "uni-previewImageItem",
+  props: {
+    src: {
+      type: String,
+      default: ""
+    },
+    index: {
+      type: Number,
+      default: -1
+    },
+    longPressAction: {
+      type: Object
+    },
+    tips: {
+      type: Object
+    },
+    reset: {
+      type: Boolean,
+      default: false
+    },
+    resetOnSrcChange: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const imageView = ref(null);
+    const mask = ref(null);
+    const imageMode = ref("aspectFit");
+    const lastTouchEndTime = ref(0);
+    const srcPath = ref("");
+    const screenWidth = ref(0);
+    const screenHeight = ref(0);
+    const scaleSize = ref(1);
+    const lastSlideTouch = ref(null);
+    const lastTouchPointerTime = ref(0);
+    const imageTop = ref(0);
+    const imageMarginTop = ref(0);
+    const imageLeft = ref(0);
+    const withAnimation = ref(false);
+    const imageHeight = ref(0);
+    const historyX = ref([0, 0]);
+    const historyY = ref([0, 0]);
+    const historyT = ref([0, 0]);
+    const _friction = ref(new Friction2(1, 2));
+    const requestId = ref(-1);
+    const needExecLongPress = ref(false);
+    const downPoint = ref(null);
+    const longPressActionTimeoutId = ref(-1);
+    const inScaleMode = ref(false);
+    const scaleGestureActive = ref(false);
+    const scaleGestureInProgress = ref(false);
+    const delegateMoveToParent = ref(false);
+    const inDoubleTapMode = ref(false);
+    const startTimestamp = ref(0);
+    const clickTimeoutId = ref(-1);
+    const transformOrigin = ref([0, 0]);
+    const loadingFinished = ref(false);
+    const devicePixelRatio = ref(0);
+    const loadError = ref(false);
+    const language = ref("zh-Hans");
+    const isPreviewImaqeClosed = ref(false);
+    const swiperTouchDisabled = ref(false);
+    const ignoreClickUntil = ref(0);
+    const inScaleBounceBack = ref(false);
+    const bounceTransitionUntil = ref(0);
+    const instance2 = getCurrentInstance().proxy;
+    const getSrcLocalPath = (url) => {
+      srcPath.value = url;
+    };
+    const resetImageState = () => {
+      var _a, _b, _c, _d;
+      cancelAnimationFrame(requestId.value);
+      clearTimeout(clickTimeoutId.value);
+      clearTimeout(longPressActionTimeoutId.value);
+      loadingFinished.value = false;
+      loadError.value = false;
+      imageMode.value = "aspectFit";
+      scaleSize.value = 1;
+      imageTop.value = 0;
+      imageMarginTop.value = 0;
+      imageLeft.value = 0;
+      imageHeight.value = 0;
+      withAnimation.value = false;
+      historyX.value = [0, 0];
+      historyY.value = [0, 0];
+      historyT.value = [0, 0];
+      lastSlideTouch.value = null;
+      needExecLongPress.value = false;
+      downPoint.value = null;
+      inScaleMode.value = false;
+      scaleGestureActive.value = false;
+      scaleGestureInProgress.value = false;
+      delegateMoveToParent.value = false;
+      inDoubleTapMode.value = false;
+      transformOrigin.value = [0, 0];
+      inScaleBounceBack.value = false;
+      bounceTransitionUntil.value = 0;
+      if (swiperTouchDisabled.value) {
+        swiperTouchDisabled.value = false;
+        uni.$emit("__UNIPREVIEWIMAGE", false);
+      }
+      (_a = imageView.value) == null ? void 0 : _a.style.setProperty("height", "100%");
+      (_b = imageView.value) == null ? void 0 : _b.style.setProperty("transition-duration", "0ms");
+      (_c = imageView.value) == null ? void 0 : _c.style.setProperty("transform-origin", "0px 0px");
+      (_d = imageView.value) == null ? void 0 : _d.style.setProperty("transform", "translate(0px,0px) scale(1)");
+    };
+    watch(() => props2.src, (newValue, oldValue) => {
+      if (props2.resetOnSrcChange) {
+        resetImageState();
+      }
+      if (newValue != "") {
+        getSrcLocalPath(newValue);
+      } else {
+        srcPath.value = "";
+        loadingFinished.value = true;
+        loadError.value = true;
+      }
+    }, { immediate: true });
+    onMounted(() => {
+      var dpr = uni.getDeviceInfo({ filter: ["devicePixelRatio"] }).devicePixelRatio;
+      if (dpr == null) {
+        devicePixelRatio.value = 1;
+      } else {
+        devicePixelRatio.value = dpr;
+      }
+      const systemInfo = uni.getSystemInfoSync();
+      language.value = systemInfo.appLanguage;
+      language.value = uni.getLocale();
+    });
+    const previewImageError = (e2) => {
+      var _a;
+      (_a = mask.value) == null ? void 0 : _a.style.setProperty("point-events", "none");
+      loadingFinished.value = true;
+      loadError.value = true;
+    };
+    const onLongPressAction = () => {
+      var longPressAction = props2.longPressAction;
+      if (longPressAction != null && longPressAction.itemList.length > 0) {
+        uni.showActionSheet({
+          itemList: longPressAction.itemList,
+          itemColor: longPressAction.itemColor,
+          success: (e2) => {
+            var _a;
+            (_a = longPressAction.success) == null ? void 0 : _a.call(longPressAction, { tapIndex: e2.tapIndex, index: props2.index });
+            uni.$emit("__UNIPREVIEWLONGPRESS", { type: "success", tapIndex: e2.tapIndex, index: props2.index });
+          },
+          fail() {
+            var _a;
+            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new PreviewImageErrorImpl(1101001, UniErrorPreviewImage));
+            uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 });
+          }
+        });
+      }
+    };
+    const preventDefaultScall = (e2) => {
+      e2 == null ? void 0 : e2.preventDefault();
+      e2 == null ? void 0 : e2.stopPropagation();
+    };
+    const setSwiperTouchDisabled = (disabled) => {
+      if (swiperTouchDisabled.value == disabled) {
+        return;
+      }
+      swiperTouchDisabled.value = disabled;
+      uni.$emit("__UNIPREVIEWIMAGE", disabled);
+    };
+    const markScaleGesture = () => {
+      ignoreClickUntil.value = Date.now() + 450;
+    };
+    const shouldIgnoreClick = () => {
+      return Date.now() < ignoreClickUntil.value;
+    };
+    const setScaleKeepingViewportCenter = (targetScale) => {
+      if (scaleSize.value <= 0 || screenWidth.value <= 0 || screenHeight.value <= 0) {
+        scaleSize.value = targetScale;
+        return;
+      }
+      var ratio = targetScale / scaleSize.value;
+      var centerX = screenWidth.value / 2;
+      var centerY = screenHeight.value / 2;
+      imageLeft.value = centerX - transformOrigin.value[0] - (centerX - imageLeft.value - transformOrigin.value[0]) * ratio;
+      imageTop.value = centerY - transformOrigin.value[1] - (centerY - imageTop.value - transformOrigin.value[1]) * ratio;
+      scaleSize.value = targetScale;
+    };
+    const protectBounceTransition = () => {
+      bounceTransitionUntil.value = Date.now() + ANIMATION_DURATION;
+    };
+    const onInterceptTouchEvent = (e2) => {
+      if (inScaleMode.value || scaleGestureActive.value) {
+        setSwiperTouchDisabled(true);
+        preventDefaultScall(e2);
+        return;
+      }
+      clearTimeout(clickTimeoutId.value);
+    };
+    const shouldDelegateMoveToParent = (slideX, slideY) => {
+      if (scaleSize.value <= 1 || screenWidth.value <= 0) {
+        return false;
+      }
+      if (Math.abs(slideX) <= Math.abs(slideY)) {
+        return false;
+      }
+      var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1);
+      var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value);
+      return imageLeft.value >= maxLeft && slideX > 0 || imageLeft.value <= minLeft && slideX < 0;
+    };
+    const isAtHorizontalBoundary = () => {
+      if (scaleSize.value <= 1 || screenWidth.value <= 0) {
+        return false;
+      }
+      var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1);
+      var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value);
+      return imageLeft.value >= maxLeft || imageLeft.value <= minLeft;
+    };
+    const delegateCurrentMoveToParent = (e2, currentSlideTouch) => {
+      inScaleMode.value = false;
+      scaleGestureActive.value = false;
+      scaleGestureInProgress.value = false;
+      delegateMoveToParent.value = true;
+      setSwiperTouchDisabled(false);
+      needExecLongPress.value = false;
+      clearTimeout(longPressActionTimeoutId.value);
+      lastSlideTouch.value = e2.touches;
+      downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY };
+      historyX.value = [imageLeft.value, imageLeft.value];
+      historyY.value = [imageTop.value, imageTop.value];
+      historyT.value = [e2.timeStamp, e2.timeStamp];
+      onInterceptTouchEvent(e2);
+    };
+    const caculatorTransformOrigin = (e2) => {
+      var originalCenterX;
+      var originalCenterY;
+      if (e2 != null) {
+        if (e2.touches.length >= 2) {
+          var point1 = e2.touches[0];
+          var point2 = e2.touches[1];
+          originalCenterX = (point1.clientX + point2.clientX) / 2;
+          originalCenterY = (point1.clientY + point2.clientY) / 2;
+          if (scaleSize.value * imageHeight.value < screenHeight.value) {
+            originalCenterY = screenHeight.value / 2;
+          }
+          if (imageHeight.value > screenHeight.value && scaleSize.value >= 1) {
+            originalCenterY = originalCenterY - imageTop.value / scaleSize.value;
+          }
+          var oldTransformOrigin = [transformOrigin.value[0], transformOrigin.value[1]];
+          transformOrigin.value = [originalCenterX, originalCenterY];
+          if (oldTransformOrigin[0] != 0 && oldTransformOrigin[1] != 1) {
+            imageLeft.value = imageLeft.value + (scaleSize.value - 1) * (originalCenterX - oldTransformOrigin[0]);
+            imageTop.value = imageTop.value + (scaleSize.value - 1) * (originalCenterY - oldTransformOrigin[1]);
+          }
+        } else if (e2.type == "touchend") {
+          if (inDoubleTapMode.value && scaleSize.value == 2 && lastSlideTouch.value != null && lastSlideTouch.value.length == 1) {
+            originalCenterX = lastSlideTouch.value[0].clientX;
+            originalCenterY = lastSlideTouch.value[0].clientY;
+            if (scaleSize.value * imageHeight.value < screenHeight.value) {
+              originalCenterY = screenHeight.value / 2;
+            }
+            if (imageHeight.value > screenHeight.value) {
+              originalCenterY = originalCenterY - imageTop.value;
+            }
+            transformOrigin.value = [originalCenterX, originalCenterY];
+          }
+        }
+      }
+    };
+    const updateStyle2 = (e2, xDistance, yDistance) => {
+      var _a, _b, _c;
+      caculatorTransformOrigin(e2);
+      if (1 < scaleSize.value) {
+        var minLeft = screenWidth.value - (transformOrigin.value[0] + (screenWidth.value - transformOrigin.value[0]) * scaleSize.value);
+        var maxLeft = transformOrigin.value[0] * (scaleSize.value - 1);
+        if (imageLeft.value > maxLeft) {
+          imageLeft.value = maxLeft;
+          onInterceptTouchEvent(e2);
+        } else if (imageLeft.value < minLeft) {
+          imageLeft.value = minLeft;
+          onInterceptTouchEvent(e2);
+        } else {
+          preventDefaultScall(e2);
+        }
+      } else {
+        imageLeft.value = 0;
+        onInterceptTouchEvent(e2);
+      }
+      var imageContentTop = imageMarginTop.value > 0 ? imageMarginTop.value : 0;
+      var imageContentBottom = imageContentTop + imageHeight.value;
+      var scaledContentHeight = imageHeight.value * scaleSize.value;
+      if (scaleSize.value <= 1 && imageHeight.value > screenHeight.value) {
+        var minTop = screenHeight.value - imageHeight.value;
+        if (imageTop.value > 0) {
+          imageTop.value = 0;
+        } else if (imageTop.value < minTop) {
+          imageTop.value = minTop;
+        }
+        if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value.y) > DEFAULT_DISTANCE) {
+          preventDefaultScall(e2);
+        }
+      } else if (screenHeight.value + SCALE_BOUNDARY_BUFFER < scaledContentHeight) {
+        var scaledTopWithoutTranslate = transformOrigin.value[1] + (imageContentTop - transformOrigin.value[1]) * scaleSize.value;
+        var scaledBottomWithoutTranslate = transformOrigin.value[1] + (imageContentBottom - transformOrigin.value[1]) * scaleSize.value;
+        var visualTop = scaledTopWithoutTranslate + imageTop.value;
+        var visualBottom = scaledBottomWithoutTranslate + imageTop.value;
+        if (visualBottom < screenHeight.value) {
+          imageTop.value = imageTop.value + (screenHeight.value - visualBottom);
+        } else if (visualTop > 0 && !inScaleBounceBack.value) {
+          imageTop.value = imageTop.value - visualTop;
+        }
+        if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value.y) > DEFAULT_DISTANCE) {
+          preventDefaultScall(e2);
+        }
+      } else {
+        if (!inScaleMode.value) {
+          var scaledTopWithoutTranslate = transformOrigin.value[1] + (imageContentTop - transformOrigin.value[1]) * scaleSize.value;
+          var centeredTop = (screenHeight.value - scaledContentHeight) / 2;
+          imageTop.value = centeredTop - scaledTopWithoutTranslate;
+          if (!Number.isNaN(yDistance) && Math.abs(yDistance - downPoint.value.y) > DEFAULT_DISTANCE) {
+            preventDefaultScall(e2);
+          }
+        } else {
+          preventDefaultScall(e2);
+        }
+      }
+      var shouldAnimate = withAnimation.value || Date.now() < bounceTransitionUntil.value;
+      (_a = imageView.value) == null ? void 0 : _a.style.setProperty("transition-duration", shouldAnimate ? ANIMATION_DURATION + "ms" : "0ms");
+      (_b = imageView.value) == null ? void 0 : _b.style.setProperty("transform-origin", transformOrigin.value[0] + "px " + transformOrigin.value[1] + "px");
+      (_c = imageView.value) == null ? void 0 : _c.style.setProperty("transform", "translate(" + imageLeft.value + "px," + imageTop.value + "px) scale(" + scaleSize.value + ")");
+    };
+    watch(() => props2.reset, (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        if (imageView.value != null && (scaleSize.value != 1 || imageLeft.value != 0 || imageTop.value != 0)) {
+          scaleSize.value = 1;
+          imageLeft.value = 0;
+          imageTop.value = 0;
+          withAnimation.value = false;
+          updateStyle2(null, NaN, NaN);
+        }
+      }
+    }, { immediate: true });
+    function doTransform(callback) {
+      requestId.value = requestAnimationFrame(() => {
+        callback();
+        if (!_friction.value.isDone())
+          doTransform(callback);
+      });
+    }
+    function closePreviewImage2() {
+      isPreviewImaqeClosed.value = true;
+      uni.$emit("__UNIPREVIEWIMAGECLOSE");
+    }
+    const handleStart = (e2) => {
+      if (isPreviewImaqeClosed.value)
+        return;
+      inScaleMode.value = false;
+      scaleGestureActive.value = false;
+      scaleGestureInProgress.value = false;
+      delegateMoveToParent.value = false;
+      bounceTransitionUntil.value = 0;
+      if (e2.touches.length >= 2) {
+        inScaleMode.value = true;
+        scaleGestureActive.value = true;
+        scaleGestureInProgress.value = true;
+        markScaleGesture();
+        setSwiperTouchDisabled(true);
+      } else {
+        setSwiperTouchDisabled(scaleSize.value > 1 && !isAtHorizontalBoundary());
+      }
+      withAnimation.value = false;
+      cancelAnimationFrame(requestId.value);
+      clearTimeout(clickTimeoutId.value);
+      lastSlideTouch.value = e2.touches;
+      historyX.value = [0, 0];
+      historyY.value = [0, 0];
+      historyT.value = [0, 0];
+      downPoint.value = { x: e2.touches[0].clientX, y: e2.touches[0].clientY };
+      inDoubleTapMode.value = false;
+      startTimestamp.value = e2.timeStamp;
+      e2.preventDefault();
+      needExecLongPress.value = e2.touches.length < 2;
+      if (needExecLongPress.value) {
+        longPressActionTimeoutId.value = setTimeout(() => {
+          if (needExecLongPress.value) {
+            onLongPressAction();
+          }
+        }, 350);
+      }
+    };
+    const handleMove = (e2) => {
+      if (isPreviewImaqeClosed.value)
+        return;
+      if (e2.touches.length == 1) {
+        var currentSlideTouch = e2.touches[0];
+        if (delegateMoveToParent.value) {
+          needExecLongPress.value = false;
+          clearTimeout(longPressActionTimeoutId.value);
+          lastSlideTouch.value = e2.touches;
+          downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY };
+          historyX.value = [imageLeft.value, imageLeft.value];
+          historyY.value = [imageTop.value, imageTop.value];
+          historyT.value = [e2.timeStamp, e2.timeStamp];
+          onInterceptTouchEvent(e2);
+          return;
+        }
+        if (lastSlideTouch.value != null && lastSlideTouch.value.length != 1) {
+          lastSlideTouch.value = e2.touches;
+          downPoint.value = { x: currentSlideTouch.clientX, y: currentSlideTouch.clientY };
+          historyX.value = [imageLeft.value, imageLeft.value];
+          historyY.value = [imageTop.value, imageTop.value];
+          historyT.value = [e2.timeStamp, e2.timeStamp];
+          if (scaleSize.value > 1 || inScaleMode.value || scaleGestureActive.value) {
+            preventDefaultScall(e2);
+          } else {
+            onInterceptTouchEvent(e2);
+          }
+          return;
+        }
+        if (lastSlideTouch.value != null) {
+          var slideX = currentSlideTouch.clientX - lastSlideTouch.value[0].clientX;
+          var slideY = currentSlideTouch.clientY - lastSlideTouch.value[0].clientY;
+          if (shouldDelegateMoveToParent(slideX, slideY)) {
+            delegateCurrentMoveToParent(e2, currentSlideTouch);
+            return;
+          }
+          var downX = Math.abs(currentSlideTouch.clientX - downPoint.value.x);
+          var downY = Math.abs(currentSlideTouch.clientY - downPoint.value.y);
+          if (downX > DEFAULT_DISTANCE || downY > DEFAULT_DISTANCE) {
+            needExecLongPress.value = false;
+            clearTimeout(longPressActionTimeoutId.value);
+            var handledByImage = false;
+            if (scaleSize.value > 1) {
+              setSwiperTouchDisabled(true);
+              imageLeft.value = imageLeft.value + slideX;
+              imageTop.value = imageTop.value + slideY;
+              updateStyle2(e2, currentSlideTouch.clientX, currentSlideTouch.clientY);
+              handledByImage = true;
+            } else if (imageHeight.value > screenHeight.value && downY > downX) {
+              setSwiperTouchDisabled(true);
+              imageTop.value = imageTop.value + slideY;
+              updateStyle2(e2, currentSlideTouch.clientX, currentSlideTouch.clientY);
+              preventDefaultScall(e2);
+              handledByImage = true;
+            } else {
+              setSwiperTouchDisabled(false);
+              onInterceptTouchEvent(e2);
+            }
+            if (handledByImage) {
+              historyX.value.shift();
+              historyX.value.push(imageLeft.value);
+              historyY.value.shift();
+              historyY.value.push(imageTop.value);
+              historyT.value.shift();
+              historyT.value.push(e2.timeStamp);
+            }
+            lastSlideTouch.value = e2.touches;
+            needExecLongPress.value = false;
+          } else {
+            needExecLongPress.value = true;
+          }
+        } else {
+          lastSlideTouch.value = e2.touches;
+        }
+      } else if (e2.touches.length >= 2) {
+        inScaleMode.value = true;
+        scaleGestureActive.value = true;
+        scaleGestureInProgress.value = true;
+        setSwiperTouchDisabled(true);
+        markScaleGesture();
+        needExecLongPress.value = false;
+        clearTimeout(longPressActionTimeoutId.value);
+        var currentFirstTouch = e2.touches[0];
+        var currentSecondTouch = e2.touches[1];
+        var currentXSlideLength = currentFirstTouch.clientX - currentSecondTouch.clientX;
+        var currentYSlideLength = currentFirstTouch.clientY - currentSecondTouch.clientY;
+        var currentLongSideLength = Math.sqrt(currentXSlideLength * currentXSlideLength + currentYSlideLength * currentYSlideLength);
+        if (lastSlideTouch.value != null && lastSlideTouch.value.length >= 2) {
+          var lastFirstTouch = lastSlideTouch.value[0];
+          var lastSecondTouch = lastSlideTouch.value[1];
+          var lastXSlideLength = lastFirstTouch.clientX - lastSecondTouch.clientX;
+          var lastYSlideLength = lastFirstTouch.clientY - lastSecondTouch.clientY;
+          var lastLongSideLength = Math.sqrt(lastXSlideLength * lastXSlideLength + lastYSlideLength * lastYSlideLength);
+          if (currentLongSideLength != lastLongSideLength) {
+            scaleSize.value = scaleSize.value * (currentLongSideLength / lastLongSideLength);
+            updateStyle2(e2, NaN, NaN);
+          }
+        }
+        preventDefaultScall(e2);
+        needExecLongPress.value = false;
+        lastSlideTouch.value = e2.touches;
+      }
+    };
+    const handleEnd = (e2) => {
+      if (isPreviewImaqeClosed.value)
+        return;
+      const wasScaleMode = inScaleMode.value || scaleGestureActive.value || scaleGestureInProgress.value;
+      if (wasScaleMode) {
+        markScaleGesture();
+      }
+      inScaleMode.value = false;
+      needExecLongPress.value = false;
+      clearTimeout(longPressActionTimeoutId.value);
+      var current = Date.now();
+      if (wasScaleMode) {
+        if (scaleSize.value > MAX_SCALE) {
+          withAnimation.value = true;
+          protectBounceTransition();
+          setScaleKeepingViewportCenter(MAX_SCALE);
+          inScaleBounceBack.value = true;
+          updateStyle2(e2, NaN, NaN);
+          inScaleBounceBack.value = false;
+        } else if (scaleSize.value < MIN_SCALE) {
+          withAnimation.value = true;
+          protectBounceTransition();
+          setScaleKeepingViewportCenter(MIN_SCALE);
+          imageLeft.value = 0;
+          imageTop.value = 0;
+          inScaleBounceBack.value = true;
+          updateStyle2(e2, NaN, NaN);
+          inScaleBounceBack.value = false;
+        } else {
+          withAnimation.value = false;
+          updateStyle2(e2, NaN, NaN);
+        }
+        lastTouchEndTime.value = current;
+        lastSlideTouch.value = null;
+        scaleGestureActive.value = false;
+        if (e2.touches.length == 0) {
+          scaleGestureInProgress.value = false;
+        }
+        delegateMoveToParent.value = false;
+        setSwiperTouchDisabled(false);
+        return;
+      }
+      if (historyY.value[0] == 0 && historyY.value[1] == 0 && historyX.value[0] == 0 && historyX.value[1] == 0) {
+        withAnimation.value = true;
+        if (current - lastTouchEndTime.value < 350) {
+          if (lastSlideTouch.value != null && lastSlideTouch.value.length > 0) {
+            var downX = Math.abs(lastSlideTouch.value[0].clientX - downPoint.value.x);
+            var downY = Math.abs(lastSlideTouch.value[0].clientY - downPoint.value.y);
+            if (downX > FAST_SLIDE_LENGTH || downY > FAST_SLIDE_LENGTH) {
+              lastSlideTouch.value = null;
+              scaleGestureActive.value = false;
+              delegateMoveToParent.value = false;
+              setSwiperTouchDisabled(false);
+              return;
+            }
+          }
+          if (scaleSize.value > 1) {
+            scaleSize.value = 1;
+            imageLeft.value = 0;
+            updateStyle2(e2, NaN, NaN);
+          } else if (scaleSize.value == 1) {
+            scaleSize.value = 2;
+            inDoubleTapMode.value = true;
+            updateStyle2(e2, NaN, NaN);
+          }
+        } else if (e2.touches.length == 0) {
+          if (lastSlideTouch.value != null && lastSlideTouch.value.length == 1 && e2.timeStamp - startTimestamp.value < 160) {
+            var downX = Math.abs(lastSlideTouch.value[0].clientX - downPoint.value.x);
+            var downY = Math.abs(lastSlideTouch.value[0].clientY - downPoint.value.y);
+            if (downX < FAST_SLIDE_LENGTH && downY < FAST_SLIDE_LENGTH && !shouldIgnoreClick()) {
+              clickTimeoutId.value = setTimeout(() => {
+                closePreviewImage2();
+              }, 200);
+            }
+          }
+          lastTouchEndTime.value = current;
+        }
+      } else {
+        var deltaTime = historyT.value[1] - historyT.value[0];
+        var xv = 0;
+        var yv = 0;
+        if (deltaTime > 0) {
+          xv = 1e3 * (historyX.value[1] - historyX.value[0]) / deltaTime;
+          yv = 1e3 * (historyY.value[1] - historyY.value[0]) / deltaTime;
+        }
+        if (!Number.isFinite(xv)) {
+          xv = 0;
+        }
+        if (!Number.isFinite(yv)) {
+          yv = 0;
+        }
+        _friction.value.setVelocity(xv, yv);
+        _friction.value.setStartPosition(imageLeft.value, imageTop.value);
+        const x0 = _friction.value.displacement().x;
+        const y0 = _friction.value.displacement().y;
+        var x = imageLeft.value;
+        if (!Number.isNaN(x0))
+          x = x0 + imageLeft.value;
+        var y = imageTop.value;
+        if (!Number.isNaN(y0))
+          y = y0 + imageTop.value;
+        _friction.value.setEndPosition(x, y);
+        doTransform(() => {
+          var p2 = _friction.value.positionAtTime(null);
+          if (Number.isNaN(p2.x) && Number.isNaN(p2.y)) {
+            cancelAnimationFrame(requestId.value);
+          }
+          if (!Number.isNaN(p2.x))
+            imageLeft.value = p2.x;
+          if (!Number.isNaN(p2.y))
+            imageTop.value = p2.y;
+          updateStyle2(e2, NaN, NaN);
+        });
+      }
+      lastSlideTouch.value = null;
+      scaleGestureActive.value = false;
+      if (e2.touches.length == 0) {
+        scaleGestureInProgress.value = false;
+      }
+      delegateMoveToParent.value = false;
+      setSwiperTouchDisabled(false);
+    };
+    const handleCancel = (e2) => {
+      handleEnd(e2);
+      clearTimeout(clickTimeoutId.value);
+      inScaleMode.value = false;
+      scaleGestureActive.value = false;
+      scaleGestureInProgress.value = false;
+      delegateMoveToParent.value = false;
+      setSwiperTouchDisabled(false);
+    };
+    const toPreviewEvent = (e2) => {
+      const points = [];
+      for (var i = 0; i < e2.touches.length; i++) {
+        const touch = e2.touches[i];
+        points.push({ clientX: touch.clientX, clientY: touch.clientY });
+      }
+      const event = {
+        type: e2.type,
+        timeStamp: e2.timeStamp,
+        touches: points,
+        preventDefault: () => {
+          e2.preventDefault();
+        },
+        stopPropagation: () => {
+          e2.stopPropagation();
+        }
+      };
+      return event;
+    };
+    const onstart = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleStart(toPreviewEvent(e2));
+    };
+    const onmove = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleMove(toPreviewEvent(e2));
+    };
+    const onend = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleEnd(toPreviewEvent(e2));
+    };
+    const oncancel = (e2) => {
+      lastTouchPointerTime.value = Date.now();
+      handleCancel(toPreviewEvent(e2));
+    };
+    const mousePressed = ref(false);
+    const isSimulatedMouseEvent = () => {
+      return Date.now() - lastTouchPointerTime.value < 600;
+    };
+    const toPreviewEventFromMouse = (e2, type) => {
+      const points = [];
+      if (type != "touchend") {
+        points.push({ clientX: e2.clientX, clientY: e2.clientY });
+      }
+      const event = {
+        type,
+        timeStamp: e2.timeStamp,
+        touches: points,
+        preventDefault: () => {
+          e2.preventDefault();
+        },
+        stopPropagation: () => {
+          e2.stopPropagation();
+        }
+      };
+      return event;
+    };
+    const onMouseStart = (e2) => {
+      if (isSimulatedMouseEvent())
+        return;
+      mousePressed.value = true;
+      handleStart(toPreviewEventFromMouse(e2, "touchstart"));
+    };
+    const onMouseMove = (e2) => {
+      if (!mousePressed.value)
+        return;
+      if (isSimulatedMouseEvent())
+        return;
+      handleMove(toPreviewEventFromMouse(e2, "touchmove"));
+    };
+    const onMouseEnd = (e2) => {
+      mousePressed.value = false;
+      if (isSimulatedMouseEvent())
+        return;
+      handleEnd(toPreviewEventFromMouse(e2, "touchend"));
+    };
+    const caculatorImageSize = (imgWidth, imgHeight) => {
+      var _a, _b;
+      var scaleImageSize = imgHeight / (imgWidth / screenWidth.value);
+      if (scaleImageSize > screenHeight.value) {
+        imageHeight.value = scaleImageSize;
+        imageMode.value = "aspectFill";
+        (_a = imageView.value) == null ? void 0 : _a.style.setProperty("height", scaleImageSize + "px");
+      } else {
+        imageMode.value = "aspectFit";
+        (_b = imageView.value) == null ? void 0 : _b.style.setProperty("height", "100%");
+      }
+      imageMarginTop.value = (screenHeight.value - scaleImageSize) / 2;
+      imageHeight.value = scaleImageSize;
+    };
+    const onImageLoad = (e2) => {
+      var _a;
+      (_a = mask.value) == null ? void 0 : _a.style.setProperty("point-events", "none");
+      uni.createSelectorQuery().in(instance2).select(".uni-preview-image-patch").boundingClientRect().exec((ret) => {
+        if (ret.length == 1) {
+          var rect = mask.value.getBoundingClientRect();
+          screenHeight.value = rect.height;
+          screenWidth.value = rect.width;
+          if (devicePixelRatio.value == 0) {
+            var dpr = uni.getDeviceInfo({ filter: ["devicePixelRatio"] }).devicePixelRatio;
+            if (dpr == null) {
+              devicePixelRatio.value = 1;
+            } else {
+              devicePixelRatio.value = dpr;
+            }
+          }
+          caculatorImageSize(e2.detail.width / devicePixelRatio.value, e2.detail.height / devicePixelRatio.value);
+        }
+      });
+      loadingFinished.value = true;
+    };
+    const reloadImage = (e2) => {
+      var _a;
+      if (srcPath.value == "") {
+        loadingFinished.value = false;
+        loadError.value = false;
+        setTimeout(() => {
+          loadError.value = true;
+          loadingFinished.value = true;
+        }, 1e3);
+        e2.stopPropagation();
+        return;
+      }
+      (_a = mask.value) == null ? void 0 : _a.style.setProperty("point-events", "none");
+      loadingFinished.value = false;
+      loadError.value = false;
+      var tempPath = srcPath.value + "";
+      srcPath.value = "";
+      setTimeout(() => {
+        srcPath.value = tempPath;
+      }, 100);
+      e2.stopPropagation();
+    };
+    const _component_loading = _sfc_main$7;
+    const n10 = t2$1();
+    const n0 = child(n10);
+    const n1 = next(n0);
+    on$1(n0, "error", withImageEventDetail(previewImageError, "error"));
+    on$1(n0, "load", withImageEventDetail(onImageLoad, "load"));
+    setStaticTemplateRef(n0, imageView, null, "imageView");
+    on$1(n1, "touchstart", onstart);
+    on$1(n1, "touchmove", onmove);
+    on$1(n1, "touchend", onend);
+    on$1(n1, "touchcancel", oncancel);
+    on$1(n1, "mousedown", onMouseStart);
+    on$1(n1, "mousemove", onMouseMove);
+    on$1(n1, "mouseup", onMouseEnd);
+    setStaticTemplateRef(n1, mask, null, "mask");
+    renderEffect(() => {
+      setImageMode(n0, imageMode.value);
+      setImageSrc(n0, srcPath.value);
+    });
+    setInsertionState(n10, 2);
+    createIf(() => !loadingFinished.value, () => {
+      const n5 = t0$1();
+      setInsertionState(n5);
+      createComponentWithFallback(_component_loading, { style: "margin: auto;width:54px;height: 54px;border-color:#d3d3d3;" });
+      return n5;
+    });
+    setInsertionState(n10, 3);
+    createIf(() => loadError.value, () => {
+      const n9 = t1$1();
+      const n8 = child(n9);
+      on$1(n8, "click", reloadImage);
+      setImageSrc(n8, "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAMAAADQmBKKAAAAilBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////2N2iNAAAALXRSTlMAf/kN/BOp7IxPBsMz9NzMRi0h4L7Q5pFjnhfVmIN3WUo6W6NUPrVtJ0yhcR84ApfrAAADTElEQVR42u3b3XaiMBSG4V1CABFBhFr/f1q1Tmf2/d/eHJoYrNJvu1a6Vp7zzrwthAAJFARBEARBEARBEPxmqtiuk3bZTJmnzbJN1ttC0SNeSJ76k71yhyrbqbs9LF4zG8Z8U9TO1Pc9wkG7JOI7Rh/jb3pkg96X/JBqcKtHNGhW8sOW284eyaD9K/cyrN0ewSA9577iTDk9YkGDlH+gOVo9ckH5G/9MvHF7mGCTin/spK978KAiZUA5sXvwoPGIO8XVfDM4TxZEi0k92HzdGoTTwuzBg7ZR5//yNlDOQDysUu4wOlo9DPbE7Ihuzg354RSzI2a5oHHk/sLZgr5xnrs/IhdUjNyrnb47KJOnBU3SrvngvnH5nKC8Ylv0iVxJ8aDrf7Us6GGHVD5owLZW9TrcpXSQTtmS5NTLohIOmrNlRX2pRjRoz5aEenth0SB7ampzrAcPmtnjS4E9eJA1RqIC7MGD3tn0ifbgQUtrvkB78KCddcBqtAcPStiQoT14kIrM+x8t28PomM/gHjxoaJ5BC7QHD1IxX3zAPXjQHzaM4R48KDOfd8R7GJtX38R7GDuFBnAPHlTwRazFexiaWCvywNoImpMHzIlsQx4YWue0B8xRX5MHGiNoQh5IjSBNHoiMoJw84F2Qd4fMu5Pau2Hv3YXRu6nDu8nVu9sP5wYNpmNz4MK3sLiD9dQA3+TjVnxxIvgxCDflixeSfVCEX+4cCX2Ulr2wpUT4ywbQv8i+sOGvY0AZO6MWfWEF0SPziOX4UecMHfPOVQR/6QmoYzacyQC/FoYHCLdkwV+c97dh045M+NJCf3UE/KnhxReXbhi46qPLU668ZeAMghfwXAkDo1V+iZO+2LImBL4InCdsKXMC4MvkumVLfCQAvpGgKNm2IQC81YI+I7adCABvRqmHfKXRBAC36+gs4ivpmQDYhqbFeuT+yJ4AyJYvOnZtJo6AORXZFKfGqyl3GDn5z942qCf14O/qNeZOKXS85DdWNjUB5LeetppA+OZc4AHh6duXkdNZfoM3rxQBxLfAV8j0Lv+RQHkggPxnFDMCSH9oEid7Akh/inOaaQKIfqwUV28HRTD8c660aYYf6/e9oiAIgiAIgiAIguAX+w9i21DdU9TtnwAAAABJRU5ErkJggg==");
+      on$1(n9, "click", closePreviewImage2);
+      return n9;
+    });
+    return n10;
+  }
+});
+const _style_0$1 = "\n.uni-preview-image-item {\n		width: 100%;\n		height: 100%;\n		transition-property: transform;\n		transition-duration: 0ms;\n}\n.uni-preview-image-patch {\n		width: 100%;\n		height: 100%;\n		background-color: transparent;\n		position: absolute;\n}\n.uni-preview-image-loading {\n		position: absolute;\n		top: 0;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		pointer-events: none;\n}\n.uni-preview-image-item-background {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-tips-retry {\n		color: blue;\n		font-size: 18px;\n		margin-top: 16px;\n		text-decoration-line: underline;\n}\n.uni-preview-image-tips-error {\n		font-size: 18px;\n		color: red;\n}\n";
+const UniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$1]]]);
+const t0 = template("<div uni-view class=uni-preview-image-number-indicator-layout><span uni-text class=uni-preview-image-number-indicator> ");
+const t1 = template("<div uni-view>");
+const t2 = template("<div uni-view class=uni-preview-image-default-indicator-layout>");
+const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
+  __name: "uni-previewImageNonVapor",
+  props: {
+    urls: {
+      type: Array,
+      default: null
+    },
+    current: {
+      type: Number,
+      default: 0
+    },
+    resetCurrent: {
+      type: Number,
+      default: 0
+    },
+    loop: {
+      type: Boolean,
+      default: false
+    },
+    disableTouch: {
+      type: Boolean,
+      default: false
+    },
+    numberIndicator: {
+      type: String,
+      default: ""
+    },
+    indicatorIndex: {
+      type: Number,
+      default: 0
+    },
+    indicator: {
+      type: String,
+      default: "number"
+    },
+    longPressAction: {
+      type: Object
+    },
+    tips: {
+      type: Object
+    }
+  },
+  emits: ["previewImageChanged", "previewImageFinish"],
+  __multiRoot: true,
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    const emit2 = __emit;
+    const shouldRender = (index2) => {
+      var _a;
+      const len = (_a = props2.urls) == null ? void 0 : _a.length;
+      if (len == null) {
+        return false;
+      }
+      if (len <= 3) {
+        return true;
+      }
+      const c = props2.current;
+      if (index2 == c) {
+        return true;
+      }
+      if (props2.loop) {
+        const prev = c == 0 ? len - 1 : c - 1;
+        const next2 = c == len - 1 ? 0 : c + 1;
+        const prev2 = prev == 0 ? len - 1 : prev - 1;
+        const next22 = next2 == len - 1 ? 0 : next2 + 1;
+        if (index2 == prev || index2 == next2 || index2 == prev2 || index2 == next22) {
+          return true;
+        }
+      } else if (Math.abs(index2 - c) <= 2) {
+        return true;
+      }
+      return false;
+    };
+    const handlePreviewImageChanged = (e2) => {
+      emit2("previewImageChanged", e2);
+    };
+    const handlePreviewImageFinish = (e2) => {
+      emit2("previewImageFinish", e2);
+    };
+    const _component_swiper_item = __syscom_0$1;
+    const n8 = createAssetComponent("swiper", {
+      class: "uni-preview-image-swiper",
+      style: "flex: 1;background-color: black;",
+      "indicator-dots": false,
+      circular: () => props2.loop,
+      current: () => props2.current,
+      onChange: () => handlePreviewImageChanged,
+      onAnimationfinish: () => handlePreviewImageFinish,
+      "disable-touch": () => props2.disableTouch
+    }, extend$1(() => {
+      const n0 = createIf(
+        () => props2.urls != null,
+        () => {
+          const n2 = createFor(
+            () => props2.urls,
+            (_for_item0, _for_key0) => {
+              const n7 = createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
+                const n4 = createIf(
+                  () => shouldRender(_for_key0.value),
+                  () => {
+                    const n6 = createComponent(UniPreviewImageItem, {
+                      index: () => _for_key0.value,
+                      src: () => _for_item0.value,
+                      longPressAction: () => props2.longPressAction,
+                      tips: () => props2.tips,
+                      reset: () => _for_key0.value == props2.resetCurrent
+                    });
+                    return n6;
+                  },
+                  null,
+                  129
+                  /* TRUE_SINGLE_ROOT, SLOT_ROOT */
+                );
+                return n4;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              }));
+              return n7;
+            },
+            void 0,
+            34
+            /* IS_COMPONENT, SLOT_ROOT */
+          );
+          return n2;
+        },
+        null,
+        129
+        /* TRUE_SINGLE_ROOT, SLOT_ROOT */
+      );
+      return n0;
+    }, {
+      _: 1
+      /* NON_STABLE */
+    }));
+    const n9 = createIf(() => props2.indicator == "number", () => {
+      const n12 = t0();
+      const n11 = child(n12);
+      const x11 = txt(n11);
+      renderEffect(() => setText(x11, normalizeUniText(toDisplayString(props2.numberIndicator))));
+      return n12;
+    });
+    const n13 = createIf(() => props2.indicator == "default", () => {
+      const n18 = t2();
+      setInsertionState(n18);
+      createFor(
+        () => props2.urls.length,
+        (_for_item0) => {
+          const n17 = t1();
+          renderEffect(() => setClass(n17, ["uni-preview-image-default-indicator", props2.indicatorIndex + 1 == _for_item0.value ? "uni-preview-image-default-indicator-active" : "uni-preview-image-default-indicator-default"]));
+          return n17;
+        },
+        void 0,
+        9
+        /* FAST_REMOVE, IS_SINGLE_NODE */
+      );
+      applyVShow(n18, () => props2.urls != null);
+      return n18;
+    });
+    return [n8, n9, n13];
+  }
+});
+const _style_0 = "\n.uni-preview-image-swiper {\n		overflow: hidden;\n}\n.uni-preview-image-swiper-item {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-default-indicator {\n		width: 9px;\n		height: 9px;\n		border-style: solid;\n		border-radius: 9px;\n		margin: 2px 3px;\n		border-width: .1px;\n		border-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-default {\n		background-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-active {\n		background-color: #ffffff;\n}\n.uni-preview-image-default-indicator-layout {\n		bottom: var(--uni-safe-area-inset-bottom);\n		margin-bottom: 8px;\n		flex-direction: row;\n		position: absolute;\n		left: 0px;\n		right: 0px;\n		justify-content: center;\n}\n.uni-preview-image-number-indicator-layout {\n		position: absolute;\n		left: 0;\n		right: 0;\n		top: var(--uni-safe-area-inset-top);\n		margin-top: 8px;\n}\n.uni-preview-image-number-indicator {\n		color: white;\n		font-size: 16px;\n		margin: auto;\n		padding: 8px 20px;\n		background-color: rgba(0, 0, 0, .3);\n		line-height: 1;\n		border-radius: 32px;\n}\n";
+const UniPreviewImageNonVapor = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0]]]);
+const _sfc_main = /* @__PURE__ */ defineVaporComponent({
+  __name: "previewImage",
+  setup(__props) {
+    const urls = ref(null);
+    const current = ref(0);
+    const resetCurrent = ref(0);
+    const loop = ref(false);
+    const disableTouch = ref(false);
+    const numberIndicator = ref("");
+    const indicatorIndex = ref(0);
+    const indicator = ref("number");
+    const longPressAction = ref(null);
+    const tips = ref(null);
+    const pageInstance = getCurrentInstance().proxy;
+    const uniPageInstance = pageInstance.$page;
+    const updateIndicator = (index2) => {
+      var _a;
+      numberIndicator.value = index2 + 1 + " / " + ((_a = urls.value) == null ? void 0 : _a.length);
+      indicatorIndex.value = index2;
+    };
+    const __onPreviewLoadCallback = (result) => {
+      urls.value = result["urls"];
+      if (result["current"] != null) {
+        var c = result["current"];
+        if (typeof c == "number") {
+          var d = c;
+          if (urls.value == null || d < 0 || d >= urls.value.length) {
+            d = 0;
+          }
+          current.value = d;
+        } else if (typeof c == "string" && urls.value != null) {
+          var index2 = urls.value.indexOf(c);
+          if (index2 < 0) {
+            index2 = 0;
+          }
+          current.value = index2;
+        }
+        resetCurrent.value = current.value;
+      }
+      if (result["indicator"] != null) {
+        indicator.value = result["indicator"];
+      }
+      if (result["longPressActions"] != null) {
+        longPressAction.value = {
+          itemList: result["longPressActions"]["itemList"],
+          itemColor: result["longPressActions"]["itemColor"]
+        };
+      }
+      if (result["loop"] != null) {
+        loop.value = result["loop"];
+      }
+      updateIndicator(current.value);
+    };
+    const onPreviewImageChanged = (e2) => {
+      current.value = e2.detail.current;
+      updateIndicator(e2.detail.current);
+    };
+    const onPreviewImageFinish = (e2) => {
+      current.value = e2.detail.current;
+      resetCurrent.value = e2.detail.current;
+    };
+    const setDisableTouch = (isDisable) => {
+      disableTouch.value = isDisable;
+    };
+    const closePreviewPage = () => {
+      uni.closeDialogPage({
+        dialogPage: uniPageInstance,
+        animationType: "fade-out"
+      });
+    };
+    const closePreviewPageByEvent = () => {
+      closePreviewPage();
+    };
+    onUnload(() => {
+      uni.$off("__UNIPREVIEWIMAGE");
+      uni.$off("__UNIPREVIEWIMAGECLOSE");
+      uni.$off("__UNIPREVIEWLONGPRESS");
+      uni.$off("__CLOSEPREVIEWIMAGE");
+    });
+    onLoad(() => {
+      uni.$once("__onPreviewLoadCallback", __onPreviewLoadCallback);
+      uni.$emit("__onPreviewLoad", null);
+      uni.$on("__UNIPREVIEWIMAGE", setDisableTouch);
+      uni.$on("__UNIPREVIEWIMAGECLOSE", closePreviewPage);
+      uni.$on("__CLOSEPREVIEWIMAGE", closePreviewPageByEvent);
+    });
+    onBackPress((options) => {
+      return false;
+    });
+    const n0 = createComponent(UniPreviewImageNonVapor, {
+      urls: () => unref(urls),
+      current: () => unref(current),
+      resetCurrent: () => unref(resetCurrent),
+      loop: () => unref(loop),
+      disableTouch: () => unref(disableTouch),
+      numberIndicator: () => unref(numberIndicator),
+      indicatorIndex: () => unref(indicatorIndex),
+      indicator: () => unref(indicator),
+      longPressAction: () => unref(longPressAction),
+      tips: () => unref(tips),
+      onPreviewImageChanged: () => onPreviewImageChanged,
+      onPreviewImageFinish: () => onPreviewImageFinish
+    }, null, true);
+    return n0;
+  }
+});
+const UniErrorPreviewImage$1 = "uni-previewImage";
+const PreviewImageUniErrors = /* @__PURE__ */ new Map([
+  /**
+   * 用户取消
+   */
+  [1101001, "user cancel"],
+  /**
+   * urls至少包含一张图片地址
+   */
+  [1001, "fail parameter error: parameter.urls should have at least 1 item"],
+  /**
+   * 文件不存在
+   */
+  [1101003, "file not find"],
+  /**
+   * 图片加载失败
+   */
+  [1101004, "Failed to load resource"],
+  /**
+   * 未获取权限
+   */
+  [1101005, "No Permission"],
+  /**
+   * 其他错误
+   */
+  [1101010, "unexpect error:please check previewImage.uvue is in pages.json"]
+]);
+let PreviewImageErrorImpl$1 = class PreviewImageErrorImpl2 extends UniError {
+  constructor(errCode, uniErrorSubject) {
+    var _a;
+    super();
+    this.errSubject = uniErrorSubject;
+    this.errCode = errCode;
+    this.errMsg = (_a = PreviewImageUniErrors.get(errCode)) != null ? _a : "";
+  }
+};
+function __previewImage(option) {
+  var _a, _b;
+  if (option.urls.length == 0) {
+    let error = new PreviewImageErrorImpl$1(1001, UniErrorPreviewImage$1);
+    (_a = option.fail) == null ? void 0 : _a.call(option, error);
+    (_b = option.complete) == null ? void 0 : _b.call(option, error);
+    return;
+  }
+  uni.$once("__onPreviewLoad", () => {
+    var object = {
+      current: option.current,
+      urls: option.urls,
+      indicator: option.indicator,
+      loop: option.loop
+    };
+    if (option.longPressActions != null) {
+      object.longPressActions = {
+        itemList: option.longPressActions.itemList,
+        itemColor: option.longPressActions.itemColor
+      };
+    }
+    uni.$emit("__onPreviewLoadCallback", object);
+  });
+  uni.$on("__UNIPREVIEWLONGPRESS", (value) => {
+    var _a2, _b2, _c, _d, _e, _f, _g, _h;
+    if (option.longPressActions != null) {
+      var type = value["type"];
+      var tapIndex = value["tapIndex"];
+      var index2 = value["index"];
+      if (type == "success") {
+        var success = { tapIndex, index: index2 };
+        (_b2 = (_a2 = option.longPressActions) == null ? void 0 : _a2.success) == null ? void 0 : _b2.call(_a2, success);
+        (_d = (_c = option.longPressActions) == null ? void 0 : _c.complete) == null ? void 0 : _d.call(_c, success);
+      } else {
+        var fail = new PreviewImageErrorImpl$1(1101001, UniErrorPreviewImage$1);
+        (_f = (_e = option.longPressActions) == null ? void 0 : _e.fail) == null ? void 0 : _f.call(_e, fail);
+        (_h = (_g = option.longPressActions) == null ? void 0 : _g.complete) == null ? void 0 : _h.call(_g, fail);
+      }
+    }
+  });
+  uni.openDialogPage({
+    url: "uni:previewImage",
+    animationType: "fade-in",
+    success(_) {
+      var _a2, _b2;
+      let success = { errMsg: "ok", "errSubject": UniErrorPreviewImage$1 };
+      (_a2 = option.success) == null ? void 0 : _a2.call(option, success);
+      (_b2 = option.complete) == null ? void 0 : _b2.call(option, success);
+    },
+    fail(_) {
+      var _a2, _b2;
+      let error = new PreviewImageErrorImpl$1(1101010, UniErrorPreviewImage$1);
+      (_a2 = option.fail) == null ? void 0 : _a2.call(option, error);
+      (_b2 = option.complete) == null ? void 0 : _b2.call(option, error);
+    }
+  });
+}
+function __closePreviewImage(option) {
+  var _a, _b;
+  uni.$emit("__CLOSEPREVIEWIMAGE", null);
+  let callback = {
+    errMsg: "ok"
+  };
+  (_a = option.success) == null ? void 0 : _a.call(option, callback);
+  (_b = option.complete) == null ? void 0 : _b.call(option, callback);
+}
+const previewImage$1 = (option) => {
+  __previewImage(option);
+};
+const closePreviewImage$1 = (option) => {
+  __closePreviewImage(option);
+};
+function mergeComponentStyles(page, components) {
+  const styles = isArray(page.styles) ? [...page.styles] : [];
+  components.forEach((component) => {
+    if (isArray(component.styles)) {
+      styles.push(...component.styles);
+    }
+  });
+  page.styles = styles;
+}
+const registerPreviewImageOnce = /* @__PURE__ */ once(() => {
+  mergeComponentStyles(
+    _sfc_main,
+    [UniPreviewImageNonVapor, UniPreviewImageItem]
+  );
+  registerSystemRoute("uni:previewImage", _sfc_main);
+});
+const closePreviewImage = () => {
+  registerPreviewImageOnce();
+  closePreviewImage$1();
+};
+const previewImage = /* @__PURE__ */ defineAsyncApi(
+  API_PREVIEW_IMAGE,
+  (args, { resolve, reject }) => {
+    registerPreviewImageOnce();
+    previewImage$1(
+      /* @__PURE__ */ extend(
         {
           success: (res) => {
             resolve(res);
@@ -30099,6 +33158,29 @@ const createWorker = /* @__PURE__ */ defineSyncApi(
     return new WorkerImpl();
   }
 );
+const uasmCache = /* @__PURE__ */ new Map();
+function loadUasm(module) {
+  const descriptor = module;
+  if (!descriptor || typeof descriptor.id !== "string" || typeof descriptor.loader !== "function") {
+    return Promise.reject(new Error("uni.loadUasm 参数未经过编译处理"));
+  }
+  let promise = uasmCache.get(descriptor.id);
+  if (!promise) {
+    promise = descriptor.loader().then((loaded) => {
+      if (typeof loaded.default !== "function") {
+        throw new Error(`uasm 插件[${descriptor.id}]的默认导出必须是函数`);
+      }
+      return loaded.default();
+    });
+    uasmCache.set(descriptor.id, promise);
+    promise.catch(() => {
+      if (uasmCache.get(descriptor.id) === promise) {
+        uasmCache.delete(descriptor.id);
+      }
+    });
+  }
+  return promise;
+}
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -30129,6 +33211,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   createCameraContext,
   createCanvasContext,
   createCanvasContextAsync,
+  createEditorContextAsync,
   createInnerAudioContext,
   createIntersectionObserver,
   createLivePlayerContext,
@@ -30187,13 +33270,16 @@ const api = /* @__PURE__ */ Object.defineProperty({
   interceptors,
   invokePushCallback,
   loadFontFace,
+  loadUasm,
   login,
   makePhoneCall,
   navigateBack,
   navigateTo,
   offAccelerometerChange,
   offAppHide,
+  offAppRoute,
   offAppShow,
+  offBeforeAppRoute,
   offCompassChange,
   offError,
   offHostThemeChange,
@@ -30207,7 +33293,9 @@ const api = /* @__PURE__ */ Object.defineProperty({
   offWindowResize,
   onAccelerometerChange,
   onAppHide,
+  onAppRoute,
   onAppShow,
+  onBeforeAppRoute,
   onCompassChange,
   onCreateVueApp,
   onError,
@@ -30246,6 +33334,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   removeStorageSync,
   removeTabBarBadge,
   request,
+  rewriteRoute,
   rpx2px: upx2px,
   saveFile,
   saveImageToPhotosAlbum,
@@ -30309,48 +33398,49 @@ export {
   index$3 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$s as Button,
+  index$u as Button,
   index$2 as Camera,
   indexX$4 as Canvas,
-  index$q as Checkbox,
-  index$r as CheckboxGroup,
+  index$s as Checkbox,
+  index$t as CheckboxGroup,
   index$7 as CoverImage,
   index$8 as CoverView,
-  index$o as Editor,
-  index$u as Form,
-  index$n as Icon,
-  index$m as Image,
-  __syscom_3 as Input,
-  index$t as Label,
+  index$q as Editor,
+  index$w as Form,
+  index$p as Icon,
+  index$o as Image,
+  __syscom_0$2 as Input,
+  index$v as Label,
   LayoutComponent,
   index$g as ListItem,
   index$h as ListView,
   index$1 as LivePlayer,
   index as LivePusher,
-  _sfc_main$4 as Loading,
-  __syscom_0 as Map,
+  _sfc_main$7 as Loading,
+  Map$1 as Map,
   MatchMedia,
   MovableArea,
   MovableView,
-  index$l as Navigator,
+  index$n as Navigator,
   PageComponent,
+  _sfc_main$8 as PageContainer,
   index$6 as Picker,
   PickerView,
   PickerViewColumn,
-  index$k as Progress,
+  index$m as Progress,
   indexX$3 as Radio,
-  index$j as RadioGroup,
+  index$l as RadioGroup,
   ResizeSensor,
-  index$i as RichText,
-  __syscom_2$1 as ScrollView,
+  index$k as RichText,
+  __syscom_1 as ScrollView,
   indexX$2 as Slider,
   index$e as StickyHeader,
   index$f as StickySection,
   Swiper,
-  SwiperItem,
+  __syscom_0$1 as SwiperItem,
   indexX$1 as Switch,
-  __syscom_1$1 as Text,
-  __syscom_1 as Textarea,
+  index$j as Text,
+  __syscom_0 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,
@@ -30390,6 +33480,8 @@ export {
   UniMovableViewElement as UniMovableViewElementImpl,
   UniNavigatorElement,
   UniNavigatorElement as UniNavigatorElementImpl,
+  UniPageContainerElement,
+  UniPageContainerElement as UniPageContainerElementImpl,
   UniPickerElement,
   UniPickerViewColumnElement,
   UniPickerViewColumnElement as UniPickerViewColumnElementImpl,
@@ -30428,7 +33520,7 @@ export {
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
   index$b as Video,
-  __syscom_2 as View,
+  index$i as View,
   indexX as WebView,
   __f__,
   addInterceptor,
@@ -30453,6 +33545,7 @@ export {
   createCameraContext,
   createCanvasContext,
   createCanvasContextAsync,
+  createEditorContextAsync,
   createInnerAudioContext,
   createIntersectionObserver,
   createLivePlayerContext,
@@ -30514,13 +33607,16 @@ export {
   interceptors,
   invokePushCallback,
   loadFontFace,
+  loadUasm,
   login,
   makePhoneCall,
   navigateBack,
   navigateTo,
   offAccelerometerChange,
   offAppHide,
+  offAppRoute,
   offAppShow,
+  offBeforeAppRoute,
   offCompassChange,
   offError,
   offHostThemeChange,
@@ -30534,7 +33630,9 @@ export {
   offWindowResize,
   onAccelerometerChange,
   onAppHide,
+  onAppRoute,
   onAppShow,
+  onBeforeAppRoute,
   onCompassChange,
   onCreateVueApp2 as onCreateVueApp,
   onError,
@@ -30574,6 +33672,7 @@ export {
   removeStorageSync,
   removeTabBarBadge,
   request,
+  rewriteRoute,
   upx2px as rpx2px,
   saveFile,
   saveImageToPhotosAlbum,

@@ -24,6 +24,7 @@ import {
   isExternalUrl,
   isUniAppXAppPlatform,
   isUniAppXStandardScriptSupported,
+  isUniAppXWebVapor,
   isUniPageFile,
   matchEasycom,
   normalizePath,
@@ -39,6 +40,7 @@ import { createNVueCompiler } from '../utils'
 
 const pluginVuePath = require.resolve('@vitejs/plugin-vue')
 const normalizedPluginVuePath = normalizePath(pluginVuePath)
+
 /**
  * 每次创建新的 plugin-vue 实例。因为该插件内部会 cache  descriptor，而相同的vue文件在编译到vue页面和nvue页面时，不能共享缓存（条件编译，css scoped等均不同）
  * @returns
@@ -46,7 +48,8 @@ const normalizedPluginVuePath = normalizePath(pluginVuePath)
 export function createPluginVueInstance(options: VueOptions) {
   delete require.cache[pluginVuePath]
   delete require.cache[normalizedPluginVuePath]
-  const vuePlugin = require('@vitejs/plugin-vue')
+  const vuePluginModule = require(pluginVuePath)
+  const vuePlugin = vuePluginModule.default || vuePluginModule
   const vuePluginInstance: Plugin = vuePlugin(options)
   if (process.env.NODE_ENV === 'development') {
     // 删除 buildEnd 逻辑，因为里边清理了缓存，导致 watch 模式失效 https://github.com/vitejs/vite-plugin-vue/commit/96dbb220ff210d2f7391f43a807bcd8cfb0da776
@@ -118,6 +121,7 @@ export function initPluginVueOptions(
       isCustomElement,
       nodeTransforms,
       directiveTransforms,
+      ssrPreTagTransforms,
       whitespace,
     },
   } = uniPluginOptions
@@ -128,6 +132,16 @@ export function initPluginVueOptions(
 
   if (compiler) {
     templateOptions.compiler = compiler
+  }
+  if (isUniAppXWebVapor()) {
+    const features = vueOptions.features || (vueOptions.features = {})
+    ;(features as typeof features & { vapor?: boolean }).vapor = true
+    // plugin-vue 的 compiler 是完整 SFC compiler；显式传入 Web Vapor 定制版，
+    // 避免从项目根目录解析到标准 Vue compiler-sfc。
+    vueOptions.compiler = require('vue/compiler-sfc')
+    if (ssrPreTagTransforms) {
+      Object.assign(compilerOptions, { ssrPreTagTransforms })
+    }
   }
   if (miniProgram) {
     ;(compilerOptions as any).miniProgram = miniProgram

@@ -6,7 +6,7 @@ import jscc from 'rollup-plugin-jscc'
 import strip from '@rollup/plugin-strip'
 import replace from '@rollup/plugin-replace'
 
-import vue from '@vitejs/plugin-vue'
+import type { default as VuePlugin } from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import type { OutputChunk } from 'rollup'
@@ -15,6 +15,7 @@ import {
   UNI_EASYCOM_EXCLUDE,
   initAutoImportOptions,
   initPreContext,
+  initWebVaporAliases,
   normalizePath,
   stripOptions,
   uniPrePlugin,
@@ -38,6 +39,12 @@ const FORMAT = process.env.FORMAT as 'es' | 'cjs'
 
 const isX = process.env.UNI_APP_X === 'true'
 const isX_VAPOR = process.env.UNI_APP_X_VAPOR === 'true'
+if (isX_VAPOR) {
+  initWebVaporAliases()
+}
+const pluginVueId = ['@vitejs', 'plugin-vue'].join('/')
+const vuePluginModule = require(require.resolve(pluginVueId))
+const vue: typeof VuePlugin = vuePluginModule.default || vuePluginModule
 
 let systemPagePaths: Record<string, string> = {}
 if (isX) {
@@ -169,6 +176,12 @@ export default defineConfig({
       : []),
     vue({
       customElement: isX,
+      ...(isX_VAPOR
+        ? {
+            compiler: require('vue/compiler-sfc'),
+            features: { vapor: true },
+          }
+        : {}),
       template: {
         compilerOptions: {
           isNativeTag: isH5NativeTag,

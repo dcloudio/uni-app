@@ -1,5 +1,11 @@
+import path from 'path'
 import { initPluginUniOptions } from '../src/utils/plugin'
 import { initPluginVueOptions } from '../src/vue/options'
+
+const inputDir = path.resolve(
+  __dirname,
+  '../../uni-uts-v1/__tests__/examples/uni-app-x'
+)
 
 describe('initPluginUniOptions', () => {
   test('collects the uni-app x Vapor script transform', () => {
@@ -24,7 +30,9 @@ describe('initPluginVueOptions', () => {
   const originalEnv = {
     UNI_APP_X: process.env.UNI_APP_X,
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
+    UNI_APP_X_VAPOR: process.env.UNI_APP_X_VAPOR,
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
+    UNI_PLATFORM: process.env.UNI_PLATFORM,
     UNI_UTS_PLATFORM: process.env.UNI_UTS_PLATFORM,
   }
 
@@ -57,7 +65,7 @@ describe('initPluginVueOptions', () => {
       } else {
         delete process.env.UNI_APP_X_DOM2
       }
-      process.env.UNI_INPUT_DIR = '/project'
+      process.env.UNI_INPUT_DIR = inputDir
       const uniAppXVaporScriptTransform = jest.fn()
       const plugin = {
         name: 'uni:vapor-script',
@@ -68,7 +76,7 @@ describe('initPluginVueOptions', () => {
         base: '/',
         command: 'serve',
         platform: 'h5',
-        inputDir: '/project',
+        inputDir,
         outputDir: '/dist',
         assetsDir: 'assets',
       } as any
@@ -91,12 +99,12 @@ describe('initPluginVueOptions', () => {
     process.env.UNI_APP_X = 'true'
     process.env.UNI_APP_X_DOM2 = 'true'
     process.env.UNI_UTS_PLATFORM = 'app-android'
-    process.env.UNI_INPUT_DIR = '/project'
+    process.env.UNI_INPUT_DIR = inputDir
     const options = {
       base: '/',
       command: 'serve',
       platform: 'h5',
-      inputDir: '/project',
+      inputDir,
       outputDir: '/dist',
       assetsDir: 'assets',
       vueOptions: {
@@ -109,18 +117,44 @@ describe('initPluginVueOptions', () => {
     expect(vueOptions.script?.babelParserPlugins).toEqual(['decorators-legacy'])
   })
 
+  test('Web Vapor 显式传入定制 SFC compiler', () => {
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_APP_X_VAPOR = 'true'
+    process.env.UNI_PLATFORM = 'h5'
+    process.env.UNI_UTS_PLATFORM = 'web'
+    process.env.UNI_INPUT_DIR = inputDir
+    const options = {
+      base: '/',
+      command: 'serve',
+      platform: 'h5',
+      inputDir,
+      outputDir: '/dist',
+      assetsDir: 'assets',
+    } as any
+
+    const vueOptions = initPluginVueOptions(options, initPluginUniOptions([]))
+
+    expect(
+      (vueOptions.features as typeof vueOptions.features & { vapor?: boolean })
+        ?.vapor
+    ).toBe(true)
+    expect(vueOptions.compiler).toBe(require('vue/compiler-sfc'))
+    expect(vueOptions.template).not.toHaveProperty('vaporCompiler')
+  })
+
   test.each(['web', 'mp-weixin', 'app-ios', 'app-harmony'] as const)(
     'uses script lang parser semantics on %s',
     (platform) => {
       process.env.UNI_APP_X = 'true'
       Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
       process.env.UNI_UTS_PLATFORM = platform
-      process.env.UNI_INPUT_DIR = '/project'
+      process.env.UNI_INPUT_DIR = inputDir
       const options = {
         base: '/',
         command: 'serve',
         platform: 'h5',
-        inputDir: '/project',
+        inputDir,
         outputDir: '/dist',
         assetsDir: 'assets',
       } as any
@@ -151,13 +185,13 @@ describe('initPluginVueOptions', () => {
     process.env.UNI_APP_X = 'true'
     Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
     process.env.UNI_UTS_PLATFORM = platform
-    process.env.UNI_INPUT_DIR = '/project'
+    process.env.UNI_INPUT_DIR = inputDir
     const decorators = ['decorators', { decoratorsBeforeExport: true }] as any
     const options = {
       base: '/',
       command: 'serve',
       platform: 'h5',
-      inputDir: '/project',
+      inputDir,
       outputDir: '/dist',
       assetsDir: 'assets',
       vueOptions: {
