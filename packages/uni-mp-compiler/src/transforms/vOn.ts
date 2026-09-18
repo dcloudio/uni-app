@@ -40,6 +40,13 @@ export interface VOnDirectiveNode extends DirectiveNode {
   exp: SimpleExpressionNode | undefined
 }
 
+export interface VBindAttrsEventDirectiveNode extends VOnDirectiveNode {
+  __uniVBindAttrsEvent?: {
+    attrsExp: string
+    attrsFirst: boolean
+  }
+}
+
 export const transformOn: DirectiveTransform = (
   dir,
   node,
@@ -48,6 +55,9 @@ export const transformOn: DirectiveTransform = (
 ) => {
   const context = _context as unknown as TransformContext
   const { loc, modifiers, arg } = dir as VOnDirectiveNode
+  const vBindAttrsEvent = context.isX
+    ? (dir as VBindAttrsEventDirectiveNode).__uniVBindAttrsEvent
+    : undefined
   if (!dir.exp && !modifiers.length) {
     context.onError(createCompilerError(ErrorCodes.X_V_ON_NO_EXPRESSION, loc))
   }
@@ -146,6 +156,44 @@ export const transformOn: DirectiveTransform = (
         hasMultipleStatements ? `}` : `)`,
       ])
     }
+  }
+
+  if (vBindAttrsEvent) {
+    // 没有透传处理器时保留本地处理器原值，避免改变单处理器的返回语义和额外创建数组。
+    // 需要合并时使用 concat 展平已有处理器数组，并用空数组过滤无效的本地处理器；
+    // attrsFirst 用于保持处理器与模板声明一致的执行顺序。
+    const attrsExp = context.prefixIdentifiers
+      ? processExpression(
+          createSimpleExpression(vBindAttrsEvent.attrsExp, false, loc),
+          context
+        )
+      : createSimpleExpression(vBindAttrsEvent.attrsExp, false, loc)
+    const localHandler = exp || createSimpleExpression(`() => {}`, false, loc)
+    exp = createCompoundExpression(
+      vBindAttrsEvent.attrsFirst
+        ? [
+            `(`,
+            attrsExp,
+            ` ? [].concat(`,
+            attrsExp,
+            `, (`,
+            localHandler,
+            `) || []) : `,
+            localHandler,
+            `)`,
+          ]
+        : [
+            `(`,
+            attrsExp,
+            ` ? [].concat((`,
+            localHandler,
+            `) || [], `,
+            attrsExp,
+            `) : `,
+            localHandler,
+            `)`,
+          ]
+    )
   }
 
   let ret: DirectiveTransformResult = {
