@@ -32,6 +32,7 @@ describe('initPluginVueOptions', () => {
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
     UNI_APP_X_VAPOR: process.env.UNI_APP_X_VAPOR,
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
+    NODE_ENV: process.env.NODE_ENV,
     UNI_PLATFORM: process.env.UNI_PLATFORM,
     UNI_UTS_PLATFORM: process.env.UNI_UTS_PLATFORM,
   }
@@ -115,6 +116,44 @@ describe('initPluginVueOptions', () => {
     const vueOptions = initPluginVueOptions(options, initPluginUniOptions([]))
 
     expect(vueOptions.script?.babelParserPlugins).toEqual(['decorators-legacy'])
+  })
+
+  test('only records implicit script language metadata in development', () => {
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    process.env.UNI_INPUT_DIR = inputDir
+    const createDescriptor = () =>
+      ({
+        script: null,
+        scriptSetup: { attrs: {} },
+      } as any)
+    const createVueOptions = () =>
+      initPluginVueOptions(
+        {
+          base: '/',
+          command: 'serve',
+          platform: 'app-harmony',
+          inputDir,
+          outputDir: '/dist',
+          assetsDir: 'assets',
+        } as any,
+        initPluginUniOptions([])
+      ) as any
+
+    process.env.NODE_ENV = 'development'
+    const developmentDescriptor = createDescriptor()
+    createVueOptions().uniAppXVaporSfcTransform(developmentDescriptor)
+    expect(developmentDescriptor.__uniAppXVaporSfcMeta).toEqual({
+      hasImplicitLang: true,
+      defaultLang: 'ts',
+    })
+
+    process.env.NODE_ENV = 'production'
+    const productionDescriptor = createDescriptor()
+    createVueOptions().uniAppXVaporSfcTransform(productionDescriptor)
+    expect(productionDescriptor.scriptSetup.lang).toBe('ts')
+    expect(productionDescriptor.__uniAppXVaporSfcMeta).toBeUndefined()
   })
 
   test('Web Vapor 显式传入定制 SFC compiler', () => {

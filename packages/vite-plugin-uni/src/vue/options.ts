@@ -359,16 +359,20 @@ export function initPluginVueOptions(
           if (descriptor.scriptSetup) {
             ;(descriptor as SFCDescriptor & { vapor?: boolean }).vapor = true
           }
-          ;(
-            descriptor as SFCDescriptor & {
-              __uniAppXVaporSfcMeta?: {
-                hasImplicitLang: boolean
-                defaultLang: string
+          // App DOM2 会为代码生成强制设置 plugin-vue 的 isProduction，
+          // 因此提示元信息必须依据真实运行模式生成。
+          if (process.env.NODE_ENV === 'development') {
+            ;(
+              descriptor as SFCDescriptor & {
+                __uniAppXVaporSfcMeta?: {
+                  hasImplicitLang: boolean
+                  defaultLang: string
+                }
               }
+            ).__uniAppXVaporSfcMeta = {
+              hasImplicitLang,
+              defaultLang,
             }
-          ).__uniAppXVaporSfcMeta = {
-            hasImplicitLang,
-            defaultLang,
           }
         }
       }

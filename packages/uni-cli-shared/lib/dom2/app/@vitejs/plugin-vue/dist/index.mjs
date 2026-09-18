@@ -2733,7 +2733,7 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
     );
     return null;
   }
-  const uniAppXScriptMeta = !isProduction ? descriptor.__uniAppXVaporSfcMeta : void 0;
+  const uniAppXScriptMeta = descriptor.__uniAppXVaporSfcMeta;
   const attachedProps = [];
   const hasScoped = descriptor.styles.some((s) => s.scoped);
   const {
@@ -2775,7 +2775,7 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
     attachedProps
   );
   const customBlocksCode = await genCustomBlockCode(descriptor, pluginContext);
-  if (uniAppXScriptMeta?.hasImplicitLang && !isProduction) {
+  if (uniAppXScriptMeta?.hasImplicitLang) {
     attachedProps.push([
       "__uniDefaultScriptLang",
       JSON.stringify(uniAppXScriptMeta.defaultLang)
