@@ -20612,11 +20612,12 @@ const index$c = {
 };
 function warnHandler(msg, instance2, trace) {
   if (instance2) {
-    const name = instance2.$.type.name;
+    const internalInstance = "$" in instance2 ? instance2.$ : instance2;
+    const name = internalInstance.type.name;
     if ("PageMetaHead" === name) {
       return;
     }
-    const parent = instance2.$.parent;
+    const parent = internalInstance.parent;
     if (parent && parent.type.name === "PageMeta") {
       return;
     }

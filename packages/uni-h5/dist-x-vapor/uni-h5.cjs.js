@@ -10592,11 +10592,12 @@ const index$b = {
 };
 function warnHandler(msg, instance, trace) {
   if (instance) {
-    const name = instance.$.type.name;
+    const internalInstance = "$" in instance ? instance.$ : instance;
+    const name = internalInstance.type.name;
     if ("PageMetaHead" === name) {
       return;
     }
-    const parent = instance.$.parent;
+    const parent = internalInstance.parent;
     if (parent && parent.type.name === "PageMeta") {
       return;
     }
