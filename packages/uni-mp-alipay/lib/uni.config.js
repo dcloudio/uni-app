@@ -5,6 +5,7 @@ const {
 } = require('@dcloudio/uni-cli-shared/lib/json')
 const { getSubpackageRoots } = require('@dcloudio/uni-cli-shared/lib/pages')
 const { normalizePath } = require('@dcloudio/uni-cli-shared/lib/util')
+const { copyMiniProgramThemeJson } = require('@dcloudio/uni-cli-shared/lib/theme')
 
 const COMPONENTS_DIR_NAME = 'mycomponents'
 
@@ -25,7 +26,8 @@ module.exports = {
     },
     filterTag: 'sjs',
     subPackages: true,
-    project: 'mini.project.json'
+    project: 'mini.project.json',
+    darkmode: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
     const copyOptions = [
@@ -52,6 +54,7 @@ module.exports = {
         transform: content => JSON.stringify(parseJson(content.toString(), true))
       })
     }
+    copyOptions.push(copyMiniProgramThemeJson(platformOptions, vueOptions))
     return copyOptions
   }
 }
