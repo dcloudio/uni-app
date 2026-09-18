@@ -29,7 +29,7 @@ import {
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { ResolvedConfig } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
-import { getDom2BytecodeVersion } from './bytecodeVersion'
+import { MIN_RUNTIME_VERSION } from './minRuntimeVersion'
 
 export const SHARED_DATA_LIB_IMPORT_SOURCE = 'libentry.so'
 export const SHARED_DATA_LIB_GLOBAL_NAME = '__uniSharedDataLib'
@@ -209,20 +209,8 @@ export function normalizeManifestJson(
   const app = userManifestJson[platform] || userManifestJson.app || {}
   const x = userManifestJson['uni-app-x'] || {}
   x.compilerVersion = process.env.UNI_COMPILER_VERSION || ''
-  // bytecodeVersion 由 DOM2 编译器统一提供，nativecode 或非 DOM2 构建不应携带该字段。
-  const isDom2Bytecode =
-    process.env.UNI_APP_X_DOM2 === 'true' &&
-    (process.env.UNI_APP_X_VAPOR_RENDER_TARGET || 'bytecode') === 'bytecode'
-  if (isDom2Bytecode) {
-    const bytecodeVersion = getDom2BytecodeVersion()
-    if (bytecodeVersion !== undefined) {
-      x.bytecodeVersion = bytecodeVersion
-    } else {
-      delete x.bytecodeVersion
-    }
-  } else {
-    delete x.bytecodeVersion
-  }
+  x.minRuntimeVersion = MIN_RUNTIME_VERSION
+  delete x.bytecodeVersion
   const pageOrientation = getGlobalPageOrientation()
 
   if (pageOrientation) {

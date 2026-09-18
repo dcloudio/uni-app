@@ -1,9 +1,6 @@
 import { validateThemeValue } from '@dcloudio/uni-cli-shared'
 import { normalizeManifestJson } from '../src/plugins/utils'
-
-jest.mock('../src/plugins/bytecodeVersion', () => ({
-  getDom2BytecodeVersion: () => 1,
-}))
+import { MIN_RUNTIME_VERSION } from '../src/plugins/minRuntimeVersion'
 
 describe('x-ios x-harmony manifestJson', () => {
   beforeEach(() => {
@@ -114,35 +111,15 @@ describe('x-ios x-harmony manifestJson', () => {
     })
   })
 
-  describe('DOM2 bytecode version', () => {
-    test('should write compiler bytecode version for DOM2 bytecode target', () => {
-      process.env.UNI_APP_X_DOM2 = 'true'
+  describe('runtime compatibility version', () => {
+    test('should write the compiler maintained minimum runtime version', () => {
       const manifest = normalizeManifestJson('app-ios', {
         ...mockManifestJson,
-        'uni-app-x': { bytecodeVersion: 999 },
+        'uni-app-x': { minRuntimeVersion: '0.1', bytecodeVersion: 999 },
       }) as any
 
-      expect(manifest['uni-app-x'].bytecodeVersion).toBe(1)
-    })
-
-    test('should omit bytecode version for DOM2 nativecode target', () => {
-      process.env.UNI_APP_X_DOM2 = 'true'
-      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
-      const manifest = normalizeManifestJson('app-ios', {
-        ...mockManifestJson,
-        'uni-app-x': { bytecodeVersion: 999 },
-      }) as any
-
-      expect(manifest['uni-app-x'].bytecodeVersion).toBeUndefined()
-    })
-
-    test('should omit bytecode version for non-DOM2 builds', () => {
-      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
-      const manifest = normalizeManifestJson('app-ios', {
-        ...mockManifestJson,
-        'uni-app-x': { bytecodeVersion: 999 },
-      }) as any
-
+      expect(manifest['uni-app-x'].minRuntimeVersion).toBe(MIN_RUNTIME_VERSION)
+      expect(MIN_RUNTIME_VERSION).toMatch(/^\d+\.\d+$/)
       expect(manifest['uni-app-x'].bytecodeVersion).toBeUndefined()
     })
   })
