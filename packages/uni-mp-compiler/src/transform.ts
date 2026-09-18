@@ -62,6 +62,7 @@ import { EXTEND } from './runtimeHelpers'
 import { createObjectExpression } from './ast'
 import { SCOPED_SLOT_IDENTIFIER } from './transforms/utils'
 import { genBabelExpr } from './codegen'
+import { isVPreElementNode } from './transforms/vPre'
 
 export interface ImportItem {
   exp: string | ExpressionNode
@@ -210,6 +211,9 @@ export function traverseNode(
     } else {
       // node may have been replaced
       node = context.currentNode
+    }
+    if (isVPreElementNode(node)) {
+      return
     }
   }
 
