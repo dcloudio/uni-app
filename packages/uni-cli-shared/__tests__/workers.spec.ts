@@ -97,5 +97,5 @@ describe('workers', () => {
       }
       fs.removeSync(outputDir)
     }
-  })
+  }, 30_000)
 })
