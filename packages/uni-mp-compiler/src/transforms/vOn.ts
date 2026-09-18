@@ -55,6 +55,7 @@ export const transformOn: DirectiveTransform = (
 ) => {
   const context = _context as unknown as TransformContext
   const { loc, modifiers, arg } = dir as VOnDirectiveNode
+  const isOnce = modifiers.includes('once')
   const vBindAttrsEvent = context.isX
     ? (dir as VBindAttrsEventDirectiveNode).__uniVBindAttrsEvent
     : undefined
@@ -221,13 +222,15 @@ export const transformOn: DirectiveTransform = (
     ret.props[0].value = wrapperVOn(
       ret.props[0].value as ExpressionNode,
       node,
-      context
+      context,
+      isOnce
     )
   } else {
     ret.props[0].value = wrapperVOn(
       ret.props[0].value as ExpressionNode,
       node,
-      context
+      context,
+      isOnce
     )
   }
 
@@ -239,7 +242,8 @@ export const transformOn: DirectiveTransform = (
 export function wrapperVOn(
   value: ExpressionNode,
   node: ElementNode,
-  context: TransformContext
+  context: TransformContext,
+  isOnce: boolean = false
 ) {
   if (isBuiltInIdentifier(value)) {
     return value
@@ -279,6 +283,7 @@ export function wrapperVOn(
     `${context.helperString(V_ON)}(`,
     value,
     ...keys,
+    isOnce ? ', true' : '',
     `)`,
   ])
   // 保存原始事件表达式
