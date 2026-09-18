@@ -9,6 +9,7 @@ import {
   copyMiniProgramThemeJson,
   createCopyComponentDirs,
   createCopyPluginTarget,
+  createMiniProgramUasmCopyTarget,
   createTransformComponentLink,
   getNativeTags,
   resolveMiniProgramWorkerPaths,
@@ -122,6 +123,9 @@ export const options: UniMiniProgramPluginOptions = {
     copyOptions: {
       assets: createCopyComponentDirs(COMPONENTS_DIR),
       targets: [
+        ...(process.env.UNI_APP_X === 'true'
+          ? [createMiniProgramUasmCopyTarget('mp-alipay')]
+          : []),
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
           src: ['customize-tab-bar', 'preload.json', 'sitemap.json'],
