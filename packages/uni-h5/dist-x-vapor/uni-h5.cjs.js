@@ -9441,10 +9441,6 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       childStatus.splice(index2, 1);
       rearrangeDebounce();
     });
-    vue.provide("__listViewFirstItemRendered", (status) => {
-      state.defaultItemSize = status.cachedSize;
-      state.defaultItemSizeUpdated = true;
-    });
     vue.watch(() => {
       return state.defaultHeaderSize;
     }, (value) => {
@@ -9835,7 +9831,6 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     });
     vue.inject("__listViewRegisterItem");
     vue.inject("__listViewUnregisterItem");
-    const firstItemRendered = vue.inject("__listViewFirstItemRendered");
     function updateSize() {
       if (!visible.value || status.cachedSizeUpdated) {
         return;
@@ -9848,7 +9843,6 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
         }
         status.cachedSize = getSize(isVertical.value, rootNode);
         status.cachedSizeUpdated = true;
-        firstItemRendered(status);
       }
     }
     vue.watch(visible, (value) => {

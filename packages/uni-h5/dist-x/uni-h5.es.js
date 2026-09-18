@@ -7723,11 +7723,11 @@ function discardWebAppRouteTransaction(transaction) {
 }
 function takePendingProgrammaticRoute(to) {
   const redirectedFrom = getOriginalRoute(to.redirectedFrom);
-  const index2 = pendingProgrammaticRoutes.findIndex(
-    (transaction) => !transaction.cancelled && (transaction.finalFullPath === to.fullPath || transaction.finalFullPath === (redirectedFrom == null ? void 0 : redirectedFrom.fullPath))
-  );
-  if (index2 !== -1) {
-    return pendingProgrammaticRoutes.splice(index2, 1)[0];
+  for (let index2 = pendingProgrammaticRoutes.length - 1; index2 >= 0; index2--) {
+    const transaction = pendingProgrammaticRoutes[index2];
+    if (!transaction.cancelled && (transaction.finalFullPath === to.fullPath || transaction.finalFullPath === (redirectedFrom == null ? void 0 : redirectedFrom.fullPath))) {
+      return pendingProgrammaticRoutes.splice(index2, 1)[0];
+    }
   }
 }
 function takePendingHistoryRoute(to) {
@@ -7781,7 +7781,7 @@ function bindOrRedirectTransaction(router, to, transaction) {
   if (transaction.finalFullPath !== to.fullPath) {
     const resolved = replaceTransactionRoute(router, transaction, to);
     if (transaction.finalFullPath !== to.fullPath) {
-      pendingProgrammaticRoutes.unshift(transaction);
+      pendingProgrammaticRoutes.push(transaction);
       return toRouteLocation(resolved.url);
     }
   }
@@ -7799,7 +7799,7 @@ function createLaunchTransaction(router, to) {
       resolved.context
     );
     if (transaction.finalFullPath !== sourceFullPath) {
-      pendingProgrammaticRoutes.unshift(transaction);
+      pendingProgrammaticRoutes.push(transaction);
       return {
         transaction,
         redirect: toRouteLocation(resolved.url)
@@ -7878,7 +7878,7 @@ function initWebAppRouteListener(router, { onRouteConfirmed, onMissingRoute }) {
         );
         transaction.delta = historyRoute.delta;
         if (transaction.finalFullPath !== historyRoute.fullPath) {
-          pendingProgrammaticRoutes.unshift(transaction);
+          pendingProgrammaticRoutes.push(transaction);
           return toRouteLocation(resolved.url);
         }
       }
@@ -7899,7 +7899,7 @@ function initWebAppRouteListener(router, { onRouteConfirmed, onMissingRoute }) {
         resolved.context
       );
       if (transaction.finalFullPath !== originalRoute.fullPath) {
-        pendingProgrammaticRoutes.unshift(transaction);
+        pendingProgrammaticRoutes.push(transaction);
         return toRouteLocation(resolved.url);
       }
     }
