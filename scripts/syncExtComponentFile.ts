@@ -24,6 +24,7 @@ const PREPROCESS_KEYS = [
   'APP_ANDROID',
   'APP_IOS',
   'APP_HARMONY',
+  'APP_HARMONY_JSVM',
   'H5',
   'WEB',
   'MP',
