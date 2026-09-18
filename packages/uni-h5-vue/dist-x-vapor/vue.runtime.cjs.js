@@ -2348,7 +2348,7 @@ function warn$1(msg, ...args) {
 			const toString = a.toString;
 			return toString == null ? JSON.stringify(a) : toString.call(a);
 		}).join(""),
-		instance && instance.proxy || instance,
+		instance && instance.vapor ? instance : instance && instance.proxy || instance,
 		trace.map(({ ctx }) => `at <${formatComponentName(instance, ctx.type)}>`).join("\n"),
 		trace
 	]);
@@ -2528,7 +2528,7 @@ function handleError(err, instance, type, throwInDev = true) {
 	const { errorHandler, throwUnhandledErrorInProduction } = instance && instance.appContext.config || EMPTY_OBJ;
 	if (instance) {
 		let cur = instance.parent;
-		const exposedInstance = instance.proxy || instance;
+		const exposedInstance = instance.vapor ? instance : instance.proxy || instance;
 		const errorInfo = ErrorTypeStrings$1[type];
 		while (cur) {
 			const errorCapturedHooks = cur.ec;
@@ -4737,6 +4737,8 @@ const KeepAlive = {
 				const { subTree, suspense } = keepAliveInstance;
 				const vnode = getInnerChild(subTree);
 				if (cached.type === vnode.type && cached.key === vnode.key) {
+					const bda = vnode.component.bda;
+					bda && invokeArrayFns(bda);
 					resetShapeFlag(vnode);
 					const da = vnode.component.da;
 					da && queuePostRenderEffect(da, void 0, suspense);
@@ -5132,7 +5134,8 @@ function toHandlers(obj, preserveCaseIfNecessary) {
 * public $parent chains, skip functional ones and go to the parent instead.
 */
 const getPublicInstance = (i) => {
-	if (!i || i.vapor) return null;
+	if (i && i.vapor) return getComponentPublicInstance(i);
+	if (!i) return null;
 	if (isStatefulComponent(i)) return getComponentPublicInstance(i);
 	return getPublicInstance(i.parent);
 };
@@ -5167,7 +5170,7 @@ let publicPropertiesMap;
 const getPublicPropertiesMap = () => {
 	if (!publicPropertiesMap) publicPropertiesMap = extend(Object.create(null), {
 		$: (i) => i,
-		$el: (i) => getDevRootFragmentEl(i),
+		$el: (i) => i.vapor ? i.getRootElement() : getDevRootFragmentEl(i),
 		$data: (i) => i.data,
 		$props: (i) => /* @__PURE__ */ shallowReadonly(i.props),
 		$attrs: (i) => /* @__PURE__ */ shallowReadonly(i.attrs),
@@ -5178,9 +5181,12 @@ const getPublicPropertiesMap = () => {
 		$host: (i) => i.ce,
 		$emit: (i) => i.emit,
 		$options: (i) => resolveMergedOptions(i),
-		$forceUpdate: (i) => i.f || (i.f = () => {
-			queueJob(i.update);
-		}),
+		$forceUpdate: (i) => {
+			if (i.vapor) return;
+			return i.f || (i.f = () => {
+				queueJob(i.update);
+			});
+		},
 		$nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
 		$watch: (i) => instanceWatch.bind(i)
 	});
@@ -8340,7 +8346,10 @@ let currentInstance = null;
 * @internal
 */
 const getCurrentGenericInstance = () => currentInstance || currentRenderingInstance;
-const getCurrentInstance = () => currentInstance && !currentInstance.vapor ? currentInstance : currentRenderingInstance;
+/**
+* fixed by uts: uni-h5 框架需要在 Vapor setup 中访问当前组件实例。
+*/
+const getCurrentInstance = () => getCurrentGenericInstance();
 let isInSSRComponentSetup = false;
 let setInSSRSetupState;
 /**
@@ -14181,6 +14190,25 @@ const emptyContext = {
 	provides: /*@__PURE__*/ Object.create(null)
 };
 var VaporComponentInstance = class {
+	get proxy() {
+		var _instance$setupContex;
+		const instance = this;
+		const ctx = instance.ctx || (instance.ctx = {});
+		ctx._ = instance;
+		instance.data || (instance.data = EMPTY_OBJ);
+		instance.setupState || (instance.setupState = EMPTY_OBJ);
+		(_instance$setupContex = instance.setupContext) !== null && _instance$setupContex !== void 0 || (instance.setupContext = null);
+		instance.accessCache || (instance.accessCache = Object.create(null));
+		const proxy = new Proxy(ctx, PublicInstanceProxyHandlers);
+		Object.defineProperty(instance, "proxy", {
+			configurable: true,
+			value: proxy
+		});
+		return proxy;
+	}
+	getRootElement() {
+		return this.block ? getBlockFirstNode(this.block) : void 0;
+	}
 	constructor(comp, rawProps, rawSlots, appContext, once, ce) {
 		this.effectCount = 0;
 		this.vapor = true;
@@ -15400,6 +15428,7 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 				unsetShapeFlag(cached);
 				const instance = getInstanceFromCache(cached);
 				if (instance) {
+					if (instance.bda) invokeArrayFns(instance.bda);
 					const da = instance.da;
 					da && queuePostRenderEffect(da, void 0, keepAliveInstance.suspense);
 				}
@@ -19657,6 +19686,7 @@ exports.KeepAlive = KeepAlive;
 exports.MismatchTypes = MismatchTypes;
 exports.MoveType = MoveType;
 exports.NULL_DYNAMIC_COMPONENT = NULL_DYNAMIC_COMPONENT;
+exports.PublicInstanceProxyHandlers = PublicInstanceProxyHandlers;
 exports.ReactiveEffect = ReactiveEffect;
 exports.SchedulerJobFlags = SchedulerJobFlags;
 exports.Static = Static;
