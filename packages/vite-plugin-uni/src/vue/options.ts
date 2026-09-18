@@ -348,7 +348,13 @@ export function initPluginVueOptions(
           const scripts = [descriptor.script, descriptor.scriptSetup].filter(
             (script): script is NonNullable<typeof script> => !!script
           )
-          let hasImplicitLang = false
+          // compiler-sfc 可能复用缓存中的 descriptor，保留首次处理时记录的隐式 lang 状态。
+          let hasImplicitLang =
+            (
+              descriptor as SFCDescriptor & {
+                __uniAppXVaporSfcMeta?: { hasImplicitLang?: boolean }
+              }
+            ).__uniAppXVaporSfcMeta?.hasImplicitLang === true
           scripts.forEach((script) => {
             if (script.lang == null) {
               script.lang = defaultLang

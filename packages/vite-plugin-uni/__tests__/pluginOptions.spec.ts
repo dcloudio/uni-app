@@ -143,7 +143,10 @@ describe('initPluginVueOptions', () => {
 
     process.env.NODE_ENV = 'development'
     const developmentDescriptor = createDescriptor()
-    createVueOptions().uniAppXVaporSfcTransform(developmentDescriptor)
+    const developmentTransform = createVueOptions().uniAppXVaporSfcTransform
+    developmentTransform(developmentDescriptor)
+    // compiler-sfc 的解析缓存可能让同一 descriptor 再次进入扩展点。
+    developmentTransform(developmentDescriptor)
     expect(developmentDescriptor.__uniAppXVaporSfcMeta).toEqual({
       hasImplicitLang: true,
       defaultLang: 'ts',
