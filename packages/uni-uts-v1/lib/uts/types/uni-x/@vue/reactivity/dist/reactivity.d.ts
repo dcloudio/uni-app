@@ -734,7 +734,9 @@ export declare function trigger(target: object, type: TriggerOpTypes, key?: unkn
 /**
  * Track array iteration and return:
  * - if input is reactive: a cloned raw array with reactive values
- * - if input is non-reactive or shallowReactive: the original raw array
+ * - if input is readonly: a cloned raw array with readonly values, preserving
+ *   reactivity
+ * - if input is raw or shallow: the original raw array
  */
 export declare function reactiveReadArray<T>(array: T[]): T[];
 /**

@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.8
+  * @vue/compiler-sfc v3.6.0-rc.9
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -122,7 +122,7 @@ function parseCssVars(sfc) {
 	const vars = [];
 	sfc.styles.forEach((style) => {
 		let match;
-		const content = style.content.replace(/\/\*([\s\S]*?)\*\/|\/\/.*/g, "");
+		const content = stripComments(style.content);
 		while (match = vBindRE.exec(content)) {
 			const start = match.index + match[0].length;
 			const end = lexBinding(content, start);
@@ -133,6 +133,70 @@ function parseCssVars(sfc) {
 		}
 	});
 	return vars;
+}
+const cssSpecialRE = /[/"'\\(]/g;
+function stripComments(content) {
+	const len = content.length;
+	let out = "";
+	let last = 0;
+	let i = 0;
+	cssSpecialRE.lastIndex = 0;
+	while (cssSpecialRE.test(content)) {
+		i = cssSpecialRE.lastIndex - 1;
+		const c = content.charCodeAt(i);
+		if (c === 47) {
+			const next = content.charCodeAt(i + 1);
+			if (next === 42) {
+				out += content.slice(last, i);
+				const end = content.indexOf("*/", i + 2);
+				i = last = end === -1 ? len : end + 2;
+			} else if (next === 47) {
+				out += content.slice(last, i);
+				i += 2;
+				while (i < len && !isNewline(content.charCodeAt(i))) i++;
+				last = i;
+			} else i++;
+		} else if (c === 34 || c === 39) i = skipString(content, i + 1, c);
+		else if (c === 92) i += 2;
+		else if (isUrlFunction(content, i)) i = skipUrl(content, i + 1);
+		else i++;
+		cssSpecialRE.lastIndex = i;
+	}
+	return last === 0 ? content : out + content.slice(last);
+}
+function skipString(s, i, quote) {
+	while (i < s.length) {
+		const c = s.charCodeAt(i);
+		if (c === quote) return i + 1;
+		if (isNewline(c)) return i;
+		if (c === 92) i += s.charCodeAt(i + 1) === 13 && s.charCodeAt(i + 2) === 10 ? 3 : 2;
+		else i++;
+	}
+	return i;
+}
+function isUrlFunction(s, i) {
+	const prev = s.charCodeAt(i - 4);
+	return (s.charCodeAt(i - 3) | 32) === 117 && (s.charCodeAt(i - 2) | 32) === 114 && (s.charCodeAt(i - 1) | 32) === 108 && prev !== 92 && !isIdentChar(prev);
+}
+function skipUrl(s, i) {
+	while (isWhitespace(s.charCodeAt(i))) i++;
+	const c = s.charCodeAt(i);
+	if (c === 34 || c === 39) return i;
+	while (i < s.length) {
+		const c = s.charCodeAt(i);
+		if (c === 41) return i + 1;
+		i += c === 92 ? 2 : 1;
+	}
+	return i;
+}
+function isIdentChar(c) {
+	return c >= 97 && c <= 122 || c >= 65 && c <= 90 || c >= 48 && c <= 57 || c === 45 || c === 95 || c >= 128;
+}
+function isNewline(c) {
+	return c === 10 || c === 13;
+}
+function isWhitespace(c) {
+	return c === 32 || c === 9 || c === 12 || isNewline(c);
 }
 function lexBinding(content, start) {
 	let state = 0;
@@ -3836,7 +3900,7 @@ const trimPlugin = () => {
 };
 trimPlugin.postcss = true;
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/unesc.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/unesc.js
 var require_unesc = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = unesc;
@@ -3887,7 +3951,7 @@ var require_unesc = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/getProp.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/getProp.js
 var require_getProp = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = getProp;
@@ -3903,7 +3967,7 @@ var require_getProp = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/ensureObject.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/ensureObject.js
 var require_ensureObject = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = ensureObject;
@@ -3918,7 +3982,7 @@ var require_ensureObject = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/stripComments.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/stripComments.js
 var require_stripComments = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = stripComments;
@@ -3938,7 +4002,7 @@ var require_stripComments = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/maxNestingDepth.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/maxNestingDepth.js
 var require_maxNestingDepth = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.MAX_NESTING_DEPTH = void 0;
@@ -3965,7 +4029,7 @@ var require_maxNestingDepth = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/index.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/index.js
 var require_util$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __importDefault = exports && exports.__importDefault || function(mod) {
 		return mod && mod.__esModule ? mod : { "default": mod };
@@ -4015,7 +4079,7 @@ var require_util$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	});
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/node.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/node.js
 var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var util_1 = require_util$1();
@@ -4169,7 +4233,7 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}();
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/types.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/types.js
 var require_types = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.UNIVERSAL = exports.ATTRIBUTE = exports.CLASS = exports.COMBINATOR = exports.COMMENT = exports.ID = exports.NESTING = exports.PSEUDO = exports.ROOT = exports.SELECTOR = exports.STRING = exports.TAG = void 0;
@@ -4187,7 +4251,7 @@ var require_types = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.UNIVERSAL = "universal";
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/container.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/container.js
 var require_container = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4578,7 +4642,7 @@ var require_container = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/root.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/root.js
 var require_root = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4634,7 +4698,7 @@ var require_root = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(container_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/selector.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/selector.js
 var require_selector = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4733,7 +4797,7 @@ var require_cssesc = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = cssesc;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/className.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/className.js
 var require_className = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4793,7 +4857,7 @@ var require_className = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/comment.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/comment.js
 var require_comment = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4830,7 +4894,7 @@ var require_comment = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/id.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/id.js
 var require_id = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4870,7 +4934,7 @@ var require_id = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/namespace.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/namespace.js
 var require_namespace = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4953,7 +5017,7 @@ var require_namespace = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(__importDefault(require_node$1()).default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/tag.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/tag.js
 var require_tag = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4990,7 +5054,7 @@ var require_tag = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(namespace_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/string.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/string.js
 var require_string = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -5028,7 +5092,7 @@ var require_string = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.default = String;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/pseudo.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/pseudo.js
 var require_pseudo = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -5086,7 +5150,7 @@ var require_node = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = require("util").deprecate;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/attribute.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/attribute.js
 var require_attribute = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -5472,7 +5536,7 @@ var require_attribute = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/universal.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/universal.js
 var require_universal = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -5510,7 +5574,7 @@ var require_universal = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(namespace_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/combinator.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/combinator.js
 var require_combinator = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -5547,7 +5611,7 @@ var require_combinator = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/nesting.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/nesting.js
 var require_nesting = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -5585,7 +5649,7 @@ var require_nesting = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/sortAscending.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/sortAscending.js
 var require_sortAscending = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = sortAscending;
@@ -5596,7 +5660,7 @@ var require_sortAscending = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/tokenTypes.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/tokenTypes.js
 var require_tokenTypes = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.combinator = exports.word = exports.comment = exports.str = exports.tab = exports.newline = exports.feed = exports.cr = exports.backslash = exports.bang = exports.slash = exports.doubleQuote = exports.singleQuote = exports.space = exports.greaterThan = exports.pipe = exports.equals = exports.plus = exports.caret = exports.tilde = exports.dollar = exports.closeSquare = exports.openSquare = exports.closeParenthesis = exports.openParenthesis = exports.semicolon = exports.colon = exports.comma = exports.at = exports.asterisk = exports.ampersand = void 0;
@@ -5633,7 +5697,7 @@ var require_tokenTypes = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.combinator = -3;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/tokenize.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/tokenize.js
 var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
 		if (k2 === void 0) k2 = k;
@@ -5875,7 +5939,7 @@ var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/parser.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/parser.js
 var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __assign = exports && exports.__assign || function() {
 		__assign = Object.assign || function(t) {
@@ -6027,10 +6091,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return indexes;
 	}
 	function uniqs() {
-		var list = Array.prototype.concat.apply([], arguments);
-		return list.filter(function(item, i) {
-			return i === list.indexOf(item);
-		});
+		return Array.from(new Set(Array.prototype.concat.apply([], arguments)));
 	}
 	exports.default = function() {
 		function Parser(rule, options) {
@@ -6078,6 +6139,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 				attr.push(this.currToken);
 				this.position++;
 			}
+			if (!this.currToken) return this.expected("closing square bracket", startingToken[tokenize_1.FIELDS.START_POS]);
 			if (this.currToken[tokenize_1.FIELDS.TYPE] !== tokens.closeSquare) return this.expected("closing square bracket", this.currToken[tokenize_1.FIELDS.START_POS]);
 			var len = attr.length;
 			var node = {
@@ -6121,7 +6183,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 							}
 							if (commentBefore) {
 								(0, util_1.ensureObject)(node, "raws", "spaces", "attribute");
-								node.raws.spaces.attribute.before = spaceBefore;
+								node.raws.spaces.attribute.before = commentBefore;
 								commentBefore = "";
 							}
 							node.namespace = (node.namespace || "") + content;
@@ -6458,7 +6520,9 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 			return this.error("Unexpected '|'.", this.currToken[tokenize_1.FIELDS.START_POS]);
 		};
 		Parser.prototype.namespace = function() {
-			var before = this.prevToken && this.content(this.prevToken) || true;
+			var prev = this.prevToken;
+			var before = prev && (prev[tokenize_1.FIELDS.TYPE] === tokens.word || prev[tokenize_1.FIELDS.TYPE] === tokens.asterisk || prev[tokenize_1.FIELDS.TYPE] === tokens.ampersand) ? this.content(prev) : true;
+			if (!this.nextToken) return this.unexpectedPipe();
 			if (this.nextToken[tokenize_1.FIELDS.TYPE] === tokens.word) {
 				this.position++;
 				return this.word(before);
@@ -6486,6 +6550,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 		Parser.prototype.parentheses = function() {
 			var last = this.current.last;
 			var unbalanced = 1;
+			var openingToken = this.currToken;
 			this.position++;
 			if (last && last.type === types.PSEUDO) {
 				var selector = new selector_1.default({
@@ -6530,7 +6595,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 					sourceIndex: parenStart[tokenize_1.FIELDS.START_POS]
 				}));
 			}
-			if (unbalanced) return this.expected("closing parenthesis", this.currToken[tokenize_1.FIELDS.START_POS]);
+			if (unbalanced) return this.expected("closing parenthesis", (this.currToken || openingToken)[tokenize_1.FIELDS.START_POS]);
 		};
 		Parser.prototype.pseudo = function() {
 			var _this = this;
@@ -6618,9 +6683,14 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 				return word[i - 1] !== "\\";
 			});
 			var interpolations = indexesOf(word, "#{");
-			if (interpolations.length) hasId = hasId.filter(function(hashIndex) {
-				return !~interpolations.indexOf(hashIndex);
-			});
+			if (interpolations.length) {
+				var interpolationIndexes_1 = new Set(interpolations);
+				hasId = hasId.filter(function(hashIndex) {
+					return !interpolationIndexes_1.has(hashIndex);
+				});
+			}
+			var classIndexes = new Set(hasClass);
+			var idIndexes = new Set(hasId);
 			var indices = (0, sortAscending_1.default)(uniqs(__spreadArray(__spreadArray([0], __read(hasClass), false), __read(hasId), false)));
 			indices.forEach(function(ind, i) {
 				var index = indices[i + 1] || word.length;
@@ -6630,14 +6700,14 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 				var current = _this.currToken;
 				var sourceIndex = current[tokenize_1.FIELDS.START_POS] + indices[i];
 				var source = getSource(current[1], current[2] + ind, current[3], current[2] + (index - 1));
-				if (~hasClass.indexOf(ind)) {
+				if (classIndexes.has(ind)) {
 					var classNameOpts = {
 						value: value.slice(1),
 						source,
 						sourceIndex
 					};
 					node = new className_1.default(unescapeProp(classNameOpts, "value"));
-				} else if (~hasId.indexOf(ind)) {
+				} else if (idIndexes.has(ind)) {
 					var idOpts = {
 						value: value.slice(1),
 						source,
@@ -6802,7 +6872,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}();
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/processor.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/processor.js
 var require_processor = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __importDefault = exports && exports.__importDefault || function(mod) {
 		return mod && mod.__esModule ? mod : { "default": mod };
@@ -6951,7 +7021,7 @@ var require_processor = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}();
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/constructors.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/constructors.js
 var require_constructors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __importDefault = exports && exports.__importDefault || function(mod) {
 		return mod && mod.__esModule ? mod : { "default": mod };
@@ -7020,7 +7090,7 @@ var require_constructors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.universal = universal;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/guards.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/guards.js
 var require_guards = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var _a;
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -7064,7 +7134,7 @@ var require_guards = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/index.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/index.js
 var require_selectors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
 		if (k2 === void 0) k2 = k;
@@ -7089,7 +7159,7 @@ var require_selectors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	__exportStar(require_guards(), exports);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/index.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/index.js
 var require_dist = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
 		if (k2 === void 0) k2 = k;
@@ -9515,7 +9585,7 @@ const processors = {
 	stylus: styl
 };
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/fs.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/fs.js
 var require_fs = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.getFileSystem = getFileSystem;
@@ -9537,7 +9607,7 @@ var require_fs = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/unquote.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/unquote.js
 var require_unquote = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = unquote;
@@ -9550,7 +9620,7 @@ var require_unquote = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.19/node_modules/icss-utils/src/replaceValueSymbols.js
+//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.28/node_modules/icss-utils/src/replaceValueSymbols.js
 var require_replaceValueSymbols = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const matchValueName = /[$]?[\w-]+/g;
 	const replaceValueSymbols = (value, replacements) => {
@@ -9567,7 +9637,7 @@ var require_replaceValueSymbols = /* @__PURE__ */ __commonJSMin(((exports, modul
 	module.exports = replaceValueSymbols;
 }));
 //#endregion
-//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.19/node_modules/icss-utils/src/replaceSymbols.js
+//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.28/node_modules/icss-utils/src/replaceSymbols.js
 var require_replaceSymbols = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const replaceValueSymbols = require_replaceValueSymbols();
 	const replaceSymbols = (css, replacements) => {
@@ -9580,7 +9650,7 @@ var require_replaceSymbols = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 	module.exports = replaceSymbols;
 }));
 //#endregion
-//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.19/node_modules/icss-utils/src/extractICSS.js
+//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.28/node_modules/icss-utils/src/extractICSS.js
 var require_extractICSS = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const importPattern = /^:import\(("[^"]*"|'[^']*'|[^"']+)\)$/;
 	const balancedQuotes = /^("[^"]*"|'[^']*'|[^"']+)$/;
@@ -9634,7 +9704,7 @@ var require_extractICSS = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = extractICSS;
 }));
 //#endregion
-//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.19/node_modules/icss-utils/src/createICSSRules.js
+//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.28/node_modules/icss-utils/src/createICSSRules.js
 var require_createICSSRules = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const createImports = (imports, postcss, mode = "rule") => {
 		return Object.keys(imports).map((path) => {
@@ -9678,7 +9748,7 @@ var require_createICSSRules = /* @__PURE__ */ __commonJSMin(((exports, module) =
 	module.exports = createICSSRules;
 }));
 //#endregion
-//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.19/node_modules/icss-utils/src/index.js
+//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.28/node_modules/icss-utils/src/index.js
 var require_src$4 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = {
 		replaceValueSymbols: require_replaceValueSymbols(),
@@ -9688,7 +9758,7 @@ var require_src$4 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/Parser.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/Parser.js
 var require_Parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = void 0;
@@ -9756,7 +9826,7 @@ var require_Parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.default = Parser;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/saveJSON.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/saveJSON.js
 var require_saveJSON = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = saveJSON;
@@ -10437,7 +10507,7 @@ var require_lodash_camelcase = /* @__PURE__ */ __commonJSMin(((exports, module) 
 	module.exports = camelCase;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/localsConvention.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/localsConvention.js
 var require_localsConvention = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.makeLocalsConventionReducer = makeLocalsConventionReducer;
@@ -10475,7 +10545,7 @@ var require_localsConvention = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/FileSystemLoader.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/FileSystemLoader.js
 var require_FileSystemLoader = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = void 0;
@@ -10560,7 +10630,7 @@ var require_FileSystemLoader = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.default = FileSystemLoader;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules-extract-imports@3.1.0_postcss@8.5.19/node_modules/postcss-modules-extract-imports/src/topologicalSort.js
+//#region node_modules/.pnpm/postcss-modules-extract-imports@3.1.0_postcss@8.5.28/node_modules/postcss-modules-extract-imports/src/topologicalSort.js
 var require_topologicalSort = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const PERMANENT_MARKER = 2;
 	const TEMPORARY_MARKER = 1;
@@ -10599,7 +10669,7 @@ var require_topologicalSort = /* @__PURE__ */ __commonJSMin(((exports, module) =
 	module.exports = topologicalSort;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules-extract-imports@3.1.0_postcss@8.5.19/node_modules/postcss-modules-extract-imports/src/index.js
+//#region node_modules/.pnpm/postcss-modules-extract-imports@3.1.0_postcss@8.5.28/node_modules/postcss-modules-extract-imports/src/index.js
 var require_src$3 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const topologicalSort = require_topologicalSort();
 	const matchImports = /^(.+?)\s+from\s+(?:"([^"]+)"|'([^']+)'|(global))$/;
@@ -11522,7 +11592,7 @@ var require_lib = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = ValueParser;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules-local-by-default@4.2.0_postcss@8.5.19/node_modules/postcss-modules-local-by-default/src/index.js
+//#region node_modules/.pnpm/postcss-modules-local-by-default@4.2.0_postcss@8.5.28/node_modules/postcss-modules-local-by-default/src/index.js
 var require_src$2 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const selectorParser = require_dist();
 	const valueParser = require_lib();
@@ -11919,7 +11989,7 @@ var require_src$2 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports.postcss = true;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules-scope@3.2.1_postcss@8.5.19/node_modules/postcss-modules-scope/src/index.js
+//#region node_modules/.pnpm/postcss-modules-scope@3.2.1_postcss@8.5.28/node_modules/postcss-modules-scope/src/index.js
 var require_src$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const selectorParser = require_dist();
 	const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -12097,7 +12167,7 @@ var require_string_hash = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = hash;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules-values@4.0.0_postcss@8.5.19/node_modules/postcss-modules-values/src/index.js
+//#region node_modules/.pnpm/postcss-modules-values@4.0.0_postcss@8.5.28/node_modules/postcss-modules-values/src/index.js
 var require_src = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const ICSSUtils = require_src$4();
 	const matchImports = /^(.+?|\([\s\S]+?\))\s+from\s+("[^"]*"|'[^']*'|[\w-]+)$/;
@@ -12184,7 +12254,7 @@ var require_src = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports.postcss = true;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/scoping.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/scoping.js
 var require_scoping = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.behaviours = void 0;
@@ -12246,7 +12316,7 @@ var require_scoping = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/pluginFactory.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/pluginFactory.js
 var require_pluginFactory = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.makePlugin = makePlugin;
@@ -14679,6 +14749,7 @@ function resolveExt(filename, fs) {
 }
 const tsConfigCache = createCache();
 const tsConfigRefMap = /* @__PURE__ */ new Map();
+const extendedConfigCache = /* @__PURE__ */ new Map();
 function resolveWithTS(containingFile, source, ts, fs) {
 	const configPath = ts.findConfigFile(containingFile, fs.fileExists);
 	let tsCompilerOptions;
@@ -14724,7 +14795,7 @@ function resolveWithTS(containingFile, source, ts, fs) {
 }
 function loadTSConfig(configPath, ts, fs, visited = /* @__PURE__ */ new Set()) {
 	const parseConfigHost = ts.sys;
-	const config = ts.parseJsonConfigFileContent(ts.readConfigFile(configPath, fs.readFile).config, parseConfigHost, (0, path.dirname)(configPath), void 0, configPath);
+	const config = ts.parseJsonConfigFileContent(ts.readConfigFile(configPath, fs.readFile).config, parseConfigHost, (0, path.dirname)(configPath), void 0, configPath, void 0, void 0, extendedConfigCache);
 	const res = [config];
 	visited.add(configPath);
 	if (config.projectReferences) for (const ref of config.projectReferences) {
@@ -14745,6 +14816,10 @@ function invalidateTypeCache(filename) {
 	fileToScopeCache.delete(filename);
 	fileToGlobalScopeCache.delete(filename);
 	tsConfigCache.delete(filename);
+	if (filename.endsWith(".json")) {
+		extendedConfigCache.clear();
+		tsConfigCache.clear();
+	}
 	const affectedConfig = tsConfigRefMap.get(filename);
 	if (affectedConfig) tsConfigCache.delete(affectedConfig);
 }
@@ -16032,6 +16107,7 @@ function compileScript(sfc, options) {
 				enter(child, parent) {
 					if ((0, _vue_compiler_dom.isFunctionType)(child)) this.skip();
 					if (child.type === "BlockStatement") scope.push(child.body);
+					else if (child.type === "SwitchCase") scope.push(child.consequent);
 					if (child.type === "AwaitExpression") {
 						hasAwait = true;
 						const needsSemi = scope[scope.length - 1].some((n, i) => {
@@ -16040,8 +16116,8 @@ function compileScript(sfc, options) {
 						processAwait(ctx, child, needsSemi, parent.type === "ExpressionStatement");
 					}
 				},
-				exit(node) {
-					if (node.type === "BlockStatement") scope.pop();
+				leave(node) {
+					if (node.type === "BlockStatement" || node.type === "SwitchCase") scope.pop();
 				}
 			});
 		}
@@ -16407,7 +16483,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-rc.8";
+const version = "3.6.0-rc.9";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,

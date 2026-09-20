@@ -83,11 +83,11 @@ type PropConstructor<T = any> = {
 } | {
   (): T;
 } | PropMethod<T>;
-type PropMethod<T, TConstructor = any> = [T] extends [((...args: any) => any) | undefined] ? {
+type PropMethod<T, TConstructor = any> = {
   new (): TConstructor;
   (): T;
   readonly prototype: TConstructor;
-} : never;
+};
 type RequiredKeys<T> = { [K in keyof T]: T[K] extends {
   required: true;
 } | {
@@ -116,7 +116,7 @@ type InferPropType<T, NullAsAny = true> = [T] extends [null] ? NullAsAny extends
   type: DateConstructor;
 }] ? Date : [T] extends [(infer U)[] | {
   type: (infer U)[];
-}] ? U extends DateConstructor ? Date | InferPropType<U, false> : InferPropType<U, false> : [T] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : T;
+}] ? U extends DateConstructor ? Date | InferPropType<U, false> : InferPropType<U, false> : [T] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, unknown extends D ? V : D> : V : V : T;
 /**
  * Extract prop types from a runtime props options object.
  * The extracted types are **internal** - i.e. the resolved props received by

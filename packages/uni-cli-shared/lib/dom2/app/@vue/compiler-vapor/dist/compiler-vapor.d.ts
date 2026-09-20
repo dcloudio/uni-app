@@ -21713,12 +21713,10 @@ declare function useCssVars(getter: (ctx: any) => Record<string, unknown>): void
  * @internal
  * shared between vdom and vapor
  */
-declare function baseUseCssVars(instance: GenericComponentInstance | null, getParentNode: () => Node, getVars: () => Record<string, any>, setVars: (vars: Record<string, any>) => void): void;
-/**
- * @internal
- * shared between vdom and vapor
- */
 declare function setVarsOnNode(el: Node, vars: Record<string, string>): void;
+//#endregion
+//#region packages/runtime-dom/src/modules/class.d.ts
+declare function patchClass(el: Element, value: string | null, isSVG: boolean): void;
 //#endregion
 //#region packages/runtime-dom/src/modules/style.d.ts
 type Style = string | null | undefined | Record<string, unknown>;
@@ -21730,7 +21728,7 @@ declare function parseEventName(name: string): [string, EventListenerOptions | u
 //#region packages/runtime-dom/src/modules/attrs.d.ts
 declare const xlinkNS = "http://www.w3.org/1999/xlink";
 declare namespace index_d_exports$1 {
-  export { AnchorHTMLAttributes, AreaHTMLAttributes, AriaAttributes, AudioHTMLAttributes, BaseHTMLAttributes, BlockquoteHTMLAttributes, ButtonHTMLAttributes, CSSProperties, CanvasHTMLAttributes, ClassValue, ColHTMLAttributes, ColgroupHTMLAttributes, CustomElementOptions$1 as CustomElementOptions, DataHTMLAttributes, DelHTMLAttributes, DetailsHTMLAttributes, DialogHTMLAttributes, ElementWithTransition, EmbedHTMLAttributes, Events, FieldsetHTMLAttributes, FormHTMLAttributes, HTMLAttributes, HtmlHTMLAttributes, IframeHTMLAttributes, ImgHTMLAttributes, InputAutoCompleteAttribute, InputHTMLAttributes, InputTypeHTMLAttribute, InsHTMLAttributes, IntrinsicElementAttributes, KeygenHTMLAttributes, LabelHTMLAttributes, LiHTMLAttributes, LinkHTMLAttributes, MapHTMLAttributes, MediaHTMLAttributes, MenuHTMLAttributes, MetaHTMLAttributes, MeterHTMLAttributes, NativeElements, ObjectHTMLAttributes, OlHTMLAttributes, OptgroupHTMLAttributes, OptionHTMLAttributes, OutputHTMLAttributes, ParamHTMLAttributes, ProgressHTMLAttributes, QuoteHTMLAttributes, ReservedProps$1 as ReservedProps, SVGAttributes, ScriptHTMLAttributes, SelectHTMLAttributes, SourceHTMLAttributes, StyleHTMLAttributes, StyleValue, TableHTMLAttributes, TdHTMLAttributes, TextareaHTMLAttributes, ThHTMLAttributes, TimeHTMLAttributes, TrackHTMLAttributes, Transition, TransitionGroup, TransitionGroupProps$1 as TransitionGroupProps, TransitionProps$1 as TransitionProps, TransitionPropsValidators, VShowElement, VideoHTMLAttributes, VueElement, VueElementBase$1 as VueElementBase, VueElementConstructor, WebViewHTMLAttributes, baseApplyTranslation, baseUseCssVars, callPendingCbs, createApp, createSSRApp, defineCustomElement, defineSSRCustomElement, ensureHydrationRenderer, ensureRenderer, forceReflow, handleMovedChildren, hasCSSTransform, hydrate, initDirectivesForSSR, nodeOps, normalizeContainer, parseEventName, patchProp, patchStyle, render, resolveTransitionProps, setVarsOnNode, shouldSetAsProp, shouldSetAsPropForVueCE, svgNS, unsafeToTrustedHTML, useCssModule, useCssVars, useHost, useShadowRoot, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, withKeys, withModifiers, xlinkNS };
+  export { AnchorHTMLAttributes, AreaHTMLAttributes, AriaAttributes, AudioHTMLAttributes, BaseHTMLAttributes, BlockquoteHTMLAttributes, ButtonHTMLAttributes, CSSProperties, CanvasHTMLAttributes, ClassValue, ColHTMLAttributes, ColgroupHTMLAttributes, CustomElementOptions$1 as CustomElementOptions, DataHTMLAttributes, DelHTMLAttributes, DetailsHTMLAttributes, DialogHTMLAttributes, ElementWithTransition, EmbedHTMLAttributes, Events, FieldsetHTMLAttributes, FormHTMLAttributes, HTMLAttributes, HtmlHTMLAttributes, IframeHTMLAttributes, ImgHTMLAttributes, InputAutoCompleteAttribute, InputHTMLAttributes, InputTypeHTMLAttribute, InsHTMLAttributes, IntrinsicElementAttributes, KeygenHTMLAttributes, LabelHTMLAttributes, LiHTMLAttributes, LinkHTMLAttributes, MapHTMLAttributes, MediaHTMLAttributes, MenuHTMLAttributes, MetaHTMLAttributes, MeterHTMLAttributes, NativeElements, ObjectHTMLAttributes, OlHTMLAttributes, OptgroupHTMLAttributes, OptionHTMLAttributes, OutputHTMLAttributes, ParamHTMLAttributes, ProgressHTMLAttributes, QuoteHTMLAttributes, ReservedProps$1 as ReservedProps, SVGAttributes, ScriptHTMLAttributes, SelectHTMLAttributes, SourceHTMLAttributes, StyleHTMLAttributes, StyleValue, TableHTMLAttributes, TdHTMLAttributes, TextareaHTMLAttributes, ThHTMLAttributes, TimeHTMLAttributes, TrackHTMLAttributes, Transition, TransitionGroup, TransitionGroupProps$1 as TransitionGroupProps, TransitionProps$1 as TransitionProps, TransitionPropsValidators, VShowElement, VideoHTMLAttributes, VueElement, VueElementBase$1 as VueElementBase, VueElementConstructor, WebViewHTMLAttributes, baseApplyTranslation, callPendingCbs, createApp, createSSRApp, defineCustomElement, defineSSRCustomElement, ensureHydrationRenderer, ensureRenderer, forceReflow, handleMovedChildren, hasCSSTransform, hydrate, initDirectivesForSSR, nodeOps, normalizeContainer, parseEventName, patchClass, patchProp, patchStyle, render, resolveTransitionProps, setVarsOnNode, shouldSetAsProp, shouldSetAsPropForVueCE, svgNS, unsafeToTrustedHTML, useCssModule, useCssVars, useHost, useShadowRoot, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, withKeys, withModifiers, xlinkNS };
 }
 import * as import__vue_runtime_core from "@vue/runtime-core";
 /**
@@ -21889,6 +21887,11 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   remove?(parent?: ParentNode, transitionHooks?: TransitionHooks): void;
   hydrate?(...args: any[]): void;
   scope?: EffectScope$1;
+  /**
+   * @internal the KeepAlive-owned scope that commits this fragment's raw input
+   * sources, paused while the fragment is cached (see `isolatePropSources`)
+   */
+  inputScope?: EffectScope$1;
   setRef?: (instance: VaporComponentInstance, ref: NodeRef, refFor: boolean, refKey: string | undefined) => void;
   /**
    * @internal vdom interop protocol, implemented by interop fragments so
@@ -21910,7 +21913,7 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   /** beforeUpdate */
   bu?: (() => void)[];
   /** updated */
-  u?: ((nodes?: Block) => void)[];
+  u?: ((nodes: Block) => void)[];
   constructor(nodes: T, flags?: number);
 }
 declare class RenderContextFragment<T extends Block = Block> extends VaporFragment<T> {
@@ -21940,7 +21943,6 @@ declare class DynamicFragment extends RenderContextFragment {
   anchorLabel?: string;
   keyed?: boolean;
   branchKey?: any;
-  inTransition?: boolean;
   /** hydration: this `v-if` branch's claim on its SSR range */
   hydrationClaim?: FragmentClaim;
   fallthrough?: (nodes: Block) => void;
@@ -22084,6 +22086,9 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   slots: Slots;
   scopeId?: string | null;
   slotScopeIds?: string[] | null;
+  applyCssVars?: (nodes: Block) => void;
+  cssVarOutlets?: VaporFragment[];
+  interopVNode?: VNode;
   rawPropsRef?: ShallowRef<any>;
   rawSlotsRef?: ShallowRef<any>;
   emit: EmitFn<Emits>;
@@ -22102,6 +22107,7 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   hasFallthrough: boolean;
   shapeFlag?: number;
   inputScope?: EffectScope;
+  unmountScope?: EffectScope;
   $key?: any;
   deferredKeepAliveUpdates?: DeferredKeepAliveUpdates;
   ce?: ComponentCustomElementInterface$1;
@@ -22186,9 +22192,9 @@ declare function defineVaporAsyncComponent<T extends VaporComponent>(source: Asy
 declare const vaporInteropPlugin: Plugin;
 //#endregion
 //#region packages/runtime-vapor/src/directives/custom.d.ts
-type VaporDirective<HostElement extends Element = Element, Value = any, Modifiers extends string = string, Arg = any> = (node: HostElement, value?: () => Value, argument?: Arg, modifiers?: DirectiveModifiers<Modifiers>) => (() => void) | void;
+type VaporDirective<HostElement extends Element = Element, Value = any, Modifiers extends string = string, Arg = any> = (node: HostElement, value?: () => Value, argument?: () => Arg, modifiers?: DirectiveModifiers<Modifiers>) => (() => void) | void;
 type AnyVaporDirective = VaporDirective<any>;
-type VaporDirectiveArguments = Array<[AnyVaporDirective | undefined] | [AnyVaporDirective | undefined, () => any] | [AnyVaporDirective | undefined, (() => any) | undefined, argument: any] | [AnyVaporDirective | undefined, value: (() => any) | undefined, argument: any | undefined, modifiers: DirectiveModifiers]>;
+type VaporDirectiveArguments = Array<[AnyVaporDirective | undefined] | [AnyVaporDirective | undefined, () => any] | [AnyVaporDirective | undefined, (() => any) | undefined, argument: () => any] | [AnyVaporDirective | undefined, value: (() => any) | undefined, argument: (() => any) | undefined, modifiers: DirectiveModifiers]>;
 declare function withVaporDirectives(node: Element | VaporComponentInstance | VaporFragment, dirs: VaporDirectiveArguments): void;
 //#endregion
 //#region packages/runtime-vapor/src/components/Teleport.d.ts
@@ -22278,9 +22284,9 @@ declare function template(html: string, flags?: number, ns?: Namespace): () => N
 //#region packages/runtime-vapor/src/dom/node.d.ts
 declare function createTextNode(value?: string): Text;
 declare function txt(node: ParentNode): Node;
-declare function child(node: InsertionParent): Node;
-declare function nthChild(node: InsertionParent, i: number): Node;
-declare function next(node: Node): Node;
+declare function child(node: InsertionParent, isText?: boolean): Node;
+declare function nthChild(node: InsertionParent, i: number, isText?: boolean): Node;
+declare function next(node: Node, isText?: boolean): Node;
 //#endregion
 //#region packages/runtime-vapor/src/dom/prop.d.ts
 type TargetElement = Element & {
@@ -22308,7 +22314,8 @@ declare function setText(el: Text & {
   $txt?: string;
 }, value: string): void;
 /**
- * Used by setDynamicProps only, so need to guard with `toDisplayString`
+ * Used by setDynamicProps and `textContent` bindings, so need to guard with
+ * `toDisplayString`
  */
 declare function setElementText(el: Node & {
   $txt?: string;
@@ -22375,17 +22382,31 @@ declare function getRestElement(val: any, keys: string[]): any;
 declare function getDefaultValue(val: any, getDefaultVal: () => any): any;
 //#endregion
 //#region packages/runtime-vapor/src/helpers/useCssVars.d.ts
+/**
+ * Css vars are root-inherited state: the owner writes its root chain before
+ * insertion, containers on that chain write the content they produce later
+ * (`bm` hooks; `u` for vdom-owned interop content), and teleports are written
+ * directly as outlets since their content leaves the chain.
+ */
 declare function useVaporCssVars(getter: () => Record<string, string>): void;
 //#endregion
 //#region packages/runtime-vapor/src/helpers/setKey.d.ts
-declare function setBlockKey(block: (Block & {
+declare function setBlockKey(block: Exclude<Block, Block[]> & {
   $key?: any;
-}) | null | undefined, key: any, overwrite?: boolean): void;
+}, key: any): void;
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateDynamicComponent.d.ts
 declare function createDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: LooseRawSlots | null, flags?: number, key?: () => any): Block;
 //#endregion
 //#region packages/runtime-vapor/src/directives/vShow.d.ts
+/**
+ * v-show is root-inherited state: it lands on the effective root element of
+ * `target`, and any producer on the root chain (dynamic fragment branch,
+ * interop subtree, pending async setup) can replace that root later. `apply`
+ * resolves the root through the shared chain walker and registers itself on
+ * every producer it passes, so a replacement root re-enters `apply` and
+ * registers the producers inside it in turn.
+ */
 declare function applyVShow(target: Block, source: () => any): void;
 //#endregion
 //#region packages/runtime-vapor/src/directives/vModel.d.ts
@@ -22740,6 +22761,7 @@ export interface IRDynamicInfo {
   children: IRDynamicInfo[];
   template?: number;
   hasDynamicChild?: boolean;
+  isText?: boolean;
   operation?: OperationNode;
   type?: NodeTypes;
   tag?: string;
@@ -22879,7 +22901,7 @@ export declare class CodegenContext {
   private nextIdMap;
   private lastIdMap;
   private generatedLocalNames;
-  getUniqueLocalName(base: string, scopeNames: Set<string>): string;
+  getUniqueLocalName(base: string, scopeNames?: Set<string>): string;
   private isNameAvailable;
   private findAvailableName;
   private lastTIndex;

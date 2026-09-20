@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.8
+  * @vue/shared v3.6.0-rc.9
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -315,10 +315,10 @@ function normalizeStyle(value) {
 }
 const listDelimiterRE = /;(?![^(]*\))/g;
 const propertyDelimiterRE = /:([^]+)/;
-const styleCommentRE = /\/\*[^]*?\*\//g;
+const styleCommentRE = /"(?:[^"\\]|\\[^])*"|'(?:[^'\\]|\\[^])*'|\\[^]|\/\*[^]*?\*\//g;
 function parseStringStyle(cssText) {
 	const ret = {};
-	cssText.replace(styleCommentRE, "").split(listDelimiterRE).forEach((item) => {
+	cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match).split(listDelimiterRE).forEach((item) => {
 		if (item) {
 			const tmp = item.split(propertyDelimiterRE);
 			tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
@@ -541,19 +541,19 @@ function getEscapedCssVarName(key, doubleEscape) {
 }
 //#endregion
 //#region packages/shared/src/looseEqual.ts
-function looseCompareArrays(a, b) {
+function looseCompareArrays(a, b, seen) {
 	if (a.length !== b.length) return false;
 	let equal = true;
-	for (let i = 0; equal && i < a.length; i++) equal = looseEqual(a[i], b[i]);
+	for (let i = 0; equal && i < a.length; i++) equal = looseEqual(a[i], b[i], seen);
 	return equal;
 }
-function looseCompareCollections(a, b) {
+function looseCompareCollections(a, b, seen) {
 	if (a.size !== b.size) return false;
 	const candidates = Array.from(b);
 	const matched = new Uint8Array(candidates.length);
 	for (const item of a) {
 		let index = -1;
-		for (let i = 0; i < candidates.length; i++) if (!matched[i] && looseEqual(item, candidates[i])) {
+		for (let i = 0; i < candidates.length; i++) if (!matched[i] && looseEqual(item, candidates[i], seen)) {
 			index = i;
 			break;
 		}
@@ -562,7 +562,33 @@ function looseCompareCollections(a, b) {
 	}
 	return true;
 }
-function looseEqual(a, b) {
+function looseCompareObjects(a, b, seen) {
+	let aValidType = isMap(a);
+	let bValidType = isMap(b);
+	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b, seen) : false;
+	aValidType = isSet(a);
+	bValidType = isSet(b);
+	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b, seen) : false;
+	if (Object.keys(a).length !== Object.keys(b).length) return false;
+	for (const key in a) {
+		const aHasKey = a.hasOwnProperty(key);
+		const bHasKey = b.hasOwnProperty(key);
+		if (aHasKey && !bHasKey || !aHasKey && bHasKey || !looseEqual(a[key], b[key], seen)) return false;
+	}
+	return String(a) === String(b);
+}
+function looseCompareNested(a, b, seen, compare) {
+	if (!seen) seen = [/* @__PURE__ */ new Map(), /* @__PURE__ */ new Map()];
+	const [seenA, seenB] = seen;
+	if (seenA.has(a) || seenB.has(b)) return seenA.get(a) === b && seenB.get(b) === a;
+	seenA.set(a, b);
+	seenB.set(b, a);
+	const equal = compare(a, b, seen);
+	seenA.delete(a);
+	seenB.delete(b);
+	return equal;
+}
+function looseEqual(a, b, seen) {
 	if (a === b) return true;
 	let aValidType = isDate(a);
 	let bValidType = isDate(b);
@@ -572,23 +598,12 @@ function looseEqual(a, b) {
 	if (aValidType || bValidType) return a === b;
 	aValidType = isArray(a);
 	bValidType = isArray(b);
-	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareArrays(a, b) : false;
+	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareNested(a, b, seen, looseCompareArrays) : false;
 	aValidType = isObject(a);
 	bValidType = isObject(b);
 	if (aValidType || bValidType) {
 		if (!aValidType || !bValidType) return false;
-		aValidType = isMap(a);
-		bValidType = isMap(b);
-		if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b) : false;
-		aValidType = isSet(a);
-		bValidType = isSet(b);
-		if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b) : false;
-		if (Object.keys(a).length !== Object.keys(b).length) return false;
-		for (const key in a) {
-			const aHasKey = a.hasOwnProperty(key);
-			const bHasKey = b.hasOwnProperty(key);
-			if (aHasKey && !bHasKey || !aHasKey && bHasKey || !looseEqual(a[key], b[key])) return false;
-		}
+		return looseCompareNested(a, b, seen, looseCompareObjects);
 	}
 	return String(a) === String(b);
 }
