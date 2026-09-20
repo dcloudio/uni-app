@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createBlock, on as on$1, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, setClass, createKeyedFragment, setAttr, setHtml, setProp, createElementVNode, normalizeStyle, renderSlot, withCtx, renderList, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, defineVaporComponent, createSlot, insert, setStaticTemplateRef, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, setText, normalizeUniText, toDisplayString, createFor, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc, createComponent as createComponent$1, unref } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createBlock, on as on$1, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, setClass, createKeyedFragment, setAttr, setHtml, setProp, defineVaporComponent, insert, unref, renderSlot, withCtx, renderList, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, createSlot, setStaticTemplateRef, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, setText, normalizeUniText, toDisplayString, createFor, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc, createComponent as createComponent$1 } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -10735,69 +10735,27 @@ function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
     onConfirm
   };
 }
-const _sfc_main$9 = {
-  name: "PageRefresh",
-  setup() {
+const t0$8 = template('<div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>');
+const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
+  __name: "component",
+  setup(__props) {
     const { pullToRefresh } = usePageMeta();
-    return {
-      offset: pullToRefresh.offset,
-      color: pullToRefresh.color
-    };
+    const offset = pullToRefresh.offset;
+    const color = pullToRefresh.color;
+    const n3 = createPlainElement("uni-page-refresh", null, null, true);
+    const n2 = t0$8();
+    insert(n2, n3);
+    const n0 = child(child(n2));
+    const n1 = child(next(n0));
+    renderEffect(() => {
+      const _color = unref(color);
+      setStyle(n2, { "margin-top": unref(offset) + "px" });
+      setAttr(n0, "fill", _color, true);
+      setAttr(n1, "stroke", _color, true);
+    });
+    return n3;
   }
-};
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
-const _hoisted_1 = { class: "uni-page-refresh-inner" };
-const _hoisted_2 = ["fill"];
-const _hoisted_3 = {
-  class: "uni-page-refresh__spinner",
-  width: "24",
-  height: "24",
-  viewBox: "25 25 50 50"
-};
-const _hoisted_4 = ["stroke"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("uni-page-refresh", null, [
-    createElementVNode("div", {
-      style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
-      class: "uni-page-refresh"
-    }, [
-      createElementVNode("div", _hoisted_1, [
-        (openBlock(), createElementBlock("svg", {
-          fill: $setup.color,
-          class: "uni-page-refresh__icon",
-          width: "24",
-          height: "24",
-          viewBox: "0 0 24 24"
-        }, [..._cache[0] || (_cache[0] = [
-          createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1),
-          createElementVNode("path", {
-            d: "M0 0h24v24H0z",
-            fill: "none"
-          }, null, -1)
-        ])], 8, _hoisted_2)),
-        (openBlock(), createElementBlock("svg", _hoisted_3, [
-          createElementVNode("circle", {
-            stroke: $setup.color,
-            class: "uni-page-refresh__path",
-            cx: "50",
-            cy: "50",
-            r: "20",
-            fill: "none",
-            "stroke-width": "4",
-            "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_4)
-        ]))
-      ])
-    ], 4)
-  ]);
-}
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render]]);
+});
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -11104,7 +11062,7 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
 function createPageRefreshTsx(refreshRef, pageMeta) {
   return (() => {
     const _setTemplateRef = createTemplateRefSetter();
-    const _n0 = createComponent(PageRefresh, null, null, true);
+    const _n0 = createComponent(_sfc_main$9, null, null, true);
     renderEffect(() => _setTemplateRef(_n0, refreshRef));
     return _n0;
   })();
@@ -29664,6 +29622,13 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
   }
 });
 const _style_0$5 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n\n    transition-property: transform;\n    transition-duration: 0.15s;\n\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action,\n  .uni-action-sheet_dialog__safe-area {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.uni-action-sheet_dialog__hover__dark__mode {\n		background-color: #414141;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2C;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n\n\n\n\n\n\n\n\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
+};
 const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["styles", [_style_0$5]]]);
 class ShowActionSheetSuccessImpl {
   constructor(tapIndex, errMsg = "showActionSheet:ok") {

@@ -4127,69 +4127,27 @@ function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
     onConfirm
   };
 }
-const _sfc_main$2 = {
-  name: "PageRefresh",
-  setup() {
+const t0$2 = Vue.template('<div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>');
+const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent({
+  __name: "component",
+  setup(__props) {
     const { pullToRefresh } = usePageMeta();
-    return {
-      offset: pullToRefresh.offset,
-      color: pullToRefresh.color
-    };
+    const offset = pullToRefresh.offset;
+    const color = pullToRefresh.color;
+    const n3 = Vue.createPlainElement("uni-page-refresh", null, null, true);
+    const n2 = t0$2();
+    Vue.insert(n2, n3);
+    const n0 = Vue.child(Vue.child(n2));
+    const n1 = Vue.child(Vue.next(n0));
+    Vue.renderEffect(() => {
+      const _color = Vue.unref(color);
+      Vue.setStyle(n2, { "margin-top": Vue.unref(offset) + "px" });
+      Vue.setAttr(n0, "fill", _color, true);
+      Vue.setAttr(n1, "stroke", _color, true);
+    });
+    return n3;
   }
-};
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
-const _hoisted_1 = { class: "uni-page-refresh-inner" };
-const _hoisted_2 = ["fill"];
-const _hoisted_3 = {
-  class: "uni-page-refresh__spinner",
-  width: "24",
-  height: "24",
-  viewBox: "25 25 50 50"
-};
-const _hoisted_4 = ["stroke"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return Vue.openBlock(), Vue.createElementBlock("uni-page-refresh", null, [
-    Vue.createElementVNode("div", {
-      style: Vue.normalizeStyle({ "margin-top": $setup.offset + "px" }),
-      class: "uni-page-refresh"
-    }, [
-      Vue.createElementVNode("div", _hoisted_1, [
-        (Vue.openBlock(), Vue.createElementBlock("svg", {
-          fill: $setup.color,
-          class: "uni-page-refresh__icon",
-          width: "24",
-          height: "24",
-          viewBox: "0 0 24 24"
-        }, [..._cache[0] || (_cache[0] = [
-          Vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1),
-          Vue.createElementVNode("path", {
-            d: "M0 0h24v24H0z",
-            fill: "none"
-          }, null, -1)
-        ])], 8, _hoisted_2)),
-        (Vue.openBlock(), Vue.createElementBlock("svg", _hoisted_3, [
-          Vue.createElementVNode("circle", {
-            stroke: $setup.color,
-            class: "uni-page-refresh__path",
-            cx: "50",
-            cy: "50",
-            r: "20",
-            fill: "none",
-            "stroke-width": "4",
-            "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_4)
-        ]))
-      ])
-    ], 4)
-  ]);
-}
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render]]);
+});
 const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
@@ -4234,7 +4192,7 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
 function createPageRefreshTsx(refreshRef, pageMeta) {
   return (() => {
     const _setTemplateRef = Vue.createTemplateRefSetter();
-    const _n0 = createComponent(PageRefresh, null, null, true);
+    const _n0 = createComponent(_sfc_main$2, null, null, true);
     Vue.renderEffect(() => _setTemplateRef(_n0, refreshRef));
     return _n0;
   })();

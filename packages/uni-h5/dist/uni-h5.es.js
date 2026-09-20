@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, h, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, createElementVNode, normalizeStyle } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, h, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, createElementVNode, normalizeStyle, unref } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_THEME_CHANGE, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -27443,23 +27443,6 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main = {
-  name: "PageRefresh",
-  setup() {
-    const { pullToRefresh } = usePageMeta();
-    return {
-      offset: pullToRefresh.offset,
-      color: pullToRefresh.color
-    };
-  }
-};
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
 const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
@@ -27478,37 +27461,44 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("uni-page-refresh", null, [
-    createElementVNode("div", {
-      style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
-      class: "uni-page-refresh"
-    }, [
-      createElementVNode("div", _hoisted_1, [
-        (openBlock(), createElementBlock("svg", {
-          fill: $setup.color,
-          class: "uni-page-refresh__icon",
-          width: "24",
-          height: "24",
-          viewBox: "0 0 24 24"
-        }, _hoisted_5, 8, _hoisted_2)),
-        (openBlock(), createElementBlock("svg", _hoisted_6, [
-          createElementVNode("circle", {
-            stroke: $setup.color,
-            class: "uni-page-refresh__path",
-            cx: "50",
-            cy: "50",
-            r: "20",
-            fill: "none",
-            "stroke-width": "4",
-            "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_7)
-        ]))
-      ])
-    ], 4)
-  ]);
-}
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+const _sfc_main = /* @__PURE__ */ defineComponent({
+  __name: "component",
+  setup(__props) {
+    const { pullToRefresh } = usePageMeta();
+    const offset = pullToRefresh.offset;
+    const color = pullToRefresh.color;
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("uni-page-refresh", null, [
+        createElementVNode("div", {
+          style: normalizeStyle({ "margin-top": unref(offset) + "px" }),
+          class: "uni-page-refresh"
+        }, [
+          createElementVNode("div", _hoisted_1, [
+            (openBlock(), createElementBlock("svg", {
+              fill: unref(color),
+              class: "uni-page-refresh__icon",
+              width: "24",
+              height: "24",
+              viewBox: "0 0 24 24"
+            }, _hoisted_5, 8, _hoisted_2)),
+            (openBlock(), createElementBlock("svg", _hoisted_6, [
+              createElementVNode("circle", {
+                stroke: unref(color),
+                class: "uni-page-refresh__path",
+                cx: "50",
+                cy: "50",
+                r: "20",
+                fill: "none",
+                "stroke-width": "4",
+                "stroke-miterlimit": "10"
+              }, null, 8, _hoisted_7)
+            ]))
+          ])
+        ], 4)
+      ]);
+    };
+  }
+});
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -27780,7 +27770,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
   if (!__UNI_FEATURE_PULL_DOWN_REFRESH__ || !pageMeta.enablePullDownRefresh) {
     return null;
   }
-  return createVNode(PageRefresh, {
+  return createVNode(_sfc_main, {
     "ref": refreshRef
   }, null, 512);
 }

@@ -3980,23 +3980,6 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main$2 = {
-  name: "PageRefresh",
-  setup() {
-    const { pullToRefresh } = usePageMeta();
-    return {
-      offset: pullToRefresh.offset,
-      color: pullToRefresh.color
-    };
-  }
-};
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
 const _hoisted_3 = /* @__PURE__ */ vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
@@ -4015,37 +3998,44 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createElementBlock("uni-page-refresh", null, [
-    vue.createElementVNode("div", {
-      style: vue.normalizeStyle({ "margin-top": $setup.offset + "px" }),
-      class: "uni-page-refresh"
-    }, [
-      vue.createElementVNode("div", _hoisted_1, [
-        (vue.openBlock(), vue.createElementBlock("svg", {
-          fill: $setup.color,
-          class: "uni-page-refresh__icon",
-          width: "24",
-          height: "24",
-          viewBox: "0 0 24 24"
-        }, _hoisted_5, 8, _hoisted_2)),
-        (vue.openBlock(), vue.createElementBlock("svg", _hoisted_6, [
-          vue.createElementVNode("circle", {
-            stroke: $setup.color,
-            class: "uni-page-refresh__path",
-            cx: "50",
-            cy: "50",
-            r: "20",
-            fill: "none",
-            "stroke-width": "4",
-            "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_7)
-        ]))
-      ])
-    ], 4)
-  ]);
-}
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render]]);
+const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
+  __name: "component",
+  setup(__props) {
+    const { pullToRefresh } = usePageMeta();
+    const offset = pullToRefresh.offset;
+    const color = pullToRefresh.color;
+    return (_ctx, _cache) => {
+      return vue.openBlock(), vue.createElementBlock("uni-page-refresh", null, [
+        vue.createElementVNode("div", {
+          style: vue.normalizeStyle({ "margin-top": vue.unref(offset) + "px" }),
+          class: "uni-page-refresh"
+        }, [
+          vue.createElementVNode("div", _hoisted_1, [
+            (vue.openBlock(), vue.createElementBlock("svg", {
+              fill: vue.unref(color),
+              class: "uni-page-refresh__icon",
+              width: "24",
+              height: "24",
+              viewBox: "0 0 24 24"
+            }, _hoisted_5, 8, _hoisted_2)),
+            (vue.openBlock(), vue.createElementBlock("svg", _hoisted_6, [
+              vue.createElementVNode("circle", {
+                stroke: vue.unref(color),
+                class: "uni-page-refresh__path",
+                cx: "50",
+                cy: "50",
+                r: "20",
+                fill: "none",
+                "stroke-width": "4",
+                "stroke-miterlimit": "10"
+              }, null, 8, _hoisted_7)
+            ]))
+          ])
+        ], 4)
+      ]);
+    };
+  }
+});
 const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
@@ -4078,7 +4068,7 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
   }
 });
 function createPageRefreshTsx(refreshRef, pageMeta) {
-  return vue.createVNode(PageRefresh, {
+  return vue.createVNode(_sfc_main$2, {
     "ref": refreshRef
   }, null, 512);
 }

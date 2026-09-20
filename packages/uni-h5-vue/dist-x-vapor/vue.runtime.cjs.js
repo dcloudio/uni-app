@@ -14621,6 +14621,7 @@ function getExposed(instance) {
 			return Reflect.set(target, key, value, receiver);
 		}
 	}));
+	else return instance.proxy;
 }
 function getRootElement(block, visitor) {
 	if (block instanceof Element) return block;

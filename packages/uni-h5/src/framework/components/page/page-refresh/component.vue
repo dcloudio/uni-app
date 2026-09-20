@@ -35,16 +35,10 @@
     </div>
   </uni-page-refresh>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import { usePageMeta } from '../../../setup/provide'
-export default {
-  name: 'PageRefresh',
-  setup() {
-    const { pullToRefresh } = usePageMeta()
-    return {
-      offset: pullToRefresh!.offset,
-      color: pullToRefresh!.color,
-    }
-  },
-}
+
+const { pullToRefresh } = usePageMeta()
+const offset = pullToRefresh!.offset
+const color = pullToRefresh!.color
 </script>
