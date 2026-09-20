@@ -6,6 +6,7 @@ import {
   type SpreadElement,
   conditionalExpression,
   identifier,
+  isExpression,
   isIdentifier,
   isLiteral,
   isReferenced,
@@ -183,7 +184,12 @@ export function rewriteExpression(
   // wxs 等表达式
   if ((context as TransformContext).filters?.length) {
     if (isReferencedByIds(babelNode, (context as TransformContext).filters)) {
-      return createSimpleExpression(genExpr(node), false, node.loc)
+      return rewriteFilterExpression(
+        node,
+        context as TransformContext,
+        babelNode,
+        scope
+      )
     }
   }
 
@@ -205,6 +211,66 @@ export function rewriteExpression(
     return createSimpleExpression(referencedScope.valueAlias + '.' + id)
   }
   return createSimpleExpression(id)
+}
+
+export function rewriteFilterExpression(
+  node: ExpressionNode,
+  context: TransformContext,
+  babelNode?: Expression,
+  scope: CodegenScope = context.currentScope
+) {
+  const code = genExpr(node)
+  if (!babelNode) {
+    babelNode = parseExpr(code, context, node)
+    if (!babelNode) {
+      return createSimpleExpression(code, false, node.loc)
+    }
+  }
+
+  let rewritten = false
+  // WXS subtrees stay in the template; ordinary expressions become render data.
+  const expression = walk(babelNode, {
+    enter(child, parent) {
+      const walker = this as typeof this & {
+        replace(node: Expression): void
+      }
+      if (
+        child === babelNode ||
+        !parent ||
+        !isExpression(child) ||
+        !isReferenced(child, parent as any) ||
+        isReferencedByIds(child, context.filters)
+      ) {
+        return
+      }
+
+      const childCode = genBabelExpr(child)
+      const replacement = rewriteExpression(
+        createSimpleExpression(childCode, false, node.loc),
+        context,
+        child,
+        scope
+      )
+      const replacementCode = genExpr(replacement)
+      if (replacementCode === childCode) {
+        walker.skip()
+        return
+      }
+
+      const replacementNode = parseExpr(replacementCode, context, replacement)
+      if (replacementNode) {
+        rewritten = true
+        walker.replace(replacementNode)
+        walker.skip()
+      }
+    },
+  }) as Expression
+
+  return createSimpleExpression(
+    rewritten ? genBabelExpr(expression) : code,
+    false,
+    node.loc
+  )
 }
 
 export function findReferencedScope(
