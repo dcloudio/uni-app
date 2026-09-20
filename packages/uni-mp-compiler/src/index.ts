@@ -9,7 +9,6 @@ import {
 import { baseCompile } from './compile'
 import { parserOptions } from './parserOptions'
 import type { CompilerOptions } from './options'
-import { preprocessVPre } from './transforms/vPre'
 export type { CompilerOptions } from './options'
 export { findProp } from '@vue/compiler-core'
 export type {
@@ -28,7 +27,7 @@ export { transformModel } from './transforms/vModel'
 export * from './runtimeHelpers'
 
 export function parse(template: string, options: ParserOptions = {}): RootNode {
-  return baseParse(preprocessVPre(template), extend({}, parserOptions, options))
+  return baseParse(template, extend({}, parserOptions, options))
 }
 
 export function compile(

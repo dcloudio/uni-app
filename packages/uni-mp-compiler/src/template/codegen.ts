@@ -164,6 +164,13 @@ export function genNode(
         node.loc.source
       )
     case NodeTypes.ELEMENT:
+      if (
+        currentInVPre &&
+        (node.tagType === ElementTypes.SLOT ||
+          node.tagType === ElementTypes.TEMPLATE)
+      ) {
+        return genElement(node, context, currentInVPre)
+      }
       if (node.tagType === ElementTypes.SLOT) {
         const isEmptyDefaultSlot =
           node.props.some(

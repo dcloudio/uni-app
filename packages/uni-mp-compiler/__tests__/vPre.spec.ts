@@ -1,6 +1,13 @@
 import { assert } from './testUtils'
+import { parse } from '../src'
 
 describe('compiler: transform v-pre', () => {
+  test('public parse does not expose the internal marker', () => {
+    const root = parse('<view v-pre>{{ value }}</view>')
+    const props = (root.children[0] as any).props
+    expect(props.some((prop: any) => prop.name === 'prx')).toBe(false)
+  })
+
   test('preserves platform tag and scope transforms', () => {
     assert(
       `<div v-pre>hello</div>`,
@@ -62,6 +69,26 @@ describe('compiler: transform v-pre', () => {
     )
   })
 
+  test('slot elements stay static inside v-pre', () => {
+    assert(
+      `<view v-pre><slot name="content" class="keep" data-value="raw">fallback {{ value }}</slot></view>`,
+      `<view><slot name="content" class="keep" data-value="raw">fallback {{'{{'}} value {{'}}'}}</slot></view>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+
+  test('template elements stay static inside v-pre', () => {
+    assert(
+      `<view v-pre><template data-value="keep"><text>{{ value }}</text></template></view>`,
+      `<view><block data-value="keep"><text>{{'{{'}} value {{'}}'}}</text></block></view>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+
   test('only the v-pre subtree is skipped', () => {
     assert(
       `<view><text v-pre>{{ skipped }}</text><text>{{ rendered }}</text></view>`,
@@ -76,6 +103,16 @@ describe('compiler: transform v-pre', () => {
     assert(
       `<view v-pre v-if="visible"><text v-for="item in items">{{ item }}</text></view>`,
       `<view><text>{{'{{'}} item {{'}}'}}</text></view>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+
+  test('descendant directives do not run inside v-pre', () => {
+    assert(
+      `<view v-pre><text @click /></view>`,
+      `<view><text/></view>`,
       `(_ctx, _cache) => {
   return {}
 }`
