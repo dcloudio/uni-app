@@ -1,6 +1,17 @@
 import { assert } from './testUtils'
 
 describe('compiler: transform v-pre', () => {
+  test('preserves platform tag and scope transforms', () => {
+    assert(
+      `<div v-pre>hello</div>`,
+      `<view class="data-v-pre">hello</view>`,
+      `(_ctx, _cache) => {
+  return {}
+}`,
+      { scopeId: 'data-v-pre' }
+    )
+  })
+
   test('interpolation is emitted as text', () => {
     assert(
       `<view v-pre>{{ message }}</view>`,
@@ -75,6 +86,18 @@ describe('compiler: transform v-pre', () => {
     assert(
       `<view v-pre>{{ message }}</view>`,
       `<view>{{'{{'}} message {{'}}'}}</view>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = {}
+  return __returned__
+}`,
+      { isX: true }
+    )
+  })
+
+  test('escapes X-mode whitespace in v-pre interpolation', () => {
+    assert(
+      `<view v-pre>{{ message\u2009 }}</view>`,
+      `<view>{{'{{'}} message&thinsp; {{'}}'}}</view>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = {}
   return __returned__

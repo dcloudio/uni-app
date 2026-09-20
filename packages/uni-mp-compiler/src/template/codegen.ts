@@ -237,12 +237,12 @@ function genText(
 
 function genExpression(
   node: ExpressionNode,
-  { push }: TemplateCodegenContext,
+  { push, isX }: TemplateCodegenContext,
   inVPre = false,
   source?: string
 ) {
   if (inVPre) {
-    push(genVPreText(source || `{{${genExpr(node)}}}`))
+    push(genVPreText(source || `{{${genExpr(node)}}}`, isX))
     return
   }
   push(`{{${genExpr(node)}}}`)

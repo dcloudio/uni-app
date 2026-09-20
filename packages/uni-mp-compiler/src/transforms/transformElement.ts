@@ -28,6 +28,7 @@ import {
   type NodeTransform,
   type TransformContext,
 } from '../transform'
+import { isVPreElementNode } from './vPre'
 import { transformModel } from './vModel'
 import { addStaticClass } from '@dcloudio/uni-cli-shared'
 
@@ -47,6 +48,12 @@ export const transformElement: NodeTransform = (node, context) => {
           node.tagType === ElementTypes.COMPONENT)
       )
     ) {
+      return
+    }
+    if (isVPreElementNode(node)) {
+      if (context.scopeId) {
+        addScopeId(node, context.scopeId)
+      }
       return
     }
     if (node.tagType === ElementTypes.COMPONENT) {

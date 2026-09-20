@@ -121,6 +121,7 @@ export interface TransformContext
   currentVueId: string
   vueIds: string[]
   inVOnce: boolean
+  inVPre: boolean
   inVFor: boolean
   helper<T extends symbol>(name: T): T
   removeHelper<T extends symbol>(name: T): void
@@ -190,8 +191,11 @@ function findRootNode(root: RootNode, context: TransformContext) {
 
 export function traverseNode(
   node: RootNode | TemplateChildNode,
-  context: TransformContext
+  context: TransformContext,
+  inVPre = false
 ) {
+  const prevInVPre = context.inVPre
+  context.inVPre = inVPre || isVPreElementNode(node)
   context.currentNode = node
   // apply transform plugins
   const { nodeTransforms } = context
@@ -207,14 +211,13 @@ export function traverseNode(
     }
     if (!context.currentNode) {
       // node was removed
+      context.inVPre = prevInVPre
       return
     } else {
       // node may have been replaced
       node = context.currentNode
     }
-    if (isVPreElementNode(node)) {
-      return
-    }
+    context.inVPre = inVPre || isVPreElementNode(node)
   }
 
   switch (node.type) {
@@ -227,14 +230,14 @@ export function traverseNode(
     // for container types, further traverse downwards
     case NodeTypes.IF:
       for (let i = 0; i < node.branches.length; i++) {
-        traverseNode(node.branches[i], context)
+        traverseNode(node.branches[i], context, context.inVPre)
       }
       break
     case NodeTypes.IF_BRANCH:
     case NodeTypes.FOR:
     case NodeTypes.ELEMENT:
     case NodeTypes.ROOT:
-      traverseChildren(node, context)
+      traverseChildren(node, context, context.inVPre)
       break
   }
 
@@ -244,11 +247,13 @@ export function traverseNode(
   while (i--) {
     exitFns[i]()
   }
+  context.inVPre = prevInVPre
 }
 
 export function traverseChildren(
   parent: ParentNode,
-  context: TransformContext
+  context: TransformContext,
+  inVPre = context.inVPre
 ) {
   let i = 0
   const nodeRemoved = () => {
@@ -261,7 +266,7 @@ export function traverseChildren(
     ;(child as any).parent = parent
     context.childIndex = i
     context.onNodeRemoved = nodeRemoved
-    traverseNode(child, context)
+    traverseNode(child, context, inVPre)
   }
 }
 function defaultOnError(error: CompilerError) {
@@ -401,6 +406,7 @@ export function createTransformContext(
       return vueIds[vueIds.length - 1]
     },
     inVOnce: false,
+    inVPre: false,
     get inVFor() {
       let parent: CodegenScope | null = scopes[scopes.length - 1]
       while (parent) {
@@ -556,6 +562,9 @@ export function createStructuralDirectiveTransform(
     : (n: string) => name.test(n)
 
   return (node, context) => {
+    if (context.inVPre) {
+      return
+    }
     if (isElementNode(node)) {
       const { props } = node
       // structural directive transforms are not concerned with slots
