@@ -23,6 +23,7 @@ import {
   addUniViewAutoImportFilter,
   isFilterExpr,
   rewriteExpression,
+  rewriteFilterExpression,
 } from './utils'
 import {
   createVirtualHostClass,
@@ -96,8 +97,10 @@ export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
     if (node.type === NodeTypes.INTERPOLATION) {
       const content = node.content
-      let isFilter = isFilterExpr(content, context)
-      if (!isFilter) {
+      const isFilter = isFilterExpr(content, context)
+      if (isFilter) {
+        node.content = rewriteFilterExpression(content, context)
+      } else {
         node.content = rewriteExpression(
           createCompoundExpression([
             `${context.helperString(TO_DISPLAY_STRING)}(`,
