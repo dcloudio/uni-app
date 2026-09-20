@@ -22,6 +22,7 @@ import {
   parseUTSComponent,
   removePlugins,
   resolveUasmCopyAssets,
+  transformAppVHtml,
   transformLineBreak,
   transformTapToClick,
   transformUTSComponent,
@@ -98,6 +99,7 @@ export function createUniOptions(platform: AppPlatform): UniVitePlugin['uni'] {
               )
             },
             nodeTransforms: [
+              ...(isDom2 ? [transformAppVHtml] : []),
               transformTapToClick,
               transformUTSComponent,
               // TODO 合并复用安卓插件逻辑
