@@ -38,6 +38,8 @@
 <script setup lang="ts">
 import { usePageMeta } from '../../../setup/provide'
 
+defineOptions({ name: 'PageRefresh' })
+
 const { pullToRefresh } = usePageMeta()
 const offset = pullToRefresh!.offset
 const color = pullToRefresh!.color

@@ -3369,20 +3369,42 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const clazz = { class: "uni-async-loading" };
-const loadingVNode = /* @__PURE__ */ vue.createVNode(
-  "i",
-  { class: "uni-loading" },
-  null,
-  -1
-  /* HOISTED */
-);
-const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
+var __defProp$3 = Object.defineProperty;
+var __defProps$3 = Object.defineProperties;
+var __getOwnPropDescs$3 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$3 = Object.getOwnPropertySymbols;
+var __hasOwnProp$3 = Object.prototype.hasOwnProperty;
+var __propIsEnum$3 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$3 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$3.call(b, prop))
+      __defNormalProp$3(a, prop, b[prop]);
+  if (__getOwnPropSymbols$3)
+    for (var prop of __getOwnPropSymbols$3(b)) {
+      if (__propIsEnum$3.call(b, prop))
+        __defNormalProp$3(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$3 = (a, b) => __defProps$3(a, __getOwnPropDescs$3(b));
+const _hoisted_1$1 = { class: "uni-async-loading" };
+const _hoisted_2$1 = /* @__PURE__ */ vue.createElementVNode("i", { class: "uni-loading" }, null, -1);
+const _hoisted_3$1 = [
+  _hoisted_2$1
+];
+const _sfc_main$3 = /* @__PURE__ */ vue.defineComponent(__spreadProps$3(__spreadValues$3({}, {
   name: "AsyncLoading",
-  render() {
-    return vue.openBlock(), vue.createBlock("div", clazz, [loadingVNode]);
+  __reserved: true,
+  compatConfig: { MODE: 3 }
+}), {
+  __name: "asyncLoading",
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$1, _hoisted_3$1);
+    };
   }
-});
+}));
 function reload() {
   window.location.reload();
 }
@@ -3435,8 +3457,8 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(AsyncLoadingComponent.name)) {
-    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
+  if (!app.component(_sfc_main$3.name)) {
+    app.component(_sfc_main$3.name, _sfc_main$3);
   }
   if (!app.component(AsyncErrorComponent.name)) {
     app.component(AsyncErrorComponent.name, AsyncErrorComponent);
@@ -3646,7 +3668,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
       navigationBar.titleColor = _navigationBar.titleColor;
     });
     const {
-      clazz: clazz2,
+      clazz,
       style
     } = usePageHead(navigationBar);
     const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
@@ -3667,7 +3689,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
         "uni-page-head-type": type
       }, [vue.createVNode("div", {
         "ref": headRef,
-        "class": clazz2.value,
+        "class": clazz.value,
         "style": style.value
       }, [vue.createVNode("div", {
         "class": "uni-page-head-hd"
@@ -3815,22 +3837,22 @@ function onPageHeadBackButton() {
   }
 }
 function usePageHead(navigationBar) {
-  const clazz2 = vue.computed(() => {
+  const clazz = vue.computed(() => {
     const {
       type,
       titlePenetrate,
       shadowColorType
     } = navigationBar;
-    const clazz3 = {
+    const clazz2 = {
       "uni-page-head": true,
       "uni-page-head-transparent": type === "transparent",
       "uni-page-head-titlePenetrate": titlePenetrate === "YES",
       "uni-page-head-shadow": !!shadowColorType
     };
     if (shadowColorType) {
-      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
+      clazz2[`uni-page-head-shadow-${shadowColorType}`] = true;
     }
-    return clazz3;
+    return clazz2;
   });
   const style = vue.computed(() => {
     const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
@@ -3842,7 +3864,7 @@ function usePageHead(navigationBar) {
     };
   });
   return {
-    clazz: clazz2,
+    clazz,
     style
   };
 }
@@ -3980,6 +4002,25 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
+var __defProp$2 = Object.defineProperty;
+var __defProps$2 = Object.defineProperties;
+var __getOwnPropDescs$2 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$2 = Object.getOwnPropertySymbols;
+var __hasOwnProp$2 = Object.prototype.hasOwnProperty;
+var __propIsEnum$2 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$2 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$2.call(b, prop))
+      __defNormalProp$2(a, prop, b[prop]);
+  if (__getOwnPropSymbols$2)
+    for (var prop of __getOwnPropSymbols$2(b)) {
+      if (__propIsEnum$2.call(b, prop))
+        __defNormalProp$2(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$2 = (a, b) => __defProps$2(a, __getOwnPropDescs$2(b));
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
 const _hoisted_3 = /* @__PURE__ */ vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
@@ -3998,7 +4039,7 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
+const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent(__spreadProps$2(__spreadValues$2({}, { name: "PageRefresh" }), {
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
@@ -4035,7 +4076,7 @@ const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
       ]);
     };
   }
-});
+}));
 const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
@@ -15148,13 +15189,13 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
   const {
     iconWidth
   } = tabBar;
-  const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
+  const clazz = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
     height: iconWidth
   };
   return vue.createVNode("div", {
-    "class": clazz2,
+    "class": clazz,
     "style": style
   }, [type !== "midButton" && vue.createVNode("img", {
     "src": getRealPath(iconPath)
@@ -15169,7 +15210,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
   const {
     iconWidth
   } = tabBar;
-  const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
+  const clazz = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
     height: iconWidth
@@ -15179,7 +15220,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
     color: iconfontColor
   };
   return vue.createVNode("div", {
-    "class": clazz2,
+    "class": clazz,
     "style": style
   }, [type !== "midButton" && vue.createVNode("div", {
     "class": "uni-tabbar__iconfont",
@@ -15207,9 +15248,9 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar) {
   }, [text], 4);
 }
 function createTabBarItemRedDotTsx(badge) {
-  const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
+  const clazz = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
   return vue.createVNode("div", {
-    "class": clazz2
+    "class": clazz
   }, [badge], 2);
 }
 function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar, index2, onSwitchTab) {
@@ -15258,13 +15299,13 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
     const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
     const showTabBar = __UNI_FEATURE_TABBAR__ && useShowTabBar();
-    const clazz2 = useAppClass(showTabBar);
+    const clazz = useAppClass(showTabBar);
     return () => {
       const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar);
       return vue.createVNode("uni-app", {
         "ref": rootRef,
-        "class": clazz2.value
+        "class": clazz.value
       }, [layoutTsx, tabBarTsx], 2);
     };
   }
@@ -15642,7 +15683,7 @@ exports.Ad = index$5;
 exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
 exports.AsyncErrorComponent = AsyncErrorComponent;
-exports.AsyncLoadingComponent = AsyncLoadingComponent;
+exports.AsyncLoadingComponent = _sfc_main$3;
 exports.Button = index$x;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;

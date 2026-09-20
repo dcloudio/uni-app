@@ -3524,20 +3524,37 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const clazz = { class: "uni-async-loading" };
-const loadingVNode = /* @__PURE__ */ Vue.createVNode(
-  "i",
-  { class: "uni-loading" },
-  null,
-  -1
-  /* HOISTED */
-);
-const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
+var __defProp$4 = Object.defineProperty;
+var __defProps$3 = Object.defineProperties;
+var __getOwnPropDescs$3 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$4 = Object.getOwnPropertySymbols;
+var __hasOwnProp$4 = Object.prototype.hasOwnProperty;
+var __propIsEnum$4 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$4 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$4.call(b, prop))
+      __defNormalProp$4(a, prop, b[prop]);
+  if (__getOwnPropSymbols$4)
+    for (var prop of __getOwnPropSymbols$4(b)) {
+      if (__propIsEnum$4.call(b, prop))
+        __defNormalProp$4(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$3 = (a, b) => __defProps$3(a, __getOwnPropDescs$3(b));
+const t0$3 = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent(__spreadProps$3(__spreadValues$4({}, {
   name: "AsyncLoading",
-  render() {
-    return Vue.openBlock(), Vue.createBlock("div", clazz, [loadingVNode]);
+  __reserved: true,
+  compatConfig: { MODE: 3 }
+}), {
+  __name: "asyncLoading",
+  setup(__props) {
+    const n0 = t0$3();
+    return n0;
   }
-});
+}));
 const _t0$o = Vue.template("<div class=uni-async-error> ", 1);
 function reload() {
   window.location.reload();
@@ -3592,8 +3609,8 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(AsyncLoadingComponent.name)) {
-    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
+  if (!app.component(_sfc_main$3.name)) {
+    app.component(_sfc_main$3.name, _sfc_main$3);
   }
   if (!app.component(AsyncErrorComponent.name)) {
     app.component(AsyncErrorComponent.name, AsyncErrorComponent);
@@ -3811,7 +3828,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
       navigationBar.backgroundColor = _navigationBar.backgroundColor;
       navigationBar.titleColor = _navigationBar.titleColor;
     });
-    const { clazz: clazz2, style } = usePageHead(navigationBar);
+    const { clazz, style } = usePageHead(navigationBar);
     const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
     const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
@@ -3836,7 +3853,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
           setNodes(_n1, () => createPageHeadBdTsx(navigationBar, searchInput));
           const _n3 = createNodes(() => placeholderTsx);
           Vue.renderEffect(() => {
-            Vue.setClass(_n2, clazz2.value);
+            Vue.setClass(_n2, clazz.value);
             Vue.setStyle(_n2, style.value);
             _setTemplateRef(_n2, headRef);
           });
@@ -3992,18 +4009,18 @@ function onPageHeadBackButton() {
   }
 }
 function usePageHead(navigationBar) {
-  const clazz2 = Vue.computed(() => {
+  const clazz = Vue.computed(() => {
     const { type, titlePenetrate, shadowColorType } = navigationBar;
-    const clazz22 = {
+    const clazz2 = {
       "uni-page-head": true,
       "uni-page-head-transparent": type === "transparent",
       "uni-page-head-titlePenetrate": titlePenetrate === "YES",
       "uni-page-head-shadow": !!shadowColorType
     };
     if (shadowColorType) {
-      clazz22[`uni-page-head-shadow-${shadowColorType}`] = true;
+      clazz2[`uni-page-head-shadow-${shadowColorType}`] = true;
     }
-    return clazz22;
+    return clazz2;
   });
   const style = Vue.computed(() => {
     const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
@@ -4015,7 +4032,7 @@ function usePageHead(navigationBar) {
     };
   });
   return {
-    clazz: clazz2,
+    clazz,
     style
   };
 }
@@ -4127,8 +4144,27 @@ function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
     onConfirm
   };
 }
+var __defProp$3 = Object.defineProperty;
+var __defProps$2 = Object.defineProperties;
+var __getOwnPropDescs$2 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$3 = Object.getOwnPropertySymbols;
+var __hasOwnProp$3 = Object.prototype.hasOwnProperty;
+var __propIsEnum$3 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$3 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$3.call(b, prop))
+      __defNormalProp$3(a, prop, b[prop]);
+  if (__getOwnPropSymbols$3)
+    for (var prop of __getOwnPropSymbols$3(b)) {
+      if (__propIsEnum$3.call(b, prop))
+        __defNormalProp$3(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$2 = (a, b) => __defProps$2(a, __getOwnPropDescs$2(b));
 const t0$2 = Vue.template('<div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>');
-const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent(__spreadProps$2(__spreadValues$3({}, { name: "PageRefresh" }), {
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
@@ -4147,7 +4183,7 @@ const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent({
     });
     return n3;
   }
-});
+}));
 const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
@@ -15006,7 +15042,7 @@ function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tab
 function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
   const { type, text } = tabBarItem;
   const { iconWidth } = tabBar;
-  const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
+  const clazz = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
     height: iconWidth
@@ -15020,7 +15056,7 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
       return _n02;
     })());
     Vue.renderEffect(() => {
-      Vue.setClass(_n0, clazz2);
+      Vue.setClass(_n0, clazz);
       Vue.setStyle(_n0, style);
     });
     return _n0;
@@ -15030,7 +15066,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
   var _a;
   const { type, text } = tabBarItem;
   const { iconWidth } = tabBar;
-  const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
+  const clazz = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
     height: iconWidth
@@ -15050,7 +15086,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
       return _n02;
     })());
     Vue.renderEffect(() => {
-      Vue.setClass(_n0, clazz2);
+      Vue.setClass(_n0, clazz);
       Vue.setStyle(_n0, style);
     });
     return _n0;
@@ -15074,12 +15110,12 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar) {
   })();
 }
 function createTabBarItemRedDotTsx(badge) {
-  const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
+  const clazz = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
   return (() => {
     const _n0 = _t4$1();
     const _x0 = Vue.txt(_n0);
     setNodes(_x0, () => badge);
-    Vue.renderEffect(() => Vue.setClass(_n0, clazz2));
+    Vue.renderEffect(() => Vue.setClass(_n0, clazz));
     return _n0;
   })();
 }
@@ -15134,13 +15170,13 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
     const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
     const showTabBar = __UNI_FEATURE_TABBAR__ && useShowTabBar();
-    const clazz2 = useAppClass(showTabBar);
+    const clazz = useAppClass(showTabBar);
     return () => {
       const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar);
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n2 = Vue.createPlainElement("uni-app", { class: () => clazz2.value }, Vue.extend(() => {
+        const _n2 = Vue.createPlainElement("uni-app", { class: () => clazz.value }, Vue.extend(() => {
           const _n0 = createNodes(() => layoutTsx, () => tabBarTsx);
           return _n0;
         }, { _: 1 }), true);
@@ -15533,7 +15569,7 @@ exports.Ad = index$5;
 exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
 exports.AsyncErrorComponent = AsyncErrorComponent;
-exports.AsyncLoadingComponent = AsyncLoadingComponent;
+exports.AsyncLoadingComponent = _sfc_main$3;
 exports.Button = index$v;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;

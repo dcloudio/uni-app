@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, h, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, createElementVNode, normalizeStyle, unref } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, h, renderSlot, logError, createElementVNode, onBeforeActivate, onBeforeDeactivate, createBlock, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, normalizeStyle, unref } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_THEME_CHANGE, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -1417,31 +1417,31 @@ class ComponentDescriptor {
     }
     return this;
   }
-  addClass(clazz2) {
-    if (!this.$el || !clazz2) {
+  addClass(clazz) {
+    if (!this.$el || !clazz) {
       return this;
     }
     const __wxsAddClass = this.$el.__wxsAddClass || (this.$el.__wxsAddClass = []);
-    if (__wxsAddClass.indexOf(clazz2) === -1) {
-      __wxsAddClass.push(clazz2);
+    if (__wxsAddClass.indexOf(clazz) === -1) {
+      __wxsAddClass.push(clazz);
       this.forceUpdate("class");
     }
     return this;
   }
-  removeClass(clazz2) {
-    if (!this.$el || !clazz2) {
+  removeClass(clazz) {
+    if (!this.$el || !clazz) {
       return this;
     }
     const { __wxsAddClass } = this.$el;
     if (__wxsAddClass) {
-      const index2 = __wxsAddClass.indexOf(clazz2);
+      const index2 = __wxsAddClass.indexOf(clazz);
       if (index2 > -1) {
         __wxsAddClass.splice(index2, 1);
       }
     }
     const __wxsRemoveClass = this.$el.__wxsRemoveClass || (this.$el.__wxsRemoveClass = []);
-    if (__wxsRemoveClass.indexOf(clazz2) === -1) {
-      __wxsRemoveClass.push(clazz2);
+    if (__wxsRemoveClass.indexOf(clazz) === -1) {
+      __wxsRemoveClass.push(clazz);
       this.forceUpdate("class");
     }
     return this;
@@ -16944,20 +16944,24 @@ function warnHandler(msg, instance2, trace) {
   }
   console.warn(...warnArgs);
 }
-const clazz = { class: "uni-async-loading" };
-const loadingVNode = /* @__PURE__ */ createVNode(
-  "i",
-  { class: "uni-loading" },
-  null,
-  -1
-  /* HOISTED */
-);
-const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
+const _hoisted_1$1 = { class: "uni-async-loading" };
+const _hoisted_2$1 = /* @__PURE__ */ createElementVNode("i", { class: "uni-loading" }, null, -1);
+const _hoisted_3$1 = [
+  _hoisted_2$1
+];
+const _sfc_main$1 = /* @__PURE__ */ Object.assign({
   name: "AsyncLoading",
-  render() {
-    return openBlock(), createBlock("div", clazz, [loadingVNode]);
+  __reserved: true,
+  compatConfig: { MODE: 3 }
+}, {
+  __name: "asyncLoading",
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$1, _hoisted_3$1);
+    };
   }
 });
+const AsyncLoadingComponent = _sfc_main$1;
 function reload() {
   window.location.reload();
 }
@@ -23786,13 +23790,13 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
   const {
     iconWidth
   } = tabBar;
-  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
+  const clazz = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
     height: iconWidth
   };
   return createVNode("div", {
-    "class": clazz2,
+    "class": clazz,
     "style": style
   }, [type !== "midButton" && createVNode("img", {
     "src": getRealPath(iconPath)
@@ -23807,7 +23811,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
   const {
     iconWidth
   } = tabBar;
-  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
+  const clazz = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
     height: iconWidth
@@ -23817,7 +23821,7 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
     color: iconfontColor
   };
   return createVNode("div", {
-    "class": clazz2,
+    "class": clazz,
     "style": style
   }, [type !== "midButton" && createVNode("div", {
     "class": "uni-tabbar__iconfont",
@@ -23845,9 +23849,9 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar) {
   }, [text2], 4);
 }
 function createTabBarItemRedDotTsx(badge) {
-  const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
+  const clazz = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
   return createVNode("div", {
-    "class": clazz2
+    "class": clazz
   }, [badge], 2);
 }
 function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar, index2, onSwitchTab) {
@@ -23902,14 +23906,14 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
     const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
     const showTabBar2 = __UNI_FEATURE_TABBAR__ && useShowTabBar();
-    const clazz2 = useAppClass(showTabBar2);
+    const clazz = useAppClass(showTabBar2);
     globalLayoutState = layoutState;
     return () => {
       const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar2);
       return createVNode("uni-app", {
         "ref": rootRef,
-        "class": clazz2.value
+        "class": clazz.value
       }, [layoutTsx, tabBarTsx], 2);
     };
   }
@@ -27108,7 +27112,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
       navigationBar.titleColor = _navigationBar.titleColor;
     });
     const {
-      clazz: clazz2,
+      clazz,
       style
     } = usePageHead(navigationBar);
     const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
@@ -27129,7 +27133,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
         "uni-page-head-type": type
       }, [createVNode("div", {
         "ref": headRef,
-        "class": clazz2.value,
+        "class": clazz.value,
         "style": style.value
       }, [createVNode("div", {
         "class": "uni-page-head-hd"
@@ -27277,22 +27281,22 @@ function onPageHeadBackButton() {
   }
 }
 function usePageHead(navigationBar) {
-  const clazz2 = computed(() => {
+  const clazz = computed(() => {
     const {
       type,
       titlePenetrate,
       shadowColorType
     } = navigationBar;
-    const clazz3 = {
+    const clazz2 = {
       "uni-page-head": true,
       "uni-page-head-transparent": type === "transparent",
       "uni-page-head-titlePenetrate": titlePenetrate === "YES",
       "uni-page-head-shadow": !!shadowColorType
     };
     if (shadowColorType) {
-      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
+      clazz2[`uni-page-head-shadow-${shadowColorType}`] = true;
     }
-    return clazz3;
+    return clazz2;
   });
   const style = computed(() => {
     const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
@@ -27304,7 +27308,7 @@ function usePageHead(navigationBar) {
     };
   });
   return {
-    clazz: clazz2,
+    clazz,
     style
   };
 }
@@ -27443,6 +27447,25 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
+var __defProp2 = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp2 = (obj, key, value) => key in obj ? __defProp2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp2(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp2(a2, prop, b[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
 const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
@@ -27461,7 +27484,7 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-const _sfc_main = /* @__PURE__ */ defineComponent({
+const _sfc_main = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, { name: "PageRefresh" }), {
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
@@ -27498,7 +27521,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       ]);
     };
   }
-});
+}));
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
