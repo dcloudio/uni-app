@@ -159,7 +159,11 @@ export function uniPagesJsonPlugin(
         console.warn(M['dev.watching.restart.independentSubPackages'])
         process.exit(0)
       }
-      addMiniProgramAppJson(normalizedAppJson)
+      addMiniProgramAppJson(normalizedAppJson, {
+        subPackages:
+          !!parseManifestJsonOnce(inputDir)[platform]?.optimization
+            ?.subPackages,
+      })
       allPagePaths = []
       Object.keys(pageJsons).forEach((name) => {
         if (isNormalPage(name)) {

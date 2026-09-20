@@ -20,6 +20,7 @@ import {
   relativeFile,
   removeExt,
   resolveMainPathOnce,
+  resolveMiniProgramComponentPackageRoot,
   transformPartSelector,
   transformScopedCss,
 } from '@dcloudio/uni-cli-shared'
@@ -28,7 +29,8 @@ import { getNVueCssPaths } from '../plugins/pagesJson'
 import {
   isUniComponentUrl,
   isUniPageUrl,
-  parseVirtualComponentPath,
+  normalizeMiniProgramComponentFilename,
+  parseVirtualComponentPathInfo,
   parseVirtualPagePath,
 } from '../plugins/entry'
 import { getIndependentRootByFilename } from '../plugins/independentUtils'
@@ -54,6 +56,21 @@ export function createConfigResolved({
     return (
       removeExt(normalizeMiniProgramFilename(id, process.env.UNI_INPUT_DIR)) +
       extname
+    )
+  }
+  function normalizeComponentCssChunkFilename(
+    id: string,
+    extname: string,
+    packageRoot?: string
+  ) {
+    return (
+      removeExt(
+        normalizeMiniProgramComponentFilename(
+          id,
+          process.env.UNI_INPUT_DIR,
+          packageRoot
+        )
+      ) + extname
     )
   }
   return (config) => {
@@ -94,9 +111,14 @@ export function createConfigResolved({
               cssExtname
             )
           } else if (isUniComponentUrl(id)) {
-            return normalizeCssChunkFilename(
-              parseVirtualComponentPath(id),
-              cssExtname
+            const { filepath, root, packageRoot } =
+              parseVirtualComponentPathInfo(id)
+            return normalizeComponentCssChunkFilename(
+              filepath,
+              cssExtname,
+              root
+                ? undefined
+                : resolveMiniProgramComponentPackageRoot(filepath, packageRoot)
             )
           } else if (id.startsWith('uni_modules://')) {
             return normalizeCssChunkFilename(
