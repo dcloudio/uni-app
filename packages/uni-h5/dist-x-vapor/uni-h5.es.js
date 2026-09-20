@@ -1,12 +1,7 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, template, defineVaporComponent, createIf, on as on$1, renderEffect, setStyle, setClass, setInsertionState, createSlot, createPlainElement, insert, setStaticTemplateRef, setClassName, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, child, next, txt, setText, normalizeUniText, toDisplayString, createFor, setHover, createAssetComponent, createComponentWithFallback, extend as extend$1, withImageEventDetail, setImageMode, setImageSrc, createComponent, applyVShow, unref } from "vue";
+import * as Vue from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createBlock, on as on$1, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, setClass, createKeyedFragment, setAttr, setHtml, setProp, createElementVNode, normalizeStyle, renderSlot, withCtx, renderList, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, defineVaporComponent, createSlot, insert, setStaticTemplateRef, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, setText, normalizeUniText, toDisplayString, createFor, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc, createComponent as createComponent$1, unref } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -2218,6 +2213,149 @@ class UniElement extends HTMLElement {
     return super.nodeName.replace(/^UNI-/, "");
   }
 }
+const createComponent = (type, ...args) => {
+  if (type === Fragment) {
+    const slots = args[1];
+    return slots ? typeof slots === "function" ? slots() : typeof slots.default === "function" ? slots.default() : [] : [];
+  }
+  return Vue.createComponentWithFallback(
+    createProxyComponent(Vue.resolveDynamicComponent(type)),
+    ...args
+  );
+};
+const proxyCache = /* @__PURE__ */ new WeakMap();
+function createProxyComponent(type, normalizeNode2) {
+  if (typeof type === "function") {
+    const existing = proxyCache.get(type);
+    if (existing)
+      return existing;
+    const i = Vue.currentInstance || getCurrentInstance();
+    const proxy = new Proxy(type, {
+      apply(target, ctx, args) {
+        if (typeof target.__setup === "function") {
+          target.__setup.apply(ctx, args);
+        }
+        const node = Reflect.apply(target, ctx, args);
+        return node;
+      },
+      get(target, p2, receiver) {
+        const result = Reflect.get(target, p2, receiver);
+        if (p2 === "__vapor" && result === void 0 && i && i.appContext.vapor) {
+          return true;
+        }
+        return result;
+      }
+    });
+    proxyCache.set(type, proxy);
+    return proxy;
+  }
+  return type;
+}
+function isBlock(val) {
+  return val instanceof Node || Array.isArray(val) || Vue.isVaporComponent(val) || Vue.isFragment(val);
+}
+function createFragment(nodes, anchor = document.createTextNode("")) {
+  const frag = new Vue.VaporFragment(nodes);
+  frag.anchor = anchor;
+  return frag;
+}
+function normalizeBlock(node, anchor, processFunction = false) {
+  if (node instanceof Node || Vue.isFragment(node)) {
+    return node;
+  } else if (Vue.isVaporComponent(node)) {
+    return createFragment(node, anchor);
+  } else if (Array.isArray(node)) {
+    return createFragment(
+      node.map((i) => normalizeBlock(i, void 0, processFunction)),
+      anchor
+    );
+  } else if (processFunction && typeof node === "function") {
+    return resolveValues([node], anchor, true)[0];
+  } else {
+    const result = node == null || typeof node === "boolean" ? "" : String(node);
+    if (anchor) {
+      anchor.textContent = result;
+      return anchor;
+    } else {
+      return document.createTextNode(result);
+    }
+  }
+}
+function resolveValue(current, value, anchor, processFunction = false) {
+  anchor = anchor || (current instanceof Node && current.nodeType === 3 ? current : void 0);
+  const node = normalizeBlock(value, anchor, processFunction);
+  if (current) {
+    if (Vue.isFragment(current)) {
+      if (current.anchor && current.anchor.parentNode) {
+        Vue.remove(current.nodes, current.anchor.parentNode);
+        Vue.insert(node, current.anchor.parentNode, current.anchor);
+        if (!anchor)
+          current.anchor.parentNode.removeChild(current.anchor);
+        if (current.scope)
+          current.scope.stop();
+      }
+    } else if (current instanceof Node) {
+      if (current.nodeType === 3 && (!(node instanceof Node) || node.nodeType !== 3)) {
+        current.textContent = "";
+      }
+      if (Vue.isFragment(node) && current.parentNode) {
+        Vue.insert(node, current.parentNode, current);
+        if (!anchor || current.nodeType !== 3) {
+          current.parentNode.removeChild(current);
+        }
+      } else if (node instanceof Node) {
+        if (current.nodeType === 3 && node.nodeType === 3) {
+          current.textContent = node.textContent;
+          return current;
+        } else if (current.parentNode) {
+          current.parentNode.replaceChild(node, current);
+        }
+      }
+    }
+  }
+  return node;
+}
+function resolveValues(values = [], _anchor, processFunction = false) {
+  const nodes = [];
+  const scopes = [];
+  for (const [index2, value] of values.entries()) {
+    const anchor = index2 === values.length - 1 ? _anchor : void 0;
+    if (typeof value === "function") {
+      Vue.renderEffect(() => {
+        if (scopes[index2])
+          scopes[index2].stop();
+        scopes[index2] = new EffectScope();
+        nodes[index2] = scopes[index2].run(
+          () => resolveValue(nodes[index2], value(), anchor, processFunction)
+        );
+      });
+    } else {
+      nodes[index2] = resolveValue(nodes[index2], value, anchor, processFunction);
+    }
+  }
+  return nodes;
+}
+function setNodes(anchor, ...values) {
+  const resolvedValues = resolveValues(values, anchor);
+  if (anchor.parentNode)
+    Vue.insert(resolvedValues, anchor.parentNode, anchor);
+}
+function createNodes(...values) {
+  return resolveValues(values);
+}
+function normalizeVaporSlots(slots) {
+  if (typeof slots === "function") {
+    return { name: "default", fn: slots };
+  } else if (Object.prototype.toString.call(slots) === "[object Object]" && !isBlock(slots)) {
+    return Object.entries(slots).map(([name, fn]) => ({ name, fn }));
+  } else {
+    return {
+      name: "default",
+      fn: () => createNodes(slots)
+    };
+  }
+}
+const _t0$t = template("<span> ");
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
@@ -2228,19 +2366,24 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-form",
     class: UniFormElement
   },
-  setup(_props, {
-    slots,
-    emit: emit2
-  }) {
+  setup(_props, { slots, emit: emit2 }) {
     const rootRef = ref(null);
     provideForm(useCustomEvent(rootRef, emit2));
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(_props);
     });
-    return () => createVNode("uni-form", {
-      "ref": rootRef
-    }, [createVNode("span", null, [slots.default && slots.default()])], 512);
+    return () => (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n1 = createPlainElement("uni-form", null, () => {
+        const _n0 = _t0$t();
+        const _x0 = txt(_n0);
+        setNodes(_x0, () => slots.default && slots.default());
+        return _n0;
+      }, true);
+      renderEffect(() => _setTemplateRef(_n1, rootRef));
+      return _n1;
+    })();
   }
 });
 function provideForm(trigger) {
@@ -2253,15 +2396,13 @@ function provideForm(trigger) {
       fields2.splice(fields2.indexOf(field), 1);
     },
     submit(evt) {
-      trigger("submit", evt, {
-        value: fields2.reduce((res, field) => {
-          if (field.submit) {
-            const [name, value] = field.submit();
-            name && (res[name] = value);
-          }
-          return res;
-        }, /* @__PURE__ */ Object.create(null))
-      });
+      trigger("submit", evt, { value: fields2.reduce((res, field) => {
+        if (field.submit) {
+          const [name, value] = field.submit();
+          name && (res[name] = value);
+        }
+        return res;
+      }, /* @__PURE__ */ Object.create(null)) });
     },
     reset(evt) {
       fields2.forEach((field) => field.reset && field.reset());
@@ -2298,9 +2439,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-label",
     class: UniLabelElement
   },
-  setup(props2, {
-    slots
-  }) {
+  setup(props2, { slots }) {
     const rootRef = ref(null);
     const pageId = useCurrentPageId();
     const handlers = useProvideLabel();
@@ -2324,13 +2463,18 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
     });
-    return () => createVNode("uni-label", {
-      "ref": rootRef,
-      "class": {
-        "uni-label-pointer": pointer
-      },
-      "onClick": _onClick
-    }, [slots.default && slots.default()], 10, ["onClick"]);
+    return () => (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n1 = createPlainElement("uni-label", {
+        class: () => ({ "uni-label-pointer": pointer }),
+        onClick: () => _onClick
+      }, extend$1(() => {
+        const _n0 = createNodes(() => slots.default && slots.default());
+        return _n0;
+      }, { _: 1 }), true);
+      renderEffect(() => _setTemplateRef(_n1, rootRef));
+      return _n1;
+    })();
   }
 });
 function useListeners(props2, listeners2) {
@@ -2441,15 +2585,10 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-button",
     class: UniButtonElement
   },
-  setup(props2, {
-    slots
-  }) {
+  setup(props2, { slots }) {
     const rootRef = ref(null);
     const uniForm = inject(uniFormKey, false);
-    const {
-      hovering,
-      binding
-    } = useHover(props2);
+    const { hovering, binding } = useHover(props2);
     const onClick = withWebEvent((e2, isLabelClick) => {
       if (props2.disabled) {
         return e2.stopImmediatePropagation();
@@ -2477,9 +2616,7 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
         uniLabel.removeHandler(onClick);
       });
     }
-    useListeners(props2, {
-      "label-click": onClick
-    });
+    useListeners(props2, { "label-click": onClick });
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
@@ -2490,21 +2627,33 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
       const loadingAttrs = useBooleanAttr(props2, "loading");
       const plainAttrs = useBooleanAttr(props2, "plain");
       const hasHoverClass = hoverClass && hoverClass !== "none";
-      return createVNode("uni-button", mergeProps({
-        "ref": rootRef,
-        "onClick": onClick,
-        "id": props2.id,
-        "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, booleanAttrs, loadingAttrs, plainAttrs), [slots.default && slots.default()], 16, ["onClick", "id"]);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n1 = createPlainElement("uni-button", {
+          onClick: () => onClick,
+          id: () => props2.id,
+          class: () => hasHoverClass && hovering.value ? hoverClass : "",
+          $: [
+            () => hasHoverClass && binding,
+            () => booleanAttrs,
+            () => loadingAttrs,
+            () => plainAttrs
+          ]
+        }, extend$1(() => {
+          const _n0 = createNodes(() => slots.default && slots.default());
+          return _n0;
+        }, { _: 1 }), true);
+        renderEffect(() => _setTemplateRef(_n1, rootRef));
+        return _n1;
+      })();
     };
   }
 });
-const props$s = {
-  disableScroll: {
-    type: [Boolean, String],
-    default: false
-  }
-};
+const _t0$s = template("<canvas class=uni-canvas-canvas>");
+const props$s = { disableScroll: {
+  type: [Boolean, String],
+  default: false
+} };
 class UniCanvasElement extends UniElement {
   get width() {
     return this.querySelector("canvas").width;
@@ -2532,9 +2681,7 @@ class UniCanvasElement extends UniElement {
 const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
-  compatConfig: {
-    MODE: 3
-  },
+  compatConfig: { MODE: 3 },
   props: props$s,
   rootElement: {
     name: "uni-canvas",
@@ -2548,22 +2695,24 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      return createVNode("uni-canvas", {
-        "ref": rootRef
-      }, [createVNode("canvas", {
-        "ref": canvas,
-        "class": "uni-canvas-canvas"
-      }, null, 512)], 512);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n1 = createPlainElement("uni-canvas", null, () => {
+          const _n0 = _t0$s();
+          renderEffect(() => _setTemplateRef(_n0, canvas));
+          return _n0;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n1, rootRef));
+        return _n1;
+      })();
     };
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$r = {
-  name: {
-    type: String,
-    default: ""
-  }
-};
+const props$r = { name: {
+  type: String,
+  default: ""
+} };
 class UniCheckboxGroupElement extends UniElement {
 }
 const index$q = /* @__PURE__ */ defineBuiltInComponent({
@@ -2574,10 +2723,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-checkbox-group",
     class: UniCheckboxGroupElement
   },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
+  setup(props2, { emit: emit2, slots }) {
     const rootRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
     useProvideCheckGroup(props2, trigger);
@@ -2586,9 +2732,15 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      return createVNode("uni-checkbox-group", {
-        "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n1 = createPlainElement("uni-checkbox-group", null, extend$1(() => {
+          const _n0 = createNodes(() => slots.default && slots.default());
+          return _n0;
+        }, { _: 1 }), true);
+        renderEffect(() => _setTemplateRef(_n1, rootRef));
+        return _n1;
+      })();
     };
   }
 });
@@ -2608,26 +2760,23 @@ function useProvideCheckGroup(props2, trigger) {
       fields2.splice(fields2.indexOf(field), 1);
     },
     checkboxChange($event) {
-      trigger("change", $event, {
-        value: getFieldsValue()
-      });
+      trigger("change", $event, { value: getFieldsValue() });
     }
   });
   const uniForm = inject(uniFormKey, false);
   if (uniForm) {
-    uniForm.addField({
-      submit: () => {
-        let data = ["", null];
-        if (props2.name !== "") {
-          data[0] = props2.name;
-          data[1] = getFieldsValue();
-        }
-        return data;
+    uniForm.addField({ submit: () => {
+      let data = ["", null];
+      if (props2.name !== "") {
+        data[0] = props2.name;
+        data[1] = getFieldsValue();
       }
-    });
+      return data;
+    } });
   }
   return getFieldsValue;
 }
+const _t0$r = template("<div class=uni-checkbox-wrapper><div></div> ");
 const props$q = {
   checked: {
     type: [Boolean, String],
@@ -2684,9 +2833,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-checkbox",
     class: UniCheckboxElement
   },
-  setup(props2, {
-    slots
-  }) {
+  setup(props2, { slots }) {
     const rootRef = ref(null);
     const checkboxChecked = ref(props2.checked);
     const checkboxCheckedBool = computed(() => {
@@ -2722,10 +2869,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
     const reset = () => {
       checkboxChecked.value = initialCheckedValue;
     };
-    const {
-      uniCheckGroup,
-      uniLabel
-    } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
+    const { uniCheckGroup, uniLabel } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
     const _onClick = ($event) => {
       if (props2.disabled) {
         return;
@@ -2740,9 +2884,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
         uniLabel.removeHandler(_onClick);
       });
     }
-    useListeners(props2, {
-      "label-click": _onClick
-    });
+    useListeners(props2, { "label-click": _onClick });
     let checkedCache = ref(checkboxCheckedBool.value);
     watch(() => checkboxCheckedBool.value, (newChecked) => {
       checkedCache.value = newChecked;
@@ -2769,21 +2911,34 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       let realCheckValue;
       realCheckValue = checkedCache.value;
-      return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
-        "id": props2.id,
-        "onClick": _onClick,
-        "ref": rootRef
-      }), [createVNode("div", {
-        "class": "uni-checkbox-wrapper",
-        "style": {
-          "--HOVER-BD-COLOR": props2.activeBorderColor
-        }
-      }, [createVNode("div", {
-        "class": ["uni-checkbox-input", {
-          "uni-checkbox-input-disabled": props2.disabled
-        }],
-        "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n8 = createPlainElement("uni-checkbox", { $: [() => booleanAttrs, {
+          id: () => props2.id,
+          onClick: () => _onClick
+        }] }, () => {
+          const _n7 = _t0$r();
+          const _n5 = child(_n7);
+          const _n6 = next(_n5, true);
+          renderEffect(() => {
+            setStyle(_n7, { "--HOVER-BD-COLOR": props2.activeBorderColor });
+            setClassName(_n5, props2.disabled ? 1 : 0, " uni-checkbox-input-disabled", "uni-checkbox-input");
+            setStyle(_n5, checkboxStyle.value);
+          });
+          setInsertionState(_n5);
+          createIf(() => realCheckValue, () => {
+            const _n2 = createNodes(() => createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : props2.foreColor || props2.iconColor || props2.color, 22));
+            return _n2;
+          }, () => {
+            const _n4 = createNodes("");
+            return _n4;
+          }, 266);
+          setNodes(_n6, () => slots.default && slots.default());
+          return _n7;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n8, rootRef));
+        return _n8;
+      })();
     };
   }
 });
@@ -2792,9 +2947,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
     checkboxChecked: Boolean(checkboxChecked.value),
     value: checkboxValue.value
   }));
-  const formField = {
-    reset
-  };
+  const formField = { reset };
   const uniCheckGroup = inject(uniCheckGroupKey, false);
   if (!!uniCheckGroup) {
     uniCheckGroup.addField(field);
@@ -9727,6 +9880,7 @@ const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
+const _t0$q = template("<div class=uni-async-error> ", 1);
 function reload() {
   window.location.reload();
 }
@@ -9735,13 +9889,14 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   props: ["error"],
   setup() {
     initI18nAsyncMsgsOnce();
-    const {
-      t: t8
-    } = useI18n();
-    return () => createVNode("div", {
-      "class": "uni-async-error",
-      "onClick": reload
-    }, [t8("uni.async.error")], 8, ["onClick"]);
+    const { t: t8 } = useI18n();
+    return () => (() => {
+      const _n0 = _t0$q();
+      on$1(_n0, "click", reload);
+      const _x0 = txt(_n0);
+      setNodes(_x0, () => t8("uni.async.error"));
+      return _n0;
+    })();
   }
 });
 let appVm;
@@ -10233,6 +10388,15 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
+const _t0$p = template("<div>", 1);
+const _t1$g = template("<div><div class=uni-page-head-hd> </div> <div class=uni-page-head-ft></div></div>");
+const _t2$9 = template("<div class=uni-page-head-btn> ", 1);
+const _t3$9 = template("<span><i class=uni-btn-icon></i> ");
+const _t4$7 = template("<i class=uni-btn-icon>");
+const _t5$2 = template("<i class=uni-loading>", 2);
+const _t6$2 = template("<img class=uni-page-head__title_image>");
+const _t7$1 = template("<div class=uni-page-head-bd><div class=uni-page-head__title>", 1);
+const _t8$1 = template("<div class=uni-page-head-search><div><div class=uni-page-head-search-icon> </div></div>", 1);
 const ICON_PATHS = {
   none: "",
   forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
@@ -10254,73 +10418,90 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
       navigationBar.backgroundColor = _navigationBar.backgroundColor;
       navigationBar.titleColor = _navigationBar.titleColor;
     });
-    const {
-      clazz: clazz2,
-      style
-    } = usePageHead(navigationBar);
+    const { clazz: clazz2, style } = usePageHead(navigationBar);
     const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
     const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
     return () => {
       const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
-      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
-      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
+      __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
+      __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
       const type = navigationBar.type || "default";
-      const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
-        "class": {
-          "uni-placeholder": true,
-          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
-        }
-      }, null, 2);
-      return createVNode("uni-page-head", {
-        "uni-page-head-type": type
-      }, [createVNode("div", {
-        "ref": headRef,
-        "class": clazz2.value,
-        "style": style.value
-      }, [createVNode("div", {
-        "class": "uni-page-head-hd"
-      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
-        "class": "uni-page-head-ft"
-      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
+      const placeholderTsx = type !== "transparent" && type !== "float" && (() => {
+        const _n0 = _t0$p();
+        renderEffect(() => setClassName(_n0, 1 | (navigationBar.titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
+        return _n0;
+      })();
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n4 = createPlainElement("uni-page-head", { "uni-page-head-type": () => type }, () => {
+          const _n2 = _t1$g();
+          let _p0 = child(_n2);
+          const _n0 = child(_p0, true);
+          const _n1 = next(_p0, true);
+          setNodes(_n0, () => backButtonTsx);
+          setNodes(_n1, () => createPageHeadBdTsx(navigationBar, searchInput));
+          const _n3 = createNodes(() => placeholderTsx);
+          renderEffect(() => {
+            setClass(_n2, clazz2.value);
+            setStyle(_n2, style.value);
+            _setTemplateRef(_n2, headRef);
+          });
+          return [_n2, _n3];
+        }, true);
+        return _n4;
+      })();
     };
   }
 });
 function createBackButtonTsx(navigationBar, isQuit) {
   if (!isQuit) {
-    return createVNode("div", {
-      "class": "uni-page-head-btn",
-      "onClick": onPageHeadBackButton
-    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
+    return (() => {
+      const _n0 = _t2$9();
+      on$1(_n0, "click", onPageHeadBackButton);
+      const _x0 = txt(_n0);
+      setNodes(_x0, () => createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26));
+      return _n0;
+    })();
   }
 }
 function createButtonsTsx(btns) {
-  return btns.map(({
-    onClick,
-    btnClass,
-    btnStyle,
-    btnText,
-    btnIconPath,
-    badgeText,
-    iconStyle,
-    btnSelect
-  }, index2) => {
-    return createVNode("div", {
-      "key": index2,
-      "class": btnClass,
-      "style": btnStyle,
-      "onClick": onClick,
-      "badge-text": badgeText
-    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? createVNode("span", {
-      "style": iconStyle
-    }, [createVNode("i", {
-      "class": "uni-btn-icon",
-      "innerHTML": btnText
-    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : createVNode("i", {
-      "class": "uni-btn-icon",
-      "style": iconStyle,
-      "innerHTML": btnText
-    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
+  return btns.map(({ onClick, btnClass, btnStyle, btnText, btnIconPath, badgeText, iconStyle, btnSelect }, index2) => {
+    return (() => {
+      const _n0 = createKeyedFragment(() => index2, () => {
+        const _n2 = _t0$p();
+        on$1(_n2, "click", onClick);
+        renderEffect(() => {
+          setClass(_n2, btnClass);
+          setStyle(_n2, btnStyle);
+          setAttr(_n2, "badge-text", badgeText);
+        });
+        setInsertionState(_n2);
+        createIf(() => btnIconPath, () => {
+          const _n5 = createNodes(() => createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize));
+          return _n5;
+        }, () => createIf(() => btnSelect, () => {
+          const _n9 = _t3$9();
+          const _n7 = child(_n9);
+          const _n8 = next(_n7, true);
+          setNodes(_n8, () => createSvgIconVNode(ICON_PATHS["select"], "#000", 14));
+          renderEffect(() => {
+            setStyle(_n9, iconStyle);
+            setHtml(_n7, btnText);
+          });
+          return _n9;
+        }, () => {
+          const _n11 = _t4$7();
+          renderEffect(() => {
+            setStyle(_n11, iconStyle);
+            setHtml(_n11, btnText);
+          });
+          return _n11;
+        }, 513), 262);
+        return _n2;
+      });
+      return _n0;
+    })();
   });
 }
 function createPageHeadBdTsx(navigationBar, searchInput) {
@@ -10329,117 +10510,107 @@ function createPageHeadBdTsx(navigationBar, searchInput) {
   }
   return createPageHeadSearchInputTsx(navigationBar, searchInput);
 }
-function createPageHeadTitleTextTsx({
-  type,
-  loading,
-  titleSize,
-  titleText,
-  titleImage
-}) {
-  return createVNode("div", {
-    "class": "uni-page-head-bd"
-  }, [createVNode("div", {
-    "style": {
+function createPageHeadTitleTextTsx({ type, loading, titleSize, titleText, titleImage }) {
+  return (() => {
+    const _n8 = _t7$1();
+    const _n7 = child(_n8);
+    renderEffect(() => setStyle(_n7, {
       fontSize: titleSize,
       opacity: type === "transparent" ? 0 : 1
-    },
-    "class": "uni-page-head__title"
-  }, [loading ? createVNode("i", {
-    "class": "uni-loading"
-  }, null) : titleImage ? createVNode("img", {
-    "src": titleImage,
-    "class": "uni-page-head__title_image"
-  }, null, 8, ["src"]) : titleText], 4)]);
+    }));
+    setInsertionState(_n7);
+    createIf(() => loading, () => {
+      const _n2 = _t5$2();
+      return _n2;
+    }, () => createIf(() => titleImage, () => {
+      const _n4 = _t6$2();
+      renderEffect(() => setProp(_n4, "src", titleImage));
+      return _n4;
+    }, () => {
+      const _n6 = createNodes(() => titleText);
+      return _n6;
+    }, 513), 293);
+    return _n8;
+  })();
 }
-function createPageHeadSearchInputTsx(navigationBar, {
-  text: text2,
-  focus,
-  composing,
-  onBlur,
-  onFocus,
-  onInput,
-  onConfirm,
-  onClick
-}) {
-  const {
-    color,
-    align: align2,
-    autoFocus,
-    disabled,
-    borderRadius,
-    backgroundColor,
-    placeholder,
-    placeholderColor
-  } = navigationBar.searchInput;
+function createPageHeadSearchInputTsx(navigationBar, { text: text2, focus, composing, onBlur, onFocus, onInput, onConfirm, onClick }) {
+  const { color, align: align2, autoFocus, disabled, borderRadius, backgroundColor, placeholder, placeholderColor } = navigationBar.searchInput;
   const searchStyle = {
     borderRadius,
     backgroundColor
   };
   const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
-  return createVNode("div", {
-    "class": "uni-page-head-search",
-    "style": searchStyle
-  }, [createVNode("div", {
-    "style": {
-      color: placeholderColor
-    },
-    "class": placeholderClass
-  }, [createVNode("div", {
-    "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_0$2, {
-    "disabled": true,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_0$2, {
-    "focus": autoFocus,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onFocus": onFocus,
-    "onBlur": onBlur,
-    "onInput": onInput,
-    "onConfirm": onConfirm
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
+  return (() => {
+    const _n12 = _t8$1();
+    const _n6 = child(_n12);
+    const _n0 = child(_n6);
+    const _x0 = txt(_n0);
+    setNodes(_x0, () => createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20));
+    renderEffect(() => {
+      setStyle(_n12, searchStyle);
+      setStyle(_n6, { color: placeholderColor });
+      setClass(_n6, placeholderClass);
+    });
+    setInsertionState(_n6, 1);
+    createIf(() => text2.value || composing.value, () => {
+      const _n3 = createNodes("");
+      return _n3;
+    }, () => {
+      const _n5 = createNodes(() => placeholder);
+      return _n5;
+    }, 266);
+    setInsertionState(_n12, 1);
+    createIf(() => disabled, () => {
+      const _n9 = createComponent(__syscom_0$2, {
+        disabled: true,
+        style: () => ({ color }),
+        "placeholder-style": () => "color: " + placeholderColor,
+        class: "uni-page-head-search-input",
+        "confirm-type": "search",
+        onClick: () => onClick
+      });
+      return _n9;
+    }, () => {
+      const _n11 = createComponent(__syscom_0$2, {
+        focus: () => autoFocus,
+        style: () => ({ color }),
+        "placeholder-style": () => "color: " + placeholderColor,
+        class: "uni-page-head-search-input",
+        "confirm-type": "search",
+        onConfirm: () => onConfirm,
+        onInput: () => onInput,
+        onBlur: () => onBlur,
+        onFocus: () => onFocus
+      });
+      return _n11;
+    }, 517);
+    return _n12;
+  })();
 }
 function onPageHeadBackButton() {
   if (getCurrentPages().length === 1) {
-    uni.reLaunch({
-      url: "/"
-    });
+    uni.reLaunch({ url: "/" });
   } else {
     uni.navigateBack({
       from: "backbutton",
       success() {
       }
-      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
     });
   }
 }
 function usePageHead(navigationBar) {
   const clazz2 = computed(() => {
-    const {
-      type,
-      titlePenetrate,
-      shadowColorType
-    } = navigationBar;
-    const clazz3 = {
+    const { type, titlePenetrate, shadowColorType } = navigationBar;
+    const clazz22 = {
       "uni-page-head": true,
       "uni-page-head-transparent": type === "transparent",
       "uni-page-head-titlePenetrate": titlePenetrate === "YES",
       "uni-page-head-shadow": !!shadowColorType
     };
     if (shadowColorType) {
-      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
+      clazz22[`uni-page-head-shadow-${shadowColorType}`] = true;
     }
-    return clazz3;
+    return clazz22;
   });
   const style = computed(() => {
     const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
@@ -10455,19 +10626,12 @@ function usePageHead(navigationBar) {
     style
   };
 }
-function usePageHeadButtons({
-  id: id2,
-  navigationBar
-}) {
+function usePageHeadButtons({ id: id2, navigationBar }) {
   const left = [];
   const right = [];
-  const {
-    buttons
-  } = navigationBar;
+  const { buttons } = navigationBar;
   if (isArray(buttons)) {
-    const {
-      type
-    } = navigationBar;
+    const { type } = navigationBar;
     const isTransparent = type === "transparent";
     const fonts = /* @__PURE__ */ Object.create(null);
     buttons.forEach((btn, index2) => {
@@ -10519,33 +10683,22 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
     badgeText: btn.badgeText,
     iconStyle,
     onClick() {
-      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({
-        index: index2
-      }, btn));
+      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index: index2 }, btn));
     },
     btnSelect: btn.select
-  }, {
-    get(target, key, receiver) {
-      if (["btnText"].includes(key)) {
-        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-      } else {
-        return Reflect.get(target, key, receiver);
-      }
+  }, { get(target, key, receiver) {
+    if (["btnText"].includes(key)) {
+      return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+    } else {
+      return Reflect.get(target, key, receiver);
     }
-  });
+  } });
 }
-function usePageHeadSearchInput({
-  id: id2,
-  navigationBar: {
-    searchInput
-  }
-}) {
+function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
   const focus = ref(false);
   const text2 = ref("");
   const composing = ref(false);
-  const {
-    disabled
-  } = searchInput;
+  const { disabled } = searchInput;
   if (disabled) {
     const onClick = () => {
       invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
@@ -10559,26 +10712,18 @@ function usePageHeadSearchInput({
   }
   const onFocus = () => {
     focus.value = true;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: true
-    });
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: true });
   };
   const onBlur = () => {
     focus.value = false;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: false
-    });
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: false });
   };
   const onInput = (evt) => {
     text2.value = evt.detail.value;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
-      text: text2.value
-    });
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, { text: text2.value });
   };
   const onConfirm = (evt) => {
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-      text: text2.value
-    });
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, { text: text2.value });
   };
   return {
     focus,
@@ -10920,16 +11065,9 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
       return pageMeta.enablePullDownRefresh;
     }, () => {
       pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
-    }, {
-      immediate: true
-    });
+    }, { immediate: true });
     function _resize() {
-      const {
-        top,
-        left,
-        right,
-        bottom
-      } = getSafeAreaInsets(wrapperRef.value);
+      const { top, left, right, bottom } = getSafeAreaInsets(wrapperRef.value);
       const vars = {
         "--uni-safe-area-inset-top": `${top}px`,
         "--uni-safe-area-inset-left": `${left}px`,
@@ -10942,19 +11080,34 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
     }
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
-      const pageResizeSensor = createVNode(ResizeSensor, {
-        "onResize": _resize
-      }, null, 8, ["onResize"]);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", mergeProps({
-        "ref": wrapperRef
-      }, pageRefresh.value), [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")]), pageResizeSensor], 16)]);
+      const pageResizeSensor = (() => {
+        const _n0 = createComponent(ResizeSensor, { onResize: () => _resize }, null, true);
+        return _n0;
+      })();
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = createNodes(() => pageRefreshTsx);
+        const _n4 = createPlainElement("uni-page-wrapper", { $: [() => pageRefresh.value] }, () => {
+          const _n2 = createPlainElement("uni-page-body", null, extend$1(() => {
+            const _n1 = createNodes(() => renderSlot(ctx.slots, "default"));
+            return _n1;
+          }, { _: 1 }));
+          const _n3 = createNodes(() => pageResizeSensor);
+          return [_n2, _n3];
+        });
+        renderEffect(() => _setTemplateRef(_n4, wrapperRef));
+        return [_n0, _n4];
+      })();
     };
   }
 });
 function createPageRefreshTsx(refreshRef, pageMeta) {
-  return createVNode(PageRefresh, {
-    "ref": refreshRef
-  }, null, 512);
+  return (() => {
+    const _setTemplateRef = createTemplateRefSetter();
+    const _n0 = createComponent(PageRefresh, null, null, true);
+    renderEffect(() => _setTemplateRef(_n0, refreshRef));
+    return _n0;
+  })();
 }
 const PageComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
@@ -12105,14 +12258,19 @@ class UniEditorElement extends UniElement {
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$o,
-  emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
+  emit: [
+    "ready",
+    "focus",
+    "blur",
+    "input",
+    "statuschange",
+    ...emit$1
+  ],
   rootElement: {
     name: "uni-editor",
     class: UniEditorElement
   },
-  setup(props2, {
-    emit: emit2
-  }) {
+  setup(props2, { emit: emit2 }) {
     const rootRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
     useQuill(props2, rootRef, trigger);
@@ -12122,11 +12280,15 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      return createVNode("uni-editor", {
-        "ref": rootRef,
-        "id": props2.id,
-        "class": "ql-container"
-      }, null, 8, ["id"]);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = createPlainElement("uni-editor", {
+          id: () => props2.id,
+          class: "ql-container"
+        }, null, true);
+        renderEffect(() => _setTemplateRef(_n0, rootRef));
+        return _n0;
+      })();
     };
   }
 });
@@ -12203,12 +12365,16 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      const {
-        value
-      } = path;
-      return createVNode("uni-icon", {
-        "ref": rootRef
-      }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);
+      const { value } = path;
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n1 = createPlainElement("uni-icon", null, extend$1(() => {
+          const _n0 = createNodes(() => value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size)));
+          return _n0;
+        }, { _: 1 }), true);
+        renderEffect(() => _setTemplateRef(_n1, rootRef));
+        return _n1;
+      })();
     };
   }
 });
@@ -12741,6 +12907,10 @@ once(() => {
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 });
+const _t0$o = template("<input tabindex=-1 class=uni-input-input>", 1);
+const _t1$f = template("<input class=uni-input-input>", 1);
+const _t2$8 = template("<form action class=uni-input-form> ");
+const _t3$8 = template("<div class=uni-input-wrapper><div> </div>");
 const props$m = /* @__PURE__ */ extend({}, props$n, {
   placeholderClass: {
     type: String,
@@ -12783,11 +12953,15 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-input",
     class: UniInputElement
   },
-  setup(props2, {
-    emit: emit2,
-    expose
-  }) {
-    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
+  setup(props2, { emit: emit2, expose }) {
+    const INPUT_TYPES = [
+      "text",
+      "number",
+      "idcard",
+      "digit",
+      "password",
+      "tel"
+    ];
     const AUTOCOMPLETES = ["off", "one-time-code"];
     const type = computed(() => {
       let type2 = "";
@@ -12838,13 +13012,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     });
     let cache = useCache(props2, type);
     const rootRef = ref(null);
-    const {
-      fieldRef,
-      state: state2,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger
-    } = useField(props2, rootRef, emit2, (event, state22) => {
+    const { fieldRef, state: state2, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state22) => {
       {
         return;
       }
@@ -12867,18 +13035,14 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
       }
       const input = event.target;
       event.stopPropagation();
-      trigger("confirm", event, {
-        value: input.value
-      });
+      trigger("confirm", event, { value: input.value });
       !props2.confirmHold && input.blur();
     }
-    expose({
-      $triggerInput: (detail) => {
-        emit2("update:modelValue", detail.value);
-        emit2("update:value", detail.value);
-        state2.value = detail.value;
-      }
-    });
+    expose({ $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state2.value = detail.value;
+    } });
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.defineProperty(rootElement, "value", {
@@ -12892,26 +13056,32 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
-        "key": "disabled-input",
-        "ref": fieldRef,
-        "value": state2.value,
-        "tabindex": "-1",
-        "readonly": !!props2.disabled,
-        "type": type.value,
-        "maxlength": state2.maxlength,
-        "step": step.value,
-        "class": "uni-input-input",
-        "style": props2.cursorColor ? {
-          caretColor: props2.cursorColor
-        } : {},
-        "inputmode": inputmode.value,
-        "onFocus": (event) => event.target.blur()
-      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : createVNode("input", {
-        "key": "input",
-        "ref": fieldRef,
-        "value": state2.value,
-        "onInput": withModifiers((event) => {
+      let inputNode = props2.disabled && fixDisabledColor ? (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = _t0$o();
+        setBlockKey(_n0, "disabled-input");
+        on$1(
+          _n0,
+          // fix: 禁止 readonly 状态获取焦点
+          "focus",
+          (event) => event.target.blur()
+        );
+        renderEffect(() => {
+          setValue(_n0, state2.value);
+          setProp(_n0, "readonly", !!props2.disabled);
+          setProp(_n0, "type", type.value);
+          setProp(_n0, "maxlength", state2.maxlength);
+          setProp(_n0, "step", step.value);
+          setStyle(_n0, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
+          setProp(_n0, "inputmode", inputmode.value);
+          _setTemplateRef(_n0, fieldRef);
+        });
+        return _n0;
+      })() : (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = _t1$f();
+        setBlockKey(_n0, "input");
+        on$1(_n0, "input", withModifiers((event) => {
           const value = event.target.value.toString();
           if (type.value === "number" && state2.maxlength > 0 && value.length > state2.maxlength) {
             if (isPaste(event)) {
@@ -12923,33 +13093,51 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
             return;
           }
           state2.value = value;
-        }, ["stop"]),
-        "disabled": !!props2.disabled,
-        "type": type.value,
-        "maxlength": state2.maxlength,
-        "step": step.value,
-        "enterkeyhint": props2.confirmType,
-        "pattern": props2.type === "number" ? "[0-9]*" : void 0,
-        "class": "uni-input-input",
-        "style": props2.cursorColor ? {
-          caretColor: props2.cursorColor
-        } : {},
-        "autocomplete": autocomplete.value,
-        "onKeyup": onKeyUpEnter,
-        "inputmode": inputmode.value
-      }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
-      return createVNode("uni-input", {
-        "ref": rootRef
-      }, [createVNode("div", {
-        "class": "uni-input-wrapper"
-      }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "style": props2.placeholderStyle,
-        "class": ["uni-input-placeholder", props2.placeholderClass]
-      }), [props2.placeholder], 16), [[vShow, !(state2.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? createVNode("form", {
-        "action": "",
-        "onSubmit": (event) => event.preventDefault(),
-        "class": "uni-input-form"
-      }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
+        }, ["stop"]));
+        on$1(_n0, "keyup", onKeyUpEnter);
+        renderEffect(() => {
+          setValue(_n0, state2.value);
+          setProp(_n0, "disabled", !!props2.disabled);
+          setProp(_n0, "type", type.value);
+          setProp(_n0, "maxlength", state2.maxlength);
+          setProp(_n0, "step", step.value);
+          setProp(_n0, "enterkeyhint", props2.confirmType);
+          setProp(_n0, "pattern", props2.type === "number" ? "[0-9]*" : void 0);
+          setStyle(_n0, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
+          setProp(_n0, "autocomplete", autocomplete.value);
+          setProp(_n0, "inputmode", inputmode.value);
+          _setTemplateRef(_n0, fieldRef);
+        });
+        return _n0;
+      })();
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n7 = createPlainElement("uni-input", null, () => {
+          const _n6 = _t3$8();
+          const _n0 = child(_n6);
+          applyVShow(_n0, () => !(state2.value.length || cache.value === "-" || cache.value.includes(".")));
+          const _x0 = txt(_n0);
+          setNodes(_x0, () => props2.placeholder);
+          renderEffect(() => setDynamicProps(_n0, [scopedAttrsState.attrs, {
+            style: props2.placeholderStyle,
+            class: ["uni-input-placeholder", props2.placeholderClass]
+          }]));
+          setInsertionState(_n6, 1);
+          createIf(() => props2.confirmType === "search", () => {
+            const _n3 = _t2$8();
+            on$1(_n3, "submit", (event) => event.preventDefault());
+            const _x3 = txt(_n3);
+            setNodes(_x3, () => inputNode);
+            return _n3;
+          }, () => {
+            const _n5 = createNodes(() => inputNode);
+            return _n5;
+          }, 265);
+          return _n6;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n7, rootRef));
+        return _n7;
+      })();
     };
   }
 });
@@ -12993,30 +13181,32 @@ const useAttrs = (params = {}) => {
   });
   return { $attrs: attrs2, $listeners: listeners2, $excludeAttrs: excludeAttrs };
 };
+const _t0$n = template("<div><div></div></div>");
+const _t1$e = template("<div><div>");
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
-  props: {
-    initial: {
-      type: Boolean,
-      default: false
-    }
-  },
+  props: { initial: {
+    type: Boolean,
+    default: false
+  } },
   emits: ["resize"],
-  setup(props2, {
-    emit: emit2
-  }) {
+  setup(props2, { emit: emit2 }) {
     const rootRef = ref(null);
     const reset = useResizeSensorReset(rootRef);
     const update = useResizeSensorUpdate(rootRef, emit2, reset);
     useResizeSensorLifecycle(rootRef, props2, update, reset);
-    return () => createVNode("uni-resize-sensor", {
-      "ref": rootRef,
-      "onAnimationstartOnce": update
-    }, [createVNode("div", {
-      "onScroll": update
-    }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
-      "onScroll": update
-    }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+    return () => (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n2 = createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
+        const _n0 = _t0$n();
+        const _n1 = _t1$e();
+        on$1(_n0, "scroll", update);
+        on$1(_n1, "scroll", update);
+        return [_n0, _n1];
+      }, true);
+      renderEffect(() => _setTemplateRef(_n2, rootRef));
+      return _n2;
+    })();
   }
 });
 function useResizeSensorUpdate(rootRef, emit2, reset) {
@@ -13037,10 +13227,7 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
 }
 function useResizeSensorReset(rootRef) {
   return () => {
-    const {
-      firstElementChild,
-      lastElementChild
-    } = rootRef.value;
+    const { firstElementChild, lastElementChild } = rootRef.value;
     firstElementChild.scrollLeft = 1e5;
     firstElementChild.scrollTop = 1e5;
     lastElementChild.scrollLeft = 1e5;
@@ -13095,22 +13282,17 @@ const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-movable-area",
     class: UniMovableAreaElement
   },
-  setup(props2, {
-    slots
-  }) {
+  setup(props2, { slots }) {
     const rootRef = ref(null);
     const _isMounted = ref(false);
-    let {
-      setContexts,
-      events: movableAreaEvents
-    } = useMovableAreaState(props2, rootRef);
-    const {
-      $listeners,
-      $attrs,
-      $excludeAttrs
-    } = useAttrs();
+    let { setContexts, events: movableAreaEvents } = useMovableAreaState(props2, rootRef);
+    const { $listeners, $attrs, $excludeAttrs } = useAttrs();
     const _listeners = $listeners.value;
-    let events = ["onTouchstart", "onTouchmove", "onTouchend"];
+    let events = [
+      "onTouchstart",
+      "onTouchmove",
+      "onTouchend"
+    ];
     events.forEach((event) => {
       let existing = _listeners[event];
       let ours = movableAreaEvents[`_${event}`];
@@ -13160,11 +13342,20 @@ const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
       {
         movableViewItems = flatVNode(defaultSlots);
       }
-      return createVNode("uni-movable-area", mergeProps({
-        "ref": rootRef
-      }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {
-        "onResize": movableAreaEvents._resize
-      }, null, 8, ["onResize"]), movableViewItems], 16);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n2 = createPlainElement("uni-movable-area", { $: [
+          () => $attrs.value,
+          () => $excludeAttrs.value,
+          () => _listeners
+        ] }, () => {
+          const _n0 = createComponent(ResizeSensor, { onResize: () => movableAreaEvents._resize });
+          const _n1 = createNodes(() => movableViewItems);
+          return [_n0, _n1];
+        }, true);
+        renderEffect(() => _setTemplateRef(_n2, rootRef));
+        return _n2;
+      })();
     };
   }
 });
@@ -13792,25 +13983,25 @@ const MovableView = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-movable-view",
     class: UniMovableViewElement
   },
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
+  setup(props2, { slots, emit: emit2 }) {
     const rootRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      setParent
-    } = useMovableViewState(props2, trigger, rootRef);
+    const { setParent } = useMovableViewState(props2, trigger, rootRef);
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
     });
     return () => {
-      return createVNode("uni-movable-view", {
-        "ref": rootRef
-      }, [createVNode(ResizeSensor, {
-        "onResize": setParent
-      }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n2 = createPlainElement("uni-movable-view", null, () => {
+          const _n0 = createComponent(ResizeSensor, { onResize: () => setParent });
+          const _n1 = createNodes(() => slots.default && slots.default());
+          return [_n0, _n1];
+        }, true);
+        renderEffect(() => _setTemplateRef(_n2, rootRef));
+        return _n2;
+      })();
     };
   }
 });
@@ -14134,29 +14325,8 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
   watch(() => props2.scaleValue, (val) => {
     scaleValueSync.value = Number(val) || 0;
   });
-  const {
-    _updateBoundary,
-    _updateOffset,
-    _updateWH,
-    _scaleOffset,
-    minX,
-    minY,
-    maxX,
-    maxY
-  } = useMovableViewLayout(rootRef, _scale, _adjustScale);
-  const {
-    FAandSFACancel,
-    _getLimitXY,
-    _animationTo,
-    _setTransform,
-    _revise,
-    dampingNumber,
-    xMove,
-    yMove,
-    xSync,
-    ySync,
-    _STD
-  } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  const { _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY } = useMovableViewLayout(rootRef, _scale, _adjustScale);
+  const { FAandSFACancel, _getLimitXY, _animationTo, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
   function _updateScale(scale, animat) {
     if (props2.scale) {
       scale = _adjustScale(scale);
@@ -14274,33 +14444,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   watch(() => props2.disabled, () => {
     __handleTouchStart();
   });
-  const {
-    // scale
-    _updateOldScale,
-    _endScale,
-    _setScale,
-    scaleValueSync,
-    // layout
-    _updateBoundary,
-    _updateOffset,
-    _updateWH,
-    _scaleOffset,
-    minX,
-    minY,
-    maxX,
-    maxY,
-    // transform
-    FAandSFACancel,
-    _getLimitXY,
-    _setTransform,
-    _revise,
-    dampingNumber,
-    xMove,
-    yMove,
-    xSync,
-    ySync,
-    _STD
-  } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  const { _updateOldScale, _endScale, _setScale, scaleValueSync, _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY, FAandSFACancel, _getLimitXY, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
   function __handleTouchStart() {
     if (!_isScaling.value) {
       if (!props2.disabled) {
@@ -14481,9 +14625,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   onUnmounted(() => {
     FAandSFACancel();
   });
-  return {
-    setParent
-  };
+  return { setParent };
 }
 const OPEN_TYPES = [
   "navigate",
@@ -14613,59 +14755,57 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
+const _t0$m = template("<a class=navigator-wrap> ", 1);
 class UniNavigatorElement extends UniElement {
 }
 const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
-  compatConfig: {
-    MODE: 3
-  },
-  props: /* @__PURE__ */ extend({}, navigatorProps, {
-    renderLink: {
-      type: Boolean,
-      default: true
-    }
-  }),
+  compatConfig: { MODE: 3 },
+  props: /* @__PURE__ */ extend({}, navigatorProps, { renderLink: {
+    type: Boolean,
+    default: true
+  } }),
   rootElement: {
     name: "uni-navigator",
     class: UniNavigatorElement
   },
-  setup(props2, {
-    slots
-  }) {
+  setup(props2, { slots }) {
     const rootRef = ref(null);
     const vm = getCurrentInstance();
     const __scopeId = vm && vm.vnode.scopeId || "";
-    const {
-      hovering,
-      binding
-    } = useHover(props2);
+    const { hovering, binding } = useHover(props2);
     const onClick = createNavigatorOnClick(props2);
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
     });
     return () => {
-      const {
-        hoverClass,
-        url
-      } = props2;
+      const { hoverClass, url } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
-      const innerNode = props2.renderLink ? createVNode("a", {
-        "class": "navigator-wrap",
-        "href": url,
-        "onClick": onEventPrevent,
-        "onMousedown": onEventPrevent
-      }, [slots.default && slots.default()], 40, ["href", "onClick", "onMousedown"]) : slots.default && slots.default();
-      return createVNode("uni-navigator", mergeProps({
-        "class": hasHoverClass && hovering.value ? hoverClass : "",
-        "ref": rootRef
-      }, hasHoverClass && binding, vm ? vm.attrs : {}, {
-        [__scopeId]: ""
-      }, {
-        "onClick": onClick
-      }), [innerNode], 16, ["onClick"]);
+      const innerNode = props2.renderLink ? (() => {
+        const _n0 = _t0$m();
+        on$1(_n0, "click", onEventPrevent);
+        on$1(_n0, "mousedown", onEventPrevent);
+        const _x0 = txt(_n0);
+        setNodes(_x0, () => slots.default && slots.default());
+        renderEffect(() => setProp(_n0, "href", url));
+        return _n0;
+      })() : slots.default && slots.default();
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = createPlainElement("uni-navigator", {
+          class: () => hasHoverClass && hovering.value ? hoverClass : "",
+          $: [
+            () => hasHoverClass && binding,
+            () => vm ? vm.attrs : {},
+            () => ({ [__scopeId]: "" }),
+            { onClick: () => onClick }
+          ]
+        }, { $: [() => normalizeVaporSlots(innerNode)] }, true);
+        renderEffect(() => _setTemplateRef(_n0, rootRef));
+        return _n0;
+      })();
     };
   }
 });
@@ -14696,6 +14836,7 @@ const pickerViewProps = {
     default: ""
   }
 };
+const _t0$l = template("<div class=uni-picker-view-wrapper> ");
 function useState$3(props2) {
   const value = reactive([...props2.value]);
   const state2 = reactive({
@@ -14719,15 +14860,17 @@ class UniPickerViewElement extends UniElement {
 const PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
   props: pickerViewProps,
-  emits: ["change", "pickstart", "pickend", "update:value"],
+  emits: [
+    "change",
+    "pickstart",
+    "pickend",
+    "update:value"
+  ],
   rootElement: {
     name: "uni-picker-view",
     class: UniPickerViewElement
   },
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
+  setup(props2, { slots, emit: emit2 }) {
     const rootRef = ref(null);
     const wrapperRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
@@ -14766,9 +14909,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
             state2.value[index2] = current;
             const value = state2.value.map((val) => val);
             emit2("update:value", value);
-            trigger("change", {}, {
-              value
-            });
+            trigger("change", {}, { value });
           }
         }
       });
@@ -14802,17 +14943,22 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
           columnsRef.value = vnode;
         });
       }
-      return createVNode("uni-picker-view", {
-        "ref": rootRef
-      }, [createVNode(ResizeSensor, {
-        "ref": resizeSensorRef,
-        "onResize": ({
-          height
-        }) => state2.height = height
-      }, null, 8, ["onResize"]), createVNode("div", {
-        "ref": wrapperRef,
-        "class": "uni-picker-view-wrapper"
-      }, [defaultSlots], 512)], 512);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n2 = createPlainElement("uni-picker-view", null, () => {
+          const _n0 = createComponent(ResizeSensor, { onResize: () => ({ height }) => state2.height = height });
+          const _n1 = _t0$l();
+          const _x1 = txt(_n1);
+          setNodes(_x1, () => defaultSlots);
+          renderEffect(() => {
+            _setTemplateRef(_n0, resizeSensorRef);
+            _setTemplateRef(_n1, wrapperRef);
+          });
+          return [_n0, _n1];
+        }, true);
+        renderEffect(() => _setTemplateRef(_n2, rootRef));
+        return _n2;
+      })();
     };
   }
 });
@@ -15515,6 +15661,7 @@ function useScroller(element, options) {
     handleTouchEnd
   };
 }
+const _t0$k = template("<div class=uni-picker-view-group><div></div><div></div><div> ");
 function useCustomClick(dom) {
   const MAX_MOVE = 20;
   let x = 0;
@@ -15534,7 +15681,14 @@ function useCustomClick(dom) {
         currentTarget: event.currentTarget
       };
       const customClick = new CustomEvent("click", options);
-      const props2 = ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"];
+      const props2 = [
+        "screenX",
+        "screenY",
+        "clientX",
+        "clientY",
+        "pageX",
+        "pageY"
+      ];
       props2.forEach((key) => {
         customClick[key] = info[key];
       });
@@ -15550,10 +15704,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-picker-view-column",
     class: UniPickerViewColumnElement
   },
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
+  setup(props2, { slots, emit: emit2 }) {
     const rootRef = ref(null);
     const contentRef = ref(null);
     const getPickerViewColumn = inject("getPickerViewColumn");
@@ -15571,9 +15722,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       onMounted(initIndicatorHeight);
     }
     const maskSize = computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
-    const {
-      state: scopedAttrsState
-    } = useScopedAttrs();
+    const { state: scopedAttrsState } = useScopedAttrs();
     let scroller;
     const state2 = reactive({
       current: currentRef.value,
@@ -15598,7 +15747,11 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       }
     });
     watch(() => state2.current, (current) => currentRef.value = current);
-    watch([() => indicatorHeight.value, () => state2.length, () => pickerViewState.height], updatesScroller);
+    watch([
+      () => indicatorHeight.value,
+      () => state2.length,
+      () => pickerViewState.height
+    ], updatesScroller);
     let oldDeltaY = 0;
     function handleWheel(event) {
       const deltaY = oldDeltaY + event.deltaY;
@@ -15612,9 +15765,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       }
       event.preventDefault();
     }
-    function handleTap({
-      clientY
-    }) {
+    function handleTap({ clientY }) {
       const el = rootRef.value;
       if (!scroller.isScrolling()) {
         const rect = el.getBoundingClientRect();
@@ -15632,12 +15783,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const initScroller = () => {
       const el = rootRef.value;
       const content = contentRef.value;
-      const {
-        scroller: scrollerOrigin,
-        handleTouchStart,
-        handleTouchMove,
-        handleTouchEnd
-      } = useScroller(content, {
+      const { scroller: scrollerOrigin, handleTouchStart, handleTouchMove, handleTouchEnd } = useScroller(content, {
         enableY: true,
         enableX: false,
         enableSnap: true,
@@ -15694,31 +15840,43 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         state2.length = flatVNode(defaultSlots).length;
       }
       const padding = `${maskSize.value}px 0`;
-      return createVNode("uni-picker-view-column", {
-        "ref": rootRef
-      }, [createVNode("div", {
-        "onWheel": handleWheel,
-        "onClick": handleTap,
-        "class": "uni-picker-view-group"
-      }, [createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-mask", pickerViewProps2.maskClass],
-        "style": `background-size: 100% ${maskSize.value}px;${pickerViewProps2.maskStyle}`
-      }), null, 16), createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "class": ["uni-picker-view-indicator", pickerViewProps2.indicatorClass],
-        "style": pickerViewProps2.indicatorStyle
-      }), [createVNode(ResizeSensor, {
-        "ref": resizeSensorRef,
-        "onResize": ({
-          height
-        }) => indicatorHeight.value = height
-      }, null, 8, ["onResize"])], 16), createVNode("div", {
-        "ref": contentRef,
-        "class": ["uni-picker-view-content"],
-        "style": {
-          padding,
-          "--picker-view-column-indicator-height": `${indicatorHeight.value}px`
-        }
-      }, [defaultSlots], 4)], 40, ["onWheel", "onClick"])], 512);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n5 = createPlainElement("uni-picker-view-column", null, () => {
+          const _n0 = _t0$k();
+          const _n1 = child(_n0);
+          const _n3 = next(_n1);
+          const _n4 = next(_n3);
+          on$1(_n0, "wheel", handleWheel);
+          on$1(_n0, "click", handleTap);
+          renderEffect(() => {
+            setDynamicProps(_n1, [scopedAttrsState.attrs, {
+              class: ["uni-picker-view-mask", pickerViewProps2.maskClass],
+              style: `background-size: 100% ${maskSize.value}px;${pickerViewProps2.maskStyle}`
+            }]);
+            setDynamicProps(_n3, [scopedAttrsState.attrs, {
+              class: ["uni-picker-view-indicator", pickerViewProps2.indicatorClass],
+              style: pickerViewProps2.indicatorStyle
+            }]);
+          });
+          setInsertionState(_n3);
+          const _n2 = createComponent(ResizeSensor, { onResize: () => ({ height }) => indicatorHeight.value = height });
+          setClass(_n4, ["uni-picker-view-content"]);
+          const _x4 = txt(_n4);
+          setNodes(_x4, () => defaultSlots);
+          renderEffect(() => {
+            _setTemplateRef(_n2, resizeSensorRef);
+            setStyle(_n4, {
+              padding,
+              "--picker-view-column-indicator-height": `${indicatorHeight.value}px`
+            });
+            _setTemplateRef(_n4, contentRef);
+          });
+          return _n0;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n5, rootRef));
+        return _n5;
+      })();
     };
   }
 });
@@ -15783,6 +15941,8 @@ const progressProps = {
     default: 0
   }
 };
+const _t0$j = template("<div class=uni-progress-bar><div class=uni-progress-inner-bar></div></div>");
+const _t1$d = template("<p class=uni-progress-info> ");
 class UniProgressElement extends UniElement {
 }
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
@@ -15822,29 +15982,31 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      const {
-        showInfo
-      } = props2;
-      const {
-        outerBarStyle,
-        innerBarStyle,
-        currentPercent
-      } = state2;
-      return createVNode("uni-progress", {
-        "class": "uni-progress",
-        "ref": rootRef
-      }, [createVNode("div", {
-        "style": outerBarStyle,
-        "class": "uni-progress-bar"
-      }, [createVNode("div", {
-        "style": innerBarStyle,
-        "class": "uni-progress-inner-bar"
-      }, null, 4)], 4), showInfo ? (
-        // {currentPercent}% 的写法会影响 SSR Hydration (tsx插件的问题)
-        createVNode("p", {
-          "class": "uni-progress-info"
-        }, [currentPercent + "%"])
-      ) : ""], 512);
+      const { showInfo } = props2;
+      const { outerBarStyle, innerBarStyle, currentPercent } = state2;
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n7 = createPlainElement("uni-progress", { class: "uni-progress" }, () => {
+          const _n1 = _t0$j();
+          const _n0 = child(_n1);
+          renderEffect(() => {
+            setStyle(_n1, outerBarStyle);
+            setStyle(_n0, innerBarStyle);
+          });
+          const _n2 = createIf(() => showInfo, () => {
+            const _n4 = _t1$d();
+            const _x4 = txt(_n4);
+            setNodes(_x4, () => currentPercent + "%");
+            return _n4;
+          }, () => {
+            const _n6 = createNodes("");
+            return _n6;
+          }, 265);
+          return [_n1, _n2];
+        }, true);
+        renderEffect(() => _setTemplateRef(_n7, rootRef));
+        return _n7;
+      })();
     };
   }
 });
@@ -15893,12 +16055,10 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$l = {
-  name: {
-    type: String,
-    default: ""
-  }
-};
+const props$l = { name: {
+  type: String,
+  default: ""
+} };
 class UniRadioGroupElement extends UniElement {
 }
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
@@ -15909,10 +16069,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-radio-group",
     class: UniRadioGroupElement
   },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
+  setup(props2, { emit: emit2, slots }) {
     const rootRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
     useProvideRadioGroup(props2, trigger);
@@ -15921,9 +16078,15 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      return createVNode("uni-radio-group", {
-        "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n1 = createPlainElement("uni-radio-group", null, extend$1(() => {
+          const _n0 = createNodes(() => slots.default && slots.default());
+          return _n0;
+        }, { _: 1 }), true);
+        renderEffect(() => _setTemplateRef(_n1, rootRef));
+        return _n1;
+      })();
     };
   }
 });
@@ -15946,22 +16109,18 @@ function useProvideRadioGroup(props2, trigger) {
     radioChange($event, field) {
       const index2 = fields2.indexOf(field);
       _resetRadioGroupValue(index2, true);
-      trigger("change", $event, {
-        value: getFieldsValue()
-      });
+      trigger("change", $event, { value: getFieldsValue() });
     }
   });
   const uniForm = inject(uniFormKey, false);
-  const formField = {
-    submit: () => {
-      let data = ["", null];
-      if (props2.name !== "") {
-        data[0] = props2.name;
-        data[1] = getFieldsValue();
-      }
-      return data;
+  const formField = { submit: () => {
+    let data = ["", null];
+    if (props2.name !== "") {
+      data[0] = props2.name;
+      data[1] = getFieldsValue();
     }
-  };
+    return data;
+  } };
   if (uniForm) {
     uniForm.addField(formField);
     onBeforeUnmount(() => {
@@ -15995,6 +16154,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
+const _t0$i = template("<div></div>");
 const props$k = {
   checked: {
     type: [Boolean, String],
@@ -16051,9 +16211,7 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-radio",
     class: UniRadioElement
   },
-  setup(props2, {
-    slots
-  }) {
+  setup(props2, { slots }) {
     const rootRef = ref(null);
     const radioChecked = ref(props2.checked);
     const radioValue = ref(props2.value);
@@ -16086,11 +16244,7 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
     const reset = () => {
       radioChecked.value = initialCheckedValue;
     };
-    const {
-      uniCheckGroup,
-      uniLabel,
-      field
-    } = useRadioInject(radioChecked, radioValue, reset);
+    const { uniCheckGroup, uniLabel, field } = useRadioInject(radioChecked, radioValue, reset);
     const _onClick = ($event) => {
       if (props2.disabled || radioChecked.value) {
         return;
@@ -16105,9 +16259,7 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
         uniLabel.removeHandler(_onClick);
       });
     }
-    useListeners(props2, {
-      "label-click": _onClick
-    });
+    useListeners(props2, { "label-click": _onClick });
     const checkedCache = ref(radioChecked.value);
     watch(() => radioChecked.value, (value) => {
       checkedCache.value = value;
@@ -16130,23 +16282,35 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
       realCheckValue = checkedCache.value;
       const radioStyle = getRadioStyle(realCheckValue);
       const hoverBorderColor = realCheckValue ? radioStyle == null ? void 0 : radioStyle.borderColor : props2.activeBorderColor;
-      const hoverStyle = hoverBorderColor ? {
-        "--HOVER-BD-COLOR": hoverBorderColor
-      } : void 0;
+      const hoverStyle = hoverBorderColor ? { "--HOVER-BD-COLOR": hoverBorderColor } : void 0;
       const iconColor = props2.foreColor || props2.iconColor || "currentColor";
-      return createVNode("uni-radio", mergeProps(booleanAttrs, {
-        "onClick": _onClick,
-        "ref": rootRef,
-        "id": props2.id,
-        "class": "uni-radio-wrapper",
-        "style": hoverStyle
-      }), [createVNode("div", {
-        "class": ["uni-radio-input", {
-          "uni-radio-input-checked": realCheckValue,
-          "uni-radio-input-disabled": props2.disabled
-        }],
-        "style": radioStyle
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n7 = createPlainElement("uni-radio", { $: [() => booleanAttrs, {
+          onClick: () => _onClick,
+          id: () => props2.id,
+          class: "uni-radio-wrapper",
+          style: () => hoverStyle
+        }] }, () => {
+          const _n5 = _t0$i();
+          renderEffect(() => {
+            setClassName(_n5, (realCheckValue ? 1 : 0) | (props2.disabled ? 2 : 0), [" uni-radio-input-checked", " uni-radio-input-disabled"], "uni-radio-input");
+            setStyle(_n5, radioStyle);
+          });
+          setInsertionState(_n5);
+          createIf(() => realCheckValue, () => {
+            const _n2 = createNodes(() => createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "currentColor" : iconColor, 18));
+            return _n2;
+          }, () => {
+            const _n4 = createNodes("");
+            return _n4;
+          }, 266);
+          const _n6 = createNodes(() => slots.default && slots.default());
+          return [_n5, _n6];
+        }, true);
+        renderEffect(() => _setTemplateRef(_n7, rootRef));
+        return _n7;
+      })();
     };
   }
 });
@@ -16156,15 +16320,11 @@ function useRadioInject(radioChecked, radioValue, reset) {
       radioChecked: Boolean(radioChecked.value),
       value: radioValue.value
     }),
-    set: ({
-      radioChecked: checked
-    }) => {
+    set: ({ radioChecked: checked }) => {
       radioChecked.value = checked;
     }
   });
-  const formField = {
-    reset
-  };
+  const formField = { reset };
   const uniCheckGroup = inject(uniRadioGroupKey, false);
   if (!!uniCheckGroup) {
     uniCheckGroup.addField(field);
@@ -16390,18 +16550,14 @@ class UniRichTextElement extends UniElement {
 }
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
-  compatConfig: {
-    MODE: 3
-  },
+  compatConfig: { MODE: 3 },
   props: props$j,
   emits: ["itemclick"],
   rootElement: {
     name: "uni-rich-text",
     class: UniRichTextElement
   },
-  setup(props2, {
-    emit: emit2
-  }) {
+  setup(props2, { emit: emit2 }) {
     const vm = getCurrentInstance();
     const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = ref(null);
@@ -16431,6 +16587,11 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     }, h("div", {}, _vnode.value));
   }
 });
+const _t0$h = template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
+const _t1$c = template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
+const _t2$7 = template("<div class=uni-scroll-view-refresh><div class=uni-scroll-view-refresh-inner></div>");
+const _t3$7 = template("<div class=uni-scroll-view-refresher-container> ");
+const _t4$6 = template("<div class=uni-scroll-view-refresher>", 1);
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   name: "Refresher",
   props: {
@@ -16455,14 +16616,10 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
       default: "transparent"
     }
   },
-  setup(props2, {
-    slots
-  }) {
+  setup(props2, { slots }) {
     const rootRef = ref(null);
     const rootStyle = computed(() => {
-      const style = {
-        backgroundColor: props2.refresherBackground
-      };
+      const style = { backgroundColor: props2.refresherBackground };
       switch (props2.refreshState) {
         case "pulling":
           style.height = props2.refresherHeight + "px";
@@ -16485,56 +16642,57 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
       return (route > 1 ? 1 : route) * 360;
     });
     return () => {
-      const {
-        refreshState,
-        refresherDefaultStyle,
-        refresherThreshold
-      } = props2;
-      return createVNode("div", {
-        "ref": rootRef,
-        "style": rootStyle.value,
-        "class": "uni-scroll-view-refresher"
-      }, [refresherDefaultStyle !== "none" ? createVNode("div", {
-        "class": "uni-scroll-view-refresh"
-      }, [createVNode("div", {
-        "class": "uni-scroll-view-refresh-inner"
-      }, [refreshState == "pulling" ? createVNode("svg", {
-        "key": "refresh__icon",
-        "style": {
-          transform: "rotate(" + refreshRotate.value + "deg)"
-        },
-        "fill": "#2BD009",
-        "class": "uni-scroll-view-refresh__icon",
-        "width": "24",
-        "height": "24",
-        "viewBox": "0 0 24 24"
-      }, [createVNode("path", {
-        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-      }, null), createVNode("path", {
-        "d": "M0 0h24v24H0z",
-        "fill": "none"
-      }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
-        "key": "refresh__spinner",
-        "class": "uni-scroll-view-refresh__spinner",
-        "width": "24",
-        "height": "24",
-        "viewBox": "25 25 50 50"
-      }, [createVNode("circle", {
-        "cx": "50",
-        "cy": "50",
-        "r": "20",
-        "fill": "none",
-        "style": "color: #2bd009",
-        "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? createVNode("div", {
-        "class": "uni-scroll-view-refresher-container",
-        "style": {
-          height: `${refresherThreshold}px`
-        }
-      }, [slots.default && slots.default()]) : null], 4);
+      const { refreshState, refresherDefaultStyle, refresherThreshold } = props2;
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n21 = _t4$6();
+        renderEffect(() => setStyle(_n21, rootStyle.value));
+        setInsertionState(_n21);
+        createIf(() => refresherDefaultStyle !== "none", () => {
+          const _n13 = _t2$7();
+          const _n12 = child(_n13);
+          setInsertionState(_n12);
+          createIf(() => refreshState == "pulling", () => {
+            const _n4 = _t0$h();
+            setBlockKey(_n4, "refresh__icon");
+            renderEffect(() => setAttr(_n4, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
+            return _n4;
+          }, () => {
+            const _n6 = createNodes(null);
+            return _n6;
+          }, 265);
+          setInsertionState(_n12, 1);
+          createIf(() => refreshState == "refreshing", () => {
+            const _n9 = _t1$c();
+            setBlockKey(_n9, "refresh__spinner");
+            return _n9;
+          }, () => {
+            const _n11 = createNodes(null);
+            return _n11;
+          }, 521);
+          return _n13;
+        }, () => {
+          const _n15 = createNodes(null);
+          return _n15;
+        }, 777);
+        setInsertionState(_n21, 1);
+        createIf(() => refresherDefaultStyle === "none", () => {
+          const _n18 = _t3$7();
+          const _x18 = txt(_n18);
+          setNodes(_x18, () => slots.default && slots.default());
+          renderEffect(() => setStyle(_n18, { height: `${refresherThreshold}px` }));
+          return _n18;
+        }, () => {
+          const _n20 = createNodes(null);
+          return _n20;
+        }, 1033);
+        renderEffect(() => _setTemplateRef(_n21, rootRef));
+        return _n21;
+      })();
     };
   }
 });
+const _t0$g = template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
 const passiveOptions = /* @__PURE__ */ passive(true);
 const props$i = {
   direction: {
@@ -16606,36 +16764,30 @@ class UniScrollViewElement extends UniElement {
 }
 const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
-  compatConfig: {
-    MODE: 3
-  },
+  compatConfig: { MODE: 3 },
   props: props$i,
-  emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
+  emits: [
+    "scroll",
+    "scrolltoupper",
+    "scrolltolower",
+    "refresherrefresh",
+    "refresherrestore",
+    "refresherpulling",
+    "refresherabort",
+    "update:refresherTriggered"
+  ],
   rootElement: {
     name: "uni-scroll-view",
     class: UniScrollViewElement
   },
-  setup(props2, {
-    emit: emit2,
-    slots,
-    expose
-  }) {
+  setup(props2, { emit: emit2, slots, expose }) {
     const rootRef = ref(null);
     const main = ref(null);
     const wrap = ref(null);
     const content = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state: state2,
-      scrollTopNumber,
-      scrollLeftNumber
-    } = useScrollViewState(props2);
-    const {
-      realScrollX,
-      realScrollY,
-      _scrollLeftChanged,
-      _scrollTopChanged
-    } = useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
+    const { state: state2, scrollTopNumber, scrollLeftNumber } = useScrollViewState(props2);
+    const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } = useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = computed(() => {
       let style = "";
       realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
@@ -16652,16 +16804,12 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.defineProperties(rootElement, {
-        scrollHeight: {
-          get() {
-            return main.value.scrollHeight;
-          }
-        },
-        scrollWidth: {
-          get() {
-            return main.value.scrollWidth;
-          }
-        },
+        scrollHeight: { get() {
+          return main.value.scrollHeight;
+        } },
+        scrollWidth: { get() {
+          return main.value.scrollWidth;
+        } },
         scrollLeft: {
           get() {
             return main.value.scrollLeft;
@@ -16678,16 +16826,12 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
             _scrollTopChanged(val);
           }
         },
-        scrollTo: {
-          get() {
-            return main.value.scrollTo.bind(main.value);
-          }
-        },
-        scrollBy: {
-          get() {
-            return main.value.scrollBy.bind(main.value);
-          }
-        }
+        scrollTo: { get() {
+          return main.value.scrollTo.bind(main.value);
+        } },
+        scrollBy: { get() {
+          return main.value.scrollBy.bind(main.value);
+        } }
       });
       rootElement.attachVmProps(props2);
     });
@@ -16698,37 +16842,54 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
       }
     });
     return () => {
-      const {
-        refresherEnabled,
-        refresherBackground,
-        refresherDefaultStyle,
-        refresherThreshold
-      } = props2;
-      const {
-        refresherHeight,
-        refreshState
-      } = state2;
-      return createVNode("uni-scroll-view", {
-        "ref": rootRef
-      }, [createVNode("div", {
-        "ref": wrap,
-        "class": "uni-scroll-view"
-      }, [createVNode("div", {
-        "ref": main,
-        "style": mainStyle.value,
-        "class": scrollBarClassName.value
-      }, [refresherEnabled ? createVNode(Refresher, {
-        "refreshState": refreshState,
-        "refresherHeight": refresherHeight,
-        "refresherThreshold": refresherThreshold,
-        "refresherDefaultStyle": refresherDefaultStyle,
-        "refresherBackground": refresherBackground
-      }, {
-        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
-      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
-        "ref": content,
-        "class": "uni-scroll-view-content"
-      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
+      const { refresherEnabled, refresherBackground, refresherDefaultStyle, refresherThreshold } = props2;
+      const { refresherHeight, refreshState } = state2;
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n14 = createPlainElement("uni-scroll-view", null, () => {
+          const _n13 = _t0$g();
+          const _n12 = child(_n13);
+          const _n11 = child(_n12);
+          const _n10 = next(_n11);
+          renderEffect(() => {
+            setStyle(_n12, mainStyle.value);
+            setClass(_n12, scrollBarClassName.value);
+          });
+          setInsertionState(_n12, _n11);
+          createIf(() => refresherEnabled, () => {
+            const _n7 = createComponent(Refresher, {
+              refreshState: () => refreshState,
+              refresherHeight: () => refresherHeight,
+              refresherThreshold: () => refresherThreshold,
+              refresherDefaultStyle: () => refresherDefaultStyle,
+              refresherBackground: () => refresherBackground
+            }, extend$1(() => {
+              const _n2 = createIf(() => refresherDefaultStyle == "none", () => {
+                const _n4 = createNodes(() => slots.refresher && slots.refresher());
+                return _n4;
+              }, () => {
+                const _n6 = createNodes(null);
+                return _n6;
+              }, 394);
+              return _n2;
+            }, { _: 1 }));
+            return _n7;
+          }, () => {
+            const _n9 = createNodes(null);
+            return _n9;
+          }, 521);
+          const _x10 = txt(_n10);
+          setNodes(_x10, () => slots.default && slots.default());
+          renderEffect(() => {
+            _setTemplateRef(_n10, content);
+            _setTemplateRef(_n12, main);
+            _setTemplateRef(_n13, wrap);
+          });
+          return _n13;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n14, rootRef));
+        return _n14;
+      })();
     };
   }
 });
@@ -16820,29 +16981,21 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     });
     if (realScrollY.value) {
       if (target.scrollTop <= upperThresholdNumber.value && state2.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
-        trigger("scrolltoupper", $event, {
-          direction: "top"
-        });
+        trigger("scrolltoupper", $event, { direction: "top" });
         state2.lastScrollToUpperTime = $event.timeStamp;
       }
       if (target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >= target.scrollHeight && state2.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
-        trigger("scrolltolower", $event, {
-          direction: "bottom"
-        });
+        trigger("scrolltolower", $event, { direction: "bottom" });
         state2.lastScrollToLowerTime = $event.timeStamp;
       }
     }
     if (realScrollX.value) {
       if (target.scrollLeft <= upperThresholdNumber.value && state2.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
-        trigger("scrolltoupper", $event, {
-          direction: "left"
-        });
+        trigger("scrolltoupper", $event, { direction: "left" });
         state2.lastScrollToUpperTime = $event.timeStamp;
       }
       if (target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >= target.scrollWidth && state2.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
-        trigger("scrolltolower", $event, {
-          direction: "right"
-        });
+        trigger("scrolltolower", $event, { direction: "right" });
         state2.lastScrollToLowerTime = $event.timeStamp;
       }
     }
@@ -16932,9 +17085,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
             deltaY: state2.refresherHeight,
             dy: state2.refresherHeight
           });
-          trigger("refresherrefresh", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
+          trigger("refresherrefresh", {}, { dy: touchEnd.y - touchStart.y });
           emit2("update:refresherTriggered", true);
         }
         break;
@@ -16944,15 +17095,11 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         state2.refresherHeight = toUpperNumber = 0;
         if (_state === "restore") {
           triggerAbort = false;
-          trigger("refresherrestore", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
+          trigger("refresherrestore", {}, { dy: touchEnd.y - touchStart.y });
         }
         if (_state === "refresherabort" && triggerAbort) {
           triggerAbort = false;
-          trigger("refresherabort", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
+          trigger("refresherabort", {}, { dy: touchEnd.y - touchStart.y });
         }
         break;
     }
@@ -17110,6 +17257,7 @@ function createBackgroundColorStyle(color) {
 function withBackgroundColor(style, color) {
   return color ? Object.assign(style, { backgroundColor: color }) : style;
 }
+const _t0$f = template("<div class=uni-slider-wrapper><div class=uni-slider-input><div class=uni-slider-track><div class=uni-slider-track-value></div></div><div class=uni-slider-thumb-track><div class=uni-slider-thumb-value></div></div><input class=uni-slider-browser-input-range type=range></div><span class=uni-slider-value>");
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
 const props$h = {
@@ -17137,32 +17285,16 @@ const props$h = {
     type: [Boolean, String],
     default: false
   },
-  color: {
-    type: String
-  },
-  backgroundColor: {
-    type: String
-  },
+  color: { type: String },
+  backgroundColor: { type: String },
   // 优先级高于 activeColor
-  activeBackgroundColor: {
-    type: String
-  },
-  activeColor: {
-    type: String
-  },
-  selectedColor: {
-    type: String
-  },
-  blockColor: {
-    type: String
-  },
+  activeBackgroundColor: { type: String },
+  activeColor: { type: String },
+  selectedColor: { type: String },
+  blockColor: { type: String },
   // 优先级高于blockColor
-  foreColor: {
-    type: String
-  },
-  valueColor: {
-    type: String
-  },
+  foreColor: { type: String },
+  valueColor: { type: String },
   blockSize: {
     type: [Number, String],
     default: 28
@@ -17178,7 +17310,7 @@ const getValuePercentage = (value, min, max) => {
 class UniSliderElement extends UniElement {
   constructor() {
     super(...arguments);
-    __publicField(this, "_initialValue", 0);
+    this._initialValue = 0;
   }
   init() {
     this.htmlSlider = this.querySelector(".uni-slider-browser-input-range");
@@ -17219,9 +17351,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-slider",
     class: UniSliderElement
   },
-  setup(props2, {
-    emit: emit2
-  }) {
+  setup(props2, { emit: emit2 }) {
     const sliderRef = ref(null);
     const sliderValueRef = ref(null);
     let uniSliderElement;
@@ -17230,10 +17360,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
     });
     const trigger = useCustomEvent(sliderRef, emit2);
     const state2 = useSliderState(props2);
-    const {
-      _onInput,
-      _onChange
-    } = useSliderLoader(props2, sliderRef, trigger);
+    const { _onInput, _onChange } = useSliderLoader(props2, sliderRef, trigger);
     onMounted(() => {
       uniSliderElement = sliderRef.value;
       uniSliderElement._initialValue = props2.value;
@@ -17241,45 +17368,38 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
       uniSliderElement.attachVmProps(props2);
     });
     return () => {
-      const {
-        setTrackBgColor,
-        setActiveColor,
-        setThumbStyle,
-        thumbTrackStyle,
-        setValueStyle
-      } = state2;
-      return createVNode("uni-slider", {
-        "ref": sliderRef
-      }, [createVNode("div", {
-        "class": "uni-slider-wrapper"
-      }, [createVNode("div", {
-        "class": "uni-slider-input"
-      }, [createVNode("div", {
-        "style": setTrackBgColor(),
-        "class": "uni-slider-track"
-      }, [createVNode("div", {
-        "style": setActiveColor(),
-        "class": "uni-slider-track-value"
-      }, null, 4)], 4), createVNode("div", {
-        "style": thumbTrackStyle(),
-        "class": "uni-slider-thumb-track"
-      }, [createVNode("div", {
-        "style": setThumbStyle(),
-        "class": "uni-slider-thumb-value"
-      }, null, 4)], 4), createVNode("input", {
-        "class": "uni-slider-browser-input-range",
-        "type": "range",
-        "min": props2.min,
-        "max": props2.max,
-        "step": props2.step,
-        "value": props2.value,
-        "onInput": withWebEvent(_onInput),
-        "onChange": withWebEvent(_onChange)
-      }, null, 40, ["min", "max", "step", "value", "onInput", "onChange"])]), withDirectives(createVNode("span", {
-        "ref": sliderValueRef,
-        "style": setValueStyle(),
-        "class": "uni-slider-value"
-      }, null, 4), [[vShow, props2.showValue]])])], 512);
+      const { setTrackBgColor, setActiveColor, setThumbStyle, thumbTrackStyle, setValueStyle } = state2;
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n7 = createPlainElement("uni-slider", null, () => {
+          const _n6 = _t0$f();
+          let _p0 = child(_n6);
+          const _n1 = child(_p0);
+          const _n0 = child(_n1);
+          const _n3 = next(_n1);
+          const _n2 = child(_n3);
+          const _n4 = next(_n3);
+          const _n5 = next(_p0);
+          on$1(_n4, "input", withWebEvent(_onInput));
+          on$1(_n4, "change", withWebEvent(_onChange));
+          applyVShow(_n5, () => props2.showValue);
+          renderEffect(() => {
+            setStyle(_n1, setTrackBgColor());
+            setStyle(_n0, setActiveColor());
+            setStyle(_n3, thumbTrackStyle());
+            setStyle(_n2, setThumbStyle());
+            setProp(_n4, "min", props2.min);
+            setProp(_n4, "max", props2.max);
+            setProp(_n4, "step", props2.step);
+            setValue(_n4, props2.value);
+            setStyle(_n5, setValueStyle());
+            _setTemplateRef(_n5, sliderValueRef);
+          });
+          return _n6;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n7, sliderRef));
+        return _n7;
+      })();
     };
   }
 });
@@ -17314,16 +17434,12 @@ function useSliderState(props2) {
   return {
     setTrackBgColor: () => createBackgroundColorStyle(_getBgColor()),
     setActiveColor: () => createBackgroundColorStyle(_getActiveColor()),
-    thumbTrackStyle: () => ({
-      marginRight: _getBlockSizeString()
-    }),
+    thumbTrackStyle: () => ({ marginRight: _getBlockSizeString() }),
     setThumbStyle: () => withBackgroundColor({
       width: _getBlockSizeString(),
       height: _getBlockSizeString()
     }, _getBlockColor()),
-    setValueStyle: () => props2.valueColor ? {
-      color: props2.valueColor
-    } : void 0
+    setValueStyle: () => props2.valueColor ? { color: props2.valueColor } : void 0
   };
 }
 function useSliderLoader(props2, sliderRef, trigger) {
@@ -17333,9 +17449,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     }
     const valueNumber = Number(event.target.value);
     sliderRef.value.updateValue(valueNumber);
-    trigger("changing", event, {
-      value: valueNumber
-    });
+    trigger("changing", event, { value: valueNumber });
   };
   const _onChange = (event) => {
     if (props2.disabled) {
@@ -17343,9 +17457,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     }
     const valueNumber = Number(event.target.value);
     sliderRef.value.updateValue(valueNumber);
-    trigger("change", event, {
-      value: valueNumber
-    });
+    trigger("change", event, { value: valueNumber });
   };
   const uniForm = inject(uniFormKey, false);
   if (!!uniForm) {
@@ -17373,6 +17485,10 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
+const _t0$e = template("<div class=uni-swiper-wrapper><div class=uni-swiper-slides><div class=uni-swiper-slide-frame> </div></div> ");
+const _t1$b = template("<div> ", 1);
+const _t2$6 = template("<div>", 1);
+const _t3$6 = template("<div> ");
 const props$g = {
   indicatorDots: {
     type: [Boolean, String],
@@ -17500,7 +17616,15 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
         const d = Math.max(index2 - (l + 1), l - i, 0);
         const h2 = Math.max(index2 - (c + 1), c - i, 0);
         const p2 = Math.min(u, d, h2);
-        const position = [s, l, c][[u, d, h2].indexOf(p2)];
+        const position = [
+          s,
+          l,
+          c
+        ][[
+          u,
+          d,
+          h2
+        ].indexOf(p2)];
         item.updatePosition(position, props2.vertical);
       }
     }
@@ -17697,7 +17821,11 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
       updateViewport(-state2.displayMultipleItems - 1);
     }
   }
-  watch([() => props2.current, () => props2.currentItemId, () => [...swiperContexts.value]], () => {
+  watch([
+    () => props2.current,
+    () => props2.currentItemId,
+    () => [...swiperContexts.value]
+  ], () => {
     let current = -1;
     if (props2.currentItemId) {
       for (let i = 0, items = swiperContexts.value; i < items.length; i++) {
@@ -17717,7 +17845,12 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
       state2.current = current;
     }
   });
-  watch([() => props2.vertical, () => circularEnabled.value, () => state2.displayMultipleItems, () => [...swiperContexts.value]], resetLayout);
+  watch([
+    () => props2.vertical,
+    () => circularEnabled.value,
+    () => state2.displayMultipleItems,
+    () => [...swiperContexts.value]
+  ], resetLayout);
   watch(() => state2.interval, () => {
     if (timer) {
       cancelSchedule();
@@ -17877,15 +18010,18 @@ class UniSwiperElement extends UniElement {
 const Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$g,
-  emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
+  emits: [
+    "change",
+    "transition",
+    "animationfinish",
+    "update:current",
+    "update:currentItemId"
+  ],
   rootElement: {
     name: "uni-swiper",
     class: UniSwiperElement
   },
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
+  setup(props2, { slots, emit: emit2 }) {
     const rootRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
     const slidesWrapperRef = ref(null);
@@ -17945,11 +18081,7 @@ const Swiper = /* @__PURE__ */ defineBuiltInComponent({
       }
     };
     provide("removeSwiperContext", removeSwiperContext);
-    const {
-      onSwiperDotClick,
-      circularEnabled,
-      swiperEnabled
-    } = useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger);
+    const { onSwiperDotClick, circularEnabled, swiperEnabled } = useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger);
     let createNavigationTsx = () => null;
     {
       createNavigationTsx = useSwiperNavigation(rootRef, props2, state2, onSwiperDotClick, swiperContexts, circularEnabled, swiperEnabled);
@@ -17963,30 +18095,41 @@ const Swiper = /* @__PURE__ */ defineBuiltInComponent({
       {
         swiperItems = flatVNode(defaultSlots);
       }
-      return createVNode("uni-swiper", {
-        "ref": rootRef
-      }, [createVNode("div", {
-        "ref": slidesWrapperRef,
-        "class": "uni-swiper-wrapper"
-      }, [createVNode("div", {
-        "class": "uni-swiper-slides",
-        "style": slidesStyle.value
-      }, [createVNode("div", {
-        "ref": slideFrameRef,
-        "class": "uni-swiper-slide-frame",
-        "style": slideFrameStyle.value
-      }, [defaultSlots], 4)], 4), props2.indicatorDots && createVNode("div", {
-        "class": ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
-      }, [swiperContexts.value.map((_, index2, array) => createVNode("div", {
-        "onClick": () => onSwiperDotClick(index2),
-        "class": {
-          "uni-swiper-dot": true,
-          "uni-swiper-dot-active": index2 < state2.current + state2.displayMultipleItems && index2 >= state2.current || index2 < state2.current + state2.displayMultipleItems - array.length
-        },
-        "style": {
-          background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
-        }
-      }, null, 14, ["onClick"]))], 2), createNavigationTsx()], 512)], 512);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n4 = createPlainElement("uni-swiper", null, () => {
+          const _n3 = _t0$e();
+          const _n1 = child(_n3);
+          const _n0 = child(_n1);
+          const _n2 = next(_n1, true);
+          const _x0 = txt(_n0);
+          setNodes(_x0, () => defaultSlots);
+          setNodes(_n2, () => props2.indicatorDots && (() => {
+            const _n02 = _t1$b();
+            const _x02 = txt(_n02);
+            setNodes(_x02, () => swiperContexts.value.map((_, index2, array) => (() => {
+              const _n03 = _t2$6();
+              on$1(_n03, "click", () => onSwiperDotClick(index2));
+              renderEffect(() => {
+                setClassName(_n03, 1 | (index2 < state2.current + state2.displayMultipleItems && index2 >= state2.current || index2 < state2.current + state2.displayMultipleItems - array.length ? 2 : 0), [" uni-swiper-dot", " uni-swiper-dot-active"]);
+                setStyle(_n03, { background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor });
+              });
+              return _n03;
+            })()));
+            renderEffect(() => setClass(_n02, ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]));
+            return _n02;
+          })(), () => createNavigationTsx());
+          renderEffect(() => {
+            setStyle(_n1, slidesStyle.value);
+            setStyle(_n0, slideFrameStyle.value);
+            _setTemplateRef(_n0, slideFrameRef);
+            _setTemplateRef(_n3, slidesWrapperRef);
+          });
+          return _n3;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n4, rootRef));
+        return _n4;
+      })();
     };
   }
 });
@@ -18047,18 +18190,8 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   let setHideNavigationTimer;
   const _mousemove = (e2) => {
     clearTimeout(setHideNavigationTimer);
-    const {
-      clientX,
-      clientY
-    } = e2;
-    const {
-      left,
-      right,
-      top,
-      bottom,
-      width,
-      height
-    } = rootRef.value.getBoundingClientRect();
+    const { clientX, clientY } = e2;
+    const { left, right, top, bottom, width, height } = rootRef.value.getBoundingClientRect();
     let hide = false;
     if (props2.vertical) {
       hide = !(clientY - top < height / 3 || bottom - clientY < height / 3);
@@ -18092,28 +18225,30 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
       "uni-swiper-navigation-vertical": props2.vertical
     };
     if (props2.navigation) {
-      return createVNode(Fragment, null, [createVNode("div", mergeProps({
-        "class": ["uni-swiper-navigation uni-swiper-navigation-prev", extend({
-          "uni-swiper-navigation-disabled": prevDisabled
-        }, navigationClass)],
-        "onClick": (e2) => navigationClick(e2, "prev", prevDisabled)
-      }, navigationAttr), [createNavigationSVG()], 16, ["onClick"]), createVNode("div", mergeProps({
-        "class": ["uni-swiper-navigation uni-swiper-navigation-next", extend({
-          "uni-swiper-navigation-disabled": nextDisabled
-        }, navigationClass)],
-        "onClick": (e2) => navigationClick(e2, "next", nextDisabled)
-      }, navigationAttr), [createNavigationSVG()], 16, ["onClick"])]);
+      return (() => {
+        const _n0 = _t3$6();
+        const _n1 = _t3$6();
+        on$1(_n0, "click", (e2) => navigationClick(e2, "prev", prevDisabled));
+        const _x0 = txt(_n0);
+        setNodes(_x0, () => createNavigationSVG());
+        on$1(_n1, "click", (e2) => navigationClick(e2, "next", nextDisabled));
+        const _x1 = txt(_n1);
+        setNodes(_x1, () => createNavigationSVG());
+        renderEffect(() => {
+          setDynamicProps(_n0, [{ class: ["uni-swiper-navigation uni-swiper-navigation-prev", extend({ "uni-swiper-navigation-disabled": prevDisabled }, navigationClass)] }, navigationAttr]);
+          setDynamicProps(_n1, [{ class: ["uni-swiper-navigation uni-swiper-navigation-next", extend({ "uni-swiper-navigation-disabled": nextDisabled }, navigationClass)] }, navigationAttr]);
+        });
+        return [_n0, _n1];
+      })();
     }
     return null;
   }
   return createNavigationTsx;
 };
-const props$f = {
-  itemId: {
-    type: String,
-    default: ""
-  }
-};
+const props$f = { itemId: {
+  type: String,
+  default: ""
+} };
 class UniSwiperItemElement extends UniElement {
 }
 const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
@@ -18123,9 +18258,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-swiper-item",
     class: UniSwiperItemElement
   },
-  setup(props2, {
-    slots
-  }) {
+  setup(props2, { slots }) {
     const rootRef = ref(null);
     const context = {
       rootRef,
@@ -18164,17 +18297,23 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      return createVNode("uni-swiper-item", {
-        "ref": rootRef,
-        "style": {
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n1 = createPlainElement("uni-swiper-item", { style: {
           position: "absolute",
           width: "100%",
           height: "100%"
-        }
-      }, [slots.default && slots.default()], 512);
+        } }, extend$1(() => {
+          const _n0 = createNodes(() => slots.default && slots.default());
+          return _n0;
+        }, { _: 1 }), true);
+        renderEffect(() => _setTemplateRef(_n1, rootRef));
+        return _n1;
+      })();
     };
   }
 });
+const _t0$d = template("<div class=uni-switch-wrapper><div><div></div></div><div class=uni-checkbox-input>");
 const props$e = {
   name: {
     type: String,
@@ -18227,9 +18366,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-switch",
     class: UniSwitchElement
   },
-  setup(props2, {
-    emit: emit2
-  }) {
+  setup(props2, { emit: emit2 }) {
     const rootRef = ref(null);
     const switchChecked = ref(props2.checked);
     const uniLabel = useSwitchInject(rootRef, props2, switchChecked);
@@ -18242,9 +18379,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         return;
       }
       switchChecked.value = !switchChecked.value;
-      trigger("change", $event, {
-        value: switchChecked.value
-      });
+      trigger("change", $event, { value: switchChecked.value });
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
@@ -18252,9 +18387,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         uniLabel.removeHandler(_onClick);
       });
     }
-    useListeners(props2, {
-      "label-click": _onClick
-    });
+    useListeners(props2, { "label-click": _onClick });
     let checkedCache = ref(switchChecked.value);
     watch(() => switchChecked.value, (val) => {
       checkedCache.value = val;
@@ -18272,14 +18405,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      const {
-        activeBackgroundColor,
-        activeForeColor,
-        backgroundColor,
-        color,
-        foreColor,
-        type
-      } = props2;
+      const { activeBackgroundColor, activeForeColor, backgroundColor, color, foreColor, type } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       const fixColor = activeBackgroundColor || color;
       const bgColor = switchChecked.value ? fixColor : backgroundColor;
@@ -18288,27 +18414,40 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         borderColor: bgColor
       } : void 0;
       const fgColor = switchChecked.value ? activeForeColor : foreColor;
-      const thumbStyle = fgColor ? {
-        backgroundColor: fgColor
-      } : void 0;
+      const thumbStyle = fgColor ? { backgroundColor: fgColor } : void 0;
       let realCheckValue;
       realCheckValue = checkedCache.value;
-      return createVNode("uni-switch", mergeProps({
-        "id": props2.id,
-        "ref": rootRef
-      }, booleanAttrs, {
-        "onClick": _onClick
-      }), [createVNode("div", {
-        "class": "uni-switch-wrapper"
-      }, [withDirectives(createVNode("div", {
-        "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
-        "style": switchInputStyle
-      }, [createVNode("div", {
-        "class": ["uni-switch-thumb", [switchChecked.value ? "uni-switch-thumb-checked" : ""]],
-        "style": thumbStyle
-      }, null, 6)], 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
-        "class": "uni-checkbox-input"
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.foreColor || props2.color || "currentColor", 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n9 = createPlainElement("uni-switch", {
+          id: () => props2.id,
+          $: [() => booleanAttrs, { onClick: () => _onClick }]
+        }, () => {
+          const _n8 = _t0$d();
+          const _n0 = child(_n8);
+          const _n1 = child(_n0);
+          const _n2 = next(_n0);
+          applyVShow(_n0, () => type === "switch");
+          applyVShow(_n2, () => type === "checkbox");
+          renderEffect(() => {
+            setClass(_n0, ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]]);
+            setStyle(_n0, switchInputStyle);
+            setClass(_n1, ["uni-switch-thumb", [switchChecked.value ? "uni-switch-thumb-checked" : ""]]);
+            setStyle(_n1, thumbStyle);
+          });
+          setInsertionState(_n2);
+          createIf(() => realCheckValue, () => {
+            const _n5 = createNodes(() => createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.foreColor || props2.color || "currentColor", 22));
+            return _n5;
+          }, () => {
+            const _n7 = createNodes("");
+            return _n7;
+          }, 266);
+          return _n8;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n9, rootRef));
+        return _n9;
+      })();
     };
   }
 });
@@ -18337,6 +18476,27 @@ function useSwitchInject(rootRef, props2, switchChecked) {
   }
   return uniLabel;
 }
+var __defProp$2 = Object.defineProperty;
+var __getOwnPropSymbols$2 = Object.getOwnPropertySymbols;
+var __hasOwnProp$2 = Object.prototype.hasOwnProperty;
+var __propIsEnum$2 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$2 = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$2.call(b, prop))
+      __defNormalProp$2(a2, prop, b[prop]);
+  if (__getOwnPropSymbols$2)
+    for (var prop of __getOwnPropSymbols$2(b)) {
+      if (__propIsEnum$2.call(b, prop))
+        __defNormalProp$2(a2, prop, b[prop]);
+    }
+  return a2;
+};
+const _t0$c = template("<textarea tabindex=-1>", 1);
+const _t1$a = template("<textarea>", 1);
+const _t2$5 = template("<form action class=uni-input-form> ");
+const _t3$5 = template("<div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>");
+const _t4$5 = template("<div>", 1);
 const props$d = /* @__PURE__ */ extend({}, props$n, {
   placeholderClass: {
     type: String,
@@ -18355,7 +18515,13 @@ const props$d = /* @__PURE__ */ extend({}, props$n, {
   }
 });
 let fixMargin = false;
-const ConfirmTypes = ["done", "go", "next", "search", "send"];
+const ConfirmTypes = [
+  "done",
+  "go",
+  "next",
+  "search",
+  "send"
+];
 function setFixMargin() {
   const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
   fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
@@ -18369,24 +18535,20 @@ class UniTextareaElement extends UniElement {
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$d,
-  emits: ["confirm", "change", "linechange", ...emit],
+  emits: [
+    "confirm",
+    "change",
+    "linechange",
+    ...emit
+  ],
   rootElement: {
     name: "uni-textarea",
     class: UniTextareaElement
   },
-  setup(props2, {
-    emit: emit2,
-    expose
-  }) {
+  setup(props2, { emit: emit2, expose }) {
     const rootRef = ref(null);
     const wrapperRef = ref(null);
-    const {
-      fieldRef,
-      state: state2,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger
-    } = useField(props2, rootRef, emit2);
+    const { fieldRef, state: state2, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
     const valueCompute = computed(() => state2.value.split(LINEFEED));
     const isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
     const heightRef = ref(0);
@@ -18417,22 +18579,16 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
         wrapper.style.height = "";
       }
     });
-    function onResize2({
-      height
-    }) {
+    function onResize2({ height }) {
       heightRef.value = height;
     }
     function onChange2(event) {
       {
-        trigger("change", event, {
-          value: state2.value
-        });
+        trigger("change", event, { value: state2.value });
       }
     }
     function confirm(event) {
-      trigger("confirm", event, {
-        value: state2.value
-      });
+      trigger("confirm", event, { value: state2.value });
     }
     function onKeyDownEnter(event) {
       if (event.key !== "Enter") {
@@ -18455,13 +18611,11 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
     {
       setFixMargin();
     }
-    expose({
-      $triggerInput: (detail) => {
-        emit2("update:modelValue", detail.value);
-        emit2("update:value", detail.value);
-        state2.value = detail.value;
-      }
-    });
+    expose({ $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state2.value = detail.value;
+    } });
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.defineProperty(rootElement, "value", {
@@ -18475,76 +18629,106 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
-        "key": "disabled-textarea",
-        "ref": fieldRef,
-        "value": state2.value,
-        "tabindex": "-1",
-        "readonly": !!props2.disabled,
-        "maxlength": state2.maxlength,
-        "class": {
-          "uni-textarea-textarea": true,
-          "uni-textarea-textarea-fix-margin": fixMargin
-        },
-        "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto",
-          /* eslint-disable no-restricted-syntax */
-          ...props2.cursorColor && {
-            caretColor: props2.cursorColor
-          }
-        },
-        "onFocus": (event) => event.target.blur()
-      }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
-        "key": "textarea",
-        "ref": fieldRef,
-        "value": state2.value,
-        "disabled": !!props2.disabled,
-        "maxlength": state2.maxlength,
-        "enterkeyhint": props2.confirmType,
-        "inputmode": props2.inputmode,
-        "class": {
-          "uni-textarea-textarea": true,
-          "uni-textarea-textarea-fix-margin": fixMargin
-        },
-        "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto",
-          /* eslint-disable no-restricted-syntax */
-          ...props2.cursorColor && {
-            caretColor: props2.cursorColor
-          }
-        },
-        "onKeydown": onKeyDownEnter,
-        "onKeyup": onKeyUpEnter,
-        "onChange": onChange2
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup", "onChange"]);
-      return createVNode("uni-textarea", {
-        "ref": rootRef,
-        "auto-height": props2.autoHeight
-      }, [createVNode("div", {
-        "ref": wrapperRef,
-        "class": "uni-textarea-wrapper"
-      }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        "style": props2.placeholderStyle,
-        "class": ["uni-textarea-placeholder", props2.placeholderClass]
-      }), [props2.placeholder], 16), [[vShow, !state2.value.length]]), createVNode("div", {
-        "ref": lineRef,
-        "class": "uni-textarea-line"
-      }, [" "], 512), createVNode("div", {
-        "class": {
-          "uni-textarea-compute": true,
-          "uni-textarea-compute-auto-height": props2.autoHeight
-        }
-      }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
-        "initial": true,
-        "onResize": onResize2
-      }, null, 8, ["initial", "onResize"])], 2), props2.confirmType === "search" ? createVNode("form", {
-        "action": "",
-        "onSubmit": () => false,
-        "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 8, ["auto-height"]);
+      let textareaNode = props2.disabled && fixDisabledColor ? (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = _t0$c();
+        setBlockKey(_n0, "disabled-textarea");
+        on$1(
+          _n0,
+          // fix: 禁止 readonly 状态获取焦点
+          "focus",
+          (event) => event.target.blur()
+        );
+        renderEffect(() => {
+          setValue(_n0, state2.value);
+          setProp(_n0, "readonly", !!props2.disabled);
+          setProp(_n0, "maxlength", state2.maxlength);
+          setClassName(_n0, 1 | (fixMargin ? 2 : 0), [" uni-textarea-textarea", " uni-textarea-textarea-fix-margin"]);
+          setStyle(_n0, __spreadValues$2({
+            overflowY: props2.autoHeight ? "hidden" : "auto"
+          }, props2.cursorColor && { caretColor: props2.cursorColor }));
+          _setTemplateRef(_n0, fieldRef);
+        });
+        return _n0;
+      })() : (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = _t1$a();
+        setBlockKey(_n0, "textarea");
+        on$1(_n0, "keydown", onKeyDownEnter);
+        on$1(_n0, "keyup", onKeyUpEnter);
+        on$1(_n0, "change", onChange2);
+        renderEffect(() => {
+          setValue(_n0, state2.value);
+          setProp(_n0, "disabled", !!props2.disabled);
+          setProp(_n0, "maxlength", state2.maxlength);
+          setProp(_n0, "enterkeyhint", props2.confirmType);
+          setProp(_n0, "inputmode", props2.inputmode);
+          setClassName(_n0, 1 | (fixMargin ? 2 : 0), [" uni-textarea-textarea", " uni-textarea-textarea-fix-margin"]);
+          setStyle(_n0, __spreadValues$2({
+            overflowY: props2.autoHeight ? "hidden" : "auto"
+          }, props2.cursorColor && { caretColor: props2.cursorColor }));
+          _setTemplateRef(_n0, fieldRef);
+        });
+        return _n0;
+      })();
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n11 = createPlainElement("uni-textarea", { "auto-height": () => props2.autoHeight }, () => {
+          const _n10 = _t3$5();
+          const _n0 = child(_n10);
+          const _n1 = next(_n0);
+          const _n4 = next(_n1);
+          const _n2 = child(_n4, true);
+          applyVShow(_n0, () => !state2.value.length);
+          const _x0 = txt(_n0);
+          setNodes(_x0, () => props2.placeholder);
+          setNodes(_n2, () => valueCompute.value.map((item) => (() => {
+            const _n52 = _t4$5();
+            setInsertionState(_n52);
+            createIf(() => item.trim(), () => {
+              const _n22 = createNodes(() => item);
+              return _n22;
+            }, () => {
+              const _n42 = createNodes(".");
+              return _n42;
+            }, 266);
+            return _n52;
+          })()));
+          renderEffect(() => {
+            setDynamicProps(_n0, [scopedAttrsState.attrs, {
+              style: props2.placeholderStyle,
+              class: ["uni-textarea-placeholder", props2.placeholderClass]
+            }]);
+            _setTemplateRef(_n1, lineRef);
+            setClassName(_n4, 1 | (props2.autoHeight ? 2 : 0), [" uni-textarea-compute", " uni-textarea-compute-auto-height"]);
+          });
+          setInsertionState(_n4, 1);
+          createComponent(ResizeSensor, {
+            initial: true,
+            onResize: () => onResize2
+          });
+          setInsertionState(_n10, 3);
+          createIf(() => props2.confirmType === "search", () => {
+            const _n7 = _t2$5();
+            on$1(_n7, "submit", () => false);
+            const _x7 = txt(_n7);
+            setNodes(_x7, () => textareaNode);
+            return _n7;
+          }, () => {
+            const _n9 = createNodes(() => textareaNode);
+            return _n9;
+          }, 265);
+          renderEffect(() => _setTemplateRef(_n10, wrapperRef));
+          return _n10;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n11, rootRef));
+        return _n11;
+      })();
     };
   }
 });
+const _t0$b = template("<div class=uni-list-view-visible> ", 1);
+const _t1$9 = template("<div><!><div class=uni-list-view-content><div></div> <div></div></div></div>");
 function isHTMlElement(node) {
   return !!(node && node.nodeType === 1);
 }
@@ -18555,7 +18739,11 @@ function getChildren(root) {
   }
   return children;
 }
-const ChildType = ["ListItem", "StickySection", "StickyHeader"];
+const ChildType = [
+  "ListItem",
+  "StickySection",
+  "StickyHeader"
+];
 function walk(vnode, children) {
   if (vnode.component && vnode.component.type && vnode.component.type.name && ChildType.includes(vnode.component.type.name)) {
     children.push(vnode);
@@ -18587,7 +18775,11 @@ const props$c = {
     type: String,
     default: "vertical",
     validator: (val) => {
-      return ["none", "vertical", "horizontal"].includes(val);
+      return [
+        "none",
+        "vertical",
+        "horizontal"
+      ].includes(val);
     }
   },
   showScrollbar: {
@@ -18648,8 +18840,6 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     "scroll",
     "scrolltoupper",
     "scrolltolower",
-    // 有触发时机，但是由于没有原生事件暂不支持
-    // 'scrollend',
     "refresherrefresh",
     "refresherrestore",
     "refresherpulling",
@@ -18660,17 +18850,11 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-list-view",
     class: UniListViewElement
   },
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
+  setup(props2, { slots, emit: emit2 }) {
     const rootRef = ref(null);
     const containerRef = ref(null);
     const visibleRef = ref(null);
-    const {
-      isVertical,
-      state: state2
-    } = useListViewState(props2);
+    const { isVertical, state: state2 } = useListViewState(props2);
     provide("__listViewIsVertical", isVertical);
     provide("__listViewDefaultItemSize", state2.defaultItemSize);
     provide("__listViewDefaultHeaderSize", state2.defaultHeaderSize);
@@ -18802,17 +18986,13 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         const currentOffset = getOffset();
         const upperOffset = upperThresholdNumber.value;
         if (currentOffset <= upperOffset && lastScrollOffset > upperOffset) {
-          trigger("scrolltoupper", $event, {
-            direction: isVertical.value ? "top" : "left"
-          });
+          trigger("scrolltoupper", $event, { direction: isVertical.value ? "top" : "left" });
         }
         const realTotalSize = isVertical.value ? target.scrollHeight : target.scrollWidth;
         const realRootSize = isVertical.value ? target.clientHeight : target.clientWidth;
         const lowerOffset = realTotalSize - realRootSize - lowerThresholdNumber.value;
         if (currentOffset >= lowerOffset && lastScrollOffset < lowerOffset) {
-          trigger("scrolltolower", $event, {
-            direction: isVertical.value ? "bottom" : "right"
-          });
+          trigger("scrolltolower", $event, { direction: isVertical.value ? "bottom" : "right" });
         }
         lastScrollOffset = currentOffset;
         if (_shouldRearrange()) {
@@ -18822,16 +19002,12 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       const rootElement = rootRef.value;
       const containerElement = containerRef.value;
       Object.defineProperties(rootElement, {
-        scrollHeight: {
-          get() {
-            return containerElement.scrollHeight;
-          }
-        },
-        scrollWidth: {
-          get() {
-            return containerElement.scrollWidth;
-          }
-        },
+        scrollHeight: { get() {
+          return containerElement.scrollHeight;
+        } },
+        scrollWidth: { get() {
+          return containerElement.scrollWidth;
+        } },
         scrollLeft: {
           get() {
             return containerElement.scrollLeft;
@@ -18848,11 +19024,9 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
             containerElement.scrollTop = val;
           }
         },
-        scrollBy: {
-          get() {
-            return containerElement.scrollBy.bind(containerElement);
-          }
-        }
+        scrollBy: { get() {
+          return containerElement.scrollBy.bind(containerElement);
+        } }
       });
       rootElement.attachVmProps(props2);
     });
@@ -18882,47 +19056,70 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     });
     let visibleVNode = null;
     return () => {
-      const {
-        refresherEnabled,
-        refresherBackground,
-        refresherDefaultStyle,
-        refresherThreshold
-      } = props2;
-      const {
-        refresherHeight,
-        refreshState
-      } = state2;
+      const { refresherEnabled, refresherBackground, refresherDefaultStyle, refresherThreshold } = props2;
+      const { refresherHeight, refreshState } = state2;
       const defaultSlot = slots.default && slots.default();
-      visibleVNode = createVNode("div", {
-        "ref": visibleRef,
-        "class": "uni-list-view-visible",
-        "style": visibleStyle.value
-      }, [defaultSlot], 4);
-      return createVNode("uni-list-view", {
-        "ref": rootRef,
-        "class": "uni-list-view"
-      }, [createVNode("div", {
-        "ref": containerRef,
-        "class": `uni-list-view-container ${props2.showScrollbar === false ? "uni-list-view-scrollbar-hidden" : ""}`,
-        "style": containerStyle.value
-      }, [refresherEnabled ? createVNode(Refresher, {
-        "refreshState": refreshState,
-        "refresherHeight": refresherHeight,
-        "refresherThreshold": refresherThreshold,
-        "refresherDefaultStyle": refresherDefaultStyle,
-        "refresherBackground": refresherBackground
-      }, {
-        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
-      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
-        "class": "uni-list-view-content"
-      }, [createVNode("div", {
-        "style": placeholderHeadStyle.value
-      }, null, 4), visibleVNode, createVNode("div", {
-        "style": placeholderTailStyle.value
-      }, null, 4)])], 4), createVNode(ResizeSensor, {
-        "initial": true,
-        "onResize": onResize2
-      }, null, 8, ["onResize"])], 512);
+      visibleVNode = (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = _t0$b();
+        const _x0 = txt(_n0);
+        setNodes(_x0, () => defaultSlot);
+        renderEffect(() => {
+          setStyle(_n0, visibleStyle.value);
+          _setTemplateRef(_n0, visibleRef);
+        });
+        return _n0;
+      })();
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n16 = createPlainElement("uni-list-view", { class: "uni-list-view" }, () => {
+          const _n14 = _t1$9();
+          const _n13 = child(_n14);
+          const _n10 = child(next(_n13));
+          const _n11 = next(_n10, true);
+          const _n12 = next(_n11);
+          renderEffect(() => {
+            setClass(_n14, `uni-list-view-container ${props2.showScrollbar === false ? "uni-list-view-scrollbar-hidden" : ""}`);
+            setStyle(_n14, containerStyle.value);
+          });
+          setInsertionState(_n14, _n13);
+          createIf(() => refresherEnabled, () => {
+            const _n7 = createComponent(Refresher, {
+              refreshState: () => refreshState,
+              refresherHeight: () => refresherHeight,
+              refresherThreshold: () => refresherThreshold,
+              refresherDefaultStyle: () => refresherDefaultStyle,
+              refresherBackground: () => refresherBackground
+            }, extend$1(() => {
+              const _n2 = createIf(() => refresherDefaultStyle == "none", () => {
+                const _n4 = createNodes(() => slots.refresher && slots.refresher());
+                return _n4;
+              }, () => {
+                const _n6 = createNodes(null);
+                return _n6;
+              }, 394);
+              return _n2;
+            }, { _: 1 }));
+            return _n7;
+          }, () => {
+            const _n9 = createNodes(null);
+            return _n9;
+          }, 521);
+          setNodes(_n11, () => visibleVNode);
+          renderEffect(() => {
+            setStyle(_n10, placeholderHeadStyle.value);
+            setStyle(_n12, placeholderTailStyle.value);
+            _setTemplateRef(_n14, containerRef);
+          });
+          const _n15 = createComponent(ResizeSensor, {
+            initial: true,
+            onResize: () => onResize2
+          });
+          return [_n14, _n15];
+        }, true);
+        renderEffect(() => _setTemplateRef(_n16, rootRef));
+        return _n16;
+      })();
     };
   }
 });
@@ -18982,12 +19179,7 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
     const childType = (_a = child2.component) == null ? void 0 : _a.type.name;
     const status = (_c = (_b = child2.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
     if (childType === "StickySection") {
-      const {
-        headSize,
-        tailSize,
-        headPlaceholderSize,
-        tailPlaceholderSize
-      } = status;
+      const { headSize, tailSize, headPlaceholderSize, tailPlaceholderSize } = status;
       tempTotalSize += headSize.value;
       let tempTailPlaceholderSizeOfSection = 0;
       let tempHeadPlaceholderSizeOfSection = 0;
@@ -18996,10 +19188,7 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
         const childType2 = (_a2 = child22.component) == null ? void 0 : _a2.type.name;
         const status2 = (_c2 = (_b2 = child22.component) == null ? void 0 : _b2.exposed) == null ? void 0 : _c2.__listViewChildStatus;
         if (childType2 === "StickyHeader") {
-          const {
-            cachedSize,
-            cachedSizeUpdated
-          } = status2;
+          const { cachedSize, cachedSizeUpdated } = status2;
           if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultHeaderSizeUpdated) {
             state2.defaultHeaderSize = cachedSize;
             state2.defaultHeaderSizeUpdated = true;
@@ -19007,10 +19196,7 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
           tempTotalSize += cachedSize || state2.defaultHeaderSize;
           tempVisibleSize += cachedSize;
         } else if (childType2 === "ListItem") {
-          const {
-            cachedSize,
-            cachedSizeUpdated
-          } = status2;
+          const { cachedSize, cachedSizeUpdated } = status2;
           if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultItemSizeUpdated) {
             state2.defaultItemSize = cachedSize;
             state2.defaultItemSizeUpdated = true;
@@ -19040,10 +19226,7 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
       headPlaceholderSize.value = tempHeadPlaceholderSizeOfSection;
       tailPlaceholderSize.value = tempTailPlaceholderSizeOfSection;
     } else if (childType === "ListItem") {
-      const {
-        cachedSize,
-        cachedSizeUpdated
-      } = status;
+      const { cachedSize, cachedSizeUpdated } = status;
       if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultItemSizeUpdated) {
         state2.defaultItemSize = cachedSize;
         state2.defaultItemSizeUpdated = true;
@@ -19068,10 +19251,7 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
         end = true;
       }
     } else if (childType === "StickyHeader") {
-      const {
-        cachedSize,
-        cachedSizeUpdated
-      } = status;
+      const { cachedSize, cachedSizeUpdated } = status;
       if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultHeaderSizeUpdated) {
         state2.defaultHeaderSize = cachedSize;
         state2.defaultHeaderSizeUpdated = true;
@@ -19110,9 +19290,7 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
             deltaY: state2.refresherHeight,
             dy: state2.refresherHeight
           });
-          trigger("refresherrefresh", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
+          trigger("refresherrefresh", {}, { dy: touchEnd.y - touchStart.y });
           emit2("update:refresherTriggered", true);
         }
         break;
@@ -19122,15 +19300,11 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
         state2.refresherHeight = toUpperNumber = 0;
         if (_state === "restore") {
           triggerAbort = false;
-          trigger("refresherrestore", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
+          trigger("refresherrestore", {}, { dy: touchEnd.y - touchStart.y });
         }
         if (_state === "refresherabort" && triggerAbort) {
           triggerAbort = false;
-          trigger("refresherabort", {}, {
-            dy: touchEnd.y - touchStart.y
-          });
+          trigger("refresherabort", {}, { dy: touchEnd.y - touchStart.y });
         }
         break;
     }
@@ -19224,9 +19398,7 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
   onMounted(() => {
     const containerEl = containerRef.value;
     containerEl.addEventListener("touchstart", __handleTouchStart);
-    containerEl.addEventListener("touchmove", __handleTouchMove, {
-      passive: false
-    });
+    containerEl.addEventListener("touchmove", __handleTouchMove, { passive: false });
     containerEl.addEventListener("touchend", __handleTouchEnd);
   });
   onBeforeUnmount(() => {
@@ -19253,14 +19425,16 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-list-item",
     class: UniListItemElement
   },
-  setup(props2, {
-    slots,
-    expose,
-    attrs: attrs2
-  }) {
+  setup(props2, { slots, expose, attrs: attrs2 }) {
     if (attrs2.slot === "refresher") {
       return () => {
-        return createVNode("uni-list-item", null, [slots.default && slots.default()]);
+        return (() => {
+          const _n1 = createPlainElement("uni-list-item", null, extend$1(() => {
+            const _n0 = createNodes(() => slots.default && slots.default());
+            return _n0;
+          }, { _: 1 }), true);
+          return _n1;
+        })();
       };
     }
     const rootRef = ref(null);
@@ -19272,9 +19446,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       cachedSize: inject("__listViewDefaultItemSize"),
       cachedSizeUpdated: false
     };
-    expose({
-      __listViewChildStatus: status
-    });
+    expose({ __listViewChildStatus: status });
     const registerItem = inject("__listViewRegisterItem");
     const unregisterItem = inject("__listViewUnregisterItem");
     onMounted(() => {
@@ -19306,9 +19478,15 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       if (!visible.value) {
         return null;
       }
-      return createVNode("uni-list-item", {
-        "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n1 = createPlainElement("uni-list-item", null, extend$1(() => {
+          const _n0 = createNodes(() => slots.default && slots.default());
+          return _n0;
+        }, { _: 1 }), true);
+        renderEffect(() => _setTemplateRef(_n1, rootRef));
+        return _n1;
+      })();
     };
   }
 });
@@ -19316,20 +19494,20 @@ class UniStickySectionElement extends UniElement {
 }
 const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
-  props: {
-    padding: {
-      type: Array,
-      default: [0, 0, 0, 0]
-    }
-  },
+  props: { padding: {
+    type: Array,
+    default: [
+      0,
+      0,
+      0,
+      0
+    ]
+  } },
   rootElement: {
     name: "uni-sticky-section",
     class: UniStickySectionElement
   },
-  setup(props2, {
-    slots,
-    expose
-  }) {
+  setup(props2, { slots, expose }) {
     const rootRef = ref(null);
     const isVertical = inject("__listViewIsVertical");
     const headPlaceholderSize = ref(0);
@@ -19360,19 +19538,24 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
       headPlaceholderSize,
       tailPlaceholderSize
     };
-    expose({
-      __listViewChildStatus: status
-    });
+    expose({ __listViewChildStatus: status });
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
     });
     return () => {
-      var _a;
-      return createVNode("uni-sticky-section", {
-        "ref": rootRef,
-        "style": style.value
-      }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 4);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n1 = createPlainElement("uni-sticky-section", { style: () => style.value }, extend$1(() => {
+          const _n0 = createNodes(() => {
+            var _a;
+            return (_a = slots.default) == null ? void 0 : _a.call(slots);
+          });
+          return _n0;
+        }, { _: 1 }), true);
+        renderEffect(() => _setTemplateRef(_n1, rootRef));
+        return _n1;
+      })();
     };
   }
 });
@@ -19380,20 +19563,20 @@ class UniStickyHeaderElement extends UniElement {
 }
 const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
-  props: {
-    padding: {
-      type: Array,
-      default: [0, 0, 0, 0]
-    }
-  },
+  props: { padding: {
+    type: Array,
+    default: [
+      0,
+      0,
+      0,
+      0
+    ]
+  } },
   rootElement: {
     name: "uni-sticky-header",
     class: UniStickyHeaderElement
   },
-  setup(props2, {
-    slots,
-    expose
-  }) {
+  setup(props2, { slots, expose }) {
     const rootRef = ref(null);
     const isVertical = inject("__listViewIsVertical");
     const style = computed(() => {
@@ -19410,9 +19593,7 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
       cachedSize: inject("__listViewDefaultHeaderSize"),
       cachedSizeUpdated: false
     };
-    expose({
-      __listViewChildStatus: status
-    });
+    expose({ __listViewChildStatus: status });
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
@@ -19424,11 +19605,18 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
       status.cachedSizeUpdated = true;
     });
     return () => {
-      var _a;
-      return createVNode("uni-sticky-header", {
-        "ref": rootRef,
-        "style": style.value
-      }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 4);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n1 = createPlainElement("uni-sticky-header", { style: () => style.value }, extend$1(() => {
+          const _n0 = createNodes(() => {
+            var _a;
+            return (_a = slots.default) == null ? void 0 : _a.call(slots);
+          });
+          return _n0;
+        }, { _: 1 }), true);
+        renderEffect(() => _setTemplateRef(_n1, rootRef));
+        return _n1;
+      })();
     };
   }
 });
@@ -19815,21 +20003,21 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-var __defProp2 = Object.defineProperty;
+var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
 var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp2 = (obj, key, value) => key in obj ? __defProp2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __spreadValues = (a2, b) => {
   for (var prop in b || (b = {}))
     if (__hasOwnProp.call(b, prop))
-      __defNormalProp2(a2, prop, b[prop]);
+      __defNormalProp(a2, prop, b[prop]);
   if (__getOwnPropSymbols)
     for (var prop of __getOwnPropSymbols(b)) {
       if (__propIsEnum.call(b, prop))
-        __defNormalProp2(a2, prop, b[prop]);
+        __defNormalProp(a2, prop, b[prop]);
     }
   return a2;
 };
@@ -20247,6 +20435,11 @@ function warnHandler(msg, instance2, trace) {
   }
   console.warn(...warnArgs);
 }
+const _t0$a = template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
+const _t1$8 = template("<div><!><div class=uni-video-toast-draw></div>");
+const _t2$4 = template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ');
+const _t3$4 = template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
+const _t4$4 = template('<text class="uni-video-icon uni-video-toast-icon">', 1, 1);
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
   const h2 = Math.floor(val / 3600);
@@ -20406,9 +20599,7 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
   };
 }
 function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef) {
-  const state2 = reactive({
-    fullscreen: false
-  });
+  const state2 = reactive({ fullscreen: false });
   const isSafari = /^Apple/.test(navigator.vendor);
   function onFullscreenChange($event, webkit) {
     if (webkit && document.fullscreenEnabled) {
@@ -20496,9 +20687,7 @@ function useVideo(props2, attrs2, trigger) {
     state2.currentTime = 0;
   });
   watch(() => state2.buffered, (buffered) => {
-    trigger("progress", {}, {
-      buffered
-    });
+    trigger("progress", {}, { buffered });
   });
   watch(() => muted.value, (muted2) => {
     const video = videoRef.value;
@@ -20509,9 +20698,7 @@ function useVideo(props2, attrs2, trigger) {
     isNaN(_duration) && (_duration = 0);
     state2.currentDuration = _duration > 0 ? _duration : state2.duration;
   });
-  function onDurationChange({
-    target
-  }) {
+  function onDurationChange({ target }) {
     state2.duration = target.duration;
   }
   function onLoadedMetadata($event) {
@@ -20740,9 +20927,7 @@ function useControls(props2, videoState, seek, seeking) {
 }
 function useDanmu(props2, videoState) {
   const danmuRef = ref(null);
-  const state2 = reactive({
-    enable: Boolean(props2.enableDanmu)
-  });
+  const state2 = reactive({ enable: Boolean(props2.enableDanmu) });
   let danmuIndex = {
     time: 0,
     index: -1
@@ -20863,9 +21048,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
       videoState.progress = 0;
     }
     videoState.progress > 100 && (videoState.progress = 100);
-  }, {
-    immediate: true
-  });
+  }, { immediate: true });
   watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
     videoState.currentTime = currentTimeNew;
   });
@@ -20964,77 +21147,33 @@ class UniVideoElement extends UniElement {
 const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$b,
-  emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
+  emits: [
+    "fullscreenchange",
+    "progress",
+    "loadedmetadata",
+    "waiting",
+    "error",
+    "play",
+    "pause",
+    "ended",
+    "timeupdate"
+  ],
   rootElement: {
     name: "uni-video",
     class: UniVideoElement
   },
-  setup(props2, {
-    emit: emit2,
-    attrs: attrs2,
-    slots
-  }) {
+  setup(props2, { emit: emit2, attrs: attrs2, slots }) {
     const rootRef = ref(null);
     const containerRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state: userActionState
-    } = useUserAction();
-    const {
-      $attrs: videoAttrs
-    } = useAttrs({
-      excludeListeners: true
-    });
+    const { state: userActionState } = useUserAction();
+    const { $attrs: videoAttrs } = useAttrs({ excludeListeners: true });
     initI18nVideoMsgsOnce();
-    const {
-      videoRef,
-      state: videoState,
-      play,
-      pause,
-      stop,
-      seek,
-      playbackRate,
-      toggle,
-      onDurationChange,
-      onLoadedMetadata,
-      onProgress,
-      onWaiting,
-      onVideoError,
-      onPlay,
-      onPause,
-      onEnded,
-      onTimeUpdate
-    } = useVideo(props2, attrs2, trigger);
-    const {
-      state: danmuState,
-      danmuRef,
-      updateDanmu,
-      toggleDanmu,
-      sendDanmu
-    } = useDanmu(props2, videoState);
-    const {
-      state: fullscreenState,
-      onFullscreenChange,
-      emitFullscreenChange,
-      toggleFullscreen,
-      requestFullScreen,
-      exitFullScreen
-    } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-    const {
-      state: gestureState,
-      onTouchstart,
-      onTouchend,
-      onTouchmove
-    } = useGesture(props2, videoState, videoRef, fullscreenState);
-    const {
-      state: controlsState,
-      progressRef,
-      ballRef,
-      clickProgress,
-      toggleControls,
-      autoHideEnd,
-      autoHideStart
-    } = useControls(props2, videoState, seek, (currentTimeNew) => {
+    const { videoRef, state: videoState, play, pause, stop, seek, playbackRate, toggle, onDurationChange, onLoadedMetadata, onProgress, onWaiting, onVideoError, onPlay, onPause, onEnded, onTimeUpdate } = useVideo(props2, attrs2, trigger);
+    const { state: danmuState, danmuRef, updateDanmu, toggleDanmu, sendDanmu } = useDanmu(props2, videoState);
+    const { state: fullscreenState, onFullscreenChange, emitFullscreenChange, toggleFullscreen, requestFullScreen, exitFullScreen } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+    const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = useGesture(props2, videoState, videoRef, fullscreenState);
+    const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, seek, (currentTimeNew) => {
       gestureState.currentTimeNew = currentTimeNew;
     });
     useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
@@ -21054,156 +21193,172 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      return createVNode("uni-video", {
-        "ref": rootRef,
-        "id": props2.id,
-        "onClick": toggleControls
-      }, [createVNode("div", {
-        "ref": containerRef,
-        "class": "uni-video-container",
-        "onTouchstart": onTouchstart,
-        "onTouchend": onTouchend,
-        "onTouchmove": onTouchmove,
-        "onFullscreenchange": withModifiers(onFullscreenChange, ["stop"]),
-        "onWebkitfullscreenchange": withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
-      }, [createVNode("video", mergeProps({
-        "ref": videoRef,
-        "style": {
-          "object-fit": props2.objectFit
-        },
-        "muted": !!props2.muted,
-        "loop": !!props2.loop,
-        "src": videoState.src,
-        "poster": props2.poster,
-        "autoplay": !!props2.autoplay
-      }, videoAttrs.value, {
-        "class": {
-          "uni-video-video": true,
-          "uni-video-video-fullscreen": fullscreenState.fullscreen
-        },
-        "webkit-playsinline": true,
-        "playsinline": true,
-        "onDurationchange": onDurationChange,
-        "onLoadedmetadata": onLoadedMetadata,
-        "onProgress": onProgress,
-        "onWaiting": onWaiting,
-        "onError": onVideoError,
-        "onPlay": onPlay,
-        "onPause": onPause,
-        "onEnded": onEnded,
-        "onTimeupdate": (event) => {
-          onTimeUpdate(event);
-          updateDanmu(event);
-        },
-        "onWebkitbeginfullscreen": () => emitFullscreenChange(true),
-        "onX5videoenterfullscreen": () => emitFullscreenChange(true),
-        "onWebkitendfullscreen": () => emitFullscreenChange(false),
-        "onX5videoexitfullscreen": () => emitFullscreenChange(false)
-      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
-        "class": "uni-video-bar uni-video-bar-full",
-        "onClick": withModifiers(() => {
-        }, ["stop"])
-      }, [createVNode("div", {
-        "class": "uni-video-controls"
-      }, [withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-icon": true,
-          "uni-video-control-button": true,
-          "uni-video-control-button-play": !videoState.playing,
-          "uni-video-control-button-pause": videoState.playing
-        },
-        "onClick": withModifiers(toggle, ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), withDirectives(createVNode("div", {
-        "class": "uni-video-current-time"
-      }, [formatTime(videoState.currentTime)], 512), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
-        "ref": progressRef,
-        "class": "uni-video-progress-container",
-        "onClick": withModifiers(clickProgress, ["stop"])
-      }, [createVNode("div", {
-        "class": {
-          "uni-video-progress": true,
-          "uni-video-progress-progressing": progressing.value
-        }
-      }, [createVNode("div", {
-        "style": {
-          width: videoState.buffered - videoState.progress + "%",
-          left: videoState.progress + "%"
-        },
-        "class": "uni-video-progress-buffered"
-      }, null, 4), createVNode("div", {
-        "style": {
-          width: videoState.progress + "%"
-        },
-        "class": "uni-video-progress-played"
-      }, null, 4), createVNode("div", {
-        "ref": ballRef,
-        "style": {
-          left: videoState.progress + "%"
-        },
-        "class": {
-          "uni-video-ball": true,
-          "uni-video-ball-progressing": progressing.value
-        }
-      }, [createVNode("div", {
-        "class": "uni-video-inner"
-      }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
-        "class": "uni-video-duration"
-      }, [formatTime(videoState.currentDuration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-icon": true,
-          "uni-video-danmu-button": true,
-          "uni-video-danmu-button-active": danmuState.enable
-        },
-        "onClick": withModifiers(toggleDanmu, ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-icon": true,
-          "uni-video-fullscreen": true,
-          "uni-video-type-fullscreen": fullscreenState.fullscreen
-        },
-        "onClick": withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vShow, controlsState.controlsShow]]), withDirectives(createVNode("div", {
-        "ref": danmuRef,
-        "style": "z-index: 0;",
-        "class": "uni-video-danmu"
-      }, null, 512), [[vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && createVNode("div", {
-        "class": "uni-video-cover",
-        "onClick": withModifiers(() => {
-        }, ["stop"])
-      }, [createVNode("div", {
-        "class": "uni-video-cover-play-button uni-video-icon",
-        "onClick": withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"])], 8, ["onClick"]), createVNode("div", {
-        "class": "uni-video-loading"
-      }, [gestureState.gestureType === "volume" ? createVNode("div", {
-        "class": {
-          "uni-video-toast-container": true,
-          "uni-video-toast-container-thin": gestureState.toastThin
-        },
-        "style": {
-          marginTop: `5px`
-        }
-      }, [!gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume" ? createVNode("text", {
-        "class": "uni-video-icon uni-video-toast-icon"
-      }, [""]) : !gestureState.toastThin && createVNode("text", {
-        "class": "uni-video-icon uni-video-toast-icon"
-      }, [""]), createVNode("div", {
-        "class": "uni-video-toast-draw",
-        "style": {
-          width: `${gestureState.volumeNew * 100}%`
-        }
-      }, null)], 2) : null]), createVNode("div", {
-        "class": {
-          "uni-video-toast": true,
-          "uni-video-toast-progress": progressing.value
-        }
-      }, [createVNode("div", {
-        "class": "uni-video-toast-title"
-      }, [createVNode("span", {
-        "class": "uni-video-toast-title-current-time"
-      }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), createVNode("div", {
-        "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n32 = createPlainElement("uni-video", {
+          id: () => props2.id,
+          onClick: () => toggleControls
+        }, () => {
+          const _n0 = _t2$4();
+          const _n1 = child(_n0);
+          const _n2 = next(_n1);
+          let _p0 = child(_n2);
+          const _n3 = child(_p0);
+          const _n4 = next(_n3);
+          const _n5 = next(_n4);
+          const _n9 = child(_n5);
+          const _n6 = child(_n9);
+          const _n7 = next(_n6);
+          const _n8 = next(_n7);
+          const _n10 = next(_n5);
+          const _n11 = next(_p0);
+          const _n12 = next(_n11);
+          const _n13 = next(_n2);
+          const _n14 = next(_n13, true);
+          const _n27 = next(_n14);
+          const _n30 = next(_n27);
+          const _n28 = child(child(_n30));
+          const _n29 = next(_n28, true);
+          const _n31 = next(_n30);
+          on$1(_n0, "touchstart", onTouchstart);
+          on$1(_n0, "touchend", onTouchend);
+          on$1(_n0, "touchmove", onTouchmove);
+          on$1(
+            _n0,
+            // @ts-expect-error
+            "fullscreenchange",
+            withModifiers(onFullscreenChange, ["stop"])
+          );
+          on$1(_n0, "webkitfullscreenchange", withModifiers(($event) => onFullscreenChange($event, true), ["stop"]));
+          on$1(_n1, "durationchange", onDurationChange);
+          on$1(_n1, "loadedmetadata", onLoadedMetadata);
+          on$1(_n1, "progress", onProgress);
+          on$1(_n1, "waiting", onWaiting);
+          on$1(_n1, "error", onVideoError);
+          on$1(_n1, "play", onPlay);
+          on$1(_n1, "pause", onPause);
+          on$1(_n1, "ended", onEnded);
+          on$1(_n1, "timeupdate", (event) => {
+            onTimeUpdate(event);
+            updateDanmu(event);
+          });
+          on$1(_n1, "webkitbeginfullscreen", () => emitFullscreenChange(true));
+          on$1(_n1, "x5videoenterfullscreen", () => emitFullscreenChange(true));
+          on$1(_n1, "webkitendfullscreen", () => emitFullscreenChange(false));
+          on$1(_n1, "x5videoexitfullscreen", () => emitFullscreenChange(false));
+          applyVShow(_n2, () => controlsState.controlsShow);
+          on$1(_n2, "click", withModifiers(() => {
+          }, ["stop"]));
+          applyVShow(_n3, () => props2.showPlayBtn);
+          on$1(_n3, "click", withModifiers(toggle, ["stop"]));
+          applyVShow(_n4, () => props2.showProgress);
+          const _x4 = txt(_n4);
+          setNodes(_x4, () => formatTime(videoState.currentTime));
+          on$1(_n5, "click", withModifiers(clickProgress, ["stop"]));
+          applyVShow(_n5, () => props2.showProgress);
+          applyVShow(_n10, () => props2.showProgress);
+          const _x10 = txt(_n10);
+          setNodes(_x10, () => formatTime(videoState.currentDuration));
+          applyVShow(_n11, () => props2.danmuBtn);
+          on$1(_n11, "click", withModifiers(toggleDanmu, ["stop"]));
+          applyVShow(_n12, () => props2.showFullscreenBtn);
+          on$1(_n12, "click", withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"]));
+          applyVShow(_n13, () => videoState.start && danmuState.enable);
+          setNodes(_n14, () => controlsState.centerPlayBtnShow && (() => {
+            const _n02 = _t3$4();
+            const _n16 = child(_n02);
+            on$1(_n02, "click", withModifiers(() => {
+            }, ["stop"]));
+            on$1(_n16, "click", withModifiers(play, ["stop"]));
+            return _n02;
+          })());
+          renderEffect(() => {
+            setDynamicProps(_n1, [
+              {
+                style: { "object-fit": props2.objectFit },
+                muted: !!props2.muted,
+                loop: !!props2.loop,
+                src: videoState.src,
+                poster: props2.poster,
+                autoplay: !!props2.autoplay
+              },
+              videoAttrs.value,
+              {
+                class: {
+                  "uni-video-video": true,
+                  "uni-video-video-fullscreen": fullscreenState.fullscreen
+                },
+                "webkit-playsinline": true,
+                playsinline: true
+              }
+            ]);
+            _setTemplateRef(_n1, videoRef);
+            setClassName(_n3, 1 | 2 | (!videoState.playing ? 4 : 0) | (videoState.playing ? 8 : 0), [
+              " uni-video-icon",
+              " uni-video-control-button",
+              " uni-video-control-button-play",
+              " uni-video-control-button-pause"
+            ]);
+            setClassName(_n9, 1 | (progressing.value ? 2 : 0), [" uni-video-progress", " uni-video-progress-progressing"]);
+            setStyle(_n6, {
+              width: videoState.buffered - videoState.progress + "%",
+              left: videoState.progress + "%"
+            });
+            setStyle(_n7, { width: videoState.progress + "%" });
+            setStyle(_n8, { left: videoState.progress + "%" });
+            setClassName(_n8, 1 | (progressing.value ? 2 : 0), [" uni-video-ball", " uni-video-ball-progressing"]);
+            _setTemplateRef(_n8, ballRef);
+            _setTemplateRef(_n5, progressRef);
+            setClassName(_n11, 1 | 2 | (danmuState.enable ? 4 : 0), [
+              " uni-video-icon",
+              " uni-video-danmu-button",
+              " uni-video-danmu-button-active"
+            ]);
+            setClassName(_n12, 1 | 2 | (fullscreenState.fullscreen ? 4 : 0), [
+              " uni-video-icon",
+              " uni-video-fullscreen",
+              " uni-video-type-fullscreen"
+            ]);
+            _setTemplateRef(_n13, danmuRef);
+          });
+          setInsertionState(_n27);
+          createIf(() => gestureState.gestureType === "volume", () => {
+            const _n24 = _t1$8();
+            const _n23 = child(_n24);
+            const _n22 = next(_n23);
+            renderEffect(() => setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
+            setInsertionState(_n24, _n23);
+            createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
+              const _n19 = _t0$a();
+              return _n19;
+            }, () => {
+              const _n21 = createNodes(() => !gestureState.toastThin && (() => {
+                const _n02 = _t4$4();
+                return _n02;
+              })());
+              return _n21;
+            }, 265);
+            setStyle(_n24, { marginTop: `5px` });
+            renderEffect(() => setStyle(_n22, { width: `${gestureState.volumeNew * 100}%` }));
+            return _n24;
+          }, () => {
+            const _n26 = createNodes(null);
+            return _n26;
+          }, 521);
+          const _x28 = txt(_n28);
+          setNodes(_x28, () => formatTime(gestureState.currentTimeNew));
+          setNodes(_n29, " / ", () => formatTime(videoState.currentDuration));
+          const _x31 = txt(_n31);
+          setNodes(_x31, () => slots.default && slots.default());
+          renderEffect(() => {
+            setClassName(_n30, 1 | (progressing.value ? 2 : 0), [" uni-video-toast", " uni-video-toast-progress"]);
+            _setTemplateRef(_n0, containerRef);
+          });
+          return _n0;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n32, rootRef));
+        return _n32;
+      })();
     };
   }
 });
@@ -21231,12 +21386,10 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$a = {
-  src: {
-    type: String,
-    default: ""
-  }
-};
+const props$a = { src: {
+  type: String,
+  default: ""
+} };
 class UniWebViewElement extends UniElement {
 }
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
@@ -21248,19 +21401,11 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
     name: "uni-web-view",
     class: UniWebViewElement
   },
-  setup(props2, {
-    emit: emit2
-  }) {
+  setup(props2, { emit: emit2 }) {
     Invoke();
     const rootRef = ref(null);
     const iframeRef = ref(null);
-    const {
-      $attrs,
-      $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
+    const { $attrs, $excludeAttrs, $listeners } = useAttrs({ excludeListeners: true });
     const trigger = useCustomEvent(rootRef, emit2);
     const renderIframe = () => {
       const iframe = document.createElement("iframe");
@@ -21293,11 +21438,15 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      return createVNode("uni-web-view", mergeProps({
-        "class": "uni-webview"
-      }, $listeners.value, $excludeAttrs.value, {
-        "ref": rootRef
-      }), null, 16);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = createPlainElement("uni-web-view", {
+          class: "uni-webview",
+          $: [() => $listeners.value, () => $excludeAttrs.value]
+        }, null, true);
+        renderEffect(() => _setTemplateRef(_n0, rootRef));
+        return _n0;
+      })();
     };
   }
 });
@@ -21964,9 +22113,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               if (getIsAMap()) {
                 const callback = () => {
                   if (id2 !== "") {
-                    trigger("callouttap", {}, {
-                      markerId: Number(id2)
-                    });
+                    trigger("callouttap", {}, { markerId: Number(id2) });
                   }
                 };
                 callout = marker.callout = new maps2.Callout(calloutStyle, callback);
@@ -21974,9 +22121,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
                 callout = marker.callout = new maps2.Callout(calloutStyle);
                 callout.div.onclick = function($event) {
                   if (id2 !== "") {
-                    trigger("callouttap", $event, {
-                      markerId: Number(id2)
-                    });
+                    trigger("callouttap", $event, { markerId: Number(id2) });
                   }
                   $event.stopPropagation();
                   $event.preventDefault();
@@ -22206,18 +22351,8 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
           path.push(pointPosition);
         });
         const strokeWeight = Number(option.width) || 1;
-        const {
-          r: sr,
-          g: sg,
-          b: sb,
-          a: sa
-        } = hexToRgba(option.color);
-        const {
-          r: br,
-          g: bg,
-          b: bb,
-          a: ba
-        } = hexToRgba(option.borderColor);
+        const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color);
+        const { r: br, g: bg, b: bb, a: ba } = hexToRgba(option.borderColor);
         const polylineOptions = {
           map,
           clickable: false,
@@ -22324,18 +22459,8 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
           circleOptions.fillColor = option.fillColor || "#000";
           circleOptions.fillOpacity = 1;
         } else {
-          const {
-            r: fr,
-            g: fg,
-            b: fb,
-            a: fa
-          } = hexToRgba(option.fillColor);
-          const {
-            r: sr,
-            g: sg,
-            b: sb,
-            a: sa
-          } = hexToRgba(option.color);
+          const { r: fr, g: fg, b: fb, a: fa } = hexToRgba(option.fillColor);
+          const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color);
           if ("Color" in maps2) {
             circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
             circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
@@ -22371,6 +22496,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
+const _t0$9 = template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
 const props$6 = {
   id: {
     type: [Number, String],
@@ -22410,20 +22536,20 @@ const MapControl = /* @__PURE__ */ defineSystemComponent({
     });
     const handleClick = ($event) => {
       if (props2.clickable) {
-        props2.trigger("controltap", $event, {
-          controlId: props2.id
-        });
+        props2.trigger("controltap", $event, { controlId: props2.id });
       }
     };
     return () => {
-      return createVNode("div", {
-        "class": "uni-map-control"
-      }, [createVNode("img", {
-        "src": imgPath.value,
-        "style": positionStyle.value,
-        "class": "uni-map-control-icon",
-        "onClick": handleClick
-      }, null, 12, ["src", "onClick"])]);
+      return (() => {
+        const _n1 = _t0$9();
+        const _n0 = child(_n1);
+        on$1(_n0, "click", handleClick);
+        renderEffect(() => {
+          setProp(_n0, "src", imgPath.value);
+          setStyle(_n0, positionStyle.value);
+        });
+        return _n1;
+      })();
     };
   }
 });
@@ -24590,14 +24716,12 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
   GetLocationProtocol,
   GetLocationOptions
 );
+const _t0$8 = template("<div class=map-move> ");
+const _t1$7 = template("<div class=uni-system-open-location><!><div class=info><div class=name> </div><div class=address> </div><div class=nav> </div></div><div class=nav-btn-back> ", 1);
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
 const props$5 = {
-  latitude: {
-    type: Number
-  },
-  longitude: {
-    type: Number
-  },
+  latitude: { type: Number },
+  longitude: { type: Number },
   scale: {
     type: Number,
     default: 18
@@ -24650,17 +24774,12 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
   props: props$5,
   emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
+  setup(props2, { emit: emit2 }) {
     const state2 = useState$1(props2);
     usePreventScroll();
     getLocation({
       type: "gcj02",
-      success: ({
-        latitude,
-        longitude
-      }) => {
+      success: ({ latitude, longitude }) => {
         state2.location.latitude = latitude;
         state2.location.longitude = longitude;
       }
@@ -24690,42 +24809,47 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
     function back() {
       emit2("close");
     }
-    function setCenter({
-      latitude,
-      longitude
-    }) {
+    function setCenter({ latitude, longitude }) {
       state2.center.latitude = latitude;
       state2.center.longitude = longitude;
     }
     return () => {
-      return createVNode("div", {
-        "class": "uni-system-open-location"
-      }, [createVNode(Map$1, {
-        "latitude": state2.center.latitude,
-        "longitude": state2.center.longitude,
-        "class": "map",
-        "markers": [state2.marker, state2.location],
-        "onRegionchange": onRegionChange
-      }, {
-        default: () => [createVNode("div", {
-          "class": "map-move",
-          "onClick": () => setCenter(state2.location)
-        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
-      }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
-        "class": "info"
-      }, [createVNode("div", {
-        "class": "name",
-        "onClick": () => setCenter(state2.marker)
-      }, [props2.name], 8, ["onClick"]), createVNode("div", {
-        "class": "address",
-        "onClick": () => setCenter(state2.marker)
-      }, [props2.address], 8, ["onClick"]), createVNode("div", {
-        "class": "nav",
-        "onClick": nav
-      }, [createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26)], 8, ["onClick"])]), createVNode("div", {
-        "class": "nav-btn-back",
-        "onClick": back
-      }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])]);
+      return (() => {
+        const _n7 = _t1$7();
+        const _n6 = child(_n7);
+        let _p0 = next(_n6);
+        const _n2 = child(_p0);
+        const _n3 = next(_n2);
+        const _n4 = next(_n3);
+        const _n5 = next(_p0);
+        setInsertionState(_n7, _n6);
+        createComponent(Map$1, {
+          latitude: () => state2.center.latitude,
+          longitude: () => state2.center.longitude,
+          class: "map",
+          markers: () => [state2.marker, state2.location],
+          onRegionchange: () => onRegionChange
+        }, () => {
+          const _n0 = _t0$8();
+          on$1(_n0, "click", () => setCenter(state2.location));
+          const _x0 = txt(_n0);
+          setNodes(_x0, () => createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24));
+          return _n0;
+        });
+        on$1(_n2, "click", () => setCenter(state2.marker));
+        const _x2 = txt(_n2);
+        setNodes(_x2, () => props2.name);
+        on$1(_n3, "click", () => setCenter(state2.marker));
+        const _x3 = txt(_n3);
+        setNodes(_x3, () => props2.address);
+        on$1(_n4, "click", nav);
+        const _x4 = txt(_n4);
+        setNodes(_x4, () => createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26));
+        on$1(_n5, "click", back);
+        const _x5 = txt(_n5);
+        setNodes(_x5, () => createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26));
+        return _n7;
+      })();
     };
   }
 });
@@ -24913,6 +25037,11 @@ if (process.env.NODE_ENV !== "production" && !process.env.UNI_AUTOMATOR_WS_ENDPO
     }, Promise.resolve());
   });
 }
+const _t0$7 = template('<div class=uni-mask style="background: transparent;">');
+const _t1$6 = template("<div class=uni-sample-toast><p class=uni-simple-toast__text> ");
+const _t2$3 = template("<img>");
+const _t3$3 = template("<div class=uni-toast><!><p class=uni-toast__content> ");
+const _t4$3 = template("<i>", 1);
 const props$4 = {
   title: {
     type: String,
@@ -24936,9 +25065,7 @@ const props$4 = {
     type: Boolean,
     default: false
   },
-  visible: {
-    type: Boolean
-  }
+  visible: { type: Boolean }
 };
 const ToastIconClassName = "uni-toast__icon";
 const ICONCOLOR = {
@@ -24952,47 +25079,64 @@ const Toast = /* @__PURE__ */ defineComponent({
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
-    const {
-      Icon
-    } = useToastIcon(props2);
+    const { Icon } = useToastIcon(props2);
     const visible = usePopup(props2, {});
     return () => {
-      const {
-        mask,
-        duration,
-        title,
-        image: image2
-      } = props2;
-      return createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("uni-toast", {
-          "data-duration": duration
-        }, [mask ? createVNode("div", {
-          "class": "uni-mask",
-          "style": "background: transparent;",
-          "onTouchmove": onEventPrevent
-        }, null, 40, ["onTouchmove"]) : "", !image2 && !Icon.value ? createVNode("div", {
-          "class": "uni-sample-toast"
-        }, [createVNode("p", {
-          "class": "uni-simple-toast__text"
-        }, [title])]) : createVNode("div", {
-          "class": "uni-toast"
-        }, [image2 ? createVNode("img", {
-          "src": image2,
-          "class": ToastIconClassName
-        }, null, 10, ["src"]) : Icon.value, createVNode("p", {
-          "class": "uni-toast__content"
-        }, [title])])], 8, ["data-duration"]), [[vShow, visible.value]])]
-      });
+      const { mask, duration, title, image: image2 } = props2;
+      return (() => {
+        const _n19 = createComponent(Transition, {
+          name: "uni-fade",
+          persisted: true
+        }, () => {
+          const _n0 = createPlainElement("uni-toast", { "data-duration": () => duration }, extend$1(() => {
+            const _n1 = createIf(() => mask, () => {
+              const _n3 = _t0$7();
+              on$1(_n3, "touchmove", onEventPrevent);
+              return _n3;
+            }, () => {
+              const _n5 = createNodes("");
+              return _n5;
+            }, 393);
+            const _n6 = createIf(() => !image2 && !Icon.value, () => {
+              const _n9 = _t1$6();
+              const _n8 = child(_n9);
+              const _x8 = txt(_n8);
+              setNodes(_x8, () => title);
+              return _n9;
+            }, () => {
+              const _n18 = _t3$3();
+              const _n17 = child(_n18);
+              const _n16 = next(_n17);
+              setInsertionState(_n18, _n17);
+              createIf(() => image2, () => {
+                const _n13 = _t2$3();
+                renderEffect(() => {
+                  setProp(_n13, "src", image2);
+                  setClass(_n13, ToastIconClassName);
+                });
+                return _n13;
+              }, () => {
+                const _n15 = createNodes(() => Icon.value);
+                return _n15;
+              }, 777);
+              const _x16 = txt(_n16);
+              setNodes(_x16, () => title);
+              return _n18;
+            }, 645);
+            return [_n1, _n6];
+          }, { _: 1 }));
+          applyVShow(_n0, () => visible.value);
+          return _n0;
+        }, true);
+        return _n19;
+      })();
     };
   }
 });
 function useToastIcon(props2) {
-  const iconColor = ref(getIconColor(getTheme() ?? "light"));
-  const _onThemeChange = ({
-    theme
-  }) => iconColor.value = getIconColor(theme);
+  var _a;
+  const iconColor = ref(getIconColor((_a = getTheme()) != null ? _a : "light"));
+  const _onThemeChange = ({ theme }) => iconColor.value = getIconColor(theme);
   watchEffect(() => {
     if (props2.visible) {
       onThemeChange$2(_onThemeChange);
@@ -25003,24 +25147,20 @@ function useToastIcon(props2) {
   const Icon = computed(() => {
     switch (props2.icon) {
       case "success":
-        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, iconColor.value, 38), {
-          class: ToastIconClassName
-        });
+        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, iconColor.value, 38), { class: ToastIconClassName });
       case "error":
-        return createVNode(createSvgIconVNode(ICON_PATH_WARN, iconColor.value, 38), {
-          class: ToastIconClassName
-        });
+        return createVNode(createSvgIconVNode(ICON_PATH_WARN, iconColor.value, 38), { class: ToastIconClassName });
       case "loading":
-        return createVNode("i", {
-          "class": [ToastIconClassName, "uni-loading"]
-        }, null, 2);
+        return (() => {
+          const _n0 = _t4$3();
+          renderEffect(() => setClass(_n0, [ToastIconClassName, "uni-loading"]));
+          return _n0;
+        })();
       default:
         return null;
     }
   });
-  return {
-    Icon
-  };
+  return { Icon };
 }
 let showToastState;
 let showType = "";
@@ -25484,6 +25624,15 @@ const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(
   SetTabBarBadgeProtocol,
   SetTabBarBadgeOptions
 );
+const _t0$6 = template("<div class=uni-tabbar><div class=uni-tabbar-border></div> </div>");
+const _t1$5 = template("<div class=uni-placeholder>");
+const _t2$2 = template("<div class=uni-tabbar__item> ", 1);
+const _t3$2 = template("<div class=uni-tabbar__bd> ", 1);
+const _t4$2 = template("<div> ", 1);
+const _t5$1 = template("<img>", 1);
+const _t6$1 = template("<div class=uni-tabbar__iconfont> ", 1);
+const _t7 = template("<div class=uni-tabbar__label> ", 1);
+const _t8 = template("<div class=uni-tabbar__item><div class=uni-tabbar__mid> </div> ", 1);
 const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
 const _middleButton = {
   width: "50px",
@@ -25498,11 +25647,7 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
     useVisibleList(tabBar, visibleList);
     useTabBarCssVar(tabBar);
     const onSwitchTab = useSwitchTab(useRoute(), tabBar, visibleList);
-    const {
-      style,
-      borderStyle,
-      placeholderStyle
-    } = useTabBarStyle(tabBar);
+    const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar);
     onMounted(() => {
       if (tabBar.iconfontSrc) {
         loadFontFace({
@@ -25513,32 +25658,32 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
     });
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar, onSwitchTab, visibleList);
-      return createVNode("uni-tabbar", {
-        "class": "uni-tabbar-" + tabBar.position
-      }, [createVNode("div", {
-        "class": "uni-tabbar",
-        "style": style.value
-      }, [createVNode("div", {
-        "class": "uni-tabbar-border",
-        "style": borderStyle.value
-      }, null, 4), tabBarItemsTsx], 4), createVNode("div", {
-        "class": "uni-placeholder",
-        "style": placeholderStyle.value
-      }, null, 4)], 2);
+      return (() => {
+        const _n4 = createPlainElement("uni-tabbar", { class: () => "uni-tabbar-" + tabBar.position }, () => {
+          const _n2 = _t0$6();
+          const _n0 = child(_n2);
+          const _n1 = next(_n0, true);
+          const _n3 = _t1$5();
+          setNodes(_n1, () => tabBarItemsTsx);
+          renderEffect(() => {
+            setStyle(_n2, style.value);
+            setStyle(_n0, borderStyle.value);
+            setStyle(_n3, placeholderStyle.value);
+          });
+          return [_n2, _n3];
+        }, true);
+        return _n4;
+      })();
     };
   }
 });
 function useTabBarCssVar(tabBar) {
   watch(() => tabBar.shown, (value) => {
-    updatePageCssVar({
-      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar.height) : 0)
-    });
+    updatePageCssVar({ "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar.height) : 0) });
   });
 }
 function useVisibleList(tabBar, visibleList) {
-  const internalMidButton = ref(extend({
-    type: "midButton"
-  }, tabBar.midButton));
+  const internalMidButton = ref(extend({ type: "midButton" }, tabBar.midButton));
   function setVisibleList() {
     let tempList = [];
     tempList = tabBar.list.filter((item) => item.visible !== false);
@@ -25563,17 +25708,12 @@ function useSwitchTab(route, tabBar, visibleList) {
     }
   });
   return (tabBarItem, index2) => {
-    const {
-      type
-    } = tabBarItem;
+    const { type } = tabBarItem;
     return () => {
       if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && type === "midButton") {
         return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
       }
-      const {
-        pagePath,
-        text: text2
-      } = tabBarItem;
+      const { pagePath, text: text2 } = tabBarItem;
       let url = addLeadingSlash(pagePath);
       if (url === __uniRoutes[0].alias) {
         url = "/";
@@ -25621,23 +25761,14 @@ function useTabBarStyle(tabBar) {
     };
   });
   const borderStyle = computed(() => {
-    const {
-      borderStyle: borderStyle2,
-      borderColor
-    } = tabBar;
+    const { borderStyle: borderStyle2, borderColor } = tabBar;
     if (borderColor && isString(borderColor)) {
-      return {
-        backgroundColor: borderColor
-      };
+      return { backgroundColor: borderColor };
     }
-    return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
-    };
+    return { backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"] };
   });
   const placeholderStyle = computed(() => {
-    return {
-      height: tabBar.height
-    };
+    return { height: tabBar.height };
   });
   return {
     style,
@@ -25649,11 +25780,7 @@ function isMidButton(item) {
   return item.type === "midButton";
 }
 function createTabBarItemsTsx(tabBar, onSwitchTab, visibleList) {
-  const {
-    selectedIndex,
-    selectedColor,
-    color
-  } = tabBar;
+  const { selectedIndex, selectedColor, color } = tabBar;
   return visibleList.value.map((item, index2) => {
     const selected = selectedIndex === index2;
     const textColor = selected ? selectedColor : color;
@@ -25667,52 +25794,54 @@ function createTabBarItemsTsx(tabBar, onSwitchTab, visibleList) {
   });
 }
 function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar, index2, onSwitchTab) {
-  return createVNode("div", {
-    "key": index2,
-    "class": "uni-tabbar__item",
-    "onClick": onSwitchTab(tabBarItem, index2)
-  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar)], 8, ["onClick"]);
+  return (() => {
+    const _n0 = createKeyedFragment(() => index2, () => {
+      const _n2 = _t2$2();
+      on$1(_n2, "click", onSwitchTab(tabBarItem, index2));
+      const _x2 = txt(_n2);
+      setNodes(_x2, () => createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar));
+      return _n2;
+    });
+    return _n0;
+  })();
 }
 function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar) {
-  const {
-    height
-  } = tabBar;
-  return createVNode("div", {
-    "class": "uni-tabbar__bd",
-    "style": {
-      height
-    }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+  const { height } = tabBar;
+  return (() => {
+    const _n0 = _t3$2();
+    const _x0 = txt(_n0);
+    setNodes(_x0, () => iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar), () => tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar), () => tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge));
+    renderEffect(() => setStyle(_n0, { height }));
+    return _n0;
+  })();
 }
 function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
-  const {
-    type,
-    text: text2
-  } = tabBarItem;
-  const {
-    iconWidth
-  } = tabBar;
+  const { type, text: text2 } = tabBarItem;
+  const { iconWidth } = tabBar;
   const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
     height: iconWidth
   };
-  return createVNode("div", {
-    "class": clazz2,
-    "style": style
-  }, [type !== "midButton" && createVNode("img", {
-    "src": getRealPath(iconPath)
-  }, null, 8, ["src"])], 6);
+  return (() => {
+    const _n0 = _t4$2();
+    const _x0 = txt(_n0);
+    setNodes(_x0, () => type !== "midButton" && (() => {
+      const _n02 = _t5$1();
+      renderEffect(() => setProp(_n02, "src", getRealPath(iconPath)));
+      return _n02;
+    })());
+    renderEffect(() => {
+      setClass(_n0, clazz2);
+      setStyle(_n0, style);
+    });
+    return _n0;
+  })();
 }
 function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar) {
   var _a;
-  const {
-    type,
-    text: text2
-  } = tabBarItem;
-  const {
-    iconWidth
-  } = tabBar;
+  const { type, text: text2 } = tabBarItem;
+  const { iconWidth } = tabBar;
   const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
   const style = {
     width: iconWidth,
@@ -25722,70 +25851,90 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
     fontSize: ((_a = tabBarItem.iconfont) == null ? void 0 : _a.fontSize) || iconWidth,
     color: iconfontColor
   };
-  return createVNode("div", {
-    "class": clazz2,
-    "style": style
-  }, [type !== "midButton" && createVNode("div", {
-    "class": "uni-tabbar__iconfont",
-    "style": iconfontStyle
-  }, [iconfontText], 4)], 6);
+  return (() => {
+    const _n0 = _t4$2();
+    const _x0 = txt(_n0);
+    setNodes(_x0, () => type !== "midButton" && (() => {
+      const _n02 = _t6$1();
+      const _x02 = txt(_n02);
+      setNodes(_x02, () => iconfontText);
+      renderEffect(() => setStyle(_n02, iconfontStyle));
+      return _n02;
+    })());
+    renderEffect(() => {
+      setClass(_n0, clazz2);
+      setStyle(_n0, style);
+    });
+    return _n0;
+  })();
 }
 function createTabBarItemTextTsx(color, tabBarItem, tabBar) {
-  const {
-    iconPath,
-    text: text2
-  } = tabBarItem;
-  const {
-    fontSize,
-    spacing
-  } = tabBar;
+  const { iconPath, text: text2 } = tabBarItem;
+  const { fontSize, spacing } = tabBar;
   const style = {
     color,
     fontSize,
     lineHeight: !iconPath ? 1.8 : "normal",
     marginTop: !iconPath ? "inherit" : spacing
   };
-  return createVNode("div", {
-    "class": "uni-tabbar__label",
-    "style": style
-  }, [text2], 4);
+  return (() => {
+    const _n0 = _t7();
+    const _x0 = txt(_n0);
+    setNodes(_x0, () => text2);
+    renderEffect(() => setStyle(_n0, style));
+    return _n0;
+  })();
 }
 function createTabBarItemRedDotTsx(badge) {
   const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
-  return createVNode("div", {
-    "class": clazz2
-  }, [badge], 2);
+  return (() => {
+    const _n0 = _t4$2();
+    const _x0 = txt(_n0);
+    setNodes(_x0, () => badge);
+    renderEffect(() => setClass(_n0, clazz2));
+    return _n0;
+  })();
 }
 function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar, index2, onSwitchTab) {
-  const {
-    width,
-    height,
-    backgroundImage,
-    iconWidth
-  } = midButton;
-  return createVNode("div", {
-    "key": "midButton",
-    "class": "uni-tabbar__item",
-    "style": {
-      flex: "0 0 " + width,
-      position: "relative"
-    },
-    "onClick": onSwitchTab(midButton, index2)
-  }, [createVNode("div", {
-    "class": "uni-tabbar__mid",
-    "style": {
-      width,
-      height,
-      backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
-    }
-  }, [iconPath && createVNode("img", {
-    "style": {
-      width: iconWidth,
-      height: iconWidth
-    },
-    "src": getRealPath(iconPath)
-  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar)], 12, ["onClick"]);
+  const { width, height, backgroundImage, iconWidth } = midButton;
+  return (() => {
+    const _n0 = _t8();
+    const _n1 = child(_n0);
+    const _n2 = next(_n1, true);
+    setBlockKey(_n0, "midButton");
+    on$1(_n0, "click", onSwitchTab(midButton, index2));
+    const _x1 = txt(_n1);
+    setNodes(_x1, () => iconPath && (() => {
+      const _n02 = _t5$1();
+      renderEffect(() => {
+        setStyle(_n02, {
+          width: iconWidth,
+          height: iconWidth
+        });
+        setProp(_n02, "src", getRealPath(iconPath));
+      });
+      return _n02;
+    })());
+    setNodes(_n2, () => createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar));
+    renderEffect(() => {
+      setStyle(_n0, {
+        flex: "0 0 " + width,
+        position: "relative"
+      });
+      setStyle(_n1, {
+        width,
+        height,
+        backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
+      });
+    });
+    return _n0;
+  })();
 }
+const _t0$5 = template("<div class=uni-top-window></div>");
+const _t1$4 = template("<div class=uni-top-window--placeholder>");
+const _t2$1 = template("<div class=uni-mask>");
+const _t3$1 = template("<div class=uni-left-window>");
+const _t4$1 = template("<div class=uni-right-window>");
 const DEFAULT_CSS_VAR_VALUE = "0px";
 let globalLayoutState = void 0;
 function getLayoutState() {
@@ -25793,16 +25942,11 @@ function getLayoutState() {
 }
 const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
-  setup(_props, {
-    emit: emit2
-  }) {
+  setup(_props, { emit: emit2 }) {
     const rootRef = ref(null);
     initCssVar();
     const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute();
-    const {
-      layoutState,
-      windowState
-    } = useState();
+    const { layoutState, windowState } = useState();
     useMaxWidth(layoutState, rootRef);
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
@@ -25813,10 +25957,15 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
     return () => {
       const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar2);
-      return createVNode("uni-app", {
-        "ref": rootRef,
-        "class": clazz2.value
-      }, [layoutTsx, tabBarTsx], 2);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n2 = createPlainElement("uni-app", { class: () => clazz2.value }, extend$1(() => {
+          const _n0 = createNodes(() => layoutTsx, () => tabBarTsx);
+          return _n0;
+        }, { _: 1 }), true);
+        renderEffect(() => _setTemplateRef(_n2, rootRef));
+        return _n2;
+      })();
     };
   }
 });
@@ -25902,18 +26051,12 @@ function useState() {
       leftWindowWidth: 0,
       rightWindowWidth: 0
     });
-    watch(() => layoutState2.marginWidth, (value) => updateCssVar({
-      "--window-margin": value + "px"
-    }));
+    watch(() => layoutState2.marginWidth, (value) => updateCssVar({ "--window-margin": value + "px" }));
     watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
-      updateCssVar({
-        "--window-left": value + "px"
-      });
+      updateCssVar({ "--window-left": value + "px" });
     });
     watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
-      updateCssVar({
-        "--window-right": value + "px"
-      });
+      updateCssVar({ "--window-right": value + "px" });
     });
     return {
       layoutState: layoutState2,
@@ -25945,7 +26088,11 @@ function useState() {
     leftWindowStyle: {},
     rightWindowStyle: {}
   });
-  const props2 = ["topWindow", "leftWindow", "rightWindow"];
+  const props2 = [
+    "topWindow",
+    "leftWindow",
+    "rightWindow"
+  ];
   props2.forEach((prop) => {
     var _a;
     const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
@@ -25959,21 +26106,13 @@ function useState() {
     });
     layoutState[`${prop}MediaQuery`] = matches2;
   });
-  watch(() => layoutState.topWindowHeight, (value) => updateCssVar({
-    "--top-window-height": value + "px"
-  }));
-  watch(() => layoutState.marginWidth, (value) => updateCssVar({
-    "--window-margin": value + "px"
-  }));
+  watch(() => layoutState.topWindowHeight, (value) => updateCssVar({ "--top-window-height": value + "px" }));
+  watch(() => layoutState.marginWidth, (value) => updateCssVar({ "--window-margin": value + "px" }));
   watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
-    updateCssVar({
-      "--window-left": value + "px"
-    });
+    updateCssVar({ "--window-left": value + "px" });
   });
   watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
-    updateCssVar({
-      "--window-right": value + "px"
-    });
+    updateCssVar({ "--window-right": value + "px" });
   });
   UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
     layoutState.navigationBarTitleText = navigationBar.titleText;
@@ -25999,38 +26138,43 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
   const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState.value) : null;
   const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState.value) : null;
   const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState.value) : null;
-  return createVNode("uni-layout", {
-    "class": {
+  return (() => {
+    const _n5 = createPlainElement("uni-layout", { class: () => ({
       "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
       "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
       "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
-    }
-  }, [topWindowTsx, createVNode("uni-content", null, [createVNode("uni-main", null, [routerVNode]), leftWindowTsx, rightWindowTsx])], 2);
+    }) }, () => {
+      const _n0 = createNodes(() => topWindowTsx);
+      const _n4 = createPlainElement("uni-content", null, () => {
+        const _n1 = createPlainElement("uni-main", null, { $: [() => normalizeVaporSlots(routerVNode)] });
+        const _n2 = createNodes(() => leftWindowTsx, () => rightWindowTsx);
+        return [_n1, _n2];
+      });
+      return [_n0, _n4];
+    }, true);
+    return _n5;
+  })();
 }
 function useShowTabBar(emit2) {
   const route = usePageRoute();
   const tabBar = useTabBar();
   const showTabBar2 = computed(() => route.meta.isTabBar && tabBar.shown);
-  updateCssVar({
-    "--tab-bar-height": tabBar.height
-  });
+  updateCssVar({ "--tab-bar-height": tabBar.height });
   return showTabBar2;
 }
 function createTabBarTsx(showTabBar2) {
-  return withDirectives(createVNode(TabBar, null, null, 512), [[vShow, showTabBar2.value]]);
+  return (() => {
+    const _n0 = createComponent(TabBar, null, null, true);
+    applyVShow(_n0, () => showTabBar2.value);
+    return _n0;
+  })();
 }
 function createPageVNode() {
   return createVNode(__uniRoutes[0].component);
 }
-function createRouterViewVNode({
-  routeKey,
-  isTabBar,
-  routeCache: routeCache2
-}) {
+function createRouterViewVNode({ routeKey, isTabBar, routeCache: routeCache2 }) {
   return createVNode(RouterView, null, {
-    default: withCtx(({
-      Component
-    }) => [(openBlock(), createBlock(KeepAlive, {
+    default: withCtx(({ Component }) => [(openBlock(), createBlock(KeepAlive, {
       matchBy: "key",
       cache: routeCache2
     }, [(openBlock(), createBlock(resolveDynamicComponent(Component), {
@@ -26038,14 +26182,10 @@ function createRouterViewVNode({
       key: routeKey.value
     }))], 1032, ["cache"]))]),
     _: 1
-    /* STABLE */
   });
 }
 function useTopWindow(layoutState) {
-  const {
-    component,
-    style
-  } = __uniConfig.topWindow;
+  const { component, style } = __uniConfig.topWindow;
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
@@ -26075,10 +26215,7 @@ function useTopWindow(layoutState) {
   };
 }
 function useLeftWindow(layoutState) {
-  const {
-    component,
-    style
-  } = __uniConfig.leftWindow;
+  const { component, style } = __uniConfig.leftWindow;
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
@@ -26108,10 +26245,7 @@ function useLeftWindow(layoutState) {
   };
 }
 function useRightWindow(layoutState) {
-  const {
-    component,
-    style
-  } = __uniConfig.rightWindow;
+  const { component, style } = __uniConfig.rightWindow;
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
@@ -26142,60 +26276,83 @@ function useRightWindow(layoutState) {
 }
 function createTopWindowTsx(topWindow, layoutState, windowState) {
   if (topWindow) {
-    const {
-      component: TopWindow,
-      windowRef
-    } = topWindow;
-    return withDirectives(createVNode("uni-top-window", null, [createVNode("div", {
-      "class": "uni-top-window",
-      "style": layoutState.topWindowStyle
-    }, [createVNode(TopWindow, mergeProps({
-      "ref": windowRef,
-      "navigation-bar-title-text": layoutState.navigationBarTitleText
-    }, windowState), null, 16, ["navigation-bar-title-text"])], 4), createVNode("div", {
-      "class": "uni-top-window--placeholder",
-      "style": {
-        height: layoutState.topWindowHeight + "px"
-      }
-    }, null, 4)], 512), [[vShow, layoutState.showTopWindow || layoutState.apiShowTopWindow]]);
+    const { component: TopWindow, windowRef } = topWindow;
+    return (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n0 = createPlainElement("uni-top-window", null, () => {
+        const _n2 = _t0$5();
+        renderEffect(() => setStyle(_n2, layoutState.topWindowStyle));
+        setInsertionState(_n2);
+        const _n1 = createComponent(TopWindow, {
+          "navigation-bar-title-text": () => layoutState.navigationBarTitleText,
+          $: [() => windowState]
+        });
+        const _n3 = _t1$4();
+        renderEffect(() => {
+          _setTemplateRef(_n1, windowRef);
+          setStyle(_n3, { height: layoutState.topWindowHeight + "px" });
+        });
+        return [_n2, _n3];
+      }, true);
+      applyVShow(_n0, () => layoutState.showTopWindow || layoutState.apiShowTopWindow);
+      return _n0;
+    })();
   }
 }
 function createLeftWindowTsx(leftWindow, layoutState, windowState) {
   if (leftWindow) {
-    const {
-      component: LeftWindow,
-      windowRef
-    } = leftWindow;
-    return withDirectives(createVNode("uni-left-window", {
-      "data-show": layoutState.apiShowLeftWindow || void 0,
-      "style": layoutState.leftWindowStyle
-    }, [layoutState.apiShowLeftWindow ? createVNode("div", {
-      "class": "uni-mask",
-      "onClick": () => layoutState.apiShowLeftWindow = false
-    }, null, 8, ["onClick"]) : null, createVNode("div", {
-      "class": "uni-left-window"
-    }, [createVNode(LeftWindow, mergeProps({
-      "ref": windowRef
-    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showLeftWindow || layoutState.apiShowLeftWindow]]);
+    const { component: LeftWindow, windowRef } = leftWindow;
+    return (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n0 = createPlainElement("uni-left-window", {
+        "data-show": () => layoutState.apiShowLeftWindow || void 0,
+        style: () => layoutState.leftWindowStyle
+      }, () => {
+        const _n1 = createIf(() => layoutState.apiShowLeftWindow, () => {
+          const _n3 = _t2$1();
+          on$1(_n3, "click", () => layoutState.apiShowLeftWindow = false);
+          return _n3;
+        }, () => {
+          const _n5 = createNodes(null);
+          return _n5;
+        }, 265);
+        const _n7 = _t3$1();
+        setInsertionState(_n7);
+        const _n6 = createComponent(LeftWindow, { $: [() => windowState] });
+        renderEffect(() => _setTemplateRef(_n6, windowRef));
+        return [_n1, _n7];
+      }, true);
+      applyVShow(_n0, () => layoutState.showLeftWindow || layoutState.apiShowLeftWindow);
+      return _n0;
+    })();
   }
 }
 function createRightWindowTsx(rightWindow, layoutState, windowState) {
   if (rightWindow) {
-    const {
-      component: RightWindow,
-      windowRef
-    } = rightWindow;
-    return withDirectives(createVNode("uni-right-window", {
-      "data-show": layoutState.apiShowRightWindow || void 0,
-      "style": layoutState.rightWindowStyle
-    }, [layoutState.apiShowRightWindow ? createVNode("div", {
-      "class": "uni-mask",
-      "onClick": () => layoutState.apiShowRightWindow = false
-    }, null, 8, ["onClick"]) : null, createVNode("div", {
-      "class": "uni-right-window"
-    }, [createVNode(RightWindow, mergeProps({
-      "ref": windowRef
-    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
+    const { component: RightWindow, windowRef } = rightWindow;
+    return (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n0 = createPlainElement("uni-right-window", {
+        "data-show": () => layoutState.apiShowRightWindow || void 0,
+        style: () => layoutState.rightWindowStyle
+      }, () => {
+        const _n1 = createIf(() => layoutState.apiShowRightWindow, () => {
+          const _n3 = _t2$1();
+          on$1(_n3, "click", () => layoutState.apiShowRightWindow = false);
+          return _n3;
+        }, () => {
+          const _n5 = createNodes(null);
+          return _n5;
+        }, 265);
+        const _n7 = _t4$1();
+        setInsertionState(_n7);
+        const _n6 = createComponent(RightWindow, { $: [() => windowState] });
+        renderEffect(() => _setTemplateRef(_n6, windowRef));
+        return [_n1, _n7];
+      }, true);
+      applyVShow(_n0, () => layoutState.showRightWindow || layoutState.apiShowRightWindow);
+      return _n0;
+    })();
   }
 }
 const showTopWindow = /* @__PURE__ */ defineAsyncApi(
@@ -26728,15 +26885,19 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
       onUnmounted(() => removeMapChidlContext(context));
     }
     return () => {
-      return state2.latitude ? createVNode(MapMarker, mergeProps({
-        "anchor": {
-          x: 0.5,
-          y: 0.5
-        },
-        "width": "44",
-        "height": "44",
-        "iconPath": ICON_PATH_ORIGIN
-      }, state2), null, 16, ["iconPath"]) : null;
+      return state2.latitude ? (() => {
+        const _n0 = createComponent(MapMarker, {
+          anchor: {
+            x: 0.5,
+            y: 0.5
+          },
+          width: "44",
+          height: "44",
+          iconPath: () => ICON_PATH_ORIGIN,
+          $: [() => state2]
+        }, null, true);
+        return _n0;
+      })() : null;
     };
   }
 });
@@ -26780,19 +26941,9 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
     const onMapReady = inject("onMapReady");
     onMapReady((map, maps2, trigger) => {
       function drawPolygon() {
-        const {
-          points,
-          strokeWidth,
-          strokeColor,
-          dashArray,
-          fillColor,
-          zIndex
-        } = props2;
+        const { points, strokeWidth, strokeColor, dashArray, fillColor, zIndex } = props2;
         const path = points.map((item) => {
-          const {
-            latitude,
-            longitude
-          } = item;
+          const { latitude, longitude } = item;
           if (getIsAMap()) {
             return [longitude, latitude];
           } else if (getIsBMap()) {
@@ -26801,18 +26952,8 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
             return new maps2.LatLng(latitude, longitude);
           }
         });
-        const {
-          r: fcR,
-          g: fcG,
-          b: fcB,
-          a: fcA
-        } = hexToRgba(fillColor);
-        const {
-          r: scR,
-          g: scG,
-          b: scB,
-          a: scA
-        } = hexToRgba(strokeColor);
+        const { r: fcR, g: fcG, b: fcB, a: fcA } = hexToRgba(fillColor);
+        const { r: scR, g: scG, b: scB, a: scA } = hexToRgba(strokeColor);
         const polygonOptions = {
           //多边形是否可点击。
           clickable: true,
@@ -26867,6 +27008,8 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
     return () => null;
   }
 });
+const _t0$4 = template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
+const _t1$3 = template('<div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ');
 const props$2 = {
   id: {
     type: String,
@@ -27038,9 +27181,7 @@ function useMap(props2, rootRef, emit2) {
     if (isBoundsReady) {
       updateBounds();
     }
-  }, {
-    deep: true
-  });
+  }, { deep: true });
   function emitBoundsReady() {
     isBoundsReady = true;
     onBoundsReadyCallbacks.forEach((callback) => callback());
@@ -27072,10 +27213,7 @@ function useMap(props2, rootRef, emit2) {
       ;
     else {
       const bounds = new maps2.LatLngBounds();
-      state2.includePoints.forEach(({
-        latitude,
-        longitude
-      }) => {
+      state2.includePoints.forEach(({ latitude, longitude }) => {
         const latLng = new maps2.LatLng(latitude, longitude);
         bounds.extend(latLng);
       });
@@ -27292,62 +27430,89 @@ class UniMapElement extends UniElement {
 const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$2,
-  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
+  emits: [
+    "markertap",
+    "labeltap",
+    "callouttap",
+    "controltap",
+    "regionchange",
+    "tap",
+    "click",
+    "updated",
+    "update:scale",
+    "update:latitude",
+    "update:longitude"
+  ],
   rootElement: {
     name: "uni-map",
     class: UniMapElement
   },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
+  setup(props2, { emit: emit2, slots }) {
     const rootRef = ref(null);
-    const {
-      mapRef,
-      trigger
-    } = useMap(props2, rootRef, emit2);
+    const { mapRef, trigger } = useMap(props2, rootRef, emit2);
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
     });
     return () => {
-      return createVNode("uni-map", {
-        "ref": rootRef,
-        "id": props2.id
-      }, [createVNode("div", {
-        "ref": mapRef,
-        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
-      }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
-        "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
-        "trigger": trigger
-      }), null, 16, ["trigger"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
-        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
-      }, [slots.default && slots.default()])], 8, ["id"]);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n8 = createPlainElement("uni-map", { id: () => props2.id }, () => {
+          const _n0 = _t0$4();
+          const _n7 = _t1$3();
+          const _n1 = createNodes(() => props2.markers.map((item) => (() => {
+            const _n02 = createKeyedFragment(() => item.id, () => {
+              const _n2 = createComponent(MapMarker, { $: [() => item] }, null, true);
+              return _n2;
+            });
+            return _n02;
+          })()), () => props2.polyline.map((item) => (() => {
+            const _n02 = createComponent(MapPolyline, { $: [() => item] }, null, true);
+            return _n02;
+          })()), () => props2.circles.map((item) => (() => {
+            const _n02 = createComponent(MapCircle, { $: [() => item] }, null, true);
+            return _n02;
+          })()), () => props2.controls.map((item) => (() => {
+            const _n02 = createComponent(MapControl, { $: [() => item, { trigger: () => trigger }] }, null, true);
+            return _n02;
+          })()), () => props2.showLocation && (() => {
+            const _n02 = createComponent(MapLocation, null, null, true);
+            return _n02;
+          })(), () => props2.polygons.map((item) => (() => {
+            const _n02 = createComponent(MapPolygon, { $: [() => item] }, null, true);
+            return _n02;
+          })()));
+          const _x7 = txt(_n7);
+          setNodes(_x7, () => slots.default && slots.default());
+          renderEffect(() => _setTemplateRef(_n0, mapRef));
+          return [
+            _n0,
+            _n1,
+            _n7
+          ];
+        }, true);
+        renderEffect(() => _setTemplateRef(_n8, rootRef));
+        return _n8;
+      })();
     };
   }
 });
-const props$1 = {
-  scrollTop: {
-    type: [String, Number],
-    default: 0
-  }
-};
+const _t0$3 = template("<div class=uni-cover-view> ");
+const props$1 = { scrollTop: {
+  type: [String, Number],
+  default: 0
+} };
 class UniCoverViewElement extends UniElement {
 }
 const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
-  compatConfig: {
-    MODE: 3
-  },
+  compatConfig: { MODE: 3 },
   props: props$1,
   rootElement: {
     name: "uni-cover-view",
     class: UniCoverViewElement
   },
-  setup(props2, {
-    slots
-  }) {
+  setup(props2, { slots }) {
     const root = ref(null);
     const content = ref(null);
     watch(() => props2.scrollTop, (val) => {
@@ -27376,37 +27541,38 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      return createVNode("uni-cover-view", {
-        "scroll-top": props2.scrollTop,
-        "ref": root
-      }, [createVNode("div", {
-        "ref": content,
-        "class": "uni-cover-view"
-      }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n1 = createPlainElement("uni-cover-view", { "scroll-top": () => props2.scrollTop }, () => {
+          const _n0 = _t0$3();
+          const _x0 = txt(_n0);
+          setNodes(_x0, () => slots.default && slots.default());
+          renderEffect(() => _setTemplateRef(_n0, content));
+          return _n0;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n1, root));
+        return _n1;
+      })();
     };
   }
 });
+const _t0$2 = template("<img>");
+const _t1$2 = template("<div class=uni-cover-image>");
 class UniCoverImageElement extends UniElement {
 }
 const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
-  compatConfig: {
-    MODE: 3
-  },
-  props: {
-    src: {
-      type: String,
-      default: ""
-    }
-  },
+  compatConfig: { MODE: 3 },
+  props: { src: {
+    type: String,
+    default: ""
+  } },
   rootElement: {
     name: "uni-cover-image",
     class: UniCoverImageElement
   },
   emits: ["load", "error"],
-  setup(props2, {
-    emit: emit2
-  }) {
+  setup(props2, { emit: emit2 }) {
     const root = ref(null);
     const trigger = useCustomEvent(root, emit2);
     function load($event) {
@@ -27420,25 +27586,37 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      const {
-        src
-      } = props2;
-      return createVNode("uni-cover-image", {
-        "ref": root,
-        "src": src
-      }, [createVNode("div", {
-        "class": "uni-cover-image"
-      }, [src ? createVNode("img", {
-        "src": getRealPath(src),
-        "onLoad": load,
-        "onError": error
-      }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
+      const { src } = props2;
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n6 = createPlainElement("uni-cover-image", { src: () => src }, () => {
+          const _n5 = _t1$2();
+          setInsertionState(_n5);
+          createIf(() => src, () => {
+            const _n2 = _t0$2();
+            on$1(_n2, "load", load);
+            on$1(_n2, "error", error);
+            renderEffect(() => setProp(_n2, "src", getRealPath(src)));
+            return _n2;
+          }, () => {
+            const _n4 = createNodes(null);
+            return _n4;
+          }, 265);
+          return _n5;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n6, root));
+        return _n6;
+      })();
     };
   }
 });
-function _isSlot(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
+const _t0$1 = template('<div class="uni-mask uni-picker-mask">');
+const _t1$1 = template('<div><div class=uni-picker-header><div class="uni-picker-action uni-picker-action-cancel"> </div><div class="uni-picker-action uni-picker-action-confirm"> </div></div><!><div class=uni-picker-select> </div><div></div>');
+const _t2 = template("<div>");
+const _t3 = template("<div> </div>");
+const _t4 = template("<div class=uni-picker-system><input tabindex=-1>");
+const _t5 = template("<div class=uni-picker-item>", 1);
+const _t6 = template("<div>", 1);
 function getDefaultStartValue(props2) {
   if (props2.mode === mode.TIME) {
     return "00:00";
@@ -27508,8 +27686,6 @@ const mode = {
   MULTISELECTOR: "multiSelector",
   TIME: "time",
   DATE: "date"
-  // 暂不支持城市选择
-  // REGION: 'region'
 };
 const fields = {
   YEAR: "year",
@@ -27536,7 +27712,11 @@ const props = {
     default: ""
   },
   value: {
-    type: [Number, String, Array],
+    type: [
+      Number,
+      String,
+      Array
+    ],
     default: 0
   },
   mode: {
@@ -27575,50 +27755,28 @@ class UniPickerElement extends UniElement {
 }
 const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
-  compatConfig: {
-    MODE: 3
-  },
+  compatConfig: { MODE: 3 },
   props,
-  emits: ["change", "cancel", "columnchange"],
+  emits: [
+    "change",
+    "cancel",
+    "columnchange"
+  ],
   rootElement: {
     name: "uni-picker",
     class: UniPickerElement
   },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
+  setup(props2, { emit: emit2, slots }) {
     initI18nPickerMsgsOnce();
-    const {
-      t: t8
-    } = useI18n();
+    const { t: t8 } = useI18n();
     const rootRef = ref(null);
     const pickerRef = ref(null);
     const selectRef = ref(null);
     const inputRef = ref(null);
     const pickerRender = ref(false);
-    const {
-      state: state2,
-      rangeArray
-    } = usePickerState(props2);
+    const { state: state2, rangeArray } = usePickerState(props2);
     const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      system,
-      selectorTypeComputed,
-      _show,
-      _l10nColumn,
-      _l10nItem,
-      _input,
-      _fixInputPosition,
-      _pickerViewChange,
-      _cancel,
-      _change,
-      _resetFormData,
-      _getFormData,
-      _createTime,
-      _createDate,
-      _setValueSync
-    } = usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef);
+    const { system, selectorTypeComputed, _show, _l10nColumn, _l10nItem, _input, _fixInputPosition, _pickerViewChange, _cancel, _change, _resetFormData, _getFormData, _createTime, _createDate, _setValueSync } = usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef);
     usePickerWatch(state2, _cancel, _change);
     usePickerForm(_resetFormData, _getFormData);
     _createTime();
@@ -27640,102 +27798,157 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      let _slot2;
-      const {
-        visible,
-        contentVisible,
-        valueArray,
-        popupStyle,
-        valueSync
-      } = state2;
-      const {
-        rangeKey,
-        mode: mode2,
-        start,
-        end
-      } = props2;
+      const { visible, contentVisible, valueArray, popupStyle, valueSync } = state2;
+      const { rangeKey, mode: mode2, start, end } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
-      return createVNode("uni-picker", mergeProps({
-        "ref": rootRef
-      }, booleanAttrs, {
-        "onClick": withWebEvent(_show)
-      }), [pickerRender.value ? createVNode("div", {
-        "ref": pickerRef,
-        "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
-        "onWheel": onEventPrevent,
-        "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-picker-mask",
-          "onClick": withWebEvent(_cancel),
-          "onMousemove": _fixInputPosition
-        }, null, 40, ["onClick", "onMousemove"]), [[vShow, visible]])]
-      }), !system.value ? createVNode("div", {
-        "class": [{
-          "uni-picker-toggle": visible
-        }, "uni-picker-custom"],
-        "style": popupStyle.content
-      }, [createVNode("div", {
-        "class": "uni-picker-header",
-        "onClick": onEventStop
-      }, [createVNode("div", {
-        "class": "uni-picker-action uni-picker-action-cancel",
-        "onClick": withWebEvent(_cancel)
-      }, [t8("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
-        "class": "uni-picker-action uni-picker-action-confirm",
-        "onClick": _change
-      }, [t8("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
-        "value": _l10nColumn(valueArray),
-        "class": "uni-picker-content",
-        "onChange": _pickerViewChange
-      }, _isSlot(_slot2 = renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => {
-        let _slot;
-        return createVNode(PickerViewColumn, {
-          "key": index0
-        }, _isSlot(_slot = renderList(rangeItem, (item, index2) => createVNode("div", {
-          "key": index2,
-          "class": "uni-picker-item"
-        }, [typeof item === "object" ? item[rangeKey] || "" : _l10nItem(item, index0)]))) ? _slot : {
-          default: () => [_slot],
-          _: 1
-        });
-      })) ? _slot2 : {
-        default: () => [_slot2],
-        _: 1
-      }, 8, ["value", "onChange"]) : null, createVNode("div", {
-        "ref": selectRef,
-        "class": "uni-picker-select",
-        "onWheel": onEventStop,
-        "onTouchmove": onEventStop
-      }, [renderList(rangeArray.value[0], (item, index2) => createVNode("div", {
-        "key": index2,
-        "class": ["uni-picker-item", {
-          selected: valueArray[0] === index2
-        }],
-        "onClick": () => {
-          valueArray[0] = index2;
-          _change();
-        }
-      }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
-        "style": popupStyle.triangle
-      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
-        "class": "uni-picker-system",
-        "onMousemove": withWebEvent(_fixInputPosition)
-      }, [createVNode("input", {
-        "class": ["uni-picker-system_input", system.value],
-        "ref": inputRef,
-        "value": valueSync,
-        "type": mode2,
-        "tabindex": "-1",
-        "min": start,
-        "max": end,
-        "onChange": ($event) => {
-          _input($event);
-          onEventStop($event);
-        }
-      }, null, 42, ["value", "type", "min", "max", "onChange"])], 40, ["onMousemove"]) : null], 16, ["onClick"]);
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n31 = createPlainElement("uni-picker", { $: [() => booleanAttrs, { onClick: () => withWebEvent(_show) }] }, () => {
+          const _n0 = createIf(() => pickerRender.value, () => {
+            const _n2 = _t2();
+            on$1(_n2, "wheel", onEventPrevent);
+            on$1(_n2, "touchmove", onEventPrevent);
+            renderEffect(() => setClass(_n2, ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`]));
+            setInsertionState(_n2);
+            createComponent(Transition, {
+              name: "uni-fade",
+              persisted: true
+            }, () => {
+              const _n3 = _t0$1();
+              applyVShow(_n3, () => visible);
+              on$1(_n3, "click", withWebEvent(_cancel));
+              on$1(_n3, "mousemove", _fixInputPosition);
+              return _n3;
+            });
+            setInsertionState(_n2, 1);
+            createIf(() => !system.value, () => {
+              const _n19 = _t1$1();
+              const _n7 = child(_n19);
+              const _n8 = child(_n7);
+              const _n9 = next(_n8);
+              const _n18 = next(_n7);
+              const _n16 = next(_n18);
+              const _n17 = next(_n16);
+              on$1(_n7, "click", onEventStop);
+              on$1(_n8, "click", withWebEvent(_cancel));
+              const _x8 = txt(_n8);
+              setNodes(_x8, () => t8("uni.picker.cancel"));
+              on$1(_n9, "click", _change);
+              const _x9 = txt(_n9);
+              setNodes(_x9, () => t8("uni.picker.done"));
+              renderEffect(() => {
+                setClassName(_n19, visible ? 1 : 0, "uni-picker-toggle", "", "uni-picker-custom");
+                setStyle(_n19, popupStyle.content);
+              });
+              setInsertionState(_n19, _n18);
+              createIf(() => contentVisible, () => {
+                const _n13 = createComponent(PickerView, {
+                  value: () => _l10nColumn(valueArray),
+                  class: "uni-picker-content",
+                  onChange: () => _pickerViewChange
+                }, extend$1(() => {
+                  const _n12 = createNodes(() => renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => (() => {
+                    const _n02 = createKeyedFragment(() => index0, () => {
+                      const _n3 = createComponent(PickerViewColumn, null, extend$1(() => {
+                        const _n22 = createNodes(() => renderList(rangeItem, (item, index2) => (() => {
+                          const _n03 = createKeyedFragment(() => index2, () => {
+                            const _n72 = _t5();
+                            setInsertionState(_n72);
+                            createIf(() => typeof item === "object", () => {
+                              const _n42 = createNodes(() => item[rangeKey] || "");
+                              return _n42;
+                            }, () => {
+                              const _n6 = createNodes(() => _l10nItem(item, index0));
+                              return _n6;
+                            }, 266);
+                            return _n72;
+                          });
+                          return _n03;
+                        })()));
+                        return _n22;
+                      }, { _: 1 }), true);
+                      return _n3;
+                    });
+                    return _n02;
+                  })()));
+                  return _n12;
+                }, { _: 1 }));
+                return _n13;
+              }, () => {
+                const _n15 = createNodes(null);
+                return _n15;
+              }, 265);
+              on$1(_n16, "wheel", onEventStop);
+              on$1(_n16, "touchmove", onEventStop);
+              const _x16 = txt(_n16);
+              setNodes(_x16, () => renderList(rangeArray.value[0], (item, index2) => (() => {
+                const _n02 = createKeyedFragment(() => index2, () => {
+                  const _n22 = _t6();
+                  on$1(_n22, "click", () => {
+                    valueArray[0] = index2;
+                    _change();
+                  });
+                  renderEffect(() => setClassName(_n22, valueArray[0] === index2 ? 1 : 0, " selected", "uni-picker-item"));
+                  setInsertionState(_n22);
+                  createIf(() => typeof item === "object", () => {
+                    const _n52 = createNodes(() => item[rangeKey] || "");
+                    return _n52;
+                  }, () => {
+                    const _n72 = createNodes(() => item);
+                    return _n72;
+                  }, 266);
+                  return _n22;
+                });
+                return _n02;
+              })()));
+              renderEffect(() => {
+                _setTemplateRef(_n16, selectRef);
+                setStyle(_n17, popupStyle.triangle);
+              });
+              return _n19;
+            }, () => {
+              const _n21 = createNodes(null);
+              return _n21;
+            }, 521);
+            renderEffect(() => _setTemplateRef(_n2, pickerRef));
+            return _n2;
+          }, () => {
+            const _n23 = createNodes(null);
+            return _n23;
+          }, 777);
+          const _n24 = _t3();
+          const _x24 = txt(_n24);
+          setNodes(_x24, () => slots.default && slots.default());
+          const _n25 = createIf(() => system.value, () => {
+            const _n27 = _t4();
+            const _n28 = child(_n27);
+            on$1(_n27, "mousemove", withWebEvent(_fixInputPosition));
+            on$1(_n28, "change", ($event) => {
+              _input($event);
+              onEventStop($event);
+            });
+            renderEffect(() => {
+              setClass(_n28, ["uni-picker-system_input", system.value]);
+              setValue(_n28, valueSync);
+              setProp(_n28, "type", mode2);
+              setProp(_n28, "min", start);
+              setProp(_n28, "max", end);
+              _setTemplateRef(_n28, inputRef);
+            });
+            return _n27;
+          }, () => {
+            const _n30 = createNodes(null);
+            return _n30;
+          }, 1033);
+          return [
+            _n0,
+            _n24,
+            _n25
+          ];
+        }, true);
+        renderEffect(() => _setTemplateRef(_n31, rootRef));
+        return _n31;
+      })();
     };
   }
 });
@@ -27773,7 +27986,11 @@ function usePickerState(props2) {
           case fields.MONTH:
             return [dateArray[0], dateArray[1]];
           default:
-            return [dateArray[0], dateArray[1], dateArray[2]];
+            return [
+              dateArray[0],
+              dateArray[1],
+              dateArray[2]
+            ];
         }
       }
     }
@@ -27973,14 +28190,10 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
         valueArray = [...val];
         break;
       case mode.TIME:
-        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
-          mode: mode.TIME
-        }));
+        valueArray = getDateValueArray(props2, state2, val, formatDateTime({ mode: mode.TIME }));
         break;
       case mode.DATE:
-        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
-          mode: mode.DATE
-        }));
+        valueArray = getDateValueArray(props2, state2, val, formatDateTime({ mode: mode.DATE }));
         break;
       default:
         valueArray = [val];
@@ -28007,22 +28220,12 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     state2.valueChangeSource = "click";
     const value = _getValue();
     state2.valueSync = isArray(value) ? value.map((val) => val) : value;
-    trigger("change", {}, {
-      value
-    });
+    trigger("change", {}, { value });
   }
   function _cancel($event) {
     if (system.value === "firefox" && $event) {
-      const {
-        top,
-        left,
-        width,
-        height
-      } = state2.popover;
-      const {
-        pageX,
-        pageY
-      } = $event;
+      const { top, left, width, height } = state2.popover;
+      const { pageX, pageY } = $event;
       if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
         return;
       }
@@ -28063,9 +28266,7 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     state2.valueArray = _l10nColumn(event.detail.value, true);
   }
   function _l10nColumn(array, normalize) {
-    const {
-      getLocale: getLocale2
-    } = useI18n();
+    const { getLocale: getLocale2 } = useI18n();
     if (props2.mode === mode.DATE) {
       const locale = getLocale2();
       if (!locale.startsWith("zh")) {
@@ -28078,9 +28279,21 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
             switch (locale) {
               case "es":
               case "fr":
-                return [array[2], array[1], array[0]];
+                return [
+                  array[2],
+                  array[1],
+                  array[0]
+                ];
               default:
-                return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
+                return normalize ? [
+                  array[2],
+                  array[0],
+                  array[1]
+                ] : [
+                  array[1],
+                  array[2],
+                  array[0]
+                ];
             }
         }
       }
@@ -28088,25 +28301,66 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     return array;
   }
   function _l10nItem(item, index2) {
-    const {
-      getLocale: getLocale2
-    } = useI18n();
+    const { getLocale: getLocale2 } = useI18n();
     if (props2.mode === mode.DATE) {
       const locale = getLocale2();
       if (locale.startsWith("zh")) {
-        const array = ["年", "月", "日"];
+        const array = [
+          "年",
+          "月",
+          "日"
+        ];
         return item + array[index2];
       } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
         let array;
         switch (locale) {
           case "es":
-            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "​​julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            array = [
+              "enero",
+              "febrero",
+              "marzo",
+              "abril",
+              "mayo",
+              "junio",
+              "​​julio",
+              "agosto",
+              "septiembre",
+              "octubre",
+              "noviembre",
+              "diciembre"
+            ];
             break;
           case "fr":
-            array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+            array = [
+              "janvier",
+              "février",
+              "mars",
+              "avril",
+              "mai",
+              "juin",
+              "juillet",
+              "août",
+              "septembre",
+              "octobre",
+              "novembre",
+              "décembre"
+            ];
             break;
           default:
-            array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            array = [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December"
+            ];
             break;
         }
         return array[Number(item) - 1];
@@ -28125,12 +28379,12 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
       }, 300);
     }
   });
-  watch([() => props2.mode, () => props2.value, () => props2.range], _setValueSync, {
-    deep: true
-  });
-  watch(() => state2.valueSync, _setValueArray, {
-    deep: true
-  });
+  watch([
+    () => props2.mode,
+    () => props2.value,
+    () => props2.range
+  ], _setValueSync, { deep: true });
+  watch(() => state2.valueSync, _setValueArray, { deep: true });
   watch(() => state2.valueArray, (val) => {
     if (props2.mode === mode.TIME || props2.mode === mode.DATE) {
       const getValue = props2.mode === mode.TIME ? _getTimeValue : _getDateValue;
@@ -28183,10 +28437,7 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
   };
 }
 function usePickerWatch(state2, _cancel, _change) {
-  const {
-    key,
-    disable
-  } = useKeyboard();
+  const { key, disable } = useKeyboard();
   watchEffect(() => {
     disable.value = !state2.visible;
   });
@@ -28205,10 +28456,7 @@ function usePickerForm(_resetFormData, _getFormData) {
       reset: _resetFormData,
       submit: () => {
         const data = ["", null];
-        const {
-          key,
-          value
-        } = _getFormData();
+        const { key, value } = _getFormData();
         if (key !== "") {
           data[0] = key;
           data[1] = value;
@@ -28222,19 +28470,21 @@ function usePickerForm(_resetFormData, _getFormData) {
     });
   }
 }
-const _AdConfig = class _AdConfig {
+const _t0 = template("<div class=uni-ad-container></div>");
+const _t1 = template("<div class=uni-ad-custom-material> ");
+const _AdConfig = class _AdConfig2 {
   constructor() {
-    __publicField(this, "_adConfig", null);
-    __publicField(this, "_isLoading", false);
-    __publicField(this, "_callbacks", []);
-    __publicField(this, "_configLast", 0);
+    this._adConfig = null;
+    this._isLoading = false;
+    this._callbacks = [];
+    this._configLast = 0;
   }
   static get instance() {
-    if (!_AdConfig._instance) {
-      _AdConfig._instance = new _AdConfig();
-      _AdConfig._instance._init();
+    if (!_AdConfig2._instance) {
+      _AdConfig2._instance = new _AdConfig2();
+      _AdConfig2._instance._init();
     }
-    return _AdConfig._instance;
+    return _AdConfig2._instance;
   }
   get adConfig() {
     return this._adConfig;
@@ -28246,20 +28496,20 @@ const _AdConfig = class _AdConfig {
     if (!this._configLast) {
       return true;
     }
-    return Math.abs(Date.now() - this._configLast) > _AdConfig.CACHE_TIME;
+    return Math.abs(Date.now() - this._configLast) > _AdConfig2.CACHE_TIME;
   }
   _init() {
     var config = this._getConfig();
     if (config === null || !config.last) {
       return;
     }
-    if (Math.abs(Date.now() - config.last) <= _AdConfig.CACHE_TIME) {
+    if (Math.abs(Date.now() - config.last) <= _AdConfig2.CACHE_TIME) {
       this._adConfig = config.data;
       this._configLast = config.last;
     }
   }
   get(adpid, success, fail) {
-    _AdConfig.IC++;
+    _AdConfig2.IC++;
     if (this._adConfig != null) {
       this._doCallback(adpid, success, fail);
       if (this.isExpired) {
@@ -28275,26 +28525,24 @@ const _AdConfig = class _AdConfig {
     this._loadAdConfig(adpid);
   }
   _doCallback(adpid, success, fail) {
-    _AdConfig.IS++;
-    var {
-      a: a2,
-      b
-    } = this._adConfig;
+    _AdConfig2.IS++;
+    var { a: a2, b } = this._adConfig;
     const adData = a2[adpid];
     if (adData) {
       success(b, Array.isArray(adData) ? adData : [adData]);
     } else {
-      fail(_AdConfig.ERROR_INVALID_ADPID);
+      fail(_AdConfig2.ERROR_INVALID_ADPID);
     }
   }
   _loadAdConfig(adpid) {
+    var _a;
     if (this._isLoading === true) {
       return;
     }
     this._isLoading = true;
-    const appid = typeof __uniConfig !== "undefined" ? __uniConfig.appId ?? "" : "";
+    const appid = typeof __uniConfig !== "undefined" ? (_a = __uniConfig.appId) != null ? _a : "" : "";
     uni.request({
-      url: _AdConfig.URL,
+      url: _AdConfig2.URL,
       method: "GET",
       timeout: 8e3,
       data: {
@@ -28310,11 +28558,7 @@ const _AdConfig = class _AdConfig {
           this._adConfig = data;
           this._configLast = Date.now();
           this._setConfig(data);
-          this._callbacks.forEach(({
-            adpid: adpid2,
-            success,
-            fail
-          }) => {
+          this._callbacks.forEach(({ adpid: adpid2, success, fail }) => {
             this._doCallback(adpid2, success, fail);
           });
         } else {
@@ -28342,40 +28586,32 @@ const _AdConfig = class _AdConfig {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    var data = localStorage.getItem(_AdConfig.KEY);
+    var data = localStorage.getItem(_AdConfig2.KEY);
     return data ? JSON.parse(data) : null;
   }
   _setConfig(data) {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    localStorage.setItem(_AdConfig.KEY, JSON.stringify({
+    localStorage.setItem(_AdConfig2.KEY, JSON.stringify({
       last: Date.now(),
       data
     }));
   }
 };
-__publicField(_AdConfig, "IC", 0);
-__publicField(_AdConfig, "IS", 0);
-// 生产环境地址
-// private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
-// 生产环境地址v2
-__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5v2");
-// 测试环境地址
-// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
-// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5v2'
-__publicField(_AdConfig, "KEY", "uni_app_ad_config");
-__publicField(_AdConfig, "CACHE_TIME", 1e3 * 60 * 10);
-__publicField(_AdConfig, "ERROR_INVALID_ADPID", {
-  "-5002": "invalid adpid"
-});
+_AdConfig.IC = 0;
+_AdConfig.IS = 0;
+_AdConfig.URL = "https://hac1.dcloud.net.cn/ah5v2";
+_AdConfig.KEY = "uni_app_ad_config";
+_AdConfig.CACHE_TIME = 1e3 * 60 * 10;
+_AdConfig.ERROR_INVALID_ADPID = { "-5002": "invalid adpid" };
 let AdConfig = _AdConfig;
-const _AdReport = class _AdReport {
+const _AdReport = class _AdReport2 {
   static get instance() {
-    if (!_AdReport._instance) {
-      _AdReport._instance = new _AdReport();
+    if (!_AdReport2._instance) {
+      _AdReport2._instance = new _AdReport2();
     }
-    return _AdReport._instance;
+    return _AdReport2._instance;
   }
   constructor() {
     var config = this._getConfig();
@@ -28394,7 +28630,7 @@ const _AdReport = class _AdReport {
   }
   _process(data) {
     uni.request({
-      url: _AdReport.URL,
+      url: _AdReport2.URL,
       method: "GET",
       data,
       dataType: "json",
@@ -28418,21 +28654,21 @@ const _AdReport = class _AdReport {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    var data = localStorage.getItem(_AdReport.KEY);
+    var data = localStorage.getItem(_AdReport2.KEY);
     return data ? JSON.parse(data) : null;
   }
   _setConfig(guid) {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    localStorage.setItem(_AdReport.KEY, JSON.stringify({
+    localStorage.setItem(_AdReport2.KEY, JSON.stringify({
       last: Date.now(),
       guid
     }));
   }
 };
-__publicField(_AdReport, "URL", "https://has1.dcloud.net.cn/ahl");
-__publicField(_AdReport, "KEY", "uni_app_ad_guid");
+_AdReport.URL = "https://has1.dcloud.net.cn/ahl";
+_AdReport.KEY = "uni_app_ad_guid";
 let AdReport = _AdReport;
 class AdScript {
   static get instance() {
@@ -28480,18 +28716,14 @@ class AdScript {
     }
     ads.onload = () => {
       this._cache[provider] = 1;
-      this._callback[provider].forEach(({
-        success
-      }) => {
+      this._callback[provider].forEach(({ success }) => {
         success();
       });
       this._callback[provider].length = 0;
     };
     ads.onerror = (err) => {
       this._cache[provider] = void 0;
-      this._callback[provider].forEach(({
-        fail
-      }) => {
+      this._callback[provider].forEach(({ fail }) => {
         fail(err);
       });
       this._callback[provider].length = 0;
@@ -28507,12 +28739,12 @@ const AD_PROVIDER = {
 };
 class AdRender {
   constructor(props2, trigger, rootRef, options) {
-    __publicField(this, "_pi", 0);
-    __publicField(this, "_pl", []);
-    __publicField(this, "_b", {});
-    __publicField(this, "_checkTimerCount", 0);
-    __publicField(this, "_currentChannel", null);
-    __publicField(this, "_tuiaData", null);
+    this._pi = 0;
+    this._pl = [];
+    this._b = {};
+    this._checkTimerCount = 0;
+    this._currentChannel = null;
+    this._tuiaData = null;
     this._checkTimer = null;
     this._adpid = props2.adpid;
     this._adpidWidescreen = props2.adpidWidescreen;
@@ -28617,9 +28849,7 @@ class AdRender {
           window.TencentGDT.NATIVE.renderAd(res[0], id2);
           this._trigger("load", {}, {});
         } else {
-          this._trigger("error", {}, res || {
-            errMsg: "No advertisement"
-          });
+          this._trigger("error", {}, res || { errMsg: "No advertisement" });
           this._renderNext();
         }
       }
@@ -28629,9 +28859,7 @@ class AdRender {
   _renderTuiaMaterial(id2, data) {
     const adView = document.getElementById(id2);
     if (!adView) {
-      this._trigger("error", {}, {
-        errMsg: "Invalid ad container"
-      });
+      this._trigger("error", {}, { errMsg: "Invalid ad container" });
       this._renderNext();
       return;
     }
@@ -28646,18 +28874,14 @@ class AdRender {
     this._setCustomTuiaVisible(false);
     const materialSrc = this._getRandomTuiaMaterial(data == null ? void 0 : data.imgs, data == null ? void 0 : data.img);
     if (!materialSrc) {
-      this._trigger("error", {}, {
-        errMsg: "Invalid tuia material imgs/img"
-      });
+      this._trigger("error", {}, { errMsg: "Invalid tuia material imgs/img" });
       this._renderNext();
       return;
     }
     const img = document.createElement("img");
     img.src = materialSrc;
     img.onerror = () => {
-      this._trigger("error", {}, {
-        errMsg: "Tuia material load fail"
-      });
+      this._trigger("error", {}, { errMsg: "Tuia material load fail" });
       this._renderNext();
     };
     img.alt = "ad";
@@ -28691,9 +28915,7 @@ class AdRender {
     this._setCustomTuiaVisible(false);
     const tuia = window.TuiaSDKLite;
     if (!tuia || typeof tuia.execute !== "function") {
-      this._trigger("error", {}, {
-        errMsg: "Invalid TuiaSDKLite"
-      });
+      this._trigger("error", {}, { errMsg: "Invalid TuiaSDKLite" });
       this._renderNext();
       return;
     }
@@ -28707,9 +28929,7 @@ class AdRender {
         this._trigger("load", {}, res || {});
       },
       fail: (err) => {
-        this._trigger("error", {}, err || {
-          errMsg: "TuiaSDKLite execute fail"
-        });
+        this._trigger("error", {}, err || { errMsg: "TuiaSDKLite execute fail" });
         this._renderNext();
       }
     });
@@ -28722,9 +28942,7 @@ class AdRender {
     this._rootRef.value.append(adView);
     const scriptPath = provider.s || provider.script;
     if (!scriptPath || typeof scriptPath !== "string") {
-      this._trigger("error", {}, {
-        errMsg: "Invalid provider script"
-      });
+      this._trigger("error", {}, { errMsg: "Invalid provider script" });
       this._renderNext();
       return;
     }
@@ -28781,7 +28999,8 @@ class AdRender {
     }
   }
   report(type, currentChannel) {
-    const compilerVersion = typeof __uniConfig !== "undefined" ? __uniConfig.compilerVersion ?? "" : "";
+    var _a;
+    const compilerVersion = typeof __uniConfig !== "undefined" ? (_a = __uniConfig.compilerVersion) != null ? _a : "" : "";
     const reportData = {
       h: compilerVersion,
       a: this._currentAdpid,
@@ -28829,18 +29048,10 @@ const index$5 = /* @__PURE__ */ defineBuiltInComponent({
       default: DEFAULT_WIDESCREEN_WIDTH
     }
   },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
+  setup(props2, { emit: emit2, slots }) {
     const rootRef = ref(null);
     const customTuiaVisible = ref(false);
-    const {
-      $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
+    const { $excludeAttrs, $listeners } = useAttrs({ excludeListeners: true });
     const trigger = useCustomEvent(rootRef, emit2);
     const ad = new AdRender(props2, trigger, rootRef, {
       hasCustomTuiaMaterial: () => Boolean(slots.default && slots.default().length),
@@ -28855,7 +29066,8 @@ const index$5 = /* @__PURE__ */ defineBuiltInComponent({
       ad.load(val);
     });
     onMounted(() => {
-      const compilerVersion = typeof __uniConfig !== "undefined" ? __uniConfig.compilerVersion ?? "" : "";
+      var _a;
+      const compilerVersion = typeof __uniConfig !== "undefined" ? (_a = __uniConfig.compilerVersion) != null ? _a : "" : "";
       ad.load(null);
       AdReport.instance.get({
         h: compilerVersion,
@@ -28869,23 +29081,35 @@ const index$5 = /* @__PURE__ */ defineBuiltInComponent({
       ad.dispose();
     });
     return () => {
-      const {
-        adpid,
-        adpidWidescreen,
-        widescreenWidth
-      } = props2;
-      return createVNode(Fragment, null, [createVNode("uni-ad", mergeProps($listeners.value, $excludeAttrs.value, {
-        "adpid": adpid,
-        "adpidWidescreen": adpidWidescreen,
-        "widescreenWidth": widescreenWidth
-      }), [createVNode("div", {
-        "ref": rootRef,
-        "class": "uni-ad-container",
-        "onClick": () => ad.report(41)
-      }, null, 8, ["onClick"]), customTuiaVisible.value && slots.default ? createVNode("div", {
-        "class": "uni-ad-custom-material",
-        "onClick": () => ad.renderTuiaFromCustomMaterial()
-      }, [slots.default()], 8, ["onClick"]) : null], 16, ["adpid", "adpidWidescreen", "widescreenWidth"])]);
+      const { adpid, adpidWidescreen, widescreenWidth } = props2;
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n6 = createPlainElement("uni-ad", { $: [
+          () => $listeners.value,
+          () => $excludeAttrs.value,
+          {
+            adpid: () => adpid,
+            adpidWidescreen: () => adpidWidescreen,
+            widescreenWidth: () => widescreenWidth
+          }
+        ] }, () => {
+          const _n0 = _t0();
+          on$1(_n0, "click", () => ad.report(41));
+          renderEffect(() => _setTemplateRef(_n0, rootRef));
+          const _n1 = createIf(() => customTuiaVisible.value && slots.default, () => {
+            const _n3 = _t1();
+            on$1(_n3, "click", () => ad.renderTuiaFromCustomMaterial());
+            const _x3 = txt(_n3);
+            setNodes(_x3, () => slots.default());
+            return _n3;
+          }, () => {
+            const _n5 = createNodes(null);
+            return _n5;
+          }, 265);
+          return [_n0, _n1];
+        });
+        return _n6;
+      })();
     };
   }
 });
@@ -32409,7 +32633,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
                 const n4 = createIf(
                   () => shouldRender(_for_key0.value),
                   () => {
-                    const n6 = createComponent(UniPreviewImageItem, {
+                    const n6 = createComponent$1(UniPreviewImageItem, {
                       index: () => _for_key0.value,
                       src: () => _for_item0.value,
                       longPressAction: () => props2.longPressAction,
@@ -32562,7 +32786,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
     onBackPress((options) => {
       return false;
     });
-    const n0 = createComponent(UniPreviewImageNonVapor, {
+    const n0 = createComponent$1(UniPreviewImageNonVapor, {
       urls: () => unref(urls),
       current: () => unref(current),
       resetCurrent: () => unref(resetCurrent),

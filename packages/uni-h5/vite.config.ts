@@ -124,135 +124,144 @@ autoImportOptions.imports = autoImportOptions.imports!.filter(
 )
 autoImportOptions.include = ['**/uni-ext-api/uni_modules/**']
 
-export default defineConfig({
-  root: __dirname,
-  define: {
-    global: FORMAT === 'cjs' ? 'global' : 'window',
-    __TEST__: false,
-    __PLATFORM__: JSON.stringify('h5'),
-    __APP_VIEW__: false,
-    __NODE_JS__: FORMAT === 'cjs' ? true : false,
-    __X__: isX,
-    __X_VAPOR__: isX_VAPOR,
-    HTMLElement: FORMAT === 'cjs' ? 'Object' : 'HTMLElement',
-  },
-  resolve: {
-    alias: [
-      {
-        find: '@dcloudio/uni-api',
-        replacement: resolve('../uni-api/src/index.ts'),
-      },
-      {
-        find: '@dcloudio/uni-vue',
-        replacement: resolve('../uni-vue/src/index.ts'),
-      },
-      {
-        find: '@dcloudio/uni-core',
-        replacement: resolve('../uni-core/src'),
-      },
-      {
-        find: '@dcloudio/uni-components',
-        replacement: resolve(
-          isX_VAPOR
-            ? '../uni-components/src/index-vapor.ts'
-            : '../uni-components/src/index.ts'
-        ),
-      },
-      {
-        find: '@dcloudio/uni-platform',
-        replacement: resolve('./src/platform/index.ts'),
-      },
-      {
-        find: '@dcloudio/uni-uts-v1',
-        replacement: resolve('../uni-uts-v1'),
-      },
+export default defineConfig(async () => {
+  // Vue JSX Vapor 插件为 ESM，仅在 Web Vapor 构建中动态加载；普通 H5 继续使用 VDOM JSX 插件。
+  const jsxPlugin = isX_VAPOR
+    ? (await import('vue-jsx/vite')).default({
+        vapor: true,
+      })
+    : vueJsx({ optimize: true, isCustomElement: realIsH5CustomElement })
+
+  return {
+    root: __dirname,
+    define: {
+      global: FORMAT === 'cjs' ? 'global' : 'window',
+      __TEST__: false,
+      __PLATFORM__: JSON.stringify('h5'),
+      __APP_VIEW__: false,
+      __NODE_JS__: FORMAT === 'cjs' ? true : false,
+      __X__: isX,
+      __X_VAPOR__: isX_VAPOR,
+      HTMLElement: FORMAT === 'cjs' ? 'Object' : 'HTMLElement',
+    },
+    resolve: {
+      alias: [
+        {
+          find: '@dcloudio/uni-api',
+          replacement: resolve('../uni-api/src/index.ts'),
+        },
+        {
+          find: '@dcloudio/uni-vue',
+          replacement: resolve('../uni-vue/src/index.ts'),
+        },
+        {
+          find: '@dcloudio/uni-core',
+          replacement: resolve('../uni-core/src'),
+        },
+        {
+          find: '@dcloudio/uni-components',
+          replacement: resolve(
+            isX_VAPOR
+              ? '../uni-components/src/index-vapor.ts'
+              : '../uni-components/src/index.ts'
+          ),
+        },
+        {
+          find: '@dcloudio/uni-platform',
+          replacement: resolve('./src/platform/index.ts'),
+        },
+        {
+          find: '@dcloudio/uni-uts-v1',
+          replacement: resolve('../uni-uts-v1'),
+        },
+      ],
+    },
+    plugins: [
+      ...(isX
+        ? [
+            uniUVueTypeScriptPlugin(),
+            prePlugin,
+            AutoImport(autoImportOptions),
+            uniExtApi(),
+            uts2ts({ target: 'uni-h5', platform: 'web' }),
+          ]
+        : []),
+      vue({
+        customElement: isX,
+        ...(isX_VAPOR
+          ? {
+              compiler: require('vue/compiler-sfc'),
+              features: { vapor: true },
+            }
+          : {}),
+        template: {
+          compilerOptions: {
+            isNativeTag: isH5NativeTag,
+            isCustomElement: realIsH5CustomElement,
+          },
+        },
+      }),
+      jsxPlugin,
+      // 需要支持uni-chooseLocation等内置页面编译
+      ...(isX ? [uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE })] : []),
+      ...(isX ? [replacePagePaths(systemPagePaths)] : []),
     ],
-  },
-  plugins: [
-    ...(isX
-      ? [
-          uniUVueTypeScriptPlugin(),
-          prePlugin,
-          AutoImport(autoImportOptions),
-          uniExtApi(),
-          uts2ts({ target: 'uni-h5', platform: 'web' }),
-        ]
-      : []),
-    vue({
-      customElement: isX,
-      ...(isX_VAPOR
-        ? {
-            compiler: require('vue/compiler-sfc'),
-            features: { vapor: true },
+    esbuild: {
+      // 强制为 es2015，否则默认为 esnext，将会生成 __publicField 代码，
+      // 部分 API 写的时候，使用了动态定义 prototype 的方式，与 __publicField 冲突，比如 createCanvasContext
+      target: 'es2015',
+    },
+    build: {
+      cssCodeSplit: true,
+      target: 'modules', // keep import.meta...
+      emptyOutDir: FORMAT === 'es',
+      minify: false,
+      lib: {
+        entry: path.resolve(__dirname, 'src/index.ts'),
+        formats: [FORMAT],
+      },
+      assetsDir: '.',
+      rollupOptions: {
+        output: {
+          dir: isX_VAPOR ? 'dist-x-vapor' : isX ? 'dist-x' : 'dist',
+          freeze: false, // uni 对象需要可被修改
+          entryFileNames: 'uni-h5.' + FORMAT + '.js',
+        },
+        external(source) {
+          if (
+            [
+              'vue',
+              'vue-router',
+              '@vue/shared',
+              '@dcloudio/uni-i18n',
+              '@dcloudio/uni-shared',
+            ].includes(source)
+          ) {
+            return true
           }
-        : {}),
-      template: {
-        compilerOptions: {
-          isNativeTag: isH5NativeTag,
-          isCustomElement: realIsH5CustomElement,
+          if (source.startsWith('@dcloudio/uni-h5/style')) {
+            return true
+          }
+        },
+        preserveEntrySignatures: 'strict',
+        plugins: rollupPlugins as any,
+        onwarn: (msg, warn) => {
+          if (
+            String(msg).includes(
+              'contains an annotation that Rollup cannot interpret'
+            )
+          ) {
+            // ignore TODO 稍后排查为什么会有警告
+            return
+          }
+          if (!String(msg).includes('external module "vue" but never used')) {
+            warn(msg)
+          }
         },
       },
-    }),
-    vueJsx({ optimize: true, isCustomElement: realIsH5CustomElement }),
-    // 需要支持uni-chooseLocation等内置页面编译
-    ...(isX ? [uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE })] : []),
-    ...(isX ? [replacePagePaths(systemPagePaths)] : []),
-  ],
-  esbuild: {
-    // 强制为 es2015，否则默认为 esnext，将会生成 __publicField 代码，
-    // 部分 API 写的时候，使用了动态定义 prototype 的方式，与 __publicField 冲突，比如 createCanvasContext
-    target: 'es2015',
-  },
-  build: {
-    cssCodeSplit: true,
-    target: 'modules', // keep import.meta...
-    emptyOutDir: FORMAT === 'es',
-    minify: false,
-    lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
-      formats: [FORMAT],
+      sourcemap: (process.env as any).ENABLE_SOURCEMAP === 'true',
     },
-    assetsDir: '.',
-    rollupOptions: {
-      output: {
-        dir: isX_VAPOR ? 'dist-x-vapor' : isX ? 'dist-x' : 'dist',
-        freeze: false, // uni 对象需要可被修改
-        entryFileNames: 'uni-h5.' + FORMAT + '.js',
-      },
-      external(source) {
-        if (
-          [
-            'vue',
-            'vue-router',
-            '@vue/shared',
-            '@dcloudio/uni-i18n',
-            '@dcloudio/uni-shared',
-          ].includes(source)
-        ) {
-          return true
-        }
-        if (source.startsWith('@dcloudio/uni-h5/style')) {
-          return true
-        }
-      },
-      preserveEntrySignatures: 'strict',
-      plugins: rollupPlugins as any,
-      onwarn: (msg, warn) => {
-        if (
-          String(msg).includes(
-            'contains an annotation that Rollup cannot interpret'
-          )
-        ) {
-          // ignore TODO 稍后排查为什么会有警告
-          return
-        }
-        if (!String(msg).includes('external module "vue" but never used')) {
-          warn(msg)
-        }
-      },
-    },
-    sourcemap: (process.env as any).ENABLE_SOURCEMAP === 'true',
-  },
+  }
 })
 
 // if (!process.env.UNI_APP_EXT_API_DIR) {
