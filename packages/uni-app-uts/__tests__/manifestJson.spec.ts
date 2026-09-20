@@ -112,7 +112,8 @@ describe('x-ios x-harmony manifestJson', () => {
   })
 
   describe('runtime compatibility version', () => {
-    test('should write the compiler maintained minimum runtime version', () => {
+    test('should write the compiler maintained minimum runtime version in vapor mode', () => {
+      process.env.UNI_APP_X_DOM2 = 'true'
       const manifest = normalizeManifestJson('app-ios', {
         ...mockManifestJson,
         'uni-app-x': { minRuntimeVersion: '0.1', bytecodeVersion: 999 },
@@ -121,6 +122,15 @@ describe('x-ios x-harmony manifestJson', () => {
       expect(manifest['uni-app-x'].minRuntimeVersion).toBe(MIN_RUNTIME_VERSION)
       expect(MIN_RUNTIME_VERSION).toMatch(/^\d+\.\d+$/)
       expect(manifest['uni-app-x'].bytecodeVersion).toBeUndefined()
+    })
+
+    test('should omit minimum runtime version outside vapor mode', () => {
+      const manifest = normalizeManifestJson('app-ios', {
+        ...mockManifestJson,
+        'uni-app-x': { minRuntimeVersion: MIN_RUNTIME_VERSION },
+      }) as any
+
+      expect(manifest['uni-app-x'].minRuntimeVersion).toBeUndefined()
     })
   })
 

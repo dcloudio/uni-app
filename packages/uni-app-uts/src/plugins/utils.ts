@@ -209,7 +209,11 @@ export function normalizeManifestJson(
   const app = userManifestJson[platform] || userManifestJson.app || {}
   const x = userManifestJson['uni-app-x'] || {}
   x.compilerVersion = process.env.UNI_COMPILER_VERSION || ''
-  x.minRuntimeVersion = MIN_RUNTIME_VERSION
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    x.minRuntimeVersion = MIN_RUNTIME_VERSION
+  } else {
+    delete x.minRuntimeVersion
+  }
   delete x.bytecodeVersion
   const pageOrientation = getGlobalPageOrientation()
 
