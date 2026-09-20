@@ -353,7 +353,8 @@ export declare const cssVarNameEscapeSymbolsRE: RegExp;
 export declare function getEscapedCssVarName(key: string, doubleEscape: boolean): string;
 //#endregion
 //#region temp/packages/shared/src/looseEqual.d.ts
-export declare function looseEqual(a: any, b: any): boolean;
+type ComparisonState = [Map<any, any>, Map<any, any>];
+export declare function looseEqual(a: any, b: any, seen?: ComparisonState): boolean;
 export declare function looseIndexOf(arr: any[], val: any): number;
 //#endregion
 //#region temp/packages/shared/src/toDisplayString.d.ts

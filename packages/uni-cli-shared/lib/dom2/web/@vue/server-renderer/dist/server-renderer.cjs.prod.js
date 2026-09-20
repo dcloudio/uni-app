@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.8
+  * @vue/server-renderer v3.6.0-rc.9
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -77,7 +77,7 @@ function ssrRenderClass(raw) {
 }
 function ssrRenderStyle(raw) {
 	if (!raw) return "";
-	if ((0, _vue_shared.isString)(raw)) return (0, _vue_shared.escapeHtml)((0, _vue_shared.stringifyStyle)(raw));
+	if ((0, _vue_shared.isString)(raw)) return (0, _vue_shared.escapeHtml)(raw);
 	const styles = (0, _vue_shared.normalizeStyle)(ssrResetCssVars(raw));
 	return (0, _vue_shared.escapeHtml)((0, _vue_shared.stringifyStyle)(styles));
 }

@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.8
+  * @vue/server-renderer v3.6.0-rc.9
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -137,10 +137,10 @@ function normalizeStyle(value) {
 }
 const listDelimiterRE = /;(?![^(]*\))/g;
 const propertyDelimiterRE = /:([^]+)/;
-const styleCommentRE = /\/\*[^]*?\*\//g;
+const styleCommentRE = /"(?:[^"\\]|\\[^])*"|'(?:[^'\\]|\\[^])*'|\\[^]|\/\*[^]*?\*\//g;
 function parseStringStyle(cssText) {
 	const ret = {};
-	cssText.replace(styleCommentRE, "").split(listDelimiterRE).forEach((item) => {
+	cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match).split(listDelimiterRE).forEach((item) => {
 		if (item) {
 			const tmp = item.split(propertyDelimiterRE);
 			tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
@@ -303,19 +303,19 @@ function escapeHtmlComment(src) {
 }
 //#endregion
 //#region packages/shared/src/looseEqual.ts
-function looseCompareArrays(a, b) {
+function looseCompareArrays(a, b, seen) {
 	if (a.length !== b.length) return false;
 	let equal = true;
-	for (let i = 0; equal && i < a.length; i++) equal = looseEqual(a[i], b[i]);
+	for (let i = 0; equal && i < a.length; i++) equal = looseEqual(a[i], b[i], seen);
 	return equal;
 }
-function looseCompareCollections(a, b) {
+function looseCompareCollections(a, b, seen) {
 	if (a.size !== b.size) return false;
 	const candidates = Array.from(b);
 	const matched = new Uint8Array(candidates.length);
 	for (const item of a) {
 		let index = -1;
-		for (let i = 0; i < candidates.length; i++) if (!matched[i] && looseEqual(item, candidates[i])) {
+		for (let i = 0; i < candidates.length; i++) if (!matched[i] && looseEqual(item, candidates[i], seen)) {
 			index = i;
 			break;
 		}
@@ -324,7 +324,33 @@ function looseCompareCollections(a, b) {
 	}
 	return true;
 }
-function looseEqual(a, b) {
+function looseCompareObjects(a, b, seen) {
+	let aValidType = isMap(a);
+	let bValidType = isMap(b);
+	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b, seen) : false;
+	aValidType = isSet(a);
+	bValidType = isSet(b);
+	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b, seen) : false;
+	if (Object.keys(a).length !== Object.keys(b).length) return false;
+	for (const key in a) {
+		const aHasKey = a.hasOwnProperty(key);
+		const bHasKey = b.hasOwnProperty(key);
+		if (aHasKey && !bHasKey || !aHasKey && bHasKey || !looseEqual(a[key], b[key], seen)) return false;
+	}
+	return String(a) === String(b);
+}
+function looseCompareNested(a, b, seen, compare) {
+	if (!seen) seen = [/* @__PURE__ */ new Map(), /* @__PURE__ */ new Map()];
+	const [seenA, seenB] = seen;
+	if (seenA.has(a) || seenB.has(b)) return seenA.get(a) === b && seenB.get(b) === a;
+	seenA.set(a, b);
+	seenB.set(b, a);
+	const equal = compare(a, b, seen);
+	seenA.delete(a);
+	seenB.delete(b);
+	return equal;
+}
+function looseEqual(a, b, seen) {
 	if (a === b) return true;
 	let aValidType = isDate(a);
 	let bValidType = isDate(b);
@@ -334,23 +360,12 @@ function looseEqual(a, b) {
 	if (aValidType || bValidType) return a === b;
 	aValidType = isArray(a);
 	bValidType = isArray(b);
-	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareArrays(a, b) : false;
+	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareNested(a, b, seen, looseCompareArrays) : false;
 	aValidType = isObject(a);
 	bValidType = isObject(b);
 	if (aValidType || bValidType) {
 		if (!aValidType || !bValidType) return false;
-		aValidType = isMap(a);
-		bValidType = isMap(b);
-		if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b) : false;
-		aValidType = isSet(a);
-		bValidType = isSet(b);
-		if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b) : false;
-		if (Object.keys(a).length !== Object.keys(b).length) return false;
-		for (const key in a) {
-			const aHasKey = a.hasOwnProperty(key);
-			const bHasKey = b.hasOwnProperty(key);
-			if (aHasKey && !bHasKey || !aHasKey && bHasKey || !looseEqual(a[key], b[key])) return false;
-		}
+		return looseCompareNested(a, b, seen, looseCompareObjects);
 	}
 	return String(a) === String(b);
 }
@@ -817,13 +832,17 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
 /**
 * Track array iteration and return:
 * - if input is reactive: a cloned raw array with reactive values
-* - if input is non-reactive or shallowReactive: the original raw array
+* - if input is readonly: a cloned raw array with readonly values, preserving
+*   reactivity
+* - if input is raw or shallow: the original raw array
 */
 function reactiveReadArray(array) {
 	const raw = /* @__PURE__ */ toRaw(array);
 	if (raw === array) return raw;
 	track(raw, "iterate", ARRAY_ITERATE_KEY);
-	return /* @__PURE__ */ isShallow(array) ? raw : raw.map(toReactive);
+	if (/* @__PURE__ */ isShallow(array)) return raw;
+	if (!/* @__PURE__ */ isReadonly(array)) return raw.map(toReactive);
+	return /* @__PURE__ */ isReactive(array) ? raw.map((item) => toReadonly(toReactive(item))) : raw.map(toReadonly);
 }
 /**
 * Track array iteration and return raw array
@@ -1994,7 +2013,7 @@ function warn$1(msg, ...args) {
 			const toString = a.toString;
 			return toString == null ? JSON.stringify(a) : toString.call(a);
 		}).join(""),
-		instance && instance.proxy || instance,
+		instance && instance.vapor ? instance : instance && instance.proxy || instance,
 		trace.map(({ ctx }) => `at <${formatComponentName(instance, ctx.type)}>`).join("\n"),
 		trace
 	]);
@@ -2136,7 +2155,7 @@ function handleError(err, instance, type, throwInDev = true) {
 	const { errorHandler, throwUnhandledErrorInProduction } = instance && instance.appContext.config || EMPTY_OBJ;
 	if (instance) {
 		let cur = instance.parent;
-		const exposedInstance = instance.proxy || instance;
+		const exposedInstance = instance.vapor ? instance : instance.proxy || instance;
 		const errorInfo = ErrorTypeStrings[type];
 		while (cur) {
 			const errorCapturedHooks = cur.ec;
@@ -2160,7 +2179,7 @@ function handleError(err, instance, type, throwInDev = true) {
 }
 function logError(err, type, instance, throwInDev = true, throwInProd = false) {
 	{
-		const info = ErrorTypeStrings[type];
+		const info = ErrorTypeStrings[type] || type;
 		if (instance) pushWarningContext$1(instance);
 		warn$1(`Unhandled error${info ? ` during execution of ${info}` : ``}`);
 		if (instance) popWarningContext$1();
@@ -3046,7 +3065,8 @@ function ensureValidVNode$1(vnodes) {
 * public $parent chains, skip functional ones and go to the parent instead.
 */
 const getPublicInstance = (i) => {
-	if (!i || i.vapor) return null;
+	if (i && i.vapor) return getComponentPublicInstance(i);
+	if (!i) return null;
 	if (isStatefulComponent(i)) return getComponentPublicInstance(i);
 	return getPublicInstance(i.parent);
 };
@@ -3081,7 +3101,7 @@ let publicPropertiesMap;
 const getPublicPropertiesMap = () => {
 	if (!publicPropertiesMap) publicPropertiesMap = extend(Object.create(null), {
 		$: (i) => i,
-		$el: (i) => getDevRootFragmentEl(i),
+		$el: (i) => i.vapor ? i.getRootElement() : getDevRootFragmentEl(i),
 		$data: (i) => i.data,
 		$props: (i) => /* @__PURE__ */ shallowReadonly(i.props),
 		$attrs: (i) => /* @__PURE__ */ shallowReadonly(i.attrs),
@@ -3092,9 +3112,12 @@ const getPublicPropertiesMap = () => {
 		$host: (i) => i.ce,
 		$emit: (i) => i.emit,
 		$options: (i) => resolveMergedOptions(i),
-		$forceUpdate: (i) => i.f || (i.f = () => {
-			queueJob(i.update);
-		}),
+		$forceUpdate: (i) => {
+			if (i.vapor) return;
+			return i.f || (i.f = () => {
+				queueJob(i.update);
+			});
+		},
 		$nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
 		$watch: (i) => instanceWatch.bind(i)
 	});
@@ -4375,6 +4398,10 @@ function baseCreateRenderer(options, createHydrationFns) {
 			optimized = false;
 			n2.dynamicChildren = null;
 		}
+		if (n2.dynamicChildren && n1 && n1.dynamicChildren && n1.dynamicChildren.hasOnce) {
+			if (n2.dynamicChildren === EMPTY_ARR) n2.dynamicChildren = [];
+			n2.dynamicChildren.hasOnce = true;
+		}
 		const { type, ref, shapeFlag } = n2;
 		switch (type) {
 			case Text:
@@ -4691,6 +4718,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 		if (shouldUpdateComponent(n1, n2, optimized)) {
 			if (instance.asyncDep && !instance.asyncResolved) {
 				pushWarningContext$1(n2);
+				n2.el = n1.el;
 				updateComponentPreRender(instance, n2, optimized);
 				popWarningContext$1();
 				return;
@@ -5002,13 +5030,13 @@ function baseCreateRenderer(options, createHydrationFns) {
 	};
 	const unmount = (vnode, parentComponent, parentSuspense, doRemove = false, optimized = false) => {
 		const { type, props, ref, children, dynamicChildren, shapeFlag, patchFlag, dirs, cacheIndex, memo } = vnode;
-		if (patchFlag === -2) optimized = false;
+		if (patchFlag === -2 || dynamicChildren && dynamicChildren.hasOnce) optimized = false;
 		if (ref != null) {
 			const prevSub = setActiveSub();
 			setRef(ref, null, parentSuspense, vnode, true);
 			setActiveSub(prevSub);
 		}
-		if (cacheIndex != null) parentComponent.renderCache[cacheIndex] = void 0;
+		if (cacheIndex != null && (!vnode.ctx || vnode.ctx === parentComponent)) parentComponent.renderCache[cacheIndex] = void 0;
 		if (shapeFlag & 256) {
 			if (isVaporComponent(vnode.type)) getVaporInterface(parentComponent, vnode).deactivate(vnode, parentComponent.ctx.getStorageContainer(), parentSuspense);
 			else parentComponent.ctx.deactivate(vnode);
@@ -5062,6 +5090,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 		}
 		if (type === Static) {
 			removeStaticNode(vnode);
+			if (transition && !transition.persisted && transition.afterLeave) transition.afterLeave();
 			return;
 		}
 		if (transition) performTransitionLeave(el, transition, () => hostRemove(el), !!(vnode.shapeFlag & 1));
@@ -5086,7 +5115,10 @@ function baseCreateRenderer(options, createHydrationFns) {
 		if (effect) {
 			effect.stop();
 			unmount(subTree, instance, parentSuspense, doRemove);
-		} else if (doRemove && subTree && instance.vnode.el) remove(subTree);
+		} else if (instance.vnode.el && subTree) {
+			subTree.transition = instance.vnode.transition;
+			unmount(subTree, instance, parentSuspense, doRemove);
+		}
 		if (um) queuePostRenderEffect(um, void 0, parentSuspense);
 		queuePostRenderEffect(() => instance.isUnmounted = true, void 0, parentSuspense);
 		devtoolsComponentRemoved(instance);
@@ -5479,7 +5511,8 @@ function cloneVNode(vnode, extraProps, mergeRef = false, cloneTransition = false
 		vs: cloneVaporSlotMeta(vnode),
 		vb: vnode.vb,
 		ibu: vnode.ibu,
-		iu: vnode.iu
+		iu: vnode.iu,
+		cacheIndex: vnode.cacheIndex
 	};
 	if (transition && cloneTransition) setTransitionHooks(cloned, transition.clone(cloned));
 	return cloned;
@@ -5918,7 +5951,7 @@ const computed = (getterOrOptions, debugOptions) => {
 };
 //#endregion
 //#region packages/runtime-core/src/index.ts
-const version = "3.6.0-rc.8";
+const version = "3.6.0-rc.9";
 const warn = warn$1;
 /**
 * SSR utils for \@vue/server-renderer. Only exposed in ssr-possible builds.
@@ -6676,7 +6709,7 @@ function ssrRenderClass(raw) {
 }
 function ssrRenderStyle(raw) {
 	if (!raw) return "";
-	if (isString(raw)) return escapeHtml(stringifyStyle(raw));
+	if (isString(raw)) return escapeHtml(raw);
 	return escapeHtml(stringifyStyle(normalizeStyle(ssrResetCssVars(raw))));
 }
 function ssrResetCssVars(raw) {

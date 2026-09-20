@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-rc.8
+  * @vue/compiler-dom v3.6.0-rc.9
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -142,10 +142,10 @@ var VueCompilerDOM = (function(exports) {
 	//#region packages/shared/src/normalizeProp.ts
 	const listDelimiterRE = /;(?![^(]*\))/g;
 	const propertyDelimiterRE = /:([^]+)/;
-	const styleCommentRE = /\/\*[^]*?\*\//g;
+	const styleCommentRE = /"(?:[^"\\]|\\[^])*"|'(?:[^'\\]|\\[^])*'|\\[^]|\/\*[^]*?\*\//g;
 	function parseStringStyle(cssText) {
 		const ret = {};
-		cssText.replace(styleCommentRE, "").split(listDelimiterRE).forEach((item) => {
+		cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match).split(listDelimiterRE).forEach((item) => {
 			if (item) {
 				const tmp = item.split(propertyDelimiterRE);
 				tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());

@@ -1,5 +1,5 @@
 /**
-  * vue v3.6.0-rc.8
+  * vue v3.6.0-rc.9
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -151,10 +151,10 @@ function normalizeStyle(value) {
 }
 const listDelimiterRE = /;(?![^(]*\))/g;
 const propertyDelimiterRE = /:([^]+)/;
-const styleCommentRE = /\/\*[^]*?\*\//g;
+const styleCommentRE = /"(?:[^"\\]|\\[^])*"|'(?:[^'\\]|\\[^])*'|\\[^]|\/\*[^]*?\*\//g;
 function parseStringStyle(cssText) {
 	const ret = {};
-	cssText.replace(styleCommentRE, "").split(listDelimiterRE).forEach((item) => {
+	cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match).split(listDelimiterRE).forEach((item) => {
 		if (item) {
 			const tmp = item.split(propertyDelimiterRE);
 			tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
@@ -276,19 +276,19 @@ function getEscapedCssVarName(key, doubleEscape) {
 }
 //#endregion
 //#region packages/shared/src/looseEqual.ts
-function looseCompareArrays(a, b) {
+function looseCompareArrays(a, b, seen) {
 	if (a.length !== b.length) return false;
 	let equal = true;
-	for (let i = 0; equal && i < a.length; i++) equal = looseEqual(a[i], b[i]);
+	for (let i = 0; equal && i < a.length; i++) equal = looseEqual(a[i], b[i], seen);
 	return equal;
 }
-function looseCompareCollections(a, b) {
+function looseCompareCollections(a, b, seen) {
 	if (a.size !== b.size) return false;
 	const candidates = Array.from(b);
 	const matched = new Uint8Array(candidates.length);
 	for (const item of a) {
 		let index = -1;
-		for (let i = 0; i < candidates.length; i++) if (!matched[i] && looseEqual(item, candidates[i])) {
+		for (let i = 0; i < candidates.length; i++) if (!matched[i] && looseEqual(item, candidates[i], seen)) {
 			index = i;
 			break;
 		}
@@ -297,7 +297,33 @@ function looseCompareCollections(a, b) {
 	}
 	return true;
 }
-function looseEqual(a, b) {
+function looseCompareObjects(a, b, seen) {
+	let aValidType = isMap(a);
+	let bValidType = isMap(b);
+	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b, seen) : false;
+	aValidType = isSet(a);
+	bValidType = isSet(b);
+	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b, seen) : false;
+	if (Object.keys(a).length !== Object.keys(b).length) return false;
+	for (const key in a) {
+		const aHasKey = a.hasOwnProperty(key);
+		const bHasKey = b.hasOwnProperty(key);
+		if (aHasKey && !bHasKey || !aHasKey && bHasKey || !looseEqual(a[key], b[key], seen)) return false;
+	}
+	return String(a) === String(b);
+}
+function looseCompareNested(a, b, seen, compare) {
+	if (!seen) seen = [/* @__PURE__ */ new Map(), /* @__PURE__ */ new Map()];
+	const [seenA, seenB] = seen;
+	if (seenA.has(a) || seenB.has(b)) return seenA.get(a) === b && seenB.get(b) === a;
+	seenA.set(a, b);
+	seenB.set(b, a);
+	const equal = compare(a, b, seen);
+	seenA.delete(a);
+	seenB.delete(b);
+	return equal;
+}
+function looseEqual(a, b, seen) {
 	if (a === b) return true;
 	let aValidType = isDate(a);
 	let bValidType = isDate(b);
@@ -307,23 +333,12 @@ function looseEqual(a, b) {
 	if (aValidType || bValidType) return a === b;
 	aValidType = isArray(a);
 	bValidType = isArray(b);
-	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareArrays(a, b) : false;
+	if (aValidType || bValidType) return aValidType && bValidType ? looseCompareNested(a, b, seen, looseCompareArrays) : false;
 	aValidType = isObject(a);
 	bValidType = isObject(b);
 	if (aValidType || bValidType) {
 		if (!aValidType || !bValidType) return false;
-		aValidType = isMap(a);
-		bValidType = isMap(b);
-		if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b) : false;
-		aValidType = isSet(a);
-		bValidType = isSet(b);
-		if (aValidType || bValidType) return aValidType && bValidType ? looseCompareCollections(a, b) : false;
-		if (Object.keys(a).length !== Object.keys(b).length) return false;
-		for (const key in a) {
-			const aHasKey = a.hasOwnProperty(key);
-			const bHasKey = b.hasOwnProperty(key);
-			if (aHasKey && !bHasKey || !aHasKey && bHasKey || !looseEqual(a[key], b[key])) return false;
-		}
+		return looseCompareNested(a, b, seen, looseCompareObjects);
 	}
 	return String(a) === String(b);
 }
@@ -805,13 +820,17 @@ function getDepFromReactive(object, key) {
 /**
 * Track array iteration and return:
 * - if input is reactive: a cloned raw array with reactive values
-* - if input is non-reactive or shallowReactive: the original raw array
+* - if input is readonly: a cloned raw array with readonly values, preserving
+*   reactivity
+* - if input is raw or shallow: the original raw array
 */
 function reactiveReadArray(array) {
 	const raw = /* @__PURE__ */ toRaw(array);
 	if (raw === array) return raw;
 	track(raw, "iterate", ARRAY_ITERATE_KEY);
-	return /* @__PURE__ */ isShallow(array) ? raw : raw.map(toReactive);
+	if (/* @__PURE__ */ isShallow(array)) return raw;
+	if (!/* @__PURE__ */ isReadonly(array)) return raw.map(toReactive);
+	return /* @__PURE__ */ isReactive(array) ? raw.map((item) => toReadonly(toReactive(item))) : raw.map(toReadonly);
 }
 /**
 * Track array iteration and return raw array
@@ -1895,22 +1914,6 @@ function effect(fn, options) {
 */
 function stop(runner) {
 	runner.effect.stop();
-}
-const resetTrackingStack = [];
-/**
-* Temporarily pauses tracking.
-*/
-function pauseTracking() {
-	resetTrackingStack.push(activeSub);
-	setActiveSub();
-}
-/**
-* Resets the previous global effect tracking state.
-*/
-function resetTracking() {
-	if (resetTrackingStack.length === 0) warn$2("resetTracking() was called when there was no active tracking to reset.");
-	if (resetTrackingStack.length) setActiveSub(resetTrackingStack.pop());
-	else setActiveSub();
 }
 function cleanup(sub) {
 	const l = sub.cleanupsLength;
@@ -4070,12 +4073,12 @@ function createHydrationFunctions(rendererInternals) {
 				} else {
 					mountComponent(vnode, container, null, parentComponent, parentSuspense, getContainerType(container), optimized);
 					const component = vnode.component;
-					if (!component.subTree && (isAsyncWrapper(vnode) || component.asyncDep && !component.asyncResolved)) {
+					if (!component.subTree && (isAsyncWrapper(vnode) || component.asyncDep)) {
 						let subTree;
 						if (isFragmentStart) {
 							subTree = createVNode(Static);
 							subTree.anchor = nextNode ? nextNode.previousSibling : container.lastChild;
-						} else subTree = node.nodeType === 3 ? createTextVNode("") : createVNode("div");
+						} else subTree = node.nodeType === 3 ? createTextVNode("") : createVNode(node.nodeType === 8 ? Comment$1 : "div");
 						subTree.el = node;
 						component.subTree = subTree;
 					}
@@ -6768,6 +6771,10 @@ function baseCreateRenderer(options, createHydrationFns) {
 			optimized = false;
 			n2.dynamicChildren = null;
 		}
+		if (n2.dynamicChildren && n1 && n1.dynamicChildren && n1.dynamicChildren.hasOnce) {
+			if (n2.dynamicChildren === EMPTY_ARR) n2.dynamicChildren = [];
+			n2.dynamicChildren.hasOnce = true;
+		}
 		const { type, ref, shapeFlag } = n2;
 		switch (type) {
 			case Text$1:
@@ -7084,6 +7091,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 		if (shouldUpdateComponent(n1, n2, optimized)) {
 			if (instance.asyncDep && !instance.asyncResolved) {
 				pushWarningContext(n2);
+				n2.el = n1.el;
 				updateComponentPreRender(instance, n2, optimized);
 				popWarningContext();
 				return;
@@ -7395,13 +7403,13 @@ function baseCreateRenderer(options, createHydrationFns) {
 	};
 	const unmount = (vnode, parentComponent, parentSuspense, doRemove = false, optimized = false) => {
 		const { type, props, ref, children, dynamicChildren, shapeFlag, patchFlag, dirs, cacheIndex, memo } = vnode;
-		if (patchFlag === -2) optimized = false;
+		if (patchFlag === -2 || dynamicChildren && dynamicChildren.hasOnce) optimized = false;
 		if (ref != null) {
 			const prevSub = setActiveSub();
 			setRef(ref, null, parentSuspense, vnode, true);
 			setActiveSub(prevSub);
 		}
-		if (cacheIndex != null) parentComponent.renderCache[cacheIndex] = void 0;
+		if (cacheIndex != null && (!vnode.ctx || vnode.ctx === parentComponent)) parentComponent.renderCache[cacheIndex] = void 0;
 		if (shapeFlag & 256) {
 			if (isVaporComponent$1(vnode.type)) getVaporInterface(parentComponent, vnode).deactivate(vnode, parentComponent.ctx.getStorageContainer(), parentSuspense);
 			else parentComponent.ctx.deactivate(vnode);
@@ -7455,6 +7463,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 		}
 		if (type === Static) {
 			removeStaticNode(vnode);
+			if (transition && !transition.persisted && transition.afterLeave) transition.afterLeave();
 			return;
 		}
 		if (transition) performTransitionLeave(el, transition, () => hostRemove(el), !!(vnode.shapeFlag & 1));
@@ -7479,7 +7488,10 @@ function baseCreateRenderer(options, createHydrationFns) {
 		if (effect) {
 			effect.stop();
 			unmount(subTree, instance, parentSuspense, doRemove);
-		} else if (doRemove && subTree && instance.vnode.el) remove(subTree);
+		} else if (instance.vnode.el && subTree) {
+			subTree.transition = instance.vnode.transition;
+			unmount(subTree, instance, parentSuspense, doRemove);
+		}
 		if (um) queuePostRenderEffect(um, void 0, parentSuspense);
 		queuePostRenderEffect(() => instance.isUnmounted = true, void 0, parentSuspense);
 		devtoolsComponentRemoved(instance);
@@ -7685,7 +7697,7 @@ const Suspense = {
 	process(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, rendererInternals) {
 		if (n1 == null) mountSuspense(n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, rendererInternals);
 		else {
-			if (parentSuspense && parentSuspense.deps > 0 && !n1.suspense.isInFallback) {
+			if (parentSuspense && parentSuspense.deps > 0 && !n1.suspense.isInFallback && !parentSuspense.isHydrating) {
 				n2.suspense = n1.suspense;
 				n2.suspense.vnode = n2;
 				n2.el = n1.el;
@@ -7723,7 +7735,9 @@ function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, sl
 	if (pendingBranch) {
 		suspense.pendingBranch = newBranch;
 		if (isSameVNodeType(pendingBranch, newBranch)) {
-			patch(pendingBranch, newBranch, suspense.hiddenContainer, null, parentComponent, suspense, namespace, slotScopeIds, optimized);
+			suspense.deps++;
+			patch(pendingBranch, newBranch, isHydrating ? container : suspense.hiddenContainer, null, parentComponent, suspense, namespace, slotScopeIds, optimized);
+			suspense.deps--;
 			if (suspense.deps <= 0) suspense.resolve();
 			else if (isInFallback) {
 				if (!isHydrating && !suspense.isFallbackMountPending) {
@@ -7859,6 +7873,7 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
 			suspense.effects = [];
 			if (isSuspensible) {
 				if (parentSuspense && parentSuspense.pendingBranch && parentSuspenseId === parentSuspense.pendingId) {
+					parentSuspenseId = void 0;
 					parentSuspense.deps--;
 					if (parentSuspense.deps === 0 && !sync) parentSuspense.resolve();
 				}
@@ -7896,11 +7911,16 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
 		registerDep(instance, onResolve) {
 			const isInPendingSuspense = !!suspense.pendingBranch;
 			if (isInPendingSuspense) suspense.deps++;
+			const hydratedEl = instance.vnode && instance.vnode.el;
 			instance.asyncDep.catch((err) => {
 				handleError(err, instance, 0);
 			}).then((asyncSetupResult) => {
 				if (instance.isUnmounted || suspense.isUnmounted || suspense.pendingId !== instance.suspenseId) return;
 				setCurrentInstance(null, void 0);
+				if (hydratedEl && !instance.scope.active) {
+					if (isInPendingSuspense && --suspense.deps === 0) suspense.resolve();
+					return;
+				}
 				instance.asyncResolved = true;
 				onResolve(asyncSetupResult);
 				if (isInPendingSuspense && --suspense.deps === 0) suspense.resolve();
@@ -8213,7 +8233,8 @@ function cloneVNode(vnode, extraProps, mergeRef = false, cloneTransition = false
 		vs: cloneVaporSlotMeta(vnode),
 		vb: vnode.vb,
 		ibu: vnode.ibu,
-		iu: vnode.iu
+		iu: vnode.iu,
+		cacheIndex: vnode.cacheIndex
 	};
 	if (transition && cloneTransition) setTransitionHooks(cloned, transition.clone(cloned));
 	return cloned;
@@ -8935,7 +8956,7 @@ function isMemoSame(cached, memo) {
 }
 //#endregion
 //#region packages/runtime-core/src/index.ts
-const version = "3.6.0-rc.8";
+const version = "3.6.0-rc.9";
 const warn = warn$1;
 /**
 * Runtime error messages. Only exposed in dev or esm builds.
@@ -9325,38 +9346,6 @@ const CSS_VAR_TEXT = Symbol("CSS_VAR_TEXT");
 * @private
 */
 function useCssVars(getter) {}
-/**
-* @internal
-* shared between vdom and vapor
-*/
-function baseUseCssVars(instance, getParentNode, getVars, setVars) {
-	/* v8 ignore start */
-	if (!instance) {
-		warn(`useCssVars is called without current active component instance.`);
-		return;
-	}
-	instance.getCssVars = getVars;
-	const updateTeleports = instance.ut = (vars = getVars()) => {
-		Array.from(document.querySelectorAll(`[data-v-owner="${instance.uid}"]`)).forEach((node) => setVarsOnNode(node, vars));
-	};
-	const applyCssVars = (vars = getVars()) => {
-		setVars(vars);
-		updateTeleports(vars);
-	};
-	onBeforeUpdate(() => {
-		queuePostFlushCb(applyCssVars);
-	});
-	onMounted(() => {
-		watch(() => {
-			const vars = getVars();
-			extend({}, vars);
-			applyCssVars(vars);
-		}, NOOP, { flush: "post" });
-		const ob = new MutationObserver(() => applyCssVars());
-		ob.observe(getParentNode(), { childList: true });
-		onUnmounted(() => ob.disconnect());
-	});
-}
 /**
 * @internal
 * shared between vdom and vapor
@@ -10668,20 +10657,27 @@ function txt(node) {
 	return /* @__PURE__ */ _child(node);
 }
 /*@__NO_SIDE_EFFECTS__*/
-function child(node) {
-	if (isHydrating$1) return locateChildByLogicalIndex(node, 0);
+function child(node, isText) {
+	if (isHydrating$1) {
+		const n = locateChildByLogicalIndex(node, 0);
+		return isText ? resolveBlankTextTarget(n, node) : n;
+	}
 	return /* @__PURE__ */ _child(node);
 }
 /*@__NO_SIDE_EFFECTS__*/
-function nthChild(node, i) {
-	if (isHydrating$1) return locateChildByLogicalIndex(node, i);
+function nthChild(node, i, isText) {
+	if (isHydrating$1) {
+		const n = locateChildByLogicalIndex(node, i);
+		return isText ? resolveBlankTextTarget(n, node) : n;
+	}
 	return node.childNodes[i];
 }
 /*@__NO_SIDE_EFFECTS__*/
-function next(node) {
+function next(node, isText) {
 	if (isHydrating$1) {
-		const result = nextLogicalSibling(node);
+		let result = nextLogicalSibling(node);
 		const parent = node.parentNode;
+		if (isText) result = resolveBlankTextTarget(result, parent);
 		if (parent) updateLastLocatedLogicalChild(parent, node, result, 1);
 		return result;
 	}
@@ -10697,7 +10693,7 @@ function _next(node) {
 }
 function locateChildByLogicalIndex(parent, logicalIndex) {
 	let child = parent.$llc || skipUntrackedAnchors(parent.firstChild);
-	let fromIndex = child.$idx || 0;
+	let fromIndex = child && child.$idx || 0;
 	if (logicalIndex < fromIndex) {
 		child = skipUntrackedAnchors(parent.firstChild);
 		fromIndex = 0;
@@ -10978,10 +10974,7 @@ function exitHydrationCursor(cursor) {
 * while handling potential fragments.
 */
 function adoptTemplateImpl(node, template, adoptChildren = false, ns, target = parseAdoptTargetImpl(template)) {
-	if (target.type !== 8) {
-		if (target.blank && isComment(node, "]") && isComment(node.previousSibling, "[")) node.before(node = /* @__PURE__ */ createTextNode());
-		node = resolveHydrationTarget(node);
-	}
+	if (target.type !== 8) node = target.blank ? resolveBlankTextTarget(node, /* @__PURE__ */ parentNode(node)) : resolveHydrationTarget(node);
 	if (!matchesAdoptTarget(node, target)) node = handleMismatch(node, template, adoptChildren, ns);
 	advanceHydrationNode(node);
 	return node;
@@ -11234,6 +11227,19 @@ function markRecreatedNode(node) {
 function isRecreatedNode(node) {
 	return !!node && node.$rcn === 1;
 }
+/**
+* SSR omits empty text nodes. Block owners consume their opening markers
+* before template adoption. Preserve any remaining boundary or sibling while
+* seeding the missing text at its logical position.
+*/
+function resolveBlankTextTarget(node, parent) {
+	node = skipUntrackedAnchors(node);
+	if (node && node.nodeType === 3) return node;
+	const text = /* @__PURE__ */ createTextNode();
+	parent.insertBefore(text, node);
+	if (node) updateLastLocatedLogicalChild(parent, node, text);
+	return text;
+}
 function resolveHydrationTarget(node) {
 	while (true) {
 		const flags = node.$vha;
@@ -11291,7 +11297,8 @@ function normalizeEmitsOptions(comp) {
 	return comp.__emitsOptions = normalized;
 }
 function emit(instance, event, ...rawArgs) {
-	baseEmit(instance, instance.rawProps || EMPTY_OBJ, getAttrFromRawProps, event, ...rawArgs);
+	const vnode = isInteropEnabled && instance.interopVNode;
+	baseEmit(instance, vnode ? vnode.props || EMPTY_OBJ : instance.rawProps || EMPTY_OBJ, vnode ? defaultPropGetter : getAttrFromRawProps, event, ...rawArgs);
 }
 //#endregion
 //#region packages/runtime-vapor/src/once.ts
@@ -11572,7 +11579,7 @@ function getPropsProxyHandlers(comp) {
 	const propsOptions = normalizePropsOptions(comp)[0];
 	const emitsOptions = normalizeEmitsOptions(comp);
 	const isProp = propsOptions ? (key) => isString(key) && hasOwn(propsOptions, camelize(key)) : NO;
-	const isAttr = propsOptions || emitsOptions ? (key) => isString(key) && key !== "$" && !isProp(key) && !isEmitListener(emitsOptions, key) : (key) => isString(key);
+	const isAttr = propsOptions || emitsOptions ? (key) => isString(key) && key !== "$" && !isReservedProp(key) && !isProp(key) && !isEmitListener(emitsOptions, key) : (key) => isString(key) && !isReservedProp(key);
 	const normalizeRawProp = (key, value) => {
 		if (!value) return value;
 		if (key === "class" && !isString(value)) return normalizeClass(value);
@@ -11580,7 +11587,7 @@ function getPropsProxyHandlers(comp) {
 		return value;
 	};
 	const getProp = (instance, key) => {
-		if (key === "__v_isReactive") return true;
+		if (key === "__v_isReactive" || key === "__v_isShallow") return true;
 		if (!isProp(key)) return;
 		const rawProps = instance.rawProps;
 		const dynamicSources = rawProps.$;
@@ -11646,7 +11653,7 @@ function getPropsProxyHandlers(comp) {
 		deleteProperty: propsDeleteDevTrap
 	});
 	const getAttr = (target, key) => {
-		if (isString(key) && !isProp(key) && !isEmitListener(emitsOptions, key)) return getAttrFromRawProps(target, key);
+		if (isString(key) && !isReservedProp(key) && !isProp(key) && !isEmitListener(emitsOptions, key)) return getAttrFromRawProps(target, key);
 	};
 	const hasAttr = (target, key) => {
 		if (isAttr(key)) return hasAttrFromRawProps(target, key);
@@ -11897,6 +11904,24 @@ function createInvoker(handler) {
 	return (...args) => callWithAsyncErrorHandling(handler, i, 5, args);
 }
 //#endregion
+//#region packages/runtime-vapor/src/transition.ts
+let applyTransitionHooks;
+let applyTransitionLeaveHooks;
+let deferBranchUpdateDuringLeave;
+let removeBranchWithLeave;
+let isTransitionEnabled = false;
+function registerTransitionHooks(applyHooks, applyLeaveHooks, deferBranchUpdate, removeBranch) {
+	isTransitionEnabled = true;
+	applyTransitionHooks = applyHooks;
+	applyTransitionLeaveHooks = applyLeaveHooks;
+	deferBranchUpdateDuringLeave = deferBranchUpdate;
+	removeBranchWithLeave = removeBranch;
+}
+const displayName = "VaporTransition";
+function isVaporTransition(component) {
+	return component.displayName === displayName;
+}
+//#endregion
 //#region packages/runtime-vapor/src/dom/prop.ts
 const shouldSkipFallthroughKey = (el, key) => {
 	const instance = currentInstance;
@@ -11969,6 +11994,9 @@ function setClass(el, value, isSVG = false, isNormalized = false) {
 			if (el.$hoverUpdateClass) {
 				el.$cls = value;
 				el.$hoverUpdateClass();
+			} else if (isTransitionEnabled) {
+				el.$cls = value;
+				patchClass(el, value, isSVG);
 			} else if (isSVG) el.setAttribute("class", el.$cls = value);
 			else el.className = el.$cls = value;
 		}
@@ -11986,6 +12014,9 @@ function setClassName(el, flags, cls, prefix = "", suffix = "") {
 	else if (el.$hoverUpdateClass) {
 		el.$cls = value;
 		el.$hoverUpdateClass();
+	} else if (isTransitionEnabled) {
+		el.$cls = value;
+		patchClass(el, value, false);
 	} else el.className = el.$cls = value;
 	el.$clsFlags = flags;
 }
@@ -12039,6 +12070,7 @@ function setStyle(el, value) {
 		if (isHydrating$1 && !isRecreatedNode(el)) {
 			checkHydrationStyleMismatch(el, value, normalizedValue, false);
 			el.$sty = normalizedValue;
+			hydrateVShowDisplay(el, normalizedValue);
 			return;
 		}
 		patchStyle(el, el.$sty, el.$sty = normalizedValue);
@@ -12050,15 +12082,23 @@ function setStyleIncremental(el, value) {
 	if (isHydrating$1 && !isRecreatedNode(el)) {
 		checkHydrationStyleMismatch(el, value, normalizedValue, true);
 		el[cacheKey] = normalizedValue;
+		hydrateVShowDisplay(el, normalizedValue);
 		return;
 	}
 	patchStyle(el, el[cacheKey], el[cacheKey] = normalizedValue);
+}
+function hydrateVShowDisplay(el, style) {
+	if (vShowOriginalDisplay in el) {
+		let display = isString(style) ? parseStringStyle(style).display : style && style.display;
+		if (isArray(display)) display = display[display.length - 1];
+		el[vShowOriginalDisplay] = display == null ? "" : String(display);
+	}
 }
 function setValue(el, value, forceHydrate = false) {
 	if (shouldSkipFallthroughKey(el, "value")) return;
 	el._value = value;
 	if (isHydrating$1 && !isRecreatedNode(el)) {
-		attributeHasMismatch(el, "value", getClientText(el, value));
+		attributeHasMismatch(el, "value", isString(value) ? getClientText(el, value) : value);
 		if (!forceHydrate && !shouldForceHydrate(el, "value")) return;
 	}
 	const oldValue = el.tagName === "OPTION" ? el.getAttribute("value") : el.value;
@@ -12088,7 +12128,8 @@ function setText(el, value) {
 	if (el.$txt !== value) el.nodeValue = el.$txt = value;
 }
 /**
-* Used by setDynamicProps only, so need to guard with `toDisplayString`
+* Used by setDynamicProps and `textContent` bindings, so need to guard with
+* `toDisplayString`
 */
 function setElementText(el, value) {
 	value = toDisplayString(value);
@@ -12124,6 +12165,7 @@ function patchDynamicProps(el, props, isSVG) {
 		for (const key in prevProps) if (!(key in props)) setDynamicProp(el, key, null, isSVG);
 	}
 	for (const key of Object.keys(props)) {
+		if (isReservedProp(key)) continue;
 		const value = props[key];
 		nextProps[key] = value;
 		if (prevProps && key in prevProps && !isOn(key) && (value == null || typeof value !== "object") && Object.is(prevProps[key], value)) continue;
@@ -12277,67 +12319,11 @@ function hasSlotFallback(boundary) {
 	return false;
 }
 //#endregion
-//#region packages/runtime-vapor/src/transition.ts
-let applyTransitionHooks;
-let applyTransitionLeaveHooks;
-let deferBranchUpdateDuringLeave;
-let removeBranchWithLeave;
-let isTransitionEnabled = false;
-function registerTransitionHooks(applyHooks, applyLeaveHooks, deferBranchUpdate, removeBranch) {
-	isTransitionEnabled = true;
-	applyTransitionHooks = applyHooks;
-	applyTransitionLeaveHooks = applyLeaveHooks;
-	deferBranchUpdateDuringLeave = deferBranchUpdate;
-	removeBranchWithLeave = removeBranch;
-}
-const displayName = "VaporTransition";
-function isVaporTransition(component) {
-	return component.displayName === displayName;
-}
-//#endregion
-//#region packages/runtime-vapor/src/keepAlive.ts
-let isKeepAliveEnabled = false;
-let currentCacheKey;
-function enableKeepAlive() {
-	isKeepAliveEnabled = true;
-}
-function withKeepAliveEnabled(value) {
-	enableKeepAlive();
-	return value;
-}
-function getKeepAliveContext(instance) {
-	let owner = instance;
-	while (isAsyncComponentEnabled && owner && owner.vapor && isAsyncWrapper(owner)) owner = owner.parent;
-	return owner && owner.vapor && isKeepAlive(owner) ? owner.ctx : null;
-}
-function withCurrentCacheKey(key, fn) {
-	const prev = currentCacheKey;
-	currentCacheKey = key;
-	try {
-		return fn();
-	} finally {
-		currentCacheKey = prev;
-	}
-}
-//#endregion
 //#region packages/runtime-vapor/src/helpers/setKey.ts
-function setBlockKey(block, key, overwrite = true) {
-	if (!block) return;
-	if (block instanceof Node) {
-		if (!overwrite && block.$key != null) return;
-		block.$key = key;
-	} else if (isVaporComponent(block)) {
-		if (!overwrite && block.$key != null) return;
-		block.$key = key;
-		if ((!isKeepAliveEnabled || !isKeepAlive(block)) && block.block) setBlockKey(block.block, key, overwrite);
-	} else if (isArray(block)) {
-		if (block.length === 1) setBlockKey(block[0], key, overwrite);
-	} else {
-		if (!overwrite && block.$key != null) return;
-		block.$key = key;
-		if (isInteropEnabled && block.setKey) block.setKey(key);
-		setBlockKey(block.nodes, key, overwrite);
-	}
+function setBlockKey(block, key) {
+	const frag = block;
+	frag.$key = key;
+	if (isInteropEnabled && frag.setKey) frag.setKey(key);
 }
 //#endregion
 //#region packages/runtime-vapor/src/slotFragment.ts
@@ -12373,6 +12359,10 @@ function renderSlotFallback(boundary, scope) {
 	}
 	return result;
 }
+function beforeExpose(state, block) {
+	const bm = state.bm;
+	if (bm) for (let i = 0; i < bm.length; i++) bm[i](block);
+}
 /**
 * The winning exposed branch for a slot host: the committed fallback while one
 * is active, the resolved content otherwise. Every host's `syncNodes` points
@@ -12394,19 +12384,18 @@ function invalidateExposedSlotContent(state) {
 	const callbacks = state.activeFallback ? state.activeFallbackInvalidCallbacks : state.boundary.onContentInvalid;
 	if (callbacks) for (let i = 0; i < callbacks.length; i++) callbacks[i]();
 }
-function clearSlotFallback(state) {
-	const fallback = state.activeFallback;
-	if (fallback) {
-		const parentNode = state.getParentNode();
-		if (state.fallbackInserted && parentNode) remove(fallback, parentNode);
-		state.activeFallback = null;
-		state.fallbackInserted = false;
-	}
-	state.activeFallbackInvalidCallbacks = void 0;
+function clearSlotFallback(state, parentNode = state.getParentNode()) {
 	if (state.fallbackScope) {
 		state.fallbackScope.stop();
 		state.fallbackScope = void 0;
 	}
+	const fallback = state.activeFallback;
+	if (fallback) {
+		remove(fallback, state.fallbackInserted ? parentNode || void 0 : void 0);
+		state.activeFallback = null;
+		state.fallbackInserted = false;
+	}
+	state.activeFallbackInvalidCallbacks = void 0;
 }
 function leaveSlotFallback(state, hooks, afterLeave) {
 	const fallback = state.activeFallback;
@@ -12449,8 +12438,8 @@ function commitSlotFallback(state, block, scope, onContentInvalid, detachContent
 	state.fallbackInserted = isHydrating$1;
 	if (isTransitionEnabled) {
 		if (state.$transition) {
-			setBlockKey(block, "_fb");
-			state.$transition = applyTransitionHooks(block, state.$transition);
+			if (!isArray(block)) setBlockKey(block, "_fb");
+			state.$transition = applyTransitionHooks(block, state.$transition, ownerFragment(state));
 		}
 	}
 	if (detachContent && !isHydrating$1) {
@@ -12459,15 +12448,20 @@ function commitSlotFallback(state, block, scope, onContentInvalid, detachContent
 		if (contentInvalidCallbacks) for (let i = 0; i < contentInvalidCallbacks.length; i++) contentInvalidCallbacks[i]();
 		if (parentNode) removeAttachedNodes$1(state.getContent(), parentNode, false);
 	}
+	beforeExpose(state, block);
 	insertActiveSlotFallback(state);
+}
+function ownerFragment(state) {
+	const frag = state;
+	return frag.__vf ? frag : void 0;
 }
 function renderAndCommitSlotFallback(state, hadFallback) {
 	const result = renderFallbackInScope(state);
 	clearSlotFallback(state);
 	if (result) commitSlotFallback(state, result.block, result.scope, result.onContentInvalid, !hadFallback);
 }
-function disposeSlotResolution(state) {
-	clearSlotFallback(state);
+function disposeSlotResolution(state, parentNode) {
+	clearSlotFallback(state, parentNode || null);
 	state.pendingRecheck = false;
 	state.pendingRecheckForce = false;
 	state.lastNodesValid = void 0;
@@ -12508,9 +12502,12 @@ function recheckSlotResolutionNow(state, force) {
 		const content = state.getContent();
 		const hadFallback = !!fallback;
 		clearSlotFallback(state);
-		if (!isHydrating$1 && hadFallback) {
-			const parentNode = state.getParentNode();
-			if (parentNode) insert(content, parentNode, state.getAnchor());
+		if (hadFallback) {
+			beforeExpose(state, content);
+			if (!isHydrating$1) {
+				const parentNode = state.getParentNode();
+				if (parentNode) insert(content, parentNode, state.getAnchor());
+			}
 		}
 	} else if (fallback) {
 		if (prevNodesValid) {
@@ -13181,7 +13178,9 @@ function createSlot(name = "default", rawProps, fallback, flags = 0) {
 				if (fallback) {
 					const fallbackFn = fallback;
 					withRenderContext(dynamicFragment.ctx, () => {
-						insert(fallbackFn(), el);
+						const block = fallbackFn();
+						insert(block, el);
+						registerNestedVDOMCleanup(block);
 					});
 				}
 				fragment.nodes = el;
@@ -13335,6 +13334,32 @@ function hydrateComponentScopeIds(instance) {
 	if (publish) publish(instance.block, scopeIds);
 }
 //#endregion
+//#region packages/runtime-vapor/src/keepAlive.ts
+let isKeepAliveEnabled = false;
+let currentCacheKey;
+function enableKeepAlive() {
+	isKeepAliveEnabled = true;
+}
+function withKeepAliveEnabled(value) {
+	enableKeepAlive();
+	return value;
+}
+function getKeepAliveContext(instance) {
+	let owner = instance;
+	while (isAsyncComponentEnabled && owner && owner.vapor && isAsyncWrapper(owner)) owner = owner.parent;
+	return owner && owner.vapor && isKeepAlive(owner) ? owner.ctx : null;
+}
+function withCurrentCacheKey(key, fn) {
+	if (key === void 0) return fn();
+	const prev = currentCacheKey;
+	currentCacheKey = key;
+	try {
+		return fn();
+	} finally {
+		currentCacheKey = prev;
+	}
+}
+//#endregion
 //#region packages/runtime-vapor/src/fragment.ts
 var VaporFragment = class {
 	constructor(nodes, flags = 1) {
@@ -13409,7 +13434,6 @@ var DynamicFragment = class extends RenderContextFragment {
 		super(EMPTY_BLOCK, 2 | flags);
 		this.everUpdated = false;
 		if (keyed) this.keyed = true;
-		if (isTransitionEnabled && currentInstance && isVaporTransition(currentInstance.type)) this.inTransition = true;
 		this.anchorLabel = anchorLabel;
 		if (!isHydrating$1) this.anchor = resolveFragmentAnchor(adoptAnchor, anchorLabel);
 		if (trackSlotBoundary) trackSlotBoundaryDirtying(this, onInvalid);
@@ -13429,36 +13453,34 @@ var DynamicFragment = class extends RenderContextFragment {
 		const wasMounted = prevKey !== void 0;
 		this.current = key;
 		const prevSub = setActiveSub();
-		const parent = !isHydrating$1 ? this.getBranchParent() : null;
-		const isUpdate = wasMounted || everUpdated && !!parent;
-		if (isUpdate) {
-			const bu = this.bu;
-			if (bu) for (let i = 0; i < bu.length; i++) bu[i]();
-		}
-		if (transition && deferBranchUpdateDuringLeave(this, render, key, noScope, branchKey)) {
+		let reusingDeferredAnchor = false;
+		try {
+			const parent = !isHydrating$1 ? this.getBranchParent() : null;
+			const isUpdate = wasMounted || everUpdated && !!parent;
+			if (isUpdate) {
+				const bu = this.bu;
+				if (bu) for (let i = 0; i < bu.length; i++) bu[i]();
+			}
+			if (transition && deferBranchUpdateDuringLeave(this, render, key, noScope, branchKey)) return;
+			let removePrevious;
+			if (wasMounted) {
+				const scope = this.scope;
+				const previous = this.nodes;
+				const removeBranch = () => remove(previous, parent || void 0);
+				let deferRemoval = false;
+				if (scope) {
+					if (this.keepAliveCtx) deferRemoval = this.keepAliveCtx.prepareBranchRemoval(this, scope, prevKey);
+					else scope.stop();
+				}
+				if (transition && removeBranchWithLeave(this, transition, parent, render, key, noScope, branchKey)) return;
+				if (deferRemoval) removePrevious = removeBranch;
+				else removeBranch();
+			}
+			reusingDeferredAnchor = isHydrating$1 ? prepareDeferredHydrationAnchor(this, !!render) : false;
+			this.renderBranch(render, transition, parent, key, noScope, isUpdate, removePrevious, branchKey);
+		} finally {
 			setActiveSub(prevSub);
-			return;
 		}
-		let removePrevious;
-		if (wasMounted) {
-			const scope = this.scope;
-			const previous = this.nodes;
-			const removeBranch = () => remove(previous, parent || void 0);
-			let deferRemoval = false;
-			if (scope) {
-				if (this.keepAliveCtx) deferRemoval = this.keepAliveCtx.prepareBranchRemoval(this, scope, prevKey);
-				else scope.stop();
-			}
-			if (transition && removeBranchWithLeave(this, transition, parent, render, key, noScope, branchKey)) {
-				setActiveSub(prevSub);
-				return;
-			}
-			if (deferRemoval) removePrevious = removeBranch;
-			else removeBranch();
-		}
-		const reusingDeferredAnchor = isHydrating$1 ? prepareDeferredHydrationAnchor(this, !!render) : false;
-		this.renderBranch(render, transition, parent, key, noScope, isUpdate, removePrevious, branchKey);
-		setActiveSub(prevSub);
 		if (isHydrating$1 && this.autoHydrate && !reusingDeferredAnchor) hydrateDynamicFragmentAnchor(this, render == null);
 	}
 	getBranchParent() {
@@ -13469,10 +13491,10 @@ var DynamicFragment = class extends RenderContextFragment {
 		if (render) {
 			const keepAliveCtx = isKeepAliveEnabled ? this.keepAliveCtx : null;
 			const useScope = !noScope || !!this.fallthrough;
-			if (keepAliveCtx) keepAliveCtx.runBranchRender(this, () => this.renderNodes(render, useScope, parent, transition, keepAliveCtx), useScope, removePrevious);
+			if (keepAliveCtx) keepAliveCtx.runBranchRender(this, () => this.renderNodes(render, useScope, parent, transition), useScope, removePrevious);
 			else {
 				this.scope = useScope ? new EffectScope() : void 0;
-				this.renderNodes(render, useScope, parent, transition, null);
+				this.renderNodes(render, useScope, parent, transition);
 			}
 			if (this.scopeIdOwners) applyScopeIdOwners(this.scopeIdOwners);
 			if (parent) {
@@ -13487,7 +13509,7 @@ var DynamicFragment = class extends RenderContextFragment {
 		const u = this.u;
 		if (notifyUpdated && u) for (let i = 0; i < u.length; i++) u[i](this.nodes);
 	}
-	renderNodes(render, useScope, parent, transition, keepAliveCtx) {
+	renderNodes(render, useScope, parent, transition) {
 		try {
 			this.nodes = this.runWithRenderCtx(() => {
 				const nodes = (useScope ? this.scope.run(render) : render()) || EMPTY_BLOCK;
@@ -13497,9 +13519,7 @@ var DynamicFragment = class extends RenderContextFragment {
 				return nodes;
 			});
 		} finally {
-			const key = this.branchKey !== void 0 ? this.branchKey : this.$key;
-			if (key !== void 0 && (transition || this.inTransition || keepAliveCtx)) setBlockKey(this.nodes, key, false);
-			if (isTransitionEnabled && transition) this.$transition = applyTransitionHooks(this.nodes, transition);
+			if (isTransitionEnabled && transition) this.$transition = applyTransitionHooks(this.nodes, transition, this);
 		}
 	}
 };
@@ -13514,6 +13534,10 @@ var SlotFragment = class extends DynamicFragment {
 		this.isReconciling = false;
 		this.content = EMPTY_BLOCK;
 		this.isUpdating = false;
+		onScopeDispose(() => {
+			this.disposed = true;
+			if (this.fallbackScope) this.fallbackScope.stop();
+		}, true);
 		this.sharedFallback = !!(flags & 8);
 		this.inheritFallback = slotInheritsFallback(flags);
 		this.notifyParentBoundary = slotNotifiesBoundary(flags);
@@ -13554,6 +13578,7 @@ var SlotFragment = class extends DynamicFragment {
 	}
 	remove(parent) {
 		this.disposed = true;
+		if (this.fallbackScope) this.fallbackScope.stop();
 		const nodes = this.nodes;
 		remove(nodes, parent);
 		if (this.activeFallback === nodes) {
@@ -13561,7 +13586,7 @@ var SlotFragment = class extends DynamicFragment {
 			this.fallbackInserted = false;
 		}
 		this.clearContentInvalid();
-		disposeSlotResolution(this);
+		disposeSlotResolution(this, parent);
 	}
 	clearContentInvalid() {
 		const callbacks = this.ownBoundary && this.ownBoundary.onContentInvalid;
@@ -13669,6 +13694,7 @@ function isAdoptedPlaceholder(fragmentAnchor, insertionAnchor) {
 function finishBlockCreation(block, anchor, cursor, insertionParent, insertionAnchor, force) {
 	if (isHydrating$1) exitHydrationCursor(cursor);
 	else if (insertionParent && (force || !isAdoptedPlaceholder(anchor, insertionAnchor))) insert(block, insertionParent, insertionAnchor);
+	if (insertionParent) registerNestedVDOMCleanup(block);
 }
 function isFragment(val) {
 	return !!(val && val.__vf);
@@ -13681,6 +13707,15 @@ function isSlotOutletFragment(val) {
 }
 function isDynamicFragment(val) {
 	return !!(val && val.__vf & 2);
+}
+/**
+* The key a fragment hands to its branch root as default: a declared key
+* (static key on a dynamic component) or the current branch key (keyed
+* fragment, dynamic component `:key`, v-if branch index).
+*/
+function getFragmentKey(frag) {
+	var _frag$$key;
+	return (_frag$$key = frag.$key) !== null && _frag$$key !== void 0 ? _frag$$key : frag.branchKey;
 }
 function isForFragment(val) {
 	return !!(val && val.__vf & 8);
@@ -13815,6 +13850,25 @@ function removeFragment(block, parent) {
 	if (block.scope) block.scope.stop();
 }
 /**
+* Block removal doesn't descend into elements, so it never reaches a block
+* mounted into one. Unmount the vdom components in its tree synchronously when
+* its owner scope is disposed, as vdom does for an element's children.
+*/
+function registerNestedVDOMCleanup(block) {
+	if (isInteropEnabled && !(block instanceof Node)) onScopeDispose(() => unmountVDOM(block), true);
+}
+/**
+* Unmounts the vdom components in a block tree whose DOM goes away without
+* block removal.
+*/
+function unmountVDOM(block) {
+	if (!block || block instanceof Node) return;
+	if (isVaporComponent(block)) unmountVDOM(block.block);
+	else if (isArray(block)) for (let i = 0; i < block.length; i++) unmountVDOM(block[i]);
+	else if (isInteropFragment(block)) block.remove();
+	else unmountVDOM(block.nodes);
+}
+/**
 * dev / test only
 */
 function normalizeBlock(block) {
@@ -13849,7 +13903,10 @@ function getBlockFirstNode(block) {
 			if (marker) return marker;
 		}
 		const nodes = block.nodes;
-		return isValidBlock(nodes) ? getBlockFirstNode(nodes) : block.anchor || getBlockFirstNode(nodes);
+		if (isValidBlock(nodes)) return getBlockFirstNode(nodes);
+		const node = getBlockFirstNode(nodes);
+		const anchor = block.anchor;
+		return node && (!anchor || node.parentNode === anchor.parentNode) ? node : anchor;
 	}
 }
 function findBlockBoundary(block) {
@@ -13881,6 +13938,33 @@ function isFragmentBlock(block) {
 	return false;
 }
 //#endregion
+//#region packages/runtime-vapor/src/helpers/useCssVars.ts
+/**
+* Css vars are root-inherited state: the owner writes its root chain before
+* insertion, containers on that chain write the content they produce later
+* (`bm` hooks; `u` for vdom-owned interop content), and teleports are written
+* directly as outlets since their content leaves the chain.
+*/
+function useVaporCssVars(getter) {}
+function setVarsOnBlock(block, vars) {
+	if (block instanceof Node) setVarsOnNode(block, vars);
+	else if (isArray(block)) for (let i = 0; i < block.length; i++) setVarsOnBlock(block[i], vars);
+	else if (isVaporComponent(block)) setVarsOnBlock(block.block, vars);
+	else if (isFragment(block) && !(isTeleportEnabled && isTeleportFragment(block))) setVarsOnBlock(block.nodes, vars);
+}
+function registerCssVarOutlet(owner, frag) {
+	(owner.cssVarOutlets || (owner.cssVarOutlets = [])).push(frag);
+	onScopeDispose(() => remove$1(owner.cssVarOutlets, frag), true);
+}
+function applyComponentCssVars(instance) {
+	let current = instance;
+	while (current && current.vapor) {
+		const owner = current;
+		if (owner.applyCssVars && !owner.ce) owner.applyCssVars(owner.block);
+		current = current.parent;
+	}
+}
+//#endregion
 //#region packages/runtime-vapor/src/hmr.ts
 function hmrRerender(instance) {
 	if (!instance.type.render) {
@@ -13904,6 +13988,7 @@ function hmrRerender(instance) {
 		restoreCurrentInstance(prev);
 	}
 	applyComponentScopeIds(instance);
+	applyComponentCssVars(instance);
 	insert(instance.block, parent, anchor);
 }
 function hmrReload(instance, newComp) {
@@ -13960,7 +14045,14 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, once, appC
 			const ctx = currentInstance.ctx;
 			keepAliveCtx = ctx;
 			const cached = ctx.getCachedComponent(component);
-			if (cached) return cached;
+			if (cached) {
+				const scope = getCurrentScope();
+				if (isVaporComponent(cached) && cached.unmountScope !== scope) {
+					cached.unmountScope = scope;
+					registerUnmount(cached);
+				}
+				return cached;
+			}
 		}
 		let asyncBoundary = false;
 		if (isAsyncComponentEnabled && !isHydrating$1) {
@@ -13970,17 +14062,12 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, once, appC
 				asyncBoundary = true;
 			}
 		}
-		if (isInteropEnabled && useVdomInterop(component, appContext)) {
-			const frag = appContext.vdom.mount(component, currentInstance, rawProps, normalizeRawSlots(rawSlots), once);
-			if (!isHydrating$1) {
-				if (_insertionParent) insert(frag, _insertionParent, _insertionAnchor, currentRenderContext.suspense);
-			} else frag.hydrate();
-			return frag;
-		}
 		if (isTeleportEnabled && isVaporTeleport(component)) {
 			const frag = component.process(rawProps, normalizeRawSlots(rawSlots), _insertionAnchor);
-			if (_insertionParent) onScopeDispose(() => frag.disposeTarget(), true);
-			else onScopeDispose(() => frag.scheduleTargetDispose(), true);
+			if (_insertionParent) {
+				onScopeDispose(() => frag.disposeTarget(), true);
+				registerNestedVDOMCleanup(frag);
+			} else onScopeDispose(() => frag.scheduleTargetDispose(), true);
 			if (!isHydrating$1) {
 				if (_insertionParent) insert(frag, _insertionParent, _insertionAnchor, currentRenderContext.suspense);
 			} else frag.hydrate();
@@ -14003,6 +14090,15 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, once, appC
 				}
 			});
 			if (isolated) inputScope = scope;
+		}
+		if (isInteropEnabled && useVdomInterop(component, appContext)) {
+			const frag = appContext.vdom.mount(component, currentInstance, rawProps, normalizeRawSlots(rawSlots), once);
+			if (inputScope) frag.inputScope = inputScope;
+			if (_insertionParent) registerNestedVDOMCleanup(frag);
+			if (!isHydrating$1) {
+				if (_insertionParent) insert(frag, _insertionParent, _insertionAnchor, currentRenderContext.suspense);
+			} else frag.hydrate();
+			return frag;
 		}
 		const instance = new VaporComponentInstance(component, rawProps, rawSlots, appContext, once, ce);
 		if (inputScope) instance.inputScope = inputScope;
@@ -14050,7 +14146,9 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, once, appC
 			if (hasWarningContext) popWarningContext();
 			if (hasInitMeasure) endMeasure(instance, "init");
 		}
-		onScopeDispose(() => unmountComponent(instance, void 0, isInteropEnabled ? resolveUnmountSuspense(instance.suspense) : instance.suspense), true);
+		if (keepAliveCtx) instance.unmountScope = getCurrentScope();
+		registerUnmount(instance);
+		if (_insertionParent) registerNestedVDOMCleanup(instance);
 		if (!managedMount && (_insertionParent || isHydrating$1)) mountComponent(instance, _insertionParent, _insertionAnchor);
 		return instance;
 	} finally {
@@ -14274,7 +14372,8 @@ var VaporComponentInstance = class {
 	* paths where it's needed, e.g. `useModel`
 	*/
 	rawKeys() {
-		return getKeysFromRawProps(this.rawProps);
+		const vnode = isInteropEnabled && this.interopVNode;
+		return vnode ? Object.keys(vnode.props || EMPTY_OBJ) : getKeysFromRawProps(this.rawProps);
 	}
 };
 function isVaporComponent(value) {
@@ -14352,11 +14451,13 @@ function createPlainElement(comp, rawProps, rawSlots, isSingleRoot, once, ns) {
 			if (isHydrating$1) locateHydrationNode();
 			renderEffect(() => frag.update(getSlot(rawSlots, "default")));
 			if (!isHydrating$1) insert(frag, el);
+			registerNestedVDOMCleanup(frag);
 		} else {
 			const slot = getSlot(rawSlots, "default");
 			if (slot) {
 				const block = slot();
 				if (!isHydrating$1) insert(block, el);
+				registerNestedVDOMCleanup(block);
 			}
 		}
 		if (isHydrating$1) setCurrentHydrationNode(nextNode);
@@ -14459,6 +14560,13 @@ function mountComponent(instance, parent, anchor) {
 	instance.isMounted = true;
 	endMeasure(instance, `mount`);
 }
+function registerUnmount(instance) {
+	const scope = instance.unmountScope;
+	onScopeDispose(() => {
+		if (scope && instance.unmountScope === scope) instance.unmountScope = void 0;
+		unmountComponent(instance, void 0, isInteropEnabled ? resolveUnmountSuspense(instance.suspense) : instance.suspense);
+	}, true);
+}
 function unmountComponent(instance, parentNode, parentSuspense = instance.suspense) {
 	if (isSuspenseEnabled && isInteropEnabled && currentUnmountSuspense !== parentSuspense) {
 		runWithUnmountSuspense(parentSuspense, () => unmountComponent(instance, parentNode, parentSuspense));
@@ -14502,13 +14610,23 @@ function unmountComponent(instance, parentNode, parentSuspense = instance.suspen
 	}
 }
 function getExposed(instance) {
-	if (instance.exposed) return instance.exposeProxy || (instance.exposeProxy = new Proxy(markRaw(instance.exposed), { get: (target, key) => unref(target[key]) }));
+	if (instance.exposed) return instance.exposeProxy || (instance.exposeProxy = new Proxy(markRaw(instance.exposed), {
+		get: (target, key) => unref(target[key]),
+		set: (target, key, value, receiver) => {
+			const oldValue = target[key];
+			if (/* @__PURE__ */ isRef(oldValue) && !/* @__PURE__ */ isRef(value)) {
+				oldValue.value = value;
+				return true;
+			}
+			return Reflect.set(target, key, value, receiver);
+		}
+	}));
 }
 function getRootElement(block, visitor) {
 	if (block instanceof Element) return block;
 	if (isVaporComponent(block)) {
 		if (visitor) {
-			if (visitor.onComponent) visitor.onComponent(block);
+			if (visitor.onComponent && visitor.onComponent(block)) return;
 			if (visitor.stopAtComponent) return;
 		}
 		return getRootElement(block.block, visitor);
@@ -14517,10 +14635,7 @@ function getRootElement(block, visitor) {
 		if (visitor) {
 			if (visitor.excludeSlotOutlets && isSlotOutletFragment(block)) return;
 			if (isDynamicFragment(block) && visitor.onDynamicFragment && visitor.onDynamicFragment(block)) return;
-			if (isInteropEnabled && visitor.onInteropFragment && isInteropFragment(block) && block.vnode) {
-				visitor.onInteropFragment(block);
-				return;
-			}
+			if (isInteropEnabled && visitor.onInteropFragment && isInteropFragment(block) && visitor.onInteropFragment(block)) return;
 		}
 		return getRootElement(block.nodes, visitor);
 	}
@@ -14827,7 +14942,7 @@ function defineVaporAsyncComponent(source) {
 				restoreCurrentInstance(prev);
 			}
 			instance.isMounted = true;
-			setCurrentHydrationNode(endAnchor || el.nextSibling);
+			setCurrentHydrationNode(nextLogicalSibling(el));
 			performAsyncHydrate(el, instance, () => hydrateNode(el, () => withDeferredHydrationBoundary(hydrate)), getResolvedComp, load, hydrateStrategy, false);
 		},
 		get __asyncResolved() {
@@ -15043,10 +15158,12 @@ function getLeaveElement(block) {
 	if (el) return el;
 	if (isFragment(block) && !isArray(block.nodes) && (block.nodes instanceof Element || isFragment(block.nodes))) return getLeaveElement(block.nodes);
 }
-const groupTransitionKeys = /* @__PURE__ */ new WeakMap();
+const transitionKeys = /* @__PURE__ */ new WeakMap();
 function getTransitionKey(block) {
-	const key = groupTransitionKeys.get(block);
-	return key !== void 0 ? key : block.$key;
+	return transitionKeys.get(block);
+}
+function setTransitionKey(block, key) {
+	transitionKeys.set(block, key);
 }
 const getTransitionHooksContext = (block, state) => {
 	const key = String(getTransitionKey(block));
@@ -15077,7 +15194,7 @@ function resolveTransitionHooks$1(block, props, state, instance) {
 	hooks.instance = instance;
 	return hooks;
 }
-function applyTransitionHooksImpl(block, hooks) {
+function applyTransitionHooksImpl(block, hooks, owner) {
 	if (isArray(block)) {
 		block = block.filter((b) => !(b instanceof Comment));
 		if (block.length === 1) block = block[0];
@@ -15088,7 +15205,7 @@ function applyTransitionHooksImpl(block, hooks) {
 		return hooks;
 	}
 	const fragments = [];
-	const child = resolveTransitionBlock(block, (fragment) => fragments.push(fragment));
+	const child = resolveTransitionBlock(block, (fragment) => fragments.push(fragment), owner);
 	if (!child) {
 		fragments.forEach((f) => f.$transition = hooks);
 		if (fragments.length === 0) warn("Transition component has no valid child element");
@@ -15115,7 +15232,7 @@ function isPersistedRoot(block) {
 	return false;
 }
 function applyTransitionLeaveHooksImpl(block, enterHooks, afterLeaveCb) {
-	const leavingBlock = resolveTransitionBlock(block);
+	const leavingBlock = findTransitionBlock(block);
 	if (!leavingBlock) return false;
 	const { props, state, instance } = enterHooks;
 	const leavingHooks = resolveTransitionHooks$1(leavingBlock, props, state, instance);
@@ -15189,36 +15306,84 @@ function removeBranchWithLeaveImpl(frag, transition, parent, render, key, noScop
 	}
 	return false;
 }
-function resolveTransitionBlock(block, onFragment) {
+const ROOT_KEY_CONTEXT = { key: void 0 };
+const keyContexts = /* @__PURE__ */ new WeakMap();
+const KEY_CONTEXT_OWNER = 34;
+function transitionTypeOf(block) {
+	return isAsyncComponentEnabled && block.type.__asyncResolved || block.type;
+}
+function withDefaultKey(ctx, key) {
+	return ctx.type || key == null ? ctx : { key };
+}
+function isUnresolvedAsyncWrapper(block) {
+	return isAsyncComponentEnabled && isAsyncWrapper(block) && getAsyncWrapperInner(block) === void 0;
+}
+function enterComponentKeyContext(ctx, block, unresolved = isUnresolvedAsyncWrapper(block)) {
+	var _block$$key;
+	if (ctx.type) return ctx;
+	return unresolved ? withDefaultKey(ctx, block.$key) : {
+		key: (_block$$key = block.$key) !== null && _block$$key !== void 0 ? _block$$key : ctx.key,
+		type: transitionTypeOf(block)
+	};
+}
+function enterFragmentKeyContext(frag, ctx, key = getFragmentKey(frag)) {
+	if (frag.__vf & KEY_CONTEXT_OWNER) keyContexts.set(frag, ctx);
+	return withDefaultKey(ctx, key);
+}
+function resolveChildIdentity(child, ctx) {
+	var _child$$key;
+	transitionKeys.set(child, ctx.type ? ctx.key : (_child$$key = child.$key) !== null && _child$$key !== void 0 ? _child$$key : ctx.key);
+	if (ctx.type) setTransitionType(child, ctx.type);
+}
+/**
+* Resolve the transition child of `block` together with its identity.
+* `owner` is the fragment whose content `block` is.
+*/
+function resolveTransitionBlock(block, onFragment, owner) {
+	const ctx = owner ? withDefaultKey(keyContexts.get(owner) || ROOT_KEY_CONTEXT, getFragmentKey(owner)) : ROOT_KEY_CONTEXT;
 	const children = [];
-	collectTransitionBlocks$1(block, onFragment, children);
+	collectTransitionBlocks$1(block, onFragment, children, ctx);
 	return children[0];
 }
-function collectTransitionBlocks$1(block, onFragment, children) {
-	if (block instanceof Node) {
-		if (block instanceof Element) children.push(block);
-	} else if (isVaporComponent(block)) collectComponentTransitionBlocks(block, onFragment, children);
-	else if (isArray(block)) collectArrayTransitionBlocks(block, onFragment, children);
-	else if (isFragment(block)) collectFragmentTransitionBlocks(block, onFragment, children);
+/** Locate the transition child of `block` without touching its identity. */
+function findTransitionBlock(block) {
+	const children = [];
+	collectTransitionBlocks$1(block, void 0, children, void 0);
+	return children[0];
 }
-function collectComponentTransitionBlocks(block, onFragment, children) {
-	if (isAsyncComponentEnabled && isAsyncWrapper(block)) {
-		const inner = getAsyncWrapperInner(block);
+function collectTransitionBlocks$1(block, onFragment, children, ctx) {
+	if (block instanceof Node) {
+		if (block instanceof Element) {
+			children.push(block);
+			if (ctx) resolveChildIdentity(block, ctx);
+		}
+	} else if (isVaporComponent(block)) collectComponentTransitionBlocks(block, onFragment, children, ctx);
+	else if (isArray(block)) collectArrayTransitionBlocks(block, onFragment, children, ctx);
+	else if (isFragment(block)) collectFragmentTransitionBlocks(block, onFragment, children, ctx);
+}
+function collectComponentTransitionBlocks(block, onFragment, children, ctx) {
+	if (isKeepAliveEnabled && isKeepAlive(block)) {
+		collectTransitionBlocks$1(block.block, onFragment, children, ctx);
+		return;
+	}
+	const async = isAsyncComponentEnabled && isAsyncWrapper(block);
+	const inner = async ? getAsyncWrapperInner(block) : void 0;
+	if (ctx) ctx = enterComponentKeyContext(ctx, block, async && inner === void 0);
+	if (async) {
 		if (inner === void 0) {
-			if (onFragment && isFragment(block.block)) onFragment(block.block);
+			if (isFragment(block.block)) {
+				if (onFragment) onFragment(block.block);
+				if (ctx) keyContexts.set(block.block, ctx);
+			}
 			return;
 		}
-		const start = children.length;
-		collectTransitionBlocks$1(inner, onFragment, children);
-		inheritSingleComponentKey(children[start], block);
+		collectTransitionBlocks$1(inner, onFragment, children, ctx);
 		return;
 	}
 	if (isVaporTransition(block.type)) return;
-	const start = children.length;
-	collectTransitionBlocks$1(block.block, onFragment, children);
-	inheritSingleComponentKey(children[start], block);
+	collectTransitionBlocks$1(block.block, onFragment, children, ctx);
 }
-function collectArrayTransitionBlocks(block, onFragment, children) {
+function collectArrayTransitionBlocks(block, onFragment, children, ctx) {
 	let hasFound = false;
 	for (const c of block) {
 		if (c instanceof Comment) continue;
@@ -15227,29 +15392,29 @@ function collectArrayTransitionBlocks(block, onFragment, children) {
 			break;
 		}
 		const nested = [];
-		collectTransitionBlocks$1(c, onFragment, nested);
+		collectTransitionBlocks$1(c, onFragment, nested, ctx);
 		if (nested.length) children.push(nested[0]);
 		hasFound = true;
 	}
 }
-function collectFragmentTransitionBlocks(block, onFragment, children) {
+function collectFragmentTransitionBlocks(block, onFragment, children, ctx) {
 	if (isInteropEnabled && block.hasVDOMContent && block.hasVDOMContent()) {
 		children.push(block);
-		const type = block.getTransitionType();
-		if (type !== void 0) setTransitionType(block, type);
+		if (ctx) {
+			resolveChildIdentity(block, ctx);
+			if (!ctx.type) {
+				const type = block.getTransitionType();
+				if (type !== void 0) setTransitionType(block, type);
+			}
+		}
 		return;
 	}
 	if (onFragment) onFragment(block);
-	collectTransitionBlocks$1(block.nodes, onFragment, children);
-}
-function inheritSingleComponentKey(child, block) {
-	if (!child) return;
-	if (child.$key == null && block.$key != null) child.$key = block.$key;
-	setTransitionType(child, block.type);
+	collectTransitionBlocks$1(block.nodes, onFragment, children, ctx && enterFragmentKeyContext(block, ctx));
 }
 function setTransitionHooks$1(block, hooks) {
 	if (isVaporComponent(block)) {
-		block = resolveTransitionBlock(block.block);
+		block = findTransitionBlock(block.block);
 		if (!block) return;
 	}
 	block.$transition = hooks;
@@ -15311,14 +15476,14 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 		const keys = /* @__PURE__ */ new Set();
 		const storageContainer = /* @__PURE__ */ createElement("div");
 		const keptAliveScopes = /* @__PURE__ */ new Map();
-		const resolveCacheKeyFromBlock = (block, interop, branchKey = currentCacheKey) => {
-			var _ref2, _$key;
+		const resolveCacheKeyFromBlock = (block, interop, branchKey) => {
+			var _ref3, _$key;
 			if (interop && isInteropEnabled) {
-				var _ref, _key;
+				var _ref, _ref2, _frag$$key;
 				const frag = block;
-				return (_ref = frag.$key !== void 0 ? frag.$key : (_key = frag.vnode.key) !== null && _key !== void 0 ? _key : branchKey) !== null && _ref !== void 0 ? _ref : frag.vnode.type;
+				return (_ref = (_ref2 = (_frag$$key = frag.$key) !== null && _frag$$key !== void 0 ? _frag$$key : frag.vnode.key) !== null && _ref2 !== void 0 ? _ref2 : branchKey) !== null && _ref !== void 0 ? _ref : frag.vnode.type;
 			}
-			return (_ref2 = (_$key = block.$key) !== null && _$key !== void 0 ? _$key : branchKey) !== null && _ref2 !== void 0 ? _ref2 : block.type;
+			return (_ref3 = (_$key = block.$key) !== null && _$key !== void 0 ? _$key : branchKey) !== null && _ref3 !== void 0 ? _ref3 : block.type;
 		};
 		let current;
 		let rootFragment;
@@ -15344,9 +15509,8 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 				const transition = block.$transition;
 				if (transition && transition.mode === "out-in" && transition.state.isLeaving) return;
 			}
-			const [innerBlock, interop] = getInnerBlock(block);
+			const [innerBlock, interop, branchKey] = getInnerBlock(block);
 			if (!innerBlock) return;
-			const branchKey = isDynamicFragment(block) ? block.branchKey : void 0;
 			const cacheKey = resolveCacheKeyFromBlock(innerBlock, interop, branchKey);
 			if (!shouldCache(innerBlock, props, interop)) {
 				if (cache.has(cacheKey)) pruneCacheEntry(cacheKey);
@@ -15356,10 +15520,10 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 			const { currentBlock, currentKey } = getCurrentBlockState();
 			innerCacheBlock(cacheKey, innerBlock, currentBlock === innerBlock || currentKey === cacheKey);
 		};
-		const processShapeFlag = (block) => {
-			const [innerBlock, interop] = getInnerBlock(block);
-			if (!innerBlock || !shouldCache(innerBlock, props, interop)) return false;
-			const cacheKey = resolveCacheKeyFromBlock(innerBlock, interop);
+		const processShapeFlag = (block, requireKeptAlive = false) => {
+			const [innerBlock, interop, branchKey] = getInnerBlock(block);
+			if (!innerBlock || requireKeptAlive && !isKeptAlive(innerBlock, interop) || !shouldCache(innerBlock, props, interop)) return false;
+			const cacheKey = resolveCacheKeyFromBlock(innerBlock, interop, branchKey);
 			setShapeFlag(innerBlock, interop, cache.has(cacheKey));
 			return cacheKey;
 		};
@@ -15406,6 +15570,7 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 		watch(() => [props.include, props.exclude], ([include, exclude]) => {
 			include && pruneCache((name) => matches(include, name));
 			exclude && pruneCache((name) => !matches(exclude, name));
+			cacheBlock();
 		}, {
 			flush: "post",
 			deep: true
@@ -15414,8 +15579,7 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 		onUpdated(cacheBlock);
 		const getCurrentBlockState = () => {
 			const block = keepAliveInstance.block;
-			const [currentBlock, interop] = getInnerBlock(block);
-			const branchKey = isDynamicFragment(block) && block.branchKey !== void 0 ? block.branchKey : currentCacheKey;
+			const [currentBlock, interop, branchKey] = getInnerBlock(block);
 			return {
 				currentBlock,
 				interop,
@@ -15454,8 +15618,8 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 			getStorageContainer: () => storageContainer,
 			getCachedComponent: (comp, key) => {
 				if (isInteropEnabled && isVNode(comp)) {
-					var _ref3, _comp$key;
-					return cache.get((_ref3 = (_comp$key = comp.key) !== null && _comp$key !== void 0 ? _comp$key : currentCacheKey) !== null && _ref3 !== void 0 ? _ref3 : comp.type);
+					var _ref4, _comp$key;
+					return cache.get((_ref4 = (_comp$key = comp.key) !== null && _comp$key !== void 0 ? _comp$key : currentCacheKey) !== null && _ref4 !== void 0 ? _ref4 : comp.type);
 				}
 				const branchKey = key !== null && key !== void 0 ? key : currentCacheKey;
 				return branchKey != null ? cache.get(branchKey) : cache.get(comp) || cache.get(comp.__asyncResolved);
@@ -15473,17 +15637,19 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 					scope.stop();
 					return false;
 				}
-				const cacheKey = frag.branchKey !== void 0 ? withCurrentCacheKey(frag.branchKey, () => processShapeFlag(frag.nodes)) : processShapeFlag(frag.nodes);
+				const fragKey = getFragmentKey(frag);
+				const cacheKey = withCurrentCacheKey(fragKey, () => processShapeFlag(frag.nodes, true));
 				if (cacheKey === false) {
 					scope.stop();
 					return false;
 				}
 				scope.pause();
-				cacheScope(cacheKey, scopeLookupKey(frag, prevKey), scope);
+				cacheScope(cacheKey, fragKey !== null && fragKey !== void 0 ? fragKey : prevKey, scope);
 				return true;
 			},
 			runBranchRender(frag, fn, useScope, removePrevious) {
-				const cachedScope = useScope ? deleteScope(scopeLookupKey(frag, frag.current)) : void 0;
+				const fragKey = getFragmentKey(frag);
+				const cachedScope = useScope ? deleteScope(fragKey !== null && fragKey !== void 0 ? fragKey : frag.current) : void 0;
 				frag.scope = useScope ? cachedScope || new EffectScope() : void 0;
 				if (cachedScope) cachedScope.resume();
 				let incomingCacheKey = false;
@@ -15495,7 +15661,7 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 					}
 				};
 				try {
-					frag.branchKey !== void 0 ? withCurrentCacheKey(frag.branchKey, run) : run();
+					withCurrentCacheKey(fragKey, run);
 					if (removePrevious && incomingCacheKey !== false && !cache.has(incomingCacheKey)) addCacheKey(incomingCacheKey);
 				} finally {
 					if (removePrevious) removePrevious();
@@ -15521,9 +15687,6 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 		return children;
 	}
 }));
-function scopeLookupKey(frag, current) {
-	return frag.branchKey !== void 0 ? frag.branchKey : current;
-}
 function registerDynamicFragmentHooks(block, keepAliveCtx) {
 	if (!isDynamicFragment(block)) return;
 	(block.u || (block.u = [])).unshift(() => {
@@ -15565,11 +15728,26 @@ function isKeptAlive(cached, interop) {
 	if (interop && isInteropEnabled && isInteropFragment(cached)) return !!(cached.vnode.shapeFlag & 256);
 	return !!(cached.shapeFlag & 256);
 }
-function getInnerBlock(block) {
-	if (isVaporComponent(block)) return [block, false];
-	else if (isInteropEnabled && isInteropFragment(block)) return [block, true];
-	else if (isFragment(block)) return getInnerBlock(block.nodes);
-	return [void 0, false];
+function getInnerBlock(block, branchKey = currentCacheKey) {
+	if (isVaporComponent(block)) return [
+		block,
+		false,
+		branchKey
+	];
+	else if (isInteropEnabled && isInteropFragment(block)) return [
+		block,
+		true,
+		branchKey
+	];
+	else if (isFragment(block)) {
+		var _getFragmentKey;
+		return getInnerBlock(block.nodes, (_getFragmentKey = getFragmentKey(block)) !== null && _getFragmentKey !== void 0 ? _getFragmentKey : branchKey);
+	}
+	return [
+		void 0,
+		false,
+		branchKey
+	];
 }
 function getInstanceFromCache(cached) {
 	if (isVaporComponent(cached)) return cached;
@@ -15662,15 +15840,19 @@ function getInteropTransitionType(vnode) {
 	const child = getRawTransitionChild(vnode);
 	return child && child.type;
 }
+function vnodeKeyOf(vnode) {
+	var _vnode$key;
+	return (_vnode$key = vnode.key) !== null && _vnode$key !== void 0 ? _vnode$key : void 0;
+}
 function getVNodeKey(vnode) {
 	const child = getRawTransitionChild(vnode);
-	return child && child.key;
+	return child && vnodeKeyOf(child);
 }
 function getInteropTransitionElement(vnode) {
 	if (!vnode) return;
 	const component = vnode.component;
 	if (isVaporComponent(component)) {
-		const block = component.block && resolveTransitionBlock(component.block);
+		const block = component.block && findTransitionBlock(component.block);
 		return block && getTransitionElement(block);
 	}
 	if (component) return getInteropTransitionElement(component.subTree);
@@ -15689,6 +15871,9 @@ function filterReservedProps(props) {
 	return filtered;
 }
 const vaporInteropImpl = {
+	applyCssVars(vnode, vars) {
+		setVarsOnBlock(getVaporInstance(vnode).block, vars);
+	},
 	mount(vnode, container, anchor, parentComponent, parentSuspense, onBeforeMount, onVnodeBeforeMount) {
 		const selfAnchor = vnode.anchor = /* @__PURE__ */ createTextNode();
 		vnode.el = selfAnchor;
@@ -15784,8 +15969,8 @@ const vaporInteropImpl = {
 			const anchor = vnode.anchor;
 			if (vnode.el && vnode.el !== anchor && isComment(vnode.el, "[")) slotStartAnchor = vnode.el;
 			const blockContainer = container || (needsHostParentForRemove(vnode.vb) ? anchor && anchor.parentNode : void 0);
-			remove(vnode.vb, blockContainer);
 			stopVaporSlotScope(vnode);
+			remove(vnode.vb, blockContainer);
 		}
 		if (doRemove) {
 			if (slotStartAnchor) {
@@ -15812,8 +15997,8 @@ const vaporInteropImpl = {
 			const nextSibling = selfAnchor.nextSibling;
 			const rangeStartAnchor = n1.el && n1.el !== selfAnchor && isComment(n1.el, "[") ? n1.el : void 0;
 			const oldBlockOwnsAnchor = isFragment(n1.vb) && n1.vb.anchor === selfAnchor;
-			remove(n1.vb, parent);
 			stopVaporSlotScope(n1);
+			remove(n1.vb, parent);
 			const slotBlock = renderVaporSlot(n2, parentComponent, parentSuspense, slotScopeIds);
 			let newAnchor = isFragment(slotBlock) ? slotBlock.anchor : void 0;
 			let insertAnchor = nextSibling;
@@ -15961,6 +16146,7 @@ const vaporSlotsProxyHandler = {
 			if (cached && cached.slot === slot) return cached.wrapped;
 			const wrapped = (props) => [renderSlot({ [key]: slot }, key, props)];
 			wrapped[rawVaporSlotKey] = slot;
+			wrapped._n = true;
 			wrappers.set(key, {
 				slot,
 				wrapped
@@ -15996,6 +16182,15 @@ function resolveVNodeNodes(vnode) {
 			return block;
 		}
 	}
+	if (vnode.type === VaporSlot && vnode.vb) {
+		const { el, anchor, vb } = vnode;
+		if (!anchor) return vb;
+		return el && el !== anchor && isComment(el, "[") ? [
+			el,
+			vb,
+			anchor
+		] : [vb, anchor];
+	}
 	const vnodeRange = resolveVNodeRange(vnode);
 	if (vnodeRange) {
 		const nodeRange = [];
@@ -16024,7 +16219,7 @@ function trackFragmentVNodeUpdates(frag, vnode, syncNodes) {
 	};
 	vnode.iu = () => {
 		syncNodes();
-		if (frag.u) frag.u.forEach((hook) => hook());
+		if (frag.u) frag.u.forEach((hook) => hook(frag.nodes));
 	};
 }
 /**
@@ -16051,7 +16246,7 @@ var InteropContentState = class {
 };
 function createVNodeFragment(vnode) {
 	const frag = createInteropFragment(EMPTY_BLOCK, vnode);
-	frag.$key = vnode.key;
+	frag.$key = vnodeKeyOf(vnode);
 	const content = new InteropContentState();
 	const syncNodes = () => {
 		frag.nodes = resolveVNodeNodes(frag.vnode);
@@ -16102,7 +16297,15 @@ function mountVNode(internals, vnode, parentComponent, getFallthroughAttrs) {
 	let mountedParentNode;
 	let mountedAnchor = null;
 	let namespace;
+	let isUnmounted = false;
 	const unmount = (parentNode, transition) => {
+		if (isUnmounted) {
+			if (parentNode) {
+				removeAttachedNodes(resolveVNodeNodes(vnode), parentNode);
+				if (vnode.anchor && vnode.anchor.parentNode === parentNode) remove(vnode.anchor, parentNode);
+			}
+			return;
+		}
 		if (transition) setTransitionHooks(vnode, transition);
 		const parentSuspense = resolveUnmountSuspense(suspense);
 		if (vnode.shapeFlag & 256) {
@@ -16113,13 +16316,15 @@ function mountVNode(internals, vnode, parentComponent, getFallthroughAttrs) {
 				deactivate$1(vnode.component, storageContainer, parentSuspense);
 				insert(vnode.anchor, storageContainer);
 			} else deactivate(vnode, storageContainer, internals, parentComponent, parentSuspense);
-		} else internals.um(vnode, parentComponent, parentSuspense, !!parentNode);
+		} else {
+			isUnmounted = true;
+			internals.um(vnode, parentComponent, parentSuspense, !!parentNode);
+		}
 		if (vnode.anchor && parentNode && vnode.anchor.parentNode === parentNode) remove(vnode.anchor, parentNode);
 	};
 	frag.hydrate = () => {
 		if (!isHydrating$1) return;
 		hydrateVNode(vnode, parentComponent, frag.slotScopeIds);
-		onScopeDispose(unmount, true);
 		isMounted = true;
 		syncNodes();
 	};
@@ -16140,7 +16345,6 @@ function mountVNode(internals, vnode, parentComponent, getFallthroughAttrs) {
 				if (transition) setTransitionHooks(vnode, transition);
 				namespace = getContainerType(parentNode);
 				internals.p(null, vnode, parentNode, anchor, parentComponent, operationSuspense, namespace, frag.slotScopeIds);
-				onScopeDispose(unmount, true);
 				isMounted = true;
 			} else {
 				if (transition && moveType !== 2) setTransitionHooks(vnode, transition);
@@ -16151,7 +16355,7 @@ function mountVNode(internals, vnode, parentComponent, getFallthroughAttrs) {
 			mountedAnchor = anchor;
 		}
 		syncNodes();
-		if (isMounted && frag.u) frag.u.forEach((hook) => hook());
+		if (isMounted && frag.u) frag.u.forEach((hook) => hook(frag.nodes));
 	};
 	frag.insert = (parentNode, anchor, parentSuspense, transition) => place(parentNode, anchor, parentSuspense, transition);
 	frag.move = (parentNode, anchor, moveType, _parentComponent, parentSuspense, transition) => place(parentNode, anchor, parentSuspense, transition, moveType);
@@ -16168,7 +16372,7 @@ function mountVNode(internals, vnode, parentComponent, getFallthroughAttrs) {
 			vnode = next;
 			trackFragmentVNodeUpdates(frag, vnode, syncNodes);
 			frag.vnode = vnode;
-			frag.$key = vnode.key;
+			frag.$key = vnodeKeyOf(vnode);
 			const prevInstance = currentInstance;
 			simpleSetCurrentInstance(parentComponent);
 			internals.p(previous, vnode, mountedParentNode, mountedAnchor, parentComponent, suspense, namespace, frag.slotScopeIds);
@@ -16199,33 +16403,42 @@ function createVDOMComponent(internals, component, parentComponent, rawProps, ra
 			}).catch(NOOP);
 		}
 	}
+	if (!once && component.__asyncLoader && rawSlots && rawSlots.$) renderEffect(() => {
+		dynamicSlotsProxyHandlers.ownKeys(rawSlots);
+		const instance = vnode.component;
+		if (instance && instance.isMounted) instance.update();
+	}, true);
 	vnode.vi = (instance) => {
 		const wrapper = new VaporComponentInstance(useBridge ? comp : {
 			props: instance.propsOptions[0],
 			__propsOptions: instance.propsOptions
 		}, rawProps, rawSlots, parentComponent ? parentComponent.appContext : void 0, once);
-		instance.props = /* @__PURE__ */ shallowReactive(wrapper.props);
 		const attrs = createInternalObject();
-		const isFilteredEmit = (key) => typeof key === "string" && isEmitListener(instance.emitsOptions, key);
+		const isFilteredAttr = (key) => typeof key === "string" && (isReservedProp(key) || isEmitListener(instance.emitsOptions, key));
 		instance.attrs = new Proxy(attrs, {
 			get(_, key) {
-				if (isFilteredEmit(key)) return;
+				if (isFilteredAttr(key)) return;
 				return wrapper.attrs[key];
 			},
 			has(_, key) {
-				return !isFilteredEmit(key) && key in wrapper.attrs;
+				return !isFilteredAttr(key) && key in wrapper.attrs;
 			},
 			ownKeys() {
-				return Reflect.ownKeys(wrapper.attrs).filter((key) => !isFilteredEmit(key));
+				return Reflect.ownKeys(wrapper.attrs).filter((key) => !isFilteredAttr(key));
 			},
 			getOwnPropertyDescriptor(_, key) {
-				if (!isFilteredEmit(key) && key in wrapper.attrs) return {
+				if (!isFilteredAttr(key) && key in wrapper.attrs) return {
 					enumerable: true,
 					configurable: true
 				};
 			}
 		});
+		instance.props = vnode.shapeFlag & 2 && !comp.props ? instance.attrs : /* @__PURE__ */ shallowReactive(wrapper.props);
 		instance.slots = wrapper.rawSlots === EMPTY_OBJ ? EMPTY_OBJ : new Proxy(wrapper.rawSlots, vaporSlotsProxyHandler);
+		if (component.__asyncLoader && instance.slots !== EMPTY_OBJ) {
+			vnode.children = instance.slots;
+			vnode.shapeFlag |= 32;
+		}
 		{
 			const prev = setCurrentInstance(wrapper, instance.scope);
 			try {
@@ -16253,13 +16466,15 @@ function createVDOMComponent(internals, component, parentComponent, rawProps, ra
 		if (transition) setTransitionHooks(vnode, transition);
 		const parentSuspense = resolveUnmountSuspense(suspense);
 		if (vnode.shapeFlag & 256) {
+			if (frag.inputScope) frag.inputScope.pause();
 			keepAliveCtx.clearCurrent(frag);
 			deactivate(vnode, keepAliveCtx.getStorageContainer(), internals, parentComponent, parentSuspense);
 			return;
 		}
 		isUnmounted = true;
 		isMounted = false;
-		internals.umt(vnode.component, parentSuspense, !!parentNode);
+		if (isKeepAliveEnabled && frag.inputScope) frag.inputScope.stop();
+		internals.um(vnode, parentComponent, parentSuspense, !!parentNode);
 		if (!transition) removeDom(parentNode);
 	};
 	frag.hydrate = () => {
@@ -16274,8 +16489,10 @@ function createVDOMComponent(internals, component, parentComponent, rawProps, ra
 		if (isHydrating$1) return;
 		if (parentSuspense !== void 0) suspense = parentSuspense;
 		const operationSuspense = suspense;
-		if (vnode.shapeFlag & 512) activate(vnode, parentNode, anchor, internals, parentComponent, operationSuspense, void 0, false);
-		else {
+		if (vnode.shapeFlag & 512) {
+			if (frag.inputScope) frag.inputScope.resume();
+			activate(vnode, parentNode, anchor, internals, parentComponent, operationSuspense, void 0, false);
+		} else {
 			const prev = currentInstance;
 			simpleSetCurrentInstance(parentComponent);
 			if (!isMounted) {
@@ -16290,7 +16507,7 @@ function createVDOMComponent(internals, component, parentComponent, rawProps, ra
 			simpleSetCurrentInstance(prev);
 		}
 		syncNodes();
-		if (isMounted && frag.u) frag.u.forEach((hook) => hook());
+		if (isMounted && frag.u) frag.u.forEach((hook) => hook(frag.nodes));
 	};
 	frag.insert = (parentNode, anchor, parentSuspense, transition) => place(parentNode, anchor, parentSuspense, transition);
 	frag.move = (parentNode, anchor, moveType, _parentComponent, parentSuspense, transition) => place(parentNode, anchor, parentSuspense, transition, moveType);
@@ -16495,7 +16712,7 @@ function renderVDOMSlot(internals, slotsRef, name, props, parentComponent, optio
 		const leave = leavingElement && leavingElement[leaveCbKey];
 		if (leave) leave(true);
 		if (rendered) removeRenderedContent(rendered, storage || parentNode);
-		disposeSlotResolution(slotResolutionState);
+		disposeSlotResolution(slotResolutionState, storage || parentNode);
 		if (storage) {
 			const anchor = frag.anchor;
 			if (anchor && anchor.parentNode === storage) frag.anchor = void 0;
@@ -16545,7 +16762,7 @@ function renderVDOMSlot(internals, slotsRef, name, props, parentComponent, optio
 	}
 	function notifyUpdated() {
 		syncInteropRoot(parentComponent);
-		if (isMounted && frag.u) frag.u.forEach((hook) => hook());
+		if (isMounted && frag.u) frag.u.forEach((hook) => hook(frag.nodes));
 	}
 	function notifyBeforeUpdate() {
 		if (isMounted && frag.bu) frag.bu.forEach((hook) => hook());
@@ -16667,7 +16884,7 @@ function renderVDOMSlot(internals, slotsRef, name, props, parentComponent, optio
 		if (slotResolutionState.activeFallback && slotContentValid && transition) {
 			if (mode === "out-in") {
 				const fallback = slotResolutionState.activeFallback;
-				const leavingBlock = fallback && resolveTransitionBlock(fallback);
+				const leavingBlock = fallback && findTransitionBlock(fallback);
 				pendingOutIn = {
 					content: slotContent,
 					placeholder: null,
@@ -16945,7 +17162,6 @@ function renderVaporSlot(vnode, parentComponent, parentSuspense, contextSlotScop
 		let outletFallback;
 		let currentParentNode = null;
 		let currentAnchor = null;
-		let slotScope;
 		let disposed = false;
 		let slotResolutionState;
 		let ownedSlotFragment;
@@ -16996,8 +17212,7 @@ function renderVaporSlot(vnode, parentComponent, parentSuspense, contextSlotScop
 			if (disposed) return;
 			if (parentNode) currentParentNode = parentNode;
 			disposed = true;
-			disposeSlotResolution(slotResolutionState);
-			slotScope = void 0;
+			disposeSlotResolution(slotResolutionState, parentNode);
 			currentParentNode = null;
 			currentAnchor = null;
 		};
@@ -17036,13 +17251,6 @@ function renderVaporSlot(vnode, parentComponent, parentSuspense, contextSlotScop
 			} finally {
 				isResolvingContent = false;
 			}
-			const nextScope = vnode.vs.scope;
-			if (nextScope && slotScope !== nextScope && !disposed) {
-				slotScope = nextScope;
-				nextScope.run(() => {
-					onScopeDispose(() => dispose(), true);
-				});
-			}
 			if (hasInteropFallback && isSlotResolver(resolvedContent)) {
 				ownedSlotFragment = resolvedContent;
 				trackInteropFallbackChanges(vnode.vs.scope, slotState, () => markInteropSlotResolutionDirty());
@@ -17076,7 +17284,7 @@ function renderVaporSlot(vnode, parentComponent, parentSuspense, contextSlotScop
 			}
 			return frag;
 		} catch (e) {
-			dispose();
+			dispose(currentParentNode || void 0);
 			stopVaporSlotScope(vnode);
 			throw e;
 		}
@@ -17127,6 +17335,7 @@ function syncInteropRoot(instance) {
 }
 const vnodeHookStateMap = /* @__PURE__ */ new WeakMap();
 function ensureVNodeHookState(instance, vnode) {
+	instance.interopVNode = vnode;
 	let state = vnodeHookStateMap.get(instance);
 	if (!state) {
 		state = {
@@ -17190,7 +17399,7 @@ function createVNodeChildrenFragment(internals, render, parentComponent) {
 	};
 	const notifyUpdated = (validityChanged = false) => {
 		if (validityChanged && frag.slotBoundary) frag.slotBoundary.markDirty();
-		if (isMounted && frag.u) frag.u.forEach((hook) => hook());
+		if (isMounted && frag.u) frag.u.forEach((hook) => hook(frag.nodes));
 	};
 	const notifyBeforeUpdate = () => {
 		if (isMounted && frag.bu) frag.bu.forEach((hook) => hook());
@@ -17236,7 +17445,7 @@ function createVNodeChildrenFragment(internals, render, parentComponent) {
 					}
 					const validityChanged = syncResolvedNodesAndCleanup();
 					if (isHydrating$1) {
-						if (isMounted && frag.u) frag.u.forEach((hook) => hook());
+						if (isMounted && frag.u) frag.u.forEach((hook) => hook(frag.nodes));
 					} else notifyUpdated(validityChanged);
 				});
 			});
@@ -17399,7 +17608,10 @@ function publishVaporScopeIds(block, scopeIds) {
 			currentScopeIds = collectRootScopeIds(instance) || [];
 		},
 		onInteropFragment: (frag) => {
-			setVNodeVaporScopeIds(frag.vnode, currentScopeIds);
+			if (frag.vnode) {
+				setVNodeVaporScopeIds(frag.vnode, currentScopeIds);
+				return true;
+			}
 		},
 		excludeSlotOutlets: true
 	});
@@ -17486,7 +17698,6 @@ var TeleportFragment = class extends RenderContextFragment {
 				}
 			} else if (disabled) this.hydrateDisabledTeleport(null, null);
 			else this.anchor = claimAnchor(locateTeleportEndAnchor(currentHydrationNode.nextSibling));
-			if (target || disabled) this.updateCssVars();
 			advanceHydrationNode(this.anchor);
 		};
 		this.rawSlots = slots;
@@ -17507,7 +17718,10 @@ var TeleportFragment = class extends RenderContextFragment {
 		return this.ctx.slotOwner || this.renderInstance;
 	}
 	initChildren() {
-		const prevInstance = setCurrentInstance(this.renderInstance, this.childrenScope);
+		const instance = this.renderInstance;
+		const prevInstance = setCurrentInstance(instance, this.childrenScope);
+		const prevUpdating = instance ? instance.isUpdating : false;
+		if (instance) instance.isUpdating = true;
 		try {
 			this.childrenInitialized = true;
 			renderEffect(() => withRenderContext(this.ctx, () => {
@@ -17516,24 +17730,20 @@ var TeleportFragment = class extends RenderContextFragment {
 				const scope = this.scope = new EffectScope();
 				this.handleChildrenUpdate(scope.run(() => this.rawSlots && this.rawSlots.default ? this.rawSlots.default() : []) || []);
 			}));
+			const owner = this.scopeOwner;
+			if (owner && owner.applyCssVars) registerCssVarOutlet(owner, this);
 			this.bindChildren(this.nodes);
 		} finally {
+			if (instance) instance.isUpdating = prevUpdating;
 			restoreCurrentInstance(prevInstance);
 		}
 	}
 	ensureChildrenInitialized() {
 		if (!this.childrenInitialized) this.initChildren();
 	}
-	registerUpdateCssVars(block) {
-		if (isFragment(block)) {
-			(block.u || (block.u = [])).push(() => this.updateCssVars());
-			this.registerUpdateCssVars(block.nodes);
-		} else if (isVaporComponent(block)) this.registerUpdateCssVars(block.block);
-		else if (isArray(block)) block.forEach((node) => this.registerUpdateCssVars(node));
-	}
 	bindChildren(block) {
-		const scopeOwner = this.scopeOwner;
-		if (scopeOwner && scopeOwner.ut) this.registerUpdateCssVars(block);
+		const owner = this.scopeOwner;
+		if (owner && owner.applyCssVars) owner.applyCssVars(block);
 	}
 	handleChildrenUpdate(children) {
 		const mountState = this.mountState;
@@ -17543,12 +17753,11 @@ var TeleportFragment = class extends RenderContextFragment {
 		}
 		remove(this.nodes, mountState.container);
 		this.nodes = children;
+		this.bindChildren(children);
 		insert(children, mountState.container, mountState.anchor);
-		this.bindChildren(this.nodes);
-		this.updateCssVars();
 	}
 	mount(parent, anchor, location) {
-		if (isTransitionEnabled && this.$transition && this.mountState.location === 0) applyTransitionHooks(this.nodes, this.$transition);
+		if (isTransitionEnabled && this.$transition && this.mountState.location === 0) applyTransitionHooks(this.nodes, this.$transition, this);
 		if (this.mountState.location !== 0) move(this.nodes, parent, anchor, 2);
 		else insert(this.nodes, parent, anchor);
 		this.mountState = {
@@ -17556,7 +17765,6 @@ var TeleportFragment = class extends RenderContextFragment {
 			container: parent,
 			anchor
 		};
-		this.updateCssVars();
 	}
 	prepareTargetAnchors(target) {
 		if (!this.targetAnchor || /* @__PURE__ */ parentNode(this.targetAnchor) !== target) {
@@ -17699,30 +17907,6 @@ var TeleportFragment = class extends RenderContextFragment {
 			logMismatchError();
 		}
 		runWithoutHydration(this.initChildren.bind(this));
-	}
-	updateCssVars() {
-		const ctx = this.scopeOwner;
-		if (ctx && ctx.ut) {
-			let node;
-			let anchor;
-			if (this.mountState.location === 1) {
-				node = this.placeholder;
-				anchor = this.anchor;
-			} else if (this.mountState.location === 2) {
-				node = this.targetStart;
-				anchor = this.targetAnchor;
-			} else return;
-			while (node && node !== anchor) {
-				if (node.nodeType === 1) node.setAttribute("data-v-owner", String(ctx.uid));
-				node = node.nextSibling;
-			}
-			pauseTracking();
-			try {
-				ctx.ut();
-			} finally {
-				resetTracking();
-			}
-		}
 	}
 };
 const VaporTeleport = /*@__PURE__*/ enableTeleport(VaporTeleportImpl);
@@ -17879,11 +18063,14 @@ function createIf(condition, b1, b2, flags = 1) {
 	let frag;
 	if (flags & 16) {
 		const ok = condition();
+		let claim;
 		if (isHydrating$1) {
 			branchShape = decodeIfShape(flags, ok);
-			hydrationCursor = enterHydrationCursor(branchShape === 2 ? createFragmentClaim() : void 0);
+			claim = branchShape === 2 ? createFragmentClaim() : void 0;
+			hydrationCursor = enterHydrationCursor(claim);
 		}
 		frag = ok ? b1() : b2 ? b2() : [claimUntrackedAnchor(/* @__PURE__ */ createComment("if"))];
+		if (isHydrating$1 && claim && claim.start) advanceHydrationNode(locateEndAnchor(claim.start));
 	} else {
 		const index = flags >> 8;
 		const keyed = index > 0;
@@ -18130,7 +18317,7 @@ const createFor = (src, renderItem, getKey, flags = 0) => {
 		}
 		oldBlocks = newBlocks;
 		frag.nodes = parentAnchor ? [newBlocks, parentAnchor] : [newBlocks];
-		if (wasMounted && frag.u) for (const fn of frag.u) fn();
+		if (wasMounted && frag.u) for (const fn of frag.u) fn(frag.nodes);
 		setActiveSub(prevSub);
 	};
 	const needKey = renderItem.length > 1;
@@ -18155,9 +18342,12 @@ const createFor = (src, renderItem, getKey, flags = 0) => {
 		}
 		const block = newBlocks[idx] = new ForBlock(nodes, scope, itemRef, keyRef, indexRef, newKeys ? newKeys[idx] : void 0);
 		if (isTransitionEnabled && frag.$transition) {
-			if (frag.$transition.applyGroup) setBlockKey(block.nodes, block.key);
-			applyTransitionHooks(block.nodes, frag.$transition);
+			const hooks = frag.$transition;
+			if (hooks.applyGroup) hooks.applyGroup(block, hooks.props, hooks.state, hooks.instance);
+			else applyTransitionHooks(block.nodes, hooks);
 		}
+		const bm = frag.bm;
+		if (bm) for (let i = 0; i < bm.length; i++) bm[i](block.nodes);
 		if (parent) insertForBlock(block, anchor);
 		return block;
 	};
@@ -18238,6 +18428,7 @@ const createFor = (src, renderItem, getKey, flags = 0) => {
 	const unmount = (block, doRemove = true) => {
 		if (!isComponent) block.scope.stop();
 		if (doRemove) removeForBlock(block);
+		else if (isInteropEnabled) unmountVDOM(block);
 		if (isComponent) block.scope.stop();
 	};
 	if (flags & 4) renderList();
@@ -18700,9 +18891,6 @@ const getRefValue = (el) => {
 	return el;
 };
 //#endregion
-//#region packages/runtime-vapor/src/helpers/useCssVars.ts
-function useVaporCssVars(getter) {}
-//#endregion
 //#region packages/runtime-vapor/src/apiCreateDynamicComponent.ts
 function createDynamicComponent(getter, rawProps, rawSlots, flags = 0, key) {
 	const isSingleRoot = !!(flags & 1);
@@ -18772,7 +18960,7 @@ function resolveValue(value, appContext, scopeOwner) {
 	if (isBlock(value) || isInteropEnabled && appContext.vdom && isVNode(value)) return value;
 	const resolved = withScopeOwner(scopeOwner, () => resolveDynamicComponent(value));
 	const type = typeof resolved;
-	if (type !== "string" && type !== "object" && type !== "function" && type !== "symbol") {
+	if (!resolved || type !== "string" && type !== "object" && type !== "function" && type !== "symbol") {
 		warn(`Invalid dynamic component type: ${String(resolved)} (${type})`);
 		return NULL_DYNAMIC_COMPONENT;
 	}
@@ -18788,79 +18976,96 @@ function withScopeOwner(owner, fn) {
 }
 //#endregion
 //#region packages/runtime-vapor/src/directives/vShow.ts
+/**
+* v-show is root-inherited state: it lands on the effective root element of
+* `target`, and any producer on the root chain (dynamic fragment branch,
+* interop subtree, pending async setup) can replace that root later. `apply`
+* resolves the root through the shared chain walker and registers itself on
+* every producer it passes, so a replacement root re-enters `apply` and
+* registers the producers inside it in turn.
+*/
 function applyVShow(target, source) {
-	if (isVaporComponent(target)) return applyVShow(target.block, source);
-	if (isArray(target) && target.length === 1) return applyVShow(target[0], source);
-	target.$vshow = true;
-	if (isDynamicFragment(target)) (target.bm || (target.bm = [])).push((nodes) => setDisplayUntracked(nodes, source));
-	else if (isFragment(target) && target.insert) {
-		const insert = target.insert;
-		target.insert = (...args) => {
-			const res = insert.call(target, ...args);
-			setDisplayUntracked(target, source);
-			return res;
-		};
-	}
-	renderEffect(() => setDisplay(target, source()));
-}
-function setDisplayUntracked(target, source) {
-	const prevSub = setActiveSub();
-	try {
-		setDisplay(target, source());
-	} finally {
-		setActiveSub(prevSub);
-	}
-}
-function setDisplay(target, value, transition = void 0) {
-	if (isVaporComponent(target)) return setDisplay(target.block, value, transition);
-	if (isArray(target)) {
-		if (target.length === 0) return;
-		if (target.length === 1) return setDisplay(target[0], value, transition);
-	}
-	if (isFragment(target)) {
-		if (isInteropEnabled && isInteropFragment(target) && target.$transition) transition = target.$transition;
-		return setDisplay(target.nodes, value, transition);
-	}
-	if (target instanceof Element) {
-		const el = target;
-		const hidden = !value;
-		if (!(vShowOriginalDisplay in el)) {
-			target.$vshow = true;
-			el[vShowOriginalDisplay] = el.style.display === "none" ? "" : el.style.display;
-			el[vShowHidden] = hidden;
-			writeDisplay(el, value);
-			return;
-		}
-		if (el[vShowHidden] === hidden) return;
-		el[vShowHidden] = hidden;
-		const { $transition = transition } = target;
-		if ($transition) {
-			const prevSub = setActiveSub();
-			try {
-				if (value) {
-					$transition.beforeEnter(target);
-					el.style.display = el[vShowOriginalDisplay];
-					$transition.enter(target);
-				} else if (target.isConnected) $transition.leave(target, () => {
-					el.style.display = "none";
-				});
-				else el.style.display = "none";
-			} finally {
-				setActiveSub(prevSub);
+	let value;
+	let transition;
+	let unresolved = false;
+	let slotRoot = false;
+	const visitor = {
+		onComponent(instance) {
+			if (isSuspenseEnabled && instance.asyncDep && !instance.asyncResolved) {
+				if (!instance.$vshow) (instance.bm || (instance.bm = [])).push(() => apply(instance.block));
+				unresolved = true;
+				mark(instance);
+				return true;
 			}
-		} else writeDisplay(el, value);
-	} else warn("v-show used on component with non-single-element root node and will be ignored.");
+			mark(instance);
+		},
+		onDynamicFragment(frag) {
+			if (isSlotOutletFragment(frag)) return slotRoot = true;
+			mark(frag);
+			register(frag.bm || (frag.bm = []), apply);
+		}
+	};
+	if (isInteropEnabled) visitor.onInteropFragment = (frag) => {
+		if (isSlotOutletFragment(frag)) return slotRoot = true;
+		mark(frag);
+		if (isTransitionEnabled && frag.$transition) transition = frag.$transition;
+		register(frag.u || (frag.u = []), apply);
+		if (!isValidBlock(frag.nodes)) unresolved = true;
+	};
+	const apply = (nodes) => {
+		transition = void 0;
+		unresolved = slotRoot = false;
+		const root = getRootElement(nodes, visitor);
+		if (root) setDisplay(root, value, transition);
+		else if (slotRoot || !unresolved && isValidBlock(nodes)) warn("v-show used on component with non-single-element root node and will be ignored.");
+	};
+	renderEffect(() => {
+		value = source();
+		apply(target);
+	});
+}
+function mark(block) {
+	block.$vshow = true;
+}
+function register(hooks, hook) {
+	if (!hooks.includes(hook)) hooks.push(hook);
+}
+function setDisplay(el, value, transition) {
+	const hidden = !value;
+	if (!(vShowOriginalDisplay in el)) {
+		mark(el);
+		el[vShowOriginalDisplay] = el.style.display === "none" ? "" : el.style.display;
+		el[vShowHidden] = hidden;
+		writeDisplay(el, value);
+		return;
+	}
+	if (el[vShowHidden] === hidden) return;
+	el[vShowHidden] = hidden;
+	const $transition = isTransitionEnabled ? el.$transition || transition : void 0;
+	if ($transition) {
+		const prevSub = setActiveSub();
+		try {
+			if (value) {
+				$transition.beforeEnter(el);
+				el.style.display = el[vShowOriginalDisplay];
+				$transition.enter(el);
+			} else if (el.isConnected) $transition.leave(el, () => {
+				el.style.display = "none";
+			});
+			else el.style.display = "none";
+		} finally {
+			setActiveSub(prevSub);
+		}
+	} else writeDisplay(el, value);
 }
 function writeDisplay(el, value) {
 	if (isHydrating$1) {
-		if (!value && el.style.display !== "none") {
-			if (warnPropMismatch(el, "style", 3, `display: ${el.style.display}`, "display: none")) {
-				logMismatchError();
-				el.style.display = "none";
-				el[vShowOriginalDisplay] = "";
-			}
-		}
-	} else el.style.display = value ? el[vShowOriginalDisplay] : "none";
+		const hidden = el.style.display === "none";
+		if (!value === hidden) return;
+		const expected = value ? el[vShowOriginalDisplay] : "none";
+		if (warnPropMismatch(el, "style", 3, `display: ${el.style.display}`, expected ? `display: ${expected}` : false)) logMismatchError();
+	}
+	el.style.display = value ? el[vShowOriginalDisplay] : "none";
 }
 //#endregion
 //#region packages/runtime-vapor/src/directives/vModel.ts
@@ -18913,26 +19118,60 @@ const applyDynamicModel = (el, get, set, modifiers) => {
 //#region packages/runtime-vapor/src/directives/custom.ts
 function withVaporDirectives(node, dirs) {
 	if (node instanceof Element) {
-		applyDirectivesToElement(node, dirs);
+		applyDirectivesToElement(node, dirs, currentInstance);
 		return;
 	}
 	const instance = currentInstance;
 	const once = inOnce;
-	const trackedBlocks = /* @__PURE__ */ new WeakSet();
 	let currentElement = null;
 	let directiveScope;
 	let disposed = false;
+	let pending = false;
+	let pendingSetups;
+	const visitor = {
+		onDynamicFragment: track,
+		onComponent(block) {
+			if (isSuspenseEnabled && block.asyncDep && !block.asyncResolved) {
+				pending = true;
+				if (!(pendingSetups || (pendingSetups = /* @__PURE__ */ new WeakSet())).has(block)) {
+					pendingSetups.add(block);
+					onBeforeMount(applyDirectives, block);
+				}
+				return true;
+			}
+			if (isAsyncComponentEnabled && isAsyncWrapper(block)) {
+				const inner = block.block;
+				if (isFragment(inner) && inner.nodes === EMPTY_BLOCK) pending = true;
+			}
+		},
+		excludeSlotOutlets: true
+	};
+	if (isInteropEnabled) visitor.onInteropFragment = (frag) => {
+		if (frag.nodes === EMPTY_BLOCK) pending = true;
+		track(frag);
+	};
 	function stopDirectiveScope() {
 		if (directiveScope) {
 			directiveScope.stop();
 			directiveScope = void 0;
 		}
 	}
+	function track(frag) {
+		const u = frag.u || (frag.u = []);
+		if (u.includes(applyDirectives)) return;
+		u.push(applyDirectives);
+		if (isDynamicFragment(frag)) (frag.bu || (frag.bu = [])).push(() => {
+			if (currentElement && getRootElement(frag.nodes) === currentElement) {
+				currentElement = null;
+				stopDirectiveScope();
+			}
+		});
+	}
 	function applyDirectives() {
 		if (disposed) return;
-		const isRootPending = trackRootUpdates(node);
-		const element = getRootElement(node);
-		if (!element && isRootPending) {
+		pending = false;
+		const element = getRootElement(node, visitor);
+		if (!element && pending) {
 			if (currentElement !== null) {
 				currentElement = null;
 				stopDirectiveScope();
@@ -18949,36 +19188,11 @@ function withVaporDirectives(node, dirs) {
 		directiveScope = new EffectScope(true);
 		const prev = setCurrentInstance(instance, directiveScope);
 		try {
-			if (once) withOnce(() => applyDirectivesToElement(element, dirs));
-			else applyDirectivesToElement(element, dirs);
+			if (once) withOnce(() => applyDirectivesToElement(element, dirs, instance));
+			else applyDirectivesToElement(element, dirs, instance);
 		} finally {
 			restoreCurrentInstance(prev);
 		}
-	}
-	function trackRootUpdates(block) {
-		if (isVaporComponent(block)) {
-			if (block.asyncDep && !block.asyncResolved) {
-				if (!trackedBlocks.has(block)) {
-					trackedBlocks.add(block);
-					onBeforeMount(applyDirectives, block);
-				}
-				return true;
-			}
-			const innerBlock = block.block;
-			if (trackRootUpdates(innerBlock)) return true;
-			return isAsyncComponentEnabled && isAsyncWrapper(block) && isFragment(innerBlock) && innerBlock.nodes === EMPTY_BLOCK;
-		}
-		if (isArray(block)) {
-			let hasPendingTarget = false;
-			for (const child of block) if (trackRootUpdates(child)) hasPendingTarget = true;
-			return hasPendingTarget;
-		}
-		if (!isFragment(block)) return false;
-		if (!trackedBlocks.has(block)) {
-			trackedBlocks.add(block);
-			(block.u || (block.u = [])).push(applyDirectives);
-		}
-		return isInteropEnabled && isInteropFragment(block) && block.nodes === EMPTY_BLOCK || trackRootUpdates(block.nodes);
 	}
 	onScopeDispose(() => {
 		disposed = true;
@@ -18986,10 +19200,47 @@ function withVaporDirectives(node, dirs) {
 	}, true);
 	applyDirectives();
 }
-function applyDirectivesToElement(element, dirs) {
+function applyDirectivesToElement(element, dirs, instance) {
+	const hookCounts = instance ? countLifecycleHooks(instance) : null;
 	for (const [dir, value, argument, modifiers] of dirs) if (dir) {
-		const ret = dir(element, value, argument, modifiers);
-		if (ret) onScopeDispose(ret);
+		if (!isFunction(dir)) {
+			warn(`Received a VDOM object directive` + (isObject(dir) ? ` (hooks: ${Object.keys(dir).join(", ")})` : ``) + " in a Vapor template. Vapor directives must be a function: (el, value, arg, modifiers) => cleanup.");
+			continue;
+		}
+		const ret = callWithErrorHandling(dir, instance, 8, [
+			element,
+			value,
+			argument,
+			modifiers
+		]);
+		if (ret) onScopeDispose(() => callWithErrorHandling(ret, instance, 8));
+	}
+	if (hookCounts) warnLifecycleHooks(instance, hookCounts);
+}
+const lifecycleHookNames = {
+	bm: "onBeforeMount",
+	m: "onMounted",
+	bu: "onBeforeUpdate",
+	u: "onUpdated",
+	bum: "onBeforeUnmount",
+	um: "onUnmounted",
+	da: "onDeactivated",
+	a: "onActivated"
+};
+function countLifecycleHooks(instance) {
+	const counts = [];
+	for (const key in lifecycleHookNames) {
+		const hooks = instance[key];
+		counts.push(hooks ? hooks.length : 0);
+	}
+	return counts;
+}
+function warnLifecycleHooks(instance, before) {
+	let i = 0;
+	for (const key in lifecycleHookNames) {
+		const hooks = instance[key];
+		if (hooks && hooks.length > before[i]) warn(`${lifecycleHookNames[key]}() was called inside a custom directive. Lifecycle hooks are not supported in Vapor directives: they attach to the component, not the element. Use watchPostEffect() for work that needs the element in the DOM, and return a cleanup function for teardown.`);
+		i++;
 	}
 }
 //#endregion
@@ -19066,20 +19317,15 @@ const VaporTransitionGroup = /*@__PURE__*/ decorate(/* @__PURE__ */ defineVaporC
 			beforeUpdate,
 			updated
 		};
-		const frag = new DynamicFragment(0, "transition-group");
 		if (isHydrating$1) locateHydrationNode();
-		let currentTag;
-		let currentSlot;
+		const tag = props.tag;
 		let isMounted = false;
 		renderEffect(() => {
 			cssTransitionProps = resolveTransitionProps(props);
 			if (isMounted) applyGroupTransitionHooks(slottedBlock, propsProxy, state, instance, updateHooks);
 		}, true);
-		renderEffect(() => {
-			const tag = props.tag;
-			const slot = slots.default;
-			if (isMounted && tag === currentTag && slot === currentSlot) return;
-			const container = tag ? isHydrating$1 ? adoptTemplate(currentHydrationNode, `<${tag}/>`) : /* @__PURE__ */ createElement(tag) : void 0;
+		const createContainer = () => tag ? isHydrating$1 ? adoptTemplate(currentHydrationNode, `<${tag}/>`) : /* @__PURE__ */ createElement(tag) : void 0;
+		const renderChildren = (slot, container, run = (render) => render()) => {
 			let nextNode = null;
 			let prevMarkerlessContainer = null;
 			let prevTransitionChildPending = false;
@@ -19089,14 +19335,15 @@ const VaporTransitionGroup = /*@__PURE__*/ decorate(/* @__PURE__ */ defineVaporC
 				nextNode = nextLogicalSibling(container);
 				setCurrentHydrationNode(container.firstChild || container);
 			}
-			let block = slottedBlock;
 			let transitionBlocks = [];
 			try {
-				frag.update(() => {
-					block = slot && slot() || [];
+				run(() => {
+					const block = slot && slot() || [];
 					transitionBlocks = applyGroupTransitionHooks(block, propsProxy, state, instance, updateHooks);
+					slottedBlock = block;
 					if (container) {
 						if (!isHydrating$1) insert(block, container);
+						registerNestedVDOMCleanup(block);
 						return container;
 					}
 					return block;
@@ -19109,10 +19356,20 @@ const VaporTransitionGroup = /*@__PURE__*/ decorate(/* @__PURE__ */ defineVaporC
 					setCurrentHydrationNode(nextNode);
 				}
 			}
-			slottedBlock = block;
-			currentTag = tag;
-			currentSlot = slot;
 			isMounted = true;
+		};
+		if (!instance.rawSlots.$) {
+			const container = createContainer();
+			renderChildren(slots.default, container);
+			return container || slottedBlock;
+		}
+		const frag = new DynamicFragment(0, "transition-group");
+		let currentSlot;
+		renderEffect(() => {
+			const slot = slots.default;
+			if (isMounted && slot === currentSlot) return;
+			renderChildren(slot, createContainer(), (render) => frag.update(render));
+			currentSlot = slot;
 		});
 		return frag;
 	}
@@ -19123,53 +19380,63 @@ function resolveTransitionBlocks(block, onFragment, onUpdateOwner, collectOnly =
 		collectTransitionBlocks(block, children, onFragment, onUpdateOwner);
 		return children;
 	}
-	const composed = /* @__PURE__ */ new Map();
-	collectTransitionBlocks(block, children, onFragment, onUpdateOwner, composed);
-	for (let i = 0; i < children.length; i++) {
-		const child = children[i];
-		const key = composed.get(child);
-		if (key !== void 0) groupTransitionKeys.set(child, key);
-		else groupTransitionKeys.delete(child);
-	}
+	const keys = /* @__PURE__ */ new Map();
+	collectTransitionBlocks(block, children, onFragment, onUpdateOwner, keys, ROOT_KEY_CONTEXT);
+	for (let i = 0; i < children.length; i++) setTransitionKey(children[i], keys.get(children[i]));
 	return children;
 }
-function collectTransitionBlocks(block, children, onFragment, onUpdateOwner, composed) {
+function collectTransitionBlocks(block, children, onFragment, onUpdateOwner, keys, ctx) {
 	if (block instanceof Node) {
-		if (block instanceof Element) children.push(block);
+		if (block instanceof Element) {
+			children.push(block);
+			if (keys) keys.set(block, block.$key);
+		}
 	} else if (isVaporComponent(block)) {
 		const isRootSlot = block.block && isVaporSlotOutlet(block.block);
 		if (onUpdateOwner && !isRootSlot) onUpdateOwner(block);
 		const start = children.length;
-		collectTransitionBlocks(block.block, children, onFragment, isRootSlot ? onUpdateOwner : void 0, composed);
-		if (composed) {
-			if (!isRootSlot) for (let i = start; i < children.length; i++) setTransitionType(children[i], block.type);
-			inheritTransitionKey(children, start, block.$key, composed);
+		collectTransitionBlocks(block.block, children, onFragment, isRootSlot ? onUpdateOwner : void 0, keys, ctx && (isRootSlot ? withDefaultKey(ctx, block.$key) : enterComponentKeyContext(ctx, block)));
+		if (keys) {
+			if (!isRootSlot) {
+				const t = transitionTypeOf(block);
+				for (let i = start; i < children.length; i++) setTransitionType(children[i], t);
+			}
+			resolveOwnerKey(children, start, block.$key, keys, !isRootSlot);
 		}
-	} else if (isArray(block)) for (let i = 0; i < block.length; i++) collectTransitionBlocks(block[i], children, onFragment, onUpdateOwner, composed);
+	} else if (isArray(block)) for (let i = 0; i < block.length; i++) collectTransitionBlocks(block[i], children, onFragment, onUpdateOwner, keys, ctx);
 	else if (isFragment(block)) {
 		const isItem = isForBlock(block);
 		if (!isItem) {
 			if (onFragment) onFragment(block);
 			if (onUpdateOwner) onUpdateOwner(block);
 		}
-		if (isInteropEnabled && block.hasVDOMContent && block.hasVDOMContent()) children.push(block);
-		else {
+		if (isInteropEnabled && block.hasVDOMContent && block.hasVDOMContent()) {
+			children.push(block);
+			if (keys) keys.set(block, block.$key);
+		} else {
+			const key = isItem ? block.key : getFragmentKey(block);
 			const start = children.length;
-			collectTransitionBlocks(block.nodes, children, onFragment, onUpdateOwner, composed);
-			if (!composed) {} else if (isItem) {
-				if (children.length - start === 1) children[start].$key = block.key;
-				else if (block.key != null) for (let i = start; i < children.length; i++) composed.set(children[i], `${block.key}:${i - start}`);
-			} else inheritTransitionKey(children, start, block.$key, composed);
+			collectTransitionBlocks(block.nodes, children, onFragment, onUpdateOwner, keys, ctx && enterFragmentKeyContext(block, ctx, key));
+			if (!keys) return;
+			if (!isItem) resolveOwnerKey(children, start, key, keys, false);
+			else if (key != null) {
+				if (children.length - start === 1) keys.set(children[start], key);
+				else for (let i = start; i < children.length; i++) keys.set(children[i], `${key}:${i - start}`);
+			}
 		}
 	}
 }
-function inheritTransitionKey(children, start, key, composed) {
+function resolveOwnerKey(children, start, key, keys, final) {
+	if (children.length - start === 1) {
+		const child = children[start];
+		if (final || keys.get(child) == null) keys.set(child, key);
+		return;
+	}
 	if (key == null) return;
 	for (let i = start; i < children.length; i++) {
 		const child = children[i];
-		const inner = composed.get(child);
-		const base = inner !== void 0 ? inner : child.$key != null ? child.$key : i - start;
-		composed.set(child, String(key) + String(base));
+		const inner = keys.get(child);
+		keys.set(child, String(key) + String(inner != null ? inner : i - start));
 	}
 }
 function applyGroupTransitionHooks(block, props, state, instance, updateHooks) {
@@ -19719,7 +19986,6 @@ exports.baseApplyTranslation = baseApplyTranslation;
 exports.baseEmit = baseEmit;
 exports.baseNormalizePropsOptions = baseNormalizePropsOptions;
 exports.baseResolveTransitionHooks = baseResolveTransitionHooks;
-exports.baseUseCssVars = baseUseCssVars;
 exports.callPendingCbs = callPendingCbs;
 exports.callWithAsyncErrorHandling = callWithAsyncErrorHandling;
 exports.callWithErrorHandling = callWithErrorHandling;
@@ -19772,6 +20038,7 @@ Object.defineProperty(exports, "currentInstance", {
 });
 exports.customRef = customRef;
 exports.deactivate = deactivate;
+exports.defaultPropGetter = defaultPropGetter;
 exports.defineAsyncComponent = defineAsyncComponent;
 exports.defineComponent = defineComponent;
 exports.defineCustomElement = defineCustomElement;
@@ -19915,6 +20182,7 @@ exports.onUpdated = onUpdated;
 exports.onWatcherCleanup = onWatcherCleanup;
 exports.openBlock = openBlock;
 exports.parseEventName = parseEventName;
+exports.patchClass = patchClass;
 exports.patchProp = patchProp;
 exports.patchStyle = patchStyle;
 exports.performAsyncHydrate = performAsyncHydrate;

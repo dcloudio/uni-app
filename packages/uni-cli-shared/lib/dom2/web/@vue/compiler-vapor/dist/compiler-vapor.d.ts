@@ -859,11 +859,11 @@ type PropConstructor<T = any> = {
 } | {
   (): T;
 } | PropMethod<T>;
-type PropMethod<T, TConstructor = any> = [T] extends [((...args: any) => any) | undefined] ? {
+type PropMethod<T, TConstructor = any> = {
   new (): TConstructor;
   (): T;
   readonly prototype: TConstructor;
-} : never;
+};
 type RequiredKeys<T> = { [K in keyof T]: T[K] extends {
   required: true;
 } | {
@@ -892,7 +892,7 @@ type InferPropType<T, NullAsAny = true> = [T] extends [null] ? NullAsAny extends
   type: DateConstructor;
 }] ? Date : [T] extends [(infer U)[] | {
   type: (infer U)[];
-}] ? U extends DateConstructor ? Date | InferPropType<U, false> : InferPropType<U, false> : [T] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : T;
+}] ? U extends DateConstructor ? Date | InferPropType<U, false> : InferPropType<U, false> : [T] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, unknown extends D ? V : D> : V : V : T;
 /**
  * Extract prop types from a runtime props options object.
  * The extracted types are **internal** - i.e. the resolved props received by
@@ -1203,6 +1203,7 @@ type EmitFn<Options = ObjectEmitsOptions, Event extends keyof Options = keyof Op
  * @internal for vapor only
  */
 declare function baseEmit(instance: GenericComponentInstance, props: Record<string, any>, getter: (props: Record<string, any>, key: string) => unknown, event: string, ...rawArgs: any[]): ComponentPublicInstance | null | undefined;
+declare function defaultPropGetter(props: Record<string, any>, key: string): unknown;
 /**
  * Check if an incoming prop key is a declared emit event listener.
  * e.g. With `emits: { click: null }`, props named `onClick` and `onclick` are
@@ -1326,6 +1327,7 @@ interface ComponentRenderContext {
   [key: string]: any;
   _: ComponentInternalInstance;
 }
+declare const PublicInstanceProxyHandlers: ProxyHandler<any>;
 //#endregion
 //#region packages/runtime-core/src/enums.d.ts
 declare enum LifecycleHooks {
@@ -2086,6 +2088,7 @@ interface VaporInVdomInterface {
   activate(vnode: VNode, container: RendererElement, anchor: RendererNode | null, parentComponent: ComponentInternalInstance, parentSuspense: SuspenseBoundary | null): void;
   deactivate(vnode: VNode, container: RendererElement, parentSuspense: SuspenseBoundary | null): void;
   setTransitionHooks(component: ComponentInternalInstance, transition: TransitionHooks): void;
+  applyCssVars(vnode: VNode, vars: Record<string, string>): void;
 }
 /**
  * Options for rendering a VDOM slot inside vapor. `flags` carries the
@@ -2484,6 +2487,9 @@ declare function mergeProps(...args: (Data & VNodeProps)[]): Data;
  * @internal
  */
 declare let currentInstance: GenericComponentInstance | null;
+/**
+ * fixed by uts: uni-h5 框架需要在 Vapor setup 中访问当前组件实例。
+ */
 declare const getCurrentInstance: () => ComponentInternalInstance | null;
 declare let isInSSRComponentSetup: boolean;
 /**
@@ -3261,7 +3267,7 @@ type ErrorTypes = LifecycleHooks | ErrorCodes | WatchErrorCodes;
 declare function callWithErrorHandling(fn: Function, instance: GenericComponentInstance | null | undefined, type: ErrorTypes, args?: unknown[]): any;
 declare function callWithAsyncErrorHandling(fn: Function | Function[], instance: GenericComponentInstance | null, type: ErrorTypes, args?: unknown[]): any;
 declare function handleError(err: unknown, instance: GenericComponentInstance | null | undefined, type: ErrorTypes, throwInDev?: boolean): void;
-declare function logError(err: unknown, type: ErrorTypes | string, instance: GenericComponentInstance | null | undefined, throwInDev?: boolean, throwInProd?: boolean): void;
+declare function logError(err: unknown, type: ErrorTypes | string, instance: GenericComponentInstance | VNode | null | undefined, throwInDev?: boolean, throwInProd?: boolean): void;
 //#endregion
 //#region packages/runtime-core/src/customFormatter.d.ts
 declare function initCustomFormatter(): void;
@@ -25309,12 +25315,10 @@ declare function useCssVars(getter: (ctx: any) => Record<string, unknown>): void
  * @internal
  * shared between vdom and vapor
  */
-declare function baseUseCssVars(instance: GenericComponentInstance | null, getParentNode: () => Node, getVars: () => Record<string, any>, setVars: (vars: Record<string, any>) => void): void;
-/**
- * @internal
- * shared between vdom and vapor
- */
 declare function setVarsOnNode(el: Node, vars: Record<string, string>): void;
+//#endregion
+//#region packages/runtime-dom/src/modules/class.d.ts
+declare function patchClass(el: Element, value: string | null, isSVG: boolean): void;
 //#endregion
 //#region packages/runtime-dom/src/modules/style.d.ts
 type Style = string | null | undefined | Record<string, unknown>;
@@ -25326,7 +25330,7 @@ declare function parseEventName(name: string): [string, EventListenerOptions | u
 //#region packages/runtime-dom/src/modules/attrs.d.ts
 declare const xlinkNS = "http://www.w3.org/1999/xlink";
 declare namespace index_d_exports$1 {
-  export { AllowedAttrs, AllowedComponentProps, AnchorHTMLAttributes, App, AppConfig, AppContext, AppMountFn, AppUnmountFn, AreaHTMLAttributes, AriaAttributes, AsyncComponentInternalOptions, AsyncComponentLoader, AsyncComponentOptions, Attrs, AudioHTMLAttributes, BaseHTMLAttributes, BaseTransition, BaseTransitionProps, BaseTransitionPropsValidators, BlockquoteHTMLAttributes, ButtonHTMLAttributes, CSSProperties, CanvasHTMLAttributes, ClassValue, ColHTMLAttributes, ColgroupHTMLAttributes, Comment$2 as Comment, CompatVue, Component, ComponentCustomElementInterface, ComponentCustomOptions, ComponentCustomProperties, ComponentCustomProps, ComponentInjectOptions, ComponentInstance, ComponentInternalInstance, ComponentInternalOptions, ComponentObjectPropsOptions, ComponentOptions, ComponentOptionsBase, ComponentOptionsMixin, ComponentOptionsWithArrayProps, ComponentOptionsWithObjectProps, ComponentOptionsWithoutProps, ComponentPropsOptions, ComponentProvideOptions, ComponentPublicInstance, ComponentTypeEmits, ComputedGetter, ComputedOptions, ComputedRef, ComputedSetter, ConcreteComponent, CreateAppFunction, CreateComponentPublicInstance, CreateComponentPublicInstanceWithMixins, CustomElementOptions, CustomRefFactory, DataHTMLAttributes, DebuggerEvent, DebuggerEventExtraInfo, DebuggerOptions, DeepReadonly, DefineComponent, DefineProps, DefineSetupFnComponent, DelHTMLAttributes, DeprecationTypes, DetailsHTMLAttributes, DialogHTMLAttributes, Directive$1 as Directive, DirectiveArguments$1 as DirectiveArguments, DirectiveBinding, DirectiveHook, DirectiveModifiers, EffectScheduler, EffectScope, ElementNamespace, ElementWithTransition, EmbedHTMLAttributes, EmitFn, EmitsOptions, EmitsToProps, ErrorCodes, ErrorTypeStrings, Events, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, FieldsetHTMLAttributes, FormHTMLAttributes, Fragment, FunctionDirective, FunctionPlugin, FunctionalComponent, GenericAppContext, GenericComponent, GenericComponentInstance, GlobalComponents, GlobalDirectives, HMRRuntime, HTMLAttributes, HtmlHTMLAttributes, HydrationRenderer, HydrationStrategy, HydrationStrategyFactory, IframeHTMLAttributes, ImgHTMLAttributes, InjectionKey, InputAutoCompleteAttribute, InputHTMLAttributes, InputTypeHTMLAttribute, InsHTMLAttributes, IntrinsicElementAttributes, KeepAlive, KeepAliveContext, KeepAliveProps, KeygenHTMLAttributes, LabelHTMLAttributes, LegacyConfig, LiHTMLAttributes, LifecycleHook, LinkHTMLAttributes, MapHTMLAttributes, MaybeRef, MaybeRefOrGetter, MediaHTMLAttributes, MenuHTMLAttributes, MetaHTMLAttributes, MeterHTMLAttributes, MethodOptions, MismatchTypes, ModelRef, MoveType, MultiWatchSources, NULL_DYNAMIC_COMPONENT, NativeElements, NormalizedPropsOptions, ObjectDirective, ObjectEmitsOptions, ObjectHTMLAttributes, ObjectPlugin, OlHTMLAttributes, OptgroupHTMLAttributes, OptionHTMLAttributes, OptionMergeFunction, OutputHTMLAttributes, ParamHTMLAttributes, Plugin, ProgressHTMLAttributes, Prop, PropType, PublicProps, QuoteHTMLAttributes, Raw, Reactive, ReactiveEffect, ReactiveEffectOptions, ReactiveEffectRunner, ReactiveFlags$1 as ReactiveFlags, Ref, RenderFunction, RenderResultExtensions, Renderer, RendererElement, RendererInternals, RendererNode, RendererOptions, ReservedProps, RootHydrateFunction, RootRenderFunction, RuntimeCompilerOptions, SVGAttributes, SchedulerJob, SchedulerJobFlags, ScriptHTMLAttributes, SelectHTMLAttributes, SetupContext, ShallowReactive, ShallowRef, ShallowUnwrapRef, ShortEmitsToObject, Slot, Slots, SlotsType, SourceHTMLAttributes, Static, StyleHTMLAttributes, StyleValue, Suspense, SuspenseBoundary, SuspenseProps, TableHTMLAttributes, TdHTMLAttributes, Teleport, TeleportProps, TeleportTargetElement, TemplateRef, Text$1 as Text, TextareaHTMLAttributes, ThHTMLAttributes, TimeHTMLAttributes, ToRef, ToRefs, TrackHTMLAttributes, TrackOpTypes, Transition, TransitionElement, TransitionGroup, TransitionGroupProps, TransitionHooks, TransitionHooksContext, TransitionProps, TransitionPropsValidators, TransitionState, TriggerOpTypes, TypeEmitsToOptions, UnwrapNestedRefs, UnwrapRef, VNode, VNodeArrayChildren, VNodeChild, VNodeNormalizedChildren, VNodeNormalizedRef, VNodeProps, VNodeRef, VNodeTypes, VShowElement, VaporInVdomInterface, VaporSlot$1 as VaporSlot, VdomInVaporInterface, VdomSlotOptions, VideoHTMLAttributes, VueElement, VueElementBase, VueElementConstructor, WatchCallback, WatchEffect, WatchHandle, WatchOptions, WatchEffectOptions as WatchOptionsBase, WatchSource, WatchStopHandle, WebViewHTMLAttributes, WritableComputedOptions, WritableComputedRef, activate, assertNumber, baseApplyTranslation, baseEmit, baseNormalizePropsOptions, baseResolveTransitionHooks, baseUseCssVars, callPendingCbs, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, checkTransitionMode, cloneVNode, compatUtils, computed, createApp, createAppAPI, createAsyncComponentContext, createBlock, createCanSetSetupRefChecker, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createInternalObject, createPropsRestProxy, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, currentInstance, customRef, deactivate, defineAsyncComponent, defineComponent, defineCustomElement, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSSRCustomElement, defineSlots, devtools, devtoolsComponentAdded, effect, effectScope, endMeasure, ensureHydrationRenderer, ensureRenderer, ensureValidVNode, ensureVaporSlotFallback, expose, filterModelListeners, flushOnAppMount, forceReflow, getAttributeMismatch, getComponentName, getContainerType, getCurrentInstance, getCurrentScope, getCurrentWatcher, getFunctionalFallthrough, getInheritedScopeIds, getTransitionRawChildren, guardReactiveProps, h, handleError, handleMovedChildren, hasCSSTransform, hasInjectionContext, hydrate, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initDirectivesForSSR, initFeatureFlags, inject, injectHook, invalidateMount, invokeDirectiveHook, invokeKeepAliveHooks, isAsyncWrapper, isEmitListener, isFunctionalFallthroughKey, isHydrating, isHydratingEnabled, isInSSRComponentSetup, isKeepAlive, isMapEqual, isMemoSame, isMismatchAllowed, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isSetEqual, isShallow, isTeleportDeferred, isTeleportDisabled, isTemplateNode, isTemplateRefKey, isVNode, isValidHtmlOrSvgAttribute, knownTemplateRefs, leaveCbKey, logError, logMismatchError, markAsyncBoundary, markRaw, matches, mergeDefaults, mergeModels, mergeProps, nextTick, nextUid, nodeOps, normalizeClass, normalizeContainer, normalizeProps, normalizeRef, normalizeStyle, normalizeVNode, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseEventName, patchProp, patchStyle, performAsyncHydrate, performTransitionEnter, performTransitionLeave, popScopeId, popWarningContext, prepareTransitionLeave, prepareTransitionSwitch, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, queuePostRenderEffect, rawVaporSlotKey, reactive, readonly, ref$1 as ref, registerHMR, registerRuntimeCompiler, render, renderList, renderSlot, resetKeepAliveHookState, resetShapeFlag, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTarget as resolveTeleportTarget, resolveTransitionChild, resolveTransitionHooks, resolveTransitionProps, restoreCurrentInstance, setBlockTracking, setCurrentInstance, setCurrentRenderingInstance, setDevtoolsHook, setIsHydratingEnabled, setRef, setTransitionHooks, setVarsOnNode, shallowReactive, shallowReadonly, shallowRef, shouldSetAsProp, shouldSetAsPropForVueCE, shouldUpdateComponent, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, stop, svgNS, toClassSet, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toStyleMap, toValue, transformVNodeArgs, triggerRef, unref, unregisterHMR, unsafeToTrustedHTML, useAsyncComponentState, useAttrs, useCssModule, useCssVars, useHost, useId, useInstanceOption, useModel, useSSRContext, useShadowRoot, useSlots, useTemplateRef, useTransitionState, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vdomSlotFallbackKey, version, vtcKey, warn, warnExtraneousAttributes, warnPropMismatch, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, xlinkNS };
+  export { AllowedAttrs, AllowedComponentProps, AnchorHTMLAttributes, App, AppConfig, AppContext, AppMountFn, AppUnmountFn, AreaHTMLAttributes, AriaAttributes, AsyncComponentInternalOptions, AsyncComponentLoader, AsyncComponentOptions, Attrs, AudioHTMLAttributes, BaseHTMLAttributes, BaseTransition, BaseTransitionProps, BaseTransitionPropsValidators, BlockquoteHTMLAttributes, ButtonHTMLAttributes, CSSProperties, CanvasHTMLAttributes, ClassValue, ColHTMLAttributes, ColgroupHTMLAttributes, Comment$2 as Comment, CompatVue, Component, ComponentCustomElementInterface, ComponentCustomOptions, ComponentCustomProperties, ComponentCustomProps, ComponentInjectOptions, ComponentInstance, ComponentInternalInstance, ComponentInternalOptions, ComponentObjectPropsOptions, ComponentOptions, ComponentOptionsBase, ComponentOptionsMixin, ComponentOptionsWithArrayProps, ComponentOptionsWithObjectProps, ComponentOptionsWithoutProps, ComponentPropsOptions, ComponentProvideOptions, ComponentPublicInstance, ComponentTypeEmits, ComputedGetter, ComputedOptions, ComputedRef, ComputedSetter, ConcreteComponent, CreateAppFunction, CreateComponentPublicInstance, CreateComponentPublicInstanceWithMixins, CustomElementOptions, CustomRefFactory, DataHTMLAttributes, DebuggerEvent, DebuggerEventExtraInfo, DebuggerOptions, DeepReadonly, DefineComponent, DefineProps, DefineSetupFnComponent, DelHTMLAttributes, DeprecationTypes, DetailsHTMLAttributes, DialogHTMLAttributes, Directive$1 as Directive, DirectiveArguments$1 as DirectiveArguments, DirectiveBinding, DirectiveHook, DirectiveModifiers, EffectScheduler, EffectScope, ElementNamespace, ElementWithTransition, EmbedHTMLAttributes, EmitFn, EmitsOptions, EmitsToProps, ErrorCodes, ErrorTypeStrings, Events, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, FieldsetHTMLAttributes, FormHTMLAttributes, Fragment, FunctionDirective, FunctionPlugin, FunctionalComponent, GenericAppContext, GenericComponent, GenericComponentInstance, GlobalComponents, GlobalDirectives, HMRRuntime, HTMLAttributes, HtmlHTMLAttributes, HydrationRenderer, HydrationStrategy, HydrationStrategyFactory, IframeHTMLAttributes, ImgHTMLAttributes, InjectionKey, InputAutoCompleteAttribute, InputHTMLAttributes, InputTypeHTMLAttribute, InsHTMLAttributes, IntrinsicElementAttributes, KeepAlive, KeepAliveContext, KeepAliveProps, KeygenHTMLAttributes, LabelHTMLAttributes, LegacyConfig, LiHTMLAttributes, LifecycleHook, LinkHTMLAttributes, MapHTMLAttributes, MaybeRef, MaybeRefOrGetter, MediaHTMLAttributes, MenuHTMLAttributes, MetaHTMLAttributes, MeterHTMLAttributes, MethodOptions, MismatchTypes, ModelRef, MoveType, MultiWatchSources, NULL_DYNAMIC_COMPONENT, NativeElements, NormalizedPropsOptions, ObjectDirective, ObjectEmitsOptions, ObjectHTMLAttributes, ObjectPlugin, OlHTMLAttributes, OptgroupHTMLAttributes, OptionHTMLAttributes, OptionMergeFunction, OutputHTMLAttributes, ParamHTMLAttributes, Plugin, ProgressHTMLAttributes, Prop, PropType, PublicInstanceProxyHandlers, PublicProps, QuoteHTMLAttributes, Raw, Reactive, ReactiveEffect, ReactiveEffectOptions, ReactiveEffectRunner, ReactiveFlags$1 as ReactiveFlags, Ref, RenderFunction, RenderResultExtensions, Renderer, RendererElement, RendererInternals, RendererNode, RendererOptions, ReservedProps, RootHydrateFunction, RootRenderFunction, RuntimeCompilerOptions, SVGAttributes, SchedulerJob, SchedulerJobFlags, ScriptHTMLAttributes, SelectHTMLAttributes, SetupContext, ShallowReactive, ShallowRef, ShallowUnwrapRef, ShortEmitsToObject, Slot, Slots, SlotsType, SourceHTMLAttributes, Static, StyleHTMLAttributes, StyleValue, Suspense, SuspenseBoundary, SuspenseProps, TableHTMLAttributes, TdHTMLAttributes, Teleport, TeleportProps, TeleportTargetElement, TemplateRef, Text$1 as Text, TextareaHTMLAttributes, ThHTMLAttributes, TimeHTMLAttributes, ToRef, ToRefs, TrackHTMLAttributes, TrackOpTypes, Transition, TransitionElement, TransitionGroup, TransitionGroupProps, TransitionHooks, TransitionHooksContext, TransitionProps, TransitionPropsValidators, TransitionState, TriggerOpTypes, TypeEmitsToOptions, UnwrapNestedRefs, UnwrapRef, VNode, VNodeArrayChildren, VNodeChild, VNodeNormalizedChildren, VNodeNormalizedRef, VNodeProps, VNodeRef, VNodeTypes, VShowElement, VaporInVdomInterface, VaporSlot$1 as VaporSlot, VdomInVaporInterface, VdomSlotOptions, VideoHTMLAttributes, VueElement, VueElementBase, VueElementConstructor, WatchCallback, WatchEffect, WatchHandle, WatchOptions, WatchEffectOptions as WatchOptionsBase, WatchSource, WatchStopHandle, WebViewHTMLAttributes, WritableComputedOptions, WritableComputedRef, activate, assertNumber, baseApplyTranslation, baseEmit, baseNormalizePropsOptions, baseResolveTransitionHooks, callPendingCbs, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, checkTransitionMode, cloneVNode, compatUtils, computed, createApp, createAppAPI, createAsyncComponentContext, createBlock, createCanSetSetupRefChecker, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createInternalObject, createPropsRestProxy, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, currentInstance, customRef, deactivate, defaultPropGetter, defineAsyncComponent, defineComponent, defineCustomElement, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSSRCustomElement, defineSlots, devtools, devtoolsComponentAdded, effect, effectScope, endMeasure, ensureHydrationRenderer, ensureRenderer, ensureValidVNode, ensureVaporSlotFallback, expose, filterModelListeners, flushOnAppMount, forceReflow, getAttributeMismatch, getComponentName, getContainerType, getCurrentInstance, getCurrentScope, getCurrentWatcher, getFunctionalFallthrough, getInheritedScopeIds, getTransitionRawChildren, guardReactiveProps, h, handleError, handleMovedChildren, hasCSSTransform, hasInjectionContext, hydrate, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initDirectivesForSSR, initFeatureFlags, inject, injectHook, invalidateMount, invokeDirectiveHook, invokeKeepAliveHooks, isAsyncWrapper, isEmitListener, isFunctionalFallthroughKey, isHydrating, isHydratingEnabled, isInSSRComponentSetup, isKeepAlive, isMapEqual, isMemoSame, isMismatchAllowed, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isSetEqual, isShallow, isTeleportDeferred, isTeleportDisabled, isTemplateNode, isTemplateRefKey, isVNode, isValidHtmlOrSvgAttribute, knownTemplateRefs, leaveCbKey, logError, logMismatchError, markAsyncBoundary, markRaw, matches, mergeDefaults, mergeModels, mergeProps, nextTick, nextUid, nodeOps, normalizeClass, normalizeContainer, normalizeProps, normalizeRef, normalizeStyle, normalizeVNode, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseEventName, patchClass, patchProp, patchStyle, performAsyncHydrate, performTransitionEnter, performTransitionLeave, popScopeId, popWarningContext, prepareTransitionLeave, prepareTransitionSwitch, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, queuePostRenderEffect, rawVaporSlotKey, reactive, readonly, ref$1 as ref, registerHMR, registerRuntimeCompiler, render, renderList, renderSlot, resetKeepAliveHookState, resetShapeFlag, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTarget as resolveTeleportTarget, resolveTransitionChild, resolveTransitionHooks, resolveTransitionProps, restoreCurrentInstance, setBlockTracking, setCurrentInstance, setCurrentRenderingInstance, setDevtoolsHook, setIsHydratingEnabled, setRef, setTransitionHooks, setVarsOnNode, shallowReactive, shallowReadonly, shallowRef, shouldSetAsProp, shouldSetAsPropForVueCE, shouldUpdateComponent, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, stop, svgNS, toClassSet, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toStyleMap, toValue, transformVNodeArgs, triggerRef, unref, unregisterHMR, unsafeToTrustedHTML, useAsyncComponentState, useAttrs, useCssModule, useCssVars, useHost, useId, useInstanceOption, useModel, useSSRContext, useShadowRoot, useSlots, useTemplateRef, useTransitionState, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vdomSlotFallbackKey, version, vtcKey, warn, warnExtraneousAttributes, warnPropMismatch, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, xlinkNS };
 }
 /**
  * This is a stub implementation to prevent the need to use dom types.
@@ -25483,6 +25487,11 @@ declare class VaporFragment<T extends Block$1 = Block$1> implements TransitionOp
   remove?(parent?: ParentNode, transitionHooks?: TransitionHooks): void;
   hydrate?(...args: any[]): void;
   scope?: EffectScope;
+  /**
+   * @internal the KeepAlive-owned scope that commits this fragment's raw input
+   * sources, paused while the fragment is cached (see `isolatePropSources`)
+   */
+  inputScope?: EffectScope;
   setRef?: (instance: VaporComponentInstance, ref: NodeRef, refFor: boolean, refKey: string | undefined) => void;
   /**
    * @internal vdom interop protocol, implemented by interop fragments so
@@ -25504,7 +25513,7 @@ declare class VaporFragment<T extends Block$1 = Block$1> implements TransitionOp
   /** beforeUpdate */
   bu?: (() => void)[];
   /** updated */
-  u?: ((nodes?: Block$1) => void)[];
+  u?: ((nodes: Block$1) => void)[];
   constructor(nodes: T, flags?: number);
 }
 declare class RenderContextFragment<T extends Block$1 = Block$1> extends VaporFragment<T> {
@@ -25534,7 +25543,6 @@ declare class DynamicFragment extends RenderContextFragment {
   anchorLabel?: string;
   keyed?: boolean;
   branchKey?: any;
-  inTransition?: boolean;
   /** hydration: this `v-if` branch's claim on its SSR range */
   hydrationClaim?: FragmentClaim;
   fallthrough?: (nodes: Block$1) => void;
@@ -25667,6 +25675,8 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   root: GenericComponentInstance | null;
   parent: GenericComponentInstance | null;
   appContext: GenericAppContext;
+  get proxy(): Record<string, any>;
+  getRootElement(): Node | undefined;
   block: TypeBlock;
   pendingBlock?: Node | Node[];
   scope: EffectScope;
@@ -25678,6 +25688,9 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   slots: Slots;
   scopeId?: string | null;
   slotScopeIds?: string[] | null;
+  applyCssVars?: (nodes: Block$1) => void;
+  cssVarOutlets?: VaporFragment[];
+  interopVNode?: VNode;
   rawPropsRef?: ShallowRef<any>;
   rawSlotsRef?: ShallowRef<any>;
   emit: EmitFn<Emits>;
@@ -25696,6 +25709,7 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   hasFallthrough: boolean;
   shapeFlag?: number;
   inputScope?: EffectScope;
+  unmountScope?: EffectScope;
   $key?: any;
   deferredKeepAliveUpdates?: DeferredKeepAliveUpdates;
   ce?: ComponentCustomElementInterface;
@@ -25780,9 +25794,9 @@ declare function defineVaporAsyncComponent<T extends VaporComponent>(source: Asy
 declare const vaporInteropPlugin: Plugin;
 //#endregion
 //#region packages/runtime-vapor/src/directives/custom.d.ts
-type VaporDirective<HostElement extends Element = Element, Value = any, Modifiers extends string = string, Arg = any> = (node: HostElement, value?: () => Value, argument?: Arg, modifiers?: DirectiveModifiers<Modifiers>) => (() => void) | void;
+type VaporDirective<HostElement extends Element = Element, Value = any, Modifiers extends string = string, Arg = any> = (node: HostElement, value?: () => Value, argument?: () => Arg, modifiers?: DirectiveModifiers<Modifiers>) => (() => void) | void;
 type AnyVaporDirective = VaporDirective<any>;
-type VaporDirectiveArguments = Array<[AnyVaporDirective | undefined] | [AnyVaporDirective | undefined, () => any] | [AnyVaporDirective | undefined, (() => any) | undefined, argument: any] | [AnyVaporDirective | undefined, value: (() => any) | undefined, argument: any | undefined, modifiers: DirectiveModifiers]>;
+type VaporDirectiveArguments = Array<[AnyVaporDirective | undefined] | [AnyVaporDirective | undefined, () => any] | [AnyVaporDirective | undefined, (() => any) | undefined, argument: () => any] | [AnyVaporDirective | undefined, value: (() => any) | undefined, argument: (() => any) | undefined, modifiers: DirectiveModifiers]>;
 declare function withVaporDirectives(node: Element | VaporComponentInstance | VaporFragment, dirs: VaporDirectiveArguments): void;
 //#endregion
 //#region packages/runtime-vapor/src/components/Teleport.d.ts
@@ -25872,9 +25886,9 @@ declare function template(html: string, flags?: number, ns?: Namespace): () => N
 //#region packages/runtime-vapor/src/dom/node.d.ts
 declare function createTextNode(value?: string): Text;
 declare function txt(node: ParentNode): Node;
-declare function child(node: InsertionParent): Node;
-declare function nthChild(node: InsertionParent, i: number): Node;
-declare function next(node: Node): Node;
+declare function child(node: InsertionParent, isText?: boolean): Node;
+declare function nthChild(node: InsertionParent, i: number, isText?: boolean): Node;
+declare function next(node: Node, isText?: boolean): Node;
 //#endregion
 //#region packages/runtime-vapor/src/dom/prop.d.ts
 type TargetElement = Element & {
@@ -25903,7 +25917,8 @@ declare function setText(el: Text & {
   $txt?: string;
 }, value: string): void;
 /**
- * Used by setDynamicProps only, so need to guard with `toDisplayString`
+ * Used by setDynamicProps and `textContent` bindings, so need to guard with
+ * `toDisplayString`
  */
 declare function setElementText(el: Node & {
   $txt?: string;
@@ -25970,17 +25985,31 @@ declare function getRestElement(val: any, keys: string[]): any;
 declare function getDefaultValue(val: any, getDefaultVal: () => any): any;
 //#endregion
 //#region packages/runtime-vapor/src/helpers/useCssVars.d.ts
+/**
+ * Css vars are root-inherited state: the owner writes its root chain before
+ * insertion, containers on that chain write the content they produce later
+ * (`bm` hooks; `u` for vdom-owned interop content), and teleports are written
+ * directly as outlets since their content leaves the chain.
+ */
 declare function useVaporCssVars(getter: () => Record<string, string>): void;
 //#endregion
 //#region packages/runtime-vapor/src/helpers/setKey.d.ts
-declare function setBlockKey(block: (Block$1 & {
+declare function setBlockKey(block: Exclude<Block$1, Block$1[]> & {
   $key?: any;
-}) | null | undefined, key: any, overwrite?: boolean): void;
+}, key: any): void;
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateDynamicComponent.d.ts
 declare function createDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: LooseRawSlots | null, flags?: number, key?: () => any): Block$1;
 //#endregion
 //#region packages/runtime-vapor/src/directives/vShow.d.ts
+/**
+ * v-show is root-inherited state: it lands on the effective root element of
+ * `target`, and any producer on the root chain (dynamic fragment branch,
+ * interop subtree, pending async setup) can replace that root later. `apply`
+ * resolves the root through the shared chain walker and registers itself on
+ * every producer it passes, so a replacement root re-enters `apply` and
+ * registers the producers inside it in turn.
+ */
 declare function applyVShow(target: Block$1, source: () => any): void;
 //#endregion
 //#region packages/runtime-vapor/src/directives/vModel.d.ts
@@ -26284,6 +26313,7 @@ export interface IRDynamicInfo {
   children: IRDynamicInfo[];
   template?: number;
   hasDynamicChild?: boolean;
+  isText?: boolean;
   operation?: OperationNode;
 }
 export interface IREffect {
@@ -28313,7 +28343,7 @@ export declare class CodegenContext {
   private nextIdMap;
   private lastIdMap;
   private generatedLocalNames;
-  getUniqueLocalName(base: string, scopeNames: Set<string>): string;
+  getUniqueLocalName(base: string, scopeNames?: Set<string>): string;
   private isNameAvailable;
   private findAvailableName;
   private lastTIndex;
@@ -28677,6 +28707,7 @@ interface IRDynamicInfo$1 {
   children: IRDynamicInfo$1[];
   template?: number;
   hasDynamicChild?: boolean;
+  isText?: boolean;
   operation?: OperationNode$1;
 }
 interface IREffect$1 {
@@ -28775,7 +28806,7 @@ declare class TransformContext$1<T extends AllNode = AllNode> {
 export declare const transformTransition: NodeTransform$1;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/expression.d.ts
-export declare function genExpression(node: SimpleExpressionNode, context: CodegenContext, assignment?: string): CodeFragment[];
+export declare function genExpression(node: SimpleExpressionNode, context: CodegenContext, assignment?: string, asParams?: boolean): CodeFragment[];
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/prop.d.ts
 export declare function genDynamicProps(oper: SetDynamicPropsIRNode, context: CodegenContext, helperName?: VaporHelper): CodeFragment[];

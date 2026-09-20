@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.8
+  * @vue/server-renderer v3.6.0-rc.9
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -40,7 +40,7 @@ function ssrRenderClass(raw) {
 }
 function ssrRenderStyle(raw) {
 	if (!raw) return "";
-	if (isString(raw)) return escapeHtml(stringifyStyle(raw));
+	if (isString(raw)) return escapeHtml(raw);
 	const styles = normalizeStyle(ssrResetCssVars(raw));
 	return escapeHtml(stringifyStyle(styles));
 }

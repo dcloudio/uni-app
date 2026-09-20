@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.8
+  * @vue/compiler-sfc v3.6.0-rc.9
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -306,10 +306,10 @@ function normalizeStyle(value) {
 }
 const listDelimiterRE = /;(?![^(]*\))/g;
 const propertyDelimiterRE = /:([^]+)/;
-const styleCommentRE = /\/\*[^]*?\*\//g;
+const styleCommentRE = /"(?:[^"\\]|\\[^])*"|'(?:[^'\\]|\\[^])*'|\\[^]|\/\*[^]*?\*\//g;
 function parseStringStyle(cssText) {
 	const ret = {};
-	cssText.replace(styleCommentRE, "").split(listDelimiterRE).forEach((item) => {
+	cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match).split(listDelimiterRE).forEach((item) => {
 		if (item) {
 			const tmp = item.split(propertyDelimiterRE);
 			tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
@@ -392,10 +392,25 @@ const isInlineTag = /*@__PURE__*/ makeMap(INLINE_TAGS);
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
 const isBlockTag = /*@__PURE__*/ makeMap(BLOCK_TAGS);
+//#endregion
+//#region packages/shared/src/domAttrConfig.ts
+/**
+* On the client we only need to offer special cases for boolean attributes that
+* have different names from their corresponding dom properties:
+* - itemscope -> N/A
+* - allowfullscreen -> allowFullscreen
+* - formnovalidate -> formNoValidate
+* - ismap -> isMap
+* - nomodule -> noModule
+* - novalidate -> noValidate
+* - readonly -> readOnly
+*/
+const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
+const isSpecialBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs);
 /**
 * The full list is needed during SSR to produce the correct initial markup.
 */
-const isBooleanAttr = /*@__PURE__*/ makeMap("itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly,async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
+const isBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs + ",async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
 /**
 * Boolean attributes should be included if the value is truthy or ''.
 * e.g. `<select multiple>` compiles to `{ multiple: '' }`
@@ -2650,11 +2665,11 @@ const defaultDelimitersClose = new Uint8Array([125, 125]);
 function isTagStartChar(c) {
 	return c >= 97 && c <= 122 || c >= 65 && c <= 90;
 }
-function isWhitespace(c) {
+function isWhitespace$1(c) {
 	return c === 32 || c === 10 || c === 9 || c === 12 || c === 13;
 }
 function isEndOfTagSection(c) {
-	return c === 47 || c === 62 || isWhitespace(c);
+	return c === 47 || c === 62 || isWhitespace$1(c);
 }
 function toCharCodes(str) {
 	const ret = new Uint8Array(str.length);
@@ -2863,7 +2878,7 @@ var Tokenizer = class {
 	/** Look for an end tag. For <title> and <textarea>, also decode entities. */
 	stateInRCDATA(c) {
 		if (this.sequenceIndex === this.currentSequence.length) {
-			if (c === 62 || isWhitespace(c)) {
+			if (c === 62 || isWhitespace$1(c)) {
 				const endOfText = this.index - this.currentSequence.length;
 				if (this.sectionStart < endOfText) {
 					const actualIndex = this.index;
@@ -2987,7 +3002,7 @@ var Tokenizer = class {
 		this.stateBeforeAttrName(c);
 	}
 	stateBeforeClosingTagName(c) {
-		if (isWhitespace(c)) {} else if (c === 62) {
+		if (isWhitespace$1(c)) {} else if (c === 62) {
 			this.cbs.onerr(14, this.index);
 			this.state = 1;
 			this.sectionStart = this.index + 1;
@@ -2997,7 +3012,7 @@ var Tokenizer = class {
 		}
 	}
 	stateInClosingTagName(c) {
-		if (c === 62 || isWhitespace(c)) {
+		if (c === 62 || isWhitespace$1(c)) {
 			this.cbs.onclosetag(this.sectionStart, this.index);
 			this.sectionStart = -1;
 			this.state = 10;
@@ -3023,7 +3038,7 @@ var Tokenizer = class {
 			this.cbs.onopentagend(this.index);
 			this.state = 5;
 			this.sectionStart = this.index;
-		} else if (!isWhitespace(c)) {
+		} else if (!isWhitespace$1(c)) {
 			if (c === 61) this.cbs.onerr(19, this.index);
 			this.handleAttrStart(c);
 		}
@@ -3047,7 +3062,7 @@ var Tokenizer = class {
 			this.state = 1;
 			this.sectionStart = this.index + 1;
 			this.inRCDATA = false;
-		} else if (!isWhitespace(c)) {
+		} else if (!isWhitespace$1(c)) {
 			this.state = 11;
 			this.stateBeforeAttrName(c);
 		}
@@ -3113,7 +3128,7 @@ var Tokenizer = class {
 			this.sectionStart = -1;
 			this.state = 11;
 			this.stateBeforeAttrName(c);
-		} else if (!isWhitespace(c)) {
+		} else if (!isWhitespace$1(c)) {
 			this.cbs.onattribend(0, this.sectionStart);
 			this.handleAttrStart(c);
 		}
@@ -3125,7 +3140,7 @@ var Tokenizer = class {
 		} else if (c === 39) {
 			this.state = 20;
 			this.sectionStart = this.index + 1;
-		} else if (!isWhitespace(c)) {
+		} else if (!isWhitespace$1(c)) {
 			this.sectionStart = this.index;
 			this.state = 21;
 			this.stateInAttrValueNoQuotes(c);
@@ -3146,7 +3161,7 @@ var Tokenizer = class {
 		this.handleInAttrValue(c, 39);
 	}
 	stateInAttrValueNoQuotes(c) {
-		if (isWhitespace(c) || c === 62) {
+		if (isWhitespace$1(c) || c === 62) {
 			this.cbs.onattribdata(this.sectionStart, this.index);
 			this.sectionStart = -1;
 			this.cbs.onattribend(1, this.index);
@@ -16986,7 +17001,7 @@ function isSingleIfBlock(parent) {
 }
 const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+(\S[\s\S]*)/;
 function isAllWhitespace(str) {
-	for (let i = 0; i < str.length; i++) if (!isWhitespace(str.charCodeAt(i))) return false;
+	for (let i = 0; i < str.length; i++) if (!isWhitespace$1(str.charCodeAt(i))) return false;
 	return true;
 }
 function isWhitespaceText(node) {
@@ -17035,8 +17050,8 @@ const tokenizer = new Tokenizer(stack, {
 		if (inVPre) return onText(getSlice(start, end), start, end);
 		let innerStart = start + tokenizer.delimiterOpen.length;
 		let innerEnd = end - tokenizer.delimiterClose.length;
-		while (isWhitespace(currentInput.charCodeAt(innerStart))) innerStart++;
-		while (isWhitespace(currentInput.charCodeAt(innerEnd - 1))) innerEnd--;
+		while (isWhitespace$1(currentInput.charCodeAt(innerStart))) innerStart++;
+		while (isWhitespace$1(currentInput.charCodeAt(innerEnd - 1))) innerEnd--;
 		let exp = getSlice(innerStart, innerEnd);
 		if (exp.includes("&")) exp = decodeHTML(exp);
 		addNode({
@@ -17399,7 +17414,7 @@ function hasNewlineChar(str) {
 function condense(str) {
 	let ret = "";
 	let prevCharIsWhitespace = false;
-	for (let i = 0; i < str.length; i++) if (isWhitespace(str.charCodeAt(i))) {
+	for (let i = 0; i < str.length; i++) if (isWhitespace$1(str.charCodeAt(i))) {
 		if (!prevCharIsWhitespace) {
 			ret += " ";
 			prevCharIsWhitespace = true;
@@ -22868,7 +22883,7 @@ function parseCssVars(sfc) {
 	const vars = [];
 	sfc.styles.forEach((style) => {
 		let match;
-		const content = style.content.replace(/\/\*([\s\S]*?)\*\/|\/\/.*/g, "");
+		const content = stripComments(style.content);
 		while (match = vBindRE.exec(content)) {
 			const start = match.index + match[0].length;
 			const end = lexBinding(content, start);
@@ -22879,6 +22894,70 @@ function parseCssVars(sfc) {
 		}
 	});
 	return vars;
+}
+const cssSpecialRE = /[/"'\\(]/g;
+function stripComments(content) {
+	const len = content.length;
+	let out = "";
+	let last = 0;
+	let i = 0;
+	cssSpecialRE.lastIndex = 0;
+	while (cssSpecialRE.test(content)) {
+		i = cssSpecialRE.lastIndex - 1;
+		const c = content.charCodeAt(i);
+		if (c === 47) {
+			const next = content.charCodeAt(i + 1);
+			if (next === 42) {
+				out += content.slice(last, i);
+				const end = content.indexOf("*/", i + 2);
+				i = last = end === -1 ? len : end + 2;
+			} else if (next === 47) {
+				out += content.slice(last, i);
+				i += 2;
+				while (i < len && !isNewline(content.charCodeAt(i))) i++;
+				last = i;
+			} else i++;
+		} else if (c === 34 || c === 39) i = skipString(content, i + 1, c);
+		else if (c === 92) i += 2;
+		else if (isUrlFunction(content, i)) i = skipUrl(content, i + 1);
+		else i++;
+		cssSpecialRE.lastIndex = i;
+	}
+	return last === 0 ? content : out + content.slice(last);
+}
+function skipString(s, i, quote) {
+	while (i < s.length) {
+		const c = s.charCodeAt(i);
+		if (c === quote) return i + 1;
+		if (isNewline(c)) return i;
+		if (c === 92) i += s.charCodeAt(i + 1) === 13 && s.charCodeAt(i + 2) === 10 ? 3 : 2;
+		else i++;
+	}
+	return i;
+}
+function isUrlFunction(s, i) {
+	const prev = s.charCodeAt(i - 4);
+	return (s.charCodeAt(i - 3) | 32) === 117 && (s.charCodeAt(i - 2) | 32) === 114 && (s.charCodeAt(i - 1) | 32) === 108 && prev !== 92 && !isIdentChar(prev);
+}
+function skipUrl(s, i) {
+	while (isWhitespace(s.charCodeAt(i))) i++;
+	const c = s.charCodeAt(i);
+	if (c === 34 || c === 39) return i;
+	while (i < s.length) {
+		const c = s.charCodeAt(i);
+		if (c === 41) return i + 1;
+		i += c === 92 ? 2 : 1;
+	}
+	return i;
+}
+function isIdentChar(c) {
+	return c >= 97 && c <= 122 || c >= 65 && c <= 90 || c >= 48 && c <= 57 || c === 45 || c === 95 || c >= 128;
+}
+function isNewline(c) {
+	return c === 10 || c === 13;
+}
+function isWhitespace(c) {
+	return c === 32 || c === 9 || c === 12 || isNewline(c);
 }
 function lexBinding(content, start) {
 	let state = 0;
@@ -25902,7 +25981,8 @@ function isBuiltInComponent(tag) {
 }
 function getBlockShape(block) {
 	if (block.returns.length === 0) return 0;
-	return block.returns.length === 1 ? 1 : 2;
+	if (block.returns.length > 1) return 2;
+	return block.node.type === 1 && block.node.children.every((child) => child.type === 2 || child.type === 5) ? 2 : 1;
 }
 //#endregion
 //#region packages/compiler-vapor/src/transform.ts
@@ -26411,7 +26491,7 @@ function genInsertNode({ parent, elements, anchor }, { helper }) {
 //#endregion
 //#region packages/compiler-vapor/src/generators/expression.ts
 init_objectSpread2();
-function genExpression(node, context, assignment) {
+function genExpression(node, context, assignment, asParams = false) {
 	node = context.getExpressionReplacement(node);
 	const { content, ast, isStatic, loc } = node;
 	const { options } = context;
@@ -26430,10 +26510,13 @@ function genExpression(node, context, assignment) {
 	const ids = [];
 	const parentStackMap = /* @__PURE__ */ new Map();
 	const parentStack = [];
-	walkIdentifiers(ast, (id) => {
+	walkIdentifiers(ast, (id, _, __, isReference, isLocal) => {
+		if (isLocal) {
+			if (!id.typeAnnotation && !id.optional) return;
+		} else if (!isReference) return;
 		ids.push(id);
 		parentStackMap.set(id, parentStack.slice());
-	}, false, parentStack);
+	}, asParams, parentStack);
 	let hasMemberExpression = false;
 	if (ids.length) {
 		const [frag, push] = buildCodeFragment();
@@ -26454,7 +26537,7 @@ function genExpression(node, context, assignment) {
 			const leadingText = content.slice(lastEnd, start);
 			if (leadingText.length) push([leadingText, -3]);
 			hasMemberExpression || (hasMemberExpression = parent && (parent.type === "MemberExpression" || parent.type === "OptionalMemberExpression"));
-			push(...genIdentifier(source, context, {
+			push(...genIdentifier(asParams ? id.name : source, context, {
 				start: advancePositionWithClone(node.loc.start, source, start),
 				end: advancePositionWithClone(node.loc.start, source, end),
 				source
@@ -26606,6 +26689,7 @@ function analyzeExpressions(expressions) {
 		const seenParents = /* @__PURE__ */ new Set();
 		walkIdentifiers(exp.ast, (currentNode, parent, parentStack) => {
 			if (parent && isMemberExpression(parent) && !seenParents.has(parent)) {
+				var _parentStack$index;
 				seenParents.add(parent);
 				let hasGlobalIdentifier = false;
 				const memberExp = extractMemberExpression(parent, (id) => {
@@ -26615,8 +26699,14 @@ function analyzeExpressions(expressions) {
 					});
 					if (isGloballyAllowed(id.name)) hasGlobalIdentifier = true;
 				});
+				if (memberExp === void 0) return;
 				const parentOfMemberExp = parentStack[parentStack.length - 2];
 				if (parentOfMemberExp && isCallExpression(parentOfMemberExp)) return;
+				let chainChild = parent;
+				let index = parentStack.length - 2;
+				while (((_parentStack$index = parentStack[index]) === null || _parentStack$index === void 0 ? void 0 : _parentStack$index.type) === "TSNonNullExpression") chainChild = parentStack[index--];
+				const chainParent = parentStack[index];
+				if (chainParent && chainParent.type === "OptionalMemberExpression" && !chainParent.optional && chainParent.object === chainChild) return;
 				if (hasGlobalIdentifier) return;
 				registerVariable(memberExp, exp, false, {
 					start: parent.start,
@@ -26762,7 +26852,7 @@ function processRepeatedExpressions(context, expressions, varDeclarations, updat
 		for (const exp of expressions) {
 			const processed = getProcessedExpression(exp, expressionReplacements);
 			if (processed.content === content) setExpressionReplacement(expressionReplacements, exp, varName, null);
-			else if (processed.content.includes(content)) {
+			else if (!content.includes("?.") && processed.content.includes(content)) {
 				const replacements = findContentReplacements(processed, content, varName);
 				if (replacements.length) {
 					const replacedContent = applyContentReplacements(processed.content, replacements);
@@ -26795,23 +26885,14 @@ function applyReplacementPlan(context, expressionReplacements, replacementPlan) 
 	}
 }
 function findContentReplacements(exp, content, replacement) {
-	const identifiers = getIdentifierRanges(exp);
-	if (!identifiers.length) return [];
+	const nodeRanges = getNodeRanges(exp);
+	if (!nodeRanges.size) return [];
 	const replacements = [];
 	let searchStart = 0;
 	let start = exp.content.indexOf(content, searchStart);
 	while (start !== -1) {
 		const end = start + content.length;
-		let canReplace = false;
-		for (const identifier of identifiers) {
-			if (start >= identifier.end || end <= identifier.start) continue;
-			if (start > identifier.start || end < identifier.end) {
-				canReplace = false;
-				break;
-			}
-			canReplace = true;
-		}
-		if (canReplace) {
+		if (nodeRanges.has(`${start}:${end}`)) {
 			replacements.push({
 				start,
 				end,
@@ -26831,6 +26912,15 @@ function findIdentifierReplacements(exp, name, replacement) {
 		content: replacement
 	});
 	return replacements;
+}
+function getNodeRanges(exp) {
+	const ranges = /* @__PURE__ */ new Set();
+	if (!exp.ast || typeof exp.ast !== "object") return ranges;
+	walk$2(exp.ast, { enter(node) {
+		if (isFunctionType(node) || node.type === "TemplateElement" || node.type.startsWith("TS") && !TS_NODE_TYPES.includes(node.type)) return this.skip();
+		if (node.start != null && node.end != null) ranges.add(`${node.start - 1}:${node.end - 1}`);
+	} });
+	return ranges;
 }
 function getIdentifierRanges(exp) {
 	if (!exp.ast || typeof exp.ast !== "object") return [];
@@ -26888,24 +26978,44 @@ function getUniqueDeclarationName(baseName, reservedNames) {
 	reservedNames.add(name);
 	return name;
 }
+/**
+* Returns the source of a member expression, or `undefined` if it contains a
+* node that cannot be extracted, e.g. `foo[bar ? 'a' : 'b']`. Such expressions
+* must not be cached - the extracted source would be incomplete.
+*/
 function extractMemberExpression(exp, onIdentifier) {
-	if (!exp) return "";
+	if (!exp) return;
 	switch (exp.type) {
 		case "Identifier":
 			onIdentifier(exp);
 			return exp.name;
 		case "StringLiteral": return exp.extra ? exp.extra.raw : exp.value;
 		case "NumericLiteral": return exp.value.toString();
-		case "BinaryExpression": return `${extractMemberExpression(exp.left, onIdentifier)} ${exp.operator} ${extractMemberExpression(exp.right, onIdentifier)}`;
-		case "CallExpression": return `${extractMemberExpression(exp.callee, onIdentifier)}(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
-		case "OptionalCallExpression": return `${extractMemberExpression(exp.callee, onIdentifier)}?.(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
+		case "BinaryExpression": {
+			var _exp$extra;
+			const left = extractMemberExpression(exp.left, onIdentifier);
+			const right = extractMemberExpression(exp.right, onIdentifier);
+			if (left === void 0 || right === void 0) return;
+			const expression = `${left} ${exp.operator} ${right}`;
+			return ((_exp$extra = exp.extra) === null || _exp$extra === void 0 ? void 0 : _exp$extra.parenthesized) ? `(${expression})` : expression;
+		}
+		case "CallExpression":
+		case "OptionalCallExpression": {
+			const callee = extractMemberExpression(exp.callee, onIdentifier);
+			const args = exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier));
+			if (callee === void 0 || args.some((arg) => arg === void 0)) return;
+			return `${callee}${exp.type === "OptionalCallExpression" ? "?." : ""}(${args.join(", ")})`;
+		}
 		case "MemberExpression":
-		case "OptionalMemberExpression":
+		case "OptionalMemberExpression": {
 			const object = extractMemberExpression(exp.object, onIdentifier);
+			const property = extractMemberExpression(exp.property, exp.computed ? onIdentifier : NOOP);
+			if (object === void 0 || property === void 0) return;
 			const optional = exp.type === "OptionalMemberExpression" && exp.optional;
-			return `${object}${exp.computed ? `${optional ? "?." : ""}[${extractMemberExpression(exp.property, onIdentifier)}]` : `${optional ? "?." : "."}${extractMemberExpression(exp.property, NOOP)}`}`;
-		case "TSNonNullExpression": return `${extractMemberExpression(exp.expression, onIdentifier)}`;
-		default: return "";
+			return `${object}${exp.computed ? `${optional ? "?." : ""}[${property}]` : `${optional ? "?." : "."}${property}`}`;
+		}
+		case "TSNonNullExpression": return extractMemberExpression(exp.expression, onIdentifier);
+		default: return;
 	}
 }
 const isCallExpression = (node) => {
@@ -27044,30 +27154,30 @@ function isConstantBinding(value, context) {
 function genFor(oper, context) {
 	const { helper } = context;
 	const { source, value, key, index, render, keyProp, once, id, component, onlyChild, slotRoot, wrappedRows } = oper;
-	const rawValue = value && value.content;
-	const rawKey = key && key.content;
-	const rawIndex = index && index.content;
 	const sourceExpr = [
 		"() => (",
 		...genExpression(source, context),
 		")"
 	];
+	const plugins = context.options.expressionPlugins;
 	const idToPathMap = parseValueDestructure(value, context);
+	const keyToPathMap = parseValueDestructure(key, context);
+	const indexToPathMap = parseValueDestructure(index, context);
 	const [depth, exitScope] = context.enterScope();
 	const itemVar = `_for_item${depth}`;
-	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, context.options.expressionPlugins);
+	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, plugins);
 	idMap[itemVar] = null;
 	const args = [itemVar];
-	if (rawKey) {
+	if (key) {
 		const keyVar = `_for_key${depth}`;
 		args.push(`, ${keyVar}`);
-		idMap[rawKey] = `${keyVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(keyToPathMap, `${keyVar}.value`, plugins));
 		idMap[keyVar] = null;
-	}
-	if (rawIndex) {
+	} else if (index) args.push(", _");
+	if (index) {
 		const indexVar = `_for_index${depth}`;
 		args.push(`, ${indexVar}`);
-		idMap[rawIndex] = `${indexVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(indexToPathMap, `${indexVar}.value`, plugins));
 		idMap[indexVar] = null;
 	}
 	const { selectorPatterns, keyOnlyBindingPatterns, skippedEffectIndexes } = matchPatterns(render, keyProp, idMap, context);
@@ -27108,23 +27218,19 @@ function genFor(oper, context) {
 	];
 	function genCallback(expr) {
 		if (!expr) return false;
-		const res = context.withId(() => genExpression(expr, context), genSimpleIdMap());
-		return [
-			...genMulti([
-				"(",
-				")",
-				", "
-			], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex),
+		return context.withId(() => [
+			...genAliasParams(value, key, index, context),
 			" => (",
-			...res,
+			...genExpression(expr, context),
 			")"
-		];
+		], genSimpleIdMap());
 	}
 	function genSimpleIdMap() {
 		const idMap = {};
-		if (rawKey) idMap[rawKey] = null;
-		if (rawIndex) idMap[rawIndex] = null;
-		idToPathMap.forEach((_, id) => idMap[id] = null);
+		const collect = (map) => map.forEach((_, id) => idMap[id] = null);
+		collect(idToPathMap);
+		collect(keyToPathMap);
+		collect(indexToPathMap);
 		return idMap;
 	}
 }
@@ -27177,6 +27283,13 @@ function getSingleReturnedChild(block) {
 	const id = block.returns[0];
 	for (const child of block.dynamic.children) if (child.id === id) return child;
 }
+function genAliasParams(value, key, index, context) {
+	return genMulti([
+		"(",
+		")",
+		", "
+	], value ? genExpression(value, context, void 0, true) : key || index ? "_" : void 0, key ? genExpression(key, context, void 0, true) : index ? "__" : void 0, index && genExpression(index, context, void 0, true));
+}
 function parseValueDestructure(value, context) {
 	const map = /* @__PURE__ */ new Map();
 	if (value) {
@@ -27210,7 +27323,7 @@ function parseValueDestructure(value, context) {
 							} else return JSON.stringify(p.key.name);
 						}).join(", ") + "]";
 					}
-					if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern")) {
+					if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern" || parent.type === "ArrowFunctionExpression" && child.left === id)) {
 						isDynamic = true;
 						helper = context.helper("getDefaultValue");
 						helperArgs = `() => (${rawValue.slice(child.right.start - 1, child.right.end - 1)})`;
@@ -27296,7 +27409,7 @@ function matchSelectorPattern(effect, key, idMap, context) {
 				if (typeof node === "object" && node && node.type === "BinaryExpression" && node.operator === "===" && node.left.type !== "PrivateName") {
 					const { left, right } = node;
 					for (const [a, b] of [[left, right], [right, left]]) {
-						const aIsKey = isKeyOnlyBinding(a, key, content);
+						const aIsKey = content.slice(a.start - 1, a.end - 1) === key;
 						const bIsKey = isKeyOnlyBinding(b, key, content);
 						const bVars = analyzeVariableScopes(b, idMap);
 						if (aIsKey && !bIsKey && !bVars.length) matcheds.push([a, b]);
@@ -27406,7 +27519,7 @@ function genBlockShapeName(flags) {
 //#endregion
 //#region packages/compiler-vapor/src/generators/prop.ts
 const helpers = {
-	setText: { name: "setText" },
+	setElementText: { name: "setElementText" },
 	setHtml: { name: "setHtml" },
 	setClass: { name: "setClass" },
 	setClassName: { name: "setClassName" },
@@ -27624,7 +27737,7 @@ function getSpecialHelper(keyName, tagName, isSVG) {
 	else if (keyName === "class") return extend({ isSVG }, helpers.setClass);
 	else if (keyName === "style") return helpers.setStyle;
 	else if (keyName === "innerHTML") return helpers.setHtml;
-	else if (keyName === "textContent") return helpers.setText;
+	else if (keyName === "textContent") return helpers.setElementText;
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/templateRef.ts
@@ -27669,16 +27782,6 @@ function genGetTextChild(oper, context) {
 	return [NEWLINE, `const x${oper.parent} = ${context.helper("txt")}(n${oper.parent})`];
 }
 //#endregion
-//#region packages/compiler-vapor/src/generators/vShow.ts
-function genVShow(oper, context) {
-	const { element } = oper;
-	return genCall(context.helper("applyVShow"), `n${element}`, [
-		`() => (`,
-		...genExpression(oper.dir.exp, context),
-		`)`
-	]);
-}
-//#endregion
 //#region packages/compiler-vapor/src/generators/modifier.ts
 function genDirectiveModifiers(modifiers) {
 	return modifiers.map((value) => `${isSimpleIdentifier(value) ? value : JSON.stringify(value)}: true`).join(", ");
@@ -27708,54 +27811,6 @@ function genModelHandler(exp, context) {
 	];
 }
 //#endregion
-//#region packages/compiler-vapor/src/generators/directive.ts
-function genBuiltinDirective(oper, context) {
-	let call;
-	switch (oper.name) {
-		case "show":
-			call = genVShow(oper, context);
-			break;
-		case "model":
-			call = genVModel(oper, context);
-			break;
-		default: return [];
-	}
-	return [NEWLINE, ...oper.once ? genOnce(call, context) : call];
-}
-/**
-* user directives via `withVaporDirectives`
-*/
-function genDirectivesForElement(id, context) {
-	const dirs = filterCustomDirectives(id, context.block.operation);
-	return dirs.length ? genCustomDirectives(dirs, context) : [];
-}
-function genCustomDirectives(opers, context) {
-	const { helper } = context;
-	const element = `n${opers[0].element}`;
-	const directiveItems = opers.map(genDirectiveItem);
-	const directives = genMulti(DELIMITERS_ARRAY, ...directiveItems);
-	const call = genCall(helper("withVaporDirectives"), element, directives);
-	return [NEWLINE, ...opers[0].once ? genOnce(call, context) : call];
-	function genDirectiveItem({ dir, name, asset }) {
-		const directiveVar = asset ? toValidAssetId(name, "directive") : genExpression(extend(createSimpleExpression(name, false), { ast: null }), context);
-		const value = dir.exp && [
-			"() => (",
-			...genExpression(dir.exp, context),
-			")"
-		];
-		const argument = dir.arg && genExpression(dir.arg, context);
-		const modifiers = !!dir.modifiers.length && [
-			"{ ",
-			genDirectiveModifiers(dir.modifiers.map((m) => m.content)),
-			" }"
-		];
-		return genMulti(DELIMITERS_ARRAY.concat("void 0"), directiveVar, value, argument, modifiers);
-	}
-}
-function filterCustomDirectives(id, operations) {
-	return operations.filter((oper) => oper.type === 13 && oper.element === id && !oper.builtin);
-}
-//#endregion
 //#region packages/compiler-vapor/src/generators/component.ts
 function genStaticModifierPropKey(name) {
 	const key = getModifierPropName(name);
@@ -27771,7 +27826,8 @@ function genCreateComponent(operation, context) {
 	const isRuntimeDynamicComponent = !!(operation.dynamic && !operation.dynamic.isStatic);
 	const dynamicComponentFlags = isRuntimeDynamicComponent ? genDynamicComponentFlags(root, once, slotRoot, operation.ns) : false;
 	const nsArg = !isRuntimeDynamicComponent && (operation.useCreateElement || operation.asset || !!operation.dynamic) && operation.ns ? String(operation.ns) : false;
-	const rawSlots = genRawSlots(slots, context);
+	const slotDeclarations = [];
+	const rawSlots = genRawSlots(slots, context, slotDeclarations);
 	const [ids, handlers] = processInlineHandlers(props, context);
 	const rawProps = context.withId(() => genRawProps(props, context, true), ids);
 	const inlineHandlers = handlers.reduce((acc, { name, value }) => {
@@ -27786,13 +27842,17 @@ function genCreateComponent(operation, context) {
 	return [
 		NEWLINE,
 		...inlineHandlers,
+		...slotDeclarations.length ? genMulti([
+			"let ",
+			NEWLINE,
+			", "
+		], ...slotDeclarations) : [],
 		`const n${operation.id} = `,
 		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags : root ? "true" : false, isRuntimeDynamicComponent ? operation.key && [
 			"() => (",
 			...genExpression(operation.key, context),
 			")"
-		] : once && "true", useAssetComponentHelper ? maybeSelfReference && "true" : nsArg, useAssetComponentHelper && nsArg),
-		...genDirectivesForElement(operation.id, context)
+		] : once && "true", useAssetComponentHelper ? maybeSelfReference && "true" : nsArg, useAssetComponentHelper && nsArg)
 	];
 	function genTag() {
 		if (operation.useCreateElement) return JSON.stringify(operation.tag);
@@ -28058,40 +28118,40 @@ function isDirectTemplateConstantAst(node) {
 	}
 	return false;
 }
-function genRawSlots(slots, context) {
+function genRawSlots(slots, context, slotDeclarations) {
 	if (!slots.length) return;
 	const staticSlots = slots[0];
 	if (staticSlots.slotType === 0) {
 		const defaultSlot = getSingleDefaultSlot(staticSlots);
 		if (defaultSlot && slots.length === 1) return genSlotBlockWithProps(defaultSlot, context);
-		return genStaticSlots(staticSlots, context, slots.length > 1 ? slots.slice(1) : void 0);
+		return genStaticSlots(staticSlots, context, slotDeclarations, slots.length > 1 ? slots.slice(1) : void 0);
 	} else return genStaticSlots({
 		slotType: 0,
 		slots: {}
-	}, context, slots);
+	}, context, slotDeclarations, slots);
 }
 function getSingleDefaultSlot({ slots }) {
 	const names = Object.keys(slots);
 	return names.length === 1 && names[0] === "default" ? slots.default : void 0;
 }
-function genStaticSlots({ slots }, context, dynamicSlots) {
+function genStaticSlots({ slots }, context, slotDeclarations, dynamicSlots) {
 	const args = Object.keys(slots).map((name) => [`${JSON.stringify(name)}: `, ...genSlotBlockWithProps(slots[name], context)]);
-	if (dynamicSlots) args.push([`$: `, ...genDynamicSlots(dynamicSlots, context)]);
+	if (dynamicSlots) args.push([`$: `, ...genDynamicSlots(dynamicSlots, context, slotDeclarations)]);
 	return genMulti(DELIMITERS_OBJECT_NEWLINE, ...args);
 }
-function genDynamicSlots(slots, context) {
-	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, slot.slotType !== 2)));
+function genDynamicSlots(slots, context, slotDeclarations) {
+	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context, slotDeclarations) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, slotDeclarations, slot.slotType !== 2)));
 }
-function genDynamicSlot(slot, context, withFunction = false) {
+function genDynamicSlot(slot, context, slotDeclarations, withFunction = false) {
 	let frag;
 	switch (slot.slotType) {
 		case 1:
-			frag = genBasicDynamicSlot(slot, context);
+			frag = genBasicDynamicSlot(slot, context, slotDeclarations);
 			break;
 		case 2:
 			frag = genLoopSlot(slot, context);
 			break;
-		case 3: frag = genConditionalSlot(slot, context);
+		case 3: frag = genConditionalSlot(slot, context, slotDeclarations);
 	}
 	if (!withFunction) return frag;
 	return [
@@ -28100,32 +28160,38 @@ function genDynamicSlot(slot, context, withFunction = false) {
 		")"
 	];
 }
-function genBasicDynamicSlot(slot, context) {
+function genBasicDynamicSlot(slot, context, slotDeclarations) {
 	const { name, fn } = slot;
-	return genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...genExpression(name, context)], ["fn: ", ...genSlotBlockWithProps(fn, context, false)]);
+	const slotName = context.getUniqueLocalName("s");
+	slotDeclarations.push(slotName);
+	return genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...genExpression(name, context)], [
+		`fn: ${slotName} || (${slotName} = `,
+		...genSlotBlockWithProps(fn, context, false),
+		")"
+	]);
 }
 function genLoopSlot(slot, context) {
 	const { name, fn, loop, keyProp } = slot;
 	const { value, key, index, source } = loop;
-	const rawValue = value && value.content;
-	const rawKey = key && key.content;
-	const rawIndex = index && index.content;
+	const plugins = context.options.expressionPlugins;
 	const idToPathMap = parseValueDestructure(value, context);
+	const keyToPathMap = parseValueDestructure(key, context);
+	const indexToPathMap = parseValueDestructure(index, context);
 	const [depth, exitScope] = context.enterScope();
 	const itemVar = `_for_item${depth}`;
-	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, context.options.expressionPlugins);
+	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, plugins);
 	idMap[itemVar] = null;
 	const args = [itemVar];
-	if (rawKey) {
+	if (key) {
 		const keyVar = `_for_key${depth}`;
 		args.push(keyVar);
-		idMap[rawKey] = `${keyVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(keyToPathMap, `${keyVar}.value`, plugins));
 		idMap[keyVar] = null;
-	} else if (rawIndex) args.push("_");
-	if (rawIndex) {
+	} else if (index) args.push("_");
+	if (index) {
 		const indexVar = `_for_index${depth}`;
 		args.push(indexVar);
-		idMap[rawIndex] = `${indexVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(indexToPathMap, `${indexVar}.value`, plugins));
 		idMap[indexVar] = null;
 	}
 	const renderSlot = [
@@ -28139,14 +28205,11 @@ function genLoopSlot(slot, context) {
 	];
 	exitScope();
 	const rawIdMap = {};
-	if (rawKey) rawIdMap[rawKey] = null;
-	if (rawIndex) rawIdMap[rawIndex] = null;
-	idToPathMap.forEach((_, id) => rawIdMap[id] = null);
-	const rawParams = genMulti([
-		"(",
-		")",
-		", "
-	], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex);
+	const collect = (map) => map.forEach((_, id) => rawIdMap[id] = null);
+	collect(idToPathMap);
+	collect(keyToPathMap);
+	collect(indexToPathMap);
+	const rawParams = context.withId(() => genAliasParams(value, key, index, context), rawIdMap);
 	const getName = [
 		...rawParams,
 		" => (",
@@ -28165,17 +28228,17 @@ function genLoopSlot(slot, context) {
 		")"
 	], renderSlot, getName, getKey)];
 }
-function genConditionalSlot(slot, context) {
+function genConditionalSlot(slot, context, slotDeclarations) {
 	const { condition, positive, negative } = slot;
 	return [
 		...genExpression(condition, context),
 		INDENT_START,
 		NEWLINE,
 		"? ",
-		...genDynamicSlot(positive, context),
+		...genDynamicSlot(positive, context, slotDeclarations),
 		NEWLINE,
 		": ",
-		...negative ? [...genDynamicSlot(negative, context)] : ["void 0"],
+		...negative ? genDynamicSlot(negative, context, slotDeclarations) : ["void 0"],
 		INDENT_END
 	];
 }
@@ -28232,6 +28295,73 @@ function genSlotFlags(flags) {
 	if (flags & 8) names.push("SHARED_FALLBACK");
 	if (flags & 256) names.push("TEXT_MODE");
 	return genFlags(flags, names);
+}
+//#endregion
+//#region packages/compiler-vapor/src/generators/vShow.ts
+function genVShow(oper, context) {
+	const { element } = oper;
+	return genCall(context.helper("applyVShow"), `n${element}`, [
+		`() => (`,
+		...genExpression(oper.dir.exp, context),
+		`)`
+	]);
+}
+//#endregion
+//#region packages/compiler-vapor/src/generators/directive.ts
+function genBuiltinDirective(oper, context) {
+	let call;
+	switch (oper.name) {
+		case "show":
+			call = genVShow(oper, context);
+			break;
+		case "model":
+			call = genVModel(oper, context);
+			break;
+		default: return [];
+	}
+	return [NEWLINE, ...oper.once ? genOnce(call, context) : call];
+}
+/**
+* user directives via `withVaporDirectives`, emitted at the end of the block
+* so the element's props, children and v-model are in place first
+*/
+function genCustomDirectives(operations, context) {
+	const byElement = /* @__PURE__ */ new Map();
+	for (const oper of operations) if (oper.type === 13 && !oper.builtin) {
+		const dirs = byElement.get(oper.element);
+		if (dirs) dirs.push(oper);
+		else byElement.set(oper.element, [oper]);
+	}
+	const [frag, push] = buildCodeFragment();
+	for (const dirs of byElement.values()) push(...genElementDirectives(dirs, context));
+	return frag;
+}
+function genElementDirectives(opers, context) {
+	const { helper } = context;
+	const element = `n${opers[0].element}`;
+	const directiveItems = opers.map(genDirectiveItem);
+	const directives = genMulti(DELIMITERS_ARRAY, ...directiveItems);
+	const call = genCall(helper("withVaporDirectives"), element, directives);
+	return [NEWLINE, ...opers[0].once ? genOnce(call, context) : call];
+	function genDirectiveItem({ dir, name, asset }) {
+		const directiveVar = asset ? toValidAssetId(name, "directive") : genExpression(extend(createSimpleExpression(name, false), { ast: null }), context);
+		const value = dir.exp && [
+			"() => (",
+			...genExpression(dir.exp, context),
+			")"
+		];
+		const argument = dir.arg && [
+			"() => (",
+			...genExpression(dir.arg, context),
+			")"
+		];
+		const modifiers = !!dir.modifiers.length && [
+			"{ ",
+			genDirectiveModifiers(dir.modifiers.map((m) => m.content)),
+			" }"
+		];
+		return genMulti(DELIMITERS_ARRAY.concat("void 0"), directiveVar, value, argument, modifiers);
+	}
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/key.ts
@@ -28349,10 +28479,7 @@ function genTemplates(templates, context) {
 function genSelf(dynamic, context, flushBeforeDynamic) {
 	const [frag, push] = buildCodeFragment();
 	const { id, template, operation, hasDynamicChild } = dynamic;
-	if (id !== void 0 && template !== void 0) {
-		push(NEWLINE, `const n${id} = ${context.tName(template)}()`);
-		push(...genDirectivesForElement(id, context));
-	}
+	if (id !== void 0 && template !== void 0) push(NEWLINE, `const n${id} = ${context.tName(template)}()`);
 	if (operation) push(...genOperationWithInsertionState(operation, context));
 	if (hasDynamicChild) push(...genChildren(dynamic, context, push, `n${id}`, flushBeforeDynamic));
 	return frag;
@@ -28392,7 +28519,7 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 		}
 		const elementIndex = index + offset;
 		const inlinePlaceholder = id === void 0 && canInlinePlaceholder(child) && child.template == null && child.operation === void 0 && !(child.flags & 6);
-		const accessPath = genAccessPath(context, from, elementIndex, prev);
+		const accessPath = genAccessPath(context, from, elementIndex, prev, child.isText);
 		if (inlinePlaceholder) {
 			if (prev && prev[2]) {
 				push(...genChildren(child, context, pushBlock, [
@@ -28426,7 +28553,6 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 			flushBeforeDynamic && flushBeforeDynamic(child, push);
 			push(...genSelf(child, context, flushBeforeDynamic));
 		}
-		if (id !== void 0) push(...genDirectivesForElement(id, context));
 		prev = [
 			variable,
 			elementIndex,
@@ -28440,14 +28566,15 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 * Build one DOM lookup path while preserving the fast sibling walk:
 * adjacent nodes use _next(prev), otherwise fall back to _nthChild(parent).
 */
-function genAccessPath({ helper }, from, elementIndex, prev) {
-	if (prev) return elementIndex - prev[1] === 1 ? genCall(helper("next"), prev[0]) : genCall(helper("nthChild"), from, String(elementIndex));
-	if (elementIndex === 0) return genCall(helper("child"), from);
+function genAccessPath({ helper }, from, elementIndex, prev, isText) {
+	const textHint = isText ? "true" : void 0;
+	if (prev) return elementIndex - prev[1] === 1 ? genCall(helper("next"), prev[0], textHint) : genCall(helper("nthChild"), from, String(elementIndex), textHint);
+	if (elementIndex === 0) return genCall(helper("child"), from, textHint);
 	if (elementIndex === 1) {
 		const firstChild = genCall(helper("child"), from);
-		return genCall(helper("next"), firstChild);
+		return genCall(helper("next"), firstChild, textHint);
 	}
-	return genCall(helper("nthChild"), from, String(elementIndex));
+	return genCall(helper("nthChild"), from, String(elementIndex), textHint);
 }
 /**
 * Only inline a placeholder when materializing it would not save a parent
@@ -28562,6 +28689,7 @@ function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffec
 	if (effectIndex < effect.length) push(...genEffectRange(effectIndex, effect.length, genEffectsExtraFrag));
 	else if (genEffectsExtraFrag) push(...genEffects([], context, genEffectsExtraFrag));
 	if (modelOperations.length) push(...genOperations(modelOperations, context));
+	push(...genCustomDirectives(operation, context));
 	push(NEWLINE, `return `);
 	const returnNodes = returns.map((n) => `n${n}`);
 	push(...returnNodes.length > 1 ? genMulti(DELIMITERS_ARRAY, ...returnNodes) : [returnNodes[0] || "[]"]);
@@ -28776,14 +28904,16 @@ var CodegenContext = class {
 	enterScope() {
 		return [this.scopeLevel++, () => this.scopeLevel--];
 	}
-	getUniqueLocalName(base, scopeNames) {
+	getUniqueLocalName(base, scopeNames = this.generatedLocalNames) {
 		const name = this.findAvailableName(base, scopeNames);
 		scopeNames.add(name);
 		this.generatedLocalNames.add(name);
 		return name;
 	}
 	isNameAvailable(name, reservedNames) {
+		var _this$identifiers$nam;
 		if (this.bindingNames.has(name) || reservedNames.has(name)) return false;
+		if ((_this$identifiers$nam = this.identifiers[name]) === null || _this$identifiers$nam === void 0 ? void 0 : _this$identifiers$nam.length) return false;
 		for (const alias of this.helpers.values()) if (alias === name) return false;
 		return true;
 	}
@@ -28943,9 +29073,9 @@ const transformVBind = (dir, node, context) => {
 		context.options.onError(createCompilerError(34, loc));
 		exp = createSimpleExpression("", true, loc);
 	}
-	const isComponent = node.tagType === 1;
-	exp = resolveExpression(exp, isComponent);
 	arg = resolveExpression(arg);
+	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || !arg.isStatic || isSpecialBooleanAttr(arg.content) || isCheckboxValueProp(node, arg.content) || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content));
+	exp = resolveExpression(exp, excludeNumber);
 	if (arg.isStatic && isReservedProp(arg.content)) return;
 	let camel = false;
 	if (modifiersString.includes("camel")) {
@@ -28965,7 +29095,7 @@ const transformVBind = (dir, node, context) => {
 init_objectSpread2();
 const dynamicComponentKeys = /* @__PURE__ */ new WeakMap();
 const transformKey = (node, context) => {
-	if (node.type !== 1 || context.inVOnce || findDir(node, "for")) return;
+	if (node.type !== 1 || context.inVOnce || findDir(node, "for") || node.tagType === 3 && findDir(node, /^(if|else-if|else|slot)$/, true)) return;
 	const dir = findProp(node, "key", true, true);
 	if (!dir || dir.type === 6) return;
 	let value;
@@ -29022,6 +29152,53 @@ const transformVHtml = (dir, node, context) => {
 //#region packages/compiler-vapor/src/transforms/transformElement.ts
 init_objectSpread2();
 const isReservedProp = /*#__PURE__*/ makeMap(",key,ref,ref_for,ref_key,");
+/**
+* `true-value` / `false-value` are only read back by `v-model` on a checkbox,
+* and they are dropped from the ssr output, so a checkbox that only carries
+* them in the template has nothing left to read from after hydration. A
+* dynamic `type` can still make the element a checkbox at runtime.
+*/
+function isCheckboxValueProp(node, key) {
+	if (node.tag !== "input" || key !== "true-value" && key !== "false-value") return false;
+	const type = findProp(node, "type");
+	return type ? type.type === 7 || type.value.content === "checkbox" : hasDynamicKeyVBind(node);
+}
+/**
+* Props the template string cannot carry, so they have to be applied by a
+* runtime prop setter instead:
+* - `<textarea>` / `<select>` ignore a `value` content attribute, the value
+*   only takes effect as a dom property - which is where vdom sends it too,
+*   see `shouldSetAsProp`
+* - `true-value` / `false-value`, see `isCheckboxValueProp`
+*/
+function isRuntimeOnlyProp(node, key) {
+	return key === "value" && (node.tag === "textarea" || node.tag === "select") || isCheckboxValueProp(node, key);
+}
+/**
+* Props `v-model` reads back off the element as raw values (`_value`,
+* `_trueValue`, `_falseValue`), so a number literal bound to them has to keep
+* its type - vdom bails on `<option :value="1">` in its own static
+* stringification for the same reason.
+*
+* Deliberately wider than `isRuntimeOnlyProp`: a literal `<input value="1">`
+* belongs in the template string, only the type of a *bound* number has to
+* survive. So this one is consulted by `v-bind`, that one by
+* `transformNativeElement`.
+*/
+function isModelValueProp(node, key) {
+	const { tag } = node;
+	return key === "value" && (tag === "input" || tag === "option" || tag === "textarea" || tag === "select") || isCheckboxValueProp(node, key);
+}
+/**
+* Boolean attributes are folded into the template from the value itself, which
+* needs the type it was written with: `:disabled="0"` is `false`, while the
+* `"0"` a stringified template attribute would carry is `true`. `hidden` is
+* not a boolean attribute - it also takes `until-found` - but a number means
+* the same thing there.
+*/
+function isFoldableBooleanAttr(key) {
+	return isBooleanAttr(key) || key === "hidden";
+}
 const transformElement = (node, context) => {
 	let effectIndex = context.block.effect.length;
 	const getEffectIndex = () => effectIndex++;
@@ -29150,6 +29327,7 @@ function resolveSetupReference(name, context) {
 }
 const dynamicKeys = ["indeterminate"];
 const NEEDS_QUOTES_RE = /[\s"'`=<>]/;
+const LEADING_NEWLINE_RE = /^\r?\n/;
 const UNSAFE_ATTR_NAME_RE = /[\u0000-\u0020"'<=/>]/;
 function transformNativeElement(node, propsResult, staticKey, singleRoot, context, getEffectIndex, omitEndTag) {
 	const { tag } = node;
@@ -29178,10 +29356,10 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 			const canStringifyAttrName = key.isStatic && !UNSAFE_ATTR_NAME_RE.test(key.content);
 			let foldedValue;
 			if (canStringifyAttrName && context.imports.some((imported) => values[0].content.includes(imported.exp.content))) template += ` ${key.content}="${IMPORT_EXP_START}${values[0].content}${IMPORT_EXP_END}"`;
-			else if (canStringifyAttrName && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content)) {
+			else if (canStringifyAttrName && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content) && !isRuntimeOnlyProp(node, key.content)) {
 				const value = values[0].content === "''" ? "" : values[0].content;
 				appendTemplateProp(key.content, value);
-			} else if (canStringifyAttrName && !prop.modifier && (isBooleanAttr(key.content) || key.content === "hidden") && (foldedValue = foldBooleanAttrValue(key.content, values)) != null) {
+			} else if (canStringifyAttrName && !prop.modifier && isFoldableBooleanAttr(key.content) && (foldedValue = foldBooleanAttrValue(key.content, values)) != null) {
 				if (foldedValue) appendTemplateProp(key.content);
 			} else if (canStringifyAttrName && !prop.modifier && hasBoundValue(values) && (foldedValue = key.content === "class" ? foldClassValues(values) : key.content === "style" ? foldStyleValues(values) : void 0) != null) {
 				if (foldedValue) appendTemplateProp(key.content, foldedValue, true);
@@ -29193,7 +29371,9 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 			}, getEffectIndex);
 		}
 	}
-	template += `>` + context.childrenTemplate.join("");
+	let children = context.childrenTemplate.join("");
+	if (node.ns === 0 && parserOptions.isIgnoreNewlineTag(tag) && LEADING_NEWLINE_RE.test(children)) children = `\n` + children;
+	template += `>` + children;
 	if (!isVoidTag(tag) && !omitEndTag) template += `</${tag}>`;
 	context.templateRoot = singleRoot;
 	if (context.parent && context.parent.node.type === 1 && !isValidHTMLNesting(context.parent.node.tag, tag)) {
@@ -29322,6 +29502,7 @@ function evaluateObjectExpression(node) {
 	return { value };
 }
 function resolveStaticKey(node, context, isComponent) {
+	if (context.parent.node !== context.block.node) return;
 	const keyProp = findProp(node, "key", false, true);
 	if (!keyProp) return;
 	if (keyProp.type === 6) return keyProp.value ? createSimpleExpression(keyProp.value.content, true, keyProp.value.loc) : EMPTY_EXPRESSION;
@@ -29571,6 +29752,10 @@ function transformProp(prop, node, context) {
 	const directiveTransform = context.options.directiveTransforms[name];
 	if (directiveTransform) return directiveTransform(prop, node, context);
 	if (!isBuiltInDirective(name)) {
+		if (node.tagType === 2) {
+			context.options.onError(createCompilerError(36, prop.loc));
+			return;
+		}
 		const fromSetup = resolveSetupReference(`v-${name}`, context);
 		if (fromSetup) name = fromSetup;
 		else context.directive.add(name);
@@ -29638,18 +29823,20 @@ const transformChildren = (node, context) => {
 		childContext.templateCloseBlocks = isInSameTemplate ? childTemplateCloseState.blocks : false;
 		transformNode(childContext);
 		const childDynamic = childContext.dynamic;
+		const createsNode = isFragment || childContext.template !== "" || childDynamic.template != null || childDynamic.id !== void 0 || childDynamic.operation !== void 0 || childDynamic.hasDynamicChild === true;
 		if (isFragment) {
 			childContext.reference();
 			childContext.registerTemplate();
 			if (!(childDynamic.flags & 2) || childDynamic.flags & 4) context.block.returns.push(childContext.dynamic.id);
 		} else if (useCreateElement) {
-			if (childContext.template !== "" || childDynamic.template != null || childDynamic.id !== void 0 || childDynamic.operation !== void 0 || childDynamic.hasDynamicChild === true) {
+			if (createsNode) {
 				childContext.reference();
 				childContext.registerTemplate();
 				childDynamic.flags |= 6;
 			}
 		} else context.childrenTemplate.push(childContext.template);
 		if (childDynamic.hasDynamicChild || childDynamic.id !== void 0 || childDynamic.flags & 2 || childDynamic.flags & 4) context.dynamic.hasDynamicChild = true;
+		if (!createsNode) childDynamic.flags |= 2;
 		context.dynamic.children[i] = childDynamic;
 	}
 	if (!isFragment) processDynamicChildren(context);
@@ -29749,6 +29936,7 @@ function processInterpolation(context) {
 	}
 	context.template += " ";
 	const id = context.reference();
+	context.dynamic.isText = isElementChild;
 	if (values.length === 0) return;
 	context.registerEffect(values, {
 		type: 5,
@@ -30331,8 +30519,6 @@ const transformSlotOutlet = (node, context) => {
 	if (slotProps.length) {
 		const [isDynamic, props] = buildProps(extend({}, node, { props: slotProps }), context, true);
 		irProps = isDynamic ? props : [props];
-		const runtimeDirective = context.block.operation.find((oper) => oper.type === 13 && oper.element === id);
-		if (runtimeDirective) context.options.onError(createCompilerError(36, runtimeDirective.dir.loc));
 	}
 	return () => {
 		exitBlock && exitBlock();
@@ -30826,7 +31012,7 @@ var init_objectWithoutProperties = __esmMin((() => {
 //#region packages/compiler-vapor-web/src/compile.ts
 init_objectSpread2();
 init_objectWithoutProperties();
-const _excluded = ["ssrPreTagTransforms"];
+const _excluded = ["ssrPreTagTransforms", "nodeTransforms"];
 function compile(source, options = {}) {
 	var _options$expressionPl;
 	const resolvedOptions = _objectSpread2(_objectSpread2({}, options), resolveParserOptions(options));
@@ -30851,8 +31037,11 @@ function compile(source, options = {}) {
 function compileSSR(source, options = {}) {
 	const ast = typeof source === "string" ? parse$3(source, options) : source;
 	const web = createUniAppXWebTransform({ ssr: true });
-	const { ssrPreTagTransforms = [] } = options;
-	return compile$1(ast, _objectSpread2(_objectSpread2({}, _objectWithoutProperties(options, _excluded)), {}, { preNodeTransforms: [web.transform, ...ssrPreTagTransforms] }));
+	const { ssrPreTagTransforms = [], nodeTransforms = [] } = options;
+	return compile$1(ast, _objectSpread2(_objectSpread2({}, _objectWithoutProperties(options, _excluded)), {}, {
+		nodeTransforms: nodeTransforms.filter((transform) => !ssrPreTagTransforms.includes(transform)),
+		preNodeTransforms: [web.transform, ...ssrPreTagTransforms]
+	}));
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/index.ts
@@ -31089,10 +31278,10 @@ var require_picocolors_browser = /* @__PURE__ */ __commonJSMin(((exports, module
 	module.exports.createColors = create;
 }));
 //#endregion
-//#region (ignored) node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/terminal-highlight
+//#region (ignored) node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/terminal-highlight
 var require_terminal_highlight = /* @__PURE__ */ __commonJSMin((() => {}));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/css-syntax-error.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/css-syntax-error.js
 var require_css_syntax_error = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let pico = require_picocolors_browser();
 	let terminalHighlight = require_terminal_highlight();
@@ -31169,10 +31358,11 @@ var require_css_syntax_error = /* @__PURE__ */ __commonJSMin(((exports, module) 
 	CssSyntaxError.default = CssSyntaxError;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/stringifier.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/stringifier.js
 var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const STYLE_TAG = /(<)(\/?style\b)/gi;
 	const COMMENT_OPEN = /(<)(!--)/g;
+	const AT_NAME_END = /[\t\n\f\r "#'()/;[\\\]{}]/;
 	function escapeHTMLInCSS(str) {
 		if (typeof str !== "string") return str;
 		if (!str.includes("<")) return str;
@@ -31198,9 +31388,15 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	function atruleStart(str, node) {
 		let name = "@" + node.name;
 		let params = node.params ? str.rawValue(node, "params") : "";
-		if (typeof node.raws.afterName !== "undefined") name += node.raws.afterName;
-		else if (params) name += " ";
-		return name + params;
+		let afterName = node.raws.afterName;
+		if (typeof afterName === "undefined") afterName = params ? " " : "";
+		else if (afterName === "" && params && !AT_NAME_END.test(params[0])) afterName = " ";
+		return name + afterName + params;
+	}
+	function isCustomProperty(node) {
+		if (!node.prop.startsWith("--")) return false;
+		let before = node.raws.before;
+		return typeof before === "undefined" || !/\S$/.test(before);
 	}
 	function pushBody(str, stack, node) {
 		let nodes = node.nodes;
@@ -31211,11 +31407,16 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		let semicolon = str.raw(node, "semicolon");
 		let isDocument = node.type === "document";
-		for (let i = nodes.length - 1; i >= 0; i--) stack.push({
-			document: isDocument,
-			node: nodes[i],
-			semicolon: last !== i || semicolon
-		});
+		for (let i = nodes.length - 1; i >= 0; i--) {
+			let child = nodes[i];
+			let childSemicolon = last !== i || semicolon;
+			if (!childSemicolon && i < nodes.length - 1 && (child.type === "atrule" && !child.nodes || child.type === "decl" && isCustomProperty(child))) childSemicolon = true;
+			stack.push({
+				document: isDocument,
+				node: child,
+				semicolon: childSemicolon
+			});
+		}
 	}
 	function pushBlock(str, stack, node, start) {
 		let between = str.raw(node, "between", "beforeOpen");
@@ -31460,6 +31661,7 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return value;
 		}
 		root(node) {
+			if (node.source && node.source.input.hasBOM) this.builder("﻿", node, "start");
 			this.body(node);
 			if (node.raws.after) {
 				let after = node.raws.after;
@@ -31482,7 +31684,7 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Stringifier.default = Stringifier;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/stringify.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/stringify.js
 var require_stringify = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Stringifier = require_stringifier();
 	function stringify(node, builder) {
@@ -31492,13 +31694,13 @@ var require_stringify = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	stringify.default = stringify;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/symbols.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/symbols.js
 var require_symbols = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports.isClean = Symbol("isClean");
 	module.exports.my = Symbol("my");
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/node.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/node.js
 var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let CssSyntaxError = require_css_syntax_error();
 	let Stringifier = require_stringifier();
@@ -31860,7 +32062,7 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Node.default = Node;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/comment.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/comment.js
 var require_comment$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Node = require_node$1();
 	var Comment = class extends Node {
@@ -31873,7 +32075,7 @@ var require_comment$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Comment.default = Comment;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/declaration.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/declaration.js
 var require_declaration = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let Node = require_node$1();
@@ -31891,7 +32093,7 @@ var require_declaration = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Declaration.default = Declaration;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/container.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/container.js
 var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Comment = require_comment$1();
 	let Declaration = require_declaration();
@@ -32227,7 +32429,7 @@ var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 }));
 /* c8 ignore stop */
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/at-rule.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/at-rule.js
 var require_at_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	var AtRule = class extends Container {
@@ -32249,7 +32451,7 @@ var require_at_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerAtRule(AtRule);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/document.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/document.js
 var require_document = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let Container = require_container$1();
@@ -32274,21 +32476,21 @@ var require_document = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Document.default = Document;
 }));
 //#endregion
-//#region node_modules/.pnpm/nanoid@3.3.12/node_modules/nanoid/non-secure/index.cjs
+//#region node_modules/.pnpm/nanoid@3.3.19/node_modules/nanoid/non-secure/index.cjs
 var require_non_secure = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let urlAlphabet = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
 	let customAlphabet = (alphabet, defaultSize = 21) => {
 		return (size = defaultSize) => {
 			let id = "";
 			let i = size | 0;
-			while (i--) id += alphabet[Math.random() * alphabet.length | 0];
+			while (i-- > 0) id += alphabet[Math.random() * alphabet.length | 0];
 			return id;
 		};
 	};
 	let nanoid = (size = 21) => {
 		let id = "";
 		let i = size | 0;
-		while (i--) id += urlAlphabet[Math.random() * 64 | 0];
+		while (i-- > 0) id += urlAlphabet[Math.random() * 64 | 0];
 		return id;
 	};
 	module.exports = {
@@ -32297,15 +32499,22 @@ var require_non_secure = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region (ignored) node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib
+//#region (ignored) node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib
 var require_lib = /* @__PURE__ */ __commonJSMin((() => {}));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/previous-map.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/previous-map.js
 var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_buffer();
-	let { existsSync, readFileSync } = (init__polyfill_node_fs(), __toCommonJS(_polyfill_node_fs_exports));
+	let { existsSync, readFileSync, realpathSync } = (init__polyfill_node_fs(), __toCommonJS(_polyfill_node_fs_exports));
 	let { dirname, isAbsolute, join, relative, sep } = (init__polyfill_node_path(), __toCommonJS(_polyfill_node_path_exports));
 	let { SourceMapConsumer, SourceMapGenerator } = require_lib();
+	function realPath(path) {
+		try {
+			return realpathSync(path);
+		} catch (_unused) {
+			return path;
+		}
+	}
 	function fromBase64(str) {
 		if (Buffer$1) return Buffer$1.from(str, "base64").toString();
 		else
@@ -32355,11 +32564,10 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		loadFile(path, cssFile, trusted) {
 			if (!trusted && !this.unsafeMap) {
-				if (!/\.map$/i.test(path)) return;
-				if (cssFile) {
-					let relativePath = relative(dirname(cssFile), path);
-					if (relativePath === ".." || relativePath.startsWith(".." + sep) || isAbsolute(relativePath)) return;
-				}
+				if (!/\.map$/i.test(path)) return void 0;
+				if (!cssFile) return void 0;
+				let rel = relative(realPath(dirname(cssFile)), realPath(path));
+				if (rel === ".." || rel.startsWith(".." + sep) || isAbsolute(rel)) return;
 			}
 			this.root = dirname(path);
 			if (existsSync(path)) {
@@ -32390,7 +32598,7 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				if (unknown) try {
 					/* c8 ignore next 4 */
 					this.json = JSON.parse(unknown.replace(/^\)]}'[^\n]*\n/, ""));
-				} catch (_unused) {
+				} catch (_unused2) {
 					return;
 				}
 				return unknown;
@@ -32408,7 +32616,7 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	PreviousMap.default = PreviousMap;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/input.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/input.js
 var require_input = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let { nanoid } = require_non_secure();
@@ -32608,7 +32816,7 @@ var require_input = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	if (terminalHighlight && terminalHighlight.registerInput) terminalHighlight.registerInput(Input);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/root.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/root.js
 var require_root$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let LazyResult;
@@ -32653,7 +32861,7 @@ var require_root$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerRoot(Root);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/list.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/list.js
 var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let list = {
 		comma(string) {
@@ -32667,6 +32875,7 @@ var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			]);
 		},
 		split(string, separators, last) {
+			if (typeof string !== "string") return [];
 			let array = [];
 			let current = "";
 			let split = false;
@@ -32689,12 +32898,14 @@ var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 					if (separators.includes(letter)) split = true;
 				}
 				if (split) {
-					if (current !== "") array.push(current.trim());
+					let value = current.trim();
+					if (last || value !== "") array.push(value);
 					current = "";
 					split = false;
 				} else current += letter;
 			}
-			if (last || current !== "") array.push(current.trim());
+			let value = current.trim();
+			if (last || value !== "") array.push(value);
 			return array;
 		}
 	};
@@ -32702,7 +32913,7 @@ var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	list.default = list;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/rule.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/rule.js
 var require_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let list = require_list();
@@ -32726,7 +32937,7 @@ var require_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerRule(Rule);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/fromJSON.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/fromJSON.js
 var require_fromJSON = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	init_objectWithoutProperties();
@@ -32802,7 +33013,7 @@ var require_fromJSON = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	fromJSON.default = fromJSON;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/map-generator.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/map-generator.js
 var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_buffer();
 	let { dirname, relative, resolve, sep } = (init__polyfill_node_path(), __toCommonJS(_polyfill_node_path_exports));
@@ -32856,9 +33067,10 @@ var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 					if (node.text.startsWith("# sourceMappingURL=")) this.root.removeChild(i);
 				}
 			} else if (this.css) {
+				let annotation = "/*# sourceMappingURL=";
 				let startIndex;
-				while ((startIndex = this.css.lastIndexOf("/*#")) !== -1) {
-					let endIndex = this.css.indexOf("*/", startIndex + 3);
+				while ((startIndex = this.css.lastIndexOf(annotation)) !== -1) {
+					let endIndex = this.css.indexOf("*/", startIndex + 21);
 					if (endIndex === -1) break;
 					while (startIndex > 0 && this.css[startIndex - 1] === "\n") startIndex--;
 					this.css = this.css.slice(0, startIndex) + this.css.slice(endIndex + 2);
@@ -33073,7 +33285,7 @@ var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 	module.exports = MapGenerator;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/tokenize.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/tokenize.js
 var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const SINGLE_QUOTE = "'".charCodeAt(0);
 	const DOUBLE_QUOTE = "\"".charCodeAt(0);
@@ -33310,7 +33522,7 @@ var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/parser.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/parser.js
 var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let AtRule = require_at_rule();
 	let Comment = require_comment$1();
@@ -33580,7 +33792,7 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 					prev.raws.ownSemicolon = this.spaces;
 					this.spaces = "";
 					prev.source.end = this.getPosition(token[2]);
-					prev.source.end.offset += prev.raws.ownSemicolon.length;
+					prev.source.end.offset++;
 				}
 			}
 		}
@@ -33772,7 +33984,7 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = Parser;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/parse.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/parse.js
 var require_parse = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let Input = require_input();
@@ -33797,13 +34009,16 @@ var require_parse = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerParse(parse);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/warning.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/warning.js
 var require_warning = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	let Container = require_container$1();
+	let { my } = require_symbols();
 	var Warning = class {
 		constructor(text, opts = {}) {
 			this.type = "warning";
 			this.text = text;
 			if (opts.node && opts.node.source) {
+				if (!opts.node[my]) Container.rebuild(opts.node);
 				let range = opts.node.rangeBy(opts);
 				this.line = range.start.line;
 				this.column = range.start.column;
@@ -33826,7 +34041,7 @@ var require_warning = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Warning.default = Warning;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/result.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/result.js
 var require_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Warning = require_warning();
 	var Result = class {
@@ -33860,7 +34075,7 @@ var require_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Result.default = Result;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/warn-once.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/warn-once.js
 var require_warn_once = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let printed = {};
 	module.exports = function warnOnce(message) {
@@ -33870,7 +34085,7 @@ var require_warn_once = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/lazy-result.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/lazy-result.js
 var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	init_asyncToGenerator();
@@ -34237,14 +34452,19 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			}
 			if (visit.iterator !== 0) {
 				let iterator = visit.iterator;
+				if (visit.descending) {
+					visit.descending = false;
+					node.indexes[iterator] += 1;
+				}
 				let child;
 				while (child = node.nodes[node.indexes[iterator]]) {
-					node.indexes[iterator] += 1;
 					if (!child[isClean]) {
 						child[isClean] = true;
+						visit.descending = true;
 						stack.push(toStack(child));
 						return;
 					}
+					node.indexes[iterator] += 1;
 				}
 				visit.iterator = 0;
 				delete node.indexes[iterator];
@@ -34279,12 +34499,16 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				let visitNode = visit.node;
 				if (visit.iterator !== 0) {
 					let iterator = visit.iterator;
+					if (visit.descending) {
+						visit.descending = false;
+						visitNode.indexes[iterator] += 1;
+					}
 					let child;
 					let descended = false;
 					while (child = visitNode.nodes[visitNode.indexes[iterator]]) {
-						visitNode.indexes[iterator] += 1;
 						if (!child[isClean]) {
 							child[isClean] = true;
+							visit.descending = true;
 							stack.push({
 								eventIndex: 0,
 								events: getEvents(child),
@@ -34294,6 +34518,7 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 							descended = true;
 							break;
 						}
+						visitNode.indexes[iterator] += 1;
 					}
 					if (descended) continue;
 					visit.iterator = 0;
@@ -34328,7 +34553,7 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Document.registerLazyResult(LazyResult);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/no-work-result.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/no-work-result.js
 var require_no_work_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let MapGenerator = require_map_generator();
 	let parse = require_parse();
@@ -34425,7 +34650,7 @@ var require_no_work_result = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 	NoWorkResult.default = NoWorkResult;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/processor.js
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/processor.js
 var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Document = require_document();
 	let LazyResult = require_lazy_result();
@@ -34433,7 +34658,7 @@ var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Root = require_root$1();
 	var Processor = class {
 		constructor(plugins = []) {
-			this.version = "8.5.19";
+			this.version = "8.5.28";
 			this.plugins = this.normalize(plugins);
 		}
 		normalize(plugins) {
@@ -34464,7 +34689,7 @@ var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Document.registerProcessor(Processor);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/postcss.mjs
+//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/postcss.mjs
 var import_postcss = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_process();
 	let AtRule = require_at_rule();
@@ -34495,7 +34720,7 @@ var import_postcss = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((ex
 			if (console && console.warn && !warningPrinted) {
 				warningPrinted = true;
 				console.warn(name + ": postcss.plugin was deprecated. Migration guide:\nhttps://evilmartians.com/chronicles/postcss-8-plugin-migration");
-				if (browser$1.env.LANG && browser$1.env.LANG.startsWith("cn"))
+				if (browser$1.env.LANG && browser$1.env.LANG.startsWith("zh"))
  /* c8 ignore next 7 */
 				console.warn(name + ": 里面 postcss.plugin 被弃用. 迁移指南:\nhttps://www.w3ctech.com/topic/2226");
 			}
@@ -34583,7 +34808,7 @@ const trimPlugin = () => {
 };
 trimPlugin.postcss = true;
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/unesc.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/unesc.js
 var require_unesc = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = unesc;
@@ -34634,7 +34859,7 @@ var require_unesc = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/getProp.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/getProp.js
 var require_getProp = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = getProp;
@@ -34650,7 +34875,7 @@ var require_getProp = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/ensureObject.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/ensureObject.js
 var require_ensureObject = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = ensureObject;
@@ -34665,7 +34890,7 @@ var require_ensureObject = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/stripComments.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/stripComments.js
 var require_stripComments = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = stripComments;
@@ -34685,7 +34910,7 @@ var require_stripComments = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/maxNestingDepth.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/maxNestingDepth.js
 var require_maxNestingDepth = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.MAX_NESTING_DEPTH = void 0;
@@ -34712,7 +34937,7 @@ var require_maxNestingDepth = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/index.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/index.js
 var require_util$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __importDefault = exports && exports.__importDefault || function(mod) {
 		return mod && mod.__esModule ? mod : { "default": mod };
@@ -34762,7 +34987,7 @@ var require_util$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	});
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/node.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/node.js
 var require_node = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var util_1 = require_util$1();
@@ -34916,7 +35141,7 @@ var require_node = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}();
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/types.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/types.js
 var require_types = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.UNIVERSAL = exports.ATTRIBUTE = exports.CLASS = exports.COMBINATOR = exports.COMMENT = exports.ID = exports.NESTING = exports.PSEUDO = exports.ROOT = exports.SELECTOR = exports.STRING = exports.TAG = void 0;
@@ -34934,7 +35159,7 @@ var require_types = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.UNIVERSAL = "universal";
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/container.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/container.js
 var require_container = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -35325,7 +35550,7 @@ var require_container = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/root.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/root.js
 var require_root = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -35381,7 +35606,7 @@ var require_root = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(container_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/selector.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/selector.js
 var require_selector = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -35480,7 +35705,7 @@ var require_cssesc = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = cssesc;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/className.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/className.js
 var require_className = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -35540,7 +35765,7 @@ var require_className = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/comment.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/comment.js
 var require_comment = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -35577,7 +35802,7 @@ var require_comment = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/id.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/id.js
 var require_id = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -35617,7 +35842,7 @@ var require_id = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/namespace.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/namespace.js
 var require_namespace = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -35700,7 +35925,7 @@ var require_namespace = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(__importDefault(require_node()).default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/tag.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/tag.js
 var require_tag = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -35737,7 +35962,7 @@ var require_tag = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(namespace_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/string.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/string.js
 var require_string = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -35775,7 +36000,7 @@ var require_string = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.default = String;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/pseudo.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/pseudo.js
 var require_pseudo = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -35882,7 +36107,7 @@ var require_browser = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/attribute.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/attribute.js
 var require_attribute = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -36268,7 +36493,7 @@ var require_attribute = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/universal.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/universal.js
 var require_universal = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -36306,7 +36531,7 @@ var require_universal = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(namespace_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/combinator.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/combinator.js
 var require_combinator = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -36343,7 +36568,7 @@ var require_combinator = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/nesting.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/nesting.js
 var require_nesting = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -36381,7 +36606,7 @@ var require_nesting = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/sortAscending.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/sortAscending.js
 var require_sortAscending = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = sortAscending;
@@ -36392,7 +36617,7 @@ var require_sortAscending = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/tokenTypes.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/tokenTypes.js
 var require_tokenTypes = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.combinator = exports.word = exports.comment = exports.str = exports.tab = exports.newline = exports.feed = exports.cr = exports.backslash = exports.bang = exports.slash = exports.doubleQuote = exports.singleQuote = exports.space = exports.greaterThan = exports.pipe = exports.equals = exports.plus = exports.caret = exports.tilde = exports.dollar = exports.closeSquare = exports.openSquare = exports.closeParenthesis = exports.openParenthesis = exports.semicolon = exports.colon = exports.comma = exports.at = exports.asterisk = exports.ampersand = void 0;
@@ -36429,7 +36654,7 @@ var require_tokenTypes = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.combinator = -3;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/tokenize.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/tokenize.js
 var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
 		if (k2 === void 0) k2 = k;
@@ -36671,7 +36896,7 @@ var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/parser.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/parser.js
 var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __assign = exports && exports.__assign || function() {
 		__assign = Object.assign || function(t) {
@@ -36823,10 +37048,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return indexes;
 	}
 	function uniqs() {
-		var list = Array.prototype.concat.apply([], arguments);
-		return list.filter(function(item, i) {
-			return i === list.indexOf(item);
-		});
+		return Array.from(new Set(Array.prototype.concat.apply([], arguments)));
 	}
 	exports.default = function() {
 		function Parser(rule, options) {
@@ -36874,6 +37096,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 				attr.push(this.currToken);
 				this.position++;
 			}
+			if (!this.currToken) return this.expected("closing square bracket", startingToken[tokenize_1.FIELDS.START_POS]);
 			if (this.currToken[tokenize_1.FIELDS.TYPE] !== tokens.closeSquare) return this.expected("closing square bracket", this.currToken[tokenize_1.FIELDS.START_POS]);
 			var len = attr.length;
 			var node = {
@@ -36917,7 +37140,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 							}
 							if (commentBefore) {
 								(0, util_1.ensureObject)(node, "raws", "spaces", "attribute");
-								node.raws.spaces.attribute.before = spaceBefore;
+								node.raws.spaces.attribute.before = commentBefore;
 								commentBefore = "";
 							}
 							node.namespace = (node.namespace || "") + content;
@@ -37254,7 +37477,9 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 			return this.error("Unexpected '|'.", this.currToken[tokenize_1.FIELDS.START_POS]);
 		};
 		Parser.prototype.namespace = function() {
-			var before = this.prevToken && this.content(this.prevToken) || true;
+			var prev = this.prevToken;
+			var before = prev && (prev[tokenize_1.FIELDS.TYPE] === tokens.word || prev[tokenize_1.FIELDS.TYPE] === tokens.asterisk || prev[tokenize_1.FIELDS.TYPE] === tokens.ampersand) ? this.content(prev) : true;
+			if (!this.nextToken) return this.unexpectedPipe();
 			if (this.nextToken[tokenize_1.FIELDS.TYPE] === tokens.word) {
 				this.position++;
 				return this.word(before);
@@ -37282,6 +37507,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 		Parser.prototype.parentheses = function() {
 			var last = this.current.last;
 			var unbalanced = 1;
+			var openingToken = this.currToken;
 			this.position++;
 			if (last && last.type === types.PSEUDO) {
 				var selector = new selector_1.default({
@@ -37326,7 +37552,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 					sourceIndex: parenStart[tokenize_1.FIELDS.START_POS]
 				}));
 			}
-			if (unbalanced) return this.expected("closing parenthesis", this.currToken[tokenize_1.FIELDS.START_POS]);
+			if (unbalanced) return this.expected("closing parenthesis", (this.currToken || openingToken)[tokenize_1.FIELDS.START_POS]);
 		};
 		Parser.prototype.pseudo = function() {
 			var _this = this;
@@ -37414,9 +37640,14 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 				return word[i - 1] !== "\\";
 			});
 			var interpolations = indexesOf(word, "#{");
-			if (interpolations.length) hasId = hasId.filter(function(hashIndex) {
-				return !~interpolations.indexOf(hashIndex);
-			});
+			if (interpolations.length) {
+				var interpolationIndexes_1 = new Set(interpolations);
+				hasId = hasId.filter(function(hashIndex) {
+					return !interpolationIndexes_1.has(hashIndex);
+				});
+			}
+			var classIndexes = new Set(hasClass);
+			var idIndexes = new Set(hasId);
 			var indices = (0, sortAscending_1.default)(uniqs(__spreadArray(__spreadArray([0], __read(hasClass), false), __read(hasId), false)));
 			indices.forEach(function(ind, i) {
 				var index = indices[i + 1] || word.length;
@@ -37426,14 +37657,14 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 				var current = _this.currToken;
 				var sourceIndex = current[tokenize_1.FIELDS.START_POS] + indices[i];
 				var source = getSource(current[1], current[2] + ind, current[3], current[2] + (index - 1));
-				if (~hasClass.indexOf(ind)) {
+				if (classIndexes.has(ind)) {
 					var classNameOpts = {
 						value: value.slice(1),
 						source,
 						sourceIndex
 					};
 					node = new className_1.default(unescapeProp(classNameOpts, "value"));
-				} else if (~hasId.indexOf(ind)) {
+				} else if (idIndexes.has(ind)) {
 					var idOpts = {
 						value: value.slice(1),
 						source,
@@ -37598,7 +37829,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}();
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/processor.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/processor.js
 var require_processor = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __importDefault = exports && exports.__importDefault || function(mod) {
 		return mod && mod.__esModule ? mod : { "default": mod };
@@ -37747,7 +37978,7 @@ var require_processor = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}();
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/constructors.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/constructors.js
 var require_constructors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __importDefault = exports && exports.__importDefault || function(mod) {
 		return mod && mod.__esModule ? mod : { "default": mod };
@@ -37816,7 +38047,7 @@ var require_constructors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.universal = universal;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/guards.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/guards.js
 var require_guards = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var _a;
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -37860,7 +38091,7 @@ var require_guards = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/index.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/index.js
 var require_selectors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
 		if (k2 === void 0) k2 = k;
@@ -42095,6 +42326,7 @@ function resolveExt(filename, fs) {
 }
 const tsConfigCache = createCache();
 const tsConfigRefMap = /* @__PURE__ */ new Map();
+const extendedConfigCache = /* @__PURE__ */ new Map();
 const fileToScopeCache = createCache();
 const fileToGlobalScopeCache = createCache();
 /**
@@ -42105,6 +42337,10 @@ function invalidateTypeCache(filename) {
 	fileToScopeCache.delete(filename);
 	fileToGlobalScopeCache.delete(filename);
 	tsConfigCache.delete(filename);
+	if (filename.endsWith(".json")) {
+		extendedConfigCache.clear();
+		tsConfigCache.clear();
+	}
 	const affectedConfig = tsConfigRefMap.get(filename);
 	if (affectedConfig) tsConfigCache.delete(affectedConfig);
 }
@@ -43359,6 +43595,7 @@ function compileScript(sfc, options) {
 				enter(child, parent) {
 					if (isFunctionType(child)) this.skip();
 					if (child.type === "BlockStatement") scope.push(child.body);
+					else if (child.type === "SwitchCase") scope.push(child.consequent);
 					if (child.type === "AwaitExpression") {
 						hasAwait = true;
 						const needsSemi = scope[scope.length - 1].some((n, i) => {
@@ -43367,8 +43604,8 @@ function compileScript(sfc, options) {
 						processAwait(ctx, child, needsSemi, parent.type === "ExpressionStatement");
 					}
 				},
-				exit(node) {
-					if (node.type === "BlockStatement") scope.pop();
+				leave(node) {
+					if (node.type === "BlockStatement" || node.type === "SwitchCase") scope.pop();
 				}
 			});
 		}
@@ -43669,7 +43906,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
 init_objectSpread2();
-const version = "3.6.0-rc.8";
+const version = "3.6.0-rc.9";
 const parseCache = parseCache$1;
 const errorMessages = _objectSpread2(_objectSpread2({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

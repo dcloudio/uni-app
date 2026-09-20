@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.8
+  * @vue/compiler-vapor v3.6.0-rc.9
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -103,10 +103,10 @@ function normalizeStyle(value) {
 }
 const listDelimiterRE = /;(?![^(]*\))/g;
 const propertyDelimiterRE = /:([^]+)/;
-const styleCommentRE = /\/\*[^]*?\*\//g;
+const styleCommentRE = /"(?:[^"\\]|\\[^])*"|'(?:[^'\\]|\\[^])*'|\\[^]|\/\*[^]*?\*\//g;
 function parseStringStyle(cssText) {
 	const ret = {};
-	cssText.replace(styleCommentRE, "").split(listDelimiterRE).forEach((item) => {
+	cssText.replace(styleCommentRE, (match) => match.startsWith("/*") ? "" : match).split(listDelimiterRE).forEach((item) => {
 		if (item) {
 			const tmp = item.split(propertyDelimiterRE);
 			tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
@@ -189,10 +189,25 @@ const isInlineTag = /*@__PURE__*/ makeMap(INLINE_TAGS);
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
 const isBlockTag = /*@__PURE__*/ makeMap(BLOCK_TAGS);
+//#endregion
+//#region packages/shared/src/domAttrConfig.ts
+/**
+* On the client we only need to offer special cases for boolean attributes that
+* have different names from their corresponding dom properties:
+* - itemscope -> N/A
+* - allowfullscreen -> allowFullscreen
+* - formnovalidate -> formNoValidate
+* - ismap -> isMap
+* - nomodule -> noModule
+* - novalidate -> noValidate
+* - readonly -> readOnly
+*/
+const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
+const isSpecialBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs);
 /**
 * The full list is needed during SSR to produce the correct initial markup.
 */
-const isBooleanAttr = /*@__PURE__*/ makeMap("itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly,async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
+const isBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs + ",async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected");
 /**
 * Boolean attributes should be included if the value is truthy or ''.
 * e.g. `<select multiple>` compiles to `{ multiple: '' }`
@@ -19232,7 +19247,8 @@ function isBuiltInComponent(tag) {
 }
 function getBlockShape(block) {
 	if (block.returns.length === 0) return 0;
-	return block.returns.length === 1 ? 1 : 2;
+	if (block.returns.length > 1) return 2;
+	return block.node.type === 1 && block.node.children.every((child) => child.type === 2 || child.type === 5) ? 2 : 1;
 }
 //#endregion
 //#region packages/compiler-vapor/src/transform.ts
@@ -19802,7 +19818,7 @@ function _objectSpread2(e) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/expression.ts
-function genExpression(node, context, assignment) {
+function genExpression(node, context, assignment, asParams = false) {
 	node = context.getExpressionReplacement(node);
 	const { content, ast, isStatic, loc } = node;
 	const { options } = context;
@@ -19821,10 +19837,13 @@ function genExpression(node, context, assignment) {
 	const ids = [];
 	const parentStackMap = /* @__PURE__ */ new Map();
 	const parentStack = [];
-	walkIdentifiers(ast, (id) => {
+	walkIdentifiers(ast, (id, _, __, isReference, isLocal) => {
+		if (isLocal) {
+			if (!id.typeAnnotation && !id.optional) return;
+		} else if (!isReference) return;
 		ids.push(id);
 		parentStackMap.set(id, parentStack.slice());
-	}, false, parentStack);
+	}, asParams, parentStack);
 	let hasMemberExpression = false;
 	if (ids.length) {
 		const [frag, push] = buildCodeFragment();
@@ -19845,7 +19864,7 @@ function genExpression(node, context, assignment) {
 			const leadingText = content.slice(lastEnd, start);
 			if (leadingText.length) push([leadingText, -3]);
 			hasMemberExpression || (hasMemberExpression = parent && (parent.type === "MemberExpression" || parent.type === "OptionalMemberExpression"));
-			push(...genIdentifier(source, context, {
+			push(...genIdentifier(asParams ? id.name : source, context, {
 				start: advancePositionWithClone(node.loc.start, source, start),
 				end: advancePositionWithClone(node.loc.start, source, end),
 				source
@@ -19997,6 +20016,7 @@ function analyzeExpressions(expressions) {
 		const seenParents = /* @__PURE__ */ new Set();
 		walkIdentifiers(exp.ast, (currentNode, parent, parentStack) => {
 			if (parent && isMemberExpression(parent) && !seenParents.has(parent)) {
+				var _parentStack$index;
 				seenParents.add(parent);
 				let hasGlobalIdentifier = false;
 				const memberExp = extractMemberExpression(parent, (id) => {
@@ -20006,8 +20026,14 @@ function analyzeExpressions(expressions) {
 					});
 					if (isGloballyAllowed(id.name)) hasGlobalIdentifier = true;
 				});
+				if (memberExp === void 0) return;
 				const parentOfMemberExp = parentStack[parentStack.length - 2];
 				if (parentOfMemberExp && isCallExpression(parentOfMemberExp)) return;
+				let chainChild = parent;
+				let index = parentStack.length - 2;
+				while (((_parentStack$index = parentStack[index]) === null || _parentStack$index === void 0 ? void 0 : _parentStack$index.type) === "TSNonNullExpression") chainChild = parentStack[index--];
+				const chainParent = parentStack[index];
+				if (chainParent && chainParent.type === "OptionalMemberExpression" && !chainParent.optional && chainParent.object === chainChild) return;
 				if (hasGlobalIdentifier) return;
 				registerVariable(memberExp, exp, false, {
 					start: parent.start,
@@ -20153,7 +20179,7 @@ function processRepeatedExpressions(context, expressions, varDeclarations, updat
 		for (const exp of expressions) {
 			const processed = getProcessedExpression(exp, expressionReplacements);
 			if (processed.content === content) setExpressionReplacement(expressionReplacements, exp, varName, null);
-			else if (processed.content.includes(content)) {
+			else if (!content.includes("?.") && processed.content.includes(content)) {
 				const replacements = findContentReplacements(processed, content, varName);
 				if (replacements.length) {
 					const replacedContent = applyContentReplacements(processed.content, replacements);
@@ -20186,23 +20212,14 @@ function applyReplacementPlan(context, expressionReplacements, replacementPlan) 
 	}
 }
 function findContentReplacements(exp, content, replacement) {
-	const identifiers = getIdentifierRanges(exp);
-	if (!identifiers.length) return [];
+	const nodeRanges = getNodeRanges(exp);
+	if (!nodeRanges.size) return [];
 	const replacements = [];
 	let searchStart = 0;
 	let start = exp.content.indexOf(content, searchStart);
 	while (start !== -1) {
 		const end = start + content.length;
-		let canReplace = false;
-		for (const identifier of identifiers) {
-			if (start >= identifier.end || end <= identifier.start) continue;
-			if (start > identifier.start || end < identifier.end) {
-				canReplace = false;
-				break;
-			}
-			canReplace = true;
-		}
-		if (canReplace) {
+		if (nodeRanges.has(`${start}:${end}`)) {
 			replacements.push({
 				start,
 				end,
@@ -20222,6 +20239,15 @@ function findIdentifierReplacements(exp, name, replacement) {
 		content: replacement
 	});
 	return replacements;
+}
+function getNodeRanges(exp) {
+	const ranges = /* @__PURE__ */ new Set();
+	if (!exp.ast || typeof exp.ast !== "object") return ranges;
+	walk(exp.ast, { enter(node) {
+		if (isFunctionType(node) || node.type === "TemplateElement" || node.type.startsWith("TS") && !TS_NODE_TYPES.includes(node.type)) return this.skip();
+		if (node.start != null && node.end != null) ranges.add(`${node.start - 1}:${node.end - 1}`);
+	} });
+	return ranges;
 }
 function getIdentifierRanges(exp) {
 	if (!exp.ast || typeof exp.ast !== "object") return [];
@@ -20279,24 +20305,44 @@ function getUniqueDeclarationName(baseName, reservedNames) {
 	reservedNames.add(name);
 	return name;
 }
+/**
+* Returns the source of a member expression, or `undefined` if it contains a
+* node that cannot be extracted, e.g. `foo[bar ? 'a' : 'b']`. Such expressions
+* must not be cached - the extracted source would be incomplete.
+*/
 function extractMemberExpression(exp, onIdentifier) {
-	if (!exp) return "";
+	if (!exp) return;
 	switch (exp.type) {
 		case "Identifier":
 			onIdentifier(exp);
 			return exp.name;
 		case "StringLiteral": return exp.extra ? exp.extra.raw : exp.value;
 		case "NumericLiteral": return exp.value.toString();
-		case "BinaryExpression": return `${extractMemberExpression(exp.left, onIdentifier)} ${exp.operator} ${extractMemberExpression(exp.right, onIdentifier)}`;
-		case "CallExpression": return `${extractMemberExpression(exp.callee, onIdentifier)}(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
-		case "OptionalCallExpression": return `${extractMemberExpression(exp.callee, onIdentifier)}?.(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
+		case "BinaryExpression": {
+			var _exp$extra;
+			const left = extractMemberExpression(exp.left, onIdentifier);
+			const right = extractMemberExpression(exp.right, onIdentifier);
+			if (left === void 0 || right === void 0) return;
+			const expression = `${left} ${exp.operator} ${right}`;
+			return ((_exp$extra = exp.extra) === null || _exp$extra === void 0 ? void 0 : _exp$extra.parenthesized) ? `(${expression})` : expression;
+		}
+		case "CallExpression":
+		case "OptionalCallExpression": {
+			const callee = extractMemberExpression(exp.callee, onIdentifier);
+			const args = exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier));
+			if (callee === void 0 || args.some((arg) => arg === void 0)) return;
+			return `${callee}${exp.type === "OptionalCallExpression" ? "?." : ""}(${args.join(", ")})`;
+		}
 		case "MemberExpression":
-		case "OptionalMemberExpression":
+		case "OptionalMemberExpression": {
 			const object = extractMemberExpression(exp.object, onIdentifier);
+			const property = extractMemberExpression(exp.property, exp.computed ? onIdentifier : NOOP);
+			if (object === void 0 || property === void 0) return;
 			const optional = exp.type === "OptionalMemberExpression" && exp.optional;
-			return `${object}${exp.computed ? `${optional ? "?." : ""}[${extractMemberExpression(exp.property, onIdentifier)}]` : `${optional ? "?." : "."}${extractMemberExpression(exp.property, NOOP)}`}`;
-		case "TSNonNullExpression": return `${extractMemberExpression(exp.expression, onIdentifier)}`;
-		default: return "";
+			return `${object}${exp.computed ? `${optional ? "?." : ""}[${property}]` : `${optional ? "?." : "."}${property}`}`;
+		}
+		case "TSNonNullExpression": return extractMemberExpression(exp.expression, onIdentifier);
+		default: return;
 	}
 }
 const isCallExpression = (node) => {
@@ -20435,30 +20481,30 @@ function isConstantBinding(value, context) {
 function genFor(oper, context) {
 	const { helper } = context;
 	const { source, value, key, index, render, keyProp, once, id, component, onlyChild, slotRoot, wrappedRows } = oper;
-	const rawValue = value && value.content;
-	const rawKey = key && key.content;
-	const rawIndex = index && index.content;
 	const sourceExpr = [
 		"() => (",
 		...genExpression(source, context),
 		")"
 	];
+	const plugins = context.options.expressionPlugins;
 	const idToPathMap = parseValueDestructure(value, context);
+	const keyToPathMap = parseValueDestructure(key, context);
+	const indexToPathMap = parseValueDestructure(index, context);
 	const [depth, exitScope] = context.enterScope();
 	const itemVar = `_for_item${depth}`;
-	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, context.options.expressionPlugins);
+	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, plugins);
 	idMap[itemVar] = null;
 	const args = [itemVar];
-	if (rawKey) {
+	if (key) {
 		const keyVar = `_for_key${depth}`;
 		args.push(`, ${keyVar}`);
-		idMap[rawKey] = `${keyVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(keyToPathMap, `${keyVar}.value`, plugins));
 		idMap[keyVar] = null;
-	}
-	if (rawIndex) {
+	} else if (index) args.push(", _");
+	if (index) {
 		const indexVar = `_for_index${depth}`;
 		args.push(`, ${indexVar}`);
-		idMap[rawIndex] = `${indexVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(indexToPathMap, `${indexVar}.value`, plugins));
 		idMap[indexVar] = null;
 	}
 	const { selectorPatterns, keyOnlyBindingPatterns, skippedEffectIndexes } = matchPatterns(render, keyProp, idMap, context);
@@ -20499,23 +20545,19 @@ function genFor(oper, context) {
 	];
 	function genCallback(expr) {
 		if (!expr) return false;
-		const res = context.withId(() => genExpression(expr, context), genSimpleIdMap());
-		return [
-			...genMulti([
-				"(",
-				")",
-				", "
-			], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex),
+		return context.withId(() => [
+			...genAliasParams(value, key, index, context),
 			" => (",
-			...res,
+			...genExpression(expr, context),
 			")"
-		];
+		], genSimpleIdMap());
 	}
 	function genSimpleIdMap() {
 		const idMap = {};
-		if (rawKey) idMap[rawKey] = null;
-		if (rawIndex) idMap[rawIndex] = null;
-		idToPathMap.forEach((_, id) => idMap[id] = null);
+		const collect = (map) => map.forEach((_, id) => idMap[id] = null);
+		collect(idToPathMap);
+		collect(keyToPathMap);
+		collect(indexToPathMap);
 		return idMap;
 	}
 }
@@ -20568,6 +20610,13 @@ function getSingleReturnedChild(block) {
 	const id = block.returns[0];
 	for (const child of block.dynamic.children) if (child.id === id) return child;
 }
+function genAliasParams(value, key, index, context) {
+	return genMulti([
+		"(",
+		")",
+		", "
+	], value ? genExpression(value, context, void 0, true) : key || index ? "_" : void 0, key ? genExpression(key, context, void 0, true) : index ? "__" : void 0, index && genExpression(index, context, void 0, true));
+}
 function parseValueDestructure(value, context) {
 	const map = /* @__PURE__ */ new Map();
 	if (value) {
@@ -20601,7 +20650,7 @@ function parseValueDestructure(value, context) {
 							} else return JSON.stringify(p.key.name);
 						}).join(", ") + "]";
 					}
-					if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern")) {
+					if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern" || parent.type === "ArrowFunctionExpression" && child.left === id)) {
 						isDynamic = true;
 						helper = context.helper("getDefaultValue");
 						helperArgs = `() => (${rawValue.slice(child.right.start - 1, child.right.end - 1)})`;
@@ -20687,7 +20736,7 @@ function matchSelectorPattern(effect, key, idMap, context) {
 				if (typeof node === "object" && node && node.type === "BinaryExpression" && node.operator === "===" && node.left.type !== "PrivateName") {
 					const { left, right } = node;
 					for (const [a, b] of [[left, right], [right, left]]) {
-						const aIsKey = isKeyOnlyBinding(a, key, content);
+						const aIsKey = content.slice(a.start - 1, a.end - 1) === key;
 						const bIsKey = isKeyOnlyBinding(b, key, content);
 						const bVars = analyzeVariableScopes(b, idMap);
 						if (aIsKey && !bIsKey && !bVars.length) matcheds.push([a, b]);
@@ -20797,7 +20846,7 @@ function genBlockShapeName(flags) {
 //#endregion
 //#region packages/compiler-vapor/src/generators/prop.ts
 const helpers = {
-	setText: { name: "setText" },
+	setElementText: { name: "setElementText" },
 	setHtml: { name: "setHtml" },
 	setClass: { name: "setClass" },
 	setClassName: { name: "setClassName" },
@@ -21015,7 +21064,7 @@ function getSpecialHelper(keyName, tagName, isSVG) {
 	else if (keyName === "class") return extend({ isSVG }, helpers.setClass);
 	else if (keyName === "style") return helpers.setStyle;
 	else if (keyName === "innerHTML") return helpers.setHtml;
-	else if (keyName === "textContent") return helpers.setText;
+	else if (keyName === "textContent") return helpers.setElementText;
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/templateRef.ts
@@ -21060,16 +21109,6 @@ function genGetTextChild(oper, context) {
 	return [NEWLINE, `const x${oper.parent} = ${context.helper("txt")}(n${oper.parent})`];
 }
 //#endregion
-//#region packages/compiler-vapor/src/generators/vShow.ts
-function genVShow(oper, context) {
-	const { element } = oper;
-	return genCall(context.helper("applyVShow"), `n${element}`, [
-		`() => (`,
-		...genExpression(oper.dir.exp, context),
-		`)`
-	]);
-}
-//#endregion
 //#region packages/compiler-vapor/src/generators/modifier.ts
 function genDirectiveModifiers(modifiers) {
 	return modifiers.map((value) => `${isSimpleIdentifier(value) ? value : JSON.stringify(value)}: true`).join(", ");
@@ -21099,54 +21138,6 @@ function genModelHandler(exp, context) {
 	];
 }
 //#endregion
-//#region packages/compiler-vapor/src/generators/directive.ts
-function genBuiltinDirective(oper, context) {
-	let call;
-	switch (oper.name) {
-		case "show":
-			call = genVShow(oper, context);
-			break;
-		case "model":
-			call = genVModel(oper, context);
-			break;
-		default: return [];
-	}
-	return [NEWLINE, ...oper.once ? genOnce(call, context) : call];
-}
-/**
-* user directives via `withVaporDirectives`
-*/
-function genDirectivesForElement(id, context) {
-	const dirs = filterCustomDirectives(id, context.block.operation);
-	return dirs.length ? genCustomDirectives(dirs, context) : [];
-}
-function genCustomDirectives(opers, context) {
-	const { helper } = context;
-	const element = `n${opers[0].element}`;
-	const directiveItems = opers.map(genDirectiveItem);
-	const directives = genMulti(DELIMITERS_ARRAY, ...directiveItems);
-	const call = genCall(helper("withVaporDirectives"), element, directives);
-	return [NEWLINE, ...opers[0].once ? genOnce(call, context) : call];
-	function genDirectiveItem({ dir, name, asset }) {
-		const directiveVar = asset ? toValidAssetId(name, "directive") : genExpression(extend(createSimpleExpression(name, false), { ast: null }), context);
-		const value = dir.exp && [
-			"() => (",
-			...genExpression(dir.exp, context),
-			")"
-		];
-		const argument = dir.arg && genExpression(dir.arg, context);
-		const modifiers = !!dir.modifiers.length && [
-			"{ ",
-			genDirectiveModifiers(dir.modifiers.map((m) => m.content)),
-			" }"
-		];
-		return genMulti(DELIMITERS_ARRAY.concat("void 0"), directiveVar, value, argument, modifiers);
-	}
-}
-function filterCustomDirectives(id, operations) {
-	return operations.filter((oper) => oper.type === 13 && oper.element === id && !oper.builtin);
-}
-//#endregion
 //#region packages/compiler-vapor/src/generators/component.ts
 function genStaticModifierPropKey(name) {
 	const key = getModifierPropName(name);
@@ -21162,7 +21153,8 @@ function genCreateComponent(operation, context) {
 	const isRuntimeDynamicComponent = !!(operation.dynamic && !operation.dynamic.isStatic);
 	const dynamicComponentFlags = isRuntimeDynamicComponent ? genDynamicComponentFlags(root, once, slotRoot, operation.ns) : false;
 	const nsArg = !isRuntimeDynamicComponent && (operation.useCreateElement || operation.asset || !!operation.dynamic) && operation.ns ? String(operation.ns) : false;
-	const rawSlots = genRawSlots(slots, context);
+	const slotDeclarations = [];
+	const rawSlots = genRawSlots(slots, context, slotDeclarations);
 	const [ids, handlers] = processInlineHandlers(props, context);
 	const rawProps = context.withId(() => genRawProps(props, context, true), ids);
 	const inlineHandlers = handlers.reduce((acc, { name, value }) => {
@@ -21177,13 +21169,17 @@ function genCreateComponent(operation, context) {
 	return [
 		NEWLINE,
 		...inlineHandlers,
+		...slotDeclarations.length ? genMulti([
+			"let ",
+			NEWLINE,
+			", "
+		], ...slotDeclarations) : [],
 		`const n${operation.id} = `,
 		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags : root ? "true" : false, isRuntimeDynamicComponent ? operation.key && [
 			"() => (",
 			...genExpression(operation.key, context),
 			")"
-		] : once && "true", useAssetComponentHelper ? maybeSelfReference && "true" : nsArg, useAssetComponentHelper && nsArg),
-		...genDirectivesForElement(operation.id, context)
+		] : once && "true", useAssetComponentHelper ? maybeSelfReference && "true" : nsArg, useAssetComponentHelper && nsArg)
 	];
 	function genTag() {
 		if (operation.useCreateElement) return JSON.stringify(operation.tag);
@@ -21449,40 +21445,40 @@ function isDirectTemplateConstantAst(node) {
 	}
 	return false;
 }
-function genRawSlots(slots, context) {
+function genRawSlots(slots, context, slotDeclarations) {
 	if (!slots.length) return;
 	const staticSlots = slots[0];
 	if (staticSlots.slotType === 0) {
 		const defaultSlot = getSingleDefaultSlot(staticSlots);
 		if (defaultSlot && slots.length === 1) return genSlotBlockWithProps(defaultSlot, context);
-		return genStaticSlots(staticSlots, context, slots.length > 1 ? slots.slice(1) : void 0);
+		return genStaticSlots(staticSlots, context, slotDeclarations, slots.length > 1 ? slots.slice(1) : void 0);
 	} else return genStaticSlots({
 		slotType: 0,
 		slots: {}
-	}, context, slots);
+	}, context, slotDeclarations, slots);
 }
 function getSingleDefaultSlot({ slots }) {
 	const names = Object.keys(slots);
 	return names.length === 1 && names[0] === "default" ? slots.default : void 0;
 }
-function genStaticSlots({ slots }, context, dynamicSlots) {
+function genStaticSlots({ slots }, context, slotDeclarations, dynamicSlots) {
 	const args = Object.keys(slots).map((name) => [`${JSON.stringify(name)}: `, ...genSlotBlockWithProps(slots[name], context)]);
-	if (dynamicSlots) args.push([`$: `, ...genDynamicSlots(dynamicSlots, context)]);
+	if (dynamicSlots) args.push([`$: `, ...genDynamicSlots(dynamicSlots, context, slotDeclarations)]);
 	return genMulti(DELIMITERS_OBJECT_NEWLINE, ...args);
 }
-function genDynamicSlots(slots, context) {
-	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, slot.slotType !== 2)));
+function genDynamicSlots(slots, context, slotDeclarations) {
+	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context, slotDeclarations) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, slotDeclarations, slot.slotType !== 2)));
 }
-function genDynamicSlot(slot, context, withFunction = false) {
+function genDynamicSlot(slot, context, slotDeclarations, withFunction = false) {
 	let frag;
 	switch (slot.slotType) {
 		case 1:
-			frag = genBasicDynamicSlot(slot, context);
+			frag = genBasicDynamicSlot(slot, context, slotDeclarations);
 			break;
 		case 2:
 			frag = genLoopSlot(slot, context);
 			break;
-		case 3: frag = genConditionalSlot(slot, context);
+		case 3: frag = genConditionalSlot(slot, context, slotDeclarations);
 	}
 	if (!withFunction) return frag;
 	return [
@@ -21491,32 +21487,38 @@ function genDynamicSlot(slot, context, withFunction = false) {
 		")"
 	];
 }
-function genBasicDynamicSlot(slot, context) {
+function genBasicDynamicSlot(slot, context, slotDeclarations) {
 	const { name, fn } = slot;
-	return genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...genExpression(name, context)], ["fn: ", ...genSlotBlockWithProps(fn, context, false)]);
+	const slotName = context.getUniqueLocalName("s");
+	slotDeclarations.push(slotName);
+	return genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...genExpression(name, context)], [
+		`fn: ${slotName} || (${slotName} = `,
+		...genSlotBlockWithProps(fn, context, false),
+		")"
+	]);
 }
 function genLoopSlot(slot, context) {
 	const { name, fn, loop, keyProp } = slot;
 	const { value, key, index, source } = loop;
-	const rawValue = value && value.content;
-	const rawKey = key && key.content;
-	const rawIndex = index && index.content;
+	const plugins = context.options.expressionPlugins;
 	const idToPathMap = parseValueDestructure(value, context);
+	const keyToPathMap = parseValueDestructure(key, context);
+	const indexToPathMap = parseValueDestructure(index, context);
 	const [depth, exitScope] = context.enterScope();
 	const itemVar = `_for_item${depth}`;
-	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, context.options.expressionPlugins);
+	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, plugins);
 	idMap[itemVar] = null;
 	const args = [itemVar];
-	if (rawKey) {
+	if (key) {
 		const keyVar = `_for_key${depth}`;
 		args.push(keyVar);
-		idMap[rawKey] = `${keyVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(keyToPathMap, `${keyVar}.value`, plugins));
 		idMap[keyVar] = null;
-	} else if (rawIndex) args.push("_");
-	if (rawIndex) {
+	} else if (index) args.push("_");
+	if (index) {
 		const indexVar = `_for_index${depth}`;
 		args.push(indexVar);
-		idMap[rawIndex] = `${indexVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(indexToPathMap, `${indexVar}.value`, plugins));
 		idMap[indexVar] = null;
 	}
 	const renderSlot = [
@@ -21530,14 +21532,11 @@ function genLoopSlot(slot, context) {
 	];
 	exitScope();
 	const rawIdMap = {};
-	if (rawKey) rawIdMap[rawKey] = null;
-	if (rawIndex) rawIdMap[rawIndex] = null;
-	idToPathMap.forEach((_, id) => rawIdMap[id] = null);
-	const rawParams = genMulti([
-		"(",
-		")",
-		", "
-	], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex);
+	const collect = (map) => map.forEach((_, id) => rawIdMap[id] = null);
+	collect(idToPathMap);
+	collect(keyToPathMap);
+	collect(indexToPathMap);
+	const rawParams = context.withId(() => genAliasParams(value, key, index, context), rawIdMap);
 	const getName = [
 		...rawParams,
 		" => (",
@@ -21556,17 +21555,17 @@ function genLoopSlot(slot, context) {
 		")"
 	], renderSlot, getName, getKey)];
 }
-function genConditionalSlot(slot, context) {
+function genConditionalSlot(slot, context, slotDeclarations) {
 	const { condition, positive, negative } = slot;
 	return [
 		...genExpression(condition, context),
 		INDENT_START,
 		NEWLINE,
 		"? ",
-		...genDynamicSlot(positive, context),
+		...genDynamicSlot(positive, context, slotDeclarations),
 		NEWLINE,
 		": ",
-		...negative ? [...genDynamicSlot(negative, context)] : ["void 0"],
+		...negative ? genDynamicSlot(negative, context, slotDeclarations) : ["void 0"],
 		INDENT_END
 	];
 }
@@ -21623,6 +21622,73 @@ function genSlotFlags(flags) {
 	if (flags & 8) names.push("SHARED_FALLBACK");
 	if (flags & 256) names.push("TEXT_MODE");
 	return genFlags(flags, names);
+}
+//#endregion
+//#region packages/compiler-vapor/src/generators/vShow.ts
+function genVShow(oper, context) {
+	const { element } = oper;
+	return genCall(context.helper("applyVShow"), `n${element}`, [
+		`() => (`,
+		...genExpression(oper.dir.exp, context),
+		`)`
+	]);
+}
+//#endregion
+//#region packages/compiler-vapor/src/generators/directive.ts
+function genBuiltinDirective(oper, context) {
+	let call;
+	switch (oper.name) {
+		case "show":
+			call = genVShow(oper, context);
+			break;
+		case "model":
+			call = genVModel(oper, context);
+			break;
+		default: return [];
+	}
+	return [NEWLINE, ...oper.once ? genOnce(call, context) : call];
+}
+/**
+* user directives via `withVaporDirectives`, emitted at the end of the block
+* so the element's props, children and v-model are in place first
+*/
+function genCustomDirectives(operations, context) {
+	const byElement = /* @__PURE__ */ new Map();
+	for (const oper of operations) if (oper.type === 13 && !oper.builtin) {
+		const dirs = byElement.get(oper.element);
+		if (dirs) dirs.push(oper);
+		else byElement.set(oper.element, [oper]);
+	}
+	const [frag, push] = buildCodeFragment();
+	for (const dirs of byElement.values()) push(...genElementDirectives(dirs, context));
+	return frag;
+}
+function genElementDirectives(opers, context) {
+	const { helper } = context;
+	const element = `n${opers[0].element}`;
+	const directiveItems = opers.map(genDirectiveItem);
+	const directives = genMulti(DELIMITERS_ARRAY, ...directiveItems);
+	const call = genCall(helper("withVaporDirectives"), element, directives);
+	return [NEWLINE, ...opers[0].once ? genOnce(call, context) : call];
+	function genDirectiveItem({ dir, name, asset }) {
+		const directiveVar = asset ? toValidAssetId(name, "directive") : genExpression(extend(createSimpleExpression(name, false), { ast: null }), context);
+		const value = dir.exp && [
+			"() => (",
+			...genExpression(dir.exp, context),
+			")"
+		];
+		const argument = dir.arg && [
+			"() => (",
+			...genExpression(dir.arg, context),
+			")"
+		];
+		const modifiers = !!dir.modifiers.length && [
+			"{ ",
+			genDirectiveModifiers(dir.modifiers.map((m) => m.content)),
+			" }"
+		];
+		return genMulti(DELIMITERS_ARRAY.concat("void 0"), directiveVar, value, argument, modifiers);
+	}
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/key.ts
@@ -21740,10 +21806,7 @@ function genTemplates(templates, context) {
 function genSelf(dynamic, context, flushBeforeDynamic) {
 	const [frag, push] = buildCodeFragment();
 	const { id, template, operation, hasDynamicChild } = dynamic;
-	if (id !== void 0 && template !== void 0) {
-		push(NEWLINE, `const n${id} = ${context.tName(template)}()`);
-		push(...genDirectivesForElement(id, context));
-	}
+	if (id !== void 0 && template !== void 0) push(NEWLINE, `const n${id} = ${context.tName(template)}()`);
 	if (operation) push(...genOperationWithInsertionState(operation, context));
 	if (hasDynamicChild) push(...genChildren(dynamic, context, push, `n${id}`, flushBeforeDynamic));
 	return frag;
@@ -21783,7 +21846,7 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 		}
 		const elementIndex = index + offset;
 		const inlinePlaceholder = id === void 0 && canInlinePlaceholder(child) && child.template == null && child.operation === void 0 && !(child.flags & 6);
-		const accessPath = genAccessPath(context, from, elementIndex, prev);
+		const accessPath = genAccessPath(context, from, elementIndex, prev, child.isText);
 		if (inlinePlaceholder) {
 			if (prev && prev[2]) {
 				push(...genChildren(child, context, pushBlock, [
@@ -21817,7 +21880,6 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 			flushBeforeDynamic && flushBeforeDynamic(child, push);
 			push(...genSelf(child, context, flushBeforeDynamic));
 		}
-		if (id !== void 0) push(...genDirectivesForElement(id, context));
 		prev = [
 			variable,
 			elementIndex,
@@ -21831,14 +21893,15 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 * Build one DOM lookup path while preserving the fast sibling walk:
 * adjacent nodes use _next(prev), otherwise fall back to _nthChild(parent).
 */
-function genAccessPath({ helper }, from, elementIndex, prev) {
-	if (prev) return elementIndex - prev[1] === 1 ? genCall(helper("next"), prev[0]) : genCall(helper("nthChild"), from, String(elementIndex));
-	if (elementIndex === 0) return genCall(helper("child"), from);
+function genAccessPath({ helper }, from, elementIndex, prev, isText) {
+	const textHint = isText ? "true" : void 0;
+	if (prev) return elementIndex - prev[1] === 1 ? genCall(helper("next"), prev[0], textHint) : genCall(helper("nthChild"), from, String(elementIndex), textHint);
+	if (elementIndex === 0) return genCall(helper("child"), from, textHint);
 	if (elementIndex === 1) {
 		const firstChild = genCall(helper("child"), from);
-		return genCall(helper("next"), firstChild);
+		return genCall(helper("next"), firstChild, textHint);
 	}
-	return genCall(helper("nthChild"), from, String(elementIndex));
+	return genCall(helper("nthChild"), from, String(elementIndex), textHint);
 }
 /**
 * Only inline a placeholder when materializing it would not save a parent
@@ -21953,6 +22016,7 @@ function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffec
 	if (effectIndex < effect.length) push(...genEffectRange(effectIndex, effect.length, genEffectsExtraFrag));
 	else if (genEffectsExtraFrag) push(...genEffects([], context, genEffectsExtraFrag));
 	if (modelOperations.length) push(...genOperations(modelOperations, context));
+	push(...genCustomDirectives(operation, context));
 	push(NEWLINE, `return `);
 	const returnNodes = returns.map((n) => `n${n}`);
 	push(...returnNodes.length > 1 ? genMulti(DELIMITERS_ARRAY, ...returnNodes) : [returnNodes[0] || "[]"]);
@@ -22167,14 +22231,16 @@ var CodegenContext = class {
 	enterScope() {
 		return [this.scopeLevel++, () => this.scopeLevel--];
 	}
-	getUniqueLocalName(base, scopeNames) {
+	getUniqueLocalName(base, scopeNames = this.generatedLocalNames) {
 		const name = this.findAvailableName(base, scopeNames);
 		scopeNames.add(name);
 		this.generatedLocalNames.add(name);
 		return name;
 	}
 	isNameAvailable(name, reservedNames) {
+		var _this$identifiers$nam;
 		if (this.bindingNames.has(name) || reservedNames.has(name)) return false;
+		if ((_this$identifiers$nam = this.identifiers[name]) === null || _this$identifiers$nam === void 0 ? void 0 : _this$identifiers$nam.length) return false;
 		for (const alias of this.helpers.values()) if (alias === name) return false;
 		return true;
 	}
@@ -22334,9 +22400,9 @@ const transformVBind = (dir, node, context) => {
 		context.options.onError(createCompilerError(34, loc));
 		exp = createSimpleExpression("", true, loc);
 	}
-	const isComponent = node.tagType === 1;
-	exp = resolveExpression(exp, isComponent);
 	arg = resolveExpression(arg);
+	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || !arg.isStatic || isSpecialBooleanAttr(arg.content) || isCheckboxValueProp(node, arg.content) || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content));
+	exp = resolveExpression(exp, excludeNumber);
 	if (arg.isStatic && isReservedProp(arg.content)) return;
 	let camel = false;
 	if (modifiersString.includes("camel")) {
@@ -22355,7 +22421,7 @@ const transformVBind = (dir, node, context) => {
 //#region packages/compiler-vapor/src/transforms/transformKey.ts
 const dynamicComponentKeys = /* @__PURE__ */ new WeakMap();
 const transformKey = (node, context) => {
-	if (node.type !== 1 || context.inVOnce || findDir(node, "for")) return;
+	if (node.type !== 1 || context.inVOnce || findDir(node, "for") || node.tagType === 3 && findDir(node, /^(if|else-if|else|slot)$/, true)) return;
 	const dir = findProp(node, "key", true, true);
 	if (!dir || dir.type === 6) return;
 	let value;
@@ -22411,6 +22477,53 @@ const transformVHtml = (dir, node, context) => {
 //#endregion
 //#region packages/compiler-vapor/src/transforms/transformElement.ts
 const isReservedProp = /*#__PURE__*/ makeMap(",key,ref,ref_for,ref_key,");
+/**
+* `true-value` / `false-value` are only read back by `v-model` on a checkbox,
+* and they are dropped from the ssr output, so a checkbox that only carries
+* them in the template has nothing left to read from after hydration. A
+* dynamic `type` can still make the element a checkbox at runtime.
+*/
+function isCheckboxValueProp(node, key) {
+	if (node.tag !== "input" || key !== "true-value" && key !== "false-value") return false;
+	const type = findProp(node, "type");
+	return type ? type.type === 7 || type.value.content === "checkbox" : hasDynamicKeyVBind(node);
+}
+/**
+* Props the template string cannot carry, so they have to be applied by a
+* runtime prop setter instead:
+* - `<textarea>` / `<select>` ignore a `value` content attribute, the value
+*   only takes effect as a dom property - which is where vdom sends it too,
+*   see `shouldSetAsProp`
+* - `true-value` / `false-value`, see `isCheckboxValueProp`
+*/
+function isRuntimeOnlyProp(node, key) {
+	return key === "value" && (node.tag === "textarea" || node.tag === "select") || isCheckboxValueProp(node, key);
+}
+/**
+* Props `v-model` reads back off the element as raw values (`_value`,
+* `_trueValue`, `_falseValue`), so a number literal bound to them has to keep
+* its type - vdom bails on `<option :value="1">` in its own static
+* stringification for the same reason.
+*
+* Deliberately wider than `isRuntimeOnlyProp`: a literal `<input value="1">`
+* belongs in the template string, only the type of a *bound* number has to
+* survive. So this one is consulted by `v-bind`, that one by
+* `transformNativeElement`.
+*/
+function isModelValueProp(node, key) {
+	const { tag } = node;
+	return key === "value" && (tag === "input" || tag === "option" || tag === "textarea" || tag === "select") || isCheckboxValueProp(node, key);
+}
+/**
+* Boolean attributes are folded into the template from the value itself, which
+* needs the type it was written with: `:disabled="0"` is `false`, while the
+* `"0"` a stringified template attribute would carry is `true`. `hidden` is
+* not a boolean attribute - it also takes `until-found` - but a number means
+* the same thing there.
+*/
+function isFoldableBooleanAttr(key) {
+	return isBooleanAttr(key) || key === "hidden";
+}
 const transformElement = (node, context) => {
 	let effectIndex = context.block.effect.length;
 	const getEffectIndex = () => effectIndex++;
@@ -22539,6 +22652,7 @@ function resolveSetupReference(name, context) {
 }
 const dynamicKeys = ["indeterminate"];
 const NEEDS_QUOTES_RE = /[\s"'`=<>]/;
+const LEADING_NEWLINE_RE = /^\r?\n/;
 const UNSAFE_ATTR_NAME_RE = /[\u0000-\u0020"'<=/>]/;
 function transformNativeElement(node, propsResult, staticKey, singleRoot, context, getEffectIndex, omitEndTag) {
 	const { tag } = node;
@@ -22567,10 +22681,10 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 			const canStringifyAttrName = key.isStatic && !UNSAFE_ATTR_NAME_RE.test(key.content);
 			let foldedValue;
 			if (canStringifyAttrName && context.imports.some((imported) => values[0].content.includes(imported.exp.content))) template += ` ${key.content}="${IMPORT_EXP_START}${values[0].content}${IMPORT_EXP_END}"`;
-			else if (canStringifyAttrName && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content)) {
+			else if (canStringifyAttrName && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content) && !isRuntimeOnlyProp(node, key.content)) {
 				const value = values[0].content === "''" ? "" : values[0].content;
 				appendTemplateProp(key.content, value);
-			} else if (canStringifyAttrName && !prop.modifier && (isBooleanAttr(key.content) || key.content === "hidden") && (foldedValue = foldBooleanAttrValue(key.content, values)) != null) {
+			} else if (canStringifyAttrName && !prop.modifier && isFoldableBooleanAttr(key.content) && (foldedValue = foldBooleanAttrValue(key.content, values)) != null) {
 				if (foldedValue) appendTemplateProp(key.content);
 			} else if (canStringifyAttrName && !prop.modifier && hasBoundValue(values) && (foldedValue = key.content === "class" ? foldClassValues(values) : key.content === "style" ? foldStyleValues(values) : void 0) != null) {
 				if (foldedValue) appendTemplateProp(key.content, foldedValue, true);
@@ -22582,7 +22696,9 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 			}, getEffectIndex);
 		}
 	}
-	template += `>` + context.childrenTemplate.join("");
+	let children = context.childrenTemplate.join("");
+	if (node.ns === 0 && parserOptions.isIgnoreNewlineTag(tag) && LEADING_NEWLINE_RE.test(children)) children = `\n` + children;
+	template += `>` + children;
 	if (!isVoidTag(tag) && !omitEndTag) template += `</${tag}>`;
 	context.templateRoot = singleRoot;
 	if (context.parent && context.parent.node.type === 1 && !isValidHTMLNesting(context.parent.node.tag, tag)) {
@@ -22711,6 +22827,7 @@ function evaluateObjectExpression(node) {
 	return { value };
 }
 function resolveStaticKey(node, context, isComponent) {
+	if (context.parent.node !== context.block.node) return;
 	const keyProp = findProp(node, "key", false, true);
 	if (!keyProp) return;
 	if (keyProp.type === 6) return keyProp.value ? createSimpleExpression(keyProp.value.content, true, keyProp.value.loc) : EMPTY_EXPRESSION;
@@ -22960,6 +23077,10 @@ function transformProp(prop, node, context) {
 	const directiveTransform = context.options.directiveTransforms[name];
 	if (directiveTransform) return directiveTransform(prop, node, context);
 	if (!isBuiltInDirective(name)) {
+		if (node.tagType === 2) {
+			context.options.onError(createCompilerError(36, prop.loc));
+			return;
+		}
 		const fromSetup = resolveSetupReference(`v-${name}`, context);
 		if (fromSetup) name = fromSetup;
 		else context.directive.add(name);
@@ -23027,18 +23148,20 @@ const transformChildren = (node, context) => {
 		childContext.templateCloseBlocks = isInSameTemplate ? childTemplateCloseState.blocks : false;
 		transformNode(childContext);
 		const childDynamic = childContext.dynamic;
+		const createsNode = isFragment || childContext.template !== "" || childDynamic.template != null || childDynamic.id !== void 0 || childDynamic.operation !== void 0 || childDynamic.hasDynamicChild === true;
 		if (isFragment) {
 			childContext.reference();
 			childContext.registerTemplate();
 			if (!(childDynamic.flags & 2) || childDynamic.flags & 4) context.block.returns.push(childContext.dynamic.id);
 		} else if (useCreateElement) {
-			if (childContext.template !== "" || childDynamic.template != null || childDynamic.id !== void 0 || childDynamic.operation !== void 0 || childDynamic.hasDynamicChild === true) {
+			if (createsNode) {
 				childContext.reference();
 				childContext.registerTemplate();
 				childDynamic.flags |= 6;
 			}
 		} else context.childrenTemplate.push(childContext.template);
 		if (childDynamic.hasDynamicChild || childDynamic.id !== void 0 || childDynamic.flags & 2 || childDynamic.flags & 4) context.dynamic.hasDynamicChild = true;
+		if (!createsNode) childDynamic.flags |= 2;
 		context.dynamic.children[i] = childDynamic;
 	}
 	if (!isFragment) processDynamicChildren(context);
@@ -23138,6 +23261,7 @@ function processInterpolation(context) {
 	}
 	context.template += " ";
 	const id = context.reference();
+	context.dynamic.isText = isElementChild;
 	if (values.length === 0) return;
 	context.registerEffect(values, {
 		type: 5,
@@ -23717,8 +23841,6 @@ const transformSlotOutlet = (node, context) => {
 	if (slotProps.length) {
 		const [isDynamic, props] = buildProps(extend({}, node, { props: slotProps }), context, true);
 		irProps = isDynamic ? props : [props];
-		const runtimeDirective = context.block.operation.find((oper) => oper.type === 13 && oper.element === id);
-		if (runtimeDirective) context.options.onError(createCompilerError(36, runtimeDirective.dir.loc));
 	}
 	return () => {
 		exitBlock && exitBlock();
