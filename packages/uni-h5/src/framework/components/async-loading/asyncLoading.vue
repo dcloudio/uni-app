@@ -3,7 +3,7 @@
     <i class="uni-loading" />
   </div>
 </template>
-<script setup vapor>
+<script setup lang="ts">
 defineOptions({
   name: 'AsyncLoading',
   __reserved: true,

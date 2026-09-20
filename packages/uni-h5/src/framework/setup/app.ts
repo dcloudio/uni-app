@@ -1,6 +1,6 @@
 import type { ComponentPublicInstance } from 'vue'
-import AsyncLoadingComponent from '../components/async-loading'
-import AsyncErrorComponent from '../components/async-error'
+import AsyncLoadingComponent from '../components/async-loading/asyncLoading.vue'
+import AsyncErrorComponent from '../components/async-error/asyncError.vue'
 import {
   defineGlobalData,
   initAppVm,

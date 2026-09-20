@@ -1311,7 +1311,7 @@ function normalizeVaporSlots(slots) {
     };
   }
 }
-const _t0$r = Vue.template("<span> ");
+const _t0$q = Vue.template("<span> ");
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -1322,7 +1322,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n1 = Vue.createPlainElement("uni-form", null, () => {
-        const _n0 = _t0$r();
+        const _n0 = _t0$q();
         const _x0 = Vue.txt(_n0);
         setNodes(_x0, () => slots.default && slots.default());
         return _n0;
@@ -1514,7 +1514,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$q = Vue.template("<canvas class=uni-canvas-canvas>");
+const _t0$p = Vue.template("<canvas class=uni-canvas-canvas>");
 const props$q = { disableScroll: {
   type: [Boolean, String],
   default: false
@@ -1531,7 +1531,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n1 = Vue.createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$q();
+          const _n0 = _t0$p();
           Vue.renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -1599,7 +1599,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const _t0$p = Vue.template("<div class=uni-checkbox-wrapper><div></div> ");
+const _t0$o = Vue.template("<div class=uni-checkbox-wrapper><div></div> ");
 const props$o = {
   checked: {
     type: [Boolean, String],
@@ -1707,7 +1707,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
           id: () => props2.id,
           onClick: () => _onClick
         }] }, () => {
-          const _n7 = _t0$p();
+          const _n7 = _t0$o();
           const _n5 = Vue.child(_n7);
           const _n6 = Vue.next(_n5, true);
           Vue.renderEffect(() => {
@@ -3524,6 +3524,37 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
+var __defProp$5 = Object.defineProperty;
+var __defProps$4 = Object.defineProperties;
+var __getOwnPropDescs$4 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$5 = Object.getOwnPropertySymbols;
+var __hasOwnProp$5 = Object.prototype.hasOwnProperty;
+var __propIsEnum$5 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$5 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$5.call(b, prop))
+      __defNormalProp$5(a, prop, b[prop]);
+  if (__getOwnPropSymbols$5)
+    for (var prop of __getOwnPropSymbols$5(b)) {
+      if (__propIsEnum$5.call(b, prop))
+        __defNormalProp$5(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$4 = (a, b) => __defProps$4(a, __getOwnPropDescs$4(b));
+const t0$4 = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent(__spreadProps$4(__spreadValues$5({}, {
+  name: "AsyncLoading",
+  __reserved: true,
+  compatConfig: { MODE: 3 }
+}), {
+  __name: "asyncLoading",
+  setup(__props) {
+    const n0 = t0$4();
+    return n0;
+  }
+}));
 var __defProp$4 = Object.defineProperty;
 var __defProps$3 = Object.defineProperties;
 var __getOwnPropDescs$3 = Object.getOwnPropertyDescriptors;
@@ -3543,37 +3574,27 @@ var __spreadValues$4 = (a, b) => {
   return a;
 };
 var __spreadProps$3 = (a, b) => __defProps$3(a, __getOwnPropDescs$3(b));
-const t0$3 = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const t0$3 = Vue.template("<div class=uni-async-error> ", 1);
 const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent(__spreadProps$3(__spreadValues$4({}, {
-  name: "AsyncLoading",
+  name: "AsyncError",
   __reserved: true,
   compatConfig: { MODE: 3 }
 }), {
-  __name: "asyncLoading",
+  __name: "asyncError",
+  props: ["error"],
   setup(__props) {
+    initI18nAsyncMsgsOnce();
+    const { t: t2 } = useI18n();
+    function reload() {
+      window.location.reload();
+    }
     const n0 = t0$3();
+    const x0 = Vue.txt(n0);
+    Vue.on(n0, "click", reload);
+    Vue.renderEffect(() => Vue.setText(x0, Vue.toDisplayString(Vue.unref(t2)("uni.async.error"))));
     return n0;
   }
 }));
-const _t0$o = Vue.template("<div class=uni-async-error> ", 1);
-function reload() {
-  window.location.reload();
-}
-const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncError",
-  props: ["error"],
-  setup() {
-    initI18nAsyncMsgsOnce();
-    const { t: t2 } = useI18n();
-    return () => (() => {
-      const _n0 = _t0$o();
-      Vue.on(_n0, "click", reload);
-      const _x0 = Vue.txt(_n0);
-      setNodes(_x0, () => t2("uni.async.error"));
-      return _n0;
-    })();
-  }
-});
 let appVm;
 let $uniApp;
 {
@@ -3609,11 +3630,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$4.name)) {
+    app.component(_sfc_main$4.name, _sfc_main$4);
+  }
   if (!app.component(_sfc_main$3.name)) {
     app.component(_sfc_main$3.name, _sfc_main$3);
-  }
-  if (!app.component(AsyncErrorComponent.name)) {
-    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -15568,8 +15589,8 @@ Object.defineProperty(exports, "UniError", {
 exports.Ad = index$5;
 exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
-exports.AsyncErrorComponent = AsyncErrorComponent;
-exports.AsyncLoadingComponent = _sfc_main$3;
+exports.AsyncErrorComponent = _sfc_main$3;
+exports.AsyncLoadingComponent = _sfc_main$4;
 exports.Button = index$v;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;

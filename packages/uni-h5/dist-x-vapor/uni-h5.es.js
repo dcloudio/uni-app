@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, defineVaporComponent, on as on$1, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, setClass, createKeyedFragment, setAttr, setHtml, setProp, insert, unref, renderSlot, withCtx, renderList, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, createSlot, setStaticTemplateRef, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, setText, normalizeUniText, toDisplayString, createFor, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc, createComponent as createComponent$1 } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, defineVaporComponent, on as on$1, setText, toDisplayString, unref, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, setClass, createKeyedFragment, setAttr, setHtml, setProp, insert, renderSlot, withCtx, renderList, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, createSlot, setStaticTemplateRef, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, normalizeUniText, createFor, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc, createComponent as createComponent$1 } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -2355,7 +2355,7 @@ function normalizeVaporSlots(slots) {
     };
   }
 }
-const _t0$t = template("<span> ");
+const _t0$s = template("<span> ");
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
@@ -2376,7 +2376,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n1 = createPlainElement("uni-form", null, () => {
-        const _n0 = _t0$t();
+        const _n0 = _t0$s();
         const _x0 = txt(_n0);
         setNodes(_x0, () => slots.default && slots.default());
         return _n0;
@@ -2649,7 +2649,7 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$s = template("<canvas class=uni-canvas-canvas>");
+const _t0$r = template("<canvas class=uni-canvas-canvas>");
 const props$s = { disableScroll: {
   type: [Boolean, String],
   default: false
@@ -2698,7 +2698,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n1 = createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$s();
+          const _n0 = _t0$r();
           renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -2776,7 +2776,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const _t0$r = template("<div class=uni-checkbox-wrapper><div></div> ");
+const _t0$q = template("<div class=uni-checkbox-wrapper><div></div> ");
 const props$q = {
   checked: {
     type: [Boolean, String],
@@ -2917,7 +2917,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
           id: () => props2.id,
           onClick: () => _onClick
         }] }, () => {
-          const _n7 = _t0$r();
+          const _n7 = _t0$q();
           const _n5 = child(_n7);
           const _n6 = next(_n5, true);
           renderEffect(() => {
@@ -9866,6 +9866,37 @@ function revokeObjectURL(url) {
   URL.revokeObjectURL(url);
   delete files[url];
 }
+var __defProp$5 = Object.defineProperty;
+var __defProps$4 = Object.defineProperties;
+var __getOwnPropDescs$4 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$5 = Object.getOwnPropertySymbols;
+var __hasOwnProp$5 = Object.prototype.hasOwnProperty;
+var __propIsEnum$5 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$5 = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$5.call(b, prop))
+      __defNormalProp$5(a2, prop, b[prop]);
+  if (__getOwnPropSymbols$5)
+    for (var prop of __getOwnPropSymbols$5(b)) {
+      if (__propIsEnum$5.call(b, prop))
+        __defNormalProp$5(a2, prop, b[prop]);
+    }
+  return a2;
+};
+var __spreadProps$4 = (a2, b) => __defProps$4(a2, __getOwnPropDescs$4(b));
+const t0$a = template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$b = /* @__PURE__ */ defineVaporComponent(__spreadProps$4(__spreadValues$5({}, {
+  name: "AsyncLoading",
+  __reserved: true,
+  compatConfig: { MODE: 3 }
+}), {
+  __name: "asyncLoading",
+  setup(__props) {
+    const n0 = t0$a();
+    return n0;
+  }
+}));
 var __defProp$4 = Object.defineProperty;
 var __defProps$3 = Object.defineProperties;
 var __getOwnPropDescs$3 = Object.getOwnPropertyDescriptors;
@@ -9885,37 +9916,27 @@ var __spreadValues$4 = (a2, b) => {
   return a2;
 };
 var __spreadProps$3 = (a2, b) => __defProps$3(a2, __getOwnPropDescs$3(b));
-const t0$9 = template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const t0$9 = template("<div class=uni-async-error> ", 1);
 const _sfc_main$a = /* @__PURE__ */ defineVaporComponent(__spreadProps$3(__spreadValues$4({}, {
-  name: "AsyncLoading",
+  name: "AsyncError",
   __reserved: true,
   compatConfig: { MODE: 3 }
 }), {
-  __name: "asyncLoading",
+  __name: "asyncError",
+  props: ["error"],
   setup(__props) {
+    initI18nAsyncMsgsOnce();
+    const { t: t8 } = useI18n();
+    function reload() {
+      window.location.reload();
+    }
     const n0 = t0$9();
+    const x0 = txt(n0);
+    on$1(n0, "click", reload);
+    renderEffect(() => setText(x0, toDisplayString(unref(t8)("uni.async.error"))));
     return n0;
   }
 }));
-const _t0$q = template("<div class=uni-async-error> ", 1);
-function reload() {
-  window.location.reload();
-}
-const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncError",
-  props: ["error"],
-  setup() {
-    initI18nAsyncMsgsOnce();
-    const { t: t8 } = useI18n();
-    return () => (() => {
-      const _n0 = _t0$q();
-      on$1(_n0, "click", reload);
-      const _x0 = txt(_n0);
-      setNodes(_x0, () => t8("uni.async.error"));
-      return _n0;
-    })();
-  }
-});
 let appVm;
 let $uniApp;
 {
@@ -9951,11 +9972,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$b.name)) {
+    app.component(_sfc_main$b.name, _sfc_main$b);
+  }
   if (!app.component(_sfc_main$a.name)) {
     app.component(_sfc_main$a.name, _sfc_main$a);
-  }
-  if (!app.component(AsyncErrorComponent.name)) {
-    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -33243,8 +33264,8 @@ export {
   index$5 as Ad,
   index$4 as AdContentPage,
   index$3 as AdDraw,
-  AsyncErrorComponent,
-  _sfc_main$a as AsyncLoadingComponent,
+  _sfc_main$a as AsyncErrorComponent,
+  _sfc_main$b as AsyncLoadingComponent,
   index$r as Button,
   index$2 as Camera,
   indexX$4 as Canvas,

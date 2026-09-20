@@ -3369,6 +3369,42 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
+var __defProp$4 = Object.defineProperty;
+var __defProps$4 = Object.defineProperties;
+var __getOwnPropDescs$4 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$4 = Object.getOwnPropertySymbols;
+var __hasOwnProp$4 = Object.prototype.hasOwnProperty;
+var __propIsEnum$4 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$4 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$4.call(b, prop))
+      __defNormalProp$4(a, prop, b[prop]);
+  if (__getOwnPropSymbols$4)
+    for (var prop of __getOwnPropSymbols$4(b)) {
+      if (__propIsEnum$4.call(b, prop))
+        __defNormalProp$4(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$4 = (a, b) => __defProps$4(a, __getOwnPropDescs$4(b));
+const _hoisted_1$1 = { class: "uni-async-loading" };
+const _hoisted_2$1 = /* @__PURE__ */ vue.createElementVNode("i", { class: "uni-loading" }, null, -1);
+const _hoisted_3$1 = [
+  _hoisted_2$1
+];
+const _sfc_main$4 = /* @__PURE__ */ vue.defineComponent(__spreadProps$4(__spreadValues$4({}, {
+  name: "AsyncLoading",
+  __reserved: true,
+  compatConfig: { MODE: 3 }
+}), {
+  __name: "asyncLoading",
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$1, _hoisted_3$1);
+    };
+  }
+}));
 var __defProp$3 = Object.defineProperty;
 var __defProps$3 = Object.defineProperties;
 var __getOwnPropDescs$3 = Object.getOwnPropertyDescriptors;
@@ -3388,40 +3424,27 @@ var __spreadValues$3 = (a, b) => {
   return a;
 };
 var __spreadProps$3 = (a, b) => __defProps$3(a, __getOwnPropDescs$3(b));
-const _hoisted_1$1 = { class: "uni-async-loading" };
-const _hoisted_2$1 = /* @__PURE__ */ vue.createElementVNode("i", { class: "uni-loading" }, null, -1);
-const _hoisted_3$1 = [
-  _hoisted_2$1
-];
 const _sfc_main$3 = /* @__PURE__ */ vue.defineComponent(__spreadProps$3(__spreadValues$3({}, {
-  name: "AsyncLoading",
+  name: "AsyncError",
   __reserved: true,
   compatConfig: { MODE: 3 }
 }), {
-  __name: "asyncLoading",
+  __name: "asyncError",
+  props: ["error"],
   setup(__props) {
+    initI18nAsyncMsgsOnce();
+    const { t: t2 } = useI18n();
+    function reload() {
+      window.location.reload();
+    }
     return (_ctx, _cache) => {
-      return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$1, _hoisted_3$1);
+      return vue.openBlock(), vue.createElementBlock("div", {
+        class: "uni-async-error",
+        onClick: reload
+      }, vue.toDisplayString(vue.unref(t2)("uni.async.error")), 1);
     };
   }
 }));
-function reload() {
-  window.location.reload();
-}
-const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncError",
-  props: ["error"],
-  setup() {
-    initI18nAsyncMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    return () => vue.createVNode("div", {
-      "class": "uni-async-error",
-      "onClick": reload
-    }, [t2("uni.async.error")], 8, ["onClick"]);
-  }
-});
 let appVm;
 let $uniApp;
 {
@@ -3457,11 +3480,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$4.name)) {
+    app.component(_sfc_main$4.name, _sfc_main$4);
+  }
   if (!app.component(_sfc_main$3.name)) {
     app.component(_sfc_main$3.name, _sfc_main$3);
-  }
-  if (!app.component(AsyncErrorComponent.name)) {
-    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -15682,8 +15705,8 @@ Object.defineProperty(exports, "UniError", {
 exports.Ad = index$5;
 exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
-exports.AsyncErrorComponent = AsyncErrorComponent;
-exports.AsyncLoadingComponent = _sfc_main$3;
+exports.AsyncErrorComponent = _sfc_main$3;
+exports.AsyncLoadingComponent = _sfc_main$4;
 exports.Button = index$x;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;

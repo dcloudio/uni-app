@@ -8473,41 +8473,82 @@ function warnHandler(msg, instance, trace) {
   }
   console.warn(...warnArgs);
 }
+var __defProp$2 = Object.defineProperty;
+var __defProps$2 = Object.defineProperties;
+var __getOwnPropDescs$2 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$2 = Object.getOwnPropertySymbols;
+var __hasOwnProp$2 = Object.prototype.hasOwnProperty;
+var __propIsEnum$2 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$2 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$2.call(b, prop))
+      __defNormalProp$2(a, prop, b[prop]);
+  if (__getOwnPropSymbols$2)
+    for (var prop of __getOwnPropSymbols$2(b)) {
+      if (__propIsEnum$2.call(b, prop))
+        __defNormalProp$2(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$2 = (a, b) => __defProps$2(a, __getOwnPropDescs$2(b));
 const _hoisted_1$1 = { class: "uni-async-loading" };
 const _hoisted_2$1 = /* @__PURE__ */ vue.createElementVNode("i", { class: "uni-loading" }, null, -1);
 const _hoisted_3$1 = [
   _hoisted_2$1
 ];
-const _sfc_main$1 = /* @__PURE__ */ Object.assign({
+const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent(__spreadProps$2(__spreadValues$2({}, {
   name: "AsyncLoading",
   __reserved: true,
   compatConfig: { MODE: 3 }
-}, {
+}), {
   __name: "asyncLoading",
   setup(__props) {
     return (_ctx, _cache) => {
       return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$1, _hoisted_3$1);
     };
   }
-});
-const AsyncLoadingComponent = _sfc_main$1;
-function reload() {
-  window.location.reload();
-}
-const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
+}));
+var __defProp$1 = Object.defineProperty;
+var __defProps$1 = Object.defineProperties;
+var __getOwnPropDescs$1 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$1 = Object.getOwnPropertySymbols;
+var __hasOwnProp$1 = Object.prototype.hasOwnProperty;
+var __propIsEnum$1 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$1 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$1.call(b, prop))
+      __defNormalProp$1(a, prop, b[prop]);
+  if (__getOwnPropSymbols$1)
+    for (var prop of __getOwnPropSymbols$1(b)) {
+      if (__propIsEnum$1.call(b, prop))
+        __defNormalProp$1(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$1 = (a, b) => __defProps$1(a, __getOwnPropDescs$1(b));
+const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent(__spreadProps$1(__spreadValues$1({}, {
   name: "AsyncError",
+  __reserved: true,
+  compatConfig: { MODE: 3 }
+}), {
+  __name: "asyncError",
   props: ["error"],
-  setup() {
+  setup(__props) {
     initI18nAsyncMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    return () => vue.createVNode("div", {
-      "class": "uni-async-error",
-      "onClick": reload
-    }, [t2("uni.async.error")], 8, ["onClick"]);
+    const { t: t2 } = useI18n();
+    function reload() {
+      window.location.reload();
+    }
+    return (_ctx, _cache) => {
+      return vue.openBlock(), vue.createElementBlock("div", {
+        class: "uni-async-error",
+        onClick: reload
+      }, vue.toDisplayString(vue.unref(t2)("uni.async.error")), 1);
+    };
   }
-});
+}));
 let appVm;
 function getApp$1() {
   {
@@ -8522,11 +8563,11 @@ function initApp(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(AsyncLoadingComponent.name)) {
-    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
+  if (!app.component(_sfc_main$2.name)) {
+    app.component(_sfc_main$2.name, _sfc_main$2);
   }
-  if (!app.component(AsyncErrorComponent.name)) {
-    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
+  if (!app.component(_sfc_main$1.name)) {
+    app.component(_sfc_main$1.name, _sfc_main$1);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -14192,8 +14233,8 @@ function createPageBodyVNode(ctx) {
 exports.Ad = index$6;
 exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
-exports.AsyncErrorComponent = AsyncErrorComponent;
-exports.AsyncLoadingComponent = AsyncLoadingComponent;
+exports.AsyncErrorComponent = _sfc_main$1;
+exports.AsyncLoadingComponent = _sfc_main$2;
 exports.Button = index$A;
 exports.Camera = index$3;
 exports.Canvas = index$z;
