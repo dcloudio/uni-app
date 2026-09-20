@@ -2279,7 +2279,7 @@
           "x-js": false,
           "kotlin": "dom2",
           "swift": "dom2",
-          "arkts": "dom2"
+          "arkts": false
         }
       },
       "loadUasmSync": {
@@ -2289,7 +2289,7 @@
           "x-js": false,
           "kotlin": "dom2",
           "swift": "dom2",
-          "arkts": "dom2"
+          "arkts": false
         }
       }
     },
