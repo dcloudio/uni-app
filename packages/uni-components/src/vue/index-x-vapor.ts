@@ -1,14 +1,46 @@
-//#if _X_
-import './x/polyfill/polyfill'
-export {
-  UTS,
-  UTSJSONObject,
-  UTSValueIterable,
-  UniError,
-} from '@dcloudio/uni-shared'
-//#endif
+import Button, { UniButtonElement } from './button/index'
+import Canvas, { UniCanvasElement } from './canvas/index-x'
+import Checkbox, { UniCheckboxElement } from './checkbox/index'
+import CheckboxGroup, { UniCheckboxGroupElement } from './checkbox-group/index'
+import Editor, { UniEditorElement } from './editor/index'
+import Form, { UniFormElement } from './form/index'
+import Icon, { UniIconElement } from './icon/index'
+import Input, { UniInputElement } from './input/index'
+import Label, { UniLabelElement } from './label/index'
+import MovableArea, { UniMovableAreaElement } from './movable-area/index'
+import MovableView, { UniMovableViewElement } from './movable-view/index'
+import Navigator, { UniNavigatorElement } from './navigator'
+import PickerView, { UniPickerViewElement } from './picker-view/index'
+import PickerViewColumn, {
+  UniPickerViewColumnElement,
+} from './picker-view-column/index'
+import Progress, { UniProgressElement } from './progress/index'
+import Radio, { UniRadioElement } from './radio/index-x'
+import RadioGroup, { UniRadioGroupElement } from './radio-group/index'
+import ResizeSensor from './resize-sensor/index'
+import RichText, { UniRichTextElement } from './rich-text'
+import ScrollView, { UniScrollViewElement } from './scroll-view/index'
+import Slider, { UniSliderElement } from './slider/index-x'
+import Swiper, { UniSwiperElement } from './swiper/index'
+import SwiperItem, { UniSwiperItemElement } from './swiper-item/index'
+import Switch, { UniSwitchElement } from './switch/index-x'
+import Textarea, { UniTextareaElement } from './textarea/index'
+import ListView, { UniListViewElement } from './list-view/index'
+import ListItem, { UniListItemElement } from './list-item/index'
+import StickySection, { UniStickySectionElement } from './sticky-section/index'
+import StickyHeader, { UniStickyHeaderElement } from './sticky-header/index'
+import PageContainer from './page-container/index.vue'
+import { UniPageContainerElement } from './page-container/element'
+import Loading from './loading/index-x.vue'
+import {
+  UniImageElement,
+  UniTextElement,
+  UniViewElement,
+} from './web-vapor-elements'
 
+// Web Vapor 中 view、text、image 由模板编译器直接生成原生 DOM，不能加载旧的 Vue 组件。
 export {
+  Loading,
   Button,
   Canvas,
   Checkbox,
@@ -34,17 +66,11 @@ export {
   SwiperItem,
   Switch,
   Textarea,
-  //#if _X_
-  PageContainer,
-  Loading,
   ListView,
   ListItem,
   StickySection,
   StickyHeader,
-  //#endif
-  //#if _X_ && !_NODE_JS_
-  UniElement,
-  UniElement as UniElementImpl,
+  PageContainer,
   UniButtonElement,
   UniButtonElement as UniButtonElementImpl,
   UniCanvasElement,
@@ -109,47 +135,4 @@ export {
   UniStickyHeaderElement as UniStickyHeaderElementImpl,
   UniPageContainerElement,
   UniPageContainerElement as UniPageContainerElementImpl,
-  //#endif
-} from '@dcloudio/uni-components'
-
-// Web Vapor 的 view、text、image 已由编译器降级为原生 DOM，不导出旧的 Vue 组件及其元素实现。
-//#if !_X_VAPOR_
-export { Image, Text, View } from '@dcloudio/uni-components'
-//#endif
-
-export { useI18n } from '@dcloudio/uni-core'
-
-export { default as plugin } from './framework/plugin'
-
-export * from './framework/setup'
-
-export * from './view/components'
-
-export * from './view/bridge'
-
-//#if _X_
-export * from './x/service/api'
-export * from './x/service/api/uni'
-//#endif
-
-//#if _X_ && !_NODE_JS_
-export * from './x/view/components/customElements'
-//#endif
-
-//#if !_X_
-// @ts-expect-error
-export * from './service/api'
-// @ts-expect-error
-export * from './service/api/uni'
-//#endif
-
-export * from './service/bridge'
-
-export { getApp, getCurrentPages } from './framework'
-
-export { default as LayoutComponent } from './framework/components/layout/index'
-export { default as PageComponent } from './framework/components/page/index'
-export { default as AsyncErrorComponent } from './framework/components/async-error/index'
-export { default as AsyncLoadingComponent } from './framework/components/async-loading'
-export * from './framework/setup/state'
-export { getRealPath } from './platform'
+}

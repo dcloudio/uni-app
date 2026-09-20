@@ -152,7 +152,11 @@ export default defineConfig({
       },
       {
         find: '@dcloudio/uni-components',
-        replacement: resolve('../uni-components/src/index.ts'),
+        replacement: resolve(
+          isX_VAPOR
+            ? '../uni-components/src/index-vapor.ts'
+            : '../uni-components/src/index.ts'
+        ),
       },
       {
         find: '@dcloudio/uni-platform',

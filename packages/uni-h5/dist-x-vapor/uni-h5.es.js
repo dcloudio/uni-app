@@ -2030,24 +2030,6 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
     detail
   };
 }
-const hoverProps = {
-  hoverClass: {
-    type: String,
-    default: "none"
-  },
-  hoverStopPropagation: {
-    type: Boolean,
-    default: false
-  },
-  hoverStartTime: {
-    type: [Number, String],
-    default: 50
-  },
-  hoverStayTime: {
-    type: [Number, String],
-    default: 400
-  }
-};
 function useHover(props2) {
   const hovering = ref(false);
   let hoverTouch = false;
@@ -2239,7 +2221,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2309,7 +2291,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2452,7 +2434,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -2517,7 +2499,7 @@ const index$u = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$t = {
+const props$s = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -2553,7 +2535,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$t,
+  props: props$s,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -2576,7 +2558,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$s = {
+const props$r = {
   name: {
     type: String,
     default: ""
@@ -2584,9 +2566,9 @@ const props$s = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$s,
+  props: props$r,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -2646,7 +2628,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$r = {
+const props$q = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2695,9 +2677,9 @@ const props$r = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$r,
+  props: props$q,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -2835,7 +2817,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$q = {
+const props$p = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -5180,13 +5162,13 @@ const innerAudioContextOffEventNames = [
   "offSeeking",
   "offSeeked"
 ];
-let index$r = 0;
+let index$o = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$r++);
+    const callbackId = String(index$o++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -12088,7 +12070,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$p = /* @__PURE__ */ extend({}, props$q, {
+const props$o = /* @__PURE__ */ extend({}, props$p, {
   id: {
     type: String,
     default: ""
@@ -12120,9 +12102,9 @@ const props$p = /* @__PURE__ */ extend({}, props$q, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$p,
+  props: props$o,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   rootElement: {
     name: "uni-editor",
@@ -12192,7 +12174,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -12230,307 +12212,6 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ResizeSensor",
-  props: {
-    initial: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ["resize"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    useResizeSensorLifecycle(rootRef, props2, update, reset);
-    return () => createVNode("uni-resize-sensor", {
-      "ref": rootRef,
-      "onAnimationstartOnce": update
-    }, [createVNode("div", {
-      "onScroll": update
-    }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
-      "onScroll": update
-    }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
-  }
-});
-function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = reactive({
-    width: -1,
-    height: -1
-  });
-  watch(() => extend({}, size), (value) => emit2("resize", value));
-  return () => {
-    const rootEl = rootRef.value;
-    if (!rootEl)
-      return;
-    const rect = rootEl.getBoundingClientRect();
-    size.width = rect.width;
-    size.height = rect.height;
-    reset();
-  };
-}
-function useResizeSensorReset(rootRef) {
-  return () => {
-    const {
-      firstElementChild,
-      lastElementChild
-    } = rootRef.value;
-    firstElementChild.scrollLeft = 1e5;
-    firstElementChild.scrollTop = 1e5;
-    lastElementChild.scrollLeft = 1e5;
-    lastElementChild.scrollTop = 1e5;
-  };
-}
-function useResizeSensorLifecycle(rootRef, props2, update, reset) {
-  onActivated(reset);
-  onMounted(() => {
-    if (props2.initial) {
-      nextTick(update);
-    }
-    const rootEl = rootRef.value;
-    if (rootEl.offsetParent !== rootEl.parentElement) {
-      rootEl.parentElement.style.position = "relative";
-    }
-    if (!("AnimationEvent" in window)) {
-      reset();
-    }
-  });
-}
-const props$o = {
-  src: {
-    type: String,
-    default: ""
-  },
-  mode: {
-    type: String,
-    default: "scaleToFill"
-  },
-  lazyLoad: {
-    type: [Boolean, String],
-    default: false
-  },
-  draggable: {
-    type: Boolean,
-    default: false
-  }
-};
-const FIX_MODES = {
-  widthFix: ["offsetWidth", "height", (value, ratio) => value / ratio],
-  heightFix: ["offsetHeight", "width", (value, ratio) => value * ratio]
-};
-const IMAGE_MODES = {
-  aspectFit: ["center center", "contain"],
-  aspectFill: ["center center", "cover"],
-  widthFix: [, "100% 100%"],
-  heightFix: [, "100% 100%"],
-  top: ["center top"],
-  bottom: ["center bottom"],
-  center: ["center center"],
-  left: ["left center"],
-  right: ["right center"],
-  "top left": ["left top"],
-  "top right": ["right top"],
-  "bottom left": ["left bottom"],
-  "bottom right": ["right bottom"]
-};
-class UniImageElement extends UniElement {
-}
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Image",
-  props: props$o,
-  rootElement: {
-    name: "uni-image",
-    class: UniImageElement
-  },
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const state2 = useImageState(rootRef, props2);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      fixSize
-    } = useImageSize(rootRef, props2, state2);
-    useImageLoader(state2, props2, rootRef, fixSize, trigger);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      Object.defineProperty(rootElement, "src", {
-        get() {
-          return rootElement.querySelector("img").src;
-        },
-        set(value) {
-          rootElement.querySelector("div").style.backgroundImage = `url("${value}")`;
-          rootElement.querySelector("img").src = value;
-        }
-      });
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-image", {
-        "ref": rootRef
-      }, [createVNode("div", {
-        "style": state2.modeStyle
-      }, null, 4), FIX_MODES[props2.mode] ? createVNode(ResizeSensor, {
-        "onResize": fixSize
-      }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
-    };
-  }
-});
-function useImageState(rootRef, props2) {
-  const imgSrc = ref("");
-  const modeStyleRef = computed(() => {
-    let size = "auto";
-    let position = "";
-    const opts = IMAGE_MODES[props2.mode];
-    if (!opts) {
-      position = "0% 0%";
-      size = "100% 100%";
-    } else {
-      opts[0] && (position = opts[0]);
-      opts[1] && (size = opts[1]);
-    }
-    return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};background-position:${position};background-size:${size};`;
-  });
-  const state2 = reactive({
-    rootEl: rootRef,
-    src: computed(() => props2.src ? getRealPath(props2.src) : ""),
-    origWidth: 0,
-    origHeight: 0,
-    origStyle: {
-      width: "",
-      height: ""
-    },
-    modeStyle: modeStyleRef,
-    imgSrc
-  });
-  onMounted(() => {
-    const rootEl = rootRef.value;
-    state2.origWidth = rootEl.clientWidth || 0;
-    state2.origHeight = rootEl.clientHeight || 0;
-  });
-  return state2;
-}
-function useImageLoader(state2, props2, rootRef, fixSize, trigger) {
-  let img;
-  let draggableImg;
-  const setState = (width = 0, height = 0, imgSrc = "") => {
-    state2.origWidth = width;
-    state2.origHeight = height;
-    state2.imgSrc = imgSrc;
-  };
-  const loadImage = (src) => {
-    if (!src) {
-      resetImage();
-      setState();
-      return;
-    }
-    img = img || new Image();
-    img.onload = (evt) => {
-      const {
-        width,
-        height
-      } = img;
-      setState(width, height, src);
-      nextTick(() => {
-        fixSize();
-      });
-      img.draggable = props2.draggable;
-      if (draggableImg) {
-        draggableImg.remove();
-      }
-      draggableImg = img;
-      rootRef.value.appendChild(img);
-      resetImage();
-      trigger("load", evt, {
-        width,
-        height
-      });
-    };
-    img.onerror = (evt) => {
-      setState();
-      resetImage();
-      trigger("error", evt, {
-        errMsg: `GET ${state2.src} 404 (Not Found)`
-      });
-    };
-    img.src = src;
-  };
-  const resetImage = () => {
-    if (img) {
-      img.onload = null;
-      img.onerror = null;
-      img = null;
-    }
-  };
-  watch(() => state2.src, (value) => loadImage(value));
-  watch(() => state2.imgSrc, (value) => {
-    if (!value && draggableImg) {
-      draggableImg.remove();
-      draggableImg = null;
-    }
-  });
-  onMounted(() => loadImage(state2.src));
-  onBeforeUnmount(() => resetImage());
-}
-const isChrome = navigator.vendor === "Google Inc.";
-function fixNumber(num) {
-  if (isChrome && num > 10) {
-    num = Math.round(num / 2) * 2;
-  }
-  return num;
-}
-function useImageSize(rootRef, props2, state2) {
-  const fixSize = () => {
-    const {
-      mode: mode2
-    } = props2;
-    const names = FIX_MODES[mode2];
-    if (!names) {
-      return;
-    }
-    const {
-      origWidth,
-      origHeight
-    } = state2;
-    const ratio = origWidth && origHeight ? origWidth / origHeight : 0;
-    if (!ratio) {
-      return;
-    }
-    const rootEl = rootRef.value;
-    const value = rootEl[names[0]];
-    if (value) {
-      rootEl.style[names[1]] = fixNumber(names[2](value, ratio)) + "px";
-    }
-  };
-  const resetSize = () => {
-    const {
-      style
-    } = rootRef.value;
-    const {
-      origStyle: {
-        width,
-        height
-      }
-    } = state2;
-    style.width = width;
-    style.height = height;
-  };
-  watch(() => props2.mode, (value, oldValue) => {
-    if (FIX_MODES[oldValue]) {
-      resetSize();
-    }
-    if (FIX_MODES[value]) {
-      fixSize();
-    }
-  });
-  return {
-    fixSize,
-    resetSize
-  };
-}
 function throttle(fn, wait) {
   let last = 0;
   let timeout;
@@ -12793,7 +12474,7 @@ const props$n = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$q
+  props$p
 );
 const emit = [
   "input",
@@ -13312,6 +12993,75 @@ const useAttrs = (params = {}) => {
   });
   return { $attrs: attrs2, $listeners: listeners2, $excludeAttrs: excludeAttrs };
 };
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ResizeSensor",
+  props: {
+    initial: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: ["resize"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    const reset = useResizeSensorReset(rootRef);
+    const update = useResizeSensorUpdate(rootRef, emit2, reset);
+    useResizeSensorLifecycle(rootRef, props2, update, reset);
+    return () => createVNode("uni-resize-sensor", {
+      "ref": rootRef,
+      "onAnimationstartOnce": update
+    }, [createVNode("div", {
+      "onScroll": update
+    }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
+      "onScroll": update
+    }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+  }
+});
+function useResizeSensorUpdate(rootRef, emit2, reset) {
+  const size = reactive({
+    width: -1,
+    height: -1
+  });
+  watch(() => extend({}, size), (value) => emit2("resize", value));
+  return () => {
+    const rootEl = rootRef.value;
+    if (!rootEl)
+      return;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
+    reset();
+  };
+}
+function useResizeSensorReset(rootRef) {
+  return () => {
+    const {
+      firstElementChild,
+      lastElementChild
+    } = rootRef.value;
+    firstElementChild.scrollLeft = 1e5;
+    firstElementChild.scrollTop = 1e5;
+    lastElementChild.scrollLeft = 1e5;
+    lastElementChild.scrollTop = 1e5;
+  };
+}
+function useResizeSensorLifecycle(rootRef, props2, update, reset) {
+  onActivated(reset);
+  onMounted(() => {
+    if (props2.initial) {
+      nextTick(update);
+    }
+    const rootEl = rootRef.value;
+    if (rootEl.offsetParent !== rootEl.parentElement) {
+      rootEl.parentElement.style.position = "relative";
+    }
+    if (!("AnimationEvent" in window)) {
+      reset();
+    }
+  });
+}
 function flatVNode(nodes) {
   const array = [];
   if (isArray(nodes)) {
@@ -14865,7 +14615,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -16035,7 +15785,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -16151,7 +15901,7 @@ const props$l = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$l,
   // emits: ['change'],
@@ -16638,7 +16388,7 @@ const props$j = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -18587,109 +18337,6 @@ function useSwitchInject(rootRef, props2, switchChecked) {
   }
   return uniLabel;
 }
-const SPACE_UNICODE = {
-  ensp: " ",
-  emsp: " ",
-  nbsp: " "
-};
-function normalizeText(text2, { space, decode: decode2 }) {
-  let result = "";
-  let isEscape = false;
-  for (let char of text2) {
-    if (space && SPACE_UNICODE[space] && char === " ") {
-      char = SPACE_UNICODE[space];
-    }
-    if (isEscape) {
-      if (char === "n") {
-        result += LINEFEED;
-      } else if (char === "\\") {
-        result += "\\";
-      } else {
-        result += "\\" + char;
-      }
-      isEscape = false;
-    } else {
-      if (char === "\\") {
-        isEscape = true;
-      } else {
-        result += char;
-      }
-    }
-  }
-  if (!decode2) {
-    return result;
-  }
-  return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
-}
-function parseTextIgnoreLinefeed(text2, options) {
-  return normalizeText(text2, options);
-}
-class UniTextElement extends UniElement {
-}
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Text",
-  rootElement: {
-    name: "uni-text",
-    class: UniTextElement
-  },
-  props: {
-    selectable: {
-      type: [Boolean, String],
-      default: false
-    },
-    space: {
-      type: String,
-      default: ""
-    },
-    decode: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = ref(null);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      const children = [];
-      if (slots.default) {
-        slots.default().forEach((vnode) => {
-          if (vnode.shapeFlag & 8 && vnode.type !== Comment) {
-            let lines = [];
-            lines = [parseTextIgnoreLinefeed(vnode.children, {
-              space: props2.space,
-              decode: props2.decode
-            })];
-            const len = lines.length - 1;
-            lines.forEach((line, index2) => {
-              if (index2 === 0 && !line)
-                ;
-              else {
-                children.push(createTextVNode(line));
-              }
-              if (index2 !== len) {
-                children.push(createVNode("br"));
-              }
-            });
-          } else {
-            if (process.env.NODE_ENV !== "production" && vnode.shapeFlag & 6 && vnode.type.name !== "Text") {
-              console.warn("Do not nest other components in the text component, as there may be display differences on different platforms.");
-            }
-            children.push(vnode);
-          }
-        });
-      }
-      return createVNode("uni-text", {
-        "ref": rootRef,
-        "selectable": props2.selectable ? true : null
-      }, [createVNode("span", null, children)], 8, ["selectable"]);
-    };
-  }
-});
 const props$d = /* @__PURE__ */ extend({}, props$n, {
   placeholderClass: {
     type: String,
@@ -18895,41 +18542,6 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
         "onSubmit": () => false,
         "class": "uni-input-form"
       }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 8, ["auto-height"]);
-    };
-  }
-});
-class UniViewElement extends UniElement {
-}
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
-  name: "View",
-  props: /* @__PURE__ */ extend({}, hoverProps),
-  rootElement: {
-    name: "uni-view",
-    class: UniViewElement
-  },
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = ref(null);
-    const {
-      hovering,
-      binding
-    } = useHover(props2);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      const hoverClass = props2.hoverClass;
-      if (hoverClass && hoverClass !== "none") {
-        return createVNode("uni-view", mergeProps({
-          "class": hovering.value ? hoverClass : "",
-          "ref": rootRef
-        }, binding), [renderSlot(slots, "default")], 16);
-      }
-      return createVNode("uni-view", {
-        "ref": rootRef
-      }, [renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -20256,6 +19868,12 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent(__spreadProps(__spreadV
     return n1;
   }
 }));
+class UniViewElement extends UniElement {
+}
+class UniTextElement extends UniElement {
+}
+class UniImageElement extends UniElement {
+}
 function normalizeEvent(vm, id2) {
   if (!id2) {
     id2 = vm.id;
@@ -33402,19 +33020,18 @@ export {
   index$3 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$u as Button,
+  index$r as Button,
   index$2 as Camera,
   indexX$4 as Canvas,
-  index$s as Checkbox,
-  index$t as CheckboxGroup,
+  index$p as Checkbox,
+  index$q as CheckboxGroup,
   index$7 as CoverImage,
   index$8 as CoverView,
-  index$q as Editor,
-  index$w as Form,
-  index$p as Icon,
-  index$o as Image,
+  index$n as Editor,
+  index$t as Form,
+  index$m as Icon,
   __syscom_0$2 as Input,
-  index$v as Label,
+  index$s as Label,
   LayoutComponent,
   index$g as ListItem,
   index$h as ListView,
@@ -33425,17 +33042,17 @@ export {
   MatchMedia,
   MovableArea,
   MovableView,
-  index$n as Navigator,
+  index$l as Navigator,
   PageComponent,
   _sfc_main$8 as PageContainer,
   index$6 as Picker,
   PickerView,
   PickerViewColumn,
-  index$m as Progress,
+  index$k as Progress,
   indexX$3 as Radio,
-  index$l as RadioGroup,
+  index$j as RadioGroup,
   ResizeSensor,
-  index$k as RichText,
+  index$i as RichText,
   __syscom_1 as ScrollView,
   indexX$2 as Slider,
   index$e as StickyHeader,
@@ -33443,7 +33060,6 @@ export {
   Swiper,
   __syscom_0$1 as SwiperItem,
   indexX$1 as Switch,
-  index$j as Text,
   __syscom_0 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
@@ -33524,7 +33140,6 @@ export {
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
   index$b as Video,
-  index$i as View,
   indexX as WebView,
   __f__,
   addInterceptor,

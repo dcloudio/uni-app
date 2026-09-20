@@ -970,24 +970,6 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
     detail
   };
 }
-const hoverProps = {
-  hoverClass: {
-    type: String,
-    default: "none"
-  },
-  hoverStopPropagation: {
-    type: Boolean,
-    default: false
-  },
-  hoverStartTime: {
-    type: [Number, String],
-    default: 50
-  },
-  hoverStayTime: {
-    type: [Number, String],
-    default: 400
-  }
-};
 function useHover(props2) {
   const hovering = vue.ref(false);
   let hoverTouch = false;
@@ -1177,7 +1159,7 @@ class UniElement extends Object {
   }
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1237,7 +1219,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1313,7 +1295,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1364,7 +1346,7 @@ const index$y = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$r = {
+const props$q = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -1376,7 +1358,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$r,
+  props: props$q,
   setup(props2, {}) {
     const rootRef = vue.ref(null);
     const canvas = vue.ref(null);
@@ -1391,15 +1373,15 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$q = {
+const props$p = {
   name: {
     type: String,
     default: ""
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$q,
+  props: props$p,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -1451,7 +1433,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$p = {
+const props$o = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -1498,9 +1480,9 @@ const props$p = {
     default: ""
   }
 };
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$p,
+  props: props$o,
   setup(props2, {
     slots
   }) {
@@ -1601,7 +1583,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$o = {
+const props$n = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -4385,7 +4367,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
+const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
   id: {
     type: String,
     default: ""
@@ -4415,9 +4397,9 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
     default: false
   }
 });
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$n,
+  props: props$m,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   setup(props2, {
     emit: emit2
@@ -4476,7 +4458,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -4506,261 +4488,6 @@ const index$u = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ResizeSensor",
-  props: {
-    initial: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ["resize"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = vue.ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    return () => vue.createVNode("uni-resize-sensor", {
-      "ref": rootRef,
-      "onAnimationstartOnce": update
-    }, [vue.createVNode("div", {
-      "onScroll": update
-    }, [vue.createVNode("div", null, null)], 40, ["onScroll"]), vue.createVNode("div", {
-      "onScroll": update
-    }, [vue.createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
-  }
-});
-function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = vue.reactive({
-    width: -1,
-    height: -1
-  });
-  vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
-  return () => {
-    const rootEl = rootRef.value;
-    if (!rootEl)
-      return;
-    const rect = rootEl.getBoundingClientRect();
-    size.width = rect.width;
-    size.height = rect.height;
-    reset();
-  };
-}
-function useResizeSensorReset(rootRef) {
-  return () => {
-    const {
-      firstElementChild,
-      lastElementChild
-    } = rootRef.value;
-    firstElementChild.scrollLeft = 1e5;
-    firstElementChild.scrollTop = 1e5;
-    lastElementChild.scrollLeft = 1e5;
-    lastElementChild.scrollTop = 1e5;
-  };
-}
-const props$m = {
-  src: {
-    type: String,
-    default: ""
-  },
-  mode: {
-    type: String,
-    default: "scaleToFill"
-  },
-  lazyLoad: {
-    type: [Boolean, String],
-    default: false
-  },
-  draggable: {
-    type: Boolean,
-    default: false
-  }
-};
-const FIX_MODES = {
-  widthFix: ["offsetWidth", "height", (value, ratio) => value / ratio],
-  heightFix: ["offsetHeight", "width", (value, ratio) => value * ratio]
-};
-const IMAGE_MODES = {
-  aspectFit: ["center center", "contain"],
-  aspectFill: ["center center", "cover"],
-  widthFix: [, "100% 100%"],
-  heightFix: [, "100% 100%"],
-  top: ["center top"],
-  bottom: ["center bottom"],
-  center: ["center center"],
-  left: ["left center"],
-  right: ["right center"],
-  "top left": ["left top"],
-  "top right": ["right top"],
-  "bottom left": ["left bottom"],
-  "bottom right": ["right bottom"]
-};
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Image",
-  props: props$m,
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = vue.ref(null);
-    const state = useImageState(rootRef, props2);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      fixSize
-    } = useImageSize(rootRef, props2, state);
-    useImageLoader(state, props2, rootRef, fixSize, trigger);
-    return () => {
-      return vue.createVNode("uni-image", {
-        "ref": rootRef
-      }, [vue.createVNode("div", {
-        "style": state.modeStyle
-      }, null, 4), FIX_MODES[props2.mode] ? vue.createVNode(ResizeSensor, {
-        "onResize": fixSize
-      }, null, 8, ["onResize"]) : vue.createVNode("span", null, null)], 512);
-    };
-  }
-});
-function useImageState(rootRef, props2) {
-  const imgSrc = vue.ref("");
-  const modeStyleRef = vue.computed(() => {
-    let size = "auto";
-    let position = "";
-    const opts = IMAGE_MODES[props2.mode];
-    if (!opts) {
-      position = "0% 0%";
-      size = "100% 100%";
-    } else {
-      opts[0] && (position = opts[0]);
-      opts[1] && (size = opts[1]);
-    }
-    return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};background-position:${position};background-size:${size};`;
-  });
-  const state = vue.reactive({
-    rootEl: rootRef,
-    src: vue.computed(() => props2.src ? getRealPath(props2.src) : ""),
-    origWidth: 0,
-    origHeight: 0,
-    origStyle: {
-      width: "",
-      height: ""
-    },
-    modeStyle: modeStyleRef,
-    imgSrc
-  });
-  return state;
-}
-function useImageLoader(state, props2, rootRef, fixSize, trigger) {
-  let img;
-  let draggableImg;
-  const setState = (width = 0, height = 0, imgSrc = "") => {
-    state.origWidth = width;
-    state.origHeight = height;
-    state.imgSrc = imgSrc;
-  };
-  const loadImage = (src) => {
-    if (!src) {
-      resetImage();
-      setState();
-      return;
-    }
-    img = img || new Image();
-    img.onload = (evt) => {
-      const {
-        width,
-        height
-      } = img;
-      setState(width, height, src);
-      vue.nextTick(() => {
-        fixSize();
-      });
-      img.draggable = props2.draggable;
-      if (draggableImg) {
-        draggableImg.remove();
-      }
-      draggableImg = img;
-      rootRef.value.appendChild(img);
-      resetImage();
-      trigger("load", evt, {
-        width,
-        height
-      });
-    };
-    img.onerror = (evt) => {
-      setState();
-      resetImage();
-      trigger("error", evt, {
-        errMsg: `GET ${state.src} 404 (Not Found)`
-      });
-    };
-    img.src = src;
-  };
-  const resetImage = () => {
-    if (img) {
-      img.onload = null;
-      img.onerror = null;
-      img = null;
-    }
-  };
-  vue.watch(() => state.src, (value) => loadImage(value));
-  vue.watch(() => state.imgSrc, (value) => {
-    if (!value && draggableImg) {
-      draggableImg.remove();
-      draggableImg = null;
-    }
-  });
-}
-function fixNumber(num) {
-  return num;
-}
-function useImageSize(rootRef, props2, state) {
-  const fixSize = () => {
-    const {
-      mode: mode2
-    } = props2;
-    const names = FIX_MODES[mode2];
-    if (!names) {
-      return;
-    }
-    const {
-      origWidth,
-      origHeight
-    } = state;
-    const ratio = origWidth && origHeight ? origWidth / origHeight : 0;
-    if (!ratio) {
-      return;
-    }
-    const rootEl = rootRef.value;
-    const value = rootEl[names[0]];
-    if (value) {
-      rootEl.style[names[1]] = fixNumber(names[2](value, ratio)) + "px";
-    }
-  };
-  const resetSize = () => {
-    const {
-      style
-    } = rootRef.value;
-    const {
-      origStyle: {
-        width,
-        height
-      }
-    } = state;
-    style.width = width;
-    style.height = height;
-  };
-  vue.watch(() => props2.mode, (value, oldValue) => {
-    if (FIX_MODES[oldValue]) {
-      resetSize();
-    }
-    if (FIX_MODES[value]) {
-      fixSize();
-    }
-  });
-  return {
-    fixSize,
-    resetSize
-  };
-}
 function throttle(fn, wait) {
   let last = 0;
   let timeout;
@@ -4965,7 +4692,7 @@ const props$l = /* @__PURE__ */ shared.extend(
       default: ""
     }
   },
-  props$o
+  props$n
 );
 const emit = [
   "input",
@@ -5439,6 +5166,59 @@ const useAttrs = (params = {}) => {
   });
   return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
 };
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ResizeSensor",
+  props: {
+    initial: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: ["resize"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = vue.ref(null);
+    const reset = useResizeSensorReset(rootRef);
+    const update = useResizeSensorUpdate(rootRef, emit2, reset);
+    return () => vue.createVNode("uni-resize-sensor", {
+      "ref": rootRef,
+      "onAnimationstartOnce": update
+    }, [vue.createVNode("div", {
+      "onScroll": update
+    }, [vue.createVNode("div", null, null)], 40, ["onScroll"]), vue.createVNode("div", {
+      "onScroll": update
+    }, [vue.createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+  }
+});
+function useResizeSensorUpdate(rootRef, emit2, reset) {
+  const size = vue.reactive({
+    width: -1,
+    height: -1
+  });
+  vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
+  return () => {
+    const rootEl = rootRef.value;
+    if (!rootEl)
+      return;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
+    reset();
+  };
+}
+function useResizeSensorReset(rootRef) {
+  return () => {
+    const {
+      firstElementChild,
+      lastElementChild
+    } = rootRef.value;
+    firstElementChild.scrollLeft = 1e5;
+    firstElementChild.scrollTop = 1e5;
+    lastElementChild.scrollLeft = 1e5;
+    lastElementChild.scrollTop = 1e5;
+  };
+}
 function flatVNode(nodes) {
   const array = [];
   if (shared.isArray(nodes)) {
@@ -5462,7 +5242,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -6010,7 +5790,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -6665,7 +6445,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -6987,7 +6767,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -7077,7 +6857,7 @@ const props$j = {
     default: ""
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$j,
   // emits: ['change'],
@@ -7506,7 +7286,7 @@ const props$h = {
     default: false
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -7711,7 +7491,7 @@ const props$g = {
     default: false
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -8618,7 +8398,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$e,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -8849,7 +8629,7 @@ const props$d = {
     default: ""
   }
 };
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$d,
   setup(props2, {
@@ -9003,99 +8783,6 @@ function useSwitchInject(rootRef, props2, switchChecked) {
   }
   return uniLabel;
 }
-const SPACE_UNICODE = {
-  ensp: " ",
-  emsp: " ",
-  nbsp: " "
-};
-function normalizeText(text, { space, decode }) {
-  let result = "";
-  let isEscape = false;
-  for (let char of text) {
-    if (space && SPACE_UNICODE[space] && char === " ") {
-      char = SPACE_UNICODE[space];
-    }
-    if (isEscape) {
-      if (char === "n") {
-        result += uniShared.LINEFEED;
-      } else if (char === "\\") {
-        result += "\\";
-      } else {
-        result += "\\" + char;
-      }
-      isEscape = false;
-    } else {
-      if (char === "\\") {
-        isEscape = true;
-      } else {
-        result += char;
-      }
-    }
-  }
-  if (!decode) {
-    return result;
-  }
-  return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
-}
-function parseTextIgnoreLinefeed(text, options) {
-  return normalizeText(text, options);
-}
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Text",
-  props: {
-    selectable: {
-      type: [Boolean, String],
-      default: false
-    },
-    space: {
-      type: String,
-      default: ""
-    },
-    decode: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = vue.ref(null);
-    return () => {
-      const children = [];
-      if (slots.default) {
-        slots.default().forEach((vnode) => {
-          if (vnode.shapeFlag & 8 && vnode.type !== vue.Comment) {
-            let lines = [];
-            lines = [parseTextIgnoreLinefeed(vnode.children, {
-              space: props2.space,
-              decode: props2.decode
-            })];
-            const len = lines.length - 1;
-            lines.forEach((line, index2) => {
-              if (index2 === 0 && !line)
-                ;
-              else {
-                children.push(vue.createTextVNode(line));
-              }
-              if (index2 !== len) {
-                children.push(vue.createVNode("br"));
-              }
-            });
-          } else {
-            if (process.env.NODE_ENV !== "production" && vnode.shapeFlag & 6 && vnode.type.name !== "Text") {
-              console.warn("Do not nest other components in the text component, as there may be display differences on different platforms.");
-            }
-            children.push(vnode);
-          }
-        });
-      }
-      return vue.createVNode("uni-text", {
-        "ref": rootRef,
-        "selectable": props2.selectable ? true : null
-      }, [vue.createVNode("span", null, children)], 8, ["selectable"]);
-    };
-  }
-});
 const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
   placeholderClass: {
     type: String,
@@ -9115,7 +8802,7 @@ const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
   emits: ["confirm", "change", "linechange", ...emit],
@@ -9272,31 +8959,6 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "onSubmit": () => false,
         "class": "uni-input-form"
       }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 8, ["auto-height"]);
-    };
-  }
-});
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
-  name: "View",
-  props: /* @__PURE__ */ shared.extend({}, hoverProps),
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = vue.ref(null);
-    const {
-      hovering,
-      binding
-    } = useHover(props2);
-    return () => {
-      const hoverClass = props2.hoverClass;
-      if (hoverClass && hoverClass !== "none") {
-        return vue.createVNode("uni-view", vue.mergeProps({
-          "class": hovering.value ? hoverClass : "",
-          "ref": rootRef
-        }, binding), [vue.renderSlot(slots, "default")], 16);
-      }
-      return vue.createVNode("uni-view", {
-        "ref": rootRef
-      }, [vue.renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -15649,19 +15311,18 @@ exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$y;
+exports.Button = index$v;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;
-exports.Checkbox = index$w;
-exports.CheckboxGroup = index$x;
+exports.Checkbox = index$t;
+exports.CheckboxGroup = index$u;
 exports.CoverImage = index$7;
 exports.CoverView = index$8;
-exports.Editor = index$v;
-exports.Form = index$A;
-exports.Icon = index$u;
-exports.Image = index$t;
+exports.Editor = index$s;
+exports.Form = index$x;
+exports.Icon = index$r;
 exports.Input = Input;
-exports.Label = index$z;
+exports.Label = index$w;
 exports.LayoutComponent = LayoutComponent;
 exports.ListItem = index$f;
 exports.ListView = index$g;
@@ -15669,32 +15330,30 @@ exports.LivePlayer = index$1;
 exports.LivePusher = index;
 exports.Loading = _sfc_main;
 exports.Map = index$9;
-exports.MovableArea = index$s;
-exports.MovableView = index$r;
-exports.Navigator = index$q;
+exports.MovableArea = index$q;
+exports.MovableView = index$p;
+exports.Navigator = index$o;
 exports.PageComponent = PageComponent;
 exports.PageContainer = _sfc_main$1;
 exports.Picker = index$6;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$p;
+exports.Progress = index$n;
 exports.Radio = indexX$3;
-exports.RadioGroup = index$o;
+exports.RadioGroup = index$m;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$n;
-exports.ScrollView = index$m;
+exports.RichText = index$l;
+exports.ScrollView = index$k;
 exports.Slider = indexX$2;
 exports.StickyHeader = index$d;
 exports.StickySection = index$e;
-exports.Swiper = index$l;
-exports.SwiperItem = index$k;
+exports.Swiper = index$j;
+exports.SwiperItem = index$i;
 exports.Switch = indexX$1;
-exports.Text = index$j;
-exports.Textarea = index$i;
+exports.Textarea = index$h;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
 exports.Video = index$a;
-exports.View = index$h;
 exports.WebView = indexX;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
