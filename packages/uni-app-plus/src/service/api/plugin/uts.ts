@@ -572,6 +572,12 @@ function unregisterInstance(id: number) {
     keepAlive: false,
     nested: false,
     params: [id],
+    method: [
+      {
+        name: 'id',
+        type: 'number',
+      },
+    ],
   }
   getProxy().invokeSync(args, () => {})
 }
