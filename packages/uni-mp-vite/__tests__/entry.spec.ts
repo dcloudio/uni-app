@@ -29,9 +29,11 @@ async function withEntryProject(
   const inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-entry-'))
   const originalInputDir = process.env.UNI_INPUT_DIR
   const originalPlatform = process.env.UNI_PLATFORM
+  const originalAppX = process.env.UNI_APP_X
   try {
     process.env.UNI_INPUT_DIR = inputDir
     process.env.UNI_PLATFORM = 'mp-weixin'
+    process.env.UNI_APP_X = 'true'
     fs.writeFileSync(path.join(inputDir, 'manifest.json'), '{}')
     await test(inputDir)
   } finally {
@@ -44,6 +46,11 @@ async function withEntryProject(
       delete (process.env as Record<string, string | undefined>).UNI_PLATFORM
     } else {
       process.env.UNI_PLATFORM = originalPlatform
+    }
+    if (originalAppX === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_APP_X
+    } else {
+      process.env.UNI_APP_X = originalAppX
     }
     fs.rmSync(inputDir, { recursive: true, force: true })
   }
@@ -133,6 +140,44 @@ describe('entry virtual paths', () => {
           inputDir
         )
       ).toBe('package-b')
+    })
+  })
+
+  test('does not detect optimized subpackage roots for normal uni-app', async () => {
+    await withEntryProject((inputDir) => {
+      process.env.UNI_APP_X = 'false'
+      fs.writeFileSync(
+        path.join(inputDir, 'pages.json'),
+        JSON.stringify({
+          pages: [{ path: 'pages/index/index' }],
+          subPackages: [
+            {
+              root: 'package-a',
+              pages: [{ path: 'pages/index/index' }],
+            },
+          ],
+        })
+      )
+      fs.writeFileSync(
+        path.join(inputDir, 'manifest.json'),
+        JSON.stringify({
+          'mp-weixin': { optimization: { subPackages: true } },
+        })
+      )
+      const plugin = uniEntryPlugin({
+        global: 'wx',
+        template: { extname: '.wxml' },
+        style: { extname: '.wxss' },
+      } as any)
+
+      ;(plugin.buildStart as Function).call({ addWatchFile: jest.fn() })
+
+      expect(
+        getSubPackageRootByFilename(
+          path.join(inputDir, 'package-a/pages/index/index.vue'),
+          inputDir
+        )
+      ).toBeUndefined()
     })
   })
 

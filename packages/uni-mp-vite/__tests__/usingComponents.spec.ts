@@ -14,6 +14,11 @@ import { dynamicImport } from '../src/plugins/usingComponents'
 
 describe('mp vite usingComponents', () => {
   const originalInputDir = process.env.UNI_INPUT_DIR
+  const originalAppX = process.env.UNI_APP_X
+
+  beforeEach(() => {
+    process.env.UNI_APP_X = 'true'
+  })
 
   afterEach(() => {
     initIndependentSubPackages([])
@@ -22,6 +27,11 @@ describe('mp vite usingComponents', () => {
       delete (process.env as Record<string, string | undefined>).UNI_INPUT_DIR
     } else {
       process.env.UNI_INPUT_DIR = originalInputDir
+    }
+    if (originalAppX === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_APP_X
+    } else {
+      process.env.UNI_APP_X = originalAppX
     }
   })
 

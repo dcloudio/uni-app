@@ -49,6 +49,11 @@ describe('mp vite build options', () => {
   const originalPlatform = process.env.UNI_PLATFORM
   const originalInputDir = process.env.UNI_INPUT_DIR
   const originalCompileTarget = process.env.UNI_COMPILE_TARGET
+  const originalAppX = process.env.UNI_APP_X
+
+  beforeEach(() => {
+    process.env.UNI_APP_X = 'true'
+  })
 
   afterEach(() => {
     resetMiniProgramJsonFiles()
@@ -66,6 +71,11 @@ describe('mp vite build options', () => {
       clearCompileTarget()
     } else {
       process.env.UNI_COMPILE_TARGET = originalCompileTarget
+    }
+    if (originalAppX === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_APP_X
+    } else {
+      process.env.UNI_APP_X = originalAppX
     }
   })
 

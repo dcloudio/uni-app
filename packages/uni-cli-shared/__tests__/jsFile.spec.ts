@@ -16,7 +16,21 @@ import xrStart from './examples/usingComponents/wxcomponents/xr-start/xr-start.j
 import xrStartIndex from './examples/usingComponents/wxcomponents/xr-start-index/index.json'
 
 describe('miniProgram:jsonFile', () => {
+  const originalAppX = process.env.UNI_APP_X
   const filename = 'pages/index/index'
+
+  beforeAll(() => {
+    process.env.UNI_APP_X = 'true'
+  })
+
+  afterAll(() => {
+    if (originalAppX === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_APP_X
+    } else {
+      process.env.UNI_APP_X = originalAppX
+    }
+  })
+
   test(`usingComponents`, () => {
     const usingComponents = {
       subscribe: 'plugin://subscribeMsg/subscribe',
