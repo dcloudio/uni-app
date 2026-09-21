@@ -377,8 +377,8 @@ function getCurrentPage() {
   }
 }
 function getCurrentPageMeta() {
-  var _c;
-  const $page = (_c = getCurrentPage()) == null ? void 0 : _c.$page;
+  var _a;
+  const $page = (_a = getCurrentPage()) == null ? void 0 : _a.$page;
   if ($page) {
     return $page.meta;
   }
@@ -8473,66 +8473,30 @@ function warnHandler(msg, instance, trace) {
   }
   console.warn(...warnArgs);
 }
-var __defProp$2 = Object.defineProperty;
-var __defProps$2 = Object.defineProperties;
-var __getOwnPropDescs$2 = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols$2 = Object.getOwnPropertySymbols;
-var __hasOwnProp$2 = Object.prototype.hasOwnProperty;
-var __propIsEnum$2 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues$2 = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp$2.call(b, prop))
-      __defNormalProp$2(a, prop, b[prop]);
-  if (__getOwnPropSymbols$2)
-    for (var prop of __getOwnPropSymbols$2(b)) {
-      if (__propIsEnum$2.call(b, prop))
-        __defNormalProp$2(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps$2 = (a, b) => __defProps$2(a, __getOwnPropDescs$2(b));
 const _hoisted_1$1 = { class: "uni-async-loading" };
 const _hoisted_2$1 = /* @__PURE__ */ vue.createElementVNode("i", { class: "uni-loading" }, null, -1);
 const _hoisted_3$1 = [
   _hoisted_2$1
 ];
-const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent(__spreadProps$2(__spreadValues$2({}, {
-  name: "AsyncLoading",
-  __reserved: true,
-  compatConfig: { MODE: 3 }
-}), {
+const _sfc_main$3 = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "AsyncLoading",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
   __name: "asyncLoading",
   setup(__props) {
     return (_ctx, _cache) => {
       return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$1, _hoisted_3$1);
     };
   }
-}));
-var __defProp$1 = Object.defineProperty;
-var __defProps$1 = Object.defineProperties;
-var __getOwnPropDescs$1 = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols$1 = Object.getOwnPropertySymbols;
-var __hasOwnProp$1 = Object.prototype.hasOwnProperty;
-var __propIsEnum$1 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues$1 = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp$1.call(b, prop))
-      __defNormalProp$1(a, prop, b[prop]);
-  if (__getOwnPropSymbols$1)
-    for (var prop of __getOwnPropSymbols$1(b)) {
-      if (__propIsEnum$1.call(b, prop))
-        __defNormalProp$1(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps$1 = (a, b) => __defProps$1(a, __getOwnPropDescs$1(b));
-const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent(__spreadProps$1(__spreadValues$1({}, {
-  name: "AsyncError",
-  __reserved: true,
-  compatConfig: { MODE: 3 }
-}), {
+});
+const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "AsyncError",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
   __name: "asyncError",
   props: ["error"],
   setup(__props) {
@@ -8548,7 +8512,7 @@ const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent(__spreadProps$1(__spread
       }, vue.toDisplayString(vue.unref(t2)("uni.async.error")), 1);
     };
   }
-}));
+});
 let appVm;
 function getApp$1() {
   {
@@ -8563,11 +8527,11 @@ function initApp(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$3.name)) {
+    app.component(_sfc_main$3.name, _sfc_main$3);
+  }
   if (!app.component(_sfc_main$2.name)) {
     app.component(_sfc_main$2.name, _sfc_main$2);
-  }
-  if (!app.component(_sfc_main$1.name)) {
-    app.component(_sfc_main$1.name, _sfc_main$1);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -10934,7 +10898,7 @@ function usePopupStyle(props2, triangleColor = "#fcfcfd") {
       try {
         const number = Number(value);
         return Number.isFinite(number) ? number : 0;
-      } catch (e2) {
+      } catch {
         return 0;
       }
     }
@@ -14088,25 +14052,6 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-var __defProp2 = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp2 = (obj, key, value) => key in obj ? __defProp2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp2(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp2(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
 const _hoisted_3 = /* @__PURE__ */ vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
@@ -14125,7 +14070,8 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValues({}, { name: "PageRefresh" }), {
+const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent({
+  ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
@@ -14162,39 +14108,59 @@ const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValu
       ]);
     };
   }
-}));
-const PageBody = /* @__PURE__ */ defineSystemComponent({
-  name: "PageBody",
-  setup(props2, ctx) {
-    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
-    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && vue.ref(null);
+});
+const _sfc_main = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "PageBody",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "pageBody",
+  setup(__props) {
+    const isX = false;
+    const hasPullDownRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__;
+    const pageMeta = hasPullDownRefresh ? usePageMeta() : null;
+    const refreshRef = vue.ref(null);
     const wrapperRef = vue.ref(null);
     const _pageRefresh = null;
     const pageRefresh = vue.ref(null);
-    vue.watch(() => {
-      return pageMeta.enablePullDownRefresh;
-    }, () => {
-      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
-    }, {
-      immediate: true
-    });
-    return () => {
-      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      const pageResizeSensor = null;
-      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", vue.mergeProps({
-        "ref": wrapperRef
-      }, pageRefresh.value), [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")]), pageResizeSensor], 16)]);
+    vue.watch(
+      () => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh,
+      () => {
+        pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
+      },
+      {
+        immediate: true
+      }
+    );
+    function resize() {
+      {
+        return;
+      }
+    }
+    return (_ctx, _cache) => {
+      return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
+        vue.unref(hasPullDownRefresh) && !!vue.unref(pageMeta) && (vue.unref(isX) || !!vue.unref(pageMeta).enablePullDownRefresh) ? (vue.openBlock(), vue.createBlock(_sfc_main$1, {
+          key: 0,
+          ref_key: "refreshRef",
+          ref: refreshRef
+        }, null, 512)) : vue.createCommentVNode("", true),
+        vue.createElementVNode("uni-page-wrapper", vue.mergeProps({
+          ref_key: "wrapperRef",
+          ref: wrapperRef
+        }, pageRefresh.value), [
+          vue.createElementVNode("uni-page-body", null, [
+            vue.renderSlot(_ctx.$slots, "default")
+          ]),
+          vue.unref(isX) ? (vue.openBlock(), vue.createBlock(vue.unref(ResizeSensor), {
+            key: 0,
+            onResize: resize
+          })) : vue.createCommentVNode("", true)
+        ], 16)
+      ], 64);
     };
   }
 });
-function createPageRefreshTsx(refreshRef, pageMeta) {
-  if (!__UNI_FEATURE_PULL_DOWN_REFRESH__ || !pageMeta.enablePullDownRefresh) {
-    return null;
-  }
-  return vue.createVNode(_sfc_main, {
-    "ref": refreshRef
-  }, null, 512);
-}
 const index = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
@@ -14222,7 +14188,7 @@ const index = /* @__PURE__ */ defineSystemComponent({
 });
 function createPageBodyVNode(ctx) {
   return vue.openBlock(), vue.createBlock(
-    PageBody,
+    _sfc_main,
     { key: 0 },
     {
       default: vue.withCtx(() => [vue.renderSlot(ctx.slots, "page")]),
@@ -14233,8 +14199,8 @@ function createPageBodyVNode(ctx) {
 exports.Ad = index$6;
 exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
-exports.AsyncErrorComponent = _sfc_main$1;
-exports.AsyncLoadingComponent = _sfc_main$2;
+exports.AsyncErrorComponent = _sfc_main$2;
+exports.AsyncLoadingComponent = _sfc_main$3;
 exports.Button = index$A;
 exports.Camera = index$3;
 exports.Canvas = index$z;

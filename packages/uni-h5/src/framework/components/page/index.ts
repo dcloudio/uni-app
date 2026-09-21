@@ -20,7 +20,7 @@ import { useDocumentTitle } from '../../../helpers/useDocumentTitle'
 import { useBackgroundColorContent } from '../../../helpers/useBackgroundColorContent'
 
 import PageHead from './pageHead'
-import PageBody from './pageBody'
+import PageBody from './pageBody.vue'
 import { providePageMeta } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
 import { stringifyQuery } from '@dcloudio/uni-shared'

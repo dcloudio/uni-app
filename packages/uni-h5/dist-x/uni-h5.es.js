@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createElementVNode, toDisplayString, unref, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, createCommentVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createElementVNode, toDisplayString, unref, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, normalizeStyle, Fragment, createCommentVNode, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -5883,8 +5883,7 @@ function createAppRouteRuntime(options = {}) {
     }
   );
   function createAppRouteContext2(event) {
-    var _a, _b;
-    const timeStamp = (_a = event.timeStamp) != null ? _a : Date.now();
+    const timeStamp = event.timeStamp ?? Date.now();
     return {
       event: {
         path: event.path,
@@ -5892,7 +5891,7 @@ function createAppRouteRuntime(options = {}) {
         openType: event.openType,
         notFound: event.notFound,
         timeStamp,
-        routeEventId: (_b = event.routeEventId) != null ? _b : `${timeStamp}-${++routeEventId}`
+        routeEventId: event.routeEventId ?? `${timeStamp}-${++routeEventId}`
       },
       normalizeRewriteRoute: options.normalizeRewriteRoute
     };
@@ -7608,26 +7607,6 @@ const reLaunch = /* @__PURE__ */ defineAsyncApi(
   ReLaunchProtocol,
   ReLaunchOptions
 );
-var __async$3 = (__this, __arguments, generator) => {
-  return new Promise((resolve, reject) => {
-    var fulfilled = (value) => {
-      try {
-        step(generator.next(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var rejected = (value) => {
-      try {
-        step(generator.throw(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-    step((generator = generator.apply(__this, __arguments)).next());
-  });
-};
 function normalizeAppRoutePath(path) {
   const route = getRouteOptions(path, true);
   const pagePath = route == null ? void 0 : route.meta.route;
@@ -7787,26 +7766,24 @@ function bindOrRedirectTransaction(router, to, transaction) {
   }
   bindRouteTransaction(to, transaction);
 }
-function createLaunchTransaction(router, to) {
-  return __async$3(this, null, function* () {
-    yield launchExecutorReady;
-    const originalRoute = getOriginalRoute(to) || to;
-    const resolved = yield launchExecutor(originalRoute);
-    const sourceFullPath = originalRoute.fullPath;
-    const transaction = createWebAppRouteTransaction(
-      resolveFullPath(router, resolved.url),
-      "appLaunch",
-      resolved.context
-    );
-    if (transaction.finalFullPath !== sourceFullPath) {
-      pendingProgrammaticRoutes.push(transaction);
-      return {
-        transaction,
-        redirect: toRouteLocation(resolved.url)
-      };
-    }
-    return { transaction };
-  });
+async function createLaunchTransaction(router, to) {
+  await launchExecutorReady;
+  const originalRoute = getOriginalRoute(to) || to;
+  const resolved = await launchExecutor(originalRoute);
+  const sourceFullPath = originalRoute.fullPath;
+  const transaction = createWebAppRouteTransaction(
+    resolveFullPath(router, resolved.url),
+    "appLaunch",
+    resolved.context
+  );
+  if (transaction.finalFullPath !== sourceFullPath) {
+    pendingProgrammaticRoutes.push(transaction);
+    return {
+      transaction,
+      redirect: toRouteLocation(resolved.url)
+    };
+  }
+  return { transaction };
 }
 function registerWebAppRouteLaunchExecutor(executor) {
   launchExecutor = executor;
@@ -7851,11 +7828,11 @@ function setWebAppRouteHistoryDirection(fullPath, direction2, delta = 0) {
   };
 }
 function initWebAppRouteListener(router, { onRouteConfirmed, onMissingRoute }) {
-  router.beforeEach((to) => __async$3(this, null, function* () {
+  router.beforeEach(async (to) => {
     const route = to;
     if (!appRouteStarted) {
       appRouteStarted = true;
-      const launch = yield createLaunchTransaction(router, route);
+      const launch = await createLaunchTransaction(router, route);
       if (launch.redirect) {
         return launch.redirect;
       }
@@ -7904,7 +7881,7 @@ function initWebAppRouteListener(router, { onRouteConfirmed, onMissingRoute }) {
       }
     }
     return bindOrRedirectTransaction(router, route, transaction);
-  }));
+  });
   router.afterEach((to, _from, failure) => {
     var _a;
     const route = to;
@@ -8306,7 +8283,7 @@ function getBrowserInfo() {
       if (window.matchMedia("(orientation:landscape)").matches) {
         deviceOrientation = "landscape";
       }
-    } catch (e2) {
+    } catch {
     }
   }
   if (deviceOrientation === "portrait" && window.screen.orientation !== void 0) {
@@ -9731,66 +9708,30 @@ function revokeObjectURL(url) {
   URL.revokeObjectURL(url);
   delete files[url];
 }
-var __defProp$4 = Object.defineProperty;
-var __defProps$4 = Object.defineProperties;
-var __getOwnPropDescs$4 = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols$4 = Object.getOwnPropertySymbols;
-var __hasOwnProp$4 = Object.prototype.hasOwnProperty;
-var __propIsEnum$4 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues$4 = (a2, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp$4.call(b, prop))
-      __defNormalProp$4(a2, prop, b[prop]);
-  if (__getOwnPropSymbols$4)
-    for (var prop of __getOwnPropSymbols$4(b)) {
-      if (__propIsEnum$4.call(b, prop))
-        __defNormalProp$4(a2, prop, b[prop]);
-    }
-  return a2;
-};
-var __spreadProps$4 = (a2, b) => __defProps$4(a2, __getOwnPropDescs$4(b));
 const _hoisted_1$1 = { class: "uni-async-loading" };
 const _hoisted_2$1 = /* @__PURE__ */ createElementVNode("i", { class: "uni-loading" }, null, -1);
 const _hoisted_3$1 = [
   _hoisted_2$1
 ];
-const _sfc_main$b = /* @__PURE__ */ defineComponent(__spreadProps$4(__spreadValues$4({}, {
-  name: "AsyncLoading",
-  __reserved: true,
-  compatConfig: { MODE: 3 }
-}), {
+const _sfc_main$c = /* @__PURE__ */ defineComponent({
+  ...{
+    name: "AsyncLoading",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
   __name: "asyncLoading",
   setup(__props) {
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", _hoisted_1$1, _hoisted_3$1);
     };
   }
-}));
-var __defProp$3 = Object.defineProperty;
-var __defProps$3 = Object.defineProperties;
-var __getOwnPropDescs$3 = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols$3 = Object.getOwnPropertySymbols;
-var __hasOwnProp$3 = Object.prototype.hasOwnProperty;
-var __propIsEnum$3 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues$3 = (a2, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp$3.call(b, prop))
-      __defNormalProp$3(a2, prop, b[prop]);
-  if (__getOwnPropSymbols$3)
-    for (var prop of __getOwnPropSymbols$3(b)) {
-      if (__propIsEnum$3.call(b, prop))
-        __defNormalProp$3(a2, prop, b[prop]);
-    }
-  return a2;
-};
-var __spreadProps$3 = (a2, b) => __defProps$3(a2, __getOwnPropDescs$3(b));
-const _sfc_main$a = /* @__PURE__ */ defineComponent(__spreadProps$3(__spreadValues$3({}, {
-  name: "AsyncError",
-  __reserved: true,
-  compatConfig: { MODE: 3 }
-}), {
+});
+const _sfc_main$b = /* @__PURE__ */ defineComponent({
+  ...{
+    name: "AsyncError",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
   __name: "asyncError",
   props: ["error"],
   setup(__props) {
@@ -9806,7 +9747,7 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent(__spreadProps$3(__spreadValu
       }, toDisplayString(unref(t2)("uni.async.error")), 1);
     };
   }
-}));
+});
 let appVm;
 let $uniApp;
 {
@@ -9842,11 +9783,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$c.name)) {
+    app.component(_sfc_main$c.name, _sfc_main$c);
+  }
   if (!app.component(_sfc_main$b.name)) {
     app.component(_sfc_main$b.name, _sfc_main$b);
-  }
-  if (!app.component(_sfc_main$a.name)) {
-    app.component(_sfc_main$a.name, _sfc_main$a);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -9862,26 +9803,6 @@ function updateAppBodyScopeId(vm) {
     document.body.setAttribute(scopeId, "");
   }
 }
-var __async$2 = (__this, __arguments, generator) => {
-  return new Promise((resolve, reject) => {
-    var fulfilled = (value) => {
-      try {
-        step(generator.next(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var rejected = (value) => {
-      try {
-        step(generator.throw(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-    step((generator = generator.apply(__this, __arguments)).next());
-  });
-};
 function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
     comp = extend({}, comp);
@@ -10070,10 +9991,10 @@ function setupApp(comp) {
         return resolved;
       };
       if (__UNI_FEATURE_PAGES__) {
-        registerWebAppRouteLaunchExecutor((launchRoute) => __async$2(this, null, function* () {
-          yield Promise.resolve();
+        registerWebAppRouteLaunchExecutor(async (launchRoute) => {
+          await Promise.resolve();
           return onLaunch(launchRoute);
-        }));
+        });
       } else {
         onBeforeMount(onLaunch);
       }
@@ -10653,25 +10574,6 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-var __defProp$2 = Object.defineProperty;
-var __defProps$2 = Object.defineProperties;
-var __getOwnPropDescs$2 = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols$2 = Object.getOwnPropertySymbols;
-var __hasOwnProp$2 = Object.prototype.hasOwnProperty;
-var __propIsEnum$2 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues$2 = (a2, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp$2.call(b, prop))
-      __defNormalProp$2(a2, prop, b[prop]);
-  if (__getOwnPropSymbols$2)
-    for (var prop of __getOwnPropSymbols$2(b)) {
-      if (__propIsEnum$2.call(b, prop))
-        __defNormalProp$2(a2, prop, b[prop]);
-    }
-  return a2;
-};
-var __spreadProps$2 = (a2, b) => __defProps$2(a2, __getOwnPropDescs$2(b));
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
 const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
@@ -10690,7 +10592,8 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-const _sfc_main$9 = /* @__PURE__ */ defineComponent(__spreadProps$2(__spreadValues$2({}, { name: "PageRefresh" }), {
+const _sfc_main$a = /* @__PURE__ */ defineComponent({
+  ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
@@ -10727,7 +10630,7 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent(__spreadProps$2(__spreadValu
       ]);
     };
   }
-}));
+});
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -10983,28 +10886,32 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const PageBody = /* @__PURE__ */ defineSystemComponent({
-  name: "PageBody",
-  setup(props2, ctx) {
-    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
-    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
+const _sfc_main$9 = /* @__PURE__ */ defineComponent({
+  ...{
+    name: "PageBody",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "pageBody",
+  setup(__props) {
+    const isX = true;
+    const hasPullDownRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__;
+    const pageMeta = hasPullDownRefresh ? usePageMeta() : null;
+    const refreshRef = ref(null);
     const wrapperRef = ref(null);
-    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
+    const _pageRefresh = hasPullDownRefresh && pageMeta && (pageMeta.enablePullDownRefresh || isX) ? usePageRefresh(refreshRef) : null;
     const pageRefresh = ref(null);
-    watch(() => {
-      return pageMeta.enablePullDownRefresh;
-    }, () => {
-      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
-    }, {
-      immediate: true
-    });
-    function _resize() {
-      const {
-        top,
-        left,
-        right,
-        bottom
-      } = getSafeAreaInsets(wrapperRef.value);
+    watch(
+      () => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh,
+      () => {
+        pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
+      },
+      {
+        immediate: true
+      }
+    );
+    function resize() {
+      const { top, left, right, bottom } = getSafeAreaInsets(wrapperRef.value);
       const vars = {
         "--uni-safe-area-inset-top": `${top}px`,
         "--uni-safe-area-inset-left": `${left}px`,
@@ -11015,22 +10922,29 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
         wrapperRef.value.style.setProperty(key, vars[key]);
       }
     }
-    return () => {
-      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
-      const pageResizeSensor = createVNode(ResizeSensor, {
-        "onResize": _resize
-      }, null, 8, ["onResize"]);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", mergeProps({
-        "ref": wrapperRef
-      }, pageRefresh.value), [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")]), pageResizeSensor], 16)]);
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock(Fragment, null, [
+        unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh) ? (openBlock(), createBlock(_sfc_main$a, {
+          key: 0,
+          ref_key: "refreshRef",
+          ref: refreshRef
+        }, null, 512)) : createCommentVNode("", true),
+        createElementVNode("uni-page-wrapper", mergeProps({
+          ref_key: "wrapperRef",
+          ref: wrapperRef
+        }, pageRefresh.value), [
+          createElementVNode("uni-page-body", null, [
+            renderSlot(_ctx.$slots, "default")
+          ]),
+          unref(isX) ? (openBlock(), createBlock(unref(ResizeSensor), {
+            key: 0,
+            onResize: resize
+          })) : createCommentVNode("", true)
+        ], 16)
+      ], 64);
     };
   }
 });
-function createPageRefreshTsx(refreshRef, pageMeta) {
-  return createVNode(_sfc_main$9, {
-    "ref": refreshRef
-  }, null, 512);
-}
 const PageComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
@@ -11125,7 +11039,7 @@ function assignDialogPage(ctx, parentInstance, currentInstance) {
 }
 function createPageBodyVNode(ctx) {
   return openBlock(), createBlock(
-    PageBody,
+    _sfc_main$9,
     { key: 0 },
     {
       default: withCtx(() => [renderSlot(ctx.slots, "page")]),
@@ -19909,34 +19823,16 @@ const onBackPress = /* @__PURE__ */ createLifeCycleHook(
 );
 class UniPageContainerElement extends UniElement {
 }
-var __defProp$1 = Object.defineProperty;
-var __defProps$1 = Object.defineProperties;
-var __getOwnPropDescs$1 = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols$1 = Object.getOwnPropertySymbols;
-var __hasOwnProp$1 = Object.prototype.hasOwnProperty;
-var __propIsEnum$1 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues$1 = (a2, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp$1.call(b, prop))
-      __defNormalProp$1(a2, prop, b[prop]);
-  if (__getOwnPropSymbols$1)
-    for (var prop of __getOwnPropSymbols$1(b)) {
-      if (__propIsEnum$1.call(b, prop))
-        __defNormalProp$1(a2, prop, b[prop]);
-    }
-  return a2;
-};
-var __spreadProps$1 = (a2, b) => __defProps$1(a2, __getOwnPropDescs$1(b));
 const MAX_SLIDER_DISTANCE = 100;
 const MIN_SLIDER_VELOCITY = 0.3;
-const _sfc_main$8 = /* @__PURE__ */ defineComponent(__spreadProps$1(__spreadValues$1({}, {
-  name: "page-container",
-  rootElement: {
-    name: "uni-page-container",
-    class: UniPageContainerElement
-  }
-}), {
+const _sfc_main$8 = /* @__PURE__ */ defineComponent({
+  ...{
+    name: "page-container",
+    rootElement: {
+      name: "uni-page-container",
+      class: UniPageContainerElement
+    }
+  },
   __name: "index",
   props: {
     show: { type: Boolean, default: false },
@@ -20209,7 +20105,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent(__spreadProps$1(__spreadValu
       ], 64);
     };
   }
-}));
+});
 class UniVueElement extends HTMLElement {
 }
 class UniLoadingElement extends UniVueElement {
@@ -20261,34 +20157,16 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-var __defProp2 = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp2 = (obj, key, value) => key in obj ? __defProp2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a2, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp2(a2, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp2(a2, prop, b[prop]);
+const _sfc_main$7 = /* @__PURE__ */ defineComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement
     }
-  return a2;
-};
-var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
-const _sfc_main$7 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
-  name: "loading",
-  styleIsolation: "app-and-page",
-  // @ts-ignore
-  rootElement: {
-    name: "uni-loading-element",
-    class: UniLoadingElement
-  }
-}), {
+  },
   __name: "index-x",
   props: {
     paused: { type: Boolean, default: false },
@@ -20314,7 +20192,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues
       ], 512);
     };
   }
-}));
+});
 function normalizeEvent(vm, id2) {
   if (!id2) {
     id2 = vm.id;
@@ -23388,51 +23266,31 @@ const vibrateLong = /* @__PURE__ */ defineAsyncApi(
     }
   }
 );
-var __async$1 = (__this, __arguments, generator) => {
-  return new Promise((resolve, reject) => {
-    var fulfilled = (value) => {
-      try {
-        step(generator.next(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var rejected = (value) => {
-      try {
-        step(generator.throw(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-    step((generator = generator.apply(__this, __arguments)).next());
-  });
-};
 const getClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_GET_CLIPBOARD_DATA,
-  (_0, _1) => __async$1(void 0, [_0, _1], function* (_, { resolve, reject }) {
+  async (_, { resolve, reject }) => {
     initI18nGetClipboardDataMsgsOnce();
     const { t: t2 } = useI18n();
     try {
-      const data = yield navigator.clipboard.readText();
+      const data = await navigator.clipboard.readText();
       resolve({ data });
     } catch (error) {
       _getClipboardData(resolve, () => {
         reject(`${error} ${t2("uni.getClipboardData.fail")}`);
       });
     }
-  })
+  }
 );
 const setClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_SET_CLIPBOARD_DATA,
-  (_0, _1) => __async$1(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
+  async ({ data }, { resolve, reject }) => {
     try {
-      yield navigator.clipboard.writeText(data);
+      await navigator.clipboard.writeText(data);
       resolve();
     } catch (error) {
       _setClipboardData(data, resolve, reject);
     }
-  }),
+  },
   SetClipboardDataProtocol,
   SetClipboardDataOptions
 );
@@ -25567,7 +25425,7 @@ function usePopupStyle(props2, triangleColor = "#fcfcfd") {
       try {
         const number = Number(value);
         return Number.isFinite(number) ? number : 0;
-      } catch (e2) {
+      } catch {
         return 0;
       }
     }
@@ -25630,7 +25488,7 @@ function usePopupStyle(props2, triangleColor = "#fcfcfd") {
         const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
         popupWidth.value = windowWidth;
         popupHeight.value = windowHeight + (windowTop || 0);
-      } catch (e2) {
+      } catch {
       }
     };
     window.addEventListener("resize", fixSize);
@@ -26783,26 +26641,6 @@ const getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi(
     }
   }
 );
-var __async = (__this, __arguments, generator) => {
-  return new Promise((resolve, reject) => {
-    var fulfilled = (value) => {
-      try {
-        step(generator.next(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var rejected = (value) => {
-      try {
-        step(generator.throw(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-    step((generator = generator.apply(__this, __arguments)).next());
-  });
-};
 let keepScreenOn = false;
 let wakeLockSentinel = null;
 let wakeLockRequest = null;
@@ -26849,21 +26687,19 @@ function requestWakeLock() {
   });
   return wakeLockRequest;
 }
-function releaseWakeLock() {
-  return __async(this, null, function* () {
-    if (wakeLockRequest) {
-      yield wakeLockRequest.catch(() => null);
-    }
-    const sentinel = wakeLockSentinel;
-    wakeLockSentinel = null;
-    if (sentinel == null) {
-      return;
-    }
-    sentinel.removeEventListener("release", onWakeLockRelease);
-    if (!sentinel.released) {
-      yield sentinel.release();
-    }
-  });
+async function releaseWakeLock() {
+  if (wakeLockRequest) {
+    await wakeLockRequest.catch(() => null);
+  }
+  const sentinel = wakeLockSentinel;
+  wakeLockSentinel = null;
+  if (sentinel == null) {
+    return;
+  }
+  sentinel.removeEventListener("release", onWakeLockRelease);
+  if (!sentinel.released) {
+    await sentinel.release();
+  }
 }
 function onVisibilityChange() {
   if (document.visibilityState === "visible" && keepScreenOn) {
@@ -27044,9 +26880,8 @@ class CanvasContextImpl {
 }
 const createCanvasContextAsync = function(options) {
   nextTick(() => {
-    var _a;
     const pages = getCurrentBasePages();
-    const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
+    const currentPage = options.component ?? pages[pages.length - 1];
     requestComponentInfo(
       currentPage,
       [
@@ -27060,10 +26895,10 @@ const createCanvasContextAsync = function(options) {
         }
       ],
       (result) => {
-        var _a2, _b, _c;
+        var _a, _b, _c;
         if (result.length > 0) {
           const canvas = result[0].node;
-          (_a2 = options.success) == null ? void 0 : _a2.call(options, new CanvasContextImpl(canvas));
+          (_a = options.success) == null ? void 0 : _a.call(options, new CanvasContextImpl(canvas));
         } else {
           const uniError = new UniError(
             "uni-createCanvasContextAsync",
@@ -27080,9 +26915,8 @@ const createCanvasContextAsync = function(options) {
 const ERR_SUBJECT = "uni-createEditorContextAsync";
 const createEditorContextAsync = function(options) {
   nextTick(() => {
-    var _a;
     const pages = getCurrentBasePages();
-    const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
+    const currentPage = options.component ?? pages[pages.length - 1];
     requestComponentInfo(
       currentPage,
       [
@@ -27096,13 +26930,13 @@ const createEditorContextAsync = function(options) {
         }
       ],
       (result) => {
-        var _a2, _b, _c, _d;
+        var _a, _b, _c, _d;
         if (result.length > 0) {
           const contextInfo = result[0].contextInfo;
           const id2 = contextInfo == null ? void 0 : contextInfo.id;
           const page = contextInfo == null ? void 0 : contextInfo.page;
           if (id2 != null && page != null) {
-            (_a2 = options.success) == null ? void 0 : _a2.call(options, new EditorContext(id2, page));
+            (_a = options.success) == null ? void 0 : _a.call(options, new EditorContext(id2, page));
           } else {
             const uniError = new UniError(
               ERR_SUBJECT,
@@ -29690,12 +29524,11 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       return res;
     });
     const triangleStyle = computed(() => {
-      var _a;
       if (Object.keys(popover).length == 0) {
         return {};
       }
       const res = {};
-      const borderColor = (_a = backgroundColor.value) != null ? _a : theme.value == "dark" ? "#2C2C2C" : "#fcfcfd";
+      const borderColor = backgroundColor.value ?? (theme.value == "dark" ? "#2C2C2C" : "#fcfcfd");
       const top = popover.top;
       const left = popover.left;
       const width = popover.width;
@@ -29740,8 +29573,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       return "取消";
     });
     const computedBackgroundColor = computed(() => {
-      var _a;
-      return (_a = backgroundColor.value) != null ? _a : theme.value == "dark" ? "#2C2C2C" : "#ffffff";
+      return backgroundColor.value ?? (theme.value == "dark" ? "#2C2C2C" : "#ffffff");
     });
     const hoverClass = computed(() => {
       return theme.value == "dark" ? "uni-action-sheet_dialog__hover__dark__mode" : "uni-action-sheet_dialog__hover";
@@ -33157,11 +32989,10 @@ const PreviewImageUniErrors = /* @__PURE__ */ new Map([
 ]);
 let PreviewImageErrorImpl$1 = class PreviewImageErrorImpl2 extends UniError {
   constructor(errCode, uniErrorSubject) {
-    var _a;
     super();
     this.errSubject = uniErrorSubject;
     this.errCode = errCode;
-    this.errMsg = (_a = PreviewImageUniErrors.get(errCode)) != null ? _a : "";
+    this.errMsg = PreviewImageUniErrors.get(errCode) ?? "";
   }
 };
 function __previewImage(option) {
@@ -33314,10 +33145,9 @@ const createWorker = /* @__PURE__ */ defineSyncApi(
         $on(ERROR_EVENT_NAME, listener2);
       }
       postMessage(message, options = null) {
-        var _a;
         this._threadWorker.postMessage(
           message,
-          (_a = options == null ? void 0 : options.transfer) != null ? _a : void 0
+          (options == null ? void 0 : options.transfer) ?? void 0
         );
       }
       terminate() {
@@ -33567,8 +33397,8 @@ export {
   index$5 as Ad,
   index$4 as AdContentPage,
   index$3 as AdDraw,
-  _sfc_main$a as AsyncErrorComponent,
-  _sfc_main$b as AsyncLoadingComponent,
+  _sfc_main$b as AsyncErrorComponent,
+  _sfc_main$c as AsyncLoadingComponent,
   index$r as Button,
   index$2 as Camera,
   indexX$4 as Canvas,
