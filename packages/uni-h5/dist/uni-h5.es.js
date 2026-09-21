@@ -16694,6 +16694,8 @@ function initHooks(options, instance2, publicThis) {
     instance2.__isVisible = true;
     try {
       let query = instance2.attrs.__pageQuery;
+      const scriptLang = instance2 == null ? void 0 : instance2.__scriptLang;
+      const isUTS = !scriptLang || scriptLang === "uts";
       if (false)
         ;
       if (false)

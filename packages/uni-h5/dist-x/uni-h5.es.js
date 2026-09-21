@@ -8550,9 +8550,10 @@ class UniPageImpl {
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
-    var _a, _b;
+    var _a, _b, _c, _d;
     const pageMeta = ((_a = this.vm) == null ? void 0 : _a.$basePage.meta) ? normalizeStyles((_b = this.vm) == null ? void 0 : _b.$basePage.meta, __uniConfig.themeConfig) : void 0;
-    return pageMeta ? new UTSJSONObject({
+    const scriptLang = (_d = (_c = this.vm) == null ? void 0 : _c.$) == null ? void 0 : _d.__scriptLang;
+    const pageStyle = pageMeta ? {
       navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
       navigationBarTextStyle: pageMeta.navigationBar.titleColor,
       navigationBarTitleText: pageMeta.navigationBar.titleText,
@@ -8562,7 +8563,11 @@ class UniPageImpl {
       enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
       onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
-    }) : new UTSJSONObject({});
+    } : {};
+    if (!scriptLang || scriptLang === "uts") {
+      return new UTSJSONObject(pageStyle);
+    }
+    return pageStyle;
   }
   $getPageStyle() {
     return this.getPageStyle();
@@ -8744,7 +8749,7 @@ class UniDialogPageImpl extends UniPageImpl {
   }
 }
 function initXPage(vm, route, page) {
-  var _a, _b;
+  var _a, _b, _c;
   initPageVm(vm, page);
   if (!("$pageLayoutInstance" in vm)) {
     Object.defineProperty(vm, "$pageLayoutInstance", {
@@ -8765,13 +8770,16 @@ function initXPage(vm, route, page) {
   };
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
+    const scriptLang = (_a = vm.$) == null ? void 0 : _a.__scriptLang;
+    const isUTS = !scriptLang || scriptLang === "uts";
     const uniPage = new UniNormalPageImpl({
       route: (route == null ? void 0 : route.path) ? removeLeadingSlash(route == null ? void 0 : route.path) : "",
-      options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
+      // 忽略类型，不同环境UTSJSONObject表示不同类型
+      options: isUTS ? new UTSJSONObject((route == null ? void 0 : route.query) || {}) : (route == null ? void 0 : route.query) || {},
       vm
     });
     vm.$.page = uniPage;
-    vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
+    vm.$dialogPage = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
     if (currentPagesMap.size === 1) {
       setTimeout(() => {
@@ -8793,7 +8801,7 @@ function initXPage(vm, route, page) {
       }
     }
   } else {
-    vm.$.page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
+    vm.$.page = (_c = vm.$pageLayoutInstance) == null ? void 0 : _c.$dialogPage;
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
@@ -20378,8 +20386,10 @@ function initHooks(options, instance2, publicThis) {
     instance2.__isVisible = true;
     try {
       let query = instance2.attrs.__pageQuery;
+      const scriptLang = instance2 == null ? void 0 : instance2.__scriptLang;
+      const isUTS = !scriptLang || scriptLang === "uts";
       if (true) {
-        query = new UTSJSONObject(decodedQuery(query));
+        query = isUTS ? new UTSJSONObject(decodedQuery(query)) : decodedQuery(query);
       }
       if (false)
         ;
@@ -28684,7 +28694,8 @@ const openDialogPage = (options) => {
   const dialogPage = markRaw(
     new UniDialogPageImpl({
       route: removeLeadingSlash(path),
-      options: new UTSJSONObject(query),
+      // 忽略类型，不同环境UTSJSONObject表示不同类型。此处直接传普通object即可，获取options时再进行处理
+      options: query,
       $component: targetRoute.component,
       getParentPage: () => null,
       $disableEscBack: options.disableEscBack,

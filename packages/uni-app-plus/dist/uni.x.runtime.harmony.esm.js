@@ -816,6 +816,7 @@ function getCurrentSystemDialogPage() {
   return currentSystemDialogPage;
 }
 function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
+  var _pageVm$$;
   instance.$dialogPages = ref([]);
   var uniPage;
   if (pageInstance.openType === OPEN_DIALOG_PAGE) {
@@ -832,9 +833,13 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   pageVm.$.page = uniPage;
   uniPage.route = pageVm.$basePage.route;
   uniPage.optionsByJS = pageVm.$basePage.options;
+  var scriptLang = (_pageVm$$ = pageVm.$) === null || _pageVm$$ === void 0 ? void 0 : _pageVm$$.__scriptLang;
   Object.defineProperty(uniPage, "options", {
     get: function() {
-      return new UTSJSONObject(pageVm.$basePage.options);
+      if (!scriptLang || scriptLang === "uts") {
+        return new UTSJSONObject(pageVm.$basePage.options);
+      }
+      return pageVm.$basePage.options;
     }
   });
   uniPage.vm = pageVm;
@@ -1884,6 +1889,12 @@ function init() {
     tabBarConfig.set(key, _tabBarConfig[key]);
   }
   fixBorderStyle(tabBarConfig);
+  if (!tabBarConfig.has("color")) {
+    tabBarConfig.set("color", "#999999");
+  }
+  if (!tabBarConfig.has("selectedColor")) {
+    tabBarConfig.set("selectedColor", "#007AFF");
+  }
   tabBar0.initTabBar(tabBarConfig);
   tabBar0.addEventListener("tabBarItemTap", function(event) {
     var index2 = event.index;
@@ -2094,7 +2105,7 @@ var onThemeChange = function(themeMode) {
       var routeOptions = initRouteOptions(basePage.path, "");
       routeOptions.meta.isQuit = basePage.meta.isQuit;
       var style = parsePageStyle(routeOptions);
-      page.$page.setPageStyle(new UTSJSONObject(style));
+      page.$page.setPageStyle(style);
     });
   };
   handlePage();

@@ -8238,6 +8238,8 @@ function initHooks(options, instance, publicThis) {
     instance.__isVisible = true;
     try {
       let query = instance.attrs.__pageQuery;
+      const scriptLang = instance == null ? void 0 : instance.__scriptLang;
+      const isUTS = !scriptLang || scriptLang === "uts";
       if (false)
         ;
       if (false)
