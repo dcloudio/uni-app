@@ -15274,15 +15274,12 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
     const hasLeftWindow = __UNI_FEATURE_LEFTWINDOW__;
     const hasRightWindow = __UNI_FEATURE_RIGHTWINDOW__;
     const hasTabBar = __UNI_FEATURE_TABBAR__;
-    const PageRouter = hasPages && defineSystemComponent({
-      name: "PageRouter",
-      setup() {
-        const keepAliveRoute = useKeepAliveRoute();
-        return () => createRouterViewVNode(keepAliveRoute);
-      }
-    });
     const rootRef = Vue.ref(null);
     const firstPageComponent = !hasPages && __uniRoutes[0].component;
+    const keepAliveRoute = hasPages ? useKeepAliveRoute() : void 0;
+    const routeKey = keepAliveRoute == null ? void 0 : keepAliveRoute.routeKey;
+    const isTabBar = keepAliveRoute == null ? void 0 : keepAliveRoute.isTabBar;
+    const routeCache2 = keepAliveRoute == null ? void 0 : keepAliveRoute.routeCache;
     const { layoutState, windowState } = useState2();
     useMaxWidth(layoutState, rootRef);
     const topWindow = hasTopWindow && useTopWindow(layoutState);
@@ -15475,29 +15472,6 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       const showTabBar2 = Vue.computed(() => route.meta.isTabBar && tabBar.shown);
       return showTabBar2;
     }
-    function createRouterViewVNode({
-      routeKey,
-      isTabBar,
-      routeCache: routeCache2
-    }) {
-      return Vue.createVNode(vueRouter.RouterView, null, {
-        default: Vue.withCtx(({ Component }) => [
-          (Vue.openBlock(), Vue.createBlock(
-            Vue.KeepAlive,
-            { matchBy: "key", cache: routeCache2 },
-            [
-              (Vue.openBlock(), Vue.createBlock(Vue.resolveDynamicComponent(Component), {
-                type: isTabBar.value ? "tabBar" : "",
-                key: routeKey.value
-              }))
-            ],
-            1032,
-            ["cache"]
-          ))
-        ]),
-        _: 1
-      });
-    }
     function useTopWindow(layoutState2) {
       const { component, style } = __uniConfig.topWindow;
       const windowRef = Vue.ref(null);
@@ -15615,17 +15589,17 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
         windowRef
       };
     }
-    const n42 = Vue.createPlainElement("uni-app", { class: () => Vue.unref(clazz) }, null, true);
-    Vue.setInsertionState(n42);
+    const n46 = Vue.createPlainElement("uni-app", { class: () => Vue.unref(clazz) }, null, true);
+    Vue.setInsertionState(n46);
     Vue.createIf(
       () => Vue.unref(hasResponsive),
       () => {
-        const n31 = Vue.createPlainElement("uni-layout", { class: () => ({
+        const n33 = Vue.createPlainElement("uni-layout", { class: () => ({
           "uni-app--showtopwindow": Vue.unref(hasTopWindow) && Vue.unref(layoutState).showTopWindow,
           "uni-app--showleftwindow": Vue.unref(hasLeftWindow) && Vue.unref(layoutState).showLeftWindow,
           "uni-app--showrightwindow": Vue.unref(hasRightWindow) && Vue.unref(layoutState).showRightWindow
         }) });
-        Vue.setInsertionState(n31);
+        Vue.setInsertionState(n33);
         Vue.createIf(() => Vue.unref(hasTopWindow) && Vue.unref(TopWindow), () => {
           const n7 = Vue.createPlainElement("uni-top-window");
           const n5 = t0();
@@ -15645,97 +15619,121 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.renderEffect(() => Vue.setStyle(n6, { height: Vue.unref(layoutState).topWindowHeight + "px" }));
           return n7;
         });
-        Vue.setInsertionState(n31, 1);
-        const n30 = Vue.createPlainElement("uni-content");
-        Vue.setInsertionState(n30);
-        const n13 = Vue.createPlainElement("uni-main");
-        Vue.setInsertionState(n13);
+        Vue.setInsertionState(n33, 1);
+        const n32 = Vue.createPlainElement("uni-content");
+        Vue.setInsertionState(n32);
+        const n15 = Vue.createPlainElement("uni-main");
+        Vue.setInsertionState(n15);
         Vue.createIf(
           () => Vue.unref(hasPages),
           () => {
-            const n10 = Vue.createComponent(Vue.unref(PageRouter));
-            return n10;
+            const n12 = Vue.createComponent(Vue.unref(vueRouter.RouterView), null, (_slotProps0) => {
+              const n11 = Vue.createComponent(Vue.VaporKeepAlive, {
+                "match-by": "key",
+                cache: () => Vue.unref(routeCache2)
+              }, Vue.extend(() => {
+                const n10 = Vue.createDynamicComponent(() => _slotProps0.Component, { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, null, 4, () => Vue.unref(routeKey));
+                return n10;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              }));
+              return n11;
+            });
+            return n12;
           },
           () => {
-            const n12 = Vue.createDynamicComponent(() => Vue.unref(firstPageComponent));
-            return n12;
+            const n14 = Vue.createDynamicComponent(() => Vue.unref(firstPageComponent));
+            return n14;
           },
           517
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
         );
-        Vue.setInsertionState(n30, 1);
+        Vue.setInsertionState(n32, 1);
         Vue.createIf(() => Vue.unref(hasLeftWindow) && Vue.unref(LeftWindow), () => {
-          const n21 = Vue.createPlainElement("uni-left-window", {
+          const n23 = Vue.createPlainElement("uni-left-window", {
             "data-show": () => Vue.unref(layoutState).apiShowLeftWindow || void 0,
             style: () => Vue.unref(layoutState).leftWindowStyle
           });
-          Vue.setInsertionState(n21);
+          Vue.setInsertionState(n23);
           Vue.createIf(() => Vue.unref(layoutState).apiShowLeftWindow, () => {
-            const n18 = t2();
-            Vue.on(n18, "click", () => Vue.unref(layoutState).apiShowLeftWindow = false);
-            return n18;
+            const n20 = t2();
+            Vue.on(n20, "click", () => Vue.unref(layoutState).apiShowLeftWindow = false);
+            return n20;
           });
-          const n20 = t3();
-          Vue.insert(n20, n21);
-          Vue.setInsertionState(n20);
-          const n19 = Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
+          const n22 = t3();
+          Vue.insert(n22, n23);
+          Vue.setInsertionState(n22);
+          const n21 = Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
             () => Vue.unref(windowState)
           ] });
-          Vue.setStaticTemplateRef(n19, leftWindowRef, null, "leftWindowRef");
-          Vue.applyVShow(n21, () => Vue.unref(layoutState).showLeftWindow || Vue.unref(layoutState).apiShowLeftWindow);
-          return n21;
+          Vue.setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
+          Vue.applyVShow(n23, () => Vue.unref(layoutState).showLeftWindow || Vue.unref(layoutState).apiShowLeftWindow);
+          return n23;
         });
-        Vue.setInsertionState(n30, 2);
+        Vue.setInsertionState(n32, 2);
         Vue.createIf(() => Vue.unref(hasRightWindow) && Vue.unref(RightWindow), () => {
-          const n29 = Vue.createPlainElement("uni-right-window", {
+          const n31 = Vue.createPlainElement("uni-right-window", {
             "data-show": () => Vue.unref(layoutState).apiShowRightWindow || void 0,
             style: () => Vue.unref(layoutState).rightWindowStyle
           });
-          Vue.setInsertionState(n29);
+          Vue.setInsertionState(n31);
           Vue.createIf(() => Vue.unref(layoutState).apiShowRightWindow, () => {
-            const n26 = t2();
-            Vue.on(n26, "click", () => Vue.unref(layoutState).apiShowRightWindow = false);
-            return n26;
+            const n28 = t2();
+            Vue.on(n28, "click", () => Vue.unref(layoutState).apiShowRightWindow = false);
+            return n28;
           });
-          const n28 = t4();
-          Vue.insert(n28, n29);
-          Vue.setInsertionState(n28);
-          const n27 = Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
+          const n30 = t4();
+          Vue.insert(n30, n31);
+          Vue.setInsertionState(n30);
+          const n29 = Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
             () => Vue.unref(windowState)
           ] });
-          Vue.setStaticTemplateRef(n27, rightWindowRef, null, "rightWindowRef");
-          Vue.applyVShow(n29, () => Vue.unref(layoutState).showRightWindow || Vue.unref(layoutState).apiShowRightWindow);
-          return n29;
+          Vue.setStaticTemplateRef(n29, rightWindowRef, null, "rightWindowRef");
+          Vue.applyVShow(n31, () => Vue.unref(layoutState).showRightWindow || Vue.unref(layoutState).apiShowRightWindow);
+          return n31;
         });
-        return n31;
+        return n33;
       },
       () => {
-        const n33 = Vue.createIf(
+        const n35 = Vue.createIf(
           () => Vue.unref(hasPages),
           () => {
-            const n35 = Vue.createComponent(Vue.unref(PageRouter));
-            return n35;
+            const n39 = Vue.createComponent(Vue.unref(vueRouter.RouterView), null, (_slotProps0) => {
+              const n38 = Vue.createComponent(Vue.VaporKeepAlive, {
+                "match-by": "key",
+                cache: () => Vue.unref(routeCache2)
+              }, Vue.extend(() => {
+                const n37 = Vue.createDynamicComponent(() => _slotProps0.Component, { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, null, 4, () => Vue.unref(routeKey));
+                return n37;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              }));
+              return n38;
+            });
+            return n39;
           },
           () => {
-            const n37 = Vue.createDynamicComponent(() => Vue.unref(firstPageComponent));
-            return n37;
+            const n41 = Vue.createDynamicComponent(() => Vue.unref(firstPageComponent));
+            return n41;
           },
           2053
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
         );
-        return n33;
+        return n35;
       },
       1797
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_6 */
     );
-    Vue.setInsertionState(n42, 1);
+    Vue.setInsertionState(n46, 1);
     Vue.createIf(() => Vue.unref(hasTabBar), () => {
-      const n41 = Vue.createComponent(_sfc_main$1);
-      Vue.applyVShow(n41, () => Vue.unref(showTabBar));
-      return n41;
+      const n45 = Vue.createComponent(_sfc_main$1);
+      Vue.applyVShow(n45, () => Vue.unref(showTabBar));
+      return n45;
     });
-    Vue.setStaticTemplateRef(n42, rootRef, null, "rootRef");
-    return n42;
+    Vue.setStaticTemplateRef(n46, rootRef, null, "rootRef");
+    return n46;
   }
 });
 Object.defineProperty(exports, "UTS", {

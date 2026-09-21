@@ -32,7 +32,15 @@
       </uni-top-window>
       <uni-content>
         <uni-main>
-          <PageRouter v-if="hasPages" />
+          <RouterView v-if="hasPages" v-slot="{ Component }">
+            <KeepAlive match-by="key" :cache="routeCache">
+              <component
+                :is="Component"
+                :type="isTabBar ? 'tabBar' : ''"
+                :key="routeKey"
+              />
+            </KeepAlive>
+          </RouterView>
           <component v-else :is="firstPageComponent" />
         </uni-main>
         <uni-left-window
@@ -84,7 +92,15 @@
       </uni-content>
     </uni-layout>
     <template v-else>
-      <PageRouter v-if="hasPages" />
+      <RouterView v-if="hasPages" v-slot="{ Component }">
+        <KeepAlive match-by="key" :cache="routeCache">
+          <component
+            :is="Component"
+            :type="isTabBar ? 'tabBar' : ''"
+            :key="routeKey"
+          />
+        </KeepAlive>
+      </RouterView>
       <component v-else :is="firstPageComponent" />
     </template>
     <TabBar v-if="hasTabBar" v-show="showTabBar" />
@@ -110,21 +126,15 @@ import {
   type Ref,
   type defineComponent,
   computed,
-  createBlock,
-  createVNode,
   nextTick,
   onMounted,
-  openBlock,
   reactive,
   ref,
-  resolveDynamicComponent,
   watch,
-  withCtx,
 } from 'vue'
 
 import { RouterView } from 'vue-router'
 
-import { defineSystemComponent } from '@dcloudio/uni-components'
 import { getRouteOptions, updateCssVar } from '@dcloudio/uni-core'
 import { useTabBar } from '../../setup/state'
 import {
@@ -150,8 +160,6 @@ defineOptions({
   compatConfig: { MODE: 3 },
 })
 
-type KeepAliveRoute = ReturnType<typeof useKeepAliveRoute>
-
 const DEFAULT_CSS_VAR_VALUE = '0px'
 
 const hasPages = __UNI_FEATURE_PAGES__
@@ -161,19 +169,13 @@ const hasLeftWindow = __UNI_FEATURE_LEFTWINDOW__
 const hasRightWindow = __UNI_FEATURE_RIGHTWINDOW__
 const hasTabBar = __UNI_FEATURE_TABBAR__
 
-const PageRouter =
-  hasPages &&
-  defineSystemComponent({
-    name: 'PageRouter',
-    setup() {
-      const keepAliveRoute = useKeepAliveRoute()
-      return () => createRouterViewVNode(keepAliveRoute)
-    },
-  })
-
 const rootRef: Ref<HTMLElement | null> = ref(null)
 !__NODE_JS__ && initCssVar()
 const firstPageComponent = !hasPages && __uniRoutes[0].component
+const keepAliveRoute = hasPages ? useKeepAliveRoute() : undefined
+const routeKey = keepAliveRoute?.routeKey
+const isTabBar = keepAliveRoute?.isTabBar
+const routeCache = keepAliveRoute?.routeCache
 const { layoutState, windowState } = useState()
 useMaxWidth(layoutState, rootRef)
 const topWindow = (hasTopWindow &&
@@ -429,32 +431,6 @@ function useShowTabBar() {
       '--tab-bar-height': tabBar.height!,
     })
   return showTabBar
-}
-
-function createRouterViewVNode({
-  routeKey,
-  isTabBar,
-  routeCache,
-}: KeepAliveRoute) {
-  return createVNode(RouterView, null, {
-    default: withCtx(({ Component }: { Component: unknown }) => [
-      (openBlock(),
-      createBlock(
-        KeepAlive,
-        { matchBy: 'key', cache: routeCache },
-        [
-          (openBlock(),
-          createBlock(resolveDynamicComponent(Component), {
-            type: isTabBar.value ? 'tabBar' : '',
-            key: routeKey.value,
-          })),
-        ],
-        1032 /* PROPS, DYNAMIC_SLOTS */,
-        ['cache']
-      )),
-    ]),
-    _: 1 /* STABLE */,
-  })
 }
 
 interface WindowComponentInfo {

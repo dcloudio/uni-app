@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, formatDateTime, onCreateVueApp, RESPONSIVE_MIN_WIDTH } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, defineVaporComponent, on as on$1, setText, toDisplayString, unref, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, insert, setClass, setAttr, createFor, setHtml, setProp, createComponent as createComponent$1, setStaticTemplateRef, createSlot, withCtx, renderSlot, renderList, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, logError, createApp, Transition, effectScope, createKeyedFragment, normalizeUniText, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc, createDynamicComponent, KeepAlive, resolveDynamicComponent } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, defineVaporComponent, on as on$1, setText, toDisplayString, unref, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, insert, setClass, setAttr, createFor, setHtml, setProp, createComponent as createComponent$1, setStaticTemplateRef, createSlot, withCtx, renderSlot, renderList, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, logError, createApp, Transition, effectScope, createKeyedFragment, normalizeUniText, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc, createDynamicComponent, VaporKeepAlive } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -32851,16 +32851,13 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
     const hasLeftWindow = __UNI_FEATURE_LEFTWINDOW__;
     const hasRightWindow = __UNI_FEATURE_RIGHTWINDOW__;
     const hasTabBar = __UNI_FEATURE_TABBAR__;
-    const PageRouter = hasPages && defineSystemComponent({
-      name: "PageRouter",
-      setup() {
-        const keepAliveRoute = useKeepAliveRoute();
-        return () => createRouterViewVNode(keepAliveRoute);
-      }
-    });
     const rootRef = ref(null);
     initCssVar();
     const firstPageComponent = !hasPages && __uniRoutes[0].component;
+    const keepAliveRoute = hasPages ? useKeepAliveRoute() : void 0;
+    const routeKey = keepAliveRoute == null ? void 0 : keepAliveRoute.routeKey;
+    const isTabBar = keepAliveRoute == null ? void 0 : keepAliveRoute.isTabBar;
+    const routeCache2 = keepAliveRoute == null ? void 0 : keepAliveRoute.routeCache;
     const { layoutState, windowState } = useState2();
     useMaxWidth(layoutState, rootRef);
     const topWindow = hasTopWindow && useTopWindow(layoutState);
@@ -33079,29 +33076,6 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       });
       return showTabBar22;
     }
-    function createRouterViewVNode({
-      routeKey,
-      isTabBar,
-      routeCache: routeCache2
-    }) {
-      return createVNode(RouterView, null, {
-        default: withCtx(({ Component }) => [
-          (openBlock(), createBlock(
-            KeepAlive,
-            { matchBy: "key", cache: routeCache2 },
-            [
-              (openBlock(), createBlock(resolveDynamicComponent(Component), {
-                type: isTabBar.value ? "tabBar" : "",
-                key: routeKey.value
-              }))
-            ],
-            1032,
-            ["cache"]
-          ))
-        ]),
-        _: 1
-      });
-    }
     function useTopWindow(layoutState2) {
       const { component, style } = __uniConfig.topWindow;
       const windowRef = ref(null);
@@ -33219,17 +33193,17 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
         windowRef
       };
     }
-    const n42 = createPlainElement("uni-app", { class: () => unref(clazz) }, null, true);
-    setInsertionState(n42);
+    const n46 = createPlainElement("uni-app", { class: () => unref(clazz) }, null, true);
+    setInsertionState(n46);
     createIf(
       () => unref(hasResponsive),
       () => {
-        const n31 = createPlainElement("uni-layout", { class: () => ({
+        const n33 = createPlainElement("uni-layout", { class: () => ({
           "uni-app--showtopwindow": unref(hasTopWindow) && unref(layoutState).showTopWindow,
           "uni-app--showleftwindow": unref(hasLeftWindow) && unref(layoutState).showLeftWindow,
           "uni-app--showrightwindow": unref(hasRightWindow) && unref(layoutState).showRightWindow
         }) });
-        setInsertionState(n31);
+        setInsertionState(n33);
         createIf(() => unref(hasTopWindow) && unref(TopWindow), () => {
           const n7 = createPlainElement("uni-top-window");
           const n5 = t0();
@@ -33249,97 +33223,121 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
           renderEffect(() => setStyle(n6, { height: unref(layoutState).topWindowHeight + "px" }));
           return n7;
         });
-        setInsertionState(n31, 1);
-        const n30 = createPlainElement("uni-content");
-        setInsertionState(n30);
-        const n13 = createPlainElement("uni-main");
-        setInsertionState(n13);
+        setInsertionState(n33, 1);
+        const n32 = createPlainElement("uni-content");
+        setInsertionState(n32);
+        const n15 = createPlainElement("uni-main");
+        setInsertionState(n15);
         createIf(
           () => unref(hasPages),
           () => {
-            const n10 = createComponent$1(unref(PageRouter));
-            return n10;
+            const n12 = createComponent$1(unref(RouterView), null, (_slotProps0) => {
+              const n11 = createComponent$1(VaporKeepAlive, {
+                "match-by": "key",
+                cache: () => unref(routeCache2)
+              }, extend$1(() => {
+                const n10 = createDynamicComponent(() => _slotProps0.Component, { type: () => unref(isTabBar) ? "tabBar" : "" }, null, 4, () => unref(routeKey));
+                return n10;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              }));
+              return n11;
+            });
+            return n12;
           },
           () => {
-            const n12 = createDynamicComponent(() => unref(firstPageComponent));
-            return n12;
+            const n14 = createDynamicComponent(() => unref(firstPageComponent));
+            return n14;
           },
           517
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
         );
-        setInsertionState(n30, 1);
+        setInsertionState(n32, 1);
         createIf(() => unref(hasLeftWindow) && unref(LeftWindow), () => {
-          const n21 = createPlainElement("uni-left-window", {
+          const n23 = createPlainElement("uni-left-window", {
             "data-show": () => unref(layoutState).apiShowLeftWindow || void 0,
             style: () => unref(layoutState).leftWindowStyle
           });
-          setInsertionState(n21);
+          setInsertionState(n23);
           createIf(() => unref(layoutState).apiShowLeftWindow, () => {
-            const n18 = t2();
-            on$1(n18, "click", () => unref(layoutState).apiShowLeftWindow = false);
-            return n18;
+            const n20 = t2();
+            on$1(n20, "click", () => unref(layoutState).apiShowLeftWindow = false);
+            return n20;
           });
-          const n20 = t3();
-          insert(n20, n21);
-          setInsertionState(n20);
-          const n19 = createDynamicComponent(() => unref(LeftWindow), { $: [
+          const n22 = t3();
+          insert(n22, n23);
+          setInsertionState(n22);
+          const n21 = createDynamicComponent(() => unref(LeftWindow), { $: [
             () => unref(windowState)
           ] });
-          setStaticTemplateRef(n19, leftWindowRef, null, "leftWindowRef");
-          applyVShow(n21, () => unref(layoutState).showLeftWindow || unref(layoutState).apiShowLeftWindow);
-          return n21;
+          setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
+          applyVShow(n23, () => unref(layoutState).showLeftWindow || unref(layoutState).apiShowLeftWindow);
+          return n23;
         });
-        setInsertionState(n30, 2);
+        setInsertionState(n32, 2);
         createIf(() => unref(hasRightWindow) && unref(RightWindow), () => {
-          const n29 = createPlainElement("uni-right-window", {
+          const n31 = createPlainElement("uni-right-window", {
             "data-show": () => unref(layoutState).apiShowRightWindow || void 0,
             style: () => unref(layoutState).rightWindowStyle
           });
-          setInsertionState(n29);
+          setInsertionState(n31);
           createIf(() => unref(layoutState).apiShowRightWindow, () => {
-            const n26 = t2();
-            on$1(n26, "click", () => unref(layoutState).apiShowRightWindow = false);
-            return n26;
+            const n28 = t2();
+            on$1(n28, "click", () => unref(layoutState).apiShowRightWindow = false);
+            return n28;
           });
-          const n28 = t4();
-          insert(n28, n29);
-          setInsertionState(n28);
-          const n27 = createDynamicComponent(() => unref(RightWindow), { $: [
+          const n30 = t4();
+          insert(n30, n31);
+          setInsertionState(n30);
+          const n29 = createDynamicComponent(() => unref(RightWindow), { $: [
             () => unref(windowState)
           ] });
-          setStaticTemplateRef(n27, rightWindowRef, null, "rightWindowRef");
-          applyVShow(n29, () => unref(layoutState).showRightWindow || unref(layoutState).apiShowRightWindow);
-          return n29;
+          setStaticTemplateRef(n29, rightWindowRef, null, "rightWindowRef");
+          applyVShow(n31, () => unref(layoutState).showRightWindow || unref(layoutState).apiShowRightWindow);
+          return n31;
         });
-        return n31;
+        return n33;
       },
       () => {
-        const n33 = createIf(
+        const n35 = createIf(
           () => unref(hasPages),
           () => {
-            const n35 = createComponent$1(unref(PageRouter));
-            return n35;
+            const n39 = createComponent$1(unref(RouterView), null, (_slotProps0) => {
+              const n38 = createComponent$1(VaporKeepAlive, {
+                "match-by": "key",
+                cache: () => unref(routeCache2)
+              }, extend$1(() => {
+                const n37 = createDynamicComponent(() => _slotProps0.Component, { type: () => unref(isTabBar) ? "tabBar" : "" }, null, 4, () => unref(routeKey));
+                return n37;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              }));
+              return n38;
+            });
+            return n39;
           },
           () => {
-            const n37 = createDynamicComponent(() => unref(firstPageComponent));
-            return n37;
+            const n41 = createDynamicComponent(() => unref(firstPageComponent));
+            return n41;
           },
           2053
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
         );
-        return n33;
+        return n35;
       },
       1797
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_6 */
     );
-    setInsertionState(n42, 1);
+    setInsertionState(n46, 1);
     createIf(() => unref(hasTabBar), () => {
-      const n41 = createComponent$1(_sfc_main$1);
-      applyVShow(n41, () => unref(showTabBar2));
-      return n41;
+      const n45 = createComponent$1(_sfc_main$1);
+      applyVShow(n45, () => unref(showTabBar2));
+      return n45;
     });
-    setStaticTemplateRef(n42, rootRef, null, "rootRef");
-    return n42;
+    setStaticTemplateRef(n46, rootRef, null, "rootRef");
+    return n46;
   }
 });
 export {

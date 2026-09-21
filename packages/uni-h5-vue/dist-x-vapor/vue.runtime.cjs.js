@@ -15466,7 +15466,12 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 			RegExp,
 			Array
 		],
-		max: [String, Number]
+		max: [String, Number],
+		matchBy: {
+			type: String,
+			default: "name"
+		},
+		cache: Object
 	},
 	setup(props, { slots, expose }) {
 		let exposed;
@@ -15475,16 +15480,30 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 		const keepAliveInstance = currentInstance;
 		const cache = /* @__PURE__ */ new Map();
 		const keys = /* @__PURE__ */ new Set();
+		const externalCache = props.cache;
+		const externalCacheState = externalCache ? {
+			keyByVNode: /* @__PURE__ */ new WeakMap(),
+			vnodeByKey: /* @__PURE__ */ new Map()
+		} : void 0;
 		const storageContainer = /* @__PURE__ */ createElement("div");
 		const keptAliveScopes = /* @__PURE__ */ new Map();
 		const resolveCacheKeyFromBlock = (block, interop, branchKey) => {
-			var _ref3, _$key;
-			if (interop && isInteropEnabled) {
-				var _ref, _ref2, _frag$$key;
-				const frag = block;
-				return (_ref = (_ref2 = (_frag$$key = frag.$key) !== null && _frag$$key !== void 0 ? _frag$$key : frag.vnode.key) !== null && _ref2 !== void 0 ? _ref2 : branchKey) !== null && _ref !== void 0 ? _ref : frag.vnode.type;
+			var _ref6, _$key2;
+			if (props.matchBy === "key") {
+				var _ref3, _$key;
+				if (interop && isInteropEnabled) {
+					var _ref, _ref2, _key;
+					const frag = block;
+					return (_ref = (_ref2 = (_key = frag.vnode.key) !== null && _key !== void 0 ? _key : branchKey) !== null && _ref2 !== void 0 ? _ref2 : frag.$key) !== null && _ref !== void 0 ? _ref : frag.vnode.type;
+				}
+				return (_ref3 = (_$key = block.$key) !== null && _$key !== void 0 ? _$key : branchKey) !== null && _ref3 !== void 0 ? _ref3 : block.type;
 			}
-			return (_ref3 = (_$key = block.$key) !== null && _$key !== void 0 ? _$key : branchKey) !== null && _ref3 !== void 0 ? _ref3 : block.type;
+			if (interop && isInteropEnabled) {
+				var _ref4, _ref5, _frag$$key;
+				const frag = block;
+				return (_ref4 = (_ref5 = (_frag$$key = frag.$key) !== null && _frag$$key !== void 0 ? _frag$$key : frag.vnode.key) !== null && _ref5 !== void 0 ? _ref5 : branchKey) !== null && _ref4 !== void 0 ? _ref4 : frag.vnode.type;
+			}
+			return (_ref6 = (_$key2 = block.$key) !== null && _$key2 !== void 0 ? _$key2 : branchKey) !== null && _ref6 !== void 0 ? _ref6 : block.type;
 		};
 		let current;
 		let rootFragment;
@@ -15503,6 +15522,16 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 				}
 			} else addCacheKey(key);
 			cache.set(key, block);
+			if (externalCache && externalCacheState) {
+				const vnode = getVNodeFromCacheBlock(block);
+				if (vnode) {
+					const previousVNode = externalCacheState.vnodeByKey.get(key);
+					if (previousVNode && previousVNode !== vnode) externalCacheState.keyByVNode.delete(previousVNode);
+					externalCache.set(key, vnode);
+					externalCacheState.keyByVNode.set(vnode, key);
+					externalCacheState.vnodeByKey.set(key, vnode);
+				}
+			}
 			if (isCurrent) current = block;
 		};
 		const cacheBlock = (block = keepAliveInstance.block) => {
@@ -15565,9 +15594,20 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 			} else if (current) unsetShapeFlag(current);
 			cache.delete(key);
 			keys.delete(key);
+			const externalVNode = externalCacheState ? externalCacheState.vnodeByKey.get(key) : void 0;
+			if (externalCache && externalVNode && externalCache.get(key) === externalVNode) externalCache.delete(key);
+			if (externalVNode && externalCacheState) {
+				externalCacheState.vnodeByKey.delete(key);
+				externalCacheState.keyByVNode.delete(externalVNode);
+			}
 			const scope = deleteScope(key);
 			if (scope) scope.stop();
 		};
+		const pruneExternalCacheEntry = externalCache && externalCacheState ? (cached) => {
+			if (!externalCacheState.keyByVNode.has(cached)) return;
+			pruneCacheEntry(externalCacheState.keyByVNode.get(cached));
+		} : void 0;
+		if (externalCache && pruneExternalCacheEntry) externalCache.pruneCacheEntry = pruneExternalCacheEntry;
 		watch(() => [props.include, props.exclude], ([include, exclude]) => {
 			include && pruneCache((name) => matches(include, name));
 			exclude && pruneCache((name) => !matches(exclude, name));
@@ -15612,6 +15652,15 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 			if (!matched && currentBlock && isKeptAlive(currentBlock, interop)) deactivateCached(currentBlock);
 			keptAliveScopes.forEach((scope) => scope.stop());
 			keptAliveScopes.clear();
+			cache.clear();
+			keys.clear();
+			if (externalCache && externalCacheState) {
+				externalCacheState.vnodeByKey.forEach((_vnode, key) => {
+					externalCache.delete(key);
+				});
+				externalCacheState.vnodeByKey.clear();
+				if (externalCache.pruneCacheEntry === pruneExternalCacheEntry) externalCache.pruneCacheEntry = void 0;
+			}
 		});
 		const keepAliveCtx = {
 			isolatePropSources,
@@ -15619,8 +15668,8 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 			getStorageContainer: () => storageContainer,
 			getCachedComponent: (comp, key) => {
 				if (isInteropEnabled && isVNode(comp)) {
-					var _ref4, _comp$key;
-					return cache.get((_ref4 = (_comp$key = comp.key) !== null && _comp$key !== void 0 ? _comp$key : currentCacheKey) !== null && _ref4 !== void 0 ? _ref4 : comp.type);
+					var _ref7, _comp$key;
+					return cache.get((_ref7 = (_comp$key = comp.key) !== null && _comp$key !== void 0 ? _comp$key : currentCacheKey) !== null && _ref7 !== void 0 ? _ref7 : comp.type);
 				}
 				const branchKey = key !== null && key !== void 0 ? key : currentCacheKey;
 				return branchKey != null ? cache.get(branchKey) : cache.get(comp) || cache.get(comp.__asyncResolved);
@@ -15753,6 +15802,9 @@ function getInnerBlock(block, branchKey = currentCacheKey) {
 function getInstanceFromCache(cached) {
 	if (isVaporComponent(cached)) return cached;
 	if (isInteropEnabled) return cached.vnode.component;
+}
+function getVNodeFromCacheBlock(block) {
+	return isInteropFragment(block) ? block.vnode || void 0 : void 0;
 }
 function activate$1(instance, parentNode, anchor, parentSuspense = instance.suspense) {
 	if (instance.ba) {
