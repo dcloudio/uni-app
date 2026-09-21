@@ -92,6 +92,12 @@ function init() {
   }
 
   fixBorderStyle(tabBarConfig)
+  if (!tabBarConfig.has('color')) {
+    tabBarConfig.set('color', '#999999')
+  }
+  if (!tabBarConfig.has('selectedColor')) {
+    tabBarConfig.set('selectedColor', '#007AFF')
+  }
   tabBar0!.initTabBar(tabBarConfig)
   tabBar0!.addEventListener('tabBarItemTap', function (event: Event) {
     const index = (event as TabTapEvent).index
