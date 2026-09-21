@@ -119,8 +119,10 @@ class UniPageImpl implements UniPage {
     const pageMeta = this.vm?.$basePage.meta
       ? normalizeStyles(this.vm?.$basePage.meta, __uniConfig.themeConfig)
       : undefined
-    return pageMeta
-      ? new UTSJSONObject({
+
+    const scriptLang = (this.vm?.$ as any)?.__scriptLang
+    const pageStyle = pageMeta
+      ? {
           navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
           navigationBarTextStyle: pageMeta.navigationBar.titleColor,
           navigationBarTitleText: pageMeta.navigationBar.titleText,
@@ -131,8 +133,13 @@ class UniPageImpl implements UniPage {
           onReachBottomDistance:
             pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
           backgroundColorContent: pageMeta.backgroundColorContent,
-        })
-      : new UTSJSONObject({})
+        }
+      : {}
+    if (!scriptLang || scriptLang === 'uts') {
+      return new UTSJSONObject(pageStyle)
+    }
+    // 忽略类型，不同环境UTSJSONObject表示不同类型
+    return pageStyle as unknown as UTSJSONObject
   }
   $getPageStyle(): UTSJSONObject {
     return this.getPageStyle()
@@ -387,9 +394,14 @@ export function initXPage(
   }
   const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
+    const scriptLang = (vm.$ as any)?.__scriptLang
+    const isUTS = !scriptLang || scriptLang === 'uts'
     const uniPage = new UniNormalPageImpl({
       route: route?.path ? removeLeadingSlash(route?.path) : '',
-      options: new UTSJSONObject(route?.query || {}),
+      // 忽略类型，不同环境UTSJSONObject表示不同类型
+      options: isUTS
+        ? new UTSJSONObject(route?.query || {})
+        : ((route?.query || {}) as unknown as UTSJSONObject),
       vm,
     })
     vm.$.page = uniPage

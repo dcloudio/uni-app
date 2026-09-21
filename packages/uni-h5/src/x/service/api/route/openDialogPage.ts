@@ -18,7 +18,7 @@ import {
   normalizeRoute,
 } from '@dcloudio/uni-core'
 import { closePreSystemDialogPage } from './utils'
-import { UTSJSONObject } from '@dcloudio/uni-shared'
+import type { UTSJSONObject } from '@dcloudio/uni-shared'
 import { markRaw } from 'vue'
 
 export const openDialogPage = (
@@ -43,7 +43,8 @@ export const openDialogPage = (
   const dialogPage = markRaw(
     new UniDialogPageImpl({
       route: removeLeadingSlash(path),
-      options: new UTSJSONObject(query),
+      // 忽略类型，不同环境UTSJSONObject表示不同类型。此处直接传普通object即可，获取options时再进行处理
+      options: query as unknown as UTSJSONObject,
       $component: targetRoute!.component,
       getParentPage: () => null,
       $disableEscBack: options.disableEscBack,
