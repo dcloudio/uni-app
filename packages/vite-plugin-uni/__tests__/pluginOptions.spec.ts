@@ -118,7 +118,7 @@ describe('initPluginVueOptions', () => {
     expect(vueOptions.script?.babelParserPlugins).toEqual(['decorators-legacy'])
   })
 
-  test('only records implicit script language metadata in development', () => {
+  test('records script language metadata and limits implicit markers to development', () => {
     process.env.UNI_APP_X = 'true'
     process.env.UNI_APP_X_DOM2 = 'true'
     process.env.UNI_UTS_PLATFORM = 'app-harmony'
@@ -148,6 +148,7 @@ describe('initPluginVueOptions', () => {
     // compiler-sfc 的解析缓存可能让同一 descriptor 再次进入扩展点。
     developmentTransform(developmentDescriptor)
     expect(developmentDescriptor.__uniAppXVaporSfcMeta).toEqual({
+      scriptLang: 'ts',
       hasImplicitLang: true,
       defaultLang: 'ts',
     })
@@ -156,7 +157,9 @@ describe('initPluginVueOptions', () => {
     const productionDescriptor = createDescriptor()
     createVueOptions().uniAppXVaporSfcTransform(productionDescriptor)
     expect(productionDescriptor.scriptSetup.lang).toBe('ts')
-    expect(productionDescriptor.__uniAppXVaporSfcMeta).toBeUndefined()
+    expect(productionDescriptor.__uniAppXVaporSfcMeta).toEqual({
+      scriptLang: 'ts',
+    })
   })
 
   test('Web Vapor 显式传入定制 SFC compiler', () => {

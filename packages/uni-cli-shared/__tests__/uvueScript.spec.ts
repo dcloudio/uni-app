@@ -314,12 +314,6 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     ).toEqual(
       expect.objectContaining({
         code: '<script setup vapor lang="ts">const value = 1</script>',
-        meta: {
-          uniAppXScript: {
-            hasImplicitLang: true,
-            defaultLang: 'ts',
-          },
-        },
       })
     )
   })
@@ -416,7 +410,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
   })
 
   test.each(['web', 'mp-weixin', 'app-ios', 'app-harmony'] as const)(
-    'supports standard scripts without enabling Vapor on %s',
+    'does not record script language metadata outside App Vapor (%s)',
     (platform) => {
       Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
       process.env.UNI_UTS_PLATFORM = platform
@@ -454,42 +448,6 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     ).toEqual({
       code: '<script lang="uts">export default {}</script>',
       map: { mappings: '' },
-      meta: {
-        uniAppXScript: {
-          hasImplicitLang: true,
-          defaultLang: 'uts',
-        },
-      },
-    })
-  })
-
-  test('clears implicit language metadata when HMR adds an explicit language', () => {
-    process.env.UNI_APP_X_DOM2 = 'true'
-    const transform = getTransform(uniUTSUVueJavaScriptPlugin())
-    const moduleInfo = {
-      meta: {
-        uniAppXScript: {
-          hasImplicitLang: true,
-          defaultLang: 'ts',
-        },
-      },
-    }
-
-    expect(
-      transform.call(
-        {
-          getModuleInfo: () => moduleInfo,
-        } as any,
-        '<script lang="ts">const value = 1</script>',
-        '/pages/index/index.uvue'
-      )
-    ).toEqual({
-      code: '<script lang="ts">const value = 1</script>',
-      meta: {
-        uniAppXScript: {
-          hasImplicitLang: false,
-        },
-      },
     })
   })
 
@@ -593,12 +551,6 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     ).toEqual(
       expect.objectContaining({
         code: '<script setup vapor lang="js">const value = 1</script>',
-        meta: {
-          uniAppXScript: {
-            hasImplicitLang: true,
-            defaultLang: 'js',
-          },
-        },
       })
     )
     fs.rmSync(inputDir, { recursive: true, force: true })

@@ -2775,6 +2775,12 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
     attachedProps
   );
   const customBlocksCode = await genCustomBlockCode(descriptor, pluginContext);
+  if (uniAppXScriptMeta?.scriptLang) {
+    attachedProps.push([
+      "__scriptLang",
+      JSON.stringify(uniAppXScriptMeta.scriptLang)
+    ]);
+  }
   if (uniAppXScriptMeta?.hasImplicitLang) {
     attachedProps.push([
       "__uniDefaultScriptLang",
