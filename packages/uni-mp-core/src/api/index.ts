@@ -26,6 +26,9 @@ import {
   onPushMessage,
 } from '@dcloudio/uni-api/src/service/plugin/push'
 import { invokeCreateVueAppHook, onCreateVueApp } from '@dcloudio/uni-shared'
+//#if _X_
+import { loadUasm } from '@dcloudio/uni-api/src/service/base/uasm'
+//#endif
 
 import { promisify } from './promise'
 import { initWrapper } from './wrapper'
@@ -54,6 +57,7 @@ const baseApis = {
   invokePushCallback,
   __f__,
   //#if _X_
+  loadUasm,
   getElementById,
   createCanvasContextAsync,
   createEditorContextAsync,

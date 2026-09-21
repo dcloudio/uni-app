@@ -29,6 +29,19 @@ const workers = {
   createWorkerTransformer,
 }
 
+const miniProgramUasm = {
+  resolve(modulePath: string) {
+    return modulePath === 'uni_modules/test-uasm'
+      ? {
+          id: 'test-uasm',
+          entry: '@/uni_modules/test-uasm/uasm/mp-weixin/test-uasm.js',
+          import: 'static' as const,
+        }
+      : undefined
+  },
+  createLoadUasmTransformer,
+}
+
 describe('uni-app x standard script', () => {
   test.each([
     ['/src/index.ts', 'module'],
@@ -55,6 +68,20 @@ describe('uni-app x standard script', () => {
       'uni.loadUasm<Bridge>({ id: "test-uasm", loader: () => import("@/uni_modules/test-uasm/uasm/web/test-uasm.js") })'
     )
     expect(result.map.sourcesContent).toEqual([source])
+  })
+
+  test('generates a static UASM import for mini programs', () => {
+    const source = `const plugin = uni.loadUasm<Bridge>('uni_modules/test-uasm')`
+    const result = transformUniAppXStandardScript(source, '/src/index.ts', ts, {
+      uasm: miniProgramUasm,
+    })!
+
+    expect(result.code).toContain(
+      'import __uniUasmModule0 from "@/uni_modules/test-uasm/uasm/mp-weixin/test-uasm.js";'
+    )
+    expect(result.code).toContain(
+      'uni.loadUasm<Bridge>({ id: "test-uasm", loader: () => Promise.resolve({ default: __uniUasmModule0 }) })'
+    )
   })
 
   test('transforms createWorker paths in standard TypeScript', () => {

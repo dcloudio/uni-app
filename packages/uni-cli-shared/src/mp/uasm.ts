@@ -1,7 +1,16 @@
 import fs from 'node:fs'
 import MagicString from 'magic-string'
 import path from 'node:path'
+import type { Plugin } from 'vite'
+import {
+  type UasmTransformOptions,
+  type UasmWebLoadDescriptor,
+  createLoadUasmTransformer,
+  parseUasmModuleName,
+} from '../uasm'
 import type { UniViteCopyPluginTarget } from '../vite/plugins/copy'
+
+export type UasmMiniProgramPlatform = 'mp-weixin' | 'mp-alipay'
 
 const UASM_MARKER = '/* @uni-uasm-mini-program */'
 const MODULE_INIT_RE = /\bvar\s+Module\s*=\s*moduleArg\s*;?/g
@@ -28,43 +37,117 @@ export interface MiniProgramUasmTransformResult {
 
 const MINI_PROGRAM_UASM_CONFIG = {
   'mp-weixin': 'WXWebAssembly',
-  'mp-alipay': 'MyWebAssembly',
+  'mp-alipay': 'MYWebAssembly',
 } as const
 
-export function createMiniProgramUasmCopyTarget(
-  platform: keyof typeof MINI_PROGRAM_UASM_CONFIG
-): UniViteCopyPluginTarget {
+export function initUasmMiniProgramTransformOptions(
+  platform: UasmMiniProgramPlatform,
+  inputDir = process.env.UNI_INPUT_DIR
+): UasmTransformOptions {
+  return {
+    resolve(modulePath) {
+      return resolveUasmMiniProgramLoad(modulePath, platform, inputDir)
+    },
+    createLoadUasmTransformer(options) {
+      return createLoadUasmTransformer({
+        ...options,
+        methodNames: ['loadUasm'],
+        resolveError(modulePath) {
+          const moduleName = parseUasmModuleName(modulePath)
+          const entry = moduleName
+            ? `uni_modules/${moduleName}/uasm/${platform}/${moduleName}.js`
+            : `uni_modules/<插件ID>/uasm/${platform}/<插件ID>.js`
+          return `无法加载 uasm 插件[${modulePath}]，请确认插件路径正确，且插件已提供入口文件 ${entry}`
+        },
+      })
+    },
+  }
+}
+
+export function resolveUasmMiniProgramLoad(
+  modulePath: string,
+  platform: UasmMiniProgramPlatform,
+  inputDir = process.env.UNI_INPUT_DIR
+): UasmWebLoadDescriptor | undefined {
+  const moduleName = parseUasmModuleName(modulePath)
+  if (!moduleName) {
+    return
+  }
+  const entry = path.posix.join(
+    'uni_modules',
+    moduleName,
+    'uasm',
+    platform,
+    `${moduleName}.js`
+  )
+  if (!fs.existsSync(path.resolve(inputDir, entry))) {
+    return
+  }
+  return {
+    id: moduleName,
+    entry: `@/${entry}`,
+    import: 'static',
+  }
+}
+
+export function uniMiniProgramUasmPlugin(
+  platform: UasmMiniProgramPlatform
+): Plugin {
   const entryRe = new RegExp(
     `/uni_modules/([^/]+)/uasm/${platform}/([^/]+)\\.js$`
   )
   return {
-    src: [`uni_modules/*/uasm/${platform}/**/*`],
+    name: 'uni:mini-program-uasm',
+    enforce: 'pre',
+    transform(source, id) {
+      const filename = id.split('?', 1)[0]
+      const match = filename.replaceAll(path.sep, '/').match(entryRe)
+      if (
+        !match ||
+        match[1] !== match[2] ||
+        !MODULE_INIT_TEST_RE.test(source)
+      ) {
+        return
+      }
+      const moduleName = match[1]
+      const wasmFile = resolveMiniProgramUasmWasmFile(filename, moduleName)
+      return transformMiniProgramUasmJs(source, {
+        webAssemblyGlobal: MINI_PROGRAM_UASM_CONFIG[platform],
+        // 静态导入后入口 JS 会被合并进业务代码，WASM 必须使用代码包内路径。
+        wasmFile: path.posix.join(
+          'uni_modules',
+          moduleName,
+          'uasm',
+          platform,
+          wasmFile
+        ),
+      })
+    },
+  }
+}
+
+export function createMiniProgramUasmCopyTarget(
+  platform: keyof typeof MINI_PROGRAM_UASM_CONFIG
+): UniViteCopyPluginTarget {
+  return {
+    src: [
+      `uni_modules/*/uasm/${platform}/**/*.wasm`,
+      `uni_modules/*/uasm/${platform}/**/*.wasm.br`,
+    ],
     get dest() {
       return process.env.UNI_OUTPUT_DIR
     },
-    transform(source, filename) {
-      const normalized = filename.replaceAll(path.sep, '/')
-      const match = normalized.match(entryRe)
-      if (!match || match[1] !== match[2]) {
-        return
-      }
-      const code = source.toString()
-      if (!MODULE_INIT_TEST_RE.test(code)) {
-        return
-      }
-      const wasmFile = [`${match[1]}.wasm`, `${match[1]}.wasm.br`].find(
-        (file) => fs.existsSync(path.resolve(path.dirname(filename), file))
-      )
-      if (!wasmFile) {
-        throw new Error(`UASM 小程序 JS[${filename}] 未找到对应的 WASM 文件`)
-      }
-      return transformMiniProgramUasmJs(source.toString(), {
-        webAssemblyGlobal: MINI_PROGRAM_UASM_CONFIG[platform],
-        wasmFile,
-        generateMap: false,
-      }).code
-    },
   }
+}
+
+function resolveMiniProgramUasmWasmFile(filename: string, moduleName: string) {
+  const wasmFile = [`${moduleName}.wasm`, `${moduleName}.wasm.br`].find(
+    (file) => fs.existsSync(path.resolve(path.dirname(filename), file))
+  )
+  if (!wasmFile) {
+    throw new Error(`UASM 小程序 JS[${filename}] 未找到对应的 WASM 文件`)
+  }
+  return wasmFile
 }
 
 export function transformMiniProgramUasmJs(

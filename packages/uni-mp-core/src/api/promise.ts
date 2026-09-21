@@ -21,6 +21,9 @@ const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket']
 // 同步例外情况
 const ASYNC_API = ['createBLEConnection']
 
+// 这些 API 自身已经返回 Promise，不应再套用小程序回调式 Promise 包装。
+const PROMISE_API = ['loadUasm']
+
 const CALLBACK_API_RE = /^on|^off/
 
 export function isContextApi(name: string) {
@@ -43,6 +46,9 @@ export function isTaskApi(name: string) {
 }
 
 export function shouldPromise(name: string) {
+  if (__X__ && PROMISE_API.includes(name)) {
+    return false
+  }
   if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
     return false
   }

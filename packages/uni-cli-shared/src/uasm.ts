@@ -78,6 +78,7 @@ export interface UasmWebResources {
 export interface UasmWebLoadDescriptor {
   id: string
   entry: string
+  import?: 'static'
 }
 
 export type ResolvedUasmLoad = string | UasmWebLoadDescriptor
@@ -232,6 +233,31 @@ export function createLoadUasmTransformer(
     return (sourceFile) => {
       const imports = new Set<string>()
       const typeImports = new Map<string, string>()
+      const staticImports = new Map<string, string>()
+      const resolveStaticImport = (resolved: UasmWebLoadDescriptor) => {
+        if (resolved.import !== 'static') {
+          return
+        }
+        let identifier = staticImports.get(resolved.entry)
+        if (!identifier) {
+          let index = 0
+          do {
+            identifier = `__uniUasmModule${index++}`
+          } while (
+            sourceFile.text.includes(identifier) ||
+            Array.from(staticImports.values()).includes(identifier)
+          )
+          staticImports.set(resolved.entry, identifier)
+          options.onSourceEdit?.({
+            start: 0,
+            end: 0,
+            content: `import ${identifier} from ${JSON.stringify(
+              resolved.entry
+            )};\n`,
+          })
+        }
+        return identifier
+      }
       const visitor = (node: Node): VisitResult<Node> => {
         if (
           typescript.isCallExpression(node) &&
@@ -274,6 +300,11 @@ export function createLoadUasmTransformer(
             return node
           }
 
+          const staticImport =
+            typeof resolved === 'string'
+              ? undefined
+              : resolveStaticImport(resolved)
+
           const loader = options.resolveLoader?.(firstArg.text)
           if (loader && typeof loader !== 'string') {
             loader.imports?.forEach((module) => imports.add(module))
@@ -287,7 +318,7 @@ export function createLoadUasmTransformer(
           options.onSourceEdit?.({
             start: firstArg.getStart(sourceFile),
             end: firstArg.getEnd(),
-            content: resolveUasmSourceEdit(resolved),
+            content: resolveUasmSourceEdit(resolved, staticImport),
           })
           return factory.updateCallExpression(
             node,
@@ -314,13 +345,29 @@ export function createLoadUasmTransformer(
                           factory.createToken(
                             typescript.SyntaxKind.EqualsGreaterThanToken
                           ),
-                          factory.createCallExpression(
-                            factory.createToken(
-                              typescript.SyntaxKind.ImportKeyword
-                            ) as import('typescript').Expression,
-                            undefined,
-                            [factory.createStringLiteral(resolved.entry)]
-                          )
+                          staticImport
+                            ? factory.createCallExpression(
+                                factory.createPropertyAccessExpression(
+                                  factory.createIdentifier('Promise'),
+                                  'resolve'
+                                ),
+                                undefined,
+                                [
+                                  factory.createObjectLiteralExpression([
+                                    factory.createPropertyAssignment(
+                                      'default',
+                                      factory.createIdentifier(staticImport)
+                                    ),
+                                  ]),
+                                ]
+                              )
+                            : factory.createCallExpression(
+                                factory.createToken(
+                                  typescript.SyntaxKind.ImportKeyword
+                                ) as import('typescript').Expression,
+                                undefined,
+                                [factory.createStringLiteral(resolved.entry)]
+                              )
                         )
                       ),
                     ],
@@ -340,10 +387,21 @@ export function createLoadUasmTransformer(
         sourceFile,
         visitor
       ) as SourceFile
-      if (!imports.size && !typeImports.size) {
+      if (!imports.size && !typeImports.size && !staticImports.size) {
         return transformed
       }
       return factory.updateSourceFile(transformed, [
+        ...Array.from(staticImports).map(([entry, identifier]) =>
+          factory.createImportDeclaration(
+            undefined,
+            factory.createImportClause(
+              false,
+              factory.createIdentifier(identifier),
+              undefined
+            ),
+            factory.createStringLiteral(entry)
+          )
+        ),
         ...Array.from(imports).map((module) =>
           factory.createImportDeclaration(
             undefined,
@@ -441,13 +499,17 @@ function createUasmLoader(
   )
 }
 
-function resolveUasmSourceEdit(resolved: ResolvedUasmLoad) {
+function resolveUasmSourceEdit(
+  resolved: ResolvedUasmLoad,
+  staticImport?: string
+) {
   if (typeof resolved === 'string') {
     return JSON.stringify(resolved)
   }
-  return `{ id: ${JSON.stringify(
-    resolved.id
-  )}, loader: () => import(${JSON.stringify(resolved.entry)}) }`
+  const loader = staticImport
+    ? `Promise.resolve({ default: ${staticImport} })`
+    : `import(${JSON.stringify(resolved.entry)})`
+  return `{ id: ${JSON.stringify(resolved.id)}, loader: () => ${loader} }`
 }
 
 export function initUasmModules(inputDir: string) {

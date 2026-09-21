@@ -19,6 +19,10 @@ import {
   resolveUasmWebLoad,
   uniUasmPlugin,
 } from '../src/uasm'
+import {
+  initUasmMiniProgramTransformOptions,
+  resolveUasmMiniProgramLoad,
+} from '../src/mp/uasm'
 
 function transformLoadUasm(
   code: string,
@@ -47,6 +51,27 @@ function transformLoadUasm(
 
 function transformWebLoadUasm(code: string) {
   const options = initUasmWebTransformOptions()
+  return ts.transpileModule(code, {
+    compilerOptions: {
+      module: ts.ModuleKind.ESNext,
+      target: ts.ScriptTarget.ESNext,
+    },
+    transformers: {
+      before: [
+        options.createLoadUasmTransformer({
+          ...options,
+          typescript: ts,
+          reportDiagnostic(_context, diagnostic) {
+            throw new Error(diagnostic.messageText.toString())
+          },
+        }),
+      ],
+    },
+  }).outputText
+}
+
+function transformMiniProgramLoadUasm(code: string, inputDir: string) {
+  const options = initUasmMiniProgramTransformOptions('mp-weixin', inputDir)
   return ts.transpileModule(code, {
     compilerOptions: {
       module: ts.ModuleKind.ESNext,
@@ -376,6 +401,32 @@ describe('uasm', () => {
       transformWebLoadUasm(`uni.loadUasm('uni_modules/test-uasm')`)
     ).toThrow(
       '无法加载 uasm 插件[uni_modules/test-uasm]，请确认插件路径正确，且插件已提供入口文件 uni_modules/test-uasm/uasm/web/test-uasm.js'
+    )
+  })
+
+  test('cache and resolve mini program entry with a static import', () => {
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/test-uasm/uasm/mp-weixin/test-uasm.js'),
+      ''
+    )
+    initUasmModules(inputDir)
+
+    expect(
+      resolveUasmMiniProgramLoad('uni_modules/test-uasm', 'mp-weixin', inputDir)
+    ).toEqual({
+      id: 'test-uasm',
+      entry: '@/uni_modules/test-uasm/uasm/mp-weixin/test-uasm.js',
+      import: 'static',
+    })
+    const output = transformMiniProgramLoadUasm(
+      `uni.loadUasm<TestUASM>('uni_modules/test-uasm')`,
+      inputDir
+    )
+    expect(output).toContain(
+      'import __uniUasmModule0 from "@/uni_modules/test-uasm/uasm/mp-weixin/test-uasm.js";'
+    )
+    expect(output).toContain(
+      'uni.loadUasm({ id: "test-uasm", loader: () => Promise.resolve({ default: __uniUasmModule0 }) })'
     )
   })
 
