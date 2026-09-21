@@ -9,6 +9,7 @@ import {
   findMiniProgramComponentPackageRoot,
   findMiniProgramComponentPackageRoots,
   findMiniProgramTemplateFiles,
+  isUniAppX,
   normalizeMiniProgramFilename,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
@@ -59,11 +60,10 @@ export function getFilterFiles(
 export function getTemplateFiles(
   template: UniMiniProgramPluginOptions['template']
 ) {
-  const files = normalizeTemplateFiles(
-    findMiniProgramTemplateFiles(template.filter?.generate)
-  )
+  const files = findMiniProgramTemplateFiles(template.filter?.generate)
+  const normalizedFiles = isUniAppX() ? normalizeTemplateFiles(files) : files
   clearMiniProgramTemplateFiles()
-  return files
+  return normalizedFiles
 }
 
 export const emitFile: (emittedFile: EmittedFile) => string = (emittedFile) => {
@@ -74,7 +74,9 @@ export const emitFile: (emittedFile: EmittedFile) => string = (emittedFile) => {
         normalizeMiniProgramComponentFilename(
           filename,
           process.env.UNI_INPUT_DIR,
-          findMiniProgramComponentPackageRoot(filename)
+          isUniAppX()
+            ? findMiniProgramComponentPackageRoot(filename)
+            : undefined
         )
       ),
       emittedFile.source!.toString()
