@@ -1023,9 +1023,6 @@ function createUTSJSONObjectIfNeed(obj) {
     return UTS.JSON.parse(JSON.stringify(obj));
 }
 
-function isRequestSuccessResult(res) {
-    return 'data' in res;
-}
 const request = {
     args(fromArgs, toArgs) {
         if (fromArgs.isUTS) {
@@ -1035,24 +1032,10 @@ const request = {
                     fromArgs.success(res);
                 };
             }
-            if (fromArgs.complete) {
-                toArgs.complete = (res) => {
-                    if (isRequestSuccessResult(res)) {
-                        res.data = createUTSJSONObjectIfNeed(res.data);
-                        fromArgs.complete(res);
-                    }
-                    else {
-                        fromArgs.complete(res);
-                    }
-                };
-            }
         }
     },
 };
 
-function isGetStorageSuccessResult(res) {
-    return 'data' in res;
-}
 const getStorage = {
     args(fromArgs, toArgs) {
         if (fromArgs.isUTS) {
@@ -1060,17 +1043,6 @@ const getStorage = {
                 toArgs.success = (res) => {
                     res.data = createUTSJSONObjectIfNeed(res.data);
                     fromArgs.success(res);
-                };
-            }
-            if (fromArgs.complete) {
-                toArgs.complete = (res) => {
-                    if (isGetStorageSuccessResult(res)) {
-                        res.data = createUTSJSONObjectIfNeed(res.data);
-                        fromArgs.complete(res);
-                    }
-                    else {
-                        fromArgs.complete(res);
-                    }
                 };
             }
         }
