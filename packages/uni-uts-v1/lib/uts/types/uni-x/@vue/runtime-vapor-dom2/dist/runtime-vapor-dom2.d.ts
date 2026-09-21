@@ -82,6 +82,8 @@ export declare function createSharedDataScopedSlot<S extends UniSharedData>(shar
 //#region temp/packages/runtime-vapor-dom2/src/component.d.ts
 export type VaporSharedDataComponent = ObjectVaporSharedDataComponent & {
   __className?: string;
+  /** 编译器生成的页面或组件最终生效的 script lang。 */
+  __scriptLang?: "js" | "ts" | "uts";
   /** 编译器仅在开发模式下为未显式配置 script lang 的组件生成。 */
   __uniDefaultScriptLang?: string;
   externalClasses?: string[];
