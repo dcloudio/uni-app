@@ -288,6 +288,7 @@ export function addMiniProgramAppJson(
   options: { subPackages?: boolean } = {}
 ) {
   appJsonCache = appJson
+  componentPackageRootsCache.clear()
   subPackageRootsCache =
     !isUniAppX() || options.subPackages === false
       ? []

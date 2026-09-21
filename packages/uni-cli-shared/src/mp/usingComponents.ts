@@ -267,7 +267,10 @@ export async function updateMiniProgramGlobalComponents(
       bindingComponents,
       imports,
       inputDir,
-      normalizeComponentName
+      normalizeComponentName,
+      undefined,
+      undefined,
+      !!root
     )
   )
   return {
@@ -281,13 +284,15 @@ function createUsingComponents(
   inputDir: string,
   normalizeComponentName: (name: string) => string,
   ownerFilename?: string,
-  ownerPackageRoot?: string
+  ownerPackageRoot?: string,
+  ownerIsIndependent?: boolean
 ) {
   const usingComponents: Record<string, string> = {}
-  const ownerSubPackageRoot = isUniAppX()
-    ? ownerPackageRoot ||
-      (ownerFilename && findMiniProgramSubPackageRoot(ownerFilename))
-    : undefined
+  const ownerSubPackageRoot =
+    isUniAppX() && !ownerIsIndependent
+      ? ownerPackageRoot ||
+        (ownerFilename && findMiniProgramSubPackageRoot(ownerFilename))
+      : undefined
   imports.forEach(({ source: { value }, specifiers: [specifier] }) => {
     const { name } = specifier.local
     if (!bindingComponents[name]) {
@@ -300,7 +305,11 @@ function createUsingComponents(
       let componentFilename = removeExt(
         normalizeMiniProgramFilename(withoutIndependentRoot(value), inputDir)
       )
-      if (isUniAppX() && componentFilename.startsWith('uni_modules/')) {
+      if (
+        isUniAppX() &&
+        !ownerIsIndependent &&
+        componentFilename.startsWith('uni_modules/')
+      ) {
         addMiniProgramComponentPackageRoot(
           componentFilename,
           ownerSubPackageRoot
@@ -371,7 +380,8 @@ export function updateMiniProgramComponentsByMainFilename(
       inputDir,
       normalizeComponentName,
       ownerFilename,
-      root ? undefined : packageRoot
+      root ? undefined : packageRoot,
+      !!root
     )
   )
 }

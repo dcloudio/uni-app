@@ -15,7 +15,6 @@ import {
   parseScriptDescriptor,
   parseTemplateDescriptor,
   parseVueRequest,
-  resolveMiniProgramComponentPackageRoot,
   resolveUTSModule,
   transformDynamicImports,
   updateMiniProgramComponentsByMainFilename,
@@ -218,14 +217,17 @@ export function dynamicImport(
       independentRoot
     )}')`
   }
+  // Register the package scope before creating the virtual ID. The resolved
+  // scope is deliberately not encoded in the ID because later consumers may
+  // cause the component to become shared by multiple packages.
+  registerComponentPackageRoot(value, options)
   return `const ${name} = ()=>import('${virtualComponentPath(
     value,
-    independentRoot,
-    resolveComponentPackageRoot(value, options)
+    independentRoot
   )}')`
 }
 
-function resolveComponentPackageRoot(
+function registerComponentPackageRoot(
   value: string,
   { inputDir, packageRoot, root }: DynamicImportOptions
 ) {
@@ -238,6 +240,5 @@ function resolveComponentPackageRoot(
     : filename
   if (relativeFilename.startsWith('uni_modules/')) {
     addMiniProgramComponentPackageRoot(relativeFilename, packageRoot)
-    return resolveMiniProgramComponentPackageRoot(relativeFilename, packageRoot)
   }
 }

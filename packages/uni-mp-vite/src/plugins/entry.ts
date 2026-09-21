@@ -200,7 +200,7 @@ ${root ? '__uniCreatePage' : `${global}.createPage`}(MiniProgramPage)`,
           path.resolve(inputDir, componentFilepath)
         )
         const relativePath = normalizePath(path.relative(inputDir, filepath))
-        if (!root && relativePath.startsWith('uni_modules/')) {
+        if (!root && packageRoot && relativePath.startsWith('uni_modules/')) {
           addMiniProgramComponentPackageRoot(relativePath, packageRoot)
         }
         this.addWatchFile(filepath)
