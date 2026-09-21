@@ -3461,22 +3461,23 @@ const routeCache = {
     pageCacheMap.forEach(fn);
   }
 };
-function isTabBarVNode(vnode) {
-  return vnode.props.type === "tabBar";
+function isTabBarCacheEntry(cacheEntry) {
+  var _a;
+  return ((_a = cacheEntry.attrs || cacheEntry.props) == null ? void 0 : _a.type) === "tabBar";
 }
 function pruneRouteCache(key) {
   const pageId = parseInt(key.split(SEP)[1]);
   if (!pageId) {
     return;
   }
-  routeCache.forEach((vnode, key2) => {
+  routeCache.forEach((cacheEntry, key2) => {
     const cPageId = parseInt(key2.split(SEP)[1]);
     if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarCacheEntry(cacheEntry)) {
         return;
       }
       routeCache.delete(key2);
-      routeCache.pruneCacheEntry(vnode);
+      routeCache.pruneCacheEntry(cacheEntry);
       Vue.nextTick(() => pruneCurrentPages());
     }
   });
@@ -3524,7 +3525,7 @@ function getRealPath(filePath) {
   return filePath;
 }
 const t0$7 = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -3537,7 +3538,7 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
   }
 });
 const t0$6 = Vue.template("<div class=uni-async-error> ", 1);
-const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -3593,11 +3594,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$9.name)) {
+    app.component(_sfc_main$9.name, _sfc_main$9);
+  }
   if (!app.component(_sfc_main$8.name)) {
     app.component(_sfc_main$8.name, _sfc_main$8);
-  }
-  if (!app.component(_sfc_main$7.name)) {
-    app.component(_sfc_main$7.name, _sfc_main$7);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -3793,7 +3794,7 @@ const t7$1 = Vue.template(" ");
 const t8$1 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
 const t9 = Vue.template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
 const t10 = Vue.template("<div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>");
-const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -4270,7 +4271,7 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
   }
 });
 const t0$4 = Vue.template('<div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>');
-const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
@@ -4291,7 +4292,7 @@ const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n3;
   }
 });
-const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -4322,7 +4323,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     const n0 = Vue.createIf(() => Vue.unref(hasPullDownRefresh) && !!Vue.unref(pageMeta) && (Vue.unref(isX) || !!Vue.unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = Vue.createComponent(_sfc_main$5);
+      const n2 = Vue.createComponent(_sfc_main$6);
       Vue.setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
@@ -4342,149 +4343,157 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
     return [n0, n8];
   }
 });
-const PageComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "Page",
-  setup(_props, ctx) {
+const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "Page",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "index-vapor",
+  setup(__props) {
     var _a;
+    const hasNavigationBar = __UNI_FEATURE_NAVIGATIONBAR__;
+    const pageStyle = {};
     let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
-    const pageStyle = {};
-    useDocumentTitle(pageMeta);
     const currentInstance = Vue.getCurrentInstance();
-    {
-      currentInstance.$dialogPages = Vue.ref([]);
-      currentInstance.$systemDialogPages = Vue.ref([]);
-      if (isDialogPageInstance(ctx)) {
-        pageMeta.route = ctx.attrs.route;
-        const routePageMeta = (_a = __uniRoutes.find(
-          (route) => route.path === pageMeta.route.split("?")[0]
-        )) == null ? void 0 : _a.meta;
-        if (routePageMeta) {
-          routePageMeta.navigationBar = Object.assign(
-            navigationBar,
-            routePageMeta.navigationBar
-          );
-          pageMeta = Object.assign(pageMeta, routePageMeta);
-        }
-        pageMeta.id = createDialogPageId();
-        if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {
-          pageMeta.backgroundColorContent = "transparent";
-        }
-        if (!(routePageMeta == null ? void 0 : routePageMeta.navigationBar.style)) {
-          pageMeta.navigationBar.style = "custom";
-        }
-        if (ctx.attrs["data-type"] === SYSTEM_DIALOG_TAG) {
-          pageMeta.navigationBar.titleText = "";
-        }
-        const parentInstance = Vue.inject(
-          "parentInstance"
+    const attrs2 = currentInstance.attrs;
+    const routeComponent = currentInstance.type;
+    const pageComponent = routeComponent.__uniPageComponent;
+    const pageProps = routeComponent.__uniGetPageProps();
+    useDocumentTitle(pageMeta);
+    currentInstance.$dialogPages = Vue.ref([]);
+    currentInstance.$systemDialogPages = Vue.ref([]);
+    if (isDialogPageInstance(currentInstance)) {
+      pageMeta.route = attrs2.route;
+      const routePageMeta = (_a = __uniRoutes.find(
+        (route) => route.path === pageMeta.route.split("?")[0]
+      )) == null ? void 0 : _a.meta;
+      if (routePageMeta) {
+        routePageMeta.navigationBar = Object.assign(
+          navigationBar,
+          routePageMeta.navigationBar
         );
-        if (currentInstance && parentInstance) {
-          currentInstance.$parentInstance = parentInstance;
-          assignDialogPage(
-            ctx,
-            parentInstance,
-            currentInstance
-          );
+        pageMeta = Object.assign(pageMeta, routePageMeta);
+      }
+      pageMeta.id = createDialogPageId();
+      if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {
+        pageMeta.backgroundColorContent = "transparent";
+      }
+      if (!(routePageMeta == null ? void 0 : routePageMeta.navigationBar.style)) {
+        pageMeta.navigationBar.style = "custom";
+      }
+      if (attrs2["data-type"] === SYSTEM_DIALOG_TAG) {
+        pageMeta.navigationBar.titleText = "";
+      }
+      const parentInstance = Vue.inject("parentInstance");
+      if (currentInstance && parentInstance) {
+        currentInstance.$parentInstance = parentInstance;
+        assignDialogPage(currentInstance, parentInstance, currentInstance);
+      }
+    } else {
+      useBackgroundColorContent(pageMeta);
+      Vue.provide("parentInstance", currentInstance);
+    }
+    function getDialogPages() {
+      const pages = [
+        ...currentInstance.$dialogPages.value.map((page) => ({
+          page,
+          type: DIALOG_TAG
+        })),
+        ...currentInstance.$systemDialogPages.value.map((page) => ({
+          page,
+          type: SYSTEM_DIALOG_TAG
+        }))
+      ];
+      pages.sort((a, b) => {
+        var _a2, _b, _c, _d;
+        const aId = ((_b = (_a2 = a.page.vm) == null ? void 0 : _a2.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
+        const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
+        return aId - bId;
+      });
+      return pages.map(({ page, type }) => ({
+        component: page.$component,
+        type,
+        route: `${page.route}${uniShared.stringifyQuery(page.options)}`
+      }));
+    }
+    const dialogPageStyle = {
+      position: "fixed",
+      zIndex: 999,
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0
+    };
+    function assignDialogPage(ctx, parentInstance, currentInstance2) {
+      let parentDialogPages = [];
+      if (isNormalDialogPageInstance(ctx)) {
+        parentDialogPages = parentInstance.$dialogPages.value;
+      }
+      if (isSystemDialogPageInstance(ctx)) {
+        parentDialogPages = parentInstance.$systemDialogPages.value;
+      }
+      if (!parentDialogPages.length)
+        return;
+      for (let i = 0; i < parentDialogPages.length; i++) {
+        const dialogPage = parentDialogPages[i];
+        if (!dialogPage.$assigned) {
+          dialogPage.$assigned = true;
+          currentInstance2.$dialogPage = dialogPage;
+          break;
         }
-      } else {
-        useBackgroundColorContent(pageMeta);
-        Vue.provide("parentInstance", currentInstance);
       }
     }
-    return () => Vue.createVNode(
-      "uni-page",
-      {
-        "data-page": pageMeta.route,
-        style: pageStyle
+    const n8 = Vue.createPlainElement("uni-page", {
+      "data-page": () => Vue.unref(pageMeta).route,
+      style: () => pageStyle
+    }, null, true);
+    Vue.setInsertionState(n8);
+    Vue.createIf(() => Vue.unref(hasNavigationBar) && Vue.unref(navigationBar).style !== "custom", () => {
+      const n2 = Vue.createComponent(_sfc_main$7);
+      return n2;
+    });
+    Vue.setInsertionState(n8, 1);
+    Vue.createComponent(_sfc_main$5, null, Vue.extend(() => {
+      const n3 = Vue.createDynamicComponent(
+        () => Vue.unref(pageComponent),
+        { $: [
+          () => Vue.unref(pageProps)
+        ] },
+        null,
+        4
+        /* SLOT_ROOT */
+      );
+      Vue.setStaticTemplateRef(n3, "page");
+      return n3;
+    }, {
+      _: 1
+      /* NON_STABLE */
+    }));
+    Vue.setInsertionState(n8, 2);
+    Vue.createFor(
+      () => getDialogPages(),
+      (_for_item0) => {
+        const n7 = Vue.createDynamicComponent(() => _for_item0.value.component, {
+          style: () => dialogPageStyle,
+          "data-type": () => _for_item0.value.type,
+          route: () => _for_item0.value.route
+        });
+        return n7;
       },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        Vue.createVNode(_sfc_main$6),
-        createPageBodyVNode(ctx),
-        createDialogPageVNode(
-          currentInstance.$dialogPages,
-          currentInstance.$systemDialogPages
-        )
-      ] : [
-        createPageBodyVNode(ctx),
-        createDialogPageVNode(
-          currentInstance.$dialogPages,
-          currentInstance.$systemDialogPages
-        )
-      ]
+      (dialogPage) => dialogPage.route,
+      18
+      /* IS_COMPONENT, IS_FRAGMENT */
     );
+    return n8;
   }
 });
-function assignDialogPage(ctx, parentInstance, currentInstance) {
-  let parentDialogPages = [];
-  if (isNormalDialogPageInstance(ctx)) {
-    parentDialogPages = parentInstance.$dialogPages.value;
-  }
-  if (isSystemDialogPageInstance(ctx)) {
-    parentDialogPages = parentInstance.$systemDialogPages.value;
-  }
-  if (!parentDialogPages.length)
-    return;
-  for (let i = 0; i < parentDialogPages.length; i++) {
-    const dialogPage = parentDialogPages[i];
-    if (!dialogPage.$assigned) {
-      dialogPage.$assigned = true;
-      currentInstance.$dialogPage = dialogPage;
-      break;
-    }
-  }
-}
-function createPageBodyVNode(ctx) {
-  return Vue.openBlock(), Vue.createBlock(
-    _sfc_main$4,
-    { key: 0 },
-    {
-      default: Vue.withCtx(() => [Vue.renderSlot(ctx.slots, "page")]),
-      _: 3
-    }
-  );
-}
-function createDialogPageVNode(normalDialogPages, systemDialogPages) {
-  const dialogPages = [
-    ...normalDialogPages.value.map((page) => ({ page, type: DIALOG_TAG })),
-    ...systemDialogPages.value.map((page) => ({
-      page,
-      type: SYSTEM_DIALOG_TAG
-    }))
-  ];
-  dialogPages.sort((a, b) => {
-    var _a, _b, _c, _d;
-    const aId = ((_b = (_a = a.page.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
-    const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
-    return aId - bId;
+function createVaporPageRouteComponent(pageComponent, getPageProps) {
+  return Object.assign({}, _sfc_main$4, {
+    __uniPageComponent: pageComponent,
+    __uniGetPageProps: getPageProps
   });
-  return Vue.openBlock(true), Vue.createElementBlock(
-    Vue.Fragment,
-    null,
-    Vue.renderList(dialogPages, (dialogPage) => {
-      const { type, page } = dialogPage;
-      const fullUrl = `${page.route}${uniShared.stringifyQuery(page.options)}`;
-      return Vue.openBlock(), Vue.createBlock(
-        Vue.createVNode(
-          page.$component,
-          {
-            key: fullUrl,
-            style: {
-              position: "fixed",
-              "z-index": 999,
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0
-            },
-            "data-type": type,
-            route: fullUrl
-          },
-          null
-        )
-      );
-    })
-  );
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
@@ -15755,8 +15764,8 @@ Object.defineProperty(exports, "UniError", {
 exports.Ad = index$5;
 exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
-exports.AsyncErrorComponent = _sfc_main$7;
-exports.AsyncLoadingComponent = _sfc_main$8;
+exports.AsyncErrorComponent = _sfc_main$8;
+exports.AsyncLoadingComponent = _sfc_main$9;
 exports.Button = index$v;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;
@@ -15779,7 +15788,7 @@ exports.Map = index$9;
 exports.MovableArea = index$q;
 exports.MovableView = index$p;
 exports.Navigator = index$o;
-exports.PageComponent = PageComponent;
+exports.PageComponent = _sfc_main$4;
 exports.PageContainer = _sfc_main$3;
 exports.Picker = index$6;
 exports.PickerView = PickerView;
@@ -15803,6 +15812,7 @@ exports.Video = index$a;
 exports.WebView = indexX;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
+exports.createVaporPageRouteComponent = createVaporPageRouteComponent;
 exports.getApp = getApp$1;
 exports.getAppBaseInfo = getAppBaseInfo;
 exports.getCurrentPages = getCurrentPages$1;

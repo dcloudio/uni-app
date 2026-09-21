@@ -954,6 +954,37 @@ const offPushMessage = (fn) => {
     }
 };
 
+const uasmCache = new Map();
+/**
+ * 加载经过编译器处理的 UASM 模块。
+ *
+ * module 在运行时是编译器生成的 descriptor，而不是用户直接传入的插件路径。
+ */
+function loadUasm(module) {
+    const descriptor = module;
+    if (!descriptor ||
+        typeof descriptor.id !== 'string' ||
+        typeof descriptor.loader !== 'function') {
+        return Promise.reject(new Error('uni.loadUasm 参数未经过编译处理'));
+    }
+    let promise = uasmCache.get(descriptor.id);
+    if (!promise) {
+        promise = descriptor.loader().then((loaded) => {
+            if (typeof loaded.default !== 'function') {
+                throw new Error(`uasm 插件[${descriptor.id}]的默认导出必须是函数`);
+            }
+            return loaded.default();
+        });
+        uasmCache.set(descriptor.id, promise);
+        promise.catch(() => {
+            if (uasmCache.get(descriptor.id) === promise) {
+                uasmCache.delete(descriptor.id);
+            }
+        });
+    }
+    return promise;
+}
+
 const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|rpx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const SYNC_API_RE_X = /getElementById/;
 const CONTEXT_API_RE = /^create|Manager$/;
@@ -962,6 +993,8 @@ const CONTEXT_API_RE_EXC = ['createBLEConnection'];
 const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 // 同步例外情况
 const ASYNC_API = ['createBLEConnection'];
+// 这些 API 自身已经返回 Promise，不应再套用小程序回调式 Promise 包装。
+const PROMISE_API = ['loadUasm'];
 const CALLBACK_API_RE = /^on|^off/;
 function isContextApi(name) {
     return CONTEXT_API_RE.test(name) && CONTEXT_API_RE_EXC.indexOf(name) === -1;
@@ -979,6 +1012,9 @@ function isTaskApi(name) {
     return TASK_APIS.indexOf(name) !== -1;
 }
 function shouldPromise(name) {
+    if (PROMISE_API.includes(name)) {
+        return false;
+    }
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
         return false;
     }
@@ -1595,6 +1631,7 @@ const baseApis = {
     offPushMessage,
     invokePushCallback,
     __f__,
+    loadUasm,
     getElementById,
     createCanvasContextAsync,
     createEditorContextAsync,

@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, formatDateTime, onCreateVueApp, RESPONSIVE_MIN_WIDTH } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, defineVaporComponent, on as on$1, setText, toDisplayString, unref, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, insert, setClass, setAttr, createFor, setHtml, setProp, createComponent as createComponent$1, setStaticTemplateRef, createSlot, withCtx, renderSlot, renderList, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, logError, createApp, Transition, effectScope, createKeyedFragment, normalizeUniText, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc, createDynamicComponent, VaporKeepAlive } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, defineVaporComponent, on as on$1, setText, toDisplayString, unref, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, insert, setClass, setAttr, createFor, setHtml, setProp, createComponent as createComponent$1, setStaticTemplateRef, createSlot, createDynamicComponent, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, logError, createApp, Transition, effectScope, createKeyedFragment, renderList, normalizeUniText, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc, VaporKeepAlive } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -8945,11 +8945,16 @@ function useBackgroundColorContent$1(vm) {
   });
 }
 function handleEscKeyPress(event) {
-  if (event.key === "Escape") {
-    const currentPage = getCurrentPage();
-    const dialogPages = currentPage.getDialogPages();
-    const dialogPage = dialogPages[dialogPages.length - 1];
-    if (!dialogPage.$disableEscBack) {
+  if (event.key !== "Escape" && event.key !== "Esc") {
+    return;
+  }
+  const currentPage = getCurrentPage();
+  const dialogPage = getLastDialogPage(currentPage);
+  if (dialogPage && !dialogPage.$disableEscBack) {
+    const onBackPressRes = invokeHook(dialogPage.vm, ON_BACK_PRESS, {
+      from: "navigateBack"
+    });
+    if (onBackPressRes !== true) {
       closeDialogPage({ dialogPage });
     }
   }
@@ -9008,6 +9013,9 @@ const closeDialogPage = (options) => {
           dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
         }
         dialogPageTriggerParentShow(dialogPage, 1);
+        if (!dialogPage.$disableEscBack) {
+          decrementEscBackPageNum();
+        }
       } else {
         triggerFailCallback$1(options, "dialogPage is not a valid page");
       }
@@ -9054,13 +9062,18 @@ function clearDialogPages(uniPage) {
     }
   }
 }
-function closePreSystemDialogPage(dialogPages, type) {
+function closePreSystemDialogPage(dialogPages, type, onClose) {
   const targetSystemDialogPages = dialogPages.filter(
     (page) => page.route.startsWith(type)
   );
   if (targetSystemDialogPages.length > 1) {
+    const preSystemDialogPage = targetSystemDialogPages[0];
     setTimeout(() => {
-      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1);
+      const index2 = dialogPages.indexOf(preSystemDialogPage);
+      if (index2 > -1) {
+        dialogPages.splice(index2, 1);
+        onClose == null ? void 0 : onClose(preSystemDialogPage);
+      }
     }, 150);
   }
 }
@@ -9107,10 +9120,10 @@ function getCurrentBasePages() {
   return curPages;
 }
 function removeRouteCache(routeKey) {
-  const vnode = pageCacheMap.get(routeKey);
-  if (vnode) {
+  const cacheEntry = pageCacheMap.get(routeKey);
+  if (cacheEntry) {
     pageCacheMap.delete(routeKey);
-    routeCache.pruneCacheEntry(vnode);
+    routeCache.pruneCacheEntry(cacheEntry);
   }
 }
 function removePage(routeKey, removeRouteCaches = true) {
@@ -9191,22 +9204,23 @@ const routeCache = {
     pageCacheMap.forEach(fn);
   }
 };
-function isTabBarVNode(vnode) {
-  return vnode.props.type === "tabBar";
+function isTabBarCacheEntry(cacheEntry) {
+  var _a;
+  return ((_a = cacheEntry.attrs || cacheEntry.props) == null ? void 0 : _a.type) === "tabBar";
 }
 function pruneRouteCache(key) {
   const pageId = parseInt(key.split(SEP)[1]);
   if (!pageId) {
     return;
   }
-  routeCache.forEach((vnode, key2) => {
+  routeCache.forEach((cacheEntry, key2) => {
     const cPageId = parseInt(key2.split(SEP)[1]);
     if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarCacheEntry(cacheEntry)) {
         return;
       }
       routeCache.delete(key2);
-      routeCache.pruneCacheEntry(vnode);
+      routeCache.pruneCacheEntry(cacheEntry);
       nextTick(() => pruneCurrentPages());
     }
   });
@@ -9844,7 +9858,7 @@ function revokeObjectURL(url) {
   delete files[url];
 }
 const t0$d = template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -9857,7 +9871,7 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
   }
 });
 const t0$c = template("<div class=uni-async-error> ", 1);
-const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -9913,11 +9927,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$g.name)) {
+    app.component(_sfc_main$g.name, _sfc_main$g);
+  }
   if (!app.component(_sfc_main$f.name)) {
     app.component(_sfc_main$f.name, _sfc_main$f);
-  }
-  if (!app.component(_sfc_main$e.name)) {
-    app.component(_sfc_main$e.name, _sfc_main$e);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -10358,7 +10372,7 @@ const t7$2 = template(" ");
 const t8$1 = template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
 const t9 = template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
 const t10 = template("<div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>");
-const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -10841,7 +10855,7 @@ const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
   }
 });
 const t0$a = template('<div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>');
-const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
@@ -11117,7 +11131,7 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -11155,7 +11169,7 @@ const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
       }
     }
     const n0 = createIf(() => unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = createComponent$1(_sfc_main$c);
+      const n2 = createComponent$1(_sfc_main$d);
       setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
@@ -11175,162 +11189,156 @@ const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
     return [n0, n8];
   }
 });
-const PageComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "Page",
-  setup(_props, ctx) {
+const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
+  ...{
+    name: "Page",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "index-vapor",
+  setup(__props) {
     var _a;
+    const hasNavigationBar = __UNI_FEATURE_NAVIGATIONBAR__;
+    const pageStyle = {};
     let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
-    const pageStyle = {};
-    useDocumentTitle(pageMeta);
     const currentInstance = getCurrentInstance();
-    {
-      currentInstance.$dialogPages = ref([]);
-      currentInstance.$systemDialogPages = ref([]);
-      if (isDialogPageInstance(ctx)) {
-        pageMeta.route = ctx.attrs.route;
-        const routePageMeta = (_a = __uniRoutes.find(
-          (route) => route.path === pageMeta.route.split("?")[0]
-        )) == null ? void 0 : _a.meta;
-        if (routePageMeta) {
-          routePageMeta.navigationBar = Object.assign(
-            navigationBar,
-            routePageMeta.navigationBar
-          );
-          pageMeta = Object.assign(pageMeta, routePageMeta);
-        }
-        pageMeta.id = createDialogPageId();
-        if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {
-          pageMeta.backgroundColorContent = "transparent";
-        }
-        if (!(routePageMeta == null ? void 0 : routePageMeta.navigationBar.style)) {
-          pageMeta.navigationBar.style = "custom";
-        }
-        if (ctx.attrs["data-type"] === SYSTEM_DIALOG_TAG) {
-          pageMeta.navigationBar.titleText = "";
-        }
-        const parentInstance = inject(
-          "parentInstance"
+    const attrs2 = currentInstance.attrs;
+    const routeComponent = currentInstance.type;
+    const pageComponent = routeComponent.__uniPageComponent;
+    const pageProps = routeComponent.__uniGetPageProps();
+    useDocumentTitle(pageMeta);
+    currentInstance.$dialogPages = ref([]);
+    currentInstance.$systemDialogPages = ref([]);
+    if (isDialogPageInstance(currentInstance)) {
+      pageMeta.route = attrs2.route;
+      const routePageMeta = (_a = __uniRoutes.find(
+        (route) => route.path === pageMeta.route.split("?")[0]
+      )) == null ? void 0 : _a.meta;
+      if (routePageMeta) {
+        routePageMeta.navigationBar = Object.assign(
+          navigationBar,
+          routePageMeta.navigationBar
         );
-        if (currentInstance && parentInstance) {
-          currentInstance.$parentInstance = parentInstance;
-          assignDialogPage(
-            ctx,
-            parentInstance,
-            currentInstance
-          );
+        pageMeta = Object.assign(pageMeta, routePageMeta);
+      }
+      pageMeta.id = createDialogPageId();
+      if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {
+        pageMeta.backgroundColorContent = "transparent";
+      }
+      if (!(routePageMeta == null ? void 0 : routePageMeta.navigationBar.style)) {
+        pageMeta.navigationBar.style = "custom";
+      }
+      if (attrs2["data-type"] === SYSTEM_DIALOG_TAG) {
+        pageMeta.navigationBar.titleText = "";
+      }
+      const parentInstance = inject("parentInstance");
+      if (currentInstance && parentInstance) {
+        currentInstance.$parentInstance = parentInstance;
+        assignDialogPage(currentInstance, parentInstance, currentInstance);
+      }
+    } else {
+      useBackgroundColorContent(pageMeta);
+      provide("parentInstance", currentInstance);
+    }
+    function getDialogPages() {
+      const pages = [
+        ...currentInstance.$dialogPages.value.map((page) => ({
+          page,
+          type: DIALOG_TAG
+        })),
+        ...currentInstance.$systemDialogPages.value.map((page) => ({
+          page,
+          type: SYSTEM_DIALOG_TAG
+        }))
+      ];
+      pages.sort((a2, b) => {
+        var _a2, _b, _c, _d;
+        const aId = ((_b = (_a2 = a2.page.vm) == null ? void 0 : _a2.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
+        const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
+        return aId - bId;
+      });
+      return pages.map(({ page, type }) => ({
+        component: page.$component,
+        type,
+        route: `${page.route}${stringifyQuery$1(page.options)}`
+      }));
+    }
+    const dialogPageStyle = {
+      position: "fixed",
+      zIndex: 999,
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0
+    };
+    function assignDialogPage(ctx, parentInstance, currentInstance2) {
+      let parentDialogPages = [];
+      if (isNormalDialogPageInstance(ctx)) {
+        parentDialogPages = parentInstance.$dialogPages.value;
+      }
+      if (isSystemDialogPageInstance(ctx)) {
+        parentDialogPages = parentInstance.$systemDialogPages.value;
+      }
+      if (!parentDialogPages.length)
+        return;
+      for (let i = 0; i < parentDialogPages.length; i++) {
+        const dialogPage = parentDialogPages[i];
+        if (!dialogPage.$assigned) {
+          dialogPage.$assigned = true;
+          currentInstance2.$dialogPage = dialogPage;
+          break;
         }
-      } else {
-        useBackgroundColorContent(pageMeta);
-        provide("parentInstance", currentInstance);
       }
     }
-    return () => createVNode(
-      "uni-page",
-      {
-        "data-page": pageMeta.route,
-        style: pageStyle
+    const n8 = createPlainElement("uni-page", {
+      "data-page": () => unref(pageMeta).route,
+      style: () => pageStyle
+    }, null, true);
+    setInsertionState(n8);
+    createIf(() => unref(hasNavigationBar) && unref(navigationBar).style !== "custom", () => {
+      const n2 = createComponent$1(_sfc_main$e);
+      return n2;
+    });
+    setInsertionState(n8, 1);
+    createComponent$1(_sfc_main$c, null, extend$1(() => {
+      const n3 = createDynamicComponent(
+        () => unref(pageComponent),
+        { $: [
+          () => unref(pageProps)
+        ] },
+        null,
+        4
+        /* SLOT_ROOT */
+      );
+      setStaticTemplateRef(n3, "page");
+      return n3;
+    }, {
+      _: 1
+      /* NON_STABLE */
+    }));
+    setInsertionState(n8, 2);
+    createFor(
+      () => getDialogPages(),
+      (_for_item0) => {
+        const n7 = createDynamicComponent(() => _for_item0.value.component, {
+          style: () => dialogPageStyle,
+          "data-type": () => _for_item0.value.type,
+          route: () => _for_item0.value.route
+        });
+        return n7;
       },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        createVNode(_sfc_main$d),
-        createPageBodyVNode(ctx),
-        createDialogPageVNode(
-          currentInstance.$dialogPages,
-          currentInstance.$systemDialogPages
-        )
-      ] : [
-        createPageBodyVNode(ctx),
-        createDialogPageVNode(
-          currentInstance.$dialogPages,
-          currentInstance.$systemDialogPages
-        )
-      ]
+      (dialogPage) => dialogPage.route,
+      18
+      /* IS_COMPONENT, IS_FRAGMENT */
     );
+    return n8;
   }
 });
-function assignDialogPage(ctx, parentInstance, currentInstance) {
-  let parentDialogPages = [];
-  if (isNormalDialogPageInstance(ctx)) {
-    parentDialogPages = parentInstance.$dialogPages.value;
-  }
-  if (isSystemDialogPageInstance(ctx)) {
-    parentDialogPages = parentInstance.$systemDialogPages.value;
-  }
-  if (!parentDialogPages.length)
-    return;
-  for (let i = 0; i < parentDialogPages.length; i++) {
-    const dialogPage = parentDialogPages[i];
-    if (!dialogPage.$assigned) {
-      dialogPage.$assigned = true;
-      currentInstance.$dialogPage = dialogPage;
-      break;
-    }
-  }
-}
-function createPageBodyVNode(ctx) {
-  return openBlock(), createBlock(
-    _sfc_main$b,
-    { key: 0 },
-    {
-      default: withCtx(() => [renderSlot(ctx.slots, "page")]),
-      _: 3
-    }
-  );
-}
-function createDialogPageVNode(normalDialogPages, systemDialogPages) {
-  const dialogPages = [
-    ...normalDialogPages.value.map((page) => ({ page, type: DIALOG_TAG })),
-    ...systemDialogPages.value.map((page) => ({
-      page,
-      type: SYSTEM_DIALOG_TAG
-    }))
-  ];
-  dialogPages.sort((a2, b) => {
-    var _a, _b, _c, _d;
-    const aId = ((_b = (_a = a2.page.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
-    const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
-    return aId - bId;
-  });
-  return openBlock(true), createElementBlock(
-    Fragment,
-    null,
-    renderList(dialogPages, (dialogPage) => {
-      const { type, page } = dialogPage;
-      const fullUrl = `${page.route}${stringifyQuery$1(page.options)}`;
-      return openBlock(), createBlock(
-        createVNode(
-          page.$component,
-          {
-            key: fullUrl,
-            style: {
-              position: "fixed",
-              "z-index": 999,
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0
-            },
-            "data-type": type,
-            route: fullUrl
-          },
-          null
-        )
-      );
-    })
-  );
-}
-function renderPage(component, props2) {
-  return openBlock(), createBlock(PageComponent, null, {
-    page: withCtx(() => [
-      createVNode(
-        component,
-        extend({}, props2, { ref: "page" }),
-        null,
-        512
-        /* NEED_PATCH */
-      )
-    ]),
-    _: 1
+function createVaporPageRouteComponent(pageComponent, getPageProps) {
+  return Object.assign({}, _sfc_main$b, {
+    __uniPageComponent: pageComponent,
+    __uniGetPageProps: getPageProps
   });
 }
 const systemRoutes = [];
@@ -11345,16 +11353,15 @@ function registerSystemRoute(route, page, meta = {}) {
     });
   }
   const __uniPage = setupPage(page);
+  let routeComponent;
+  routeComponent = createVaporPageRouteComponent(__uniPage, () => {
+    const app = getApp();
+    return app && app.$route && app.$route.query || {};
+  });
+  routeComponent.mpType = "page";
   __uniRoutes.push({
     path: route,
-    component: {
-      mpType: "page",
-      setup() {
-        const app = getApp();
-        const query = app && app.$route && app.$route.query || {};
-        return () => renderPage(__uniPage, query);
-      }
-    },
+    component: routeComponent,
     meta: extend(
       {
         isQuit: false,
@@ -28526,9 +28533,6 @@ const openDialogPage = (options) => {
       dialogPage.getParentPage = () => parentPage;
       parentPage.getDialogPages().push(dialogPage);
     }
-    if (!options.disableEscBack) {
-      incrementEscBackPageNum();
-    }
   } else {
     let targetSystemDialogPages = [];
     if (!currentPages.length) {
@@ -28545,9 +28549,17 @@ const openDialogPage = (options) => {
     if (isSystemActionSheetDialogPage(dialogPage)) {
       closePreSystemDialogPage(
         targetSystemDialogPages,
-        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH$1
+        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH$1,
+        (preSystemDialogPage) => {
+          if (!preSystemDialogPage.$disableEscBack) {
+            decrementEscBackPageNum();
+          }
+        }
       );
     }
+  }
+  if (!dialogPage.$disableEscBack) {
+    incrementEscBackPageNum();
   }
   const successOptions = {
     errMsg: "openDialogPage:ok"
@@ -33348,8 +33360,8 @@ export {
   index$5 as Ad,
   index$4 as AdContentPage,
   index$3 as AdDraw,
-  _sfc_main$e as AsyncErrorComponent,
-  _sfc_main$f as AsyncLoadingComponent,
+  _sfc_main$f as AsyncErrorComponent,
+  _sfc_main$g as AsyncLoadingComponent,
   index$r as Button,
   index$2 as Camera,
   indexX$4 as Canvas,
@@ -33373,7 +33385,7 @@ export {
   MovableArea,
   MovableView,
   index$l as Navigator,
-  PageComponent,
+  _sfc_main$b as PageComponent,
   _sfc_main$a as PageContainer,
   index$6 as Picker,
   PickerView,
@@ -33501,6 +33513,7 @@ export {
   createMapContext,
   createMediaQueryObserver,
   createSelectorQuery,
+  createVaporPageRouteComponent,
   createVideoContext,
   createWorker,
   cssBackdropFilter,

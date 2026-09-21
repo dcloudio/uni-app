@@ -8810,11 +8810,16 @@ function useBackgroundColorContent$1(vm) {
   });
 }
 function handleEscKeyPress(event) {
-  if (event.key === "Escape") {
-    const currentPage = getCurrentPage();
-    const dialogPages = currentPage.getDialogPages();
-    const dialogPage = dialogPages[dialogPages.length - 1];
-    if (!dialogPage.$disableEscBack) {
+  if (event.key !== "Escape" && event.key !== "Esc") {
+    return;
+  }
+  const currentPage = getCurrentPage();
+  const dialogPage = getLastDialogPage(currentPage);
+  if (dialogPage && !dialogPage.$disableEscBack) {
+    const onBackPressRes = invokeHook(dialogPage.vm, ON_BACK_PRESS, {
+      from: "navigateBack"
+    });
+    if (onBackPressRes !== true) {
       closeDialogPage({ dialogPage });
     }
   }
@@ -8873,6 +8878,9 @@ const closeDialogPage = (options) => {
           dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
         }
         dialogPageTriggerParentShow(dialogPage, 1);
+        if (!dialogPage.$disableEscBack) {
+          decrementEscBackPageNum();
+        }
       } else {
         triggerFailCallback$1(options, "dialogPage is not a valid page");
       }
@@ -8919,13 +8927,18 @@ function clearDialogPages(uniPage) {
     }
   }
 }
-function closePreSystemDialogPage(dialogPages, type) {
+function closePreSystemDialogPage(dialogPages, type, onClose) {
   const targetSystemDialogPages = dialogPages.filter(
     (page) => page.route.startsWith(type)
   );
   if (targetSystemDialogPages.length > 1) {
+    const preSystemDialogPage = targetSystemDialogPages[0];
     setTimeout(() => {
-      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1);
+      const index2 = dialogPages.indexOf(preSystemDialogPage);
+      if (index2 > -1) {
+        dialogPages.splice(index2, 1);
+        onClose == null ? void 0 : onClose(preSystemDialogPage);
+      }
     }, 150);
   }
 }
@@ -8972,10 +8985,10 @@ function getCurrentBasePages() {
   return curPages;
 }
 function removeRouteCache(routeKey) {
-  const vnode = pageCacheMap.get(routeKey);
-  if (vnode) {
+  const cacheEntry = pageCacheMap.get(routeKey);
+  if (cacheEntry) {
     pageCacheMap.delete(routeKey);
-    routeCache.pruneCacheEntry(vnode);
+    routeCache.pruneCacheEntry(cacheEntry);
   }
 }
 function removePage(routeKey, removeRouteCaches = true) {
@@ -9056,22 +9069,23 @@ const routeCache = {
     pageCacheMap.forEach(fn);
   }
 };
-function isTabBarVNode(vnode) {
-  return vnode.props.type === "tabBar";
+function isTabBarCacheEntry(cacheEntry) {
+  var _a;
+  return ((_a = cacheEntry.attrs || cacheEntry.props) == null ? void 0 : _a.type) === "tabBar";
 }
 function pruneRouteCache(key) {
   const pageId = parseInt(key.split(SEP)[1]);
   if (!pageId) {
     return;
   }
-  routeCache.forEach((vnode, key2) => {
+  routeCache.forEach((cacheEntry, key2) => {
     const cPageId = parseInt(key2.split(SEP)[1]);
     if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarCacheEntry(cacheEntry)) {
         return;
       }
       routeCache.delete(key2);
-      routeCache.pruneCacheEntry(vnode);
+      routeCache.pruneCacheEntry(cacheEntry);
       nextTick(() => pruneCurrentPages());
     }
   });
@@ -11186,16 +11200,18 @@ function registerSystemRoute(route, page, meta = {}) {
     });
   }
   const __uniPage = setupPage(page);
+  let routeComponent;
+  routeComponent = {
+    mpType: "page",
+    setup() {
+      const app = getApp();
+      const query = app && app.$route && app.$route.query || {};
+      return () => renderPage(__uniPage, query);
+    }
+  };
   __uniRoutes.push({
     path: route,
-    component: {
-      mpType: "page",
-      setup() {
-        const app = getApp();
-        const query = app && app.$route && app.$route.query || {};
-        return () => renderPage(__uniPage, query);
-      }
-    },
+    component: routeComponent,
     meta: extend(
       {
         isQuit: false,
@@ -28694,9 +28710,6 @@ const openDialogPage = (options) => {
       dialogPage.getParentPage = () => parentPage;
       parentPage.getDialogPages().push(dialogPage);
     }
-    if (!options.disableEscBack) {
-      incrementEscBackPageNum();
-    }
   } else {
     let targetSystemDialogPages = [];
     if (!currentPages.length) {
@@ -28713,9 +28726,17 @@ const openDialogPage = (options) => {
     if (isSystemActionSheetDialogPage(dialogPage)) {
       closePreSystemDialogPage(
         targetSystemDialogPages,
-        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH$1
+        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH$1,
+        (preSystemDialogPage) => {
+          if (!preSystemDialogPage.$disableEscBack) {
+            decrementEscBackPageNum();
+          }
+        }
       );
     }
+  }
+  if (!dialogPage.$disableEscBack) {
+    incrementEscBackPageNum();
   }
   const successOptions = {
     errMsg: "openDialogPage:ok"
