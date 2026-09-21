@@ -8685,9 +8685,9 @@ class UniPageImpl {
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     const pageMeta = ((_a = this.vm) == null ? void 0 : _a.$basePage.meta) ? normalizeStyles((_b = this.vm) == null ? void 0 : _b.$basePage.meta, __uniConfig.themeConfig) : void 0;
-    const scriptLang = (_d = (_c = this.vm) == null ? void 0 : _c.$) == null ? void 0 : _d.__scriptLang;
+    const scriptLang = (_e = (_d = (_c = this.vm) == null ? void 0 : _c.$) == null ? void 0 : _d.type) == null ? void 0 : _e.__scriptLang;
     const pageStyle = pageMeta ? {
       navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
       navigationBarTextStyle: pageMeta.navigationBar.titleColor,
@@ -8884,7 +8884,7 @@ class UniDialogPageImpl extends UniPageImpl {
   }
 }
 function initXPage(vm, route, page) {
-  var _a, _b, _c;
+  var _a, _b;
   initPageVm(vm, page);
   if (!("$pageLayoutInstance" in vm)) {
     Object.defineProperty(vm, "$pageLayoutInstance", {
@@ -8905,7 +8905,7 @@ function initXPage(vm, route, page) {
   };
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
-    const scriptLang = (_a = vm.$) == null ? void 0 : _a.__scriptLang;
+    const scriptLang = vm.$.type.__scriptLang;
     const isUTS = !scriptLang || scriptLang === "uts";
     const uniPage = new UniNormalPageImpl({
       route: (route == null ? void 0 : route.path) ? removeLeadingSlash(route == null ? void 0 : route.path) : "",
@@ -8914,7 +8914,7 @@ function initXPage(vm, route, page) {
       vm
     });
     vm.$.page = uniPage;
-    vm.$dialogPage = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
+    vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
     if (currentPagesMap.size === 1) {
       setTimeout(() => {
@@ -8936,7 +8936,7 @@ function initXPage(vm, route, page) {
       }
     }
   } else {
-    vm.$.page = (_c = vm.$pageLayoutInstance) == null ? void 0 : _c.$dialogPage;
+    vm.$.page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
@@ -20196,7 +20196,7 @@ function initHooks(options, instance2, publicThis) {
     instance2.__isVisible = true;
     try {
       let query = instance2.attrs.__pageQuery;
-      const scriptLang = instance2 == null ? void 0 : instance2.__scriptLang;
+      const scriptLang = instance2.type.__scriptLang;
       const isUTS = !scriptLang || scriptLang === "uts";
       if (true) {
         query = isUTS ? new UTSJSONObject(decodedQuery(query)) : decodedQuery(query);

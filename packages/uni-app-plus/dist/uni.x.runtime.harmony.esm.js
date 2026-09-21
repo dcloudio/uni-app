@@ -816,7 +816,6 @@ function getCurrentSystemDialogPage() {
   return currentSystemDialogPage;
 }
 function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
-  var _pageVm$$;
   instance.$dialogPages = ref([]);
   var uniPage;
   if (pageInstance.openType === OPEN_DIALOG_PAGE) {
@@ -833,7 +832,7 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   pageVm.$.page = uniPage;
   uniPage.route = pageVm.$basePage.route;
   uniPage.optionsByJS = pageVm.$basePage.options;
-  var scriptLang = (_pageVm$$ = pageVm.$) === null || _pageVm$$ === void 0 ? void 0 : _pageVm$$.__scriptLang;
+  var scriptLang = pageVm.$.type.__scriptLang;
   Object.defineProperty(uniPage, "options", {
     get: function() {
       if (!scriptLang || scriptLang === "uts") {
