@@ -157,6 +157,7 @@ export { default as LayoutComponent } from './framework/components/layout/index'
 //#if _X_VAPOR_
 // @ts-expect-error 条件编译前两个分支会同时参与类型检查，构建后只保留一个导出
 export { default as PageComponent } from './framework/components/page/index-vapor.vue'
+export { createVaporPageRouteComponent } from './framework/components/page/route-vapor'
 //#else
 // @ts-expect-error 条件编译前两个分支会同时参与类型检查，构建后只保留一个导出
 export { default as PageComponent } from './framework/components/page/index'

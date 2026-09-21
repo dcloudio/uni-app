@@ -2,7 +2,7 @@
   <uni-page :data-page="pageMeta.route" :style="pageStyle">
     <PageHead v-if="hasNavigationBar && navigationBar.style !== 'custom'" />
     <PageBody>
-      <slot name="page" />
+      <component :is="pageComponent" v-bind="pageProps" ref="page" />
     </PageBody>
     <component
       v-for="dialogPage in getDialogPages()"
@@ -32,6 +32,7 @@ import { stringifyQuery } from '@dcloudio/uni-shared'
 
 import PageHead from './pageHead.vue'
 import PageBody from './pageBody.vue'
+import type { VaporPageRouteComponent } from './route-vapor'
 
 import { createDialogPageId } from '../../setup/page'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
@@ -55,6 +56,9 @@ let pageMeta = providePageMeta(getStateId())
 const navigationBar = pageMeta.navigationBar
 const currentInstance = getCurrentInstance()!
 const attrs = currentInstance.attrs
+const routeComponent = currentInstance.type as VaporPageRouteComponent
+const pageComponent = routeComponent.__uniPageComponent
+const pageProps = routeComponent.__uniGetPageProps()
 
 useDocumentTitle(pageMeta)
 

@@ -1,0 +1,89 @@
+import fs from 'fs'
+import os from 'os'
+import path from 'path'
+
+import { PAGES_JSON_JS } from '@dcloudio/uni-cli-shared'
+
+import { uniPagesJsonPlugin } from '../src/plugins/pagesJson'
+
+describe('h5 pages.json page route', () => {
+  const originalEnv = {
+    UNI_APP_X: process.env.UNI_APP_X,
+    UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
+    UNI_APP_X_VAPOR: process.env.UNI_APP_X_VAPOR,
+    UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
+    UNI_PLATFORM: process.env.UNI_PLATFORM,
+  }
+  let inputDir: string
+
+  beforeEach(() => {
+    inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-h5-pages-json-'))
+    fs.mkdirSync(path.join(inputDir, 'pages/index'), { recursive: true })
+    fs.writeFileSync(path.join(inputDir, 'manifest.json'), '{}')
+    fs.writeFileSync(
+      path.join(inputDir, 'pages/index/index.uvue'),
+      '<template><view /></template>'
+    )
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_INPUT_DIR = inputDir
+    process.env.UNI_PLATFORM = 'h5'
+    delete process.env.UNI_APP_X_DOM2
+    delete process.env.UNI_APP_X_VAPOR
+  })
+
+  afterEach(() => {
+    fs.rmSync(inputDir, { recursive: true, force: true })
+  })
+
+  afterAll(() => {
+    Object.entries(originalEnv).forEach(([name, value]) => {
+      if (value === undefined) {
+        delete process.env[name]
+      } else {
+        process.env[name] = value
+      }
+    })
+  })
+
+  function transform(vapor: boolean) {
+    if (vapor) {
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR = 'true'
+    }
+    const plugin = uniPagesJsonPlugin() as any
+    plugin.configResolved({
+      command: 'serve',
+      define: {},
+      isProduction: false,
+    })
+    return plugin.transform.call(
+      {},
+      JSON.stringify({ pages: [{ path: 'pages/index/index', style: {} }] }),
+      path.join(inputDir, PAGES_JSON_JS)
+    ).code as string
+  }
+
+  test('Web VDOM 保持原有 VNode 页面包装', () => {
+    const code = transform(false)
+
+    expect(code).toContain(
+      `import { PageComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'`
+    )
+    expect(code).toContain('function renderPage(component,props)')
+    expect(code).toContain('createBlock(PageComponent')
+    expect(code).not.toContain('createVaporPageRouteComponent')
+  })
+
+  test('Web Vapor 生成路由专属 Page 组件', () => {
+    const code = transform(true)
+
+    expect(code).toContain(
+      `import { createVaporPageRouteComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'`
+    )
+    expect(code).toContain(
+      'component:createVaporPageRouteComponent(PagesIndexIndex,()=>'
+    )
+    expect(code).not.toContain('function renderPage(component,props)')
+    expect(code).not.toContain('createBlock(PageComponent')
+  })
+})

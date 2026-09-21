@@ -15482,8 +15482,8 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 		const keys = /* @__PURE__ */ new Set();
 		const externalCache = props.cache;
 		const externalCacheState = externalCache ? {
-			keyByVNode: /* @__PURE__ */ new WeakMap(),
-			vnodeByKey: /* @__PURE__ */ new Map()
+			keyByEntry: /* @__PURE__ */ new WeakMap(),
+			entryByKey: /* @__PURE__ */ new Map()
 		} : void 0;
 		const storageContainer = /* @__PURE__ */ createElement("div");
 		const keptAliveScopes = /* @__PURE__ */ new Map();
@@ -15523,14 +15523,12 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 			} else addCacheKey(key);
 			cache.set(key, block);
 			if (externalCache && externalCacheState) {
-				const vnode = getVNodeFromCacheBlock(block);
-				if (vnode) {
-					const previousVNode = externalCacheState.vnodeByKey.get(key);
-					if (previousVNode && previousVNode !== vnode) externalCacheState.keyByVNode.delete(previousVNode);
-					externalCache.set(key, vnode);
-					externalCacheState.keyByVNode.set(vnode, key);
-					externalCacheState.vnodeByKey.set(key, vnode);
-				}
+				const entry = getExternalCacheEntry(block);
+				const previousEntry = externalCacheState.entryByKey.get(key);
+				if (previousEntry && previousEntry !== entry) externalCacheState.keyByEntry.delete(previousEntry);
+				externalCache.set(key, entry);
+				externalCacheState.keyByEntry.set(entry, key);
+				externalCacheState.entryByKey.set(key, entry);
 			}
 			if (isCurrent) current = block;
 		};
@@ -15594,18 +15592,18 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 			} else if (current) unsetShapeFlag(current);
 			cache.delete(key);
 			keys.delete(key);
-			const externalVNode = externalCacheState ? externalCacheState.vnodeByKey.get(key) : void 0;
-			if (externalCache && externalVNode && externalCache.get(key) === externalVNode) externalCache.delete(key);
-			if (externalVNode && externalCacheState) {
-				externalCacheState.vnodeByKey.delete(key);
-				externalCacheState.keyByVNode.delete(externalVNode);
+			const externalEntry = externalCacheState ? externalCacheState.entryByKey.get(key) : void 0;
+			if (externalCache && externalEntry && externalCache.get(key) === externalEntry) externalCache.delete(key);
+			if (externalEntry && externalCacheState) {
+				externalCacheState.entryByKey.delete(key);
+				externalCacheState.keyByEntry.delete(externalEntry);
 			}
 			const scope = deleteScope(key);
 			if (scope) scope.stop();
 		};
 		const pruneExternalCacheEntry = externalCache && externalCacheState ? (cached) => {
-			if (!externalCacheState.keyByVNode.has(cached)) return;
-			pruneCacheEntry(externalCacheState.keyByVNode.get(cached));
+			if (!externalCacheState.keyByEntry.has(cached)) return;
+			pruneCacheEntry(externalCacheState.keyByEntry.get(cached));
 		} : void 0;
 		if (externalCache && pruneExternalCacheEntry) externalCache.pruneCacheEntry = pruneExternalCacheEntry;
 		watch(() => [props.include, props.exclude], ([include, exclude]) => {
@@ -15655,10 +15653,10 @@ const VaporKeepAlive = /*@__PURE__*/ withKeepAliveEnabled(/* @__PURE__ */ define
 			cache.clear();
 			keys.clear();
 			if (externalCache && externalCacheState) {
-				externalCacheState.vnodeByKey.forEach((_vnode, key) => {
+				externalCacheState.entryByKey.forEach((_entry, key) => {
 					externalCache.delete(key);
 				});
-				externalCacheState.vnodeByKey.clear();
+				externalCacheState.entryByKey.clear();
 				if (externalCache.pruneCacheEntry === pruneExternalCacheEntry) externalCache.pruneCacheEntry = void 0;
 			}
 		});
@@ -15803,8 +15801,8 @@ function getInstanceFromCache(cached) {
 	if (isVaporComponent(cached)) return cached;
 	if (isInteropEnabled) return cached.vnode.component;
 }
-function getVNodeFromCacheBlock(block) {
-	return isInteropFragment(block) ? block.vnode || void 0 : void 0;
+function getExternalCacheEntry(block) {
+	return isInteropFragment(block) && block.vnode ? block.vnode : block;
 }
 function activate$1(instance, parentNode, anchor, parentSuspense = instance.suspense) {
 	if (instance.ba) {

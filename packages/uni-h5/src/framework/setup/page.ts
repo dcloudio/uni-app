@@ -115,15 +115,14 @@ export function getCurrentBasePages() {
 }
 
 function removeRouteCache(routeKey: string) {
-  const vnode = pageCacheMap.get(routeKey)
-  if (vnode) {
+  const cacheEntry = pageCacheMap.get(routeKey)
+  if (cacheEntry) {
     pageCacheMap.delete(routeKey)
     /**
      * 此逻辑为处理首页->非首页->back回首页后首页reLaunch不触发当前首页的onUnmount问题
      * 但是相关的问题并没有彻底解决，比如activated、deactivated触发不符合预期的问题，后续需要继续跟进
      */
-    // resetShapeFlag(vnode)
-    routeCache.pruneCacheEntry!(vnode)
+    routeCache.pruneCacheEntry!(cacheEntry)
   }
 }
 
@@ -219,17 +218,25 @@ function resetShapeFlag(vnode: VNode) {
 // https://github.com/vuejs/vue-next/pull/3414
 
 type CacheKey = string | number | ConcreteComponent
+interface KeepAliveCacheEntry {
+  props?: Record<string, any> | null
+  attrs?: Record<string, any>
+}
 interface KeepAliveCache {
-  get(key: CacheKey): VNode | void
-  set(key: CacheKey, value: VNode): void
+  get(key: CacheKey): KeepAliveCacheEntry | void
+  set(key: CacheKey, value: KeepAliveCacheEntry): void
   delete(key: CacheKey): void
   forEach(
-    fn: (value: VNode, key: CacheKey, map: Map<CacheKey, VNode>) => void,
+    fn: (
+      value: KeepAliveCacheEntry,
+      key: CacheKey,
+      map: Map<CacheKey, KeepAliveCacheEntry>
+    ) => void,
     thisArg?: any
   ): void
-  pruneCacheEntry?: (cached: VNode) => void
+  pruneCacheEntry?: (cached: KeepAliveCacheEntry) => void
 }
-const pageCacheMap = new Map<CacheKey, VNode>()
+const pageCacheMap = new Map<CacheKey, KeepAliveCacheEntry>()
 const routeCache: KeepAliveCache = {
   get(key) {
     return pageCacheMap.get(key)
@@ -250,8 +257,8 @@ const routeCache: KeepAliveCache = {
   },
 }
 
-function isTabBarVNode(vnode: VNode): boolean {
-  return vnode.props!.type === 'tabBar'
+function isTabBarCacheEntry(cacheEntry: KeepAliveCacheEntry): boolean {
+  return (cacheEntry.attrs || cacheEntry.props)?.type === 'tabBar'
 }
 
 function pruneRouteCache(key: string) {
@@ -259,16 +266,15 @@ function pruneRouteCache(key: string) {
   if (!pageId) {
     return
   }
-  routeCache.forEach((vnode, key) => {
+  routeCache.forEach((cacheEntry, key) => {
     const cPageId = parseInt((key as string).split(SEP)[1])
     if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarCacheEntry(cacheEntry)) {
         // tabBar keep alive
         return
       }
       routeCache.delete(key)
-      // resetShapeFlag(vnode)
-      routeCache.pruneCacheEntry!(vnode)
+      routeCache.pruneCacheEntry!(cacheEntry)
       nextTick(() => pruneCurrentPages())
     }
   })
