@@ -27,6 +27,7 @@ import { M } from '../messages'
 import { BINDING_COMPONENTS, EXTNAME_VUE_RE } from '../constants'
 import { isAppVue, normalizeMiniProgramFilename, removeExt } from '../utils'
 import { cleanUrl, parseVueRequest } from '../vite/utils'
+import { isUniAppX } from '../x'
 import {
   addMiniProgramComponentPackageRoot,
   addMiniProgramUsingComponents,
@@ -283,9 +284,10 @@ function createUsingComponents(
   ownerPackageRoot?: string
 ) {
   const usingComponents: Record<string, string> = {}
-  const ownerSubPackageRoot =
-    ownerPackageRoot ||
-    (ownerFilename && findMiniProgramSubPackageRoot(ownerFilename))
+  const ownerSubPackageRoot = isUniAppX()
+    ? ownerPackageRoot ||
+      (ownerFilename && findMiniProgramSubPackageRoot(ownerFilename))
+    : undefined
   imports.forEach(({ source: { value }, specifiers: [specifier] }) => {
     const { name } = specifier.local
     if (!bindingComponents[name]) {
@@ -298,7 +300,7 @@ function createUsingComponents(
       let componentFilename = removeExt(
         normalizeMiniProgramFilename(withoutIndependentRoot(value), inputDir)
       )
-      if (componentFilename.startsWith('uni_modules/')) {
+      if (isUniAppX() && componentFilename.startsWith('uni_modules/')) {
         addMiniProgramComponentPackageRoot(
           componentFilename,
           ownerSubPackageRoot

@@ -12,6 +12,7 @@ import {
   injectCssPlugin,
   injectCssPostPlugin,
   isMiniProgramPageFile,
+  isUniAppX,
   normalizeMiniProgramFilename,
   normalizePath,
   parseManifestJsonOnce,
@@ -116,9 +117,11 @@ export function createConfigResolved({
             return normalizeComponentCssChunkFilename(
               filepath,
               cssExtname,
-              root
+              isUniAppX() && root
                 ? undefined
-                : resolveMiniProgramComponentPackageRoot(filepath, packageRoot)
+                : isUniAppX()
+                ? resolveMiniProgramComponentPackageRoot(filepath, packageRoot)
+                : undefined
             )
           } else if (id.startsWith('uni_modules://')) {
             return normalizeCssChunkFilename(

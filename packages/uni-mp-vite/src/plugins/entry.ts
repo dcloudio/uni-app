@@ -10,6 +10,7 @@ import {
   encodeBase64Url,
   getUniModulesEncryptType,
   isAlipayXStyleIsolation,
+  isUniAppX,
   normalizeMiniProgramFilename,
   normalizePath,
   parseManifestJsonOnce,
@@ -125,7 +126,7 @@ export function getSubPackageRootByFilename(
   filename: string,
   inputDir: string
 ) {
-  if (!hasOptimizationSubPackages) {
+  if (!isUniAppX() || !hasOptimizationSubPackages) {
     return
   }
   const normalizedFilename = normalizePath(filename).split('?')[0]
@@ -143,7 +144,11 @@ export function normalizeMiniProgramComponentFilename(
   packageRoot?: string
 ) {
   const miniProgramFilename = normalizeMiniProgramFilename(filename, inputDir)
-  if (packageRoot && miniProgramFilename.startsWith('uni_modules/')) {
+  if (
+    isUniAppX() &&
+    packageRoot &&
+    miniProgramFilename.startsWith('uni_modules/')
+  ) {
     return `${packageRoot}/${miniProgramFilename}`
   }
   return miniProgramFilename

@@ -15,6 +15,7 @@ import {
   isCSSRequest,
   isEnableConsole,
   isMiniProgramAssetFile,
+  isUniAppX,
   normalizeMiniProgramFilename,
   normalizePath,
   parseIndependentSubPackages,
@@ -431,12 +432,15 @@ function createChunkFileNames(
           parseVirtualComponentPathInfo(id)
         independentRoot = independentRoot || root
         id = path.resolve(process.env.UNI_INPUT_DIR, filepath)
-        componentPackageRoot = independentRoot
-          ? undefined
-          : resolveMiniProgramComponentPackageRoot(
-              normalizeMiniProgramFilename(id, inputDir),
-              packageRoot
-            )
+        componentPackageRoot =
+          isUniAppX() && independentRoot
+            ? undefined
+            : isUniAppX()
+            ? resolveMiniProgramComponentPackageRoot(
+                normalizeMiniProgramFilename(id, inputDir),
+                packageRoot
+              )
+            : undefined
         isMiniProgramEntry = true
       }
       if (getWorkersRootDirs().length) {
