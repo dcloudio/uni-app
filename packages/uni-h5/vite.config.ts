@@ -147,7 +147,7 @@ export default defineConfig(async () => {
     resolve: {
       alias: [
         {
-          find: '@dcloudio/uni-api',
+          find: /^@dcloudio\/uni-api$/,
           replacement: resolve('../uni-api/src/index.ts'),
         },
         {
