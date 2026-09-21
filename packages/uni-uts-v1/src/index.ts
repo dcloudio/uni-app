@@ -953,6 +953,7 @@ export async function buildUniModules(
       isX: compilerOptions.isX,
       isExtApi: compilerOptions.isExtApi,
       sourceMap: compilerOptions.sourceMap,
+      uni_modules: compilerOptions.uni_modules,
       rewriteConsoleExpr: compilerOptions.rewriteConsoleExpr,
       transform: {
         uniExtApiProviderName: compilerOptions.transform?.uniExtApiProviderName,

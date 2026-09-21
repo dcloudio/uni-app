@@ -110,10 +110,12 @@ export async function compileArkTSExtApi(
     input: {
       root: rootDir,
       filename: resolveBundleInputFileName('app-harmony', filename),
+      pluginId,
       paths: {
         '@dcloudio/uni-runtime': runtimePackageName,
       },
       uniModules: uni_modules,
+      uniModulesPrefix: process.env.UNI_UTS_MODULE_PREFIX || '',
       parseOptions: {
         tsx: true,
         noEarlyErrors: true,

@@ -336,6 +336,7 @@ export function uniWorkersPlugin(): Plugin {
       ? resolveUTSCompiler().createUniXArkTSCompilerOnce({
           resolveWorkers,
           createWorkerTransformer,
+          loadUasmTransformer: initUasmTransformerCreator('app-harmony'),
           sharedData: initUts2jsSharedDataOptions(),
         })
       : null

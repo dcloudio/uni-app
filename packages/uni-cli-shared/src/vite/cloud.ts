@@ -512,6 +512,7 @@ export function compileCloudUniModuleWithTsc(
       ? createUniXArkTSCompilerOnce({
           resolveWorkers,
           createWorkerTransformer,
+          loadUasmTransformer: initUasmTransformerCreator('app-harmony'),
           sharedData: initUts2jsSharedDataOptions(),
         })
       : createUniXSwiftCompilerOnce({
