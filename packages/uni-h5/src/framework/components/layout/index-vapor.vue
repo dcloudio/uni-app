@@ -1,13 +1,117 @@
+<template>
+  <uni-app ref="rootRef" :class="clazz">
+    <uni-layout
+      v-if="hasResponsive"
+      :class="{
+        'uni-app--showtopwindow': hasTopWindow && layoutState.showTopWindow,
+        'uni-app--showleftwindow': hasLeftWindow && layoutState.showLeftWindow,
+        'uni-app--showrightwindow':
+          hasRightWindow && layoutState.showRightWindow,
+      }"
+    >
+      <uni-top-window
+        v-if="hasTopWindow && TopWindow"
+        v-show="layoutState.showTopWindow || layoutState.apiShowTopWindow"
+      >
+        <!--
+          注意如果修改 layoutState.topWindowStyle 所在的元素，需要同步修改
+          useTopWindow 函数中 layoutState.topWindowHeight 的计算逻辑。
+        -->
+        <div class="uni-top-window" :style="layoutState.topWindowStyle">
+          <component
+            :is="TopWindow"
+            ref="topWindowRef"
+            :navigation-bar-title-text="layoutState.navigationBarTitleText"
+            v-bind="windowState"
+          />
+        </div>
+        <div
+          class="uni-top-window--placeholder"
+          :style="{ height: layoutState.topWindowHeight + 'px' }"
+        />
+      </uni-top-window>
+      <uni-content>
+        <uni-main>
+          <PageRouter v-if="hasPages" />
+          <component v-else :is="firstPageComponent" />
+        </uni-main>
+        <uni-left-window
+          v-if="hasLeftWindow && LeftWindow"
+          v-show="layoutState.showLeftWindow || layoutState.apiShowLeftWindow"
+          :data-show="layoutState.apiShowLeftWindow || undefined"
+          :style="layoutState.leftWindowStyle"
+        >
+          <!--
+            注意如果修改 layoutState.leftWindowStyle 所在的元素，需要同步修改
+            useLeftWindow 函数中 layoutState.leftWindowWidth 的计算逻辑。
+          -->
+          <div
+            v-if="layoutState.apiShowLeftWindow"
+            class="uni-mask"
+            @click="layoutState.apiShowLeftWindow = false"
+          />
+          <div class="uni-left-window">
+            <component
+              :is="LeftWindow"
+              ref="leftWindowRef"
+              v-bind="windowState"
+            />
+          </div>
+        </uni-left-window>
+        <uni-right-window
+          v-if="hasRightWindow && RightWindow"
+          v-show="layoutState.showRightWindow || layoutState.apiShowRightWindow"
+          :data-show="layoutState.apiShowRightWindow || undefined"
+          :style="layoutState.rightWindowStyle"
+        >
+          <!--
+            注意如果修改 layoutState.rightWindowStyle 所在的元素，需要同步修改
+            useRightWindow 函数中 layoutState.rightWindowWidth 的计算逻辑。
+          -->
+          <div
+            v-if="layoutState.apiShowRightWindow"
+            class="uni-mask"
+            @click="layoutState.apiShowRightWindow = false"
+          />
+          <div class="uni-right-window">
+            <component
+              :is="RightWindow"
+              ref="rightWindowRef"
+              v-bind="windowState"
+            />
+          </div>
+        </uni-right-window>
+      </uni-content>
+    </uni-layout>
+    <template v-else>
+      <PageRouter v-if="hasPages" />
+      <component v-else :is="firstPageComponent" />
+    </template>
+    <TabBar v-if="hasTabBar" v-show="showTabBar" />
+  </uni-app>
+</template>
+
+<script lang="ts">
+interface WindowState {
+  matchTopWindow?: boolean
+  showTopWindow?: boolean
+  matchLeftWindow?: boolean
+  showLeftWindow?: boolean
+  matchRightWindow?: boolean
+  showRightWindow?: boolean
+}
+</script>
+
+<script setup lang="ts">
 import {
   type ComponentPublicInstance,
   type ComputedRef,
   KeepAlive,
   type Ref,
-  type SetupContext,
+  type defineComponent,
   computed,
   createBlock,
   createVNode,
-  type defineComponent,
   nextTick,
   onMounted,
   openBlock,
@@ -37,49 +141,56 @@ import { checkMinWidth } from '../../../helpers/dom'
 import { hasOwn } from '@vue/shared'
 
 import TabBar from './tabBar.vue'
-import { type LayoutState, setLayoutState } from './state'
+import { setLayoutState, type LayoutState } from './state'
 import { usePageRoute } from '../../setup/provide'
+
+defineOptions({
+  name: 'Layout',
+  __reserved: true,
+  compatConfig: { MODE: 3 },
+})
 
 type KeepAliveRoute = ReturnType<typeof useKeepAliveRoute>
 
 const DEFAULT_CSS_VAR_VALUE = '0px'
 
-export default /*#__PURE__*/ defineSystemComponent({
-  name: 'Layout',
-  setup(_props, { emit }) {
-    const rootRef: Ref<HTMLElement | null> = ref(null)
-    !__NODE_JS__ && initCssVar()
-    const keepAliveRoute = (__UNI_FEATURE_PAGES__ &&
-      useKeepAliveRoute()) as KeepAliveRoute
-    const { layoutState, windowState } = useState()
-    useMaxWidth(layoutState, rootRef)
-    const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState!)
-    const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState!)
-    const rightWindow =
-      __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState!)
-    const showTabBar = (__UNI_FEATURE_TABBAR__ &&
-      useShowTabBar(emit)) as ComputedRef<boolean>
-    const clazz = useAppClass(showTabBar)
-    setLayoutState(layoutState)
-    return () => {
-      const layoutTsx = createLayoutTsx(
-        keepAliveRoute,
-        layoutState,
-        windowState,
-        topWindow,
-        leftWindow,
-        rightWindow
-      )
-      const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar)
-      return (
-        <uni-app ref={rootRef} class={clazz.value}>
-          {layoutTsx}
-          {tabBarTsx}
-        </uni-app>
-      )
-    }
-  },
-})
+const hasPages = __UNI_FEATURE_PAGES__
+const hasResponsive = __UNI_FEATURE_RESPONSIVE__
+const hasTopWindow = __UNI_FEATURE_TOPWINDOW__
+const hasLeftWindow = __UNI_FEATURE_LEFTWINDOW__
+const hasRightWindow = __UNI_FEATURE_RIGHTWINDOW__
+const hasTabBar = __UNI_FEATURE_TABBAR__
+
+const PageRouter =
+  hasPages &&
+  defineSystemComponent({
+    name: 'PageRouter',
+    setup() {
+      const keepAliveRoute = useKeepAliveRoute()
+      return () => createRouterViewVNode(keepAliveRoute)
+    },
+  })
+
+const rootRef: Ref<HTMLElement | null> = ref(null)
+!__NODE_JS__ && initCssVar()
+const firstPageComponent = !hasPages && __uniRoutes[0].component
+const { layoutState, windowState } = useState()
+useMaxWidth(layoutState, rootRef)
+const topWindow = (hasTopWindow &&
+  useTopWindow(layoutState)) as WindowComponentInfo
+const leftWindow = (hasLeftWindow &&
+  useLeftWindow(layoutState)) as WindowComponentInfo
+const rightWindow = (hasRightWindow &&
+  useRightWindow(layoutState)) as WindowComponentInfo
+const TopWindow = topWindow && topWindow.component
+const LeftWindow = leftWindow && leftWindow.component
+const RightWindow = rightWindow && rightWindow.component
+const topWindowRef = topWindow && topWindow.windowRef
+const leftWindowRef = leftWindow && leftWindow.windowRef
+const rightWindowRef = rightWindow && rightWindow.windowRef
+const showTabBar = (hasTabBar && useShowTabBar()) as ComputedRef<boolean>
+const clazz = useAppClass(showTabBar)
+setLayoutState(layoutState)
 
 function useAppClass(showTabBar?: ComputedRef<boolean>) {
   const showMaxWidth = ref(false)
@@ -100,14 +211,6 @@ function initCssVar() {
     '--window-margin': DEFAULT_CSS_VAR_VALUE,
     '--tab-bar-height': DEFAULT_CSS_VAR_VALUE,
   })
-}
-interface WindowState {
-  matchTopWindow?: boolean
-  showTopWindow?: boolean
-  matchLeftWindow?: boolean
-  showLeftWindow?: boolean
-  matchRightWindow?: boolean
-  showRightWindow?: boolean
 }
 
 function initMediaQuery(
@@ -189,7 +292,7 @@ function useMaxWidth(
 
 function useState() {
   const route = usePageRoute()
-  if (!__UNI_FEATURE_RESPONSIVE__) {
+  if (!hasResponsive) {
     // max width
     const layoutState = reactive({
       marginWidth: 0,
@@ -222,19 +325,19 @@ function useState() {
   const rightWindowMediaQuery = ref(false)
   const showTopWindow = computed(
     () =>
-      __UNI_FEATURE_TOPWINDOW__ &&
+      hasTopWindow &&
       route.meta.topWindow !== false &&
       topWindowMediaQuery.value
   )
   const showLeftWindow = computed(
     () =>
-      __UNI_FEATURE_LEFTWINDOW__ &&
+      hasLeftWindow &&
       route.meta.leftWindow !== false &&
       leftWindowMediaQuery.value
   )
   const showRightWindow = computed(
     () =>
-      __UNI_FEATURE_RIGHTWINDOW__ &&
+      hasRightWindow &&
       route.meta.rightWindow !== false &&
       rightWindowMediaQuery.value
   )
@@ -316,52 +419,7 @@ function useState() {
   }
 }
 
-function createLayoutTsx(
-  keepAliveRoute: KeepAliveRoute,
-  layoutState: LayoutState,
-  windowState: ComputedRef<WindowState>,
-  topWindow?: unknown,
-  leftWindow?: unknown,
-  rightWindow?: unknown
-) {
-  const routerVNode = __UNI_FEATURE_PAGES__
-    ? createRouterViewVNode(keepAliveRoute)
-    : createPageVNode()
-  // 非响应式
-  if (!__UNI_FEATURE_RESPONSIVE__) {
-    return routerVNode
-  }
-  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__
-    ? createTopWindowTsx(topWindow, layoutState, windowState.value)
-    : null
-  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__
-    ? createLeftWindowTsx(leftWindow, layoutState, windowState.value)
-    : null
-  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__
-    ? createRightWindowTsx(rightWindow, layoutState, windowState.value)
-    : null
-  return (
-    <uni-layout
-      class={{
-        'uni-app--showtopwindow':
-          __UNI_FEATURE_TOPWINDOW__ && layoutState!.showTopWindow,
-        'uni-app--showleftwindow':
-          __UNI_FEATURE_LEFTWINDOW__ && layoutState!.showLeftWindow,
-        'uni-app--showrightwindow':
-          __UNI_FEATURE_RIGHTWINDOW__ && layoutState!.showRightWindow,
-      }}
-    >
-      {topWindowTsx}
-      <uni-content>
-        <uni-main>{routerVNode}</uni-main>
-        {leftWindowTsx}
-        {rightWindowTsx}
-      </uni-content>
-    </uni-layout>
-  )
-}
-
-function useShowTabBar(emit: SetupContext<['change']>['emit']) {
+function useShowTabBar() {
   const route = usePageRoute()
   const tabBar = useTabBar()!
   // TODO meida query
@@ -373,19 +431,11 @@ function useShowTabBar(emit: SetupContext<['change']>['emit']) {
   return showTabBar
 }
 
-function createTabBarTsx(showTabBar: ComputedRef<boolean>) {
-  return <TabBar v-show={showTabBar.value} />
-}
-
-function createPageVNode() {
-  return createVNode(__uniRoutes[0].component)
-}
-
 function createRouterViewVNode({
   routeKey,
   isTabBar,
   routeCache,
-}: ReturnType<typeof useKeepAliveRoute>) {
+}: KeepAliveRoute) {
   return createVNode(RouterView, null, {
     default: withCtx(({ Component }: { Component: unknown }) => [
       (openBlock(),
@@ -426,8 +476,8 @@ function useTopWindow(layoutState: LayoutState): WindowComponentInfo {
       return
     }
     /**
-     * el指开发者top-window的根节点，其高度可能并不正确。
-     * pages.json内的top-window style被设置到了el的父元素上。需要以父元素的高度为准。此值会影响--top-window-height变量
+     * el 指开发者 top-window 的根节点，其高度可能并不正确。
+     * pages.json 内的 top-window style 被设置到了 el 的父元素上。需要以父元素的高度为准。此值会影响 --top-window-height 变量
      */
     const uniTopWindowStyleEl = el.parentElement
     if (!uniTopWindowStyleEl) {
@@ -456,6 +506,7 @@ function useTopWindow(layoutState: LayoutState): WindowComponentInfo {
     windowRef,
   }
 }
+
 function useLeftWindow(layoutState: LayoutState): WindowComponentInfo {
   const { component, style } = __uniConfig.leftWindow!
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
@@ -469,7 +520,7 @@ function useLeftWindow(layoutState: LayoutState): WindowComponentInfo {
       return
     }
     /**
-     * left-window样式应用节点为el的父元素的父元素。
+     * left-window 样式应用节点为 el 的父元素的父元素。
      */
     const uniLeftWindowStyleEl =
       el.parentElement && el.parentElement.parentElement
@@ -499,6 +550,7 @@ function useLeftWindow(layoutState: LayoutState): WindowComponentInfo {
     windowRef,
   }
 }
+
 function useRightWindow(layoutState: LayoutState): WindowComponentInfo {
   const { component, style } = __uniConfig.rightWindow!
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
@@ -512,7 +564,7 @@ function useRightWindow(layoutState: LayoutState): WindowComponentInfo {
       return
     }
     /**
-     * right-window样式应用节点为el的父元素的父元素。
+     * right-window 样式应用节点为 el 的父元素的父元素。
      */
     const uniRightWindowStyleEl =
       el.parentElement && el.parentElement.parentElement
@@ -542,93 +594,4 @@ function useRightWindow(layoutState: LayoutState): WindowComponentInfo {
     windowRef,
   }
 }
-
-function createTopWindowTsx(
-  topWindow: unknown,
-  layoutState: LayoutState,
-  windowState: WindowState
-) {
-  if (topWindow) {
-    const { component: TopWindow, windowRef } = topWindow as WindowComponentInfo
-    /**
-     * 注意如果修改layoutState.topWindowStyle所在的元素，需要同步修改useTopWindow函数中layoutState.topWindowHeight的计算逻辑。
-     */
-    return (
-      <uni-top-window
-        v-show={layoutState.showTopWindow || layoutState.apiShowTopWindow}
-      >
-        <div class="uni-top-window" style={layoutState.topWindowStyle as any}>
-          <TopWindow
-            ref={windowRef}
-            navigation-bar-title-text={layoutState.navigationBarTitleText}
-            {...windowState}
-          />
-        </div>
-        <div
-          class="uni-top-window--placeholder"
-          style={{ height: layoutState.topWindowHeight + 'px' }}
-        />
-      </uni-top-window>
-    )
-  }
-}
-function createLeftWindowTsx(
-  leftWindow: unknown,
-  layoutState: LayoutState,
-  windowState: WindowState
-) {
-  if (leftWindow) {
-    const { component: LeftWindow, windowRef } =
-      leftWindow as WindowComponentInfo
-    /**
-     * 注意如果修改layoutState.leftWindowStyle所在的元素，需要同步修改useLeftWindow函数中layoutState.leftWindowWidth的计算逻辑。
-     */
-    return (
-      <uni-left-window
-        v-show={layoutState.showLeftWindow || layoutState.apiShowLeftWindow}
-        data-show={layoutState.apiShowLeftWindow || undefined}
-        style={layoutState.leftWindowStyle as any}
-      >
-        {layoutState.apiShowLeftWindow ? (
-          <div
-            class="uni-mask"
-            onClick={() => (layoutState.apiShowLeftWindow = false)}
-          />
-        ) : null}
-        <div class="uni-left-window">
-          <LeftWindow ref={windowRef} {...windowState} />
-        </div>
-      </uni-left-window>
-    )
-  }
-}
-function createRightWindowTsx(
-  rightWindow: unknown,
-  layoutState: LayoutState,
-  windowState: WindowState
-) {
-  if (rightWindow) {
-    const { component: RightWindow, windowRef } =
-      rightWindow as WindowComponentInfo
-    /**
-     * 注意如果修改layoutState.rightWindowStyle所在的元素，需要同步修改useRightWindow函数中layoutState.rightWindowWidth的计算逻辑。
-     */
-    return (
-      <uni-right-window
-        v-show={layoutState.showRightWindow || layoutState.apiShowRightWindow}
-        data-show={layoutState.apiShowRightWindow || undefined}
-        style={layoutState.rightWindowStyle as any}
-      >
-        {layoutState.apiShowRightWindow ? (
-          <div
-            class="uni-mask"
-            onClick={() => (layoutState.apiShowRightWindow = false)}
-          />
-        ) : null}
-        <div class="uni-right-window">
-          <RightWindow ref={windowRef} {...windowState} />
-        </div>
-      </uni-right-window>
-    )
-  }
-}
+</script>

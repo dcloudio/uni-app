@@ -147,7 +147,13 @@ export * from './service/bridge'
 
 export { getApp, getCurrentPages } from './framework'
 
+//#if _X_VAPOR_
+// @ts-expect-error 条件编译前两个分支会同时参与类型检查，构建后只保留一个导出
+export { default as LayoutComponent } from './framework/components/layout/index-vapor.vue'
+//#else
+// @ts-expect-error 条件编译前两个分支会同时参与类型检查，构建后只保留一个导出
 export { default as LayoutComponent } from './framework/components/layout/index'
+//#endif
 export { default as PageComponent } from './framework/components/page/index'
 export { default as AsyncErrorComponent } from './framework/components/async-error/asyncError.vue'
 export { default as AsyncLoadingComponent } from './framework/components/async-loading/asyncLoading.vue'

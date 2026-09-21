@@ -1311,7 +1311,7 @@ function normalizeVaporSlots(slots) {
     };
   }
 }
-const _t0$p = Vue.template("<span> ");
+const _t0$n = Vue.template("<span> ");
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -1322,7 +1322,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n1 = Vue.createPlainElement("uni-form", null, () => {
-        const _n0 = _t0$p();
+        const _n0 = _t0$n();
         const _x0 = Vue.txt(_n0);
         setNodes(_x0, () => slots.default && slots.default());
         return _n0;
@@ -1514,7 +1514,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$o = Vue.template("<canvas class=uni-canvas-canvas>");
+const _t0$m = Vue.template("<canvas class=uni-canvas-canvas>");
 const props$q = { disableScroll: {
   type: [Boolean, String],
   default: false
@@ -1531,7 +1531,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n1 = Vue.createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$o();
+          const _n0 = _t0$m();
           Vue.renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -1599,7 +1599,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const _t0$n = Vue.template("<div class=uni-checkbox-wrapper><div></div> ");
+const _t0$l = Vue.template("<div class=uni-checkbox-wrapper><div></div> ");
 const props$o = {
   checked: {
     type: [Boolean, String],
@@ -1707,7 +1707,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
           id: () => props2.id,
           onClick: () => _onClick
         }] }, () => {
-          const _n7 = _t0$n();
+          const _n7 = _t0$l();
           const _n5 = Vue.child(_n7);
           const _n6 = Vue.next(_n5, true);
           Vue.renderEffect(() => {
@@ -3523,8 +3523,8 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const t0$5 = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$7 = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -3532,12 +3532,12 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   __name: "asyncLoading",
   setup(__props) {
-    const n0 = t0$5();
+    const n0 = t0$7();
     return n0;
   }
 });
-const t0$4 = Vue.template("<div class=uni-async-error> ", 1);
-const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$6 = Vue.template("<div class=uni-async-error> ", 1);
+const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -3551,7 +3551,7 @@ const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
     function reload() {
       window.location.reload();
     }
-    const n0 = t0$4();
+    const n0 = t0$6();
     const x0 = Vue.txt(n0);
     Vue.on(n0, "click", reload);
     Vue.renderEffect(() => Vue.setText(x0, Vue.toDisplayString(Vue.unref(t11)("uni.async.error"))));
@@ -3593,11 +3593,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(_sfc_main$6.name)) {
-    app.component(_sfc_main$6.name, _sfc_main$6);
+  if (!app.component(_sfc_main$8.name)) {
+    app.component(_sfc_main$8.name, _sfc_main$8);
   }
-  if (!app.component(_sfc_main$5.name)) {
-    app.component(_sfc_main$5.name, _sfc_main$5);
+  if (!app.component(_sfc_main$7.name)) {
+    app.component(_sfc_main$7.name, _sfc_main$7);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -3697,7 +3697,7 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       const render = () => {
-        return Vue.openBlock(), Vue.createBlock(LayoutComponent);
+        return Vue.openBlock(), Vue.createBlock(_sfc_main);
       };
       comp2.setup = (props2, ctx) => {
         const res = setup && setup(props2, ctx);
@@ -3782,18 +3782,18 @@ function usePageHeadTransparent(headRef, {
 }) {
   Vue.computed(() => hexToRgba(backgroundColor));
 }
-const t0$3 = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path>');
-const t1$1 = Vue.template('<svg viewBox="0 0 32 32"><path>', 0, 1);
-const t2 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
-const t3 = Vue.template("<i class=uni-btn-icon></i>");
-const t4 = Vue.template("<div>");
-const t5 = Vue.template("<i class=uni-loading></i>", 2);
-const t6 = Vue.template("<img class=uni-page-head__title_image>");
-const t7 = Vue.template(" ");
-const t8 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
+const t0$5 = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path>');
+const t1$3 = Vue.template('<svg viewBox="0 0 32 32"><path>', 0, 1);
+const t2$2 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
+const t3$2 = Vue.template("<i class=uni-btn-icon></i>");
+const t4$2 = Vue.template("<div>");
+const t5$1 = Vue.template("<i class=uni-loading></i>", 2);
+const t6$1 = Vue.template("<img class=uni-page-head__title_image>");
+const t7$1 = Vue.template(" ");
+const t8$1 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
 const t9 = Vue.template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
 const t10 = Vue.template("<div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>");
-const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -3998,7 +3998,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
     });
     Vue.setInsertionState(n19);
     Vue.createIf(() => Vue.unref(hasPages) && !Vue.unref(pageMeta).isQuit, () => {
-      const n3 = t0$3();
+      const n3 = t0$5();
       const n2 = Vue.child(Vue.child(n3));
       Vue.on(n3, "click", onPageHeadBackButton);
       Vue.renderEffect(() => {
@@ -4018,7 +4018,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
       const n6 = Vue.createFor(
         () => Vue.unref(buttons).left,
         (_for_item0, _for_key0) => {
-          const n18 = t4();
+          const n18 = t4$2();
           Vue.renderEffect(() => {
             const _button = _for_item0.value;
             Vue.setClass(n18, _button.btnClass);
@@ -4029,7 +4029,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.createIf(
             () => _for_item0.value.btnIconPath,
             () => {
-              const n11 = t1$1();
+              const n11 = t1$3();
               const n10 = Vue.child(n11);
               Vue.renderEffect(() => {
                 const _button = _for_item0.value;
@@ -4045,7 +4045,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
             () => Vue.createIf(
               () => _for_item0.value.btnSelect,
               () => {
-                const n15 = t2();
+                const n15 = t2$2();
                 const n13 = Vue.child(n15);
                 const n14 = Vue.child(Vue.next(n13));
                 Vue.renderEffect(() => {
@@ -4057,7 +4057,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
                 return n15;
               },
               () => {
-                const n17 = t3();
+                const n17 = t3$2();
                 Vue.renderEffect(() => {
                   const _button = _for_item0.value;
                   Vue.setStyle(n17, _button.iconStyle);
@@ -4084,7 +4084,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.createIf(
       () => !Vue.unref(hasSearchInput) || !Vue.unref(navigationBar).searchInput,
       () => {
-        const n30 = t8();
+        const n30 = t8$1();
         const n29 = Vue.child(n30);
         Vue.renderEffect(() => {
           const _navigationBar = Vue.unref(navigationBar);
@@ -4097,18 +4097,18 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.createIf(
           () => Vue.unref(navigationBar).loading,
           () => {
-            const n24 = t5();
+            const n24 = t5$1();
             return n24;
           },
           () => Vue.createIf(
             () => Vue.unref(navigationBar).titleImage,
             () => {
-              const n26 = t6();
+              const n26 = t6$1();
               Vue.renderEffect(() => Vue.setProp(n26, "src", Vue.unref(navigationBar).titleImage));
               return n26;
             },
             () => {
-              const n28 = t7();
+              const n28 = t7$1();
               Vue.renderEffect(() => Vue.setText(n28, Vue.toDisplayString(Vue.unref(navigationBar).titleText)));
               return n28;
             },
@@ -4143,7 +4143,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.createIf(
           () => !(Vue.unref(searchText) || Vue.unref(searchComposing)),
           () => {
-            const n35 = t7();
+            const n35 = t7$1();
             Vue.renderEffect(() => Vue.setText(n35, Vue.toDisplayString(Vue.unref(navigationBar).searchInput.placeholder)));
             return n35;
           },
@@ -4197,7 +4197,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
       const n45 = Vue.createFor(
         () => Vue.unref(buttons).right,
         (_for_item0, _for_key0) => {
-          const n57 = t4();
+          const n57 = t4$2();
           Vue.renderEffect(() => {
             const _button = _for_item0.value;
             Vue.setClass(n57, _button.btnClass);
@@ -4208,7 +4208,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.createIf(
             () => _for_item0.value.btnIconPath,
             () => {
-              const n50 = t1$1();
+              const n50 = t1$3();
               const n49 = Vue.child(n50);
               Vue.renderEffect(() => {
                 const _button = _for_item0.value;
@@ -4224,7 +4224,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
             () => Vue.createIf(
               () => _for_item0.value.btnSelect,
               () => {
-                const n54 = t2();
+                const n54 = t2$2();
                 const n52 = Vue.child(n54);
                 const n53 = Vue.child(Vue.next(n52));
                 Vue.renderEffect(() => {
@@ -4236,7 +4236,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
                 return n54;
               },
               () => {
-                const n56 = t3();
+                const n56 = t3$2();
                 Vue.renderEffect(() => {
                   const _button = _for_item0.value;
                   Vue.setStyle(n56, _button.iconStyle);
@@ -4262,15 +4262,15 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.setStaticTemplateRef(n60, headRef, null, "headRef");
     Vue.setInsertionState(n64, 1);
     Vue.createIf(() => Vue.unref(navigationBar).type !== "transparent" && Vue.unref(navigationBar).type !== "float", () => {
-      const n63 = t4();
+      const n63 = t4$2();
       Vue.renderEffect(() => Vue.setClassName(n63, 1 | (Vue.unref(navigationBar).titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
       return n63;
     });
     return n64;
   }
 });
-const t0$2 = Vue.template('<div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>');
-const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$4 = Vue.template('<div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>');
+const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
@@ -4278,7 +4278,7 @@ const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
     const n3 = Vue.createPlainElement("uni-page-refresh", null, null, true);
-    const n2 = t0$2();
+    const n2 = t0$4();
     Vue.insert(n2, n3);
     const n0 = Vue.child(Vue.child(n2));
     const n1 = Vue.child(Vue.next(n0));
@@ -4291,7 +4291,7 @@ const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n3;
   }
 });
-const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -4322,7 +4322,7 @@ const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     const n0 = Vue.createIf(() => Vue.unref(hasPullDownRefresh) && !!Vue.unref(pageMeta) && (Vue.unref(isX) || !!Vue.unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = Vue.createComponent(_sfc_main$3);
+      const n2 = Vue.createComponent(_sfc_main$5);
       Vue.setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
@@ -4399,7 +4399,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         style: pageStyle
       },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        Vue.createVNode(_sfc_main$4),
+        Vue.createVNode(_sfc_main$6),
         createPageBodyVNode(ctx),
         createDialogPageVNode(
           currentInstance.$dialogPages,
@@ -4436,7 +4436,7 @@ function assignDialogPage(ctx, parentInstance, currentInstance) {
 }
 function createPageBodyVNode(ctx) {
   return Vue.openBlock(), Vue.createBlock(
-    _sfc_main$2,
+    _sfc_main$4,
     { key: 0 },
     {
       default: Vue.withCtx(() => [Vue.renderSlot(ctx.slots, "page")]),
@@ -5230,10 +5230,10 @@ function useField(props2, rootRef, emit2, beforeInput) {
 }
 uniShared.once(() => {
 });
-const _t0$m = Vue.template("<input tabindex=-1 class=uni-input-input>", 1);
-const _t1$d = Vue.template("<input class=uni-input-input>", 1);
-const _t2$7 = Vue.template("<form action class=uni-input-form> ");
-const _t3$7 = Vue.template("<div class=uni-input-wrapper><div> </div>");
+const _t0$k = Vue.template("<input tabindex=-1 class=uni-input-input>", 1);
+const _t1$b = Vue.template("<input class=uni-input-input>", 1);
+const _t2$5 = Vue.template("<form action class=uni-input-form> ");
+const _t3$5 = Vue.template("<div class=uni-input-wrapper><div> </div>");
 const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
   placeholderClass: {
     type: String,
@@ -5359,7 +5359,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t0$m();
+        const _n0 = _t0$k();
         Vue.setBlockKey(_n0, "disabled-input");
         Vue.on(
           _n0,
@@ -5380,7 +5380,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         return _n0;
       })() : (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t1$d();
+        const _n0 = _t1$b();
         Vue.setBlockKey(_n0, "input");
         Vue.on(_n0, "input", Vue.withModifiers((event) => {
           const value = event.target.value.toString();
@@ -5414,7 +5414,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n7 = Vue.createPlainElement("uni-input", null, () => {
-          const _n6 = _t3$7();
+          const _n6 = _t3$5();
           const _n0 = Vue.child(_n6);
           Vue.applyVShow(_n0, () => !(state.value.length || cache.value === "-" || cache.value.includes(".")));
           const _x0 = Vue.txt(_n0);
@@ -5425,7 +5425,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           }]));
           Vue.setInsertionState(_n6, 1);
           Vue.createIf(() => props2.confirmType === "search", () => {
-            const _n3 = _t2$7();
+            const _n3 = _t2$5();
             Vue.on(_n3, "submit", (event) => event.preventDefault());
             const _x3 = Vue.txt(_n3);
             setNodes(_x3, () => inputNode);
@@ -5482,8 +5482,8 @@ const useAttrs = (params = {}) => {
   });
   return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
 };
-const _t0$l = Vue.template("<div><div></div></div>");
-const _t1$c = Vue.template("<div><div>");
+const _t0$j = Vue.template("<div><div></div></div>");
+const _t1$a = Vue.template("<div><div>");
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: { initial: {
@@ -5498,8 +5498,8 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n2 = Vue.createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$l();
-        const _n1 = _t1$c();
+        const _n0 = _t0$j();
+        const _n1 = _t1$a();
         Vue.on(_n0, "scroll", update);
         Vue.on(_n1, "scroll", update);
         return [_n0, _n1];
@@ -6715,7 +6715,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const _t0$k = Vue.template("<a class=navigator-wrap> ", 1);
+const _t0$i = Vue.template("<a class=navigator-wrap> ", 1);
 const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
@@ -6734,7 +6734,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
       const { hoverClass, url } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
       const innerNode = props2.renderLink ? (() => {
-        const _n0 = _t0$k();
+        const _n0 = _t0$i();
         Vue.on(_n0, "click", onEventPrevent);
         Vue.on(_n0, "mousedown", onEventPrevent);
         const _x0 = Vue.txt(_n0);
@@ -6786,8 +6786,8 @@ const pickerViewProps = {
     default: ""
   }
 };
-const _t0$j = Vue.template("<div class=uni-picker-view-wrapper> ");
-function useState$2(props2) {
+const _t0$h = Vue.template("<div class=uni-picker-view-wrapper> ");
+function useState$1(props2) {
   const value = Vue.reactive([...props2.value]);
   const state = Vue.reactive({
     value,
@@ -6818,7 +6818,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = Vue.ref(null);
     const wrapperRef = Vue.ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const state = useState$2(props2);
+    const state = useState$1(props2);
     const resizeSensorRef = Vue.ref(null);
     let ColumnsPreRef = Vue.ref([]);
     let columnsRef = Vue.ref([]);
@@ -6868,7 +6868,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n2 = Vue.createPlainElement("uni-picker-view", null, () => {
           const _n0 = createComponent(ResizeSensor, { onResize: () => ({ height }) => state.height = height });
-          const _n1 = _t0$j();
+          const _n1 = _t0$h();
           const _x1 = Vue.txt(_n1);
           setNodes(_x1, () => defaultSlots);
           Vue.renderEffect(() => {
@@ -6883,7 +6883,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$i = Vue.template("<div class=uni-picker-view-group><div></div><div></div><div> ");
+const _t0$g = Vue.template("<div class=uni-picker-view-group><div></div><div></div><div> ");
 const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerViewColumn",
   setup(props2, { slots, emit: emit2 }) {
@@ -6953,7 +6953,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n5 = Vue.createPlainElement("uni-picker-view-column", null, () => {
-          const _n0 = _t0$i();
+          const _n0 = _t0$g();
           const _n1 = Vue.child(_n0);
           const _n3 = Vue.next(_n1);
           const _n4 = Vue.next(_n3);
@@ -7051,8 +7051,8 @@ const progressProps = {
     default: 0
   }
 };
-const _t0$h = Vue.template("<div class=uni-progress-bar><div class=uni-progress-inner-bar></div></div>");
-const _t1$b = Vue.template("<p class=uni-progress-info> ");
+const _t0$f = Vue.template("<div class=uni-progress-bar><div class=uni-progress-inner-bar></div></div>");
+const _t1$9 = Vue.template("<p class=uni-progress-info> ");
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
@@ -7071,14 +7071,14 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n7 = Vue.createPlainElement("uni-progress", { class: "uni-progress" }, () => {
-          const _n1 = _t0$h();
+          const _n1 = _t0$f();
           const _n0 = Vue.child(_n1);
           Vue.renderEffect(() => {
             Vue.setStyle(_n1, outerBarStyle);
             Vue.setStyle(_n0, innerBarStyle);
           });
           const _n2 = Vue.createIf(() => showInfo, () => {
-            const _n4 = _t1$b();
+            const _n4 = _t1$9();
             const _x4 = Vue.txt(_n4);
             setNodes(_x4, () => currentPercent + "%");
             return _n4;
@@ -7213,7 +7213,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const _t0$g = Vue.template("<div></div>");
+const _t0$e = Vue.template("<div></div>");
 const props$i = {
   checked: {
     type: [Boolean, String],
@@ -7324,7 +7324,7 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
           class: "uni-radio-wrapper",
           style: () => hoverStyle
         }] }, () => {
-          const _n5 = _t0$g();
+          const _n5 = _t0$e();
           Vue.renderEffect(() => {
             Vue.setClassName(_n5, (realCheckValue ? 1 : 0) | (props2.disabled ? 2 : 0), [" uni-radio-input-checked", " uni-radio-input-disabled"], "uni-radio-input");
             Vue.setStyle(_n5, radioStyle);
@@ -7605,11 +7605,11 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     }, Vue.h("div", {}, _vnode.value));
   }
 });
-const _t0$f = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
-const _t1$a = Vue.template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
-const _t2$6 = Vue.template("<div class=uni-scroll-view-refresh><div class=uni-scroll-view-refresh-inner></div>");
-const _t3$6 = Vue.template("<div class=uni-scroll-view-refresher-container> ");
-const _t4$5 = Vue.template("<div class=uni-scroll-view-refresher>", 1);
+const _t0$d = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
+const _t1$8 = Vue.template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
+const _t2$4 = Vue.template("<div class=uni-scroll-view-refresh><div class=uni-scroll-view-refresh-inner></div>");
+const _t3$4 = Vue.template("<div class=uni-scroll-view-refresher-container> ");
+const _t4$3 = Vue.template("<div class=uni-scroll-view-refresher>", 1);
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   name: "Refresher",
   props: {
@@ -7663,15 +7663,15 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
       const { refreshState, refresherDefaultStyle, refresherThreshold } = props2;
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n21 = _t4$5();
+        const _n21 = _t4$3();
         Vue.renderEffect(() => Vue.setStyle(_n21, rootStyle.value));
         Vue.setInsertionState(_n21);
         Vue.createIf(() => refresherDefaultStyle !== "none", () => {
-          const _n13 = _t2$6();
+          const _n13 = _t2$4();
           const _n12 = Vue.child(_n13);
           Vue.setInsertionState(_n12);
           Vue.createIf(() => refreshState == "pulling", () => {
-            const _n4 = _t0$f();
+            const _n4 = _t0$d();
             Vue.setBlockKey(_n4, "refresh__icon");
             Vue.renderEffect(() => Vue.setAttr(_n4, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
             return _n4;
@@ -7681,7 +7681,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           }, 265);
           Vue.setInsertionState(_n12, 1);
           Vue.createIf(() => refreshState == "refreshing", () => {
-            const _n9 = _t1$a();
+            const _n9 = _t1$8();
             Vue.setBlockKey(_n9, "refresh__spinner");
             return _n9;
           }, () => {
@@ -7695,7 +7695,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         }, 777);
         Vue.setInsertionState(_n21, 1);
         Vue.createIf(() => refresherDefaultStyle === "none", () => {
-          const _n18 = _t3$6();
+          const _n18 = _t3$4();
           const _x18 = Vue.txt(_n18);
           setNodes(_x18, () => slots.default && slots.default());
           Vue.renderEffect(() => Vue.setStyle(_n18, { height: `${refresherThreshold}px` }));
@@ -7710,7 +7710,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$e = Vue.template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
+const _t0$c = Vue.template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
 const props$g = {
   direction: {
     type: [String],
@@ -7824,7 +7824,7 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n14 = Vue.createPlainElement("uni-scroll-view", null, () => {
-          const _n13 = _t0$e();
+          const _n13 = _t0$c();
           const _n12 = Vue.child(_n13);
           const _n11 = Vue.child(_n12);
           const _n10 = Vue.next(_n11);
@@ -8085,7 +8085,7 @@ function createBackgroundColorStyle(color) {
 function withBackgroundColor(style, color) {
   return color ? Object.assign(style, { backgroundColor: color }) : style;
 }
-const _t0$d = Vue.template("<div class=uni-slider-wrapper><div class=uni-slider-input><div class=uni-slider-track><div class=uni-slider-track-value></div></div><div class=uni-slider-thumb-track><div class=uni-slider-thumb-value></div></div><input class=uni-slider-browser-input-range type=range></div><span class=uni-slider-value>");
+const _t0$b = Vue.template("<div class=uni-slider-wrapper><div class=uni-slider-input><div class=uni-slider-track><div class=uni-slider-track-value></div></div><div class=uni-slider-thumb-track><div class=uni-slider-thumb-value></div></div><input class=uni-slider-browser-input-range type=range></div><span class=uni-slider-value>");
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
 const props$f = {
@@ -8151,7 +8151,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n7 = Vue.createPlainElement("uni-slider", null, () => {
-          const _n6 = _t0$d();
+          const _n6 = _t0$b();
           let _p0 = Vue.child(_n6);
           const _n1 = Vue.child(_p0);
           const _n0 = Vue.child(_n1);
@@ -8261,10 +8261,10 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const _t0$c = Vue.template("<div class=uni-swiper-wrapper><div class=uni-swiper-slides><div class=uni-swiper-slide-frame> </div></div> ");
-const _t1$9 = Vue.template("<div> ", 1);
-const _t2$5 = Vue.template("<div>", 1);
-const _t3$5 = Vue.template("<div> ");
+const _t0$a = Vue.template("<div class=uni-swiper-wrapper><div class=uni-swiper-slides><div class=uni-swiper-slide-frame> </div></div> ");
+const _t1$7 = Vue.template("<div> ", 1);
+const _t2$3 = Vue.template("<div>", 1);
+const _t3$3 = Vue.template("<div> ");
 const props$e = {
   indicatorDots: {
     type: [Boolean, String],
@@ -8339,7 +8339,7 @@ const props$e = {
     default: "rgba(53, 53, 53, 0.6)"
   }
 };
-function useState$1(props2) {
+function useState(props2) {
   const interval = Vue.computed(() => {
     const interval2 = Number(props2.interval);
     return isNaN(interval2) ? 5e3 : interval2;
@@ -8690,7 +8690,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     const trigger = useCustomEvent(rootRef, emit2);
     const slidesWrapperRef = Vue.ref(null);
     const slideFrameRef = Vue.ref(null);
-    const state = useState$1(props2);
+    const state = useState(props2);
     const slidesStyle = Vue.computed(() => {
       let style = {};
       if (props2.nextMargin || props2.previousMargin) {
@@ -8758,17 +8758,17 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n4 = Vue.createPlainElement("uni-swiper", null, () => {
-          const _n3 = _t0$c();
+          const _n3 = _t0$a();
           const _n1 = Vue.child(_n3);
           const _n0 = Vue.child(_n1);
           const _n2 = Vue.next(_n1, true);
           const _x0 = Vue.txt(_n0);
           setNodes(_x0, () => defaultSlots);
           setNodes(_n2, () => props2.indicatorDots && (() => {
-            const _n02 = _t1$9();
+            const _n02 = _t1$7();
             const _x02 = Vue.txt(_n02);
             setNodes(_x02, () => swiperContexts.value.map((_, index2, array) => (() => {
-              const _n03 = _t2$5();
+              const _n03 = _t2$3();
               Vue.on(_n03, "click", () => onSwiperDotClick(index2));
               Vue.renderEffect(() => {
                 Vue.setClassName(_n03, 1 | (index2 < state.current + state.displayMultipleItems && index2 >= state.current || index2 < state.current + state.displayMultipleItems - array.length ? 2 : 0), [" uni-swiper-dot", " uni-swiper-dot-active"]);
@@ -8885,8 +8885,8 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
     };
     if (props2.navigation) {
       return (() => {
-        const _n0 = _t3$5();
-        const _n1 = _t3$5();
+        const _n0 = _t3$3();
+        const _n1 = _t3$3();
         Vue.on(_n0, "click", (e2) => navigationClick(e2, "prev", prevDisabled));
         const _x0 = Vue.txt(_n0);
         setNodes(_x0, () => createNavigationSVG());
@@ -8930,7 +8930,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$b = Vue.template("<div class=uni-switch-wrapper><div><div></div></div><div class=uni-checkbox-input>");
+const _t0$9 = Vue.template("<div class=uni-switch-wrapper><div><div></div></div><div class=uni-checkbox-input>");
 const props$c = {
   name: {
     type: String,
@@ -9018,7 +9018,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
           id: () => props2.id,
           $: [() => booleanAttrs, { onClick: () => _onClick }]
         }, () => {
-          const _n8 = _t0$b();
+          const _n8 = _t0$9();
           const _n0 = Vue.child(_n8);
           const _n1 = Vue.child(_n0);
           const _n2 = Vue.next(_n0);
@@ -9068,11 +9068,11 @@ function useSwitchInject(rootRef, props2, switchChecked) {
   }
   return uniLabel;
 }
-const _t0$a = Vue.template("<textarea tabindex=-1>", 1);
-const _t1$8 = Vue.template("<textarea>", 1);
-const _t2$4 = Vue.template("<form action class=uni-input-form> ");
-const _t3$4 = Vue.template("<div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>");
-const _t4$4 = Vue.template("<div>", 1);
+const _t0$8 = Vue.template("<textarea tabindex=-1>", 1);
+const _t1$6 = Vue.template("<textarea>", 1);
+const _t2$2 = Vue.template("<form action class=uni-input-form> ");
+const _t3$2 = Vue.template("<div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>");
+const _t4$2 = Vue.template("<div>", 1);
 const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
   placeholderClass: {
     type: String,
@@ -9177,7 +9177,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t0$a();
+        const _n0 = _t0$8();
         Vue.setBlockKey(_n0, "disabled-textarea");
         Vue.on(
           _n0,
@@ -9200,7 +9200,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         return _n0;
       })() : (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t1$8();
+        const _n0 = _t1$6();
         Vue.setBlockKey(_n0, "textarea");
         Vue.on(_n0, "keydown", onKeyDownEnter);
         Vue.on(_n0, "keyup", onKeyUpEnter);
@@ -9224,7 +9224,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n11 = Vue.createPlainElement("uni-textarea", { "auto-height": () => props2.autoHeight }, () => {
-          const _n10 = _t3$4();
+          const _n10 = _t3$2();
           const _n0 = Vue.child(_n10);
           const _n1 = Vue.next(_n0);
           const _n4 = Vue.next(_n1);
@@ -9233,7 +9233,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
           const _x0 = Vue.txt(_n0);
           setNodes(_x0, () => props2.placeholder);
           setNodes(_n2, () => valueCompute.value.map((item) => (() => {
-            const _n52 = _t4$4();
+            const _n52 = _t4$2();
             Vue.setInsertionState(_n52);
             Vue.createIf(() => item.trim(), () => {
               const _n22 = createNodes(() => item);
@@ -9259,7 +9259,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
           });
           Vue.setInsertionState(_n10, 3);
           Vue.createIf(() => props2.confirmType === "search", () => {
-            const _n7 = _t2$4();
+            const _n7 = _t2$2();
             Vue.on(_n7, "submit", () => false);
             const _x7 = Vue.txt(_n7);
             setNodes(_x7, () => textareaNode);
@@ -9277,8 +9277,8 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$9 = Vue.template("<div class=uni-list-view-visible> ", 1);
-const _t1$7 = Vue.template("<div><!><div class=uni-list-view-content><div></div> <div></div></div></div>");
+const _t0$7 = Vue.template("<div class=uni-list-view-visible> ", 1);
+const _t1$5 = Vue.template("<div><!><div class=uni-list-view-content><div></div> <div></div></div></div>");
 function isHTMlElement(node) {
   return !!(node && node.nodeType === 1);
 }
@@ -9526,7 +9526,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       const defaultSlot = slots.default && slots.default();
       visibleVNode = (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t0$9();
+        const _n0 = _t0$7();
         const _x0 = Vue.txt(_n0);
         setNodes(_x0, () => defaultSlot);
         Vue.renderEffect(() => {
@@ -9538,7 +9538,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n16 = Vue.createPlainElement("uni-list-view", { class: "uni-list-view" }, () => {
-          const _n14 = _t1$7();
+          const _n14 = _t1$5();
           const _n13 = Vue.child(_n14);
           const _n10 = Vue.child(Vue.next(_n13));
           const _n11 = Vue.next(_n10, true);
@@ -9961,11 +9961,11 @@ const onBackPress = /* @__PURE__ */ createLifeCycleHook(
 );
 class UniPageContainerElement extends UniElement {
 }
-const t0$1 = Vue.template("<div uni-view class=uni-page-container-overlay>");
-const t1 = Vue.template("<div uni-view>");
+const t0$3 = Vue.template("<div uni-view class=uni-page-container-overlay>");
+const t1$2 = Vue.template("<div uni-view>");
 const MAX_SLIDER_DISTANCE = 100;
 const MIN_SLIDER_VELOCITY = 0.3;
-const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "page-container",
     rootElement: {
@@ -10211,7 +10211,7 @@ const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
       return false;
     });
     const n0 = Vue.createIf(() => __props.overlay && showPageContainer.value, () => {
-      const n2 = t0$1();
+      const n2 = t0$3();
       Vue.on(n2, "click", onClickOverlay);
       Vue.on(n2, "touchmove", Vue.withModifiers(() => {
       }, ["prevent", "stop"]));
@@ -10219,7 +10219,7 @@ const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
       return n2;
     });
     const n3 = Vue.createIf(() => showPageContainer.value, () => {
-      const n6 = t1();
+      const n6 = t1$2();
       Vue.renderEffect(() => {
         Vue.setClass(n6, ["uni-page-container-popup", popupClasses.value]);
         Vue.setStyle(n6, [innerStyleMap.value, __props.customStyle]);
@@ -10250,8 +10250,8 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0 = Vue.template("<div uni-view>");
-const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$2 = Vue.template("<div uni-view>");
+const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
@@ -10275,7 +10275,7 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       class: "default __uni_loading_container__",
       style: "display: flex;"
     }, null, true);
-    const n0 = t0();
+    const n0 = t0$2();
     Vue.insert(n0, n1);
     Vue.setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
     Vue.renderEffect(() => {
@@ -10568,11 +10568,11 @@ function warnHandler(msg, instance, trace) {
   }
   console.warn(...warnArgs);
 }
-const _t0$8 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
-const _t1$6 = Vue.template("<div><!><div class=uni-video-toast-draw></div>");
-const _t2$3 = Vue.template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ');
-const _t3$3 = Vue.template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
-const _t4$3 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', 1, 1);
+const _t0$6 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
+const _t1$4 = Vue.template("<div><!><div class=uni-video-toast-draw></div>");
+const _t2$1 = Vue.template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ');
+const _t3$1 = Vue.template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
+const _t4$1 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', 1, 1);
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
   const h = Math.floor(val / 3600);
@@ -11223,7 +11223,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
           id: () => props2.id,
           onClick: () => toggleControls
         }, () => {
-          const _n0 = _t2$3();
+          const _n0 = _t2$1();
           const _n1 = Vue.child(_n0);
           const _n2 = Vue.next(_n1);
           let _p0 = Vue.child(_n2);
@@ -11289,7 +11289,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
           Vue.on(_n12, "click", Vue.withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"]));
           Vue.applyVShow(_n13, () => videoState.start && danmuState.enable);
           setNodes(_n14, () => controlsState.centerPlayBtnShow && (() => {
-            const _n02 = _t3$3();
+            const _n02 = _t3$1();
             const _n16 = Vue.child(_n02);
             Vue.on(_n02, "click", Vue.withModifiers(() => {
             }, ["stop"]));
@@ -11347,17 +11347,17 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
           });
           Vue.setInsertionState(_n27);
           Vue.createIf(() => gestureState.gestureType === "volume", () => {
-            const _n24 = _t1$6();
+            const _n24 = _t1$4();
             const _n23 = Vue.child(_n24);
             const _n22 = Vue.next(_n23);
             Vue.renderEffect(() => Vue.setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
             Vue.setInsertionState(_n24, _n23);
             Vue.createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
-              const _n19 = _t0$8();
+              const _n19 = _t0$6();
               return _n19;
             }, () => {
               const _n21 = createNodes(() => !gestureState.toastThin && (() => {
-                const _n02 = _t4$3();
+                const _n02 = _t4$1();
                 return _n02;
               })());
               return _n21;
@@ -12121,7 +12121,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const _t0$7 = Vue.template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
+const _t0$5 = Vue.template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
 const props$4 = {
   id: {
     type: [Number, String],
@@ -12166,7 +12166,7 @@ const MapControl = /* @__PURE__ */ defineSystemComponent({
     };
     return () => {
       return (() => {
-        const _n1 = _t0$7();
+        const _n1 = _t0$5();
         const _n0 = Vue.child(_n1);
         Vue.on(_n0, "click", handleClick);
         Vue.renderEffect(() => {
@@ -12308,8 +12308,8 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
     return () => null;
   }
 });
-const _t0$6 = Vue.template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
-const _t1$5 = Vue.template('<div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ');
+const _t0$4 = Vue.template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
+const _t1$3 = Vue.template('<div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ');
 const props$2 = {
   id: {
     type: String,
@@ -12600,8 +12600,8 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n8 = Vue.createPlainElement("uni-map", { id: () => props2.id }, () => {
-          const _n0 = _t0$6();
-          const _n7 = _t1$5();
+          const _n0 = _t0$4();
+          const _n7 = _t1$3();
           const _n1 = createNodes(() => props2.markers.map((item) => (() => {
             const _n02 = Vue.createKeyedFragment(() => item.id, () => {
               const _n2 = createComponent(MapMarker, { $: [() => item] }, null, true);
@@ -12639,7 +12639,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$5 = Vue.template("<div class=uni-cover-view> ");
+const _t0$3 = Vue.template("<div class=uni-cover-view> ");
 const props$1 = { scrollTop: {
   type: [String, Number],
   default: 0
@@ -12673,7 +12673,7 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n1 = Vue.createPlainElement("uni-cover-view", { "scroll-top": () => props2.scrollTop }, () => {
-          const _n0 = _t0$5();
+          const _n0 = _t0$3();
           const _x0 = Vue.txt(_n0);
           setNodes(_x0, () => slots.default && slots.default());
           Vue.renderEffect(() => _setTemplateRef(_n0, content));
@@ -12685,8 +12685,8 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$4 = Vue.template("<img>");
-const _t1$4 = Vue.template("<div class=uni-cover-image>");
+const _t0$2 = Vue.template("<img>");
+const _t1$2 = Vue.template("<div class=uni-cover-image>");
 const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: { MODE: 3 },
@@ -12709,10 +12709,10 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n6 = Vue.createPlainElement("uni-cover-image", { src: () => src }, () => {
-          const _n5 = _t1$4();
+          const _n5 = _t1$2();
           Vue.setInsertionState(_n5);
           Vue.createIf(() => src, () => {
-            const _n2 = _t0$4();
+            const _n2 = _t0$2();
             Vue.on(_n2, "load", load);
             Vue.on(_n2, "error", error);
             Vue.renderEffect(() => Vue.setProp(_n2, "src", getRealPath(src)));
@@ -12829,13 +12829,13 @@ function useKeyboard() {
     disable
   };
 }
-const _t0$3 = Vue.template('<div class="uni-mask uni-picker-mask">');
-const _t1$3 = Vue.template('<div><div class=uni-picker-header><div class="uni-picker-action uni-picker-action-cancel"> </div><div class="uni-picker-action uni-picker-action-confirm"> </div></div><!><div class=uni-picker-select> </div><div></div>');
-const _t2$2 = Vue.template("<div>");
-const _t3$2 = Vue.template("<div> </div>");
-const _t4$2 = Vue.template("<div class=uni-picker-system><input tabindex=-1>");
-const _t5$1 = Vue.template("<div class=uni-picker-item>", 1);
-const _t6$1 = Vue.template("<div>", 1);
+const _t0$1 = Vue.template('<div class="uni-mask uni-picker-mask">');
+const _t1$1 = Vue.template('<div><div class=uni-picker-header><div class="uni-picker-action uni-picker-action-cancel"> </div><div class="uni-picker-action uni-picker-action-confirm"> </div></div><!><div class=uni-picker-select> </div><div></div>');
+const _t2 = Vue.template("<div>");
+const _t3 = Vue.template("<div> </div>");
+const _t4 = Vue.template("<div class=uni-picker-system><input tabindex=-1>");
+const _t5 = Vue.template("<div class=uni-picker-item>", 1);
+const _t6 = Vue.template("<div>", 1);
 function getDefaultStartValue(props2) {
   if (props2.mode === mode.TIME) {
     return "00:00";
@@ -13008,7 +13008,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n31 = Vue.createPlainElement("uni-picker", { $: [() => booleanAttrs, { onClick: () => withWebEvent(_show) }] }, () => {
           const _n0 = Vue.createIf(() => pickerRender.value, () => {
-            const _n2 = _t2$2();
+            const _n2 = _t2();
             Vue.on(_n2, "wheel", onEventPrevent);
             Vue.on(_n2, "touchmove", onEventPrevent);
             Vue.renderEffect(() => Vue.setClass(_n2, ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`]));
@@ -13017,7 +13017,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
               name: "uni-fade",
               persisted: true
             }, () => {
-              const _n3 = _t0$3();
+              const _n3 = _t0$1();
               Vue.applyVShow(_n3, () => visible);
               Vue.on(_n3, "click", withWebEvent(_cancel));
               Vue.on(_n3, "mousemove", _fixInputPosition);
@@ -13025,7 +13025,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
             });
             Vue.setInsertionState(_n2, 1);
             Vue.createIf(() => !system.value, () => {
-              const _n19 = _t1$3();
+              const _n19 = _t1$1();
               const _n7 = Vue.child(_n19);
               const _n8 = Vue.child(_n7);
               const _n9 = Vue.next(_n8);
@@ -13055,7 +13055,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
                       const _n3 = createComponent(PickerViewColumn, null, Vue.extend(() => {
                         const _n22 = createNodes(() => Vue.renderList(rangeItem, (item, index2) => (() => {
                           const _n03 = Vue.createKeyedFragment(() => index2, () => {
-                            const _n72 = _t5$1();
+                            const _n72 = _t5();
                             Vue.setInsertionState(_n72);
                             Vue.createIf(() => typeof item === "object", () => {
                               const _n42 = createNodes(() => item[rangeKey] || "");
@@ -13086,7 +13086,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
               const _x16 = Vue.txt(_n16);
               setNodes(_x16, () => Vue.renderList(rangeArray.value[0], (item, index2) => (() => {
                 const _n02 = Vue.createKeyedFragment(() => index2, () => {
-                  const _n22 = _t6$1();
+                  const _n22 = _t6();
                   Vue.on(_n22, "click", () => {
                     valueArray[0] = index2;
                     _change();
@@ -13119,11 +13119,11 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
             const _n23 = createNodes(null);
             return _n23;
           }, 777);
-          const _n24 = _t3$2();
+          const _n24 = _t3();
           const _x24 = Vue.txt(_n24);
           setNodes(_x24, () => slots.default && slots.default());
           const _n25 = Vue.createIf(() => system.value, () => {
-            const _n27 = _t4$2();
+            const _n27 = _t4();
             const _n28 = Vue.child(_n27);
             Vue.on(_n27, "mousemove", withWebEvent(_fixInputPosition));
             Vue.on(_n28, "change", ($event) => {
@@ -13653,8 +13653,8 @@ function usePickerForm(_resetFormData, _getFormData) {
     uniForm.addField(field);
   }
 }
-const _t0$2 = Vue.template("<div class=uni-ad-container></div>");
-const _t1$2 = Vue.template("<div class=uni-ad-custom-material> ");
+const _t0 = Vue.template("<div class=uni-ad-container></div>");
+const _t1 = Vue.template("<div class=uni-ad-custom-material> ");
 const _AdConfig = class _AdConfig {
   constructor() {
     this._adConfig = null;
@@ -14259,11 +14259,11 @@ const index$5 = /* @__PURE__ */ defineBuiltInComponent({
             widescreenWidth: () => widescreenWidth
           }
         ] }, () => {
-          const _n0 = _t0$2();
+          const _n0 = _t0();
           Vue.on(_n0, "click", () => ad.report(41));
           Vue.renderEffect(() => _setTemplateRef(_n0, rootRef));
           const _n1 = Vue.createIf(() => customTuiaVisible.value && slots.default, () => {
-            const _n3 = _t1$2();
+            const _n3 = _t1();
             Vue.on(_n3, "click", () => ad.renderTuiaFromCustomMaterial());
             const _x3 = Vue.txt(_n3);
             setNodes(_x3, () => slots.default());
@@ -14924,698 +14924,820 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-const _t0$1 = Vue.template("<div class=uni-tabbar><div class=uni-tabbar-border></div> </div>");
-const _t1$1 = Vue.template("<div class=uni-placeholder>");
-const _t2$1 = Vue.template("<div class=uni-tabbar__item> ", 1);
-const _t3$1 = Vue.template("<div class=uni-tabbar__bd> ", 1);
-const _t4$1 = Vue.template("<div> ", 1);
-const _t5 = Vue.template("<img>", 1);
-const _t6 = Vue.template("<div class=uni-tabbar__iconfont> ", 1);
-const _t7 = Vue.template("<div class=uni-tabbar__label> ", 1);
-const _t8 = Vue.template("<div class=uni-tabbar__item><div class=uni-tabbar__mid> </div> ", 1);
-const _middleButton = {
-  width: "50px",
-  height: "50px",
-  iconWidth: "24px"
-};
-const TabBar = /* @__PURE__ */ defineSystemComponent({
-  name: "TabBar",
-  setup() {
+const t0$1 = Vue.template("<img>");
+const t1$1 = Vue.template("<div class=uni-tabbar__mid>");
+const t2$1 = Vue.template("<div class=uni-tabbar__iconfont> ");
+const t3$1 = Vue.template("<div>");
+const t4$1 = Vue.template("<div class=uni-tabbar__label> ");
+const t5 = Vue.template("<div> ");
+const t6 = Vue.template("<div class=uni-tabbar__item><!><div class=uni-tabbar__bd></div>");
+const t7 = Vue.template("<div class=uni-tabbar><div class=uni-tabbar-border></div></div>");
+const t8 = Vue.template("<div class=uni-placeholder>");
+const DEFAULT_BG_COLOR = "#f7f7fa";
+const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
+const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
+const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "TabBar",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "tabBar",
+  setup(__props) {
+    const hasMidButton = __UNI_FEATURE_TABBAR_MIDBUTTON__;
+    const _middleButton = {
+      width: "50px",
+      height: "50px",
+      iconWidth: "24px"
+    };
     const visibleList = Vue.ref([]);
     const tabBar = useTabBar();
     useVisibleList(tabBar, visibleList);
     useTabBarCssVar(tabBar);
     const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar, visibleList);
     const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar);
-    return () => {
-      const tabBarItemsTsx = createTabBarItemsTsx(tabBar, onSwitchTab, visibleList);
-      return (() => {
-        const _n4 = Vue.createPlainElement("uni-tabbar", { class: () => "uni-tabbar-" + tabBar.position }, () => {
-          const _n2 = _t0$1();
-          const _n0 = Vue.child(_n2);
-          const _n1 = Vue.next(_n0, true);
-          const _n3 = _t1$1();
-          setNodes(_n1, () => tabBarItemsTsx);
-          Vue.renderEffect(() => {
-            Vue.setStyle(_n2, style.value);
-            Vue.setStyle(_n0, borderStyle.value);
-            Vue.setStyle(_n3, placeholderStyle.value);
+    function useTabBarCssVar(tabBar2) {
+      Vue.watch(
+        () => tabBar2.shown,
+        (value) => {
+          updatePageCssVar({
+            "--window-bottom": normalizeWindowBottom(
+              value ? parseInt(tabBar2.height) : 0
+            )
           });
-          return [_n2, _n3];
-        }, true);
-        return _n4;
-      })();
-    };
-  }
-});
-function useTabBarCssVar(tabBar) {
-  Vue.watch(() => tabBar.shown, (value) => {
-    updatePageCssVar({ "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar.height) : 0) });
-  });
-}
-function useVisibleList(tabBar, visibleList) {
-  const internalMidButton = Vue.ref(shared.extend({ type: "midButton" }, tabBar.midButton));
-  function setVisibleList() {
-    let tempList = [];
-    tempList = tabBar.list.filter((item) => item.visible !== false);
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {
-      internalMidButton.value = shared.extend({}, _middleButton, internalMidButton.value, tabBar.midButton);
-      tempList = tempList.filter((item) => !isMidButton(item));
-      if (tempList.length % 2 === 0) {
-        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
-      }
+        }
+      );
     }
-    visibleList.value = tempList;
-  }
-  Vue.watchEffect(setVisibleList);
-}
-function useSwitchTab(route, tabBar, visibleList) {
-  Vue.watchEffect(() => {
-    const meta = route.meta;
-    if (meta.isTabBar) {
-      const pagePath = meta.route;
-      const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
-      tabBar.selectedIndex = index2;
-    }
-  });
-  return (tabBarItem, index2) => {
-    const { type } = tabBarItem;
-    return () => {
-      if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && type === "midButton") {
-        return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
+    function useVisibleList(tabBar2, visibleList2) {
+      const internalMidButton = Vue.ref(
+        shared.extend({ type: "midButton" }, tabBar2.midButton)
+      );
+      function setVisibleList() {
+        let tempList = [];
+        tempList = tabBar2.list.filter((item) => item.visible !== false);
+        if (hasMidButton && tabBar2.midButton) {
+          internalMidButton.value = shared.extend(
+            {},
+            _middleButton,
+            internalMidButton.value,
+            tabBar2.midButton
+          );
+          tempList = tempList.filter((item) => !isMidButton(item));
+          if (tempList.length % 2 === 0) {
+            tempList.splice(
+              Math.floor(tempList.length / 2),
+              0,
+              internalMidButton.value
+            );
+          }
+        }
+        visibleList2.value = tempList;
       }
-      const { pagePath, text } = tabBarItem;
-      let url = uniShared.addLeadingSlash(pagePath);
-      if (url === __uniRoutes[0].alias) {
-        url = "/";
-      }
-      if (route.path !== url) {
-        uni.switchTab({
-          from: "tabBar",
-          url,
-          tabBarText: text
-        });
-      } else {
-        invokeHook("onTabItemTap", {
-          index: index2,
-          text,
-          pagePath
-        });
-      }
-    };
-  };
-}
-const DEFAULT_BG_COLOR = "#f7f7fa";
-const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
-const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const BLUR_EFFECT_COLORS = {
-  dark: BLUR_EFFECT_COLOR_DARK,
-  light: BLUR_EFFECT_COLOR_LIGHT,
-  extralight: BLUR_EFFECT_COLOR_LIGHT
-};
-const BORDER_COLORS = {
-  white: "rgba(255, 255, 255, 0.33)",
-  black: "rgba(0, 0, 0, 0.33)"
-};
-function useTabBarStyle(tabBar) {
-  const style = Vue.computed(() => {
-    let backgroundColor = tabBar.backgroundColor;
-    const blurEffect = tabBar.blurEffect;
-    if (!backgroundColor) {
-      if (blurEffect && blurEffect !== "none") {
-        backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
-      }
+      Vue.watchEffect(setVisibleList);
     }
-    return {
-      backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
-      backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
-    };
-  });
-  const borderStyle = Vue.computed(() => {
-    const { borderStyle: borderStyle2, borderColor } = tabBar;
-    if (borderColor && shared.isString(borderColor)) {
-      return { backgroundColor: borderColor };
-    }
-    return { backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"] };
-  });
-  const placeholderStyle = Vue.computed(() => {
-    return { height: tabBar.height };
-  });
-  return {
-    style,
-    borderStyle,
-    placeholderStyle
-  };
-}
-function isMidButton(item) {
-  return item.type === "midButton";
-}
-function createTabBarItemsTsx(tabBar, onSwitchTab, visibleList) {
-  const { selectedIndex, selectedColor, color } = tabBar;
-  return visibleList.value.map((item, index2) => {
-    const selected = selectedIndex === index2;
-    const textColor = selected ? selectedColor : color;
-    const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
-    const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
-    const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
-    if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
-      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
-    }
-    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
-  });
-}
-function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar, index2, onSwitchTab) {
-  return (() => {
-    const _n0 = Vue.createKeyedFragment(() => index2, () => {
-      const _n2 = _t2$1();
-      Vue.on(_n2, "click", onSwitchTab(tabBarItem, index2));
-      const _x2 = Vue.txt(_n2);
-      setNodes(_x2, () => createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar));
-      return _n2;
-    });
-    return _n0;
-  })();
-}
-function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar) {
-  const { height } = tabBar;
-  return (() => {
-    const _n0 = _t3$1();
-    const _x0 = Vue.txt(_n0);
-    setNodes(_x0, () => iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar), () => tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar), () => tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge));
-    Vue.renderEffect(() => Vue.setStyle(_n0, { height }));
-    return _n0;
-  })();
-}
-function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
-  const { type, text } = tabBarItem;
-  const { iconWidth } = tabBar;
-  const clazz = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
-  const style = {
-    width: iconWidth,
-    height: iconWidth
-  };
-  return (() => {
-    const _n0 = _t4$1();
-    const _x0 = Vue.txt(_n0);
-    setNodes(_x0, () => type !== "midButton" && (() => {
-      const _n02 = _t5();
-      Vue.renderEffect(() => Vue.setProp(_n02, "src", getRealPath(iconPath)));
-      return _n02;
-    })());
-    Vue.renderEffect(() => {
-      Vue.setClass(_n0, clazz);
-      Vue.setStyle(_n0, style);
-    });
-    return _n0;
-  })();
-}
-function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar) {
-  var _a;
-  const { type, text } = tabBarItem;
-  const { iconWidth } = tabBar;
-  const clazz = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
-  const style = {
-    width: iconWidth,
-    height: iconWidth
-  };
-  const iconfontStyle = {
-    fontSize: ((_a = tabBarItem.iconfont) == null ? void 0 : _a.fontSize) || iconWidth,
-    color: iconfontColor
-  };
-  return (() => {
-    const _n0 = _t4$1();
-    const _x0 = Vue.txt(_n0);
-    setNodes(_x0, () => type !== "midButton" && (() => {
-      const _n02 = _t6();
-      const _x02 = Vue.txt(_n02);
-      setNodes(_x02, () => iconfontText);
-      Vue.renderEffect(() => Vue.setStyle(_n02, iconfontStyle));
-      return _n02;
-    })());
-    Vue.renderEffect(() => {
-      Vue.setClass(_n0, clazz);
-      Vue.setStyle(_n0, style);
-    });
-    return _n0;
-  })();
-}
-function createTabBarItemTextTsx(color, tabBarItem, tabBar) {
-  const { iconPath, text } = tabBarItem;
-  const { fontSize, spacing } = tabBar;
-  const style = {
-    color,
-    fontSize,
-    lineHeight: !iconPath ? 1.8 : "normal",
-    marginTop: !iconPath ? "inherit" : spacing
-  };
-  return (() => {
-    const _n0 = _t7();
-    const _x0 = Vue.txt(_n0);
-    setNodes(_x0, () => text);
-    Vue.renderEffect(() => Vue.setStyle(_n0, style));
-    return _n0;
-  })();
-}
-function createTabBarItemRedDotTsx(badge) {
-  const clazz = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
-  return (() => {
-    const _n0 = _t4$1();
-    const _x0 = Vue.txt(_n0);
-    setNodes(_x0, () => badge);
-    Vue.renderEffect(() => Vue.setClass(_n0, clazz));
-    return _n0;
-  })();
-}
-function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar, index2, onSwitchTab) {
-  const { width, height, backgroundImage, iconWidth } = midButton;
-  return (() => {
-    const _n0 = _t8();
-    const _n1 = Vue.child(_n0);
-    const _n2 = Vue.next(_n1, true);
-    Vue.setBlockKey(_n0, "midButton");
-    Vue.on(_n0, "click", onSwitchTab(midButton, index2));
-    const _x1 = Vue.txt(_n1);
-    setNodes(_x1, () => iconPath && (() => {
-      const _n02 = _t5();
-      Vue.renderEffect(() => {
-        Vue.setStyle(_n02, {
-          width: iconWidth,
-          height: iconWidth
-        });
-        Vue.setProp(_n02, "src", getRealPath(iconPath));
+    function useSwitchTab(route, tabBar2, visibleList2) {
+      Vue.watchEffect(() => {
+        const meta = route.meta;
+        if (meta.isTabBar) {
+          const pagePath = meta.route;
+          const index2 = visibleList2.value.findIndex(
+            (item) => item.pagePath === pagePath
+          );
+          tabBar2.selectedIndex = index2;
+        }
       });
-      return _n02;
-    })());
-    setNodes(_n2, () => createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar));
-    Vue.renderEffect(() => {
-      Vue.setStyle(_n0, {
-        flex: "0 0 " + width,
+      return (tabBarItem, index2) => {
+        const { type } = tabBarItem;
+        if (hasMidButton && type === "midButton") {
+          return UniServiceJSBridge.invokeOnCallback(
+            API_ON_TAB_BAR_MID_BUTTON_TAP
+          );
+        }
+        const { pagePath, text } = tabBarItem;
+        let url = uniShared.addLeadingSlash(pagePath);
+        if (url === __uniRoutes[0].alias) {
+          url = "/";
+        }
+        if (route.path !== url) {
+          uni.switchTab({ from: "tabBar", url, tabBarText: text });
+        } else {
+          invokeHook("onTabItemTap", {
+            index: index2,
+            text,
+            pagePath
+          });
+        }
+      };
+    }
+    const BLUR_EFFECT_COLORS = {
+      dark: BLUR_EFFECT_COLOR_DARK,
+      light: BLUR_EFFECT_COLOR_LIGHT,
+      extralight: BLUR_EFFECT_COLOR_LIGHT
+    };
+    const BORDER_COLORS = {
+      white: "rgba(255, 255, 255, 0.33)",
+      black: "rgba(0, 0, 0, 0.33)"
+    };
+    function useTabBarStyle(tabBar2) {
+      const style2 = Vue.computed(() => {
+        let backgroundColor = tabBar2.backgroundColor;
+        const blurEffect = tabBar2.blurEffect;
+        if (!backgroundColor) {
+          if (blurEffect && blurEffect !== "none") {
+            backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
+          }
+        }
+        return {
+          backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
+          backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
+        };
+      });
+      const borderStyle2 = Vue.computed(() => {
+        const { borderStyle: borderStyle3, borderColor } = tabBar2;
+        if (borderColor && shared.isString(borderColor)) {
+          return {
+            backgroundColor: borderColor
+          };
+        }
+        return {
+          backgroundColor: BORDER_COLORS[borderStyle3] || BORDER_COLORS["black"]
+        };
+      });
+      const placeholderStyle2 = Vue.computed(() => {
+        return {
+          height: tabBar2.height
+        };
+      });
+      return {
+        style: style2,
+        borderStyle: borderStyle2,
+        placeholderStyle: placeholderStyle2
+      };
+    }
+    function isMidButton(item) {
+      return item.type === "midButton";
+    }
+    function isRenderedMidButton(item) {
+      return hasMidButton && isMidButton(item);
+    }
+    function getMidButton(item) {
+      return item;
+    }
+    function getItemStyle(item) {
+      if (!isRenderedMidButton(item)) {
+        return;
+      }
+      return {
+        flex: "0 0 " + item.width,
         position: "relative"
-      });
-      Vue.setStyle(_n1, {
+      };
+    }
+    function getMidButtonStyle(item) {
+      const { width, height, backgroundImage } = getMidButton(item);
+      return {
         width,
         height,
         backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
-      });
+      };
+    }
+    function isSelected(index2) {
+      return tabBar.selectedIndex === index2;
+    }
+    function getTextColor(index2) {
+      return isSelected(index2) ? tabBar.selectedColor : tabBar.color;
+    }
+    function getIconPath(item, index2) {
+      return (isSelected(index2) ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
+    }
+    function getIconfontText(item, index2) {
+      if (!item.iconfont) {
+        return;
+      }
+      return isSelected(index2) ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text;
+    }
+    function getIconfontColor(item, index2) {
+      if (!item.iconfont) {
+        return;
+      }
+      return isSelected(index2) ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color;
+    }
+    function getIconClass(item) {
+      return "uni-tabbar__icon" + (item.text ? " uni-tabbar__icon__diff" : "");
+    }
+    function getIconStyle() {
+      return { width: tabBar.iconWidth, height: tabBar.iconWidth };
+    }
+    function getIconfontStyle(item, index2) {
+      var _a;
+      return {
+        fontSize: ((_a = item.iconfont) == null ? void 0 : _a.fontSize) || tabBar.iconWidth,
+        color: getIconfontColor(item, index2) || BLUR_EFFECT_COLOR_DARK
+      };
+    }
+    function getLabelStyle(item, index2) {
+      return {
+        color: getTextColor(index2),
+        fontSize: tabBar.fontSize,
+        lineHeight: !item.iconPath ? 1.8 : "normal",
+        marginTop: !item.iconPath ? "inherit" : tabBar.spacing
+      };
+    }
+    const n31 = Vue.createPlainElement("uni-tabbar", { class: () => "uni-tabbar-" + Vue.unref(tabBar).position }, null, true);
+    const n29 = t7();
+    Vue.insert(n29, n31);
+    const n0 = Vue.child(n29);
+    Vue.renderEffect(() => {
+      Vue.setStyle(n29, Vue.unref(style));
+      Vue.setStyle(n0, Vue.unref(borderStyle));
     });
-    return _n0;
-  })();
-}
-const _t0 = Vue.template("<div class=uni-top-window></div>");
-const _t1 = Vue.template("<div class=uni-top-window--placeholder>");
-const _t2 = Vue.template("<div class=uni-mask>");
-const _t3 = Vue.template("<div class=uni-left-window>");
-const _t4 = Vue.template("<div class=uni-right-window>");
-const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "Layout",
-  setup(_props, { emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute();
-    const { layoutState, windowState } = useState();
-    useMaxWidth(layoutState, rootRef);
-    const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
-    const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
-    const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
-    const showTabBar = __UNI_FEATURE_TABBAR__ && useShowTabBar();
-    const clazz = useAppClass(showTabBar);
-    return () => {
-      const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
-      const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar);
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n2 = Vue.createPlainElement("uni-app", { class: () => clazz.value }, Vue.extend(() => {
-          const _n0 = createNodes(() => layoutTsx, () => tabBarTsx);
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n2, rootRef));
-        return _n2;
-      })();
-    };
+    Vue.setInsertionState(n29, 1);
+    Vue.createFor(
+      () => visibleList.value,
+      (_for_item0, _for_key0) => {
+        const n28 = t6();
+        const n27 = Vue.child(n28);
+        const n26 = Vue.next(n27);
+        Vue.renderEffect(() => Vue.setStyle(n28, getItemStyle(_for_item0.value)));
+        Vue.setInsertionState(n28, n27);
+        Vue.createIf(() => isRenderedMidButton(_for_item0.value), () => {
+          const n8 = t1$1();
+          Vue.renderEffect(() => Vue.setStyle(n8, getMidButtonStyle(_for_item0.value)));
+          Vue.setInsertionState(n8);
+          Vue.createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
+            const n7 = t0$1();
+            Vue.renderEffect(() => {
+              Vue.setStyle(n7, {
+                width: getMidButton(_for_item0.value).iconWidth,
+                height: getMidButton(_for_item0.value).iconWidth
+              });
+              Vue.setProp(n7, "src", Vue.unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value)));
+            });
+            return n7;
+          });
+          return n8;
+        });
+        Vue.renderEffect(() => Vue.setStyle(n26, { height: Vue.unref(tabBar).height }));
+        Vue.setInsertionState(n26);
+        Vue.createIf(
+          () => getIconfontText(_for_item0.value, _for_key0.value),
+          () => {
+            const n14 = t3$1();
+            Vue.renderEffect(() => {
+              Vue.setClass(n14, getIconClass(_for_item0.value));
+              Vue.setStyle(n14, getIconStyle());
+            });
+            Vue.setInsertionState(n14);
+            Vue.createIf(() => _for_item0.value.type !== "midButton", () => {
+              const n13 = t2$1();
+              const x13 = Vue.txt(n13);
+              Vue.renderEffect(() => {
+                const _item = _for_item0.value;
+                const _index = _for_key0.value;
+                Vue.setStyle(n13, getIconfontStyle(_item, _index));
+                Vue.setText(x13, Vue.toDisplayString(getIconfontText(_item, _index)));
+              });
+              return n13;
+            });
+            return n14;
+          },
+          () => Vue.createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
+            const n19 = t3$1();
+            Vue.renderEffect(() => {
+              Vue.setClass(n19, getIconClass(_for_item0.value));
+              Vue.setStyle(n19, getIconStyle());
+            });
+            Vue.setInsertionState(n19);
+            Vue.createIf(() => _for_item0.value.type !== "midButton", () => {
+              const n18 = t0$1();
+              Vue.renderEffect(() => Vue.setProp(n18, "src", Vue.unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value))));
+              return n18;
+            });
+            return n19;
+          }),
+          1029
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
+        );
+        Vue.setInsertionState(n26, 1);
+        Vue.createIf(() => _for_item0.value.text, () => {
+          const n22 = t4$1();
+          const x22 = Vue.txt(n22);
+          Vue.renderEffect(() => {
+            const _item = _for_item0.value;
+            Vue.setStyle(n22, getLabelStyle(_item, _for_key0.value));
+            Vue.setText(x22, Vue.toDisplayString(_item.text));
+          });
+          return n22;
+        });
+        Vue.setInsertionState(n26, 2);
+        Vue.createIf(() => _for_item0.value.redDot, () => {
+          const n25 = t5();
+          const x25 = Vue.txt(n25);
+          Vue.renderEffect(() => {
+            const _item_badge = _for_item0.value.badge;
+            Vue.setClass(n25, [
+              "uni-tabbar__reddot",
+              _item_badge ? "uni-tabbar__badge" : ""
+            ]);
+            Vue.setText(x25, Vue.toDisplayString(_item_badge));
+          });
+          return n25;
+        });
+        Vue.on(n28, "click", () => Vue.unref(onSwitchTab)(_for_item0.value, _for_key0.value));
+        return n28;
+      },
+      (item, index2) => isRenderedMidButton(item) ? "midButton" : index2,
+      8
+      /* IS_SINGLE_NODE */
+    );
+    const n30 = t8();
+    Vue.insert(n30, n31);
+    Vue.renderEffect(() => Vue.setStyle(n30, Vue.unref(placeholderStyle)));
+    return n31;
   }
 });
-function useAppClass(showTabBar) {
-  const showMaxWidth = Vue.ref(false);
-  return Vue.computed(() => {
-    return {
-      "uni-app--showtabbar": showTabBar && showTabBar.value,
-      "uni-app--maxwidth": showMaxWidth.value
-    };
-  });
-}
-function initMediaQuery(minWidth, callback) {
-  {
-    return false;
-  }
-}
-function useMaxWidth(layoutState, rootRef) {
-  const route = usePageRoute();
-  function checkMaxWidth() {
-    const windowWidth = document.body.clientWidth;
-    const pages = getCurrentBasePages();
-    let meta = {};
-    if (pages.length > 0) {
-      const curPage = pages[pages.length - 1];
-      meta = getPage$BasePage(curPage).meta;
-    } else {
-      const routeOptions = getRouteOptions(route.path, true);
-      if (routeOptions) {
-        meta = routeOptions.meta;
+const t0 = Vue.template("<div class=uni-top-window></div>");
+const t1 = Vue.template("<div class=uni-top-window--placeholder>");
+const t2 = Vue.template("<div class=uni-mask>");
+const t3 = Vue.template("<div class=uni-left-window>");
+const t4 = Vue.template("<div class=uni-right-window>");
+const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "Layout",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "index-vapor",
+  setup(__props) {
+    const hasPages = __UNI_FEATURE_PAGES__;
+    const hasResponsive = __UNI_FEATURE_RESPONSIVE__;
+    const hasTopWindow = __UNI_FEATURE_TOPWINDOW__;
+    const hasLeftWindow = __UNI_FEATURE_LEFTWINDOW__;
+    const hasRightWindow = __UNI_FEATURE_RIGHTWINDOW__;
+    const hasTabBar = __UNI_FEATURE_TABBAR__;
+    const PageRouter = hasPages && defineSystemComponent({
+      name: "PageRouter",
+      setup() {
+        const keepAliveRoute = useKeepAliveRoute();
+        return () => createRouterViewVNode(keepAliveRoute);
+      }
+    });
+    const rootRef = Vue.ref(null);
+    const firstPageComponent = !hasPages && __uniRoutes[0].component;
+    const { layoutState, windowState } = useState2();
+    useMaxWidth(layoutState, rootRef);
+    const topWindow = hasTopWindow && useTopWindow(layoutState);
+    const leftWindow = hasLeftWindow && useLeftWindow(layoutState);
+    const rightWindow = hasRightWindow && useRightWindow(layoutState);
+    const TopWindow = topWindow && topWindow.component;
+    const LeftWindow = leftWindow && leftWindow.component;
+    const RightWindow = rightWindow && rightWindow.component;
+    const topWindowRef = topWindow && topWindow.windowRef;
+    const leftWindowRef = leftWindow && leftWindow.windowRef;
+    const rightWindowRef = rightWindow && rightWindow.windowRef;
+    const showTabBar = hasTabBar && useShowTabBar();
+    const clazz = useAppClass(showTabBar);
+    function useAppClass(showTabBar2) {
+      const showMaxWidth = Vue.ref(false);
+      return Vue.computed(() => {
+        return {
+          "uni-app--showtabbar": showTabBar2 && showTabBar2.value,
+          "uni-app--maxwidth": showMaxWidth.value
+        };
+      });
+    }
+    function initMediaQuery(minWidth, callback) {
+      {
+        return false;
       }
     }
-    const maxWidth = parseInt(String((shared.hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
-    let showMaxWidth = false;
-    if (windowWidth > maxWidth) {
-      showMaxWidth = true;
-    } else {
-      showMaxWidth = false;
-    }
-    if (showMaxWidth && maxWidth) {
-      layoutState.marginWidth = (windowWidth - maxWidth) / 2;
-      Vue.nextTick(() => {
-        const rootEl = rootRef.value;
-        if (rootEl) {
-          rootEl.setAttribute("style", "max-width:" + maxWidth + "px;margin:0 auto;");
+    function useMaxWidth(layoutState2, rootRef2) {
+      const route = usePageRoute();
+      function checkMaxWidth() {
+        const windowWidth = document.body.clientWidth;
+        const pages = getCurrentBasePages();
+        let meta = {};
+        if (pages.length > 0) {
+          const curPage = pages[pages.length - 1];
+          meta = getPage$BasePage(curPage).meta;
+        } else {
+          const routeOptions = getRouteOptions(route.path, true);
+          if (routeOptions) {
+            meta = routeOptions.meta;
+          }
         }
-      });
-    } else {
-      layoutState.marginWidth = 0;
-      Vue.nextTick(() => {
-        const rootEl = rootRef.value;
-        if (rootEl) {
-          rootEl.removeAttribute("style");
+        const maxWidth = parseInt(
+          String(
+            (shared.hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER
+          )
+        );
+        let showMaxWidth = false;
+        if (windowWidth > maxWidth) {
+          showMaxWidth = true;
+        } else {
+          showMaxWidth = false;
         }
+        if (showMaxWidth && maxWidth) {
+          layoutState2.marginWidth = (windowWidth - maxWidth) / 2;
+          Vue.nextTick(() => {
+            const rootEl = rootRef2.value;
+            if (rootEl) {
+              rootEl.setAttribute(
+                "style",
+                "max-width:" + maxWidth + "px;margin:0 auto;"
+              );
+            }
+          });
+        } else {
+          layoutState2.marginWidth = 0;
+          Vue.nextTick(() => {
+            const rootEl = rootRef2.value;
+            if (rootEl) {
+              rootEl.removeAttribute("style");
+            }
+          });
+        }
+      }
+      Vue.watch([() => route.path], checkMaxWidth);
+    }
+    function useState2() {
+      const route = usePageRoute();
+      if (!hasResponsive) {
+        const layoutState3 = Vue.reactive({
+          marginWidth: 0,
+          leftWindowWidth: 0,
+          rightWindowWidth: 0
+        });
+        Vue.watch(
+          () => layoutState3.marginWidth,
+          (value) => updateCssVar({ "--window-margin": value + "px" })
+        );
+        Vue.watch(
+          () => layoutState3.leftWindowWidth + layoutState3.marginWidth,
+          (value) => {
+            updateCssVar({ "--window-left": value + "px" });
+          }
+        );
+        Vue.watch(
+          () => layoutState3.rightWindowWidth + layoutState3.marginWidth,
+          (value) => {
+            updateCssVar({ "--window-right": value + "px" });
+          }
+        );
+        return {
+          layoutState: layoutState3,
+          windowState: Vue.computed(() => ({}))
+        };
+      }
+      const topWindowMediaQuery = Vue.ref(false);
+      const leftWindowMediaQuery = Vue.ref(false);
+      const rightWindowMediaQuery = Vue.ref(false);
+      const showTopWindow = Vue.computed(
+        () => hasTopWindow && route.meta.topWindow !== false && topWindowMediaQuery.value
+      );
+      const showLeftWindow = Vue.computed(
+        () => hasLeftWindow && route.meta.leftWindow !== false && leftWindowMediaQuery.value
+      );
+      const showRightWindow = Vue.computed(
+        () => hasRightWindow && route.meta.rightWindow !== false && rightWindowMediaQuery.value
+      );
+      const layoutState2 = Vue.reactive({
+        topWindowMediaQuery,
+        showTopWindow,
+        apiShowTopWindow: false,
+        leftWindowMediaQuery,
+        showLeftWindow,
+        apiShowLeftWindow: false,
+        rightWindowMediaQuery,
+        showRightWindow,
+        apiShowRightWindow: false,
+        topWindowHeight: 0,
+        marginWidth: 0,
+        leftWindowWidth: 0,
+        rightWindowWidth: 0,
+        navigationBarTitleText: "",
+        topWindowStyle: {},
+        leftWindowStyle: {},
+        rightWindowStyle: {}
+      });
+      const props2 = [
+        "topWindow",
+        "leftWindow",
+        "rightWindow"
+      ];
+      props2.forEach((prop) => {
+        var _a;
+        const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
+        if (matchMedia && shared.hasOwn(matchMedia, "minWidth")) {
+          matchMedia.minWidth;
+        }
+        const matches = initMediaQuery();
+        layoutState2[`${prop}MediaQuery`] = matches;
+      });
+      Vue.watch(
+        () => layoutState2.topWindowHeight,
+        (value) => updateCssVar({ "--top-window-height": value + "px" })
+      );
+      Vue.watch(
+        () => layoutState2.marginWidth,
+        (value) => updateCssVar({ "--window-margin": value + "px" })
+      );
+      Vue.watch(
+        () => layoutState2.leftWindowWidth + layoutState2.marginWidth,
+        (value) => {
+          updateCssVar({ "--window-left": value + "px" });
+        }
+      );
+      Vue.watch(
+        () => layoutState2.rightWindowWidth + layoutState2.marginWidth,
+        (value) => {
+          updateCssVar({ "--window-right": value + "px" });
+        }
+      );
+      UniServiceJSBridge.on(uniShared.ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
+        layoutState2.navigationBarTitleText = navigationBar.titleText;
+      });
+      const windowState2 = Vue.computed(() => ({
+        matchTopWindow: layoutState2.topWindowMediaQuery,
+        showTopWindow: layoutState2.showTopWindow || layoutState2.apiShowTopWindow,
+        matchLeftWindow: layoutState2.leftWindowMediaQuery,
+        showLeftWindow: layoutState2.showLeftWindow || layoutState2.apiShowLeftWindow,
+        matchRightWindow: layoutState2.rightWindowMediaQuery,
+        showRightWindow: layoutState2.showRightWindow || layoutState2.apiShowRightWindow
+      }));
+      return {
+        layoutState: layoutState2,
+        windowState: windowState2
+      };
+    }
+    function useShowTabBar() {
+      const route = usePageRoute();
+      const tabBar = useTabBar();
+      const showTabBar2 = Vue.computed(() => route.meta.isTabBar && tabBar.shown);
+      return showTabBar2;
+    }
+    function createRouterViewVNode({
+      routeKey,
+      isTabBar,
+      routeCache: routeCache2
+    }) {
+      return Vue.createVNode(vueRouter.RouterView, null, {
+        default: Vue.withCtx(({ Component }) => [
+          (Vue.openBlock(), Vue.createBlock(
+            Vue.KeepAlive,
+            { matchBy: "key", cache: routeCache2 },
+            [
+              (Vue.openBlock(), Vue.createBlock(Vue.resolveDynamicComponent(Component), {
+                type: isTabBar.value ? "tabBar" : "",
+                key: routeKey.value
+              }))
+            ],
+            1032,
+            ["cache"]
+          ))
+        ]),
+        _: 1
       });
     }
-  }
-  Vue.watch([() => route.path], checkMaxWidth);
-}
-function useState() {
-  const route = usePageRoute();
-  if (!__UNI_FEATURE_RESPONSIVE__) {
-    const layoutState2 = Vue.reactive({
-      marginWidth: 0,
-      leftWindowWidth: 0,
-      rightWindowWidth: 0
-    });
-    Vue.watch(() => layoutState2.marginWidth, (value) => updateCssVar({ "--window-margin": value + "px" }));
-    Vue.watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
-      updateCssVar({ "--window-left": value + "px" });
-    });
-    Vue.watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
-      updateCssVar({ "--window-right": value + "px" });
-    });
-    return {
-      layoutState: layoutState2,
-      windowState: Vue.computed(() => ({}))
-    };
-  }
-  const topWindowMediaQuery = Vue.ref(false);
-  const leftWindowMediaQuery = Vue.ref(false);
-  const rightWindowMediaQuery = Vue.ref(false);
-  const showTopWindow = Vue.computed(() => __UNI_FEATURE_TOPWINDOW__ && route.meta.topWindow !== false && topWindowMediaQuery.value);
-  const showLeftWindow = Vue.computed(() => __UNI_FEATURE_LEFTWINDOW__ && route.meta.leftWindow !== false && leftWindowMediaQuery.value);
-  const showRightWindow = Vue.computed(() => __UNI_FEATURE_RIGHTWINDOW__ && route.meta.rightWindow !== false && rightWindowMediaQuery.value);
-  const layoutState = Vue.reactive({
-    topWindowMediaQuery,
-    showTopWindow,
-    apiShowTopWindow: false,
-    leftWindowMediaQuery,
-    showLeftWindow,
-    apiShowLeftWindow: false,
-    rightWindowMediaQuery,
-    showRightWindow,
-    apiShowRightWindow: false,
-    topWindowHeight: 0,
-    marginWidth: 0,
-    leftWindowWidth: 0,
-    rightWindowWidth: 0,
-    navigationBarTitleText: "",
-    topWindowStyle: {},
-    leftWindowStyle: {},
-    rightWindowStyle: {}
-  });
-  const props2 = [
-    "topWindow",
-    "leftWindow",
-    "rightWindow"
-  ];
-  props2.forEach((prop) => {
-    var _a;
-    const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
-    if (matchMedia && shared.hasOwn(matchMedia, "minWidth")) {
-      matchMedia.minWidth;
+    function useTopWindow(layoutState2) {
+      const { component, style } = __uniConfig.topWindow;
+      const windowRef = Vue.ref(null);
+      function updateWindow() {
+        const instance = windowRef.value;
+        if (!instance || !instance.$) {
+          return;
+        }
+        const el = uniShared.resolveOwnerEl(instance.$);
+        if (!el) {
+          return;
+        }
+        const uniTopWindowStyleEl = el.parentElement;
+        if (!uniTopWindowStyleEl) {
+          return;
+        }
+        const height = uniTopWindowStyleEl.getBoundingClientRect().height;
+        layoutState2.topWindowHeight = height;
+      }
+      Vue.watch(
+        () => windowRef.value,
+        () => {
+          updateWindow();
+        }
+      );
+      Vue.watch(
+        () => layoutState2.showTopWindow || layoutState2.apiShowTopWindow,
+        () => Vue.nextTick(updateWindow)
+      );
+      Vue.watch(
+        () => layoutState2.topWindowStyle,
+        () => Vue.nextTick(updateWindow)
+      );
+      layoutState2.topWindowStyle = style;
+      return {
+        component,
+        windowRef
+      };
     }
-    const matches = initMediaQuery();
-    layoutState[`${prop}MediaQuery`] = matches;
-  });
-  Vue.watch(() => layoutState.topWindowHeight, (value) => updateCssVar({ "--top-window-height": value + "px" }));
-  Vue.watch(() => layoutState.marginWidth, (value) => updateCssVar({ "--window-margin": value + "px" }));
-  Vue.watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
-    updateCssVar({ "--window-left": value + "px" });
-  });
-  Vue.watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
-    updateCssVar({ "--window-right": value + "px" });
-  });
-  UniServiceJSBridge.on(uniShared.ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
-    layoutState.navigationBarTitleText = navigationBar.titleText;
-  });
-  const windowState = Vue.computed(() => ({
-    matchTopWindow: layoutState.topWindowMediaQuery,
-    showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
-    matchLeftWindow: layoutState.leftWindowMediaQuery,
-    showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
-    matchRightWindow: layoutState.rightWindowMediaQuery,
-    showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
-  }));
-  return {
-    layoutState,
-    windowState
-  };
-}
-function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow) {
-  const routerVNode = __UNI_FEATURE_PAGES__ ? createRouterViewVNode(keepAliveRoute) : createPageVNode();
-  if (!__UNI_FEATURE_RESPONSIVE__) {
-    return routerVNode;
-  }
-  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState.value) : null;
-  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState.value) : null;
-  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState.value) : null;
-  return (() => {
-    const _n5 = Vue.createPlainElement("uni-layout", { class: () => ({
-      "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
-      "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
-      "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
-    }) }, () => {
-      const _n0 = createNodes(() => topWindowTsx);
-      const _n4 = Vue.createPlainElement("uni-content", null, () => {
-        const _n1 = Vue.createPlainElement("uni-main", null, { $: [() => normalizeVaporSlots(routerVNode)] });
-        const _n2 = createNodes(() => leftWindowTsx, () => rightWindowTsx);
-        return [_n1, _n2];
-      });
-      return [_n0, _n4];
-    }, true);
-    return _n5;
-  })();
-}
-function useShowTabBar(emit2) {
-  const route = usePageRoute();
-  const tabBar = useTabBar();
-  const showTabBar = Vue.computed(() => route.meta.isTabBar && tabBar.shown);
-  return showTabBar;
-}
-function createTabBarTsx(showTabBar) {
-  return (() => {
-    const _n0 = createComponent(TabBar, null, null, true);
-    Vue.applyVShow(_n0, () => showTabBar.value);
-    return _n0;
-  })();
-}
-function createPageVNode() {
-  return Vue.createVNode(__uniRoutes[0].component);
-}
-function createRouterViewVNode({ routeKey, isTabBar, routeCache: routeCache2 }) {
-  return Vue.createVNode(vueRouter.RouterView, null, {
-    default: Vue.withCtx(({ Component }) => [(Vue.openBlock(), Vue.createBlock(Vue.KeepAlive, {
-      matchBy: "key",
-      cache: routeCache2
-    }, [(Vue.openBlock(), Vue.createBlock(Vue.resolveDynamicComponent(Component), {
-      type: isTabBar.value ? "tabBar" : "",
-      key: routeKey.value
-    }))], 1032, ["cache"]))]),
-    _: 1
-  });
-}
-function useTopWindow(layoutState) {
-  const { component, style } = __uniConfig.topWindow;
-  const windowRef = Vue.ref(null);
-  function updateWindow() {
-    const instance = windowRef.value;
-    if (!instance || !instance.$) {
-      return;
+    function useLeftWindow(layoutState2) {
+      const { component, style } = __uniConfig.leftWindow;
+      const windowRef = Vue.ref(null);
+      function updateWindow() {
+        const instance = windowRef.value;
+        if (!instance || !instance.$) {
+          return;
+        }
+        const el = uniShared.resolveOwnerEl(instance.$);
+        if (!el) {
+          return;
+        }
+        const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+        if (!uniLeftWindowStyleEl) {
+          return;
+        }
+        const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
+        layoutState2.leftWindowWidth = width;
+      }
+      Vue.watch(
+        () => windowRef.value,
+        () => {
+          updateWindow();
+        }
+      );
+      Vue.watch(
+        () => layoutState2.showLeftWindow || layoutState2.apiShowLeftWindow,
+        () => Vue.nextTick(updateWindow)
+      );
+      Vue.watch(
+        () => layoutState2.leftWindowStyle,
+        () => Vue.nextTick(updateWindow)
+      );
+      layoutState2.leftWindowStyle = style;
+      return {
+        component,
+        windowRef
+      };
     }
-    const el = uniShared.resolveOwnerEl(instance.$);
-    if (!el) {
-      return;
+    function useRightWindow(layoutState2) {
+      const { component, style } = __uniConfig.rightWindow;
+      const windowRef = Vue.ref(null);
+      function updateWindow() {
+        const instance = windowRef.value;
+        if (!instance || !instance.$) {
+          return;
+        }
+        const el = uniShared.resolveOwnerEl(instance.$);
+        if (!el) {
+          return;
+        }
+        const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+        if (!uniRightWindowStyleEl) {
+          return;
+        }
+        const width = uniRightWindowStyleEl.getBoundingClientRect().width;
+        layoutState2.rightWindowWidth = width;
+      }
+      Vue.watch(
+        () => windowRef.value,
+        () => {
+          updateWindow();
+        }
+      );
+      Vue.watch(
+        () => layoutState2.showRightWindow || layoutState2.apiShowRightWindow,
+        () => Vue.nextTick(updateWindow)
+      );
+      Vue.watch(
+        () => layoutState2.rightWindowStyle,
+        () => Vue.nextTick(updateWindow)
+      );
+      layoutState2.rightWindowStyle = style;
+      return {
+        component,
+        windowRef
+      };
     }
-    const uniTopWindowStyleEl = el.parentElement;
-    if (!uniTopWindowStyleEl) {
-      return;
-    }
-    const height = uniTopWindowStyleEl.getBoundingClientRect().height;
-    layoutState.topWindowHeight = height;
-  }
-  Vue.watch(() => windowRef.value, () => {
-    updateWindow();
-  });
-  Vue.watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => Vue.nextTick(updateWindow));
-  Vue.watch(() => layoutState.topWindowStyle, () => Vue.nextTick(updateWindow));
-  layoutState.topWindowStyle = style;
-  return {
-    component,
-    windowRef
-  };
-}
-function useLeftWindow(layoutState) {
-  const { component, style } = __uniConfig.leftWindow;
-  const windowRef = Vue.ref(null);
-  function updateWindow() {
-    const instance = windowRef.value;
-    if (!instance || !instance.$) {
-      return;
-    }
-    const el = uniShared.resolveOwnerEl(instance.$);
-    if (!el) {
-      return;
-    }
-    const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
-    if (!uniLeftWindowStyleEl) {
-      return;
-    }
-    const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
-    layoutState.leftWindowWidth = width;
-  }
-  Vue.watch(() => windowRef.value, () => {
-    updateWindow();
-  });
-  Vue.watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => Vue.nextTick(updateWindow));
-  Vue.watch(() => layoutState.leftWindowStyle, () => Vue.nextTick(updateWindow));
-  layoutState.leftWindowStyle = style;
-  return {
-    component,
-    windowRef
-  };
-}
-function useRightWindow(layoutState) {
-  const { component, style } = __uniConfig.rightWindow;
-  const windowRef = Vue.ref(null);
-  function updateWindow() {
-    const instance = windowRef.value;
-    if (!instance || !instance.$) {
-      return;
-    }
-    const el = uniShared.resolveOwnerEl(instance.$);
-    if (!el) {
-      return;
-    }
-    const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
-    if (!uniRightWindowStyleEl) {
-      return;
-    }
-    const width = uniRightWindowStyleEl.getBoundingClientRect().width;
-    layoutState.rightWindowWidth = width;
-  }
-  Vue.watch(() => windowRef.value, () => {
-    updateWindow();
-  });
-  Vue.watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => Vue.nextTick(updateWindow));
-  Vue.watch(() => layoutState.rightWindowStyle, () => Vue.nextTick(updateWindow));
-  layoutState.rightWindowStyle = style;
-  return {
-    component,
-    windowRef
-  };
-}
-function createTopWindowTsx(topWindow, layoutState, windowState) {
-  if (topWindow) {
-    const { component: TopWindow, windowRef } = topWindow;
-    return (() => {
-      const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n0 = Vue.createPlainElement("uni-top-window", null, () => {
-        const _n2 = _t0();
-        Vue.renderEffect(() => Vue.setStyle(_n2, layoutState.topWindowStyle));
-        Vue.setInsertionState(_n2);
-        const _n1 = createComponent(TopWindow, {
-          "navigation-bar-title-text": () => layoutState.navigationBarTitleText,
-          $: [() => windowState]
+    const n42 = Vue.createPlainElement("uni-app", { class: () => Vue.unref(clazz) }, null, true);
+    Vue.setInsertionState(n42);
+    Vue.createIf(
+      () => Vue.unref(hasResponsive),
+      () => {
+        const n31 = Vue.createPlainElement("uni-layout", { class: () => ({
+          "uni-app--showtopwindow": Vue.unref(hasTopWindow) && Vue.unref(layoutState).showTopWindow,
+          "uni-app--showleftwindow": Vue.unref(hasLeftWindow) && Vue.unref(layoutState).showLeftWindow,
+          "uni-app--showrightwindow": Vue.unref(hasRightWindow) && Vue.unref(layoutState).showRightWindow
+        }) });
+        Vue.setInsertionState(n31);
+        Vue.createIf(() => Vue.unref(hasTopWindow) && Vue.unref(TopWindow), () => {
+          const n7 = Vue.createPlainElement("uni-top-window");
+          const n5 = t0();
+          Vue.insert(n5, n7);
+          Vue.renderEffect(() => Vue.setStyle(n5, Vue.unref(layoutState).topWindowStyle));
+          Vue.setInsertionState(n5);
+          const n4 = Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
+            "navigation-bar-title-text": () => Vue.unref(layoutState).navigationBarTitleText,
+            $: [
+              () => Vue.unref(windowState)
+            ]
+          });
+          const n6 = t1();
+          Vue.insert(n6, n7);
+          Vue.setStaticTemplateRef(n4, topWindowRef, null, "topWindowRef");
+          Vue.applyVShow(n7, () => Vue.unref(layoutState).showTopWindow || Vue.unref(layoutState).apiShowTopWindow);
+          Vue.renderEffect(() => Vue.setStyle(n6, { height: Vue.unref(layoutState).topWindowHeight + "px" }));
+          return n7;
         });
-        const _n3 = _t1();
-        Vue.renderEffect(() => {
-          _setTemplateRef(_n1, windowRef);
-          Vue.setStyle(_n3, { height: layoutState.topWindowHeight + "px" });
+        Vue.setInsertionState(n31, 1);
+        const n30 = Vue.createPlainElement("uni-content");
+        Vue.setInsertionState(n30);
+        const n13 = Vue.createPlainElement("uni-main");
+        Vue.setInsertionState(n13);
+        Vue.createIf(
+          () => Vue.unref(hasPages),
+          () => {
+            const n10 = Vue.createComponent(Vue.unref(PageRouter));
+            return n10;
+          },
+          () => {
+            const n12 = Vue.createDynamicComponent(() => Vue.unref(firstPageComponent));
+            return n12;
+          },
+          517
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+        );
+        Vue.setInsertionState(n30, 1);
+        Vue.createIf(() => Vue.unref(hasLeftWindow) && Vue.unref(LeftWindow), () => {
+          const n21 = Vue.createPlainElement("uni-left-window", {
+            "data-show": () => Vue.unref(layoutState).apiShowLeftWindow || void 0,
+            style: () => Vue.unref(layoutState).leftWindowStyle
+          });
+          Vue.setInsertionState(n21);
+          Vue.createIf(() => Vue.unref(layoutState).apiShowLeftWindow, () => {
+            const n18 = t2();
+            Vue.on(n18, "click", () => Vue.unref(layoutState).apiShowLeftWindow = false);
+            return n18;
+          });
+          const n20 = t3();
+          Vue.insert(n20, n21);
+          Vue.setInsertionState(n20);
+          const n19 = Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
+            () => Vue.unref(windowState)
+          ] });
+          Vue.setStaticTemplateRef(n19, leftWindowRef, null, "leftWindowRef");
+          Vue.applyVShow(n21, () => Vue.unref(layoutState).showLeftWindow || Vue.unref(layoutState).apiShowLeftWindow);
+          return n21;
         });
-        return [_n2, _n3];
-      }, true);
-      Vue.applyVShow(_n0, () => layoutState.showTopWindow || layoutState.apiShowTopWindow);
-      return _n0;
-    })();
+        Vue.setInsertionState(n30, 2);
+        Vue.createIf(() => Vue.unref(hasRightWindow) && Vue.unref(RightWindow), () => {
+          const n29 = Vue.createPlainElement("uni-right-window", {
+            "data-show": () => Vue.unref(layoutState).apiShowRightWindow || void 0,
+            style: () => Vue.unref(layoutState).rightWindowStyle
+          });
+          Vue.setInsertionState(n29);
+          Vue.createIf(() => Vue.unref(layoutState).apiShowRightWindow, () => {
+            const n26 = t2();
+            Vue.on(n26, "click", () => Vue.unref(layoutState).apiShowRightWindow = false);
+            return n26;
+          });
+          const n28 = t4();
+          Vue.insert(n28, n29);
+          Vue.setInsertionState(n28);
+          const n27 = Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
+            () => Vue.unref(windowState)
+          ] });
+          Vue.setStaticTemplateRef(n27, rightWindowRef, null, "rightWindowRef");
+          Vue.applyVShow(n29, () => Vue.unref(layoutState).showRightWindow || Vue.unref(layoutState).apiShowRightWindow);
+          return n29;
+        });
+        return n31;
+      },
+      () => {
+        const n33 = Vue.createIf(
+          () => Vue.unref(hasPages),
+          () => {
+            const n35 = Vue.createComponent(Vue.unref(PageRouter));
+            return n35;
+          },
+          () => {
+            const n37 = Vue.createDynamicComponent(() => Vue.unref(firstPageComponent));
+            return n37;
+          },
+          2053
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
+        );
+        return n33;
+      },
+      1797
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_6 */
+    );
+    Vue.setInsertionState(n42, 1);
+    Vue.createIf(() => Vue.unref(hasTabBar), () => {
+      const n41 = Vue.createComponent(_sfc_main$1);
+      Vue.applyVShow(n41, () => Vue.unref(showTabBar));
+      return n41;
+    });
+    Vue.setStaticTemplateRef(n42, rootRef, null, "rootRef");
+    return n42;
   }
-}
-function createLeftWindowTsx(leftWindow, layoutState, windowState) {
-  if (leftWindow) {
-    const { component: LeftWindow, windowRef } = leftWindow;
-    return (() => {
-      const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n0 = Vue.createPlainElement("uni-left-window", {
-        "data-show": () => layoutState.apiShowLeftWindow || void 0,
-        style: () => layoutState.leftWindowStyle
-      }, () => {
-        const _n1 = Vue.createIf(() => layoutState.apiShowLeftWindow, () => {
-          const _n3 = _t2();
-          Vue.on(_n3, "click", () => layoutState.apiShowLeftWindow = false);
-          return _n3;
-        }, () => {
-          const _n5 = createNodes(null);
-          return _n5;
-        }, 265);
-        const _n7 = _t3();
-        Vue.setInsertionState(_n7);
-        const _n6 = createComponent(LeftWindow, { $: [() => windowState] });
-        Vue.renderEffect(() => _setTemplateRef(_n6, windowRef));
-        return [_n1, _n7];
-      }, true);
-      Vue.applyVShow(_n0, () => layoutState.showLeftWindow || layoutState.apiShowLeftWindow);
-      return _n0;
-    })();
-  }
-}
-function createRightWindowTsx(rightWindow, layoutState, windowState) {
-  if (rightWindow) {
-    const { component: RightWindow, windowRef } = rightWindow;
-    return (() => {
-      const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n0 = Vue.createPlainElement("uni-right-window", {
-        "data-show": () => layoutState.apiShowRightWindow || void 0,
-        style: () => layoutState.rightWindowStyle
-      }, () => {
-        const _n1 = Vue.createIf(() => layoutState.apiShowRightWindow, () => {
-          const _n3 = _t2();
-          Vue.on(_n3, "click", () => layoutState.apiShowRightWindow = false);
-          return _n3;
-        }, () => {
-          const _n5 = createNodes(null);
-          return _n5;
-        }, 265);
-        const _n7 = _t4();
-        Vue.setInsertionState(_n7);
-        const _n6 = createComponent(RightWindow, { $: [() => windowState] });
-        Vue.renderEffect(() => _setTemplateRef(_n6, windowRef));
-        return [_n1, _n7];
-      }, true);
-      Vue.applyVShow(_n0, () => layoutState.showRightWindow || layoutState.apiShowRightWindow);
-      return _n0;
-    })();
-  }
-}
+});
 Object.defineProperty(exports, "UTS", {
   enumerable: true,
   get: () => uniShared.UTS
@@ -15635,8 +15757,8 @@ Object.defineProperty(exports, "UniError", {
 exports.Ad = index$5;
 exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
-exports.AsyncErrorComponent = _sfc_main$5;
-exports.AsyncLoadingComponent = _sfc_main$6;
+exports.AsyncErrorComponent = _sfc_main$7;
+exports.AsyncLoadingComponent = _sfc_main$8;
 exports.Button = index$v;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;
@@ -15649,18 +15771,18 @@ exports.Form = index$x;
 exports.Icon = index$r;
 exports.Input = Input;
 exports.Label = index$w;
-exports.LayoutComponent = LayoutComponent;
+exports.LayoutComponent = _sfc_main;
 exports.ListItem = index$f;
 exports.ListView = index$g;
 exports.LivePlayer = index$1;
 exports.LivePusher = index;
-exports.Loading = _sfc_main;
+exports.Loading = _sfc_main$2;
 exports.Map = index$9;
 exports.MovableArea = index$q;
 exports.MovableView = index$p;
 exports.Navigator = index$o;
 exports.PageComponent = PageComponent;
-exports.PageContainer = _sfc_main$1;
+exports.PageContainer = _sfc_main$3;
 exports.Picker = index$6;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;

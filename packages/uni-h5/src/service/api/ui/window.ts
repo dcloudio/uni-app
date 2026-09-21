@@ -1,7 +1,7 @@
 import { extend } from '@vue/shared'
 import { nextTick } from 'vue'
 import { defineAsyncApi, defineSyncApi } from '@dcloudio/uni-api'
-import { getLayoutState } from '../../../framework/components/layout'
+import { getLayoutState } from '../../../framework/components/layout/state'
 
 export const showTopWindow = defineAsyncApi<typeof uni.showTopWindow>(
   'showTopWindow',
