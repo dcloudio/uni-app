@@ -8,6 +8,7 @@ import {
   findMiniProgramComponentPackageRoot,
   isAppVue,
   isMiniProgramPageFile,
+  isUniAppX,
   normalizePath,
   parseMainDescriptor,
   parseProgram,
@@ -58,7 +59,7 @@ export function uniUsingComponentsPlugin(
       }
       const sourceMap = enableSourceMap()
       const packageRoot =
-        inputDir && !independentRoot
+        isUniAppX() && inputDir && !independentRoot
           ? getSubPackageRootByFilename(filename, inputDir) ||
             findMiniProgramComponentPackageRoot(filename)
           : undefined
@@ -228,7 +229,7 @@ function resolveComponentPackageRoot(
   value: string,
   { inputDir, packageRoot, root }: DynamicImportOptions
 ) {
-  if (!inputDir || !packageRoot || root) {
+  if (!isUniAppX() || !inputDir || !packageRoot || root) {
     return
   }
   const filename = normalizePath(value).split('?')[0]

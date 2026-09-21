@@ -20,6 +20,7 @@ import {
   parseIndependentSubPackages,
   setIndependentSubPackages,
 } from './subpackage'
+import { isUniAppX } from '../../x'
 
 let appJsonCache: Record<string, any> = {}
 let subPackageRootsCache: string[] = []
@@ -66,6 +67,9 @@ export function findUsingComponents(filename: string) {
 }
 
 export function findMiniProgramSubPackageRoot(filename: string) {
+  if (!isUniAppX()) {
+    return
+  }
   return findSubPackageRoot(filename, subPackageRootsCache)
 }
 
@@ -73,6 +77,9 @@ export function addMiniProgramComponentPackageRoot(
   filename: string,
   packageRoot?: string
 ) {
+  if (!isUniAppX()) {
+    return
+  }
   const normalizedFilename = normalizeComponentPackageFilename(filename)
   if (!normalizedFilename.startsWith('uni_modules/')) {
     return
@@ -84,6 +91,9 @@ export function addMiniProgramComponentPackageRoot(
 }
 
 export function findMiniProgramComponentPackageRoot(filename: string) {
+  if (!isUniAppX()) {
+    return
+  }
   const roots = getMiniProgramComponentPackageRoots(filename)
   if (roots?.size === 1) {
     const [root] = [...roots]
@@ -92,6 +102,9 @@ export function findMiniProgramComponentPackageRoot(filename: string) {
 }
 
 export function findMiniProgramComponentPackageRoots(filename: string) {
+  if (!isUniAppX()) {
+    return
+  }
   const roots = getMiniProgramComponentPackageRoots(filename)
   if (roots) {
     if (roots.has(mainPackageRoot) || roots.size > 1) {
@@ -105,6 +118,9 @@ export function resolveMiniProgramComponentPackageRoot(
   filename: string,
   packageRoot?: string
 ) {
+  if (!isUniAppX()) {
+    return
+  }
   const roots = getMiniProgramComponentPackageRoots(filename)
   if (!roots) {
     return packageRoot
@@ -135,7 +151,9 @@ export function findChangedJsonFiles(
   const changedJsonFiles = new Map<string, string>()
   function findChangedFile(filename: string, json: Record<string, any>) {
     const cacheFilename = filename
-    const outputFilename = normalizeJsonPackageFilename(filename)
+    const outputFilename = isUniAppX()
+      ? normalizeJsonPackageFilename(filename)
+      : filename
     const newJson = JSON.parse(JSON.stringify(json))
     if (!newJson.usingComponents) {
       newJson.usingComponents = {}
@@ -172,10 +190,12 @@ export function findChangedJsonFiles(
         )
       }
       Object.keys(usingComponents).forEach((name) => {
-        const componentFilename = normalizeUsingComponentPackageFilename(
-          usingComponents[name],
-          outputFilename
-        )
+        const componentFilename = isUniAppX()
+          ? normalizeUsingComponentPackageFilename(
+              usingComponents[name],
+              outputFilename
+            )
+          : usingComponents[name]
         if (componentFilename.startsWith('/')) {
           usingComponents[name] = relativeFile(
             outputFilename,
@@ -269,7 +289,7 @@ export function addMiniProgramAppJson(
 ) {
   appJsonCache = appJson
   subPackageRootsCache =
-    options.subPackages === false
+    !isUniAppX() || options.subPackages === false
       ? []
       : parseSubPackageRoots(appJson as UniApp.PagesJson)
   independentRootsCache = parseIndependentSubPackages(
