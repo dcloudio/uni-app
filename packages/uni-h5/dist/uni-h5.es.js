@@ -20070,7 +20070,7 @@ const offThemeChange = /* @__PURE__ */ defineOffApi(
   }
 );
 const STORAGE_KEYS = "uni-storage-keys";
-function parseValue(value) {
+function parseValue(value, isUTS) {
   const types = ["object", "string", "number", "boolean", "undefined"];
   try {
     const object = isString(value) ? JSON.parse(value) : value;
@@ -20115,7 +20115,7 @@ const setStorage = /* @__PURE__ */ defineAsyncApi(
   },
   SetStorageProtocol
 );
-function getStorageOrigin(key) {
+function getStorageOrigin(key, isUTS) {
   const value = localStorage && localStorage.getItem(key);
   if (!isString(value)) {
     throw new Error("data not found");
@@ -20123,7 +20123,7 @@ function getStorageOrigin(key) {
   let data = value;
   try {
     const object = JSON.parse(value);
-    const result = parseValue(object);
+    const result = parseValue(object, isUTS);
     if (result !== void 0) {
       data = result;
     }
@@ -20133,9 +20133,10 @@ function getStorageOrigin(key) {
 }
 const getStorageSync = /* @__PURE__ */ defineSyncApi(
   API_GET_STORAGE_SYNC,
-  (key) => {
+  // @ts-expect-error 内部isUTS参数
+  (key, isUTS) => {
     try {
-      return getStorageOrigin(key);
+      return getStorageOrigin(key, isUTS);
     } catch (error) {
       return "";
     }
@@ -20144,9 +20145,10 @@ const getStorageSync = /* @__PURE__ */ defineSyncApi(
 );
 const getStorage = /* @__PURE__ */ defineAsyncApi(
   API_GET_STORAGE,
-  ({ key }, { resolve, reject }) => {
+  // @ts-expect-error 内部isUTS参数
+  ({ key, isUTS }, { resolve, reject }) => {
     try {
-      const data = getStorageOrigin(key);
+      const data = getStorageOrigin(key, isUTS);
       resolve({
         data
       });
@@ -20978,7 +20980,9 @@ const request = /* @__PURE__ */ defineTaskApi(
     responseType,
     enableChunked,
     withCredentials,
-    timeout = __uniConfig.networkTimeout.request
+    timeout = __uniConfig.networkTimeout.request,
+    // @ts-expect-error 内部isUTS参数
+    isUTS
   }, { resolve, reject }) => {
     let body = null;
     const contentType = normalizeContentType(header);
@@ -21268,7 +21272,7 @@ function parseHeaders(headers) {
   });
   return headersObject;
 }
-function parseResponseText(responseText, responseType, dataType2) {
+function parseResponseText(responseText, responseType, dataType2, isUTS) {
   let res = responseText;
   if (responseType === "text" && dataType2 === "json") {
     try {

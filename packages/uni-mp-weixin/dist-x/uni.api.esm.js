@@ -1023,21 +1023,76 @@ function createUTSJSONObjectIfNeed(obj) {
     return UTS.JSON.parse(JSON.stringify(obj));
 }
 
+function isRequestSuccessResult(res) {
+    return 'data' in res;
+}
 const request = {
-    returnValue: (res) => {
-        const { data } = res;
-        res.data = createUTSJSONObjectIfNeed(data);
-        return res;
+    args(fromArgs, toArgs) {
+        if (fromArgs.isUTS) {
+            if (fromArgs.success) {
+                toArgs.success = (res) => {
+                    res.data = createUTSJSONObjectIfNeed(res.data);
+                    fromArgs.success(res);
+                };
+            }
+            if (fromArgs.complete) {
+                toArgs.complete = (res) => {
+                    if (isRequestSuccessResult(res)) {
+                        res.data = createUTSJSONObjectIfNeed(res.data);
+                        fromArgs.complete(res);
+                    }
+                    else {
+                        fromArgs.complete(res);
+                    }
+                };
+            }
+        }
     },
 };
 
+function isGetStorageSuccessResult(res) {
+    return 'data' in res;
+}
 const getStorage = {
-    returnValue: (res) => {
-        return createUTSJSONObjectIfNeed(res);
+    args(fromArgs, toArgs) {
+        if (fromArgs.isUTS) {
+            if (fromArgs.success) {
+                toArgs.success = (res) => {
+                    res.data = createUTSJSONObjectIfNeed(res.data);
+                    fromArgs.success(res);
+                };
+            }
+            if (fromArgs.complete) {
+                toArgs.complete = (res) => {
+                    if (isGetStorageSuccessResult(res)) {
+                        res.data = createUTSJSONObjectIfNeed(res.data);
+                        fromArgs.complete(res);
+                    }
+                    else {
+                        fromArgs.complete(res);
+                    }
+                };
+            }
+        }
     },
 };
 
-const getStorageSync = getStorage;
+const getStorageSync = () => {
+    let isUTS = false;
+    return {
+        args(fromArgs) {
+            isUTS = fromArgs[1];
+        },
+        returnValue(fromRes) {
+            if (isUTS) {
+                return createUTSJSONObjectIfNeed(fromRes);
+            }
+            else {
+                return fromRes;
+            }
+        },
+    };
+};
 
 var protocols$1 = /*#__PURE__*/Object.freeze({
   __proto__: null,

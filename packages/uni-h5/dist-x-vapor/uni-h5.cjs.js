@@ -14159,7 +14159,9 @@ const request = /* @__PURE__ */ defineTaskApi(
     responseType,
     enableChunked,
     withCredentials,
-    timeout = __uniConfig.networkTimeout.request
+    timeout = __uniConfig.networkTimeout.request,
+    // @ts-expect-error 内部isUTS参数
+    isUTS
   }, { resolve, reject }) => {
     {
       timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout;
@@ -14287,7 +14289,7 @@ const request = /* @__PURE__ */ defineTaskApi(
                 const result = concatArrayBuffers(bodyBuffers);
                 let res = responseType === "text" ? new TextDecoder().decode(result) : result;
                 if (responseType === "text") {
-                  res = parseResponseText(res, responseType, dataType2);
+                  res = parseResponseText(res, responseType, dataType2, isUTS);
                 }
                 resolve({
                   data: res,
@@ -14456,18 +14458,22 @@ function parseHeaders(headers) {
   });
   return headersObject;
 }
-function parseResponseText(responseText, responseType, dataType2) {
+function parseResponseText(responseText, responseType, dataType2, isUTS) {
   let res = responseText;
   if (responseType === "text" && dataType2 === "json") {
     try {
-      res = UTS.JSON.parse(res) || res;
+      if (isUTS) {
+        res = UTS.JSON.parse(res) || res;
+      } else {
+        res = JSON.parse(res);
+      }
     } catch (error) {
     }
   }
   return res;
 }
 const STORAGE_KEYS = "uni-storage-keys";
-function parseValue(value) {
+function parseValue(value, isUTS) {
   const types = ["object", "string", "number", "boolean", "undefined"];
   try {
     const object = shared.isString(value) ? JSON.parse(value) : value;
@@ -14476,7 +14482,7 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
-          if (type === "object") {
+          if (type === "object" && isUTS) {
             return UTS.JSON.parse(JSON.stringify(object.data));
           }
           return object.data;
@@ -14515,7 +14521,7 @@ const setStorage = /* @__PURE__ */ defineAsyncApi(
   },
   SetStorageProtocol
 );
-function getStorageOrigin(key) {
+function getStorageOrigin(key, isUTS) {
   const value = localStorage && localStorage.getItem(key);
   if (!shared.isString(value)) {
     throw new Error("data not found");
@@ -14523,7 +14529,7 @@ function getStorageOrigin(key) {
   let data = value;
   try {
     const object = JSON.parse(value);
-    const result = parseValue(object);
+    const result = parseValue(object, isUTS);
     if (result !== void 0) {
       data = result;
     }
@@ -14533,9 +14539,10 @@ function getStorageOrigin(key) {
 }
 const getStorageSync = /* @__PURE__ */ defineSyncApi(
   API_GET_STORAGE_SYNC,
-  (key) => {
+  // @ts-expect-error 内部isUTS参数
+  (key, isUTS) => {
     try {
-      return getStorageOrigin(key);
+      return getStorageOrigin(key, isUTS);
     } catch (error) {
       return "";
     }
@@ -14544,9 +14551,10 @@ const getStorageSync = /* @__PURE__ */ defineSyncApi(
 );
 const getStorage = /* @__PURE__ */ defineAsyncApi(
   API_GET_STORAGE,
-  ({ key }, { resolve, reject }) => {
+  // @ts-expect-error 内部isUTS参数
+  ({ key, isUTS }, { resolve, reject }) => {
     try {
-      const data = getStorageOrigin(key);
+      const data = getStorageOrigin(key, isUTS);
       resolve({
         data
       });
