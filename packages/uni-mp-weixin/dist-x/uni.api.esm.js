@@ -1023,67 +1023,13 @@ function createUTSJSONObjectIfNeed(obj) {
     return UTS.JSON.parse(JSON.stringify(obj));
 }
 
-const request = {
-    args(fromArgs, toArgs) {
-        if (fromArgs.isUTS) {
-            if (fromArgs.success) {
-                toArgs.success = (res) => {
-                    res.data = createUTSJSONObjectIfNeed(res.data);
-                    fromArgs.success(res);
-                };
-            }
-        }
-    },
-};
-
-const getStorage = {
-    args(fromArgs, toArgs) {
-        if (fromArgs.isUTS) {
-            if (fromArgs.success) {
-                toArgs.success = (res) => {
-                    res.data = createUTSJSONObjectIfNeed(res.data);
-                    fromArgs.success(res);
-                };
-            }
-        }
-    },
-};
-
-const getStorageSync = () => {
-    let isUTS = false;
-    return {
-        args(fromArgs) {
-            isUTS = fromArgs[1];
-        },
-        returnValue(fromRes) {
-            if (isUTS) {
-                return createUTSJSONObjectIfNeed(fromRes);
-            }
-            else {
-                return fromRes;
-            }
-        },
-    };
-};
-
-var protocols$1 = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  getStorage: getStorage,
-  getStorageSync: getStorageSync,
-  request: request
-});
-
 function parseXReturnValue(methodName, res) {
     if (isObject(res) && hasOwn(res, 'errno')) {
         res.errCode = res.errno;
     }
-    const protocol = protocols$1[methodName];
-    if (protocol && isFunction(protocol.returnValue)) {
-        return protocol.returnValue(res);
-    }
     return res;
 }
-function shouldKeepReturnValue(methodName) {
+function forceReturnValueResult(methodName) {
     return methodName === 'getStorage' || methodName === 'getStorageSync';
 }
 
@@ -1125,12 +1071,12 @@ function initWrapper(protocols) {
         }
         return processCallback(methodName, callback, returnValue);
     }
-    function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
+    function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false, restArgs = []) {
         if (isPlainObject(fromArgs)) {
             // 一般 api 的参数解析
             const toArgs = (keepFromArgs === true ? fromArgs : {}); // returnValue 为 false 时，说明是格式化返回值，直接在返回值对象上修改赋值
             if (isFunction(argsOption)) {
-                argsOption = argsOption(fromArgs, toArgs) || {};
+                argsOption = argsOption(fromArgs, toArgs, restArgs) || {};
             }
             for (const key in fromArgs) {
                 if (hasOwn(argsOption, key)) {
@@ -1167,10 +1113,14 @@ function initWrapper(protocols) {
         }
         else if (isFunction(fromArgs)) {
             if (isFunction(argsOption)) {
-                argsOption(fromArgs, {});
+                argsOption(fromArgs, {}, restArgs);
             }
             // 事件 API 需要保证 on/off 传给平台的回调引用一致。
             fromArgs = processEventCallback(methodName, fromArgs, returnValue);
+        }
+        else if (isFunction(argsOption)) {
+            // 目前仅服务于getStorageSync isUTS标记
+            argsOption(fromArgs, {}, restArgs);
         }
         return fromArgs;
     }
@@ -1179,8 +1129,17 @@ function initWrapper(protocols) {
             // 处理通用 returnValue
             res = protocols.returnValue(methodName, res);
         }
-        const realKeepReturnValue = keepReturnValue || (shouldKeepReturnValue(methodName));
-        return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
+        /**
+         * storage接口的返回值不应再遍历复制
+         * 目前在此处特殊处理
+         */
+        const useReturnValueResult = forceReturnValueResult(methodName);
+        if (useReturnValueResult) {
+            if (typeof returnValue === 'function') {
+                return returnValue(res);
+            }
+        }
+        return processArgs(methodName, res, returnValue, {}, keepReturnValue, []);
     }
     return function wrapper(methodName, method) {
         /**
@@ -1217,7 +1176,7 @@ function initWrapper(protocols) {
             if (isFunction(protocol)) {
                 options = protocol(arg1);
             }
-            arg1 = processArgs(methodName, arg1, options.args, options.returnValue);
+            arg1 = processArgs(methodName, arg1, options.args, options.returnValue, false, [arg2]);
             const args = [arg1];
             if (typeof arg2 !== 'undefined') {
                 args.push(arg2);
@@ -1684,6 +1643,37 @@ const onSocketOpen = {
 };
 const onSocketMessage = onSocketOpen;
 
+const getStorage = {
+    args(fromArgs) {
+        if (fromArgs.isUTS) {
+            const oldSuccess = fromArgs.success;
+            if (oldSuccess) {
+                fromArgs.success = (res) => {
+                    res.data = createUTSJSONObjectIfNeed(res.data);
+                    oldSuccess(res);
+                };
+            }
+        }
+    },
+};
+
+const getStorageSync = () => {
+    let isUTS = false;
+    return {
+        args(fromArgs, toArgs, restArgs) {
+            isUTS = restArgs[0];
+        },
+        returnValue(fromRes) {
+            if (isUTS) {
+                return createUTSJSONObjectIfNeed(fromRes);
+            }
+            else {
+                return fromRes;
+            }
+        },
+    };
+};
+
 const baseApis = {
     $on,
     $off,
@@ -1909,6 +1899,19 @@ const compressImage = {
         }
     },
 };
+const request = {
+    args(fromArgs, toArgs) {
+        if (fromArgs.isUTS) {
+            const oldSuccess = fromArgs.success;
+            if (oldSuccess) {
+                fromArgs.success = (res) => {
+                    res.data = createUTSJSONObjectIfNeed(res.data);
+                    oldSuccess(res);
+                };
+            }
+        }
+    },
+};
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
@@ -1917,6 +1920,8 @@ var protocols = /*#__PURE__*/Object.freeze({
   getAppAuthorizeSetting: getAppAuthorizeSetting,
   getAppBaseInfo: getAppBaseInfo,
   getDeviceInfo: getDeviceInfo,
+  getStorage: getStorage,
+  getStorageSync: getStorageSync,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getWindowInfo: getWindowInfo,
@@ -1926,6 +1931,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   onSocketOpen: onSocketOpen,
   previewImage: previewImage,
   redirectTo: redirectTo,
+  request: request,
   returnValue: returnValue,
   showActionSheet: showActionSheet
 });
