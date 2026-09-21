@@ -1,4 +1,5 @@
 import {
+  type CallExpression,
   type Expression,
   type Identifier,
   type MemberExpression,
@@ -241,6 +242,15 @@ export function rewriteFilterExpression(
     return createSimpleExpression(code, false, node.loc)
   }
 
+  // uni-app x 支付宝小程序的 uV 调用由 uniView SJS 在视图层处理，避免再次重写其参数
+  if (
+    context.isX &&
+    process.env.UNI_PLATFORM === 'mp-alipay' &&
+    isUniViewFilterCallExpression(babelNode)
+  ) {
+    return createSimpleExpression(code, false, node.loc)
+  }
+
   babelNode.arguments = babelNode.arguments.map((argument) => {
     if (!isExpression(argument)) {
       return argument
@@ -271,6 +281,14 @@ function isFilterCallExpression(
     isMemberExpression(node.callee) &&
     isIdentifier(node.callee.object) &&
     filters.includes(node.callee.object.name)
+  )
+}
+
+function isUniViewFilterCallExpression(node: CallExpression) {
+  return (
+    isMemberExpression(node.callee) &&
+    isIdentifier(node.callee.object) &&
+    node.callee.object.name === FILTER_MODULE_NAME
   )
 }
 
