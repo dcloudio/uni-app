@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, h, renderSlot, logError, createElementVNode, toDisplayString, unref, onBeforeActivate, onBeforeDeactivate, createBlock, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, normalizeStyle, createCommentVNode } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, h, renderSlot, logError, createElementVNode, toDisplayString, unref, onBeforeActivate, onBeforeDeactivate, createBlock, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, normalizeClass, normalizeStyle, createCommentVNode } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_THEME_CHANGE, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -16944,12 +16944,12 @@ function warnHandler(msg, instance2, trace) {
   }
   console.warn(...warnArgs);
 }
-const _hoisted_1$1 = { class: "uni-async-loading" };
-const _hoisted_2$1 = /* @__PURE__ */ createElementVNode("i", { class: "uni-loading" }, null, -1);
-const _hoisted_3$1 = [
-  _hoisted_2$1
+const _hoisted_1$2 = { class: "uni-async-loading" };
+const _hoisted_2$2 = /* @__PURE__ */ createElementVNode("i", { class: "uni-loading" }, null, -1);
+const _hoisted_3$2 = [
+  _hoisted_2$2
 ];
-const _sfc_main$3 = /* @__PURE__ */ defineComponent({
+const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -16958,11 +16958,11 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
   __name: "asyncLoading",
   setup(__props) {
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$1, _hoisted_3$1);
+      return openBlock(), createElementBlock("div", _hoisted_1$2, _hoisted_3$2);
     };
   }
 });
-const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+const _sfc_main$3 = /* @__PURE__ */ defineComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -16998,11 +16998,11 @@ function initApp(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$4.name)) {
+    app.component(_sfc_main$4.name, _sfc_main$4);
+  }
   if (!app.component(_sfc_main$3.name)) {
     app.component(_sfc_main$3.name, _sfc_main$3);
-  }
-  if (!app.component(_sfc_main$2.name)) {
-    app.component(_sfc_main$2.name, _sfc_main$2);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -27057,20 +27057,75 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const ICON_PATHS = {
-  none: "",
-  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-  back: ICON_PATH_BACK,
-  select: ICON_PATH_BACK,
-  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-  close: ICON_PATH_CLOSE
+const _hoisted_1$1 = ["uni-page-head-type"];
+const _hoisted_2$1 = { class: "uni-page-head-hd" };
+const _hoisted_3$1 = {
+  width: "26",
+  height: "26",
+  viewBox: "0 0 32 32"
 };
-const PageHead = /* @__PURE__ */ defineSystemComponent({
-  name: "PageHead",
-  setup() {
+const _hoisted_4$1 = ["d", "fill"];
+const _hoisted_5$1 = ["badge-text", "onClick"];
+const _hoisted_6$1 = ["width", "height"];
+const _hoisted_7$1 = ["d", "fill"];
+const _hoisted_8 = ["innerHTML"];
+const _hoisted_9 = {
+  width: "14",
+  height: "14",
+  viewBox: "0 0 32 32"
+};
+const _hoisted_10 = ["d"];
+const _hoisted_11 = ["innerHTML"];
+const _hoisted_12 = {
+  key: 0,
+  class: "uni-page-head-bd"
+};
+const _hoisted_13 = {
+  key: 0,
+  class: "uni-loading"
+};
+const _hoisted_14 = ["src"];
+const _hoisted_15 = { class: "uni-page-head-search-icon" };
+const _hoisted_16 = {
+  width: "20",
+  height: "20",
+  viewBox: "0 0 32 32"
+};
+const _hoisted_17 = ["d", "fill"];
+const _hoisted_18 = { class: "uni-page-head-ft" };
+const _hoisted_19 = ["badge-text", "onClick"];
+const _hoisted_20 = ["width", "height"];
+const _hoisted_21 = ["d", "fill"];
+const _hoisted_22 = ["innerHTML"];
+const _hoisted_23 = {
+  width: "14",
+  height: "14",
+  viewBox: "0 0 32 32"
+};
+const _hoisted_24 = ["d"];
+const _hoisted_25 = ["innerHTML"];
+const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+  ...{
+    name: "PageHead",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "pageHead",
+  setup(__props) {
+    const hasPages = __UNI_FEATURE_PAGES__;
+    const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
+    const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
+    const ICON_PATHS = {
+      none: "",
+      forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+      back: ICON_PATH_BACK,
+      select: ICON_PATH_BACK,
+      share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+      favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+      home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+      menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+      close: ICON_PATH_CLOSE
+    };
     const headRef = ref(null);
     const pageMeta = usePageMeta();
     const navigationBar = useTheme(pageMeta.navigationBar, () => {
@@ -27078,342 +27133,358 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
       navigationBar.backgroundColor = _navigationBar.backgroundColor;
       navigationBar.titleColor = _navigationBar.titleColor;
     });
-    const {
-      clazz,
-      style
-    } = usePageHead(navigationBar);
-    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
-    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    const { clazz, style } = usePageHead(navigationBar);
+    const buttons = hasButtons && usePageHeadButtons(pageMeta);
+    const searchInput = hasSearchInput && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    const searchFocus = searchInput && searchInput.focus;
+    const searchText = searchInput && searchInput.text;
+    const searchComposing = searchInput && searchInput.composing;
+    const searchOnClick = searchInput && searchInput.onClick;
+    const searchOnFocus = searchInput && searchInput.onFocus;
+    const searchOnBlur = searchInput && searchInput.onBlur;
+    const searchOnInput = searchInput && searchInput.onInput;
+    const searchOnConfirm = searchInput && searchInput.onConfirm;
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-    return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
-      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
-      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
-      const type = navigationBar.type || "default";
-      const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
-        "class": {
-          "uni-placeholder": true,
-          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
+    function getSvgSize(size) {
+      return size == null ? 27 : size;
+    }
+    function getSvgColor(color) {
+      return color == null ? "#000" : color;
+    }
+    function onPageHeadBackButton() {
+      if (getCurrentPages().length === 1) {
+        uni.reLaunch({
+          url: "/"
+        });
+      } else {
+        uni.navigateBack({
+          from: "backbutton",
+          success() {
+          }
+          // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+        });
+      }
+    }
+    function usePageHead(navigationBar2) {
+      const clazz2 = computed(() => {
+        const { type, titlePenetrate, shadowColorType } = navigationBar2;
+        const clazz3 = {
+          "uni-page-head": true,
+          "uni-page-head-transparent": type === "transparent",
+          "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+          "uni-page-head-shadow": !!shadowColorType
+        };
+        if (shadowColorType) {
+          clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
         }
-      }, null, 2);
-      return createVNode("uni-page-head", {
-        "uni-page-head-type": type
-      }, [createVNode("div", {
-        "ref": headRef,
-        "class": clazz.value,
-        "style": style.value
-      }, [createVNode("div", {
-        "class": "uni-page-head-hd"
-      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
-        "class": "uni-page-head-ft"
-      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
+        return clazz3;
+      });
+      const style2 = computed(() => {
+        const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar2.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar2.backgroundColor) : navigationBar2.backgroundColor;
+        return {
+          backgroundColor,
+          color: navigationBar2.titleColor,
+          transitionDuration: navigationBar2.duration,
+          transitionTimingFunction: navigationBar2.timingFunc
+        };
+      });
+      return { clazz: clazz2, style: style2 };
+    }
+    function usePageHeadButtons({ id: id2, navigationBar: navigationBar2 }) {
+      const left = [];
+      const right = [];
+      const { buttons: buttons2 } = navigationBar2;
+      if (isArray(buttons2)) {
+        const { type } = navigationBar2;
+        const isTransparent = type === "transparent";
+        const fonts = /* @__PURE__ */ Object.create(null);
+        buttons2.forEach((btn, index2) => {
+          if (btn.fontSrc && !btn.fontFamily) {
+            const fontSrc = getRealPath(btn.fontSrc);
+            let fontFamily = fonts[fontSrc];
+            if (!fontFamily) {
+              fontFamily = `font${Date.now()}`;
+              fonts[fontSrc] = fontFamily;
+              onBeforeMount(
+                () => updateStyle(
+                  "uni-btn-" + fontFamily,
+                  `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`
+                )
+              );
+            }
+            btn.fontFamily = fontFamily;
+          }
+          const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+          if (btn.float === "left") {
+            left.push(pageHeadBtn);
+          } else {
+            right.push(pageHeadBtn);
+          }
+        });
+      }
+      return { left, right };
+    }
+    function usePageHeadButton(pageId, index2, btn, isTransparent) {
+      const iconStyle = {
+        color: btn.color,
+        fontSize: btn.fontSize,
+        fontWeight: btn.fontWeight
+      };
+      if (btn.fontFamily) {
+        iconStyle.fontFamily = btn.fontFamily;
+      }
+      return new Proxy(
+        {
+          btnClass: {
+            "uni-page-head-btn": true,
+            "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+            "uni-page-head-btn-select": !!btn.select
+          },
+          btnStyle: {
+            backgroundColor: isTransparent ? btn.background : "transparent",
+            width: btn.width
+          },
+          btnText: "",
+          btnIconPath: ICON_PATHS[btn.type],
+          badgeText: btn.badgeText,
+          iconStyle,
+          onClick() {
+            invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index: index2 }, btn));
+          },
+          btnSelect: btn.select
+        },
+        {
+          get(target, key, receiver) {
+            if (["btnText"].includes(key)) {
+              return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+            } else {
+              return Reflect.get(target, key, receiver);
+            }
+          }
+        }
+      );
+    }
+    function usePageHeadSearchInput({
+      id: id2,
+      navigationBar: { searchInput: searchInput2 }
+    }) {
+      const focus = ref(false);
+      const text2 = ref("");
+      const composing = ref(false);
+      const { disabled } = searchInput2;
+      if (disabled) {
+        const onClick = () => {
+          invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+        };
+        return { focus, text: text2, composing, onClick };
+      }
+      const onFocus = () => {
+        focus.value = true;
+        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+          focus: true
+        });
+      };
+      const onBlur = () => {
+        focus.value = false;
+        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+          focus: false
+        });
+      };
+      const onInput = (evt) => {
+        text2.value = evt.detail.value;
+        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+          text: text2.value
+        });
+      };
+      const onConfirm = (evt) => {
+        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+          text: text2.value
+        });
+      };
+      return { focus, text: text2, composing, onFocus, onBlur, onInput, onConfirm };
+    }
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("uni-page-head", {
+        "uni-page-head-type": unref(navigationBar).type || "default"
+      }, [
+        createElementVNode("div", {
+          ref_key: "headRef",
+          ref: headRef,
+          class: normalizeClass(unref(clazz)),
+          style: normalizeStyle(unref(style))
+        }, [
+          createElementVNode("div", _hoisted_2$1, [
+            unref(hasPages) && !unref(pageMeta).isQuit ? (openBlock(), createElementBlock("div", {
+              key: 0,
+              class: "uni-page-head-btn",
+              onClick: onPageHeadBackButton
+            }, [
+              (openBlock(), createElementBlock("svg", _hoisted_3$1, [
+                createElementVNode("path", {
+                  d: unref(ICON_PATH_BACK),
+                  fill: unref(navigationBar).type === "transparent" ? "#fff" : unref(navigationBar).titleColor
+                }, null, 8, _hoisted_4$1)
+              ]))
+            ])) : createCommentVNode("", true),
+            unref(hasButtons) && unref(buttons) ? (openBlock(true), createElementBlock(Fragment, { key: 1 }, renderList(unref(buttons).left, (button, index2) => {
+              return openBlock(), createElementBlock("div", {
+                key: index2,
+                class: normalizeClass(button.btnClass),
+                style: normalizeStyle(button.btnStyle),
+                "badge-text": button.badgeText,
+                onClick: button.onClick
+              }, [
+                button.btnIconPath ? (openBlock(), createElementBlock("svg", {
+                  key: 0,
+                  width: getSvgSize(button.iconStyle.fontSize),
+                  height: getSvgSize(button.iconStyle.fontSize),
+                  viewBox: "0 0 32 32"
+                }, [
+                  createElementVNode("path", {
+                    d: button.btnIconPath,
+                    fill: getSvgColor(button.iconStyle.color)
+                  }, null, 8, _hoisted_7$1)
+                ], 8, _hoisted_6$1)) : button.btnSelect ? (openBlock(), createElementBlock("span", {
+                  key: 1,
+                  style: normalizeStyle(button.iconStyle)
+                }, [
+                  createElementVNode("i", {
+                    class: "uni-btn-icon",
+                    innerHTML: button.btnText
+                  }, null, 8, _hoisted_8),
+                  (openBlock(), createElementBlock("svg", _hoisted_9, [
+                    createElementVNode("path", {
+                      d: ICON_PATHS.select,
+                      fill: "#000"
+                    }, null, 8, _hoisted_10)
+                  ]))
+                ], 4)) : (openBlock(), createElementBlock("i", {
+                  key: 2,
+                  class: "uni-btn-icon",
+                  style: normalizeStyle(button.iconStyle),
+                  innerHTML: button.btnText
+                }, null, 12, _hoisted_11))
+              ], 14, _hoisted_5$1);
+            }), 128)) : createCommentVNode("", true)
+          ]),
+          !unref(hasSearchInput) || !unref(navigationBar).searchInput ? (openBlock(), createElementBlock("div", _hoisted_12, [
+            createElementVNode("div", {
+              class: "uni-page-head__title",
+              style: normalizeStyle({
+                fontSize: unref(navigationBar).titleSize,
+                opacity: unref(navigationBar).type === "transparent" ? 0 : 1
+              })
+            }, [
+              unref(navigationBar).loading ? (openBlock(), createElementBlock("i", _hoisted_13)) : unref(navigationBar).titleImage ? (openBlock(), createElementBlock("img", {
+                key: 1,
+                src: unref(navigationBar).titleImage,
+                class: "uni-page-head__title_image"
+              }, null, 8, _hoisted_14)) : (openBlock(), createElementBlock(Fragment, { key: 2 }, [
+                createTextVNode(toDisplayString(unref(navigationBar).titleText), 1)
+              ], 64))
+            ], 4)
+          ])) : (openBlock(), createElementBlock("div", {
+            key: 1,
+            class: "uni-page-head-search",
+            style: normalizeStyle({
+              borderRadius: unref(navigationBar).searchInput.borderRadius,
+              backgroundColor: unref(navigationBar).searchInput.backgroundColor
+            })
+          }, [
+            createElementVNode("div", {
+              style: normalizeStyle({ color: unref(navigationBar).searchInput.placeholderColor }),
+              class: normalizeClass([
+                "uni-page-head-search-placeholder",
+                `uni-page-head-search-placeholder-${unref(searchFocus) || unref(searchText) ? "left" : unref(navigationBar).searchInput.align}`
+              ])
+            }, [
+              createElementVNode("div", _hoisted_15, [
+                (openBlock(), createElementBlock("svg", _hoisted_16, [
+                  createElementVNode("path", {
+                    d: unref(ICON_PATH_SEARCH),
+                    fill: unref(navigationBar).searchInput.placeholderColor
+                  }, null, 8, _hoisted_17)
+                ]))
+              ]),
+              !(unref(searchText) || unref(searchComposing)) ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
+                createTextVNode(toDisplayString(unref(navigationBar).searchInput.placeholder), 1)
+              ], 64)) : createCommentVNode("", true)
+            ], 6),
+            unref(navigationBar).searchInput.disabled ? (openBlock(), createBlock(unref(Input), {
+              key: 0,
+              disabled: true,
+              style: normalizeStyle({ color: unref(navigationBar).searchInput.color }),
+              "placeholder-style": "color: " + unref(navigationBar).searchInput.placeholderColor,
+              class: "uni-page-head-search-input",
+              "confirm-type": "search",
+              onClick: _cache[0] || (_cache[0] = ($event) => unref(searchOnClick) && unref(searchOnClick)($event))
+            }, null, 8, ["style", "placeholder-style"])) : (openBlock(), createBlock(unref(Input), {
+              key: 1,
+              focus: unref(navigationBar).searchInput.autoFocus,
+              style: normalizeStyle({ color: unref(navigationBar).searchInput.color }),
+              "placeholder-style": "color: " + unref(navigationBar).searchInput.placeholderColor,
+              class: "uni-page-head-search-input",
+              "confirm-type": "search",
+              onFocus: _cache[1] || (_cache[1] = ($event) => unref(searchOnFocus) && unref(searchOnFocus)($event)),
+              onBlur: _cache[2] || (_cache[2] = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event)),
+              onInput: _cache[3] || (_cache[3] = ($event) => unref(searchOnInput) && unref(searchOnInput)($event)),
+              onConfirm: _cache[4] || (_cache[4] = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event))
+            }, null, 8, ["focus", "style", "placeholder-style"]))
+          ], 4)),
+          createElementVNode("div", _hoisted_18, [
+            unref(hasButtons) && unref(buttons) ? (openBlock(true), createElementBlock(Fragment, { key: 0 }, renderList(unref(buttons).right, (button, index2) => {
+              return openBlock(), createElementBlock("div", {
+                key: index2,
+                class: normalizeClass(button.btnClass),
+                style: normalizeStyle(button.btnStyle),
+                "badge-text": button.badgeText,
+                onClick: button.onClick
+              }, [
+                button.btnIconPath ? (openBlock(), createElementBlock("svg", {
+                  key: 0,
+                  width: getSvgSize(button.iconStyle.fontSize),
+                  height: getSvgSize(button.iconStyle.fontSize),
+                  viewBox: "0 0 32 32"
+                }, [
+                  createElementVNode("path", {
+                    d: button.btnIconPath,
+                    fill: getSvgColor(button.iconStyle.color)
+                  }, null, 8, _hoisted_21)
+                ], 8, _hoisted_20)) : button.btnSelect ? (openBlock(), createElementBlock("span", {
+                  key: 1,
+                  style: normalizeStyle(button.iconStyle)
+                }, [
+                  createElementVNode("i", {
+                    class: "uni-btn-icon",
+                    innerHTML: button.btnText
+                  }, null, 8, _hoisted_22),
+                  (openBlock(), createElementBlock("svg", _hoisted_23, [
+                    createElementVNode("path", {
+                      d: ICON_PATHS.select,
+                      fill: "#000"
+                    }, null, 8, _hoisted_24)
+                  ]))
+                ], 4)) : (openBlock(), createElementBlock("i", {
+                  key: 2,
+                  class: "uni-btn-icon",
+                  style: normalizeStyle(button.iconStyle),
+                  innerHTML: button.btnText
+                }, null, 12, _hoisted_25))
+              ], 14, _hoisted_19);
+            }), 128)) : createCommentVNode("", true)
+          ])
+        ], 6),
+        unref(navigationBar).type !== "transparent" && unref(navigationBar).type !== "float" ? (openBlock(), createElementBlock("div", {
+          key: 0,
+          class: normalizeClass({
+            "uni-placeholder": true,
+            "uni-placeholder-titlePenetrate": unref(navigationBar).titlePenetrate
+          })
+        }, null, 2)) : createCommentVNode("", true)
+      ], 8, _hoisted_1$1);
     };
   }
 });
-function createBackButtonTsx(navigationBar, isQuit) {
-  if (!isQuit) {
-    return createVNode("div", {
-      "class": "uni-page-head-btn",
-      "onClick": onPageHeadBackButton
-    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
-  }
-}
-function createButtonsTsx(btns) {
-  return btns.map(({
-    onClick,
-    btnClass,
-    btnStyle,
-    btnText,
-    btnIconPath,
-    badgeText,
-    iconStyle,
-    btnSelect
-  }, index2) => {
-    return createVNode("div", {
-      "key": index2,
-      "class": btnClass,
-      "style": btnStyle,
-      "onClick": onClick,
-      "badge-text": badgeText
-    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? createVNode("span", {
-      "style": iconStyle
-    }, [createVNode("i", {
-      "class": "uni-btn-icon",
-      "innerHTML": btnText
-    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : createVNode("i", {
-      "class": "uni-btn-icon",
-      "style": iconStyle,
-      "innerHTML": btnText
-    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
-  });
-}
-function createPageHeadBdTsx(navigationBar, searchInput) {
-  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
-    return createPageHeadTitleTextTsx(navigationBar);
-  }
-  return createPageHeadSearchInputTsx(navigationBar, searchInput);
-}
-function createPageHeadTitleTextTsx({
-  type,
-  loading,
-  titleSize,
-  titleText,
-  titleImage
-}) {
-  return createVNode("div", {
-    "class": "uni-page-head-bd"
-  }, [createVNode("div", {
-    "style": {
-      fontSize: titleSize,
-      opacity: type === "transparent" ? 0 : 1
-    },
-    "class": "uni-page-head__title"
-  }, [loading ? createVNode("i", {
-    "class": "uni-loading"
-  }, null) : titleImage ? createVNode("img", {
-    "src": titleImage,
-    "class": "uni-page-head__title_image"
-  }, null, 8, ["src"]) : titleText], 4)]);
-}
-function createPageHeadSearchInputTsx(navigationBar, {
-  text: text2,
-  focus,
-  composing,
-  onBlur,
-  onFocus,
-  onInput,
-  onConfirm,
-  onClick
-}) {
-  const {
-    color,
-    align: align2,
-    autoFocus,
-    disabled,
-    borderRadius,
-    backgroundColor,
-    placeholder,
-    placeholderColor
-  } = navigationBar.searchInput;
-  const searchStyle = {
-    borderRadius,
-    backgroundColor
-  };
-  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
-  return createVNode("div", {
-    "class": "uni-page-head-search",
-    "style": searchStyle
-  }, [createVNode("div", {
-    "style": {
-      color: placeholderColor
-    },
-    "class": placeholderClass
-  }, [createVNode("div", {
-    "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(Input, {
-    "disabled": true,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(Input, {
-    "focus": autoFocus,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onFocus": onFocus,
-    "onBlur": onBlur,
-    "onInput": onInput,
-    "onConfirm": onConfirm
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
-}
-function onPageHeadBackButton() {
-  if (getCurrentPages().length === 1) {
-    uni.reLaunch({
-      url: "/"
-    });
-  } else {
-    uni.navigateBack({
-      from: "backbutton",
-      success() {
-      }
-      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
-    });
-  }
-}
-function usePageHead(navigationBar) {
-  const clazz = computed(() => {
-    const {
-      type,
-      titlePenetrate,
-      shadowColorType
-    } = navigationBar;
-    const clazz2 = {
-      "uni-page-head": true,
-      "uni-page-head-transparent": type === "transparent",
-      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
-      "uni-page-head-shadow": !!shadowColorType
-    };
-    if (shadowColorType) {
-      clazz2[`uni-page-head-shadow-${shadowColorType}`] = true;
-    }
-    return clazz2;
-  });
-  const style = computed(() => {
-    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
-    return {
-      backgroundColor,
-      color: navigationBar.titleColor,
-      transitionDuration: navigationBar.duration,
-      transitionTimingFunction: navigationBar.timingFunc
-    };
-  });
-  return {
-    clazz,
-    style
-  };
-}
-function usePageHeadButtons({
-  id: id2,
-  navigationBar
-}) {
-  const left = [];
-  const right = [];
-  const {
-    buttons
-  } = navigationBar;
-  if (isArray(buttons)) {
-    const {
-      type
-    } = navigationBar;
-    const isTransparent = type === "transparent";
-    const fonts = /* @__PURE__ */ Object.create(null);
-    buttons.forEach((btn, index2) => {
-      if (btn.fontSrc && !btn.fontFamily) {
-        const fontSrc = getRealPath(btn.fontSrc);
-        let fontFamily = fonts[fontSrc];
-        if (!fontFamily) {
-          fontFamily = `font${Date.now()}`;
-          fonts[fontSrc] = fontFamily;
-          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
-        }
-        btn.fontFamily = fontFamily;
-      }
-      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
-      if (btn.float === "left") {
-        left.push(pageHeadBtn);
-      } else {
-        right.push(pageHeadBtn);
-      }
-    });
-  }
-  return {
-    left,
-    right
-  };
-}
-function usePageHeadButton(pageId, index2, btn, isTransparent) {
-  const iconStyle = {
-    color: btn.color,
-    fontSize: btn.fontSize,
-    fontWeight: btn.fontWeight
-  };
-  if (btn.fontFamily) {
-    iconStyle.fontFamily = btn.fontFamily;
-  }
-  return new Proxy({
-    btnClass: {
-      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
-      "uni-page-head-btn": true,
-      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-      "uni-page-head-btn-select": !!btn.select
-    },
-    btnStyle: {
-      backgroundColor: isTransparent ? btn.background : "transparent",
-      width: btn.width
-    },
-    btnText: "",
-    btnIconPath: ICON_PATHS[btn.type],
-    badgeText: btn.badgeText,
-    iconStyle,
-    onClick() {
-      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({
-        index: index2
-      }, btn));
-    },
-    btnSelect: btn.select
-  }, {
-    get(target, key, receiver) {
-      if (["btnText"].includes(key)) {
-        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-      } else {
-        return Reflect.get(target, key, receiver);
-      }
-    }
-  });
-}
-function usePageHeadSearchInput({
-  id: id2,
-  navigationBar: {
-    searchInput
-  }
-}) {
-  const focus = ref(false);
-  const text2 = ref("");
-  const composing = ref(false);
-  const {
-    disabled
-  } = searchInput;
-  if (disabled) {
-    const onClick = () => {
-      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-    };
-    return {
-      focus,
-      text: text2,
-      composing,
-      onClick
-    };
-  }
-  const onFocus = () => {
-    focus.value = true;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: true
-    });
-  };
-  const onBlur = () => {
-    focus.value = false;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: false
-    });
-  };
-  const onInput = (evt) => {
-    text2.value = evt.detail.value;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
-      text: text2.value
-    });
-  };
-  const onConfirm = (evt) => {
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-      text: text2.value
-    });
-  };
-  return {
-    focus,
-    text: text2,
-    composing,
-    onFocus,
-    onBlur,
-    onInput,
-    onConfirm
-  };
-}
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
 const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
@@ -27781,7 +27852,7 @@ const index = /* @__PURE__ */ defineSystemComponent({
         style: pageStyle
       },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        createVNode(PageHead),
+        createVNode(_sfc_main$2),
         createPageBodyVNode(ctx),
         null
       ] : [
@@ -27809,8 +27880,8 @@ export {
   index$6 as Ad,
   index$5 as AdContentPage,
   index$4 as AdDraw,
-  _sfc_main$2 as AsyncErrorComponent,
-  _sfc_main$3 as AsyncLoadingComponent,
+  _sfc_main$3 as AsyncErrorComponent,
+  _sfc_main$4 as AsyncLoadingComponent,
   index$x as Button,
   index$3 as Camera,
   index$v as Canvas,

@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, defineVaporComponent, on as on$1, setText, toDisplayString, unref, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, setClass, createKeyedFragment, setAttr, setHtml, setProp, insert, createComponent as createComponent$1, setStaticTemplateRef, createSlot, withCtx, renderSlot, renderList, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, normalizeUniText, createFor, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, defineVaporComponent, on as on$1, setText, toDisplayString, unref, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, insert, setClass, setAttr, createFor, setHtml, setProp, createComponent as createComponent$1, setStaticTemplateRef, createSlot, withCtx, renderSlot, renderList, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, logError, createApp, Transition, effectScope, createKeyedFragment, KeepAlive, resolveDynamicComponent, normalizeUniText, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -2355,7 +2355,7 @@ function normalizeVaporSlots(slots) {
     };
   }
 }
-const _t0$s = template("<span> ");
+const _t0$r = template("<span> ");
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
@@ -2376,7 +2376,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n1 = createPlainElement("uni-form", null, () => {
-        const _n0 = _t0$s();
+        const _n0 = _t0$r();
         const _x0 = txt(_n0);
         setNodes(_x0, () => slots.default && slots.default());
         return _n0;
@@ -2649,7 +2649,7 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$r = template("<canvas class=uni-canvas-canvas>");
+const _t0$q = template("<canvas class=uni-canvas-canvas>");
 const props$s = { disableScroll: {
   type: [Boolean, String],
   default: false
@@ -2698,7 +2698,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n1 = createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$r();
+          const _n0 = _t0$q();
           renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -2776,7 +2776,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const _t0$q = template("<div class=uni-checkbox-wrapper><div></div> ");
+const _t0$p = template("<div class=uni-checkbox-wrapper><div></div> ");
 const props$q = {
   checked: {
     type: [Boolean, String],
@@ -2917,7 +2917,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
           id: () => props2.id,
           onClick: () => _onClick
         }] }, () => {
-          const _n7 = _t0$q();
+          const _n7 = _t0$p();
           const _n5 = child(_n7);
           const _n6 = next(_n5, true);
           renderEffect(() => {
@@ -3276,9 +3276,9 @@ function assertType(value, type) {
   let valid;
   const expectedType = getType(type);
   if (isSimpleType(expectedType)) {
-    const t8 = typeof value;
-    valid = t8 === expectedType.toLowerCase();
-    if (!valid && t8 === "object") {
+    const t11 = typeof value;
+    valid = t11 === expectedType.toLowerCase();
+    if (!valid && t11 === "object") {
       valid = value instanceof type;
     }
   } else if (expectedType === "Object") {
@@ -4526,39 +4526,39 @@ const predefinedColor = {
 };
 function checkColor(e2) {
   e2 = e2 || "#000000";
-  let t8 = null;
-  if ((t8 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
-    const n = parseInt(t8[1].slice(0, 2), 16);
-    const o2 = parseInt(t8[1].slice(2, 4), 16);
-    const r = parseInt(t8[1].slice(4), 16);
+  let t11 = null;
+  if ((t11 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
+    const n = parseInt(t11[1].slice(0, 2), 16);
+    const o2 = parseInt(t11[1].slice(2, 4), 16);
+    const r = parseInt(t11[1].slice(4), 16);
     return [n, o2, r, 255];
   }
-  if ((t8 = /^#([0-9|A-F|a-f]{3})$/.exec(e2)) != null) {
-    let n = t8[1].slice(0, 1);
-    let o2 = t8[1].slice(1, 2);
-    let r = t8[1].slice(2, 3);
+  if ((t11 = /^#([0-9|A-F|a-f]{3})$/.exec(e2)) != null) {
+    let n = t11[1].slice(0, 1);
+    let o2 = t11[1].slice(1, 2);
+    let r = t11[1].slice(2, 3);
     n = parseInt(n + n, 16);
     o2 = parseInt(o2 + o2, 16);
     r = parseInt(r + r, 16);
     return [n, o2, r, 255];
   }
-  if ((t8 = /^rgb\((.+)\)$/.exec(e2)) != null) {
-    return t8[1].split(",").map(function(e22) {
+  if ((t11 = /^rgb\((.+)\)$/.exec(e2)) != null) {
+    return t11[1].split(",").map(function(e22) {
       return Math.min(255, parseInt(e22.trim()));
     }).concat(255);
   }
-  if ((t8 = /^rgba\((.+)\)$/.exec(e2)) != null) {
-    return t8[1].split(",").map(function(e22, t22) {
+  if ((t11 = /^rgba\((.+)\)$/.exec(e2)) != null) {
+    return t11[1].split(",").map(function(e22, t22) {
       return t22 === 3 ? Math.floor(255 * parseFloat(e22.trim())) : Math.min(255, parseInt(e22.trim()));
     });
   }
   var i = e2.toLowerCase();
   if (hasOwn(predefinedColor, i)) {
-    t8 = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
-    const n = parseInt(t8[1].slice(0, 2), 16);
-    const o2 = parseInt(t8[1].slice(2, 4), 16);
-    const r = parseInt(t8[1].slice(4, 6), 16);
-    let a2 = parseInt(t8[1].slice(6, 8), 16);
+    t11 = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
+    const n = parseInt(t11[1].slice(0, 2), 16);
+    const o2 = parseInt(t11[1].slice(2, 4), 16);
+    const r = parseInt(t11[1].slice(4, 6), 16);
+    let a2 = parseInt(t11[1].slice(6, 8), 16);
     a2 = a2 >= 0 ? a2 : 255;
     return [n, o2, r, a2];
   }
@@ -6186,8 +6186,8 @@ const SetClipboardDataOptions = {
   beforeSuccess(res, params) {
     if (!params.showToast)
       return;
-    const { t: t8 } = useI18n();
-    const title = t8("uni.setClipboardData.success");
+    const { t: t11 } = useI18n();
+    const title = t11("uni.setClipboardData.success");
     if (title) {
       uni.showToast({
         title,
@@ -7174,13 +7174,13 @@ const initIntersectionObserverPolyfill = function() {
     var threshold = opt_threshold || [0];
     if (!Array.isArray(threshold))
       threshold = [threshold];
-    return threshold.sort().filter(function(t8, i, a2) {
-      if (typeof t8 != "number" || isNaN(t8) || t8 < 0 || t8 > 1) {
+    return threshold.sort().filter(function(t11, i, a2) {
+      if (typeof t11 != "number" || isNaN(t11) || t11 < 0 || t11 > 1) {
         throw new Error(
           "threshold must be a number between 0 and 1 inclusively"
         );
       }
-      return t8 !== a2[i - 1];
+      return t11 !== a2[i - 1];
     });
   };
   IntersectionObserver2.prototype._parseRootMargin = function(opt_rootMargin) {
@@ -9474,8 +9474,8 @@ function getNodeInfo(el, fields2) {
   }
   if (isArray(fields2.properties)) {
     fields2.properties.forEach((prop) => {
-      prop = prop.replace(/-([a-z])/g, function(e2, t8) {
-        return t8.toUpperCase();
+      prop = prop.replace(/-([a-z])/g, function(e2, t11) {
+        return t11.toUpperCase();
       });
     });
   }
@@ -9843,8 +9843,8 @@ function revokeObjectURL(url) {
   URL.revokeObjectURL(url);
   delete files[url];
 }
-const t0$a = template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
+const t0$b = template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -9852,12 +9852,12 @@ const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
   },
   __name: "asyncLoading",
   setup(__props) {
-    const n0 = t0$a();
+    const n0 = t0$b();
     return n0;
   }
 });
-const t0$9 = template("<div class=uni-async-error> ", 1);
-const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
+const t0$a = template("<div class=uni-async-error> ", 1);
+const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -9867,14 +9867,14 @@ const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
   props: ["error"],
   setup(__props) {
     initI18nAsyncMsgsOnce();
-    const { t: t8 } = useI18n();
+    const { t: t11 } = useI18n();
     function reload() {
       window.location.reload();
     }
-    const n0 = t0$9();
+    const n0 = t0$a();
     const x0 = txt(n0);
     on$1(n0, "click", reload);
-    renderEffect(() => setText(x0, toDisplayString(unref(t8)("uni.async.error"))));
+    renderEffect(() => setText(x0, toDisplayString(unref(t11)("uni.async.error"))));
     return n0;
   }
 });
@@ -9913,11 +9913,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$d.name)) {
+    app.component(_sfc_main$d.name, _sfc_main$d);
+  }
   if (!app.component(_sfc_main$c.name)) {
     app.component(_sfc_main$c.name, _sfc_main$c);
-  }
-  if (!app.component(_sfc_main$b.name)) {
-    app.component(_sfc_main$b.name, _sfc_main$b);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -10347,29 +10347,39 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const _t0$p = template("<div>", 1);
-const _t1$g = template("<div><div class=uni-page-head-hd> </div> <div class=uni-page-head-ft></div></div>");
-const _t2$9 = template("<div class=uni-page-head-btn> ", 1);
-const _t3$9 = template("<span><i class=uni-btn-icon></i> ");
-const _t4$7 = template("<i class=uni-btn-icon>");
-const _t5$2 = template("<i class=uni-loading>", 2);
-const _t6$2 = template("<img class=uni-page-head__title_image>");
-const _t7$1 = template("<div class=uni-page-head-bd><div class=uni-page-head__title>", 1);
-const _t8$1 = template("<div class=uni-page-head-search><div><div class=uni-page-head-search-icon> </div></div>", 1);
-const ICON_PATHS = {
-  none: "",
-  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-  back: ICON_PATH_BACK,
-  select: ICON_PATH_BACK,
-  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-  close: ICON_PATH_CLOSE
-};
-const PageHead = /* @__PURE__ */ defineSystemComponent({
-  name: "PageHead",
-  setup() {
+const t0$9 = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path>');
+const t1$7 = template('<svg viewBox="0 0 32 32"><path>', 0, 1);
+const t2$5 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
+const t3$3 = template("<i class=uni-btn-icon></i>");
+const t4$3 = template("<div>");
+const t5$2 = template("<i class=uni-loading></i>", 2);
+const t6$1 = template("<img class=uni-page-head__title_image>");
+const t7$1 = template(" ");
+const t8 = template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
+const t9 = template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
+const t10 = template("<div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>");
+const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
+  ...{
+    name: "PageHead",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "pageHead",
+  setup(__props) {
+    const hasPages = __UNI_FEATURE_PAGES__;
+    const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
+    const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
+    const ICON_PATHS = {
+      none: "",
+      forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+      back: ICON_PATH_BACK,
+      select: ICON_PATH_BACK,
+      share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+      favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+      home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+      menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+      close: ICON_PATH_CLOSE
+    };
     const headRef = ref(null);
     const pageMeta = usePageMeta();
     const navigationBar = useTheme(pageMeta.navigationBar, () => {
@@ -10378,322 +10388,458 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
       navigationBar.titleColor = _navigationBar.titleColor;
     });
     const { clazz, style } = usePageHead(navigationBar);
-    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
-    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    const buttons = hasButtons && usePageHeadButtons(pageMeta);
+    const searchInput = hasSearchInput && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    const searchFocus = searchInput && searchInput.focus;
+    const searchText = searchInput && searchInput.text;
+    const searchComposing = searchInput && searchInput.composing;
+    const searchOnClick = searchInput && searchInput.onClick;
+    const searchOnFocus = searchInput && searchInput.onFocus;
+    const searchOnBlur = searchInput && searchInput.onBlur;
+    const searchOnInput = searchInput && searchInput.onInput;
+    const searchOnConfirm = searchInput && searchInput.onConfirm;
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-    return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
-      __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
-      __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
-      const type = navigationBar.type || "default";
-      const placeholderTsx = type !== "transparent" && type !== "float" && (() => {
-        const _n0 = _t0$p();
-        renderEffect(() => setClassName(_n0, 1 | (navigationBar.titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
-        return _n0;
-      })();
-      return (() => {
-        const _setTemplateRef = createTemplateRefSetter();
-        const _n4 = createPlainElement("uni-page-head", { "uni-page-head-type": () => type }, () => {
-          const _n2 = _t1$g();
-          let _p0 = child(_n2);
-          const _n0 = child(_p0, true);
-          const _n1 = next(_p0, true);
-          setNodes(_n0, () => backButtonTsx);
-          setNodes(_n1, () => createPageHeadBdTsx(navigationBar, searchInput));
-          const _n3 = createNodes(() => placeholderTsx);
+    function getSvgSize(size) {
+      return size == null ? 27 : size;
+    }
+    function getSvgColor(color) {
+      return color == null ? "#000" : color;
+    }
+    function onPageHeadBackButton() {
+      if (getCurrentPages().length === 1) {
+        uni.reLaunch({
+          url: "/"
+        });
+      } else {
+        uni.navigateBack({
+          from: "backbutton",
+          success() {
+          }
+          // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+        });
+      }
+    }
+    function usePageHead(navigationBar2) {
+      const clazz2 = computed(() => {
+        const { type, titlePenetrate, shadowColorType } = navigationBar2;
+        const clazz3 = {
+          "uni-page-head": true,
+          "uni-page-head-transparent": type === "transparent",
+          "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+          "uni-page-head-shadow": !!shadowColorType
+        };
+        if (shadowColorType) {
+          clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
+        }
+        return clazz3;
+      });
+      const style2 = computed(() => {
+        const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar2.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar2.backgroundColor) : navigationBar2.backgroundColor;
+        return {
+          backgroundColor,
+          color: navigationBar2.titleColor,
+          transitionDuration: navigationBar2.duration,
+          transitionTimingFunction: navigationBar2.timingFunc
+        };
+      });
+      return { clazz: clazz2, style: style2 };
+    }
+    function usePageHeadButtons({ id: id2, navigationBar: navigationBar2 }) {
+      const left = [];
+      const right = [];
+      const { buttons: buttons2 } = navigationBar2;
+      if (isArray(buttons2)) {
+        const { type } = navigationBar2;
+        const isTransparent = type === "transparent";
+        const fonts = /* @__PURE__ */ Object.create(null);
+        buttons2.forEach((btn, index2) => {
+          if (btn.fontSrc && !btn.fontFamily) {
+            const fontSrc = getRealPath(btn.fontSrc);
+            let fontFamily = fonts[fontSrc];
+            if (!fontFamily) {
+              fontFamily = `font${Date.now()}`;
+              fonts[fontSrc] = fontFamily;
+              onBeforeMount(
+                () => updateStyle(
+                  "uni-btn-" + fontFamily,
+                  `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`
+                )
+              );
+            }
+            btn.fontFamily = fontFamily;
+          }
+          const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+          if (btn.float === "left") {
+            left.push(pageHeadBtn);
+          } else {
+            right.push(pageHeadBtn);
+          }
+        });
+      }
+      return { left, right };
+    }
+    function usePageHeadButton(pageId, index2, btn, isTransparent) {
+      const iconStyle = {
+        color: btn.color,
+        fontSize: btn.fontSize,
+        fontWeight: btn.fontWeight
+      };
+      if (btn.fontFamily) {
+        iconStyle.fontFamily = btn.fontFamily;
+      }
+      return new Proxy(
+        {
+          btnClass: {
+            "uni-page-head-btn": true,
+            "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+            "uni-page-head-btn-select": !!btn.select
+          },
+          btnStyle: {
+            backgroundColor: isTransparent ? btn.background : "transparent",
+            width: btn.width
+          },
+          btnText: "",
+          btnIconPath: ICON_PATHS[btn.type],
+          badgeText: btn.badgeText,
+          iconStyle,
+          onClick() {
+            invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index: index2 }, btn));
+          },
+          btnSelect: btn.select
+        },
+        {
+          get(target, key, receiver) {
+            if (["btnText"].includes(key)) {
+              return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+            } else {
+              return Reflect.get(target, key, receiver);
+            }
+          }
+        }
+      );
+    }
+    function usePageHeadSearchInput({
+      id: id2,
+      navigationBar: { searchInput: searchInput2 }
+    }) {
+      const focus = ref(false);
+      const text2 = ref("");
+      const composing = ref(false);
+      const { disabled } = searchInput2;
+      if (disabled) {
+        const onClick = () => {
+          invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+        };
+        return { focus, text: text2, composing, onClick };
+      }
+      const onFocus = () => {
+        focus.value = true;
+        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+          focus: true
+        });
+      };
+      const onBlur = () => {
+        focus.value = false;
+        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+          focus: false
+        });
+      };
+      const onInput = (evt) => {
+        text2.value = evt.detail.value;
+        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+          text: text2.value
+        });
+      };
+      const onConfirm = (evt) => {
+        invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+          text: text2.value
+        });
+      };
+      return { focus, text: text2, composing, onFocus, onBlur, onInput, onConfirm };
+    }
+    const n64 = createPlainElement("uni-page-head", { "uni-page-head-type": () => unref(navigationBar).type || "default" }, null, true);
+    const n60 = t10();
+    insert(n60, n64);
+    const n19 = child(n60);
+    const n59 = next(n19);
+    const n58 = next(n59);
+    renderEffect(() => {
+      setClass(n60, unref(clazz));
+      setStyle(n60, unref(style));
+    });
+    setInsertionState(n19);
+    createIf(() => unref(hasPages) && !unref(pageMeta).isQuit, () => {
+      const n3 = t0$9();
+      const n2 = child(child(n3));
+      on$1(n3, "click", onPageHeadBackButton);
+      renderEffect(() => {
+        const _navigationBar = unref(navigationBar);
+        setAttr(n2, "d", unref(ICON_PATH_BACK), true);
+        setAttr(
+          n2,
+          "fill",
+          _navigationBar.type === "transparent" ? "#fff" : _navigationBar.titleColor,
+          true
+        );
+      });
+      return n3;
+    });
+    setInsertionState(n19, 1);
+    createIf(() => unref(hasButtons) && unref(buttons), () => {
+      const n6 = createFor(
+        () => unref(buttons).left,
+        (_for_item0, _for_key0) => {
+          const n18 = t4$3();
           renderEffect(() => {
-            setClass(_n2, clazz.value);
-            setStyle(_n2, style.value);
-            _setTemplateRef(_n2, headRef);
+            const _button = _for_item0.value;
+            setClass(n18, _button.btnClass);
+            setStyle(n18, _button.btnStyle);
+            setAttr(n18, "badge-text", _button.badgeText);
           });
-          return [_n2, _n3];
-        }, true);
-        return _n4;
-      })();
-    };
+          setInsertionState(n18);
+          createIf(
+            () => _for_item0.value.btnIconPath,
+            () => {
+              const n11 = t1$7();
+              const n10 = child(n11);
+              renderEffect(() => {
+                const _button = _for_item0.value;
+                const _button_iconStyle = _button.iconStyle;
+                const _getSvgSize_button_iconStyle_fontSize = getSvgSize(_button_iconStyle.fontSize);
+                setAttr(n11, "width", _getSvgSize_button_iconStyle_fontSize, true);
+                setAttr(n11, "height", _getSvgSize_button_iconStyle_fontSize, true);
+                setAttr(n10, "d", _button.btnIconPath, true);
+                setAttr(n10, "fill", getSvgColor(_button_iconStyle.color), true);
+              });
+              return n11;
+            },
+            () => createIf(
+              () => _for_item0.value.btnSelect,
+              () => {
+                const n15 = t2$5();
+                const n13 = child(n15);
+                const n14 = child(next(n13));
+                renderEffect(() => {
+                  const _button = _for_item0.value;
+                  setStyle(n15, _button.iconStyle);
+                  setHtml(n13, _button.btnText);
+                  setAttr(n14, "d", ICON_PATHS.select, true);
+                });
+                return n15;
+              },
+              () => {
+                const n17 = t3$3();
+                renderEffect(() => {
+                  const _button = _for_item0.value;
+                  setStyle(n17, _button.iconStyle);
+                  setHtml(n17, _button.btnText);
+                });
+                return n17;
+              },
+              773
+              /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_2 */
+            ),
+            517
+            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+          );
+          on$1(n18, "click", (e2) => _for_item0.value.onClick(e2));
+          return n18;
+        },
+        (button, index2) => index2,
+        8
+        /* IS_SINGLE_NODE */
+      );
+      return n6;
+    });
+    setInsertionState(n60, n59);
+    createIf(
+      () => !unref(hasSearchInput) || !unref(navigationBar).searchInput,
+      () => {
+        const n30 = t8();
+        const n29 = child(n30);
+        renderEffect(() => {
+          const _navigationBar = unref(navigationBar);
+          setStyle(n29, {
+            fontSize: _navigationBar.titleSize,
+            opacity: _navigationBar.type === "transparent" ? 0 : 1
+          });
+        });
+        setInsertionState(n29);
+        createIf(
+          () => unref(navigationBar).loading,
+          () => {
+            const n24 = t5$2();
+            return n24;
+          },
+          () => createIf(
+            () => unref(navigationBar).titleImage,
+            () => {
+              const n26 = t6$1();
+              renderEffect(() => setProp(n26, "src", unref(navigationBar).titleImage));
+              return n26;
+            },
+            () => {
+              const n28 = t7$1();
+              renderEffect(() => setText(n28, toDisplayString(unref(navigationBar).titleText)));
+              return n28;
+            },
+            1545
+            /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_5 */
+          ),
+          1285
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_4 */
+        );
+        return n30;
+      },
+      () => {
+        const n42 = t9();
+        const n36 = child(n42);
+        const n32 = child(child(child(n36)));
+        renderEffect(() => {
+          const _navigationBar = unref(navigationBar);
+          const _navigationBar_searchInput = _navigationBar.searchInput;
+          setStyle(n42, {
+            borderRadius: _navigationBar_searchInput.borderRadius,
+            backgroundColor: _navigationBar_searchInput.backgroundColor
+          });
+          setStyle(n36, { color: _navigationBar_searchInput.placeholderColor });
+          setClass(n36, [
+            "uni-page-head-search-placeholder",
+            `uni-page-head-search-placeholder-${unref(searchFocus) || unref(searchText) ? "left" : _navigationBar_searchInput.align}`
+          ]);
+          setAttr(n32, "d", unref(ICON_PATH_SEARCH), true);
+          setAttr(n32, "fill", _navigationBar_searchInput.placeholderColor, true);
+        });
+        setInsertionState(n36, 1);
+        createIf(
+          () => !(unref(searchText) || unref(searchComposing)),
+          () => {
+            const n35 = t7$1();
+            renderEffect(() => setText(n35, toDisplayString(unref(navigationBar).searchInput.placeholder)));
+            return n35;
+          },
+          null,
+          2
+          /* TRUE_MULTI_ROOT */
+        );
+        setInsertionState(n42, 1);
+        createIf(
+          () => unref(navigationBar).searchInput.disabled,
+          () => {
+            const _on_click = ($event) => unref(searchOnClick) && unref(searchOnClick)($event);
+            const n39 = createComponent$1(unref(__syscom_0$2), {
+              disabled: true,
+              style: () => ({ color: unref(navigationBar).searchInput.color }),
+              "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
+              class: "uni-page-head-search-input",
+              "confirm-type": "search",
+              onClick: () => _on_click
+            });
+            return n39;
+          },
+          () => {
+            const _on_focus = ($event) => unref(searchOnFocus) && unref(searchOnFocus)($event);
+            const _on_blur = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event);
+            const _on_input = ($event) => unref(searchOnInput) && unref(searchOnInput)($event);
+            const _on_confirm = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event);
+            const n41 = createComponent$1(unref(__syscom_0$2), {
+              focus: () => unref(navigationBar).searchInput.autoFocus,
+              style: () => ({ color: unref(navigationBar).searchInput.color }),
+              "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
+              class: "uni-page-head-search-input",
+              "confirm-type": "search",
+              onFocus: () => _on_focus,
+              onBlur: () => _on_blur,
+              onInput: () => _on_input,
+              onConfirm: () => _on_confirm
+            });
+            return n41;
+          },
+          2309
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_8 */
+        );
+        return n42;
+      },
+      1797
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_6 */
+    );
+    setInsertionState(n58);
+    createIf(() => unref(hasButtons) && unref(buttons), () => {
+      const n45 = createFor(
+        () => unref(buttons).right,
+        (_for_item0, _for_key0) => {
+          const n57 = t4$3();
+          renderEffect(() => {
+            const _button = _for_item0.value;
+            setClass(n57, _button.btnClass);
+            setStyle(n57, _button.btnStyle);
+            setAttr(n57, "badge-text", _button.badgeText);
+          });
+          setInsertionState(n57);
+          createIf(
+            () => _for_item0.value.btnIconPath,
+            () => {
+              const n50 = t1$7();
+              const n49 = child(n50);
+              renderEffect(() => {
+                const _button = _for_item0.value;
+                const _button_iconStyle = _button.iconStyle;
+                const _getSvgSize_button_iconStyle_fontSize = getSvgSize(_button_iconStyle.fontSize);
+                setAttr(n50, "width", _getSvgSize_button_iconStyle_fontSize, true);
+                setAttr(n50, "height", _getSvgSize_button_iconStyle_fontSize, true);
+                setAttr(n49, "d", _button.btnIconPath, true);
+                setAttr(n49, "fill", getSvgColor(_button_iconStyle.color), true);
+              });
+              return n50;
+            },
+            () => createIf(
+              () => _for_item0.value.btnSelect,
+              () => {
+                const n54 = t2$5();
+                const n52 = child(n54);
+                const n53 = child(next(n52));
+                renderEffect(() => {
+                  const _button = _for_item0.value;
+                  setStyle(n54, _button.iconStyle);
+                  setHtml(n52, _button.btnText);
+                  setAttr(n53, "d", ICON_PATHS.select, true);
+                });
+                return n54;
+              },
+              () => {
+                const n56 = t3$3();
+                renderEffect(() => {
+                  const _button = _for_item0.value;
+                  setStyle(n56, _button.iconStyle);
+                  setHtml(n56, _button.btnText);
+                });
+                return n56;
+              },
+              2821
+              /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_10 */
+            ),
+            2565
+            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_9 */
+          );
+          on$1(n57, "click", (e2) => _for_item0.value.onClick(e2));
+          return n57;
+        },
+        (button, index2) => index2,
+        8
+        /* IS_SINGLE_NODE */
+      );
+      return n45;
+    });
+    setStaticTemplateRef(n60, headRef, null, "headRef");
+    setInsertionState(n64, 1);
+    createIf(() => unref(navigationBar).type !== "transparent" && unref(navigationBar).type !== "float", () => {
+      const n63 = t4$3();
+      renderEffect(() => setClassName(n63, 1 | (unref(navigationBar).titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
+      return n63;
+    });
+    return n64;
   }
 });
-function createBackButtonTsx(navigationBar, isQuit) {
-  if (!isQuit) {
-    return (() => {
-      const _n0 = _t2$9();
-      on$1(_n0, "click", onPageHeadBackButton);
-      const _x0 = txt(_n0);
-      setNodes(_x0, () => createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26));
-      return _n0;
-    })();
-  }
-}
-function createButtonsTsx(btns) {
-  return btns.map(({ onClick, btnClass, btnStyle, btnText, btnIconPath, badgeText, iconStyle, btnSelect }, index2) => {
-    return (() => {
-      const _n0 = createKeyedFragment(() => index2, () => {
-        const _n2 = _t0$p();
-        on$1(_n2, "click", onClick);
-        renderEffect(() => {
-          setClass(_n2, btnClass);
-          setStyle(_n2, btnStyle);
-          setAttr(_n2, "badge-text", badgeText);
-        });
-        setInsertionState(_n2);
-        createIf(() => btnIconPath, () => {
-          const _n5 = createNodes(() => createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize));
-          return _n5;
-        }, () => createIf(() => btnSelect, () => {
-          const _n9 = _t3$9();
-          const _n7 = child(_n9);
-          const _n8 = next(_n7, true);
-          setNodes(_n8, () => createSvgIconVNode(ICON_PATHS["select"], "#000", 14));
-          renderEffect(() => {
-            setStyle(_n9, iconStyle);
-            setHtml(_n7, btnText);
-          });
-          return _n9;
-        }, () => {
-          const _n11 = _t4$7();
-          renderEffect(() => {
-            setStyle(_n11, iconStyle);
-            setHtml(_n11, btnText);
-          });
-          return _n11;
-        }, 513), 262);
-        return _n2;
-      });
-      return _n0;
-    })();
-  });
-}
-function createPageHeadBdTsx(navigationBar, searchInput) {
-  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
-    return createPageHeadTitleTextTsx(navigationBar);
-  }
-  return createPageHeadSearchInputTsx(navigationBar, searchInput);
-}
-function createPageHeadTitleTextTsx({ type, loading, titleSize, titleText, titleImage }) {
-  return (() => {
-    const _n8 = _t7$1();
-    const _n7 = child(_n8);
-    renderEffect(() => setStyle(_n7, {
-      fontSize: titleSize,
-      opacity: type === "transparent" ? 0 : 1
-    }));
-    setInsertionState(_n7);
-    createIf(() => loading, () => {
-      const _n2 = _t5$2();
-      return _n2;
-    }, () => createIf(() => titleImage, () => {
-      const _n4 = _t6$2();
-      renderEffect(() => setProp(_n4, "src", titleImage));
-      return _n4;
-    }, () => {
-      const _n6 = createNodes(() => titleText);
-      return _n6;
-    }, 513), 293);
-    return _n8;
-  })();
-}
-function createPageHeadSearchInputTsx(navigationBar, { text: text2, focus, composing, onBlur, onFocus, onInput, onConfirm, onClick }) {
-  const { color, align: align2, autoFocus, disabled, borderRadius, backgroundColor, placeholder, placeholderColor } = navigationBar.searchInput;
-  const searchStyle = {
-    borderRadius,
-    backgroundColor
-  };
-  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
-  return (() => {
-    const _n12 = _t8$1();
-    const _n6 = child(_n12);
-    const _n0 = child(_n6);
-    const _x0 = txt(_n0);
-    setNodes(_x0, () => createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20));
-    renderEffect(() => {
-      setStyle(_n12, searchStyle);
-      setStyle(_n6, { color: placeholderColor });
-      setClass(_n6, placeholderClass);
-    });
-    setInsertionState(_n6, 1);
-    createIf(() => text2.value || composing.value, () => {
-      const _n3 = createNodes("");
-      return _n3;
-    }, () => {
-      const _n5 = createNodes(() => placeholder);
-      return _n5;
-    }, 266);
-    setInsertionState(_n12, 1);
-    createIf(() => disabled, () => {
-      const _n9 = createComponent(__syscom_0$2, {
-        disabled: true,
-        style: () => ({ color }),
-        "placeholder-style": () => "color: " + placeholderColor,
-        class: "uni-page-head-search-input",
-        "confirm-type": "search",
-        onClick: () => onClick
-      });
-      return _n9;
-    }, () => {
-      const _n11 = createComponent(__syscom_0$2, {
-        focus: () => autoFocus,
-        style: () => ({ color }),
-        "placeholder-style": () => "color: " + placeholderColor,
-        class: "uni-page-head-search-input",
-        "confirm-type": "search",
-        onConfirm: () => onConfirm,
-        onInput: () => onInput,
-        onBlur: () => onBlur,
-        onFocus: () => onFocus
-      });
-      return _n11;
-    }, 517);
-    return _n12;
-  })();
-}
-function onPageHeadBackButton() {
-  if (getCurrentPages().length === 1) {
-    uni.reLaunch({ url: "/" });
-  } else {
-    uni.navigateBack({
-      from: "backbutton",
-      success() {
-      }
-    });
-  }
-}
-function usePageHead(navigationBar) {
-  const clazz = computed(() => {
-    const { type, titlePenetrate, shadowColorType } = navigationBar;
-    const clazz2 = {
-      "uni-page-head": true,
-      "uni-page-head-transparent": type === "transparent",
-      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
-      "uni-page-head-shadow": !!shadowColorType
-    };
-    if (shadowColorType) {
-      clazz2[`uni-page-head-shadow-${shadowColorType}`] = true;
-    }
-    return clazz2;
-  });
-  const style = computed(() => {
-    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
-    return {
-      backgroundColor,
-      color: navigationBar.titleColor,
-      transitionDuration: navigationBar.duration,
-      transitionTimingFunction: navigationBar.timingFunc
-    };
-  });
-  return {
-    clazz,
-    style
-  };
-}
-function usePageHeadButtons({ id: id2, navigationBar }) {
-  const left = [];
-  const right = [];
-  const { buttons } = navigationBar;
-  if (isArray(buttons)) {
-    const { type } = navigationBar;
-    const isTransparent = type === "transparent";
-    const fonts = /* @__PURE__ */ Object.create(null);
-    buttons.forEach((btn, index2) => {
-      if (btn.fontSrc && !btn.fontFamily) {
-        const fontSrc = getRealPath(btn.fontSrc);
-        let fontFamily = fonts[fontSrc];
-        if (!fontFamily) {
-          fontFamily = `font${Date.now()}`;
-          fonts[fontSrc] = fontFamily;
-          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
-        }
-        btn.fontFamily = fontFamily;
-      }
-      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
-      if (btn.float === "left") {
-        left.push(pageHeadBtn);
-      } else {
-        right.push(pageHeadBtn);
-      }
-    });
-  }
-  return {
-    left,
-    right
-  };
-}
-function usePageHeadButton(pageId, index2, btn, isTransparent) {
-  const iconStyle = {
-    color: btn.color,
-    fontSize: btn.fontSize,
-    fontWeight: btn.fontWeight
-  };
-  if (btn.fontFamily) {
-    iconStyle.fontFamily = btn.fontFamily;
-  }
-  return new Proxy({
-    btnClass: {
-      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
-      "uni-page-head-btn": true,
-      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-      "uni-page-head-btn-select": !!btn.select
-    },
-    btnStyle: {
-      backgroundColor: isTransparent ? btn.background : "transparent",
-      width: btn.width
-    },
-    btnText: "",
-    btnIconPath: ICON_PATHS[btn.type],
-    badgeText: btn.badgeText,
-    iconStyle,
-    onClick() {
-      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index: index2 }, btn));
-    },
-    btnSelect: btn.select
-  }, { get(target, key, receiver) {
-    if (["btnText"].includes(key)) {
-      return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-    } else {
-      return Reflect.get(target, key, receiver);
-    }
-  } });
-}
-function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
-  const focus = ref(false);
-  const text2 = ref("");
-  const composing = ref(false);
-  const { disabled } = searchInput;
-  if (disabled) {
-    const onClick = () => {
-      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-    };
-    return {
-      focus,
-      text: text2,
-      composing,
-      onClick
-    };
-  }
-  const onFocus = () => {
-    focus.value = true;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: true });
-  };
-  const onBlur = () => {
-    focus.value = false;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: false });
-  };
-  const onInput = (evt) => {
-    text2.value = evt.detail.value;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, { text: text2.value });
-  };
-  const onConfirm = (evt) => {
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, { text: text2.value });
-  };
-  return {
-    focus,
-    text: text2,
-    composing,
-    onFocus,
-    onBlur,
-    onInput,
-    onConfirm
-  };
-}
 const t0$8 = template('<div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>');
 const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
   ...{ name: "PageRefresh" },
@@ -11086,7 +11232,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         style: pageStyle
       },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        createVNode(PageHead),
+        createVNode(_sfc_main$b),
         createPageBodyVNode(ctx),
         createDialogPageVNode(
           currentInstance.$dialogPages,
@@ -13321,8 +13467,8 @@ function useMovableAreaState(props2, rootRef) {
     }
     return get(target);
   }
-  const _onTouchstart = withWebEvent((t8) => {
-    let i = t8.touches;
+  const _onTouchstart = withWebEvent((t11) => {
+    let i = t11.touches;
     if (i) {
       if (i.length > 1) {
         let r = {
@@ -13340,11 +13486,11 @@ function useMovableAreaState(props2, rootRef) {
       }
     }
   });
-  const _onTouchmove = withWebEvent((t8) => {
-    let n = t8.touches;
+  const _onTouchmove = withWebEvent((t11) => {
+    let n = t11.touches;
     if (n) {
       if (n.length > 1) {
-        t8.preventDefault();
+        t11.preventDefault();
         let i = {
           x: n[1].pageX - n[0].pageX,
           y: n[1].pageY - n[0].pageY
@@ -13359,8 +13505,8 @@ function useMovableAreaState(props2, rootRef) {
     }
   });
   const _onTouchend = withWebEvent((e2) => {
-    let t8 = e2.touches;
-    if (!(t8 && t8.length)) {
+    let t11 = e2.touches;
+    if (!(t11 && t11.length)) {
       if (e2.changedTouches) {
         gapV.x = 0;
         gapV.y = 0;
@@ -13541,20 +13687,20 @@ function useTouchtrack(element, method, useCancel) {
     }
   });
 }
-function e(e2, t8, n) {
-  return e2 > t8 - n && e2 < t8 + n;
+function e(e2, t11, n) {
+  return e2 > t11 - n && e2 < t11 + n;
 }
-function t(t8, n) {
-  return e(t8, 0, n);
+function t(t11, n) {
+  return e(t11, 0, n);
 }
 function Decline() {
 }
 Decline.prototype.x = function(e2) {
   return Math.sqrt(e2);
 };
-function Friction$2(e2, t8) {
+function Friction$2(e2, t11) {
   this._m = e2;
-  this._f = 1e3 * t8;
+  this._f = 1e3 * t11;
   this._startTime = 0;
   this._v = 0;
 }
@@ -13572,16 +13718,16 @@ Friction$2.prototype.setS = function(x, y) {
   this._x_s = x;
   this._y_s = y;
 };
-Friction$2.prototype.s = function(t8) {
-  if (void 0 === t8) {
-    t8 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction$2.prototype.s = function(t11) {
+  if (void 0 === t11) {
+    t11 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t8 > this._t) {
-    t8 = this._t;
-    this._lastDt = t8;
+  if (t11 > this._t) {
+    t11 = this._t;
+    this._lastDt = t11;
   }
-  let x = this._x_v * t8 + 0.5 * this._x_a * Math.pow(t8, 2) + this._x_s;
-  let y = this._y_v * t8 + 0.5 * this._y_a * Math.pow(t8, 2) + this._y_s;
+  let x = this._x_v * t11 + 0.5 * this._x_a * Math.pow(t11, 2) + this._x_s;
+  let y = this._y_v * t11 + 0.5 * this._y_a * Math.pow(t11, 2) + this._y_s;
   if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
     x = this._endPositionX;
   }
@@ -13593,16 +13739,16 @@ Friction$2.prototype.s = function(t8) {
     y
   };
 };
-Friction$2.prototype.ds = function(t8) {
-  if (void 0 === t8) {
-    t8 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction$2.prototype.ds = function(t11) {
+  if (void 0 === t11) {
+    t11 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t8 > this._t) {
-    t8 = this._t;
+  if (t11 > this._t) {
+    t11 = this._t;
   }
   return {
-    dx: this._x_v + this._x_a * t8,
-    dy: this._y_v + this._y_a * t8
+    dx: this._x_v + this._x_a * t11,
+    dy: this._y_v + this._y_a * t11
   };
 };
 Friction$2.prototype.delta = function() {
@@ -13615,9 +13761,9 @@ Friction$2.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
 Friction$2.prototype.done = function() {
-  const t8 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+  const t11 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
-  return t8;
+  return t11;
 };
 Friction$2.prototype.setEnd = function(x, y) {
   this._endPositionX = x;
@@ -13635,7 +13781,7 @@ function Spring$1(m, k, c) {
   this._endPosition = 0;
   this._startTime = 0;
 }
-Spring$1.prototype._solve = function(e2, t8) {
+Spring$1.prototype._solve = function(e2, t11) {
   const n = this._c;
   const i = this._m;
   const r = this._k;
@@ -13643,70 +13789,70 @@ Spring$1.prototype._solve = function(e2, t8) {
   if (o2 === 0) {
     const a2 = -n / (2 * i);
     const s = e2;
-    const l = t8 / (a2 * e2);
+    const l = t11 / (a2 * e2);
     return {
       x: function(e3) {
         return (s + l * e3) * Math.pow(Math.E, a2 * e3);
       },
       dx: function(e3) {
-        const t9 = Math.pow(Math.E, a2 * e3);
-        return a2 * (s + l * e3) * t9 + l * t9;
+        const t12 = Math.pow(Math.E, a2 * e3);
+        return a2 * (s + l * e3) * t12 + l * t12;
       }
     };
   }
   if (o2 > 0) {
     const c = (-n - Math.sqrt(o2)) / (2 * i);
     const u = (-n + Math.sqrt(o2)) / (2 * i);
-    const d = (t8 - c * e2) / (u - c);
+    const d = (t11 - c * e2) / (u - c);
     const h2 = e2 - d;
     return {
       x: function(e3) {
-        let t9;
+        let t12;
         let n2;
         if (e3 === this._t) {
-          t9 = this._powER1T;
+          t12 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t9) {
-          t9 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t12) {
+          t12 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h2 * t9 + d * n2;
+        return h2 * t12 + d * n2;
       },
       dx: function(e3) {
-        let t9;
+        let t12;
         let n2;
         if (e3 === this._t) {
-          t9 = this._powER1T;
+          t12 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t9) {
-          t9 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t12) {
+          t12 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h2 * c * t9 + d * u * n2;
+        return h2 * c * t12 + d * u * n2;
       }
     };
   }
   const p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
   const f2 = -n / 2 * i;
   const v2 = e2;
-  const g2 = (t8 - f2 * e2) / p2;
+  const g2 = (t11 - f2 * e2) / p2;
   return {
     x: function(e3) {
       return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
     },
     dx: function(e3) {
-      const t9 = Math.pow(Math.E, f2 * e3);
+      const t12 = Math.pow(Math.E, f2 * e3);
       const n2 = Math.cos(p2 * e3);
       const i2 = Math.sin(p2 * e3);
-      return t9 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t9 * (g2 * i2 + v2 * n2);
+      return t12 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t12 * (g2 * i2 + v2 * n2);
     }
   };
 };
@@ -13767,9 +13913,9 @@ Spring$1.prototype.done = function(n) {
   }
   return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
 };
-Spring$1.prototype.reconfigure = function(m, t8, c) {
+Spring$1.prototype.reconfigure = function(m, t11, c) {
   this._m = m;
-  this._k = t8;
+  this._k = t11;
   this._c = c;
   if (!this.done()) {
     this._solution = this._solve(this.x() - this._endPosition, this.dx());
@@ -13783,11 +13929,11 @@ Spring$1.prototype.damping = function() {
   return this._c;
 };
 Spring$1.prototype.configuration = function() {
-  function e2(e3, t9) {
-    e3.reconfigure(1, t9, e3.damping());
+  function e2(e3, t12) {
+    e3.reconfigure(1, t12, e3.damping());
   }
-  function t8(e3, t9) {
-    e3.reconfigure(1, e3.springConstant(), t9);
+  function t11(e3, t12) {
+    e3.reconfigure(1, e3.springConstant(), t12);
   }
   return [
     {
@@ -13800,22 +13946,22 @@ Spring$1.prototype.configuration = function() {
     {
       label: "Damping",
       read: this.damping.bind(this),
-      write: t8.bind(this, this),
+      write: t11.bind(this, this),
       min: 1,
       max: 500
     }
   ];
 };
-function STD(e2, t8, n) {
-  this._springX = new Spring$1(e2, t8, n);
-  this._springY = new Spring$1(e2, t8, n);
-  this._springScale = new Spring$1(e2, t8, n);
+function STD(e2, t11, n) {
+  this._springX = new Spring$1(e2, t11, n);
+  this._springY = new Spring$1(e2, t11, n);
+  this._springScale = new Spring$1(e2, t11, n);
   this._startTime = 0;
 }
-STD.prototype.setEnd = function(e2, t8, n, i) {
+STD.prototype.setEnd = function(e2, t11, n, i) {
   const r = (/* @__PURE__ */ new Date()).getTime();
   this._springX.setEnd(e2, i, r);
-  this._springY.setEnd(t8, i, r);
+  this._springY.setEnd(t11, i, r);
   this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
@@ -13831,10 +13977,10 @@ STD.prototype.done = function() {
   const e2 = (/* @__PURE__ */ new Date()).getTime();
   return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
 };
-STD.prototype.reconfigure = function(e2, t8, n) {
-  this._springX.reconfigure(e2, t8, n);
-  this._springY.reconfigure(e2, t8, n);
-  this._springScale.reconfigure(e2, t8, n);
+STD.prototype.reconfigure = function(e2, t11, n) {
+  this._springX.reconfigure(e2, t11, n);
+  this._springY.reconfigure(e2, t11, n);
+  this._springScale.reconfigure(e2, t11, n);
 };
 const movableViewProps = {
   direction: {
@@ -13935,19 +14081,19 @@ function _requestAnimationFrame(e2) {
     });
   }
 }
-function p(t8, n) {
-  if (t8 === n) {
+function p(t11, n) {
+  if (t11 === n) {
     return 0;
   }
-  let i = t8.offsetLeft;
-  return t8.offsetParent ? i += p(t8.offsetParent, n) : 0;
+  let i = t11.offsetLeft;
+  return t11.offsetParent ? i += p(t11.offsetParent, n) : 0;
 }
-function f(t8, n) {
-  if (t8 === n) {
+function f(t11, n) {
+  if (t11 === n) {
     return 0;
   }
-  let i = t8.offsetTop;
-  return t8.offsetParent ? i += f(t8.offsetParent, n) : 0;
+  let i = t11.offsetTop;
+  return t11.offsetParent ? i += f(t11.offsetParent, n) : 0;
 }
 function g(friction, execute, endCallback) {
   let record = {
@@ -14486,9 +14632,9 @@ function useMovableViewState(props2, trigger, rootRef) {
         }
         _friction.setEnd(x, y);
         _FA = g(_friction, function() {
-          let t8 = _friction.s();
-          let x2 = t8.x;
-          let y2 = t8.y;
+          let t11 = _friction.s();
+          let x2 = t11.x;
+          let y2 = t11.y;
           _setTransform(x2, y2, _scale.value, "friction");
         }, function() {
           _FA.cancel();
@@ -14902,27 +15048,27 @@ let Friction$1 = class Friction {
     if (e2 === void 0) {
       e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
     }
-    const t8 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+    const t11 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
     this._dt = e2;
-    return this._x + this._v * t8 / this._dragLog - this._v / this._dragLog;
+    return this._x + this._v * t11 / this._dragLog - this._v / this._dragLog;
   }
   dx(e2) {
     if (e2 === void 0) {
       e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
     }
-    const t8 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+    const t11 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
     this._dt = e2;
-    return this._v * t8;
+    return this._v * t11;
   }
   done() {
     return Math.abs(this.dx()) < 3;
   }
   reconfigure(e2) {
-    const t8 = this.x();
+    const t11 = this.x();
     const n = this.dx();
     this._drag = e2;
     this._dragLog = Math.log(e2);
-    this.set(t8, n);
+    this.set(t11, n);
   }
   configuration() {
     const e2 = this;
@@ -14932,8 +15078,8 @@ let Friction$1 = class Friction {
         read: function() {
           return e2._drag;
         },
-        write: function(t8) {
-          e2.reconfigure(t8);
+        write: function(t11) {
+          e2.reconfigure(t11);
         },
         min: 1e-3,
         max: 0.1,
@@ -14942,11 +15088,11 @@ let Friction$1 = class Friction {
     ];
   }
 };
-function o(e2, t8, n) {
-  return e2 > t8 - n && e2 < t8 + n;
+function o(e2, t11, n) {
+  return e2 > t11 - n && e2 < t11 + n;
 }
-function a(e2, t8) {
-  return o(e2, 0, t8);
+function a(e2, t11) {
+  return o(e2, 0, t11);
 }
 class Spring {
   constructor(m, k, c) {
@@ -14957,7 +15103,7 @@ class Spring {
     this._endPosition = 0;
     this._startTime = 0;
   }
-  _solve(e2, t8) {
+  _solve(e2, t11) {
     const n = this._c;
     const i = this._m;
     const r = this._k;
@@ -14965,7 +15111,7 @@ class Spring {
     if (o2 === 0) {
       const a3 = -n / (2 * i);
       const s2 = e2;
-      const l2 = t8 / (a3 * e2);
+      const l2 = t11 / (a3 * e2);
       return {
         x: function(e22) {
           return (s2 + l2 * e22) * Math.pow(Math.E, a3 * e22);
@@ -14979,7 +15125,7 @@ class Spring {
     if (o2 > 0) {
       const c = (-n - Math.sqrt(o2)) / (2 * i);
       const u = (-n + Math.sqrt(o2)) / (2 * i);
-      const l2 = (t8 - c * e2) / (u - c);
+      const l2 = (t11 - c * e2) / (u - c);
       const s2 = e2 - l2;
       return {
         x: function(e22) {
@@ -15019,7 +15165,7 @@ class Spring {
     const d = Math.sqrt(4 * i * r - n * n) / (2 * i);
     const a2 = -n / 2 * i;
     const s = e2;
-    const l = (t8 - a2 * e2) / d;
+    const l = (t11 - a2 * e2) / d;
     return {
       x: function(e22) {
         return Math.pow(Math.E, a2 * e22) * (s * Math.cos(d * e22) + l * Math.sin(d * e22));
@@ -15044,29 +15190,29 @@ class Spring {
     }
     return this._solution ? this._solution.dx(e2) : 0;
   }
-  setEnd(e2, t8, n) {
+  setEnd(e2, t11, n) {
     if (!n) {
       n = (/* @__PURE__ */ new Date()).getTime();
     }
-    if (e2 !== this._endPosition || !a(t8, 0.4)) {
-      t8 = t8 || 0;
+    if (e2 !== this._endPosition || !a(t11, 0.4)) {
+      t11 = t11 || 0;
       let i = this._endPosition;
       if (this._solution) {
-        if (a(t8, 0.4)) {
-          t8 = this._solution.dx((n - this._startTime) / 1e3);
+        if (a(t11, 0.4)) {
+          t11 = this._solution.dx((n - this._startTime) / 1e3);
         }
         i = this._solution.x((n - this._startTime) / 1e3);
-        if (a(t8, 0.4)) {
-          t8 = 0;
+        if (a(t11, 0.4)) {
+          t11 = 0;
         }
         if (a(i, 0.4)) {
           i = 0;
         }
         i += this._endPosition;
       }
-      if (!(this._solution && a(i - e2, 0.4) && a(t8, 0.4))) {
+      if (!(this._solution && a(i - e2, 0.4) && a(t11, 0.4))) {
         this._endPosition = e2;
-        this._solution = this._solve(i - this._endPosition, t8);
+        this._solution = this._solve(i - this._endPosition, t11);
         this._startTime = n;
       }
     }
@@ -15089,9 +15235,9 @@ class Spring {
     }
     return o(this.x(), this._endPosition, 0.4) && a(this.dx(), 0.4);
   }
-  reconfigure(e2, t8, n) {
+  reconfigure(e2, t11, n) {
     this._m = e2;
-    this._k = t8;
+    this._k = t11;
     this._c = n;
     if (!this.done()) {
       this._solution = this._solve(this.x() - this._endPosition, this.dx());
@@ -15108,7 +15254,7 @@ class Spring {
     function e2(e22, t22) {
       e22.reconfigure(1, t22, e22.damping());
     }
-    function t8(e22, t22) {
+    function t11(e22, t22) {
       e22.reconfigure(1, e22.springConstant(), t22);
     }
     return [
@@ -15122,7 +15268,7 @@ class Spring {
       {
         label: "Damping",
         read: this.damping.bind(this),
-        write: t8.bind(this, this),
+        write: t11.bind(this, this),
         min: 1,
         max: 500
       }
@@ -15138,21 +15284,21 @@ class Scroll {
     this._springing = false;
     this._springOffset = 0;
   }
-  snap(e2, t8) {
+  snap(e2, t11) {
     this._springOffset = 0;
     this._springing = true;
     this._spring.snap(e2);
-    this._spring.setEnd(t8);
+    this._spring.setEnd(t11);
   }
-  set(e2, t8) {
-    this._friction.set(e2, t8);
-    if (e2 > 0 && t8 >= 0) {
+  set(e2, t11) {
+    this._friction.set(e2, t11);
+    if (e2 > 0 && t11 >= 0) {
       this._springOffset = 0;
       this._springing = true;
       this._spring.snap(e2);
       this._spring.setEnd(0);
     } else {
-      if (e2 < -this._extent && t8 <= 0) {
+      if (e2 < -this._extent && t11 <= 0) {
         this._springOffset = 0;
         this._springing = true;
         this._spring.snap(e2);
@@ -15173,30 +15319,30 @@ class Scroll {
     if (this._springing) {
       return this._spring.x() + this._springOffset;
     }
-    let t8 = this._friction.x(e2);
+    let t11 = this._friction.x(e2);
     let n = this.dx(e2);
-    if (t8 > 0 && n >= 0 || t8 < -this._extent && n <= 0) {
+    if (t11 > 0 && n >= 0 || t11 < -this._extent && n <= 0) {
       this._springing = true;
       this._spring.setEnd(0, n);
-      if (t8 < -this._extent) {
+      if (t11 < -this._extent) {
         this._springOffset = -this._extent;
       } else {
         this._springOffset = 0;
       }
-      t8 = this._spring.x() + this._springOffset;
+      t11 = this._spring.x() + this._springOffset;
     }
-    return t8;
+    return t11;
   }
   dx(e2) {
-    let t8;
+    let t11;
     if (this._lastTime === e2) {
-      t8 = this._lastDx;
+      t11 = this._lastDx;
     } else {
-      t8 = this._springing ? this._spring.dx(e2) : this._friction.dx(e2);
+      t11 = this._springing ? this._spring.dx(e2) : this._friction.dx(e2);
     }
     this._lastTime = e2;
-    this._lastDx = t8;
-    return t8;
+    this._lastDx = t11;
+    return t11;
   }
   done() {
     return this._springing ? this._spring.done() : this._friction.done();
@@ -17857,10 +18003,10 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
     }
     function handleTrackEnd(isCancel) {
       state2.userTracking = false;
-      const t8 = contentTrackSpeed / Math.abs(contentTrackSpeed);
+      const t11 = contentTrackSpeed / Math.abs(contentTrackSpeed);
       let n = 0;
       if (!isCancel && Math.abs(contentTrackSpeed) > 0.2) {
-        n = 0.5 * t8;
+        n = 0.5 * t11;
       }
       const current = normalizeCurrentValue(viewportPosition + n);
       if (isCancel) {
@@ -17890,12 +18036,12 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
         if (state2.userTracking) {
           if (!userDirectionChecked) {
             userDirectionChecked = true;
-            const t8 = Math.abs(event.detail.dx);
+            const t11 = Math.abs(event.detail.dx);
             const n = Math.abs(event.detail.dy);
-            if (t8 >= n && props2.vertical) {
+            if (t11 >= n && props2.vertical) {
               state2.userTracking = false;
             } else {
-              if (t8 <= n && !props2.vertical) {
+              if (t11 <= n && !props2.vertical) {
                 state2.userTracking = false;
               }
             }
@@ -22950,13 +23096,13 @@ const getClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_GET_CLIPBOARD_DATA,
   async (_, { resolve, reject }) => {
     initI18nGetClipboardDataMsgsOnce();
-    const { t: t8 } = useI18n();
+    const { t: t11 } = useI18n();
     try {
       const data = await navigator.clipboard.readText();
       resolve({ data });
     } catch (error) {
       _getClipboardData(resolve, () => {
-        reject(`${error} ${t8("uni.getClipboardData.fail")}`);
+        reject(`${error} ${t11("uni.getClipboardData.fail")}`);
       });
     }
   }
@@ -23400,7 +23546,7 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
     extension
   }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t8 } = useI18n();
+    const { t: t11 } = useI18n();
     if (fileInput) {
       document.body.removeChild(fileInput);
       fileInput = null;
@@ -23443,7 +23589,7 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
     });
     fileInput.click();
     if (!getInteractStatus()) {
-      console.warn(t8("uni.chooseFile.notUserActivation"));
+      console.warn(t11("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseFileProtocol,
@@ -23459,7 +23605,7 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
     extension
   }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t8 } = useI18n();
+    const { t: t11 } = useI18n();
     if (imageInput) {
       document.body.removeChild(imageInput);
       imageInput = null;
@@ -23502,7 +23648,7 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
     });
     imageInput.click();
     if (!getInteractStatus()) {
-      console.warn(t8("uni.chooseFile.notUserActivation"));
+      console.warn(t11("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseImageProtocol,
@@ -23620,7 +23766,7 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(
   API_CHOOSE_VIDEO,
   ({ sourceType, extension }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t8 } = useI18n();
+    const { t: t11 } = useI18n();
     if (videoInput) {
       document.body.removeChild(videoInput);
       videoInput = null;
@@ -23678,7 +23824,7 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(
     });
     videoInput.click();
     if (!getInteractStatus()) {
-      console.warn(t8("uni.chooseFile.notUserActivation"));
+      console.warn(t11("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseVideoProtocol,
@@ -25078,15 +25224,15 @@ const hideToast = /* @__PURE__ */ defineAsyncApi(
   }
 );
 function hidePopup(type) {
-  const { t: t8 } = useI18n();
+  const { t: t11 } = useI18n();
   if (!showType) {
     return;
   }
   let warnMsg = "";
   if (type === "onHideToast" && showType !== "onShowToast") {
-    warnMsg = t8("uni.showToast.unpaired");
+    warnMsg = t11("uni.showToast.unpaired");
   } else if (type === "onHideLoading" && showType !== "onShowLoading") {
-    warnMsg = t8("uni.showLoading.unpaired");
+    warnMsg = t11("uni.showLoading.unpaired");
   }
   if (warnMsg) {
     return console.warn(warnMsg);
@@ -27603,7 +27749,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup(props2, { emit: emit2, slots }) {
     initI18nPickerMsgsOnce();
-    const { t: t8 } = useI18n();
+    const { t: t11 } = useI18n();
     const rootRef = ref(null);
     const pickerRef = ref(null);
     const selectRef = ref(null);
@@ -27667,10 +27813,10 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
               on$1(_n7, "click", onEventStop);
               on$1(_n8, "click", withWebEvent(_cancel));
               const _x8 = txt(_n8);
-              setNodes(_x8, () => t8("uni.picker.cancel"));
+              setNodes(_x8, () => t11("uni.picker.cancel"));
               on$1(_n9, "click", _change);
               const _x9 = txt(_n9);
-              setNodes(_x9, () => t8("uni.picker.done"));
+              setNodes(_x9, () => t11("uni.picker.done"));
               renderEffect(() => {
                 setClassName(_n19, visible ? 1 : 0, "uni-picker-toggle", "", "uni-picker-custom");
                 setStyle(_n19, popupStyle.content);
@@ -31501,16 +31647,16 @@ class Friction2 {
     this.endPosition = { x, y };
   }
   // 计算并返回物体在时间 t 时的位置
-  positionAtTime(t8) {
-    if (t8 == null) {
-      t8 = (Date.now() - this.startTime) / 1e3;
+  positionAtTime(t11) {
+    if (t11 == null) {
+      t11 = (Date.now() - this.startTime) / 1e3;
     }
-    if (t8 > this.totalTimeToStop) {
-      t8 = this.totalTimeToStop;
-      this.lastTimeElapsed = t8;
+    if (t11 > this.totalTimeToStop) {
+      t11 = this.totalTimeToStop;
+      this.lastTimeElapsed = t11;
     }
-    var x = this.velocity.x * t8 + 0.5 * this.acceleration.x * t8 * t8 + this.startPosition.x;
-    var y = this.velocity.y * t8 + 0.5 * this.acceleration.y * t8 * t8 + this.startPosition.y;
+    var x = this.velocity.x * t11 + 0.5 * this.acceleration.x * t11 * t11 + this.startPosition.x;
+    var y = this.velocity.y * t11 + 0.5 * this.acceleration.y * t11 * t11 + this.startPosition.y;
     if (this.acceleration.x > 0 && x < this.endPosition.x || this.acceleration.x < 0 && x > this.endPosition.x) {
       x = this.endPosition.x;
     }
@@ -31520,16 +31666,16 @@ class Friction2 {
     return { x, y };
   }
   // 计算并返回物体在时间 t 时的速度
-  velocityAtTime(t8) {
-    if (t8 == null) {
-      t8 = (Date.now() - this.startTime) / 1e3;
+  velocityAtTime(t11) {
+    if (t11 == null) {
+      t11 = (Date.now() - this.startTime) / 1e3;
     }
-    if (t8 > this.totalTimeToStop) {
-      t8 = this.totalTimeToStop;
+    if (t11 > this.totalTimeToStop) {
+      t11 = this.totalTimeToStop;
     }
     return {
-      dx: this.velocity.x + this.acceleration.x * t8,
-      dy: this.velocity.y + this.acceleration.y * t8
+      dx: this.velocity.x + this.acceleration.x * t11,
+      dy: this.velocity.y + this.acceleration.y * t11
     };
   }
   // 计算物体停止前的位移量（这里的方法名可能不准确，因为 delta 通常表示变化量）
@@ -33077,8 +33223,8 @@ export {
   index$5 as Ad,
   index$4 as AdContentPage,
   index$3 as AdDraw,
-  _sfc_main$b as AsyncErrorComponent,
-  _sfc_main$c as AsyncLoadingComponent,
+  _sfc_main$c as AsyncErrorComponent,
+  _sfc_main$d as AsyncLoadingComponent,
   index$r as Button,
   index$2 as Camera,
   indexX$4 as Canvas,

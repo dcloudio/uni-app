@@ -19,7 +19,7 @@ import { defineSystemComponent } from '@dcloudio/uni-components'
 import { useDocumentTitle } from '../../../helpers/useDocumentTitle'
 import { useBackgroundColorContent } from '../../../helpers/useBackgroundColorContent'
 
-import PageHead from './pageHead'
+import PageHead from './pageHead.vue'
 import PageBody from './pageBody.vue'
 import { providePageMeta } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'

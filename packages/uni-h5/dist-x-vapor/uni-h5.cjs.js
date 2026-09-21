@@ -1311,7 +1311,7 @@ function normalizeVaporSlots(slots) {
     };
   }
 }
-const _t0$q = Vue.template("<span> ");
+const _t0$p = Vue.template("<span> ");
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -1322,7 +1322,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n1 = Vue.createPlainElement("uni-form", null, () => {
-        const _n0 = _t0$q();
+        const _n0 = _t0$p();
         const _x0 = Vue.txt(_n0);
         setNodes(_x0, () => slots.default && slots.default());
         return _n0;
@@ -1514,7 +1514,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$p = Vue.template("<canvas class=uni-canvas-canvas>");
+const _t0$o = Vue.template("<canvas class=uni-canvas-canvas>");
 const props$q = { disableScroll: {
   type: [Boolean, String],
   default: false
@@ -1531,7 +1531,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n1 = Vue.createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$p();
+          const _n0 = _t0$o();
           Vue.renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -1599,7 +1599,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const _t0$o = Vue.template("<div class=uni-checkbox-wrapper><div></div> ");
+const _t0$n = Vue.template("<div class=uni-checkbox-wrapper><div></div> ");
 const props$o = {
   checked: {
     type: [Boolean, String],
@@ -1707,7 +1707,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
           id: () => props2.id,
           onClick: () => _onClick
         }] }, () => {
-          const _n7 = _t0$o();
+          const _n7 = _t0$n();
           const _n5 = Vue.child(_n7);
           const _n6 = Vue.next(_n5, true);
           Vue.renderEffect(() => {
@@ -1992,9 +1992,9 @@ function assertType(value, type) {
   let valid;
   const expectedType = getType(type);
   if (isSimpleType(expectedType)) {
-    const t2 = typeof value;
-    valid = t2 === expectedType.toLowerCase();
-    if (!valid && t2 === "object") {
+    const t11 = typeof value;
+    valid = t11 === expectedType.toLowerCase();
+    if (!valid && t11 === "object") {
       valid = value instanceof type;
     }
   } else if (expectedType === "Object") {
@@ -3523,8 +3523,8 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const t0$4 = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$5 = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -3532,12 +3532,12 @@ const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   __name: "asyncLoading",
   setup(__props) {
-    const n0 = t0$4();
+    const n0 = t0$5();
     return n0;
   }
 });
-const t0$3 = Vue.template("<div class=uni-async-error> ", 1);
-const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$4 = Vue.template("<div class=uni-async-error> ", 1);
+const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -3547,14 +3547,14 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
   props: ["error"],
   setup(__props) {
     initI18nAsyncMsgsOnce();
-    const { t: t2 } = useI18n();
+    const { t: t11 } = useI18n();
     function reload() {
       window.location.reload();
     }
-    const n0 = t0$3();
+    const n0 = t0$4();
     const x0 = Vue.txt(n0);
     Vue.on(n0, "click", reload);
-    Vue.renderEffect(() => Vue.setText(x0, Vue.toDisplayString(Vue.unref(t2)("uni.async.error"))));
+    Vue.renderEffect(() => Vue.setText(x0, Vue.toDisplayString(Vue.unref(t11)("uni.async.error"))));
     return n0;
   }
 });
@@ -3593,11 +3593,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$6.name)) {
+    app.component(_sfc_main$6.name, _sfc_main$6);
+  }
   if (!app.component(_sfc_main$5.name)) {
     app.component(_sfc_main$5.name, _sfc_main$5);
-  }
-  if (!app.component(_sfc_main$4.name)) {
-    app.component(_sfc_main$4.name, _sfc_main$4);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -3782,29 +3782,39 @@ function usePageHeadTransparent(headRef, {
 }) {
   Vue.computed(() => hexToRgba(backgroundColor));
 }
-const _t0$n = Vue.template("<div>", 1);
-const _t1$e = Vue.template("<div><div class=uni-page-head-hd> </div> <div class=uni-page-head-ft></div></div>");
-const _t2$8 = Vue.template("<div class=uni-page-head-btn> ", 1);
-const _t3$8 = Vue.template("<span><i class=uni-btn-icon></i> ");
-const _t4$6 = Vue.template("<i class=uni-btn-icon>");
-const _t5$2 = Vue.template("<i class=uni-loading>", 2);
-const _t6$2 = Vue.template("<img class=uni-page-head__title_image>");
-const _t7$1 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__title>", 1);
-const _t8$1 = Vue.template("<div class=uni-page-head-search><div><div class=uni-page-head-search-icon> </div></div>", 1);
-const ICON_PATHS = {
-  none: "",
-  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-  back: ICON_PATH_BACK,
-  select: ICON_PATH_BACK,
-  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-  close: ICON_PATH_CLOSE
-};
-const PageHead = /* @__PURE__ */ defineSystemComponent({
-  name: "PageHead",
-  setup() {
+const t0$3 = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path>');
+const t1$1 = Vue.template('<svg viewBox="0 0 32 32"><path>', 0, 1);
+const t2 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
+const t3 = Vue.template("<i class=uni-btn-icon></i>");
+const t4 = Vue.template("<div>");
+const t5 = Vue.template("<i class=uni-loading></i>", 2);
+const t6 = Vue.template("<img class=uni-page-head__title_image>");
+const t7 = Vue.template(" ");
+const t8 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
+const t9 = Vue.template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
+const t10 = Vue.template("<div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>");
+const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "PageHead",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "pageHead",
+  setup(__props) {
+    const hasPages = __UNI_FEATURE_PAGES__;
+    const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
+    const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
+    const ICON_PATHS = {
+      none: "",
+      forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+      back: ICON_PATH_BACK,
+      select: ICON_PATH_BACK,
+      share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+      favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+      home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+      menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+      close: ICON_PATH_CLOSE
+    };
     const headRef = Vue.ref(null);
     const pageMeta = usePageMeta();
     const navigationBar = useTheme(pageMeta.navigationBar, () => {
@@ -3813,321 +3823,452 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
       navigationBar.titleColor = _navigationBar.titleColor;
     });
     const { clazz, style } = usePageHead(navigationBar);
-    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
-    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    const buttons = hasButtons && usePageHeadButtons(pageMeta);
+    const searchInput = hasSearchInput && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    const searchFocus = searchInput && searchInput.focus;
+    const searchText = searchInput && searchInput.text;
+    const searchComposing = searchInput && searchInput.composing;
+    const searchOnClick = searchInput && searchInput.onClick;
+    const searchOnFocus = searchInput && searchInput.onFocus;
+    const searchOnBlur = searchInput && searchInput.onBlur;
+    const searchOnInput = searchInput && searchInput.onInput;
+    const searchOnConfirm = searchInput && searchInput.onConfirm;
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-    return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
-      __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
-      __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
-      const type = navigationBar.type || "default";
-      const placeholderTsx = type !== "transparent" && type !== "float" && (() => {
-        const _n0 = _t0$n();
-        Vue.renderEffect(() => Vue.setClassName(_n0, 1 | (navigationBar.titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
-        return _n0;
-      })();
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n4 = Vue.createPlainElement("uni-page-head", { "uni-page-head-type": () => type }, () => {
-          const _n2 = _t1$e();
-          let _p0 = Vue.child(_n2);
-          const _n0 = Vue.child(_p0, true);
-          const _n1 = Vue.next(_p0, true);
-          setNodes(_n0, () => backButtonTsx);
-          setNodes(_n1, () => createPageHeadBdTsx(navigationBar, searchInput));
-          const _n3 = createNodes(() => placeholderTsx);
+    function getSvgSize(size) {
+      return size == null ? 27 : size;
+    }
+    function getSvgColor(color) {
+      return color == null ? "#000" : color;
+    }
+    function onPageHeadBackButton() {
+      if (getCurrentPages().length === 1) {
+        uni.reLaunch({
+          url: "/"
+        });
+      } else {
+        uni.navigateBack({
+          from: "backbutton",
+          success() {
+          }
+          // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+        });
+      }
+    }
+    function usePageHead(navigationBar2) {
+      const clazz2 = Vue.computed(() => {
+        const { type, titlePenetrate, shadowColorType } = navigationBar2;
+        const clazz3 = {
+          "uni-page-head": true,
+          "uni-page-head-transparent": type === "transparent",
+          "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+          "uni-page-head-shadow": !!shadowColorType
+        };
+        if (shadowColorType) {
+          clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
+        }
+        return clazz3;
+      });
+      const style2 = Vue.computed(() => {
+        const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar2.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar2.backgroundColor) : navigationBar2.backgroundColor;
+        return {
+          backgroundColor,
+          color: navigationBar2.titleColor,
+          transitionDuration: navigationBar2.duration,
+          transitionTimingFunction: navigationBar2.timingFunc
+        };
+      });
+      return { clazz: clazz2, style: style2 };
+    }
+    function usePageHeadButtons({ id: id2, navigationBar: navigationBar2 }) {
+      const left = [];
+      const right = [];
+      const { buttons: buttons2 } = navigationBar2;
+      if (shared.isArray(buttons2)) {
+        const { type } = navigationBar2;
+        const isTransparent = type === "transparent";
+        const fonts = /* @__PURE__ */ Object.create(null);
+        buttons2.forEach((btn, index2) => {
+          if (btn.fontSrc && !btn.fontFamily) {
+            const fontSrc = getRealPath(btn.fontSrc);
+            let fontFamily = fonts[fontSrc];
+            if (!fontFamily) {
+              fontFamily = `font${Date.now()}`;
+              fonts[fontSrc] = fontFamily;
+            }
+            btn.fontFamily = fontFamily;
+          }
+          const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+          if (btn.float === "left") {
+            left.push(pageHeadBtn);
+          } else {
+            right.push(pageHeadBtn);
+          }
+        });
+      }
+      return { left, right };
+    }
+    function usePageHeadButton(pageId, index2, btn, isTransparent) {
+      const iconStyle = {
+        color: btn.color,
+        fontSize: btn.fontSize,
+        fontWeight: btn.fontWeight
+      };
+      if (btn.fontFamily) {
+        iconStyle.fontFamily = btn.fontFamily;
+      }
+      return new Proxy(
+        {
+          btnClass: {
+            "uni-page-head-btn": true,
+            "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+            "uni-page-head-btn-select": !!btn.select
+          },
+          btnStyle: {
+            backgroundColor: isTransparent ? btn.background : "transparent",
+            width: btn.width
+          },
+          btnText: "",
+          btnIconPath: ICON_PATHS[btn.type],
+          badgeText: btn.badgeText,
+          iconStyle,
+          onClick() {
+            invokeHook(pageId, uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, shared.extend({ index: index2 }, btn));
+          },
+          btnSelect: btn.select
+        },
+        {
+          get(target, key, receiver) {
+            if (["btnText"].includes(key)) {
+              return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+            } else {
+              return Reflect.get(target, key, receiver);
+            }
+          }
+        }
+      );
+    }
+    function usePageHeadSearchInput({
+      id: id2,
+      navigationBar: { searchInput: searchInput2 }
+    }) {
+      const focus = Vue.ref(false);
+      const text = Vue.ref("");
+      const composing = Vue.ref(false);
+      const { disabled } = searchInput2;
+      if (disabled) {
+        const onClick = () => {
+          invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+        };
+        return { focus, text, composing, onClick };
+      }
+      const onFocus = () => {
+        focus.value = true;
+        invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+          focus: true
+        });
+      };
+      const onBlur = () => {
+        focus.value = false;
+        invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+          focus: false
+        });
+      };
+      const onInput = (evt) => {
+        text.value = evt.detail.value;
+        invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+          text: text.value
+        });
+      };
+      const onConfirm = (evt) => {
+        invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+          text: text.value
+        });
+      };
+      return { focus, text, composing, onFocus, onBlur, onInput, onConfirm };
+    }
+    const n64 = Vue.createPlainElement("uni-page-head", { "uni-page-head-type": () => Vue.unref(navigationBar).type || "default" }, null, true);
+    const n60 = t10();
+    Vue.insert(n60, n64);
+    const n19 = Vue.child(n60);
+    const n59 = Vue.next(n19);
+    const n58 = Vue.next(n59);
+    Vue.renderEffect(() => {
+      Vue.setClass(n60, Vue.unref(clazz));
+      Vue.setStyle(n60, Vue.unref(style));
+    });
+    Vue.setInsertionState(n19);
+    Vue.createIf(() => Vue.unref(hasPages) && !Vue.unref(pageMeta).isQuit, () => {
+      const n3 = t0$3();
+      const n2 = Vue.child(Vue.child(n3));
+      Vue.on(n3, "click", onPageHeadBackButton);
+      Vue.renderEffect(() => {
+        const _navigationBar = Vue.unref(navigationBar);
+        Vue.setAttr(n2, "d", Vue.unref(ICON_PATH_BACK), true);
+        Vue.setAttr(
+          n2,
+          "fill",
+          _navigationBar.type === "transparent" ? "#fff" : _navigationBar.titleColor,
+          true
+        );
+      });
+      return n3;
+    });
+    Vue.setInsertionState(n19, 1);
+    Vue.createIf(() => Vue.unref(hasButtons) && Vue.unref(buttons), () => {
+      const n6 = Vue.createFor(
+        () => Vue.unref(buttons).left,
+        (_for_item0, _for_key0) => {
+          const n18 = t4();
           Vue.renderEffect(() => {
-            Vue.setClass(_n2, clazz.value);
-            Vue.setStyle(_n2, style.value);
-            _setTemplateRef(_n2, headRef);
+            const _button = _for_item0.value;
+            Vue.setClass(n18, _button.btnClass);
+            Vue.setStyle(n18, _button.btnStyle);
+            Vue.setAttr(n18, "badge-text", _button.badgeText);
           });
-          return [_n2, _n3];
-        }, true);
-        return _n4;
-      })();
-    };
+          Vue.setInsertionState(n18);
+          Vue.createIf(
+            () => _for_item0.value.btnIconPath,
+            () => {
+              const n11 = t1$1();
+              const n10 = Vue.child(n11);
+              Vue.renderEffect(() => {
+                const _button = _for_item0.value;
+                const _button_iconStyle = _button.iconStyle;
+                const _getSvgSize_button_iconStyle_fontSize = getSvgSize(_button_iconStyle.fontSize);
+                Vue.setAttr(n11, "width", _getSvgSize_button_iconStyle_fontSize, true);
+                Vue.setAttr(n11, "height", _getSvgSize_button_iconStyle_fontSize, true);
+                Vue.setAttr(n10, "d", _button.btnIconPath, true);
+                Vue.setAttr(n10, "fill", getSvgColor(_button_iconStyle.color), true);
+              });
+              return n11;
+            },
+            () => Vue.createIf(
+              () => _for_item0.value.btnSelect,
+              () => {
+                const n15 = t2();
+                const n13 = Vue.child(n15);
+                const n14 = Vue.child(Vue.next(n13));
+                Vue.renderEffect(() => {
+                  const _button = _for_item0.value;
+                  Vue.setStyle(n15, _button.iconStyle);
+                  Vue.setHtml(n13, _button.btnText);
+                  Vue.setAttr(n14, "d", ICON_PATHS.select, true);
+                });
+                return n15;
+              },
+              () => {
+                const n17 = t3();
+                Vue.renderEffect(() => {
+                  const _button = _for_item0.value;
+                  Vue.setStyle(n17, _button.iconStyle);
+                  Vue.setHtml(n17, _button.btnText);
+                });
+                return n17;
+              },
+              773
+              /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_2 */
+            ),
+            517
+            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+          );
+          Vue.on(n18, "click", (e2) => _for_item0.value.onClick(e2));
+          return n18;
+        },
+        (button, index2) => index2,
+        8
+        /* IS_SINGLE_NODE */
+      );
+      return n6;
+    });
+    Vue.setInsertionState(n60, n59);
+    Vue.createIf(
+      () => !Vue.unref(hasSearchInput) || !Vue.unref(navigationBar).searchInput,
+      () => {
+        const n30 = t8();
+        const n29 = Vue.child(n30);
+        Vue.renderEffect(() => {
+          const _navigationBar = Vue.unref(navigationBar);
+          Vue.setStyle(n29, {
+            fontSize: _navigationBar.titleSize,
+            opacity: _navigationBar.type === "transparent" ? 0 : 1
+          });
+        });
+        Vue.setInsertionState(n29);
+        Vue.createIf(
+          () => Vue.unref(navigationBar).loading,
+          () => {
+            const n24 = t5();
+            return n24;
+          },
+          () => Vue.createIf(
+            () => Vue.unref(navigationBar).titleImage,
+            () => {
+              const n26 = t6();
+              Vue.renderEffect(() => Vue.setProp(n26, "src", Vue.unref(navigationBar).titleImage));
+              return n26;
+            },
+            () => {
+              const n28 = t7();
+              Vue.renderEffect(() => Vue.setText(n28, Vue.toDisplayString(Vue.unref(navigationBar).titleText)));
+              return n28;
+            },
+            1545
+            /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_5 */
+          ),
+          1285
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_4 */
+        );
+        return n30;
+      },
+      () => {
+        const n42 = t9();
+        const n36 = Vue.child(n42);
+        const n32 = Vue.child(Vue.child(Vue.child(n36)));
+        Vue.renderEffect(() => {
+          const _navigationBar = Vue.unref(navigationBar);
+          const _navigationBar_searchInput = _navigationBar.searchInput;
+          Vue.setStyle(n42, {
+            borderRadius: _navigationBar_searchInput.borderRadius,
+            backgroundColor: _navigationBar_searchInput.backgroundColor
+          });
+          Vue.setStyle(n36, { color: _navigationBar_searchInput.placeholderColor });
+          Vue.setClass(n36, [
+            "uni-page-head-search-placeholder",
+            `uni-page-head-search-placeholder-${Vue.unref(searchFocus) || Vue.unref(searchText) ? "left" : _navigationBar_searchInput.align}`
+          ]);
+          Vue.setAttr(n32, "d", Vue.unref(ICON_PATH_SEARCH), true);
+          Vue.setAttr(n32, "fill", _navigationBar_searchInput.placeholderColor, true);
+        });
+        Vue.setInsertionState(n36, 1);
+        Vue.createIf(
+          () => !(Vue.unref(searchText) || Vue.unref(searchComposing)),
+          () => {
+            const n35 = t7();
+            Vue.renderEffect(() => Vue.setText(n35, Vue.toDisplayString(Vue.unref(navigationBar).searchInput.placeholder)));
+            return n35;
+          },
+          null,
+          2
+          /* TRUE_MULTI_ROOT */
+        );
+        Vue.setInsertionState(n42, 1);
+        Vue.createIf(
+          () => Vue.unref(navigationBar).searchInput.disabled,
+          () => {
+            const _on_click = ($event) => Vue.unref(searchOnClick) && Vue.unref(searchOnClick)($event);
+            const n39 = Vue.createComponent(Vue.unref(Input), {
+              disabled: true,
+              style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
+              "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
+              class: "uni-page-head-search-input",
+              "confirm-type": "search",
+              onClick: () => _on_click
+            });
+            return n39;
+          },
+          () => {
+            const _on_focus = ($event) => Vue.unref(searchOnFocus) && Vue.unref(searchOnFocus)($event);
+            const _on_blur = ($event) => Vue.unref(searchOnBlur) && Vue.unref(searchOnBlur)($event);
+            const _on_input = ($event) => Vue.unref(searchOnInput) && Vue.unref(searchOnInput)($event);
+            const _on_confirm = ($event) => Vue.unref(searchOnConfirm) && Vue.unref(searchOnConfirm)($event);
+            const n41 = Vue.createComponent(Vue.unref(Input), {
+              focus: () => Vue.unref(navigationBar).searchInput.autoFocus,
+              style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
+              "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
+              class: "uni-page-head-search-input",
+              "confirm-type": "search",
+              onFocus: () => _on_focus,
+              onBlur: () => _on_blur,
+              onInput: () => _on_input,
+              onConfirm: () => _on_confirm
+            });
+            return n41;
+          },
+          2309
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_8 */
+        );
+        return n42;
+      },
+      1797
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_6 */
+    );
+    Vue.setInsertionState(n58);
+    Vue.createIf(() => Vue.unref(hasButtons) && Vue.unref(buttons), () => {
+      const n45 = Vue.createFor(
+        () => Vue.unref(buttons).right,
+        (_for_item0, _for_key0) => {
+          const n57 = t4();
+          Vue.renderEffect(() => {
+            const _button = _for_item0.value;
+            Vue.setClass(n57, _button.btnClass);
+            Vue.setStyle(n57, _button.btnStyle);
+            Vue.setAttr(n57, "badge-text", _button.badgeText);
+          });
+          Vue.setInsertionState(n57);
+          Vue.createIf(
+            () => _for_item0.value.btnIconPath,
+            () => {
+              const n50 = t1$1();
+              const n49 = Vue.child(n50);
+              Vue.renderEffect(() => {
+                const _button = _for_item0.value;
+                const _button_iconStyle = _button.iconStyle;
+                const _getSvgSize_button_iconStyle_fontSize = getSvgSize(_button_iconStyle.fontSize);
+                Vue.setAttr(n50, "width", _getSvgSize_button_iconStyle_fontSize, true);
+                Vue.setAttr(n50, "height", _getSvgSize_button_iconStyle_fontSize, true);
+                Vue.setAttr(n49, "d", _button.btnIconPath, true);
+                Vue.setAttr(n49, "fill", getSvgColor(_button_iconStyle.color), true);
+              });
+              return n50;
+            },
+            () => Vue.createIf(
+              () => _for_item0.value.btnSelect,
+              () => {
+                const n54 = t2();
+                const n52 = Vue.child(n54);
+                const n53 = Vue.child(Vue.next(n52));
+                Vue.renderEffect(() => {
+                  const _button = _for_item0.value;
+                  Vue.setStyle(n54, _button.iconStyle);
+                  Vue.setHtml(n52, _button.btnText);
+                  Vue.setAttr(n53, "d", ICON_PATHS.select, true);
+                });
+                return n54;
+              },
+              () => {
+                const n56 = t3();
+                Vue.renderEffect(() => {
+                  const _button = _for_item0.value;
+                  Vue.setStyle(n56, _button.iconStyle);
+                  Vue.setHtml(n56, _button.btnText);
+                });
+                return n56;
+              },
+              2821
+              /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_10 */
+            ),
+            2565
+            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_9 */
+          );
+          Vue.on(n57, "click", (e2) => _for_item0.value.onClick(e2));
+          return n57;
+        },
+        (button, index2) => index2,
+        8
+        /* IS_SINGLE_NODE */
+      );
+      return n45;
+    });
+    Vue.setStaticTemplateRef(n60, headRef, null, "headRef");
+    Vue.setInsertionState(n64, 1);
+    Vue.createIf(() => Vue.unref(navigationBar).type !== "transparent" && Vue.unref(navigationBar).type !== "float", () => {
+      const n63 = t4();
+      Vue.renderEffect(() => Vue.setClassName(n63, 1 | (Vue.unref(navigationBar).titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
+      return n63;
+    });
+    return n64;
   }
 });
-function createBackButtonTsx(navigationBar, isQuit) {
-  if (!isQuit) {
-    return (() => {
-      const _n0 = _t2$8();
-      Vue.on(_n0, "click", onPageHeadBackButton);
-      const _x0 = Vue.txt(_n0);
-      setNodes(_x0, () => createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26));
-      return _n0;
-    })();
-  }
-}
-function createButtonsTsx(btns) {
-  return btns.map(({ onClick, btnClass, btnStyle, btnText, btnIconPath, badgeText, iconStyle, btnSelect }, index2) => {
-    return (() => {
-      const _n0 = Vue.createKeyedFragment(() => index2, () => {
-        const _n2 = _t0$n();
-        Vue.on(_n2, "click", onClick);
-        Vue.renderEffect(() => {
-          Vue.setClass(_n2, btnClass);
-          Vue.setStyle(_n2, btnStyle);
-          Vue.setAttr(_n2, "badge-text", badgeText);
-        });
-        Vue.setInsertionState(_n2);
-        Vue.createIf(() => btnIconPath, () => {
-          const _n5 = createNodes(() => createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize));
-          return _n5;
-        }, () => Vue.createIf(() => btnSelect, () => {
-          const _n9 = _t3$8();
-          const _n7 = Vue.child(_n9);
-          const _n8 = Vue.next(_n7, true);
-          setNodes(_n8, () => createSvgIconVNode(ICON_PATHS["select"], "#000", 14));
-          Vue.renderEffect(() => {
-            Vue.setStyle(_n9, iconStyle);
-            Vue.setHtml(_n7, btnText);
-          });
-          return _n9;
-        }, () => {
-          const _n11 = _t4$6();
-          Vue.renderEffect(() => {
-            Vue.setStyle(_n11, iconStyle);
-            Vue.setHtml(_n11, btnText);
-          });
-          return _n11;
-        }, 513), 262);
-        return _n2;
-      });
-      return _n0;
-    })();
-  });
-}
-function createPageHeadBdTsx(navigationBar, searchInput) {
-  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
-    return createPageHeadTitleTextTsx(navigationBar);
-  }
-  return createPageHeadSearchInputTsx(navigationBar, searchInput);
-}
-function createPageHeadTitleTextTsx({ type, loading, titleSize, titleText, titleImage }) {
-  return (() => {
-    const _n8 = _t7$1();
-    const _n7 = Vue.child(_n8);
-    Vue.renderEffect(() => Vue.setStyle(_n7, {
-      fontSize: titleSize,
-      opacity: type === "transparent" ? 0 : 1
-    }));
-    Vue.setInsertionState(_n7);
-    Vue.createIf(() => loading, () => {
-      const _n2 = _t5$2();
-      return _n2;
-    }, () => Vue.createIf(() => titleImage, () => {
-      const _n4 = _t6$2();
-      Vue.renderEffect(() => Vue.setProp(_n4, "src", titleImage));
-      return _n4;
-    }, () => {
-      const _n6 = createNodes(() => titleText);
-      return _n6;
-    }, 513), 293);
-    return _n8;
-  })();
-}
-function createPageHeadSearchInputTsx(navigationBar, { text, focus, composing, onBlur, onFocus, onInput, onConfirm, onClick }) {
-  const { color, align, autoFocus, disabled, borderRadius, backgroundColor, placeholder, placeholderColor } = navigationBar.searchInput;
-  const searchStyle = {
-    borderRadius,
-    backgroundColor
-  };
-  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text.value ? "left" : align}`];
-  return (() => {
-    const _n12 = _t8$1();
-    const _n6 = Vue.child(_n12);
-    const _n0 = Vue.child(_n6);
-    const _x0 = Vue.txt(_n0);
-    setNodes(_x0, () => createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20));
-    Vue.renderEffect(() => {
-      Vue.setStyle(_n12, searchStyle);
-      Vue.setStyle(_n6, { color: placeholderColor });
-      Vue.setClass(_n6, placeholderClass);
-    });
-    Vue.setInsertionState(_n6, 1);
-    Vue.createIf(() => text.value || composing.value, () => {
-      const _n3 = createNodes("");
-      return _n3;
-    }, () => {
-      const _n5 = createNodes(() => placeholder);
-      return _n5;
-    }, 266);
-    Vue.setInsertionState(_n12, 1);
-    Vue.createIf(() => disabled, () => {
-      const _n9 = createComponent(Input, {
-        disabled: true,
-        style: () => ({ color }),
-        "placeholder-style": () => "color: " + placeholderColor,
-        class: "uni-page-head-search-input",
-        "confirm-type": "search",
-        onClick: () => onClick
-      });
-      return _n9;
-    }, () => {
-      const _n11 = createComponent(Input, {
-        focus: () => autoFocus,
-        style: () => ({ color }),
-        "placeholder-style": () => "color: " + placeholderColor,
-        class: "uni-page-head-search-input",
-        "confirm-type": "search",
-        onConfirm: () => onConfirm,
-        onInput: () => onInput,
-        onBlur: () => onBlur,
-        onFocus: () => onFocus
-      });
-      return _n11;
-    }, 517);
-    return _n12;
-  })();
-}
-function onPageHeadBackButton() {
-  if (getCurrentPages().length === 1) {
-    uni.reLaunch({ url: "/" });
-  } else {
-    uni.navigateBack({
-      from: "backbutton",
-      success() {
-      }
-    });
-  }
-}
-function usePageHead(navigationBar) {
-  const clazz = Vue.computed(() => {
-    const { type, titlePenetrate, shadowColorType } = navigationBar;
-    const clazz2 = {
-      "uni-page-head": true,
-      "uni-page-head-transparent": type === "transparent",
-      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
-      "uni-page-head-shadow": !!shadowColorType
-    };
-    if (shadowColorType) {
-      clazz2[`uni-page-head-shadow-${shadowColorType}`] = true;
-    }
-    return clazz2;
-  });
-  const style = Vue.computed(() => {
-    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
-    return {
-      backgroundColor,
-      color: navigationBar.titleColor,
-      transitionDuration: navigationBar.duration,
-      transitionTimingFunction: navigationBar.timingFunc
-    };
-  });
-  return {
-    clazz,
-    style
-  };
-}
-function usePageHeadButtons({ id: id2, navigationBar }) {
-  const left = [];
-  const right = [];
-  const { buttons } = navigationBar;
-  if (shared.isArray(buttons)) {
-    const { type } = navigationBar;
-    const isTransparent = type === "transparent";
-    const fonts = /* @__PURE__ */ Object.create(null);
-    buttons.forEach((btn, index2) => {
-      if (btn.fontSrc && !btn.fontFamily) {
-        const fontSrc = getRealPath(btn.fontSrc);
-        let fontFamily = fonts[fontSrc];
-        if (!fontFamily) {
-          fontFamily = `font${Date.now()}`;
-          fonts[fontSrc] = fontFamily;
-        }
-        btn.fontFamily = fontFamily;
-      }
-      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
-      if (btn.float === "left") {
-        left.push(pageHeadBtn);
-      } else {
-        right.push(pageHeadBtn);
-      }
-    });
-  }
-  return {
-    left,
-    right
-  };
-}
-function usePageHeadButton(pageId, index2, btn, isTransparent) {
-  const iconStyle = {
-    color: btn.color,
-    fontSize: btn.fontSize,
-    fontWeight: btn.fontWeight
-  };
-  if (btn.fontFamily) {
-    iconStyle.fontFamily = btn.fontFamily;
-  }
-  return new Proxy({
-    btnClass: {
-      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
-      "uni-page-head-btn": true,
-      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-      "uni-page-head-btn-select": !!btn.select
-    },
-    btnStyle: {
-      backgroundColor: isTransparent ? btn.background : "transparent",
-      width: btn.width
-    },
-    btnText: "",
-    btnIconPath: ICON_PATHS[btn.type],
-    badgeText: btn.badgeText,
-    iconStyle,
-    onClick() {
-      invokeHook(pageId, uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, shared.extend({ index: index2 }, btn));
-    },
-    btnSelect: btn.select
-  }, { get(target, key, receiver) {
-    if (["btnText"].includes(key)) {
-      return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-    } else {
-      return Reflect.get(target, key, receiver);
-    }
-  } });
-}
-function usePageHeadSearchInput({ id: id2, navigationBar: { searchInput } }) {
-  const focus = Vue.ref(false);
-  const text = Vue.ref("");
-  const composing = Vue.ref(false);
-  const { disabled } = searchInput;
-  if (disabled) {
-    const onClick = () => {
-      invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-    };
-    return {
-      focus,
-      text,
-      composing,
-      onClick
-    };
-  }
-  const onFocus = () => {
-    focus.value = true;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: true });
-  };
-  const onBlur = () => {
-    focus.value = false;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: false });
-  };
-  const onInput = (evt) => {
-    text.value = evt.detail.value;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, { text: text.value });
-  };
-  const onConfirm = (evt) => {
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, { text: text.value });
-  };
-  return {
-    focus,
-    text,
-    composing,
-    onFocus,
-    onBlur,
-    onInput,
-    onConfirm
-  };
-}
 const t0$2 = Vue.template('<div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>');
 const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{ name: "PageRefresh" },
@@ -4258,7 +4399,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         style: pageStyle
       },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        Vue.createVNode(PageHead),
+        Vue.createVNode(_sfc_main$4),
         createPageBodyVNode(ctx),
         createDialogPageVNode(
           currentInstance.$dialogPages,
@@ -5531,8 +5672,8 @@ function useMovableAreaState(props2, rootRef) {
     }
     return get(target);
   }
-  const _onTouchstart = withWebEvent((t2) => {
-    let i = t2.touches;
+  const _onTouchstart = withWebEvent((t11) => {
+    let i = t11.touches;
     if (i) {
       if (i.length > 1) {
         let r = {
@@ -5550,11 +5691,11 @@ function useMovableAreaState(props2, rootRef) {
       }
     }
   });
-  const _onTouchmove = withWebEvent((t2) => {
-    let n = t2.touches;
+  const _onTouchmove = withWebEvent((t11) => {
+    let n = t11.touches;
     if (n) {
       if (n.length > 1) {
-        t2.preventDefault();
+        t11.preventDefault();
         let i = {
           x: n[1].pageX - n[0].pageX,
           y: n[1].pageY - n[0].pageY
@@ -5569,8 +5710,8 @@ function useMovableAreaState(props2, rootRef) {
     }
   });
   const _onTouchend = withWebEvent((e2) => {
-    let t2 = e2.touches;
-    if (!(t2 && t2.length)) {
+    let t11 = e2.touches;
+    if (!(t11 && t11.length)) {
       if (e2.changedTouches) {
         gapV.x = 0;
         gapV.y = 0;
@@ -5621,15 +5762,15 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-function e(e2, t2, n) {
-  return e2 > t2 - n && e2 < t2 + n;
+function e(e2, t11, n) {
+  return e2 > t11 - n && e2 < t11 + n;
 }
-function t(t2, n) {
-  return e(t2, 0, n);
+function t(t11, n) {
+  return e(t11, 0, n);
 }
-function Friction(e2, t2) {
+function Friction(e2, t11) {
   this._m = e2;
-  this._f = 1e3 * t2;
+  this._f = 1e3 * t11;
   this._startTime = 0;
   this._v = 0;
 }
@@ -5647,16 +5788,16 @@ Friction.prototype.setS = function(x, y) {
   this._x_s = x;
   this._y_s = y;
 };
-Friction.prototype.s = function(t2) {
-  if (void 0 === t2) {
-    t2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction.prototype.s = function(t11) {
+  if (void 0 === t11) {
+    t11 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t2 > this._t) {
-    t2 = this._t;
-    this._lastDt = t2;
+  if (t11 > this._t) {
+    t11 = this._t;
+    this._lastDt = t11;
   }
-  let x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
-  let y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
+  let x = this._x_v * t11 + 0.5 * this._x_a * Math.pow(t11, 2) + this._x_s;
+  let y = this._y_v * t11 + 0.5 * this._y_a * Math.pow(t11, 2) + this._y_s;
   if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
     x = this._endPositionX;
   }
@@ -5668,16 +5809,16 @@ Friction.prototype.s = function(t2) {
     y
   };
 };
-Friction.prototype.ds = function(t2) {
-  if (void 0 === t2) {
-    t2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction.prototype.ds = function(t11) {
+  if (void 0 === t11) {
+    t11 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t2 > this._t) {
-    t2 = this._t;
+  if (t11 > this._t) {
+    t11 = this._t;
   }
   return {
-    dx: this._x_v + this._x_a * t2,
-    dy: this._y_v + this._y_a * t2
+    dx: this._x_v + this._x_a * t11,
+    dy: this._y_v + this._y_a * t11
   };
 };
 Friction.prototype.delta = function() {
@@ -5690,9 +5831,9 @@ Friction.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
 Friction.prototype.done = function() {
-  const t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+  const t11 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
-  return t2;
+  return t11;
 };
 Friction.prototype.setEnd = function(x, y) {
   this._endPositionX = x;
@@ -5710,7 +5851,7 @@ function Spring(m, k, c) {
   this._endPosition = 0;
   this._startTime = 0;
 }
-Spring.prototype._solve = function(e2, t2) {
+Spring.prototype._solve = function(e2, t11) {
   const n = this._c;
   const i = this._m;
   const r = this._k;
@@ -5718,70 +5859,70 @@ Spring.prototype._solve = function(e2, t2) {
   if (o === 0) {
     const a = -n / (2 * i);
     const s = e2;
-    const l = t2 / (a * e2);
+    const l = t11 / (a * e2);
     return {
       x: function(e3) {
         return (s + l * e3) * Math.pow(Math.E, a * e3);
       },
       dx: function(e3) {
-        const t3 = Math.pow(Math.E, a * e3);
-        return a * (s + l * e3) * t3 + l * t3;
+        const t12 = Math.pow(Math.E, a * e3);
+        return a * (s + l * e3) * t12 + l * t12;
       }
     };
   }
   if (o > 0) {
     const c = (-n - Math.sqrt(o)) / (2 * i);
     const u = (-n + Math.sqrt(o)) / (2 * i);
-    const d = (t2 - c * e2) / (u - c);
+    const d = (t11 - c * e2) / (u - c);
     const h = e2 - d;
     return {
       x: function(e3) {
-        let t3;
+        let t12;
         let n2;
         if (e3 === this._t) {
-          t3 = this._powER1T;
+          t12 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t3) {
-          t3 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t12) {
+          t12 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * t3 + d * n2;
+        return h * t12 + d * n2;
       },
       dx: function(e3) {
-        let t3;
+        let t12;
         let n2;
         if (e3 === this._t) {
-          t3 = this._powER1T;
+          t12 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t3) {
-          t3 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t12) {
+          t12 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * c * t3 + d * u * n2;
+        return h * c * t12 + d * u * n2;
       }
     };
   }
   const p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
   const f2 = -n / 2 * i;
   const v2 = e2;
-  const g2 = (t2 - f2 * e2) / p2;
+  const g2 = (t11 - f2 * e2) / p2;
   return {
     x: function(e3) {
       return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
     },
     dx: function(e3) {
-      const t3 = Math.pow(Math.E, f2 * e3);
+      const t12 = Math.pow(Math.E, f2 * e3);
       const n2 = Math.cos(p2 * e3);
       const i2 = Math.sin(p2 * e3);
-      return t3 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t3 * (g2 * i2 + v2 * n2);
+      return t12 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t12 * (g2 * i2 + v2 * n2);
     }
   };
 };
@@ -5842,9 +5983,9 @@ Spring.prototype.done = function(n) {
   }
   return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
 };
-Spring.prototype.reconfigure = function(m, t2, c) {
+Spring.prototype.reconfigure = function(m, t11, c) {
   this._m = m;
-  this._k = t2;
+  this._k = t11;
   this._c = c;
   if (!this.done()) {
     this._solution = this._solve(this.x() - this._endPosition, this.dx());
@@ -5858,11 +5999,11 @@ Spring.prototype.damping = function() {
   return this._c;
 };
 Spring.prototype.configuration = function() {
-  function e2(e3, t3) {
-    e3.reconfigure(1, t3, e3.damping());
+  function e2(e3, t12) {
+    e3.reconfigure(1, t12, e3.damping());
   }
-  function t2(e3, t3) {
-    e3.reconfigure(1, e3.springConstant(), t3);
+  function t11(e3, t12) {
+    e3.reconfigure(1, e3.springConstant(), t12);
   }
   return [
     {
@@ -5875,22 +6016,22 @@ Spring.prototype.configuration = function() {
     {
       label: "Damping",
       read: this.damping.bind(this),
-      write: t2.bind(this, this),
+      write: t11.bind(this, this),
       min: 1,
       max: 500
     }
   ];
 };
-function STD(e2, t2, n) {
-  this._springX = new Spring(e2, t2, n);
-  this._springY = new Spring(e2, t2, n);
-  this._springScale = new Spring(e2, t2, n);
+function STD(e2, t11, n) {
+  this._springX = new Spring(e2, t11, n);
+  this._springY = new Spring(e2, t11, n);
+  this._springScale = new Spring(e2, t11, n);
   this._startTime = 0;
 }
-STD.prototype.setEnd = function(e2, t2, n, i) {
+STD.prototype.setEnd = function(e2, t11, n, i) {
   const r = (/* @__PURE__ */ new Date()).getTime();
   this._springX.setEnd(e2, i, r);
-  this._springY.setEnd(t2, i, r);
+  this._springY.setEnd(t11, i, r);
   this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
@@ -5906,10 +6047,10 @@ STD.prototype.done = function() {
   const e2 = (/* @__PURE__ */ new Date()).getTime();
   return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
 };
-STD.prototype.reconfigure = function(e2, t2, n) {
-  this._springX.reconfigure(e2, t2, n);
-  this._springY.reconfigure(e2, t2, n);
-  this._springScale.reconfigure(e2, t2, n);
+STD.prototype.reconfigure = function(e2, t11, n) {
+  this._springX.reconfigure(e2, t11, n);
+  this._springY.reconfigure(e2, t11, n);
+  this._springScale.reconfigure(e2, t11, n);
 };
 const movableViewProps = {
   direction: {
@@ -6000,19 +6141,19 @@ function _requestAnimationFrame(e2) {
     });
   }
 }
-function p(t2, n) {
-  if (t2 === n) {
+function p(t11, n) {
+  if (t11 === n) {
     return 0;
   }
-  let i = t2.offsetLeft;
-  return t2.offsetParent ? i += p(t2.offsetParent, n) : 0;
+  let i = t11.offsetLeft;
+  return t11.offsetParent ? i += p(t11.offsetParent, n) : 0;
 }
-function f(t2, n) {
-  if (t2 === n) {
+function f(t11, n) {
+  if (t11 === n) {
     return 0;
   }
-  let i = t2.offsetTop;
-  return t2.offsetParent ? i += f(t2.offsetParent, n) : 0;
+  let i = t11.offsetTop;
+  return t11.offsetParent ? i += f(t11.offsetParent, n) : 0;
 }
 function g(friction, execute, endCallback) {
   let record = {
@@ -12840,7 +12981,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   ],
   setup(props2, { emit: emit2, slots }) {
     initI18nPickerMsgsOnce();
-    const { t: t2 } = useI18n();
+    const { t: t11 } = useI18n();
     const rootRef = Vue.ref(null);
     const pickerRef = Vue.ref(null);
     const selectRef = Vue.ref(null);
@@ -12894,10 +13035,10 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
               Vue.on(_n7, "click", onEventStop);
               Vue.on(_n8, "click", withWebEvent(_cancel));
               const _x8 = Vue.txt(_n8);
-              setNodes(_x8, () => t2("uni.picker.cancel"));
+              setNodes(_x8, () => t11("uni.picker.cancel"));
               Vue.on(_n9, "click", _change);
               const _x9 = Vue.txt(_n9);
-              setNodes(_x9, () => t2("uni.picker.done"));
+              setNodes(_x9, () => t11("uni.picker.done"));
               Vue.renderEffect(() => {
                 Vue.setClassName(_n19, visible ? 1 : 0, "uni-picker-toggle", "", "uni-picker-custom");
                 Vue.setStyle(_n19, popupStyle.content);
@@ -15494,8 +15635,8 @@ Object.defineProperty(exports, "UniError", {
 exports.Ad = index$5;
 exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
-exports.AsyncErrorComponent = _sfc_main$4;
-exports.AsyncLoadingComponent = _sfc_main$5;
+exports.AsyncErrorComponent = _sfc_main$5;
+exports.AsyncLoadingComponent = _sfc_main$6;
 exports.Button = index$v;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;
