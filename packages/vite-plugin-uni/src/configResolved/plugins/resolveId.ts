@@ -43,6 +43,7 @@ export function uniResolveIdPlugin(
 ): Plugin {
   const resolveCache: Record<string, string> = {}
   const isX = process.env.UNI_APP_X === 'true'
+  const isVapor = process.env.UNI_APP_X_VAPOR === 'true'
   const builtInAliases = isX
     ? {
         ...resolveVueI18nAlias(),
@@ -51,7 +52,9 @@ export function uniResolveIdPlugin(
     : {}
   if (isX) {
     BUILT_IN_MODULES['@dcloudio/uni-app'] = 'dist-x/uni-app.es.js'
-    BUILT_IN_MODULES['@dcloudio/uni-cloud'] = 'dist/uni-cloud-x.es.js'
+    BUILT_IN_MODULES['@dcloudio/uni-cloud'] = isVapor
+      ? 'dist/uni-cloud-x-vapor.es.js'
+      : 'dist/uni-cloud-x.es.js'
   }
   return {
     name: 'uni:resolve-id',

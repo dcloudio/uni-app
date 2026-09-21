@@ -37,7 +37,10 @@ export function collectExtApiUsageAst(
 
   visit(sourceFile)
   // 解除 uniCloud 对 uni-push 的强制依赖，与旧 JS 收集插件保持一致。
-  if (sourceFile.fileName.endsWith('uni-cloud-x.es.js')) {
+  if (
+    sourceFile.fileName.endsWith('uni-cloud-x.es.js') ||
+    sourceFile.fileName.endsWith('uni-cloud-x-vapor.es.js')
+  ) {
     extApis.delete('uni.getPushClientId')
     extApis.delete('uni.onPushMessage')
     extApis.delete('uni.offPushMessage')
