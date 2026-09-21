@@ -46,6 +46,20 @@ function dynamicImport(name: string, source: string) {
 }
 
 describe('transformVueComponentImports', () => {
+  const originalAppX = process.env.UNI_APP_X
+
+  beforeAll(() => {
+    process.env.UNI_APP_X = 'true'
+  })
+
+  afterAll(() => {
+    if (originalAppX === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_APP_X
+    } else {
+      process.env.UNI_APP_X = originalAppX
+    }
+  })
+
   let oldInputDir = process.env.UNI_INPUT_DIR
 
   afterAll(() => {

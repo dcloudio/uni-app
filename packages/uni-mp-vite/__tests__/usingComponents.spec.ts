@@ -89,31 +89,29 @@ describe('mp vite usingComponents', () => {
     })
   })
 
-  test('keeps package root when generating dynamic component imports', () => {
+  test('keeps a stable virtual id while registering the package root', () => {
     process.env.UNI_INPUT_DIR = '/project/src'
-    const code = dynamicImport(
-      'UniNumberBox',
-      '/project/src/uni_modules/uni-number-box-x/components/uni-number-box/uni-number-box.uvue',
-      {
-        packageRoot: 'pages-sub',
-        inputDir: process.env.UNI_INPUT_DIR,
-      }
-    )
+    const component =
+      '/project/src/uni_modules/uni-number-box-x/components/uni-number-box/uni-number-box.uvue'
+    const code = dynamicImport('UniNumberBox', component, {
+      packageRoot: 'pages-sub',
+      inputDir: process.env.UNI_INPUT_DIR,
+    })
     const [, id] = code.match(/import\('(.+)'\)/)!
 
-    expect(id).toBe(
-      virtualComponentPath(
-        '/project/src/uni_modules/uni-number-box-x/components/uni-number-box/uni-number-box.uvue',
-        undefined,
-        'pages-sub'
-      )
-    )
+    expect(id).toBe(virtualComponentPath(component))
     expect(parseVirtualComponentPathInfo(id)).toEqual({
-      filepath:
-        '/project/src/uni_modules/uni-number-box-x/components/uni-number-box/uni-number-box.uvue',
+      filepath: component,
       root: undefined,
-      packageRoot: 'pages-sub',
+      packageRoot: undefined,
     })
+
+    const sharedCode = dynamicImport('UniNumberBox', component, {
+      packageRoot: 'pages-other',
+      inputDir: process.env.UNI_INPUT_DIR,
+    })
+    const [, sharedId] = sharedCode.match(/import\('(.+)'\)/)!
+    expect(sharedId).toBe(id)
   })
 
   test('shares component from main when multiple packages use it', () => {
