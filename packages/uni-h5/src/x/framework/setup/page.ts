@@ -120,7 +120,7 @@ class UniPageImpl implements UniPage {
       ? normalizeStyles(this.vm?.$basePage.meta, __uniConfig.themeConfig)
       : undefined
 
-    const scriptLang = (this.vm?.$ as any)?.__scriptLang
+    const scriptLang = (this.vm?.$?.type as any)?.__scriptLang
     const pageStyle = pageMeta
       ? {
           navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
@@ -394,7 +394,7 @@ export function initXPage(
   }
   const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
-    const scriptLang = (vm.$ as any)?.__scriptLang
+    const scriptLang = (vm.$.type as any).__scriptLang
     const isUTS = !scriptLang || scriptLang === 'uts'
     const uniPage = new UniNormalPageImpl({
       route: route?.path ? removeLeadingSlash(route?.path) : '',
