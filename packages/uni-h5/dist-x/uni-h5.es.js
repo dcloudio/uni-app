@@ -19064,10 +19064,6 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       childStatus.splice(index2, 1);
       rearrangeDebounce();
     });
-    provide("__listViewFirstItemRendered", (status) => {
-      state2.defaultItemSize = status.cachedSize;
-      state2.defaultItemSizeUpdated = true;
-    });
     watch(() => {
       return state2.defaultHeaderSize;
     }, (value) => {
@@ -19653,7 +19649,6 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     });
     const registerItem = inject("__listViewRegisterItem");
     const unregisterItem = inject("__listViewUnregisterItem");
-    const firstItemRendered = inject("__listViewFirstItemRendered");
     onMounted(() => {
       registerItem(status);
     });
@@ -19672,7 +19667,6 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         }
         status.cachedSize = getSize(isVertical.value, rootNode);
         status.cachedSizeUpdated = true;
-        firstItemRendered(status);
       }
     }
     watch(visible, (value) => {
