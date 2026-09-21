@@ -16,3 +16,7 @@ export { getAppAuthorizeSetting } from './getAppAuthorizeSetting'
 export { onError, offError } from './onError'
 export { onSocketOpen, onSocketMessage } from './socket'
 export * from './types'
+
+// #if _X_
+export { getStorage, getStorageSync } from './x/protocols'
+// #endif

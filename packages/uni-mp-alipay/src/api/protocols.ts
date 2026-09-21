@@ -6,12 +6,15 @@ import {
   getWindowInfo as _getWindowInfo,
   navigateTo as _navigateTo,
   addSafeAreaInsets,
+  // #if _X_
+  createUTSJSONObjectIfNeed,
+  // #endif
   isSyncApi,
   populateParameters,
   useDeviceId,
 } from '@dcloudio/uni-mp-core'
 
-import { getStorageSync } from './shims'
+import { getStorageSync as getStorageSyncShim } from './shims'
 
 export {
   redirectTo,
@@ -20,6 +23,10 @@ export {
   onSocketOpen,
   onSocketMessage,
 } from '@dcloudio/uni-mp-core'
+
+// #if _X_
+export { getStorage, getStorageSync } from '@dcloudio/uni-mp-core'
+// #endif
 
 function handleNetworkInfo(
   fromRes: my.IGetNetworkTypeSuccessResult,
@@ -60,7 +67,7 @@ function handleSystemInfo(
   reviseScreenSize(fromRes, toRes)
   addSafeAreaInsets(fromRes, toRes)
   useDeviceId({
-    getStorageSync: getStorageSync as Uni['getStorageSync'],
+    getStorageSync: getStorageSyncShim as Uni['getStorageSync'],
   })(fromRes, toRes)
   populateParameters(fromRes, toRes)
 
@@ -96,7 +103,10 @@ export function returnValue(methodName: string, res: Record<string, any> = {}) {
  */
 export const request = {
   name: my.canIUse('request') ? 'request' : 'httpRequest',
-  args(fromArgs: UniApp.RequestOptions) {
+  args(
+    fromArgs: UniApp.RequestOptions & { isUTS: boolean },
+    toArgs: WechatMiniprogram.RequestOption
+  ) {
     const isDingDing = my.canIUse('saveFileToDingTalk')
     const method = fromArgs.method || 'GET'
     if (!fromArgs.header) {
@@ -109,6 +119,19 @@ export const request = {
     Object.keys(fromArgs.header).forEach((key) => {
       headers[key.toLowerCase()] = fromArgs.header[key]
     })
+
+    // #if _X_
+    if (fromArgs.isUTS) {
+      const oldSuccess = fromArgs.success
+      if (oldSuccess) {
+        fromArgs.success = (res) => {
+          res.data = createUTSJSONObjectIfNeed(res.data)
+          oldSuccess!(res as UniApp.RequestSuccessCallbackResult)
+        }
+      }
+    }
+    // #endif
+
     return {
       header() {
         return {

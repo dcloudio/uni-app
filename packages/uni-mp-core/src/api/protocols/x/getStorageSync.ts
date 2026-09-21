@@ -5,8 +5,8 @@ export const getStorageSync = (): MPProtocol => {
   let isUTS = false
 
   return {
-    args(fromArgs) {
-      isUTS = fromArgs[1]
+    args(fromArgs, toArgs, restArgs) {
+      isUTS = restArgs[0]
     },
     returnValue(fromRes) {
       if (isUTS) {

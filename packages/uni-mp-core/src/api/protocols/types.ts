@@ -13,7 +13,8 @@ type MPProtocolArgsObject = {
 }
 type MPProtocolArgsFunction<T = any> = (
   fromArgs: T,
-  toArgs: T
+  toArgs: T,
+  restArgs: any[]
 ) => MPProtocolArgsObject | void
 
 export type MPProtocolArgs = MPProtocolArgsObject | MPProtocolArgsFunction
