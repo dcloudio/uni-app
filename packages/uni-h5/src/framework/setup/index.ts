@@ -1,9 +1,26 @@
-import { extend, invokeArrayFns, isFunction, isPlainObject } from '@vue/shared'
+import {
+  //#if _X_VAPOR_
+  EMPTY_OBJ,
+  //#endif
+  extend,
+  invokeArrayFns,
+  isFunction,
+  isPlainObject,
+  //#if _X_VAPOR_
+  isPromise,
+  //#endif
+} from '@vue/shared'
 import {
   type ComponentInternalInstance,
   type ComponentPublicInstance,
   type DefineComponent,
+  //#if !_X_VAPOR_
   createBlock,
+  //#endif
+  //#if _X_VAPOR_
+  // @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Web Vapor runtime 已导出该方法
+  createComponent,
+  //#endif
   getCurrentInstance,
   nextTick,
   onBeforeActivate,
@@ -11,7 +28,9 @@ import {
   onBeforeMount,
   onBeforeUnmount,
   onMounted,
+  //#if !_X_VAPOR_
   openBlock,
+  //#endif
   reactive,
   watch,
 } from 'vue'
@@ -351,10 +370,20 @@ export function setupApp(comp: any) {
       comp.mpType = 'app'
       const { setup } = comp
       const render = () => {
+        //#if _X_VAPOR_
+        return createComponent(LayoutComponent, null, null, true)
+        //#else
         return openBlock(), createBlock(LayoutComponent)
+        //#endif
       }
       comp.setup = (props, ctx) => {
         const res = setup && setup(props, ctx)
+        //#if _X_VAPOR_
+        // Vapor 异步 setup 的空结果不会经过同步 setup 的默认值归一化。
+        if (isPromise(res)) {
+          return res.then((value) => value || EMPTY_OBJ)
+        }
+        //#endif
         return isFunction(res) ? render : res
       }
       comp.render = render
