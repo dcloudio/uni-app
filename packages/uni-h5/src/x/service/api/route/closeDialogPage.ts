@@ -57,6 +57,9 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
           dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
         }
         dialogPageTriggerParentShow(dialogPage, 1)
+        if (!dialogPage.$disableEscBack) {
+          decrementEscBackPageNum()
+        }
       } else {
         triggerFailCallback(options, 'dialogPage is not a valid page')
       }

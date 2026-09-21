@@ -1,7 +1,13 @@
 import safeAreaInsets from 'safe-area-insets'
 import { type ComponentPublicInstance, markRaw, watchEffect } from 'vue'
-import { getCurrentPage, initPageVm } from '@dcloudio/uni-core'
 import {
+  getCurrentPage,
+  getLastDialogPage,
+  initPageVm,
+  invokeHook,
+} from '@dcloudio/uni-core'
+import {
+  ON_BACK_PRESS,
   ON_REACH_BOTTOM_DISTANCE,
   UTSJSONObject,
   normalizeTitleColor,
@@ -433,16 +439,20 @@ export function useBackgroundColorContent(vm: ComponentPublicInstance | null) {
     })
 }
 
-function handleEscKeyPress(event) {
+function handleEscKeyPress(event: KeyboardEvent) {
   if (__NODE_JS__) {
     return
   }
-  if (event.key === 'Escape') {
-    const currentPage = getCurrentPage() as unknown as UniPage
-    const dialogPages = currentPage.getDialogPages()
-    const dialogPage = dialogPages[dialogPages.length - 1]
-    // @ts-expect-error
-    if (!dialogPage.$disableEscBack) {
+  if (event.key !== 'Escape' && event.key !== 'Esc') {
+    return
+  }
+  const currentPage = getCurrentPage() as unknown as UniPage | null
+  const dialogPage = getLastDialogPage(currentPage)
+  if (dialogPage && !dialogPage.$disableEscBack) {
+    const onBackPressRes = invokeHook(dialogPage.vm, ON_BACK_PRESS, {
+      from: 'navigateBack',
+    })
+    if (onBackPressRes !== true) {
       closeDialogPage({ dialogPage })
     }
   }

@@ -17,14 +17,20 @@ export function clearDialogPages(uniPage: UniPage) {
 
 export function closePreSystemDialogPage(
   dialogPages: UniDialogPage[],
-  type: string
+  type: string,
+  onClose?: (dialogPage: UniDialogPage) => void
 ) {
   const targetSystemDialogPages = dialogPages.filter((page): boolean =>
     page.route.startsWith(type)
   )
   if (targetSystemDialogPages.length > 1) {
+    const preSystemDialogPage = targetSystemDialogPages[0]
     setTimeout(() => {
-      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1)
+      const index = dialogPages.indexOf(preSystemDialogPage)
+      if (index > -1) {
+        dialogPages.splice(index, 1)
+        onClose?.(preSystemDialogPage)
+      }
     }, 150)
   }
 }

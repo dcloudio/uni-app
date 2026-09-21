@@ -2,6 +2,7 @@ import { createNormalizeUrl } from '@dcloudio/uni-api'
 
 import {
   UniDialogPageImpl,
+  decrementEscBackPageNum,
   homeDialogPages,
   homeSystemDialogPages,
   incrementEscBackPageNum,
@@ -69,10 +70,6 @@ export const openDialogPage = (
       dialogPage.getParentPage = () => parentPage!
       parentPage.getDialogPages().push(dialogPage)
     }
-
-    if (!options.disableEscBack) {
-      incrementEscBackPageNum()
-    }
   } else {
     let targetSystemDialogPages: UniDialogPage[] = []
     if (!currentPages.length) {
@@ -90,9 +87,18 @@ export const openDialogPage = (
     if (isSystemActionSheetDialogPage(dialogPage)) {
       closePreSystemDialogPage(
         targetSystemDialogPages,
-        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH
+        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH,
+        (preSystemDialogPage) => {
+          if (!preSystemDialogPage.$disableEscBack) {
+            decrementEscBackPageNum()
+          }
+        }
       )
     }
+  }
+
+  if (!dialogPage.$disableEscBack) {
+    incrementEscBackPageNum()
   }
 
   const successOptions = {
