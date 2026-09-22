@@ -1384,6 +1384,12 @@
       "LoadFontFaceSuccessCallback"
     ],
     [
+      "LoadUasm"
+    ],
+    [
+      "LoadUasmSync"
+    ],
+    [
       "LoadingPage"
     ],
     [
@@ -2705,9 +2711,6 @@
     ],
     [
       "TruncateFileOptions"
-    ],
-    [
-      "UASMLoader"
     ],
     [
       "UnLinkOptions"
