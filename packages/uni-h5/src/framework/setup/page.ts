@@ -176,8 +176,23 @@ export function initPublicPage(route: RouteLocationNormalizedLoaded) {
 }
 
 export function initPage(vm: ComponentPublicInstance) {
-  const route = vm.$route
+  let route: RouteLocationNormalizedLoaded
+  //#if _X_VAPOR_
+  route = useRoute()
+  //#endif
+  //#if !_X_VAPOR_
+  route = vm.$route
+  //#endif
   const page = initPublicPage(route)
+  //#if _X_VAPOR_
+  const routeMeta = route.meta
+  Object.defineProperty(page, 'eventChannel', {
+    configurable: true,
+    enumerable: true,
+    get: () => routeMeta.eventChannel,
+    set: (eventChannel) => (routeMeta.eventChannel = eventChannel),
+  })
+  //#endif
   initPageVm(vm, page)
   if (__X__) {
     initXPage(vm, route, page)

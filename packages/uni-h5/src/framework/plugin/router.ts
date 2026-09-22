@@ -6,6 +6,9 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router'
+//#if _X_VAPOR_
+import { setRouterInstance } from './routerInstance'
+//#endif
 //#if _X_
 import {
   initWebAppRouteListener,
@@ -32,6 +35,9 @@ import {
 
 export function initRouter(app: App) {
   const router = createRouter(createRouterOptions())
+  //#if _X_VAPOR_
+  setRouterInstance(router)
+  //#endif
   //#if _X_
   initWebAppRouteListener(router, {
     onRouteConfirmed: cleanupWebAppRoute,

@@ -93,9 +93,12 @@ function generatePagesJsonCode(
   const pageComponentImport = isWebVapor
     ? 'createVaporPageRouteComponent'
     : 'PageComponent'
+  const vueRouterImport = isWebVapor
+    ? "import { useRoute } from 'vue-router'\n"
+    : ''
   return `
 import { ${vueImports} } from 'vue'
-import { ${pageComponentImport}, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
+${vueRouterImport}import { ${pageComponentImport}, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
 import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, aMapKey, bMapKey, aMapSecurityJsCode, aMapServiceHost, ${vueType}, locale, fallbackLocale, darkmode, themeConfig } from './${MANIFEST_JSON_JS}'
 const locales = import.meta.glob('./locale/*.json', { eager: true })
 ${importLayoutComponentsCode}
@@ -295,20 +298,20 @@ function generatePageRoute(
 ) {
   const { isEntry } = meta
   const alias = isEntry ? `\n  alias:'/${path}',` : ''
+  const pageComponent = normalizeIdentifier(path)
+  if (isWebVapor) {
+    return `{
+  path:'/${isEntry ? '' : path}',${alias}
+  component:createVaporPageRouteComponent(${pageComponent},()=>useRoute().query),
+  loader: ${pageComponent}Loader,
+  meta: ${JSON.stringify(meta)}
+}`
+  }
   // 目前单页面未处理 query=>props
   const queryCode =
     process.env.UNI_APP_X === 'true'
       ? 'app && app.vm && app.vm.$route && app.vm.$route.query || {};'
       : 'app && app.$route && app.$route.query || {};'
-  const pageComponent = normalizeIdentifier(path)
-  if (isWebVapor) {
-    return `{
-  path:'/${isEntry ? '' : path}',${alias}
-  component:createVaporPageRouteComponent(${pageComponent},()=>{ const app = getApp(); const query = ${queryCode} return query }),
-  loader: ${pageComponent}Loader,
-  meta: ${JSON.stringify(meta)}
-}`
-  }
   return `{
   path:'/${isEntry ? '' : path}',${alias}
   component:{setup(){ const app = getApp(); const query = ${queryCode} return ()=>renderPage(${pageComponent},query)}},

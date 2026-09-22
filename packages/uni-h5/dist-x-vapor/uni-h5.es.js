@@ -1816,14 +1816,12 @@ const wxInstance = /* @__PURE__ */ Object.defineProperty({
 }, Symbol.toStringTag, { value: "Module" });
 function getOpenerEventChannel() {
   {
-    if (this.$route) {
-      const meta = this.$route.meta;
-      if (!meta.eventChannel) {
-        meta.eventChannel = new EventChannel(
-          this.$basePage.id
-        );
+    const page = this.$basePage;
+    if (page) {
+      if (!page.eventChannel) {
+        page.eventChannel = new EventChannel(page.id);
       }
-      return meta.eventChannel;
+      return page.eventChannel;
     }
   }
 }
@@ -3130,6 +3128,13 @@ function checkMinWidth(minWidth) {
 }
 function getStateId() {
   return history.state && history.state.__id__ || 1;
+}
+let router;
+function setRouterInstance(value) {
+  router = value;
+}
+function getRouterInstance() {
+  return router;
 }
 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 var lookup = /* @__PURE__ */ function() {
@@ -7861,9 +7866,9 @@ function getOriginalRoute(route) {
 function getRouteUrl(route) {
   return route.fullPath || route.path;
 }
-function resolveFullPath(router, url) {
+function resolveFullPath(router2, url) {
   const { path, query } = parseUrl(url);
-  return router.resolve({ path, query }).fullPath;
+  return router2.resolve({ path, query }).fullPath;
 }
 function toRouteLocation(url) {
   const { path, query } = parseUrl(url);
@@ -7880,20 +7885,20 @@ function findRouteTransaction(route) {
   const transaction = routeTransactions.get(route) || (getOriginalRoute(route.redirectedFrom) ? routeTransactions.get(getOriginalRoute(route.redirectedFrom)) : void 0);
   return (transaction == null ? void 0 : transaction.cancelled) ? void 0 : transaction;
 }
-function replaceTransactionRoute(router, transaction, route) {
+function replaceTransactionRoute(router2, transaction, route) {
   const routeUrl = getRouteUrl(route);
   const resolved = resolveAppRoute(
     routeUrl,
     transaction.openType,
     route.matched.length === 0
   );
-  transaction.finalFullPath = resolveFullPath(router, resolved.url);
+  transaction.finalFullPath = resolveFullPath(router2, resolved.url);
   transaction.context = resolved.context;
   return resolved;
 }
-function bindOrRedirectTransaction(router, to, transaction) {
+function bindOrRedirectTransaction(router2, to, transaction) {
   if (transaction.finalFullPath !== to.fullPath) {
-    const resolved = replaceTransactionRoute(router, transaction, to);
+    const resolved = replaceTransactionRoute(router2, transaction, to);
     if (transaction.finalFullPath !== to.fullPath) {
       pendingProgrammaticRoutes.push(transaction);
       return toRouteLocation(resolved.url);
@@ -7901,13 +7906,13 @@ function bindOrRedirectTransaction(router, to, transaction) {
   }
   bindRouteTransaction(to, transaction);
 }
-async function createLaunchTransaction(router, to) {
+async function createLaunchTransaction(router2, to) {
   await launchExecutorReady;
   const originalRoute = getOriginalRoute(to) || to;
   const resolved = await launchExecutor(originalRoute);
   const sourceFullPath = originalRoute.fullPath;
   const transaction = createWebAppRouteTransaction(
-    resolveFullPath(router, resolved.url),
+    resolveFullPath(router2, resolved.url),
     "appLaunch",
     resolved.context
   );
@@ -7962,16 +7967,16 @@ function setWebAppRouteHistoryDirection(fullPath, direction2, delta = 0) {
     delta: Math.abs(delta)
   };
 }
-function initWebAppRouteListener(router, { onRouteConfirmed, onMissingRoute }) {
-  router.beforeEach(async (to) => {
+function initWebAppRouteListener(router2, { onRouteConfirmed, onMissingRoute }) {
+  router2.beforeEach(async (to) => {
     const route = to;
     if (!appRouteStarted) {
       appRouteStarted = true;
-      const launch = await createLaunchTransaction(router, route);
+      const launch = await createLaunchTransaction(router2, route);
       if (launch.redirect) {
         return launch.redirect;
       }
-      return bindOrRedirectTransaction(router, route, launch.transaction);
+      return bindOrRedirectTransaction(router2, route, launch.transaction);
     }
     let transaction = takePendingProgrammaticRoute(route);
     if (!transaction) {
@@ -7984,7 +7989,7 @@ function initWebAppRouteListener(router, { onRouteConfirmed, onMissingRoute }) {
           originalRoute.matched.length === 0
         );
         transaction = createWebAppRouteTransaction(
-          resolveFullPath(router, resolved.url),
+          resolveFullPath(router2, resolved.url),
           historyRoute.openType,
           resolved.context
         );
@@ -8006,7 +8011,7 @@ function initWebAppRouteListener(router, { onRouteConfirmed, onMissingRoute }) {
         originalRoute.matched.length === 0
       );
       transaction = createWebAppRouteTransaction(
-        resolveFullPath(router, resolved.url),
+        resolveFullPath(router2, resolved.url),
         API_NAVIGATE_TO,
         resolved.context
       );
@@ -8015,9 +8020,9 @@ function initWebAppRouteListener(router, { onRouteConfirmed, onMissingRoute }) {
         return toRouteLocation(resolved.url);
       }
     }
-    return bindOrRedirectTransaction(router, route, transaction);
+    return bindOrRedirectTransaction(router2, route, transaction);
   });
-  router.afterEach((to, _from, failure) => {
+  router2.afterEach((to, _from, failure) => {
     var _a;
     const route = to;
     const transaction = findRouteTransaction(route);
@@ -8042,7 +8047,7 @@ function initWebAppRouteListener(router, { onRouteConfirmed, onMissingRoute }) {
       onMissingRoute(transaction);
     }
   });
-  router.onError((_error, to) => {
+  router2.onError((_error, to) => {
     if (!to) {
       return;
     }
@@ -8080,7 +8085,8 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
     );
   }
-  const router = getApp().vm.$router;
+  let router2;
+  router2 = getRouterInstance();
   return new Promise((resolve, reject) => {
     let routeUrl = url;
     let transaction;
@@ -8090,7 +8096,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       routeUrl = (appRoute == null ? void 0 : appRoute.url) || url;
       const { path: path2, query: query2 } = parseUrl(routeUrl);
       transaction = createWebAppRouteTransaction(
-        router.resolve({ path: path2, query: query2 }).fullPath,
+        router2.resolve({ path: path2, query: query2 }).fullPath,
         type,
         appRoute == null ? void 0 : appRoute.context
       );
@@ -8102,7 +8108,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       transaction.pageId = state2.__id__;
       queueWebAppRouteTransaction(transaction);
     }
-    const navigation = router[type === "navigateTo" ? "push" : "replace"]({
+    const navigation = router2[type === "navigateTo" ? "push" : "replace"]({
       path,
       query,
       state: state2,
@@ -8113,11 +8119,11 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
         return reject(failure.message);
       }
       if (type === "switchTab") {
-        const finalTabBarText = routeUrl === url ? tabBarText : router.resolve({ path, query }).meta.tabBarText;
-        router.currentRoute.value.meta.tabBarText = finalTabBarText;
+        const finalTabBarText = routeUrl === url ? tabBarText : router2.resolve({ path, query }).meta.tabBarText;
+        router2.currentRoute.value.meta.tabBarText = finalTabBarText;
       }
       if (type === "navigateTo") {
-        const meta = router.currentRoute.value.meta;
+        const meta = router2.currentRoute.value.meta;
         if (!meta.eventChannel) {
           meta.eventChannel = new EventChannel(state2.__id__, events);
         } else if (events) {
@@ -9170,8 +9176,16 @@ function initPublicPage(route) {
   return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
-  const route = vm.$route;
+  let route;
+  route = useRoute();
   const page = initPublicPage(route);
+  const routeMeta = route.meta;
+  Object.defineProperty(page, "eventChannel", {
+    configurable: true,
+    enumerable: true,
+    get: () => routeMeta.eventChannel,
+    set: (eventChannel) => routeMeta.eventChannel = eventChannel
+  });
   initPageVm(vm, page);
   {
     initXPage(vm, route, page);
@@ -10013,7 +10027,7 @@ function setupPage(comp, path) {
     setup(instance2) {
       instance2.$pageInstance = instance2;
       const route = usePageRoute();
-      const router = __UNI_FEATURE_PAGES__ ? useRouter() : void 0;
+      const router2 = __UNI_FEATURE_PAGES__ ? useRouter() : void 0;
       const query = decodedQuery(route.query);
       instance2.attrs.__pageQuery = query;
       {
@@ -10047,7 +10061,7 @@ function setupPage(comp, path) {
         {
           const pageInstance = getPageInstanceByChild(instance2);
           if (!isDialogPageInstance(pageInstance)) {
-            dispatchWebAppRoute(router == null ? void 0 : router.currentRoute.value);
+            dispatchWebAppRoute(router2 == null ? void 0 : router2.currentRoute.value);
           }
         }
       });
@@ -10075,7 +10089,7 @@ function setupPage(comp, path) {
             if (!isDialogPageInstance(pageInstance)) {
               const { onShow } = instance2;
               onShow && invokeArrayFns$1(onShow);
-              dispatchWebAppRoute(router == null ? void 0 : router.currentRoute.value);
+              dispatchWebAppRoute(router2 == null ? void 0 : router2.currentRoute.value);
               invokeLastDialogPageHookByUniPage(
                 (_a = instance2.proxy) == null ? void 0 : _a.$page,
                 ON_SHOW
@@ -11366,8 +11380,7 @@ function registerSystemRoute(route, page, meta = {}) {
   const __uniPage = setupPage(page);
   let routeComponent;
   routeComponent = createVaporPageRouteComponent(__uniPage, () => {
-    const app = getApp();
-    return app && app.$route && app.$route.query || {};
+    return useRoute().query;
   });
   routeComponent.mpType = "page";
   __uniRoutes.push({
@@ -20356,18 +20369,19 @@ function initApp(app) {
   }
 }
 function initRouter(app) {
-  const router = createRouter(createRouterOptions());
-  initWebAppRouteListener(router, {
+  const router2 = createRouter(createRouterOptions());
+  setRouterInstance(router2);
+  initWebAppRouteListener(router2, {
     onRouteConfirmed: cleanupWebAppRoute,
     onMissingRoute: handleBeforeEntryPageRoutes
   });
-  router.beforeEach((to, from) => {
+  router2.beforeEach((to, from) => {
     if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
       saveTabBarScrollPosition(from.meta.tabBarIndex);
     }
   });
-  app.router = router;
-  app.use(router);
+  app.router = router2;
+  app.use(router2);
 }
 let positionStore = /* @__PURE__ */ Object.create(null);
 function getTabBarScrollPosition(id2) {
@@ -25000,9 +25014,9 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
     if (!canBack) {
       return reject(ON_BACK_PRESS);
     }
-    {
-      getApp().vm.$router.go(-args.delta);
-    }
+    let router2;
+    router2 = getRouterInstance();
+    router2.go(-args.delta);
     return resolve();
   },
   NavigateBackProtocol,
