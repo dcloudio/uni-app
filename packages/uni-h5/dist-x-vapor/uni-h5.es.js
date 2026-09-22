@@ -3,7 +3,7 @@ import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSVa
 import * as Vue from "vue";
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, Fragment, EffectScope, template, onMounted, createTemplateRefSetter, createPlainElement, txt, renderEffect, provide, computed, extend as extend$1, watch, onUnmounted, inject, onBeforeUnmount, child, next, setStyle, setClassName, setInsertionState, createIf, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, defineVaporComponent, on as on$1, setText, toDisplayString, unref, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createComponent as createComponent$1, onActivated, insert, setClass, setAttr, createFor, setHtml, setProp, setStaticTemplateRef, createSlot, createDynamicComponent, setBlockKey, setValue, applyVShow, setDynamicProps, shallowRef, isVNode, Comment, createTextVNode, h, isInSSRComponentSetup, logError, createApp, createBlock, Transition, effectScope, createKeyedFragment, renderList, normalizeUniText, setHover, createAssetComponent, createComponentWithFallback, withImageEventDetail, setImageMode, setImageSrc, VaporKeepAlive } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, hyphenate } from "@vue/shared";
-import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
+import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, VaporRouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 const realGlobal = getGlobal();
 realGlobal.UTS = UTS$1;
@@ -32884,6 +32884,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
     const routeKey = keepAliveRoute == null ? void 0 : keepAliveRoute.routeKey;
     const isTabBar = keepAliveRoute == null ? void 0 : keepAliveRoute.isTabBar;
     const routeCache2 = keepAliveRoute == null ? void 0 : keepAliveRoute.routeCache;
+    const route = hasPages ? useRoute() : void 0;
     const { layoutState, windowState } = useState2();
     useMaxWidth(layoutState, rootRef);
     const topWindow = hasTopWindow && useTopWindow(layoutState);
@@ -32927,7 +32928,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       return mediaQueryList.matches;
     }
     function useMaxWidth(layoutState2, rootRef2) {
-      const route = usePageRoute();
+      const route2 = usePageRoute();
       function checkMaxWidth2() {
         const windowWidth = document.body.clientWidth;
         const pages = getCurrentBasePages();
@@ -32936,7 +32937,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
           const curPage = pages[pages.length - 1];
           meta = getPage$BasePage(curPage).meta;
         } else {
-          const routeOptions = getRouteOptions(route.path, true);
+          const routeOptions = getRouteOptions(route2.path, true);
           if (routeOptions) {
             meta = routeOptions.meta;
           }
@@ -32973,14 +32974,14 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
           });
         }
       }
-      watch([() => route.path], checkMaxWidth2);
+      watch([() => route2.path], checkMaxWidth2);
       onMounted(() => {
         checkMaxWidth2();
         window.addEventListener("resize", checkMaxWidth2);
       });
     }
     function useState2() {
-      const route = usePageRoute();
+      const route2 = usePageRoute();
       if (!hasResponsive) {
         const layoutState3 = reactive({
           marginWidth: 0,
@@ -33012,13 +33013,13 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       const leftWindowMediaQuery = ref(false);
       const rightWindowMediaQuery = ref(false);
       const showTopWindow2 = computed(
-        () => hasTopWindow && route.meta.topWindow !== false && topWindowMediaQuery.value
+        () => hasTopWindow && route2.meta.topWindow !== false && topWindowMediaQuery.value
       );
       const showLeftWindow2 = computed(
-        () => hasLeftWindow && route.meta.leftWindow !== false && leftWindowMediaQuery.value
+        () => hasLeftWindow && route2.meta.leftWindow !== false && leftWindowMediaQuery.value
       );
       const showRightWindow2 = computed(
-        () => hasRightWindow && route.meta.rightWindow !== false && rightWindowMediaQuery.value
+        () => hasRightWindow && route2.meta.rightWindow !== false && rightWindowMediaQuery.value
       );
       const layoutState2 = reactive({
         topWindowMediaQuery,
@@ -33094,9 +33095,9 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       };
     }
     function useShowTabBar() {
-      const route = usePageRoute();
+      const route2 = usePageRoute();
       const tabBar = useTabBar();
-      const showTabBar22 = computed(() => route.meta.isTabBar && tabBar.shown);
+      const showTabBar22 = computed(() => route2.meta.isTabBar && tabBar.shown);
       updateCssVar({
         "--tab-bar-height": tabBar.height
       });
@@ -33255,27 +33256,27 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
         const n15 = createPlainElement("uni-main");
         setInsertionState(n15);
         createIf(
-          () => unref(hasPages),
           () => {
-            const n12 = createComponent$1(unref(RouterView), null, (_slotProps0) => {
-              const n11 = createComponent$1(VaporKeepAlive, {
-                "match-by": "key",
-                cache: () => unref(routeCache2)
-              }, extend$1(() => {
-                const n10 = createDynamicComponent(() => _slotProps0.Component, { type: () => unref(isTabBar) ? "tabBar" : "" }, null, 4, () => unref(routeKey));
-                return n10;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              }));
-              return n11;
+            var _a;
+            return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
+          },
+          () => {
+            const n12 = createComponent$1(VaporKeepAlive, {
+              "match-by": "key",
+              cache: () => unref(routeCache2)
+            }, () => {
+              const n10 = createKeyedFragment(() => unref(routeKey), () => {
+                const n11 = createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" });
+                return n11;
+              });
+              return n10;
             });
             return n12;
           },
-          () => {
+          () => createIf(() => !unref(hasPages), () => {
             const n14 = createDynamicComponent(() => unref(firstPageComponent));
             return n14;
-          },
+          }),
           517
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
         );
@@ -33327,34 +33328,34 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       },
       () => {
         const n35 = createIf(
-          () => unref(hasPages),
           () => {
-            const n39 = createComponent$1(unref(RouterView), null, (_slotProps0) => {
-              const n38 = createComponent$1(VaporKeepAlive, {
-                "match-by": "key",
-                cache: () => unref(routeCache2)
-              }, extend$1(() => {
-                const n37 = createDynamicComponent(() => _slotProps0.Component, { type: () => unref(isTabBar) ? "tabBar" : "" }, null, 4, () => unref(routeKey));
-                return n37;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              }));
-              return n38;
+            var _a;
+            return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
+          },
+          () => {
+            const n39 = createComponent$1(VaporKeepAlive, {
+              "match-by": "key",
+              cache: () => unref(routeCache2)
+            }, () => {
+              const n37 = createKeyedFragment(() => unref(routeKey), () => {
+                const n38 = createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" });
+                return n38;
+              });
+              return n37;
             });
             return n39;
           },
-          () => {
+          () => createIf(() => !unref(hasPages), () => {
             const n41 = createDynamicComponent(() => unref(firstPageComponent));
             return n41;
-          },
-          2053
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
+          }),
+          2309
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_8 */
         );
         return n35;
       },
-      1797
-      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_6 */
+      2053
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
     );
     setInsertionState(n46, 1);
     createIf(() => unref(hasTabBar), () => {

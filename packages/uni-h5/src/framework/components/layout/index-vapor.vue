@@ -32,16 +32,14 @@
       </uni-top-window>
       <uni-content>
         <uni-main>
-          <RouterView v-if="hasPages" v-slot="{ Component }">
-            <KeepAlive match-by="key" :cache="routeCache">
-              <component
-                :is="Component"
-                :type="isTabBar ? 'tabBar' : ''"
-                :key="routeKey"
-              />
-            </KeepAlive>
-          </RouterView>
-          <component v-else :is="firstPageComponent" />
+          <KeepAlive
+            v-if="hasPages && route?.meta.route"
+            match-by="key"
+            :cache="routeCache"
+          >
+            <RouterView :type="isTabBar ? 'tabBar' : ''" :key="routeKey" />
+          </KeepAlive>
+          <component v-else-if="!hasPages" :is="firstPageComponent" />
         </uni-main>
         <uni-left-window
           v-if="hasLeftWindow && LeftWindow"
@@ -92,16 +90,14 @@
       </uni-content>
     </uni-layout>
     <template v-else>
-      <RouterView v-if="hasPages" v-slot="{ Component }">
-        <KeepAlive match-by="key" :cache="routeCache">
-          <component
-            :is="Component"
-            :type="isTabBar ? 'tabBar' : ''"
-            :key="routeKey"
-          />
-        </KeepAlive>
-      </RouterView>
-      <component v-else :is="firstPageComponent" />
+      <KeepAlive
+        v-if="hasPages && route?.meta.route"
+        match-by="key"
+        :cache="routeCache"
+      >
+        <RouterView :type="isTabBar ? 'tabBar' : ''" :key="routeKey" />
+      </KeepAlive>
+      <component v-else-if="!hasPages" :is="firstPageComponent" />
     </template>
     <TabBar v-if="hasTabBar" v-show="showTabBar" />
   </uni-app>
@@ -133,7 +129,8 @@ import {
   watch,
 } from 'vue'
 
-import { RouterView } from 'vue-router'
+// TODO Web Vapor SSR 支持后，为 VaporRouterView 补充服务端渲染实现。
+import { VaporRouterView as RouterView, useRoute } from 'vue-router'
 
 import { getRouteOptions, updateCssVar } from '@dcloudio/uni-core'
 import { useTabBar } from '../../setup/state'
@@ -176,6 +173,7 @@ const keepAliveRoute = hasPages ? useKeepAliveRoute() : undefined
 const routeKey = keepAliveRoute?.routeKey
 const isTabBar = keepAliveRoute?.isTabBar
 const routeCache = keepAliveRoute?.routeCache
+const route = hasPages ? useRoute() : undefined
 const { layoutState, windowState } = useState()
 useMaxWidth(layoutState, rootRef)
 const topWindow = (hasTopWindow &&

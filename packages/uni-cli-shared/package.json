@@ -60,6 +60,7 @@
     "merge": "catalog:",
     "mime": "catalog:",
     "module-alias": "catalog:",
+    "nostics": "^1.1.4",
     "os-locale-s-fix": "^1.0.8-fix-1",
     "picocolors": "catalog:",
     "postcss-import": "^14.0.2",

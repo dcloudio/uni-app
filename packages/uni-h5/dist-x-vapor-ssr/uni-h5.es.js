@@ -1,9 +1,9 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, LINEFEED, PRIMARY_COLOR, passive, debounce, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_WEB_INVOKE_APP_SERVICE, callOptions, formatDateTime, addFont, resolveOwnerEl } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { createVNode, getCurrentInstance, ref, defineComponent as defineComponent$1, openBlock, createElementBlock, Fragment, renderList, isVNode, createBlock, createElementVNode, Comment, Text, cloneVNode, provide, computed, inject, onBeforeUnmount, mergeProps, onMounted, watch, reactive, isReactive, nextTick, useSSRContext, unref, watchEffect, onActivated, ssrContextKey, onBeforeMount, withCtx, resolveDynamicComponent, withDirectives, vShow, shallowRef, markRaw, onUnmounted, createTextVNode, h, isInSSRComponentSetup, injectHook, logError, Transition, KeepAlive } from "vue";
+import { createVNode, getCurrentInstance, ref, defineComponent as defineComponent$1, openBlock, createElementBlock, Fragment, renderList, isVNode, createBlock, createElementVNode, Comment, Text, cloneVNode, provide, computed, inject, onBeforeUnmount, mergeProps, onMounted, watch, reactive, isReactive, nextTick, useSSRContext, unref, watchEffect, onActivated, ssrContextKey, onBeforeMount, withCtx, resolveDynamicComponent, withDirectives, vShow, shallowRef, markRaw, onUnmounted, createTextVNode, h, isInSSRComponentSetup, injectHook, logError, Transition } from "vue";
 import { isArray, isString, extend, capitalize, camelize, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isFunction, isPromise, EMPTY_OBJ, hyphenate } from "@vue/shared";
 import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderClass, ssrRenderStyle, ssrRenderAttr, ssrRenderList, ssrRenderSlot, ssrRenderVNode } from "vue/server-renderer";
-import { useRoute, isNavigationFailure, useRouter, createRouter, createMemoryHistory, RouterView } from "vue-router";
+import { useRoute, isNavigationFailure, useRouter, createRouter, createMemoryHistory, VaporRouterView } from "vue-router";
 import safeAreaInsets from "safe-area-insets";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 const realGlobal = getGlobal();
@@ -17193,7 +17193,8 @@ const _sfc_main = /* @__PURE__ */ defineComponent$1({
     const keepAliveRoute = hasPages ? useKeepAliveRoute() : void 0;
     const routeKey = keepAliveRoute == null ? void 0 : keepAliveRoute.routeKey;
     const isTabBar = keepAliveRoute == null ? void 0 : keepAliveRoute.isTabBar;
-    const routeCache2 = keepAliveRoute == null ? void 0 : keepAliveRoute.routeCache;
+    keepAliveRoute == null ? void 0 : keepAliveRoute.routeCache;
+    const route = hasPages ? useRoute() : void 0;
     const { layoutState, windowState } = useState2();
     useMaxWidth(layoutState, rootRef);
     const topWindow = hasTopWindow && useTopWindow(layoutState);
@@ -17222,7 +17223,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent$1({
       }
     }
     function useMaxWidth(layoutState2, rootRef2) {
-      const route = usePageRoute();
+      const route2 = usePageRoute();
       function checkMaxWidth() {
         const windowWidth = document.body.clientWidth;
         const pages = getCurrentBasePages();
@@ -17231,7 +17232,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent$1({
           const curPage = pages[pages.length - 1];
           meta = getPage$BasePage(curPage).meta;
         } else {
-          const routeOptions = getRouteOptions(route.path, true);
+          const routeOptions = getRouteOptions(route2.path, true);
           if (routeOptions) {
             meta = routeOptions.meta;
           }
@@ -17268,14 +17269,14 @@ const _sfc_main = /* @__PURE__ */ defineComponent$1({
           });
         }
       }
-      watch([() => route.path], checkMaxWidth);
+      watch([() => route2.path], checkMaxWidth);
       onMounted(() => {
         checkMaxWidth();
         window.addEventListener("resize", checkMaxWidth);
       });
     }
     function useState2() {
-      const route = usePageRoute();
+      const route2 = usePageRoute();
       if (!hasResponsive) {
         const layoutState3 = reactive({
           marginWidth: 0,
@@ -17307,13 +17308,13 @@ const _sfc_main = /* @__PURE__ */ defineComponent$1({
       const leftWindowMediaQuery = ref(false);
       const rightWindowMediaQuery = ref(false);
       const showTopWindow = computed(
-        () => hasTopWindow && route.meta.topWindow !== false && topWindowMediaQuery.value
+        () => hasTopWindow && route2.meta.topWindow !== false && topWindowMediaQuery.value
       );
       const showLeftWindow = computed(
-        () => hasLeftWindow && route.meta.leftWindow !== false && leftWindowMediaQuery.value
+        () => hasLeftWindow && route2.meta.leftWindow !== false && leftWindowMediaQuery.value
       );
       const showRightWindow = computed(
-        () => hasRightWindow && route.meta.rightWindow !== false && rightWindowMediaQuery.value
+        () => hasRightWindow && route2.meta.rightWindow !== false && rightWindowMediaQuery.value
       );
       const layoutState2 = reactive({
         topWindowMediaQuery,
@@ -17385,9 +17386,9 @@ const _sfc_main = /* @__PURE__ */ defineComponent$1({
       };
     }
     function useShowTabBar() {
-      const route = usePageRoute();
+      const route2 = usePageRoute();
       const tabBar = useTabBar();
-      const showTabBar2 = computed(() => route.meta.isTabBar && tabBar.shown);
+      const showTabBar2 = computed(() => route2.meta.isTabBar && tabBar.shown);
       return showTabBar2;
     }
     function useTopWindow(layoutState2) {
@@ -17508,6 +17509,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent$1({
       };
     }
     return (_ctx, _push, _parent, _attrs) => {
+      var _a, _b;
       _push(`<uni-app${ssrRenderAttrs(mergeProps({
         ref_key: "rootRef",
         ref: rootRef,
@@ -17531,33 +17533,15 @@ const _sfc_main = /* @__PURE__ */ defineComponent$1({
           _push(`<!---->`);
         }
         _push(`<uni-content><uni-main>`);
-        if (unref(hasPages)) {
-          _push(ssrRenderComponent(unref(RouterView), null, {
-            default: withCtx(({ Component }, _push2, _parent2, _scopeId) => {
-              if (_push2) {
-                _push2(``);
-                ssrRenderVNode(_push2, createVNode(resolveDynamicComponent(Component), {
-                  type: unref(isTabBar) ? "tabBar" : "",
-                  key: unref(routeKey)
-                }, null), _parent2, _scopeId);
-              } else {
-                return [
-                  (openBlock(), createBlock(KeepAlive, {
-                    "match-by": "key",
-                    cache: unref(routeCache2)
-                  }, [
-                    (openBlock(), createBlock(resolveDynamicComponent(Component), {
-                      type: unref(isTabBar) ? "tabBar" : "",
-                      key: unref(routeKey)
-                    }, null, 8, ["type"]))
-                  ], 1032, ["cache"]))
-                ];
-              }
-            }),
-            _: 1
-          }, _parent));
-        } else {
+        if (unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route)) {
+          _push(ssrRenderComponent(unref(VaporRouterView), {
+            type: unref(isTabBar) ? "tabBar" : "",
+            key: unref(routeKey)
+          }, null, _parent));
+        } else if (!unref(hasPages)) {
           ssrRenderVNode(_push, createVNode(resolveDynamicComponent(unref(firstPageComponent)), null, null), _parent);
+        } else {
+          _push(`<!---->`);
         }
         _push(`</uni-main>`);
         if (unref(hasLeftWindow) && unref(LeftWindow)) {
@@ -17601,33 +17585,15 @@ const _sfc_main = /* @__PURE__ */ defineComponent$1({
         _push(`</uni-content></uni-layout>`);
       } else {
         _push(`<!--[-->`);
-        if (unref(hasPages)) {
-          _push(ssrRenderComponent(unref(RouterView), null, {
-            default: withCtx(({ Component }, _push2, _parent2, _scopeId) => {
-              if (_push2) {
-                _push2(``);
-                ssrRenderVNode(_push2, createVNode(resolveDynamicComponent(Component), {
-                  type: unref(isTabBar) ? "tabBar" : "",
-                  key: unref(routeKey)
-                }, null), _parent2, _scopeId);
-              } else {
-                return [
-                  (openBlock(), createBlock(KeepAlive, {
-                    "match-by": "key",
-                    cache: unref(routeCache2)
-                  }, [
-                    (openBlock(), createBlock(resolveDynamicComponent(Component), {
-                      type: unref(isTabBar) ? "tabBar" : "",
-                      key: unref(routeKey)
-                    }, null, 8, ["type"]))
-                  ], 1032, ["cache"]))
-                ];
-              }
-            }),
-            _: 1
-          }, _parent));
-        } else {
+        if (unref(hasPages) && ((_b = unref(route)) == null ? void 0 : _b.meta.route)) {
+          _push(ssrRenderComponent(unref(VaporRouterView), {
+            type: unref(isTabBar) ? "tabBar" : "",
+            key: unref(routeKey)
+          }, null, _parent));
+        } else if (!unref(hasPages)) {
           ssrRenderVNode(_push, createVNode(resolveDynamicComponent(unref(firstPageComponent)), null, null), _parent);
+        } else {
+          _push(`<!---->`);
         }
         _push(`<!--]-->`);
       }

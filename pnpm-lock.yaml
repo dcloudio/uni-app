@@ -1497,6 +1497,9 @@ importers:
       module-alias:
         specifier: 'catalog:'
         version: 2.2.3
+      nostics:
+        specifier: ^1.1.4
+        version: 1.3.0
       os-locale-s-fix:
         specifier: ^1.0.8-fix-1
         version: 1.0.8-fix-1
@@ -6764,6 +6767,9 @@ packages:
   normalize-range@0.1.2:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
+
+  nostics@1.3.0:
+    resolution: {integrity: sha512-wzRsrJwNlFbqIRQt8aCeL2WE8USip/uuvGSOZV1D02CxX8ABTMbw8IywKjH7yWHETMXbWJI4OBpihg9rmz2Vyg==}
 
   npm-run-path@2.0.2:
     resolution: {integrity: sha512-lJxZYlT4DW/bRUtFh1MQIWqmLwQfAxnqWG4HhEdjMlkrJYnJn0Jrr2u3mgxqaWsdiBc76TYkTG/mhrnYTuzfHw==}
@@ -13425,6 +13431,8 @@ snapshots:
   normalize-path@3.0.0: {}
 
   normalize-range@0.1.2: {}
+
+  nostics@1.3.0: {}
 
   npm-run-path@2.0.2:
     dependencies:

@@ -15302,6 +15302,7 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
     const routeKey = keepAliveRoute == null ? void 0 : keepAliveRoute.routeKey;
     const isTabBar = keepAliveRoute == null ? void 0 : keepAliveRoute.isTabBar;
     const routeCache2 = keepAliveRoute == null ? void 0 : keepAliveRoute.routeCache;
+    const route = hasPages ? vueRouter.useRoute() : void 0;
     const { layoutState, windowState } = useState2();
     useMaxWidth(layoutState, rootRef);
     const topWindow = hasTopWindow && useTopWindow(layoutState);
@@ -15330,7 +15331,7 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     function useMaxWidth(layoutState2, rootRef2) {
-      const route = usePageRoute();
+      const route2 = usePageRoute();
       function checkMaxWidth() {
         const windowWidth = document.body.clientWidth;
         const pages = getCurrentBasePages();
@@ -15339,7 +15340,7 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
           const curPage = pages[pages.length - 1];
           meta = getPage$BasePage(curPage).meta;
         } else {
-          const routeOptions = getRouteOptions(route.path, true);
+          const routeOptions = getRouteOptions(route2.path, true);
           if (routeOptions) {
             meta = routeOptions.meta;
           }
@@ -15376,10 +15377,10 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
           });
         }
       }
-      Vue.watch([() => route.path], checkMaxWidth);
+      Vue.watch([() => route2.path], checkMaxWidth);
     }
     function useState2() {
-      const route = usePageRoute();
+      const route2 = usePageRoute();
       if (!hasResponsive) {
         const layoutState3 = Vue.reactive({
           marginWidth: 0,
@@ -15411,13 +15412,13 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       const leftWindowMediaQuery = Vue.ref(false);
       const rightWindowMediaQuery = Vue.ref(false);
       const showTopWindow = Vue.computed(
-        () => hasTopWindow && route.meta.topWindow !== false && topWindowMediaQuery.value
+        () => hasTopWindow && route2.meta.topWindow !== false && topWindowMediaQuery.value
       );
       const showLeftWindow = Vue.computed(
-        () => hasLeftWindow && route.meta.leftWindow !== false && leftWindowMediaQuery.value
+        () => hasLeftWindow && route2.meta.leftWindow !== false && leftWindowMediaQuery.value
       );
       const showRightWindow = Vue.computed(
-        () => hasRightWindow && route.meta.rightWindow !== false && rightWindowMediaQuery.value
+        () => hasRightWindow && route2.meta.rightWindow !== false && rightWindowMediaQuery.value
       );
       const layoutState2 = Vue.reactive({
         topWindowMediaQuery,
@@ -15489,9 +15490,9 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       };
     }
     function useShowTabBar() {
-      const route = usePageRoute();
+      const route2 = usePageRoute();
       const tabBar = useTabBar();
-      const showTabBar2 = Vue.computed(() => route.meta.isTabBar && tabBar.shown);
+      const showTabBar2 = Vue.computed(() => route2.meta.isTabBar && tabBar.shown);
       return showTabBar2;
     }
     function useTopWindow(layoutState2) {
@@ -15647,27 +15648,27 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
         const n15 = Vue.createPlainElement("uni-main");
         Vue.setInsertionState(n15);
         Vue.createIf(
-          () => Vue.unref(hasPages),
           () => {
-            const n12 = Vue.createComponent(Vue.unref(vueRouter.RouterView), null, (_slotProps0) => {
-              const n11 = Vue.createComponent(Vue.VaporKeepAlive, {
-                "match-by": "key",
-                cache: () => Vue.unref(routeCache2)
-              }, Vue.extend(() => {
-                const n10 = Vue.createDynamicComponent(() => _slotProps0.Component, { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, null, 4, () => Vue.unref(routeKey));
-                return n10;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              }));
-              return n11;
+            var _a;
+            return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
+          },
+          () => {
+            const n12 = Vue.createComponent(Vue.VaporKeepAlive, {
+              "match-by": "key",
+              cache: () => Vue.unref(routeCache2)
+            }, () => {
+              const n10 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
+                const n11 = Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" });
+                return n11;
+              });
+              return n10;
             });
             return n12;
           },
-          () => {
+          () => Vue.createIf(() => !Vue.unref(hasPages), () => {
             const n14 = Vue.createDynamicComponent(() => Vue.unref(firstPageComponent));
             return n14;
-          },
+          }),
           517
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
         );
@@ -15719,34 +15720,34 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       },
       () => {
         const n35 = Vue.createIf(
-          () => Vue.unref(hasPages),
           () => {
-            const n39 = Vue.createComponent(Vue.unref(vueRouter.RouterView), null, (_slotProps0) => {
-              const n38 = Vue.createComponent(Vue.VaporKeepAlive, {
-                "match-by": "key",
-                cache: () => Vue.unref(routeCache2)
-              }, Vue.extend(() => {
-                const n37 = Vue.createDynamicComponent(() => _slotProps0.Component, { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, null, 4, () => Vue.unref(routeKey));
-                return n37;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              }));
-              return n38;
+            var _a;
+            return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
+          },
+          () => {
+            const n39 = Vue.createComponent(Vue.VaporKeepAlive, {
+              "match-by": "key",
+              cache: () => Vue.unref(routeCache2)
+            }, () => {
+              const n37 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
+                const n38 = Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" });
+                return n38;
+              });
+              return n37;
             });
             return n39;
           },
-          () => {
+          () => Vue.createIf(() => !Vue.unref(hasPages), () => {
             const n41 = Vue.createDynamicComponent(() => Vue.unref(firstPageComponent));
             return n41;
-          },
-          2053
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
+          }),
+          2309
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_8 */
         );
         return n35;
       },
-      1797
-      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_6 */
+      2053
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
     );
     Vue.setInsertionState(n46, 1);
     Vue.createIf(() => Vue.unref(hasTabBar), () => {
