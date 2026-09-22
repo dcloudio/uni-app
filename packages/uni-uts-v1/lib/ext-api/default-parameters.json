@@ -434,11 +434,6 @@
       "null"
     ]
   },
-  "uni-prompt": {
-    "hideToast": [
-      "null"
-    ]
-  },
   "uni-pullDownRefresh": {
     "startPullDownRefresh": [
       "null"
@@ -483,13 +478,6 @@
   },
   "uni-video": {
     "createVideoContext": [
-      null,
-      "null"
-    ]
-  },
-  "uni-zstd-decompress": {
-    "__zstdDecompressFile": [
-      null,
       null,
       "null"
     ]
