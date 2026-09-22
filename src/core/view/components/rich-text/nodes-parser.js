@@ -107,7 +107,10 @@ export default function parseNodes (nodes, parentNode, scopeId, triggerItemClick
     if (!isPlainObject(node)) {
       return
     }
-    if (!hasOwn(node, 'type') || node.type === 'node') {
+    // 存在 node.text 且 type 为空或为 'text' 时当作 text 节点处理
+    if ((!hasOwn(node, 'type') || node.type === 'text') && typeof node.text === 'string' && node.text !== '') {
+      parentNode.appendChild(document.createTextNode(decodeEntities(node.text)))
+    } else if (!hasOwn(node, 'type') || node.type === 'node') {
       if (!(typeof node.name === 'string' && node.name)) {
         return
       }
@@ -148,10 +151,6 @@ export default function parseNodes (nodes, parentNode, scopeId, triggerItemClick
       }
 
       parentNode.appendChild(elem)
-    } else {
-      if (node.type === 'text' && typeof node.text === 'string' && node.text !== '') {
-        parentNode.appendChild(document.createTextNode(decodeEntities(node.text)))
-      }
     }
   })
   return parentNode

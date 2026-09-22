@@ -9,6 +9,10 @@ const {
 const {
   updateAppJsonUsingComponents
 } = require('@dcloudio/uni-cli-shared/lib/cache')
+const {
+  darkmode,
+  hasTheme
+} = require('@dcloudio/uni-cli-shared/lib/theme')
 
 const {
   hasOwn,
@@ -144,6 +148,10 @@ module.exports = function (pagesJson, manifestJson) {
   const platformJson = manifestJson['mp-alipay'] || {}
 
   Object.keys(platformJson).forEach(key => {
+    if (key === 'darkmode') {
+      app.darkMode = platformJson[key]
+      return
+    }
     if (!projectKeys.includes(key) && !NON_APP_JSON_KEYS.includes(key)) {
       // usingComponents 是编译模式开关，需要过滤，不能拷贝到 app
       app[key] = platformJson[key]
@@ -153,6 +161,12 @@ module.exports = function (pagesJson, manifestJson) {
   if (app.usingComponents) {
     updateAppJsonUsingComponents(app.usingComponents)
   }
+
+  const themeLocation = platformJson.themeLocation
+  if (darkmode() && hasTheme(themeLocation)) {
+    app.themeLocation = themeLocation || 'theme.json'
+  }
+
   const projectName = getPlatformProject()
 
   let project = {}
