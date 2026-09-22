@@ -58,7 +58,10 @@ describe('h5 pages.json page route', () => {
     })
     return plugin.transform.call(
       {},
-      JSON.stringify({ pages: [{ path: 'pages/index/index', style: {} }] }),
+      JSON.stringify({
+        pages: [{ path: 'pages/index/index', style: {} }],
+        topWindow: { path: 'windows/top' },
+      }),
       path.join(inputDir, PAGES_JSON_JS)
     ).code as string
   }
@@ -66,6 +69,14 @@ describe('h5 pages.json page route', () => {
   test('Web VDOM 保持原有 VNode 页面包装', () => {
     const code = transform(false)
 
+    expect(code).toContain('import { defineAsyncComponent,')
+    expect(code).not.toContain('defineVaporAsyncComponent')
+    expect(code).toContain(
+      'const PagesIndexIndex = defineAsyncComponent(extend('
+    )
+    expect(code).toContain(
+      `const topWindow = defineAsyncComponent(()=>import('./windows/top')`
+    )
     expect(code).toContain(
       `import { PageComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'`
     )
@@ -77,6 +88,16 @@ describe('h5 pages.json page route', () => {
   test('Web Vapor 生成路由专属 Page 组件', () => {
     const code = transform(true)
 
+    expect(code).toContain(
+      'import { defineVaporAsyncComponent as defineAsyncComponent,'
+    )
+    expect(code).not.toContain('import { defineAsyncComponent,')
+    expect(code).toContain(
+      'const PagesIndexIndex = defineAsyncComponent(extend('
+    )
+    expect(code).toContain(
+      `const topWindow = defineAsyncComponent(()=>import('./windows/top')`
+    )
     expect(code).toContain(
       `import { createVaporPageRouteComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'`
     )

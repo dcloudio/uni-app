@@ -54,6 +54,9 @@ function generatePagesJsonCode(
   config: ResolvedConfig
 ) {
   const isWebVapor = isUniAppXWebVapor()
+  const defineAsyncComponentImport = isWebVapor
+    ? 'defineVaporAsyncComponent as defineAsyncComponent'
+    : 'defineAsyncComponent'
   const globalName = getGlobal(ssr)
   const pagesJson = normalizePagesJson(jsonStr, process.env.UNI_PLATFORM)
   const { importLayoutComponentsCode, defineLayoutComponentsCode } =
@@ -85,7 +88,7 @@ function generatePagesJsonCode(
     ? 'createVaporPageRouteComponent'
     : 'PageComponent'
   return `
-import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
+import { ${defineAsyncComponentImport}, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { ${pageComponentImport}, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
 import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, aMapKey, bMapKey, aMapSecurityJsCode, aMapServiceHost, ${vueType}, locale, fallbackLocale, darkmode, themeConfig } from './${MANIFEST_JSON_JS}'
 const locales = import.meta.glob('./locale/*.json', { eager: true })
