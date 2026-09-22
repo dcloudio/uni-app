@@ -1619,7 +1619,7 @@ function returnValue(methodName, res = {}) {
  */
 const request = {
     name: my.canIUse('request') ? 'request' : 'httpRequest',
-    args(fromArgs, toArgs) {
+    args(fromArgs) {
         const isDingDing = my.canIUse('saveFileToDingTalk');
         const method = fromArgs.method || 'GET';
         if (!fromArgs.header) {

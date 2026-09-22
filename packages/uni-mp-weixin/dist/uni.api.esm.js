@@ -1565,7 +1565,7 @@ const compressImage = {
     },
 };
 const request = {
-    args(fromArgs, toArgs) {
+    args(fromArgs) {
     },
 };
 

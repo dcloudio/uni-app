@@ -1937,7 +1937,7 @@ const compressImage = {
     },
 };
 const request = {
-    args(fromArgs, toArgs) {
+    args(fromArgs) {
         if (fromArgs.isUTS) {
             const oldSuccess = fromArgs.success;
             if (oldSuccess) {
