@@ -164,7 +164,11 @@ export async function compileArkTSExtApi(
   const depEtsFiles: string[] = []
   for (const harmonyRawFile of harmonyRawFiles) {
     const srcFile = path.resolve(utssdkHarmonyDir, harmonyRawFile)
-    const destFile = path.resolve(outputUniModuleDir, harmonyRawFile)
+    const destFile = path.resolve(
+      outputUniModuleDir,
+      'utssdk/app-harmony',
+      harmonyRawFile
+    )
     if (/\.(ets|js)$/.test(harmonyRawFile)) {
       depEtsFiles.push(srcFile)
       if (rewriteConsoleExpr) {
