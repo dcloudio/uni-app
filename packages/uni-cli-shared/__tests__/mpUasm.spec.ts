@@ -123,8 +123,14 @@ Module["instantiateWasm"] = function(imports, successCallback) {
 
   test('uses the Alipay WebAssembly implementation', () => {
     const inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-uasm-mp-'))
-    const entry = path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay/zstd.js')
-    fs.outputFileSync(path.join(path.dirname(entry), 'zstd.wasm'), '')
+    const entry = path.join(
+      inputDir,
+      'uni_modules/zstd/workers/mp-alipay/zstd.js'
+    )
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay/zstd.wasm'),
+      ''
+    )
     const transform = uniMiniProgramUasmPlugin('mp-alipay').transform as (
       source: string,
       id: string
@@ -133,6 +139,153 @@ Module["instantiateWasm"] = function(imports, successCallback) {
     const result = transform('var Module=moduleArg;', entry)
 
     expect(result.code).toContain('const WebAssembly = MYWebAssembly;')
+    expect(result.code).toContain(
+      'WebAssembly.instantiate("uni_modules/zstd/uasm/mp-alipay/zstd.wasm", imports)'
+    )
+    fs.removeSync(inputDir)
+  })
+
+  test('keeps the Alipay UASM wrapper outside the WASM transform', () => {
+    const plugin = uniMiniProgramUasmPlugin('mp-alipay')
+    const transform = plugin.transform as (
+      source: string,
+      id: string
+    ) => unknown
+
+    expect(
+      transform(
+        'const workerUrl = "/workers/mp-alipay/zstd-in-worker.js"',
+        '/tmp/uni_modules/zstd/uasm/mp-alipay/zstd.js'
+      )
+    ).toBeUndefined()
+  })
+
+  test('emits Alipay UASM worker assets separately from standard workers', () => {
+    const inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-uasm-mp-'))
+    const workerDir = path.join(inputDir, 'uni_modules/zstd/workers/mp-alipay')
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay/zstd.js'),
+      'export default function createModule() {}'
+    )
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay/zstd.wasm'),
+      ''
+    )
+    fs.outputFileSync(path.join(workerDir, 'zstd.js'), 'var Module=moduleArg;')
+    fs.outputFileSync(
+      path.join(workerDir, 'zstd-in-worker.js'),
+      'import { createZstdModule } from "./zstd.js"'
+    )
+
+    const plugin = uniMiniProgramUasmPlugin('mp-alipay', inputDir)
+    const emitted: Array<{ fileName: string; source: string }> = []
+    const generateBundle = plugin.generateBundle as Function
+    generateBundle.call(
+      {
+        emitFile(asset: { fileName: string; source: string }) {
+          emitted.push(asset)
+        },
+      },
+      {},
+      {}
+    )
+
+    expect(emitted).toHaveLength(2)
+    expect(emitted).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          fileName: 'workers/mp-alipay/zstd-in-worker.js',
+          source: 'import { createZstdModule } from "./zstd.js"',
+        }),
+        expect.objectContaining({
+          fileName: 'workers/mp-alipay/zstd.js',
+          source: expect.stringContaining('const WebAssembly = MYWebAssembly;'),
+        }),
+      ])
+    )
+    fs.removeSync(inputDir)
+  })
+
+  test('preserves nested Alipay UASM worker assets', () => {
+    const inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-uasm-mp-'))
+    const workerDir = path.join(
+      inputDir,
+      'uni_modules/zstd/workers/mp-alipay/helpers'
+    )
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay/zstd.wasm'),
+      ''
+    )
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay/zstd.js'),
+      'export default function createModule() {}'
+    )
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/zstd/workers/mp-alipay/zstd.js'),
+      'var Module=moduleArg;'
+    )
+    fs.outputFileSync(
+      path.join(workerDir, 'codec.js'),
+      'export const codec = 1'
+    )
+
+    const plugin = uniMiniProgramUasmPlugin('mp-alipay', inputDir)
+    const emitted: Array<{ fileName: string; source: string }> = []
+    const generateBundle = plugin.generateBundle as Function
+    generateBundle.call(
+      {
+        emitFile(asset: { fileName: string; source: string }) {
+          emitted.push(asset)
+        },
+      },
+      {},
+      {}
+    )
+
+    expect(emitted).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          fileName: 'workers/mp-alipay/helpers/codec.js',
+          source: 'export const codec = 1',
+        }),
+      ])
+    )
+    fs.removeSync(inputDir)
+  })
+
+  test('fails on an existing Alipay UASM worker asset', () => {
+    const inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-uasm-mp-'))
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay/zstd.js'),
+      'export default function createModule() {}'
+    )
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/zstd/uasm/mp-alipay/zstd.wasm'),
+      ''
+    )
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/zstd/workers/mp-alipay/zstd.js'),
+      'var Module=moduleArg;'
+    )
+
+    const plugin = uniMiniProgramUasmPlugin('mp-alipay', inputDir)
+    const generateBundle = plugin.generateBundle as Function
+
+    expect(() =>
+      generateBundle.call(
+        {
+          emitFile() {},
+        },
+        {},
+        {
+          'workers/mp-alipay/zstd.js': {
+            type: 'asset',
+            fileName: 'workers/mp-alipay/zstd.js',
+            source: 'existing',
+          },
+        }
+      )
+    ).toThrow('UASM 小程序 Worker 产物冲突：workers/mp-alipay/zstd.js')
     fs.removeSync(inputDir)
   })
 })
