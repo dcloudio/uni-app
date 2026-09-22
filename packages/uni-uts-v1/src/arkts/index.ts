@@ -192,10 +192,15 @@ export async function compileArkTSExtApi(
     main: 'utssdk/app-harmony/index.ets',
     author: '',
     license: '',
-    dependencies: (uni_modules || []).reduce((acc, dep) => {
-      acc['@uni_modules/' + dep.toLowerCase()] = '../' + dep
-      return acc
-    }, {} as Record<string, string>),
+    /**
+     * 开发者项目下的模块使用项目oh-package.json5内定义的依赖进行相互依赖
+     * 内置插件不需要生成uni_modules相对路径依赖，通过内部包进行互相依赖
+     * 外置插件不需要生成uni_modules相对路径依赖，仅依赖runtime包内的基础模块
+     */
+    // dependencies: (uni_modules || []).reduce((acc, dep) => {
+    //   acc['@uni_modules/' + dep.toLowerCase()] = '../' + dep
+    //   return acc
+    // }, {} as Record<string, string>),
   }
 
   if (isOhpmPackage) {
