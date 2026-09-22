@@ -19032,70 +19032,33 @@ function getObjectOrArrayExpressionKeys(value) {
   return [];
 }
 
-var __defProp$1 = Object.defineProperty;
-var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$1 = (obj, key, value) => {
-  __defNormalProp$1(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 var _a, _b;
 class ScriptCompileContext {
   constructor(descriptor, options) {
     this.descriptor = descriptor;
     this.options = options;
-    __publicField$1(this, "isJS");
-    __publicField$1(this, "isTS");
-    // fixed by xxxxxx
-    __publicField$1(this, "isUTS");
-    __publicField$1(this, "isCE", false);
-    __publicField$1(this, "scriptAst");
-    __publicField$1(this, "scriptSetupAst");
-    __publicField$1(this, "source", this.descriptor.source);
-    __publicField$1(this, "filename", this.descriptor.filename);
-    __publicField$1(this, "s", new MagicString(this.source));
-    __publicField$1(this, "startOffset", (_a = this.descriptor.scriptSetup) == null ? void 0 : _a.loc.start.offset);
-    __publicField$1(this, "endOffset", (_b = this.descriptor.scriptSetup) == null ? void 0 : _b.loc.end.offset);
-    // import / type analysis
-    __publicField$1(this, "scope");
-    __publicField$1(this, "globalScopes");
-    __publicField$1(this, "userImports", /* @__PURE__ */ Object.create(null));
+    this.isCE = false;
+    this.source = this.descriptor.source;
+    this.filename = this.descriptor.filename;
+    this.s = new MagicString(this.source);
+    this.startOffset = (_a = this.descriptor.scriptSetup) == null ? void 0 : _a.loc.start.offset;
+    this.endOffset = (_b = this.descriptor.scriptSetup) == null ? void 0 : _b.loc.end.offset;
+    this.userImports = /* @__PURE__ */ Object.create(null);
     // macros presence check
-    __publicField$1(this, "hasDefinePropsCall", false);
-    __publicField$1(this, "hasDefineEmitCall", false);
-    __publicField$1(this, "hasDefineExposeCall", false);
-    __publicField$1(this, "hasDefaultExportName", false);
-    __publicField$1(this, "hasDefaultExportRender", false);
-    __publicField$1(this, "hasDefineOptionsCall", false);
-    __publicField$1(this, "hasDefineSlotsCall", false);
-    __publicField$1(this, "hasDefineModelCall", false);
-    // defineProps
-    __publicField$1(this, "propsCall");
-    __publicField$1(this, "propsDecl");
-    __publicField$1(this, "propsRuntimeDecl");
-    __publicField$1(this, "propsTypeDecl");
-    __publicField$1(this, "propsDestructureDecl");
-    __publicField$1(this, "propsDestructuredBindings", /* @__PURE__ */ Object.create(null));
-    __publicField$1(this, "propsDestructureRestId");
-    __publicField$1(this, "propsRuntimeDefaults");
-    // defineEmits
-    __publicField$1(this, "emitsRuntimeDecl");
-    __publicField$1(this, "emitsTypeDecl");
-    __publicField$1(this, "emitDecl");
+    this.hasDefinePropsCall = false;
+    this.hasDefineEmitCall = false;
+    this.hasDefineExposeCall = false;
+    this.hasDefaultExportName = false;
+    this.hasDefaultExportRender = false;
+    this.hasDefineOptionsCall = false;
+    this.hasDefineSlotsCall = false;
+    this.hasDefineModelCall = false;
+    this.propsDestructuredBindings = /* @__PURE__ */ Object.create(null);
     // defineModel
-    __publicField$1(this, "modelDecls", /* @__PURE__ */ Object.create(null));
-    // defineOptions
-    __publicField$1(this, "optionsRuntimeDecl");
+    this.modelDecls = /* @__PURE__ */ Object.create(null);
     // codegen
-    __publicField$1(this, "bindingMetadata", {});
-    __publicField$1(this, "helperImports", /* @__PURE__ */ new Set());
-    /**
-     * to be exposed on compiled script block for HMR cache busting
-     */
-    __publicField$1(this, "deps");
-    /**
-     * cache for resolved fs
-     */
-    __publicField$1(this, "fs");
+    this.bindingMetadata = {};
+    this.helperImports = /* @__PURE__ */ new Set();
     const { script, scriptSetup } = descriptor;
     const scriptLang = script && script.lang;
     const scriptSetupLang = scriptSetup && scriptSetup.lang;
@@ -21377,12 +21340,6 @@ minimatch.Minimatch = Minimatch;
 minimatch.escape = escape;
 minimatch.unescape = unescape;
 
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 class TypeScope {
   constructor(filename, source, offset = 0, imports = /* @__PURE__ */ Object.create(null), types = /* @__PURE__ */ Object.create(null), declares = /* @__PURE__ */ Object.create(null)) {
     this.filename = filename;
@@ -21391,10 +21348,10 @@ class TypeScope {
     this.imports = imports;
     this.types = types;
     this.declares = declares;
-    __publicField(this, "isGenericScope", false);
-    __publicField(this, "resolvedImportSources", /* @__PURE__ */ Object.create(null));
-    __publicField(this, "exportedTypes", /* @__PURE__ */ Object.create(null));
-    __publicField(this, "exportedDeclares", /* @__PURE__ */ Object.create(null));
+    this.isGenericScope = false;
+    this.resolvedImportSources = /* @__PURE__ */ Object.create(null);
+    this.exportedTypes = /* @__PURE__ */ Object.create(null);
+    this.exportedDeclares = /* @__PURE__ */ Object.create(null);
   }
 }
 function resolveTypeElements(ctx, node, scope, typeParameters) {

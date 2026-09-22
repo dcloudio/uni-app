@@ -1203,12 +1203,6 @@ function decodeHTML(str, mode = DecodingMode.Legacy) {
     return htmlDecoder(str, mode);
 }
 
-var __defProp$c = Object.defineProperty;
-var __defNormalProp$c = (obj, key, value) => key in obj ? __defProp$c(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$2 = (obj, key, value) => {
-  __defNormalProp$c(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 const defaultDelimitersOpen = new Uint8Array([123, 123]);
 const defaultDelimitersClose = new Uint8Array([125, 125]);
 function isTagStartChar(c) {
@@ -1259,32 +1253,31 @@ let Tokenizer$1 = class Tokenizer {
     this.stack = stack;
     this.cbs = cbs;
     /** The current state the tokenizer is in. */
-    __publicField$2(this, "state", 1);
+    this.state = 1;
     /** The read buffer. */
-    __publicField$2(this, "buffer", "");
+    this.buffer = "";
     /** The beginning of the section that is currently being read. */
-    __publicField$2(this, "sectionStart", 0);
+    this.sectionStart = 0;
     /** The index within the buffer that we are currently looking at. */
-    __publicField$2(this, "index", 0);
+    this.index = 0;
     /** The start of the last entity. */
-    __publicField$2(this, "entityStart", 0);
+    this.entityStart = 0;
     /** Some behavior, eg. when decoding entities, is done while we are in another state. This keeps track of the other state type. */
-    __publicField$2(this, "baseState", 1);
+    this.baseState = 1;
     /** For special parsing behavior inside of script and style tags. */
-    __publicField$2(this, "inRCDATA", false);
+    this.inRCDATA = false;
     /** For disabling RCDATA tags handling */
-    __publicField$2(this, "inXML", false);
+    this.inXML = false;
     /** For disabling interpolation parsing in v-pre */
-    __publicField$2(this, "inVPre", false);
+    this.inVPre = false;
     /** Record newline positions for fast line / column calculation */
-    __publicField$2(this, "newlines", []);
-    __publicField$2(this, "entityDecoder");
-    __publicField$2(this, "mode", 0);
-    __publicField$2(this, "delimiterOpen", defaultDelimitersOpen);
-    __publicField$2(this, "delimiterClose", defaultDelimitersClose);
-    __publicField$2(this, "delimiterIndex", -1);
-    __publicField$2(this, "currentSequence");
-    __publicField$2(this, "sequenceIndex", 0);
+    this.newlines = [];
+    this.mode = 0;
+    this.delimiterOpen = defaultDelimitersOpen;
+    this.delimiterClose = defaultDelimitersClose;
+    this.delimiterIndex = -1;
+    this.currentSequence = void 0;
+    this.sequenceIndex = 0;
     {
       this.entityDecoder = new EntityDecoder(
         htmlDecodeTree,
@@ -26844,21 +26837,21 @@ function extractIdentifiers(ids, node) {
   }
 }
 
-var __defProp$b = Object.defineProperty;
+var __defProp$a = Object.defineProperty;
 var __defProps$9 = Object.defineProperties;
 var __getOwnPropDescs$9 = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols$a = Object.getOwnPropertySymbols;
 var __hasOwnProp$a = Object.prototype.hasOwnProperty;
 var __propIsEnum$a = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$b = (obj, key, value) => key in obj ? __defProp$b(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __spreadValues$a = (a, b) => {
   for (var prop in b || (b = {}))
     if (__hasOwnProp$a.call(b, prop))
-      __defNormalProp$b(a, prop, b[prop]);
+      __defNormalProp$a(a, prop, b[prop]);
   if (__getOwnPropSymbols$a)
     for (var prop of __getOwnPropSymbols$a(b)) {
       if (__propIsEnum$a.call(b, prop))
-        __defNormalProp$b(a, prop, b[prop]);
+        __defNormalProp$a(a, prop, b[prop]);
     }
   return a;
 };
@@ -31079,21 +31072,21 @@ function parseUriParts(urlString) {
   return urlParse(isString$2(urlString) ? urlString : "", false, true);
 }
 
-var __defProp$a = Object.defineProperty;
+var __defProp$9 = Object.defineProperty;
 var __defProps$8 = Object.defineProperties;
 var __getOwnPropDescs$8 = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols$9 = Object.getOwnPropertySymbols;
 var __hasOwnProp$9 = Object.prototype.hasOwnProperty;
 var __propIsEnum$9 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __spreadValues$9 = (a, b) => {
   for (var prop in b || (b = {}))
     if (__hasOwnProp$9.call(b, prop))
-      __defNormalProp$a(a, prop, b[prop]);
+      __defNormalProp$9(a, prop, b[prop]);
   if (__getOwnPropSymbols$9)
     for (var prop of __getOwnPropSymbols$9(b)) {
       if (__propIsEnum$9.call(b, prop))
-        __defNormalProp$a(a, prop, b[prop]);
+        __defNormalProp$9(a, prop, b[prop]);
     }
   return a;
 };
@@ -31973,21 +31966,21 @@ function ssrProcessTransition(node, context) {
   }
 }
 
-var __defProp$9 = Object.defineProperty;
+var __defProp$8 = Object.defineProperty;
 var __defProps$7 = Object.defineProperties;
 var __getOwnPropDescs$7 = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols$8 = Object.getOwnPropertySymbols;
 var __hasOwnProp$8 = Object.prototype.hasOwnProperty;
 var __propIsEnum$8 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __spreadValues$8 = (a, b) => {
   for (var prop in b || (b = {}))
     if (__hasOwnProp$8.call(b, prop))
-      __defNormalProp$9(a, prop, b[prop]);
+      __defNormalProp$8(a, prop, b[prop]);
   if (__getOwnPropSymbols$8)
     for (var prop of __getOwnPropSymbols$8(b)) {
       if (__propIsEnum$8.call(b, prop))
-        __defNormalProp$9(a, prop, b[prop]);
+        __defNormalProp$8(a, prop, b[prop]);
     }
   return a;
 };
@@ -32626,21 +32619,21 @@ function injectCssVars(node) {
   }
 }
 
-var __defProp$8 = Object.defineProperty;
+var __defProp$7 = Object.defineProperty;
 var __defProps$6 = Object.defineProperties;
 var __getOwnPropDescs$6 = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols$7 = Object.getOwnPropertySymbols;
 var __hasOwnProp$7 = Object.prototype.hasOwnProperty;
 var __propIsEnum$7 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __spreadValues$7 = (a, b) => {
   for (var prop in b || (b = {}))
     if (__hasOwnProp$7.call(b, prop))
-      __defNormalProp$8(a, prop, b[prop]);
+      __defNormalProp$7(a, prop, b[prop]);
   if (__getOwnPropSymbols$7)
     for (var prop of __getOwnPropSymbols$7(b)) {
       if (__propIsEnum$7.call(b, prop))
-        __defNormalProp$8(a, prop, b[prop]);
+        __defNormalProp$7(a, prop, b[prop]);
     }
   return a;
 };
@@ -32726,21 +32719,21 @@ function warn(msg) {
   );
 }
 
-var __defProp$7 = Object.defineProperty;
+var __defProp$6 = Object.defineProperty;
 var __defProps$5 = Object.defineProperties;
 var __getOwnPropDescs$5 = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols$6 = Object.getOwnPropertySymbols;
 var __hasOwnProp$6 = Object.prototype.hasOwnProperty;
 var __propIsEnum$6 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __spreadValues$6 = (a, b) => {
   for (var prop in b || (b = {}))
     if (__hasOwnProp$6.call(b, prop))
-      __defNormalProp$7(a, prop, b[prop]);
+      __defNormalProp$6(a, prop, b[prop]);
   if (__getOwnPropSymbols$6)
     for (var prop of __getOwnPropSymbols$6(b)) {
       if (__propIsEnum$6.call(b, prop))
-        __defNormalProp$7(a, prop, b[prop]);
+        __defNormalProp$6(a, prop, b[prop]);
     }
   return a;
 };
@@ -44287,21 +44280,21 @@ function merge(oldMap, newMap) {
 
 var merge$1 = /*@__PURE__*/getDefaultExportFromCjs(mergeSourceMap);
 
-var __defProp$6 = Object.defineProperty;
+var __defProp$5 = Object.defineProperty;
 var __defProps$4 = Object.defineProperties;
 var __getOwnPropDescs$4 = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols$5 = Object.getOwnPropertySymbols;
 var __hasOwnProp$5 = Object.prototype.hasOwnProperty;
 var __propIsEnum$5 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __spreadValues$5 = (a, b) => {
   for (var prop in b || (b = {}))
     if (__hasOwnProp$5.call(b, prop))
-      __defNormalProp$6(a, prop, b[prop]);
+      __defNormalProp$5(a, prop, b[prop]);
   if (__getOwnPropSymbols$5)
     for (var prop of __getOwnPropSymbols$5(b)) {
       if (__propIsEnum$5.call(b, prop))
-        __defNormalProp$6(a, prop, b[prop]);
+        __defNormalProp$5(a, prop, b[prop]);
     }
   return a;
 };
@@ -44404,21 +44397,21 @@ const processors = {
   stylus: styl
 };
 
-var __defProp$5 = Object.defineProperty;
+var __defProp$4 = Object.defineProperty;
 var __defProps$3 = Object.defineProperties;
 var __getOwnPropDescs$3 = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols$4 = Object.getOwnPropertySymbols;
 var __hasOwnProp$4 = Object.prototype.hasOwnProperty;
 var __propIsEnum$4 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __spreadValues$4 = (a, b) => {
   for (var prop in b || (b = {}))
     if (__hasOwnProp$4.call(b, prop))
-      __defNormalProp$5(a, prop, b[prop]);
+      __defNormalProp$4(a, prop, b[prop]);
   if (__getOwnPropSymbols$4)
     for (var prop of __getOwnPropSymbols$4(b)) {
       if (__propIsEnum$4.call(b, prop))
-        __defNormalProp$5(a, prop, b[prop]);
+        __defNormalProp$4(a, prop, b[prop]);
     }
   return a;
 };
@@ -45994,70 +45987,33 @@ class MagicString {
 	}
 }
 
-var __defProp$4 = Object.defineProperty;
-var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$1 = (obj, key, value) => {
-  __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 var _a, _b;
 class ScriptCompileContext {
   constructor(descriptor, options) {
     this.descriptor = descriptor;
     this.options = options;
-    __publicField$1(this, "isJS");
-    __publicField$1(this, "isTS");
-    // fixed by xxxxxx
-    __publicField$1(this, "isUTS");
-    __publicField$1(this, "isCE", false);
-    __publicField$1(this, "scriptAst");
-    __publicField$1(this, "scriptSetupAst");
-    __publicField$1(this, "source", this.descriptor.source);
-    __publicField$1(this, "filename", this.descriptor.filename);
-    __publicField$1(this, "s", new MagicString(this.source));
-    __publicField$1(this, "startOffset", (_a = this.descriptor.scriptSetup) == null ? void 0 : _a.loc.start.offset);
-    __publicField$1(this, "endOffset", (_b = this.descriptor.scriptSetup) == null ? void 0 : _b.loc.end.offset);
-    // import / type analysis
-    __publicField$1(this, "scope");
-    __publicField$1(this, "globalScopes");
-    __publicField$1(this, "userImports", /* @__PURE__ */ Object.create(null));
+    this.isCE = false;
+    this.source = this.descriptor.source;
+    this.filename = this.descriptor.filename;
+    this.s = new MagicString(this.source);
+    this.startOffset = (_a = this.descriptor.scriptSetup) == null ? void 0 : _a.loc.start.offset;
+    this.endOffset = (_b = this.descriptor.scriptSetup) == null ? void 0 : _b.loc.end.offset;
+    this.userImports = /* @__PURE__ */ Object.create(null);
     // macros presence check
-    __publicField$1(this, "hasDefinePropsCall", false);
-    __publicField$1(this, "hasDefineEmitCall", false);
-    __publicField$1(this, "hasDefineExposeCall", false);
-    __publicField$1(this, "hasDefaultExportName", false);
-    __publicField$1(this, "hasDefaultExportRender", false);
-    __publicField$1(this, "hasDefineOptionsCall", false);
-    __publicField$1(this, "hasDefineSlotsCall", false);
-    __publicField$1(this, "hasDefineModelCall", false);
-    // defineProps
-    __publicField$1(this, "propsCall");
-    __publicField$1(this, "propsDecl");
-    __publicField$1(this, "propsRuntimeDecl");
-    __publicField$1(this, "propsTypeDecl");
-    __publicField$1(this, "propsDestructureDecl");
-    __publicField$1(this, "propsDestructuredBindings", /* @__PURE__ */ Object.create(null));
-    __publicField$1(this, "propsDestructureRestId");
-    __publicField$1(this, "propsRuntimeDefaults");
-    // defineEmits
-    __publicField$1(this, "emitsRuntimeDecl");
-    __publicField$1(this, "emitsTypeDecl");
-    __publicField$1(this, "emitDecl");
+    this.hasDefinePropsCall = false;
+    this.hasDefineEmitCall = false;
+    this.hasDefineExposeCall = false;
+    this.hasDefaultExportName = false;
+    this.hasDefaultExportRender = false;
+    this.hasDefineOptionsCall = false;
+    this.hasDefineSlotsCall = false;
+    this.hasDefineModelCall = false;
+    this.propsDestructuredBindings = /* @__PURE__ */ Object.create(null);
     // defineModel
-    __publicField$1(this, "modelDecls", /* @__PURE__ */ Object.create(null));
-    // defineOptions
-    __publicField$1(this, "optionsRuntimeDecl");
+    this.modelDecls = /* @__PURE__ */ Object.create(null);
     // codegen
-    __publicField$1(this, "bindingMetadata", {});
-    __publicField$1(this, "helperImports", /* @__PURE__ */ new Set());
-    /**
-     * to be exposed on compiled script block for HMR cache busting
-     */
-    __publicField$1(this, "deps");
-    /**
-     * cache for resolved fs
-     */
-    __publicField$1(this, "fs");
+    this.bindingMetadata = {};
+    this.helperImports = /* @__PURE__ */ new Set();
     const { script, scriptSetup } = descriptor;
     const scriptLang = script && script.lang;
     const scriptSetupLang = scriptSetup && scriptSetup.lang;
@@ -46335,10 +46291,6 @@ var __spreadValues$2 = (a, b) => {
   return a;
 };
 var __spreadProps$1 = (a, b) => __defProps$1(a, __getOwnPropDescs$1(b));
-var __publicField = (obj, key, value) => {
-  __defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 class TypeScope {
   constructor(filename, source, offset = 0, imports = /* @__PURE__ */ Object.create(null), types = /* @__PURE__ */ Object.create(null), declares = /* @__PURE__ */ Object.create(null)) {
     this.filename = filename;
@@ -46347,10 +46299,10 @@ class TypeScope {
     this.imports = imports;
     this.types = types;
     this.declares = declares;
-    __publicField(this, "isGenericScope", false);
-    __publicField(this, "resolvedImportSources", /* @__PURE__ */ Object.create(null));
-    __publicField(this, "exportedTypes", /* @__PURE__ */ Object.create(null));
-    __publicField(this, "exportedDeclares", /* @__PURE__ */ Object.create(null));
+    this.isGenericScope = false;
+    this.resolvedImportSources = /* @__PURE__ */ Object.create(null);
+    this.exportedTypes = /* @__PURE__ */ Object.create(null);
+    this.exportedDeclares = /* @__PURE__ */ Object.create(null);
   }
 }
 function resolveTypeElements(ctx, node, scope, typeParameters) {

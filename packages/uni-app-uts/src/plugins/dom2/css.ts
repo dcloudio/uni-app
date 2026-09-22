@@ -1,5 +1,3 @@
-import fs from 'fs'
-import path from 'path'
 import type { Plugin, ResolvedConfig } from 'vite'
 
 import {
@@ -38,13 +36,7 @@ import {
 
 const CSS_FILE_ID_MAP = new Map<string, string>()
 
-export function isAnimationEnabled() {
-  const inputDir = process.env.UNI_INPUT_DIR
-  return !!inputDir && fs.existsSync(path.resolve(inputDir, '.animation'))
-}
-
 export function uniAppCssPrePlugin(): Plugin {
-  const enableAnimation = isAnimationEnabled()
   const name = 'uni:app-uvue-css-pre'
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   const appUVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
@@ -101,7 +93,6 @@ export function uniAppCssPrePlugin(): Plugin {
             platform: process.env.UNI_UTS_PLATFORM,
             helper: requireUniHelpers(),
             output,
-            enableAnimation,
           })
           collectPageSelectorBackgroundDeclarations(
             filename,
@@ -208,7 +199,6 @@ export function uniAppCssPrePlugin(): Plugin {
 }
 
 export function uniAppCssPlugin(): Plugin {
-  const enableAnimation = isAnimationEnabled()
   let resolvedConfig: ResolvedConfig
   const compiler = require('@dcloudio/compiler-vapor-dom2')
   const { parseCss } = compiler
@@ -239,7 +229,6 @@ export function uniAppCssPlugin(): Plugin {
         platform: process.env.UNI_UTS_PLATFORM,
         helper: requireUniHelpers(),
         output,
-        enableAnimation,
       })
       let cssSourceMap: SourceMapInput | undefined
       if (messages.find((m) => m.type === 'warning')) {
