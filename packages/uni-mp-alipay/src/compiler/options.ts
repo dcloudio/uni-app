@@ -12,6 +12,7 @@ import {
   createMiniProgramUasmCopyTarget,
   createTransformComponentLink,
   getNativeTags,
+  resolveMiniProgramUasmWorkerPaths,
   resolveMiniProgramWorkerPaths,
   transformDirection,
   transformTeleport,
@@ -191,7 +192,12 @@ export const options: UniMiniProgramPluginOptions = {
             : 'NO'
         }
       })
-      const workerPaths = resolveMiniProgramWorkerPaths()
+      const workerPaths = Array.from(
+        new Set([
+          ...resolveMiniProgramWorkerPaths(),
+          ...resolveMiniProgramUasmWorkerPaths('mp-alipay'),
+        ])
+      )
       if (workerPaths.length) {
         ;(appJson as Record<string, unknown>).workers = workerPaths
       }

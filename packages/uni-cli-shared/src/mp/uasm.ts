@@ -129,52 +129,37 @@ export function uniMiniProgramUasmPlugin(
       return transformMiniProgramUasmEntry(source, filename, moduleName, config)
     },
     generateBundle(_options, bundle) {
-      if (!config.workerOutputPath || !inputDir) {
-        return
-      }
-      const workerFiles = sync(
-        `uni_modules/*/${config.transformPath}/**/*.js`,
-        {
-          cwd: inputDir,
-          absolute: true,
-        }
-      )
-      const workerEntryRe = new RegExp(
-        `/uni_modules/([^/]+)/${config.transformPath}/(.+\\.js)$`
-      )
       const emittedFiles = new Set<string>()
-      workerFiles.forEach((filename) => {
-        const normalized = filename.replaceAll(path.sep, '/')
-        const match = normalized.match(workerEntryRe)
-        if (
-          !match ||
-          !resolveUasmMiniProgramLoad(
-            `uni_modules/${match[1]}`,
-            platform,
-            inputDir
-          )
-        ) {
-          return
+      resolveMiniProgramUasmWorkerFiles(platform, inputDir).forEach(
+        ({ filename, moduleName, relativePath, outputFile }) => {
+          if (bundle[outputFile] || emittedFiles.has(outputFile)) {
+            throw new Error(`UASM 小程序 Worker 产物冲突：${outputFile}`)
+          }
+          emittedFiles.add(outputFile)
+          const source = fs.readFileSync(filename, 'utf8')
+          const code =
+            relativePath === `${moduleName}.js`
+              ? transformMiniProgramUasmEntry(
+                  source,
+                  filename,
+                  moduleName,
+                  config
+                ).code
+              : source
+          this.emitFile({ type: 'asset', fileName: outputFile, source: code })
         }
-        const relativePath = match[2]
-        const outputFile = path.posix.join(
-          config.workerOutputPath!,
-          relativePath
-        )
-        if (bundle[outputFile] || emittedFiles.has(outputFile)) {
-          throw new Error(`UASM 小程序 Worker 产物冲突：${outputFile}`)
-        }
-        emittedFiles.add(outputFile)
-        const source = fs.readFileSync(filename, 'utf8')
-        const code =
-          relativePath === `${match[1]}.js`
-            ? transformMiniProgramUasmEntry(source, filename, match[1], config)
-                .code
-            : source
-        this.emitFile({ type: 'asset', fileName: outputFile, source: code })
-      })
+      )
     },
   }
+}
+
+export function resolveMiniProgramUasmWorkerPaths(
+  platform: UasmMiniProgramPlatform,
+  inputDir = process.env.UNI_INPUT_DIR
+) {
+  return resolveMiniProgramUasmWorkerFiles(platform, inputDir).map(
+    ({ outputFile }) => outputFile
+  )
 }
 
 export function createMiniProgramUasmCopyTarget(
@@ -189,6 +174,41 @@ export function createMiniProgramUasmCopyTarget(
       return process.env.UNI_OUTPUT_DIR
     },
   }
+}
+
+function resolveMiniProgramUasmWorkerFiles(
+  platform: UasmMiniProgramPlatform,
+  inputDir: string | undefined
+) {
+  const config = MINI_PROGRAM_UASM_CONFIG[platform]
+  if (!config.workerOutputPath || !inputDir) {
+    return []
+  }
+  const workerEntryRe = new RegExp(
+    `/uni_modules/([^/]+)/${config.transformPath}/(.+\\.js)$`
+  )
+  return sync(`uni_modules/*/${config.transformPath}/**/*.js`, {
+    cwd: inputDir,
+    absolute: true,
+  }).flatMap((filename) => {
+    const normalized = filename.replaceAll(path.sep, '/')
+    const match = normalized.match(workerEntryRe)
+    if (
+      !match ||
+      !resolveUasmMiniProgramLoad(`uni_modules/${match[1]}`, platform, inputDir)
+    ) {
+      return []
+    }
+    const relativePath = match[2]
+    return [
+      {
+        filename,
+        moduleName: match[1],
+        relativePath,
+        outputFile: path.posix.join(config.workerOutputPath!, relativePath),
+      },
+    ]
+  })
 }
 
 function resolveMiniProgramUasmWasmFile(
