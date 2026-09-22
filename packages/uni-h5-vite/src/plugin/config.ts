@@ -10,6 +10,7 @@ import {
   initPostcssPlugin,
   isInHBuilderX,
   isSsr,
+  isUniAppXWebVapor,
   normalizePath,
   parseManifestJsonOnce,
   parseRpx2UnitOnce,
@@ -19,7 +20,12 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { createDefine } from '../utils'
 import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
-import { external } from './configureServer/ssr'
+import {
+  external,
+  getSsrExternalModules,
+  getWebVaporSsrExternalModules,
+  webVaporSsrNoExternal,
+} from './configureServer/ssr'
 
 export interface ManifestBasicSslOptions {
   // 对应 @vitejs/plugin-basic-ssl 的证书名称配置
@@ -100,6 +106,14 @@ export function createConfig(options: {
 
     let sourcemapPathTransform: SourcemapPathTransformOption | undefined =
       undefined
+    const ssr = isSsr(env.command, config)
+    const bundleWebVaporSsr =
+      ssr && env.command === 'build' && isUniAppXWebVapor()
+    const ssrExternal = ssr
+      ? bundleWebVaporSsr
+        ? getWebVaporSsrExternalModules()
+        : getSsrExternalModules()
+      : external
     if (
       // 仅在 uni-app-x 模式下，且非开发模式，且需要 sourcemap 时，才进行 sourcemap 路径转换
       process.env.UNI_APP_X === 'true' &&
@@ -130,7 +144,8 @@ export function createConfig(options: {
       define: createDefine(env.command, config),
       server,
       ssr: {
-        external,
+        external: ssrExternal,
+        ...(bundleWebVaporSsr ? { noExternal: webVaporSsrNoExternal } : {}),
       },
       build: {
         target:
@@ -139,7 +154,7 @@ export function createConfig(options: {
             : undefined,
         rollupOptions: {
           // resolveSSRExternal 会判定package.json，hbx 工程可能没有，通过 rollup 来配置
-          external: isSsr(env.command, config) ? external : [],
+          external: ssr ? ssrExternal : [],
           output: {
             sourcemapPathTransform,
             chunkFileNames(chunkInfo) {

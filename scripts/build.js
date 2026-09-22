@@ -236,6 +236,24 @@ async function build (target) {
         }
       )
       await sleep(500)
+      // 构建 uni-app x Web Vapor 服务端框架产物
+      await execa(
+        'vite',
+        ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+        {
+          stdio: 'inherit',
+          env: Object.assign({}, process.env, env, {
+            FORMAT: 'es',
+            UNI_APP_X: 'true',
+            UNI_APP_X_VAPOR: 'true',
+            UNI_APP_X_VAPOR_BUILD: 'true',
+            UNI_APP_X_VAPOR_SSR_BUILD: 'true',
+            UNI_PLATFORM: 'h5',
+          }),
+          cwd: pkgDir,
+        }
+      )
+      await sleep(500)
     }
     if (target === 'uni-app-plus') {
       await execa(

@@ -39,6 +39,8 @@ const FORMAT = process.env.FORMAT as 'es' | 'cjs'
 
 const isX = process.env.UNI_APP_X === 'true'
 const isX_VAPOR = process.env.UNI_APP_X_VAPOR === 'true'
+// 仅用于构建 Web Vapor 服务端框架产物，不是用户项目的运行时开关。
+const isX_VAPOR_SSR_BUILD = process.env.UNI_APP_X_VAPOR_SSR_BUILD === 'true'
 if (isX_VAPOR) {
   initWebVaporAliases()
 }
@@ -81,9 +83,10 @@ const rollupPlugins = [
   jscc({
     values: {
       // 该插件限制了不能以__开头
-      _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
+      _NODE_JS_: FORMAT === 'cjs' || isX_VAPOR_SSR_BUILD ? 1 : 0,
       _X_: isX ? 1 : 0,
       _X_VAPOR_: isX_VAPOR ? 1 : 0,
+      _X_VAPOR_SSR_: isX_VAPOR_SSR_BUILD ? 1 : 0,
     },
     exclude: [normalizePath(path.resolve(__dirname, '../../uni-ext-api/**/*'))],
   }),
@@ -102,7 +105,9 @@ if (FORMAT === 'es') {
           '__IMPORT_META_ENV_BASE_URL__',
           'import.meta.env.BASE_URL'
         )
-        genApiJson(esBundle.code)
+        if (!isX_VAPOR_SSR_BUILD) {
+          genApiJson(esBundle.code)
+        }
       }
     },
   })
@@ -129,20 +134,24 @@ export default defineConfig(async () => {
   const jsxPlugin = isX_VAPOR
     ? (await import('vue-jsx/vite')).default({
         vapor: true,
+        ...(isX_VAPOR_SSR_BUILD
+          ? { root: path.resolve(__dirname, '../..') }
+          : {}),
       })
     : vueJsx({ optimize: true, isCustomElement: realIsH5CustomElement })
 
   return {
     root: __dirname,
     define: {
-      global: FORMAT === 'cjs' ? 'global' : 'window',
+      global: FORMAT === 'cjs' || isX_VAPOR_SSR_BUILD ? 'global' : 'window',
       __TEST__: false,
       __PLATFORM__: JSON.stringify('h5'),
       __APP_VIEW__: false,
-      __NODE_JS__: FORMAT === 'cjs' ? true : false,
+      __NODE_JS__: FORMAT === 'cjs' || isX_VAPOR_SSR_BUILD,
       __X__: isX,
       __X_VAPOR__: isX_VAPOR,
-      HTMLElement: FORMAT === 'cjs' ? 'Object' : 'HTMLElement',
+      HTMLElement:
+        FORMAT === 'cjs' || isX_VAPOR_SSR_BUILD ? 'Object' : 'HTMLElement',
     },
     resolve: {
       alias: [
@@ -211,22 +220,37 @@ export default defineConfig(async () => {
       target: 'esnext',
     },
     build: {
+      ssr: isX_VAPOR_SSR_BUILD
+        ? path.resolve(__dirname, 'src/index.ts')
+        : false,
       cssCodeSplit: true,
       target: 'modules', // keep import.meta...
-      emptyOutDir: FORMAT === 'es',
+      emptyOutDir: isX_VAPOR_SSR_BUILD || FORMAT === 'es',
       minify: false,
-      lib: {
-        entry: path.resolve(__dirname, 'src/index.ts'),
-        formats: [FORMAT],
-      },
+      lib: isX_VAPOR_SSR_BUILD
+        ? undefined
+        : {
+            entry: path.resolve(__dirname, 'src/index.ts'),
+            formats: [FORMAT],
+          },
       assetsDir: '.',
       rollupOptions: {
         output: {
-          dir: isX_VAPOR ? 'dist-x-vapor' : isX ? 'dist-x' : 'dist',
+          ...(isX_VAPOR_SSR_BUILD ? { format: FORMAT } : {}),
+          dir: isX_VAPOR_SSR_BUILD
+            ? 'dist-x-vapor-ssr'
+            : isX_VAPOR
+            ? 'dist-x-vapor'
+            : isX
+            ? 'dist-x'
+            : 'dist',
           freeze: false, // uni 对象需要可被修改
           entryFileNames: 'uni-h5.' + FORMAT + '.js',
         },
         external(source) {
+          if (source === 'vue/server-renderer') {
+            return isX_VAPOR_SSR_BUILD
+          }
           if (
             [
               'vue',

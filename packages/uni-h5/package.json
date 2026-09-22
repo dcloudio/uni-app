@@ -8,6 +8,7 @@
     "dist",
     "dist-x",
     "dist-x-vapor",
+    "dist-x-vapor-ssr",
     "lib",
     "style"
   ],
