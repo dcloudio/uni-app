@@ -7945,7 +7945,8 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
     );
   }
-  const router = getApp().vm.$router;
+  let router;
+  router = getApp().vm.$router;
   return new Promise((resolve, reject) => {
     let routeUrl = url;
     let transaction;
@@ -9035,7 +9036,8 @@ function initPublicPage(route) {
   return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
-  const route = vm.$route;
+  let route;
+  route = vm.$route;
   const page = initPublicPage(route);
   initPageVm(vm, page);
   {
@@ -25252,9 +25254,9 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
     if (!canBack) {
       return reject(ON_BACK_PRESS);
     }
-    {
-      getApp().vm.$router.go(-args.delta);
-    }
+    let router;
+    router = getApp().vm.$router;
+    router.go(-args.delta);
     return resolve();
   },
   NavigateBackProtocol,

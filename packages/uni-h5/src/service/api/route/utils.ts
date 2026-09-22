@@ -1,5 +1,8 @@
 import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
 import { type Router, isNavigationFailure } from 'vue-router'
+//#if _X_VAPOR_
+import { getRouterInstance } from '../../../framework/plugin/routerInstance'
+//#endif
 import {
   createPageState,
   entryPageState,
@@ -67,9 +70,15 @@ export function navigate(
       '当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。'
     )
   }
-  const router = __X__
+  let router: Router
+  //#if _X_VAPOR_
+  router = getRouterInstance()
+  //#endif
+  //#if !_X_VAPOR_
+  router = __X__
     ? (getApp().vm.$router as Router)
     : (getApp().$router as Router)
+  //#endif
   return new Promise((resolve, reject) => {
     let routeUrl = url
     let transaction: WebAppRouteTransaction | undefined

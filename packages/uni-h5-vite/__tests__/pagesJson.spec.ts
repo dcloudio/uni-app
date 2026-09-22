@@ -90,6 +90,7 @@ describe('h5 pages.json page route', () => {
     expect(code).toContain('function renderPage(component,props)')
     expect(code).toContain('createBlock(PageComponent')
     expect(code).not.toContain('createVaporPageRouteComponent')
+    expect(code).not.toContain("import { useRoute } from 'vue-router'")
   })
 
   test('Web Vapor 生成路由专属 Page 组件', () => {
@@ -116,9 +117,11 @@ describe('h5 pages.json page route', () => {
     expect(code).toContain(
       `import { createVaporPageRouteComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'`
     )
+    expect(code).toContain("import { useRoute } from 'vue-router'")
     expect(code).toContain(
-      'component:createVaporPageRouteComponent(PagesIndexIndex,()=>'
+      'component:createVaporPageRouteComponent(PagesIndexIndex,()=>useRoute().query)'
     )
+    expect(code).not.toContain('.$route')
     expect(code).not.toContain('function renderPage(component,props)')
     expect(code).not.toContain('createBlock(PageComponent')
   })
@@ -131,8 +134,10 @@ describe('h5 pages.json page route', () => {
     expect(code).toContain(
       'return createVNode(resolveComponent(async.loading))'
     )
+    expect(code).toContain("import { useRoute } from 'vue-router'")
     expect(code).toContain(
-      'component:createVaporPageRouteComponent(PagesIndexIndex,()=>'
+      'component:createVaporPageRouteComponent(PagesIndexIndex,()=>useRoute().query)'
     )
+    expect(code).not.toContain('.$route')
   })
 })

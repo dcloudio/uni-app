@@ -1898,6 +1898,13 @@ function getStateId() {
     return 1;
   }
 }
+let router;
+function setRouterInstance(value) {
+  router = value;
+}
+function getRouterInstance() {
+  return router;
+}
 const HTTP_METHODS = [
   "GET",
   "OPTIONS",
@@ -2952,7 +2959,8 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
     );
   }
-  const router = getApp().vm.$router;
+  let router2;
+  router2 = getRouterInstance();
   return new Promise((resolve, reject) => {
     let routeUrl = url;
     let transaction;
@@ -2962,7 +2970,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       routeUrl = (appRoute == null ? void 0 : appRoute.url) || url;
       const { path: path2, query: query2 } = uniShared.parseUrl(routeUrl);
       transaction = createWebAppRouteTransaction(
-        router.resolve({ path: path2, query: query2 }).fullPath,
+        router2.resolve({ path: path2, query: query2 }).fullPath,
         type,
         appRoute == null ? void 0 : appRoute.context
       );
@@ -2974,7 +2982,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       transaction.pageId = state.__id__;
       queueWebAppRouteTransaction(transaction);
     }
-    const navigation = router[type === "navigateTo" ? "push" : "replace"]({
+    const navigation = router2[type === "navigateTo" ? "push" : "replace"]({
       path,
       query,
       state,
@@ -2985,11 +2993,11 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
         return reject(failure.message);
       }
       if (type === "switchTab") {
-        const finalTabBarText = routeUrl === url ? tabBarText : router.resolve({ path, query }).meta.tabBarText;
-        router.currentRoute.value.meta.tabBarText = finalTabBarText;
+        const finalTabBarText = routeUrl === url ? tabBarText : router2.resolve({ path, query }).meta.tabBarText;
+        router2.currentRoute.value.meta.tabBarText = finalTabBarText;
       }
       if (type === "navigateTo") {
-        const meta = router.currentRoute.value.meta;
+        const meta = router2.currentRoute.value.meta;
         if (!meta.eventChannel) {
           meta.eventChannel = new uniShared.EventChannel(state.__id__, events);
         } else if (events) {
@@ -3427,8 +3435,16 @@ function initPublicPage(route) {
   return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
-  const route = vm.$route;
+  let route;
+  route = vueRouter.useRoute();
   const page = initPublicPage(route);
+  const routeMeta = route.meta;
+  Object.defineProperty(page, "eventChannel", {
+    configurable: true,
+    enumerable: true,
+    get: () => routeMeta.eventChannel,
+    set: (eventChannel) => routeMeta.eventChannel = eventChannel
+  });
   initPageVm(vm, page);
   {
     initXPage(vm, route, page);
@@ -10506,14 +10522,15 @@ function initApp(app) {
   }
 }
 function initRouter(app) {
-  const router = vueRouter.createRouter(createRouterOptions());
-  router.beforeEach((to, from) => {
+  const router2 = vueRouter.createRouter(createRouterOptions());
+  setRouterInstance(router2);
+  router2.beforeEach((to, from) => {
     if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
       saveTabBarScrollPosition(from.meta.tabBarIndex);
     }
   });
-  app.router = router;
-  app.use(router);
+  app.router = router2;
+  app.use(router2);
 }
 let positionStore = /* @__PURE__ */ Object.create(null);
 function getTabBarScrollPosition(id2) {

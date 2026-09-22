@@ -1265,11 +1265,13 @@ function createRouter(options) {
 		onError: errorListeners.add,
 		isReady,
 		install(app) {
-			app.config.globalProperties.$router = router;
-			Object.defineProperty(app.config.globalProperties, "$route", {
-				enumerable: true,
-				get: () => unref(currentRoute)
-			});
+			if (!app.vapor) {
+				app.config.globalProperties.$router = router;
+				Object.defineProperty(app.config.globalProperties, "$route", {
+					enumerable: true,
+					get: () => unref(currentRoute)
+				});
+			}
 			if (isBrowser && !started && currentRoute.value === START_LOCATION_NORMALIZED) {
 				started = true;
 				push(routerHistory.location).catch((err) => {
