@@ -881,21 +881,6 @@
     "easycom": [],
     "customElements": []
   },
-  "uni-install-wgt": {
-    "uni": {
-      "installWgt": {
-        "app": {
-          "js": false,
-          "kotlin": "dom2",
-          "swift": "dom2",
-          "arkts": false
-        }
-      }
-    },
-    "components": [],
-    "easycom": [],
-    "customElements": []
-  },
   "uni-installApk": {
     "uni": {
       "installApk": {
@@ -2493,21 +2478,6 @@
     "customElements": []
   },
   "uni-weixin-common": {
-    "components": [],
-    "easycom": [],
-    "customElements": []
-  },
-  "uni-zstd-decompress": {
-    "uni": {
-      "__zstdDecompressFile": {
-        "app": {
-          "js": false,
-          "kotlin": "dom2",
-          "swift": "dom2",
-          "arkts": false
-        }
-      }
-    },
     "components": [],
     "easycom": [],
     "customElements": []
