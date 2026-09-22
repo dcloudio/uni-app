@@ -45,7 +45,7 @@ describe('h5 pages.json page route', () => {
     })
   })
 
-  function transform(vapor: boolean) {
+  function transform(vapor: boolean, ssr = false) {
     if (vapor) {
       process.env.UNI_APP_X_DOM2 = 'true'
       process.env.UNI_APP_X_VAPOR = 'true'
@@ -62,7 +62,8 @@ describe('h5 pages.json page route', () => {
         pages: [{ path: 'pages/index/index', style: {} }],
         topWindow: { path: 'windows/top' },
       }),
-      path.join(inputDir, PAGES_JSON_JS)
+      path.join(inputDir, PAGES_JSON_JS),
+      ssr ? { ssr: true } : undefined
     ).code as string
   }
 
@@ -71,6 +72,12 @@ describe('h5 pages.json page route', () => {
 
     expect(code).toContain('import { defineAsyncComponent,')
     expect(code).not.toContain('defineVaporAsyncComponent')
+    expect(code).toContain(
+      'return createVNode(resolveComponent(async.loading))'
+    )
+    expect(code).toContain(
+      'return createVNode(resolveComponent(async.error), { error: this.error })'
+    )
     expect(code).toContain(
       'const PagesIndexIndex = defineAsyncComponent(extend('
     )
@@ -89,9 +96,17 @@ describe('h5 pages.json page route', () => {
     const code = transform(true)
 
     expect(code).toContain(
-      'import { defineVaporAsyncComponent as defineAsyncComponent,'
+      "import { defineVaporAsyncComponent as defineAsyncComponent, defineVaporComponent, createAssetComponent } from 'vue'"
     )
     expect(code).not.toContain('import { defineAsyncComponent,')
+    expect(code).not.toContain('createVNode')
+    expect(code).not.toContain('resolveComponent')
+    expect(code).toContain(
+      'return createAssetComponent(async.loading, null, null, true)'
+    )
+    expect(code).toContain(
+      'return createAssetComponent(async.error, { error: () => props.error }, null, true)'
+    )
     expect(code).toContain(
       'const PagesIndexIndex = defineAsyncComponent(extend('
     )
@@ -106,5 +121,18 @@ describe('h5 pages.json page route', () => {
     )
     expect(code).not.toContain('function renderPage(component,props)')
     expect(code).not.toContain('createBlock(PageComponent')
+  })
+
+  test('Web Vapor SSR 保持服务端异步组件包装', () => {
+    const code = transform(true, true)
+
+    expect(code).toContain('import { defineAsyncComponent,')
+    expect(code).not.toContain('defineVaporAsyncComponent')
+    expect(code).toContain(
+      'return createVNode(resolveComponent(async.loading))'
+    )
+    expect(code).toContain(
+      'component:createVaporPageRouteComponent(PagesIndexIndex,()=>'
+    )
   })
 })
