@@ -314,6 +314,9 @@ const options = {
         copyOptions: {
             assets: uniCliShared.createCopyComponentDirs(COMPONENTS_DIR),
             targets: [
+                ...(process.env.UNI_APP_X === 'true'
+                    ? [uniCliShared.createMiniProgramUasmCopyTarget('mp-alipay')]
+                    : []),
                 ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
                     src: ['customize-tab-bar', 'preload.json', 'sitemap.json'],
@@ -322,6 +325,7 @@ const options = {
                     },
                 },
                 uniCliShared.createCopyPluginTarget(['ext.json']),
+                ...uniCliShared.copyMiniProgramThemeJson(),
             ],
         },
     },
@@ -361,7 +365,12 @@ const options = {
             icon: 'iconPath',
             activeIcon: 'selectedIconPath',
         },
-        formatAppJson(appJson, _manifestJson, pageJsons) {
+        formatAppJson(appJson, manifestJson, pageJsons) {
+            const { darkmode } = manifestJson[process.env.UNI_PLATFORM] || {};
+            delete appJson.darkmode;
+            if (typeof darkmode === 'boolean') {
+                appJson.darkMode = darkmode;
+            }
             if (process.env.UNI_APP_X !== 'true') {
                 return;
             }
@@ -372,14 +381,19 @@ const options = {
                         : 'NO';
                 }
             });
+            const workerPaths = uniCliShared.resolveMiniProgramWorkerPaths();
+            if (workerPaths.length) {
+                appJson.workers = workerPaths;
+            }
         },
     },
     app: {
-        darkmode: false,
+        darkmode: true,
         subpackages: true,
         independentSubpackages: true,
         plugins: true,
         usingComponents: true,
+        workers: true,
         normalize(appJson) {
             // 支付宝小程序默认主包，分包 js 模块不共享，会导致 getCurrentInstance，setCurrentInstance 不一致
             appJson.subPackageBuildType = 'shared';

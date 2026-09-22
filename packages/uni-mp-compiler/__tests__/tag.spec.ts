@@ -98,5 +98,25 @@ describe('compiler: transform tag', () => {
         nodeTransforms: [transformTeleport],
       }
     )
+    assert(
+      `<Teleport v-if="show" to="#target"><view>test Teleport</view></Teleport>`,
+      `<root-portal wx:if="{{a}}"><view>test Teleport</view></root-portal>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.show }, _ctx.show ? {} : {})
+}`,
+      {
+        nodeTransforms: [transformTeleport],
+      }
+    )
+    assert(
+      `<Teleport :disabled="disabled" :defer="isDeferred"><view/></Teleport>`,
+      `<root-portal enable="{{a}}"><view/></root-portal>`,
+      `(_ctx, _cache) => {
+  return { a: !_ctx.disabled }
+}`,
+      {
+        nodeTransforms: [transformTeleport],
+      }
+    )
   })
 })

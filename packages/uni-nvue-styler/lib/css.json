@@ -10667,6 +10667,132 @@
       }
     },
     {
+      "name": "word-break",
+      "description": "word-break 属性指定文本在内容框内溢出时的断行规则。",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "normal | break-all",
+      "values": [
+        {
+          "name": "normal",
+          "description": "使用默认的断行规则。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.30"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.30"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.30"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "-"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "break-all",
+          "description": "对于非中日韩文本，可在任意字符间断行。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.30"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.30"
+              },
+              "harmony": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.30"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "-"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.30"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.30"
+          },
+          "harmony": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.30"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "-"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "5.30"
+          },
+          "ios": {
+            "unixVaporVer": "5.30"
+          },
+          "harmony": {
+            "unixVaporVer": "5.30"
+          }
+        }
+      },
+      "unixTags": [
+        "text"
+      ],
+      "defaultValue": {
+        "uvue-app": "normal",
+        "uvue-web": "normal",
+        "w3c": "normal"
+      }
+    },
+    {
       "name": "text-shadow",
       "restrictions": [
         "color",

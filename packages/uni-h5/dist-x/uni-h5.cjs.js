@@ -2434,8 +2434,7 @@ function createAppRouteRuntime(options = {}) {
     }
   );
   function createAppRouteContext2(event) {
-    var _a, _b;
-    const timeStamp = (_a = event.timeStamp) != null ? _a : Date.now();
+    const timeStamp = event.timeStamp ?? Date.now();
     return {
       event: {
         path: event.path,
@@ -2443,7 +2442,7 @@ function createAppRouteRuntime(options = {}) {
         openType: event.openType,
         notFound: event.notFound,
         timeStamp,
-        routeEventId: (_b = event.routeEventId) != null ? _b : `${timeStamp}-${++routeEventId}`
+        routeEventId: event.routeEventId ?? `${timeStamp}-${++routeEventId}`
       },
       normalizeRewriteRoute: options.normalizeRewriteRoute
     };
@@ -3009,9 +3008,10 @@ class UniPageImpl {
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
-    var _a, _b;
+    var _a, _b, _c, _d, _e;
     const pageMeta = ((_a = this.vm) == null ? void 0 : _a.$basePage.meta) ? uniShared.normalizeStyles((_b = this.vm) == null ? void 0 : _b.$basePage.meta, __uniConfig.themeConfig) : void 0;
-    return pageMeta ? new uniShared.UTSJSONObject({
+    const scriptLang = (_e = (_d = (_c = this.vm) == null ? void 0 : _c.$) == null ? void 0 : _d.type) == null ? void 0 : _e.__scriptLang;
+    const pageStyle = pageMeta ? {
       navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
       navigationBarTextStyle: pageMeta.navigationBar.titleColor,
       navigationBarTitleText: pageMeta.navigationBar.titleText,
@@ -3021,7 +3021,11 @@ class UniPageImpl {
       enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
       onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
-    }) : new uniShared.UTSJSONObject({});
+    } : {};
+    if (!scriptLang || scriptLang === "uts") {
+      return new uniShared.UTSJSONObject(pageStyle);
+    }
+    return pageStyle;
   }
   $getPageStyle() {
     return this.getPageStyle();
@@ -3166,9 +3170,12 @@ function initXPage(vm, route, page) {
   };
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
+    const scriptLang = vm.$.type.__scriptLang;
+    const isUTS = !scriptLang || scriptLang === "uts";
     const uniPage = new UniNormalPageImpl({
       route: (route == null ? void 0 : route.path) ? uniShared.removeLeadingSlash(route == null ? void 0 : route.path) : "",
-      options: new uniShared.UTSJSONObject((route == null ? void 0 : route.query) || {}),
+      // 忽略类型，不同环境UTSJSONObject表示不同类型
+      options: isUTS ? new uniShared.UTSJSONObject((route == null ? void 0 : route.query) || {}) : (route == null ? void 0 : route.query) || {},
       vm
     });
     vm.$.page = uniPage;
@@ -3198,14 +3205,6 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
-    const parentPage = vm.$page.getParentPage();
-    if (parentPage) {
-      if (!parentPage.vm.$dialogPagesNum) {
-        parentPage.vm.$dialogPagesNum = 0;
-      }
-      parentPage.vm.$dialogPagesNum++;
-      vm.$basePage.id = parentPage.vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum;
-    }
   }
 }
 const SEP = "$$";
@@ -3256,6 +3255,10 @@ function createPageState(type, __id__) {
     __id__: __id__ || ++id,
     __type__: type
   };
+}
+let dialogPageId = Number.MIN_SAFE_INTEGER;
+function createDialogPageId() {
+  return ++dialogPageId;
 }
 function initPublicPage(route) {
   const meta = usePageMeta();
@@ -3311,22 +3314,23 @@ const routeCache = {
     pageCacheMap.forEach(fn);
   }
 };
-function isTabBarVNode(vnode) {
-  return vnode.props.type === "tabBar";
+function isTabBarCacheEntry(cacheEntry) {
+  var _a;
+  return ((_a = cacheEntry.attrs || cacheEntry.props) == null ? void 0 : _a.type) === "tabBar";
 }
 function pruneRouteCache(key) {
   const pageId = parseInt(key.split(SEP)[1]);
   if (!pageId) {
     return;
   }
-  routeCache.forEach((vnode, key2) => {
+  routeCache.forEach((cacheEntry, key2) => {
     const cPageId = parseInt(key2.split(SEP)[1]);
     if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarCacheEntry(cacheEntry)) {
         return;
       }
       routeCache.delete(key2);
-      routeCache.pruneCacheEntry(vnode);
+      routeCache.pruneCacheEntry(cacheEntry);
       vue.nextTick(() => pruneCurrentPages());
     }
   });
@@ -3373,35 +3377,44 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const clazz = { class: "uni-async-loading" };
-const loadingVNode = /* @__PURE__ */ vue.createVNode(
-  "i",
-  { class: "uni-loading" },
-  null,
-  -1
-  /* HOISTED */
-);
-const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncLoading",
-  render() {
-    return vue.openBlock(), vue.createBlock("div", clazz, [loadingVNode]);
+const _hoisted_1$3 = { class: "uni-async-loading" };
+const _hoisted_2$3 = /* @__PURE__ */ vue.createElementVNode("i", { class: "uni-loading" }, null, -1);
+const _hoisted_3$3 = [
+  _hoisted_2$3
+];
+const _sfc_main$7 = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "AsyncLoading",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "asyncLoading",
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$3, _hoisted_3$3);
+    };
   }
 });
-function reload() {
-  window.location.reload();
-}
-const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncError",
+const _sfc_main$6 = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "AsyncError",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "asyncError",
   props: ["error"],
-  setup() {
+  setup(__props) {
     initI18nAsyncMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    return () => vue.createVNode("div", {
-      "class": "uni-async-error",
-      "onClick": reload
-    }, [t2("uni.async.error")], 8, ["onClick"]);
+    const { t: t2 } = useI18n();
+    function reload() {
+      window.location.reload();
+    }
+    return (_ctx, _cache) => {
+      return vue.openBlock(), vue.createElementBlock("div", {
+        class: "uni-async-error",
+        onClick: reload
+      }, vue.toDisplayString(vue.unref(t2)("uni.async.error")), 1);
+    };
   }
 });
 let appVm;
@@ -3439,11 +3452,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(AsyncLoadingComponent.name)) {
-    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
+  if (!app.component(_sfc_main$7.name)) {
+    app.component(_sfc_main$7.name, _sfc_main$7);
   }
-  if (!app.component(AsyncErrorComponent.name)) {
-    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
+  if (!app.component(_sfc_main$6.name)) {
+    app.component(_sfc_main$6.name, _sfc_main$6);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -3628,20 +3641,75 @@ function usePageHeadTransparent(headRef, {
 }) {
   vue.computed(() => hexToRgba(backgroundColor));
 }
-const ICON_PATHS = {
-  none: "",
-  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-  back: ICON_PATH_BACK,
-  select: ICON_PATH_BACK,
-  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-  close: ICON_PATH_CLOSE
+const _hoisted_1$2 = ["uni-page-head-type"];
+const _hoisted_2$2 = { class: "uni-page-head-hd" };
+const _hoisted_3$2 = {
+  width: "26",
+  height: "26",
+  viewBox: "0 0 32 32"
 };
-const PageHead = /* @__PURE__ */ defineSystemComponent({
-  name: "PageHead",
-  setup() {
+const _hoisted_4$1 = ["d", "fill"];
+const _hoisted_5$1 = ["badge-text", "onClick"];
+const _hoisted_6$1 = ["width", "height"];
+const _hoisted_7$1 = ["d", "fill"];
+const _hoisted_8 = ["innerHTML"];
+const _hoisted_9 = {
+  width: "14",
+  height: "14",
+  viewBox: "0 0 32 32"
+};
+const _hoisted_10 = ["d"];
+const _hoisted_11 = ["innerHTML"];
+const _hoisted_12 = {
+  key: 0,
+  class: "uni-page-head-bd"
+};
+const _hoisted_13 = {
+  key: 0,
+  class: "uni-loading"
+};
+const _hoisted_14 = ["src"];
+const _hoisted_15 = { class: "uni-page-head-search-icon" };
+const _hoisted_16 = {
+  width: "20",
+  height: "20",
+  viewBox: "0 0 32 32"
+};
+const _hoisted_17 = ["d", "fill"];
+const _hoisted_18 = { class: "uni-page-head-ft" };
+const _hoisted_19 = ["badge-text", "onClick"];
+const _hoisted_20 = ["width", "height"];
+const _hoisted_21 = ["d", "fill"];
+const _hoisted_22 = ["innerHTML"];
+const _hoisted_23 = {
+  width: "14",
+  height: "14",
+  viewBox: "0 0 32 32"
+};
+const _hoisted_24 = ["d"];
+const _hoisted_25 = ["innerHTML"];
+const _sfc_main$5 = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "PageHead",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "pageHead",
+  setup(__props) {
+    const hasPages = __UNI_FEATURE_PAGES__;
+    const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
+    const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
+    const ICON_PATHS = {
+      none: "",
+      forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+      back: ICON_PATH_BACK,
+      select: ICON_PATH_BACK,
+      share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+      favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+      home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+      menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+      close: ICON_PATH_CLOSE
+    };
     const headRef = vue.ref(null);
     const pageMeta = usePageMeta();
     const navigationBar = useTheme(pageMeta.navigationBar, () => {
@@ -3649,367 +3717,361 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
       navigationBar.backgroundColor = _navigationBar.backgroundColor;
       navigationBar.titleColor = _navigationBar.titleColor;
     });
-    const {
-      clazz: clazz2,
-      style
-    } = usePageHead(navigationBar);
-    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
-    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    const { clazz, style } = usePageHead(navigationBar);
+    const buttons = hasButtons && usePageHeadButtons(pageMeta);
+    const searchInput = hasSearchInput && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    const searchFocus = searchInput && searchInput.focus;
+    const searchText = searchInput && searchInput.text;
+    const searchComposing = searchInput && searchInput.composing;
+    const searchOnClick = searchInput && searchInput.onClick;
+    const searchOnFocus = searchInput && searchInput.onFocus;
+    const searchOnBlur = searchInput && searchInput.onBlur;
+    const searchOnInput = searchInput && searchInput.onInput;
+    const searchOnConfirm = searchInput && searchInput.onConfirm;
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-    return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
-      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
-      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
-      const type = navigationBar.type || "default";
-      const placeholderTsx = type !== "transparent" && type !== "float" && vue.createVNode("div", {
-        "class": {
-          "uni-placeholder": true,
-          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
+    function getSvgSize(size) {
+      return size == null ? 27 : size;
+    }
+    function getSvgColor(color) {
+      return color == null ? "#000" : color;
+    }
+    function onPageHeadBackButton() {
+      if (getCurrentPages().length === 1) {
+        uni.reLaunch({
+          url: "/"
+        });
+      } else {
+        uni.navigateBack({
+          from: "backbutton",
+          success() {
+          }
+          // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+        });
+      }
+    }
+    function usePageHead(navigationBar2) {
+      const clazz2 = vue.computed(() => {
+        const { type, titlePenetrate, shadowColorType } = navigationBar2;
+        const clazz3 = {
+          "uni-page-head": true,
+          "uni-page-head-transparent": type === "transparent",
+          "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+          "uni-page-head-shadow": !!shadowColorType
+        };
+        if (shadowColorType) {
+          clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
         }
-      }, null, 2);
-      return vue.createVNode("uni-page-head", {
-        "uni-page-head-type": type
-      }, [vue.createVNode("div", {
-        "ref": headRef,
-        "class": clazz2.value,
-        "style": style.value
-      }, [vue.createVNode("div", {
-        "class": "uni-page-head-hd"
-      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), vue.createVNode("div", {
-        "class": "uni-page-head-ft"
-      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
+        return clazz3;
+      });
+      const style2 = vue.computed(() => {
+        const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar2.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar2.backgroundColor) : navigationBar2.backgroundColor;
+        return {
+          backgroundColor,
+          color: navigationBar2.titleColor,
+          transitionDuration: navigationBar2.duration,
+          transitionTimingFunction: navigationBar2.timingFunc
+        };
+      });
+      return { clazz: clazz2, style: style2 };
+    }
+    function usePageHeadButtons({ id: id2, navigationBar: navigationBar2 }) {
+      const left = [];
+      const right = [];
+      const { buttons: buttons2 } = navigationBar2;
+      if (shared.isArray(buttons2)) {
+        const { type } = navigationBar2;
+        const isTransparent = type === "transparent";
+        const fonts = /* @__PURE__ */ Object.create(null);
+        buttons2.forEach((btn, index2) => {
+          if (btn.fontSrc && !btn.fontFamily) {
+            const fontSrc = getRealPath(btn.fontSrc);
+            let fontFamily = fonts[fontSrc];
+            if (!fontFamily) {
+              fontFamily = `font${Date.now()}`;
+              fonts[fontSrc] = fontFamily;
+            }
+            btn.fontFamily = fontFamily;
+          }
+          const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+          if (btn.float === "left") {
+            left.push(pageHeadBtn);
+          } else {
+            right.push(pageHeadBtn);
+          }
+        });
+      }
+      return { left, right };
+    }
+    function usePageHeadButton(pageId, index2, btn, isTransparent) {
+      const iconStyle = {
+        color: btn.color,
+        fontSize: btn.fontSize,
+        fontWeight: btn.fontWeight
+      };
+      if (btn.fontFamily) {
+        iconStyle.fontFamily = btn.fontFamily;
+      }
+      return new Proxy(
+        {
+          btnClass: {
+            "uni-page-head-btn": true,
+            "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+            "uni-page-head-btn-select": !!btn.select
+          },
+          btnStyle: {
+            backgroundColor: isTransparent ? btn.background : "transparent",
+            width: btn.width
+          },
+          btnText: "",
+          btnIconPath: ICON_PATHS[btn.type],
+          badgeText: btn.badgeText,
+          iconStyle,
+          onClick() {
+            invokeHook(pageId, uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, shared.extend({ index: index2 }, btn));
+          },
+          btnSelect: btn.select
+        },
+        {
+          get(target, key, receiver) {
+            if (["btnText"].includes(key)) {
+              return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+            } else {
+              return Reflect.get(target, key, receiver);
+            }
+          }
+        }
+      );
+    }
+    function usePageHeadSearchInput({
+      id: id2,
+      navigationBar: { searchInput: searchInput2 }
+    }) {
+      const focus = vue.ref(false);
+      const text = vue.ref("");
+      const composing = vue.ref(false);
+      const { disabled } = searchInput2;
+      if (disabled) {
+        const onClick = () => {
+          invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+        };
+        return { focus, text, composing, onClick };
+      }
+      const onFocus = () => {
+        focus.value = true;
+        invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+          focus: true
+        });
+      };
+      const onBlur = () => {
+        focus.value = false;
+        invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+          focus: false
+        });
+      };
+      const onInput = (evt) => {
+        text.value = evt.detail.value;
+        invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+          text: text.value
+        });
+      };
+      const onConfirm = (evt) => {
+        invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+          text: text.value
+        });
+      };
+      return { focus, text, composing, onFocus, onBlur, onInput, onConfirm };
+    }
+    return (_ctx, _cache) => {
+      return vue.openBlock(), vue.createElementBlock("uni-page-head", {
+        "uni-page-head-type": vue.unref(navigationBar).type || "default"
+      }, [
+        vue.createElementVNode("div", {
+          ref_key: "headRef",
+          ref: headRef,
+          class: vue.normalizeClass(vue.unref(clazz)),
+          style: vue.normalizeStyle(vue.unref(style))
+        }, [
+          vue.createElementVNode("div", _hoisted_2$2, [
+            vue.unref(hasPages) && !vue.unref(pageMeta).isQuit ? (vue.openBlock(), vue.createElementBlock("div", {
+              key: 0,
+              class: "uni-page-head-btn",
+              onClick: onPageHeadBackButton
+            }, [
+              (vue.openBlock(), vue.createElementBlock("svg", _hoisted_3$2, [
+                vue.createElementVNode("path", {
+                  d: vue.unref(ICON_PATH_BACK),
+                  fill: vue.unref(navigationBar).type === "transparent" ? "#fff" : vue.unref(navigationBar).titleColor
+                }, null, 8, _hoisted_4$1)
+              ]))
+            ])) : vue.createCommentVNode("", true),
+            vue.unref(hasButtons) && vue.unref(buttons) ? (vue.openBlock(true), vue.createElementBlock(vue.Fragment, { key: 1 }, vue.renderList(vue.unref(buttons).left, (button, index2) => {
+              return vue.openBlock(), vue.createElementBlock("div", {
+                key: index2,
+                class: vue.normalizeClass(button.btnClass),
+                style: vue.normalizeStyle(button.btnStyle),
+                "badge-text": button.badgeText,
+                onClick: button.onClick
+              }, [
+                button.btnIconPath ? (vue.openBlock(), vue.createElementBlock("svg", {
+                  key: 0,
+                  width: getSvgSize(button.iconStyle.fontSize),
+                  height: getSvgSize(button.iconStyle.fontSize),
+                  viewBox: "0 0 32 32"
+                }, [
+                  vue.createElementVNode("path", {
+                    d: button.btnIconPath,
+                    fill: getSvgColor(button.iconStyle.color)
+                  }, null, 8, _hoisted_7$1)
+                ], 8, _hoisted_6$1)) : button.btnSelect ? (vue.openBlock(), vue.createElementBlock("span", {
+                  key: 1,
+                  style: vue.normalizeStyle(button.iconStyle)
+                }, [
+                  vue.createElementVNode("i", {
+                    class: "uni-btn-icon",
+                    innerHTML: button.btnText
+                  }, null, 8, _hoisted_8),
+                  (vue.openBlock(), vue.createElementBlock("svg", _hoisted_9, [
+                    vue.createElementVNode("path", {
+                      d: ICON_PATHS.select,
+                      fill: "#000"
+                    }, null, 8, _hoisted_10)
+                  ]))
+                ], 4)) : (vue.openBlock(), vue.createElementBlock("i", {
+                  key: 2,
+                  class: "uni-btn-icon",
+                  style: vue.normalizeStyle(button.iconStyle),
+                  innerHTML: button.btnText
+                }, null, 12, _hoisted_11))
+              ], 14, _hoisted_5$1);
+            }), 128)) : vue.createCommentVNode("", true)
+          ]),
+          !vue.unref(hasSearchInput) || !vue.unref(navigationBar).searchInput ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_12, [
+            vue.createElementVNode("div", {
+              class: "uni-page-head__title",
+              style: vue.normalizeStyle({
+                fontSize: vue.unref(navigationBar).titleSize,
+                opacity: vue.unref(navigationBar).type === "transparent" ? 0 : 1
+              })
+            }, [
+              vue.unref(navigationBar).loading ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_13)) : vue.unref(navigationBar).titleImage ? (vue.openBlock(), vue.createElementBlock("img", {
+                key: 1,
+                src: vue.unref(navigationBar).titleImage,
+                class: "uni-page-head__title_image"
+              }, null, 8, _hoisted_14)) : (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 2 }, [
+                vue.createTextVNode(vue.toDisplayString(vue.unref(navigationBar).titleText), 1)
+              ], 64))
+            ], 4)
+          ])) : (vue.openBlock(), vue.createElementBlock("div", {
+            key: 1,
+            class: "uni-page-head-search",
+            style: vue.normalizeStyle({
+              borderRadius: vue.unref(navigationBar).searchInput.borderRadius,
+              backgroundColor: vue.unref(navigationBar).searchInput.backgroundColor
+            })
+          }, [
+            vue.createElementVNode("div", {
+              style: vue.normalizeStyle({ color: vue.unref(navigationBar).searchInput.placeholderColor }),
+              class: vue.normalizeClass([
+                "uni-page-head-search-placeholder",
+                `uni-page-head-search-placeholder-${vue.unref(searchFocus) || vue.unref(searchText) ? "left" : vue.unref(navigationBar).searchInput.align}`
+              ])
+            }, [
+              vue.createElementVNode("div", _hoisted_15, [
+                (vue.openBlock(), vue.createElementBlock("svg", _hoisted_16, [
+                  vue.createElementVNode("path", {
+                    d: vue.unref(ICON_PATH_SEARCH),
+                    fill: vue.unref(navigationBar).searchInput.placeholderColor
+                  }, null, 8, _hoisted_17)
+                ]))
+              ]),
+              !(vue.unref(searchText) || vue.unref(searchComposing)) ? (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 0 }, [
+                vue.createTextVNode(vue.toDisplayString(vue.unref(navigationBar).searchInput.placeholder), 1)
+              ], 64)) : vue.createCommentVNode("", true)
+            ], 6),
+            vue.unref(navigationBar).searchInput.disabled ? (vue.openBlock(), vue.createBlock(vue.unref(Input), {
+              key: 0,
+              disabled: true,
+              style: vue.normalizeStyle({ color: vue.unref(navigationBar).searchInput.color }),
+              "placeholder-style": "color: " + vue.unref(navigationBar).searchInput.placeholderColor,
+              class: "uni-page-head-search-input",
+              "confirm-type": "search",
+              onClick: _cache[0] || (_cache[0] = ($event) => vue.unref(searchOnClick) && vue.unref(searchOnClick)($event))
+            }, null, 8, ["style", "placeholder-style"])) : (vue.openBlock(), vue.createBlock(vue.unref(Input), {
+              key: 1,
+              focus: vue.unref(navigationBar).searchInput.autoFocus,
+              style: vue.normalizeStyle({ color: vue.unref(navigationBar).searchInput.color }),
+              "placeholder-style": "color: " + vue.unref(navigationBar).searchInput.placeholderColor,
+              class: "uni-page-head-search-input",
+              "confirm-type": "search",
+              onFocus: _cache[1] || (_cache[1] = ($event) => vue.unref(searchOnFocus) && vue.unref(searchOnFocus)($event)),
+              onBlur: _cache[2] || (_cache[2] = ($event) => vue.unref(searchOnBlur) && vue.unref(searchOnBlur)($event)),
+              onInput: _cache[3] || (_cache[3] = ($event) => vue.unref(searchOnInput) && vue.unref(searchOnInput)($event)),
+              onConfirm: _cache[4] || (_cache[4] = ($event) => vue.unref(searchOnConfirm) && vue.unref(searchOnConfirm)($event))
+            }, null, 8, ["focus", "style", "placeholder-style"]))
+          ], 4)),
+          vue.createElementVNode("div", _hoisted_18, [
+            vue.unref(hasButtons) && vue.unref(buttons) ? (vue.openBlock(true), vue.createElementBlock(vue.Fragment, { key: 0 }, vue.renderList(vue.unref(buttons).right, (button, index2) => {
+              return vue.openBlock(), vue.createElementBlock("div", {
+                key: index2,
+                class: vue.normalizeClass(button.btnClass),
+                style: vue.normalizeStyle(button.btnStyle),
+                "badge-text": button.badgeText,
+                onClick: button.onClick
+              }, [
+                button.btnIconPath ? (vue.openBlock(), vue.createElementBlock("svg", {
+                  key: 0,
+                  width: getSvgSize(button.iconStyle.fontSize),
+                  height: getSvgSize(button.iconStyle.fontSize),
+                  viewBox: "0 0 32 32"
+                }, [
+                  vue.createElementVNode("path", {
+                    d: button.btnIconPath,
+                    fill: getSvgColor(button.iconStyle.color)
+                  }, null, 8, _hoisted_21)
+                ], 8, _hoisted_20)) : button.btnSelect ? (vue.openBlock(), vue.createElementBlock("span", {
+                  key: 1,
+                  style: vue.normalizeStyle(button.iconStyle)
+                }, [
+                  vue.createElementVNode("i", {
+                    class: "uni-btn-icon",
+                    innerHTML: button.btnText
+                  }, null, 8, _hoisted_22),
+                  (vue.openBlock(), vue.createElementBlock("svg", _hoisted_23, [
+                    vue.createElementVNode("path", {
+                      d: ICON_PATHS.select,
+                      fill: "#000"
+                    }, null, 8, _hoisted_24)
+                  ]))
+                ], 4)) : (vue.openBlock(), vue.createElementBlock("i", {
+                  key: 2,
+                  class: "uni-btn-icon",
+                  style: vue.normalizeStyle(button.iconStyle),
+                  innerHTML: button.btnText
+                }, null, 12, _hoisted_25))
+              ], 14, _hoisted_19);
+            }), 128)) : vue.createCommentVNode("", true)
+          ])
+        ], 6),
+        vue.unref(navigationBar).type !== "transparent" && vue.unref(navigationBar).type !== "float" ? (vue.openBlock(), vue.createElementBlock("div", {
+          key: 0,
+          class: vue.normalizeClass({
+            "uni-placeholder": true,
+            "uni-placeholder-titlePenetrate": vue.unref(navigationBar).titlePenetrate
+          })
+        }, null, 2)) : vue.createCommentVNode("", true)
+      ], 8, _hoisted_1$2);
     };
   }
 });
-function createBackButtonTsx(navigationBar, isQuit) {
-  if (!isQuit) {
-    return vue.createVNode("div", {
-      "class": "uni-page-head-btn",
-      "onClick": onPageHeadBackButton
-    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
-  }
-}
-function createButtonsTsx(btns) {
-  return btns.map(({
-    onClick,
-    btnClass,
-    btnStyle,
-    btnText,
-    btnIconPath,
-    badgeText,
-    iconStyle,
-    btnSelect
-  }, index2) => {
-    return vue.createVNode("div", {
-      "key": index2,
-      "class": btnClass,
-      "style": btnStyle,
-      "onClick": onClick,
-      "badge-text": badgeText
-    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? vue.createVNode("span", {
-      "style": iconStyle
-    }, [vue.createVNode("i", {
-      "class": "uni-btn-icon",
-      "innerHTML": btnText
-    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : vue.createVNode("i", {
-      "class": "uni-btn-icon",
-      "style": iconStyle,
-      "innerHTML": btnText
-    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
-  });
-}
-function createPageHeadBdTsx(navigationBar, searchInput) {
-  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
-    return createPageHeadTitleTextTsx(navigationBar);
-  }
-  return createPageHeadSearchInputTsx(navigationBar, searchInput);
-}
-function createPageHeadTitleTextTsx({
-  type,
-  loading,
-  titleSize,
-  titleText,
-  titleImage
-}) {
-  return vue.createVNode("div", {
-    "class": "uni-page-head-bd"
-  }, [vue.createVNode("div", {
-    "style": {
-      fontSize: titleSize,
-      opacity: type === "transparent" ? 0 : 1
-    },
-    "class": "uni-page-head__title"
-  }, [loading ? vue.createVNode("i", {
-    "class": "uni-loading"
-  }, null) : titleImage ? vue.createVNode("img", {
-    "src": titleImage,
-    "class": "uni-page-head__title_image"
-  }, null, 8, ["src"]) : titleText], 4)]);
-}
-function createPageHeadSearchInputTsx(navigationBar, {
-  text,
-  focus,
-  composing,
-  onBlur,
-  onFocus,
-  onInput,
-  onConfirm,
-  onClick
-}) {
-  const {
-    color,
-    align,
-    autoFocus,
-    disabled,
-    borderRadius,
-    backgroundColor,
-    placeholder,
-    placeholderColor
-  } = navigationBar.searchInput;
-  const searchStyle = {
-    borderRadius,
-    backgroundColor
-  };
-  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text.value ? "left" : align}`];
-  return vue.createVNode("div", {
-    "class": "uni-page-head-search",
-    "style": searchStyle
-  }, [vue.createVNode("div", {
-    "style": {
-      color: placeholderColor
-    },
-    "class": placeholderClass
-  }, [vue.createVNode("div", {
-    "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text.value || composing.value ? "" : placeholder], 6), disabled ? vue.createVNode(Input, {
-    "disabled": true,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : vue.createVNode(Input, {
-    "focus": autoFocus,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onFocus": onFocus,
-    "onBlur": onBlur,
-    "onInput": onInput,
-    "onConfirm": onConfirm
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
-}
-function onPageHeadBackButton() {
-  if (getCurrentPages().length === 1) {
-    uni.reLaunch({
-      url: "/"
-    });
-  } else {
-    uni.navigateBack({
-      from: "backbutton",
-      success() {
-      }
-      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
-    });
-  }
-}
-function usePageHead(navigationBar) {
-  const clazz2 = vue.computed(() => {
-    const {
-      type,
-      titlePenetrate,
-      shadowColorType
-    } = navigationBar;
-    const clazz3 = {
-      "uni-page-head": true,
-      "uni-page-head-transparent": type === "transparent",
-      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
-      "uni-page-head-shadow": !!shadowColorType
-    };
-    if (shadowColorType) {
-      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
-    }
-    return clazz3;
-  });
-  const style = vue.computed(() => {
-    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
-    return {
-      backgroundColor,
-      color: navigationBar.titleColor,
-      transitionDuration: navigationBar.duration,
-      transitionTimingFunction: navigationBar.timingFunc
-    };
-  });
-  return {
-    clazz: clazz2,
-    style
-  };
-}
-function usePageHeadButtons({
-  id: id2,
-  navigationBar
-}) {
-  const left = [];
-  const right = [];
-  const {
-    buttons
-  } = navigationBar;
-  if (shared.isArray(buttons)) {
-    const {
-      type
-    } = navigationBar;
-    const isTransparent = type === "transparent";
-    const fonts = /* @__PURE__ */ Object.create(null);
-    buttons.forEach((btn, index2) => {
-      if (btn.fontSrc && !btn.fontFamily) {
-        const fontSrc = getRealPath(btn.fontSrc);
-        let fontFamily = fonts[fontSrc];
-        if (!fontFamily) {
-          fontFamily = `font${Date.now()}`;
-          fonts[fontSrc] = fontFamily;
-        }
-        btn.fontFamily = fontFamily;
-      }
-      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
-      if (btn.float === "left") {
-        left.push(pageHeadBtn);
-      } else {
-        right.push(pageHeadBtn);
-      }
-    });
-  }
-  return {
-    left,
-    right
-  };
-}
-function usePageHeadButton(pageId, index2, btn, isTransparent) {
-  const iconStyle = {
-    color: btn.color,
-    fontSize: btn.fontSize,
-    fontWeight: btn.fontWeight
-  };
-  if (btn.fontFamily) {
-    iconStyle.fontFamily = btn.fontFamily;
-  }
-  return new Proxy({
-    btnClass: {
-      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
-      "uni-page-head-btn": true,
-      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-      "uni-page-head-btn-select": !!btn.select
-    },
-    btnStyle: {
-      backgroundColor: isTransparent ? btn.background : "transparent",
-      width: btn.width
-    },
-    btnText: "",
-    btnIconPath: ICON_PATHS[btn.type],
-    badgeText: btn.badgeText,
-    iconStyle,
-    onClick() {
-      invokeHook(pageId, uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, shared.extend({
-        index: index2
-      }, btn));
-    },
-    btnSelect: btn.select
-  }, {
-    get(target, key, receiver) {
-      if (["btnText"].includes(key)) {
-        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-      } else {
-        return Reflect.get(target, key, receiver);
-      }
-    }
-  });
-}
-function usePageHeadSearchInput({
-  id: id2,
-  navigationBar: {
-    searchInput
-  }
-}) {
-  const focus = vue.ref(false);
-  const text = vue.ref("");
-  const composing = vue.ref(false);
-  const {
-    disabled
-  } = searchInput;
-  if (disabled) {
-    const onClick = () => {
-      invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-    };
-    return {
-      focus,
-      text,
-      composing,
-      onClick
-    };
-  }
-  const onFocus = () => {
-    focus.value = true;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: true
-    });
-  };
-  const onBlur = () => {
-    focus.value = false;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: false
-    });
-  };
-  const onInput = (evt) => {
-    text.value = evt.detail.value;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
-      text: text.value
-    });
-  };
-  const onConfirm = (evt) => {
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-      text: text.value
-    });
-  };
-  return {
-    focus,
-    text,
-    composing,
-    onFocus,
-    onBlur,
-    onInput,
-    onConfirm
-  };
-}
-const _sfc_main$2 = {
-  name: "PageRefresh",
-  setup() {
-    const { pullToRefresh } = usePageMeta();
-    return {
-      offset: pullToRefresh.offset,
-      color: pullToRefresh.color
-    };
-  }
-};
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
-const _hoisted_1 = { class: "uni-page-refresh-inner" };
-const _hoisted_2 = ["fill"];
-const _hoisted_3 = /* @__PURE__ */ vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
+const _hoisted_1$1 = { class: "uni-page-refresh-inner" };
+const _hoisted_2$1 = ["fill"];
+const _hoisted_3$1 = /* @__PURE__ */ vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
 const _hoisted_4 = /* @__PURE__ */ vue.createElementVNode("path", {
   d: "M0 0h24v24H0z",
   fill: "none"
 }, null, -1);
 const _hoisted_5 = [
-  _hoisted_3,
+  _hoisted_3$1,
   _hoisted_4
 ];
 const _hoisted_6 = {
@@ -4019,73 +4081,97 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createElementBlock("uni-page-refresh", null, [
-    vue.createElementVNode("div", {
-      style: vue.normalizeStyle({ "margin-top": $setup.offset + "px" }),
-      class: "uni-page-refresh"
-    }, [
-      vue.createElementVNode("div", _hoisted_1, [
-        (vue.openBlock(), vue.createElementBlock("svg", {
-          fill: $setup.color,
-          class: "uni-page-refresh__icon",
-          width: "24",
-          height: "24",
-          viewBox: "0 0 24 24"
-        }, _hoisted_5, 8, _hoisted_2)),
-        (vue.openBlock(), vue.createElementBlock("svg", _hoisted_6, [
-          vue.createElementVNode("circle", {
-            stroke: $setup.color,
-            class: "uni-page-refresh__path",
-            cx: "50",
-            cy: "50",
-            r: "20",
-            fill: "none",
-            "stroke-width": "4",
-            "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_7)
-        ]))
-      ])
-    ], 4)
-  ]);
-}
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render]]);
-const PageBody = /* @__PURE__ */ defineSystemComponent({
-  name: "PageBody",
-  setup(props2, ctx) {
-    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
-    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && vue.ref(null);
+const _sfc_main$4 = /* @__PURE__ */ vue.defineComponent({
+  ...{ name: "PageRefresh" },
+  __name: "component",
+  setup(__props) {
+    const { pullToRefresh } = usePageMeta();
+    const offset = pullToRefresh.offset;
+    const color = pullToRefresh.color;
+    return (_ctx, _cache) => {
+      return vue.openBlock(), vue.createElementBlock("uni-page-refresh", null, [
+        vue.createElementVNode("div", {
+          style: vue.normalizeStyle({ "margin-top": vue.unref(offset) + "px" }),
+          class: "uni-page-refresh"
+        }, [
+          vue.createElementVNode("div", _hoisted_1$1, [
+            (vue.openBlock(), vue.createElementBlock("svg", {
+              fill: vue.unref(color),
+              class: "uni-page-refresh__icon",
+              width: "24",
+              height: "24",
+              viewBox: "0 0 24 24"
+            }, _hoisted_5, 8, _hoisted_2$1)),
+            (vue.openBlock(), vue.createElementBlock("svg", _hoisted_6, [
+              vue.createElementVNode("circle", {
+                stroke: vue.unref(color),
+                class: "uni-page-refresh__path",
+                cx: "50",
+                cy: "50",
+                r: "20",
+                fill: "none",
+                "stroke-width": "4",
+                "stroke-miterlimit": "10"
+              }, null, 8, _hoisted_7)
+            ]))
+          ])
+        ], 4)
+      ]);
+    };
+  }
+});
+const _sfc_main$3 = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "PageBody",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "pageBody",
+  setup(__props) {
+    const isX = true;
+    const hasPullDownRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__;
+    const pageMeta = hasPullDownRefresh ? usePageMeta() : null;
+    const refreshRef = vue.ref(null);
     const wrapperRef = vue.ref(null);
     const _pageRefresh = null;
     const pageRefresh = vue.ref(null);
-    vue.watch(() => {
-      return pageMeta.enablePullDownRefresh;
-    }, () => {
-      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
-    }, {
-      immediate: true
-    });
-    function _resize() {
+    vue.watch(
+      () => pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh,
+      () => {
+        pageRefresh.value = (pageMeta == null ? void 0 : pageMeta.enablePullDownRefresh) ? _pageRefresh : null;
+      },
+      {
+        immediate: true
+      }
+    );
+    function resize() {
       {
         return;
       }
     }
-    return () => {
-      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
-      const pageResizeSensor = vue.createVNode(ResizeSensor, {
-        "onResize": _resize
-      }, null, 8, ["onResize"]);
-      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", vue.mergeProps({
-        "ref": wrapperRef
-      }, pageRefresh.value), [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")]), pageResizeSensor], 16)]);
+    return (_ctx, _cache) => {
+      return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
+        vue.unref(hasPullDownRefresh) && !!vue.unref(pageMeta) && (vue.unref(isX) || !!vue.unref(pageMeta).enablePullDownRefresh) ? (vue.openBlock(), vue.createBlock(_sfc_main$4, {
+          key: 0,
+          ref_key: "refreshRef",
+          ref: refreshRef
+        }, null, 512)) : vue.createCommentVNode("", true),
+        vue.createElementVNode("uni-page-wrapper", vue.mergeProps({
+          ref_key: "wrapperRef",
+          ref: wrapperRef
+        }, pageRefresh.value), [
+          vue.createElementVNode("uni-page-body", null, [
+            vue.renderSlot(_ctx.$slots, "default")
+          ]),
+          vue.unref(isX) ? (vue.openBlock(), vue.createBlock(vue.unref(ResizeSensor), {
+            key: 0,
+            onResize: resize
+          })) : vue.createCommentVNode("", true)
+        ], 16)
+      ], 64);
     };
   }
 });
-function createPageRefreshTsx(refreshRef, pageMeta) {
-  return vue.createVNode(PageRefresh, {
-    "ref": refreshRef
-  }, null, 512);
-}
 const PageComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
@@ -4110,6 +4196,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
           );
           pageMeta = Object.assign(pageMeta, routePageMeta);
         }
+        pageMeta.id = createDialogPageId();
         if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {
           pageMeta.backgroundColorContent = "transparent";
         }
@@ -4142,7 +4229,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         style: pageStyle
       },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        vue.createVNode(PageHead),
+        vue.createVNode(_sfc_main$5),
         createPageBodyVNode(ctx),
         createDialogPageVNode(
           currentInstance.$dialogPages,
@@ -4179,7 +4266,7 @@ function assignDialogPage(ctx, parentInstance, currentInstance) {
 }
 function createPageBodyVNode(ctx) {
   return vue.openBlock(), vue.createBlock(
-    PageBody,
+    _sfc_main$3,
     { key: 0 },
     {
       default: vue.withCtx(() => [vue.renderSlot(ctx.slots, "page")]),
@@ -7383,6 +7470,8 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
     if (!shared.isPlainObject(node)) {
       return;
     }
+    if ((!shared.hasOwn(node, "type") || node.type === "text") && shared.isString(node.text) && node.text !== "")
+      return vue.createTextVNode(decodeEntities(node.text || ""));
     if (!shared.hasOwn(node, "type") || node.type === "node") {
       if (!shared.isString(node.name) || !node.name) {
         return;
@@ -7399,8 +7488,6 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
         nodeList2VNode(scopeId, triggerItemClick, node.children)
       );
     }
-    if (node.type === "text" && shared.isString(node.text) && node.text !== "")
-      return vue.createTextVNode(decodeEntities(node.text || ""));
   });
 };
 function removeDOCTYPE(html) {
@@ -9972,34 +10059,16 @@ const onBackPress = /* @__PURE__ */ createLifeCycleHook(
 );
 class UniPageContainerElement extends UniElement {
 }
-var __defProp$1 = Object.defineProperty;
-var __defProps$1 = Object.defineProperties;
-var __getOwnPropDescs$1 = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols$1 = Object.getOwnPropertySymbols;
-var __hasOwnProp$1 = Object.prototype.hasOwnProperty;
-var __propIsEnum$1 = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues$1 = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp$1.call(b, prop))
-      __defNormalProp$1(a, prop, b[prop]);
-  if (__getOwnPropSymbols$1)
-    for (var prop of __getOwnPropSymbols$1(b)) {
-      if (__propIsEnum$1.call(b, prop))
-        __defNormalProp$1(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps$1 = (a, b) => __defProps$1(a, __getOwnPropDescs$1(b));
 const MAX_SLIDER_DISTANCE = 100;
 const MIN_SLIDER_VELOCITY = 0.3;
-const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent(__spreadProps$1(__spreadValues$1({}, {
-  name: "page-container",
-  rootElement: {
-    name: "uni-page-container",
-    class: UniPageContainerElement
-  }
-}), {
+const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "page-container",
+    rootElement: {
+      name: "uni-page-container",
+      class: UniPageContainerElement
+    }
+  },
   __name: "index",
   props: {
     show: { type: Boolean, default: false },
@@ -10264,7 +10333,7 @@ const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent(__spreadProps$1(__spread
       ], 64);
     };
   }
-}));
+});
 class UniVueElement extends Object {
 }
 class UniLoadingElement extends UniVueElement {
@@ -10272,44 +10341,29 @@ class UniLoadingElement extends UniVueElement {
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = vue.ref("16px");
   const loadingBorderWidth = vue.ref("1px");
-  const loadingBorderRadius = vue.ref("8px");
+  vue.ref("8px");
   return {
-    size: loadingSize,
-    borderWidth: loadingBorderWidth,
-    borderRadius: loadingBorderRadius
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
   };
 }
-var __defProp2 = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp2 = (obj, key, value) => key in obj ? __defProp2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp2(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp2(a, prop, b[prop]);
+const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement
     }
-  return a;
-};
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValues({}, {
-  name: "loading",
-  // @ts-ignore
-  rootElement: {
-    name: "uni-loading-element",
-    class: UniLoadingElement
-  }
-}), {
+  },
   __name: "index-x",
   props: {
     paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false }
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
   },
   setup(__props) {
     const props2 = __props;
@@ -10317,23 +10371,20 @@ const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValu
     const loadingStyle = vue.reactive(useLoadingStyle(LoadingRef, vue.computed(() => props2.bold)));
     return (_ctx, _cache) => {
       const _component_view = __syscom_0;
-      return vue.openBlock(), vue.createBlock(_component_view, {
-        class: "__uni_loading_container__",
+      return vue.openBlock(), vue.createElementBlock("uni-loading-element", {
+        class: "default __uni_loading_container__",
         ref_key: "LoadingRef",
         ref: LoadingRef,
         style: { "display": "flex" }
-      }, {
-        default: vue.withCtx(() => [
-          vue.createVNode(_component_view, {
-            class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
-            style: vue.normalizeStyle([{ "box-sizing": "border-box" }, { width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }])
-          }, null, 8, ["class", "style"])
-        ]),
-        _: 1
-      }, 512);
+      }, [
+        vue.createVNode(_component_view, {
+          class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
+          style: vue.normalizeStyle(loadingStyle)
+        }, null, 8, ["class", "style"])
+      ], 512);
     };
   }
-}));
+});
 function useSubscribe(callback, name, multiple, pageId) {
   const instance = vue.getCurrentInstance();
   instance.proxy;
@@ -10375,8 +10426,10 @@ function initHooks(options, instance, publicThis) {
     instance.__isVisible = true;
     try {
       let query = instance.attrs.__pageQuery;
+      const scriptLang = instance.type.__scriptLang;
+      const isUTS = !scriptLang || scriptLang === "uts";
       if (true) {
-        query = new uniShared.UTSJSONObject(uniShared.decodedQuery(query));
+        query = isUTS ? new uniShared.UTSJSONObject(uniShared.decodedQuery(query)) : uniShared.decodedQuery(query);
       }
       if (false)
         ;
@@ -12852,7 +12905,7 @@ function usePopupStyle(props2, triangleColor = "#fcfcfd") {
       try {
         const number = Number(value);
         return Number.isFinite(number) ? number : 0;
-      } catch (e2) {
+      } catch {
         return 0;
       }
     }
@@ -14346,7 +14399,9 @@ const request = /* @__PURE__ */ defineTaskApi(
     responseType,
     enableChunked,
     withCredentials,
-    timeout = __uniConfig.networkTimeout.request
+    timeout = __uniConfig.networkTimeout.request,
+    // @ts-expect-error 内部isUTS参数
+    isUTS
   }, { resolve, reject }) => {
     {
       timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout;
@@ -14474,7 +14529,7 @@ const request = /* @__PURE__ */ defineTaskApi(
                 const result = concatArrayBuffers(bodyBuffers);
                 let res = responseType === "text" ? new TextDecoder().decode(result) : result;
                 if (responseType === "text") {
-                  res = parseResponseText(res, responseType, dataType2);
+                  res = parseResponseText(res, responseType, dataType2, isUTS);
                 }
                 resolve({
                   data: res,
@@ -14643,18 +14698,22 @@ function parseHeaders(headers) {
   });
   return headersObject;
 }
-function parseResponseText(responseText, responseType, dataType2) {
+function parseResponseText(responseText, responseType, dataType2, isUTS) {
   let res = responseText;
   if (responseType === "text" && dataType2 === "json") {
     try {
-      res = UTS.JSON.parse(res) || res;
+      if (isUTS) {
+        res = UTS.JSON.parse(res) || res;
+      } else {
+        res = JSON.parse(res);
+      }
     } catch (error) {
     }
   }
   return res;
 }
 const STORAGE_KEYS = "uni-storage-keys";
-function parseValue(value) {
+function parseValue(value, isUTS) {
   const types = ["object", "string", "number", "boolean", "undefined"];
   try {
     const object = shared.isString(value) ? JSON.parse(value) : value;
@@ -14663,7 +14722,7 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
-          if (type === "object") {
+          if (type === "object" && isUTS) {
             return UTS.JSON.parse(JSON.stringify(object.data));
           }
           return object.data;
@@ -14702,7 +14761,7 @@ const setStorage = /* @__PURE__ */ defineAsyncApi(
   },
   SetStorageProtocol
 );
-function getStorageOrigin(key) {
+function getStorageOrigin(key, isUTS) {
   const value = localStorage && localStorage.getItem(key);
   if (!shared.isString(value)) {
     throw new Error("data not found");
@@ -14710,7 +14769,7 @@ function getStorageOrigin(key) {
   let data = value;
   try {
     const object = JSON.parse(value);
-    const result = parseValue(object);
+    const result = parseValue(object, isUTS);
     if (result !== void 0) {
       data = result;
     }
@@ -14720,9 +14779,10 @@ function getStorageOrigin(key) {
 }
 const getStorageSync = /* @__PURE__ */ defineSyncApi(
   API_GET_STORAGE_SYNC,
-  (key) => {
+  // @ts-expect-error 内部isUTS参数
+  (key, isUTS) => {
     try {
-      return getStorageOrigin(key);
+      return getStorageOrigin(key, isUTS);
     } catch (error) {
       return "";
     }
@@ -14731,9 +14791,10 @@ const getStorageSync = /* @__PURE__ */ defineSyncApi(
 );
 const getStorage = /* @__PURE__ */ defineAsyncApi(
   API_GET_STORAGE,
-  ({ key }, { resolve, reject }) => {
+  // @ts-expect-error 内部isUTS参数
+  ({ key, isUTS }, { resolve, reject }) => {
     try {
-      const data = getStorageOrigin(key);
+      const data = getStorageOrigin(key, isUTS);
       resolve({
         data
       });
@@ -14962,299 +15023,299 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-const _middleButton = {
-  width: "50px",
-  height: "50px",
-  iconWidth: "24px"
-};
-const TabBar = /* @__PURE__ */ defineSystemComponent({
-  name: "TabBar",
-  setup() {
+const _hoisted_1 = ["onClick"];
+const _hoisted_2 = ["src"];
+const _hoisted_3 = ["src"];
+const DEFAULT_BG_COLOR = "#f7f7fa";
+const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
+const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
+const _sfc_main = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "TabBar",
+    __reserved: true,
+    compatConfig: { MODE: 3 }
+  },
+  __name: "tabBar",
+  setup(__props) {
+    const hasMidButton = __UNI_FEATURE_TABBAR_MIDBUTTON__;
+    const _middleButton = {
+      width: "50px",
+      height: "50px",
+      iconWidth: "24px"
+    };
     const visibleList = vue.ref([]);
     const tabBar = useTabBar();
     useVisibleList(tabBar, visibleList);
     useTabBarCssVar(tabBar);
     const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar, visibleList);
-    const {
-      style,
-      borderStyle,
-      placeholderStyle
-    } = useTabBarStyle(tabBar);
-    return () => {
-      const tabBarItemsTsx = createTabBarItemsTsx(tabBar, onSwitchTab, visibleList);
-      return vue.createVNode("uni-tabbar", {
-        "class": "uni-tabbar-" + tabBar.position
-      }, [vue.createVNode("div", {
-        "class": "uni-tabbar",
-        "style": style.value
-      }, [vue.createVNode("div", {
-        "class": "uni-tabbar-border",
-        "style": borderStyle.value
-      }, null, 4), tabBarItemsTsx], 4), vue.createVNode("div", {
-        "class": "uni-placeholder",
-        "style": placeholderStyle.value
-      }, null, 4)], 2);
+    const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar);
+    function useTabBarCssVar(tabBar2) {
+      vue.watch(
+        () => tabBar2.shown,
+        (value) => {
+          updatePageCssVar({
+            "--window-bottom": normalizeWindowBottom(
+              value ? parseInt(tabBar2.height) : 0
+            )
+          });
+        }
+      );
+    }
+    function useVisibleList(tabBar2, visibleList2) {
+      const internalMidButton = vue.ref(
+        shared.extend({ type: "midButton" }, tabBar2.midButton)
+      );
+      function setVisibleList() {
+        let tempList = [];
+        tempList = tabBar2.list.filter((item) => item.visible !== false);
+        if (hasMidButton && tabBar2.midButton) {
+          internalMidButton.value = shared.extend(
+            {},
+            _middleButton,
+            internalMidButton.value,
+            tabBar2.midButton
+          );
+          tempList = tempList.filter((item) => !isMidButton(item));
+          if (tempList.length % 2 === 0) {
+            tempList.splice(
+              Math.floor(tempList.length / 2),
+              0,
+              internalMidButton.value
+            );
+          }
+        }
+        visibleList2.value = tempList;
+      }
+      vue.watchEffect(setVisibleList);
+    }
+    function useSwitchTab(route, tabBar2, visibleList2) {
+      vue.watchEffect(() => {
+        const meta = route.meta;
+        if (meta.isTabBar) {
+          const pagePath = meta.route;
+          const index2 = visibleList2.value.findIndex(
+            (item) => item.pagePath === pagePath
+          );
+          tabBar2.selectedIndex = index2;
+        }
+      });
+      return (tabBarItem, index2) => {
+        const { type } = tabBarItem;
+        if (hasMidButton && type === "midButton") {
+          return UniServiceJSBridge.invokeOnCallback(
+            API_ON_TAB_BAR_MID_BUTTON_TAP
+          );
+        }
+        const { pagePath, text } = tabBarItem;
+        let url = uniShared.addLeadingSlash(pagePath);
+        if (url === __uniRoutes[0].alias) {
+          url = "/";
+        }
+        if (route.path !== url) {
+          uni.switchTab({ from: "tabBar", url, tabBarText: text });
+        } else {
+          invokeHook("onTabItemTap", {
+            index: index2,
+            text,
+            pagePath
+          });
+        }
+      };
+    }
+    const BLUR_EFFECT_COLORS = {
+      dark: BLUR_EFFECT_COLOR_DARK,
+      light: BLUR_EFFECT_COLOR_LIGHT,
+      extralight: BLUR_EFFECT_COLOR_LIGHT
+    };
+    const BORDER_COLORS = {
+      white: "rgba(255, 255, 255, 0.33)",
+      black: "rgba(0, 0, 0, 0.33)"
+    };
+    function useTabBarStyle(tabBar2) {
+      const style2 = vue.computed(() => {
+        let backgroundColor = tabBar2.backgroundColor;
+        const blurEffect = tabBar2.blurEffect;
+        if (!backgroundColor) {
+          if (blurEffect && blurEffect !== "none") {
+            backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
+          }
+        }
+        return {
+          backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
+          backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
+        };
+      });
+      const borderStyle2 = vue.computed(() => {
+        const { borderStyle: borderStyle3, borderColor } = tabBar2;
+        if (borderColor && shared.isString(borderColor)) {
+          return {
+            backgroundColor: borderColor
+          };
+        }
+        return {
+          backgroundColor: BORDER_COLORS[borderStyle3] || BORDER_COLORS["black"]
+        };
+      });
+      const placeholderStyle2 = vue.computed(() => {
+        return {
+          height: tabBar2.height
+        };
+      });
+      return {
+        style: style2,
+        borderStyle: borderStyle2,
+        placeholderStyle: placeholderStyle2
+      };
+    }
+    function isMidButton(item) {
+      return item.type === "midButton";
+    }
+    function isRenderedMidButton(item) {
+      return hasMidButton && isMidButton(item);
+    }
+    function getMidButton(item) {
+      return item;
+    }
+    function getItemStyle(item) {
+      if (!isRenderedMidButton(item)) {
+        return;
+      }
+      return {
+        flex: "0 0 " + item.width,
+        position: "relative"
+      };
+    }
+    function getMidButtonStyle(item) {
+      const { width, height, backgroundImage } = getMidButton(item);
+      return {
+        width,
+        height,
+        backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
+      };
+    }
+    function isSelected(index2) {
+      return tabBar.selectedIndex === index2;
+    }
+    function getTextColor(index2) {
+      return isSelected(index2) ? tabBar.selectedColor : tabBar.color;
+    }
+    function getIconPath(item, index2) {
+      return (isSelected(index2) ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
+    }
+    function getIconfontText(item, index2) {
+      if (!item.iconfont) {
+        return;
+      }
+      return isSelected(index2) ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text;
+    }
+    function getIconfontColor(item, index2) {
+      if (!item.iconfont) {
+        return;
+      }
+      return isSelected(index2) ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color;
+    }
+    function getIconClass(item) {
+      return "uni-tabbar__icon" + (item.text ? " uni-tabbar__icon__diff" : "");
+    }
+    function getIconStyle() {
+      return { width: tabBar.iconWidth, height: tabBar.iconWidth };
+    }
+    function getIconfontStyle(item, index2) {
+      var _a;
+      return {
+        fontSize: ((_a = item.iconfont) == null ? void 0 : _a.fontSize) || tabBar.iconWidth,
+        color: getIconfontColor(item, index2) || BLUR_EFFECT_COLOR_DARK
+      };
+    }
+    function getLabelStyle(item, index2) {
+      return {
+        color: getTextColor(index2),
+        fontSize: tabBar.fontSize,
+        lineHeight: !item.iconPath ? 1.8 : "normal",
+        marginTop: !item.iconPath ? "inherit" : tabBar.spacing
+      };
+    }
+    return (_ctx, _cache) => {
+      return vue.openBlock(), vue.createElementBlock("uni-tabbar", {
+        class: vue.normalizeClass("uni-tabbar-" + vue.unref(tabBar).position)
+      }, [
+        vue.createElementVNode("div", {
+          class: "uni-tabbar",
+          style: vue.normalizeStyle(vue.unref(style))
+        }, [
+          vue.createElementVNode("div", {
+            class: "uni-tabbar-border",
+            style: vue.normalizeStyle(vue.unref(borderStyle))
+          }, null, 4),
+          (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(visibleList.value, (item, index2) => {
+            return vue.openBlock(), vue.createElementBlock("div", {
+              key: isRenderedMidButton(item) ? "midButton" : index2,
+              class: "uni-tabbar__item",
+              style: vue.normalizeStyle(getItemStyle(item)),
+              onClick: ($event) => vue.unref(onSwitchTab)(item, index2)
+            }, [
+              isRenderedMidButton(item) ? (vue.openBlock(), vue.createElementBlock("div", {
+                key: 0,
+                class: "uni-tabbar__mid",
+                style: vue.normalizeStyle(getMidButtonStyle(item))
+              }, [
+                getIconPath(item, index2) ? (vue.openBlock(), vue.createElementBlock("img", {
+                  key: 0,
+                  style: vue.normalizeStyle({
+                    width: getMidButton(item).iconWidth,
+                    height: getMidButton(item).iconWidth
+                  }),
+                  src: vue.unref(getRealPath)(getIconPath(item, index2))
+                }, null, 12, _hoisted_2)) : vue.createCommentVNode("", true)
+              ], 4)) : vue.createCommentVNode("", true),
+              vue.createElementVNode("div", {
+                class: "uni-tabbar__bd",
+                style: vue.normalizeStyle({ height: vue.unref(tabBar).height })
+              }, [
+                getIconfontText(item, index2) ? (vue.openBlock(), vue.createElementBlock("div", {
+                  key: 0,
+                  class: vue.normalizeClass(getIconClass(item)),
+                  style: vue.normalizeStyle(getIconStyle())
+                }, [
+                  item.type !== "midButton" ? (vue.openBlock(), vue.createElementBlock("div", {
+                    key: 0,
+                    class: "uni-tabbar__iconfont",
+                    style: vue.normalizeStyle(getIconfontStyle(item, index2))
+                  }, vue.toDisplayString(getIconfontText(item, index2)), 5)) : vue.createCommentVNode("", true)
+                ], 6)) : getIconPath(item, index2) ? (vue.openBlock(), vue.createElementBlock("div", {
+                  key: 1,
+                  class: vue.normalizeClass(getIconClass(item)),
+                  style: vue.normalizeStyle(getIconStyle())
+                }, [
+                  item.type !== "midButton" ? (vue.openBlock(), vue.createElementBlock("img", {
+                    key: 0,
+                    src: vue.unref(getRealPath)(getIconPath(item, index2))
+                  }, null, 8, _hoisted_3)) : vue.createCommentVNode("", true)
+                ], 6)) : vue.createCommentVNode("", true),
+                item.text ? (vue.openBlock(), vue.createElementBlock("div", {
+                  key: 2,
+                  class: "uni-tabbar__label",
+                  style: vue.normalizeStyle(getLabelStyle(item, index2))
+                }, vue.toDisplayString(item.text), 5)) : vue.createCommentVNode("", true),
+                item.redDot ? (vue.openBlock(), vue.createElementBlock("div", {
+                  key: 3,
+                  class: vue.normalizeClass([
+                    "uni-tabbar__reddot",
+                    item.badge ? "uni-tabbar__badge" : ""
+                  ])
+                }, vue.toDisplayString(item.badge), 3)) : vue.createCommentVNode("", true)
+              ], 4)
+            ], 12, _hoisted_1);
+          }), 128))
+        ], 4),
+        vue.createElementVNode("div", {
+          class: "uni-placeholder",
+          style: vue.normalizeStyle(vue.unref(placeholderStyle))
+        }, null, 4)
+      ], 2);
     };
   }
 });
-function useTabBarCssVar(tabBar) {
-  vue.watch(() => tabBar.shown, (value) => {
-    updatePageCssVar({
-      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar.height) : 0)
-    });
-  });
-}
-function useVisibleList(tabBar, visibleList) {
-  const internalMidButton = vue.ref(shared.extend({
-    type: "midButton"
-  }, tabBar.midButton));
-  function setVisibleList() {
-    let tempList = [];
-    tempList = tabBar.list.filter((item) => item.visible !== false);
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {
-      internalMidButton.value = shared.extend({}, _middleButton, internalMidButton.value, tabBar.midButton);
-      tempList = tempList.filter((item) => !isMidButton(item));
-      if (tempList.length % 2 === 0) {
-        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
-      }
-    }
-    visibleList.value = tempList;
-  }
-  vue.watchEffect(setVisibleList);
-}
-function useSwitchTab(route, tabBar, visibleList) {
-  vue.watchEffect(() => {
-    const meta = route.meta;
-    if (meta.isTabBar) {
-      const pagePath = meta.route;
-      const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
-      tabBar.selectedIndex = index2;
-    }
-  });
-  return (tabBarItem, index2) => {
-    const {
-      type
-    } = tabBarItem;
-    return () => {
-      if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && type === "midButton") {
-        return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
-      }
-      const {
-        pagePath,
-        text
-      } = tabBarItem;
-      let url = uniShared.addLeadingSlash(pagePath);
-      if (url === __uniRoutes[0].alias) {
-        url = "/";
-      }
-      if (route.path !== url) {
-        uni.switchTab({
-          from: "tabBar",
-          url,
-          tabBarText: text
-        });
-      } else {
-        invokeHook("onTabItemTap", {
-          index: index2,
-          text,
-          pagePath
-        });
-      }
-    };
-  };
-}
-const DEFAULT_BG_COLOR = "#f7f7fa";
-const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
-const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const BLUR_EFFECT_COLORS = {
-  dark: BLUR_EFFECT_COLOR_DARK,
-  light: BLUR_EFFECT_COLOR_LIGHT,
-  extralight: BLUR_EFFECT_COLOR_LIGHT
-};
-const BORDER_COLORS = {
-  white: "rgba(255, 255, 255, 0.33)",
-  black: "rgba(0, 0, 0, 0.33)"
-};
-function useTabBarStyle(tabBar) {
-  const style = vue.computed(() => {
-    let backgroundColor = tabBar.backgroundColor;
-    const blurEffect = tabBar.blurEffect;
-    if (!backgroundColor) {
-      if (blurEffect && blurEffect !== "none") {
-        backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
-      }
-    }
-    return {
-      backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
-      backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
-    };
-  });
-  const borderStyle = vue.computed(() => {
-    const {
-      borderStyle: borderStyle2,
-      borderColor
-    } = tabBar;
-    if (borderColor && shared.isString(borderColor)) {
-      return {
-        backgroundColor: borderColor
-      };
-    }
-    return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
-    };
-  });
-  const placeholderStyle = vue.computed(() => {
-    return {
-      height: tabBar.height
-    };
-  });
-  return {
-    style,
-    borderStyle,
-    placeholderStyle
-  };
-}
-function isMidButton(item) {
-  return item.type === "midButton";
-}
-function createTabBarItemsTsx(tabBar, onSwitchTab, visibleList) {
-  const {
-    selectedIndex,
-    selectedColor,
-    color
-  } = tabBar;
-  return visibleList.value.map((item, index2) => {
-    const selected = selectedIndex === index2;
-    const textColor = selected ? selectedColor : color;
-    const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
-    const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
-    const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
-    if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
-      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
-    }
-    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar, index2, onSwitchTab);
-  });
-}
-function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar, index2, onSwitchTab) {
-  return vue.createVNode("div", {
-    "key": index2,
-    "class": "uni-tabbar__item",
-    "onClick": onSwitchTab(tabBarItem, index2)
-  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar)], 8, ["onClick"]);
-}
-function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar) {
-  const {
-    height
-  } = tabBar;
-  return vue.createVNode("div", {
-    "class": "uni-tabbar__bd",
-    "style": {
-      height
-    }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
-}
-function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar) {
-  const {
-    type,
-    text
-  } = tabBarItem;
-  const {
-    iconWidth
-  } = tabBar;
-  const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
-  const style = {
-    width: iconWidth,
-    height: iconWidth
-  };
-  return vue.createVNode("div", {
-    "class": clazz2,
-    "style": style
-  }, [type !== "midButton" && vue.createVNode("img", {
-    "src": getRealPath(iconPath)
-  }, null, 8, ["src"])], 6);
-}
-function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar) {
-  var _a;
-  const {
-    type,
-    text
-  } = tabBarItem;
-  const {
-    iconWidth
-  } = tabBar;
-  const clazz2 = "uni-tabbar__icon" + (text ? " uni-tabbar__icon__diff" : "");
-  const style = {
-    width: iconWidth,
-    height: iconWidth
-  };
-  const iconfontStyle = {
-    fontSize: ((_a = tabBarItem.iconfont) == null ? void 0 : _a.fontSize) || iconWidth,
-    color: iconfontColor
-  };
-  return vue.createVNode("div", {
-    "class": clazz2,
-    "style": style
-  }, [type !== "midButton" && vue.createVNode("div", {
-    "class": "uni-tabbar__iconfont",
-    "style": iconfontStyle
-  }, [iconfontText], 4)], 6);
-}
-function createTabBarItemTextTsx(color, tabBarItem, tabBar) {
-  const {
-    iconPath,
-    text
-  } = tabBarItem;
-  const {
-    fontSize,
-    spacing
-  } = tabBar;
-  const style = {
-    color,
-    fontSize,
-    lineHeight: !iconPath ? 1.8 : "normal",
-    marginTop: !iconPath ? "inherit" : spacing
-  };
-  return vue.createVNode("div", {
-    "class": "uni-tabbar__label",
-    "style": style
-  }, [text], 4);
-}
-function createTabBarItemRedDotTsx(badge) {
-  const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
-  return vue.createVNode("div", {
-    "class": clazz2
-  }, [badge], 2);
-}
-function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar, index2, onSwitchTab) {
-  const {
-    width,
-    height,
-    backgroundImage,
-    iconWidth
-  } = midButton;
-  return vue.createVNode("div", {
-    "key": "midButton",
-    "class": "uni-tabbar__item",
-    "style": {
-      flex: "0 0 " + width,
-      position: "relative"
-    },
-    "onClick": onSwitchTab(midButton, index2)
-  }, [vue.createVNode("div", {
-    "class": "uni-tabbar__mid",
-    "style": {
-      width,
-      height,
-      backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
-    }
-  }, [iconPath && vue.createVNode("img", {
-    "style": {
-      width: iconWidth,
-      height: iconWidth
-    },
-    "src": getRealPath(iconPath)
-  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar)], 12, ["onClick"]);
-}
 const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
   setup(_props, {
@@ -15271,13 +15332,13 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
     const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
     const showTabBar = __UNI_FEATURE_TABBAR__ && useShowTabBar();
-    const clazz2 = useAppClass(showTabBar);
+    const clazz = useAppClass(showTabBar);
     return () => {
       const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
       const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar);
       return vue.createVNode("uni-app", {
         "ref": rootRef,
-        "class": clazz2.value
+        "class": clazz.value
       }, [layoutTsx, tabBarTsx], 2);
     };
   }
@@ -15454,7 +15515,7 @@ function useShowTabBar(emit2) {
   return showTabBar;
 }
 function createTabBarTsx(showTabBar) {
-  return vue.withDirectives(vue.createVNode(TabBar, null, null, 512), [[vue.vShow, showTabBar.value]]);
+  return vue.withDirectives(vue.createVNode(_sfc_main, null, null, 512), [[vue.vShow, showTabBar.value]]);
 }
 function createPageVNode() {
   return vue.createVNode(__uniRoutes[0].component);
@@ -15654,8 +15715,8 @@ Object.defineProperty(exports, "UniError", {
 exports.Ad = index$5;
 exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
-exports.AsyncErrorComponent = AsyncErrorComponent;
-exports.AsyncLoadingComponent = AsyncLoadingComponent;
+exports.AsyncErrorComponent = _sfc_main$6;
+exports.AsyncLoadingComponent = _sfc_main$7;
 exports.Button = index$x;
 exports.Camera = index$2;
 exports.Canvas = indexX$4;
@@ -15674,13 +15735,13 @@ exports.ListItem = index$f;
 exports.ListView = index$g;
 exports.LivePlayer = index$1;
 exports.LivePusher = index;
-exports.Loading = _sfc_main;
+exports.Loading = _sfc_main$1;
 exports.Map = index$9;
 exports.MovableArea = index$r;
 exports.MovableView = index$q;
 exports.Navigator = index$p;
 exports.PageComponent = PageComponent;
-exports.PageContainer = _sfc_main$1;
+exports.PageContainer = _sfc_main$2;
 exports.Picker = index$6;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;

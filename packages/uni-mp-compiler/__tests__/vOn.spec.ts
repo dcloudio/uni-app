@@ -33,6 +33,59 @@ describe('compiler: transform v-on', () => {
 }`
     )
   })
+
+  describe('once modifier', () => {
+    test('without once should not pass flags', () => {
+      assert(
+        `<view @click="onClick"/>`,
+        `<view bindtap="{{a}}"/>`,
+        `(_ctx, _cache) => {
+  return { a: _o(_ctx.onClick, "00") }
+}`
+      )
+    })
+
+    test('element handler', () => {
+      assert(
+        `<view @click.once="onClick"/>`,
+        `<view bindtap="{{a}}"/>`,
+        `(_ctx, _cache) => {
+  return { a: _o(_ctx.onClick, "6f", true) }
+}`
+      )
+    })
+
+    test('component handler', () => {
+      assert(
+        `<custom @click.once="onClick"/>`,
+        `<custom bindclick="{{a}}" u-i="2a9ec0b0-0"/>`,
+        `(_ctx, _cache) => {
+  return { a: _o(_ctx.onClick, "92", true) }
+}`
+      )
+    })
+
+    test('inline statement handler', () => {
+      assert(
+        `<view @click.once="i++"/>`,
+        `<view bindtap="{{a}}"/>`,
+        `(_ctx, _cache) => {
+  return { a: _o($event => _ctx.i++, "fa", true) }
+}`
+      )
+    })
+
+    test('combined with other modifiers', () => {
+      assert(
+        `<view @click.stop.once="onClick"/>`,
+        `<view catchtap="{{a}}"/>`,
+        `(_ctx, _cache) => {
+  return { a: _o(_ctx.onClick, "be", true) }
+}`
+      )
+    })
+  })
+
   test('dynamic arg', () => {
     // <view v-on:[event]="handler"/>
   })

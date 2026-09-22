@@ -8,6 +8,7 @@
     "dist",
     "dist-x",
     "dist-x-vapor",
+    "dist-x-vapor-ssr",
     "lib",
     "style"
   ],
@@ -57,6 +58,7 @@
     "fast-glob": "catalog:",
     "fs-extra": "catalog:",
     "unplugin-auto-import": "catalog:",
-    "vue": "catalog:"
+    "vue": "catalog:",
+    "vue-jsx": "3.3.0-rc.2"
   }
 }

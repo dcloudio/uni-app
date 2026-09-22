@@ -14,7 +14,7 @@ import {
   initWxsCallMethods,
 } from '@dcloudio/uni-mp-core'
 // #if _X_
-import { updateCssVariables } from '@dcloudio/uni-mp-core'
+import { initPageInstance, updateCssVariables } from '@dcloudio/uni-mp-core'
 // #endif
 
 import {
@@ -56,6 +56,7 @@ export function initCreatePage() {
         }
         if (__X__) {
           updateCssVariables()
+          initPageInstance(this as any)
         }
         // 初始化 vue 实例
         this.props = query

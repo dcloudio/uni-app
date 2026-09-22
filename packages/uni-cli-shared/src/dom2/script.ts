@@ -3,6 +3,7 @@ import { initUts2jsExtApiOptions } from '../uts/extApi'
 import { isNormalCompileTarget, requireUniHelpers } from '../utils'
 import type { UasmTransformOptions } from '../uasm'
 import type { UniVitePlugin } from '../vite'
+import { createUniAppXScriptMacrosTransformer } from '../uts/scriptMacros'
 import { initUts2jsSharedDataOptions } from './sharedData'
 
 export interface UniVaporScriptPluginOptions {
@@ -23,6 +24,7 @@ export function uniVaporScriptPlugin(
       : undefined
   return D2SP({
     typescript: resolveUTSCompiler().getTypeScript(),
+    createUniAppXScriptMacrosTransformer,
     extApi,
     uasm,
     sharedData: {

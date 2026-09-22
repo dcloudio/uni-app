@@ -23,6 +23,7 @@ import {
   addUniViewAutoImportFilter,
   isFilterExpr,
   rewriteExpression,
+  rewriteFilterExpression,
 } from './utils'
 import {
   createVirtualHostClass,
@@ -96,8 +97,10 @@ export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
     if (node.type === NodeTypes.INTERPOLATION) {
       const content = node.content
-      let isFilter = isFilterExpr(content, context)
-      if (!isFilter) {
+      const isFilter = isFilterExpr(content, context)
+      if (isFilter) {
+        node.content = rewriteFilterExpression(content, context)
+      } else {
         node.content = rewriteExpression(
           createCompoundExpression([
             `${context.helperString(TO_DISPLAY_STRING)}(`,
@@ -535,6 +538,18 @@ function wrapAlipayStyleIsolationClassAttribute(
   )
 }
 
+const ALIPAY_STYLE_ISOLATION_CLASS_ATTRIBUTES: Record<
+  string,
+  true | readonly string[]
+> = {
+  'hover-class': true,
+  'placeholder-class': ['input', 'textarea'],
+  'indicator-class': ['picker-view'],
+  'mask-class': ['picker-view'],
+  'active-class': ['swiper'],
+  'changing-class': ['swiper'],
+}
+
 function isAlipayStyleIsolationClassAttribute(
   node: TemplateChildNode,
   prop: DirectiveNode | AttributeNode
@@ -550,11 +565,8 @@ function isAlipayStyleIsolationClassAttribute(
       prop.arg.isStatic
     ? prop.arg.content
     : ''
-  const matched =
-    name === 'hover-class' ||
-    (name === 'placeholder-class' &&
-      (node.tag === 'input' || node.tag === 'textarea'))
-  return matched
+  const supportedElements = ALIPAY_STYLE_ISOLATION_CLASS_ATTRIBUTES[name]
+  return supportedElements === true || !!supportedElements?.includes(node.tag)
 }
 
 /**

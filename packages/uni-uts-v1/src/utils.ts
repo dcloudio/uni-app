@@ -36,6 +36,7 @@ type UTSPluginPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 interface ToOptions {
   inputDir: string
   outputDir: string
+  noEmit?: boolean
   outFilename?: string
   sourceMap: boolean
   components: Record<string, string>
@@ -77,6 +78,7 @@ export interface RunProdOptions extends RunOptions {
   hookClass: string
   uniModuleId: string
   outFilename?: string
+  noEmit?: boolean
 }
 
 export interface RunDevOptions extends RunOptions {

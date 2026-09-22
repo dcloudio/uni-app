@@ -31,7 +31,9 @@ function createUniXTargetLanguageCompiler(
       normalizeFileName: normalizeNodeModules,
       // 非 uni x 项目，不传 resolveWorkers 参数
       resolveWorkers: options?.resolveWorkers || (() => ({})),
+      createWorkerTransformer: options?.createWorkerTransformer,
       loadUasmTransformer: options?.loadUasmTransformer,
+      sharedData: options?.sharedData,
       sourceFileCallback: options?.sourceFileCallback,
     }
   )
@@ -39,8 +41,14 @@ function createUniXTargetLanguageCompiler(
 
 interface CreateUniXCompilerOptions {
   resolveWorkers?: () => Record<string, string>
+  createWorkerTransformer?: NonNullable<
+    NonNullable<UniXCompilerOptions['transformOptions']>['workers']
+  >['createWorkerTransformer']
   loadUasmTransformer?: NonNullable<
     NonNullable<UniXCompilerOptions['transformOptions']>['loadUasmTransformer']
+  >
+  sharedData?: NonNullable<
+    NonNullable<UniXCompilerOptions['transformOptions']>['sharedData']
   >
   sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
 }
@@ -140,7 +148,9 @@ export async function compileUniModuleWithTsc(
     rootFiles,
     preprocessor,
   }: {
-    rootFiles?: string[] | ((platform: UniXCompilerPlatform) => string[])
+    rootFiles?:
+      | string[]
+      | ((platform: UniXCompilerPlatform) => string[] | Promise<string[]>)
     preprocessor: SyncUniModulesFilePreprocessor
   }
 ) {
@@ -164,7 +174,7 @@ export async function compileUniModuleWithTsc(
     await uniXCompiler.addRootFile(indexFileName)
   }
   const userRootFiles =
-    typeof rootFiles === 'function' ? rootFiles(platform) : rootFiles
+    typeof rootFiles === 'function' ? await rootFiles(platform) : rootFiles
   if (userRootFiles && userRootFiles.length) {
     await uniXCompiler.addRootFiles(userRootFiles)
   }

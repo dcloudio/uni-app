@@ -7,7 +7,7 @@ jest.mock('../../src/api/promise', () => ({
 }))
 
 jest.mock('../../src/api/protocols/x', () => ({
-  shouldKeepReturnValue: () => false,
+  forceReturnValueResult: () => false,
 }))
 
 describe('api wrapper', () => {

@@ -3,6 +3,7 @@ import type { Alias, ResolverFunction, UserConfig } from 'vite'
 import {
   extensions,
   isNormalCompileTarget,
+  isUniAppXStandardScriptSupported,
   isWindows,
   normalizePath,
   requireResolve,
@@ -27,14 +28,41 @@ function resolveUTSModuleProxyFile(id: string, importer: string) {
   }
 }
 
-export const customResolver: ResolverFunction = (updatedId, importer) => {
+export const customResolver: ResolverFunction = function (
+  updatedId,
+  importer,
+  resolveOptions
+) {
   const independentRoot = resolveIndependentRoot(
     updatedId,
     importer,
     process.env.UNI_INPUT_DIR,
     process.env.UNI_PLATFORM
   )
-  updatedId = withoutIndependentRoot(updatedId).split('?')[0]
+  updatedId = withoutIndependentRoot(updatedId)
+  const filename = updatedId.split('?')[0]
+
+  if (isUniAppXStandardScriptSupported() && filename.endsWith('.json')) {
+    // alias 先于用户 pre 插件执行，JSON 需要重新进入插件链，才能根据 UTS/TS/JS 导入方分流。
+    return this.resolve(updatedId, importer, {
+      ...resolveOptions,
+      skipSelf: true,
+    }).then((resolved) => {
+      if (!resolved || resolved.external) {
+        return resolved
+      }
+      return {
+        ...resolved,
+        id: withIndependentRootIfNeeded(
+          isWindows ? normalizePath(resolved.id) : resolved.id,
+          independentRoot,
+          process.env.UNI_INPUT_DIR
+        ),
+      }
+    })
+  }
+
+  updatedId = filename
 
   const utsImporter = importer
     ? path.dirname(importer)

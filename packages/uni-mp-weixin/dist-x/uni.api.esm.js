@@ -954,6 +954,37 @@ const offPushMessage = (fn) => {
     }
 };
 
+const uasmCache = new Map();
+/**
+ * 加载经过编译器处理的 UASM 模块。
+ *
+ * module 在运行时是编译器生成的 descriptor，而不是用户直接传入的插件路径。
+ */
+function loadUasm(module) {
+    const descriptor = module;
+    if (!descriptor ||
+        typeof descriptor.id !== 'string' ||
+        typeof descriptor.loader !== 'function') {
+        return Promise.reject(new Error('uni.loadUasm 参数未经过编译处理'));
+    }
+    let promise = uasmCache.get(descriptor.id);
+    if (!promise) {
+        promise = descriptor.loader().then((loaded) => {
+            if (typeof loaded.default !== 'function') {
+                throw new Error(`uasm 插件[${descriptor.id}]的默认导出必须是函数`);
+            }
+            return loaded.default();
+        });
+        uasmCache.set(descriptor.id, promise);
+        promise.catch(() => {
+            if (uasmCache.get(descriptor.id) === promise) {
+                uasmCache.delete(descriptor.id);
+            }
+        });
+    }
+    return promise;
+}
+
 const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|rpx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const SYNC_API_RE_X = /getElementById/;
 const CONTEXT_API_RE = /^create|Manager$/;
@@ -962,6 +993,8 @@ const CONTEXT_API_RE_EXC = ['createBLEConnection'];
 const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 // 同步例外情况
 const ASYNC_API = ['createBLEConnection'];
+// 这些 API 自身已经返回 Promise，不应再套用小程序回调式 Promise 包装。
+const PROMISE_API = ['loadUasm'];
 const CALLBACK_API_RE = /^on|^off/;
 function isContextApi(name) {
     return CONTEXT_API_RE.test(name) && CONTEXT_API_RE_EXC.indexOf(name) === -1;
@@ -979,6 +1012,9 @@ function isTaskApi(name) {
     return TASK_APIS.indexOf(name) !== -1;
 }
 function shouldPromise(name) {
+    if (PROMISE_API.includes(name)) {
+        return false;
+    }
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
         return false;
     }
@@ -1023,40 +1059,13 @@ function createUTSJSONObjectIfNeed(obj) {
     return UTS.JSON.parse(JSON.stringify(obj));
 }
 
-const request = {
-    returnValue: (res) => {
-        const { data } = res;
-        res.data = createUTSJSONObjectIfNeed(data);
-        return res;
-    },
-};
-
-const getStorage = {
-    returnValue: (res) => {
-        return createUTSJSONObjectIfNeed(res);
-    },
-};
-
-const getStorageSync = getStorage;
-
-var protocols$1 = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  getStorage: getStorage,
-  getStorageSync: getStorageSync,
-  request: request
-});
-
 function parseXReturnValue(methodName, res) {
     if (isObject(res) && hasOwn(res, 'errno')) {
         res.errCode = res.errno;
     }
-    const protocol = protocols$1[methodName];
-    if (protocol && isFunction(protocol.returnValue)) {
-        return protocol.returnValue(res);
-    }
     return res;
 }
-function shouldKeepReturnValue(methodName) {
+function forceReturnValueResult(methodName) {
     return methodName === 'getStorage' || methodName === 'getStorageSync';
 }
 
@@ -1098,12 +1107,12 @@ function initWrapper(protocols) {
         }
         return processCallback(methodName, callback, returnValue);
     }
-    function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
+    function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false, restArgs = []) {
         if (isPlainObject(fromArgs)) {
             // 一般 api 的参数解析
             const toArgs = (keepFromArgs === true ? fromArgs : {}); // returnValue 为 false 时，说明是格式化返回值，直接在返回值对象上修改赋值
             if (isFunction(argsOption)) {
-                argsOption = argsOption(fromArgs, toArgs) || {};
+                argsOption = argsOption(fromArgs, toArgs, restArgs) || {};
             }
             for (const key in fromArgs) {
                 if (hasOwn(argsOption, key)) {
@@ -1140,10 +1149,14 @@ function initWrapper(protocols) {
         }
         else if (isFunction(fromArgs)) {
             if (isFunction(argsOption)) {
-                argsOption(fromArgs, {});
+                argsOption(fromArgs, {}, restArgs);
             }
             // 事件 API 需要保证 on/off 传给平台的回调引用一致。
             fromArgs = processEventCallback(methodName, fromArgs, returnValue);
+        }
+        else if (isFunction(argsOption)) {
+            // 目前仅服务于getStorageSync isUTS标记
+            argsOption(fromArgs, {}, restArgs);
         }
         return fromArgs;
     }
@@ -1152,8 +1165,17 @@ function initWrapper(protocols) {
             // 处理通用 returnValue
             res = protocols.returnValue(methodName, res);
         }
-        const realKeepReturnValue = keepReturnValue || (shouldKeepReturnValue(methodName));
-        return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
+        /**
+         * storage接口的返回值不应再遍历复制
+         * 目前在此处特殊处理
+         */
+        const useReturnValueResult = forceReturnValueResult(methodName);
+        if (useReturnValueResult) {
+            if (typeof returnValue === 'function') {
+                return returnValue(res);
+            }
+        }
+        return processArgs(methodName, res, returnValue, {}, keepReturnValue, []);
     }
     return function wrapper(methodName, method) {
         /**
@@ -1190,7 +1212,7 @@ function initWrapper(protocols) {
             if (isFunction(protocol)) {
                 options = protocol(arg1);
             }
-            arg1 = processArgs(methodName, arg1, options.args, options.returnValue);
+            arg1 = processArgs(methodName, arg1, options.args, options.returnValue, false, [arg2]);
             const args = [arg1];
             if (typeof arg2 !== 'undefined') {
                 args.push(arg2);
@@ -1406,6 +1428,7 @@ function populateParameters(fromRes, toRes) {
         try {
             parameters.uniCompilerVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             parameters.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
+            if ("mp-weixin" === 'mp-alipay') ;
         }
         catch (error) { }
     }
@@ -1564,8 +1587,10 @@ const getAppBaseInfo = {
         };
         try {
             if (typeof wx.getAccountInfoSync === 'function') {
-                parameters.packagename =
-                    wx.getAccountInfoSync().miniProgram.appId;
+                const miniProgramAppId = wx.getAccountInfoSync().miniProgram.appId;
+                if (miniProgramAppId) {
+                    parameters.packagename = miniProgramAppId;
+                }
             }
         }
         catch (error) { }
@@ -1654,6 +1679,37 @@ const onSocketOpen = {
 };
 const onSocketMessage = onSocketOpen;
 
+const getStorage = {
+    args(fromArgs) {
+        if (fromArgs.isUTS) {
+            const oldSuccess = fromArgs.success;
+            if (oldSuccess) {
+                fromArgs.success = (res) => {
+                    res.data = createUTSJSONObjectIfNeed(res.data);
+                    oldSuccess(res);
+                };
+            }
+        }
+    },
+};
+
+const getStorageSync = () => {
+    let isUTS = false;
+    return {
+        args(fromArgs, toArgs, restArgs) {
+            isUTS = restArgs[0];
+        },
+        returnValue(fromRes) {
+            if (isUTS) {
+                return createUTSJSONObjectIfNeed(fromRes);
+            }
+            else {
+                return fromRes;
+            }
+        },
+    };
+};
+
 const baseApis = {
     $on,
     $off,
@@ -1674,6 +1730,7 @@ const baseApis = {
     offPushMessage,
     invokePushCallback,
     __f__,
+    loadUasm,
     getElementById,
     createCanvasContextAsync,
     createEditorContextAsync,
@@ -1879,6 +1936,19 @@ const compressImage = {
         }
     },
 };
+const request = {
+    args(fromArgs) {
+        if (fromArgs.isUTS) {
+            const oldSuccess = fromArgs.success;
+            if (oldSuccess) {
+                fromArgs.success = (res) => {
+                    res.data = createUTSJSONObjectIfNeed(res.data);
+                    oldSuccess(res);
+                };
+            }
+        }
+    },
+};
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
@@ -1887,6 +1957,8 @@ var protocols = /*#__PURE__*/Object.freeze({
   getAppAuthorizeSetting: getAppAuthorizeSetting,
   getAppBaseInfo: getAppBaseInfo,
   getDeviceInfo: getDeviceInfo,
+  getStorage: getStorage,
+  getStorageSync: getStorageSync,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getWindowInfo: getWindowInfo,
@@ -1896,6 +1968,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   onSocketOpen: onSocketOpen,
   previewImage: previewImage,
   redirectTo: redirectTo,
+  request: request,
   returnValue: returnValue,
   showActionSheet: showActionSheet
 });

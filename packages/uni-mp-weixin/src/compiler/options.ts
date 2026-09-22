@@ -6,6 +6,7 @@ import {
   copyMiniProgramThemeJson,
   createCopyComponentDirs,
   createCopyPluginTarget,
+  createMiniProgramUasmCopyTarget,
   getNativeTags,
   transformComponentLink,
   transformDirection,
@@ -163,6 +164,9 @@ export const options: UniMiniProgramPluginOptions = {
     copyOptions: {
       assets: createCopyComponentDirs(COMPONENTS_DIR),
       targets: [
+        ...(process.env.UNI_APP_X === 'true'
+          ? [createMiniProgramUasmCopyTarget('mp-weixin')]
+          : []),
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
           src: [

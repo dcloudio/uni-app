@@ -1120,6 +1120,24 @@
       "HideToast"
     ],
     [
+      "HideToastCompleteCallback"
+    ],
+    [
+      "HideToastFail"
+    ],
+    [
+      "HideToastFailCallback"
+    ],
+    [
+      "HideToastOptions"
+    ],
+    [
+      "HideToastSuccess"
+    ],
+    [
+      "HideToastSuccessCallback"
+    ],
+    [
       "IAccelerometerError"
     ],
     [
@@ -2876,6 +2894,9 @@
     ],
     [
       "UnzipFileOptions"
+    ],
+    [
+      "UnzipSyncOptions"
     ],
     [
       "UploadFile"

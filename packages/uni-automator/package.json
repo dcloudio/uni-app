@@ -23,6 +23,7 @@
       "app",
       "h5",
       "mp-weixin",
+      "mp-alipay",
       "app-harmony"
     ],
     "uvue": true

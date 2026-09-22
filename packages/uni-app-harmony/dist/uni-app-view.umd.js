@@ -19855,6 +19855,8 @@
       if (!isPlainObject(node)) {
         return;
       }
+      if ((!hasOwn$1(node, "type") || node.type === "text") && isString(node.text) && node.text !== "")
+        return createTextVNode(decodeEntities(node.text || ""));
       if (!hasOwn$1(node, "type") || node.type === "node") {
         if (!isString(node.name) || !node.name) {
           return;
@@ -19868,8 +19870,6 @@
         }, processClickEvent(node, triggerItemClick), normalizeAttrs(tagName, node.attrs));
         return h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
       }
-      if (node.type === "text" && isString(node.text) && node.text !== "")
-        return createTextVNode(decodeEntities(node.text || ""));
     });
   };
   function removeDOCTYPE(html) {

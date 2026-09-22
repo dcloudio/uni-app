@@ -14,9 +14,11 @@ import {
   isNormalCompileTarget,
   isUniAppX,
   isUniAppXVapor,
+  normalizeUniAppXVaporEnv,
   output,
   parseManifestJsonOnce,
   parseScripts,
+  resolveUniAppXHarmonyScriptEngine,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 
@@ -93,15 +95,6 @@ export function addConfigFile(inlineConfig: InlineConfig) {
   return inlineConfig
 }
 
-export function initVaporScriptLangEnv(inputDir: string) {
-  // 临时通过项目根目录的 .lang 标记开启 Vapor JS/TS 脚本编译链路。
-  process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = fs.existsSync(
-    path.resolve(inputDir, '.lang')
-  )
-    ? 'true'
-    : 'false'
-}
-
 let initialized = false
 export function initEnv(
   type: 'unknown' | 'dev' | 'build',
@@ -167,7 +160,6 @@ export function initEnv(
 
   process.env.UNI_INPUT_DIR =
     process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), 'src')
-  initVaporScriptLangEnv(process.env.UNI_INPUT_DIR)
 
   initCustomScripts(options)
 
@@ -175,6 +167,8 @@ export function initEnv(
     UniApp.PLATFORM,
     'app-android' | 'app-ios'
   >
+
+  normalizeUniAppXVaporEnv()
 
   // 需要提前初始化
   initUVueEnv()
@@ -280,6 +274,10 @@ export function initEnv(
     }
     if (manifestJson['uni-app-x']?.['styleIsolationVersion'] == 2) {
       process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
+    }
+    if (isUniAppXVapor() && process.env.UNI_PLATFORM === 'app-harmony') {
+      process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE =
+        resolveUniAppXHarmonyScriptEngine(manifestJson)
     }
   } catch (e) {}
 

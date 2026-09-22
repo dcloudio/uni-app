@@ -461,6 +461,24 @@
     "easycom": [],
     "customElements": []
   },
+  "uni-drama": {
+    "uni": {
+      "createDramaAd": {
+        "name": "createDramaAd",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    },
+    "components": [],
+    "easycom": [
+      "ad-drama"
+    ],
+    "customElements": []
+  },
   "uni-editor": {
     "uni": {
       "createEditorContextAsync": {

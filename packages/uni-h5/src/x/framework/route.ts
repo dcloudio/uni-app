@@ -1,7 +1,11 @@
 import { updateStyle } from '@dcloudio/uni-core'
 import { extend, isArray } from '@vue/shared'
 import { setupPage } from '../../framework/setup'
+//#if _X_VAPOR_
+import { createVaporPageRouteComponent } from '../../framework/components/page/route-vapor'
+//#else
 import { renderPage } from './utils'
+//#endif
 
 const systemRoutes: string[] = []
 export function registerSystemRoute(
@@ -20,16 +24,26 @@ export function registerSystemRoute(
     })
   }
   const __uniPage = setupPage(page)
+  let routeComponent: any
+  //#if _X_VAPOR_
+  routeComponent = createVaporPageRouteComponent(__uniPage, () => {
+    const app = getApp()
+    return (app && app.$route && app.$route.query) || {}
+  })
+  routeComponent.mpType = 'page'
+  //#else
+  routeComponent = {
+    mpType: 'page',
+    setup() {
+      const app = getApp()
+      const query = (app && app.$route && app.$route.query) || {}
+      return () => renderPage(__uniPage, query)
+    },
+  }
+  //#endif
   __uniRoutes.push({
     path: route,
-    component: {
-      mpType: 'page',
-      setup() {
-        const app = getApp()
-        const query = (app && app.$route && app.$route.query) || {}
-        return () => renderPage(__uniPage, query)
-      },
-    },
+    component: routeComponent,
     meta: extend(
       {
         isQuit: false,

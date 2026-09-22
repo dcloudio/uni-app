@@ -1,4 +1,7 @@
 import type { MPProtocol } from '@dcloudio/uni-mp-core'
+// #if _X_
+import { createUTSJSONObjectIfNeed } from '@dcloudio/uni-mp-core'
+// #endif
 
 export {
   redirectTo,
@@ -26,6 +29,8 @@ export function returnValue(method: string, res: unknown) {
 export const chooseFile = {
   name: 'chooseMessageFile',
 }
+
+export { getStorage, getStorageSync } from '@dcloudio/uni-mp-core'
 // #endif
 
 export const compressImage: MPProtocol = {
@@ -44,5 +49,21 @@ export const compressImage: MPProtocol = {
       // @ts-expect-error
       toArgs.compressWidth = fromArgs.compressedWidth
     }
+  },
+}
+
+export const request: MPProtocol = {
+  args(fromArgs: UniApp.RequestOptions & { isUTS?: boolean }) {
+    // #if _X_
+    if (fromArgs.isUTS) {
+      const oldSuccess = fromArgs.success
+      if (oldSuccess) {
+        fromArgs.success = (res) => {
+          res.data = createUTSJSONObjectIfNeed(res.data)
+          oldSuccess!(res as UniApp.RequestSuccessCallbackResult)
+        }
+      }
+    }
+    // #endif
   },
 }

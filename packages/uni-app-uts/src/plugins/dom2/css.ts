@@ -29,6 +29,12 @@ import {
 } from '@jridgewell/trace-mapping'
 
 import { DOM2_CSS_CACHE_MAP, isVue } from '../utils'
+import {
+  collectPageSelectorBackgroundDeclarations,
+  resetPageSelectorBackgroundColors,
+  restoreCachedPageSelectorBackgroundColor,
+  setPageSelectorBackgroundValueResolver,
+} from './pageBackground'
 
 const CSS_FILE_ID_MAP = new Map<string, string>()
 
@@ -42,7 +48,11 @@ export function uniAppCssPrePlugin(): Plugin {
   const name = 'uni:app-uvue-css-pre'
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   const appUVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
-  const { parseCss } = require('@dcloudio/compiler-vapor-dom2')
+  const compiler = require('@dcloudio/compiler-vapor-dom2')
+  const { parseCss } = compiler
+  setPageSelectorBackgroundValueResolver(
+    compiler.resolvePageSelectorBackgroundValue
+  )
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return {
     name,
@@ -50,6 +60,9 @@ export function uniAppCssPrePlugin(): Plugin {
     // 所以需要在它之前做替换
     enforce: 'pre',
     apply: 'build',
+    buildStart() {
+      resetPageSelectorBackgroundColors()
+    },
     configResolved(config) {
       removePlugins(['vite:css', 'vite:css-post'], config)
       // 强制启用 css source map
@@ -59,6 +72,7 @@ export function uniAppCssPrePlugin(): Plugin {
         platform: process.env.UNI_PLATFORM,
         includeComponentCss: false,
         preserveModules: true,
+        onCssChunkCacheHit: restoreCachedPageSelectorBackgroundColor,
         chunkCssFilename(id: string) {
           // 暂不支持多style标签
           const { filename } = parseVueRequest(id)
@@ -77,12 +91,22 @@ export function uniAppCssPrePlugin(): Plugin {
           cssCode = parseAssets(config, cssCode)
           const output =
             process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code'
-          const { code, bytes, messages, fontFaces } = await parseCss(cssCode, {
+          const {
+            code,
+            bytes,
+            messages,
+            fontFaces,
+            pageSelectorBackgroundDeclarations,
+          } = await parseCss(cssCode, {
             platform: process.env.UNI_UTS_PLATFORM,
             helper: requireUniHelpers(),
             output,
             enableAnimation,
           })
+          collectPageSelectorBackgroundDeclarations(
+            filename,
+            pageSelectorBackgroundDeclarations
+          )
           if (isDom2 && fontFaces?.length) {
             const id = CSS_FILE_ID_MAP.get(filename)
             if (id) {
@@ -186,7 +210,11 @@ export function uniAppCssPrePlugin(): Plugin {
 export function uniAppCssPlugin(): Plugin {
   const enableAnimation = isAnimationEnabled()
   let resolvedConfig: ResolvedConfig
-  const { parseCss } = require('@dcloudio/compiler-vapor-dom2')
+  const compiler = require('@dcloudio/compiler-vapor-dom2')
+  const { parseCss } = compiler
+  setPageSelectorBackgroundValueResolver(
+    compiler.resolvePageSelectorBackgroundValue
+  )
   return {
     name: 'uni:app-uvue-css',
     apply: 'build',

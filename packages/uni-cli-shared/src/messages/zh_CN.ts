@@ -26,6 +26,10 @@ export default {
     'DONE  Restart required. 独立分包 root 列表变化需要重新运行才能生效。',
   'dev.watching.vapor.render.target':
     'manifest.json 中更改了视图层编译目标为{manifestTarget}，但注意运行控制台还是{runtimeTarget}。',
+  'harmony.vapor.script.engine':
+    '指定的 Harmony 脚本引擎无效（{engine}），使用默认值。',
+  'dev.watching.restart.script.engine':
+    'DONE  Restart required. 脚本引擎变化需要重新运行才能生效。',
   'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': '编译失败',
   'stat.warn.appid':

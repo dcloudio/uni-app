@@ -110,10 +110,12 @@ export async function compileArkTSExtApi(
     input: {
       root: rootDir,
       filename: resolveBundleInputFileName('app-harmony', filename),
+      pluginId,
       paths: {
         '@dcloudio/uni-runtime': runtimePackageName,
       },
       uniModules: uni_modules,
+      uniModulesPrefix: process.env.UNI_UTS_MODULE_PREFIX || '',
       parseOptions: {
         tsx: true,
         noEarlyErrors: true,
@@ -155,14 +157,19 @@ export async function compileArkTSExtApi(
     .replace(/-/g, '_')
 
   // 拷贝所有ets、har文件
-  const etsFiles = sync('**/*.{ets,js,har,tgz}', {
-    cwd: pluginDir,
+  const utssdkHarmonyDir = path.resolve(pluginDir, 'utssdk/app-harmony')
+  const harmonyRawFiles = sync('**/*.{ets,js,har,tgz}', {
+    cwd: utssdkHarmonyDir,
   })
   const depEtsFiles: string[] = []
-  for (const etsFile of etsFiles) {
-    const srcFile = path.resolve(pluginDir, etsFile)
-    const destFile = path.resolve(outputUniModuleDir, etsFile)
-    if (/\.(ets|js)$/.test(etsFile)) {
+  for (const harmonyRawFile of harmonyRawFiles) {
+    const srcFile = path.resolve(utssdkHarmonyDir, harmonyRawFile)
+    const destFile = path.resolve(
+      outputUniModuleDir,
+      'utssdk/app-harmony',
+      harmonyRawFile
+    )
+    if (/\.(ets|js)$/.test(harmonyRawFile)) {
       depEtsFiles.push(srcFile)
       if (rewriteConsoleExpr) {
         const content = fs.readFileSync(srcFile, 'utf8')
@@ -190,10 +197,15 @@ export async function compileArkTSExtApi(
     main: 'utssdk/app-harmony/index.ets',
     author: '',
     license: '',
-    dependencies: (uni_modules || []).reduce((acc, dep) => {
-      acc['@uni_modules/' + dep.toLowerCase()] = '../' + dep
-      return acc
-    }, {} as Record<string, string>),
+    /**
+     * 开发者项目下的模块使用项目oh-package.json5内定义的依赖进行相互依赖
+     * 内置插件不需要生成uni_modules相对路径依赖，通过内部包进行互相依赖
+     * 外置插件不需要生成uni_modules相对路径依赖，仅依赖runtime包内的基础模块
+     */
+    // dependencies: (uni_modules || []).reduce((acc, dep) => {
+    //   acc['@uni_modules/' + dep.toLowerCase()] = '../' + dep
+    //   return acc
+    // }, {} as Record<string, string>),
   }
 
   if (isOhpmPackage) {

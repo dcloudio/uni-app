@@ -6,11 +6,14 @@ import {
   getWorkers,
   initUasmWebTransformOptions,
   initUts2jsExtApiOptions,
+  initWorkerTransformOptions,
   isAppVue,
   isEnableConsole,
   isNormalCompileTarget,
   isVueSfcFile,
   resolveUTSCompiler,
+  resolveWorkersRootDir,
+  uniAppXStandardScriptPlugin,
   uniCssScopedPlugin,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesAssetsPlugin,
@@ -51,6 +54,8 @@ if (
 export default () => {
   const isNewStyleIsolation =
     process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
+  const uasm =
+    process.env.UNI_APP_X === 'true' ? initUasmWebTransformOptions() : undefined
   // 从 manifest.json 的 h5.devServer 中解析 HTTPS 扩展配置，按需注入 basic-ssl 插件。
   const h5BasicSslPlugin = resolveH5BasicSslPlugin()
   return [
@@ -63,8 +68,14 @@ export default () => {
           uniDecryptUniModulesPlugin(),
           uniUasmPlugin(),
           uniUTSUVueJavaScriptPlugin(),
+          // H5 的标准 JS/TS 不走 uts2js，脚本宏和 UASM 必须在标准 plugin-vue 前完成转换。
+          uniAppXStandardScriptPlugin({
+            uasm,
+            workers: initWorkerTransformOptions(),
+          }),
           resolveUTSCompiler().uts2js({
             platform: 'web',
+            excludeStandardTypeScript: true,
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,
             sourceMap: enableSourceMap(),
@@ -76,10 +87,16 @@ export default () => {
               vueCompilerDom,
               uniCliShared,
             },
+            scriptMacros: {
+              createUniAppXScriptMacrosTransformer:
+                uniCliShared.createUniAppXScriptMacrosTransformer,
+            },
             extApi: initUts2jsExtApiOptions(),
-            uasm: initUasmWebTransformOptions(),
+            uasm,
             workers: {
               extname: '.js',
+              rewriteRootDir: resolveWorkersRootDir(),
+              createWorkerTransformer: uniCliShared.createWorkerTransformer,
               resolve: () => {
                 return getWorkers()
               },

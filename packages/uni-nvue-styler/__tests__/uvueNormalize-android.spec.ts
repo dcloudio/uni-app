@@ -762,6 +762,33 @@ flexBasis: fill;
       })
     )
   })
+  test('transition shorthand accepts a negative delay', async () => {
+    const { json, messages } = await objectifierRule(`
+  .foo {
+    transition: opacity 1s ease -100ms
+  }
+  `)
+
+    expect(json).toEqual({
+      '@TRANSITION': {
+        foo: {
+          delay: '-100ms',
+          duration: '1s',
+          property: 'opacity',
+          timingFunction: 'ease',
+        },
+      },
+      foo: {
+        '': {
+          transitionDelay: '-100ms',
+          transitionDuration: '1s',
+          transitionProperty: 'opacity',
+          transitionTimingFunction: 'ease',
+        },
+      },
+    })
+    expect(messages).toHaveLength(0)
+  })
   test('transition-timing-function', async () => {
     const { json, messages } = await objectifierRule(`
 .foo {

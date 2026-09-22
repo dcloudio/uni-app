@@ -82,7 +82,8 @@ describe('app x switchTab appRoute openType', () => {
       undefined,
       'switchTab',
       true,
-      { event: {} }
+      { event: {} },
+      expect.any(Function)
     )
   })
 
@@ -96,7 +97,7 @@ describe('app x switchTab appRoute openType', () => {
 
     jest.runAllTimers()
 
-    expect(mockSwitchSelect.mock.calls[0].slice(-3)).toEqual([
+    expect(mockSwitchSelect.mock.calls[0].slice(5, 8)).toEqual([
       'appLaunch',
       false,
       undefined,

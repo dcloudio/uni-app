@@ -285,6 +285,8 @@ export async function compile(
   const useProxyCodeV2 =
     process.env.UNI_APP_X_DOM2 === 'true' &&
     process.env.UNI_UTS_PLATFORM === 'app-android'
+  const isWgtProxyCode =
+    process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' && useProxyCodeV2
 
   const decls = await prepareProxyCodeAndFillOptions(
     pluginDir,
@@ -297,9 +299,10 @@ export async function compile(
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
-    // uts 插件 wgt 模式，本地资源模式不需要编译、ext-api模式也不需要编译（已经有前置编译过了）
+    // WGT 的 Android 蒸汽模式仍需转译 UTS，以获取生成代理代码所需的桥接信息。
+    // 其他 WGT 模式及已前置编译的 ext-api 无需再次编译。
     if (
-      process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
+      (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' && !useProxyCodeV2) ||
       // 当编译 ext-api 中的 pages/components 时，不需要编译 utssdk 插件
       (process.env.UNI_COMPILE_TARGET === 'ext-api' &&
         (process.env.UNI_COMPILE_EXT_API_TYPE === 'pages' ||
@@ -368,12 +371,13 @@ export async function compile(
                 join(pluginRelativeDir, 'utssdk', 'app-android', 'index.kt')
               )
             : '',
+          noEmit: isWgtProxyCode,
         })
         if (result) {
-          if (result.inject_apis) {
+          if (!isWgtProxyCode && result.inject_apis) {
             inject_apis.push(...result.inject_apis)
           }
-          if (result.scoped_slots) {
+          if (!isWgtProxyCode && result.scoped_slots) {
             scoped_slots.push(...result.scoped_slots)
           }
           const custom_elements = result.custom_elements || {}
@@ -396,7 +400,7 @@ export async function compile(
               )
           }
         }
-        if (!isCompileUniModules && cacheDir) {
+        if (!isCompileUniModules && !isWgtProxyCode && cacheDir) {
           // 存储 sourcemap
           storeSourceMap(
             'app-android',
@@ -836,6 +840,10 @@ function emptyDir(dir: string) {
  * @param param2
  * @param compilerOptions
  */
+type BuildUniModulesTransformOptions = NonNullable<
+  UniXCompilerOptions['transformOptions']
+>
+
 export interface BuildUniModulesOptions {
   syncUniModulesFilePreprocessors: {
     android: SyncUniModulesFilePreprocessor
@@ -846,8 +854,21 @@ export interface BuildUniModulesOptions {
     platform: UniXCompilerPlatform,
     fileName: string
   ) => Promise<string>
-  rootFiles?: string[]
+  rootFiles?:
+    | string[]
+    | ((platform: UniXCompilerPlatform) => string[] | Promise<string[]>)
   sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
+  workers?: Pick<
+    NonNullable<BuildUniModulesTransformOptions['workers']>,
+    'resolve' | 'createWorkerTransformer'
+  >
+  loadUasmTransformer?: (
+    platform: UniXCompilerPlatform
+  ) => BuildUniModulesTransformOptions['loadUasmTransformer']
+  /** DOM2 SharedData 使用的统一 AST transformer 配置。 */
+  sharedData?: NonNullable<
+    NonNullable<UniXCompilerOptions['transformOptions']>['sharedData']
+  >
 }
 
 export async function buildUniModules(
@@ -872,8 +893,11 @@ export async function buildUniModules(
       'app-android',
       pluginDir,
       createUniXKotlinCompiler({
-        resolveWorkers: () => ({}),
+        resolveWorkers: options.workers?.resolve,
+        createWorkerTransformer: options.workers?.createWorkerTransformer,
+        loadUasmTransformer: options.loadUasmTransformer?.(platform),
         sourceFileCallback: options.sourceFileCallback,
+        sharedData: options.sharedData,
       }),
       {
         rootFiles: options.rootFiles,
@@ -888,7 +912,10 @@ export async function buildUniModules(
       'app-ios',
       pluginDir,
       createUniXSwiftCompiler({
-        resolveWorkers: () => ({}),
+        resolveWorkers: options.workers?.resolve,
+        createWorkerTransformer: options.workers?.createWorkerTransformer,
+        loadUasmTransformer: options.loadUasmTransformer?.(platform),
+        sharedData: options.sharedData,
       }),
       {
         rootFiles: options.rootFiles,
@@ -903,7 +930,10 @@ export async function buildUniModules(
       'app-harmony',
       pluginDir,
       createUniXArkTSCompiler({
-        resolveWorkers: () => ({}),
+        resolveWorkers: options.workers?.resolve,
+        createWorkerTransformer: options.workers?.createWorkerTransformer,
+        loadUasmTransformer: options.loadUasmTransformer?.(platform),
+        sharedData: options.sharedData,
       }),
       {
         rootFiles: options.rootFiles,
@@ -923,6 +953,7 @@ export async function buildUniModules(
       isX: compilerOptions.isX,
       isExtApi: compilerOptions.isExtApi,
       sourceMap: compilerOptions.sourceMap,
+      uni_modules: compilerOptions.uni_modules,
       rewriteConsoleExpr: compilerOptions.rewriteConsoleExpr,
       transform: {
         uniExtApiProviderName: compilerOptions.transform?.uniExtApiProviderName,

@@ -45,6 +45,7 @@ export type UTSInputOptions = UTSParseOptions & {
 
 export type UTSOutputOptions = {
   outDir: string
+  noEmit?: boolean
   outFilename?: string
   package: string
   utsBridgeName?: string

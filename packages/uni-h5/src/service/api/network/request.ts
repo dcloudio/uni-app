@@ -24,6 +24,8 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
       enableChunked,
       withCredentials,
       timeout = __uniConfig.networkTimeout.request,
+      // @ts-expect-error 内部isUTS参数
+      isUTS,
     },
     { resolve, reject }
   ) => {
@@ -166,7 +168,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
                     ? new TextDecoder().decode(result)
                     : result
                 if (responseType === 'text') {
-                  res = parseResponseText(res, responseType, dataType)
+                  res = parseResponseText(res, responseType, dataType, isUTS)
                 }
                 resolve({
                   data: res,
@@ -399,14 +401,19 @@ function parseHeaders(headers: string) {
 function parseResponseText(
   responseText: string,
   responseType: string | undefined,
-  dataType: string | undefined
+  dataType: string | undefined,
+  isUTS: boolean
 ): any {
   let res = responseText
   if (responseType === 'text' && dataType === 'json') {
     try {
       //#if _X_
-      // @ts-expect-error
-      res = UTS.JSON.parse(res) || res
+      if (isUTS) {
+        // @ts-expect-error
+        res = UTS.JSON.parse(res) || res
+      } else {
+        res = JSON.parse(res)
+      }
       //#else
       res = JSON.parse(res)
       //#endif

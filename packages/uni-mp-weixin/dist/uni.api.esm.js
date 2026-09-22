@@ -839,12 +839,12 @@ function initWrapper(protocols) {
         }
         return processCallback(methodName, callback, returnValue);
     }
-    function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
+    function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false, restArgs = []) {
         if (isPlainObject(fromArgs)) {
             // 一般 api 的参数解析
             const toArgs = (keepFromArgs === true ? fromArgs : {}); // returnValue 为 false 时，说明是格式化返回值，直接在返回值对象上修改赋值
             if (isFunction(argsOption)) {
-                argsOption = argsOption(fromArgs, toArgs) || {};
+                argsOption = argsOption(fromArgs, toArgs, restArgs) || {};
             }
             for (const key in fromArgs) {
                 if (hasOwn(argsOption, key)) {
@@ -881,10 +881,14 @@ function initWrapper(protocols) {
         }
         else if (isFunction(fromArgs)) {
             if (isFunction(argsOption)) {
-                argsOption(fromArgs, {});
+                argsOption(fromArgs, {}, restArgs);
             }
             // 事件 API 需要保证 on/off 传给平台的回调引用一致。
             fromArgs = processEventCallback(methodName, fromArgs, returnValue);
+        }
+        else if (isFunction(argsOption)) {
+            // 目前仅服务于getStorageSync isUTS标记
+            argsOption(fromArgs, {}, restArgs);
         }
         return fromArgs;
     }
@@ -893,8 +897,7 @@ function initWrapper(protocols) {
             // 处理通用 returnValue
             res = protocols.returnValue(methodName, res);
         }
-        const realKeepReturnValue = keepReturnValue || (false);
-        return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
+        return processArgs(methodName, res, returnValue, {}, keepReturnValue, []);
     }
     return function wrapper(methodName, method) {
         /**
@@ -931,7 +934,7 @@ function initWrapper(protocols) {
             if (isFunction(protocol)) {
                 options = protocol(arg1);
             }
-            arg1 = processArgs(methodName, arg1, options.args, options.returnValue);
+            arg1 = processArgs(methodName, arg1, options.args, options.returnValue, false, [arg2]);
             const args = [arg1];
             if (typeof arg2 !== 'undefined') {
                 args.push(arg2);
@@ -1298,8 +1301,10 @@ const getAppBaseInfo = {
         };
         try {
             if (typeof wx.getAccountInfoSync === 'function') {
-                parameters.packagename =
-                    wx.getAccountInfoSync().miniProgram.appId;
+                const miniProgramAppId = wx.getAccountInfoSync().miniProgram.appId;
+                if (miniProgramAppId) {
+                    parameters.packagename = miniProgramAppId;
+                }
             }
         }
         catch (error) { }
@@ -1559,6 +1564,10 @@ const compressImage = {
         }
     },
 };
+const request = {
+    args(fromArgs) {
+    },
+};
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
@@ -1575,6 +1584,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   onSocketOpen: onSocketOpen,
   previewImage: previewImage,
   redirectTo: redirectTo,
+  request: request,
   showActionSheet: showActionSheet
 });
 

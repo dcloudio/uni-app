@@ -9,6 +9,7 @@ import {
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
+  uniAppXStandardScriptPlugin,
   uniDecryptUniModulesPlugin,
   uniEasycomPlugin,
   uniEncryptUniModulesAssetsPlugin,
@@ -68,8 +69,8 @@ export function init() {
           uniAppManifestPlugin('app-ios'),
           uniAppPagesPlugin(),
         ]),
-    uniUTSUVueJavaScriptPlugin(),
-    ...(isDom2 && process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
+    uniUTSUVueJavaScriptPlugin({ useSfcDescriptorTransform: isDom2 }),
+    ...(isDom2
       ? [
           uniVaporScriptPlugin({
             sharedDataLibName: !isDom2Dynamic
@@ -79,9 +80,13 @@ export function init() {
             uasm,
           }),
         ]
-      : []),
+      : [
+          // 非 DOM2 iOS 只处理标准脚本宏，不接入仅 H5、MP 需要的 UASM 转换。
+          uniAppXStandardScriptPlugin(),
+        ]),
     resolveUTSCompiler().uts2js({
       dom2: isDom2,
+      excludeStandardTypeScript: true,
       platform: 'app-ios',
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
@@ -96,7 +101,12 @@ export function init() {
         vueCompilerDom,
         uniCliShared,
       },
+      scriptMacros: {
+        createUniAppXScriptMacrosTransformer:
+          uniCliShared.createUniAppXScriptMacrosTransformer,
+      },
       workers: {
+        createWorkerTransformer: uniCliShared.createWorkerTransformer,
         resolve: () => {
           return getWorkers()
         },

@@ -67,8 +67,8 @@ export function init() {
           uniAppManifestPlugin('app-android'),
           uniAppPagesPlugin(),
         ]),
-    uniUTSUVueJavaScriptPlugin(),
-    ...(isDom2 && process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
+    uniUTSUVueJavaScriptPlugin({ useSfcDescriptorTransform: isDom2 }),
+    ...(isDom2
       ? [
           uniVaporScriptPlugin({
             sharedDataLibName: !isDom2Dynamic
@@ -95,7 +95,12 @@ export function init() {
         vueCompilerDom,
         uniCliShared,
       },
+      scriptMacros: {
+        createUniAppXScriptMacrosTransformer:
+          uniCliShared.createUniAppXScriptMacrosTransformer,
+      },
       workers: {
+        createWorkerTransformer: uniCliShared.createWorkerTransformer,
         resolve: () => {
           return getWorkers()
         },

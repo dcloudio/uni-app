@@ -1,4 +1,5 @@
 import {
+  type CallExpression,
   type Expression,
   type Identifier,
   type MemberExpression,
@@ -6,8 +7,11 @@ import {
   type SpreadElement,
   conditionalExpression,
   identifier,
+  isCallExpression,
+  isExpression,
   isIdentifier,
   isLiteral,
+  isMemberExpression,
   isReferenced,
   isTemplateLiteral,
   numericLiteral,
@@ -183,7 +187,20 @@ export function rewriteExpression(
   // wxs 等表达式
   if ((context as TransformContext).filters?.length) {
     if (isReferencedByIds(babelNode, (context as TransformContext).filters)) {
-      return createSimpleExpression(genExpr(node), false, node.loc)
+      if (
+        !isFilterCallExpression(
+          babelNode,
+          (context as TransformContext).filters
+        )
+      ) {
+        return createSimpleExpression(genExpr(node), false, node.loc)
+      }
+      return rewriteFilterExpression(
+        node,
+        context as TransformContext,
+        babelNode,
+        scope
+      )
     }
   }
 
@@ -205,6 +222,74 @@ export function rewriteExpression(
     return createSimpleExpression(referencedScope.valueAlias + '.' + id)
   }
   return createSimpleExpression(id)
+}
+
+export function rewriteFilterExpression(
+  node: ExpressionNode,
+  context: TransformContext,
+  babelNode?: Expression,
+  scope: CodegenScope = context.currentScope
+) {
+  const code = genExpr(node)
+  if (!babelNode) {
+    babelNode = parseExpr(code, context, node)
+    if (!babelNode) {
+      return createSimpleExpression(code, false, node.loc)
+    }
+  }
+
+  if (!isFilterCallExpression(babelNode, context.filters)) {
+    return createSimpleExpression(code, false, node.loc)
+  }
+
+  // uni-app x 支付宝小程序的 uV 调用由 uniView SJS 在视图层处理，避免再次重写其参数
+  if (
+    context.isX &&
+    process.env.UNI_PLATFORM === 'mp-alipay' &&
+    isUniViewFilterCallExpression(babelNode)
+  ) {
+    return createSimpleExpression(code, false, node.loc)
+  }
+
+  babelNode.arguments = babelNode.arguments.map((argument) => {
+    if (!isExpression(argument)) {
+      return argument
+    }
+    const argumentCode = genBabelExpr(argument)
+    const rewritten = rewriteExpression(
+      createSimpleExpression(argumentCode, false, node.loc),
+      context,
+      argument,
+      scope
+    )
+    const rewrittenCode = genExpr(rewritten)
+    if (rewrittenCode === argumentCode) {
+      return argument
+    }
+    return parseExpr(rewrittenCode, context, rewritten) || argument
+  })
+
+  return createSimpleExpression(genBabelExpr(babelNode), false, node.loc)
+}
+
+function isFilterCallExpression(
+  node: Expression,
+  filters: string[]
+): node is import('@babel/types').CallExpression {
+  return (
+    isCallExpression(node) &&
+    isMemberExpression(node.callee) &&
+    isIdentifier(node.callee.object) &&
+    filters.includes(node.callee.object.name)
+  )
+}
+
+function isUniViewFilterCallExpression(node: CallExpression) {
+  return (
+    isMemberExpression(node.callee) &&
+    isIdentifier(node.callee.object) &&
+    node.callee.object.name === FILTER_MODULE_NAME
+  )
 }
 
 export function findReferencedScope(

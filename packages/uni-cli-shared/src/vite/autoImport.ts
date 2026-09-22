@@ -349,7 +349,13 @@ export function initAutoImportOptions(
     }
   }
 
-  const exclude: (RegExp | string)[] = [/[\\/]\.git[\\/]/]
+  // node_modules 可能包含依赖 auto import 的 uni-app x 源码包，不能恢复 unplugin 的默认排除项。
+  const exclude: (RegExp | string)[] = [
+    /[\\/]\.git[\\/]/,
+    // @dcloudio 包中的 JS 是自带完整导入的官方产物，正则扫描导出别名或继承类时可能误判，
+    // 进而产生自引用或重复声明。
+    /[\\/]@dcloudio[\\/].*\.js$/,
+  ]
   if (process.env.UNI_INPUT_DIR) {
     exclude.push(
       ...resolveWorkersDir(process.env.UNI_INPUT_DIR).map((dir) =>
@@ -359,7 +365,7 @@ export function initAutoImportOptions(
   }
   return {
     ...userOptions,
-    include: [/\.[u]?ts$/, /\.[u]?vue/],
+    include: [/\.(?:js|ts|uts)$/, /\.[u]?vue/],
     exclude,
     imports: (imports as any[]).concat(
       // 旧版 Android x 仍由专有编译流程处理，Android Vapor 对齐 iOS 走通用自动导入

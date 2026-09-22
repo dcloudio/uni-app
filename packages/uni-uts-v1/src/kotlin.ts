@@ -131,6 +131,7 @@ export async function runKotlinProd(
     transform,
     sourceMap,
     uniModules,
+    noEmit,
   }: RunProdOptions
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -142,6 +143,7 @@ export async function runKotlinProd(
   const result = await compile(filename, {
     inputDir: isModule ? uvueOutDir('app-android') : inputDir,
     outputDir,
+    noEmit,
     sourceMap: !!sourceMap,
     components,
     customElements,
@@ -160,6 +162,9 @@ export async function runKotlinProd(
   }
   if (result.error) {
     throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
+  }
+  if (noEmit) {
+    return result
   }
 
   const autoImportUniCloud = shouldAutoImportUniCloud()
@@ -587,6 +592,7 @@ export async function compile(
     transform,
     uniModules,
     outFilename,
+    noEmit,
   }: ToKotlinOptions
 ) {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
@@ -659,6 +665,7 @@ export async function compile(
     vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input,
     output: {
+      noEmit,
       errorFormat: 'json',
       outFilename: outFilename ? outFilename : undefined,
       isX,
@@ -697,6 +704,7 @@ export async function compile(
   // console.log('bundle options', options)
   const result = await bundle(UTSTarget.KOTLIN, options)
   sourceMap &&
+    !noEmit &&
     moveRootIndexSourceMap(filename, {
       isX,
       inputDir,

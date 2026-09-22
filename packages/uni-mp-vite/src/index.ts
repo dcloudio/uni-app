@@ -7,7 +7,10 @@ import {
   EXTNAME_VUE,
   enableSourceMap,
   getWorkers,
+  initUasmMiniProgramTransformOptions,
+  initUasmWebTransformOptions,
   initUts2jsExtApiOptions,
+  initWorkerTransformOptions,
   isEnableConsole,
   isInHBuilderX,
   isNormalCompileTarget,
@@ -17,13 +20,16 @@ import {
   resolveSourceMapPath,
   resolveUTSCompiler,
   resolveWorkersRootDir,
+  uniAppXStandardScriptPlugin,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
   uniJavaScriptWorkersPlugin,
+  uniMiniProgramUasmPlugin,
   uniSourceMapPlugin,
   uniUTSUVueJavaScriptPlugin,
+  uniUasmPlugin,
   uniViteInjectPlugin,
   uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -58,6 +64,17 @@ export default (options: UniMiniProgramPluginOptions) => {
   // 云编译会使用该环境变量
   process.env.UNI_MP_GLOBAL = options.global
   const normalizeComponentName = options.template.component?.normalizeName
+  const uasmPlatform =
+    process.env.UNI_PLATFORM === 'mp-weixin' ||
+    process.env.UNI_PLATFORM === 'mp-alipay'
+      ? process.env.UNI_PLATFORM
+      : undefined
+  const uasm =
+    process.env.UNI_APP_X === 'true'
+      ? uasmPlatform
+        ? initUasmMiniProgramTransformOptions(uasmPlatform)
+        : initUasmWebTransformOptions()
+      : undefined
 
   const sourceMapDir = resolveSourceMapPath(
     process.env.UNI_OUTPUT_DIR,
@@ -78,9 +95,18 @@ export default (options: UniMiniProgramPluginOptions) => {
     ...(process.env.UNI_APP_X === 'true'
       ? [
           uniDecryptUniModulesPlugin(),
+          ...(uasmPlatform
+            ? [uniMiniProgramUasmPlugin(uasmPlatform)]
+            : [uniUasmPlugin()]),
           uniUTSUVueJavaScriptPlugin(),
+          // 小程序标准 JS/TS 不走 uts2js，需要独立处理脚本宏和 UASM。
+          uniAppXStandardScriptPlugin({
+            uasm,
+            workers: initWorkerTransformOptions(),
+          }),
           resolveUTSCompiler().uts2js({
             platform: process.env.UNI_PLATFORM as any,
+            excludeStandardTypeScript: true,
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,
             sourceMap: enableSourceMap(),
@@ -92,10 +118,16 @@ export default (options: UniMiniProgramPluginOptions) => {
               vueCompilerDom,
               uniCliShared,
             },
+            scriptMacros: {
+              createUniAppXScriptMacrosTransformer:
+                uniCliShared.createUniAppXScriptMacrosTransformer,
+            },
             extApi: initUts2jsExtApiOptions(),
+            uasm,
             workers: {
               extname: '.js',
               rewriteRootDir: resolveWorkersRootDir(),
+              createWorkerTransformer: uniCliShared.createWorkerTransformer,
               resolve: () => {
                 return getWorkers()
               },

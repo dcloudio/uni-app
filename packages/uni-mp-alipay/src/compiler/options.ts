@@ -6,10 +6,13 @@ import {
   COMPONENT_ON_LINK,
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
+  copyMiniProgramThemeJson,
   createCopyComponentDirs,
   createCopyPluginTarget,
+  createMiniProgramUasmCopyTarget,
   createTransformComponentLink,
   getNativeTags,
+  resolveMiniProgramWorkerPaths,
   transformDirection,
   transformTeleport,
   // transformMatchMedia,
@@ -120,6 +123,9 @@ export const options: UniMiniProgramPluginOptions = {
     copyOptions: {
       assets: createCopyComponentDirs(COMPONENTS_DIR),
       targets: [
+        ...(process.env.UNI_APP_X === 'true'
+          ? [createMiniProgramUasmCopyTarget('mp-alipay')]
+          : []),
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
           src: ['customize-tab-bar', 'preload.json', 'sitemap.json'],
@@ -128,6 +134,7 @@ export const options: UniMiniProgramPluginOptions = {
           },
         },
         createCopyPluginTarget(['ext.json']),
+        ...copyMiniProgramThemeJson(),
       ],
     },
   },
@@ -167,7 +174,12 @@ export const options: UniMiniProgramPluginOptions = {
       icon: 'iconPath',
       activeIcon: 'selectedIconPath',
     },
-    formatAppJson(appJson, _manifestJson, pageJsons) {
+    formatAppJson(appJson, manifestJson, pageJsons) {
+      const { darkmode } = manifestJson[process.env.UNI_PLATFORM] || {}
+      delete appJson.darkmode
+      if (typeof darkmode === 'boolean') {
+        appJson.darkMode = darkmode
+      }
       if (process.env.UNI_APP_X !== 'true') {
         return
       }
@@ -179,14 +191,19 @@ export const options: UniMiniProgramPluginOptions = {
             : 'NO'
         }
       })
+      const workerPaths = resolveMiniProgramWorkerPaths()
+      if (workerPaths.length) {
+        ;(appJson as Record<string, unknown>).workers = workerPaths
+      }
     },
   },
   app: {
-    darkmode: false,
+    darkmode: true,
     subpackages: true,
     independentSubpackages: true,
     plugins: true,
     usingComponents: true,
+    workers: true,
     normalize(appJson) {
       // 支付宝小程序默认主包，分包 js 模块不共享，会导致 getCurrentInstance，setCurrentInstance 不一致
       appJson.subPackageBuildType = 'shared'

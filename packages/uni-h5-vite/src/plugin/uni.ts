@@ -1,9 +1,10 @@
 import {
   type UniVitePlugin,
+  isUniAppXWebVapor,
   transformH5BuiltInComponents,
   transformMatchMedia,
-  transformPageHead,
   transformRefresherSlot,
+  transformPageHead as transformSharedPageHead,
   transformTapToClick,
   transformUniH5Jsx,
 } from '@dcloudio/uni-cli-shared'
@@ -12,9 +13,9 @@ import {
   isH5CustomElement,
   isH5NativeTag,
 } from '@dcloudio/uni-shared'
-import type { CompilerOptions } from '@vue/compiler-core'
 import { transformCustomElement } from './transforms/transformCustomElement'
 import { transformAttributePart } from './transforms/transformAttributePart'
+import { transformPageHead as transformSsrPageHead } from './transforms/transformPageHead'
 
 function realIsH5CustomElement(tag: string) {
   // TODO isH5CustomElement目前被多个平台引用，重构比较麻烦
@@ -32,22 +33,25 @@ const nodeTransforms = [
   transformH5BuiltInComponents,
   transformTapToClick,
   transformMatchMedia,
-  transformPageHead,
+  transformSharedPageHead,
 ]
 
 if (process.env.UNI_APP_X === 'true') {
-  nodeTransforms.splice(nodeTransforms.indexOf(transformMatchMedia), 1)
-  nodeTransforms.push(transformCustomElement)
+  if (!isUniAppXWebVapor()) {
+    nodeTransforms.splice(nodeTransforms.indexOf(transformMatchMedia), 1)
+    nodeTransforms.push(transformCustomElement)
+  }
   if (process.env.UNI_UTS_PLATFORM === 'web') {
     nodeTransforms.push(transformAttributePart)
   }
 }
 
-export const compilerOptions: CompilerOptions = {
+export const compilerOptions = {
   isNativeTag: isH5NativeTag,
   isCustomElement: realIsH5CustomElement,
   nodeTransforms,
-}
+  ssrPreTagTransforms: [transformH5BuiltInComponents, transformSsrPageHead],
+} satisfies NonNullable<UniVitePlugin['uni']>['compilerOptions']
 
 export function createUni(): UniVitePlugin['uni'] {
   return {

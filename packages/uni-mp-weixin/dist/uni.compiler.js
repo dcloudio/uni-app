@@ -260,6 +260,9 @@ const options = {
         copyOptions: {
             assets: uniCliShared.createCopyComponentDirs(COMPONENTS_DIR),
             targets: [
+                ...(process.env.UNI_APP_X === 'true'
+                    ? [uniCliShared.createMiniProgramUasmCopyTarget('mp-weixin')]
+                    : []),
                 ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
                     src: [

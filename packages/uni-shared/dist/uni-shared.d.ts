@@ -737,6 +737,13 @@ export declare const RESPONSIVE_MIN_WIDTH = 768;
 
 export declare type Rpx2UnitOptions = typeof defaultRpx2Unit;
 
+/**
+ * mini program runtime event flags
+ */
+export declare const enum RuntimeEventFlags {
+    Once = 1
+}
+
 export declare const sanitise: (val: unknown) => any;
 
 export declare const SCHEME_RE: RegExp;

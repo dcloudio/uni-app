@@ -9,6 +9,7 @@ import {
   defineUniPagesJsonPlugin,
   getWorkers,
   isEnableTreeShaking,
+  isUniAppXWebVapor,
   normalizeIdentifier,
   normalizePagePath,
   normalizePagesJson,
@@ -52,12 +53,27 @@ function generatePagesJsonCode(
   jsonStr: string,
   config: ResolvedConfig
 ) {
+  const isWebVapor = isUniAppXWebVapor()
+  // 标准 Vapor SSR 使用 compiler-ssr，仅客户端使用 Vapor 异步组件包装。
+  const useVaporAsyncComponent = isWebVapor && !ssr
+  const vueImports = useVaporAsyncComponent
+    ? 'defineVaporAsyncComponent as defineAsyncComponent, defineVaporComponent, createAssetComponent'
+    : 'defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock'
   const globalName = getGlobal(ssr)
   const pagesJson = normalizePagesJson(jsonStr, process.env.UNI_PLATFORM)
   const { importLayoutComponentsCode, defineLayoutComponentsCode } =
     generateLayoutComponentsCode(globalName, pagesJson)
-  const definePagesCode = generatePagesDefineCode(pagesJson, config)
-  const uniRoutesCode = generateRoutes(globalName, pagesJson, config)
+  const definePagesCode = generatePagesDefineCode(
+    pagesJson,
+    config,
+    useVaporAsyncComponent
+  )
+  const uniRoutesCode = generateRoutes(
+    globalName,
+    pagesJson,
+    config,
+    isWebVapor
+  )
   const uniConfigCode = generateConfig(globalName, pagesJson, config)
   const cssCode = generateCssCode(config)
   const vueType = process.env.UNI_APP_X === 'true' ? 'uvue' : 'nvue'
@@ -74,9 +90,12 @@ function generatePagesJsonCode(
     }
   }
 
+  const pageComponentImport = isWebVapor
+    ? 'createVaporPageRouteComponent'
+    : 'PageComponent'
   return `
-import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
-import { PageComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
+import { ${vueImports} } from 'vue'
+import { ${pageComponentImport}, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
 import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, aMapKey, bMapKey, aMapSecurityJsCode, aMapServiceHost, ${vueType}, locale, fallbackLocale, darkmode, themeConfig } from './${MANIFEST_JSON_JS}'
 const locales = import.meta.glob('./locale/*.json', { eager: true })
 ${importLayoutComponentsCode}
@@ -219,16 +238,29 @@ const ${pageIdent} = defineAsyncComponent(extend({loader:${pageIdent}Loader},Asy
 
 function generatePagesDefineCode(
   pagesJson: UniApp.PagesJson,
-  _config: ResolvedConfig
+  _config: ResolvedConfig,
+  useVaporAsyncComponent: boolean
 ) {
   const { pages } = pagesJson
-  return (
-    `const AsyncComponentOptions = {
-      delay: async.delay,
-      timeout: async.timeout,
-      suspensible: async.suspensible
+  const asyncFallbackComponentsCode = useVaporAsyncComponent
+    ? `if(async.loading){
+      AsyncComponentOptions.loadingComponent = defineVaporComponent({
+        name:'SystemAsyncLoading',
+        setup(){
+          return createAssetComponent(async.loading, null, null, true)
+        }
+      })
     }
-    if(async.loading){
+    if(async.error){
+      AsyncComponentOptions.errorComponent = defineVaporComponent({
+        name:'SystemAsyncError',
+        props:['error'],
+        setup(props){
+          return createAssetComponent(async.error, { error: () => props.error }, null, true)
+        }
+      })
+    }`
+    : `if(async.loading){
       AsyncComponentOptions.loadingComponent = {
         name:'SystemAsyncLoading',
         render(){
@@ -244,14 +276,22 @@ function generatePagesDefineCode(
           return createVNode(resolveComponent(async.error), { error: this.error })
         }
       }
+    }`
+  return (
+    `const AsyncComponentOptions = {
+      delay: async.delay,
+      timeout: async.timeout,
+      suspensible: async.suspensible
     }
+    ${asyncFallbackComponentsCode}
   ` + pages.map((pageOptions) => generatePageDefineCode(pageOptions)).join('\n')
   )
 }
 
 function generatePageRoute(
   { path, meta }: UniApp.UniRoute,
-  _config: ResolvedConfig
+  _config: ResolvedConfig,
+  isWebVapor: boolean
 ) {
   const { isEntry } = meta
   const alias = isEntry ? `\n  alias:'/${path}',` : ''
@@ -260,39 +300,51 @@ function generatePageRoute(
     process.env.UNI_APP_X === 'true'
       ? 'app && app.vm && app.vm.$route && app.vm.$route.query || {};'
       : 'app && app.$route && app.$route.query || {};'
+  const pageComponent = normalizeIdentifier(path)
+  if (isWebVapor) {
+    return `{
+  path:'/${isEntry ? '' : path}',${alias}
+  component:createVaporPageRouteComponent(${pageComponent},()=>{ const app = getApp(); const query = ${queryCode} return query }),
+  loader: ${pageComponent}Loader,
+  meta: ${JSON.stringify(meta)}
+}`
+  }
   return `{
   path:'/${isEntry ? '' : path}',${alias}
-  component:{setup(){ const app = getApp(); const query = ${queryCode} return ()=>renderPage(${normalizeIdentifier(
-    path
-  )},query)}},
-  loader: ${normalizeIdentifier(path)}Loader,
+  component:{setup(){ const app = getApp(); const query = ${queryCode} return ()=>renderPage(${pageComponent},query)}},
+  loader: ${pageComponent}Loader,
   meta: ${JSON.stringify(meta)}
 }`
 }
 
 function generatePagesRoute(
   pagesRouteOptions: UniApp.UniRoute[],
-  config: ResolvedConfig
+  config: ResolvedConfig,
+  isWebVapor: boolean
 ) {
   return pagesRouteOptions.map((pageOptions) =>
-    generatePageRoute(pageOptions, config)
+    generatePageRoute(pageOptions, config, isWebVapor)
   )
 }
 
 function generateRoutes(
   globalName: string,
   pagesJson: UniApp.PagesJson,
-  config: ResolvedConfig
+  config: ResolvedConfig,
+  isWebVapor: boolean
 ) {
+  const routesCode = [
+    ...generatePagesRoute(normalizePagesRoute(pagesJson), config, isWebVapor),
+  ].join(',')
+  if (isWebVapor) {
+    return `
+${globalName}.__uniRoutes=[${routesCode}].map(uniRoute=>(uniRoute.meta.route = (uniRoute.alias || uniRoute.path).slice(1),uniRoute))`
+  }
   return `
 function renderPage(component,props){
   return (openBlock(), createBlock(PageComponent, null, {page: withCtx(() => [createVNode(component, extend({},props,{ref: "page"}), null, 512 /* NEED_PATCH */)]), _: 1 /* STABLE */}))
 }
-${globalName}.__uniRoutes=[${[
-    ...generatePagesRoute(normalizePagesRoute(pagesJson), config),
-  ].join(
-    ','
-  )}].map(uniRoute=>(uniRoute.meta.route = (uniRoute.alias || uniRoute.path).slice(1),uniRoute))`
+${globalName}.__uniRoutes=[${routesCode}].map(uniRoute=>(uniRoute.meta.route = (uniRoute.alias || uniRoute.path).slice(1),uniRoute))`
 }
 
 function generateConfig(

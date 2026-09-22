@@ -34,7 +34,9 @@ export interface LoadUasmTransformOptions {
 
 export interface LoadUasmTransformerOptions extends LoadUasmTransformOptions {
   typescript: TypeScriptCompiler
+  methodNames?: readonly string[]
   resolveLoader?: (modulePath: string) => ResolvedUasmLoader | undefined
+  resolveType?: (modulePath: string) => UasmTypeDescriptor | undefined
   onSourceEdit?: (edit: UasmSourceEdit) => void
   resolveError?: (modulePath: string) => string
   reportDiagnostic(
@@ -76,6 +78,7 @@ export interface UasmWebResources {
 export interface UasmWebLoadDescriptor {
   id: string
   entry: string
+  import?: 'static'
 }
 
 export type ResolvedUasmLoad = string | UasmWebLoadDescriptor
@@ -84,6 +87,11 @@ export interface UasmLoaderDescriptor {
   type: string
   value: string
   imports?: string[]
+}
+
+export interface UasmTypeDescriptor {
+  name: string
+  source: string
 }
 
 export type ResolvedUasmLoader = string | UasmLoaderDescriptor
@@ -159,6 +167,8 @@ export function initUasmTransformerCreator(
           : platform === 'app-ios'
           ? resolveUasmIOSLoader
           : undefined,
+      resolveType:
+        platform === 'app-harmony' ? resolveUasmHarmonyType : undefined,
       reportDiagnostic(context, diagnostic) {
         const utsContext = context as TransformationContext & {
           error?(diagnostic: DiagnosticWithLocation): void
@@ -179,6 +189,7 @@ export function initUasmWebTransformOptions(): UasmTransformOptions {
     createLoadUasmTransformer(options) {
       return createLoadUasmTransformer({
         ...options,
+        methodNames: ['loadUasm'],
         resolveError(modulePath) {
           const moduleName = parseUasmModuleName(modulePath)
           const entry = moduleName
@@ -211,6 +222,9 @@ export function createLoadUasmTransformer(
   options: LoadUasmTransformerOptions
 ): TransformerFactory<SourceFile> {
   const { typescript, resolve, reportDiagnostic } = options
+  const methodNames = new Set(
+    options.methodNames || ['loadUasm', 'loadUasmSync']
+  )
   const targetArchs = options.targetArchs?.join(', ') || '未指定'
 
   return (context) => {
@@ -218,15 +232,42 @@ export function createLoadUasmTransformer(
 
     return (sourceFile) => {
       const imports = new Set<string>()
+      const typeImports = new Map<string, string>()
+      const staticImports = new Map<string, string>()
+      const resolveStaticImport = (resolved: UasmWebLoadDescriptor) => {
+        if (resolved.import !== 'static') {
+          return
+        }
+        let identifier = staticImports.get(resolved.entry)
+        if (!identifier) {
+          let index = 0
+          do {
+            identifier = `__uniUasmModule${index++}`
+          } while (
+            sourceFile.text.includes(identifier) ||
+            Array.from(staticImports.values()).includes(identifier)
+          )
+          staticImports.set(resolved.entry, identifier)
+          options.onSourceEdit?.({
+            start: 0,
+            end: 0,
+            content: `import ${identifier} from ${JSON.stringify(
+              resolved.entry
+            )};\n`,
+          })
+        }
+        return identifier
+      }
       const visitor = (node: Node): VisitResult<Node> => {
         if (
           typescript.isCallExpression(node) &&
           node.arguments.length >= 1 &&
           typescript.isPropertyAccessExpression(node.expression) &&
-          node.expression.name.escapedText === 'loadUASM' &&
+          methodNames.has(node.expression.name.text) &&
           typescript.isIdentifier(node.expression.expression) &&
           node.expression.expression.escapedText === 'uni'
         ) {
+          const methodName = node.expression.name.text
           const firstArg = node.arguments[0]
           if (
             !typescript.isStringLiteral(firstArg) &&
@@ -238,7 +279,7 @@ export function createLoadUasmTransformer(
                 options,
                 sourceFile,
                 firstArg,
-                'uni.loadUASM(modulePath) 的 modulePath 参数必须是字符串字面量'
+                `uni.${methodName}(modulePath) 的 modulePath 参数必须是字符串字面量`
               )
             )
             return node
@@ -259,20 +300,32 @@ export function createLoadUasmTransformer(
             return node
           }
 
+          const staticImport =
+            typeof resolved === 'string'
+              ? undefined
+              : resolveStaticImport(resolved)
+
           const loader = options.resolveLoader?.(firstArg.text)
           if (loader && typeof loader !== 'string') {
             loader.imports?.forEach((module) => imports.add(module))
           }
 
+          const type = options.resolveType?.(firstArg.text)
+          if (type && !node.typeArguments?.length) {
+            typeImports.set(type.source, type.name)
+          }
+
           options.onSourceEdit?.({
             start: firstArg.getStart(sourceFile),
             end: firstArg.getEnd(),
-            content: resolveUasmSourceEdit(resolved),
+            content: resolveUasmSourceEdit(resolved, staticImport),
           })
           return factory.updateCallExpression(
             node,
             node.expression,
-            node.typeArguments,
+            type && !node.typeArguments?.length
+              ? [factory.createTypeReferenceNode(type.name)]
+              : node.typeArguments,
             [
               typeof resolved === 'string'
                 ? factory.createStringLiteral(resolved)
@@ -292,13 +345,29 @@ export function createLoadUasmTransformer(
                           factory.createToken(
                             typescript.SyntaxKind.EqualsGreaterThanToken
                           ),
-                          factory.createCallExpression(
-                            factory.createToken(
-                              typescript.SyntaxKind.ImportKeyword
-                            ) as import('typescript').Expression,
-                            undefined,
-                            [factory.createStringLiteral(resolved.entry)]
-                          )
+                          staticImport
+                            ? factory.createCallExpression(
+                                factory.createPropertyAccessExpression(
+                                  factory.createIdentifier('Promise'),
+                                  'resolve'
+                                ),
+                                undefined,
+                                [
+                                  factory.createObjectLiteralExpression([
+                                    factory.createPropertyAssignment(
+                                      'default',
+                                      factory.createIdentifier(staticImport)
+                                    ),
+                                  ]),
+                                ]
+                              )
+                            : factory.createCallExpression(
+                                factory.createToken(
+                                  typescript.SyntaxKind.ImportKeyword
+                                ) as import('typescript').Expression,
+                                undefined,
+                                [factory.createStringLiteral(resolved.entry)]
+                              )
                         )
                       ),
                     ],
@@ -318,15 +387,43 @@ export function createLoadUasmTransformer(
         sourceFile,
         visitor
       ) as SourceFile
-      if (!imports.size) {
+      if (!imports.size && !typeImports.size && !staticImports.size) {
         return transformed
       }
       return factory.updateSourceFile(transformed, [
+        ...Array.from(staticImports).map(([entry, identifier]) =>
+          factory.createImportDeclaration(
+            undefined,
+            factory.createImportClause(
+              false,
+              factory.createIdentifier(identifier),
+              undefined
+            ),
+            factory.createStringLiteral(entry)
+          )
+        ),
         ...Array.from(imports).map((module) =>
           factory.createImportDeclaration(
             undefined,
             undefined,
             factory.createStringLiteral(module)
+          )
+        ),
+        ...Array.from(typeImports).map(([source, name]) =>
+          factory.createImportDeclaration(
+            undefined,
+            factory.createImportClause(
+              false,
+              undefined,
+              factory.createNamedImports([
+                factory.createImportSpecifier(
+                  false,
+                  undefined,
+                  factory.createIdentifier(name)
+                ),
+              ])
+            ),
+            factory.createStringLiteral(source)
           )
         ),
         ...transformed.statements,
@@ -360,6 +457,20 @@ function resolveUasmIOSLoader(modulePath: string) {
   }
 }
 
+function resolveUasmHarmonyType(
+  modulePath: string
+): UasmTypeDescriptor | undefined {
+  const moduleName = parseUasmModuleName(modulePath)
+  if (!moduleName) {
+    return
+  }
+  const typeName = capitalize(camelize(moduleName))
+  return {
+    name: typeName,
+    source: `@/uni_modules/${moduleName}`,
+  }
+}
+
 function createUasmLoader(
   factory: NodeFactory,
   loader: ResolvedUasmLoader,
@@ -388,13 +499,17 @@ function createUasmLoader(
   )
 }
 
-function resolveUasmSourceEdit(resolved: ResolvedUasmLoad) {
+function resolveUasmSourceEdit(
+  resolved: ResolvedUasmLoad,
+  staticImport?: string
+) {
   if (typeof resolved === 'string') {
     return JSON.stringify(resolved)
   }
-  return `{ id: ${JSON.stringify(
-    resolved.id
-  )}, loader: () => import(${JSON.stringify(resolved.entry)}) }`
+  const loader = staticImport
+    ? `Promise.resolve({ default: ${staticImport} })`
+    : `import(${JSON.stringify(resolved.entry)})`
+  return `{ id: ${JSON.stringify(resolved.id)}, loader: () => ${loader} }`
 }
 
 export function initUasmModules(inputDir: string) {
@@ -435,7 +550,7 @@ function copyUasmIOSFrameworks(inputDir: string) {
   }
   const libraryIdentifier =
     process.env.HX_RUN_DEVICE_TYPE === 'ios_simulator'
-      ? 'ios-arm64-simulator'
+      ? 'ios-arm64_x86_64-simulator'
       : 'ios-arm64'
   const targetDir = path.resolve(dependenciesDir, 'modules')
 
@@ -580,6 +695,10 @@ export function parseUasmModuleName(modulePath: string): string | undefined {
   return /^uni_modules\/([^/]+)$/.exec(normalized)?.[1]
 }
 
+function resolveUasmLibraryFileName(moduleName: string): string {
+  return `libUasm${capitalize(camelize(moduleName))}.so`
+}
+
 export function resolveUasmWebLoad(
   modulePath: string
 ): UasmWebLoadDescriptor | undefined {
@@ -608,7 +727,7 @@ export function resolveUasmLoadPath(
   if (platform === 'app-ios') {
     return moduleName
   }
-  const libraryName = `lib${moduleName}.so`
+  const libraryName = resolveUasmLibraryFileName(moduleName)
   if (isProduction) {
     return libraryName
   }
@@ -696,7 +815,7 @@ function scanUasmPlatform(
       }
       const relativeArchDir = normalizePath(path.join(relativeDir, entry.name))
       const file = normalizePath(
-        path.join(relativeArchDir, `lib${moduleName}.so`)
+        path.join(relativeArchDir, resolveUasmLibraryFileName(moduleName))
       )
       if (!fs.existsSync(path.resolve(inputDir, file))) {
         return

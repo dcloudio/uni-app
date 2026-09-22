@@ -1,8 +1,8 @@
 page {
-  /* #ifndef MP-ALIPAY */ 
+  /* #ifndef MP-ALIPAY */
   height: 100%;
   /* #endif */
-  /* #ifdef MP-ALIPAY */ 
+  /* #ifdef MP-ALIPAY */
   height: 100vh;
   /* #endif */
   display: flex;
@@ -26,6 +26,7 @@ checkbox,
 picker-view,
 radio,
 slider,
+video,
 /* #endif */
 cover-image,
 cover-view,
@@ -51,7 +52,6 @@ page-meta,
 picker,
 progress,
 radio-group,
-rich-text,
 scroll-view,
 sticky-header,
 sticky-section,
@@ -62,7 +62,6 @@ template,
 text,
 textarea,
 unicloud-db,
-video,
 view,
 web-view {
   position: relative;
@@ -79,6 +78,30 @@ web-view {
   min-width: 0px;
   border-width: medium;
 }
+
+/* #ifdef MP-ALIPAY */
+button {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  white-space: normal;
+  word-break: break-all;
+  text-align: center;
+  height: auto;
+  min-height: 0px;
+  padding: 0 14px;
+  border-radius: 5px;
+  /* min-width: 0px; */
+  border-width: medium;
+}
+/* #endif */
 
 ad-draw[hidden],
 ad-fullscreen-video[hidden],
@@ -189,13 +212,13 @@ progress {
   flex-direction: row;
   align-items: center;
 }
-
+/* #ifndef MP-ALIPAY */
 radio,
 checkbox {
   flex-direction: row;
   align-items: center;
 }
-
+/* #endif */
 /* #ifdef MP-WEIXIN */
 /* 
  * radio目前仅适配微信小程序，其他小程序平台需要额外适配

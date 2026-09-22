@@ -1,0 +1,38 @@
+{
+  "name": "@dcloudio/compiler-vapor-web",
+  "version": "3.6.0-rc.9",
+  "description": "uni-app x Web Vapor compiler",
+  "main": "dist/compiler-vapor-web.cjs.js",
+  "types": "dist/compiler-vapor-web.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/compiler-vapor-web.d.ts",
+      "default": "./dist/compiler-vapor-web.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "buildOptions": {
+    "formats": [
+      "cjs"
+    ],
+    "prod": false,
+    "enableNonBrowserBranches": true
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@vue/compiler-dom": "workspace:*",
+    "@vue/compiler-ssr": "workspace:*",
+    "@vue/compiler-vapor": "workspace:*",
+    "@vue/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@dcloudio/runtime-vapor-web": "workspace:*",
+    "@vue/runtime-dom": "workspace:*",
+    "@vue/runtime-vapor": "workspace:*",
+    "@vue/server-renderer": "workspace:*"
+  }
+}

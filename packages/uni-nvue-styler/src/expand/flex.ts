@@ -1,11 +1,21 @@
-import { type TransformDecl, createDecl, isNumber, splitValues } from '../utils'
-import { tryExpandSingleValueVarShorthand } from './shorthand'
+import {
+  type Declaration,
+  type TransformDecl,
+  createDecl,
+  isNumber,
+  splitValues,
+} from '../utils'
+import { expandShorthand, tryExpandSingleValueVarShorthand } from './shorthand'
 
 const flexGrow = __HYPHENATE__ ? 'flex-grow' : 'flexGrow'
 const flexShrink = __HYPHENATE__ ? 'flex-shrink' : 'flexShrink'
 const flexBasis = __HYPHENATE__ ? 'flex-basis' : 'flexBasis'
 
-export const transformFlex: TransformDecl = (decl) => {
+function isCssVarValue(value: string) {
+  return /^var\(/i.test(value)
+}
+
+function transformFlexDecl(decl: Declaration, dom2: boolean): Declaration[] {
   let { value, important, raws, source } = decl
   value = value.trim()
   const result: ReturnType<TransformDecl> = []
@@ -13,12 +23,17 @@ export const transformFlex: TransformDecl = (decl) => {
   const singleVarResult = tryExpandSingleValueVarShorthand(
     decl,
     [flexGrow, flexShrink, flexBasis],
-    value
+    value,
+    dom2
   )
-  // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按 border 的兜底逻辑平铺。
+  // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按完整简写平铺。
   if (singleVarResult) {
     return singleVarResult
   }
+  const variableResult =
+    dom2 && /\bvar\(/i.test(value)
+      ? expandShorthand(decl, [flexGrow, flexShrink, flexBasis], value)
+      : null
 
   // 是否 flex-grow 的有效值 <number [0,∞]>
   const isFlexGrowValid = (v: string) =>
@@ -81,7 +96,7 @@ export const transformFlex: TransformDecl = (decl) => {
   } else if (splitResult.length === 2) {
     const [v1, v2] = splitResult
 
-    if (isFlexGrowValid(v1)) {
+    if (isFlexGrowValid(v1) || (dom2 && isCssVarValue(v1))) {
       if (isFlexShrinkValid(v2)) {
         // flex: 1 2 => 1 2 0%
         result.push(
@@ -91,6 +106,9 @@ export const transformFlex: TransformDecl = (decl) => {
         )
         return result
       } else {
+        if (dom2 && isCssVarValue(v2)) {
+          return variableResult || [decl]
+        }
         // flex: 1 100px => 1 1 100px
         result.push(
           createDecl(flexGrow, v1, important, raws, source),
@@ -100,11 +118,14 @@ export const transformFlex: TransformDecl = (decl) => {
         return result
       }
     } else {
-      return [decl]
+      return variableResult || [decl]
     }
   } else if (splitResult.length === 3) {
     const [v1, v2, v3] = splitResult
-    if (isFlexGrowValid(v1) && isFlexShrinkValid(v2)) {
+    if (
+      (isFlexGrowValid(v1) || (dom2 && isCssVarValue(v1))) &&
+      (isFlexShrinkValid(v2) || (dom2 && isCssVarValue(v2)))
+    ) {
       result.push(
         createDecl(flexGrow, v1, important, raws, source),
         createDecl(flexShrink, v2, important, raws, source),
@@ -113,10 +134,16 @@ export const transformFlex: TransformDecl = (decl) => {
       return result
     } else {
       // fallback
-      return [decl]
+      return variableResult || [decl]
     }
   }
 
   // 其它情况，原样返回
-  return [decl]
+  return variableResult || [decl]
 }
+
+export function createTransformFlex(dom2: boolean): TransformDecl {
+  return (decl) => transformFlexDecl(decl, dom2)
+}
+
+export const transformFlex = createTransformFlex(false)

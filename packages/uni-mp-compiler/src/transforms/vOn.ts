@@ -40,6 +40,13 @@ export interface VOnDirectiveNode extends DirectiveNode {
   exp: SimpleExpressionNode | undefined
 }
 
+export interface VBindAttrsEventDirectiveNode extends VOnDirectiveNode {
+  __uniVBindAttrsEvent?: {
+    attrsExp: string
+    attrsFirst: boolean
+  }
+}
+
 export const transformOn: DirectiveTransform = (
   dir,
   node,
@@ -48,6 +55,10 @@ export const transformOn: DirectiveTransform = (
 ) => {
   const context = _context as unknown as TransformContext
   const { loc, modifiers, arg } = dir as VOnDirectiveNode
+  const isOnce = modifiers.includes('once')
+  const vBindAttrsEvent = context.isX
+    ? (dir as VBindAttrsEventDirectiveNode).__uniVBindAttrsEvent
+    : undefined
   if (!dir.exp && !modifiers.length) {
     context.onError(createCompilerError(ErrorCodes.X_V_ON_NO_EXPRESSION, loc))
   }
@@ -148,6 +159,44 @@ export const transformOn: DirectiveTransform = (
     }
   }
 
+  if (vBindAttrsEvent) {
+    // 没有透传处理器时保留本地处理器原值，避免改变单处理器的返回语义和额外创建数组。
+    // 需要合并时使用 concat 展平已有处理器数组，并用空数组过滤无效的本地处理器；
+    // attrsFirst 用于保持处理器与模板声明一致的执行顺序。
+    const attrsExp = context.prefixIdentifiers
+      ? processExpression(
+          createSimpleExpression(vBindAttrsEvent.attrsExp, false, loc),
+          context
+        )
+      : createSimpleExpression(vBindAttrsEvent.attrsExp, false, loc)
+    const localHandler = exp || createSimpleExpression(`() => {}`, false, loc)
+    exp = createCompoundExpression(
+      vBindAttrsEvent.attrsFirst
+        ? [
+            `(`,
+            attrsExp,
+            ` ? [].concat(`,
+            attrsExp,
+            `, (`,
+            localHandler,
+            `) || []) : `,
+            localHandler,
+            `)`,
+          ]
+        : [
+            `(`,
+            attrsExp,
+            ` ? [].concat((`,
+            localHandler,
+            `) || [], `,
+            attrsExp,
+            `) : `,
+            localHandler,
+            `)`,
+          ]
+    )
+  }
+
   let ret: DirectiveTransformResult = {
     props: [
       createObjectProperty(
@@ -173,13 +222,15 @@ export const transformOn: DirectiveTransform = (
     ret.props[0].value = wrapperVOn(
       ret.props[0].value as ExpressionNode,
       node,
-      context
+      context,
+      isOnce
     )
   } else {
     ret.props[0].value = wrapperVOn(
       ret.props[0].value as ExpressionNode,
       node,
-      context
+      context,
+      isOnce
     )
   }
 
@@ -191,7 +242,8 @@ export const transformOn: DirectiveTransform = (
 export function wrapperVOn(
   value: ExpressionNode,
   node: ElementNode,
-  context: TransformContext
+  context: TransformContext,
+  isOnce: boolean = false
 ) {
   if (isBuiltInIdentifier(value)) {
     return value
@@ -231,6 +283,7 @@ export function wrapperVOn(
     `${context.helperString(V_ON)}(`,
     value,
     ...keys,
+    isOnce ? ', true' : '',
     `)`,
   ])
   // 保存原始事件表达式

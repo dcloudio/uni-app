@@ -41,9 +41,12 @@ jest.mock('../../../../src/service/framework/page/routeOptions', () => ({
   initRouteOptions: mockInitRouteOptions,
 }))
 
+const nativeApp = { id: 0, isDarkTheme: false }
+
 jest.mock('../../../../src/x/framework/app/app', () => ({
-  getNativeApp: jest.fn(() => ({ id: 0 })),
+  getNativeApp: jest.fn(() => nativeApp),
 }))
+;(globalThis as any).__VAPOR__ = true
 
 import {
   createThemeSnapshots,
@@ -54,36 +57,50 @@ import {
 
 describe('test: getAppThemeFallbackOS', () => {
   it('test: getAppThemeFallbackOS1', () => {
-    uni.getAppBaseInfo = jest.fn(() => {
-      return { appTheme: 'auto' } as any
-    })
-    uni.getDeviceInfo = jest.fn(() => {
-      return { osTheme: 'dark' } as any
-    })
+    nativeApp.isDarkTheme = true
 
     expect(getAppThemeFallbackOS()).toBe('dark')
   })
   it('test: getAppThemeFallbackOS2', () => {
-    uni.getAppBaseInfo = jest.fn(() => {
-      return { appTheme: 'light' } as any
-    })
-    uni.getDeviceInfo = jest.fn(() => {
-      return { osTheme: 'dark' } as any
-    })
+    nativeApp.isDarkTheme = false
 
     expect(getAppThemeFallbackOS()).toBe('light')
   })
 
   it('test: getAppThemeFallbackOS2', () => {
-    uni.getAppBaseInfo = jest.fn(() => {
-      return { appTheme: 'dark' } as any
-    })
-    uni.getDeviceInfo = jest.fn(() => {
-      return { osTheme: 'light' } as any
-    })
+    nativeApp.isDarkTheme = true
 
     expect(getAppThemeFallbackOS()).toBe('dark')
   })
+})
+
+describe('test: getAppThemeFallbackOS in VDOM', () => {
+  beforeEach(() => {
+    ;(globalThis as any).__VAPOR__ = false
+  })
+
+  afterEach(() => {
+    ;(globalThis as any).__VAPOR__ = true
+  })
+
+  it.each([
+    ['light', 'light'],
+    ['dark', 'dark'],
+  ])('returns appTheme %s', (appTheme, expected) => {
+    uni.getAppBaseInfo = jest.fn(() => ({ appTheme })) as any
+
+    expect(getAppThemeFallbackOS()).toBe(expected)
+  })
+
+  it.each(['light', 'dark'])(
+    'returns osTheme %s when appTheme is auto',
+    (osTheme) => {
+      uni.getAppBaseInfo = jest.fn(() => ({ appTheme: 'auto' })) as any
+      uni.getDeviceInfo = jest.fn(() => ({ osTheme })) as any
+
+      expect(getAppThemeFallbackOS()).toBe(osTheme)
+    }
+  )
 })
 
 describe('test: normalizePageStyles', () => {

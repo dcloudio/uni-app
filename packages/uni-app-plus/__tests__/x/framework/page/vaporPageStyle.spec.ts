@@ -44,7 +44,7 @@ describe('vapor page style', () => {
     testGlobal.UniViewElementImpl = originalUniViewElementImpl
   })
 
-  test('initializes root scroll-view attributes with defaults', () => {
+  test('records defaults without setting root scroll-view attributes', () => {
     const {
       pageStyleOwner,
       pageVm,
@@ -54,23 +54,23 @@ describe('vapor page style', () => {
 
     initVaporPageStyle(pageVm, {} as UniApp.PageRouteMeta)
 
-    expect(setVaporPageStyle.mock.calls).toEqual([
+    expect(setVaporPageStyle).not.toHaveBeenCalled()
+    expect(setVaporPageStyleInitialValue.mock.calls).toEqual([
       ['enableBackToTop', false],
       ['bounces', false],
       ['androidOverscroll', false],
+      ['backgroundTextStyle', 'dark'],
       ['androidRefresherColor', ''],
       ['backgroundColor', 'transparent'],
     ])
-    expect(setVaporPageStyle.mock.contexts).toEqual([
+    expect(setVaporPageStyleInitialValue.mock.contexts).toEqual([
+      pageStyleOwner,
       pageStyleOwner,
       pageStyleOwner,
       pageStyleOwner,
       pageStyleOwner,
       pageStyleOwner,
     ])
-    expect(setVaporPageStyleInitialValue.mock.calls).toEqual(
-      setVaporPageStyle.mock.calls
-    )
   })
 
   test('initializes attributes from the current pages.json style', () => {
@@ -80,6 +80,7 @@ describe('vapor page style', () => {
       bounces: true,
       androidOverscroll: true,
       androidRefresherColor: '#00ff00',
+      backgroundTextStyle: 'light',
       backgroundColor: '#ff0000',
     } as unknown as UniApp.PageRouteMeta
 
@@ -89,9 +90,25 @@ describe('vapor page style', () => {
       ['enableBackToTop', true],
       ['bounces', true],
       ['androidOverscroll', true],
+      ['backgroundTextStyle', 'light'],
       ['androidRefresherColor', '#00ff00'],
       ['backgroundColor', '#ff0000'],
     ])
+  })
+
+  test('normalizes unsupported background text styles without setting the default', () => {
+    const { pageVm, setVaporPageStyle, setVaporPageStyleInitialValue } =
+      createPage()
+
+    initVaporPageStyle(pageVm, {
+      backgroundTextStyle: 'invalid',
+    } as unknown as UniApp.PageRouteMeta)
+
+    expect(setVaporPageStyle).not.toHaveBeenCalled()
+    expect(setVaporPageStyleInitialValue).toHaveBeenCalledWith(
+      'backgroundTextStyle',
+      'dark'
+    )
   })
 
   test('skips attributes changed before native ready', () => {
@@ -112,6 +129,7 @@ describe('vapor page style', () => {
       bounces: false,
       androidOverscroll: true,
       androidRefresherColor: '#00ff00',
+      backgroundTextStyle: 'light',
       backgroundColor: '#ff0000',
     } as unknown as UniApp.PageRouteMeta
 
@@ -120,12 +138,14 @@ describe('vapor page style', () => {
     expect(setVaporPageStyle.mock.calls).toEqual([
       ['enableBackToTop', true],
       ['androidOverscroll', true],
+      ['backgroundTextStyle', 'light'],
       ['backgroundColor', '#ff0000'],
     ])
     expect(setVaporPageStyleInitialValue.mock.calls).toEqual([
       ['enableBackToTop', true],
       ['bounces', false],
       ['androidOverscroll', true],
+      ['backgroundTextStyle', 'light'],
       ['androidRefresherColor', '#00ff00'],
       ['backgroundColor', '#ff0000'],
     ])

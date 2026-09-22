@@ -66,12 +66,6 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       }
     }
     // TODO ext api
-    try {
-      uni.hideToast()
-      uni.hideLoading()
-    } catch (error) {
-      console.warn(error)
-    }
     if (getPage$BasePage(page).meta.isQuit) {
       invokeHook(
         getApp().vm as ComponentPublicInstance,

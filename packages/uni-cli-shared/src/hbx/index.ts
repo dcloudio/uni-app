@@ -7,7 +7,10 @@ export { formatAtFilename, createErrorWithBlockFlag } from './log'
 
 export * from './env'
 export {
+  initWebVaporAliases,
+  resolveWebVaporPackage,
   initModuleAlias,
+  normalizeUniAppXVaporEnv,
   installHBuilderXPlugin,
   formatInstallHBuilderXPluginTips,
 } from './alias'

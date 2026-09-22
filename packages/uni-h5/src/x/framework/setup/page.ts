@@ -1,7 +1,13 @@
 import safeAreaInsets from 'safe-area-insets'
 import { type ComponentPublicInstance, markRaw, watchEffect } from 'vue'
-import { getCurrentPage, initPageVm } from '@dcloudio/uni-core'
 import {
+  getCurrentPage,
+  getLastDialogPage,
+  initPageVm,
+  invokeHook,
+} from '@dcloudio/uni-core'
+import {
+  ON_BACK_PRESS,
   ON_REACH_BOTTOM_DISTANCE,
   UTSJSONObject,
   normalizeTitleColor,
@@ -113,8 +119,10 @@ class UniPageImpl implements UniPage {
     const pageMeta = this.vm?.$basePage.meta
       ? normalizeStyles(this.vm?.$basePage.meta, __uniConfig.themeConfig)
       : undefined
-    return pageMeta
-      ? new UTSJSONObject({
+
+    const scriptLang = (this.vm?.$?.type as any)?.__scriptLang
+    const pageStyle = pageMeta
+      ? {
           navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
           navigationBarTextStyle: pageMeta.navigationBar.titleColor,
           navigationBarTitleText: pageMeta.navigationBar.titleText,
@@ -125,8 +133,13 @@ class UniPageImpl implements UniPage {
           onReachBottomDistance:
             pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
           backgroundColorContent: pageMeta.backgroundColorContent,
-        })
-      : new UTSJSONObject({})
+        }
+      : {}
+    if (!scriptLang || scriptLang === 'uts') {
+      return new UTSJSONObject(pageStyle)
+    }
+    // 忽略类型，不同环境UTSJSONObject表示不同类型
+    return pageStyle as unknown as UTSJSONObject
   }
   $getPageStyle(): UTSJSONObject {
     return this.getPageStyle()
@@ -381,9 +394,14 @@ export function initXPage(
   }
   const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
+    const scriptLang = (vm.$.type as any).__scriptLang
+    const isUTS = !scriptLang || scriptLang === 'uts'
     const uniPage = new UniNormalPageImpl({
       route: route?.path ? removeLeadingSlash(route?.path) : '',
-      options: new UTSJSONObject(route?.query || {}),
+      // 忽略类型，不同环境UTSJSONObject表示不同类型
+      options: isUTS
+        ? new UTSJSONObject(route?.query || {})
+        : ((route?.query || {}) as unknown as UTSJSONObject),
       vm,
     })
     vm.$.page = uniPage
@@ -414,17 +432,8 @@ export function initXPage(
     vm.$.page = vm.$pageLayoutInstance?.$dialogPage!
     pageInstance.$dialogPage!.vm = vm
     pageInstance.$dialogPage!.$vm = vm
-    // fix dialogPage $basePage.fullPath & $basePage.id
+    // fix dialogPage $basePage.fullPath
     vm.$basePage.fullPath = vm.$basePage.path
-    const parentPage = (vm.$page as UniPage).getParentPage()
-    if (parentPage) {
-      if (!parentPage.vm.$dialogPagesNum) {
-        parentPage.vm.$dialogPagesNum = 0
-      }
-      parentPage.vm.$dialogPagesNum++
-      vm.$basePage.id =
-        parentPage.vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum
-    }
   }
 }
 
@@ -442,16 +451,20 @@ export function useBackgroundColorContent(vm: ComponentPublicInstance | null) {
     })
 }
 
-function handleEscKeyPress(event) {
+function handleEscKeyPress(event: KeyboardEvent) {
   if (__NODE_JS__) {
     return
   }
-  if (event.key === 'Escape') {
-    const currentPage = getCurrentPage() as unknown as UniPage
-    const dialogPages = currentPage.getDialogPages()
-    const dialogPage = dialogPages[dialogPages.length - 1]
-    // @ts-expect-error
-    if (!dialogPage.$disableEscBack) {
+  if (event.key !== 'Escape' && event.key !== 'Esc') {
+    return
+  }
+  const currentPage = getCurrentPage() as unknown as UniPage | null
+  const dialogPage = getLastDialogPage(currentPage)
+  if (dialogPage && !dialogPage.$disableEscBack) {
+    const onBackPressRes = invokeHook(dialogPage.vm, ON_BACK_PRESS, {
+      from: 'navigateBack',
+    })
+    if (onBackPressRes !== true) {
       closeDialogPage({ dialogPage })
     }
   }

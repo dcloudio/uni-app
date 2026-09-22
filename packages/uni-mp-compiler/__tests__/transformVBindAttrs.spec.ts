@@ -82,6 +82,36 @@ function compileTemplate(
   return source
 }
 
+function compileRenderCode(
+  template: string,
+  options: CompilerOptions = {},
+  platform = 'mp-weixin'
+) {
+  process.env.UNI_PLATFORM = platform as any
+  return compile(template, {
+    root: '',
+    mode: 'module',
+    filename: 'foo.vue',
+    prefixIdentifiers: true,
+    inline: true,
+    isNativeTag: options.isX
+      ? isMiniProgramUVueNativeTag
+      : isMiniProgramNativeTag,
+    isCustomElement: createIsCustomElement([]),
+    generatorOpts: {
+      concise: true,
+    },
+    miniProgram: {
+      ...miniProgram,
+      ...options.miniProgram,
+      emitFile() {
+        return ''
+      },
+    },
+    ...options,
+  }).code
+}
+
 function getProp(node: ElementNode, name: string) {
   return node.props.find((prop) => {
     return (
@@ -164,14 +194,108 @@ describe('compiler: transform v-bind="$attrs"', () => {
     )
 
     expect((getOnProp(node, 'click')!.exp as SimpleExpression).content).toBe(
-      `[foo, $attrs.onClick]`
+      `foo`
     )
+    expect(getOnProp(node, 'click')).toMatchObject({
+      __uniVBindAttrsEvent: {
+        attrsExp: '$attrs.onClick',
+        attrsFirst: false,
+      },
+    })
     expect((getProp(node, 'class')!.exp as SimpleExpression).content).toBe(
       `[$attrs.class, bar]`
     )
     expect((getProp(node, 'style')!.exp as SimpleExpression).content).toBe(
       `[$attrs.style, baz]`
     )
+  })
+
+  test.each([
+    [
+      `<view @click="foo" v-bind="$attrs"/>`,
+      `[].concat(_ctx.foo || [], _ctx.$attrs.onClick)`,
+    ],
+    [
+      `<view v-bind="$attrs" class="target" @click="onClick"/>`,
+      `[].concat(_ctx.$attrs.onClick, _ctx.onClick || [])`,
+    ],
+  ])('合并 click 处理器时保留声明顺序: %s', (template, expected) => {
+    const code = compileRenderCode(template, { isX: true })
+
+    expect(code).toContain(expected)
+  })
+
+  test.each(['foo()', 'count++'])(
+    '合并内联 click 处理器时保留回调语义: %s',
+    (handler) => {
+      const code = compileRenderCode(
+        `<view @click="${handler}" v-bind="$attrs"/>`,
+        { isX: true }
+      )
+
+      expect(code).toContain(
+        handler === 'foo()'
+          ? `[].concat(($event => _ctx.foo()) || [], _ctx.$attrs.onClick)`
+          : `[].concat(($event => _ctx.count++) || [], _ctx.$attrs.onClick)`
+      )
+    }
+  )
+
+  test.each([
+    ['$event => { foo(); }', `$event => { _ctx.foo(); }`],
+    [
+      'async ($event) => { await foo(); }',
+      `async $event => { await _ctx.foo(); }`,
+    ],
+  ])('合并带代码块的函数处理器时保留原函数: %s', (handler, expected) => {
+    const code = compileRenderCode(
+      `<view @click="${handler}" v-bind="$attrs"/>`,
+      { isX: true }
+    )
+
+    expect(code).toContain(
+      `[].concat((${expected}) || [], _ctx.$attrs.onClick)`
+    )
+  })
+
+  test('合并空 click 处理器时生成有效的空函数', () => {
+    const code = compileRenderCode(`<view @click="" v-bind="$attrs"/>`, {
+      isX: true,
+    })
+
+    expect(code).toContain(
+      `[].concat((() => {}) || [], _ctx.$attrs.onClick) : () => {}`
+    )
+  })
+
+  test.each([
+    '(() => foo()) as Handler',
+    '(() => foo()) satisfies Handler',
+    '(() => foo())!',
+    '(<Handler>(() => foo()))',
+  ])('合并带 TS 包装的函数处理器时保留原函数: %s', (handler) => {
+    const code = compileRenderCode(
+      `<view @click="${handler}" v-bind="$attrs"/>`,
+      {
+        isX: true,
+        isTS: true,
+        expressionPlugins: ['typescript'],
+      }
+    )
+
+    expect(code).toContain(`[].concat(`)
+    expect(code).not.toContain(`[].concat(($event =>`)
+  })
+
+  test('编译结果不会在渲染阶段执行内联 click 处理器', () => {
+    const code = compileRenderCode(`<view @click="foo()" v-bind="$attrs"/>`, {
+      isX: true,
+    })
+
+    expect(code).toContain(
+      '_o(_ctx.$attrs.onClick ? [].concat(($event => _ctx.foo()) || [],'
+    )
+    expect(code).not.toContain('_o($event => _ctx.foo()')
   })
 
   test('uni-app 下仍保持原有报错', () => {

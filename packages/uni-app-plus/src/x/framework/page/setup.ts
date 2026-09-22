@@ -42,9 +42,13 @@ export function setupXPage(
   uniPage.route = pageVm.$basePage.route
   // @ts-expect-error
   uniPage.optionsByJS = pageVm.$basePage.options
+  const scriptLang = (pageVm.$.type as any).__scriptLang
   Object.defineProperty(uniPage, 'options', {
     get: function () {
-      return new UTSJSONObject(pageVm.$basePage.options)
+      if (!scriptLang || scriptLang === 'uts') {
+        return new UTSJSONObject(pageVm.$basePage.options)
+      }
+      return pageVm.$basePage.options
     },
   })
 

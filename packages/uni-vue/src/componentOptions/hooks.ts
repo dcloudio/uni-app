@@ -68,9 +68,13 @@ export function initHooks(
     // 直接触发页面 onLoad、onShow 组件内的 onLoad 和 onShow 在注册时，直接触发一次
     try {
       let query = instance.attrs.__pageQuery as Record<string, any>
+      const scriptLang = (instance.type as any).__scriptLang
+      const isUTS = !scriptLang || scriptLang === 'uts'
       // onLoad 的 query 进行 decode
       if (__X__) {
-        query = new UTSJSONObject(decodedQuery(query))
+        query = isUTS
+          ? new UTSJSONObject(decodedQuery(query))
+          : decodedQuery(query)
       }
       if (__PLATFORM__ === 'app' && __X__) {
         // TODO 统一处理 Web

@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, decodedQuery, stringifyQuery, ON_TAB_ITEM_TAP, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -832,9 +832,13 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   pageVm.$.page = uniPage;
   uniPage.route = pageVm.$basePage.route;
   uniPage.optionsByJS = pageVm.$basePage.options;
+  var scriptLang = pageVm.$.type.__scriptLang;
   Object.defineProperty(uniPage, "options", {
     get: function() {
-      return new UTSJSONObject(pageVm.$basePage.options);
+      if (!scriptLang || scriptLang === "uts") {
+        return new UTSJSONObject(pageVm.$basePage.options);
+      }
+      return pageVm.$basePage.options;
     }
   });
   uniPage.vm = pageVm;
@@ -1884,19 +1888,30 @@ function init() {
     tabBarConfig.set(key, _tabBarConfig[key]);
   }
   fixBorderStyle(tabBarConfig);
+  if (!tabBarConfig.has("color")) {
+    tabBarConfig.set("color", "#999999");
+  }
+  if (!tabBarConfig.has("selectedColor")) {
+    tabBarConfig.set("selectedColor", "#007AFF");
+  }
   tabBar0.initTabBar(tabBarConfig);
   tabBar0.addEventListener("tabBarItemTap", function(event) {
     var index2 = event.index;
-    if (index2 !== selected0) {
-      var item = list[index2];
-      var path = item.pagePath;
-      if (isString(path) && findPageRoute(getRealPath(path, true))) {
-        uni.switchTab({
-          url: getRealPath(path, true)
-        });
-      } else {
-        console.error("switchTab: pagePath not found");
-      }
+    var item = list[index2];
+    var path = item.pagePath;
+    if (isString(path) && findPageRoute(getRealPath(path, true))) {
+      uni.switchTab({
+        url: getRealPath(path, true),
+        success() {
+          invokeHook(ON_TAB_ITEM_TAP, {
+            index: index2,
+            pagePath: item.pagePath,
+            text: item.text
+          });
+        }
+      });
+    } else {
+      console.error("switchTab: pagePath not found");
     }
   });
   tabBar0.addEventListener("tabBarMidButtonTap", function(event) {
@@ -2010,6 +2025,7 @@ function switchSelect(selected, path) {
   var appRouteOpenType = arguments.length > 5 ? arguments[5] : void 0;
   var shouldDispatchAppRoute = arguments.length > 6 && arguments[6] !== void 0 ? arguments[6] : true;
   var appRouteContext = arguments.length > 7 ? arguments[7] : void 0;
+  var onComplete = arguments.length > 8 ? arguments[8] : void 0;
   var shouldShow = false;
   if (tabBar0 === null) {
     init();
@@ -2039,23 +2055,28 @@ function switchSelect(selected, path) {
     }
     selected0 = selected;
     invokeAfterRouteHooks(type);
+    onComplete === null || onComplete === void 0 || onComplete();
   });
 }
-var APP_THEME_AUTO = "auto";
 var THEME_KEY_PREFIX = "@";
+var APP_THEME_AUTO = "auto";
+var APP_THEME_LIGHT = "light";
 function getAppThemeFallbackOS() {
-  var fallbackOSTheme = "light";
-  try {
-    var appTheme = uni.getAppBaseInfo().appTheme;
-    fallbackOSTheme = appTheme;
-    if (appTheme === APP_THEME_AUTO) {
-      var osTheme = uni.getDeviceInfo().osTheme;
-      fallbackOSTheme = osTheme;
+  var fallbackOSTheme = APP_THEME_LIGHT;
+  {
+    try {
+      var appTheme = uni.getAppBaseInfo().appTheme;
+      if (appTheme === APP_THEME_AUTO) {
+        var osTheme = uni.getDeviceInfo().osTheme;
+        fallbackOSTheme = osTheme;
+      } else {
+        fallbackOSTheme = appTheme;
+      }
+      return fallbackOSTheme;
+    } catch (e) {
+      console.error(e);
+      return fallbackOSTheme;
     }
-    return fallbackOSTheme;
-  } catch (e) {
-    console.error(e);
-    return fallbackOSTheme;
   }
 }
 var appThemeChangeCallbackId = -1;
@@ -2083,7 +2104,7 @@ var onThemeChange = function(themeMode) {
       var routeOptions = initRouteOptions(basePage.path, "");
       routeOptions.meta.isQuit = basePage.meta.isQuit;
       var style = parsePageStyle(routeOptions);
-      page.$page.setPageStyle(new UTSJSONObject(style));
+      page.$page.setPageStyle(style);
     });
   };
   handlePage();
@@ -2272,6 +2293,7 @@ function triggerFailCallback$1(options, errMsg) {
   options === null || options === void 0 || (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
 }
 function parsePageStyle(route) {
+  var includeGlobalPageSelector = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : true;
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
   var routeKeys = [
@@ -2292,12 +2314,17 @@ function parsePageStyle(route) {
     "navigationBar"
   ];
   var navKeys = ["navigationBarTitleText", "navigationBarBackgroundColor", "navigationBarTextStyle", "navigationStyle"];
-  normalizePageStyles(routeMeta, __uniConfig.themeConfig, getAppThemeFallbackOS());
+  var theme = getAppThemeFallbackOS();
+  normalizePageStyles(routeMeta, __uniConfig.themeConfig, theme);
   Object.keys(routeMeta).forEach((key) => {
     if (!routeKeys.includes(key) && !navKeys.includes(key)) {
       style.set(key, routeMeta[key]);
     }
   });
+  var pageSelectorBackgroundColor = resolvePageSelectorBackgroundColor(routeMeta, theme, includeGlobalPageSelector);
+  if (pageSelectorBackgroundColor !== void 0) {
+    style.set("backgroundColorContent", pageSelectorBackgroundColor);
+  }
   var navigationBar = {};
   navKeys.forEach((key) => {
     if (key in routeMeta) {
@@ -2313,6 +2340,19 @@ function parsePageStyle(route) {
     });
   }
   return style;
+}
+function resolvePageSelectorBackgroundColor(routeMeta, theme) {
+  var _resolvePageSelectorB;
+  var includeGlobal = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true;
+  var pageSelectorBackgroundColor = __uniConfig.pageSelectorBackgroundColor;
+  var pageColor = pageSelectorBackgroundColor && pageSelectorBackgroundColor.pages && pageSelectorBackgroundColor.pages[routeMeta.route];
+  var globalColor = pageSelectorBackgroundColor && pageSelectorBackgroundColor.global;
+  return (_resolvePageSelectorB = resolvePageSelectorBackgroundColorVariant(pageColor, theme)) !== null && _resolvePageSelectorB !== void 0 ? _resolvePageSelectorB : includeGlobal ? resolvePageSelectorBackgroundColorVariant(globalColor, theme) : void 0;
+}
+function resolvePageSelectorBackgroundColorVariant(value, theme) {
+  if (!value)
+    return void 0;
+  return value[theme];
 }
 function invokePageOnReady(pageComponentPublicInstance) {
   {
@@ -2442,12 +2482,13 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
-  var pageStyle = parsePageStyle(routeOptions);
+  var pageStyle = parsePageStyle(routeOptions, false);
+  var pageSelectorBackgroundColor = resolvePageSelectorBackgroundColor(routeOptions.meta, getAppThemeFallbackOS(), false);
   var routePageMeta = (_uniRoutes$find = __uniRoutes.find((route2) => route2.path === path)) === null || _uniRoutes$find === void 0 ? void 0 : _uniRoutes$find.meta;
   if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.navigationStyle)) {
     pageStyle.set("navigationStyle", "custom");
   }
-  if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.backgroundColorContent)) {
+  if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.backgroundColorContent) && pageSelectorBackgroundColor === void 0) {
     pageStyle.set("backgroundColorContent", "transparent");
   }
   if (typeof pageStyle.get("disableSwipeBack") !== "boolean") {
@@ -2973,7 +3014,7 @@ function _switchTab(_ref2, appRouteOpenType, shouldDispatchAppRoute, appRouteCon
   var pages2 = getCurrentBasePages();
   return new Promise((resolve) => {
     setTimeout(() => {
-      switchSelect(selected, path, query, false, void 0, appRouteOpenType, shouldDispatchAppRoute, appRouteContext);
+      switchSelect(selected, path, query, false, void 0, appRouteOpenType, shouldDispatchAppRoute, appRouteContext, () => resolve(void 0));
       for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
         var page = pages2[index2];
         if (isTabPage(page)) {
@@ -2981,7 +3022,6 @@ function _switchTab(_ref2, appRouteOpenType, shouldDispatchAppRoute, appRouteCon
         }
         closePage(page, "none");
       }
-      resolve(void 0);
     }, 0);
   });
 }
@@ -3357,12 +3397,6 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
       return reject("cancel");
     }
   }
-  try {
-    uni.hideToast();
-    uni.hideLoading();
-  } catch (error) {
-    console.warn(error);
-  }
   if (getPage$BasePage(page).meta.isQuit) {
     invokeHook(getApp().vm, ON_LAST_PAGE_BACK_PRESS);
   } else {
@@ -3635,7 +3669,28 @@ var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (opti
     reject("tabBar is not exist");
     return;
   }
-  var style = /* @__PURE__ */ new Map([["color", options.color], ["selectedColor", options.selectedColor], ["backgroundColor", options.backgroundColor], ["backgroundImage", options.backgroundImage], ["backgroundRepeat", options.backgroundRepeat], ["borderStyle", options.borderStyle], ["borderColor", options.borderColor]]);
+  var style = /* @__PURE__ */ new Map();
+  if (options.color != null) {
+    style.set("color", options.color);
+  }
+  if (options.selectedColor != null) {
+    style.set("selectedColor", options.selectedColor);
+  }
+  if (options.backgroundColor != null) {
+    style.set("backgroundColor", options.backgroundColor);
+  }
+  if (options.backgroundImage != null) {
+    style.set("backgroundImage", options.backgroundImage);
+  }
+  if (options.backgroundRepeat != null) {
+    style.set("backgroundRepeat", options.backgroundRepeat);
+  }
+  if (options.borderStyle != null) {
+    style.set("borderStyle", options.borderStyle);
+  }
+  if (options.borderColor != null) {
+    style.set("borderColor", options.borderColor);
+  }
   if (!!options.midButton) {
     var midButtonOptions = options.midButton;
     var midButton = /* @__PURE__ */ new Map([["width", midButtonOptions.width], ["height", midButtonOptions.height], ["iconPath", midButtonOptions.iconPath], ["text", midButtonOptions.text], ["iconPath", midButtonOptions.iconPath], ["iconWidth", midButtonOptions.iconWidth], ["backgroundImage", midButtonOptions.backgroundImage]]);

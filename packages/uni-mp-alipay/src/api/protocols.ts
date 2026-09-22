@@ -1,4 +1,4 @@
-import { extend, hasOwn, isArray, isObject } from '@vue/shared'
+import { extend, hasOwn, isArray, isFunction, isObject } from '@vue/shared'
 
 import {
   getAppBaseInfo as _getAppBaseInfo,
@@ -6,12 +6,15 @@ import {
   getWindowInfo as _getWindowInfo,
   navigateTo as _navigateTo,
   addSafeAreaInsets,
+  // #if _X_
+  createUTSJSONObjectIfNeed,
+  // #endif
   isSyncApi,
   populateParameters,
   useDeviceId,
 } from '@dcloudio/uni-mp-core'
 
-import { getStorageSync } from './shims'
+import { getStorageSync as getStorageSyncShim } from './shims'
 
 export {
   redirectTo,
@@ -20,6 +23,10 @@ export {
   onSocketOpen,
   onSocketMessage,
 } from '@dcloudio/uni-mp-core'
+
+// #if _X_
+export { getStorage, getStorageSync } from '@dcloudio/uni-mp-core'
+// #endif
 
 function handleNetworkInfo(
   fromRes: my.IGetNetworkTypeSuccessResult,
@@ -60,7 +67,7 @@ function handleSystemInfo(
   reviseScreenSize(fromRes, toRes)
   addSafeAreaInsets(fromRes, toRes)
   useDeviceId({
-    getStorageSync: getStorageSync as Uni['getStorageSync'],
+    getStorageSync: getStorageSyncShim as Uni['getStorageSync'],
   })(fromRes, toRes)
   populateParameters(fromRes, toRes)
 
@@ -96,7 +103,7 @@ export function returnValue(methodName: string, res: Record<string, any> = {}) {
  */
 export const request = {
   name: my.canIUse('request') ? 'request' : 'httpRequest',
-  args(fromArgs: UniApp.RequestOptions) {
+  args(fromArgs: UniApp.RequestOptions & { isUTS?: boolean }) {
     const isDingDing = my.canIUse('saveFileToDingTalk')
     const method = fromArgs.method || 'GET'
     if (!fromArgs.header) {
@@ -109,6 +116,19 @@ export const request = {
     Object.keys(fromArgs.header).forEach((key) => {
       headers[key.toLowerCase()] = fromArgs.header[key]
     })
+
+    // #if _X_
+    if (fromArgs.isUTS) {
+      const oldSuccess = fromArgs.success
+      if (oldSuccess) {
+        fromArgs.success = (res) => {
+          res.data = createUTSJSONObjectIfNeed(res.data)
+          oldSuccess!(res as UniApp.RequestSuccessCallbackResult)
+        }
+      }
+    }
+    // #endif
+
     return {
       header() {
         return {
@@ -362,6 +382,41 @@ export const getSavedFileInfo = {
     filePath: 'apFilePath',
   },
 }
+// #if _X_
+const normalizedFileSystemManagers = new WeakSet()
+export const getFileSystemManager = {
+  returnValue(manager: Record<string, any>) {
+    const stat = manager.stat
+    if (
+      isFunction(stat) === false ||
+      normalizedFileSystemManagers.has(manager)
+    ) {
+      return
+    }
+    normalizedFileSystemManagers.add(manager)
+    const normalizedStat = function (
+      this: unknown,
+      options: Record<string, any>
+    ) {
+      if (isObject(options) && options.recursive === true) {
+        ;(['success', 'complete'] as const).forEach((name) => {
+          const callback = options[name]
+          if (isFunction(callback)) {
+            options[name] = function (this: unknown, res: Record<string, any>) {
+              if (res && isObject(res.stats) && !isArray(res.stats)) {
+                res.stats = Object.values(res.stats)
+              }
+              return callback.call(this, res)
+            }
+          }
+        })
+      }
+      return stat.call(this, options)
+    }
+    manager.stat = normalizedStat
+  },
+}
+// #endif
 export const getSavedFileList = {
   returnValue(
     fromRes: my.IGetSavedFileListSuccessResult,

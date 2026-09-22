@@ -14,8 +14,9 @@ export { initGetProvider } from './api/shims'
 export { isSyncApi } from './api/promise'
 
 // #if _X_
-export { parseXReturnValue } from './api/protocols/x'
+export { parseXReturnValue, createUTSJSONObjectIfNeed } from './api/protocols/x'
 export { updateCssVariables } from './runtime/page'
+export { getStorage, getStorageSync } from './api/protocols'
 // #endif
 
 // mp-alipay

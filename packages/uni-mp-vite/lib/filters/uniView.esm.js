@@ -5,12 +5,25 @@ function handleStartAnimation (newValue, _ownerInstance, instance) {
 
   // playState leftTimes
   var state = element.getState()
+  var animationId = info.animationId || 0
+  if (
+    info.playState === 'idle' &&
+    animationId &&
+    state.animationId &&
+    state.animationId !== animationId
+  ) {
+    return
+  }
+  state.animationId = animationId
   state.playState = info.playState
 
   var startTime = null
 
   state.leftTimes = info.options.iterations || 1
   var currentStep = 0
+  for (var classIndex = 0; classIndex < info.keyframes.length; classIndex++) {
+    element.removeClass('__ct' + classIndex)
+  }
 
   var duration =
     info.options.direction === 'alternate'
@@ -33,6 +46,9 @@ function handleStartAnimation (newValue, _ownerInstance, instance) {
   }
 
   function step () {
+    if (animationId && state.animationId !== animationId) {
+      return
+    }
     var isCancelled = state.playState === 'idle'
     var currentTime = Date.now()
     if (startTime === null) {

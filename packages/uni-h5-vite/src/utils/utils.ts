@@ -1,3 +1,5 @@
+import { isUniAppXWebVapor } from '@dcloudio/uni-cli-shared'
+
 export function resolveFrameworkDistDir() {
   return resolveDistDir()
 }
@@ -7,9 +9,9 @@ export function resolveVueDistDir() {
 }
 
 export function resolveDistDir() {
-  // // 重要：目前只要manifest.json中配置了vapor:true，就认为是vapor版本（虽然还没有支持）
-  // process.env.UNI_APP_X_VAPOR === 'true'
-  //   ? 'dist-x-vapor'
-  //   :
-  return process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist'
+  return isUniAppXWebVapor()
+    ? 'dist-x-vapor'
+    : process.env.UNI_APP_X === 'true'
+    ? 'dist-x'
+    : 'dist'
 }

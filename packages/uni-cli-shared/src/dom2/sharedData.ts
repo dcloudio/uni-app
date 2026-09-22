@@ -47,9 +47,14 @@ export function initSourceFileCallback():
 
 export function initUts2jsSharedDataOptions() {
   if (process.env.UNI_APP_X_DOM2 === 'true') {
+    const uniHelpers = requireUniHelpers()
+    if (typeof uniHelpers.CSDT !== 'function') {
+      throw new Error('DOM2 requires the SharedData transformer (CSDT)')
+    }
     return {
       resolveFieldMeta: require('@dcloudio/compiler-vapor-dom2')
         .resolveSharedDataFieldMeta,
+      createSharedDataTransformer: uniHelpers.CSDT,
     }
   }
 }

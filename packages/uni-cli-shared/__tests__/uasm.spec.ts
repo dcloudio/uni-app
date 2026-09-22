@@ -19,6 +19,10 @@ import {
   resolveUasmWebLoad,
   uniUasmPlugin,
 } from '../src/uasm'
+import {
+  initUasmMiniProgramTransformOptions,
+  resolveUasmMiniProgramLoad,
+} from '../src/mp/uasm'
 
 function transformLoadUasm(
   code: string,
@@ -33,7 +37,7 @@ function transformLoadUasm(
           resolve(modulePath) {
             const normalized = modulePath.replace(/^@?\//, '')
             if (normalized === 'uni_modules/test-uasm') {
-              return `${normalized}/uasm/app-android/libs/arm64-v8a/libtest-uasm.so`
+              return `${normalized}/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so`
             }
           },
           reportDiagnostic(_context, diagnostic) {
@@ -47,6 +51,27 @@ function transformLoadUasm(
 
 function transformWebLoadUasm(code: string) {
   const options = initUasmWebTransformOptions()
+  return ts.transpileModule(code, {
+    compilerOptions: {
+      module: ts.ModuleKind.ESNext,
+      target: ts.ScriptTarget.ESNext,
+    },
+    transformers: {
+      before: [
+        options.createLoadUasmTransformer({
+          ...options,
+          typescript: ts,
+          reportDiagnostic(_context, diagnostic) {
+            throw new Error(diagnostic.messageText.toString())
+          },
+        }),
+      ],
+    },
+  }).outputText
+}
+
+function transformMiniProgramLoadUasm(code: string, inputDir: string) {
+  const options = initUasmMiniProgramTransformOptions('mp-weixin', inputDir)
   return ts.transpileModule(code, {
     compilerOptions: {
       module: ts.ModuleKind.ESNext,
@@ -87,13 +112,29 @@ describe('uasm', () => {
     expect(parseUniAppXTargetArchs('{}')).toEqual([])
   })
 
+  test('resolve UASM library file name', () => {
+    const file =
+      'uni_modules/ustd/uasm/app-android/libs/arm64-v8a/libUasmUstd.so'
+    fs.outputFileSync(path.join(inputDir, file), '')
+    initUasmModules(inputDir)
+
+    expect(resolveUasmLoadPath('uni_modules/ustd', 'app-android', true)).toBe(
+      'libUasmUstd.so'
+    )
+    expect(
+      resolveUasmLoadPath('uni_modules/ustd', 'app-android', false, [
+        'arm64-v8a',
+      ])
+    ).toBe(file)
+  })
+
   test('initialize shared transform options', () => {
     const originalTargetArchs = process.env.UNI_APP_X_TARGET_ARCHS
     process.env.UNI_APP_X_TARGET_ARCHS = JSON.stringify(['arm64-v8a'])
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so'
       ),
       ''
     )
@@ -105,7 +146,7 @@ describe('uasm', () => {
     }
 
     expect(options.targetArchs).toEqual(['arm64-v8a'])
-    expect(options.resolve('uni_modules/test-uasm')).toBe('libtest-uasm.so')
+    expect(options.resolve('uni_modules/test-uasm')).toBe('libUasmTestUasm.so')
     expect(options.createLoadUasmTransformer).toBe(createLoadUasmTransformer)
 
     if (originalTargetArchs === undefined) {
@@ -125,7 +166,7 @@ describe('uasm', () => {
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so'
       ),
       ''
     )
@@ -138,13 +179,20 @@ describe('uasm', () => {
           compilerOptions: { target: ts.ScriptTarget.ESNext },
           transformers: { before: [creator(ts).before] },
         }).outputText
-      expect(transform(`uni.loadUASM('uni_modules/test-uasm')`)).toContain(
-        'uni.loadUASM("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
+      expect(transform(`uni.loadUasm('uni_modules/test-uasm')`)).toContain(
+        'uni.loadUasm("libUasmTestUasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
       )
       expect(
-        transform(`uni.loadUASM<CompressionBridge>('uni_modules/test-uasm')`)
+        transform(`uni.loadUasm<CompressionBridge>('uni_modules/test-uasm')`)
       ).toContain(
-        'uni.loadUASM("libtest-uasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
+        'uni.loadUasm("libUasmTestUasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
+      )
+      expect(
+        transform(
+          `uni.loadUasmSync<CompressionBridge>('uni_modules/test-uasm')`
+        )
+      ).toContain(
+        'uni.loadUasmSync("libUasmTestUasm.so", () => uts.sdk.modules.testUasm.TestUasm)'
       )
     } finally {
       restoreEnv('UNI_APP_X_DOM2', originalDom2)
@@ -179,11 +227,18 @@ describe('uasm', () => {
           transformers: { before: [creator(ts).before] },
         }).outputText
       const result = transform(
-        `uni.loadUASM<CompressionBridge>('uni_modules/test-uasm')`
+        `uni.loadUasm<CompressionBridge>('uni_modules/test-uasm')`
       )
       expect(result).toContain('import "unimoduleTestUasm"')
       expect(result).toContain(
-        'uni.loadUASM("test-uasm", () => unimoduleTestUasm.TestUasm.self)'
+        'uni.loadUasm("test-uasm", () => unimoduleTestUasm.TestUasm.self)'
+      )
+      const syncResult = transform(
+        `uni.loadUasmSync<CompressionBridge>('uni_modules/test-uasm')`
+      )
+      expect(syncResult).toContain('import "unimoduleTestUasm"')
+      expect(syncResult).toContain(
+        'uni.loadUasmSync("test-uasm", () => unimoduleTestUasm.TestUasm.self)'
       )
     } finally {
       restoreEnv('UNI_APP_X_DOM2', originalDom2)
@@ -198,58 +253,76 @@ describe('uasm', () => {
     '@/uni_modules/test-uasm',
   ])('transforms UASM load path %s', (modulePath) => {
     expect(
-      transformLoadUasm(`uni.loadUASM<TestUASM>('${modulePath}')`)
+      transformLoadUasm(`uni.loadUasm<TestUASM>('${modulePath}')`)
     ).toContain(
-      'uni.loadUASM("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
+      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so")'
     )
   })
 
   test('keeps other UASM load arguments', () => {
     expect(
-      transformLoadUasm(`uni.loadUASM('uni_modules/test-uasm', true)`)
+      transformLoadUasm(`uni.loadUasm('uni_modules/test-uasm', true)`)
     ).toContain(
-      'uni.loadUASM("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so", true)'
+      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so", true)'
     )
   })
 
   test('transforms a no-substitution UASM path template literal', () => {
     expect(
-      transformLoadUasm('uni.loadUASM(`uni_modules/test-uasm`)')
+      transformLoadUasm('uni.loadUasm(`uni_modules/test-uasm`)')
     ).toContain(
-      'uni.loadUASM("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so")'
+      'uni.loadUasm("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so")'
     )
   })
 
   test('reports an unresolved UASM load path', () => {
-    expect(() => transformLoadUasm(`uni.loadUASM('')`)).toThrow(
+    expect(() => transformLoadUasm(`uni.loadUasm('')`)).toThrow(
       '无法加载 uasm 插件[]，当前设备支持的 ABI：arm64-v8a, armeabi-v7a。请确认插件路径正确，且插件已提供匹配的库文件'
     )
   })
 
   test('reports an unspecified target ABI', () => {
-    expect(() => transformLoadUasm(`uni.loadUASM('')`, [])).toThrow(
+    expect(() => transformLoadUasm(`uni.loadUasm('')`, [])).toThrow(
       '无法加载 uasm 插件[]，当前设备支持的 ABI：未指定。请确认插件路径正确，且插件已提供匹配的库文件'
     )
   })
 
-  test('reports a dynamic UASM load path', () => {
-    expect(() => transformLoadUasm(`uni.loadUASM(modulePath)`)).toThrow(
-      'uni.loadUASM(modulePath) 的 modulePath 参数必须是字符串字面量'
+  test.each(['loadUasm', 'loadUasmSync'])(
+    'reports a dynamic UASM load path for %s',
+    (methodName) => {
+      expect(() => transformLoadUasm(`uni.${methodName}(modulePath)`)).toThrow(
+        `uni.${methodName}(modulePath) 的 modulePath 参数必须是字符串字面量`
+      )
+    }
+  )
+
+  test('transforms a synchronous UASM load path', () => {
+    expect(
+      transformLoadUasm(`uni.loadUasmSync<TestUASM>('uni_modules/test-uasm')`)
+    ).toContain(
+      'uni.loadUasmSync("uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so")'
     )
+  })
+
+  test('does not transform the legacy loadUASM API', () => {
+    const result = transformLoadUasm(`uni.loadUASM('uni_modules/test-uasm')`)
+
+    expect(result).toContain('uni.loadUASM')
+    expect(result).not.toContain('uasm/app-android')
   })
 
   test('cache all platform and arch resources', () => {
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so'
       ),
       ''
     )
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-android/libs/armeabi-v7a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-android/libs/armeabi-v7a/libUasmTestUasm.so'
       ),
       ''
     )
@@ -270,11 +343,11 @@ describe('uasm', () => {
             archs: {
               'arm64-v8a': {
                 dir: 'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a',
-                file: 'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so',
+                file: 'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so',
               },
               'armeabi-v7a': {
                 dir: 'uni_modules/test-uasm/uasm/app-android/libs/armeabi-v7a',
-                file: 'uni_modules/test-uasm/uasm/app-android/libs/armeabi-v7a/libtest-uasm.so',
+                file: 'uni_modules/test-uasm/uasm/app-android/libs/armeabi-v7a/libUasmTestUasm.so',
               },
             },
           },
@@ -314,9 +387,9 @@ describe('uasm', () => {
         entry: '@/uni_modules/test-uasm/uasm/web/test-uasm.js',
       })
       expect(
-        transformWebLoadUasm(`uni.loadUASM<TestUASM>('${modulePath}', true)`)
+        transformWebLoadUasm(`uni.loadUasm<TestUASM>('${modulePath}', true)`)
       ).toContain(
-        'uni.loadUASM({ id: "test-uasm", loader: () => import("@/uni_modules/test-uasm/uasm/web/test-uasm.js") }, true)'
+        'uni.loadUasm({ id: "test-uasm", loader: () => import("@/uni_modules/test-uasm/uasm/web/test-uasm.js") }, true)'
       )
     }
   })
@@ -325,10 +398,124 @@ describe('uasm', () => {
     initUasmModules(inputDir)
 
     expect(() =>
-      transformWebLoadUasm(`uni.loadUASM('uni_modules/test-uasm')`)
+      transformWebLoadUasm(`uni.loadUasm('uni_modules/test-uasm')`)
     ).toThrow(
       '无法加载 uasm 插件[uni_modules/test-uasm]，请确认插件路径正确，且插件已提供入口文件 uni_modules/test-uasm/uasm/web/test-uasm.js'
     )
+  })
+
+  test('cache and resolve mini program entry with a static import', () => {
+    fs.outputFileSync(
+      path.join(inputDir, 'uni_modules/test-uasm/uasm/mp-weixin/test-uasm.js'),
+      ''
+    )
+    initUasmModules(inputDir)
+
+    expect(
+      resolveUasmMiniProgramLoad('uni_modules/test-uasm', 'mp-weixin', inputDir)
+    ).toEqual({
+      id: 'test-uasm',
+      entry: '@/uni_modules/test-uasm/uasm/mp-weixin/test-uasm.js',
+      import: 'static',
+    })
+    const output = transformMiniProgramLoadUasm(
+      `uni.loadUasm<TestUASM>('uni_modules/test-uasm')`,
+      inputDir
+    )
+    expect(output).toContain(
+      'import __uniUasmModule0 from "@/uni_modules/test-uasm/uasm/mp-weixin/test-uasm.js";'
+    )
+    expect(output).toContain(
+      'uni.loadUasm({ id: "test-uasm", loader: () => Promise.resolve({ default: __uniUasmModule0 }) })'
+    )
+  })
+
+  test('does not transform loadUasmSync for web', () => {
+    expect(
+      transformWebLoadUasm(`uni.loadUasmSync('uni_modules/test-uasm')`)
+    ).toBe("uni.loadUasmSync('uni_modules/test-uasm');\n")
+  })
+
+  test('transform Harmony UTS loadUasm to the library name', () => {
+    const originalDom2 = process.env.UNI_APP_X_DOM2
+    const originalTargetArchs = process.env.UNI_APP_X_TARGET_ARCHS
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_APP_X_TARGET_ARCHS = JSON.stringify(['arm64-v8a'])
+    fs.outputFileSync(
+      path.join(
+        inputDir,
+        'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libUasmTestUasm.so'
+      ),
+      ''
+    )
+    initUasmModules(inputDir)
+
+    try {
+      const creator = initUasmTransformerCreator('app-harmony')!
+      const output = ts.transpileModule(
+        `uni.loadUasmSync('uni_modules/test-uasm')`,
+        {
+          transformers: {
+            before: [creator(ts).before],
+          },
+        }
+      ).outputText
+
+      expect(output).toContain(
+        `import { TestUasm } from "@/uni_modules/test-uasm";`
+      )
+      expect(output).toContain(`uni.loadUasmSync("libUasmTestUasm.so")`)
+    } finally {
+      if (originalDom2 === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      } else {
+        process.env.UNI_APP_X_DOM2 = originalDom2
+      }
+      if (originalTargetArchs === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_APP_X_TARGET_ARCHS')
+      } else {
+        process.env.UNI_APP_X_TARGET_ARCHS = originalTargetArchs
+      }
+    }
+  })
+
+  test('resolve Harmony UASM type imports across plugins', () => {
+    const originalDom2 = process.env.UNI_APP_X_DOM2
+    process.env.UNI_APP_X_DOM2 = 'true'
+    fs.outputFileSync(
+      path.join(
+        inputDir,
+        'uni_modules/plugin-b/uasm/app-harmony/libs/arm64-v8a/libUasmPluginB.so'
+      ),
+      ''
+    )
+    initUasmModules(inputDir)
+
+    try {
+      const creator = initUasmTransformerCreator('app-harmony')!
+      const output = ts.transpileModule(
+        `uni.loadUasmSync('uni_modules/plugin-b')`,
+        {
+          fileName: path.join(
+            inputDir,
+            'uni_modules/plugin-a/utssdk/app-harmony/index.uts.ts'
+          ),
+          transformers: {
+            before: [creator(ts).before],
+          },
+        }
+      ).outputText
+
+      expect(output).toContain(
+        `import { PluginB } from "@/uni_modules/plugin-b";`
+      )
+    } finally {
+      if (originalDom2 === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      } else {
+        process.env.UNI_APP_X_DOM2 = originalDom2
+      }
+    }
   })
 
   test('resolve the first existing target arch from cache', () => {
@@ -342,14 +529,14 @@ describe('uasm', () => {
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libUasmTestUasm.so'
       ),
       ''
     )
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-harmony/libs/armeabi-v7a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-harmony/libs/armeabi-v7a/libUasmTestUasm.so'
       ),
       ''
     )
@@ -366,7 +553,7 @@ describe('uasm', () => {
       platform: 'app-harmony',
       arch: 'arm64-v8a',
       dir: 'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a',
-      file: 'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libtest-uasm.so',
+      file: 'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libUasmTestUasm.so',
     })
     expect(
       resolveUasmTargetArch('test-uasm', 'app-harmony', ['x86_64'])
@@ -377,14 +564,14 @@ describe('uasm', () => {
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so'
       ),
       ''
     )
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libtest-uasm.so'
+        'uni_modules/test-uasm/uasm/app-harmony/libs/arm64-v8a/libUasmTestUasm.so'
       ),
       ''
     )
@@ -398,7 +585,7 @@ describe('uasm', () => {
     initUasmModules(inputDir)
 
     const androidFile =
-      'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+      'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so'
     for (const modulePath of [
       'uni_modules/test-uasm',
       '/uni_modules/test-uasm',
@@ -412,15 +599,15 @@ describe('uasm', () => {
 
     expect(
       resolveUasmLoadPath('uni_modules/test-uasm', 'app-android', true)
-    ).toBe('libtest-uasm.so')
+    ).toBe('libUasmTestUasm.so')
     expect(
       resolveUasmLoadPath('uni_modules/test-uasm', 'app-harmony', true)
-    ).toBe('libtest-uasm.so')
+    ).toBe('libUasmTestUasm.so')
     expect(
       resolveUasmLoadPath('uni_modules/test-uasm', 'app-harmony', false, [
         'arm64-v8a',
       ])
-    ).toBe('libtest-uasm.so')
+    ).toBe('libUasmTestUasm.so')
     expect(resolveUasmLoadPath('uni_modules/test-uasm', 'app-ios', false)).toBe(
       'test-uasm'
     )
@@ -478,14 +665,14 @@ describe('uasm', () => {
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/module-a/uasm/app-android/libs/arm64-v8a/libmodule-a.so'
+        'uni_modules/module-a/uasm/app-android/libs/arm64-v8a/libUasmModuleA.so'
       ),
       ''
     )
     fs.outputFileSync(
       path.join(
         inputDir,
-        'uni_modules/module-b/uasm/app-android/libs/x86_64/libmodule-b.so'
+        'uni_modules/module-b/uasm/app-android/libs/x86_64/libUasmModuleB.so'
       ),
       ''
     )
@@ -504,7 +691,7 @@ describe('uasm', () => {
   test('initialize the cache when creating the Vite plugin', () => {
     const arm64File = path.join(
       inputDir,
-      'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libtest-uasm.so'
+      'uni_modules/test-uasm/uasm/app-android/libs/arm64-v8a/libUasmTestUasm.so'
     )
     fs.outputFileSync(arm64File, '')
 
@@ -559,7 +746,7 @@ describe('uasm', () => {
       )
       const simulatorFile = path.resolve(
         xcframeworkDir,
-        `ios-arm64-simulator/${frameworkName}.framework/${frameworkName}`
+        `ios-arm64_x86_64-simulator/${frameworkName}.framework/${frameworkName}`
       )
       fs.outputFileSync(deviceFile, `${frameworkName}-device`)
       fs.outputFileSync(simulatorFile, `${frameworkName}-simulator`)
@@ -587,7 +774,12 @@ describe('uasm', () => {
 
     test.each([
       ['device', undefined, 'ios-arm64', 'zstd-device'],
-      ['simulator', 'ios_simulator', 'ios-arm64-simulator', 'zstd-simulator'],
+      [
+        'simulator',
+        'ios_simulator',
+        'ios-arm64_x86_64-simulator',
+        'zstd-simulator',
+      ],
     ])('copy the %s slice', (_, deviceType, libraryIdentifier, content) => {
       createFramework('zstd')
       if (deviceType) {

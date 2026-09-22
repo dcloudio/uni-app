@@ -6,8 +6,11 @@ import { hyphenate } from '@vue/shared'
 import { toRaw } from 'vue'
 
 // TODO App端实现未继承自EventTarget，如果后续App端调整此处也需要同步调整
+let uniAnimationNextId = 0
+
 export class UniAnimation implements IUniAnimation {
   id: string
+  private _animationId: number = 0
   private _playState: string = 'idle'
   private parsedKeyframes: IParsedKeyframe[] = []
   private scope: any
@@ -49,6 +52,7 @@ export class UniAnimation implements IUniAnimation {
     toRaw(this.scope).setData({
       ['$eA.' + this.id]: JSON.stringify({
         id: this.id,
+        animationId: this._animationId,
         playState: 'idle',
         keyframes: this.parsedKeyframes,
         options: this.options,
@@ -69,9 +73,11 @@ export class UniAnimation implements IUniAnimation {
   }
 
   play(): void {
+    this._animationId = ++uniAnimationNextId
     this.scope.setData({
       ['$eA.' + this.id]: JSON.stringify({
         id: this.id,
+        animationId: this._animationId,
         playState: 'running',
         keyframes: this.parsedKeyframes,
         options: this.options,
@@ -127,6 +133,15 @@ export function normalizeKeyframes(
   })
 
   keyframes = handleDirection(keyframes, direction)
+
+  if (keyframes.length === 1) {
+    keyframes[0].offset = 0
+    return keyframes.map((kf) => {
+      kf.offset = Number(kf.offset.toFixed(5))
+
+      return kf
+    })
+  }
 
   // 记录已有的 offset 位置
   const existingOffsets = keyframes
@@ -202,11 +217,22 @@ export function coverAnimateToStyle(keyframes, options): IParsedKeyframe[] {
   // Handle object format with array values
   if (!Array.isArray(keyframes)) {
     const propertyNames = Object.keys(keyframes)
-    const arrayLength = keyframes[propertyNames[0]].length
+    const arrayLength = propertyNames.reduce((max, prop) => {
+      const value = keyframes[prop]
+      return Array.isArray(value) && value.length > max ? value.length : max
+    }, 0)
+
+    if (arrayLength === 0) {
+      return coverAnimateToStyle([keyframes], options)
+    }
+
     const frames = Array.from({ length: arrayLength }, (_, i) => {
       const frame = {}
       propertyNames.forEach((prop) => {
-        frame[prop] = keyframes[prop][i]
+        const value = keyframes[prop]
+        frame[prop] = Array.isArray(value)
+          ? value[i] ?? value[value.length - 1]
+          : value
       })
       return frame
     })

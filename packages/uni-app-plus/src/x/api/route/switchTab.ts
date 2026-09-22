@@ -117,7 +117,8 @@ function _switchTab(
         undefined,
         appRouteOpenType,
         shouldDispatchAppRoute,
-        appRouteContext
+        appRouteContext,
+        () => resolve(undefined)
       )
       for (let index = pages.length - 1; index >= 0; index--) {
         const page = pages[index] as ComponentPublicInstance
@@ -126,7 +127,6 @@ function _switchTab(
         }
         closePage(page, 'none')
       }
-      resolve(undefined)
     }, 0)
   })
 }

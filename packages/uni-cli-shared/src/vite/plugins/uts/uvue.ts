@@ -7,6 +7,13 @@ import {
 } from '@vue/compiler-core'
 import { parse } from '@vue/compiler-dom'
 import { isVueSfcFile } from '../../../vue'
+import { getUniAppXVaporScriptLang } from '../../../json'
+import {
+  isUniAppX,
+  isUniAppXAppPlatform,
+  isUniAppXStandardScriptSupported,
+  isUniAppXVapor,
+} from '../../../x'
 
 const SCRIPT_OPEN_TAG_RE = /<script([^>]*)>/gi
 const SCRIPT_LANG_RE =
@@ -19,6 +26,10 @@ interface ScriptTag {
   src: boolean
   lang?: string
   langAttr?: AttributeNode
+}
+
+interface UniUTSUVueJavaScriptPluginOptions {
+  useSfcDescriptorTransform?: boolean
 }
 
 function findScriptTag(code: string, node: ElementNode): ScriptTag | undefined {
@@ -57,16 +68,26 @@ function findScriptTag(code: string, node: ElementNode): ScriptTag | undefined {
   }
 }
 
-export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
+export function uniUTSUVueJavaScriptPlugin(
+  options: UniUTSUVueJavaScriptPluginOptions = {}
+): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
-  const enableVaporScriptLang =
-    isDom2 && process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
+  const standardScriptSupported = isUniAppXStandardScriptSupported()
+  const platform = process.env.UNI_UTS_PLATFORM || process.env.UNI_PLATFORM
+  const isAppDom2 = isDom2 && isUniAppXAppPlatform(platform)
+  const vaporScriptPlatform =
+    isUniAppXVapor() ||
+    (isUniAppX() &&
+      (platform === 'web' || platform?.startsWith('mp-') === true))
+  const defaultScriptLang = vaporScriptPlatform
+    ? getUniAppXVaporScriptLang(process.env.UNI_INPUT_DIR)
+    : 'uts'
   return {
     name: 'uni:uts-uvue',
     enforce: 'pre',
     configResolved(config) {
-      if (enableVaporScriptLang) {
+      if (standardScriptSupported) {
         return
       }
       // 移除自带的 esbuild 处理 ts 文件
@@ -80,12 +101,20 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
       if (!isVueSfcFile(id)) {
         return
       }
+      // fixed by uts App DOM2 在 plugin-vue 的 descriptor 阶段处理 vapor/lang，避免重复改写 SFC 和 sourcemap。
+      if (
+        options.useSfcDescriptorTransform &&
+        isAppDom2 &&
+        standardScriptSupported
+      ) {
+        return
+      }
       const platform = process.env.UNI_PLATFORM
       const isApp =
         platform === 'app' ||
         platform === 'app-plus' ||
         platform === 'app-harmony'
-      const scriptTags = enableVaporScriptLang
+      const scriptTags = standardScriptSupported
         ? parse(code, {
             parseMode: 'sfc',
             // 此阶段只识别真实脚本块，语法错误仍由后续正式 SFC 编译统一报告。
@@ -99,16 +128,6 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
             .map((node) => findScriptTag(code, node))
             .filter((script): script is ScriptTag => !!script)
         : []
-      const setupScript = scriptTags.find((script) => script.setup)
-      // 同一 SFC 的普通 script 与 script setup 必须使用相同语言，因此需要整组归一为 TypeScript。
-      const normalizeJavaScript =
-        enableVaporScriptLang &&
-        !!setupScript &&
-        !scriptTags.some((script) => script.src) &&
-        (setupScript.lang === 'js' || setupScript.lang === 'ts') &&
-        scriptTags.every(
-          (script) => script.lang === 'js' || script.lang === 'ts'
-        )
       const transformScriptTag = (match: string, attributes: string) => {
         let result = ''
         const langMatch = attributes.match(SCRIPT_LANG_RE)
@@ -119,62 +138,54 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
         if (!langMatch) {
           result = `<script${attributes} lang="uts">`
         } else if (lang === 'ts') {
-          // 未启用 Vapor JS/TS 脚本时，TypeScript 继续由 uts2js 处理。
+          // Android VDOM 模式下，TypeScript 继续由 uts2js 处理。
           result = match.replace(langMatch[0], `${langMatch[1]}lang="uts"`)
         } else {
           result = match
         }
-        if (
-          isDom2 &&
-          attributes.includes('setup') &&
-          !attributes.includes('vapor')
-        ) {
-          result = result.replace(/(\s)lang(?=\s*=)/i, '$1vapor lang')
-        }
         return result
       }
-      if (enableVaporScriptLang) {
-        const source = id.split('?')[0]
+      if (standardScriptSupported) {
         const transformed = new MagicString(code)
         let changed = false
         for (const script of scriptTags) {
-          const addVapor = script.setup && !script.vapor
+          const addVapor = isDom2 && script.setup && !script.vapor
           if (script.langAttr) {
-            const normalizeLang = normalizeJavaScript && script.lang === 'js'
-            if (addVapor || normalizeLang) {
-              const langText = normalizeLang
-                ? 'lang="ts"'
-                : code.slice(
-                    script.langAttr.loc.start.offset,
-                    script.langAttr.loc.end.offset
-                  )
+            if (addVapor) {
+              const langText = code.slice(
+                script.langAttr.loc.start.offset,
+                script.langAttr.loc.end.offset
+              )
               transformed.overwrite(
                 script.langAttr.loc.start.offset,
                 script.langAttr.loc.end.offset,
-                `${addVapor ? 'vapor ' : ''}${langText}`
+                `vapor ${langText}`
               )
               changed = true
             }
           } else {
-            // 未声明 lang 时保持现有 UTS 默认行为，并将 vapor 放在 lang 前。
+            // 未声明 lang 时使用 Vapor 脚本默认语言，并将 vapor 放在 lang 前。
             transformed.appendLeft(
               script.end - 1,
-              `${addVapor ? ' vapor' : ''} lang="uts"`
+              `${addVapor ? ' vapor' : ''} lang="${defaultScriptLang}"`
             )
             changed = true
           }
         }
         if (!changed) {
+          // App 旧流程即使未改写 script 标签也会返回空 map，用于隔离后续
+          // uni:pre-vue 无 map 的条件编译，避免同一 SFC 出现不同 sourcesContent。
+          if (isApp) {
+            return { code, map: { mappings: '' } }
+          }
           return
         }
         return {
           code: transformed.toString(),
-          // 阶段 map 用于后续编译诊断还原，与发行产物是否输出 sourcemap 无关。
-          map: transformed.generateMap({
-            source,
-            includeContent: true,
-            hires: 'boundary',
-          }),
+          // 此插件只改写 script 开始标签。常规多行脚本的正文行列不变，继续沿用旧的空 map
+          // 可避免后续 SFC 虚拟模块针对同一文件生成不同 sourcesContent。遗留问题：单行
+          // <script>code</script> 中正文的列偏移暂时无法还原。
+          map: { mappings: '' },
         }
       }
       return {

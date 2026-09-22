@@ -7,11 +7,14 @@ import { getTabBar } from './app/tabBar'
 import { parsePageStyle } from './page/register'
 import { initRouteOptions } from '../../service/framework/page/routeOptions'
 import { fixBorderStyle } from './app/utils'
-import { UTSJSONObject } from '@dcloudio/uni-shared'
+import type { UTSJSONObject } from '@dcloudio/uni-shared'
 import { getNativeApp } from './app/app'
+import type { IApp } from '@dcloudio/uni-app-x/types/native'
 
-const APP_THEME_AUTO = 'auto'
 export const THEME_KEY_PREFIX = '@'
+const APP_THEME_AUTO = 'auto' as const
+const APP_THEME_LIGHT = 'light' as const
+const APP_THEME_DARK = 'dark' as const
 
 type IThemeMode = 'dark' | 'light'
 type ThemeStyleSnapshot = Record<string, unknown>
@@ -34,22 +37,30 @@ declare function __uni__app_RegisterThemeConfig(
   config: AppThemeConfig
 ): boolean
 
-// 获取 appTheme > osTheme
+// 获取当前 App 主题
 export function getAppThemeFallbackOS(): IThemeMode {
-  let fallbackOSTheme: IThemeMode = 'light'
+  let fallbackOSTheme: IThemeMode = APP_THEME_LIGHT
+  if (__VAPOR__) {
+    return (getNativeApp() as IApp).isDarkTheme
+      ? APP_THEME_DARK
+      : fallbackOSTheme
+  } else {
+    try {
+      const appTheme = uni.getAppBaseInfo().appTheme as
+        | IThemeMode
+        | typeof APP_THEME_AUTO
 
-  try {
-    const appTheme = uni.getAppBaseInfo().appTheme as IThemeMode & 'auto'
-
-    fallbackOSTheme = appTheme
-    if (appTheme === APP_THEME_AUTO) {
-      const osTheme = uni.getDeviceInfo().osTheme as IThemeMode
-      fallbackOSTheme = osTheme
+      if (appTheme === APP_THEME_AUTO) {
+        const osTheme = uni.getDeviceInfo().osTheme as IThemeMode
+        fallbackOSTheme = osTheme
+      } else {
+        fallbackOSTheme = appTheme
+      }
+      return fallbackOSTheme
+    } catch (e) {
+      console.error(e)
+      return fallbackOSTheme
     }
-    return fallbackOSTheme
-  } catch (e) {
-    console.error(e)
-    return fallbackOSTheme
   }
 }
 
@@ -90,7 +101,7 @@ export const onThemeChange = function (themeMode: IThemeMode) {
       routeOptions.meta.isQuit = basePage.meta.isQuit
       const style = parsePageStyle(routeOptions)
 
-      ;(page.$page as UniPage).setPageStyle(new UTSJSONObject(style))
+      ;(page.$page as UniPage).setPageStyle(style)
     })
   }
 

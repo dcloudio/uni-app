@@ -464,6 +464,24 @@
     "easycom": [],
     "customElements": []
   },
+  "uni-drama": {
+    "uni": {
+      "createDramaAd": {
+        "name": "createDramaAd",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    },
+    "components": [],
+    "easycom": [
+      "ad-drama"
+    ],
+    "customElements": []
+  },
   "uni-editor": {
     "components": [],
     "easycom": [
@@ -856,6 +874,21 @@
         },
         "web": {
           "js": true
+        }
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-install-wgt": {
+    "uni": {
+      "installWgt": {
+        "app": {
+          "js": false,
+          "kotlin": "dom2",
+          "swift": "dom2",
+          "arkts": false
         }
       }
     },
@@ -2237,6 +2270,33 @@
     "easycom": [],
     "customElements": []
   },
+  "uni-uasm": {
+    "uni": {
+      "loadUasm": {
+        "name": "loadUasm",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": "dom2",
+          "arkts": "dom2"
+        }
+      },
+      "loadUasmSync": {
+        "name": "loadUasmSync",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": "dom2",
+          "arkts": "dom2"
+        }
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
   "uni-verify": {
     "uni": {
       "getUniverifyManager": {
@@ -2433,6 +2493,21 @@
     "customElements": []
   },
   "uni-weixin-common": {
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
+  "uni-zstd-decompress": {
+    "uni": {
+      "__zstdDecompressFile": {
+        "app": {
+          "js": false,
+          "kotlin": "dom2",
+          "swift": "dom2",
+          "arkts": false
+        }
+      }
+    },
     "components": [],
     "easycom": [],
     "customElements": []

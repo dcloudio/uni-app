@@ -5,8 +5,10 @@ import type { OutputChunk } from 'rollup'
 
 import {
   isSsr,
+  isUniAppXWebVapor,
   parseRpx2UnitOnce,
   resolveBuiltIn,
+  resolveWebVaporPackage,
 } from '@dcloudio/uni-cli-shared'
 
 import {
@@ -14,6 +16,7 @@ import {
   generateSsrEntryServerCode,
   initSsrAliasOnce,
   initSsrDefine,
+  resolveVueDistDir,
   rewriteSsrNativeTag,
   rewriteSsrRenderStyle,
   rewriteSsrVue,
@@ -31,7 +34,9 @@ export function uniSSRPlugin(): Plugin {
       if (isSsr(env.command, userConfig)) {
         initSsrAliasOnce()
         rewriteSsrVue()
-        rewriteSsrNativeTag()
+        if (!isUniAppXWebVapor()) {
+          rewriteSsrNativeTag()
+        }
         rewriteSsrRenderStyle(process.env.UNI_INPUT_DIR)
 
         const alias = [
@@ -40,6 +45,29 @@ export function uniSSRPlugin(): Plugin {
             replacement: path.dirname(resolveBuiltIn('@vue/server-renderer')),
           },
         ]
+        if (isUniAppXWebVapor()) {
+          // TODO: Web Vapor SSR 需让 ESM renderer 接入现有的动态样式 rpx 转换。
+          alias.push(
+            {
+              find: '@vue/server-renderer',
+              replacement: resolveWebVaporPackage(
+                '@vue/server-renderer/dist/server-renderer.esm-bundler.js'
+              ),
+            },
+            {
+              find: '@vue/runtime-dom',
+              replacement: resolveBuiltIn(
+                `@dcloudio/uni-h5-vue/${resolveVueDistDir()}/vue.runtime.esm.js`
+              ),
+            },
+            {
+              find: '@vue/shared',
+              replacement: resolveWebVaporPackage(
+                '@vue/shared/dist/shared.esm-bundler.js'
+              ),
+            }
+          )
+        }
         try {
           const replacement = path.dirname(resolveBuiltIn('vuex/package.json'))
           alias.push({

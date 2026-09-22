@@ -86,14 +86,14 @@ describe('支付宝小程序样式隔离 2.0', () => {
     ).toThrow('支付宝小程序样式隔离不允许 class 使用保留前缀：-a-foo')
   })
 
-  test('CSS 仅改写单 class 选择器并保留复杂选择器', async () => {
+  test('CSS 改写单 class 及其伪类、伪元素并保留复合选择器', async () => {
     const processor = postcss([externalPlugin])
     const pageResult = await processor.process(
-      '.foo, .parent .child, #id { color: red; }',
+      '.foo, .foo:hover, .foo::-webkit-scrollbar, .parent .child, #id { color: red; }',
       { from: '/src/pages/index/index.vue', map: false }
     )
     expect(pageResult.css).toBe(
-      'page .-p-foo, .parent .child, #id { color: red; }'
+      'page .-p-foo,page  .-p-foo:hover,page  .-p-foo::-webkit-scrollbar, .parent .child, #id { color: red; }'
     )
 
     const componentResult = await processor.process('.foo { color: red; }', {

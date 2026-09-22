@@ -19,8 +19,12 @@ import {
   createResolveStaticAsset,
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
+  getUniAppXVaporScriptLang,
   initVueTemplateCompilerExtraOptions,
   isExternalUrl,
+  isUniAppXAppPlatform,
+  isUniAppXStandardScriptSupported,
+  isUniAppXWebVapor,
   isUniPageFile,
   matchEasycom,
   normalizePath,
@@ -36,6 +40,7 @@ import { createNVueCompiler } from '../utils'
 
 const pluginVuePath = require.resolve('@vitejs/plugin-vue')
 const normalizedPluginVuePath = normalizePath(pluginVuePath)
+
 /**
  * 每次创建新的 plugin-vue 实例。因为该插件内部会 cache  descriptor，而相同的vue文件在编译到vue页面和nvue页面时，不能共享缓存（条件编译，css scoped等均不同）
  * @returns
@@ -43,7 +48,8 @@ const normalizedPluginVuePath = normalizePath(pluginVuePath)
 export function createPluginVueInstance(options: VueOptions) {
   delete require.cache[pluginVuePath]
   delete require.cache[normalizedPluginVuePath]
-  const vuePlugin = require('@vitejs/plugin-vue')
+  const vuePluginModule = require(pluginVuePath)
+  const vuePlugin = vuePluginModule.default || vuePluginModule
   const vuePluginInstance: Plugin = vuePlugin(options)
   if (process.env.NODE_ENV === 'development') {
     // 删除 buildEnd 逻辑，因为里边清理了缓存，导致 watch 模式失效 https://github.com/vitejs/vite-plugin-vue/commit/96dbb220ff210d2f7391f43a807bcd8cfb0da776
@@ -115,6 +121,7 @@ export function initPluginVueOptions(
       isCustomElement,
       nodeTransforms,
       directiveTransforms,
+      ssrPreTagTransforms,
       whitespace,
     },
   } = uniPluginOptions
@@ -125,6 +132,16 @@ export function initPluginVueOptions(
 
   if (compiler) {
     templateOptions.compiler = compiler
+  }
+  if (isUniAppXWebVapor()) {
+    const features = vueOptions.features || (vueOptions.features = {})
+    ;(features as typeof features & { vapor?: boolean }).vapor = true
+    // plugin-vue 的 compiler 是完整 SFC compiler；显式传入 Web Vapor 定制版，
+    // 避免从项目根目录解析到标准 Vue compiler-sfc。
+    vueOptions.compiler = require('vue/compiler-sfc')
+    if (ssrPreTagTransforms) {
+      Object.assign(compilerOptions, { ssrPreTagTransforms })
+    }
   }
   if (miniProgram) {
     ;(compilerOptions as any).miniProgram = miniProgram
@@ -291,26 +308,84 @@ export function initPluginVueOptions(
   }
 
   if (isX) {
-    if (!vueOptions.script) {
-      vueOptions.script = {
-        babelParserPlugins: [],
+    // DOM2 的定制 compiler-sfc 会根据 script lang 选择 parser，避免 JS 被按 TS 解析。
+    if (!isDom2) {
+      if (!vueOptions.script) {
+        vueOptions.script = {
+          babelParserPlugins: [],
+        }
+      }
+      if (!vueOptions.script.babelParserPlugins) {
+        vueOptions.script.babelParserPlugins = []
+      }
+
+      // Android VDOM 保持原有 UTS 兼容；标准脚本平台由 compiler-sfc 按 lang 启用 TypeScript。
+      if (
+        !isUniAppXStandardScriptSupported() &&
+        !vueOptions.script.babelParserPlugins.includes('typescript')
+      ) {
+        vueOptions.script.babelParserPlugins.push('typescript')
+      }
+      // 旧 compiler-sfc 仅用 includes('decorators') 识别现代装饰器，tuple 配置仍需字符串哨兵。
+      const hasDecoratorParser = vueOptions.script.babelParserPlugins.some(
+        (plugin) => plugin === 'decorators' || plugin === 'decorators-legacy'
+      )
+      if (!hasDecoratorParser) {
+        vueOptions.script.babelParserPlugins.push('decorators')
       }
     }
-    if (!vueOptions.script.babelParserPlugins) {
-      vueOptions.script.babelParserPlugins = []
-    }
-
-    if (!vueOptions.script.babelParserPlugins.includes('typescript')) {
-      vueOptions.script.babelParserPlugins.push('typescript')
-    }
-    // decorators or decorators-legacy
-    if (!vueOptions.script.babelParserPlugins.includes('decorators')) {
-      vueOptions.script.babelParserPlugins.push('decorators')
-    }
     if (isDom2) {
-      if (process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true') {
-        ;(vueOptions as any).uniAppXVaporScriptTransform =
-          uniPluginOptions.uniAppXVaporScriptTransform
+      // 该扩展点依赖定制 plugin-vue，仅用于 compileScript 后的 DOM2 SharedData 等转换。
+      ;(vueOptions as any).uniAppXVaporScriptTransform =
+        uniPluginOptions.uniAppXVaporScriptTransform
+      const utsPlatform =
+        process.env.UNI_UTS_PLATFORM || process.env.UNI_PLATFORM
+      if (isUniAppXAppPlatform(utsPlatform)) {
+        const defaultLang = getUniAppXVaporScriptLang(process.env.UNI_INPUT_DIR)
+        ;(vueOptions as any).uniAppXVaporSfcTransform = (
+          descriptor: SFCDescriptor
+        ) => {
+          const scripts = [descriptor.script, descriptor.scriptSetup].filter(
+            (script): script is NonNullable<typeof script> => !!script
+          )
+          // compiler-sfc 可能复用缓存中的 descriptor，保留首次处理时记录的隐式 lang 状态。
+          let hasImplicitLang =
+            (
+              descriptor as SFCDescriptor & {
+                __uniAppXVaporSfcMeta?: { hasImplicitLang?: boolean }
+              }
+            ).__uniAppXVaporSfcMeta?.hasImplicitLang === true
+          scripts.forEach((script) => {
+            if (script.lang == null) {
+              script.lang = defaultLang
+              script.attrs.lang = defaultLang
+              hasImplicitLang = true
+            }
+          })
+          if (descriptor.scriptSetup) {
+            ;(descriptor as SFCDescriptor & { vapor?: boolean }).vapor = true
+          }
+          const scriptLang =
+            descriptor.scriptSetup?.lang ||
+            descriptor.script?.lang ||
+            defaultLang
+          // App DOM2 会为代码生成强制设置 plugin-vue 的 isProduction，
+          // 因此提示元信息必须依据真实运行模式生成。
+          ;(
+            descriptor as SFCDescriptor & {
+              __uniAppXVaporSfcMeta?: {
+                scriptLang: string
+                hasImplicitLang?: boolean
+                defaultLang?: string
+              }
+            }
+          ).__uniAppXVaporSfcMeta = {
+            scriptLang,
+            ...(process.env.NODE_ENV === 'development'
+              ? { hasImplicitLang, defaultLang }
+              : {}),
+          }
+        }
       }
       const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
       function isAppVue(id: string) {
