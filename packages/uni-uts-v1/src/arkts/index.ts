@@ -157,14 +157,15 @@ export async function compileArkTSExtApi(
     .replace(/-/g, '_')
 
   // 拷贝所有ets、har文件
-  const etsFiles = sync('**/*.{ets,js,har,tgz}', {
-    cwd: pluginDir,
+  const utssdkHarmonyDir = path.resolve(pluginDir, 'utssdk/app-harmony')
+  const harmonyRawFiles = sync('**/*.{ets,js,har,tgz}', {
+    cwd: utssdkHarmonyDir,
   })
   const depEtsFiles: string[] = []
-  for (const etsFile of etsFiles) {
-    const srcFile = path.resolve(pluginDir, etsFile)
-    const destFile = path.resolve(outputUniModuleDir, etsFile)
-    if (/\.(ets|js)$/.test(etsFile)) {
+  for (const harmonyRawFile of harmonyRawFiles) {
+    const srcFile = path.resolve(utssdkHarmonyDir, harmonyRawFile)
+    const destFile = path.resolve(outputUniModuleDir, harmonyRawFile)
+    if (/\.(ets|js)$/.test(harmonyRawFile)) {
       depEtsFiles.push(srcFile)
       if (rewriteConsoleExpr) {
         const content = fs.readFileSync(srcFile, 'utf8')
