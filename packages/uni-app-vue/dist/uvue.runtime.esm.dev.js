@@ -1553,60 +1553,9 @@ function splitValues(value) {
   }
   return parts;
 }
-function isSingleCssVarValue(value) {
-  var trimmedValue = value.trim();
-  if (splitValues(trimmedValue).length !== 1 || !/^var\(/i.test(trimmedValue)) {
-    return false;
-  }
-  var depth = 0;
-  for (var i = 0; i < trimmedValue.length; i++) {
-    var char = trimmedValue[i];
-    if (char === '(') {
-      depth++;
-    } else if (char === ')') {
-      if (depth === 0) {
-        return false;
-      }
-      depth--;
-      if (depth === 0 && trimmedValue.slice(i + 1).trim()) {
-        return false;
-      }
-    }
-  }
-  return depth === 0;
-}
-function tryExpandSingleValueVarShorthand(decl, props, value, dom2) {
-  // 只在 dom2 运行时兜底展开，避免影响其它平台现有行为。
-  if (!dom2) {
-    return null;
-  }
-  // 当整个简写值只有一个 var() 时，无法静态判断它属于哪个子属性，
-  // 这里直接复制到每个长属性，交给运行时再解析。
-  if (!isSingleCssVarValue(value)) {
-    return null;
-  }
-  return expandShorthand(decl, props, value);
-}
-function expandShorthand(decl, props, value) {
-  var {
-    important,
-    raws,
-    source
-  } = decl;
-  return props.map(prop => createDecl(prop, value, important, raws, source));
-}
 var backgroundColor = 'backgroundColor';
 var backgroundImage = 'backgroundImage';
-function isCssVarValue$3(value) {
-  return /^var\(/i.test(value);
-}
-function isBackgroundImageValue(value) {
-  return value === 'none' || /^linear-gradient(.+)$/.test(value);
-}
-function isBackgroundColorValue(value) {
-  return !isCssVarValue$3(value) && !isBackgroundImageValue(value) && (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value));
-}
-var handleTransformBackground = (decl, dom2) => {
+var handleTransformBackground = decl => {
   var {
     value,
     important,
@@ -1614,23 +1563,6 @@ var handleTransformBackground = (decl, dom2) => {
     source
   } = decl;
   value = value.trim();
-  var singleVarResult = tryExpandSingleValueVarShorthand(decl, [backgroundImage, backgroundColor], value, dom2);
-  if (singleVarResult) {
-    return singleVarResult;
-  }
-  if (dom2) {
-    var values = splitValues(value);
-    if (values.length === 2) {
-      var variableIndex = values.findIndex(isCssVarValue$3);
-      var otherIndex = variableIndex === 0 ? 1 : 0;
-      if (variableIndex >= 0 && !isCssVarValue$3(values[otherIndex]) && (isBackgroundImageValue(values[otherIndex]) || isBackgroundColorValue(values[otherIndex]))) {
-        var variableValue = values[variableIndex];
-        var otherValue = values[otherIndex];
-        var variableIsImage = isBackgroundColorValue(otherValue);
-        return [createDecl(backgroundImage, variableIsImage ? variableValue : otherValue, important, raws, source), createDecl(backgroundColor, variableIsImage ? otherValue : variableValue, important, raws, source)];
-      }
-    }
-  }
   if (value === 'none') {
     return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
   }
@@ -1641,7 +1573,7 @@ var handleTransformBackground = (decl, dom2) => {
   } else if (value == '') {
     return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
   }
-  return dom2 && /\bvar\(/i.test(value) ? expandShorthand(decl, [backgroundImage, backgroundColor], value) : [decl];
+  return [decl];
 };
 var handleTransformBackgroundNvue = decl => {
   var {
@@ -1664,7 +1596,7 @@ function createTransformBackground(options) {
     // nvue 平台维持原有逻辑不变
     var isUvuePlatform = options.type === 'uvue';
     if (isUvuePlatform) {
-      return handleTransformBackground(decl, !!options.dom2);
+      return handleTransformBackground(decl);
     } else {
       return handleTransformBackgroundNvue(decl);
     }
@@ -1737,27 +1669,32 @@ var transformBorderStyle = transformBorderColor;
 var transformBorderStyleNvue = transformBorderColorNvue;
 var transformBorderWidth = transformBorderColor;
 var transformBorderWidthNvue = transformBorderColorNvue;
+function tryExpandSingleValueVarShorthand(decl, props, value) {
+  // 只在 dom2 运行时兜底展开，避免影响其它平台现有行为。
+  {
+    return null;
+  }
+}
 var borderWidth = 'Width';
 var borderStyle = 'Style';
 var borderColor = 'Color';
 var BORDER_WIDTH_REGEXP = /^(?:[\d.]+\S*|thin|medium|thick)$/;
-var BORDER_CALC_WIDTH_REGEXP = /^calc\(.+\)$/i;
 // 这里按完整 CSS line-style 识别，后续再交给 border-*-style 的既有校验逻辑报精确错误。
 var BORDER_STYLE_REGEXP = /^(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/;
 function createBorderVarOrderWarning(prop, value) {
   return supportedValueWithTipsReason(prop, value, '(border shorthand with CSS variables must follow `width style color`, for example: `1px solid var(--color, #999999)`)');
 }
-function isCssVarValue$2(value) {
+function isCssVarValue(value) {
   return value.startsWith('var(');
 }
-function isBorderWidthValue(value, dom2) {
-  return isCssVarValue$2(value) || BORDER_WIDTH_REGEXP.test(value) || dom2 && BORDER_CALC_WIDTH_REGEXP.test(value);
+function isBorderWidthValue(value) {
+  return isCssVarValue(value) || BORDER_WIDTH_REGEXP.test(value);
 }
 function isBorderStyleValue(value) {
-  return isCssVarValue$2(value) || BORDER_STYLE_REGEXP.test(value);
+  return isCssVarValue(value) || BORDER_STYLE_REGEXP.test(value);
 }
-function isBorderColorValue(value, dom2) {
-  return isCssVarValue$2(value) || !isBorderWidthValue(value, dom2) && !BORDER_STYLE_REGEXP.test(value);
+function isBorderColorValue(value) {
+  return isCssVarValue(value) || !BORDER_WIDTH_REGEXP.test(value) && !BORDER_STYLE_REGEXP.test(value);
 }
 function createTransformBorder(options) {
   return (decl, onWarning) => {
@@ -1768,8 +1705,7 @@ function createTransformBorder(options) {
       raws,
       source
     } = decl;
-    var dom2 = !!options.dom2;
-    var singleVarResult = tryExpandSingleValueVarShorthand(decl, [prop + borderWidth, prop + borderStyle, prop + borderColor], value, dom2);
+    var singleVarResult = tryExpandSingleValueVarShorthand();
     // 单个 var() 无法提前判断是 width/style/color，dom2 下先平铺后继续展开。
     if (singleVarResult) {
       return [...transformBorderWidth(singleVarResult[0]), ...transformBorderStyle(singleVarResult[1]), ...transformBorderColor(singleVarResult[2])];
@@ -1779,15 +1715,15 @@ function createTransformBorder(options) {
     var result = [];
     // 包含 var 时按位置解析，避免把 style 误判成 color
     if (havVar) {
-      if (splitResult.length > 3 || splitResult.length === 3 && (!isBorderWidthValue(splitResult[0], dom2) || !isBorderStyleValue(splitResult[1]) || !isBorderColorValue(splitResult[2], dom2))) {
+      if (splitResult.length > 3 || splitResult.length === 3 && (!isBorderWidthValue(splitResult[0]) || !isBorderStyleValue(splitResult[1]) || !isBorderColorValue(splitResult[2]))) {
         onWarning === null || onWarning === void 0 || onWarning(createBorderVarOrderWarning(prop, value));
         return [];
       }
       result = splitResult;
       splitResult = [];
     } else {
-      result = [str => isBorderWidthValue(str, dom2), str => BORDER_STYLE_REGEXP.test(str), str => /\S+/.test(str)].map(matches => {
-        var index = splitResult.findIndex(matches);
+      result = [BORDER_WIDTH_REGEXP, BORDER_STYLE_REGEXP, /\S+/].map(item => {
+        var index = splitResult.findIndex(str => item.test(str));
         return index < 0 ? null : splitResult.splice(index, 1)[0];
       });
     }
@@ -1895,7 +1831,7 @@ var transformBorderRadiusNvue = decl => {
 };
 var flexDirection = 'flexDirection';
 var flexWrap = 'flexWrap';
-function transformFlexFlowDecl(decl, dom2) {
+var transformFlexFlow = decl => {
   var {
     value,
     important,
@@ -1904,27 +1840,20 @@ function transformFlexFlowDecl(decl, dom2) {
   } = decl;
   value = value.trim();
   var splitResult = splitValues(value);
-  var singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexDirection, flexWrap], value, dom2);
+  var singleVarResult = tryExpandSingleValueVarShorthand();
   // 单个 var() 无法提前判断是 direction 还是 wrap，dom2 下直接平铺。
   if (singleVarResult) {
     return singleVarResult;
   }
-  var matchers = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/];
-  var result = matchers.map(item => {
+  var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
     var index = splitResult.findIndex(str => item.test(str));
     return index < 0 ? null : splitResult.splice(index, 1)[0];
   });
-  if (dom2 && splitResult.length === 1 && /^var\(/i.test(splitResult[0]) && (result[0] === null || result[1] === null)) {
-    result[result[0] === null ? 0 : 1] = splitResult.pop();
-  }
   if (splitResult.length) {
-    return dom2 && /\bvar\(/i.test(value) ? expandShorthand(decl, [flexDirection, flexWrap], value) : [decl];
+    return [decl];
   }
   return [createDecl(flexDirection, result[0] || 'column', important, raws, source), createDecl(flexWrap, result[1] || 'nowrap', important, raws, source)];
-}
-function createTransformFlexFlow(dom2) {
-  return decl => transformFlexFlowDecl(decl, dom2);
-}
+};
 var top = 'Top';
 var right = 'Right';
 var bottom = 'Bottom';
@@ -1958,84 +1887,7 @@ var transitionProperty = 'transitionProperty';
 var transitionDuration = 'transitionDuration';
 var transitionTimingFunction = 'transitionTimingFunction';
 var transitionDelay = 'transitionDelay';
-var transitionLonghands = [transitionProperty, transitionDuration, transitionTimingFunction, transitionDelay];
-var TRANSITION_TIME_REGEXP = /^-?(?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
-var TRANSITION_DURATION_REGEXP = /^(?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
-var TRANSITION_SIGNED_TIME_REGEXP = /^[+-](?:\d+(?:\.\d+)?|\.\d+)(?:ms|s)$/;
-var TRANSITION_TIMING_FUNCTION_REGEXP = /^(?:linear|ease(?:-in-out|-in|-out)?|cubic-bezier\(\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*\))$/i;
-function isCssVarValue$1(value) {
-  return /^var\(/i.test(value);
-}
-function containsCssVar(value) {
-  return /\bvar\(/i.test(value);
-}
-function isTransitionTimingFunction(value) {
-  return TRANSITION_TIMING_FUNCTION_REGEXP.test(value);
-}
-function parseTransitionItem(value) {
-  var tokens = splitValues(value);
-  if (!tokens.length) {
-    return null;
-  }
-  var result = {};
-  var hasProperty = false;
-  var hasDuration = false;
-  var hasTimingFunction = false;
-  var hasDelay = false;
-  for (var i = 0; i < tokens.length; i++) {
-    var token = tokens[i];
-    if (isTransitionTimingFunction(token)) {
-      if (hasTimingFunction) {
-        return null;
-      }
-      result.timingFunction = token.toLowerCase();
-      hasTimingFunction = true;
-      continue;
-    }
-    if (TRANSITION_TIME_REGEXP.test(token)) {
-      if (!hasDuration) {
-        // transition-duration 不允许负值，负时间只能作为 delay。
-        if (token[0] === '-') {
-          return null;
-        }
-        result.duration = token;
-        hasDuration = true;
-      } else if (!hasDelay) {
-        result.delay = token;
-        hasDelay = true;
-      } else {
-        return null;
-      }
-      continue;
-    }
-    if (TRANSITION_SIGNED_TIME_REGEXP.test(token)) {
-      return null;
-    }
-    if (!hasProperty) {
-      result.property = token;
-      hasProperty = true;
-      continue;
-    }
-    return null;
-  }
-  return result;
-}
-function tryTransformTransitionNestedVariable(decl, dom2) {
-  if (!dom2) {
-    return null;
-  }
-  var values = splitValues(decl.value);
-  if (values.length < 2 || values.length > 4 || !values.some(containsCssVar) || values.some(isCssVarValue$1) || TRANSITION_TIME_REGEXP.test(values[0]) || !TRANSITION_DURATION_REGEXP.test(values[1]) || values[3] && !TRANSITION_TIME_REGEXP.test(values[3])) {
-    return null;
-  }
-  var {
-    important,
-    raws,
-    source
-  } = decl;
-  return values.map((value, index) => createDecl(transitionLonghands[index], value, important, raws, source));
-}
-function transformTransitionDecl(decl, dom2) {
+var transformTransition = decl => {
   var {
     value,
     important,
@@ -2043,49 +1895,30 @@ function transformTransitionDecl(decl, dom2) {
     source
   } = decl;
   value = value.trim();
-  if (TRANSITION_DURATION_REGEXP.test(value)) {
-    return [createDecl(transitionDuration, value, important, raws, source)];
-  }
-  var singleVarResult = tryExpandSingleValueVarShorthand(decl, transitionLonghands, value, dom2);
-  if (singleVarResult) {
-    return singleVarResult;
-  }
-  var variableResult = tryTransformTransitionNestedVariable(decl, dom2);
-  if (variableResult) {
-    return variableResult;
-  }
-  if (dom2 && /\bvar\(/i.test(value)) {
-    return expandShorthand(decl, transitionLonghands, value);
-  }
-  var parsed = parseTransitionItem(value);
-  if (!parsed) {
-    return [];
-  }
   var result = [];
-  if (parsed.property !== undefined) {
-    result.push(createDecl(transitionProperty, parsed.property, important, raws, source));
+  var match;
+  // 针对 cubic-bezier 特殊处理
+  // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
+  if (value.includes('cubic-bezier')) {
+    var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/;
+    match = value.match(CHUNK_REGEXP);
+  } else {
+    var _CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/;
+    match = value.match(_CHUNK_REGEXP);
   }
-  if (parsed.duration !== undefined) {
-    result.push(createDecl(transitionDuration, parsed.duration, important, raws, source));
+  if (!match) {
+    return result;
   }
-  if (parsed.timingFunction !== undefined) {
-    result.push(createDecl(transitionTimingFunction, parsed.timingFunction, important, raws, source));
-  }
-  if (parsed.delay !== undefined) {
-    result.push(createDecl(transitionDelay, parsed.delay, important, raws, source));
-  }
+  match[1] && result.push(createDecl(transitionProperty, match[1], important, raws, source));
+  match[2] && result.push(createDecl(transitionDuration, match[2], important, raws, source));
+  match[3] && result.push(createDecl(transitionTimingFunction, match[3], important, raws, source));
+  match[4] && result.push(createDecl(transitionDelay, match[4], important, raws, source));
   return result;
-}
-function createTransformTransition(dom2) {
-  return decl => transformTransitionDecl(decl, dom2);
-}
+};
 var flexGrow = 'flexGrow';
 var flexShrink = 'flexShrink';
 var flexBasis = 'flexBasis';
-function isCssVarValue(value) {
-  return /^var\(/i.test(value);
-}
-function transformFlexDecl(decl, dom2) {
+var transformFlex = decl => {
   var {
     value,
     important,
@@ -2095,12 +1928,11 @@ function transformFlexDecl(decl, dom2) {
   value = value.trim();
   var result = [];
   var splitResult = splitValues(value);
-  var singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexGrow, flexShrink, flexBasis], value, dom2);
-  // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按完整简写平铺。
+  var singleVarResult = tryExpandSingleValueVarShorthand();
+  // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按 border 的兜底逻辑平铺。
   if (singleVarResult) {
     return singleVarResult;
   }
-  var variableResult = dom2 && /\bvar\(/i.test(value) ? expandShorthand(decl, [flexGrow, flexShrink, flexBasis], value) : null;
   // 是否 flex-grow 的有效值 <number [0,∞]>
   var isFlexGrowValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v));
   var isFlexShrinkValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
@@ -2135,38 +1967,32 @@ function transformFlexDecl(decl, dom2) {
     }
   } else if (splitResult.length === 2) {
     var [v1, v2] = splitResult;
-    if (isFlexGrowValid(v1) || dom2 && isCssVarValue(v1)) {
+    if (isFlexGrowValid(v1)) {
       if (isFlexShrinkValid(v2)) {
         // flex: 1 2 => 1 2 0%
         result.push(createDecl(flexGrow, v1, important, raws, source), createDecl(flexShrink, v2, important, raws, source), createDecl(flexBasis, '0%', important, raws, source));
         return result;
       } else {
-        if (dom2 && isCssVarValue(v2)) {
-          return variableResult || [decl];
-        }
         // flex: 1 100px => 1 1 100px
         result.push(createDecl(flexGrow, v1, important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, v2, important, raws, source));
         return result;
       }
     } else {
-      return variableResult || [decl];
+      return [decl];
     }
   } else if (splitResult.length === 3) {
     var [_v, _v2, v3] = splitResult;
-    if ((isFlexGrowValid(_v) || dom2 && isCssVarValue(_v)) && (isFlexShrinkValid(_v2) || dom2 && isCssVarValue(_v2))) {
+    if (isFlexGrowValid(_v) && isFlexShrinkValid(_v2)) {
       result.push(createDecl(flexGrow, _v, important, raws, source), createDecl(flexShrink, _v2, important, raws, source), createDecl(flexBasis, v3, important, raws, source));
       return result;
     } else {
       // fallback
-      return variableResult || [decl];
+      return [decl];
     }
   }
   // 其它情况，原样返回
-  return variableResult || [decl];
-}
-function createTransformFlex(dom2) {
-  return decl => transformFlexDecl(decl, dom2);
-}
+  return [decl];
+};
 function createEnumNormalize(items) {
   return v => {
     var index = items.indexOf(v);
@@ -2476,13 +2302,13 @@ function createTransformAnimation(options) {
       raws,
       source
     } = decl;
-    var singleVarResult = tryExpandSingleValueVarShorthand(decl, animationLonghands, value, !!options.dom2);
+    var singleVarResult = tryExpandSingleValueVarShorthand();
     if (singleVarResult) {
       return singleVarResult;
     }
-    // animation 的各值域无法仅凭变量位置可靠判断，保留完整值交给运行时投影。
+    // 无法静态确定变量所属槽位时，完整平铺并由运行时按目标 longhand 投影。
     if (/\bvar\(/i.test(value)) {
-      return expandShorthand(decl, animationLonghands, value);
+      return animationLonghands.map(prop => createDecl(prop, value, important, raws, source));
     }
     var animation = parseAnimation(value.trim());
     if (!animation) {
@@ -2492,9 +2318,9 @@ function createTransformAnimation(options) {
   };
 }
 function getDeclTransforms(options, dom2) {
-  var transformBorder = options.type === 'uvue' ? createTransformBorder(options) : createTransformBorderNvue();
+  var transformBorder = options.type === 'uvue' ? createTransformBorder() : createTransformBorderNvue();
   var styleMap = {
-    transition: createTransformTransition(dom2),
+    transition: transformTransition,
     border: transformBorder,
     background: createTransformBackground(options),
     ['borderTop']: transformBorder,
@@ -2509,13 +2335,13 @@ function getDeclTransforms(options, dom2) {
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
     padding: transformPadding,
-    ['flexFlow']: createTransformFlexFlow(dom2)
+    ['flexFlow']: transformFlexFlow
   };
   if (options.type === 'uvue' && dom2) {
-    styleMap.animation = createTransformAnimation(options);
+    styleMap.animation = createTransformAnimation();
   }
   if (options.type === 'uvue') {
-    styleMap.flex = createTransformFlex(dom2);
+    styleMap.flex = transformFlex;
   }
   var result = {};
   {
