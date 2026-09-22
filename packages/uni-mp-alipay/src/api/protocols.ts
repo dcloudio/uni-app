@@ -103,10 +103,7 @@ export function returnValue(methodName: string, res: Record<string, any> = {}) {
  */
 export const request = {
   name: my.canIUse('request') ? 'request' : 'httpRequest',
-  args(
-    fromArgs: UniApp.RequestOptions & { isUTS: boolean },
-    toArgs: WechatMiniprogram.RequestOption
-  ) {
+  args(fromArgs: UniApp.RequestOptions & { isUTS?: boolean }) {
     const isDingDing = my.canIUse('saveFileToDingTalk')
     const method = fromArgs.method || 'GET'
     if (!fromArgs.header) {

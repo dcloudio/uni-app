@@ -53,10 +53,7 @@ export const compressImage: MPProtocol = {
 }
 
 export const request: MPProtocol = {
-  args(
-    fromArgs: UniApp.RequestOptions & { isUTS: boolean },
-    toArgs: WechatMiniprogram.RequestOption
-  ) {
+  args(fromArgs: UniApp.RequestOptions & { isUTS?: boolean }) {
     // #if _X_
     if (fromArgs.isUTS) {
       const oldSuccess = fromArgs.success
