@@ -381,7 +381,10 @@ const options = {
                         : 'NO';
                 }
             });
-            const workerPaths = uniCliShared.resolveMiniProgramWorkerPaths();
+            const workerPaths = Array.from(new Set([
+                ...uniCliShared.resolveMiniProgramWorkerPaths(),
+                ...uniCliShared.resolveMiniProgramUasmWorkerPaths('mp-alipay'),
+            ]));
             if (workerPaths.length) {
                 appJson.workers = workerPaths;
             }
