@@ -29009,6 +29009,7 @@ const showActionSheet$1 = (options) => {
   });
   uni.openDialogPage({
     url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    animationType: "none",
     fail(err) {
       var _a, _b;
       const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`);
@@ -30627,6 +30628,7 @@ const showModal$1 = (options) => {
   });
   const openRet = uni.openDialogPage({
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    animationType: "none",
     fail(err) {
       var _a2, _b2;
       const res2 = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
@@ -30834,6 +30836,7 @@ const showLoading$1 = (options) => {
   });
   const openRet = uni.openDialogPage({
     url: `uni:showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    animationType: "none",
     fail(err) {
       var _a2, _b2;
       const res2 = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);

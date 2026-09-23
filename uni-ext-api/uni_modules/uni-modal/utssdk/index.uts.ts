@@ -38,6 +38,7 @@ export const showModal: ShowModal = (options?: ShowModalOptions | null) => {
 	})
 	const openRet: UniPage | null = uni.openDialogPage({
 		url: `/uni_modules/uni-modal/pages/uniModal/uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+		animationType: 'none',
 		fail(err) {
 			// #ifndef APP-HARMONY
 			const res = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`)

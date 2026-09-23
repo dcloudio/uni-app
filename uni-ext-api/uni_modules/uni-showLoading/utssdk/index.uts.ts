@@ -32,6 +32,7 @@ export const showLoading: ShowLoading = (options?: ShowLoadingOptions | null) =>
 	})
 	const openRet: UniPage | null = uni.openDialogPage({
 		url: `/uni_modules/uni-showLoading/pages/showLoading/showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+		animationType: 'none',
 		fail(err) {
 			// #ifndef APP-HARMONY
 			const res = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`)
