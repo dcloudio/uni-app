@@ -97,6 +97,14 @@ function createTextTransform() {
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformImage.ts
+function genImageExpression(expression, context) {
+	if (!expression.isStatic && expression.ast === void 0) return [[
+		expression.content,
+		-3,
+		expression.loc
+	]];
+	return (0, _vue_compiler_vapor.genExpression)(expression, context);
+}
 function transformImage(node) {
 	if (node.type !== 1 || node.tag !== "image" || node.ns !== 0) return;
 	node.tag = "img";
@@ -155,7 +163,7 @@ function createImageTransform() {
 			if (operation.type !== 3) return;
 			const key = operations.get(operation);
 			if (!key) return;
-			return [_vue_compiler_vapor.NEWLINE, ...(0, _vue_compiler_vapor.genCall)(context.helper(key === "src" ? "setImageSrc" : "setImageMode"), `n${operation.element}`, (0, _vue_compiler_vapor.genExpression)(operation.prop.values[0], context))];
+			return [_vue_compiler_vapor.NEWLINE, ...(0, _vue_compiler_vapor.genCall)(context.helper(key === "src" ? "setImageSrc" : "setImageMode"), `n${operation.element}`, genImageExpression(operation.prop.values[0], context))];
 		},
 		genEventHandler(operation, context, handler) {
 			if (!imageElements.has(operation.element) || !operation.key.isStatic) return;
