@@ -4,7 +4,10 @@ import { once } from '@dcloudio/uni-shared'
 export const isInHBuilderX = once(() => {
   // 自动化测试传入了 HX_APP_ROOT(其实就是UNI_HBUILDERX_PLUGINS)
   if (process.env.HX_APP_ROOT) {
-    process.env.UNI_HBUILDERX_PLUGINS = process.env.HX_APP_ROOT + '/plugins'
+    process.env.UNI_HBUILDERX_PLUGINS = path.resolve(
+      process.env.HX_APP_ROOT,
+      'plugins'
+    )
     return true
   }
   if (process.env.HX_PLUGIN_PATHS && process.env.UNI_HBUILDERX_PLUGINS) {
