@@ -180,15 +180,28 @@ export function setupPage(comp: any, path: string) {
       //#endif
       // 存储参数，让 initHooks 中执行 onLoad 时，可以访问到
       const query = decodedQuery(route.query)
+      //#if _X_VAPOR_
+      ;(instance as any).__pageQuery = query
+      //#else
       instance.attrs.__pageQuery = query
+      //#endif
       if (__X__) {
         const pageInstance = getPageInstanceByChild(instance)
         if (isDialogPageInstance(pageInstance)) {
+          //#if _X_VAPOR_
+          const dialogQuery = decodedQuery(
+            parseQuery(
+              (pageInstance?.attrs.route as string).split('?')[1] || ''
+            )
+          )
+          ;(instance as any).__pageQuery = dialogQuery
+          //#else
           instance.attrs.__pageQuery = decodedQuery(
             parseQuery(
               (pageInstance?.attrs.route as string).split('?')[1] || ''
             )
           )
+          //#endif
         }
       }
       getPage$BasePage(instance.proxy!).options = query
