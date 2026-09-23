@@ -231,14 +231,14 @@ describe('uasm', () => {
       )
       expect(result).toContain('import "unimoduleTestUasm"')
       expect(result).toContain(
-        'uni.loadUasm("test-uasm", () => unimoduleTestUasm.TestUasm.self)'
+        'uni.loadUasm("UasmTestUasm", () => unimoduleTestUasm.TestUasm.self)'
       )
       const syncResult = transform(
         `uni.loadUasmSync<CompressionBridge>('uni_modules/test-uasm')`
       )
       expect(syncResult).toContain('import "unimoduleTestUasm"')
       expect(syncResult).toContain(
-        'uni.loadUasmSync("test-uasm", () => unimoduleTestUasm.TestUasm.self)'
+        'uni.loadUasmSync("UasmTestUasm", () => unimoduleTestUasm.TestUasm.self)'
       )
     } finally {
       restoreEnv('UNI_APP_X_DOM2', originalDom2)
@@ -609,7 +609,10 @@ describe('uasm', () => {
       ])
     ).toBe('libUasmTestUasm.so')
     expect(resolveUasmLoadPath('uni_modules/test-uasm', 'app-ios', false)).toBe(
-      'test-uasm'
+      'UasmTestUasm'
+    )
+    expect(resolveUasmLoadPath('uni_modules/test-uasm', 'app-ios', true)).toBe(
+      'UasmTestUasm'
     )
     expect(
       resolveUasmLoadPath('uni_modules/test-uasm', 'app-android', false, [])
